@@ -1,4 +1,8 @@
 # Footer navigation links
 
-- title:
-  url:
+- title: Archive
+  url: /archive/
+- title: About
+  url: /about/
+- title: Imprint
+  url: /imprint/

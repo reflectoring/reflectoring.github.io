@@ -1,0 +1,12 @@
+tom:
+  name: Tom Hombergs
+  web: https://github.com/thombergs
+  email: tom.hombergs@gmail.com
+  bio: "Try, fail fast, try again and succeed."
+  avatar: tom.png
+
+matthias:
+  name: Matthias Balke
+  email: cornelius@thewhip.com
+  bio: "I ordered what?"
+  avatar: bio-photo.jpg

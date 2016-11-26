@@ -1,9 +1,9 @@
 ---
 layout: archive
-title: "Posts Archive"
-date: 2016-11-21
+title: "Latest Posts"
+date: 2016-11-26
 modified:
-tags: []
+tags: [reflectoring, posts, blog, software, engineering, programming, java]
 image:
   feature: 
   teaser: archive.jpg
@@ -13,4 +13,4 @@ image:
 {% for post in site.posts %}
   {% include post-grid.html %}
 {% endfor %}
-</div><!-- /.tiles -->
+</div>

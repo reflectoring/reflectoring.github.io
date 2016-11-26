@@ -1,9 +1,5 @@
 # Site navigation links
 
-- title: Archive
-  url: /archive/
-  excerpt: "Recent and not so recent blog posts."
-  image: archive.jpg
 - title: About
   url: /about/
   excerpt: "Feeling a little meta?"

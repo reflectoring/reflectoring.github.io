@@ -3,10 +3,11 @@ tom:
   web: https://github.com/thombergs
   email: tom.hombergs@gmail.com
   bio: "Fail fast and try again."
-  avatar: tom.png
+  avatar: avatars/tom.png
 
 matthias:
   name: Matthias Balke
-  email: cornelius@thewhip.com
-  bio: "I ordered what?"
-  avatar: bio-photo.jpg
+  web: https://github.com/matthiasbalke
+  email: matthias.balke@googlemail.com
+  bio:
+  avatar: avatars/matthias.png

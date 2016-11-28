@@ -5,7 +5,7 @@ description: "Reflections on Software Engineering in general and coding in parti
 logo: # 120x120 px default image used for Twitter summary card
 teaser: # 400x250 px default teaser image used in image archive grid
 locale: en
-url: https://thombergs.github.io/reflectoring-blog
+url: http://www.reflectoring.io
 feed:
   path: atom.xml
 
@@ -26,7 +26,7 @@ gems:
 
 # Site owner
 owner:
-  name: Tom Hombergs
+  name: reflectoring
   email: tom.hombergs@gmail.com
   twitter:
   google:

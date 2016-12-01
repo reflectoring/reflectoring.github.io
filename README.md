@@ -1,11 +1,10 @@
 # Getting Started
 1. install Ruby
-2. clone this repository
-3. switch to branch "gh-pages"
-4. run `bundle install`
-5. edit the source files
-6. run `bundle exec jekyll serve` to test changes on http://localhost:4000
-7. push changes to github to publish them
+1. clone this repository
+1. run `bundle install`
+1. edit the source files
+1. run `bundle exec jekyll serve` to test changes on http://localhost:4000
+1. push changes to github to publish them
 
 # Theme Features
 This blog uses the "Skinny Bones" theme for jekyll. A guide to using this theme can be found here: https://mmistakes.github.io/skinny-bones-jekyll/getting-started/

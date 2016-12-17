@@ -1,13 +1,13 @@
 tom:
   name: Tom Hombergs
-  web: https://github.com/thombergs
   email: tom.hombergs@gmail.com
   bio: "Fail fast and try again."
   avatar: avatars/tom.png
+  github: https://github.com/thombergs
 
 matthias:
   name: Matthias Balke
-  web: https://github.com/matthiasbalke
   email: matthias.balke@googlemail.com
   bio:
   avatar: avatars/matthias.png
+  github: https://github.com/thombergs

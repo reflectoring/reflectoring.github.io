@@ -1,0 +1,21 @@
+<div class="author-image">
+<img src="{{ site.url }}/images/{{ author.avatar }}" alt="{{ author.name }}">
+</div>
+<div class="author-content" style="clear: both">
+  <h3 class="author-name">
+    <span itemprop="author">{{ author.name }}</span>
+  </h3>
+
+  {% if author.bio %}
+  <p class="author-bio"><em>"{{ author.bio }}"</em></p>
+  {% endif %}
+
+  {% if author.email %}
+  <p class="author-bio">{{ author.email }}</p>
+  {% endif %}
+
+  {% if author.github %}
+  <p class="author-bio"><a href="{{ author.github }}">{{ author.github }}</a></p>
+  {% endif %}
+
+</div>

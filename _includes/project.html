@@ -1,0 +1,17 @@
+<div class="author-image">
+<img src="{{ site.url }}/images/projects/{{ project.image }}" alt="{{ project.name }}">
+</div>
+<div class="author-content" style="clear: both">
+  <h3 class="author-name">
+    <a href="{{ project.site }}">{{ project.name }}</a>
+  </h3>
+
+  {% if project.description %}
+  <p class="author-bio">{{ project.description }}</p>
+  {% endif %}
+
+  {% if project.github %}
+  <p class="author-bio"><a href="{{ project.github }}">{{ project.github }}</a></p>
+  {% endif %}
+
+</div>

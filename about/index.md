@@ -31,3 +31,13 @@ If you want to get in touch with us, simply drop us an email or post a comment.
   {% endfor %}
 
 </footer>
+
+## Projects
+
+<footer class="page-footer">
+
+  {% for project in site.projects %}
+  {% include project.html %}
+  {% endfor %}
+
+</footer>

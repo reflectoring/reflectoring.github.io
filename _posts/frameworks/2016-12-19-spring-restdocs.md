@@ -226,13 +226,11 @@ asciidoctor {
 }
 ```
 
-Next, we include the `asciidoctor` task to be run before the `jar` task, so that it is automatically
-run each build.
+Next, we include the `asciidoctor` task to be run when we execute the `build` task, so that it is automatically
+run with each build.
 
 ```groovy
-jar {
-    dependsOn asciidoctor
-}
+build.dependsOn asciidoctor
 ```
 
 ## Wrap-Up

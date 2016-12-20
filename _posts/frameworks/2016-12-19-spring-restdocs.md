@@ -57,25 +57,19 @@ request is passed into the `document()` method to automatically create documenta
 for the request. The `document()` method is statically imported from the class
 `MockMvcRestDocumentation` to keep the code readable.
 
-The `MockMvc` object is initialized with a `JUnitRestDocumentation` object, as shown in the next code snippet. 
+The `MockMvc` object returned by the method `mvc()` is initialized with a `JUnitRestDocumentation` object, as shown in the next code snippet. 
 This way, the `MockMvc` object is instrumented to create [Asciidoctor](http://asciidoctor.org/)
 snippets into the folder `build/generated-snippets`.
 
 ```java
-private MockMvc mvc;
 
 @Rule
 public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("build/generated-snippets");
 
-@Before
-public void setup() {
-    mvc = MockMvcBuilders.webAppContextSetup(applicationContext)
-            .apply(MockMvcRestDocumentation.documentationConfiguration(this.restDocumentation))
-            .build();
-}
-
 protected MockMvc mvc() {
-    return mvc;
+    return MockMvcBuilders.webAppContextSetup(applicationContext)
+                .apply(MockMvcRestDocumentation.documentationConfiguration(this.restDocumentation))
+                .build();
 }
 
 ```
@@ -198,8 +192,6 @@ In your `build.gradle`, you will first have to define a dependency to the plugin
 ```groovy
 buildscript {
     repositories {
-        mavenCentral()
-        mavenLocal()
         jcenter()
         maven {
             url "https://plugins.gradle.org/m2/"
@@ -240,9 +232,6 @@ run each build.
 ```groovy
 jar {
     dependsOn asciidoctor
-    from("${asciidoctor.outputDir}/html5") {
-        into "static/docs"
-    }
 }
 ```
 

@@ -23,6 +23,8 @@ gems:
   - jekyll-gist
   - jekyll-feed
 
+collections:
+  - projects
 
 # Site owner
 owner:

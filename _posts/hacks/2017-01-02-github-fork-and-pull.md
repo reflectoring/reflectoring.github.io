@@ -9,7 +9,7 @@ comments: true
 ads: false
 image:
   feature: 
-  teaser: teaser/svn.jpg
+  teaser: teaser/github-mark.png
   thumb:
 ---
 

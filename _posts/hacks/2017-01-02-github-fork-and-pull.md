@@ -1,6 +1,6 @@
 ---
 layout: article
-title: How to use Git for Github's Fork & Pull Workflow
+title: Github's Fork & Pull Workflow for Git Beginners
 categories: [hacks]
 modified: 2017-01-02
 author: tom
@@ -16,12 +16,14 @@ image:
 If you are new to [git](https://git-scm.com/) and/or [GitHub](https://github.com), 
 it's easy to get overwhelmed by the different workflow models you can use 
 to contribute code to a repository. At least, I was overwhelmed and it took 
-some time for me to get over the things I learned using SVN and open up to 
-new workflows.
+some time for me to open up to new workflows and to get over the things 
+I learned using good old SVN.
 
 This post explains the basic [fork and pull](https://help.github.com/articles/about-collaborative-development-models/)
-workflow model that is used on a lot of GitHub repositories
-and shows the git commands for each step in it.
+workflow model that is used on a lot of GitHub repositories. For each step
+in the workflow, I will list the necessary git commands and describe
+them briefly. Thus, this post is aimed at git beginners that have yet 
+hesitated to contribute on GitHub.
 
 ## Fork & Pull
 Thinking about it, "Fork & Pull" is a pretty concise name for this workflow. 
@@ -51,30 +53,30 @@ simply clicking the "merge" button.
 The following steps are enough for creating a pull request if you don't need to 
 work on multiple pull requests to the same repository at once.
 
-### 1. Create a Fork
-Simply click on the "fork" button of the repository page on GitHub.
+1. **Create a Fork**  
+   Simply click on the "fork" button of the repository page on GitHub.
 
-### 2. Clone your Fork
-The standard `clone` command creates a local git repository from your remote fork on GitHub. 
+2. **Clone your Fork**  
+   The standard `clone` command creates a local git repository from your remote fork on GitHub. 
 
-```
-git clone https://github.com/USERNAME/REPOSITORY.git
-```
+   ```
+   git clone https://github.com/USERNAME/REPOSITORY.git
+   ```
 
-### 3. Modify the Code
-In your local clone, modify the code and commit them to your local clone 
-using the `git commit` command.
+3. **Modify the Code**  
+   In your local clone, modify the code and commit them to your local clone 
+   using the `git commit` command.
 
-### 4. Push your Changes
-In your workspace, use the `git push` command to upload your changes to your
-remote fork on GitHub.
+4. **Push your Changes**  
+   In your workspace, use the `git push` command to upload your changes to your
+   remote fork on GitHub.
 
-### 5. Create a Pull Request
-On the GitHub page of your remote fork, click the "pull request" button. Wait
-for the owner to merge or comment your changes and be proud when it is merged :).
-If the owner suggests some changes before merging, you can simply push these
-changes into your fork by repeating steps #3 and #4 and the pull request is 
-updated automatically.
+5. **Create a Pull Request**  
+   On the GitHub page of your remote fork, click the "pull request" button. Wait
+   for the owner to merge or comment your changes and be proud when it is merged :).
+   If the owner suggests some changes before merging, you can simply push these
+   changes into your fork by repeating steps #3 and #4 and the pull request is 
+   updated automatically.
 
 ## Additional Git Commands
 The commands listed above are enough for a simple pull request. In some cases, however
@@ -113,7 +115,7 @@ git checkout master
 # create and switch to a new branch for your feature
 git checkout -b my-feature-branch
 
-# upload the branch and all changes within it to the remote fork
+# upload the branch and all committed changes within it to the remote fork
 git push
 ``` 
 
@@ -124,7 +126,7 @@ creates a pull request from the selected branch.
 
 ### Updating a Feature Branch
 You may want to pull changes made to the original repository into a local feature branch.
-As described in [Updating your Fork](#updating-your-fork), merge the upstream repository
+As described in [Updating your Fork](#updating-your-fork) above, merge the upstream repository
 to your master branch. Then `rebase` your feature branch from the updated master branch:
 
 ```

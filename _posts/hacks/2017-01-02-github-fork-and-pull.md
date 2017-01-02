@@ -122,6 +122,22 @@ simply use the command `git checkout BRANCHNAME`. To create a pull request from 
 go to the GitHub page of that branch and click the "pull request" button. GitHub automatically
 creates a pull request from the selected branch.
 
+### Updating a Feature Branch
+You may want to pull changes made to the original repository into a local feature branch.
+As described in [Updating your Fork](#updating-your-fork), merge the upstream repository
+to your master branch. Then `rebase` your feature branch from the updated master branch:
+
+```
+# switch to your feature branch
+git checkout my-feature-branch
+
+# commit all changes in your feature-branch
+git commit -m MESSAGE
+
+# update your feature branch from the master branch
+git rebase master
+```
+
 ## Conclusion
 The steps and commands described above should provide enough information to start 
 using pull requests. Of course, there are more sophisticated workflows and git 

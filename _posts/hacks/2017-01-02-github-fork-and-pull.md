@@ -116,7 +116,7 @@ git checkout master
 git checkout -b my-feature-branch
 
 # upload the branch and all committed changes within it to the remote fork
-git push
+git push --set-upstream origin my-feature-branch
 ``` 
 
 Create a branch like this for each feature you are working on. To switch between branches,

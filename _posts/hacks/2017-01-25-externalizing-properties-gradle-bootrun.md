@@ -60,31 +60,20 @@ def Properties localBootRunProperties() {
 }
 ```
 
-Then, in your `bootRun` task, add the `systemProperties` attribute as follows:
+Then, in your `bootRun` task, fill the `systemProperties` attribute as follows:
 
 ```groovy
 bootRun {
-    systemProperties = localBootRunProperties()
+  doFirst {
+    bootRun.systemProperties = localBootRunProperties()
+  }
 }
 ```
 
-Note that the call to `localBootRunProperties()` is evaluated by Gradle even if
-the task is not called. Any build will fail with a FileNotFoundException if the file `local.application.properties`
-cannot be found, which is OK on developer machines, but not on continuous integration
-servers. That's why you should wrap the call to `p.load(...)` within an if
-condition that checks whether the build is currently running on a CI server, 
-for example like this (assuming there is a global boolean property `isCiBuild`).
- 
-```groovy
-def Properties localBootRunProperties() {
-    Properties p = new Properties();
-    if(!isCiBuild){}
-      p.load(new FileInputStream(
-        file(project.projectDir).absolutePath + "/local.application.properties"))
-    }
-    return p;
-}
-```
+The call to `localBootRunProperties()` is put into the `doFirst` closure so that
+it gets executed only when the task itself is executed. Otherwise event all other tasks
+would fail with a `FileNotFoundException` if the properties file is not found
+instead of only the `bootRun` task.
 
 ## Further Reading
 

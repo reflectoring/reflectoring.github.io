@@ -1,0 +1,92 @@
+---
+layout: article
+title: Externalizing application properties for the gradle bootRun task
+categories: [hacks]
+modified: 2017-01-25
+author: tom
+tags: [gradle, spring boot, bootrun, properties, application.properties]
+comments: true
+ads: false
+image:
+  feature: 
+  teaser: teaser/spring-boot.png
+  thumb:
+---
+
+The Spring Boot gradle plugin provides the `bootRun` task that allows a 
+developer to start the application in a "developer mode" without first building
+a JAR file and then starting this JAR file. Thus, it's a quick way to test
+the latest changes you made to the codebase.
+
+Sadly, most applications cannot be started or would not work correctly without
+specifying a couple configuration parameters. Spring Boot supports such 
+parameters with it's `application.properties` file. The parameters in this file
+are automatically read when the application is started from a JAR
+and passed to the application.
+
+The `bootRun` task also allows to define such properties. 
+The common way of doing this is like this in the `build.gradle` file: 
+
+```groovy
+bootRun {
+  jvmArgs =
+    [
+      "-DmyApp.myParam1=value1",
+      "-DmyApp.myParam2=value2"
+    ]
+}
+```
+
+However, if your are working at the codebase together with other developers,
+each developer may want to test different use cases and needs different
+configuration values. She would have to edit the `build.gradle` each time.
+And each time she checks in changes to the codebase, she has to check if
+the `build.gradle` file should really be checked in. Which is not what we want.
+
+The solution to this problem is a specific properties file for each developer's 
+local environment that is not checked into the VCS. 
+Let's call it `local.application.properties`. In this file, put your applications
+configuration parameters just as you would in a real `application.properties` file.
+
+To make the `bootRun` task load these properties, add the following snippet to your
+`build.gradle`:
+
+```groovy
+def Properties localBootRunProperties() {
+    Properties p = new Properties();
+    p.load(new FileInputStream(
+      file(project.projectDir).absolutePath + "/local.application.properties"))
+    return p;
+}
+```
+
+Then, in your `bootRun` task, add the `systemProperties` attribute as follows:
+
+```groovy
+bootRun {
+    systemProperties = localBootRunProperties()
+}
+```
+
+Note that the call to `localBootRunProperties()` is evaluated by Gradle even if
+the task is not called. Any build will fail with a FileNotFoundException if the file `local.application.properties`
+cannot be found, which is OK on developer machines, but not on continuous integration
+servers. That's why you should wrap the call to `p.load(...)` within an if
+condition that checks whether the build is currently running on a CI server, 
+for example like this (assuming there is a global boolean property `isCiBuild`).
+ 
+```groovy
+def Properties localBootRunProperties() {
+    Properties p = new Properties();
+    if(!isCiBuild){}
+      p.load(new FileInputStream(
+        file(project.projectDir).absolutePath + "/local.application.properties"))
+    }
+    return p;
+}
+```
+
+## Further Reading
+
+* [Spring Boot Gradle Plugin](http://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-gradle-plugin.html)
+

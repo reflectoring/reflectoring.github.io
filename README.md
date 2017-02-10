@@ -4,7 +4,9 @@
 1. run `bundle install`
 1. edit the source files
 1. run `bundle exec jekyll serve` to test changes on http://localhost:4000 (further information for jekyll usages https://jekyllrb.com/docs/usage/)
-1. push changes to github to publish them
+1. push changes to github to publish them (use ci-build.sh/ci-build.bat to run htmlproofer to check your html style)
+
+
 
 # Contribute
 If you have an idea for a blog post or want to write a post to one of the existing ideas in the issue tracker,

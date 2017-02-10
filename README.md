@@ -7,8 +7,6 @@
 1. verify your changes by running the same checks our ci server runs by executing `ci-build.sh` or `ci-build.bat`
 1. push changes to github to publish them
 
-
-
 # Contribute
 If you have an idea for a blog post or want to write a post to one of the existing ideas in the issue tracker,
 feel free to get in touch. Here's how we work:

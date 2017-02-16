@@ -1,25 +1,27 @@
 ---
 layout: article
-title: Is Endurance a good quality in Software Projects?
+title: How to user java.util.Random right
 categories: [methodology]
-modified: 2016-11-28
-author: tom
-tags: [endurance, programming, project, software, engineering, methodology]
+modified: 2017-02-16
+author: rudi
+tags: [random, threadLocalRandom, math, programming, project, software, engineering, methodology]
 comments: true
 ads: false
 image:
-  feature: 
-  teaser: teaser/TODO.jpg
+  feature:
+  teaser: teaser/random.jpg
   thumb:
 ---
-From time to time we need a generated Number in Java. In this case we are normally using java.util.Random (https://docs.oracle.com/javase/7/docs/api/java/util/Random.html) which provides a stream of pseudo generated Number. But there´re some use cases in which the direct usage could couse some unexpected problems. 
+From time to time we need a generated Number in Java. In this case we are normally using [java.util.Random](https://docs.oracle.com/javase/7/docs/api/java/util/Random.html) which provides a stream of pseudo generated Number. But there´re some use cases in which the direct usage could couse some unexpected problems.
 
 This ist the ordinary way to generate an Number:
+
 ```
 ---Random---
-    Random random = new Random();
-        random.nextInt();//nextDouble(), nextBoolean(), nextFloat(), ...
+Random random = new Random();
+random.nextInt();//nextDouble(), nextBoolean(), nextFloat(), ...
 ```
+
 Alternative we can use the Math-Class:
 
 ```
@@ -37,9 +39,9 @@ public static double random() {
     return rnd.nextDouble();
 }
 ```
-According to the Java-Doc, the using of java.util.Random is thread safe. But the concurrent use 
+According to the Java-Doc, the using of java.util.Random is thread safe. But the concurrent use
 of the same Random-Instance across different threads may encounter contention and consequent poor performance.
-The reason for this is the usage of so called Seeds for the generation of random numbers. A Seed is a simple number which provides the basis for the generation of new random numbers. This happens within the method next which ist used within Random:
+The reason for this is the usage of so called Seeds for the generation of random numbers. A Seed is a simple number which provides the basis for the generation of new random numbers. This happens within the method next which is used within Random:
 
 ```
 ---Random---
@@ -61,16 +63,16 @@ This is done within a loop till the variables matches the excepted values. And t
 
 
 Thus, if more threads are actively generating new random numbers with the same instance of Random, the higher the probability, that the above mentioned case occurs.
-For programs that generate many (very many) random numbers, this procedure is not recommended. In this case you should ThreadLocalRandom instead.
-java.util.concurrent.ThreadLocalRandom were added to java utils from version 1.7(https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ThreadLocalRandom.html)
+For programs that generate many (very many) random numbers, this procedure is not recommended. In this case you should ThreadLocalRandom instead.[java.util.concurrent.ThreadLocalRandom](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ThreadLocalRandom.html) were added to java utils from version 1.7.
 
 
-ThreadLocalRandom extends Random and the possibility to restrict its use to the respective thread instance. 
+ThreadLocalRandom extends Random and the possibility to restrict its use to the respective thread instance.
 For this purpose, an instance of ThreadLocalRandom is held in an internal map for the respective thread and returned by calling current.
 
 ```
 ThreadLocalRandom.current().nextInt()
 ```
-###Conclusion
+
+## Conclusion
 
 The above described pitfall doesn´t mean that is forbidden to share a Random Instance threw several threads. There is no problem with turning one or two extra rounds in a loop, but if you generate a huge amount of numbers in different threads, just bear the above mentioned solution in mind. This could save you some debug time :)

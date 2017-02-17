@@ -1,10 +1,10 @@
 ---
 layout: article
-title: How to user java.util.Random right
+title: Get your Random() straight
 categories: [methodology]
 modified: 2017-02-16
 author: rudi
-tags: [random, threadLocalRandom, math, programming, project, software, engineering, methodology]
+tags: [random, threadLocalRandom, math, generated, number, programming, project, software, engineering, methodology]
 comments: true
 ads: false
 image:
@@ -14,7 +14,7 @@ image:
 ---
 From time to time we need a generated Number in Java. In this case we are normally using [java.util.Random](https://docs.oracle.com/javase/7/docs/api/java/util/Random.html) which provides a stream of pseudo generated Number. But there´re some use cases in which the direct usage could couse some unexpected problems.
 
-This ist the ordinary way to generate an Number:
+This is the ordinary way to generate an Number:
 
 ```
 ---Random---
@@ -39,6 +39,7 @@ public static double random() {
     return rnd.nextDouble();
 }
 ```
+
 According to the Java-Doc, the using of java.util.Random is thread safe. But the concurrent use
 of the same Random-Instance across different threads may encounter contention and consequent poor performance.
 The reason for this is the usage of so called Seeds for the generation of random numbers. A Seed is a simple number which provides the basis for the generation of new random numbers. This happens within the method next which is used within Random:

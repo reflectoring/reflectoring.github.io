@@ -1,6 +1,6 @@
 ---
 layout: article
-title: Get your Random() straight
+title: Random() pitfall
 categories: [methodology]
 modified: 2017-02-16
 author: rudi

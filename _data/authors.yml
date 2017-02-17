@@ -11,3 +11,10 @@ matthias:
   bio:
   avatar: avatars/matthias.png
   github: https://github.com/matthiasbalke
+
+  rudi:
+    name: Rudi klassen
+    email: rudolfklassen2@gmail.com
+    bio:
+    avatar: avatars/rudi.png
+    github: https://github.com/RudiKlassen

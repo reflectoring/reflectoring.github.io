@@ -1,9 +1,10 @@
 # Getting Started with Jekyll
-1. install Ruby
+1. install jekyll (Windows: https://jekyllrb.com/docs/windows/ Other:https://jekyllrb.com/docs/installation/)
 1. clone this repository
 1. run `bundle install`
 1. edit the source files
-1. run `bundle exec jekyll serve` to test changes on http://localhost:4000
+1. run `bundle exec jekyll serve` to test changes on http://localhost:4000 (further information for jekyll usages https://jekyllrb.com/docs/usage/)
+1. verify your changes by running the same checks our ci server runs by executing `ci-build.sh` or `ci-build.bat`
 1. push changes to github to publish them
 
 # Contribute

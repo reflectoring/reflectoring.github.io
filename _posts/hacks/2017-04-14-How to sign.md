@@ -4,7 +4,7 @@ title: Digital Signature in Java
 categories: [hacks]
 modified: 2017-04-14
 author: artur
-tags: [generated, number, programming, project, software, engineering, cryptography]
+tags: [java, generated, number, programming, project, software, engineering, cryptography, jce, bouncycastle, signature, digital]
 comments: true
 ads: false
 image:
@@ -13,52 +13,54 @@ image:
   thumb:
 ---
 
-Often you have to sign data in your application.
-It gives you integrity and authenticity by sending the data.
+Often you come across the requirement to validate integrity and authenticity 
+of data that was sent digitally. Digital signatures are the solution to this requirement.
 So what do you need to sign the data? First, you need an asymmetric key pair. It consists of a private key,
-that only signer can access to and a public key or better a certificate.
-The public key or the certificate is available for everyone. The simple way to produce a signature looks like this
+that only the signer can access, and a public key or even better, a certificate.
+The public key or the certificate is available for everyone. 
+
+## Plain Java Signature
+The simple way to produce a signature in Java 
+looks like this:
 
 ```java
-import java.security.Signature;
-
 Signature ecdsaSignature = Signature.getInstance("SHA256withECDSA");
 ecdsaSignature.initSign(eccPrivateKey);
 ecdsaSignature.update(dataToSign);
 byte[] signature = ecdsaSignature.sign();
 ```
 
-By this code you got a raw signature. It means, a hash value of the data was calculated and this hash value was
-encrypted with the private key. So if you like to check, if the data was manipulated, you just have to calculate the
-hash value of the data to be checked, to decrypt the signature and to compare the results. It is called verification and looks like this
+Using this code you get a raw signature. It means that a hash value of the data was calculated and this hash value was
+encrypted with the private key. So to check if the data was manipulated, you just have to calculate the
+hash value of the data to be checked, decrypt the signature and to compare the results. This is called signature 
+verification and looks like this:
 
 ```java
-import java.security.Signature;
-
 Signature ecdsaSignature = Signature.getInstance("SHA256withECDSA");
 ecdsaSignature.initVerify(certificate);
 ecdsaSignature.update(dataToVerify);
 boolean isValide = ecdsaSignature.verify(rawSignature);
 ```
 
-What are advantages of this way? The signature is small, the code is small and clear. It can be used, if you have a requirement to keep 
-the signature simple and quick, for example by signing an URL, if you want to add a signature to your URL. What disadvantages did you get by
+What are the advantages of doing it this way? The signature is small, the code is short and clear. It can be used if you have a requirement to keep 
+the signature simple and quick. What disadvantages did you get by
 this way? First, the verifier has to know which certificate he or she should use to verify the signature. Second, the verifier has to know
 what signature algorithm he or she has to use to verify the signature. Third, the signer and the verifier have to bind the data and the signature.
 It means you can use this kind of signature very well inside of one system.
 
-To avoid these disadvantages it is helpful to use a standard format of signature. The standard is *Cryptographic Message Syntax (CMS)* defined in
-[RFC5652](https://tools.ietf.org/html/rfc5652). CMS describes several standards of cryptographic data, but we are interested in *Signed-data* format.
-The signed data in this format has a lot of information, that can help you to verify the signature. So how can you create such data structure?
-The native java means are not enough in this case. Actually you need the solution of two problems.
-First, you need a JCE-Provider. Second, you need a cryptographic library, that can create a *CMS Signed-data*.
-Any cryptographic operation in Java is specified in JCE interface. Everybody who wants to use this interface needs 
-an implementation of it. Such implementation is called JCE provider. Your JDK has already a JCE-Provider named
+## Cryptographic Message Syntax (CMS)
+To avoid these disadvantages it is helpful to use a standard signature format. The standard is *Cryptographic Message Syntax (CMS)* defined in
+[RFC5652](https://tools.ietf.org/html/rfc5652). CMS describes several standards of cryptographic data, but we are interested in the *Signed-data* format here.
+The signed data in this format has a lot of information, that can help you to verify the signature. So how can you create such a data structure?
+
+With JCE (Java Cryptography Extension), Java provides an interface for cryptographic operations. It's best practice to use this interface for cryptographic
+operations. Implementations of JCE are called JCE providers. Your JDK already has a JCE provider named
 [SUN](http://docs.oracle.com/javase/8/docs/technotes/guides/security/SunProviders.html#SUNProvider). 
-Though the Sun provider solves the first problem, but JDK does not have any library for cryptographic standard format.
-That is why you have to chose a cryptographic library.
+
+However, JCE does not provide an interface for the Cryptographic Message Syntax.
+That is why you have to use a different cryptographic library.
 [BouncyCastle](https://www.bouncycastle.org/java.html) is a good choice. It is a JCE provider
-and has a lot cryptographic functions of the high abstract level. The code to create a signature can look like this (JavaDoc of BouncyCastle)
+and has a lot of additional cryptographic functionality on a high level of abstraction. The code to create a signature wit CMS and BouncyCastle can look like this (JavaDoc of BouncyCastle):
 
 ```java
 List certList = new ArrayList();
@@ -69,22 +71,26 @@ CMSSignedDataGenerator gen = new CMSSignedDataGenerator();
 ContentSigner sha256Signer = new JcaContentSignerBuilder("SHA256withECDSA").build(signKP.getPrivate());
 
 gen.addSignerInfoGenerator(
-                new JcaSignerInfoGeneratorBuilder(
-                     new JcaDigestCalculatorProviderBuilder().build())
-                     .build(sha256Signer, signCert));
+  new JcaSignerInfoGeneratorBuilder(
+    new JcaDigestCalculatorProviderBuilder().build())
+      .build(sha256Signer, signCert));
 
-      gen.addCertificates(certs);
-
-      CMSSignedData sigData = gen.generate(msg, false);
+gen.addCertificates(certs);
+CMSSignedData sigData = gen.generate(msg, false);
 ```
 
-Note, that you can define, if also the data and not only the signature should be in the CMS container. With other words you can choose either 
-_attached_ or _detached_ signature.
-With this container you got the signature,
-the certificate, that can be used for verifying, digital algorithm, possibly the signed data etc.
-It is also possible to create several signatures for the data and put them in the container. It means you can send this kind of signature
-to a third party, for instance, you can sign data, that are provided by a web service and the consumer wants to verify the signature.
-The code to verify a *CMSSignedData* (again JavaDoc of BouncyCastle)
+Note that you can define if the data should be put into the CMS container alongside the data or not. With other words you can choose to create either 
+an _attached_ or a _detached_ signature.
+The CMS container contains the following:
+
+* the signature
+* the certificate that can be used for verifying
+* the digital algorithm
+* possibly the signed data itself.
+
+It is also possible to create several signatures for the data and put them in the same container. That means you can sign the data for several recipients and send
+each recipient the same container.
+The code to verify a *CMSSignedData* (again JavaDoc of BouncyCastle):
 
 ```java
 Store certStore = cmsSignedData.getCertificates();
@@ -92,40 +98,39 @@ SignerInformationStore signers = cmsSignedData.getSignerInfos();
 Collection c = signers.getSigners();
 Iterator it = c.iterator();
 
-while (it.hasNext())
-  {
-    SignerInformation signer = (SignerInformation)it.next();
-    Collection certCollection = certStore.getMatches(signer.getSID());
-    Iterator certIt = certCollection.iterator();
-    X509CertificateHolder cert = (X509CertificateHolder)certIt.next();
-    if (signer.verify(new JcaSimpleSignerInfoVerifierBuilder().build(cert))) {
-           verified++;
-       }
-   }
+while (it.hasNext()){
+  SignerInformation signer = (SignerInformation)it.next();
+  Collection certCollection = certStore.getMatches(signer.getSID());
+  Iterator certIt = certCollection.iterator();
+  X509CertificateHolder cert = (X509CertificateHolder)certIt.next();
+  if (signer.verify(new JcaSimpleSignerInfoVerifierBuilder().build(cert))) {
+    // successfully verified
+  }
+}
 ```
 
-If you want to use the whole functionality of a JCE implementation you have to install unrestricted policy files for the JVM. If you don't,
+## Light Weight
+If you want to use the whole functionality of a JCE implementation you have to install the "unlimited strength jurisdiction policy files" for the JVM. If you don't,
 you'll get something like this
 
-```java
+```
 java.lang.SecurityException: Unsupported keysize or algorithm parameters 
 or java.security.InvalidKeyException: Illegal key size
 ```
 
-The reason of this exception is the restriction of the export of cryptographic technologies from the United States until 2000.
-The most restrictions limited the key length. Unfortunately JDK still does not have unrestricted implementation after the default installation,
-that's why you have to install the unrestricted policy files additionally.
+The reason for this exception is the restriction of the export of cryptographic technologies from the United States until 2000.
+These restrictions limited the key length. Unfortunately, the JDK still does not have unrestricted implementation after the default installation,
+and that's why you have to install the unrestricted policy files additionally.
 
 As you guess it is not a big problem to get and to install the unrestricted policy files for *your* JVM. But what if you 
-want to distribute your application. It can be pretty difficult for some users to solve this problem. The BouncyCastle library
-has again a solution. It provides light weight version of cryptographic operations. It means, that these operations don't use any JCE
-provider. That's why it is not necessary to install unrestricted policy files. Maybe you already saw, that some classes of the BouncyCastle
-begin with _Jce_  (Java Cryptography Extension) or with _Jca_(Java Cryptography Architecture). These classes use JCE-Provider.
+want to distribute your application? It can be pretty difficult for some users to solve this problem. The BouncyCastle library
+has again a solution. It provides a light weight version of cryptographic operations. It means, that these operations don't use any JCE
+provider. That's why it is not necessary to install unrestricted policy files. Maybe you already saw that some classes of the BouncyCastle
+begin with _Jce_  (Java Cryptography Extension) or with _Jca_(Java Cryptography Architecture). These classes use JCE provider.
 The light weight classes begin with _Bc_ and as said above don't use a JCE provider.
-The code for signing with light weight version would look like this
+The code for signing with light weight version would look like this: 
 
 ```java
-
 X509Certificate certificate = ...;
 
 X509CertificateHolder x509CertificateHolder = new X509CertificateHolder(certificate.getEncoded());
@@ -153,10 +158,9 @@ dataGenerator.addCertificate(x509CertificateHolder);
 CMSSignedData signedData = dataGenerator.generate(message, true);
 ```
 
-You get the same CMS container without installing some patches. You can verify the data with this code
+You get the same CMS container without installing any patches. You can verify the data with this code:
 
 ```java
-
 Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
 List<SignerInformation> signerList = new ArrayList<>(signers);
 SignerInformation signerFromCMS = signerList.get(0);
@@ -175,6 +179,6 @@ boolean result = signerFromCMS.verify(verifier);
 ```
 
 ## Conclusion
-There are two ways to create signature and to verify it. The first way creates small signature and is very clear. But it does not have enough 
-information about signing process. The second way is little more complicated, but provides powerful tools to work with signatures. If you don't want 
-to use any JCE-Provider because if some reasons, you can use light weight version of cryptographic operation provided by BouncyCastle.
+There are two ways to create signature and to verify it. The first is to create a raw signature. This way is very short clear. But it does not provide enough 
+information about signing process. The second way is to create a CMS container and is a little more complicated, but provides powerful tools to work with signatures. If you don't want 
+to use any JCE provider, you can use the light weight version of cryptographic operations provided by BouncyCastle.

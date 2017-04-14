@@ -47,11 +47,18 @@ this way? First, the verifier has to know which certificate he or she should use
 what signature algorithm he or she has to use to verify the data. Third, the signer and the verifier have to bind the data and signature. It means you can use this kind 
 of signature very well inside of one system.
 
-To avoid these disadvantages it is helpful to use a standard formats of signature. The standard is *Cryptographic Message Syntax (CMS)* defined in
+To avoid these disadvantages it is helpful to use a standard format of signature. The standard is *Cryptographic Message Syntax (CMS)* defined in
 [RFC5652](https://tools.ietf.org/html/rfc5652). CMS describes several standards of cryptographic data, but we are interested in *Signed-data* format.
-The signed data in this format has a lot of information, that can help us to verify the signature. So how can you create such data structure?
-Native java means are not enough in this case. That is why you have to chose a cryptographic library. [BouncyCastle](https://www.bouncycastle.org/java.html) is a good choice. It is a JCE-Provider
-and has a lot cryptographic functions of high abstract level. The code to create a signature can look like this (JavaDoc of BouncyCastle)
+The signed data in this format has a lot of information, that can help you to verify the signature. So how can you create such data structure?
+Native java means are not enough in this case. Actually you need a solution of two problems.
+First, you need a JCE-Provider. Second, you need a cryptographic library, that can create a *CMS Signed-data*.
+Any cryptographic operation in Java is specified in JCE interface. Everybody who wants to use this interface needs 
+an implementation of it. Such implementation is called JCE provider. Your JDK has already a JCE-Provider named
+[SUN](http://docs.oracle.com/javase/8/docs/technotes/guides/security/SunProviders.html#SUNProvider). 
+Though the Sun provider solves the first problem, but JDK dos'n have any library for cryptographic standard format.
+That is why you have to chose a cryptographic library.
+[BouncyCastle](https://www.bouncycastle.org/java.html) is a good choice. It is a JCE-Provider
+and has a lot cryptographic functions of the high abstract level. The code to create a signature can look like this (JavaDoc of BouncyCastle)
 
 ```java
 import org.bouncycastle.cert.jcajce.JcaCertStore;

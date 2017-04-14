@@ -169,11 +169,13 @@ CMSTypedData message = new CMSProcessableByteArray(dataToSign);
 AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find("SHA256WithECDSA");
 
 AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
-AsymmetricKeyParameter privateKeyParameter = PrivateKeyFactory.createKey(softCert.getPrivateKey().getEncoded());
+AsymmetricKeyParameter privateKeyParameter = PrivateKeyFactory.createKey(
+                                                      softCert.getPrivateKey().getEncoded());
 
 ContentSigner signer = new BcECDSAContentSignerBuilder(sigAlgId, digAlgId).build(privateKeyParameter);
 
-SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = new SignerInfoGeneratorBuilder(new BcDigestCalculatorProvider());
+SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = 
+                       new SignerInfoGeneratorBuilder(new BcDigestCalculatorProvider());
 SignerInfoGenerator infoGenerator = signerInfoGeneratorBuilder.build(signer, x509CertificateHolder);
 
 CMSSignedDataGenerator dataGenerator = new CMSSignedDataGenerator();

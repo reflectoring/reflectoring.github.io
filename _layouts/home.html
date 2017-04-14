@@ -19,20 +19,20 @@
   <link rel="author" href="https://plus.google.com/{{ author.google.plus }}"/>
   {% endif %}
 
-  <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.url }}">
+  <link rel="canonical" href="{{ base | replace:'index.html','' | prepend: base }}">
 
-  <link href="{{ site.url }}/atom.xml" type="application/atom+xml" rel="alternate" title="{{ site.title }} Atom Feed">
+  <link href="{{ base }}/atom.xml" type="application/atom+xml" rel="alternate" title="{{ site.title }} Atom Feed">
 
   <meta name="HandheldFriendly" content="True">
   <meta name="MobileOptimized" content="320">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="cleartype" content="on">
 
-  <link rel="stylesheet" href="{{ site.url }}/css/main.css">
+  <link rel="stylesheet" href="{{ base }}/css/main.css">
   <!-- HTML5 Shiv and Media Query Support for IE -->
   <!--[if lt IE 9]>
-  <script src="{{ site.url }}/js/vendor/html5shiv.min.js"></script>
-  <script src="{{ site.url }}/js/vendor/respond.min.js"></script>
+  <script src="{{ base }}/js/vendor/html5shiv.min.js"></script>
+  <script src="{{ base }}/js/vendor/respond.min.js"></script>
   <![endif]-->
 
 </head>
@@ -42,7 +42,7 @@
 {% include navigation-sliding.html %}
 
 {% if page.image.feature %}
-<div class="page-lead" style="background-image:url({{ site.url }}/images/{{ page.image.feature }})">
+<div class="page-lead" style="background-image:url({{ base }}/images/{{ page.image.feature }})">
   <div class="wrap page-lead-content">
     <h1>&nbsp;</h1>
   </div><!-- /.page-lead-content -->
@@ -69,8 +69,8 @@
   {% include footer.html %}
 </div>
 
-<script src="{{ site.url }}/js/vendor/jquery-1.9.1.min.js"></script>
-<script src="{{ site.url }}/js/main.js"></script>
+<script src="{{ base }}/js/vendor/jquery-1.9.1.min.js"></script>
+<script src="{{ base }}/js/main.js"></script>
 
 </body>
 

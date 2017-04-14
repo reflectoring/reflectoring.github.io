@@ -28,7 +28,7 @@ ecdsaSignature.update(dataToSign);
 byte[] signature = ecdsaSignature.sign();
 ```
 
-By this code we got a row signature. It means, a hash value of the data was calculated and this hash value was
+By this code we got a raw signature. It means, a hash value of the data was calculated and this hash value was
 encrypted with the private key. So if you like to check, if the data was manipulated, you just have to calculate the
 hash value of the data to be checked, to decrypt the signature and to compare the results. It is called verification and looks like this
 

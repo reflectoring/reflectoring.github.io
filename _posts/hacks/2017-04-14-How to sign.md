@@ -50,7 +50,7 @@ of signature very well inside of one system.
 To avoid these disadvantages it is helpful to use a standard formats of signature. The standard is *Cryptographic Message Syntax (CMS)* defined in
 [RFC5652](https://tools.ietf.org/html/rfc5652). CMS describes several standards of cryptographic data, but we are interested in *Signed-data* format.
 The signed data in this format has a lot of information, that can help us to verify the signature. So how can you create such data structure?
-Native java means are not enough in this case. That is why you have to chose a cryptographic library. BouncyCastle is a good choice. It is a JCE-Provider
+Native java means are not enough in this case. That is why you have to chose a cryptographic library. [BouncyCastle](https://www.bouncycastle.org/java.html) is a good choice. It is a JCE-Provider
 and has a lot cryptographic functions of high abstract level. The code to create a signature can look like this (JavaDoc of BouncyCastle)
 
 ```java

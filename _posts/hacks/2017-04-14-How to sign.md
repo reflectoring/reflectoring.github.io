@@ -28,7 +28,7 @@ ecdsaSignature.update(dataToSign);
 byte[] signature = ecdsaSignature.sign();
 ```
 
-By this code we got a raw signature. It means, a hash value of the data was calculated and this hash value was
+By this code you got a raw signature. It means, a hash value of the data was calculated and this hash value was
 encrypted with the private key. So if you like to check, if the data was manipulated, you just have to calculate the
 hash value of the data to be checked, to decrypt the signature and to compare the results. It is called verification and looks like this
 
@@ -41,17 +41,17 @@ ecdsaSignature.update(dataToVerify);
 boolean isValide = ecdsaSignature.verify(rawSignature);
 ```
 
-What are advantages of this way? The signature ist small, the code is small and clear. It can be used, if you have a requirement to keep 
-the signature simple and quickly, for example by signing a URL, if you want to add signature to your URL. What disadvantages did we get by
-this way? First the verifier has to know which certificate he or she should use to verify the signature. Second the verifier has to know
-what signature algorithm to use to verify the data. Third the signer and the verifier have to bind the data and signature. It means you can use this kind 
+What are advantages of this way? The signature is small, the code is small and clear. It can be used, if you have a requirement to keep 
+the signature simple and quick, for example by signing a URL, if you want to add signature to your URL. What disadvantages did you get by
+this way? First, the verifier has to know which certificate he or she should use to verify the signature. Second, the verifier has to know
+what signature algorithm he or she has to use to verify the data. Third, the signer and the verifier have to bind the data and signature. It means you can use this kind 
 of signature very well inside of one system.
 
-To avoid these disadvantages it is useful to use a standard formats of signature. The standard is *Cryptographic Message Syntax (CMS)* defined in
+To avoid these disadvantages it is helpful to use a standard formats of signature. The standard is *Cryptographic Message Syntax (CMS)* defined in
 [RFC5652](https://tools.ietf.org/html/rfc5652). CMS describes several standards of cryptographic data, but we are interested in *Signed-data* format.
-The signed data in this format has a lot of information, that can help us to verify the signature. So how can we create such data structure?
+The signed data in this format has a lot of information, that can help us to verify the signature. So how can you create such data structure?
 Native java means are not enough in this case. That is why you have to chose a cryptographic library. BouncyCastle is a good choice. It is a JCE-Provider
-and provides a lot cryptographic functions of high abstract level. The code to create a signature can look like this (JavaDoc of BouncyCastle)
+and has a lot cryptographic functions of high abstract level. The code to create a signature can look like this (JavaDoc of BouncyCastle)
 
 ```java
 import org.bouncycastle.cert.jcajce.JcaCertStore;
@@ -89,7 +89,7 @@ With this container you got the signature,
 the certificate, that can be used for verifying, digital algorithm, probably the signed data etc.
 It is also possible to create several signatures for the data and put them in the container. It means you can send this kind of signature
 to a third party, for instance, you can sign data, that are provided by a web service and the consumer wants to verify the signature.
-The code to verify a *CMSSignedData* can looks like this (again JavaDoc of BounceCastle)
+The code to verify a *CMSSignedData* (again JavaDoc of BounceCastle)
 
 ```java
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -119,7 +119,7 @@ while (it.hasNext())
 ```
 
 If you want to use the whole functionality of a JCE implementation you have to install unrestricted policy files for the JVM. If you don't,
-you'll get somthing like this
+you'll get something like this
 ```java
 java.lang.SecurityException: Unsupported keysize or algorithm parameters" or "java.security.InvalidKeyException: Illegal key size
 ```
@@ -175,7 +175,7 @@ dataGenerator.addCertificate(x509CertificateHolder);
 CMSSignedData signedData = dataGenerator.generate(message, true);
 ```
 
-We get the same CMS container without installing some patches. You can verify the data with this code
+You get the same CMS container without installing some patches. You can verify the data with this code
 
 ```java
 import org.bouncycastle.cert.X509CertificateHolder;

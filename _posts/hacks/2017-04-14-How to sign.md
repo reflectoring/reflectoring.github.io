@@ -93,10 +93,10 @@ gen.addSignerInfoGenerator(
 
 Note, that you can define, if also the data and not only signature should be in the CMS-Container.
 With this container you got the signature,
-the certificate, that can be used for verifying, digital algorithm, probably the signed data etc.
+the certificate, that can be used for verifying, digital algorithm, possibly the signed data etc.
 It is also possible to create several signatures for the data and put them in the container. It means you can send this kind of signature
 to a third party, for instance, you can sign data, that are provided by a web service and the consumer wants to verify the signature.
-The code to verify a *CMSSignedData* (again JavaDoc of BounceCastle)
+The code to verify a *CMSSignedData* (again JavaDoc of BouncyCastle)
 
 ```java
 import org.bouncycastle.cert.X509CertificateHolder;

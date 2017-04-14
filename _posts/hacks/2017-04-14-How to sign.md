@@ -127,8 +127,10 @@ while (it.hasNext())
 
 If you want to use the whole functionality of a JCE implementation you have to install unrestricted policy files for the JVM. If you don't,
 you'll get something like this
+
 ```java
-java.lang.SecurityException: Unsupported keysize or algorithm parameters" or "java.security.InvalidKeyException: Illegal key size
+java.lang.SecurityException: Unsupported keysize or algorithm parameters 
+or java.security.InvalidKeyException: Illegal key size
 ```
 
 As you guess it is not a big problem to get and install the unrestricted policy files for *your* JVM. But what if you 

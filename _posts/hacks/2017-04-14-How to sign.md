@@ -61,19 +61,6 @@ That is why you have to chose a cryptographic library.
 and has a lot cryptographic functions of the high abstract level. The code to create a signature can look like this (JavaDoc of BouncyCastle)
 
 ```java
-import org.bouncycastle.cert.jcajce.JcaCertStore;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSProcessableByteArray;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.CMSSignedDataGenerator;
-import org.bouncycastle.cms.CMSTypedData;
-import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
-import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
-import org.bouncycastle.util.Store;
-
 List certList = new ArrayList();
 CMSTypedData  msg = new CMSProcessableByteArray("Hello world!".getBytes());
 certList.add(signCert);
@@ -100,15 +87,6 @@ to a third party, for instance, you can sign data, that are provided by a web se
 The code to verify a *CMSSignedData* (again JavaDoc of BouncyCastle)
 
 ```java
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.cms.SignerInformationStore;
-import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.util.Store;
-
 Store certStore = cmsSignedData.getCertificates();
 SignerInformationStore signers = cmsSignedData.getSignerInfos();
 Collection c = signers.getSigners();
@@ -147,22 +125,6 @@ The light weight classes begin with _Bc_ and as said above don't use a JCE provi
 The code for signing with light weight version would look like this
 
 ```java
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSProcessableByteArray;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.CMSSignedDataGenerator;
-import org.bouncycastle.cms.CMSTypedData;
-import org.bouncycastle.cms.SignerInfoGenerator;
-import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
-import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
-import org.bouncycastle.crypto.util.PrivateKeyFactory;
-import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
-import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 
 X509Certificate certificate = ...;
 
@@ -194,14 +156,6 @@ CMSSignedData signedData = dataGenerator.generate(message, true);
 You get the same CMS container without installing some patches. You can verify the data with this code
 
 ```java
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.SignerId;
-import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.cms.SignerInformationVerifier;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
-import org.bouncycastle.util.Store;
 
 Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
 List<SignerInformation> signerList = new ArrayList<>(signers);

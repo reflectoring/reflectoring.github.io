@@ -88,7 +88,7 @@ The CMS container contains the following:
 * the digital algorithm
 * possibly the signed data itself.
 
-It is also possible to create several signatures for the data and put them in the same container. That means several signer can sign a data and send
+It is also possible to create several signatures for the data and put them in the same container. That means several signers can sign the data and send
 all their signatures in the same container.
 The code to verify a *CMSSignedData* (again JavaDoc of BouncyCastle):
 

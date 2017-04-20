@@ -25,3 +25,10 @@ artur:
     bio:
     avatar: avatars/artur.png
     github: https://github.com/arkuksin
+
+david:
+    name: David Klassen
+    email: daviddd.kl@gmail.com
+    bio:
+    avatar: avatars/david.png
+    github: https://github.com/daklassen

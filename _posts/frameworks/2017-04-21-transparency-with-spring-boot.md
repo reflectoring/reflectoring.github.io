@@ -54,7 +54,7 @@ application.
 ### Injecting the MetricsRegistry
 First off, you will need a `MetricRegistry` object at which to register
 the metrics you want to measure. In a Spring Boot application, you simply
-have to add a dependency to the [Dropwizard metrics library](https://mvnrepository.com/artifact/io.dropwizard.metrics/metrics-core). 
+have to add a dependency to the [Dropwizard metrics library](http://search.maven.org/#search%7Cga%7C1%7Cg%3Aio.dropwizard.metrics%20a%3Ametrics-core). 
 Spring Boot will automatically create a `MetricRegistry` object for you
 which you can inject like this:
 
@@ -145,8 +145,8 @@ metrics of a `Meter`.
 ## Exposing Metrics via Spring Boot Actuator
 Having measured the metrics, we still need to expose them, so that
 some monitoring tool can pick them up. Using Spring Boot, you can simply
-add a dependency to the [Actuator Plugin](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator).
-By default Actuator will create a REST endpoint on "/metrics" which lists several
+add a dependency to the [Actuator Plugin](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.springframework.boot%22%20a%3A%22spring-boot-starter-actuator%22).
+By default Actuator will create a REST endpoint on `/metrics` which lists several
 metrics already, including some resources metrics as well as counts on different
 page hits.
 

@@ -97,6 +97,7 @@ public class ImportantBusinessService {
 
 This way, each time a payment transaction is finished, Dropwizard will 
 update the following metrics (also see the [Dropwizard manual](http://metrics.dropwizard.io/3.2.2/manual/core.html#meters)) :
+
 * a counter telling how many payments have been made since server start
 * the mean rate of transactions per second since server start
 * moving average rates transactions per second within the last minute, the last 5 minutes and the last 15 minutes.
@@ -134,6 +135,7 @@ public class ImportantBusinessService {
 }
 ```
 A `Timer` creates the following metrics for us:
+
 * the min, max, mean and median duration of transactions
 * the standard deviation of the duration of transactions
 * the 75th, 95th, 98th, 99th and 999th percentile of the transaction duration
@@ -209,7 +211,7 @@ to measure and add a Dropwizard `Meter` or `Timer` to create those metrics.
 It's a few lines of code that provide a huge amount of insight into an
 application running in production. 
 Spring Boot offers first class support for Dropwizard metrics by automatically
-exposing them via the "/metrics" endpoint to be picked up by a monitoring tool.
+exposing them via the '/metrics' endpoint to be picked up by a monitoring tool.
 
 ## Further Reading
 

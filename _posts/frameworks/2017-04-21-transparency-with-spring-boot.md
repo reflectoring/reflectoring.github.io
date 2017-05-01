@@ -1,6 +1,6 @@
 ---
 layout: article
-title: Exposing Metrics of a Spring Boot application
+title: Exposing Metrics of a Spring Boot Application using Dropwizard
 categories: [frameworks]
 modified: 2017-04-21
 author: tom
@@ -217,3 +217,4 @@ exposing them via the '/metrics' endpoint to be picked up by a monitoring tool.
 
 * [Dropwizard Metrics manual](http://metrics.dropwizard.io/3.2.2/manual/core.html)
 * [Spring Boot Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html)
+* [Exposing Metrics of a Spring Boot Application for Prometheus](/monitoring-spring-boot-with-prometheus/)

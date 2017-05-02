@@ -17,8 +17,7 @@ Monitoring is an important quality requirement for applications that claim to be
 In a [previous blog post](/transparency-with-spring-boot/)
 I discussed how to expose metrics of your Spring Boot application with the 
 help of the [Dropwizard Metrics](http://metrics.dropwizard.io/) library. This blog
-post shows how to expose metrics in a format that Prometheus understands and
-how to query those metrics within the Prometheus UI.
+post shows how to expose metrics in a format that Prometheus understands.
  
 ## Why Prometheus?
 

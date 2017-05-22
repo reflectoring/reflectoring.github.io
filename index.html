@@ -1,0 +1,30 @@
+---
+layout: archive
+title: "Latest Posts"
+date: 2016-11-26
+modified:
+tags: [reflectoring, posts, blog, software, engineering, programming, java]
+image:
+feature:
+teaser: archive.jpg
+---
+
+<div class="tiles">
+  {% for post in paginator.posts %}
+  {% include post-grid.html %}
+  {% endfor %}
+</div>
+
+<div class="pagination">
+  <span class="page-number">Page {{ paginator.page }} of {{ paginator.total_pages }}</span>
+  {% if paginator.previous_page %}
+  <a href="{{ paginator.previous_page_path }}" class="btn previous">Previous Page</a>
+  {% else %}
+  <span class="btn previous">Previous</span>
+  {% endif %}
+  {% if paginator.next_page %}
+  <a href="{{ paginator.next_page_path }}" class="btn next">Next</a>
+  {% else %}
+  <span class="btn next">Next Page</span>
+  {% endif %}
+</div>

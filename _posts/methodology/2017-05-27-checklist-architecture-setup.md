@@ -14,18 +14,21 @@ image:
 ---
 
 I recently had the opportunity to propose the architecture for a new large-scale software
-project. While it's fun being paid for finding out about which technologies best fit to
-each other, it may also be daunting having to come up with a solution that best fits the
-customer's requirements (of which only a fraction is available at the time, of course).
+project. While it's fun being paid for finding the technologies that best fit to
+the customer's requirements (of which only a fraction is available at the time, of course), it may 
+also be daunting having to come up with a solution that is future-proof and scales with expectations.
 
 For future reference for myself and for everyone else that might be tasked with creating a project setup
-from scratch, I compiled a list of converns you should think about
-when setting up a new software project. For most of those concerns, I offer one or more technologies that
+from scratch, I compiled a list of concerns you should think about
+when setting up a new software project. For most of those concerns in the list below, I offer one or more technologies that
 are a possible solution to that concern.
 
 Note that this list is not 
 complete and weighs heavily towards Java technologies, so you should use this list with the
 caution that the task of selecting the best architecture for your customer deserves.
+
+Some of the concerns are inspired by [arc42](http://www.arc42.de/) which provides a template
+that I often use as a basis for documenting a software architecture.
 
 # Architecture Style
 

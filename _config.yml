@@ -11,6 +11,9 @@ feed:
 
 # Jekyll configuration
 
+paginate: 12
+paginate_path: "/:num"
+
 sass:
   sass_dir: _sass
   style: compressed
@@ -22,6 +25,7 @@ gems:
   - jekyll-sitemap
   - jekyll-gist
   - jekyll-feed
+  - jekyll-paginate
 
 collections:
   - projects

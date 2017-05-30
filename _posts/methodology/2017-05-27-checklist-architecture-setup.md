@@ -1,10 +1,10 @@
 ---
 layout: article
-title: 'A Checklist for Software Architecture Setup'
+title: 'A Checklist for setting up a Java-based Software Architecture'
 categories: [methodology]
 modified: 2017-05-27
 author: tom
-tags: [software, architecture, setup, checklist, ]
+tags: [software, architecture, setup, checklist, technology, stack, microservice, monolith]
 comments: true
 ads: false
 image:
@@ -18,8 +18,7 @@ project. While it's fun being paid for finding the technologies that best fit to
 the customer's requirements (of which only a fraction is available at the time, of course), it may 
 also be daunting having to come up with a solution that is future-proof and scales with expectations.
 
-For future reference for myself and for everyone else that might be tasked with creating a project setup
-from scratch, I compiled a list of concerns you should think about
+To ease this task in the future, I compiled a list of concerns you should think about
 when setting up a new software project. For most of those concerns in the list below, I offer one or more technologies that
 are a possible solution to that concern.
 
@@ -29,6 +28,8 @@ caution that the task of selecting the best architecture for your customer deser
 
 Some of the concerns are inspired by [arc42](http://www.arc42.de/) which provides a template
 that I often use as a basis for documenting a software architecture.
+
+I hope this helps any readers who are setting up a new Java-based software architecture.
 
 # Architecture Style
 

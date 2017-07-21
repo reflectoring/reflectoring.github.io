@@ -1,34 +1,36 @@
 tom:
-  name: Tom Hombergs
-  email: tom.hombergs@gmail.com
-  bio: "Fail fast and try again."
-  avatar: avatars/tom.png
-  github: https://github.com/thombergs
+  name              : "Tom Hombergs"
+  email             : "tom.hombergs@gmail.com"
+  bio               : "Fail fast and try again."
+  avatar            : "/assets/images/avatars/tom.png"
+  location          : "Germany"
+  github            : "thombergs"
+  linkedin          : "tom-hombergs-74048777"
+  stackoverflow     : "2375843/tom"
+  twitter           : "TomHombergs"
+  xing              : "Tom_Hombergs"
 
 matthias:
-  name: Matthias Balke
-  email: matthias.balke@googlemail.com
-  bio: "Automate as much as possible."
-  avatar: avatars/matthias.png
-  github: https://github.com/matthiasbalke
+  name              : "Matthias Balke"
+  email             : "matthias.balke@googlemail.com"
+  bio               : "Automate as much as possible."
+  avatar            : "/assets/images/avatars/matthias.png"
+  github            : "matthiasbalke"
 
 rudi:
-    name: Rudi klassen
-    email: rudolfklassen2@gmail.com
-    bio:
-    avatar: avatars/rudi.png
-    github: https://github.com/RudiKlassen
+  name              : "Rudi klassen"
+  email             : "rudolfklassen2@gmail.com"
+  avatar            : "/assets/images/avatars/rudi.png"
+  github            : "https://github.com/RudiKlassen"
 
 artur:
-    name: Artur Kuksin
-    email: arthur.kuksin@gmail.com
-    bio:
-    avatar: avatars/artur.png
-    github: https://github.com/arkuksin
+  name              : "Artur Kuksin"
+  email             : "arthur.kuksin@gmail.com"
+  avatar            : "/assets/images/avatars/artur.png"
+  github            : "https://github.com/arkuksin"
 
 david:
-    name: David Klassen
-    email: daviddd.kl@gmail.com
-    bio:
-    avatar: avatars/david.png
-    github: https://github.com/daklassen
+  name              : "David Klassen"
+  email             : "daviddd.kl@gmail.com"
+  avatar            : "/assets/images/avatars/david.png"
+  github            : "https://github.com/daklassen"

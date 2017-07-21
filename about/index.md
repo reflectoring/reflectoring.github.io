@@ -1,5 +1,5 @@
 ---
-layout: article
+
 title: About reflectoring
 modified: 2016-11-21
 comments: true

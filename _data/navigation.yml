@@ -1,6 +1,8 @@
 # main links
 main:
-  - title: "About Reflectoring"
-    url: /about/
+  - title: "Search"
+    url: /search/
   - title: "GitHub"
     url: https://github.com/reflectoring/reflectoring.github.io
+  - title: "About Reflectoring"
+    url: /about/

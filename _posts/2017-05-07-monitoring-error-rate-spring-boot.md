@@ -163,7 +163,7 @@ rate(http_status_500_total [1m]) / rate(http_requests_total [1m])
 The result of the last query looked something like this in the Prometheus web interface, once I manually
 created some successful requests and some errors:
 
-![Error Percentage]({{ base }}/images/posts/error_percentage.png)
+![Error Percentage]({{ base }}/assets/images/posts/error_percentage.png)
 
 ## Wrap-Up
 

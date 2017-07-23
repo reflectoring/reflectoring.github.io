@@ -21,16 +21,16 @@ rudi:
   name              : "Rudi klassen"
   email             : "rudolfklassen2@gmail.com"
   avatar            : "/assets/images/avatars/rudi.png"
-  github            : "https://github.com/RudiKlassen"
+  github            : "RudiKlassen"
 
 artur:
   name              : "Artur Kuksin"
   email             : "arthur.kuksin@gmail.com"
   avatar            : "/assets/images/avatars/artur.png"
-  github            : "https://github.com/arkuksin"
+  github            : "arkuksin"
 
 david:
   name              : "David Klassen"
   email             : "daviddd.kl@gmail.com"
   avatar            : "/assets/images/avatars/david.png"
-  github            : "https://github.com/daklassen"
+  github            : "daklassen"

@@ -1,7 +1,8 @@
-# Site navigation links
-
-- title: About
-  url: /about/
-  excerpt: "About reflectoring"
-  image: teaser/about.jpg
-
+# main links
+main:
+  - title: "Search"
+    url: /search/
+  - title: "GitHub"
+    url: https://github.com/reflectoring/reflectoring.github.io
+  - title: "About Reflectoring"
+    url: /about/

@@ -1,59 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-  {% include robots.html %}
+---
+---
 
-  <meta charset="utf-8">
-  <title>{% if page.title %}{{ page.title }} • {% endif %}{{ site.title }}</title>
-  {% if page.excerpt %}
-  <meta name="description" content="{{ page.excerpt | strip_html }}">
-  {% endif %}
-  {% if page.tags %}
-  <meta name="keywords" content="{{ page.tags | join: ', ' }}">
-  {% endif %}
-  {% if page.author %}
-  {% assign author = site.data.authors[page.author] %}{% else %}{% assign author = site.owner %}
-  {% endif %}
-  {% include open-graph.html %}
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.4.2 by Michael Rose
+  Copyright 2017 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE.txt
+-->
+<html lang="{{ site.locale | slice: 0,2 | default: "en" }}" class="no-js">
+  <head>
+    {% include head.html %}
+    {% include head/custom.html %}
+  </head>
 
-  <link rel="canonical" href="{{ base | replace:'index.html','' | prepend: base }}">
+  <body class="layout--{{ page.layout | default: layout.layout }}{% if page.classes or layout.classes %}{{ page.classes | default: layout.classes | join: ' ' | prepend: ' ' }}{% endif %}">
 
-  <link href="{{ base }}/atom.xml" type="application/atom+xml" rel="alternate" title="{{ site.title }} Atom Feed">
-  <link href="{{ base }}/sitemap.xml" type="application/xml" rel="sitemap" title="Sitemap">
+    {% include browser-upgrade.html %}
+    {% include masthead.html %}
 
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="cleartype" content="on">
+    {{ content }}
 
-  <link rel="stylesheet" href="{{ base }}/css/main.css">
-  <!-- HTML5 Shiv and Media Query Support for IE -->
-  <!--[if lt IE 9]>
-  <script src="{{ base }}/js/vendor/html5shiv.min.js"></script>
-  <script src="{{ base }}/js/vendor/respond.min.js"></script>
-  <![endif]-->
+    <div class="page__footer">
+      <footer>
+        {% include footer/custom.html %}
+        {% include footer.html %}
+      </footer>
+    </div>
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/logo/apple-icon-180x180.png">
-  <link rel="icon" type="image/png" href="/images/logo/favicon-32x32.png" sizes="32x32">
-  <link rel="icon" type="image/png" href="/images/logo/favicon-16x16.png" sizes="16x16">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-  <meta name="theme-color" content="#ffffff">
+    {% include scripts.html %}
 
-</head>
-
-<body id="js-body">
-{% include browser-upgrade.html %}
-{% include header.html %}
-
-<div id="page-wrapper">
-  {{ content }}
-  {% include footer.html %}
-</div>
-
-<script src="{{ base }}/js/vendor/jquery-1.9.1.min.js"></script>
-<script src="{{ base }}/js/main.js"></script>
-
-</body>
-
+  </body>
 </html>

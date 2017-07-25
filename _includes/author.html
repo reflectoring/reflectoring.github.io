@@ -1,5 +1,5 @@
 <div class="author-image">
-<img src="{{ base }}/images/{{ author.avatar }}" alt="{{ author.name }}">
+<img src="{{ base }}{{ author.avatar }}" alt="{{ author.name }}" width="180">
 </div>
 <div class="author-content" style="clear: both">
   <h3 class="author-name">
@@ -15,7 +15,7 @@
   {% endif %}
 
   {% if author.github %}
-  <p class="author-bio"><a href="{{ author.github }}">{{ author.github }}</a></p>
+  <p class="author-bio"><a href="https://github.com/{{ author.github }}">{{ author.github }}</a></p>
   {% endif %}
 
 </div>

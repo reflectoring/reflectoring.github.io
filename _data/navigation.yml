@@ -6,3 +6,14 @@ main:
     url: https://github.com/reflectoring/reflectoring.github.io
   - title: "About Reflectoring"
     url: /about/
+
+# Sidebar with Monitoring Posts
+monitoring:
+  - title: "More about Monitoring"
+    children:
+    - title: "Exposing Metrics of a Spring Boot Application for Prometheus"
+      url: /monitoring-spring-boot-with-prometheus/
+    - title: "Monitoring The Error Rate of a Spring Boot Web Application"
+      url: /monitoring-error-rate-spring-boot/
+    - title: "Exposing Metrics of a Spring Boot Application using Dropwizard"
+      url: /transparency-with-spring-boot/

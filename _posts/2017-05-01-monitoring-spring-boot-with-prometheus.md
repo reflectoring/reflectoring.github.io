@@ -9,6 +9,8 @@ comments: true
 ads: false
 ---
 
+{% include further_reading nav="monitoring" %}
+
 Monitoring is an important quality requirement for applications that claim to be production-ready.
 In a [previous blog post](/transparency-with-spring-boot/)
 I discussed how to expose metrics of your Spring Boot application with the 
@@ -141,7 +143,3 @@ a look under the hood should help in most cases.
 
 After firing up your application, the metrics should be available in Prometheus format
 at http://localhost:8080/prometheus.
-
-## Further Reading
-
-* [Exposing Metrics of a Spring Boot application using Dropwizard](/transparency-with-spring-boot/) 

@@ -9,6 +9,8 @@ comments: true
 ads: false
 ---
 
+{% include further_reading nav="monitoring" %}
+
 How do we know if an application we just put into production is working
 as it should? How do we know that the application can cope with the
 number of users and is not slowing down to a crawl? And how do we know
@@ -208,9 +210,3 @@ It's a few lines of code that provide a huge amount of insight into an
 application running in production. 
 Spring Boot offers first class support for Dropwizard metrics by automatically
 exposing them via the '/metrics' endpoint to be picked up by a monitoring tool.
-
-## Further Reading
-
-* [Dropwizard Metrics manual](http://metrics.dropwizard.io/3.2.2/manual/core.html)
-* [Spring Boot Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html)
-* [Exposing Metrics of a Spring Boot Application for Prometheus](/monitoring-spring-boot-with-prometheus/)

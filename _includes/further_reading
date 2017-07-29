@@ -1,0 +1,23 @@
+{% assign navigation = site.data.navigation[include.nav] %}
+
+{% for nav in navigation %}
+  <aside class="sidebar__right">
+    <nav class="toc">
+      <header><h4 class="nav__title">{{ nav.title }}</h4></header>
+      {% if nav.children != null %}
+        <ul class="toc__menu">
+         {% for child in nav.children %}
+           {% if child.url contains "://" %}
+             {% assign domain = "" %}
+           {% else %}
+             {% assign domain = site.url | append: site.baseurl %}
+           {% endif %}
+           {% if page.url != child.url %}
+            <li><a href="{{ domain }}{{ child.url }}">{{child.title}}</a></li>
+           {% endif %}
+         {% endfor %}
+        </ul>
+      {% endif %}
+    </nav>
+  </aside>
+{% endfor %}

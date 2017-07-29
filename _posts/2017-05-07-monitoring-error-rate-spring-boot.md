@@ -9,6 +9,8 @@ comments: true
 ads: false
 ---
 
+{% include further_reading nav="monitoring" %}
+
 In my previous blog posts about [creating monitoring metrics with Dropwizard Metrics](/transparency-with-spring-boot/) and 
 [exposing them for the Prometheus monitoring application](/monitoring-spring-boot-with-prometheus/) we already have
 gained a little insight into why monitoring is important and how to implement it.
@@ -173,9 +175,4 @@ with Prometheus that alerts us when the application starts creating errors for s
 Though pretty easy to calculate, the error rate is a very meaningful indicator of our application's health at
 any time and should be present in every monitoring setup.  
 
-## Further Reading
-
-* [Exposing Metrics of a Spring Boot Application using Dropwizard](/transparency-with-spring-boot/)
-* [Exposing Metrics of a Spring Boot Application for Prometheus](/monitoring-spring-boot-with-prometheus/)
-* [Prometheus Query Language](https://prometheus.io/docs/querying/basics/)
  

@@ -181,3 +181,5 @@ The thing to learn from this is not to use bidirectional associations in JPA. Th
 with and without Spring Data Rest. Stick with unidirectional associations and make explicit repository
 calls for each use case you are implementing instead of counting on the supposed ease-of-use of
 a bidirectional association.
+
+Examples in code can be found in my [GitHub repo](https://github.com/thombergs/code-examples/tree/master/spring-data-rest-associations).

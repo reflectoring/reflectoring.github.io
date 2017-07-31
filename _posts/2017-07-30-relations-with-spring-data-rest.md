@@ -68,14 +68,14 @@ http://localhost:8080/customers/1
 ```
 
 We send a `PUT` request to the [association resource](https://docs.spring.io/spring-data/rest/docs/current/reference/html/#repository-resources.association-resource)
-of the customer sub-resource of an address.
-Note that the Content-Type is `text/uri-list` so valid payload consists of a list of URIs. We provide the URI to
+between an `Address` and a `Customer`.
+Note that the Content-Type is `text/uri-list` so valid payload must be a list of URIs. We provide the URI to
 the customer resource with ID 1 to create the association in the database. The response for this result will
 be a HTTP status 204 (no content).
 
 ## Associating entities from a unidirectional `@OneToMany` relationship
 
-The other way around, we have `Customer` that has a list of `Addresses` and the `Addresses` don't know about
+Coming from the other end of the relationship, we have a `Customer` that has a list of `Addresses` and the `Addresses` don't know about
 the `Customer`s they are associated with.
 
 ```java
@@ -175,11 +175,13 @@ public void updateAddressAssociation(){
 Even then, it does not behave as in the unidirectional `@OneToMany` case. A `PUT` request will not delete 
 all previously stored associations and a `POST` request will do nothing at all.
 
-# Wrap Up
+## Wrap Up
 
 The thing to learn from this is not to use bidirectional associations in JPA. They are hard to handle
 with and without Spring Data Rest. Stick with unidirectional associations and make explicit repository
 calls for each use case you are implementing instead of counting on the supposed ease-of-use of
 a bidirectional association.
+
+## Example Code
 
 Examples in code can be found in my [GitHub repo](https://github.com/thombergs/code-examples/tree/master/spring-data-rest-associations).

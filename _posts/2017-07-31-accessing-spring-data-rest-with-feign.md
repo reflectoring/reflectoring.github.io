@@ -1,6 +1,6 @@
 ---
 
-title: Accessing a Spring Data REST API with Feign 
+title: "Accessing a Spring Data REST API with Feign"
 categories: [hacks]
 modified: 2017-07-31
 author: tom
@@ -8,6 +8,8 @@ tags: [spring, boot, feign, data, rest]
 comments: true
 ads: false
 ---
+
+{% include further_reading nav="spring-data-rest" %}
 
 [Spring Data REST](https://projects.spring.io/spring-data-rest/) is a framework that automatically exposes a REST API for Spring Data repositories, thus
 potentially saving a lot of manual programming work. [Feign](https://github.com/OpenFeign/feign) is a framework that allows easy creation of REST

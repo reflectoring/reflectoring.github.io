@@ -1,6 +1,6 @@
 ---
 
-title: Handling associations between entities with Spring Data Rest
+title: "Handling associations between entities with Spring Data Rest"
 categories: [hacks]
 modified: 2017-07-30
 author: tom
@@ -8,6 +8,8 @@ tags: [spring, data, jpa, rest, relation, association, onetomany, manytoone, uni
 comments: true
 ads: false
 ---
+
+{% include further_reading nav="spring-data-rest" %}
 
 [Spring Data Rest](https://projects.spring.io/spring-data-rest/) allows to rapidly create a REST API to manipulate
 and query a database by exposing Spring Data repositories via its [`@RepositoryRestResource`](http://docs.spring.io/autorepo/docs/spring-data-rest/current/api/org/springframework/data/rest/core/annotation/RepositoryRestResource.html) annotation.

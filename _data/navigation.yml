@@ -7,7 +7,7 @@ main:
   - title: "About Reflectoring"
     url: /about/
 
-# Sidebar with Monitoring Posts
+# sidebar with Monitoring Posts
 monitoring:
   - title: "More about Monitoring"
     children:
@@ -17,3 +17,12 @@ monitoring:
       url: /monitoring-error-rate-spring-boot/
     - title: "Exposing Metrics of a Spring Boot Application using Dropwizard"
       url: /transparency-with-spring-boot/
+
+# sidebar with posts on spring-data-rest
+spring-data-rest:
+  - title: "More about Spring Data REST"
+    children:
+    - title: "Handling associations between entities with Spring Data Rest"
+      url: /relations-with-spring-data-rest/
+    - title: "Accessing a Spring Data REST API with Feign"
+      url: /accessing-spring-data-rest-with-feign/

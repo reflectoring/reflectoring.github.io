@@ -56,7 +56,7 @@ like `http://localhost:8080/addresses` may look something like this:
 The deserialization issue comes from the fact that Feign by default expects a simple array of address objects
 and instead gets a JSON object.
 
-## The Solution: Make Feign understand Hypermedia
+## The Solution: Help Feign understand Hypermedia
 
 To enable Feign to understand the HAL JSON format, we have to take the following steps.
 

@@ -202,4 +202,4 @@ detail.
 
 ## Example Code
 
-Example code can be found in the [github repo](https://github.com/thombergs/code-examples/spring-data-rest-springfox).
+Example code can be found in the [github repo](https://github.com/thombergs/code-examples/tree/master/spring-data-rest-springfox).

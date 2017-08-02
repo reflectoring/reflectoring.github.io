@@ -176,8 +176,8 @@ The different response statuses and their payloads can be tuned using the `@ApiR
 public interface AddressRepository extends PagingAndSortingRepository<Address, Long> {
 	
   @Override
-	@ApiResponses({@ApiResponse(code=201, message="Created", response=Address.class)})
-	Address save(Address address);
+  @ApiResponses({@ApiResponse(code=201, message="Created", response=Address.class)})
+  Address save(Address address);
   
 }
 ```

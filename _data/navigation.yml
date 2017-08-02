@@ -26,3 +26,5 @@ spring-data-rest:
       url: /relations-with-spring-data-rest/
     - title: "Accessing a Spring Data REST API with Feign"
       url: /accessing-spring-data-rest-with-feign/
+    - title: "Documenting a Spring Data REST API with Springfox and Swagger"
+      url: /documenting-spring-data-rest-api-with-springfox/

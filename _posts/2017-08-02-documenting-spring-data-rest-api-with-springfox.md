@@ -17,7 +17,7 @@ development, you also want to have an automatically generated and up-to-date API
 
 [Swagger](http://swagger.io) provides a specification for documenting REST APIs. And with 
 [Springfox](https://github.com/springfox/springfox) we have a tool that serves as a bridge between
-Spring applications and Swagger by creating a Swagger documentation for certain Spring beans.
+Spring applications and Swagger by creating a Swagger documentation for certain Spring beans and annotations.
 
 Springfox also recently added a feature that [creates a Swagger documentation for a Spring Data REST
 API](https://springfox.github.io/springfox/docs/current/#springfox-spring-data-rest). This feature is
@@ -29,7 +29,7 @@ rapid development of a well-documented REST API.
 and has some serious bugs and missing features (see [here](https://github.com/springfox/springfox/issues/1962) 
 and [here](https://github.com/springfox/springfox/issues/1963), for example). 
 Thus, the descriptions and code examples below are based on the current 2.7.1-SNAPSHOT version in 
-which this is remedied a little.**
+which this is remedied considerably.**
 
 ## Enabling Springfox in a Spring Boot / Spring Data REST application 
 
@@ -109,6 +109,8 @@ In the end, you should be able to view the Swagger documentation of your Spring 
 ## Customizing the Output
 
 The numbers on the image above show some places where things in the generated API documentation can be customized.
+The following sections describe some customizations that I deemed important. You can probably customize more
+that I have found out so feel free to add a comment if you found something I missed!
 
 ### General API Information (1)
 
@@ -187,7 +189,7 @@ public interface AddressRepository extends PagingAndSortingRepository<Address, L
 Spring Data REST allows you to produce fast results when creating a database-driven REST API. Springfox
 allows you to quickly produce automated documentation for that API. However, the API docs generated
 by Springfox do not match the actual API in every detail. Some manual fine-tuning with annotations is 
-necessary. 
+necessary, like described in the customization section above.
 
 One such example is that the JSON of example requests and responses is not rendered correctly
 in every case, since Spring Data REST uses the HAL format and Springfox only does in a few cases. 

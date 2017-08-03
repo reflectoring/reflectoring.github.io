@@ -31,7 +31,6 @@ and [here](https://github.com/springfox/springfox/issues/1963), for example).
 Thus, the descriptions and code examples below are based on the current 2.7.1-SNAPSHOT version in 
 which this is remedied considerably.**
 
-
 ## Enabling Springfox in a Spring Boot / Spring Data REST application 
 
 In order to enable Springfox to create a Swagger documentation for our Spring Data REST API, you have to 

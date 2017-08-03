@@ -9,8 +9,6 @@ comments: true
 ads: false
 ---
 
-{% include further_reading nav="monitoring" %}
-
 How do we know if an application we just put into production is working
 as it should? How do we know that the application can cope with the
 number of users and is not slowing down to a crawl? And how do we know
@@ -19,6 +17,8 @@ up and put another instance into the cluster? The answer to these questions
 is transparency. A good application is transparent in that it exposes
 several metrics about its health and current status that can be 
 interpreted manually as well as automatically.
+
+{% include further_reading nav="monitoring" %}
 
 This post explains how to create metrics in a Java application with the Dropwizard 
 metrics library and how to expose them with Spring Boot.

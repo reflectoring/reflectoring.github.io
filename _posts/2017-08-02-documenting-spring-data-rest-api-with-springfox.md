@@ -9,11 +9,11 @@ comments: true
 ads: false
 ---
 
-{% include toc %}
-
 With [Spring Data REST](https://projects.spring.io/spring-data-rest/) you can rapidly create a REST API
 that exposes your Spring Data repositories and thus provides CRUD support and more. However, in serious API
 development, you also want to have an automatically generated and up-to-date API documentation. 
+
+{% include further_reading nav="spring-data-rest" %}
 
 [Swagger](http://swagger.io) provides a specification for documenting REST APIs. And with 
 [Springfox](https://github.com/springfox/springfox) we have a tool that serves as a bridge between
@@ -31,7 +31,6 @@ and [here](https://github.com/springfox/springfox/issues/1963), for example).
 Thus, the descriptions and code examples below are based on the current 2.7.1-SNAPSHOT version in 
 which this is remedied considerably.**
 
-{% include further_reading nav="spring-data-rest" %}
 
 ## Enabling Springfox in a Spring Boot / Spring Data REST application 
 

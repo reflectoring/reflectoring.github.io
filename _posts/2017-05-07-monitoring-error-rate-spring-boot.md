@@ -9,11 +9,11 @@ comments: true
 ads: false
 ---
 
-{% include further_reading nav="monitoring" %}
-
 In my previous blog posts about [creating monitoring metrics with Dropwizard Metrics](/transparency-with-spring-boot/) and 
 [exposing them for the Prometheus monitoring application](/monitoring-spring-boot-with-prometheus/) we already have
 gained a little insight into why monitoring is important and how to implement it.
+
+{% include further_reading nav="monitoring" %}
  
 However, we have not looked into monitoring specific and meaningful metrics yet. For one such metric, the error rate,
 I would like to go into a little detail in this blog post. The error rate is important for any kind of

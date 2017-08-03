@@ -143,4 +143,4 @@ public interface AddressClient {
 
 ## Example Code
 
-Example code can be found in the [github repo](https://github.com/thombergs/code-examples).
+Example code can be found in the [github repo](https://github.com/thombergs/code-examples/tree/master/feign-with-spring-data-rest).

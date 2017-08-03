@@ -1,14 +1,10 @@
 tom:
   name              : "Tom Hombergs"
   email             : "tom.hombergs@gmail.com"
-  bio               : "Fail fast and try again."
   avatar            : "/assets/images/avatars/tom.png"
   location          : "Germany"
   github            : "thombergs"
-  linkedin          : "tom-hombergs-74048777"
   stackoverflow     : "2375843/tom"
-  twitter           : "TomHombergs"
-  xing              : "Tom_Hombergs"
 
 matthias:
   name              : "Matthias Balke"

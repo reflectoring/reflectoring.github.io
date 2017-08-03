@@ -9,7 +9,7 @@ comments: true
 ads: false
 ---
 
-{% include further_reading nav="spring-data-rest" %}
+{% include toc %}
 
 With [Spring Data REST](https://projects.spring.io/spring-data-rest/) you can rapidly create a REST API
 that exposes your Spring Data repositories and thus provides CRUD support and more. However, in serious API
@@ -30,6 +30,8 @@ and has some serious bugs and missing features (see [here](https://github.com/sp
 and [here](https://github.com/springfox/springfox/issues/1963), for example). 
 Thus, the descriptions and code examples below are based on the current 2.7.1-SNAPSHOT version in 
 which this is remedied considerably.**
+
+{% include further_reading nav="spring-data-rest" %}
 
 ## Enabling Springfox in a Spring Boot / Spring Data REST application 
 
@@ -110,7 +112,7 @@ In the end, you should be able to view the Swagger documentation of your Spring 
 
 The numbers on the image above show some places where things in the generated API documentation can be customized.
 The following sections describe some customizations that I deemed important. You can probably customize more
-that I have found out so feel free to add a comment if you found something I missed!
+than I have found out so feel free to add a comment if you found something I missed!
 
 ### General API Information (1)
 

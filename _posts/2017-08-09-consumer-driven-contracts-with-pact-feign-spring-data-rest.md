@@ -225,7 +225,7 @@ the Spring Boot application with the provider API and allow to change the state 
 database by executing a set of SQL scripts.
  
 When the unit test is executed, Pact will now execute the requests defined in the pact files and
-verify if the responses against the pact. In the log output, you should see something like this:
+verify the responses against the pact. In the log output, you should see something like this:
 
 ```text
 Verifying a pact between addressClient and customerServiceProvider

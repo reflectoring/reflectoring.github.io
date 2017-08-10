@@ -52,6 +52,18 @@ can safely be removed from the code base.
 Of course, the contract is created by the consumer in 
 agreement with the provider so that it cannot define API calls the provider doesn't want to support.
 
+{% capture fig_img %}
+![Consumer-Driven-Contracts]({{ base }}/assets/images/posts/consumer-driven-contracts.png)
+{% endcapture %}
+
+<figure>
+  {{ fig_img | markdownify | remove: "<p>" | remove: "</p>" }}
+  <figcaption>The consumer creates and maintains a contract. Both the consumer and provider verify against that contract
+  with every change in their codebase.</figcaption>
+</figure>
+
+
+
 The process of consumer-driven contracts looks like this:
 
 1. The API consumer creates a contract (in agreement with the provider).

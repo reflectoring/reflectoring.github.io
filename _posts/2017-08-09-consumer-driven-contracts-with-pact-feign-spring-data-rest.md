@@ -22,7 +22,7 @@ or even beyond that system. This communication hopefully takes place through wel
 APIs that are stable between releases.
  
 To validate that the communication between a consumer and a provider of an API still works as
-intended after some code changes were made, the reflex is to setup integration tests. So, for each
+intended after some code changes were made, the common reflex is to setup integration tests. So, for each
 combination of an API provider and consumer, we write one or more integration tests. For the integration
 tests to run automatically, we then have to deploy the provider service to an integration 
 environment and then run the consumer application against its API. As if that is not challenging
@@ -59,21 +59,20 @@ agreement with the provider so that it cannot define API calls the provider does
 <figure>
   {{ fig_img | markdownify | remove: "<p>" | remove: "</p>" }}
   <figcaption>The consumer creates and maintains a contract. Both the consumer and provider verify against that contract
-  with every change in their codebase.</figcaption>
+  with every change in their code base.</figcaption>
 </figure>
-
-
 
 The process of consumer-driven contracts looks like this:
 
-1. The API consumer creates a contract (in agreement with the provider).
+1. The API consumer creates and maintains a contract (in agreement with the provider).
 1. The API consumer verifies that it successfully runs against the contract.
 1. The API consumer publishes the contract.
 1. The API provider verifies that it successfully runs against the contract.
 
 In the following sections, I will show how to implement these steps with 
 [Pact](https://docs.pact.io/), [Spring Boot](https://projects.spring.io/spring-boot/), 
-[Feign](https://github.com/OpenFeign/feign) and [Spring Data REST](https://projects.spring.io/spring-data-rest/).
+an API consumer implemented with [Feign](https://github.com/OpenFeign/feign) and an API provider 
+implemented with [Spring Data REST](https://projects.spring.io/spring-data-rest/).
 
 ## Pact
 
@@ -84,19 +83,24 @@ available for a number of different languages and frameworks. In this blog post 
 focus on the Pact integrations with JUnit 4 ([pact-jvm-consumer-junit_2.11](https://github.com/DiUS/pact-jvm/tree/master/pact-jvm-consumer-junit)
 and [pact-jvm-provider-junit_2.11](https://github.com/DiUS/pact-jvm/tree/master/pact-jvm-provider-junit)).
 
-Aside from Java, the [Pact integration with JavaScript](https://github.com/pact-foundation/pact-js) is noteworthy. So, for example, 
+Aside from Java, it is noteworthy that Pact also [integrates with JavaScript](https://github.com/pact-foundation/pact-js). 
+So, for example, 
 when developing a distributed system with Java backend services and Angular frontends, Pact supports contract testing between
 your frontends and backends as well as between backend services who call each other.
 
 Obviously, instead of calling it a "contract", Pact uses the word "pact" to define an agreement between
 an API consumer and provider. "Pact" and "contract" are used synonymously from here on.
 
-## Creating and Verifying a pact on the Consumer-Side
+## Creating and Verifying a pact on the Consumer Side
+
+Let's create an API client with Feign, create a pact and verify the client against that pact.
 
 ### The Feign Client
 
 Our API consumer is a Feign client that reads a collection of addresses from 
-a REST API provided by the customer service. This is the client (more details in [this blog post about Feign](/accessing-spring-data-rest-with-feign/)):
+a REST API provided by the customer service. The following code snippet is the whole client.
+More details about how to create a Feign client against a Spring Data REST API can be read in 
+[this blog post](/accessing-spring-data-rest-with-feign/).
 
 ```java
 @FeignClient(value = "addresses", path = "/addresses")
@@ -108,7 +112,7 @@ public interface AddressClient {
 }
 ```
 
-### The Unit Test
+### The Pact-Verifying Unit Test
 
 Now, we want to create a pact using this client and validate that the client works correctly against this pact.
 This is the Unit test that does just that:
@@ -194,8 +198,8 @@ Assuming our consumer has created a pact, successfully verified against it and t
 have to verify that our provider also works according to the pact. 
 
 In our case, the provider is a Spring Data REST application that exposes a Spring Data repository via REST.
-So, we need a JUnit test that replays the request defined in the pact against the provider API and verify
-that it returns the correct response:
+So, we need some kind of test that replays the request defined in the pact against the provider API and verify
+that it returns the correct response. The following code implements such a test with JUnit:
 
 ```java
 @RunWith(PactRunner.class)
@@ -226,15 +230,19 @@ name of the API provider via `@Provider`. This is needed by Pact to find the cor
 `@PactFolder` we specified. In this case the pact files are located in the consumer code base which lies
 next to the provider code base.
 
-The method annotated with `@State` must be implemented to switch the provider database into the state
-that contains exactly those `Address`es that are specified in the pact's response. 
+The method annotated with `@State` must be implemented to signal to the provider which state in the pact
+is currently tested, so it can return the correct data. In our case, we switch the database backing
+the provider in a state that contains the correct data.
 
 `@TestTarget` defines against which target the replay client should run. In our case against an HTTP
 server on port 8080.
 
 The classes `SpringBootRunner` and `DatabaseStateHolder` are classes I created myself that start up
 the Spring Boot application with the provider API and allow to change the state of the underlying 
-database by executing a set of SQL scripts.
+database by executing a set of SQL scripts. Note that if you're implementing your own Spring 
+MVC Controllers you can use the [pact-jvm-provider-spring](https://github.com/DiUS/pact-jvm/tree/master/pact-jvm-provider-spring)
+module instead of these custom classes. This module supports using MockMvc and thus you 
+don't need to bootstrap the whole Spring Boot application in the test. However, in our case Spring Data REST provides the MVC Controllers and there is no integration between Spring Data REST and Pact (yet?).
  
 When the unit test is executed, Pact will now execute the requests defined in the pact files and
 verify the responses against the pact. In the log output, you should see something like this:
@@ -254,4 +262,4 @@ Verifying a pact between addressClient and customerServiceProvider
 
 Working example code for the [consumer](https://github.com/thombergs/code-examples/tree/master/pact-feign-consumer) 
 and the [provider](https://github.com/thombergs/code-examples/tree/master/pact-spring-data-rest-provider) 
-can be found in my github repo. 
+can be found in my [github repo](https://github.com/thombergs/code-examples). 

@@ -62,6 +62,7 @@ agreement with the provider so that it cannot define API calls the provider does
   with every change in their code base.</figcaption>
 </figure>
 
+
 The process of consumer-driven contracts looks like this:
 
 1. The API consumer creates and maintains a contract (in agreement with the provider).

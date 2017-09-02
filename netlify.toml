@@ -1,0 +1,5 @@
+[context.production.environment]
+JEKYLL_ENV = "production"
+
+[context.deploy-preview.environment]
+JEKYLL_ENV = "staging"

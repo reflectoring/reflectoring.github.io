@@ -1,7 +1,7 @@
 ---
 title: "Tracing in Distributed Systems with Spring Cloud Sleuth"
 categories: [frameworks]
-modified: 2017-09-05
+modified: 2017-09-08
 author: tom
 tags: [spring, boot, microservices, tracing]
 comments: true
@@ -19,38 +19,39 @@ Even in a monolithic system, tracing a bug can be hard enough. To find the root 
 you search through the log files of the application servers around the point in time the error occurred and hope that you
 find a stacktrace that explains the error. Ideally, the error message contained a correlation ID
 that uniquely identifies the error, so that you can just search for that correlation ID in the log files.
-Even better when the log files are aggregated in a central, searchable log server like Graylog.
+It's another plus when the log files are aggregated in a central, searchable log server like Graylog.
 
-In a distributed system, this analysis gets even harder since many different services may be involved
+In a distributed system, this tracing gets even harder since many different services running on different machines may be involved
 in responding to a single request. Here, a central log server and a correlation ID are not negotiable.
 But the correlation ID now spans different services and thus has to be shared across service
 boundaries.
 
 As an example for this article, let's have a look at a distributed system with three services (see figure below).
-As result of a request `getCustomerWithAddress` we expect customer and address data. The customer and
-address data each are the responsibility of a different service so that the initial service (the "downstream" service)
-has to forward a request to those (upstream) services and aggregate their responses.
+As result of a request `getCustomerWithAddress` we expect customer and address data as a response. The customer and
+address data each live in the responsibility of a different service so that the initial service (the "downstream" service)
+has to forward a request to those ("upstream") services and aggregate their responses.
+
+![A distributed system with a downstream and two upstream services](/assets/images/posts/trace.png)
 
 If an error occurs in one of those upstream services, the upstream service will probably log the error.
 Since the downstream services receives an error response, it will probably also log an error. For a 
 straightforward error analysis, both log entries should be connected by a shared correlation ID.
  
-This correlation ID is usually called trace ID. A trace ID is created when a request from outside of the
-system is directed at a downstream service. Within the system, the trace ID is then passed onto the upstream
+This correlation ID is usually called a trace ID. A trace ID is created when a request from outside of the
+system is directed at a downstream service. Within the system, the trace ID is then passed on to the upstream
 services so they can use them in their log entries.
 
-![A distributed system with a downstream and two upstream services](/assets/images/posts/trace.png)
 
 # Implement Tracing with Spring Cloud Sleuth
 
 [Spring Cloud Sleuth](https://cloud.spring.io/spring-cloud-sleuth/) is a library that supports 
-implementing such a tracing. Sleuth is part of the Spring Cloud project which provides solutions for 
-cloud systems, that are distributed systems by definition. The following sections describe how to activate
+implementing such a trace ID. Sleuth is part of the Spring Cloud project which provides solutions for 
+cloud systems (which are distributed systems by definition). The following sections describe how to activate
 Sleuth in a Spring Boot application and provide a couple getting started tips.  
 
-If you would rather look at code that read words, most of the code examples in this articles can be found
+If you would rather look at code than read words, most of the code examples in this articles can be found
 in these Github repositories: [downstream-service](https://github.com/thombergs/code-examples/tree/master/sleuth-downstream-service) and
-[upstream-service](https://github.com/thombergs/code-examples/tree/master/sleuth-upstream-service) 
+[upstream-service](https://github.com/thombergs/code-examples/tree/master/sleuth-upstream-service).
 
 ## Activate Spring Cloud Sleuth
 
@@ -63,8 +64,10 @@ compile('org.springframework.cloud:spring-cloud-starter-sleuth:1.2.4.RELEASE')
 
 After this, Sleuth is activated by default and creates a trace ID for each incoming request. If the header
 `x-b3-traceid` of the incoming request already contains a trace ID, the existing trace ID will be used. In outgoing requests
-the trace ID is put into the header so the next upstream service can read it. The name of the header field
-consists of the prefix `x`, which is used for customer headers that are not part of the HTTP specification, 
+the trace ID is put into the header so that the next upstream service can read it. 
+
+The name of the header field
+consists of the prefix `x`, which is used for custom headers that are not part of the HTTP specification, 
 and `b3` for "BigBrotherBird", which once was the name of the popular tracing UI [Zipkin](http://zipkin.io).
 Sleuth borrows its vocabulary from Zipkin.
 
@@ -109,7 +112,7 @@ access environment variables like `spring.application.name`:
 
 The environment variables are loaded from the Spring Boot configuration, which usually lies in the file
 `application.properties`. Since there can be log output before the file `application.properties` is loaded,
-Spring Cloud supports another file `bootstrap.properties`, which is loaded earlier. So all properties which
+Spring Cloud supports another file called `bootstrap.properties`, which is loaded earlier. So all properties which
 are needed in log output should be put into this file instead.
 
 Log output including the service name then looks like this:
@@ -150,7 +153,7 @@ public class ControllerExceptionHandler {
 ## Pass the Trace ID to the Client
 
 In some cases it may be required to show the trace ID to the user so that he can provide the trace ID to
-a support hotline. The support engineer can then search the log files for that trace ID to find the 
+a support hotline in case of an error. The support engineer can then search the log files for that trace ID to find the 
 root cause. Since the trace ID is accessible via MDC, it can be read from the MDC at any time and
 may be passed on to the client in case of an error. An adapted exception handler that does just
 that may look like this:
@@ -207,15 +210,15 @@ into the GELF format and to send them to the log server:
 </configuration>
 ```
 
-The parameter `includeFullMDC` includes all MDC fields as separate fields in the GELF data structure so that 
+The parameter `includeFullMDC` includes all MDC fields (including our trace ID) as separate fields in the GELF data structure so that 
 the log server can store and index them in a structured manner.
 
-The above configuration again uses the logging features provided by Spring Boot by transmitting the 
-environment variable `spring.application.name` to he log server as a separate field named `serviceName`.
+The above configuration again uses the logging features provided by Spring Bootto send the value of the 
+environment variable `spring.application.name` to the log server as a separate field named `serviceName`.
 
 ## Analyze Traces
 
-If the trace IDs in the log files are not enough, you can perform a more sophisticated trace analysis by
+If trace IDs in the log files are not enough, you can perform a more sophisticated trace analysis by
 using [Zipkin](http://zipkin.io). Zipkin is an application that collects tracing data and displays
 detailed data about it in a web UI. This data contains the duration of the single steps between services
 among a lot of other things.

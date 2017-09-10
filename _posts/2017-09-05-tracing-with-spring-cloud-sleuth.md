@@ -235,6 +235,13 @@ Additionally, the following property must be set in `application.properties` to 
 spring.zipkin.baseUrl: http://localhost:9411/
 ```
 
+## Wrap Up
+
+This article has shown that a trace-supporting logging configuration with Spring Boot, Logback and Sleuth is not
+that much work, if you know where to look. Even sending the tracing data to a central log server in a structured
+fashion is quite easily possible and a must-have for distributed systems.
+
+
 ## Example Projects
 
 Projects containing the downstream and upstream services from this articles example

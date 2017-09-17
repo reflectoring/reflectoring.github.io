@@ -138,7 +138,7 @@ public class EventingApplication {
 
 ## Connecting to RabbitMQ
 
-In order to connect to a RabbitMQ server, the Spring AMQP starter provides the following properties, which you can
+In order to connect to a RabbitMQ server, the Spring AMQP starter reads the following properties, which you can
 specify as environment variables, for example in your `application.properties`. The following settings are the 
 default connection settings once you have installed RabbitMQ locally. 
 
@@ -151,7 +151,7 @@ spring.rabbitmq.password=guest
 
 ## Configuring an Event Producer
 
-Creating an event producer is pretty straight forward. We make use of the `RabbitTemplate` provided by the 
+Creating an event producer is pretty straightforward. We make use of the `RabbitTemplate` provided by the 
 AMQP starter and call the method `convertAndSend()` to send an event. The event in the code example
 only contains a String. If the message should contain a complex object, you can make use of [message converters](https://docs.spring.io/spring-amqp/docs/1.7.4.RELEASE/reference/html/_reference.html#message-converters).
 
@@ -181,9 +181,9 @@ public class CustomerService {
 
 Note that the call to `RabbitTemplate` needs the name of the exchange to which the event should be sent. To wire
 our application against a specific exchange, we simply create a Spring Bean of type `TopicExchange` and choose a name
-for that exchange (in case of the example, the exchange is called `eventExchange`). 
-The application will automatically connect to RabbitMQ and create an exchange with this name, if it doesn't exist.
-We use a topic exchange here, since it allows to specify a routing key (a "topic") when sending a message to it. 
+for that exchange (in case of the example code below, the exchange is called `eventExchange`). 
+The application will automatically connect to RabbitMQ and create an exchange with this name, if it doesn't exist yet.
+We use a so-called "topic exchange" here, since it allows to specify a routing key (a "topic") when sending a message to it. 
 
 The `RabbitTemplate` passed into the `CustomerService` is provided to the Spring application context by the AMQP starter.
  
@@ -265,7 +265,7 @@ public class EventConsumerConfiguration {
 # Wrap-Up
 
 With the concepts of exchanges, bindings and queues, AMQP provides everything we need to create an event 
-mechanism. Spring AMQP and its integration into Spring Boot via the AMQP Starter provide a very convenient
+mechanism for a distributed system. Spring AMQP and its integration into Spring Boot via the AMQP Starter provide a very convenient
 programming model to connect to such an event broker.
 
 # Example Code

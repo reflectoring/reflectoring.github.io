@@ -121,20 +121,7 @@ your project (Gradle notation):
 compile('org.springframework.boot:spring-boot-starter-amqp')
 ```
 
-The starter contains an auto configuration, thus you need to enable auto configurations in your Spring Boot
-application class using the `@EnableAutoConfiguration` annotation:
-
-```java
-@SpringBootApplication
-@EnableAutoConfiguration
-public class EventingApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(EventingApplication.class, args);
-	}
-	
-}
-```
+The starter contains an auto configuration which is automatically activated.
 
 ## Connecting to RabbitMQ
 

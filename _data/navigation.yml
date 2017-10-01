@@ -1,11 +1,16 @@
 # main links
 main:
-  - title: "Search"
-    url: /search/
-  - title: "GitHub"
-    url: https://github.com/reflectoring/reflectoring.github.io
   - title: "About Reflectoring"
     url: /about/
+  - title: "Search"
+    url: /search/
+    icon: fa-search
+  - title: "GitHub"
+    url: https://github.com/reflectoring/reflectoring.github.io
+    icon: fa-github
+  - title: "Feed"
+    url: /feed.xml
+    icon: fa-rss-square
 
 # sidebar with Monitoring Posts
 monitoring:

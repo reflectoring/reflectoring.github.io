@@ -15,7 +15,7 @@ the tests that need a connection to it. This article shows how
 you can skip tests in JUnit 4 and JUnit 5 depending on certain conditions.
 
 # Assumptions
-Both JUnit 4 and JUnit 5 have the concept of assumptions. Before each test,
+Both JUnit 4 and JUnit 5 support the concept of assumptions. Before each test,
 a set of assumptions can be made. If one of these assumptions is not met,
 the test should be skipped.  
 

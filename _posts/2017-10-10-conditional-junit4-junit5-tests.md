@@ -178,6 +178,10 @@ public class ConnectionCheckingJunit5Test {
 }
 ```
 
+# Code Examples
+
+Working code examples can be found in my [github repo]https://github.com/thombergs/code-examples/tree/master/junit5/src/test/java/com/example/demo/connectionchecking).
+
 # Conclusion
 Both JUnit 4 and JUnit 5 support the concept of assumptions to conditionally 
 enable or disable tests. However, it's definitely worthwhile to have a look at JUnit 5 and its

@@ -180,7 +180,7 @@ public class ConnectionCheckingJunit5Test {
 
 # Code Examples
 
-Working code examples can be found in my [github repo]https://github.com/thombergs/code-examples/tree/master/junit5/src/test/java/com/example/demo/connectionchecking).
+Working code examples can be found in my [github repo](https://github.com/thombergs/code-examples/tree/master/junit5/src/test/java/com/example/demo/connectionchecking).
 
 # Conclusion
 Both JUnit 4 and JUnit 5 support the concept of assumptions to conditionally 

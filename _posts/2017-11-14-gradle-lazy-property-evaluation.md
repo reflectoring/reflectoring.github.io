@@ -13,9 +13,11 @@ Writing Gradle build tasks is often easy and straight forward, but as soon as yo
 ## Why Lazy Evaluation?
 
 Recently I wrote a task to configure a docker build for different Java modules. Some of them are packaged as JAR and some as WAR artifacts.
-Now this configuration was not that complicated, but I really hate duplicating stuff. So I thought how could I write a generic configuration and let each modules override some parts of this config? Thats where lazy property evaluation comes in very handy.
+Now this configuration was not that complicated, but I really hate duplicating stuff. So I wondered how to write a generic configuration and let each module override some parts of this config? That's where lazy property evaluation comes in very handy.
 
-Let's check this simple project configuration:
+## Lazy Evaluation of String Properties
+
+Let's check this simple project configuration, which logs the the evaluated properties to the console using the build-in [Gradle Logger](https://docs.gradle.org/current/userguide/logging.html).
 ```groovy
 allprojects {
     version = '1.0.0'
@@ -83,7 +85,7 @@ We can do that by turning the property into a `Closure` like that:
 dockerArtifact = "${name}-${version}.${-> artifactExt}"
 ```
 
-Now Gradle evaluates `name` and `version` properties eager but `artifactExt` gets evaluated lazy **each time** `dockerArtifact` is used (lazy).
+Now Gradle evaluates `name` and `version` properties eagerly but `artifactExt` gets evaluated lazily **each time** `dockerArtifact` is used.
 Running the modified code again gives us the expected result:
 ```
 ./gradlew printArtifactName
@@ -95,8 +97,9 @@ Artifact  B-1.0.0.war
 Extension war
 ```
 
-This simple hack can come in quite handy, but can only be used within Groovy Strings, as it uses Groovys build in [Lazy String Evaluation](http://docs.groovy-lang.org/latest/html/documentation/#_special_case_of_interpolating_closure_expressions).
+This simple hack can come in quite handy, but can only be used within Groovy Strings, as it uses Groovys build-in [Lazy String Evaluation](http://docs.groovy-lang.org/latest/html/documentation/#_special_case_of_interpolating_closure_expressions). Note that [Groovy Strings](http://docs.groovy-lang.org/latest/html/documentation/#_double_quoted_string) are those Strings wrapped in double quotes, whereas regular [Java Strings](http://docs.groovy-lang.org/latest/html/documentation/#_single_quoted_string) are wrapped in single quotes.
 
+## Lazy Evaluation of non-String Properties
 
 Using Closures you can also use lazy evaluation for other property types like shown below.
 
@@ -134,7 +137,7 @@ project('B') {
 }
 ```
 
-As you can see the real difference to lazy String evaluation is how the closure gets invoked at execution time. We invoke the Closure by adding paranthesis to the property name.
+As you can see the real difference to lazy String evaluation is how the closure gets invoked at execution time. We invoke the Closure by adding parenthesis to the property name.
 
 Running the modified code again gives us the expected result:
 
@@ -152,4 +155,4 @@ Min Mem   512
 Max Mem   1024
 ```
 
-As you can see lazy evaluation of properties is realy simple and allows more complex configurations without the need of duplicating code.
+As you can see lazy evaluation of properties is really simple and allows more complex configurations without the need of duplicating code.

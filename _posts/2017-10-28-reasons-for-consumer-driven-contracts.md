@@ -151,16 +151,35 @@ Also, when setting up an E2E runtime environment, some of the deployed services 
 team or even completely outside of your organization. You probably don't have a lot of influence on those services.
 If one of those services fails, it may be a cause for a failing test and adds to the potential instability.
 
+## Unused Interfaces
+
+Usually, an API is defined by the API provider. Consumers then may choose which parts of the API they want to
+use and which not. Thus, the provider does not really know which operations of its API are used by which consumer
+which may lead to a situation where an operation of the API is not used by any consumer.
+
+We obviously want to find out which operations of an API are not used so that we can throw away unneeded code 
+cluttering our codebase. Running E2E tests or even plain mock tests, however, you cannot easily find out which operations of an
+API are not used.
+
+When using CDC tests, on the other hand, if a consumer decides that a certain
+API operation is no longer needed, it removes that operation from the consumer tests and thus from the contract.
+This leads to a failing provider test and you will automatically be notified by your CI when an API operation is no longer needed and 
+you can act accordingly.
+
 ## Well-Fittedness
 
+A very similar issue is the issue of well-fittedness of the API operations for a certain consumer. If a provider dictates 
+an API contract, it may not fit certain use cases of certain consumers optimally. If the consumer defines the contract,
+it may be defined to fit its use case better.
 
-
-## Unused Interfaces
+With E2E tests and plain provider-dicated mock tests, the consumer has no real say in matters of well-fittedness. 
+Only consumer-driven contracts allow the consumer to match the API to his needs.
 
 ## Unknown Consumers
 
-## Test Results Quality
-* Provider can run test for each consumer interaction
+Some APIs are public or semi-public and thus developed for an unknown group of consumers. In a setting like this,
+CDC tests in general and mo
+
 
 # Feature Overview
 TODO: tabular overview over the features

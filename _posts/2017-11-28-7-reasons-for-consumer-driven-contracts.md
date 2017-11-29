@@ -204,7 +204,7 @@ Also, when setting up an E2E runtime environment, some of the deployed services 
 team or even completely outside of your organization. You probably don't have a lot of influence on those services.
 If one of those services fails, it may be a cause for a failing test and adds to the potential instability.
 
-## Unused Interfaces
+## Reveal Unused Interfaces
 
 Usually, an API is defined by the API provider. Consumers then may choose which operations of the API they want to
 use and which not. Thus, the provider does not really know which operations of its API are used by which consumer.
@@ -289,7 +289,7 @@ Here's an overview table of the features of the different testing strategies dis
 | **[Testing Data Semantics](#testing-data-semantics)** |  <i class="fa fa-plus" style="color:green" title="plus"></i>  | <i class="fa fa-minus" style="color:red" title="minus"></i>   | <i class="fa fa-minus" style="color:red" title="minus"></i>  |
 | **[Feedback Time](#feedback-time)**                   |  <i class="fa fa-minus" style="color:red" title="minus"></i>  | <i class="fa fa-plus" style="color:green" title="plus"></i>   | <i class="fa fa-plus" style="color:green" title="plus"></i>  |
 | **[Stability](#stability)**                           |  <i class="fa fa-minus" style="color:red" title="minus"></i>  | <i class="fa fa-plus" style="color:green" title="plus"></i>   | <i class="fa fa-plus" style="color:green" title="plus"></i>  |
-| **[Unused Interfaces](#unused-interfaces)**           |  <i class="fa fa-minus" style="color:red" title="minus"></i>  | <i class="fa fa-minus" style="color:red" title="minus"></i>   | <i class="fa fa-plus" style="color:green" title="plus"></i>  |
+| **[Reveal Unused Interfaces](#reveal-unused-interfaces)**           |  <i class="fa fa-minus" style="color:red" title="minus"></i>  | <i class="fa fa-minus" style="color:red" title="minus"></i>   | <i class="fa fa-plus" style="color:green" title="plus"></i>  |
 | **[Well-Fittedness](#well-fittedness)**               |  <i class="fa fa-minus" style="color:red" title="minus"></i>  | <i class="fa fa-minus" style="color:red" title="minus"></i>   | <i class="fa fa-plus" style="color:green" title="plus"></i>  |
 | **[Unknown Consumers](#unknown-consumers)**           |  <i class="fa fa-plus" style="color:green" title="plus"></i>  | <i class="fa fa-plus" style="color:green" title="plus"></i>   | <i class="fa fa-minus" style="color:red" title="minus"></i>  |
 

@@ -9,7 +9,7 @@ ads: false
 ---
 
 In a distributed system, testing the successful integration between  
-distributed components is essential for ensuring that the components
+distributed services is essential for ensuring that the services
 won't fail in production just because they're not speaking the same language.
 This article presents some approaches to performing such integration tests
 and describes their pros and cons.
@@ -52,12 +52,12 @@ between the consumer and a mock provider and between a mock consumer and the rea
 TODO: Image of consumer, provider, mocks, contract from slides
 
 In mock tests, we now have to sets of tests instead of one. The first set of tests is between the consumer
-and a provider mock. In a test the consumer application is started up and triggered so that
+and a provider mock. In a test the consumer service is started up and triggered so that
 it sends some requests to a provider mock. The provider mock checks if
 the requests are listed in the contract and reports an error otherwise.
 
 In the second set of tests a mock consumer is given the requests from the contract and simply
-sends them against the provider application. The mock consumer then checks if the providers' 
+sends them against the provider service. The mock consumer then checks if the providers' 
 responses meet the expectations defined in the contract.
 
 ## Consumer-Driven Contract Tests
@@ -81,11 +81,11 @@ TODO: image of testing pyramid
 The reason for this is simple: isolated tests are easy to execute and their results are easy to interpret, thus
 we should rely on them as long as it's possible.
 
-E2E tests obviously aren't isolated tests since each test potentially calls a whole lot of components.
+E2E tests obviously aren't isolated tests since each test potentially calls a whole lot of services.
 While I wouldn't call mock tests and CDC tests "isolated", they are definitely more
-isolated than E2E tests since each test only tests a single component: either the provider or the consumer.
+isolated than E2E tests since each test only tests a single service: either the provider or the consumer.
 
-Using mock tests instead of E2E tests for testing interfaces between distributed components moves those tests
+Using mock tests instead of E2E tests for testing interfaces between distributed services moves those tests
 from the top of the testing pyramid at least one level down, so the point for isolation definitely goes
 to mock tests and CDC tests.
 
@@ -101,16 +101,24 @@ Reducing the test focus from semantics to syntax should be a conscious choice yo
 You are no longer testing the business logic but you are concentrating your test efforts on the potentially
 fragile interface structure (while covering your business logic with isolated tests, I hope).
 
+## Complexity
+
+For an E2E runtime environment, you have to deploy containers running your services, their databases
+and any other dependencies they might have, each in a specified versions. Nowadays, tools like Docker and 
+kubernetes make this a lot easier than it was when services were hosted on bare metal. However,
+you have to implement an automatism that executes this deployment when the tests are to be run. You
+do not have this kind of complexity with mock tests.
+
 ## Test Data 
 
 Test data is always an issue when implementing tests of any sort. In E2E tests test data is especially troublesome
-since you have potentially many components each with their own database. To set up a test environment for those
+since you have potentially many services each with their own database. To set up a test environment for those
 E2E tests you have to provide each of those databases with test data that match the expectations of your tests.
 
 TODO: Image with multiple service containers and highlighted databases
 
 The data in each database has to match to data in the other databases to enable valid testing scenarios across multiple
-components. Beyond that, you have to implement a potentially complex automation to fire up your databases in a defined
+services. Beyond that, you have to implement a potentially complex automation to fire up your databases in a defined
 state. 
 
 In mock tests, on the other hand, you can define the data to be sent / returned directly in the consumer and provider mocks
@@ -118,13 +126,34 @@ without having to setup any database at all.
 
 ## Feedback Time
 
-## Complexity
+Another important issue in testing is the time it takes from starting your tests until you get the results and
+can act on them by fixing a bug or modifying a test. The shorter this feedback time, the more productive you can
+be. 
+
+Due to their itegrative nature, E2E tests usually have a rather long feedback time. One cause for this is the time
+it takes to setup a complete E2E runtime environment. The other cause is that once you have setup that environment
+you probably won't just run a single test but rather a complete suite of tests, which tends to take some time.
+
+Mock tests have a much shorter feedback cycle, since you can run them any time, especially from a developer machine
+and get feedback rather quickly (not as quickly as for usual unit tests, but quicker than for E2E tests for sure).
 
 ## Stability
 
-## 3rd Party Components
+Due to the complexity, potentially erroneous test data and a whole lot of other potential factors, E2E tests may fail.
+If an E2E test fails, it does not necessarily mean that you found a bug in the code or in the test. It may mean that
+the runtime environment was badly configured and an service could not be reached or that a certain service
+was deployed in the wrong version or any other reason. That means that E2E tests are inherently less stable than
+tests that are better isolated like mock tests. 
+
+Unstable tests lead to dangerous mindsets like "A couple tests failed, but 90% are OK, so let's deploy to production.".
+
+Also, when setting up an E2E runtime environment, some of the deployed services may be developed by another 
+team or even completely outside of your organization. You probably don't have a lot of influence on those services.
+If one of those services fails, it may be a cause for a failing test and adds to the potential instability.
 
 ## Well-Fittedness
+
+
 
 ## Unused Interfaces
 

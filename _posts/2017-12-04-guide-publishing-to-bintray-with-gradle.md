@@ -74,6 +74,7 @@ version = '1.0.0'
 
 The important parts are the [bintray plugin](https://github.com/bintray/gradle-bintray-plugin)
 and the [maven-publish](https://docs.gradle.org/current/userguide/publishing_maven.html) plugin. 
+
 The two `repositories` closures simply list the Maven repositories to be
 searched for our project's dependencies and have nothing to do with publishing our artifacts.
 
@@ -211,6 +212,7 @@ You can run the build and upload the artifacts on Bintray by running
 ```
  
 # Publish!
+
 The files have now been uploaded to Bintray, but by default they have not been published to the Maven repository yet.
 You can do this manually for each new version on the Bintray site. Going to the site, you should see
 a notice like this:

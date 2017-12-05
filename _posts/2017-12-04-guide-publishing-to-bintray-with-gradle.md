@@ -25,6 +25,11 @@ routine in your own repository first and THEN publish it to Maven Central from t
 Publishing from your own Bintray repository to Maven Central is supported by Bintray,
 but will be covered in a follow-up article.
 
+Another reason for uploading to Bintray and not to Maven Central is that you still
+have control over your files even after uploading and publishing your files
+whereas in Maven Central you lose all control after publishing (however, you should
+be careful with editing already-published files!). 
+
 # Create a Bintray Account
 To publish artifacts on [Bintray](https://bintray.com), you naturally need an account there. I'm not going to describe
 how to do that since if you're reading this article you should possess the skills
@@ -67,7 +72,8 @@ repositories {
 version = '1.0.0'
 ```
 
-The important parts are the bintray plugin and the maven-publish plugin. 
+The important parts are the [bintray plugin](https://github.com/bintray/gradle-bintray-plugin)
+and the [maven-publish](https://docs.gradle.org/current/userguide/publishing_maven.html) plugin. 
 The two `repositories` closures simply list the Maven repositories to be
 searched for our project's dependencies and have nothing to do with publishing our artifacts.
 
@@ -205,13 +211,16 @@ You can run the build and upload the artifacts on Bintray by running
 ```
  
 # Publish!
-The files have now been uploaded to Bintray, but they have not been published to the Maven repository yet.
-This has to be done manually for each new version on the Bintray site. Going to the site, you should see
+The files have now been uploaded to Bintray, but by default they have not been published to the Maven repository yet.
+You can do this manually for each new version on the Bintray site. Going to the site, you should see
 a notice like this:
 
 ![Notice](/assets/images/posts/guide-publishing-to-bintray-with-gradle/notice.png)
 
 Click on publish and your files should be published for real and be publicly accessible.
+
+Alternatively, you can set up the bintray plugin to publish the files automatically after uploading, by setting `publish = true`.
+For a complete list of the plugin options have a look at the [plugin DSL](https://github.com/bintray/gradle-bintray-plugin#plugin-dsl).
 
 # Access your Artifacts from a Gradle Build
 Once the artifacts are published for real you can add them as dependencies in a Gradle build.

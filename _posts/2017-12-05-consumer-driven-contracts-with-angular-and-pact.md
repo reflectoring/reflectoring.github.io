@@ -6,6 +6,9 @@ author: tom
 tags: [consumer, provider, contract]
 comments: true
 ads: false
+header:
+  teaser: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
+  image: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
 ---
 
 Consumer-Driven Contract Tests are a technique to automatically test integration
@@ -19,7 +22,7 @@ create consumer-driven contract tests between an Angular client and a REST backe
 
 # The Big Picture
 
-![Mocking Overview](/assets/images/posts/consumer-driven-contract-with-angular-and-pact/mocks.jpg)
+![Mocking Overview](/assets/images/posts/consumer-driven-contracts-with-angular-and-pact/mocks.jpg)
 
 This article focuses on creating a contract and testing the Angular client against it.
 The provider is left out for now.

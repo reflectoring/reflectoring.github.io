@@ -1,5 +1,5 @@
 ---
-title: "Creating a Consumer-Driven Contract from an Angular Client with Pact"
+title: "Consumer-Driven Contracts with Angular and Pact"
 categories: [frameworks]
 modified: 2017-12-05
 author: tom

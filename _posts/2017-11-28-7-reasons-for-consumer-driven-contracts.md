@@ -8,6 +8,7 @@ comments: true
 ads: false
 header:
   teaser: /assets/images/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg
+  image: /assets/images/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg
 ---
 
 In a distributed system, testing the successful integration between  

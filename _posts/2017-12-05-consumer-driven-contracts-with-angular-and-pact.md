@@ -33,7 +33,7 @@ Instead of testing consumer and provider in an end-to-end manner, which requires
 server environment](/7-reasons-for-consumer-driven-contracts/#complexity),
 we split the test of our API into two parts: a consumer test and a provider test.
 Each of these tests runs against a mock of the interface counterpart instead of against the real
-thing, in order to reduce complexity and gain some [other advantages](7-reasons-for-consumer-driven-contracts/#feature-overview).
+thing, in order to reduce complexity and gain some [other advantages](/7-reasons-for-consumer-driven-contracts/#feature-overview).
 
 The consumer mock and provider mock both have access to a contract that specifies
 a set of valid request / response pairs (also called "interactions") so that they are able to verify the

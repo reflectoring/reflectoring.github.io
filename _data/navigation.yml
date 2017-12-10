@@ -25,7 +25,7 @@ monitoring:
 
 # sidebar with posts on spring-data-rest
 spring-data-rest:
-  - title: "More about Spring Data REST"
+  - title: "More on Spring Data REST"
     children:
     - title: "Handling associations between entities with Spring Data Rest"
       url: /relations-with-spring-data-rest/
@@ -33,3 +33,13 @@ spring-data-rest:
       url: /accessing-spring-data-rest-with-feign/
     - title: "Documenting a Spring Data REST API with Springfox and Swagger"
       url: /documenting-spring-data-rest-api-with-springfox/
+
+cdc:
+  - title: "More on Consumer-Driven Contracts"
+    children:
+    - title: "7 Reasons to Choose Consumer-Driven Contract Tests Over End-to-End Tests"
+      url: /7-reasons-for-consumer-driven-contracts/
+    - title: "Creating a Consumer-Driven Contract with Angular and Pact"
+      url: /consumer-driven-contracts-with-angular-and-pact/
+    - title: "Consumer-Driven Contracts with Pact, Feign and Spring Data REST"
+      url: /consumer-driven-contracts-with-pact-feign-spring-data-rest/

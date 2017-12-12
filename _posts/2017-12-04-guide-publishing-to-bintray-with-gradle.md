@@ -6,6 +6,9 @@ author: tom
 tags: [gradle, maven, build]
 comments: true
 ads: false
+header:
+  teaser: /assets/images/posts/guide-publishing-to-bintray-with-gradle/bintray_to_gradle.jpg
+  image: /assets/images/posts/guide-publishing-to-bintray-with-gradle/bintray_to_gradle.jpg
 ---
 
 When working on an open source Java project, you always come to the point where 

@@ -148,7 +148,7 @@ module.exports = function (config) {
 
 Basically, we only tell the `karma-pact` plugin some information like on which port to start 
 the mock server. Additionally, I found that it's necessary to add the `proxies` configuration.
-I the case above, we tell Karma to redirect all requests coming from within our tests and pointing to a URL starting with `/user-service/` 
+In the case above, we tell Karma to redirect all requests coming from within our tests and pointing to a URL starting with `/user-service/` 
 to port `1234`, which is our mock provider. This way, we can be sure that
 the requests our `UserService` sends during the test will be received by the mock provider.  
 

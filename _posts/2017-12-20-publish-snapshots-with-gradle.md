@@ -69,7 +69,7 @@ is an entry within `oss-snapshot-local` with the namespace you requested, you're
 Now that the target repository for our snapshots is available,you can go on to create a script that deploys your 
 snapshots there. 
 
-In order to create the desired artifacts, follow these steps from the bintray article:
+In order to create the desired artifacts, follow these steps from another article:
 * [Set up your build.gradle](/guide-publishing-to-bintray-with-gradle/#set-up-your-buildgradle)
 * [Build Sources and Javadoc Artifacts](/guide-publishing-to-bintray-with-gradle/#build-sources-and-javadoc-artifacts)
 * [Define what to publish](/guide-publishing-to-bintray-with-gradle/#define-what-to-publish)

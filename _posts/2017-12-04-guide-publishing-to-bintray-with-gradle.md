@@ -1,5 +1,5 @@
 ---
-title: "Publishing to your own Bintray Maven Repository Using Gradle"
+title: "Publishing Open Source Releases with Gradle"
 categories: [frameworks]
 modified: 2017-12-04
 author: tom
@@ -17,6 +17,8 @@ In the Java world
 this is usually done by publishing your artifacts to a publicly accessible
 Maven repository. This article gives a step-by-step guide on how to publish 
 your artifacts to your own Maven Repository on Bintray.
+
+{% include further_reading nav="publishing-open-source" %}
 
 # Bintray vs. Maven Central
 You might be asking why you should publish your artifacts to a custom repository
@@ -141,7 +143,7 @@ def pomConfig = {
 
 publishing {
     publications {
-        BintrayPublication(MavenPublication) {
+        mavenPublication(MavenPublication) {
             from components.java
             artifact sourcesJar {
                 classifier "sources"
@@ -178,7 +180,7 @@ to Bintray:
 bintray {
 	user = System.getProperty('bintray.user')
 	key = System.getProperty('bintray.key')
-	publications = ['BintrayPublication']
+	publications = ['mavenPublication']
 
 	pkg {
 		repo = 'myAwesomeLib'
@@ -199,7 +201,7 @@ bintray {
 The `user` and `key` are read from system properties so that you don't have to add them in your script
 for everyone to read. You can later pass those properties via command line.
 
-In the next line, we reference the `BintrayPublication` we defined earlier, thus giving the bintray
+In the next line, we reference the `mavenPublication` we defined earlier, thus giving the bintray
 plugin (almost) all the information it needs to publish our artifacts.
 
 In the `pkg` closure, we define some additional information for the Bintray "package". A package in Bintray is

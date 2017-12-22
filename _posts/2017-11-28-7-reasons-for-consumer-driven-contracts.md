@@ -10,8 +10,6 @@ header:
   teaser: /assets/images/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg
   image: /assets/images/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg
 ---
-{% include further_reading nav="cdc" %}
-
 In a distributed system, testing the successful integration between  
 distributed services is essential for ensuring that the services
 won't fail in production just because they're not speaking the same language.
@@ -19,6 +17,7 @@ This article discusses three approaches to implementing integration tests
 between distributed services and shows the advantages of
 Consumer-Driven Contract tests.
 
+{% include further_reading nav="cdc" %}
 
 # Strategies for Integration Testing
 

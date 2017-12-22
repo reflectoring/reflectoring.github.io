@@ -10,7 +10,6 @@ header:
   teaser: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
   image: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
 ---
-{% include further_reading nav="cdc" %}
 
 Consumer-Driven Contract Tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -22,6 +21,8 @@ being a widely adopted user client framework and [Pact](https://pact.io) being a
 contract framework that allows consumer and provider to be written in different languages,
 this article takes a look on how to 
 create a contract from an Angular client that consumes a REST API.
+
+{% include further_reading nav="cdc" %}
 
 # The Big Picture
 

@@ -43,3 +43,11 @@ cdc:
       url: /consumer-driven-contracts-with-angular-and-pact/
     - title: "Consumer-Driven Contracts with Pact, Feign and Spring Data REST"
       url: /consumer-driven-contracts-with-pact-feign-spring-data-rest/
+
+publishing-open-source:
+  - title: "Other Articles in the Series \"Publishing Open Source\""
+    children:
+    - title: "Publishing Open Source Releases with Gradle"
+      url: /guide-publishing-to-bintray-with-gradle/
+    - title: "Publishing Open Source Snapshots with Gradle"
+      url: /publish-snapshots-with-gradle/

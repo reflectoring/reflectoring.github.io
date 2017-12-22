@@ -1,5 +1,5 @@
 ---
-title: "Publishing to your own Bintray Maven Repository Using Gradle"
+title: "Publishing Open Source Releases with Gradle"
 categories: [frameworks]
 modified: 2017-12-04
 author: tom
@@ -18,13 +18,7 @@ this is usually done by publishing your artifacts to a publicly accessible
 Maven repository. This article gives a step-by-step guide on how to publish 
 your artifacts to your own Maven Repository on Bintray.
 
-{% capture related_articles %}
-#### Related Article
-* If you want to read up on how to upload, publish and distribute a **snapshot** instead of a 
-  stable release with Gradle, read [this article](/publish-snapshots-with-gradle/).
-{% endcapture %}
-
-<div class="notice--warning">{{ related_articles | markdownify }}</div>
+{% include further_reading nav="publishing-open-source" %}
 
 # Bintray vs. Maven Central
 You might be asking why you should publish your artifacts to a custom repository

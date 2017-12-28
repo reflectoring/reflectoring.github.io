@@ -51,3 +51,5 @@ publishing-open-source:
       url: /guide-publishing-to-bintray-with-gradle/
     - title: "Publishing Open Source Snapshots with Gradle"
       url: /publish-snapshots-with-gradle/
+    - title: "A Fully Automated Open Source Release Chain with Gradle and Travis CI"
+      url: /fully-automated-open-source-release-chain/

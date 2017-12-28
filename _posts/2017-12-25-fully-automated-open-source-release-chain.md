@@ -7,8 +7,8 @@ tags: [gradle, snapshot, bintray]
 comments: true
 ads: false
 header:
-  teaser: /assets/images/posts/publish-snapshots-with-gradle/gradle-to-artifactory.jpg
-  image: /assets/images/posts/publish-snapshots-with-gradle/gradle-to-artifactory.jpg
+  teaser: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
+  image: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
 ---
 
 *"Release early, release often"*. This philosophy should be a goal for every 
@@ -25,7 +25,7 @@ Github repository using Gradle, Bintray and Travis CI.
 
 The following image shows the release chain we're going to build.
 
-TODO: image
+![Releasing snapshots and releases from different branches](/assets/images/posts/fully-automated-open-source-release-chain/git-snapshots-releases.jpg)
 
 In a simplified [Git Flow](http://nvie.com/posts/a-successful-git-branching-model/) fashion, we have two branches
 in our Git repository: "master" and "release":
@@ -170,3 +170,13 @@ maintaining multiple versions at the same time you might have to move toward a
 more complex branching strategy like the original [Git Flow](http://nvie.com/posts/a-successful-git-branching-model/).
 In this case, you would have to add more branches from which snapshots and releases should be published
 to the Travis configuration. 
+
+{% capture notice %}
+#### Example Project
+You can see a working example of the setup described in this article in my 
+[diffparser](https://github.com/thombergs/diffparser) project on Github!
+
+{% endcapture %}
+
+<div class="notice--success">{{ notice | markdownify }}</div>
+

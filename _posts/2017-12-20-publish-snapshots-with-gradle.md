@@ -20,6 +20,15 @@ those snapshots from their own projects.
 
 {% include further_reading nav="publishing-open-source" %}
 
+{% capture notice %}
+#### Example Project
+You can see a working example of the setup described in this article in my 
+[diffparser](https://github.com/thombergs/diffparser) project on Github!
+
+{% endcapture %}
+
+<div class="notice--success">{{ notice | markdownify }}</div>
+
 # oss.jfrog.org vs. Bintray
 Before we start, a couple words on [oss.jfrog.org](https://oss.jfrog.org). It's the place we're going to publish
 our snapshots to and an instance of [Artifactory](https://jfrog.com/artifactory/), an artifact repository
@@ -171,6 +180,5 @@ You can find out which specific versions are available by browsing the artifacts
 # What next?
 There comes a time when a version is complete and you want to release the real thing. Then, you might want
 to follow the [guide to publishing stable releases to bintray](/guide-publishing-to-bintray-with-gradle/). When this is
-all set up, you might want to have a CI tool create snapshots and releases automatically, which will be
-addressed in an upcoming blog post. 
-
+all set up, you might want to have a CI tool create snapshots and releases automatically, which is covered
+in [this blog post](/fully-automated-open-source-release-chain/). 

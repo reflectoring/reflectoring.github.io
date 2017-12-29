@@ -20,6 +20,15 @@ your artifacts to your own Maven Repository on Bintray.
 
 {% include further_reading nav="publishing-open-source" %}
 
+{% capture notice %}
+#### Example Project
+You can see a working example of the setup described in this article in my 
+[diffparser](https://github.com/thombergs/diffparser) project on Github!
+
+{% endcapture %}
+
+<div class="notice--success">{{ notice | markdownify }}</div>
+
 # Bintray vs. Maven Central
 You might be asking why you should publish your artifacts to a custom repository
 and not to [Maven Central](https://search.maven.org/), because Maven Central is THE Maven repository
@@ -255,7 +264,6 @@ Also, there's probably a whole lot of companies out there which have a proxy tha
 does not allow any Maven repository to be accessed.
 
 So, as a next step, you might want to publish your artifacts to the well-known JCenter or Maven Central
-repositories. And to have it automated, you may want integrate the publishing step 
-into a CI tool (for example, to publish snapshots
-with every CI build). These issues will be addressed in upcoming blog posts. 
-
+repositories. And to have it automated, you may want [integrate the publishing step 
+into a CI tool](/fully-automated-open-source-release-chain/) (for example, to publish snapshots
+with every CI build). 

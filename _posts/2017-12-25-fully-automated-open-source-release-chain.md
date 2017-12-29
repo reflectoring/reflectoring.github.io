@@ -10,13 +10,6 @@ header:
   teaser: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
   image: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
 ---
-
-{% capture notice %}
-#### Example Project
-You can see a working example of the setup described in this article in my 
-[diffparser](https://github.com/thombergs/diffparser) project on Github!
-{% endcapture %}
-
 *"Release early, release often"*. This philosophy should be a goal for every 
 software project. Users can only give quality feedback when they have early access
 to a software release. And they can only give feedback to new features and
@@ -24,6 +17,12 @@ fixes if they have access to the latest version. Releasing often is a major pain
 when the release process is not automated. This article is a guide to a fully automated
 release chain that is able to publish snapshots and releases from a 
 Github repository using Gradle, Bintray and Travis CI.   
+
+{% capture notice %}
+#### Example Project
+You can see a working example of the setup described in this article in my 
+[diffparser](https://github.com/thombergs/diffparser) project on Github!
+{% endcapture %}
 
 {% include further_reading nav="publishing-open-source" %}
 

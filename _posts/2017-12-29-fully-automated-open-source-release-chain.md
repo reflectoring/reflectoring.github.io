@@ -178,5 +178,3 @@ more complex branching strategy more like the original [Git Flow](http://nvie.co
 In this case, you would have to add more branches from which snapshots and releases should be published
 to the Travis configuration. 
 
-<div class="notice--success">{{ notice | markdownify }}</div>
-

@@ -11,15 +11,24 @@ header:
   image: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
 ---
 
+{% capture notice %}
+#### Example Project
+You can see a working example of the setup described in this article in my 
+[diffparser](https://github.com/thombergs/diffparser) project on Github!
+
+{% endcapture %}
+
 *"Release early, release often"*. This philosophy should be a goal for every 
 software project. Users can only give quality feedback when they have early access
 to a software release. And they can only give feedback to new features and
 fixes if they have access to the latest version. Releasing often is a major pain
-when the release process is not automated. This article is guide to a fully automated
+when the release process is not automated. This article is a guide to a fully automated
 release chain that is able to publish snapshots and releases from a 
 Github repository using Gradle, Bintray and Travis CI.   
 
 {% include further_reading nav="publishing-open-source" %}
+
+<div class="notice--success">{{ notice | markdownify }}</div>
 
 # The Release Chain 
 
@@ -28,7 +37,7 @@ The following image shows the release chain we're going to build.
 ![Releasing snapshots and releases from different branches](/assets/images/posts/fully-automated-open-source-release-chain/git-snapshots-releases.jpg)
 
 In a simplified [Git Flow](http://nvie.com/posts/a-successful-git-branching-model/) fashion, we have two branches
-in our Git repository: "master" and "release":
+in our Git repository:
 
 The **master** branch contains the current state of work. Here, all features and bugfixes
 currently being developed come together.
@@ -39,7 +48,7 @@ released.
 Additionally, there may be optional **feature** branches in which some features are developed
 in isolation. 
 
-Here's what we're going to automate:
+**Here's what we're going to automate:**
 
 Each time someone pushes a commit to the master branch (or merges a feature branch into master), **a snapshot will
 be published** by our CI pipeline so that users can test the current state of work at any time.
@@ -51,7 +60,7 @@ Naturally, a snapshot or release will only be published if all tests have run su
 
 # Prerequisites
 To create an automated release chain as described in this article, we need
-to create a Bintray account and to set up a Gradle build as described 
+to create a Bintray account and set up a Gradle build as described 
 in my previous articles: 
 
 * [Publishing Open Source Releases with Gradle](/guide-publishing-to-bintray-with-gradle/)
@@ -61,7 +70,7 @@ Once the `build.gradle` file is set up as described in those articles, we're rea
 Travis CI to do the publishing work for us automatically.
 
 # Configure Travis CI
-To enable Travis CI, we need to create an account on [https://about.travis-ci.com](https://about.travis-ci.com)
+To enable Travis CI, we need to create an account on [https://about.travis-ci.com](https://travis-ci.com)
 and link it to our Github account. 
 
 ## Activate 
@@ -167,16 +176,9 @@ Java projects with Gradle, Bintray and Travis CI.
 
 You can tailor the process to your project as needed. Especially in projects 
 maintaining multiple versions at the same time you might have to move toward a 
-more complex branching strategy like the original [Git Flow](http://nvie.com/posts/a-successful-git-branching-model/).
+more complex branching strategy more like the original [Git Flow](http://nvie.com/posts/a-successful-git-branching-model/).
 In this case, you would have to add more branches from which snapshots and releases should be published
 to the Travis configuration. 
-
-{% capture notice %}
-#### Example Project
-You can see a working example of the setup described in this article in my 
-[diffparser](https://github.com/thombergs/diffparser) project on Github!
-
-{% endcapture %}
 
 <div class="notice--success">{{ notice | markdownify }}</div>
 

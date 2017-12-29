@@ -15,7 +15,6 @@ header:
 #### Example Project
 You can see a working example of the setup described in this article in my 
 [diffparser](https://github.com/thombergs/diffparser) project on Github!
-
 {% endcapture %}
 
 *"Release early, release often"*. This philosophy should be a goal for every 

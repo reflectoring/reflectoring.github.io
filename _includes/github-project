@@ -1,0 +1,5 @@
+<div class="notice--success">
+  <img src="/assets/images/github-mark-48px.png" style="float:right" alt="View on Github"/>
+  <h4>Example Project</h4>
+  This article is accompanied by working example code <a href="{{ include.url }}">on github</a>.
+</div>

@@ -11,7 +11,7 @@ header:
   image: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
 ---
 
-Consumer-Driven Contract Tests are a technique to test integration
+Consumer-driven contract tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
 [recent blog post](/7-reasons-for-consumer-driven-contracts/)).
 A common use case for consumer-driven contract tests is testing interfaces between 
@@ -21,6 +21,8 @@ being a widely adopted user client framework and [Pact](https://pact.io) being a
 contract framework that allows consumer and provider to be written in different languages,
 this article takes a look on how to 
 create a contract from an Angular client that consumes a REST API.
+
+{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact-angular" %}
 
 {% include further_reading nav="cdc" %}
 
@@ -96,7 +98,7 @@ following dependencies as `devDependencies` in the `package.json` file:
   ...
   "@pact-foundation/pact-node": "6.5.0",
   "@pact-foundation/karma-pact": "2.1.3",
-  "pact-web": "4.3.1"
+  "@pact-foundation/pact-web": "5.3.0"
  }
 ```
 
@@ -112,16 +114,6 @@ actual tests.
 to define contract fragments by listing request / response pairs ("interactions") and
 sending them to a `pact-node` mock server. This enables us to implement consumer-driven contract
 tests from our Angular tests.
-
-{% capture notice %}
-#### Up-To-Date Dependency Versions
-At the time of this writing, `pact-web` 5.0.3-beta is already available. However, it does not work
-as expected yet. I will update the article as soon as I learn that `pact-web` 5 is out of beta. 
-Let me know if you find out that any of the versions are not up-to-date anymore.
-
-{% endcapture %}
-
-<div class="notice--warning">{{ notice | markdownify }}</div>
 
 # Configure Karma
 
@@ -167,7 +159,7 @@ import {TestBed} from '@angular/core/testing';
 import {HttpClientModule} from '@angular/common/http';
 import {UserService} from './user.service';
 import {User} from './user';
-import * as Pact from 'pact-web';
+import {PactWeb, Matchers} from '@pact-foundation/pact-web';
 ```
 
 Next, in the `beforeAll()` function, we create a provider object that can then be used
@@ -175,7 +167,7 @@ by all test cases defined in the test file.
 
 ```typescript
 beforeAll(function (done) {
-  provider = Pact({
+  provider = PactWeb({
     consumer: 'ui',
     provider: 'userservice',
     port: 1234,
@@ -240,7 +232,7 @@ describe('create()', () => {
       },
       willRespondWith: {
         status: 201,
-        body: Pact.Matchers.somethingLike({
+        body: Matchers.somethingLike({
             id: createdUserId
         }),
         headers: {

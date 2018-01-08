@@ -22,7 +22,7 @@ contract framework that allows consumer and provider to be written in different 
 this article takes a look on how to 
 create a contract from an Angular client that consumes a REST API.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact-angular" %}
+{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-angular" %}
 
 {% include further_reading nav="cdc" %}
 
@@ -58,7 +58,7 @@ What we will do in this article:
 * publish the contract on a [Pact Broker](https://github.com/pact-foundation/pact_broker) so it can later be accessed by the API provider 
 
 A prerequisite for this article is an Angular app skeleton created with Angular CLI. If you
-don't want to create one yourself, clone the [code repository](https://github.com/thombergs/code-examples/tree/master/pact-angular).
+don't want to create one yourself, clone the [code repository](https://github.com/thombergs/code-examples/tree/master/pact/pact-angular).
 
 # The API Consumer: UserService
 
@@ -149,7 +149,7 @@ the requests our `UserService` sends during the test will be received by the moc
 
 Now, we're ready to set up a test that defines a contract and verifies our `UserService` against
 this contract. We name the file `user.service.pact.spec.ts` to make clear that it's 
-a Pact test. You can find the whole file in the [demo repository](https://github.com/thombergs/code-examples/blob/master/pact-angular/src/app/user.service.pact.spec.ts).
+a Pact test. You can find the whole file in the [demo repository](https://github.com/thombergs/code-examples/blob/master/pact/pact-angular/src/app/user.service.pact.spec.ts).
 
 To start off, we need to import the usual suspects from the Angular test framework, 
 as well as our own files and the Pact files:
@@ -325,7 +325,7 @@ provider of that API? The developers of that API provider will need the pact in 
 build the correct API.   
 
 Thus, we should publish the pact somehow. For this, you can set up a [Pact Broker](https://github.com/pact-foundation/pact_broker),
-which acts as a repository for pacts. Here's a [script](https://github.com/thombergs/code-examples/blob/master/pact-angular/publish-pacts.js) that publishes all pact files within a folder
+which acts as a repository for pacts. Here's a [script](https://github.com/thombergs/code-examples/blob/master/pact/pact-angular/publish-pacts.js) that publishes all pact files within a folder
 to a Pact Broker.    
 
 ```typescript

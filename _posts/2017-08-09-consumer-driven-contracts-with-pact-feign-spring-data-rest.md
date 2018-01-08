@@ -10,9 +10,16 @@ ads: false
 ---
 When thinking about integration testing in a distributed system, you quickly come across the 
 concept of consumer-driven contracts. This blog post gives a short introduction into
-this concept and a concrete implementation example using the Technologies [Pact](https://docs.pact.io/),
+this concept and a concrete implementation example using the technologies [Pact](https://docs.pact.io/),
 [Spring Boot](https://projects.spring.io/spring-boot/), [Feign](https://github.com/OpenFeign/feign) 
 and [Spring Data REST](https://projects.spring.io/spring-data-rest/).
+
+<div class="notice--success">
+  <img src="/assets/images/github-mark-48px.png" style="float:right" alt="View on Github"/>
+  <h4>Code Example</h4>
+  This article is accompanied by working example code for the <a href="https://github.com/thombergs/code-examples/tree/master/pact/pact-feign-consumer">consumer</a> 
+  and the <a href="https://github.com/thombergs/code-examples/tree/master/pact/pact-spring-data-rest-provider">provider</a>.
+</div>
 
 {% include further_reading nav="cdc" %}
 
@@ -259,9 +266,3 @@ Verifying a pact between addressClient and customerServiceProvider
         "Content-Type" with value "application/hal+json" (OK)
       has a matching body (OK)
 ```
-
-## Example Code
-
-Working example code for the [consumer](https://github.com/thombergs/code-examples/tree/master/pact-feign-consumer) 
-and the [provider](https://github.com/thombergs/code-examples/tree/master/pact-spring-data-rest-provider) 
-can be found in my [github repo](https://github.com/thombergs/code-examples). 

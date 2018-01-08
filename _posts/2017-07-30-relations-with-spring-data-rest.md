@@ -9,9 +9,10 @@ comments: true
 ads: false
 ---
 
-
 [Spring Data Rest](https://projects.spring.io/spring-data-rest/) allows to rapidly create a REST API to manipulate
 and query a database by exposing Spring Data repositories via its [`@RepositoryRestResource`](http://docs.spring.io/autorepo/docs/spring-data-rest/current/api/org/springframework/data/rest/core/annotation/RepositoryRestResource.html) annotation.
+
+{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-data/spring-data-rest-associations" %}
  
 {% include further_reading nav="spring-data-rest" %}
 
@@ -184,7 +185,3 @@ The thing to learn from this is not to use bidirectional associations in JPA. Th
 with and without Spring Data Rest. Stick with unidirectional associations and make explicit repository
 calls for each use case you are implementing instead of counting on the supposed ease-of-use of
 a bidirectional association.
-
-## Example Code
-
-Examples in code can be found in my [GitHub repo](https://github.com/thombergs/code-examples/tree/master/spring-data-rest-associations).

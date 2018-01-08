@@ -12,6 +12,8 @@ In a microservice environment or any other distributed system you may come upon 
 to exchange events between services. This article shows how to implement a messaging solution 
 with RabbitMQ.
 
+{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/rabbitmq-event-brokering" %}
+
 # Event Messaging Requirements
 Before jumping into the solution let's define some requirements that an eventing mechanism
 in a distributed system should fulfill. We'll use the following diagram to derive those requirements.
@@ -254,8 +256,3 @@ public class EventConsumerConfiguration {
 With the concepts of exchanges, bindings and queues, AMQP provides everything we need to create an event 
 mechanism for a distributed system. Spring AMQP and its integration into Spring Boot via the AMQP Starter provide a very convenient
 programming model to connect to such an event broker.
-
-# Example Code
-A working code example can be found in my [github repository](https://github.com/thombergs/code-examples/tree/master/rabbitmq-event-brokering).
-It contains a readme with which you can get it up and running in no time. Note that the code examples in this
-article are modified for better readability and do not match the code in the repository completely.

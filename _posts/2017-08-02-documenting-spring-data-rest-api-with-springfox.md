@@ -13,6 +13,8 @@ With [Spring Data REST](https://projects.spring.io/spring-data-rest/) you can ra
 that exposes your Spring Data repositories and thus provides CRUD support and more. However, in serious API
 development, you also want to have an automatically generated and up-to-date API documentation. 
 
+{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-data/spring-data-rest-springfox" %}
+
 {% include further_reading nav="spring-data-rest" %}
 
 [Swagger](http://swagger.io) provides a specification for documenting REST APIs. And with 
@@ -202,6 +204,3 @@ is developed and used in a closed group of developers. For a public API, details
 it may be frustrating to keep the Swagger annotations and Springfox configuration up-to-date for every
 detail. 
 
-## Example Code
-
-Example code can be found in the [github repo](https://github.com/thombergs/code-examples/tree/master/spring-data-rest-springfox).

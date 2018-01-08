@@ -35,13 +35,13 @@ spring-data-rest:
       url: /documenting-spring-data-rest-api-with-springfox/
 
 cdc:
-  - title: "More on Consumer-Driven Contracts"
+  - title: "Other Articles in the Series about Consumer-Driven Contracts"
     children:
     - title: "7 Reasons to Choose Consumer-Driven Contract Tests Over End-to-End Tests"
       url: /7-reasons-for-consumer-driven-contracts/
     - title: "Creating a Consumer-Driven Contract with Angular and Pact"
       url: /consumer-driven-contracts-with-angular-and-pact/
-    - title: "Consumer-Driven Contracts with Pact, Feign and Spring Data REST"
+    - title: "Testing a Spring Boot REST API against a Consumer-Driven-Contract with Pact"
       url: /consumer-driven-contracts-with-pact-feign-spring-data-rest/
 
 publishing-open-source:

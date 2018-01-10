@@ -25,21 +25,13 @@ against a contract previously defined by the API consumer.
 
 {% include further_reading nav="cdc" %}
 
-# The Big Picture
-
-Instead of testing consumer and provider in an end-to-end manner, which requires a [complex
-server environment](/7-reasons-for-consumer-driven-contracts/#complexity),
-we split the test of our API into two parts: a consumer test and a provider test.
-Each of these tests runs against a mock of the interface counterpart instead of against the real
-thing, in order to reduce complexity and gain some [other advantages](/7-reasons-for-consumer-driven-contracts/#feature-overview).
-
-The consumer mock and provider mock both have access to a contract that specifies
-a set of valid request / response pairs (also called "interactions") so that they are able to verify the
-requests and responses of the real consumer and provider.
-
-![Mocking Overview](/assets/images/posts/consumer-driven-contract-provider-pact-spring/mocks.jpg)
-
 # In this Article
+
+Instead of testing API consumer and provider in an end-to-end manner, with consumer-driven contract tests
+we split up the test of our API into two parts: 
+
+* a consumer test testing against a mock provider and
+* a provider test testing against a mock consumer 
 
 This article focuses on the provider side. A consumer of our API has created a contract in advance and
 we want to verify that the REST API provided by our Spring Boot Service matches the expectations of that contract.   
@@ -49,6 +41,9 @@ In this article we will:
 * have a look at the API contract created in advance by an API consumer
 * create a Spring MVC controller providing the desired REST API
 * verify that the controller against the contract within a JUnit test
+
+Fo an overview of the big picture of consumer-driven contract testing, have a look at 
+[this article](/7-reasons-for-consumer-driven-contracts/). 
 
 # The Pact
 Since we're using the Pact framework as facilitator for our consumer-driven contract tests,

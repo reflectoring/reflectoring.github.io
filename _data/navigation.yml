@@ -43,6 +43,8 @@ cdc:
       url: /consumer-driven-contracts-with-angular-and-pact/
     - title: "Testing a Spring Boot REST API against a Consumer-Driven-Contract with Pact"
       url: /consumer-driven-contract-provider-pact-spring/
+    - title: "Testing a Spring Boot REST API against Contract with Spring Cloud Contract"
+      url: /consumer-driven-contract-provider-spring-cloud-contract/
 
 publishing-open-source:
   - title: "Other Articles in the Series \"Publishing Open Source\""

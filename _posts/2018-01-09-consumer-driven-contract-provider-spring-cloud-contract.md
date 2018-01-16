@@ -249,6 +249,8 @@ In this case you may want to use [Pact](http://pact.io) on the consumer side sin
 supports other languages as well. You can read up how to create a contract with
 Pact from an Angular client in [this article](/consumer-driven-contracts-with-angular-and-pact/).
 
+## Spring Cloud Contract Pact Support
+
 Luckily, Spring Cloud Contract supports the Pact contract format as well. To automatically generate
 tests from a pact file, you need to put the pact file (which is a JSON file) into the folder `src/test/contracts`
 and add these dependencies to your `build.gradle`:
@@ -269,9 +271,10 @@ buildscript {
 Spring Cloud Contract then automatically picks up the pact file and generated tests for it just like for
 the "normal" contract files.
 
-However, due to a current [issue](https://github.com/spring-cloud/spring-cloud-contract/issues/511), 
-when generating the contract via `pact-web`,
-you should not use the `somethingLike` matcher on the response body in your pact file as follows: 
+## Matching Issue
+
+If you're using Spring Cloud Contract 1.2.1 or below, you should not use the `somethingLike` matcher on the 
+response body in your pact file when generating the contract via `pact-web`:
 
 ```json
 willRespondWith: {
@@ -291,6 +294,9 @@ willRespondWith: {
   },
 }
 ```
+
+Note that this [issue](https://github.com/spring-cloud/spring-cloud-contract/issues/511) is resolved in 
+Spring Cloud Contract 1.2.2.
  
 # Conclusion
 

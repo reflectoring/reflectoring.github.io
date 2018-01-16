@@ -11,10 +11,10 @@ A few months ago I was asked to find a solution for starting and stopping a Spri
 
 As you can read on the Github page of WinSW it "is an executable binary, which can be used to wrap and manage a custom process as a Windows service". This windows service can be used to automatically start/stop your application on computer startup/shutdown. After downloading the binary (you can find it [here](http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/)) you have to perform the following simple steps to install your own custom windows service.
 
-# Name your Service
+# Step 1: Name the Service
 First you take the downloaded **winsw-2.1.2-bin.exe** file and rename it to the name of your service. In this example I will call this **MyCustomService.exe**. 
 
-# Configuration File
+# Step 2: Configure the Service
 Next, you have to create a new **MyCustomService.xml** file and place it right next to the executable (it is mandatory that the file name is the same). This xml file holds all the configuration for your custom windows service. It could look like the following example:
 
 ```xml
@@ -41,7 +41,7 @@ This configurations basically tells the windows service to:
 2. Execute the just downloaded jar by executing the command `java -jar myCustomService.jar`
 3. Save all logs into the `log` folder (for more details about logging [click here](https://github.com/kohsuke/winsw/blob/master/doc/loggingAndErrorReporting.md))
 
-# Install the Service
+# Step 3: Install the Service
 To finally install the service as a Windows service you open your command line in the current folder and execute `MyCustomService.exe install`. After the installation you can directly test your service by executing `MyCustomService.exe test`. Now you can manage this service like any other default windows service. To put it in the autostart you have to navigate to your Windows services, select the newly service and set the **Startup type** to **Automatic**.
 
 # Conclusion

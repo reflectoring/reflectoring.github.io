@@ -1,14 +1,14 @@
 ---
 title: "Testing a Spring Boot REST API Consumer against a Contract with Spring Cloud Contract"
 categories: [spring]
-modified: 2018-01-17
+modified: 2018-01-18
 author: tom
 tags: [gradle, snapshot, bintray]
 comments: true
 ads: false
 header:
- teaser: /assets/images/posts/consumer-driven-contract-provider-spring-cloud-contract/contract.jpg
- image: /assets/images/posts/consumer-driven-contract-provider-spring-cloud-contract/contract.jpg
+ teaser: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
+ image: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
 ---
 
 Consumer-driven contract tests are a technique to test integration
@@ -133,13 +133,13 @@ So, we simply clone the provider codebase and put the contract into the file
 `src/test/resources/contracts/userservice/shouldSaveUser.groovy` in the provider codebase and push it as
 a pull request for the provider team to take up.
 
+Note that although we're still acting as the consumer of the API, in this step and the next, we're 
+editing **the provider's** codebase! 
+
 # Generate a Provider Stub
 Next, we want to generate the stub against which we can verify our consumer code. For this, the Spring
 Cloud Contract Verifier Gradle plugin has to be set up in the provider build. You can read up on this setup
 in [this article about the provider side](/consumer-driven-contract-provider-spring-cloud-contract/).
-
-Note that although we're still acting as the consumer of the API, in this step, we're 
-editing **the provider's** codebase! 
 
 Additionally to the setup from the article above, in order to publish the stub into a Maven repository,
 we need to add the maven-publish plugin to the `build.gradle`:
@@ -148,7 +148,8 @@ we need to add the maven-publish plugin to the `build.gradle`:
 apply plugin: 'maven-publish'
 ```
 
-We want to control the groupId, version and artifactId of the stub, so we add this information to
+We want to control the `groupId`, `version` and `artifactId` of the stub so that we can later use these coordinates
+to load the stub from the Maven repository. For this, we add some information to
 `build.gradle`:
 
 ```groovy
@@ -156,8 +157,8 @@ group = 'io.reflectoring'
 version = '1.0.0'
 ```
 
-and the artifactId to `settings.gradle` (unless you're OK with it being the name of the project directory, which
-is the default):
+The the `artifactId` can be set up in `settings.gradle` (unless you're OK with it being the name of the 
+project directory, which is the default):
 
 ```groovy
 rootProject.name = 'user-service'
@@ -166,7 +167,7 @@ rootProject.name = 'user-service'
 Then, we run `./gradlew publishToMavenLocal` which should create and publish the artifact `io.reflectoring:user-service:1.0.0-stubs`
 to the local Maven repository on our machine. If you're interested what this artifact looks like, look into the 
 file `build/libs/user-service-1.0.0-stubs.jar`. Basically, it contains a JSON representation of the contract
-that can be used as input for stubbing away the API provider.
+that can be used as input for a stub that can act as the API provider.
 
 # Verify the Consumer Code Locally
 After the trip to the provider's code base, let's get back to our own code base (i.e. the consumer code base).
@@ -187,7 +188,9 @@ With the Stub Runner in place, we create an integration test for our consumer co
 ```java
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@AutoConfigureStubRunner(ids = "io.reflectoring:user-service:+:stubs:6565", workOffline = true)
+@AutoConfigureStubRunner(
+    ids = "io.reflectoring:user-service:+:stubs:6565", 
+    workOffline = true)
 public class UserClientTest {
 
   @Autowired
@@ -237,10 +240,10 @@ Having verified the consumer code against a stub in our local Maven repository i
 the consumer code to the CI, the build will fail because the stub is not available in an online Maven repository.
 
 Thus, we have to wait until the provider team is finished with implementing the contract and the provider code
-is pushed to the CI. The provider build pipe should be configured to automatically publish the stub to the Maven repository
-(Nexus, Artifactory) used by the development team. 
+is pushed to the CI. The provider build pipeline should be configured to automatically publish the stub to 
+an online Maven repository like a Nexus or Artifactory installation. 
 
-Once the provider build has passed the CI build pipe, we can adapt our test and remove the `workOffline` flag:
+Once the provider build has passed the CI build pipeline, we can adapt our test and remove the `workOffline` flag:
 
 ```java
 @AutoConfigureStubRunner(ids = "io.reflectoring:user-service:+:stubs:6565")
@@ -249,7 +252,7 @@ public class UserClientTest {
 }
 ```
 
-In order for the Stub Runner to find the Maven repository, we need to tell it where to look in the `application.yml`:
+In order for the Stub Runner to find the online Maven repository, we need to tell it where to look in the `application.yml`:
 
 ```yaml
 stubrunner:
@@ -262,7 +265,7 @@ Now, we can push the consumer code and be certain that the consumer and provider
 
 This article gave a quick tour of the consumer-side workflow of Spring Cloud Contract. We created a Feign client and 
 verified it against a provider stub which is created from a contract. The workflow requires good communication between
-the consumer and provider teams, but that is the nature of integration test. Once the workflow is understood by all
+the consumer and provider teams, but that is the nature of integration tests. Once the workflow is understood by all
 team members, it lets us sleep well at night since it protects us from syntactical API issues between
 consumer and provider.
 

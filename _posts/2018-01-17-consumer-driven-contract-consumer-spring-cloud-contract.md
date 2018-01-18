@@ -136,7 +136,7 @@ a pull request for the provider team to take up.
 # Generate a Provider Stub
 Next, we want to generate the stub against which we can verify our consumer code. For this, the Spring
 Cloud Contract Verifier Gradle plugin has to be set up in the provider build. You can read up on this setup
-in [this article about the provider side](/consumer-driven-contract-provider-spring-cloud/).
+in [this article about the provider side](/consumer-driven-contract-provider-spring-cloud-contract/).
 
 Note that although we're still acting as the consumer of the API, in this step, we're 
 editing **the provider's** codebase! 

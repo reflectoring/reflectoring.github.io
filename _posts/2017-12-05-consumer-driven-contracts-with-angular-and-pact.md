@@ -167,7 +167,7 @@ by all test cases defined in the test file.
 
 ```typescript
 beforeAll(function (done) {
-  provider = PactWeb({
+  provider = new PactWeb({
     consumer: 'ui',
     provider: 'userservice',
     port: 1234,

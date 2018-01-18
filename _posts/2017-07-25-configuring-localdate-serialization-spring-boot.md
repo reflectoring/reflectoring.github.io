@@ -73,7 +73,8 @@ The `JavaTimeModule` is then activated by default. The only thing left to do is 
 property in your `application.yml` (or `application.properties`):
 
 ```yaml
-jackson:
+spring:
+  jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
 ```

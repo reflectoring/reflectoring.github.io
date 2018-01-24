@@ -59,7 +59,7 @@ Syncing a Bintray repository to JCenter is easy as pie. Simply go to your packag
 klick the button "Add to JCenter". In the dialog you can also check the checkbox "host my snapshot artifacts on
 oss.jfrog.org" to be able to publish snapshots (more on snapshots [here](/publish-snapshots-with-gradle/)). 
 
-Sumbit the form and wait until you get a response. This may take a working day or so, since the approval is a
+Submit the form and wait until you get a response. This may take a working day or so, since the approval is a
 manual process. Then, you'll find a response in your inbox on Bintray and you're ready to publish to JCenter.
 Every time you publish an artifact to Bintray, it will automatically be mirrored to JCenter without anything 
 else to do. 
@@ -84,7 +84,7 @@ bintray {
 
 Syncing with Maven Central requires a little more effort. Here's what to do:
 
-## Set up Sonatype Account
+## Set up a Sonatype Account
 
 Maven Central is hosted on a Nexus instance that requires a login to publish releases.
 Thus, you need to register and request the group name you want to publish your artifacts
@@ -92,12 +92,12 @@ under. [This guide](http://central.sonatype.org/pages/ossrh-guide.html)
 explains the necessary steps. There is a manual process involved on Sonatype's side so
 be patient :). 
 
-## Link Bintray Account with Sonatype Account
+## Link Your Bintray Account with Your Sonatype Account
 
 Next, you can add your Sonatype credentials to your Bintray Account under "Edit Profile -> Accounts".
 
-If you do not feel comfortable with trusting your Sonatype credentials to Bintray, you can also
-enter the credentials each time you want to sync your repository.
+If you're not comfortable with trusting your Sonatype credentials to Bintray, you can also
+enter the credentials each time you want to sync your repository in the step "[Sync with Maven Central](#sync-with-maven-central)".
 
 Next, we need to sign our artifacts, since that is a requirement for all artifacts published on
 Maven Central. 
@@ -139,7 +139,7 @@ For a full example have a look at my [diffparser project](https://github.com/tho
 
 Note that the key pair you upload to your Bintray profile should be a special key pair for exactly the purpose
 of publishing your artifacts through Bintray. You're giving away your private key, after all, so you don't want
-it to be a key you use for anything else.
+it to be a key that is also used for something else.
 
 Again, if you don't feel comfortable with providing a private key to Bintray, you can use a Gradle plugin
 like the [Signing Plugin](https://docs.gradle.org/current/userguide/signing_plugin.html) to create the 
@@ -150,12 +150,12 @@ to the CI server, which probably is not much better...).
 
 Once the above steps are taken, navigate to the package you want to publish in the Bintray UI. Open
 the "Maven Central" tab and click on "Sync". You may have to wait a couple minutes and then the Bintray
-UI shows if the syncing was successful. Note that you have to hit this button each time you want to
+UI shows if the syncing was successful. Note that you have to hit this button manually each time you want to
 release a new version to Maven Central.
 
 # Conclusion
 
 This article discussed the steps necessary to sync a Bintray package to JCenter and Maven Central
-to get the largest exposure for your open source releases. Syncing to JCenter is easier than
+to get the best exposure for your open source releases. Syncing to JCenter is easier than
 syncing to Maven Central, but to get even more exposure, it might still be worth it to take the steps to 
 also publish to Maven Central.

@@ -53,6 +53,8 @@ publishing-open-source:
     children:
     - title: "Publishing Open Source Releases with Gradle"
       url: /guide-publishing-to-bintray-with-gradle/
+    - title: "Publishing Open Source Releases to JCenter and Maven Central"
+      url: /bintray-jcenter-maven-central/
     - title: "Publishing Open Source Snapshots with Gradle"
       url: /publish-snapshots-with-gradle/
     - title: "A Fully Automated Open Source Release Chain with Gradle and Travis CI"

@@ -12,9 +12,9 @@ header:
 ---
 
 In previous articles, I discussed [how to publish snapshots](/publish-snapshots-with-gradle/) 
-to oss.jfrog.org and [releases to Bintray](/guide-publishing-to-bintray-with-gradle/) using 
-Gradle as a build tool. While this is very helpful already, to make your release available to 
-the public it's even better to publish it to the [JCenter](https://bintray.com/bintray/jcenter)
+to oss.jfrog.org and [how to publish releases to Bintray](/guide-publishing-to-bintray-with-gradle/) using 
+Gradle as a build tool. While this is very helpful already, you can get better exposure  
+for your release by publishing it to the [JCenter](https://bintray.com/bintray/jcenter)
 and / or [Maven Central](https://search.maven.org/) repositories
 because those are widely known and supported by build tools. This article explains how to
 publish a release from your Bintray repository to JCenter and Maven Central.
@@ -43,25 +43,42 @@ by JFrog, the company that created Bintray and Artifactory (which is used to hos
 JCenter is younger than Maven Central, giving it an edge in terms of user experience and 
 simple workflows because the developers had more time to learn.
 
-Since JCenter is a mirror of Maven Central, containing everything Maven Central contains, you
-could simply include JCenter into your build tools and get access to all releases you could wish for.
+Since JCenter is a mirror of Maven Central that contains everything Maven Central contains plus some
+extra, you could simply include JCenter into your build tools and get access to all releases you could wish for.
 However, Maven Central is still more widely known and supported out-of-the-box in more build tools,
 so you might want to publish your release in both repositories.
 
 In the following, we will discuss the steps necessary to synchronize a repository on Bintray 
 with JCenter and Maven Central so that all releases to that repository are automatically published 
-to both public repositories. Read [this article](/guide-publishing-to-bintray-with-gradle/) for the steps necessary to create and publish to
-a Bintray repository.
+to both public repositories. If you don't have uploaded your release to Bintray yet,
+read [this article](/guide-publishing-to-bintray-with-gradle/) which explains the necessary steps.
 
 # Publish to JCenter
 
 Syncing a Bintray repository to JCenter is easy as pie. Simply go to your package in the Bintray UI and
 klick the button "Add to JCenter". In the dialog you can also check the checkbox "host my snapshot artifacts on
-oss.jfrog.org" (more on snapshots [here](/publish-snapshots-with-gradle/)). 
+oss.jfrog.org" to be able to publish snapshots (more on snapshots [here](/publish-snapshots-with-gradle/)). 
 
 Sumbit the form and wait until you get a response. This may take a working day or so, since the approval is a
-manual process. Then, you'll find a response in your inbox on Bintray and all artifacts in your 
-Bintray repository will automatically be published to JCenter.
+manual process. Then, you'll find a response in your inbox on Bintray and you're ready to publish to JCenter.
+Every time you publish an artifact to Bintray, it will automatically be mirrored to JCenter without anything 
+else to do. 
+
+To publish **manually**, click the "Publish" link shown below after you uploaded some files.
+
+![publish manually](/assets/images/posts/bintray-jcenter-maven-central/bintray-publish-manually.png)
+
+To publish **automatically** from a Gradle build, add the `publish` flag to the bintray configuration:
+
+```groovy
+bintray {
+    ...
+    pkg {
+      ...
+    }
+    publish = true
+}
+``` 
 
 # Publish to Maven Central
 

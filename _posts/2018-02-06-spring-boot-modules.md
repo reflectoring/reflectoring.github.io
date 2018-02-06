@@ -1,13 +1,13 @@
 ---
 title: "Modularizing a Spring Boot Application"
 categories: [spring]
-modified: 2018-01-18
+modified: 2018-02-06
 author: tom
 comments: true
 ads: false
 header:
- teaser: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
- image: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
+ teaser: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg
+ image: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg
 ---
 
 Every software project comes to a point where the code should be broken up into modules.
@@ -28,11 +28,17 @@ modules or to the whole of the application.
 
 # Options for Creating Modules
 
-Spring and Spring Boot provide several ways to create a module. 
+The base for a Spring Module is a `@Configuration`-annotated class along the lines of Spring's 
+[Java configuration](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-java)
+feature.
+
+There are several ways to define what beans should be loaded by such a 
+configuration class.
 
 ## `@ComponentScan`
 
-The easiest way to create a module is using the `@ComponentScan` annotation: 
+The easiest way to create a module is using the `@ComponentScan` annotation on
+a configuration class:
 
 ```java
 @Configuration
@@ -41,18 +47,19 @@ public class BookingModuleConfiguration {
 }
 ```
 
-If this configuration class is picked up by one of the importing mechanisms,
+If this configuration class is picked up by one of the importing mechanisms (explained later),
 it will look through all classes in the package `io.reflectoring.booking` and load 
-an instance of each class annotated with one of Spring's [stereotype annotations](https://github.com/spring-projects/spring-framework/tree/master/spring-context/src/main/java/org/springframework/stereotype)
-into the `ApplicationContext`. 
+an instance of each class that is annotated with one of 
+Spring's [stereotype annotations](https://github.com/spring-projects/spring-framework/tree/master/spring-context/src/main/java/org/springframework/stereotype)
+into the application context. 
 
-This way is fine as long as you always want to load *all* classes into the `ApplicationContext`.
-If you need more control, read on.
+This way is fine as long as you always want to load *all* classes of a package and its sub-packages
+into the application context. If you need more control on what to load, read on.
 
 ## `@Bean` Definitions
 
-With its [Java configuration feature](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-java), 
-Spring itself brings a standard for creating modules:
+Spring's Java configuration feature also brings the `@Bean` annotation for creating beans
+that are loaded into the application context:
 
 ```java
 @Configuration
@@ -69,16 +76,22 @@ public class BookingModuleConfiguration {
 ```
 
 When this configuration class is imported, a
-`BookingService` instance will be created and inserted into the `ApplicationContext`.
+`BookingService` instance will be created and inserted into the application context.
 
-## Spring Boot's `@Conditional` Annotations 
+Using this way to create a module gives a clearer picture of what beans
+are actually loaded, since you have a single place to look at - in contrast
+to using `@ComponentScan` where you have to look at the stereotype annotations
+of all classes in the package to see what's going on. 
+
+## `@Conditional` Annotations 
 
 If you need even more fine-grained control over which components should be loaded into the
-`ApplicationContext`, you can make use of Spring Boot's `@Conditional...` annotations:
+application context, you can make use of Spring Boot's `@Conditional...` annotations:
 
 ```java
 @Configuration
-@ConditionalOnProperty(name = "io.reflectoring.security.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "io.reflectoring.security.enabled", 
+    havingValue = "true", matchIfMissing = true)
 public class SecurityModuleConfiguration {
   // @Bean definitions ...
 }
@@ -87,8 +100,15 @@ public class SecurityModuleConfiguration {
 Setting the property `io.reflectoring.security.enabled` to `false` will now
 disable this module completely.
 
-There are lots of other [`@Conditional...` annotations](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html#boot-features-condition-annotations)
-you can use to define conditions for loading a module.
+There are other [`@Conditional...` annotations](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html#boot-features-condition-annotations)
+you can use to define conditions for loading a module. These include a 
+condition depending on the version of the JVM and
+the existence of a certain class in the classpath or a certain bean in the
+application context.
+
+If you ever asked yourself how Spring Boot magically loads exactly the beans 
+your application needs into the application context, this is how. Spring Boot itself makes
+heavy use of the `@Conditional` annotations.
 
 # Options for Importing Modules
 
@@ -106,13 +126,14 @@ public class ModularApplication {
 }
 ```
 
-This will import the `BookingModuleConfiguration` class and all beans that come with it.  
+This will import the `BookingModuleConfiguration` class and all beans that come 
+with it - no matter whether they are declared by `@ComponentScan` or `@Bean` annotations.  
 
-## Spring Boot's `@Enable...` Annotations
+## `@Enable...` Annotations
 
 Spring Boot brings a set of annotations that each import a certain module by themselves. An example 
-is `@EnableScheduling`, which import all Beans necessary for the scheduling sub system and the
-`@Scheduled` annotation to work.
+is `@EnableScheduling`, which imports all Beans necessary for the scheduling sub system 
+and its `@Scheduled` annotation to work.
 
 We can make use of this ourselves, by defining our own `@EnableBookingModule` annotation:
 
@@ -138,14 +159,15 @@ public class ModularApplication {
 
 The `@EnableBookingModule` annotation is actually just a wrapper around an `@Import` annotation 
 that imports our `BookingModuleConfiguration` as before. However, if we have a module consisting 
-of more than one configuration, this is a convenient and expressive way to import that module.
+of more than one configuration, this is a convenient and expressive way to aggregate these
+configurations into a single module.
 
 ## Auto-Configuration
 
 If we want to load a module automatically instead of hard-wiring the import into the 
 source code, we can make use of Spring Boot's [auto-configuration feature](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html).
 
-To enable a module for auto configuration, put a file `META-INF/spring.factories` into
+To enable a module for auto configuration, put the file `META-INF/spring.factories` into
 the classpath:
 
 ```properties
@@ -153,12 +175,12 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   io.reflectoring.security.SecurityModuleConfiguration
 ```
 
-This would import the `SecurityModuleConfiguration` class and evaluate all `@Conditional...`
-annotations before loading it and all its beans into the `ApplicationContext`.
+This would import the `SecurityModuleConfiguration` class all its beans into the application context.
 
 # When to use which Import Strategy?
 
-So many options ... when should we use which one?
+This article presented the major options for creating and importing modules
+in a Spring Boot application. But when should we use which of those options?
 
 ## Use `@Import` for Business Modules
 

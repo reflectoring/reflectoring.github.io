@@ -6,8 +6,8 @@ author: tom
 comments: true
 ads: false
 header:
- teaser: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg
- image: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg
+ teaser: /assets/images/posts/rest-hypermedia/rest-maturity-model-header.jpg
+ image: /assets/images/posts/rest-hypermedia/rest-maturity-model-header.jpg
 ---
 
 Following Roy Fielding, who first coined the REST acronym, you may call
@@ -99,7 +99,7 @@ the book to the shopping cart.
 Following the links in the API's responses further we can browse books, add them to our shopping cart or remove them from it, and
 finally order the contents of our shopping cart.
 
-# The Case **FOR** Hypermedia
+# Why Hypermedia Makes Sense
 
 Having understood the basics of hypermedia in REST APIs, let's discuss the pros.
 
@@ -125,7 +125,7 @@ a human. A developer that knows the root URL can simply follow the links to get 
 Using a tool like [HAL Browser](https://github.com/mikekelly/hal-browser), the API can even be browsed and
 experimented with comfortably.
 
-# The Case **AGAINST** Hypermedia
+# Why You Might Not Want to Use Hypermedia
 
 While decoupling client and server is a very worthwhile goal, when implementing a hypermedia API 
 you may stumble over a few things.
@@ -136,16 +136,17 @@ First of all, the decoupling aspect of the hyperlinks gets lost if the client ch
 to evaluate the hyperlinks but instead uses hard-coded URLs to access the API. 
 
 In this case, all the effort that has gone into crafting a semantically powerful hypermedia
-API was for nothing, since the client does not take advantage of it. 
+API was for nothing, since the client does not take advantage of it.
 
-In a public-facing API, there will most probably be clients that will use hard-coded URLs.
-So, as API provider, we lose the advantage of hyperlinks because we still cannot refactor URLs
+In a public-facing API, there will most probably be clients that will use hard-coded URLs
+and NOT evaluate the hyperlinks.
+So, as the API provider, we lose the advantage of hyperlinks because we still cannot refactor URLs
 independently without irritating our users.
 
 ## Client Must Understand Relations
 
 If the client chooses to evaluate the hyperlinks, it obviously needs to understand the relations
-to make sense of then. In the example above, the client needs to know what the `remove` relation means
+to make sense of them. In the example above, the client needs to know what the `remove` relation means
 in order to present the user with a UI that lets him remove an item from the shopping cart.
 
 Having to understand the relations in itself is a good thing, but building a client that acts on those relations
@@ -155,9 +156,9 @@ that most APIs don't go to level 3.
 ## Server Must Describe Application Completely with Relations
 
 Similarly, describing the whole application state with relations and hyperlinks is a burden on the server side 
-(at least initially). Building a hypermedia API is plain more effort than building a level 2 API.
+- at least initially. Designing and Building a hypermedia API is plain more effort than building a level 2 API.
 
-To be fair, once the API is stable it's probably less effort to maintain a hypermedia API than a level 2 API, thanks
+To be fair, once the API is stable it's probably less effort to **maintain** a hypermedia API than a level 2 API, thanks
 to the decoupling features. But building a hypermedia API is a long-term invest few managers are willing to make.
 
 ## No Standard Hypermedia Representation
@@ -168,14 +169,28 @@ Another reason why hypermedia is not yet widely adopted is the lack of a standar
 and other formats, each specifying a syntax for links within JSON resources.
 
 Each format has another view on which information should be included in hyperlinks. This raises uncertainty amongst
-developers. 
+developers and makes development of general-purpose hypermedia frameworks for the client- and server-side harder.
 
-## Client Must Still Know Data Structure
+## Client Must Still Have Domain Knowledge
 
-A big dent in the armor of decoupling is the fact that the client still needs to know the data structures
+Hypermedia is not a silver bullet for decoupling client from server. The client still needs 
+to know the structure of the resources it loads from the server. This structure contains a large part of the domain
+knowledge, so the decoupling is far from complete. 
 
 ## Bigger Response Payload
 
-## No Adoption by Big Players
+As you can see in the JSON examples above, hypermedia APIs tend to have bigger response payloads than a level
+2 API. The links and relations need to be transferred from server to client somehow, after all. Thus, an API
+implemented with hypermedia will probably need more bandwidth than the same API without.
 
-* HAL, others? 
+# How Should I Implement My New Shiny API?
+
+In my opinion, there's no golden way of creating a REST API. 
+
+If, in your project, the advantages of 
+hypermedia outweigh the disadvantages - which is mainly effort in careful design and implementation - 
+then go for hypermedia and be one of the few who can claim to have built a glorious level 3 REST API :).
+
+If you're not sure, go for level 2. Especially if the client is not in your control, this may be the wiser
+choice. However, be aware that you may not call your API a "REST API" then! 
+ 

@@ -63,7 +63,7 @@ don't want to create one yourself, clone the [code repository](https://github.co
 # The API Consumer: UserService
 
 The API we want to create a contract for is an API to create a user resource.
-The consumer of this API is an Angular service called `UserService`:
+The consumer of this API is an Angular service called `UserService` living in the file `user.service.ts`:
 
 ```typescript
 @Injectable()
@@ -347,7 +347,17 @@ pact.publishPacts(options).then(function () {
 });
 ```
 
-You can call this script from your CI build to publish the pacts every time the tests ran successfully.
+You can integrate this script into your npm build by adding it to the `scripts` section of your `package.json`:
+
+```json
+"scripts": {
+  ...
+  "publish-pacts": "node publish-pacts.js"
+ }
+```
+
+The script can then be executed by running `npm run publish:pacts` either from your machine or from your CI build 
+to publish the pacts every time the tests ran successfully.
 
 # Wrap Up
 In this article, we created an API contract and verified that our Angular service (i.e. the API consumer) abides by that 

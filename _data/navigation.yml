@@ -41,6 +41,8 @@ cdc:
       url: /7-reasons-for-consumer-driven-contracts/
     - title: "Creating a Consumer-Driven Contract with Angular and Pact"
       url: /consumer-driven-contracts-with-angular-and-pact/
+    - title: "Creating a Consumer-Driven Contract with Feign and Pact"
+      url: /consumer-driven-contract-feign-pact/
     - title: "Testing a Spring Boot REST API against a Consumer-Driven Contract with Pact"
       url: /consumer-driven-contract-provider-pact-spring/
     - title: "Testing a Spring Boot REST API Provider against Contract with Spring Cloud Contract"

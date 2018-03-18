@@ -41,6 +41,7 @@ In this article we will:
 * have a look at the API contract created in advance by an API consumer
 * create a Spring MVC controller providing the desired REST API
 * verify that the controller against the contract within a JUnit test
+* modify our test to load the contract file from a Pact Broker
 
 Fo an overview of the big picture of consumer-driven contract testing, have a look at 
 [this article](/7-reasons-for-consumer-driven-contracts/). 
@@ -226,6 +227,26 @@ Verifying a pact between ui and userservice
         "Content-Type" with value "application/json" (OK)
       has a matching body (OK)
 ```
+
+# Load the Contract from a Pact Broker
+
+Consumer-Driven contracts loose their value if you have multiple versions of the same
+contract file in the consumer and provider codebase. We need a single source of truth for the contract files.
+
+For this reason, the Pact team has developed a web application called [Pact Broker](https://github.com/pact-foundation/pact_broker)
+which serves as a repository for pact files.
+
+Our test from above can be modified to load the pact file directly from a Pact Broker instead of 
+a local folder by using the `@PactBroker` annotation instead of the `@PactFolder` annotation:
+
+```java
+
+@PactBroker(host = "host", port = "80", protocol = "https",
+        authentication = @PactBrokerAuth(username = "username", password = "password"))
+public class UserControllerProviderTest {
+  ...
+}
+``` 
 
 # Conclusion
 

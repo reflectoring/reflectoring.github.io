@@ -118,14 +118,18 @@ public interface UserClient {
   @RequestMapping(method = RequestMethod.POST, path = "/user-service/users")
   IdObject createUser(@RequestBody User user);
 }
+```
 
+```java
 public class User {
 	private Long id;
 	private String firstName;
 	private String lastName;
 	// getters / setters / constructors omitted
 }
+```
 
+```java
 public class IdObject {
 	private long id;
 	// getters / setters / constructors omitted

@@ -15,6 +15,8 @@ potentially saving a lot of manual programming work. [Feign](https://github.com/
 clients and is well integrated into the [Spring Cloud ecosystem](http://projects.spring.io/spring-cloud/spring-cloud.html#spring-cloud-feign). Together, both frameworks seem to be a
 natural fit, especially in a microservice environment.
 
+{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-cloud/feign-with-spring-data-rest" %}
+
 {% include further_reading nav="spring-data-rest" %}
  
 However, they don't play along by default. This blog post shows what has to be done in order to be able
@@ -142,6 +144,3 @@ public interface AddressClient {
 }
 ```
 
-## Example Code
-
-Example code can be found in the [github repo](https://github.com/thombergs/code-examples/tree/master/feign-with-spring-data-rest).

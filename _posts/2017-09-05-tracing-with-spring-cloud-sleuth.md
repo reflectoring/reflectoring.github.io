@@ -13,6 +13,14 @@ request. Not only for debugging purposes it's essential that the path of such a 
 through all involved services. This article gives an overview of the traceability problem in 
 distributed systems and provides some tips on how to implement tracing with Spring Cloud Sleuth.
 
+<div class="notice--success">
+  <img src="/assets/images/github-mark-48px.png" style="float:right" alt="View on Github"/>
+  <h4>Code Example</h4>
+  This article is accompanied by example code for a
+  <a href="https://github.com/thombergs/code-examples/tree/master/spring-cloud/sleuth-downstream-service">downstream-service</a> and
+  an <a href="https://github.com/thombergs/code-examples/tree/master/spring-cloud/sleuth-upstream-service">upstream-service</a>.
+</div>
+
 # Traceability in Distributed Systems
 
 Even in a monolithic system, tracing a bug can be hard enough. To find the root cause of an error
@@ -48,10 +56,6 @@ services so they can use them in their log entries.
 implementing such a trace ID. Sleuth is part of the Spring Cloud project which provides solutions for 
 cloud systems (which are distributed systems by definition). The following sections describe how to activate
 Sleuth in a Spring Boot application and provide a couple getting started tips.  
-
-If you would rather look at code than read words, most of the code examples in this articles can be found
-in these Github repositories: [downstream-service](https://github.com/thombergs/code-examples/tree/master/sleuth-downstream-service) and
-[upstream-service](https://github.com/thombergs/code-examples/tree/master/sleuth-upstream-service).
 
 ## Activate Spring Cloud Sleuth
 
@@ -240,11 +244,3 @@ spring.zipkin.baseUrl: http://localhost:9411/
 This article has shown that a trace-supporting logging configuration with Spring Boot, Logback and Sleuth is not
 that much work, if you know where to look. Even sending the tracing data to a central log server in a structured
 fashion is quite easily possible and a must-have for distributed systems.
-
-
-## Example Projects
-
-Projects containing the downstream and upstream services from this articles example
-can be found here: [downstream-service](https://github.com/thombergs/code-examples/tree/master/sleuth-downstream-service) and
-[upstream-service](https://github.com/thombergs/code-examples/tree/master/sleuth-upstream-service). Both 
-projects contain a README that explains the steps how to test the application.

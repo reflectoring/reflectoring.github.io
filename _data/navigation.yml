@@ -35,11 +35,29 @@ spring-data-rest:
       url: /documenting-spring-data-rest-api-with-springfox/
 
 cdc:
-  - title: "More on Consumer-Driven Contracts"
+  - title: "Other Articles in the Series about Consumer-Driven Contracts"
     children:
     - title: "7 Reasons to Choose Consumer-Driven Contract Tests Over End-to-End Tests"
       url: /7-reasons-for-consumer-driven-contracts/
     - title: "Creating a Consumer-Driven Contract with Angular and Pact"
       url: /consumer-driven-contracts-with-angular-and-pact/
-    - title: "Consumer-Driven Contracts with Pact, Feign and Spring Data REST"
-      url: /consumer-driven-contracts-with-pact-feign-spring-data-rest/
+    - title: "Creating a Consumer-Driven Contract with Feign and Pact"
+      url: /consumer-driven-contract-feign-pact/
+    - title: "Testing a Spring Boot REST API against a Consumer-Driven Contract with Pact"
+      url: /consumer-driven-contract-provider-pact-spring/
+    - title: "Testing a Spring Boot REST API Provider against Contract with Spring Cloud Contract"
+      url: /consumer-driven-contract-provider-spring-cloud-contract/
+    - title: "Testing a Spring Boot REST API Consumer against Contract with Spring Cloud Contract"
+      url: /consumer-driven-contract-consumer-spring-cloud-contract/
+
+publishing-open-source:
+  - title: "Other Articles in the Series \"Publishing Open Source\""
+    children:
+    - title: "Publishing Open Source Releases with Gradle"
+      url: /guide-publishing-to-bintray-with-gradle/
+    - title: "Publishing Open Source Releases to JCenter and Maven Central"
+      url: /bintray-jcenter-maven-central/
+    - title: "Publishing Open Source Snapshots with Gradle"
+      url: /publish-snapshots-with-gradle/
+    - title: "A Fully Automated Open Source Release Chain with Gradle and Travis CI"
+      url: /fully-automated-open-source-release-chain/

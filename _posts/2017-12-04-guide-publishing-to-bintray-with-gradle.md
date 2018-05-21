@@ -1,5 +1,5 @@
 ---
-title: "Publishing to your own Bintray Maven Repository Using Gradle"
+title: "Publishing Open Source Releases with Gradle"
 categories: [frameworks]
 modified: 2017-12-04
 author: tom
@@ -17,6 +17,17 @@ In the Java world
 this is usually done by publishing your artifacts to a publicly accessible
 Maven repository. This article gives a step-by-step guide on how to publish 
 your artifacts to your own Maven Repository on Bintray.
+
+{% include further_reading nav="publishing-open-source" %}
+
+{% capture notice %}
+#### Example Project
+You can see a working example of the setup described in this article in my 
+[diffparser](https://github.com/thombergs/diffparser) project on Github!
+
+{% endcapture %}
+
+<div class="notice--success">{{ notice | markdownify }}</div>
 
 # Bintray vs. Maven Central
 You might be asking why you should publish your artifacts to a custom repository
@@ -141,7 +152,7 @@ def pomConfig = {
 
 publishing {
     publications {
-        BintrayPublication(MavenPublication) {
+        mavenPublication(MavenPublication) {
             from components.java
             artifact sourcesJar {
                 classifier "sources"
@@ -178,7 +189,7 @@ to Bintray:
 bintray {
 	user = System.getProperty('bintray.user')
 	key = System.getProperty('bintray.key')
-	publications = ['BintrayPublication']
+	publications = ['mavenPublication']
 
 	pkg {
 		repo = 'myAwesomeLib'
@@ -199,7 +210,7 @@ bintray {
 The `user` and `key` are read from system properties so that you don't have to add them in your script
 for everyone to read. You can later pass those properties via command line.
 
-In the next line, we reference the `BintrayPublication` we defined earlier, thus giving the bintray
+In the next line, we reference the `mavenPublication` we defined earlier, thus giving the bintray
 plugin (almost) all the information it needs to publish our artifacts.
 
 In the `pkg` closure, we define some additional information for the Bintray "package". A package in Bintray is
@@ -253,7 +264,6 @@ Also, there's probably a whole lot of companies out there which have a proxy tha
 does not allow any Maven repository to be accessed.
 
 So, as a next step, you might want to publish your artifacts to the well-known JCenter or Maven Central
-repositories. And to have it automated, you may want integrate the publishing step 
-into a CI tool (for example, to publish snapshots
-with every CI build). These issues will be addressed in upcoming blog posts. 
-
+repositories. And to have it automated, you may want [integrate the publishing step 
+into a CI tool](/fully-automated-open-source-release-chain/) (for example, to publish snapshots
+with every CI build). 

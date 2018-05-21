@@ -10,9 +10,8 @@ header:
   teaser: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
   image: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
 ---
-{% include further_reading nav="cdc" %}
 
-Consumer-Driven Contract Tests are a technique to test integration
+Consumer-driven contract tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
 [recent blog post](/7-reasons-for-consumer-driven-contracts/)).
 A common use case for consumer-driven contract tests is testing interfaces between 
@@ -22,6 +21,10 @@ being a widely adopted user client framework and [Pact](https://pact.io) being a
 contract framework that allows consumer and provider to be written in different languages,
 this article takes a look on how to 
 create a contract from an Angular client that consumes a REST API.
+
+{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-angular" %}
+
+{% include further_reading nav="cdc" %}
 
 # The Big Picture
 
@@ -55,12 +58,12 @@ What we will do in this article:
 * publish the contract on a [Pact Broker](https://github.com/pact-foundation/pact_broker) so it can later be accessed by the API provider 
 
 A prerequisite for this article is an Angular app skeleton created with Angular CLI. If you
-don't want to create one yourself, clone the [code repository](https://github.com/thombergs/code-examples/tree/master/pact-angular).
+don't want to create one yourself, clone the [code repository](https://github.com/thombergs/code-examples/tree/master/pact/pact-angular).
 
 # The API Consumer: UserService
 
 The API we want to create a contract for is an API to create a user resource.
-The consumer of this API is an Angular service called `UserService`:
+The consumer of this API is an Angular service called `UserService` living in the file `user.service.ts`:
 
 ```typescript
 @Injectable()
@@ -95,7 +98,7 @@ following dependencies as `devDependencies` in the `package.json` file:
   ...
   "@pact-foundation/pact-node": "6.5.0",
   "@pact-foundation/karma-pact": "2.1.3",
-  "pact-web": "4.3.1"
+  "@pact-foundation/pact-web": "5.3.0"
  }
 ```
 
@@ -111,16 +114,6 @@ actual tests.
 to define contract fragments by listing request / response pairs ("interactions") and
 sending them to a `pact-node` mock server. This enables us to implement consumer-driven contract
 tests from our Angular tests.
-
-{% capture notice %}
-#### Up-To-Date Dependency Versions
-At the time of this writing, `pact-web` 5.0.3-beta is already available. However, it does not work
-as expected yet. I will update the article as soon as I learn that `pact-web` 5 is out of beta. 
-Let me know if you find out that any of the versions are not up-to-date anymore.
-
-{% endcapture %}
-
-<div class="notice--warning">{{ notice | markdownify }}</div>
 
 # Configure Karma
 
@@ -156,7 +149,7 @@ the requests our `UserService` sends during the test will be received by the moc
 
 Now, we're ready to set up a test that defines a contract and verifies our `UserService` against
 this contract. We name the file `user.service.pact.spec.ts` to make clear that it's 
-a Pact test. You can find the whole file in the [demo repository](https://github.com/thombergs/code-examples/blob/master/pact-angular/src/app/user.service.pact.spec.ts).
+a Pact test. You can find the whole file in the [demo repository](https://github.com/thombergs/code-examples/blob/master/pact/pact-angular/src/app/user.service.pact.spec.ts).
 
 To start off, we need to import the usual suspects from the Angular test framework, 
 as well as our own files and the Pact files:
@@ -166,7 +159,7 @@ import {TestBed} from '@angular/core/testing';
 import {HttpClientModule} from '@angular/common/http';
 import {UserService} from './user.service';
 import {User} from './user';
-import * as Pact from 'pact-web';
+import {PactWeb, Matchers} from '@pact-foundation/pact-web';
 ```
 
 Next, in the `beforeAll()` function, we create a provider object that can then be used
@@ -174,7 +167,7 @@ by all test cases defined in the test file.
 
 ```typescript
 beforeAll(function (done) {
-  provider = Pact({
+  provider = new PactWeb({
     consumer: 'ui',
     provider: 'userservice',
     port: 1234,
@@ -239,7 +232,7 @@ describe('create()', () => {
       },
       willRespondWith: {
         status: 201,
-        body: Pact.Matchers.somethingLike({
+        body: Matchers.somethingLike({
             id: createdUserId
         }),
         headers: {
@@ -332,7 +325,7 @@ provider of that API? The developers of that API provider will need the pact in 
 build the correct API.   
 
 Thus, we should publish the pact somehow. For this, you can set up a [Pact Broker](https://github.com/pact-foundation/pact_broker),
-which acts as a repository for pacts. Here's a [script](https://github.com/thombergs/code-examples/blob/master/pact-angular/publish-pacts.js) that publishes all pact files within a folder
+which acts as a repository for pacts. Here's a [script](https://github.com/thombergs/code-examples/blob/master/pact/pact-angular/publish-pacts.js) that publishes all pact files within a folder
 to a Pact Broker.    
 
 ```typescript
@@ -354,7 +347,17 @@ pact.publishPacts(options).then(function () {
 });
 ```
 
-You can call this script from your CI build to publish the pacts every time the tests ran successfully.
+You can integrate this script into your npm build by adding it to the `scripts` section of your `package.json`:
+
+```json
+"scripts": {
+  ...
+  "publish-pacts": "node publish-pacts.js"
+ }
+```
+
+The script can then be executed by running `npm run publish:pacts` either from your machine or from your CI build 
+to publish the pacts every time the tests ran successfully.
 
 # Wrap Up
 In this article, we created an API contract and verified that our Angular service (i.e. the API consumer) abides by that 

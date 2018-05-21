@@ -1,5 +1,5 @@
 ---
-title: "Creating Testable Code with Spring Boot"
+title: "Testing Verticals and Layers in Spring Boot"
 categories: [spring-boot]
 modified: 2018-05-20
 author: tom

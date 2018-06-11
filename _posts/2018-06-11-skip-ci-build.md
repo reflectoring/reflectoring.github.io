@@ -11,7 +11,7 @@ ads: false
 Skipping a CI build is like purposefully not brushing your teeth every morning and evening.
 You know it should not be skipped and you feel guilty when you do it anyways.
 However, there are some cases when you have only changed some supplementary files
-that have no impact whatsoever on your build pipeline and you don't want to wait for a
+(like documentation) that have no impact whatsoever on your build pipeline and you don't want to wait for a
 long-running build. Here are two ways how to skip a CI build in this case.
 
 # Using the Commit Message `[skip ci]` 

@@ -7,6 +7,9 @@ author: tom
 tags: [transparency, logging, log, level]
 comments: true
 ads: false
+header:
+  teaser: /assets/images/posts/patterns/logging-levels/logging-levels.jpg
+  image: /assets/images/posts/patterns/logging-levels/logging-levels.jpg
 ---
 
 When searching for a bug, or just trying to get a feel for an application,

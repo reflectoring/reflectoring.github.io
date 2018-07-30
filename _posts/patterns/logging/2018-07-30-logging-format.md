@@ -2,7 +2,7 @@
 
 title: Use a Human-Readable Logging Format
 categories: [patterns]
-modified: 2018-07-29
+modified: 2018-07-30
 author: tom
 tags: [transparency, logging, log, format]
 comments: true

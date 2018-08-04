@@ -18,6 +18,8 @@ But in the end it's us - the humans - who have to be able to
 interpret a log message. This article discusses how the format of a log
 message helps us and what such a format should look like.
 
+{% include further_reading nav="logging" %}
+
 ## Why Log Messages should be Human-Readable
 
 In our digital age, one might argue that something like acting on a message

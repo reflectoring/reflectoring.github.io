@@ -18,6 +18,8 @@ to find in the logs. But we will only know what to expect if we have followed a 
 while programming the log statements. This article describes the set of logging conventions
 I have found useful while programming Java applications.
 
+{% include further_reading nav="logging" %}
+
 ## Logging Levels
 
 In this article, we will have a look at the most commonly used logging levels. By accident,

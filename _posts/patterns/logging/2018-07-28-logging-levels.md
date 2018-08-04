@@ -1,7 +1,7 @@
 ---
 
-title: Use Logging Levels Consistently
-categories: [patterns]
+title: Tip: Use Logging Levels Consistently
+categories: [tips]
 modified: 2018-07-28
 author: tom
 tags: [transparency, logging, log, level]

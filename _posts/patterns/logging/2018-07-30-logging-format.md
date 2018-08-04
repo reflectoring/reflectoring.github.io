@@ -1,7 +1,7 @@
 ---
 
-title: Tip: Use a Human-Readable Logging Format
-categories: [tips]
+title: "Tip: Use a Human-Readable Logging Format"
+categories: [tip, logging]
 modified: 2018-07-30
 author: tom
 tags: [transparency, logging, log, format]

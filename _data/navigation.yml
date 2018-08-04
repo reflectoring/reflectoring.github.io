@@ -69,5 +69,5 @@ logging:
       url: /logging-levels/
     - title: "Tip: Use a Human-Readable Logging Format"
       url: /logging-format/
-    - title: "How to Configure a Human-Readable Logging Format with Logback and Descriptive Logger
+    - title: "How to Configure a Human-Readable Logging Format with Logback and Descriptive Logger"
       url: /logging-format-logback/

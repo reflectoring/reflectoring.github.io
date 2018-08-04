@@ -1,7 +1,7 @@
 ---
 
 title: How to Configure a Human-Readable Logging Format with Logback and Descriptive Logger
-categories: [howtos]
+categories: [howto]
 modified: 2018-08-03
 author: tom
 tags: [transparency, logging, log, format]

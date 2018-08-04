@@ -14,11 +14,11 @@ this concept and a concrete implementation example using the technologies [Pact]
 [Spring Boot](https://projects.spring.io/spring-boot/), [Feign](https://github.com/OpenFeign/feign) 
 and [Spring Data REST](https://projects.spring.io/spring-data-rest/).
 
-<div class="notice--success">
-  <img src="/assets/images/github-mark-48px.png" style="float:right" alt="View on Github"/>
-  <h4>Code Example</h4>
-  This article is accompanied by working example code for the <a href="https://github.com/thombergs/code-examples/tree/master/pact/pact-feign-consumer">consumer</a> 
-  and the <a href="https://github.com/thombergs/code-examples/tree/master/pact/pact-spring-data-rest-provider">provider</a>.
+<div class="notice--danger">
+  <h4>Deprecated</h4>
+  The contents of this article are deprecated. Instead, please read the articles about <a href="/consumer-driven-contract-feign-pact/">
+  Creating a Consumer-Driven Contract with Feign and Pact</a> and <a href="/consumer-driven-contract-provider-pact-spring/">Testing a Spring Boot REST API against a Consumer-Driven Contract
+  with Pact</a>
 </div>
 
 {% include further_reading nav="cdc" %}

@@ -14,10 +14,14 @@ header:
 
 In a [previous article](/logging-format), I proposed to use a human-readable logging format
 so that we can quickly scan a log to find the information we need. This article
-shows how to implement that logging format with the [Logback](https://logback.qos.ch/)
+shows how to implement this logging format with the [Logback](https://logback.qos.ch/)
 and [Descriptive Logger](https://github.com/thombergs/descriptive-logger) libraries.
 
-## The Logging Format
+{% include further_reading nav="logging" %}
+
+{% include github-project url="https://github.com/thombergs/code-examples/tree/master/logging" %}
+
+## The Target Logging Format
 
 The Logging format we want to achieve looks something like this:
 
@@ -41,11 +45,14 @@ The columns contain the following information:
 * the message itself
 * potentially a stacktrace.
 
-The following sections show how to configure our application to create log messages like that.
+Let's look at how we can configure our application to create log messages that look like this.
 
 ## Adding a Unique ID to each Log Message
 
-In order to add a unique ID to each log message, we have to provide such an ID. For this, we use the 
+First, we need to collect all the information contained in the log messages. Every information except the
+unique ID is pretty much default so we don't have to do anything to get it. 
+
+But in order to add a unique ID to each log message, we have to provide such an ID. For this, we use the 
 [Descriptive Logger](https://github.com/thombergs/descriptive-logger) library, a small wrapper on top
 of SLF4J I created.
 
@@ -57,7 +64,9 @@ dependencies {
 }
 ```
 
-Descriptive Logger is a library that allows us to descriptively define log messages with the help annotations. For each 
+Descriptive Logger is a library that allows us to descriptively define log messages with the help annotations. 
+
+For each 
 associated set of log messages we create an interface annotated with `@DescriptiveLogger`:
 
 ```java
@@ -99,12 +108,12 @@ public class LoggingFormatTest {
 }
 ```
 
-In between the messages we change the thread name to test the log output.
+In between the messages we change the thread name to test the log output with thread names of different lengths.
 
 ## Configuring the Logging Format with Logback
 
-Now that we can create log output, we can configure logback with the desired logging format. The configuration is made
-in the file `logback.xml`:
+Now that we can create log output with all the information we need, we can configure logback with the desired logging format. 
+The configuration is located in the file `logback.xml`:
 
 ```xml
 <configuration>
@@ -122,10 +131,10 @@ in the file `logback.xml`:
 </configuration>
 ```
 
-Within the `<pattern>` xml tag, we define the logging format. The available formats can be looked up in the 
+Within the `<pattern>` xml tag, we define the logging format. The formats that have been used here can be looked up in the 
 [Logback documentation](https://logback.qos.ch/manual/layouts.html).
 
-However, if we try this logging format, it will not be formatted properly:
+However, if we try out this logging format, it will not be formatted properly:
 
 ```
 2018-08-03 | 22:04:29.119 | main | DEBUG | o.s.a.f.JdkDynamicAopProxy | ID:          | Creating JDK dynamic proxy: target source is EmptyTargetSource: no target class, static
@@ -134,13 +143,15 @@ However, if we try this logging format, it will not be formatted properly:
 2018-08-03 | 22:04:29.133 | short | ERROR | i.r.l.LoggingFormatTest | ID:  1548654 | This is an ERROR message with a very long ID.
 ```
 
-The thread and logger name columns don't have the same width in each line. 
+**The thread and logger name columns don't have the same width in each line**. 
 
-Now we could try to use Logback's padding feature, which allows us to pad a column with spaces up to a certain number
-by adding `%<number>` before the format in question. This way, we could try `%20t` instead of just `%t` to pad the thread name)
-to 20 characters. If the thread name is longer than 20 characters, though, the column will overflow.
+To fix this, we could try to use Logback's padding feature, which allows us to pad a column with spaces up to a certain number
+by adding `%<number>` before the format in question. This way, we could try `%20t` instead of just `%t` to pad the thread name
+to 20 characters. 
 
-Thus, we need some way to truncate the thread and logger names to a defined maximum of characters.
+**If the thread name is longer than these 20 characters, though, the column will overflow.**
+
+So, we need some way to truncate the thread and logger names to a defined maximum of characters.
 
 ## Truncating Thread and Logger Names
 
@@ -153,11 +164,11 @@ We can include such a converter into the `logback.xml` file like this:
                 converterClass="io.reflectoring.logging.TruncatedThreadConverter" />
 ```
 
-In the above example, the converter is bound to the conversion word "truncatedThread", which we can use in the 
-`<pattern>` definition.
+In the above example, the converter is bound to the conversion word `truncatedThread`, which we can use in the 
+`<pattern>` definition of the `logback.xml` file.
 
-The converter itself simply takes the current thread name, pads it with spaces if it's shorter than the maximum length
-or cuts of the first part of it if it's too long (adding "..." to the start, so we can see that it has been truncated):
+The converter itself simply takes the current thread name, **pads it with spaces if it's shorter than the maximum length
+or cuts of the first part of it if it's too long** (adding "..." to the start, so we can see that it has been truncated):
 
 ```java
 public class TruncatedThreadConverter extends ClassicConverter {
@@ -182,14 +193,17 @@ public class TruncatedThreadConverter extends ClassicConverter {
 }
 ```
 
-In the logging pattern, we now use `%truncatedThread` instead of `%t`. We have added a similar converter 
-`%truncatedLogger` for the logger name. As an argument, we pass in the maximum length for each:
+In the logging pattern, we now use `%truncatedThread` instead of `%t`:
 
 ```
 <pattern>%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %truncatedThread{20} | %5p | %truncatedLogger{25} | %12(ID: %8mdc{id}) | %m%n</pattern>
 ```
 
-Now, if we run our logging code again, we have the output we wanted:
+We have added a similar converter named `%truncatedLogger` for the logger name. 
+As an argument, we pass in the maximum length for each (20 characters for the thread name and 25 characters for the logger name).
+
+
+Now, if we run our logging code again, **we have the output we wanted**, without any overflowing columns:
 
 ```
 2018-08-03 | 22:07:52.841 | main                 | DEBUG | ...a.f.JdkDynamicAopProxy | ID:          | Creating JDK dynamic proxy: target source is EmptyTargetSource: no target class, static
@@ -197,6 +211,9 @@ Now, if we run our logging code again, we have the output we wanted:
 2018-08-03 | 22:07:52.860 | short                |  INFO | i.r.l.LoggingFormatTest   | ID:     5456 | This is an INFO message.
 2018-08-03 | 22:07:52.860 | short                | ERROR | i.r.l.LoggingFormatTest   | ID:  1548654 | This is an ERROR message with a very long ID.
 ```
+
+Actually, the ID column may still overflow if we provide a very high ID number for a log message. However, since we're
+controlling those IDs we can constrict them to a maximum number so that the column does not overflow.
 
 ## Have we Lost Information by Truncating?
 
@@ -211,8 +228,9 @@ Even if truncated, the information isn't really lost. It's still contained in th
 **If we're logging to a log server, the information will still be there.** It has just been removed from the 
 string representation of the log message.
 
-We might configure the above logging format for local development only, since here a human-readable
-logging format is most valuable, since we're probably logging to a file or console and not to a log server.
+We might configure the above logging format for local development only. Here, a human-readable
+logging format is most valuable, since we're probably logging to a file or console and not to a log server
+like we're doing in production.
 
 ## Conclusion
 
@@ -220,6 +238,8 @@ Logback has to be tweaked a bit to provide a column-based logging format that al
 but it can be done with a little customization. 
 
 Using [Descriptive Logger](https://github.com/thombergs/descriptive-logger), we can easily add a unique
-ID to each log message for quick reference into the code.  
+ID to each log message for quick reference into the code. 
+
+The code used in this article is available on [github](https://github.com/thombergs/code-examples/tree/master/logging). 
 
  

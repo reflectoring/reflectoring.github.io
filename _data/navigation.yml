@@ -61,3 +61,13 @@ publishing-open-source:
       url: /publish-snapshots-with-gradle/
     - title: "A Fully Automated Open Source Release Chain with Gradle and Travis CI"
       url: /fully-automated-open-source-release-chain/
+
+logging:
+  - title: "Other Articles about Logging"
+    children:
+    - title: "Use Logging Levels Consistently"
+      url: /logging-levels/
+    - title: "Use a Human-Readable Logging Format"
+      url: /logging-format/
+    - title: "Configuring a Human-Readable Logging Format with Logback and Descriptive Logger"
+      url: /logging-format-logback/

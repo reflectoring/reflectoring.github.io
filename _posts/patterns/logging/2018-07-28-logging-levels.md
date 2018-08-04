@@ -18,17 +18,36 @@ to find in the logs. But we will only know what to expect if we have followed a 
 while programming the log statements. This article describes the set of logging conventions
 I have found useful while programming Java applications.
 
-### Logging Levels
+{% include further_reading nav="logging" %}
+
+## Logging Levels
 
 In this article, we will have a look at the most commonly used logging levels. By accident,
 these are exactly the logging levels that [SLF4J](https://www.slf4j.org/) provides - the de-facto
-standard logging framework in the java world.
+standard logging framework in the java world: ERROR, WARN, INFO, DEBUG and TRACE.
 
-Note that other logging frameworks have even more logging levels like FATAL, but the less logging levels
-we use, the easier it is to follow some conventions to use them consistently. Hence, we'll stick
-with the de-facto default logging levels.
+Note that other logging frameworks have even more logging levels like FATAL or FINER, but the 
+less logging levels we use, the easier it is to follow some conventions to use them 
+consistently. Hence, we'll stick with the de-facto default logging levels.
 
-### ERROR
+## Why Logging Levels should be used consistently
+
+Logging levels exist for a reason. They allow us to put a log message into one of several buckets, sorted
+by urgency. This in turn allows us to filter the messages of a production log by the level of urgency.
+
+Since urgent messages in a production log often mean that something is wrong and we're currently 
+losing money because of that, this filter should be very important to us!
+
+Now, imagine, we have found the instruction manual for building one of those big Lego figures and a truck load of
+mixed Lego bricks on the attic. For each step in the manual we would have to sift through the bricks to find the ones
+we need. How much easier would it be if they were sorted into actual buckets by color? 
+
+The same is true for log messages. **If we mix urgent log messages with informational log messages in the same
+bucket, we're not going to find the messages we're looking for** because they're drowned in others.
+
+Let's have a look at when to put the log messages into which bucket.  
+
+## ERROR
 
 The ERROR level should only be used when the application really is in trouble. **Users are being affected
 without having a way to work around the issue**. 
@@ -44,7 +63,7 @@ Take care **not to use this logging level too generously** because that would ad
 to the logs and reduce the significance of a single ERROR event. You wouldn't want to be woken
 in the middle of the night due to something that could have waited until the next morning, would you? 
 
-### WARN
+## WARN
 
 The WARN level should be used when **something bad happened, but the application still has the
 chance to heal itself or the issue can wait a day or two** to be fixed. 
@@ -65,7 +84,7 @@ If storage and performance are not a problem and our log server provides good se
 capabilities we can actually report even INFO and DEBUG events and just filter them
 out when we're only interested in the important stuff.
 
-### INFO
+## INFO
 
 The INFO level should be used to **document state changes in the application or some
 entity within the application**. 
@@ -81,7 +100,7 @@ Concrete examples for using the INFO level are:
 * the state of a certain business process (e.g. an order) has changed from "open" to "processed"
 * a regularly scheduled batch job has finished and processed z items.
 
-### DEBUG
+## DEBUG
 
 It's harder for to define what information to log on DEBUG level than defining it
 for the other levels. 
@@ -99,7 +118,7 @@ The DEBUG level may be used more generously than the above levels, but the code
 should not be littered with DEBUG statements as it reduces readability and
 pollutes the log.
 
-### TRACE
+## TRACE
 
 Compared to DEBUG, it's pretty easy to define what to log on TRACE. As the name
 suggests, we want to log **all information that helps us to trace the processing of 
@@ -111,11 +130,29 @@ This includes:
 * URLs of the endpoints of our application that have been called
 * start and end of the processing of an incoming request or scheduled job.
 
-### Alert & Adapt
+## Alert & Adapt
 
-**We won't get logging right if we don't have any kind of alerting on the WARN
-and ERROR levels**. 
+Even with a convention in place, in a team of several developers we probably won't get the logging
+level for all messages right the first time. 
 
-WARN and ERROR should trigger some kind of alert even in
-a pre-production environment and someone should be responsible to act on them.
-Maybe just to reconsider a log event and reduce it's level from WARN to INFO.  
+There will be ERROR messages that should be WARN messages because nothing is
+broken yet. And there will be errors hidden in INFO messages, giving us a
+false sense of security.
+
+**That's why there must be some kind of alerting on the WARN and ERROR levels
+and someone responsible to act on it.**
+
+Even in a pre-production environment, we want to know what is being reported
+on WARN and ERROR in order to be able fix things before they
+go into production. 
+
+## Conclusion
+
+The above conventions provide a first step towards searchable and understandable
+log data that allows us to quickly find the information we need in a situation where each
+second might cost us a lot of money.
+
+To keep our conventions sharp, we should set up an alerting on WARN and ERROR messages
+on a test environment and act on them by either adapting our conventions or changing
+the level of a message. 
+

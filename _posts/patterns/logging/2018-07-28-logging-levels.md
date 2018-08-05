@@ -10,15 +10,18 @@ ads: false
 header:
   teaser: /assets/images/posts/patterns/logging-levels/logging-levels.jpg
   image: /assets/images/posts/patterns/logging-levels/logging-levels.jpg
+excerpt: "A guide to using which logging level in which logging situation."
 ---
+
+{% include further_reading nav="logging" %}
+
+{% include toc %}
 
 When searching for a bug, or just trying to get a feel for an application,
  it helps a lot if we know which information we can expect
 to find in the logs. But we will only know what to expect if we have followed a convention
 while programming the log statements. This article describes the set of logging conventions
 I have found useful while programming Java applications.
-
-{% include further_reading nav="logging" %}
 
 ## Logging Levels
 

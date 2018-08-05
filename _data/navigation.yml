@@ -63,11 +63,11 @@ publishing-open-source:
       url: /fully-automated-open-source-release-chain/
 
 logging:
-  - title: "Other Articles about Logging"
+  - title: "Other Tips about Logging"
     children:
     - title: "Tip: Use Logging Levels Consistently"
       url: /logging-levels/
     - title: "Tip: Use a Human-Readable Logging Format"
       url: /logging-format/
-    - title: "How to Configure a Human-Readable Logging Format with Logback and Descriptive Logger"
-      url: /logging-format-logback/
+    - title: "Tip: Provide Contextual Information in Log Messages"
+      url: /logging-context/

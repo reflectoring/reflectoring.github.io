@@ -7,18 +7,19 @@ author: tom
 tags: [transparency, logging, log, format]
 comments: true
 ads: false
-header:
-  teaser: 
-  image: 
+excerpt: "A guide to create a logging format that can be scanned at
+          a single glance."
 ---
+
+{% include further_reading nav="logging" %}
+
+{% include toc %}
 
 Application logs are all about finding the right information in the least
 amount of time. Automated log servers may help us in finding and filtering log messages. 
 But in the end it's us - the humans - who have to be able to
 interpret a log message. This article discusses how the format of a log
 message helps us and what such a format should look like.
-
-{% include further_reading nav="logging" %}
 
 ## Why Log Messages should be Human-Readable
 

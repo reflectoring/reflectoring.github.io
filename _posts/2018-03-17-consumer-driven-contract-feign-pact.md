@@ -9,6 +9,8 @@ ads: false
 header:
  teaser: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
  image: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
+sidebar:
+  nav: cdc
 ---
 
 Consumer-driven contract tests are a technique to test integration
@@ -22,8 +24,6 @@ is a polyglot framework that facilitates consumer-driven contract tests.
 So let's have a look at how to create a contract with Feign and Pact and test a Feign client against that contract.
 
 {% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-feign-consumer" %}
-
-{% include further_reading nav="cdc" %}
 
 # In this Article
 

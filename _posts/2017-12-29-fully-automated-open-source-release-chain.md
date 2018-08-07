@@ -9,6 +9,8 @@ ads: false
 header:
   teaser: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
   image: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
+sidebar:
+  nav: publishing-open-source
 ---
 *"Release early, release often"*. This philosophy should be a goal for every 
 software project. Users can only give quality feedback when they have early access
@@ -23,8 +25,6 @@ Github repository using Gradle, Bintray and Travis CI.
 You can see a working example of the setup described in this article in my 
 [diffparser](https://github.com/thombergs/diffparser) project on Github!
 {% endcapture %}
-
-{% include further_reading nav="publishing-open-source" %}
 
 <div class="notice--success">{{ notice | markdownify }}</div>
 

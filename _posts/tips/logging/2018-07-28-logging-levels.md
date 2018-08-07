@@ -8,12 +8,12 @@ tags: [transparency, logging, log, level]
 comments: true
 ads: false
 header:
-  teaser: /assets/images/posts/patterns/logging-levels/logging-levels.jpg
-  image: /assets/images/posts/patterns/logging-levels/logging-levels.jpg
+  teaser: /assets/images/posts/tips/logging-levels/logging-levels.jpg
+  image: /assets/images/posts/tips/logging-levels/logging-levels.jpg
 excerpt: "A guide to using which logging level in which logging situation."
+sidebar:
+  nav: logging
 ---
-
-{% include further_reading nav="logging" %}
 
 {% include toc %}
 

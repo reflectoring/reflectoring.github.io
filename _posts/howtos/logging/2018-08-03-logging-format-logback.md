@@ -11,9 +11,9 @@ header:
   teaser: 
   image: 
 excerpt: "A guide to configuring Logback to use a human-readable logging format."
+sidebar:
+  nav: logging
 ---
-
-{% include further_reading nav="logging" %}
 
 {% include github-project url="https://github.com/thombergs/code-examples/tree/master/logging" %}
 

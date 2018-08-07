@@ -9,9 +9,9 @@ comments: true
 ads: false
 excerpt: "A guide to which contextual information is helpful in which 
           logging situation."
+sidebar:
+  nav: logging
 ---
-
-{% include further_reading nav="logging" %}
 
 {% include toc %}
 

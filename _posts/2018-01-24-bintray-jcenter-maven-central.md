@@ -9,6 +9,8 @@ ads: false
 header:
   teaser: /assets/images/posts/bintray-jcenter-maven-central/bintray-jcenter-maven-central.jpg
   image: /assets/images/posts/bintray-jcenter-maven-central/bintray-jcenter-maven-central.jpg
+sidebar:
+  nav: publishing-open-source
 ---
 
 In previous articles, I discussed [how to publish snapshots](/publish-snapshots-with-gradle/) 
@@ -18,8 +20,6 @@ for your release by publishing it to the [JCenter](https://bintray.com/bintray/j
 and / or [Maven Central](https://search.maven.org/) repositories
 because those are widely known and supported by build tools. This article explains how to
 publish a release from your Bintray repository to JCenter and Maven Central.
-
-{% include further_reading nav="publishing-open-source" %}
 
 {% capture notice %}
 #### Example Project

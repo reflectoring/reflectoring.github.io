@@ -14,7 +14,7 @@ main:
 
 # sidebar with Monitoring Posts
 monitoring:
-  - title: "More about Monitoring"
+  - title: "Articles about Monitoring"
     children:
     - title: "Exposing Metrics of a Spring Boot Application for Prometheus"
       url: /monitoring-spring-boot-with-prometheus/
@@ -25,7 +25,7 @@ monitoring:
 
 # sidebar with posts on spring-data-rest
 spring-data-rest:
-  - title: "More on Spring Data REST"
+  - title: "Articles about Spring Data REST"
     children:
     - title: "Handling associations between entities with Spring Data Rest"
       url: /relations-with-spring-data-rest/
@@ -35,7 +35,7 @@ spring-data-rest:
       url: /documenting-spring-data-rest-api-with-springfox/
 
 cdc:
-  - title: "Other Articles in the Series about Consumer-Driven Contracts"
+  - title: "Articles about Consumer-Driven Contracts"
     children:
     - title: "7 Reasons to Choose Consumer-Driven Contract Tests Over End-to-End Tests"
       url: /7-reasons-for-consumer-driven-contracts/
@@ -51,7 +51,7 @@ cdc:
       url: /consumer-driven-contract-consumer-spring-cloud-contract/
 
 publishing-open-source:
-  - title: "Other Articles in the Series \"Publishing Open Source\""
+  - title: "Articles about \"Publishing Open Source\""
     children:
     - title: "Publishing Open Source Releases with Gradle"
       url: /guide-publishing-to-bintray-with-gradle/
@@ -63,7 +63,7 @@ publishing-open-source:
       url: /fully-automated-open-source-release-chain/
 
 logging:
-  - title: "Other Tips about Logging"
+  - title: "Tips about Logging"
     children:
     - title: "Tip: Use Logging Levels Consistently"
       url: /logging-levels/
@@ -71,3 +71,7 @@ logging:
       url: /logging-format/
     - title: "Tip: Provide Contextual Information in Log Messages"
       url: /logging-context/
+  - title: "Implementing Logging Tips"
+    children:
+    - title: "How to Configure a Human-Readable Logging Format with Logback and Descriptive Logger"
+      url: /logging-format-logback/

@@ -9,6 +9,8 @@ ads: false
 header:
   teaser: /assets/images/posts/guide-publishing-to-bintray-with-gradle/bintray_to_gradle.jpg
   image: /assets/images/posts/guide-publishing-to-bintray-with-gradle/bintray_to_gradle.jpg
+sidebar:
+  nav: publishing-open-source
 ---
 
 When working on an open source Java project, you always come to the point where 
@@ -17,8 +19,6 @@ In the Java world
 this is usually done by publishing your artifacts to a publicly accessible
 Maven repository. This article gives a step-by-step guide on how to publish 
 your artifacts to your own Maven Repository on Bintray.
-
-{% include further_reading nav="publishing-open-source" %}
 
 {% capture notice %}
 #### Example Project

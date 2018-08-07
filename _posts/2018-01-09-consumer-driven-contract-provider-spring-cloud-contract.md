@@ -9,6 +9,8 @@ ads: false
 header:
  teaser: /assets/images/posts/consumer-driven-contract-provider-spring-cloud-contract/contract.jpg
  image: /assets/images/posts/consumer-driven-contract-provider-spring-cloud-contract/contract.jpg
+sidebar:
+  nav: cdc
 ---
 
 Consumer-driven contract tests are a technique to test integration
@@ -22,8 +24,6 @@ So let's have a look at how to test a REST API provided by a Spring Boot applica
 against a contract previously defined by the API consumer using Spring Cloud Contract.
 
 {% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-cloud/spring-cloud-contract-provider" %}
-
-{% include further_reading nav="cdc" %}
 
 # In this Article
 

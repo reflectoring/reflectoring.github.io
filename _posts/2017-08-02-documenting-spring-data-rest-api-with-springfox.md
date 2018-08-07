@@ -7,6 +7,8 @@ author: tom
 tags: [spring, boot, data, rest, swagger, springfox, documentation, document]
 comments: true
 ads: false
+sidebar:
+  nav: spring-data-rest
 ---
 
 With [Spring Data REST](https://projects.spring.io/spring-data-rest/) you can rapidly create a REST API
@@ -14,8 +16,6 @@ that exposes your Spring Data repositories and thus provides CRUD support and mo
 development, you also want to have an automatically generated and up-to-date API documentation. 
 
 {% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-data/spring-data-rest-springfox" %}
-
-{% include further_reading nav="spring-data-rest" %}
 
 [Swagger](http://swagger.io) provides a specification for documenting REST APIs. And with 
 [Springfox](https://github.com/springfox/springfox) we have a tool that serves as a bridge between

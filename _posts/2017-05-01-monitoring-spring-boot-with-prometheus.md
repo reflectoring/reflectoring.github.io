@@ -7,6 +7,8 @@ author: tom
 tags: [spring, java, boot, monitoring, metric, metrics, prometheus, dropwizard, summary, counter]
 comments: true
 ads: false
+sidebar:
+  nav: monitoring
 ---
 
 Monitoring is an important quality requirement for applications that claim to be production-ready.
@@ -15,8 +17,6 @@ I discussed how to expose metrics of your Spring Boot application with the
 help of the [Dropwizard Metrics](http://metrics.dropwizard.io/) library. This blog
 post shows how to expose metrics in a format that Prometheus understands.
  
-{% include further_reading nav="monitoring" %}
-
 ## Why Prometheus?
 
 [Prometheus](https://prometheus.io) represents the newest generation of monitoring tools.

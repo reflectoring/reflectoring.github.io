@@ -9,6 +9,8 @@ ads: false
 header:
   teaser: /assets/images/posts/publish-snapshots-with-gradle/gradle-to-artifactory.jpg
   image: /assets/images/posts/publish-snapshots-with-gradle/gradle-to-artifactory.jpg
+sidebar:
+  nav: publishing-open-source
 ---
 
 One of the most fulfilling things in developing an open source project is getting feedback from the
@@ -17,8 +19,6 @@ So, to get the most up-to-date feedback possible, you might want to give your us
 your project - often called a "snapshot". This article shows how to publish snapshots of
 your Java projects to [oss.jfrog.org](https://oss.jfrog.org) and how your users can access
 those snapshots from their own projects.
-
-{% include further_reading nav="publishing-open-source" %}
 
 {% capture notice %}
 #### Example Project

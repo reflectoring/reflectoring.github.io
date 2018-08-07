@@ -7,6 +7,8 @@ author: tom
 tags: [spring, data, jpa, rest, relation, association, onetomany, manytoone, unidirectional, bidirectional]
 comments: true
 ads: false
+sidebar:
+  nav: spring-data-rest
 ---
 
 [Spring Data Rest](https://projects.spring.io/spring-data-rest/) allows to rapidly create a REST API to manipulate
@@ -14,8 +16,6 @@ and query a database by exposing Spring Data repositories via its [`@RepositoryR
 
 {% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-data/spring-data-rest-associations" %}
  
-{% include further_reading nav="spring-data-rest" %}
-
 Managing associations between entities with Spring Data Rest isn't quite self-explanatory. That's why in this post
 I'm writing up what I learned about managing associations of different types with Spring Data Rest.
 

@@ -82,7 +82,8 @@ public interface MyLogger {
   @LogMessage(level=Level.INFO, message="This is an INFO message.", id=5456)
   void logInfoMessage();
 
-  @LogMessage(level=Level.ERROR, message="This is an ERROR message with a very long ID.", id=1548654)
+  @LogMessage(level=Level.ERROR, 
+    message="This is an ERROR message with a very long ID.", id=1548654)
   void logMessageWithLongId();
 
 }
@@ -98,7 +99,8 @@ call the log methods to output the log messages:
 ```java
 public class LoggingFormatTest {
 
-  private MyLogger logger = LoggerFactory.getLogger(MyLogger.class, LoggingFormatTest.class);
+  private MyLogger logger = LoggerFactory.getLogger(MyLogger.class, 
+    LoggingFormatTest.class);
 
   @Test
   public void testLogPattern(){
@@ -121,16 +123,16 @@ The configuration is located in the file `logback.xml`:
 ```xml
 <configuration>
 
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %t | %5p | %logger{25} | %12(ID: %8mdc{id}) | %m%n</pattern>
-            <charset>utf8</charset>
-        </encoder>
-    </appender>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %t | %5p | %logger{25} | %12(ID: %8mdc{id}) | %m%n</pattern>
+      <charset>utf8</charset>
+    </encoder>
+  </appender>
 
-    <root level="DEBUG">
-        <appender-ref ref="CONSOLE"/>
-    </root>
+  <root level="DEBUG">
+    <appender-ref ref="CONSOLE"/>
+  </root>
 </configuration>
 ```
 

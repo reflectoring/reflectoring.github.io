@@ -9,6 +9,8 @@ ads: false
 header:
   teaser: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
   image: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
+sidebar:
+  nav: cdc
 ---
 
 Consumer-driven contract tests are a technique to test integration
@@ -23,8 +25,6 @@ this article takes a look on how to
 create a contract from an Angular client that consumes a REST API.
 
 {% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-angular" %}
-
-{% include further_reading nav="cdc" %}
 
 # The Big Picture
 

@@ -9,6 +9,8 @@ ads: false
 header:
  teaser: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
  image: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
+sidebar:
+  nav: cdc
 ---
 
 Consumer-driven contract tests are a technique to test integration
@@ -22,8 +24,6 @@ So let's have a look at how to verify a Spring Boot REST client against a contra
 with Spring Cloud Contract.
 
 {% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-cloud/spring-cloud-contract-consumer" %}
-
-{% include further_reading nav="cdc" %}
 
 # In this Article
 

@@ -9,9 +9,9 @@ comments: true
 ads: false
 excerpt: "A guide to create a logging format that can be scanned at
           a single glance."
+sidebar:
+  nav: logging
 ---
-
-{% include further_reading nav="logging" %}
 
 {% include toc %}
 

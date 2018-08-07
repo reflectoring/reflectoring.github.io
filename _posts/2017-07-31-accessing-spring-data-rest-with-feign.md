@@ -7,6 +7,8 @@ author: tom
 tags: [spring, boot, feign, data, rest]
 comments: true
 ads: false
+sidebar:
+  nav: spring-data-rest
 ---
 
 
@@ -17,8 +19,6 @@ natural fit, especially in a microservice environment.
 
 {% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-cloud/feign-with-spring-data-rest" %}
 
-{% include further_reading nav="spring-data-rest" %}
- 
 However, they don't play along by default. This blog post shows what has to be done in order to be able
 to access a Spring Data REST API with a Spring Boot Feign client.
 

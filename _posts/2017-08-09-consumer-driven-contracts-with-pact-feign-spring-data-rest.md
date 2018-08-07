@@ -7,6 +7,8 @@ author: tom
 tags: [spring, boot, consumer, driven, contract, pact, feign, data, rest]
 comments: true
 ads: false
+sidebar:
+  nav: cdc
 ---
 When thinking about integration testing in a distributed system, you quickly come across the 
 concept of consumer-driven contracts. This blog post gives a short introduction into
@@ -20,8 +22,6 @@ and [Spring Data REST](https://projects.spring.io/spring-data-rest/).
   Creating a Consumer-Driven Contract with Feign and Pact</a> and <a href="/consumer-driven-contract-provider-pact-spring/">Testing a Spring Boot REST API against a Consumer-Driven Contract
   with Pact</a>
 </div>
-
-{% include further_reading nav="cdc" %}
 
 ## Integration Test Hell
 

@@ -9,3 +9,6 @@
   {% endcase %}
 {% endif %}
 
+{% if jekyll.environment == 'production'%}
+  {% include /analytics-providers/drip.html %}
+{% endif %}

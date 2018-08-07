@@ -10,7 +10,7 @@ locale                   : "en"
 title                    : "Reflectoring"
 title_separator          : "-"
 name                     : "Reflectoring"
-description              : "Tips for Software Development and How To Implement them with Java"
+description              : "Software Engineering Tips and How To Implement them with (not only) Java technologies"
 url                      : "https://reflectoring.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : "reflectoring/reflectoring.github.io" # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
@@ -77,7 +77,7 @@ analytics:
 author:
   name             : "Reflectoring"
   avatar           : "/assets/images/reflectoringLogo.png"
-  bio              : "Tips for Software Development and How To Implement them with Java"
+  bio              : "Software Engineering Tips and How To Implement them with (not only) Java technologies"
   location         : "Germany"
   email            :
   uri              :

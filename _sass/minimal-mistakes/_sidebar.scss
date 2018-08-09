@@ -55,15 +55,19 @@
   margin-bottom: 1em;
 
   @include breakpoint($large) {
-    position: relative;
+    position: absolute;
+    top: 0;
+    right: 0;
     float: right;
     width: $right-sidebar-width-narrow;
-    margin-left: span(0.5 of 12);
+    margin-right: -$right-sidebar-width-narrow;
+    padding-left: 1em;
     z-index: 10;
   }
 
   @include breakpoint($x-large) {
     width: $right-sidebar-width;
+    margin-right: -$right-sidebar-width;
   }
 }
 

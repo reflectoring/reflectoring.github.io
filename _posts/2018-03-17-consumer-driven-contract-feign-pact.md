@@ -2,6 +2,7 @@
 title: "Creating a Consumer-Driven Contract with Feign and Pact"
 categories: [spring]
 modified: 2018-08-10
+last_modified_at: 2018-08-10
 author: tom
 tags: [consumer, feign, pact]
 comments: true

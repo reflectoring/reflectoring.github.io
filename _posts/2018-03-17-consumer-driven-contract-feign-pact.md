@@ -1,7 +1,7 @@
 ---
 title: "Creating a Consumer-Driven Contract with Feign and Pact"
 categories: [spring]
-modified: 2018-03-17
+modified: 2018-08-10
 author: tom
 tags: [consumer, feign, pact]
 comments: true
@@ -50,31 +50,38 @@ we need to include the pact library:
 ```groovy
 dependencies {
     ...
-    testCompile("au.com.dius:pact-jvm-consumer-junit_2.11:3.5.2")
+    testCompile("au.com.dius:pact-jvm-consumer-junit5_2.12:3.5.20")
 }
 ```
 
-The `pact-jvm-consumer-junit_2.11` library is part of `pact-jvm`, a collection of libraries facilitating 
+The `pact-jvm-consumer-junit5_2.12` library is part of `pact-jvm`, a collection of libraries facilitating 
 consumer-driven-contracts for various frameworks on the JVM. 
 
-As the name suggests, we're generating a contract from a JUnit test. 
+As the name suggests, we're generating a contract from a JUnit5 unit test. 
 
-Let's create a test class called `UserServiceConsumerTest` and add the following method to it:
+Let's create a test class called `UserServiceConsumerTest` that is going to create a pact for us:
 
 ```java
-@Pact(provider = "userservice", consumer = "userclient")
-public RequestResponsePact createPersonPact(PactDslWithProvider builder) {
+@ExtendWith(PactConsumerTestExt.class)
+public class UserServiceConsumerTest {
+
+  @Pact(provider = "userservice", consumer = "userclient")
+  public RequestResponsePact createPersonPact(PactDslWithProvider builder) {
+  // @formatter:off
   return builder
-          .given("provider accepts a new person")
-          .uponReceiving("a request to POST a person")
-            .path("/user-service/users")
-            .method("POST")
-          .willRespondWith()
-            .status(201)
-            .matchHeader("Content-Type", "application/json")
-            .body(new PactDslJsonBody()
-                  .integerType("id", 42))
-          .toPact();
+      .given("provider accepts a new person")
+      .uponReceiving("a request to POST a person")
+        .path("/user-service/users")
+        .method("POST")
+      .willRespondWith()
+        .status(201)
+        .matchHeader("Content-Type", "application/json")
+        .body(new PactDslJsonBody()
+          .integerType("id", 42))
+      .toPact();
+  // @formatter:on
+  }
+
 }
 ```
 
@@ -95,20 +102,29 @@ Next, we define how the request should look like. In this example, we define a U
 Having defined the request, we go on to define the expected response to this request. Here, we expect HTTP status 201, the content type
 `application/json` and a JSON response body containing the id of the newly created `User` resource. 
 
-Note that the test will not run successfully yet, since we have not defined and `@Test` methods yet. We will do that in
+Note that the test will not run yet, since we have not defined and `@Test` methods yet. We will do that in
 the section [Verify the Client against the Contract](#verify-the-client-against-the-contract).
 
+**Tip:** don't use dashes ("-") in the names of providers and consumers because Pact will create pact files
+with the name "consumername-providername.json" so that a dash within either the consumer or provider name will make it 
+less readable.
+
 # Create a Client against the API
+Before we can verify a client, we have to create it first.
+
 We choose [Feign](https://cloud.spring.io/spring-cloud-netflix/multi/multi_spring-cloud-feign.html) as the technology
 to create a client against the API defined in the contract. 
 
 We need to add the Feign dependency to the Gradle build:
 ```groovy
 dependencies {
-    compile("org.springframework.cloud:spring-cloud-starter-feign:1.4.1.RELEASE")
+    compile("org.springframework.cloud:spring-cloud-starter-openfeign")
     // ... other dependencies
 }
 ```
+
+Note that we're not specifying a version number here, since we're using Spring's depency management plugin.
+You can see the whole source of the `build.gradle` file [in the github repo](https://github.com/thombergs/code-examples/blob/master/pact/pact-feign-consumer/build.gradle).
 
 Next, we create the actual client and the data classes used in the API:
 ```java
@@ -122,22 +138,43 @@ public interface UserClient {
 
 ```java
 public class User {
-	private Long id;
-	private String firstName;
-	private String lastName;
-	// getters / setters / constructors omitted
+  private Long id;
+  private String firstName;
+  private String lastName;
+  // getters / setters / constructors omitted
 }
 ```
 
 ```java
 public class IdObject {
-	private long id;
-	// getters / setters / constructors omitted
+  private long id;
+  // getters / setters / constructors omitted
 }
 ```
 The `@FeignClient` annotation tells Spring Boot to create an implementation of the `UserClient` interface
 that should run against the host that configured under the name `userservice`. The `@RequestMapping` and `@RequestBody`
-annotations specify the details of the POST request and the corresponding response defined in the contract.  
+annotations specify the details of the POST request and the corresponding response defined in the contract. 
+
+For the Feign client to work, we need to add the `@EnableFeignClients` and `@RibbonClient` annotations to our application class
+and provide a configuration for Ribbon, the loadbalancing solution from the Netflix stack:
+
+```java
+@SpringBootApplication
+@EnableFeignClients
+@RibbonClient(name = "userservice", configuration = RibbonConfiguration.class)
+public class ConsumerApplication {
+  ...
+}
+```
+
+```java
+public class RibbonConfiguration {
+  @Bean
+  public IRule ribbonRule(IClientConfig config) {
+    return new RandomRule();
+  }
+}
+```
 
 # Verify the Client against the Contract
 
@@ -145,14 +182,14 @@ Let's go back to our JUnit test class `UserServiceConsumerTest` and extend it so
 client we just created actually works as defined in the contract:
 
 ```java
-@RunWith(SpringRunner.class)
-@SpringBootTest(properties = {
+@ExtendWith(PactConsumerTestExt.class)
+@ExtendWith(SpringExtension.class)
+@PactTestFor(providerName = "userservice", port = "8888")
+@SpringBootTest({
+        // overriding provider address
         "userservice.ribbon.listOfServers: localhost:8888"
 })
 public class UserServiceConsumerTest {
-
-  @Rule
-  public PactProviderRuleMk2 stubProvider = new PactProviderRuleMk2("userservice", "localhost", 8888, this);
 
   @Autowired
   private UserClient userClient;
@@ -163,7 +200,7 @@ public class UserServiceConsumerTest {
   }
   
   @Test
-  @PactVerification(fragment = "createPersonPact")
+  @PactTestFor(pactMethod = "createPersonPact")
   public void verifyCreatePersonPact() {
     User user = new User();
     user.setFirstName("Zaphod");
@@ -175,13 +212,14 @@ public class UserServiceConsumerTest {
 }
 ```
 
-We start off using the standard `SpringRunner` and `SpringBootTest` annotations. Important to note is that
-we configure our Feign client to send its requests against `localhost:8888`.
+We start off by using the standard `@SpringBootTest` annotation together with the `SpringExtension` for JUnit 5. 
+Important to note is that
+we configure the Ribbon loadbalancer so that our client sends its requests against `localhost:8888`.
 
-Using the JUnit rule `PactProviderRuleMk2`, we tell pact to start a mock API provider on `localhost:8888`.
+With the `PactConsumerTestExt` together with the `@PactTestFor` annotation, we tell pact to start a mock API provider on `localhost:8888`.
 This mock provider will return responses according to all pact fragments from the `@Pact` methods within the test class.
 
-The actual verification of our Feign client is implemented in the method `verifyCreatePersonPact()`. The `@PactVerification`
+The actual verification of our Feign client is implemented in the method `verifyCreatePersonPact()`. The `@PactTestFor`
 annotation defines which pact fragment we want to test (the `fragment` property must be the name of a 
 method annotated with `@Pact` within the test class).
 
@@ -192,7 +230,7 @@ If the request the client sends to the mock provider looks as defined in the pac
 be returned and the test will pass. If the client does something differently, the test will fail, meaning that
 we do not meet the contract. 
 
-Once the test has passed, a pact file will be created in the `target` folder.
+Once the test has passed, a pact file with the name `userclient-userservice.json` will be created in the `target/pacts` folder.
 
 # Publish the Contract to a Pact Broker
 
@@ -203,7 +241,7 @@ Pact provides a Gradle plugin that we can use for this purpose. Let's include th
 
 ```groovy
 plugins {
-    id "au.com.dius.pact" version "3.5.13"
+    id "au.com.dius.pact" version "3.5.20"
 }
 
 pact {

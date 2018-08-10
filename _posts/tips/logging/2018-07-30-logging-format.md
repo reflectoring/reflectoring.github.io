@@ -146,6 +146,12 @@ allows us to quickly grasp a message and save a lot of time analyzing logs.
 
 The argument for a clearly-structured text representation of log messages loses a little
 weight when using a log server, but it's still a good idea to provide a structured logging format
-for those cases where the logs are still being written in a file (for example local development). 
+for those cases where the logs are still being written in a file (for example local development).
 
+## How to Implement this Tip
+
+The following articles describe ways to implement this tip with Spring Boot:
+
+* [How to Configure a Human-Readable Logging Format with Logback and Descriptive Logger](/logging-format-logback/)
+* [How to Configure Environment-Specific Logging Behavior with Spring Boot](/profile-specific-logging-spring-boot/)
 

@@ -162,9 +162,8 @@ Next, we create a JUnit test that:
 
 ```java
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, properties = {
-				"server.port=8080"
-})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, 
+        properties = "server.port=8080")
 @Provider("userservice")
 @PactFolder("../pact-angular/pacts")
 public class UserControllerProviderTest {

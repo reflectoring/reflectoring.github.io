@@ -152,7 +152,7 @@ However, if we try out this logging format, it will not be formatted properly:
 **The thread and logger name columns don't have the same width in each line**. 
 
 To fix this, we could try to use Logback's padding feature, which allows us to pad a column with spaces up to a certain number
-by adding `%<number>` before the format in question. This way, we could try `%20t` instead of just `%t` to pad the thread name
+by adding `%<number>` before the format in question. This way, we could try `%20thread` instead of just `%thread` to pad the thread name
 to 20 characters. 
 
 **If the thread name is longer than these 20 characters, though, the column will overflow.**

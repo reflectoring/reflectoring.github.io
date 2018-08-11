@@ -2,7 +2,8 @@
 
 title: How to Configure a Human-Readable Logging Format with Logback and Descriptive Logger
 categories: [howto, logging]
-modified: 2018-08-03
+modified: 2018-08-11
+last_modified_at: 2018-08-11
 author: tom
 tags: [transparency, logging, log, format]
 comments: true
@@ -125,7 +126,7 @@ The configuration is located in the file `logback.xml`:
 
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %t | %5p | %logger{25} | %12(ID: %8mdc{id}) | %m%n</pattern>
+      <pattern>%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %thread | %5p | %logger{25} | %12(ID: %8mdc{id}) | %m%n</pattern>
       <charset>utf8</charset>
     </encoder>
   </appender>
@@ -160,65 +161,29 @@ So, we need some way to truncate the thread and logger names to a defined maximu
 
 ## Truncating Thread and Logger Names
 
-Luckily, Logback provides the option to implement a `Converter` which allows us to modify the log output.
+Luckily, Logback provides an option to truncate fields.
 
-We can include such a converter into the `logback.xml` file like this:
+If we change the patterns for thread and logger to `%-20.20thread` and `%-25.25logger{25}`, Logback will
+pad the values with spaces if they are shorter than 20 or 25 characters and truncate them from the start
+if they are longer than 20 or 25 characters.
 
+The final pattern looks like this:
 ```xml
-<conversionRule conversionWord="truncatedThread"
-                converterClass="io.reflectoring.logging.TruncatedThreadConverter" />
+<pattern>%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %-20.20thread | %5p | %-25.25logger{25} | %12(ID: %8mdc{id}) | %m%n</pattern>
 ```
 
-In the above example, the converter is bound to the conversion word `truncatedThread`, which we can use in the 
-`<pattern>` definition of the `logback.xml` file.
-
-The converter itself simply takes the current thread name, **pads it with spaces if it's shorter than the maximum length
-or cuts of the first part of it if it's too long** (adding "..." to the start, so we can see that it has been truncated):
-
-```java
-public class TruncatedThreadConverter extends ClassicConverter {
-
-  @Override
-  public String convert(ILoggingEvent event) {
-    String maxLengthString = getFirstOption();
-    int maxLength = Integer.parseInt(maxLengthString);
-    String threadName = event.getThreadName();
-
-    if (threadName.length() <= maxLength) {
-      return threadName + generateSpaces(maxLength - threadName.length());
-    } else {
-      return "..." + threadName.substring(threadName.length() - maxLength + 3);
-    }
-  }
-
-  private String generateSpaces(int count) {
-    return Stream.generate(() -> " ").limit(count).collect(Collectors.joining());
-  }
-
-}
-```
-
-In the logging pattern, we now use `%truncatedThread` instead of `%t`:
+Now, if we run our logging code again, we have the output we wanted, **without any overflowing columns**:
 
 ```
-<pattern>%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %truncatedThread{20} | %5p | %truncatedLogger{25} | %12(ID: %8mdc{id}) | %m%n</pattern>
+2018-08-11 | 21:31:20.436 | main                 | DEBUG | .s.a.f.JdkDynamicAopProxy | ID:          | Creating JDK dynamic proxy: target source is EmptyTargetSource: no target class, static
+2018-08-11 | 21:31:20.450 | ery-long-thread-name | DEBUG | i.r.l.LoggingFormatTest   | ID:    14556 | This is a DEBUG message.
+2018-08-11 | 21:31:20.450 | short                |  INFO | i.r.l.LoggingFormatTest   | ID:     5456 | This is an INFO message.
+2018-08-11 | 21:31:20.450 | short                | ERROR | i.r.l.LoggingFormatTest   | ID:  1548654 | This is an ERROR message with a very long ID.
 ```
 
-We have added a similar converter named `%truncatedLogger` for the logger name. 
-As an argument, we pass in the maximum length for each (20 characters for the thread name and 25 characters for the logger name).
-
-
-Now, if we run our logging code again, **we have the output we wanted**, without any overflowing columns:
-
-```
-2018-08-03 | 22:07:52.841 | main                 | DEBUG | ...a.f.JdkDynamicAopProxy | ID:          | Creating JDK dynamic proxy: target source is EmptyTargetSource: no target class, static
-2018-08-03 | 22:07:52.859 | ...-long-thread-name | DEBUG | i.r.l.LoggingFormatTest   | ID:    14556 | This is a DEBUG message.
-2018-08-03 | 22:07:52.860 | short                |  INFO | i.r.l.LoggingFormatTest   | ID:     5456 | This is an INFO message.
-2018-08-03 | 22:07:52.860 | short                | ERROR | i.r.l.LoggingFormatTest   | ID:  1548654 | This is an ERROR message with a very long ID.
-```
-
-Actually, the ID column may still overflow if we provide a very high ID number for a log message. However, since we're
-controlling those IDs we can constrict them to a maximum number so that the column does not overflow.
+Actually, the ID column may still overflow if we provide a very high ID number for a log message. However, an ID
+should never be truncated and since we're controlling those IDs we can constrict them to a maximum number 
+so that the column does not overflow.
 
 ## Have we Lost Information by Truncating?
 

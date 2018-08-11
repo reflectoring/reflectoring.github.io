@@ -14,6 +14,8 @@ sidebar:
   nav: cdc
 ---
 
+{% include toc %}
+
 Consumer-driven contract tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
 [recent blog post](/7-reasons-for-consumer-driven-contracts/)).

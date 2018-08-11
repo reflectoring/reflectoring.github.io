@@ -1,7 +1,8 @@
 ---
 title: "Testing a Spring Boot REST API against a Consumer-Driven Contract with Pact"
 categories: [open source]
-modified: 2018-01-01
+modified: 2018-08-11
+last_modified_at: 2018-08-11
 author: tom
 tags: [gradle, snapshot, bintray]
 comments: true
@@ -12,6 +13,8 @@ header:
 sidebar:
   nav: cdc
 ---
+
+{% include toc %}
 
 Consumer-driven contract tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -142,35 +145,42 @@ To create that JUnit test, we need to add the following dependencies to our proj
 
 ```groovy
 dependencies {
-  testCompile('au.com.dius:pact-jvm-provider-spring_2.12:3.5.11')
-  testCompile('junit:junit:4.12')
+  testCompile("au.com.dius:pact-jvm-provider-junit5_2.12:3.5.20")
   // Spring Boot dependencies omitted
 }
 ```
+
+This will transitively pull the JUnit 5 dependency as well.
 
 ## Set up the JUnit Test
 
 Next, we create a JUnit test that:
 
-* starts up our Spring Boot application providing the REST API
+* starts up our Spring Boot application that provides the REST API (our contract provider)
 * starts up a mock consumer that sends all requests from our pact to that API
 * fails if the response does not match the response from the pact  
 
 ```java
-@RunWith(SpringRestPactRunner.class)
-@PactFolder("../pact-angular/pacts")
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, 
+        properties = "server.port=8080")
 @Provider("userservice")
-@SpringBootTest(
-  webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, 
-  properties = {"server.port=8080"}
-)
+@PactFolder("../pact-angular/pacts")
 public class UserControllerProviderTest {
-
-  @TestTarget
-  public final Target target = new HttpTarget(8080);
 
   @MockBean
   private UserRepository userRepository;
+  
+  @BeforeEach
+  void setupTestTarget(PactVerificationContext context) {
+    context.setTarget(new HttpTestTarget("localhost", 8080, "/"));
+  }
+  
+  @TestTemplate
+  @ExtendWith(PactVerificationInvocationContextProvider.class)
+  void pactVerificationTestTemplate(PactVerificationContext context) {
+    context.verifyInteraction();
+  }
 
   @State({"provider accepts a new person"})
   public void toCreatePersonState() {
@@ -185,38 +195,38 @@ public class UserControllerProviderTest {
 }
 ```
 
-The test is run with the `SpringRestPactRunner` which allows Pact to take control of the test.
+The test uses the standard `SpringExtension` together with `@SpringBootTest` to start up our Spring Boot
+application. We're configuring it to start on a fixed port `8080`.
 
 With `@PactFolder` we tell Pact where to look for pact files that serve as the base for our
 contract test. Note that there are other options for loading pact files such as the [`@PactBroker`](https://github.com/DiUS/pact-jvm/blob/master/pact-jvm-provider-junit/src/main/java/au/com/dius/pact/provider/junit/loader/PactBroker.java)
 annotation.
 
-`@Provider("userservice")` tells pact that we're testing the provider called "userservice". Pact will
-automatically filter out all interactions from the loaded pact files that are not addressed at the 
-provider "userservice".
-
-The `@SpringBootTest` annotation is a standard annotation from Spring Boot that starts up the Spring Boot 
-application. We're configuring it to start on a fixed port `8080`.
+The annotation `@Provider("userservice")` tells Pact that we're testing the provider called "userservice". Pact will
+automatically filter the interactions from the loaded pact files so that only those interaction with this provider
+are being tested.
 
 Since Pact creates a mock consumer for us that "replays" all requests from the pact files, 
-it needs to know where to send those requests. With `@TestTarget` we mark a field of type
-`Target` that provides exactly this information. In our case, we tell Pact to send the requests
-via HTTP to `localhost:8080`, since we started the Spring Boot application on the same port.  
+it needs to know where to send those requests. In the `@BeforeEach` annotated method, we define
+the target for those requests by calling `PactVerificationContext#setTarget()`. This should
+obviously target the Spring Boot application we started with `@SpringBootTest` so the ports must match. 
 
 `@MockBean` is another standard annotation from Spring Boot that - in our case - replaces the real `UserRepository`
 with a Mockito mock. We do this so that we do not have to initialize the database and any other dependencies
 our controller may have. With our consumer-driven contract test, we want to test that consumer and provider
 can talk to each other - we do not want to test the business logic behind the API. That's what unit tests are for.
 
-Finally, we create a method that puts our Spring Boot application into a defined state that is suitable 
+Next, we create a method annotated with `@State` that puts our Spring Boot application into a defined state that is suitable 
 to respond to the mock consumer's requests. In our case, the pact file defines a single `providerState`
 named `provider accepts a new person`. In this method, we set up our mock repository so that it returns 
 a suitable `User` object that fits the object expected in the contract.
 
-When this JUnit test is run, Pact will automatically fire up a test for each request in the processed
-pact files and check the results against the associated responses. It even provides some human-readable 
-output on the console:
+Finally, we make use of JUnit 5's `@TestTemplate` feature in combination with `PactVerificationInvocationContextProvider`
+that allows Pact to dynamically create one test for each interaction found in the pact files. For each interaction from the pact file,
+`context.verifyInteraction()` will be called. This will automatically call the correct `@State` method and then fire
+the request defined in the interaction verify the result against the pact. 
 
+The test should output something like this in the log:
 ```
 Verifying a pact between ui and userservice
   Given provider accepts a new person

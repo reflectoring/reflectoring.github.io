@@ -7,11 +7,13 @@ ads: false
 layout: single
 ---
 
-Last modified: August 07, 2018
+Last modified: August 13, 2018
+
+{% include toc %}
 
 ## Introduction
 
-reflectoring ("us", "we", or "our") operates the https://reflectoring.io website (hereinafter referred to as the "Service").
+Tom Hombergs ("us", "we", or "our") operates the https://reflectoring.io website (hereinafter referred to as the "Service").
 
 This page informs you of our policies regarding the collection, use and disclosure of personal data 
 when you use our Service and the choices you have associated with that data.

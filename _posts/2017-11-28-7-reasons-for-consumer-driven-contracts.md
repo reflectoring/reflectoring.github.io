@@ -2,6 +2,7 @@
 title: "7 Reasons to Choose Consumer-Driven Contract Tests Over End-to-End Tests"
 categories: [frameworks]
 modified: 2017-11-29
+last_modified_at: 2018-08-16
 author: tom
 tags: [microservice, integration, testing, distributed, architecture]
 comments: true
@@ -11,7 +12,12 @@ header:
   image: /assets/images/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg
 sidebar:
   nav: cdc
+excerpt: "Find out why contracts should be defined by the user and how to ease 
+          integration testing APIs by using contract tests."
 ---
+
+{% include toc %}
+
 In a distributed system, testing the successful integration between  
 distributed services is essential for ensuring that the services
 won't fail in production just because they're not speaking the same language.

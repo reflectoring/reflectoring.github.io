@@ -12,6 +12,8 @@ header:
   image: /assets/images/posts/consumer-driven-contract-provider-pact-spring/contract.jpg
 sidebar:
   nav: cdc
+excerpt: "A guide on how to implement a consumer-driven contract test with Pact that verifies that a REST provider based on
+          Spring Boot works as defined in the contract."
 ---
 
 {% include toc %}

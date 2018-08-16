@@ -2,6 +2,7 @@
 title: "Testing a Spring Boot REST API Consumer against a Contract with Spring Cloud Contract"
 categories: [spring]
 modified: 2018-01-18
+last_modified_at: 2018-08-16
 author: tom
 tags: [gradle, snapshot, bintray]
 comments: true
@@ -11,7 +12,11 @@ header:
  image: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
 sidebar:
   nav: cdc
+excerpt: "A guide on how to implement a consumer-driven contract test with Spring Cloud Contract that verifies that a REST consumer based on
+          Feign and Spring Boot works as defined in the contract."
 ---
+
+{% include toc %}
 
 Consumer-driven contract tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -82,6 +87,8 @@ The above contract defines an HTTP POST request to `/user-service/users` with a 
 supposed to save that user to the database and should be answered with HTTP status 201 and the id of the
 newly created user.
 
+We'll store the contract in a file called `shouldSaveUser.groovy` for later usage.
+
 The details of the DSL can be looked up in the [Spring Cloud Contract Reference](http://cloud.spring.io/spring-cloud-contract/single/spring-cloud-contract.html#_contract_dsl).
 
 # Create a Client against the API
@@ -91,7 +98,7 @@ to create a client against the API defined in the contract.
 We need to add the Feign dependency to the Gradle build:
 ```groovy
 dependencies {
-    compile("org.springframework.cloud:spring-cloud-starter-feign:1.4.1.RELEASE")
+    compile("org.springframework.cloud:spring-cloud-starter-openfeign:2.0.1.RELEASE")
     // ... other dependencies
 }
 ```
@@ -121,6 +128,7 @@ public class IdObject {
 	// getters / setters / constructors omitted
 }
 ```
+
 The `@FeignClient` annotation tells Spring Boot to create an implementation of the `UserClient` interface
 that should run against the host that configured under the name `userservice`. The `@RequestMapping` and `@RequestBody`
 annotations specify the details of the POST request and the corresponding response defined in the contract.  
@@ -137,8 +145,8 @@ So, we simply clone the provider codebase and put the contract into the file
 `src/test/resources/contracts/userservice/shouldSaveUser.groovy` in the provider codebase and push it as
 a pull request for the provider team to take up.
 
-Note that although we're still acting as the consumer of the API, in this step and the next, we're 
-editing **the provider's** codebase! 
+Note that although we're still acting as the consumer of the API, in this step and the next, **we're 
+editing the provider's codebase**! 
 
 # Generate a Provider Stub
 Next, we want to generate the stub against which we can verify our consumer code. For this, the Spring
@@ -161,7 +169,7 @@ group = 'io.reflectoring'
 version = '1.0.0'
 ```
 
-The the `artifactId` can be set up in `settings.gradle` (unless you're OK with it being the name of the 
+The `artifactId` can be set up in `settings.gradle` (unless you're OK with it being the name of the 
 project directory, which is the default):
 
 ```groovy
@@ -182,7 +190,7 @@ For this, we need to add the Stub Runner as a dependency to the Gradle build:
 
 ```groovy
 dependencies {
-    testCompile("org.springframework.cloud:spring-cloud-starter-contract-stub-runner:${verifier_version}")
+    testCompile("org.springframework.cloud:spring-cloud-starter-contract-stub-runner:2.0.1.RELEASE")
     // ... other dependencies
 }
 ```
@@ -194,7 +202,7 @@ With the Stub Runner in place, we create an integration test for our consumer co
 @SpringBootTest
 @AutoConfigureStubRunner(
     ids = "io.reflectoring:user-service:+:stubs:6565", 
-    workOffline = true)
+    stubsMode = StubRunnerProperties.StubsMode.LOCAL)
 public class UserClientTest {
 
   @Autowired
@@ -220,8 +228,11 @@ With the `@AutoConfigureStubRunner` annotation we tell the Stub Runner to load t
 * with the `stubs` qualifier
 
 from a Maven repository, extract the contract from it and pass it into the Stub Runner who then acts as the
-API provider on port 6565. The `workOffline` flag is set to `true` meaning that the artifact should be resolved
-against the local maven repository on our machine for now. 
+API provider on port 6565. 
+
+The `stubsMode` is set to `LOCAL` meaning that the artifact should be resolved
+against the local Maven repository on our machine for now. And since we have published the stub to our local
+Maven repository, it should resolve just fine.  
 
 When running the test, you may run into the following exception:
 
@@ -247,10 +258,13 @@ Thus, we have to wait until the provider team is finished with implementing the 
 is pushed to the CI. The provider build pipeline should be configured to automatically publish the stub to 
 an online Maven repository like a Nexus or Artifactory installation. 
 
-Once the provider build has passed the CI build pipeline, we can adapt our test and remove the `workOffline` flag:
+Once the provider build has passed the CI build pipeline, we can adapt our test and set the `stubsMode` to `REMOTE`
+so that the stub will be loaded from our Nexus or Artifactory server:
 
 ```java
-@AutoConfigureStubRunner(ids = "io.reflectoring:user-service:+:stubs:6565")
+@AutoConfigureStubRunner(
+  ids = "io.reflectoring:user-service:+:stubs:6565",
+  stubsMode = StubRunnerProperties.StubsMode.REMOTE)
 public class UserClientTest {
   //...
 }

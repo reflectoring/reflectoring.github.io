@@ -2,6 +2,7 @@
 title: "Testing a Spring Boot REST API against a Contract with Spring Cloud Contract"
 categories: [spring]
 modified: 2018-01-01
+last_modified_at: 2018-08-16
 author: tom
 tags: [gradle, snapshot, bintray]
 comments: true
@@ -11,7 +12,11 @@ header:
  image: /assets/images/posts/consumer-driven-contract-provider-spring-cloud-contract/contract.jpg
 sidebar:
   nav: cdc
+excerpt: "A guide on how to implement a consumer-driven contract test with Spring Cloud Contract that verifies that a REST provider based on
+          Spring Boot works as defined in the contract."
 ---
+
+{% include toc %}
 
 Consumer-driven contract tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -171,8 +176,8 @@ buildscript {
     // ...
   }
   dependencies {
-    classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE"
-    classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:1.2.2.BUILD-SNAPSHOT"
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:2.0.4.RELEASE"
+    classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:2.0.1.RELEASE"
   }
 }
 ```
@@ -198,9 +203,9 @@ In order for the automatically generated tests to work, we need to include some 
 dependencies {
   // ...
   testCompile('org.codehaus.groovy:groovy-all:2.4.6')
-  testCompile("org.springframework.cloud:spring-cloud-starter-contract-verifier:${verifier_version}")
-  testCompile("org.springframework.cloud:spring-cloud-contract-spec:${verifier_version}")
-  testCompile("org.springframework.boot:spring-boot-starter-test:${springboot_version}")
+  testCompile("org.springframework.cloud:spring-cloud-starter-contract-verifier:2.0.1.RELEASE")
+  testCompile("org.springframework.cloud:spring-cloud-contract-spec:2.0.1.RELEASE")
+  testCompile("org.springframework.boot:spring-boot-starter-test:2.0.4.RELEASE")
 }
 ``` 
 
@@ -262,42 +267,15 @@ buildscript {
     }
     dependencies {
         // other dependencies ...
-        classpath "org.springframework.cloud:spring-cloud-contract-spec-pact:${verifier_version}"
+        classpath "org.springframework.cloud:spring-cloud-contract-spec-pact:1.2.5.RELEASE"
         classpath 'au.com.dius:pact-jvm-model:2.4.18'
     }
 }
 ```
 
-Spring Cloud Contract then automatically picks up the pact file and generated tests for it just like for
+Spring Cloud Contract then automatically picks up the pact file and generates tests for it just like for
 the "normal" contract files.
 
-## Matching Issue
-
-If you're using Spring Cloud Contract 1.2.1 or below, you should not use the `somethingLike` matcher on the 
-response body in your pact file when generating the contract via `pact-web`:
-
-```json
-willRespondWith: {
-  body: Matchers.somethingLike({
-    id: 42
-  }),
-}
-```
-
-This runs into an error when Spring Cloud Contract tries to generate the tests. Instead, use the matcher
-on each field of the body object separately:
-
-```json
-willRespondWith: {
-  body: {
-    id: Matchers.somethingLike(42)
-  },
-}
-```
-
-Note that this [issue](https://github.com/spring-cloud/spring-cloud-contract/issues/511) is resolved in 
-Spring Cloud Contract 1.2.2.
- 
 # Conclusion
 
 In this article, we set up a Gradle build using Spring Cloud Contract to auto-generate tests that 

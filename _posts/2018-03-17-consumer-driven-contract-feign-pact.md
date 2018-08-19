@@ -12,6 +12,8 @@ header:
  image: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
 sidebar:
   nav: cdc
+excerpt: "A guide on how to implement a consumer-driven contract test with Pact that verifies that a REST consumer based on
+          Feign and Spring Boot works as defined in the contract."
 ---
 
 {% include toc %}

@@ -11,6 +11,8 @@ header:
   image: /assets/images/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg
 sidebar:
   nav: cdc
+excerpt: "Find out why contracts should be defined by the API consumer and how to ease 
+          integration testing APIs by using contract tests."
 ---
 In a distributed system, testing the successful integration between  
 distributed services is essential for ensuring that the services

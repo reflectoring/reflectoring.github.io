@@ -12,7 +12,7 @@ header:
   image: /assets/images/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg
 sidebar:
   nav: cdc
-excerpt: "Find out why contracts should be defined by the user and how to ease 
+excerpt: "Find out why contracts should be defined by the API consumer and how to ease 
           integration testing APIs by using contract tests."
 ---
 

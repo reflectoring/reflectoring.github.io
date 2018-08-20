@@ -88,7 +88,8 @@ This is easy for a log server, since
 * it has **access to the log events of all services**
 * it can **index and efficiently search structured data** appended to the log events, such as a trace id.  
 
-With clever use of such structured log data, we can make the data flow through our application easily visible.
+With clever use of such [structured log data](/structured-log-data) for providing [context information](/logging-context),
+we can make the data flow through our application easily visible.
 
 ## Reason #3: Accessability
 

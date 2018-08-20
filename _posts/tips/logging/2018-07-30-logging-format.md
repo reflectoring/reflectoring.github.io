@@ -145,7 +145,7 @@ This, and the fact that we only include the most important information,
 allows us to quickly grasp a message and save a lot of time analyzing logs.
 
 The argument for a clearly-structured text representation of log messages loses a little
-weight when using a log server, but it's still a good idea to provide a structured logging format
+weight when using a [log server](/log-server), but it's still a good idea to provide a structured logging format
 for those cases where the logs are still being written in a file (for example local development).
 
 ## How to Implement this Tip

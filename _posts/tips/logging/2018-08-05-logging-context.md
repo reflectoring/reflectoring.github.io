@@ -217,6 +217,8 @@ to the log can help when analyzing them:
 * the number of records that have NOT been touched by the job and the reason why (i.e. because they don't match 
   the filter defined by the batch job
 * the type of records that are being processed.
+* the processing status of the job (waiting / in progress / processed)
+* the success status of the job (success / failure)
 
 **Bad Examples**:
 ```
@@ -229,6 +231,7 @@ Batch Job "SendNewsletter" finished in 5123ms.
 Batch Job "SendNewsLetter" sent "3456" mails in "5s 123ms". 
   324 mails were not sent due to an invalid mail address.  
 ```
+
 
 ## What If the Contextual Information Is Not Passed into My Code?
 
@@ -251,6 +254,9 @@ code accordingly.
 Adding some helpful contextual information to log messages is usually not 
 a lot of effort, but it may even pay off to change some method
 signatures to pass in contextual data just for logging.
+
+Note that providing context information as [structured data](/structured-log-data) instead of just text
+makes it even easier for us to find the information we're looking for.
 
 Have you encountered cases that are not listed in this article? I would
 like to hear about them and add them here!

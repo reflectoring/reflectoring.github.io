@@ -71,6 +71,10 @@ logging:
       url: /logging-format/
     - title: "Tip: Provide Contextual Information in Log Messages"
       url: /logging-context/
+    - title: "5 Good Reasons to Use a Log Server"
+      url: /log-server/
+    - title: "3 Use Cases for Structured Log Data"
+      url: /structured-log-data/
   - title: "Implementing Logging Tips"
     children:
     - title: "How to Configure a Human-Readable Logging Format"

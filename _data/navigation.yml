@@ -73,7 +73,7 @@ logging:
       url: /logging-context/
     - title: "5 Good Reasons to Use a Log Server"
       url: /log-server/
-    - title: "3 Use Cases for Structured Log Data"
+    - title: "3 Use Cases Where Structured Log Data Really Helps"
       url: /structured-log-data/
   - title: "Implementing Logging Tips"
     children:

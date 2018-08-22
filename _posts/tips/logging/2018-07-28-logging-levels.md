@@ -18,7 +18,7 @@ sidebar:
 {% include toc %}
 
 When searching for a bug, or just trying to get a feel for an application,
- it helps a lot if we know which information we can expect
+it helps a lot if we know which information we can expect
 to find in the logs. But we will only know what to expect if we have followed a convention
 while programming the log statements. This article describes the set of logging conventions
 I have found useful while programming Java applications.

@@ -1,6 +1,6 @@
 ---
 title: "Publishing Open Source Snapshots with Gradle"
-categories: [frameworks]
+categories: [opensource]
 modified: 2017-12-20
 author: tom
 tags: [gradle, snapshot, bintray]
@@ -9,9 +9,15 @@ ads: false
 header:
   teaser: /assets/images/posts/publish-snapshots-with-gradle/gradle-to-artifactory.jpg
   image: /assets/images/posts/publish-snapshots-with-gradle/gradle-to-artifactory.jpg
+excerpt: "One of the most fulfilling things in open source development is getting feedback from your users. 
+          This article shows how to publish snapshots of
+          your Java projects to oss.jfrog.org to enable your users to give feedback early."
 sidebar:
-  nav: publishing-open-source
+  nav: opensource
+  toc: true
 ---
+
+{% include sidebar_right %}
 
 One of the most fulfilling things in developing an open source project is getting feedback from the
 users of your project. To give feedback, the users need to have something to play around with.

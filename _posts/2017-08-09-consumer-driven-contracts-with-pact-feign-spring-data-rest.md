@@ -1,7 +1,7 @@
 ---
 
 title: "Consumer-Driven Contracts with Pact, Feign and Spring Data REST"
-categories: [hacks]
+categories: [cdc]
 modified: 2017-08-09
 author: tom
 tags: [spring, boot, consumer, driven, contract, pact, feign, data, rest]
@@ -9,7 +9,11 @@ comments: true
 ads: false
 sidebar:
   nav: cdc
+  toc: true
 ---
+
+{% include sidebar_right %}
+
 When thinking about integration testing in a distributed system, you quickly come across the 
 concept of consumer-driven contracts. This blog post gives a short introduction into
 this concept and a concrete implementation example using the technologies [Pact](https://docs.pact.io/),

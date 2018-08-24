@@ -1,6 +1,6 @@
 ---
 title: "Publishing Open Source Releases to JCenter and Maven Central"
-categories: [open source]
+categories: [opensource]
 modified: 2018-01-24
 author: tom
 tags: [gradle, bintray]
@@ -9,9 +9,15 @@ ads: false
 header:
   teaser: /assets/images/posts/bintray-jcenter-maven-central/bintray-jcenter-maven-central.jpg
   image: /assets/images/posts/bintray-jcenter-maven-central/bintray-jcenter-maven-central.jpg
+excerpt: "For your open source projects to be accessible, it's worthwile to publish them   
+          to JCenter and / or Maven Central. This article explains how to
+          publish a release from your Bintray repository to JCenter and Maven Central."
 sidebar:
-  nav: publishing-open-source
+  nav: opensource
+  toc: true
 ---
+
+{% include sidebar_right %}
 
 In previous articles, I discussed [how to publish snapshots](/publish-snapshots-with-gradle/) 
 to oss.jfrog.org and [how to publish releases to Bintray](/guide-publishing-to-bintray-with-gradle/) using 

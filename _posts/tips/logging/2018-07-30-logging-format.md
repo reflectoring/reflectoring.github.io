@@ -11,9 +11,10 @@ excerpt: "A guide to create a logging format that can be scanned at
           a single glance."
 sidebar:
   nav: logging
+  toc: true
 ---
 
-{% include toc %}
+{% include sidebar_right %}
 
 Application logs are all about finding the right information in the least
 amount of time. Automated log servers may help us in finding and filtering log messages. 

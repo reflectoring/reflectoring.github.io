@@ -13,9 +13,10 @@ header:
 excerpt: "A guide to using which logging level in which logging situation."
 sidebar:
   nav: logging
+  toc: true
 ---
 
-{% include toc %}
+{% include sidebar_right %}
 
 When searching for a bug, or just trying to get a feel for an application,
 it helps a lot if we know which information we can expect

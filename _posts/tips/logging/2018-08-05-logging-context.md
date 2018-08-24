@@ -11,9 +11,10 @@ excerpt: "A guide to which contextual information is helpful in which
           logging situation."
 sidebar:
   nav: logging
+  toc: true
 ---
 
-{% include toc %}
+{% include sidebar_right %}
 
 Have you ever had a situation where you stared at en error message in a log 
 and wondered "*how the hell is this supposed to help me?*". You probably have.

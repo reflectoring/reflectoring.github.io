@@ -1,11 +1,15 @@
 tom:
   name              : "Tom Hombergs"
-  email             : "tom.hombergs@gmail.com"
-  avatar            : "/assets/images/avatars/tom.png"
-  location          : "Germany"
+  email             : "tom@reflectoring.io"
+  avatar            : "/assets/images/avatars/tom.jpg"
   github            : "thombergs"
   stackoverflow     : "2375843/tom"
   twitter           : "TomHombergs"
+  linkedin          : "tom-hombergs-74048777"
+  bio               : "Tom has more than 10 years experience as a consulting software engineer and architect with a
+                      focus on Java and the Spring ecosystem. He contributes to open source projects on
+                      GitHub, writes software engineering-related articles and is an
+                      occasional speaker at conferences. He's also an editor at [baeldung.com](https://www.baeldung.com)."
 
 matthias:
   name              : "Matthias Balke"

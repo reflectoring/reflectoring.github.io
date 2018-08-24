@@ -5,11 +5,13 @@ comments: false
 share: false
 ads: false
 layout: single
+sidebar:
+  toc: true
 ---
 
 Last modified: August 13, 2018
 
-{% include toc %}
+{% include sidebar_right %}
 
 ## Introduction
 

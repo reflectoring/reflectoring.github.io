@@ -7,15 +7,22 @@ ads: false
 layout: single
 ---
 
-reflectoring is a group of professional software developers who like to play
-around with technologies and develop their own projects at night. The name 
-'reflectoring' came up as a mix of 'reflection' and 'refactoring' which we
-deemed geeky enough to serve as a name for our blog.
+The reflectoring blog is all about software engineering tips and tutorials.
 
-The blog will mainly contain articles about software technologies (focused on but not exclusively 
-Java) and software development methodology. 
+The goal is to bring easy-to-digest and actionable tips to you so you can apply
+them in your projects.
 
-If you want to get in touch with us, simply drop us an email or post a comment.
+These tips are largely technology-agnostic so they apply regardless of the tech stack
+you're using.
+
+Some tips will be accompanied by separate tutorials based on Java technologies. 
+
+So, if you're a Java developer you have twice the benefit from my blog :).
+
+If you want to get in touch, simply drop an email at <a href="mailto:tom@reflectoring.io">tom@reflectoring.io</a>.
+
+Regards,
+Tom
 
 ## Authors
 

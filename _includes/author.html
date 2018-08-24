@@ -7,15 +7,25 @@
   </h3>
 
   {% if author.bio %}
-  <p class="author-bio"><em>"{{ author.bio }}"</em></p>
+  <p class="author-bio">{{ author.bio | markdownify }}</p>
   {% endif %}
 
-  {% if author.email %}
-  <p class="author-bio">{{ author.email }}</p>
+  {% if author.twitter %}
+  <a href="https://twitter.com/{{ author.twitter }}" class="btn btn--twitter" title="Twitter"><i class="fa fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
   {% endif %}
 
   {% if author.github %}
-  <p class="author-bio"><a href="https://github.com/{{ author.github }}">{{ author.github }}</a></p>
+  <a href="https://github.com/{{ author.github }}" class="btn btn--github" title="GitHub"><i class="fa fa-fw fa-github" aria-hidden="true"></i><span> GitHub</span></a>
   {% endif %}
+
+  {% if author.linkedin %}
+  <a href="https://www.linkedin.com/in/{{ author.linkedin }}" class="btn btn--linkedin" title="LinkedIn"><i class="fa fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+  {% endif %}
+
+  {% if author.email %}
+  <a href="mailto:{{ author.email }}" class="btn btn--email" title="EMail"><i class="fa fa-fw fa-at" aria-hidden="true"></i><span> EMail</span></a>
+  {% endif %}
+
+  <hr/>
 
 </div>

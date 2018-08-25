@@ -1,6 +1,6 @@
 ---
 
-title: "3 Use Cases for Structured Log Data"
+title: "3 Use Cases Where Structured Log Data Really Helps"
 categories: [tip, logging]
 modified: 2018-08-19
 last_modified_at: 2018-08-19
@@ -10,16 +10,17 @@ comments: true
 ads: false
 excerpt: "Log data should contain more than just text. This article discusses some
           example use cases where adding structured properties to log events
-          helps when debugging. Get inspired to use structured logging in your use cases!"
+          helps when debugging. Get inspired to use structured logging in your own use cases!"
 sidebar:
   nav: logging
+  toc: true
 ---
 
-{% include toc %}
+{% include sidebar_right %}
 
 Log data should contain more than just text. This article discusses some
 example use cases where adding structured properties to log events
-helps when debugging. Get inspired to use structured logging in your use cases!
+helps when debugging. Get inspired to use structured logging in your own use cases!
 
 ## Logging is more than Text
 
@@ -167,5 +168,5 @@ properties might help us and then add them to our log events**.
 
 However, we need a [log server](/log-server) to make real use of structured log data.
 
-Do you know any use cases where structured log data helps? Let me know in the comments!  
+Do you know any other use cases where structured log data helps? Let me know in the comments!  
 

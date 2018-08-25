@@ -13,9 +13,10 @@ excerpt: "Logging to files and analyzing them by hand is not the way to go anymo
           for collecting and analyzing log data."
 sidebar:
   nav: logging
+  toc: true
 ---
 
-{% include toc %}
+{% include sidebar_right %}
 
 Logging to files and analyzing them by hand is not the way to go anymore.
 This article explains the reasons why a log server is the way to go

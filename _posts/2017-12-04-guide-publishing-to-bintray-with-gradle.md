@@ -1,6 +1,6 @@
 ---
 title: "Publishing Open Source Releases with Gradle"
-categories: [frameworks]
+categories: [opensource]
 modified: 2017-12-04
 author: tom
 tags: [gradle, maven, build]
@@ -9,9 +9,15 @@ ads: false
 header:
   teaser: /assets/images/posts/guide-publishing-to-bintray-with-gradle/bintray_to_gradle.jpg
   image: /assets/images/posts/guide-publishing-to-bintray-with-gradle/bintray_to_gradle.jpg
+excerpt: "When working on an open source Java project, you always come to the point where 
+          you want to share your work with the developer community. This article gives a 
+          step-by-step guide on how to publish your artifacts Bintray."
 sidebar:
-  nav: publishing-open-source
+  nav: opensource
+  toc: true
 ---
+
+{% include sidebar_right %}
 
 When working on an open source Java project, you always come to the point where 
 you want to share your work with the developer community (at least that should be the goal). 

@@ -1,6 +1,6 @@
 ---
 title: "Testing a Spring Boot REST API Consumer against a Contract with Spring Cloud Contract"
-categories: [spring]
+categories: [cdc]
 modified: 2018-01-18
 last_modified_at: 2018-08-16
 author: tom
@@ -12,11 +12,12 @@ header:
  image: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
 sidebar:
   nav: cdc
+  toc: true
 excerpt: "A guide on how to implement a consumer-driven contract test with Spring Cloud Contract that verifies that a REST consumer based on
           Feign and Spring Boot works as defined in the contract."
 ---
 
-{% include toc %}
+{% include sidebar_right %}
 
 Consumer-driven contract tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 

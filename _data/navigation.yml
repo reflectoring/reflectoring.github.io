@@ -1,7 +1,10 @@
 # main links
 main:
-  - title: "About Reflectoring"
+  - title: "Software Engineering Tips"
+    url: /tips/
+  - title: "About"
     url: /about/
+    icon: fa-question-circle
   - title: "Search"
     url: /search/
     icon: fa-search
@@ -14,7 +17,7 @@ main:
 
 # sidebar with Monitoring Posts
 monitoring:
-  - title: "Articles about Monitoring"
+  - title: "Articles on Monitoring"
     children:
     - title: "Exposing Metrics of a Spring Boot Application for Prometheus"
       url: /monitoring-spring-boot-with-prometheus/
@@ -25,7 +28,7 @@ monitoring:
 
 # sidebar with posts on spring-data-rest
 spring-data-rest:
-  - title: "Articles about Spring Data REST"
+  - title: "Articles on Spring Data REST"
     children:
     - title: "Handling associations between entities with Spring Data Rest"
       url: /relations-with-spring-data-rest/
@@ -35,7 +38,7 @@ spring-data-rest:
       url: /documenting-spring-data-rest-api-with-springfox/
 
 cdc:
-  - title: "Articles about Consumer-Driven Contracts"
+  - title: "Articles on Consumer-Driven Contracts"
     children:
     - title: "7 Reasons to Choose Consumer-Driven Contract Tests Over End-to-End Tests"
       url: /7-reasons-for-consumer-driven-contracts/
@@ -50,8 +53,8 @@ cdc:
     - title: "Testing a Spring Boot REST API Consumer against Contract with Spring Cloud Contract"
       url: /consumer-driven-contract-consumer-spring-cloud-contract/
 
-publishing-open-source:
-  - title: "Articles about \"Publishing Open Source\""
+opensource:
+  - title: "Articles on Publishing Open Source"
     children:
     - title: "Publishing Open Source Releases with Gradle"
       url: /guide-publishing-to-bintray-with-gradle/
@@ -73,11 +76,11 @@ logging:
       url: /logging-context/
     - title: "5 Good Reasons to Use a Log Server"
       url: /log-server/
-    - title: "3 Use Cases for Structured Log Data"
+    - title: "3 Use Cases Where Structured Log Data Really Helps"
       url: /structured-log-data/
-  - title: "Implementing Logging Tips"
+  - title: "Logging Tutorials"
     children:
-    - title: "How to Configure a Human-Readable Logging Format"
+    - title: "How to Configure a Human-Readable Logging Format with Logback"
       url: /logging-format-logback/
     - title: "How to Configure Environment-Specific Logging Behavior with Spring Boot"
       url: /profile-specific-logging-spring-boot/

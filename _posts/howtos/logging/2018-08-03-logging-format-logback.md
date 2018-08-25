@@ -14,9 +14,10 @@ header:
 excerpt: "A guide to configuring Logback to use a human-readable logging format."
 sidebar:
   nav: logging
+  toc: true
 ---
 
-{% include toc %}
+{% include sidebar_right %}
 
 In a [previous Tip](/logging-format), I proposed to use a human-readable logging format
 so that we can quickly scan a log to find the information we need. This article

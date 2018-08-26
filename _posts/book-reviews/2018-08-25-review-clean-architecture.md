@@ -13,11 +13,14 @@ sidebar:
   toc: true
   books:
     - href: //geni.us/oBgB
-      img: //ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=DE&ASIN=0134494164&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL160_&tag=reflectoring-21
+      alt:  Clean Architecture
+      img:  //ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=DE&ASIN=0134494164&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL160_&tag=reflectoring-21
     - href: //geni.us/5MXmRRM
-      img: //ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=DE&ASIN=0132350882&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL160_&tag=reflectoring-21
+      alt:  Clean Code
+      img:  //ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=DE&ASIN=0132350882&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL160_&tag=reflectoring-21
     - href: //geni.us/hgdI
-      img: //ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=DE&ASIN=0137081073&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL160_&tag=reflectoring-21
+      alt:  The Clean Coder
+      img:  //ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=DE&ASIN=0137081073&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL160_&tag=reflectoring-21
 ---
 
 {% include sidebar_right %}

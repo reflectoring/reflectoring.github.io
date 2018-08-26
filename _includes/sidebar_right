@@ -19,7 +19,7 @@
 
 {% if page.ads %}
   <span class="nav__sub-title">Book Promotion</span>
-  <a class="book" rel="nofollow" target="_blank" href="{{ site.data.promotion.href }}"><img border="0" src="{{ site.data.promotion.img }}" alt="{{ site.data.promotion.alt }}></a>
+  <a class="book" rel="nofollow" target="_blank" href="{{ site.data.promotion.href }}"><img border="0" src="{{ site.data.promotion.img }}" alt="{{ site.data.promotion.alt }}"></a>
 {% endif %}
 
 </aside>

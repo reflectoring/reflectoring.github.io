@@ -66,7 +66,13 @@ opensource:
       url: /fully-automated-open-source-release-chain/
 
 logging:
-  - title: "Tips about Logging"
+  - title: "Logging Tutorials"
+    children:
+    - title: "How to Configure a Human-Readable Logging Format with Logback"
+      url: /logging-format-logback/
+    - title: "How to Configure Environment-Specific Logging Behavior with Spring Boot"
+      url: /profile-specific-logging-spring-boot/
+  - title: "Logging Tips"
     children:
     - title: "Tip: Use Logging Levels Consistently"
       url: /logging-levels/
@@ -78,11 +84,9 @@ logging:
       url: /log-server/
     - title: "3 Use Cases Where Structured Log Data Really Helps"
       url: /structured-log-data/
-  - title: "Logging Tutorials"
+
+book-reviews:
+  - title: "My Book Reviews"
     children:
-    - title: "How to Configure a Human-Readable Logging Format with Logback"
-      url: /logging-format-logback/
-    - title: "How to Configure Environment-Specific Logging Behavior with Spring Boot"
-      url: /profile-specific-logging-spring-boot/
-
-
+    - title: "Clean Architecture by Robert C. Martin"
+      url: /review-clean-architecture/

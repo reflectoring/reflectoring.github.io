@@ -6,7 +6,7 @@ modified: 2017-07-31
 author: tom
 tags: [spring, boot, feign, data, rest]
 comments: true
-ads: false
+ads: true
 sidebar:
   nav: spring-data-rest
 ---

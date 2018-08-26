@@ -6,7 +6,7 @@ modified: 2017-05-14
 author: tom
 tags: [database, refactoring, bootstrap, schema, setup, tools, liquibase, flyway, sql, script, automatic]
 comments: true
-ads: false
+ads: true
 ---
 
 In a [previous blog post](/tool-based-database-refactoring/) I discussed the term "database refactoring" and some concepts that allow

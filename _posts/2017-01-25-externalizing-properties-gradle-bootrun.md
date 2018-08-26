@@ -6,7 +6,7 @@ modified: 2017-01-25
 author: tom
 tags: [gradle, spring boot, bootrun, properties, application.properties]
 comments: true
-ads: false
+ads: true
 ---
 
 The Spring Boot gradle plugin provides the `bootRun` task that allows a 

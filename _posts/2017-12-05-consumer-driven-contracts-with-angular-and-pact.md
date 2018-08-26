@@ -5,7 +5,7 @@ modified: 2017-12-10
 author: tom
 tags: [consumer, provider, contract]
 comments: true
-ads: false
+ads: true
 header:
   teaser: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
   image: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg

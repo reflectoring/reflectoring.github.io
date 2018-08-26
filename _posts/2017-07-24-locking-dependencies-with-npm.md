@@ -6,7 +6,7 @@ modified: 2017-07-24
 author: tom
 tags: [npm, dependency, dependencies, lock, locking, version, transitive, range]
 comments: true
-ads: false
+ads: true
 ---
 
 As a developer I am [lazy](http://blogoscoped.com/archive/2005-08-24-n14.html). I don't build everything by myself

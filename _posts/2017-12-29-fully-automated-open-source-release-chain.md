@@ -5,7 +5,7 @@ modified: 2017-12-29
 author: tom
 tags: [gradle, snapshot, bintray]
 comments: true
-ads: false
+ads: true
 header:
   teaser: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
   image: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg

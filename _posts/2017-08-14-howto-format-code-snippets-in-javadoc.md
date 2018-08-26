@@ -6,7 +6,7 @@ modified: 2017-08-14
 author: tom
 tags: [java, javadoc, code, snippet, pre, tag, html]
 comments: true
-ads: false
+ads: true
 ---
 
 Sometimes you want to add code snippets to our Javadoc comments, especially when developing

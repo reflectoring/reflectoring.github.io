@@ -6,7 +6,7 @@ modified: 2018-08-05
 author: tom
 tags: [transparency, logging, log, context]
 comments: true
-ads: false
+ads: true
 excerpt: "A guide to which contextual information is helpful in which 
           logging situation."
 sidebar:

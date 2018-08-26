@@ -6,7 +6,7 @@ modified: 2018-07-28
 author: tom
 tags: [transparency, logging, log, level]
 comments: true
-ads: false
+ads: true
 header:
   teaser: /assets/images/posts/tips/logging-levels/logging-levels.jpg
   image: /assets/images/posts/tips/logging-levels/logging-levels.jpg

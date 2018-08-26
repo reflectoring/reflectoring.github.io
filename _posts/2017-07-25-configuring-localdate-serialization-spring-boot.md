@@ -6,7 +6,7 @@ modified: 2017-07-25
 author: tom
 tags: [spring, boot, localdate, json, rest, serialize]
 comments: true
-ads: false
+ads: true
 ---
 
 Today, I stumbled (once again) over `LocalDate` in a Spring Boot application. `LocalDate` came with Java

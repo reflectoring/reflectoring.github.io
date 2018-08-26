@@ -5,7 +5,7 @@ modified: 2017-10-01
 author: tom
 tags: [java, mapper, mapping]
 comments: true
-ads: false
+ads: true
 ---
 
 Object mapping is a necessary and often unloved evil in software development projects. 

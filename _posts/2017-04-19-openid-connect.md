@@ -6,7 +6,7 @@ modified: 2017-04-19
 author: david
 tags: [java, keycloak, openid, connect, jwt, security]
 comments: true
-ads: false
+ads: true
 ---
 
 You may have already heard about OpenID Connect as the new standard for single sign-on and identity provision on the internet. If not, I am sure that you have at least already used it by clicking on any of these "Log In With Google" buttons. **But what is OpenID Connect and why would you want to use it for your own applications?** In this post I want to give a simple answer to these questions.

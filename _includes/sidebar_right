@@ -1,14 +1,25 @@
 <aside class="sidebar__right">
 {% if page.sidebar.toc %}
-<nav class="toc" markdown="1">
-<header><h4 class="nav__title"><i class="fa fa-{{ include.icon | default: 'file-text' }}"></i> {{ include.title | default: site.data.ui-text[site.locale].toc_label }}</h4></header>
-*  Auto generated table of contents
-{:toc .toc__menu}
-</nav>
+  <nav class="toc" markdown="1">
+  <header><h4 class="nav__title"><i class="fa fa-{{ include.icon | default: 'file-text' }}"></i> {{ include.title | default: site.data.ui-text[site.locale].toc_label }}</h4></header>
+  *  Auto generated table of contents
+  {:toc .toc__menu}
+  </nav>
 {% endif %}
 
-{% if page.sidebar.nav %}
-  {% include nav_list nav=page.sidebar.nav %}
+{% assign navigation = site.data.navigation[page.sidebar.nav] | concat: site.data.navigation["book-reviews"] | reverse %}
+{% include nav_list_inner %}
+
+{% if page.sidebar.books %}
+  <span class="nav__sub-title">Books on this Page</span>
+  {% for book in page.sidebar.books %}
+    <a class="book" rel="nofollow" target="_blank" href="{{ book.href }}"><img border="0" src="{{ book.img }}"></a>
+  {% endfor %}
+{% endif %}
+
+{% if page.ads %}
+  <span class="nav__sub-title">Book Promotion</span>
+  <a class="book" rel="nofollow" target="_blank" href="{{ site.data.promotion.href }}"><img border="0" src="{{ site.data.promotion.img }}"></a>
 {% endif %}
 
 </aside>

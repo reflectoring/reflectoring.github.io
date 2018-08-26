@@ -76,6 +76,19 @@
     line-height: 1.5;
     margin: 0 0 8px 0;
   }
+
+  .book {
+
+    @include breakpoint($x-large) {
+      margin-top: 10px;
+      display: block;
+    }
+
+    @include breakpoint($large) {
+      margin-right: 5px;
+    }
+
+  }
 }
 
 /*

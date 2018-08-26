@@ -5,7 +5,7 @@ modified: 2018-01-14
 author: david
 tags: [winsw, spring, windows, autostart]
 comments: true
-ads: false
+ads: true
 ---
 A few months ago I was asked to find a solution for starting and stopping a Spring Boot application under Windows **automatically** together with the computer this application was running on. After doing some research I found a nice fitting and open source solution with [**WinSW**](https://github.com/kohsuke/winsw).
 

@@ -6,7 +6,7 @@ last_modified_at: 2018-08-10
 author: tom
 tags: [consumer, feign, pact]
 comments: true
-ads: false
+ads: true
 header:
  teaser: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
  image: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg

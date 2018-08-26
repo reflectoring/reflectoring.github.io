@@ -6,7 +6,7 @@ modified: 2017-08-09
 author: tom
 tags: [spring, boot, consumer, driven, contract, pact, feign, data, rest]
 comments: true
-ads: false
+ads: true
 sidebar:
   nav: cdc
   toc: true

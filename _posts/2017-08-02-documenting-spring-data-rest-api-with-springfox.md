@@ -6,7 +6,7 @@ modified: 2017-08-02
 author: tom
 tags: [spring, boot, data, rest, swagger, springfox, documentation, document]
 comments: true
-ads: false
+ads: true
 sidebar:
   nav: spring-data-rest
 ---

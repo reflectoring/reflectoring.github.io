@@ -6,7 +6,7 @@ modified: 2016-11-26
 author: tom
 tags: [gradle, revision, subversion, svn]
 comments: true
-ads: false
+ads: true
 ---
 
 A common use case for build tools like Ant, Maven or Gradle is to retrieve the current revision number of the project sources in the Version Control System (VCS), in many cases Subversion (SVN). This revision number is then used in the file names of the build artifacts, for example. As mature build tools, Ant and Maven provide plugins to access the current revision number of the SVN working copy. But how about Gradle?

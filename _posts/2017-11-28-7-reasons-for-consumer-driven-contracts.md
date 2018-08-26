@@ -6,7 +6,7 @@ last_modified_at: 2018-08-16
 author: tom
 tags: [microservice, integration, testing, distributed, architecture]
 comments: true
-ads: false
+ads: true
 header:
   teaser: /assets/images/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg
   image: /assets/images/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg

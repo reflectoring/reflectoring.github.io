@@ -6,7 +6,7 @@ modified: 2017-05-01
 author: tom
 tags: [spring, java, boot, monitoring, metric, metrics, prometheus, dropwizard, summary, counter]
 comments: true
-ads: false
+ads: true
 sidebar:
   nav: monitoring
 ---

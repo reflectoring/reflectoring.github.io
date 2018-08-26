@@ -5,7 +5,7 @@ modified: 2017-12-04
 author: tom
 tags: [gradle, maven, build]
 comments: true
-ads: false
+ads: true
 header:
   teaser: /assets/images/posts/guide-publishing-to-bintray-with-gradle/bintray_to_gradle.jpg
   image: /assets/images/posts/guide-publishing-to-bintray-with-gradle/bintray_to_gradle.jpg

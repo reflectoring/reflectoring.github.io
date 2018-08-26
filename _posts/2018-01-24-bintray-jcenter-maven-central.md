@@ -5,7 +5,7 @@ modified: 2018-01-24
 author: tom
 tags: [gradle, bintray]
 comments: true
-ads: false
+ads: true
 header:
   teaser: /assets/images/posts/bintray-jcenter-maven-central/bintray-jcenter-maven-central.jpg
   image: /assets/images/posts/bintray-jcenter-maven-central/bintray-jcenter-maven-central.jpg

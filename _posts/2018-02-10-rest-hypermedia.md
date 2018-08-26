@@ -4,7 +4,7 @@ categories: [REST]
 modified: 2018-02-06
 author: tom
 comments: true
-ads: false
+ads: true
 header:
  teaser: /assets/images/posts/rest-hypermedia/state-diagram-relations-header.png
  image: /assets/images/posts/rest-hypermedia/state-diagram-relations-header.png

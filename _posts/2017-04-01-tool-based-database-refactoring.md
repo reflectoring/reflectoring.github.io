@@ -6,7 +6,7 @@ modified: 2017-04-01
 author: tom
 tags: [database, refactoring, bootstrap, schema, setup, tools, liquibase, flyway, sql, script, automatic]
 comments: true
-ads: false
+ads: true
 ---
 
 The term "refactoring" is well defined in software development. It is usually used

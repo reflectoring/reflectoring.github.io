@@ -5,7 +5,7 @@ modified: 2017-12-20
 author: tom
 tags: [gradle, snapshot, bintray]
 comments: true
-ads: false
+ads: true
 header:
   teaser: /assets/images/posts/publish-snapshots-with-gradle/gradle-to-artifactory.jpg
   image: /assets/images/posts/publish-snapshots-with-gradle/gradle-to-artifactory.jpg

@@ -6,7 +6,7 @@ modified: 2017-05-27
 author: tom
 tags: [software, architecture, setup, checklist, technology, stack, microservice, monolith]
 comments: true
-ads: false
+ads: true
 ---
 
 I recently had the opportunity to propose the architecture for a new large-scale software

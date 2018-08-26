@@ -4,7 +4,7 @@ categories: [spring]
 modified: 2018-02-06
 author: tom
 comments: true
-ads: false
+ads: true
 header:
  teaser: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg
  image: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg

@@ -5,7 +5,7 @@ modified: 2017-09-16
 author: tom
 tags: [spring, boot, microservices, events, messaging, rabbitmq]
 comments: true
-ads: false
+ads: true
 ---
 
 In a microservice environment or any other distributed system you may come upon the requirement

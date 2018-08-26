@@ -5,7 +5,7 @@ modified: 2018-08-10
 author: tom
 tags: [transparency, logging, log, format]
 comments: true
-ads: false
+ads: true
 header:
   teaser: 
   image: 

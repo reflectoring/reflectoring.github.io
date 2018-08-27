@@ -1,7 +1,7 @@
 # main links
 main:
-  - title: "Software Engineering Tips"
-    url: /tips/
+  - title: "Latest Articles"
+    url: /latest
   - title: "About"
     url: /about/
     icon: fa-question-circle

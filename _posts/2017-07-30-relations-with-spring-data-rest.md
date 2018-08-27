@@ -6,7 +6,7 @@ modified: 2017-07-30
 author: tom
 tags: [spring, data, jpa, rest, relation, association, onetomany, manytoone, unidirectional, bidirectional]
 comments: true
-ads: false
+ads: true
 sidebar:
   nav: spring-data-rest
 ---

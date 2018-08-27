@@ -5,7 +5,7 @@ modified: 2018-06-11
 author: tom
 tags: [ci, travis]
 comments: true
-ads: false
+ads: true
 ---
 
 Skipping a CI build is like purposefully not brushing your teeth every morning and evening.

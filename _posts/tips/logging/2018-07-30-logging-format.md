@@ -6,7 +6,7 @@ modified: 2018-07-30
 author: tom
 tags: [transparency, logging, log, format]
 comments: true
-ads: false
+ads: true
 excerpt: "A guide to create a logging format that can be scanned at
           a single glance."
 sidebar:

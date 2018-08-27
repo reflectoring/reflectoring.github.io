@@ -6,7 +6,7 @@ modified: 2017-04-21
 author: tom
 tags: [spring, java, boot, monitoring, meter, timer, rate, moving average, transparency, metrics, actuator, dropwizard]
 comments: true
-ads: false
+ads: true
 sidebar:
   nav: monitoring
 ---

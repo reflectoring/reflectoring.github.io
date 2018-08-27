@@ -5,7 +5,7 @@ modified: 2017-11-14
 author: matthias
 tags: [gradle, groovy, property, lazy, evaluation]
 comments: true
-ads: false
+ads: true
 ---
 
 Writing Gradle build tasks is often easy and straight forward, but as soon as you start to write more generic tasks for multiple modules or projects it can get a little tricky.

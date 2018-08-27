@@ -5,7 +5,7 @@ modified: 2018-05-27
 author: tom
 tags: [spring, boot, testing, junit]
 comments: true
-ads: false
+ads: true
 header:
   teaser: /assets/images/posts/testing-verticals-and-layers-spring-boot/cube.jpg
   image: /assets/images/posts/testing-verticals-and-layers-spring-boot/cube.jpg

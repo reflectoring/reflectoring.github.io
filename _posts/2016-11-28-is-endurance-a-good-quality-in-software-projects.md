@@ -6,7 +6,7 @@ modified: 2016-11-28
 author: tom
 tags: [endurance, programming, project, software, engineering, methodology]
 comments: true
-ads: false
+ads: true
 ---
 
 The ability to endure hardship without complaining is often considered a positive feat associated with "endurance" or "stamina". However, endurance seems to be a double-edged sword (not only) in software projects. An appeal to speak up in software projects instead of just enduring the status quo.

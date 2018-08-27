@@ -5,7 +5,7 @@ modified: 2017-10-10
 author: tom
 tags: [junit]
 comments: true
-ads: false
+ads: true
 ---
 
 Sometimes, a test should only be run under certain conditions. One such case

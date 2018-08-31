@@ -8,7 +8,9 @@ author: tom
 tags: [testing, test data, generator]
 comments: true
 ads: true
-excerpt: "TODO"
+excerpt: "Combining the Object Mother Pattern with the Fluent Builder Pattern allows to create
+          Test Data Factories that reduce code duplication and promote the Single Responsibility Principle.
+          Learn why and how in this tutorial." 
 sidebar:
   nav: testing
   toc: true
@@ -16,7 +18,7 @@ sidebar:
 
 {% include sidebar_right %}
 
-To test our business code we always need some kind of test data. This article explains how to do just that with the 
+To test our business code we always need some kind of test data. This tutorial explains how to do just that with the 
 Object Mother pattern and why we should combine it with a Fluent Builder to create test data factories that
 are fun to work with.
 

@@ -166,3 +166,5 @@ Naively aiming at 100% code coverage is bullshit.
 However, if we allow excluding code 
 that doesn't need to be tested from the coverage metric, aiming at 100% becomes much more meaningful and it
 becomes easier to keep a high test coverage due to psychological effects. 
+
+What's your take on 100% code coverage?

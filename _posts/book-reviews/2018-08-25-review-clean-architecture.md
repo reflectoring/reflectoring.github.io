@@ -26,10 +26,10 @@ sidebar:
 {% include sidebar_right %}
 
 As the name suggests, <a href="//geni.us/oBgB" rel="nofollow">Clean Architecture - A Craftsman's Guide to Software Structure and Design</a> 
-by Robert C. Martin ("Uncle Bob") takes a step back from the details of programming and discusses the bigger picture.
+by Robert C. Martin ("Uncle Bob") takes a step back from the details of programming and discusses the bigger picture (link points to Amazon).
 
 The "prequels" <a href="//geni.us/5MXmRRM" rel="nofollow">Clean Code</a> and <a href="//geni.us/hgdI" rel="nofollow">The Clean Coder</a> have been must-reads for a
-software engineer, so I expected a lot from this new book. 
+software engineer, so I expected a lot from this new book (links point to Amazon). 
 
 The book has about 320 pages in 34 chapters, not counting the appendix. Few chapters are longer than 10 pages.
 

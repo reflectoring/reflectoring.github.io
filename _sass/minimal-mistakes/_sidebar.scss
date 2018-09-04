@@ -77,6 +77,13 @@
     margin: 0 0 8px 0;
   }
 
+  .info {
+    font-size: $type-size-6;
+    line-height: 1.5;
+    display: block;
+    margin-bottom: 10px;
+  }
+
   .book {
 
     @include breakpoint($x-large) {

@@ -12,13 +12,15 @@
 
 {% if page.sidebar.books %}
   <span class="nav__sub-title">Books on this Page</span>
+  <span class="info">Amazon links to the books mentioned on this page.</span>
   {% for book in page.sidebar.books %}
     <a class="book" rel="nofollow" target="_blank" href="{{ book.href }}"><img border="0" src="{{ book.img }}" alt="{{ book.alt }}"></a>
   {% endfor %}
 {% endif %}
 
 {% if page.ads %}
-  <span class="nav__sub-title">Book Promotion</span>
+  <span class="nav__sub-title">Recommended Books</span>
+  <span class="info">Amazon links to books worth reading.</span>
   <a class="book" rel="nofollow" target="_blank" href="{{ site.data.promotion.href }}"><img border="0" src="{{ site.data.promotion.img }}" alt="{{ site.data.promotion.alt }}"></a>
 {% endif %}
 

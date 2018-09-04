@@ -8,6 +8,8 @@ comments: true
 ads: true
 ---
 
+{% include sidebar_right %}
+
 Writing Gradle build tasks is often easy and straight forward, but as soon as you start to write more generic tasks for multiple modules or projects it can get a little tricky.
 
 ## Why Lazy Evaluation?

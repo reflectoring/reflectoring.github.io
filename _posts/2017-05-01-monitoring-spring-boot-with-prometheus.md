@@ -11,6 +11,8 @@ sidebar:
   nav: monitoring
 ---
 
+{% include sidebar_right %}
+
 Monitoring is an important quality requirement for applications that claim to be production-ready.
 In a [previous blog post](/transparency-with-spring-boot/)
 I discussed how to expose metrics of your Spring Boot application with the 

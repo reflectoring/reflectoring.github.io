@@ -11,6 +11,8 @@ sidebar:
   nav: monitoring
 ---
 
+{% include sidebar_right %}
+
 How do we know if an application we just put into production is working
 as it should? How do we know that the application can cope with the
 number of users and is not slowing down to a crawl? And how do we know

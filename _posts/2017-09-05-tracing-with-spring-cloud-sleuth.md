@@ -8,6 +8,8 @@ comments: true
 ads: true
 ---
 
+{% include sidebar_right %}
+
 In a distributed system, potentially many services are involved in creating a response to a single 
 request. Not only for debugging purposes it's essential that the path of such a request can be traced 
 through all involved services. This article gives an overview of the traceability problem in 

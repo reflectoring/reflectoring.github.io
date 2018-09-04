@@ -9,6 +9,8 @@ comments: true
 ads: true
 ---
 
+{% include sidebar_right %}
+
 Today, I stumbled (once again) over `LocalDate` in a Spring Boot application. `LocalDate` came with Java
 8 and is part of the new standard API in Java for working with dates. However, if you want to effectively
 use `LocalDate` over `Date` in a Spring Boot application, you need to take some extra care, since not all tools support 

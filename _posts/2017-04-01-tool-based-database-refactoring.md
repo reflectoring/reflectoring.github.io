@@ -9,6 +9,8 @@ comments: true
 ads: true
 ---
 
+{% include sidebar_right %}
+
 The term "refactoring" is well defined in software development. It is usually used
 to describe a restructuring of source code ranging from simply renaming a variable
 to completely re-thinking whole components or applications.

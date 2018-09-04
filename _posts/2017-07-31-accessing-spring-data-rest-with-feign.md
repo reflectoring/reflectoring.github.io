@@ -11,6 +11,8 @@ sidebar:
   nav: spring-data-rest
 ---
 
+{% include sidebar_right %}
+
 
 [Spring Data REST](https://projects.spring.io/spring-data-rest/) is a framework that automatically exposes a REST API for Spring Data repositories, thus
 potentially saving a lot of manual programming work. [Feign](https://github.com/OpenFeign/feign) is a framework that allows easy creation of REST

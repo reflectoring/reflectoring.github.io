@@ -8,6 +8,8 @@ comments: true
 ads: true
 ---
 
+{% include sidebar_right %}
+
 Object mapping is a necessary and often unloved evil in software development projects. 
 To communicate between layers of your application, you have to create and test mappers between
 a multitude of types, which can be a very cumbersome task, depending on the mapper library

@@ -11,6 +11,8 @@ sidebar:
   nav: spring-data-rest
 ---
 
+{% include sidebar_right %}
+
 With [Spring Data REST](https://projects.spring.io/spring-data-rest/) you can rapidly create a REST API
 that exposes your Spring Data repositories and thus provides CRUD support and more. However, in serious API
 development, you also want to have an automatically generated and up-to-date API documentation. 

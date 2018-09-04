@@ -86,7 +86,7 @@ logging:
       url: /structured-log-data/
 
 book-reviews:
-  - title: "My Book Reviews"
+  - title: "Book Reviews"
     children:
     - title: "Clean Architecture by Robert C. Martin"
       url: /review-clean-architecture/

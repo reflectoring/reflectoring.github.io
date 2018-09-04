@@ -10,6 +10,8 @@ header:
  image: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg
 ---
 
+{% include sidebar_right %}
+
 Every software project comes to a point where the code should be broken up into modules.
 These may be modules within a single code base or modules that each live in their own
 code base. This article explains some Spring Boot features that help to split up

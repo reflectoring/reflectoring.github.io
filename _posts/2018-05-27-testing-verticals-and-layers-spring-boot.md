@@ -11,6 +11,8 @@ header:
   image: /assets/images/posts/testing-verticals-and-layers-spring-boot/cube.jpg
 ---
 
+{% include sidebar_right %}
+
 Well-behaved software consists of highly cohesive modules that are loosely coupled
 to other modules. Each module takes care from user input on the web layer down to
 writing into and reading from the database. **This article presents a way to structure 

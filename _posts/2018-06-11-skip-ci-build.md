@@ -8,6 +8,8 @@ comments: true
 ads: true
 ---
 
+{% include sidebar_right %}
+
 Skipping a CI build is like purposefully not brushing your teeth every morning and evening.
 You know it should not be skipped and you feel guilty when you do it anyways.
 However, there are some cases when you have only changed some supplementary files

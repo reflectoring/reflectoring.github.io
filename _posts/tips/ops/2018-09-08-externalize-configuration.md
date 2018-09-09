@@ -1,8 +1,8 @@
 ---
 title: "Build Once, Run Anywhere: Externalize Your Configuration"
 categories: [tip, operations]
-modified: 2018-09-08
-last_modified_at: 2018-09-08
+modified: 2018-09-09
+last_modified_at: 2018-09-09
 author: tom
 tags: [operations, configuration]
 comments: true

@@ -7,6 +7,9 @@ tags: [winsw, spring, windows, autostart]
 comments: true
 ads: true
 ---
+
+{% include sidebar_right %}
+
 A few months ago I was asked to find a solution for starting and stopping a Spring Boot application under Windows **automatically** together with the computer this application was running on. After doing some research I found a nice fitting and open source solution with [**WinSW**](https://github.com/kohsuke/winsw).
 
 As you can read on the Github page of WinSW it "is an executable binary, which can be used to wrap and manage a custom process as a Windows service". This windows service can be used to automatically start/stop your application on computer startup/shutdown. After downloading the binary (you can find it [here](http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/)) you have to perform the following simple steps to install your own custom windows service.

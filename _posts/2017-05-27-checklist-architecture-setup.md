@@ -9,6 +9,8 @@ comments: true
 ads: true
 ---
 
+{% include sidebar_right %}
+
 I recently had the opportunity to propose the architecture for a new large-scale software
 project. While it's fun being paid for finding the technologies that best fit to
 the customer's requirements (of which only a fraction is available at the time, of course), it may 

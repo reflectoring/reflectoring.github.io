@@ -9,6 +9,8 @@ comments: true
 ads: true
 ---
 
+{% include sidebar_right %}
+
 In a [previous blog post](/tool-based-database-refactoring/) I discussed the term "database refactoring" and some concepts that allow
 database refactoring to be supported by tools with the result of having a database schema that is 
 versioned just like your software is. In this post I would like to discuss [Flyway](https://flywaydb.org/)

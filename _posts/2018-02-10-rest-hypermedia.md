@@ -10,6 +10,8 @@ header:
  image: /assets/images/posts/rest-hypermedia/state-diagram-relations-header.png
 ---
 
+{% include sidebar_right %}
+
 Believing Roy Fielding, who first coined the REST acronym, you may call
 your API a REST API [only if you make use of hypertext](http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven).
 But what is hypermedia? This article explains what 

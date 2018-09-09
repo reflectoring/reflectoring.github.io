@@ -9,6 +9,8 @@ comments: true
 ads: true
 ---
 
+{% include sidebar_right %}
+
 The first impression counts. When you're developing an API of any kind, chances are 
 that the first impression is gained from a look into the API docs. If that first impression
 fails to convince, developers will go on looking for another API they can use instead.

@@ -11,6 +11,8 @@ header:
  image: /assets/images/posts/microservice-communication-patterns/communication.jpg
 ---
 
+{% include sidebar_right %}
+
 A microservice architecture is all about communication. How should services communicate in any
 given business scenario? Should they call each other synchronously? Or should they communicate
 via asynchronous messaging? As always, this is not a black-or-white decision. This article

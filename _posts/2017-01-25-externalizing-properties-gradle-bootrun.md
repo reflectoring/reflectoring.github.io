@@ -9,6 +9,8 @@ comments: true
 ads: true
 ---
 
+{% include sidebar_right %}
+
 The Spring Boot gradle plugin provides the `bootRun` task that allows a 
 developer to start the application in a "developer mode" without first building
 a JAR file and then starting this JAR file. Thus, it's a quick way to test

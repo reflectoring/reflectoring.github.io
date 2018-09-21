@@ -153,7 +153,7 @@ public class User {
 
 ```java
 public class IdObject {
-  private long id;
+  private Long id;
   // getters / setters / constructors omitted
 }
 ```

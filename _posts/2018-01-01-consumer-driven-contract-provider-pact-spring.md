@@ -49,7 +49,7 @@ In this article we will:
 * verify that the controller against the contract within a JUnit test
 * modify our test to load the contract file from a Pact Broker
 
-Fo an overview of the big picture of consumer-driven contract testing, have a look at 
+For an overview of the big picture of consumer-driven contract testing, have a look at 
 [this article](/7-reasons-for-consumer-driven-contracts/). 
 
 # The Pact
@@ -134,7 +134,8 @@ public class UserController {
 }
 ```
 
-`IdObject` is a simple bean that has the single field `id`.
+`IdObject` is a simple bean that has the single field `id`. The `UserRepository` is a standard Spring Data 
+repository that saves and loads `User` objects to and from a database.
 
 # The Provider Test
 
@@ -191,7 +192,7 @@ public class UserControllerProviderTest {
     user.setId(42L);
     user.setFirstName("Arthur");
     user.setLastName("Dent");
-    when(userRepository.findOne(eq(42L))).thenReturn(user);
+    when(userRepository.findById(eq(42L))).thenReturn(Optional.of(user));
     when(userRepository.save(any(User.class))).thenReturn(user);
   }
 
@@ -212,7 +213,7 @@ are being tested.
 Since Pact creates a mock consumer for us that "replays" all requests from the pact files, 
 it needs to know where to send those requests. In the `@BeforeEach` annotated method, we define
 the target for those requests by calling `PactVerificationContext#setTarget()`. This should
-obviously target the Spring Boot application we started with `@SpringBootTest` so the ports must match. 
+target the Spring Boot application we started with `@SpringBootTest` so the ports must match. 
 
 `@MockBean` is another standard annotation from Spring Boot that - in our case - replaces the real `UserRepository`
 with a Mockito mock. We do this so that we do not have to initialize the database and any other dependencies

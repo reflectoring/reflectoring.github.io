@@ -1,8 +1,8 @@
 ---
 title: "What is Upstream and Downstream in Software Development?"
 categories: [musings]
-modified: 2018-09-09
-last_modified_at: 2018-09-09
+modified: 2018-09-27
+last_modified_at: 2018-09-27
 author: tom
 tags: 
 comments: true

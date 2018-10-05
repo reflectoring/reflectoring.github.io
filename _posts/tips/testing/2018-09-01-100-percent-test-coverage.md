@@ -3,7 +3,7 @@
 title: "Why You Should Enforce 100% Code Coverage*"
 categories: [tip, testing]
 modified: 2018-09-01
-last_modified_at: 2018-09-01
+last_modified_at: 2018-10-05
 author: tom
 tags: [testing, coverage]
 comments: true
@@ -149,15 +149,15 @@ Let's define our requirements for a code coverage tool to support the practice d
 
 The code coverage tool must:
 
-* allow us to define exclusions / false positives 
-* create a report about cleaned code coverage (i.e. taking into regard the exclusions)
-* create a report about actual code coverage (i.e. disregarding the exclusions)
-* allow to break a build at <100% cleaned code coverage
+1. allow us to define exclusions / false positives 
+2. create a report about cleaned code coverage (i.e. taking into regard the exclusions)
+3. create a report about actual code coverage (i.e. disregarding the exclusions)
+4. allow to break a build at <100% cleaned code coverage
 
-I really don't know which of the tools out there support all of that, but I'm determined to find out at least for the Java 
-ecosystem. I will then update this article.
+[JaCoCo](/jacoco) is a tool that supports all of the above bullet points except creating a coverage report
+about the actual code coverage when we have defined exclusions.
 
-If you have any ideas about tools that support this, let me know in the comments!
+If you know of a tool that supports all of the above features, let me know in the comments!
 
 ## Conclusion
 

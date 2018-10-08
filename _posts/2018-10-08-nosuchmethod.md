@@ -157,8 +157,6 @@ Here, we're trying to access the method `foobar()` of class `String`, which does
 This article went through some common causes of `NoSuchMethodError`s and `NoSuchMethodException`s and walked through some steps
 that can help to fix them. 
 
-   
-
-
+We need to find out where the error is caused and who causes it before we can compare versions and try to fix the problem.
 
  

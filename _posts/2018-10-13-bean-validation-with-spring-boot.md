@@ -174,7 +174,7 @@ evaluate the constraint annotations on method parameters.
 
 The `@Validated` annotation is only evaluated
 on class level in this case, even though it's allowed to be used on methods (we'll learn why it's allowed on
-method level when discussing [validation groups](#validating-objects-differently-for-different-use-cases) later).
+method level when discussing [validation groups](#using-validation-groups-to-validate-objects-differently-for-different-use-cases) later).
 
 In contrast to request body validation a failed validation will trigger a `ConstraintViolationException`
 instead of a `MethodArgumentNotValidException`. Spring does not register a default exception handler for this exception,
@@ -374,7 +374,7 @@ A custom constraint annotation needs all of the following:
 * the parameter `message`, pointing to a property key in `ValidationMessages.properties`, which is used
   to resolve a message in case of violation,
 * the parameter `groups`, allowing to define under which circumstances this validation is to be triggered
-  (we're going to talk about [validation groups](#validating-objects-differently-for-different-use-cases) later),
+  (we're going to talk about [validation groups](#using-validation-groups-to-validate-objects-differently-for-different-use-cases) later),
 * the parameter `payload`, allowing to define a payload to be passed with this validation (since this is 
   a rarely used feature, we'll not cover it in this tutorial), and
 * a `@Constraint` annotation pointing to an implementation of the `ConstraintValidator` interface.

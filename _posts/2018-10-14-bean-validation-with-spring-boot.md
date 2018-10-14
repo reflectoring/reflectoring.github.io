@@ -1,8 +1,8 @@
 ---
 title: "All You Need To Know About Bean Validation With Spring Boot"
 categories: [java]
-modified: 2018-10-13
-last_modified_at: 2018-10-13
+modified: 2018-10-14
+last_modified_at: 2018-10-14
 author: tom
 tags: 
 comments: true
@@ -228,7 +228,7 @@ class ValidateParametersControllerTest {
 }
 ```
 
-# Validating Input to a Spring Service Method
+## Validating Input to a Spring Service Method
 
 Instead of (or additionally to) validating input on the controller level, **we can also validate the input to
 any Spring components**. In order to to this, we use a combination of the `@Validated` and `@Valid` annotations:
@@ -269,7 +269,7 @@ class ValidatingServiceTest {
 }
 ```
 
-# Validating JPA Entities
+## Validating JPA Entities
 
 The last line of defense for validation is the persistence layer. By default, Spring Data uses Hibernate underneath,
 which supports Bean Validation out of the box. 
@@ -338,7 +338,7 @@ we have to do this by hand.
 If for any reason we want to disable Bean Validation in our Spring Data repositories, we can set the
 Spring Boot property `spring.jpa.properties.javax.persistence.validation.mode` to `none`.
 
-# Implementing A Custom Validator
+## Implementing A Custom Validator
 
 If the available [constraint annotations](https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/javax/validation/constraints/package-summary.html)
 do not suffice for our use cases, we might want to create one ourselves.
@@ -421,7 +421,7 @@ class InputWithCustomValidator {
 }
 ```
 
-# Validating Programmatically
+## Validating Programmatically
 
 There may be cases when we want to invoke validation programmatically instead of relying on Spring's built-in
 Bean Validation support.
@@ -501,7 +501,7 @@ class ProgrammaticallyValidatingServiceTest {
 }
 ```   
 
-# Using Validation Groups to Validate Objects Differently for Different Use Cases
+## Using Validation Groups to Validate Objects Differently for Different Use Cases
 
 Often, certain objects are shared between different use cases. 
 

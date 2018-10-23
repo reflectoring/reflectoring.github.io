@@ -206,20 +206,20 @@ provide the Service on our behalf, perform Service-related services or assist us
 These third parties have access to your Personal Data only to perform these tasks on our behalf and are obligated 
 not to disclose or use it for any other purpose.
 
-### Drip
+### Mailchimp
 
-reflectoring uses Drip as its e-mail service provider. 
+reflectoring uses Mailchimp as its e-mail service provider. 
 
-Drip collects contact information, distributes e-mails, and tracks actions 
+Mailchimp collects contact information, distributes e-mails, and tracks actions 
 you take that assist us in measuring the performance of the website and e-mails. 
-Upon subscription, Drip also tracks the pages you visit on the website.
+Upon subscription, Mailchimp also tracks the pages you visit on the website.
 
 Our e-mails may contain tracking pixels. This pixel is embedded in e-mails and allows 
 us to analyze the success of our e-mails. Because of these tracking pixels, 
 we may see if and when you open an e-mail and which links within the e-mail you click. 
 
 This behavior is not passed to third parties. All data submitted at the time of subscription 
-to our e-mails is stored on Drip’s servers. You may access Drip’s privacy policy [here](https://www.drip.com/privacy). 
+to our e-mails is stored on Mailchimp’s servers. You may access Mailchimp’s privacy policy [here](https://mailchimp.com/legal/privacy/). 
 
 At any time, you may be removed from our newsletter list by clicking on the unsubscribe button 
 provided in each e-mail.

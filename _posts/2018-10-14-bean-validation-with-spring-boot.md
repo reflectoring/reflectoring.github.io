@@ -274,6 +274,9 @@ class ValidatingServiceTest {
 The last line of defense for validation is the persistence layer. By default, Spring Data uses Hibernate underneath,
 which supports Bean Validation out of the box. 
 
+**Note that we usually don't want to do validation as late as in the persistence layer because this means that the 
+business code above has worked with potentially invalid objects.**
+
 Let's say want to store objects of our `Input` class to the database. First, we add the necessary JPA annotation 
 `@Entity` and add an ID field:
 
@@ -674,3 +677,7 @@ Spring Boot.
 
 If you want to get your hands dirty on the example code, have a look at the 
 [github repository](https://github.com/thombergs/code-examples/tree/master/spring-boot/validation).
+
+## Update History
+* **10-25-2018:** added a word of caution on using bean validation in the persistence layer 
+(see [this](https://twitter.com/olivergierke/status/1055015506326052865) thread on Twitter). 

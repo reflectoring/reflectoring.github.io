@@ -1,5 +1,5 @@
 ---
-title: "Consumer-Driven Contracts for a React Consumer with Pact and Jest"
+title: "Step By Step Tutorial for Implementing Consumer-Driven Contracts for a React App with Pact and Jest"
 categories: [java]
 modified: 2018-10-25
 last_modified_at: 2018-10-25
@@ -8,7 +8,7 @@ tags:
 comments: true
 ads: true
 excerpt: "A tutorial that shows how to implement a REST consumer with Axios, build a 
-          a consumer-driven contract for it with the Pact framework and 
+          a consumer-driven contract for it with the Pact framework, and 
           validate the consumer against the contract using Jest as the testing framework."
 sidebar:
   nav: cdc

@@ -1,5 +1,5 @@
 ---
-title: "Implementing Consumer-Driven Contracts for a React Consumer with Pact and Jest"
+title: "Consumer-Driven Contracts for a React Consumer with Pact and Jest"
 categories: [java]
 modified: 2018-10-25
 last_modified_at: 2018-10-25
@@ -11,12 +11,13 @@ excerpt: "A tutorial that shows how to implement a REST consumer with Axios, bui
           a consumer-driven contract for it with the Pact framework and 
           validate the consumer against the contract using Jest as the testing framework."
 sidebar:
+  nav: cdc
   toc: true
 ---
 
 {% include sidebar_right %}
 
-Consumer-driven contract tests are a technique to test integration
+Consumer-driven contract (CDC) tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
 [recent blog post](/7-reasons-for-consumer-driven-contracts/)).
 A common use case for consumer-driven contract tests is testing interfaces between 
@@ -25,15 +26,15 @@ testing interfaces between the user client and those backend services.
 
 This article leads through the steps of setting up a fresh React app which calls a backend
 REST service using [Axios](https://github.com/axios/axios). We'll then see how to create and publish 
-a consumer-driven contract for this REST interaction and test our REST client against that contract
+a consumer-driven contract for the REST interaction between the React consumer and the API provider
+and how to verify our REST client against that contract
 using the [Jest](https://jestjs.io/) testing framework. 
 
 **Note that this is not a tutorial on React, but rather on how to create a REST client with Axios
 and using Pact in combination with Jest to implement consumer-driven contracts.** 
-It's just close to React since the [create-react-app bootstrapper](https://github.com/facebook/create-react-app)
-uses Jest as the default testing framework. 
-
-If you're using different tools, this tutorial will give some orientation nevertheless.
+But since the [create-react-app bootstrapper](https://github.com/facebook/create-react-app)
+uses Jest as the default testing framework, this tutorial describes a way to implement
+CDC tests for your React app.
 
 The core of this tutorial stems from [an example](https://github.com/pact-foundation/pact-js/tree/master/examples/jest)
 in the pact-js repository.
@@ -46,7 +47,7 @@ Let's start by creating our react app. I'm assuming you have a current version o
 installed. 
 
 First, we need to install the `create-react-app` bootstrapper, then we can use it to create
-a project template for us:
+a project template containing a minimal React app for us:
 
 ```
 npm install -g create-react-app
@@ -85,8 +86,8 @@ The details on how to use the libraries follow in the sections below.
 
 ## Setting Up Jest
 
-Now, we want to create a contract that defines how the REST client (consumer) and REST server (provider)
-interact with one another. The contract is created from a unit test, so we have to set up the Jest testing framework
+We want to create a contract that defines how the REST client (consumer) and REST server (provider)
+interact with one another. The contract is created from within a unit test, so we have to set up the Jest testing framework
 to cooperate with Pact.
 
 ### Initializing the Pact Mock Provider
@@ -120,8 +121,8 @@ global.provider = new Pact({
 });
 ```
 
-Later, we will include this file in the test runs, so that it will be executed before any test 
-and all tests can rely upon the fact that the mock provider  is configured correctly.
+Later, we'll include this file in the test runs, so that it will be executed before any test 
+is run and so that all tests can rely upon the fact that the mock provider is configured correctly.
 
 The provider instance is made globally available for later access in the tests. 
 
@@ -135,7 +136,7 @@ We configured some important things:
 ### Starting and Stopping the Pact Mock Provider
 
 Next, we have to tell Jest to start the mock provider before the tests start and to
-kill them after the tests are finished:
+kill it after the tests are finished. We do this in the script `pact/jest-wrapper.js`:
 
 ```javascript
 // ./pact/jest-wrapper.js
@@ -155,7 +156,7 @@ defined in a certain contract).
 The call to `finalize()` will trigger the mock provider to create contract files for 
 all interactions it has received during the test run in the `pacts` folder. 
 
-We'll include this file in the Jest config in the next step.
+We'll include this script in the Jest config in the next step.
 
 ### Creating an NPM Task to Run the Pact Tests
 
@@ -183,22 +184,22 @@ readability.
 
 The options in detail:
 
-* With `cross-env CI_true`, we tell Jest to run in CI mode, meaning the tests should only run once
+* With `cross-env CI=true`, we tell Jest to run in CI mode, meaning the tests should only run once
   and not in watch mode (this is optional, but I had some problems with zombie processes in watch mode).
 * `--runInBand` tells Jest to run the tests sequentially instead of in parallel. This is necessary
   for the Pact provider to be properly started and stopped.
 * With `--setupFiles`, we make sure that Jest executes our `setup.js` from above before every test run.
 * Similarly, with `--setupTestFrameworkScriptfile`, we make sure that Jest calls the `beforeAll()`
-  and `afterAll()` methods from `jest-wrapper.js` before and after all tests.
+  and `afterAll()` functions from `jest-wrapper.js` before and after all tests.
 * With `--testMatch`, we tell Jest to only execute tests that end with `test.pact.js`. 
 
-Now, we can call
+Now, we can run the tests:
 
 ```
 npm run test:pact
 ```
 
-to execute only the pact tests. It's a good idea to run pact tests separately from other unit tests,
+This will only execute the pact tests. It's a good idea to run pact tests separately from other unit tests,
 since they have some special needs, as we can see in all the configuration above.
 
 ## The Hero REST Client
@@ -228,7 +229,7 @@ export default Hero;
 ```
 
 Strictly, we don't need to declare a class for our hero objects, since we can just use 
-plain JSON objects instead. However, having a Java background, I could not resist the urge to 
+plain JSON objects instead. However, having a Java background, I couldn't resist the urge to 
 fake type safety ;).
 
 ### The Hero REST Client Service
@@ -341,28 +342,28 @@ beforeEach((done) => {
 });
 ```
 
-**A request / response pair is called an interaction in Pact-lingo.** 
+**A request / response pair is called an "interaction" in Pact lingo.** 
 
 By calling `provider.addInteraction()`, we pass such a request / response pair
-to the mock provider. If the mock provider then receives a request that matches 
-a certain request, it will respond with the response paired with that request.
+to the mock provider. If the mock provider afterwards receives a request that matches 
+the request of that pair, it will respond with the response paired with that request.
 
 Also, when calling `provider.verify()` (as we'll do later), the provider will
-check if all requests passed into `addInteraction()` have been received and will
-fail if any are missing. 
+check if all requests that have been passed into `addInteraction()` earlier have been 
+received and will fail if any are missing. 
  
-The JSON structure of an interaction is pretty self-explanatory, for a list of all options
+The JSON structure of an interaction is pretty self-explanatory. For a list of all options
 refer to the [dsl implementation](https://github.com/pact-foundation/pact-js/blob/master/src/dsl/interaction.ts).
 
 **Note, however, that we're not expecting the response body to match exactly**.
 
 Instead, we're expecting the response body to contain a JSON object that looks like
-a Hero object by using `Pact.Matchers.somethingLike()`. This matcher will check that
-the body contains all fields of a hero and that each field has the correct type.
+a Hero object by using `Pact.Matchers.somethingLike()`. This matcher will **check that
+the body contains all fields of a hero and that each field has the correct type**.
 
 This will decouple our contract from the provider test because the provider does not
 have to return the exact object specified in the contract. In turn, this will make
-our tests much more stable over time.
+our tests much more stable through changes that might happen over time.
 
 ### Validating the REST Client
 
@@ -417,8 +418,10 @@ the `hero` parameter it gets from outside:
 // hero.service.js
 class HeroService {
     createHero(hero) {
-        return axios.request(
+        return axios.request({
+          data: hero
           // ...
+          }
         );
     };
 }
@@ -430,8 +433,9 @@ as a bad request and return HTTP error status 400.
 
 Also, **what if we have forgotten to add the Hero 
 attribute `capeColor` into our contract but we're happily using it in 
-our consumer code base?** The REST provider will not include
-this attribute in its responses since it's not part of the contract.
+our consumer code base?** The REST provider will certainly not include
+this attribute in its responses since it's not part of the contract, which
+may lead to errors in the client application.
 
 **The test is green, but in production anything can still go wrong!** 
 
@@ -469,24 +473,25 @@ On the response side, we do the same by passing the response data into
 `_validateIncomingHero()` to validate the response object before returning
 it to the client code wrapped into a `Promise`.
 
-**This ensures that the test is red of the response we get from the mock provider during the test
+**This ensures that the test is red if the response we get from the mock provider during the test
 returns an object that does not satisfy our validations.** In turn, this ensures that
 the contract is specified according to our validation rules and that the
 real REST provider will return valid objects, too, since it's going to be verified
 against the contract.
 
-Adding validation to a provider-facing service class is not only good
+**Adding validation to a provider-facing service class is not only good
 software design, but also plainly and simply necessary for creating high-quality contracts
-that help our software to behave as it's expected to.
+that help our software to behave as it's expected to.**
 
 ## Debugging 
 
-As always, it can be time-consuming to search for the cause of a test failure. Here are some hints
-that help along the way.
+As with a lot of other tests, it can be time-consuming to search for the cause of a test failure with Pact.
+Here are some hints that help along the way.
 
-If a pact test fails, have a look at the log file pact creates (`logs/pact.log` in the configuration used above).
+If a pact test fails, have a look at the log file Pact creates (`logs/pact.log` in the configuration used above).
 
-Also, those async promises can be a pain. Make sure to call the `done` function at the proper places!
+Also, those async promises can be a pain. Make sure to call the `done` function at the proper places, otherwise
+this may lead to errors which are very hard to isolate.
 
 Finally, I sometimes had problems with zombie node and ruby processes on my windows machine and
 had to kill them manually (the ruby process is the Pact mock provider).
@@ -543,7 +548,11 @@ always represent the current state of the consumer.
 In this tutorial, we used Pact to create a contract from within a Jest unit test and Axios
 to create a REST client that is tested against this contract. 
 
-This contract can now be used to create a REST provider, for example with [Spring Boot](/consumer-driven-contract-provider-pact-spring) or Node.
+Since Jest is the default test
+framework for React apps (at least if you use the create-react-app bootstrapper), the described
+setup is well applicable to implements CDC for a REST-consuming React app.
+
+The generated contract can now be used to create a REST provider, for example with [Spring Boot](/consumer-driven-contract-provider-pact-spring) or Node.
 
 The code for this tutorial can be found on 
 [github](https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer). 

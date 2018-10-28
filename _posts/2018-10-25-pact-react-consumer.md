@@ -1,6 +1,6 @@
 ---
 title: "Step By Step Tutorial for Implementing Consumer-Driven Contracts for a React App with Pact and Jest"
-categories: [java]
+categories: [cdc]
 modified: 2018-10-25
 last_modified_at: 2018-10-25
 author: tom
@@ -115,8 +115,8 @@ global.provider = new Pact({
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'update',
-    consumer: 'pact-consumer',
-    provider: 'node-provider',
+    consumer: 'hero-consumer',
+    provider: 'hero-provider',
     host: '127.0.0.1'
 });
 ```
@@ -238,6 +238,10 @@ Our REST client simply provides a method to POST a hero object to the provider:
 
 ```javascript
 // hero.service.js
+import Hero from "./hero";
+const axios = require('axios');
+import adapter from 'axios/lib/adapters/http';
+
 class HeroService {
 
     constructor(baseUrl, port){
@@ -251,11 +255,11 @@ class HeroService {
             url: `/heroes`,
             baseURL: `${this.baseUrl}:${this.port}`,
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Accept': 'application/json; charset=utf-8',
+                'Content-Type': 'application/json; charset=utf-8'
             },
             data: hero
-        });
+        }, adapter);
     };
 
 }
@@ -264,6 +268,9 @@ export default HeroService;
 ```
 
 We use Axios to submit a POST request to a certain url and port containing a hero object as payload.
+
+Note that we use the Axios http adapter to make sure that the requests are made just as they would
+in a browser, even in a Node environment.
 
 We can use this service in our React components now and it should work. 
 
@@ -318,6 +325,12 @@ Within `beforeEach()`, we'll define our contract and make it known to the pact m
 
 ```javascript
 beforeEach((done) => {
+  
+    const contentTypeJsonMatcher = Pact.Matchers.term({
+        matcher: "application\\/json; *charset=utf-8",
+        generate: "application/json; charset=utf-8"
+    });
+  
     global.provider.addInteraction({
         state: 'provider allows hero creation',
         uponReceiving: 'a POST request to create a hero',
@@ -326,14 +339,14 @@ beforeEach((done) => {
             path: '/heroes',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': contentTypeJsonMatcher
             },
             body: new Hero(null, 'Superman', 'flying', 'DC')
         },
         willRespondWith: {
             status: 201,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': contentTypeJsonMatcher
             },
             body: Pact.Matchers.somethingLike(
                 new Hero(42, 'Superman', 'flying', 'DC'))
@@ -361,7 +374,11 @@ Instead, we're expecting the response body to contain a JSON object that looks l
 a Hero object by using `Pact.Matchers.somethingLike()`. This matcher will **check that
 the body contains all fields of a hero and that each field has the correct type**.
 
-This will decouple our contract from the provider test because the provider does not
+We're using another matcher on the content type. This is a simple regex matcher
+that ignores the white space in `application/json; charset=utf-8`. This is necessary
+for the test to work with some servers that seem to forget this whitespace.
+
+The matchers decouple our contract from the provider test because the provider does not
 have to return the exact object specified in the contract. In turn, this will make
 our tests much more stable through changes that might happen over time.
 

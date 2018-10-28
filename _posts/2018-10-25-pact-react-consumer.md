@@ -1,6 +1,6 @@
 ---
 title: "Step By Step Tutorial for Implementing Consumer-Driven Contracts for a React App with Pact and Jest"
-categories: [java]
+categories: [cdc]
 modified: 2018-10-25
 last_modified_at: 2018-10-25
 author: tom

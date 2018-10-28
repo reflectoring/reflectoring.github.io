@@ -1,6 +1,6 @@
 ---
 title: "Step By Step Tutorial for Implementing Consumer-Driven Contracts for a Node Express Server with Pact"
-categories: [java]
+categories: [cdc]
 modified: 2018-10-28
 last_modified_at: 2018-10-28
 author: tom
@@ -26,6 +26,10 @@ testing interfaces between the user client and those backend services.
 In this tutorial, we're going to create a REST provider with [Node](https://nodejs.org/en/) 
 and [Express](https://expressjs.com/) that implements the Heroes endpoints from the contract
 created in [this article](/pact-react-consumer). 
+
+Then, we'll create a contract test
+with the JavaScript version of [Pact](https://github.com/pact-foundation/pact-js) that 
+verifies that our provider works as specified in the contract. 
 
 This tutorial assumes you have a current version of Node installed.
 
@@ -54,11 +58,12 @@ Don't forget to call `npm install` in the created project folder now to install 
 
 ## Adding the Heroes Endpoints
 
-Having a base Express project, we're ready to implement a new REST endpoing.
+Having a base Express project, we're ready to implement a new REST endpoint.
 
 ### The Contract
 
-But first, let's have a look at the contract we're about to implement. The contract has been created
+But first, let's have a look at the contract against which we're about to implement. 
+The contract has been created
 by the consumer in [this article](/pact-react-consumer):
 
 ```json
@@ -162,7 +167,7 @@ module.exports = router;
 ```
 
 **I highly recommend to add some kind of validation to check the incoming request (e.g. check that the
-body contains all expected fields).** I explained [here](pact-react-consumer/#improving-contract-quality-with-validation)
+body contains all expected fields).** I explained [here](/pact-react-consumer#improving-contract-quality-with-validation)
 why validation immensely improves the quality of our contract tests.
 
 Now we have to make the new route available to the Express application by adding
@@ -174,16 +179,16 @@ const heroesRouter = require('./routes/heroes');
 app.use('/heroes', heroesRouter);
 ```
 
-We just implemented the contract. 
+We just implemented the provider side of the contract. 
 
-Now we have to prove that the provider actually works as expected by the contract.
+**Now we have to prove that the provider actually works as expected by the contract.**
 
 ## Setting Up Pact
 
-So let's set up Pact to implement a provider test that verifies our endpoint against
+So, let's set up Pact to implement a provider test that verifies our endpoint against
 the contract.
 
-The provider test basically reads the interactions from a contract and for each interaction,
+The provider test reads the interactions from a contract and for each interaction,
 does the following:
 
 1. put the provider into a state that allows to respond accordingly 
@@ -217,12 +222,12 @@ called "provider state" in Pact lingo.
 In [the contract](#the-contract) above the provider state for our single interaction 
 is called "provider allows hero creation".
 
-Provider states can be used by the provider to mock database queries, for example. When the provider
+**Provider states can be used by the provider to mock database queries, for example**. When the provider
 is notified to go into the state "provider allows hero creation" it knows which database queries
 are needed and can set up mocks that simulate the database accordingly. 
 
-Thus, we don't need to spin up a database. A major advantage of CDC tests is to be able to execute them
-without spinning up a whole server farm with a database and other dependencies. Hence, we should make
+Thus, we don't need to spin up a database during the test. **A major advantage of CDC tests is to be able to execute them
+without spinning up a whole server farm with a database and other dependencies**. Hence, we should make
 use of mocks that react to the provider states.
 
 You can read more about provider states in the [Pact docs](https://docs.pact.io/getting_started/provider_states).
@@ -263,8 +268,8 @@ if (process.env.PACT_MODE === 'true') {
 }
 ```
 
-We only activate the endpoint when the environment variable `PACT_MODE` is set to `true`, since we
-don't want this endpoint in production. 
+**We only activate the endpoint when the environment variable `PACT_MODE` is set to `true`, since we
+don't want this endpoint in production.** 
  
 Make sure to set this environment variable when running the test later. 
 
@@ -298,15 +303,21 @@ that executes the three steps (provider state, send request, validate response).
 
 The most important options are:
 
-* **pactBroker***: coordinates to the pact broker instance where Pact can download the
+* **pactBroker...**: coordinates to the pact broker instance where Pact can download the
   contracts. Username and password are read from environment variables since we don't
   want to include them in code.
 * **provider**: we tell pact to download only contracts for the provider we're currently
   implementing, which in this case is `hero-provider`.
 * **providerBaseUrl**: base url of the provider to which the requests are going to be
-  sent. In our case, we're starting the Express server on port 3000.
-* **providerStatesSetupUrl**: the url to change provider states. This points to the endpoint
+  sent. In our case, we're starting the Express server locally on port 3000.
+* **providerStatesSetupUrl**: the url to change provider states. This refers to the endpoint
   we have created above.
+  
+Instead of providing the coordinates to a pact broker, we could also provide a
+`pactUrls` option pointing directly to local pact files. 
+
+A full description of the options can be found 
+[here](https://github.com/pact-foundation/pact-js#provider-api-testing). 
 
 To make the script runnable via node, we add some scripts to `package.json`:  
 

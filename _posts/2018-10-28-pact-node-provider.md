@@ -255,8 +255,6 @@ module.exports = router;
 Note that the endpoint implementation above is just a dummy implementation. We don't have any database access in
 our `/heroes` endpoint, hence we don't need to mock anything. 
 
-However, the endpoint is still needed by Pact. It will fail if the endpoint is not available.
-
 Next, we make the endpoint available to the Express app:
 
 ```javascript
@@ -311,7 +309,8 @@ The most important options are:
 * **providerBaseUrl**: base url of the provider to which the requests are going to be
   sent. In our case, we're starting the Express server locally on port 3000.
 * **providerStatesSetupUrl**: the url to change provider states. This refers to the endpoint
-  we have created above.
+  we have created above. In our case, we could actually leave this option out, since our provider state
+  endpoint doesn't really do anything.
   
 Instead of providing the coordinates to a pact broker, we could also provide a
 `pactUrls` option pointing directly to local pact files. 

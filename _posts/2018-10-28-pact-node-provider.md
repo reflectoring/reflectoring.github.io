@@ -366,7 +366,7 @@ npm run test:pact
 ## Conclusion
 
 In this tutorial we went through the steps to create an Express server from scratch
-and enabling it to run provider tests against a Pact contract. 
+and enabled it to run provider tests against a Pact contract. 
 
 You can look at the example code from this tutorial in my 
 [github repo](https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider).

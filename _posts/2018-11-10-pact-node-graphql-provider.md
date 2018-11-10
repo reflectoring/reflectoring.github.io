@@ -128,7 +128,7 @@ response to that request has HTTP status 200 and contains a hero JSON object.
 
 In the following, we assume that the contract has been published on a [Pact Broker](https://github.com/pact-foundation/pact_broker)
 by the consumer. But it's also possible to take the contract file from the consumer codebase and 
-access it directly in the provider code base. 
+copy it into the provider code base (be careful, though, we're loosing the single source of truth!). 
 
 ### Adding an Express Route
 
@@ -181,7 +181,7 @@ For a detailed discussion of GraphQL schemas, refer to the [GraphQL documentatio
 
 Next, we're providing a `getHero()` function that is responsible to find a hero. In this example, we're simply
 always returning the same object. In the real world, this function would load a hero from an external resource
-like a database depending on an ID.
+like a database depending on an ID that's passed in.
 
 In the `root` object, we're defining the GraphQL root. Since we're only providing a GraphQL query for heroes,
 the only root is `hero` which should resolve to a hero object, so we're using the `getHero` function
@@ -204,11 +204,11 @@ app.use('/graphql', graphqlRouter);
 We now have a working `/graphql` endpoint. We can test it by running `npm run start` and
 type the URL `http://localhost:3000/graphql` into a browser.
 
-You should see the graphiql interface that looks something like this:
+We should see the graphiql interface that looks something like this:
 
 ![GraphiQL Web Interface](/assets/images/posts/pact-node-graphql-provider/graphiql.png) 
 
-You can play around and enter a query like shown in the screenshot to check if the server responds
+We can play around and enter a query like shown in the screenshot to check if the server responds
 accordingly.
 
 ## Setting Up Pact
@@ -242,7 +242,10 @@ First, we add some dependencies to `package.json`:
 
 ### Creating a Provider-Side Contract Test
 
-The actual contract test is done by Pact. Let's create the script `pact/provider_tests_graphql.js` to configure Pact:
+The actual contract testing is done by Pact. We simply have to make sure that our GraphQL endpoint 
+is up and running and ready to receive requests. 
+
+Let's create the script `pact/provider_tests_graphql.js` to configure Pact:
 
 ```javascript
 const { Verifier } = require('@pact-foundation/pact');
@@ -276,7 +279,7 @@ To make the script runnable via Node, we add some scripts to `package.json`:
 }
 ```
 
-The script are explained in detail in my [previous tutorial](pact-node-provider/#starting-pact) on
+The scripts are explained in detail in my [previous tutorial](/pact-node-provider#starting-pact) on
 creating a contract test for a Node REST provider.
 
 We can now run the provider tests and they should be green:
@@ -288,7 +291,7 @@ npm run test:pact:graphql
 ## Conclusion
 
 In this tutorial we went through the steps to create an Express server with a GraphQL
-endpoint and enabling it to run provider contract tests against a Pact contract. 
+endpoint and enabled it to run provider contract tests against a Pact contract. 
 
 You can look at the example code from this tutorial in my 
 [github repo](https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider).

@@ -37,7 +37,7 @@ consumer for a REST API, so you'll find some links to that tutorial for more det
 
 ## Creating the Node App
 
-To set up a Node app, follow [the instructions in the previous tutorial](https://reflectoring.io/pact-react-consumer/#creating-a-react-app).
+To set up a Node app, follow [the instructions in the previous tutorial](/pact-react-consumer/#creating-a-react-app).
 There, we're using the `create-react-app` tool to create a React client that already has [Jest](https://jestjs.io/) set up as
 a testing framework.
 
@@ -76,7 +76,7 @@ Don't forget to run `npm install` after changing the dependencies.
 
 We're using Jest as the testing framework for our contract tests.
 
-Follow [the instructions in the previous tutorial](https://reflectoring.io/pact-react-consumer/#setting-up-jest)
+Follow [the instructions in the previous tutorial](/pact-react-consumer/#setting-up-jest)
 to set up Jest. If you want the code of the previous tutorial and the code of this tutorial to exist in parallel,
 note these changes:
 
@@ -348,13 +348,13 @@ can test against it, too.
 
 ## Improving Contract Quality with Validation
 
-Read [this discussion](https://reflectoring.io/pact-react-consumer/#improving-contract-quality-with-validation) in my previous tutorial.
+Read [this discussion](/pact-react-consumer/#improving-contract-quality-with-validation) in my previous tutorial.
 
 ## Debugging
-Read [this discussion](https://reflectoring.io/pact-react-consumer/#debugging) in my previous tutorial.
+Read [this discussion](/pact-react-consumer/#debugging) in my previous tutorial.
 
 ## Publishing the Contract
-Read [this discussion](https://reflectoring.io/pact-react-consumer/#publishing-the-contract) in my previous tutorial.
+Read [this discussion](/pact-react-consumer/#publishing-the-contract) in my previous tutorial.
 
 ## Conclusion
 In this tutorial, we have successfully created a GraphQL client with Node and Apollo. We have

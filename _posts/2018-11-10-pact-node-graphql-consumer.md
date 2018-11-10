@@ -1,8 +1,8 @@
 ---
 title: "Implementing a Consumer-Driven Contract for a GraphQL Consumer with Node and Apollo"
 categories: [cdc]
-modified: 2018-10-25
-last_modified_at: 2018-10-25
+modified: 2018-11-10
+last_modified_at: 2018-11-10
 author: tom
 tags: 
 comments: true

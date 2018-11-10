@@ -56,7 +56,7 @@ don't need any templating engine.
 
 Don't forget to call `npm install` in the created project folder now to install the dependencies. 
 
-## Adding the Heroes Endpoints
+## Adding the Heroes Endpoint
 
 Having a base Express project, we're ready to implement a new REST endpoint.
 
@@ -179,7 +179,10 @@ const heroesRouter = require('./routes/heroes');
 app.use('/heroes', heroesRouter);
 ```
 
-We just implemented the provider side of the contract. 
+We just implemented the provider side of the contract. We can check if it works by calling `npm run start` and
+sending a POST request to `http://localhost:3000/heroes` with a REST client tool. Or, we can just
+type the URL into your browser. However, we'll get HTTP status 405 then, because the browser sends
+a GET request and a POST request is expected.
 
 **Now we have to prove that the provider actually works as expected by the contract.**
 
@@ -205,7 +208,7 @@ First, we add some dependencies to `package.json`:
 // ./package.json
 {
   "devDependencies": {
-    "@pact-foundation/pact": "7.0.1",
+    "@pact-foundation/pact": "7.0.3",
     "start-server-and-test": "^1.7.5"
   }
 }
@@ -271,7 +274,13 @@ don't want this endpoint in production.**
  
 Make sure to set this environment variable when running the test later. 
 
-### Starting Pact
+Providing an endpoint that is only needed in tests is quite invasive. There's a [feature proposal](https://github.com/pact-foundation/pact-js/issues/209)
+that provides "state handlers" that can react to provider states within your provider test. This way, we can
+mock external dependencies depending on the provider state 
+more cleanly within the test, instead of "polluting" our application
+with a dedicated endpoint. However, this feature has not made it into Pact, yet.
+
+### Creating a Provider-Side Contract Test
 
 Now we create a script `pact/provider_tests.js` to use Pact to do the actual testing:
 
@@ -316,9 +325,14 @@ Instead of providing the coordinates to a pact broker, we could also provide a
 `pactUrls` option pointing directly to local pact files. 
 
 A full description of the options can be found 
-[here](https://github.com/pact-foundation/pact-js#provider-api-testing). 
+[here](https://github.com/pact-foundation/pact-js#provider-api-testing).
 
-To make the script runnable via node, we add some scripts to `package.json`:  
+If the script is run, it will load all contracts for the provider `hero-provider` 
+from the specified Pact Broker and then call Pact's `Verifier`. For each interaction defined
+int the loaded contracts the `Verifier` will send a request to `http://localhost:3000` and
+check if the response matches the expectations expressed in the contract.  
+
+To make the script runnable via Node, we add some scripts to `package.json`:  
 
 ```json
 // ./package.json

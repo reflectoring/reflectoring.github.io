@@ -54,8 +54,14 @@ cdc:
       url: /consumer-driven-contract-consumer-spring-cloud-contract/
     - title: "Testing a Spring Message Producer and Consumer against a Contract with Pact"
       url: /cdc-pact-messages/
-    - title: "Step By Step Tutorial for Implementing Consumer-Driven Contracts for a React App with Pact and Jest"
+    - title: "Implementing a Consumer-Driven Contract for a React App with Pact and Jest"
       url: /pact-react-consumer/
+    - title: "Implementing a Consumer-Driven Contract for a Node Express Server with Pact"
+      url: /pact-node-provider/
+    - title: "Implementing a Consumer-Driven Contract for a GraphQL Consumer with Node and Apollo"
+      url: /pact-node-graphql-consumer/
+    - title: "Implementing a Consumer-Driven Contract for a GraphQL Provider with Node and Express"
+      url: /pact-node-graphql-provider/
 
 opensource:
   - title: "Articles on Publishing Open Source"

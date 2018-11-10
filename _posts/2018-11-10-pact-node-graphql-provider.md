@@ -41,7 +41,7 @@ This tutorial assumes you have a current version of Node installed.
 If you have already followed the [previous tutorial about Node and Pact](/pact-node-provider), you can re-use the
 Node Express server created there.
 
-Otherwise, follow [the instructions in the previous tutorial](pact-node-provider/#creating-an-express-server)
+Otherwise, follow [the instructions in the previous tutorial](/pact-node-provider#creating-an-express-server)
 to create an Express Server from scratch.
 
 ## Adding the Heroes GraphQL Endpoint

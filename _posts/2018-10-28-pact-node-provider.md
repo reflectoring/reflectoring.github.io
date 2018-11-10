@@ -1,8 +1,8 @@
 ---
-title: "Step By Step Tutorial for Implementing Consumer-Driven Contracts for a Node Express Server with Pact"
+title: "Implementing a Consumer-Driven Contract for a Node Express Server with Pact"
 categories: [cdc]
 modified: 2018-10-28
-last_modified_at: 2018-10-28
+last_modified_at: 2018-11-10
 author: tom
 tags: 
 comments: true

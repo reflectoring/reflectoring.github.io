@@ -21,10 +21,9 @@ Consumer-driven contract (CDC) tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
 [recent blog post](/7-reasons-for-consumer-driven-contracts/)).
 A common use case for consumer-driven contract tests is testing interfaces between 
-services in a microservice architecture. However, another interesting use case is
-testing interfaces between the user client and those backend services. 
+services in a microservice architecture. 
 
-This article explains the steps of setting up a GraphQL client using the [Apollo](https://www.apollographql.com/)
+This article explains the steps of setting up a GraphQL client (or "consumer") using the [Apollo](https://www.apollographql.com/)
 framework. We'll then create and publish a consumer-driven contract for the GraphQL interaction 
 between the GraphQL client and the API provider and implement a contract test that validates that
 our consumer is working as expected by the contract. For this, we're using the Node version of the 

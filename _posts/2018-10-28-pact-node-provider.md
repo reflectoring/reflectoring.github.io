@@ -20,8 +20,7 @@ Consumer-driven contract (CDC) tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
 [recent blog post](/7-reasons-for-consumer-driven-contracts/)).
 A common use case for consumer-driven contract tests is testing interfaces between 
-services in a microservice architecture. However, another interesting use case is
-testing interfaces between the user client and those backend services. 
+services in a microservice architecture. 
 
 In this tutorial, we're going to create a REST provider with [Node](https://nodejs.org/en/) 
 and [Express](https://expressjs.com/) that implements the Heroes endpoints from the contract

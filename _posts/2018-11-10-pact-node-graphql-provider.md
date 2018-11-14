@@ -278,7 +278,7 @@ To make the script runnable via Node, we add some scripts to `package.json`:
 }
 ```
 
-The scripts are explained in detail in my [previous tutorial](/pact-node-provider/#starting-pact) on
+The scripts are explained in detail in my [previous tutorial](/pact-node-provider/#setting-up-pact) on
 creating a contract test for a Node REST provider.
 
 We can now run the provider tests and they should be green:

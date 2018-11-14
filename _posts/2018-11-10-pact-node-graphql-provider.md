@@ -25,7 +25,7 @@ services in a microservice architecture.
  
 In this tutorial, we're going to create a GraphQL API provider with [Node](https://nodejs.org/en/) 
 and [Express](https://expressjs.com/) that implements the Heroes query from the contract
-created by a [GraphQL consumer](/pact-node-graphql-consumer) previously. 
+created previously by a [GraphQL consumer](/pact-node-graphql-consumer). 
 
 Then, we'll create a contract test
 with the JavaScript version of [Pact](https://github.com/pact-foundation/pact-js) that 

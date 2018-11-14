@@ -62,6 +62,8 @@ cdc:
       url: /pact-node-graphql-consumer/
     - title: "Implementing a Consumer-Driven Contract for a GraphQL Provider with Node and Express"
       url: /pact-node-graphql-provider/
+    - title: "Implementing a Consumer-Driven Contract between a Node Message Consumer and a Node Message Producer"
+      url: /pact-node-messaging/
 
 opensource:
   - title: "Articles on Publishing Open Source"

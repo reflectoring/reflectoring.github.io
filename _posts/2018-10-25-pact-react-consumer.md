@@ -21,8 +21,7 @@ Consumer-driven contract (CDC) tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
 [recent blog post](/7-reasons-for-consumer-driven-contracts/)).
 A common use case for consumer-driven contract tests is testing interfaces between 
-services in a microservice architecture. However, another interesting use case is
-testing interfaces between the user client and those backend services. 
+services in a microservice architecture.
 
 This article leads through the steps of setting up a fresh React app which calls a backend
 REST service using [Axios](https://github.com/axios/axios). We'll then see how to create and publish 

@@ -1,8 +1,8 @@
 ---
-title: "Step By Step Tutorial for Implementing Consumer-Driven Contracts for a React App with Pact and Jest"
+title: "Implementing a Consumer-Driven Contract for a React App with Pact and Jest"
 categories: [cdc]
 modified: 2018-10-25
-last_modified_at: 2018-10-25
+last_modified_at: 2018-11-10
 author: tom
 tags: 
 comments: true
@@ -75,10 +75,11 @@ However, for the rest of this tutorial to work, we need additional dependencies:
 }
 ```
 
-* we use `axios` to implement our REST client
-* we use `pact-node` to start a pact mock server for us during tests
-* we use `pact` as an easier-to-use wrapper around pact-node
-* we use `cross-env` to create command lines that are independent of the operating system 
+* [axios](https://www.npmjs.com/package/axios) provides REST client capabilities
+* [pact-node](https://www.npmjs.com/package/@pact-foundation/pact-node) provides the pact mock server 
+  that receives and checks our REST client's requests during the contract test
+* [pact](https://www.npmjs.com/package/@pact-foundation/pact) is an easier-to-use wrapper around pact-node
+* [cross-env](https://www.npmjs.com/package/cross-env) allows to create npm command lines that are independent of the operating system 
 
 Don't forget to run `npm install` after changing the contents of `package.json`. 
 
@@ -274,7 +275,7 @@ in a browser, even in a Node environment.
 
 We can use this service in our React components now and it should work. 
 
-## Implementing a Unit Test
+## Implementing a Contract Test
 
 Next, let's create a test for our REST client. 
 
@@ -382,7 +383,7 @@ The matchers decouple our contract from the provider test because the provider d
 have to return the exact object specified in the contract. In turn, this will make
 our tests much more stable through changes that might happen over time.
 
-### Validating the REST Client
+### Verifying the REST Client
 
 All we have left to do is to verify that our REST client works as the contract
 expects it to. We do this in the actual test method `it()`: 
@@ -569,7 +570,8 @@ Since Jest is the default test
 framework for React apps (at least if you use the create-react-app bootstrapper), the described
 setup is well applicable to implements CDC for a REST-consuming React app.
 
-The generated contract can now be used to create a REST provider, for example with [Spring Boot](/consumer-driven-contract-provider-pact-spring) or Node.
+The generated contract can now be used to create a REST provider, for example with 
+[Spring Boot](/consumer-driven-contract-provider-pact-spring) or [Node](/pact-node-provider).
 
 The code for this tutorial can be found on 
 [github](https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer). 

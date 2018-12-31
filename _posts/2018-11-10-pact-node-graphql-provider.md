@@ -21,12 +21,11 @@ Consumer-driven contract (CDC) tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
 [recent blog post](/7-reasons-for-consumer-driven-contracts/)).
 A common use case for consumer-driven contract tests is testing interfaces between 
-services in a microservice architecture. However, another interesting use case is
-testing interfaces between the user client and those backend services. 
-
-In this tutorial, we're going to create a GraphQL provider with [Node](https://nodejs.org/en/) 
+services in a microservice architecture.   
+ 
+In this tutorial, we're going to create a GraphQL API provider with [Node](https://nodejs.org/en/) 
 and [Express](https://expressjs.com/) that implements the Heroes query from the contract
-created in [this article](/pact-node-graphql-consumer). 
+created previously by a [GraphQL consumer](/pact-node-graphql-consumer). 
 
 Then, we'll create a contract test
 with the JavaScript version of [Pact](https://github.com/pact-foundation/pact-js) that 
@@ -279,7 +278,7 @@ To make the script runnable via Node, we add some scripts to `package.json`:
 }
 ```
 
-The scripts are explained in detail in my [previous tutorial](/pact-node-provider#starting-pact) on
+The scripts are explained in detail in my [previous tutorial](/pact-node-provider/#setting-up-pact) on
 creating a contract test for a Node REST provider.
 
 We can now run the provider tests and they should be green:

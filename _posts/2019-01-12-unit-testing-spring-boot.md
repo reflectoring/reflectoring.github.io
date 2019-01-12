@@ -26,7 +26,7 @@ We'll have a look at how to create Spring beans in a testable manner and then di
 usage of Mockito and AssertJ, both libraries that Spring Boot by default includes for
 testing. 
 
-[comment]: # (CROSS REFERENCE - tutorials on other Spring Boot testing features)
+[comment]: # (add cross reference - https://gitlab.com/thombergs/reflectoring/issues/103)
 Note that this article only discusses *unit tests*. Integration tests, tests of the web layer
 and tests of the persistence layer will be discussed in upcoming articles of this series.
 
@@ -72,7 +72,7 @@ class RegisterUseCaseTest {
 }
 ```
 
-[comment]: # (CROSS REFERENCE - tutorial on how to inject current time)
+[comment]: # (add cross reference - https://gitlab.com/thombergs/reflectoring/issues/171)
 
 This test takes about 4.5 seconds to run on an empty Spring project on my computer. 
 
@@ -316,8 +316,8 @@ the AssertJ library, we can use the new, easier to read assertion.
 
 Creating a custom assertion like this may seem like a lot of work, but it's actually done in a couple minutes.
 I believe strongly that it's worth to invest these minutes to create readable test code, even if it's
-only marginally better readable afterwards. **We only write the test code once, after all, and others
-have to read, understand and then manipulate the code many, many times during the lifetime of the software**.
+only marginally better readable afterwards. **We only write the test code *once*, after all, and others
+(including "future me") have to read, understand and then manipulate the code many, many times during the lifetime of the software**.
 
 If it still seems like too much work, have a look at AssertJ's 
 [Assertions Generator](http://joel-costigliola.github.io/assertj/assertj-assertions-generator.html).
@@ -329,7 +329,8 @@ necessary. It's even harmful due to the longer turnaround times. Instead, we sho
 beans in a way that easily supports writing plain unit tests for.
 
 The [Spring Boot Test Starter](https://search.maven.org/search?q=g:org.springframework.boot%20AND%20a:spring-boot-starter-test&core=gav)
-comes with Mockito and AssertJ as testing libraries. We should exploit their
-features to create expressive unit tests.
+comes with Mockito and AssertJ as testing libraries. 
+
+Let's exploit those testing libraries to create expressive unit tests!
 
 The code example in its final form is available [on github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing).   

@@ -1,13 +1,14 @@
 ---
 title: "All You Need To Know About Unit Testing with Spring Boot"
 categories: [java]
-modified: 2018-12-31
-last_modified_at: 2018-12-31
+modified: 2019-01-12
+last_modified_at: 2019-01-12
 author: tom
 tags: 
 comments: true
 ads: true
-excerpt: ""
+excerpt: "In this tutorial we'll learn how to build testable Spring beans and get to know 
+          the tools that Spring Boot by default imports for writing maintainable unit tests."
 sidebar:
   toc: true
 ---
@@ -15,21 +16,26 @@ sidebar:
 {% include sidebar_right %}
 
 Writing good unit tests can be considered an art that is hard to master. But the
-good news is that the mechanics supporting this art are easy to learn. This article
-provides these mechanics and goes into the technical details that are necessary
-to write good unit tests. 
+good news is that the mechanics supporting it are easy to learn. 
+
+This tutorial
+provides you with these mechanics and goes into the technical details that are necessary
+to write good unit tests with a focus on Spring Boot applications. 
 
 We'll have a look at how to create Spring beans in a testable manner and then discuss 
-usage of Mockito and AssertJ, both libraries that Spring Boot automatically includes for
-supporting tests. 
+usage of Mockito and AssertJ, both libraries that Spring Boot by default includes for
+testing. 
 
-Note that this article only discusses unit tests. Integration tests, tests of the web layer
+[comment]: # (CROSS REFERENCE - tutorials on other Spring Boot testing features)
+Note that this article only discusses *unit tests*. Integration tests, tests of the web layer
 and tests of the persistence layer will be discussed in upcoming articles of this series.
+
+{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
 # Dependencies
 
-For the unit tests in this tutorial, we'll use JUnit Jupiter (JUnit 5), Mockito, and 
-AssertJ. We'll also include Lombok for reducing a bit of boilerplate code:
+For the unit test in this tutorial, we'll use JUnit Jupiter (JUnit 5), Mockito, and 
+AssertJ. We'll also include Lombok to reduce a bit of boilerplate code:
 
 ```groovy
 compileOnly('org.projectlombok:lombok')
@@ -38,14 +44,15 @@ testCompile 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
 testCompile('org.mockito:mockito-junit-jupiter:2.23.0')
 ```
 
-Mockito and AssertJ are automatically imported with the `spring-boot-starter-test` dependency.
+Mockito and AssertJ are automatically imported with the `spring-boot-starter-test` dependency, but
+we'll have to include Lombok ourselves.
  
 # Don't Use Spring in Unit Tests 
 
 If you have written tests with Spring or Spring Boot in the past, **you'll probably say that
-we don't need Spring to write unit tests**. But why?
+we don't need Spring to write unit tests**. Why is that?
 
-Consider the following "unit" test that tests a single method on the `RegisterUseCase` class:
+Consider the following "unit" test that tests a single method of the `RegisterUseCase` class:
 
 ```java
 @ExtendWith(SpringExtension.class)
@@ -67,26 +74,29 @@ class RegisterUseCaseTest {
 
 [comment]: # (CROSS REFERENCE - tutorial on how to inject current time)
 
-**This test takes about 4.5 seconds to run on an empty Spring project on my computer.** Note that
-if it's run from the IDE, it shows only about 75 ms, but the IDE only shows the time needed
-to actually run the test, not the time to set up the Spring context.
+This test takes about 4.5 seconds to run on an empty Spring project on my computer. 
 
-The rest of the 4.5 seconds is due to the `@SpringBootRun` annotation that tells Spring Boot
-to set up **a whole Spring Boot application context only so that we can autowire a `RegisterUseCase`
+**But a good unit test only takes milliseconds.** Otherwise it hinders the "test / code / test" flow
+promoted by the idea of Test-Driven Development (TDD). But even when we're not practicing TDD,
+waiting on a test that takes too long ruins our concentration.
+
+Execution of the test method above actually only takes milliseconds. The rest of the 4.5 seconds is due to the `@SpringBootRun` 
+telling Spring Boot to set up a whole Spring Boot application context.
+ 
+**So we have started the whole application only to autowire a `RegisterUseCase`
 instance into our test**. It will take even longer once the application gets bigger and Spring
-has to load more beans into the application context. If you want to dig deeper into 
-Spring Boot startup performance, have a look at Dave Syer's 
-[write-up about this topic](https://github.com/dsyer/spring-boot-startup-bench).
+has to load more and more beans into the application context. 
 
 So, why this article when we shouldn't use Spring Boot in a unit test? To be honest, most of this tutorial
-is about how to write good unit tests *without* Spring Boot.
+is about writing unit tests *without* Spring Boot.
 
 # Creating a Testable Spring Bean
 
+However, there are some things we can do to make our Spring beans better testable.
+
 ## Field Injection is Evil
 
-However, we can write Spring beans ways that are better or worse unit testable without Spring Boot. Consider
-the following class:
+Let's start with a bad example. Consider the following class:
 
 ```java
 @Service
@@ -104,7 +114,7 @@ public class RegisterUseCase {
 
 This class cannot be unit tested without Spring because it provides no way to pass in a `UserRepository`
 instance. Instead, we need to write the test in the way discussed in the previous section to let
-Spring create a `UserRepository` instance and inject it into the field annotated with `@Autowired`.
+Spring create a `UserRepository` instance and inject it into the field annotated with `@Autowired`. 
 
 **The lesson here is not to use field injection.** 
 
@@ -131,13 +141,13 @@ public class RegisterUseCase {
 
 This version allows constructor injection by providing a constructor that allows to pass 
 in a `UserRepository` instance. In the unit test, we can now
-create such an instance (perhaps a mock instance as will be discussed later) and pass it into the constructor.
+create such an instance (perhaps a mock instance as we'll discuss later) and pass it into the constructor.
 
 Spring will automatically use this constructor to instantiate a `RegisterUseCase` object when creating
-the application context. Note that prior to Spring 5, we need to add the `@Autowired` annotation to
+the production application context. Note that prior to Spring 5, we need to add the `@Autowired` annotation to
 the constructor for Spring to find the constructor. 
 
-Also note that the `UserRepository` field is now `final`. This makes sense since the field content 
+Also note that the `UserRepository` field is now `final`. This makes sense, since the field content 
 won't ever change during the lifetime of an application. It also helps to avoid programming
 errors, because the compiler will complain if we have forgotten to initialize the field.
 
@@ -161,7 +171,7 @@ public class RegisterUseCase {
 }
 ```
 
-Now we have a very concise class without boilerplate code that can be instantiated easily in 
+Now, we have a very concise class without boilerplate code that can be instantiated easily in 
 a plain java test case:
 
 ```java
@@ -186,9 +196,9 @@ class RegisterUseCaseTest {
 }
 ```
 
-In the next section we'll look at how to create a mock `UserRepository` instance so that 
-we can test the `RegisterUseCase` class without relying on an actual `UserRepository`
-that would in turn rely on a database.   
+There's a piece missing, yet, and that is how to mock away the `UserRepository` instance
+our class under test depends on, because we don't want to rely on the real thing, which
+probably needs a connection to a database.
 
 # Using Mockito to Mock Dependencies
 
@@ -207,9 +217,9 @@ This will create an object that looks like a `UserRepository` from the outside. 
 do nothing when a method is called and return `null` if the method has a return value**.
 
 Our test would now fail with a `NullPointerException` at `assertThat(savedUser.getRegistrationDate()).isNotNull()`
-because the content of the `savedUser` resulting from the call to `userRepository.save(user)` is `null`.
+because `userRepository.save(user)` now returns `null`.
 
-So, we have to tell Mockito to return something when `save()` is called. We do this with the static `when`
+So, we have to tell Mockito to return something when `userRepository.save()` is called. We do this with the static `when`
 method:
 
 ```java
@@ -225,7 +235,8 @@ void savedUserHasRegistrationDate() {
 This will make `userRepository.save()` return the same user object that is passed into
 the method.
 
-For more information on how to use Mockito, have a look at 
+Mockito has a whole lot more features that allow for mocking, matching arguments and verifying method calls.
+For more information have a look at 
 the [reference documentation](https://static.javadoc.io/org.mockito/mockito-core/2.23.4/org/mockito/Mockito.html).
 
 ## Mocking Dependencies with Mockito's `@Mock` Annotation
@@ -259,7 +270,7 @@ The `@Mock` annotation specifies the fields in which Mockito should inject mock 
 tells Mockito to evaluate those `@Mock` annotations because JUnit does not do this automatically.
 
 The result is the same as if calling `Mockito.mock()` manually, it's a matter of taste which way to use. Note, though,
-that by using `MockitoExtension` you're bound to the test framework. 
+that by using `MockitoExtension` our tests are bound to the test framework. 
 
 # Creating Readable Assertions with AssertJ
 
@@ -303,21 +314,22 @@ public class UserAssert extends AbstractAssert<UserAssert, User> {
 Now, if we import the `assertThat` method from the new `UserAssert` class instead from
 the AssertJ library, we can use the new, easier to read assertion.
 
-Creating a custom assertion may seem like a lot of work, but it's actually done in a couple minutes.
+Creating a custom assertion like this may seem like a lot of work, but it's actually done in a couple minutes.
 I believe strongly that it's worth to invest these minutes to create readable test code, even if it's
 only marginally better readable afterwards. **We only write the test code once, after all, and others
-have to read, understand and then manipulate the code many, many times during the life-time of a software**.
+have to read, understand and then manipulate the code many, many times during the lifetime of the software**.
 
 If it still seems like too much work, have a look at AssertJ's 
 [Assertions Generator](http://joel-costigliola.github.io/assertj/assertj-assertions-generator.html).
 
 # Conclusion
 
-There are reasons to start up a Spring application in a test, but for plain unit tests, this is not
+There are reasons to start up a Spring application in a test, but for plain unit tests, it's not
 necessary. It's even harmful due to the longer turnaround times. Instead, we should build our Spring
 beans in a way that easily supports writing plain unit tests for.
 
-The Spring Boot Test Starter comes with Mockito and AssertJ as testing libraries. We should exploit their
+The [Spring Boot Test Starter](https://search.maven.org/search?q=g:org.springframework.boot%20AND%20a:spring-boot-starter-test&core=gav)
+comes with Mockito and AssertJ as testing libraries. We should exploit their
 features to create expressive unit tests.
 
 The code example in its final form is available [on github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing).   

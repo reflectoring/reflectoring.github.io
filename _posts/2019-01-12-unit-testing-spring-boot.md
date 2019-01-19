@@ -272,8 +272,9 @@ tells Mockito to evaluate those `@Mock` annotations because JUnit does not do th
 The result is the same as if calling `Mockito.mock()` manually, it's a matter of taste which way to use. Note, though,
 that by using `MockitoExtension` our tests are bound to the test framework. 
 
-Note that instead of constructing an `RegisterUseCase` object manually, we can just as well use the `@InjectMocks` on
-the field. Mockito will then try to do it for us, following a specified [algorithm](https://static.javadoc.io/org.mockito/mockito-core/2.23.4/org/mockito/InjectMocks.html):
+Note that instead of constructing an `RegisterUseCase` object manually, we can just as well use the `@InjectMocks` 
+annotation on the `registerUseCase` field. Mockito will then create an instance for us,
+following a specified [algorithm](https://static.javadoc.io/org.mockito/mockito-core/2.23.4/org/mockito/InjectMocks.html):
 
 ```java
 @ExtendWith(MockitoExtension.class)

@@ -272,6 +272,27 @@ tells Mockito to evaluate those `@Mock` annotations because JUnit does not do th
 The result is the same as if calling `Mockito.mock()` manually, it's a matter of taste which way to use. Note, though,
 that by using `MockitoExtension` our tests are bound to the test framework. 
 
+Note that instead of constructing an `RegisterUseCase` object manually, we can just as well use the `@InjectMocks` on
+the field. Mockito will then try to do it for us, following a specified [algorithm](https://static.javadoc.io/org.mockito/mockito-core/2.23.4/org/mockito/InjectMocks.html):
+
+```java
+@ExtendWith(MockitoExtension.class)
+class RegisterUseCaseTest {
+
+  @Mock
+  private UserRepository userRepository;
+
+  @InjectMocks
+  private RegisterUseCase registerUseCase;
+
+  @Test
+  void savedUserHasRegistrationDate() {
+    // ...
+  }
+
+}
+```
+
 # Creating Readable Assertions with AssertJ
 
 Another library that comes automatically with the Spring Boot test support is [AssertJ](http://joel-costigliola.github.io/assertj/).

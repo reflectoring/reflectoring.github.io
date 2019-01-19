@@ -99,8 +99,8 @@ there's also talk about upstream and downstream services.
 
 Unsurprisingly, both the Dependency Rules and the Value Rule also apply to this context.
 
-Service A is the upstream service since service B depends on it. And service B is the downstream
-service since it adds to the value of service A.
+Service B is the upstream service since service A depends on it. And service A is the downstream
+service since it adds to the value of service B.
 
 Note that **the "stream"** defining what is upstream and what is downstream in this case **is not the
 stream of data coming into the system** through service A but rather **the stream of data from the

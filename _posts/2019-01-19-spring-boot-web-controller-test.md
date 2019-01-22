@@ -81,8 +81,10 @@ class RegisterRestController {
 
 The controller method is annotated with `@PostMapping` to define the URL, HTTP method and content type
 it should listen to.
+
 It takes input via parameters annotated with `@PathVariable`, `@RequestBody`,
 and `@RequestParam` which are automatically filled from the incoming HTTP request. 
+
 Parameters my be annotated with `@Valid` to indicate that Spring should perform
 [bean validation](/bean-validation-with-spring-boot/) on them.
 
@@ -96,15 +98,16 @@ usually does the following steps:
 | # | Responsibility              | Description |
 |---|-----------------------------|-------------|
 | 1.| **Listen to HTTP Requests** | The controller should respond to certain URLs, HTTP methods and content types.
-| 2.| **Deserialize input**       | The controller should parse the incoming HTTP request and create Java objects from variables in the URL, HTTP request parameters and the request body so that we can work with them in the code.
-| 3.| **Validate input**          | The controller is the first line of defense against bad input, so it's a place where we can validate the input.
-| 4.| **Call the business logic** | Having parsed the input, the controller must transform the input into the model expected by the business logic and pass it on to the business logic.
-| 5.| **Serialize the output**    | The controller takes the output of the business logic and serializes it into an HTTP response.
-| 6.| **Translate exceptions**    | If an exception occurs somewhere on the way, the controller should translate it into a meaningful error message and HTTP status for the user.
+| 2.| **Deserialize Input**       | The controller should parse the incoming HTTP request and create Java objects from variables in the URL, HTTP request parameters and the request body so that we can work with them in the code.
+| 3.| **Validate Input**          | The controller is the first line of defense against bad input, so it's a place where we can validate the input.
+| 4.| **Call the Business Logic** | Having parsed the input, the controller must transform the input into the model expected by the business logic and pass it on to the business logic.
+| 5.| **Serialize the Output**    | The controller takes the output of the business logic and serializes it into an HTTP response.
+| 6.| **Translate Exceptions**    | If an exception occurs somewhere on the way, the controller should translate it into a meaningful error message and HTTP status for the user.
   
 A controller apparently has a lot to do!  
-**So, we should take care not to 
-add even more responsibilities like performing business logic**. 
+**We should take care not to 
+add even more responsibilities like performing business logic**. Otherwise, our
+controller tests will become fat and unmaintainable. 
 
 How are we going to write meaningful tests that cover all of those responsibilities?
 
@@ -123,16 +126,18 @@ we have identified above we can cover in an isolated unit test:
 | # | Responsibility              | Covered in a Unit Test? |
 |---|-----------------------------|-------------------------|
 | 1.| **Listen to HTTP Requests** | <i class="fa fa-times" style="color:red" title="no"></i> No, because the unit test would not evaluate the `@PostMapping` annotation and similar annotations specifying the properties of a HTTP request.
-| 2.| **Deserialize input**       | <i class="fa fa-times" style="color:red" title="no"></i> No, because in a unit test, we'd have to provide the input as Java objects, effectively skipping deserialization from an HTTP request.  
-| 3.| **Validate input**          | <i class="fa fa-times" style="color:red" title="no"></i> Not when depending on bean validation, because the `@Valid` annotation would not be evaluated.
-| 4.| **Call the business logic** | <i class="fa fa-check" style="color:green" title="yes"></i> Yes, because we can verify if the mocked business logic has been called with the expected arguments.
-| 5.| **Serialize the output**    | <i class="fa fa-times" style="color:red" title="no"></i> No, because we can only verify the Java version of the output, and not the HTTP response that would be generated.   
-| 6.| **Translate exceptions**    | <i class="fa fa-times" style="color:red" title="no"></i> Only partly: we can verify if the error has been translated into a certain error object but we cannot verify the expected HTTP status. If we depend on `@ControllerAdvice` or `@ExceptionHandler` for error handling, we cannot test the error handling at all, since these annotations are evaluated by the Spring framework.
+| 2.| **Deserialize Input**       | <i class="fa fa-times" style="color:red" title="no"></i> No, because annotations like `@RequestParam` and `@PathVariable` would not be evaluated. Instead we would provide the input as Java objects, effectively skipping deserialization from an HTTP request.  
+| 3.| **Validate Input**          | <i class="fa fa-times" style="color:red" title="no"></i> Not when depending on bean validation, because the `@Valid` annotation would not be evaluated.
+| 4.| **Call the Business Logic** | <i class="fa fa-check" style="color:green" title="yes"></i> Yes, because we can verify if the mocked business logic has been called with the expected arguments.
+| 5.| **Serialize the Output**    | <i class="fa fa-times" style="color:red" title="no"></i> No, because we can only verify the Java version of the output, and not the HTTP response that would be generated.   
+| 6.| **Translate Exceptions**    | <i class="fa fa-times" style="color:red" title="no"></i> No. We could check if a certain exception was raised, but not that it was translated to a certain JSON response or HTTP status code.
 
-In summary, **a simple unit test will not cover most of the things a controller does**,
-because we don't use Spring in our unit test and Spring does all of the HTTP magic.
+In summary, **a simple unit test will not cover the HTTP layer**. 
+So, we need to introduce Spring to our test to do the HTTP magic for us. 
+Thus, we're building an integration test that tests the integration between
+our controller code and the components Spring provides for HTTP support.
 
-So, we need to build an integration test. An integration test with Spring fires
+An integration test with Spring fires
 up a Spring application context that contains all the beans we need. This includes
 framework beans that are responsible for listening to certain URLs, serializing and deserializing to and from
 JSON and translating exceptions to HTTP. These beans will evaluate the annotations
@@ -166,7 +171,7 @@ class RegisterRestControllerTest {
 }
 ```
 
-We can now `@Autowire` all the beans we need. Spring Boot automatically 
+We can now `@Autowire` all the beans we need from the application context. Spring Boot automatically 
 provides beans like an `@ObjectMapper` to map to and from JSON and a
 `MockMvc` instance to simulate HTTP requests. 
 
@@ -198,6 +203,9 @@ HTTP method or content type.
 
 Note that this test would still fail, yet, since our controller expects some input parameters.
 
+More options to match HTTP requests can be found in the Javadoc of 
+[MockHttpServletRequestBuilder](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/test/web/servlet/request/MockHttpServletRequestBuilder.html).
+
 ## 2. Verifying Input Serialization
 
 To verify that the input is successfully serialized into Java objects, we have to provide it in the 
@@ -228,7 +236,7 @@ successfully parsed from the HTTP request.
 
 ## 3. Verifying Input Validation
 
-Let's say the `UserResource` uses the `@NotNull` annotation to not allow `null` values:
+Let's say the `UserResource` uses the `@NotNull` annotation to deny `null` values:
 
 ```java
 @Value
@@ -279,8 +287,10 @@ interface RegisterUseCase {
 }
 ```
 
-We expect the controller to transform the incoming `UserResource` object into a `User` object and call
-`registerUser()` with it. To verify this, we can ask
+We expect the controller to transform the incoming `UserResource` object into a `User` and to pass this
+object into the `registerUser()` method. 
+
+To verify this, we can ask
 the `RegisterUseCase` mock, which has been injected into the application context with the `@MockBean` annotation:
 
 ```java

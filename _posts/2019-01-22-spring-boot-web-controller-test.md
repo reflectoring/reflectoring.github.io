@@ -1,8 +1,8 @@
 ---
 title: "All You Need To Know About Testing Web Controllers with Spring Boot"
 categories: [java]
-modified: 2019-01-19
-last_modified_at: 2019-01-19
+modified: 2019-01-22
+last_modified_at: 2019-01-22
 author: tom
 tags: 
 comments: true

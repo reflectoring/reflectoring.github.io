@@ -110,6 +110,12 @@ class ValidateRequestBodyController {
 to mark that it should be read from the request body**. By doing this,
 we're telling Spring to pass the object to a `Validator` before doing anything else. 
 
+<div class="notice--warning">
+  <h4>Hint</h4>
+  If the <code>Input</code> class contains a field with another complex type that should be validated, this field, too, needs
+  to be annotated with <code>@Valid</code>.
+</div>
+
 If the validation fails, it will trigger a `MethodArgumentNotValidException`. **By default, Spring will translate
 this exception to a HTTP status 400 (Bad Request)**. 
 

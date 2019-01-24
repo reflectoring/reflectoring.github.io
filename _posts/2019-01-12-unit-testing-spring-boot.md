@@ -26,11 +26,19 @@ We'll have a look at how to create Spring beans in a testable manner and then di
 usage of Mockito and AssertJ, both libraries that Spring Boot by default includes for
 testing. 
 
-[comment]: # (add cross reference - https://gitlab.com/thombergs/reflectoring/issues/103)
 Note that this article only discusses *unit tests*. Integration tests, tests of the web layer
 and tests of the persistence layer will be discussed in upcoming articles of this series.
 
 {% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
+
+# The "Testing with Spring Boot" Series
+
+This tutorial is part of a series:
+
+1. [Unit Tests with Spring Boot](/unit-testing-spring-boot/)
+2. [Testing Web Controllers](/spring-boot-web-controller-test/)
+3. Testing Spring Data Repositories
+4. Integration Tests with Spring Boot
 
 # Dependencies
 
@@ -183,7 +191,7 @@ class RegisterUseCaseTest {
 
   @BeforeEach
   void initUseCase() {
-    RegisterUseCase registerUseCase = new RegisterUseCase(userRepository);
+    registerUseCase = new RegisterUseCase(userRepository);
   }
 
   @Test

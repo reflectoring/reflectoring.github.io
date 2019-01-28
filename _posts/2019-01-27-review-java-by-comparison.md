@@ -86,7 +86,8 @@ the reader can connect the dots.
 ## My Key Takeaways
 
 Having more than 10 years of Java experience under my belt, I really did not learn
-very much from this book. As advertised, it's a book for beginners.
+very much from this book. As advertised, it's a book for beginners. I would have
+profited greatly from the book had it been available 8-10 years ago, though. 
 
 I did learn two things I was not aware of, though.
 

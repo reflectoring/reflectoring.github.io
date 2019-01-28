@@ -13,4 +13,11 @@
 {% assign navigation = site.data.navigation[page.sidebar.nav] %}
 {% include nav_list_inner %}
 
+{% if page.sidebar.books %}
+  <span class="nav__sub-title">Books on this Page</span>
+  {% for book in page.sidebar.books %}
+    <a class="book" rel="nofollow" target="_blank" href="{{ book.href }}"><img border="0" src="{{ book.img }}" alt="{{ book.alt }}"></a>
+  {% endfor %}
+{% endif %}
+
 </aside>

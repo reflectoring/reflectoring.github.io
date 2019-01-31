@@ -46,10 +46,12 @@ For the unit test in this tutorial, we'll use JUnit Jupiter (JUnit 5), Mockito, 
 AssertJ. We'll also include Lombok to reduce a bit of boilerplate code:
 
 ```groovy
-compileOnly('org.projectlombok:lombok')
-testCompile('org.springframework.boot:spring-boot-starter-test')
-testCompile 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
-testCompile('org.mockito:mockito-junit-jupiter:2.23.0')
+dependencies{
+  compileOnly('org.projectlombok:lombok')
+  testCompile('org.springframework.boot:spring-boot-starter-test')
+  testCompile 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
+  testCompile('org.mockito:mockito-junit-jupiter:2.23.0')
+}
 ```
 
 Mockito and AssertJ are automatically imported with the `spring-boot-starter-test` dependency, but

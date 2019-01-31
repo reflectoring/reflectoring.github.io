@@ -40,11 +40,13 @@ We're going to use JUnit Jupiter (JUnit 5) as the testing framework, Mockito for
 mocking, AssertJ for creating assertions and Lombok to reduce boilerplate code:
 
 ```groovy
-compile('org.springframework.boot:spring-boot-starter-web')
-compileOnly('org.projectlombok:lombok')
-testCompile('org.springframework.boot:spring-boot-starter-test')
-testCompile 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
-testCompile('org.mockito:mockito-junit-jupiter:2.23.0')
+dependencies {
+  compile('org.springframework.boot:spring-boot-starter-web')
+  compileOnly('org.projectlombok:lombok')
+  testCompile('org.springframework.boot:spring-boot-starter-test')
+  testCompile 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
+  testCompile('org.mockito:mockito-junit-jupiter:2.23.0')
+}
 ```
 
 AssertJ and Mockito automatically come with the dependency to `spring-boot-starter-test`.

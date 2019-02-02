@@ -25,6 +25,18 @@ sidebar:
 
 {% include sidebar_right %}
 
+## TL;DR: Read this Book, when...
+
+* you are interested in building maintainable software
+* you need arguments to persuade your stakeholders to take some more time 
+  for creating quality software 
+* you want some inspiration on building applications in a different way than the
+  default "3-layer architecture"
+
+{% include amazon-disclaimer.html %}
+
+## Overview
+
 As the name suggests, <a href="//geni.us/oBgB" rel="nofollow">Clean Architecture - A Craftsman's Guide to Software Structure and Design</a> 
 by Robert C. Martin ("Uncle Bob") takes a step back from the details of programming and discusses the bigger picture.
 
@@ -33,14 +45,7 @@ software engineer, so I expected a lot from this new book.
 
 The book has about 320 pages in 34 chapters, not counting the appendix. Few chapters are longer than 10 pages.
 
-<div class="notice--success">
-  <strong>Disclaimer:</strong> This page contains affiliate links to books on Amazon. 
-  If this review helped you, consider buying a book by following one of these links. Thanks! :)
-</div>
-
-## Overview
-
-**In my opinion, the book starts and ends weakly with a strong middle part.**
+In my opinion, the book starts and ends weakly with a strong middle part.
 
 Part I of the book gives a motivation of the topic by defining architecture as the means to facilitate the 
 development, deployment, operation, and maintenance of a software and *not* as the means to make the software work.

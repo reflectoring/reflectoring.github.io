@@ -31,7 +31,7 @@ This tutorial is part of a series:
 
 1. [Unit Tests with Spring Boot](/unit-testing-spring-boot/)
 2. [Testing Web Controllers](/spring-boot-web-controller-test/)
-3. [Testing Spring Data Repositories](/spring-boot-data-jpa-test/)
+3. [Testing Spring Data JPA Queries](/spring-boot-data-jpa-test/)
 4. Integration Tests with Spring Boot
 
 ## Dependencies

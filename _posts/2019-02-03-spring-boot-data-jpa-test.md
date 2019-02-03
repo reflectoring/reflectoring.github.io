@@ -1,8 +1,8 @@
 ---
-title: "All You Need To Know About Testing JPA Queries with Spring Boot"
+title: "All You Need To Know About Testing Spring Data JPA Queries with Spring Boot"
 categories: [java]
-modified: 2019-02-02
-last_modified_at: 2019-02-02
+modified: 2019-02-03
+last_modified_at: 2019-02-03
 author: tom
 tags: 
 comments: true
@@ -15,11 +15,11 @@ sidebar:
 {% include sidebar_right %}
 
 Aside from unit tests, integration tests play a vital role in producing quality software.
-A special kind of integration tests deals with the integration between our code
+A special kind of integration test deals with the integration between our code
 and the database. 
 
 With the `@DataJpaTest` annotation, Spring Boot provides a convenient way to set up
-an environment with an embedded database to test our queries against.
+an environment with an embedded database to test our database queries against.
 
 In this tutorial, we'll first discuss which types of queries are worthy of tests and then
 discuss different ways of creating a database schema and database state to test against.
@@ -32,7 +32,7 @@ This tutorial is part of a series:
 
 1. [Unit Tests with Spring Boot](/unit-testing-spring-boot/)
 2. [Testing Web Controllers](/spring-boot-web-controller-test/)
-3. [Testing Spring Data Repositories](/spring-boot-data-jpa-test/)
+3. [Testing Spring Data JPA Queries](/spring-boot-data-jpa-test/)
 4. Integration Tests with Spring Boot
 
 ## Dependencies
@@ -47,7 +47,7 @@ dependencies {
   compile('org.springframework.boot:spring-boot-starter-web')
   runtime('com.h2database:h2')
   testCompile('org.springframework.boot:spring-boot-starter-test')
-  testCompile 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
+  testCompile('org.junit.jupiter:junit-jupiter-engine:5.2.0')
 }
 ```
 ## What to Test?
@@ -95,8 +95,8 @@ query.**
 Note that this is not true for queries inferred from long method
 names like
 `findByNameAndRegistrationDateBeforeAndEmailIsNotNull()`. 
-This method name is hard to grasp and easy to get wrong, so we need
-to test if it really does what is expected. 
+This method name is hard to grasp and easy to get wrong, so we should
+test if it really does what we intended. 
 
 Having said this, it's good practice to rename such methods to a shorter,
 more meaningful name and add a `@Query` annotation to provide a custom
@@ -113,9 +113,10 @@ UserEntity findByNameCustomQuery(@Param("name") String name);
 ```
 
 **Similar to inferred queries, we get a validity check for those
-JPQL queries for free**. If we use Hibernate as our JPA provider, 
-we'll get a `QuerySyntaxException` on startup if we have an error in the
-query: 
+JPQL queries for free**. Using Hibernate as our JPA provider, 
+we'll get a `QuerySyntaxException` on startup if it found an
+invalid query:
+
 
 ```
 org.hibernate.hql.internal.ast.QuerySyntaxException: 
@@ -125,7 +126,10 @@ org.hibernate.hql.internal.ast.QuerySyntaxException:
 Custom queries, however, can get a lot more complicated than
 finding an entry by a single attribute. They might include
 joins with other tables or return complex DTOs instead of an entity,
-for instance. **We have to decide for
+for instance. 
+
+So, should we write tests for custom queries? The unsatisfying answer
+is that **we have to decide for
 ourselves if the query is complex enough to require a test.** 
 
 ### Native Queries with `@Query`
@@ -229,9 +233,9 @@ If Spring finds a `schema.sql` file in the classpath, this will be executed agai
 the datasource. This overrides the `ddl-auto` configuration of Hibernate
 discussed above. 
 
-We can control if the `schema.sql` file is executed with the property
-`spring.datasource.initialization-mode`. If we set it to `embedded`,
-it will only execute for an embedded database (i.e. in our tests).
+We can control whether the `schema.sql` file should be executed with the property
+`spring.datasource.initialization-mode`. The default value is `embedded`,
+meaning it will only execute for an embedded database (i.e. in our tests).
 If we set it to `always`, it will always execute. 
 
 The following log output confirms that the file has been executed:
@@ -255,18 +259,6 @@ class SchemaSqlTest {
 }
 ``` 
 
-<div class="notice--success">
-  <h4>Maintainability</h4>
-  <p>
-  Using a <code>schema.sql</code> file to generate a database schema is not very maintainable in the long
-  run. What if the schema changes? If we just change the <code>schema.sql</code> file and restart
-  the application, we'd get errors because we'd try to create a schema that already exists.
-  </p><p>
-  I have not seen the use of <code>schema.sql</code> in a real project, yet.
-  </p>
-</div>
- 
-
 ### Using Flyway
 
 [Flyway](https://flywaydb.org/) is a [database migration](/database-refactoring-flyway-vs-liquibase/)
@@ -275,14 +267,15 @@ schema. It keeps track of which of these scripts have already been
 executed on the target database, so that it executes only those that
 have not been executed before.
 
-To activate Flyway, we just need to drop in the dependency in our
+To activate Flyway, we just need to drop the dependency into our
 `build.gradle` file (similar if we'd use Maven):
 
 ```groovy
 compile('org.flywaydb:flyway-core')
 ```
 
-Hibernate's `ddl-auto` configuration will automatically back off,
+Hibernate's `ddl-auto` configuration will automatically back off if we
+have not specifically configured it,
 so that Flyway has precedence and will by default execute all SQL scripts
 it finds in the folder `src/main/resources/db/migration` against our
 in-memory test database.
@@ -421,7 +414,7 @@ The approach of "manually" programming the database population in Java code has
 a big advantage over the other approaches in that **it's refactoring-safe**. 
 Changes in the codebase
 lead to compile errors in our test code. In all other approaches, we have to run the
-tests to be notified of errors due to a refactoring.
+tests to be notified about potential errors due to a refactoring.
 
 ### Using Spring DBUnit
 
@@ -451,8 +444,8 @@ desired database state:
 </dataset>
 ```
 
-By default, the XML file (let's name it `createUser.xml') 
-should be found in the classpath next to the test class.
+By default, the XML file (let's name it `createUser.xml`) 
+lie in the classpath next to the test class.
 
 In the test class, we need to add two `TestExecutionListeners` to enable DBUnit support.
 To set a certain database state we can then use `@DatabaseSetup` on a test method:

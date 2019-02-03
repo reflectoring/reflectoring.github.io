@@ -31,31 +31,33 @@ and tests of the persistence layer will be discussed in upcoming articles of thi
 
 {% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
-# The "Testing with Spring Boot" Series
+## The "Testing with Spring Boot" Series
 
 This tutorial is part of a series:
 
 1. [Unit Tests with Spring Boot](/unit-testing-spring-boot/)
 2. [Testing Web Controllers](/spring-boot-web-controller-test/)
-3. Testing Spring Data Repositories
+3. [Testing Spring Data JPA Queries](/spring-boot-data-jpa-test/)
 4. Integration Tests with Spring Boot
 
-# Dependencies
+## Dependencies
 
 For the unit test in this tutorial, we'll use JUnit Jupiter (JUnit 5), Mockito, and 
 AssertJ. We'll also include Lombok to reduce a bit of boilerplate code:
 
 ```groovy
-compileOnly('org.projectlombok:lombok')
-testCompile('org.springframework.boot:spring-boot-starter-test')
-testCompile 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
-testCompile('org.mockito:mockito-junit-jupiter:2.23.0')
+dependencies{
+  compileOnly('org.projectlombok:lombok')
+  testCompile('org.springframework.boot:spring-boot-starter-test')
+  testCompile 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
+  testCompile('org.mockito:mockito-junit-jupiter:2.23.0')
+}
 ```
 
 Mockito and AssertJ are automatically imported with the `spring-boot-starter-test` dependency, but
 we'll have to include Lombok ourselves.
  
-# Don't Use Spring in Unit Tests 
+## Don't Use Spring in Unit Tests 
 
 If you have written tests with Spring or Spring Boot in the past, **you'll probably say that
 we don't need Spring to write unit tests**. Why is that?
@@ -98,11 +100,11 @@ has to load more and more beans into the application context.
 So, why this article when we shouldn't use Spring Boot in a unit test? To be honest, most of this tutorial
 is about writing unit tests *without* Spring Boot.
 
-# Creating a Testable Spring Bean
+## Creating a Testable Spring Bean
 
 However, there are some things we can do to make our Spring beans better testable.
 
-## Field Injection is Evil
+### Field Injection is Evil
 
 Let's start with a bad example. Consider the following class:
 
@@ -126,7 +128,7 @@ Spring create a `UserRepository` instance and inject it into the field annotated
 
 **The lesson here is not to use field injection.** 
 
-## Providing a Constructor
+### Providing a Constructor
  
 Actually let's not use the `@Autowired` annotation at all:
 
@@ -159,7 +161,7 @@ Also note that the `UserRepository` field is now `final`. This makes sense, sinc
 won't ever change during the lifetime of an application. It also helps to avoid programming
 errors, because the compiler will complain if we have forgotten to initialize the field.
 
-## Reducing Boilerplate Code
+### Reducing Boilerplate Code
 
 Using Lombok's [`@RequiredArgsConstructor`](https://projectlombok.org/features/constructor)
 annotation we can let the constructor be automatically generated:
@@ -208,12 +210,12 @@ There's a piece missing, yet, and that is how to mock away the `UserRepository` 
 our class under test depends on, because we don't want to rely on the real thing, which
 probably needs a connection to a database.
 
-# Using Mockito to Mock Dependencies
+## Using Mockito to Mock Dependencies
 
 The de-facto standard mocking library nowadays is [Mockito](https://site.mockito.org/).
 It provides at least two ways to create a mocked `UserRepository` to fill the blank in the previous code example.
 
-## Mocking Dependencies with Plain Mockito
+### Mocking Dependencies with Plain Mockito
 
 The first way is to just use Mockito programmatically:
 
@@ -302,7 +304,7 @@ class RegisterUseCaseTest {
 }
 ```
 
-# Creating Readable Assertions with AssertJ
+## Creating Readable Assertions with AssertJ
 
 Another library that comes automatically with the Spring Boot test support is [AssertJ](http://joel-costigliola.github.io/assertj/).
 We have already used it above to implement our assertion:
@@ -352,7 +354,7 @@ only marginally better readable afterwards. **We only write the test code *once*
 If it still seems like too much work, have a look at AssertJ's 
 [Assertions Generator](http://joel-costigliola.github.io/assertj/assertj-assertions-generator.html).
 
-# Conclusion
+## Conclusion
 
 There are reasons to start up a Spring application in a test, but for plain unit tests, it's not
 necessary. It's even harmful due to the longer turnaround times. Instead, we should build our Spring

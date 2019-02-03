@@ -25,31 +25,33 @@ expected in a production environment.
 
 {% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
-# The "Testing with Spring Boot" Series
+## The "Testing with Spring Boot" Series
 
 This tutorial is part of a series:
 
 1. [Unit Tests with Spring Boot](/unit-testing-spring-boot/)
 2. [Testing Web Controllers](/spring-boot-web-controller-test/)
-3. Testing Spring Data Repositories
+3. [Testing Spring Data JPA Queries](/spring-boot-data-jpa-test/)
 4. Integration Tests with Spring Boot
 
-# Dependencies
+## Dependencies
 
 We're going to use JUnit Jupiter (JUnit 5) as the testing framework, Mockito for
 mocking, AssertJ for creating assertions and Lombok to reduce boilerplate code:
 
 ```groovy
-compile('org.springframework.boot:spring-boot-starter-web')
-compileOnly('org.projectlombok:lombok')
-testCompile('org.springframework.boot:spring-boot-starter-test')
-testCompile 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
-testCompile('org.mockito:mockito-junit-jupiter:2.23.0')
+dependencies {
+  compile('org.springframework.boot:spring-boot-starter-web')
+  compileOnly('org.projectlombok:lombok')
+  testCompile('org.springframework.boot:spring-boot-starter-test')
+  testCompile 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
+  testCompile('org.mockito:mockito-junit-jupiter:2.23.0')
+}
 ```
 
 AssertJ and Mockito automatically come with the dependency to `spring-boot-starter-test`.
 
-# Responsibilities of a Web Controller
+## Responsibilities of a Web Controller
 
 Let's start by looking at a typical REST controller:
 
@@ -111,7 +113,7 @@ controller tests will become fat and unmaintainable.
 
 How are we going to write meaningful tests that cover all of those responsibilities?
 
-# Unit or Integration Test?
+## Unit or Integration Test?
 
 Do we write unit tests? Or integration tests? What's the 
 difference, anyways? Let's discuss both approaches and decide for one.
@@ -145,7 +147,7 @@ that would be ignored by a simple unit test.
 
 So, how do we do it?
 
-# Verifying Controller Responsibilities with `@WebMvcTest`
+## Verifying Controller Responsibilities with `@WebMvcTest`
 
 Spring Boot provides the `@WebMvcTest` annotation to fire up an application context
 that contains only the beans needed for testing a web controller:
@@ -185,7 +187,7 @@ Let's go through each of the responsibilities and see how we can
 use `MockMvc` to verify each of them in order build the best integration 
 test we can.
 
-## 1. Verifying HTTP Request Matching
+### 1. Verifying HTTP Request Matching
 
 Verifying that a controller listens to a certain HTTP request is pretty straightforward.
 We simply call the `perform()` method of `MockMvc` and provide the URL we want
@@ -206,7 +208,7 @@ Note that this test would still fail, yet, since our controller expects some inp
 More options to match HTTP requests can be found in the Javadoc of 
 [MockHttpServletRequestBuilder](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/test/web/servlet/request/MockHttpServletRequestBuilder.html).
 
-## 2. Verifying Input Serialization
+### 2. Verifying Input Serialization
 
 To verify that the input is successfully serialized into Java objects, we have to provide it in the 
 test request. Input can be either the JSON content of the request body (`@RequestBody`), a
@@ -234,7 +236,7 @@ If the test is green, we now know that the controller's `register()` method
 has received those parameters as Java objects and that they have been
 successfully parsed from the HTTP request. 
 
-## 3. Verifying Input Validation
+### 3. Verifying Input Validation
 
 Let's say the `UserResource` uses the `@NotNull` annotation to deny `null` values:
 
@@ -275,7 +277,7 @@ Depending on how important the validation is for the application, we might add a
 for each invalid value that is possible. This can quickly add up to a lot of test cases, though, so you should talk to your
 team about how you want to handle validation tests in your project.
 
-## 4. Verifying Business Logic Calls
+### 4. Verifying Business Logic Calls
 
 Next, we want to verify that the business logic is called as expected. 
 In our case, the business logic is provided by the `RegisterUseCase` interface and expects a `User` object
@@ -315,7 +317,7 @@ The `verify` call checks that `registerUser()` has been called exactly once.
 Note that if we do a lot of assertions on `User` objects, we can create [our own custom Mockito assertion methods](/unit-testing-spring-boot/#creating-readable-assertions-with-assertj)
 for better readability.
 
-## 5. Verifying Output Serialization
+### 5. Verifying Output Serialization
 
 After the business logic has been called, we expect the controller to map the result into a JSON string 
 and include it in the HTTP response. In our case, we expect the HTTP response body to contain a valid
@@ -346,7 +348,7 @@ by Spring Boot.
 
 Note that we can make this much more readable by using a custom `ResultMatcher`, [as described later](#matching-json-output).
 
-## 6. Verifying Exception Handling
+### 6. Verifying Exception Handling
 
 Usually, if an exception occurs, the controller should return a certain HTTP status. 400, if something
 is wrong with the request, 500, if an exception bubbles up, and so on.
@@ -425,7 +427,7 @@ Additionally, we check that the response status is 400.
 
 This, too, can be implemented in a much more readable manner, [as we'll learn below](#matching-expected-validation-errors).
 
-# Creating Custom ResultMatchers
+## Creating Custom ResultMatchers
 
 Certain assertions are rather hard to write and, more importantly, hard to read.
 Especially when we want to compare the JSON string from the HTTP response to an expected value
@@ -434,7 +436,7 @@ it takes a lot of code, as we have seen in the last two examples.
 Luckily, we can create custom `ResultMatcher`s that we can use within the fluent API
 of `MockMvc`. Let's see how we can do this for our use cases.
 
-## Matching JSON Output
+### Matching JSON Output
 
 Wouldn't it be nice to use the following code to verify if the HTTP response body contains
 a JSON representation of a certain Java object?
@@ -481,7 +483,7 @@ The static method `responseBody()` serves as the entrypoint for our fluent API. 
 actual `ResultMatcher` that parses the JSON from the HTTP response body and compares
 it field by field with the expected object that is passed in. 
 
-## Matching Expected Validation Errors
+### Matching Expected Validation Errors
 
 We can even go a step further to simplify our exception handling test. It took
 us [4 lines of code](#validation_code_example) to verify that the JSON response contained a certain error message.
@@ -538,7 +540,7 @@ public class ResponseBodyMatchers {
 All the ugly code is hidden within this helper class and we can happily write clean assertions
 in our integration tests.
 
-# Conclusion
+## Conclusion
 
 Web controllers have a lot of responsibilities. If we want to cover a web controller with meaningful
 tests, it's not enough to just check if it returns the correct HTTP status. 

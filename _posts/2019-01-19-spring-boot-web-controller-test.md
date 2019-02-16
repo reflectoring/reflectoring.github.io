@@ -1,5 +1,5 @@
 ---
-title: "All You Need To Know About Testing Web Controllers with Spring Boot"
+title: "Testing Spring MVC Web Controllers with `@WebMvcTest`"
 categories: [java]
 modified: 2019-01-19
 last_modified_at: 2019-01-19

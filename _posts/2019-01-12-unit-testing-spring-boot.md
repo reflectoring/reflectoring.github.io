@@ -1,5 +1,5 @@
 ---
-title: "All You Need To Know About Unit Testing with Spring Boot"
+title: "Unit Testing with Spring Boot"
 categories: [java]
 modified: 2019-01-12
 last_modified_at: 2019-01-12

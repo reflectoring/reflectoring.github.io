@@ -1,5 +1,5 @@
 ---
-title: "All You Need To Know About Testing Spring Data JPA Queries with Spring Boot"
+title: "Testing JPA Queries with `@DataJpaTest`"
 categories: [java]
 modified: 2019-02-03
 last_modified_at: 2019-02-03

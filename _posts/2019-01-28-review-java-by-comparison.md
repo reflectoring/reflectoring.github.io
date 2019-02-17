@@ -1,6 +1,6 @@
 ---
 title: "Book Review: Java by Comparison"
-categories: [java]
+categories: [java, books]
 modified: 2019-01-28
 last_modified_at: 2019-01-28
 author: tom

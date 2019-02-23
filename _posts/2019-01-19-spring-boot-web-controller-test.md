@@ -29,10 +29,10 @@ expected in a production environment.
 
 This tutorial is part of a series:
 
-1. [Unit Tests with Spring Boot](/unit-testing-spring-boot/)
-2. [Testing Web Controllers](/spring-boot-web-controller-test/)
-3. [Testing Spring Data JPA Queries](/spring-boot-data-jpa-test/)
-4. Integration Tests with Spring Boot
+1. [Unit Testing with Spring Boot](/unit-testing-spring-boot/)
+2. [Testing Spring MVC Web Controllers with `@WebMvcTest`](/spring-boot-web-controller-test/)
+3. [Testing JPA Queries with `@DataJpaTest`](/spring-boot-data-jpa-test/)
+4. [Integration Tests with `@SpringBootTest`](/spring-boot-test/)
 
 ## Dependencies
 
@@ -172,6 +172,17 @@ class RegisterRestControllerTest {
 
 }
 ```
+
+<div class="notice--success">
+  <h4><code>@ExtendWith</code></h4>
+  <p>
+  The code examples in this tutorial use the <code>@ExtendWith</code> annotation to tell
+  JUnit 5 to enable Spring support. As of Spring Boot 2.1, we no longer need to
+  load the `SpringExtension` because it's included as a meta annotation in the 
+  Spring Boot test annotations like <code>@DataJpaTest</code>, <code>@WebMvcTest</code>, and 
+  <code>@SpringBootTest</code>.
+  </p>
+</div>
 
 We can now `@Autowire` all the beans we need from the application context. Spring Boot automatically 
 provides beans like an `@ObjectMapper` to map to and from JSON and a

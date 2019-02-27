@@ -173,17 +173,6 @@ class RegisterRestControllerTest {
 }
 ```
 
-<div class="notice--success">
-  <h4><code>@ExtendWith</code></h4>
-  <p>
-  The code examples in this tutorial use the <code>@ExtendWith</code> annotation to tell
-  JUnit 5 to enable Spring support. As of Spring Boot 2.1, we no longer need to
-  load the `SpringExtension` because it's included as a meta annotation in the 
-  Spring Boot test annotations like <code>@DataJpaTest</code>, <code>@WebMvcTest</code>, and 
-  <code>@SpringBootTest</code>.
-  </p>
-</div>
-
 We can now `@Autowire` all the beans we need from the application context. Spring Boot automatically 
 provides beans like an `@ObjectMapper` to map to and from JSON and a
 `MockMvc` instance to simulate HTTP requests. 
@@ -193,6 +182,27 @@ to test integration between controller and business logic, but
 between controller and the HTTP layer. `@MockBean` automatically
 replaces the bean of the same type in the application context with a 
 Mockito mock.
+
+<div class="notice--success">
+  <h4>Use <code>@WebMvcTest</code> with or without the <code>controllers</code> parameter?</h4>
+  <p>
+  By setting the <code>controllers</code> parameter to <code>RegisterRestController.class</code>
+  in the example above, we're telling Spring Boot to restrict the application context created
+  for this test to the given controller bean and some framework beans needed for Spring Web MVC.
+  All other beans we might need have to be included separately or mocked away with <code>@MockBean</code>.
+  </p>
+  <p>
+  If we leave away the <code>controllers</code> parameter, Spring Boot will include <em>all</em>
+  controllers in the application context. Thus, we need to include or mock away <em>all</em>
+  beans any controller depends on. This makes for a much more complex test setup with more dependencies,
+  but saves runtime since all controller tests will re-use the same application context.
+  </p>
+  <p>
+  I tend to restrict the controller tests to the narrowest application context possible in order to
+  make the tests independent of beans that I don't even need in my test, even though
+  Spring Boot has to create a new application context for each single test.
+  </p>
+</div>
 
 Let's go through each of the responsibilities and see how we can 
 use `MockMvc` to verify each of them in order build the best integration 

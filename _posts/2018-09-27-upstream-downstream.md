@@ -57,7 +57,7 @@ Consider this figure:
 Component C depends on component B which in turn depends on component A.
 
 Applying the Dependency Rule, we can safely say that component A is upstream
-from component B which is upstream from component A (even though the 
+from component B which is upstream from component C (even though the 
 arrows point in the other direction).
 
 Applying the Value Rule here is a little more abstract, but we can say that

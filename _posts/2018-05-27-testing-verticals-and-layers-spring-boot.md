@@ -70,7 +70,7 @@ public class Application {
 The `@SpringBootApplication` annotation already takes care of loading all our classes
 into the `ApplicationContext`. 
 
-However, we want our modules to me loosely coupled and
+However, we want our modules to be loosely coupled and
 separately testable. So we create a custom configuration class annotated with `@SpringBootConfiguration` for each module
 to take care of stuff that is only relevant within the respective module.
 
@@ -183,6 +183,9 @@ the application context, it will fail and notify us about our error.
 Tip: if setting up the database for a complicated query becomes cumbersome, have a look at [Spring Test DBUnit](https://springtestdbunit.github.io/spring-test-dbunit/)
 which allows to set up database content via XML files.
 
+You can find more details about testing Spring Data repositories in
+my [article about the `@DataJpaTest` annotation](/spring-boot-data-jpa-test/).
+
 # Integration Testing the Web Layer with `@WebMvcTest`
 
 Similar to `@DataJpaTest`, [`@WebMvcTest`](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html#boot-features-testing-spring-boot-applications-testing-autoconfigured-mvc-tests) sets up an application context with everything we need for testing
@@ -225,6 +228,9 @@ it finds and uses it as the root for the application context.
 
 **Thanks to our module configurations,
 `@WebMvcTest` will only load the application context needed for the module we're currently testing.**
+
+You can find more details about testing Spring MVC controllers in
+[my article about the `@WebMvcTest` annotation](/spring-boot-web-controller-test/).
 
 # Testing ApplicationContext Startup with `@SpringBootTest`
 
@@ -315,6 +321,9 @@ can help.
 **In the test above we haven't mocked the beans coming from the other modules. If we only wanted to test the integration of the beans
 within our booking module, we might have used `@MockBean` to mock out the beans coming from other modules.**
 
+If you want to find out more about integration tests with Spring Boot,
+read [my article about the `@SpringBootTest` annotation](/spring-boot-test/).
+
 # Testing single Beans with Plain Old Unit Tests
 
 All Spring Boot test features discussed above support integration tests and not unit tests.
@@ -363,6 +372,9 @@ class BookingServiceTest {
 ```   
 
 Using [Mockito](http://site.mockito.org/), we simply mock away all dependencies we don't want to test.
+
+In my article about [Unit Testing with Spring Boot](/unit-testing-spring-boot/)
+you can read more about how to create testable code with Spring Boot.
 
 # Conclusion
 

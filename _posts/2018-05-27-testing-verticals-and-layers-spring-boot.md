@@ -18,13 +18,13 @@ excerpt: "Slice your Spring Boot applications into vertical modules and make the
 {% include sidebar_right %}
 
 Well-behaved software consists of highly cohesive modules that are loosely coupled
-to other modules. Each module takes care from user input on the web layer down to
+to other modules. Each module takes care from user input in the web layer down to
 writing into and reading from the database. 
 
-**This article presents a way to structure 
+This article presents a way to structure 
 a Spring Boot application in vertical modules and discusses a way how
 to test the layers within one such module isolated from other modules using
-the testing features provided by Spring Boot**. 
+the testing features provided by Spring Boot. 
 
 {% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
@@ -162,7 +162,7 @@ package upwards, which is usually the main application class, since the
 `@SpringBootApplication` annotation includes a `@SpringBootConfiguration`. 
 
 So, to narrow down the application context to a single module, we can create a 
-test configuration for each of our modules within the test sources: 
+test configuration for each of our modules **within the test sources**: 
 
 ```java
 package io.reflectoring.booking;

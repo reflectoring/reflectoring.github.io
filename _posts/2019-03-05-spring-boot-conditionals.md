@@ -14,13 +14,13 @@ sidebar:
 
 {% include sidebar_right %}
 
-When building a Spring Boot app, we sometimes want to **load part of the application context only
-under certain conditions**. Be it to disable some beans during tests or to react to a certain
+When building a Spring Boot app, we sometimes want to **only load beans or [modules](/spring-boot-modules/) into the application 
+context if some condition is met**. Be it to disable some beans during tests or to react to a certain
 property in the runtime environment. 
 
-Spring has introduced the `@Condition` annotation that allows us to define custom conditions
-to apply to parts of our application context. Spring Boot brings some pre-defined conditions
-so we don't have to implement them ourselves.
+Spring has introduced the `@Conditional` annotation that allows us to define custom conditions
+to apply to parts of our application context. Spring Boot builds on top of that and provides 
+some pre-defined conditions so we don't have to implement them ourselves.
 
 In this tutorial, we'll have a look some use cases that explain why we would need conditionally
 loaded beans at all. Then, we'll see how to apply conditions and which conditions Spring Boot
@@ -38,10 +38,11 @@ Why would we need to include or exclude beans under certain conditions?
 
 In my experience, the most common use case is that **certain beans don't work in a test environment**. 
 They might require a connection to a remote system or an application server that
-is not available during tests. So, we want to exclude or replace these beans during tests.
+is not available during tests. So, we want to [modularize our tests](/testing-verticals-and-layers-spring-boot/)
+to exclude or replace these beans during tests.
 
 Another use case is that we want **to enable or disable a certain cross-cutting concern**.
-Imagine that we have built a module that configures security. During developer tests,
+Imagine that [we have built a module](/spring-boot-modules/) that configures security. During developer tests,
 we don't want to type in our usernames and passwords every time, so we flip a
 switch and disable the whole security module for local tests.
 
@@ -49,7 +50,7 @@ Also, we might want to load certain beans only **if some external resource
 is available** without which they cannot work. For instance, we want to configure
 our Logback logger only if a `logback.xml` file has been found on the classpath.
 
-There are more uses cases, as we'll see in the discussions below.
+We'll see some more use cases in the discussion below.
 
 ## Declaring Conditional Beans
 
@@ -58,7 +59,7 @@ condition is satisfied will the bean be added to the application context.
 To declare a condition, we can use any of the `@Conditional...` annotations
 that are described [below](#pre-defined-conditions).
 
-Let's look at how to declare a condition.
+But first, let's look at how to apply a condition to a certain Spring bean.
 
 ### Conditional `@Bean`
 
@@ -70,7 +71,7 @@ loaded if the condition is met:
 class ConditionalBeanConfiguration {
 
   @Bean
-  @Conditional...
+  @Conditional... // <--
   ConditionalBean conditionalBean(){
     return new ConditionalBean();
   };
@@ -84,7 +85,7 @@ within this configuration will only be loaded if the condition is met:
 
 ```java
 @Configuration
-@Conditional...
+@Conditional... // <--
 class ConditionalConfiguration {
   
   @Bean
@@ -102,7 +103,7 @@ annotations `@Component`, `@Service`, `@Repository`, or `@Controller`:
 
 ```java
 @Component
-@Conditional...
+@Conditional... // <--
 class ConditionalComponent {
 }
 ```
@@ -110,7 +111,7 @@ class ConditionalComponent {
 ## Pre-Defined Conditions
 
 Spring Boot offers some pre-defined `@ConditionalOn...` annotations that 
-we can use out-of-the box. Let's have a look at each one in turn:
+we can use out-of-the box. Let's have a look at each one in turn.
 
 ### `@ConditionalOnProperty`
 
@@ -120,7 +121,8 @@ a certain environment property:
 
 ```java
 @Configuration
-@ConditionalOnProperty(value="module.enabled", 
+@ConditionalOnProperty(
+    value="module.enabled", 
     havingValue = "true", 
     matchIfMissing = true)
 class CrossCuttingConcernModule {
@@ -154,8 +156,8 @@ have the value `true`. By appending `:true` to the properties we tell Spring to 
 as a default value in the case the properties have not been set. We can use the full extend of
 the [Spring Expression Language](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions).
 
-This way we can, for instance, **create sub modules within a parent module that we might want to
-enable or disable separately from the parent module**.
+This way we can, for instance, **create sub modules that should be disabled if the
+parent module is disabled, but can also be disabled if the parent module is enabled**.
 
 ### `@ConditionalOnBean` 
 
@@ -328,7 +330,7 @@ with logical operators.
 
 ### Defining a Custom Condition
 
-Imagine we have some native beans that talk to the operating system natively. These
+Imagine we have some Spring beans that talk to the operating system natively. These
 beans should only be loaded if we're running the application on the respective operating
 system. 
 
@@ -402,7 +404,7 @@ WindowsOrUnixBean windowsOrUnixBean() {
 <div class="notice--success">
   <h4>Is your <code>AnyNestedCondition</code> or <code>AllNestedConditions</code> not working?</h4>
   <p>
-  Check the <code>ConfigurationPhase</code> parameter passed in the constructor. If you want
+  Check the <code>ConfigurationPhase</code> parameter passed into <code>super()</code>. If you want
   to apply your combined condition to <code>@Configuration</code> beans, use the value 
   <code>PARSE_CONFIGURATION</code>. If you want to apply the condition to simple beans,
   use <code>REGISTER_BEAN</code> as shown in the example above. Spring Boot needs to make
@@ -427,12 +429,13 @@ WindowsAndUnixBean windowsAndUnixBean() {
 ```
 
 This bean should never load, unless someone has created a Windows / Unix hybrid 
-that I'm not aware of.
+that I'm not aware of. 
 
 Note that the `@Conditional` annotation cannot be used more than once on a single
 method or class. So, if we want to combine multiple annotations this way, we 
 have to use custom `@ConditionalOn...` annotations, which do not have this
-restriction.
+restriction. [Below](#defining-a-custom-conditionalon-annotation),
+ we'll explore how to create the `@ConditionalOnUnix` annotation.
 
 Alternatively, if we want to combine conditions with AND into a single 
 `@Conditional` annotation, we can extend Spring Boot's `AllNestedConditions`
@@ -475,10 +478,11 @@ the content of our application context.
 
 Spring Boot builds on top of that by bringing some convenient `@ConditionalOn...` annotations 
 to the table and by allowing us to combine conditions using `AllNestedConditions`,
-`AnyNestedCondition` or `NoneNestedCondition`.
+`AnyNestedCondition` or `NoneNestedCondition`. These tools allow us to [modularize our 
+production code](/spring-boot-modules/) as well as [our tests](/testing-verticals-and-layers-spring-boot/).
 
 With power comes responsibility, however, so we should take care not to litter
-our application context with conditions, otherwise we might lose track of what
+our application context with conditions, lest we lose track of what
 is loaded when.
 
 The code for this article is available [on github](https://github.com/thombergs/code-examples/tree/master/spring-boot/conditionals).  

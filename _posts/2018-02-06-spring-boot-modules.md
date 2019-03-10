@@ -102,7 +102,7 @@ public class SecurityModuleConfiguration {
 Setting the property `io.reflectoring.security.enabled` to `false` will now
 disable this module completely.
 
-There are other [`@Conditional...` annotations](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html#boot-features-condition-annotations)
+There are other [`@ConditionalOn...` annotations](/spring-boot-conditionals)
 you can use to define conditions for loading a module. These include a 
 condition depending on the version of the JVM and
 the existence of a certain class in the classpath or a certain bean in the
@@ -110,7 +110,7 @@ application context.
 
 If you ever asked yourself how Spring Boot magically loads exactly the beans 
 your application needs into the application context, this is how. Spring Boot itself makes
-heavy use of the `@Conditional` annotations.
+heavy use of the `@ConditionalOn...` annotations.
 
 # Options for Importing Modules
 

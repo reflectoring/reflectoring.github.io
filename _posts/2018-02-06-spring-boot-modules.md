@@ -102,7 +102,7 @@ public class SecurityModuleConfiguration {
 Setting the property `io.reflectoring.security.enabled` to `false` will now
 disable this module completely.
 
-There are other [`@ConditionalOn...` annotations](/spring-boot-conditionals)
+There are other [`@ConditionalOn...` annotations](/spring-boot-conditionals/)
 you can use to define conditions for loading a module. These include a 
 condition depending on the version of the JVM and
 the existence of a certain class in the classpath or a certain bean in the

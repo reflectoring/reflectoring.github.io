@@ -9,4 +9,5 @@ _asset_bundler_cache
 .jekyll-metadata
 .idea
 gemfile.lock
+Gemfile.lock
 

@@ -1,13 +1,14 @@
 ---
 title: "Configuring a Spring Boot Module with `@ConfigurationProperties`"
 categories: [java]
-modified: 2019-03-15
-last_modified_at: 2019-03-15
+modified: 2019-03-18
+last_modified_at: 2019-03-18
 author: tom
 tags: 
 comments: true
 ads: true
-excerpt: "TODO"
+excerpt: "An in-depth look at Spring Boot's support to bind external configuration
+          parameters to fields of a Spring bean."
 sidebar:
   toc: true
 ---
@@ -440,7 +441,7 @@ Boot know that this converter is needed during the binding of configuration prop
 <div class="notice--success">
   <h4>E-Mail Attachments with a Weight?</h4>
   <p>
-  Obviously, E-Mails cannot have "real" attachments with a weight. I'm quite aware
+  Obviously, e-mails cannot have "real" attachments with a weight. I'm quite aware
   of this. I had a hard time to come up with an example for a custom configuration
   type, though, since this is a rare case indeed.   
   </p>

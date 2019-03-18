@@ -247,7 +247,7 @@ org.springframework.boot.context.properties.bind.UnboundConfigurationPropertiesE
 ## Validating `@ConfigurationProperties` on Startup
 
 If we want to make sure that the parameters that the configuration parameters passed into
-the application are valid, **we can add [bean validation](bean-validation-with-spring-boot)
+the application are valid, **we can add [bean validation](/bean-validation-with-spring-boot/)
 annotations to the fields and the `@Validated` annotation to the class itself**: 
 
 

@@ -26,7 +26,7 @@ she is looking for.
 In this tutorial, we're examining Spring Data's paging support and create examples of how to use
 and configure it along with some information about how it works under the covers.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/pagination" %}
+{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/paging" %}
 
 ## Paging vs. Pagination
 The terms "paging" and "pagination" are often used as synonyms. They don't exactly mean the same,
@@ -505,7 +505,7 @@ you don't have to trip over them.
 **If you're missing anything about paging with Spring in this
 tutorial, let me know in the comments.**
 
-You can find the example code used in this article [on github](https://github.com/thombergs/code-examples/tree/master/spring-boot/pagination). 
+You can find the example code used in this article [on github](https://github.com/thombergs/code-examples/tree/master/spring-boot/paging). 
 
 
 

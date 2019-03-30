@@ -248,7 +248,7 @@ class PaginatedController {
 }
 ```
 
-An integration tests shows that the query parameters `page`, `size`, and `sort` are now evaluated
+An [integration tests](/spring-boot-web-controller-test/) shows that the query parameters `page`, `size`, and `sort` are now evaluated
 and "injected" into the `Pageable` argument of our web controller method: 
 
 ```java
@@ -504,6 +504,8 @@ you don't have to trip over them.
 
 **If you're missing anything about paging with Spring in this
 tutorial, let me know in the comments.**
+
+You can find the example code used in this article [on github](https://github.com/thombergs/code-examples/tree/master/spring-boot/pagination). 
 
 
 

@@ -236,7 +236,7 @@ to a web controller method and return a `Page` object to the client:
 ```java
 @RestController
 @RequiredArgsConstructor
-class PaginatedController {
+class PagedController {
 
   private final MovieCharacterRepository characterRepository;
 
@@ -252,8 +252,8 @@ An [integration tests](/spring-boot-web-controller-test/) shows that the query p
 and "injected" into the `Pageable` argument of our web controller method: 
 
 ```java
-@WebMvcTest(controllers = PaginatedController.class)
-class PaginatedControllerTest {
+@WebMvcTest(controllers = PagedController.class)
+class PagedControllerTest {
 
   @MockBean
   private MovieCharacterRepository characterRepository;
@@ -303,7 +303,7 @@ Similarly, we can use a standalone `Sort` argument in a web controller method:
 ```java
 @RestController
 @RequiredArgsConstructor
-class PaginatedController {
+class PagedController {
 
   private final MovieCharacterRepository characterRepository;
 
@@ -318,8 +318,8 @@ Naturally, a `Sort` object is populated only with the value of the `sort` query 
 as this test shows:
 
 ```java
-@WebMvcTest(controllers = PaginatedController.class)
-class PaginatedControllerTest {
+@WebMvcTest(controllers = PagedController.class)
+class PagedControllerTest {
 
   @MockBean
   private MovieCharacterRepository characterRepository;
@@ -379,7 +379,7 @@ a `Pageable` method argument to provide a local prefix for the paging query para
 
 ```java
 @RestController
-class PaginatedController {
+class PagedController {
 
   @GetMapping(path = "/characters/qualifier")
   Page<MovieCharacter> loadCharactersPageWithQualifier(
@@ -416,7 +416,7 @@ For this case, we can use the `@PagableDefault` and `@SortDefault` annotations:
 
 ```java
 @RestController
-class PaginatedController {
+class PagedController {
 
   @GetMapping(path = "/characters/page")
   Page<MovieCharacter> loadCharactersPage(

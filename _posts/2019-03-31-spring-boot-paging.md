@@ -1,14 +1,14 @@
 ---
-title: "Paging with Spring and Spring Boot"
+title: "Paging with Spring Boot"
 categories: [spring]
-modified: 2019-03-27
-last_modified_at: 2019-03-27
+modified: 2019-03-31
+last_modified_at: 2019-03-31
 author: tom
 tags: 
 comments: true
 ads: true
 excerpt: "An in-depth look at the paging support provided by Spring Data for querying
-          Spring Web MVC controllers as well as Spring Data repositories."
+          Spring Web MVC controllers and Spring Data repositories."
 sidebar:
   toc: true
 ---

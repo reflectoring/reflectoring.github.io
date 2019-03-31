@@ -320,23 +320,26 @@ assertThat(savedUser).hasRegistrationDate();
 ``` 
 
 There are many cases where small changes like this make the test so much better to understand.
-So, let's create our own [custom assertion](http://joel-costigliola.github.io/assertj/assertj-core-custom-assertions.html):
+So, let's create our own [custom assertion](http://joel-costigliola.github.io/assertj/assertj-core-custom-assertions.html)
+**in the test sources folder**:
 
 ```java
-public class UserAssert extends AbstractAssert<UserAssert, User> {
+class UserAssert extends AbstractAssert<UserAssert, User> {
 
-  public UserAssert(User user) {
+  UserAssert(User user) {
     super(user, UserAssert.class);
   }
 
-  public static UserAssert assertThat(User actual) {
+  static UserAssert assertThat(User actual) {
     return new UserAssert(actual);
   }
 
-  public UserAssert hasRegistrationDate() {
+  UserAssert hasRegistrationDate() {
     isNotNull();
     if (actual.getRegistrationDate() == null) {
-      failWithMessage("Expected user to have a registration date, but it was null");
+      failWithMessage(
+        "Expected user to have a registration date, but it was null"
+      );
     }
     return this;
   }

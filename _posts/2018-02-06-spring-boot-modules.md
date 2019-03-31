@@ -8,6 +8,8 @@ ads: true
 header:
  teaser: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg
  image: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg
+sidebar:
+  toc: true
 ---
 
 {% include sidebar_right %}
@@ -19,7 +21,7 @@ your Spring Boot application into several modules.
 
 {% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/modular" %}
 
-# What's a Module in Spring Boot?
+## What's a Module in Spring Boot?
 
 A module in the sense of this article is a set of Spring components loaded into the 
 application context. 
@@ -28,7 +30,7 @@ A module can be a business module, providing some business services to the appli
 or a technical module that provides cross-cutting concerns to several other
 modules or to the whole of the application. 
 
-# Options for Creating Modules
+## Options for Creating Modules
 
 The base for a Spring Module is a `@Configuration`-annotated class along the lines of Spring's 
 [Java configuration](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-java)
@@ -37,7 +39,7 @@ feature.
 There are several ways to define what beans should be loaded by such a 
 configuration class.
 
-## `@ComponentScan`
+### `@ComponentScan`
 
 The easiest way to create a module is using the `@ComponentScan` annotation on
 a configuration class:
@@ -58,7 +60,7 @@ into the application context.
 This way is fine as long as you always want to load *all* classes of a package and its sub-packages
 into the application context. If you need more control on what to load, read on.
 
-## `@Bean` Definitions
+### `@Bean` Definitions
 
 Spring's Java configuration feature also brings the `@Bean` annotation for creating beans
 that are loaded into the application context:
@@ -85,10 +87,10 @@ are actually loaded, since you have a single place to look at - in contrast
 to using `@ComponentScan` where you have to look at the stereotype annotations
 of all classes in the package to see what's going on. 
 
-## `@Conditional` Annotations 
+### `@ConditionalOn...` Annotations 
 
 If you need even more fine-grained control over which components should be loaded into the
-application context, you can make use of Spring Boot's `@Conditional...` annotations:
+application context, you can make use of Spring Boot's `@ConditionalOn...` annotations:
 
 ```java
 @Configuration
@@ -102,7 +104,7 @@ public class SecurityModuleConfiguration {
 Setting the property `io.reflectoring.security.enabled` to `false` will now
 disable this module completely.
 
-There are other [`@Conditional...` annotations](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html#boot-features-condition-annotations)
+There are other [`@ConditionalOn...` annotations](/spring-boot-conditionals/)
 you can use to define conditions for loading a module. These include a 
 condition depending on the version of the JVM and
 the existence of a certain class in the classpath or a certain bean in the
@@ -110,13 +112,13 @@ application context.
 
 If you ever asked yourself how Spring Boot magically loads exactly the beans 
 your application needs into the application context, this is how. Spring Boot itself makes
-heavy use of the `@Conditional` annotations.
+heavy use of the `@ConditionalOn...` annotations.
 
-# Options for Importing Modules
+## Options for Importing Modules
 
 Having created a module, we need to import it into the application. 
 
-## `@Import`
+### `@Import`
 
 The most straight-forward way is to use the `@Import` annotation:
 
@@ -131,7 +133,7 @@ public class ModularApplication {
 This will import the `BookingModuleConfiguration` class and all beans that come 
 with it - no matter whether they are declared by `@ComponentScan` or `@Bean` annotations.  
 
-## `@Enable...` Annotations
+### `@Enable...` Annotations
 
 Spring Boot brings a set of annotations that each import a certain module by themselves. An example 
 is `@EnableScheduling`, which imports all Beans necessary for the scheduling sub system 
@@ -164,7 +166,7 @@ that imports our `BookingModuleConfiguration` as before. However, if we have a m
 of more than one configuration, this is a convenient and expressive way to aggregate these
 configurations into a single module.
 
-## Auto-Configuration
+### Auto-Configuration
 
 If we want to load a module automatically instead of hard-wiring the import into the 
 source code, we can make use of Spring Boot's [auto-configuration feature](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html).
@@ -179,12 +181,18 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 
 This would import the `SecurityModuleConfiguration` class all its beans into the application context.
 
-# When to use which Import Strategy?
+## Configuring a Module
+
+With the `@ConfigurationProperties` annotation, Spring Boot provides first-class support
+for [binding external configuration parameters to a Spring bean](/spring-boot-configuration-properties/) 
+in a type-safe manner.
+
+## When to use which Import Strategy?
 
 This article presented the major options for creating and importing modules
 in a Spring Boot application. But when should we use which of those options?
 
-## Use `@Import` for Business Modules
+### Use `@Import` for Business Modules
 
 For modules that contain business logic - like the `BookingModuleConfiguration` from the 
 code snippets above - a static import with the `@Import` annotation should suffice in
@@ -195,7 +203,7 @@ Note that even if a module is *always* loaded, it still has a right to exist as 
 since it being a module enables it to live in its own package or even 
 its own JAR file.
 
-## Use Auto-Configuration for Technical Modules
+### Use Auto-Configuration for Technical Modules
 
 Technical modules, on the other hand - like the `SecurityModuleConfiguration` from above - 
 usually provide some cross-cutting concerns like logging, exception handling, authorization 

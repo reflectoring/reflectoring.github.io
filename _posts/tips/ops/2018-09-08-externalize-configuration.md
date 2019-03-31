@@ -191,7 +191,8 @@ it easy to change parameters at a single source.
 
 Each technology stack provides features that support external configuration. A very
 good example is [Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html)
-which allows a lot of different configuration sources and loads them in a sensible priority.
+which allows a lot of different configuration sources, loads them in a sensible priority and
+even [allows to bind them to fields in Java objects](/spring-boot-configuration-properties/).
 
 Such a combination of configuration sources makes it possible to define defaults in one source
 (i.e. a configuration file) that can be overridden by another source (i.e. the command-line).

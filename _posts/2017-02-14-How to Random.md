@@ -1,7 +1,7 @@
 ---
 
 title: A Random pitfall
-categories: [hacks]
+categories: [java]
 modified: 2017-02-16
 author: rudi
 tags: [random, performance, threadLocalRandom, math, generated, number, programming, project, software, engineering]

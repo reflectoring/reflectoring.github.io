@@ -1,7 +1,7 @@
 ---
 
 title: Externalizing application properties for the gradle bootRun task
-categories: [hacks]
+categories: [tools]
 modified: 2017-01-25
 author: tom
 tags: [gradle, spring boot, bootrun, properties, application.properties]

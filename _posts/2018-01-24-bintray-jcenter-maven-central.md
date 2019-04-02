@@ -1,6 +1,6 @@
 ---
 title: "Publishing Open Source Releases to JCenter and Maven Central"
-categories: [opensource]
+categories: [tools]
 modified: 2018-01-24
 author: tom
 tags: [gradle, bintray]

@@ -1,6 +1,6 @@
 ---
 title: Autostart for your Spring Boot Application
-categories: [frameworks]
+categories: [tools]
 modified: 2018-01-14
 author: david
 tags: [winsw, spring, windows, autostart]

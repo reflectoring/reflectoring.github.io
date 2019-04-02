@@ -1,7 +1,7 @@
 ---
 
 title: 'A Checklist for setting up a Java-based Software Architecture'
-categories: [methodology]
+categories: [architecture]
 modified: 2017-05-27
 author: tom
 tags: [software, architecture, setup, checklist, technology, stack, microservice, monolith]

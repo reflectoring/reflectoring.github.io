@@ -2,11 +2,10 @@
 main:
   - title: "Latest Articles"
     url: /latest
+  - title: "Spring Boot"
+    url: /categories/spring-boot
   - title: "Book Reviews"
     url: /categories/book-reviews
-  - title: "About"
-    url: /about/
-    icon: fa-question-circle
   - title: "Search"
     url: /search/
     icon: fa-search

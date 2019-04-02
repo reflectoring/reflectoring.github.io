@@ -1,7 +1,7 @@
 ---
 
 title: "Tip: Use Logging Levels Consistently"
-categories: [tip, logging]
+categories: [architecture]
 modified: 2018-07-28
 author: tom
 tags: [transparency, logging, log, level]

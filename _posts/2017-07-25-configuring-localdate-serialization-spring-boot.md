@@ -1,7 +1,7 @@
 ---
 
 title: Serializing LocalDate to JSON in Spring Boot
-categories: [hacks]
+categories: [spring-boot]
 modified: 2017-07-25
 author: tom
 tags: [spring, boot, localdate, json, rest, serialize]

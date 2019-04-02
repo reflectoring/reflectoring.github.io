@@ -1,6 +1,6 @@
 ---
 title: "Lazy Evaluation of Gradle Properties"
-categories: [hacks]
+categories: [tools]
 modified: 2017-11-14
 author: matthias
 tags: [gradle, groovy, property, lazy, evaluation]

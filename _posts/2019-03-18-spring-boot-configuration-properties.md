@@ -1,6 +1,6 @@
 ---
 title: "Configuring a Spring Boot Module with `@ConfigurationProperties`"
-categories: [java]
+categories: [spring-boot]
 modified: 2019-03-18
 last_modified_at: 2019-03-18
 author: tom

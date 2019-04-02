@@ -1,7 +1,7 @@
 ---
 
 title: "Tip: Provide Contextual Information in Log Messages"
-categories: [tip, logging]
+categories: [architecture]
 modified: 2018-08-05
 author: tom
 tags: [transparency, logging, log, context]

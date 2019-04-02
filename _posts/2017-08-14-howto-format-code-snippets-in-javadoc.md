@@ -1,7 +1,7 @@
 ---
 
 title: "A Guide to Formatting Code Snippets in Javadoc"
-categories: [hacks]
+categories: [tools]
 modified: 2017-08-14
 author: tom
 tags: [java, javadoc, code, snippet, pre, tag, html]

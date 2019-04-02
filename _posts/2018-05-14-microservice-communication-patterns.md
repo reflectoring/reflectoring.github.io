@@ -1,6 +1,6 @@
 ---
 title: "Microservice Communication Patterns"
-categories: [microservices]
+categories: [architecture]
 modified: 2018-05-14
 author: tom
 tags: [microservices, architecture, patterns]

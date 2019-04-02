@@ -1,7 +1,7 @@
 ---
 
 title: "5 Good Reasons to Use a Log Server"
-categories: [tip, logging]
+categories: [architecture]
 modified: 2018-08-13
 last_modified_at: 2018-08-13
 author: tom

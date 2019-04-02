@@ -1,6 +1,6 @@
 ---
 title: "Implementing a Consumer-Driven Contract for a React App with Pact and Jest"
-categories: [cdc]
+categories: [cdc, testing]
 modified: 2018-10-25
 last_modified_at: 2018-11-10
 author: tom

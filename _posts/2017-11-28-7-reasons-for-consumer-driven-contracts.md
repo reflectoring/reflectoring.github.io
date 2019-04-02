@@ -1,6 +1,6 @@
 ---
 title: "7 Reasons to Choose Consumer-Driven Contract Tests Over End-to-End Tests"
-categories: [cdc]
+categories: [cdc, testing]
 modified: 2017-11-29
 last_modified_at: 2018-08-16
 author: tom

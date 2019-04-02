@@ -1,7 +1,7 @@
 ---
 
 title: "Accessing a Spring Data REST API with Feign"
-categories: [hacks]
+categories: [tools]
 modified: 2017-07-31
 author: tom
 tags: [spring, boot, feign, data, rest]

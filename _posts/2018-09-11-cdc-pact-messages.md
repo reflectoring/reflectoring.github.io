@@ -1,7 +1,7 @@
 ---
 
 title: "Testing a Spring Message Producer and Consumer against a Contract with Pact"
-categories: [cdc]
+categories: [cdc, testing]
 modified: 2018-09-13
 last_modified_at: 2018-09-13
 author: tom

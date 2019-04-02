@@ -1,7 +1,7 @@
 ---
 
 title: Monitoring the Error Rate of a Spring Boot Web Application
-categories: [frameworks]
+categories: [spring-boot, architecture]
 modified: 2017-05-07
 author: tom
 tags: [spring, java, boot, monitoring, error, rate, metric, metrics, dropwizard, exception, counter, mvc]

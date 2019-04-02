@@ -1,7 +1,7 @@
 ---
 
 title: Github's Fork & Pull Workflow for Git Beginners
-categories: [opensource]
+categories: [tools]
 modified: 2017-01-02
 author: tom
 tags: [git, github, pull request, branch, fork, howto, guide, pull]

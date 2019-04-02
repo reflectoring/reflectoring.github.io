@@ -1,11 +1,11 @@
 ---
 layout: archive
-title: "Book Reviews"
+title: "Spring Boot Articles"
 author_profile: true
 ---
 
 {% include base_path %}
-{% assign posts = site.posts | where:"categories","book-review" %}
+{% assign posts = site.posts | where:"categories","spring-boot" %}
 {% for post in posts %}
   {% include archive-single.html %}
 {% endfor %}

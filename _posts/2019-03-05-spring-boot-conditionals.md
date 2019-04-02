@@ -1,6 +1,6 @@
 ---
 title: "Conditional Beans with Spring Boot"
-categories: [java]
+categories: [spring-boot]
 modified: 2019-03-07
 last_modified_at: 2019-03-07
 author: tom

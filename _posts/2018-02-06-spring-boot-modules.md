@@ -1,6 +1,6 @@
 ---
 title: "Modularizing a Spring Boot Application"
-categories: [spring]
+categories: [spring-boot]
 modified: 2018-02-06
 author: tom
 comments: true

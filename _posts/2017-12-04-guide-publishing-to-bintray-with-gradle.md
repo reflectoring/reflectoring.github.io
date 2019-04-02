@@ -1,6 +1,6 @@
 ---
 title: "Publishing Open Source Releases with Gradle"
-categories: [opensource]
+categories: [tools]
 modified: 2017-12-04
 author: tom
 tags: [gradle, maven, build]

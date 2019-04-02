@@ -1,7 +1,7 @@
 ---
 
 title: Is Endurance a good quality in Software Projects?
-categories: [methodology]
+categories: [musings]
 modified: 2016-11-28
 author: tom
 tags: [endurance, programming, project, software, engineering, methodology]

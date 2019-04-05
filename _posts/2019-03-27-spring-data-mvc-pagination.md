@@ -288,7 +288,7 @@ The test captures the `Pageable` parameter passed into the repository method and
 that it has the properties defined by the query parameters. 
 
 Note that I used [a custom
-AssertJ assertion](https://github.com/thombergs/code-examples/blob/master/spring-boot/pagination/src/test/java/io/reflectoring/pagination/PageableAssert.java)
+AssertJ assertion](https://github.com/thombergs/code-examples/blob/master/spring-boot/paging/src/test/java/io/reflectoring/paging/PageableAssert.java)
 to create readable assertions on the `Pageable` instance.
 
 Also note that in order to sort by multiple fields, we must provide the `sort` query parameter 

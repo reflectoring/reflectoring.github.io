@@ -1,6 +1,6 @@
 ---
 title: "Assumptions and Conditional Test Execution with JUnit 4 and 5"
-categories: [frameworks]
+categories: [java, tools]
 modified: 2017-10-10
 author: tom
 tags: [junit]

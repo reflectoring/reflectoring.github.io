@@ -1,6 +1,6 @@
 ---
 title: "A Fully Automated Open Source Release Chain with Gradle and Travis CI"
-categories: [opensource]
+categories: [tools]
 modified: 2017-12-29
 author: tom
 tags: [gradle, snapshot, bintray]

@@ -1,6 +1,6 @@
 ---
 title: "Implementing a Consumer-Driven Contract for a Node Express Server with Pact"
-categories: [cdc]
+categories: [cdc, testing]
 modified: 2018-10-28
 last_modified_at: 2018-11-10
 author: tom

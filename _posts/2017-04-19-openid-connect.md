@@ -1,7 +1,7 @@
 ---
 
 title: OpenID Connect
-categories: [frameworks]
+categories: [tools]
 modified: 2017-04-19
 author: david
 tags: [java, keycloak, openid, connect, jwt, security]

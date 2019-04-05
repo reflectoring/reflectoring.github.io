@@ -1,6 +1,6 @@
 ---
 title: "Unit Testing with Spring Boot"
-categories: [java]
+categories: [spring-boot]
 modified: 2019-01-12
 last_modified_at: 2019-01-12
 author: tom

@@ -1,6 +1,6 @@
 ---
 title: "All You Need To Know About Bean Validation With Spring Boot"
-categories: [java]
+categories: [spring-boot]
 modified: 2018-10-14
 last_modified_at: 2018-10-14
 author: tom

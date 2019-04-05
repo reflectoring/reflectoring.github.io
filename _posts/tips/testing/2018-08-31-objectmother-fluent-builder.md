@@ -1,7 +1,7 @@
 ---
 
 title: "Combining Object Mother and Fluent Builder for the Ultimate Test Data Factory"
-categories: [tip, testing]
+categories: [testing]
 modified: 2018-08-31
 last_modified_at: 2018-08-31
 author: tom

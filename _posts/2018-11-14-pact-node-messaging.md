@@ -1,6 +1,6 @@
 ---
 title: "Implementing a Consumer-Driven Contract between a Node Message Consumer and a Node Message Producer"
-categories: [cdc]
+categories: [cdc, testing]
 modified: 2018-11-14
 last_modified_at: 2018-11-14
 author: tom

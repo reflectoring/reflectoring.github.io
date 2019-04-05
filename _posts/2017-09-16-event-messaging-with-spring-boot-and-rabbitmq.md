@@ -1,6 +1,6 @@
 ---
 title: "Event Messaging for Microservices with Spring Boot and RabbitMQ"
-categories: [frameworks]
+categories: [spring-boot, tools]
 modified: 2017-09-16
 author: tom
 tags: [spring, boot, microservices, events, messaging, rabbitmq]

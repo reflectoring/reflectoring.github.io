@@ -1,7 +1,7 @@
 ---
 
 title: "Book Review: Clean Architecture by Robert C. Martin"
-categories: [books, architecture]
+categories: [book-review]
 modified: 2018-08-25
 last_modified_at: 2018-08-25
 author: tom

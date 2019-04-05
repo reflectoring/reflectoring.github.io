@@ -1,6 +1,6 @@
 ---
 title: "Integration Tests with `@SpringBootTest`"
-categories: [java]
+categories: [spring-boot]
 modified: 2019-02-23
 last_modified_at: 2019-02-23
 author: tom

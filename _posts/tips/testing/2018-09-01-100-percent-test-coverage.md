@@ -1,7 +1,7 @@
 ---
 
 title: "Why You Should Enforce 100% Code Coverage*"
-categories: [tip, testing]
+categories: [testing]
 modified: 2018-09-01
 last_modified_at: 2018-10-05
 author: tom

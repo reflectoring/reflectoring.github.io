@@ -1,7 +1,7 @@
 ---
 
 title: Digital Signature in Java
-categories: [hacks]
+categories: [java]
 modified: 2017-04-14
 author: artur
 tags: [java, generated, number, programming, project, software, engineering, cryptography, jce, bouncycastle, signature, digital]

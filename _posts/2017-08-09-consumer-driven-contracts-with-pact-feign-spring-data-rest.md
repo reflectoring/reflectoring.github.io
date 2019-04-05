@@ -1,7 +1,7 @@
 ---
 
 title: "Consumer-Driven Contracts with Pact, Feign and Spring Data REST"
-categories: [cdc]
+categories: [cdc, testing]
 modified: 2017-08-09
 author: tom
 tags: [spring, boot, consumer, driven, contract, pact, feign, data, rest]

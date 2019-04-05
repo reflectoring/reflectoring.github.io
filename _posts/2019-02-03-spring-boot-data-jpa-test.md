@@ -1,6 +1,6 @@
 ---
 title: "Testing JPA Queries with `@DataJpaTest`"
-categories: [java]
+categories: [spring-boot]
 modified: 2019-02-03
 last_modified_at: 2019-02-03
 author: tom

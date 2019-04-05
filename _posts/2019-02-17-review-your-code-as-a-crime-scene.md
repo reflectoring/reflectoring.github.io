@@ -1,6 +1,6 @@
 ---
 title: "Book Review: Your Code as a Crime Scene"
-categories: [books]
+categories: [book-review]
 modified: 2019-02-17
 last_modified_at: 2019-02-17
 author: tom

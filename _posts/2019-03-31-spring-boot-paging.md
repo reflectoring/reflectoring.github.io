@@ -1,6 +1,6 @@
 ---
 title: "Paging with Spring Boot"
-categories: [spring]
+categories: [spring-boot]
 modified: 2019-03-31
 last_modified_at: 2019-03-31
 author: tom

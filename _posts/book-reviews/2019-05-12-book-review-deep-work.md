@@ -28,22 +28,22 @@ sidebar:
 
 ## Overview
 
-In his book "Deep Work", Cal Newport gives a name to the productive state of "flow" most of us
+In his book ["Deep Work"](//geni.us/r6bM), Cal Newport gives a name to the productive state of "flow" most of us
 like to attain at work but which we can rarely maintain for more than a couple minutes when
 the next emergency interrupts our train of thought.
 
 Newport defines "Deep Work" as: 
 
-  "**Deep Work:** Professional activities performed in a state of distraction-free concentration 
-  that push your cognitive capabilities to their limit. These efforts create new value,
-  improve your skill, and are hard to replicate."
+ > "**Deep Work:** Professional activities performed in a state of distraction-free concentration 
+ > that push your cognitive capabilities to their limit. These efforts create new value,
+ > improve your skill, and are hard to replicate."
  
 The book is all about how to create an environment in which Deep Work is possible and
 how to reduce the time spent on "Shallow Work":
 
-  "**Shallow Work:** Noncognitively demanding, logistical-style tasks, often performed
-  while distracted. These efforts tend to not create much new value in the world and
-  are easy to replicate."   
+ > "**Shallow Work:** Noncognitively demanding, logistical-style tasks, often performed
+ > while distracted. These efforts tend to not create much new value in the world and
+ > are easy to replicate."   
 
 The book is structured in two parts. The first part motivates Deep Work in stating
 that Deep Work is valuable, rare and meaningful. The second part describes four rules
@@ -58,12 +58,12 @@ is pleasantly conversational, however.
 
 Newport tells a lot
 of anecdotes about his own academic work and about that of other important people in
-the world. The anecdotes always prove a certain point, so they definitely serve a meaning.
-In my opinion, the points could have been proven with less anecdotes and with less words, however,
+the world. The anecdotes always prove a certain point, so they definitely serve a purpose.
+In my opinion, however, the points could have been proven with less anecdotes and with less words,
 as the anecdotes take up a significant share of the text. 
 
 The book starts a little slow. I had some trouble staying motivated through the first part
-which describes why Deep Work is important. The chapters are very long, with sub-headings in between. I like
+which goes into details about why Deep Work is important. The chapters are very long, with sub-headings in between. I like
 it better if chapters are short and I can read through them in a single session. 
 
 The second part of the book was worth every cent, however. It provides very actionable
@@ -98,10 +98,14 @@ The second part of the book is full of tips on doing Deep Work. Here are my key 
 
 ## Conclusion
 
-Even though I don't particularly like the anecdotal writing style, the book was very enlightening.
+Even though I don't particularly like the anecdotal writing style, ["Deep Work"](//geni.us/r6bM) was very enlightening.
 Once through the book, I started to apply some of the tips and successfully created a habit
 of doing deep work every morning before work which allowed me to write most of my 
 [e-book](https://leanpub.com/get-your-hands-dirty-on-clean-architecture), prepare
-and hold two conference talks and write articles that almost tripled the visitors to my blog 
-- all within about 5 months.  
+and hold two conference talks and write articles that tripled the 
+visitors to my blog - all within about 5 months.  
+
+I definitely recommend it for anyone who is interested in creating a 
+productive environment for cognitively demanding work. 
+
 

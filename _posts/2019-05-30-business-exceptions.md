@@ -73,7 +73,7 @@ class Rocket {
     if (this.fuel < 50) {
       throw new NotEnoughFuelException();
     }
-    
+    lockDoors();
     igniteThrusters();
   }
   
@@ -130,12 +130,18 @@ What should the client code do if it encounters a `NotEnoughFuelException`?
 Probably, it will fill the fuel tanks and try again:
 
 ```java
-Rocket rocket = new Rocket();
-try {
-  rocket.takeOff();
-} catch (NotEnoughFuelException e) {
-  rocket.fillTanks();
-  rocket.takeOff();
+class FlightControl {
+
+  void start(){
+    Rocket rocket = new Rocket();
+    try {
+      rocket.takeOff();
+    } catch (NotEnoughFuelException e) {
+      rocket.fillTanks();
+      rocket.takeOff();
+    }
+  }
+  
 }
 ```
 
@@ -175,6 +181,7 @@ class Rocket {
       throw new NotEnoughFuelException();
     }
     
+    lockDoors();
     igniteThrusters();
   }
   
@@ -228,13 +235,89 @@ back where it wasn't before. Dangerous, isn't it?
 
 ## #5: Exceptions Evoke Fear
 
-* imagine coming into a new project and you have to deal with a whole bunch of
-  unknown business exceptions? How would you feel? 
-* if the code simply called validation methods you would feel a whole lot better
+Finally, using exceptions to mark failing business rules invokes fear in 
+developers that are trying to understand the codebase, especially if they're new to
+the project. 
+
+After all, each exception marks something that can go wrong, doesn't it? There are
+so many exceptions to have in mind when working with the code, and we have
+to handle them all! 
+
+How would you feel looking at an unknown codebase that's riddled with exceptions
+and try/catch blocks, knowing you have to work with that code for the next couple years? 
 
 ## What to do instead of Business Exceptions?
-* instead of calling one method throwing exceptions, call multiple methods checking
-  the business rules and then call the final method
+
+The alternative to using business exceptions is pretty simple. Just use plain code 
+to validate your business rules instead of exceptions:
+
+```java
+class Rocket {
+
+  private int fuel;
+
+  void takeOff() {
+    lockDoors();
+    igniteThrusters();
+  }
   
-## Further Reading
-* https://martinfowler.com/articles/replaceThrowWithNotification.html
+  boolean hasEnoughFuelForTakeOff(){
+    return this.fuel >= 50;
+  }
+  
+}
+```
+
+```java
+class FlightControl {
+
+  void startWithFuelCheck(){
+    Rocket rocket = new Rocket();
+    
+    if(!rocket.hasEnoughFuel()){
+      rocket.fillTanks();
+    }
+    
+    rocket.takeOff();
+  }
+  
+  void startWithoutFuelCheck(){
+    Rocket rocket = new Rocket();
+    rocket.takeOff();
+  }
+  
+}
+```
+
+Instead of forcing each client to handle a `NotEnoughFuelException`, we let the client
+check if there is enough fuel available. With this simple change, we have achieved the following:
+
+* If we stumble upon an exception, it really is an exception,
+  as the expected control flow doesn't throw an exception at all (#1).
+* We have used normal code for normal control flow which is much better readable than
+  try/catch blocks (#2).
+* The `takeOff()` method is reusable in different contexts, like taking off with
+  less than optimal fuel (#3).
+* We have no exception that might or might not interfere with any database transactions (#4).
+* We have no exception that evokes fear in the new guy that just joined the team (#5).
+
+You might notice that this solution moves the responsibility of checking 
+for business rules one layer up,
+from the `Rocket` class to the `FlightControl` class. This might feel like
+we're giving up control of our business rules, since the clients of the 
+`Rocket` class now have to check for the business rules themselves. 
+
+Yes, we have moved a responsibility away from our domain object. But we have gained
+a lot of flexibility, readability, and understandability on the way.
+
+## Conclusion
+
+Using exceptions, both checked and unchecked, for marking failed business rules,
+makes code less readable and flexible due to several reasons. 
+
+By moving business rule validation out of a domain object and into a use case,
+we can avoid having to throw an exception in the case a business rule fails. The use
+case decides if the business rule should be validated or not, since there might
+be valid reasons not to validate a certain rule.
+
+What's your take on exception handling? 

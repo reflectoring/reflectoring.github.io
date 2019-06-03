@@ -1,0 +1,240 @@
+---
+title: "5 Reasons Why Business Exceptions Are a Bad Idea"
+categories: [architecture]
+modified: 2019-05-30
+last_modified_at: 2019-05-30
+author: tom
+tags: 
+comments: true
+ads: true
+excerpt: "An article explaining the reasons why you shouldn't work with exceptions if you don't have to."
+sidebar:
+  toc: true
+---
+
+{% include sidebar_right %}
+
+I recently had a conversation about exception handling. 
+
+I argued that business exceptions are 
+a good thing because they clearly mark the rules of a business method. If a rule is violated,
+the business method throws a "business" exception that the client has to handle. 
+If it's a checked exception the business rule is even made 
+apparent in the method signature - at least the cases in which it fails.
+
+My counterpart argued that failing business rules shouldn't be exceptions because of multiple
+reasons. Having thought
+about it a bit more, I came to the conclusion that he was right. And I came up with 
+even more reasons than he enumerated during our discussion. 
+
+Read on to find out what distinguishes a business exception from a technical exception 
+and why technical exceptions are the only true exceptions.
+
+## Technical Exceptions
+
+Before we discuss why it's a bad idea to use business exceptions, let's define
+what a business exception actually is - compared to a "technical" exception.
+
+Let's start with technical exceptions. These exceptions are thrown when
+something goes wrong that we cannot fix and usually cannot respond to in any
+sensible way. 
+
+An example is Java's built-in `IllegalArgumentException`. If someone provides
+an argument to a method that does not follow the contract of that method,
+the method may throw an `IllegalArgumentException`. 
+
+When we call a method and get an `IllegalArgumentException` thrown into
+our face, what can we do about it? 
+
+Nothing. 
+
+It's a programming error. 
+If the invalid argument value comes from a user, it should have been validated earlier
+and an error message provided to the user. If the invalid argument comes from 
+somewhere else in the code, we have to fix it there. In any case, someone screwed up
+somewhere else.
+
+A technical Exception is usually derived from Java's `RuntimeException`,
+meaning that it doesn't have to be declared in a method signature.
+
+## Business Exceptions
+
+Now, what's a business exception? 
+
+A business exception is thrown when a business rule within our application is
+violated:
+
+```java
+class Rocket {
+
+  private int fuel;
+
+  void takeOff() throws NotEnoughFuelException {
+    if (this.fuel < 50) {
+      throw new NotEnoughFuelException();
+    }
+    
+    igniteThrusters();
+  }
+  
+}
+``` 
+
+In this example, the `Rocket` only takes off if it has enough fuel. 
+If it doesn't have enough fuel, it throws an exception with the very imaginative name 
+of `NotEnoughFuelException`.
+
+It's up to the client of the above code to make sure that the business rule
+of providing at least 50 units of fuel before takeoff is satisfied. 
+If the business rule is violated, the client 
+has to to handle the exception (for example by filling the fuel tank and then
+trying again).
+
+Now that we're on the same page about the definitions of a technical and a business 
+exception, let's look at the reasons why business exceptions are a bad idea. 
+
+## #1: Exceptions Should be Exceptions
+
+First of all, just by looking at the meaning of the word "exception",
+we'll see that a business exception as defined above isn't actually an exception.
+
+Let's look at some definitions of the word "exception":
+
+> A person or thing that is excluded from a general statement or does not follow a rule.
+> ([Oxford Dictionary](https://en.oxforddictionaries.com/definition/exception)).
+
+> An instance or case not conforming to the general rule ([dictionary.com](https://www.dictionary.com/browse/exception)).
+
+> Someone or something that is not included in a rule, group, or 
+> list or that does not behave in the expected way ([Cambridge Dictionary](https://dictionary.cambridge.org/dictionary/english/exception)).
+
+All three definitions say that an exception is something that *does not follow a 
+rule*.
+
+Coming back to our example, you could say that we have used the `NotEnoughFuelException` as an 
+exception to the rule
+"fuel tanks must contain at least 50 units of fuel". I say, however, that we have used
+the `NotEnoughFuelException` *to define* the (inverted) rule "fuel tanks must not contain
+less than 50 units of fuel".
+
+After all, we have added the exception to the signature of the `takeOff()` method. What is
+that if not defining some sort of rule that's relevant for the client code to know about?  
+
+To sum up, exceptions should be exceptions. Exceptions should not be an expected outcome. 
+Otherwise we defy the english language.
+
+## #2: Exceptions Shouldn't Be Used for Flow Control
+
+What should the client code do if it encounters a `NotEnoughFuelException`? 
+
+Probably, it will fill the fuel tanks and try again:
+
+```java
+Rocket rocket = new Rocket();
+try {
+  rocket.takeOff();
+} catch (NotEnoughFuelException e) {
+  rocket.fillTanks();
+  rocket.takeOff();
+}
+```
+
+As soon as the client code reacts to an exception by executing a different 
+branch of business code, we have misused the concept of exceptions for flow control.
+
+Using try/catch for flow control creates code that is 
+
+* expensive to understand (because we need more time to understand it), and
+* expensive to execute (because the JVM fills the exception in the catch block with a stacktrace).
+
+And, unlike in fashion, expensive is usually bad in software engineering.
+
+## #3: Exceptions Hinder Reusability
+
+The `takeOff()` method, as implemented above, will always check for fuel before igniting the
+thrusters. 
+
+Imagine that the funding for the space program has been reduced and we can't afford to fill the
+fuel tanks anymore. We have to cut corners and start the rocket with less fuel (I hope
+it doesn't work that way, but who knows?).
+
+Our business rule has just changed. How do we change the code to reflect this? 
+We want to be able to still execute the fuel check, so we don't have to change a lot of code
+once the funding returns.
+
+So, we could add a parameter to the method so that the `NotEnoughFuelException` is thrown
+conditionally: 
+
+```java
+class Rocket {
+
+  private int fuel;
+
+  void takeOff(boolean checkFuel) throws NotEnoughFuelException {
+    if (checkFuel && this.fuel < 50) {
+      throw new NotEnoughFuelException();
+    }
+    
+    igniteThrusters();
+  }
+  
+}
+``` 
+
+Ugly, isn't it? And the client code still has to handle the `NotEnoughFuelException`
+even if it passes `false` into the `takeOff()` method. 
+
+Using an exception for a business rule prohibits reusability in contexts where the
+business rule should not be validated. 
+
+A more mundane example where such reusability is required are multi-page forms
+in a web application that a user has to fill out. It would be convenient if the
+user can save his current progress at any time. When saving, the code might
+no run through all business rules so that the user can save invalid 
+data that he can later fix.
+
+So, using exceptions for business rules makes for code that is not reusable
+or code that is ugly (= expensive to read), or both.
+
+## #4: Exceptions May Interfere with Transactions
+
+If you have ever worked with Java's or Spring's `@Transactional` annotation to
+demarcate transaction boundaries, you will probably have thought about how
+exceptions affect transaction behavior. 
+
+To sum up the way Spring handles exceptions: 
+
+* If a *runtime exception* bubbles out of a method that is annotated with `@Transactional`,
+  the transaction is marked for rollback.
+* If a *checked exception* bubbles out of a method that is annotated with `@Transactional`,
+  the transaction is *not* marked for rollback (= nothing happens).
+  
+The reasoning behind this is that a checked exception is a valid return value of the method 
+(which is strange for reasons #1 and #2) while a runtime exception is unexpected.
+
+Because our `NotEnoughFuelException` is a checked exception, our try/catch from above
+would work as expected, without rolling back the current transaction. But only because
+we misuse an exception for control flow (see reason #2).
+
+If `NotEnoughFuelException` was a runtime exception instead, we could still try to handle
+the exception like above, only to run into a `TransactionRolledBackException` or a similar 
+exception as soon as the transaction commits.
+
+Since the transaction
+handling code is hidden away behind a simple `@Transactional` annotation, we're not really
+aware of the impact of our exceptions. Imagine someone refactoring a checked exception
+to a runtime exception. Every time this exception now occurs, the transaction will be rolled
+back where it wasn't before. Dangerous, isn't it?  
+
+## #5: Exceptions Evoke Fear
+
+* imagine coming into a new project and you have to deal with a whole bunch of
+  unknown business exceptions? How would you feel? 
+* if the code simply called validation methods you would feel a whole lot better
+
+## What to do instead of Business Exceptions?
+* instead of calling one method throwing exceptions, call multiple methods checking
+  the business rules and then call the final method
+  
+## Further Reading
+* https://martinfowler.com/articles/replaceThrowWithNotification.html

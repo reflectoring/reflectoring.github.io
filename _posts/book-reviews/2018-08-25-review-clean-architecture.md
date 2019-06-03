@@ -25,17 +25,27 @@ sidebar:
 
 {% include sidebar_right %}
 
-As the name suggests, <a href="//geni.us/oBgB" rel="nofollow">Clean Architecture - A Craftsman's Guide to Software Structure and Design</a> 
-by Robert C. Martin ("Uncle Bob") takes a step back from the details of programming and discusses the bigger picture (link points to Amazon).
+## TL;DR: Read this Book, when...
 
-The "prequels" <a href="//geni.us/5MXmRRM" rel="nofollow">Clean Code</a> and <a href="//geni.us/hgdI" rel="nofollow">The Clean Coder</a> have been must-reads for a
-software engineer, so I expected a lot from this new book (links point to Amazon). 
+* you are interested in building maintainable software
+* you need arguments to persuade your stakeholders to take some more time 
+  for creating quality software 
+* you want some inspiration on building applications in a different way than the
+  default "3-layer architecture"
 
-The book has about 320 pages in 34 chapters, not counting the appendix. Few chapters are longer than 10 pages.
+{% include amazon-disclaimer.html %}
 
 ## Overview
 
-**In my opinion, the book starts and ends weakly with a strong middle part.**
+As the name suggests, <a href="//geni.us/oBgB" rel="nofollow">Clean Architecture - A Craftsman's Guide to Software Structure and Design</a> 
+by Robert C. Martin ("Uncle Bob") takes a step back from the details of programming and discusses the bigger picture.
+
+The "prequels" <a href="//geni.us/5MXmRRM" rel="nofollow">Clean Code</a> and <a href="//geni.us/hgdI" rel="nofollow">The Clean Coder</a> have been must-reads for a
+software engineer, so I expected a lot from this new book. 
+
+The book has about 320 pages in 34 chapters, not counting the appendix. Few chapters are longer than 10 pages.
+
+In my opinion, the book starts and ends weakly with a strong middle part.
 
 Part I of the book gives a motivation of the topic by defining architecture as the means to facilitate the 
 development, deployment, operation, and maintenance of a software and *not* as the means to make the software work.

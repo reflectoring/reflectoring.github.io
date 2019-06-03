@@ -1,6 +1,6 @@
 ---
 title: "Skipping a CI Build for non-code changes"
-categories: [ci]
+categories: [tools]
 modified: 2018-06-11
 author: tom
 tags: [ci, travis]

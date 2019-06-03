@@ -1,7 +1,7 @@
 ---
 
 title: Exposing Metrics of a Spring Boot Application for Prometheus
-categories: [frameworks]
+categories: [spring-boot, architecture]
 modified: 2017-05-01
 author: tom
 tags: [spring, java, boot, monitoring, metric, metrics, prometheus, dropwizard, summary, counter]

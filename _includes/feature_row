@@ -6,6 +6,10 @@
 
 <div class="feature__wrapper">
 
+  {% if feature_row.size == 1 %}
+    SINGLE FEATURE
+  {% endif %}
+
   {% for f in feature_row %}
 
     {% if f.url contains "://" %}

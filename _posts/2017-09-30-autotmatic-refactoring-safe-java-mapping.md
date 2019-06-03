@@ -1,6 +1,6 @@
 ---
 title: "Robust Java Object Mapping With Minimal Testing Overhead Using reMap"
-categories: [frameworks]
+categories: [java, tools]
 modified: 2017-10-01
 author: tom
 tags: [java, mapper, mapping]

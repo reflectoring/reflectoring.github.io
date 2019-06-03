@@ -1,7 +1,7 @@
 ---
 
 title: 'Tool-based Database Refactoring: Flyway vs. Liquibase'
-categories: [methodology]
+categories: [tools]
 modified: 2017-05-14
 author: tom
 tags: [database, refactoring, bootstrap, schema, setup, tools, liquibase, flyway, sql, script, automatic]

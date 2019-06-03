@@ -1,6 +1,6 @@
 ---
 title: "What is Upstream and Downstream in Software Development?"
-categories: [musings]
+categories: [architecture]
 modified: 2018-09-27
 last_modified_at: 2018-09-27
 author: tom
@@ -57,7 +57,7 @@ Consider this figure:
 Component C depends on component B which in turn depends on component A.
 
 Applying the Dependency Rule, we can safely say that component A is upstream
-from component B which is upstream from component A (even though the 
+from component B which is upstream from component C (even though the 
 arrows point in the other direction).
 
 Applying the Value Rule here is a little more abstract, but we can say that
@@ -99,8 +99,8 @@ there's also talk about upstream and downstream services.
 
 Unsurprisingly, both the Dependency Rules and the Value Rule also apply to this context.
 
-Service A is the upstream service since service B depends on it. And service B is the downstream
-service since it adds to the value of service A.
+Service B is the upstream service since service A depends on it. And service A is the downstream
+service since it adds to the value of service B.
 
 Note that **the "stream"** defining what is upstream and what is downstream in this case **is not the
 stream of data coming into the system** through service A but rather **the stream of data from the

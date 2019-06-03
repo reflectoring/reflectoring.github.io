@@ -1,6 +1,6 @@
 ---
 title: "Creating a Consumer-Driven Contract with Feign and Pact"
-categories: [cdc]
+categories: [cdc, testing]
 modified: 2018-08-10
 last_modified_at: 2018-08-10
 author: tom

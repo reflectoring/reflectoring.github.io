@@ -1,7 +1,7 @@
 ---
 
 title: Locking transitive Dependencies with NPM 
-categories: [hacks]
+categories: [tools]
 modified: 2017-07-24
 author: tom
 tags: [npm, dependency, dependencies, lock, locking, version, transitive, range]

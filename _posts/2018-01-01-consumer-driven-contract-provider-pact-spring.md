@@ -1,6 +1,6 @@
 ---
 title: "Testing a Spring Boot REST API against a Consumer-Driven Contract with Pact"
-categories: [cdc]
+categories: [cdc, testing]
 modified: 2018-08-11
 last_modified_at: 2018-08-11
 author: tom

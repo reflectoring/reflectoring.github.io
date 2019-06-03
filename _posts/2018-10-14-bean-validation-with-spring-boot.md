@@ -1,6 +1,6 @@
 ---
 title: "All You Need To Know About Bean Validation With Spring Boot"
-categories: [java]
+categories: [spring-boot]
 modified: 2018-10-14
 last_modified_at: 2018-10-14
 author: tom
@@ -32,8 +32,8 @@ our project (Gradle notation):
 implementation('org.springframework.boot:spring-boot-starter-validation')
 ```
 
-**It's not necessary to add the version number since the Spring Dependency Management Gradle plugin does
-that for us**. If you're not using the plugin, you can find the most recent version 
+It's not necessary to add the version number since the Spring Dependency Management Gradle plugin does
+that for us. If you're not using the plugin, you can find the most recent version 
 [here](https://search.maven.org/search?q=g:org.springframework.boot%20AND%20a:spring-boot-starter-validation&core=gav).
 
 However, if we have also included the web starter, the validation starter comes for free:
@@ -42,8 +42,8 @@ However, if we have also included the web starter, the validation starter comes 
 implementation('org.springframework.boot:spring-boot-starter-web')
 ```
 
-Note that **the validation starter does no more than adding a dependency to a compatible version of
-[hibernate validator](https://search.maven.org/search?q=g:org.hibernate.validator%20AND%20a:hibernate-validator&core=gav)**, which is 
+Note that the validation starter does no more than adding a dependency to a compatible version of
+[hibernate validator](https://search.maven.org/search?q=g:org.hibernate.validator%20AND%20a:hibernate-validator&core=gav), which is 
 the most widely used implementation of the Bean Validation specification.
 
 ## Bean Validation Basics
@@ -58,7 +58,7 @@ We'll see more details in the examples below.
 
 ## Validating Input to a Spring MVC Controller
 
-**Let's say we have implemented a Spring REST controller and want to validate the input that' passed in by a client**. There are three 
+Let's say we have implemented a Spring REST controller and want to validate the input that' passed in by a client. There are three 
 things we can validate for any incoming HTTP request:
 
 * the request body,
@@ -70,7 +70,7 @@ Let's look at each of those in more detail.
 ### Validating a Request Body
 
 In POST and PUT requests, it's common to pass a JSON payload within the request body. Spring automatically maps 
-the incoming JSON to a Java object. **Now, we want to check if the incoming Java object meets our requirements**.
+the incoming JSON to a Java object. Now, we want to check if the incoming Java object meets our requirements.
 
 This is our incoming payload class:
 
@@ -106,12 +106,18 @@ class ValidateRequestBodyController {
 }
 ```
 
-**We simply have added the `@Valid` annotation to the `Input` parameter, which is also annotated with `@RequestBody`
-to mark that it should be read from the request body**. By doing this,
+We simply have added the `@Valid` annotation to the `Input` parameter, which is also annotated with `@RequestBody`
+to mark that it should be read from the request body. By doing this,
 we're telling Spring to pass the object to a `Validator` before doing anything else. 
 
-If the validation fails, it will trigger a `MethodArgumentNotValidException`. **By default, Spring will translate
-this exception to a HTTP status 400 (Bad Request)**. 
+<div class="notice--warning">
+  <h4>Use <code>@Valid</code> on Complex Types</h4>
+  If the <code>Input</code> class contains a field with another complex type that should be validated, this field, too, needs
+  to be annotated with <code>@Valid</code>.
+</div>
+
+If the validation fails, it will trigger a `MethodArgumentNotValidException`. By default, Spring will translate
+this exception to a HTTP status 400 (Bad Request). 
 
 We can verify this behavior with an integration test:
 
@@ -139,6 +145,9 @@ class ValidateRequestBodyControllerTest {
 }
 ```
 
+You can find more details about testing Spring MVC controllers in
+[my article about the `@WebMvcTest` annotation](/spring-boot-web-controller-test/).  
+
 ### Validating Path Variables and Request Parameters
 
 Validating path variables and request parameters works a little differently.
@@ -147,8 +156,8 @@ We're not validating complex Java objects in this case, since path variables and
 primitive types like `int` or their counterpart objects like `Integer` 
 or `String`. 
 
-Instead of annotating a class field like above, **we're adding a constraint annotation (in this case `@Min`) directly to
-the method parameter in the Spring controller**:  
+Instead of annotating a class field like above, we're adding a constraint annotation (in this case `@Min`) directly to
+the method parameter in the Spring controller:  
 
 ```java
 @RestController
@@ -169,7 +178,7 @@ class ValidateParametersController {
 }
 ```
 
-Note that **we have to add Spring's `@Validated` annotation to the controller at class level** to tell Spring to 
+Note that we have to add Spring's `@Validated` annotation to the controller at class level to tell Spring to 
 evaluate the constraint annotations on method parameters. 
 
 The `@Validated` annotation is only evaluated
@@ -230,8 +239,8 @@ class ValidateParametersControllerTest {
 
 ## Validating Input to a Spring Service Method
 
-Instead of (or additionally to) validating input on the controller level, **we can also validate the input to
-any Spring components**. In order to to this, we use a combination of the `@Validated` and `@Valid` annotations:
+Instead of (or additionally to) validating input on the controller level, we can also validate the input to
+any Spring components. In order to to this, we use a combination of the `@Validated` and `@Valid` annotations:
 
 ```java
 @Service
@@ -274,8 +283,13 @@ class ValidatingServiceTest {
 The last line of defense for validation is the persistence layer. By default, Spring Data uses Hibernate underneath,
 which supports Bean Validation out of the box. 
 
-**Note that we usually don't want to do validation as late as in the persistence layer because this means that the 
-business code above has worked with potentially invalid objects.**
+<div class="notice--warning">
+  <h4>Is the Persistence Layer the right Place for Validation?</h4>
+  <p>
+  We usually don't want to do validation as late as in the persistence layer because it means that the 
+  business code above has worked with potentially invalid objects which may lead to unforeseen errors.
+  </p>
+</div>
 
 Let's say want to store objects of our `Input` class to the database. First, we add the necessary JPA annotation 
 `@Entity` and add an ID field:
@@ -307,8 +321,8 @@ Then, we create a Spring Data repository that provides us with methods to persis
 public interface ValidatingRepository extends CrudRepository<Input, Long> {}
 ```
 
-**By default, any time we use the repository to store an `Input` object whose constraint annotations are violated,
-we'll get a `ConstraintViolationException`** as this integration test demonstrates:
+By default, any time we use the repository to store an `Input` object whose constraint annotations are violated,
+we'll get a `ConstraintViolationException` as this integration test demonstrates:
 
 ```java
 @ExtendWith(SpringExtension.class)
@@ -333,8 +347,10 @@ class ValidatingRepositoryTest {
 
 }
 ``` 
+You can find more details about testing Spring Data repositories in
+my [article about the `@DataJpaTest` annotation](/spring-boot-data-jpa-test/).
 
-**Note that Bean Validation is only triggered by Hibernate once the `EntityManager` is flushed**. Hibernate flushes
+Note that Bean Validation is only triggered by Hibernate once the `EntityManager` is flushed. Hibernate flushes
 thes `EntityManager` automatically under certain circumstances, but in the case of our integration test
 we have to do this by hand.
 

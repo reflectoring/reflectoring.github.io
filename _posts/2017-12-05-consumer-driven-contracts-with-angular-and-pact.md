@@ -1,6 +1,6 @@
 ---
 title: "Creating a Consumer-Driven Contract with Angular and Pact"
-categories: [cdc]
+categories: [cdc, testing]
 modified: 2017-12-10
 author: tom
 tags: [consumer, provider, contract]

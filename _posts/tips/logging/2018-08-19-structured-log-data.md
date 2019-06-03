@@ -1,7 +1,7 @@
 ---
 
 title: "3 Use Cases Where Structured Log Data Really Helps"
-categories: [tip, logging]
+categories: [architecture]
 modified: 2018-08-19
 last_modified_at: 2018-08-19
 author: tom

@@ -1,7 +1,7 @@
 ---
 
 title: "Handling associations between entities with Spring Data Rest"
-categories: [hacks]
+categories: [tools]
 modified: 2017-07-30
 author: tom
 tags: [spring, data, jpa, rest, relation, association, onetomany, manytoone, unidirectional, bidirectional]

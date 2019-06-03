@@ -1,6 +1,6 @@
 ---
 title: "Publishing Open Source Snapshots with Gradle"
-categories: [opensource]
+categories: [tools]
 modified: 2017-12-20
 author: tom
 tags: [gradle, snapshot, bintray]

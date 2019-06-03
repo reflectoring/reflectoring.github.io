@@ -1,7 +1,7 @@
 ---
 
 title: Tool-based Database Refactoring
-categories: [methodology]
+categories: [tools]
 modified: 2017-04-01
 author: tom
 tags: [database, refactoring, bootstrap, schema, setup, tools, liquibase, flyway, sql, script, automatic]

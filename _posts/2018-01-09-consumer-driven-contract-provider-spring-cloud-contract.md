@@ -1,6 +1,6 @@
 ---
 title: "Testing a Spring Boot REST API against a Contract with Spring Cloud Contract"
-categories: [cdc]
+categories: [cdc, testing]
 modified: 2018-01-01
 last_modified_at: 2018-08-16
 author: tom

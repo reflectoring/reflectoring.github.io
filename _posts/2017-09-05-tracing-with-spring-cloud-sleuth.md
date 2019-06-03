@@ -1,6 +1,6 @@
 ---
 title: "Tracing in Distributed Systems with Spring Cloud Sleuth"
-categories: [frameworks]
+categories: [spring-boot, tools]
 modified: 2017-09-08
 author: tom
 tags: [spring, boot, microservices, tracing]

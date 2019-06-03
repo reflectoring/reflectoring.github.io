@@ -2,15 +2,13 @@
 main:
   - title: "Latest Articles"
     url: /latest
-  - title: "About"
-    url: /about/
-    icon: fa-question-circle
+  - title: "Spring Boot"
+    url: /categories/spring-boot
+  - title: "Book Reviews"
+    url: /categories/book-reviews
   - title: "Search"
     url: /search/
     icon: fa-search
-  - title: "GitHub"
-    url: https://github.com/reflectoring/reflectoring.github.io
-    icon: fa-github
   - title: "Feed"
     url: /feed.xml
     icon: fa-rss-square

@@ -1,6 +1,6 @@
 ---
 title: "REST with Hypermedia - Hot or Not?"
-categories: [REST]
+categories: [architecture]
 modified: 2018-02-06
 author: tom
 comments: true

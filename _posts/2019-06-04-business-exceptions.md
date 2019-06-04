@@ -28,10 +28,6 @@ even more reasons than he enumerated during our discussion.
 Read on to find out what distinguishes a business exception from a technical exception 
 and why technical exceptions are the only true exceptions.
 
-Before we discuss why it's a bad idea to use business exceptions, let's define
-what a business exception actually is - compared to a "technical" exception.
-
-
 ## Technical Exceptions
 
 Let's start with technical exceptions. These exceptions are thrown when
@@ -45,7 +41,7 @@ the method may throw an `IllegalArgumentException`.
 When we call a method and get an `IllegalArgumentException` thrown into
 our face, what can we do about it? 
 
-Nothing. 
+We can only fix the code.
 
 It's a programming error. 
 If the illegal argument value comes from a user, it should have been validated earlier
@@ -53,7 +49,7 @@ and an error message provided to the user. If the illegal argument comes from
 somewhere else in the code, we have to fix it there. In any case, someone screwed up
 somewhere else.
 
-A technical Exception is usually derived from Java's `RuntimeException`,
+A technical exception is usually derived from Java's `RuntimeException`,
 meaning that it doesn't have to be declared in a method signature.
 
 ## Business Exceptions
@@ -122,7 +118,7 @@ that if not defining some sort of expected outcome that's relevant for the clien
 To sum up, exceptions should be exceptions. **Exceptions should not be an expected outcome**. 
 Otherwise we defy the english language.
 
-## #2: Exceptions are Ugly and Expensive
+## #2: Exceptions are Expensive
 
 What should the client code do if it encounters a `NotEnoughFuelException`? 
 
@@ -215,8 +211,7 @@ The reasoning behind this is that **a checked exception is a valid return value 
 Let's assume the `Rocket` class has a `@Transactional` annotation.
 
 Because our `NotEnoughFuelException` is a checked exception, our try/catch from above
-would work as expected, without rolling back the current transaction. But only because
-we misuse an exception for control flow (see [reason #2](#2-exceptions-are-ugly-and-expensive)).
+would work as expected, without rolling back the current transaction. 
 
 If `NotEnoughFuelException` was a runtime exception instead, we could still try to handle
 the exception like above, only to run into a `TransactionRolledBackException` or a similar 
@@ -238,10 +233,14 @@ After all, each exception marks something that can go wrong, doesn't it? There a
 so many exceptions to have in mind when working with the code, and we have
 to handle them all! 
 
+This tends to make developers very cautious (in the negative sense of the word).
+Where they would otherwise feel free to refactor code, they will feel restrained
+instead. 
+
 How would you feel looking at an unknown codebase that's riddled with exceptions
 and try/catch blocks, knowing you have to work with that code for the next couple years? 
 
-## What to do instead of Business Exceptions?
+## What to Do Instead of Business Exceptions?
 
 The alternative to using business exceptions is pretty simple. Just use plain code 
 to validate your business rules instead of exceptions:

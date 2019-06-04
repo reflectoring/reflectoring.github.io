@@ -289,7 +289,7 @@ check if there is enough fuel available. With this simple change, we have achiev
 * If we stumble upon an exception, it really is an exception,
   as the expected control flow doesn't throw an exception at all ([#1](#1-exceptions-should-not-be-an-expected-outcome)).
 * We have used normal code for normal control flow which is much better readable than
-  try/catch blocks ([#2](#2-exceptions-are-ugly-and-expensive)).
+  try/catch blocks ([#2](#2-exceptions-are-expensive)).
 * The `takeOff()` method is reusable in different contexts, like taking off with
   less than optimal fuel ([#3](#3-exceptions-hinder-reusability)).
 * We have no exception that might or might not interfere with any database transactions ([#4](#4-exceptions-may-interfere-with-transactions)).

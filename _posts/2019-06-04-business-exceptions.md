@@ -151,6 +151,16 @@ Using try/catch for flow control creates code that is
 
 And, unlike in fashion, expensive is usually bad in software engineering.
 
+<div class="notice--success">
+  <h4>Exceptions without Stacktraces?</h4>
+  <p>
+    In a comment I was made aware that Java's exception constructors allow passing
+    in a parameter <code>writableStackTrace</code> that, when set to <code>false</code>,
+    will cause the exception not to create a stacktrace, thus reducing the performance
+    overhead. Use at your own peril.  
+  </p>
+</div> 
+
 ## #3: Exceptions Hinder Reusability
 
 The `takeOff()` method, as implemented above, will *always* check for fuel before igniting the

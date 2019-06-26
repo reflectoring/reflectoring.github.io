@@ -29,7 +29,7 @@ sidebar:
 ## Overview
 
 I read the book ["The 7 Habits of Highly Effective People"](//geni.us/psvl) by Stephen Covey in my quest to shape
-my habits to be more *productive* at the things I do. Mostly the things I do for work
+my habits to be more *productive* at the things I do. Mostly at the things I do for work
 like my software developer job or this blog. 
 
 However, this book didn't give me the magic formula of how to become more productive
@@ -85,7 +85,7 @@ turn into a recruiting text, which luckily was not the case.
 
 ### Begin with the End in Mind
 
-* identify the different roles you have in life (father, husband, software engineer, ...) and short-term and long-term goals for each of those roles
+* identify the different roles you have in life (father, husband, software engineer, ...) and define short-term and long-term goals for each of those roles
 * create a personal mission statement defining your most important principles
 * think not only of producing, but also of your long-term production capability 
 * visualize what you want to achieve
@@ -114,9 +114,9 @@ turn into a recruiting text, which luckily was not the case.
 * listening without interrupting allows the speaker to open up
 * empathic listening is listening with the goal to understand
 * don't use autobiographical responses (responses comparing yourself to the speaker) like "when I was your age, I ...", or "I would do it differently ..."
-* instead re-phrase what you heard and repeat what you understood how the speaker feels
+* instead re-phrase what you heard and repeat what you understood about how the speaker feels
 * without understanding your counterpart you cannot create a win / win situation
-* if you want to persuade someone, you have to understand him / her first (and the create a win / win situation)
+* if you want to persuade someone, you have to understand him / her first (and then create a win / win situation)
 
 ### Synergize
 
@@ -139,14 +139,15 @@ turn into a recruiting text, which luckily was not the case.
 ## Conclusion
 
 Even though I was a little sceptical about "7 magical habits" at first, the habits are explained
-in logical order and made perfect sense once I understood them. The logical part is especially 
-important for me as a very rational person. They are backed with stories from the author's
+in logical order and made perfect sense once I understood them (the "logical" part is especially 
+important for me, since I'm a very rational person). They are backed with stories from the author's
 life which are interwoven with the text in a natural way, without disturbing the
 reading flow.
 
 This book gets my definite reading recommendation. In the least, you'll go through life
 a little more self-aware after reading it. At best, you might change yourself to become
-more secure in life and more effective in defining and achieving goals.
+more secure in life and more effective in defining and achieving goals. I'm still deciding on
+which of the two it was for me... .
 
 
 

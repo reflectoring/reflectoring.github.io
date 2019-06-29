@@ -6,10 +6,9 @@ tom:
   stackoverflow     : "2375843/tom"
   twitter           : "TomHombergs"
   linkedin          : "tom-hombergs-74048777"
-  bio               : "Tom has more than 10 years experience as a consulting software engineer and architect with a
-                      focus on Java and the Spring ecosystem. He contributes to open source projects on
-                      GitHub, writes software engineering-related articles and is an
-                      occasional speaker at conferences. He's also an editor at [baeldung.com](https://www.baeldung.com)."
+  bio               : "Passionate software engineer with a focus on Java and the Spring ecosystem.
+                       Loves open source as well as writing and speaking about things he learned."
+
 
 matthias:
   name              : "Matthias Balke"

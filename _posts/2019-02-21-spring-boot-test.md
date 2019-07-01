@@ -269,9 +269,9 @@ class MockBeanTest {
     // given
     User user = new User("Zaphod", "zaphod@galaxy.net");
     boolean sendWelcomeMail = true;
+    given(userRepository.save(any(UserEntity.class))).willReturn(userEntity(1L));
 
     // when
-    when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity(1L));
     Long userId = registerUseCase.registerUser(user, sendWelcomeMail);
 
     // then

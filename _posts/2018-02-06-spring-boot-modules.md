@@ -30,6 +30,11 @@ A module can be a business module, providing some business services to the appli
 or a technical module that provides cross-cutting concerns to several other
 modules or to the whole of the application. 
 
+The modules discussed in this article are part of the same monolithic
+codebase. To better enforce module boundaries, we could split up that monolithic codebase 
+into [multiple build modules](/spring-boot-gradle-multi-module/)
+with Maven or Gradle, if we so wish.
+
 ## Options for Creating Modules
 
 The base for a Spring Module is a `@Configuration`-annotated class along the lines of Spring's 

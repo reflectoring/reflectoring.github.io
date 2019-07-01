@@ -26,7 +26,7 @@ with Gradle.
 
 {% include github-project url="https://github.com/thombergs/clean-architecture-example" %}
 
-# What's a Module?
+## What's a Module?
 
 As we'll be using the word "module" a lot in this tutorial, let's first
 define what a module is.
@@ -44,7 +44,8 @@ A module is part of a parent build
 process that builds all modules of our application and combines them to
 a single artifact like a WAR file.
 
-# Why Do We Need Multiple Modules?
+
+## Why Do We Need Multiple Modules?
 
 Why would we make the effort to split up our codebase into multiple 
 modules when everything works just fine with a single, monolithic module?
@@ -60,7 +61,7 @@ If we split up the codebase into multiple smaller modules that each have
 clearly defined dependencies to other modules, we take a big step towards an easily maintainable
 codebase. 
 
-# The Example Application
+## The Example Application
 
 Let's take a look at the modular example web application we're going to build in this tutorial. 
 The application follows the hexagonal architecture style described in my [e-Book](/e-book/), 
@@ -105,7 +106,12 @@ its own responsibilities:
   cases implemented in the `application` module.
 * The `adapters/persistence` module implements the persistence layer of our application.
 
-# Parent Build File
+In the rest of this article, we'll look at how to create a separate Gradle module for each of those 
+application modules. Since we're using Spring, it makes sense to cut our Spring application context
+into multiple Spring modules along the same
+boundaries, but that's a story for a [different article](/spring-boot-modules/). 
+
+## Parent Build File
 
 To include all modules in the parent build, we first need to list them in the
 `settings.gradle` file in the parent folder: 
@@ -178,7 +184,7 @@ Thus, we don't need to list every single dependency on our own and potentially g
 Also note that we apply the `java-library` plugin to all sub-modules. This allows us to use the
 `api` configuration we'll later need in the module build files.
 
-# Module Build Files
+## Module Build Files
 
 In a module build file, we now simply add the dependencies the module needs.
 
@@ -227,11 +233,11 @@ Our modules have access to all the classes they need to build a web or persisten
 layer for a Spring Boot application, without having unnecessary dependencies. 
 
 The web module knows nothing about persistence and vice versa. As a developer **we cannot
-inadvertently add persistence code to the web layer or web code to the persistence layer**
+accidentally add persistence code to the web layer or web code to the persistence layer**
 without consciously adding a dependency to a `build.gradle` file. This helps to avoid
 the dreaded big ball of mud.
 
-# Spring Boot Application Build File
+## Spring Boot Application Build File
 
 Now, all we have to do is to aggregate those modules into a single Spring Boot application.
 We do this in the `configuration` module. 
@@ -281,12 +287,12 @@ instead of the `implementation` configuration.
 Had we not used the `api` configuration above, we would have to add a dependency to the needed Spring classes
 in `configuration/build.gradle`, which is also a valid option.    
 
-# Conclusion
+## Conclusion
 
 In this tutorial, we've seen how to split up a Spring Boot application into multiple Gradle modules
 with the help of the Spring Dependency Plugin for Gradle. We can follow this approach to split an application
 up along technical layers like in the [example application on github](https://github.com/thombergs/clean-architecture-example), 
-or along functional boundaries, or both. 
+or along [functional boundaries](/testing-verticals-and-layers-spring-boot/), or both. 
 
 A very similar approach can be used with Maven.
 

@@ -44,6 +44,7 @@ A module is part of a parent build
 process that builds all modules of our application and combines them to
 a single artifact like a WAR file.
 
+
 ## Why Do We Need Multiple Modules?
 
 Why would we make the effort to split up our codebase into multiple 

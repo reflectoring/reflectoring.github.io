@@ -37,13 +37,12 @@ A module ...
 * ... is transformed into its own artifact (JAR file) during a build, and
 * ... can define its own dependencies to other modules or third-party libraries.
 
-Basically, **a module is part of a codebase that can be maintained and built 
-separately from other modules**. 
+Basically, **a module is a codebase that can be maintained and built 
+separately from other modules' codebases**. 
 
-A module is part of a parent build
+However, a module is still part of a parent build
 process that builds all modules of our application and combines them to
 a single artifact like a WAR file.
-
 
 ## Why Do We Need Multiple Modules?
 

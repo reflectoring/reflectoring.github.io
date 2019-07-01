@@ -105,8 +105,9 @@ its own responsibilities:
   cases implemented in the `application` module.
 * The `adapters/persistence` module implements the persistence layer of our application.
 
-In the rest of this article, we'll look at how to create multiple Gradle modules for each of those 
-modules. Since we're using Spring, it makes sense to cut Spring modules along the same
+In the rest of this article, we'll look at how to create a separate Gradle module for each of those 
+application modules. Since we're using Spring, it makes sense to cut our Spring application context
+into multiple Spring modules along the same
 boundaries, but that's a story for a [different article](/spring-boot-modules/). 
 
 ## Parent Build File

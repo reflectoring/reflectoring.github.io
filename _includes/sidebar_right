@@ -1,6 +1,6 @@
 <aside class="sidebar__right">
 
-{% include /mailchimp/sidebar-form.html %}
+{% include /mailerlite/sidebar-form.html %}
 
 {% if page.sidebar.toc %}
   <nav class="toc" markdown="1">

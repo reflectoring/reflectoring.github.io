@@ -1,6 +1,6 @@
 ---
 title: Privacy Policy
-modified: 2018-08-07
+modified: 2019-07-14
 comments: false
 share: false
 ads: false
@@ -9,7 +9,7 @@ sidebar:
   toc: true
 ---
 
-Last modified: August 13, 2018
+Last modified: July 14, 2019
 
 {% include sidebar_right %}
 

@@ -35,10 +35,10 @@ use it to configure a Spring Boot application module.
 ## Using `@ConfigurationProperties` to Configure a Module
 
 Imagine we're building a [module](/spring-boot-modules/) in our application that is responsible for
-sending e-mails. In local tests, we don't want the module
-to actually send e-mails, so **we need a parameter to disable this functionality**.
+sending emails. In local tests, we don't want the module
+to actually send emails, so **we need a parameter to disable this functionality**.
 Also, **we want to be able to configure a default subject** for these mails, so we
-can quickly identify e-mails in our inbox that have been sent from a test
+can quickly identify emails in our inbox that have been sent from a test
 environment.
 
 Spring Boot offers [many different options](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config)
@@ -381,7 +381,7 @@ myapp.mail.max-attachment-size=1MB
 
 In rare cases, we might want to parse a configuration parameter into a custom
 value object. Imagine that we want to provide the (hypothetical) 
-maximum attachment weight for an e-mail:
+maximum attachment weight for an email:
 
 ```properties
 myapp.mail.max-attachment-weight=5kg
@@ -439,9 +439,9 @@ class MailModuleConfiguration {
 Boot know that this converter is needed during the binding of configuration properties.
 
 <div class="notice--success">
-  <h4>E-Mail Attachments with a Weight?</h4>
+  <h4>email Attachments with a Weight?</h4>
   <p>
-  Obviously, e-mails cannot have "real" attachments with a weight. I'm quite aware
+  Obviously, emails cannot have "real" attachments with a weight. I'm quite aware
   of this. I had a hard time to come up with an example for a custom configuration
   type, though, since this is a rare case indeed.   
   </p>

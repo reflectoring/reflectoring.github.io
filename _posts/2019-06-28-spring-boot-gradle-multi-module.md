@@ -52,7 +52,7 @@ modules when everything works just fine with a single, monolithic module?
 The main reason is that **a single monolithic codebase is susceptible for architectural
 decay**. Within a codebase we usually use packages to demarcate architectural boundaries. 
 But packages in Java aren't very good at protecting those boundaries (more about this in the chapter
-"Enforcing Architecture Boundaries" of my [e-Book](/e-book/)). Suffice it to say
+"Enforcing Architecture Boundaries" of my [eBook](/e-book/)). Suffice it to say
 that the dependencies between classes within a single monolithic codebase tend to quickly
 degrade into a big ball of mud.
 
@@ -63,7 +63,7 @@ codebase.
 ## The Example Application
 
 Let's take a look at the modular example web application we're going to build in this tutorial. 
-The application follows the hexagonal architecture style described in my [e-Book](/e-book/), 
+The application follows the hexagonal architecture style described in my [eBook](/e-book/), 
 which splits the codebase into separate, clearly defined architectural elements.
 For each of those architectural elements, we'll create a separate Gradle build module,
 as indicated by the following folder structure: 

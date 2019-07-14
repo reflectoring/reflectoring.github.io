@@ -133,6 +133,6 @@ to Java, <a href="http://geni.us/java-by-comparison" rel="nofollow">*Java by Com
 is definitely worth its money.
 
 As the authors themselves do in the preface of the book, 
-**I explicitly suggest reading the PDF or print version and *not* the e-book 
-version**. The e-Book version is no fun since you cannot see more than one code
+**I explicitly suggest reading the PDF or print version and *not* the eBook 
+version**. The eBook version is no fun since you cannot see more than one code
 snippet at a time and often have to scroll back-and-forth.

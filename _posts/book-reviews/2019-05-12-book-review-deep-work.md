@@ -21,7 +21,7 @@ sidebar:
 ## TL;DR: Read this Book, when...
 
 * you want to get more productive at knowledge work (yes, software development is knowledge work!)
-* you feel like you're drowning in "shallow" work like e-mails and phone calls
+* you feel like you're drowning in "shallow" work like emails and phone calls
 * you need arguments to defend a change of work style towards your colleagues and your boss
 
 {% include amazon-disclaimer.html %}
@@ -101,7 +101,7 @@ The second part of the book is full of tips on doing Deep Work. Here are my key 
 Even though I don't particularly like the anecdotal writing style, ["Deep Work"](//geni.us/r6bM) was very enlightening.
 Once through the book, I started to apply some of the tips and successfully created a habit
 of doing deep work every morning before work which allowed me to write most of my 
-[e-book](https://leanpub.com/get-your-hands-dirty-on-clean-architecture), prepare
+[eBook](https://leanpub.com/get-your-hands-dirty-on-clean-architecture), prepare
 and hold two conference talks and write articles that tripled the 
 visitors to my blog - all within about 5 months.  
 

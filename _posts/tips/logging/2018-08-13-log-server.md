@@ -29,7 +29,7 @@ prevents users from finishing an important use case under certain conditions. If
 to the bug ... but that information should be available in the logs, right?
 
 **Day 1:**  
-Ok, let's write an e-mail to the ops people to request the logs from today! Wait, they're not allowed
+Ok, let's write an email to the ops people to request the logs from today! Wait, they're not allowed
 to send us just any logs due to privacy concerns. We need to specify some filter for the data we need. 
 Ok then, let's filter the logs by date (we only need today's logs) and by component (we suspect the bug in a certain
 component). 
@@ -40,7 +40,7 @@ But, *damn*, the log excerpt doesn't help us. The component we suspected wasn't 
 Let's widen the search to another component and try again... .
 
 **Day n:**
-We finally found the information we needed to fix the bug after playing e-mail ping pong with the ops people for n days.
+We finally found the information we needed to fix the bug after playing email ping pong with the ops people for n days.
 
 **No need to say that this kind of turnaround makes fixing evasive bugs an unproductive task that no one really
 wants to be involved in.**

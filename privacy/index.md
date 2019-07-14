@@ -295,4 +295,4 @@ Changes to this Privacy Policy are effective when they are posted on this page.
 
 ## Contact Us
 If you have any questions about this Privacy Policy, please contact us 
-at [support@reflectoring.io](mailto:support@reflectoring.io).
+at [tom@reflectoring.io](mailto:tom@reflectoring.io).

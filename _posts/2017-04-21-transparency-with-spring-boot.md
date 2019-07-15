@@ -9,6 +9,7 @@ comments: true
 ads: true
 sidebar:
   nav: monitoring
+excerpt: "A tutorial on how to use the Dropwizard library to expose monitoring metrics in a Spring Boot application."
 ---
 
 {% include sidebar_right %}

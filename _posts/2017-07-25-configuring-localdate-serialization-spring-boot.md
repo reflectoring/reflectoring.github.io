@@ -7,6 +7,7 @@ author: tom
 tags: [spring, boot, localdate, json, rest, serialize]
 comments: true
 ads: true
+excerpt: "An extensive list of things to think through when starting a new Java-based software project."
 ---
 
 {% include sidebar_right %}

@@ -7,6 +7,7 @@ author: tom
 tags: [database, refactoring, bootstrap, schema, setup, tools, liquibase, flyway, sql, script, automatic]
 comments: true
 ads: true
+excerpt: "A comparison of Flyway and Liquibase - the two most popular tools for database refactoring."
 ---
 
 {% include sidebar_right %}

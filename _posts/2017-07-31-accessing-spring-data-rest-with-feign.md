@@ -9,6 +9,7 @@ comments: true
 ads: true
 sidebar:
   nav: spring-data-rest
+excerpt: "A tutorial on how to use the Feign REST client library to access an API created with Spring Data REST."
 ---
 
 {% include sidebar_right %}

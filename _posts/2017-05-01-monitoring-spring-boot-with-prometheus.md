@@ -9,6 +9,8 @@ comments: true
 ads: true
 sidebar:
   nav: monitoring
+excerpt: "A tutorial on using Dropwizard to expose monitoring metrics from within a Spring Boot application
+          to be consumed by a Prometheus monitoring server."
 ---
 
 {% include sidebar_right %}

@@ -6,6 +6,7 @@ author: matthias
 tags: [gradle, groovy, property, lazy, evaluation]
 comments: true
 ads: true
+excerpt: "A guide on lazy evaluation in Gradle scripts and when it makes sense to use it."
 ---
 
 {% include sidebar_right %}

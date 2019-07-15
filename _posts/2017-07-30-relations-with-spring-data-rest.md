@@ -1,6 +1,6 @@
 ---
 
-title: "Handling associations between entities with Spring Data Rest"
+title: "Handling Associations Between Entities with Spring Data REST"
 categories: [tools]
 modified: 2017-07-30
 author: tom
@@ -9,6 +9,7 @@ comments: true
 ads: true
 sidebar:
   nav: spring-data-rest
+excerpt: "How to implement an API with Spring Data TEST that spans over multiple database entities."
 ---
 
 {% include sidebar_right %}

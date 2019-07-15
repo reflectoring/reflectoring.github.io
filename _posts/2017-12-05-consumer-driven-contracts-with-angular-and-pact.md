@@ -12,6 +12,7 @@ header:
 sidebar:
   nav: cdc
   toc: true
+excerpt: "A tutorial on testing an Angular REST client against a contract with the Pact framework."
 ---
 
 {% include sidebar_right %}

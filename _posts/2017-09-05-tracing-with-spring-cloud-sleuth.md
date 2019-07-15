@@ -6,6 +6,7 @@ author: tom
 tags: [spring, boot, microservices, tracing]
 comments: true
 ads: true
+excerpt: "A tutorial on using Spring Cloud Sleuth to trace communication between distributed Spring Boot applications."
 ---
 
 {% include sidebar_right %}

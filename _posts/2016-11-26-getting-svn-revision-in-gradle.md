@@ -7,6 +7,7 @@ author: tom
 tags: [gradle, revision, subversion, svn]
 comments: true
 ads: true
+excerpt: "A tutorial showing how to use the subversion Revision number in a Gradle build."
 ---
 
 {% include sidebar_right %}

@@ -10,6 +10,7 @@ ads: true
 sidebar:
   nav: cdc
   toc: true
+excerpt: "A tutorial on how to test an API created with Spring Data REST with contract tests using the Pact framework."
 ---
 
 {% include sidebar_right %}

@@ -7,6 +7,7 @@ author: tom
 tags: [endurance, programming, project, software, engineering, methodology]
 comments: true
 ads: true
+excerpt: "Endurance is typically considered a good quality...but is it really good in all cases?"
 ---
 
 {% include sidebar_right %}

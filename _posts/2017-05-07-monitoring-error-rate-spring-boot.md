@@ -9,6 +9,7 @@ comments: true
 ads: true
 sidebar:
   nav: monitoring
+excerpt: "How to monitor the error rate of a Spring Boot web application."
 ---
 
 {% include sidebar_right %}

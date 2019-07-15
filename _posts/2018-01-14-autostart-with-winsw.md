@@ -6,6 +6,7 @@ author: david
 tags: [winsw, spring, windows, autostart]
 comments: true
 ads: true
+excerpt: "A guide on how to use WinSW to create an autostart for a Spring Boot application in Windows."
 ---
 
 {% include sidebar_right %}

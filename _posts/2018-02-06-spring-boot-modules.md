@@ -10,6 +10,7 @@ header:
  image: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg
 sidebar:
   toc: true
+excerpt: "A guide on different ways Spring Boot offers to split an application into distinct modules."
 ---
 
 {% include sidebar_right %}

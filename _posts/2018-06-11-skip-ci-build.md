@@ -6,6 +6,7 @@ author: tom
 tags: [ci, travis]
 comments: true
 ads: true
+excerpt: "A guide on how to skip a CI build when only certain documentation files have changed."
 ---
 
 {% include sidebar_right %}

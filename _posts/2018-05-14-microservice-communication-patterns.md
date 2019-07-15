@@ -9,6 +9,7 @@ ads: true
 header:
  teaser: /assets/images/posts/microservice-communication-patterns/communication.jpg
  image: /assets/images/posts/microservice-communication-patterns/communication.jpg
+excerpt: "A discussion of several different communication patterns between distributed micro services."
 ---
 
 {% include sidebar_right %}

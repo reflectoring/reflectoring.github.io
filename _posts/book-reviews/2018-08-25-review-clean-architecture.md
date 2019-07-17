@@ -8,7 +8,7 @@ author: tom
 tags: [architecture]
 comments: true
 ads: false
-excerpt: "A review of Robert C. Martin's book on Clean Architecture. "
+excerpt: "A review of Robert C. Martin's book on 'Clean Architecture'. "
 sidebar:
   toc: true
   books:

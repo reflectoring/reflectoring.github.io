@@ -7,6 +7,8 @@ author: tom
 tags: [database, refactoring, bootstrap, schema, setup, tools, liquibase, flyway, sql, script, automatic]
 comments: true
 ads: true
+excerpt: "A short introduction to database refactoring and an argument why a database 
+          refactoring tool is a must-have in any project using a database with a schema."
 ---
 
 {% include sidebar_right %}

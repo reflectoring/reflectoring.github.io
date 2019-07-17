@@ -8,6 +8,7 @@ ads: true
 header:
  teaser: /assets/images/posts/rest-hypermedia/state-diagram-relations-header.png
  image: /assets/images/posts/rest-hypermedia/state-diagram-relations-header.png
+excerpt: "A discussion of what Hypermedia with REST means and a guide to decide whether hypermedia is a match for your use case."
 ---
 
 {% include sidebar_right %}

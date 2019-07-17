@@ -1,8 +1,8 @@
 ---
-title: "Taming Technologies"
+title: "reflectoring - Adding the Why to the How"
 layout: splash
-excerpt: "Hands-On Guides and Tutorials on Spring Boot, Java and Software Development in General
-          to help You Dive Deep into a Topic."
+excerpt: "Hands-On guides and tutorials on Spring Boot, Java, and software development in general -
+          explaining not only how to do things, but why."
 header:
   overlay_color: "#000"
   overlay_filter: "0.7"
@@ -10,42 +10,66 @@ header:
   cta_url: "/latest/"
 ---
 
+<script>
+  (function (m, a, i, l, e, r) {
+    m['MailerLiteObject'] = e;
+
+    function f() {
+      var c = {a: arguments, q: []};
+      var r = this.push(c);
+      return "number" != typeof r ? r : f.bind(c.q);
+    }
+
+    f.q = f.q || [];
+    m[e] = m[e] || f.bind(f.q);
+    m[e].q = m[e].q || f.q;
+    r = a.createElement(i);
+    var _ = a.getElementsByTagName(i)[0];
+    r.async = 1;
+    r.src = l + '?v' + (~~(new Date().getTime() / 1000000));
+    _.parentNode.insertBefore(r, _);
+  })(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+  var ml_account = ml('accounts', '1580070', 'o8l2q7w6c1', 'load');
+</script>
+
+<script>
+  var ml_webform_1404342 = ml_account('webforms', '1404342', 'r5r7j4', 'load');
+  ml_webform_1404342('animation', 'fadeIn');
+</script>
+
 <div class="feature__wrapper">
   <div class="feature__item_full">
     <div class="archive__item">
       <div class="archive__item-body">
 
-        <h2 class="archive__item-title">Get a Free Copy of my e-Book</h2>
+        <h2 class="archive__item-title">Get a Free Copy of my eBook</h2>
         <div class="archive__item-excerpt">
 
-          <form action="https://reflectoring.us19.list-manage.com/subscribe/post?u=11ed6e63bab4d7be9080f1b9d&amp;id=bcc3068c29" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate="" style="padding-bottom:0px; display:inline">
-            <a href="/e-book/"><img alt="e-Book" src="/assets/images/book/cover_275px.png" style="float:right; margin-left: 20px"></a>
-            <p>
+          <a href="/e-book/"><img alt="e-Book" src="/assets/images/book/cover_275px.png"
+                                  style="float:right; margin-left: 20px"></a>
+          <p>
             Frustrated with the conventional layered architecture style?
-              Sign up to my mailing list to get a <strong>free copy</strong> of my e-Book <a href="/e-book/"><strong>Get Your Hands Dirty on Clean Architecture</strong></a>.
+            Sign up to my mailing list to get a <strong>free copy</strong> of my eBook <a
+            href="/e-book/"><strong>Get Your Hands Dirty on Clean Architecture</strong></a>.
           </p>
 
           <p>
-            A good software architecture should keep the cost of development low over the complete lifetime of an application.
+            A good software architecture should keep the cost of development low over the complete
+            lifetime of an application.
 
-            This book discusses how the concepts of a <strong>Hexagonal Architecture</strong> try to fulfill this goal and <strong>translates them into actual code</strong> to provide inspiration for software developers.
+            This book discusses how the concepts of a <strong>Hexagonal Architecture</strong> try to
+            fulfill this goal and <strong>translates them into actual code</strong> to provide
+            inspiration for software developers.
           </p>
 
           <p>This is a time-limited offer.</p>
 
-          <p>
-            <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required="" style="width:500px; display:block">
-          </p>
-
-          <div style="position: absolute; left: -5000px;" aria-hidden="true">
-            <input type="text" name="b_11ed6e63bab4d7be9080f1b9d_bcc3068c29" tabindex="-1" value="">
+          <div class="clear">
+            <button name="subscribe" class="button btn btn--inverse"
+                    onclick="ml_webform_1404342('show')">Subscribe
+            </button>
           </div>
-
-          <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button btn btn--inverse"></div>
-          <small>Read the <a href="/privacy">privacy policy</a>.</small>
-
-
-          </form>
 
         </div>
       </div>
@@ -67,7 +91,8 @@ header:
         {% for post in spring_boot_posts %}
 
         <li>
-          <h3><a href="{{ base }}{{ post.url }}">{{ post.title | markdownify | remove: "<p>" | remove: "</p>" }}</a></h3>
+          <h3><a href="{{ base }}{{ post.url }}">{{ post.title | markdownify | remove: "<p>" |
+            remove: "</p>" }}</a></h3>
           <p class="archive__item-excerpt">
             {{ post.excerpt | markdownify | strip_html | truncate: 250 }}
             <a href="{{ base }}{{ post.url }}" class="btn btn--inverse">Read more</a>
@@ -91,11 +116,13 @@ header:
 
           <ul class="feature__list">
 
-            {% assign book_review_posts = site.posts | where:"categories","book-review" | slice: 0,3 %}
+            {% assign book_review_posts = site.posts | where:"categories","book-review" | slice: 0,3
+            %}
             {% for post in book_review_posts %}
 
             <li>
-              <h3><a href="{{ base }}{{ post.url }}">{{ post.title | markdownify | remove: "<p>" | remove: "</p>" }}</a></h3>
+              <h3><a href="{{ base }}{{ post.url }}">{{ post.title | markdownify | remove: "<p>" |
+                remove: "</p>" }}</a></h3>
               <p class="archive__item-excerpt">
                 {{ post.excerpt | markdownify | strip_html | truncate: 250 }}
                 <a href="{{ base }}{{ post.url }}" class="btn btn--inverse">Read more</a>
@@ -126,11 +153,14 @@ header:
             Whatever the role, I'm focused on getting the software ready for production.
           </p>
           <p>
-            For more than a decade, I've been involved in developing software for many different clients across
-            almost as many different industries, always with a focus on the Java and Spring ecosystem.
+            For more than a decade, I've been involved in developing software for many different
+            clients across
+            almost as many different industries, always with a focus on the Java and Spring
+            ecosystem.
           </p>
           <p>
-            I found that writing about a topic with the intention to actually let other people read it
+            I found that writing about a topic with the intention to actually let other people read
+            it
             is the best way to learn. This blog is my way of diving deep into topics that I have
             stumbled over in my projects or which I just wanted to learn about.
           </p>

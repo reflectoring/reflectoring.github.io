@@ -6,6 +6,7 @@ author: tom
 tags: [java, mapper, mapping]
 comments: true
 ads: true
+excerpt: "An intro to the reMap Java mapping library that has a focus on minimal testing overhead."
 ---
 
 {% include sidebar_right %}

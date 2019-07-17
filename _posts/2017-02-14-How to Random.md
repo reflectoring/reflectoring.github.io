@@ -7,6 +7,7 @@ author: rudi
 tags: [random, performance, threadLocalRandom, math, generated, number, programming, project, software, engineering]
 comments: true
 ads: true
+excerpt: "An intro on how to create random numbers in Java."
 ---
 
 {% include sidebar_right %}

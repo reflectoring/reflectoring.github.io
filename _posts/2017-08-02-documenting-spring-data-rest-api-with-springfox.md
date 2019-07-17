@@ -9,6 +9,7 @@ comments: true
 ads: true
 sidebar:
   nav: spring-data-rest
+excerpt: "A tutorial on how to document a REST API created with Spring Data REST using Springfox and Swagger."
 ---
 
 {% include sidebar_right %}

@@ -6,6 +6,7 @@ author: tom
 tags: [spring, boot, microservices, events, messaging, rabbitmq]
 comments: true
 ads: true
+excerpt: "A tutorial on creating an event messaging solution with Spring Boot and RabbitMQ."
 ---
 
 {% include sidebar_right %}

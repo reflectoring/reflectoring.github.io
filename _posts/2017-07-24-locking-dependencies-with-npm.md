@@ -7,6 +7,7 @@ author: tom
 tags: [npm, dependency, dependencies, lock, locking, version, transitive, range]
 comments: true
 ads: true
+excerpt: "A tutorial on how to lock the version of your NPM dependencies to create a reproducible build."
 ---
 
 {% include sidebar_right %}

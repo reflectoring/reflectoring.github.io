@@ -6,6 +6,7 @@ author: tom
 tags: [junit]
 comments: true
 ads: true
+excerpt: "A comparison on how to implement assumptions and conditional test execution between JUnit 4 and 5."
 ---
 
 {% include sidebar_right %}

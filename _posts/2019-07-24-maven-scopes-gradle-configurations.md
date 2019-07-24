@@ -1,7 +1,7 @@
 ---
 title: Maven Scopes and Gradle Configurations Explained
 categories: [tools]
-modified: 2017-07-23
+modified: 2017-07-24
 author: tom
 tags: [gradle, maven, scope, configuration]
 comments: true

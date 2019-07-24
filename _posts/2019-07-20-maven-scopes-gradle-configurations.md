@@ -13,7 +13,7 @@ sidebar:
 
 {% include sidebar_right %}
 
-One of the key features of a build tool is dependency management. We declare that we want to use a certain library in our own project and **the build tool takes care of downloading it and adding it to the classpath at the right times in the build lifecycle**.
+One of the key features of a build tool for Java is dependency management. We declare that we want to use a certain third-party library in our own project and **the build tool takes care of downloading it and adding it to the classpath at the right times in the build lifecycle**.
 
 Maven has been around as a build tool for a long time. It's stable and still well liked in the Java community. 
 
@@ -127,7 +127,7 @@ This configuration was introduced to replace the deprecated `compile` configurat
 
 We use the `api` configuration do declare dependencies that are part of our API, i.e. **for dependencies that we explicitly want to expose to our consumers**.
 
-This is the only standard configuration that exposes dependencies to consumers.
+This is the only standard configuration that exposes dependencies to consumers. 
 
 | When available?                                                            | Transitive ? | Included in Artifact? |
 | -------------------------------------------------------------------------- | ------------ | --------------------- |

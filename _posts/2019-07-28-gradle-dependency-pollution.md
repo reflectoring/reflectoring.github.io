@@ -14,8 +14,6 @@ sidebar:
 
 {% include sidebar_right %}
 
-## What's Dependency Pollution?
-
 Remember the days when we had to manually download *every single JAR file* that our project needed to run?
 And not only the JAR files we directly depended upon, mind you, but even those JAR files that our 
 dependencies and our dependencies' dependencies needed to work!
@@ -27,6 +25,8 @@ This has a downside, however. Years ago, when we downloaded each of the direct a
 dependencies manually, we could decide for each of those dependencies if we really needed it for
 our project to run. Today, we let Gradle and Maven make this decision ... which may result in 
 too many JAR files included in the final build artifact and some other problems outlined below.
+
+## What's Dependency Pollution?
 
 Say we have a project X. It depends on libraries A and B. And C is a consumer of project X. 
 

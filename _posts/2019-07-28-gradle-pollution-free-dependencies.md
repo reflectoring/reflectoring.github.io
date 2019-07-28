@@ -23,8 +23,8 @@ our dependencies.
 
 This has a downside, however. Years ago, when we downloaded each of the direct and transitive
 dependencies manually, we could decide for each of those dependencies if we really needed it for
-our project to run. Today, we let Gradle and Maven make this decision ... which may result in 
-too many JAR files included in the final build artifact and some other problems outlined below.
+our project to compile and run. **Today, we let Gradle or Maven make these decisions, which often 
+results in too many dependencies being available at compile time.**
 
 ## What's Dependency Pollution?
 

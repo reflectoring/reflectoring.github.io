@@ -70,6 +70,8 @@ The `compile` scope is the default scope. We can use it **when we have no specia
 | ---------------------------------------------------------------------------------- | ------------ | --------------------- |
 | {::nomarkdown}<ul><li>compile time</li><li>runtime</li><li>test compile time</li><li>test runtime</li></ul>{:/} | yes          | yes                   |
 
+Note that `compile`-scope dependencies [leak into the compile time](/gradle-pollution-free-dependencies/#whats-dependency-pollution) of the consumers.
+
 ### `provided`
 
 We can use the `provided` scope **to declare a dependency that will not be included in the final build artifact**.
@@ -123,7 +125,7 @@ This configuration was introduced to replace the deprecated `compile` configurat
 | -------------------------------------------------------------------------- | ------------ | --------------------- |
 | {::nomarkdown}<ul><li>compile time</li><li>runtime</li><li>test compile time</li><li>test runtime</li></ul>{:/} | yes*          | yes                   |
 
-(\*) A dependency declared in the `implementation` configuration *is* transitive, but the consumer of our own module can only access it at runtime, not at compile time. In other words, **the `implementation` configuration spills into the runtime of the consumer, but not into the compile time**.
+(\*) A dependency declared in the `implementation` configuration *is* transitive, but the consumer of our own module can only access it at runtime, not at compile time. In other words, **the `implementation` configuration [does not pollute the consumer's compile time](/gradle-pollution-free-dependencies/#use-the-implementation-configuration)**.
 
 ### `api`
 
@@ -230,7 +232,7 @@ about whether dependencies are available in tests, at runtime or at compile time
 
 Furthermore, with the `api` and `implementation`
 configurations, Gradle allows us to explicitly specify which dependencies we want to expose to our consumers, reducing
-dependency pollution to the consumers.  
+[dependency pollution](/gradle-pollution-free-dependencies/#whats-dependency-pollution) to the consumers.  
 
 
 

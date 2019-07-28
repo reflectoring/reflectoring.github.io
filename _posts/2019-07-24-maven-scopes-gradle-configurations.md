@@ -115,13 +115,15 @@ plugins {
 
 ### `implementation`
 
-The `implementation` configuration should be considered the default. We use it **to declare dependencies that we don’t want to expose to our consumers**.
+The `implementation` configuration should be considered the default. We use it **to declare dependencies that we don’t want to expose to our consumers' compile time**.
 
 This configuration was introduced to replace the deprecated `compile` configuration to avoid "polluting" the consumer with dependencies we actually don't want to expose. 
 
 | When available?                                                            | Transitive ? | Included in Artifact? |
 | -------------------------------------------------------------------------- | ------------ | --------------------- |
-| {::nomarkdown}<ul><li>compile time</li><li>runtime</li><li>test compile time</li><li>test runtime</li></ul>{:/} | no           | yes                   |
+| {::nomarkdown}<ul><li>compile time</li><li>runtime</li><li>test compile time</li><li>test runtime</li></ul>{:/} | yes*          | yes                   |
+
+(\*) A dependency declared in the `implementation` configuration *is* transitive, but the consumer of our own module can only access it at runtime, not at compile time. In other words, **the `implementation` configuration spills into the runtime of the consumer, but not into the compile time**.
 
 ### `api`
 

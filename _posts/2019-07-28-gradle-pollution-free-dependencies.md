@@ -19,11 +19,12 @@ And not only the JAR files we directly depended upon, mind you, but even those J
 dependencies and our dependencies' dependencies needed to work!
 
 Luckily, those days are over. Today, build tools like Maven and Gradle take care of resolving
-our dependencies.
+our dependencies. They do this following the rules of [scopes and configurations](/maven-scopes-gradle-configurations/)
+that we put into the build script.
 
 This has a downside, however. Years ago, when we downloaded each of the direct and transitive
 dependencies manually, we could decide for each of those dependencies if we really needed it for
-our project to compile and run. **Today, we let Gradle or Maven make these decisions, which often 
+our project to compile and run. **Today, we pay less attention to specifying the correct scopes or configurations, which often 
 results in too many dependencies being available at compile time.**
 
 ## What's Dependency Pollution?

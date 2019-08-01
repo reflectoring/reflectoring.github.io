@@ -132,6 +132,17 @@ class RegisterUseCaseIntegrationTest {
 }
 ```
 
+<div class="notice--success">
+  <h4><code>@ExtendWith</code></h4>
+  <p>
+  The code examples in this tutorial use the <code>@ExtendWith</code> annotation to tell
+  JUnit 5 to enable Spring support. <a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#junit-5">As of Spring Boot 2.1</a>, we no longer need to
+  load the <code>SpringExtension</code> because it's included as a meta annotation in the 
+  Spring Boot test annotations like <code>@DataJpaTest</code>, <code>@WebMvcTest</code>, and 
+  <code>@SpringBootTest</code>.
+  </p>
+</div> 
+
 Here, we additionally use `@AutoConfigureMockMvc` to add a `MockMvc` instance 
 to the application context.
 

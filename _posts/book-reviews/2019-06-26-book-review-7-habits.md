@@ -11,9 +11,9 @@ excerpt: "A review of the Book 'The 7 Habits of Highly Effective People' by Step
 sidebar:
   toc: true
   books:
-    - href: //geni.us/psvl
+    - href: //www.kqzyfj.com/click-9137796-13660345?url=https%3A%2F%2Fwww.ebooks.com%2Fcj.asp%3FIID%3D138625964%26fc%3DUS&cjsku=138625964
       alt:  The 7 Habits of Highly Effective People
-      img:  /assets/images/posts/book-review-7-habits/7-habits.jpg
+      img:  //i2.ebkimg.com/previews/138/138625/138625964/138625964.jpg
 ---
 
 {% include sidebar_right %}
@@ -24,11 +24,11 @@ sidebar:
 * you want to be more effective in communicating with those around you
 * you want to learn some motives why you should change your habits
 
-{% include amazon-disclaimer.html %}
+{% include affiliate-disclosure.html %}
 
 ## Overview
 
-I read the book ["The 7 Habits of Highly Effective People"](//geni.us/psvl) by Stephen Covey in my quest to shape
+I read the book ["The 7 Habits of Highly Effective People"](//www.kqzyfj.com/click-9137796-13660345?url=https%3A%2F%2Fwww.ebooks.com%2Fcj.asp%3FIID%3D138625964%26fc%3DUS&cjsku=138625964) by Stephen Covey in my quest to shape
 my habits to be more *productive* at the things I do. Mostly at the things I do for work
 like my software developer job or this blog. 
 
@@ -75,7 +75,7 @@ turn into a recruiting text, which luckily was not the case.
 
 * act, don't be acted upon
 * work on things within your circle of influence instead of complaining about things outside of your circle of influence
-* don't think deterministically, as if everything is pre-determined
+* don't think deterministically, as if everything is pre-determined (have a "growth mindset" instead of a "fixed mindset", even though he didn't use these words)
 * responsibility = response-ability - we can choose how to respond to a situation
 * control your feelings proactively instead of letting them control you
 * work on what you are, not on what you have
@@ -144,7 +144,7 @@ important for me, since I'm a very rational person). They are backed with storie
 life which are interwoven with the text in a natural way, without disturbing the
 reading flow.
 
-This book gets my definite reading recommendation. In the least, you'll go through life
+[This book](//www.kqzyfj.com/click-9137796-13660345?url=https%3A%2F%2Fwww.ebooks.com%2Fcj.asp%3FIID%3D138625964%26fc%3DUS&cjsku=138625964) gets my definite reading recommendation. In the least, you'll go through life
 a little more self-aware after reading it. At best, you might change yourself to become
 more secure in life and more effective in defining and achieving goals. I'm still deciding on
 which of the two it was for me... .

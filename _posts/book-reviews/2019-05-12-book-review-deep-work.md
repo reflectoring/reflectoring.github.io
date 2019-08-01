@@ -11,9 +11,9 @@ excerpt: "A review of the Book 'Deep Work' by Cal Newport."
 sidebar:
   toc: true
   books:
-    - href: //geni.us/r6bM
+    - href: //www.anrdoezrs.net/click-9137796-13660345?url=https%3A%2F%2Fwww.ebooks.com%2Fcj.asp%3FIID%3D2041699%26fc%3DUS&cjsku=2041699
       alt:  Deep Work
-      img:  /assets/images/posts/book-review-deep-work/deep-work.jpg
+      img:  //i2.ebkimg.com/previews/002/002041/002041699%2F002041699.jpg
 ---
 
 {% include sidebar_right %}
@@ -24,11 +24,11 @@ sidebar:
 * you feel like you're drowning in "shallow" work like emails and phone calls
 * you need arguments to defend a change of work style towards your colleagues and your boss
 
-{% include amazon-disclaimer.html %}
+{% include affiliate-disclosure.html %}
 
 ## Overview
 
-In his book ["Deep Work"](//geni.us/r6bM), Cal Newport gives a name to the productive state of "flow" most of us
+In his book ["Deep Work"](//www.anrdoezrs.net/click-9137796-13660345?url=https%3A%2F%2Fwww.ebooks.com%2Fcj.asp%3FIID%3D2041699%26fc%3DUS&cjsku=2041699), Cal Newport gives a name to the productive state of "flow" most of us
 like to attain at work but which we can rarely maintain for more than a couple minutes when
 the next emergency interrupts our train of thought.
 
@@ -98,7 +98,7 @@ The second part of the book is full of tips on doing Deep Work. Here are my key 
 
 ## Conclusion
 
-Even though I don't particularly like the anecdotal writing style, ["Deep Work"](//geni.us/r6bM) was very enlightening.
+Even though I don't particularly like the anecdotal writing style, ["Deep Work"](//www.anrdoezrs.net/click-9137796-13660345?url=https%3A%2F%2Fwww.ebooks.com%2Fcj.asp%3FIID%3D2041699%26fc%3DUS&cjsku=2041699) was very enlightening.
 Once through the book, I started to apply some of the tips and successfully created a habit
 of doing deep work every morning before work which allowed me to write most of my 
 [eBook](https://leanpub.com/get-your-hands-dirty-on-clean-architecture), prepare

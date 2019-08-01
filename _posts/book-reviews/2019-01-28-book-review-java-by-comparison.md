@@ -11,9 +11,9 @@ excerpt: "A review of the Book 'Java by Comparison' by Simon Harrer, Jörg Lenha
 sidebar:
   toc: true
   books:
-    - href: //geni.us/java-by-comparison
+    - href: //www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D96173656%26fc%3DUS&cjsku=96173656
       alt:  Java by Comparison
-      img:  //ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=US&ASIN=1680502875&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL250_&tag=reflectoring-20
+      img:  //i1.ebkimg.com/previews/096/096173/096173656/096173656-hq-168-80.jpg
 ---
 
 {% include sidebar_right %}
@@ -24,11 +24,11 @@ sidebar:
 * you are teaching Java and want your students to learn best practices
 * you are working with junior developers and want them to get them up to speed
 
-{% include amazon-disclaimer.html %}
+{% include affiliate-disclosure.html %}
 
 ## Overview
 
-In a nutshell, <a href="http://geni.us/java-by-comparison" rel="nofollow">*Java by Comparison*</a> by Simon Harrer, Jörg Lenhard, and Linus Dietz
+In a nutshell, <a href="//www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D96173656%26fc%3DUS&cjsku=96173656" rel="nofollow">*Java by Comparison*</a> by Simon Harrer, Jörg Lenhard, and Linus Dietz
 teaches best practices in the Java programming language. It's aimed at Java beginners
 and intermediates. As the name suggest, the book compares code snippets that have 
 room for improvement with revised versions that have certain best practices applied.
@@ -129,7 +129,7 @@ a couple years of practice with Java, though, you should not expect
 to learn too much from this book.
 
 If you are a college student learning Java or a seasoned programmer switching
-to Java, <a href="http://geni.us/java-by-comparison" rel="nofollow">*Java by Comparison*</a>
+to Java, <a href="http://www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D96173656%26fc%3DUS&cjsku=96173656" rel="nofollow">*Java by Comparison*</a>
 is definitely worth its money.
 
 As the authors themselves do in the preface of the book, 

@@ -11,9 +11,9 @@ excerpt: "A review of the Book 'Your Code as a Crime Scene' by Adam Tornhill."
 sidebar:
   toc: true
   books:
-    - href: //geni.us/c4MoG
+    - href: //www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D95960873%26fc%3DUS&cjsku=95960873
       alt:  Your Code as a Crime Scene
-      img:  //ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=DE&ASIN=1680500384&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL160_&tag=reflectoring-21
+      img:  //i3.ebkimg.com/previews/095/095960/095960873/095960873-hq-168-80.jpg
 ---
 
 {% include sidebar_right %}
@@ -25,11 +25,11 @@ sidebar:
 * you want to know how to gather those metrics
 * you have a certain codebase that you want to analyze
 
-{% include amazon-disclaimer.html %}
+{% include affiliate-disclosure.html %}
 
 ## Overview
 
-<a href="https://geni.us/c4MoG" rel="nofollow">*Your Code as a Crime Scene*</a> by Adam Tornhill 
+<a href="https://www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D95960873%26fc%3DUS&cjsku=95960873" rel="nofollow">*Your Code as a Crime Scene*</a> by Adam Tornhill 
 is a book 
 that aims to apply 
 criminal investigation techniques to a codebase in order to gain insights about the structure and 
@@ -109,7 +109,7 @@ criminal investigation. But I don't like crime shows in TV much, either... .
        
 ## Conclusion
 
-<a href="https://geni.us/c4MoG" rel="nofollow">*Your Code as a Crime Scene*</a> introduces very interesting code metrics, so if
+<a href="https://www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D95960873%26fc%3DUS&cjsku=95960873" rel="nofollow">*Your Code as a Crime Scene*</a> introduces very interesting code metrics, so if
 you're interested in measuring or visualizing code, this book is definitely
 worth to spend your time on.
 

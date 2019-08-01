@@ -12,15 +12,15 @@ excerpt: "A review of Robert C. Martin's book on 'Clean Architecture'. "
 sidebar:
   toc: true
   books:
-    - href: //geni.us/oBgB
+    - href: //www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D95862666%26fc%3DUS&cjsku=95862666
       alt:  Clean Architecture
-      img:  //ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=DE&ASIN=0134494164&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL160_&tag=reflectoring-21
-    - href: //geni.us/5MXmRRM
+      img:  //i2.ebkimg.com/previews/095/095862/095862666/095862666.jpg
+    - href: //www.jdoqocy.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D726365%26fc%3DUS&cjsku=726365
       alt:  Clean Code
-      img:  //ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=DE&ASIN=0132350882&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL160_&tag=reflectoring-21
-    - href: //geni.us/hgdI
+      img:  //i2.ebkimg.com/previews/000/000726/000726365/000726365.jpg
+    - href: //www.jdoqocy.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D726181%26fc%3DUS&cjsku=726181
       alt:  The Clean Coder
-      img:  //ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=DE&ASIN=0137081073&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL160_&tag=reflectoring-21
+      img:  //i2.ebkimg.com/previews/000/000726/000726181/000726181.jpg
 ---
 
 {% include sidebar_right %}
@@ -33,14 +33,14 @@ sidebar:
 * you want some inspiration on building applications in a different way than the
   default "3-layer architecture"
 
-{% include amazon-disclaimer.html %}
+{% include affiliate-disclosure.html %}
 
 ## Overview
 
-As the name suggests, <a href="//geni.us/oBgB" rel="nofollow">Clean Architecture - A Craftsman's Guide to Software Structure and Design</a> 
+As the name suggests, <a href="//www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D95862666%26fc%3DUS&cjsku=95862666" rel="nofollow">Clean Architecture - A Craftsman's Guide to Software Structure and Design</a> 
 by Robert C. Martin ("Uncle Bob") takes a step back from the details of programming and discusses the bigger picture.
 
-The "prequels" <a href="//geni.us/5MXmRRM" rel="nofollow">Clean Code</a> and <a href="//geni.us/hgdI" rel="nofollow">The Clean Coder</a> have been must-reads for a
+The "prequels" <a href="//www.jdoqocy.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D726365%26fc%3DUS&cjsku=726365" rel="nofollow">Clean Code</a> and <a href="//www.jdoqocy.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D726181%26fc%3DUS&cjsku=726181" rel="nofollow">The Clean Coder</a> have been must-reads for a
 software engineer, so I expected a lot from this new book. 
 
 The book has about 320 pages in 34 chapters, not counting the appendix. Few chapters are longer than 10 pages.

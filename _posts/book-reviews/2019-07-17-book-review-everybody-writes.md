@@ -14,7 +14,8 @@ sidebar:
     - href: //www.tkqlhce.com/click-9137796-13660345?url=https%3A%2F%2Fwww.ebooks.com%2Fcj.asp%3FIID%3D1779315%26fc%3DUS&cjsku=1779315
       alt:  Everybody Writes
       img:  //i2.ebkimg.com/previews/001/001779/001779315/001779315.jpg
-
+header:
+  teaser: /assets/images/1200x628.png
 ---
 
 {% include sidebar_right %}

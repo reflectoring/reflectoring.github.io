@@ -15,7 +15,7 @@ sidebar:
       alt:  Everybody Writes
       img:  //i2.ebkimg.com/previews/001/001779/001779315/001779315.jpg
 header:
-  teaser: /assets/images/1200x628.png
+  teaser: https://deploy-preview-241--reflectoring.netlify.com/assets/images/1200x628.png
 ---
 
 {% include sidebar_right %}

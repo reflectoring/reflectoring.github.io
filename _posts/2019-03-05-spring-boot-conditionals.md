@@ -26,7 +26,7 @@ In this tutorial, we'll have a look some use cases that explain why we would nee
 loaded beans at all. Then, we'll see how to apply conditions and which conditions Spring Boot
 offers. To round things up, we'll also implement a custom condition. 
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/conditionals" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/conditionals" %}
 
 ## Why do we need Conditional Beans?
 

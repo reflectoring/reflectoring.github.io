@@ -29,7 +29,7 @@ is a framework that facilitates consumer-driven contract tests.
 So let's have a look at how to test a REST API provided by a Spring Boot application 
 against a contract previously defined by the API consumer.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-spring-provider" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-spring-provider" %}
 
 # In this Article
 

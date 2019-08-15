@@ -26,7 +26,7 @@ a Spring Boot application in vertical modules and discusses a way how
 to test the layers within one such module isolated from other modules using
 the testing features provided by Spring Boot. 
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
 ## Code Structure
 

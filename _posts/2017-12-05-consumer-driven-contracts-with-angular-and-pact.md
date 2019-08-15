@@ -28,7 +28,7 @@ contract framework that allows consumer and provider to be written in different 
 this article takes a look on how to 
 create a contract from an Angular client that consumes a REST API.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-angular" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-angular" %}
 
 # The Big Picture
 

@@ -20,7 +20,7 @@ an application context to be used in a test. In this tutorial, we'll discuss whe
 `@SpringBootTest` and when to better use other tools for testing. We'll also look into
 different ways to customize the application context and how to reduce test runtime. 
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
 ## The "Testing with Spring Boot" Series
 

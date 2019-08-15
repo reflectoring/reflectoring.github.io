@@ -22,7 +22,7 @@ To test our business code we always need some kind of test data. This tutorial e
 Object Mother pattern and why we should combine it with a Fluent Builder to create test data factories that
 are fun to work with.
 
-{% include github-project url="https://github.com/thombergs/code-examples/blob/master/patterns/src/test/java/io/reflectoring/objectmother/ObjectMotherClient.java" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/blob/master/patterns/src/test/java/io/reflectoring/objectmother/ObjectMotherClient.java" %}
 
 ## What do we Need a Test Data Factory For?
 
@@ -196,4 +196,4 @@ Single Responsibility Principle by making it easy to adjust created objects loca
 * Object Mother at [java-design-patterns.com](http://java-design-patterns.com/patterns/object-mother/)
 * TestDataBuilder at [wiki.c2.com](http://wiki.c2.com/?TestDataBuilder)
 
-{% include github-project url="https://github.com/thombergs/code-examples/blob/master/patterns/src/test/java/io/reflectoring/objectmother/ObjectMotherClient.java" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/blob/master/patterns/src/test/java/io/reflectoring/objectmother/ObjectMotherClient.java" %}

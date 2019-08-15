@@ -28,7 +28,7 @@ of asynchronous messages with [Pact](https://pact.io).
 We'll then create a consumer and a provider test verifying that both the consumer and provider
 work as defined by the contract.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-messages" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-messages" %}
 
 ## Setting Up a Node Project
 

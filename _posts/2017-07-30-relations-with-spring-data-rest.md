@@ -17,7 +17,7 @@ excerpt: "How to implement an API with Spring Data TEST that spans over multiple
 [Spring Data Rest](https://projects.spring.io/spring-data-rest/) allows to rapidly create a REST API to manipulate
 and query a database by exposing Spring Data repositories via its [`@RepositoryRestResource`](http://docs.spring.io/autorepo/docs/spring-data-rest/current/api/org/springframework/data/rest/core/annotation/RepositoryRestResource.html) annotation.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-data/spring-data-rest-associations" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-data/spring-data-rest-associations" %}
  
 Managing associations between entities with Spring Data Rest isn't quite self-explanatory. That's why in this post
 I'm writing up what I learned about managing associations of different types with Spring Data Rest.

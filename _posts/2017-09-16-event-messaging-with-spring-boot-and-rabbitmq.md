@@ -15,7 +15,7 @@ In a microservice environment or any other distributed system you may come upon 
 to exchange events between services. This article shows how to implement a messaging solution 
 with RabbitMQ.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/rabbitmq-event-brokering" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/rabbitmq-event-brokering" %}
 
 # Event Messaging Requirements
 Before jumping into the solution let's define some requirements that an eventing mechanism

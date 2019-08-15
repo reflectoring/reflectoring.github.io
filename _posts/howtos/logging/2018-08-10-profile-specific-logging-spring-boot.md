@@ -15,7 +15,7 @@ sidebar:
   toc: true
 ---
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging" %}
 
 
 

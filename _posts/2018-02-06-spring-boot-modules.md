@@ -20,7 +20,7 @@ These may be modules within a single code base or modules that each live in thei
 code base. This article explains some Spring Boot features that help to split up
 your Spring Boot application into several modules. 
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/modular" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/modular" %}
 
 ## What's a Module in Spring Boot?
 

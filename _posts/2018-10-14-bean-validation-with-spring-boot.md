@@ -21,7 +21,7 @@ logic in the Java eco system. It's well integrated with Spring and Spring Boot.
 However, there are some pitfalls. This tutorial goes over all major validation use cases
 and sports code examples for each.   
   
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/validation" %} 
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/validation" %} 
 
 ## Setting Up Validation
 

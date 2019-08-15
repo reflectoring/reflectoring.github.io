@@ -23,7 +23,7 @@ Then, we're going to find out how to cover each of those responsibilities in a t
 Only with those responsibilities covered can we be sure that our controllers behave as
 expected in a production environment.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
 ## The "Testing with Spring Boot" Series
 

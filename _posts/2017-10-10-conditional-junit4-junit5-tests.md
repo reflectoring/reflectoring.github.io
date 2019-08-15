@@ -17,7 +17,7 @@ our builds to fail if that system has an outage, so we just want to skip
 the tests that need a connection to it. This article shows how
 you can skip tests in JUnit 4 and JUnit 5 depending on certain conditions.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/junit/assumptions" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/junit/assumptions" %}
 
 # Assumptions
 Both JUnit 4 and JUnit 5 support the concept of assumptions. Before each test,

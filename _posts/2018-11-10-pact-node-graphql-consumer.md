@@ -32,7 +32,7 @@ our consumer is working as expected by the contract. For this, we're using the N
 This tutorial builds upon a [recent tutorial](/pact-react-consumer) about creating a React
 consumer for a REST API, so you'll find some links to that tutorial for more detailed explanations.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer" %}
 
 ## Creating the Node App
 

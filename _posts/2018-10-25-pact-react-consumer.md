@@ -38,7 +38,7 @@ CDC tests for your React app.
 The core of this tutorial stems from [an example](https://github.com/pact-foundation/pact-js/tree/master/examples/jest)
 in the pact-js repository.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer" %}
 
 ## Creating a React App
 

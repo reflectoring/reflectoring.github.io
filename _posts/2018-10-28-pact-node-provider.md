@@ -32,7 +32,7 @@ verifies that our provider works as specified in the contract.
 
 This tutorial assumes you have a current version of Node installed.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider" %}
 
 ## Creating an Express Server
 

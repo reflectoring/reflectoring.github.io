@@ -29,7 +29,7 @@ is a popular stack for creating API clients in a distributed architecture. [Pact
 is a polyglot framework that facilitates consumer-driven contract tests. 
 So let's have a look at how to create a contract with Feign and Pact and test a Feign client against that contract.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-feign-consumer" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-feign-consumer" %}
 
 # In this Article
 

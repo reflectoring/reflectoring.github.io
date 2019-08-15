@@ -24,7 +24,7 @@ so that we can quickly scan a log to find the information we need. This article
 shows how to implement this logging format with the [Logback](https://logback.qos.ch/)
 and [Descriptive Logger](https://github.com/thombergs/descriptive-logger) libraries.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/logging" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/logging" %}
 
 ## The Target Logging Format
 

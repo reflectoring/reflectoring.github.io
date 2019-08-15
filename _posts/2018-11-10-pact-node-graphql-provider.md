@@ -33,7 +33,7 @@ verifies that our provider works as specified in the contract.
 
 This tutorial assumes you have a current version of Node installed.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider" %}
 
 ## Creating an Express Server
 
@@ -80,7 +80,7 @@ by the consumer in [this article](/pact-node-graphql-consumer):
         "matchingRules": {
           "$.body.query": {
             "match": "regex",
-            "regex": "\\s*query\\s*GetHero\\(\\$heroId:\\s*Int!\\)\\s*\\{\\s*hero\\(id:\\s*\\$heroId\\)\\s*\\{\\s*name\\s*superpower\\s*__typename\\s*\\}\\s*\\}"
+            "regex": "..."
           }
         }
       },

@@ -30,7 +30,7 @@ convenient way to access such parameters from within the application code.
 This tutorial goes into the details of this annotation and shows how to
 use it to configure a Spring Boot application module.  
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/configuration" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/configuration" %}
 
 ## Using `@ConfigurationProperties` to Configure a Module
 

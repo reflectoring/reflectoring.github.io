@@ -29,7 +29,7 @@ is a framework that facilitates consumer-driven contract tests.
 So let's have a look at how to verify a Spring Boot REST client against a contract
 with Spring Cloud Contract.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-cloud/spring-cloud-contract-consumer" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-cloud/spring-cloud-contract-consumer" %}
 
 # In this Article
 

@@ -12,7 +12,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 Aside from unit tests, integration tests play a vital role in producing quality software.
 A special kind of integration test deals with the integration between our code

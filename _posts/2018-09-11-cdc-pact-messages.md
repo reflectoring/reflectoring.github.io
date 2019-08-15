@@ -16,7 +16,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 Among other things, testing an interface between two systems with  
 (consumer-driven) contract tests is [faster and more stable](/7-reasons-for-consumer-driven-contracts)

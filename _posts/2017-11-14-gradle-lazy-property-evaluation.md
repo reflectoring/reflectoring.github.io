@@ -9,7 +9,7 @@ ads: true
 excerpt: "A guide on lazy evaluation in Gradle scripts and when it makes sense to use it."
 ---
 
-{% include sidebar_right %}
+
 
 Writing Gradle build tasks is often easy and straight forward, but as soon as you start to write more generic tasks for multiple modules or projects it can get a little tricky.
 

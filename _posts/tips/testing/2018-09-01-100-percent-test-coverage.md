@@ -15,7 +15,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 Yeah, I know. Everyone says aiming for 100% code coverage is bullshit.
 

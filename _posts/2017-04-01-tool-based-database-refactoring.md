@@ -11,7 +11,7 @@ excerpt: "A short introduction to database refactoring and an argument why a dat
           refactoring tool is a must-have in any project using a database with a schema."
 ---
 
-{% include sidebar_right %}
+
 
 The term "refactoring" is well defined in software development. It is usually used
 to describe a restructuring of source code ranging from simply renaming a variable

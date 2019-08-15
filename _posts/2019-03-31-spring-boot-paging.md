@@ -13,7 +13,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 As a user of a web application we're expecting pages to load quickly and only show
 the information that's relevant to us. **For pages that show a list of items, this means

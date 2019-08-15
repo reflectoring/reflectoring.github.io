@@ -16,7 +16,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 In the recent past, I stumbled a few times over the definition of the words "upstream" and
 "downstream" in various software development contexts. Each time, I had to look up what

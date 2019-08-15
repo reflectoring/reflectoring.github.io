@@ -13,7 +13,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 In this second part of the series on testing with Spring Boot, we're going to look
 at web controllers. First, we're going to explore what a web controller actually does

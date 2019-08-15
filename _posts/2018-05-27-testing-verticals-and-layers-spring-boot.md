@@ -15,7 +15,7 @@ excerpt: "Slice your Spring Boot applications into vertical modules and make the
           testable in isolation using Spring Boot's testing features."
 ---
 
-{% include sidebar_right %}
+
 
 Well-behaved software consists of highly cohesive modules that are loosely coupled
 to other modules. Each module takes care from user input in the web layer down to

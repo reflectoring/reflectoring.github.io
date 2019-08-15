@@ -10,7 +10,7 @@ ads: true
 excerpt: "A comparison of Flyway and Liquibase - the two most popular tools for database refactoring."
 ---
 
-{% include sidebar_right %}
+
 
 In a [previous blog post](/tool-based-database-refactoring/) I discussed the term "database refactoring" and some concepts that allow
 database refactoring to be supported by tools with the result of having a database schema that is 

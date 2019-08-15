@@ -10,7 +10,7 @@ ads: true
 excerpt: "An extensive list of things to think through when starting a new Java-based software project."
 ---
 
-{% include sidebar_right %}
+
 
 Today, I stumbled (once again) over `LocalDate` in a Spring Boot application. `LocalDate` came with Java
 8 and is part of the new standard API in Java for working with dates. However, if you want to effectively

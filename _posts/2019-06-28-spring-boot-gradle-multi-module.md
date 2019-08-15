@@ -12,7 +12,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 The [Spring Initializr](https://start.spring.io/) is a great way to quickly create a Spring Boot
 application from scratch. It creates a single Gradle file that we can expand upon

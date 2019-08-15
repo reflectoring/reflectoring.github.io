@@ -17,7 +17,7 @@ excerpt: "A guide on how to implement a consumer-driven contract test with Pact 
           Spring Boot works as defined in the contract."
 ---
 
-{% include sidebar_right %}
+
 
 Consumer-driven contract tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 

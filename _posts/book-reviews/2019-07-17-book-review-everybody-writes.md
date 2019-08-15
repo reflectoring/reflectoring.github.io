@@ -17,7 +17,7 @@ sidebar:
 
 ---
 
-{% include sidebar_right %}
+
 
 ## TL;DR: Read this Book, when...
 

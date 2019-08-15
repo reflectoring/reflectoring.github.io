@@ -16,7 +16,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 Log data should contain more than just text. This article discusses some
 example use cases where adding structured properties to log events

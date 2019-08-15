@@ -17,7 +17,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 In previous articles, I discussed [how to publish snapshots](/publish-snapshots-with-gradle/) 
 to oss.jfrog.org and [how to publish releases to Bintray](/guide-publishing-to-bintray-with-gradle/) using 

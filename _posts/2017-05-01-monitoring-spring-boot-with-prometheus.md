@@ -13,7 +13,7 @@ excerpt: "A tutorial on using Dropwizard to expose monitoring metrics from withi
           to be consumed by a Prometheus monitoring server."
 ---
 
-{% include sidebar_right %}
+
 
 Monitoring is an important quality requirement for applications that claim to be production-ready.
 In a [previous blog post](/transparency-with-spring-boot/)

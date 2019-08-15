@@ -12,7 +12,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 When building a Spring Boot app, we sometimes want to **only load beans or [modules](/spring-boot-modules/) into the application 
 context if some condition is met**. Be it to disable some beans during tests or to react to a certain

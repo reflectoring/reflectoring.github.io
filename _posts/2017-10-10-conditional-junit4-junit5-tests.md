@@ -9,7 +9,7 @@ ads: true
 excerpt: "A comparison on how to implement assumptions and conditional test execution between JUnit 4 and 5."
 ---
 
-{% include sidebar_right %}
+
 
 Sometimes, a test should only be run under certain conditions. One such case
 are integration tests which depend on a certain external system. We don't want

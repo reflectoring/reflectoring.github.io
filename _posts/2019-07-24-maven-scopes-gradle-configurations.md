@@ -17,7 +17,7 @@ sidebar:
 }
 </style>
 
-{% include sidebar_right %}
+
 
 One of the key features of a build tool for Java is dependency management. We declare that we want to use a certain third-party library in our own project and **the build tool takes care of downloading it and adding it to the classpath at the right times in the build lifecycle**.
 

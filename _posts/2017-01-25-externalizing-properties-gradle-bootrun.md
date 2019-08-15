@@ -12,7 +12,7 @@ excerpt: "Configuration parameters should not be baked into code - including
           start a Spring Boot application with application parameters loaded from a properties file." 
 ---
 
-{% include sidebar_right %}
+
 
 The Spring Boot gradle plugin provides the `bootRun` task that allows a 
 developer to start the application in a "developer mode" without first building

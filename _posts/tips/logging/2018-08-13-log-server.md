@@ -16,7 +16,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 Logging to files and analyzing them by hand is not the way to go anymore.
 This article explains the reasons why a log server is the way to go

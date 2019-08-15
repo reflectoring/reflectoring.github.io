@@ -11,7 +11,7 @@ header:
 excerpt: "A discussion of what Hypermedia with REST means and a guide to decide whether hypermedia is a match for your use case."
 ---
 
-{% include sidebar_right %}
+
 
 Believing Roy Fielding, who first coined the REST acronym, you may call
 your API a REST API [only if you make use of hypertext](http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven).

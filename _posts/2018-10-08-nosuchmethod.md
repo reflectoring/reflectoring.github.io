@@ -12,7 +12,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 A [*NoSuchMethodError*](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/NoSuchMethodError.html) occurs
 when we're calling a method that does not exist at runtime. 

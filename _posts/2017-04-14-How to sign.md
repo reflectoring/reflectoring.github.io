@@ -10,7 +10,7 @@ ads: true
 excerpt: "A tutorial on how to create digital signatures with Java."
 ---
 
-{% include sidebar_right %}
+
 
 Often you come across the requirement to validate integrity and authenticity 
 of data that was sent digitally. Digital signatures are the solution to this requirement.

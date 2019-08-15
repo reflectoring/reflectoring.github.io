@@ -13,7 +13,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 Writing good unit tests can be considered an art that is hard to master. But the
 good news is that the mechanics supporting it are easy to learn. 

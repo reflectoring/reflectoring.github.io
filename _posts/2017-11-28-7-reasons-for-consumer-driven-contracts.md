@@ -17,7 +17,7 @@ excerpt: "Find out why contracts should be defined by the API consumer and how t
           integration testing APIs by using contract tests."
 ---
 
-{% include sidebar_right %}
+
 
 In a distributed system, testing the successful integration between  
 distributed services is essential for ensuring that the services

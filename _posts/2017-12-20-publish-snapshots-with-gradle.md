@@ -17,7 +17,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 One of the most fulfilling things in developing an open source project is getting feedback from the
 users of your project. To give feedback, the users need to have something to play around with.

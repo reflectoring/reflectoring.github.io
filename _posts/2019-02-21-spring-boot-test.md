@@ -13,7 +13,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 With the `@SpringBootTest` annotation, Spring Boot provides a convenient way to start up
 an application context to be used in a test. In this tutorial, we'll discuss when to use

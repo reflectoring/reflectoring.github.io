@@ -13,7 +13,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 [Bean Validation](https://beanvalidation.org/) is the de-facto standard for implementing validation
 logic in the Java eco system. It's well integrated with Spring and Spring Boot. 

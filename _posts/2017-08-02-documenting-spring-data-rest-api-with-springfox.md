@@ -12,7 +12,7 @@ sidebar:
 excerpt: "A tutorial on how to document a REST API created with Spring Data REST using Springfox and Swagger."
 ---
 
-{% include sidebar_right %}
+
 
 With [Spring Data REST](https://projects.spring.io/spring-data-rest/) you can rapidly create a REST API
 that exposes your Spring Data repositories and thus provides CRUD support and more. However, in serious API

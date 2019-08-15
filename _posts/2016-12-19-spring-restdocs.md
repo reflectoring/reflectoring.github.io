@@ -10,7 +10,7 @@ ads: true
 excerpt: "A tutorial on how to create REST API docs with Spring Rest Docs."
 ---
 
-{% include sidebar_right %}
+
 
 The first impression counts. When you're developing an API of any kind, chances are 
 that the first impression is gained from a look into the API docs. If that first impression

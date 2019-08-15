@@ -14,7 +14,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 Application logs are all about finding the right information in the least
 amount of time. Automated log servers may help us in finding and filtering log messages. 

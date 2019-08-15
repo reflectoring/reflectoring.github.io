@@ -9,7 +9,7 @@ ads: true
 excerpt: "A guide on how to skip a CI build when only certain documentation files have changed."
 ---
 
-{% include sidebar_right %}
+
 
 Skipping a CI build is like purposefully not brushing your teeth every morning and evening.
 You know it should not be skipped and you feel guilty when you do it anyways.

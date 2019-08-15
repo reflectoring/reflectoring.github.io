@@ -12,7 +12,7 @@ sidebar:
 excerpt: "A tutorial on how to use the Feign REST client library to access an API created with Spring Data REST."
 ---
 
-{% include sidebar_right %}
+
 
 
 [Spring Data REST](https://projects.spring.io/spring-data-rest/) is a framework that automatically exposes a REST API for Spring Data repositories, thus

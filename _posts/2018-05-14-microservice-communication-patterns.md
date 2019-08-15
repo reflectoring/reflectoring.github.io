@@ -12,7 +12,7 @@ header:
 excerpt: "A discussion of several different communication patterns between distributed micro services."
 ---
 
-{% include sidebar_right %}
+
 
 A microservice architecture is all about communication. How should services communicate in any
 given business scenario? Should they call each other synchronously? Or should they communicate

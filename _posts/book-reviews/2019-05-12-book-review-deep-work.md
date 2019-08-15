@@ -16,7 +16,7 @@ sidebar:
       img:  //i2.ebkimg.com/previews/002/002041/002041699%2F002041699.jpg
 ---
 
-{% include sidebar_right %}
+
 
 ## TL;DR: Read this Book, when...
 

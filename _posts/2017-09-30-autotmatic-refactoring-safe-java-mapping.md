@@ -9,7 +9,7 @@ ads: true
 excerpt: "An intro to the reMap Java mapping library that has a focus on minimal testing overhead."
 ---
 
-{% include sidebar_right %}
+
 
 Object mapping is a necessary and often unloved evil in software development projects. 
 To communicate between layers of your application, you have to create and test mappers between

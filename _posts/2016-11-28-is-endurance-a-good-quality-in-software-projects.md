@@ -10,7 +10,7 @@ ads: true
 excerpt: "Endurance is typically considered a good quality...but is it really good in all cases?"
 ---
 
-{% include sidebar_right %}
+
 
 The ability to endure hardship without complaining is often considered a positive feat associated with "endurance" or "stamina". However, endurance seems to be a double-edged sword (not only) in software projects. An appeal to speak up in software projects instead of just enduring the status quo.
 

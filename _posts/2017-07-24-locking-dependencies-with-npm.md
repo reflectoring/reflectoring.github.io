@@ -10,7 +10,7 @@ ads: true
 excerpt: "A tutorial on how to lock the version of your NPM dependencies to create a reproducible build."
 ---
 
-{% include sidebar_right %}
+
 
 As a developer I am [lazy](http://blogoscoped.com/archive/2005-08-24-n14.html). I don't build everything by myself
 because others have done it already. So, when I come upon a problem someone has already solved and that someone

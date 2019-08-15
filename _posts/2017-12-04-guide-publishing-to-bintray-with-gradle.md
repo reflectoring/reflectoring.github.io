@@ -17,7 +17,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 When working on an open source Java project, you always come to the point where 
 you want to share your work with the developer community (at least that should be the goal). 

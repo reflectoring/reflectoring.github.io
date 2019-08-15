@@ -16,7 +16,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 Most software that does more than a "hello world" needs to be configured in some
 way or another in order to function in a certain environment. This article explains

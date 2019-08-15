@@ -13,7 +13,7 @@ sidebar:
 excerpt: "A tutorial on how to test an API created with Spring Data REST with contract tests using the Pact framework."
 ---
 
-{% include sidebar_right %}
+
 
 When thinking about integration testing in a distributed system, you quickly come across the 
 concept of consumer-driven contracts. This blog post gives a short introduction into

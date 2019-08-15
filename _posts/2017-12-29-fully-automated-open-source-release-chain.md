@@ -18,7 +18,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 *"Release early, release often"*. This philosophy should be a goal for every 
 software project. Users can only give quality feedback when they have early access

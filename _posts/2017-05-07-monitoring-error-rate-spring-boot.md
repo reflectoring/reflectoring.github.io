@@ -12,7 +12,7 @@ sidebar:
 excerpt: "How to monitor the error rate of a Spring Boot web application."
 ---
 
-{% include sidebar_right %}
+
 
 In my previous blog posts about [creating monitoring metrics with Dropwizard Metrics](/transparency-with-spring-boot/) and 
 [exposing them for the Prometheus monitoring application](/monitoring-spring-boot-with-prometheus/) we already have

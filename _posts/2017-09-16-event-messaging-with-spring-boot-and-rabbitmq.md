@@ -9,7 +9,7 @@ ads: true
 excerpt: "A tutorial on creating an event messaging solution with Spring Boot and RabbitMQ."
 ---
 
-{% include sidebar_right %}
+
 
 In a microservice environment or any other distributed system you may come upon the requirement
 to exchange events between services. This article shows how to implement a messaging solution 

@@ -12,7 +12,7 @@ sidebar:
 excerpt: "How to implement an API with Spring Data TEST that spans over multiple database entities."
 ---
 
-{% include sidebar_right %}
+
 
 [Spring Data Rest](https://projects.spring.io/spring-data-rest/) allows to rapidly create a REST API to manipulate
 and query a database by exposing Spring Data repositories via its [`@RepositoryRestResource`](http://docs.spring.io/autorepo/docs/spring-data-rest/current/api/org/springframework/data/rest/core/annotation/RepositoryRestResource.html) annotation.

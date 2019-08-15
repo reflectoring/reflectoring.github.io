@@ -12,7 +12,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 I recently had a conversation about exception handling. I argued that business exceptions are 
 a good thing because they clearly mark the possible failures of a business method. If a rule is violated,

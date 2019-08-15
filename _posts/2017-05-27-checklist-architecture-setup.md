@@ -10,7 +10,7 @@ ads: true
 excerpt: "An extensive list of things to think through when starting a new Java-based software project."
 ---
 
-{% include sidebar_right %}
+
 
 I recently had the opportunity to propose the architecture for a new large-scale software
 project. While it's fun being paid for finding the technologies that best fit to

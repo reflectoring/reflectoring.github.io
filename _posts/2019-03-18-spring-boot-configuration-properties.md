@@ -13,7 +13,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 Every application above play size requires some parameters at startup. These
 parameters may, for instance, define which database to connect to, which locale

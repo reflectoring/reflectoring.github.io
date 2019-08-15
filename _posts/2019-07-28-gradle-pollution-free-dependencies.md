@@ -12,7 +12,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 Remember the days when we had to manually download *every single JAR file* that our project needed to run?
 And not only the JAR files we directly depended upon, mind you, but even those JAR files that our 

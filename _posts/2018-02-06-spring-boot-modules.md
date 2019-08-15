@@ -13,7 +13,7 @@ sidebar:
 excerpt: "A guide on different ways Spring Boot offers to split an application into distinct modules."
 ---
 
-{% include sidebar_right %}
+
 
 Every software project comes to a point where the code should be broken up into modules.
 These may be modules within a single code base or modules that each live in their own

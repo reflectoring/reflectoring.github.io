@@ -12,7 +12,7 @@ sidebar:
 excerpt: "A tutorial on how to use the Dropwizard library to expose monitoring metrics in a Spring Boot application."
 ---
 
-{% include sidebar_right %}
+
 
 How do we know if an application we just put into production is working
 as it should? How do we know that the application can cope with the

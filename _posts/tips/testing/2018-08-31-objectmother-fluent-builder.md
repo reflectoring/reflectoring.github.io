@@ -16,7 +16,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 To test our business code we always need some kind of test data. This tutorial explains how to do just that with the 
 Object Mother pattern and why we should combine it with a Fluent Builder to create test data factories that

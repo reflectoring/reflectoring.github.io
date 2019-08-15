@@ -10,7 +10,7 @@ ads: true
 excerpt: "An intro on how to create random numbers in Java."
 ---
 
-{% include sidebar_right %}
+
 
 From time to time we need a randomly generated Number in Java. In this case we are normally using [java.util.Random](https://docs.oracle.com/javase/7/docs/api/java/util/Random.html) which provides a stream of pseudo generated Numbers. But there are some use cases in which the direct usage may cause some unexpected problems.
 

@@ -14,7 +14,7 @@ sidebar:
   toc: true
 ---
 
-{% include sidebar_right %}
+
 
 If you are new to [git](https://git-scm.com/) and/or [GitHub](https://github.com), 
 it's easy to get overwhelmed by the different workflow models you can use 

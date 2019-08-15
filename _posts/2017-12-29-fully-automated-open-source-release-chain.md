@@ -40,7 +40,7 @@ You can see a working example of the setup described in this article in my
 
 The following image shows the release chain we're going to build.
 
-![Releasing snapshots and releases from different branches](/assets/images/posts/fully-automated-open-source-release-chain/git-snapshots-releases.jpg)
+![Releasing snapshots and releases from different branches](/assets/img/posts/fully-automated-open-source-release-chain/git-snapshots-releases.jpg)
 
 In a simplified [Git Flow](http://nvie.com/posts/a-successful-git-branching-model/) fashion, we have two branches
 in our Git repository:
@@ -83,14 +83,14 @@ and link it to our Github account.
 Once logged into the Travis account, we activate 
 Travis CI for the repository we want to publish snapshots and releases for:
 
-![Activate in Travis CI](/assets/images/posts/fully-automated-open-source-release-chain/travis.png)
+![Activate in Travis CI](/assets/img/posts/fully-automated-open-source-release-chain/travis.png)
 
 ## Set Environment Variables
 
 In the settings of the repository on Travis CI, we now set the environment variables
 `BINTRAY_KEY` and `BINTRAY_USER` to our Bintray credentials:
 
-![Environment Variables](/assets/images/posts/fully-automated-open-source-release-chain/travis-env-variables.png) 
+![Environment Variables](/assets/img/posts/fully-automated-open-source-release-chain/travis-env-variables.png) 
 
 ## The `.travis.yml` File
 Next, we need to put a file called `.travis.yml` into the codebase and push

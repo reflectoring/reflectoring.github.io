@@ -74,7 +74,7 @@ those classes that are responsible for consuming and producing messages.
 
 The figure below shows the data flow through our consumer and provider code base.
 
-![Architecture](/assets/images/posts/cdc-pact-messages/architecture.jpg)
+![Architecture](/assets/img/posts/cdc-pact-messages/architecture.jpg)
 
 1. In the **domain logic** on the producer side, something happens that triggers a message.
 1. The message is passed as a Java object to the **`MessageProducer`** class which transforms it into a JSON string.

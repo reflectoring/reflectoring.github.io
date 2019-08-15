@@ -69,12 +69,12 @@ Having set up a Bintray account, you now need to create a repository on oss.jfro
 snapshots. You can do this by clicking on "add to JCenter" on the homepage of your bintray package (see image below) 
 and then providing a group id under which you want to publish your snapshots.
 
-![add to JCenter](/assets/images/posts/publish-snapshots-with-gradle/add-to-jcenter.PNG)
+![add to JCenter](/assets/img/posts/publish-snapshots-with-gradle/add-to-jcenter.PNG)
 
 If you already have added your repository to JCenter, you can still activate the snapshot repository by clicking 
 "stage snapshots on oss.jfrog.org" (see image below).
 
-![stage snapshots](/assets/images/posts/publish-snapshots-with-gradle/stage-snapshots.PNG)
+![stage snapshots](/assets/img/posts/publish-snapshots-with-gradle/stage-snapshots.PNG)
 
 It takes from a couple hours up to a day or so for the JFrog people to check your request and activate your snapshot repository.
 You can check if it's available by browsing the Artifact Repository on [oss.jfrog.org](https://oss.jfrog.org). If there

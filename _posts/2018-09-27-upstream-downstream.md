@@ -28,7 +28,7 @@ Let's start with a simple production process, even though it has nothing to with
 development, so we can build on that to define upstream and downstream in
 software development.
 
-![Upstream and Downstream Process Steps](/assets/images/posts/upstream-downstream/production.png)
+![Upstream and Downstream Process Steps](/assets/img/posts/upstream-downstream/production.png)
 
 In the above example, we have three steps: 
 
@@ -52,7 +52,7 @@ So what's an upstream dependency and a downstream dependency?
 
 Consider this figure: 
 
-![Upstream and Downstream Software Dependencies](/assets/images/posts/upstream-downstream/dependencies.png)
+![Upstream and Downstream Software Dependencies](/assets/img/posts/upstream-downstream/dependencies.png)
 
 Component C depends on component B which in turn depends on component A.
 
@@ -74,7 +74,7 @@ dependencies discussed above.
 Consider the projects A and B, where A is an original project and B is 
 a fork of A:
 
-![Upstream and Downstream Software Projects](/assets/images/posts/upstream-downstream/fork.png)
+![Upstream and Downstream Software Projects](/assets/img/posts/upstream-downstream/fork.png)
 
 This is a rather common development style in open source projects: we 
 create a fork of a project, fix a bug or add a feature in that fork and then
@@ -95,7 +95,7 @@ have sent a patch upstream**.
 In systems consisting of microservices (or just plain old distributed services for the old-fashioned),
 there's also talk about upstream and downstream services.
 
-![Upstream and Downstream Distributed Services](/assets/images/posts/upstream-downstream/services.png)
+![Upstream and Downstream Distributed Services](/assets/img/posts/upstream-downstream/services.png)
 
 Unsurprisingly, both the Dependency Rules and the Value Rule also apply to this context.
 

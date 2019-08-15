@@ -35,7 +35,7 @@ at how the code is structured. If you want to view the code while reading, have 
 at the [github repository](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing)
 with the example code.
 
-![Package Structure](/assets/images/posts/testing-verticals-and-layers-spring-boot/package-structure.jpg)
+![Package Structure](/assets/img/posts/testing-verticals-and-layers-spring-boot/package-structure.jpg)
 
 The application resides in the package `io.reflectoring` and consists of three vertical modules:
 
@@ -59,7 +59,7 @@ Again, each layer has its own sub-package.
 Now that we have a clear-cut package structure, let's look at how we structure the Spring 
 `ApplicationContext` in order to represent our modules:
 
-![ApplicationContext Structure](/assets/images/posts/testing-verticals-and-layers-spring-boot/configurations.jpg)
+![ApplicationContext Structure](/assets/img/posts/testing-verticals-and-layers-spring-boot/configurations.jpg)
 
 It all starts with a Spring Boot `Application` class:
 

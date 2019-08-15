@@ -24,7 +24,7 @@ drawbacks you might encounter when using it.
 Before starting with Hypermedia, let's have a look at the [REST Maturity Model](https://www.crummy.com/writing/speaking/2008-QCon/act3.html)
 conceived by Leonard Richardson:
 
-![REST Maturity Model](/assets/images/posts/rest-hypermedia/rest-maturity-model.jpg)
+![REST Maturity Model](/assets/img/posts/rest-hypermedia/rest-maturity-model.jpg)
 
 At the bottom of the maturity pyramid we find the "Swamp of POX (Plain old XML)". This means sending XML fragments back and forth
 that contain a command for executing one of several procedures as well as some payload data to a single URL. 
@@ -55,7 +55,7 @@ link to other related resources.
 
 Let's try this concept on a simple book store example:
 
-![Links and Relations](/assets/images/posts/rest-hypermedia/state-diagram-relations.png)
+![Links and Relations](/assets/img/posts/rest-hypermedia/state-diagram-relations.png)
 
 In the diagram above, each node is a URL within our API and each edge is a link relating one URL with another.
 

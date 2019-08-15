@@ -34,7 +34,7 @@ create a contract from an Angular client that consumes a REST API.
 
 The big picture of Consumer-Driven Contract tests is shown in the figure below.
 
-![Mocking Overview](/assets/images/posts/consumer-driven-contracts-with-angular-and-pact/mocks.jpg)
+![Mocking Overview](/assets/img/posts/consumer-driven-contracts-with-angular-and-pact/mocks.jpg)
 
 Instead of testing consumer and provider in an end-to-end manner, which requires a [complex
 server environment](/7-reasons-for-consumer-driven-contracts/#complexity),

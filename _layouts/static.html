@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    {% include head.html %}
+
+	<body>
+
+	<header id="header">
+
+		{% include nav.html %}
+
+		<!-- Page Header -->
+		<div class="page-header slim">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-10">
+						<h1>{{ page.title }}</h1>
+						<p>
+							{{ page.description }}
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+
+	</header>
+
+		<!-- section -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<!-- Post content -->
+					<div class="col-md-9">
+						<div class="section-row">
+							<div class="main-post">
+
+								{{ content }}
+
+							</div>
+
+						</div>
+
+					</div>
+					<!-- /Post content -->
+
+					{% include sidebar.html %}
+
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /section -->
+
+		{% if page.comments.enabled != false %}
+		<section id="disqus_thread"></section>
+		{% endif %}
+
+		{% include footer.html %}
+
+		{% include scripts.html %}
+
+
+	</body>
+</html>

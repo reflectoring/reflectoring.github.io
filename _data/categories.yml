@@ -1,0 +1,15 @@
+spring-boot:
+  title: "Spring Boot"
+  style: "cat-1"
+
+java:
+  title: "Java"
+  style: "cat-2"
+
+software-development:
+  title: "Software Development"
+  style: "cat-3"
+
+book-reviews:
+  title: "Book Reviews"
+  style: "cat-4"

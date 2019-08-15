@@ -1,102 +1,40 @@
-# main links
 main:
-  - title: "Latest Articles"
-    url: /latest
   - title: "Spring Boot"
     url: /categories/spring-boot
+    style: "cat-1"
+  - title: "Java"
+    url: /categories/java
+    style: "cat-2"
+  - title: "Software Craft"
+    url: /categories/software-craft
+    style: "cat-3"
   - title: "Book Reviews"
     url: /categories/book-reviews
-  - title: "Search"
-    url: /search/
-    icon: fa-search
-  - title: "Feed"
-    url: /feed.xml
-    icon: fa-rss-square
+    style: "cat-4"
 
-# sidebar with Monitoring Posts
-monitoring:
-  - title: "Articles on Monitoring"
+footer:
+  - title: "Reflectoring"
     children:
-    - title: "Exposing Metrics of a Spring Boot Application for Prometheus"
-      url: /monitoring-spring-boot-with-prometheus/
-    - title: "Monitoring The Error Rate of a Spring Boot Web Application"
-      url: /monitoring-error-rate-spring-boot/
-    - title: "Exposing Metrics of a Spring Boot Application using Dropwizard"
-      url: /transparency-with-spring-boot/
-
-# sidebar with posts on spring-data-rest
-spring-data-rest:
-  - title: "Articles on Spring Data REST"
+    - title: "About"
+      url: /about/
+    - title: "RSS Feed"
+      url: /feed.xml
+    - title: "Meta"
+      url: /categories/meta
+    - title: "Privacy Policy"
+      url: /privacy/
+  - title: "Resources"
     children:
-    - title: "Handling associations between entities with Spring Data Rest"
-      url: /relations-with-spring-data-rest/
-    - title: "Accessing a Spring Data REST API with Feign"
-      url: /accessing-spring-data-rest-with-feign/
-    - title: "Documenting a Spring Data REST API with Springfox and Swagger"
-      url: /documenting-spring-data-rest-api-with-springfox/
-
-cdc:
-  - title: "Articles on Consumer-Driven Contracts"
+    - title: "eBook"
+      url: /e-book/
+    - title: "Talks"
+      url: /talks/
+  - title: "Categories"
     children:
-    - title: "7 Reasons to Choose Consumer-Driven Contract Tests Over End-to-End Tests"
-      url: /7-reasons-for-consumer-driven-contracts/
-    - title: "Creating a Consumer-Driven Contract with Angular and Pact"
-      url: /consumer-driven-contracts-with-angular-and-pact/
-    - title: "Creating a Consumer-Driven Contract with Feign and Pact"
-      url: /consumer-driven-contract-feign-pact/
-    - title: "Testing a Spring Boot REST API against a Consumer-Driven Contract with Pact"
-      url: /consumer-driven-contract-provider-pact-spring/
-    - title: "Testing a Spring Boot REST API Provider against Contract with Spring Cloud Contract"
-      url: /consumer-driven-contract-provider-spring-cloud-contract/
-    - title: "Testing a Spring Boot REST API Consumer against Contract with Spring Cloud Contract"
-      url: /consumer-driven-contract-consumer-spring-cloud-contract/
-    - title: "Testing a Spring Message Producer and Consumer against a Contract with Pact"
-      url: /cdc-pact-messages/
-    - title: "Implementing a Consumer-Driven Contract for a React App with Pact and Jest"
-      url: /pact-react-consumer/
-    - title: "Implementing a Consumer-Driven Contract for a Node Express Server with Pact"
-      url: /pact-node-provider/
-    - title: "Implementing a Consumer-Driven Contract for a GraphQL Consumer with Node and Apollo"
-      url: /pact-node-graphql-consumer/
-    - title: "Implementing a Consumer-Driven Contract for a GraphQL Provider with Node and Express"
-      url: /pact-node-graphql-provider/
-    - title: "Implementing a Consumer-Driven Contract between a Node Message Consumer and a Node Message Producer"
-      url: /pact-node-messaging/
-
-opensource:
-  - title: "Articles on Publishing Open Source"
-    children:
-    - title: "Publishing Open Source Releases with Gradle"
-      url: /guide-publishing-to-bintray-with-gradle/
-    - title: "Publishing Open Source Releases to JCenter and Maven Central"
-      url: /bintray-jcenter-maven-central/
-    - title: "Publishing Open Source Snapshots with Gradle"
-      url: /publish-snapshots-with-gradle/
-    - title: "A Fully Automated Open Source Release Chain with Gradle and Travis CI"
-      url: /fully-automated-open-source-release-chain/
-
-logging:
-  - title: "Logging Tutorials"
-    children:
-    - title: "How to Configure a Human-Readable Logging Format with Logback"
-      url: /logging-format-logback/
-    - title: "How to Configure Environment-Specific Logging Behavior with Spring Boot"
-      url: /profile-specific-logging-spring-boot/
-  - title: "Logging Tips"
-    children:
-    - title: "Tip: Use Logging Levels Consistently"
-      url: /logging-levels/
-    - title: "Tip: Use a Human-Readable Logging Format"
-      url: /logging-format/
-    - title: "Tip: Provide Contextual Information in Log Messages"
-      url: /logging-context/
-    - title: "5 Good Reasons to Use a Log Server"
-      url: /log-server/
-    - title: "3 Use Cases Where Structured Log Data Really Helps"
-      url: /structured-log-data/
-
-book-reviews:
-  - title: "Book Reviews"
-    children:
-    - title: "Clean Architecture by Robert C. Martin"
-      url: /review-clean-architecture/
+    - title: "Spring Boot"
+      url: /categories/spring-boot/
+    - title: "Java"
+      url: /categories/java/
+    - title: "Software Craft"
+      url: /categories/software-craft/
+    - title: "Book Reviews"

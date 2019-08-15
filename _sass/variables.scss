@@ -1,0 +1,25 @@
+$font-size              : 22px !default;
+$font-family-serif      : "Roboto Slab";
+$font-family-sans       : "Roboto Slab";
+$font-family-code       : "Roboto Mono";
+
+$space                  : 30px;
+
+@mixin sans() {
+  font-family: $font-family-sans;
+}
+
+@mixin serif() {
+  font-family: $font-family-serif;
+}
+
+@mixin underline() {
+  border-bottom: 1px solid #f2f3f3;
+  padding-bottom: 5px;
+  padding-top: $space;
+}
+
+@mixin no-underline() {
+  border-bottom: 0;
+  padding-bottom: 0px;
+}

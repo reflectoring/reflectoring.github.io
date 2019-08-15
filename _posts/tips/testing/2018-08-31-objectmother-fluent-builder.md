@@ -28,7 +28,7 @@ are fun to work with.
 
 Let's imagine that we want to create some tests around `Invoice` objects that are structured as shown in the figure below.
 
-![Invoice UML](/assets/images/posts/tips/objectmother-fluent-builder/invoice.jpg)
+![Invoice UML](/assets/img/posts/tips/objectmother-fluent-builder/invoice.jpg)
 
 An `Invoice` has a target `Address` and zero or more `InvoiceItems`,
 each containing the amount and price of a certain product that is billed with the invoice.

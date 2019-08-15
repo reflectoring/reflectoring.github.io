@@ -1,20 +1,26 @@
-{% if page.author_profile or layout.author_profile or page.sidebar %}
-  <div class="sidebar sticky">
-  {% if page.author_profile or layout.author_profile %}{% include author-profile.html %}{% endif %}
-  {% if page.sidebar %}
-    {% for s in page.sidebar %}
-      {% if s.image %}
-        <img src=
-        {% if s.image contains "://" %}
-          "{{ s.image }}"
-        {% else %}
-          "{{ base }}{{ s.image }}"
-        {% endif %}
-        alt="{% if s.image_alt %}{{ s.image_alt }}{% endif %}">
-      {% endif %}
-      {% if s.title %}<h3>{{ s.title }}</h3>{% endif %}
-      {% if s.text %}{{ s.text | markdownify }}{% endif %}
-    {% endfor %}
-  {% endif %}
-  </div>
+{% if page.sidebar.enabled != false %}
+<!-- aside -->
+<div class="col-md-3">
+
+    {% include sidebar-ad.html %}
+
+    {% if site.data.showcase.url %}
+    <div class="aside-widget">
+        <div class="section-title">
+            <h2>Current Reading*</h2>
+        </div>
+        <div class="text-center">
+            <a href="{{ site.data.showcase.url }}"><img src="{{ site.data.showcase.img}}" width="260"/></a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="aside-widget fineprint text">
+        *<strong>Affiliate Link</strong> - If you purchase an item through this link, I'll
+        get a cut at no extra cost to you. If you're undecided, I usually write up a <a href="/categories/book-reviews/"><strong>review</strong></a>
+        of the book once I'm through.
+    </div>
+
+</div>
+<!-- /aside -->
 {% endif %}

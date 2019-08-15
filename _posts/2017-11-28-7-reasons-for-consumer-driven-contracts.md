@@ -61,7 +61,7 @@ In a mock test, we no longer set up a whole runtime environment, but run isolate
 between the consumer and a mock provider and between a mock consumer and the real provider.
 
 {% capture img_mocks %}
-![Mocks](/assets/images/posts/7-reasons-for-consumer-driven-contracts/mocks.jpg)
+![Mocks](/assets/img/posts/7-reasons-for-consumer-driven-contracts/mocks.jpg)
 {% endcapture %}
 
 {% capture img_mocks_caption %}
@@ -91,7 +91,7 @@ as one would expect naturally, by the provider. This provides some interesting a
 we will come to later in this article.
 
 {% capture img_cdc %}
-![CDC](/assets/images/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg)
+![CDC](/assets/img/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg)
 {% endcapture %}
 
 {% capture img_cdc_caption %}
@@ -114,7 +114,7 @@ them unit tests, if you like). Thus, your test suite should consist of a high nu
 followed by few integration tests and even fewer end-to-end tests. The reason for this is simple: isolated tests are easy to execute and their results are easy to interpret, thus we should rely on them as long as it's possible.
 
 {% capture img_pyramid %}
-![Testing Pyramid](/assets/images/posts/7-reasons-for-consumer-driven-contracts/pyramid.jpg)
+![Testing Pyramid](/assets/img/posts/7-reasons-for-consumer-driven-contracts/pyramid.jpg)
 {% endcapture %}
 
 {% capture img_pyramid_caption %}
@@ -155,7 +155,7 @@ For an E2E runtime environment, you have to deploy containers running your servi
 and any other dependencies they might have, each in a specified versions (see image below). 
 
 {% capture img_containers %}
-![E2E Runtime Environment](/assets/images/posts/7-reasons-for-consumer-driven-contracts/containers.jpg)
+![E2E Runtime Environment](/assets/img/posts/7-reasons-for-consumer-driven-contracts/containers.jpg)
 {% endcapture %}
 
 {% capture img_containers_caption %}
@@ -220,7 +220,7 @@ use and which not. Thus, the provider does not really know which operations of i
 This may lead to a situation where an operation of the API is not used by any consumer.
 
 {% capture img_unused %}
-![Unused Interface](/assets/images/posts/7-reasons-for-consumer-driven-contracts/unused-interface.jpg)
+![Unused Interface](/assets/img/posts/7-reasons-for-consumer-driven-contracts/unused-interface.jpg)
 {% endcapture %}
 
 {% capture img_unused_caption %}
@@ -248,7 +248,7 @@ an API contract, it may not fit certain use cases of certain consumers optimally
 it may be defined to fit its use case better.
 
 {% capture img_well_fittedness %}
-![Unused Interface](/assets/images/posts/7-reasons-for-consumer-driven-contracts/well-fittedness.jpg)
+![Unused Interface](/assets/img/posts/7-reasons-for-consumer-driven-contracts/well-fittedness.jpg)
 {% endcapture %}
 
 {% capture img_well_fittedness_caption %}

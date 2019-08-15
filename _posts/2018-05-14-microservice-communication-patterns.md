@@ -23,7 +23,7 @@ discusses some prominent communication patterns.
 The probably easiest communication pattern to implement is simply calling another service synchronously,
 usually via REST. 
 
-![Synchronous Calls](/assets/images/posts/microservice-communication-patterns/rest.jpg)
+![Synchronous Calls](/assets/img/posts/microservice-communication-patterns/rest.jpg)
 
 Service 1 calls Service 2 and waits until Service 2 is done processing the request and returns
 a response. Service 1 can then process Service 2's response in the same transaction that triggered
@@ -61,7 +61,7 @@ It's easy as pie (as long as we don't have to think about retries and fallbacks,
 
 Asynchronous messaging is the next option we take a look at.
 
-![Synchronous Calls](/assets/images/posts/microservice-communication-patterns/messaging.jpg)
+![Synchronous Calls](/assets/img/posts/microservice-communication-patterns/messaging.jpg)
 
 Service 1 fires a message to a message broker and forgets about it. Service 2 subscribes to
 a topic is fed with all messages belonging to that topic. The services don't need to know each other 
@@ -109,7 +109,7 @@ the message broker and even if it is, it's often a pain to get working and even 
 
 We can modify the simple messaging scenario from above for some benefits.
 
-![Synchronous Calls](/assets/images/posts/microservice-communication-patterns/transactional-messaging.jpg)
+![Synchronous Calls](/assets/img/posts/microservice-communication-patterns/transactional-messaging.jpg)
 
 Instead of sending a message directly to the message broker, we now store it
 in the service's database first. Same on the receiving side: here the message
@@ -144,7 +144,7 @@ unprocessed messages and then process them by
 The last scenario is similar to the messaging example, but we're not sending
 whole messages (i.e. big JSON objects) but instead only a pointer to the payload.
 
-![Synchronous Calls](/assets/images/posts/microservice-communication-patterns/zero-payload-events.jpg)
+![Synchronous Calls](/assets/img/posts/microservice-communication-patterns/zero-payload-events.jpg)
 
 In this case, the message is more like an event. It signals that something happened,
 for example that "the order with ID 4711 has been shipped". Thus, the

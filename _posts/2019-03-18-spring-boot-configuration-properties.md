@@ -502,7 +502,7 @@ To get auto-completion in IntelliJ, we just install the [Spring Assistant](https
 plugin. If we now hit CMD+Space in an `application.properties` or `application.yml`
 file, we get an auto-completion popup:
 
-![Auto-Completion in IntelliJ](/assets/images/posts/spring-boot-configuration-properties/intellij.png)
+![Auto-Completion in IntelliJ](/assets/img/posts/spring-boot-configuration-properties/intellij.png)
  
 ### Eclipse
 
@@ -555,7 +555,7 @@ include deprecation information in the meta data:
 This information is then provided to us when typing away in the properties file 
 (IntelliJ, in this case):
 
-![Deprecated info in auto-completion](/assets/images/posts/spring-boot-configuration-properties/deprecated.png)
+![Deprecated info in auto-completion](/assets/img/posts/spring-boot-configuration-properties/deprecated.png)
 
 ## Conclusion
 

@@ -17,7 +17,7 @@ through all involved services. This article gives an overview of the traceabilit
 distributed systems and provides some tips on how to implement tracing with Spring Cloud Sleuth.
 
 <div class="notice--success">
-  <img src="/assets/images/github-mark-48px.png" style="float:right" alt="View on Github"/>
+  <img src="/assets/img/github-mark-48px.png" style="float:right" alt="View on Github"/>
   <h4>Code Example</h4>
   This article is accompanied by example code for a
   <a href="https://github.com/thombergs/code-examples/tree/master/spring-cloud/sleuth-downstream-service">downstream-service</a> and
@@ -42,7 +42,7 @@ As result of a request `getCustomerWithAddress` we expect customer and address d
 address data each live in the responsibility of a different service so that the initial service (the "downstream" service)
 has to forward a request to those ("upstream") services and aggregate their responses.
 
-![A distributed system with a downstream and two upstream services](/assets/images/posts/trace.png)
+![A distributed system with a downstream and two upstream services](/assets/img/posts/trace.png)
 
 If an error occurs in one of those upstream services, the upstream service will probably log the error.
 Since the downstream services receives an error response, it will probably also log an error. For a 

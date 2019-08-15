@@ -1,0 +1,13 @@
+{% if page.excerpt %}
+    {% assign seo_description = page.excerpt %}
+{% elsif page.description %}
+    {% assign seo_description = page.description %}
+{% else %}
+    {% assign seo_description = page.title %}
+{% endif %}
+
+{% if page.author %}
+  {% assign seo_author = site.data.authors[page.author].name %}
+{% else %}
+  {% assign seo_author = site.data.authors[default].name %}
+{% endif %}

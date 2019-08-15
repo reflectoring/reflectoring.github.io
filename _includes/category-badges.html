@@ -1,0 +1,7 @@
+<div class="post-meta">
+{% for category in include.categories %}
+{% assign categoryTitle = site.data.categories[category].title %}
+{% assign categoryStyle = site.data.categories[category].style %}
+<a class="post-category {{ categoryStyle }}" href="/categories/{{ category }}">{{ categoryTitle }}</a>
+{% endfor %}
+</div>

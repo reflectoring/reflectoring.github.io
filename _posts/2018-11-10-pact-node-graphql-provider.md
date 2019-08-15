@@ -205,7 +205,7 @@ type the URL `http://localhost:3000/graphql` into a browser.
 
 We should see the graphiql interface that looks something like this:
 
-![GraphiQL Web Interface](/assets/images/posts/pact-node-graphql-provider/graphiql.png) 
+![GraphiQL Web Interface](/assets/img/posts/pact-node-graphql-provider/graphiql.png) 
 
 We can play around and enter a query like shown in the screenshot to check if the server responds
 accordingly.

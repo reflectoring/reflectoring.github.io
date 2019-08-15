@@ -22,7 +22,7 @@ Before jumping into the solution let's define some requirements that an eventing
 in a distributed system should fulfill. We'll use the following diagram to derive those requirements.
 
 {% capture eventing_img %}
-![Event Producer and Consumers](/assets/images/posts/event-messaging-with-spring-boot-and-rabbitmq/eventing.png)
+![Event Producer and Consumers](/assets/img/posts/event-messaging-with-spring-boot-and-rabbitmq/eventing.png)
 {% endcapture %}
 
 {% capture eventing_img_caption %}
@@ -85,7 +85,7 @@ Using the concepts above, we can create an eventing solution with RabbitMQ. The 
 figure below.
 
 {% capture eventing_amqp_img %}
-![Eventing with RabbitMQ](/assets/images/posts/event-messaging-with-spring-boot-and-rabbitmq/eventing_rabbitmq.png)
+![Eventing with RabbitMQ](/assets/img/posts/event-messaging-with-spring-boot-and-rabbitmq/eventing_rabbitmq.png)
 {% endcapture %}
 
 {% capture eventing_amqp_img_caption %}

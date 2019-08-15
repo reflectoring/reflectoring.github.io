@@ -72,7 +72,7 @@ else to do.
 
 To publish **manually**, click the "Publish" link shown below after you uploaded some files.
 
-![publish manually](/assets/images/posts/bintray-jcenter-maven-central/bintray-publish-manually.png)
+![publish manually](/assets/img/posts/bintray-jcenter-maven-central/bintray-publish-manually.png)
 
 To publish **automatically** from a Gradle build, add the `publish` flag to the bintray configuration:
 

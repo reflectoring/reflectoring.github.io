@@ -1,17 +1,16 @@
 ---
 title: Privacy Policy
 modified: 2019-07-14
-comments: false
-share: false
-ads: false
-layout: single
+comments: 
+  enabled: false
+ads: 
+  enabled: false
 sidebar:
-  toc: true
+  enabled: false
+layout: static
 ---
 
 Last modified: July 14, 2019
-
-{% include sidebar_right %}
 
 ## Introduction
 

@@ -1,0 +1,91 @@
+.fineprint {
+  font-size: 16px;
+}
+
+.footer-newsletter input {
+  margin-bottom: 5px;
+}
+
+img.framed {
+  border-radius: 10px;
+  padding: 5px;
+  border: 2px solid #eeeeee;
+}
+
+img.circle {
+  border-radius: 50%;
+  padding: 5px;
+  border: 2px solid #eeeeee;
+}
+
+p.author-name {
+  margin-top: 0px;
+}
+
+img.pull-left {
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.aside-widget .section-title, .aside-widget{
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+// SYNTAX HIGHLIGHTING
+
+code {
+  color: black;
+  font-family: $font-family-code;
+  background-color: #eeeeee;
+}
+
+pre {
+  font-size: 16px;
+  margin-top: $space;
+}
+
+// TABLES
+
+.main-post table, .main-post th, .main-post td {
+  font-size: 16px;
+  margin-top: $space;
+}
+
+.main-post th {
+  border-bottom: 1px solid lightgray;
+  border-left: 10px solid white;
+  border-right: 10px solid white;
+}
+
+.main-post td, .main-post th {
+  padding: 5px;
+}
+
+.main-post td ul {
+  padding-left: 20px;
+  margin-top: 0px;
+}
+
+// BOXES
+.notice--success {
+  background-color: #008e0021;
+  padding: 20px;
+  font-size: 20px;
+  border-radius: 20px;
+  margin-top: $space;
+}
+
+.notice--success h4 {
+  padding: 0;
+  border-bottom: 1px solid #666666;
+  margin-top: 0px;
+  padding-bottom: 5px;
+}
+
+.notice--success i {
+  float: right;
+  color: green;
+  font-size: 60px;
+  display: none;
+}

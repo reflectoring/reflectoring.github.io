@@ -237,7 +237,7 @@ The files have now been uploaded to Bintray, but by default they have not been p
 You can do this manually for each new version on the Bintray site. Going to the site, you should see
 a notice like this:
 
-![Notice](/assets/images/posts/guide-publishing-to-bintray-with-gradle/notice.png)
+![Notice](/assets/img/posts/guide-publishing-to-bintray-with-gradle/notice.png)
 
 Click on publish and your files should be published for real and be publicly accessible.
 

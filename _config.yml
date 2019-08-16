@@ -1,5 +1,10 @@
 title: reflectoring.io
 
+defaults:
+  -
+    values:
+      layout: "article"
+
 theme:
   header_logo: "/assets/img/logo/apple-icon-60x60.png"
   footer_logo: "/assets/img/logo/apple-icon-120x120.png"

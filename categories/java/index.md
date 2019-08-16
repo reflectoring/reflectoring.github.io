@@ -6,5 +6,5 @@ description: "I've dabbled around with other programming languages, but Java is 
 layout: category
 pagination:
   enabled: true
-  category: software-development
+  category: java
 ---

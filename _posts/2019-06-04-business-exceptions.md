@@ -1,18 +1,12 @@
 ---
 title: "5 Reasons Why Business Exceptions Are a Bad Idea"
-categories: [architecture]
+categories: [java]
 modified: 2019-06-04
-last_modified_at: 2019-06-04
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "An article discussing some reasons why you shouldn't work with exceptions when validating business rules."
-sidebar:
-  toc: true
+images:
+  teaser: /assets/img/stock/0011-chairs-750.jpg
+  opengraph: /assets/img/stock/0011-chairs-1200-branded.jpg
 ---
-
-
 
 I recently had a conversation about exception handling. I argued that business exceptions are 
 a good thing because they clearly mark the possible failures of a business method. If a rule is violated,

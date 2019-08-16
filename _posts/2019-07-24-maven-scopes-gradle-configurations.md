@@ -1,14 +1,11 @@
 ---
 title: Maven Scopes and Gradle Configurations Explained
-categories: [tools]
+categories: [java]
 modified: 2017-07-24
-author: tom
-tags: [gradle, maven, scope, configuration]
-comments: true
-ads: true
 excerpt: "An explanation and comparison of Maven scopes and Gradle configurations to declare dependencies in a build file."
-sidebar:
-  toc: true
+images:
+  teaser: /assets/img/stock/0002-telescope-750.jpg
+  opengraph: /assets/img/stock/0002-telescope-1200-branded.jpg
 ---
 
 <style>

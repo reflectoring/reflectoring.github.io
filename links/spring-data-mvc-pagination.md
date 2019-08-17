@@ -1,10 +1,5 @@
 ---
+layout: redirect
 permalink: /spring-data-mvc-pagination/
+redirect_url: /spring-boot-paging/
 ---
-<html>
-    <head>
-	<meta http-equiv="refresh" content="0; url=/spring-boot-paging/">
-	<link rel="canonical" href="/spring-boot-paging/" />
-    </head>
-    {% include google-analytics.html %}
-</html>

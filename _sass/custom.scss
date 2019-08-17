@@ -93,3 +93,28 @@ pre {
   color: black;
   vertical-align: middle;
 }
+
+.teaser-container {
+  position: relative;
+}
+
+.teaser-container .credit-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  transition: .5s ease;
+  transition-property: opacity;
+  color: white;
+  text-align: center;
+  display: inline;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-size: 10px;
+  padding: 5px 10px;
+  opacity: 0;
+}
+
+.teaser-container:hover .credit-overlay {
+  opacity: 1;
+}

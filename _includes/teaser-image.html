@@ -1,0 +1,9 @@
+{% assign image_key = include.image | split: "/" | last | slice: 0, 4  %}
+{% assign teaser=post.image | teaser %}
+{% assign credit_url = site.data.credits[image_key] %}
+<div class="teaser-container">
+<a class="post-img" href="{{ post.url }}"><img src="{{ teaser }}" alt="Teaser Image"></a>
+<a href="{{ credit_url }}" class="credit-overlay" target="_blank">Photo Credits</a>
+</div>
+
+

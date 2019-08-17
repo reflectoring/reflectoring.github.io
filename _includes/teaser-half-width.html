@@ -3,7 +3,7 @@
 <div class="col-md-6">
     <div class="post">
         {% if post.image %}
-        <a class="post-img" href="{{ post.url }}"><img src="{{ post.image | teaser }}" alt=""></a>
+        {% include teaser-image.html image=post.image %}
         {% endif %}
         <div class="post-body">
             {% include category-badges.html categories=post.categories %}

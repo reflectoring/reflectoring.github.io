@@ -133,6 +133,15 @@ blockquote.blockquote {
   padding: 20px;
 }
 
+blockquote {
+  clear:both;
+  font-size: $font-size;
+}
+
+blockquote p {
+  margin-top: 0px;
+}
+
 blockquote.blockquote:before {
   content: "``";
   font-family: 'Nunito Sans', sans-serif;

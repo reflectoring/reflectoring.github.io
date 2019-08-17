@@ -14,9 +14,8 @@ Hi, I'm Tom, and I run the reflectoring blog.
 I'm a software developer, consultant, architect, coach ... whatever the role, I'm
 focused on getting software ready for production.
 
-Every day, I'm confronted with new problems to solve and new ideas to follow up on.
-This blog is a place for those solutions and ideas, so that you (and future me) get
-a head start the next time we have to solve a problem.
+> **The goal of this blog is to persist the things I learned so that you (and future me)
+> don't have to learn them the hard way (again)**.
 
 With this blog, I produce:
 

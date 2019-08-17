@@ -395,7 +395,7 @@ WindowsOrUnixBean windowsOrUnixBean() {
 }
 ```
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Is your <code>AnyNestedCondition</code> or <code>AllNestedConditions</code> not working?</h4>
   <p>
   Check the <code>ConfigurationPhase</code> parameter passed into <code>super()</code>. If you want

@@ -73,7 +73,7 @@ pre {
 }
 
 // BOXES
-.notice--success {
+.notice.success {
   background-color: #008e0021;
   padding: 20px;
   font-size: 20px;
@@ -81,14 +81,14 @@ pre {
   margin-top: $space;
 }
 
-.notice--success h4 {
+.notice.success h4 {
   padding: 0;
   border-bottom: 1px solid #666666;
   margin-top: 0px;
   padding-bottom: 5px;
 }
 
-.notice--success i {
+.notice.success i {
   float: right;
   color: black;
   vertical-align: middle;

@@ -33,7 +33,7 @@ You can see a working example of the setup described in this article in my
 
 {% endcapture %}
 
-<div class="notice--success">{{ notice | markdownify }}</div>
+<div class="notice success">{{ notice | markdownify }}</div>
 
 # Bintray vs. Maven Central
 You might be asking why you should publish your artifacts to a custom repository

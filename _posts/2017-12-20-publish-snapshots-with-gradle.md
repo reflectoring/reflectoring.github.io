@@ -33,7 +33,7 @@ You can see a working example of the setup described in this article in my
 
 {% endcapture %}
 
-<div class="notice--success">{{ notice | markdownify }}</div>
+<div class="notice success">{{ notice | markdownify }}</div>
 
 # oss.jfrog.org vs. Bintray
 Before we start, a couple words on [oss.jfrog.org](https://oss.jfrog.org). It's the place we're going to publish

@@ -166,7 +166,7 @@ class RegisterRestControllerTest {
 }
 ```
 
-<div class="notice--success">
+<div class="notice success">
   <h4><code>@ExtendWith</code></h4>
   <p>
   The code examples in this tutorial use the <code>@ExtendWith</code> annotation to tell
@@ -187,7 +187,7 @@ between controller and the HTTP layer. `@MockBean` automatically
 replaces the bean of the same type in the application context with a 
 Mockito mock.
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Use <code>@WebMvcTest</code> with or without the <code>controllers</code> parameter?</h4>
   <p>
   By setting the <code>controllers</code> parameter to <code>RegisterRestController.class</code>

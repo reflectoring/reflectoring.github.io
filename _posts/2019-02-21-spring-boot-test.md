@@ -125,7 +125,7 @@ class RegisterUseCaseIntegrationTest {
 }
 ```
 
-<div class="notice--success">
+<div class="notice success">
   <h4><code>@ExtendWith</code></h4>
   <p>
   The code examples in this tutorial use the <code>@ExtendWith</code> annotation to tell
@@ -150,7 +150,7 @@ request has lead to an expected change in the state of the database.
 We can turn a lot of knobs to customize the application context
 created by `@SpringBootTest`. Let's see which options we have.
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Caution when Customizing the Application Context</h4>
   <p>
   Each customization of the application context is one more thing that

@@ -194,7 +194,7 @@ class to inherit its contributions
 to the application context. Also, each configuration is additionally annotated with 
 `@EnableAutoConfiguration` to enable Spring Boot's auto-configuration magic.
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Why not use <code>@SpringBootConfiguration</code> in production code?</h4>
   <p>
     We could just add <code>@SpringBootConfiguration</code> and <code>@EnableAutoConfiguration</code>

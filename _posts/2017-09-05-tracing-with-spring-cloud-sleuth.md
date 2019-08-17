@@ -16,7 +16,7 @@ request. Not only for debugging purposes it's essential that the path of such a 
 through all involved services. This article gives an overview of the traceability problem in 
 distributed systems and provides some tips on how to implement tracing with Spring Cloud Sleuth.
 
-<div class="notice--success">
+<div class="notice success">
   <img src="/assets/img/github-mark-48px.png" style="float:right" alt="View on Github"/>
   <h4>Code Example</h4>
   This article is accompanied by example code for a

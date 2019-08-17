@@ -290,7 +290,7 @@ that overrides some of the reflection magic. Have a look at [the code](https://g
 if you run into the same problem.
 {% endcapture %}
 
-<div class="notice--warning">{{ notice | markdownify }}</div>
+<div class="notice warning">{{ notice | markdownify }}</div>
 
 ## Conclusion
 

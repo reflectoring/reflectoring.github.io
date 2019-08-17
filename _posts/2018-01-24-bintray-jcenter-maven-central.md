@@ -34,7 +34,7 @@ You can see a working example of the setup described in this article in my
 
 {% endcapture %}
 
-<div class="notice--success">{{ notice | markdownify }}</div>
+<div class="notice success">{{ notice | markdownify }}</div>
 
 # JCenter vs. Maven Central
 Before we go into the details of publishing to JCenter and Maven Central, let's disuss the difference

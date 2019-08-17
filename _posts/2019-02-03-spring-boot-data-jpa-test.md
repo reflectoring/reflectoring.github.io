@@ -178,7 +178,7 @@ class UserEntityRepositoryTest {
 }
 ```
 
-<div class="notice--success">
+<div class="notice success">
   <h4><code>@ExtendWith</code></h4>
   <p>
   The code examples in this tutorial use the <code>@ExtendWith</code> annotation to tell
@@ -298,7 +298,7 @@ class FlywayTest {
 }
 ```
 
-<div class="notice--success">
+<div class="notice success">
   <h4>The Value of using Flyway in Tests</h4>
   <p>
   If we're using Flyway in production it's really nice if we can also
@@ -348,7 +348,7 @@ class LiquibaseTest {
 }
 ```
 
-<div class="notice--success">
+<div class="notice success">
   <h4>The Value of using Liquibase in Tests</h4>
   <p>
   As Liquibase allows multiple input formats that act as an abstraction
@@ -377,7 +377,7 @@ so let's discuss each of them.
 Similar to `schema.sql`, we can use a `data.sql` file containing insert
 statements to populate our database. The same rules apply as [above](#using-schemasql). 
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Maintainability</h4>
   <p>
   A <code>data.sql</code> file forces us to put all our <code>insert</code> statements
@@ -481,7 +481,7 @@ the state the database is expected to be in *after* the test.
 
 Note, however, that Spring DBUnit has [not been maintained since 2016](https://github.com/springtestdbunit/spring-test-dbunit/commits/master).
 
-<div class="notice--success">
+<div class="notice success">
   <h4><code>@DatabaseSetup</code> not working?</h4>
   <p>
   In my tests I had the problem that the <code>@DatabaseSetup</code> annotation 

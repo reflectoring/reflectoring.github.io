@@ -143,7 +143,7 @@ Using try/catch for flow control creates code that is
 
 And, unlike in fashion, expensive is usually bad in software engineering.
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Exceptions without Stacktraces?</h4>
   <p>
     In a comment I was made aware that Java's exception constructors allow passing

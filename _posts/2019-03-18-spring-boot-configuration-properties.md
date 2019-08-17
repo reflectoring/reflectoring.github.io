@@ -133,7 +133,7 @@ class MailModuleConfiguration {
 }
 ```
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Which is the Best Way to activate a <code>@ConfigurationProperties</code> Class?</h4>
   <p>
   All of the above ways are equally valid. I would suggest, however, to 
@@ -228,7 +228,7 @@ org.springframework.boot.context.properties.bind.UnboundConfigurationPropertiesE
   The elements [myapp.mail.unknown-property] were left unbound.
 ```
 
-<div class="notice--warning">
+<div class="notice warning">
   <h4>Deprecation Warning</h4>
   <p>
   The paramater <code>ignoreUnknownFields</code> is to be <a href="https://github.com/spring-projects/spring-boot/issues/12601">deprecated</a>
@@ -432,7 +432,7 @@ class MailModuleConfiguration {
 **It's important to add the `@ConfigurationPropertiesBinding` annotation** to let Spring 
 Boot know that this converter is needed during the binding of configuration properties.
 
-<div class="notice--success">
+<div class="notice success">
   <h4>email Attachments with a Weight?</h4>
   <p>
   Obviously, emails cannot have "real" attachments with a weight. I'm quite aware

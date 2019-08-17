@@ -34,7 +34,7 @@ You can see a working example of the setup described in this article in my
 [diffparser](https://github.com/thombergs/diffparser) project on Github!
 {% endcapture %}
 
-<div class="notice--success">{{ notice | markdownify }}</div>
+<div class="notice success">{{ notice | markdownify }}</div>
 
 # The Release Chain 
 

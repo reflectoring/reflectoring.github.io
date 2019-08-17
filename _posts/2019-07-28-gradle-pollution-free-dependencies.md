@@ -37,7 +37,7 @@ Now, imagine these dependencies are available at compile time, meaning
 
 **The dependencies of X leak into the compile-time classpath of C**. This is what I'll call "dependency pollution".
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Why are we only talking about compile-time dependencies?</h4>
   <p>
     This article only discusses the problems of too many compile-time dependencies and not those of 

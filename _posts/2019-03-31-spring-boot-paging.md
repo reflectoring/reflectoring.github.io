@@ -103,7 +103,7 @@ Pageable pageable = PageRequest.of(0, 5, Sort.by(
 This will create a request for the first page with 5 items ordered first
 by name (ascending) and second by id (descending). **Note that the page index is zero-based by default!**
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Confusion with <code>java.awt.print.Pageable</code>?</h4>
   <p>
   When working with <code>Pageable</code>, you'll notice that your IDE will sometimes 
@@ -389,7 +389,7 @@ This has a similar effect to the `prefix` property from above, but it also appli
 parameter name. In the example above, only the query parameters `my_page`, `my_size` and `my_sort`
 are evaluated.
 
-<div class="notice--success">
+<div class="notice success">
   <h4><code>spring.data.web.*</code> Properties are not evaluated?</h4>
   <p>
   If changes to the configuration properties above have no effect, the <code>SpringDataWebProperties</code>

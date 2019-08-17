@@ -22,8 +22,9 @@
     <meta property="og:site_name" content="{{ site.title }}">
     <meta property="og:title" content="{{ page.title }}">
     <meta property="og:url" content="{{ page.url | absolute_url | replace: "/index.html", "/" }}">
-    {% if page.images.opengraph %}
-    <meta property="og:image" content="{{ page.images.opengraph | absolute_url }}">
+    {% if page.image %}
+    <meta property="og:image" content="{{ page.image | opengraph | absolute_url }}">
+    <meta name="twitter:image" content="{{ page.image | opengraph | absolute_url }}">
     {% endif %}
     <meta property="og:type" content="article">
     <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
@@ -33,9 +34,6 @@
     <meta name="twitter:description" content="{{ seo_description }}">
     <meta name="twitter:url" content="{{ page.url | absolute_url | replace: "/index.html", "/" }}">
     <meta name="twitter:card" content="summary_large_image">
-    {% if page.images.opengraph %}
-    <meta name="twitter:image" content="{{ page.images.opengraph | absolute_url }}">
-    {% endif %}
     <meta name="twitter:creator" content="@TomHombergs">
 
     <meta name="HandheldFriendly" content="True">

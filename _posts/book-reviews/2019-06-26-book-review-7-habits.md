@@ -1,19 +1,9 @@
 ---
 title: "Book Review: The 7 Habits of Highly Effective People"
-categories: [book-review]
+categories: [book-reviews]
 modified: 2019-06-26
-last_modified_at: 2019-06-26
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "A review of the Book 'The 7 Habits of Highly Effective People' by Stephen Covey."
-sidebar:
-  toc: true
-  books:
-    - href: //www.kqzyfj.com/click-9137796-13660345?url=https%3A%2F%2Fwww.ebooks.com%2Fcj.asp%3FIID%3D138625964%26fc%3DUS&cjsku=138625964
-      alt:  The 7 Habits of Highly Effective People
-      img:  //i2.ebkimg.com/previews/138/138625/138625964/138625964.jpg
+image: 0007-books
 ---
 
 

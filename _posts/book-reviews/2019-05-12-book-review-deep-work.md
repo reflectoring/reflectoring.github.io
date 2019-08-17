@@ -1,19 +1,9 @@
 ---
 title: "Book Review: Deep Work"
-categories: [book-review]
+categories: [book-reviews]
 modified: 2019-05-12
-last_modified_at: 2019-05-12
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "A review of the Book 'Deep Work' by Cal Newport."
-sidebar:
-  toc: true
-  books:
-    - href: //www.anrdoezrs.net/click-9137796-13660345?url=https%3A%2F%2Fwww.ebooks.com%2Fcj.asp%3FIID%3D2041699%26fc%3DUS&cjsku=2041699
-      alt:  Deep Work
-      img:  //i2.ebkimg.com/previews/002/002041/002041699%2F002041699.jpg
+image: 0015-focus
 ---
 
 

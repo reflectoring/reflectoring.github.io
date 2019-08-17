@@ -2,14 +2,8 @@
 title: "Conditional Beans with Spring Boot"
 categories: [spring-boot]
 modified: 2019-03-07
-last_modified_at: 2019-03-07
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "An overview of Spring Boot's @ConditionalOn... annotations and when it makes sense to use them."
-sidebar:
-  toc: true
+image: 0017-coffee-beans
 ---
 
 

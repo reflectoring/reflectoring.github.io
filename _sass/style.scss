@@ -105,6 +105,13 @@ ul, ol {
   margin-top: $space;
 }
 
+.main-post ol {
+  list-style: decimal;
+  margin-bottom: $space;
+  padding-left: 40px;
+  margin-top: $space;
+}
+
 ul.list-style, ol.list-style {
   padding-left: 15px;
   margin-bottom: 10px;

@@ -2,15 +2,8 @@
 title: "All You Need To Know About Bean Validation With Spring Boot"
 categories: [spring-boot]
 modified: 2018-10-14
-last_modified_at: 2018-10-14
-author: tom
-tags: 
-comments: true
-ads: true
-excerpt: "A tutorial consolidating the most important features you'll need to integrate
-          Bean Validation into your Spring Boot application. "
-sidebar:
-  toc: true
+excerpt: "A tutorial consolidating the most important features you'll need to integrate Bean Validation into your Spring Boot application. "
+image: 0022-sorting
 ---
 
 

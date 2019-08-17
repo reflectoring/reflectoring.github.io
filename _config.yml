@@ -1,5 +1,5 @@
 title: "reflectoring.io"
-url: "https://deploy-preview-243--reflectoring.netlify.com"
+url: "https://reflectoring.io"
 
 defaults:
   -
@@ -21,6 +21,11 @@ theme:
   comments:
     disqus:
       shortname: "reflectoring"
+  image_formats:
+    teaser_prefix: "/assets/img/stock/"
+    teaser_suffix: "-1200x628.jpg"
+    opengraph_prefix: "/assets/img/stock/"
+    opengraph_suffix: "-1200x628-branded.jpg"
 
 sass:
   sass_dir: _sass

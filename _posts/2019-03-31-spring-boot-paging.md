@@ -4,9 +4,7 @@ categories: [spring-boot]
 modified: 2019-03-31
 excerpt: "An in-depth look at the paging support provided by Spring Data for querying
           Spring Web MVC controllers and Spring Data repositories."
-images:
-  teaser: /assets/img/stock/0012-pages-750.jpg
-  opengraph: /assets/img/stock/0012-pages-1200-branded.jpq
+image: 0012-pages
 ---
 
 

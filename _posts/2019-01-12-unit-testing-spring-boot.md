@@ -2,15 +2,8 @@
 title: "Unit Testing with Spring Boot"
 categories: [spring-boot]
 modified: 2019-01-12
-last_modified_at: 2019-01-12
-author: tom
-tags: 
-comments: true
-ads: true
-excerpt: "In this tutorial we'll learn how to build testable Spring beans and get to know 
-          the tools that Spring Boot by default imports for writing maintainable unit tests."
-sidebar:
-  toc: true
+excerpt: "In this tutorial we'll learn how to build testable Spring beans and get to know the tools that Spring Boot by default imports for writing maintainable unit tests."
+image: 0020-black-box
 ---
 
 

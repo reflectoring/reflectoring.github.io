@@ -1,18 +1,10 @@
 ---
-title: "Testing JPA Queries with `@DataJpaTest`"
+title: "Testing JPA Queries with @DataJpaTest"
 categories: [spring-boot]
 modified: 2019-02-03
-last_modified_at: 2019-02-03
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "An in-depth tutorial about Spring Boot's support for testing JPA database queries."
-sidebar:
-  toc: true
+image: 0019-magnifying-glass
 ---
-
-
 
 Aside from unit tests, integration tests play a vital role in producing quality software.
 A special kind of integration test deals with the integration between our code

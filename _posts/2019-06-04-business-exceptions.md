@@ -87,7 +87,7 @@ we'll see that a business exception as defined above isn't actually an exception
 
 Let's look at some definitions of the word "exception":
 
-> A person or thing that is excluded from a general statement or does not follow a rule.
+> A person or thing that is excluded from a general statement or does not follow a rule
 > ([Oxford Dictionary](https://en.oxforddictionaries.com/definition/exception)).
 
 > An instance or case not conforming to the general rule ([dictionary.com](https://www.dictionary.com/browse/exception)).

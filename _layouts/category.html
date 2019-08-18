@@ -39,16 +39,11 @@
                         {% include teaser-hero.html post=post %}
                     {% endfor %}
 
-                    {% for post in paginator.posts offset: 1 limit:2 %}
-                        {% include teaser-half-width.html post=post %}
-                    {% endfor %}
-
                     <div class="clearfix visible-md visible-lg"></div>
 
-                    {% for post in paginator.posts offset: 3 %}
+                    {% for post in paginator.posts offset: 1 %}
                         {% include teaser-full-width.html post=post %}
                     {% endfor %}
-
 
                     {% if paginator.total_pages > 1 %}
                     <div class="col-md-12">

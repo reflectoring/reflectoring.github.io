@@ -13,3 +13,7 @@ software-development:
 book-reviews:
   title: "Book Review"
   style: "cat-4"
+
+meta:
+  title: "Meta"
+  style: "cat-5"

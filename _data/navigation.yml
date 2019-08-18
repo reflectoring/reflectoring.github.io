@@ -11,6 +11,9 @@ main:
   - title: "Book Reviews"
     url: /categories/book-reviews
     style: "cat-4"
+  - title: "Meta"
+    url: /categories/meta
+    style: "cat-5"
 
 footer:
   - title: "Reflectoring"

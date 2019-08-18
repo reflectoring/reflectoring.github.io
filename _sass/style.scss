@@ -375,19 +375,23 @@ textarea.input {
 }
 
 .nav-menu li.cat-1 a:after {
-  background-color: #4BB92F;
+  background-color: $category-1-color;
 }
 
 .nav-menu li.cat-2 a:after {
-  background-color: #ff8700;
+  background-color: $category-2-color;;
 }
 
 .nav-menu li.cat-3 a:after {
-  background-color: #8d00ff;
+  background-color: $category-3-color;;
 }
 
 .nav-menu li.cat-4 a:after {
-  background-color: #0078ff;
+  background-color: $category-4-color;;
+}
+
+.nav-menu li.cat-5 a:after {
+  background-color: $category-5-color;;
 }
 
 .nav-menu li a:hover, .nav-menu li a:focus {
@@ -396,19 +400,23 @@ textarea.input {
 }
 
 .nav-menu li.cat-1 a:hover, .nav-menu li.cat-1 a:focus {
-  color: #4BB92F;
+  color: $category-1-color;
 }
 
 .nav-menu li.cat-2 a:hover, .nav-menu li.cat-2 a:focus {
-  color: #ff8700;
+  color: $category-2-color;
 }
 
 .nav-menu li.cat-3 a:hover, .nav-menu li.cat-3 a:focus {
-  color: #8d00ff;
+  color: $category-3-color;
 }
 
 .nav-menu li.cat-4 a:hover, .nav-menu li.cat-4 a:focus {
-  color: #0078ff;
+  color: $category-4-color;
+}
+
+.nav-menu li.cat-5 a:hover, .nav-menu li.cat-5 a:focus {
+  color: $category-5-color;
 }
 
 /*----------------------------*\
@@ -674,19 +682,23 @@ textarea.input {
 }
 
 .post-meta .post-category.cat-1 {
-  background-color: #4BB92F;
+  background-color: $category-1-color;
 }
 
 .post-meta .post-category.cat-2 {
-  background-color: #ff8700;
+  background-color: $category-2-color;
 }
 
 .post-meta .post-category.cat-3 {
-  background-color: #8d00ff;
+  background-color: $category-3-color;
 }
 
 .post-meta .post-category.cat-4 {
-  background-color: #0078ff;
+  background-color: $category-4-color;
+}
+
+.post-meta .post-category.cat-5 {
+  background-color: $category-5-color;
 }
 
 .post-meta .post-date {
@@ -993,19 +1005,23 @@ textarea.input {
 }
 
 .category-widget ul li > a.cat-1 > span {
-  background-color: #4BB92F;
+  background-color: $category-1-color;
 }
 
 .category-widget ul li > a.cat-2 > span {
-  background-color: #ff8700;
+  background-color: $category-2-color;
 }
 
 .category-widget ul li > a.cat-3 > span {
-  background-color: #8d00ff;
+  background-color: $category-3-color;
 }
 
 .category-widget ul li > a.cat-4 > span {
-  background-color: #0078ff;
+  background-color: $category-4-color;
+}
+
+.category-widget ul li > a.cat-5 > span {
+  background-color: $category-5-color;
 }
 
 .category-widget ul li > a:hover, .category-widget ul li > a:focus {
@@ -1013,19 +1029,23 @@ textarea.input {
 }
 
 .category-widget ul li > a.cat-1:hover, .category-widget ul li > a.cat-1:focus {
-  color: #4BB92F;
+  color: $category-1-color;
 }
 
 .category-widget ul li > a.cat-2:hover, .category-widget ul li > a.cat-2:focus {
-  color: #ff8700;
+  color: $category-2-color;
 }
 
 .category-widget ul li > a.cat-3:hover, .category-widget ul li > a.cat-3:focus {
-  color: #8d00ff;
+  color: $category-3-color;
 }
 
 .category-widget ul li > a.cat-4:hover, .category-widget ul li > a.cat-4:focus {
-  color: #0078ff;
+  color: $category-4-color;
+}
+
+.category-widget ul li > a.cat-5:hover, .category-widget ul li > a.cat-5:focus {
+  color: $category-5-color;
 }
 
 /*----------------------------*\

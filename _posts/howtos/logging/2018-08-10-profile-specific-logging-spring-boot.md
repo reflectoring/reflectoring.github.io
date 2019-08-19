@@ -1,18 +1,8 @@
 ---
 title: "How to Configure Environment-Specific Logging Behavior with Spring Boot" 
-categories: [howto, logging]
-modified: 2018-08-10
-author: tom
-tags: [transparency, logging, log, format]
-comments: true
-ads: true
-header:
-  teaser: 
-  image: 
+categories: [spring-boot]
 excerpt: "A guide to configuring different logging behavior in different runtime environments."
-sidebar:
-  nav: logging
-  toc: true
+image: 0031-matrix
 ---
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging" %}

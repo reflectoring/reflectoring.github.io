@@ -2,15 +2,8 @@
 title: "Modularizing a Spring Boot Application"
 categories: [spring-boot]
 modified: 2018-02-06
-author: tom
-comments: true
-ads: true
-header:
- teaser: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg
- image: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg
-sidebar:
-  toc: true
 excerpt: "A guide on different ways Spring Boot offers to split an application into distinct modules."
+image: 0037-rubics-cube
 ---
 
 

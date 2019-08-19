@@ -1,14 +1,8 @@
 ---
 title: "REST with Hypermedia - Hot or Not?"
-categories: [architecture]
-modified: 2018-02-06
-author: tom
-comments: true
-ads: true
-header:
- teaser: /assets/images/posts/rest-hypermedia/state-diagram-relations-header.png
- image: /assets/images/posts/rest-hypermedia/state-diagram-relations-header.png
+categories: [craft]
 excerpt: "A discussion of what Hypermedia with REST means and a guide to decide whether hypermedia is a match for your use case."
+image: 0036-notebooks
 ---
 
 

@@ -1,19 +1,12 @@
 ---
 
 title: "Combining Object Mother and Fluent Builder for the Ultimate Test Data Factory"
-categories: [testing]
+categories: [craft, java]
 modified: 2018-08-31
-last_modified_at: 2018-08-31
-author: tom
-tags: [testing, test data, generator]
-comments: true
-ads: true
 excerpt: "Combining the Object Mother Pattern with the Fluent Builder Pattern allows to create
           Test Data Factories that reduce code duplication and promote the Single Responsibility Principle.
-          Learn why and how in this tutorial." 
-sidebar:
-  nav: testing
-  toc: true
+          Learn why and how in this tutorial."
+image: 0030-builder 
 ---
 
 

@@ -2,17 +2,9 @@
 title: "Structuring and Testing Modules and Layers with Spring Boot"
 categories: [spring-boot]
 modified: 2018-05-27
-author: tom
-tags: [spring, boot, testing, junit]
-comments: true
-ads: true
-header:
-  teaser: /assets/images/posts/testing-verticals-and-layers-spring-boot/cube.jpg
-  image: /assets/images/posts/testing-verticals-and-layers-spring-boot/cube.jpg
-sidebar:
-  toc: true
 excerpt: "Slice your Spring Boot applications into vertical modules and make them
           testable in isolation using Spring Boot's testing features."
+image: 0034-layers
 ---
 
 

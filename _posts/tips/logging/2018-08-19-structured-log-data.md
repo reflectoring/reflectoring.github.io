@@ -1,19 +1,12 @@
 ---
 
 title: "3 Use Cases Where Structured Log Data Really Helps"
-categories: [architecture]
+categories: [craft]
 modified: 2018-08-19
-last_modified_at: 2018-08-19
-author: tom
-tags: [transparency, logging, log, structured]
-comments: true
-ads: true
 excerpt: "Log data should contain more than just text. This article discusses some
           example use cases where adding structured properties to log events
           helps when debugging. Get inspired to use structured logging in your own use cases!"
-sidebar:
-  nav: logging
-  toc: true
+image: 0031-matrix
 ---
 
 

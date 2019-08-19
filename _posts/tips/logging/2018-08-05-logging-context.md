@@ -1,17 +1,11 @@
 ---
 
 title: "Tip: Provide Contextual Information in Log Messages"
-categories: [architecture]
+categories: [craft]
 modified: 2018-08-05
-author: tom
-tags: [transparency, logging, log, context]
-comments: true
-ads: true
 excerpt: "A guide to which contextual information is helpful in which 
           logging situation."
-sidebar:
-  nav: logging
-  toc: true
+image: 0031-matrix
 ---
 
 

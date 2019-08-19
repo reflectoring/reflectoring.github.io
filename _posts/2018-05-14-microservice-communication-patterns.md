@@ -1,15 +1,9 @@
 ---
 title: "Microservice Communication Patterns"
-categories: [architecture]
+categories: [craft]
 modified: 2018-05-14
-author: tom
-tags: [microservices, architecture, patterns]
-comments: true
-ads: true
-header:
- teaser: /assets/images/posts/microservice-communication-patterns/communication.jpg
- image: /assets/images/posts/microservice-communication-patterns/communication.jpg
 excerpt: "A discussion of several different communication patterns between distributed micro services."
+image: 0035-switchboard
 ---
 
 

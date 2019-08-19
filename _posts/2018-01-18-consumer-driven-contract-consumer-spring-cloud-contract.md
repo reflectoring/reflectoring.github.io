@@ -1,20 +1,10 @@
 ---
 title: "Testing a Spring Boot REST API Consumer against a Contract with Spring Cloud Contract"
-categories: [cdc, testing]
+categories: [spring-boot]
 modified: 2018-01-18
-last_modified_at: 2018-08-16
-author: tom
-tags: [gradle, snapshot, bintray]
-comments: true
-ads: true
-header:
- teaser: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
- image: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
-sidebar:
-  nav: cdc
-  toc: true
 excerpt: "A guide on how to implement a consumer-driven contract test with Spring Cloud Contract that verifies that a REST consumer based on
           Feign and Spring Boot works as defined in the contract."
+image: 0025-signature
 ---
 
 

@@ -8,5 +8,5 @@ description: "I've been a software developer for more than a decade but I'm stil
 layout: category
 pagination:
   enabled: true
-  category: software-craft
+  category: craft
 ---

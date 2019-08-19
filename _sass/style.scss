@@ -394,6 +394,10 @@ textarea.input {
   background-color: $category-5-color;;
 }
 
+.nav-menu li.cat-6 a:after {
+  background-color: $category-6-color;;
+}
+
 .nav-menu li a:hover, .nav-menu li a:focus {
   background-color: transparent;
   text-decoration: none;
@@ -417,6 +421,10 @@ textarea.input {
 
 .nav-menu li.cat-5 a:hover, .nav-menu li.cat-5 a:focus {
   color: $category-5-color;
+}
+
+.nav-menu li.cat-6 a:hover, .nav-menu li.cat-6 a:focus {
+  color: $category-6-color;
 }
 
 /*----------------------------*\
@@ -699,6 +707,10 @@ textarea.input {
 
 .post-meta .post-category.cat-5 {
   background-color: $category-5-color;
+}
+
+.post-meta .post-category.cat-6 {
+  background-color: $category-6-color;
 }
 
 .post-meta .post-date {
@@ -1024,6 +1036,10 @@ textarea.input {
   background-color: $category-5-color;
 }
 
+.category-widget ul li > a.cat-6 > span {
+  background-color: $category-6-color;
+}
+
 .category-widget ul li > a:hover, .category-widget ul li > a:focus {
   text-decoration: none;
 }
@@ -1046,6 +1062,10 @@ textarea.input {
 
 .category-widget ul li > a.cat-5:hover, .category-widget ul li > a.cat-5:focus {
   color: $category-5-color;
+}
+
+.category-widget ul li > a.cat-6:hover, .category-widget ul li > a.cat-6:focus {
+  color: $category-6-color;
 }
 
 /*----------------------------*\

@@ -6,8 +6,8 @@ java:
   title: "Java"
   style: "cat-2"
 
-software-development:
-  title: "Software Development"
+craft:
+  title: "Software Craft"
   style: "cat-3"
 
 book-reviews:
@@ -17,3 +17,7 @@ book-reviews:
 meta:
   title: "Meta"
   style: "cat-5"
+
+programming:
+  title: "Programming"
+  style: "cat-6"

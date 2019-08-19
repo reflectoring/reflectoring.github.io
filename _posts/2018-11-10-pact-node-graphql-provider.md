@@ -1,18 +1,9 @@
 ---
 title: "Implementing a Consumer-Driven Contract for a GraphQL Provider with Node and Express"
-categories: [cdc, testing]
+categories: [programming]
 modified: 2018-11-10
-last_modified_at: 2018-11-10
-author: tom
-tags: 
-comments: true
-ads: true
-excerpt: "In this tutorial, we're exploring how to create a GraphQL provider with Node and Express and
-          how to implement a contract test with Pact that verifies that this GraphQL provider works
-          as expected by the consumer-defined contract."
-sidebar:
-  nav: cdc
-  toc: true
+excerpt: "In this tutorial, we're exploring how to create a GraphQL provider with Node and Express and how to implement a contract test with Pact that verifies that this GraphQL provider works as expected by the consumer-defined contract."
+image: 0026-signature
 ---
 
 

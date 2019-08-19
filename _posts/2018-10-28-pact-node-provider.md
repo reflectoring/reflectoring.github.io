@@ -1,17 +1,10 @@
 ---
 title: "Implementing a Consumer-Driven Contract for a Node Express Server with Pact"
-categories: [cdc, testing]
+categories: [programming]
 modified: 2018-10-28
-last_modified_at: 2018-11-10
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "A tutorial that shows how to implement a REST provider with a Node Express Server
           using the Pact framework."
-sidebar:
-  nav: cdc
-  toc: true
+image: 0026-signature
 ---
 
 

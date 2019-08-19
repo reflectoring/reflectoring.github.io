@@ -1,17 +1,10 @@
 ---
 title: "Implementing a Consumer-Driven Contract between a Node Message Consumer and a Node Message Producer"
-categories: [cdc, testing]
+categories: [programming]
 modified: 2018-11-14
-last_modified_at: 2018-11-14
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "In this tutorial, we're exploring how to implement a consumer-driven contract
           with Pact between a message consumer and provider both based on Node."
-sidebar:
-  nav: cdc
-  toc: true
+image: 0025-signature
 ---
 
 

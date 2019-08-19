@@ -80,7 +80,7 @@ by the consumer in [this article](/pact-node-graphql-consumer):
         "matchingRules": {
           "$.body.query": {
             "match": "regex",
-            "regex": "\\s*query\\s*GetHero\\(\\$heroId:\\s*Int!\\)\\s*\\{\\s*hero\\(id:\\s*\\$heroId\\)\\s*\\{\\s*name\\s*superpower\\s*__typename\\s*\\}\\s*\\}"
+            "regex": "..."
           }
         }
       },

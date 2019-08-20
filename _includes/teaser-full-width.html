@@ -3,7 +3,7 @@
 <div class="col-md-12">
     <div class="post post-row">
         {% if post.image %}
-        {% include teaser-image-branded.html image=post.image %}
+        {% include teaser-image.html image=post.image %}
         {% endif %}
         <div class="post-body">
             {% include category-badges.html categories=post.categories %}

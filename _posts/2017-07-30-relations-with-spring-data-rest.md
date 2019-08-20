@@ -1,15 +1,10 @@
 ---
 
 title: "Handling Associations Between Entities with Spring Data REST"
-categories: [tools]
+categories: [spring-boot]
 modified: 2017-07-30
-author: tom
-tags: [spring, data, jpa, rest, relation, association, onetomany, manytoone, unidirectional, bidirectional]
-comments: true
-ads: true
-sidebar:
-  nav: spring-data-rest
 excerpt: "How to implement an API with Spring Data TEST that spans over multiple database entities."
+image: 0001-network
 ---
 
 

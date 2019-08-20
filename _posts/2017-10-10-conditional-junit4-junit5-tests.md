@@ -1,12 +1,9 @@
 ---
 title: "Assumptions and Conditional Test Execution with JUnit 4 and 5"
-categories: [java, tools]
+categories: [java]
 modified: 2017-10-10
-author: tom
-tags: [junit]
-comments: true
-ads: true
 excerpt: "A comparison on how to implement assumptions and conditional test execution between JUnit 4 and 5."
+image: 0019-magnifying-glass
 ---
 
 

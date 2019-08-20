@@ -1,20 +1,10 @@
 ---
 title: "7 Reasons to Choose Consumer-Driven Contract Tests Over End-to-End Tests"
-categories: [cdc, testing]
+categories: [craft]
 modified: 2017-11-29
-last_modified_at: 2018-08-16
-author: tom
-tags: [microservice, integration, testing, distributed, architecture]
-comments: true
-ads: true
-header:
-  teaser: /assets/images/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg
-  image: /assets/images/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg
-sidebar:
-  nav: cdc
-  toc: true
 excerpt: "Find out why contracts should be defined by the API consumer and how to ease 
           integration testing APIs by using contract tests."
+image: 0029-contract
 ---
 
 

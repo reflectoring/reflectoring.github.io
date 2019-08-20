@@ -1,13 +1,11 @@
 ---
 
-title: A Random pitfall
+title: A Random Pitfall
 categories: [java]
 modified: 2017-02-16
 author: rudi
-tags: [random, performance, threadLocalRandom, math, generated, number, programming, project, software, engineering]
-comments: true
-ads: true
 excerpt: "An intro on how to create random numbers in Java."
+image: 0049-dice
 ---
 
 

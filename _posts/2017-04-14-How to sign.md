@@ -4,10 +4,8 @@ title: Digital Signature in Java
 categories: [java]
 modified: 2017-04-14
 author: artur
-tags: [java, generated, number, programming, project, software, engineering, cryptography, jce, bouncycastle, signature, digital]
-comments: true
-ads: true
 excerpt: "A tutorial on how to create digital signatures with Java."
+image: 0025-signature
 ---
 
 

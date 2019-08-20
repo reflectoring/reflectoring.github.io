@@ -1,21 +1,12 @@
 ---
 title: "A Fully Automated Open Source Release Chain with Gradle and Travis CI"
-categories: [tools]
+categories: [java]
 modified: 2017-12-29
-author: tom
-tags: [gradle, snapshot, bintray]
-comments: true
-ads: true
-header:
-  teaser: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
-  image: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
 excerpt: "Releasing often is a major pain
           when the release process is not automated. This article is a guide to a fully automated
           release chain that is able to publish snapshots and releases from a 
           Github repository using Gradle, Bintray and Travis CI."
-sidebar:
-  nav: opensource
-  toc: true
+image: 0038-package
 ---
 
 

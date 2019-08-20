@@ -1,18 +1,10 @@
 ---
 title: "Creating a Consumer-Driven Contract with Angular and Pact"
-categories: [cdc, testing]
+categories: [programming]
 modified: 2017-12-10
 author: tom
-tags: [consumer, provider, contract]
-comments: true
-ads: true
-header:
-  teaser: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
-  image: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
-sidebar:
-  nav: cdc
-  toc: true
 excerpt: "A tutorial on testing an Angular REST client against a contract with the Pact framework."
+image: 0029-contract
 ---
 
 

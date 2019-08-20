@@ -1,13 +1,10 @@
 ---
 
 title: Documenting your REST API with Spring Rest Docs
-categories: [tools]
+categories: [spring-boot]
 modified: 2016-12-19
-author: tom
-tags: [spring, rest, api, documentation, mvc, controller, integration, test, docs, junit]
-comments: true
-ads: true
 excerpt: "A tutorial on how to create REST API docs with Spring Rest Docs."
+image: 0016-pen
 ---
 
 

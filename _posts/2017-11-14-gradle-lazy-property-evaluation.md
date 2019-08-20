@@ -1,12 +1,10 @@
 ---
 title: "Lazy Evaluation of Gradle Properties"
-categories: [tools]
+categories: [java]
 modified: 2017-11-14
 author: matthias
-tags: [gradle, groovy, property, lazy, evaluation]
-comments: true
-ads: true
 excerpt: "A guide on lazy evaluation in Gradle scripts and when it makes sense to use it."
+image: 0040-hammock
 ---
 
 

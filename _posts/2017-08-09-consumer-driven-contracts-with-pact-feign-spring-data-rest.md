@@ -1,16 +1,10 @@
 ---
 
 title: "Consumer-Driven Contracts with Pact, Feign and Spring Data REST"
-categories: [cdc, testing]
+categories: [spring-boot]
 modified: 2017-08-09
-author: tom
-tags: [spring, boot, consumer, driven, contract, pact, feign, data, rest]
-comments: true
-ads: true
-sidebar:
-  nav: cdc
-  toc: true
 excerpt: "A tutorial on how to test an API created with Spring Data REST with contract tests using the Pact framework."
+image: 0029-contract
 ---
 
 
@@ -66,7 +60,7 @@ Of course, the contract is created by the consumer in
 agreement with the provider so that it cannot define API calls the provider doesn't want to support.
 
 {% capture fig_img %}
-![Consumer-Driven-Contracts]({{ base }}/assets/images/posts/consumer-driven-contracts.png)
+![Consumer-Driven-Contracts]({{ base }}/assets/img/posts/consumer-driven-contracts.png)
 {% endcapture %}
 
 <figure>

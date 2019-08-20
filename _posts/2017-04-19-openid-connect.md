@@ -1,13 +1,11 @@
 ---
 
 title: OpenID Connect
-categories: [tools]
+categories: [craft]
 modified: 2017-04-19
 author: david
-tags: [java, keycloak, openid, connect, jwt, security]
-comments: true
-ads: true
 excerpt: "A short introduction to OpenID Connect - the standard for Identity Management and Single-Sign-On."
+image: 0048-passport
 ---
 
 

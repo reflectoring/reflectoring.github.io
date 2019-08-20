@@ -12,6 +12,6 @@
     <a title="Share on LinkedIn" target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&amp;url={{ page.url | absolute_url }}" class="share-linkedin"><i class="fa fa-linkedin"></i></a>
     {% endif %}
     {% if site.theme.social_share.email %}
-    <a title="Share via email" target="_blank" href="mailto:{{ site.theme.social_share.email }}?subject={{ page.title }}&amp;body=Check out this site: {{ page.url | absolute_url }}." class="share-email"><i class="fa fa-envelope"></i></a>
+    <a title="Share via email" target="_blank" href="mailto:?subject={{ page.title }}&amp;body=Check out this site: {{ page.url | absolute_url }}." class="share-email" data-proofer-ignore><i class="fa fa-envelope"></i></a>
     {% endif %}
 </div>

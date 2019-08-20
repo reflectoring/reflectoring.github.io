@@ -21,7 +21,7 @@ With this blog, I produce:
 
  * deep-dive tutorials about [Spring Boot](/categories/spring-boot)
  * hands-on tutorials about [Java](/categories/java)
- * opinion on practices of the [Software Craft](/categories/software-craft)
+ * opinion on practices of the [Software Craft](/categories/craft)
  * [book reviews](/categories/book-reviews) of the (non-fiction) books I've read.
 
 If you're interested in working with me or have any feedback about my writing, don't hesitate to contact me.

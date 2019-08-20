@@ -6,7 +6,7 @@ main:
     url: /categories/java
     style: "cat-2"
   - title: "Software Craft"
-    url: /categories/software-craft
+    url: /categories/craft
     style: "cat-3"
   - title: "Book Reviews"
     url: /categories/book-reviews
@@ -30,8 +30,6 @@ footer:
     children:
     - title: "eBook"
       url: /e-book/
-    - title: "Talks"
-      url: /talks/
   - title: "Categories"
     children:
     - title: "Spring Boot"
@@ -39,5 +37,8 @@ footer:
     - title: "Java"
       url: /categories/java/
     - title: "Software Craft"
-      url: /categories/software-craft/
+      url: /categories/craft/
     - title: "Book Reviews"
+      url: /categories/book-reviews
+    - title: "Programming"
+      url: /categories/book-reviews

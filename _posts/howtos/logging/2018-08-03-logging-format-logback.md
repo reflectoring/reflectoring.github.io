@@ -1,20 +1,10 @@
 ---
 
 title: How to Configure a Human-Readable Logging Format with Logback and Descriptive Logger
-categories: [howto, logging]
+categories: [java]
 modified: 2018-08-11
-last_modified_at: 2018-08-11
-author: tom
-tags: [transparency, logging, log, format]
-comments: true
-ads: true
-header:
-  teaser: 
-  image: 
 excerpt: "A guide to configuring Logback to use a human-readable logging format."
-sidebar:
-  nav: logging
-  toc: true
+image: 0031-matrix
 ---
 
 

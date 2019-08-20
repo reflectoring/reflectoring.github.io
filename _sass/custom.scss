@@ -45,6 +45,10 @@ pre {
   margin-top: $space;
 }
 
+pre code {
+  white-space: pre;
+}
+
 // TABLES
 
 .main-post table, .main-post th, .main-post td {

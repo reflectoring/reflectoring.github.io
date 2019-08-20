@@ -7,6 +7,7 @@ defaults:
       layout: "article"
 
 theme:
+  showcase_book: clean-code
   header_logo: "/assets/img/logo/apple-icon-60x60.png"
   footer_logo: "/assets/img/logo/apple-icon-120x120.png"
   social_share:

@@ -7,7 +7,7 @@ opengraph_image: /assets/img/get-your-hands-dirty-1200x628.png
 excerpt: "A hands-on book on the concepts of a Hexagonal software architecture and how to implement them with actual code." 
 ---
 
-<a href="https://leanpub.com/e-book"><img src="/assets/img/get-your-hands-dirty-400x518.png" alt="Get Your Hands Dirty on Clean Architecture" class="pull-right"></a>
+<a href="https://leanpub.com/get-your-hands-dirty-on-clean-architecture"><img src="/assets/img/get-your-hands-dirty-400x518.png" alt="Get Your Hands Dirty on Clean Architecture" class="pull-right"></a>
 
 <blockquote style="clear: none"><strong>A good software architecture should keep the cost of development low over the complete lifetime of an application.</strong></blockquote>
 

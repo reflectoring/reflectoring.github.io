@@ -29,7 +29,7 @@ footer:
   - title: "Resources"
     children:
     - title: "Book"
-      url: /e-book/
+      url: /get-your-hands-dirty-on-clean-architecture/
   - title: "Categories"
     children:
     - title: "Spring Boot"

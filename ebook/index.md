@@ -18,8 +18,6 @@ on this topic.
 **This book provides an opinionated approach to the Hexagonal architecture
 style from the concepts behind it down to actual code.**
 
-## Get the Book on Leanpub
-
 The book is available in all common ebook formats at [Leanpub](https://leanpub.com/get-your-hands-dirty-on-clean-architecture) for a minimum price of $9.99. You can opt-in to pay more to support this blog :). 
 
 <a class="primary-button" href="https://leanpub.com/get-your-hands-dirty-on-clean-architecture">Get it on Leanpub</a> 

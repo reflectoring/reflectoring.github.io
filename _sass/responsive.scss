@@ -36,7 +36,7 @@
 }
 
 @media only screen and (max-width: 767px) {
-  div.media-left {
+  div.author {
     display: none;
   }
 }
@@ -46,4 +46,30 @@
     display: block;
     margin-top: 5px;
   }
+}
+
+@media only screen and (max-width: 767px) {
+  .hide-on-mobile {
+    display:none;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .below-content-container .side-image {
+    float: none;
+    margin-left: 0px;
+  }
+
+  .below-content-container {
+    text-align: center;
+  }
+
+  .below-content-container p {
+    text-align: left;
+  }
+
+  .below-content-container a.primary-button {
+    display: block;
+  }
+
 }

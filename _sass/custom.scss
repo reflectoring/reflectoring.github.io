@@ -126,3 +126,12 @@ pre code {
 .teaser-container:hover .credit-overlay {
   opacity: 1;
 }
+
+.below-content-container .side-image {
+  float:right;
+  margin-left: 30px
+}
+
+.below-content-container a.primary-button {
+  margin-top: $space;
+}

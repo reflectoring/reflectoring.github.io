@@ -10,4 +10,6 @@ layout: category
 pagination:
   enabled: true
   category: book-reviews
+comments:
+  enabled: false
 ---

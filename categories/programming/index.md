@@ -5,4 +5,6 @@ layout: category
 pagination:
   enabled: true
   category: programming
+comments:
+  enabled: false
 ---

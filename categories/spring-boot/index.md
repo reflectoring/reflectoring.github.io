@@ -8,4 +8,6 @@ layout: category
 pagination:
   enabled: true
   category: spring-boot
+comments:
+  enabled: false
 ---

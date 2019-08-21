@@ -7,4 +7,6 @@ layout: category
 pagination:
   enabled: true
   category: java
+comments:
+  enabled: false
 ---

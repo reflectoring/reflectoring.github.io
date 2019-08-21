@@ -6,7 +6,7 @@ layout: none
     <generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator>
     <link href="{{ site.url }}/feed.xml" rel="self" type="application/atom+xml"/>
     <link href="{{ site.url }}" rel="alternate" type="text/html"/>
-    <updated>2019-08-21T06:02:21+02:00</updated>
+    <updated>{{ site.time | date: "%FT%TZ"}}</updated>
     <id>{{ site.url }}</id>
     <title type="html">{{ site.title }}</title>
     {% assign author = site.data.authors['default'] %}
@@ -18,11 +18,9 @@ layout: none
     <entry>
         <title type="html">{{ post.title | xml_escape }}</title>
         <link href="{{ post.url | absolute_url }}" rel="alternate" type="text/html" title="Pollution-Free Dependency Management with Gradle"/>
-        <published>{{ post.date | date: "%FT%T%z"}}</published>
-        <updated>{{ post.modified | date: "%FT%T%z"}}</updated>
-        <id>
-            {{ post.url | absolute_url }}
-        </id>
+        <published>{{ post.date | date: "%FT%TZ"}}</published>
+        <updated>{{ post.modified | date: "%FT%TZ"}}</updated>
+        <id>{{ post.url | absolute_url }}</id>
         {% if page.author %}
         {% assign author = site.data.authors[page.author] %}
         {% else %}

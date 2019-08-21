@@ -1,34 +1,27 @@
 ---
 
 title: "Combining Object Mother and Fluent Builder for the Ultimate Test Data Factory"
-categories: [testing]
+categories: [craft, java]
 modified: 2018-08-31
-last_modified_at: 2018-08-31
-author: tom
-tags: [testing, test data, generator]
-comments: true
-ads: true
 excerpt: "Combining the Object Mother Pattern with the Fluent Builder Pattern allows to create
           Test Data Factories that reduce code duplication and promote the Single Responsibility Principle.
-          Learn why and how in this tutorial." 
-sidebar:
-  nav: testing
-  toc: true
+          Learn why and how in this tutorial."
+image: 0030-builder 
 ---
 
-{% include sidebar_right %}
+
 
 To test our business code we always need some kind of test data. This tutorial explains how to do just that with the 
 Object Mother pattern and why we should combine it with a Fluent Builder to create test data factories that
 are fun to work with.
 
-{% include github-project url="https://github.com/thombergs/code-examples/blob/master/patterns/src/test/java/io/reflectoring/objectmother/ObjectMotherClient.java" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/blob/master/patterns/src/test/java/io/reflectoring/objectmother/ObjectMotherClient.java" %}
 
 ## What do we Need a Test Data Factory For?
 
 Let's imagine that we want to create some tests around `Invoice` objects that are structured as shown in the figure below.
 
-![Invoice UML](/assets/images/posts/tips/objectmother-fluent-builder/invoice.jpg)
+![Invoice UML](/assets/img/posts/tips/objectmother-fluent-builder/invoice.jpg)
 
 An `Invoice` has a target `Address` and zero or more `InvoiceItems`,
 each containing the amount and price of a certain product that is billed with the invoice.
@@ -196,4 +189,4 @@ Single Responsibility Principle by making it easy to adjust created objects loca
 * Object Mother at [java-design-patterns.com](http://java-design-patterns.com/patterns/object-mother/)
 * TestDataBuilder at [wiki.c2.com](http://wiki.c2.com/?TestDataBuilder)
 
-{% include github-project url="https://github.com/thombergs/code-examples/blob/master/patterns/src/test/java/io/reflectoring/objectmother/ObjectMotherClient.java" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/blob/master/patterns/src/test/java/io/reflectoring/objectmother/ObjectMotherClient.java" %}

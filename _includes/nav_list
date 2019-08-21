@@ -1,2 +1,0 @@
-{% assign navigation = site.data.navigation[include.nav] %}
-{% include nav_list_inner %}

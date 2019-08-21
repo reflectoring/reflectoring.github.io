@@ -1,18 +1,13 @@
 ---
 title: Pollution-Free Dependency Management with Gradle
-categories: [tools]
+categories: [java]
 modified: 2017-07-28
-author: tom
-tags: [gradle, maven, scope, configuration]
-comments: true
-ads: true
 excerpt: "Unwanted compile-time dependencies can lead to problems. This article discusses these
           problems and the solution Gradle provides to keep dependencies clean."
-sidebar:
-  toc: true
+image: 0001-network
 ---
 
-{% include sidebar_right %}
+
 
 Remember the days when we had to manually download *every single JAR file* that our project needed to run?
 And not only the JAR files we directly depended upon, mind you, but even those JAR files that our 
@@ -31,7 +26,7 @@ results in too many dependencies being available at compile time.**
 
 Say we have a project X. It depends on libraries A and B. And C is a consumer of project X. 
 
-![Transitive dependencies are implicit dependencies.](/assets/images/posts/gradle-dependency-pollution/implicit-dependency.jpg)
+![Transitive dependencies are implicit dependencies.](/assets/img/posts/gradle-dependency-pollution/implicit-dependency.jpg)
 
 **C has a transitive dependency to A and B** because X needs A and B to function.
 
@@ -42,7 +37,7 @@ Now, imagine these dependencies are available at compile time, meaning
 
 **The dependencies of X leak into the compile-time classpath of C**. This is what I'll call "dependency pollution".
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Why are we only talking about compile-time dependencies?</h4>
   <p>
     This article only discusses the problems of too many compile-time dependencies and not those of 
@@ -76,7 +71,7 @@ Now, the developers of X decide that with the next version of X, they no longer 
 They sell this as a minor update that is completely backward-compatible because
 they haven't changed the API of X at all.
 
-![A transitive dependency can change without us doing anything.](/assets/images/posts/gradle-dependency-pollution/explicit-dependency-error.jpg)
+![A transitive dependency can change without us doing anything.](/assets/img/posts/gradle-dependency-pollution/explicit-dependency-error.jpg)
 
 When the developer of C updates to this next version of X, **she will get compile errors even though the update of X 
 has been backward-compatible** because the classes of A are no longer available. And 
@@ -135,7 +130,7 @@ to the [`implementation` configuration](/maven-scopes-gradle-configurations/#imp
 instead of the `compile` configuration (which has been deprecated in favor of `implementation` for 
 some time now).
 
-![With Gradle's implementation configuration, compile-time dependencies are no longer transitive.](/assets/images/posts/gradle-dependency-pollution/explicit-dependency.jpg)
+![With Gradle's implementation configuration, compile-time dependencies are no longer transitive.](/assets/img/posts/gradle-dependency-pollution/explicit-dependency.jpg)
 
 So, if the dependency of X to A is declared to the `implementation` configuration, **C no longer
 has a transitive compile-time dependency to A**. C can no longer accidentally use classes of A.

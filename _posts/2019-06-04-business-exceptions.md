@@ -1,18 +1,10 @@
 ---
 title: "5 Reasons Why Business Exceptions Are a Bad Idea"
-categories: [architecture]
+categories: [java]
 modified: 2019-06-04
-last_modified_at: 2019-06-04
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "An article discussing some reasons why you shouldn't work with exceptions when validating business rules."
-sidebar:
-  toc: true
+image: 0011-exception
 ---
-
-{% include sidebar_right %}
 
 I recently had a conversation about exception handling. I argued that business exceptions are 
 a good thing because they clearly mark the possible failures of a business method. If a rule is violated,
@@ -95,7 +87,7 @@ we'll see that a business exception as defined above isn't actually an exception
 
 Let's look at some definitions of the word "exception":
 
-> A person or thing that is excluded from a general statement or does not follow a rule.
+> A person or thing that is excluded from a general statement or does not follow a rule
 > ([Oxford Dictionary](https://en.oxforddictionaries.com/definition/exception)).
 
 > An instance or case not conforming to the general rule ([dictionary.com](https://www.dictionary.com/browse/exception)).
@@ -151,7 +143,7 @@ Using try/catch for flow control creates code that is
 
 And, unlike in fashion, expensive is usually bad in software engineering.
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Exceptions without Stacktraces?</h4>
   <p>
     In a comment I was made aware that Java's exception constructors allow passing

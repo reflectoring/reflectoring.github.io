@@ -2,18 +2,11 @@
 title: "All You Need To Know About Bean Validation With Spring Boot"
 categories: [spring-boot]
 modified: 2018-10-14
-last_modified_at: 2018-10-14
-author: tom
-tags: 
-comments: true
-ads: true
-excerpt: "A tutorial consolidating the most important features you'll need to integrate
-          Bean Validation into your Spring Boot application. "
-sidebar:
-  toc: true
+excerpt: "A tutorial consolidating the most important features you'll need to integrate Bean Validation into your Spring Boot application. "
+image: 0022-sorting
 ---
 
-{% include sidebar_right %}
+
 
 [Bean Validation](https://beanvalidation.org/) is the de-facto standard for implementing validation
 logic in the Java eco system. It's well integrated with Spring and Spring Boot. 
@@ -21,7 +14,7 @@ logic in the Java eco system. It's well integrated with Spring and Spring Boot.
 However, there are some pitfalls. This tutorial goes over all major validation use cases
 and sports code examples for each.   
   
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/validation" %} 
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/validation" %} 
 
 ## Setting Up Validation
 
@@ -110,7 +103,7 @@ We simply have added the `@Valid` annotation to the `Input` parameter, which is 
 to mark that it should be read from the request body. By doing this,
 we're telling Spring to pass the object to a `Validator` before doing anything else. 
 
-<div class="notice--warning">
+<div class="notice warning">
   <h4>Use <code>@Valid</code> on Complex Types</h4>
   If the <code>Input</code> class contains a field with another complex type that should be validated, this field, too, needs
   to be annotated with <code>@Valid</code>.
@@ -283,7 +276,7 @@ class ValidatingServiceTest {
 The last line of defense for validation is the persistence layer. By default, Spring Data uses Hibernate underneath,
 which supports Bean Validation out of the box. 
 
-<div class="notice--warning">
+<div class="notice warning">
   <h4>Is the Persistence Layer the right Place for Validation?</h4>
   <p>
   We usually don't want to do validation as late as in the persistence layer because it means that the 

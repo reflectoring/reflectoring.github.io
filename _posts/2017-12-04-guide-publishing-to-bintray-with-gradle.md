@@ -1,23 +1,14 @@
 ---
 title: "Publishing Open Source Releases with Gradle"
-categories: [tools]
+categories: [java]
 modified: 2017-12-04
-author: tom
-tags: [gradle, maven, build]
-comments: true
-ads: true
-header:
-  teaser: /assets/images/posts/guide-publishing-to-bintray-with-gradle/bintray_to_gradle.jpg
-  image: /assets/images/posts/guide-publishing-to-bintray-with-gradle/bintray_to_gradle.jpg
 excerpt: "When working on an open source Java project, you always come to the point where 
           you want to share your work with the developer community. This article gives a 
           step-by-step guide on how to publish your artifacts Bintray."
-sidebar:
-  nav: opensource
-  toc: true
+image: 0038-package
 ---
 
-{% include sidebar_right %}
+
 
 When working on an open source Java project, you always come to the point where 
 you want to share your work with the developer community (at least that should be the goal). 
@@ -33,7 +24,7 @@ You can see a working example of the setup described in this article in my
 
 {% endcapture %}
 
-<div class="notice--success">{{ notice | markdownify }}</div>
+<div class="notice success">{{ notice | markdownify }}</div>
 
 # Bintray vs. Maven Central
 You might be asking why you should publish your artifacts to a custom repository
@@ -237,7 +228,7 @@ The files have now been uploaded to Bintray, but by default they have not been p
 You can do this manually for each new version on the Bintray site. Going to the site, you should see
 a notice like this:
 
-![Notice](/assets/images/posts/guide-publishing-to-bintray-with-gradle/notice.png)
+![Notice](/assets/img/posts/guide-publishing-to-bintray-with-gradle/notice.png)
 
 Click on publish and your files should be published for real and be publicly accessible.
 

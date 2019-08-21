@@ -1,15 +1,12 @@
 ---
 title: "Robust Java Object Mapping With Minimal Testing Overhead Using reMap"
-categories: [java, tools]
+categories: [java]
 modified: 2017-10-01
-author: tom
-tags: [java, mapper, mapping]
-comments: true
-ads: true
 excerpt: "An intro to the reMap Java mapping library that has a focus on minimal testing overhead."
+image: 0041-adapter
 ---
 
-{% include sidebar_right %}
+
 
 Object mapping is a necessary and often unloved evil in software development projects. 
 To communicate between layers of your application, you have to create and test mappers between

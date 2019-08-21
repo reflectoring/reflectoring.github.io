@@ -1,23 +1,13 @@
 ---
 title: "Creating a Consumer-Driven Contract with Feign and Pact"
-categories: [cdc, testing]
+categories: [spring-boot]
 modified: 2018-08-10
-last_modified_at: 2018-08-10
-author: tom
-tags: [consumer, feign, pact]
-comments: true
-ads: true
-header:
- teaser: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
- image: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
-sidebar:
-  nav: cdc
-  toc: true
 excerpt: "A guide on how to implement a consumer-driven contract test with Pact that verifies that a REST consumer based on
           Feign and Spring Boot works as defined in the contract."
+image: 0026-signature
 ---
 
-{% include sidebar_right %}
+
 
 Consumer-driven contract tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -29,7 +19,7 @@ is a popular stack for creating API clients in a distributed architecture. [Pact
 is a polyglot framework that facilitates consumer-driven contract tests. 
 So let's have a look at how to create a contract with Feign and Pact and test a Feign client against that contract.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-feign-consumer" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-feign-consumer" %}
 
 # In this Article
 

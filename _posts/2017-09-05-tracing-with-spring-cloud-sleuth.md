@@ -1,23 +1,20 @@
 ---
 title: "Tracing in Distributed Systems with Spring Cloud Sleuth"
-categories: [spring-boot, tools]
+categories: [spring-boot]
 modified: 2017-09-08
-author: tom
-tags: [spring, boot, microservices, tracing]
-comments: true
-ads: true
 excerpt: "A tutorial on using Spring Cloud Sleuth to trace communication between distributed Spring Boot applications."
+image: 0019-magnifying-glass
 ---
 
-{% include sidebar_right %}
+
 
 In a distributed system, potentially many services are involved in creating a response to a single 
 request. Not only for debugging purposes it's essential that the path of such a request can be traced 
 through all involved services. This article gives an overview of the traceability problem in 
 distributed systems and provides some tips on how to implement tracing with Spring Cloud Sleuth.
 
-<div class="notice--success">
-  <img src="/assets/images/github-mark-48px.png" style="float:right" alt="View on Github"/>
+<div class="notice success">
+  <img src="/assets/img/github-mark-48px.png" style="float:right" alt="View on Github"/>
   <h4>Code Example</h4>
   This article is accompanied by example code for a
   <a href="https://github.com/thombergs/code-examples/tree/master/spring-cloud/sleuth-downstream-service">downstream-service</a> and
@@ -42,7 +39,7 @@ As result of a request `getCustomerWithAddress` we expect customer and address d
 address data each live in the responsibility of a different service so that the initial service (the "downstream" service)
 has to forward a request to those ("upstream") services and aggregate their responses.
 
-![A distributed system with a downstream and two upstream services](/assets/images/posts/trace.png)
+![A distributed system with a downstream and two upstream services](/assets/img/posts/trace.png)
 
 If an error occurs in one of those upstream services, the upstream service will probably log the error.
 Since the downstream services receives an error response, it will probably also log an error. For a 

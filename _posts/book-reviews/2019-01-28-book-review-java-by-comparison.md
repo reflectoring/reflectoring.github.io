@@ -1,22 +1,12 @@
 ---
 title: "Book Review: Java by Comparison"
-categories: [book-review]
+categories: [book-reviews]
 modified: 2019-01-28
-last_modified_at: 2019-01-28
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "A review of the Book 'Java by Comparison' by Simon Harrer, Jörg Lenhard, and Linus Dietz."
-sidebar:
-  toc: true
-  books:
-    - href: //www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D96173656%26fc%3DUS&cjsku=96173656
-      alt:  Java by Comparison
-      img:  //i1.ebkimg.com/previews/096/096173/096173656/096173656-hq-168-80.jpg
+image: 0004-book-coffee
 ---
 
-{% include sidebar_right %}
+
 
 ## TL;DR: Read this Book, when...
 

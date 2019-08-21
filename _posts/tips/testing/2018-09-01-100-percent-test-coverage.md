@@ -1,21 +1,13 @@
 ---
-
 title: "Why You Should Enforce 100% Code Coverage*"
-categories: [testing]
+categories: [craft]
 modified: 2018-09-01
-last_modified_at: 2018-10-05
-author: tom
-tags: [testing, coverage]
-comments: true
-ads: true
 excerpt: "Everyone knows that aiming for 100% code coverage is bullshit. This article re-defines code coverage
           to make 100% a meaningful and worthwhile goal."
-sidebar:
-  nav: testing
-  toc: true
+image: 0027-cover
 ---
 
-{% include sidebar_right %}
+
 
 Yeah, I know. Everyone says aiming for 100% code coverage is bullshit.
 

@@ -1,23 +1,13 @@
 ---
 title: "How to Configure Environment-Specific Logging Behavior with Spring Boot" 
-categories: [howto, logging]
-modified: 2018-08-10
-author: tom
-tags: [transparency, logging, log, format]
-comments: true
-ads: true
-header:
-  teaser: 
-  image: 
+categories: [spring-boot]
 excerpt: "A guide to configuring different logging behavior in different runtime environments."
-sidebar:
-  nav: logging
-  toc: true
+image: 0031-matrix
 ---
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging" %}
 
-{% include sidebar_right %}
+
 
 In the Tip [Use a Human-Readable Logging Format](/logging-format), I proposed to use a human-readable logging format
 so that we can quickly scan a log to find the information we need. However, a human-readable

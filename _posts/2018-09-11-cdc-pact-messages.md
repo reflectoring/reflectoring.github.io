@@ -1,22 +1,15 @@
 ---
 
 title: "Testing a Spring Message Producer and Consumer against a Contract with Pact"
-categories: [cdc, testing]
+categories: [spring-boot]
 modified: 2018-09-13
-last_modified_at: 2018-09-13
-author: tom
-tags: [testing, cdc]
-comments: true
-ads: true
 excerpt: "A tutorial on using Spring and Pact to create a contract between a message
           producer and a message consumer and to verify if both producer and consumer
           work as expected by this contract."
-sidebar:
-  nav: cdc
-  toc: true
+image: 0029-contract
 ---
 
-{% include sidebar_right %}
+
 
 Among other things, testing an interface between two systems with  
 (consumer-driven) contract tests is [faster and more stable](/7-reasons-for-consumer-driven-contracts)
@@ -74,7 +67,7 @@ those classes that are responsible for consuming and producing messages.
 
 The figure below shows the data flow through our consumer and provider code base.
 
-![Architecture](/assets/images/posts/cdc-pact-messages/architecture.jpg)
+![Architecture](/assets/img/posts/cdc-pact-messages/architecture.jpg)
 
 1. In the **domain logic** on the producer side, something happens that triggers a message.
 1. The message is passed as a Java object to the **`MessageProducer`** class which transforms it into a JSON string.
@@ -111,9 +104,15 @@ public class MessageConsumer {
   }
 
   public void consumeStringMessage(String messageString) throws IOException {
-    UserCreatedMessage message = objectMapper.readValue(messageString, UserCreatedMessage.class);
-    Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-    Set<ConstraintViolation<UserCreatedMessage>> violations = validator.validate(message);
+    UserCreatedMessage message = 
+        objectMapper.readValue(messageString, UserCreatedMessage.class);
+    
+    Validator validator = 
+        Validation.buildDefaultValidatorFactory().getValidator();
+    
+    Set<ConstraintViolation<UserCreatedMessage>> violations = 
+        validator.validate(message);
+    
     if(!violations.isEmpty()){
       throw new ConstraintViolationException(violations);
     }
@@ -144,7 +143,9 @@ To test the consumer, we create a unit test similar as we would for a
 public class MessageConsumerTest {
 
   @Rule
-  public MessagePactProviderRule mockProvider = new MessagePactProviderRule(this);
+  public MessagePactProviderRule mockProvider = 
+    new MessagePactProviderRule(this);
+  
   private byte[] currentMessage;
 
   @Autowired
@@ -208,13 +209,19 @@ class MessageProducer {
 
     private MessagePublisher messagePublisher;
 
-    MessageProducer(ObjectMapper objectMapper, MessagePublisher messagePublisher) {
+    MessageProducer(
+        ObjectMapper objectMapper,
+        MessagePublisher messagePublisher) {
       this.objectMapper = objectMapper;
       this.messagePublisher = messagePublisher;
     }
 
-    void produceUserCreatedMessage(UserCreatedMessage message) throws IOException {
-      String stringMessage = objectMapper.writeValueAsString(message);
+    void produceUserCreatedMessage(UserCreatedMessage message)
+        throws IOException {
+      
+      String stringMessage = 
+          objectMapper.writeValueAsString(message);
+      
       messagePublisher.publishMessage(stringMessage, "user.created");
     }
 
@@ -236,16 +243,21 @@ The test for the `MessageProducer` class looks like this:
 public class UserCreatedMessageProviderTest {
 
     @TestTarget
-    public final Target target = new AmqpTarget(Collections.singletonList("io.reflectoring"));
+    public final Target target = 
+        new AmqpTarget(Collections.singletonList("io.reflectoring"));
 
-    private MessagePublisher publisher = Mockito.mock(MessagePublisher.class);
+    private MessagePublisher publisher = 
+        Mockito.mock(MessagePublisher.class);
 
-    private MessageProducer messageProvider = new MessageProducer(new ObjectMapper(), publisher);
+    private MessageProducer messageProvider = 
+        new MessageProducer(new ObjectMapper(), publisher);
 
     @PactVerifyProvider("a user created message")
     public String verifyUserCreatedMessage() throws IOException {
       // given
-      doNothing().when(publisher).publishMessage(any(String.class), eq("user.created"));
+      doNothing()
+        .when(publisher)
+        .publishMessage(any(String.class), eq("user.created"));
 
       // when
       UserCreatedMessage message = UserCreatedMessage.builder()
@@ -258,8 +270,11 @@ public class UserCreatedMessageProviderTest {
       messageProvider.produceUserCreatedMessage(message);
 
       // then
-      ArgumentCaptor<String> messageCapture = ArgumentCaptor.forClass(String.class);
-      verify(publisher, times(1)).publishMessage(messageCapture.capture(), eq("user.created"));
+      ArgumentCaptor<String> messageCapture = 
+        ArgumentCaptor.forClass(String.class);
+      
+      verify(publisher, times(1))
+        .publishMessage(messageCapture.capture(), eq("user.created"));
 
       return messageCapture.getValue();
     }
@@ -290,7 +305,7 @@ that overrides some of the reflection magic. Have a look at [the code](https://g
 if you run into the same problem.
 {% endcapture %}
 
-<div class="notice--warning">{{ notice | markdownify }}</div>
+<div class="notice warning">{{ notice | markdownify }}</div>
 
 ## Conclusion
 

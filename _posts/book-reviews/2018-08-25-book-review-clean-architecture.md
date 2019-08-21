@@ -1,29 +1,13 @@
 ---
 
 title: "Book Review: Clean Architecture by Robert C. Martin"
-categories: [book-review]
+categories: [book-reviews]
 modified: 2018-08-25
-last_modified_at: 2018-08-25
-author: tom
-tags: [architecture]
-comments: true
-ads: false
 excerpt: "A review of Robert C. Martin's book on 'Clean Architecture'. "
-sidebar:
-  toc: true
-  books:
-    - href: //www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D95862666%26fc%3DUS&cjsku=95862666
-      alt:  Clean Architecture
-      img:  //i2.ebkimg.com/previews/095/095862/095862666/095862666.jpg
-    - href: //www.jdoqocy.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D726365%26fc%3DUS&cjsku=726365
-      alt:  Clean Code
-      img:  //i2.ebkimg.com/previews/000/000726/000726365/000726365.jpg
-    - href: //www.jdoqocy.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D726181%26fc%3DUS&cjsku=726181
-      alt:  The Clean Coder
-      img:  //i2.ebkimg.com/previews/000/000726/000726181/000726181.jpg
+image: 0023-cleaning
 ---
 
-{% include sidebar_right %}
+
 
 ## TL;DR: Read this Book, when...
 

@@ -1,17 +1,14 @@
 ---
 
 title: Tool-based Database Refactoring
-categories: [tools]
+categories: [craft]
 modified: 2017-04-01
-author: tom
-tags: [database, refactoring, bootstrap, schema, setup, tools, liquibase, flyway, sql, script, automatic]
-comments: true
-ads: true
 excerpt: "A short introduction to database refactoring and an argument why a database 
           refactoring tool is a must-have in any project using a database with a schema."
+image: 0046-rack
 ---
 
-{% include sidebar_right %}
+
 
 The term "refactoring" is well defined in software development. It is usually used
 to describe a restructuring of source code ranging from simply renaming a variable

@@ -1,22 +1,14 @@
 ---
 
 title: "5 Good Reasons to Use a Log Server"
-categories: [architecture]
-modified: 2018-08-13
-last_modified_at: 2018-08-13
-author: tom
-tags: [transparency, logging, log, server]
-comments: true
-ads: true
+categories: [craft]
 excerpt: "Logging to files and analyzing them by hand is not the way to go anymore.
           This article explains the reasons why a log server is the way to go
           for collecting and analyzing log data."
-sidebar:
-  nav: logging
-  toc: true
+image: 0032-dashboard
 ---
 
-{% include sidebar_right %}
+
 
 Logging to files and analyzing them by hand is not the way to go anymore.
 This article explains the reasons why a log server is the way to go

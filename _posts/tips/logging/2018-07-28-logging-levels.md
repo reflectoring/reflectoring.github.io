@@ -1,22 +1,13 @@
 ---
 
 title: "Tip: Use Logging Levels Consistently"
-categories: [architecture]
+categories: [craft]
 modified: 2018-07-28
-author: tom
-tags: [transparency, logging, log, level]
-comments: true
-ads: true
-header:
-  teaser: /assets/images/posts/tips/logging-levels/logging-levels.jpg
-  image: /assets/images/posts/tips/logging-levels/logging-levels.jpg
 excerpt: "A guide to using which logging level in which logging situation."
-sidebar:
-  nav: logging
-  toc: true
+image: 0033-colored-chalk
 ---
 
-{% include sidebar_right %}
+
 
 When searching for a bug, or just trying to get a feel for an application,
 it helps a lot if we know which information we can expect

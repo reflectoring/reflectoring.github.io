@@ -1,28 +1,25 @@
 ---
 title: "Event Messaging for Microservices with Spring Boot and RabbitMQ"
-categories: [spring-boot, tools]
+categories: [spring-boot]
 modified: 2017-09-16
-author: tom
-tags: [spring, boot, microservices, events, messaging, rabbitmq]
-comments: true
-ads: true
 excerpt: "A tutorial on creating an event messaging solution with Spring Boot and RabbitMQ."
+image: 0035-switchboard
 ---
 
-{% include sidebar_right %}
+
 
 In a microservice environment or any other distributed system you may come upon the requirement
 to exchange events between services. This article shows how to implement a messaging solution 
 with RabbitMQ.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/rabbitmq-event-brokering" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/rabbitmq-event-brokering" %}
 
 # Event Messaging Requirements
 Before jumping into the solution let's define some requirements that an eventing mechanism
 in a distributed system should fulfill. We'll use the following diagram to derive those requirements.
 
 {% capture eventing_img %}
-![Event Producer and Consumers](/assets/images/posts/event-messaging-with-spring-boot-and-rabbitmq/eventing.png)
+![Event Producer and Consumers](/assets/img/posts/event-messaging-with-spring-boot-and-rabbitmq/eventing.png)
 {% endcapture %}
 
 {% capture eventing_img_caption %}
@@ -85,7 +82,7 @@ Using the concepts above, we can create an eventing solution with RabbitMQ. The 
 figure below.
 
 {% capture eventing_amqp_img %}
-![Eventing with RabbitMQ](/assets/images/posts/event-messaging-with-spring-boot-and-rabbitmq/eventing_rabbitmq.png)
+![Eventing with RabbitMQ](/assets/img/posts/event-messaging-with-spring-boot-and-rabbitmq/eventing_rabbitmq.png)
 {% endcapture %}
 
 {% capture eventing_amqp_img_caption %}

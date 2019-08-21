@@ -1,30 +1,20 @@
 ---
 
 title: How to Configure a Human-Readable Logging Format with Logback and Descriptive Logger
-categories: [howto, logging]
+categories: [java]
 modified: 2018-08-11
-last_modified_at: 2018-08-11
-author: tom
-tags: [transparency, logging, log, format]
-comments: true
-ads: true
-header:
-  teaser: 
-  image: 
 excerpt: "A guide to configuring Logback to use a human-readable logging format."
-sidebar:
-  nav: logging
-  toc: true
+image: 0031-matrix
 ---
 
-{% include sidebar_right %}
+
 
 In a [previous Tip](/logging-format), I proposed to use a human-readable logging format
 so that we can quickly scan a log to find the information we need. This article
 shows how to implement this logging format with the [Logback](https://logback.qos.ch/)
 and [Descriptive Logger](https://github.com/thombergs/descriptive-logger) libraries.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/logging" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/logging" %}
 
 ## The Target Logging Format
 

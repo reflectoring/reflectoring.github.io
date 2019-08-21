@@ -1,21 +1,12 @@
 ---
 title: "Creating a Consumer-Driven Contract with Angular and Pact"
-categories: [cdc, testing]
+categories: [programming]
 modified: 2017-12-10
-author: tom
-tags: [consumer, provider, contract]
-comments: true
-ads: true
-header:
-  teaser: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
-  image: /assets/images/posts/consumer-driven-contracts-with-angular-and-pact/contract.jpg
-sidebar:
-  nav: cdc
-  toc: true
 excerpt: "A tutorial on testing an Angular REST client against a contract with the Pact framework."
+image: 0029-contract
 ---
 
-{% include sidebar_right %}
+
 
 Consumer-driven contract tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -28,13 +19,13 @@ contract framework that allows consumer and provider to be written in different 
 this article takes a look on how to 
 create a contract from an Angular client that consumes a REST API.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-angular" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-angular" %}
 
 # The Big Picture
 
 The big picture of Consumer-Driven Contract tests is shown in the figure below.
 
-![Mocking Overview](/assets/images/posts/consumer-driven-contracts-with-angular-and-pact/mocks.jpg)
+![Mocking Overview](/assets/img/posts/consumer-driven-contracts-with-angular-and-pact/mocks.jpg)
 
 Instead of testing consumer and provider in an end-to-end manner, which requires a [complex
 server environment](/7-reasons-for-consumer-driven-contracts/#complexity),

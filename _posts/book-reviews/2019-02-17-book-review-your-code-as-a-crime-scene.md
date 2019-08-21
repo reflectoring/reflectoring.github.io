@@ -1,22 +1,10 @@
 ---
 title: "Book Review: Your Code as a Crime Scene"
-categories: [book-review]
+categories: [book-reviews]
 modified: 2019-02-17
-last_modified_at: 2019-02-17
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "A review of the Book 'Your Code as a Crime Scene' by Adam Tornhill."
-sidebar:
-  toc: true
-  books:
-    - href: //www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D95960873%26fc%3DUS&cjsku=95960873
-      alt:  Your Code as a Crime Scene
-      img:  //i3.ebkimg.com/previews/095/095960/095960873/095960873-hq-168-80.jpg
+image: 0014-handcuffs
 ---
-
-{% include sidebar_right %}
 
 ## TL;DR: Read this Book, when...
 

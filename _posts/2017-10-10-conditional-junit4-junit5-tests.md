@@ -1,15 +1,12 @@
 ---
 title: "Assumptions and Conditional Test Execution with JUnit 4 and 5"
-categories: [java, tools]
+categories: [java]
 modified: 2017-10-10
-author: tom
-tags: [junit]
-comments: true
-ads: true
 excerpt: "A comparison on how to implement assumptions and conditional test execution between JUnit 4 and 5."
+image: 0019-magnifying-glass
 ---
 
-{% include sidebar_right %}
+
 
 Sometimes, a test should only be run under certain conditions. One such case
 are integration tests which depend on a certain external system. We don't want
@@ -17,7 +14,7 @@ our builds to fail if that system has an outage, so we just want to skip
 the tests that need a connection to it. This article shows how
 you can skip tests in JUnit 4 and JUnit 5 depending on certain conditions.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/junit/assumptions" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/junit/assumptions" %}
 
 # Assumptions
 Both JUnit 4 and JUnit 5 support the concept of assumptions. Before each test,

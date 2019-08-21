@@ -1,14 +1,9 @@
 ---
 title: Maven Scopes and Gradle Configurations Explained
-categories: [tools]
+categories: [java]
 modified: 2017-07-24
-author: tom
-tags: [gradle, maven, scope, configuration]
-comments: true
-ads: true
 excerpt: "An explanation and comparison of Maven scopes and Gradle configurations to declare dependencies in a build file."
-sidebar:
-  toc: true
+image: 0002-telescope
 ---
 
 <style>
@@ -17,7 +12,7 @@ sidebar:
 }
 </style>
 
-{% include sidebar_right %}
+
 
 One of the key features of a build tool for Java is dependency management. We declare that we want to use a certain third-party library in our own project and **the build tool takes care of downloading it and adding it to the classpath at the right times in the build lifecycle**.
 

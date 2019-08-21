@@ -1,24 +1,15 @@
 ---
 title: "A Fully Automated Open Source Release Chain with Gradle and Travis CI"
-categories: [tools]
+categories: [java]
 modified: 2017-12-29
-author: tom
-tags: [gradle, snapshot, bintray]
-comments: true
-ads: true
-header:
-  teaser: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
-  image: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
 excerpt: "Releasing often is a major pain
           when the release process is not automated. This article is a guide to a fully automated
           release chain that is able to publish snapshots and releases from a 
           Github repository using Gradle, Bintray and Travis CI."
-sidebar:
-  nav: opensource
-  toc: true
+image: 0038-package
 ---
 
-{% include sidebar_right %}
+
 
 *"Release early, release often"*. This philosophy should be a goal for every 
 software project. Users can only give quality feedback when they have early access
@@ -34,13 +25,13 @@ You can see a working example of the setup described in this article in my
 [diffparser](https://github.com/thombergs/diffparser) project on Github!
 {% endcapture %}
 
-<div class="notice--success">{{ notice | markdownify }}</div>
+<div class="notice success">{{ notice | markdownify }}</div>
 
 # The Release Chain 
 
 The following image shows the release chain we're going to build.
 
-![Releasing snapshots and releases from different branches](/assets/images/posts/fully-automated-open-source-release-chain/git-snapshots-releases.jpg)
+![Releasing snapshots and releases from different branches](/assets/img/posts/fully-automated-open-source-release-chain/git-snapshots-releases.jpg)
 
 In a simplified [Git Flow](http://nvie.com/posts/a-successful-git-branching-model/) fashion, we have two branches
 in our Git repository:
@@ -83,14 +74,14 @@ and link it to our Github account.
 Once logged into the Travis account, we activate 
 Travis CI for the repository we want to publish snapshots and releases for:
 
-![Activate in Travis CI](/assets/images/posts/fully-automated-open-source-release-chain/travis.png)
+![Activate in Travis CI](/assets/img/posts/fully-automated-open-source-release-chain/travis.png)
 
 ## Set Environment Variables
 
 In the settings of the repository on Travis CI, we now set the environment variables
 `BINTRAY_KEY` and `BINTRAY_USER` to our Bintray credentials:
 
-![Environment Variables](/assets/images/posts/fully-automated-open-source-release-chain/travis-env-variables.png) 
+![Environment Variables](/assets/img/posts/fully-automated-open-source-release-chain/travis-env-variables.png) 
 
 ## The `.travis.yml` File
 Next, we need to put a file called `.travis.yml` into the codebase and push

@@ -1,21 +1,12 @@
 ---
 title: "Implementing a Consumer-Driven Contract for a GraphQL Consumer with Node and Apollo"
-categories: [cdc, testing]
+categories: [programming]
 modified: 2018-11-10
-last_modified_at: 2018-11-10
-author: tom
-tags: 
-comments: true
-ads: true
-excerpt: "In this tutorial, we're exploring how to create a GraphQL consumer with Node and Apollo.
-          We're then going to create a contract for this GraphQL Consumer and a test that validates
-          that the consumer works accoring to the contract."
-sidebar:
-  nav: cdc
-  toc: true
+excerpt: "In this tutorial, we're exploring how to create a GraphQL consumer with Node and Apollo. We're then going to create a contract for this GraphQL Consumer and a test that validates that the consumer works accoring to the contract."
+image: 0025-signature
 ---
 
-{% include sidebar_right %}
+
 
 Consumer-driven contract (CDC) tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -32,7 +23,7 @@ our consumer is working as expected by the contract. For this, we're using the N
 This tutorial builds upon a [recent tutorial](/pact-react-consumer) about creating a React
 consumer for a REST API, so you'll find some links to that tutorial for more detailed explanations.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer" %}
 
 ## Creating the Node App
 

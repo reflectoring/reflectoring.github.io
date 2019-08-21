@@ -1,19 +1,13 @@
 ---
-title: "Configuring a Spring Boot Module with `@ConfigurationProperties`"
+title: "Configuring a Spring Boot Module with @ConfigurationProperties"
 categories: [spring-boot]
 modified: 2019-03-18
-last_modified_at: 2019-03-18
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "An in-depth look at Spring Boot's support to bind external configuration
           parameters to fields of a Spring bean."
-sidebar:
-  toc: true
+image: 0013-switchboard
 ---
 
-{% include sidebar_right %}
+
 
 Every application above play size requires some parameters at startup. These
 parameters may, for instance, define which database to connect to, which locale
@@ -30,7 +24,7 @@ convenient way to access such parameters from within the application code.
 This tutorial goes into the details of this annotation and shows how to
 use it to configure a Spring Boot application module.  
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/configuration" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/configuration" %}
 
 ## Using `@ConfigurationProperties` to Configure a Module
 
@@ -139,7 +133,7 @@ class MailModuleConfiguration {
 }
 ```
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Which is the Best Way to activate a <code>@ConfigurationProperties</code> Class?</h4>
   <p>
   All of the above ways are equally valid. I would suggest, however, to 
@@ -234,7 +228,7 @@ org.springframework.boot.context.properties.bind.UnboundConfigurationPropertiesE
   The elements [myapp.mail.unknown-property] were left unbound.
 ```
 
-<div class="notice--warning">
+<div class="notice warning">
   <h4>Deprecation Warning</h4>
   <p>
   The paramater <code>ignoreUnknownFields</code> is to be <a href="https://github.com/spring-projects/spring-boot/issues/12601">deprecated</a>
@@ -438,7 +432,7 @@ class MailModuleConfiguration {
 **It's important to add the `@ConfigurationPropertiesBinding` annotation** to let Spring 
 Boot know that this converter is needed during the binding of configuration properties.
 
-<div class="notice--success">
+<div class="notice success">
   <h4>email Attachments with a Weight?</h4>
   <p>
   Obviously, emails cannot have "real" attachments with a weight. I'm quite aware
@@ -502,7 +496,7 @@ To get auto-completion in IntelliJ, we just install the [Spring Assistant](https
 plugin. If we now hit CMD+Space in an `application.properties` or `application.yml`
 file, we get an auto-completion popup:
 
-![Auto-Completion in IntelliJ](/assets/images/posts/spring-boot-configuration-properties/intellij.png)
+![Auto-Completion in IntelliJ](/assets/img/posts/spring-boot-configuration-properties/intellij.png)
  
 ### Eclipse
 
@@ -555,7 +549,7 @@ include deprecation information in the meta data:
 This information is then provided to us when typing away in the properties file 
 (IntelliJ, in this case):
 
-![Deprecated info in auto-completion](/assets/images/posts/spring-boot-configuration-properties/deprecated.png)
+![Deprecated info in auto-completion](/assets/img/posts/spring-boot-configuration-properties/deprecated.png)
 
 ## Conclusion
 

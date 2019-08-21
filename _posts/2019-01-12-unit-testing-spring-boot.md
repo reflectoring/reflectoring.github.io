@@ -2,18 +2,11 @@
 title: "Unit Testing with Spring Boot"
 categories: [spring-boot]
 modified: 2019-01-12
-last_modified_at: 2019-01-12
-author: tom
-tags: 
-comments: true
-ads: true
-excerpt: "In this tutorial we'll learn how to build testable Spring beans and get to know 
-          the tools that Spring Boot by default imports for writing maintainable unit tests."
-sidebar:
-  toc: true
+excerpt: "In this tutorial we'll learn how to build testable Spring beans and get to know the tools that Spring Boot by default imports for writing maintainable unit tests."
+image: 0020-black-box
 ---
 
-{% include sidebar_right %}
+
 
 Writing good unit tests can be considered an art that is hard to master. But the
 good news is that the mechanics supporting it are easy to learn. 
@@ -29,7 +22,7 @@ testing.
 Note that this article only discusses *unit tests*. Integration tests, tests of the web layer
 and tests of the persistence layer will be discussed in upcoming articles of this series.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
 ## The "Testing with Spring Boot" Series
 

@@ -1,18 +1,12 @@
 ---
 title: "Building a Multi-Module Spring Boot Application with Gradle"
-categories: [architecture, spring-boot]
+categories: [spring-boot]
 modified: 2019-06-28
-last_modified_at: 2019-06-28
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "A tutorial on how to split up a Spring Boot application into multiple Gradle modules."
-sidebar:
-  toc: true
+image: 0010-gray-lego
 ---
 
-{% include sidebar_right %}
+
 
 The [Spring Initializr](https://start.spring.io/) is a great way to quickly create a Spring Boot
 application from scratch. It creates a single Gradle file that we can expand upon
@@ -24,7 +18,7 @@ into multiple build modules for better maintainability and understandability.
 This article shows **how to split up a Spring Boot application into multiple build modules**
 with Gradle.
 
-{% include github-project url="https://github.com/thombergs/clean-architecture-example" %}
+{% include github-project.html url="https://github.com/thombergs/clean-architecture-example" %}
 
 ## What's a Module?
 
@@ -52,7 +46,7 @@ modules when everything works just fine with a single, monolithic module?
 The main reason is that **a single monolithic codebase is susceptible for architectural
 decay**. Within a codebase we usually use packages to demarcate architectural boundaries. 
 But packages in Java aren't very good at protecting those boundaries (more about this in the chapter
-"Enforcing Architecture Boundaries" of my [eBook](/e-book/)). Suffice it to say
+"Enforcing Architecture Boundaries" of my [eBook](/get-your-hands-dirty-on-clean-architecture/)). Suffice it to say
 that the dependencies between classes within a single monolithic codebase tend to quickly
 degrade into a big ball of mud.
 
@@ -63,7 +57,7 @@ codebase.
 ## The Example Application
 
 Let's take a look at the modular example web application we're going to build in this tutorial. 
-The application follows the hexagonal architecture style described in my [eBook](/e-book/), 
+The application follows the hexagonal architecture style described in my [eBook](/get-your-hands-dirty-on-clean-architecture/), 
 which splits the codebase into separate, clearly defined architectural elements.
 For each of those architectural elements, we'll create a separate Gradle build module,
 as indicated by the following folder structure: 

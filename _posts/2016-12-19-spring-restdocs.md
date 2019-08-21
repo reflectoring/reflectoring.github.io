@@ -1,16 +1,13 @@
 ---
 
 title: Documenting your REST API with Spring Rest Docs
-categories: [tools]
+categories: [spring-boot]
 modified: 2016-12-19
-author: tom
-tags: [spring, rest, api, documentation, mvc, controller, integration, test, docs, junit]
-comments: true
-ads: true
 excerpt: "A tutorial on how to create REST API docs with Spring Rest Docs."
+image: 0016-pen
 ---
 
-{% include sidebar_right %}
+
 
 The first impression counts. When you're developing an API of any kind, chances are 
 that the first impression is gained from a look into the API docs. If that first impression

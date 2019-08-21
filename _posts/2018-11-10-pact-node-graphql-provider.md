@@ -1,21 +1,12 @@
 ---
 title: "Implementing a Consumer-Driven Contract for a GraphQL Provider with Node and Express"
-categories: [cdc, testing]
+categories: [programming]
 modified: 2018-11-10
-last_modified_at: 2018-11-10
-author: tom
-tags: 
-comments: true
-ads: true
-excerpt: "In this tutorial, we're exploring how to create a GraphQL provider with Node and Express and
-          how to implement a contract test with Pact that verifies that this GraphQL provider works
-          as expected by the consumer-defined contract."
-sidebar:
-  nav: cdc
-  toc: true
+excerpt: "In this tutorial, we're exploring how to create a GraphQL provider with Node and Express and how to implement a contract test with Pact that verifies that this GraphQL provider works as expected by the consumer-defined contract."
+image: 0026-signature
 ---
 
-{% include sidebar_right %}
+
 
 Consumer-driven contract (CDC) tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -33,7 +24,7 @@ verifies that our provider works as specified in the contract.
 
 This tutorial assumes you have a current version of Node installed.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider" %}
 
 ## Creating an Express Server
 
@@ -205,7 +196,7 @@ type the URL `http://localhost:3000/graphql` into a browser.
 
 We should see the graphiql interface that looks something like this:
 
-![GraphiQL Web Interface](/assets/images/posts/pact-node-graphql-provider/graphiql.png) 
+![GraphiQL Web Interface](/assets/img/posts/pact-node-graphql-provider/graphiql.png) 
 
 We can play around and enter a query like shown in the screenshot to check if the server responds
 accordingly.

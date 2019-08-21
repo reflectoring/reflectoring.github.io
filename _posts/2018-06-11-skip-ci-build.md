@@ -1,15 +1,12 @@
 ---
 title: "Skipping a CI Build for non-code changes"
-categories: [tools]
+categories: [craft]
 modified: 2018-06-11
-author: tom
-tags: [ci, travis]
-comments: true
-ads: true
 excerpt: "A guide on how to skip a CI build when only certain documentation files have changed."
+image: 0018-cogs
 ---
 
-{% include sidebar_right %}
+
 
 Skipping a CI build is like purposefully not brushing your teeth every morning and evening.
 You know it should not be skipped and you feel guilty when you do it anyways.

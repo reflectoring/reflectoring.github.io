@@ -1,22 +1,15 @@
 ---
 title: "Build Once, Run Anywhere: Externalize Your Configuration"
-categories: [architecture]
+categories: [craft]
 modified: 2018-09-09
-last_modified_at: 2018-09-09
-author: tom
-tags: [operations, configuration]
-comments: true
-ads: true
 excerpt: "Software that does more than a \"hello world\" usually needs to be configured in some
           way or another in order to function in a certain environment. This article explains
           why this configuration must not be part of the software itself and explores
           some ways on how to externalize configuration parameters."
-sidebar:
-  nav: operations
-  toc: true
+image: 0013-switchboard
 ---
 
-{% include sidebar_right %}
+
 
 Most software that does more than a "hello world" needs to be configured in some
 way or another in order to function in a certain environment. This article explains
@@ -57,7 +50,7 @@ In the naive approach, we have a magic build process that takes our code and our
 for the production and development environments and creates a deployment artifact
 for each environment as shown in the figure below.  
 
-![Internal Configuration](/assets/images/posts/tips/ops/internal-config.jpg)
+![Internal Configuration](/assets/img/posts/tips/ops/internal-config.jpg)
 
 Since the artifacts have the configuration baked into them, they must each be deployed to 
 the specific runtime environment they are configured for.
@@ -99,7 +92,7 @@ specifies a certain runtime environment.**
 
 We can do better and gain a lot of flexibility by externalizing our configuration as depicted below.
 
-![External Configuration](/assets/images/posts/tips/ops/external-config.jpg)
+![External Configuration](/assets/img/posts/tips/ops/external-config.jpg)
 
 **Our build process no longer needs to know about the runtime environments, since we're deploying the same artifact
 in all environments.**

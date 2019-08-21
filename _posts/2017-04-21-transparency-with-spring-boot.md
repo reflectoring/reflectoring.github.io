@@ -1,18 +1,13 @@
 ---
 
 title: Exposing Metrics of a Spring Boot Application using Dropwizard
-categories: [spring-boot, architecture]
+categories: [spring-boot]
 modified: 2017-04-21
-author: tom
-tags: [spring, java, boot, monitoring, meter, timer, rate, moving average, transparency, metrics, actuator, dropwizard]
-comments: true
-ads: true
-sidebar:
-  nav: monitoring
 excerpt: "A tutorial on how to use the Dropwizard library to expose monitoring metrics in a Spring Boot application."
+image: 0047-transparent
 ---
 
-{% include sidebar_right %}
+
 
 How do we know if an application we just put into production is working
 as it should? How do we know that the application can cope with the

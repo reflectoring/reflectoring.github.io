@@ -1,20 +1,13 @@
 ---
 title: "Implementing a Consumer-Driven Contract for a Node Express Server with Pact"
-categories: [cdc, testing]
+categories: [programming]
 modified: 2018-10-28
-last_modified_at: 2018-11-10
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "A tutorial that shows how to implement a REST provider with a Node Express Server
           using the Pact framework."
-sidebar:
-  nav: cdc
-  toc: true
+image: 0026-signature
 ---
 
-{% include sidebar_right %}
+
 
 Consumer-driven contract (CDC) tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -32,7 +25,7 @@ verifies that our provider works as specified in the contract.
 
 This tutorial assumes you have a current version of Node installed.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider" %}
 
 ## Creating an Express Server
 

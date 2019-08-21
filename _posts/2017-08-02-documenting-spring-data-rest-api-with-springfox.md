@@ -1,24 +1,19 @@
 ---
 
 title: "Documenting a Spring Data REST API with Springfox and Swagger"
-categories: [tools]
+categories: [spring-boot]
 modified: 2017-08-02
-author: tom
-tags: [spring, boot, data, rest, swagger, springfox, documentation, document]
-comments: true
-ads: true
-sidebar:
-  nav: spring-data-rest
 excerpt: "A tutorial on how to document a REST API created with Spring Data REST using Springfox and Swagger."
+image: 0042-fox
 ---
 
-{% include sidebar_right %}
+
 
 With [Spring Data REST](https://projects.spring.io/spring-data-rest/) you can rapidly create a REST API
 that exposes your Spring Data repositories and thus provides CRUD support and more. However, in serious API
 development, you also want to have an automatically generated and up-to-date API documentation. 
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-data/spring-data-rest-springfox" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-data/spring-data-rest-springfox" %}
 
 [Swagger](http://swagger.io) provides a specification for documenting REST APIs. And with 
 [Springfox](https://github.com/springfox/springfox) we have a tool that serves as a bridge between
@@ -109,7 +104,7 @@ More details below.
 In the end, you should be able to view the Swagger documentation of your Spring Data REST API by accessing
 `http://localhost:8080/swagger-ui.html` in your browser. The result should look something like the image below.
 
-![Swagger UI]({{ base }}/assets/images/posts/spring-data-rest-springfox.png)
+![Swagger UI]({{ base }}/assets/img/posts/spring-data-rest-springfox.png)
 
 ## Customizing the Output
 

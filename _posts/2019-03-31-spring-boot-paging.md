@@ -2,18 +2,12 @@
 title: "Paging with Spring Boot"
 categories: [spring-boot]
 modified: 2019-03-31
-last_modified_at: 2019-03-31
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "An in-depth look at the paging support provided by Spring Data for querying
           Spring Web MVC controllers and Spring Data repositories."
-sidebar:
-  toc: true
+image: 0012-pages
 ---
 
-{% include sidebar_right %}
+
 
 As a user of a web application we're expecting pages to load quickly and only show
 the information that's relevant to us. **For pages that show a list of items, this means
@@ -26,7 +20,7 @@ she is looking for.
 In this tutorial, we're examining Spring Data's paging support and create examples of how to use
 and configure it along with some information about how it works under the covers.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/paging" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/paging" %}
 
 ## Paging vs. Pagination
 The terms "paging" and "pagination" are often used as synonyms. They don't exactly mean the same,
@@ -109,7 +103,7 @@ Pageable pageable = PageRequest.of(0, 5, Sort.by(
 This will create a request for the first page with 5 items ordered first
 by name (ascending) and second by id (descending). **Note that the page index is zero-based by default!**
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Confusion with <code>java.awt.print.Pageable</code>?</h4>
   <p>
   When working with <code>Pageable</code>, you'll notice that your IDE will sometimes 
@@ -395,7 +389,7 @@ This has a similar effect to the `prefix` property from above, but it also appli
 parameter name. In the example above, only the query parameters `my_page`, `my_size` and `my_sort`
 are evaluated.
 
-<div class="notice--success">
+<div class="notice success">
   <h4><code>spring.data.web.*</code> Properties are not evaluated?</h4>
   <p>
   If changes to the configuration properties above have no effect, the <code>SpringDataWebProperties</code>

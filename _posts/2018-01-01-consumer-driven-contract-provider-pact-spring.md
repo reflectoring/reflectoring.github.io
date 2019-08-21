@@ -1,23 +1,13 @@
 ---
 title: "Testing a Spring Boot REST API against a Consumer-Driven Contract with Pact"
-categories: [cdc, testing]
+categories: [spring-boot]
 modified: 2018-08-11
-last_modified_at: 2018-08-11
-author: tom
-tags: [gradle, snapshot, bintray]
-comments: true
-ads: true
-header:
-  teaser: /assets/images/posts/consumer-driven-contract-provider-pact-spring/contract.jpg
-  image: /assets/images/posts/consumer-driven-contract-provider-pact-spring/contract.jpg
-sidebar:
-  nav: cdc
-  toc: true
 excerpt: "A guide on how to implement a consumer-driven contract test with Pact that verifies that a REST provider based on
           Spring Boot works as defined in the contract."
+image: 0026-signature
 ---
 
-{% include sidebar_right %}
+
 
 Consumer-driven contract tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -29,7 +19,7 @@ is a framework that facilitates consumer-driven contract tests.
 So let's have a look at how to test a REST API provided by a Spring Boot application 
 against a contract previously defined by the API consumer.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-spring-provider" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-spring-provider" %}
 
 # In this Article
 

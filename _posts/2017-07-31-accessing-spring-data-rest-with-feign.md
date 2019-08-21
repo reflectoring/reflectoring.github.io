@@ -1,18 +1,13 @@
 ---
 
 title: "Accessing a Spring Data REST API with Feign"
-categories: [tools]
+categories: [spring-boot]
 modified: 2017-07-31
-author: tom
-tags: [spring, boot, feign, data, rest]
-comments: true
-ads: true
-sidebar:
-  nav: spring-data-rest
 excerpt: "A tutorial on how to use the Feign REST client library to access an API created with Spring Data REST."
+image: 0036-notebooks
 ---
 
-{% include sidebar_right %}
+
 
 
 [Spring Data REST](https://projects.spring.io/spring-data-rest/) is a framework that automatically exposes a REST API for Spring Data repositories, thus
@@ -20,7 +15,7 @@ potentially saving a lot of manual programming work. [Feign](https://github.com/
 clients and is well integrated into the [Spring Cloud ecosystem](http://projects.spring.io/spring-cloud/spring-cloud.html#spring-cloud-feign). Together, both frameworks seem to be a
 natural fit, especially in a microservice environment.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-cloud/feign-with-spring-data-rest" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-cloud/feign-with-spring-data-rest" %}
 
 However, they don't play along by default. This blog post shows what has to be done in order to be able
 to access a Spring Data REST API with a Spring Boot Feign client.

@@ -1,17 +1,11 @@
 ---
 title: "REST with Hypermedia - Hot or Not?"
-categories: [architecture]
-modified: 2018-02-06
-author: tom
-comments: true
-ads: true
-header:
- teaser: /assets/images/posts/rest-hypermedia/state-diagram-relations-header.png
- image: /assets/images/posts/rest-hypermedia/state-diagram-relations-header.png
+categories: [craft]
 excerpt: "A discussion of what Hypermedia with REST means and a guide to decide whether hypermedia is a match for your use case."
+image: 0036-notebooks
 ---
 
-{% include sidebar_right %}
+
 
 Believing Roy Fielding, who first coined the REST acronym, you may call
 your API a REST API [only if you make use of hypertext](http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven).
@@ -24,7 +18,7 @@ drawbacks you might encounter when using it.
 Before starting with Hypermedia, let's have a look at the [REST Maturity Model](https://www.crummy.com/writing/speaking/2008-QCon/act3.html)
 conceived by Leonard Richardson:
 
-![REST Maturity Model](/assets/images/posts/rest-hypermedia/rest-maturity-model.jpg)
+![REST Maturity Model](/assets/img/posts/rest-hypermedia/rest-maturity-model.jpg)
 
 At the bottom of the maturity pyramid we find the "Swamp of POX (Plain old XML)". This means sending XML fragments back and forth
 that contain a command for executing one of several procedures as well as some payload data to a single URL. 
@@ -55,7 +49,7 @@ link to other related resources.
 
 Let's try this concept on a simple book store example:
 
-![Links and Relations](/assets/images/posts/rest-hypermedia/state-diagram-relations.png)
+![Links and Relations](/assets/img/posts/rest-hypermedia/state-diagram-relations.png)
 
 In the diagram above, each node is a URL within our API and each edge is a link relating one URL with another.
 

@@ -1,23 +1,14 @@
 ---
 title: "Publishing Open Source Snapshots with Gradle"
-categories: [tools]
+categories: [java]
 modified: 2017-12-20
-author: tom
-tags: [gradle, snapshot, bintray]
-comments: true
-ads: true
-header:
-  teaser: /assets/images/posts/publish-snapshots-with-gradle/gradle-to-artifactory.jpg
-  image: /assets/images/posts/publish-snapshots-with-gradle/gradle-to-artifactory.jpg
 excerpt: "One of the most fulfilling things in open source development is getting feedback from your users. 
           This article shows how to publish snapshots of
           your Java projects to oss.jfrog.org to enable your users to give feedback early."
-sidebar:
-  nav: opensource
-  toc: true
+image: 0038-package
 ---
 
-{% include sidebar_right %}
+
 
 One of the most fulfilling things in developing an open source project is getting feedback from the
 users of your project. To give feedback, the users need to have something to play around with.
@@ -33,7 +24,7 @@ You can see a working example of the setup described in this article in my
 
 {% endcapture %}
 
-<div class="notice--success">{{ notice | markdownify }}</div>
+<div class="notice success">{{ notice | markdownify }}</div>
 
 # oss.jfrog.org vs. Bintray
 Before we start, a couple words on [oss.jfrog.org](https://oss.jfrog.org). It's the place we're going to publish
@@ -69,12 +60,12 @@ Having set up a Bintray account, you now need to create a repository on oss.jfro
 snapshots. You can do this by clicking on "add to JCenter" on the homepage of your bintray package (see image below) 
 and then providing a group id under which you want to publish your snapshots.
 
-![add to JCenter](/assets/images/posts/publish-snapshots-with-gradle/add-to-jcenter.PNG)
+![add to JCenter](/assets/img/posts/publish-snapshots-with-gradle/add-to-jcenter.PNG)
 
 If you already have added your repository to JCenter, you can still activate the snapshot repository by clicking 
 "stage snapshots on oss.jfrog.org" (see image below).
 
-![stage snapshots](/assets/images/posts/publish-snapshots-with-gradle/stage-snapshots.PNG)
+![stage snapshots](/assets/img/posts/publish-snapshots-with-gradle/stage-snapshots.PNG)
 
 It takes from a couple hours up to a day or so for the JFrog people to check your request and activate your snapshot repository.
 You can check if it's available by browsing the Artifact Repository on [oss.jfrog.org](https://oss.jfrog.org). If there

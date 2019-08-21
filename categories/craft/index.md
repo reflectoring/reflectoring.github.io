@@ -9,4 +9,6 @@ layout: category
 pagination:
   enabled: true
   category: craft
+comments:
+  enabled: false
 ---

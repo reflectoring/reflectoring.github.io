@@ -8,4 +8,6 @@ pagination:
   enabled: true
 header:
   enabled: true
+comments:
+  enabled: false
 ---

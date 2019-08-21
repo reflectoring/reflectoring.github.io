@@ -47,7 +47,7 @@
 
                     {% if paginator.total_pages > 1 %}
                     <div class="col-md-12">
-                        <div class="section-row text-center">
+                        <div class="section-row text-center paginator">
                             {% if paginator.previous_page %}
                                 <a href="{{ paginator.previous_page_path | prepend: site.baseurl }}" class="primary-button">Previous Page</a>
                             {% endif %}

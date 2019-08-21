@@ -40,3 +40,10 @@
     display: none;
   }
 }
+
+@media only screen and (max-width: 425px) {
+  .paginator a {
+    display: block;
+    margin-top: 5px;
+  }
+}

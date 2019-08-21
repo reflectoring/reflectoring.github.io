@@ -12,6 +12,10 @@ img.framed {
   border: 2px solid #eeeeee;
 }
 
+.main-post img {
+  width: 100%; // responsive
+}
+
 img.circle {
   border-radius: 50%;
   padding: 5px;

@@ -1,0 +1,45 @@
+---
+layout: none
+---
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator>
+    <link href="{{ site.url }}/feed.xml" rel="self" type="application/atom+xml"/>
+    <link href="{{ site.url }}" rel="alternate" type="text/html"/>
+    <updated>2019-08-21T06:02:21+02:00</updated>
+    <id>{{ site.url }}</id>
+    <title type="html">{{ site.title }}</title>
+    {% assign author = site.data.authors['default'] %}
+    <author>
+        <name>{{ author.name }}</name>
+        <email>{{ author.email }}</email>
+    </author>
+    {% for post in site.posts limit:10 %}
+    <entry>
+        <title type="html">{{ post.title | xml_escape }}</title>
+        <link href="{{ post.url | absolute_url }}" rel="alternate" type="text/html" title="Pollution-Free Dependency Management with Gradle"/>
+        <published>{{ post.date | date: "%FT%T%z"}}</published>
+        <updated>{{ post.modified | date: "%FT%T%z"}}</updated>
+        <id>
+            {{ post.url | absolute_url }}
+        </id>
+        {% if page.author %}
+        {% assign author = site.data.authors[page.author] %}
+        {% else %}
+        {% assign author = site.data.authors['default'] %}
+        {% endif %}
+        <author>
+            <name>{{ author.name }}</name>
+            <email>{{ author.email }}</email>
+        </author>
+        {% for category_key in post.categories %}
+        {% assign category = site.data.categories[category_key] %}
+        <category term="{{ category.title }}"/>
+        {% endfor %}
+        <summary type="html">
+            {{ post.excerpt }}
+        </summary>
+        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="{{ post.image | opengraph | absolute_url }}"/>
+    </entry>
+    {% endfor %}
+</feed>

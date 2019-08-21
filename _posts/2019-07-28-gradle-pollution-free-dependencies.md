@@ -7,7 +7,7 @@ excerpt: "Unwanted compile-time dependencies can lead to problems. This article 
 image: 0001-network
 ---
 
-50
+
 
 Remember the days when we had to manually download *every single JAR file* that our project needed to run?
 And not only the JAR files we directly depended upon, mind you, but even those JAR files that our 

@@ -20,7 +20,7 @@ footer:
     children:
     - title: "About"
       url: /about/
-    - title: "RSS Feed"
+    - title: "Atom Feed"
       url: /feed.xml
     - title: "Meta"
       url: /categories/meta

@@ -35,7 +35,6 @@ sass:
 plugins:
   - jekyll-paginate-v2
   - jekyll-sitemap
-  - jekyll-feed
 
 permalink: /:title/
 

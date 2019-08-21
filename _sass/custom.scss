@@ -29,6 +29,18 @@ p.author-name {
 img.pull-left {
   margin-right: 20px;
   margin-bottom: 20px;
+  width: auto;
+}
+
+img.pull-right {
+  margin-left: 20px;
+  margin-bottom: 20px;
+  width: auto;
+}
+
+a.primary-button {
+  cursor: pointer;
+  text-align: center;
 }
 
 .aside-widget .section-title, .aside-widget{

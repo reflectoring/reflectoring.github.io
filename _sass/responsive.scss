@@ -42,9 +42,21 @@
 }
 
 @media only screen and (max-width: 425px) {
-  .paginator a {
+  a.primary-button {
     display: block;
     margin-top: 5px;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  img.pull-left {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  img.pull-right {
+    width: 100%;
+    margin-left: 0;
   }
 }
 

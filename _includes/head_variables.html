@@ -11,3 +11,9 @@
 {% else %}
   {% assign seo_author = site.data.authors[default].name %}
 {% endif %}
+
+{% if page.opengraph_image %}
+  {% assign opengraph_image = page.opengraph_image | absolute_url %}
+{% elsif page.image %}
+  {% assign opengraph_image = page.image | opengraph | absolute_url %}
+{% endif %}

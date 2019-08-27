@@ -4,6 +4,7 @@ categories: [spring-boot]
 modified: 2019-02-23
 excerpt: "A tutorial on when and how to use Spring Boot's @SpringBootTest annotation and how to reduce test runtime."
 image: 0018-cogs
+
 ---
 
 

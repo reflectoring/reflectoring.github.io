@@ -27,7 +27,7 @@ that I often use as a basis for documenting a software architecture.
 
 I hope this helps any readers who are setting up a new Java-based software architecture.
 
-# Architecture Style
+## Architecture Style
 
 Which should be the basic architecture style of the application? There are of course more
 styles that are listed here. However, monoliths and micro-services seem to be the most
@@ -37,7 +37,7 @@ discussed architecture styles these days.
 | **(Micro-) Services**       | Multiple, smaller deployment units that make use of distributed communication to implement the application's functionality. May be more flexible for creating smaller and faster releases and scales with multiple teams, but comes at the cost of distributed communication problems.
 
 
-# Back-End Concerns
+## Back-End Concerns
 
 What things should you think about that concern the back-end of the application you
 want to build?
@@ -54,7 +54,7 @@ want to build?
 | **Database Technology**     | Does the application need a structured, schema-based database? Use a relational database. Is it storing document-based structures? Use [MongoDB](https://www.mongodb.com/). Key-Value Pairs? [Redis](https://redis.io/). Graphs? [Neo4J](https://neo4j.com/).
 | **Persistence Layer**       | When using a relational database, [Hibernate](http://hibernate.org/) is the de-facto default technology to map your objects into the database. You may want to use [Spring Data JPA](http://projects.spring.io/spring-data-jpa/) on top of Hibernate for easy creation of repository classes. Spring Data JPA also supports many NoSQL databases like Neo4J or MongoDB. However, there are alternative database-accessing technologies like [iBatis](http://ibatis.apache.org/) and [jOOQ](https://www.jooq.org/).
 
-# Frontend Concerns
+## Frontend Concerns
 
 What concerns are there to think about that affect the frontend architecture? 
 
@@ -65,7 +65,7 @@ What concerns are there to think about that affect the frontend architecture?
 | **Measuring Metrics**       | Are there any events (errors, client version, ...) that the client should report to a central server? How will those events be communicated to the server? 
 | **Offline Mode**            | Are the clients required to work offline? Which use cases should be available offline and which not? How will client side data be synchronized with the server once the client is online?
 
-# Operations Concerns
+## Operations Concerns
 
 What you definitely should discuss with the operations team before proposing your 
 architecture to anyone.
@@ -78,7 +78,7 @@ architecture to anyone.
 | **Central Log Server**      | Especially in a distributed architecture with many deployment units, but also in a monolithic application (which also should have at least two instances running), a central log server may make bug hunting easier. The [Elastic Stack](https://www.elastic.co/de/products) (Elastic Search, Logstash, Kibana) is popular, but heavy to set up. [Graylog 2](https://www.graylog.org/) is an alternative.
 | **Database Operations**     | What are the requirements towards the database? Does it need to support hot failover and / or load balancing between database instance? Does it need online backup? [Oracle RAC](https://www.oracle.com/database/real-application-clusters/) is a pretty default (but expensive) technology here, but other databases support similar requirements. 
 
-# Development Concerns
+## Development Concerns
 
 Things that the whole development team has to deal with every day. Definitely discuss these
 points with the development team before starting development.

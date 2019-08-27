@@ -5,6 +5,7 @@ modified: 2019-03-31
 excerpt: "An in-depth look at the paging support provided by Spring Data for querying
           Spring Web MVC controllers and Spring Data repositories."
 image: 0012-pages
+
 ---
 
 

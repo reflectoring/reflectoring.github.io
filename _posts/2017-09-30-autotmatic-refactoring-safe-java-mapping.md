@@ -14,7 +14,7 @@ a multitude of types, which can be a very cumbersome task, depending on the mapp
 that is used. This article introduces [reMap](https://github.com/remondis-it/remap), 
 yet another Java object mapper that has a unique focus on robustness and minimal testing overhead.
 
-# Specifying a Mapper
+## Specifying a Mapper
 
 Rather than creating a mapper via XML or annotations as in some other mapping libraries, with reMap you create 
 a mapper by writing a few
@@ -49,7 +49,7 @@ Customer customer = ...
 Person person = mapper.map(customer);
 ```
 
-## Omitting fields
+### Omitting fields
 
 Say `Customer` has the field `address` and `Person` does not. Vice versa, `Person` has a field `birthDate`
 that is missing in `Customer`.
@@ -76,7 +76,7 @@ simple reason for this is [robustness](#robustness) again. I don't want to let a
 fields to map and which not. I want to explicitly specify what to map from here to there. Only then 
 can I be sure that things are mapped according to my expectations at runtime.
 
-## Mapping fields with different names
+### Mapping fields with different names
 
 Source and target objects often have fields that have the same meaning but a different name. By using 
 the `reassign` specification, we can tell reMap to map one field into another field of the same type. In this 
@@ -92,7 +92,7 @@ Mapper<Customer, Person> mapper = Mapping
     .mapper();
 ```
  
-## Mapping fields with different types
+### Mapping fields with different types
 
 What if I need to convert a field to another type? Say `Customer` has a field `registrationDate`
 of type `Calendar` that should be mapped to the field `regDate` of type `Date` in `Person`?
@@ -120,7 +120,7 @@ private Transform<Date, Calendar> calendarToDate() {
 By implementing a `Transform` function that converts one type to another, we can use the `replace`
 specification to convert a field value.
  
-## Nested Mapping
+### Nested Mapping
 
 Another often-required feature of a mapper is nested mapping. Let's say our `Customer` class has a field
 of type `CustomerAddress` and our `Person` class has a field of type `PersonAddress`. First, we create
@@ -141,12 +141,12 @@ Mapper<Customer, Person> mapper = Mapping
     .mapper();
 ```
 
-# Key Philosophies 
+## Key Philosophies 
 
 reMap has some more features that can best be looked up in the project's [documentation](https://github.com/remondis-it/remap).
 However, I would like to point out some "meta-features" that make out the philosophy behind the development of reMap.
 
-## Robustness
+### Robustness
 
 A main goal of reMap is to create robust mappers. That means that a mapper must be refactoring-safe. A mapper must
 not break if a field name changes. This is why
@@ -161,7 +161,7 @@ But a mapper can be broken even if the compiler has nothing to fret about. For e
 field when specifying the mapper. This is why each mapper is validated at the earliest possible moment during runtime, 
 which is when calling the `mapper()` factory method.
 
-## Testing
+### Testing
 
 This leads us to testing. A major goal of reMap is to reduce testing effort to a minimum. Mapping is a tedious task,
 so we don't want to add another tedious task by creating unit tests that manually check if each field was mapped
@@ -191,7 +191,7 @@ Note that if you created a custom `Transform` function as described [above](#map
 you should include an explicit test for this transformation in your test suite, since it cannot be validated
 automatically by reMap.
 
-## Performance
+### Performance
 
 Performance was actually not a goal at all when developing reMap. Robustness and minimal test effort were valued much higher. 
 However, reMap seems to be faster than some other popular mappers like [Dozer](https://github.com/DozerMapper/dozer) and 
@@ -211,7 +211,7 @@ The following performance test results were created on my local machine with a
 |ModelMapper  | 4,71332 |
 |Dozer        | 6,12523 |
 
-# Summary
+## Summary
 
 [reMap](https://github.com/remondis-it/remap) is yet another object mapper for Java but has a different philosophy
 from most of the other mappers out there. It values robustness above all else and minimal testing overhead a strong second.

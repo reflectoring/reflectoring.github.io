@@ -5,6 +5,8 @@ defaults:
   -
     values:
       layout: "article"
+    toc:
+      enabled: true
 
 theme:
   showcase_book: clean-code
@@ -35,7 +37,6 @@ sass:
 plugins:
   - jekyll-paginate-v2
   - jekyll-sitemap
-  - jekyll-toc
 
 permalink: /:title/
 

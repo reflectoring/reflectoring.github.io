@@ -5,9 +5,8 @@ modified: 2017-07-28
 excerpt: "Unwanted compile-time dependencies can lead to problems. This article discusses these
           problems and the solution Gradle provides to keep dependencies clean."
 image: 0001-network
+toc: true
 ---
-
-
 
 Remember the days when we had to manually download *every single JAR file* that our project needed to run?
 And not only the JAR files we directly depended upon, mind you, but even those JAR files that our 

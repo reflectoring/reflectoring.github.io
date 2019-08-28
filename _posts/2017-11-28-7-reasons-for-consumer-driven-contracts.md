@@ -16,7 +16,7 @@ This article discusses three approaches to implementing integration tests
 between distributed services and shows the advantages of
 Consumer-Driven Contract tests.
 
-# Strategies for Integration Testing
+## Strategies for Integration Testing
 
 This article compares three testing strategies that can be used to implement
 integration tests and then goes into describing how those strategies 
@@ -34,7 +34,7 @@ Thus, with an integration test, we want to assert that consumer and provider
 are speaking the same languange and that they understand each other syntactically
 by checking that they both follow the rules of a mutual contract.
 
-## End-to-End Tests
+### End-to-End Tests
 
 The most natural approach to testing interfaces between provider and consumer is
 end-to-end testing. In end-to-end tests (E2E tests), real servers or containers are set up so
@@ -45,7 +45,7 @@ To execute our integration tests, the consumer is usually triggered by providing
 certain input in the user interface. The consumer then calls the provider and the test
 asserts (again in the UI) if the results meet the expectations defined in the contract.
 
-## Mocking 
+### Mocking 
 
 In a mock test, we no longer set up a whole runtime environment, but run isolated tests
 between the consumer and a mock provider and between a mock consumer and the real provider.
@@ -73,7 +73,7 @@ In the second set of tests a mock consumer is given the requests from the contra
 sends them against the provider service. The mock consumer then checks if the providers' 
 responses meet the expectations defined in the contract.
 
-## Consumer-Driven Contract Tests
+### Consumer-Driven Contract Tests
 
 Consumer-Driven Contract tests (CDC tests) are a specialization of mock tests as described above. They work just
 like mock tests with the specialty that the interface contract is driven by the consumer and not,
@@ -94,10 +94,10 @@ the API contract between provider and consumer.
   <figcaption>{{ img_cdc_caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
 </figure>
 
-# Comparing the Integration Testing Strategies
+## Comparing the Integration Testing Strategies
 Let's have a look at certain issues in testing and check how the testing strategies deal with them.
 
-## Isolation
+### Isolation
 We've all been taught that isolation in tests is a good thing. This is highlighted in the 
 famous testing pyramid (see image below). The base of the pyramid consists of isolated tests (you can also call
 them unit tests, if you like). Thus, your test suite should consist of a high number of isolated tests
@@ -127,7 +127,7 @@ Using mock tests instead of E2E tests for testing interfaces between distributed
 from the top of the testing pyramid at least one level down, so the point for isolation definitely goes
 to mock tests and CDC tests.
 
-## Testing Data Semantics
+### Testing Data Semantics
 The correct semantics of data exchanged over an interface are, naturally, important for the data to be processed
 correctly. However, mock tests usually only check the syntax of the data, e.g. if a credit card number is
 syntactically correct but not if a credit card with that number actually exists. 
@@ -139,7 +139,7 @@ Reducing the test focus from semantics to syntax should be a conscious choice yo
 You are no longer testing the business logic but you are concentrating your test efforts on the potentially
 fragile interface structure (while covering your business logic with a separate set of isolated tests, I hope).
 
-## Complexity
+### Complexity
 
 For an E2E runtime environment, you have to deploy containers running your services, their databases
 and any other dependencies they might have, each in a specified versions (see image below). 
@@ -162,7 +162,7 @@ kubernetes make this a lot easier than it was when services were hosted on bare 
 you have to implement an automatism that executes this deployment when the tests are to be run. You
 do not have this kind of complexity with mock tests.
 
-## Test Data Setup
+### Test Data Setup
 
 Test data is always an issue when implementing tests of any sort. In E2E tests test data is especially troublesome
 since you have potentially many services each with their own database (see image in the previous
@@ -176,7 +176,7 @@ state.
 In mock tests, on the other hand, you can define the data to be sent / returned directly in the consumer and provider mocks
 without having to setup any database at all.
 
-## Feedback Time
+### Feedback Time
 
 Another important issue in testing is the time it takes from starting your tests until you get the results and
 can act on them by fixing a bug or modifying a test. The shorter this feedback time, the more productive you can
@@ -189,7 +189,7 @@ you probably won't just run a single test but rather a complete suite of tests, 
 Mock tests have a much shorter feedback cycle, since you can run them any time, especially from a developer machine
 and get feedback rather quickly (not as quickly as for usual unit tests, but quicker than for E2E tests for sure).
 
-## Stability
+### Stability
 
 Due to the complexity, potentially erroneous test data and a whole lot of other potential factors, E2E tests may fail.
 If an E2E test fails, it does not necessarily mean that you found a bug in the code or in the test. It may mean that
@@ -203,7 +203,7 @@ Also, when setting up an E2E runtime environment, some of the deployed services 
 team or even completely outside of your organization. You probably don't have a lot of influence on those services.
 If one of those services fails, it may be a cause for a failing test and adds to the potential instability.
 
-## Reveal Unused Interfaces
+### Reveal Unused Interfaces
 
 Usually, an API is defined by the API provider. Consumers then may choose which operations of the API they want to
 use and which not. Thus, the provider does not really know which operations of its API are used by which consumer.
@@ -231,7 +231,7 @@ API operation is no longer needed, it removes that operation from the consumer t
 This leads to a failing provider test and you will automatically be notified by your CI when an API operation is no longer needed and 
 you can act accordingly.
 
-## Well-Fittedness
+### Well-Fittedness
 
 A very similar issue is the issue of well-fittedness of the API operations for a certain consumer. If a provider dictates 
 an API contract, it may not fit certain use cases of certain consumers optimally. If the consumer defines the contract,
@@ -254,7 +254,7 @@ a different purpose since it doesn't find an operation that better suits its use
 With E2E tests and plain provider-dicated mock tests, the consumer has no real say in matters of well-fittedness. 
 Only consumer-driven contracts allow the consumer to match the API to his needs.
 
-## Unknown Consumers
+### Unknown Consumers
 
 Some APIs are public or semi-public and thus developed for an unknown group of consumers. In a setting like this,
 CDC tests obviously don't work, since unknown consumers cannot define a contract. 
@@ -268,7 +268,7 @@ there to test the provider.
 a consumer. However, you could argue that it's still an E2E test in the context of your application if 
 you setup your provider in an E2E runtime environment and hit it with mocked requests from your contract.
 
-# Feature Overview
+## Feature Overview
 
 Here's an overview table of the features of the different testing strategies discussed above.
 

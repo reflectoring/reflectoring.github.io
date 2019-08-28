@@ -12,6 +12,9 @@ $category-6-color       : #000000;
 
 $space                  : 30px;
 
+$gray                   : #f2f3f3;
+$link-color             : #00BFA5;
+
 @mixin sans() {
   font-family: $font-family-sans;
 }
@@ -21,7 +24,7 @@ $space                  : 30px;
 }
 
 @mixin underline() {
-  border-bottom: 1px solid #f2f3f3;
+  border-bottom: 1px solid $gray;
   padding-bottom: 5px;
   padding-top: $space;
 }

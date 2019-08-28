@@ -1,4 +1,13 @@
-<div class="notice success">
-    <h4>Code Example<i class="fa fa-github"></i></h4>
-    This article is accompanied by working example code <a href="{{ include.url }}">on github</a>.
-</div>
+{% assign text = include.text %}
+
+<h2><a href="{{ include.url }}"><i class="fa fa-github"></i></a> Code Example</h2>
+
+{% if text %}
+<p>
+    {{ text }}
+</p>
+{% else %}
+<p>
+    This article is accompanied by working example code <a href="{{ include.url }}">on GitHub</a>.
+</p>
+{% endif %}

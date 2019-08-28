@@ -65,6 +65,10 @@ pre code {
   white-space: pre;
 }
 
+h1 a i, h2 a i, h3 a i, h4 a i, h5 a i, h6 a i {
+  color: black;
+}
+
 // TABLES
 
 .main-post table, .main-post th, .main-post td {
@@ -73,7 +77,7 @@ pre code {
 }
 
 .main-post th {
-  border-bottom: 1px solid lightgray;
+  border-bottom: 1px solid #f2f3f3;
   border-left: 10px solid white;
   border-right: 10px solid white;
 }

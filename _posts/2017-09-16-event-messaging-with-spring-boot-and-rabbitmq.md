@@ -14,7 +14,7 @@ with RabbitMQ.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/rabbitmq-event-brokering" %}
 
-# Event Messaging Requirements
+## Event Messaging Requirements
 Before jumping into the solution let's define some requirements that an eventing mechanism
 in a distributed system should fulfill. We'll use the following diagram to derive those requirements.
 
@@ -38,30 +38,30 @@ An event producer sends events which are consumed by other services within the d
 * In our distributed system we have several service clusters (e.g. a cluster of "order service" instances and a cluster
   of "archive service" instances). Each event must be processed by at most one instance per service cluster. 
  
-# Messaging Concepts 
+## Messaging Concepts 
 
 The eventing solution presented in this article makes use of some messaging concepts that are described in the following sections.
 
-## Producer
+### Producer
 
 A producer is simply a piece of software that sends a message to a message broker, for example a customer service
 in a system of microservices that wants to tell other services that a new customer was created by sending
 the event `customer.created` that contains the newly created customers' ID as a payload.
 
-## Consumer
+### Consumer
 
 A consumer is a piece of software that receives messages from a message broker and processes those messages.
 In our example, this might be an order service that needs the address of all customers to create orders for
 those customers. It would process the `customer.created` event by reading the ID from the event
 and calling the customer service to load the corresponding customers' address. 
 
-## Queue
+### Queue
 
 A queue is first-in-first-out message store. The messages are put into a queue by a producer and read from it by
 a consumer. Once a message is read, it is consumed and removed from the queue. A message can thus only be processed
 exactly once.
 
-## Exchange
+### Exchange
 
 An exchange is a concept that is part of the [AMQP protocol](http://www.amqp.org/specification/0-9-1/amqp-org-download).
 Basically, it acts as an intermediary between the producer and a queue. Instead of sending messages directly to a queue,
@@ -69,14 +69,14 @@ a producer can send them to an exchange instead. The exchange then sends those m
 following a specified set of rules. Thus, the producer does not need to know the queues that eventually receive those
 messages.
 
-## Binding
+### Binding
 
 A binding connects a queue to an exchange. The exchange forwards all messages it receives to the queues it is bound
 to. A binding can contain a routing key that specifies which events should be forwarded. For example, a binding
 might contain the routing key `customer.*` meaning that all events whose type starts with `customer.` will
 be routed to the specified queue.
 
-# An Event Messaging Concept with AMQP
+## An Event Messaging Concept with AMQP
 
 Using the concepts above, we can create an eventing solution with RabbitMQ. The solution is depicted in the 
 figure below.
@@ -106,13 +106,13 @@ of the service instances connected to that queue.
 The event producing services only need to know the central exchange and send all events to that exchange. Since the
 consuming services take care of the binding and routing, we have a real, loosely coupled eventing mechanism.
 
-# Implementing Event Messaging with Spring Boot and RabbitMQ
+## Implementing Event Messaging with Spring Boot and RabbitMQ
 
 The eventing concept described above can be implemented with Spring Boot and RabbitMQ. The implementation is pretty
 straightforward. If you don't feel like reading and more like delving into code, you will find a link to a github
 repository with a working example at the end of this article.
 
-## Including the Spring Boot AMQP Starter
+### Including the Spring Boot AMQP Starter
 
 Spring Boot offers a starter for Messaging with AMQP that integrates the [Spring AMQP](https://docs.spring.io/spring-amqp/docs/1.7.4.RELEASE/reference/html/)
 project with Spring Boot. The AMQP Starter currently only supports RabbitMQ as 
@@ -125,7 +125,7 @@ compile('org.springframework.boot:spring-boot-starter-amqp')
 
 The starter contains an auto configuration which is automatically activated.
 
-## Connecting to RabbitMQ
+### Connecting to RabbitMQ
 
 In order to connect to a RabbitMQ server, the Spring AMQP starter reads the following properties, which you can
 specify as environment variables, for example in your `application.properties`. The following settings are the 
@@ -138,7 +138,7 @@ spring.rabbitmq.username=guest
 spring.rabbitmq.password=guest
 ```
 
-## Configuring an Event Producer
+### Configuring an Event Producer
 
 Creating an event producer is pretty straightforward. We make use of the `RabbitTemplate` provided by the 
 AMQP starter and call the method `convertAndSend()` to send an event. The event in the code example
@@ -193,7 +193,7 @@ public class EventProducerConfiguration {
 }
 ```
 
-## Configuring an Event Consumer
+### Configuring an Event Consumer
 
 First off, the event consumer itself is a simple java class. Again, to process more complex objects than
 simple strings, you can use Spring AMQPs message converters. We use the `@RabbitListener` annotation
@@ -251,7 +251,7 @@ public class EventConsumerConfiguration {
 }
 ```
 
-# Wrap-Up
+## Wrap-Up
 
 With the concepts of exchanges, bindings and queues, AMQP provides everything we need to create an event 
 mechanism for a distributed system. Spring AMQP and its integration into Spring Boot via the AMQP Starter provide a very convenient

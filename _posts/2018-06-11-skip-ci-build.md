@@ -14,7 +14,7 @@ However, there are some cases when you have only changed some supplementary file
 (like documentation) that have no impact whatsoever on your build pipeline and you don't want to wait for a
 long-running build. Here are two ways how to skip a CI build in this case.
 
-# Using the Commit Message `[skip ci]` 
+## Using the Commit Message `[skip ci]` 
 
 The easiest way to skip a CI build is to add `[skip ci]` or `[ci skip]` to your
 commit message. Many CI providers support this:
@@ -37,7 +37,7 @@ You're screwed, for example, if you have protected the branches of your GitHub
 repository, so that pull requests can only be merged when the CI build for the pull request has successfully run.
 This will never happen using `[skip ci]`, so you can never merge the pull request... .
 
-# Using a Git Diff in the CI Build
+## Using a Git Diff in the CI Build
 
 So, we actually want the CI build to start - only to immediately exit when only non-code changes
 were made.
@@ -64,7 +64,7 @@ variable:
 * BitBucket doesn't support a commit range variable, but it's [requested as a feature](https://bitbucket.org/site/master/issues/15892/present-a-commit-range-environment)
 * CircleCI doesn't support a commit range variable, but there is a [workaround](https://discuss.circleci.com/t/get-list-of-commits-in-build/15725)
 
-# A Word of Caution
+## A Word of Caution
 
 Use wisely and with caution. The build should never be skipped when a file changed that has any impact
 on the build. So, if your markdown files are part of your build, don't skip the build.  

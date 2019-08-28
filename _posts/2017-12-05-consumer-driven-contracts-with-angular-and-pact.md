@@ -21,7 +21,7 @@ create a contract from an Angular client that consumes a REST API.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-angular" %}
 
-# The Big Picture
+## The Big Picture
 
 The big picture of Consumer-Driven Contract tests is shown in the figure below.
 
@@ -37,7 +37,7 @@ The consumer mock and provider mock both have access to a contract that specifie
 a set of valid request / response pairs (also called "interactions") so that they are able to verify the
 requests and responses of the real consumer and provider.
 
-# In this Article
+## In this Article
 
 This article focuses on the consumer side. Our consumer is an Angular application 
 that accesses some remote REST API. The provider of this API is of no concern to us
@@ -55,7 +55,7 @@ What we will do in this article:
 A prerequisite for this article is an Angular app skeleton created with Angular CLI. If you
 don't want to create one yourself, clone the [code repository](https://github.com/thombergs/code-examples/tree/master/pact/pact-angular).
 
-# The API Consumer: UserService
+## The API Consumer: UserService
 
 The API we want to create a contract for is an API to create a user resource.
 The consumer of this API is an Angular service called `UserService` living in the file `user.service.ts`:
@@ -83,7 +83,7 @@ send a `POST` request containing a User JSON object to the URI `/user-service/us
 The response is expected to contain an `id` field containing the ID of the newly
 created user.
 
-# Pact Dependencies
+## Pact Dependencies
 
 In order to get Pact up and running in our Angular tests, we need to include the
 following dependencies as `devDependencies` in the `package.json` file:
@@ -110,7 +110,7 @@ to define contract fragments by listing request / response pairs ("interactions"
 sending them to a `pact-node` mock server. This enables us to implement consumer-driven contract
 tests from our Angular tests.
 
-# Configure Karma
+## Configure Karma
 
 Before starting into our test, we need to configure Karma to start up a mock provider each time we
 start a test run. For this, we add the following lines to `karma.conf.js`:
@@ -140,7 +140,7 @@ In the case above, we tell Karma to redirect all requests coming from within our
 to port `1234`, which is our mock provider. This way, we can be sure that
 the requests our `UserService` sends during the test will be received by the mock provider.  
 
-# Set up the Pact Test
+## Set up the Pact Test
 
 Now, we're ready to set up a test that defines a contract and verifies our `UserService` against
 this contract. We name the file `user.service.pact.spec.ts` to make clear that it's 
@@ -197,7 +197,7 @@ afterAll(function (done) {
 });
 ```
 
-# Create a Pact
+## Create a Pact
 
 Now to the test. The following code shows how to add an interaction to a contract
 and then verify if the requests our `UserService` sends are valid according
@@ -260,7 +260,7 @@ associated to it. If it does not find a matching interaction, the test fails. Th
 test passes, we have verified that `UserService` follows the rules of the contract fragment we
 created above.
  
-# The Pact
+## The Pact
 
 After `provider.finalize()` has been called, i.e. when all tests have finished, the mock server
 creates a pact file from all interactions that it has been fed during the test run. A pact
@@ -313,7 +313,7 @@ file is simply a JSON structure that contains the request / response pairs and s
 }
 ```
 
-# Bonus: Publish the Pact on a Pact Broker
+## Bonus: Publish the Pact on a Pact Broker
 
 We just created a pact from an Angular test that tests an API consumer! But what about the
 provider of that API? The developers of that API provider will need the pact in order to
@@ -354,7 +354,7 @@ You can integrate this script into your npm build by adding it to the `scripts` 
 The script can then be executed by running `npm run publish:pacts` either from your machine or from your CI build 
 to publish the pacts every time the tests ran successfully.
 
-# Wrap Up
+## Wrap Up
 In this article, we created an API contract and verified that our Angular service (i.e. the API consumer) abides by that 
 contract, all from within an Angular test. This article has not covered the provider side yet. In an upcoming blog post,
 we'll have a look at how to create an API provider with Spring Boot and how to 

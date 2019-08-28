@@ -13,7 +13,7 @@ img.framed {
 }
 
 .main-post img {
-  width: 100%; // responsive
+  max-width: 100%; // responsive
 }
 
 img.circle {
@@ -73,7 +73,7 @@ pre code {
 }
 
 .main-post th {
-  border-bottom: 1px solid lightgray;
+  border-bottom: 1px solid #f2f3f3;
   border-left: 10px solid white;
   border-right: 10px solid white;
 }

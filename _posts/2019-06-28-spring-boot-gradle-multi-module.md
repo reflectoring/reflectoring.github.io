@@ -4,6 +4,7 @@ categories: [spring-boot]
 modified: 2019-06-28
 excerpt: "A tutorial on how to split up a Spring Boot application into multiple Gradle modules."
 image: 0010-gray-lego
+
 ---
 
 

@@ -21,7 +21,7 @@ So let's have a look at how to create a contract with Feign and Pact and test a 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-feign-consumer" %}
 
-# In this Article
+## In this Article
 
 Instead of testing API consumer and provider in an end-to-end manner, with consumer-driven contract tests
 we split up the test of our API into two parts: 
@@ -38,7 +38,7 @@ In this article we will:
 * verify the client against the contract within an integration test
 * publish the contract to a Pact Broker
 
-# Define the Contract
+## Define the Contract
 
 Unsurprising, a contract is called a "pact" within the Pact framework. In order to create a pact
 we need to include the pact library: 
@@ -105,7 +105,7 @@ the section [Verify the Client against the Contract](#verify-the-client-against-
 with the name "consumername-providername.json" so that a dash within either the consumer or provider name will make it 
 less readable.
 
-# Create a Client against the API
+## Create a Client against the API
 Before we can verify a client, we have to create it first.
 
 We choose [Feign](https://cloud.spring.io/spring-cloud-netflix/multi/multi_spring-cloud-feign.html) as the technology
@@ -172,7 +172,7 @@ public class RibbonConfiguration {
 }
 ```
 
-# Verify the Client against the Contract
+## Verify the Client against the Contract
 
 Let's go back to our JUnit test class `UserServiceConsumerTest` and extend it so that it verifies that the Feign
 client we just created actually works as defined in the contract:
@@ -228,7 +228,7 @@ we do not meet the contract.
 
 Once the test has passed, a pact file with the name `userclient-userservice.json` will be created in the `target/pacts` folder.
 
-# Publish the Contract to a Pact Broker
+## Publish the Contract to a Pact Broker
 
 The pact file created from our test now has to be made available to the provider side so that the provider
 can also test against the contract.
@@ -255,7 +255,7 @@ The API provider can get the pact from there to validate his own code against th
 
 We can integrate this task into a CI build to automate publishing of the pacts.
 
-# Conclusion
+## Conclusion
 
 This article gave a quick tour of the consumer-side workflow of Pact. We created a contract and verified our
 Feign client against this contract from a JUnit test class. Then we published the pact to a Pact Broker that

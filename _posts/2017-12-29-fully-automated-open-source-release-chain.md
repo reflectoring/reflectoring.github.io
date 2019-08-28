@@ -20,12 +20,12 @@ release chain that is able to publish snapshots and releases from a
 Github repository using Gradle, Bintray and Travis CI.   
 
 {% capture notice %}
-#### Example Project
 You can see a working example of the setup described in this article in my 
 [diffparser](https://github.com/thombergs/diffparser) project on Github!
-{% endcapture %}
 
-<div class="notice success">{{ notice | markdownify }}</div>
+{% endcapture %}
+{% assign text = notice | markdownify %}
+{% include github-project.html text=text %}
 
 ## The Release Chain 
 

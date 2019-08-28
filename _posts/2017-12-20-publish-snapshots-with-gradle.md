@@ -18,13 +18,12 @@ your Java projects to [oss.jfrog.org](https://oss.jfrog.org) and how your users 
 those snapshots from their own projects.
 
 {% capture notice %}
-#### Example Project
 You can see a working example of the setup described in this article in my 
 [diffparser](https://github.com/thombergs/diffparser) project on Github!
 
 {% endcapture %}
-
-<div class="notice success">{{ notice | markdownify }}</div>
+{% assign text = notice | markdownify %}
+{% include github-project.html text=text %}
 
 ## oss.jfrog.org vs. Bintray
 Before we start, a couple words on [oss.jfrog.org](https://oss.jfrog.org). It's the place we're going to publish

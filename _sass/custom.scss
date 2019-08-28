@@ -65,6 +65,10 @@ pre code {
   white-space: pre;
 }
 
+h1 a i, h2 a i, h3 a i, h4 a i, h5 a i, h6 a i {
+  color: black;
+}
+
 // TABLES
 
 .main-post table, .main-post th, .main-post td {

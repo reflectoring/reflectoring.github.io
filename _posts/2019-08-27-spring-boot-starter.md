@@ -37,33 +37,45 @@ Finally, a Spring Boot Starter is a Maven or Gradle module with the sole purpose
 In our application, we then only need to include this starter to use the feature.
 
 <div class="notice success">
-  <h4>Combining Auto-Configuration and Starter in a Single Module</h4>
+  <h3>Combining Auto-Configuration and Starter in a Single Module</h3>
   <p>
    The <a target="_blank" href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html#boot-features-custom-starter-module-starter">reference manual</a> proposes to separate auto-configuration and starter each into 
    their own Maven or Gradle module to separate the concern of auto-configuration from 
    the concern of dependency management. 
   </p>
   <p>
-  This may seem a bit over-engineered in environments where we're not building an  
+  This may be a bit over-engineered in environments where we're not building an  
   open source library that is used by thousands of users. <strong>In this article, we're 
   combining both concerns into a single starter module</strong>. 
   </p>
 </div> 
 
-## When does a Spring Boot Starter Make Sense?
+## Use Cases for a Spring Boot Starter
 
-* cross-cutting concerns in Microservices
-* providing a library
-* logging configuration
-* security configuration
-* event messaging adapter
+When do we actually need a Spring Boot starter? 
+
+In short: each time we're building a feature that is a cross-cutting concern across multiple Spring Boot applications.
+
+A Spring Boot starter makes it as easy as can be to include such a cross-cutting concern into a Spring Boot application, as we'll see at the end of this article. 
+
+A prime example is a microservices environment: if we're building microservices with Spring Boot, we don't want each service to build its own logging, security, or event messaging features. We want to build these features once and simply include them in each service.
+
+Use cases for Spring Boot Starters include the following: 
+
+* providing a configurable default logging configuration or making it easy to log to a central log server
+* providing a configurable default security configuration
+* providing a configurable default error handling strategy
+* providing an adapter to a central messaging infrastructure 
+* integrating a third party library and making it configurable to use with Spring Boot
 * ...
 
-# The Example Use Case
+As an example, we'll build a Spring Boot starter that allows a Spring Boot application to easily send and receive Events over a central messaging infrastructure.
+
+## Building a Starter for Event Messaging
 * allow publishing events to an event broker
 * provides an EventPublisher
 
-# Setting Up the Gradle Build
+### Setting Up the Gradle Build
 * doesn't make much sense in a monolithic codebase, because there are easier ways to include spring moduls (link to article)
 
 * Gradle build file
@@ -71,25 +83,33 @@ In our application, we then only need to include this starter to use the feature
 * if not in the same parent build, have a separate dependencyManagement closure
 * include spring boot dependencies in `compileOnly` configuration to let the consumer decide on the version
 
-# Providing an entry-point `@Configuration`
+### Providing an entry-point `@Configuration`
 * functionality is a set of beans made available in the application context
 * @configuration class that can include other configurations
 * single point of entry to the functionality of the starter
 
-# Making it Optional
+### Making it Optional
 * always allow to turn it off
 * Conditional annotations (link to post)
 
-# Making it Configurable
+### Making it Configurable
 * always make it configurable (not everyone needs all features)
 * @ConfigurationProperties (link to post)
 * we access the consumer's `application.properties`
 
-# Including the starter in the consumer
+### Making it Accessible
+
+* Use the Metadata processor to generate metadata about all configuration parameters
+* the processor automatically reads properties from @ConfigurationProperties classes
+* if there are additional properties, add them manually in `META-INF/additional-spring-configuration-metadata.json`
+
+### Improving Startup Time
+* use the autoconfigure processor
+
+## Using the Starter
 * simply add it as a dependency
 
 
 https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html
 
-# Improving Startup Time
-* use the autoconfigure processor
+

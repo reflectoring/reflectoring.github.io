@@ -19,13 +19,12 @@ because those are widely known and supported by build tools. This article explai
 publish a release from your Bintray repository to JCenter and Maven Central.
 
 {% capture notice %}
-#### Example Project
 You can see a working example of the setup described in this article in my 
 [diffparser](https://github.com/thombergs/diffparser) project on Github!
 
 {% endcapture %}
-
-<div class="notice success">{{ notice | markdownify }}</div>
+{% assign text = notice | markdownify %}
+{% include github-project.html text=text %}
 
 ## JCenter vs. Maven Central
 Before we go into the details of publishing to JCenter and Maven Central, let's disuss the difference

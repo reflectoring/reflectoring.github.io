@@ -7,7 +7,7 @@ image: 0039-start
 tags: ["cross-cutting concern", "starter", "auto-configuration"]
 ---
 
-There are certain cross-cutting concerns that we don't want to implement from scratch for each Spring Boot application we're building. **Instead, we want to implement those features *once* and include them into any applications as needed**.
+There are certain cross-cutting concerns that we don't want to implement from scratch for each Spring Boot application we're building. **Instead, we want to implement those features *once* and include them into any application as needed**.
 
 In Spring Boot, the term used for a module that provides such cross-cutting concerns is "starter". A starter makes it easy to include a certain set of features to "get started" with them.
 

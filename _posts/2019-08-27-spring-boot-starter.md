@@ -1,14 +1,15 @@
 ---
-title: Building a Spring Boot Starter for Cross-Cutting Concerns
+title: Quick Guide to Building a Spring Boot Starter
 categories: [spring-boot]
 modified: 2017-08-28
-excerpt: "TODO"
+excerpt: "Everything you need to know to build a Spring Boot Starter bringing a cross-cutting concern to any Spring Boot application."
 image: 0039-start
+tags: ["cross-cutting concern", "starter", "auto-configuration"]
 ---
 
-There are certain cross-cutting concerns that we don't want to implement from scratch for each Spring Boot application we're building. Instead, we want to implement those features once and include them into our applications as we see fit.
+There are certain cross-cutting concerns that we don't want to implement from scratch for each Spring Boot application we're building. **Instead, we want to implement those features *once* and include them into any applications as needed**.
 
-In Spring Boot, the term used for a module that provide such cross-cutting concerns is "starter". A starter makes it easy to include a certain set of features to "get started" with them.
+In Spring Boot, the term used for a module that provides such cross-cutting concerns is "starter". A starter makes it easy to include a certain set of features to "get started" with them.
 
 Some example use cases for a Spring Boot starter are: 
 
@@ -16,7 +17,7 @@ Some example use cases for a Spring Boot starter are:
 * providing a configurable and/or default security configuration
 * providing a configurable and/or default error handling strategy
 * providing an adapter to a central messaging infrastructure 
-* integrating a third party library and making it configurable to use with Spring Boot
+* integrating a third-party library and making it configurable to use with Spring Boot
 * ...
 
 In this article, we'll build a Spring Boot starter that allows a Spring Boot application to easily send and receive Events over an imaginary central messaging infrastructure.
@@ -35,13 +36,13 @@ In a Spring application, **the application context is the network of objects (or
 
 A class annotated with the `@Configuration` annotation serves as a factory for beans that are added to the application context. It may contain factory methods annotated with `@Bean` whose return values are automatically added to the application context by Spring. 
 
-In short, **a Spring configuration makes a contribution to the application context**.
+In short, **a Spring configuration contributes beans to the application context**.
 
 ### What's an Auto-Configuration?
 
 **An auto-configuration is a `@Configuration` class that is automatically discovered by Spring**. As soon as an auto-configuration is found on the classpath, it is evaluated and the configuration's contribution is added to the application context.
 
-An auto-configuration may be [conditional](/spring-boot-conditionals/), so that its activation depends on external factors like a certain configuration parameter having a specific value.
+An auto-configuration may be [conditional](/spring-boot-conditionals/) so that its activation depends on external factors like a certain configuration parameter having a specific value.
 
 ### What's an Auto-Configure Module?
 
@@ -59,19 +60,19 @@ In a Spring Boot application, we then only need to include this starter to use t
   <h3>Combining Auto-Configuration and Starter in a Single Module</h3>
   <p>
    The <a target="_blank" href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html#boot-features-custom-starter-module-starter">reference manual</a> proposes to separate auto-configuration and starter each into 
-   their own Maven or Gradle module to separate the concern of auto-configuration from 
+   a distinct Maven or Gradle module to separate the concern of auto-configuration from 
    the concern of dependency management. 
   </p>
   <p>
   This may be a bit over-engineered in environments where we're not building an  
-  open source library that is used by thousands of users. <strong>In this article, we're 
+  open-source library that is used by thousands of users. <strong>In this article, we're 
   combining both concerns into a single starter module</strong>. 
   </p>
 </div> 
 
 ## Building a Starter for Event Messaging
 
-Let's discover how to implement a starter along an example.
+Let's discover how to implement a starter with an example.
 
 Imagine we're working in a microservice environment and want to implement a starter that allows the services to communicate with each other asynchronously. The starter we're building will provide the following features:
 
@@ -301,6 +302,10 @@ In the example above, the starter is a module within the same Gradle build, so w
 
 We can now configure the starter using the [configuration parameters](#making-it-configurable) we have introduced above. Hopefully, our IDE will evaluate the [configuration metadata](#creating-ide-friendly-configuration-metadata) we created and auto-complete the parameter names for us. 
 
-To use our event starter, we can now inject an `EventPublisher` into our beans and use it to publish events. Also, we can create beans that extend the `EventListener` class in order to receive and act on events. 
+To use our event starter, we can now inject an `EventPublisher` into our beans and use it to publish events. Also, we can create beans that extend the `EventListener` class to receive and act on events. 
 
-A working example application is available [on github](https://github.com/thombergs/code-examples/tree/master/spring-boot/starter/application).
+A working example application is available [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/starter/application).
+
+## Conclusion
+
+Wrapping certain features into a starter to use them in any Spring Boot application is only a matter of a few simple steps. Provide an auto-configuration, make it configurable, and polish it with some auto-generated metadata to improve performance and usability.

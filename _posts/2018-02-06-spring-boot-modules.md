@@ -168,7 +168,7 @@ configurations into a single module.
 ### Auto-Configuration
 
 If we want to load a module automatically instead of hard-wiring the import into the 
-source code, we can make use of Spring Boot's [auto-configuration feature](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html).
+source code, we can make use of Spring Boot's auto-configuration feature. 
 
 To enable a module for auto configuration, put the file `META-INF/spring.factories` into
 the classpath:
@@ -179,6 +179,8 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 ```
 
 This would import the `SecurityModuleConfiguration` class all its beans into the application context.
+
+An auto-configuration is especially handy if we're building a cross-cutting concern to be used in many Spring Boot applications. In this case, we can even build a separate [starter module](/spring-boot-starter/) around the configuration.
 
 ## Configuring a Module
 

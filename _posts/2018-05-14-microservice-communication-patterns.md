@@ -3,7 +3,8 @@ title: "Microservice Communication Patterns"
 categories: [craft]
 modified: 2018-05-14
 excerpt: "A discussion of several different communication patterns between distributed micro services."
-image: 0035-switchboard
+image:
+  auto: 0035-switchboard
 ---
 
 

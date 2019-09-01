@@ -4,7 +4,8 @@ title: Exposing Metrics of a Spring Boot Application using Dropwizard
 categories: [spring-boot]
 modified: 2017-04-21
 excerpt: "A tutorial on how to use the Dropwizard library to expose monitoring metrics in a Spring Boot application."
-image: 0047-transparent
+image:
+  auto: 0047-transparent
 ---
 
 

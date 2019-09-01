@@ -4,7 +4,8 @@ categories: [programming]
 modified: 2018-10-28
 excerpt: "A tutorial that shows how to implement a REST provider with a Node Express Server
           using the Pact framework."
-image: 0026-signature
+image:
+  auto: 0026-signature
 ---
 
 

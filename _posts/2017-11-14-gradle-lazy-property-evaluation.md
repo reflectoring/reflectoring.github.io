@@ -4,7 +4,8 @@ categories: [java]
 modified: 2017-11-14
 author: matthias
 excerpt: "A guide on lazy evaluation in Gradle scripts and when it makes sense to use it."
-image: 0040-hammock
+image:
+  auto: 0040-hammock
 ---
 
 

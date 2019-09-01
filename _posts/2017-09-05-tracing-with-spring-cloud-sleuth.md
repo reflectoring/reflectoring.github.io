@@ -3,7 +3,8 @@ title: "Tracing in Distributed Systems with Spring Cloud Sleuth"
 categories: [spring-boot]
 modified: 2017-09-08
 excerpt: "A tutorial on using Spring Cloud Sleuth to trace communication between distributed Spring Boot applications."
-image: 0019-magnifying-glass
+image:
+  auto: 0019-magnifying-glass
 ---
 
 

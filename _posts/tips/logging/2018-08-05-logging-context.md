@@ -5,7 +5,8 @@ categories: [craft]
 modified: 2018-08-05
 excerpt: "A guide to which contextual information is helpful in which 
           logging situation."
-image: 0031-matrix
+image:
+  auto: 0031-matrix
 ---
 
 

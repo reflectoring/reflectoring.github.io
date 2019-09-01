@@ -5,7 +5,8 @@ categories: [craft]
 excerpt: "Logging to files and analyzing them by hand is not the way to go anymore.
           This article explains the reasons why a log server is the way to go
           for collecting and analyzing log data."
-image: 0032-dashboard
+image:
+  auto: 0032-dashboard
 ---
 
 

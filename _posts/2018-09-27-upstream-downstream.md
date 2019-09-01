@@ -7,7 +7,8 @@ excerpt: "Wondering about what upstream and downstream means in the context
           usages of these words and defines two simple rules
           to identify what is upstream and what is downstream in
           every context."
-image: 0028-stream
+image:
+  auto: 0028-stream
 ---
 
 

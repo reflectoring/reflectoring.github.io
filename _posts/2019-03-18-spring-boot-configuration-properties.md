@@ -4,7 +4,8 @@ categories: [spring-boot]
 modified: 2019-03-18
 excerpt: "An in-depth look at Spring Boot's support to bind external configuration
           parameters to fields of a Spring bean."
-image: 0013-switchboard
+image:
+  auto: 0013-switchboard
 
 ---
 

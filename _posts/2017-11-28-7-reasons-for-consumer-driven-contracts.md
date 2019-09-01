@@ -4,7 +4,8 @@ categories: [craft]
 modified: 2017-11-29
 excerpt: "Find out why contracts should be defined by the API consumer and how to ease 
           integration testing APIs by using contract tests."
-image: 0029-contract
+image:
+  auto: 0029-contract
 ---
 
 

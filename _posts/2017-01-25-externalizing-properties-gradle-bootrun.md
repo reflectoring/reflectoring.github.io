@@ -6,7 +6,8 @@ modified: 2017-01-25
 excerpt: "Configuration parameters should not be baked into code - including 
           the code of your build scripts. This tutorial shows how use the Gradle bootRun task to
           start a Spring Boot application with application parameters loaded from a properties file." 
-image: 0013-switchboard
+image:
+  auto: 0013-switchboard
 ---
 
 

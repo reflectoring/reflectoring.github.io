@@ -5,7 +5,8 @@ categories: [java]
 modified: 2017-04-14
 author: artur
 excerpt: "A tutorial on how to create digital signatures with Java."
-image: 0025-signature
+image:
+  auto: 0025-signature
 ---
 
 

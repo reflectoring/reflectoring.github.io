@@ -4,7 +4,8 @@ categories: [java]
 modified: 2017-07-28
 excerpt: "Unwanted compile-time dependencies can lead to problems. This article discusses these
           problems and the solution Gradle provides to keep dependencies clean."
-image: 0001-network
+image:
+  auto: 0001-network
 
 ---
 

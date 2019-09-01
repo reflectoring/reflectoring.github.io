@@ -4,7 +4,8 @@ title: "Accessing a Spring Data REST API with Feign"
 categories: [spring-boot]
 modified: 2017-07-31
 excerpt: "A tutorial on how to use the Feign REST client library to access an API created with Spring Data REST."
-image: 0036-notebooks
+image:
+  auto: 0036-notebooks
 ---
 
 

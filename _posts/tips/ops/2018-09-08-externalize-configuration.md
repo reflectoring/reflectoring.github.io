@@ -6,7 +6,8 @@ excerpt: "Software that does more than a \"hello world\" usually needs to be con
           way or another in order to function in a certain environment. This article explains
           why this configuration must not be part of the software itself and explores
           some ways on how to externalize configuration parameters."
-image: 0013-switchboard
+image:
+  auto: 0013-switchboard
 ---
 
 

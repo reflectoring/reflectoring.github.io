@@ -3,7 +3,8 @@ title: "Testing Spring MVC Web Controllers with @WebMvcTest"
 categories: [spring-boot]
 modified: 2019-01-19
 excerpt: "An in-depth look at the responsibilities of a Spring Boot web controller and how to cover those responsibilities with meaningful tests."
-image: 0021-controller
+image:
+  auto: 0021-controller
 
 ---
 

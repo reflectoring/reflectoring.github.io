@@ -2,7 +2,8 @@
 layout: static-full
 title: Get Your Hands Dirty on Clean Architecture 
 modified: 2019-08-21
-opengraph_image: /assets/img/get-your-hands-dirty-1200x628.png
+image: 
+  opengraph: /assets/img/get-your-hands-dirty-1200x628.png
 excerpt: "A hands-on book on the concepts of a Hexagonal software architecture and how to implement them with actual code."
 comments:
   enabled: false 

@@ -4,7 +4,8 @@ title: Getting the current Subversion Revision Number in Gradle
 categories: [java]
 modified: 2016-11-26
 excerpt: "A tutorial showing how to use the subversion Revision number in a Gradle build."
-image: 0050-git
+image:
+  auto: 0050-git
 ---
 
 

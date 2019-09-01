@@ -4,7 +4,8 @@ categories: [spring-boot]
 modified: 2018-08-10
 excerpt: "A guide on how to implement a consumer-driven contract test with Pact that verifies that a REST consumer based on
           Feign and Spring Boot works as defined in the contract."
-image: 0026-signature
+image:
+  auto: 0026-signature
 ---
 
 

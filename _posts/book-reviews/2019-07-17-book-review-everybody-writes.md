@@ -3,7 +3,7 @@ title: "Book Review: Everybody Writes"
 categories: [book-reviews]
 modified: 2019-07-17
 excerpt: "A review of the Book 'Everybody Writes' by Ann Handley."
-image: 0016-pen
+image: everybody-writes
 ---
 
 ## TL;DR: Read this Book, when...
@@ -16,7 +16,7 @@ image: 0016-pen
 
 ## Overview
 
-The book ["Everybody Writes"](//www.tkqlhce.com/click-9137796-13660345?url=https%3A%2F%2Fwww.ebooks.com%2Fcj.asp%3FIID%3D1779315%26fc%3DUS&cjsku=1779315) by Ann Handley aims to be a book for everyone since everybody writes in their daily routine in emails, social media, or on a blog or website. 
+The book {% include book-link.html book="everybody-writes" %} by Ann Handley aims to be a book for everyone since everybody writes in their daily routine in emails, social media, or on a blog or website. 
 
 The book gives very concrete tips on writing, building the habits around it, grammar and usage of words, how to tell a story and on marketing things with words. 
 
@@ -129,7 +129,7 @@ Since the book is neatly structured in a lot of very small chapters, and I'm alw
 
 ## Conclusion
 
-As you see from the lists above, [Everybody Writes](//www.tkqlhce.com/click-9137796-13660345?url=https%3A%2F%2Fwww.ebooks.com%2Fcj.asp%3FIID%3D1779315%26fc%3DUS&cjsku=1779315) offers a lot of applicable content. The lists above just include the things I took away, and they may be different for you.
+As you see from the lists above, {% include book-link.html book="everybody-writes" %} offers a lot of applicable content. The lists above just include the things I took away, and they may be different for you.
 
 The book is very pleasant to read and makes it easy to take away valuable tips. I now have a big list of things I want to do to improve my writing :).
 

@@ -105,11 +105,21 @@ ul, ol {
   margin-top: $space;
 }
 
+.main-post ul ul, .main-post ul ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 .main-post ol {
   list-style: decimal;
   margin-bottom: $space;
   padding-left: 40px;
   margin-top: $space;
+}
+
+.main-post ol ul, .main-post ol ol {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 ul.list-style, ol.list-style {

@@ -12,24 +12,27 @@ image: 0012-pages
 * you want to trigger some self-reflection on your own habits
 * you enjoy real-life stories that read like a novel 
 
-{% include affiliate-disclosure.html %}
-
 ## Overview
 
-* individuals
-* organizations
-* societies
+Similar to [The 7 Habits of Highly Effective People](/book-review-7-habits), I read {% include book-link.html book="power-of-habit" %} in my quest for self-improvement, efficiency and effectivity. 
 
-TODO 
+While "The 7 Habits" concentrates more on interpersonal relations and the mindset to be effective in life, "The Power of Habit" by Charles Duhigg explains what habits are, how they develop and how they can be changed. 
+
+The book is divided into three parts with a couple of chapters each. The first part discusses the term "habit" as we usually understand it: as a habit of an individual. Duhigg doesn't stop with individual habits, though, but goes on to discuss organizational habits in the second part and the habits of society in the third part.
+
+{% include affiliate-disclosure.html %}
 
 ## Likes & Dislikes
 
-* feels like reading a novel
-* everything is explained through real stories
-* explanations satisfy my engineer's need for logic
+Reading the book almost feels like reading a novel. Each chapter tells one or two (real) stories that drive the topic, written with suspense. Embedded within those stories are the well-researched scientific facts behind our habits.   
 
+The explanations are comprehensible enough to satisfy my engineer's need for logic. Every fact in the book is based on interviews the author conducted with scientists, entrepreneurs, medical doctors, patients, and more.
+
+The above makes the book very digestible and a very interesting read. 
 
 ## Key Takeaways
+
+Here are my notes from reading the book ... .
 
 ### The Habit Loop
 
@@ -103,7 +106,7 @@ TODO
 * people with brain damage may lose some of their free will - this may look very similar to people with strong habits
 * a man who murdered his wife while in a sleep terror - a form of sleep walking, which is automatic behavior similar to a habit - because he wanted to defend her against imaginary attackers was exonerated
 * a woman with a bad gambling habit became indebted to the casino that abused this habit was successfully sued by that casino
-* it's easier to sympathize with a devastated widower who killed his own wife while sleep walking than with a housewife who gambled her family's money - this seems fair since the widower wasn't aware of his habits while the gambling woman was
+* it's easier to sympathize with a devastated widower who killed his own wife while sleep walking than with a housewife who gambled her family's money - to society, this seems fair since the widower wasn't aware of his habits while the gambling woman was
 * habits can only be modified if we're aware of them
 * the most important ingredient to chaning habits is the habit of believing in that we *can* change  
 
@@ -125,6 +128,9 @@ TODO
 4. have a plan
   * write down a plan to change the habit
 
-
 ## Conclusion
+
+If you're interested in what makes us tick and how to change it, {% include book-link.html book="power-of-habit" %} is a very good starting point to dive into the topic.
+
+It's well-researched, well-written, easily digestible and gets my unconditional reading recommendation.
 

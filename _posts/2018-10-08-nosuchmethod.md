@@ -3,7 +3,8 @@ title: "3 Steps to Fix NoSuchMethodErrors and NoSuchMethodExceptions"
 categories: [java]
 modified: 2018-10-08
 excerpt: "A tutorial on how identify the root cause of NoSuchMethodErrors and NoSuchMethodExceptions."
-image: 0011-exception
+image:
+  auto: 0011-exception
 ---
 
 

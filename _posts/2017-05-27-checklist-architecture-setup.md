@@ -4,7 +4,8 @@ title: 'A Checklist for setting up a Java-based Software Architecture'
 categories: [craft]
 modified: 2017-05-27
 excerpt: "An extensive list of things to think through when starting a new Java-based software project."
-image: 0045-checklist
+image:
+  auto: 0045-checklist
 ---
 
 

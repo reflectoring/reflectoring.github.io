@@ -5,7 +5,8 @@ categories: [spring-boot]
 modified: 2017-05-01
 excerpt: "A tutorial on using Dropwizard to expose monitoring metrics from within a Spring Boot application
           to be consumed by a Prometheus monitoring server."
-image: 0032-dashboard
+image:
+  auto: 0032-dashboard
 ---
 
 

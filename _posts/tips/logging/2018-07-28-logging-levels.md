@@ -4,7 +4,8 @@ title: "Tip: Use Logging Levels Consistently"
 categories: [craft]
 modified: 2018-07-28
 excerpt: "A guide to using which logging level in which logging situation."
-image: 0033-colored-chalk
+image:
+  auto: 0033-colored-chalk
 ---
 
 

@@ -103,6 +103,7 @@ h1 a i, h2 a i, h3 a i, h4 a i, h5 a i, h6 a i {
   font-size: 20px;
   border-radius: 20px;
   margin-top: $space;
+  clear: both;
 }
 
 .notice.success h4, .notice.success h3, .notice.success h2, .notice.success h5, .notice.success h6 {

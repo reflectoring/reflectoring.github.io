@@ -4,7 +4,8 @@ title: How to Configure a Human-Readable Logging Format with Logback and Descrip
 categories: [java]
 modified: 2018-08-11
 excerpt: "A guide to configuring Logback to use a human-readable logging format."
-image: 0031-matrix
+image:
+  auto: 0031-matrix
 ---
 
 

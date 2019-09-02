@@ -6,7 +6,8 @@ modified: 2018-08-19
 excerpt: "Log data should contain more than just text. This article discusses some
           example use cases where adding structured properties to log events
           helps when debugging. Get inspired to use structured logging in your own use cases!"
-image: 0031-matrix
+image:
+  auto: 0031-matrix
 ---
 
 

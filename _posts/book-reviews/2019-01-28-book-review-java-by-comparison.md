@@ -3,7 +3,8 @@ title: "Book Review: Java by Comparison"
 categories: [book-reviews]
 modified: 2019-01-28
 excerpt: "A review of the Book 'Java by Comparison' by Simon Harrer, Jörg Lenhard, and Linus Dietz."
-image: 0004-book-coffee
+image:
+  auto: 0004-book-coffee
 ---
 
 

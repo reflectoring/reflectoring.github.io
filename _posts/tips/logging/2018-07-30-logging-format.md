@@ -5,7 +5,8 @@ categories: [craft]
 modified: 2018-07-30
 excerpt: "A guide to create a logging format that can be scanned at
           a single glance."
-image: 0008-glasses
+image:
+  auto: 0008-glasses
 ---
 
 

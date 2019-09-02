@@ -4,7 +4,8 @@ title: "Consumer-Driven Contracts with Pact, Feign and Spring Data REST"
 categories: [spring-boot]
 modified: 2017-08-09
 excerpt: "A tutorial on how to test an API created with Spring Data REST with contract tests using the Pact framework."
-image: 0029-contract
+image:
+  auto: 0029-contract
 ---
 
 

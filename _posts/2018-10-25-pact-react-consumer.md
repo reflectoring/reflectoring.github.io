@@ -5,7 +5,8 @@ modified: 2018-10-25
 excerpt: "A tutorial that shows how to implement a REST consumer with Axios, build a 
           a consumer-driven contract for it with the Pact framework, and 
           validate the consumer against the contract using Jest as the testing framework."
-image: 0025-signature
+image:
+  auto: 0025-signature
 ---
 
 Consumer-driven contract (CDC) tests are a technique to test integration

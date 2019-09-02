@@ -5,7 +5,8 @@ modified: 2017-12-04
 excerpt: "When working on an open source Java project, you always come to the point where 
           you want to share your work with the developer community. This article gives a 
           step-by-step guide on how to publish your artifacts Bintray."
-image: 0038-package
+image:
+  auto: 0038-package
 ---
 
 

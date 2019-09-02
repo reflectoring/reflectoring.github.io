@@ -5,7 +5,8 @@ categories: [craft]
 modified: 2017-04-19
 author: david
 excerpt: "A short introduction to OpenID Connect - the standard for Identity Management and Single-Sign-On."
-image: 0048-passport
+image:
+  auto: 0048-passport
 ---
 
 

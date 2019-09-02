@@ -45,7 +45,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   color: #212631;
   margin: 0px 0px 15px;
-  display: inline-block;
 }
 
 h1 {
@@ -106,11 +105,21 @@ ul, ol {
   margin-top: $space;
 }
 
+.main-post ul ul, .main-post ul ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 .main-post ol {
   list-style: decimal;
   margin-bottom: $space;
   padding-left: 40px;
   margin-top: $space;
+}
+
+.main-post ol ul, .main-post ol ol {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 ul.list-style, ol.list-style {

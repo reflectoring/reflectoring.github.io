@@ -3,7 +3,8 @@ title: "Implementing a Consumer-Driven Contract for a GraphQL Consumer with Node
 categories: [programming]
 modified: 2018-11-10
 excerpt: "In this tutorial, we're exploring how to create a GraphQL consumer with Node and Apollo. We're then going to create a contract for this GraphQL Consumer and a test that validates that the consumer works accoring to the contract."
-image: 0025-signature
+image:
+  auto: 0025-signature
 ---
 
 

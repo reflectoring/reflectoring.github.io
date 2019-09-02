@@ -4,7 +4,8 @@ categories: [programming]
 modified: 2018-11-14
 excerpt: "In this tutorial, we're exploring how to implement a consumer-driven contract
           with Pact between a message consumer and provider both based on Node."
-image: 0025-signature
+image:
+  auto: 0025-signature
 ---
 
 

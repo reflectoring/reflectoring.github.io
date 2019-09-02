@@ -4,7 +4,8 @@ title: Monitoring the Error Rate of a Spring Boot Web Application
 categories: [spring-boot]
 modified: 2017-05-07
 excerpt: "How to monitor the error rate of a Spring Boot web application."
-image: 0032-dashboard
+image:
+  auto: 0032-dashboard
 ---
 
 

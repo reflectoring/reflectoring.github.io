@@ -6,7 +6,8 @@ excerpt: "Releasing often is a major pain
           when the release process is not automated. This article is a guide to a fully automated
           release chain that is able to publish snapshots and releases from a 
           Github repository using Gradle, Bintray and Travis CI."
-image: 0038-package
+image:
+  auto: 0038-package
 ---
 
 

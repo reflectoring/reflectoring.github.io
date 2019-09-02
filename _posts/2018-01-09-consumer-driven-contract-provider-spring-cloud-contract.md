@@ -4,7 +4,8 @@ categories: [spring-boot]
 modified: 2018-08-16
 excerpt: "A guide on how to implement a consumer-driven contract test with Spring Cloud Contract that verifies that a REST provider based on
           Spring Boot works as defined in the contract."
-image: 0025-signature
+image:
+  auto: 0025-signature
 ---
 
 

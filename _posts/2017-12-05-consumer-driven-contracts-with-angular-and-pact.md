@@ -3,7 +3,8 @@ title: "Creating a Consumer-Driven Contract with Angular and Pact"
 categories: [programming]
 modified: 2017-12-10
 excerpt: "A tutorial on testing an Angular REST client against a contract with the Pact framework."
-image: 0029-contract
+image:
+  auto: 0029-contract
 ---
 
 

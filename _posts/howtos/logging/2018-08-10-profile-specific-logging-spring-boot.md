@@ -2,7 +2,8 @@
 title: "How to Configure Environment-Specific Logging Behavior with Spring Boot" 
 categories: [spring-boot]
 excerpt: "A guide to configuring different logging behavior in different runtime environments."
-image: 0031-matrix
+image:
+  auto: 0031-matrix
 ---
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging" %}

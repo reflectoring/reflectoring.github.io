@@ -5,7 +5,8 @@ categories: [craft]
 modified: 2017-01-02
 excerpt: "If you are new to Git and/or GitHub, it's easy to get overwhelmed by the different workflow models you can use. 
           This post explains the basic fork and pull workflow model that is used on a lot of GitHub repositories." 
-image: 0050-git
+image:
+  auto: 0050-git
 ---
 
 

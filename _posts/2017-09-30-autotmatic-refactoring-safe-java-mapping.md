@@ -3,7 +3,8 @@ title: "Robust Java Object Mapping With Minimal Testing Overhead Using reMap"
 categories: [java]
 modified: 2017-10-01
 excerpt: "An intro to the reMap Java mapping library that has a focus on minimal testing overhead."
-image: 0041-adapter
+image:
+  auto: 0041-adapter
 ---
 
 

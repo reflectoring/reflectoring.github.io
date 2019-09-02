@@ -4,7 +4,7 @@ categories: [book-reviews]
 modified: 2019-06-26
 excerpt: "A review of the Book 'The 7 Habits of Highly Effective People' by Stephen Covey."
 image:
-  auto: 0007-books
+  teaser: /assets/img/covers/7-habits-teaser.jpg
 ---
 
 

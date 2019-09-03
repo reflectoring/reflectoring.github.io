@@ -278,8 +278,8 @@ class ValidatingServiceTest {
 The last line of defense for validation is the persistence layer. By default, Spring Data uses Hibernate underneath,
 which supports Bean Validation out of the box. 
 
-<div class="notice warning">
-  <h4>Is the Persistence Layer the right Place for Validation?</h4>
+<div class="notice success">
+  <h3>Is the Persistence Layer the right Place for Validation?</h3>
   <p>
   We usually don't want to do validation as late as in the persistence layer because it means that the 
   business code above has worked with potentially invalid objects which may lead to unforeseen errors.

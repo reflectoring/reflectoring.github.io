@@ -11,7 +11,7 @@ image:
 
 
 [Bean Validation](https://beanvalidation.org/) is the de-facto standard for implementing validation
-logic in the Java eco system. It's well integrated with Spring and Spring Boot. 
+logic in the Java ecosystem. It's well integrated with Spring and Spring Boot. 
 
 However, there are some pitfalls. This tutorial goes over all major validation use cases
 and sports code examples for each.   
@@ -279,10 +279,10 @@ The last line of defense for validation is the persistence layer. By default, Sp
 which supports Bean Validation out of the box. 
 
 <div class="notice success">
-  <h3>Is the Persistence Layer the right Place for Validation?</h3>
+  <h4>Is the Persistence Layer the right Place for Validation?</h4>
   <p>
   We usually don't want to do validation as late as in the persistence layer because it means that the 
-  business code above has worked with potentially invalid objects which may lead to unforeseen errors.
+  business code above has worked with potentially invalid objects which may lead to unforeseen errors. More on this topic in my article about <a href="/bean-validation-anti-patterns/#anti-pattern-1-validating-only-in-the-persistence-layer">Bean Validation anti-patterns</a>.
   </p>
 </div>
 
@@ -611,6 +611,14 @@ class ValidatingServiceWithGroupsTest {
 
 }
 ```
+
+<div class="notice warning">
+  <h4>Careful with Validation Groups</h4>
+  Using validation groups can easily become an anti-pattern since we're mixing concerns. With
+  validation groups the validated entity has to know the validation rules for all the use cases
+  (groups) it is used in. More on this topic in my article about 
+  <a href="/bean-validation-anti-patterns/#anti-pattern-3-using-validation-groups-for-use-case-validations">Bean Validation anti-patterns</a>.
+</div>
 
 ## Returning Structured Error Responses
 

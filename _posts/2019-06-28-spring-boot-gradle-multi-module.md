@@ -12,7 +12,7 @@ image:
 
 The [Spring Initializr](https://start.spring.io/) is a great way to quickly create a Spring Boot
 application from scratch. It creates a single Gradle file that we can expand upon
-to grow our own application.
+to grow our application.
 
 When projects become bigger, however, we might want to split our codebase 
 into multiple build modules for better maintainability and understandability.
@@ -20,7 +20,7 @@ into multiple build modules for better maintainability and understandability.
 This article shows **how to split up a Spring Boot application into multiple build modules**
 with Gradle.
 
-{% include github-project.html url="https://github.com/thombergs/clean-architecture-example" %}
+{% include github-project.html url="https://github.com/thombergs/buckpal" %}
 
 ## What's a Module?
 
@@ -30,10 +30,10 @@ define what a module is.
 A module ...
 
 * ... has a codebase that is separate from other modules' code,
-* ... is transformed into its own artifact (JAR file) during a build, and
-* ... can define its own dependencies to other modules or third-party libraries.
+* ... is transformed into a separate artifact (JAR file) during a build, and
+* ... can define dependencies to other modules or third-party libraries.
 
-Basically, **a module is a codebase that can be maintained and built 
+**A module is a codebase that can be maintained and built 
 separately from other modules' codebases**. 
 
 However, a module is still part of a parent build
@@ -45,21 +45,21 @@ a single artifact like a WAR file.
 Why would we make the effort to split up our codebase into multiple 
 modules when everything works just fine with a single, monolithic module?
 
-The main reason is that **a single monolithic codebase is susceptible for architectural
-decay**. Within a codebase we usually use packages to demarcate architectural boundaries. 
+The main reason is that **a single monolithic codebase is susceptible to architectural
+decay**. Within a codebase, we usually use packages to demarcate architectural boundaries. 
 But packages in Java aren't very good at protecting those boundaries (more about this in the chapter
-"Enforcing Architecture Boundaries" of my [eBook](/get-your-hands-dirty-on-clean-architecture/)). Suffice it to say
+"Enforcing Architecture Boundaries" of my [book](/get-your-hands-dirty-on-clean-architecture/)). Suffice it to say
 that the dependencies between classes within a single monolithic codebase tend to quickly
 degrade into a big ball of mud.
 
-If we split up the codebase into multiple smaller modules that each have
+If we split up the codebase into multiple smaller modules that each has
 clearly defined dependencies to other modules, we take a big step towards an easily maintainable
 codebase. 
 
 ## The Example Application
 
 Let's take a look at the modular example web application we're going to build in this tutorial. 
-The application follows the hexagonal architecture style described in my [eBook](/get-your-hands-dirty-on-clean-architecture/), 
+The application follows the hexagonal architecture style described in my [book](/get-your-hands-dirty-on-clean-architecture/), 
 which splits the codebase into separate, clearly defined architectural elements.
 For each of those architectural elements, we'll create a separate Gradle build module,
 as indicated by the following folder structure: 
@@ -85,14 +85,14 @@ as indicated by the following folder structure:
 └── settings.gradle
 ```
 
-Each module is in its own folder with its own Java sources, its own `build.gradle` file, and
-its own responsibilities:
+Each module is in a separate folder with Java sources, a `build.gradle` file, and
+distinct responsibilities:
 
 * The top-level `build.gradle` file configures build behavior that is shared between all sub-modules so that we don't have
   to duplicate things in the sub-modules.
 * The `configuration` module contains the actual Spring Boot application and any 
   Spring Java Configuration that puts together the Spring application context. To create the application
-  context, it needs access to the other modules, which each provide certain parts of the application.
+  context, it needs access to the other modules, which each provides certain parts of the application.
   I have also seen this module called `infrastructure` in other contexts. 
 * The `common` module provides certain classes that can be accessed by all other modules.
 * The `application` module holds classes that make up the "application layer": 
@@ -176,7 +176,7 @@ of Spring Boot. This BOM includes [all dependencies that a Spring Boot applicati
 in the exact version that is compatible with a given Spring Boot version (2.1.5.RELEASE in this case).
 Thus, we don't need to list every single dependency on our own and potentially get the version wrong.
 
-Also note that we apply the `java-library` plugin to all sub-modules. This allows us to use the
+Also, note that we apply the `java-library` plugin to all sub-modules. This allows us to use the
 `api` configuration we'll later need in the module build files.
 
 ## Module Build Files
@@ -204,7 +204,7 @@ for the application layer.
 More importantly, however, we add the dependency to `spring-boot-starter-data-jdbc` which
 provides Spring Data JDBC support for a Spring Boot application. **Note that we did not add
 a version number** because the version is automatically resolved from the `spring-boot-dependencies`
-BOM in the parent build file. In this case, we'll get the version that is compatible to Spring Boot 2.1.5.RELEASE.
+BOM in the parent build file. In this case, we'll get the version that is compatible with Spring Boot 2.1.5.RELEASE.
 
 Note that we added the `spring-boot-starter-data-jdbc` dependency to the `api` configuration.
 This means that this dependency is considered transitive. Any module depending on the
@@ -227,7 +227,7 @@ dependencies {
 Our modules have access to all the classes they need to build a web or persistence
 layer for a Spring Boot application, without having unnecessary dependencies. 
 
-The web module knows nothing about persistence and vice versa. As a developer **we cannot
+The web module knows nothing about persistence and vice versa. As a developer, **we cannot
 accidentally add persistence code to the web layer or web code to the persistence layer**
 without consciously adding a dependency to a `build.gradle` file. This helps to avoid
 the dreaded big ball of mud.
@@ -286,10 +286,10 @@ in `configuration/build.gradle`, which is also a valid option.
 
 In this tutorial, we've seen how to split up a Spring Boot application into multiple Gradle modules
 with the help of the Spring Dependency Plugin for Gradle. We can follow this approach to split an application
-up along technical layers like in the [example application on github](https://github.com/thombergs/clean-architecture-example), 
+up along technical layers like in the [example application on GitHub](https://github.com/thombergs/clean-architecture-example), 
 or along [functional boundaries](/testing-verticals-and-layers-spring-boot/), or both. 
 
 A very similar approach can be used with Maven.
 
 If you'd like another perspective on the topic, there's also a [Spring guide](https://spring.io/guides/gs/multi-module/) 
-on creating a multi module Spring Boot application that talks about different aspects.
+on creating a multi-module Spring Boot application that talks about different aspects.

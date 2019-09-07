@@ -59,28 +59,29 @@ codebase.
 ## The Example Application
 
 Let's take a look at the modular example web application we're going to build in this tutorial. 
-The application follows the hexagonal architecture style described in my [book](/get-your-hands-dirty-on-clean-architecture/), 
+The application is called "BuckPal" and shall provide online payment functionality.
+It follows the hexagonal architecture style described in my [book](/get-your-hands-dirty-on-clean-architecture/), 
 which splits the codebase into separate, clearly defined architectural elements.
 For each of those architectural elements, we'll create a separate Gradle build module,
 as indicated by the following folder structure: 
  
 ```
 ├── adapters
-|   ├── persistence
-|   |    ├── src
-|   |    └── build.gradle
-|   └── web
-|        ├── src
-|        └── build.gradle
-├── application
+|   ├── buckpal-persistence
+|   |  ├── src
+|   |  └── build.gradle
+|   └── buckpal-web
 |    ├── src
 |    └── build.gradle
+├── buckpal-application
+|  ├── src
+|  └── build.gradle
 ├── common
-|    ├── src
-|    └── build.gradle
-├── configuration
-|    ├── src
-|    └── build.gradle
+|  ├── src
+|  └── build.gradle
+├── buckpal-configuration
+|  ├── src
+|  └── build.gradle
 ├── build.gradle
 └── settings.gradle
 ```
@@ -90,16 +91,16 @@ distinct responsibilities:
 
 * The top-level `build.gradle` file configures build behavior that is shared between all sub-modules so that we don't have
   to duplicate things in the sub-modules.
-* The `configuration` module contains the actual Spring Boot application and any 
+* The `buckpal-configuration` module contains the actual Spring Boot application and any 
   Spring Java Configuration that puts together the Spring application context. To create the application
   context, it needs access to the other modules, which each provides certain parts of the application.
   I have also seen this module called `infrastructure` in other contexts. 
 * The `common` module provides certain classes that can be accessed by all other modules.
-* The `application` module holds classes that make up the "application layer": 
+* The `buckpal-application` module holds classes that make up the "application layer": 
   services that implement use cases which query and modify the domain model.
-* The `adapters/web` module implements the web layer of our application, which may call the uses
+* The `adapters/buckpal-web` module implements the web layer of our application, which may call the uses
   cases implemented in the `application` module.
-* The `adapters/persistence` module implements the persistence layer of our application.
+* The `adapters/buckpal-persistence` module implements the persistence layer of our application.
 
 In the rest of this article, we'll look at how to create a separate Gradle module for each of those 
 application modules. Since we're using Spring, it makes sense to cut our Spring application context
@@ -113,10 +114,10 @@ To include all modules in the parent build, we first need to list them in the
 
 ```
 include 'common'
-include 'application'
-include 'adapters:persistence'
-include 'adapters:web'
-include 'configuration'
+include 'adapters:buckpal-web'
+include 'adapters:buckpal-persistence'
+include 'buckpal-configuration'
+include 'buckpal-application'
 ```
 
 Now, if we call `./gradlew build` in the parent folder, Gradle will automatically
@@ -131,10 +132,10 @@ all sub-modules:
 
 ```groovy
 plugins {
-  id "io.spring.dependency-management" version "1.0.6.RELEASE"
+  id "io.spring.dependency-management" version "1.0.8.RELEASE"
 }
 
-allprojects {
+subprojects {
 
   group = 'io.reflectoring.reviewapp'
   version = '0.0.1-SNAPSHOT'
@@ -149,7 +150,7 @@ allprojects {
 
   dependencyManagement {
     imports {
-      mavenBom("org.springframework.boot:spring-boot-dependencies:2.1.5.RELEASE")
+      mavenBom("org.springframework.boot:spring-boot-dependencies:2.1.7.RELEASE")
     }
   }
 
@@ -159,10 +160,10 @@ allprojects {
 First of all, we include the [Spring Dependency Management Plugin](https://docs.spring.io/dependency-management-plugin/docs/current/reference/html/)
 which provides us with the `dependencyManagement` closure that we'll use later. 
 
-Then, we define a shared configuration within the `allprojects` closure. **Everything within `allprojects` 
+Then, we define a shared configuration within the `subprojects` closure. **Everything within `subprojects` 
 will be applied to all sub-modules**. 
 
-The most important part within `allprojects` is the `dependencyManagement` closure.
+The most important part within `subprojects` is the `dependencyManagement` closure.
 Here, we can define any dependencies to Maven artifacts in a certain version.
 If we need one of those dependencies within a sub-module, we can specify it in the sub-module without providing a version
 number since the version number will be loaded from the `dependencyManagement`
@@ -176,20 +177,20 @@ of Spring Boot. This BOM includes [all dependencies that a Spring Boot applicati
 in the exact version that is compatible with a given Spring Boot version (2.1.5.RELEASE in this case).
 Thus, we don't need to list every single dependency on our own and potentially get the version wrong.
 
-Also, note that we apply the `java-library` plugin to all sub-modules. This allows us to use the
-`api` configuration we'll later need in the module build files.
+Also, note that we apply the `java-library` plugin to all sub-modules. This enables us to use the
+`api` and `implementation` configurations which allow us to define [finer-grained dependency scopes](/gradle-pollution-free-dependencies/).
 
 ## Module Build Files
 
 In a module build file, we now simply add the dependencies the module needs.
 
-The file `adapters/persistence/build.gradle` looks like this:
+The file `adapters/buckpal-persistence/build.gradle` looks like this:
 
 ```groovy
 dependencies {
   implementation project(':common')
-  implementation project(':application')
-  api 'org.springframework.boot:spring-boot-starter-data-jdbc'
+  implementation project(':buckpal-application')
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
   
   // ... more dependencies
 }
@@ -197,28 +198,26 @@ dependencies {
 
 The persistence module depends on the `common` and the `application` module. The `common` module
 is used by all modules, so this dependency is natural. The dependency to the `application` module
-comes from the fact that we're following a hexagonal architecture style in which the `persistence`
+comes from the fact that we're following a hexagonal architecture style in which the persistence
 module implements interfaces located in the application layer, thus acting as a persistence "plugin" 
 for the application layer.
 
-More importantly, however, we add the dependency to `spring-boot-starter-data-jdbc` which
-provides Spring Data JDBC support for a Spring Boot application. **Note that we did not add
+More importantly, however, we add the dependency to `spring-boot-starter-data-jpa` which
+provides Spring Data JPA support for a Spring Boot application. **Note that we did not add
 a version number** because the version is automatically resolved from the `spring-boot-dependencies`
 BOM in the parent build file. In this case, we'll get the version that is compatible with Spring Boot 2.1.5.RELEASE.
 
-Note that we added the `spring-boot-starter-data-jdbc` dependency to the `api` configuration.
-This means that this dependency is considered transitive. Any module depending on the
-persistence module will have access to the classes of `spring-boot-starter-data-jdbc` as well.
-We'll need this later.
+Note that we added the `spring-boot-starter-data-jpa` dependency to the `implementation` configuration.
+This means that this dependency does not leak into the compile time of the modules that include the persistence module as a dependency. This keeps us from accidentally using JPA classes in modules where we don't want it.
 
-The build file for the web layer, `adapters/web/build.gradle`, looks similar, just with a dependency
+The build file for the web layer, `adapters/buckpal-web/build.gradle`, looks similar, just with a dependency
 to `spring-boot-starter-web` instead:
 
 ```groovy
 dependencies {
   implementation project(':common')
   implementation project(':application')
-  api 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-web'
   
   // ... more dependencies
 }
@@ -235,22 +234,23 @@ the dreaded big ball of mud.
 ## Spring Boot Application Build File
 
 Now, all we have to do is to aggregate those modules into a single Spring Boot application.
-We do this in the `configuration` module. 
+We do this in the `buckpal-configuration` module. 
 
-In the `configuration/build.gradle` build file, we add the dependencies to all
+In the `buckpal-configuration/build.gradle` build file, we add the dependencies to all
 of our modules:
 
 ```groovy
 plugins {
-  id "org.springframework.boot" version "2.1.5.RELEASE"
+  id "org.springframework.boot" version "2.1.7.RELEASE"
 }
 
 dependencies {
 
   implementation project(':common')
-  implementation project(':application')
-  implementation project(':adapters:persistence')
-  implementation project(':adapters:web')
+  implementation project(':buckpal-application')
+  implementation project(':adapters:buckpal-persistence')
+  implementation project(':adapters:buckpal-web')
+  implementation 'org.springframework.boot:spring-boot-starter'
 
   // ... more dependencies
 }
@@ -261,26 +261,21 @@ among other things, gives us the `bootRun` Gradle task.
 We can now start the application with Gradle using `./gradlew bootRun`.
 
 Also, we add the obligatory `@SpringBootApplication`-annotated class to the source folder of 
-the `configuration` module: 
+the `buckpal-configuration` module: 
 
 ```java
 @SpringBootApplication
-public class BookReviewerApplication {
+public class BuckPalApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(BookReviewerApplication.class, args);
+    SpringApplication.run(BuckPalApplication.class, args);
   }
 
 }
 ```
 
 This class needs access to the `SpringBootApplication` and `SpringApplication` classes
-and potentially other classes from the Spring ecosystem. Access to those classes is granted 
-by the fact that we added the Spring Boot Starters in the sub-modules to the `api` configuration 
-instead of the `implementation` configuration.
-
-Had we not used the `api` configuration above, we would have to add a dependency to the needed Spring classes
-in `configuration/build.gradle`, which is also a valid option.    
+that the `spring-boot-starter` dependency gives us access to.
 
 ## Conclusion
 

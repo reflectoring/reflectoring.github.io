@@ -97,7 +97,7 @@ h1 a i, h2 a i, h3 a i, h4 a i, h5 a i, h6 a i {
 }
 
 // BOXES
-.notice.success {
+.notice {
   background-color: #008e0021;
   padding: 20px;
   font-size: 20px;
@@ -106,14 +106,14 @@ h1 a i, h2 a i, h3 a i, h4 a i, h5 a i, h6 a i {
   clear: both;
 }
 
-.notice.success h4, .notice.success h3, .notice.success h2, .notice.success h5, .notice.success h6 {
+.notice h4, .notice h3, .notice h2, .notice h5, .notice h6 {
   padding: 0;
   border-bottom: 0px;
   margin-top: 0px;
   padding-bottom: 5px;
 }
 
-.notice.success i {
+.notice i {
   float: right;
   color: black;
   vertical-align: middle;

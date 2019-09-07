@@ -1,7 +1,7 @@
 ---
 title: Bean Validation Anti-Patterns
 categories: [spring-boot, java]
-modified: 2017-09-06
+modified: 2017-09-07
 excerpt: "Some thoughts about validation in general, Bean Validation in particular, and why I consider some applications of Bean Validation an anti-pattern."
 image:
   auto: 0051-stop
@@ -10,7 +10,7 @@ tags: ["bean validation", "anti-pattern", "best practice"]
 
 Bean Validation is the de-facto standard for implementing validation logic in the Java ecosystem and it's a great tool to have around.
 
-In recent projects, however, I have been thinking a bit deeper about Bean Validation and have come up with some anti-patterns.
+In recent projects, however, I have been thinking a bit deeper about Bean Validation and have identified some practices I consider anti-patterns.
 
 <div class="notice success">
   <h4>Anti-Pattern Disclaimer </h4>

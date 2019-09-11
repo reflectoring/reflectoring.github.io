@@ -17,7 +17,8 @@ layout: none
     {% for post in site.posts limit:10 %}
     <entry>
         <title type="html">{{ post.title | xml_escape }}</title>
-        <link href="{{ post.url | absolute_url }}" rel="alternate" type="text/html" title="Pollution-Free Dependency Management with Gradle"/>
+        <link href="{{ post.url | absolute_url }}" rel="alternate" type="text/html"
+              title="Pollution-Free Dependency Management with Gradle"/>
         <published>{{ post.date | date: "%FT%TZ"}}</published>
         <updated>{{ post.modified | date: "%FT%TZ"}}</updated>
         <id>{{ post.url | absolute_url }}</id>
@@ -37,7 +38,11 @@ layout: none
         <summary type="html">
             {{ post.excerpt }}
         </summary>
-        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="{{ post.image | opengraph | absolute_url }}"/>
+        {% if post.image.opengraph %}
+        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="{{ post.image.opengraph | absolute_url }}"/>
+        {% elsif post.image.auto %}
+        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="{{ post.image.auto | opengraph | absolute_url }}"/>
+        {% endif %}
     </entry>
     {% endfor %}
 </feed>

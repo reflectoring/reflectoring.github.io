@@ -1,7 +1,7 @@
 ---
 title: "Book Review: Shape Up"
 categories: [book-reviews]
-modified: 2019-09-02
+modified: 2019-09-11
 excerpt: "A review of the online Book 'Shape Up' by Ryan Singer, describing the set of techniques Basecamp uses to develop software."
 image:
   teaser: /assets/img/teasers/shape-up-1200x628.png
@@ -10,21 +10,23 @@ image:
 
 ## TL;DR: Read this Book, when...
 
-* you want to know how Basecamp builds software without fine-grained estimation
-* you are interested in how an agile company actually creates software (beyond Scrum)
+* you want to know how Basecamp builds software with bets instead of estimation
+* you are interested in an agile process beyond Scrum & Co.
 * you want inspiration on how to "shape" work before it can be implemented by programmers and designers
 
 ## Overview
 
 In his book "Shape Up", Ryan Singer describes the workflow and set of techniques Basecamp has developed over the years to build their project management and collaboration software with the same name. 
 
-The book describes the workflow from "shaping" raw ideas into low-risk, time-boxed projects to actually implementing the solution in 6-week cycles and monitoring the progress. While the term "agile" is not used in a single word throughout the whole book, I consider this workflow to be a welcome opinion on agile that goes beyond Scrum & Co. and provides a sustainable way of building software. 
+"Shape Up" covers the process from "shaping" raw ideas into low-risk, time-boxed projects to finally implementing the solution in small teams within 6-week cycles. It also discusses how to fight scope creep and monitor progress during a cycle. 
+
+While the term "agile" is not mentioned in a single word throughout the text, I consider this workflow to be a welcome opinion on agile that goes beyond Scrum & Co. and provides a sustainable way of building software. 
 
 The book is [available online](https://basecamp.com/shapeup) for free, to be read in a browser, or to be downloaded as a PDF.
 
 ## Likes ~~and Dislikes~~
 
-As a software engineer, I welcome the fact that the book has been programmed rather than written. It's nicely formatted for screen reading and keeps a bookmark where you have left off reading.
+As a software engineer, I welcome the fact that the book has been programmed rather than written. It's nicely formatted for screen reading and keeps a bookmark where you have left off.
 
 If you have done a couple of years of software development, you can relate very well to the problems of requirements engineering, estimation, and getting things done, for which "Shape Up" offers opinionated but logical solutions.
 
@@ -34,21 +36,23 @@ The text is accompanied by hand-drawn figures which do a great job of explaining
 
 ## Key Takeaways
 
-Here are my notes from reading the book ....
+Here are my notes from reading the book, along with a map of some of the keywords that I have assembled while reading ....
+
+![Keywords of "Shape Up"](/assets/img/teasers/shape-up-1200x628.png)
 
 ### Introduction
 
 * first focus on your ability to ship, then on shipping the right thing
-* in a nutshell, Shape Up is to first shape a project, then bet on that it can be finished by a small, self dependent team within six weeks
+* in a nutshell, Shape Up is to first shape a project, then bet on that it can be finished by a small, self-dependent team within six weeks
 
 ### Principles of Shaping
 
-* wireframes are to concrete to shape work, they allow no creativity 
-* words are too abstract to shape work, they don't describe well enough what should be built
+* wireframes are to concrete to shape work - they allow no creativity 
+* words are too abstract to shape work - they don't describe well enough what should be built
 * unshaped work is risky and unknown
 * shaped work is rough, solved, and bounded
 * shaping cannot be scheduled - keep it on a separate track from building so as not to let it delay the whole process
-* shaping is done privately to give shapers the option to shelve things, and get them back out later, if it doesn't work out right now
+* shaping is done privately to give shapers the option to shelve things and get them back out later
 
 ### Set Boundaries
 
@@ -69,7 +73,7 @@ Here are my notes from reading the book ....
 ### Risks and Rabbit Holes
 
 * go through a use case in slow motion to find holes in the shaping
-* explicitly mark features as "out of bounds" if they threaten the 6-week appetite
+* explicitly mark features as "out of bounds" if they threaten the appetite
 * invite a technical expert to find any time bombs in the shaped work
 
 ### Write the Pitch
@@ -91,11 +95,11 @@ Here are my notes from reading the book ....
 * the common two-week sprint is too short for the overhead it brings
 * a six-week cycle is the result of Basecamp experimenting over the years
 * there's a two-week "cooldown" phase after each cycle in which developers are free to follow up on work they're invested in
-* teams change from cycle to cycle and consist of a designer, 1-2 programmers and a tester
-* the "betting table" is a call with the highest stakeholders to decide which pitches make it into the next cycle
-* it's important that the highest stakeholders place the bets so that there is no higher authority to veto the bets and waste work in the process
+* teams change from cycle to cycle and consist of a designer, 1-2 programmers, and a tester
+* the "betting table" is a conference call with the highest stakeholders to decide which pitches make it into the next cycle
+* the highest stakeholders must place the bets so that there is no higher authority to veto the bets and waste time and effort in the process
 * there are no interruptions during a cycle - if something comes up, it can usually wait until the next cycle
-* the "circuit breaker" rules says that projects do not get an extension if they are not finished within the cycle 
+* the "circuit breaker" rule says that projects do not get an extension if they are not finished within the cycle 
 * only one cycle is planned - a clean slate after each cycle avoids debts to carry around
 
 ### Hand Over Responsibility
@@ -127,7 +131,7 @@ Here are my notes from reading the book ....
 ### Decide When to Stop
 
 * we have to live with the fact that shipping on time means shipping something imperfect
-* compare the currently finished work to the baseline (what the user currently can do with the software) to make a decision to stop
+* compare the currently finished work to the baseline (what the user currently can do with the software) to decide when to stop
 * don't compare the currently finished work to an ideal
 * "scope grows like grass" - so the teams need to have the authority to cut the grass
 
@@ -137,11 +141,11 @@ Here are my notes from reading the book ....
 
 ## Conclusion
 
-I believe Basecamp when they say they're using the "Shape Up" way of doing things successfully to create their software. After all, they have spent years on tuning their workflow to come up with this. 
+I believe Basecamp when they say they're using the "Shape Up" way of doing things successfully to create their software. After all, they have spent years tuning their process to come up with this. 
 
-I also believe that "Shape Up" can be applied to other software development environments if management is in on it (which is a common problem adopting any agile method).
+I also believe that - with some experimentation on parameters like cycle duration - "Shape Up" can be applied to other software development environments. Management must be 100% in on it, which is the main reason for process change to fail, I'm afraid. 
 
-Even if you don't want to change your way of doing things completely, in the least you'll get some inspiration and some helpful tools out of the book - like using breadboarding for sketching user interactions or hill charts for monitoring progress.
+Even if you don't want to change your process you'll get some inspiration and some helpful tools out of the book - like using breadboarding for sketching user interactions or hill charts for monitoring progress.
 
 In conclusion, this is a clear reading recommendation for anyone working in software development, and perhaps especially those who are currently struggling to adapt to an agile method.
 

@@ -2,17 +2,12 @@
 title: "3 Steps to Fix NoSuchMethodErrors and NoSuchMethodExceptions"
 categories: [java]
 modified: 2018-10-08
-last_modified_at: 2018-10-08
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "A tutorial on how identify the root cause of NoSuchMethodErrors and NoSuchMethodExceptions."
-sidebar:
-  toc: true
+image:
+  auto: 0011-exception
 ---
 
-{% include sidebar_right %}
+
 
 A [*NoSuchMethodError*](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/NoSuchMethodError.html) occurs
 when we're calling a method that does not exist at runtime. 

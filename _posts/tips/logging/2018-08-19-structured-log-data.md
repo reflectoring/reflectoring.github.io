@@ -1,22 +1,16 @@
 ---
 
 title: "3 Use Cases Where Structured Log Data Really Helps"
-categories: [architecture]
+categories: [craft]
 modified: 2018-08-19
-last_modified_at: 2018-08-19
-author: tom
-tags: [transparency, logging, log, structured]
-comments: true
-ads: true
 excerpt: "Log data should contain more than just text. This article discusses some
           example use cases where adding structured properties to log events
           helps when debugging. Get inspired to use structured logging in your own use cases!"
-sidebar:
-  nav: logging
-  toc: true
+image:
+  auto: 0031-matrix
 ---
 
-{% include sidebar_right %}
+
 
 Log data should contain more than just text. This article discusses some
 example use cases where adding structured properties to log events
@@ -48,7 +42,7 @@ Especially in distributed systems, it's necessary to correlate log events over s
 If a browser calls Service A and Service A in turn calls Service B to complete the request, 
 we want all log events produced in that exchange to be assigned the same trace ID.
 
-![Log Events across service calls](/assets/images/posts/tips/structured-log-data/browser-servicea-serviceb.jpg)
+![Log Events across service calls](/assets/img/posts/tips/structured-log-data/browser-servicea-serviceb.jpg)
 
 Now, we could just add the trace ID to the log text, like this (it's the hex value in the square brackets):
 

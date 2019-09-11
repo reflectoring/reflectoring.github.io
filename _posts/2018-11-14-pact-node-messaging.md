@@ -1,20 +1,14 @@
 ---
 title: "Implementing a Consumer-Driven Contract between a Node Message Consumer and a Node Message Producer"
-categories: [cdc, testing]
+categories: [programming]
 modified: 2018-11-14
-last_modified_at: 2018-11-14
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "In this tutorial, we're exploring how to implement a consumer-driven contract
           with Pact between a message consumer and provider both based on Node."
-sidebar:
-  nav: cdc
-  toc: true
+image:
+  auto: 0025-signature
 ---
 
-{% include sidebar_right %}
+
 
 Consumer-driven contract (CDC) tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -28,7 +22,7 @@ of asynchronous messages with [Pact](https://pact.io).
 We'll then create a consumer and a provider test verifying that both the consumer and provider
 work as defined by the contract.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-messages" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-messages" %}
 
 ## Setting Up a Node Project
 

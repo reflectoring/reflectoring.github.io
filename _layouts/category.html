@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include head.html %}
+<body>
+
+<header id="header">
+
+    {% include nav.html %}
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1>{{ page.title }}</h1>
+                    <p>
+                    {{ page.description }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+</header>
+<!-- /Header -->
+
+
+<!-- section -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+
+                    {% for post in paginator.posts limit:1 %}
+                        {% include teaser-hero.html post=post %}
+                    {% endfor %}
+
+                    <div class="clearfix visible-md visible-lg"></div>
+
+                    {% for post in paginator.posts offset: 1 %}
+                        {% include teaser-full-width.html post=post %}
+                    {% endfor %}
+
+                    {% if paginator.total_pages > 1 %}
+                    <div class="col-md-12">
+                        <div class="section-row text-center paginator">
+                            {% if paginator.previous_page %}
+                                <a href="{{ paginator.previous_page_path | prepend: site.baseurl }}" class="primary-button">Previous Page</a>
+                            {% endif %}
+                            {% if paginator.next_page %}
+                                <a href="{{ paginator.next_page_path | prepend: site.baseurl }}" class="primary-button">Next Page</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+
+            {% include sidebar.html %}
+
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /section -->
+
+{% if page.comments.enabled != false %}
+<section id="disqus_thread"></section>
+{% endif %}
+
+{% include footer.html %}
+
+{% include scripts.html %}
+
+</body>
+</html>

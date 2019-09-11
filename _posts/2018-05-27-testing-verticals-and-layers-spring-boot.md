@@ -2,20 +2,13 @@
 title: "Structuring and Testing Modules and Layers with Spring Boot"
 categories: [spring-boot]
 modified: 2018-05-27
-author: tom
-tags: [spring, boot, testing, junit]
-comments: true
-ads: true
-header:
-  teaser: /assets/images/posts/testing-verticals-and-layers-spring-boot/cube.jpg
-  image: /assets/images/posts/testing-verticals-and-layers-spring-boot/cube.jpg
-sidebar:
-  toc: true
 excerpt: "Slice your Spring Boot applications into vertical modules and make them
           testable in isolation using Spring Boot's testing features."
+image:
+  auto: 0034-layers
 ---
 
-{% include sidebar_right %}
+
 
 Well-behaved software consists of highly cohesive modules that are loosely coupled
 to other modules. Each module takes care from user input in the web layer down to
@@ -26,7 +19,7 @@ a Spring Boot application in vertical modules and discusses a way how
 to test the layers within one such module isolated from other modules using
 the testing features provided by Spring Boot. 
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
 ## Code Structure
 
@@ -35,7 +28,7 @@ at how the code is structured. If you want to view the code while reading, have 
 at the [github repository](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing)
 with the example code.
 
-![Package Structure](/assets/images/posts/testing-verticals-and-layers-spring-boot/package-structure.jpg)
+![Package Structure](/assets/img/posts/testing-verticals-and-layers-spring-boot/package-structure.jpg)
 
 The application resides in the package `io.reflectoring` and consists of three vertical modules:
 
@@ -59,7 +52,7 @@ Again, each layer has its own sub-package.
 Now that we have a clear-cut package structure, let's look at how we structure the Spring 
 `ApplicationContext` in order to represent our modules:
 
-![ApplicationContext Structure](/assets/images/posts/testing-verticals-and-layers-spring-boot/configurations.jpg)
+![ApplicationContext Structure](/assets/img/posts/testing-verticals-and-layers-spring-boot/configurations.jpg)
 
 It all starts with a Spring Boot `Application` class:
 
@@ -194,7 +187,7 @@ class to inherit its contributions
 to the application context. Also, each configuration is additionally annotated with 
 `@EnableAutoConfiguration` to enable Spring Boot's auto-configuration magic.
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Why not use <code>@SpringBootConfiguration</code> in production code?</h4>
   <p>
     We could just add <code>@SpringBootConfiguration</code> and <code>@EnableAutoConfiguration</code>

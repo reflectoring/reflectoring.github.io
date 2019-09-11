@@ -1,18 +1,12 @@
 ---
-title: "Testing JPA Queries with `@DataJpaTest`"
+title: "Testing JPA Queries with @DataJpaTest"
 categories: [spring-boot]
 modified: 2019-02-03
-last_modified_at: 2019-02-03
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "An in-depth tutorial about Spring Boot's support for testing JPA database queries."
-sidebar:
-  toc: true
----
+image:
+  auto: 0019-magnifying-glass
 
-{% include sidebar_right %}
+---
 
 Aside from unit tests, integration tests play a vital role in producing quality software.
 A special kind of integration test deals with the integration between our code
@@ -24,7 +18,7 @@ an environment with an embedded database to test our database queries against.
 In this tutorial, we'll first discuss which types of queries are worthy of tests and then
 discuss different ways of creating a database schema and database state to test against.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
 ## The "Testing with Spring Boot" Series
 
@@ -186,12 +180,12 @@ class UserEntityRepositoryTest {
 }
 ```
 
-<div class="notice--success">
+<div class="notice success">
   <h4><code>@ExtendWith</code></h4>
   <p>
   The code examples in this tutorial use the <code>@ExtendWith</code> annotation to tell
-  JUnit 5 to enable Spring support. As of Spring Boot 2.1, we no longer need to
-  load the `SpringExtension` because it's included as a meta annotation in the 
+  JUnit 5 to enable Spring support. <a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#junit-5">As of Spring Boot 2.1</a>, we no longer need to
+  load the <code>SpringExtension</code> because it's included as a meta annotation in the 
   Spring Boot test annotations like <code>@DataJpaTest</code>, <code>@WebMvcTest</code>, and 
   <code>@SpringBootTest</code>.
   </p>
@@ -306,7 +300,7 @@ class FlywayTest {
 }
 ```
 
-<div class="notice--success">
+<div class="notice success">
   <h4>The Value of using Flyway in Tests</h4>
   <p>
   If we're using Flyway in production it's really nice if we can also
@@ -356,7 +350,7 @@ class LiquibaseTest {
 }
 ```
 
-<div class="notice--success">
+<div class="notice success">
   <h4>The Value of using Liquibase in Tests</h4>
   <p>
   As Liquibase allows multiple input formats that act as an abstraction
@@ -385,7 +379,7 @@ so let's discuss each of them.
 Similar to `schema.sql`, we can use a `data.sql` file containing insert
 statements to populate our database. The same rules apply as [above](#using-schemasql). 
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Maintainability</h4>
   <p>
   A <code>data.sql</code> file forces us to put all our <code>insert</code> statements
@@ -489,7 +483,7 @@ the state the database is expected to be in *after* the test.
 
 Note, however, that Spring DBUnit has [not been maintained since 2016](https://github.com/springtestdbunit/spring-test-dbunit/commits/master).
 
-<div class="notice--success">
+<div class="notice success">
   <h4><code>@DatabaseSetup</code> not working?</h4>
   <p>
   In my tests I had the problem that the <code>@DatabaseSetup</code> annotation 

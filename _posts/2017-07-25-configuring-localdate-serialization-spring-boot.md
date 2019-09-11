@@ -3,13 +3,12 @@
 title: Serializing LocalDate to JSON in Spring Boot
 categories: [spring-boot]
 modified: 2017-07-25
-author: tom
-tags: [spring, boot, localdate, json, rest, serialize]
-comments: true
-ads: true
+excerpt: "An extensive list of things to think through when starting a new Java-based software project."
+image:
+  auto: 0043-calendar
 ---
 
-{% include sidebar_right %}
+
 
 Today, I stumbled (once again) over `LocalDate` in a Spring Boot application. `LocalDate` came with Java
 8 and is part of the new standard API in Java for working with dates. However, if you want to effectively

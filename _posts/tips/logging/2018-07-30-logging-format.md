@@ -1,20 +1,15 @@
 ---
 
 title: "Tip: Use a Human-Readable Logging Format"
-categories: [architecture]
+categories: [craft]
 modified: 2018-07-30
-author: tom
-tags: [transparency, logging, log, format]
-comments: true
-ads: true
 excerpt: "A guide to create a logging format that can be scanned at
           a single glance."
-sidebar:
-  nav: logging
-  toc: true
+image:
+  auto: 0008-glasses
 ---
 
-{% include sidebar_right %}
+
 
 Application logs are all about finding the right information in the least
 amount of time. Automated log servers may help us in finding and filtering log messages. 

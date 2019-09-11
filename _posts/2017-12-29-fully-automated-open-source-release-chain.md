@@ -1,24 +1,16 @@
 ---
 title: "A Fully Automated Open Source Release Chain with Gradle and Travis CI"
-categories: [tools]
+categories: [java]
 modified: 2017-12-29
-author: tom
-tags: [gradle, snapshot, bintray]
-comments: true
-ads: true
-header:
-  teaser: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
-  image: /assets/images/posts/fully-automated-open-source-release-chain/github-packages.jpg
 excerpt: "Releasing often is a major pain
           when the release process is not automated. This article is a guide to a fully automated
           release chain that is able to publish snapshots and releases from a 
           Github repository using Gradle, Bintray and Travis CI."
-sidebar:
-  nav: opensource
-  toc: true
+image:
+  auto: 0038-package
 ---
 
-{% include sidebar_right %}
+
 
 *"Release early, release often"*. This philosophy should be a goal for every 
 software project. Users can only give quality feedback when they have early access
@@ -29,18 +21,18 @@ release chain that is able to publish snapshots and releases from a
 Github repository using Gradle, Bintray and Travis CI.   
 
 {% capture notice %}
-#### Example Project
 You can see a working example of the setup described in this article in my 
 [diffparser](https://github.com/thombergs/diffparser) project on Github!
+
 {% endcapture %}
+{% assign text = notice | markdownify %}
+{% include github-project.html text=text %}
 
-<div class="notice--success">{{ notice | markdownify }}</div>
-
-# The Release Chain 
+## The Release Chain 
 
 The following image shows the release chain we're going to build.
 
-![Releasing snapshots and releases from different branches](/assets/images/posts/fully-automated-open-source-release-chain/git-snapshots-releases.jpg)
+![Releasing snapshots and releases from different branches](/assets/img/posts/fully-automated-open-source-release-chain/git-snapshots-releases.jpg)
 
 In a simplified [Git Flow](http://nvie.com/posts/a-successful-git-branching-model/) fashion, we have two branches
 in our Git repository:
@@ -64,7 +56,7 @@ be published** by our CI pipeline so that users can work with the stable version
 
 Naturally, a snapshot or release will only be published if all tests have run successfully.
 
-# Prerequisites
+## Prerequisites
 To create an automated release chain as described in this article, we need
 to create a Bintray account and set up a Gradle build as described 
 in my previous articles: 
@@ -75,30 +67,30 @@ in my previous articles:
 Once the `build.gradle` file is set up as described in those articles, we're ready to configure 
 Travis CI to do the publishing work for us automatically.
 
-# Configure Travis CI
+## Configure Travis CI
 To enable Travis CI, we need to create an account on [https://about.travis-ci.com](https://travis-ci.com)
 and link it to our Github account. 
 
-## Activate 
+### Activate 
 Once logged into the Travis account, we activate 
 Travis CI for the repository we want to publish snapshots and releases for:
 
-![Activate in Travis CI](/assets/images/posts/fully-automated-open-source-release-chain/travis.png)
+![Activate in Travis CI](/assets/img/posts/fully-automated-open-source-release-chain/travis.png)
 
-## Set Environment Variables
+### Set Environment Variables
 
 In the settings of the repository on Travis CI, we now set the environment variables
 `BINTRAY_KEY` and `BINTRAY_USER` to our Bintray credentials:
 
-![Environment Variables](/assets/images/posts/fully-automated-open-source-release-chain/travis-env-variables.png) 
+![Environment Variables](/assets/img/posts/fully-automated-open-source-release-chain/travis-env-variables.png) 
 
-## The `.travis.yml` File
+### The `.travis.yml` File
 Next, we need to put a file called `.travis.yml` into the codebase and push
 it to Github. This file contains all configuration for the CI build.
 
 Let's look at the contents of this file. 
 
-### Basic Setup
+#### Basic Setup
 
 ```yaml
 language: java
@@ -124,7 +116,7 @@ the most current Java 8 JDK.
 
 The last line makes the `gradlew` file executable so that Travis can run it.
 
-### Declare Build Stages
+#### Declare Build Stages
 
 In the next section of `.travis.yml`, we're making use of Travis CI's [build stages feature](https://docs.travis-ci.com/user/build-stages/)
 to divide our build into several steps.
@@ -147,7 +139,7 @@ only run on the master branch.
 The **release** stage is responsible for publishing a stable release and thus should
 only run on the release branch.
   
-### Define Build Jobs
+#### Define Build Jobs
 
 The last thing left to do now is to configure the actual jobs that should run within
 the build stages we declared above:
@@ -176,7 +168,7 @@ In the **release** stage, we're running the `bintrayUpload` task that takes care
 publishing a stable release to Bintray, again passing in the necessary environment variables. The details of the Gradle configuration are explained
 [here](/guide-publishing-to-bintray-with-gradle/#set-up-your-buildgradle).  
 
-# What now?
+## What now?
 And that's it. All in all this is a pretty straightforward way to publish open source
 Java projects with Gradle, Bintray and Travis CI.
 

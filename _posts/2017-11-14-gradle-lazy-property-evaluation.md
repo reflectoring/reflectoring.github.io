@@ -1,14 +1,14 @@
 ---
 title: "Lazy Evaluation of Gradle Properties"
-categories: [tools]
+categories: [java]
 modified: 2017-11-14
 author: matthias
-tags: [gradle, groovy, property, lazy, evaluation]
-comments: true
-ads: true
+excerpt: "A guide on lazy evaluation in Gradle scripts and when it makes sense to use it."
+image:
+  auto: 0040-hammock
 ---
 
-{% include sidebar_right %}
+
 
 Writing Gradle build tasks is often easy and straight forward, but as soon as you start to write more generic tasks for multiple modules or projects it can get a little tricky.
 

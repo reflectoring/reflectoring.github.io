@@ -2,17 +2,13 @@
 title: "Conditional Beans with Spring Boot"
 categories: [spring-boot]
 modified: 2019-03-07
-last_modified_at: 2019-03-07
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "An overview of Spring Boot's @ConditionalOn... annotations and when it makes sense to use them."
-sidebar:
-  toc: true
+image:
+  auto: 0017-coffee-beans
+
 ---
 
-{% include sidebar_right %}
+
 
 When building a Spring Boot app, we sometimes want to **only load beans or [modules](/spring-boot-modules/) into the application 
 context if some condition is met**. Be it to disable some beans during tests or to react to a certain
@@ -26,7 +22,7 @@ In this tutorial, we'll have a look some use cases that explain why we would nee
 loaded beans at all. Then, we'll see how to apply conditions and which conditions Spring Boot
 offers. To round things up, we'll also implement a custom condition. 
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/conditionals" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/conditionals" %}
 
 ## Why do we need Conditional Beans?
 
@@ -401,7 +397,7 @@ WindowsOrUnixBean windowsOrUnixBean() {
 }
 ```
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Is your <code>AnyNestedCondition</code> or <code>AllNestedConditions</code> not working?</h4>
   <p>
   Check the <code>ConfigurationPhase</code> parameter passed into <code>super()</code>. If you want

@@ -1,0 +1,55 @@
+nav.toc {
+  float: right;
+  width: 50%;
+  background-color: $gray;
+  border-radius: 10px;
+  font-size: 16px;
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+nav.toc header {
+  font-weight: bold;
+  padding: 5px 5px 5px 20px;
+  background-color: $link-color;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  color: white;
+}
+
+ul.toc {
+  margin: 0 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+ul.toc ul {
+  margin: 0;
+  padding: 0;
+}
+
+// list item of depth 2
+ul.toc li ul>li a {
+  padding-left: 20px;
+  font-weight: normal;
+}
+
+ul.toc li {
+  cursor: pointer;
+  list-style: none;
+}
+
+ul.toc li a {
+  display:block;
+  cursor: pointer;
+  font-weight: bold;
+  padding:5px 5px 5px 10px;
+}
+
+@media only screen and (max-width: 767px) {
+  nav.toc {
+    margin-left: 0;
+    float: none;
+    width: auto;
+  }
+}

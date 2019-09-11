@@ -1,23 +1,14 @@
 ---
 title: "Testing a Spring Boot REST API Consumer against a Contract with Spring Cloud Contract"
-categories: [cdc, testing]
+categories: [spring-boot]
 modified: 2018-01-18
-last_modified_at: 2018-08-16
-author: tom
-tags: [gradle, snapshot, bintray]
-comments: true
-ads: true
-header:
- teaser: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
- image: /assets/images/posts/consumer-driven-contract-consumer-spring-cloud-contract/contract.jpg
-sidebar:
-  nav: cdc
-  toc: true
 excerpt: "A guide on how to implement a consumer-driven contract test with Spring Cloud Contract that verifies that a REST consumer based on
           Feign and Spring Boot works as defined in the contract."
+image:
+  auto: 0025-signature
 ---
 
-{% include sidebar_right %}
+
 
 Consumer-driven contract tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -29,9 +20,9 @@ is a framework that facilitates consumer-driven contract tests.
 So let's have a look at how to verify a Spring Boot REST client against a contract
 with Spring Cloud Contract.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-cloud/spring-cloud-contract-consumer" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-cloud/spring-cloud-contract-consumer" %}
 
-# In this Article
+## In this Article
 
 Instead of testing API consumer and provider in an end-to-end manner, with consumer-driven contract tests
 we split up the test of our API into two parts: 
@@ -50,7 +41,7 @@ In this article we will:
 * verify the consumer against the stub locally
 * verify the consumer against the stub online
 
-# Define the Contract
+## Define the Contract
 
 With Spring Cloud Contract, contracts are defined with a Groovy DSL:
 
@@ -92,7 +83,7 @@ We'll store the contract in a file called `shouldSaveUser.groovy` for later usag
 
 The details of the DSL can be looked up in the [Spring Cloud Contract Reference](http://cloud.spring.io/spring-cloud-contract/single/spring-cloud-contract.html#_contract_dsl).
 
-# Create a Client against the API
+## Create a Client against the API
 We choose [Feign](https://cloud.spring.io/spring-cloud-netflix/multi/multi_spring-cloud-feign.html) as the technology
 to create a client against the API defined in the contract. 
 
@@ -134,7 +125,7 @@ The `@FeignClient` annotation tells Spring Boot to create an implementation of t
 that should run against the host that configured under the name `userservice`. The `@RequestMapping` and `@RequestBody`
 annotations specify the details of the POST request and the corresponding response defined in the contract.  
 
-# Publish the Contract to the Provider
+## Publish the Contract to the Provider
 The next thing we - as the API consumer - want to do, is to verify that our client code works exactly as the contract
 specifies. For this verification, Spring Cloud Contracts provides a Stub Runner that takes a contract as input
 and provides a runtime stub against which we can run our consumer code.
@@ -149,7 +140,7 @@ a pull request for the provider team to take up.
 Note that although we're still acting as the consumer of the API, in this step and the next, **we're 
 editing the provider's codebase**! 
 
-# Generate a Provider Stub
+## Generate a Provider Stub
 Next, we want to generate the stub against which we can verify our consumer code. For this, the Spring
 Cloud Contract Verifier Gradle plugin has to be set up in the provider build. You can read up on this setup
 in [this article about the provider side](/consumer-driven-contract-provider-spring-cloud-contract/).
@@ -182,7 +173,7 @@ to the local Maven repository on our machine. If you're interested what this art
 file `build/libs/user-service-1.0.0-stubs.jar`. Basically, it contains a JSON representation of the contract
 that can be used as input for a stub that can act as the API provider.
 
-# Verify the Consumer Code Locally
+## Verify the Consumer Code Locally
 After the trip to the provider's code base, let's get back to our own code base (i.e. the consumer code base).
 Now, that we have the stub in our local Maven repository, we can use the Stub Runner to verify that our consumer code
 works as the contract expects. 
@@ -251,7 +242,7 @@ stubrunner:
     user-service: userservice
 ```
 
-# Verify the Consumer Code Online
+## Verify the Consumer Code Online
 Having verified the consumer code against a stub in our local Maven repository is well and good, but once we push
 the consumer code to the CI, the build will fail because the stub is not available in an online Maven repository.
 
@@ -280,7 +271,7 @@ stubrunner:
 
 Now, we can push the consumer code and be certain that the consumer and provider are compatible to each other.
 
-# Conclusion
+## Conclusion
 
 This article gave a quick tour of the consumer-side workflow of Spring Cloud Contract. We created a Feign client and 
 verified it against a provider stub which is created from a contract. The workflow requires good communication between

@@ -1,15 +1,14 @@
 ---
 
 title: "A Guide to Formatting Code Snippets in Javadoc"
-categories: [tools]
+categories: [java]
 modified: 2017-08-14
-author: tom
-tags: [java, javadoc, code, snippet, pre, tag, html]
-comments: true
-ads: true
+excerpt: "A thorough explanation of different ways to format code snippets within a Javadoc comment."
+image:
+  auto: 0031-matrix
 ---
 
-{% include sidebar_right %}
+
 
 Sometimes you want to add code snippets to our Javadoc comments, especially when developing
 an API of some kind. But how do you mark the code snippet so that it will be rendered correctly

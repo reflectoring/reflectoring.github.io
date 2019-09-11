@@ -1,18 +1,14 @@
 ---
 
 title: "Consumer-Driven Contracts with Pact, Feign and Spring Data REST"
-categories: [cdc, testing]
+categories: [spring-boot]
 modified: 2017-08-09
-author: tom
-tags: [spring, boot, consumer, driven, contract, pact, feign, data, rest]
-comments: true
-ads: true
-sidebar:
-  nav: cdc
-  toc: true
+excerpt: "A tutorial on how to test an API created with Spring Data REST with contract tests using the Pact framework."
+image:
+  auto: 0029-contract
 ---
 
-{% include sidebar_right %}
+
 
 When thinking about integration testing in a distributed system, you quickly come across the 
 concept of consumer-driven contracts. This blog post gives a short introduction into
@@ -20,7 +16,7 @@ this concept and a concrete implementation example using the technologies [Pact]
 [Spring Boot](https://projects.spring.io/spring-boot/), [Feign](https://github.com/OpenFeign/feign) 
 and [Spring Data REST](https://projects.spring.io/spring-data-rest/).
 
-<div class="notice--danger">
+<div class="notice danger">
   <h4>Deprecated</h4>
   The contents of this article are deprecated. Instead, please read the articles about <a href="/consumer-driven-contract-feign-pact/">
   Creating a Consumer-Driven Contract with Feign and Pact</a> and <a href="/consumer-driven-contract-provider-pact-spring/">Testing a Spring Boot REST API against a Consumer-Driven Contract
@@ -65,7 +61,7 @@ Of course, the contract is created by the consumer in
 agreement with the provider so that it cannot define API calls the provider doesn't want to support.
 
 {% capture fig_img %}
-![Consumer-Driven-Contracts]({{ base }}/assets/images/posts/consumer-driven-contracts.png)
+![Consumer-Driven-Contracts]({{ base }}/assets/img/posts/consumer-driven-contracts.png)
 {% endcapture %}
 
 <figure>

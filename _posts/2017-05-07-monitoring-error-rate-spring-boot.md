@@ -1,17 +1,14 @@
 ---
 
 title: Monitoring the Error Rate of a Spring Boot Web Application
-categories: [spring-boot, architecture]
+categories: [spring-boot]
 modified: 2017-05-07
-author: tom
-tags: [spring, java, boot, monitoring, error, rate, metric, metrics, dropwizard, exception, counter, mvc]
-comments: true
-ads: true
-sidebar:
-  nav: monitoring
+excerpt: "How to monitor the error rate of a Spring Boot web application."
+image:
+  auto: 0032-dashboard
 ---
 
-{% include sidebar_right %}
+
 
 In my previous blog posts about [creating monitoring metrics with Dropwizard Metrics](/transparency-with-spring-boot/) and 
 [exposing them for the Prometheus monitoring application](/monitoring-spring-boot-with-prometheus/) we already have
@@ -167,7 +164,7 @@ rate(http_status_500_total [1m]) / rate(http_requests_total [1m])
 The result of the last query looked something like this in the Prometheus web interface, once I manually
 created some successful requests and some errors:
 
-![Error Percentage]({{ base }}/assets/images/posts/error_percentage.png)
+![Error Percentage]({{ base }}/assets/img/posts/error_percentage.png)
 
 ## Wrap-Up
 

@@ -1,16 +1,12 @@
 ---
 title: "REST with Hypermedia - Hot or Not?"
-categories: [architecture]
-modified: 2018-02-06
-author: tom
-comments: true
-ads: true
-header:
- teaser: /assets/images/posts/rest-hypermedia/state-diagram-relations-header.png
- image: /assets/images/posts/rest-hypermedia/state-diagram-relations-header.png
+categories: [craft]
+excerpt: "A discussion of what Hypermedia with REST means and a guide to decide whether hypermedia is a match for your use case."
+image:
+  auto: 0036-notebooks
 ---
 
-{% include sidebar_right %}
+
 
 Believing Roy Fielding, who first coined the REST acronym, you may call
 your API a REST API [only if you make use of hypertext](http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven).
@@ -18,12 +14,12 @@ But what is hypermedia? This article explains what
 hypermedia means for creating an API, what benefits it brings and which 
 drawbacks you might encounter when using it.
 
-# The REST Maturity Model
+## The REST Maturity Model
 
 Before starting with Hypermedia, let's have a look at the [REST Maturity Model](https://www.crummy.com/writing/speaking/2008-QCon/act3.html)
 conceived by Leonard Richardson:
 
-![REST Maturity Model](/assets/images/posts/rest-hypermedia/rest-maturity-model.jpg)
+![REST Maturity Model](/assets/img/posts/rest-hypermedia/rest-maturity-model.jpg)
 
 At the bottom of the maturity pyramid we find the "Swamp of POX (Plain old XML)". This means sending XML fragments back and forth
 that contain a command for executing one of several procedures as well as some payload data to a single URL. 
@@ -46,7 +42,7 @@ Level 3 adds **hypermedia** to the mix, consisting of **hyperlinks** between res
 a **relation** between the connected resources. The concepts behind level 3 are a little more academic than
 the other levels, and are a little harder to grasp. Read on to follow my attempt to grasp them.
 
-# Hypermedia
+## Hypermedia
 
 I will use the term "Hypermedia" as a shorthand for "Hypermedia As The Engine Of Application State" (HATEOAS), which is one of
 the ugliest acronyms I've ever seen. Basically, it means that a REST API provides hyperlinks with each response that
@@ -54,7 +50,7 @@ link to other related resources.
 
 Let's try this concept on a simple book store example:
 
-![Links and Relations](/assets/images/posts/rest-hypermedia/state-diagram-relations.png)
+![Links and Relations](/assets/img/posts/rest-hypermedia/state-diagram-relations.png)
 
 In the diagram above, each node is a URL within our API and each edge is a link relating one URL with another.
 
@@ -103,27 +99,27 @@ the book to the shopping cart.
 All in all, just by following the links in the API's responses we can browse books, add them to our shopping cart or remove them from it, and
 finally order the contents of our shopping cart.
 
-# Why Hypermedia Makes Sense
+## Why Hypermedia Makes Sense
 
 Having understood the basics of hypermedia in REST APIs, let's discuss the pros. 
 
 The main argument for going the extra mile to level 3 and create a hypermedia-driven API is that **it helps to decouple 
 the consumer from the provider**. This brings some advantages ...
 
-## Refactoring Resource URLs
+### Refactoring Resource URLs
 
 The consumer does not need to know all the URLs to the API's endpoints, because **it can navigate the API over
 the hyperlinks** provided in the responses. This gives the provider the freedom to refactor the endpoint URLs at 
 will without consulting the consumers at all.
 
-## Changing Client Behavior without Changing Code
+### Changing Client Behavior without Changing Code
 
 Another decoupling feature is that **the consumer can change its behavior depending on which links are provided by the
 server**. In the book store example above, the server may decide not to include the `order` link in its responses
 until the shopping cart has reached a minimum value. The client knows that and only displays a checkout button
 once it gets the `order` link from the server. 
    
-## Explorable API
+### Explorable API
 
 Obviously, by following the hyperlinks, our REST API is explorable by a client. However, **it's also explorable by 
 a human**. A developer that knows the root URL can simply follow the links to get a feel for the API. 
@@ -131,12 +127,12 @@ a human**. A developer that knows the root URL can simply follow the links to ge
 Using a tool like [HAL Browser](https://github.com/mikekelly/hal-browser), the API can even be browsed and
 experimented with comfortably.
 
-# Why You Might Not Want to Use Hypermedia
+## Why You Might Not Want to Use Hypermedia
 
 While decoupling client and server is a very worthwhile goal, when implementing a hypermedia API 
 you may stumble over a few things.
 
-## Client Must Evaluate Hyperlinks
+### Client Must Evaluate Hyperlinks
 
 First of all, **the decoupling aspect of the hyperlinks gets lost if the client chooses not 
 to evaluate the hyperlinks** but instead uses hard-coded URLs to access the API. 
@@ -150,7 +146,7 @@ and NOT evaluate the hyperlinks.
 So, as the API provider, we lose the advantage of hyperlinks because we still cannot refactor URLs
 independently without irritating our users.
 
-## Client Must Understand Relations
+### Client Must Understand Relations
 
 If the client chooses to evaluate the hyperlinks, it obviously needs to understand the relations
 to make sense of them. In the example above, the client needs to know what the `remove` relation means
@@ -160,7 +156,7 @@ Having to understand the relations in itself is a good thing, but **building a c
 alone is harder than building a client that is more tightly coupled to the server**, which is probably a main reason
 that most APIs don't go to level 3.
 
-## Server Must Describe Application Completely with Relations
+### Server Must Describe Application Completely with Relations
 
 Similarly, describing the whole application state with relations and hyperlinks is a burden on the 
 server side - at least initially. Designing and Building a hypermedia API is plain more effort than building a level 2 API.
@@ -168,7 +164,7 @@ server side - at least initially. Designing and Building a hypermedia API is pla
 To be fair, once the API is stable it's probably less effort to **maintain** a hypermedia API than a level 2 API, thanks
 to the decoupling features. But building a hypermedia API is a long-term invest few managers are willing to make.
 
-## No Standard Hypermedia Representation
+### No Standard Hypermedia Representation
 
 Another reason why hypermedia is not yet widely adopted is the lack of a standard format. There's 
 [RFC 5988](https://tools.ietf.org/html/rfc5988), specifying a syntax for links contained in HTTP headers. Then there's
@@ -178,19 +174,19 @@ and other formats, each specifying a syntax for links within JSON resources.
 **Each of these formats has a different view on which information should be included in hyperlinks**. This raises uncertainty amongst
 developers and makes development of general-purpose hypermedia frameworks harder for both the client side and the server side.
 
-## Client Must Still Have Domain Knowledge
+### Client Must Still Have Domain Knowledge
 
 Hypermedia is not a silver bullet for decoupling client from server. **The client still needs 
 to know the structure of the resources** it loads from the server and posts back to the server. This structure contains a large part of the domain
 knowledge, so the decoupling is far from complete. 
 
-## Bigger Response Payload
+### Bigger Response Payload
 
 As you can see in the JSON examples above, hypermedia APIs tend to have bigger response payloads than a level
 2 API. The links and relations need to be transferred from server to client somehow, after all. Thus, an API
 implemented with hypermedia will probably need more bandwidth than the same API without.
 
-# How Should I Implement My New Shiny API?
+## How Should I Implement My New Shiny API?
 
 In my opinion, there's no golden way of creating a REST API. 
 

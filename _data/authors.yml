@@ -1,37 +1,38 @@
-tom:
-  name              : "Tom Hombergs"
-  email             : "tom@reflectoring.io"
-  avatar            : "/assets/images/avatars/tom.jpg"
-  github            : "thombergs"
-  stackoverflow     : "2375843/tom"
-  twitter           : "TomHombergs"
-  linkedin          : "tom-hombergs-74048777"
-  bio               : "Tom has more than 10 years experience as a consulting software engineer and architect with a
-                      focus on Java and the Spring ecosystem. He contributes to open source projects on
-                      GitHub, writes software engineering-related articles and is an
-                      occasional speaker at conferences. He's also an editor at [baeldung.com](https://www.baeldung.com)."
+default:
+  name: "Tom Hombergs"
+  email: "tom@reflectoring.io"
+  avatar: "/assets/img/authors/tom.jpg"
+  github: "thombergs"
+  stackoverflow: "2375843/tom"
+  twitter: "TomHombergs"
+  linkedin: "tom-hombergs-74048777"
+  rss: "/feed.xml"
+  url: /about/
+  bio: "As a professional software engineer, consultant, architect, and general problem solver,
+          I've been practicing the software craft for more than ten years and I'm still learning
+          something new every day. I love sharing the things I learned, so you (and future me)
+          can get a head start."
 
 matthias:
-  name              : "Matthias Balke"
-  email             : "matthias.balke@googlemail.com"
-  bio               : "Automate as much as possible."
-  avatar            : "/assets/images/avatars/matthias.png"
-  github            : "matthiasbalke"
+  name: "Matthias Balke"
+  email: "matthias.balke@googlemail.com"
+  avatar: "/assets/img/authors/matthias.png"
+  github: "matthiasbalke"
 
 rudi:
-  name              : "Rudi klassen"
-  email             : "rudolfklassen2@gmail.com"
-  avatar            : "/assets/images/avatars/rudi.png"
-  github            : "RudiKlassen"
+  name: "Rudi Klassen"
+  email: "rudolfklassen2@gmail.com"
+  avatar: "/assets/img/authors/rudi.png"
+  github: "RudiKlassen"
 
 artur:
-  name              : "Artur Kuksin"
-  email             : "arthur.kuksin@gmail.com"
-  avatar            : "/assets/images/avatars/artur.png"
-  github            : "arkuksin"
+  name: "Artur Kuksin"
+  email: "arthur.kuksin@gmail.com"
+  avatar: "/assets/img/authors/artur.png"
+  github: "arkuksin"
 
 david:
-  name              : "David Klassen"
-  email             : "daviddd.kl@gmail.com"
-  avatar            : "/assets/images/avatars/david.png"
-  github            : "daklassen"
+  name: "David Klassen"
+  email: "daviddd.kl@gmail.com"
+  avatar: "/assets/img/authors/david.png"
+  github: "daklassen"

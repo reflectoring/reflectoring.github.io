@@ -1,14 +1,13 @@
 ---
 title: "Assumptions and Conditional Test Execution with JUnit 4 and 5"
-categories: [java, tools]
+categories: [java]
 modified: 2017-10-10
-author: tom
-tags: [junit]
-comments: true
-ads: true
+excerpt: "A comparison on how to implement assumptions and conditional test execution between JUnit 4 and 5."
+image:
+  auto: 0019-magnifying-glass
 ---
 
-{% include sidebar_right %}
+
 
 Sometimes, a test should only be run under certain conditions. One such case
 are integration tests which depend on a certain external system. We don't want
@@ -16,9 +15,9 @@ our builds to fail if that system has an outage, so we just want to skip
 the tests that need a connection to it. This article shows how
 you can skip tests in JUnit 4 and JUnit 5 depending on certain conditions.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/junit/assumptions" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/junit/assumptions" %}
 
-# Assumptions
+## Assumptions
 Both JUnit 4 and JUnit 5 support the concept of assumptions. Before each test,
 a set of assumptions can be made. If one of these assumptions is not met,
 the test should be skipped.  
@@ -50,7 +49,7 @@ sends an HTTP GET request to a given URI and returns `true` if the server respon
 with an HTTP response with a status code in the range of 200-299 meaning that
 the response was successfully processed. 
  
-# Assumptions for a single Test Method (JUnit 4 and JUnit 5)
+## Assumptions for a single Test Method (JUnit 4 and JUnit 5)
 
 Skipping a single test method based on an assumption works the same in JUnit 4
 and JUnit 5:
@@ -76,7 +75,7 @@ system could successfully be established.
 Most of the times, though, we want all methods in a test class to be skipped
 depending on an assumption. This is done differently in JUnit 4 and JUnit 5
 
-# Assumptions for all Test Methods with JUnit 4
+## Assumptions for all Test Methods with JUnit 4
 
 In JUnit 4, we have to implement a `TestRule` like this:
 
@@ -125,7 +124,7 @@ public class ConnectionCheckingJunit4Test {
 }
 ```
 
-# Assumptions for all Test Methods with JUnit 5
+## Assumptions for all Test Methods with JUnit 5
 
 In JUnit 5, the same can be achieved a little more elegantly with the [extension sytem](http://junit.org/junit5/docs/current/user-guide/#extensions-registration)
 and annotations. First, we define ourselves an annotation that should mark tests
@@ -182,7 +181,7 @@ public class ConnectionCheckingJunit5Test {
 }
 ```
 
-# Conclusion
+## Conclusion
 Both JUnit 4 and JUnit 5 support the concept of assumptions to conditionally 
 enable or disable tests. However, it's definitely worthwhile to have a look at JUnit 5 and its
 extension system since it allows a very declarative way (not only) to create

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    {% include head.html %}
+
+	<body>
+
+	<header id="header">
+
+		{% include nav.html %}
+
+		<!-- Page Header -->
+		<div id="post-header" class="page-header">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-10">
+                        {% include category-badges.html categories=page.categories %}
+						<h1>{{ page.title }}</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+	</header>
+
+		<!-- section -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<!-- Post content -->
+					<div class="col-md-9">
+						<div class="section-row sticky-container">
+							<div class="main-post text">
+
+								{% if page.toc.enabled != false %}
+								  {% include toc.html html=content sanitize=true class="toc" id="toc" h_min=2 h_max=3 %}
+								{% endif %}
+
+								{{ content }}
+
+							</div>
+
+							{% include social-share.html %}
+
+						</div>
+
+						{% include author.html %}
+
+						{% if page.ads.enabled != false %}
+						  {% include below-content-ad.html %}
+						{% endif %}
+
+						{% if page.comments.enabled != false %}
+						<div id="disqus_thread"></div>
+						{% endif %}
+
+					</div>
+					<!-- /Post content -->
+
+					{% include sidebar.html %}
+
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /section -->
+
+		{% include footer.html %}
+
+		{% include scripts.html %}
+
+
+	</body>
+</html>

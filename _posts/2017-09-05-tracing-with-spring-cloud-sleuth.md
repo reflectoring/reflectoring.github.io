@@ -1,29 +1,28 @@
 ---
 title: "Tracing in Distributed Systems with Spring Cloud Sleuth"
-categories: [spring-boot, tools]
+categories: [spring-boot]
 modified: 2017-09-08
-author: tom
-tags: [spring, boot, microservices, tracing]
-comments: true
-ads: true
+excerpt: "A tutorial on using Spring Cloud Sleuth to trace communication between distributed Spring Boot applications."
+image:
+  auto: 0019-magnifying-glass
 ---
 
-{% include sidebar_right %}
+
 
 In a distributed system, potentially many services are involved in creating a response to a single 
 request. Not only for debugging purposes it's essential that the path of such a request can be traced 
 through all involved services. This article gives an overview of the traceability problem in 
 distributed systems and provides some tips on how to implement tracing with Spring Cloud Sleuth.
 
-<div class="notice--success">
-  <img src="/assets/images/github-mark-48px.png" style="float:right" alt="View on Github"/>
+<div class="notice success">
+  <img src="/assets/img/github-mark-48px.png" style="float:right" alt="View on Github"/>
   <h4>Code Example</h4>
   This article is accompanied by example code for a
   <a href="https://github.com/thombergs/code-examples/tree/master/spring-cloud/sleuth-downstream-service">downstream-service</a> and
   an <a href="https://github.com/thombergs/code-examples/tree/master/spring-cloud/sleuth-upstream-service">upstream-service</a>.
 </div>
 
-# Traceability in Distributed Systems
+## Traceability in Distributed Systems
 
 Even in a monolithic system, tracing a bug can be hard enough. To find the root cause of an error
 you search through the log files of the application servers around the point in time the error occurred and hope that you
@@ -41,7 +40,7 @@ As result of a request `getCustomerWithAddress` we expect customer and address d
 address data each live in the responsibility of a different service so that the initial service (the "downstream" service)
 has to forward a request to those ("upstream") services and aggregate their responses.
 
-![A distributed system with a downstream and two upstream services](/assets/images/posts/trace.png)
+![A distributed system with a downstream and two upstream services](/assets/img/posts/trace.png)
 
 If an error occurs in one of those upstream services, the upstream service will probably log the error.
 Since the downstream services receives an error response, it will probably also log an error. For a 
@@ -52,14 +51,14 @@ system is directed at a downstream service. Within the system, the trace ID is t
 services so they can use them in their log entries.
 
 
-# Implement Tracing with Spring Cloud Sleuth
+## Implement Tracing with Spring Cloud Sleuth
 
 [Spring Cloud Sleuth](https://cloud.spring.io/spring-cloud-sleuth/) is a library that supports 
 implementing such a trace ID. Sleuth is part of the Spring Cloud project which provides solutions for 
 cloud systems (which are distributed systems by definition). The following sections describe how to activate
 Sleuth in a Spring Boot application and provide a couple getting started tips.  
 
-## Activate Spring Cloud Sleuth
+### Activate Spring Cloud Sleuth
 
 First of all, Spring Cloud Sleuth has to be added as a dependency in your build management tool. For
 Gradle: 
@@ -77,7 +76,7 @@ consists of the prefix `x`, which is used for custom headers that are not part o
 and `b3` for "BigBrotherBird", which once was the name of the popular tracing UI [Zipkin](http://zipkin.io).
 Sleuth borrows its vocabulary from Zipkin.
 
-## Writing the Trace ID into a Log
+### Writing the Trace ID into a Log
 
 Now that a trace id is available, it shall be included in our log output. Sleuth supports this by writing
 the trace ID into the [Mapped Diagnostic Context (MDC)](https://www.slf4j.org/manual.html#mdc) of SLF4J.
@@ -97,7 +96,7 @@ the other rows from an upstream service each.
 2017-09-03 15:31:29.198  INFO [903c472a08e5cda0] GETTING ADDRESS FOR CUSTOMER WITH ID 1
 ```
 
-## Output the Service Name
+### Output the Service Name
 
 The log output so far does not say which service it comes from. To add this information to the logs, you can
 use the [logging features](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html#boot-features-custom-log-configuration) 
@@ -129,7 +128,7 @@ Log output including the service name then looks like this:
 2017-09-03 15:31:29.198  INFO [sleuth-upstream-service,903c472a08e5cda0] GETTING ADDRESS FOR CUSTOMER WITH ID 1
 ```
 
-## Output the Trace ID in Exceptions
+### Output the Trace ID in Exceptions
 
 Exception logs should include the trace ID since tracing errors is a main reason for introducing the trace
 ID in the first place. Sadly, exceptions that bubble up in Spring Boot cannot access the trace ID since they
@@ -156,7 +155,7 @@ public class ControllerExceptionHandler {
 }
 ```
 
-## Pass the Trace ID to the Client
+### Pass the Trace ID to the Client
 
 In some cases it may be required to show the trace ID to the user so that he can provide the trace ID to
 a support hotline in case of an error. The support engineer can then search the log files for that trace ID to find the 
@@ -184,7 +183,7 @@ public class ErrorHandler {
 Instead of passing the trace ID as part of an error message you can of course create a structured
 JSON answer which includes the trace ID as a separate field for better processing.
 
-## Send the Trace ID to a Central Log Server
+### Send the Trace ID to a Central Log Server
 
 When using a log server like [Graylog](https://www.graylog.org) it is a good idea to send the trace ID
 to that log server not only as part of the log message string but also as a separate, searchable and
@@ -222,7 +221,7 @@ the log server can store and index them in a structured manner.
 The above configuration again uses the logging features provided by Spring Bootto send the value of the 
 environment variable `spring.application.name` to the log server as a separate field named `serviceName`.
 
-## Analyze Traces
+### Analyze Traces
 
 If trace IDs in the log files are not enough, you can perform a more sophisticated trace analysis by
 using [Zipkin](http://zipkin.io). Zipkin is an application that collects tracing data and displays
@@ -241,7 +240,7 @@ Additionally, the following property must be set in `application.properties` to 
 spring.zipkin.baseUrl: http://localhost:9411/
 ```
 
-## Wrap Up
+### Wrap Up
 
 This article has shown that a trace-supporting logging configuration with Spring Boot, Logback and Sleuth is not
 that much work, if you know where to look. Even sending the tracing data to a central log server in a structured

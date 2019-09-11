@@ -1,0 +1,35 @@
+$font-size              : 22px !default;
+$font-family-serif      : "Roboto Slab";
+$font-family-sans       : "Roboto Slab";
+$font-family-code       : "Roboto Mono";
+
+$category-1-color       : #4bb92f;
+$category-2-color       : #ff8700;
+$category-3-color       : #8d00ff;
+$category-4-color       : #0078ff;
+$category-5-color       : #737373;
+$category-6-color       : #000000;
+
+$space                  : 30px;
+
+$gray                   : #f2f3f3;
+$link-color             : #00BFA5;
+
+@mixin sans() {
+  font-family: $font-family-sans;
+}
+
+@mixin serif() {
+  font-family: $font-family-serif;
+}
+
+@mixin underline() {
+  border-bottom: 1px solid $gray;
+  padding-bottom: 5px;
+  padding-top: $space;
+}
+
+@mixin no-underline() {
+  border-bottom: 0;
+  padding-bottom: 0px;
+}

@@ -1,19 +1,14 @@
 ---
-title: "Testing Spring MVC Web Controllers with `@WebMvcTest`"
+title: "Testing Spring MVC Web Controllers with @WebMvcTest"
 categories: [spring-boot]
 modified: 2019-01-19
-last_modified_at: 2019-01-19
-author: tom
-tags: 
-comments: true
-ads: true
-excerpt: "An in-depth look at the responsibilities of a Spring Boot web controller and how
-          to cover those responsibilities with meaningful tests."
-sidebar:
-  toc: true
+excerpt: "An in-depth look at the responsibilities of a Spring Boot web controller and how to cover those responsibilities with meaningful tests."
+image:
+  auto: 0021-controller
+
 ---
 
-{% include sidebar_right %}
+
 
 In this second part of the series on testing with Spring Boot, we're going to look
 at web controllers. First, we're going to explore what a web controller actually does
@@ -23,7 +18,7 @@ Then, we're going to find out how to cover each of those responsibilities in a t
 Only with those responsibilities covered can we be sure that our controllers behave as
 expected in a production environment.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
 ## The "Testing with Spring Boot" Series
 
@@ -173,6 +168,17 @@ class RegisterRestControllerTest {
 }
 ```
 
+<div class="notice success">
+  <h4><code>@ExtendWith</code></h4>
+  <p>
+  The code examples in this tutorial use the <code>@ExtendWith</code> annotation to tell
+  JUnit 5 to enable Spring support. <a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#junit-5">As of Spring Boot 2.1</a>, we no longer need to
+  load the <code>SpringExtension</code> because it's included as a meta annotation in the 
+  Spring Boot test annotations like <code>@DataJpaTest</code>, <code>@WebMvcTest</code>, and 
+  <code>@SpringBootTest</code>.
+  </p>
+</div> 
+
 We can now `@Autowire` all the beans we need from the application context. Spring Boot automatically 
 provides beans like an `@ObjectMapper` to map to and from JSON and a
 `MockMvc` instance to simulate HTTP requests. 
@@ -183,7 +189,7 @@ between controller and the HTTP layer. `@MockBean` automatically
 replaces the bean of the same type in the application context with a 
 Mockito mock.
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Use <code>@WebMvcTest</code> with or without the <code>controllers</code> parameter?</h4>
   <p>
   By setting the <code>controllers</code> parameter to <code>RegisterRestController.class</code>

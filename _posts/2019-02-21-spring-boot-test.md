@@ -1,26 +1,21 @@
 ---
-title: "Integration Tests with `@SpringBootTest`"
+title: "Integration Tests with @SpringBootTest"
 categories: [spring-boot]
 modified: 2019-02-23
-last_modified_at: 2019-02-23
-author: tom
-tags: 
-comments: true
-ads: true
-excerpt: "A tutorial on when and how to use Spring Boot's `@SpringBootTest` annotation and how to reduce
-          test runtime."
-sidebar:
-  toc: true
+excerpt: "A tutorial on when and how to use Spring Boot's @SpringBootTest annotation and how to reduce test runtime."
+image:
+  auto: 0018-cogs
+
 ---
 
-{% include sidebar_right %}
+
 
 With the `@SpringBootTest` annotation, Spring Boot provides a convenient way to start up
 an application context to be used in a test. In this tutorial, we'll discuss when to use
 `@SpringBootTest` and when to better use other tools for testing. We'll also look into
 different ways to customize the application context and how to reduce test runtime. 
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
 ## The "Testing with Spring Boot" Series
 
@@ -132,6 +127,17 @@ class RegisterUseCaseIntegrationTest {
 }
 ```
 
+<div class="notice success">
+  <h4><code>@ExtendWith</code></h4>
+  <p>
+  The code examples in this tutorial use the <code>@ExtendWith</code> annotation to tell
+  JUnit 5 to enable Spring support. <a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#junit-5">As of Spring Boot 2.1</a>, we no longer need to
+  load the <code>SpringExtension</code> because it's included as a meta annotation in the 
+  Spring Boot test annotations like <code>@DataJpaTest</code>, <code>@WebMvcTest</code>, and 
+  <code>@SpringBootTest</code>.
+  </p>
+</div> 
+
 Here, we additionally use `@AutoConfigureMockMvc` to add a `MockMvc` instance 
 to the application context.
 
@@ -146,7 +152,7 @@ request has lead to an expected change in the state of the database.
 We can turn a lot of knobs to customize the application context
 created by `@SpringBootTest`. Let's see which options we have.
 
-<div class="notice--success">
+<div class="notice success">
   <h4>Caution when Customizing the Application Context</h4>
   <p>
   Each customization of the application context is one more thing that
@@ -269,9 +275,9 @@ class MockBeanTest {
     // given
     User user = new User("Zaphod", "zaphod@galaxy.net");
     boolean sendWelcomeMail = true;
+    given(userRepository.save(any(UserEntity.class))).willReturn(userEntity(1L));
 
     // when
-    when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity(1L));
     Long userId = registerUseCase.registerUser(user, sendWelcomeMail);
 
     // then

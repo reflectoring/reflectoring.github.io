@@ -1,23 +1,14 @@
 ---
 title: "Testing a Spring Boot REST API against a Consumer-Driven Contract with Pact"
-categories: [cdc, testing]
+categories: [spring-boot]
 modified: 2018-08-11
-last_modified_at: 2018-08-11
-author: tom
-tags: [gradle, snapshot, bintray]
-comments: true
-ads: true
-header:
-  teaser: /assets/images/posts/consumer-driven-contract-provider-pact-spring/contract.jpg
-  image: /assets/images/posts/consumer-driven-contract-provider-pact-spring/contract.jpg
-sidebar:
-  nav: cdc
-  toc: true
 excerpt: "A guide on how to implement a consumer-driven contract test with Pact that verifies that a REST provider based on
           Spring Boot works as defined in the contract."
+image:
+  auto: 0026-signature
 ---
 
-{% include sidebar_right %}
+
 
 Consumer-driven contract tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -29,9 +20,9 @@ is a framework that facilitates consumer-driven contract tests.
 So let's have a look at how to test a REST API provided by a Spring Boot application 
 against a contract previously defined by the API consumer.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-spring-provider" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-spring-provider" %}
 
-# In this Article
+## In this Article
 
 Instead of testing API consumer and provider in an end-to-end manner, with consumer-driven contract tests
 we split up the test of our API into two parts: 
@@ -52,7 +43,7 @@ In this article we will:
 For an overview of the big picture of consumer-driven contract testing, have a look at 
 [this article](/7-reasons-for-consumer-driven-contracts/). 
 
-# The Pact
+## The Pact
 Since we're using the Pact framework as facilitator for our consumer-driven contract tests,
 contracts are called "pacts". We'll use the following pact that was created by an Angular consumer in 
 [another article](/consumer-driven-contracts-with-angular-and-pact/):
@@ -109,7 +100,7 @@ with a user object as payload and an associated response that
 is expected to have the status code `201` and should contain the ID of the created user.
 A request / response pair like this is called an *interaction*.
 
-# The Spring Controller
+## The Spring Controller
 
 It's pretty easy to create a Spring controller that should obey that contract:
 
@@ -137,13 +128,13 @@ public class UserController {
 `IdObject` is a simple bean that has the single field `id`. The `UserRepository` is a standard Spring Data 
 repository that saves and loads `User` objects to and from a database.
 
-# The Provider Test
+## The Provider Test
 
 The controller works, we can test it by manually sending requests against it using Postman, for example.
 But now, we want to verify that it actually obeys the contract specified above. This verification should
 be done in every build, so doing this in a JUnit tests seems a natural fit.
 
-## Pact Dependencies
+### Pact Dependencies
 
 To create that JUnit test, we need to add the following dependencies to our project:
 
@@ -156,7 +147,7 @@ dependencies {
 
 This will transitively pull the JUnit 5 dependency as well.
 
-## Set up the JUnit Test
+### Set up the JUnit Test
 
 Next, we create a JUnit test that:
 
@@ -242,7 +233,7 @@ Verifying a pact between ui and userservice
       has a matching body (OK)
 ```
 
-# Load the Contract from a Pact Broker
+## Load the Contract from a Pact Broker
 
 Consumer-Driven contracts loose their value if you have multiple versions of the same
 contract file in the consumer and provider codebase. We need a single source of truth for the contract files.
@@ -262,7 +253,7 @@ public class UserControllerProviderTest {
 }
 ``` 
 
-# Conclusion
+## Conclusion
 
 In this article, we created a JUnit test that verified a REST API against a contract
 [previously created](/consumer-driven-contracts-with-angular-and-pact/) by a consumer of that API.

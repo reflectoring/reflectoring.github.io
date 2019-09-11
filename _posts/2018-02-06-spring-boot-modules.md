@@ -2,24 +2,19 @@
 title: "Modularizing a Spring Boot Application"
 categories: [spring-boot]
 modified: 2018-02-06
-author: tom
-comments: true
-ads: true
-header:
- teaser: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg
- image: /assets/images/posts/spring-boot-modules/spring-boot-modules.jpg
-sidebar:
-  toc: true
+excerpt: "A guide on different ways Spring Boot offers to split an application into distinct modules."
+image:
+  auto: 0037-rubics-cube
 ---
 
-{% include sidebar_right %}
+
 
 Every software project comes to a point where the code should be broken up into modules.
 These may be modules within a single code base or modules that each live in their own
 code base. This article explains some Spring Boot features that help to split up
 your Spring Boot application into several modules. 
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/spring-boot/modular" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/modular" %}
 
 ## What's a Module in Spring Boot?
 
@@ -29,6 +24,11 @@ application context.
 A module can be a business module, providing some business services to the application
 or a technical module that provides cross-cutting concerns to several other
 modules or to the whole of the application. 
+
+The modules discussed in this article are part of the same monolithic
+codebase. To better enforce module boundaries, we could split up that monolithic codebase 
+into [multiple build modules](/spring-boot-gradle-multi-module/)
+with Maven or Gradle, if we so wish.
 
 ## Options for Creating Modules
 
@@ -169,7 +169,7 @@ configurations into a single module.
 ### Auto-Configuration
 
 If we want to load a module automatically instead of hard-wiring the import into the 
-source code, we can make use of Spring Boot's [auto-configuration feature](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-developing-auto-configuration.html).
+source code, we can make use of Spring Boot's auto-configuration feature. 
 
 To enable a module for auto configuration, put the file `META-INF/spring.factories` into
 the classpath:
@@ -180,6 +180,8 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 ```
 
 This would import the `SecurityModuleConfiguration` class all its beans into the application context.
+
+An auto-configuration is especially handy if we're building a cross-cutting concern to be used in many Spring Boot applications. In this case, we can even build a separate [starter module](/spring-boot-starter/) around the configuration.
 
 ## Configuring a Module
 

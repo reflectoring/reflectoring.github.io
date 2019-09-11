@@ -1,34 +1,28 @@
 ---
 
 title: "Combining Object Mother and Fluent Builder for the Ultimate Test Data Factory"
-categories: [testing]
+categories: [craft, java]
 modified: 2018-08-31
-last_modified_at: 2018-08-31
-author: tom
-tags: [testing, test data, generator]
-comments: true
-ads: true
 excerpt: "Combining the Object Mother Pattern with the Fluent Builder Pattern allows to create
           Test Data Factories that reduce code duplication and promote the Single Responsibility Principle.
-          Learn why and how in this tutorial." 
-sidebar:
-  nav: testing
-  toc: true
+          Learn why and how in this tutorial."
+image:
+  auto: 0030-builder 
 ---
 
-{% include sidebar_right %}
+
 
 To test our business code we always need some kind of test data. This tutorial explains how to do just that with the 
 Object Mother pattern and why we should combine it with a Fluent Builder to create test data factories that
 are fun to work with.
 
-{% include github-project url="https://github.com/thombergs/code-examples/blob/master/patterns/src/test/java/io/reflectoring/objectmother/ObjectMotherClient.java" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/blob/master/patterns/src/test/java/io/reflectoring/objectmother/ObjectMotherClient.java" %}
 
 ## What do we Need a Test Data Factory For?
 
 Let's imagine that we want to create some tests around `Invoice` objects that are structured as shown in the figure below.
 
-![Invoice UML](/assets/images/posts/tips/objectmother-fluent-builder/invoice.jpg)
+![Invoice UML](/assets/img/posts/tips/objectmother-fluent-builder/invoice.jpg)
 
 An `Invoice` has a target `Address` and zero or more `InvoiceItems`,
 each containing the amount and price of a certain product that is billed with the invoice.
@@ -59,8 +53,8 @@ or `Address` can easily contain 20 or more fields each.
 **Do we really want to have code that initializes such complex object graphs in multiple places of our test code base?**
 
 Bad test code structure hinders the development of new features just as much as bad production code,
-as Robert C. Martin's [Clean Architecture](//geni.us/oBgB) has once more brought to my attention 
-(link points to Amazon; read my [book review](/review-clean-architecture/)).
+as Robert C. Martin's <a href="//www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D95862666%26fc%3DUS&cjsku=95862666" rel="nofollow">Clean Architecture</a> has once more brought to my attention 
+(link points to <a href="https://www.kqzyfj.com/click-9137796-9837109" rel="nofollow">ebooks.com</a>; read my [book review](/review-clean-architecture/)).
 
 So, **let's try to keep test code duplication to a minimum by applying the [Object Mother](https://martinfowler.com/bliki/ObjectMother.html) pattern**.
 
@@ -190,10 +184,10 @@ Single Responsibility Principle by making it easy to adjust created objects loca
 
 ## Further Reading
 
-* [Clean Architecture](//geni.us/oBgB) by Robert C. Martin, chapter 28 about the quality of test code 
-  (link points to Amazon)
+* <a href="//www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D95862666%26fc%3DUS&cjsku=95862666" rel="nofollow">Clean Architecture</a> by Robert C. Martin, chapter 28 about the quality of test code 
+  (link points to <a href="https://www.kqzyfj.com/click-9137796-9837109" rel="nofollow">ebooks.com</a>)
 * Martin Fowler on [Object Mother](https://martinfowler.com/bliki/ObjectMother.html)
 * Object Mother at [java-design-patterns.com](http://java-design-patterns.com/patterns/object-mother/)
 * TestDataBuilder at [wiki.c2.com](http://wiki.c2.com/?TestDataBuilder)
 
-{% include github-project url="https://github.com/thombergs/code-examples/blob/master/patterns/src/test/java/io/reflectoring/objectmother/ObjectMotherClient.java" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/blob/master/patterns/src/test/java/io/reflectoring/objectmother/ObjectMotherClient.java" %}

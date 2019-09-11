@@ -1,15 +1,14 @@
 ---
 
 title: 'Tool-based Database Refactoring: Flyway vs. Liquibase'
-categories: [tools]
+categories: [java]
 modified: 2017-05-14
-author: tom
-tags: [database, refactoring, bootstrap, schema, setup, tools, liquibase, flyway, sql, script, automatic]
-comments: true
-ads: true
+excerpt: "A comparison of Flyway and Liquibase - the two most popular tools for database refactoring."
+image:
+  auto: 0046-rack
 ---
 
-{% include sidebar_right %}
+
 
 In a [previous blog post](/tool-based-database-refactoring/) I discussed the term "database refactoring" and some concepts that allow
 database refactoring to be supported by tools with the result of having a database schema that is 

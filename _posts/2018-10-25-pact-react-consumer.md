@@ -1,21 +1,13 @@
 ---
 title: "Implementing a Consumer-Driven Contract for a React App with Pact and Jest"
-categories: [cdc, testing]
+categories: [programming]
 modified: 2018-10-25
-last_modified_at: 2018-11-10
-author: tom
-tags: 
-comments: true
-ads: true
 excerpt: "A tutorial that shows how to implement a REST consumer with Axios, build a 
           a consumer-driven contract for it with the Pact framework, and 
           validate the consumer against the contract using Jest as the testing framework."
-sidebar:
-  nav: cdc
-  toc: true
+image:
+  auto: 0025-signature
 ---
-
-{% include sidebar_right %}
 
 Consumer-driven contract (CDC) tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
@@ -38,7 +30,7 @@ CDC tests for your React app.
 The core of this tutorial stems from [an example](https://github.com/pact-foundation/pact-js/tree/master/examples/jest)
 in the pact-js repository.
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer" %}
 
 ## Creating a React App
 

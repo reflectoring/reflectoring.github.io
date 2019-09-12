@@ -1,358 +1,357 @@
 ---
-title: "Step By Step Tutorial for Implementing Consumer-Driven Contracts for a Node Express Server with Pact"
-categories: [cdc]
-modified: 2018-10-28
-last_modified_at: 2018-10-28
-author: tom
-tags: 
-comments: true
-ads: true
-excerpt: "A tutorial that shows how to implement a REST provider with a Node Express Server
-          using the Pact framework."
-sidebar:
-  nav: cdc
-  toc: true
+title: "Implementing a Consumer-Driven Contract for a GraphQL Consumer with Node and Apollo"
+categories: [programming]
+modified: 2018-11-10
+excerpt: "In this tutorial, we're exploring how to create a GraphQL consumer with Node and Apollo. We're then going to create a contract for this GraphQL Consumer and a test that validates that the consumer works accoring to the contract."
+image:
+  auto: 0025-signature
 ---
 
-{% include sidebar_right %}
+
 
 Consumer-driven contract (CDC) tests are a technique to test integration
 points between API providers and API consumers without the hassle of end-to-end tests (read it up in a 
 [recent blog post](/7-reasons-for-consumer-driven-contracts/)).
 A common use case for consumer-driven contract tests is testing interfaces between 
-services in a microservice architecture. However, another interesting use case is
-testing interfaces between the user client and those backend services. 
+services in a microservice architecture. 
 
-In this tutorial, we're going to create a REST provider with [Node](https://nodejs.org/en/) 
-and [Express](https://expressjs.com/) that implements the Heroes endpoints from the contract
-created in [this article](/pact-react-consumer). 
+This article explains the steps of setting up a GraphQL client (or "consumer") using the [Apollo](https://www.apollographql.com/)
+framework. We'll then create and publish a consumer-driven contract for the GraphQL interaction 
+between the GraphQL client and the API provider and implement a contract test that validates that
+our consumer is working as expected by the contract. For this, we're using the Node version of the 
+[Pact](https://pact.io) framework.
 
-Then, we'll create a contract test
-with the JavaScript version of [Pact](https://github.com/pact-foundation/pact-js) that 
-verifies that our provider works as specified in the contract. 
+This tutorial builds upon a [recent tutorial](/pact-react-consumer) about creating a React
+consumer for a REST API, so you'll find some links to that tutorial for more detailed explanations.
 
-This tutorial assumes you have a current version of Node installed.
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer" %}
 
-{% include github-project url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider" %}
+## Creating the Node App
 
-## Creating an Express Server
+To set up a Node app, follow [the instructions in the previous tutorial](/pact-react-consumer/#creating-a-react-app).
+There, we're using the `create-react-app` tool to create a React client that already has [Jest](https://jestjs.io/) set up as
+a testing framework.
 
-Let's start by creating an Express server from scratch.
+However, since we're not using React in this tutorial, you can also create a plain Node app. Then you have
+to set up a test framework manually, though.
 
-Since we don't want to do this by hand, we'll install the `express-generator`:
+## Adding Dependencies
 
-```
-npm install -g express-generator 
-```
-
-Then, we simply call the generator to create a project template for us:
-
-```
-express --no-view pact-node-provider
-```
-
-We're using the `--no-view` parameter since we're only implementing REST endpoint and thus 
-don't need any templating engine. 
-
-Don't forget to call `npm install` in the created project folder now to install the dependencies. 
-
-## Adding the Heroes Endpoints
-
-Having a base Express project, we're ready to implement a new REST endpoint.
-
-### The Contract
-
-But first, let's have a look at the contract against which we're about to implement. 
-The contract has been created
-by the consumer in [this article](/pact-react-consumer):
+In our `package.json`, we need to declare some additional dependencies:
 
 ```json
 {
-  "consumer": {
-    "name": "hero-consumer"
-  },
-  "provider": {
-    "name": "hero-provider"
-  },
-  "interactions": [
-    {
-      "description": "a POST request to create a hero",
-      "providerState": "provider allows hero creation",
-      "request": {
-        "method": "POST",
-        "path": "/heroes",
-        "headers": {
-          "Accept": "application/json; charset=utf-8",
-          "Content-Type": "application/json; charset=utf-8"
-        },
-        "body": {
-          "name": "Superman",
-          "superpower": "flying",
-          "universe": "DC"
-        },
-        "matchingRules": {
-          "$.headers.Accept": {
-            "match": "regex",
-            "regex": "application\\/json; *charset=utf-8"
-          },
-          "$.headers.Content-Type": {
-            "match": "regex",
-            "regex": "application\\/json; *charset=utf-8"
-          }
-        }
-      },
-      "response": {
-        "status": 201,
-        "headers": {
-          "Content-Type": "application/json; charset=utf-8"
-        },
-        "body": {
-          "id": 42,
-          "name": "Superman",
-          "superpower": "flying",
-          "universe": "DC"
-        },
-        "matchingRules": {
-          "$.headers.Content-Type": {
-            "match": "regex",
-            "regex": "application\\/json; *charset=utf-8"
-          },
-          "$.body": {
-            "match": "type"
-          }
-        }
-      }
+  "dependencies": {
+    "apollo-cache-inmemory": "^1.3.9",
+    "apollo-client": "^2.4.5",
+    "apollo-link-http": "^1.5.5",
+    "graphql": "^14.0.2",
+    "graphql-tag": "^2.10.0",
+    "node-fetch": "^2.2.1"
     }
-  ],
-  "metadata": {
-    "pactSpecification": {
-      "version": "2.0.0"
-    }
-  }
 }
 ```
 
-The contract contains a single request / response pair, called an "interaction". In this interaction,
-the consumer sends a POST request with a Hero-JSON-object in the body and the provider
-is expected to return a response with HTTP status 201 which again contains the hero in the body,
-this time with an ID that was added by the server.
+* [apollo-client](https://www.npmjs.com/package/apollo-client) provides Apollo's GraphQL client implementation
+* [apollo-cache-inmemory](https://www.npmjs.com/package/apollo-cache-inmemory) contains Apollo's implementation of an 
+  in-memory-cache that is used to cache GraphQL query results to reduce the number of requests to the server
+* [apollo-link-http](https://www.npmjs.com/package/apollo-link-http) allows us to use GraphQL over HTTP
+* [graphql](https://www.npmjs.com/package/graphql) and [graphql-tag](https://www.npmjs.com/package/graphql-tag)
+  provide the means to work with GraphQL queries
+* [node-fetch](https://www.npmjs.com/package/node-fetch) implements the global `fetch` operation that is available 
+  in browsers, but not in a Node environment.
+  
+Don't forget to run `npm install` after changing the dependencies.
 
-In the following, we assume that the contract has been published on a [Pact Broker](https://github.com/pact-foundation/pact_broker)
-by the consumer. But it's also possible to take the contract file from the consumer codebase and 
-access it directly in the provider code base. 
+## Setting Up Jest
 
-### Adding an Express Route
+We're using Jest as the testing framework for our contract tests.
 
-We now want to implement the contract on the provider side. 
+Follow [the instructions in the previous tutorial](/pact-react-consumer/#setting-up-jest)
+to set up Jest. If you want the code of the previous tutorial and the code of this tutorial to exist in parallel,
+note these changes:
 
-For this, we create a new POST route that expects a hero JSON object as payload:
+* copy the file `pact/setup.js` to `pact/setup-graphql.js` and use different consumer and provider names
+* in `package.json` add a script `test:pact:graphql` referring to `pact/setup-graphql.js` and using
+  `--testMatch \"**/*.test.graphql.pact.js\"` in order to only execute our graphQL client tests
+
+Now, we can run the pact tests with this command:
+
+```
+npm run test:pact:graphql
+```
+
+We just don't have a test to run, yet.
+
+## The Hero GraphQL Client
+
+Let's implement a GraphQL client that we can test.
+
+We're going to create a client that allows us to query heroes from a GraphQL server.
+
+### The Hero Class
+
+A hero resource has an id, a name, a superpower and it belongs to a certain universe (e.g. "DC" or "Marvel"):
 
 ```javascript
-// ./routes/heroes.js
-const express = require('express');
-const router = express.Router();
+// hero.js
+class Hero {
+    constructor(name, superpower, universe, id) {
+        this.name = name;
+        this.superpower = superpower;
+        this.universe = universe;
+        this.id = id;
+    }
+}
 
-router.route('/')
-    .post(function (req, res) {
-        res.status(201);
-        res.json({
-            id: 42,
-            superpower: 'flying',
-            name: 'Superman',
-            universe: 'DC'
+export default Hero;
+```
+
+Strictly, we don't need to declare a class for our hero objects, since we can just use 
+plain JSON objects instead. However, having a Java background, I couldn't resist the urge to 
+fake type safety ;).
+
+### The Hero GraphQL Client Service
+
+For loading a hero from the server via GraphQL, we're creating the `GraphQLHeroService` class:
+
+```javascript
+import {ApolloClient} from "apollo-client"
+import {InMemoryCache} from "apollo-cache-inmemory"
+import {HttpLink} from "apollo-link-http"
+import gql from "graphql-tag"
+import Hero from "hero";
+
+class GraphQLHeroService {
+
+    constructor(baseUrl, port, fetch) {
+        this.client = new ApolloClient({
+            link: new HttpLink({
+                uri: `${baseUrl}:${port}/graphql`,
+                fetch: fetch
+            }),
+            cache: new InMemoryCache()
         });
+    }
+
+    getHero(heroId) {
+        if (heroId == null) {
+            throw new Error("heroId must not be null!");
+        }
+        return this.client.query({
+            query: gql`
+              query GetHero($heroId: Int!) {
+                hero(id: $heroId) {
+                  name
+                  superpower
+                }
+              }
+            `,
+            variables: {
+                heroId: heroId
+            }
+        }).then((response) => {
+            return new Promise((resolve, reject) => {
+                try {
+                    const hero = new Hero(response.data.hero.name, 
+                        response.data.hero.superpower, 
+                        null, 
+                        heroId);
+                    Hero.validateName(hero);
+                    Hero.validateSuperpower(hero);
+                    resolve(hero);
+                } catch (error) {
+                    reject(error);
+                }
+            })
+        });
+    };
+
+}
+
+export default GraphQLHeroService;
+```
+
+First, we're creating a new `ApolloClient` that is pointed to a certain URL and port.
+
+In the constructor, we're passing a `fetch` function. In a browser environment, this is a globally
+available function. However, we're going to run our tests in a Node environment where this function
+is not available by default. So, to make our service compatible to both environments, we're taking
+a fetch function as a parameter and pass it on to be used by the GraphQL client.
+
+In the `getHero` function, we're using `gql` to create a GraphQL query.
+
+## Implementing a Contract Test
+
+In this test, we're going to:
+
+* create a contract between our GraphQL client and GraphQL provider
+* verify that our GraphQL client works as defined in the contract.
+
+### The Test Template
+
+The test structure will look like this:
+
+```javascript
+// hero.service.test.graphql.pact.js
+import GraphQLHeroService from './hero.service.graphql';
+import * as Pact from '@pact-foundation/pact';
+import fetch from 'node-fetch';
+
+describe('HeroService GraphQL API', () => {
+
+    const heroService = new HeroService('http://localhost', global.port, fetch);
+
+    describe('getHero()', () => {
+
+        beforeEach((done) => {
+           // ...
+        });
+
+        it('sends a request according to contract', (done) => {
+           // ...
+        });
+
     });
 
-module.exports = router;
-```
-
-**I highly recommend to add some kind of validation to check the incoming request (e.g. check that the
-body contains all expected fields).** I explained [here](/pact-react-consumer#improving-contract-quality-with-validation)
-why validation immensely improves the quality of our contract tests.
-
-Now we have to make the new route available to the Express application by adding
-it in `app.js`:
-
-```javascript
-// ./app.js
-const heroesRouter = require('./routes/heroes');
-app.use('/heroes', heroesRouter);
-```
-
-We just implemented the provider side of the contract. 
-
-**Now we have to prove that the provider actually works as expected by the contract.**
-
-## Setting Up Pact
-
-So, let's set up Pact to implement a provider test that verifies our endpoint against
-the contract.
-
-The provider test reads the interactions from a contract and for each interaction,
-does the following:
-
-1. put the provider into a state that allows to respond accordingly 
-2. send the request to the provider
-3. validate that the response from the provider matches the response from the contract.
-
-Pact does most of the work here, we just need to set it up correctly. 
-
-### Dependencies
-
-First, we add some dependencies to `package.json`:
-
-```json
-// ./package.json
-{
-  "devDependencies": {
-    "@pact-foundation/pact": "7.0.1",
-    "start-server-and-test": "^1.7.5"
-  }
-}
-```
-
-* we use [`pact`](https://www.npmjs.com/package/@pact-foundation/pact) to interpret a given contract file and create a provider test for us
-* we use [`start-server-and-test`](https://www.npmjs.com/package/start-server-and-test) to allow us to start up the Express server and the provider test at once.
-
-### Adding a Provider State Endpoint
-
-The first step of the provider test for each interaction is to put the provider into a certain state,
-called "provider state" in Pact lingo. 
-
-In [the contract](#the-contract) above the provider state for our single interaction 
-is called "provider allows hero creation".
-
-**Provider states can be used by the provider to mock database queries, for example**. When the provider
-is notified to go into the state "provider allows hero creation" it knows which database queries
-are needed and can set up mocks that simulate the database accordingly. 
-
-Thus, we don't need to spin up a database during the test. **A major advantage of CDC tests is to be able to execute them
-without spinning up a whole server farm with a database and other dependencies**. Hence, we should make
-use of mocks that react to the provider states.
-
-You can read more about provider states in the [Pact docs](https://docs.pact.io/getting_started/provider_states).
-
-In order to put the provider into a certain state, it needs a POST endpoint that accepts the `consumer` and
-`state` query parameters:
-
-```javascript
-// ./routes/provider_state.js
-const express = require('express');
-const router = express.Router();
-
-router.route('/')
-    .post(function (req, res) {
-        const consumer = req.query['consumer'];
-        const providerState = req.query['state'];
-        // imagine we're setting the server into a certain state
-        res.send(`changed to provider state "${providerState}" for consumer "${consumer}"`);
-        res.status(200);
-    });
-
-module.exports = router;
-```
-
-Note that the endpoint implementation above is just a dummy implementation. We don't have any database access in
-our `/heroes` endpoint, hence we don't need to mock anything. 
-
-Next, we make the endpoint available to the Express app:
-
-```javascript
-// ./app.js
-var providerStateRouter = require('./routes/provider_state');
-
-if (process.env.PACT_MODE === 'true') {
-    app.use('/provider-state', providerStateRouter);
-}
-```
-
-**We only activate the endpoint when the environment variable `PACT_MODE` is set to `true`, since we
-don't want this endpoint in production.** 
- 
-Make sure to set this environment variable when running the test later. 
-
-### Starting Pact
-
-Now we create a script `pact/provider_tests.js` to use Pact to do the actual testing:
-
-```javascript
-// ./pact/provider_tests.js
-const { Verifier } = require('@pact-foundation/pact');
-const packageJson = require('../package.json');
-
-let opts = {
-    providerBaseUrl: 'http://localhost:3000',
-    pactBrokerUrl: 'https://adesso.pact.dius.com.au',
-    pactBrokerUsername: process.env.PACT_USERNAME,
-    pactBrokerPassword: process.env.PACT_PASSWORD,
-    provider: 'hero-provider',
-    publishVerificationResult: true,
-    providerVersion: packageJson.version,
-    providerStatesSetupUrl: 'http://localhost:3000/provider-state'
-};
-
-new Verifier().verifyProvider(opts).then(function () {
-    console.log("Pacts successfully verified!");
 });
 ```
 
-In the script we define some options and pass them to a `Verifier` instance
-that executes the three steps (provider state, send request, validate response).
+We see the usual `describe()` and `it()` functions popular in javascript testing frameworks.
 
-The most important options are:
+Also, we create an instance of our `GraphQLHeroService` GraphQL client and tell it to please send its
+requests to `localhost:8080`. 
 
-* **pactBroker...**: coordinates to the pact broker instance where Pact can download the
-  contracts. Username and password are read from environment variables since we don't
-  want to include them in code.
-* **provider**: we tell pact to download only contracts for the provider we're currently
-  implementing, which in this case is `hero-provider`.
-* **providerBaseUrl**: base url of the provider to which the requests are going to be
-  sent. In our case, we're starting the Express server locally on port 3000.
-* **providerStatesSetupUrl**: the url to change provider states. This refers to the endpoint
-  we have created above. In our case, we could actually leave this option out, since our provider state
-  endpoint doesn't really do anything.
+Additionally, we're importing the `fetch` function from `node-fetch` to pass it into our `GraphQLHeroService` to
+make it compatible within the Node environment.
+
+We'll fill in the `beforeEach()` and `it()` functions next. 
+
+### Defining the Contract
+
+Within the `beforeEach` function, we're defining our contract:
+
+```javascript
+// hero.service.test.graphql.pact.js
+beforeEach((done) => {
   
-Instead of providing the coordinates to a pact broker, we could also provide a
-`pactUrls` option pointing directly to local pact files. 
+    const contentTypeJsonMatcher = Pact.Matchers.term({
+        matcher: "application\\/json; *charset=utf-8",
+        generate: "application/json; charset=utf-8"
+    });
 
-A full description of the options can be found 
-[here](https://github.com/pact-foundation/pact-js#provider-api-testing). 
-
-To make the script runnable via node, we add some scripts to `package.json`:  
-
-```json
-// ./package.json
-{
-  "scripts": {
-    "start": "node ./bin/www.js",
-    "pact:providerTests": "node ./pact/provider_tests.js",
-    "test:pact": "start-server-and-test start http://localhost:3000 pact:providerTests"
-  }
-}
+    global.provider.addInteraction(new Pact.GraphQLInteraction()
+        .uponReceiving('a GetHero Query')
+        .withRequest({
+            path: '/graphql',
+            method: 'POST',
+        })
+        .withOperation("GetHero")
+        .withQuery(`
+            query GetHero($heroId: Int!) {
+              hero(id: $heroId) {
+                  name
+                  superpower
+                  __typename
+              }
+            }`)
+        .withVariables({
+            heroId: 42
+        })
+        .willRespondWith({
+            status: 200,
+            headers: {
+                'Content-Type': contentTypeJsonMatcher
+            },
+            body: {
+                data: {
+                    hero: {
+                        name: Pact.Matchers.somethingLike('Superman'),
+                        superpower: Pact.Matchers.somethingLike('Flying'),
+                        __typename: 'Hero'
+                    }
+                }
+            }
+        }))
+        .then(() => done());
+});
 ```
 
-The `start` script has already been added by the Express generator.
+By calling `provider.addInteraction()`, we're passing a request / response pair to the
+pact mock server (which has been started by the `jest-wrapper.js` script we defined above).
 
-The script `pact:providerTests` runs the `provider_tests.js` script from above. However,
-this will only work when the Express server is already running.
+Since we want to create a GraphQL interaction, we're using Pact's `GraphQLInteraction` class
+to describe this interaction.
 
-So we create a third script `test:pact` that uses the `start-server-and-test` tool we
-added to our dependencies earlier to start up the Express server first and then run the
-provider tests. 
+The differences to a standard REST interaction are the `.withOperation()`, `.withQuery()` and
+`.withVariables()` functions. These we can use to define the name of the GraphQL operation (if
+we have defined a name in the query), the GraphQL query itself and the variables used within the query.
 
-We tell the tool to run the `start` task first and run the server on `localhost:3000` before
-running the `pact:providerTests` task.
+For a discussion of the GraphQL Syntax, refer to the [GraphQL documentation](https://graphql.org/learn/).
 
-We can now run the provider tests and they should be green:
+Note the `__typename` field in the query. We have not defined such a field in our `Hero` class.
+However, the Apollo GraphQL client adds this field by itself, so we need to include it into our
+contract.   
 
+Also note that whitespaces are not important in the GraphQL query. If the GraphQL client 
+adds whitespaces and line breaks in a different manner, it doesn't matter.   
+
+### Verifying the GraphQL Client
+
+Now, we want to make sure that our `GraphQLHeroService` works as expected by the contract.
+We do this in the actual test method `it()`:
+
+```javascript
+// hero.service.test.graphql.pact.js
+it('sends a request according to contract', (done) => {
+    heroService.getHero(42)
+        .then(hero => {
+            expect(hero.name).toEqual('Superman');
+        })
+        .then(() => {
+            global.provider.verify()
+                .then(() => done(), error => {
+                    done.fail(error)
+                })
+        });
+});
 ```
-npm run test:pact
-``` 
+
+We're calling our `heroService` to fetch a hero for us. Since the `heroService`
+is configured to send requests to the Pact mock provider, Pact can check
+if the request matches a certain request / response pair.
+
+In our case, we have only defined a single request / response pair, so if the
+request does not match the request we have defined in our `before()` function above,
+we'll get an error.
+
+If the request matches, the Pact mock provider will return the response we have 
+provided in the contract. To prove that, we assert that the heroes `name` is the
+one we provided in the contract.
+
+By calling `provider.verify()` we also make sure
+that the test fails if the `heroService` doesn't send any request at all or a request that
+did not match any of the registered interactions. 
+
+We can now run our test with `npm run test:pact:graphql` and it should be green. Also, it should
+have created a contract file in the `pacts` folder that can be published so that the provider
+can test against it, too.
+
+## Improving Contract Quality with Validation
+
+Read [this discussion](/pact-react-consumer/#improving-contract-quality-with-validation) in my previous tutorial.
+
+## Debugging
+Read [this discussion](/pact-react-consumer/#debugging) in my previous tutorial.
+
+## Publishing the Contract
+Read [this discussion](/pact-react-consumer/#publishing-the-contract) in my previous tutorial.
 
 ## Conclusion
+In this tutorial, we have successfully created a GraphQL client with Node and Apollo. We have
+also defined a contract for this client and verified that this client works as expected by the contract.
 
-In this tutorial we went through the steps to create an Express server from scratch
-and enabling it to run provider tests against a Pact contract. 
+The contract can now be used to verify that a certain GraphQL provider works as expected.
 
-You can look at the example code from this tutorial in my 
-[github repo](https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider).
+The code for this tutorial can be found on 
+[github](https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer).

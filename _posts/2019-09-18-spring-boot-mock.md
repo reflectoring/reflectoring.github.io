@@ -103,13 +103,13 @@ public class SendMoneyService implements SendMoneyUseCase {
 
 Imagine that there is some wildly complicated business logic going on in this class in place of the logging statements. 
 
-For most of this article we're not really interested in the actual implementation of the `SendMoneyUseCase` interface. After all, we want to mock it away in our test of the web controller.
+For most of this article, we're not interested in the actual implementation of the `SendMoneyUseCase` interface. After all, we want to mock it away in our test of the web controller.
 
 ## Why Mock?
 
 Why should we use a mock instead of a real service object in a test?
 
-Imagine the service implementation above has a dependency to a database or some other third-party system. We don't really want to have our test run against the database. If the database isn't available, the test will fail even though our system under test might be completely bug-free. **The more dependencies we add in a test, the more wrong reasons a test has to fail.** If we use a mock instead, we can mock all those potential failures away.
+Imagine the service implementation above has a dependency to a database or some other third-party system. We don't want to have our test run against the database. If the database isn't available, the test will fail even though our system under test might be completely bug-free. **The more dependencies we add in a test, the more wrong reasons a test has to fail.** If we use a mock instead, we can mock all those potential failures away.
 
 Aside from reducing failures, **mocking also reduces our tests' complexity and thus saves us some effort**. It takes time to instantiate a whole network of live objects to be used in a test. Using mocks, we only have to "instantiate" one mock instead of a whole rat-tail of objects the real object might need to be instantiated.
 
@@ -168,7 +168,7 @@ In the test itself, we can use Mockito's `given()` to define the behavior we wan
   <h4>Web Controllers Should Be Integration-tested Instead of Unit-tested!</h4>
   <p>
   Don't do this at home! The code above is just an example for how to create mocks.
-  Testing a Spring Web Controller with a unit test like this only covers a fraction of the potential errors that can happen in production. The unit test above verifies that a certain response code is returned, but it does not integrate with Spring to check if the input parameters are parsed correctly from a HTTP request, if the controller listens to the correct path, if exceptions are transformed into the expected HTTP response, and so on.
+  Testing a Spring Web Controller with a unit test like this only covers a fraction of the potential errors that can happen in production. The unit test above verifies that a certain response code is returned, but it does not integrate with Spring to check if the input parameters are parsed correctly from an HTTP request, if the controller listens to the correct path, if exceptions are transformed into the expected HTTP response, and so on.
   </p>
   <p>
   Web controllers should instead be tested integrated with Spring as discussed in <a href="/spring-boot-web-controller-test/">my article</a> about the <code>@WebMvcTest</code> annotation. 
@@ -255,7 +255,7 @@ class SendMoneyControllerWebMvcMockBeanTest {
 }
 ```
 
-The application context created by `@WebMvcTest` will not pick up our `SendMoneyService` bean (which implements the `SendMoneyUseCase` interface), even though it is marked as a Spring beann with the `@Component` annotation. We have to provide a bean of type  `SendMoneyUseCase` ourselves, otherwise we'll get an error like this:
+The application context created by `@WebMvcTest` will not pick up our `SendMoneyService` bean (which implements the `SendMoneyUseCase` interface), even though it is marked as a Spring bean with the `@Component` annotation. We have to provide a bean of type  `SendMoneyUseCase` ourselves, otherwise, we'll get an error like this:
 
 ```
 No qualifying bean of type 'io.reflectoring.mocking.SendMoneyUseCase' available:
@@ -264,9 +264,9 @@ No qualifying bean of type 'io.reflectoring.mocking.SendMoneyUseCase' available:
 
 Instead of instantiating `SendMoneyService` ourselves or telling Spring to pick it up, potentially pulling in a rat-tail of other beans in the process, we can just add a mock implementation of `SendMoneyUseCase` to the application context.
 
-This is easily done by using Spring Boot's `@MockBean` annotation. The Spring Boot test support will then automatically create a Mockito mock of type `SendMoneyUseCase` and add it to the application context, so that our controller can use it. In the test method, we can then use Mockito's `given()` and `when()` methods just like above.
+This is easily done by using Spring Boot's `@MockBean` annotation. The Spring Boot test support will then automatically create a Mockito mock of type `SendMoneyUseCase` and add it to the application context so that our controller can use it. In the test method, we can then use Mockito's `given()` and `when()` methods just like above.
 
-This way we can easily create a focused web controller test that instantiates only the objects it really needs.
+This way we can easily create a focused web controller test that instantiates only the objects it needs.
 
 ### Replacing a Spring Bean with @MockBean
 
@@ -297,11 +297,11 @@ The `@MockBean` annotation will cause Spring to look for an existing bean of typ
 
 The net result is the same: in our test, we can treat the `sendMoneyUseCase` object like a Mockito mock. 
 
-The difference is that the `SendMoneyService` bean will be instantiated when the initial application context is created, before it's replaced with the mock. If `SendMoneyService` did something in its constructor that requires a dependency to a database or third-party system that's not available at test time, this wouldn't work. Instead of using `@SpringBootTest`, we'd have to create a more focused application context and add the mock to the application context before the actual bean is instantiated.
+The difference is that the `SendMoneyService` bean will be instantiated when the initial application context is created before it's replaced with the mock. If `SendMoneyService` did something in its constructor that requires a dependency to a database or third-party system that's not available at test time, this wouldn't work. Instead of using `@SpringBootTest`, we'd have to create a more focused application context and add the mock to the application context before the actual bean is instantiated.
 
 ### Spying on a Spring Bean with @SpyBean
 
-Mockito also allows us to spy on real objects. Instead of mocking away an object completely, Mockito creates a proxy around the real object and simply monitors which methods are being called to that we can later verify if a certain method has beend called or not.
+Mockito also allows us to spy on real objects. Instead of mocking away an object completely, Mockito creates a proxy around the real object and simply monitors which methods are being called to that we can later verify if a certain method has been called or not.
 
 Spring Boot provides the `@SpyBean` annotation for this purpose:
 
@@ -329,7 +329,7 @@ class SendMoneyControllerSpringBootSpyBeanTest {
 
 ### Why Do My Spring Tests Take So Long?
 
-If we use `@MockBean` and `@SpyBean` a lot in our tests, running the tests will take a lot of time. This is due to the fact that Spring Boot creates a new application context for each test, which can be an expensive operation depending on the size of the application context.
+If we use `@MockBean` and `@SpyBean` a lot in our tests, running the tests will take a lot of time. This is because Spring Boot creates a new application context for each test, which can be an expensive operation depending on the size of the application context.
 
 ## Conclusion
 

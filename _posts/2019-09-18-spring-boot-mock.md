@@ -40,11 +40,11 @@ public class SendMoneyController {
   
     boolean success = sendMoneyUseCase.sendMoney(command);
     
-    if(success) {
+    if (success) {
       return ResponseEntity
               .ok()
               .build();
-    }else{
+    } else {
       return ResponseEntity
               .status(HttpStatus.INTERNAL_SERVER_ERROR)
               .build();
@@ -139,7 +139,7 @@ public class SendMoneyControllerPlainTest {
       new SendMoneyController(sendMoneyUseCase);
 
   @Test
-  void testSuccess(){
+  void testSuccess() {
     // given
     SendMoneyCommand command = new SendMoneyCommand(1L, 2L, 500);
     given(sendMoneyUseCase
@@ -194,7 +194,7 @@ class SendMoneyControllerMockitoAnnotationsJUnitJupiterTest {
   private SendMoneyController sendMoneyController;
 
   @Test
-  void testSuccess(){
+  void testSuccess() {
     ...
   }
 
@@ -222,7 +222,7 @@ public class SendMoneyControllerMockitoAnnotationsJUnit4Test {
   private SendMoneyController sendMoneyController;
 
   @Test
-  public void testSuccess(){
+  public void testSuccess() {
     ...
   }
 
@@ -250,7 +250,7 @@ class SendMoneyControllerWebMvcMockBeanTest {
   private SendMoneyUseCase sendMoneyUseCase;
 
   @Test
-  void testSendMoney() throws Exception {
+  void testSendMoney() {
     ...
   }
 
@@ -286,7 +286,7 @@ class SendMoneyControllerSpringBootMockBeanTest {
   private SendMoneyUseCase sendMoneyUseCase;
 
   @Test
-  void testSendMoney() throws Exception {
+  void testSendMoney() {
     ...
   }
 
@@ -319,7 +319,7 @@ class SendMoneyControllerSpringBootSpyBeanTest {
   private SendMoneyUseCase sendMoneyUseCase;
 
   @Test
-  void testSendMoney() throws Exception {
+  void testSendMoney() {
     ...
   }
 

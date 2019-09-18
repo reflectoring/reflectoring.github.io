@@ -189,7 +189,7 @@ between controller and the HTTP layer. `@MockBean` automatically
 replaces the bean of the same type in the application context with a 
 Mockito mock. 
 
-You can read more about the `@MockBean` annotation in [my article](/spring-boot-mocking) about mocking.
+You can read more about the `@MockBean` annotation in [my article](/spring-boot-mock/) about mocking.
 
 <div class="notice success">
   <h4>Use <code>@WebMvcTest</code> with or without the <code>controllers</code> parameter?</h4>

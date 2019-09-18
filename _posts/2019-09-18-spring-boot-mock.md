@@ -340,3 +340,5 @@ Mockito makes it easy for us to mock away objects that we don't want to test rig
 Spring Boot makes it easy to use Mockito's mocking features in Spring-supported integration tests by using the `@MockBean` and `@SpyBean` annotations.
 
 As easy as these Spring Boot features are to include in our tests, we should be aware of the cost: each test may create a new application context, potentially increasing the runtime of our test suite noticeable.
+
+The code examples are available on [GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/mocking).

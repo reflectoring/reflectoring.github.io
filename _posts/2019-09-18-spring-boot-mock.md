@@ -111,9 +111,9 @@ For most of this article, we're not interested in the actual implementation of t
 
 Why should we use a mock instead of a real service object in a test?
 
-Imagine the service implementation above has a dependency to a database or some other third-party system. We don't want to have our test run against the database. If the database isn't available, the test will fail even though our system under test might be completely bug-free. **The more dependencies we add in a test, the more wrong reasons a test has to fail.** If we use a mock instead, we can mock all those potential failures away.
+Imagine the service implementation above has a dependency to a database or some other third-party system. We don't want to have our test run against the database. If the database isn't available, the test will fail even though our system under test might be completely bug-free. **The more dependencies we add in a test, the more reasons a test has to fail.** And most of those reasons will be the wrong ones. If we use a mock instead, we can mock all those potential failures away.
 
-Aside from reducing failures, **mocking also reduces our tests' complexity and thus saves us some effort**. It takes time to instantiate a whole network of live objects to be used in a test. Using mocks, we only have to "instantiate" one mock instead of a whole rat-tail of objects the real object might need to be instantiated.
+Aside from reducing failures, **mocking also reduces our tests' complexity and thus saves us some effort**. It takes a lot of boilerplate code to set up a whole network of correctly-initialized objects to be used in a test. Using mocks, we only have to "instantiate" one mock instead of a whole rat-tail of objects the real object might need to be instantiated.
 
 In summary, **we want to move from a potentially complex, slow, and flaky integration test towards a simple, fast, and reliable unit test**.
 
@@ -167,13 +167,13 @@ We create a mock instance of `SendMoneyService` and pass this mock into the cons
 In the test itself, we can use Mockito's `given()` to define the behavior we want the mock to have and `then()` to check if certain methods have been called as expected. You can find more on Mockito's mocking and verification methods in the [docs](https://static.javadoc.io/org.mockito/mockito-core/3.0.0/org/mockito/Mockito.html).
 
 <div class="notice success">
-  <h4>Web Controllers Should Be Integration-tested Instead of Unit-tested!</h4>
+  <h4>Web Controllers Should Be Integration-tested!</h4>
   <p>
   Don't do this at home! The code above is just an example for how to create mocks.
-  Testing a Spring Web Controller with a unit test like this only covers a fraction of the potential errors that can happen in production. The unit test above verifies that a certain response code is returned, but it does not integrate with Spring to check if the input parameters are parsed correctly from an HTTP request, if the controller listens to the correct path, if exceptions are transformed into the expected HTTP response, and so on.
+  Testing a Spring Web Controller with a unit test like this only covers a fraction of the potential errors that can happen in production. The unit test above verifies that a certain response code is returned, but it does not integrate with Spring to check if the input parameters are parsed correctly from an HTTP request, or if the controller listens to the correct path, or if exceptions are transformed into the expected HTTP response, and so on.
   </p>
   <p>
-  Web controllers should instead be tested integrated with Spring as discussed in <a href="/spring-boot-web-controller-test/">my article</a> about the <code>@WebMvcTest</code> annotation. 
+  Web controllers should instead be tested in integration with Spring as discussed in <a href="/spring-boot-web-controller-test/">my article</a> about the <code>@WebMvcTest</code> annotation. 
   </p>
 </div>
 

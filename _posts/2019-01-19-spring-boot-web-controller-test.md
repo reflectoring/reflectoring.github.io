@@ -187,7 +187,9 @@ We use `@MockBean` to mock away the business logic, since we don't want
 to test integration between controller and business logic, but 
 between controller and the HTTP layer. `@MockBean` automatically
 replaces the bean of the same type in the application context with a 
-Mockito mock.
+Mockito mock. 
+
+You can read more about the `@MockBean` annotation in [my article](/spring-boot-mocking) about mocking.
 
 <div class="notice success">
   <h4>Use <code>@WebMvcTest</code> with or without the <code>controllers</code> parameter?</h4>

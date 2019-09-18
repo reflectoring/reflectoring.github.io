@@ -12,6 +12,8 @@ Mockito is a very popular library to support testing. It allows us to replace re
 
 This article gives a quick intro to the how and why of Mockito and Spring Boot's integration with it. 
 
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/mocking" %}
+
 ## The System Under Test
 
 Before we dive into the details of mocking, let's take a look at the application we're going to test. We'll use some code based on the payment example application "buckpal" of my [book](/get-your-hands-dirty-on-clean-architecture/).

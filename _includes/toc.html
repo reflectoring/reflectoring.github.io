@@ -95,8 +95,13 @@ generate the table of contents and will NOT output the markdown given to it
 {% endif %}
 {% endcapture %}{% assign tocWorkspace = '' %}
 
-<nav class="toc">
-    <header>Table of Contents</header>
-    {{ my_toc | markdownify | strip }}
-</nav>
-
+{% if page.toc.enabled != false %}
+<div class="aside-widget hide-on-mobile">
+    <div class="section-title">
+        <h2>On This Page</h2>
+    </div>
+    <nav class="toc">
+        {{ my_toc | markdownify | strip }}
+    </nav>
+</div>
+{% endif %}

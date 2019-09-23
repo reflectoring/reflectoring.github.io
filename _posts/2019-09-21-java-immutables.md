@@ -346,31 +346,99 @@ Examples for value objects are:
 * a `Weight` object representing a certain weight
 * a `Name` object representing the name of a person
 * an `ID` object representing a certain numerical ID
-* a `TaxIdentificationNumber` object representing a ... wait for it ... tax identification numer
+* a `TaxIdentificationNumber` object representing a ... wait for it ... tax identification number
 * ...
 
-Since value objects represent a specific value, that value must not change, making them immutable. 
+Since value objects represent a specific value, that value must not change. So, they must be immutable. 
 
 Imagine passing a `Long` object with value `42` to a third-party method only to have that method change the value to `13` ... scary, isn't it? Can't happen with an immutable.
 
 ### Data Transfer Objects
 
+Another use case for immutables is when we need to transport data between systems or components that do not share the same data model. In this case, we can create a Data Transfer Object (DTO) shared by both components. This DTO is created from the data of the source component and then passed to the target component. 
 
+Although DTOs don't necessarily have to be immutable, it helps to keep the state of a DTO in a single place instead of scattered over the codebase.
 
-* example: command
+Imagine we have a large DTO with tens of fields which are set and re-set over hundreds of lines of code, depending on certain conditions, before the DTO is send over the line to a remote system. In case of an error, we'll have a hard time finding out where the value of a specific field actually came from.
+
+If we make the DTO immutable (or close to immutable) instead, with dedicated factory methods for valid state combinations, there are only a few entrypoints for the state of the object, easing debugging and maintenance considerably.
+
+### Applying Immutability Concepts to Domain Objects
+
+Even domain objects can benefit from the concepts of immutability. 
+
+Let's define a domain object as an object with an identity that is loaded from the database, manipulated for a certain use case, and then stored back into the database, usually within a database transaction. There are certainly more general and complete definitions of a domain object out there, but for the sake of discussion this should do.
+
+A domain object is most certainly not immutable, but we will benefit from making it as immutable as possible.
+
+As an example, let's look at this `Account` class from my [clean architecture example application "BuckPal"](https://github.com/thombergs/buckpal):
+
+```java
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class Account {
+
+  private final AccountId id;
+
+  private final Money baselineBalance;
+
+  @Getter
+  private final ActivityWindow activityWindow;
+
+  public static Account withoutId(
+          Money baselineBalance, 
+          ActivityWindow activityWindow) {
+    return new Account(null, baselineBalance, activityWindow);
+  }
+
+  public static Account withId(
+          AccountId accountId, 
+          Money baselineBalance, 
+          ActivityWindow activityWindow) {
+    return new Account(accountId, baselineBalance, activityWindow);
+  }
+
+  public Optional<AccountId> getId(){
+    return Optional.ofNullable(this.id);
+  }
+
+  public Money calculateBalance() {
+    // calculate balance from baselineBalance and ActivityWindow
+  }
+
+  public boolean withdraw(Money money, AccountId targetAccountId) {
+    // add a negative Activity to the ActivityWindow
+  }
+
+  public boolean deposit(Money money, AccountId sourceAccountId) {
+    // add a positive Activity to the ActivityWindow
+  }
+
+}
+```
+
+An `Account` can collect an unbounded number of `Activity`s over the years, which can either be positive (deposits) or negative (withdrawals). For the use case of depositing or withdrawing money to / from the account, we're not loading the complete list of activities (which might be too large for processing), but instead only load the latest 10 or so activities into an `ActivityWindow`. To still be able to calculate the total account balance, the account has the field `baselineBalance` with the balance the account had just before the oldest activity in the window.
+
+All fields are final, so an `Account` seems to be immutable at first glance. The `deposit()` and `withdraw()` methods manipulate the state of the associated `AccountWindow`, however, so it's not immutable after all. These methods are better than standard getters and setters, though, because they provide very targeted entry points for manipulation that may even contain business rules that would otherwise be scattered over some services in the codebase.
+
+In short, we're making as many of the domain object's fields as possible immutable and provide focused manipulation methods if we cannot get around it. An architecture style that supports this kind of domain objects is the Hexagonal Architecture explained hands-on in my [e-book about clean architecture](/get-your-hands-dirty-on-clean-architecture/).
 
 ### "Stateless" Service Objects
-* they DO have a state if they rely on other stateless objects
 
-### Domain Objects (to a Degree)
-* example: Account
-* don't provide setters, only methods that modify the state in a manner controlled by the object itself
-  * business rules close to the domain
-* 
+Even so-called "stateless" service objects usually have some kind of state. Usually, a service has dependencies to components that provide database access for loading and updating data: 
 
-* even though domain objects are not immutable, we can apply some of the concepts to gain some advantages
+```java
+@RequiredArgsConstructor
+@Service
+@Transactional
+public class SendMoneyService {
 
-* domain objects have an identity
-* domain objects are not really immutable, but some attributes of immutables are advantageous for them
-* example: account
+  private final LoadAccountPort loadAccountPort;
+  private final UpdateAccountStatePort updateAccountStatePort;
+  
+  // stateless methods omitted
+}
+```
 
+In this service the objects in `loadAccountPort` and `updateAccountStatePort` provide database access. These fields don't make the service "stateful", though, because their value doesn't usually change during the runtime of the application. 
+
+If the values don't change, why not make them immutable from the start? Wew can simply make the fields final and provide a matching constructor (in this case with Lombok's `@RequiredArgsConstructor`). The least we get this way is the compiler complaining about missing dependencies at compile time instead of the JRE complaining later at runtime.

@@ -4,24 +4,7 @@
 
     {% include sidebar-ad.html %}
 
-    {% assign book_key = site.theme.showcase_book %}
-    {% assign book = site.data.books[book_key] %}
-    {% if book %}
-    <div class="aside-widget">
-        <div class="section-title">
-            <h2>Current Reading*</h2>
-        </div>
-        <div class="text-center">
-            <a href="{{ book.url }}"><img src="{{ book.cover }}" width="260" alt="Book Review of {{ book.title }} by {{ book.author }}"/></a>
-        </div>
-    </div>
-
-    <div class="aside-widget fineprint text">
-        *<strong>Affiliate Link</strong> - If you purchase an item through this link, I'll
-        get a cut at no extra cost to you. If you're undecided, I usually write up a <a href="/categories/book-reviews/"><strong>review</strong></a>
-        of the book once I'm through.
-    </div>
-    {% endif %}
+    {% include toc.html html=content sanitize=true class="toc" id="toc" h_min=2 h_max=3 %}
 
 </div>
 <!-- /aside -->

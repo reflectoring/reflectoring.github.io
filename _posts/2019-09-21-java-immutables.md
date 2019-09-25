@@ -1,12 +1,14 @@
 ---
 title: Why Immutables are the Better Objects and How to Implement Them
-categories: [spring-boot, java]
+categories: [java, craft]
 modified: 2017-09-18
-excerpt: "Immutable objects are a way to create safer software that is easier to maintain. Why is that? And what should we do and not do when implementing them? This article provides the answers."
+excerpt: "Immutable objects are a way to create safer software that is easier to maintain. Why is that? And what should we do and what not when implementing them? This article provides answers."
 image:
-  auto: 0052-mock
-tags: ["immutable", "factory method"]
+  auto: 0053-rock-wave
+tags: ["immutable", "factory method", "final"]
 ---
+
+Immutable objects are a way to create safer software that is easier to maintain. Why is that? And what should we do and what not when implementing them? This article provides answers.
 
 ## What's an Immutable?
 
@@ -442,3 +444,9 @@ public class SendMoneyService {
 In this service the objects in `loadAccountPort` and `updateAccountStatePort` provide database access. These fields don't make the service "stateful", though, because their value doesn't usually change during the runtime of the application. 
 
 If the values don't change, why not make them immutable from the start? Wew can simply make the fields final and provide a matching constructor (in this case with Lombok's `@RequiredArgsConstructor`). The least we get this way is the compiler complaining about missing dependencies at compile time instead of the JRE complaining later at runtime.
+
+## Conclusion
+
+Every time we add a field to a class we should make it immutable (i.e. final) by default. If there is a reason to make it mutable, that's fine, but unnecessary mutability increases the chance of introducing bugs and maintainability issues by unintentionally changing state.
+
+What's your take on immutables?

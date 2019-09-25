@@ -10,6 +10,12 @@
   }
 }
 
+@media only screen and (max-width: 991px) {
+  .hide-without-sidebar {
+    display: none;
+  }
+}
+
 @media only screen and (max-width: 767px) {
   .page-header h1 {
     font-size: 28px;

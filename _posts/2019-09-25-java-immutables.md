@@ -2,7 +2,7 @@
 title: Why Immutables Are the Better Objects and How to Implement Them
 categories: [java, craft]
 modified: 2017-09-25
-excerpt: "Immutable objects are a way to create safer software that is easier to maintain. Why is that? And what should we do and what not when implementing them? This article provides answers."
+excerpt: "Why are immutable objects a way to create safer software that is easier to maintain? And what are best practices to implement them? This article provides answers."
 image:
   auto: 0053-rock-wave
 tags: ["immutable", "factory method", "final"]

@@ -59,13 +59,12 @@ Let's have a look at how to implement an immutable.
 A very basic immutable class looks like this:
 
 ```java
-public class User {
+class User {
 
   private final Long id;
-
   private final String name;
 
-  public User(Long id, String name) {
+  User(Long id, String name) {
     this.id = id;
     this.name = name;
   }
@@ -84,7 +83,6 @@ Instead of writing the constructor by hand, we can use [Lombok](https://projectl
 class User {
 
   private final Long id;
-
   private final String name;
 
 }
@@ -103,7 +101,6 @@ An immutable object may have fields that are optional so that their value is nul
 class User {
 
   private final Long id;
-
   private final String name;
   
   static User existingUser(Long id, String name){
@@ -132,7 +129,6 @@ In the `User` class from above, the ID is an optional field and may be null. We 
 class User {
 
   private final Long id;
-
   private final String name;
 
   static User existingUser(Long id, String name){
@@ -157,7 +153,7 @@ Any client calling `getId()` will immediately know that the value might be empty
      Instead of using <code>Long</code> as the field type for the user ID, we could have used <code>Optional&lt;Long&gt;</code>, right? This would make it obvious at a glance at the field declarations that the ID may be empty. 
   </p>
   <p>
-  This is bad practice, however, since an <code>Optional</code> may also be <code>null</code>. This would mean that each time we work with the value of the ID field within the <code>User</code> class, we would have to first check if the <code>Optional</code> is <code>null</code> and *then* check if it has a value or is empty.
+  This is bad practice, however, since an <code>Optional</code> may also be <code>null</code>. This would mean that each time we work with the value of the ID field within the <code>User</code> class, we would have to first check if the <code>Optional</code> is <code>null</code> and <em>then</em> check if it has a value or is empty.
   </p>
   <p>
   The same argument holds for passing an <code>Optional</code> as a parameter into a method.
@@ -172,7 +168,6 @@ To only allow valid state, an immutable may check within its constructor(s) if t
 class User {
 
   private final Long id;
-
   private final String name;
 
   User(Long id, String name) {
@@ -280,7 +275,6 @@ If you search the web for immutables, you may come across the pattern of using s
 class User {
 
   private final Long id;
-
   private final String name;
 
   User withId(Long id) {
@@ -314,7 +308,6 @@ Let's look at a different version of our `User` class:
 class User {
 
   private final Long id;
-
   private final List<String> roles;
 
 }
@@ -388,7 +381,6 @@ As an example, let's look at this `Account` class from my [clean architecture ex
 public class Account {
 
   private final AccountId id;
-
   private final Money baselineBalance;
 
   @Getter

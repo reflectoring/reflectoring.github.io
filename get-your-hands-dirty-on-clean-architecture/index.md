@@ -136,7 +136,7 @@ comments:
 
 <div class="row">
 
-  <h2>Table of Contents</h2>
+  <h2 id="table-of-contents">Table of Contents</h2>
   
   <ol class="feature-list">
       <li>What's Wrong with Layers?</li>

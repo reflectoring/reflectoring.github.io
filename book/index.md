@@ -25,7 +25,7 @@ comments:
       </p>
               
       <p><strong>
-        This book fills a void by providing hands-on approach to the Hexagonal architecture
+        This book fills a void by providing a hands-on approach to the Hexagonal architecture
         style from the concepts behind it down to actual code.
       </strong></p>
   </div>
@@ -43,7 +43,7 @@ comments:
               <li>e-book only (101-page PDF, .mobi, and .epub)</li>
               <li>$14,99 suggested price</li> 
               <li>$9,99 minimum price</li>
-              <li>support the author directly by paying more than the minumum price</li>
+              <li>support me directly by paying more than the minumum price</li>
               <li>get it for $4,99 if you <a href="#" onclick="ml_webform_1449648(&#39;show&#39;)">subscribe</a> to my mailing list</li>
               <li>get updated versions immediately and for free</li> 
           </ul> 
@@ -113,7 +113,7 @@ comments:
   <h2>What Readers Say</h2>
   <div class="testimonial">
       <blockquote class="feature-quote">"Tom Hombergs has done a terrific job in explaining clean architecture - from concepts to code. Really wish more technical books would be as clear as that one!"</blockquote>
-      <em>Gernot Starke - Fellow at INNOQ, software architecture author, coach, and consultant</em>
+      <em>Gernot Starke - Fellow at INNOQ, Author of Software Architecture Books, Coach, and Consultant</em>
   </div>
   <div class="testimonial">
       <blockquote class="feature-quote">"Love your book. One of the most practical books on hexagonal architecture I have seen/read so far."</blockquote>

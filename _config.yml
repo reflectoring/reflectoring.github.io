@@ -1,14 +1,14 @@
 title: "reflectoring.io"
 url: "https://reflectoring.io"
 
-timezone: Australia/Sydney
-
 defaults:
   -
     values:
       layout: "article"
     toc:
       enabled: true
+
+future: true
 
 theme:
   showcase_book: atomic-habits

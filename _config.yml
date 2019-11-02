@@ -9,7 +9,6 @@ defaults:
       layout: "article"
     toc:
       enabled: true
-    timezone: Australia/Sydney
 
 theme:
   showcase_book: atomic-habits

@@ -8,8 +8,6 @@ defaults:
     toc:
       enabled: true
 
-future: true
-
 theme:
   showcase_book: atomic-habits
   header_logo: "/assets/img/logo/apple-icon-60x60.png"

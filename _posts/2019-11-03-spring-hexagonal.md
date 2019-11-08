@@ -145,7 +145,9 @@ public class Account {
 
 An `Account` can have many associated `Activity`s that each represents a withdrawal or a deposit to that account. Since we don't always want to load *all* activities for a given account, we limit it to a certain `ActivityWindow`. To still be able to calculate the total balance of the account, the `Account` class has the `baselineBalance` attribute containing the balance of the account at the start time of the activity window.
 
-As you can see in the code above, we build our domain objects completely free of external dependencies. We're free to model the code how we see fit, in this case creating a "rich" behavior that is very close to the state of the model to make it easier to understand.
+As you can see in the code above, we build our domain objects completely free of dependencies to the other layers of our architecture. We're free to model the code how we see fit, in this case creating a "rich" behavior that is very close to the state of the model to make it easier to understand.
+
+We can use external libraries in our domain model if we choose to, but those dependencies should be relatively stable to prevent forced changes to our code. In the case above, we included Lombok annotations, for instance.
 
 The `Account` class now allows us to withdraw and deposit money to a single account, but we want to transfer money between two accounts. So, we create a use case class that orchestrates this for us.  
 

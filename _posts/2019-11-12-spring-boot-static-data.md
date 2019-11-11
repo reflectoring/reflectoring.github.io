@@ -1,6 +1,7 @@
 ---
 title: Static Data with Spring Boot
 categories: [spring-boot]
+date: 2019-11-12 06:00:00 +1100
 modified: 2019-11-12 06:00:00 +1100
 excerpt: "Sometimes we need some structured, static data in our application. Spring Boot provides an easy way to maintain and access such data without the need of a database."
 image:

@@ -1,2 +1,14 @@
-- author: Rahm Emanuel (Obama's Chief of Staff)
+- author: Rahm Emanuel
   text: "You never let a serious crisis go to waste."
+- author: Ward Cunningham
+  publication: Clean Code
+  text: "You know you are working on clean code when each routine you read turns out to be pretty much what you expected."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "Side effects are lies. Your function promises to do one thing, but it also does hidden things."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "Writing software is like any other kind of writing."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "Duplication may be the root of all evil in software."

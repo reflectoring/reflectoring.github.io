@@ -66,21 +66,27 @@ Now to the code.
 First off, we need a `Quote` data structure that serves as a vessel for the configuration data:
 
 ```java
-public class Quote {
+@ConstructorBinding
+class Quote {
 
-  private String text;
-  private String author;
+    private final String text;
+    private final String author;
 
-  public Quote() {
-  }
+    Quote(String text, String author) {
+        this.text = text;
+        this.author = author;
+    }
 
-  // getters and setters omitted
+    // getters and setters omitted
+
 }
 ```
 
-The `Quote` class only has simple `String` properties. If we have more complex data types, we can make use of [custom converters](/spring-boot-configuration-properties/#custom-types) to convert the configuration parameters (which are always `String`s) to the custom types. 
+The `Quote` class only has simple `String` properties. If we have more complex data types, we can make use of [custom converters](/spring-boot-configuration-properties/#custom-types) that convert the configuration parameters (which are always `String`s) to the custom types we need. 
 
-Then we take advantage of Spring Boot's `@ConfigurationProperties` feature to bind the static data to a `QuotesProperties` object:
+Note that `Quote`s are [immutable](/java-immutables/), taking all their state in the constructor. Because of this, we need to add the `@ConstructorBinding` annotation to the class, telling Spring Boot to use the constructor for instantiation. Otherwise, we'll get a binding error (see box below).
+
+Next, we take advantage of Spring Boot's `@ConfigurationProperties` feature to bind the static data to a `QuotesProperties` object:
 
 ```java
 @Component
@@ -108,7 +114,10 @@ This is where our namespace prefix comes into play. The `QuotesProperties` class
    Spring Boot is a little intransparent in the error messages when the binding of a configuration property fails. You might get an error message like <code>Binding to target ... failed ... property was left unbound</code> without knowing the root cause.
   </p>
   <p>
-  In my case, the root cause was always that I did not provide <strong>a default constructor and getters and setters</strong> in one of the classes that act as a data structure for the configuration properties (<code>Quote</code>, in this case). Spring Boot needs a no-args constructor and getters and setters to populate the data.
+  In my case, <strong>the root cause was always that I did not provide a default constructor and getters and setters</strong> in one of the classes that act as a data structure for the configuration properties (<code>Quote</code>, in this case). By default, Spring Boot uses a no-args constructor and setters to create and populate an object. This does not allow <a href="/java-immutables/">immutable</a> objects, however.
+  </p>
+  <p>
+  <strong>If we want immutable objects, as is the case with <code>Quote</code>, we need to add the <code>@ConstructorBinding</code> annotation to tell Spring Boot to use the constructor.</strong> 
   </p>
 </div>
 

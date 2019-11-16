@@ -12,3 +12,21 @@
 - author: Robert C. Martin
   publication: Clean Code
   text: "Duplication may be the root of all evil in software."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "Comments are always failures."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "Test code is just as important as production code."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "A system with many small classes has no more moving parts than a system with a few large classes."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "It's a myth that we can get systems 'right the first time'."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "To write clean code, you must first write dirty code and then clean it."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "A comment worth writing is worth writing well."

@@ -1,2 +1,32 @@
-- author: Rahm Emanuel (Obama's Chief of Staff)
+- author: Rahm Emanuel
   text: "You never let a serious crisis go to waste."
+- author: Ward Cunningham
+  publication: Clean Code
+  text: "You know you are working on clean code when each routine you read turns out to be pretty much what you expected."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "Side effects are lies. Your function promises to do one thing, but it also does hidden things."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "Writing software is like any other kind of writing."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "Duplication may be the root of all evil in software."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "Comments are always failures."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "Test code is just as important as production code."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "A system with many small classes has no more moving parts than a system with a few large classes."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "It's a myth that we can get systems 'right the first time'."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "To write clean code, you must first write dirty code and then clean it."
+- author: Robert C. Martin
+  publication: Clean Code
+  text: "A comment worth writing is worth writing well."

@@ -1,25 +1,25 @@
 ---
 title: "Book Review: Clean Code"
 categories: [book-reviews]
-date: 2019-11-13 06:00:00 +1100
-modified: 2019-11-13 06:00:00 +1100
+date: 2019-11-19 06:00:00 +1100
+modified: 2019-11-19 06:00:00 +1100
 excerpt: "Everyone is talking about Clean Code, so I finally took the time to read it. So here's my review of Uncle Bob's 'Clean Code'."
 image:
-  teaser: /assets/img/teasers/shape-up-1200x628.png
-  opengraph: /assets/img/teasers/shape-up-1200x628-branded.png
+  teaser: /assets/img/covers/clean-code-teaser.jpg
+  opengraph: /assets/img/covers/clean-code-teaser.jpg
 ---
 
 ## TL;DR: Read this Book, when...
 
 * you're new to programming and want to learn some coding best practices
 * you're a coding veteran and want to confirm your own coding best practices
-* you met a "Clean Code" fanatic and want to check if the book really is as black-and-white as they are preaching (this was my main reason to read it) 
+* you met a "Clean Code" fanatic and want to check out if the book really is as black-and-white as they are preaching (this was my main reason to read it) 
 
 ## Overview
 
-I guess "Clean Code" by Robert C. Martin doesn't need an introduction. I knew the book well before I read it. Even though I'm quite satisfied with my own coding best practices, I read it to confirm my coding practices and to be able to discuss about it with any fanatic "Clean Code" disciple I happen to meet. 
+I guess "Clean Code" by Robert C. Martin doesn't need an introduction. I knew the book well before I read it. Even though I'm quite comfortable with my own coding best practices, I read it to confirm my coding practices and to be able to discuss it with any fanatic "Clean Code" disciple I happen to meet. 
 
-The book contains mostly small, easily digestable chapters, which get (a lot) longer and (a lot) more tiring towards the end of the book. It uses Java for most code examples and even some Java-specific frameworks in the discussions, so you get the most of it if you're familiar with Java.
+The book contains mostly small and easily digestible chapters, which get (a lot) longer and (a lot) more tiring towards the end of the book. It uses Java for most code examples and even some Java-specific frameworks in the discussions, so you get the most of it if you're familiar with Java.
 
 The book starts with isolated coding practices around naming and functions and becomes more broad and general in the end, discussing systems, concurrency and code smells.
 
@@ -27,21 +27,23 @@ The book starts with isolated coding practices around naming and functions and b
 
 I agree with most of the clean code practices discussed in the book. However, they should be applied with common sense instead of being followed dogmatically. 
 
-Some of the quotes in the book are very black-and-white, like
+Some quotes from the book are very black-and-white, like
 
-> "Duplication may be the root of all evil"
+> "Duplication may be the root of all evil",
 
 or
 
 > "Comments are always failures".
 
-Taken out of context, these quotes may very well create "Clean Code" fanatics that split their code into one-line methods and argue about every comment in your code, even if they are justified.
+Taken out of context, these quotes may very well recruit "Clean Code" fanatics that split all of their code into one-line methods and argue about every comment in your code, even if they are justified.
 
 In most cases, though, Martin softens up the meaning of those rules and explains when it makes sense to break them.
 
 The book contains a lot of quotes about coding, however, that are very valid even when taken out of context. This is my favorite: 
 
 > "To write clean code, you must first write dirty code and then clean it."
+
+This is exactly how I create clean code :).
 
 The first half of the book is very concise and fun to read, as it explains clean coding practices. 
 
@@ -57,7 +59,7 @@ Here are my notes of the book in my own words. I added some comments in *italics
 * bad code can bring a whole company down due to maintenance nightmares
 * it's our responsibility to create clean code even if deadlines are looming - communication is key
 * we usually won't make a deadline by cutting corners
-* "bad codes tempts the mess to grow" - it's an instance of the "Broken Windows" Theory (*learn about broken windows in my [article about code coverage](/100-percent-test-coverage/#broken-windows-cracks-in-your-code-coverage) and in my [book](/book)*)
+* "bad code tempts the mess to grow" (*this is an instance of the "Broken Windows" Theory - learn about broken windows in my [article about code coverage](/100-percent-test-coverage/#broken-windows-cracks-in-your-code-coverage) and in my [book](/book)*)
 
 ### Meaningful Names
 
@@ -69,7 +71,7 @@ Here are my notes of the book in my own words. I added some comments in *italics
 * functions should be short
 * functions should not mix levels of abstraction
 * a way to hide big switch statements is to hide them in a factory and use polymorphism to implement behavior that depends on the switch value
-* functions should have a s few parameters as possible - understandability suffers with each added parameter
+* functions should have as few parameters as possible - understandability suffers with each added parameter
 * functions should not have side effects
 * functions should not need a double-take to understand
 * functions should avoid output parameters
@@ -93,12 +95,12 @@ Here are my notes of the book in my own words. I added some comments in *italics
 
 ### Objects and Data Structures
 
-* don't add getters and setters by default - instead provide an abstract interface to the data so that you can modify the implementation without having to think about the clients
+* don't add getters and setters by default - instead, provide an abstract interface to the data so that you can modify the implementation without having to think about the clients
 * adding a new data structure to procedural code is hard because all functions have to change
-* adding a new function to object oriented code is hard because all objects have to change
+* adding a new function to object-oriented code is hard because all objects have to change
 * an object hides its internals, a data structure doesn't 
-* objects expose behaviour and hide data (i.e. adding or changing behaviour is hard while adding or changing the underlying data is easy)
-* data structures have no behaviour and expose data (i.e. adding behaviour is easy while adding or changing data is hard)
+* objects expose behavior and hide data (i.e. adding or changing behavior is hard while adding or changing the underlying data is easy)
+* data structures have no behavior and expose data (i.e. adding behavior is easy while adding or changing data is hard)
 * we don't need objects all the time - sometimes a data structure will do
 
 ### Error Handling
@@ -164,12 +166,12 @@ Here are my notes of the book in my own words. I added some comments in *italics
 ### Successive Refinement
 
 * "To write clean code, you must first write dirty code and then clean it."
-* *This chapter contains 60 pages with code examples making it a chore to read. I skipped it... .*
+* *this chapter contains 60 pages with code examples making it a chore to read - I skipped most of it...*
 
 ### JUnit
 
 * refactoring is iterative - each refactoring may invalidate a previous refactoring
-* *this chapter contains very long code examples, making it a chore to read - I skipped most of it*
+* *this chapter contains very long code examples, making it a chore to read - I skipped most of it...*
 
 ### Refactoring SerialDate
 

@@ -8,7 +8,7 @@ image:
   teaser: /assets/img/covers/clean-code-teaser.jpg
   opengraph: /assets/img/covers/clean-code-teaser.jpg
 ---
-
+asdrest
 ## TL;DR: Read this Book, when...
 
 * you're new to programming and want to learn some coding best practices

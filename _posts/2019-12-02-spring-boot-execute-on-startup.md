@@ -104,7 +104,7 @@ class MyApplicationRunner implements ApplicationRunner {
 }
 ```
 
-The `ApplicationArguments` object gives us access to the parsed command-line arguments. Each argument can have multiple values because it might be used more than once in the command-line. We can get an array of the values for a specific parameter by calling `getOptionValues()`.
+The `ApplicationArguments` object gives us access to the parsed command-line arguments. Each argument can have multiple values because they might be used more than once in the command-line. We can get an array of the values for a specific parameter by calling `getOptionValues()`.
 
 Let's start the application with the `foo` parameter again:
  

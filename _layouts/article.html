@@ -21,6 +21,7 @@
 			</div>
 		</div>
 		<!-- /Page Header -->
+
 	</header>
 
 		<!-- section -->
@@ -34,11 +35,11 @@
 						<div class="section-row sticky-container">
 							<div class="main-post text">
 
-								{% if page.toc.enabled != false %}
-								  {% include toc.html html=content sanitize=true class="toc" id="toc" h_min=2 h_max=3 %}
-								{% endif %}
-
 								{{ content }}
+
+								{% if page.author == null or page.author == 'tom' %}
+								<p>Follow me on <a href="https://twitter.com/TomHombergs">Twitter</a>, <a href="https://www.linkedin.com/in/tom-hombergs-74048777/">LinkedIn</a>, or my <a onclick="ml_webform_1449648('show')" style="cursor: pointer;">Mailing List</a> to be notified of new content.</p>
+                                {% endif %}
 
 							</div>
 

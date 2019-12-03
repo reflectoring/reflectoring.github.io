@@ -36,7 +36,7 @@ public class Person {
 
   @NotNull
   @Min(0)
-  private int age;
+  private Integer age;
 
   // getters and setters omitted
 

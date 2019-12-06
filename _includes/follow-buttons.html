@@ -1,4 +1,7 @@
 <ul class="footer-social">
+    {% if author.facebook %}
+    <li><a target="_blank" title="Follow me on Facebook" href="https://facebook.com/{{ author.facebook }}" class="follow-facebook"><i class="fa fa-facebook"></i></a></li>
+    {% endif %}
     {% if author.linkedin %}
     <li><a target="_blank" title="Follow me on LinkedIn" href="https://www.linkedin.com/in/{{ author.linkedin }}" class="follow-linkedin"><i class="fa fa-linkedin"></i></a></li>
     {% endif %}

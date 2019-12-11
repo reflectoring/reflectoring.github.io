@@ -4,7 +4,22 @@
 
     {% include sidebar-ad.html %}
 
-    {% include toc.html html=content sanitize=true class="toc" id="toc" h_min=2 h_max=3 %}
+    {% if page.toc.enabled != false %}
+
+      {% if page.toc.min %}
+        {% assign min = page.toc.min %}
+      {% else %}
+        {% assign min = 2 %}
+      {% endif %}
+
+      {% if page.toc.max %}
+        {% assign max = page.toc.max %}
+      {% else %}
+        {% assign max = 3 %}
+      {% endif %}
+
+      {% include toc.html html=content sanitize=true class="toc" id="toc" h_min=min h_max=max %}
+    {% endif %}
 
 </div>
 <!-- /aside -->

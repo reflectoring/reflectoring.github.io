@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "jekyll-paginate-v2", "~> 1.7"
   spec.add_runtime_dependency "jekyll-sitemap", "1.3.1"
 
-  spec.add_development_dependency "bundler", "~> 2.0.2"
+  spec.add_development_dependency "bundler", "~> 2.0.1"
   spec.add_development_dependency "rake", "~> 12.0"
   spec.add_development_dependency "html-proofer", "3.3.1"
 end

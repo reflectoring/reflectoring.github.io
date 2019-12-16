@@ -5,6 +5,8 @@ author:
   enabled: false
 ads:
   enabled: false
+comments:
+  enabled: false
 ---
 
 <img alt="Tom" src="/assets/img/authors/tom.jpg" class="circle pull-left"/>

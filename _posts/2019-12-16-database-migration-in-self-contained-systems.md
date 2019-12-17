@@ -6,7 +6,7 @@ modified: 2019-12-16
 author: artur
 excerpt: "A tutorial on how to migrate databases in SCS"
 image:
-  auto: 0025-signature
+  auto: 0066-database-migration
 ---
 
 

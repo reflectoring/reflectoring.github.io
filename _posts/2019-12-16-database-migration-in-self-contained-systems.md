@@ -228,10 +228,10 @@ flyway control. So if we want to change our database configuration, we have to a
 If the `Job` runs first time at all and the database is not configured, then the SQL scripts will be applied and 
 the schema, the user and the privileges will be created.
 
-Assume, the Job was triggered again by the pipeline, the database is already created and there are no changes
+Assume, the Job was triggered again by the pipeline, the database is already created and configured. There are no changes
 in the `postgres-configmap` with SQL scripts. The `Flyway` migration will run anyway, but `Flyway` will not detect any changes.
 
-And now assume, the Job was triggered again by the pipeline, the database is already created and the `postgres-configmap`
+And now assume, the Job was triggered again by the pipeline, the database is already created and configured. The `postgres-configmap`
 with SQL scripts has a new SQL script. The `Flyway` migration will run and apply the changes.
 
 So with this approach, we can control the version of configuration scripts for the database.

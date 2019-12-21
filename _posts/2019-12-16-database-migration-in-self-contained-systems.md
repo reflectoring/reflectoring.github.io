@@ -273,7 +273,7 @@ That's it. The values
 are read from `post-configmap` and `post-secret` and Spring Boot can use them. The same values were used by the `Job` with `Flyway` migration
 to create a user in the database.
 By the way, this Spring Boot application starts its database migration too and uses the `Flyway` tool for that again,
-but this time with Spring Boot support. The application just creates a table with the name `Post`.
+but this time with Spring Boot support. The application just creates a table with the name `Post` in the database `post_service`.
 It is easily made by adding a dependency to `build.gradle`
  
  ````groovy

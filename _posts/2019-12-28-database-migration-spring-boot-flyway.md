@@ -10,17 +10,16 @@ image:
 tags: ["data migration", "spring-boot", "flyway"]
 ---
 
-## Preface
-2-3 sentences about Spring Boot integration with Flyway.
+Spring Boot siplifies database migrations by providing integration with one of the most widely used tool [Flyway](https://flywaydb.org/). This guide will present various options of using Flyway as part of Spring Boot application. We'll also show in practice the main advantages of having [Database Refactoring Done Right](https://reflectoring.io/tool-based-database-refactoring/). **Put some words about CI here**
 
-## Code examples 
-See the structure from existing articles
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/data-migration/flyway" %}
 
 ## Why We Need Database Migrations/ Importance of Database Migration
 
 ## Setting up Flyway
 
 ### As a Spring Boot configuration
+
 https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#data-migration-properties
 
 ### Using Maven/Gradle plugin
@@ -33,6 +32,9 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-applicat
 
 ### Handling Database migration with CI builds
 
+More and more companies are trying to automate the process of delivering database changes to different environments. 
+
 ### Conclusion
+
 few word about benefits after integrating Flyway, like automating the process and confidence when
  handling database changes. Also mentioning Liquibase as a popular alternative.

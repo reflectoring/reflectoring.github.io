@@ -18,6 +18,15 @@ Spring Boot siplifies database migrations by providing integration with one of t
 
 ## Why We Need Database Migrations
 
+I've worked in a project where all database changes were deployed manually. More people joined and at some point we start asking ourselves:
+
+1. What state is the database in on this environment?
+2. Has specific script already been applied or not?
+3. Has hot-fix in production been deployed in other environments afterwards?
+4. How a new database instance can be set up to specific or latest state?
+
+To answer to these questions one of us had to check for a change which was part of the sql script, e.g. adding a column, a stored procedure etc. If we multiply all these checks to number of environments plus the work required to align the state, then we get decent amount of time lost.
+
 ## Setting up Flyway
 
 ### As a Spring Boot configuration

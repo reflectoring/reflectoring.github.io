@@ -18,22 +18,56 @@ Spring Boot siplifies database migrations by providing integration with one of t
 
 ## Why We Need Database Migrations
 
-I've worked in a project where all database changes were deployed manually. More people joined and at some point we start asking ourselves:
+I've worked in a project where all database changes were deployed manually. More people joined and naturally they start asking:
 
 1. What state is the database in on this environment?
 2. Has specific script already been applied or not?
 3. Has hot-fix in production been deployed in other environments afterwards?
 4. How a new database instance can be set up to specific or latest state?
 
-To answer to these questions one of us had to check for a change which was part of the sql script, e.g. adding a column, a stored procedure etc. If we multiply all these checks to number of environments plus the work required to align the state, then we get decent amount of time lost.
+Ansering these questions required one of us to check for a change which was part of the sql script, e.g. adding a column, a stored procedure etc. If we multiply all these checks to number of environments plus the work required to align the state, then we get decent amount of time lost.
+
+Database migrations allow you to:
+
+1. Create a database from scratch.
+2. Have a single source of truth for database version.
+3. Have reproducible state of the database in local and remote environments.
+3. Automate database changes deployment, which helps minimizing human errors.
+
+### Why Flyway
+
+Flyway facilitates the above while providing:
+
+1. Well stuctured and easy to read documentation.
+2. An option to integrate with existing database.
+3. Support for almost all known databases.
+4. Wide variety of running and configuration options.
 
 ## Setting up Flyway
 
-### As a Spring Boot configuration
+Among all configuration options, we will focus on those exposed by [Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#data-migration-properties), but first let's add the following dependency to our build file (Gradle notation):
 
-https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#data-migration-properties
+```
+implementation 'org.flywaydb:flyway-core'
+```
 
-### Using Maven/Gradle plugin
+Spring Boot is quite flexible in terms of properties definitions, but let's see how a tipical Flyway configuration looks like in `application.yml` file.
+
+```
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/test
+
+  flyway:
+    url: "${spring.datasource.url}"
+    user: test
+    password: test
+    schemas: public
+```
+
+## Running Flyway
+
+Mentions all possible options for running Flyway and describe one suitable for local development and point out one recomended for CI builds.
 
 ## Tips
 
@@ -47,7 +81,10 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-applicat
 
 The above quote is also applicable to delivering of database changes to different environments (test, stage, prod etc.).
 
-We need to make sure that our local database changes will work on all other servers. Most common approach is to use CI build to emulate real deployement. 
+We need to make sure that our local database changes will work on all other servers. Most common approach is to use CI build to emulate real deployement.
+
+[Flyway Jekins Plugin](https://plugins.jenkins.io/flyway-runner)
+
 
 ## Conclusion
 

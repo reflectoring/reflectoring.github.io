@@ -65,11 +65,15 @@ spring:
     schemas: public
 ```
 
+**TODO: Should we use H2 for the sake of the example**
+
 ## Running Flyway
 
-Mentions all possible options for running Flyway and describe one suitable for local development and point out one recomended for CI builds.
+**TODO: Mentions all possible options for running Flyway and describe one suitable for local development and point out one recomended for CI builds.**
 
 ## Tips
+
+**TODO: Ask if it's a good idea to put each of these in a green box**
 
 * swithing mindset to incremental changes
 * how to fix broken checksums
@@ -83,7 +87,9 @@ The above quote is also applicable to delivering of database changes to differen
 
 We need to make sure that our local database changes will work on all other servers. Most common approach is to use CI build to emulate real deployement.
 
-[Flyway Jekins Plugin](https://plugins.jenkins.io/flyway-runner)
+**TODO: Describe one option of using Flyway as part of CI build (CI server agnostic)**
+
+**TODO: Should we mention [Flyway Jekins Plugin](https://plugins.jenkins.io/flyway-runner)**
 
 
 ## Conclusion

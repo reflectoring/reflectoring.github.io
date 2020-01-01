@@ -1,9 +1,9 @@
 ---
 title: One-Stop Guide to Profiles with Spring Boot
 categories: [spring-boot]
-date: 2019-12-31 06:00:00 +1100
-modified: 2019-12-31 06:00:00 +1100
-excerpt: "TODO"
+date: 2020-01-02 05:00:00 +1100
+modified: 2020-01-02 05:00:00 +1100
+excerpt: "Profiles are a mighty tool for configuring Spring and Spring Boot applications. In this article, we discuss how Profiles work, for which use cases they are the right solution, and when we should rather not use them."
 image:
   auto: 0056-colors
 tags: ["profiles"]
@@ -79,7 +79,7 @@ I'm a fan of using separate files, however, because it makes it much easier to f
 
 ### Profile-Specific Beans
 
-With properties we can already control many things like connection strings to databases or URLs to external systems that should have different values in different profiles.
+With properties, we can already control many things like connection strings to databases or URLs to external systems that should have different values in different profiles.
 
 But with profiles, **we can also control which beans are loaded into Spring's application context**. 
 
@@ -102,7 +102,7 @@ class FooBean {
 
 The `FooBean` is automatically picked up by Spring Boot's classpath scan because we used the `@Component` annotation. But we'll only see the log output in the `postConstruct()` method if the `foo` profile is active. Otherwise, the bean will not be instantiated and not be added to the application context.
 
-It works similar with beans defined via `@Bean` in a `@Configuration` class:
+It works similarly with beans defined via `@Bean` in a `@Configuration` class:
 
 ```java
 @Configuration
@@ -124,10 +124,10 @@ class BaseConfiguration {
 <div class="notice success">
   <h4>Use Profile-Specific Beans Responsibly!</h4>
   <p>
-  Adding certain beans to the application context for one profile, but not for another, can quickly add complexity to our application! We always have to pause and think if a bean is available in a particular profile or not, otherwise this may cause <code>NoSuchBeanDefinitionException</code>s when other beans depend on it!
+  Adding certain beans to the application context for one profile, but not for another, can quickly add complexity to our application! We always have to pause and think if a bean is available in a particular profile or not, otherwise, this may cause <code>NoSuchBeanDefinitionException</code>s when other beans depend on it!
   </p>
   <p>
-  <strong>Most use cases can and should be implemented using profile-specific properties instead of profile-specific beans.</strong> This makes the configuration of our application easier to understand, because everything specific to a profile is collected in a single <code>application.yml</code> file and we don't have to scan our codebase to find out which beans are actually loaded for which profile. 
+  <strong>Most use cases can and should be implemented using profile-specific properties instead of profile-specific beans.</strong> This makes the configuration of our application easier to understand because everything specific to a profile is collected in a single <code>application.yml</code> file and we don't have to scan our codebase to find out which beans are actually loaded for which profile. 
   </p>
 </div>
 
@@ -164,7 +164,7 @@ java -Dspring.profiles.active=foo -jar profiles-0.0.1-SNAPSHOT.jar
 
 If the system property is set, the environment variable `SPRING_PROFILES_ACTIVE` will be ignored. 
 
-It's important to put the `-D...` before the `-jar...`, otherwise the system property won't have effect.
+It's important to put the `-D...` before the `-jar...`, otherwise the system property won't have an effect.
 
 ### Programmatically
 
@@ -256,7 +256,7 @@ There might be a `local` environment that configures the application to run on t
 
 Then, there might be a `prod` profile for the production environment. This profile uses a real database and so we set the database url to connect to the real database in `application-prod.yml`. 
 
-I would advise to **put an invalid value into the default profile** (i.e. into `application.yml`) so that the application fails fast if we forget to override it in a profile-specific configuration. If we put a valid URL like `test-db:1234` into the default profile we might get an ugly surprise when we forget to override it and the production environment unknowingly connects to the test database... .
+**I would advise putting an invalid value into the default profile** (i.e. into `application.yml`) so that the application fails fast if we forget to override it in a profile-specific configuration. If we put a valid URL like `test-db:1234` into the default profile we might get an ugly surprise when we forget to override it and the production environment unknowingly connects to the test database....
 
 Our configuration files then might look like this:
 
@@ -348,7 +348,7 @@ class BaseConfiguration {
 
 So, why do I consider this to be problematic?
 
-First, **we have to look into the code to see which profiles are available and what they do**. That is, if we haven't documented them outside of the code, but who does that, right? We see these `@Profile` annotations in the code and ask ourselves what this profile does exactly. Each time. Better to use a set of properties that are clearly documented in `application.yml` and can be overridden for a specific environment or a specific test. 
+First, **we have to look into the code to see which profiles are available and what they do**. That is if we haven't documented them outside of the code, but who does that, right? We see these `@Profile` annotations in the code and ask ourselves what this profile does exactly. Each time. Better to use a set of properties that are clearly documented in `application.yml` and can be overridden for a specific environment or a specific test. 
 
 Second, **we have a combinatorial effect when using profiles for multiple application modes**. Which combinations of modes are compatible? Does the application still work when we combine the `worker` profile with the `mock` profile? What happens if we activate the `master` *and* the `worker` profile at the same time? We're more likely to understand the effect of these combinations if we're looking at them at a property level instead of at a profile level. So, again, a set of central properties in `application.yml` for the same effect is easier to grasp.
 
@@ -362,7 +362,7 @@ A feature flag is an on/off switch for a specific feature. We could model this a
 
 But if we use feature flags for what they're intended (i.e. to enable trunk-based development and speed up our deployments), we're bound to collect a bunch of feature flags over time. If we create a profile for each profile, **we'll be drowning in the combinatorial hell I described in the previous section**.
 
-Also, **profiles are too cumbersome to evaluate at runtime**. To check if a feature is enabled or disabled, we'll have to use if/else blocks more often than not, and to call `environment.getActiveProfiles()` to find out if a feature is be enabled is awkward at best. 
+Also, **profiles are too cumbersome to evaluate at runtime**. To check if a feature is enabled or disabled, we'll have to use if/else blocks more often than not and to call `environment.getActiveProfiles()` for this check is awkward at best. 
 
 Better to configure a boolean property for each feature and inject it into our beans with `@Value("${feature.foo.enabled}") boolean featureEnabled`.
 
@@ -380,7 +380,7 @@ As we've seen above, [profiles are activated using the `spring.profiles.active` 
 
 We could also add the property `spring.profiles.active` to one of our `application.yml` files to activate a certain set of profiles by default.
 
-This only works in the default `application.yml` file, however, and not in the profile-specific `application-<profile>.yml` files. Otherwise, in a profile we could activate another set of profiles, which could activate another set of profiles, which could activate another set of profiles until no one knows where those profiles come from anymore. Spring Boot doesn't support this profile-ception, and that's a good thing!
+This only works in the default `application.yml` file, however, and not in the profile-specific `application-<profile>.yml` files. Otherwise, in a profile, we could activate another set of profiles, which could activate another set of profiles, which could activate another set of profiles until no one knows where those profiles come from anymore. Spring Boot doesn't support this profile-ception, and that's a good thing!
 
 So, using `spring.profiles.active` might lead to misunderstandings when developers expect `spring.profiles.active` to work in profile-specific YAML files. 
 

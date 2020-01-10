@@ -7,6 +7,9 @@ ads:
   enabled: false
 comments:
   enabled: false
+excerpt: "Interested in honing your writing skills in the Java / Spring space and earning a little money on the side? I need you! Read on to learn on how to contribute to the reflectoring blog. I'm looking forward to hear from you!"
+image:
+  auto: 0016-pen
 ---
 
 I'm looking for authors to contribute to the reflectoring blog!

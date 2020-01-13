@@ -9,62 +9,67 @@ image:
   auto: 0066-database-migration
 ---
 
-When we develop a self-contained system (SCS), we often want to have the whole database inside the SCS in order to avoid tight coupling
-to other systems. If we want to deliver an SCS, then our goal is to start the SCS with one click. To achieve this goal, we have to do the following steps:
- 1. Set up an empty database,
- 2. Configure the database for using it from the application, that we deliver with this SCS,
- 3. Deploy the application and connect to the database from the application.
+Self-contained systems (SCS) are systems that have no tight coupling to other systems. They can be developed, deployed and operated on their own.
+With continuous delivery mechanisms, we can easily deploy an application. But what if our SCS contains a database and want to deliver 
+a change to its configuration?
 
-If we want to deliver the SCS to the customer we have to automate all these steps. Since we have such technologies as Docker, we can easily set up
-an empty database from step 1. Also, we can deploy an application with business logic as a docker container from step 3. But how can we automatically
-configure the database and how can we control the versions of configuration?
-Using Kubernetes as a container orchestration system with its declarative approach, we can easily build up the automated process to deliver the SCS.
-It means, that we can just declare our desire state of components like a database or business logic application and Kubernetes takes care of the rest.
-But it is not possible to declare the desire database configuration like schemas, users, privileges and so on, because it is the internal configuration
-of the database.
-
-Imagine we have a pipeline to deliver our SCS. This pipeline does the three steps from the list above.
-If we start the pipeline first time, the database will be created, the database will be configured and the application will be deployed.
-If we later make a change in the business logic, the pipeline will run these steps und Kubernetes will not detect any changes on the database, but on the business logic application.
-In this case, Kubernetes is responsible for updating our application. It works fine with Kubernetes. 
-
-But we want also to be able to make changes on one script for the database configuration. After that we want, that this change is detected and
-the database configuration will be updated.
-
-In this article, we will have a look at how to configure the database in a continuous way and how to have control over the version of the database configuration.
-It means, we want to be able to update the database configuration in the continuous delivery process. 
-
+This article shows a way of implementing continuous delivery for database configuration using Kubernetes and Flyway. 
 
 {% include github-project.html url="https://github.com/arkuksin/scs-db-versioning" %}
 
+## The Problem
+When developing a self-contained system (SCS), we may want to have the whole database inside the SCS to avoid tight coupling
+to other systems. If we want to deliver an SCS, then our goal is to start the SCS with one click. To achieve this goal, we have to:
+
+ 1. set up an empty database,
+ 2. configure the database for access by the application,
+ 3. deploy the application and connect to the database from the application.
+
+We'll want to automate all those steps to create a smooth delivery pipeline to the customer. Technologies like docker make it easy 
+to set up an empty database for step 1. Also, we can easily deploy an application as a docker container for step 3. But how can we automatically
+configure the database and how can we control different versions for this configuration?
+
+Using the declarative approach of Kubernetes as a container orchestration system, we can easily build up the automated process to deliver the SCS.
+We can just declare the desired state of components like a database or application and Kubernetes takes care of the rest.
+But it's not possible to declare the desired database configuration with its schemas, users, privileges and so on, because it is the *internal* configuration
+of the database.
+
+Imagine we have a pipeline to deliver our SCS. This pipeline does the three steps from the list above.
+When we start the pipeline for the first time, the database will be created and configured and the application will be deployed.
+If we later make a change in the business logic, the pipeline will run these steps and Kubernetes will not detect any changes on the database, but on the business logic application.
+In this case, Kubernetes is responsible for updating our application. It works fine with Kubernetes. 
+
+**But we also want to be able to make changes to the database configuration (e.g. to change some permissions) and have that change deploy automatically**.
+
+Let's find out how to do that with Kubernetes and Flyway.
+
 ## General Approach
-It is possible to configure a database with SQL scripts. It means we can code the configuration of the database and use this code
-in the delivery process. Thank the tools like [Flyway](https://flywaydb.org/) or [Liquibase](https://www.liquibase.org/) we can have
-version control for these SQL configuration scripts. Note, it is not about the migration *from business logic application* like creating the tables
-for the data model, constraints and so on. In this article we consider the possibility to configure the database automatically before the
-application with business logic is started.
-To show how to implement it I created an example project.    
+
+It's possible to configure a database with SQL scripts. This means we can code the configuration of the database and use this code
+in the delivery process. Thanks to tools like [Flyway](https://flywaydb.org/) or [Liquibase](https://www.liquibase.org/) we can use
+version control systems for these SQL configuration scripts. Note that we're not talking about SQL scripts that create the tables
+for the data model, but about scripts that change the configuration of the database itself.
 
 ## Project Structure
 
 The project is an SCS with a [PostgreSQL](https://www.postgresql.org/) Database and a very simple
-Spring Boot Application called `Post Service`. According to these components, the project consists of two parts:
+Spring Boot application called `Post Service`. According to these components, the project consists of two parts:
 * `k8s` folder with Kubernetes manifest files
 * `src` with source code for `Post Service`
 
 ## Kubernetes Objects
  
-Let's look at the Kubernetes Configuration.
+Let's have a look at the Kubernetes configuration.
  
 ### Base Configuration
  
 In the folder `k8s/base` we create a [ConfigMap](https://cloud.google.com/kubernetes-engine/docs/concepts/configmap)
 and [Secret](https://cloud.google.com/kubernetes-engine/docs/concepts/secret) with the connection properties for the `Post Service`.
-A `ConfigMap` is a Kubernetes object, where we can put our external configuration and it can be applied to the systems at runtime.
-A `Secret` is a Kubernetes Object for storing sensitive data. These data can be read at runtime too. 
- 
-ConfigMap
- ```yaml
+
+A `ConfigMap` is a Kubernetes object where we can put our external configuration so that Kubernetes can apply this configuration to our system at runtime:
+
+```yaml
+# base/configmap.yml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -75,8 +80,11 @@ data:
   spring.datasource.driver-class-name: org.postgresql.Driver
   spring.datasource.url: jdbc:postgresql://postgres:5432/post_service
 ```
-Secret
+
+A `Secret` is a Kubernetes Object for storing sensitive data. Similar to a `ConfigMap`, a `Secret` can also be read at runtime: 
+
 ```yaml
+# base/secret.yml
 apiVersion: v1
 kind: Secret
 metadata:
@@ -84,19 +92,23 @@ metadata:
   namespace: migration
 type: Opaque
 data:
-  spring.datasource.password: bXlfc2VydmljZV9wYXNzd29yZA== #my_service_password
+  spring.datasource.password: bXlfc2VydmljZV9wYXNzd29yZA==
 ```    
 
 As we can see, the data from `post-configmap` and the password from `post-secret` are the data for connecting to the database
-with the user `post_service`. It means, after deploying the Spring Boot application, these data should be read and used by it.  
+with the user `post_service`. After deploying the Spring Boot application, our application and database should be connected and ready to use.
 
 ### Database
-With the scripts from `k8s/postgres` we create a PostgreSQL Database as
-[StatefulSet](https://cloud.google.com/kubernetes-engine/docs/concepts/statefulset) with an admin user. The password for
-the user is read from another secret. `StatefulSet` is a Kubernetes Object, that defines a system with unique, persistent identities 
-and with persistent disk storage. A database is exactly the case, where we should use a `StatefulSet`. 
+
+With the scripts from `k8s/postgres` we create a PostgreSQL Database as a
+[StatefulSet](https://cloud.google.com/kubernetes-engine/docs/concepts/statefulset) with an admin user.
+A `StatefulSet` is a Kubernetes Object that defines components with unique, persistent identities 
+and with persistent disk storage. A database fits well into the use case of a `StatefulSet`. 
+
+The password for the user is read from another secret:
 
 ```yaml
+# postgres/postgres-secret.yml
 apiVersion: v1
 kind: Secret
 metadata:
@@ -104,22 +116,25 @@ metadata:
   namespace: migration
 type: Opaque
 data:
-  password: bXlzZWNyZXQ= #mysecret
+  password: bXlzZWNyZXQ=
 ```
 
-This password is needed later to run the migration of SQL scripts for database configuration by admin user.
+We need this password later to run the SQL scripts in the name of the admin user.
 
 ### Migration
-Now let's look at the most interesting part of Kubernetes files.
+
+Now let's look at the most interesting part of the Kubernetes files.
 Our goal is to automate the creation of the schema,
 users, privileges and other configuration. We can create all of this with SQL scripts.
+
 Fortunately, we can use [Flyway](https://flywaydb.org/) as a docker container
-to migrate the _SQL configuration scripts_. Since we are now in the world of containers we can use the official
+to execute the SQL configuration scripts. Since we are now in the world of containers we can use the official
 [Flyway Docker Container](https://hub.docker.com/r/boxfuse/flyway/).
 
-First, we create a `ConfigMap` with the SQL scripts.
+First, we create a `ConfigMap` with the SQL scripts:
 
 ```yaml
+# migration/migration_configmap.yml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -145,14 +160,15 @@ data:
     GRANT ALL ON DATABASE ${username} TO ${username}
 ```     
 
-As we can see we have SQL scripts in a `ConfigMap`. To be able to use it we can mount this `postgres-configmap` as 
-a [Persitence Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/), so that the values from this `ConfigMap`
-are seen as files by [Flyway Docker Container](https://hub.docker.com/r/boxfuse/flyway/).
+To be able to use this `ConfigMap`, we can mount it as 
+a [Persistence Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) so that the Flyway Docker container can see it as files.
+
+TODO CONTINUE HERE
 
 Next, we create a Kubernetes [Job](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/). 
 A `Job` is a Kubernetes Object, that includes a docker container, it runs only once and terminates immediately after
 the container is finished. This exactly what we need for the migration of SQL configuration scripts. The Job includes the 
-[Flyway Docker Container](https://hub.docker.com/r/boxfuse/flyway/) and runs it by starting. The `postgres-configmap` is mounted to the `Job`.
+Flyway Docker Container and runs it by starting. The `postgres-configmap` is mounted to the `Job`.
 It means, the `Flyway` will find scripts on the filesystem and start the migration. After this migration,
 the schema and the user will be created in the database.
   

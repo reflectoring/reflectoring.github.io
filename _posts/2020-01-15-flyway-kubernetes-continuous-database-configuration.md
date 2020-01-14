@@ -2,8 +2,8 @@
 
 title: Continuous Database Configuration with Flyway and Kubernetes
 categories: [craft]
-date: 2020-01-14 05:00:00 +1100
-modified: 2020-01-14 05:00:00 +1100
+date: 2020-01-15 05:00:00 +1100
+modified: 2020-01-15 05:00:00 +1100
 author: artur
 excerpt: "Combining Kubernetes and Flyway provides us with a powerful tool for automated database configuration that we can include into a continuous delivery pipeline."
 image:

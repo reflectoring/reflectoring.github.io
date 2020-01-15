@@ -10,7 +10,7 @@ image:
 tags: ["data migration", "spring-boot", "flyway"]
 ---
 
-Spring Boot siplifies database migrations by providing integration with one of the most widely used tool [Flyway](https://flywaydb.org/). This guide will present various options of using Flyway as part of Spring Boot application, as well as running it within our CI builds. We'll also cover main advantages of having [Database Refactoring Done Right](https://reflectoring.io/tool-based-database-refactoring/).
+Spring Boot siplifies database migrations by providing integration with one of the most widely used tool [Flyway](https://flywaydb.org/). This guide will present various options of using Flyway as part of Spring Boot application, as well as running it within a CI build. We'll also cover main advantages of having [Database Migrations Done Right](https://reflectoring.io/tool-based-database-refactoring/).
 
 ```
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/data-migration/flyway" %}
@@ -20,19 +20,19 @@ Spring Boot siplifies database migrations by providing integration with one of t
 
 I've worked in a project where all database changes were deployed manually. More people joined and naturally they start asking:
 
-1. What state is the database in on this environment?
-2. Has specific script already been applied or not?
-3. Has hot-fix in production been deployed in other environments afterwards?
-4. How a new database instance can be set up to specific or latest state?
+* What state is the database in on this environment?
+* Has specific script already been applied or not?
+* Has hot-fix in production been deployed in other environments afterwards?
+* How a new database instance can be set up to specific or latest state?
 
 Ansering these questions required one of us to check for a change which was part of the sql script, e.g. adding a column, a stored procedure etc. If we multiply all these checks to number of environments plus the work required to align the state, then we get decent amount of time lost.
 
 Database migrations allow you to:
 
-1. Create a database from scratch.
-2. Have a single source of truth for database version.
-3. Have reproducible state of the database in local and remote environments.
-3. Automate database changes deployment, which helps minimizing human errors.
+* Create a database from scratch.
+* Have a single source of truth for database version.
+* Have reproducible state of the database in local and remote environments.
+* Automate database changes deployment, which helps minimizing human errors.
 
 ### Why Flyway
 
@@ -65,7 +65,7 @@ spring:
     schemas: public
 ```
 
-**TODO: Should we use H2 for the sake of the example**
+**TODO: Add H2 settings to the example
 
 ## Running Flyway
 
@@ -73,9 +73,11 @@ spring:
 
 ## Tips
 
-**TODO: Ask if it's a good idea to put each of these in a green box**
+**TODO: Describe each of these in seprate paragraph and then decide if they should be put in a green box**
 
-* swithing mindset to incremental changes
+* Swithing our mindset to incremental changes
+Flyway tries to shape our understanding by processing data migrations incrementally be default.
+
 * how to fix broken checksums
 * lack of support of undo operations in community version
 

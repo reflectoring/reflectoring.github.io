@@ -1,23 +1,15 @@
 # reflectoring.io
 This is the repository for the [reflectoring.io](https://reflectoring.io) blog on software engineering and Java topics.
 
-# Getting Started with Jekyll
-1. install jekyll (Windows: https://jekyllrb.com/docs/windows/ Other:https://jekyllrb.com/docs/installation/)
-1. clone this repository
-1. run `bundle install`
-1. edit the source files
-1. run `bundle exec jekyll serve` to test changes on http://localhost:4000 (further information for jekyll usages https://jekyllrb.com/docs/usage/)
-1. verify your changes by running the same checks our ci server runs by executing `ci-build.sh` or `ci-build.bat`
-1. push changes to github to publish them
+## Running the Blog Locally on Windows
 
-# Public Domain Images
-The following sites provide public domain images that can be safely used.
-* https://unsplash.com/
-* https://www.flickr.com/search/?license=2%2C3%2C4%2C5%2C6%2C9
-* http://www.publicdomainpictures.net/
-* http://magdeleine.co/license/cc0/
-* http://www.oldbookillustrations.com/
-* http://realisticshots.com/
-* http://startupstockphotos.com/
-* http://publicdomainarchive.com/
-* http://negativespace.co/
+1. download and install ruby using the [ruby installer](https://rubyinstaller.org/) (I have used Ruby+Devkit 2.6.5-1 successfully)
+1. open a console and run `ruby --version` to verify that it has been installed successfully (if this command seems to run forever, restart the computer and try again :)
+1. in the folder you cloned this repo into, run `bundle install`
+1. run `bundle exec jekyll serve` to start jekyll
+1. go to [http://localhost:4000](http://localhost:4000) to view the blog in your browser
+1. changes to the markdown files should automatically trigger a re-start of jekyll (if not, kill the process with `CMD+C` and restart it)  
+
+## Contributing to this Blog
+
+See the [Write For Me](https://reflectoring.io/write-for-me) page on the blog.

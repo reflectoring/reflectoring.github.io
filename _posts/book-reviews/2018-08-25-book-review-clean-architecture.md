@@ -19,8 +19,6 @@ image:
 * you want some inspiration on building applications in a different way than the
   default "3-layer architecture"
 
-{% include affiliate-disclosure.html %}
-
 ## Overview
 
 As the name suggests, <a href="//www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D95862666%26fc%3DUS&cjsku=95862666" rel="nofollow">Clean Architecture - A Craftsman's Guide to Software Structure and Design</a> 

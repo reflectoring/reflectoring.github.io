@@ -14,8 +14,6 @@ image:
 * you want to know how to gather those metrics
 * you have a certain codebase that you want to analyze
 
-{% include affiliate-disclosure.html %}
-
 ## Overview
 
 <a href="https://www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D95960873%26fc%3DUS&cjsku=95960873" rel="nofollow">*Your Code as a Crime Scene*</a> by Adam Tornhill 

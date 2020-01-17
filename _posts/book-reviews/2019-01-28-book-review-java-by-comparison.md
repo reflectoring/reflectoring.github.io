@@ -15,8 +15,6 @@ image:
 * you are teaching Java and want your students to learn best practices
 * you are working with junior developers and want them to get them up to speed
 
-{% include affiliate-disclosure.html %}
-
 ## Overview
 
 In a nutshell, <a href="//www.kqzyfj.com/click-9137796-13660345?url=https%3A//www.ebooks.com/cj.asp%3FIID%3D96173656%26fc%3DUS&cjsku=96173656" rel="nofollow">*Java by Comparison*</a> by Simon Harrer, Jörg Lenhard, and Linus Dietz

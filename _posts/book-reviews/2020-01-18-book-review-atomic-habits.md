@@ -3,7 +3,7 @@ title: "Book Review: Atomic Habits"
 categories: [book-reviews]
 date: 2020-01-18 06:00:00 +1100
 modified: 2020-01-18 06:00:00 +1100
-excerpt: "Everyone is talking about Clean Code, so I finally took the time to read it. So here's my review of Uncle Bob's 'Clean Code'."
+excerpt: "'Atomic Habits' provides an actionable framework for making or breaking habits. Here are my notes."
 image:
   teaser: /assets/img/covers/atomic-habits-teaser.jpg
   opengraph: /assets/img/covers/atomic-habits-teaser.jpg

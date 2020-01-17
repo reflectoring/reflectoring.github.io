@@ -9,6 +9,16 @@ This is the repository for the [reflectoring.io](https://reflectoring.io) blog o
 1. run `bundle exec jekyll serve` to start jekyll
 1. go to [http://localhost:4000](http://localhost:4000) to view the blog in your browser
 1. changes to the markdown files should automatically trigger a re-start of jekyll (if not, kill the process with `CMD+C` and restart it)  
+## Viewing Your Blog Post Locally
+
+1. copy one of the existing blog post `.md` files from the `_posts` folder into a new file 
+1. change the name of the file so that it contains today's date and your blog post title
+1. change the `date` and `modified` fields in the file header to today's date (replace the `+1100` with the offset of your local timezone to UTC; the blog post will only show in the preview if these dates are in the past)
+1. don't worry about the rest of the header fields, I will update them before publishing
+1. write the article in markdown format
+1. run `bundle exec jekyll serve` to start up the blog locally
+1. go to [http://localhost:4000](http://localhost:4000) to view the blog in your browser
+1. your blog post should show up on the start page; click on it and check if it looks good
 
 ## Contributing to this Blog
 

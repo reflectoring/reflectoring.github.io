@@ -22,8 +22,6 @@ While "The 7 Habits" concentrates more on interpersonal relations and the mindse
 
 The book is divided into three parts with a couple of chapters each. The first part discusses the term "habit" as we usually understand it: as a habit of an individual. Duhigg doesn't stop with individual habits, though, but goes on to discuss organizational habits in the second part and the habits of society in the third part.
 
-{% include affiliate-disclosure.html %}
-
 ## Likes & Dislikes
 
 Reading the book almost feels like reading a novel. Each chapter tells one or two (real) stories that drive the topic, written with suspense. Embedded within those stories are the well-researched scientific facts behind our habits.   

@@ -59,7 +59,7 @@ Here are my notes of the book. I added some comments in *italics*.
 * the **habit loop** consists of:
   * a **cue** (noticing the reward)
   * a **craving** (wanting the reward)
-  * a **response** (obtaining the reward; *this is what Charles Duhigg calls the "routine" in [The Power of Habit](/book-review/the-power-of-habit/)*)
+  * a **response** (obtaining the reward; *this is what Charles Duhigg calls the "routine" in [The Power of Habit](/book-review-the-power-of-habit/)*)
   * a **reward** that satisfies us 
   * *funny and totally irrelevant analogy to software development: the habit loop is like an endless loop in code - a thread that continually scans for cues to trigger a habit routine*
 * to establish a new habit, you must address each part of the habit loop: 
@@ -174,7 +174,7 @@ Here are my notes of the book. I added some comments in *italics*.
 * we experience peak motivation on tasks that are just hard enough to challenge us
 * **variable rewards**, e.g. rewards in 50% of cases and no reward in the other 50%, increase the dopamine rush for each reward (*this explains the ridiculous amount of time I have spent in loot-based computer games like Diablo and World of Warcraft*)
 * "Professionals stick to the schedule. Amateurs let it get in the way."
-* you have to embrace boredom to effectively stick to a habit (*also see [Deep Work](/book-review/deep-work/) in which Cal Newport has dedicated a whole chapter to "Embracing Boredom"*
+* you have to embrace boredom to effectively stick to a habit (*also see [Deep Work](/book-review-deep-work/) in which Cal Newport has dedicated a whole chapter to "Embracing Boredom"*
 
 ### The Downside of Creating Good Habits
 

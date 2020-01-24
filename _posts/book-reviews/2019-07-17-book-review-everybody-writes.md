@@ -14,8 +14,6 @@ image:
 - you are writing for a blog or marketing department
 - you want to learn some tricks on how to keep writing
 
-{% include affiliate-disclosure.html %}
-
 ## Overview
 
 The book {% include book-link.html book="everybody-writes" %} by Ann Handley aims to be a book for everyone since everybody writes in their daily routine in emails, social media, or on a blog or website. 

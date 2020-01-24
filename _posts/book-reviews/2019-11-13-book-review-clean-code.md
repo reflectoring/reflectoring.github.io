@@ -17,7 +17,7 @@ image:
 
 ## Overview
 
-I guess "Clean Code" by Robert C. Martin doesn't need an introduction. I knew the book well before I read it. Even though I'm quite comfortable with my own coding best practices, I read it to confirm my coding practices and to be able to discuss it with any fanatic "Clean Code" disciple I happen to meet. 
+I guess {% include book-link.html book="clean-code" %} by Robert C. Martin doesn't need an introduction. I knew the book well before I read it. Even though I'm quite comfortable with my own coding best practices, I read it to confirm my coding practices and to be able to discuss it with any fanatic "Clean Code" disciple I happen to meet. 
 
 The book contains mostly small and easily digestible chapters, which get (a lot) longer and (a lot) more tiring towards the end of the book. It uses Java for most code examples and even some Java-specific frameworks in the discussions, so you get the most of it if you're familiar with Java.
 

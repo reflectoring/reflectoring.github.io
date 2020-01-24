@@ -16,8 +16,6 @@ image:
 * you feel like you're drowning in "shallow" work like emails and phone calls
 * you need arguments to defend a change of work style towards your colleagues and your boss
 
-{% include affiliate-disclosure.html %}
-
 ## Overview
 
 In his book ["Deep Work"](//www.anrdoezrs.net/click-9137796-13660345?url=https%3A%2F%2Fwww.ebooks.com%2Fcj.asp%3FIID%3D2041699%26fc%3DUS&cjsku=2041699), Cal Newport gives a name to the productive state of "flow" most of us

@@ -10,9 +10,9 @@ image:
 ---
 
 ## What are Spring Beans?
- > Spring Beans are Java Objects or Instances which is created and managed by Spring container.
+ > Spring beans are Java objects created and managed by the Spring container.
 
-Spring `@ApplicationContext` is responsible for creating a Spring bean and manage the 
+Spring's `ApplicationContext` is responsible for creating a Spring bean and manage the 
 Spring bean life cycle.
 
 Below, We have created a simple Spring bean for `Foo` class using `@Component` annotation.
@@ -58,7 +58,7 @@ Below is Phase 2, `Pre-destruction` steps while destroying a Bean.
 
 ## Hooking into the Bean Lifecycle
   Let us look at the 5 different ways of tapping into the spring bean lifecycle.
-## Using Spring @PostConstruct and @PreDestroy annotations
+### Using Spring @PostConstruct and @PreDestroy annotations
 ```java
 @Component
 class Foo {
@@ -73,7 +73,7 @@ class Foo {
     }
 }
 ```
-## Using @Bean annotation and Attributes
+### Using @Bean annotation and Attributes
 ```java
 @Component
 public class Foo {
@@ -99,7 +99,7 @@ public class Config {
 }
 ```
 
-## Using Spring InitializingBean and DisposableBean Interfaces
+### Using Spring InitializingBean and DisposableBean Interfaces
 ```java
 @Component
 public class Foo implements InitializingBean, DisposableBean {
@@ -117,7 +117,7 @@ public class Foo implements InitializingBean, DisposableBean {
 
 
 ```
-## Using Spring Aware Interfaces
+### Using Spring Aware Interfaces
 ```java
 @Component
 class Foo implements BeanNameAware {
@@ -148,7 +148,7 @@ class Foo implements ApplicationContextAware {
 }
 ```
  
-## Using XML configuration(<Bean> Tag)
+### Using XML configuration(<Bean> Tag)
 modern-day spring applications are not using the traditional XML Bean configurations. For more information refer Spring reference manual for bean [Creation](https://docs.spring.io/spring/docs/3.2.x/spring-framework-reference/html/beans.html#beans-factory-lifecycle-initializingbean) and [Destruction](https://docs.spring.io/spring/docs/3.2.x/spring-framework-reference/html/beans.html#beans-factory-lifecycle-disposablebean) callback methods.
 
 ## Conclusion

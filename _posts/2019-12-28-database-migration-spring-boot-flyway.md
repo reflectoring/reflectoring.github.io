@@ -45,31 +45,21 @@ Flyway facilitates the above while providing:
 
 ## Setting up Flyway
 
-Among all configuration options, we will focus on those exposed by [Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#data-migration-properties), but first let's add the following dependency to our build file (Gradle notation):
+For the purpose of this post we use H2 database in `in-memory` mode. Spring Boot auto-configures [Flyway](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-execute-flyway-database-migrations-on-startup) and [H2](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-embedded-database-support) as long as we add the following dependencies to our build file (Gradle notation):
 
 ```
 implementation 'org.flywaydb:flyway-core'
+runtimeOnly 'com.h2database:h2:1.4.199'
 ```
 
-Spring Boot is quite flexible in terms of properties definitions, but let's see how a tipical Flyway configuration looks like in `application.yml` file.
-
-```
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/test
-
-  flyway:
-    url: "${spring.datasource.url}"
-    user: test
-    password: test
-    schemas: public
-```
-
-**TODO: Add H2 settings to the example
+All configuration options can be found at [Spring Boot applcation proprties reference](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html)
 
 ## Running Flyway
 
-**TODO: Mentions all possible options for running Flyway and describe one suitable for local development and point out one recomended for CI builds.**
+During application initialization
+Gradle plugin - gradlew flywayMigrate -i
+
+Using plugin option provide us more flexibility when using CI
 
 ## Tips
 
@@ -81,18 +71,15 @@ Flyway tries to shape our understanding by processing data migrations incrementa
 * how to fix broken checksums
 * lack of support of undo operations in community version
 
-## Database migration as part of CI build
+## Database migration as part of CI/CD process
 
 > "If it can be automated, it should be automated" - Unknown
 
 The above quote is also applicable to delivering of database changes to different environments (test, stage, prod etc.).
 
-We need to make sure that our local database changes will work on all other servers. Most common approach is to use CI build to emulate real deployement.
+We need to make sure that our local database changes will work on all other servers. Most common approach is to use CI/CD build to emulate real deployement. 
 
-**TODO: Describe one option of using Flyway as part of CI build (CI server agnostic)**
-
-**TODO: Should we mention [Flyway Jekins Plugin](https://plugins.jenkins.io/flyway-runner)**
-
+One of the most widely used CI/CD server is [Jenkins](https://jenkins.io/). We can use the both options from [Running Flyway section](#running-flyway) as part of our job/pipeline definition. In addition to that, Jenkins provides hundreds of plugins to support various technologies and [Flyway](https://plugins.jenkins.io/flyway-runner) is no exception. 
 
 ## Conclusion
 

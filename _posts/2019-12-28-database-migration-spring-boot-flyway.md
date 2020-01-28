@@ -52,9 +52,31 @@ implementation 'org.flywaydb:flyway-core'
 runtimeOnly 'com.h2database:h2:1.4.199'
 ```
 
-All configuration options can be found at [Spring Boot applcation proprties reference](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html)
+This is enough for Spring Boot to initializes H2 `DataSource` and which is then used by Flyway to execute given migrations. All configuration options can be found at [Spring Boot applcation proprties reference](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html)
+
+## Writing our first database migration
+
+Flyway has its own [naming convention](https://flywaydb.org/documentation/migrations#sql-based-migrations) which can be adjusted to our needs using the following [configurations](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#data-migration-properties):
+
+```
+spring.flyway.sql-migration-prefix
+spring.flyway.sql-migration-separator
+spring.flyway.sql-migration-suffixes
+```
+
+Here is the `V1__init.sql` file used in our [code examples repository](https://github.com/thombergs/code-examples/tree/master/spring-boot) **TODO: Put actual link here**:
+
+```sql
+CREATE TABLE auth_user(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL unique
+);
+```
 
 ## Running Flyway
+
+By default  runs database migrations on startup by looking at `classpath:db/migration`
+
 
 During application initialization
 Gradle plugin - gradlew flywayMigrate -i
@@ -63,7 +85,7 @@ Using plugin option provide us more flexibility when using CI
 
 ## Tips
 
-**TODO: Describe each of these in seprate paragraph and then decide if they should be put in a green box**
+* [Placehodlers](https://flywaydb.org/documentation/placeholders) come very handy when we want to abstract differences between environments. By default Ant-style is used, e.g. `${database_name}`
 
 * Swithing our mindset to incremental changes
 Flyway tries to shape our understanding by processing data migrations incrementally be default.
@@ -85,4 +107,4 @@ One of the most widely used CI/CD server is [Jenkins](https://jenkins.io/). We c
 
 Implementing the above would make us the confident when dealing with database changes and their distribution to desired environments. 
 
-Another popular alternative of Flyway is [Liquibase](https://www.liquibase.org/), which will be a subject of a future blog post.
+Another popular alternative of Flyway is [Liquibase](https://www.liquibase.org/), which will be a subject of a future blog post :blush:

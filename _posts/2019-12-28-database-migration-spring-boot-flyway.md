@@ -52,11 +52,26 @@ implementation 'org.flywaydb:flyway-core'
 runtimeOnly 'com.h2database:h2:1.4.199'
 ```
 
-This is enough for Spring Boot to initializes H2 `DataSource` and which is then used by Flyway to execute given migrations. All configuration options can be found at [Spring Boot applcation proprties reference](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html)
+This is enough for Spring Boot to initializes a specific implementation of `DataSource` called `EmbeddedDatabase`. It is  then used by Flyway to execute the given migrations. All configuration options can be found at [Spring Boot applcation properties reference](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html)
+
+In case we prefer to use one of the build tool plugins, an additional definition is required in our build file (Gradle notation):
+
+```gradle
+plugins {
+
+  // Other plugins...
+ 
+  id "org.flywaydb.flyway" version "6.2.0"
+}
+
+flyway {
+  url = 'jdbc:h2:mem:'
+}
+```
 
 ## Writing our first database migration
 
-Flyway has its own [naming convention](https://flywaydb.org/documentation/migrations#sql-based-migrations) which can be adjusted to our needs using the following [configurations](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#data-migration-properties):
+Flyway has own [naming convention](https://flywaydb.org/documentation/migrations#sql-based-migrations) which can be adjusted to our needs using the following [configurations](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#data-migration-properties):
 
 ```
 spring.flyway.sql-migration-prefix
@@ -64,7 +79,7 @@ spring.flyway.sql-migration-separator
 spring.flyway.sql-migration-suffixes
 ```
 
-Here is the `V1__init.sql` file used in our [code examples repository](https://github.com/thombergs/code-examples/tree/master/spring-boot) **TODO: Put actual link here**:
+Here is the `V1__init.sql` file used in our [code examples repository](https://github.com/thombergs/code-examples/tree/master/spring-boot) **TODO: Put actual link here when the code is approved**:
 
 ```sql
 CREATE TABLE auth_user(
@@ -75,23 +90,31 @@ CREATE TABLE auth_user(
 
 ## Running Flyway
 
-By default  runs database migrations on startup by looking at `classpath:db/migration`
+Choosing the right running option depends on our needs and FLyway tries to cover almost all of them - [command-line](https://flywaydb.org/documentation/commandline/), [Java/Android API](https://flywaydb.org/documentation/api/), [Maven](https://flywaydb.org/documentation/maven/)/[Gradle](https://flywaydb.org/documentation/gradle/) plugins, [Docker](https://hub.docker.com/r/flyway/flyway) and decent list of [community plugins and integrations](https://flywaydb.org/documentation/plugins/).
 
+By default, Spring Boot runs Flyway database migrations on [startup](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-execute-flyway-database-migrations-on-startup) by looking at `classpath:db/migration` folder. We can modify this location by passing comma-separated list of one or more `classpath:` or `filesystem:` locations to `spring.flyway.locations` property.
 
-During application initialization
-Gradle plugin - gradlew flywayMigrate -i
+When Gradle plugin is preferred, we can call the following command in our terminal: 
 
-Using plugin option provide us more flexibility when using CI
+```bash
+./gradlew flywayMigrate -i
+```
 
 ## Tips
 
-* [Placehodlers](https://flywaydb.org/documentation/placeholders) come very handy when we want to abstract differences between environments. By default Ant-style is used, e.g. `${database_name}`
+* [Placehodlers](https://flywaydb.org/documentation/placeholders) come very handy when we want to abstract differences between environments. By default, Ant-style is used, e.g. `${database_name}`
 
 * Swithing our mindset to incremental changes
-Flyway tries to shape our understanding by processing data migrations incrementally be default.
 
-* how to fix broken checksums
-* lack of support of undo operations in community version
+Flyway tries to enforces writing of incremental database changes. That means we shouldn't update already applied migrations, except [repeatable](https://flywaydb.org/documentation/migrations#repeatable-migrations) ones. This rule is also applicable when `spring.flyway.out-of-order` is used.
+
+* Fix broken checksums
+
+Sometimes we have to do manual changes, directly to the database server, but we want to have them in our migraitons scripts as well. Once a certain migration is applied, any further updates would produce different checksum. Fixing this is easy, by simply calling [repair](https://flywaydb.org/documentation/command/repair) command
+
+* Lack of support of undo operations in community edition
+
+I guess we all have been in a situation when latest production database changes should be reverted. We should be aware that Flyway doens't support its [undo](https://flywaydb.org/documentation/command/undo) command in the community edition. There is an open-source [project](https://github.com/Majitek/strata-db-versioning) which handles this case for PostgreSQL database.
 
 ## Database migration as part of CI/CD process
 
@@ -101,7 +124,7 @@ The above quote is also applicable to delivering of database changes to differen
 
 We need to make sure that our local database changes will work on all other servers. Most common approach is to use CI/CD build to emulate real deployement. 
 
-One of the most widely used CI/CD server is [Jenkins](https://jenkins.io/). We can use the both options from [Running Flyway section](#running-flyway) as part of our job/pipeline definition. In addition to that, Jenkins provides hundreds of plugins to support various technologies and [Flyway](https://plugins.jenkins.io/flyway-runner) is no exception. 
+One of the most widely used CI/CD server is [Jenkins](https://jenkins.io/). We can use both options from [Running Flyway section](#running-flyway) as part of our job/pipeline definition. In addition to that, Jenkins provides hundreds of plugins to support various technologies and [Flyway](https://plugins.jenkins.io/flyway-runner) is no exception. 
 
 ## Conclusion
 

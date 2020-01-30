@@ -16,8 +16,6 @@ image:
 * you want to be more effective in communicating with those around you
 * you want to learn some motives why you should change your habits
 
-{% include affiliate-disclosure.html %}
-
 ## Overview
 
 I read the book ["The 7 Habits of Highly Effective People"](//www.kqzyfj.com/click-9137796-13660345?url=https%3A%2F%2Fwww.ebooks.com%2Fcj.asp%3FIID%3D138625964%26fc%3DUS&cjsku=138625964) by Stephen Covey in my quest to shape

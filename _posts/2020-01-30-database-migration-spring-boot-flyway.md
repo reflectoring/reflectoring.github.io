@@ -102,17 +102,18 @@ When the Gradle plugin is preferred, we can call the following command in our te
 
 ## Tips
 
-* [Placeholders](https://flywaydb.org/documentation/placeholders) come in very handy when we want to abstract differences between environments. By default, Ant-style is used, e.g. `${database_name}`
+### Placeholders
+[Placeholders](https://flywaydb.org/documentation/placeholders) come in very handy when we want to abstract differences between environments. By default, Ant-style is used, e.g. `${database_name}`
 
-* Switching our mindset to incremental changes
+### Incremental Mindset
 
 Flyway tries to enforce writing of incremental database changes. That means we shouldn't update already applied migrations, except [repeatable](https://flywaydb.org/documentation/migrations#repeatable-migrations) ones. This rule is also applicable when `spring.flyway.out-of-order` is used.
 
-* Fix broken checksums
+### Fixing Broken Checksums
 
 Sometimes we have to do manual changes, directly to the database server, but we want to have them in our migrations scripts as well. Once a certain migration is applied, any further updates would produce different checksum. Fixing this is easy, by simply calling the [repair](https://flywaydb.org/documentation/command/repair) command
 
-* Lack of support for undo operations in the community edition
+### Support of Undo
 
 I guess we all have been in a situation when the latest production database changes should be reverted. We should be aware that Flyway doesn't support its [undo](https://flywaydb.org/documentation/command/undo) command in the community edition. There is an open-source [project](https://github.com/Majitek/strata-db-versioning) which handles this case for PostgreSQL database.
 

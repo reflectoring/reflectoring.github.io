@@ -1,9 +1,22 @@
-# Everything you need to know about Interface Segregation Principle
+---
+
+title: Everything you need to know about Interface Segregation Principle
+categories: [craft]
+date: 2020-01-31 06:00:00 +1100
+modified: 2020-02-01 07:44:00 +1100
+author: mukul
+excerpt: "This is one stop practical guide to understand and apply the Interface Segregation Principle, which is one of the SOLID principle."
+image:
+  auto: 0018-cogs
+tags: ["Interface Segregation Principle", "ISP", "SOLID", "Principles of software development"]
+---
+
+
 >Clients should not be forced to depend upon interfaces that they do not use." — Robert Martin, ISP paper [Principles of OOD ](https://web.archive.org/web/20150905081110/http://www.objectmentor.com/resources/articles/isp.pdf)
 
 Abstraction is the heart of object-oriented design which allows the client to be unconcerned with the implementation details of functionality. In Java, abstraction is achieved through abstract classes and Interface. This article explains the idea of the Interface Segregation Principle which is one of  the [SOLID](https://en.wikipedia.org/wiki/SOLID) principles
 
-{% include github-project.html url="link_to_example_module" %}
+{% include github-project.html url="https://github.com/mukul-s/code-examples/tree/master/craft/interface%20segregation%20principle" %}
 
 ## What is an Interface?
 An Interface is a set of abstractions which implementing class must follow. Basically, you define the behaviour but not implement them.
@@ -150,4 +163,4 @@ We can say that ISP is a really simple principle which is easy to avoid as well,
 
 There are many code smells which can help us in identifying ISP violations and then we can fix them by using various methods such as Adapter pattern and refactoring which is presented in this article.
 
-The example code used in this article is available on [github](#stub needs to be included once article approved).
+The example code used in this article is available on [github](https://github.com/mukul-s/code-examples/tree/master/craft/interface%20segregation%20principle).

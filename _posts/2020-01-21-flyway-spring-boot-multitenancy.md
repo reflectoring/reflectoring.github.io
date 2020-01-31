@@ -183,7 +183,7 @@ public class CarRoutingDataSource extends AbstractRoutingDataSource {
 
     @Override
     protected Object determineCurrentLookupKey() {
-        return ObjectUtils.defaultIfNull(CarRoutingDataSource.getTenantName(), DEFAULT_TENANT);
+        return ObjectUtils.defaultIfNull(ThreadTenantStorage.getTenantName(), DEFAULT_TENANT);
     }
 }
 ````

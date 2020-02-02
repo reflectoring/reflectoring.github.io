@@ -1,12 +1,12 @@
 ---
 title: Reactive Multi-Threading with RxJava - Pitfalls and Solutions
 categories: [java]
-date: 2020-01-30 05:00:00 +1100
-modified: 2020-01-30 05:00:00 +1100
-author: tom
+date: 2020-02-03 05:00:00 +1100
+modified: 2020-02-03 05:00:00 +1100
+author: default
 excerpt: "Reactive Programming has a lot of pitfalls for rookies to fall into, especially when it's multi-threaded. This article documents some of those pitfalls and their solutions so you don't have to fall."
 image:
-  auto: 0018-cogs
+  auto: 0058-motorway-junction
 ---
 
 I had a rough time this week refactoring a multi-threaded, reactive message processor. It just didn't seem to be working the way I expected. It was failing in various ways, each of which took me a while to understand. But it finally clicked.

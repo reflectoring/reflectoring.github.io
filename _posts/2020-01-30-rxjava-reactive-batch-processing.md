@@ -102,7 +102,9 @@ We pass a `MessageSource` and a `MessageHandler` to the processor, so that it kn
 
 ## Testing the Batch Processing API
 
-In a test-driven fashion, let's write a failing test before we start with the implementation. Note that I didn't actually build it in TDD fashion, because I didn't actually know how to test this before playing around with the problem a bit. But from a didactic point of view, I think it's good to start with the test to get a grasp for the requirements:
+In a test-driven fashion, let's write a failing test before we start with the implementation. 
+
+Note that I didn't actually build it in TDD fashion, because I didn't actually know how to test this before playing around with the problem a bit. But from a didactic point of view, I think it's good to start with the test to get a grasp for the requirements:
 
 ```java
 public class ReactiveBatchProcessorTest {
@@ -131,7 +133,7 @@ public class ReactiveBatchProcessorTest {
         .pollInterval(1, TimeUnit.SECONDS)
         .untilAsserted(() -> assertEquals(batches * batchSize, messageHandler.getProcessedMessages()));
 
-    assertEquals(threads, messageHandler.threadNames().size());
+    assertEquals(threads, messageHandler.threadNames().size(), String.format("expecting messages to be executed on %d threads!", threads));
   }
 
 }
@@ -141,7 +143,7 @@ Let's take this test apart.
 
 Since we want to unit-test our batch processor, we don't want a real message source or message handler. Hence, we create a `TestMessageSource` that generates 10 batches of 3 messages each and a `TestMessageHandler` that processes a single message by simply logging it, counting the number of messages it has processed, and counting the number of threads it has been called from. You can find the implementation of both classes in the [GitHub repo](https://github.com/thombergs/code-examples/tree/master/reactive/src/test/java/io/reflectoring).
 
-Then, we create our `ReactiveBatchProcessor`, giving it 2 threads and a thread pool queue of 10 items.
+Then, we create our not-yet-implemented `ReactiveBatchProcessor`, giving it 2 threads and a thread pool queue of 10 items.
 
 Next, we call the `start()` method on the processor, which should trigger the coordination thread to start fetching message batches from the source and passing them to the 2 worker threads.
 
@@ -151,10 +153,13 @@ Finally, after all messages have been successfully processed, we ask the `TestMe
 
 Our task is now to build an implementation of `ReactiveBatchProcessor` that passes this test.
 
-
 ## Implementing the Reactive Batch Processor
 
+We implement the `ReactiveBatchProcessor` in a couple iterations. Each iteration has a flaw that shows one of the pitfalls of reactive programming that I fell for when solving this problem.  
+
 ### Iteration #1 - Working on the Wrong Thread
+
+Let's have a look at the [first implementation](https://github.com/thombergs/code-examples/blob/master/reactive/src/main/java/io/reflectoring/reactive/batch/ReactiveBatchProcessorV1.java) to get a grasp of the solution:
 
 ```java
 public class ReactiveBatchProcessorV1 {
@@ -167,11 +172,25 @@ public class ReactiveBatchProcessorV1 {
       .doOnNext(batch -> logger.log(batch.toString()))
       .flatMap(batch -> Flowable.fromIterable(batch.getMessages()))
       .flatMapSingle(m -> Single.just(messageHandler.handleMessage(m))
-    .subscribeOn(threadPoolScheduler(threads, 10)))
+          .subscribeOn(threadPoolScheduler(threads, threadPoolQueueSize)))
       .subscribeWith(new SimpleSubscriber<>(threads, 1));
   }
 }
 ```
+
+The `start()` method sets up a reactive stream that fetches `MessageBatch`es from the source. 
+
+We subscribe to this `Flowable` of `MessageBatch`es on a single new thread. This is the thread I calld "coordinator thread" above.
+
+Next, we `flatMap()` each `MessageBatch` into a `Flowable` of `Message`s. This step allows us to only care about `Message`s further downstream and ignore the fact that each `Message` is part of a `MessageBatch`.
+
+Then, we use `flatMapSingle()` to pass each `Message` into our `MessageHandler`. Since the handler has a blocking interface (i.e. it doesn't return a `Flowable` or `Single`), we wrap the result with `Single.just()`. We subscribe to these `Single` messages on a thread pool with the specified number of threads and the specified threadPoolQueueSize.
+
+Finally, we subscribe to this reactive stream with a [simple subscriber](https://github.com/thombergs/code-examples/blob/master/reactive/src/main/java/io/reflectoring/reactive/batch/SimpleSubscriber.java) that pulls a number of items from the stream that equals the number of threads and pulls 1 more item each time an item has been processed.
+
+Looks good, doesn't it? Spot the error if you want to make a game of it :).
+
+The test is failing with a `ConditionTimeoutException` indicating that not all messages have been processed within the timeout. Processing is too slow. Let's look at the log output:
 
 ```
 1580500514456 Test worker: subscribed
@@ -183,10 +202,36 @@ public class ReactiveBatchProcessorV1 {
 1580500516487 pool-1-thread-1: processed message 2-1
 1580500516988 pool-1-thread-1: processed message 2-2
 1580500517488 pool-1-thread-1: processed message 2-3
+...
 ```
-Learning: defer execution, otherwise it
 
-### Iteration #2 - Working On Too Many Threadpools
+In the logs, we see that our stream has subscribed on the `Test worker` thread, which is the main thread of the JUnit test, and then everything else takes place on the thread `pool-1-thread-1`. 
+
+All messages are processed sequentially instead of in parallel!
+
+The reason (of course), is **that the call to `messageHandler.handleMessage()` is called in a blocking fashion**. The `Single.just()` doesn't defer the execution to the thread pool.
+
+The solution is to wrap a `Single.defer()` around it, as shown in the next code example.
+
+<div class="notice success">
+  <h4>Is <code>defer()</code> an Anti-Pattern?</h4>
+  <p>
+   I hear people say that using <code>defer()</code> is an anti-pattern in reactive programming. I don't share that opinion, at least not in a black-or-white sense.
+  </p>
+  <p>
+   It's true that <code>defer()</code> wraps blocking (= not reactive) code and that this blocking code is not really part of the reactive stream. The blocking code cannot use features of the reactive programming model and thus is probably not taking full advantage of the CPU resources. 
+  </p>
+  <p>
+   But there are cases in which we just don't need the reactive programming model to do increase performance or resource utilization. Think of developers implementing the (blocking) <code>MessageHandler</code> interface - they don't have to think about the complexities of reactive programming, making their job so much easier. I believe that it's OK to make things blocking just to make them easier to understand - assuming we don't need parallelization
+  </p>
+  <p>
+  The downside of blocking code within a reactive stream is, of course, that we can run into the pitfall I described above. So, <strong>if you use blocking code withing a reactive stream, make sure to <code>defer()</code> it!</strong>
+  </p>
+</div>
+
+### Iteration #2 - Working On Too Many Thread Pools
+
+Ok, we learned that we need to `defer()` blocking code, so it's not executed on the current thread. This is the fixed version:
 
 ```java
 public class ReactiveBatchProcessorV2 {
@@ -199,7 +244,7 @@ public class ReactiveBatchProcessorV2 {
       .doOnNext(batch -> logger.log(batch.toString()))
       .flatMap(batch -> Flowable.fromIterable(batch.getMessages()))
       .flatMapSingle(m -> Single.defer(() -> Single.just(messageHandler.handleMessage(m)))
-      .subscribeOn(threadPoolScheduler(threads, 10)))
+          .subscribeOn(threadPoolScheduler(threads, threadPoolQueueSize)))
       .subscribeWith(new SimpleSubscriber<>(threads, 1));
   }
 }
@@ -217,11 +262,20 @@ public class ReactiveBatchProcessorV2 {
 1580500835118 pool-6-thread-1: processed message 2-1
 1580500835118 pool-7-thread-1: processed message 2-2
 ... some more messages
+expecting messages to be executed on 2 threads! ==> expected: <2> but was: <30>
 ```
 
-Learning: subscribeOn() within a flatMap is called for each Observable produced by the flatMap!
+This time, the test fails because the messages are processed on 30 different threads! We expected only 2 threads, because that's the pool size we passed into the factory method `threadPoolScheduler()`, which is supposed to create a `ThreadPoolExecutor` for us. Where do the other 28 threads come from?
+
+Looking at the log output, it becomes clear that each message is processed not only in its own thread, but in its own thread pool. 
+
+The reason for this is that the method `threadPoolScheduler()` for each message that is returned from our message handler within the `subscribeOn()` method.
+
+The solution is easy: store the result of `threadPoolScheduler()` in a variable and use the variable instead. 
 
 ### Iteration #3 - Rejected Messages
+
+So, here's the next version, without creating a thread pool for each message:
 
 ```java
 public class ReactiveBatchProcessorV3 {
@@ -236,11 +290,13 @@ public class ReactiveBatchProcessorV3 {
       .doOnNext(batch -> logger.log(batch.toString()))
       .flatMap(batch -> Flowable.fromIterable(batch.getMessages()))
       .flatMapSingle(m -> Single.defer(() -> Single.just(messageHandler.handleMessage(m)))
-    .subscribeOn(scheduler))
+          .subscribeOn(scheduler))
       .subscribeWith(new SimpleSubscriber<>(threads, 1));
   }
 }
 ```
+
+Now, it should finally work, shouldn't it? Let's look at the test output:
 
 ```
 1580501297031 Test worker: subscribed
@@ -253,6 +309,11 @@ io.reactivex.exceptions.UndeliverableException: The exception could not be deliv
 Caused by: java.util.concurrent.RejectedExecutionException: Task ... rejected from java.util.concurrent.ThreadPoolExecutor@4a195f69[Running, pool size = 2, active threads = 2, queued tasks = 10, completed tasks = 0]	
 ```
 
+The test hasn't event started to process messages and yet it fails due to an `RejectedExecutionException`!
+
+It turns out that this exception is thrown by a `ThreadPoolExecutor` when all of its threads are busy and its queue is full. Our `ThreadPoolExecutor` has two threads and we passed 10 as the `threadPoolQueueSize`, so it has a capacity of 2 + 10 = 12. The 13th message will cause exactly the above exception if the message handler blocks the two threads long enough.
+
+The solution to this is to re-queue a rejected task by implementing a `RejectedExecutionHandler` and adding this to our `ThreadPoolExecutor`:
 
 ```java
 public class WaitForCapacityPolicy implements RejectedExecutionHandler {
@@ -269,7 +330,11 @@ public class WaitForCapacityPolicy implements RejectedExecutionHandler {
 }
 ```
 
+Since a `ThreadPoolExecutor`s queue is a [`BlockingQueue`](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/BlockingQueue.html), the `put()` operation will wait until the queue has capacity again. Since this happens in our coordinator thread, no new messages will be fetched from the source until the `ThreadPoolExecutor` has capacity.
+
 ### Iteration #4 - Works as Expected
+
+Here's the final version that passes our test:
 
 ```java
 public class ReactiveBatchProcessor {
@@ -301,23 +366,38 @@ public class ReactiveBatchProcessor {
 }
 ```
 
-```
-1580501887484 Test worker: subscribed
-1580501887498 pool-3-thread-1: MessageBatch{messages=[1-1, 1-2, 1-3]}
-1580501887510 pool-3-thread-1: MessageBatch{messages=[2-1, 2-2, 2-3]}
-1580501887511 pool-3-thread-1: MessageBatch{messages=[3-1, 3-2, 3-3]}
-1580501887512 pool-3-thread-1: MessageBatch{messages=[4-1, 4-2, 4-3]}
-1580501887512 pool-3-thread-1: MessageBatch{messages=[5-1, 5-2, 5-3]}
-1580501888014 pool-1-thread-2: processed message 1-2
-1580501888014 pool-1-thread-1: processed message 1-1
-1580501888517 pool-1-thread-1: processed message 1-3
-1580501888518 pool-1-thread-2: processed message 2-1
-1580501888520 pool-3-thread-1: MessageBatch{messages=[6-1, 6-2, 6-3]}
-1580501889019 pool-1-thread-1: processed message 2-3
-1580501889019 pool-1-thread-2: processed message 2-2
-```
+Within the `threadPoolScheduler()` method, we add our `WaitForCapacityPolicy()` to re-queue rejected tasks.
 
-Learning: Re-queue  rejected messages if you don't want to lose them 
+The log output of the test now looks complete:
+
+```
+1580601895022 Test worker: subscribed
+1580601895039 pool-3-thread-1: MessageBatch{messages=[1-1, 1-2, 1-3]}
+1580601895055 pool-3-thread-1: MessageBatch{messages=[2-1, 2-2, 2-3]}
+1580601895056 pool-3-thread-1: MessageBatch{messages=[3-1, 3-2, 3-3]}
+1580601895057 pool-3-thread-1: MessageBatch{messages=[4-1, 4-2, 4-3]}
+1580601895058 pool-3-thread-1: MessageBatch{messages=[5-1, 5-2, 5-3]}
+1580601895558 pool-1-thread-2: processed message 1-2
+1580601895558 pool-1-thread-1: processed message 1-1
+1580601896059 pool-1-thread-2: processed message 1-3
+1580601896059 pool-1-thread-1: processed message 2-1
+1580601896059 pool-3-thread-1: MessageBatch{messages=[6-1, 6-2, 6-3]}
+1580601896560 pool-1-thread-2: processed message 2-2
+1580601896560 pool-1-thread-1: processed message 2-3
+...
+1580601901565 pool-1-thread-2: processed message 9-1
+1580601902066 pool-1-thread-2: processed message 10-1
+1580601902066 pool-1-thread-1: processed message 9-3
+1580601902567 pool-1-thread-2: processed message 10-2
+1580601902567 pool-1-thread-1: processed message 10-3
+1580601902567 pool-1-thread-1: completed
+```
 
 ## Conclusion
+
+The conclusion I draw from the experience of implementing a reactive batch processor is that the reactive concepts are very hard to grasp in the beginning and you only come to admire it's elegance once you have overcome the learning curve. 
+
+Blocking code within a reactive stream has a high potential of introducing errors with the threading model. In my opinion, however, this doesn't mean that every single line of code should be reactive, because it's much easier to understand (and thus maintain) blocking code.
+
+The code examples are available on [GitHub](https://github.com/thombergs/code-examples/tree/master/reactive).
 

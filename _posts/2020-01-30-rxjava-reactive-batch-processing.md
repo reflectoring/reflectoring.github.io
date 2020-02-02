@@ -1,10 +1,10 @@
 ---
-title: Multi-threaded Batch Processing with RxJava
+title: Reactive Multi-Threading with RxJava - Pitfalls and Solutions
 categories: [java]
 date: 2020-01-30 05:00:00 +1100
 modified: 2020-01-30 05:00:00 +1100
 author: tom
-excerpt: "Reactive Programming offers a lot of pitfalls for rookies, especially when it's multi-threaded. This article documents some of those pitfalls so you don't have to fall."
+excerpt: "Reactive Programming has a lot of pitfalls for rookies to fall into, especially when it's multi-threaded. This article documents some of those pitfalls and their solutions so you don't have to fall."
 image:
   auto: 0018-cogs
 ---
@@ -25,7 +25,7 @@ Let's start with a literally painted picture of what we're trying to achieve:
 
 We want to create a paginating processor that fetches batches (or pages) of items (we'll call them "messages") from a source. This source can be a queue system, or a REST endpoint, or any other system providing input messages for us. 
 
-Our batch processor loads these batches of messages from a dedicated "coordinator" thread, splits the batch into single items, and forwards the single message to a number of worker threads. We want this coordination work to be done in a separate thread so that we don't block the current thread of our application.
+Our batch processor loads these batches of messages from a dedicated "coordinator" thread, splits the batch into single messages and forwards each single message to one of several worker threads. We want this coordination work to be done in a separate thread so that we don't block the current thread of our application.
 
 In the figure above, the coordinator thread loads pages of 3 messages at a time and forwards them to a thread pool of 2 worker threads to be processed. When all messages of a page have been processed, the coordinator thread loads the next batch of messages and forwards these, too. If the source runs out of messages, the coordinator thread waits for the source to generate more messages and continues its work.
 
@@ -33,7 +33,7 @@ In a nutshell, these are the requirements to our batch processor:
 
 * The fetching of messages must take place in a different thread (a coordinator thread) so we don't block the application's thread.
 * The processor can fan out the message processing to an arbitrary configurable number of worker threads.
-* If the message source has more messages than our worker thread pool can handle, we must not reject those incoming messages, but instead wait until the worker threads have capacity again.
+* If the message source has more messages than our worker thread pool can handle, we must not reject those incoming messages but instead wait until the worker threads have capacity again.
 
 ## Why Reactive?
 
@@ -63,7 +63,7 @@ interface MessageSource {
 }
 ```
 
-It's a simple interface that returns a `Flowable` of `MessageBatch` objects. This `Flowable` can be a steady stream of messages, or a paginated one like in the figure above, or whatever else. The implementation of this interface decides the way in which messages are being fetched from a source. 
+It's a simple interface that returns a `Flowable` of `MessageBatch` objects. This `Flowable` can be a steady stream of messages, or a paginated one like in the figure above, or whatever else. The implementation of this interface decides how messages are being fetched from a source. 
 
 ### `MessageHandler`
 
@@ -98,7 +98,7 @@ ReactiveBatchProcessor processor = new ReactiveBatchProcessor(
 processor.start();
 ```
 
-We pass a `MessageSource` and a `MessageHandler` to the processor, so that it knows from where to fetch the messages and where to forward them for processing. Also, we want to configure the size of the worker thread pool and the size of the queue of that thread pool (a `ThreadPoolExecutor` can have a queue of tasks that is used to buffer tasks when all threads are currently busy).
+We pass a `MessageSource` and a `MessageHandler` to the processor so that it knows from where to fetch the messages and where to forward them for processing. Also, we want to configure the size of the worker thread pool and the size of the queue of that thread pool (a `ThreadPoolExecutor` can have a queue of tasks that is used to buffer tasks when all threads are currently busy).
 
 ## Testing the Batch Processing API
 
@@ -147,15 +147,15 @@ class ReactiveBatchProcessorTest {
 
 Let's take this test apart. 
 
-Since we want to unit-test our batch processor, we don't want a real message source or message handler. Hence, we create a `TestMessageSource` that generates 10 batches of 3 messages each and a `TestMessageHandler` that processes a single message by simply logging it, waiting 500ms, counting the number of messages it has processed, and counting the number of threads it has been called from. You can find the implementation of both classes in the [GitHub repo](https://github.com/thombergs/code-examples/tree/master/reactive/src/test/java/io/reflectoring/reactive/batch).
+Since we want to unit-test our batch processor, we don't want a real message source or message handler. Hence, we create a `TestMessageSource` that generates 10 batches of 3 messages each and a `TestMessageHandler` that processes a single message by simply logging it, waiting 500ms, counting the number of messages it has processed and counting the number of threads it has been called from. You can find the implementation of both classes in the [GitHub repo](https://github.com/thombergs/code-examples/tree/master/reactive/src/test/java/io/reflectoring/reactive/batch).
 
 Then, we instantiate our not-yet-implemented `ReactiveBatchProcessor`, giving it 2 threads and a thread pool queue with capacity for 10 messages.
 
 Next, we call the `start()` method on the processor, which should trigger the coordination thread to start fetching message batches from the source and passing them to the 2 worker threads.
 
-Since none of this takes place in the main thread of our unit test, we now have pause the current thread to wait until the coordinator and worker threads have finished their job. For this, we make use of the [Awaitility library](http://www.awaitility.org). 
+Since none of this takes place in the main thread of our unit test, we now have to pause the current thread to wait until the coordinator and worker threads have finished their job. For this, we make use of the [Awaitility library](http://www.awaitility.org). 
 
-The `await()` method allows us to wait at most 10 seconds until all messages have been processed (or fail if the messages have not been processed in that time). To check if all messages have been processed, we compare the number of expected messages (batches x messages per batch) to the number of messages that our `TestMessageHandler` has counted so far. 
+The `await()` method allows us to wait at most 10 seconds until all messages have been processed (or fail if the messages have not been processed within that time). To check if all messages have been processed, we compare the number of expected messages (batches x messages per batch) to the number of messages that our `TestMessageHandler` has counted so far. 
 
 Finally, after all messages have been successfully processed, we ask the `TestMessageHandler` for the number of different threads it has been called from to assert that all threads of our thread pool have been used in processing the messages. 
 
@@ -195,7 +195,7 @@ Next, we `flatMap()` each `MessageBatch` into a `Flowable<Message>`. This step a
 
 Then, we use `flatMapSingle()` to pass each `Message` into our `MessageHandler`. Since the handler has a blocking interface (i.e. it doesn't return a `Flowable` or `Single`), we wrap the result with `Single.just()`. We subscribe to these `Single`s on a thread pool with the specified number of threads and the specified `threadPoolQueueSize`.
 
-Finally, we subscribe to this reactive stream with a [simple subscriber](https://github.com/thombergs/code-examples/blob/master/reactive/src/main/java/io/reflectoring/reactive/batch/SimpleSubscriber.java) that initially pulls a number of messages down the stream that equals the number of threads and pulls one more message each time a message has been processed.
+Finally, we subscribe to this reactive stream with a [simple subscriber](https://github.com/thombergs/code-examples/blob/master/reactive/src/main/java/io/reflectoring/reactive/batch/SimpleSubscriber.java) that initially pulls enough messages down the stream so that all worker threads are busy and pulls one more message each time a message has been processed.
 
 Looks good, doesn't it? Spot the error if you want to make a game of it :).
 
@@ -214,7 +214,7 @@ The test is failing with a `ConditionTimeoutException` indicating that not all m
 ...
 ```
 
-In the logs, we see that our stream has subscribed on the `Test worker` thread, which is the main thread of the JUnit test, and then everything else takes place on the thread `pool-1-thread-1`. 
+In the logs, we see that our stream has been subscribed to on the `Test worker` thread, which is the main thread of the JUnit test, and then everything else takes place on the thread `pool-1-thread-1`. 
 
 *All messages are processed sequentially instead of in parallel!*
 
@@ -280,7 +280,7 @@ expecting messages to be executed on 2 threads! ==> expected:<2> but was:<30>
 
 This time, the test fails because the messages are processed on 30 different threads! We expected only 2 threads, because that's the pool size we passed into the factory method `threadPoolScheduler()`, which is supposed to create a `ThreadPoolExecutor` for us. Where do the other 28 threads come from?
 
-Looking at the log output, it becomes clear that *each message is processed not only in its own thread, but in its own thread pool*. 
+Looking at the log output, it becomes clear that *each message is processed not only in its own thread but in its own thread pool*. 
 
 The reason for this is, once again, that `threadPoolScheduler()` is called in the wrong thread. It's called for each message that is returned from our message handler.
 
@@ -417,11 +417,11 @@ The log output of the test now looks complete:
 1580601902567 pool-1-thread-1: completed
 ```
 
-Looking at the timestamps, we see that two messages are always processed at approximately the same time, followed by a pause of 500 ms. That is because our `TestMessageHandler` is waiting for 500 ms for each message. Also, the messages are processed by two threads in the same threadpool `pool-1`, as we wanted.
+Looking at the timestamps, we see that two messages are always processed at approximately the same time, followed by a pause of 500 ms. That is because our `TestMessageHandler` is waiting for 500 ms for each message. Also, the messages are processed by two threads in the same thread pool `pool-1`, as we wanted.
 
-Also, we can see that the message batches are fetched in a single thread of a different threadpool `pool-3`. This is our coordinator thread.
+Also, we can see that the message batches are fetched in a single thread of a different thread pool `pool-3`. This is our coordinator thread.
 
-All our requirements are fulfilled. Mission accomplished.
+All of our requirements are fulfilled. Mission accomplished.
 
 ## Conclusion
 

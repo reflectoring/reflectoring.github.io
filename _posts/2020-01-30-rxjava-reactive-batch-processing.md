@@ -9,7 +9,7 @@ image:
   auto: 0058-motorway-junction
 ---
 
-I had a rough time this week refactoring a multi-threaded, reactive message processor. It just didn't seem to be working the way I expected. It was failing in various ways, each of which took me a while to understand. But it finally clicked.
+I recently had a rough time refactoring a multi-threaded, reactive message processor. It just didn't seem to be working the way I expected. It was failing in various ways, each of which took me a while to understand. But it finally clicked.
 
 This article provides a complete example of a reactive stream that processes items in parallel and explains all the pitfalls I encountered. It should be a good intro for developers that are just starting with reactive, and it also provides a working solution for creating a reactive batch processing stream for those that are looking for such a solution.
 

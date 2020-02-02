@@ -11,7 +11,7 @@ image:
 
 I recently had a rough time refactoring a multi-threaded, reactive message processor. It just didn't seem to be working the way I expected. It was failing in various ways, each of which took me a while to understand. But it finally clicked.
 
-This article provides a complete example of a reactive stream that processes items in parallel and explains all the pitfalls I encountered. It should be a good intro for developers that are just starting with reactive, and it also provides a working solution for creating a reactive batch processing stream for those that are looking for such a solution.
+*This article provides a complete example of a reactive stream that processes items in parallel* and explains all the pitfalls I encountered. It should be a good intro for developers that are just starting with reactive, and it also provides a working solution for creating a reactive batch processing stream for those that are looking for such a solution.
 
 We'll be using [RxJava 3](https://github.com/ReactiveX/RxJava), which is an implementation of the [ReactiveX](http://reactivex.io/) specification. It should be relatively easy to transfer the code to other reactive libraries.
 

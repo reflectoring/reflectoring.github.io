@@ -25,6 +25,9 @@ To work with multiple tenants in an application we'll have a look at how to:
 3. migrate SQL Scripts for all tenants if we want to make changes in the database or add a new tenant.
 
 ## Binding A Request to Tenant
+When the application is used by many tenants, every tenant has his own data in the persistence. Also every tenant
+sends requests to the application to execute the business logic and this logic must be applied to the data of tenant,
+who sent the request. That's why we need to assign every request to an existing tenant. 
 There are different ways to bind an incoming request to the tenant in the application:
 
 * send a `tenantId` with a request as part of the URI,

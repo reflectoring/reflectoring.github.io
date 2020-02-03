@@ -48,7 +48,7 @@ public class HeaderTenantInterceptor implements WebRequestInterceptor {
 
   @Override
   public void preHandle(WebRequest request) throws Exception {
-    ThreadTenantStorage.setTenantName(request.getHeader(TENANT_HEADER));
+    ThreadTenantStorage.setId(request.getHeader(TENANT_HEADER));
   }
   
   // other methods omitted
@@ -66,11 +66,11 @@ public class ThreadTenantStorage {
 
   private static ThreadLocal<String> currentTenant = new ThreadLocal<>();
 
-  public static void setTenantName(String tenantName) {
-    currentTenant.set(tenantName);
+  public static void setTenantId(String tenantId) {
+    currentTenant.set(tenantId);
   }
 
-  public static String getTenantName() {
+  public static String getTenantId() {
     return currentTenant.get();
   }
 
@@ -112,18 +112,18 @@ But we can define only one `DataSource` with these properties. To define multipl
 need to use custom properties: 
 
 ```yaml
-spring:
+tenants:
   datasources:
-  vw:
-    jdbcUrl: jdbc:h2:mem:vw
-    driverClassName: org.h2.Driver
-    username: sa
-    password: password
-  bmw:
-    jdbcUrl: jdbc:h2:mem:bmw
-    driverClassName: org.h2.Driver
-    username: sa
-    password: password
+    vw:
+      jdbcUrl: jdbc:h2:mem:vw
+      driverClassName: org.h2.Driver
+      username: sa
+      password: password
+    bmw:
+      jdbcUrl: jdbc:h2:mem:bmw
+      driverClassName: org.h2.Driver
+      username: sa
+      password: password
 ```
 In this case, we configured data sources for two tenants: `vw` and `bmw`. If we assume that we have a fixed number of tenants
 we can define the `Datasource`s for them as static data in `application.yml`. 
@@ -135,7 +135,7 @@ Now we can bind the properties to a Spring Bean using `@ConfigurationProperties`
 
 ```java
 @Component
-@ConfigurationProperties(prefix = "spring")
+@ConfigurationProperties(prefix = "tenants")
 public class DataSourceProperties {
 
   private Map<Object, Object> datasources = new LinkedHashMap<>();

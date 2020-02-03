@@ -109,7 +109,7 @@ From the application's perspective, schemas and databases are abstracted by a `D
 
 In a Spring Boot application we usually configure the `DataSource` in `application.yaml` using properties with the prefix `spring.datasource`.
 But we can define only one `DataSource` with these properties. To define multiple `DataSource`s we
-need to use custom properties: 
+need to use custom properties in `application.yml`: 
 
 ```yaml
 tenants:
@@ -160,6 +160,8 @@ public class DataSourceProperties {
 }
 ```
 In the `DataSourceProperties` we build a `Map` with the datasource names as keys and the `DataSource`s as values.
+Now we can add new Tenant to the `application.yml` and the `DataSource` for this new tenant will be loaded automatically
+by starting the application.  
 
 Now we need a way to load the right data source for a tenant, depending on the `tenantId` from the HTTP request.
 For this, we provide our Spring Boot application with a `DataSource` that wraps all of our tenant `DataSource`s:

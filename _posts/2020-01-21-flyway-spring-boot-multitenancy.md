@@ -24,13 +24,6 @@ To work with multiple tenants in an application we'll have a look at how to:
 2. provide the data source for the current tenant,
 3. migrate SQL Scripts for all tenants if we want to make changes in the database or add a new tenant.
 
-## Multitenancy in Relational Databases
-There are different possibilities to separate data for different tenants. We'll have a look at two of them:
-* using a different schema for each tenant,
-* using a completely different database for each tenant.
-
-From the application's perspective, schemas and databases are abstracted by a `DataSource`, so, in the code, we can handle these approaches in the same way.
-
 ## Binding A Request to Tenant
 There are different ways to bind an incoming request to the tenant in the application:
 
@@ -104,6 +97,12 @@ public class WebConfiguration implements WebMvcConfigurer {
 ```
 
 ## Configuring A `DataSource` for Each Tenant
+
+There are different possibilities to separate data for different tenants. We'll have a look at two of them:
+* using a different schema for each tenant,
+* using a completely different database for each tenant.
+
+From the application's perspective, schemas and databases are abstracted by a `DataSource`, so, in the code, we can handle these approaches in the same way.
 
 In a Spring Boot application we usually configure the `DataSource` in `application.yaml` using properties with the prefix `spring.datasource`.
 But we can define only one `DataSource` with these properties. To define multiple `DataSource`s we

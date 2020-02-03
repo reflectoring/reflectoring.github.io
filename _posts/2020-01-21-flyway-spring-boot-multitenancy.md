@@ -1,6 +1,6 @@
 ---
 
-title: Flyway Migration in a Spring Boot Application with Multitenancy
+title: Multi-Tenancy Applications with Spring Boot and Flyway
 categories: [spring-boot]
 date: 2020-01-26 05:00:00 +1100
 modified: 2020-01-26 05:00:00 +1100

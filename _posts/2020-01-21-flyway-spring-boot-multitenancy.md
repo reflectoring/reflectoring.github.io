@@ -1,41 +1,43 @@
 ---
-
-title: Multi-Tenancy Applications with Spring Boot and Flyway
+title: Multitenancy Applications with Spring Boot and Flyway
 categories: [spring-boot]
-date: 2020-01-26 05:00:00 +1100
-modified: 2020-01-26 05:00:00 +1100
+date: 2020-02-04 05:00:00 +1100
+modified: 2020-02-04 05:00:00 +1100
 author: artur
-excerpt: "Flyway and Spring Boot provide us automated data migration with multiple data sources"
+excerpt: "Multitenancy applications require a separate data store for each tenant. This guide shows how to configure a Spring Boot application with multiple data sources and how to switch between them depending on the tenant using the software. Using Flyway we can even upgrade the database schemas for all data sources at once."
 image:
   auto: 0058-multitenant
 ---
 
-Multitenancy applications support work with different customers who want to separate their data from each other.
-A multitenancy application uses the same business logic for all tenants but persists their data in different places.
-If we want to make some changes to the database, we have to do it for every tenant.
+Multitenancy applications allow different customers to work with the same application without seeing each other's data.
+That means we have to set up a separate data store for each tenant.
+And as if that's not hard enough, if we want to make some changes to the database, we have to do it for every tenant.
 
-This article shows a way how to do it with Flyway in a Spring Boot application.
+This article shows a way how to implement a Spring Boot application with a data source for each tenant and how to use Flyway to make updated to all tenant databases at once.
 
 {% include github-project.html url="https://github.com/arkuksin/flyway-multitenancy" %}
 
 ## General Approach
-To work with multiple tenants in an application we'll have a look at how to:
-1. bind an incoming request to a tenant,
-2. provide the data source for the current tenant,
-3. migrate SQL Scripts for all tenants if we want to make changes in the database or add a new tenant.
+To work with multiple tenants in an application we'll have a look at:
+1. how to bind an incoming request to a tenant,
+2. how to provide the data source for the current tenant, and
+3. how to execute SQL scripts for all tenants at once.
 
-## Binding A Request to Tenant
-When the application is used by many tenants, every tenant has his own data in the persistence. Also every tenant
-sends requests to the application to execute the business logic and this logic must be applied to the data of tenant,
-who sent the request. That's why we need to assign every request to an existing tenant. 
-There are different ways to bind an incoming request to the tenant in the application:
+## Binding a Request to a Tenant
+When the application is used by many different tenants, every tenant has their own data. This means that
+the business logic executed with each request sent to the application must work with the data of the tenant
+who sent the request. 
 
-* send a `tenantId` with a request as part of the URI,
-* add a `tenantId` to the JWT token,
-* include a `tenantId` field in the header of the HTTP request,
+**That's why we need to assign every request to an existing tenant.**
+ 
+There are different ways to bind an incoming request to a specific tenant:
+
+* sending a `tenantId` with a request as part of the URI,
+* adding a `tenantId` to the JWT token,
+* including a `tenantId` field in the header of the HTTP request,
 * and many more....
 
-To keep it simple, let's consider the last option. We'll include a `tenantId` field in the header of the HTTP request.
+To keep it simple, let's consider the last option. **We'll include a `tenantId` field in the header of the HTTP request.**
 
 In Spring Boot, to read the header from a request, we implement the `WebRequestInterceptor` interface. This interface allows us 
 to intercept a request before it's received in the web controller:
@@ -59,7 +61,7 @@ In the method `preHandle(WebRequest request)`, we read every request's `tenantId
 to `ThreadTenantStorage`. 
 
 `ThreadTenantStorage` is a storage that contains a `ThreadLocal` variable. By storing the `tenantId` in a `ThreadLocal` we can be sure that
-every thread has its own copy of this variable and the current thread has no access to another `tenantId`:
+every thread has its own copy of this variable and that the current thread has no access to another `tenantId`:
 
 ```java
 public class ThreadTenantStorage {
@@ -101,15 +103,16 @@ public class WebConfiguration implements WebMvcConfigurer {
 
 ## Configuring A `DataSource` for Each Tenant
 
-There are different possibilities to separate data for different tenants. We'll have a look at two of them:
-* using a different schema for each tenant,
-* using a completely different database for each tenant.
+There are different possibilities to separate data for different tenants. We can
 
-From the application's perspective, schemas and databases are abstracted by a `DataSource`, so, in the code, we can handle these approaches in the same way.
+* use a different schema for each tenant, or
+* use a completely different database for each tenant.
+
+From the application's perspective, schemas and databases are abstracted by a `DataSource`, so, in the code, we can handle both approaches in the same way.
 
 In a Spring Boot application we usually configure the `DataSource` in `application.yaml` using properties with the prefix `spring.datasource`.
 But we can define only one `DataSource` with these properties. To define multiple `DataSource`s we
-need to use custom properties in `application.yml`: 
+need to use custom properties in `application.yaml`: 
 
 ```yaml
 tenants:
@@ -125,13 +128,9 @@ tenants:
       username: sa
       password: password
 ```
-In this case, we configured data sources for two tenants: `vw` and `bmw`. If we assume that we have a fixed number of tenants
-we can define the `Datasource`s for them as static data in `application.yml`. 
+In this case, we configured data sources for two tenants: `vw` and `bmw`. 
 
-But we want to be able to add new tenants without building
-the application again. So let's implement it dynamically.
-
-Now we can bind the properties to a Spring Bean using `@ConfigurationProperties`:
+To get access to these `DataSource`s in our code, we can bind the properties to a Spring bean using [`@ConfigurationProperties`](/spring-boot-configuration-properties/):
 
 ```java
 @Component
@@ -159,8 +158,8 @@ public class DataSourceProperties {
   }
 }
 ```
-In the `DataSourceProperties` we build a `Map` with the datasource names as keys and the `DataSource`s as values.
-Now we can add new Tenant to the `application.yml` and the `DataSource` for this new tenant will be loaded automatically
+In `DataSourceProperties`, we build a `Map` with the data source names as keys and the `DataSource` objects as values.
+Now we can add a new tenant to `application.yaml` and the `DataSource` for this new tenant will be loaded automatically
 by starting the application.  
 
 Now we need a way to load the right data source for a tenant, depending on the `tenantId` from the HTTP request.
@@ -246,7 +245,7 @@ public class DataSourceConfiguration {
 
 Now, every time when the application starts, the SQL scripts are migrated for every `DataSource`.
 
-If we want to add a new tenant, we just put a new configuration in `application.yml` and restart the application
+If we want to add a new tenant, we just put a new configuration in `application.yaml` and restart the application
 to trigger the SQL migration. If we don't want to rebuild the application [we can externalize the configuration](https://reflectoring.io/externalize-configuration/) of tenants.
 
 

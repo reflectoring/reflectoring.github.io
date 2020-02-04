@@ -101,6 +101,13 @@ public class WebConfiguration implements WebMvcConfigurer {
 }
 ```
 
+<div class="notice success">
+  <h4>Don't use sequential number for tenants id</h4>
+  <p>
+  It is better to use a UUID. Since the id is coming from the client, it must be hard to guess. 
+  </p>
+</div>
+
 ## Configuring A `DataSource` for Each Tenant
 
 There are different possibilities to separate data for different tenants. We can

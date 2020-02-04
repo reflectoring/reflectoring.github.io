@@ -170,11 +170,9 @@ to route over our Car `Datasource`s.
 ```java
 public class CarRoutingDataSource extends AbstractRoutingDataSource {
 
-  private static final String DEFAULT_TENANT = "vw";
-
   @Override
   protected Object determineCurrentLookupKey() {
-    return ObjectUtils.defaultIfNull(ThreadTenantStorage.getTenantName(), DEFAULT_TENANT);
+    return ThreadTenantStorage.getTenantId();
   }
 }
 ````
@@ -211,9 +209,19 @@ public class DataSourceConfiguration {
 
 If we want to have version control over the database with Flyway and make changes in it like adding a column, adding a table,
 dropping a constraint and so on, we have to write SQL scripts. With the Flyway support for Spring Boot we just need
-to deploy the application and new scripts are being executed to migrate the database to the new state. By default, Flyway uses the current `DataSource`.
+to deploy the application and new scripts are being executed to migrate the database to the new state. 
 
-But we want to apply the scripts to all `DataSource`s we defined in the application.
+First we have do disable the preconfigured property for automated Flyway migration of default `DataSource` in `application.yaml`.
+
+```yaml
+spring:
+  flyway:
+    enabled: false
+```
+If we dont't do it, the Flyway will try to migrate scripts to the current `DataSource` by starting application. But when we start the application
+we don't have a current tenant, so the `ThreadTenantStorage.getTenantId()` would return `null` and the application crashes.
+
+By default, Flyway uses the current `DataSource`. But we want to apply the scripts to all `DataSource`s we defined in the application.
 We didn't define static `Datasource`s, but we put them in a `Map` in the `DataSourceProperties`, so now we can iterate
 over them.
 
@@ -244,6 +252,8 @@ public class DataSourceConfiguration {
 ```
 
 Now, every time when the application starts, the SQL scripts are migrated for every `DataSource`.
+
+If we dont't do it, the Flyway will try to migrate the scripts to the default `DataSources`. In our configuration
 
 If we want to add a new tenant, we just put a new configuration in `application.yaml` and restart the application
 to trigger the SQL migration. If we don't want to rebuild the application [we can externalize the configuration](https://reflectoring.io/externalize-configuration/) of tenants.

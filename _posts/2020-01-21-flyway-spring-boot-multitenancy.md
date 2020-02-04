@@ -196,7 +196,6 @@ public class DataSourceConfiguration {
   }
 
   @Bean
-  @PostConstruct
   public DataSource dataSource() {
     CarRoutingDataSource customDataSource = new CarRoutingDataSource();
     customDataSource.setTargetDataSources(dataSourceProperties.getDatasources());
@@ -221,7 +220,7 @@ spring:
 If we dont't do it, the Flyway will try to migrate scripts to the current `DataSource` by starting application. But when we start the application
 we don't have a current tenant, so the `ThreadTenantStorage.getTenantId()` would return `null` and the application crashes.
 
-By default, Flyway uses the current `DataSource`. But we want to apply the scripts to all `DataSource`s we defined in the application.
+Now we want to apply the scripts to all `DataSource`s we defined in the application.
 We didn't define static `Datasource`s, but we put them in a `Map` in the `DataSourceProperties`, so now we can iterate
 over them.
 
@@ -235,10 +234,8 @@ public class DataSourceConfiguration {
     this.dataSourceProperties = dataSourceProperties;
   }
 
-  @Bean
   @PostConstruct
-  public DataSource dataSource() {
-
+  public void migrate() {
     for (Object dataSource : dataSourceProperties
         .getDatasources()
         .values()) {
@@ -251,9 +248,7 @@ public class DataSourceConfiguration {
 }
 ```
 
-Now, every time when the application starts, the SQL scripts are migrated for every `DataSource`.
-
-If we dont't do it, the Flyway will try to migrate the scripts to the default `DataSources`. In our configuration
+Every time when the application starts, the SQL scripts are migrated for every `DataSource`.
 
 If we want to add a new tenant, we just put a new configuration in `application.yaml` and restart the application
 to trigger the SQL migration. If we don't want to rebuild the application [we can externalize the configuration](https://reflectoring.io/externalize-configuration/) of tenants.

@@ -162,31 +162,7 @@ In `DataSourceProperties`, we build a `Map` with the data source names as keys a
 Now we can add a new tenant to `application.yaml` and the `DataSource` for this new tenant will be loaded automatically
 by starting the application.  
 
-Now we need a way to load the right data source for a tenant, depending on the `tenantId` from the HTTP request.
-For this, we provide our Spring Boot application with a `DataSource` that wraps all of our tenant `DataSource`s:
-
-# TODO go on from here 
-```java
-@Configuration
-public class DataSourceConfiguration {
-
-  private final DataSourceProperties dataSourceProperties;
-
-  public DataSourceConfiguration(DataSourceProperties dataSourceProperties) {
-    this.dataSourceProperties = dataSourceProperties;
-  }
-
-  @Bean
-  @PostConstruct
-  public DataSource dataSource() {
-    CarRoutingDataSource customDataSource = new CarRoutingDataSource();
-    customDataSource.setTargetDataSources(dataSourceProperties.getDatasources());
-    return customDataSource;
-  }
-}
-```
-
-We have only one `DataSource` in this configuration and it should be always the `DataSource` of the tenant from the
+The default configuration of Spring Boot has only one `DataSource`. In our case it should be always the `DataSource` of the tenant from the
 request. We can achieve this by using `AbstractRoutingDataSource`. `AbstractRoutingDataSource`
 can manage multiple `DataSource`s and routes over connections. We can extend `AbstractRoutingDataSource`
 to route over our Car `Datasource`s.
@@ -206,6 +182,30 @@ The `CarRoutingDataSource` will call `determineCurrentLookupKey` whenever it get
 The current tenant has been set to `ThreadTenantStorage`, so the method `determineCurrentLookupKey `
 returns this current tenant, the `CarRoutingDataSource` find the `DataSource` of this tenant and set it as current
 `DataSource` automatically. It means every access to data from the thread will be routed to this `Datasource`.
+
+Now we need a way to load the right data source for a tenant, depending on the `tenantId` from the HTTP request.
+For this, we provide our Spring Boot application with a `DataSource` that wraps all of our tenant `DataSource`s.
+As described above, the `CarRoutingDataSource` takes care about providing the right `DataSource`:
+
+```java
+@Configuration
+public class DataSourceConfiguration {
+
+  private final DataSourceProperties dataSourceProperties;
+
+  public DataSourceConfiguration(DataSourceProperties dataSourceProperties) {
+    this.dataSourceProperties = dataSourceProperties;
+  }
+
+  @Bean
+  @PostConstruct
+  public DataSource dataSource() {
+    CarRoutingDataSource customDataSource = new CarRoutingDataSource();
+    customDataSource.setTargetDataSources(dataSourceProperties.getDatasources());
+    return customDataSource;
+  }
+}
+```
 
 ## Migrating SQL Schemas with Multiple Tenants
 

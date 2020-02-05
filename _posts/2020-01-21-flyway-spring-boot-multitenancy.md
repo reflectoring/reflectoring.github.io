@@ -13,7 +13,7 @@ Multitenancy applications allow different customers to work with the same applic
 That means we have to set up a separate data store for each tenant.
 And as if that's not hard enough, if we want to make some changes to the database, we have to do it for every tenant.
 
-This article shows a way **how to implement a Spring Boot application with a data source for each tenant and how to use Flyway to make updated to all tenant databases at once**.
+This article shows a way **how to implement a Spring Boot application with a data source for each tenant and how to use Flyway to make updates to all tenant databases at once**.
 
 {% include github-project.html url="https://github.com/arkuksin/flyway-multitenancy" %}
 
@@ -107,11 +107,11 @@ public class WebConfiguration implements WebMvcConfigurer {
   Sequential numbers are easy to guess. All you have to do as a client is to add or subtract from your own <code>tenantId</code>, modify the HTTP header, and voilá, you'll have access to another tenant's data.
   </p>
   <p>
-  Better use a UUID, as it's all but impossible to guess and people won't accidentally confuse one tenant ID with another. Better yet, verify that the logged-in user actually belongs to the specified tenant in each request. 
+  Better use a UUID, as it's all but impossible to guess and people won't accidentally confuse one tenant ID with another. <strong>Better yet, verify that the logged-in user actually belongs to the specified tenant in each request.</strong> 
   </p>
 </div>
 
-## Configuring A `DataSource` For Each Tenant
+## Configuring a `DataSource` For Each Tenant
 
 There are different possibilities to separate data for different tenants. We can
 
@@ -187,7 +187,7 @@ public class TenantRoutingDataSource extends AbstractRoutingDataSource {
 
 }
 ````
-The `TenantRoutingDataSource` will call `determineCurrentLookupKey()` whenever a client requests a connection.
+The `AbstractRoutingDataSource` will call `determineCurrentLookupKey()` whenever a client requests a connection.
 The current tenant is available from `ThreadTenantStorage`, so the method `determineCurrentLookupKey()`
 returns this current tenant. This way, `TenantRoutingDataSource` will find the `DataSource` of this tenant and return a connection to this data source automatically.
 
@@ -217,7 +217,7 @@ To let the `TenantRoutingDataSource` know which `DataSource`s to use, we pass th
 
 That's it. Each HTTP request will now have its own `DataSource` depending on the `tenantId` in the HTTP header.
 
-## Migrating Multiple SQL Schemas At Once
+## Migrating Multiple SQL Schemas at Once
 
 If we want to have version control over the database state with Flyway and make changes to it like adding a column, adding a table, or
 dropping a constraint, we have to write SQL scripts. With Spring Boot's Flyway support we just need

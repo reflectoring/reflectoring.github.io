@@ -6,14 +6,14 @@ modified: 2020-02-04 05:00:00 +1100
 author: artur
 excerpt: "Multitenancy applications require a separate data store for each tenant. This guide shows how to configure a Spring Boot application with multiple data sources and how to switch between them depending on the tenant using the software. Using Flyway we can even upgrade the database schemas for all data sources at once."
 image:
-  auto: 0058-multitenant
+  auto: 0059-library
 ---
 
 Multitenancy applications allow different customers to work with the same application without seeing each other's data.
 That means we have to set up a separate data store for each tenant.
 And as if that's not hard enough, if we want to make some changes to the database, we have to do it for every tenant.
 
-This article shows a way how to implement a Spring Boot application with a data source for each tenant and how to use Flyway to make updated to all tenant databases at once.
+This article shows a way **how to implement a Spring Boot application with a data source for each tenant and how to use Flyway to make updated to all tenant databases at once**.
 
 {% include github-project.html url="https://github.com/arkuksin/flyway-multitenancy" %}
 
@@ -57,7 +57,7 @@ public class HeaderTenantInterceptor implements WebRequestInterceptor {
 
 }
 ```
-In the method `preHandle(WebRequest request)`, we read every request's `tenantId` from the header and forward it
+In the method `preHandle()`, we read every request's `tenantId` from the header and forward it
 to `ThreadTenantStorage`. 
 
 `ThreadTenantStorage` is a storage that contains a `ThreadLocal` variable. By storing the `tenantId` in a `ThreadLocal` we can be sure that
@@ -102,13 +102,16 @@ public class WebConfiguration implements WebMvcConfigurer {
 ```
 
 <div class="notice success">
-  <h4>Don't use sequential number for tenants id</h4>
+  <h4>Don't Use Sequential Numbers as Tenant IDs!</h4>
   <p>
-  It is better to use a UUID. Since the id is coming from the client, it must be hard to guess. 
+  Sequential numbers are easy to guess. All you have to do as a client is to add or subtract from your own <code>tenantId</code>, modify the HTTP header, and voilá, you'll have access to another tenant's data.
+  </p>
+  <p>
+  Better use a UUID, as it's all but impossible to guess and people won't accidentally confuse one tenant ID with another. Better yet, verify that the logged-in user actually belongs to the specified tenant in each request. 
   </p>
 </div>
 
-## Configuring A `DataSource` for Each Tenant
+## Configuring A `DataSource` For Each Tenant
 
 There are different possibilities to separate data for different tenants. We can
 
@@ -117,7 +120,7 @@ There are different possibilities to separate data for different tenants. We can
 
 From the application's perspective, schemas and databases are abstracted by a `DataSource`, so, in the code, we can handle both approaches in the same way.
 
-In a Spring Boot application we usually configure the `DataSource` in `application.yaml` using properties with the prefix `spring.datasource`.
+In a Spring Boot application, we usually configure the `DataSource` in `application.yaml` using properties with the prefix `spring.datasource`.
 But we can define only one `DataSource` with these properties. To define multiple `DataSource`s we
 need to use custom properties in `application.yaml`: 
 
@@ -167,30 +170,28 @@ public class DataSourceProperties {
 ```
 In `DataSourceProperties`, we build a `Map` with the data source names as keys and the `DataSource` objects as values.
 Now we can add a new tenant to `application.yaml` and the `DataSource` for this new tenant will be loaded automatically
-by starting the application.  
+when the application is started.  
 
-The default configuration of Spring Boot has only one `DataSource`. In our case it should be always the `DataSource` of the tenant from the
-request. We can achieve this by using `AbstractRoutingDataSource`. `AbstractRoutingDataSource`
-can manage multiple `DataSource`s and routes over connections. We can extend `AbstractRoutingDataSource`
-to route over our Car `Datasource`s.
+The default configuration of Spring Boot has only one `DataSource`. In our case, however, **we need a way to load the right data source for a tenant, depending on the `tenantId` from the HTTP request**. We can achieve this by using an `AbstractRoutingDataSource`. 
+
+`AbstractRoutingDataSource` can manage multiple `DataSource`s and routes between them. We can extend `AbstractRoutingDataSource`
+to route between our tenants' `Datasource`s:
 
 ```java
-public class CarRoutingDataSource extends AbstractRoutingDataSource {
+public class TenantRoutingDataSource extends AbstractRoutingDataSource {
 
   @Override
   protected Object determineCurrentLookupKey() {
     return ThreadTenantStorage.getTenantId();
   }
+
 }
 ````
-The `CarRoutingDataSource` will call `determineCurrentLookupKey` whenever it gets a new connection.
-The current tenant has been set to `ThreadTenantStorage`, so the method `determineCurrentLookupKey `
-returns this current tenant, the `CarRoutingDataSource` find the `DataSource` of this tenant and set it as current
-`DataSource` automatically. It means every access to data from the thread will be routed to this `Datasource`.
+The `TenantRoutingDataSource` will call `determineCurrentLookupKey()` whenever a client requests a connection.
+The current tenant is available from `ThreadTenantStorage`, so the method `determineCurrentLookupKey()`
+returns this current tenant. This way, `TenantRoutingDataSource` will find the `DataSource` of this tenant and return a connection to this data source automatically.
 
-Now we need a way to load the right data source for a tenant, depending on the `tenantId` from the HTTP request.
-For this, we provide our Spring Boot application with a `DataSource` that wraps all of our tenant `DataSource`s.
-As described above, the `CarRoutingDataSource` takes care about providing the right `DataSource`:
+Now, we have to replace Spring Boot's default `DataSource` with our `TenantRoutingDataSource`:
 
 ```java
 @Configuration
@@ -204,32 +205,35 @@ public class DataSourceConfiguration {
 
   @Bean
   public DataSource dataSource() {
-    CarRoutingDataSource customDataSource = new CarRoutingDataSource();
-    customDataSource.setTargetDataSources(dataSourceProperties.getDatasources());
+    TenantRoutingDataSource customDataSource = new TenantRoutingDataSource();
+    customDataSource.setTargetDataSources(
+        dataSourceProperties.getDatasources());
     return customDataSource;
   }
 }
 ```
 
-## Migrating SQL Schemas with Multiple Tenants
+To let the `TenantRoutingDataSource` know which `DataSource`s to use, we pass the map `DataSource`s from our `DataSourceProperties` into `setTargetDataSources()`. 
 
-If we want to have version control over the database with Flyway and make changes in it like adding a column, adding a table,
-dropping a constraint and so on, we have to write SQL scripts. With the Flyway support for Spring Boot we just need
-to deploy the application and new scripts are being executed to migrate the database to the new state. 
+That's it. Each HTTP request will now have its own `DataSource` depending on the `tenantId` in the HTTP header.
 
-First we have do disable the preconfigured property for automated Flyway migration of default `DataSource` in `application.yaml`.
+## Migrating Multiple SQL Schemas At Once
+
+If we want to have version control over the database state with Flyway and make changes to it like adding a column, adding a table, or
+dropping a constraint, we have to write SQL scripts. With Spring Boot's Flyway support we just need
+to deploy the application and new scripts are executed automatically to migrate the database to the new state. 
+
+To enable Flyway for all of our tenants' data sources, first we have do disable the preconfigured property for automated Flyway migration in `application.yaml`:
 
 ```yaml
 spring:
   flyway:
     enabled: false
 ```
-If we dont't do it, the Flyway will try to migrate scripts to the current `DataSource` by starting application. But when we start the application
-we don't have a current tenant, so the `ThreadTenantStorage.getTenantId()` would return `null` and the application crashes.
+If we don't do this, Flyway will try to migrate scripts to the current `DataSource` when starting the application. But during startup, we don't have a current tenant, so `ThreadTenantStorage.getTenantId()` would return `null` and the application would crash.
 
-Now we want to apply the scripts to all `DataSource`s we defined in the application.
-We didn't define static `Datasource`s, but we put them in a `Map` in the `DataSourceProperties`, so now we can iterate
-over them.
+Next, we want to apply the Flyway-managed SQL scripts to all `DataSource`s we defined in the application.
+We can iterate over our `DataSource`s in a `@PostConstruct` method: 
 
 ```java
 @Configuration
@@ -244,8 +248,8 @@ public class DataSourceConfiguration {
   @PostConstruct
   public void migrate() {
     for (Object dataSource : dataSourceProperties
-        .getDatasources()
-        .values()) {
+          .getDatasources()
+          .values()) {
       DataSource source = (DataSource) dataSource;
       Flyway flyway = Flyway.configure().dataSource(source).load();
       flyway.migrate();
@@ -255,16 +259,18 @@ public class DataSourceConfiguration {
 }
 ```
 
-Every time when the application starts, the SQL scripts are migrated for every `DataSource`.
+Whenever the application starts, the SQL scripts are now executed for each tenant's `DataSource`.
 
 If we want to add a new tenant, we just put a new configuration in `application.yaml` and restart the application
-to trigger the SQL migration. If we don't want to rebuild the application [we can externalize the configuration](https://reflectoring.io/externalize-configuration/) of tenants.
+to trigger the SQL migration. The new tenant's database will be updated to the current state automatically.  
 
-
+If we don't want to re-compile the application for adding or removing a tenant, [we can externalize the configuration](https://reflectoring.io/externalize-configuration/) of tenants (i.e. not bake `application.yaml` into the JAR or WAR file). Then, all it needs to trigger the Flyway migration is a restart.
 
 ## Conclusion
 
 Spring Boot provides good means to implement a multi-tenant application. With interceptors, it's possible to bind
-the request to a tenant. Spring Boot supports the work with many data sources and with Flyway we can migrate SQL
-script to many data sources from one application.
+the request to a tenant. Spring Boot supports working with many data sources and with Flyway we can execute SQL
+scripts across all of those data sources.
+
+You can find the code examples [on GitHub](https://github.com/arkuksin/flyway-multitenancy).
 

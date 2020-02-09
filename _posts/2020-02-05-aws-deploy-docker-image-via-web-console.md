@@ -31,7 +31,7 @@ Finally, if you want to create and publish your own Docker image, you need to ha
 
 ## Preparing a Docker Image
 
-Let's start with creating and publishing a Docker image which we can deploy. If you want to skip this part, you can just use the docker image `thombergs/aws-hello-world:latest`, which is available [here](https://hub.docker.com/r/thombergs/aws-hello-world).
+Let's start with creating and publishing a Docker image which we can deploy. If you want to skip this part, you can just use the docker image `reflectoring/aws-hello-world:latest`, which is available [here](https://hub.docker.com/r/reflectoring/aws-hello-world).
 
 ### Creating the Docker Image
 
@@ -56,7 +56,7 @@ Next, we have to build the Java application with `./gradlew clean build`. This w
 Now, we can build the docker image. From the folder containing the `Dockerfile`, we run:
 
 ```
-docker build -t thombergs/aws-hello-world:latest .
+docker build -t reflectoring/aws-hello-world:latest .
 ```
 
 To check if everything worked out, we can run 
@@ -72,7 +72,7 @@ which will display all Docker images available locally that contain `aws-hello-w
 Let's check if the Docker image we just built actually works. We start the image up with `docker run`:
 
 ```
-docker run -p 8081:8080 thombergs/aws-hello-world:latest
+docker run -p 8081:8080 reflectoring/aws-hello-world:latest
 ```
 
 With `-p` we define that whatever is available on port 8080 within the container, Docker will make available via the port 8081 on the host computer. In other words, requests to port 8081 on the host computer (the host port) will be fowarded to port 8080 within the container (the container port).
@@ -109,7 +109,7 @@ We can leave out the `registry-1.docker.io` part because Docker will use this as
 Next, we push the Docker image to the registry:
 
 ```
-docker push thombergs/aws-hello-world:latest
+docker push reflectoring/aws-hello-world:latest
 ```
 
 <div class="notice success">
@@ -121,16 +121,56 @@ docker push thombergs/aws-hello-world:latest
 
 ## AWS Concepts
 
-So, we've got a Docker image ready to be deployed to AWS. Before we start working with AWS, let's learn some AWS vocabulary.
+So, we've got a Docker image ready to be deployed to AWS. Before we start working with AWS, let's learn some high-level AWS vocabulary that we'll need.
 
+### ECS - Elastic Container Service
 
+ECS is the "entry point" service that allows us to run Docker containers on AWS infrastructure. Under the hood, it uses a bunch of other AWS services to get things done.  
 
-* ECS
-* Cluster
-* Task
-* Service
+### Task
 
-## Deploying the Docker Image
+A task is AWS domain language for a wrapper around one or more containers. A task instance is what AWS considers an instance of our application. 
+
+### Service
+
+A service wraps a task and provides access security rules and potentially load balancing rules across multiple task instances.
+
+### Cluster
+
+A cluster provides a network and scaling rules for the tasks of a service.
+
+## Deploying a Docker Image Using the Management Console
+
+We'll configure a task, service, and cluster using the "Get Started" wizard provided in the web-based management console. **This wizard is very convenient to use, but it's very limited in it's feature set**. We don't have all configuration options available.
+
+Also, by definition, **deploying containers via the web-based wizard is a manual process and cannot be automated**. In real-world scenarios, we want to automate deployments and will need to use the AWS CLI.  
+
+If you want to follow along, open the [ECS start page](https://console.aws.amazon.com/ecs/home) in your browser and click on the "Get started" button. It should take no more than a couple minutes to get a container up and running!
+
+### Configuring the Task
+
+First, we configure the task, which wraps our Docker image:
+
+![Configuring a Task](/assets/img/posts/aws-deploy-docker-image-via-web-console/task.jpg)
+
+We can select a pre-defined docker image, or choose our own. We want to use the Docker image from above, so we'll click on the "Configure" button in the "custom" box to open the "Edit container" form:
+
+![Configuring a Container](/assets/img/posts/aws-deploy-docker-image-via-web-console/container.jpg)
+
+We fill the form as follows:
+
+* **Container name:** An arbitrary name for the container.
+* **Image:** The URL to the Docker image. If you have published your image in a Docker registry different from Docker Hub, check with that registry what the URL to your image looks like.
+* **Private repository authentication:** if the Docker image is private, we need to provide authentication credentials here. We'll skip this, as our image is public.
+* **Memory Limits:** We'll leave the default (i.e. no memory limits). This should definitely be thought out and set in a production deployment, though!
+* **Port mappings:** Here we can define the *container port*, i.e. the port that our application exposes. The Spring Boot application in the `aws-hello-world` Docker image exposes port 8080, so we have to put this port here. The container port doubles as *host port* and I have found no way of changing that using the web wizard. This means that we have to add `:8080` when we want to access our application later.
+
+In the `Advanced container configuration` section we could configure more, but we'll leave everything else in the default configuration for now. 
+
+Let's save everything and hit the "Next" button to move on.
+
+### Configuring the Service
+
 
 restriction: no port forwarding from 80 to 8080: we must expose port 8080 externally
 

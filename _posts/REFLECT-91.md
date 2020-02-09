@@ -11,7 +11,7 @@ But, what is the "API-First" approach? Simply to say, when following the methodo
   * Starting a task, with first implementing the API, you may realize, that it's something is missing or better, that this API is not needed.
 * Documented-First API
   * The specification of the API, is not only the contract between teams and developers but also documentation that is available to every developer.
-  * 
+
 # Tools 
 
 To create our specification, we will be using the OpenAPI specification. 
@@ -190,47 +190,199 @@ components:
       in: header
 ```
 
-# Generating Code from an API Spec
+We will know move on how to actually generate code.
 
-Please use the generated code with caution. The one I generated was using Java 7 and Spring Boot 1.5.22.RELEASE. So I would not recommend building a project around it.
+# Generating Code from an API Specification
 
-Although, if you want you can generate it by going over to [Swagger Editor][swagger-editor]. Then selecting from menu *Generate Server* and pick the server you would like.
+We will take a look at two approaches to generating the code:
+1. Going over to [Swagger Editor][swagger-editor] and
+2. The [OpenAPI Maven plugin][openapi-maven-plugin].
 
-Let's now take a look at the generated code.
+## Generating Code from Swagger Editor
 
-Below, you can see how the General information is in code.
+Although that's an approach which I wouldn't take, I must introduce it. 
+So, Go over to [Swagger Editor][swagger-editor] and copy your `<specification>.yml` (or just use the predefined one) then select from the menu *Generate Server* and pick what kind of a server you would like to generate (I went with spring).
 
-```java
-@Configuration
-public class SwaggerDocumentationConfig {
+As I said before, I wouldn't use this approach. But why?
+First, the code that I got generated was using Java 7 and Spring Boot 1.5.22.RELEASE (which both are quite old now). 
+Second, if you make a change on the specification (and changes happen all the time), you would have to copy-paste the files that were changed. 
 
-    ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-            .title("Reflectoring")
-            .description("Tutorials on Spring Boot and Java, thoughts about the Software Craft, and relevant book reviews. Because it's just as important to understand the Why as it is to understand the How. Have fun!")
-            .license("Apache 2.0")
-            .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
-            .termsOfServiceUrl("")
-            .version("0.0.1-SNAPSHOT")
-            .contact(new Contact("","", "petros.stergioulas94@gmail.com"))
-            .build();
-    }
+So now I will introduce you to the second approach.
+ 
+ ## Generating Code with OpenAPI Maven plugin
+ 
+ Here we will use the [OpenAPI Maven plugin][openapi-maven-plugin].
+ Let's now introduce you to the folder structure. I opted out to use a multi-module maven project, where we will have two projects:
+ 
+ 1. `app`, the one who builds an API around the API Specification.
+ 2. `specification`, which its only job is to generate the API Specification for our app.  
+ 
+ The folder structure looks like this:
+ 
+ ```text
+reflect-91(root)
+├── app
+│   └── pom.xml
+│   └── src
+│       └── main
+│           └── java
+│               └── io.reflectoring
+│                   └── OpenAPIConsumerApp.java
+├── specification
+│   └── pom.xml
+│   └── src
+│       └── resources
+│           └── openapi.yml
+├── pom.xml
 ```
 
-# Things to Keep in Mind with API-First
+For the shake of simplicity, we omit the test folders.
 
-In an API-First approach, it's quite difficult to keep up with the changes. I would recommend not changing the generated code because you will lose the consistency between the YAML file and your code. 
+Our `app` is a simple Spring Boot project, so let us focus on the pom.xml from the `specification`.
 
-With the Swagger Editor, it's difficult to generate always the code. It involves a lot of copy-pasting.
+Caution: Using only the plugin won't produce you a valid project, while you need to also add other dependencies (like jackson).
 
-I would recommend for Java-based projects to use the [OpenAPI Maven plugin](https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin), which generates the code based on the YAML file. But, caution, this code is generated and it cannot be changed.
+```xml
+<plugin>
+    <groupId>org.openapitools</groupId>
+    <artifactId>openapi-generator-maven-plugin</artifactId>
+    <version>4.2.3</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <configuration>
+                <inputSpec>${project.basedir}/src/main/resources/openapi.yml</inputSpec>
+                <generatorName>spring</generatorName>
+                <apiPackage>io.reflectoring.api</apiPackage>
+                <modelPackage>io.reflectoring.model</modelPackage>
+                <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                <configOptions>
+                    <delegatePattern>true</delegatePattern>
+                </configOptions>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+
+In the above code snippet, you can see us defining the [OpenAPI Maven plugin][openapi-maven-plugin]. 
+For this tutorial, we will use the `spring` generator. [OpenAPI Maven plugin][openapi-maven-plugin] comes with a lot of options. To see the full set of options you can go over to the [official site][openapi-maven-plugin] of the plugin. 
+
+Running the command: `mvnw install`, will generate our OpenAPI Specification!
+If you take a quick look under `target/generated-sources/openapi/src/main/java/io/reflectoring/model`, you will find the User model defined in the `openapi.yml`!
+
+```java
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2020-02-07T19:50:29.578+01:00[Europe/Berlin]")
+
+public class User   {
+  @JsonProperty("id")
+  private Long id;
+
+  @JsonProperty("username")
+  private String username;
+
+  @JsonProperty("firstName")
+  private String firstName;
+
+  @JsonProperty("lastName")
+  private String lastName;
+
+  @JsonProperty("email")
+  private String email;
+
+  @JsonProperty("password")
+  private String password;
+
+  @JsonProperty("phone")
+  private String phone;
+
+  @JsonProperty("userStatus")
+  private Integer userStatus;
+}
+// omit getters and setters
+```
+
+Now let us implement the `UserApi`, which comes from our generated specification.
+
+```java
+@RestController
+public class UserController implements UserApi {
+}
+```
+
+If we test our API like this you will notice that you get a 501 response (Not Implemented). Why?
+
+```shell script
+curl -I http://localhost:8080/user/Petros
+HTTP/1.1 501
+Content-Length: 0
+```
+
+Because in UserApi says so:
+
+```java
+default ResponseEntity<User> getUserByName(String username) {
+    getRequest().ifPresent(request -> {
+        for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"password\" : \"password\", \"userStatus\" : 6, \"phone\" : \"phone\", \"id\" : 0, \"email\" : \"email\", \"username\" : \"username\" }";
+                ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                break;
+            }
+        }
+    });
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+}
+```
+
+Let's now just implement our actual GET method:
+
+```java
+@Override
+public ResponseEntity<User> getUserByName(String username) {
+    User user = new User();
+
+    user.setId(123L);
+    user.setFirstName("Petros");
+    user.setLastName("S");
+    user.setUsername("Petros");
+    user.setEmail("petors.stergioulas94@gmail.com");
+    user.setPassword("secret");
+    user.setPhone("+123 4567890");
+    user.setUserStatus(0);
+
+    return ResponseEntity.ok(user);
+}
+```
+Running now: `curl http://localhost:8080/user/Petros`
+
+You will receive a valid response!
+
+```json
+{
+  "id": 123,
+  "username": "Petros",
+  "firstName": "Petros",
+  "lastName": "S",
+  "email": "petors.stergioulas94@gmail.com",
+  "password": "secret",
+  "phone": "+123 4567890",
+  "userStatus": 0
+}
+```
+
+In my opinion, generating the OpenAPI Specification with Maven plugin instead of Swagger Editor is a better choice. 
+That's because you both have more control over your options and you can safely track any changes.
 
 # Conclusion
 
 API-First approach is easy to use, but it's difficult to master it. 
 
 To be able to do it right, you should:
- - Know what you actually have to build, it may be difficult when you are working in an agile environment
+ - Know what you have to build, it may be difficult when you are working in an agile environment
  - Communication is a must. Because the API will be used by different teams.
 
 [swagger-editor]: http://editor.swagger.io/
@@ -243,4 +395,6 @@ To be able to do it right, you should:
 
 [openapi-lint]: https://marketplace.visualstudio.com/items?itemName=mermade.openapi-lint
 
-[openapi-spec-github]: https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#versions
+[openapi-spec-github]: https://github.com/OAI/OpenAPI-Specification/blob/master/vtersions/3.0.2.md#versions
+
+[openapi-maven-plugin]: https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin

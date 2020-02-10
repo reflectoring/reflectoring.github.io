@@ -1,22 +1,26 @@
+TODO: YOUR INTRO HERE (1-2 Sentences)
+
+{% include github-project.html url="{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-openapi" %}" %}
+
 # API-First
 
-APIs have been around quite a long time, but the last years the concept of "API-First" seems to gain a lot of popularity. 
-But, what is the "API-First" approach? Simply to say, when following the methodology our APIs are being first-class citizens in our project life-cycle.
+APIs have been around quite a long time, but in the last years the concept of "API-First" seems to gain a lot of popularity. 
+But, what is the "API-First" approach? Simply put, it means to make our APIs first-class citizens in our project life-cycle.
 
 # Benefits of API-First
 
 * Teams can work in parallel
-  * A team to start working needs a contract. In our case, the contract is the API. API-First helps different teams communicate with each other, without implementing a thing.
+  * To start working on an integration between components or systems, a team needs a contract. In our case, the contract is the API. API-First helps different teams communicate with each other, without implementing a thing.
 * Better API Design
-  * Starting a task, with first implementing the API, you may realize, that it's something is missing or better, that this API is not needed.
+  * Starting a task *after* having implemented the API, we may realize that something is missing or, even better, that this API is not needed at all.
 * Documented-First API
-  * The specification of the API, is not only the contract between teams and developers but also documentation that is available to every developer.
+  * The specification of the API is not only the contract between teams and developers but also documentation that is available to every developer.
 
 # Tools 
 
 To create our specification, we will be using the OpenAPI specification. 
 
-Quoting [swagger.io][swagger-spec] the OpenAPI spec is:
+Quoting the [https://swagger.io/docs/specification/about/][Swagger website], the OpenAPI spec is:
 
 > an API description format for REST APIs. An OpenAPI file allows you to describe your entire API, including:
 >
@@ -25,36 +29,25 @@ Quoting [swagger.io][swagger-spec] the OpenAPI spec is:
 > * Authentication methods
 > * Contact information, license, terms of use and other information.
 
-When using OpenAPI, you can use JSON or YAML to write it. Luckily, the community has build tools around it to make it easier to build an OpenAPI specification. Such tools are:
+When using OpenAPI, we can use JSON or YAML to write an API specification. Luckily, the community provides tools to make it easier to build such a specification. These tools include:
 
-* [Swagger Editor][swagger-editor], the official tool from swagger.
+* [Swagger Editor][swagger-editor], the official tool from Swagger.
 * [Swagger Viewer][swagger-viewer], which is a VSCode plugin.
-* [OpenAPI (Swagger) Editor][openapi-swagger-editor], which adds rich support ( IntelliSense, linting, schema enforcement, etc...) for OpenAPI development.
-* [openapi-lint][openapi-lint], is a linter build for OpenAPI.
+* [OpenAPI (Swagger) Editor][openapi-swagger-editor], which adds rich support (IntelliSense, linting, schema enforcement, etc...) for OpenAPI development.
+* [openapi-lint][openapi-lint], a linter for OpenAPI.
 
-In this tutorial, I will be using VSCode, therefore I have installed [OpenAPI (Swagger) Editor][openapi-swagger-editor].
+In this tutorial, we'll be using VSCode, therefore I have installed [OpenAPI (Swagger) Editor][openapi-swagger-editor].
 
 # Creating an API Spec with the Swagger Editor
 
-Now we will create our OpenAPI specification. To make it easier to follow, we will split it into five parts:
+Let's create our own OpenAPI specification in a YAML document. To make it easier to follow, we'll split the discussion into separate parts of the YAML document we're creating.
 
-1. General
-2. Tags
-3. Paths
-4. Components
-5. Security
-
-If you want to learn more about the OpenAPI-Specification you can visit the [Github repository][openapi-spec-github].
+If you want to learn more details about the OpenAPI-Specification you can visit the [Github repository][openapi-spec-github].
 
 
-## General
+## General Information
 
-* [`openapi`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#openapi-object), This is the root document object of the OpenAPI document.
-* [`info`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#infoObject), The object provides metadata about the API. The metadata MAY be used by the clients if needed, and MAY be presented in editing or documentation generation tools for convenience
-* [`contact`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#contactObject), contact information for the exposed API.
-* [`licence`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#licenseObject), license information for the exposed API.
-* [`servers`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#serverObject), is an object representing a Server.
-  
+We start off with some general information about our API at the top of our document:
 
 ```yaml
 openapi: 3.0.2
@@ -74,12 +67,16 @@ externalDocs:
 servers:
 - url: https://reflectoring.swagger.io/v2
 ```
+
+The [`openapi`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#openapi-object) field allows us to define the version of the OpenAPI spec that our document follows.
+
+Within the [`info`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#infoObject) section, we add some information about our API. The fields should be pretty self-explanatory.
+
+Finally, in the [`servers`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#serverObject) section, we provide a list of servers that implement the API.
+
 ## Tags
 
-A list of tags used by the specification with additional metadata.
-
-* [`tags`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#fixed-fields), A list of tags used by the specification with additional metadata. The order of the tags can be used to reflect on their order by the parsing tools. Each tag name in the list MUST be unique.
-
+In the `tags` field, A list of tags used by the specification with additional metadata.
 
 ```yaml
 tags:
@@ -89,6 +86,8 @@ tags:
     description: Find out more about our store
     url: http://swagger.io
 ```
+
+* [`tags`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#fixed-fields), A list of tags used by the specification with additional metadata. The order of the tags can be used to reflect on their order by the parsing tools. Each tag name in the list MUST be unique.
 ## Paths
 
 Here we will describe some paths, to make it clean how you can create your own. But, what are paths? Relative paths holds the information  to the individual endpoints and their operations.
@@ -190,37 +189,40 @@ components:
       in: header
 ```
 
-We will know move on how to actually generate code.
+# Generating Code From an API Specification
 
-# Generating Code from an API Specification
+Having defined an API, we'll now create code from the YAML document above. 
 
-We will take a look at two approaches to generating the code:
-1. Going over to [Swagger Editor][swagger-editor] and
-2. The [OpenAPI Maven plugin][openapi-maven-plugin].
+We'll take a look at two different approaches to generating the code:
+
+1. Using [Swagger Editor][swagger-editor] to generate code manually, and
+2. Using the [OpenAPI Maven plugin][openapi-maven-plugin] to generated code from a Maven build.
 
 ## Generating Code from Swagger Editor
 
 Although that's an approach which I wouldn't take, I must introduce it. 
-So, Go over to [Swagger Editor][swagger-editor] and copy your `<specification>.yml` (or just use the predefined one) then select from the menu *Generate Server* and pick what kind of a server you would like to generate (I went with spring).
+
+So, let's go over to [Swagger Editor][swagger-editor] and paste our `<specification>.yml` into it. Then, we select *Generate Server* from the menu and pick what kind of a server we'd would like to generate (I went with Spring).
 
 As I said before, I wouldn't use this approach. But why?
-First, the code that I got generated was using Java 7 and Spring Boot 1.5.22.RELEASE (which both are quite old now). 
-Second, if you make a change on the specification (and changes happen all the time), you would have to copy-paste the files that were changed. 
 
-So now I will introduce you to the second approach.
+First, the code that was generated for me is using Java 7 and Spring Boot 1.5.22.RELEASE, both of which are quite old now. 
+
+Second, if you make a change to the specification (and changes happen all the time), we'd have to copy-and-paste the files that were changed. 
+
+ ## Generating Code with the OpenAPI Maven plugin
  
- ## Generating Code with OpenAPI Maven plugin
+ A better alternative is to generate the code from within a Maven build with the [OpenAPI Maven plugin][openapi-maven-plugin]. 
  
- Here we will use the [OpenAPI Maven plugin][openapi-maven-plugin].
- Let's now introduce you to the folder structure. I opted out to use a multi-module maven project, where we will have two projects:
+  Let's take a look at the folder structure. I chose to use a multi-module maven project, where we have two projects:
  
- 1. `app`, the one who builds an API around the API Specification.
- 2. `specification`, which its only job is to generate the API Specification for our app.  
+ 1. `app`, an application that implements the API from our specification.
+ 2. `specification`, whose only job is to provide the API Specification for our app.  
  
  The folder structure looks like this:
  
- ```text
-reflect-91(root)
+```text
+spring-boot-openapi
 ├── app
 │   └── pom.xml
 │   └── src
@@ -238,9 +240,8 @@ reflect-91(root)
 
 For the shake of simplicity, we omit the test folders.
 
-Our `app` is a simple Spring Boot project, so let us focus on the pom.xml from the `specification`.
-
-Caution: Using only the plugin won't produce you a valid project, while you need to also add other dependencies (like jackson).
+Our `app` is a simple Spring Boot project that we can automatically generate on [start.spring.io](https://start.spring.io), so let's focus on the `pom.xml` from the `specification` module, where we configure 
+the [OpenAPI Maven plugin][openapi-maven-plugin]:
 
 ```xml
 <plugin>
@@ -267,11 +268,13 @@ Caution: Using only the plugin won't produce you a valid project, while you need
 </plugin>
 ```
 
-In the above code snippet, you can see us defining the [OpenAPI Maven plugin][openapi-maven-plugin]. 
-For this tutorial, we will use the `spring` generator. [OpenAPI Maven plugin][openapi-maven-plugin] comes with a lot of options. To see the full set of options you can go over to the [official site][openapi-maven-plugin] of the plugin. 
+You can see the full `pom.xml` file [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-openapi/specification/pom.xml).
 
-Running the command: `mvnw install`, will generate our OpenAPI Specification!
-If you take a quick look under `target/generated-sources/openapi/src/main/java/io/reflectoring/model`, you will find the User model defined in the `openapi.yml`!
+For this tutorial, we'll use the `spring` generator. The [OpenAPI Maven plugin][openapi-maven-plugin] comes with a lot of options. To see the full set of options you can go over to the [official site][openapi-maven-plugin] of the plugin. 
+
+Simply running the command `mvnw install` will generate code that implements our OpenAPI specification!
+
+If you take a quick look under `target/generated-sources/openapi/src/main/java/io/reflectoring/model`, you will find the User model defined in `openapi.yml`!
 
 ```java
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2020-02-07T19:50:29.578+01:00[Europe/Berlin]")
@@ -304,7 +307,7 @@ public class User   {
 // omit getters and setters
 ```
 
-Now let us implement the `UserApi`, which comes from our generated specification.
+Now let's implement the `UserApi`, which comes from our generated specification.
 
 ```java
 @RestController
@@ -312,7 +315,7 @@ public class UserController implements UserApi {
 }
 ```
 
-If we test our API like this you will notice that you get a 501 response (Not Implemented). Why?
+If we test our API without having implemented a method of `UserApi`, we'll get a 501 response (Not Implemented). Why?
 
 ```shell script
 curl -I http://localhost:8080/user/Petros
@@ -379,10 +382,10 @@ That's because you both have more control over your options and you can safely t
 
 # Conclusion
 
-API-First approach is easy to use, but it's difficult to master it. 
+The API-First approach is easy to use, but it's difficult to master. 
 
 To be able to do it right, you should:
- - Know what you have to build, it may be difficult when you are working in an agile environment
+ - Know what you have to build, which may be difficult working in an agile environment
  - Communication is a must. Because the API will be used by different teams.
 
 [swagger-editor]: http://editor.swagger.io/

@@ -43,18 +43,133 @@ Flyway facilitates the above while providing:
 
 Let's see how to get Flyway running with Spring Boot.
 
-### Setting up Flyway
+### Writing Our First Database Migration
 
-We use a H2 database in an `in-memory` mode for this post. Spring Boot auto-configures [Flyway](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-execute-flyway-database-migrations-on-startup) and [H2](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-embedded-database-support) as long as we add the following dependencies to our build file (Gradle notation):
+Flyway tries to find user provided migrations both on the filesystem and on the Java classpath. By default, recursively loads all files in `db/migration` folder within the classpath, which conform the configured naming convention. This behavior can be changed by setting [locations](https://flywaydb.org/documentation/commandline/migrate#locations) property.
+
+## SQL-based
+
+Flyway has a [naming convention](https://flywaydb.org/documentation/migrations#naming) for database migration scripts which can be adjusted to our needs using the following [configuration properties](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#data-migration-properties) (Spring notation):
 
 ```
+spring.flyway.sql-migration-prefix=V
+# two underscores
+spring.flyway.sql-migration-separator=__
+spring.flyway.sql-migration-suffixes=.sql
+```
+
+Let's create `V1__init.sql` file, which can be used as a base for our database migrations.
+
+```sql
+CREATE TABLE auth_user(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+);
+```
+
+`auth_user` is just an example table which stores details of authenticated users.
+
+## Java-based
+
+Java-based migration is preferred for cases which are harder to write in SQL, e.g:
+
+1. BLOB & CLOB changes
+2. Advanced bulk data changes like generating random data, recalculations, advanced format changes etc.
+
+File naming rules are similar to SQL-based migrations, but overriding them requires implementation of [JavaMigration](https://flywaydb.org/documentation/api/javadoc/org/flywaydb/core/api/migration/JavaMigration) interface.
+
+Let's create `V1__init.java` file and see its extended capabilities:
+
+```java
+package db.migration;
+
+import java.text.MessageFormat;
+import java.util.Random;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
+import org.flywaydb.core.api.migration.Context;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+
+/**
+ * Example of a Java-based migration using Spring {@link JdbcTemplate}.
+ */
+public class V2__InsertRandomUsers extends BaseJavaMigration {
+
+  private Random random = new Random();
+
+  public void migrate(Context context) {
+
+    final JdbcTemplate jdbcTemplate = new JdbcTemplate(new SingleConnectionDataSource(context.getConnection(), true));
+
+    // Create 10 random users
+    for (int i = 0; i < 10; i++) {
+      final int randomNumber = random.nextInt(1000);
+      jdbcTemplate
+          .execute(MessageFormat.format(
+              "insert into auth_user values(1, '{0}@reflectoring.io', 'Elvis_{0}', 'Presley_{0}')",
+              randomNumber
+          ));
+    }
+  }
+}
+```
+ 
+### Setting up and Running Flyway
+
+We use a H2 database in an `in-memory` mode for this post, so we can simplify database access settings. We need to add its dependency to our build file (Gradle notation):
+
+```gradle
+runtimeOnly 'com.h2database:h2'
+```
+
+Choosing the right running option depends on our needs and Flyway tries to cover almost all of them - [command-line](https://flywaydb.org/documentation/commandline/), [Java API](https://flywaydb.org/documentation/api/), [Maven](https://flywaydb.org/documentation/maven/)/[Gradle](https://flywaydb.org/documentation/gradle/) plugins and a decent list of [community plugins and integrations](https://flywaydb.org/documentation/plugins/) including [Spring Boot](https://flywaydb.org/documentation/plugins/springboot). Let's have a look at each of them and see their pros and cons.
+
+#### Spring Boot Auto-Configuration
+
+Having [H2](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-embedded-database-support) as a dependency is enough for Spring Boot to initialize a specific implementation of `DataSource` called `EmbeddedDatabase`. This `DataSource` is then used to auto-configure [Flyway](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-execute-flyway-database-migrations-on-startup) as long as we add the following dependencies to our build file (Gradle notation):
+
+```gradle
 implementation 'org.flywaydb:flyway-core'
-runtimeOnly 'com.h2database:h2:1.4.199'
 ```
 
-This is enough for Spring Boot to initialize a specific implementation of `DataSource` called `EmbeddedDatabase`. This `DataSource` is then used by Flyway to execute the given migrations. All configuration options can be found in Spring Boot's [application properties reference](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html).
+By default, Spring Boot runs Flyway database migrations on application startup. In case we put our migrations in a different location, we can provide a comma-separated list of one or more `classpath:` or `filesystem:` locations to `spring.flyway.locations` property:
 
-In case we prefer to use one of the build tool plugins, an additional definition is required in our build file (Gradle notation):
+```
+spring.flyway.locations=classpath:db/migration,filesystem:/another/migration/directory
+```
+
+Using Spring Boot auto-configuration is the simplest approach and requires minimal efforts to support database migrations out of the box.
+
+#### Java API
+
+Non-Spring application can still benefit from Flyway, using similar to Spring Boot set-up (Gradle notation):
+
+```gradle
+implementation 'org.flywaydb:flyway-core'
+```
+
+Now, we only need to configure and run the core class [Flyway](https://flywaydb.org/documentation/api/javadoc/org/flywaydb/core/Flyway) as part of applicaiton initialization:
+
+```java
+import org.flywaydb.core.Flyway;
+
+public class MyApplication {
+  public static void main(String[] args) {
+    // Set up DataSource
+
+    Flyway flyway = Flyway.configure().dataSource(dataSource).load();
+    flyway.migrate();
+
+    // Start the rest of the application
+  }
+}
+```
+
+#### Gradle plugin
+
+Gradle plugin could be helpful when Spring and non-Spring applications are developed, but without the need of programatic congiguration. Here is the definition in our build file (Gradle notation):
 
 ```gradle
 plugins {
@@ -69,35 +184,28 @@ flyway {
 }
 ```
 
-## Writing Our First Database Migration
-
-Flyway has a [naming convention](https://flywaydb.org/documentation/migrations#naming) for database migration scripts which can be adjusted to our needs using the following [configuration properties](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#data-migration-properties):
-
-```
-spring.flyway.sql-migration-prefix
-spring.flyway.sql-migration-separator
-spring.flyway.sql-migration-suffixes
-```
-
-Here is the `V1__init.sql` file used in our [code examples repository](https://github.com/thombergs/code-examples/blob/master/spring-boot/data-migration/flyway/src/main/resources/db/migration/V1__init.sql):
-
-```sql
-CREATE TABLE auth_user(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255) NOT NULL unique
-);
-```
-
-## Running Flyway
-
-Choosing the right running option depends on our needs and Flyway tries to cover almost all of them - [command-line](https://flywaydb.org/documentation/commandline/), [Java/Android API](https://flywaydb.org/documentation/api/), [Maven](https://flywaydb.org/documentation/maven/)/[Gradle](https://flywaydb.org/documentation/gradle/) plugins, [Docker](https://hub.docker.com/r/flyway/flyway) and a decent list of [community plugins and integrations](https://flywaydb.org/documentation/plugins/).
-
-By default, Spring Boot runs Flyway database migrations on [startup](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-execute-flyway-database-migrations-on-startup) by looking at the folder `db/migration` within the classpath. We can modify this location by passing a comma-separated list of one or more `classpath:` or `filesystem:` locations to `spring.flyway.locations` property.
-
-When the Gradle plugin is preferred, we can call the following command in our terminal: 
+After successful configuration we can call the following command in our terminal: 
 
 ```bash
-./gradlew flywayMigrate -i
+./gradlew flywayMigrate --info
+```
+
+Here we use [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html) to call `flywayMigrate` task which executes created database migrations. The `--info` parameter sets Gradle log level to `info`, which allows us to see Flyway output. 
+
+Gradle plugin suppots all Flyway commands by providing corresponding tasks, following the pattern `flyway<Command>`.
+
+#### Command-line tool
+
+This option allows us to have independent tool which doesn't require installation or integration with our application. We only need to download the relevant [binary](https://flywaydb.org/documentation/commandline/) for our operating system.
+
+
+**TODO: Describe how to configure it**
+
+Once downloaded we can execute the following in our terminal:
+
+```
+cd flyway-<version>
+
 ```
 
 ## Tips
@@ -125,7 +233,31 @@ The above quote is also applicable to delivering database changes to different e
 
 We need to make sure that our local database changes will work on all other servers. The most common approach is to use a CI/CD build to emulate a real deployment. 
 
-One of the most widely used CI/CD servers is [Jenkins](https://jenkins.io/). We can use both options from the [Running Flyway section](#running-flyway) as part of our job/pipeline definition. In addition to that, Jenkins provides hundreds of plugins to support various technologies and [Flyway](https://plugins.jenkins.io/flyway-runner) is no exception. 
+One of the most widely used CI/CD servers is [Jenkins](https://jenkins.io/). Let's define a pipeline using two of the most popular [running](#running-flyway) options:
+
+### Gradle plugin
+
+```gradle
+pipeline {
+  agent any
+  
+  stages {
+    checkout scm
+
+    stage('Apply Database Migrations') {
+      steps {
+        script {
+          if (isUnix()) {
+           sh '/gradlew flywayMigrate -i'
+          } else {
+           bat 'gradlew.bat flywayMigrate -i'
+          }
+        }
+      }
+    }
+  }
+}
+```
 
 ## Conclusion
 

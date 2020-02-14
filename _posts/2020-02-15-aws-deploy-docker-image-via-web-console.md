@@ -1,6 +1,6 @@
 ---
 title: Deploying Your First Docker Image to AWS
-categories: [java]
+categories: [craft]
 date: 2020-02-15 05:00:00 +1100
 modified: 2020-02-15 05:00:00 +1100
 author: default

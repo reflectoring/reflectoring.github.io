@@ -9,20 +9,24 @@ image:
   auto: 0058-motorway-junction
 ---
 
-## The Problem: Tangled Code
+## Restricting Access with Package-Private Visibility 
 
-## The Shortcoming of Package Private Visibility
-* only works for single packages 
+* code example with an api and an internal package
+* everything in the internal package is package-private
+
+## Inverting Dependencies to Expose Package-Private Functionality
+
+* create an interface in the API package, implement it in the internal package, inject it with DI
+
+## The Shortcomings of Package-Private Visibility
+
+* all this breaks apart when the internal package has sub-packages
 * if your component needs sub-packages, classes in those sub-packages must be public so that the parent package can access them
 * good only for small components with a few classes
 
-## Clean Boundaries with Packages and ArchUnit
+## Enforcing Boundaries with ArchUnit
 
-### Separate API Code From Internal Code
-* a clear package `api` and `internal`
-* the problem of package private still remains, though, but can be solved with ArchUnit checks
-
-### Verify That No One Accesses Internal Code
+### Defining Architecture Rules
 ```java
 @AnalyzeClasses(packages = {"io.blogtrack", "io.reflectoring"})
 class ArchitectureTests {
@@ -35,18 +39,12 @@ class ArchitectureTests {
 }
 ```
 
-### Verify That API Code Does Not Depend On Internal Code
-```java
-@AnalyzeClasses(packages = {"io.blogtrack", "io.reflectoring"})
-class ArchitectureTests {
+### Making Architecture Rules Refactoring-Safe
+* check that the packages we're verifying actually exist
 
-  @ArchTest
-  static final ArchRule apiDoesNotDependOnInternal = noClasses()
-      .that().resideInAPackage("io.reflectoring.googleauth.api..")
-      .should().accessClassesThat().resideInAPackage("io.reflectoring.googleauth.internal..");
+### Providing Architecture Rules To Your Clients
+* is there a way to bundle architecture rules to your clients so they can check that they don't access internal packages?
 
-}
-```
 
 ## Conclusion
 * If you're working with Spring Boot, have a look at Moduliths, which provides some tooling around an opinionated way of structuring packages.

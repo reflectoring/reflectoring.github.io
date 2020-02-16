@@ -27,3 +27,9 @@ atomic-habits:
   url: https://www.goodreads.com/book/show/40121378-atomic-habits
   title: "Atomic Habits"
   author: "James Clear"
+
+mindset:
+  cover: /assets/img/covers/atomic-habits-260.jpg
+  url: https://www.goodreads.com/book/show/13614924-mindset
+  title: "Mindset"
+  author: "Carol S. Dweck"

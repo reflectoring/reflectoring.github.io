@@ -4,12 +4,12 @@ categories: [spring-boot]
 date: 2020-02-13 05:00:00 +1100
 modified: 2020-02-13 05:00:00 +1100
 author: default
-excerpt: "Reactive Programming has a lot of pitfalls for rookies to fall into, especially when it's multi-threaded. This article documents some of those pitfalls and their solutions so you don't have to fall."
+excerpt: 'Spring Application Events gives the capability for listening to specific application events that you can process as per application needs. Events are meant for loosely coupled components to exchange information.'
 image:
   auto: 0058-motorway-junction
 ---
 
-You can always write the listener as another method within the application, but it will be tightly coupled. With events, you no need to change the application code as well as events code. We can easily switch between listeners and events without worrying. Also, you can have multiple listeners for the same event. For example, sending an email and do some other task on user registration.
+You can always write the listener as another method within the application, but it will be tightly coupled. Events are dynamic, different listeners can register/de-register for events whereas direct method calls are more static. You can also have multiple listeners for the same event. For example, sending an email and do some other task on user registration.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
@@ -60,7 +60,7 @@ public class Publisher {
 
 ## Listening to an Application Event
 
-Now that you know how to create and publish a custom event. Let us see how to start listening to the event. An event can have multiple listeners doing different work based on the application requirement. By default spring events are synchronous it blocks until all listeners finish processing the event.
+Now that you know how to create and publish a custom event, let us see how to start listening to the event. An event can have multiple listeners doing different work based on the application requirement. By default spring events are synchronous, it blocks until all listeners finish processing the event.
 
 There are two ways to define a listener. One with `@EventListener` annotation and another by implementing `ApplicationListener`.
 
@@ -126,103 +126,45 @@ You can also register your listener regardless of how the application is created
 
 `org.springframework.context.ApplicationListener=com.reflectoring.eventdemo.MyListener`
 
-### ApplicationContextInitializedEvent
-
-An `ApplicationContextInitializedEvent` is sent when the `ApplicationContext` is prepared and `ApplicationContextInitializers` have been called but before any bean definitions are loaded.
+Below is a listener example which listens to all the `SpringApplicationEvents`,
 
 ```java
-public class ApplicationContextInitializedEventListener implements ApplicationListener< ApplicationContextInitializedEvent> {
+public class SpringBuiltInEventsListener implements ApplicationListener<SpringApplicationEvent>{
 
 	@Override
-	public void onApplicationEvent(ApplicationContextInitializedEvent event) {
-		System.out.println("ApplicationContextInitializedEvent Received - " + event);
+	public void onApplicationEvent(SpringApplicationEvent event) {
+		System.out.println("SpringApplicationEvent Received - " + event);
 	}
 }
 ```
+
+### ApplicationContextInitializedEvent
+
+An `ApplicationContextInitializedEvent` is sent when the `ApplicationContext` is prepared and `ApplicationContextInitializers` have been called but before any bean definitions are loaded.
 
 ### ApplicationEnvironmentPreparedEvent
 
 An `ApplicationEnvironmentPreparedEvent` is sent when the Environment to be used in the context is known but before the context is created.
 
-```java
-public class ApplicationEnvironmentPreparedEventListener implements ApplicationListener< ApplicationEnvironmentPreparedEvent> {
-
-	@Override
-	public void onApplicationEvent(ApplicationEnvironmentPreparedEventevent) {
-		System.out.println("ApplicationEnvironmentPreparedEvent Received - " + event);
-	}
-}
-```
-
 ### ApplicationFailedEvent
 
 An `ApplicationFailedEvent` is sent if there is an exception on startup.
-
-```java
-public class ApplicationFailedEventListener implements ApplicationListener< ApplicationFailedEvent> {
-
-	@Override
-	public void onApplicationEvent(ApplicationFailedEvent) {
-		System.out.println("ApplicationFailedEvent Received - " + event);
-	}
-}
-```
 
 ### ApplicationPreparedEvent
 
 An `ApplicationPreparedEvent` is sent just before the refresh is started but after bean definitions have been loaded.
 
-```java
-public class ApplicationPreparedEventListener implements ApplicationListener< ApplicationPreparedEvent> {
-
-	@Override
-	public void onApplicationEvent(ApplicationPreparedEvent) {
-		System.out.println("ApplicationPreparedEvent Received - " + event);
-	}
-}
-```
-
 ### ApplicationReadyEvent
 
 An `ApplicationReadyEvent` is sent after any application and command-line runners have been called. It indicates that the application is ready to service requests.
-
-```java
-public class ApplicationReadyEventListener implements ApplicationListener< ApplicationReadyEvent> {
-
-	@Override
-	public void onApplicationEvent(ApplicationReadyEvent) {
-		System.out.println("ApplicationReadyEvent Received - " + event);
-	}
-}
-```
 
 ### ApplicationStartedEvent
 
 An `ApplicationStartedEvent` is sent after the context has been refreshed but before any application and command-line runners have been called.
 
-```java
-public class ApplicationStartedEventListener implements ApplicationListener< ApplicationStartedEvent> {
-
-	@Override
-	public void onApplicationEvent(ApplicationStartedEvent) {
-		System.out.println("ApplicationStartedEvent Received - " + event);
-	}
-}
-```
-
 ### ApplicationStartingEvent
 
 An `ApplicationStartingEvent` is sent at the start of a run but before any processing, except for the registration of listeners and initializers.
-
-```java
-public class ApplicationStartingEventListener implements ApplicationListener< ApplicationStartingEventListener> {
-
-	@Override
-	public void onApplicationEvent(ApplicationStartingEventListener) {
-		System.out.println("ApplicationStartingEventListener Received - " + event);
-	}
-}
-```
 
 In addition to these, the following events are also published after `ApplicationPreparedevent` and before `ApplicationStartedEvent`:
 
@@ -236,4 +178,4 @@ A `WebServerInitializedEvent` is sent after the WebServer is ready. `ServletWebS
 
 # Conclusion
 
-You often need not use application events, but it can be handy to know that they exist. It is good to use events when you want to pass on the processing to another thread (example: sending an email on some task completion) or in case, you do not want the outcome for further processing and also with events, TDD will be easy.
+You often don't use application events, but it can be handy to know that they exist. Both events and method calls fits for different situations. With method call its like making assertion that, no matter what the state of modules are, they need to know this event happened. With events you just say this event occured and which modules get notified is not my concern. It is good to use events when you want to pass on the processing to another thread (example: sending an email on some task completion). Also for test driven development events comes in handy.

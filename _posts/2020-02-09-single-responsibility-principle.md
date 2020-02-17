@@ -1,6 +1,21 @@
 
 This article explains the Single Responsibility Principle (SRP): what does it practically mean, when and how to apply it.
 
+ - [What does the Single Responsibility Principle say?](#what-does-the-single-responsibility-principle-say)
+   - [Types of responsibilities](#types-of-responsibilities)
+   - [How small or large a responsibility should be?](#how-small-or-large-a-responsibility-should-be)
+ - [The impact of the single responsibility principle on different software qualities](#the-impact-of-the-single-responsibility-principle-on-different-software-qualities)
+   - [Understandability and Learning Curve](#understandability-and-learning-curve)
+   - [Flexibility](#flexibility)
+   - [Reusability](#reusability)
+   - [Testability](#testability)
+   - [Debuggability](#debuggability)
+   - [Observability and Operability](#observability-and-operability)
+   - [Reliability](#reliability)
+   - [Code Size](#code-size)
+   - [Performance](#performance)
+ - [Summary](#summary)
+
 ## What Does the Single Responsibility Principle Say?
 The Single Responsibility Principle may feel a bit vague at first. Let's try to deconstruct it and look at what does it actually mean.
 
@@ -165,7 +180,6 @@ Pro tip: thinking about responsibilities helps to notice [unrelated subproblems]
 ***
 
 ### Testability
-
 **It's easier to write and maintain tests for methods and classes with focused, independent concerns.** This is what the [Humble Object](http://xunitpatterns.com/Humble%20Object.html) pattern is all about. Let's continue playing with `TransactionProcessor`:
 ```
 class TransactionProcessor {
@@ -205,7 +219,7 @@ Similar to how we are able to quickly find bugs in methods and classes with a si
 
 When components (not only methods and classes, but also modules and distributed services) are connected with queues (either in-memory, in-process `Queue`s, or distributed message brokers such as Kafka), we can easily monitor the sizes of the backlogs of the queues in the pipeline. Matt Welsh, the guy who proposed the [staged event-driven architecture](https://en.wikipedia.org/wiki/Staged_event-driven_architecture), regarded this observability of load and resource bottlenecks as [the most important contribution of SEDA](http://matt-welsh.blogspot.com/2010/07/retrospective-on-seda.html).
 
-Decoupled services could be scaled up and down independently in response to the changing load, without overuse of resources. Within an application, we can control the distribution of CPU resources between method, class, and module responsibilities by sizing the corresponding thread pools. `ThreadPoolExecutor` even supports dynamic reconfiguration in runtime via [`setCorePoolSize()`]([https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html#setCorePoolSize(int)](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html#setCorePoolSize(int))) method.
+Decoupled services could be scaled up and down independently in response to the changing load, without overuse of resources. Within an application, we can control the distribution of CPU resources between method, class, and module responsibilities by sizing the corresponding thread pools. `ThreadPoolExecutor` even supports dynamic reconfiguration in runtime via [`setCorePoolSize()`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html#setCorePoolSize%28int%29) method.
 
 **When microservices have focused responsibilities, it also helps to investigate incidents.** If we monitor the request success rates and health status of each service, and see that one service which connects to a particular database is failing or unavailable, we may assume that the root problem of lies in this database rather than any other part of the system.
 
@@ -250,5 +264,7 @@ This may sound overwhelming, but of course this analysis shouldn't be done for e
 
 On the level of the distributed system, the tradeoff is much less in favor of extracting (micro)services with more narrow responsibilities: discoverability, flexibility, reusability, and observability improves, but testability, operability, reliability, and performance mostly decline. On the other hand, Single Reponsibility Principle probably shouldn't be the first thing to consider when sizing microservices. Most people in the industry think that it's more important to follow the [team boundaries](https://martinfowler.com/articles/microservices.html#OrganizedAroundBusinessCapabilities), [bounded contexts](https://martinfowler.com/bliki/BoundedContext.html), and [aggregates](https://www.martinfowler.com/bliki/DDD_Aggregate.html) (the last two are concepts from Domain-Driven Design).
 
+<hr>
+P. S. I expolore the idea of analyzing software design practices and principles through the lenses of distinct software qualities such understandability, testability, performance, and so on in the [Software Design](https://en.wikiversity.org/wiki/Software_Design) project on Wikiversity.
 
 [1] For code understandability, the crossing point might actually depend on  individual cognitive features of the developer: attention, the tendency to control things more tightly or more loosely, the habits of working with code. I suspect this may the crux of the debate around the Robert Martin's hard "[extract till you drop](https://sites.google.com/site/unclebobconsultingllc/one-thing-extract-till-you-drop)" recommendation.

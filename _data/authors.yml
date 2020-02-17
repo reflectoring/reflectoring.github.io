@@ -37,3 +37,10 @@ david:
   email: "daviddd.kl@gmail.com"
   avatar: "/assets/img/authors/david.png"
   github: "daklassen"
+
+petros:
+  name: "Petros Stergioulas"
+  email: "petros.stergioulas94@gmail.com"
+  avatar: "/assets/img/authors/petros.jpg"
+  github: "Petros0"
+  linkedin: "petrostergioulas"

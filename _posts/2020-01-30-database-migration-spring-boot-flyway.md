@@ -1,65 +1,64 @@
 ---
-title: One-Stop Guide to Database Migration with Spring Boot and Flyway
+title: One-Stop Guide to Database Migration with Flyway
 categories: [spring-boot]
 date: 2020-01-30 05:00:00 +1100
-author: Petromir Dzhunev
+author: petromir
 excerpt: "A comprehensive guide for database migrations using Spring Boot and its support of
  Flyway."
 image:
-  auto: 0018-cogs
+  auto: 0060-data
 tags: ["data migration", "spring-boot", "flyway"]
 ---
 
-Spring Boot simplifies database migrations by providing integration with one of the most widely used tools: [Flyway](https://flywaydb.org/). This guide presents various options of using Flyway as part of a Spring Boot application, as well as running it within a CI build. We'll also cover main advantages of having [Database Migrations Done Right](https://reflectoring.io/tool-based-database-refactoring/).
+Spring Boot simplifies database migrations by providing integration with [Flyway](https://flywaydb.org/), one of the most widely used database migration tools. This guide presents various options of using Flyway as part of a Spring Boot application, as well as running it within a CI build. We'll also cover the main advantages of having [Database Migrations Done Right](https://reflectoring.io/tool-based-database-refactoring/).
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/data-migration/flyway" %}
 
-## Why We Need Database Migrations
+## Why Do We Need Database Migrations?
 
-I've worked in a project where all database changes were deployed manually. Over time, more people joined and, naturally, they start asking questions:
+I've worked on a project where all database changes were deployed manually. Over time, more people joined and, naturally, they started asking questions:
 
 * What state is the database in on this environment?
 * Has a specific script already been applied or not?
-* Has this hot fix in production been deployed in other environments afterwards?
+* Has this hotfix in production been deployed in other environments afterward?
 * How can I set up a new database instance to a specific or the latest state?
 
-Answering these questions required one of us to check the SQL scripts to find out if someone added a column modified a stored procedure, or similar. If we multiply the time spent on all these checks with the number of environments plus the time spent on aligning the database state, then we get a decent amount of time lost.
+Answering these questions required one of us to check the SQL scripts to find out if someone has added a column, modified a stored procedure, or similar things. If we multiply the time spent on all these checks with the number of environments and add the time spent on aligning the database state, then we get a decent amount of time lost.
 
-Database migrations allow us to:
+Automatic database migrations with Flyway or similar tools allow us to:
 
 * Create a database from scratch.
 * Have a single source of truth for the version of the database state.
-* Have reproducible state of the database in local and remote environments.
+* Have a reproducible state of the database in local and remote environments.
 * Automate database changes deployment, which helps to minimize human errors.
 
 ## Enter Flyway
 
-Flyway facilitates the above while providing:
+Flyway facilitates database migration while providing:
 
-1. Well structured and easy to read documentation.
-2. An option to integrate with an existing database.
-3. Support for almost all known schema-based databases.
-4. Wide variety of running and configuration options.
+* Well structured and easy-to-read [documentation](https://flywaydb.org/documentation/).
+* An option to integrate with an [existing database](https://flywaydb.org/documentation/existing).
+* Support for almost all known schema-based databases.
+* A wide variety of running and configuration options.
 
-Let's see how to get Flyway running with Spring Boot.
+Let's see how to get Flyway running.
 
-### Writing Our First Database Migration
+## Writing Our First Database Migration
 
-Flyway tries to find user provided migrations both on the filesystem and on the Java classpath. By default, recursively loads all files in `db/migration` folder within the classpath, which conform the configured naming convention. This behavior can be changed by setting [locations](https://flywaydb.org/documentation/commandline/migrate#locations) property.
+Flyway tries to find user-provided migrations both on the filesystem and on the Java classpath. By default, it loads all files in the folder `db/migration` within the classpath that conform to the configured naming convention. We can change this behavior by configuring the [locations](https://flywaydb.org/documentation/commandline/migrate#locations) property.
 
-#### SQL-based
+### SQL-based Migration
 
-Flyway has a [naming convention](https://flywaydb.org/documentation/migrations#naming) for database migration scripts which can be adjusted to our needs using the following [configuration properties](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#data-migration-properties) (Spring notation):
+Flyway has a [naming convention](https://flywaydb.org/documentation/migrations#naming) for database migration scripts which can be adjusted to our needs using the following [configuration properties](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#data-migration-properties) in `application.properties` (or `application.yml`):
 
 ```
 spring.flyway.sql-migration-prefix=V
 spring.flyway.repeatable-sql-migration-prefix=R
-# two underscores
 spring.flyway.sql-migration-separator=__
 spring.flyway.sql-migration-suffixes=.sql
 ```
 
-Let's create `V1__init.sql` file, which can be used as a base for our database migrations (H2 notation):
+Let's create our first migration script `V1__init.sql`:
 
 ```sql
 CREATE TABLE test_user(
@@ -70,89 +69,96 @@ CREATE TABLE test_user(
 );
 ```
 
-`test_user` is just an example table which stores user details.
+`test_user` is just an example table that stores some user details. 
 
-#### Java-based
+The SQL we're using in this article will run in an H2 in-memory database, so keep in mind that it might not work with other databases.
 
-Java-based migration is preferred for cases which are harder to write in SQL, e.g:
+### Java-Based Migration
 
-1. BLOB & CLOB changes
-2. Advanced bulk data changes like generating random data, recalculations, advanced format changes etc.
+If we have a case that requires more dynamic database manipulation, we can create a Java-based migration. This is handy for modifying BLOB & CLOB columns, for instance, or for bulk data changes like generating random data or recalculating column values.
 
-File naming rules are similar to SQL-based migrations, but overriding them requires implementing of [JavaMigration](https://flywaydb.org/documentation/api/javadoc/org/flywaydb/core/api/migration/JavaMigration) interface.
+File naming rules are similar to SQL-based migrations, but overriding them requires us to implement the [JavaMigration](https://flywaydb.org/documentation/api/javadoc/org/flywaydb/core/api/migration/JavaMigration) interface.
 
-Let's create `V2__InsertRandomUsers.java` file and see its extended capabilities:
+Let's create `V2__InsertRandomUsers.java` and have a look at its extended capabilities:
 
 ```java
 package db.migration;
 
-import java.text.MessageFormat;
 import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-/**
- * Example of a Java-based migration using Spring {@link JdbcTemplate}.
- */
 public class V2__InsertRandomUsers extends BaseJavaMigration {
 
   public void migrate(Context context) {
 
-    final JdbcTemplate jdbcTemplate = new JdbcTemplate(new SingleConnectionDataSource(context.getConnection(), true));
+    final JdbcTemplate jdbcTemplate = new JdbcTemplate(
+        new SingleConnectionDataSource(context.getConnection(), true));
 
     // Create 10 random users
     for (int i = 1; i <= 10; i++) {
-      jdbcTemplate.execute(String.format("insert into test_user(username, first_name, last_name) " 
-                                             + "values('%d@reflectoring.io', 'Elvis_%d', 'Presley_%d')", i, i, i));
+      jdbcTemplate.execute(String.format("insert into test_user" 
+          + " (username, first_name, last_name) values" 
+          + " ('%d@reflectoring.io', 'Elvis_%d', 'Presley_%d')", i, i, i));
     }
   }
 }
 ```
- 
-### Setting up and Running Flyway
 
-We use an H2 database in an `in-memory` mode for this post, so we can simplify database access settings. We need to add its dependency to our build file (Gradle notation):
+We can execute any logic we want within a Java migration and thus have all the flexibility to implement more dynamic database changes.
+ 
+## Running Flyway
+
+We use an H2 database in `in-memory` mode for this article, so we can simplify database access settings. We need to add its dependency to our build file (Gradle notation):
 
 ```gradle
 runtimeOnly 'com.h2database:h2'
 ```
 
-Choosing the right running option depends on our needs and Flyway tries to cover almost all of them - [command-line](https://flywaydb.org/documentation/commandline/), [Java API](https://flywaydb.org/documentation/api/), [Maven](https://flywaydb.org/documentation/maven/)/[Gradle](https://flywaydb.org/documentation/gradle/) plugins and a decent list of [community plugins and integrations](https://flywaydb.org/documentation/plugins/) including [Spring Boot](https://flywaydb.org/documentation/plugins/springboot). Let's have a look at each of them and see their pros and cons.
+Flyway supports a range of different options to run database migrations:
 
-#### Spring Boot Auto-Configuration
+* via [command line](#command-line)
+* via [Java API](#java-api), 
+* via Maven and [Gradle](#gradle-plugin) plugins, and
+* via [community plugins and integrations](https://flywaydb.org/documentation/plugins/) including [Spring Boot](#spring-boot-auto-configuration). 
 
-Having [H2](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-embedded-database-support) as a dependency is enough for Spring Boot to initialize a specific implementation of `DataSource` called `EmbeddedDatabase`. This `DataSource` is then used to auto-configure [Flyway](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-execute-flyway-database-migrations-on-startup) as long as we add the following dependencies to our build file (Gradle notation):
+Let's have a look at each of them and discuss their pros and cons.
+
+### Spring Boot Auto-Configuration
+
+Having a supported `DataSource` implementation as a dependency in the classpath is enough for Spring Boot to instantiate that `DataSource` and make it available for running database queries. This `DataSource` is automatically passed on to auto-configure [Flyway](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-execute-flyway-database-migrations-on-startup) when we add the following dependency to our build file (Gradle notation):
 
 ```gradle
 implementation 'org.flywaydb:flyway-core'
 ```
 
-By default, Spring Boot runs Flyway database migrations on application startup. In case we put our migrations in a different location, we can provide a comma-separated list of one or more `classpath:` or `filesystem:` locations to `spring.flyway.locations` property:
+**By default, Spring Boot runs Flyway database migrations automatically on application startup**. 
+
+In case we put our migrations in different locations from the default folder, we can provide a comma-separated list of one or more `classpath:` or `filesystem:` locations in the `spring.flyway.locations` property in `application.properties`:
 
 ```
 spring.flyway.locations=classpath:db/migration,filesystem:/another/migration/directory
 ```
 
-Using Spring Boot auto-configuration is the simplest approach and requires minimal efforts to support database migrations out of the box.
+Using Spring Boot auto-configuration is the simplest approach and requires minimal effort to support database migrations out of the box.
 
-#### Java API
+### Java API
 
-Non-Spring application can still benefit from Flyway, using similar to Spring Boot set-up (Gradle notation):
+Non-Spring applications can still benefit from Flyway. Again, we need to add flyway as a dependency (Gradle notation):
 
 ```gradle
 implementation 'org.flywaydb:flyway-core'
 ```
 
-Now, we only need to configure and run the core class [Flyway](https://flywaydb.org/documentation/api/javadoc/org/flywaydb/core/Flyway) as part of applicaiton initialization:
+Now we only need to configure and run the core class [Flyway](https://flywaydb.org/documentation/api/javadoc/org/flywaydb/core/Flyway) as part of application initialization:
 
 ```java
 import org.flywaydb.core.Flyway;
 
 public class MyApplication {
   public static void main(String[] args) {
-    // Set up DataSource
-
+    DataSource dataSource = ... 
     Flyway flyway = Flyway.configure().dataSource(dataSource).load();
     flyway.migrate();
 
@@ -161,9 +167,11 @@ public class MyApplication {
 }
 ```
 
-#### Gradle Plugin
+Calling `flyway.migrate()` will now execute all database migrations that haven't been executed before.
 
-Gradle plugin could be helpful when Spring and non-Spring applications are developed, but without the need of programatic congiguration. Here is the definition in our build file (Gradle notation):
+### Gradle Plugin
+
+We can use the Flyway Gradle plugin for Spring-based applications as well as for plain Java applications if we don't want to run migrations automatically at startup. The plugin takes all the configuration out of our application and into the Gradle script:
 
 ```gradle
 plugins {
@@ -188,24 +196,26 @@ After successful configuration we can call the following command in our terminal
 ./gradlew flywayMigrate --info
 ```
 
-Here we use [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html) to call `flywayMigrate` task which executes created database migrations. The `--info` parameter sets Gradle log level to `info`, which allows us to see Flyway output. 
+Here we use [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html) to call the `flywayMigrate` task which executes all previously not-run database migrations. The `--info` parameter sets Gradle log level to `info`, which allows us to see Flyway output. 
 
-Gradle plugin suppots all Flyway commands by providing corresponding tasks, following the pattern `flyway<Command>`.
+The Gradle plugin supports [all Flyway commands](https://flywaydb.org/documentation/gradle/#tasks) by providing corresponding tasks, following the pattern `flyway<Command>`.
 
-#### Command-line tool
+### Command Line
 
-This option allows us to have independent tool which doesn't require installation or integration with our application. 
+We can also run Flyway via command line. This option allows us to have an independent tool which doesn't require installation or integration with our application. 
 
 First, we need to download the relevant [archive](https://flywaydb.org/documentation/commandline/) for our operating system and extract it.
-Next we should create our SQL-based migrations in `sql` folder and Java-based in `jars` folder (packed in `jar` files). 
-As with other running options, we can override default configuration by changing `flyway.conf` file located in `conf` folder. Here is a minimal configuration for H2 database:
+
+Next, we should create our SQL-based migrations in a folder named `sql` or `jars` in case of Java-based migrations. The `jar` folder must contain our Java migrations packed into `jar` files.
+ 
+As with other running options, we can override the default configuration by modifying the `flyway.conf` file located in the `conf` folder. Here is a minimal configuration for H2 database:
 
 ```
 flyway.url=jdbc:h2:mem:
 flyway.user=sa
 ```
 
-Calling Flyway executable is different for each operating system. On macOS/Linux we must call:
+Calling the Flyway executable is different for each operating system. On macOS/Linux we must call:
 
 ```
 cd flyway-<version>
@@ -219,16 +229,16 @@ cd flyway-<version>
 flyway.cmd migrate
 ```
 
-### Placeholders
-[Placeholders](https://flywaydb.org/documentation/placeholders) come in very handy when we want to abstract differences between environments. A good example is using different schema name in development and production environment:
+## Placeholders
+[Placeholders](https://flywaydb.org/documentation/placeholders) come in very handy when we want to abstract from differences between environments. A good example is using a different schema name in development and production environments:
 
 ```sql
 CREATE TABLE ${schema_name}.test_user(
--- Columns definition
+...
 );
 ```
 
-By default, Ant-style is used for placeholder definition, but we can easily override it by changing the following properties (Spring notation):
+By default, we can use Ant-style placeholders, but when we run Flyway with Spring Boot, we can easily override it by changing the following properties in `application.properties`:
 
 ```
 spring.flyway.placeholder-prefix=${
@@ -240,11 +250,13 @@ spring.flyway.placeholders.schema_name=test
 
 ## Tips
 
+Basic usage of Flyway is simple, but database migration can get complicated. Here are some thoughts about how to get database migration right.
+
 ### Incremental Mindset
 
-Flyway tries to enforce writing of incremental database changes. That means we shouldn't update already applied migrations, except [repeatable](https://flywaydb.org/documentation/migrations#repeatable-migrations) ones.
+Flyway tries to enforce incremental database changes. That means we shouldn't update already applied migrations, except [repeatable](https://flywaydb.org/documentation/migrations#repeatable-migrations) ones. By default, we should use versioned migrations that will only be run once and will be skipped in subsequent migrations.
 
-Sometimes we have to do manual changes, directly to the database server, but we want to have them in our migrations scripts as well. Once a certain migration is applied, any further updates would produce different checksum:
+Sometimes we have to do manual changes, directly to the database server, but we want to have them in our migrations scripts as well so we can transport them to other environments. So, we change a flyway script after it has already been applied. If we run another migration sometime later, we get the following error:
 
 ```bash
 * What went wrong:
@@ -256,6 +268,8 @@ Execution failed for task ':flywayMigrate'.
   -> Resolved locally    : -1438254535
 ```
 
+This is because we changed the script and Flyway has a different checksum recorded for it.  
+
 Fixing this is easy, by simply calling the [repair](https://flywaydb.org/documentation/command/repair) command, which generates the following output:
 
 ```bash
@@ -264,13 +278,11 @@ Repairing Schema History table for version 1 (Description: init, Type: SQL, Chec
 Successfully repaired schema history table "PUBLIC"."flyway_schema_history" (execution time 00:00.026s).
 Manual cleanup of the remaining effects the failed migration may still be required.
 ```
-
-Flyway allows migrations to be run "out of order" by setting `spring.flyway.out-of-order` property to `true`.
-This is useful when we would like to use the issue number as a prefix name, e.g. `REFLECT-2-Init.sql`, so different migration can be applied randomly regardless the version number.
+Flyway now has updated the checksum of migration script version 1 to the local value so that future migrations won't cause this error again.
 
 ### Support of Undo
 
-I guess we all have been in a situation when the latest production database changes should be reverted. We should be aware that Flyway supports [undo](https://flywaydb.org/documentation/command/undo) command in the professional edition only. Undo migrations are defined with `U` prefix, which can be changed with `undoSqlMigrationPrefix` property. This is how such migration would look like:
+I guess we all have been in a situation when the latest production database changes should be reverted. We should be aware that Flyway supports the [undo](https://flywaydb.org/documentation/command/undo) command in the professional edition only. Undo migrations are defined with the `U` prefix, which can be changed via the `undoSqlMigrationPrefix` property. The undo script to our migration script from above would look like this:
 
 ```sql
 DROP TABLE test_user;
@@ -284,45 +296,17 @@ Undoing migration of schema "PUBLIC" to version 1 - init
 Successfully undid 1 migration to schema "PUBLIC" (execution time 00:00.024s).
 ```
 
-There is a [free alternative](https://github.com/Majitek/strata-db-versioning), which is capable to handle rolling back of applied changes for PostgreSQL database.
+I've created a [free alternative](https://github.com/Majitek/strata-db-versioning), which is capable to handle the rollback of previously applied changes for a PostgreSQL database.
 
 ## Database Migration as Part of a CI/CD Process
 
 > "If it can be automated, it should be automated" - Unknown
 
-The above quote is also applicable to delivering database changes to different environments (test, stage, prod etc.).
+This quote is also applicable to delivering database changes to different environments (test, stage, prod, etc.).
 
 We need to make sure that our local database changes will work on all other servers. The most common approach is to use a CI/CD build to emulate a real deployment. 
 
-One of the most widely used CI/CD servers is [Jenkins](https://jenkins.io/). Let's define a [pipeline](https://jenkins.io/doc/book/pipeline) using two of the most widely used options:
-
-### Using Gradle Build
-
-```
-pipeline {
-  agent any
-
-  stages {
-    checkout scm
-
-    stage('Gradle Build') {
-      steps {
-        script {
-          if (isUnix()) {
-            sh './gradlew clean build --info'
-          } else {
-            bat 'gradlew.bat clean build --info'
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-The pipeline above builds the project and runs the tests, which initialize Spring context and execute Flyway migrations.
-
-### Using Gradle Plugin
+One of the most widely used CI/CD servers is [Jenkins](https://jenkins.io/). Let's define a [pipeline](https://jenkins.io/doc/book/pipeline) using the Flyway Gradle plugin to execute the database migrations:
 
 ```gradle
 pipeline {
@@ -346,10 +330,14 @@ pipeline {
 }
 ```
 
-Defining pipeline in this way helps us to separate building and testing the project from Flyway migrations execution.
+We call `./gradlew flywayMigrate` to run the SQL scripts against the database. We have to make sure, of course, that the Flyway Gradle plugin is configured against the correct database. We could even create multiple configurations so that we can migrate to different databases (staging, production, ...) in different CI/CD pipelines.
+
+The same command can easily be integrated in pipelines of other CI/CD tools than Jenkins.
 
 ## Conclusion
 
-Implementing the above would make us confident when dealing with database changes and their distribution to desired environments. 
+Implementing automated database migration with Flyway makes us confident when dealing with database changes and their distribution to target environments. 
 
-Another popular alternative of Flyway is [Liquibase](https://www.liquibase.org/), which will be a subject of a future blog post.
+Another popular alternative of Flyway is [Liquibase](https://www.liquibase.org/), which will be the subject of a future blog post.
+
+You can find the example code on [GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/data-migration/flyway).

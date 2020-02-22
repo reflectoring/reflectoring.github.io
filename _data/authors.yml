@@ -39,3 +39,10 @@ david:
   email: "daviddd.kl@gmail.com"
   avatar: "/assets/img/authors/david.png"
   github: "daklassen"
+
+nandan:
+  name: "Nandan BN"
+  email: "its.nandanbn@gmail.com"
+  avatar: "/assets/img/authors/nandan.jpg"
+  github: "Lucaarioo"
+  bio: "Full stack developer working for future."

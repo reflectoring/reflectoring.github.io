@@ -1,3 +1,13 @@
+---
+title: Single Responsibility Principle Unpacked
+categories: [craft]
+date: 2020-02-24 05:00:00 +1100
+modified: 2020-02-24 05:00:00 +1100
+author: leventov
+excerpt: "TODO"
+image:
+  auto: 0059-library
+---
 
 This article explains the Single Responsibility Principle (SRP): what does it practically mean, when and how to apply it.
 
@@ -181,7 +191,8 @@ Pro tip: thinking about responsibilities helps to notice [unrelated subproblems]
 
 ### Testability
 **It's easier to write and maintain tests for methods and classes with focused, independent concerns.** This is what the [Humble Object](http://xunitpatterns.com/Humble%20Object.html) pattern is all about. Let's continue playing with `TransactionProcessor`:
-```
+
+```java
 class TransactionProcessor {
     
   void processTransaction(Transaction t) {
@@ -197,55 +208,62 @@ class TransactionProcessor {
   }
 }
 ```
-In this variant, there is no separate `isFraud()` method. `processTransaction()` conflates the fraud detection and the reporting logic. Then, to test the fraud detection, we may need to mock the `alertingService`, which pollutes the test code with boilerplate. **Not only it takes effort to setup mocks in the first place, mock-based tests tend to break every time we change anything in the production code.** Such test become a permanent maintenance burden.
+In this variant, there is no separate `isFraud()` method. `processTransaction()` combines fraud detection and the reporting logic. 
+
+Then, to test the fraud detection, we may need to mock the `alertingService`, which pollutes the test code with boilerplate. **Not only does it take effort to setup mocks in the first place, mock-based tests tend to break every time we change anything in the production code.** Such test become a permanent maintenance burden.
 
 Alternatively, to test the fraud detection logic in the example above, we could intercept and check the logging output. However, this is also cumbersome, and it hinders the ability to execute tests in parallel.
 
-It's simpler to test a separate `isFraud()` method. But we would still need to construct a `TransactionProcessor` object and to pass some dummy `Logger` and `AlertingService` objects into it. So it's even easier to test the variant with the `FraudDetection` class. Notice that to test the intermediate version without separate `FraudDetection` class, we often find ourselves changing the visibility of the method under test (`isFraud()`, in this example) from private to default (package-private). **Use changing visibility of a method and `@VisibleForTesting` annotation as clues to think about whether it's better to split the responsibilities of the enclosing class.**
+It's simpler to test a separate `isFraud()` method. But we would still need to construct a `TransactionProcessor` object and to pass some dummy `Logger` and `AlertingService` objects into it. 
 
-Pete Hodgson also explains how extracting observability into a separate class (like `TransactionInstrumentation`) [enables clearer, more focused tests](https://martinfowler.com/articles/domain-oriented-observability.html#DomainProbesEnableCleanerMore-focusedTests).
+So, it's even easier to test the variant with the `FraudDetection` class. Notice that to test the intermediate version without a separate `FraudDetection` class, we often find ourselves changing the visibility of the method under test (`isFraud()`, in this example) from private to default (package-private). 
+
+**Changing visibility of a method and the `@VisibleForTesting` annotation are clues to think about whether it's better to split the responsibilities of the enclosing class.**
+
+Pete Hodgson also explains how extracting observability like the alerting feature into a separate class (like `TransactionInstrumentation`) [enables clearer, more focused tests](https://martinfowler.com/articles/domain-oriented-observability.html#DomainProbesEnableCleanerMore-focusedTests).
 
 In contrast to methods and classes, **smaller services complicate the local setup for integration testing.** [Docker Compose](https://docs.docker.com/compose/) is a godsend, but it doesn't solve the problem fully.
 
 ### Debuggability
 When methods and classes are focused on a single concern, we can write equally focused tests for them. **If tests execute only a single production method or class, when they fail, we immediately know where the bug is, and thus we don't need to debug.** Sometimes, debugging may become a large portion of the development process: for example, Michael Malis [reports](https://malisper.me/how-to-improve-your-productivity-as-a-working-programmer/) that for him, it used to take as much as a quarter of the total time.
 
-When we still have to debug, it helps to make the debugging loop shorter when we test isolated pieces of functionality and don't need to build a large graph of objects through dependency injection or to spin up a database in [Testcontainers](https://www.testcontainers.org/).
+When we still have to debug, we can accelerate the debugging loop by testing isolated pieces of functionality and don't need to build a large graph of objects through dependency injection or to spin up a database in [Testcontainers](https://www.testcontainers.org/).
 
 However, keep in mind that many bugs are due to one component incorrectly using another. [Mistakes happen exactly in the integration of real components](https://phauer.com/2019/focus-integration-tests-mock-based-tests/). So, **it's important to have *both* narrowly focused unit tests to quickly fix certain types of errors without lengthy debugging, and more integration-like tests to check that components use each other properly.**
 
 ### Observability and Operability
 Similar to how we are able to quickly find bugs in methods and classes with a single concern, **we should also be able to quickly pinpoint performance problems because results of profiling become more informative**: we see the exact responsibilities of the culprit methods from the top of the profiler's output.
 
-When components (not only methods and classes, but also modules and distributed services) are connected with queues (either in-memory, in-process `Queue`s, or distributed message brokers such as Kafka), we can easily monitor the sizes of the backlogs of the queues in the pipeline. Matt Welsh, the guy who proposed the [staged event-driven architecture](https://en.wikipedia.org/wiki/Staged_event-driven_architecture), regarded this observability of load and resource bottlenecks as [the most important contribution of SEDA](http://matt-welsh.blogspot.com/2010/07/retrospective-on-seda.html).
+When components (not only methods and classes, but also modules and distributed services) are connected with queues (either in-memory, in-process `Queue`s, or distributed message brokers such as Kafka), we can easily monitor the sizes of the backlogs of the queues in the pipeline. Matt Welsh, the guy who proposed the [staged event-driven architecture](https://en.wikipedia.org/wiki/Staged_event-driven_architecture) (SEDA), regarded this observability of load and resource bottlenecks as [the most important contribution of SEDA](http://matt-welsh.blogspot.com/2010/07/retrospective-on-seda.html).
 
-Decoupled services could be scaled up and down independently in response to the changing load, without overuse of resources. Within an application, we can control the distribution of CPU resources between method, class, and module responsibilities by sizing the corresponding thread pools. `ThreadPoolExecutor` even supports dynamic reconfiguration in runtime via [`setCorePoolSize()`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html#setCorePoolSize%28int%29) method.
+Decoupled services could be scaled up and down independently in response to the changing load, without overuse of resources. Within an application, we can control the distribution of CPU resources between method, class, and module responsibilities by sizing the corresponding thread pools. `ThreadPoolExecutor` even supports dynamic reconfiguration in runtime via the [`setCorePoolSize()`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html#setCorePoolSize%28int%29) method.
 
 **When microservices have focused responsibilities, it also helps to investigate incidents.** If we monitor the request success rates and health status of each service, and see that one service which connects to a particular database is failing or unavailable, we may assume that the root problem of lies in this database rather than any other part of the system.
 
 However, despite of the advantages of finer-grained monitoring and scaling, **splitting responsibilities between smaller services generally increases the burden of operating the system.** Smaller services mean more work:
-- Setting up and operating intermediate message queues (like Kafka) between the services.
+ 
+ - Setting up and operating intermediate message queues (like Kafka) between the services.
  - DevOps: setting up and managing separate delivery pipelines, monitoring, configuration, machine and container images.
  - Deployment and orchestration: Kubernetes doesn't fully alleviate it.
  - To ensure [rollback safety](https://aws.amazon.com/builders-library/ensuring-rollback-safety-during-deployments/), the deployments should be multi-phase, shared state and messages sent between services should be versioned.
 
 ### Reliability
-Reliability is the first software quality in the list that we mostly hurt, not aid when we split smaller responsibilities between the components. Although, if engineered properly, microservices can imporve availability: when one service is sick, others might still serve something for the users, the inherent [fallability of distributed systems](https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing) hits harder. Also, "if engineered properly" is an important caveat :)
+Reliability is the first software quality in the list that we mostly hurt, not aid when we split smaller responsibilities between the components. Although, if engineered properly, microservices can improve availability: when one service is sick, others might still serve something for the users, the inherent [fallability of distributed systems](https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing) hits harder. Also, "if engineered properly" is an important caveat :).
 
 Discussing the pros and cons of microservices is not the main goal of this article, but there are plenty of good materials on this topic, the reliability aspect in particular: [1](https://www.martinfowler.com/articles/microservice-trade-offs.html), [2](https://dwmkerr.com/the-death-of-microservice-madness-in-2018/), [3](https://developer.ibm.com/technologies/microservices/articles/challenges-and-benefits-of-the-microservice-architectural-style-part-1/).
 
 ### Code Size
 Smaller responsibility of each component means that there are more components in total in the system.
 
-Each method needs a signature declaration. Each class needs constructors, static factory methods, field declarations, and other ceremony. Each module needs a separate configuration class and a depedendency injection setup. Each service needs separate configuration files, startup scripts, CI/CD/orchestration infrastructure, and so on.
+Each method needs a signature declaration. Each class needs constructors, static factory methods, field declarations, and other ceremony. Each module needs a separate configuration class and a dependency injection setup. Each service needs separate configuration files, startup scripts, CI/CD/orchestration infrastructure, and so on.
 
-Therefore, **the more focused responsibilities of the components we make, the more code we will need to write.** This impacts the long-term maintainability much less than all the qualities discussed above: undertandability, flexibility, reusability, etc. However, it means that **it takes more time and effort to develop the first version of the application with finely separated responsibilites than with larger components**, especially if thorough testing is not the first priority as well.
+Therefore, **the more focused responsibilities of the components we make, the more code we will need to write.** This impacts the long-term maintainability much less than all the qualities discussed above: understandability, flexibility, reusability, etc. However, it means that **it takes more time and effort to develop the first version of the application with finely separated responsibilites than with larger components**, especially if thorough testing is not the first priority as well.
 
 ### Performance
 This shouldn't be a concern normally, but for the sake of completeness, we should note that a large number of smaller classes may impact the application startup time. [An entry in the Spring blog](https://spring.io/blog/2018/12/12/how-fast-is-spring) has a nice chart illustrating this:
 ![JVM startup vs. classes](https://docs.google.com/spreadsheets/d/e/2PACX-1vR8B4l5WkWf-9gZWmIYTkmBWM7YWf5bRg852OakrV0G2-vtfM_UkVNRC3cTVk1079HagnMVHYZnvbib/pubchart?oid=976086548&format=image)
 
-Having lots of small methods taxes the application performance through method calls and returns. This is not a problem at hotspots thanks to [method inlining](https://www.baeldung.com/jvm-method-inlining), but in applications with a "flat" performance profile (no obvious hotspots) an excessive number of method calls might considerably affect the cumulative thoughput.
+Having lots of small methods taxes the application performance through method calls and returns. This is not a problem at hotspots thanks to [method inlining](https://www.baeldung.com/jvm-method-inlining), but in applications with a "flat" performance profile (no obvious hotspots) an excessive number of method calls might considerably affect the cumulative throughput.
 
 **The size of services might significantly impact the efficiency of the distributed system due to the costs of RPC calls and message serialization.**
 
@@ -262,10 +280,10 @@ In other cases, we should split up responsibilities into separate methods and cl
 
 This may sound overwhelming, but of course this analysis shouldn't be done for each and every method and class in separation, but instead done infrequently to establish a guideline on the project, or just to train our intuition.
 
-On the level of the distributed system, the tradeoff is much less in favor of extracting (micro)services with more narrow responsibilities: discoverability, flexibility, reusability, and observability improves, but testability, operability, reliability, and performance mostly decline. On the other hand, Single Reponsibility Principle probably shouldn't be the first thing to consider when sizing microservices. Most people in the industry think that it's more important to follow the [team boundaries](https://martinfowler.com/articles/microservices.html#OrganizedAroundBusinessCapabilities), [bounded contexts](https://martinfowler.com/bliki/BoundedContext.html), and [aggregates](https://www.martinfowler.com/bliki/DDD_Aggregate.html) (the last two are concepts from Domain-Driven Design).
+On the level of the distributed system, the trade-off is much less in favor of extracting (micro)services with more narrow responsibilities: discoverability, flexibility, reusability, and observability improves, but testability, operability, reliability, and performance mostly decline. On the other hand, the Single Reponsibility Principle probably shouldn't be the first thing to consider when sizing microservices. Most people in the industry think that it's more important to follow the [team boundaries](https://martinfowler.com/articles/microservices.html#OrganizedAroundBusinessCapabilities), [bounded contexts](https://martinfowler.com/bliki/BoundedContext.html), and [aggregates](https://www.martinfowler.com/bliki/DDD_Aggregate.html) (the last two are concepts from Domain-Driven Design).
 
 <hr>
 
-P. S. I expolore the idea of analyzing software design practices and principles through the lenses of distinct software qualities such understandability, testability, performance, and so on in the [Software Design](https://en.wikiversity.org/wiki/Software_Design) project on Wikiversity.
+P. S. I explore the idea of analyzing software design practices and principles through the lenses of distinct software qualities such understandability, testability, performance, and so on in the [Software Design](https://en.wikiversity.org/wiki/Software_Design) project on Wikiversity.
 
 [1] For code understandability, the crossing point might actually depend on  individual cognitive features of the developer: attention, the tendency to control things more tightly or more loosely, the habits of working with code. I suspect this may the crux of the debate around the Robert Martin's hard "[extract till you drop](https://sites.google.com/site/unclebobconsultingllc/one-thing-extract-till-you-drop)" recommendation.

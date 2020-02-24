@@ -34,7 +34,7 @@ The Single Responsibility Principle applies to the software that we develop on d
 This phrase is a little more concrete, but it still doesn't explain what a *responsibility* is and *how small or large a responsibility should be* for each particular method, class, module, or service.
 
 ### Types Of Responsibilities
-Instead of defining a *responsibility* in abstract terms, it may be more intuitive to list the actual types of responsibilities. Here are some examples (they are derived from Adam Warski's classification of objects in applications which he coined in his thought-provoking post about [dependency injection in Scala](https://blog.softwaremill.com/zio-environment-meets-constructor-based-dependency-injection-6a13de6e000)):
+Instead of defining a *responsibility* in abstract terms, it may be more intuitive to list the actual types of responsibilities. Here are some examples (they are derived from Adam Warski's classification of objects in applications which he distilled in his thought-provoking post about [dependency injection in Scala](https://blog.softwaremill.com/zio-environment-meets-constructor-based-dependency-injection-6a13de6e000)):
 
 1&#46; **Business logic**, for example, extracting a phone number from text, converting XML document into JSON, or classifying a money transaction as fraud. On the level of classes and above, a business logic responsibility is *knowing how to do* (or encapsulating) the business function: for example, a class knowing how to convert XML documents into JSON, or a service encapsulating the detection of fraud transactions.
 
@@ -45,45 +45,49 @@ On the level of classes, modules, and services, a external integration responsib
 3&#46; **Data**: a profile of a person on a website, a JSON document, a message. Obviously, embodying a piece of data could only be a responsibility of a class (object), but not of a method, module, or service. A specific kind of data is **configuration**: a collection of parameters for some other method, class, or system.
 
 4&#46; A piece of application's **control flow, execution, or data flow**. An example of this responsibility is a method that orchestrates calls to components that each have other responsibilities:
-    ```
-    void processTransaction(Transaction t) {
-      if (isFraud(t)) { // Business logic
-        // External integration: logging
-        logger.log("Detected fraud transaction {}", t);
-        // Integration with external service
-        alertingService.sendAlert(new FraudTransactionAlert(t));
-      }
-    }
-    ```
-    On the level of classes, an example of a data flow responsibility may be a `BufferedLogger` class which buffers logging statements in memory and manages a separate background thread that takes statements from the buffer and writes them to actual external logger:
-    ```
-    class BufferedLogger implements Logger {
-      private final Logger delegate;
-      private final ExecutorService backgroundWorker;
-      private final BlockingQueue<Statement> buffer;
 
-      BufferedLogger(Logger delegate) {
-        this.delegate = delegate;
-        this.backgroundWorker = newSingleThreadExecutor();
-        this.buffer = new ArrayBlockingQueue<>(100);
-        backgroundWorker.execute(this::writeStatementsInBackground);
-      }
-      
-      @Override public void log(Statement s) {
-        putUninterruptibly(buffer, s);
-      }
+```java
+void processTransaction(Transaction t) {
+  if (isFraud(t)) { // Business logic
+    // External integration: logging
+    logger.log("Detected fraud transaction {}", t);
+    // Integration with external service
+    alertingService.sendAlert(new FraudTransactionAlert(t));
+  }
+}
+```
 
-      private void writeStatementsInBackground() {
-        while (true) {
-          Statement s = takeUninterruptibly(buffer);
-          delegate.log(s);
-        }
-      }
+On the level of classes, an example of a data flow responsibility may be a `BufferedLogger` class which buffers logging statements in memory and manages a separate background thread that takes statements from the buffer and writes them to actual external logger:
+    
+```java
+class BufferedLogger implements Logger {
+  private final Logger delegate;
+  private final ExecutorService backgroundWorker;
+  private final BlockingQueue<Statement> buffer;
+
+  BufferedLogger(Logger delegate) {
+    this.delegate = delegate;
+    this.backgroundWorker = newSingleThreadExecutor();
+    this.buffer = new ArrayBlockingQueue<>(100);
+    backgroundWorker.execute(this::writeStatementsInBackground);
+  }
+
+  @Override public void log(Statement s) {
+    putUninterruptibly(buffer, s);
+  }
+
+  private void writeStatementsInBackground() {
+    while (true) {
+      Statement s = takeUninterruptibly(buffer);
+      delegate.log(s);
     }
-    ```
-   Method `writeStatementsInBackground()` itself has a control flow responsibility.
+  }
+}
+```
+
+Method `writeStatementsInBackground()` itself has a control flow responsibility.
  
-   In a distributed system, examples of services with a control or data flow responsibility could be a proxy, a load balancer, or a service transparently caching responses from or buffering requests to some other service.
+In a distributed system, examples of services with a control or data flow responsibility could be a proxy, a load balancer, or a service transparently caching responses from or buffering requests to some other service.
 
 ### How Small Or Large a Responsibility Should Be?
 I hope the examples above give some more grounded sense of what a responsibility of a method, class, module, or service could be. However, they still provide no actionable guidance on how finely we should chop responsibilities between the components of your system. For example:
@@ -148,7 +152,7 @@ class TransactionInstrumentation {
 ```
 We extracted the observation part of the logic into a separate `TransactionInstrumentation` class. This approach is not unreasonable. Compared to the original version, it aids the *flexibility* and the *testability* of the code, as we will discuss below in this article. (In fact, I took the idea directly from the excellent article about [domain-oriented observability](https://martinfowler.com/articles/domain-oriented-observability.html) by Pete Hodgson.)
 
-On the other hand, it smears the logic so thin across multiple classes and methods that it would take longer to learn it than the original, at least for me. [1]
+On the other hand, it smears the logic so thin across multiple classes and methods that it would take longer to learn it than the original, at least for me.<div class="tooltip">*<span class="tooltiptext">For code understandability, the crossing point might actually depend on  individual cognitive features of the developer: attention, the tendency to control things more tightly or more loosely, the habits of working with code. I suspect this may the crux of the debate around the Robert Martin's hard "<a href="https://sites.google.com/site/unclebobconsultingllc/one-thing-extract-till-you-drop">extract till you drop</a>" recommendation.</span></div>
 
 Extracting responsibilities into separate modules or services (rather than just classes) doesn't help to further improve understandability per se, however it may help with other qualities related the learning curve: the *discoverability* of the functionality (for example, through service API discovery) and the *observability* of the system, which we will discuss below.
 
@@ -185,9 +189,9 @@ What about the "lean" approach of splitting responsibilities only when we actual
 
 **Most methods with a narrow responsibility shouldn't have side effects and shouldn't depend on the state of the class**, which enables sharing and calling them from any place. In other words, the Single Responsibility Principle nudges us toward a  [functional programming](https://en.wikipedia.org/wiki/Functional_programming) style.
 
-***
-Pro tip: thinking about responsibilities helps to notice [unrelated subproblems](https://learning.oreilly.com/library/view/the-art-of/9781449318482/ch10.html) hiding in our methods and classes. When we extract them, we can then see opportunities to reuse them in other places. Moving unrelated subproblems out of the way keeps a component at the [single level or abstraction](http://principles-wiki.net/principles:single_level_of_abstraction), which makes easier to understand the logic of the component.
-***
+<div class="notice success">
+  <b>Pro tip:</b> thinking about responsibilities helps to notice <a href="https://learning.oreilly.com/library/view/the-art-of/9781449318482/ch10.html">unrelated subproblems</a> hiding in our methods and classes. When we extract them, we can then see opportunities to reuse them in other places. Moving unrelated subproblems out of the way keeps a component at the <a href="http://principles-wiki.net/principles:single_level_of_abstraction">single level or abstraction</a>, which makes easier to understand the logic of the component.
+</div>
 
 ### Testability
 **It's easier to write and maintain tests for methods and classes with focused, independent concerns.** This is what the [Humble Object](http://xunitpatterns.com/Humble%20Object.html) pattern is all about. Let's continue playing with `TransactionProcessor`:
@@ -227,14 +231,14 @@ In contrast to methods and classes, **smaller services complicate the local setu
 ### Debuggability
 When methods and classes are focused on a single concern, we can write equally focused tests for them. **If tests execute only a single production method or class, when they fail, we immediately know where the bug is, and thus we don't need to debug.** Sometimes, debugging may become a large portion of the development process: for example, Michael Malis [reports](https://malisper.me/how-to-improve-your-productivity-as-a-working-programmer/) that for him, it used to take as much as a quarter of the total time.
 
-When we still have to debug, we can accelerate the debugging loop by testing isolated pieces of functionality and don't need to build a large graph of objects through dependency injection or to spin up a database in [Testcontainers](https://www.testcontainers.org/).
+When we still have to debug, we can accelerate the debugging loop by testing isolated pieces of functionality without building large graphs of objects through dependency injection or spinning up databases in [Testcontainers](https://www.testcontainers.org/).
 
 However, keep in mind that many bugs are due to one component incorrectly using another. [Mistakes happen exactly in the integration of real components](https://phauer.com/2019/focus-integration-tests-mock-based-tests/). So, **it's important to have *both* narrowly focused unit tests to quickly fix certain types of errors without lengthy debugging, and more integration-like tests to check that components use each other properly.**
 
 ### Observability and Operability
 Similar to how we are able to quickly find bugs in methods and classes with a single concern, **we should also be able to quickly pinpoint performance problems because results of profiling become more informative**: we see the exact responsibilities of the culprit methods from the top of the profiler's output.
 
-When components (not only methods and classes, but also modules and distributed services) are connected with queues (either in-memory, in-process `Queue`s, or distributed message brokers such as Kafka), we can easily monitor the sizes of the backlogs of the queues in the pipeline. Matt Welsh, the guy who proposed the [staged event-driven architecture](https://en.wikipedia.org/wiki/Staged_event-driven_architecture) (SEDA), regarded this observability of load and resource bottlenecks as [the most important contribution of SEDA](http://matt-welsh.blogspot.com/2010/07/retrospective-on-seda.html).
+When components (not only methods and classes, but also modules and distributed services) are connected with queues (either in-memory, in-process `Queue`s, or distributed message brokers such as Kafka), we can easily monitor the sizes of the backlogs of the queues in the pipeline. Matt Welsh, the engineer who proposed the [staged event-driven architecture](https://en.wikipedia.org/wiki/Staged_event-driven_architecture) (SEDA), regarded this observability of load and resource bottlenecks as [the most important contribution of SEDA](http://matt-welsh.blogspot.com/2010/07/retrospective-on-seda.html).
 
 Decoupled services could be scaled up and down independently in response to the changing load, without overuse of resources. Within an application, we can control the distribution of CPU resources between method, class, and module responsibilities by sizing the corresponding thread pools. `ThreadPoolExecutor` even supports dynamic reconfiguration in runtime via the [`setCorePoolSize()`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html#setCorePoolSize%28int%29) method.
 
@@ -248,7 +252,7 @@ However, despite of the advantages of finer-grained monitoring and scaling, **sp
  - To ensure [rollback safety](https://aws.amazon.com/builders-library/ensuring-rollback-safety-during-deployments/), the deployments should be multi-phase, shared state and messages sent between services should be versioned.
 
 ### Reliability
-Reliability is the first software quality in the list that we mostly hurt, not aid when we split smaller responsibilities between the components. Although, if engineered properly, microservices can improve availability: when one service is sick, others might still serve something for the users, the inherent [fallability of distributed systems](https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing) hits harder. Also, "if engineered properly" is an important caveat :).
+Reliability is the first software quality in the list that we mostly hurt, not aid when we split smaller responsibilities between the components. If engineered properly (an important caveat!), a microservice architecture can be more available: when one service is sick, others might still serve something for the users. However, the inherent [fallability of distributed systems](https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing) hits harder: when there are more remote communications between services there are more ways how things could go wrong, including network partition or degradation.
 
 Discussing the pros and cons of microservices is not the main goal of this article, but there are plenty of good materials on this topic, the reliability aspect in particular: [1](https://www.martinfowler.com/articles/microservice-trade-offs.html), [2](https://dwmkerr.com/the-death-of-microservice-madness-in-2018/), [3](https://developer.ibm.com/technologies/microservices/articles/challenges-and-benefits-of-the-microservice-architectural-style-part-1/).
 
@@ -261,6 +265,7 @@ Therefore, **the more focused responsibilities of the components we make, the mo
 
 ### Performance
 This shouldn't be a concern normally, but for the sake of completeness, we should note that a large number of smaller classes may impact the application startup time. [An entry in the Spring blog](https://spring.io/blog/2018/12/12/how-fast-is-spring) has a nice chart illustrating this:
+
 ![JVM startup vs. classes](https://docs.google.com/spreadsheets/d/e/2PACX-1vR8B4l5WkWf-9gZWmIYTkmBWM7YWf5bRg852OakrV0G2-vtfM_UkVNRC3cTVk1079HagnMVHYZnvbib/pubchart?oid=976086548&format=image)
 
 Having lots of small methods taxes the application performance through method calls and returns. This is not a problem at hotspots thanks to [method inlining](https://www.baeldung.com/jvm-method-inlining), but in applications with a "flat" performance profile (no obvious hotspots) an excessive number of method calls might considerably affect the cumulative throughput.
@@ -280,10 +285,8 @@ In other cases, we should split up responsibilities into separate methods and cl
 
 This may sound overwhelming, but of course this analysis shouldn't be done for each and every method and class in separation, but instead done infrequently to establish a guideline on the project, or just to train our intuition.
 
-On the level of the distributed system, the trade-off is much less in favor of extracting (micro)services with more narrow responsibilities: discoverability, flexibility, reusability, and observability improves, but testability, operability, reliability, and performance mostly decline. On the other hand, the Single Reponsibility Principle probably shouldn't be the first thing to consider when sizing microservices. Most people in the industry think that it's more important to follow the [team boundaries](https://martinfowler.com/articles/microservices.html#OrganizedAroundBusinessCapabilities), [bounded contexts](https://martinfowler.com/bliki/BoundedContext.html), and [aggregates](https://www.martinfowler.com/bliki/DDD_Aggregate.html) (the last two are concepts from Domain-Driven Design).
+On the level of the distributed system, the trade-off is much less in favor of extracting (micro)services with more narrow responsibilities: discoverability, flexibility, reusability, and observability improve, but testability, operability, reliability, and performance mostly decline. On the other hand, the Single Reponsibility Principle probably shouldn't be the first thing to consider when sizing microservices. Most people in the industry think that it's more important to follow the [team boundaries](https://martinfowler.com/articles/microservices.html#OrganizedAroundBusinessCapabilities), [bounded contexts](https://martinfowler.com/bliki/BoundedContext.html), and [aggregates](https://www.martinfowler.com/bliki/DDD_Aggregate.html) (the last two are concepts from Domain-Driven Design).
 
 <hr>
 
 P. S. I explore the idea of analyzing software design practices and principles through the lenses of distinct software qualities such understandability, testability, performance, and so on in the [Software Design](https://en.wikiversity.org/wiki/Software_Design) project on Wikiversity.
-
-[1] For code understandability, the crossing point might actually depend on  individual cognitive features of the developer: attention, the tendency to control things more tightly or more loosely, the habits of working with code. I suspect this may the crux of the debate around the Robert Martin's hard "[extract till you drop](https://sites.google.com/site/unclebobconsultingllc/one-thing-extract-till-you-drop)" recommendation.

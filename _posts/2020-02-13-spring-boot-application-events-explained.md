@@ -93,10 +93,10 @@ For the methods annotated with `@EventListener` and defined as a non-void return
 
 ```java
 @Component
-public class UserRemovedListener {
+class UserRemovedListener {
 
 	@EventListener
-	public ReturnedEvent handleUserRemovedEvent(UserRemovedEvent event) {
+	ReturnedEvent handleUserRemovedEvent(UserRemovedEvent event) {
 		System.out.println(String.format("User removed (@EventListerner): %s", event.getName()));
 		// Spring will send ReturnedEvent as a new event
 		return new ReturnedEvent();
@@ -104,7 +104,7 @@ public class UserRemovedListener {
 
 	// Listener to receive the event returned by Spring
 	@EventListener
-	public void handleReturnedEvent(ReturnedEvent event) {
+	void handleReturnedEvent(ReturnedEvent event) {
 		System.out.println("Returned Event Called");
 	}
 	...
@@ -115,11 +115,11 @@ Spring allows our listener to be triggered only in certain circumstances if we s
 
 ```java
 @Component
-public class UserRemovedListener {
+class UserRemovedListener {
 
 	...
 	@EventListener(condition = "#event.name eq 'reflectoring'")
-	public void handleConditionalListener(UserRemovedEvent event) {
+	void handleConditionalListener(UserRemovedEvent event) {
 		System.out.println(String.format("User removed (Conditional): %s", event.getName()));
 	}
 }
@@ -150,11 +150,11 @@ To make an event listener run in async mode, all we have to do is use the `@Asyn
 
 ```java
 @Component
-public class AsyncListener {
+class AsyncListener {
 
 	@Async
 	@EventListener
-	public void handleAsyncEvent(String event) {
+	void handleAsyncEvent(String event) {
 		System.out.println(String.format("Async event recevied: %s", event));
 	}
 }
@@ -174,10 +174,10 @@ You can bind the listener to the following phases of transaction:
 
 ```java
 @Component
-public class UserRemovedListener {
+class UserRemovedListener {
 
-  @TransactionalEventListener(condition = "#event.name eq 'reflectoring'", phase=TransactionPhase.AFTER_COMPLETION)
-	public void handleAfterUserRemoved(UserRemovedEvent event) {
+  	@TransactionalEventListener(condition = "#event.name eq 'reflectoring'", phase=TransactionPhase.AFTER_COMPLETION)
+	void handleAfterUserRemoved(UserRemovedEvent event) {
 		System.out.println(String.format("User removed (@TransactionalEventListener): %s", event.getName()));
 	}
 }

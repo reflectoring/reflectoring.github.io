@@ -11,21 +11,6 @@ image:
 
 This article explains the Single Responsibility Principle (SRP): what does it practically mean, when and how to apply it.
 
- - [What does the Single Responsibility Principle say?](#what-does-the-single-responsibility-principle-say)
-   - [Types of responsibilities](#types-of-responsibilities)
-   - [How small or large a responsibility should be?](#how-small-or-large-a-responsibility-should-be)
- - [The impact of the single responsibility principle on different software qualities](#the-impact-of-the-single-responsibility-principle-on-different-software-qualities)
-   - [Understandability and Learning Curve](#understandability-and-learning-curve)
-   - [Flexibility](#flexibility)
-   - [Reusability](#reusability)
-   - [Testability](#testability)
-   - [Debuggability](#debuggability)
-   - [Observability and Operability](#observability-and-operability)
-   - [Reliability](#reliability)
-   - [Code Size](#code-size)
-   - [Performance](#performance)
- - [Summary](#summary)
-
 ## What Does the Single Responsibility Principle Say?
 The Single Responsibility Principle may feel a bit vague at first. Let's try to deconstruct it and look at what does it actually mean.
 
@@ -226,7 +211,7 @@ So, it's even easier to test the variant with the `FraudDetection` class. Notice
 
 Pete Hodgson also explains how extracting observability like the alerting feature into a separate class (like `TransactionInstrumentation`) [enables clearer, more focused tests](https://martinfowler.com/articles/domain-oriented-observability.html#DomainProbesEnableCleanerMore-focusedTests).
 
-In contrast to methods and classes, **smaller services complicate the local setup for integration testing.** [Docker Compose](https://docs.docker.com/compose/) is a godsend, but it doesn't solve the problem fully.
+In contrast to methods and classes, **smaller (micro)services complicate the local setup for integration testing.** [Docker Compose](https://docs.docker.com/compose/) is a godsend, but it doesn't solve the problem fully.
 
 ### Debuggability
 When methods and classes are focused on a single concern, we can write equally focused tests for them. **If tests execute only a single production method or class, when they fail, we immediately know where the bug is, and thus we don't need to debug.** Sometimes, debugging may become a large portion of the development process: for example, Michael Malis [reports](https://malisper.me/how-to-improve-your-productivity-as-a-working-programmer/) that for him, it used to take as much as a quarter of the total time.
@@ -266,7 +251,7 @@ Therefore, **the more focused responsibilities of the components we make, the mo
 ### Performance
 This shouldn't be a concern normally, but for the sake of completeness, we should note that a large number of smaller classes may impact the application startup time. [An entry in the Spring blog](https://spring.io/blog/2018/12/12/how-fast-is-spring) has a nice chart illustrating this:
 
-![JVM startup vs. classes](https://docs.google.com/spreadsheets/d/e/2PACX-1vR8B4l5WkWf-9gZWmIYTkmBWM7YWf5bRg852OakrV0G2-vtfM_UkVNRC3cTVk1079HagnMVHYZnvbib/pubchart?oid=976086548&format=image)
+![JVM startup vs. classes](/assets/img/posts/single-responsibility-principle-unpacked/startup-vs-classes.png)
 
 Having lots of small methods taxes the application performance through method calls and returns. This is not a problem at hotspots thanks to [method inlining](https://www.baeldung.com/jvm-method-inlining), but in applications with a "flat" performance profile (no obvious hotspots) an excessive number of method calls might considerably affect the cumulative throughput.
 

@@ -58,7 +58,7 @@ leventov:
   github: "leventov"
   twitter: "leventov"
   rss: "https://engineeringideas.substack.com/feed"
-  url: https://engineeringideas.substack.com/?no_cover=true
+  url: "https://engineeringideas.substack.com/?no_cover=true"
   bio: "A software engineer with a special interest for software design. I publish weekly
         <a href='https://engineeringideas.substack.com/?no_cover=true'>Engineering Ideas</a> where I share articles
         and papers about software development, cloud architecture, data engineering, reliability, operations, and team

@@ -177,13 +177,11 @@ h1 a i, h2 a i, h3 a i, h4 a i, h5 a i, h6 a i {
   padding: 5px 0;
   border-radius: 6px;
   z-index: 1;
-  opacity: 0;
   transition: opacity 0.3s;
 }
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
-  opacity: 1;
 }
 
 .tooltip-right {

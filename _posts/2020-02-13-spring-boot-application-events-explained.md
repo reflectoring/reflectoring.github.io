@@ -88,8 +88,7 @@ There are two ways to define a listener. We can either use the `@EventListener` 
 
 ### Annotation-Driven
 
-Starting with Spring 4.1 it's now possible to simply annotate a method of a managed bean with `@EventListener` to automatically register an `ApplicationListener` matching the signature of the method. No additional configuration is necessary with annotation-driven configuration enabled.
-
+Starting with Spring 4.1 it's now possible to simply annotate a method of a managed bean with `@EventListener` to automatically register an `ApplicationListener` matching the signature of the method. No additional configuration is necessary with annotation-driven configuration enabled. If your method should listen to several events or if you want to define it with no parameter at all, the event types can also be specified on the annotation itself. Example: `@EventListener({ContextStartedEvent.class, ContextRefreshedEvent.class})`.
 For the methods annotated with `@EventListener` and defined as a non-void return type, Spring will send that result as a new event for us.
 
 ```java
@@ -165,7 +164,13 @@ public class AsyncListener {
 
 Spring allows us to bind an event listener to a phase of the current transaction. This allows events to be used with more flexibility when the outcome of the current transaction actually matters to the listener.
 
-The transaction module implements an `EventListenerFactory` that looks for the new `@TransactionalEventListener` annotation. So when you annotate your method with `@TransactionalEventListener` an extended event listener that is aware of the transaction is registered instead of the default. You can bind the listener to the following phases of transaction: `AFTER_COMMIT`(default), `AFTER_ROLLBACK`, `BEFORE_COMMIT` and `AFTER_COMPLETION`.
+The transaction module implements an `EventListenerFactory` that looks for the new `@TransactionalEventListener` annotation. So when you annotate your method with `@TransactionalEventListener` an extended event listener that is aware of the transaction is registered instead of the default.
+
+You can bind the listener to the following phases of transaction:  
+`AFTER_COMMIT` : Fire the event after the commit has completed successfully.  
+`AFTER_COMPLETION`: Fire the event after the transaction has completed.  
+`AFTER_ROLLBACK`: Fire the event if the transaction has rolled back.  
+`BEFORE_COMMIT`: Fire the event before transaction commit.
 
 ```java
 @Component
@@ -201,7 +206,7 @@ public class EventsDemoApplication {
 
 We can also register our listeners regardless of how the application is created by adding a `META-INF/spring.factories` file to our project and reference our listener(s) by using the `org.springframework.context.ApplicationListener` key:
 
-`org.springframework.context.ApplicationListener=com.reflectoring.eventdemo.MyListener`
+`org.springframework.context.ApplicationListener = com.reflectoring.eventdemo.SpringBuiltInEventsListener`
 
 Once we make sure that our event listener is registered properly, we can listen to all of Spring Boot's `SpringApplicationEvents`:
 
@@ -255,4 +260,4 @@ A `WebServerInitializedEvent` is sent after the WebServer is ready. `ServletWebS
 
 # Conclusion
 
-.
+Events are desgined for simple communication among Spring beans within the same application context. As of Spring 4.2, the infrastructure has been significantly improved and offers an annotation-based model as well as the ability to publish any arbitrary event. However, for more sophisticated enterprise needs, the [Spring Integration](https://spring.io/projects/spring-integration) project provides complete support for building lightweight, pattern-oriented, event-driven that build upon the well-known Spring programming model.

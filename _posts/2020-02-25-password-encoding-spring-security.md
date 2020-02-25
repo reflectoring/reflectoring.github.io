@@ -1,12 +1,12 @@
 ---
 title: Password Encoding with Spring Security
 categories: [spring-boot]
-date: 2020-02-18 05:00:00 +1100
-modified: 2020-02-18 05:00:00 +1100
+date: 2020-02-25 06:00:00 +1100
+modified: 2020-02-25 06:00:00 +1100
 author: artur
 excerpt: "When you have to store user passwords, you have to do securely. Let's have a look how to handle passwords with Spring Security in a Spring Boot application "
 image:
-  auto: 0060-password
+  auto: 0062-password
 ---
 
 Systems with user management require authentication. If we use the password-based authentication,

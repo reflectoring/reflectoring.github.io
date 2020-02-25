@@ -50,3 +50,9 @@ petromir:
   bio: "Software architect & developer with an out-of-the-box mindset and great zeal for creating
           simple and effective solutions. Focused on process automation as well as making the most of
           cutting-edge development tools"
+
+mukul:
+  name: "Mukul Sharma"
+  email: "mukul571995@gmail.com"
+  avatar: "/assets/img/authors/mukul.png"
+  github: "mukul-s"

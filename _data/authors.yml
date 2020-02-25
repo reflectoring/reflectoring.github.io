@@ -31,9 +31,22 @@ artur:
   email: "arthur.kuksin@gmail.com"
   avatar: "/assets/img/authors/artur.png"
   github: "arkuksin"
+  bio: "With many years of experience in software development I am always looking to learn new
+  things. I like coding and exchanging knowledge."
 
 david:
   name: "David Klassen"
   email: "daviddd.kl@gmail.com"
   avatar: "/assets/img/authors/david.png"
   github: "daklassen"
+
+petromir:
+  name: "Petromir Dzhunev"
+  email: "petromir@gmail.com"
+  avatar: "/assets/img/authors/petromir.png"
+  github: "petromir"
+  twitter: "dzhunev"
+  linkedin: "pdzhunev"
+  bio: "Software architect & developer with an out-of-the-box mindset and great zeal for creating
+          simple and effective solutions. Focused on process automation as well as making the most of
+          cutting-edge development tools"

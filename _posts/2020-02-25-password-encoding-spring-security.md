@@ -328,7 +328,7 @@ work factor for many encoding algorithms.
 To achieve this, we have to do two things. First, to implement `UserDetailsPasswordService` interface.
 ````java
 @Service
-@Transational
+@Transactional
 public class JdbcUserDetailPasswordService implements UserDetailsPasswordService {
 
     private final UserRepository userRepository;

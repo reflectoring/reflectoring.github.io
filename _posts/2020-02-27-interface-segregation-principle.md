@@ -6,7 +6,7 @@ modified: 2020-02-27 07:44:00 +1100
 author: mukul
 excerpt: "A practical guide to understand and apply the Interface Segregation Principle, one of the SOLID principles."
 image:
-  auto: 0018-cogs
+  auto: 0063-interface
 tags: ["Interface Segregation Principle", "ISP", "SOLID", "Principles of software development"]
 ---
 

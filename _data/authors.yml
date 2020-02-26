@@ -39,3 +39,9 @@ david:
   email: "daviddd.kl@gmail.com"
   avatar: "/assets/img/authors/david.png"
   github: "daklassen"
+  
+vasudha:
+  name: "Vasudha Venkatesan"
+  email: "vasudha.govi@gmail.com"
+  avatar: "/assets/img/authors/vasudha.jpg"
+  github: "vasudhavenkatesan"

@@ -1,14 +1,16 @@
 ---
-title: Why You should use Constructor Injection in Spring
-categories: [spring-boot]
-date: 2020-02-16 05:00:00 +1100
-modified: 2020-02-16 05:00:00 +1100
-author: default
-excerpt: 'Dependency injection is a one of the common approaches to implement loose coupling among the classes in an application. It ensures that classes are independent and the required dependencies are provided by an external framework.'
+title: Why You should use Constructor Injection in Spring
+categories: [spring-boot]
+date: 2020-02-17 05:00:00 +1100
+modified: 2020-02-25 05:00:00 +1100
+author: vasudha
+excerpt: 'Why You should use Constructor Injection in Spring'
 image:
-auto: 0058-motorway-junction
+  auto: 0058-motorway-junction
 ---
-Dependency injection is a one of the common approaches to implement loose coupling among the classes in an application. It ensures that classes are independent and the required dependencies are provided by an external framework.
+
+Dependency injection is one of the common approaches to implement loose coupling among the classes in an application. It ensures that classes are independent and the required dependencies are provided by an external framework.
+
 ### What is dependency injection?
 
 `Dependency` - Every object of a class requires some dependencies to perform its operation. These dependencies can be objects of other classes.
@@ -17,11 +19,11 @@ Dependency injection is a one of the common approaches to implement loose coupli
 
 Thus dependency injection helps in implementing inversion of control meaning, the responsibility of object creation and injecting the dependencies is given to the framework (i.e. Container in Spring) instead of the class creating the dependent objects by itself.
 
-We can implement this in three ways:
+We can achieve this in three ways:
 
- 1. Constructor based injection
- 2. Field based injection
- 3. Setter based injection
+1.  Constructor based injection
+2.  Field based injection
+3.  Setter based injection
 
 You can find the code of the example demonstrated in the below git URL.
 {% include github-project.html url="https://github.com/vasudhavenkatesan/DependencyInjectionExample" %}
@@ -34,56 +36,121 @@ In constructor based injection, the dependencies required for the class are prov
 @Component
 public class Cake {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(Cake.class);
-
-
 	private Flavor flavor;
 
-	public Cake(Flavor flavor) throws IllegalAccessException {
-		
-		//check if the required dependency is not null
-		if (flavor != null) {
+	Cake(Flavor flavor) {
+
+		// check if the required dependency is not null
+		if (Objects.requireNonNull(flavor) != null) {
 			this.flavor = flavor;
-			LOGGER.info("Flavor from Constructor Injection : " + flavor);
 		} else {
 			throw new IllegalArgumentException("Cake cannot be created with null flavor object");
 		}
 	}
+
+	public Flavor getFlavor() {
+		return flavor;
+	}
 	...
 }
 ```
 
-After Spring 4.3, **it is optional to specify `@Autowired` if the class has only one constructor defined**. However, if we have a class with multiple constructors, we need to explicitly mention `@Autowired` annotation to any one of the constructors for the container to create beans.
+After Spring 4.3, **it is optional to specify `@Autowired` if the class has only one constructor defined**.
 
-# Setter/Field based injection
+For example in `Cake` class, since we have only one constructor, we don't have to specify the `@Autowired` annotation. Consider the below example with multiple constructors.
 
-In setter-based injection, we can provide the required dependencies as field parameters to the class and values are set using the setter methods of the properties. We need to annotate the setter methods with `@Autowired`  annotation. Similarly, in field-based injection, Spring assigns the required dependencies directly to the fields on annotating with `@Autowired` annotation. 
-
-For example, here the `Cake` class requires an object of `Topping` and `Flavor` class. The `Flavor` object is provided as an argument in the setter method of that property and `Topping` object is provided as field value to the Cake class.
 ```java
 @Component
-public class Cake {
+public class Sandwich {
 
-	private Logger LOGGER = LoggerFactory.getLogger(Cake.class);
-	
-	private Flavor flavor;
-	
-	@Autowired
-	private Topping toppings;
-	
-	public Cake() {
-		LOGGER.info("Flavor from setter Injection : " + this.flavor);
+	Topping toppings;
+	Bread breadType;
+
+	Sandwich(Topping toppings) {
+		this.toppings = toppings;
 	}
-	
+
 	@Autowired
-	public void setFlavor(Flavor flavor) {
-		LOGGER.info("Initialising flavor object using setter injection");
-		this.flavor = flavor;
+	Sandwich(Topping toppings, Bread breadType) {
+		this.toppings = toppings;
+		this.breadType = breadType;
+	}
+	...
+}
+```
+
+If we have a class with multiple constructors, we need to explicitly mention `@Autowired` annotation to any one of the constructors for the container to create beans.
+
+# Setter based injection
+
+In setter-based injection, we can provide the required dependencies as field parameters to the class and values are set using the setter methods of the properties. We need to annotate the setter or getter methods with `@Autowired` annotation.
+
+For example, here the `Cake` class requires an object of `Topping` class. The `Topping` object is provided as an argument in the setter method of that property.
+
+```java
+@Component
+public class Cookie {
+
+	private Topping toppings;
+
+	@Autowired
+	public void setTopping(Topping toppings) {
+		this.toppings = toppings;
+	}
+
+	public Topping getTopping() {
+		return toppings;
 	}
 	...
 }
 
 ```
+
+# Field based Injection
+
+In field-based injection, Spring assigns the required dependencies directly to the fields on annotating with `@Autowired` annotation.
+In this example, Spring lets us set the `Topping` dependency as a field parameter to the `IcreCream` object.
+
+```java
+@Component
+public class IceCream {
+
+	@Autowired
+	Topping toppings;
+
+	public Topping getToppings() {
+		return toppings;
+	}
+
+	public void setToppings(Topping toppings) {
+		this.toppings = toppings;
+	}
+	...
+}
+```
+
+Suppose we inject a dependency with both setter and field injection, which method will Spring use to inject dependency?
+
+```java
+@Component
+public class Pizza {
+
+	@Autowired
+	Topping toppings;
+
+	public Topping getToppings() {
+		return toppings;
+	}
+
+	@Autowired
+	public void setToppings(Topping toppings) {
+		System.out.println("Using field injection");
+		this.toppings = toppings;
+	}
+}
+```
+
+In the above example, we have injected `Topping` dependency using both setter and field injection. In this case, Spring injects dependency using setter injection method.
 
 # Why should I use constructor injection?
 
@@ -94,30 +161,11 @@ Now that we have seen the different types of injection, let us go through some o
 Every class has a default constructor unless we explicitly create a constructor and its object is created by calling respective constructor. If we specify all the required dependencies in the constructor during instance creation, then we can be 100% sure that the class will never be instantiated without its dependencies injected.
 
 The **IoC container makes sure all the arguments provided in the constructor are available before bean creation**. This helps in preventing the infamous `NullPointerException`.
-```java
-@Component
-public class Cake {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(Cake.class);
+In setter injection, these dependencies are initialized using setter methods only after the constructor invocation.
+You may ask, why cant I initialize optional dependencies with null in the constructor, instead of setter injection.
 
-	private Flavor flavor;
-
-	public Cake(Flavor flavor) throws IllegalAccessException {
-		
-		//check if the required dependency is not null
-		if (flavor != null) {
-			this.flavor = flavor;
-			LOGGER.info("Flavor from Constructor Injection : " + flavor);
-		} else {
-			throw new IllegalArgumentException("Cake cannot be created with null flavor object");
-		}
-	}
-	
-	...
-}
-```
-
-In setter injection, these dependencies are initialized using setter methods only after the constructor invocation. Using setter injection, we can override the existing values of the object and provide different values. This kind of injection is preferable when we have optional dependencies.
+Using setter injection, we can override the existing values of the object and provide different values at different point of time. This kind of injection is preferable when we have optional dependencies.
 
 Constructor injection is extremely useful since we do not have to write separate business logic everywhere to check if the all the required dependencies are loaded thus simplifying code complexity.
 
@@ -125,40 +173,37 @@ Constructor injection is extremely useful since we do not have to write separate
 
 Constructor injection can help us identify if our bean is dependent many other classes. If our constructor has large number of arguments, then we can be sure that our class has too many responsibilities. It is not a sign of quality code implying it should be refactored to better address proper separation of concerns.
 
-Constructor injection can help us find out circular dependencies in the code. If it exists, Spring would throw `BeanCurrentlyInCreationException` . This can help the developer identify classes that have circular dependency.
-
-## Preventing NullPointerException
+## Preventing `NullPointerException`
 
 Constructor injection simplifies writing unit test cases for any spring application. Using `Mockito`, we can create complete mock objects with required dependencies.
 
-You may ask why can't I mock objects created with setter injection. **Mockito unlike Spring fails with a null pointer exception if it cannot inject any of the dependencies**.
+You may ask why can't I mock objects created with setter injection. **Mockito unlike Spring fails with a `NullPointerException` if it cannot inject any of the dependencies**.
 
-Let us consider an example test case for Cake class that uses setter injection. Here the test works fine. 
+Let us consider an example test case for Cake class that uses setter injection.
+
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = ExampleApplicationSI.class)
-public class TestCakeClassSetterInjection {
+public class TestCookieClassSetterInjection {
 
 	@Autowired
-	Cake cake;
+	Cookie cookie;
 
 	@Test
 	public void testSetterInjection() {
-		String testColor = cake.getFlavor().getColor();
-		Assert.assertEquals(testColor, " White ");
-		String toppingsName=cake.getToppings().getToppingName();
-		
-		//check if the dependency is not null
-		if(toppingsName!=null) {
-			Assert.assertEquals(toppingsName, "gems");
-		}
-		
-		...
+		String testColor = cookie.getTopping().getToppingName();
+		Assert.assertEquals(testColor, "White");
+	}
+	...
 }
-``` 
-In future if someone adds additional dependencies to this class, the unit test silently fails with a null pointer exception. It is very difficult to find the reason because the new dependencies is not within the visibility for Cake’s client classes.
+```
+
+Here since the Cookie class has null value for `Topping` , the test case fails with a `NullPointerException`. We need to explicitly initialize the Topping object to test.
+
+Similarly in future if someone adds additional dependencies to this class, the unit test silently fails with a `NullPointerException`. It is very difficult to find the reason because the new dependencies is not within the visibility for `Cookie`'s client classes.
 
 Let us consider the Cake class example created using constructor injection.
+
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = ExampleApplicationCI.class)
@@ -166,13 +211,12 @@ public class TestCakeClassConstructorInjection {
 
 	@Autowired
 	Cake cake;
-	
+
 	@Test
-	public void testConstructorInjection() {	
-		String testColor=cake.getFlavor().getColor();
-		Assert.assertEquals(testColor, " White ");
+	public void testConstructorInjection() {
+		String testColor = cake.getFlavor().getColor();
+		Assert.assertEquals(testColor, "White");
 	}
-	
 	...
 }
 ```
@@ -183,7 +227,8 @@ Now when we need a new dependency, we add it to the constructor. Thus, whenever 
 
 Constructor injection helps in creating immutable objects, because a constructor’s signature is the only possible way to create objects. Once we create a bean, we cannot alter its dependencies at any point of time. In setter injection, it is possible to inject the dependency as and when wherever it is required, thus leading to mutable objects which may not be thread safe in a multi-threaded environment.
 
-
 # Conclusion
 
-In general, Spring recommends to use constructor injection. Setter injection is preferable in case of optional dependencies. Contrarily, for mandatory dependencies, constructor injection is better.
+In general, Spring recommends to use constructor injection. As we have seen in the examples, setter injection is preferable in case of optional dependencies, i.e, Setter injection is useful when it is optional to provide values for the dependent properties during object creation as the object will be in valid state even without the dependent properties . Contrarily, we use constructor injection when the object cannot be created without the dependent properties, i.e, object is invalid without the mandatory dependencies.
+
+You can find the code examples [on GitHub](https://github.com/vasudhavenkatesan/DependencyInjectionExample)

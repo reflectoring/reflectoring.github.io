@@ -78,7 +78,7 @@ Method `writeStatementsInBackground()` itself has a control flow responsibility.
  
 In a distributed system, examples of services with a control or data flow responsibility could be a proxy, a load balancer, or a service transparently caching responses from or buffering requests to some other service.
 
-### How Small or Large a Should a Responsibility Be?
+### How Small or Large Should a Responsibility Be?
 I hope the examples above give some more grounded sense of what a responsibility of a method, class, module, or service could be. However, they still provide no actionable guidance on how finely we should chop responsibilities between the components of your system. For example:
 
  - Should conversion from XML to JSON be a responsibility of a single method (or a class), or should we split it between two methods? One translates XML into a tree, and another serializes a tree into JSON? Or should these be separate methods belonging to a single class?

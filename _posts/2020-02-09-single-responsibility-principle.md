@@ -226,10 +226,9 @@ When we still have to debug, we can accelerate the debugging loop by testing iso
 However, keep in mind that many bugs are due to one component incorrectly using another. [Mistakes happen exactly in the integration of real components](https://phauer.com/2019/focus-integration-tests-mock-based-tests/). So, **it's important to have *both* narrowly focused unit tests to quickly fix certain types of errors without lengthy debugging, and more integration-like tests to check that components use each other properly.**
 
 ### Observability and Operability
-**Having methods with single responsibilities also helps to quickly pinpoint performance problems because the results of profiling become more informative**. At the top of a profiler's output, we can see the methods that perform badly and will know directly what single responsibility they have.
+**Having methods with single responsibilities also helps to quickly pinpoint performance problems because the results of profiling become more informative**. At the top of a profiler's output, we can see the methods that perform badly and will know what exact responsibilities they have.
 
-When components (not only methods and classes, but also modules and distributed services) are connected with queues (either in-memory, in-process `Queue`s, or distributed message brokers such as Kafka), we can easily monitor the sizes of the backlogs of the queues in the pipeline. Matt Welsh, the engineer who proposed the [staged event-driven architecture](https://en.wikipedia.org/wiki/Staged_event-driven_architecture) (SEDA), regarded this observability of load and resource bottlenecks as [the most important contribution of SEDA](http://matt-welsh.blogspot.com/2010/07/retrospective-on-seda.html).
-When components (not only methods and classes, but also modules and distributed services) are connected with queues (either in-memory, in-process `Queue`s, or distributed message brokers such as Kafka), we can easily monitor the sizes of the backlogs of the queues in the pipeline. Matt Welsh, the engineer who proposed the [staged event-driven architecture](https://en.wikipedia.org/wiki/Staged_event-driven_architecture) (SEDA), regarded this observability of load and resource bottlenecks as [the most important contribution of SEDA](http://matt-welsh.blogspot.com/2010/07/retrospective-on-seda.html).
+When components (not only methods and classes, but also modules and distributed services) are connected with queues (either in-memory, in-process `Queue`s, or distributed message brokers such as Kafka), we can easily monitor the sizes of the backlogs in the pipeline. Matt Welsh, the engineer who proposed the [staged event-driven architecture](https://en.wikipedia.org/wiki/Staged_event-driven_architecture) (SEDA), regarded this observability of load and resource bottlenecks as [the most important contribution of SEDA](http://matt-welsh.blogspot.com/2010/07/retrospective-on-seda.html).
 
 Decoupled services could be scaled up and down independently in response to the changing load, without overuse of resources. Within an application, we can control the distribution of CPU resources between method, class, and module responsibilities by sizing the corresponding thread pools. `ThreadPoolExecutor` even supports dynamic reconfiguration in runtime via the [`setCorePoolSize()`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/ThreadPoolExecutor.html#setCorePoolSize%28int%29) method.
 
@@ -245,9 +244,9 @@ However, despite the advantages of finer-grained monitoring and scaling, **split
 ### Reliability
 Reliability is the first software quality in the list that we mostly hurt, not aid when we split smaller responsibilities between the components. 
 
-If engineered properly (an important caveat!), a microservice architecture can increase reliability: when one service is sick, others might still serve something for the users. However, the inherent [fallibility of distributed systems](https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing) hits harder: when there are more remote communications between services there are more ways how things could go wrong, including network partition or degradation.
+If engineered properly (an important caveat!), a microservice architecture can increase reliability: when one service is sick, others can still serve something for the users. However, the inherent [fallibility of distributed systems](https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing) hits harder: more remote communications between services mean more ways of how things could go wrong, including network partition or degradation.
 
-Discussing the pros and cons of microservices is not the main goal of this article, but there are plenty of good materials on this topic, the reliability aspect in particular: [1](https://www.martinfowler.com/articles/microservice-trade-offs.html), [2](https://dwmkerr.com/the-death-of-microservice-madness-in-2018/), [3](https://developer.ibm.com/technologies/microservices/articles/challenges-and-benefits-of-the-microservice-architectural-style-part-1/).
+Discussing the pros and the cons of microservices is not the main goal of this article, but there are plenty of good materials on this topic, the reliability aspect in particular: [1](https://www.martinfowler.com/articles/microservice-trade-offs.html), [2](https://dwmkerr.com/the-death-of-microservice-madness-in-2018/), [3](https://developer.ibm.com/technologies/microservices/articles/challenges-and-benefits-of-the-microservice-architectural-style-part-1/).
 
 ### Code Size
 Smaller responsibility of each component means that there are more components in total in the system.
@@ -263,7 +262,7 @@ This shouldn't be a concern normally, but for the sake of completeness, we shoul
 
 Having lots of small methods taxes the application performance through method calls and returns. This is not a problem at hotspots thanks to [method inlining](https://www.baeldung.com/jvm-method-inlining), but in applications with a "flat" performance profile (no obvious hotspots), an excessive number of method calls might considerably affect the cumulative throughput.
 
-On the level of services, **the size of services might significantly impact the efficiency of the distributed system due to the costs of RPC calls and message serialization.**
+On the higher level, **the size of services might significantly impact the efficiency of the distributed system due to the costs of RPC calls and message serialization.**
 
 ## Summary
 The Single Responsibility Principle applies to software components on all levels: methods, classes, modules, and distributed services.

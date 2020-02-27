@@ -164,7 +164,7 @@ The default value of the iteration number is 185000 and the hash width is 256.
 ### `SCryptPasswordEncoder`
 ```java
 int cpuCost = (int) Math.pow(2, 14); // factor to increase CPU costs
-int memoryCost = 8;  // factor to increases memory usage
+int memoryCost = 8;  // factor to increases memory usage, not the memory size
 int parallelization = 1; // currently not supported by Spring Security
 int keyLength = 32;  // key length in bytes
 int saltLength = 64;  // salt length in bytes
@@ -179,6 +179,7 @@ String encodedPassword = sCryptPasswordEncoder.encode(plainPassword);
 ```
 
 The `scrypt` algorithm can not only configure the CPU cost but also memory cost. It makes the attack very expensive.
+In this encoder the memory costs and CPU cost depends on each other and can not be tuned separately.
 For example with the parameter from the code above, the password encoding will require 16MB memory.  
 
 The output looks like this:

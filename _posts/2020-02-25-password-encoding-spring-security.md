@@ -247,6 +247,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
    .and()
    .httpBasic();
   }
+  // other methods omitted
+
 }
 ```
 This code creates rules that require the authentication for all endpoints except `/registration`
@@ -265,12 +267,12 @@ needs read-only access to user data:
 
 ```java
 @Service
-public class JdbcUserDetailsService implements UserDetailsService {
+public class DatabaseUserDetailsService implements UserDetailsService {
 
   private final UserRepository userRepository;
   private final UserDetailsMapper userDetailsMapper;
 
-  public JdbcUserDetailsService(
+  public DatabaseUserDetailsService(
       UserRepository userRepository, 
       UserDetailsMapper userDetailsMapper) {
     this.userRepository = userRepository;
@@ -295,10 +297,10 @@ because we store the data in the database:
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
-  private final JdbcUserDetailsService jdbcUserDetailsService;
+  private final DatabaseUserDetailsService databaseUserDetailsService;
   
-  public SecurityConfiguration(JdbcUserDetailsService jdbcUserDetailsService) {
-    this.jdbcUserDetailsService = jdbcUserDetailsService;
+  public SecurityConfiguration(DatabaseUserDetailsService databaseUserDetailsService) {
+    this.databaseUserDetailsService = databaseUserDetailsService;
   }
   
   @Autowired
@@ -310,7 +312,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     DaoAuthenticationProvider daoAuthenticationProvider = 
       new DaoAuthenticationProvider();
     daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-    daoAuthenticationProvider.setUserDetailsService(this.jdbcUserDetailsService);
+    daoAuthenticationProvider.setUserDetailsService(this.databaseUserDetailsService);
     return daoAuthenticationProvider;
   }
   
@@ -318,13 +320,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
+  
+  // other methods omitted
+
 }
 ```
 We created a `DaoAuthenticationProvider` and passed in a `BCryptPasswordEncoder`.
 That's all we need to do to enable password encoding and password matching.
 
 Now we have to make one step more to complete the configuration. We 
-set the `JdbcUserDetailsService` service to the `DaoAuthenticationProvider`. After that, `DaoAuthenticationProvider` can 
+set the `DatabaseUserDetailsService` service to the `DaoAuthenticationProvider`. After that, `DaoAuthenticationProvider` can 
 get the user data to execute the authentication. Spring Security takes care of the rest. 
 
 If a client sends a 
@@ -420,9 +425,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
     daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
     daoAuthenticationProvider.setUserDetailsPasswordService(this.jdbcUserDetailPasswordService);
-    daoAuthenticationProvider.setUserDetailsService(this.jdbcUserDetailsService);
+    daoAuthenticationProvider.setUserDetailsService(this.databaseUserDetailsService);
     return daoAuthenticationProvider;
   }
+  
+  // other methods omitted
 }
 ```
 That's it. Now, whenever a user starts the authentication, Spring Security compares the work factor in the encoded password
@@ -463,6 +470,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
+  
+  // other methods omitted
 }
 ```
 The simplest way is to let `PasswordEncoderFactories` generate the `DelegatingPasswordEncoder` for us. This factory generates a `DelegatingPasswordEncoder` that supports all encoders of Spring Security for matching.
@@ -494,6 +503,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(new SCryptPasswordEncoder());
     return delegatingPasswordEncoder;
   }
+  
+  // other methods omitted
 }
 ```
 
@@ -511,6 +522,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     encoders.put("SHA-1", new MessageDigestPasswordEncoder("SHA-1"));
     return new DelegatingPasswordEncoder(encodingId, encoders);
   }
+  
+  // other methods omitted
 }
 ```
 This code creates a password encoder that supports `SHA-1` and `scrypt` for matching and uses `scrypt` for encoding new passwords. Now we have users in the database with both password encodings `SHA-1` and `scrypt` and the application supports both.

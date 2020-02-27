@@ -208,7 +208,7 @@ Argon2 is the winner of [Password Hashing Competition](https://password-hashing.
 costs. Argon2 encoder saves all the parameters in the result string. If we want to use this password encoder,
 we'll have to import the BouncyCastle crypto library. 
 
-## Password Encoders in a Spring Boot Application
+## Setting Up a Password Encoder in Spring Boot
 To see how it works in a Spring Boot let's create an application with REST APIs and password based authentication
 supported by Spring Security. The passwords are stored in the relational database. 
 

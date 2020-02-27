@@ -122,7 +122,7 @@ that creates an instance with the default work factor. We can use other construc
 ```
 
 `BCryptPasswordEncoder` has the parameter `strength`. The default value in Spring Security is `10`.
-It is recommended to use a `SecureRandom` as salt, because it provides a cryptographically strong random number.
+It is recommended to use a `SecureRandom` as salt generator, because it provides a cryptographically strong random number.
 
 The output looks like this:
 ```
@@ -145,7 +145,9 @@ String encodedPassword = pbkdf2PasswordEncoder.encode(plainPassword);
 ```  
 
 The PBKDF2 algorithm was not designed for password encoding but the key derivation from a password.
-It runs the hash algorithm over the plain password many times. It generates a salt, too. We
+The key derivation is usually needed when we want want to encrypt some data with a password, but the
+password is not strong enough to be used as an encryption key.
+This encoder runs the hash algorithm over the plain password many times. It generates a salt, too. We
 can define how long the output can be and additionally we can use a secret called `pepper` to
 make the password encoding more secure.
 

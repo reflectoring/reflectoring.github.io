@@ -336,6 +336,7 @@ If a client sends a
 HTTP request with the basic authentication header, Spring Security will read this header, load data for the user, and matches the password using `BCryptPasswordEncoder`. If the password matches, the request will be passed
 through, if not, the server will respond with HTTP status 401.
 
+### Implementing User Registration 
 To add a user to the system, let's implement the API for registration.
 ```java
 @RestController

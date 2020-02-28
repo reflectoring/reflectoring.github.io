@@ -372,7 +372,8 @@ class RegistrationResource {
 As we defined in Spring Security rules, the access to `/registration` API is open for everybody. We use the `PasswordEncoder` that is defined in
 Spring Security configuration to encode the password. 
 
-In this example, the passwords are encoded with the `bcrypt` algorithm. 
+In this example, the passwords are encoded with the `bcrypt` algorithm, because we set the `PasswordEncoder`
+as the password encoder in the configuration.
 The code just saves the new user to the database. After that, the user is ready to authenticate.
 
 ## Upgrading The Work Factor

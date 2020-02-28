@@ -215,6 +215,7 @@ supported by Spring Security. The passwords are stored in the relational databas
 To keep it simple in this example
 we send the user credentials with every HTTP request. It means the application must start authentication whenever the client wants to access the API.
 
+### Configuring a Password Encoder
 First, we create an API we want to protect with Spring Security:
 ```java
 @RestController
@@ -280,8 +281,10 @@ public class DatabaseUserDetailsService implements UserDetailsService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    UserCredentials userCredentials = userRepository.findByUsername(username);
+  public UserDetails loadUserByUsername(String username) 
+                         throws UsernameNotFoundException {
+    UserCredentials userCredentials =
+                    userRepository.findByUsername(username);
     return userDetailsMapper.toUserDetails(userCredentials);
   }
 }
@@ -299,12 +302,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
   private final DatabaseUserDetailsService databaseUserDetailsService;
   
-  public SecurityConfiguration(DatabaseUserDetailsService databaseUserDetailsService) {
+  public SecurityConfiguration(
+              DatabaseUserDetailsService databaseUserDetailsService) {
     this.databaseUserDetailsService = databaseUserDetailsService;
   }
   
   @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+  public void configureGlobal(AuthenticationManagerBuilder auth) 
+                throws Exception {
     auth.authenticationProvider(daoAuthenticationProvider());
   }
   
@@ -345,7 +350,8 @@ class RegistrationResource {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
 
-  public UserResources(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+  public UserResources(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
   }
@@ -385,7 +391,8 @@ To achieve this, we have to do two things. First, we need to implement `UserDeta
 ```java
 @Service
 @Transactional
-public class DatabaseUserDetailPasswordService implements UserDetailsPasswordService {
+public class DatabaseUserDetailPasswordService 
+                implements UserDetailsPasswordService {
 
   private final UserRepository userRepository;
 
@@ -400,7 +407,8 @@ public class DatabaseUserDetailPasswordService implements UserDetailsPasswordSer
 
   @Override
   public UserDetails updatePassword(UserDetails user, String newPassword) {
-    UserCredentials userCredentials = userRepository.findByUsername(user.getUsername());
+    UserCredentials userCredentials =
+              userRepository.findByUsername(user.getUsername());
     userCredentials.setPassword(newPassword);
     return userDetailsMapper.toUserDetails(userCredentials);
   }
@@ -414,17 +422,21 @@ Second, we make this interface known to `AuthenticationProvider`:
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
-  private final DatabaseUserDetailPasswordService databaseUserDetailPasswordService;
+  private final DatabaseUserDetailPasswordService
+                               databaseUserDetailPasswordService;
   
-  public SecurityConfiguration(DatabaseUserDetailPasswordService databaseUserDetailPasswordService) {
-    this.databaseUserDetailPasswordService = databaseUserDetailPasswordService;
+  public SecurityConfiguration(
+      DatabaseUserDetailPasswordService databaseUserDetailPasswordService) {
+      this.databaseUserDetailPasswordService =
+                                       databaseUserDetailPasswordService;
   }
 
 
   public AuthenticationProvider daoAuthenticationProvider() {
     DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
     provider.setPasswordEncoder(passwordEncoder());
-    provider.setUserDetailsPasswordService(this.databaseUserDetailPasswordService);
+    provider.setUserDetailsPasswordService(
+                this.databaseUserDetailPasswordService);
     provider.setUserDetailsService(this.databaseUserDetailsService);
     return provider;
   }
@@ -506,8 +518,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Bean
   public PasswordEncoder passwordEncoder() {
     DelegatingPasswordEncoder delegatingPasswordEncoder = 
-        (DelegatingPasswordEncoder) PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(new SCryptPasswordEncoder());
+        (DelegatingPasswordEncoder) PasswordEncoderFactories
+                                  .createDelegatingPasswordEncoder();
+    delegatingPasswordEncoder
+      .setDefaultPasswordEncoderForMatches(new SCryptPasswordEncoder());
     return delegatingPasswordEncoder;
   }
   
@@ -550,11 +564,18 @@ to the server and override the old one in the database. This approach is transpa
 First, we have to set the `eraseCredentials` property to `false` in security configuration, because otherwise Spring Security removes the credentials from the memory as soon as possible.  
 
 ```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+  
   @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+  public void configureGlobal(AuthenticationManagerBuilder auth)
+                throws Exception {
     auth.authenticationProvider(daoAuthenticationProvider())
       .eraseCredentials(false);
   }
+  // other methods omitted
+}
 ```
 
 Now we can implement an `ApplicationListener` for the `AuthenticationSuccessEvent`:
@@ -563,7 +584,8 @@ Now we can implement an `ApplicationListener` for the `AuthenticationSuccessEven
 class PasswordMigration {
 
   @Bean
-  public ApplicationListener<AuthenticationSuccessEvent> authenticationSuccessListener(
+  public ApplicationListener<AuthenticationSuccessEvent> 
+                                      authenticationSuccessListener(
       PasswordEncoder encoder, 
       UserDetailsPasswordService userDetailsPasswordService) {
     return (AuthenticationSuccessEvent event) -> {
@@ -571,11 +593,13 @@ class PasswordMigration {
       User user = (User) authentication.getPrincipal();
       String encodedPassword = user.getPassword();
       if (encodedPassword.startsWith("{SHA-1}")) {
-        CharSequence clearTextPassword = (CharSequence) authentication.getCredentials();
+        CharSequence clearTextPassword = (CharSequence) authentication
+                                                        .getCredentials();
         String newPassword = encoder.encode(clearTextPassword);
         userDetailsPasswordService.updatePassword(user, newPassword);
       }
-      ((UsernamePasswordAuthenticationToken) authentication).eraseCredentials();
+      ((UsernamePasswordAuthenticationToken) authentication)
+                                                      .eraseCredentials();
     };
   }
 }
@@ -594,10 +618,16 @@ If the same application runs on different hardware for different customers, we c
 But we can calculate a good work factor when starting the application:
 
 ```java
- @Bean
+@Configuration
+@EnableWebSecurity
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+  @Bean
   public PasswordEncoder passwordEncoder() {
-  return new BCryptPasswordEncoder(bcCryptWorkFactorService.calculateStrength());
+    return new BCryptPasswordEncoder(
+                bcCryptWorkFactorService.calculateStrength());
   }
+  // other methods omitted
+}
 ```  
 
 The method `calculateStrength()` returns the work factor that is needed to encode the password so that it takes about 1

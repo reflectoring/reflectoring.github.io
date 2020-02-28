@@ -9,7 +9,7 @@ image:
   auto: 0063-password
 ---
 
-Systems with user management require authentication. If we password-based authentication,
+Systems with user management require authentication. If we use password-based authentication,
 we have to handle users' passwords in our system. This article shows how to encode and store passwords securely
 with Spring Security.
 
@@ -235,6 +235,7 @@ Our goal is to provide access to the resource `/cars` for authenticated users on
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+  
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {
   httpSecurity
@@ -460,7 +461,7 @@ of strength 10
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
-@Bean
+  @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder(10);
   }
@@ -486,6 +487,7 @@ To encode and match passwords using different algorithms in the same application
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+  
   @Bean
   public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -516,6 +518,7 @@ We can set the default password encoder after creating `DelegatingPasswordEncode
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+  
   @Bean
   public PasswordEncoder passwordEncoder() {
     DelegatingPasswordEncoder delegatingPasswordEncoder = 
@@ -536,6 +539,7 @@ We can also take full control of which encoders should be supported if we create
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+  
   @Bean
   public PasswordEncoder passwordEncoder() {
     String encodingId = "scrypt";

@@ -442,11 +442,18 @@ automatically.**
 
 For example, if passwords are currently encoded with `BCryptPasswordEncoder` of strength 5, we can just add a password encoder
 of strength 10
+
 ```java
-  @Bean
+@Configuration
+@EnableWebSecurity
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+  
+@Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder(10);
   }
+  // other methods omitted
+}
 ```
 
 After that, **with each login, passwords are migrated from strength 5 to 10 automatically**.

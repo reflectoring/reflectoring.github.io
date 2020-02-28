@@ -309,11 +309,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
   
   public AuthenticationProvider daoAuthenticationProvider() {
-    DaoAuthenticationProvider daoAuthenticationProvider = 
+    DaoAuthenticationProvider provider = 
       new DaoAuthenticationProvider();
-    daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-    daoAuthenticationProvider.setUserDetailsService(this.databaseUserDetailsService);
-    return daoAuthenticationProvider;
+    provider.setPasswordEncoder(passwordEncoder());
+    provider.setUserDetailsService(this.databaseUserDetailsService);
+    return provider;
   }
   
   @Bean
@@ -422,11 +422,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
   public AuthenticationProvider daoAuthenticationProvider() {
-    DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-    daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-    daoAuthenticationProvider.setUserDetailsPasswordService(this.databaseUserDetailPasswordService);
-    daoAuthenticationProvider.setUserDetailsService(this.databaseUserDetailsService);
-    return daoAuthenticationProvider;
+    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+    provider.setPasswordEncoder(passwordEncoder());
+    provider.setUserDetailsPasswordService(this.databaseUserDetailPasswordService);
+    provider.setUserDetailsService(this.databaseUserDetailsService);
+    return provider;
   }
   
   // other methods omitted

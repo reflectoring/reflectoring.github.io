@@ -218,7 +218,7 @@ we send the user credentials with every HTTP request. It means the application m
 First, we create an API we want to protect with Spring Security:
 ```java
 @RestController
-public class CarResources {
+class CarResources {
 
   @GetMapping("/cars")
   public Set<Car> cars() {
@@ -340,8 +340,7 @@ through, if not, the server will respond with HTTP status 401.
 To add a user to the system, let's implement the API for registration.
 ```java
 @RestController
-@Transactional
-public class UserResources {
+class RegistrationResource {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
@@ -386,13 +385,13 @@ To achieve this, we have to do two things. First, we need to implement `UserDeta
 ```java
 @Service
 @Transactional
-public class JdbcUserDetailPasswordService implements UserDetailsPasswordService {
+public class DatabaseUserDetailPasswordService implements UserDetailsPasswordService {
 
   private final UserRepository userRepository;
 
   private final UserDetailsMapper userDetailsMapper;
 
-  public JdbcUserDetailPasswordService(
+  public DatabaseUserDetailPasswordService(
       UserRepository userRepository, 
       UserDetailsMapper userDetailsMapper) {
     this.userRepository = userRepository;
@@ -415,17 +414,17 @@ Second, we make this interface known to `AuthenticationProvider`:
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
-  private final JdbcUserDetailPasswordService jdbcUserDetailPasswordService;
+  private final DatabaseUserDetailPasswordService databaseUserDetailPasswordService;
   
-  public SecurityConfiguration(JdbcUserDetailPasswordService jdbcUserDetailPasswordService) {
-    this.jdbcUserDetailPasswordService = jdbcUserDetailPasswordService;
+  public SecurityConfiguration(DatabaseUserDetailPasswordService databaseUserDetailPasswordService) {
+    this.databaseUserDetailPasswordService = databaseUserDetailPasswordService;
   }
 
 
   public AuthenticationProvider daoAuthenticationProvider() {
     DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
     daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-    daoAuthenticationProvider.setUserDetailsPasswordService(this.jdbcUserDetailPasswordService);
+    daoAuthenticationProvider.setUserDetailsPasswordService(this.databaseUserDetailPasswordService);
     daoAuthenticationProvider.setUserDetailsService(this.databaseUserDetailsService);
     return daoAuthenticationProvider;
   }
@@ -437,7 +436,7 @@ That's it. Now, whenever a user starts the authentication, Spring Security compa
 of the user with the current work factor of `PasswordEncoder`. 
 
 **If the current work factor is stronger, the authentication
-provider will encode the password of the user with the current password encoder and update it using `JdbcUserDetailPasswordService`
+provider will encode the password of the user with the current password encoder and update it using `DatabaseUserDetailPasswordService`
 automatically.**
 
 For example, if passwords are currently encoded with `BCryptPasswordEncoder` of strength 5, we can just add a password encoder

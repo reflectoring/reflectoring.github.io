@@ -560,7 +560,7 @@ First, we have to set the `eraseCredentials` property to `false` in security con
 Now we can implement an `ApplicationListener` for the `AuthenticationSuccessEvent`:
 ```java
 @Component
-public class PasswordMigration {
+class PasswordMigration {
 
   @Bean
   public ApplicationListener<AuthenticationSuccessEvent> authenticationSuccessListener(

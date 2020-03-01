@@ -306,12 +306,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
   // constructor ...
   
-  @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) 
-                throws Exception {
-    auth.authenticationProvider(daoAuthenticationProvider());
-  }
-  
+  @Bean
   public AuthenticationProvider daoAuthenticationProvider() {
     DaoAuthenticationProvider provider = 
       new DaoAuthenticationProvider();
@@ -416,7 +411,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private final DatabaseUserDetailPasswordService userDetailsService;
   
   // constructor ...
-
+  @Bean
   public AuthenticationProvider daoAuthenticationProvider() {
     DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
     provider.setPasswordEncoder(passwordEncoder());
@@ -547,60 +542,18 @@ If the passwords in the database are encoded by an old, easily attackable, algor
 migrate the passwords to another encoding. To migrate a password to another encoding we have to encode the plain text
 password. 
 
-Of course, we don't have the plain password in the database and we can't compute it without huge effort. Also, we don't want to force users to migrate their passwords. **But we can implement a
+Of course, we don't have the plain password in the database and we can't compute it without huge effort. Also, we don't want to force users to migrate their passwords. **But we can start a
 slow gradual migration.** 
 
-Whenever the user authenticates we encode the plain password that the user sends
-to the server and override the old one in the database. This approach is transparent to the users.
-
-First, we have to set the `eraseCredentials` property to `false` in security configuration, because otherwise, Spring Security removes the credentials from the memory as soon as possible.  
-
-```java
-@Configuration
-@EnableWebSecurity
-class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-  
-  @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth)
-                throws Exception {
-    auth.authenticationProvider(daoAuthenticationProvider())
-      .eraseCredentials(false);
-  }
-
-  // ...
-}
-```
-
-Now we can implement an `ApplicationListener` for the `AuthenticationSuccessEvent`:
-```java
-@Component
-class PasswordMigration {
-
-  @Bean
-  public ApplicationListener<AuthenticationSuccessEvent> authenticationSuccessListener(
-      PasswordEncoder encoder, 
-      UserDetailsPasswordService userDetailsPasswordService) {
-
-    return (AuthenticationSuccessEvent event) -> {
-      Authentication authentication = event.getAuthentication();
-      User user = (User) authentication.getPrincipal();
-      String encodedPassword = user.getPassword();
-      if (encodedPassword.startsWith("{SHA-1}")) {
-        CharSequence clearTextPassword = (CharSequence) authentication
-            .getCredentials();
-        String newPassword = encoder.encode(clearTextPassword);
-        userDetailsPasswordService.updatePassword(user, newPassword);
-      }
-
-      ((UsernamePasswordAuthenticationToken) authentication).eraseCredentials();
-    };
-  }
-}
-```
-
-This method is called whenever the authentication was successful. For the password update we use the 
-`UserDetailsPasswordService` we implemented before. Note that at the end of the code we erase the credentials
-of the user from memory.
+Luckily, we don't need to implement this logic on our own. **Spring Security can migrate passwords to the default password encoding.**
+The `DelegatingPasswordEncoder` compares the encoding algorithm
+after every successful authentication. If the encoding algorithm of the password is different from the current password encoder,
+the `DaoAuthenticationProvider` will update the encoded password with the current password encoder and override it in the
+database using `DatabaseUserDetailPasswordService`.
+ 
+If the password encoder, that we use now, gets old and insecure in a couple of years,
+we can just put another, more secure password encoder as default password encoder. After that, all passwords will be upgraded
+to new encoding gradually.
 
 ### Calculating the Optimal Work Factor
 How to choose the suitable work factor for the password encoder? **Spring Security recommends tuning the

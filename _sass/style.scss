@@ -83,7 +83,7 @@ a:hover, a:focus {
   outline: none;
 }
 
-.text a, .below-content-container p a {
+.text a, .below-content-container p a, .media-body p a {
   font-weight: normal;
   color: $link-color;
 }

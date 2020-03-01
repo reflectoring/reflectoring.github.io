@@ -6,7 +6,7 @@ modified: 2020-02-15 05:00:00 +1100
 author: default
 excerpt: "Always wanted to get started on AWS? Then let's create a Docker image and deploy it to the AWS cloud! All you need is an AWS account and about 15 minutes of time."
 image:
-  auto: 0059-cloud
+  auto: 0061-cloud
 ---
 
 Amazon Web Services is a beast. It offers so many different cloud services that my natural reaction was to be intimidated. But not for long! I intend to tame that beast one blog post at a time!

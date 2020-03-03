@@ -1,8 +1,8 @@
 ---
 title: Handling Passwords with Spring Boot and Spring Security
 categories: [spring-boot]
-date: 2020-02-25 06:00:00 +1100
-modified: 2020-02-25 06:00:00 +1100
+date: 2020-03-04 06:00:00 +1100
+modified: 2020-03-04 06:00:00 +1100
 author: artur
 excerpt: "When we store user passwords, we should do it securely. Let's have a look how to handle passwords with Spring Security in a Spring Boot application."
 image:
@@ -546,14 +546,13 @@ Of course, we don't have the plain password in the database and we can't compute
 slow gradual migration.** 
 
 Luckily, we don't need to implement this logic on our own. **Spring Security can migrate passwords to the default password encoding.**
-The `DelegatingPasswordEncoder` compares the encoding algorithm
+`DelegatingPasswordEncoder` compares the encoding algorithm
 after every successful authentication. If the encoding algorithm of the password is different from the current password encoder,
 the `DaoAuthenticationProvider` will update the encoded password with the current password encoder and override it in the
 database using `DatabaseUserDetailPasswordService`.
  
-If the password encoder, that we use now, gets old and insecure in a couple of years,
-we can just put another, more secure password encoder as default password encoder. After that, all passwords will be upgraded
-to new encoding gradually.
+If the password encoder we're currently using gets old and insecure in a couple of years,
+we can just set another, more secure password encoder as the default encoder. After that, **Spring Security will gradually migrate all passwords to the new encoding automatically**.
 
 ### Calculating the Optimal Work Factor
 How to choose the suitable work factor for the password encoder? **Spring Security recommends tuning the

@@ -6,7 +6,7 @@ modified: 2020-03-04 06:00:00 +1100
 author: artur
 excerpt: "When we store user passwords, we should do it securely. Let's have a look how to handle passwords with Spring Security in a Spring Boot application."
 image:
-  auto: 0063-password
+  auto: 0064-password
 ---
 
 Systems with user management require authentication. If we use password-based authentication,

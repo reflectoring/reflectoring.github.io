@@ -14,19 +14,17 @@ Spring MVC provides a very convenient programming model for creating web control
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/argumentresolver" %}
 
-## Why Would I Want Custom Method Arguments?
-
-We can take advantage of this programming model to support our own types in controller method signatures. 
+## Why Would I Want Custom Arguments in My Web Controllers?
 
 Let's say we're building an application managing Git repositories similar to GitHub.
 
-To identify a certain `Repository` entity, we use a `RepositoryId` value object instead of a simple `Long` value. This way, we cannot accidentally confuse a repository ID with a user ID, for example.
+To identify a certain `GitRepository` entity, we use a `GitRepositoryId` value object instead of a simple `Long` value. This way, we cannot accidentally confuse a repository ID with a user ID, for example.
 
-Now, **we'd like to use a `RepositoryId` instead of a `Long` in the method signatures of our web controllers** so we don't have to do that conversion ourselves.
+Now, **we'd like to use a `GitRepositoryId` instead of a `Long` in the method signatures of our web controllers** so we don't have to do that conversion ourselves.
 
 Another use case is when **we want to extract some context object from the URL path for all our controllers**. For example, think of the repository name on GitHub: every URL starts with a repository name. 
 
-So, each time we have a repository name in a URL, we'd like to have Spring automatically convert that repository name to a full-blown `Repository` entity that we can then use for further processing.   
+So, each time we have a repository name in a URL, we'd like to have Spring automatically convert that repository name to a full-blown `GitRepository` entity and pass it into our web controller for further processing.   
 
 In the following sections, we're looking at a solution for each of these use cases.
 
@@ -36,27 +34,27 @@ Let's start with the simple one.
 
 ### Using a Custom Value Object in a Controller Method Signature
 
-We want Spring to automatically convert a path variable into a `RepositoryId` object:
+We want Spring to automatically convert a path variable into a `GitRepositoryId` object:
 
 ```java
 @RestController
-class RepositoryController {
+class GitRepositoryController {
 
-  @GetMapping("/repositories/{repositoryId}")
-  String getSomething(@PathVariable("repositoryId") RepositoryId repositoryId) {
+  @GetMapping("/repositories/{repoId}")
+  String getSomething(@PathVariable("repoId") GitRepositoryId repositoryId) {
     // ... load and return repository
   }
 
 }
 ```
 
-We're binding the `repositoryId` method parameter to the `{repositoryId}` path variable.
+We're binding the `repositoryId` method parameter to the `{repositoryId}` path variable. Spring will now try to create a `GitRepositoryId` object from the String value in the path.
 
-Our `RepositoryId` is a simple value object:
+Our `GitRepositoryId` is a simple value object:
 
 ```java
 @Value
-class RepositoryId {
+class GitRepositoryId {
   private final long value;
 }
 ```
@@ -65,17 +63,17 @@ We use the Lombok annotation `@Value` so we don't have to create constructors an
 
 ### Creating a Test
 
-Let's practice Test-Driven Development and create a test before building the actual solution:
+Let's create a test and see if it passes:
 
 ```java
-@WebMvcTest(controllers = RepositoryController.class)
-class RepositoryIdConverterTest {
+@WebMvcTest(controllers = GitRepositoryController.class)
+class GitRepositoryIdConverterTest {
 
   @Autowired
   private MockMvc mockMvc;
 
   @Test
-  void resolvesRepositoryId() throws Exception {
+  void resolvesGitRepositoryId() throws Exception {
     mockMvc.perform(get("/repositories/42"))
         .andExpect(status().isOk());
   }
@@ -88,9 +86,11 @@ This test performs a `GET` request to the endpoint `/repositories/42` and checks
 By running the test before having the solution in place, we can make sure that we actually have a problem to solve. It turns out, we do, because running the test will result in an error like this:
 
 ```
-Failed to convert value of type 'java.lang.String' to required type '...RepositoryId';
+Failed to convert value of type 'java.lang.String' 
+  to required type '...GitRepositoryId';
   nested exception is java.lang.IllegalStateException: 
-  Cannot convert value of type 'java.lang.String' to required type '...RepositoryId': 
+  Cannot convert value of type 'java.lang.String' 
+  to required type '...GitRepositoryId': 
   no matching editors or conversion strategy found
 ```  
 
@@ -100,18 +100,18 @@ Fixing this is rather easy. All we need to do is to implement a custom `Converte
 
 ```java
 @Component
-class RepositoryIdConverter implements Converter<String, RepositoryId> {
+class GitRepositoryIdConverter implements Converter<String, GitRepositoryId> {
 
   @Override
-  public RepositoryId convert(String source) {
-    return new RepositoryId(Long.parseLong(source));
+  public GitRepositoryId convert(String source) {
+    return new GitRepositoryId(Long.parseLong(source));
   }
 }
 ```
 
-Since all input from HTTP requests is considered a `String`, we need to build a `Converter` that converts a `String` value to a `RepositoryId`.
+Since all input from HTTP requests is considered a `String`, we need to build a `Converter` that converts a `String` value to a `GitRepositoryId`.
 
-By adding the `@Component` annotation, we make this converter known to Spring. Spring will then automatically apply this converter to all controller method arguments with of type `RepositoryId`. 
+By adding the `@Component` annotation, we make this converter known to Spring. Spring will then automatically apply this converter to all controller method arguments of type `GitRepositoryId`. 
 
 If we run the test now, it's green.
 
@@ -134,11 +134,11 @@ Let's start with how we expect the controller code to look:
 ```java
 @RestController
 @RequestMapping(path = "/{repositorySlug}")
-class RepositoryController {
+class GitRepositoryController {
 
-  @GetMapping("/listContributors")
-  String listContributors(Repository repository) {
-    // list the contributors of the Repository ...
+  @GetMapping("/contributors")
+  String listContributors(GitRepository repository) {
+    // list the contributors of the GitRepository ...
   }
 
   // more controller methods ...
@@ -148,35 +148,35 @@ class RepositoryController {
 
 In the class-level `@RequestMapping` annotation, we define that all requests start with a `{repositorySlug}` variable. 
 
-In the `listContributors` method, we require a `Repository` object as argument. 
+The `listContributors()` method will be called when someone hits the path `/{repositorySlug}/contributors/`. The method requires a `GitRepository` object as argument, so that it knows which git repository to work with. 
 
 We now want to create some code that will be applied to ALL controller methods and
 
 * checks the database if a repository with the given `{repositorySlug}` exists
-* if the repository doesn't exist, return a HTTP status code 404 
-* if the repository exists, hydrate a `Repository` object with the repositories data and pass that into the controller method.    
+* if the repository doesn't exist, returns a HTTP status code 404 
+* if the repository exists, hydrates a `GitRepository` object with the repository data and passes that into the controller method.    
 
 ### Creating a Test
 
 Again, let's start with a test to define our requirements:
 
 ```java
-@WebMvcTest(controllers = RepositoryController.class)
-class RepositoryArgumentResolverTest {
+@WebMvcTest(controllers = GitRepositoryController.class)
+class GitRepositoryArgumentResolverTest {
 
   @Autowired
   private MockMvc mockMvc;
 
   @MockBean
-  private RepositoryFinder repositoryFinder;
+  private GitRepositoryFinder repositoryFinder;
 
   @Test
   void resolvesSiteSuccessfully() throws Exception {
 
     given(repositoryFinder.findBySlug("my-repo"))
-        .willReturn(Optional.of(new Repository(1L, "my-repo")));
+        .willReturn(Optional.of(new GitRepository(1L, "my-repo")));
 
-    mockMvc.perform(get("/my-repo/listContributors"))
+    mockMvc.perform(get("/my-repo/contributors"))
         .andExpect(status().isOk());
   }
 
@@ -186,7 +186,7 @@ class RepositoryArgumentResolverTest {
     given(repositoryFinder.findBySlug("unknownSlug"))
         .willReturn(Optional.empty());
 
-    mockMvc.perform(get("/unknownSlug/listContributors"))
+    mockMvc.perform(get("/unknownSlug/contributors"))
         .andExpect(status().isNotFound());
   }
 
@@ -195,18 +195,17 @@ class RepositoryArgumentResolverTest {
 
 We have two test cases:
 
-The first checks the happy path. If the `RepositoryFinder` finds a repository with the given slug, we expect the HTTP status code to be 200 (OK).
+The first checks the happy path. If the `GitRepositoryFinder` finds a repository with the given slug, we expect the HTTP status code to be 200 (OK).
 
-The second test checks the error path. If the `RepositoryFinder` doen't find a repository with the given slug, we expect the HTTP status code to be 404 (NOT FOUND).
+The second test checks the error path. If the `GitRepositoryFinder` doen't find a repository with the given slug, we expect the HTTP status code to be 404 (NOT FOUND).
 
 If we run the test without doing anything, we'll get an error like this:
 
 ```
-Caused by: java.lang.AssertionError: 
-Expecting actual not to be null
+Caused by: java.lang.AssertionError: Expecting actual not to be null
 ```
 
-This means that the `Repository` object passed into the controller methods is null. 
+This means that the `GitRepository` object passed into the controller methods is `null`. 
 
 ### Creating a `HandlerMethodArgumentResolver`
 
@@ -214,13 +213,13 @@ Let's fix that. We do this by implementing a custom `HandlerMethodArgumentResolv
 
 ```java
 @RequiredArgsConstructor
-class RepositoryArgumentResolver implements HandlerMethodArgumentResolver {
+class GitRepositoryArgumentResolver implements HandlerMethodArgumentResolver {
 
-  private final RepositoryFinder repositoryFinder;
+  private final GitRepositoryFinder repositoryFinder;
 
   @Override
   public boolean supportsParameter(MethodParameter parameter) {
-    return parameter.getParameter().getType() == Repository.class;
+    return parameter.getParameter().getType() == GitRepository.class;
   }
 
   @Override
@@ -230,13 +229,15 @@ class RepositoryArgumentResolver implements HandlerMethodArgumentResolver {
       NativeWebRequest webRequest,
       WebDataBinderFactory binderFactory) {
 
-    String requestPath = ((ServletWebRequest) webRequest).getRequest().getPathInfo();
+    String requestPath = ((ServletWebRequest) webRequest)
+      .getRequest()
+      .getPathInfo();
 
     String slug = requestPath
         .substring(0, requestPath.indexOf("/", 1))
         .replaceAll("^/", "");
     
-    Optional<Repository> repository = repositoryFinder.findBySlug(slug);
+    Optional<GitRepository> repository = repositoryFinder.findBySlug(slug);
 
     if (repository.isEmpty()) {
       throw new NotFoundException();
@@ -247,32 +248,33 @@ class RepositoryArgumentResolver implements HandlerMethodArgumentResolver {
 }
 ```
 
-In `resolveArgument()`, we get the first segment of the request path, which should contain our repository slug.
+In `resolveArgument()`, we extract the first segment of the request path, which should contain our repository slug.
 
-Then, we feed this slug into `RepositoryFinder` to load the repository from the database.
+Then, we feed this slug into `GitRepositoryFinder` to load the repository from the database.
 
-If `RepositoryFinder` doesn't find a repository with that slug, we throw a custom `NotFoundException`, otherwise, we return the `Repository` object we found in the database. 
+If `GitRepositoryFinder` doesn't find a repository with that slug, we throw a custom `NotFoundException`. Otherwise, we return the `GitRepository` object we found in the database. 
 
 ### Register the `HandlerMethodArgumentResolver`
 
-Now, we have to make our `RepositoryArgumentResolver` known to Spring Boot:
+Now, we have to make our `GitRepositoryArgumentResolver` known to Spring Boot:
 
 ```java
 @Component
 @RequiredArgsConstructor
-class RepositoryArgumentResolverConfiguration implements WebMvcConfigurer {
+class GitRepositoryArgumentResolverConfiguration implements WebMvcConfigurer {
 
-  private final RepositoryFinder repositoryFinder;
+  private final GitRepositoryFinder repositoryFinder;
 
   @Override
-  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-    resolvers.add(new RepositoryArgumentResolver(repositoryFinder));
+  public void addArgumentResolvers(
+      List<HandlerMethodArgumentResolver> resolvers) {
+    resolvers.add(new GitRepositoryArgumentResolver(repositoryFinder));
   }
 
 }
 ```
 
-We implement the `WebMvcConfigurer` interface and add our `RepositoryArgumentResolver` to the list of resolvers. Don't forget to make this configurer known to Spring Boot by adding the `@Component` annotation.
+We implement the `WebMvcConfigurer` interface and add our `GitRepositoryArgumentResolver` to the list of resolvers. Don't forget to make this configurer known to Spring Boot by adding the `@Component` annotation.
 
 ### Mapping `NotFoundException` to HTTP Status 404
 

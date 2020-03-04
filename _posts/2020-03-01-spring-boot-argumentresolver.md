@@ -10,7 +10,7 @@ image:
 tags: ["Spring MVC"]
 ---
 
-Spring MVC provides a very convenient programming model for creating web controllers. We declare a method signature and the method arguments will be resolved auomatically by Spring. If it doesn't work for some reason, Spring will automatically return a proper HTTP error code. 
+Spring MVC provides a very convenient programming model for creating web controllers. We declare a method signature and the method arguments will be resolved automatically by Spring. We can make it even more convenient by letting Spring pass custom objects from our domain into controller methods so we don't have to map them each time.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/argumentresolver" %}
 
@@ -293,6 +293,10 @@ class ErrorHandler {
 The `@ControllerAdvice` annotation will register the `ErrorHandler` class to be applied to all web controllers. 
 
 In `handleHttpStatusCodeException()` we return a `ResponseEntity` with HTTP status code 404 in case of a `NotFoundException`.
+
+## What Arguments Can We Pass into Web Controller Methods by Default?
+
+There's a whole bunch of method arguments that Spring supports by default so that we don't have to add any custom argument resolvers. The complete list is available in the [docs](https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-methods).
 
 ## Conclusion
 

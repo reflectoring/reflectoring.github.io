@@ -1,8 +1,8 @@
 ---
 title: Custom Web Controller Arguments with Spring MVC and Spring Boot
 categories: [spring-boot]
-date: 2020-02-27 06:00:00 +1100
-modified: 2020-02-27 07:44:00 +1100
+date: 2020-03-06 06:00:00 +1100
+modified: 2020-03-06 06:00:00 +1100
 author: default
 excerpt: "Spring MVC provides a convenient programming model for creating web controllers. We can make it even more convenient by letting Spring pass custom objects from our domain into controller methods so we don't have to map them each time."
 image:

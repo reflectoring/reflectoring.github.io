@@ -6,7 +6,7 @@ modified: 2020-03-06 06:00:00 +1100
 author: default
 excerpt: "Spring MVC provides a convenient programming model for creating web controllers. We can make it even more convenient by letting Spring pass custom objects from our domain into controller methods so we don't have to map them each time."
 image:
-  auto: 0064-java
+  auto: 0065-java
 tags: ["Spring MVC"]
 ---
 

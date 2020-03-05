@@ -1,8 +1,8 @@
 ---
 title: Everything You Need to Know About the Interface Segregation Principle
 categories: [craft]
-date: 2020-02-27 06:00:00 +1100
-modified: 2020-02-27 07:44:00 +1100
+date: 2020-03-03 06:00:00 +1100
+modified: 2020-03-03 07:44:00 +1100
 author: mukul
 excerpt: "A practical guide to understand and apply the Interface Segregation Principle, one of the SOLID principles."
 image:

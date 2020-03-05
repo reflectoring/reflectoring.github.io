@@ -148,12 +148,12 @@ class GitRepositoryController {
 
 In the class-level `@RequestMapping` annotation, we define that all requests start with a `{repositorySlug}` variable. 
 
-The `listContributors()` method will be called when someone hits the path `/{repositorySlug}/contributors/`. The method requires a `GitRepository` object as argument, so that it knows which git repository to work with. 
+The `listContributors()` method will be called when someone hits the path `/{repositorySlug}/contributors/`. The method requires a `GitRepository` object as an argument so that it knows which git repository to work with. 
 
 We now want to create some code that will be applied to ALL controller methods and
 
 * checks the database if a repository with the given `{repositorySlug}` exists
-* if the repository doesn't exist, returns a HTTP status code 404 
+* if the repository doesn't exist, returns HTTP status code 404 
 * if the repository exists, hydrates a `GitRepository` object with the repository data and passes that into the controller method.    
 
 ### Creating a Test
@@ -197,7 +197,7 @@ We have two test cases:
 
 The first checks the happy path. If the `GitRepositoryFinder` finds a repository with the given slug, we expect the HTTP status code to be 200 (OK).
 
-The second test checks the error path. If the `GitRepositoryFinder` doen't find a repository with the given slug, we expect the HTTP status code to be 404 (NOT FOUND).
+The second test checks the error path. If the `GitRepositoryFinder` doesn't find a repository with the given slug, we expect the HTTP status code to be 404 (NOT FOUND).
 
 If we run the test without doing anything, we'll get an error like this:
 
@@ -304,7 +304,7 @@ There's a whole bunch of method arguments that Spring supports by default so tha
 
 With `Converter`s, we can convert web controller method arguments annotated with `@PathVariable`s or `@RequestParam`s to value objects.
 
-With a `HandlerMethodArgumentResolver`, we can resolve any method argument type. This is used heavily by the Spring framework itself, for example to resolve method arguments annotated with `@ModelAttribute` or `@PathVariable` or to resolve arguments of type `RequestEntity` or `Model`.
+With a `HandlerMethodArgumentResolver`, we can resolve any method argument type. This is used heavily by the Spring framework itself, for example, to resolve method arguments annotated with `@ModelAttribute` or `@PathVariable` or to resolve arguments of type `RequestEntity` or `Model`.
 
 You can view the example code on [GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/argumentresolver).
 

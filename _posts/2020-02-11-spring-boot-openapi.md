@@ -235,7 +235,7 @@ spring-boot-openapi
 For the sake of simplicity, we omit the test folders.
 
 Our `app` is a simple Spring Boot project that we can automatically generate on [start.spring.io](https://start.spring.io), so let's focus on the `pom.xml` from the `specification` module, where we configure 
-the [OpenAPI Maven plugin](https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin):
+the OpenAPI Maven plugin:
 
 ```xml
 <plugin>
@@ -264,7 +264,7 @@ the [OpenAPI Maven plugin](https://github.com/OpenAPITools/openapi-generator/tre
 
 You can see the full `pom.xml` file [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-openapi/specification/pom.xml).
 
-For this tutorial, we're using the `spring` generator. The [OpenAPI Maven plugin](https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin) comes with a lot of options. To see the full set of options you can go over to the [official site](https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin) of the plugin. 
+For this tutorial, we're using the `spring` generator. The OpenAPI Maven plugin. 
 
 Simply running the command `./mvnw install` will generate code that implements our OpenAPI specification!
 
@@ -317,7 +317,7 @@ public interface UserApiDelegate {
 }
 ```
 
-The `UserApiDelegate` should be implemented by our application. Also, the class that implements it, should be annotated as a bean.
+The `UserApiDelegate` should be implemented by our application. Also, the class that implements it, should be annotated as a bean (e.g. `@Service`).
 
 ```java
 @Validated
@@ -429,7 +429,7 @@ As we see, the `UserApiDelegate` is the single point of truth. Where everything 
 The good thing is, that if we won't implement them, our application doesn't break. By default, those endpoints would send 501 (Not Implemented) response code.
 
 In my opinion, generating the OpenAPI Specification with Maven plugin instead of Swagger Editor is the better choice. 
-That's because you have more control over your options. The plugin provides a handful of configuration and with git as a version control tool we can safely track any changes, that may find a place in either on `pom.xml` or `openapi.yml`.
+That's because you have more control over your options. The plugin provides a handful of configuration and with git as a version control tool we can safely track any changes, that may find place in either on `pom.xml` or `openapi.yml`.
 
 ## Conclusion
 

@@ -10,7 +10,10 @@ image:
 tags: ["api-first-approach", "swagger"]
 ---
 
-Following an API-first approach, we specify an API before we start coding. Via API description languages, teams can collaborate without having implemented anything, yet.
+Following an API-first approach, we specify an API before we start coding. Via API description languages, teams can collaborate without having implement anything, yet.
+Those description languages, specify endpoints, security schemas, object schemas, and much more. Moreover, most of the time we can also generate everuthing that we specified in those specification.
+
+Most of the time, an API specification becomes also the documentation of the API. 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-openapi" %}
 
@@ -20,33 +23,11 @@ To start working on an integration between components or systems, a team needs a
 
 Where the API-first Approach shines is on building a **better API**. Focusing on the functionality that it is needed to provide and only that. Minimalistic APIs mean less code to maintain.
 
-## Tools 
-
-To create our API, we'll be using the OpenAPI specification. 
-
-Quoting the [Swagger website](https://swagger.io/docs/specification/about/), the OpenAPI spec is:
-
-> an API description format for REST APIs. An OpenAPI file allows you to describe your entire API, including:
->
-> * Available endpoints (/users) and operations on each endpoint (GET /users, POST /users)
-> * Operation parameters input and output for each operation
-> * Authentication methods
-> * Contact information, license, terms of use and other information.
-
-When using OpenAPI, we can use JSON or YAML to write an API specification. Luckily, the community provides tools to make it easier to build such a specification. These tools include:
-
-* [Swagger Editor](http://editor.swagger.io/), the official tool from Swagger.
-* [Swagger Viewer](https://marketplace.visualstudio.com/items?itemName=Arjun.swagger-viewer), which is a VSCode plugin.
-* [OpenAPI (Swagger) Editor](https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi), which adds rich support (IntelliSense, linting, schema enforcement, etc...) for OpenAPI development.
-* [openapi-lint](https://marketplace.visualstudio.com/items?itemName=mermade.openapi-lint), a linter for OpenAPI.
-
-In this tutorial, we'll be using VSCode, therefore I have installed [OpenAPI (Swagger) Editor](https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi).
-
 ## Creating an API Spec with the Swagger Editor
 
 Let's create our own OpenAPI specification in a YAML document. To make it easier to follow, we'll split the discussion into separate parts of the YAML document we're creating.
 
-If you want to learn more details about the OpenAPI-Specification you can visit the [Github repository](https://github.com/OAI/OpenAPI-Specification/blob/master/vtersions/3.0.2.md#versions).
+If you want to learn more details about the OpenAPI-Specification you can visit the [Github repository](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#versions).
 
 
 ### General Information
@@ -124,9 +105,9 @@ paths:
           content: {}
 ```
 
-The [`$ref`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#fixed-fields-7) field allows us to refer to objects in a self-defined schema. In this case we refer to the `User` schema object (see next section).
+The [`$ref`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#fixed-fields-8) field allows us to refer to objects in a self-defined schema. In this case we refer to the `User` schema object (see next section).
 
-The `summary` is optional and is intended to apply to all operations in this path.
+The `summary` is a short description, of what the operation does.
 
 With the [`operationId`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#fixed-fields-8), we can define a unique identifier for the operation. We can think about it as our method name.
 
@@ -173,9 +154,38 @@ The [`schemas`](https://github.com/OAI/OpenAPI-Specification/blob/master/version
 
 In the [`securitySchemes`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#security-scheme-object) section, we can define security schemes that can be used by the operations.
 
+There two possible ways to make use of the use security schemes. One to add on an specific operation for example  in a GET request like:
+
+```yaml
+paths:
+  /user/{username}:
+    get:
+      tags:
+      - user
+      summary: Get user by user name
+      security: 
+        - api_key: []
+```
+
+In the above example we explicit specify that the path /user/{username} is secured with an api key. 
+
+However, if we want to apply security on the whole project, we just need to specify it as a field in the yaml like:
+
+```yaml
+paths:
+  /user/{username}:
+    get:
+      tags:
+      - user
+      summary: Get user by user name
+security: 
+  - api_key: []
+```
+Now, all of our paths should be secured with an api key.
+
 ## Generating Code From an API Specification
 
-Having defined an API, we'll now create code from the YAML document above. 
+Having defined an API, we'll now create code from the [YAML document above](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-openapi/specification/src/main/resources/openapi.yml). 
 
 We'll take a look at two different approaches to generating the code:
 
@@ -186,7 +196,7 @@ We'll take a look at two different approaches to generating the code:
 
 Although this is an approach which I wouldn't take, let's talk about it and discuss why I think it's a bad idea. 
 
-So, let's go over to [Swagger Editor](http://editor.swagger.io/) and paste our YAML file into it. Then, we select *Generate Server* from the menu and pick what kind of a server we'd like to generate (I went with "Spring").
+So, let's go over to Swagger Editor and paste our YAML file into it. Then, we select *Generate Server* from the menu and pick what kind of a server we'd like to generate (I went with "Spring").
 
 As I said before, I wouldn't use this approach. But why?
 
@@ -196,7 +206,7 @@ Second, if we make a change to the specification (and changes happen all the tim
 
 ### Generating Code with the OpenAPI Maven plugin
  
-A better alternative is to generate the code from within a Maven build with the [OpenAPI Maven plugin](https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin). 
+A better alternative is to generate the code from within a Maven build with the OpenAPI Maven plugin. 
  
 Let's take a look at the folder structure. I chose to use a multi-module maven project, where we have two projects:
  
@@ -282,69 +292,149 @@ public class User   {
 }
 ```
 
-Now let's implement the `UserApi`, which comes from our generated specification.
+The generator does not only generate the models but also the endpoints. Let's take a quick look what we generated:
 
 ```java
-@RestController
-public class UserController implements UserApi {
+public interface UserApiDelegate {
+
+    default Optional<NativeWebRequest> getRequest() {
+        return Optional.empty();
+    }
+
+    /**
+     * POST /user : Create user
+     * Create user functionality
+     *
+     * @param body Created user object (required)
+     * @return successful operation (status code 200)
+     * @see UserApi#createUser
+     */
+    default ResponseEntity<Void> createUser(User body) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+  // ... omit deleteUser, getUserByName and updateUser
 }
 ```
 
-We can now start up our Spring Boot application and test our user API:
+The `UserApiDelegate` should be implemented by our application. Also, the class that implements it, should be annotated as a bean.
+
+```java
+@Validated
+@Api(value = "user", description = "the user API")
+public interface UserApi {
+
+    default UserApiDelegate getDelegate() {
+        return new UserApiDelegate() {};
+    }
+
+    /**
+     * POST /user : Create user
+     * Create user functionality
+     *
+     * @param body Created user object (required)
+     * @return successful operation (status code 200)
+     */
+    @ApiOperation(value = "Create user", nickname = "createUser", notes = "Create user functionality", tags={ "user", })
+    @ApiResponses(value = { 
+        @ApiResponse(code = 200, message = "successful operation") })
+    @RequestMapping(value = "/user",
+        method = RequestMethod.POST)
+    default ResponseEntity<Void> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody User body) {
+        return getDelegate().createUser(body);
+    }
+    
+    // ... omit deleteUser, getUserByName and updateUser
+}
+```
+
+Above in the `createUser` method, we see the use of the `UserApiDelegate`. By default, an empty `UserApiDelegate` is created.
+
+```java
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2020-02-11T20:57:13.223+01:00[Europe/Berlin]")
+
+@Controller
+@RequestMapping("${openapi.reflectoring.base-path:/v2}")
+public class UserApiController implements UserApi {
+
+    private final UserApiDelegate delegate;
+
+    public UserApiController(@org.springframework.beans.factory.annotation.Autowired(required = false) UserApiDelegate delegate) {
+        this.delegate = Optional.ofNullable(delegate).orElse(new UserApiDelegate() {});
+    }
+
+    @Override
+    public UserApiDelegate getDelegate() {
+        return delegate;
+    }
+}
+```
+
+The `UserApiController` is used to inject any implementation of the `UserApiDelegate`, if not, initializes the default.
+
+Let's start our application and hit the GET endpoint `/v2/user/{username}`.
 
 ```shell script
-curl -I http://localhost:8080/user/Petros
+curl -I http://localhost:8080/v2/user/Petros
 HTTP/1.1 501
 Content-Length: 0
 ```
 
 But why do we get a 501 response (Not Implemented)?
 
-Because in `UserApiDelegate` says so:
+Because we did not implement a `UserApiDelegate` and the  `UserApiController` used the default one.
 
 ```java
-default ResponseEntity<User> getUserByName(String username) {
-    // ... some code
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+public interface UserApiDelegate {
+
+    // ... omit other methods
+
+    default ResponseEntity<User> getUserByName(String username) {
+        // ... some code
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
 }
 ```
 
-Let's now just implement our actual GET method:
+Now let's implement the `UserApiDelegate`.
 
 ```java
-@Override
-public ResponseEntity<User> getUserByName(String username) {
-    User user = new User();
+@Service
+public class UserApiDelegateImpl implements UserApiDelegate {
 
-    user.setId(123L);
-    user.setUsername("Petros");
-    user.setFirstName("Petros");
-    // ... more attributes
-    user.setUserStatus(0);
+    @Override
+    public ResponseEntity<User> getUserByName(String username) {
+        User user = new User();
+        user.setId(123L);
+        user.setFirstName("Petros");
+        
+        // ... omit other initialization
 
-    return ResponseEntity.ok(user);
+        return ResponseEntity.ok(user);
+    }
 }
 ```
 
-If we run `curl http://localhost:8080/user/Petros` again now, we'll receive a valid JSON response:
+If we run `curl http://localhost:8080/v2/user/Petros` again now, we'll receive a valid JSON response:
 
 ```json
 {
   "id": 123,
-  "username": "Petros",
   "firstName": "Petros",
-  ...
-  "userStatus": 0
+  // ... omit other properties
 }
 ```
 
+As we see, the `UserApiDelegate` is the single point of truth. Where everything happens. That enables us to make fast changes in our API. For example, if we change the specification and generate it again, we have only to implement the newly generated methods.
+The good thing is, that if we won't implement them, our application doesn't break. By default, those endpoints would send 501 (Not Implemented) response code.
+
 In my opinion, generating the OpenAPI Specification with Maven plugin instead of Swagger Editor is the better choice. 
-That's because you both have more control over your options and you can safely track any changes.
+That's because you have more control over your options. The plugin provides a handful of configuration and with git as a version control tool we can safely track any changes, that may find a place in either on `pom.xml` or `openapi.yml`.
 
 ## Conclusion
 
-The API-first approach is easy to use, but it's difficult to master. 
+The API-first approach is easy to use, but it's difficult to master, while you have to have the Big Picture of the product.  
+If not, the specification will keep changing, so the API and when an API changes, dependencies are broken. Then the teams must adopt the new API. 
+It's also a challenge on how this change will be communicated.
 
-To be able to do it right, we should know **what** we have to build. Working in an agile environment might it make it more difficult, while things are changing faster.
-
-As always, communication across teams is a must. A product was never built without a proper communication.
+If we are not what we are building, or how our API is gonna look like, we may want to use a Code-first API development approach. Which is exactly the opposite of API-first, the contact is generated out of the code.

@@ -58,3 +58,21 @@ petromir:
           simple and effective solutions. Focused on process automation as well as making the most of
           cutting-edge development tools"
 
+mukul:
+  name: "Mukul Sharma"
+  email: "mukul571995@gmail.com"
+  avatar: "/assets/img/authors/mukul.png"
+  github: "mukul-s"
+
+leventov:
+  name: "Roman Leventov"
+  email: "leventov.ru@gmail.com"
+  avatar: "/assets/img/authors/leventov.png"
+  github: "leventov"
+  twitter: "leventov"
+  rss: "https://engineeringideas.substack.com/feed"
+  url: "https://engineeringideas.substack.com/?no_cover=true"
+  bio: "A software engineer with a special interest for software design. I publish weekly
+        <a href='https://engineeringideas.substack.com/?no_cover=true'>Engineering Ideas</a> where I share articles
+        and papers about software development, cloud architecture, data engineering, reliability, operations, and team
+        culture which I find insightful."

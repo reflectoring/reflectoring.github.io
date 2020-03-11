@@ -38,6 +38,13 @@ img.pull-right {
   width: auto;
 }
 
+img.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
 a.primary-button {
   cursor: pointer;
   text-align: center;

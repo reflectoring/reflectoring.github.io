@@ -1,12 +1,12 @@
 ---
 title: API-First Development with Spring Boot and Swagger
 categories: [spring-boot]
-date: 2020-03-11 05:00:00 +1100
-modified: 2020-03-11 05:00:00 +1100
+date: 2020-03-12 05:00:00 +1100
+modified: 2020-03-12 05:00:00 +1100
 excerpt: "What's the 'API-First' Approach? And how do we go about it with Swagger and Spring Boot? This guide shows how to make APIs a first-class citizen in our project."
 author: petros
 image:
-  auto: 0056-colors
+  auto: 0066-blueprint
 tags: ["api-first-approach", "swagger"]
 ---
 
@@ -39,7 +39,7 @@ We start with some general information about our API at the top of our document:
 openapi: 3.0.2
 info:
   title: Reflectoring
-  description: "Tutorials on Spring Boot and Java, thoughts about the Software Craft, and relevant book reviews. Because it's just as important to understand the Why as it is to understand the How. Have fun!"
+  description: "Tutorials on Spring Boot and Java."
   termsOfService: http://swagger.io/terms/
   contact:
     email: petros.stergioulas94@gmail.com
@@ -90,7 +90,7 @@ paths:
       parameters:
       - name: username
         in: path
-        description: 'The name that needs to be fetched. Use user1 for testing. '
+        description: 'The name that needs to be fetched. '
         required: true
         schema:
           type: string
@@ -251,11 +251,15 @@ the OpenAPI Maven plugin:
                 <goal>generate</goal>
             </goals>
             <configuration>
-                <inputSpec>${project.basedir}/src/main/resources/openapi.yml</inputSpec>
+                <inputSpec>
+                  ${project.basedir}/src/main/resources/openapi.yml
+                </inputSpec>
                 <generatorName>spring</generatorName>
                 <apiPackage>io.reflectoring.api</apiPackage>
                 <modelPackage>io.reflectoring.model</modelPackage>
-                <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                <supportingFilesToGenerate>
+                  ApiUtil.java
+                </supportingFilesToGenerate>
                 <configOptions>
                     <delegatePattern>true</delegatePattern>
                 </configOptions>
@@ -340,16 +344,22 @@ public interface UserApi {
      * @param body Created user object (required)
      * @return successful operation (status code 200)
      */
-    @ApiOperation(value = "Create user", nickname = "createUser", notes = "Create user functionality", tags={ "user", })
+    @ApiOperation(value = "Create user", 
+      nickname = "createUser", 
+      notes = "Create user functionality", 
+      tags={ "user", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
     @RequestMapping(value = "/user",
         method = RequestMethod.POST)
-    default ResponseEntity<Void> createUser(@ApiParam(value = "Created user object" ,required=true )  @Valid @RequestBody User body) {
+    default ResponseEntity<Void> createUser(
+      @ApiParam(value = "Created user object" ,required=true )  
+      @Valid 
+      @RequestBody User body) {
         return getDelegate().createUser(body);
     }
     
-    // ... omit deleteUser, getUserByName and updateUser
+    // ... other methods omitted
 }
 ```
 
@@ -363,8 +373,10 @@ public class UserApiController implements UserApi {
 
     private final UserApiDelegate delegate;
 
-    public UserApiController(@Autowired(required = false) UserApiDelegate delegate) {
-        this.delegate = Optional.ofNullable(delegate).orElse(new UserApiDelegate() {});
+    public UserApiController(
+      @Autowired(required = false) UserApiDelegate delegate) {
+        this.delegate = Optional.ofNullable(delegate)
+            .orElse(new UserApiDelegate() {});
     }
 
     @Override
@@ -378,7 +390,7 @@ Spring will inject our implementation of `UserApiDelegate` into the controller's
 
 Let's start our application and hit the GET endpoint `/v2/user/{username}`.
 
-```shell script
+```
 curl -I http://localhost:8080/v2/user/Petros
 HTTP/1.1 501
 Content-Length: 0

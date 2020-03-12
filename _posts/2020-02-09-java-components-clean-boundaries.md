@@ -17,7 +17,7 @@ Over time, many codebases deteriorate. Bad dependencies creep in and make it har
 
 How can we protect our codebase from unwanted dependencies? With careful design and persistent enforcement of component boundaries. This article shows a set of practices that help in both regards when working with Spring Boot.   
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot-boundaries" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/boundaries" %}
 
 ## Restricting Visibility to Package-Private 
 
@@ -98,15 +98,26 @@ database
     └── o BillingDatabase
 ```
 
+`+` means a class is public, `o` means it's package-private.
+
 The `database` component exposes an API with two interfaces `ReadLineItems` and `WriteLineItems`, which allow to read and write line items from a customer's order from and to the database, respectively. The `LineItem` domain type is also part of the API.
 
-Internally, the `database` component has a class `BillingDatabase` which implements the two interfaces. There may be some helper classes around this implementation, but they're not relevant to us. 
+Internally, the `database` sub-component has a class `BillingDatabase` which implements the two interfaces: 
+
+```java
+@Component
+class BillingDatabase implements WriteLineItems, ReadLineItems {
+  ...
+}
+``` 
+
+There may be some helper classes around this implementation, but they're not relevant to us.
 
 Note that this is an application of the Dependency Inversion Principle. **Instead of the `api` package depending on the `internal` package, the dependency is the other way around**. This gives us the freedom to do in the `internal` package whatever we want, as long as we implement the interfaces in the `api` package. 
 
-In the case of the `database` component, for instance, we don't care what database technology is used to query the database.
+In the case of the `database` sub-component, for instance, we don't care what database technology is used to query the database.
 
-Let's have a peek into the `batchjob` component, too:
+Let's have a peek into the `batchjob` sub-component, too:
 
 ```
 batchjob
@@ -114,7 +125,25 @@ batchjob
     └── o LoadInvoiceDataBatchJob
 ```  
 
-The `batchjob` component doesn't expose an API to other components. It simply has a class `LoadInvoiceDataBatchJob` (and potentially some helper classes), that loads data from an external source on a daily basis, transforms it, and feeds it into the billing component's database via the `WriteLineItems` interface.
+The `batchjob` sub-component doesn't expose an API to other components. It simply has a class `LoadInvoiceDataBatchJob` (and potentially some helper classes), that loads data from an external source on a daily basis, transforms it, and feeds it into the billing component's database via the `WriteLineItems` interface:
+
+```java
+@Component
+@RequiredArgsConstructor
+class LoadInvoiceDataBatchJob {
+
+  private final WriteLineItems writeLineItems;
+
+  @Scheduled(fixedRate = 5000)
+  void loadDataFromBillingSystem() {
+    ...
+    writeLineItems.saveLineItems(items);
+  }
+
+}
+```
+
+Note that we use Spring's `@Scheduled` annotation to regularly check for new items in the billing system.
 
 Finally, the content of the top-level `billing` component:
 
@@ -129,13 +158,29 @@ billing
     └── o BillingService
 ```
 
-The `billing` component exposes the `InvoiceCalculator` interface and `Invoice` domain type. Again, the `InvoiceCalculator` interface is implemented by an internal class, called `BillingService` in the example. `BillingService` accessed the database via the `ReadLineItems` database API to create a customer invoice from multiple line items.
+The `billing` component exposes the `InvoiceCalculator` interface and `Invoice` domain type. Again, the `InvoiceCalculator` interface is implemented by an internal class, called `BillingService` in the example. `BillingService` accesses the database via the `ReadLineItems` database API to create a customer invoice from multiple line items:
+
+```java
+@Component
+@RequiredArgsConstructor
+class BillingService implements InvoiceCalculator {
+
+  private final ReadLineItems readLineItems;
+
+  @Override
+  public Invoice calculateInvoice(Long userId, LocalDate fromDate, LocalDate toDate) {
+    List<LineItem> items = readLineItems.getLineItemsForUser(userId, fromDate, toDate);
+    ... 
+  }
+
+}
+```
 
 Now that we have a clean structure in place, we need dependency injection to wire it all together. 
 
 ### Wiring It Together with Spring Boot
 
-To wire everything together to an application, we make use of Spring's Java Config feature and some of Spring Boot's auto-configuration.
+To wire everything together to an application, we make use of Spring's Java Config feature and add a `Configuration` class to each module's `internal` package:
 
 ```
 billing
@@ -149,15 +194,195 @@ billing
     └── o BillingConfiguration
 ```
 
+These configurations tell Spring to load a set of Spring beans into the application context. 
+
+The `database` sub-component configuration looks like this:
+
+```java
+@Configuration
+@EnableJpaRepositories
+@ComponentScan
+class BillingDatabaseConfiguration {
+
+}
+``` 
+
+With the `@Configuration` annotation, we're telling Spring that this is a configuration class that contributes Spring beans to the application context. 
+
+The `@ComponentScan` annotation tells Spring to include all classes that are in the same package as the configuration class (or a sub-package) and annotated with `@Component` as beans into the application context. This will load our `BillingDatabase` class from above. 
+
+Under the hood, to connect to the database, the `database` module uses Spring Data JPA repositories. We enable these with the `@EnableJpaRepositories` annotation. 
+
+The `batchjob` configuration looks similar:
+
+```java
+@Configuration
+@EnableScheduling
+@ComponentScan
+class BatchJobConfiguration {
+
+}
+```
+
+Only the `@EnableScheduling` annotation is different. We need this to enable the `@Scheduled` annotation in our `LoadInvoiceDataBatchJob` bean.
+
+Finally, the configuration of the top-level `billing` component looks pretty boring:
+
+```java
+@Configuration
+@ComponentScan
+class BillingConfiguration {
+
+}
+```
+
+With the `@ComponentScan` annotation, this configuration makes sure that the sub-component `@Configuration`s are picked up by Spring and loaded into the application context together with their contributed beans. 
+
+With this, we have a clean separation of boundaries not only in the dimension of packages, but also in the dimension of Spring configurations. This means that we can target each component and sub-component separately, by addressing its `@Configuration` class. For example, we can:
+
+* Load only one (sub-)component into the application context within a [`@SpringBootTest` integration test](/spring-boot-test/).
+* Enable or disable specific (sub-)components by adding a [`@Conditional...` annotation](/spring-boot-conditionals/) to that sub-component's configuration.
+* Replace the beans contributed to the application context by a (sub-)component without affecting other (sub-)components. 
+
+We still have a problem, though: the classes in the `billing.internal.database.api` package are public, meaning they can be accessed from outside of the `billing` component, which we don't want.
+
+Let's address this issue by adding ArchUnit to the game.
+
 ## Enforcing Boundaries with ArchUnit
+
+[ArchUnit](https://github.com/TNG/ArchUnit) is a library that allows us to run assertions about our architecture. This includes checking if dependencies between certain classes are valid or not according to rules we can define ourselves.
+
+In our case, we want to define the rule that all classes in an `internal` package are not used from outside of this package.  
 
 ### Marking Internal Packages
 
-### Verifying That Internal Packages are Indeed Internal
+To have a handle on our `internal` packages when creating architecture rules, we need to mark them as "internal" somehow. We could do it by name (i.e. consider all packages with the name "internal" as internal packages), but we also might want to mark packages with a different name, so we create the `@InternalPackage` annotation:
+
+```java
+@Target(ElementType.PACKAGE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface InternalPackage {
+
+}
+```
+
+In all our internal packages, we then add a `package-info.java` file with this annotation:
+
+```java
+@InternalPackage
+package io.reflectoring.boundaries.billing.internal.database.internal;
+
+import io.reflectoring.boundaries.InternalPackage;
+```
+
+This way, all internal packages are marked and we can create rules around this.
+
+### Verifying That Internal Packages are Not Accessed From Outside
+
+We now create a test that validates that the classes in our internal packages are not accessed from the outside:
+
+```java
+class InternalPackageTests {
+
+  private static final String BASE_PACKAGE = "io.reflectoring";
+  private final JavaClasses analyzedClasses = new ClassFileImporter().importPackages(BASE_PACKAGE);
+
+  @Test
+  void internalPackagesAreNotAccessedFromOutside() throws IOException {
+
+    List<String> internalPackages = internalPackages(BASE_PACKAGE);
+
+    for (String internalPackage : internalPackages) {
+      assertPackageIsNotAccessedFromOutside(internalPackage);
+    }
+
+  }
+
+  private List<String> internalPackages(String basePackage) {
+    Reflections reflections = new Reflections(basePackage);
+    return reflections.getTypesAnnotatedWith(InternalPackage.class).stream()
+        .map(c -> c.getPackage().getName())
+        .collect(Collectors.toList());
+  }
+
+  void assertPackageIsNotAccessedFromOutside(String internalPackage) {
+    noClasses().that().resideOutsideOfPackage(packageMatcher(internalPackage))
+        .should().dependOnClassesThat().resideInAPackage(packageMatcher(internalPackage))
+        .check(analyzedClasses);
+  }
+
+  private String packageMatcher(String fullyQualifiedPackage) {
+    return fullyQualifiedPackage + "..";
+  }
+
+}
+```
+
+In `internalPackages()`, we make use of the reflections library to collect all packages annotated with our `@InternalPackage` annotation. 
+
+For each of these packages, we then call `assertPackageIsNotAccessedFromOutside()`. This method uses ArchUnit's DSL-like API to make sure that "classes that reside outside of the package should not not depend on classes that reside in the package".
+
+This test will now fail if someone adds an unwanted dependency to an internal package.
+
+But we still have one problem: what if we rename the base package (`io.reflectoring` in this case) in a refactoring?
+
+The test will pass, because it won't find any packages within the (now not existing) `io.reflectoring` package. If it doesn't have any packages to check, it can't fail. 
+
+So, we need a way to make this test refactoring-safe. 
 
 ### Making the Architecture Rules Refactoring-Safe
-* check that the packages we're verifying actually exist
+
+To make our test refactoring-safe, we verify that packages exist:
+
+```java
+class InternalPackageTests {
+
+  private static final String BASE_PACKAGE = "io.reflectoring";
+
+  @Test
+  void internalPackagesAreNotAccessedFromOutside() throws IOException {
+
+    // make it refactoring-safe in case we're renaming the base package
+    assertPackageExists(BASE_PACKAGE);
+
+    List<String> internalPackages = internalPackages(BASE_PACKAGE);
+
+    for (String internalPackage : internalPackages) {
+      // make it refactoring-safe in case we're renaming the internal package
+      assertPackageExists(internalPackage);
+      assertPackageIsNotAccessedFromOutside(internalPackage);
+    }
+
+  }
+
+  void assertPackageExists(String packageName) {
+    assertThat(analyzedClasses.containPackage(packageName))
+        .as("package %s exists", packageName)
+        .isTrue();
+  }
+
+  private List<String> internalPackages(String basePackage) {
+    ...
+  }
+
+  void assertPackageIsNotAccessedFromOutside(String internalPackage) {
+    ...
+  }
+
+}
+```
+
+The new method `assertPackageExists()` uses ArchUnit to make sure that the package in question is contained within the classes we're analyzing. 
+
+We call this method once for the base package and once for each internal package we're iterating through. 
+
+This test is now refactoring-safe and will fail if we rename packages as it should.
 
 ## Conclusion
-* If you're working with Spring Boot, have a look at Moduliths, which provides some tooling around an opinionated way of structuring packages.
 
+This article presents an opinionated approach to using packages to modularize a Java application and combines this with Spring Boot as a dependency injection mechanism and with ArchUnit to fail tests when someone has added an inter-module dependency that is not allowed.
+
+This allows us to develop components with clear APIs and clear boundaries, avoiding a big ball of mud.
+
+You can find an example application using this approach [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/boundaries).

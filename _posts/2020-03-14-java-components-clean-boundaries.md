@@ -1,31 +1,33 @@
 ---
 title: Clean Architecture Boundaries with Spring Boot and ArchUnit
 categories: [spring-boot]
-date: 2020-02-03 05:00:00 +1100
-modified: 2020-02-03 05:00:00 +1100
+date: 2020-03-14 05:00:00 +1100
+modified: 2020-03-14 05:00:00 +1100
 author: default
-excerpt: ""
+excerpt: "How can we avoid the dreaded Big Ball of Mud when developing software? This article gives an opinionated approach using packages and ArchUnit together with Spring to enforce clean boundaries between software components."
 image:
   auto: 0065-boundary
 ---
 
-When we're building software, we want to build for "-ilities": understandability, maintainability, extensibility, and - trending right now - decomposibility (so we can decompose a monolith into microservices if the need arises). Add your favorite "-ility" to that list.
+When we're building software, we want to build for "-ilities": understandability, maintainability, extensibility, and - trending right now - decomposability (so we can decompose a monolith into microservices if the need arises). Add your favorite "-ility" to that list.
 
-Most - perhaps even all - of those "ilities" go hand in hand with clean dependencies between components. If a component depends on all other components, we don't know what side effects changes to one component will have, making the codebase hard to maintain and even harder to extend and decompose. 
+**Most - perhaps even all - of those "-ilities" go hand in hand with clean dependencies between components.** 
 
-Over time, many codebases deteriorate. Bad dependencies creep in and make it harder to work with the code. This has all kinds of bad effects. But most notably, development gets slower.
+If a component depends on all other components, we don't know what side effects changes to one component will have, making the codebase hard to maintain and even harder to extend and decompose. 
 
-How can we protect our codebase from unwanted dependencies? With careful design and persistent enforcement of component boundaries. This article shows a set of practices that help in both regards when working with Spring Boot.   
+Over time, the component boundaries in a codebase tend to deteriorate. Bad dependencies creep in and make it harder to work with the code. This has all kinds of bad effects. Most notably, development gets slower.
+
+How can we protect our codebase from unwanted dependencies? **With careful design and persistent enforcement of component boundaries.** This article shows a set of practices that help in both regards when working with Spring Boot.   
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/boundaries" %}
 
-## Restricting Visibility to Package-Private 
+## Package-Private Visibility 
 
 What helps with enforcing component boundaries? Reducing visibility. 
 
-If we use package-private visibility on "internal" classes, only classes in the same package can have access. This makes it harder to add unwanted dependencies from outside of the package.
+If we use package-private visibility on "internal" classes, only classes in the same package have access. **This makes it harder to add unwanted dependencies from outside of the package.**
 
-So, just put all classes of a component into the same package and make only those classes public that are needed by the outside. Problem solved?
+So, just put all classes of a component into the same package and make only those classes public that we need outside of the component. Problem solved?
 
 Not in my opinion. 
 
@@ -33,25 +35,25 @@ Not in my opinion.
 
 We'd have to make classes in sub-packages public so they can be used in other sub-packages, opening them up to the whole world.
 
-I don't want to be restricted to a single package for my component. Maybe my component has sub-components which I don't want to expose to the outside. Or maybe I just want to sort the classes into separate buckets to make the codebase easier to navigate. I need to use sub-packages for that!
+I don't want to be restricted to a single package for my component! Maybe my component has sub-components that I don't want to expose to the outside. Or maybe I just want to sort the classes into separate buckets to make the codebase easier to navigate. I need those sub-packages!
 
-So, yes, package-private visibility helps in avoiding unwanted dependencies, but it's a half-assed solution at best.
+**So, yes, package-private visibility helps in avoiding unwanted dependencies, but on its own, it's a half-assed solution at best.**
 
 ## An Approach to Clean Boundaries
 
-What can we do about it? Let's look at an holistic approach for keeping our codebase clean of unwanted dependencies.  
+What can we do about it? We can't rely on package-private visibility by itself. Let's look at an approach for keeping our codebase clean of unwanted dependencies using a smart package structure, package-private visibility where possible, and ArchUnit as an enforcer where we can't use package-private visibility.  
 
 ### Example Use Case
 
-We discuss the approach alongside of an example use case. Say we're building a billing component that looks like this:
+We discuss the approach alongside an example use case. Say we're building a billing component that looks like this:
 
 ![A modules with external and internal dependencies](/assets/img/posts/clean-boundaries/components.jpg)
 
-The billing component exposes an invoice calculator to the outside. The invoice calculator generates an invoice for a certain user and time period.
+The billing component exposes an invoice calculator to the outside. The invoice calculator generates an invoice for a certain customer and time period.
 
 For the invoice calculator to work, it needs to synchronize data from an external order system in a daily batch job. This batch job pulls the data from an external source and puts it into the database.
 
-Our component has three sub-components: the invoice calculator, the batch job, and the database code. All of those components potentially consist of a couple of classes. We want the batch job and the database code not to be accessible from the outside. 
+Our component has three sub-components: the invoice calculator, the batch job, and the database code. All of those components potentially consist of a couple of classes. The invoice calculator is a public component and the batch job and database components are internal components that should not be accessible from outside of the billing component. 
 
 ### API Classes vs. Internal Classes
 
@@ -68,7 +70,7 @@ billing
         └── internal
 ```
 
-Each component and sub-component has an `internal` package containing, well, internal classes, and an optional `api` package containing, you guessed right, API classes that are meant to be used by other components. 
+Each component and sub-component has an `internal` package containing, well, internal classes, and an optional `api` package containing - you guessed right - API classes that are meant to be used by other components. 
 
 This package separation between `internal` and `api` gives us a couple of advantages:
 
@@ -80,7 +82,7 @@ This package separation between `internal` and `api` gives us a couple of advant
 
 Classes within an `internal` package should be package-private if possible. But even if they are public (and they need to be public if we use sub-packages), the package structure defines clean and easy to follow boundaries.
 
-Instead of relying on Java's insufficient support of package-private visibility, we have created an architecturally expressive package structure that can easily be enforced by tools.
+**Instead of relying on Java's insufficient support of package-private visibility, we have created an architecturally expressive package structure that can easily be enforced by tools.**
 
 Now, let's look into those packages.
 
@@ -98,7 +100,7 @@ database
     └── o BillingDatabase
 ```
 
-`+` means a class is public, `o` means it's package-private.
+`+` means a class is public, `o` means that it's package-private.
 
 The `database` component exposes an API with two interfaces `ReadLineItems` and `WriteLineItems`, which allow to read and write line items from a customer's order from and to the database, respectively. The `LineItem` domain type is also part of the API.
 
@@ -111,9 +113,11 @@ class BillingDatabase implements WriteLineItems, ReadLineItems {
 }
 ``` 
 
-There may be some helper classes around this implementation, but they're not relevant to us.
+There may be some helper classes around this implementation, but they're not relevant to this discussion.
 
-Note that this is an application of the Dependency Inversion Principle. **Instead of the `api` package depending on the `internal` package, the dependency is the other way around**. This gives us the freedom to do in the `internal` package whatever we want, as long as we implement the interfaces in the `api` package. 
+Note that this is an application of the Dependency Inversion Principle. 
+
+**Instead of the `api` package depending on the `internal` package, the dependency is the other way around**. This gives us the freedom to do in the `internal` package whatever we want, as long as we implement the interfaces in the `api` package. 
 
 In the case of the `database` sub-component, for instance, we don't care what database technology is used to query the database.
 
@@ -125,7 +129,7 @@ batchjob
     └── o LoadInvoiceDataBatchJob
 ```  
 
-The `batchjob` sub-component doesn't expose an API to other components. It simply has a class `LoadInvoiceDataBatchJob` (and potentially some helper classes), that loads data from an external source on a daily basis, transforms it, and feeds it into the billing component's database via the `WriteLineItems` interface:
+The `batchjob` sub-component doesn't expose an API to other components at all. It simply has a class `LoadInvoiceDataBatchJob` (and potentially some helper classes), that loads data from an external source on a daily basis, transforms it, and feeds it into the billing component's database via the `WriteLineItems` interface:
 
 ```java
 @Component
@@ -168,8 +172,15 @@ class BillingService implements InvoiceCalculator {
   private final ReadLineItems readLineItems;
 
   @Override
-  public Invoice calculateInvoice(Long userId, LocalDate fromDate, LocalDate toDate) {
-    List<LineItem> items = readLineItems.getLineItemsForUser(userId, fromDate, toDate);
+  public Invoice calculateInvoice(
+        Long userId, 
+        LocalDate fromDate, 
+        LocalDate toDate) {
+    
+    List<LineItem> items = readLineItems.getLineItemsForUser(
+      userId, 
+      fromDate, 
+      toDate);
     ... 
   }
 
@@ -187,14 +198,14 @@ billing
 └── internal
     ├── batchjob
     |   └── internal
-    |       └── o BatchJobConfiguration
+    |       └── o BillingBatchJobConfiguration
     ├── database
     |   └── internal
     |       └── o BillingDatabaseConfiguration
     └── o BillingConfiguration
 ```
 
-These configurations tell Spring to load a set of Spring beans into the application context. 
+**These configurations tell Spring to contribute set of Spring beans to the application context.**
 
 The `database` sub-component configuration looks like this:
 
@@ -211,6 +222,8 @@ With the `@Configuration` annotation, we're telling Spring that this is a config
 
 The `@ComponentScan` annotation tells Spring to include all classes that are in the same package as the configuration class (or a sub-package) and annotated with `@Component` as beans into the application context. This will load our `BillingDatabase` class from above. 
 
+Instead of `@ComponentScan`, we could also use `@Bean`-annotated factory methods within the `@Configuration` class.
+
 Under the hood, to connect to the database, the `database` module uses Spring Data JPA repositories. We enable these with the `@EnableJpaRepositories` annotation. 
 
 The `batchjob` configuration looks similar:
@@ -219,7 +232,7 @@ The `batchjob` configuration looks similar:
 @Configuration
 @EnableScheduling
 @ComponentScan
-class BatchJobConfiguration {
+class BillingBatchJobConfiguration {
 
 }
 ```
@@ -238,7 +251,9 @@ class BillingConfiguration {
 
 With the `@ComponentScan` annotation, this configuration makes sure that the sub-component `@Configuration`s are picked up by Spring and loaded into the application context together with their contributed beans. 
 
-With this, we have a clean separation of boundaries not only in the dimension of packages, but also in the dimension of Spring configurations. This means that we can target each component and sub-component separately, by addressing its `@Configuration` class. For example, we can:
+**With this, we have a clean separation of boundaries not only in the dimension of packages but also in the dimension of Spring configurations.** 
+
+This means that we can target each component and sub-component separately, by addressing its `@Configuration` class. For example, we can:
 
 * Load only one (sub-)component into the application context within a [`@SpringBootTest` integration test](/spring-boot-test/).
 * Enable or disable specific (sub-)components by adding a [`@Conditional...` annotation](/spring-boot-conditionals/) to that sub-component's configuration.
@@ -250,13 +265,15 @@ Let's address this issue by adding ArchUnit to the game.
 
 ## Enforcing Boundaries with ArchUnit
 
-[ArchUnit](https://github.com/TNG/ArchUnit) is a library that allows us to run assertions about our architecture. This includes checking if dependencies between certain classes are valid or not according to rules we can define ourselves.
+[ArchUnit](https://github.com/TNG/ArchUnit) is a library that allows us to run assertions on our architecture. This includes checking if dependencies between certain classes are valid or not according to rules we can define ourselves.
 
-In our case, we want to define the rule that all classes in an `internal` package are not used from outside of this package.  
+In our case, we want to define the rule that all classes in an `internal` package are not used from outside of this package. This rule would make sure that classes within the `billing.internal.*.api` packages are not accessible from outside of the `billing.internal` package. 
 
 ### Marking Internal Packages
 
-To have a handle on our `internal` packages when creating architecture rules, we need to mark them as "internal" somehow. We could do it by name (i.e. consider all packages with the name "internal" as internal packages), but we also might want to mark packages with a different name, so we create the `@InternalPackage` annotation:
+To have a handle on our `internal` packages when creating architecture rules, we need to mark them as "internal" somehow. 
+
+We could do it by name (i.e. consider all packages with the name "internal" as internal packages), but we also might want to mark packages with a different name, so we create the `@InternalPackage` annotation:
 
 ```java
 @Target(ElementType.PACKAGE)
@@ -278,7 +295,7 @@ import io.reflectoring.boundaries.InternalPackage;
 
 This way, all internal packages are marked and we can create rules around this.
 
-### Verifying That Internal Packages are Not Accessed From Outside
+### Verifying That Internal Packages Are Not Accessed from the Outside
 
 We now create a test that validates that the classes in our internal packages are not accessed from the outside:
 
@@ -286,7 +303,8 @@ We now create a test that validates that the classes in our internal packages ar
 class InternalPackageTests {
 
   private static final String BASE_PACKAGE = "io.reflectoring";
-  private final JavaClasses analyzedClasses = new ClassFileImporter().importPackages(BASE_PACKAGE);
+  private final JavaClasses analyzedClasses = 
+      new ClassFileImporter().importPackages(BASE_PACKAGE);
 
   @Test
   void internalPackagesAreNotAccessedFromOutside() throws IOException {
@@ -307,8 +325,12 @@ class InternalPackageTests {
   }
 
   void assertPackageIsNotAccessedFromOutside(String internalPackage) {
-    noClasses().that().resideOutsideOfPackage(packageMatcher(internalPackage))
-        .should().dependOnClassesThat().resideInAPackage(packageMatcher(internalPackage))
+    noClasses()
+        .that()
+        .resideOutsideOfPackage(packageMatcher(internalPackage))
+        .should()
+        .dependOnClassesThat()
+        .resideInAPackage(packageMatcher(internalPackage))
         .check(analyzedClasses);
   }
 
@@ -321,13 +343,13 @@ class InternalPackageTests {
 
 In `internalPackages()`, we make use of the reflections library to collect all packages annotated with our `@InternalPackage` annotation. 
 
-For each of these packages, we then call `assertPackageIsNotAccessedFromOutside()`. This method uses ArchUnit's DSL-like API to make sure that "classes that reside outside of the package should not not depend on classes that reside in the package".
+For each of these packages, we then call `assertPackageIsNotAccessedFromOutside()`. This method uses ArchUnit's DSL-like API to make sure that "classes that reside outside of the package should not depend on classes that reside within the package".
 
-This test will now fail if someone adds an unwanted dependency to an internal package.
+**This test will now fail if someone adds an unwanted dependency to a public class in an internal package.**
 
 But we still have one problem: what if we rename the base package (`io.reflectoring` in this case) in a refactoring?
 
-The test will pass, because it won't find any packages within the (now not existing) `io.reflectoring` package. If it doesn't have any packages to check, it can't fail. 
+The test will then still pass, because it won't find any packages within the (now non-existent) `io.reflectoring` package. If it doesn't have any packages to check, it can't fail. 
 
 So, we need a way to make this test refactoring-safe. 
 
@@ -384,5 +406,7 @@ This test is now refactoring-safe and will fail if we rename packages as it shou
 This article presents an opinionated approach to using packages to modularize a Java application and combines this with Spring Boot as a dependency injection mechanism and with ArchUnit to fail tests when someone has added an inter-module dependency that is not allowed.
 
 This allows us to develop components with clear APIs and clear boundaries, avoiding a big ball of mud.
+
+Let me know your thoughts in the comments!
 
 You can find an example application using this approach [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/boundaries).

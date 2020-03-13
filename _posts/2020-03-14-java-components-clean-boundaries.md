@@ -410,3 +410,5 @@ This allows us to develop components with clear APIs and clear boundaries, avoid
 Let me know your thoughts in the comments!
 
 You can find an example application using this approach [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/boundaries).
+
+If you're interested in other ways of dealing with component boundaries with Spring Boot, you might find the [moduliths project](https://github.com/odrotbohm/moduliths) interesting.

@@ -6,7 +6,7 @@ modified: 2020-02-15 05:00:00 +1100
 author: default
 excerpt: "Always wanted to get started on AWS? Then let's create a Docker image and deploy it to the AWS cloud! All you need is an AWS account and about 15 minutes of time."
 image:
-  auto: 0059-cloud
+  auto: 0061-cloud
 ---
 
 Amazon Web Services is a beast. It offers so many different cloud services that my natural reaction was to be intimidated. But not for long! I intend to tame that beast one blog post at a time!
@@ -25,7 +25,7 @@ You can also use a different Docker registry ([Amazon ECR](https://docs.aws.amaz
 
 Second, **you'll need an AWS account**. Go to [aws.amazon.com/console/](https://aws.amazon.com/console/) and sign up. 
 
-Note that, as of yet, I find Amazon's pricing for its cloud services very intransparent. I can't guarantee that this tutorial won't incur costs for your AWS account, but it hasn't for me.
+Note that, as of yet, I find Amazon's pricing for its cloud services very intransparent. I can't guarantee that this tutorial won't incur costs for your AWS account, but it hasn't for me (**Update:** after the month ended, I actually got a bill over $0.36 for playing around with AWS to write this article).
 
 Finally, if you want to create and publish your own Docker image, you need to have Docker installed.
 

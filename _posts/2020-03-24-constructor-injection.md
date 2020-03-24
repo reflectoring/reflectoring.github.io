@@ -50,7 +50,7 @@ class Cake {
 }
 ```
 
-Before Spring 4.3, we had to add an `@Autowired` annotation to the constructor. With newer versions this is optional if the class has only one constructor.
+Before Spring 4.3, we had to add an `@Autowired` annotation to the constructor. With newer versions, this is optional if the class has only one constructor.
 
 In the `Cake` class above, since we have only one constructor, we don't have to specify the `@Autowired` annotation. Consider the below example with two constructors:
 
@@ -166,7 +166,7 @@ Constructor injection is extremely useful since we do not have to write separate
 
 <div class="notice success">
  <h4>What About Optional Dependencies?</h4>
- <p>With setter injection, Spring allows us to specify optional dependencies by adding <code>@Autowired(required = false)</code> to a setter method. This is not possible with constructor injection, since the <code>required=false</code> would be applied to <strong>all</strong> constructor arguments.</p>
+ <p>With setter injection, Spring allows us to specify optional dependencies by adding <code>@Autowired(required = false)</code> to a setter method. This is not possible with constructor injection since the <code>required=false</code> would be applied to <strong>all</strong> constructor arguments.</p>
  <p>
  We can still provide optional dependencies with constructor injection using Java's <code>Optional</code> type.
  </p>  

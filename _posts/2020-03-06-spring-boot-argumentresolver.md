@@ -115,6 +115,27 @@ By adding the `@Component` annotation, we make this converter known to Spring. S
 
 If we run the test now, it's green.
 
+### Providing a `valueOf()` Method
+
+Instead of building a converter, we can also provide a static `valueOf()` method on our value object:
+
+```java
+@Value
+class GitRepositoryId {
+
+  private final long value;
+
+  public static GitRepositoryId valueOf(String value){
+    return new GitRepositoryId(Long.parseLong(value));
+  }
+
+}
+```
+
+In effect, this method does the same as the converter we built above (converting a String into a value object).
+
+If a method like this is available on an object that is used as a parameter in a controller method, Spring will automatically call it to do the conversion without the need of a separate `Converter` bean.
+
 ## Resolving Custom Arguments with a `HandlerMethodArgumentResolver`
 
 The above solution with the `Converter` only works because we're using Spring's `@PathVariable` annotation to bind the method parameter to a variable in the URL path.
@@ -237,13 +258,8 @@ class GitRepositoryArgumentResolver implements HandlerMethodArgumentResolver {
         .substring(0, requestPath.indexOf("/", 1))
         .replaceAll("^/", "");
     
-    Optional<GitRepository> repository = repositoryFinder.findBySlug(slug);
-
-    if (repository.isEmpty()) {
-      throw new NotFoundException();
-    }
-
-    return repository.get();
+    return gitRepositoryFinder.findBySlug(slug)
+            .orElseThrow(NotFoundException::new);
   }
 }
 ```

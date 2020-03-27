@@ -1,12 +1,12 @@
 ---
 title: Why You Should Use Constructor Injection in Spring
 categories: [spring-boot]
-date: 2020-03-24 05:00:00 +1100
-modified: 2020-03-24 05:00:00 +1100
+date: 2020-03-28 05:00:00 +1100
+modified: 2020-03-28 05:00:00 +1100
 author: vasudha
 excerpt: 'Dependency injection is a common approach to implement loose coupling among the classes in an application. There are different ways of injecting dependencies and this article explains why constructor injection should be the preferred way.'
 image:
-  auto: 0067-injection
+  auto: 0068-injection
 ---  
 
 Dependency injection is an approach to implement loose coupling among the classes in an application. 

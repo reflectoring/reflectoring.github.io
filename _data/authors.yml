@@ -44,7 +44,10 @@ vasudha:
   name: "Vasudha Venkatesan"
   email: "vasudha.govi@gmail.com"
   avatar: "/assets/img/authors/vasudha.jpg"
-  github: "vasudhavenkatesan"
+  github: "vasudhavenkatesan",
+  bio: "A budding software engineer curious to learn new things and open to innovative ideas.",
+  twitter:"v_a_s_u_d_h_a",
+  linkedin:"vasudha-venkatesan"
 
 petros:
   name: "Petros Stergioulas"

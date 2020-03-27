@@ -19,7 +19,7 @@ This tutorial gives an overview of how to publish and listen to custom events an
 
 ## Why Should I Use Events Instead of Direct Method Calls?
 
-Both events and direct method calls fit for different situations. With a method call it's like making an assertion that, no matter the state of the sending and receiving modules, they need to know this event happened. 
+Both events and direct method calls fit for different situations. With a method call it's like making an assertion that, no matter the state of the sending and receiving modules, they need to know this event happened.
 
 With events, on the other hand, we just say that an event occurred and which modules get notified is not our concern. It's good to use events when we want to pass on the processing to another thread (example: sending an email on some task completion). Also, events come in handy for test driven development.
 
@@ -31,7 +31,7 @@ Let's see how we can create, publish and listen to custom events in a Spring Boo
 
 ## Creating an `ApplicationEvent`
 
-We can publish application events using the Spring Framework’s event publishing mechanism. 
+We can publish application events using the Spring Framework’s event publishing mechanism.
 
 Let's create a custom event called `UserCreatedEvent` by extending `ApplicationEvent`
 
@@ -47,9 +47,9 @@ class UserCreatedEvent extends ApplicationEvent {
 }
 ```
 
-We are passing a `source` object on which the event initially occurred or with which the event is associated (never null) to `super`. We do this for event sourcing. In event sourcing, we capture the state of entity or aggregate as a sequence of state changing events.
+The `source` which is being passed to `super()` can be a object on which the event occured initially or a object with which the event is associated.
 
-Since Spring 4.2, **we can also publish objects not extending `ApplicationEvent` as an event**:
+Since Spring 4.2, **we can also publish objects as an event without extending `ApplicationEvent`**:
 
 ```java
 class UserRemovedEvent {
@@ -91,10 +91,6 @@ There are two ways to define a listener. We can either use the `@EventListener` 
 
 ### Annotation-Driven
 
-Starting with Spring 4.1 it's now possible to simply annotate a method of a managed bean with `@EventListener` to automatically register an `ApplicationListener` matching the signature of the method. No additional configuration is necessary with annotation-driven configuration enabled. Our method can listen to several events or if we want to define it with no parameter at all, the event types can also be specified on the annotation itself. Example: `@EventListener({ContextStartedEvent.class, ContextRefreshedEvent.class})`.
-
-For the methods annotated with `@EventListener` and defined as a non-void return type, Spring will publish the result as a new event for us.
-
 ```java
 @Component
 class UserRemovedListener {
@@ -115,7 +111,9 @@ class UserRemovedListener {
 }
 ```
 
-Spring allows our listener to be triggered only in certain circumstances if we specify a `condition` by defining a boolean SpEL expression. The event will only be handled if the expression evaluates to `true` or one of the following strings: "true", "on", "yes", or "1". Method arguments are exposed via their names. The condition expression also exposes a “root” variable referring to the raw `ApplicationEvent` (`#root.event`) and the actual method arguments `(#root.args)`
+Starting with Spring 4.1 it's now possible to simply annotate a method of a managed bean with `@EventListener` to automatically register an `ApplicationListener` matching the signature of the method. No additional configuration is necessary with annotation-driven configuration enabled. Our method can listen to several events or if we want to define it with no parameter at all, the event types can also be specified on the annotation itself. Example: `@EventListener({ContextStartedEvent.class, ContextRefreshedEvent.class})`.
+
+For the methods annotated with `@EventListener` and defined as a non-void return type, Spring will publish the result as a new event for us.
 
 ```java
 @Component
@@ -128,6 +126,8 @@ class UserRemovedListener {
 	}
 }
 ```
+
+Spring allows our listener to be triggered only in certain circumstances if we specify a `condition` by defining a boolean SpEL expression. The event will only be handled if the expression evaluates to `true` or one of the following strings: "true", "on", "yes", or "1". Method arguments are exposed via their names. The condition expression also exposes a “root” variable referring to the raw `ApplicationEvent` (`#root.event`) and the actual method arguments `(#root.args)`
 
 In the above example, the listener will be triggered with `UserRemovedEvent` only when the `#event.name` has value `'reflectoring'`,
 
@@ -144,13 +144,11 @@ class UserCreatedListener implements ApplicationListener<UserCreatedEvent> {
 }
 ```
 
-In the above example, we have created a listener by implementing `ApplicationLister` and the generic represents the type of event you want to listen. It is now possible to define your `ApplicationListener` implementation with nested generics information in the event type. When dispatching an event, the signature of your listener is used to determine if it matches said incoming event.
+In the above example, we have created a listener by implementing `ApplicationLister` and the generic represents the type of event we want to listen. It is now possible to define our `ApplicationListener` implementation with nested generics information in the event type. When dispatching an event, the signature of our listener is used to determine if it matches said incoming event.
 
 ### Asynchronous Event Listeners
 
 **By default spring events are synchronous, meaning the publisher thread blocks until all listeners have finished processing the event.**
-
-To make an event listener run in async mode, all we have to do is use the `@Async` annotation on that listener. To make the `@Async` annotation work, we also have to annotate one of our `@Configuration` classes or the `@SpringBootApplication` class with `@EnableAsync`.
 
 ```java
 @Component
@@ -164,11 +162,11 @@ class AsyncListener {
 }
 ```
 
+To make an event listener run in async mode, all we have to do is use the `@Async` annotation on that listener. To make the `@Async` annotation work, we also have to annotate one of our `@Configuration` classes or the `@SpringBootApplication` class with `@EnableAsync`.
+
 ## Transaction-Bound Events
 
 Spring allows us to bind an event listener to a phase of the current transaction. This allows events to be used with more flexibility when the outcome of the current transaction actually matters to the listener.
-
-The transaction module implements an `EventListenerFactory` that looks for the new `@TransactionalEventListener` annotation. So when we annotate our method with `@TransactionalEventListener`, we get an extended event listener that is aware of the transaction:
 
 ```java
 @Component
@@ -181,14 +179,16 @@ class UserRemovedListener {
 }
 ```
 
+The transaction module implements an `EventListenerFactory` that looks for the new `@TransactionalEventListener` annotation. So when we annotate our method with `@TransactionalEventListener`, we get an extended event listener that is aware of the transaction:
+
 The `UserRemovedListener` will only be invoked when the current transaction completes.
 
-We can bind the listener to the following phases of transaction: 
- 
-*`AFTER_COMMIT`: Fire the event after the commit has completed successfully.  
-*`AFTER_COMPLETION`: Fire the event after the transaction has completed.  
-*`AFTER_ROLLBACK`: Fire the event if the transaction has rolled back.  
-*`BEFORE_COMMIT`: Fire the event before transaction commit.
+We can bind the listener to the following phases of transaction:
+
+- `AFTER_COMMIT`: Event will be fired when the transaction gets committed successfully. Can perform further operation once the main transaction commit gets complete.
+- `AFTER_COMPLETION`: Event will be fired when trasaction commit or get a successful rollback. Can perform cleanup after transaction completion.
+- `AFTER_ROLLBACK`: Event will be fired after trasaction has rolled back.
+- `BEFORE_COMMIT`: Event will be fired before trasaction commit. Can flush trasactional O/R mapping sessions to database.
 
 ## Spring Boot’s Application Events
 
@@ -213,8 +213,6 @@ We can also register our listeners regardless of how the application is created 
 
 `org.springframework.context.ApplicationListener = com.reflectoring.eventdemo.SpringBuiltInEventsListener`
 
-Once we make sure that our event listener is registered properly, we can listen to all of Spring Boot's `SpringApplicationEvents`:
-
 ```java
 class SpringBuiltInEventsListener implements ApplicationListener<SpringApplicationEvent>{
 
@@ -225,46 +223,48 @@ class SpringBuiltInEventsListener implements ApplicationListener<SpringApplicati
 }
 ```
 
+Once we make sure that our event listener is registered properly, we can listen to all of Spring Boot's `SpringApplicationEvents`:
+
 Below are the list of `SpringApplicationEvent`'s in the order of their execution,
 
 ### ApplicationContextInitializedEvent
 
-An `ApplicationContextInitializedEvent` is sent when the `ApplicationContext` is prepared and `ApplicationContextInitializers` have been called but before any bean definitions are loaded.
+An `ApplicationContextInitializedEvent` is fired when the `ApplicationContext` is ready and `ApplicationContextInitializers` are called but bean definitions are not yet loaded. Can be use to perfoem task before beans are initialized into Spring container.
 
 ### ApplicationEnvironmentPreparedEvent
 
-An `ApplicationEnvironmentPreparedEvent` is sent when the `Environment` to be used in the context is known but before the context is created.
+An `ApplicationEnvironmentPreparedEvent` is fired when the `Environment` to be used in the context is available. Since environment will be ready we can inspect and do modification if required.
 
 ### ApplicationFailedEvent
 
-An `ApplicationFailedEvent` is sent if there is an exception on startup.
+An `ApplicationFailedEvent` is fired if there is an exception and application fails to start. Can be used to perform some task like execute a script or notify on failure.
 
 ### ApplicationPreparedEvent
 
-An `ApplicationPreparedEvent` is sent just before the refresh is started but after bean definitions have been loaded.
+An `ApplicationPreparedEvent` is fired when `ApllicationContext` is prepared but not refreshed. Environment is ready for use and bean definitions will be loaded.
 
 ### ApplicationReadyEvent
 
-An `ApplicationReadyEvent` is sent after any application and command-line runners have been called. It indicates that the application is ready to service requests.
+An `ApplicationReadyEvent` is fired to indicate that application is ready to service requests. It is advised not to modify the internal state since all initialization steps will be completed.
 
 ### ApplicationStartedEvent
 
-An `ApplicationStartedEvent` is sent after the context has been refreshed but before any application and command-line runners have been called.
+An `ApplicationStartedEvent` is fired after the context has been refreshed but before any application and command-line runners have been called.
 
 ### ApplicationStartingEvent
 
-An `ApplicationStartingEvent` is sent at the start of a run but before any processing, except for the registration of listeners and initializers.
+An `ApplicationStartingEvent` is fired at the start of a run but before any processing, except for the registration of listeners and initializers.
 
 ### ContextRefreshedEvent
 
-A `ContextRefreshedEvent` is sent when an `ApplicationContext` is refreshed.
+A `ContextRefreshedEvent` is fired when an `ApplicationContext` is refreshed.
 
 ### WebServerInitializedEvent
 
-A `WebServerInitializedEvent` is sent after the WebServer is ready. `ServletWebServerInitializedEvent` and `ReactiveWebServerInitializedEvent` are the servlet and reactive variants respectively.
+A `WebServerInitializedEvent` is fired after the WebServer is ready. `ServletWebServerInitializedEvent` and `ReactiveWebServerInitializedEvent` are the servlet and reactive variants respectively.
 
 # Conclusion
 
-Events are designed for simple communication among Spring beans within the same application context. As of Spring 4.2, the infrastructure has been significantly improved and offers an annotation-based model as well as the ability to publish any arbitrary event. 
+Events are designed for simple communication among Spring beans within the same application context. As of Spring 4.2, the infrastructure has been significantly improved and offers an annotation-based model as well as the ability to publish any arbitrary event.
 
 However, for more sophisticated enterprise needs, the [Spring Integration](https://spring.io/projects/spring-integration) project provides complete support for building lightweight, pattern-oriented, event-driven applications that build upon the well-known Spring programming model.

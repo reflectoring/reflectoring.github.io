@@ -229,7 +229,7 @@ Below are the list of `SpringApplicationEvent`'s in the order of their execution
 
 ### ApplicationContextInitializedEvent
 
-An `ApplicationContextInitializedEvent` is fired when the `ApplicationContext` is ready and `ApplicationContextInitializers` are called but bean definitions are not yet loaded. Can be use to perfoem task before beans are initialized into Spring container.
+An `ApplicationContextInitializedEvent` is fired when the `ApplicationContext` is ready and `ApplicationContextInitializers` are called but bean definitions are not yet loaded. Can be use to perform task before beans are initialized into Spring container.
 
 ### ApplicationEnvironmentPreparedEvent
 

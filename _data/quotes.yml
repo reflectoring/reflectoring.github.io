@@ -74,3 +74,12 @@
 - author: Carol S. Dweck
   publication: Mindset
   text: "Great contributions to society are born our of curiosity and deep understanding."
+- author: Ron Jeffries
+  publication: The Nature of Software Development
+  text: "We can stamp our feet and demand a pony, or we can act like managers and steer our software projects to the best possible result."
+- author: Ron Jeffries
+  publication: The Nature of Software Development
+  text: "Pressure is destructive. Avoid it."
+- author: Ron Jeffries
+  publication: The Nature of Software Development
+  text: "Estimates are likely to be wrong, and they focus our attention on the cost of things rather than on value."

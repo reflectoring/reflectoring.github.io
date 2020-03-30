@@ -56,6 +56,13 @@ petros:
   github: "Petros0"
   linkedin: "petrostergioulas"
 
+nandan:
+  name: "Nandan BN"
+  email: "its.nandanbn@gmail.com"
+  avatar: "/assets/img/authors/nandan.jpg"
+  github: "Lucaarioo"
+  bio: "Full stack developer, passionate about technology, working for a better future with the help of digital world."
+
 petromir:
   name: "Petromir Dzhunev"
   email: "petromir@gmail.com"

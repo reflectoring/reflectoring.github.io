@@ -173,8 +173,8 @@ closure.
 multiple modules**, very similar to the `<dependencyManagement>` element in Maven's `pom.xml` files.
 
 The only dependency we added in the example is the dependency to the Maven BOM (bill of materials)
-of Spring Boot. This BOM includes [all dependencies that a Spring Boot application potentially might need](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies/2.1.5.RELEASE)
-in the exact version that is compatible with a given Spring Boot version (2.1.5.RELEASE in this case).
+of Spring Boot. This BOM includes [all dependencies that a Spring Boot application potentially might need](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies/2.1.7.RELEASE)
+in the exact version that is compatible with a given Spring Boot version (2.1.7.RELEASE in this case).
 Thus, we don't need to list every single dependency on our own and potentially get the version wrong.
 
 Also, note that we apply the `java-library` plugin to all sub-modules. This enables us to use the
@@ -205,7 +205,7 @@ for the application layer.
 More importantly, however, we add the dependency to `spring-boot-starter-data-jpa` which
 provides Spring Data JPA support for a Spring Boot application. **Note that we did not add
 a version number** because the version is automatically resolved from the `spring-boot-dependencies`
-BOM in the parent build file. In this case, we'll get the version that is compatible with Spring Boot 2.1.5.RELEASE.
+BOM in the parent build file. In this case, we'll get the version that is compatible with Spring Boot 2.1.7.RELEASE.
 
 Note that we added the `spring-boot-starter-data-jpa` dependency to the `implementation` configuration.
 This means that this dependency does not leak into the compile time of the modules that include the persistence module as a dependency. This keeps us from accidentally using JPA classes in modules where we don't want it.

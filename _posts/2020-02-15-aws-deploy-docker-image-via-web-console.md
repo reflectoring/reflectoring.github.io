@@ -25,7 +25,7 @@ You can also use a different Docker registry ([Amazon ECR](https://docs.aws.amaz
 
 Second, **you'll need an AWS account**. Go to [aws.amazon.com/console/](https://aws.amazon.com/console/) and sign up. 
 
-Note that, as of yet, I find Amazon's pricing for its cloud services very intransparent. I can't guarantee that this tutorial won't incur costs for your AWS account, but it hasn't for me.
+Note that, as of yet, I find Amazon's pricing for its cloud services very intransparent. I can't guarantee that this tutorial won't incur costs for your AWS account, but it hasn't for me (**Update:** after the month ended, I actually got a bill over $0.36 for playing around with AWS to write this article).
 
 Finally, if you want to create and publish your own Docker image, you need to have Docker installed.
 

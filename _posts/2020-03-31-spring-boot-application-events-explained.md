@@ -1,8 +1,8 @@
 ---
 title: Spring Boot Application Events Explained
 categories: [spring-boot]
-date: 2020-03-30 05:00:00 +1100
-modified: 2020-03-30 05:00:00 +1100
+date: 2020-03-31 05:00:00 +1100
+modified: 2020-03-31 05:00:00 +1100
 author: nandan
 excerpt: 'Spring Boot allows us to throw and listen to specific application events that we can process as we wish. Events are meant for exchanging information between loosely coupled components.'
 image:

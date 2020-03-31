@@ -21,7 +21,7 @@ image:
 * **Author:** Ron Jeffries
 * **Word Count:** ~ 20.000 (1.5 hours at 250 words / minute)
 * **Reading Ease:** easy
-* **Writing Style:** grandfatherly advice (in a good way)  
+* **Writing Style:** "grandfatherly advice" (i.e. telling how it's done it without going into too much detail)  
 
 ## Overview
 
@@ -31,7 +31,7 @@ The book is very short. It's even shorter than the 150 pages suggest, as many pa
 
 Instead, the book goes over all important topics of managing software development on a very(!) high level. You won't get very specific advice on how to develop software, but you'll get advice that might help high-level managers to appreciate the benefits of agile software development.
 
-While I agree with the sentiment that agile is a "natural" way of software development I miss some real-life tales that prove what Jeffries is stating in the book. The book is full of generic statements like "The nature of the work requires us to test and refactor" without going deep into the why and how of it. 
+While I agree that Agile is a "natural" way of software development I miss some real-life tales that prove what Jeffries is stating in the book. The book is full of generic statements like "The nature of the work requires us to test and refactor" without going deep into the why and how of it. 
 
 ## Notes
 

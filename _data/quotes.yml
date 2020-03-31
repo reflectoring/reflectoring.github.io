@@ -83,3 +83,18 @@
 - author: Ron Jeffries
   publication: The Nature of Software Development
   text: "Estimates are likely to be wrong, and they focus our attention on the cost of things rather than on value."
+- author: Ron Jeffries
+  publication: The Nature of Software Development
+  text: "Everything we build must rest on a solid foundation."
+- author: Ron Jeffries
+  publication: The Nature of Software Development
+  text: "Good designs go bad one decision at a time."
+- author: Ron Jeffries
+  publication: The Nature of Software Development
+  text: "The nature of the work requires us to test and refactor."
+- author: Ron Jeffries
+  publication: The Nature of Software Development
+  text: "Under pressure, teams give up the wrong things."
+- author: Ron Jeffries
+  publication: The Nature of Software Development
+  text: "Scaling Agile is good business for scaling vendors. It's not necessarily good advice for you."

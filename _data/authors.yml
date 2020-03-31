@@ -39,6 +39,15 @@ david:
   email: "daviddd.kl@gmail.com"
   avatar: "/assets/img/authors/david.png"
   github: "daklassen"
+  
+vasudha:
+  name: "Vasudha Venkatesan"
+  email: "vasudha.govi@gmail.com"
+  avatar: "/assets/img/authors/vasudha.jpg"
+  github: "vasudhavenkatesan"
+  bio: "A budding software engineer curious to learn new things and open to innovative ideas."
+  twitter: "v_a_s_u_d_h_a"
+  linkedin: "vasudha-venkatesan"
 
 petros:
   name: "Petros Stergioulas"
@@ -46,6 +55,13 @@ petros:
   avatar: "/assets/img/authors/petros.jpg"
   github: "Petros0"
   linkedin: "petrostergioulas"
+
+nandan:
+  name: "Nandan BN"
+  email: "its.nandanbn@gmail.com"
+  avatar: "/assets/img/authors/nandan.jpg"
+  github: "Lucaarioo"
+  bio: "Full stack developer, passionate about technology, working for a better future with the help of digital world."
 
 petromir:
   name: "Petromir Dzhunev"

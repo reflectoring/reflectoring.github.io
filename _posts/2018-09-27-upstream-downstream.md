@@ -57,7 +57,7 @@ arrows point in the other direction).
 
 Applying the Value Rule here is a little more abstract, but we can say that
 component C holds the most value since it "imports" all the features of 
-components B and A and adds its only value to those features, 
+components B and A and adds its own value to those features, 
 making it the downstream component.
 
 ## Upstream and Downstream Open Source Projects

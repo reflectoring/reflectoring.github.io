@@ -173,7 +173,7 @@ The `@PostConstruct` method is called right after the bean has been created by S
 
 Instead, it will be called after all beans it depends on have been initialized. If we want to add an artificial dependency, and thus create an order, we can use the `@DependsOn` annotation (same warnings apply as for the `@Order` annotation!).
 
-**A `@PostConstruct` method is inherently tied to an existing Spring bean so it should be used for the initialization logic of this single bean only**. 
+**A `@PostConstruct` method is inherently tied to a specific Spring bean so it should be used for the initialization logic of this single bean only**. 
 
 For global initialization logic, a `CommandLineRunner`, `ApplicationRunner`, or `ApplicationListener` provides a better solution.  
 
@@ -195,11 +195,11 @@ class MyInitializingBean implements InitializingBean {
 }
 ```
 
-Spring will call the `afterPropertiesSet()` method during application startup. As the name suggests, we can be sure that all the properties of our bean have been populated by Spring. If we're using `@Autowired` on certain properties (which we shouldn't - we should use constructor injection instead), Spring will have injected beans into those properties before calling `afterPropertiesSet()`. 
+Spring will call the `afterPropertiesSet()` method during application startup. As the name suggests, we can be sure that all the properties of our bean have been populated by Spring. If we're using `@Autowired` on certain properties (which we shouldn't - we should use [constructor injection](/constructor-injection) instead), Spring will have injected beans into those properties before calling `afterPropertiesSet()` - same as with `@PostConstruct`. 
 
-**This makes the `InitializingBean` solution safer than using `@PostConstruct`, because the `@PostConstruct` method may run into `NullPointerExceptions` if we rely on `@Autowired` fields that might not have been injected yet**. 
+**With both `InitializingBean` and `@PostConstruct` we must be careful not to depend on state that has been initialized in the `afterPropertiesSet()` or `@PostConstruct` method of another bean. That state may not have been initialized yet and cause a `NullPointerException`**.
 
-If we're using constructor injection, though, both solutions are equivalent. 
+If possible, we should use [constructor injection](/constructor-injection) and initialize everything we need in the constructor, because that makes this kind of error impossible. 
 
 ## Conclusion
 

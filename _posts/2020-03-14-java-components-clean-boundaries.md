@@ -372,7 +372,6 @@ class InternalPackageTests {
 
     for (String internalPackage : internalPackages) {
       // make it refactoring-safe in case we're renaming the internal package
-      assertPackageExists(internalPackage);
       assertPackageIsNotAccessedFromOutside(internalPackage);
     }
 
@@ -397,7 +396,7 @@ class InternalPackageTests {
 
 The new method `assertPackageExists()` uses ArchUnit to make sure that the package in question is contained within the classes we're analyzing. 
 
-We call this method once for the base package and once for each internal package we're iterating through. 
+We do this check only for the base package. We don't do this check for the internal packages, because we know they exist. After all, we have identified those packages by the `@InternalPackage` annotation within the `internalPackages()` method. 
 
 This test is now refactoring-safe and will fail if we rename packages as it should.
 

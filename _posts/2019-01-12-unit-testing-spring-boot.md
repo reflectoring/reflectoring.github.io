@@ -144,7 +144,7 @@ public class RegisterUseCase {
 }
 ```
 
-This version allows constructor injection by providing a constructor that allows to pass 
+This version allows [constructor injection](/constructor-injection) by providing a constructor that allows to pass 
 in a `UserRepository` instance. In the unit test, we can now
 create such an instance (perhaps a mock instance as we'll discuss later) and pass it into the constructor.
 

@@ -20,7 +20,7 @@ The code in this article comes from the [SQS Starter library](https://github.com
 
 ## Isn't the AWS SDK Good Enough?
 
-AWS has [its own SDK](https://search.maven.org/search?q=a:aws-java-sdk-sqs) that provides functionality to interact with an SQS queue. And it's quite good and easy to use. 
+AWS provides [an SDK](https://search.maven.org/search?q=a:aws-java-sdk-sqs) that provides functionality to interact with an SQS queue. And it's quite good and easy to use. 
 
 However, **it's missing a polling mechanism that allows us to pull messages from the queue regularly and process them in near-realtime across a pool of message handlers working in parallel**. 
 
@@ -76,11 +76,11 @@ public abstract class SqsMessagePublisher<T> {
 }
 ```
 
-In the `publish()` method, we use [resilience4j's retry functionality](https://github.com/resilience4j/resilience4j#circuitbreaker-retry-fallback) to configure a retry behavior. We can modify this behavior by configuring the `RetryRegistry` that is passed into the constructor. Note that the AWS SDK provides it's own [retry behavior](https://docs.aws.amazon.com/general/latest/gr/api-retries.html), but I opted for the more generic resilience4j library here. 
+In the `publish()` method, we use [resilience4j's retry functionality](https://github.com/resilience4j/resilience4j#circuitbreaker-retry-fallback) to configure a retry behavior. We can modify this behavior by configuring the `RetryRegistry` that is passed into the constructor. Note that the AWS SDK provides its own [retry behavior](https://docs.aws.amazon.com/general/latest/gr/api-retries.html), but I opted for the more generic resilience4j library here. 
 
 The interaction with SQS happens in the internal `doPublish()` method. Here, we build a `SendMessageRequest` and send that to SQS via the `AmazonSqs` client from the Amazon SDK. If the returned HTTP status code is not 200, we throw an exception so that the retry mechanism knows something went wrong and will trigger a retry.
 
-In our application, we can now simply extend the abstract `SqsMessagePublisher` class, instantiate that class and call the `publish()` method to send messages to to a queue. 
+In our application, we can now simply extend the abstract `SqsMessagePublisher` class, instantiate that class and call the `publish()` method to send messages to a queue. 
 
 ## Building a Robust Message Handler
 
@@ -147,7 +147,7 @@ class SqsMessageFetcher {
 
 Again, we use the `AmazonSqs` client, but this time to create a `ReceiveMessageRequest` and return the `Message`s we received from the SQS queue. We can configure some parameters in the `SqsMessagePollerProperties` object that we pass into this class. 
 
-An important detail is that we're configuring the `waitTimeSeconds` on the request to tell the Amazon SDK to wait a number of seconds for a number of messages specified by `maxNumberOfMessages` before returning a list of messages (or zero messages if there weren't any after that time). **With these configuration parameters, we have effectively implemented a long polling mechanism if we call our `fetchMessages()` method regularly**. 
+An important detail is that we're configuring the `waitTimeSeconds` on the request to tell the Amazon SDK to wait some seconds until `maxNumberOfMessages` messages are available before returning a list of messages (or an empty if there weren't any after that time). **With these configuration parameters, we have effectively implemented a long polling mechanism if we call our `fetchMessages()` method regularly**. 
 
 Note that we're not throwing an exception in case of a non-success HTTP response code. This is because we're expecting  `fetchMessages()` to be called frequently in short intervals. We just hope that the call will succeed the next time.
 
@@ -200,7 +200,7 @@ In the `poll()` method, we get some messages from the message fetcher. We then d
 
 Next, we pass the message object into the `handle()` method of an`SqsMessageHandler` instance. We don't do this in the current thread, though, but instead defer the execution to a thread in a special thread pool (`handlerThreadPool`). **This way, we can fan out the processing of messages into multiple concurrent threads**. 
 
-After a message has been handled, we need to tell SQS that we have handled it successfully. We do this by calling the `deleteMessage()` API. If we didn't, SQS would return this message again after some time with one of the next calls to our `SqsMessageFetcher`. 
+After a message has been handled, we need to tell SQS that we have handled it successfully. We do this by calling the `deleteMessage()` API. If we didn't, SQS would serve this message again after some time with one of the next calls to our `SqsMessageFetcher`. 
 
 ### Starting and Stopping to Poll
 
@@ -249,7 +249,7 @@ In the `stop()` method, we just shut down the poller and handler thread pools so
 
 The final part to get everything to work is a piece of code that wires everything together. **We'll want to have a registry where we can register a message handler**. The registry will then take care of creating the message fetcher and poller required to serve messages to the handler.
 
-But first we need a data structure that takes all the configuration parameters needed to register a message handler. We'll call this class `SqsMessageHandlerRegistration`:
+But first, we need a data structure that takes all the configuration parameters needed to register a message handler. We'll call this class `SqsMessageHandlerRegistration`:
 
 ```java
 public interface SqsMessageHandlerRegistration<T> {
@@ -353,11 +353,11 @@ The registry code is pretty straightforward glue code. For each registration, we
 
 **If we call `start()` on the registry now, each poller will start polling messages from SQS in a separate thread and fan the messages out to message handlers living in a separate thread pool for each message handler.**
 
-### Creating a Spring Boot Auto Configuration
+### Creating a Spring Boot Auto-Configuration
 
 The code above will work with plain Java, but I promised to make it work with Spring Boot. For this, we can create a [Spring Boot starter](/spring-boot-starter/).
 
-The starter consists of a single auto configuration class: 
+The starter consists of a single auto-configuration class: 
 
 ```java
 @Configuration

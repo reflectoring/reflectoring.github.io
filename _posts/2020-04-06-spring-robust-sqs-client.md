@@ -1,28 +1,28 @@
 ---
 title: Building a Robust SQS Client with Spring Boot
 categories: [meta]
-date: 2020-04-06 05:00:00 +1100
-modified: 2020-04-06 05:00:00 +1100
+date: 2020-04-13 05:00:00 +1100
+modified: 2020-04-13 05:00:00 +1100
 author: default
-excerpt: "TODO"
+excerpt: "A top-to-bottom approach of building an SQS client for publishing and receiving messages from an SQS queue in a robust and scalable way."
 image:
-  auto: 0067-todo
+  auto: 0035-switchboard
 ---
 
 I mistrust tools and products that have the word "simple" in their name. This was also the case when I had First Contact with AWS's "Simple Queue Service" or SQS.
 
-And while it is rather simple to send messages to an SQS queue, there are some things to consider when retrieving messages from it. It's not rocket science, but it requires some careful design to build a robust and scalable message handler.
+And while it *is* rather simple to send messages to an SQS queue, there are some things to consider when retrieving messages from it. It's not rocket science, but it requires some careful design to build a robust and scalable message handler.
 
 This article shows a way of implementing a component that is capable of sending messages to and retrieving messages from an SQS queue in a robust and scalable manner. In the end, we'll wrap this component into a Spring Boot starter to be used in our Spring Boot applications. 
 
-## Get The SQS Starter Library
+## Get the SQS Starter Library
 The code in this article comes from the [SQS Starter library](https://github.com/thombergs/sqs-starter) that I built for one of my projects. It's [available on Maven Central](https://search.maven.org/artifact/io.reflectoring/sqs-starter) and I'll welcome any contributions you might have to make it better.
 
-## Isn't Amazon's SDK Good Enough?
+## Isn't the AWS SDK Good Enough?
 
-Amazon has [its own SDK](https://search.maven.org/search?q=a:aws-java-sdk-sqs) that provides functionality to interact with an SQS queue. And it's quite good and easy to use. 
+AWS has [its own SDK](https://search.maven.org/search?q=a:aws-java-sdk-sqs) that provides functionality to interact with an SQS queue. And it's quite good and easy to use. 
 
-However, it's missing a polling mechanism that allows us to pull messages from the queue regularly and process them in near-realtime across a pool of message handlers working in parallel. 
+However, **it's missing a polling mechanism that allows us to pull messages from the queue regularly and process them in near-realtime across a pool of message handlers working in parallel**. 
 
 This is exactly what we'll be building in this article. 
 
@@ -32,7 +32,7 @@ As a bonus, we'll build a message publisher that wraps the AWS SDK and adds a li
 
 Let's start with the easy part and look at publishing messages.
 
-The `AmazonSQS` client, which is part from the AWS SDK, provides the methods `sendMessage()` and `sendMessageBatch()` to send messages to an SQS queue.
+The `AmazonSQS` client, which is part of the AWS SDK, provides the methods `sendMessage()` and `sendMessageBatch()` to send messages to an SQS queue.
 
 In our publisher, we wrap `sendMessage()` to create a little more high-level message publisher that
 
@@ -51,33 +51,34 @@ public abstract class SqsMessagePublisher<T> {
   // constructors ...  
 
   public void publish(T message) {
-    Retry retry = retryRegistry.retry("publish");
-    retry.executeRunnable(() -> doPublish(message));
+  Retry retry = retryRegistry.retry("publish");
+  retry.executeRunnable(() -> doPublish(message));
   }
 
   private void doPublish(T message) {
-    try {
-      SendMessageRequest request = new SendMessageRequest()
-        .withQueueUrl(sqsQueueUrl)
-        .withMessageBody(objectMapper.writeValueAsString(message));
-      SendMessageResult result = sqsClient.sendMessage(request);
-    
-      if (result.getSdkHttpMetadata().getHttpStatusCode() != 200) {
-        throw new RuntimeException(String.format("got error response from SQS queue %s: %s",
-          sqsQueueUrl,
-          result.getSdkHttpMetadata()));
-    }
+  try {
+    SendMessageRequest request = new SendMessageRequest()
+    .withQueueUrl(sqsQueueUrl)
+    .withMessageBody(objectMapper.writeValueAsString(message));
+    SendMessageResult result = sqsClient.sendMessage(request);
+  
+    if (result.getSdkHttpMetadata().getHttpStatusCode() != 200) {
+    throw new RuntimeException(
+      String.format("got error response from SQS queue %s: %s",
+      sqsQueueUrl,
+      result.getSdkHttpMetadata()));
+  }
 
-    } catch (JsonProcessingException e) {
-      throw new IllegalStateException("error sending message to SQS: ", e);
-    }
+  } catch (JsonProcessingException e) {
+    throw new IllegalStateException("error sending message to SQS: ", e);
+  }
   }
 }
 ```
 
-In the `publish()` method, we use [resilience4j's retry functionality](https://github.com/resilience4j/resilience4j#circuitbreaker-retry-fallback) to configure a retry behavior. We can modify this behavior by configuring the `RetryRegistry` that is passed into the constructor.
+In the `publish()` method, we use [resilience4j's retry functionality](https://github.com/resilience4j/resilience4j#circuitbreaker-retry-fallback) to configure a retry behavior. We can modify this behavior by configuring the `RetryRegistry` that is passed into the constructor. Note that the AWS SDK provides it's own [retry behavior](https://docs.aws.amazon.com/general/latest/gr/api-retries.html), but I opted for the more generic resilience4j library here. 
 
-The interaction with SQS happens in the internal `doPublish()` method. Here, we build a `SendMessageRequest` and send that to SQS via the `AmazonSqs` client from the Amazon SDK. If the return HTTP status code is not 200, we throw an exception so that the retry mechanism knows something went wrong and will trigger a retry.
+The interaction with SQS happens in the internal `doPublish()` method. Here, we build a `SendMessageRequest` and send that to SQS via the `AmazonSqs` client from the Amazon SDK. If the returned HTTP status code is not 200, we throw an exception so that the retry mechanism knows something went wrong and will trigger a retry.
 
 In our application, we can now simply extend the abstract `SqsMessagePublisher` class, instantiate that class and call the `publish()` method to send messages to to a queue. 
 
@@ -112,7 +113,7 @@ Next, we build a `SqsMessageFetcher` class that fetches messages from an SQS que
 ```java
 class SqsMessageFetcher {
 
-  private static final Logger logger = LoggerFactory.getLogger(SqsMessageFetcher.class);
+  private static final Logger logger = ...;
   private final AmazonSQS sqsClient;
   private final SqsMessagePollerProperties properties;
 
@@ -120,37 +121,35 @@ class SqsMessageFetcher {
 
   List<Message> fetchMessages() {
 
-    logger.debug("fetching messages from SQS queue {}", properties.getQueueUrl());
+  ReceiveMessageRequest request = new ReceiveMessageRequest()
+    .withMaxNumberOfMessages(properties.getBatchSize())
+    .withQueueUrl(properties.getQueueUrl())
+    .withWaitTimeSeconds((int) properties.getWaitTime().toSeconds());
 
-    ReceiveMessageRequest request = new ReceiveMessageRequest()
-        .withMaxNumberOfMessages(properties.getBatchSize())
-        .withQueueUrl(properties.getQueueUrl())
-        .withWaitTimeSeconds((int) properties.getWaitTime().toSeconds());
+  ReceiveMessageResult result = sqsClient.receiveMessage(request);
 
-    ReceiveMessageResult result = sqsClient.receiveMessage(request);
+  if (result.getSdkHttpMetadata().getHttpStatusCode() != 200) {
+    logger.error("got error response from SQS queue {}: {}",
+      properties.getQueueUrl(),
+      result.getSdkHttpMetadata());
+    return Collections.emptyList();
+  }
 
-    if (result.getSdkHttpMetadata().getHttpStatusCode() != 200) {
-      logger.error("got error response from SQS queue {}: {}",
-          properties.getQueueUrl(),
-          result.getSdkHttpMetadata());
-      return Collections.emptyList();
-    }
+  logger.debug("polled {} messages from SQS queue {}",
+    result.getMessages().size(),
+    properties.getQueueUrl());
 
-    logger.debug("polled {} messages from SQS queue {}",
-        result.getMessages().size(),
-        properties.getQueueUrl());
-
-    return result.getMessages();
+  return result.getMessages();
   }
 
 }
 ```
 
-Again, we use the `AmazonSqs` client. This time, to create a `ReceiveMessageRequest` and return the `Message`s we received from the SQS queue. We can configure some behavior in the `SqsMessagePollerProperties` we pass into this class. 
+Again, we use the `AmazonSqs` client, but this time to create a `ReceiveMessageRequest` and return the `Message`s we received from the SQS queue. We can configure some parameters in the `SqsMessagePollerProperties` object that we pass into this class. 
 
-An important detail is that we're configuring the `waitTimeSeconds` on the request to tell the Amazon SDK to wait a number of seconds for at least `maxNumberOfMessages` before returning a list of messages (or zero messages if there weren't any after that time). With these configuration parameters, we have effectively implemented a long polling mechanism if we call our `fetchMessages()` method regularly. 
+An important detail is that we're configuring the `waitTimeSeconds` on the request to tell the Amazon SDK to wait a number of seconds for a number of messages specified by `maxNumberOfMessages` before returning a list of messages (or zero messages if there weren't any after that time). **With these configuration parameters, we have effectively implemented a long polling mechanism if we call our `fetchMessages()` method regularly**. 
 
-Note that we're not throwing an exception in case of a non-success HTTP response code. This is because we're expecting  `fetchMessages()` to be called in regular intervals. We just hope that the call will succeed the next time.
+Note that we're not throwing an exception in case of a non-success HTTP response code. This is because we're expecting  `fetchMessages()` to be called frequently in short intervals. We just hope that the call will succeed the next time.
 
 ### Polling Messages 
 
@@ -159,7 +158,7 @@ The next layer up, we build a `SqsMessagePoller` class that calls our `SqsMessag
 ```java
 class SqsMessagePoller<T> {
 
-  private static final Logger logger = LoggerFactory.getLogger(SqsMessagePoller.class);
+  private static final Logger logger = ...;
   private final SqsMessageHandler<T> messageHandler;
   private final SqsMessageFetcher messageFetcher;
   private final SqsMessagePollerProperties pollingProperties;
@@ -171,23 +170,27 @@ class SqsMessagePoller<T> {
 
   private void poll() {
 
-    List<Message> messages = messageFetcher.fetchMessages();
+  List<Message> messages = messageFetcher.fetchMessages();
 
-    for (Message sqsMessage : messages) {
-      try {
-        final T message = objectMapper.readValue(sqsMessage.getBody(), messageHandler.messageType());
-        handlerThreadPool.submit(() -> {
-          messageHandler.handle(message);
-          acknowledgeMessage(sqsMessage);
-        });
-      } catch (JsonProcessingException e) {
-        logger.warn("error parsing message: ", e);
-      }
+  for (Message sqsMessage : messages) {
+    try {
+    final T message = objectMapper.readValue(
+      sqsMessage.getBody(), 
+      messageHandler.messageType());
+    handlerThreadPool.submit(() -> {
+      messageHandler.handle(message);
+      acknowledgeMessage(sqsMessage);
+    });
+    } catch (JsonProcessingException e) {
+    logger.warn("error parsing message: ", e);
     }
+  }
   }
 
   private void acknowledgeMessage(Message message) {
-    sqsClient.deleteMessage(pollingProperties.getQueueUrl(), message.getReceiptHandle());
+  sqsClient.deleteMessage(
+    pollingProperties.getQueueUrl(),
+    message.getReceiptHandle());
   }
 
 }
@@ -195,9 +198,9 @@ class SqsMessagePoller<T> {
 
 In the `poll()` method, we get some messages from the message fetcher. We then deserialize each message from the JSON string we receive from the Amazon SDK's `Message` object.
 
-Next, we pass the message object into the `handle()` method of an`SqsMessageHandler` instance. We don't do this in the current thread, though, but instead defer the execution to a thread in a special thread pool (`handlerThreadPool`). This way, we can fan out the processing of messages into multiple threads. 
+Next, we pass the message object into the `handle()` method of an`SqsMessageHandler` instance. We don't do this in the current thread, though, but instead defer the execution to a thread in a special thread pool (`handlerThreadPool`). **This way, we can fan out the processing of messages into multiple concurrent threads**. 
 
-After a message has been handled, we need to tell SQS that we successfully handled it. Otherwise, SQS would return this message again after a grade period with one of the next calls to our `SqsMessageFetcher`. We do this by calling the `deleteMessage()` API.
+After a message has been handled, we need to tell SQS that we have handled it successfully. We do this by calling the `deleteMessage()` API. If we didn't, SQS would return this message again after some time with one of the next calls to our `SqsMessageFetcher`. 
 
 ### Starting and Stopping to Poll
 
@@ -208,27 +211,27 @@ So, we add a `start()` and a `stop()` method to the class, allowing us to start 
 ```java
 class SqsMessagePoller<T> {
 
-  private static final Logger logger = LoggerFactory.getLogger(SqsMessagePoller.class);
+  private static final Logger logger = ...;
   private final SqsMessagePollerProperties pollingProperties;
   private final ScheduledThreadPoolExecutor pollerThreadPool;
   private final ThreadPoolExecutor handlerThreadPool;
 
   void start() {
-    logger.info("starting SqsMessagePoller");
-    for (int i = 0; i < pollerThreadPool.getCorePoolSize(); i++) {
-      logger.info("starting SqsMessagePoller - thread {}", i);
-      pollerThreadPool.scheduleWithFixedDelay(
-          this::poll,
-          1,
-          pollingProperties.getPollDelay().toSeconds(),
-          TimeUnit.SECONDS);
-    }
+  logger.info("starting SqsMessagePoller");
+  for (int i = 0; i < pollerThreadPool.getCorePoolSize(); i++) {
+    logger.info("starting SqsMessagePoller - thread {}", i);
+    pollerThreadPool.scheduleWithFixedDelay(
+      this::poll,
+      1,
+      pollingProperties.getPollDelay().toSeconds(),
+      TimeUnit.SECONDS);
+  }
   }
 
   void stop() {
-    logger.info("stopping SqsMessagePoller");
-    pollerThreadPool.shutdownNow();
-    handlerThreadPool.shutdownNow();
+  logger.info("stopping SqsMessagePoller");
+  pollerThreadPool.shutdownNow();
+  handlerThreadPool.shutdownNow();
   }
 
   // other methods omitted ...
@@ -236,58 +239,63 @@ class SqsMessagePoller<T> {
 }
 ```
 
-With `pollerThreadPool`, we introduced a second thread pool. In `start()`, we schedule a call to our `poll()` method as a recurring task to this thread pool every couple seconds after the last call has finished. Note that for most cases, it should be enough if the poller thread pool has a single thread. We'd need a lot of messages on a queue to and a lot of concurrent message handlers to need more than one poller thread.
+With `pollerThreadPool`, we have introduced a second thread pool. In `start()`, **we schedule a call to our `poll()` method as a recurring task to this thread pool every couple seconds after the last call has finished**. 
 
-In the `stop()` method, we just shut down the poller and handler thread pools so they should stop accepting new work.
+Note that for most cases, it should be enough if the poller thread pool has a single thread. We'd need a lot of messages on a queue and a lot of concurrent message handlers to need more than one poller thread.
+
+In the `stop()` method, we just shut down the poller and handler thread pools so that they stop to accept new work.
 
 ### Registering Message Handlers
 
-The final part to get everything to work is a piece of code that wires everything together. We'll want to have a registry where we can register a message handler. The registry will then take care of creating the message fetcher and poller required to serve messages to the handler.
+The final part to get everything to work is a piece of code that wires everything together. **We'll want to have a registry where we can register a message handler**. The registry will then take care of creating the message fetcher and poller required to serve messages to the handler.
 
 But first we need a data structure that takes all the configuration parameters needed to register a message handler. We'll call this class `SqsMessageHandlerRegistration`:
 
 ```java
 public interface SqsMessageHandlerRegistration<T> {
 
-    /**
-     * The message handler that shall process the messages polled from SQS.
-     */
-    SqsMessageHandler<T> messageHandler();
+  /**
+   * The message handler that shall process the messages polled from SQS.
+   */
+  SqsMessageHandler<T> messageHandler();
 
-    /**
-     * A human-readable name for the message handler. This is used to name the message handler threads.
-     */
-    String name();
+  /**
+   * A human-readable name for the message handler. This is used to name 
+   * the message handler threads.
+   */
+  String name();
 
-    /**
-     * Configuration properties for the message handler.
-     */
-    SqsMessageHandlerProperties messageHandlerProperties();
+  /**
+   * Configuration properties for the message handler.
+   */
+  SqsMessageHandlerProperties messageHandlerProperties();
 
-    /**
-     * Configuration properties for the message poller.
-     */
-    SqsMessagePollerProperties messagePollerProperties();
+  /**
+   * Configuration properties for the message poller.
+   */
+  SqsMessagePollerProperties messagePollerProperties();
 
-    /**
-     * The SQS client to use for polling messages from SQS.
-     */
-    AmazonSQS sqsClient();
+  /**
+   * The SQS client to use for polling messages from SQS.
+   */
+  AmazonSQS sqsClient();
 
-    /**
-     * The {@link ObjectMapper} to use for deserializing messages from SQS.
-     */
-    ObjectMapper objectMapper();
+  /**
+   * The {@link ObjectMapper} to use for deserializing messages from SQS.
+   */
+  ObjectMapper objectMapper();
 }
 ```
 
-A registration contains the message handler and everything that's needed to instantiate and configure an `SqsMessagePoller` and the underlying `SqsMessageFetcher`.
+**A registration contains the message handler and everything that's needed to instantiate and configure an `SqsMessagePoller` and the underlying `SqsMessageFetcher`**.
 
 We'll then want to pass a list of such registrations to our registry:
 
 ```java
 List<SqsMessageHandlerRegistration> registrations = ...;
-SqsMessageHandlerRegistry registry = new SqsMessageHandlerRegistry(registrations);
+SqsMessageHandlerRegistry registry = 
+  new SqsMessageHandlerRegistry(registrations);
+
 registry.start();
 ...
 registry.stop();
@@ -300,44 +308,50 @@ The registry code will look something like this:
 ```java
 class SqsMessageHandlerRegistry {
 
-    private static final Logger logger = LoggerFactory.getLogger(SqsMessageHandlerRegistry.class);
+  private static final Logger logger = ...;
 
-    private final Set<SqsMessagePoller<?>> pollers;
+  private final Set<SqsMessagePoller<?>> pollers;
 
-    public SqsMessageHandlerRegistry(List<SqsMessageHandlerRegistration<?>> messageHandlerRegistrations) {
-        this.pollers = initializePollers(messageHandlerRegistrations);
+  public SqsMessageHandlerRegistry(
+    List<SqsMessageHandlerRegistration<?>> messageHandlerRegistrations) {
+    this.pollers = initializePollers(messageHandlerRegistrations);
+  }
+
+  private Set<SqsMessagePoller<?>> initializePollers(
+        List<SqsMessageHandlerRegistration<?>> registrations) {
+    
+    Set<SqsMessagePoller<?>> pollers = new HashSet<>();
+    
+    for (SqsMessageHandlerRegistration<?> registration : registrations) {
+      pollers.add(createPollerForHandler(registration));
+      logger.info("initialized SqsMessagePoller '{}'", registration.name());
     }
+ 
+    return pollers;
+  }
 
-    private Set<SqsMessagePoller<?>> initializePollers(List<SqsMessageHandlerRegistration<?>> registrations) {
-        Set<SqsMessagePoller<?>> pollers = new HashSet<>();
-        for (SqsMessageHandlerRegistration<?> registration : registrations) {
-            pollers.add(createPollerForHandler(registration));
-            logger.info("initialized SqsMessagePoller '{}'", registration.name());
-        }
-        return pollers;
-    }
+  private SqsMessagePoller<?> createPollerForHandler( 
+        SqsMessageHandlerRegistration<?> registration) {
+    ...
+  }
 
-    private SqsMessagePoller<?> createPollerForHandler(SqsMessageHandlerRegistration<?> registration) {
-        ...
+  public void start() {
+    for (SqsMessagePoller<?> poller : this.pollers) {
+      poller.start();
     }
+  }
 
-    public void start() {
-        for (SqsMessagePoller<?> poller : this.pollers) {
-            poller.start();
-        }
+  public void stop() {
+    for (SqsMessagePoller<?> poller : this.pollers) {
+      poller.stop();
     }
-
-    public void stop() {
-        for (SqsMessagePoller<?> poller : this.pollers) {
-            poller.stop();
-        }
-    }
+  }
 }
 ```
 
-The registry code is pretty straightforward. For each registration, we create a poller. we collect the pollers in a list so that we reference them in `start()` and `stop()`. 
+The registry code is pretty straightforward glue code. For each registration, we create a poller. we collect the pollers in a list so that we reference them in `start()` and `stop()`. 
 
-If we call `start()` on the registry now, each poller will start polling messages from SQS in a separate thread and fan the messages out to message handlers living in a separate thread pool for each message handler.
+**If we call `start()` on the registry now, each poller will start polling messages from SQS in a separate thread and fan the messages out to message handlers living in a separate thread pool for each message handler.**
 
 ### Creating a Spring Boot Auto Configuration
 
@@ -350,7 +364,8 @@ The starter consists of a single auto configuration class:
 class SqsAutoConfiguration {
 
   @Bean
-  SqsMessageHandlerRegistry sqsMessageHandlerRegistry(List<SqsMessageHandlerRegistration<?>> registrations) {
+  SqsMessageHandlerRegistry sqsMessageHandlerRegistry(
+      List<SqsMessageHandlerRegistration<?>> registrations) {
     return new SqsMessageHandlerRegistry(registrations);
   }
 
@@ -362,13 +377,16 @@ class SqsAutoConfiguration {
 }
 ```
 
-In this configuration, we register our registry from above and pass all `SqsMessageHandlerRegistration` beans into it. All we have to do now to register a message handler is to add a `SqsMessageHandlerRegistration` bean to the Spring application context. 
+In this configuration, we register our registry from above and pass all `SqsMessageHandlerRegistration` beans into it. 
+
+**To register a message handler, all we have to do now is to add a `SqsMessageHandlerRegistration` bean to the Spring application context.** 
 
 Additionally, we add an `SqsLifecycle` bean to the application context:
 
 ```java
 @RequiredArgsConstructor
-class SqsAutoConfigurationLifecycle implements ApplicationListener<ApplicationReadyEvent> {
+class SqsAutoConfigurationLifecycle implements 
+      ApplicationListener<ApplicationReadyEvent> {
 
   private final SqsMessageHandlerRegistry registry;
 
@@ -385,7 +403,7 @@ class SqsAutoConfigurationLifecycle implements ApplicationListener<ApplicationRe
 }
 ```
 
-This lifecycle bean has the sole job of starting up our registry when the Spring Boot application starts up and stopping it on shutdown.
+This lifecycle bean has the sole job of starting up our registry when the Spring Boot application starts up and stopping it again on shutdown.
 
 Finally, to make the `SqsAutoConfiguration` a real auto configuration, we need to add it to the `META-INF/spring.factories` file for Spring to pick up on application startup:
 
@@ -396,7 +414,9 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 
 ## Conclusion
 
-In this article, we went through a way of implementing a robust message publisher and message handler to interact with an SQS queue. The Amazon SDK provides an easy-to-use interface, but we wrapped it with some additional logic to enable retries on
+In this article, we went through a way of implementing a robust message publisher and message handler to interact with an SQS queue. The Amazon SDK provides an easy-to-use interface but we wrapped it with layer adding robustness in the form of retries and scalability in the form of a configurable thread pool to handle messages.
+
+The full code explained in this article is available as a Spring Boot starter [on Github](https://github.com/thombergs/sqs-starter) and [Maven Central](https://search.maven.org/artifact/io.reflectoring/sqs-starter) to use at your leisure.
 
 
 

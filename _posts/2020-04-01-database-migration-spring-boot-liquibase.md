@@ -16,86 +16,80 @@ Spring Boot provides integration with database migration tools [Liquibase](https
 
 ## Why Do We Need Database Migration tools?
 
-Database migration tools help us to track, version control, and automate database schema changes. They help us to have consistent schema across different environments. Refer to [this guide](https://reflectoring.io/database-migration-spring-boot-flyway/#why-do-we-need-database-migrations) for more details.
+Database migration tools help us to track, version control, and automate database schema changes. They help us to have a consistent schema across different environments. 
+
+Refer to [this guide](https://reflectoring.io/database-migration-spring-boot-flyway/#why-do-we-need-database-migrations) for more details and to [this guide](/database-refactoring-flyway-vs-liquibase/) for a quick comparison of Liquibase and Flyway.
 
 ## Introduction to Liquibase
 
-Liquibase facilitates database migrations with not only plain old SQL's, but also with different abstract, database-agnostic formats including XML, YAML, and JSON. When we use non-SQL formats for database migrations, it generates the database-specific SQL. It takes care of variations in data types and SQL syntax for different databases. It supports most of the famous [relational databases](https://www.liquibase.org/databases.html).
+Liquibase facilitates database migrations with not only plain old SQL scripts, but also with different abstract, database-agnostic formats including XML, YAML, and JSON. When we use non-SQL formats for database migrations, Liquibase generates the database-specific SQL for us. It takes care of variations in data types and SQL syntax for different databases. It supports most of the popular [relational databases](https://www.liquibase.org/databases.html).
 
 Liquibase allows enhancements for databases it currently supports through [Liquibase extensions](https://liquibase.jira.com/wiki/spaces/CONTRIB/overview). These extensions can be used to add support for additional databases as well. 
 
 
-### Core concepts of Liquibase
+## Core Concepts of Liquibase
 
-- **ChangeSet**: ChangeSet is units of change that need to be applied to a database. Liquibase tracks the execution of changes at a changeSet level. Refer [changeSet](https://www.liquibase.org/documentation/changeset.html) documentation for more details.
+Let's have a look at the vocabulary of Liquibase:
 
-- **ChangeType**: This describes the change that needs to be applied to the database. Liquibase provides several change types out of the box which are abstractions over the database SQL's needed to perform those changes. Refer [changetypes](https://www.liquibase.org/documentation/changes/index.html) documentation for more details.  
+- **ChangeSet**: A [changeSet](https://www.liquibase.org/documentation/changeset.html) is a set of changes that need to be applied to a database. Liquibase tracks the execution of changes at a ChangeSet level.
 
-- **Changelog**: The file which has the list of database changeSets that needs to be applied. These changelog files can be in either SQL, YAML, XML, or JSON formats. See the [changelog](https://www.liquibase.org/documentation/databasechangelog.html) documentation for more details.
+- **Change**: A [change](https://www.liquibase.org/documentation/changes/index.html) describes a single change that needs to be applied to the database. Liquibase provides several change types like "create table" or "drop column" out of the box which are each an abstraction over a piece of SQL. 
 
-- **Preconditions**:  Preconditions are used to control the execution of changelogs or changeSets. They are used to define the state of the database under which the changeSets or changes logs need to be executed. Refer [Preconditions](https://www.liquibase.org/documentation/preconditions.html) documentation for more details.
+- **Changelog**: The file which has the list of database changeSets that needs to be applied is called a [changelog](https://www.liquibase.org/documentation/databasechangelog.html). These changelog files can be in either SQL, YAML, XML, or JSON format.
 
-- **Context**: A changeSet can be tagged with context expression. And this expression can be used to select the changeSets that need to be executed while running Liquibase based on the context values passed to Liquibase at runtime. Refer [Contexts](https://www.liquibase.org/documentation/contexts.html) documentation for more details.
+- **Preconditions**:  [Preconditions](https://www.liquibase.org/documentation/preconditions.html) are used to control the execution of changelogs or changeSets. They are used to define the state of the database under which the changeSets or changes logs need to be executed. 
 
-- **Labels**: Labels are introduced in version 3.3, the purpose of it is similar to that of [context](https://www.liquibase.org/documentation/contexts.html). The difference being, changeSets are tagged with a list of labels (not expressions), and during runtime, label expression can be passed to choose the changeSets which match the expression. Refer to [Lables](https://www.liquibase.org/documentation/labels.html) documentation for more details.
+- **Context**: A changeSet can be tagged with a [context](https://www.liquibase.org/documentation/contexts.html) expression. Liquibase will evaluate this expression to determine if a changeSets should be executed at runtime, given a specific context. You could compare a context expression with environment variables. 
 
-- **Changelog Parameters**: Liquibase allows us to have place holders in changelogs, which can be dynamically substituted during runtime.
-Refere [changelog parameters](https://www.liquibase.org/documentation/changelog_parameters.html)
+- **Labels**: The purpose of [Labels](https://www.liquibase.org/documentation/labels.html) is similar to that of [contexts](https://www.liquibase.org/documentation/contexts.html). The difference is that changeSets are tagged with a list of labels (not expressions), and during runtime, we can pass a label expression to choose the changeSets which match the expression.
 
-Liquibase creates two tables `databasechangelog`  and `databasechangeloglock` when it runs in a database for the first time. It uses the `databasechangelog` table to keep track of the status of the execution of changeSets. It uses `databasechangeloglock` to prevent concurrent executions of Liquibase. Refer [how Liquibase works](https://www.liquibase.org/get_started/how-lb-works.html) for more details.
+- **Changelog Parameters**: Liquibase allows us to have [placeholders](https://www.liquibase.org/documentation/changelog_parameters.html) in changelogs, which it dynamically substitutes during runtime.
 
-Now that we went through the basics of Liquibase let's see how to get Liquibase running in Spring Boot application.
+Liquibase creates two tables `databasechangelog`  and `databasechangeloglock` when it runs in a database for the first time. It uses the `databasechangelog` table to keep track of the status of the execution of changeSets. It uses `databasechangeloglock` to prevent concurrent executions of Liquibase. Refer to the [docs](https://www.liquibase.org/get_started/how-lb-works.html) for more details.
 
 ## Liquibase with Spring Boot
 
-### Setting up Liquibase in Spring Boot application
+Now that we went through the basics of Liquibase let's see how to get Liquibase running in a Spring Boot application.
 
-By default Spring Boot [auto configures Liquibase](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-execute-liquibase-database-migrations-on-startup) when we add the following dependency to our build file.
+### Setting Up Liquibase in Spring Boot
 
-For **maven** based Spring Boot project, add the following dependency in `pom.xml`.
+By default Spring Boot auto-configures Liquibase when we add the [Liquibase dependency](https://search.maven.org/artifact/org.liquibase/liquibase-core) to our build file.
 
-   ```xml  
-  <dependency>
-    <groupId>org.liquibase</groupId>
-    <artifactId>liquibase-core</artifactId>
-    <version>3.8.8</version>
-  </dependency>
-   ```
+Spring Boot uses the primary `DataSource` to run Liquibase (i.e. the one annotated with `@Primary` if there is more than one). In case we need to use a different `DataSource` we can mark that bean
+as `@LiquibaseDataSource`. 
 
-For **Gradle** based Spring Boot project, add the following dependency in `build.gradle`.
+Alternatively, we can set the `spring.liquibase.[url,user,password]`properties, so that spring creates a Datasource on its own and uses it to auto-configure Liquibase.
 
-  ```
-  compile "org.liquibase:liquibase-core:3.8.8"
-  ```
+**By default, Spring Boot runs Liquibase database migrations automatically on application startup**. 
 
-Spring Boot uses `DataSource` marked as `@Primary` to run Liquibase. In case you need to use a different `DataSource` mark that bean
-as `@LiquibaseDataSource`. Alternatively `spring.liquibase.[url,user,password]`properties needs to be set, so that spring creates a Datasource on its own and uses it to auto-configure Liquibase.
+It looks for a master changelog file in the folder `db/migration` within the classpath with the name `db.changelog-master.yaml`. If we want to use other Liquibase changelog formats or use different file naming convention, we can configure the `spring.liquibase.change-log` application property to point to a different master changelog file.
 
-**By default, Spring Boot runs Liquibase database migrations automatically on application startup**. It looks for a master changelog file in the folder `db/migration` within the classpath with the name `db.changelog-master.yaml`. If you prefer using other Liquibase changelog formats or use different file naming convention use `spring.liquibase.change-log` application property to set a master changelog file.
-
-For example, to use `db/migration/my-master-change-log.json` as the master changelog file, set the following property in the application properties file, as shown below (for YAML application properties file).
+For example, to use `db/migration/my-master-change-log.json` as the master changelog file, we set the following property in `application.yml`:
 
 ```yaml
 spring:
   liquibase:
     changeLog: "classpath:db/migration/my-master-change-log.json"
 ```
-The master changelog can be used to [include](https://www.liquibase.org/documentation/include.html) other changelogs that need to run when the Spring boot application starts.
 
-After adding required dependencies to our Spring Boot application, let's create our first database migration by following the below steps.
-(Below demonstrates the creation of a new table `user_details` using Liquibase database migration)
+The master changelog can [include](https://www.liquibase.org/documentation/include.html) other changelogs so that we can split our changes up in logical steps.
 
-- **Create the master changelog**:
+### Running Our First Database Migration
 
-    Create a file with name ```db.changelog-master.yaml``` and place it in `src/main/resources/db/changelog` folder(with content as below)
-  ```yaml
-  databaseChangeLog:
-    - include:
-        file: db/changelog/db.changelog-yaml-example.yaml
-  ```
+After setting everything up, let's create our first database migration. We'll create the database table `user_details` in this example. 
 
-- **Create changelog with actual changeSet**:
-    Create a changelog file `db.changelog-yaml-example.yaml` in the same directory where the master changelog created in the above step with the following content.
+
+Let's create a file with name ```db.changelog-master.yaml``` and place it in `src/main/resources/db/changelog`:
+
+```yaml
+databaseChangeLog:
+  - include:
+      file: db/changelog/db.changelog-yaml-example.yaml
+```
+
+The master file is just a collection of includes that points to changelogs with the actual changes.
+
+Next, we create the changelog with the first actual changeset and put it into the file `src/main/resources/db/changelog-yaml-example.yaml`:
 
 ```yaml
 databaseChangeLog:
@@ -134,17 +128,14 @@ databaseChangeLog:
             tableName: user_details
 ```
 <div class="notice success">
-  In the above changeSet, we used changeType <b>createTable</b>, which abstracts the creation of a table. Liquibase will convert the above changeSet to appropriate SQL based on the database that application uses.
+  In the above changeSet, we used the changeType <b>createTable</b>, which abstracts the creation of a table. Liquibase will convert the above changeSet to the appropriate SQL based on the database that our application uses.
 </div> 
 
-Now that we added our first migration when Spring Boot application is run, it runs liquibase during the startup. Liquibase executes the changeSet which creates the `user_details` table with `user_pkey` as the primary key.
+Now, when we run the Spring Boot application, Liquibase executes the changeSet which creates the `user_details` table with `user_pkey` as the primary key.
 
-### Usage of Changelog parameters:
+### Using Changelog Parameters
 
- Changelog parameters come in very handy when we want to abstract differences between environments while creating changelogs. These can be set using application property `spring.liquibase.paramaters`, which takes a map of key and value pairs. Below code demonstrates the usage of changelog parameters to select different data types while executing a changeSet in different environments.
-
-The following application property file sets a liquibase parameter `textColumnType`. Spring profile `h2` defines
-`VARCHAR(250)` as `textColumnType` and `docker` profile defines `TEXT` as `textColumnType`.
+Changelog parameters come in very handy when we want to abstract differences between environments while creating changelogs. We can set these parameters using the application property `spring.liquibase.parameters`, which takes a map of key/value pairs: 
 
 ```yaml
 spring:
@@ -161,7 +152,10 @@ spring:
       textColumnType: VARCHAR(250)
     contexts: local    
 ```
-The changelog file below uses the liquibase parameter `textColumnType` to define the column type. When the application runs with `docker` profile it uses `TEXT` as the type and for `h2` profile it uses `VARCHAR(250)`.
+
+Above, we set the Liquibase parameter `textColumnType` to `VARCHAR(250)` when Spring Boot starts in the `h2` profile and to `TEXT` when it starts in the `docker` profile (assuming that the docker profile starts up a "real" database). 
+
+We can now use this parameter in a changelog:
 
 ```yaml
 databaseChangeLog:
@@ -178,15 +172,18 @@ databaseChangeLog:
                   type: ${textColumnType}
 ```
 
-### Usage of Liquibase context:
- 
- As described earlier, context can be used to control which changeSets need to be run. The code example demonstrates the use of context in a changeSet, which is used to add test data load changeSet in a non-prod environment.
+Now, when the Spring Boot application runs in the `docker` profile, it uses `TEXT` as column type and in the `h2` profile it uses `VARCHAR(250)`.
 
-Below changeSet has context expression `!prod` with this the changeSet will be run for all contexts expect `prod`.
+### Usage Liquibase Context
+ 
+As described earlier, context can be used to control which changeSets should run. Let's use this to add test data in a non-production environment:
 
  ```xml
 <databaseChangeLog>
-  <changeSet author="liquibase-docs" id="loadUpdateData-example" context="!prod">
+  <changeSet 
+    author="liquibase-docs" 
+    id="loadUpdateData-example"
+    context="!prod">
     <loadUpdateData
       encoding="UTF-8"
       file="db/data/users.csv"
@@ -199,7 +196,10 @@ Below changeSet has context expression `!prod` with this the changeSet will be r
   </changeSet>
 </databaseChangeLog>
 ```
-Context values can be passed to liquibase using the property `spring.liquibase.contexts` as shown below 
+
+We're using the expression `!prod` so it runs for all contexts except `prod`.
+
+We now need to pass the context to Liquibase using the property `spring.liquibase.contexts`: 
 
 ```yaml
 ---
@@ -211,15 +211,14 @@ spring:
     contexts: nonprod
 ```
 
+### Configuring Liquibase in Spring Boot
 
-### Configure Liquibase in Spring Boot
-
-Below is the list of all properties that Spring Boot provides to configure the behavior of Liquibase.
+As a reference, here is the list of all properties that Spring Boot provides to configure the behavior of Liquibase.
 
 ```yaml
 spring:
   liquibase:
-    changeLog: #Master Change log configuration path. Defaults to classpath:/db/changelog/db.changelog-master.yaml
+    changeLog: # Master Change log configuration path. Defaults to classpath:/db/changelog/db.changelog-master.yaml
     contexts: # Comma-separated list of runtime contexts to use. 
     defaultSchema: # Schema to use for managed database objects and Liquibase control tables.
     liquibaseSchema: # Schema for Liquibase control tables.
@@ -238,10 +237,9 @@ spring:
 
 ### Enable logging for Liquibase in Spring Boot
 
-Enabling `INFO` level logging for liquibase will help to see the changeSets that liquibase executes during the start of the application. It also helps to identify that the application has not started yet because it is waiting to acquire changeloglock during the startup.
+Enabling `INFO` level logging for Liquibase will help to see the changeSets that Liquibase executes during the start of the application. It also helps to identify that the application has not started yet because it is waiting to acquire changeloglock during the startup.
 
-
-Add the following application property in the application properties file (yaml format is shown below).
+Add the following application property in `application.yml` to enable INFO logs:
 
 ```yaml
 logging:
@@ -249,40 +247,27 @@ logging:
     "liquibase" : info
 ```
 
-### Best practices while using Liquibase
+### Best Practices Using Liquibase
 
-- **Organizing Changelogs**: Create a master changelog file that does not have actual changeSets but includes other changelogs (only YAML, JSON, and XML support using include. It is not supported in SQL changelog). By doing so allows us to organize our changeSets in different changelog files. Every time we add a new feature to the application that requires a database change, we can create a new changelog file and include it in the master changelog.
+- **Organizing Changelogs**: Create a master changelog file that does not have actual changeSets but includes other changelogs (only YAML, JSON, and XML support using include, SQL does not). Doing so allows us to organize our changeSets in different changelog files. Every time we add a new feature to the application that requires a database change, we can create a new changelog file, add it to version control, and include it in the master changelog.
 
-Below is a sample directory structure to organize changelogs.
+- **One Change per ChangeSet**: Have only one change per changeSet, as this allows easier rollback in case of a failure in applying the changeSet.
 
-```
-src:
- main:
-  resources:
-    db:
-     changelog:
-       db.changelog-master.yaml
-       db.changelog-feature-1.yaml
-       db.changelog-feature-2.yaml
-       db.changelog-feature-3.yaml    
-```
-- **Changes per ChangeSet**: Have one change per changeSet, this allows easy rollback in case of a failure in applying the changeSet.
-
-- **Modifying a ChangeSet**: Never modify a changeSet once it has been executed, add new changeSet if modifications are needed for the change that has been applied by an existing changeSet. Liquibase keeps track of the cksums of the changeSets that it already executed. If already run changeSet is modified, liquibase by default will fail to run that changeSet again, and it will not proceed with the execution of other changeSets.
+- **Don't Modify a ChangeSet**: Never modify a changeSet once it has been executed. Instead, add a new changeSet if modifications are needed for the change that has been applied by an existing changeSet. Liquibase keeps track of the checksums of the changeSets that it already executed. If an already run changeSet is modified, Liquibase by default will fail to run that changeSet again, and it will not proceed with the execution of other changeSets.
 
 - **ChangeSet Id**: Liquibase allows us to have a descriptive name for changeSets. Prefer using a unique descriptive name as the changeSetId instead of using a sequence number. They enable multiple developers to add different changeSets without worrying about the next sequence number they need to select for the changeSetId.
 
-- **Reference data management**: Do use liquibase to populate reference data and code tables that the application needs. Doing so allows deploying application and configuration data it needs together.
+- **Reference data management**: Use Liquibase to populate reference data and code tables that the application needs. Doing so allows deploying application and configuration data it needs together.
 Liquibase provides changeType [loadUpdateData](https://www.liquibase.org/documentation/changes/load_update_data.html) to support this.
 
-- **Use Preconditions**: Have preconditions for changeSets. They ensure that liquibase checks the database state before applying the changes.
+- **Use Preconditions**: Have preconditions for changeSets. They ensure that Liquibase checks the database state before applying the changes.
 
-- **Test Migrations**: Make sure you always test the migrations that you have written locally before applying them in real nonproduction or production environment. Always use liquibase to run database migrations in nonproduction or production environment instead of manually performing database changes.
+- **Test Migrations**: Make sure you always test the migrations that you have written locally before applying them in real nonproduction or production environment. Always use Liquibase to run database migrations in nonproduction or production environment instead of manually performing database changes.
 
 
-Running liquibase automatically during the Spring Boot application startup makes it easy to ship application code changes and database changes together. But in instances like adding indexes to existing database tables with lots of data, the application might take a longer time to start. One of the option is to pre-release the database migrations (releasing database changes ahead of code that needs it) and run them asynchronously. Jhipster demonstrates on how to run [liquibase asynchronously in Spring Boot application](https://github.com/jkutner/jhipster-example/blob/master/src/main/java/com/mycompany/myapp/config/liquibase/AsyncSpringLiquibase.java)
+Running Liquibase automatically during the Spring Boot application startup makes it easy to ship application code changes and database changes together. But in instances like adding indexes to existing database tables with lots of data, the application might take a longer time to start. One option is to pre-release the database migrations (releasing database changes ahead of code that needs it) and [run them asynchronously](https://github.com/jkutner/jhipster-example/blob/master/src/main/java/com/mycompany/myapp/config/liquibase/AsyncSpringLiquibase.java)
 
-## Other ways of Running Liquibase
+## Other Ways of Running Liquibase
 
 Liquibase supports a range of other options to run database migrations apart from Spring Boot integration:
 
@@ -292,13 +277,13 @@ Liquibase supports a range of other options to run database migrations apart fro
 * via [JEE CDI Integration](https://www.liquibase.org/documentation/cdi.html)
 * via [Servlet Listener](https://www.liquibase.org/documentation/servlet_listener.html)
 
-Liquibase has [Java Api](https://www.liquibase.org/javadoc/index.html) that can be used in any java based application to perform database migrations.
+Liquibase has a [Java Api](https://www.liquibase.org/javadoc/index.html) that we can use in any Java-based application to perform database migrations.
 
 ## Conclusion
 
-Liquibase helps to automate database migrations, and Spring Boot makes it easier to use liquibase. This guide
-provides details on how to use liquibase in Spring Boot application and some best practices.
+Liquibase helps to automate database migrations, and Spring Boot makes it easier to use Liquibase. This guide
+provided details on how to use Liquibase in Spring Boot application and some best practices.
 
 You can find the example code on [GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/data-migration/liquibase).
 
-Another popular alternative of Liquibase is [Flyway](https://flywaydb.org/), check this [guide on using flyway in Spring Boot](https://reflectoring.io/database-migration-spring-boot-flyway).
+We also have a guide on using [Flyway](/database-migration-spring-boot-flyway), another popular alternative for database migrations.

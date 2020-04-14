@@ -59,7 +59,7 @@ comments:
               <li>e-book and paperback (156 pages)</li>
               <li>available as PDF, .mobi, and .epub at <a href="https://www.packtpub.com/programming/get-your-hands-dirty-on-clean-architecture">Packt</a></li>
               <li>available in Kindle format at <a href="https://www.amazon.com/gp/product/1839211962/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=1839211962&linkCode=as2&tag=reflectorin0c-20&linkId=559e54b6599c4213252259df28d1d3e3">Amazon</a></li>
-              <li>available as NOOK book at <a href="https://www.barnesandnoble.com/w/get-your-hands-dirty-on-clean-architecture-tom-hombergs/1133915094">Barnes & Noble</a></li>
+              <li>available as NOOK book at <a href="https://www.barnesandnoble.com/w/get-your-hands-dirty-on-clean-architecture-tom-hombergs/1134180673?ean=9781839212710">Barnes & Noble</a></li>
               <li>price starting at $10 for the e-book version and $24,99 for the paperback version</li>
           </ul> 
           <a class="primary-button btn-block" href="https://www.packtpub.com/programming/get-your-hands-dirty-on-clean-architecture">Get it at Packt</a>  

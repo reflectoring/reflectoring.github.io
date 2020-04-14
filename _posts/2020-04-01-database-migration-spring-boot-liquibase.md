@@ -9,16 +9,24 @@ image:
 tags: ["data migration", "spring-boot", "liquibase"]
 ---
 
+<style>
+.table td {
+  padding-top:3px
+  padding-bottom:3px
+}
+</style>
+
+
 Spring Boot provides integration with database migration tools [Liquibase](https://www.liquibase.org) and [Flyway](https://flywaydb.org/). This guide provides an overview of Liquibase and how to use it in a Spring Boot application for managing and applying database schema changes.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/data-migration/liquibase" %}
 
 
-## Why Do We Need Database Migration tools?
+## Why Do We Need Database Migration Tools?
 
 Database migration tools help us to track, version control, and automate database schema changes. They help us to have a consistent schema across different environments. 
 
-Refer to [this guide](https://reflectoring.io/database-migration-spring-boot-flyway/#why-do-we-need-database-migrations) for more details and to [this guide](/database-refactoring-flyway-vs-liquibase/) for a quick comparison of Liquibase and Flyway.
+Refer to our guides for more details on [why we need database migration tools](/database-migration-spring-boot-flyway/#why-do-we-need-database-migrations) and for a [quick comparison of Liquibase and Flyway](/database-refactoring-flyway-vs-liquibase/).
 
 ## Introduction to Liquibase
 
@@ -39,13 +47,13 @@ Let's have a look at the vocabulary of Liquibase:
 
 - **Preconditions**:  [Preconditions](https://www.liquibase.org/documentation/preconditions.html) are used to control the execution of changelogs or changeSets. They are used to define the state of the database under which the changeSets or changes logs need to be executed. 
 
-- **Context**: A changeSet can be tagged with a [context](https://www.liquibase.org/documentation/contexts.html) expression. Liquibase will evaluate this expression to determine if a changeSets should be executed at runtime, given a specific context. You could compare a context expression with environment variables. 
+- **Context**: A changeSet can be tagged with a [context](https://www.liquibase.org/documentation/contexts.html) expression. Liquibase will evaluate this expression to determine if a changeSet should be executed at runtime, given a specific context. You could compare a context expression with environment variables. 
 
 - **Labels**: The purpose of [Labels](https://www.liquibase.org/documentation/labels.html) is similar to that of [contexts](https://www.liquibase.org/documentation/contexts.html). The difference is that changeSets are tagged with a list of labels (not expressions), and during runtime, we can pass a label expression to choose the changeSets which match the expression.
 
 - **Changelog Parameters**: Liquibase allows us to have [placeholders](https://www.liquibase.org/documentation/changelog_parameters.html) in changelogs, which it dynamically substitutes during runtime.
 
-Liquibase creates two tables `databasechangelog`  and `databasechangeloglock` when it runs in a database for the first time. It uses the `databasechangelog` table to keep track of the status of the execution of changeSets. It uses `databasechangeloglock` to prevent concurrent executions of Liquibase. Refer to the [docs](https://www.liquibase.org/get_started/how-lb-works.html) for more details.
+Liquibase creates the two tables `databasechangelog`  and `databasechangeloglock` when it runs in a database for the first time. It uses the `databasechangelog` table to keep track of the status of the execution of changeSets and `databasechangeloglock` to prevent concurrent executions of Liquibase. Refer to the [docs](https://www.liquibase.org/get_started/how-lb-works.html) for more details.
 
 ## Liquibase with Spring Boot
 
@@ -128,16 +136,16 @@ databaseChangeLog:
             tableName: user_details
 ```
 
-In the above changeSet, we used the changeType <b>createTable</b>, which abstracts the creation of a table. Liquibase will convert the above changeSet to the appropriate SQL based on the database that our application uses.
+We used the changeType createTable, which abstracts the creation of a table. Liquibase will convert the above changeSet to the appropriate SQL based on the database that our application uses.
 
-The `preCondition` checks that `user_details` table does not exist before executing this change. If the table already exists, Liquibase marks the changeSet as having run successfully.
+The `preCondition` checks that the `user_details` table does not exist before executing this change. If the table already exists, Liquibase marks the changeSet as having run successfully without actually having run.
  
 
 Now, when we run the Spring Boot application, Liquibase executes the changeSet which creates the `user_details` table with `user_pkey` as the primary key.
 
 ### Using Changelog Parameters
 
-Changelog parameters come in very handy when we want to abstract differences between environments while creating changelogs. We can set these parameters using the application property `spring.liquibase.parameters`, which takes a map of key/value pairs: 
+Changelog parameters come in very handy when we want to replace placeholders with different values for different environments. We can set these parameters using the application property `spring.liquibase.parameters`, which takes a map of key/value pairs: 
 
 ```yaml
 spring:
@@ -155,7 +163,7 @@ spring:
     contexts: local    
 ```
 
-Above, we set the Liquibase parameter `textColumnType` to `VARCHAR(250)` when Spring Boot starts in the `h2` profile and to `TEXT` when it starts in the `docker` profile (assuming that the docker profile starts up a "real" database). 
+We set the Liquibase parameter `textColumnType` to `VARCHAR(250)` when Spring Boot starts in the `h2` profile and to `TEXT` when it starts in the `docker` profile (assuming that the docker profile starts up a "real" database). 
 
 We can now use this parameter in a changelog:
 
@@ -176,14 +184,14 @@ databaseChangeLog:
 
 Now, when the Spring Boot application runs in the `docker` profile, it uses `TEXT` as column type and in the `h2` profile it uses `VARCHAR(250)`.
 
-<div class="notice warning">
- <h4>Warning</h4>
+<div class="notice warn">
+ <h4>Use the Same Database for All Environments!</h4>
  <p>
   The code example assumes the usage of different types of databases in different environments for demonstrating the use of the changelog parameter. Please avoid using different types of databases for different staging environments. Doing so will cause hard-to-debug errors caused  by different environments.
  </p> 
 </div> 
 
-### Usage Liquibase Context
+### Using Liquibase Context
  
 As described earlier, context can be used to control which changeSets should run. Let's use this to add test data in the `test` and `local` environments:
  ```xml
@@ -225,23 +233,24 @@ As a reference, here's a list of all properties that Spring Boot provides to con
 
 | Property                                                            | Description |
 | -------------------------------------------------------------------------- | ------------ | 
-| spring.liquibase.changeLog | Master Change log configuration path. Defaults to classpath:/db/changelog/db.changelog-master.yaml |
-| spring.liquibase.contexts | Comma-separated list of runtime contexts to use. |
-| spring.liquibase.defaultSchema | Schema to use for managed database objects and Liquibase control tables.           |
-| spring.liquibase.liquibaseSchema | Schema for Liquibase control tables.           |
-| spring.liquibase.liquibaseTablespace | Tablespace to use for Liquibase objects.           |
-| spring.liquibase.databaseChangeLogTable  | To Specify a different table to use for tracking change history. Default is DATABASECHANGELOG. |
-| spring.liquibase.databaseChangeLogLockTable  | To Specify a different table to use for tracking concurrent Liquibase usage. Default is DATABASECHANGELOGLOCK. |
-| spring.liquibase.dropFirst | Indicates whether to drop database schema before running the migration. Do not use this in prod. Default is false. |
-| spring.liquibase.user | Login user that needs to be used.          |
-| spring.liquibase.password | Login password of the database to migrate.           |
-| spring.liquibase.url | JDBC URL of the database to migrate. If not set, the primary configured data source is used.|
-| spring.liquibase.labels | Label expression to be used while running liquibase. |
-| spring.liquibase.parameters | Parameters map that needs to be passed to liquibase. |
-| spring.liquibase.rollbackFile | File to which rollback SQL is written when an update is performed. |
-| spring.liquibase.testRollbackOnUpdate | Whether rollback should be tested before the update is performed. Default is false.  |
+| `spring.liquibase.changeLog` | Master changelog configuration path. Defaults to `classpath:/db/changelog/db.changelog-master.yaml`, |
+| `spring.liquibase.contexts` | Comma-separated list of runtime contexts to use. |
+| `spring.liquibase.defaultSchema` | Schema to use for managed database objects and Liquibase control tables.           |
+| `spring.liquibase.liquibaseSchema` | Schema for Liquibase control tables.           |
+| `spring.liquibase.liquibaseTablespace` | Tablespace to use for Liquibase objects.           |
+| `spring.liquibase.databaseChangeLogTable`  | To specify a different table to use for tracking change history. Default is `DATABASECHANGELOG`. |
+| `spring.liquibase.databaseChangeLogLockTable`  | To specify a different table to use for tracking concurrent Liquibase usage. Default is `DATABASECHANGELOGLOCK`. |
+| `spring.liquibase.dropFirst` | Indicates whether to drop the database schema before running the migration. Do not use this in production! Default is `false`. |
+| `spring.liquibase.user` | Login username to connect to the database. |
+| `spring.liquibase.password` | Login password to connect to the database. |
+| `spring.liquibase.url` | JDBC URL of the database to migrate. If not set, the primary configured data source is used.|
+| `spring.liquibase.labels` | Label expression to be used when running liquibase. |
+| `spring.liquibase.parameters` | Parameters map to be passed to Liquibase. |
+| `spring.liquibase.rollbackFile` | File to which rollback SQL is written when an update is performed. |
+| `spring.liquibase.testRollbackOnUpdate` | Whether rollback should be tested before the update is performed. Default is `false`.  |
+{: .table}
 
-### Enable logging for Liquibase in Spring Boot
+### Enabling Logging for Liquibase in Spring Boot
 
 Enabling `INFO` level logging for Liquibase will help to see the changeSets that Liquibase executes during the start of the application. It also helps to identify that the application has not started yet because it is waiting to acquire changeloglock during the startup.
 
@@ -253,7 +262,7 @@ logging:
     "liquibase" : info
 ```
 
-### Best Practices Using Liquibase
+## Best Practices Using Liquibase
 
 - **Organizing Changelogs**: Create a master changelog file that does not have actual changeSets but includes other changelogs (only YAML, JSON, and XML support using include, SQL does not). Doing so allows us to organize our changeSets in different changelog files. Every time we add a new feature to the application that requires a database change, we can create a new changelog file, add it to version control, and include it in the master changelog.
 
@@ -271,7 +280,7 @@ Liquibase provides changeType [loadUpdateData](https://www.liquibase.org/documen
 - **Test Migrations**: Make sure you always test the migrations that you have written locally before applying them in real nonproduction or production environment. Always use Liquibase to run database migrations in nonproduction or production environment instead of manually performing database changes.
 
 
-Running Liquibase automatically during the Spring Boot application startup makes it easy to ship application code changes and database changes together. But in instances like adding indexes to existing database tables with lots of data, the application might take a longer time to start. One option is to pre-release the database migrations (releasing database changes ahead of code that needs it) and [run them asynchronously](https://github.com/jkutner/jhipster-example/blob/master/src/main/java/com/mycompany/myapp/config/liquibase/AsyncSpringLiquibase.java)
+Running Liquibase automatically during the Spring Boot application startup makes it easy to ship application code changes and database changes together. But in instances like adding indexes to existing database tables with lots of data, the application might take a longer time to start. One option is to pre-release the database migrations (releasing database changes ahead of code that needs it) and [run them asynchronously](https://github.com/jkutner/jhipster-example/blob/master/src/main/java/com/mycompany/myapp/config/liquibase/AsyncSpringLiquibase.java).
 
 ## Other Ways of Running Liquibase
 
@@ -283,7 +292,7 @@ Liquibase supports a range of other options to run database migrations apart fro
 * via [JEE CDI Integration](https://www.liquibase.org/documentation/cdi.html)
 * via [Servlet Listener](https://www.liquibase.org/documentation/servlet_listener.html)
 
-Liquibase has a [Java Api](https://www.liquibase.org/javadoc/index.html) that we can use in any Java-based application to perform database migrations.
+Liquibase has a [Java API](https://www.liquibase.org/javadoc/index.html) that we can use in any Java-based application to perform database migrations.
 
 ## Conclusion
 

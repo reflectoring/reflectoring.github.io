@@ -1,6 +1,6 @@
 ---
 title: Building a Robust SQS Client with Spring Boot
-categories: [meta]
+categories: [spring-boot]
 date: 2020-04-13 05:00:00 +1100
 modified: 2020-04-13 05:00:00 +1100
 author: default

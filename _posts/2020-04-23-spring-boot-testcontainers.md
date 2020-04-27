@@ -59,7 +59,10 @@ ALTER TABLE car
             registration_timestamp * interval '1 second';
 ````
 
-This script **will not work** for `H2`, because the `USING` clause doesn't work with `ALTER TABLE` for `H2`. 
+This script **will not work** for `H2`, because the `USING` clause doesn't work with `ALTER TABLE` for `H2`.
+Depending on the database, that we have in production, we can have database specific feature in the SQL script.
+For example, we can build table inheritance in `PostgreSQL` using key word `INHERITS`, but it doesn't work in 
+other databases.
 At this moment we could take a not clean way and create two sets of SQL scripts for migration.
 It could look like this: 
 
@@ -68,5 +71,18 @@ It could look like this:
 Now we :
  * have to maintain two sets of scripts,
  * are not able to test scripts from the folder `postgresql` at runtime.
+ 
+If we want to write a new script with some features, that are not supported by `H2`,
+we have to write another script for `H2` and find a way to achieve the same results with both
+scripts.
+
+If we test the migration with `H2` database, and our test is green, we don't know anything about the script `V1_2__change_columnt_type.sql` from
+folder `postgresql`.
+
+Again, even when we don't have different sets of scripts for the migration, the green test don't mean, that they can run
+on the `PostgresSQL` database.
+
+## Solution
+ 
     
 

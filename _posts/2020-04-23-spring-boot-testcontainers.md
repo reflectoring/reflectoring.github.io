@@ -34,8 +34,9 @@ with the `H2` database, we have no idea about how the migration would run in the
   </p>
 </div>
 
-`H2` database has compatibilities modes to other databases, that can be used in production, but there are still differences. It means, the SQL code for a 
-`H2` can look different from the code for `PostgresSQL`.
+`H2` database has compatibilities modes to other databases, that can be used in production. With these modes we can
+start the `H2` database with keywords, that compatible with another database, for example `PostgreSQL`. But there are still differences.
+It means, the SQL code for a `H2` can look different from the code for `PostgresSQL`.
 
 Let's imagine we have an SQL script.
 
@@ -49,7 +50,7 @@ CREATE TABLE car
     registration_timestamp INTEGER
 );
 ``` 
-This script can run as well with `H2` as with `PostgreSQL`. Now we wan to change the type
+This script can run as well with `H2` as with `PostgreSQL`. Now we want to change the type
 of the column `registration_timestamp` from `INTEGER` to `timestamp with time zone` and of course we want to migrate the data
 in this column. We can write an SQL script for migrating `registration_timestamp`.
 
@@ -61,8 +62,9 @@ ALTER TABLE car
             registration_timestamp * interval '1 second';
 ````
 
-This script **will not work** for `H2`, because the `USING` clause doesn't work with `ALTER TABLE` for `H2`.
-Depending on the database, that we have in production, we can have database-specific features in the SQL script.
+This script **will not work** for `H2` with `PostgreSQL` mode, because the `USING` clause doesn't work with `ALTER TABLE` for `H2`.
+
+Depending on the database we have in production, we can have database-specific features in the SQL script.
 For example, we can build table inheritance in `PostgreSQL` using the keyword `INHERITS`, but it doesn't work in 
 other databases.
 At this moment we could take a not clean way and create two sets of SQL scripts for migration.
@@ -76,7 +78,8 @@ Now we :
  * are not able to test scripts from the folder `postgresql` at build time.
  
 If we want to write a new script with some features, that are not supported by `H2`,
-we have to write another script for `H2` and find a way to achieve the same results with both
+we have to write two scripts, one for `H2` and one for `PostgreSQL`. Also,
+we have to find a way to achieve the same results with both
 scripts.
 
 If we test the migration with `H2` database, and our test is green, we don't know anything about the script `V1_2__change_columnt_type.sql` from
@@ -99,7 +102,8 @@ Let's imagine, we test the migration with `H2` database during building the appl
 The next step is delivering and deploying the application to a test environment. It takes time. If the migration on the test environment fails,
 we know it too late, maybe several minutes later. It slows down the development cycle.
 
-Also, this situation is very confusing, because we can't debug this error with our unit test. But our unit test with `H2` was green.
+Also, this situation is very confusing for developers, because we can't debug this error with our unit test.
+Our unit test with `H2` was green, and the error occurred on the test environment.
 
 ## Solution with Testcontainers
 With [Tescontainers](https://www.testcontainers.org/) we can test the database migration with [Docker](https://www.docker.com/) from our code.
@@ -149,7 +153,7 @@ the connection to this database. Other classes can extend this class and use the
 
 In the `@ContextConfiguration` annotation we define how to load and configure an `ApplicationContext` for integration tests.
 Then, we implement the `ApplicationContextInitializer` interface for initializing a Spring Context.
-In this implementation, we create a `PostgresSQL` database, configure the connection to the database,
+In this implementation, we create a `PostgresSQL` database, let configure the connection to the database,
 and add this configuration to the Spring Context, that should be loaded for the tests.
 
 In the method `initialize` we set the properties of the Spring Context. The method `addFirst`

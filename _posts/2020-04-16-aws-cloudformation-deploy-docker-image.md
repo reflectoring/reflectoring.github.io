@@ -1,12 +1,12 @@
 ---
 title: "The AWS Journey Part 2: Deploying a Docker image from the Command Line with CloudFormation"
 categories: [craft]
-date: 2020-04-13 05:00:00 +1100
-modified: 2020-04-13 05:00:00 +1100
+date: 2020-05-02 05:00:00 +1000
+modified: 2020-05-02 05:00:00 +1000
 author: default
-excerpt: "TODO"
+excerpt: "Learn the details of creating an AWS CloudFormation template to spin up a virtual private cloud and deploy your Docker containers into it with a single CLI command."
 image:
-  auto: 0035-switchboard
+  auto: 0061-cloud
 ---
 
 In the first article of my AWS Journey, [we deployed a Docker image via the AWS web console](/aws-deploy-docker-image-via-web-console/). While this works fine, it includes manual work and doesn't provide fine-grained control over the network and other resources we might need.

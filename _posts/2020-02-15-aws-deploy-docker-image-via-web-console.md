@@ -1,5 +1,5 @@
 ---
-title: Deploying Your First Docker Image to AWS
+title: "The AWS Journey Part 1: Deploying Your First Docker Image"
 categories: [craft]
 date: 2020-02-15 05:00:00 +1100
 modified: 2020-02-15 05:00:00 +1100
@@ -222,22 +222,26 @@ All the stuff we're missing (and more) is available in the AWS CLI, a command-li
 
 Keep your eyes peeled for a follow-up article doing the same as we did here with the AWS CLI.
 
-## Open Questions
+## The AWS Journey
 
-So, we've successfully deployed a Docker container. That's only the beginning of the story. Having an application running in the cloud opens a huge range of follow-up questions: 
+So, we've successfully deployed a Docker container. That's only the beginning of the story. Having an application running in the cloud opens a huge range of follow-up questions.
 
-* How can I deploy from a CI/CD pipeline?
-* How can I deploy a new version of my application?
+Here's a list of the questions I want to answer on my AWS Journey. If there's a link, it's been answered already with a blog post! 
+
+* [How can I deploy a Docker image from the web console?](/aws-deploy-docker-image-via-web-console/) (this article)
+* [How can I deploy a Docker image from the command line?](/aws-cloudformation-deploy-docker-image/)
+* [How do I set up load balancing?](/aws-cloudformation-deploy-docker-image/#load-balancer)
+* How can I deploy a Docker image from a CI/CD pipeline?
+* How can I deploy a new version of my Docker image without downtime?
+* How can I deploy my Docker image into multiple environments (test, staging, production)?
+* How can I implement high availability for my deployed application?
+* How can I auto-scale my application horizontally on high load?
+* How can I implement sticky sessions in the load balancer (if I'm building a session-based webapp)?
+* How can I deploy a database in a private subnet and access it from my app?
 * How can I monitor what’s happening on my application?
-* How can I access the logs of my service?
-* How can I scale my application horizontally?
-* How can I make my application accessible via a custom domain?
+* How can I bind my application to a custom domain?
 * How can I access other AWS resources (like SQS queues and DynamoDB tables) from my application?
-* How can I activate SSL?
-* How can I test my Docker container with AWS locally?
-* ...
-
-I guess there's an article in each of those questions!
+* How can I implement HTTPS?
 
 ## Conclusion
 

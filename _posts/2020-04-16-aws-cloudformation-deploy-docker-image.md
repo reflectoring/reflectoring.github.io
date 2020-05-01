@@ -15,11 +15,11 @@ The next step in this journey is to automate the deployment of Docker images. In
 
 ## What is CloudFormation?
 
-[CloudFormation](https://aws.amazon.com/cloudformation/) is AWS's service for automating deployment of AWS resources. It allows us to describe the resources we want (networks, load balancers, EC2 instances, ...) in a JSON or YAML template and provides commands within the AWS CLI to spin up those resources and remove them again (among other things).
+[CloudFormation](https://aws.amazon.com/cloudformation/) is AWS's service for automating the deployment of AWS resources. It allows us to describe the resources we want (networks, load balancers, EC2 instances, ...) in a JSON or YAML template and provides commands within the AWS CLI to spin up those resources and remove them again (among other things).
 
 The resources defined in such a template are called a "stack". **A stack is the unit in which CloudFormation allows us to interact with resources**. Each stack can be created and deleted separately and stacks may depend on each other. We'll make use of that later when we're creating a stack containing all the networking resources we need and another one that contains our application.  
 
-**In order to create a CloudFormation template, we need low-level knowledge of the resources we're going to deploy.** Once we have a running CloudFormation template, though, we can start and stop it at any time without having to think about the detailed resources too much. 
+**To create a CloudFormation template, we need low-level knowledge of the resources we're going to deploy.** Once we have a running CloudFormation template, though, we can start and stop it at any time without having to think about the detailed resources too much. 
 
 Note that CloudFormation is not the only option to codify an AWS infrastructure. We could also use Terraform, [a general infrastructure-as-code platform](https://www.terraform.io/), or [CDK](https://docs.aws.amazon.com/cdk/latest/guide/home.html), AWS's Cloud Development Kit, which is a wrapper around CloudFormation and allows us to describe AWS resources in different programming languages than JSON and YAML (did I hear anyone say that JSON and YAML are programming languages?). There's a bunch of other solutions out there, but these two seem to be the most common ones.
 
@@ -33,7 +33,7 @@ On a very high level, this is what we're going to build in this article:
 
 We'll create two CloudFormation stacks:
 
-* A **network stack** that creates a VPC (virtual private cloud) with two public subnets (each in a different availiability zone for high availability), and internet gateway, and a load balancer that balances traffic between those networks.
+* A **network stack** that creates a VPC (virtual private cloud) with two public subnets (each in a different availability zone for high availability), and internet gateway, and a load balancer that balances traffic between those networks.
 * A **service stack** that places a Docker container with the application we want to run into each of the public networks. For this, we take advantage of ECS (Elastic Container Service) and Fargate, which together abstract away some of the gritty details and make it easier to run a Docker container.
 
 The service stack depends on the network stack, so we start with designing the network stack.
@@ -89,7 +89,7 @@ Next, we create two public subnets. A subnet is a network in which we can place 
       MapPublicIpOnLaunch: true
 ```
 
-We place each subnet into a different `AvailabilityZone`, so that when one zone goes down, the other can still serve traffic. For this, we select the first and second availability zone for the region we're working in, respectively. 
+We place each subnet into a different `AvailabilityZone` so that when one zone goes down, the other can still serve traffic. For this, we select the first and second availability zone for the region we're working in, respectively. 
 
 Using the `CidrBlock` property, we define the IP address range for each subnet. The first subnet gets the range from `10.0.1.0` to `10.0.1.255` and the second from `10.0.2.0` to `10.0.2.255`.
 
@@ -185,9 +185,9 @@ Now that we have two subnets that can get traffic from the outside, we need a wa
       SecurityGroups: [!Ref 'PublicLoadBalancerSecurityGroup']
 ```
 
-We start off with a [security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) that allows inbound (or "ingress") traffic from the internet (`0.0.0.0/0`) to the load balancer. 
+We start with a [security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html) that allows inbound (or "ingress") traffic from the internet (`0.0.0.0/0`) to the load balancer. 
 
-We have to do this even though we already created a public route from the internet to the internet gateway above, because AWS will otherwise assign all resources in the public subnets to a [default security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#DefaultSecurityGroup) that doesn't allow inbound traffic from the internet.
+We have to do this even though we already created a public route from the internet to the internet gateway above because AWS will otherwise assign all resources in the public subnets to a [default security group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html#DefaultSecurityGroup) that doesn't allow inbound traffic from the internet.
 
 Next, we create the load balancer itself with the `internet-facing` scheme, meaning that it takes inbound traffic from the public, and attach it to both subnets and the security group.
 
@@ -262,7 +262,7 @@ Now, we create an [ECS (Elastic Container Service) cluster](https://docs.aws.ama
 
 We define the cluster and a security group that we will later need in the service stack. 
 
-The security group allows inbound traffic from the loadbalancer (or, more specifically, from everything in the `PublicLoadBalancerSecurityGroup`) and inbound traffic from everything in the same security group so that our Docker containers can later talk to each other.
+The security group allows inbound traffic from the load balancer (or, more specifically, from everything in the `PublicLoadBalancerSecurityGroup`) and inbound traffic from everything in the same security group so that our Docker containers can later talk to each other.
 
 #### Roles
 
@@ -453,7 +453,7 @@ The `StackName` parameter must be the name of the network stack, so we can impor
 
 #### Re-route the Load Balancer
 
-Remember that we have set up a dummy target group for the loadbalancer in the network stack? We now create the real target group:
+Remember that we have set up a dummy target group for the load balancer in the network stack? We now create the real target group:
 
 ```yaml
   TargetGroup:
@@ -488,7 +488,7 @@ Remember that we have set up a dummy target group for the loadbalancer in the ne
         Priority: 1
 ```
 
-We use some of the input parameters from above here with the `!Ref` function to set up the healthcheck and the port on which the machines within the `TargetGroup` should receive traffic.
+We use some of the input parameters from above here with the `!Ref` function to set up the health check and the port on which the machines within the `TargetGroup` should receive traffic.
 
 We put the target group into our VPC using the `Fn::ImportValue` function to import the VPC ID from the network stack (which must be up and running before we create the service stack).
 
@@ -590,7 +590,7 @@ Finally, we tell the ECS service to run our task definition from above and conne
 
 Defining a CloudFormation stack is the hard part. Once a stack template is reliably defined, running stacks becomes a breeze. 
 
-It took me a lot of time to get here, even though I have started started with existing [templates from GitHub](https://github.com/nathanpeck/aws-cloudformation-fargate). 
+It took me a lot of time to get here, even though I have started with existing [templates from GitHub](https://github.com/nathanpeck/aws-cloudformation-fargate). 
 
 The dev loop looked something like this:
 
@@ -621,7 +621,7 @@ We can check if the stack was successfully created by selecting the CloudFormati
 
 Alternatively, we can use the AWS CLI and run the command `aws cloudformation describe-stacks`, which lists the status of all the stacks that are currently running. 
 
-It should only take a couple minutes until the stack has reached the status `CREATE_COMPLETE`.
+It should only take a couple of minutes until the stack has reached the status `CREATE_COMPLETE`.
 
 ### Creating the Service Stack 
 
@@ -652,7 +652,7 @@ The rest are optional parameters that have sensible defaults, but we need to twe
 
 The application runs on port 8080, so we have to set this as the value for the `ContainerPort` parameter.
 
-Also, the application only has a single HTTP endpoint, `/hello`, so we have to configure the health check to use this endpoint, otherwise the health check will fail.
+Also, the application only has a single HTTP endpoint, `/hello`, so we have to configure the health check to use this endpoint, otherwise, the health check will fail.
 
 By default, the health check would run every 5 seconds. With the default of 256 CPU units for the `ContainerCpu` parameter (which is 1/4 vCPU), even the simple hello world Spring Boot application doesn't manage to start up in 5 seconds, so we set the `HealthCheckIntervalSeconds` to 90.
 
@@ -723,7 +723,7 @@ The logs showed that the Spring Boot app started without error, but that it took
 
 **Since the health check was configured to only 5 seconds, it kept failing and restarted the tasks over and over.**
 
-I increased the healthcheck interval to 90 seconds and it worked.
+I increased the health check interval to 90 seconds and it worked.
 
 ## The AWS Journey
 

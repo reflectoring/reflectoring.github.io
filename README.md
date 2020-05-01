@@ -9,6 +9,7 @@ This is the repository for the [reflectoring.io](https://reflectoring.io) blog o
 1. run `bundle exec jekyll serve` to start jekyll
 1. go to [http://localhost:4000](http://localhost:4000) to view the blog in your browser
 1. changes to the markdown files should automatically trigger a re-start of jekyll (if not, kill the process with `CMD+C` and restart it)  
+
 ## Viewing Your Blog Post Locally
 
 1. copy one of the existing blog post `.md` files from the `_posts` folder into a new file 
@@ -19,6 +20,12 @@ This is the repository for the [reflectoring.io](https://reflectoring.io) blog o
 1. run `bundle exec jekyll serve` to start up the blog locally
 1. go to [http://localhost:4000](http://localhost:4000) to view the blog in your browser
 1. your blog post should show up on the start page; click on it and check if it looks good
+
+## Troubleshooting
+
+### `bundle install` fails with "zlib is missing" (Ubuntu)
+
+Run `sudo apt-get install --reinstall zlibc zlib1g zlib1g-dev` to install the missing zlib library and rerun `bundle install`.
 
 ## Contributing to this Blog
 

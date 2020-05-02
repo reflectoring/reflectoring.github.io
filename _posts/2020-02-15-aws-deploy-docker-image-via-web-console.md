@@ -206,6 +206,10 @@ To find the URL of our application in the web console, do the following:
 * Click the "ENI Id" of the task to see the status of the network interface of that task (ENI = Elastic Network Interface).
 * On the status page of the network interface, we finally find the *public IPv4 address* we can use to access our freshly deployed service.
 
+Here's a screenshot that shows the link to the ENI:
+
+![ENI](/assets/img/posts/aws-deploy-docker-image-via-web-console/eni.jpg)
+
 If you have deployed the `aws-hello-world` container from above, add `:8080/hello` to that URL, put it in your browser, and you should see the message "Hello AWS!".
 
 Done. We've just deployed our first Docker container to AWS!

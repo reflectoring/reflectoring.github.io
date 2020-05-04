@@ -98,3 +98,18 @@
 - author: Ron Jeffries
   publication: The Nature of Software Development
   text: "Scaling Agile is good business for scaling vendors. It's not necessarily good advice for you."
+- author: Nicole Forsgren, Jez Humble, and Gene Kim
+  publication: Accelerate
+  text: "Software delivery is an exercise in continuous improvement."
+- author: Nicole Forsgren, Jez Humble, and Gene Kim
+  publication: Accelerate
+  text: "Maturity models focus on helping an organization arrive at a mature state and then declare themselves done with their journey."
+- author: W. Edwards Deming
+  publication: Out of the Crisis
+  text: "Cease dependence on inspection to achieve quality. Eliminate the need for inspection on a mass basis by building quality into the product in the first place."
+- author: Nicole Forsgren, Jez Humble, and Gene Kim
+  publication: Accelerate
+  text: "Architects should focus on engineers and outcomes, not tools or technologies."
+- author: Nicole Forsgren, Jez Humble, and Gene Kim
+  publication: Accelerate
+  text: "The best thing you can do for your products, your company, and your people is institute a culture of experimentation and learning, and invest in the technical and management capabilities that enable it."

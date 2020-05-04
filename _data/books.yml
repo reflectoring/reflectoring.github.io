@@ -39,3 +39,9 @@ nature-of-software-development:
   url: https://www.goodreads.com/book/show/39709198-the-nature-of-software-development
   title: "The Nature of Software Development"
   author: "Ron Jeffries"
+
+accelerate:
+  cover: /assets/img/covers/accelerate-260.jpg
+  url: https://www.goodreads.com/book/show/35747076-accelerate
+  title: "Accelerate"
+  author: "Nicole Forsgren, Jez Humble, and Gene Kim"

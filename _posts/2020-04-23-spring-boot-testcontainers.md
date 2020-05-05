@@ -120,42 +120,45 @@ With [Tescontainers](https://www.testcontainers.org/) we can test the database m
 Of course, we'll have to install Docker to run it. After that we can create an initialization code for testing:
 
 ````java
-@ContextConfiguration(
-  initializers=AbstractIntegrationTest.Initializer.class)
+@ContextConfiguration(initializers 
+                              = AbstractIntegrationTest.Initializer.class)
 public class AbstractIntegrationTest {
 
-  static class Initializer
-      implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+    static class Initializer
+         implements ApplicationContextInitializer
+                            <ConfigurableApplicationContext> {
 
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>();
+        static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>();
 
-    public static Map<String, String> getProperties() {
-      Startables.deepStart(Stream.of(postgres)).join();
-      // we can add further containers here like rabbitmq
-      // or other databases
+        private static void startContainers() {
+            Startables.deepStart(Stream.of(postgres)).join();
+            // we can add further containers 
+            // here like rabbitmq or other database
+        }
 
-      return Map.of(
-          "spring.datasource.url", postgres.getJdbcUrl(),
-          "spring.datasource.username", postgres.getUsername(),
-          "spring.datasource.password", postgres.getPassword()
-      );
+        private static Map<String, String> createConnectionConfiguration() {
+            return Map.of(
+                    "spring.datasource.url", postgres.getJdbcUrl(),
+                    "spring.datasource.username", postgres.getUsername(),
+                    "spring.datasource.password", postgres.getPassword()
+            );
+        }
+
+
+        @Override
+        public void initialize(ConfigurableApplicationContext
+                                               applicationContext) {
+            startContainers();
+            ConfigurableEnvironment environment 
+                                = applicationContext.getEnvironment();
+            MapPropertySource testcontainers = new MapPropertySource(
+                    "testcontainers",
+                    (Map) createConnectionConfiguration()
+            );
+            environment.getPropertySources().addFirst(testcontainers);
+        }
     }
-
-    @Override
-    public void initialize(ConfigurableApplicationContext
-                       applicationContext) {
-      
-      ConfigurableEnvironment environment 
-                = applicationContext.getEnvironment();
-
-      MapPropertySource testcontainers = new MapPropertySource(
-          "testcontainers",
-          (Map) getProperties());
-
-      environment.getPropertySources().addFirst(testcontainers);
-    }
-  }
-}
+} 
 ```` 
 The class `AbstractIntegrationTest` is an abstract class that defines a `PostgreSQL` database and configures 
 the connection to this database. Other classes can extend this class and use the database for tests. 
@@ -165,20 +168,25 @@ Then, we implement the `ApplicationContextInitializer` interface for initializin
 In this implementation, we create a `PostgresSQL` database, configure the connection to the database,
 and add this configuration to the Spring context, so that Spring knows which database to connect to in the tests.
 
-In the method `initialize()` we set the properties of the Spring Context. The method `addFirst()`
-adds the properties to the contexts with the highest precedence.
+Since we added the `Initializer` to the annotation `@ContextConfiguration`, the method `initialize()`
+is called when starting the Spring context.
 
-The method `getProperties()` does two important things:
-* it starts the Docker container with `PostgeSQL` database, and
-* it creates a `Map` with the properties for connecting this database.
+The method `initialize()` does three important things:
+* it starts the Docker container with `PostgeSQL` database,
+* it creates a `Map` with the properties for connecting this database,
+* it sets the properties for connecting the database to the Spring context. 
 
+The method `startContainers()` starts the containers, we defined in the `Initializer`.
 The method `deepStart()` starts all items of the `Stream` in parallel. It can be many different
 Docker containers, for instance, `RabbitMQ`, `Keycloak`, or another database. To keep it simple, let's start only one
-Docker container with the `PostgreSQL`.
+Docker container with the `PostgreSQL`. 
 
 **The URL to the database, username, and password are created by the `Tescontainers` automatically**. Hence, we don't need to configure them ourselves.
 But we have to read this configuration and add it to the Spring context. We do this by creating the `Map` in the method
-`getProperties()` and passing it on to Spring in `initialize()`. 
+`createConnectionConfiguration()` and passing it on to Spring in `initialize()`. 
+
+In the last line of the method `initialize()` we set the properties of the Spring Context. The method `addFirst()`
+adds the properties to the contexts with the highest precedence.
 
 It's also possible to set these parameters manually in the code, but it's better to let Testcontainers generate them.
 When we let Testcontainers generate the `jdbcUrl`, it includes the port of the database connection. The random port provides 
@@ -196,7 +204,8 @@ class TestcontainersApplicationTests extends AbstractIntegrationTest {
 
   @Test
   void migrate() {
-    // migration starts automatically, since Spring Boot runs the Flyway scripts on startup
+    // migration starts automatically,
+    // since Spring Boot runs the Flyway scripts on startup
   }
 
 }

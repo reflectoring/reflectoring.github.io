@@ -1,26 +1,26 @@
 ---
 title: Testing Database Migration Scripts with Spring Boot and Testcontainers
 categories: [spring-boot]
-date: 2020-04-23 05:00:00 +1100
-modified: 2020-04-23 05:00:00 +1100
+date: 2020-05-08 05:00:00 +1100
+modified: 2020-05-08 05:00:00 +1100
 author: artur
-excerpt: "Testcontainers"
+excerpt: "In-memory databases are popular for testing locally. But why test against an in-memory database when Testcontainers can easily spin up a production-like database for us?"
 image:
   auto: 0069-testcontainers
 ---
 
-Database migration with tools like [Flyway](/database-migration-spring-boot-flyway/) requires creating SQL scripts and running
+Database migration with tools like Flyway or Liquibase requires creating SQL scripts and running
 them on a database.
 Although the database is an external dependency, we have to test the SQL scripts, because it is our code.
 But this code doesn't run in the application that we develop and cannot be tested with unit tests.
 
-This article shows how to test database migration scripts with Flyway and Testcontainers in a Spring Boot application and to keep the tests close to production.
+This article shows how to test database migration scripts with [Flyway](/database-migration-spring-boot-flyway/) and Testcontainers in a Spring Boot application and to keep the tests close to production.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/testcontainers" %}
 
 ## Key Takeaways
 
-* Using an in-memory database for integration tests will cause compatibility issues between the in-memory database and the production database.
+* Using an in-memory database for integration tests will cause compatibility issues in our SQL scripts between the in-memory database and the production database.
 * Using Testcontainers, we can easily spin up a Docker container with the production database for our tests.
 
 ## Common Practice

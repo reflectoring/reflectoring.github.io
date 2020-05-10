@@ -61,8 +61,7 @@ CREATE TABLE car
   registration_timestamp INTEGER
 );
 ``` 
-This script can run on an `H2` as well as on a PostgreSQL database. 
-This script can run on an `H2` as well as on a PostgreSQL database. 
+This script can run on an `H2` as well as on a PostgreSQL database.  
 
 Now we want to change the type
 of the column `registration_timestamp` from `INTEGER` to `timestamp with time zone` and of course, we want to migrate the data

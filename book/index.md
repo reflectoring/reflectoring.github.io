@@ -64,7 +64,7 @@ comments:
           </ul> 
           <a class="primary-button btn-block" href="https://www.packtpub.com/programming/get-your-hands-dirty-on-clean-architecture">Get it at Packt</a>  
           <a class="primary-button btn-block" href="https://www.amazon.com/gp/product/1839211962/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=1839211962&linkCode=as2&tag=reflectorin0c-20&linkId=559e54b6599c4213252259df28d1d3e3">Get it at Amazon</a>
-          <a class="primary-button btn-block" href="https://www.barnesandnoble.com/w/get-your-hands-dirty-on-clean-architecture-tom-hombergs/1133915094">Get it at Barnes & Noble</a>  
+          <a class="primary-button btn-block" href="https://www.barnesandnoble.com/w/get-your-hands-dirty-on-clean-architecture-tom-hombergs/1134180673">Get it at Barnes & Noble</a>  
       </div>
 
 </div>

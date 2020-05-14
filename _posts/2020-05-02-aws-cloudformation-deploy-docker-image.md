@@ -1,5 +1,5 @@
 ---
-title: "The AWS Journey Part 2: Deploying a Docker Image with CloudFormation"
+title: "The AWS Journey Part 2: Deploying a Docker Image with AWS CloudFormation"
 categories: [craft]
 date: 2020-05-02 05:00:00 +1000
 modified: 2020-05-02 05:00:00 +1000

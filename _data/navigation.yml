@@ -26,8 +26,8 @@ footer:
       url: /categories/meta
     - title: "Privacy Policy"
       url: /privacy/
-    - title: "Write For Me"
-      url: /write-for-me
+    - title: "Write With Me"
+      url: /write-with-me
   - title: "Resources"
     children:
     - title: "Book"

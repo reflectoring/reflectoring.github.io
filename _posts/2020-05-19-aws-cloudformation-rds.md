@@ -1,10 +1,10 @@
 ---
 title: "The AWS Journey Part 3: Connecting a Spring Boot Application to an RDS Instance with CloudFormation"
 categories: [craft]
-date: 2020-05-02 05:00:00 +1000
-modified: 2020-05-02 05:00:00 +1000
+date: 2020-05-19 05:00:00 +1000
+modified: 2020-05-19 05:00:00 +1000
 author: default
-excerpt: "TODO"
+excerpt: "Deploy a Spring Boot application and a PostgreSQL database in a fully automated way with AWS CloudFormation."
 image:
   auto: 0061-cloud
 ---

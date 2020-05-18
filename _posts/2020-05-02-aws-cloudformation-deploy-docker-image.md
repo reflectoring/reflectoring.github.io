@@ -11,7 +11,9 @@ image:
 
 In the first article of my AWS Journey, [we deployed a Docker image via the AWS web console](/aws-deploy-docker-image-via-web-console/). While this works fine, it includes manual work and doesn't provide fine-grained control over the network and other resources we might need.
 
-The next step in this journey is to automate the deployment of Docker images. In this article, **we'll use AWS's CloudFormation service to deploy and undeploy a highly available virtual private cloud running multiple instances of our Docker image behind a load balancer** - all with a single CLI command. 
+The goal of this journey is to create a production-grade, continuously deployable system, so the next step in this journey is to automate the deployment of Docker images. In this article, **we'll use AWS's CloudFormation service to deploy and undeploy a highly available virtual private cloud running multiple instances of our Docker image behind a load balancer** - all with a single CLI command. 
+
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/cloudformation/ecs-in-two-public-subnets" %}
 
 ## What is CloudFormation?
 
@@ -33,14 +35,14 @@ On a very high level, this is what we're going to build in this article:
 
 We'll create two CloudFormation stacks:
 
-* A **network stack** that creates a VPC (virtual private cloud) with two public subnets (each in a different availability zone for high availability), and internet gateway, and a load balancer that balances traffic between those networks.
+* A **network stack** that creates a VPC (virtual private cloud) with two public subnets (each in a different availability zone for high availability), an internet gateway, and a load balancer that balances traffic between those networks.
 * A **service stack** that places a Docker container with the application we want to run into each of the public networks. For this, we take advantage of ECS (Elastic Container Service) and Fargate, which together abstract away some of the gritty details and make it easier to run a Docker container.
 
 The service stack depends on the network stack, so we start with designing the network stack.
 
 I didn't start from scratch (I'm not smart enough for that) but instead used [these CloudFormation templates](https://github.com/nathanpeck/aws-cloudformation-fargate) as a starting point and modified them for simplicity and understanding. 
 
-We'll be discussing a single fragment of YAML at a time. You can find the full CloudFormation templates for the [network stack](https://github.com/thombergs/code-examples/blob/master/aws/cloudformation/ecs-in-two-public-subnets/network.yml) (`network.yml`) and the [service stack](https://github.com/thombergs/code-examples/blob/master/aws/cloudformation/ecs-in-two-public-subnets/service.yml) (`service.yml`) on GitHub.  
+We'll be discussing a single fragment of YAML at a time. You can find the complete CloudFormation templates for the [network stack](https://github.com/thombergs/code-examples/blob/master/aws/cloudformation/ecs-in-two-public-subnets/network.yml) (`network.yml`) and the [service stack](https://github.com/thombergs/code-examples/blob/master/aws/cloudformation/ecs-in-two-public-subnets/service.yml) (`service.yml`) on GitHub.  
 
 Skip to [running the stacks](#running-the-stacks) if you're not interested in the nitty-gritty details of the stack configuration.
 
@@ -602,6 +604,16 @@ The dev loop looked something like this:
 
 Especially the "find out why it's not working" part takes a lot of research and time if you're not intimately familiar with all the AWS resources you're using. I put some of the errors that cost me time in the [troubleshooting](#troubleshooting) section.
 
+<div class="notice success">
+  <h4>Starting the Stacks Will Incur AWS Costs!</h4>
+  <p>
+  Starting a stack is fun because it creates a whole bunch of resources with the click of a button. But this also means that we have to pay for the resources it creates. Starting and stopping all stacks described in this article a couple of times will incur a cost in the ballpark of cents of up to a couple of dollars, depending on how often you do it. 
+  </p>
+  <p>
+  It cost me around $20 to start, stop, debug, and re-start the stacks over a week's time to prepare this article.  
+  </p>
+</div>
+
 ### Creating the Network Stack
 
 Spinning up our stacks is now a matter of running a CLI command. Make sure you have the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) installed if you want to try it yourself.
@@ -731,20 +743,20 @@ So, we've successfully deployed a network and a Docker container to the cloud.
 
 CloudFormation is a mighty tool which can spin up whole infrastructures in minutes, but you need to understand the AWS resources and their interdependencies to create a template that works. 
 
-We're still at the beginning of the AWS Journey. 
+We're still at the beginning of the AWS Journey. There's a lot more ground to cover before we arrive at a production-ready, continuously deployable system. 
 
-Here's a list of the questions I want to answer on this Journey. If there's a link, it's been answered already with a blog post! 
+Here's a list of the questions I want to answer on this journey. If there's a link, it has already been answered with a blog post! If not, stay tuned!
 
-* [How can I deploy a Docker image from the web console?](/aws-deploy-docker-image-via-web-console/)
-* [How can I deploy a Docker image from the command line?](/aws-cloudformation-deploy-docker-image/) (this article)
-* [How do I set up load balancing?](/aws-cloudformation-deploy-docker-image/#load-balancer) (this article)
-* How can I deploy a Docker image from a CI/CD pipeline?
-* How can I deploy a new version of my Docker image without downtime?
-* How can I deploy my Docker image into multiple environments (test, staging, production)?
-* How can I implement high availability for my deployed application?
+* [How can I deploy an application from the web console?](/aws-deploy-docker-image-via-web-console/)
+* [**How can I deploy an application from the command line?**](/aws-cloudformation-deploy-docker-image/) (this article)
+* [**How can I implement high availability for my deployed application?**](/aws-cloudformation-deploy-docker-image#public-subnets) (this article)
+* [**How do I set up load balancing?**](/aws-cloudformation-deploy-docker-image/#load-balancer) (this article)
+* [How can I deploy a database in a private subnet and access it from my application?](/aws-cloudformation-rds)
+* How can I deploy my application from a CI/CD pipeline?
+* How can I deploy a new version of my application without downtime?
+* How can I deploy my application into multiple environments (test, staging, production)?
 * How can I auto-scale my application horizontally on high load?
 * How can I implement sticky sessions in the load balancer (if I'm building a session-based webapp)?
-* How can I deploy a database in a private subnet and access it from my app?
 * How can I monitor what’s happening on my application?
 * How can I bind my application to a custom domain?
 * How can I access other AWS resources (like SQS queues and DynamoDB tables) from my application?

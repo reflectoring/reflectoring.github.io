@@ -1,5 +1,5 @@
 ---
-title: Write For Me
+title: Write With Me
 layout: static
 author: 
   enabled: false
@@ -20,7 +20,7 @@ Interested in writing about Spring and Java? In getting a better writer? In earn
 
 There's [plenty of reasons](https://www.google.com/search?q=why+should+i+write+a+programming+blog&rlz=1C1GCEA_enDE749DE749&oq=why+should+i+write+a+programming+blog&aqs=chrome..69i57j0j35i39j0l5.4855j0j4&sourceid=chrome&ie=UTF-8) for a software developer to write. Writing regularly has certainly created some contacts and opened a couple of doors for me.
 
-And there's nothing more satisfying than seeing the buddies at work reading your blog to solve the problem they're currently having :).
+And there's nothing more satisfying than seeing the co-workers in the office reading your blog to solve the problem they're currently having :).
 
 ## Why Should I Write for reflectoring?
 
@@ -68,7 +68,7 @@ I may consider such posts for publication on reflectoring, but I will still revi
 
 ## Why Are You Looking For Authors?
 
-I have created this big backlog of topics that I believe are interesting to my readers but I don't have enough time to write it all myself (I still have a day job!). 
+I have created this big backlog of topics that I believe are interesting to my readers but I don't have enough time to write it all myself (I do have a day job and a family I like to spend some time with, after all!). 
 
 So, to get the stuff out there before I die - to grow the reflectoring blog faster than I could alone - I'm looking for help.
  

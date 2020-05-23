@@ -9,26 +9,22 @@ image:
   auto: 0065-java
 ---
 
-One of the important steps to keep software applications customizable is the effective configuration management. Modern frameworks have many provisions out of the box to externalize configuration parameters.
+One of the important steps to keep software applications customizable is effective configuration management. Modern frameworks provide out-of-the-box features to externalize configuration parameters.
 
-However, validation of these parameters can still be a problem for some developers.
+For some configuration parameters it makes sense to fail application startup if they're invalid.
 
-Spring Boot offers us a neat way of validating configuration parameters. Binding input values and supporting [Bean Validation](https://beanvalidation.org/), we can do it practically.
+Spring Boot offers us a neat way of validating configuration parameters. We're going to bind input values to `@ConfigurationProperties` and use [Bean Validation](https://beanvalidation.org/) to validate them.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/configuration" %}
 
 ## Why Do We Need to Validate Configuration Parameters?
-Developers are super passionate guys when it comes to building up new things, architecting clever solutions and those are the moments that they really shine.
-
-But, all these attractive moments sometimes make us forget (or neglect? ... nevermind) to validate inputs. Especially, if these are the ones only we define like configuration parameters. I know, I'm one of them :)
-
-However, **not doing the proper validation of our configuration can be critical sometimes**.
+Not doing proper validation of our configuration parameters can be critical sometimes.
 
 Let's think about a scenario:
 
-You wake up early than usual because of a frustrated call. Your client complains about they haven't been receiving the utmost important reports for a week from the fancy analysis application you had developed. You jump out from your bed and debug the issue blazing fast but it still takes for a couple of hours to find out.
+We wake up early to a frustrated call. Our client complains about not having received their very important report emails from the fancy analysis application we developed. We jump out of bed to debug the issue.
 
-Oh, God! you realized the typo in the e-mail address you defined in the configuration:
+Finally, we realize the cause. A typo in the e-mail address we defined in the configuration:
 
 ```
 app.properties.report-email-address = manager.analysisapp.com
@@ -36,16 +32,19 @@ app.properties.report-email-address = manager.analysisapp.com
 
 "Didn't I validate it? Oh, I see. I had to implement a helper class to read and validate the configuration data and I was so lazy at that moment. Ahh, nevermind, it's fixed right now."
 
-I lived that scenario, not just once. So, I believe what makes sense to me can make sense to others too. That was the motivation behind this article and let's keep going to see a practical solution for that.
+I lived that scenario, not just once. 
+
+So, that's the motivation behind this article. Let's keep going to see a practical solution for this problem.
 
 ## Validating Properties at Startup
-Binding our configuration parameters to an object would be a clean way to maintain them. Therefore, **we can benefit from type-safety and seeing errors in advance**.
+Binding our configuration parameters to an object is a clean way to maintain them. This way **we can benefit from type-safety and find errors earlier**.
 
-Spring Boot has the [@ConfigurationProperties](https://reflectoring.io/spring-boot-configuration-properties/) annotation to make this binding automatically for our properties defined in `.properties` files.
+Spring Boot has the [`@ConfigurationProperties`](/spring-boot-configuration-properties/) annotation to do this binding for the properties defined in `application.properties` or `application.yml` files.
 
 However, to validate them we need to follow a couple of more steps.
 
 First, let's take a look at our `application.properties` file:
+
 ```
 app.properties.name = Analysis Application
 app.properties.send-report-emails = true
@@ -54,7 +53,8 @@ app.properties.report-interval-in-days = 7
 app.properties.report-email-address = manager@analysisapp.com
 ```
 
-Next, we add `@Validated` annotation to our properties class alongside the [bean validation](https://reflectoring.io/bean-validation-with-spring-boot/) anotations on the fields:
+Next, we add the `@Validated` annotation to our `@ConfigurationProperties` class alongside some [bean validation](/bean-validation-with-spring-boot/) anotations on the fields:
+
 ```java
 @Validated
 @ConfigurationProperties(prefix="app.properties")
@@ -78,7 +78,8 @@ class AppProperties {
 }
 ```
 
-Plus, we need to mark our `AppProperties` class with `@EnableConfigurationProperties` in order to make it work:
+To have Spring Boot pick up our `AppProperties` class, we annotate our `@Configuration` class with `@EnableConfigurationProperties`:
+
 ```java
 @Configuration
 @EnableConfigurationProperties(AppProperties.class)
@@ -87,7 +88,8 @@ class AppConfiguration {
 }
 ```
 
-As we notice, using Spring's `@Validated` annotation we trigger the validation for the `AppProperties` class when the context boots up:
+When we start the Spring Boot application now, and forget to set the `name` property, for example, the application won't start up:
+
 ```
 ***************************
 APPLICATION FAILED TO START
@@ -110,7 +112,7 @@ Update your application's configuration
 
 <div class="notice warning">
   <h4>Bean Validation API Dependency</h4>
-  In order to make bean validation work, we must have <code>javax.validation.validation-api</code> dependency in our classpath. For Spring Boot, take a look at <a href="https://reflectoring.io/bean-validation-with-spring-boot/#setting-up-validation">setting up bean validation</a> section.
+  In order to use bean validation, <a href="/bean-validation-with-spring-boot/#setting-up-validation">we must have the <code>javax.validation.validation-api</code> dependency in our classpath</a>
 </div>
 
 Additionally, we can also define some default values that are set when our `AppProperties` class is initialized:
@@ -121,12 +123,12 @@ private Boolean sendReportEmails = Boolean.FALSE;
 private ReportType reportType = ReportType.HTML;
 
 ```
-Therefore, even if we don't define any values for the properties `send-report-emails` and `report-type`, we can still get the default values `Boolean.FALSE` and `ReportType.HTML` respectively.
+Even if we don't define any values for the properties `send-report-emails` and `report-type`, we will now get the default values `Boolean.FALSE` and `ReportType.HTML` respectively.
 
-### Nested Configuration Objects
-For some properties, it would be meaningful to bind them into a nested object.
+### Validate Nested Configuration Objects
+For some properties, it makes sense to bundle them into a nested object.
 
-So, let's create `ReportProperties` to group the properties related to `report` key:
+So, let's create `ReportProperties` to group the properties related to our very important report:
 
 ```java
 class ReportProperties {
@@ -163,12 +165,13 @@ class AppProperties {
 }
 ```
 
-Besides, we should also pay attention to put `@Valid` annotation on our nested class field `report`.
+**We should pay attention to put `@Valid` annotation on our nested `report` field.**
 
-Thus, Spring can validate the inner properties included in nested objects.
+This tells Spring to validate the properties of the nested objects.
 
-### Using Bean Methods
-Another way of triggering validation, we can use the Spring bean methods. This is particularly useful when we want to **bind properties to components defined in third-party libraries or maintained in separate jar files**:
+### Validate Using @Bean Factory Methods
+We can also trigger validation by declaring a properties class in a `@Bean` factory method. This is particularly useful when we want to **bind properties to components defined in third-party libraries or maintained in separate jar files**:
+
 ```java
 @Bean
 @Validated
@@ -179,11 +182,12 @@ public ThirdPartyComponentProperties thirdPartyComponentProperties() {
 ```
 
 ### Using a Custom `Validator`
-Even though bean validation provides a declarative approach to validate our objects in a reusable way, sometimes we need more to customize our validation logic in purpose.
+Even though bean validation provides a declarative approach to validate our objects in a reusable way, sometimes we need more to customize our validation logic.
 
-In that case, **Spring has an independent `Validator` mechanism to allow dynamic input validation**.
+For this case, **Spring has an independent `Validator` mechanism to allow dynamic input validation**.
 
-Let's make our validation further, to check the `report.email-address` can only be an address under a specific domain like `@analysisapp.com`:
+Let's extend our validation to check that the `report.email-address` has a specific domain like `@analysisapp.com`:
+
 ```java
 class ReportEmailAddressValidator implements Validator {
 
@@ -208,18 +212,17 @@ class ReportEmailAddressValidator implements Validator {
   }
 }
 ```
-Then, we need to register our custom Spring validator with a specific definition of `configurationPropertiesValidator`:
+Then, we need to register our custom Spring validator with the special method name `configurationPropertiesValidator()`:
 ```java
 @Bean
 public static ReportEmailAddressValidator configurationPropertiesValidator(){
   return new ReportEmailAddressValidator();
 }
 ```
-As we notice, we should define our `configurationPropertiesValidator` bean as `static`.
 
-Therefore, Spring can create the bean in a very early stage, before `@Configuration` classes, to avoid any problems when creating other beans depending on the configuration properties.
+Note that we must define our `configurationPropertiesValidator()` method as `static`. This allows Spring to create the bean in a very early stage, before `@Configuration` classes, to avoid any problems when creating other beans depending on the configuration properties.
 
 ## Conclusion
-If you want to be safe from input errors, validating your configuration would be a good way to go. Spring Boot makes it even more practical which we've explained the ways of them in this article.
+If you want to be safe from input errors, validating your configuration is a good way to go. Spring Boot makes it easy with the ways described in this article.
 
 All the code examples and even more you can play with is over [on Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/configuration).

@@ -3,7 +3,7 @@ title: Validate Spring Boot Configuration Parameters at Startup
 categories: [spring-boot]
 date: 2020-05-22 06:00:00 +200
 modified: 2020-05-22 06:00:00 +200
-author: default
+author: yavuztas
 excerpt: "One of the important steps to keep software applications customizable is the effective configuration management. Modern frameworks have many provisions out of the box to externalize configuration parameters."
 image:
   auto: 0065-java
@@ -34,7 +34,7 @@ app.properties.report-email-address = manager.analysisapp.com
 
 I lived that scenario, not just once.
 
-So, that's the motivation behind this article. Let's keep going to see a practical solution for this problem.
+So, that's the motivation behind this article. Let's keep going to see a practical solution to this problem.
 
 ## Validating Properties at Startup
 Binding our configuration parameters to an object is a clean way to maintain them. This way **we can benefit from type-safety and find errors earlier**.
@@ -185,11 +185,16 @@ app.properties.report.email-address = manager@analysisapp.com
 We can also trigger validation by declaring a properties class in a `@Bean` factory method. This is particularly useful when we want to **bind properties to components defined in third-party libraries or maintained in separate jar files**:
 
 ```java
-@Bean
-@Validated
-@ConfigurationProperties(prefix = "app.third-party.properties")
-public ThirdPartyComponentProperties thirdPartyComponentProperties() {
-  return ThirdPartyComponentProperties();
+@Configuration
+class AppConfiguration {
+  // ...
+  @Bean
+  @Validated
+  @ConfigurationProperties(prefix = "app.third-party.properties")
+  public ThirdPartyComponentProperties thirdPartyComponentProperties() {
+    return new ThirdPartyComponentProperties();
+  }
+  // ...
 }
 ```
 
@@ -226,13 +231,54 @@ class ReportEmailAddressValidator implements Validator {
 ```
 Then, we need to register our custom Spring validator with the special method name `configurationPropertiesValidator()`:
 ```java
-@Bean
-public static ReportEmailAddressValidator configurationPropertiesValidator(){
-  return new ReportEmailAddressValidator();
+@Configuration
+class AppConfiguration {
+  // ...
+  @Bean
+  public static ReportEmailAddressValidator configurationPropertiesValidator() {
+    return new ReportEmailAddressValidator();
+  }
+  // ...
 }
 ```
 
 Note that we must define our `configurationPropertiesValidator()` method as `static`. This allows Spring to create the bean in a very early stage, before `@Configuration` classes, to avoid any problems when creating other beans depending on the configuration properties.
+
+<div class="notice warning">
+  <h4><code>Validator</code> Is Not a Part of Bean Validation</h4>
+  Spring's <a href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/validation/Validator.html"><code>Validator</code></a> is not related to bean validation and works independently after the bean validation happens. It's main purpose is to encapsulate the validation logic from any infrastructure or context.
+</div>
+
+In case we need to define more than one `Validator` for our configuration properties, we cannot make it by defining bean factory methods. Since **Spring Boot doesn't allow [duplicate bean definitions](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/support/BeanDefinitionOverrideException.html) by default**, there is another way to create `Validator`s for configuration properties.
+
+Instead of defining a bean factory method, we can move our custom `Validator` implementation to inside the configuration property classes:
+```java
+@Validated
+@ConfigurationProperties(prefix = "app.properties")
+class AppProperties implements Validator {
+  // ...
+  private static final String EMAIL_DOMAIN = "@analysisapp.com";
+
+  public boolean supports(Class clazz) {
+    return ReportProperties.class.isAssignableFrom(clazz);
+  }
+
+  public void validate(Object target, Errors errors) {
+
+    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddress", "field.required");
+
+    ReportProperties reportProperties = (ReportProperties) target;
+    if (!reportProperties.getEmailAddress().endsWith(EMAIL_DOMAIN)) {
+      errors.rejectValue("emailAddress", "field.domain.required",
+          new Object[]{EMAIL_DOMAIN},
+          "The email address must contain [" + EMAIL_DOMAIN + "] domain");
+    }
+
+  }
+  // ...
+}
+```
+By doing so, we can add different `Validator` implementations for each `@ConfigurationProperties` classes.
 
 ## Conclusion
 If you want to be safe from input errors, validating your configuration is a good way to go. Spring Boot makes it easy with the ways described in this article.

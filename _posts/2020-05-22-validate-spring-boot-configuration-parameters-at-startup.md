@@ -74,7 +74,7 @@ class AppProperties {
   @Email
   private String reportEmailAddress;
 
-  // ...
+  // getters / setters
 }
 ```
 
@@ -84,7 +84,7 @@ To have Spring Boot pick up our `AppProperties` class, we annotate our `@Configu
 @Configuration
 @EnableConfigurationProperties(AppProperties.class)
 class AppConfiguration {
-  //...
+  // ...
 }
 ```
 
@@ -116,11 +116,15 @@ Update your application's configuration
 
 Additionally, we can also define some default values that are set when our `AppProperties` class is initialized:
 ```java
+@Validated
+@ConfigurationProperties(prefix="app.properties")
+class AppProperties {
+  // ...
+  private Boolean sendReportEmails = Boolean.FALSE;
 
-private Boolean sendReportEmails = Boolean.FALSE;
-
-private ReportType reportType = ReportType.HTML;
-
+  private ReportType reportType = ReportType.HTML;
+  // ...
+}
 ```
 Even if we don't define any values for the properties `send-report-emails` and `report-type`, we will now get the default values `Boolean.FALSE` and `ReportType.HTML` respectively.
 
@@ -143,7 +147,7 @@ class ReportProperties {
   @Email
   private String emailAddress;
 
-  // ...
+  // getters / setters
 }
 ```
 
@@ -160,7 +164,7 @@ class AppProperties {
   @Valid
   private ReportProperties report;
 
-  // ...
+  // getters / setters
 }
 ```
 

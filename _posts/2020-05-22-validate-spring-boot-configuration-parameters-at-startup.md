@@ -63,9 +63,9 @@ class AppProperties {
   @NotEmpty
   private String name;
 
-  private Boolean sendReportEmails = Boolean.FALSE;
+  private Boolean sendReportEmails;
 
-  private ReportType reportType = ReportType.HTML;
+  private ReportType reportType;
 
   @Min(value = 7)
   @Max(value = 30)

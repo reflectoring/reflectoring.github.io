@@ -32,7 +32,7 @@ app.properties.report-email-address = manager.analysisapp.com
 
 "Didn't I validate it? Oh, I see. I had to implement a helper class to read and validate the configuration data and I was so lazy at that moment. Ahh, nevermind, it's fixed right now."
 
-I lived that scenario, not just once. 
+I lived that scenario, not just once.
 
 So, that's the motivation behind this article. Let's keep going to see a practical solution for this problem.
 
@@ -88,7 +88,7 @@ class AppConfiguration {
 }
 ```
 
-When we start the Spring Boot application now, and forget to set the `name` property, for example, the application won't start up:
+When we start the Spring Boot application now, and set the `report-email-address` property invalid, for example, the application won't start up:
 
 ```
 ***************************
@@ -99,10 +99,9 @@ Description:
 
 Binding to target org.springframework.boot.context.properties.bind.BindException: Failed to bind properties under 'app.properties' to io.reflectoring.validation.AppProperties failed:
 
-    Property: app.properties.name
-    Value:
-    Origin: class path resource [application-validation.properties]:1:21
-    Reason: must not be empty
+    Property: app.properties.reportEmailAddress
+    Value: manager.analysisapp.com
+    Reason: must be a well-formed email address
 
 
 Action:

@@ -39,7 +39,7 @@ david:
   email: "daviddd.kl@gmail.com"
   avatar: "/assets/img/authors/david.png"
   github: "daklassen"
-  
+
 vasudha:
   name: "Vasudha Venkatesan"
   email: "vasudha.govi@gmail.com"
@@ -100,6 +100,19 @@ prabhakar:
   github: "prabhakar349"
   twitter: "Pdigumarthi1"
   linkedin: "pdigumarthi"
-  bio: "An experienced and skilled software engineer with a strong fervor to design and develop scalable, resilient, and error-free software. 
-  A staunch believer in knowledge exchange and professional collaboration. Willing to share my expertise in building java and spring based 
+  bio: "An experienced and skilled software engineer with a strong fervor to design and develop scalable, resilient, and error-free software.
+  A staunch believer in knowledge exchange and professional collaboration. Willing to share my expertise in building java and spring based
   applications while learning from others."
+
+yavuztas:
+  name: "Yavuz Tas"
+  email: "hi@yavuztas.dev"
+  avatar: "/assets/img/authors/yavuztas.jpg"
+  github: "yavuztas"
+  stackoverflow: "7794994/yavuz-tas"
+  twitter: "YavuzSlmTas"
+  linkedin: "yavuztas"
+  rss: "https://yavuztas.dev/feed.xml"
+  url: "https://yavuztas.dev/"
+  bio: "Yavuz is a professional software developer since 2009. He has diverse experience in creating solutions for enterprise-level requirements,
+  mostly specialized in back-end technologies using Java and Spring Framework. He is a strong follower of test-driven development and a seeker of code quality."

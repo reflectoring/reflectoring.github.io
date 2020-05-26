@@ -172,6 +172,15 @@ class AppProperties {
 
 This tells Spring to validate the properties of the nested objects.
 
+Finally, we should change the report-related property names to `report.*` format in our `application.properties` file as well:
+```
+...
+app.properties.report.send-emails = true
+app.properties.report.type = HTML
+app.properties.report.interval-in-days = 7
+app.properties.report.email-address = manager@analysisapp.com
+```
+
 ### Validate Using @Bean Factory Methods
 We can also trigger validation by declaring a properties class in a `@Bean` factory method. This is particularly useful when we want to **bind properties to components defined in third-party libraries or maintained in separate jar files**:
 

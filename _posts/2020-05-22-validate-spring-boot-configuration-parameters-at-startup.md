@@ -246,7 +246,7 @@ Note that we must define our `configurationPropertiesValidator()` method as `sta
 
 <div class="notice warning">
   <h4><code>Validator</code> Is Not a Part of Bean Validation</h4>
-  Spring's <a href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/validation/Validator.html"><code>Validator</code></a> is not related to bean validation and works independently after the bean validation happens. It's main purpose is to encapsulate the validation logic from any infrastructure or context.
+  Spring's <a href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/validation/Validator.html"><code>Validator</code></a> is not related to bean validation and works independently after the bean validation happens. Its main purpose is to encapsulate the validation logic from any infrastructure or context.
 </div>
 
 In case we need to define more than one `Validator` for our configuration properties, we cannot make it by defining bean factory methods. Since **Spring Boot doesn't allow [duplicate bean definitions](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/support/BeanDefinitionOverrideException.html) by default**, there is another way to create `Validator`s for configuration properties.

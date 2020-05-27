@@ -1,8 +1,8 @@
 ---
 title: Validate Spring Boot Configuration Parameters at Startup
 categories: [spring-boot]
-date: 2020-05-22 06:00:00 +200
-modified: 2020-05-22 06:00:00 +200
+date: 2020-05-28 06:00:00 +1000
+modified: 2020-05-28 06:00:00 +1000
 author: yavuztas
 excerpt: "One of the important steps to keep software applications customizable is the effective configuration management. Let's have a look at how to do this with Spring Boot."
 image:

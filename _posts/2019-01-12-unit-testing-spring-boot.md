@@ -31,8 +31,8 @@ and tests of the persistence layer will be discussed in upcoming articles of thi
 This tutorial is part of a series:
 
 1. [Unit Testing with Spring Boot](/unit-testing-spring-boot/)
-2. [Testing Spring MVC Web Controllers with `@WebMvcTest`](/spring-boot-web-controller-test/)
-3. [Testing JPA Queries with `@DataJpaTest`](/spring-boot-data-jpa-test/)
+2. [Testing Spring MVC Web Controllers with Spring Boot and `@WebMvcTest`](/spring-boot-web-controller-test/)
+3. [Testing JPA Queries with Spring Boot and `@DataJpaTest`](/spring-boot-data-jpa-test/)
 4. [Integration Tests with `@SpringBootTest`](/spring-boot-test/)
 
 ## Dependencies

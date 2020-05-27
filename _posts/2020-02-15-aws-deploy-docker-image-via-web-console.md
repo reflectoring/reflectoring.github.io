@@ -1,5 +1,5 @@
 ---
-title: Deploying Your First Docker Image to AWS
+title: "The AWS Journey Part 1: Deploying Your First Docker Image"
 categories: [craft]
 date: 2020-02-15 05:00:00 +1100
 modified: 2020-02-15 05:00:00 +1100
@@ -9,7 +9,7 @@ image:
   auto: 0061-cloud
 ---
 
-Amazon Web Services is a beast. It offers so many different cloud services that my natural reaction was to be intimidated. But not for long! I intend to tame that beast one blog post at a time!
+Amazon Web Services is a beast. It offers so many different cloud services that my natural reaction was to be intimidated. But not for long! I intend to tame that beast one blog post at a time until I have a production-grade, continuously deployable system!
 
 We'll start this series by creating a small win to boost our motivation: we'll deploy a Docker image  using the AWS Management Console. In a real-world scenario with multiple images and a more complex setup, we'd want to automate deployments using scripts and the AWS command-line interface. But using the web-based Management Console is a good way to get our bearings.
 
@@ -222,27 +222,31 @@ All the stuff we're missing (and more) is available in the AWS CLI, a command-li
 
 Keep your eyes peeled for a follow-up article doing the same as we did here with the AWS CLI.
 
-## Open Questions
+## The AWS Journey
 
-So, we've successfully deployed a Docker container. That's only the beginning of the story. Having an application running in the cloud opens a huge range of follow-up questions: 
+So, we've successfully deployed a Docker container. That's only the beginning of the story. Having an application running in the cloud opens a huge range of follow-up questions.
 
-* How can I deploy from a CI/CD pipeline?
-* How can I deploy a new version of my application?
+Here's a list of the questions I want to answer on this journey. If there's a link, it has already been answered with a blog post! If not, stay tuned!
+
+* [**How can I deploy an application from the web console?**](/aws-deploy-docker-image-via-web-console/) (this article)
+* [How can I deploy an application from the command line?](/aws-cloudformation-deploy-docker-image/)
+* [How can I implement high availability for my deployed application?](/aws-cloudformation-deploy-docker-image#public-subnets)
+* [How do I set up load balancing?](/aws-cloudformation-deploy-docker-image/#load-balancer)
+* [How can I deploy a database in a private subnet and access it from my application?](/aws-cloudformation-rds)
+* How can I deploy my application from a CI/CD pipeline?
+* How can I deploy a new version of my application without downtime?
+* How can I deploy my application into multiple environments (test, staging, production)?
+* How can I auto-scale my application horizontally on high load?
+* How can I implement sticky sessions in the load balancer (if I'm building a session-based webapp)?
 * How can I monitor what’s happening on my application?
-* How can I access the logs of my service?
-* How can I scale my application horizontally?
-* How can I make my application accessible via a custom domain?
+* How can I bind my application to a custom domain?
 * How can I access other AWS resources (like SQS queues and DynamoDB tables) from my application?
-* How can I activate SSL?
-* How can I test my Docker container with AWS locally?
-* ...
-
-I guess there's an article in each of those questions!
+* How can I implement HTTPS?
 
 ## Conclusion
 
 The AWS web interface is intimidating. If we know where to look, though, we can deploy a Docker container in a matter of minutes. But this is a manual process and the web interface only provides basic means of configuration.
  
-In real-world scenarios, we need to use the AWS CLI to create production-grade configurations and to deploy those from within an automated CI/CD pipeline.
+In real-world scenarios, we need to [use the AWS CLI](/aws-cloudformation-deploy-docker-image/) to create production-grade configurations and to deploy those from within an automated CI/CD pipeline.
 
 

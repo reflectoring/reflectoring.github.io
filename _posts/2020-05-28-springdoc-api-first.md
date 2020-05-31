@@ -10,9 +10,14 @@ image:
 tags: ["spring-boot", "code-first-approach", "swagger"]
 ---
 
-When following a "code first" approach in API development, we first start with writing code, and then we might generate the API specification, which then becomes the documentation.
+When following a "Code First" approach in API development, we first start with writing code, and then we might generate the API specification, which then becomes the documentation.
+
+"Code First" is not the only way to develop an API. "API First" is another option where we do exactly the opposite. First we write the specification, and then we start with the implementation. 
+We discuss "API First" approach in more detail [here](https://reflectoring.io/spring-boot-openapi/).
 
 Let's discuss the benefits of using this approach and how to implement it with Springdoc and Spring Boot.
+
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-codefirst" %}
 
 ## When to Choose the "Code First" Approach
 
@@ -24,9 +29,9 @@ Another benefit of code first is the fact that the documentation will be generat
 
 In this article we will be using [Spring Boot](https://spring.io/projects/spring-boot) together with [springdoc-openapi](https://springdoc.org/).
 
-Springdoc integrates nicely with Spring Boot and will help us generate our API documentation.
+**All the annotations that we will be using are from the Swagger dependencies**. Springdoc wraps swagger dependencies and offers us single dependency, which we can just use it to create our API documentation.
 
-### Getting started
+### Getting Started
 
 To easily get started we only need to add the Springdoc dependency (Gradle notation):
 
@@ -64,7 +69,12 @@ Next, let's define some information about our API:
     url = "https://github.com/thombergs/code-examples/blob/master/LICENSE")),
   servers = @Server(url = "http://localhost:8080")
 )
+class OpenAPIConfiguration {
+}
 ```
+
+Note, that we don't need to define the class above as a bean, Springdoc will just use reflection to obtain the information it needs.
+
 
 Now, if we start the server and navigate to: [http://localhost:8080/swagger-ui/index.html?configUrl=/reflectoring-openapi/swagger-config](http://localhost:8080/swagger-ui/index.html?configUrl=/reflectoring-openapi/swagger-config), we should see the information we defined above:
 
@@ -72,7 +82,7 @@ Now, if we start the server and navigate to: [http://localhost:8080/swagger-ui/i
 
 ### Defining the REST API
 
-In this section, we will define our Rest endpoint.
+In this section, we will define our Rest endpoints. We will be building a TODO API with CRUD operations.
 
 ```java
 @RequestMapping("/api/todos")
@@ -122,17 +132,20 @@ Let's dive a little more into Springdoc by defining a security scheme.
 
 ### Defining a Security Scheme
 
-To define a security scheme for our application we just need to add the `@SecurityScheme` annotation:
+To define a security scheme for our application we just need to add the `@SecurityScheme` annotation in one of our classes:
 
 ```java
+// other annotations omitted
 @SecurityScheme(
   name = "api", 
   scheme = "basic",
   type = SecuritySchemeType.HTTP,
   in = SecuritySchemeIn.HEADER)
+class OpenAPIConfiguration {
+}
 ```
 
-The above `@SecurityScheme` will be referred as `api` and will do a basic authentication via http.
+The above `@SecurityScheme` will be referred as `api` and will do a basic authentication via http. We add this annotation in the `OpenAPIConfiguration` class.
 
 Let's see what this annotation produced for us:
 
@@ -142,39 +155,15 @@ Our documentation has now also an "Authorize" Button! If we press this button we
 
 ![Secure Scheme Dialog](/assets/img/posts/reflect-92/secure-scheme-dialog.png)
 
-To define that an API endpoint uses the above security scheme we have to define it with the `@SecurityRequirement` annotation:
+To define that an API endpoint uses the above security scheme we have to annotate it with the `@SecurityRequirement` annotation.
 
-```java
-@SecurityRequirement(name = "api")
-```
-
-Now our TodoApi Interface looks like this:
-
+Now, the `TodoApi` looks like this:
 ```java
 @RequestMapping("/api/todos")
 @Tag(name = "Todo API", description = "euismod in pellentesque ...")
 @SecurityRequirement(name = "api")
 interface TodoApi {
-
-  @GetMapping
-  @ResponseStatus(code = HttpStatus.OK)
-  List<Todo> findAll();
-
-  @GetMapping("/{id}")
-  @ResponseStatus(code = HttpStatus.OK)
-  Todo findById(@PathVariable String id);
-
-  @PostMapping
-  @ResponseStatus(code = HttpStatus.CREATED)
-  Todo save(@RequestBody Todo todo);
-
-  @PutMapping("/{id}")
-  @ResponseStatus(code = HttpStatus.OK)
-  Todo update(@PathVariable String id, @RequestBody Todo todo);
-
-  @DeleteMapping("/{id}")
-  @ResponseStatus(code = HttpStatus.NO_CONTENT)
-  void delete(@PathVariable String id);
+    // other methods omitted
 }
 ```
 

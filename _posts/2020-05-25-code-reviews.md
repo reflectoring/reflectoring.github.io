@@ -1,5 +1,5 @@
 ---
-title: "Software Developer Habits: Take Code Reviews Seriously"
+title: "Developer Habits: Take Code Reviews Seriously"
 categories: [craft]
 date: 2020-05-19 05:00:00 +1000
 modified: 2020-05-19 05:00:00 +1000
@@ -29,7 +29,7 @@ Pair programming and, more recently, mob programming, are practices where two or
 
 When the goal of code reviews is learning, the value of code reviews is reduced with each person that participates in creating the code. The learning has already taken place while programming together. 
 
-If pair or mob programming works in our working environment, we don't need code reviews. But not every team is working in this style. The prime example is open source development, which is highly asynchronous in nature. A contributor works on a piece of code and submits a pull request. A maintainer reviews the pull request and gives feedback. The contributor acts on the feedback, and so on.
+If pair or mob programming works in our working environment, we don't need code reviews. But not every team is working in this style. The prime example is open source development, which is highly asynchronous in nature. A (potentially unknown) contributor works on a piece of code and submits a pull request. A maintainer reviews the pull request and gives feedback. The contributor acts on the feedback, and so on.
 
 Many teams have chosen a similar asynchronous style for their work, with all the pros and cons that entails. And for exactly these teams, it's important to take code reviews seriously to get the most from them.
 
@@ -56,6 +56,9 @@ Let's start with looking at some of the things the reviewee, i.e. the person tha
 
 ### Actively Ask for a review (Andon Cord)
 
+### Ask to pair up
+* To avoid discussions on the PR
+
 ## Reviewer 
 
 ### Check out the code
@@ -64,12 +67,10 @@ Let's start with looking at some of the things the reviewee, i.e. the person tha
 
 ### Only give a review when it's ready
  
-### Point out Nitpicks
+### Point out Nitpicks Sparingly
+* beware: reviewee may feel they have to act on them!
+
 
 ### Point out what you like
 
 ### Be clear about when you can do the review
-
-## What about Peer/ Mob Programming?
-If synchronous is possible, do it.
-If asynchronous needed, do code reviews

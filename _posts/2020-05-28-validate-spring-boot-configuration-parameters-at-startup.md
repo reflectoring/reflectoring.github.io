@@ -97,8 +97,8 @@ APPLICATION FAILED TO START
 
 Description:
 
-Binding to target org.springframework.boot.context.properties.bind.BindException: 
-  Failed to bind properties under 'app.properties' to 
+Binding to target org.springframework.boot.context.properties.bind.BindException:
+  Failed to bind properties under 'app.properties' to
   io.reflectoring.validation.AppProperties failed:
 
     Property: app.properties.reportEmailAddress
@@ -186,7 +186,7 @@ app.properties.report.email-address = manager@analysisapp.com
 This way, properties with the prefix `app.properties` will still be bound to the `AppProperties` class, but properties with the prefix `app.properties.report` will be bound to the `ReportProperties` object in the `report` field.
 
 ### Validate Using @Bean Factory Methods
-We can also trigger validation by binding a properties file to a `@Bean` factory method with the `@ConfigurationProperties` annotation: 
+We can also trigger validation by binding a properties file to a `@Bean` factory method with the `@ConfigurationProperties` annotation:
 
 ```java
 @Configuration
@@ -226,7 +226,7 @@ class ReportEmailAddressValidator implements Validator {
         "emailAddress", "field.required");
 
     ReportProperties reportProperties = (ReportProperties) target;
-    if (reportProperties.getEmailAddress().endsWith(EMAIL_DOMAIN)) {
+    if (!reportProperties.getEmailAddress().endsWith(EMAIL_DOMAIN)) {
       errors.rejectValue("emailAddress", "field.domain.required",
           new Object[]{EMAIL_DOMAIN},
           "The email address must contain [" + EMAIL_DOMAIN + "] domain.");
@@ -257,7 +257,7 @@ Note that we must define our `configurationPropertiesValidator()` method as `sta
   Spring's <a href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/validation/Validator.html">Validator</a> is not related to Bean Validation and works independently after the Bean Validation happens. Its main purpose is to encapsulate the validation logic from any infrastructure or context.
 </div>
 
-In case we need to define more than one `Validator` for our configuration properties, we cannot do it by defining bean factory methods, because we can only define one bean named `configurationPropertiesValidator`. 
+In case we need to define more than one `Validator` for our configuration properties, we cannot do it by defining bean factory methods, because we can only define one bean named `configurationPropertiesValidator`.
 
 Instead of defining a bean factory method, we can move our custom `Validator` implementation to inside the configuration property classes:
 ```java

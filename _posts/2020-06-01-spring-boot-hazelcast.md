@@ -217,6 +217,9 @@ version compatibility between the cluster members and the clients.
 **The client-server topology should be used, when the deployment of the application is bigger than
 the cluster cache.**
 
+Since we have in the application the clients of the cluster only, we have to find the way to test it.
+It can be done very easily by using [Tescontainers](/spring-boot-flyway-testcontainers/).
+
 ## Conclusion
 `Hazelcast` java library supports the setting up the cache cluster with two topologies.
 Embedded cache topology supports very fast reading for high performing computing. The client-server topology supports very gut independent scaling of the application and cache

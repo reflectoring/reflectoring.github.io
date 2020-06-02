@@ -13,7 +13,7 @@ In some applications we need to protect the database or avoid cost-intensive cal
 We can use a cache for this goal. This article shows how to use [Hazelcast](https://hazelcast.org/) as a cache with Spring 
 in a distributed and scalable application.
 
-{% include github-project.html url="https://github.com/arkuksin/code-examples/tree/hazelcast/spring-boot/hazelcast" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/hazelcast" %}
 
 ## Caching 101
 Normally, an application reads data from storage, for example a database. If we want to increase the performance
@@ -241,6 +241,8 @@ The Hazelcast Java library supports setting up the cache cluster with two topolo
 The embedded cache topology supports very fast reading for high-performance computing. The client-server topology supports  independent scaling of the application and the cache
 cluster. It's very easy to integrate the cluster or write a client for
 the cluster in a Spring (Boot) application.
+
+If you want to play around with a working example, have a look at the code on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/hazelcast).
 
  
 

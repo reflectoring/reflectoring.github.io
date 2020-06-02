@@ -44,7 +44,7 @@ share the cache to keep the data consistent.
 
 **We solve this problem by using a distributed cache**.
 
-Hazelcast is a distributed in-memory object store and provides many features including TTL, work-through, and scalability.
+Hazelcast is a distributed in-memory object store and provides many features including TTL, write-through, and scalability.
 We can build a Hazelcast cluster by starting several Hazelcast nodes in a net. Each node is called a member. 
 
 There are two types of topologies we can implement with Hazelcast:
@@ -104,6 +104,10 @@ creates a `Map` in the cache or returns an existing one. The only thing we have 
 
 When we want to scale our application, every new instance will create a new member and this member will join
 the cluster automatically.
+ 
+Hazelcast provides several mechanisms for discovering the members. If we don't configure
+any discovery mechanism, the default one is used. This is a discovery mechanism with multicast. In this case
+Hazelcast tries to find other members in the same network using multicast.  
 
 This approach has two advantages:
  * it's very easy to set up the cluster, and
@@ -117,7 +121,9 @@ a request to the cache cluster over the network.
 
 But it brings drawbacks too. Imagine we have a system that requires one hundred instances of our application.
 In this cluster topology, it means we would have one hundred of cluster members even though we don't need it.
-The replication and synchronizing would be pretty expensive.
+This big size of cache members would consume too much memory. The replication and synchronizing would be pretty expensive.
+Whenever an entry is added or updated in the cache this entry should be synchronized with other members of the cluster,
+which causes unnecessary network communication. 
 
 Also, we have to note that Hazelcast is a java library. That means, the member can be embedded in a java
 application only.

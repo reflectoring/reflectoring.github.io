@@ -29,22 +29,23 @@ Pair programming and, more recently, mob programming, are practices where two or
 
 When the goal of code reviews is learning, the value of code reviews is reduced with each person that participates in creating the code. The learning has already taken place while programming together. 
 
-If pair or mob programming works in our working environment, we don't need code reviews. But not every team is working in this style. The prime example is open source development, which is highly asynchronous in nature. A (potentially unknown) contributor works on a piece of code and submits a pull request. A maintainer reviews the pull request and gives feedback. The contributor acts on the feedback, and so on.
+If pair or mob programming works in our environment, we don't need code reviews. But not every team is working in this style. The prime example is open source development, which is highly asynchronous in nature. A (potentially unknown) contributor works on a piece of code and submits a pull request. A maintainer reviews the pull request and gives feedback. The contributor acts on the feedback, and so on.
 
 Many teams have chosen a similar asynchronous style for their work, with all the pros and cons that entails. And for exactly these teams, it's important to take code reviews seriously to get the most from them.
 
 ## Reviewee
 
-Let's start with looking at some of the things the reviewee, i.e. the person that submits some code to a review, should do to make the most of code reviews.
+Let's start with looking at some of the things the reviewee, i.e. the person that submits some code to a review, should do to make the most of a code review.
 
-### Only ask for a review when it's ready
+### Do a Review Yourself, First
 
-* wastes reviewers time if it's not ready
-* build is green
-* no one likes to review code with a red build, because it means it's not finished and they would have to review again
-* if you have questions about how to do something, they can be asked in reviews, but don't expect a quick answer, I prefer discussing questions in person (Slack, Zoom, or in pair programming)
-* there is an inherent danger for pull requests to get dragged over many days if they are used as a platform for discussions
- 
+No one likes to look at code that fails the build or that doesn't feel "ready" in other ways. If the code has obvious flaws, the reviewer won't feel that their time is well spent reviewing this code, because they know they might have to review it again, once the flaws are fixed.
+
+Before submitting code changes to a review, we should make sure the code compiles, the tests are green, and that the code is ready for a review in every other sense.
+
+**The easiest way to check if the code is ready for a review is to first review the code ourselves.** Collaborative tools like GitHub or Bitbucket allow us to look at all the changes we made before assigning another person to review it. 
+
+That being said, there are of course times when we want to discuss unready code with our peers. While I believe that a face-to-face (or video) meeting is the best medium for this, we can also use a code review for this. But only if we set the expectations straight and tell the reviewer that the code still has known issues they shouldn't spend too much time on. 
 
 ### Add comments to give context to your own PR
 * go through the code with the eyes of a reviewer 

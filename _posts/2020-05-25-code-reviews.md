@@ -45,9 +45,12 @@ Before submitting code changes to a review, we should make sure the code compile
 
 **The easiest way to check if the code is ready for a review is to first review the code ourselves.** Collaborative tools like GitHub or Bitbucket allow us to look at all the changes we made before assigning another person to review it. 
 
-That being said, there are of course times when we want to discuss unready code with our peers. While I believe that a face-to-face (or video) meeting is the best medium for this, we can also use a code review for this. But only if we set the expectations straight and tell the reviewer that the code still has known issues they shouldn't spend too much time on. 
+That being said, **there are times when we want to discuss unready code with our peers**. While I believe that a face-to-face (or video) meeting is the best medium for this, we can also do this asynchronously via a code review. But only if we set the expectations straight and tell the reviewer that the code still has known issues they shouldn't spend too much time on. 
 
 ### Add comments to give context to your own PR
+
+While reviewing your own code in GitHub, Bitbucket, or whatever tool your team is using, add some comments to the review.
+
 * go through the code with the eyes of a reviewer 
 * add comments to any place that might need some context for the reviewer (the prime directive is learning, and these comments will help the reviewer to learn about what you did and why)
 * don't write anything in review comments that can be written in code comments

@@ -1,53 +1,52 @@
 ---
 title: "'Code First' API Documentation with Springdoc and Spring Boot"
 categories: [spring-boot]
-date: 2020-05-28 06:00 +1100
+date: 2020-06-06 06:00 +1100
 modified: 
 author: petros
-excerpt: "What's the 'code first' approach? And how do we go about it with Springdoc and Spring Boot? This guide explains and showcases this approach."
+excerpt: "This article gives a quick introduction in how to implement a 'code first' approach for creating API docs with Springdoc."
 image:
-  auto: 0035-switchboard
+  auto: 0016-pen
 tags: ["spring-boot", "code-first-approach", "swagger"]
 ---
 
-When following a "Code First" approach in API development, we first start with writing code, and then we might generate the API specification, which then becomes the documentation.
+When following a "code first" approach in API development, we first start with writing code, and then we generate the API specification from the code, which then becomes the documentation.
 
-"Code First" is not the only way to develop an API. "API First" is another option where we do exactly the opposite. First we write the specification, and then we start with the implementation. 
-We discuss "API First" approach in more detail [here](https://reflectoring.io/spring-boot-openapi/).
+"Code first" is not the only way to develop an API. ["API first"](https://reflectoring.io/spring-boot-openapi/) is another option where we do exactly the opposite. First, we write the specification, and then we generate code from that specification and implement against it. 
 
 Let's discuss the benefits of using this approach and how to implement it with Springdoc and Spring Boot.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-codefirst" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-springdoc" %}
 
 ## When to Choose the "Code First" Approach
 
-When we need to go to production fast, code first may be a good approach. Then we can generate our documentation from the API we have already programmed.
+When we need to go to production fast, or create a prototype something, "code first" may be a good approach. Then we can generate our documentation from the API we have already programmed.
 
-Another benefit of code first is the fact that the documentation will be generated from the actual Code, which means that we don't have to manually keep the documentation in sync with our code. The documentation is more likely to be correct and always up-to-date.
+Another benefit of code first is the fact that the documentation will be generated from the actual code, which means that we don't have to manually keep the documentation in sync with our code. **The documentation is more likely to match the behavior of the code and is always up-to-date**.
 
 ## Example Application
 
-In this article we will be using [Spring Boot](https://spring.io/projects/spring-boot) together with [springdoc-openapi](https://springdoc.org/).
+In this article, we'll be using [Spring Boot](https://spring.io/projects/spring-boot) together with [springdoc-openapi](https://springdoc.org/).
 
-**All the annotations that we will be using are from the Swagger dependencies**. Springdoc wraps swagger dependencies and offers us single dependency, which we can just use it to create our API documentation.
+**All the annotations that we will be using are from [Swagger](https://swagger.io/)**. Springdoc wraps Swagger and offers us a single dependency which we can use to create our API documentation.
 
 ### Getting Started
 
-To easily get started we only need to add the Springdoc dependency (Gradle notation):
+To get started we only need to add the [Springdoc dependency](https://search.maven.org/search?q=g:org.springdoc%20AND%20a:springdoc-openapi) (Gradle notation):
 
 ```groovy
 implementation 'org.springdoc:springdoc-openapi-ui:1.3.3'
 ```
 
-First, let's define the path of our documentation. This can be defined easily in the `application.yml` of our Spring Boot project:
+First, let's define the path of our documentation. We define it in the `application.yml` of our Spring Boot project:
 
 ```yaml
 springdoc:
   api-docs:
-  path: /reflectoring-openapi
+    path: /reflectoring-openapi
 ```
 
-This is where our OpenAPI specification will live, which Springdoc uses to beautifully display our endpoints. For more configuration properties please check the [official documentation](https://springdoc.org/springdoc-properties.html).
+Springdoc will now add the endpoint `/reflectoring-openapi` to our application where it will beautifully display our endpoints. For more configuration properties please check the [official documentation](https://springdoc.org/springdoc-properties.html).
 
 ### Defining General API Information
 
@@ -73,20 +72,20 @@ class OpenAPIConfiguration {
 }
 ```
 
-Note, that we don't need to define the class above as a bean, Springdoc will just use reflection to obtain the information it needs.
+Note that we don't need to define the class above as a Spring bean. Springdoc will just use reflection to obtain the information it needs.
 
 
-Now, if we start the server and navigate to: [http://localhost:8080/swagger-ui/index.html?configUrl=/reflectoring-openapi/swagger-config](http://localhost:8080/swagger-ui/index.html?configUrl=/reflectoring-openapi/swagger-config), we should see the information we defined above:
+Now, if we start the Spring Boot application and navigate to [http://localhost:8080/swagger-ui/index.html?configUrl=/reflectoring-openapi/swagger-config](http://localhost:8080/swagger-ui/index.html?configUrl=/reflectoring-openapi/swagger-config), we should see the information we defined above:
 
 ![General Information](/assets/img/posts/reflect-92/general-info.png)
 
 ### Defining the REST API
 
-In this section, we will define our Rest endpoints. We will be building a TODO API with CRUD operations.
+Next, let's add some REST endpoints. We'll be building a TODO API with CRUD operations.
 
 ```java
 @RequestMapping("/api/todos")
-@Tag(name = "Todo API", description = "euismod in pellentesque massa placerat duis ultricies lacus sed turpis")
+@Tag(name = "Todo API", description = "euismod in pellentesque ...")
 interface TodoApi {
 
   @GetMapping
@@ -111,7 +110,7 @@ interface TodoApi {
 }
 ```
 
-With the `@Tag` annotation we add some additional information to the API.
+With the `@Tag` annotation, we add some additional information to the API.
 
 Now, we have to implement this interface and annotate our controller with 
 `@RestController`. This will let Springdoc know that this is a controller and that it should produce a documentation for it:
@@ -145,7 +144,7 @@ class OpenAPIConfiguration {
 }
 ```
 
-The above `@SecurityScheme` will be referred as `api` and will do a basic authentication via http. We add this annotation in the `OpenAPIConfiguration` class.
+The above `@SecurityScheme` will be referred to as `api` and will do a basic authentication via HTTP. We add this annotation in the `OpenAPIConfiguration` class.
 
 Let's see what this annotation produced for us:
 
@@ -171,13 +170,13 @@ Now, the Swagger UI will show a lock on each of our endpoints to mark them as "s
 
 ![Todo API with lock](/assets/img/posts/reflect-92/todo-api-info-with-lock.png)
 
-Actually, the endpoints are not secured yet. If we try to request the `/api/todos` resource, for example, **we will still be able to receive the data without authentication**:
+Actually, the endpoints are not secured, yet. If we try to request the `/api/todos` resource, for example, **we will still be able to receive the data without authentication**:
 
 ![Todo API with lock unsecured](/assets/img/posts/reflect-92/todo-api-info-with-lock-unsecured.png)
 
-We have to implement the actual security ourselves. See the code in the [repository](todo_link) for the full implementation with Spring Security.
+We have to implement the actual security ourselves. See the code in the [repository](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-springdoc) for the full implementation with Spring Security.
 
-After securing the application we can now see that we receive `401` status code if we try to access any resource under `/api/todos`.
+After securing the application we can now see that we receive a `401` status code if we try to access any resource under `/api/todos`.
 
 ![Todo API with lock secured 401](/assets/img/posts/reflect-92/todo-api-info-with-lock-secured-401.png)
 
@@ -187,8 +186,10 @@ After authenticating we can again access the resource:
 
 ## Conclusion
 
-As we saw in this article Code-First approach is all about speed. First we define our API then we generate the documentation via annotations.
-Springdoc elevates Swagger and helps us create our own OpenAPI Specification.
+As we saw in this article, the "code first" approach with Springdoc is all about speed. First, we build our API in code, then we generate the specification/documentation via annotations.
+Springdoc elevates Swagger and helps us create our OpenAPI Specification.
+
+If you want to have a deeper look, browse the code [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-springdoc).
 
 
 

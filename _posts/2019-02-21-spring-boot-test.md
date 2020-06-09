@@ -288,7 +288,7 @@ class MockBeanTest {
 ```
 
 In this case, we have replaced the `UserRepository` bean with a mock.
-Using Mockito's `when` method, we have specified the expected behavior for this
+Using Mockito's `given` method, we have specified the expected behavior for this
 mock in order to test a class that uses this repository.
 
 You can read more about the `@MockBean` annotation in [my article](/spring-boot-mock/) about mocking.

@@ -191,7 +191,7 @@ To keep it simple, let's look at how to create a client with Spring.
 First, we'll add the dependency to the Hazelcast client:
 
 ````groovy
-compile group: 'com.hazelcast', name: 'hazelcast-client', version: '3.12.7'
+compile group: 'com.hazelcast', name: 'hazelcast', version: '4.0.1'
 ````
 
 Next, we create a Hazelcast client in a Spring application, similar as we did for the embedded cache topology:
@@ -242,6 +242,69 @@ the cluster cache.**
 
 Since our application now only contains the clients to the cache and not the cache itself, we need to spin up a cache instance in our tests.
 We can do this very easily by using the [Hazelcast Docker image](https://hub.docker.com/r/hazelcast/hazelcast/) and [Testcontainers](https://www.testcontainers.org/) (see [an example](https://github.com/thombergs/code-examples/blob/master/spring-boot/hazelcast/hazelcast-client-server/src/test/java/io/reflectoring/cache/cleint/AbstractIntegrationTest.java) on GitHub).
+
+## Near Cache
+When we use the client-server topology we have to produce network transfer for requesting data from
+the cache. It happens in two cases:
+ * When the client reads data from a cache member and,
+ * when a cache member starts the communication with other cache members to synchronize data in the cache.    
+
+**We can avoid this disadvantage by using Near Cache.**  
+
+Near cache is a local cache, that is created on a hazelcast member or the client. Let's look at how it works when
+we create a near cache on a hazelcast client.
+
+![Near Cahce](/assets/img/posts/hazelcast/near-cache.png)
+
+Every client creates its near cache. When a application wants to request data from the cache, it first looks 
+for the data in the near cache. If the data is not found, we call it _cache-miss_. In this case, the data is
+required remotely from the cache cluster and added to the near cache. When the application wants to read this data again, it will be found in the 
+near cache. We call it _cache-hit_.
+
+**So we can say now, the near cache is a second-level cache or cache of the cache.**
+
+We can easily configure a near cache in a Spring application.
+````java
+@Component
+public class CacheClient {
+
+    private static final String CARS = "cars";
+
+    private HazelcastInstance client 
+       = HazelcastClient.newHazelcastClient(creatClientConfig());
+
+    private ClientConfig creatClientConfig() {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.addNearCacheConfig(createNearCacheConfig());
+        return clientConfig;
+    }
+
+    private NearCacheConfig createNearCacheConfig() {
+        NearCacheConfig nearCacheConfig = new NearCacheConfig();
+        nearCacheConfig.setName(CARS);
+        nearCacheConfig.setTimeToLiveSeconds(360);
+        nearCacheConfig.setMaxIdleSeconds(60);
+        return nearCacheConfig;
+    }
+    
+    // other methods omitted
+
+}
+````
+
+The method `createNearCacheConfig()` creates the configuration of the near cache. This configuration
+is added to the hazelcast client configuration by calling `clientConfig.addNearCacheConfig()`.
+We have to note, this is the configuration of the near cache on this client only. Every client has to configure 
+the near cache, if we want to have it there.
+
+Using the near cache we can reduce the network traffic. But it is important to understand, that we have
+to accept a possible data inconsistency. Since the near cache has its own configuration, it will evict
+the data according this configuration. If a data is updated or evicted in the cache cluster, we can still have 
+stale data in the near cache. This data will evicted later according eviction configuration. Then we will get a call-miss.
+After that the data will be read from the cache cluster.
+
+**We should use the near cache, when we read from the cache very often, and the data in the cache cluster changes very rare.**
+
 
 ## Conclusion
 The Hazelcast Java library supports setting up the cache cluster with two topologies.

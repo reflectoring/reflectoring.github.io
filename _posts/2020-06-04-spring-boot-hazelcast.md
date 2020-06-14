@@ -300,7 +300,7 @@ Using the near-cache we can reduce network traffic. But it's important to unders
 to accept a possible data inconsistency. Since the near-cache has its own configuration, it will evict
 the data according this configuration. If data is updated or evicted in the cache cluster, we can still have 
 stale data in the near-cache. This data will be evicted later according to the eviction configuration.
-Then we will get a call-miss.
+Then we will get a cache-miss.
 Only after the data has been evicted from the near-cache will it be read from the cache cluster again.
 
 **We should use the near-cache when we read from the cache very often, and when the data in the cache cluster changes only rarely.**

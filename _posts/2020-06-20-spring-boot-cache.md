@@ -171,7 +171,7 @@ public class ClientCacheConfig {
 
 We added the `ClientConfig` bean to the context. Spring Cache Abstraction will find
 this bean and configure the `CacheManager` for using Hazelcast as a client of a Hazelcast cache cluster
-automatically. Note, that it makes sense to use [near-cache](spring-boot-hazelcast/#near-cache)
+automatically. Note, that it makes sense to use [near-cache](/spring-boot-hazelcast/#near-cache)
 in the client-server topology.
 
 ### Declaration

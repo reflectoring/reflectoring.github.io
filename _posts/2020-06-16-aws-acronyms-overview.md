@@ -23,7 +23,7 @@ AWS data centers are located all across the globe.[AWS Region and AZ](https://aw
 AWS resources are scoped either to a region, in an AZ, or are global. 
 
 ## Create VM With EC2
-Next, we create our VM - Virtual Machine over which we run our applications. **[EC2-Elastic Compute Cloud](https://aws.amazon.com/ec2/features/) is the service used to create VMs.**We create the VM as an EC2 instance using a pre-built machine image from Amazon (called AMI) or a custom machine image.
+Next, we create our VM - Virtual Machine over which we run our applications. **[EC2-Elastic Compute Cloud](https://aws.amazon.com/ec2/features/) is the service used to create VMs.** We create the VM as an EC2 instance using a pre-built machine image from Amazon (called AMI) or a custom machine image.
 
 **A machine image is similar to a pre-built template containing the operating system with some pre-configured applications installed over it.** For example, we can use a machine image for Windows 2016 server with SQL Server or an RHEL Linux with docker, for creating our EC2 instance. 
 
@@ -55,9 +55,9 @@ Enterprises operate hybrid cloud environments to connect their on-premise resour
 In contrast, **with DX, we can establish dedicated ultra-low latency connections from on-premises to AWS.** With DX, we reduce network charges and experience a more consistent network performance utilizing a higher bandwidth.
 
 ## Control Access With IAM
-[IAM-Identity and Access Management](https://aws.amazon.com/iam/) is an all-encompassing service for authentication and authorization in AWS, coming into action from the time we create our AWS account. 
+[IAM-Identity and Access Management](https://aws.amazon.com/iam) is an all-encompassing service for authentication and authorization in AWS, coming into action from the time we create our AWS account. 
 
-**Access to resources is provided based on the principle of least privilege.** We also use identity in the form of a username and password or an access token and secret in case of applications, to access AWS resources.** We create users, groups, and roles with IAM and grant or deny access to resources declaratively with policies.** 
+**Access to resources is provided based on the principle of least privilege.** We also use identity in the form of a username and password or an access token and secret in case of applications, to access AWS resources. **We create users, groups, and roles with IAM and grant or deny access to resources declaratively with policies.**
 
 IAM also provides SSO-Single Sign-on capabilities by integrating with SAML and OpenID based identity providers residing within or outside AWS. 
 

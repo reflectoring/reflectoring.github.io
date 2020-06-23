@@ -1,17 +1,19 @@
 ﻿---
-title: "What is AWS? An overview with acronyms."
+title: "What is AWS? An Overview with Acronyms."
 categories: [craft]
 modified: 2020-06-18
-excerpt: "AWS is vast with all kinds of services under different domains. This article introduces the most commonly used AWS services along with their acronyms."
+author: "pratikdas"
+excerpt: "AWS is vast with all kinds of services under different domains. Most AWS services are referred to by their acronyms in regular conversations. This article introduces the most commonly used AWS services along with their acronyms."
 image:
   auto: 0028-stream
 ---
 
-***AWS -Amazon Web Services provides a cloud computing platform comprising services under a wide range of portfolios like compute, storage, networking, data, security, and many more.***This makes AWS vast and looks daunting to many newcomers. I will attempt to make this easy by describing some of the popular AWS services.
+***AWS-Amazon Web Services provides a cloud computing platform comprising of services under a wide range of portfolios like compute, storage, networking, data, security, and many more.***This makes AWS vast and looks daunting to many newcomers. I will attempt to make this easy here by describing a selection of AWS services along with their three-character acronyms. I have selected the services for this article, by thinking of the services required to build and run a customer-facing n-tier application.
+So you will come across the IAAS-Infrastructure as a service and PAAS-Platform as a service category of services. I have also included services under the serverless category, and services for running containers. I have not included services under specialized subjects like machine learning, IoT, security, and Big Data.
 
 ##  Choose your Regions and AZs to Run your Workloads
-One of the first decisions we make is where to run our applications? Where are our servers located? We may like to host our applications closer to the location of our customers. AWS data centers are located all across the globe.
-AWS Regions and AZs](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/) are essential entities of this global infrastructure.***An AWS Region is composed of multiple AZ-availability zones, with each AZ mapped to physical data centers located in that region.***
+One of the first decisions we make is where to run our applications. Where are our servers located? We may like to host our applications closer to the location of our customers. AWS data centers are located all across the globe.
+[AWS Regions and AZs](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/) are essential entities of this global infrastructure.***An AWS Region is composed of multiple AZ-availability zones, with each AZ mapped to physical data centers located in that region.***
 ***An AZ-Availability Zone is a logical data center within a region.*** 
 AWS resources are scoped either to a region, in an AZ, or are global. 
 
@@ -21,7 +23,7 @@ We can enable autoscaling to create additional instances when we exceed a certai
 Each EC2 instance is backed up by storage in the form of [EBS](https://aws.amazon.com/ebs/) volumes. ***An EBS-Elastic Block storage volume is block-level storage used to store data that we want to persist beyond the lifetime of our EC2 instances. EBS volumes are attached and mounted as disks to our VM.*** EBS volumes are automatically replicated in the same availability zone to achieve redundancy and high availability.
 
 ## Distribute Traffic with ELB
-[ELB-Elastic Load Balancing](https://aws.amazon.com/elasticloadbalancing) is the load balancing service of AWS.***Elastic Load Balancing distributes incoming application traffic(layer 7), and network traffic(layer 4) across multiple targets, such as Amazon EC2 instances, containers, IP addresses, and Lambda functions.*** ELB is a region level resource. We always have the option of deploying our own load balancer on an EC2 instance. But ELB comes as a fully managed service. It scales automatically to handle the varying load of our application traffic and distributes load to our targets in a single Availability Zone, or across multiple availability zones, thereby making our applications highly available and fault-tolerant.
+[ELB-Elastic Load Balancing](https://aws.amazon.com/elasticloadbalancing) is the load balancing service of AWS.***Elastic Load Balancing distributes incoming application traffic(layer 7), and network traffic(layer 4) across multiple targets, such as Amazon EC2 instances, containers, IP addresses, and Lambda functions.*** ELB is a region level resource. We always have the option of deploying our load balancer on an EC2 instance. But ELB comes as a fully managed service. It scales automatically to handle the varying load of our application traffic and distributes load to our targets in a single Availability Zone, or across multiple availability zones, thereby making our applications highly available and fault-tolerant.
 
 ## Create your Network with VPC
 Our EC2 instances need to communicate with each other to be useful. We will also need to protect these by putting them in a secure private network called [VPC-Virtual Private Cloud](https://aws.amazon.com/vpc).***VPC-Virtual Private Cloud is our logically isolated private network with subnets, route tables and network gateways within an AWS region***. We specify a pool of IP addresses for our VPC by specifying the IP range in CIDR-Classless Interdomain routing notation.
@@ -40,9 +42,9 @@ An SCP-Service Control Policy is used to draw permission boundaries across one o
 An STS-Security Token Service is used to generate a temporary access token to invoke an AWS service, either using the AWS SDK-Software development kit or from AWS CLI-Command Line Interface.
 
 ## Store Objects on S3
-[S3-Simple Storage service](https://aws.amazon.com/s3) is the most important service in AWS portfolio. It is the foundation over which many AWS services are built. It embodies many of the features inherent to Cloud. ***S3 provides object unlimited storage, scales to any extent, durability, possesses layered security model and comes with a simple API.*** We can store all kind of objects in S3 like files, images, videos, EBS snapshots, machine images without worrying about file size or data integrity and durability. 
-We store an object in containers called bucket with a key and some metadata as object attributes. We apply our access controls on the bucket or on the S3 object. S3 offers a range of storage classes to store our objects in appropriate storage tiers based on our access requirements. Additionally, we can use lifecycle policies to define rules like delete an object or move to different storage tier after certain time period.
-S3 is widely used in many varied use cases like web hosting, data lakes in big data, archival, secure log storage. S3 plays a big part in migration of different workloads to cloud.
+[S3-Simple Storage service](https://aws.amazon.com/s3) is the most important service in the AWS portfolio. It is the foundation over which many AWS services are built. It embodies many of the features inherent to the Cloud. ***S3 provides object unlimited storage, scales to any extent, durability, possesses layered security model and comes with a simple API.*** We can store all kinds of objects in S3 like files, images, videos, EBS snapshots, machine images without worrying about file size or data integrity and durability. 
+We store an object in containers called bucket with a key and some metadata as object attributes. We apply our access controls on the bucket or the S3 object. S3 offers a range of storage classes to store our objects in relevant storage tiers based on our access requirements. Additionally, we can use lifecycle policies to define rules like delete an object or move to different storage tier after a certain time.
+S3 is widely used in many varied use cases like web hosting, data lakes in big data, archival, secure log storage. S3 plays a big part in the migration of different workloads to the cloud.
 
 ## Databases for Data Persistence
 Well, we can install our database in an EC2 instance but this will entail continuing with the rigmarole of database administration tasks like applying security patches and taking scheduled backups. AWS provides a managed service offering, where you place your order with AWS, and AWS provisions one for you.
@@ -52,10 +54,10 @@ Well, we can install our database in an EC2 instance but this will entail contin
 [DDB-DynamoDB](https://aws.amazon.com/dynamodb) is a proprietary NoSQL database of AWS. ***It is fully managed, fast and efficient at any scale with single-digit millisecond latency.*** DynamoDB is a (wide-column/key-value store)[https://en.wikipedia.org/wiki/Wide-column_store]. We cannot do things like joins or aggregations with DynamoDB. Being fully managed, AWS will manage the instances in the DynamoDB fleet to ensure its availability and performance. DynamoDB is also the preferred database to use with lambda functions.
 
 ## Messaging with SQS and SNS
-We apply [messaging patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Messaging.html) to make our applications resilient, fault-tolerant and highly available. AWS takes away the complexity of managing our own middleware by providing the messaging infrastructure in the form of two managed services -[SQS](https://aws.amazon.com/sqs) and SNS](https://aws.amazon.com/sns). 
+We apply [messaging patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Messaging.html) to make our applications resilient, fault-tolerant, and highly available. AWS takes away the complexity of managing our middleware by providing the messaging infrastructure in the form of two managed services -[SQS](https://aws.amazon.com/sqs) and SNS](https://aws.amazon.com/sns). 
 ***SQS-Simple Queue Service is the messaging middleware to send, store, and receive messages.***  SQS comes in two flavors: 
 Standard queue guarantees at least once delivery with best-effort ordering.
-FIFO-First in First Out queue guarantees ordering with exactly-once processing.
+FIFO-First in First Out queue guarantees to order with exactly-once processing.
 ***SNS-Simple Notification Service is a pub-sub messaging middleware. The sender publishes a message to a Topic which is subscribed by one or more consumers.***
 Access to Queues and Topics are managed using **resource policies**.
 

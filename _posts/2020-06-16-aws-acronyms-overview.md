@@ -2,7 +2,7 @@
 title: "What is AWS? An Overview with Acronyms."
 categories: [craft]
 modified: 2020-06-18
-author: "pratikdas.jpg"
+author: pratikdas
 excerpt: "AWS is vast with all kinds of services under different domains. Most AWS services are referred to by their acronyms in regular conversations. This article introduces the most commonly used AWS services along with their acronyms."
 image:
   auto: 0028-stream

@@ -15,9 +15,9 @@ I will attempt to make this easy here by describing a selection of AWS services 
 So you will come across the IAAS-Infrastructure as a service and PAAS-Platform as a service category of services. I have also included services under the serverless category, and services for running containers. I have not included services under specialized subjects like machine learning, IoT, security, and Big Data.
 
 ##  Choose Region & AZ To Run The Workloads
-One of the first decisions we make is where to run our applications. Where are our servers located? We may like to host our applications closer to the location of our customers. AWS data centers are located all across the globe.
+One of the first decisions we make is where to run our applications. Where are our servers located? We may like to host our applications closer to the location of our customers. 
 
-[AWS Regions and AZs](https://aws.amazon.com/about-aws/global-infrastructure/regions_az) are essential entities of this global infrastructure.
+AWS data centers are located all across the globe.[AWS Region and AZ](https://aws.amazon.com/about-aws/global-infrastructure/regions_az) are essential entities of this global infrastructure.
 
 **An AWS Region is composed of multiple AZ-availability zones.** An AZ-Availability Zone is a logical data center within a region. **Each AZ is mapped to physical data centers located in that region, with redundant power, networking, and connectivity.**  
 AWS resources are scoped either to a region, in an AZ, or are global. 
@@ -206,7 +206,7 @@ In contrast, **with DX, we can establish dedicated 'ultra-low latency' connectio
 ## Control Access With IAM
 [IAM-Identity and Access Management](https://aws.amazon.com/iam/) is an all-encompassing service for authentication and authorization in AWS, coming into action from the time we create our AWS account. 
 
-**Access to resources is provided based on the principle of least privilege.** We also use identity in the form of a username and password or an access token and secret in case of applications, to access AWS resources.**We create users, groups, and roles with IAM and grant or deny access to resources declaratively with policies.** 
+**Access to resources is provided based on the principle of least privilege.** We also use identity in the form of a username and password or an access token and secret in case of applications, to access AWS resources. **We create users, groups, and roles with IAM and grant or deny access to resources declaratively with policies.**
 
 IAM also provides SSO-Single Sign-on capabilities by integrating with SAML and OpenID based identity providers residing within or outside AWS. 
 
@@ -264,7 +264,7 @@ Our container infrastructure requires a registry like Docker hub to publish our 
 
 Both ECS and EKS come with a Fargate option for provisioning EC2 instances. AWS Fargate is a serverless compute for containers and removes the need to provision and manage servers.
 
-## Serverless Compute With Lambda and SAM
+## Serverless Compute With Lambda & SAM
 With [AWS lambda](https://aws.amazon.com/lambda) we can eliminate activities of provisioning servers of the right capacity.
 **Lambda is the service for running functions in a serverless model.** We provide our function written in one of the supported languages with enough permissions to execute. 
 The server for executing the function is provisioned at the time of invocation. The infrastructure is dynamically scaled, depending on the number of concurrent requests. 

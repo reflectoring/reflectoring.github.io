@@ -94,7 +94,7 @@ With the advent of distributed applications, observability has emerged as a key 
 ## Conclusion with Mind Map
  Putting everything together in the mind map below.
 
- ![AWS Mind Map](/assets/img/posts/aws-overview-with-acronyms⁩/mindmapaws.png)
+ ![AWS Mind Map](/assets/img/posts/aws-acronyms-overview/mindmapaws.png)
 
  AWS is a behemoth. I tried to give you a peek by covering the main capabilities of the commonly used services. We saw global scoped services like IAM, Route 53. We also saw the elastic nature of services like ELB, S3, VPN, DX, EC2 which can autoscale based on demand. 
  With some more reading, you should be able to start building useful applications. This in itself is a great incentive to dig deeper into the world of AWS.

@@ -31,7 +31,9 @@ We also select an instance family to assign the number of CPUs and RAM for our V
 
 We can enable autoscaling to create additional instances when we exceed a certain threshold of capacity utilization. Alternatively, we can scale down by terminating instances when our servers are underutilized.
 
-Each EC2 instance is backed up by storage in the form of [EBS](https://aws.amazon.com/ebs) volumes. **An EBS-Elastic Block storage volume is block-level storage used to store data that we want to persist beyond the lifetime of our EC2 instances. EBS volumes are attached and mounted as disks to our VM.** EBS volumes are automatically replicated in the same availability zone to achieve redundancy and high availability.
+Each EC2 instance is backed up by storage in the form of [EBS](https://aws.amazon.com/ebs) volumes. **An EBS-Elastic Block storage volume is block-level storage used to store data that we want to persist beyond the lifetime of our EC2 instances.**
+
+EBS volumes are attached and mounted as disks to our VM. EBS volumes are automatically replicated in the same availability zone to achieve redundancy and high availability.
 
 ## Distribute Traffic With ELB
 [ELB-Elastic Load Balancing](https://aws.amazon.com/elasticloadbalancing) is the load balancing service of AWS.**Elastic Load Balancing distributes incoming application traffic(layer 7), and network traffic(layer 4) across multiple targets, such as Amazon EC2 instances, containers, IP addresses, and Lambda functions.** ELB is a region level resource. 
@@ -41,9 +43,9 @@ We always have the option of deploying our load balancer on an EC2 instance. But
 ## Create Network With VPC
 Our EC2 instances need to communicate with each other to be useful. We will also need to protect these by putting them in a secure private network called [VPC-Virtual Private Cloud](https://aws.amazon.com/vpc).**VPC-Virtual Private Cloud is our logically isolated private network with subnets, route tables and network gateways within an AWS region**. We specify a pool of IP addresses for our VPC by specifying the IP range in CIDR-Classless Interdomain routing notation.
 
-**The VPC is divided into multiple subnets, each of them associated with a subset of IP addresses allocated to the parent VPC.** Our EC2 instances are launched within a subnet and are assigned IP addresses from the subnet's pool of IP addresses.
+**The VPC is divided into multiple [subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html#vpc-subnet-basics), each of them associated with a subset of IP addresses allocated to the parent VPC.** Our EC2 instances are launched within a subnet and are assigned IP addresses from the subnet's pool of IP addresses.
 
-Our instances get different IP every time we launch an instance. If we need fixed IP, we reserve IPs using EIP-Elastic IP Addresses.
+Our instances get different IP every time we launch an instance. If we need fixed IP, we reserve IPs using [EIP-Elastic IP](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html) addresses.
 
 ### Protect EC2 Instance With SG & Network ACL
 We control traffic to an EC2 instance using [SG-Security Group](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html). **With SG, we set up rules for incoming traffic(ingress) and outgoing traffic(egress).**  
@@ -124,10 +126,10 @@ The server for executing the function is provisioned at the time of invocation. 
 **SAM-Serverless Application Model is the framework for developing lambda applications with useful tools like a CLI, a local test environment based on docker, and integration with developer tools.** 
  
 ## Deliver Content With CloudFront
-(AWS CloudFront)[https://aws.amazon.com/cloudfront/] is a CDN-content delivery network service to serve content from the nearest AWS POP-point of presence. **It is a global autoscaled service integrated for content origin with resource endpoints in EC2, ELB, and S3.** 
+[AWS CloudFront](https://aws.amazon.com/cloudfront) is a CDN-content delivery network service to serve content from the nearest AWS POP-point of presence. **It is a global autoscaled service integrated for content origin with resource endpoints in EC2, ELB, and S3.** 
 
 ## Route To Your IP With Route 53 As DNS
-(AWS Route 53)[https://aws.amazon.com/route53/] is the DNS-Domain Name System service with capabilities of high availability and scalability. **It provides ways to route incoming end-user requests to resources within AWS like EC2, ELB load balancer and also to resources outside AWS using a group of routing rules based on network latency, geo-proximity, and weighted round-robin.**
+[AWS Route 53](https://aws.amazon.com/route53) is the DNS-Domain Name System service with capabilities of high availability and scalability. **It provides ways to route incoming end-user requests to resources within AWS like EC2, ELB load balancer and also to resources outside AWS using a group of routing rules based on network latency, geo-proximity, and weighted round-robin.**
 
 
 ## Governance, Compliance & Audit With CloudTrail

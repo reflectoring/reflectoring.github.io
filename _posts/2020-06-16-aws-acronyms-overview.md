@@ -17,7 +17,7 @@ So you will come across the IAAS-Infrastructure as a service and PAAS-Platform a
 ##  Choose Region & AZ To Run The Workloads
 One of the first decisions we make is where to run our applications. Where are our servers located? We may like to host our applications closer to the location of our customers. 
 
-AWS data centers are located all across the globe.[AWS Region and AZ](https://aws.amazon.com/about-aws/global-infrastructure/regions_az) are essential entities of this global infrastructure.
+AWS data centers are located all across the globe. [AWS Region and AZ](https://aws.amazon.com/about-aws/global-infrastructure/regions_az) are essential entities of this global infrastructure.
 
 **An AWS Region is composed of multiple AZ-availability zones.** An AZ-Availability Zone is a logical data center within a region. **Each AZ is mapped to physical data centers located in that region, with redundant power, networking, and connectivity.**  
 AWS resources are scoped either to a region, in an AZ, or are global. 
@@ -137,13 +137,13 @@ Security in the cloud works on the principle of shared responsibility something 
 
 **CloudTrail helps to gain complete visibility into all user activity in the form of events telling you who did what and when. It provides event history of all the activities done in your AWS account.**
 
-## Log, Monitor & Remediate With CloudWatch
-With the advent of distributed applications, observability has emerged as a key capability to monitor the health of systems and identify the root cause of problems like outage or slowness.[CloudWatch](https://aws.amazon.com/cloudwatch) is understandably among the first services from AWS stable.
+## Observability With CloudWatch
+With the advent of distributed applications, observability has emerged as a key capability to monitor the health of systems and identify the root cause of problems like outage or slowness. [CloudWatch](https://aws.amazon.com/cloudwatch) is understandably among the first services from AWS stable.
 
 **AWS CloudWatch comprises services for logging, monitoring, and event handling**. We send logs from various AWS resources like EC2 and even our applications to CloudWatch. Resources also emit a set of metrics over which we create alarms, for example, CPU above 80% to enable us to take remedial actions. CloudWatch Events rechristened EventBridge allows us to configure remedial actions in response to any events of our interest.
  
 ## Conclusion With Mind Map
- Putting everything together in the mind map below.
+ I have put everything together in the mind map below.
 
  ![AWS Mind Map](/assets/img/posts/aws-acronyms-overview/mindmapaws.png)
 

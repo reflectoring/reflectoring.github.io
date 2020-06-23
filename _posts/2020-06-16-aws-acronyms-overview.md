@@ -68,7 +68,7 @@ An STS-Security Token Service is used to generate a temporary access token to in
 ## Store Objects On S3
 [S3-Simple Storage service](https://aws.amazon.com/s3) is the most important service in the AWS portfolio. It is the foundation over which many AWS services are built. It embodies many of the features inherent to the Cloud. 
 
-** S3 provides unlimited object storage, scales to any extent, durability, possesses layered security model and comes with a simple API.** We can store all kinds of objects in S3 like files, images, videos, EBS snapshots, machine images without worrying about file size or data integrity and durability. 
+**S3 provides unlimited object storage, scales to any extent, durability, possesses layered security model and comes with a simple API.** We can store all kinds of objects in S3 like files, images, videos, EBS snapshots, machine images without worrying about file size or data integrity and durability. 
 
 We store an object in containers called bucket with a key and some metadata as object attributes. We apply our access controls on the bucket or the S3 object. S3 offers a range of storage classes to store our objects in relevant storage tiers based on our access requirements. 
 

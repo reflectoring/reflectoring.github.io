@@ -4,7 +4,7 @@ categories: [spring-boot]
 date: 2020-06-20 05:00:00 +1100
 modified: 2020-06-20 05:00:00 +1100
 author: artur
-excerpt: "TODO"
+excerpt: "Spring cache abstraction supports powerful mechanism for caching. This article shows how to use it with the Hazelcast as cache provider."
 image:
   auto: 0071-cache
 ---

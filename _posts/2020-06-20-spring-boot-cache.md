@@ -112,7 +112,7 @@ the cache cluster.
 
 Since we added Hazelcast to the classpath, Spring Boot will search for the cache configuration
 of Hazelcast. Spring Boot will set up the configuration for embedded topology if
-`hazelcast.xml` or `hazelcast.xml` is found on the classpath. These are files,
+`hazelcast.xml` or `hazelcast.yaml` is found on the classpath. These are files,
 where we can define cache names, data structures, and other parameters of the cache.
 
 Another option is to configure the cache programmatically via Spring's Java config:
@@ -145,7 +145,7 @@ and set up a Hazelcast cache with the embedded topology.
 In Hazelcast's [Client-Server topology](/spring-boot-hazelcast/#client-server-topology) the application is a client of a cache cluster.
 
 Spring's cache abstraction will set up the client-server configuration if 
-`hazelcast-client.xml` or `hazelcast-client.xml` is found on the classpath.
+`hazelcast-client.xml` or `hazelcast-client.yaml` is found on the classpath.
 Similar to the embedded cache we can also configure the client-server topology programmatically:
 
 ```java
@@ -180,6 +180,7 @@ We create a Spring Boot application with an in-memory database and JPA for acces
 
 We assume that the operations for accessing the database are slow because of heavy database use. Our goal is to avoid unnecessary operations by using a cache.
 
+#### Putting Data into the Cache
 We create a `CarService` to manage car data. This service has a method for reading data:
 
 ```java
@@ -208,17 +209,165 @@ The method `get()` is annotated with `@Cachable`. It starts the powerful Spring 
 When the method is called the first time, Spring will check if the value with the given key
 is in the cache. It will not be the case, and the method itself will be executed. It means we will
 have to connect to the database and read data from it. The `@Cacheable` annotation takes care
-of putting the result into the cache. Spring uses the usual java serialization to store values in the cache unless another serializer is defined for the cache provider. After the first call,
+of putting the result into the cache.
+
+After the first call,
 the cached value is in the cache and stays there according to the cache configuration.
 
 When the method is called the second time, and the cache value has not been evicted yet,
 Spring will search for the value by the key. Now it hits.
 
 **The value is found in the cache, and the method will not be executed.**
- 
+
 Spring Cache uses `SimpleKeyGenerator` to calculate the key from the method parameters. It's also
 possible to define a custom key generation by using the `key` attribute in the `@Cacheable` annotation.
 
+Also, we can use a different key generator. We should implement the interface `KeyGenerator`.
+After that, we can declare a bean with the key generator implementation:
+
+```java
+@Configuration
+@EnableCaching
+public class EmbeddedCacheConfig {
+
+    @Bean
+    public KeyGenerator keyGenerator() {
+        return new CarKeyGenerator();
+    }
+    // other methods omitted
+}
+``` 
+
+Another possibility is to use the `keyGenerator` attribute in the `@Cacheable` annotation:
+
+````java
+@Service
+class CarService {
+
+    @Cacheable(value = "cars", keyGenerator = "carKeyGenerator")
+    public Car get(UUID uuid) {
+        return carRepository.findById(uuid)
+                .orElseThrow(() -> new IllegalStateException("car with id " + uuid + " was not found"));
+    }
+   
+   // other methods omitted. 
+}
+````
+
+#### Serialization
+The java objects, that are stored in the cache should be serialized. 
+The `Car` class implements `Serializable`. In this case, the provider will use
+the usual java serialization.
+
+We can use other serializers too. Hazelcast provides us two options:
+
+* implement a Hazelcast serialization interface type in the classes, that should be serialized.
+* implement a custom serializer and add it to the cache configuration.
+
+Hazelcast has few serialization interface types. Let's have a look at the interface `DataSerializable`.
+This interface is more CPU and memory usage efficient than `Serializable`.
+
+We implement this interface in the class `Car`:
+
+```java
+public class Car implements DataSerializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+    private String name;
+    private String color;
+
+    @Override
+    public void writeData(ObjectDataOutput out) throws IOException {
+        out.writeUTF(id.toString());
+        out.writeUTF(name);
+        out.writeUTF(color);
+    }
+
+    @Override
+    public void readData(ObjectDataInput in) throws IOException {
+        id = UUID.fromString(in.readUTF());
+        name = in.readUTF();
+        color = in.readUTF();
+    }
+}
+```
+
+The methods `writeData()` and `readData()` serialize and deserialize the object of the class `Car.
+We have to note, that the serialization and the deserialization of the single fields should me 
+done in the same order.
+
+That's it. Hazelcast will now use the serialization methods.
+But now we have the Hazelcast dependency in the domain object `Car`. We can use a custom serializer
+to resolve this dependency.
+
+First, we have to implement a serializer. Let's take the `StreamSerializer`.
+
+````java
+public class CarStreamSerializer implements StreamSerializer<Car> {
+
+    @Override
+    public void write(ObjectDataOutput out, Car car) throws IOException {
+        out.writeUTF(car.getId().toString());
+        out.writeUTF(car.getName());
+        out.writeUTF(car.getColor());
+    }
+
+    @Override
+    public Car read(ObjectDataInput in) throws IOException {
+        return Car.builder()
+                .id(UUID.fromString(in.readUTF()))
+                .name(in.readUTF())
+                .color(in.readUTF())
+                .build();
+    }
+
+    @Override
+    public int getTypeId() {
+        return 1;
+    }
+}
+````
+The methods `write` and `read` serialize and deserialize the object `Car`. We have to have the same order of 
+writing and reading fields again. The method `getTypeId` return the identifier of this serializer.
+
+Second, we have to add this serializer to the configuration:
+
+```java
+@Configuration
+@EnableCaching
+public class EmbeddedCacheConfig {
+
+    @Bean
+    Config config() {
+        Config config = new Config();
+
+        MapConfig mapConfig = new MapConfig();
+        mapConfig.setTimeToLiveSeconds(300);
+        config.getMapConfigs().put("cars", mapConfig);
+
+        config.getSerializationConfig()
+                .addSerializerConfig(serializationConfig());
+
+        return config;
+    }
+
+    private SerializerConfig serializationConfig() {
+        SerializerConfig serializerConfig = new SerializerConfig();
+        serializerConfig.setImplementation(new CarStreamSerializer());
+        serializerConfig.setTypeClass(Car.class);
+        return serializerConfig;
+    }
+}
+```
+
+In the method `serializationConfig()` we let Hazelcast know, that it should use `CarStreamSerializer` for
+`Car` objects.
+
+Now the class `Car` doesn't need to implement anything and can be just a domain object.  
+
+#### Updating the Cache
 If we have data in the cache, which is actually a copy of the data in the primary storage, 
 and this primary storage is changed, we can get old or inconsistent data in the cache.
 We can solve this by using the `@CachePut` annotation:
@@ -240,6 +389,8 @@ class CarService {
 ```
 **The body of the `update()` method will always be executed.**
 The result of the method is to put the result of the method into the cache. In this case, we also defined the key that is used to update the data in the cache.
+
+#### Evicting Data from the Cache
 
 If we delete data from our primary storage, we would have stale data in the cache.
 We can annotate the deletion method to update the cache:

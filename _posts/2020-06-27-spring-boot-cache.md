@@ -1,8 +1,8 @@
 ---
 title: Implementing a Cache with Spring's Cache Abstraction
 categories: [spring-boot]
-date: 2020-06-20 05:00:00 +1100
-modified: 2020-06-20 05:00:00 +1100
+date: 2020-06-27 05:00:00 +1100
+modified: 2020-06-27 05:00:00 +1100
 author: artur
 excerpt: "Spring provides a powerful abstraction to implement a cache without binding to a specific cache provider. This article shows how to use it with Hazelcast as cache provider."
 image:

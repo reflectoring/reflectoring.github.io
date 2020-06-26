@@ -298,8 +298,12 @@ class CarService {
 
 ## Conclusion
 Spring's cache abstraction provides a powerful mechanism to keep cache usage abstract und independent of a
-cache provider. Spring Cache supports a few well-know cache providers, which should be configured in a 
-provider-specific way. With Spring's cache abstraction we can keep our business code and the cache implementation
+cache provider. 
+
+Spring Cache supports a few well-known cache providers, which should be configured in a 
+provider-specific way.
+ 
+ With Spring's cache abstraction we can keep our business code and the cache implementation
 separate.
 
 You can play around with a complete Spring Boot application using the Cache abstraction [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/cache). 

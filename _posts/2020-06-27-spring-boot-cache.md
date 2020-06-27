@@ -1,5 +1,5 @@
 ---
-title: Implementing a Cache with Spring's Cache Abstraction
+title: Implementing a Cache with Spring Boot
 categories: [spring-boot]
 date: 2020-06-27 05:00:00 +1100
 modified: 2020-06-27 05:00:00 +1100

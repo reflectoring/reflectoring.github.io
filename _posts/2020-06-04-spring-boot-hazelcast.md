@@ -304,6 +304,115 @@ Only after the data has been evicted from the near-cache will it be read from th
 
 **We should use the near-cache when we read from the cache very often, and when the data in the cache cluster changes only rarely.**
 
+## Serialization
+The java objects, that are stored in the cache should be serialized. 
+The `Car` class implements `Serializable`. In this case, Hazelcast will use
+the usual java serialization.
+
+But the standard java serialization has drawbacks like usage of more time and CPU, more space allocation.
+
+Let's imagine we have a scalable system with multiple instances and a cache cluster with few members.
+The system is working and cache entries are being stored, read, and evicted from the cache.
+Now we want to change a java object, that is cached and often used. We need a new deployment with this new class,
+and we want to make it without downtime. If we start a rolling update of our application instances,
+it works fine for the application, but the cache still can have entries of the previous version. In this case,
+Hazelcast will not be able to deserialize these entries. 
+It means we should create a serializer, that supports versioning of cache entries and that is able
+to serialize and deserialize java objects of different versions at the same time.
+
+Hazelcast provides us two options to customize the serialization:
+
+* implement a Hazelcast serialization interface type in the classes, that should be serialized.
+* implement a custom serializer and add it to the cache configuration.
+
+Hazelcast has few serialization interface types. Let's have a look at the interface `DataSerializable`.
+This interface is more CPU and memory usage efficient than `Serializable`.
+
+We implement this interface in the class `Car`:
+
+```java
+public class Car implements DataSerializable {
+
+    private String name;
+    private String number;
+
+    @Override
+    public void writeData(ObjectDataOutput out) throws IOException {
+        out.writeUTF(name);
+        out.writeUTF(number);
+    }
+
+    @Override
+    public void readData(ObjectDataInput in) throws IOException {
+        name = in.readUTF();
+        number = in.readUTF();
+    }
+}
+```
+
+The methods `writeData()` and `readData()` serialize and deserialize the object of the class `Car`.
+We have to note, that the serialization and the deserialization of the single fields should me 
+done in the same order.
+
+That's it. Hazelcast will now use the serialization methods.
+But now we have the Hazelcast dependency in the domain object `Car`. We can use a custom serializer
+to resolve this dependency.
+
+First, we have to implement a serializer. Let's take the `StreamSerializer`.
+
+````java
+public class CarStreamSerializer implements StreamSerializer<Car> {
+
+    @Override
+    public void write(ObjectDataOutput out, Car car) throws IOException {
+        out.writeUTF(car.getName());
+        out.writeUTF(car.getNumber());
+    }
+
+    @Override
+    public Car read(ObjectDataInput in) throws IOException {
+        return Car.builder()
+                .name(in.readUTF())
+                .number(in.readUTF())
+                .build();
+    }
+
+    @Override
+    public int getTypeId() {
+        return 1;
+    }
+}
+````
+The methods `write` and `read` serialize and deserialize the object `Car`. We have to have the same order of 
+writing and reading fields again. The method `getTypeId` return the identifier of this serializer.
+
+Second, we have to add this serializer to the configuration:
+
+```java
+@Component
+public class CacheClient {
+
+    public Config createConfig() {
+        Config config = new Config();
+        config.addMapConfig(mapConfig());
+        config.getSerializationConfig().addSerializerConfig(serializerConfig());
+        return config;
+    }
+
+    private SerializerConfig serializerConfig() {
+        return  new SerializerConfig()
+                .setImplementation(new CarSerializer())
+                .setTypeClass(Car.class);
+    }
+    // other methods omitted.
+}
+```
+
+In the method `serializerConfig()` we let Hazelcast know, that it should use `CarSerializer` for
+`Car` objects.
+
+Now the class `Car` doesn't need to implement anything and can be just a domain object.  
+
 ## Conclusion
 The Hazelcast Java library supports setting up the cache cluster with two topologies.
 The embedded cache topology supports very fast reading for high-performance computing. The client-server topology supports  independent scaling of the application and the cache

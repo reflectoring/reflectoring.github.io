@@ -12,14 +12,14 @@ image:
 
 I intend to give you an overview of the most important AWS services accompanied by their three-character acronyms. I hope it serves as a valuable aid to begin the exploration of AWS. I have selected the AWS services by thinking of the services required to build and run a customer-facing n-tier application.
 
-So you will come across the IAAS (Infrastructure as a service) and PAAS (Platform as a service) category of services. I have also included services under the serverless category, and services for running containers. I have not included services under specialized subjects like machine learning, IoT, security, and Big Data.
+So you will come across the IAAS (Infrastructure As A Service) and PAAS (Platform As A Service) category of services. I have also included services under the serverless category, and services for running containers. I have not included services under specialized subjects like machine learning, IoT, security, and Big Data.
 
 ##  Choose Region & AZ To Run The Workloads
 One of the first decisions we make is where to run our applications. Where are our servers located? We may like to host our applications closer to the location of our customers. 
 
 AWS data centers are located all across the globe. [AWS Region and AZ](https://aws.amazon.com/about-aws/global-infrastructure/regions_az) are essential entities of this global infrastructure.
 
-**An AWS Region is composed of multiple AZ (availability zones).** An AZ (Availability Zone) is a logical data center within a region. **Each AZ is mapped to physical data centers located in that region, with redundant power, networking, and connectivity.**  
+**An AWS Region is composed of multiple AZ (Availability Zones).** An AZ (Availability Zone) is a logical data center within a region. **Each AZ is mapped to physical data centers located in that region, with redundant power, networking, and connectivity.**  
 AWS resources are scoped either to a region, in an AZ, or are global. 
 
 ## Create VM With EC2
@@ -68,7 +68,7 @@ An SCP (Service Control Policy) is used to draw permission boundaries across one
 An STS (Security Token Service) is used to generate a temporary access token to invoke an AWS service, either using the AWS SDK (Software development kit) or from AWS CLI (Command Line Interface).
 
 ## Store Objects On S3
-[S3 (Simple Storage service)](https://aws.amazon.com/s3) is the most important service in the AWS portfolio. It is the foundation over which many AWS services are built. It embodies many of the features inherent to the Cloud. 
+[S3 (Simple Storage Service)](https://aws.amazon.com/s3) is the most important service in the AWS portfolio. It is the foundation over which many AWS services are built. It embodies many of the features inherent to the Cloud. 
 
 **S3 provides unlimited object storage, scales to any extent, durability, possesses layered security model and comes with a simple API.** We can store all kinds of objects in S3 like files, images, videos, EBS snapshots, machine images without worrying about file size or data integrity and durability. 
 

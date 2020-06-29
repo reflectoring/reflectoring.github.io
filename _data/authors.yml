@@ -116,3 +116,12 @@ yavuztas:
   url: "https://yavuztas.dev/"
   bio: "Yavuz is a professional software developer since 2009. He has diverse experience in creating solutions for enterprise-level requirements,
   mostly specialized in back-end technologies using Java and Spring Framework. He is a strong follower of test-driven development and a seeker of code quality."
+
+saajan:
+  name: "Saajan Nagendra"
+  email: "saajan.n@gmail.com"
+  avatar: "/assets/img/authors/saajan.png"
+  github: "saajn"
+  bio: "Saajan is an architect with deep experience building systems in several business domains. With a clean and minimalist-approach to design, he is 
+  passionate about code - the aesthetics of it, creating maintainable and flexibile solutions. He enjoys both sharing with and learning from others."
+  

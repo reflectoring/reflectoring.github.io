@@ -10,12 +10,12 @@ image:
 
 **AWS (Amazon Web Services) is a cloud computing platform with a wide portfolio of services like compute, storage, networking, data, security, and many more.**
 
-This article provides an overview of the most important AWS services, which are often hidden behind an acronym. I hope it serves as a valuable aid to begin the exploration of AWS. I have selected the AWS services by thinking of the services required to build and run a customer-facing n-tier application.
+This article provides an overview of the most important AWS services, which are often hidden behind an acronym. I hope it serves as a valuable aid to begin the exploration of AWS. I have selected the AWS services by considering the components required to build and run a customer-facing n-tier application.
 
 While reading this article, you'll come across the IAAS (Infrastructure As A Service) and PAAS (Platform As A Service) categories of services. I have also included services under the serverless category, and services for running containers. I have not included services under specialized subjects like machine learning, IoT, security, and Big Data.
 
 ##  Choose a Region and Availability Zone
-One of the first decisions we make is where to run our applications. Where are our servers located? We may like to host our applications closer to the location of our customers. 
+Whenever we think of cloud, one of the first decisions we make is where to run our applications. Where are our servers located? We may like to host our applications closer to the location of our customers. 
 
 AWS data centers are located all across the globe. [AWS Regions and AZs](https://aws.amazon.com/about-aws/global-infrastructure/regions_az) (Availability Zones) are essential entities of this global infrastructure.
 
@@ -24,7 +24,7 @@ AWS data centers are located all across the globe. [AWS Regions and AZs](https:/
 AWS resources are bound either to a region, to an AZ, or are global. 
 
 ## Run Virtual Machines with EC2
-Next, we create our VM (Virtual Machine) to run applications. **[EC2 (Elastic Compute Cloud)](https://aws.amazon.com/ec2/features) is the service used to create and run VMs.** We create the VM as an EC2 instance using a pre-built machine image from AWS (AMI - Amazon Machine Image) or a custom machine image.
+Next, we create our VM (Virtual Machine) to run our applications. **[EC2 (Elastic Compute Cloud)](https://aws.amazon.com/ec2/features) is the service used to create and run VMs.** We create the VM as an EC2 instance using a pre-built machine image from AWS (AMI - Amazon Machine Image) or a custom machine image.
 
 **A machine image is similar to a pre-built template containing the operating system with some pre-configured applications installed over it.** For example, we can use a machine image for Windows 2016 server with SQL Server or an RHEL Linux with Docker for creating our EC2 instance. 
 
@@ -32,7 +32,7 @@ We also select an instance family to assign the number of CPUs and RAM for our V
 
 We can enable autoscaling to create additional instances when we exceed a certain threshold of capacity utilization. Autoscaling will also take care of terminating instances when our servers are underutilized.
 
-Each EC2 instance is backed by storage in the form of [EBS](https://aws.amazon.com/ebs) (Elastic Block Storage) volumes. **An EBS volume is block-level storage used to store data that we want to persist beyond the lifetime of our EC2 instances.**
+Each EC2 instance is backed by storage in the form of [EBS (Elastic Block Storage)](https://aws.amazon.com/ebs) volumes. **An EBS volume is block-level storage used to store data that we want to persist beyond the lifetime of our EC2 instances.**
 
 EBS volumes are attached and mounted as disks to our VM. EBS volumes are automatically replicated in the same availability zone to achieve redundancy and high availability.
 
@@ -58,16 +58,16 @@ Additionally, we control traffic for an entire subnet using a [network ACL (Acce
 ### Connect To On-Premises Systems with VPN or DX
 Enterprises operate hybrid cloud environments to connect their on-premises resources to resources in the VPC. AWS provides two categories of services - [VPN (Virtual Private Network)](https://aws.amazon.com/vpn) and [DX (AWS Direct Connect)](https://aws.amazon.com/directconnect).
   
-**With AWS VPN service, we can create IPsec Site-to-Site VPN tunnels from a VPC to an on-premises network over the public internet.** This is a good option for enterprises that require certain systems to be available from the cloud but to run in our own data center.
+**With AWS VPN service, we can create IPsec Site-to-Site VPN tunnels from a VPC to an on-premises network over the public internet.** This is a good option when we have to adhere to corporate rules that require certain systems to be available from the cloud but to run in our own data center.
   
 The other way around, **with DX, we can establish dedicated ultra-low latency connections from on-premises to AWS.** We also reduce network charges and experience a more consistent network performance with higher bandwidth.
 
 ## Control Access with IAM
 [IAM (Identity and Access Management)](https://aws.amazon.com/iam) is an all-encompassing service for authentication and authorization in AWS, coming into action from the time we create our AWS account. 
 
-**We create users, groups, and roles with IAM and grant or deny access to resources declaratively with policies.** To access AWS resources, we then provide our identity in the form of a username and password or an access token and secret. 
+**We create users, groups, and roles with IAM and grant or deny access to resources declaratively with policies.** We then provide our identity in the form of a username and password or an access token and secret, to access the AWS resources. 
 
-IAM also provides SSO (Single Sign-on) capabilities by integrating with SAML and OpenID based identity providers residing within or outside of AWS. 
+IAM also provides SSO (Single Sign-on) capabilities by integrating with SAML (Security Assertion Markup Language) and OpenID based identity providers residing within or outside of AWS. 
 
 An SCP (Service Control Policy) is used to draw permission boundaries across one or more AWS accounts. 
 
@@ -78,9 +78,9 @@ An STS (Security Token Service) is used to generate a temporary access token to 
 
 **S3 provides unlimited object storage, scales to any extent, possesses a layered security model, and comes with a simple API.** We can store all kinds of objects in S3 like files, images, videos, EBS snapshots, or machine images without worrying about file size or data integrity and durability. 
 
-We store an object in containers called buckets with a key and some metadata as object attributes. We apply our access controls on the bucket or the S3 object. S3 offers a range of storage classes to store our objects in relevant storage tiers based on our access requirements. 
+We store an object in a container called bucket, with a key and some metadata as object attributes. We apply our access controls on the bucket or the S3 object. S3 offers a range of storage classes to store our objects in relevant storage tiers based on our access requirements. 
 
-Additionally, we can use lifecycle policies to define rules like deleting or moving an object after a certain time.
+Additionally, we can use lifecycle policies to define rules, for example, a lifecycle policy on a bucket for deleting or moving an object after a certain time.
 
 S3 is widely used in various use cases, like web hosting, data lakes in big data, archiving, and secure log storage. S3 also plays a big part in the migration of different workloads to the cloud.
 
@@ -143,10 +143,10 @@ The server for executing the function is provisioned at the time of invocation. 
  
 ## Deliver Content with CloudFront
 **[AWS CloudFront](https://aws.amazon.com/cloudfront) is a CDN (Content Delivery Network) service used to serve both static and dynamic content using a global network of AWS POP (Points of Presence).** The content is served to the end-users from the nearest AWS POP (Point of Presence) to minimize latency. Some of the common usages are - 
-1. image and video files stored in an S3 bucket
-1. single-page applications composed of javascript, image and HTML assets in minified or exploded form
-1. deliver an entire web portal accelerating both the download and upload functionalities in the portal
-Other sources of content are web applications running on EC2, or an ELB load balancer routing requests to a fleet of EC2 instances.
+1. Image and video files stored in an S3 bucket
+1. Single-page applications composed of javascript, image and HTML assets in minified or exploded form
+1. Deliver an entire web portal accelerating both the download and upload functionalities in the portal
+Other sources of content are web applications running on EC2, or an ELB load balancer routing requests to a fleet of EC2 instances running web applications.
 
 
 ## Route to Your IP with Route 53
@@ -169,4 +169,4 @@ With the advent of distributed applications, observability has emerged as a key 
 
  [![AWS Mind Map](/assets/img/posts/aws-acronyms-overview/mindmapaws.jpg)](/assets/img/posts/aws-acronyms-overview/mindmapaws.jpg)
 
- AWS is a behemoth. I tried to give you a peek by covering the main capabilities of the commonly used services. We also saw the elastic nature of services like ELB, S3, VPN, DX, EC2 which can autoscale based on demand.  
+ AWS is a behemoth. I tried to give you a peek by covering the main capabilities of the commonly used services. We also saw the elastic nature of services like ELB, S3, VPN, DX, EC2 which can autoscale based on demand. You can always refer to the AWS documentation to learn more about these services.

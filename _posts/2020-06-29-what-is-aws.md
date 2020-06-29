@@ -12,7 +12,7 @@ image:
 
 This article provides an overview of the most important AWS services, which are often hidden behind an acronym. I hope it serves as a valuable aid to begin the exploration of AWS. I have selected the AWS services by thinking of the services required to build and run a customer-facing n-tier application.
 
-Reading this article, you'll come across the IAAS (Infrastructure As A Service) and PAAS (Platform As A Service) categories of services. I have also included services under the serverless category, and services for running containers. I have not included services under specialized subjects like machine learning, IoT, security, and Big Data.
+While reading this article, you'll come across the IAAS (Infrastructure As A Service) and PAAS (Platform As A Service) categories of services. I have also included services under the serverless category, and services for running containers. I have not included services under specialized subjects like machine learning, IoT, security, and Big Data.
 
 ##  Choose a Region and Availability Zone
 One of the first decisions we make is where to run our applications. Where are our servers located? We may like to host our applications closer to the location of our customers. 
@@ -58,9 +58,9 @@ Additionally, we control traffic for an entire subnet using a [network ACL (Acce
 ### Connect To On-Premises Systems with VPN or DX
 Enterprises operate hybrid cloud environments to connect their on-premises resources to resources in the VPC. AWS provides two categories of services - [VPN (Virtual Private Network)](https://aws.amazon.com/vpn) and [DX (AWS Direct Connect)](https://aws.amazon.com/directconnect).
   
-**With AWS VPN service, we can create IPsec Site-to-Site VPN tunnels from a VPC to an on-premises network over the public internet.** This is a good option for corporate rules that require certain systems to be available from the cloud but to run in our own data center.
+**With AWS VPN service, we can create IPsec Site-to-Site VPN tunnels from a VPC to an on-premises network over the public internet.** This is a good option for enterprises that require certain systems to be available from the cloud but to run in our own data center.
   
-The other way around, **with DX, we can establish dedicated ultra-low latency connections from on-premises to AWS.** With DX, we reduce network charges and experience a more consistent network performance with a higher bandwidth.
+The other way around, **with DX, we can establish dedicated ultra-low latency connections from on-premises to AWS.** We also reduce network charges and experience a more consistent network performance with higher bandwidth.
 
 ## Control Access with IAM
 [IAM (Identity and Access Management)](https://aws.amazon.com/iam) is an all-encompassing service for authentication and authorization in AWS, coming into action from the time we create our AWS account. 
@@ -142,17 +142,22 @@ The server for executing the function is provisioned at the time of invocation. 
 **SAM (Serverless Application Model) is the framework for developing lambda applications with useful tools like a CLI, a local test environment based on Docker, and integration with developer tools.** 
  
 ## Deliver Content with CloudFront
-[AWS CloudFront](https://aws.amazon.com/cloudfront) is a CDN-content delivery network service to serve content from the nearest AWS POP (point of presence). **It's a global autoscaled service integrated for content origin with resource endpoints in EC2, ELB, and S3.** 
+**[AWS CloudFront](https://aws.amazon.com/cloudfront) is a CDN (Content Delivery Network) service used to serve both static and dynamic content using a global network of AWS POP (Points of Presence).** The content is served to the end-users from the nearest AWS POP (Point of Presence) to minimize latency. Some of the common usages are - 
+1. image and video files stored in an S3 bucket
+1. single-page applications composed of javascript, image and HTML assets in minified or exploded form
+1. deliver an entire web portal accelerating both the download and upload functionalities in the portal
+Other sources of content are web applications running on EC2, or an ELB load balancer routing requests to a fleet of EC2 instances.
+
 
 ## Route to Your IP with Route 53
-[AWS Route 53](https://aws.amazon.com/route53) is the DNS service with capabilities of high availability and scalability. **It provides ways to route incoming end-user requests to resources within AWS like EC2 and ELB load balancers and also to resources outside of AWS using a group of routing rules based on network latency, geo-proximity, and weighted round-robin.**
+[AWS Route 53](https://aws.amazon.com/route53) is the DNS (Domain Name System) service with capabilities of high availability and scalability. **It provides ways to route incoming end-user requests to resources within AWS like EC2 and ELB load balancers and also to resources outside of AWS using a group of routing rules based on network latency, geo-proximity, and weighted round-robin.**
 
 ## Governance, Compliance & Audit with CloudTrail
 Security in the cloud works on the principle of shared responsibility (something you will find repeated ad-nausea across AWS docs). AWS is responsible for the security *of* the cloud and we are responsible for security *in* the cloud. 
 
 [CloudTrail](https://aws.amazon.com/cloudtrail) is a service that is switched on by default in an AWS account but we need to build controls to ensure nobody switches it off, modifies the generated trails, sends trails to an S3 bucket accessible to our security teams.
 
-**CloudTrail helps to gain complete visibility into all user activity in the form of events telling you who did what and when. It provides an event history of all the activities done in your AWS account.**
+**CloudTrail helps to gain complete visibility into all user activity in the form of events telling you who did what and when. It provides event history of all the activities done in your AWS account.**
 
 ## Observability with CloudWatch
 With the advent of distributed applications, observability has emerged as a key capability to monitor the health of systems and identify the root cause of problems like outage or slowness. [CloudWatch](https://aws.amazon.com/cloudwatch) has understandably been among the first services.

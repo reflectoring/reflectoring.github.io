@@ -313,7 +313,7 @@ class DebitCard extends BaseBankCard {
 Though `CreditCard` and `DebitCard` extend a class, it's not the same as before. Other areas of our codebase now depend only on the `IPaymentInstrument` interface, not on `BaseBankCard`. Below snippet shows `CreditCard` object creation and processing:
 
 ```java
-IPaymentGatewayHandler gatewayHandler = new PaymentGatewayHandler();
+IPaymentGatewayHandler gatewayHandler = new PaymentGatewayHandler(name, cardNum, code, expiryDate);
 IPaymentInstrumentValidator validator = new BankCardBasicValidator(name, cardNum, code, expiryDate);
 IFraudChecker fraudChecker = new ThirdPartyFraudChecker(name, cardNum, code, expiryDate);
 CreditCard card = new CreditCard(name, cardNum, code, expiryDate, validator, fraudChecker, gatewayHandler);

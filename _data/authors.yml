@@ -14,6 +14,15 @@ default:
           something new every day. I love sharing the things I learned, so you (and future me)
           can get a head start."
 
+pratikdas:
+  name: "Pratik Das"
+  email: "pratikd2000@gmail.com"
+  avatar: "/assets/img/authors/pratikdas.jpg"
+  github: "pratikdas"
+  twitter: "pratikd2020"
+  linkedin: "pratik-das-80345114/"
+  bio: "Professional Software Engineer and Architect currently focussed on Cloud Architecture, serverless technologies, and Microservices."
+
 matthias:
   name: "Matthias Balke"
   email: "matthias.balke@googlemail.com"

@@ -11,7 +11,7 @@ image:
 
 This article gives a quick intro to the Liskov Substitution Principle (LSP), why it's important, and how to use it to validate object-oriented designs. We'll also see some examples and learn how to correctly identify and fix violations of LSP.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/solid" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/solid/lsp" %}
 
 ## What is LSP?
 
@@ -380,7 +380,7 @@ When designing the class hierarchy for a new application, **LSP helps make sure 
 
 When enhancing an existing application by adding or changing a subclass, being mindful of **LSP helps ensure that our changes are in line with the superclass's contract and that the client code's expectations continue to be met**.
 
-You can play around with a complete application illustrating these ideas using the code [on GitHub](https://github.com/thombergs/code-examples/tree/master/solid). 
+You can play around with a complete application illustrating these ideas using the code [on GitHub](https://github.com/thombergs/code-examples/tree/master/solid/lsp). 
 
 ## References
 

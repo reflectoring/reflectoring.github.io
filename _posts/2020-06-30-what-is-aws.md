@@ -1,7 +1,7 @@
 ﻿---
 title: "What is AWS? A High-Level Overview of the Most Important AWS Services"
 categories: [craft]
-modified: 2020-06-29
+modified: 2020-06-30
 author: pratikdas
 excerpt: "New to AWS? We've got you covered. AWS is a vast ocean of services across a bunch of different domains. This article introduces the most commonly used AWS services."
 image:
@@ -142,10 +142,12 @@ The server for executing the function is provisioned at the time of invocation. 
 **SAM (Serverless Application Model) is the framework for developing lambda applications with useful tools like a CLI, a local test environment based on Docker, and integration with developer tools.** 
  
 ## Deliver Content with CloudFront
-**[AWS CloudFront](https://aws.amazon.com/cloudfront) is a CDN (Content Delivery Network) service used to serve both static and dynamic content using a global network of AWS POP (Points of Presence).** The content is served to the end-users from the nearest AWS POP (Point of Presence) to minimize latency. Some of the common usages are - 
-1. Image and video files stored in an S3 bucket
-1. Single-page applications composed of javascript, image and HTML assets in minified or exploded form
-1. Deliver an entire web portal accelerating both the download and upload functionalities in the portal
+**[AWS CloudFront](https://aws.amazon.com/cloudfront) is a CDN (Content Delivery Network) service used to serve both static and dynamic content using a global network of AWS POP (Points of Presence).** The content is served to the end-users from the nearest AWS POP to minimize latency. Some of the common usages are: 
+
+* Deliver image and video files stored in an S3 bucket
+* Deliver single-page applications composed of javascript, image and HTML assets in minified or exploded form
+* Deliver an entire web portal accelerating both the download and upload functionalities in the portal
+
 Other sources of content are web applications running on EC2, or an ELB load balancer routing requests to a fleet of EC2 instances running web applications.
 
 

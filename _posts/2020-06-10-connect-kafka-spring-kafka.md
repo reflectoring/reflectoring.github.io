@@ -4,7 +4,7 @@ categories: [spring-boot]
 date: 2020-06-28 05:00:00 +1100
 modified: 2020-06-28 05:00:00 +1100
 author: nandan
-excerpt: 'Spring Boot allows us to throw and listen to specific application events that we can process as we wish. Events are meant for exchanging information between loosely coupled components.'
+excerpt: 'Kafka mainly aims to solve low-latency ingestion of large amounts of event data. We can use Kafka when we have to move a large amount of data, process data in real-time.'
 image:
   auto: 0065-java
 ---

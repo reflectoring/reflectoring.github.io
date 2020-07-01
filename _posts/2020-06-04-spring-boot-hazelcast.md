@@ -321,7 +321,7 @@ We need to deploy a new version of the application with this new class
 and we want to do it without downtime. If we start a rolling update of our application instances,
 it works fine for the application, but the cache still can have entries of the previous version of the objects. 
 
-**Hazelcast will not be able to deserialize the old version of the objects**, which leads to unnecessary cache misses. 
+**Hazelcast will not be able to deserialize the old version of the objects** and throw an exception. 
 It means we should create a serializer, that supports versioning of cache entries and that is able
 to serialize and deserialize java objects of different versions at the same time.
 

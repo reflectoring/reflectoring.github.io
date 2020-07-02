@@ -1,276 +1,158 @@
 ---
 title: "One-stop Guide to Lombok"
-date: 2020-06-21 10:00 +0500
-modified: 2020-06-21 10:15 +0500
+categories: [craft]
+date: 2020-06-21 10:00:00 +0500
+modified: 2020-07-02 11:06:00 +0500
+author: yalalovsm
+excerpt: "What the Lombok is and why we should use it"
 ---
 
-# What is it
-Lombok is a Java library which makes Java less chatty whilst making your code more readable. Java is great language but when you use its features you have to write a lot of boilerplate code.
+## What Is It
+Lombok is a Java library that makes Java less chatty whilst making our code more readable. In short, this is a compile-time dependency that allows us to replace a typical boilerplate code with useful annotations. Since Java 6 the annotation processing API has been available. Annotation processing is a tool build in javac that scans and process annotations at compile time. Lombok has its implementation of the annotation processor for its annotations. This processor takes java code and generates .java files.
 
-# Why to use Lombok
+## Why to Use Lombok
 
-Lombok helps you with a set of annotations to make your code more readable without losing its functionality. You don’t need to write typical constructors, setters or getters. With the help of Lombok you can easily add logging feature to you class or create fully functional builder.
+Java is a great language but when we use it we have to write a lot of boilerplate code. For instance, we create a class with some fields. Further, we want to initialize that class and set the fields to some values or get the values of the fields in that class. To do that we have to explicitly create a constructor with or without parameters, setters, and getters. What if we want to use a builder pattern. We have to create lots of code. It worth mentioning the situation when our class needs an implementation of `equals()` and `hashCode()` methods. If we have lots of fields in our class the methods mentioned above can grow extremely large. Lombok offers to automate generating constructors, setters, getters, builders, and a lot of typical routine tasks using its annotations and let us focus on our task. Using Lombok can decrease the size of our source files significantly. For example, using `@Data` and `@EqualsAndHashCode` annotations in a class with about thirty fields decreases the size of the source java file in twice from about 16Kb to 8Kb.
 
-# Which the most popular features it has
+## Which the Most Popular Features Lombok Has
 
-## @Getter and @Setter annotations
-These annotations generate setters and getters for a field respectively. These annotations can be applied as method level or class level.
+### Generating Setters and Getters
 
-Lombok annotated code
-
-```java
-@Getter
-@Setter
-public class Person {
-  private String name;
-  private boolean employed;
-}
-```
-
-Generated Java code
+With `@Setter` annotation we can set the values of the fields of the class. With `@Getter` annotation we can retrieve the values of the fields. These annotations can be applied to the class or fields.
 
 ```java
-private String name;
-private boolean employed;
+Person person1 = new Person();
+person1.setFirstName("John");
+person1.setLastName("Doe");
+person1.setAge(30);
 
-public void setName(final String name) {
-  this.name = name;
-}
-
-public void setEmployed(final boolean employed) {
-    this.employed = employed;
-}
-
-public String getName() {
-    return this.name;
-}
-
-public boolean isEmployed() {
-    return this.employed;
-}
+System.out.println(person.getFirstName() + " " + person.getLastName() + 
+    " is " + person.getAge() + " years old.");
 ```
 
-## @EqualsAndHashCode annotation
-This annotation generates both `equals` and `hashCode`. This is a class level annotation. By default any non static and non transient fields will participate in generating methods.
-You can use `callSuper` parameter for calling `equals` method from superclass before considering any field in the current class. Also you can use `exclude` parameter to prevent a field to be used in the logic of the generating methods.
+### Using Builder Pattern
 
-Lombok annotated code
+`@Builder` annotation helps us to use [Builder pattern](https://refactoring.guru/design-patterns/builder).
 
 ```java
-@EqualsAndHashCode(exclude = { "address", "company", "employed" })
-public class Person {
-    private String name;
-    private Integer age;
-    private boolean employed;
-    private String address;
-    private String company;
-}
+Ticket ticket = Ticket.builder()
+    .number(ThreadLocalRandom.current().nextInt(1, 1000 + 1))
+    .source("Berlin")
+    .destination("Leipzig")
+    .transportType("Train")
+    .price(BigDecimal.valueOf(100))
+    .owner(person)
+    .build();
 ```
 
-Generated Java code
+### Generating Various Types of the Constructors
+
+Lombok has annotations that generate various types of constructors: the default constructor without any arguments, the constructor with all arguments, the constructor with only required arguments.
+These are `@NoArgsConstructor`, `@AllArgsConstructor`, `@RequiredArgsConstructor`. We have to remember that `@RequiredArgsConstructor` annotations generate the constructor only for the fields marked as `final`
 
 ```java
-public class Person {
-    private String name;
-    private Integer age;
-    private boolean employed;
-    private String address;
-    private String company;
+Task task = new Task("House cleaning", "clean my table and wash dishes", LocalDateTime.now().plusHours(1));
 
-    public boolean equals(final Object o) {
-        if (o == this) {
-            return true;
-        } else if (!(o instanceof Person)) {
-            return false;
-        } else {
-            Person other = (Person)o;
-            if (!other.canEqual(this)) {
-                return false;
-            } else {
-                Object this$name = this.name;
-                Object other$name = other.name;
-                if (this$name == null) {
-                    if (other$name != null) {
-                        return false;
-                    }
-                } else if (!this$name.equals(other$name)) {
-                    return false;
-                }
-
-                Object this$age = this.age;
-                Object other$age = other.age;
-                if (this$age == null) {
-                    if (other$age != null) {
-                        return false;
-                    }
-                } else if (!this$age.equals(other$age)) {
-                    return false;
-                }
-
-                return true;
-            }
-        }
-    }
-
-    protected boolean canEqual(final Object other) {
-        return other instanceof Person;
-    }
-
-    public int hashCode() {
-        int PRIME = true;
-        int result = 1;
-        Object $name = this.name;
-        int result = result * 59 + ($name == null ? 43 : $name.hashCode());
-        Object $age = this.age;
-        result = result * 59 + ($age == null ? 43 : $age.hashCode());
-        return result;
-    }
-}
+Person person2 = new Person();
+Person person3 = new Person("John", "Doe", 30, "555-1234");
 ```
 
-## @RequiredArgsConstructor, @AllArgsConstructor, @NoArgsConstructor annotations
-These annotations generate constructors with only required, i.e. with final keyword, fields. Or with all fields in a class or default constructor.
+### Generating `equals()` and `hashcode()` Methods
 
-Lombok annotated code
-
-```java
-@RequiredArgsConstructor
-public class Person {
-    private final String name;
-    private final Integer age;
-}
-```
-
-Generated Java code
-
-```java
-public class Person {
-    private final String name;
-    private final Integer age;
-
-    public Person(final String name, final Integer age) {
-        this.name = name;
-        this.age = age;
-    }
-}
-```
-
-Lombok annotated code
+`@EqualsAndHashCode` annotation generates the implementation of the `equals(Object other)` and `hashCode()` methods. We can mark which fields to use by marking type members with `@EqualsAndHashCode.Include` or `@EqualsAndHashCode.Exclude` annotations.
 
 ```java
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Person {
-    private String name;
+    private String firstName;
+    private String lastName;
     private Integer age;
+
+    @EqualsAndHashCode.Exclude
+    private String phone;
 }
 ```
 
-Generated Java code
+```java
+@Test
+public void testEqualsAndHashCode() {
+    Person person1 = new Person("John", "Doe", 30, "555-1234");
+    Person person2 = new Person("John", "Doe", 30, "555-1234");
+
+    // objects are equal
+    assertThat(person1.equals(person2), is(true));
+
+    // the phone property is excluded
+    person2.setPhone("555-4321");
+    assertThat(person1.equals(person2), is(true));
+
+    // modify the property which is included in equals() method
+    person2.setAge(31);
+    assertThat(person1.equals(person2), is(false));
+}
+```
+
+### Checking the fields for null values
+
+One of the useful Lombok features is `@NonNull`. This annotation can be applied to the parameter of the method or constructor or on the field of the class. Lombok generates a null-check statement for us.
 
 ```java
-public class Person {
-    private String name;
-    private Integer age;
-
-    public Person(final String name, final Integer age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    public Person() {
+@Test
+public void testNonNull() {
+    try {
+        Ticket ticket = Ticket.builder()
+                .source("Berlin")
+                .destination("Leipzig")
+                .transportType("Train")
+                .price(BigDecimal.valueOf(100))
+                .build();
+    } catch (Exception e) {
+        final String expectedMsg = "number is marked non-null but is null";
+        assertThat(e.getMessage(), equalTo(expectedMsg));
     }
 }
 ```
 
-## @NonNull annotation
+### Add Logging Support
 
-The most useful Lombok feature is `@NonNull`. In that case Lombok adds null-checks in you code. It will look like:  
-```java
-if (name == null) {
-  throw new NullPointerException("name is marked non-null but is null");
-}
-```
-
-## @Slf4j annotation
-
-One of the usefull Lombok features is `@Slf4j`. Lombok will generate static Slf4j Logger `log` property in your class which you can use to log something with choosen severity.  
+Using the annotation `@Slf4j` we can tell Lombok to generate static Slf4j Logger `log` field in our class. We can now log something with the chosen severity.
 
 ```java
-log.info("myMethod(): started");
-log.debug("myMethod(): doing some calculations");
-log.info("myMethod(): finished");
-```
-
-## @Builder annotation
-
-If use often use Builder pattern you will like the next Lombok feature. It is `@Builder`. You can annotate your class with this feature and Lombok will generate all neccessery code.  
-
-Lombok annotated code
-
-```java
-@Builder
+@Slf4j
 public class Person {
-    private String name;
-    private Integer age;
-}
-
-```
-
-Java generated code
-
-```java
-public class Person {
-    private String name;
     private Integer age;
 
-    Person(final String name, final Integer age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    public static Person.PersonBuilder builder() {
-        return new Person.PersonBuilder();
-    }
-
-    public static class PersonBuilder {
-        private String name;
-        private Integer age;
-
-        PersonBuilder() {
-        }
-
-        public Person.PersonBuilder name(final String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Person.PersonBuilder age(final Integer age) {
+    public void setAge(final Integer age) {
+        if (age < 0) {
+            log.warn("Age is less than zero. Set to zero");
+            this.age = 0;
+        } else {
             this.age = age;
-            return this;
-        }
-
-        public Person build() {
-            return new Person(this.name, this.age);
-        }
-
-        public String toString() {
-            return "Person.PersonBuilder(name=" + this.name + ", age=" + this.age + ")";
         }
     }
 }
 ```
 
-## @Data annotation
-This annotation is used the most frequently amongst all other Lombok annotations. It combines the functionality of the next Lombok annotations: `@ToString`, `@EqualsAndHashCode`, `@Getter`, `@Setter`,
-`@RequiredArgsConstructor`
+### Using the Combination of Annotations
 
-# How to add the support of Lombok in your project
+When we work with the fields of the classes in Java we usually need setters, getters, constructors. If we compare the objects of our classes, we need `equals()` and `hashCode()` methods. And quite often we need `toString()` method to stringify information about our object. For the actions above we can use a few Lombok annotations: `@Setter`, `@Getter`, `@RequiredArgsConstructor`, `@EqualsAndHashCode`, and `@ToString`. We can combine them and use a shortcut annotation `@Data` that bundles all these features.
 
-## Dependencies to add for Maven
+```java
+@Data
+public class Task {
+    private final String name;
+    private final String description;
+    private final LocalDateTime ends;
+}
+```
 
-To set up lombok with Maven, you have to specify that the lombok dependency is required to compile your source code, but does not need to be present when running/testing/jarring/otherwise deploying your code. Generally this is called a 'provided' dependency.  
-Lombok is available in maven central, so you can easily add it in `dependencies` section of your `pom.xml` file.
+## How to Add the Support of Lombok in Our Project
+
+### Maven Build Tool
+
+The only thing we have to do is to add Lombok dependency in `pom.xml` as `provided`. It means that this dependency will be used only on compiling out source code and will not be present when running/testing/jarring/otherwise deploying our code.
 
 ```java
 <dependencies>
@@ -283,55 +165,87 @@ Lombok is available in maven central, so you can easily add it in `dependencies`
 </dependencies>
 ```
 
-*N.B.* ~when adding lombok annotations make sure that you have imported them from correct package. This is the correct import for annotation `@Getter`  
-`import lombok.Getter`~
+### Gradle Build Tool
 
-If you use Jdk9+ you should add the following to the maven compiler plugin configuration section:  
-```java
-<annotationProcessorPaths>
-  <path>
-    <groupId>org.projectlombok</groupId>
-    <artifactId>lombok</artifactId>
-    <version>1.18.12</version>
-  </path>
-</annotationProcessorPaths>
-```
-
-## Dependencies to add for Gradle
-
-As with setting up lombok for Maven you have to specify lombok dependency in your `buiild.gradle`
-
-In case you do not want to use Lombok Gradle plugin gradle has the built-in `compileOnly` scope, which can be used to tell Gradle to add lombok only during compilation.
+To use Lombok with Gradle we have to add Lombok dependency in our `build.gradle` file. Gradle has the built-in `compileOnly` scope, which can be used to tell Gradle to add Lombok only during compilation.
 
 ```java
+repositories {
+    mavenCentral()
+}
+
 dependencies {
   compileOnly 'org.projectlombok:lombok:1.18.12'
   annotationProcessor 'org.projectlombok:lombok:1.18.12'
 }
 ```
 
-If you want to use lombok gradle plugin you can read more about it [https://plugins.gradle.org/plugin/io.freefair.lombok](here)
+There is also a plugin for Gradle that is recommended for use. It can be found [here](https://plugins.gradle.org/plugin/io.freefair.lombok).
 
-## Settings for IntelliJ Idea to activate Lombok preprocessing
+### Ant Build Tool
 
-To use Lobmok features you have to activate preprocessing of Lombok annotations. For Intellij you have to go to  
-~`Settings > Build, Execution, Deployment > Compiler > Annotation Processors`~ and activate `Enable annotation processing`
+When use Ant we have to ensure that Lombok is on the classpath if our `<javac>` task. Assuming that we've put lombok.jar in a lib dir, our javac task would have to look like:  
+```java
+<javac srcdir="src" destdir="build" source="1.8">
+    <classpath location="lib/lombok-1.18.12.jar" />
+</javac>
+```
 
-The next popular features is `@EqualsAndHashCode`. With this feature usually `@EqualsAndHashCode.Exclude` used to exclude some fields from using in `equals()` and `hashCode()` methods.
+It is not convenient and it is recommended to use `ivy`, the ant add-on that lets us fetch dependencies from the internet automatically. In that case assuming that we have configuration named `build` we can easily add:
+```java
+<dependencies>
+    <dependency org="org.projectlombok" name="lombok" rev="1.18.12" conf="build->master" />
+</dependencies>
+```
 
-# Caveats when using some features of Lombok
+### Settings for Intellij Idea to Activate the Lombok Preprocessing
 
-Using Lombok annotations is easy. But sometimes there are some caveats. They often can be met when you have extended from some superclass.
-In those cases you can use some additional parameter like `callSuper=true`. This parameter can be used in such features like `@ToString, @EqualsAndHashCode etc.`. Using or not the parameter `callSuper` can be not such harmful in `@ToString` as it can be in `@EqualsAndHashCode`.
-Also it's a best practice to manually exclude all the fields you do not want to be used by Lombok when generating the code. This can be done by `@ToString.Exclude` ot `@EqualsAndHashCode.Exclude` annotations.
+The Jetbrains IntelliJ IDEA is compatible with Lombok. To add Lombok support for IntelliJ we have to add the [Lombok IntelliJ plugin](https://plugins.jetbrains.com/plugin/6317). To compile our project successfully in IntelliJ IDEA we have to enable annotation processing that is disabled by default. To do that use dialog `Preferences > Project Settings > Compiler > Annotation Processors` and check `Enable annotation processing`
 
 
-# DeLombok
+### Add Support of Lombok in Eclipse
 
-Lombok helps to focus you on the code you write and not to focus on creating typical constructors, setters, getters etc. It removes *a lot* of boilerplate code.
-But it doesn't cover cases. You cannot plug lombok into javadoc or other tools which use java sources. Here you can use delombok. Delombok copies an entire directory into another directory, recursively, skiping class files and applying lombok transformations to any java source files it encounters.
+Download `lombok-1.18.12.jar` file from the Maven Central repository. Next, we can run the jar with `java -jar lombok-1.18.12.jar`. This starts the Eclipse UI installer which finds all installations of Eclipse and offers to install Lombok into these Eclipse installations. We can choose the Eclipse installation where we want to install Lombok and press the _Install_ button. After installing the plugin and exiting the installer we need to restart the Eclipse to ensure that Lombok is configured properly.
 
-# Conclusion
+## Caveats When Using Lombok
 
-There are a lot of languages you can use to reach your goal. There are a lot of frameworks, libraries and tools which help you ease your way to that goal. And Lombok is one them. It make Java less chatty. It removes boilerplate code. It prevents you from the errors when writing typical pieces of the code. And annotations in Java used to makes your code more readable. So the Lombok does.
-And with using Lombok Java becomes more powerful and pleasent to use language.
+Lombok is a very popular library that helps us to eliminate the amount of boilerplate code. But sometimes we overuse its features.
+
+- Moving the logic outside the getters and setters.  
+We use annotations `@Setter` and `@Getter` for generating setters and getters and we forget sometimes that we do not need to expose all the fields of our class. Also, we take an attribute with the getter and do some logic with it instead of moving that logic into the domain object. Thus we violate the [TellDontAsk principle](https://martinfowler.com/bliki/TellDontAsk.html).
+- Not correct use of `@Builder` annotation.  
+It is very convenient to use `@Builder` annotation even if we a couple of fields in the class. But the Builder pattern is intended to use when we have lots of fields and constructor becomes too big.
+- We must be very careful with annotations that generate constructors. `@NoArgsConstructor` allows creating an object in an invalid state. `@AllArgsConstructor` generate constructor with all the fields in the class. But the order of the parameters in constructor various according to the declaration of the class attributes.
+- When we use `@EqualsAndHashCode` we have to be very careful especially when we deal [with databases](https://vladmihalcea.com/the-best-way-to-implement-equals-hashcode-and-tostring-with-jpa-and-hibernate/). It's better to explicitly set the attributes that will be considered in `equals()` and `hashCode()` methods or add `@EqualsAndHashCode.Exclude` annotation with the attributes which we want to exclude from considering.
+
+## Delombok
+
+Using the Lombok annotations in our Java objects will generate boilerplate code at compile time. Delombok will show us how the generated code looks like because the Lombok generated code is available in `.class` files and we cannot look into the code directly. Delombok is often used when we decided to decline using Lombok in our project and we want to keep all the features we had when had used Lombok.
+To use delombok features we have to add the next configuration in `pom.xml` under `build -> plugins` section:
+
+```java
+<plugin>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok-maven-plugin</artifactId>
+    <version>1.18.12.0</version>
+    <executions>
+        <execution>
+            <id>delombok</id>
+            <phase>generate-sources</phase>
+            <goals>
+                <goal>delombok</goal>
+            </goals>
+            <configuration>
+                <addOutputDirectory>false</addOutputDirectory>
+                <sourceDirectory>src/main/java</sourceDirectory>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+
+```
+
+## Conclusion
+
+There are a lot of languages we can use to reach our goals. There are a lot of frameworks, libraries, and tools which help us ease our way to that goal. And Lombok is one of them. It makes Java less chatty. It removes boilerplate code. It prevents us from errors when writing typical pieces of the code. And annotations in Java used to makes our code more readable. So the Lombok does.
+And with using Lombok Java becomes more powerful and pleasant to use language.

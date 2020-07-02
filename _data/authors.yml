@@ -125,3 +125,15 @@ yavuztas:
   url: "https://yavuztas.dev/"
   bio: "Yavuz is a professional software developer since 2009. He has diverse experience in creating solutions for enterprise-level requirements,
   mostly specialized in back-end technologies using Java and Spring Framework. He is a strong follower of test-driven development and a seeker of code quality."
+
+yalalovsm:
+  name: "Salavat Yalalov"
+  email: "s.yalalov@icloud.com"
+  avatar: "/assets/img/authors/yalalovsm.jpg"
+  github: "yalalovsm"
+  stackoverflow: "8297427/salavat-yalalov"
+  twitter: "SYalalov"
+  linkedin: "salavat-yalalov"
+  bio: "Salavat Yalalov is a software developer participating in commercial projects since 2017. In IT since 1993 as system administrator and programmer for myself.
+  Since 2006 untill 2017 network engineer in telecommunications with ten about 7 years of being a team leader."
+  

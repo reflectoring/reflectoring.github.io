@@ -6,7 +6,7 @@ modified: 2020-06-27 05:00:00 +1100
 author: saajan
 excerpt: "The Liskov Substitution Principle is a very useful idea both when developing new applications and modifying existing ones. This article explains what it is, why it's important and how to use it."
 image:
-  auto: 0071-disk
+  auto: 0066-blueprint
 ---
 
 This article gives a quick intro to the Liskov Substitution Principle (LSP), why it's important, and how to use it to validate object-oriented designs. We'll also see some examples and learn how to correctly identify and fix violations of the LSP.
@@ -91,7 +91,8 @@ abstract class PaymentInstrument {
   }
 
   void sendToPaymentGateway() throws PaymentFailedException {
-    // send details to payment gateway (PG) and set fingerprint from PG response
+    // send details to payment gateway (PG) and set fingerprint from 
+    // the payment gateway response
   }  
 }
 ```
@@ -101,8 +102,8 @@ class CreditCard extends PaymentInstrument {
 
   @Override
   void validate() throws PaymentInstrumentInvalidException {
-  super.validate();
-  // additional validations for credit cards
+    super.validate();
+    // additional validations for credit cards
   }  
   // other credit card-specific code
 }
@@ -129,7 +130,9 @@ class PaymentProcessor {
     }
   }
 
-  void saveToDatabase(OrderDetails orderDetails, PaymentInstrument paymentInstrument) {
+  void saveToDatabase(
+      OrderDetails orderDetails, 
+      PaymentInstrument paymentInstrument) {
     String fingerprint = paymentInstrument.getFingerprint();
     // save fingerprint and order details in DB
   }
@@ -181,7 +184,9 @@ class PaymentResponse {
 
 ```java
 class PaymentProcessor {
-  void process(OrderDetails orderDetails, IPaymentInstrument paymentInstrument) {
+  void process(
+      OrderDetails orderDetails, 
+      IPaymentInstrument paymentInstrument) {
     try {
       paymentInstrument.validate();
       PaymentResponse response = paymentInstrument.collectPayment();
@@ -353,8 +358,8 @@ class RewardsCard implements IPaymentInstrument {
   @Override
   PaymentResponse collectPayment() throws PaymentFailedException {
     PaymentResponse response = new PaymentResponse();
-    // Steps related to rewards card payment like getting current rewards balance,
-    // updating balance etc.
+    // Steps related to rewards card payment like getting current 
+    // rewards balance, updating balance etc.
     response.setIdentifier(cardNumber);
     return response;
   }

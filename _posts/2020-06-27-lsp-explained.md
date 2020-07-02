@@ -13,7 +13,7 @@ This article gives a quick intro to the Liskov Substitution Principle (LSP), why
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/solid/lsp" %}
 
-## What is LSP?
+## What is the LSP?
 
 At a high level, **the LSP states that in an object-oriented program, if we substitute a superclass object reference with an object of *any* of its subclasses, the program should not break.** 
 
@@ -42,7 +42,7 @@ This makes sense intuitively - a class's contract tells its clients what to expe
 2. Throwing a new exception that's not thrown by the superclass method.
 3. Changing the semantics or introducing side effects that are not part of the superclass's contract.
 
-Java and other statically-typed languages prevent 1 (unless we use very generic classes like `Object`) and 2 (for checked exceptions) by flagging them at compile-time. It's still possible to violate LSP in these languages via the third way.
+Java and other statically-typed languages prevent 1 (unless we use very generic classes like `Object`) and 2 (for checked exceptions) by flagging them at compile-time. It's still possible to violate the LSP in these languages via the third way.
 
 ## Why is the LSP Important?
 
@@ -71,7 +71,7 @@ While some basic validations are required on all cards, there are additional val
 Given these requirements, we might model our classes as below:
 
 ```java
-class PaymentInstrument {
+abstract class PaymentInstrument {
   String name;
   String cardNumber;
   String verificationCode;
@@ -140,7 +140,7 @@ Of course, in an actual production system, there would be many complex aspects t
 
 All is well and our system is processing payments as expected. At some point, the marketing team decides to introduce reward points to increase customer loyalty. Customers get a small number of reward points for each purchase. They can use the points to buy products on the site. 
 
-Ideally, we should be able to just add a `RewardsCard` class that extends `PaymentInstrument` and be done with it. But we find that adding it violates LSP! 
+Ideally, we should be able to just add a `RewardsCard` class that extends `PaymentInstrument` and be done with it. But we find that adding it violates the LSP! 
 
 There are no fraud checks for Rewards Cards. Details are not sent to payment gateways and there is no concept of a fingerprint identifier. `PaymentProcessor` breaks as soon as we add `RewardsCard`.
 
@@ -268,7 +268,7 @@ class BankCardBasicValidator implements IPaymentInstrumentValidator {
 Let's build `CreditCard` and `DebitCard` abstractions by **composing the above building blocks in different ways**. We first define a class that implements `IPaymentInstrument` :
 
 ```java
-class BaseBankCard implements IPaymentInstrument {
+abstract class BaseBankCard implements IPaymentInstrument {
   // members like name, cardNumber etc. omitted
   // below dependencies will be injected at runtime
   IPaymentInstrumentValidator basicValidator;
@@ -368,9 +368,9 @@ RewardsCard card = new RewardsCard(name, cardNum);
 paymentProcessor.process(order, card);
 ```
 
-## Advantages of The New Design
+## Advantages of the New Design
 
-The new design not only fixes LSP violation but also gives us a loosely-coupled, flexible set of classes to handle changing requirements. For example, adding new payment instruments like Bitcoin and Cash on Delivery is easy - we just add new classes that implement `IPaymentInstrument`.
+The new design not only fixes the LSP violation but also gives us a loosely-coupled, flexible set of classes to handle changing requirements. For example, adding new payment instruments like Bitcoin and Cash on Delivery is easy - we just add new classes that implement `IPaymentInstrument`.
 
 Business needs debit cards to be processed by a different payment gateway? No problem - we add a new class that implements `IPaymentGatewayHandler` and inject it into `DebitCard`. If `DebitCard`'s requirements begin to diverge a lot from `CreditCard`'s, we can have it implement `IPaymentInstrument` directly instead of extending `BaseBankCard` - no other class is impacted.
 
@@ -396,7 +396,7 @@ The LSP is a very useful idea to keep in mind both when developing a new applica
 
 When designing the class hierarchy for a new application, **the LSP helps make sure that we are not prematurely generalizing concepts in our problem domain.** 
 
-When enhancing an existing application by adding or changing a subclass, being mindful of **LSP helps ensure that our changes are in line with the superclass's contract and that the client code's expectations continue to be met**.
+When enhancing an existing application by adding or changing a subclass, being mindful of **the LSP helps ensure that our changes are in line with the superclass's contract and that the client code's expectations continue to be met**.
 
 You can play around with a complete application illustrating these ideas using the code [on GitHub](https://github.com/thombergs/code-examples/tree/master/solid/lsp). 
 

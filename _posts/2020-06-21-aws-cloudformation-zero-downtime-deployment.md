@@ -26,7 +26,7 @@ In the previous blog posts of this series, we have created a set of CloudFormati
 
 You can review both stacks in YML format [on Github](https://github.com/thombergs/code-examples/tree/master/aws/cloudformation/ecs-in-two-public-subnets).
 
-We can spin up the stacks using the AWS CLI with these commands: 
+We can spin up the stacks using the AWS CLI with this Bash script: 
 
 ```bash
 aws cloudformation create-stack \
@@ -70,8 +70,36 @@ Let's investigate how we can use each of these options to deploy a new version o
 
 ## Option 1: Updating the Service Stack
 
-* simply update the service stack with a new docker image URL
-* Danger! Only change the docker image! If we change anything else, we can wreak havoc on our production stacks!
+Let's say we have started our service stack with the `aws cloudformation create-stack` command from above. We passed the Docker image `docker.io/reflectoring/aws-hello-world:latest` into the `ImageUrl` parameter. The stack has spun up an ECS cluster running 2 Docker containers with that image (2 is the default `DesiredCount` in the [service stack](https://reflectoring.io/aws-cloudformation-deploy-docker-image/#designing-the-service-stack)).
+
+Now, we have published a new version of our Docker image and want to deploy this new version. We can simply run an `update-stack` command:
+
+```
+aws cloudformation update-stack \
+  --stack-name reflectoring-hello-world-service \
+  --template-body file://service.yml \
+  --parameters \
+      ParameterKey=StackName,ParameterValue=reflectoring-hello-world-network \
+      ParameterKey=ServiceName,ParameterValue=reflectoring-hello-world \
+      ParameterKey=ImageUrl,ParameterValue=docker.io/reflectoring/aws-hello-world:v6 \
+      ParameterKey=ContainerPort,ParameterValue=8080 \
+      ParameterKey=HealthCheckPath,ParameterValue=/hello \
+      ParameterKey=HealthCheckIntervalSeconds,ParameterValue=90
+``` 
+
+We have to be careful to **only change the parameters we want to change**. In this case, we have only changed the `ImageUrl` parameter to `docker.io/reflectoring/aws-hello-world:v6`.
+ 
+**We cannot use the popular `latest` tag to identify the latest version of a Docker image**, even though it would point to the same version. 
+ 
+CloudFormation compares the input parameters of the update call to the input parameters we used when we created the stack and wouldn't identify a change if we used `docker.io/reflectoring/aws-hello-world:latest` in both cases. Without a change, the update wouldn't do anything. 
+
+Once the update command has run, ECS will spin up two Docker containers with new image version, move the connections from the old two containers to the new containers and finally remove the old ones. 
+
+All this because we have configured a `DesiredCount` of 2 and a `MaximumPercent` of 200 in our ECS service configuration. This allows a maximum of 200 % of the desired instances to run during the update.
+
+That's it. The stack has been updated with a new version of the Docker image.
+
+This method has the big drawback of being rather error-prone, though. We might accidentally change one of the other 5 parameters or have made a change in the stack `yml` file. **All these unwanted changes would automatically be applied**!
 
 ## Option 2: Avoid Unintentional Changes with Change Sets
 

@@ -362,8 +362,8 @@ void whenValidInput_thenReturnsUserResource() throws Exception {
   UserResource expectedResponseBody = ...;
   String actualResponseBody = mvcResult.getResponse().getContentAsString();
   
-  assertThat(objectMapper.writeValueAsString(expectedResponseBody))
-      .isEqualToIgnoringWhitespace(actualResponseBody);
+  assertThat(actualResponseBody).isEqualToIgnoringWhitespace(
+              objectMapper.writeValueAsString(expectedResponseBody));
 }
 ```
 
@@ -447,8 +447,8 @@ void whenNullValue_thenReturns400AndErrorResult() throws Exception {
       mvcResult.getResponse().getContentAsString();
   String expectedResponseBody = 
       objectMapper.writeValueAsString(expectedErrorResponse);
-  assertThat(expectedResponseBody)
-      .isEqualToIgnoringWhitespace(actualResponseBody);
+  assertThat(actualResponseBody)
+      .isEqualToIgnoringWhitespace(expectedResponseBody);
 }
 ```
 Again, we read the JSON string from the response body and compare it against an expected JSON string.
@@ -497,7 +497,7 @@ public class ResponseBodyMatchers {
     return mvcResult -> {
       String json = mvcResult.getResponse().getContentAsString();
       T actualObject = objectMapper.readValue(json, targetClass);
-      assertThat(expectedObject).isEqualToComparingFieldByField(actualObject);
+      assertThat(actualObject).isEqualToComparingFieldByField(expectedObject);
     };
   }
   

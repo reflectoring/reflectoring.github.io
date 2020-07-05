@@ -117,7 +117,7 @@ Spring Boot does most of the configuration automatically, so we can focus on bui
 
 ## Creating Kafka Topics
 
-Lets us now see how we can create Kafka topics.
+Let`s now have a look at how we can create Kafka topics:
 
 ```java
 @Configuration

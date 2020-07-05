@@ -308,7 +308,7 @@ Spring provides a strategy to filter messages before reaching to our listeners b
 
 In the above example, we have added a filter to discard the records which contain the word 'ignored'.
 
-### Reply using @SendTo
+### Reply using `@SendTo`
 
 ```java
 @KafkaListener(topics = "reflectoring-others")

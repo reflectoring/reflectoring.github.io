@@ -109,7 +109,7 @@ class KafkaConsumerConfig {
 }
 ```
 
-The above example shows the configuration required for Kafka producer. `ConcurrentKafkaListenerContainerFactory` is used to create containers for `@KafkaListener` annotated methods. The `KafkaListenerContainer` receives all the records from all topics or partitions on a single thread. We'll see more about message listener containers in the consuming records section.
+The above example shows the configuration required for Kafka consumer. We use `ConcurrentKafkaListenerContainerFactory`  to create containers for `@KafkaListener` annotated methods. The `KafkaListenerContainer` receives all the records from all topics or partitions on a single thread. We'll see more about message listener containers in the consuming records section.
 
 ### with Spring Boot Auto Configuration
 

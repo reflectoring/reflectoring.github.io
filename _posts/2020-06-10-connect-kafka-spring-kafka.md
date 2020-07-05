@@ -222,7 +222,7 @@ The latest version supports `DelegatingSerializer` and `DelegatingDeserializer`,
 
 As said earlier, `KafkaMessageListenerContainer` receives all records from all topics on a single thread. The `ConcurrentMessageListenerContainer` assigns these records to multiple `KafkaMessageListenerContainer` instances to provide the multi-threaded capability. It also has a concurrency property (setConcurrency) which will help to instantiate multiple `KafkaMessageListenerContainer` instances. Now let us see how to create listeners.
 
-### Using @KafkaListener Annotation
+### Using `@KafkaListener` Annotation
 
 ```java
 @Component

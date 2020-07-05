@@ -113,7 +113,7 @@ The above example shows the configuration required for Kafka producer. `Concurre
 
 ### with Spring Boot Auto Configuration
 
-With Spring Boot it does most of the configuration automatically, so we can focus on building the listeners and producing the messages. It also gives the option to override the default configs through `application.properties`.
+Spring Boot does most of the configuration automatically, so we can focus on building the listeners and producing the messages. It also provides the option to override the default configs through `application.properties`.
 
 ## Creating Kafka Topics
 

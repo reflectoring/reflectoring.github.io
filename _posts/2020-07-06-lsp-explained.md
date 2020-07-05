@@ -1,8 +1,8 @@
 ---
 title: The Liskov Substitution Principle Explained
 categories: [craft]
-date: 2020-06-27 05:00:00 +1100
-modified: 2020-06-27 05:00:00 +1100
+date: 2020-07-06 05:00:00 +1100
+modified: 2020-07-06 05:00:00 +1100
 author: saajan
 excerpt: "The Liskov Substitution Principle is a very useful idea both when developing new applications and modifying existing ones. This article explains what it is, why it's important and how to use it."
 image:

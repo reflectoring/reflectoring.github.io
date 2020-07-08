@@ -30,24 +30,24 @@ We can spin up the stacks using the AWS CLI with this Bash script:
 
 ```bash
 aws cloudformation create-stack \
-  --stack-name reflectoring-hello-world-network \
+  --stack-name reflectoring-ecs-zero-downtime-deployment-network \
   --template-body file://network.yml \
   --capabilities CAPABILITY_IAM
 
-aws cloudformation wait stack-create-complete --stack-name reflectoring-hello-world-network
+aws cloudformation wait stack-create-complete --stack-name reflectoring-ecs-zero-downtime-deployment-network
 
 aws cloudformation create-stack \
-  --stack-name reflectoring-hello-world-service \
+  --stack-name reflectoring-ecs-zero-downtime-deployment-service \
   --template-body file://service.yml \
   --parameters \
-      ParameterKey=StackName,ParameterValue=reflectoring-hello-world-network \
+      ParameterKey=StackName,ParameterValue=reflectoring-ecs-zero-downtime-deployment-network \
       ParameterKey=ServiceName,ParameterValue=reflectoring-hello-world \
       ParameterKey=ImageUrl,ParameterValue=docker.io/reflectoring/aws-hello-world:latest \
       ParameterKey=ContainerPort,ParameterValue=8080 \
       ParameterKey=HealthCheckPath,ParameterValue=/hello \
       ParameterKey=HealthCheckIntervalSeconds,ParameterValue=90
 
-aws cloudformation wait stack-create-complete --stack-name reflectoring-hello-world-service
+aws cloudformation wait stack-create-complete --stack-name reflectoring-ecs-zero-downtime-deployment-service
 ```
 
 The stacks are fairly well configurable, so we can play around with the parameters to deploy any Docker container. 
@@ -72,36 +72,77 @@ Let's investigate how we can use each of these options to deploy a new version o
 
 Let's say we have started our service stack with the `aws cloudformation create-stack` command from above. We passed the Docker image `docker.io/reflectoring/aws-hello-world:latest` into the `ImageUrl` parameter. The stack has spun up an ECS cluster running 2 Docker containers with that image (2 is the default `DesiredCount` in the [service stack](https://reflectoring.io/aws-cloudformation-deploy-docker-image/#designing-the-service-stack)).
 
-Now, we have published a new version of our Docker image and want to deploy this new version. We can simply run an `update-stack` command:
+Now, let's say we have published a new version of our Docker image and want to deploy this new version. We can simply run an `update-stack` command:
 
 ```
 aws cloudformation update-stack \
-  --stack-name reflectoring-hello-world-service \
-  --template-body file://service.yml \
+  --stack-name reflectoring-ecs-zero-downtime-deployment-service \
+  --use-previous-template \
   --parameters \
-      ParameterKey=StackName,ParameterValue=reflectoring-hello-world-network \
+      ParameterKey=StackName,ParameterValue=reflectoring-ecs-zero-downtime-deployment-network \
       ParameterKey=ServiceName,ParameterValue=reflectoring-hello-world \
-      ParameterKey=ImageUrl,ParameterValue=docker.io/reflectoring/aws-hello-world:v6 \
+      ParameterKey=ImageUrl,ParameterValue=docker.io/reflectoring/aws-hello-world:v4 \
       ParameterKey=ContainerPort,ParameterValue=8080 \
       ParameterKey=HealthCheckPath,ParameterValue=/hello \
       ParameterKey=HealthCheckIntervalSeconds,ParameterValue=90
-``` 
 
-We have to be careful to **only change the parameters we want to change**. In this case, we have only changed the `ImageUrl` parameter to `docker.io/reflectoring/aws-hello-world:v6`.
+aws cloudformation wait stack-update-complete --stack-name reflectoring-ecs-zero-downtime-deployment-service
+```
+
+To make sure that we haven't accidentally changed anything in the cloudformation template, we're using the parameter `--use-previous-template`, which takes the template from the previous call to `create-stack`.
+
+We have to be careful to **only change the parameters we want to change**. In this case, we have only changed the `ImageUrl` parameter to `docker.io/reflectoring/aws-hello-world:v3`.
  
 **We cannot use the popular `latest` tag to identify the latest version of a Docker image**, even though it would point to the same version. 
  
-CloudFormation compares the input parameters of the update call to the input parameters we used when we created the stack and wouldn't identify a change if we used `docker.io/reflectoring/aws-hello-world:latest` in both cases. Without a change, the update wouldn't do anything. 
+That's because CloudFormation compares the input parameters of the update call to the input parameters we used when we created the stack to identify if there was a change. If we use used `docker.io/reflectoring/aws-hello-world:latest` in both cases, CloudFormation wouldn't identify a change and do nothing. 
 
 Once the update command has run, ECS will spin up two Docker containers with new image version, move the connections from the old two containers to the new containers and finally remove the old ones. 
 
-All this because we have configured a `DesiredCount` of 2 and a `MaximumPercent` of 200 in our ECS service configuration. This allows a maximum of 200 % of the desired instances to run during the update.
+All this because we have configured a `DesiredCount` of 2 and a `MaximumPercent` of 200 in our ECS service configuration. This allows a maximum of 200% (i.e. 4) of the desired instances to run during the update.
 
 That's it. The stack has been updated with a new version of the Docker image.
 
-This method has the big drawback of being rather error-prone, though. We might accidentally change one of the other 5 parameters or have made a change in the stack `yml` file. **All these unwanted changes would automatically be applied**!
+This method is easy, but it has the big drawback of being rather error-prone. We might accidentally change one of the other 5 parameters or have made a change in the stack `yml` file. **All these unwanted changes would automatically be applied**!
 
-## Option 2: Avoid Unintentional Changes with Change Sets
+## Option 2: Avoid Accidental Changes with Change Sets
+
+If we want to make sure not to apply accidental changes during an `aws cloudformation update-stack` command, we can use [Change Sets](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html).
+
+```
+aws cloudformation update-stack \
+  --stack-name reflectoring-ecs-zero-downtime-deployment-service \
+  --use-previous-template \
+  --parameters \
+      ParameterKey=StackName,ParameterValue=reflectoring-ecs-zero-downtime-deployment-network \
+      ParameterKey=ServiceName,ParameterValue=reflectoring-hello-world \
+      ParameterKey=ImageUrl,ParameterValue=docker.io/reflectoring/aws-hello-world:v4 \
+      ParameterKey=ContainerPort,ParameterValue=8080 \
+      ParameterKey=HealthCheckPath,ParameterValue=/hello \
+      ParameterKey=HealthCheckIntervalSeconds,ParameterValue=90
+
+aws cloudformation wait stack-update-complete --stack-name reflectoring-ecs-zero-downtime-deployment-service
+```
+
+
+```
+aws cloudformation list-change-sets --stack-name reflectoring-ecs-zero-downtime-deployment-service
+```
+
+```yaml
+Summaries:
+- ChangeSetId: arn:aws:cloudformation:ap-southeast-2:221875718260:changeSet/update-reflectoring-ecs-zero-downtime-deployment-service/6e49639f-9f8a-4526-8a4c-b0064b85bc3a
+  ChangeSetName: update-reflectoring-ecs-zero-downtime-deployment-service
+  CreationTime: '2020-07-06T22:00:53.820000+00:00'
+  ExecutionStatus: AVAILABLE
+  StackId: arn:aws:cloudformation:ap-southeast-2:221875718260:stack/reflectoring-ecs-zero-downtime-deployment-service/280ec420-bcaa-11ea-b3cd-02f7636bd36c
+  StackName: reflectoring-ecs-zero-downtime-deployment-service
+  Status: CREATE_COMPLETE
+```
+
+```
+aws cloudformation describe-change-set --stack-name reflectoring-ecs-zero-downtime-deployment-service  --change-set-name update-reflectoring-ecs-zero-downtime-deployment-service
+```
 
 ### Creating a Change Set
 

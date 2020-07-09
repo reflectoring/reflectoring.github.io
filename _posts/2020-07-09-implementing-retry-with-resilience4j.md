@@ -11,6 +11,8 @@ image:
 
 In this article, we will start with a quick intro to Resilience4j and then deep dive into its Retry module. We will learn when and how to use it, and what features it provides. Along the way, we will also learn a few good practices when implementing retries.
 
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/resilience4j/retry" %}
+
 ## What is Resilience4j?
 
 Many things can go wrong when applications communicate over the network. **Operations can timeout or fail because of broken connections, network glitches, unavailability of downstream services, etc.** Applications can overload one another, become unresponsive or even crash. 
@@ -376,6 +378,8 @@ Another good practice is to maintain the values in `RetryConfig` like maximum at
 ## Conclusion
 
 In this article, we learned what Resilience4j is and how we can use it's Retry module to make our applications resilient to temporary errors. We looked at the different ways to configure retries and some examples for deciding between the various approaches. We learned some good practices to follow when implementing retries and the importance of collecting and analyzing retry metrics.
+
+You can play around with a complete application illustrating these ideas using the code [on GitHub](https://github.com/thombergs/code-examples/tree/master/resilience4j/retry). 
 
 ## References
 

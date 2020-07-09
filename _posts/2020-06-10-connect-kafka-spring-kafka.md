@@ -4,38 +4,44 @@ categories: [spring-boot]
 date: 2020-06-28 05:00:00 +1100
 modified: 2020-06-28 05:00:00 +1100
 author: nandan
-excerpt: 'Kafka mainly aims to solve low-latency ingestion of large amounts of event data. We can use Kafka when we have to move a large amount of data, process data in real-time.'
+excerpt: 'Kafka aims to solve low-latency ingestion of large amounts of event data. We can use Kafka when we have to move a large amount of data and process it in real-time.'
 image:
   auto: 0065-java
 ---
 
-In this article we'll look at how to integrate Spring Boot application with Apache Kafka and start sending and consuimg records from our application. We'll be going through each section with code examples.
+In this article we'll look at how to integrate a Spring Boot application with Apache Kafka and start sending and consuming records in our application. We'll be going through each section with code examples.
 
 ## Why Kafka?
 
-Traditional messaging queues like ActiveMQ, RabbitMQ can handle high throughput usually used for long-running or background jobs and communicating between services. Kafka is a stream-processing platform built by LinkedIn and currently developed by Apache Software Foundation. Kafka mainly aims to solve low-latency ingestion of large amounts of event data.
+Traditional messaging middleware like ActiveMQ or RabbitMQ can handle high throughput usually used for long-running background jobs or asynchronous communication between services. 
 
-We can use Kafka when we have to move a large amount of data, process data in real-time. An example would be when we want to track user behavior on our website and give suggestions accordingly or monitor events produced by our micro-services. Kafka is built from ground up with horizontal scaling in mind. We easily can scale by adding more brokers to the existing Kafka cluster. While RabbitMQ is mostly designed for vertical scaling. i.e, We can scale by adding more power.
+Kafka is a stream-processing platform and aims to provide low-latency ingestion of large amounts of event data. It was built by LinkedIn and is currently developed under the umbrella of the Apache Software Foundation.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-events" %}
+We can use Kafka when we have to move a large amount of data and process it in real-time. An example would be when we want to track user behavior on our website and give suggestions accordingly or monitor events produced by our micro services. 
+
+Kafka is built from ground up with horizontal scaling in mind. We easily can scale by adding more brokers to an existing Kafka cluster.
+
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-kafka" %}
 
 ## Kafka Vocabulary
 
-Lets look at the key terminologies of Kafka,
+Before starting into the thick of it, let's look at some key words:
 
-- **Producer**: Producer is a client that sends records to the Kafka server to the specified topic.
-- **Consumer**: Consumers are the recipients who receive records from the Kafka server.
+- **Producer**: A producer is a client that sends records to a specified topic on the Kafka server.
+- **Consumer**: A Consumer is a recipient who receives records from the Kafka server.
 - **Broker**: Brokers can create a Kafka cluster by sharing information using Zookeeper. The broker receives records from producers and consumers fetch records from the broker by the topic, partition, and offset.
 - **Cluster**: Kafka is a distributed system. A Kafka cluster contains multiple brokers sharing the workload.
-- **Topic**: Topic is a category name to which records are published and consumers read from topics.
-- **Partition**: Records published to a topic are spread across Kafka cluster into several partitions. Each partition can be associated with a broker to allow consumers to read from a topic in parallel.
+- **Topic**: A yopic is a category name to which records are published and consumers can read from.
+- **Partition**: Records published to a topic are spread across a Kafka cluster into several partitions. Each partition can be associated with a broker to allow consumers to read from a topic in parallel.
 - **Offset**: Offset is a pointer to the last record that Kafka has already sent to a consumer.
 
 ## Configuring a Kafka Client
 
-We should have a Kafka server running on our machine. If you don't have Kafka setup on your system, take a look at [Kafka quickstart guide](https://kafka.apache.org/quickstart). Once we have Kafka server up and running, Kafka client can be easily configured with Spring configuration in java or even quicker with Spring Boot. Let us start by adding spring-kafka dependency to our pom.xml
+To run the code in this article, we should have a Kafka server running on our machine. If you don't have Kafka setup on your system, take a look at the [Kafka quickstart guide](https://kafka.apache.org/quickstart). Once we have the Kafka server up and running, a Kafka client can be easily configured with Spring configuration in java or even quicker with Spring Boot.
+ 
+ Let's start by adding the spring-kafka dependency to our dependencies:
 
-```
+```xml
 <dependency>
   <groupId>org.springframework.kafka</groupId>
   <artifactId>spring-kafka</artifactId>
@@ -45,9 +51,9 @@ We should have a Kafka server running on our machine. If you don't have Kafka se
 
 ### Using Java Configuration
 
-Lets us now see how to configure Kafka client using Java Configuration for Spring. For better understanding we have separated `KafkaProducerConfig` and `KafkaConsumerConfig`.
+Let's now see how to configure a Kafka client using Spring's Java Configuration. It's good practice to separate the producer configuration from the consumer configuration because a service might stop being a consumer and still be a producer (or vice versa) at some point in its life.
 
-Let's have a look at producer config first:
+Let's have a look at the producer config first:
 
 ```java
 @Configuration
@@ -76,15 +82,15 @@ class KafkaProducerConfig {
 }
 ```
 
-The above example shows how to configure the Kafka producer to send records. `ProducerFactory` is responsible for creating Kafka Producer instances. `KafkaTemplate` helps us to send records to their respective topic and also it gives a template for executing high-level operations. We'll see more about `KafkaTemplate` in [Sending Records](#sending-records) section.
+The above example shows how to configure the Kafka producer to send records. `ProducerFactory` is responsible for creating Kafka Producer instances. `KafkaTemplate` helps us to send records to their respective topic and also it gives a template for executing high-level operations. We'll see more about `KafkaTemplate` in the [sending records](#sending-records) section.
 
-In producerConfigs() we are configuring,
+In `producerConfigs()` we are configuring
 
 - `BOOTSTRAP_SERVERS_CONFIG` - Host and port on which Kafka is running.
 - `KEY_SERIALIZER_CLASS_CONFIG` - Serializer class to be used for the key.
 - `VALUE_SERIALIZER_CLASS_CONFIG` - Serializer class to be used for the value. We are using StringSerializer for both keys and values.
 
-Now that we have our producer config ready. Let's create configuration for consumer:
+Now that we have our producer config ready, let's create a configuration for the consumer:
 
 ```java
 @Configuration
@@ -115,7 +121,7 @@ class KafkaConsumerConfig {
 }
 ```
 
-In the above example, we use `ConcurrentKafkaListenerContainerFactory` to create containers for methods annotated with `@KafkaListener`. The `KafkaListenerContainer` receives all the records from all topics or partitions on a single thread. We'll see more about message listener containers in the [consuming records](#consuming-records) section.
+In the above example, we use `ConcurrentKafkaListenerContainerFactory` to create a container for each method annotated with `@KafkaListener`. This container receives the records and passes them on to the listener. 
 
 ### Using Spring Boot Auto Configuration
 
@@ -142,16 +148,19 @@ class KafkaTopicConfig {
 }
 ```
 
-KafkaAdmin bean is responsible for creating new topics in our broker. **With Spring Boot KafkaAdmin bean is automatically registered, so no need to register explicitly.**
+The `KafkaAdmin` bean is responsible for creating new topics in our broker. **With Spring Boot `KafkaAdmin` bean is automatically registered.**
 
-We can add a `NewTopic` `@Bean` for each topic to the application context. We can make use of `TopicBuilder` to create these beans. KafkaAdmin also increases the number of partitions if it is found that an existing topic has fewer partitions than `NewTopic.numPartitions`.
+We can add a `NewTopic` bean for each topic to the application context. We can make use of `TopicBuilder` to create these beans. `KafkaAdmin` also increases the number of partitions if it is found that an existing topic has fewer partitions than `NewTopic.numPartitions`.
+
 For our example we'll be creating 5 topics '`reflectoring-1`', '`reflectoring-2`', '`reflectoring-3`', '`reflectoring-user`' and '`reflectoring-others`' as shown above.
 
 ## Sending Records
 
+After having set up everything, let's have a look at how to send records to Kafka.
+
 ### Using Kafka Template
 
-As said earlier while explaining [producer config](#using-java-configuration), `KafkaTemplate` provides convenient methods to send records to topics.
+`KafkaTemplate` provides convenient methods to send records to topics:
 
 ```java
 @Component
@@ -168,10 +177,9 @@ class KafkaSenderExample {
 }
 ```
 
-The above example shows how we can send records with `KafkaTemplate`.
 Producer instances are thread-safe, having a single instance of producer throughout the application context will give higher performance since they are thread-safe.
 
-Spring Kafka also allows us to configure async callback. Let's now see how we can achieve this:
+Spring Kafka also allows us to configure an async callback:
 
 ```java
 @Component
@@ -196,11 +204,11 @@ class KafkaSenderExample {
 }
 ```
 
-We can get an asynchronous callback with help of ProducerListener (`onSuccess` or `onError`) instead of waiting for the `Future` as shown in the above example. Send methods of `KafkaTemplate` returns a `ListenableFuture<SendResult>` we can register a callback with the listener to receive the result of the send.
+We can get an asynchronous callback with help of `ProducerListener` (`onSuccess` or `onError`) instead of waiting for the `Future` as shown in the above example. The `send` methods of `KafkaTemplate` return a `ListenableFuture<SendResult>` we can register a callback with the listener to receive the result of the send.
 
 ### Using `RoutingKafkaTemplate`
 
-We can use `RoutingKafkaTemplate` when we have multiple producers with different configuration and we want to select producer at runtime based on the topic name.
+We can use `RoutingKafkaTemplate` when we have multiple producers with different configurations and we want to select a producer at runtime based on the topic name.
 
 ```java
 @Configuration
@@ -226,25 +234,29 @@ class KafkaProducerConfig {
 
 As shown in the above example, `RoutingKafkaTemplate` takes a map of `java.util.regex.Pattern` and `ProducerFactory<Object, Object>` instances and it is traversed in order, so it is advised to add specific patterns at the beginning.
 
-We have created a pattern `.*-bytes` so that the topic names ending with '`-bytes`' will use `ByteArraySerializer` when we use `RoutingKafkaTemplate` instance.
+We have created a pattern `.*-bytes` so that the topic names ending with '`-bytes`' will use `ByteArraySerializer` when we use the `RoutingKafkaTemplate` instance to send messages.
 
-The latest version supports `DelegatingSerializer` and `DelegatingDeserializer`, which allow producing and consuming records with different key or value types. We can achieve this by setting `DelegatingSerializer.VALUE_SERIALIZATION_SELECTOR` and `DelegatingSerializer.KEY_SERIALIZATION_SELECTOR` to Producers config.
+The latest version supports `DelegatingSerializer` and `DelegatingDeserializer`, which allow producing and consuming records with different key or value types. We can achieve this by setting `DelegatingSerializer.VALUE_SERIALIZATION_SELECTOR` and `DelegatingSerializer.KEY_SERIALIZATION_SELECTOR` to the producer config.
 
 ## Consuming Records
 
+Now let's have a look at how we can consume records from a Kafka server.
+
 ### Message Listener
 
-As said earlier, `KafkaMessageListenerContainer` receives all records from all topics on a single thread. The `ConcurrentMessageListenerContainer` assigns these records to multiple `KafkaMessageListenerContainer` instances to provide the multi-threaded capability. It also has a concurrency property (`setConcurrency`) which helps to instantiate multiple `KafkaMessageListenerContainer` instances. Let's now look at how to create listeners:
+As said earlier, `KafkaMessageListenerContainer` receives all records from all topics on a single thread. If we want concurrency, we can use the `ConcurrentMessageListenerContainer` which assigns these records to multiple `KafkaMessageListenerContainer` instances, each running in its own thread. 
+
+Let's now look at how to create a listener.
 
 ### Using `@KafkaListener` Annotation
 
-`@KafkaListener` annotation allows us to create listeners effortlessly as shown below.
+The `@KafkaListener` annotation allows us to create listeners effortlessly:
 
 ```java
 @Component
 class KafkaListenersExample {
 
-    Logger LOG = LoggerFactory.getLogger(KafkaListenersExample.class);
+    private Logger LOG = LoggerFactory.getLogger(KafkaListenersExample.class);
 
     @KafkaListener(topics = "reflectoring-1")
     void listener(String data) {
@@ -258,8 +270,9 @@ class KafkaListenersExample {
 }
 ```
 
-To use this annotation we should add `@EnableKafka` annotation on one of our `@Configuration` class and it requires a listener container factory, which we have configured in `KafkaConsumerConfig.java`.
-We can create a listener bean by annotating a method with `@KafkaListener` annotation and the created bean will be wrapped in `MessagingMessageListenerAdapter`. We can also specify multiple topics for a single listener using topics attribute as shown above.
+To use this annotation we should add the `@EnableKafka` annotation on one of our `@Configuration` classes and have configured a listener container factory as we have done in `KafkaConsumerConfig.java`.
+
+The method annotated with `@KafkaListener` will be wrapped in `MessagingMessageListenerAdapter`. We can also specify multiple topics for a single listener using the `topics` attribute as shown above.
 
 ### Using `@KafkaHandler` for Class Level
 
@@ -281,7 +294,7 @@ class KafkaClassListener {
 }
 ```
 
-As shown in the above example, we can create listeners at class-level with `@KafkaListener` annotation and we should specify `@KafkaHandler` at the method level. When the listener receive records, converted record types are used to determine which `KafkaHandler` must to used. We can assign at most one `KafkaHandler` as default using attribute `isDefault=true`, whenever there is no match default handler will be called.
+As shown in the above example, we can create listeners at class-level with `@KafkaListener` annotation and we should specify `@KafkaHandler` at the method level. When the listener receives a record, its type determines which `KafkaHandler` will receive it. We can assign at most one default `KafkaHandler` using the attribute `isDefault=true`, which will receive the record whenever there is no other match.
 
 ### Consuming Records from the Specific Partition with an Initial Offset
 
@@ -290,9 +303,12 @@ As shown in the above example, we can create listeners at class-level with `@Kaf
 class KafkaListenersExample {
 ...
 
-    @KafkaListener(topicPartitions = @TopicPartition(topic = "reflectoring-1", partitionOffsets = {
-    		@PartitionOffset(partition = "0", initialOffset = "0") }), groupId = "reflectoring-group-3")
-    void listenToParition(@Payload String message,
+    @KafkaListener(
+      topicPartitions = @TopicPartition(
+         topic = "reflectoring-1", 
+         partitionOffsets = {@PartitionOffset(partition = "0", initialOffset = "0") }), 
+      groupId = "reflectoring-group-3")
+    void listenToPartition(@Payload String message,
             @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
     		@Header(KafkaHeaders.OFFSET) int offset) {
     	LOG.info("Received message [{}] from partition-{} with offset-{}", message, partition, offset);
@@ -300,12 +316,13 @@ class KafkaListenersExample {
 }
 ```
 
-We can configure listeners created to listen to multiple topics, partitions, and initial offset optionally as shown in the above example. Since we have specified `initialOffset = "0"` in `listenToParitionWithOffset` listener, we will receive all the records starting from offset-0 every time we restart the application.
-We can also retrieve the useful metadata about the consumed record using `@Header()` annotation as shown in the above example.
+We can configure listeners to listen to multiple topics, partitions, and initial offset optionally as shown in the above example. Since we have specified `initialOffset = "0"` in `listenToParitionWithOffset` listener, we will receive all the records starting from offset-0 every time we restart the application.
+
+We can also retrieve useful metadata about the consumed record using the `@Header` annotation.
 
 ### Adding Filters to Listeners
 
-Spring provides a strategy to filter messages before reaching to our listeners.
+Spring provides a strategy to filter messages before they reach our listeners:
 
 ```java
 class KafkaConsumerConfig {
@@ -322,13 +339,13 @@ class KafkaConsumerConfig {
 }
 ```
 
-Spring wraps the listener with `FilteringMessageListenerAdapter`. It takes an implementation of `RecordFilterStrategy` in which we implement the filter method and the records which won't match get discarded before reaching the listener.
+Spring wraps the listener with `FilteringMessageListenerAdapter`. It takes an implementation of `RecordFilterStrategy` in which we implement the filter method. **Matching records will be discarded before reaching the listener**.
 
 In the above example, we have added a filter to discard the records which contain the word "ignored".
 
 ### Reply using `@SendTo`
 
-Spring allows to send method's return value to specified destination with `@SendTo`.
+Spring allows to send a method's return value to specified destination with `@SendTo`.
 
 ```java
 @KafkaListener(topics = "reflectoring-others")
@@ -340,11 +357,15 @@ String listenAndReply(String message) {
 }
 ```
 
-SpringBoot default factory configuration gives the SendTo template. Since we are overriding the factory configuration in our code example, the listener container factory must be provided with a `KafkaTemplate` by using `setReplyTemplate` which is used to send the reply. In the above example, we are forwarding the reply message to the topic "reflectoring-1".
+Spring Boot's default factory configuration provides the `SendTo` template. Since we are overriding the factory configuration in our code example, the listener container factory must be provided with a `KafkaTemplate` by using `setReplyTemplate()` which is used to send the reply. 
+
+In the above example, we are forwarding the reply message to the topic "reflectoring-1".
 
 ## Custom Records
 
 Let's now look at how to send/receive a Java Object as a JSON byte[].
+
+We'll be sending and receiving `User` objects:
 
 ```java
 class User {
@@ -353,11 +374,9 @@ class User {
 }
 ```
 
-We'll be sending and receiving the above `User` class in our example.
-
 ### Using JSON Serializer & Deserializer
 
-To achieve this, we must configuring our producer and consumer to use JSON serializer & deserializer.
+To achieve this, we must configure our producer and consumer to use JSON serializer & deserializer:
 
 ```java
 @Configuration
@@ -397,11 +416,13 @@ class KafkaConsumerConfig {
 }
 ```
 
-Spring Kafka provides `JsonSerializer` and `JsonDeserializer` implementations that are based on the Jackson JSON object mapper. It allows us to convert any Java Object to `bytes[]`.
+Spring Kafka provides `JsonSerializer` and `JsonDeserializer` implementations that are based on the Jackson JSON object mapper. It allows us to convert any Java Object to a byte array.
 
-In the above example, we are creating one more `ConcurrentKafkaListenerContainerFactory` for JsonSerialization. In this, we have configured `JsonSerializer.class` as our value serializer in Producer config and `JsonDeserializer<>(User.class)` as out value deserializer in consumer config. For this, we are creating separate Kafka listener container `userKafkaListenerContainerFactory`. If we have multiple Java object types to be serialized/deserialized, we have to create a listener container for each type as shown above.
+In the above example, we are creating one more `ConcurrentKafkaListenerContainerFactory` for JsonSerialization. In this, we have configured `JsonSerializer.class` as our value serializer in Producer config and `JsonDeserializer<>(User.class)` as our value deserializer in consumer config. For this, we are creating separate Kafka listener container `userKafkaListenerContainerFactory`. 
 
-Now that we have configured our serializer & deserializer, we can send User object using `KafkaTemplate`.
+If we have multiple Java object types to be serialized/deserialized, we have to create a listener container for each type as shown above.
+
+Now that we have configured our serializer & deserializer, we can send `User` objects using `KafkaTemplate`:
 
 ```java
 @Component
@@ -453,15 +474,17 @@ class KafkaProducerConfig {
 }
 ```
 
-Spring Kafka provides `MessageConverter` abstractions with `JsonMessageConverter`. We can inject `MessageConverter` into our `KafkaTemplate` instance directly. We must configure a message converter that is compatible with the configured Kafka Serializer. We are using `StringJsonMessageConverter` with `StringSerializer`. Also, a default topic must to set, becaause we'll be separating records based on the type of data we are sending.
+Spring Kafka provides a `MessageConverter` implementation with `JsonMessageConverter`. We can inject `MessageConverter` into our `KafkaTemplate` instance directly. We must configure a message converter that is compatible with the configured Kafka Serializer. 
+
+We are using `StringJsonMessageConverter` with `StringSerializer`. Also, we must set a default topic, because we'll be separating records based on the type of data we are sending.
 
 ```java
 @Configuration
 class KafkaConsumerConfig {
   @Bean
   public ConcurrentKafkaListenerContainerFactory<String, String> kafkaJsonListenerContainerFactory() {
-  ...
-  factory.setMessageConverter(new StringJsonMessageConverter());
+    ...
+    factory.setMessageConverter(new StringJsonMessageConverter());
   return factory;
   }
 }
@@ -481,7 +504,7 @@ class KafkaListenersExample {
 
 Now in our `KafkaConsumerConfig`, we are creating a new `kafkaJsonListenerContainerFactory` with `StringJsonMessageConverter` set as our `MessageConverter`. We can inject this created listener factory directly to our `@KafkaListener` with `containerFactory="kafkaJsonListenerContainerFactory"` as shown in the above example.
 
-We can create any number of listeners for different types of records, without the need for multiple configurations for each type. When we use a `@KafkaListener`, the parameter type is provided to the method that will assist with the conversion (In our case the User type).
+We can create any number of listeners for different types of records without the need for multiple configurations for each type. When we use a `@KafkaListener` the parameter type is provided to the method that will assist with the conversion (in our case the `User` type).
 
 ```java
 @Component

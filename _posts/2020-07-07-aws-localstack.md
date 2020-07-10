@@ -10,7 +10,7 @@ image:
 ---
 During the initial days of development, it helps to focus on writing code for the application instead of spending time on setting up the environment for AWS connectivity. We access various AWS services, while building applications - for example, upload file in S3, store some data in DynamoDb, send message to SQS, etc.  Setting up a development environment for using these services is complex and time-consuming. Instead, we use LocalStack](https://github.com/localstack/localstack) to develop and unit test our applications with mock implementations of these services. We switch to the real services only in the integration environment.
 I will take you through some of the scenarios where we can use LocalStack in the following sections along with code samples. The complete code samples are available in the git repo. 
- {% include https://github.com/pratikdas/localstack url="https://github.com/pratikdas/localstack" %}
+ {% include github-project.html url="https://github.com/pratikdas/localstack" %}
 
 ## Why Use LocalStack
 The method of temporarily using dummy objects in place of actual ones is a time tested way of running unit tests on applications having external dependencies, most appropriately called [Test Doubles](http://xunitpatterns.com/Test%20Double.html).
@@ -19,7 +19,7 @@ Some other methods of doing this-
 Manual - Using a mock object with frameworks like Mockito during unit testing.
 Do it yourself - Using a homegrown solution deployed as a service.
 
-Localstack gives a good alternative to these approaches.
+LocalStack gives a good alternative to these approaches.
 1. With Localstack we can run our applications without connecting to AWS.
 2. Avoid the complexity of AWS configuration and focus on development.
 3. Integrate LocalStack in our DevOps pipeline. 

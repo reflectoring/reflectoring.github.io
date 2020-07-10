@@ -37,7 +37,7 @@ Our usage of LocalStack revolves around two core aspects -
 
 2. Override the AWS endpoint with URL of LocalStack
 
-***LocalStack is a python application designed to run as an HTTP request processor, listening on specific ports. *** We run the docker image of LocalStack.
+***LocalStack is a python application designed to run as an HTTP request processor, listening on specific ports.*** We run the docker image of LocalStack.
 
 We access AWS services from the CLI or our applications using the AWS SDK (Software Development Kit).
 
@@ -101,7 +101,7 @@ aws cloudformation --endpoint-url http://localhost:4566 delete-stack --stack-nam
 ```
 
 ### Execute JUnit Tests
-While running as JUnit, *** LocalStack is started as a docker container at a random port and stopped after all tests have finished execution. *** 
+While running as JUnit, *** LocalStack is started as a docker container at a random port and stopped after all tests have finished execution.*** 
 
 The code snippet is a JUnit Jupiter test used to test a java class to store an object in an S3 bucket.
 ```
@@ -208,7 +208,6 @@ public class CustomerProfileStore {
 We inject the URL of LocalStack using the variable - awsLocalEndpoint. The value is set only when we run our application using the local profile, else it has the default value null. In the method named getDdbClient, the value is set with the endpointOverride method in the DynamoDbClientBuilder class only if the variable awsLocalEndpoint has a value which is the case when using the local profile.
 
 I created the AWS resources - S3 Bucket and DynamoDB table using a [cloudformation template](https://github.com/pratikdas/localstack/blob/master/cloudformation/sample.yaml). I prefer this approach instead of creating the resources individually from the console. It allows me to create and clean up all the resources with a single command at the end of the exercise following IAC principles.
-// TODO cloudformation yaml link
 
 #### Running Spring Boot application
 

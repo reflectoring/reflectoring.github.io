@@ -8,31 +8,43 @@ excerpt: "This article describes LocalStack as a useful aid to test your AWS ser
 image:
   auto: 0072-aws
 ---
-During the initial days of development, it helps to focus on writing code for the application instead of spending time on setting up the environment for AWS connectivity. We access various AWS services, while building applications - for example, upload file in S3, store some data in DynamoDb, send message to SQS, etc.  Setting up a development environment for using these services is complex and time-consuming. Instead, we use LocalStack](https://github.com/localstack/localstack) to develop and unit test our applications with mock implementations of these services. We switch to the real services only in the integration environment.
-I will take you through some of the scenarios where we can use LocalStack in the following sections along with code samples. The complete code samples are available in the git repo. 
+During the initial days of development, we prefer to focus on writing code for our application instead of spending time on setting up the environment for accessing AWS services. We access various AWS services, while building our applications - for example, upload file in S3, store some data in DynamoDb, send message to SQS, etc.  
+
+Setting up a development environment for using these services is complex and time-consuming. Instead, we use [LocalStack](https://github.com/localstack/localstack) to develop and unit test our applications with mock implementations of these services. We switch to the real services only in the integration environment.
+
+
+In this article, I will take you through some of the scenarios where we can use LocalStack in the following sections along with code samples. The complete code samples are available in the git repo. 
  {% include github-project.html url="https://github.com/pratikdas/localstack" %}
 
 ## Why Use LocalStack
-The method of temporarily using dummy objects in place of actual ones is a time tested way of running unit tests on applications having external dependencies, most appropriately called [Test Doubles](http://xunitpatterns.com/Test%20Double.html).
+The method of temporarily using dummy (mock, fake, proxy and several others are part of the folklore) objects in place of actual ones is a time tested way of running unit tests on applications having external dependencies, most appropriately called [Test Doubles](http://xunitpatterns.com/Test%20Double.html).
 We implement Test Double of our AWS services with LocalStack. 
-Some other methods of doing this-
-Manual - Using a mock object with frameworks like Mockito during unit testing.
-Do it yourself - Using a homegrown solution deployed as a service.
 
-LocalStack gives a good alternative to these approaches.
+Some of the other methods of doing this are -
+
+Manual - Using a mock object with frameworks like Mockito during unit testing.
+DIY (Do It yourself) - Using a homegrown solution deployed as a service.
+
+LocalStack gives a good alternative to both these approaches.
 1. With Localstack we can run our applications without connecting to AWS.
 2. Avoid the complexity of AWS configuration and focus on development.
 3. Integrate LocalStack in our DevOps pipeline. 
 4. Enrich our test leveraging LocalStack's integration with JUnit using a runner and a JUnit 5 extension
-5. error scenarios can be configured
+5. Error scenarios can be configured
 
 ## Making This Work - Endpoint Override
 Our usage of LocalStack revolves around two core aspects - 
-Run LocalStack in a Docker container
-Override the AWS endpoint with URL of LocalStack
-LocalStack is a python application designed to run as an HTTP request processor listening on specific ports. We run the docker image 
-We access AWS services from CLI and our applications using AWS SDK (Software Development Kit).
+
+1. Run LocalStack in a Docker container
+
+2. Override the AWS endpoint with URL of LocalStack
+
+LocalStack is a python application designed to run as an HTTP request processor, listening on specific ports. We run the docker image of LocalStack.
+
+We access AWS services from the CLI or from our applications using the AWS SDK (Software Development Kit).
+
 The AWS SDK (Software Development Kit) and CLI are an integral part of our toolset for building applications with AWS services. The SDK provides client libraries in all the popular programming languages like java, node js, python for accessing various AWS services. It essentially does the heavy-lifting of securely connecting to the AWS services.
+
 Both the AWS SDK and the CLI give an option of overriding the URL of AWS API in the local environment for connecting to LocalStack.
 We do this in AWS CLI using commands like this:
 ```
@@ -206,7 +218,7 @@ We inject the URL of LocalStack using the variable - awsLocalEndpoint. The value
 I created the AWS resources - S3 Bucket and DynamoDB table using a [cloudformation template](https://github.com/pratikdas/localstack/blob/master/cloudformation/sample.yaml). I prefer this approach instead of creating the resources individually from the console. It allows me to create and clean up all the resources with a single command at the end of the exercise following IAC principles.
 // TODO cloudformation yaml link
 
-####Running Spring Boot application
+#### Running Spring Boot application
 
 We start LocalStack with docker-compose using the command - 
 ```
@@ -232,12 +244,16 @@ After creating our resources, we will start the Spring Boot with local profile.
 java -Dspring.profiles.active=local -jar target/customerregistration-1.0.jar
 ```
 I have set 8085 as the port for my application. I tested my API by sending the request using curl. You can also use Postman or any other REST client.
+
+```
 curl -X POST -H "Content-Type: application/json" -d '{"firstName":"Peter","lastName":"Parker", "email":"peter.parker@fox.com", "phone":"476576576", "photo":"rtruytiutiuyo"}' http://localhost:8085/customers/
+```
 
-
-Finally we run our spring boot app connected to AWS by switching to the default profile. We run our application with the default profile
+Finally, we run our spring boot app connected to AWS by switching to the default profile. We run our application with the default profile
 
 
 ## Summary
 
-We saw how to use LocalStack for testing the integration of our application with AWS services locally. Localstack also has an enterprise version available with more services. I hope this will help you to feel empowered and have more fun while working with AWS services during development. Ultimately leading to higher productivity, shorter development cycles, and lower AWS Cloud bills. You can refer to all the source code used in the article in the [Github repository](https://github.com/pratikdas/localstack) .
+We saw how to use LocalStack for testing the integration of our application with AWS services locally. Localstack also has an enterprise version available with more services. I hope this will help you to feel empowered and have more fun while working with AWS services during development. Ultimately leading to higher productivity, shorter development cycles, and lower AWS Cloud bills.
+
+You can refer to all the source code used in the article in my [Github repository](https://github.com/pratikdas/localstack) .

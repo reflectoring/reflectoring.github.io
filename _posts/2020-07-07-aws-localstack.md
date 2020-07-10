@@ -176,11 +176,11 @@ I added the AWS SDK dependencies for S3 and DynamoDB to the pom.xml of the appli
 I created the controller class containing the endpoint and two service classes for invoking the S3 and DynamoDB services.
 I used the default profile for real AWS services and created an additional profile named "local" for testing with LocalStack (mock AWS services). The LocalStack URL is configured in application-local.properties. Let us take a look at our CustomerProfileStore class. 
 
-##### Endpoint Override in local profile
+
 ```java
 @Service
 public class CustomerProfileStore {
-	
+	private static final String TABLE_NAME = "entities";
 	private static final Region region = Region.US_EAST_1;
 	
 	private final String awsLocalEndpoint;
@@ -205,6 +205,7 @@ public class CustomerProfileStore {
 		}
 		return dynamoDB;
 	}
+	
 ```
 We inject the URL of LocalStack using the variable - awsLocalEndpoint. The value is set only when we run our application using the local profile, else it has the default value null. In the method named getDdbClient, the value is set with the endpointOverride method in the DynamoDbClientBuilder class only if the variable awsLocalEndpoint has a value which is the case when using the local profile.
 

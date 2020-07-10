@@ -101,10 +101,11 @@ aws cloudformation --endpoint-url http://localhost:4566 delete-stack --stack-nam
 ```
 
 ### Execute JUnit Tests
-While running as JUnit, *** LocalStack is started as a docker container at a random port and stopped after all tests have finished execution.*** 
+While running as JUnit, ***LocalStack is started as a docker container at a random port and stopped after all tests have finished execution.*** 
 
 The code snippet is a JUnit Jupiter test used to test a java class to store an object in an S3 bucket.
-```
+
+```java
 @ExtendWith(LocalstackDockerExtension.class)
 @LocalstackDockerProperties(services = { "s3", "sqs" })
 class AwsServiceClientTest {
@@ -155,7 +156,7 @@ services:
 
 I added the AWS SDK dependencies for S3 and DynamoDB to the pom.xml of the application generated in the previous step.
 
-```
+```xml
 		<dependency>
 			<groupId>software.amazon.awssdk</groupId>
 			<artifactId>dynamodb</artifactId>
@@ -176,7 +177,7 @@ I created the controller class containing the endpoint and two service classes f
 I used the default profile for real AWS services and created an additional profile named "local" for testing with LocalStack (mock AWS services). The LocalStack URL is configured in application-local.properties. Let us take a look at our CustomerProfileStore class. 
 
 ##### Endpoint Override in local profile
-```
+```java
 @Service
 public class CustomerProfileStore {
 	
@@ -230,7 +231,7 @@ The output will look similar to the below if the command executes successfully.
 }
 ```
 
-After creating our resources, we will start the Spring Boot with a local profile.
+After creating our resources, we will run our Spring Boot application with the local profile.
 ```
 java -Dspring.profiles.active=local -jar target/customerregistration-1.0.jar
 ```

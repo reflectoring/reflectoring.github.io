@@ -10,19 +10,18 @@ image:
 ---
 During the initial days of development, we prefer to focus on writing code for our application instead of spending time on setting up the environment for accessing AWS services. We access various AWS services while building our applications - for example, upload files in S3, store some data in DynamoDb, send message to SQS, etc.  
 
-Setting up a development environment for using these services is complex and time-consuming. Instead, we use [LocalStack](https://github.com/localstack/localstack) to develop and unit test our applications with mock implementations of these services. We switch to the real services only in the integration environment and beyond.
+***Setting up a development environment for using these services is complex and time-consuming. Instead, we use [LocalStack](https://github.com/localstack/localstack) to develop and unit test our applications with mock implementations of these services.*** We switch to the real services only in the integration environment and beyond.
 
-In this article, we will see some of the scenarios where we can use LocalStack along with code samples. The complete code samples are available in the git repo. 
  {% include github-project.html url="https://github.com/pratikdas/localstack" %}
 
 ## Why Use LocalStack
 The method of temporarily using dummy (mock, fake, proxy, and several others are part of the folklore) objects in place of actual ones is a time tested way of running unit tests on applications having external dependencies, most appropriately called [Test Doubles](http://xunitpatterns.com/Test%20Double.html).
-We implement Test Double of our AWS services with LocalStack. 
+***We implement Test Double of our AWS services with LocalStack.*** 
 
 Some of the other methods of doing this are -
 
-Manual - Using mock objects with frameworks like Mockito during unit testing.
-DIY (Do It yourself) - Using a homegrown solution deployed as a service running in a separate process, or embedded in our code.
+1. Manual - Using mock objects with frameworks like Mockito during unit testing.
+2. DIY (Do It yourself) - Using a homegrown solution deployed as a service running in a separate process, or embedded in our code.
 
 LocalStack gives a good alternative to both these approaches.
 1. With Localstack we can run our applications without connecting to AWS.
@@ -38,7 +37,7 @@ Our usage of LocalStack revolves around two core aspects -
 
 2. Override the AWS endpoint with URL of LocalStack
 
-LocalStack is a python application designed to run as an HTTP request processor, listening on specific ports. We run the docker image of LocalStack.
+***LocalStack is a python application designed to run as an HTTP request processor, listening on specific ports. *** We run the docker image of LocalStack.
 
 We access AWS services from the CLI or our applications using the AWS SDK (Software Development Kit).
 
@@ -51,14 +50,16 @@ aws --endpointurl http://localhost:4956 kinesis list-streams
 ```
 I am connecting to LocalStack on port 4956.
 
-Similarly in SDK our code looks will resemble as - taking S3 as an example - 
+Similarly in SDK our code looks will resemble the below snippet - 
 ```java
 URI endpointOverride = new URI("http://localhost:4566");
 S3Client s3 = S3Client.builder().endpointOverride(endpointOverride ).region(region).build();
 ```
 
 ## How To Run LocalStack
-We run Localstack either as a python application using our local python installation or alternately using a docker image. 
+
+We run LocalStack either as a python application using our local python installation or alternately using a docker image. 
+
 ### Run with python
 ```
 pip install localstack
@@ -70,19 +71,12 @@ This starts a docker container with the below output.
 
 [![Console](/assets/img/posts/aws-localstack/localstackconsole.png)](/assets/img/posts/aws-localstack/localstackconsole.png)
 
- ### Run with Docker
- I will use the docker image with the below environment variables:
+ We can also run as docker image wuth the docker run command or docker-compose.
 
- ### Run services of your choice Docker-compose
-
-I have enabled S3 and DynamoDB services.
 
 ## Common Usages
 
-### From CLI
-Keeping our Mock AWS (LocalStack) running on http://localhost:4567, we will switch to our aws CLI to execute some regular CLI commands. 
-
-#### Create profile
+#### Create Fake Profile
 We start in the usual way by creating a profile with any arbitrary credentials.
 ```
 aws configure --profile localstack
@@ -107,7 +101,7 @@ aws cloudformation --endpoint-url http://localhost:4566 delete-stack --stack-nam
 ```
 
 ### Execute JUnit Tests
-LocalStack is started as a docker container at a random port and stopped after all tests have finished execution. Please refer to the below console output.
+While running as JUnit, *** LocalStack is started as a docker container at a random port and stopped after all tests have finished execution. *** 
 
 The code snippet is a JUnit Jupiter test used to test a java class to store an object in an S3 bucket.
 ```
@@ -136,7 +130,6 @@ class AwsServiceClientTest {
 		assertTrue(keyExistsInBucket(), "Object created");
 	}
 ```
-You can refer to the complete code in the Github repository.
 
 
 ### Spring Boot Application using S3 and DynamoDB

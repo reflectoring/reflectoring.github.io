@@ -43,7 +43,7 @@ comments:
               <li>e-book only (101-page PDF, .mobi, and .epub)</li>
               <li>$14,99 suggested price</li> 
               <li>$9,99 minimum price</li>
-              <li>support me directly by paying more than the minumum price</li>
+              <li>support me directly by paying more than the minimum price</li>
               <li>get it for $4,99 if you <a href="#" onclick="ml_webform_1449648(&#39;show&#39;)">subscribe</a> to my mailing list</li>
               <li>get updated versions immediately and for free</li> 
           </ul> 

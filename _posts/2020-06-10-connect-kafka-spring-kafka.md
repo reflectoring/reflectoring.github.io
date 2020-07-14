@@ -15,7 +15,7 @@ In this article, we'll look at how to integrate the Spring Boot application with
 
 Traditional messaging queues like ActiveMQ, RabbitMQ can handle high throughput usually used for long-running or background jobs and communicating between services. Kafka is a stream-processing platform built by LinkedIn and currently developed by Apache Software Foundation. Kafka mainly aims to solve low-latency ingestion of large amounts of event data.
 
-We can use Kafka when we have to move a large amount of data or process data in real-time. An example would be when we want to track user behavior on our website and give suggestions accordingly or monitor events produced by our micro-services. Kafka is built from ground up with horizontal scaling in mind. We easily can scale by adding more brokers to the existing Kafka cluster. While RabbitMQ is mostly designed for vertical scaling. i.e, We can scale by adding more power.
+We can use Kafka when we have to move a large amount of data, process data in real-time. An example would be when we want to track user behavior on our website and give suggestions accordingly or monitor events produced by our micro-services. Kafka is built from ground up with horizontal scaling in mind. We easily can scale by adding more brokers to the existing Kafka cluster. While RabbitMQ is mostly designed for vertical scaling. i.e, We can scale by adding more power.
 
 ## Kafka Vocabulary
 

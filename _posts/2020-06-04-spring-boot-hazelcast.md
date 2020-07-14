@@ -78,21 +78,21 @@ Now let's create a cache client for the application.
 
 ```java
 @Component
-public class CacheClient {
+class CacheClient {
 
-    public static final String CARS = "cars";
-    private final HazelcastInstance hazelcastInstance
-                            = Hazelcast.newHazelcastInstance();
+  public static final String CARS = "cars";
+  private final HazelcastInstance hazelcastInstance
+              = Hazelcast.newHazelcastInstance();
 
-    public Car put(String number, Car car){
-        IMap<String, Car> map = hazelcastInstance.getMap(CARS);
-        return map.putIfAbsent(number, car);
-    }
+  public Car put(String number, Car car){
+    IMap<String, Car> map = hazelcastInstance.getMap(CARS);
+    return map.putIfAbsent(number, car);
+  }
 
-    public Car get(String key){
-        IMap<String, Car> map = hazelcastInstance.getMap(CARS);
-        return map.get(key);
-    }
+  public Car get(String key){
+    IMap<String, Car> map = hazelcastInstance.getMap(CARS);
+    return map.get(key);
+  }
    
    // other methods omitted
 
@@ -137,26 +137,26 @@ Let's have a look at a couple of the configuration parameters:
 
 ````java
 @Component
-public class CacheClient {
+class CacheClient {
 
-    public static final String CARS = "cars";
-    private final HazelcastInstance hazelcastInstance 
-         = Hazelcast.newHazelcastInstance(createConfig());
+  public static final String CARS = "cars";
+  private final HazelcastInstance hazelcastInstance 
+     = Hazelcast.newHazelcastInstance(createConfig());
 
-    public Config createConfig() {
-        Config config = new Config();
-        config.addMapConfig(mapConfig());
-        return config;
-    }
+  public Config createConfig() {
+    Config config = new Config();
+    config.addMapConfig(mapConfig());
+    return config;
+  }
 
-    private MapConfig mapConfig() {
-        MapConfig mapConfig = new MapConfig(CARS);
-        mapConfig.setTimeToLiveSeconds(360);
-        mapConfig.setMaxIdleSeconds(20);
-        return mapConfig;
-    }
-    
-    // other methods omitted
+  private MapConfig mapConfig() {
+    MapConfig mapConfig = new MapConfig(CARS);
+    mapConfig.setTimeToLiveSeconds(360);
+    mapConfig.setMaxIdleSeconds(20);
+    return mapConfig;
+  }
+  
+  // other methods omitted
 }
 ````
 
@@ -198,23 +198,23 @@ Next, we create a Hazelcast client in a Spring application, similar as we did fo
 
 ````java
 @Component
-public class CacheClient {
+class CacheClient {
 
-    private static final String CARS = "cars";
+  private static final String CARS = "cars";
 
-    private HazelcastInstance client = HazelcastClient.newHazelcastClient();
+  private HazelcastInstance client = HazelcastClient.newHazelcastClient();
 
-    public Car put(String key, Car car){
-        IMap<String, Car> map = client.getMap(CARS);
-        return map.putIfAbsent(key, car);
-    }
+  public Car put(String key, Car car){
+    IMap<String, Car> map = client.getMap(CARS);
+    return map.putIfAbsent(key, car);
+  }
 
-    public Car get(String key){
-        IMap<String, Car> map = client.getMap(CARS);
-        return map.get(key);
-    }
-    
-    // other methods omitted
+  public Car get(String key){
+    IMap<String, Car> map = client.getMap(CARS);
+    return map.get(key);
+  }
+  
+  // other methods omitted
 
 }
 ````
@@ -247,7 +247,7 @@ We can do this very easily by using the [Hazelcast Docker image](https://hub.doc
 When we use the client-server topology, we're producing network traffic for requesting data from
 the cache. It happens in two cases:
  * when the client reads data from a cache member, and
- * when a cache member starts the communication with other cache members to synchronize data in the cache.    
+ * when a cache member starts the communication with other cache members to synchronize data in the cache.  
 
 **We can avoid this disadvantage by using near-cache.**  
 
@@ -265,28 +265,28 @@ requested from the remote cache cluster and added to the near-cache. When the ap
 We can easily configure a near-cache in a Spring application:
 ````java
 @Component
-public class CacheClient {
+class CacheClient {
 
-    private static final String CARS = "cars";
+  private static final String CARS = "cars";
 
-    private HazelcastInstance client 
-       = HazelcastClient.newHazelcastClient(createClientConfig());
+  private HazelcastInstance client 
+     = HazelcastClient.newHazelcastClient(createClientConfig());
 
-    private ClientConfig createClientConfig() {
-        ClientConfig clientConfig = new ClientConfig();
-        clientConfig.addNearCacheConfig(createNearCacheConfig());
-        return clientConfig;
-    }
+  private ClientConfig createClientConfig() {
+    ClientConfig clientConfig = new ClientConfig();
+    clientConfig.addNearCacheConfig(createNearCacheConfig());
+    return clientConfig;
+  }
 
-    private NearCacheConfig createNearCacheConfig() {
-        NearCacheConfig nearCacheConfig = new NearCacheConfig();
-        nearCacheConfig.setName(CARS);
-        nearCacheConfig.setTimeToLiveSeconds(360);
-        nearCacheConfig.setMaxIdleSeconds(60);
-        return nearCacheConfig;
-    }
-    
-    // other methods omitted
+  private NearCacheConfig createNearCacheConfig() {
+    NearCacheConfig nearCacheConfig = new NearCacheConfig();
+    nearCacheConfig.setName(CARS);
+    nearCacheConfig.setTimeToLiveSeconds(360);
+    nearCacheConfig.setMaxIdleSeconds(60);
+    return nearCacheConfig;
+  }
+  
+  // other methods omitted
 
 }
 ````
@@ -303,6 +303,126 @@ stale data in the near-cache. This data will be evicted later according to the e
 Only after the data has been evicted from the near-cache will it be read from the cache cluster again.
 
 **We should use the near-cache when we read from the cache very often, and when the data in the cache cluster changes only rarely.**
+
+## Serialization
+The java objects are serialized when stored in the cache. 
+The `Car` class from above implements `Serializable`, so, in this case, Hazelcast will use
+the standard Java serialization.
+
+But the standard Java serialization has drawbacks like high resource usage of CPU and memory.
+
+### Why Customize Serialization?
+
+Imagine we have a scalable system with multiple instances and a cache cluster with few members.
+The system is working and cache entries are being stored, read, and evicted from the cache.
+**Now we want to change a java class whose objects are cached and often used**. 
+
+We need to deploy a new version of the application with this new class
+and we want to do it without downtime. If we start a rolling update of our application instances,
+it works fine for the application, but the cache still can have entries of the previous version of the objects. 
+
+**Hazelcast will not be able to deserialize the old version of the objects** and throw an exception. 
+It means we should create a serializer, that supports versioning of cache entries and that is able
+to serialize and deserialize java objects of different versions at the same time.
+
+Hazelcast provides us two options to customize the serialization:
+
+* implement a Hazelcast serialization interface type in the classes that should be serialized,
+* implement a custom serializer and add it to the cache configuration.
+
+### Implement the `DataSerializable` Interface
+
+Hazelcast has a few serialization interface types. Let's have a look at the interface `DataSerializable`.
+This interface is more CPU and memory efficient than `Serializable`.
+
+We implement this interface in the class `Car`:
+
+```java
+class Car implements DataSerializable {
+
+  private String name;
+  private String number;
+
+  @Override
+  public void writeData(ObjectDataOutput out) throws IOException {
+    out.writeUTF(name);
+    out.writeUTF(number);
+  }
+
+  @Override
+  public void readData(ObjectDataInput in) throws IOException {
+    name = in.readUTF();
+    number = in.readUTF();
+  }
+}
+```
+
+The methods `writeData()` and `readData()` serialize and deserialize the object of the class `Car`.
+Note that the serialization and the deserialization of the single fields should be 
+done in the same order.
+
+That's it. Hazelcast will now use the serialization methods.
+**But now we have the Hazelcast dependency in the domain object `Car`**. 
+
+We can use a custom serializer to avoid this dependency.
+
+### Configure a Custom Serializer
+
+First, we have to implement a serializer. Let's take the `StreamSerializer`:
+
+```java
+class CarStreamSerializer implements StreamSerializer<Car> {
+
+  @Override
+  public void write(ObjectDataOutput out, Car car) throws IOException {
+    out.writeUTF(car.getName());
+    out.writeUTF(car.getNumber());
+  }
+
+  @Override
+  public Car read(ObjectDataInput in) throws IOException {
+    return Car.builder()
+        .name(in.readUTF())
+        .number(in.readUTF())
+        .build();
+  }
+
+  @Override
+  public int getTypeId() {
+    return 1;
+  }
+}
+```
+The methods `write()` and `read()` serialize and deserialize the object `Car`, respectively. We have to have the same order of 
+writing and reading fields again. The method `getTypeId()` return the identifier of this serializer.
+
+Next, we have to add this serializer to the configuration:
+
+```java
+@Component
+class CacheClient {
+
+  public Config createConfig() {
+    Config config = new Config();
+    config.addMapConfig(mapConfig());
+    config.getSerializationConfig()
+      .addSerializerConfig(serializerConfig());
+    return config;
+  }
+
+  private SerializerConfig serializerConfig() {
+    return  new SerializerConfig()
+        .setImplementation(new CarSerializer())
+        .setTypeClass(Car.class);
+  }
+  // other methods omitted.
+}
+```
+
+In the method `serializerConfig()` we let Hazelcast know that it should use `CarSerializer` for
+`Car` objects.
+
+Now the class `Car` doesn't need to implement anything and can be just a domain object.  
 
 ## Conclusion
 The Hazelcast Java library supports setting up the cache cluster with two topologies.

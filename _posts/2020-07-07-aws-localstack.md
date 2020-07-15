@@ -68,7 +68,7 @@ Here, we have overridden the endpoint to S3.
 
 We run LocalStack either as a Python application using our local Python installation or alternately using a Docker image. 
 
-### Run with Python
+### Run With Python
 
 This starts a Docker container with the below output.
 
@@ -80,7 +80,7 @@ pip install localstack
 localstack start
 ```
 
-
+### Run With Docker
  We can also run as Docker image wuth the Docker run command or docker-compose.
 
 

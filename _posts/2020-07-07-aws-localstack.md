@@ -8,7 +8,7 @@ excerpt: "This article describes LocalStack as a useful aid to test your AWS ser
 image:
   auto: 0072-aws
 ---
-During the initial days of development, we prefer to focus on writing code for our application instead of spending time on setting up the environment for accessing AWS services. We access various AWS services while building our applications - for example, upload files in S3, store some data in DynamoDb, send messages to SQS, etc.  
+During the initial days of any development using AWS, we prefer to focus on writing code for our application instead of spending time on setting up the environment for accessing AWS services. We access various AWS services while building our applications - for example, upload files in S3, store some data in DynamoDb, send messages to SQS, etc.  
 
 **Setting up a development environment for using these services is complex and time-consuming.** Instead, we use [LocalStack](https://github.com/localstack/localstack) to develop and unit test our applications with mock implementations of these services. We switch to the real services only in the integration environment and beyond.
 
@@ -22,7 +22,7 @@ Some methods to create test doubles are:
 1. Manual - Creating and using mock objects with frameworks like Mockito during unit testing.
 2. DIY (Do It yourself) - Using a homegrown solution deployed as a service running in a separate process, or embedded in our code.
 
-**We'll implement test doubles of our AWS services with LocalStack.**
+**We will implement test doubles of our AWS services with LocalStack.**
 
 LocalStack gives a good alternative to both these approaches. With LocalStack, we can:
 
@@ -50,14 +50,14 @@ We do this in AWS CLI using commands like this:
 aws --endpointurl http://localhost:4956 kinesis list-streams
 ```
 
-This will send requests to Kinesis to localhost on port 4956 instead of to the real AWS endpoint.
+Executing this command will send the requests to localhost on port 4956 instead of to the real AWS endpoint.
 
-We can do it similarly in the SDK:
+We can do this similarly in the SDK:
  
 ```java
 URI endpointOverride = new URI("http://localhost:4566");
 S3Client s3 = S3Client.builder()
-  .endpointOverride(endpointOverride )
+  .endpointOverride(endpointOverride )  // Overriding the endpoint
   .region(region)
   .build();
 ```
@@ -70,18 +70,27 @@ We run LocalStack either as a Python application using our local Python installa
 
 ### Run With Python
 
-This starts a Docker container with the below output.
+We first install LocalStack using pip.
 
 ```
 pip install localstack
 ```
-
+We then start localstack.
 ```
 localstack start
 ```
+This will start LocalStack inside a Docker container.
 
 ### Run With Docker
- We can also run as Docker image wuth the Docker run command or docker-compose.
+ We can also run LocalStack directly as a Docker image either with the Docker run command or docker-compose.
+
+ For running with docker, we first pull the image from dockerhub and use docker run command need to allocate 4GB  memory.
+
+ With Docker-compose, we start LocalStack with docker-compose using the command:
+```
+TMPDIR=/private$TMPDIR docker-compose up
+```
+The part `TMPDIR=/private$TMPDIR` is required only in macOS.
 
 
 ## Running CLI Commands Against LocalStack
@@ -155,7 +164,7 @@ The code snippet is a JUnit Jupiter test used to test a java class to store an o
 
 We'll create a simple customer registration application using the popular [Spring Boot](https://spring.io/projects/spring-boot) framework. Our application will have an API that will take a first name, last name, email, mobile, and a profile picture. This API will save the record in DynamoDB, and store the profile picture in an S3 bucket. 
 
-We'll start with creating a Spring boot REST API using [https://start.spring.io](https://start.spring.io) with minimum dependencies for web and Lombok. 
+We'll start with creating a Spring boot REST API using [https://start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.1.RELEASE&packaging=jar&jvmVersion=14&groupId=io.pratik&artifactId=customerregistration&name=customerregistration&description=Spring%20Boot%20with%20Dynamodb%20and%20S3%20to%20demonstrate%20LocalStack&packageName=io.pratik.customerregistration&dependencies=lombok,web) with minimum dependencies for web and Lombok. 
 
 Next, we create a `docker-compose.yml` file that we can use to start up LocalStack:
 
@@ -176,7 +185,7 @@ services:
 
 In `docker-compose.yml`, we set the environment variable `SERVICES` to the name of the services we want to use from our application (`s3` and `dynamodb`).
 
-To connect to the AWS services, we need to add the dependencies to the AWS SDKs to our `pom.xml`:
+Next, we add the dependencies to our pom.xml.
 
 ```xml
 <dependency>
@@ -194,8 +203,10 @@ To connect to the AWS services, we need to add the dependencies to the AWS SDKs 
     <scope>test</scope>
 </dependency>
 ```
-I created the controller class containing the endpoint and two service classes for invoking the S3 and DynamoDB services.
-I used the default profile for real AWS services and created an additional profile named "local" for testing with LocalStack (mock AWS services). The LocalStack URL is configured in application-local.properties. Let us take a look at our CustomerProfileStore class. 
+Here we have added two dependencies for the two AWS services - DynamoDB and S3. We also add a test scoped dependency on localstack to start the localstack container when the JUnit test starts and stop the container at the end of our test run.  
+
+After that we create the controller class containing the endpoint and two service classes for invoking the S3 and DynamoDB services.
+We use the default profile for real AWS services and create an additional profile named "local" for testing with LocalStack (mock AWS services). The LocalStack URL is configured in application-local.properties. Let us take a look at our CustomerProfileStore class. 
 
 
 ```java
@@ -204,11 +215,11 @@ public class CustomerProfileStore {
 	private static final String TABLE_NAME = "entities";
 	private static final Region region = Region.US_EAST_1;
 	
-	private final String awsLocalEndpoint;
+	private final String awsEndpoint;
 	
-	public CustomerProfileStore(@Value("${aws.local.endpoint:#{null}}") String awsLocalEndpoint) {
+	public CustomerProfileStore(@Value("${aws.local.endpoint:#{null}}") String awsEndpoint) {
 		super();
-		this.awsLocalEndpoint = awsLocalEndpoint;
+		this.awsEndpoint = awsEndpoint;
 	}
 
 	private DynamoDbClient getDdbClient() {
@@ -216,19 +227,20 @@ public class CustomerProfileStore {
 		try {
 			DynamoDbClientBuilder builder = DynamoDbClient.builder();
 			// awsLocalEndpoint is set only in local environments
-			if(awsLocalEndpoint != null) {
+			if(awsEndpoint != null) {
 				// override aws endpoint with localstack URL in dev environment
-				builder.endpointOverride(new URI(awsLocalEndpoint));
+				builder.endpointOverride(new URI(awsEndpoint));
 			}
 			dynamoDB = builder.region(region).build();
 		}catch(URISyntaxException ex) {
-			log.error("Invalid url {}",awsLocalEndpoint);
+			log.error("Invalid url {}",awsEndpoint);
+			throw new IllegalStateException("Invalid url "+awsEndpoint,ex);
 		}
 		return dynamoDB;
 	}
 	
 ```
-We inject the URL of LocalStack using the variable `awsLocalEndpoint`. The value is set only when we run our application using the local profile, else it has the default value null. 
+We inject the URL of LocalStack using the variable `awsEndpoint`. The value is set only when we run our application using the local profile, else it has the default value null. 
 
 In the method `getDdbClient()`, we pass this variable to the `endpointOverride()` method in the DynamoDbClientBuilder class only if the variable awsLocalEndpoint has a value which is the case when using the local profile.
 
@@ -236,11 +248,7 @@ I created the AWS resources - S3 Bucket and DynamoDB table using a [cloudformati
 
 ### Running the application
 
-We start LocalStack with docker-compose using the command:
-```
-TMPDIR=/private$TMPDIR docker-compose up
-```
-The part `TMPDIR=/private$TMPDIR` is required only in macOS.
+We start LocalStack with docker-compose using the command  as explained earlier in the section on running LocalStack with docker:
 
 We create our S3 bucket and DynamoDB table by executing our CloudFormation Template:
 

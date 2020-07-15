@@ -26,7 +26,7 @@ Let's have a look at the modules and their purpose:
 | **Module**      | Purpose                                                      |
 | :-------------- | :----------------------------------------------------------- |
 | **Retry**           | Automatically retry a failed remote operation                |
-| **RateLimiter**     | Limit how many times a client can call our service in a certain period |
+| **RateLimiter**     | Limit how many times we call a remote operation in a certain period |
 | **TimeLimiter**     | Set a time limit when calling remote operation               |
 | **Circuit Breaker** | Fail fast or perform default actions when a remote operation is continuously failing |
 | **Bulkhead**        | Limit the number of concurrent remote operations             |
@@ -66,7 +66,7 @@ System.out.println(retryingFlightSearch.get()); // ----> 6
 **A remote operation can be any request made over the network.** Usually, it's one of these:
 
 1. Sending an HTTP request to a REST endpoint
-2. Doing a remote procedure call (RPC) or a web service call
+2. Calling a remote procedure (RPC) or a web service
 3. Reading and writing data to/from a data store (SQL/NoSQL databases, object storage, etc.)
 4. Sending messages to and receiving messages from a message broker (RabbitMQ/ActiveMQ/Kafka etc.)
 
@@ -82,7 +82,7 @@ Which option to choose depends on the error type (transient or permanent), the o
 
 **Retries increase the response time of APIs.** This may not be an issue if the client is another application like a cron job or a daemon process. If it's a person, however, sometimes it's better to be responsive, fail quickly, and give feedback rather than making the person wait while we keep retrying. 
 
-**For some critical use cases, it's better to trade off response time in favor of reliability** and implement retries even if the client is a person. Money transfer in banking or a travel agency booking flights and hotels for a trip are good examples - users expect reliability, not an instantaneous response for such use cases. 
+**For some critical use cases, reliability can be more important than response time** and we may need to implement retries even if the client is a person. Money transfer in banking or a travel agency booking flights and hotels for a trip are good examples - users expect reliability, not an instantaneous response for such use cases. We can be responsive by immediately notifying the user that we have accepted their request and letting them know once it is completed.
 
 ## Using the Resilience4j Retry Module
 
@@ -134,7 +134,7 @@ Flight search successful
 [Flight{flightNumber='XY 765', flightDate='07/31/2020', from='NYC', to='LAX'}, ...]
 ```
 
-Now, suppose we're calling `FlightSearchService.searchFlightsThrowingException()` instead, which can throw a checked `Exception`. Then we would get a compiler error on this line:
+Now, suppose we want to retry for both checked and unchecked exceptions. Let's say we're calling `FlightSearchService.searchFlightsThrowingException()` which can throw a checked `Exception`. Since a `Supplier` cannot throw a checked exception, we would get a compiler error on this line:
 
 ```
 Supplier<List<Flight>> flightSearchSupplier = 
@@ -154,7 +154,7 @@ Supplier<List<Flight>> flightSearchSupplier = () -> {
 };
 ```
 
-So what should we do when our remote call can throw an `Exception`? We can use the `Retry.decorateCheckedSupplier()` (or the `executeCheckedSupplier()` instance method) instead of `Retry.decorateSupplier()`:
+So what should we do when we want to retry for all exceptions that our remote call can throw? We can use the `Retry.decorateCheckedSupplier()` (or the `executeCheckedSupplier()` instance method) instead of `Retry.decorateSupplier()`:
 
 ```java
 CheckedFunction0<List<Flight>> retryingFlightSearch = 
@@ -164,13 +164,13 @@ CheckedFunction0<List<Flight>> retryingFlightSearch =
 try {
   System.out.println(retryingFlightSearch.apply());
 } catch (...) {
-  // handle exception
+  // handle exception that can occur after retries are exhausted
 }
 ```
 
 `Retry.decorateCheckedSupplier()` returns a `CheckedFunction0` which represents a function with no arguments. Notice the call to  `apply()` on the `CheckedFunction0` object to invoke the remote operation.
 
-If we don't want to work with `Supplier`s , `Retry` provides more helper decorator methods like `decorateFunction()`, `decorateCheckedFunction()`, `decorateRunnable()`, `decorateCallable()` etc. to work with other language constructs.
+If we don't want to work with `Supplier`s , `Retry` provides more helper decorator methods like `decorateFunction()`, `decorateCheckedFunction()`, `decorateRunnable()`, `decorateCallable()` etc. to work with other language constructs. The difference between the `decorate*` and `decorateChecked*` versions is that the `decorate*` version retries on `RuntimeException`s and `decorateChecked*` version retries on `Exception`.
 
 ### Conditional Retry
 
@@ -178,7 +178,7 @@ The simple retry example above showed how to retry when we get a `RuntimeExcepti
 
 #### Predicate-based Conditional Retry
 
-Let's say that the airline's flight service initializes flight data in its database regularly. This internal operation takes a few seconds for a given day's of flight data. If we call the flight search for that day while this initialization is in progress, the service returns a particular error code FS-167. The flight search documentation says that this is a temporary error and that the operation can be retried after a few seconds. 
+Let's say that the airline's flight service initializes flight data in its database regularly. This internal operation takes a few seconds for a given day's flight data. If we call the flight search for that day while this initialization is in progress, the service returns a particular error code FS-167. The flight search documentation says that this is a temporary error and that the operation can be retried after a few seconds. 
 
 Let's see how we would create the `RetryConfig`:
 
@@ -196,20 +196,18 @@ We use the `retryOnResult()` method and pass a `Predicate` that does this check.
 
 #### Exception-based Conditional Retry
 
-Suppose the code making the remote call to book a flight throws a `SeatsUnavailableException` when there are no free seats left, and a `RateLimitExceededException` if we made too many requests in a certain time window. We don't want to retry for the first exception but we do want to retry after some time for the second one. 
-
-We can do this by creating the `RetryConfig` like this:
+Suppose we had a general exception `FlightServiceBaseException` that's thrown when anything unexpected happens during the interaction with the airline's flight service. As a general policy, we want to retry when this exception is thrown. But there is one subclass of `SeatsUnavailableException` which we don't want to retry on - if there are no seats available on the flight, retrying will not help.  We can do this by creating the `RetryConfig` like this:
 
 ```java
 RetryConfig config = RetryConfig.custom()
   .maxAttempts(3)
   .waitDuration(Duration.of(3, SECONDS))
-  .retryExceptions(RateLimitExceededException.class)
+  .retryExceptions(FlightServiceBaseException.class)
   .ignoreExceptions(SeatsUnavailableException.class)
   .build();
 ```
 
-In `retryExceptions()` we specify the list of exceptions for which we want to retry. The ones we want to ignore and not retry we put into `ignoreExceptions()`. Resilience4J will now retry *only* for the exceptions we specified - if the code throws some other `Exception` at runtime, say an `IOException`, it will not be retried. 
+In `retryExceptions()` we specify a list of exceptions. Resilience4j will retry any exception which matches or inherits from the exceptions in this list. We put the ones we want to ignore and not retry into `ignoreExceptions()`. If the code throws some other exception at runtime, say an `IOException`, it will also not be retried. 
 
 Let's say that even for a given exception we don't want to retry in all instances. Maybe we want to retry only if the exception has a particular error code or a certain text in the exception message. We can use the `retryOnException` method in that case:
 
@@ -224,6 +222,8 @@ RetryConfig config = RetryConfig.custom()
   .retryOnException(rateLimitPredicate)
   build();
 ```
+
+As in the predicate-based conditional retry, the checks within the predicate can be as complex as required. 
 
 ### Backoff Strategies
 
@@ -354,7 +354,7 @@ MeterRegistry meterRegistry = new SimpleMeterRegistry();
 TaggedRetryMetrics.ofRetryRegistry(retryRegistry).bindTo(meterRegistry);
 ```
 
-After running the retryable operation a few times, we print the metric information to console:
+After running the retryable operation a few times, we display the captured metrics:
 
 ```java
 Consumer<Meter> meterConsumer = meter -> {
@@ -383,13 +383,15 @@ Of course, in a real application, we would export the data to a monitoring syste
 
 ## Gotchas and Good Practices When Retrying
 
-Often services provide client libraries or SDKs which have a built-in retry mechanism. This is especially true for cloud services. For example, Azure CosmosDB and Azure Service Bus provide client libraries with a built-in retry facility. They allow applications to set retry policies to control the retry behavior.
+**Often services provide client libraries or SDKs which have a built-in retry mechanism.** This is especially true for cloud services. For example, Azure CosmosDB and Azure Service Bus provide client libraries with a built-in retry facility. They allow applications to set retry policies to control the retry behavior.
 
-In such cases, it's better to use the built-in retries rather than coding our own. If we do need to write our own, we should disable the built-in default retry policy - otherwise, it could lead to nested retries where each attempt from the application causes multiple attempts from the client library.
+In such cases, it's better to use the built-in retries rather than coding our own. **If we do need to write our own, we should disable the built-in default retry policy - otherwise, it could lead to nested retries where each attempt from the application causes multiple attempts from the client library.**
 
 Some cloud services document transient error codes. Azure SQL for example, provides a list of error codes for which it expects database clients to retry. It's good to check if service providers have such lists before deciding to add retry for a particular operation. 
 
-Another good practice is to maintain the values we use in `RetryConfig` like maximum attempts, wait time, and retryable error codes and exceptions as a configuration outside our service. If we discover new transient errors or we need to tweak the interval between attempts, we can make the change without building and redeploying the service.
+Another good practice is to **maintain the values we use in `RetryConfig` like maximum attempts, wait time, and retryable error codes and exceptions as a configuration outside our service**. If we discover new transient errors or we need to tweak the interval between attempts, we can make the change without building and redeploying the service.
+
+Usually when retrying, there is likely a `Thread.sleep()` happening somewhere in the framework code. This would be the case for synchronous retries with a wait time between retries. If our code is running in the context of a web application, this `Thread` will most likely be the web server's request handling thread. **So if we do too many retries it would reduce the throughput of our application.**
 
 ## Conclusion
 

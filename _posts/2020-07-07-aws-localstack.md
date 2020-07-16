@@ -36,14 +36,14 @@ LocalStack gives a good alternative to both these approaches.**We will implement
 
 Our usage of LocalStack is centered around two tasks:  
 
-1. Running LocalStack inside a Docker container.
+1. Running LocalStack.
 2. Overriding the AWS endpoint URL with the URL of LocalStack.
 
-### Running LocalStack
+#### Running LocalStack
 
 LocalStack is run inside a Docker container. We run LocalStack either as a Python application using our local Python installation or by directly using it's Docker image. 
 
-#### Running LocalStack With Python
+##### Running LocalStack With Python
 
 We first install LocalStack using pip.
 
@@ -56,7 +56,7 @@ localstack start
 ```
 This will start LocalStack inside a Docker container.
 
-#### Run With Docker
+##### Run LocalStack With Docker
  We can also run LocalStack directly as a Docker image either with the Docker run command or docker-compose.
 
  For running with docker, we first pull the image from dockerhub and use docker run command need to allocate 4GB  memory.
@@ -67,15 +67,16 @@ TMPDIR=/private$TMPDIR docker-compose up
 ```
 The part `TMPDIR=/private$TMPDIR` is required only in macOS.
 
-#### Customize services
+##### Customize services
+We customize the behaviour of LocalStack by passing environment variables.
 
-#### Open Issues
-I did get few errors when executing the cloudformation commands.
+##### Open Issues
+I got a few errors when executing the cloudformation commands during deletiong and recreating the stack. I switched back to using 
 
-### Overriding AWS Endpoints
+#### Connect With LocalStack By Overriding AWS Endpoints
 We access AWS services from the CLI or our applications using the AWS SDK (Software Development Kit).
 
-The AWS SDK (Software Development Kit) and CLI are an integral part of our toolset for building applications with AWS services. The SDK provides client libraries in all the popular programming languages like Java, Node js, or Python for accessing various AWS services. 
+The AWS SDK and CLI are an integral part of our toolset for building applications with AWS services. The SDK provides client libraries in all the popular programming languages like Java, Node js, or Python for accessing various AWS services. 
 
 Both the AWS SDK and the CLI provide an option of overriding the URL of the AWS API. We usually use this to specify the URL of our proxy server when weconnecting to AWS services from behind a corporate proxy server. We will use this same feature in our local environment for connecting to LocalStack.
 
@@ -100,11 +101,11 @@ Here, we have overridden AWS endpoint of S3 by providing the value of URL of Loc
 
 
 
+## Common Usage Patterns 
 
-## Running CLI Commands Against LocalStack
+#### Running CLI Commands Against LocalStack
 
-### Create a Profile for the AWS CLI
-We start by creating a fake profile in the AWS CLI so that we can later use the AWS CLI for invoking the services provided by LocalStack:
+**We start by creating a fake profile in the AWS CLI** so that we can later use the AWS CLI for invoking the services provided by LocalStack:
 
 ```
 aws configure --profile localstack
@@ -115,8 +116,7 @@ Provide any value you like for AWS Access Key and Secret Access Key and a valid 
 
 Unlike AWS, LocalStack does not validate these credentials but complains if no profile is set. So far, it is just like any other AWS profile which we will use to work with LocalStack.
 
-### Execute CLI Commands
-With our profile created, we execute the AWS CLI commands by passing an additional parameter for overriding the endpoint URL:
+With our profile created, **we proceed to execute the AWS CLI commands** by passing an additional parameter for overriding the endpoint URL:
 ```
 aws s3 --endpoint-url http://localhost:4566 create-bucket io.pratik.mybucket
 ```
@@ -132,7 +132,7 @@ aws cloudformation create-stack \
   --profile localstack
 ```
 
-### Running JUnit Tests Against LocalStack
+#### Running JUnit Tests Against LocalStack
 If we want to run tests against the AWS APIs, we can do this from within a JUnit test.
 
 **At the start of a test, we start LocalStack as a Docker container on a random port and after all tests have finished execution we stop it again:** 
@@ -166,13 +166,11 @@ class AwsServiceClientTest {
 
 The code snippet is a JUnit Jupiter test used to test a java class to store an object in an S3 bucket.
 
-## Configuring a Spring Boot Application to use LocalStack
+#### Configuring a Spring Boot Application using S3 and DynamoDB to use LocalStack
 
-### A Spring Boot Application using S3 and DynamoDB
+We will create a simple customer registration application using the popular [Spring Boot](https://spring.io/projects/spring-boot) framework. Our application will have an API that will take a first name, last name, email, mobile, and a profile picture. This API will save the record in DynamoDB, and store the profile picture in an S3 bucket. 
 
-We'll create a simple customer registration application using the popular [Spring Boot](https://spring.io/projects/spring-boot) framework. Our application will have an API that will take a first name, last name, email, mobile, and a profile picture. This API will save the record in DynamoDB, and store the profile picture in an S3 bucket. 
-
-We'll start with creating a Spring boot REST API using [https://start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.1.RELEASE&packaging=jar&jvmVersion=14&groupId=io.pratik&artifactId=customerregistration&name=customerregistration&description=Spring%20Boot%20with%20Dynamodb%20and%20S3%20to%20demonstrate%20LocalStack&packageName=io.pratik.customerregistration&dependencies=lombok,web) with minimum dependencies for web and Lombok. 
+We will start with creating a Spring Boot REST API using [https://start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.1.RELEASE&packaging=jar&jvmVersion=14&groupId=io.pratik&artifactId=customerregistration&name=customerregistration&description=Spring%20Boot%20with%20Dynamodb%20and%20S3%20to%20demonstrate%20LocalStack&packageName=io.pratik.customerregistration&dependencies=lombok,web) with minimum dependencies for web and Lombok. 
 
 Next, we create a `docker-compose.yml` file that we can use to start up LocalStack:
 
@@ -254,7 +252,7 @@ In the method `getDdbClient()`, we pass this variable to the `endpointOverride()
 
 I created the AWS resources - S3 Bucket and DynamoDB table using a [cloudformation template](https://github.com/pratikdas/localstack/blob/master/cloudformation/sample.yaml). I prefer this approach instead of creating the resources individually from the console. It allows me to create and clean up all the resources with a single command at the end of the exercise following IAC principles.
 
-### Running the application
+#### Running the Spring Boot application
 
 We start LocalStack with docker-compose using the command  as explained earlier in the section on running LocalStack with docker:
 

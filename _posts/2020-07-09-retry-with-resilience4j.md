@@ -21,7 +21,9 @@ Many things can go wrong when applications communicate over the network. **Opera
 
 Written for Java 8 and above, Resilience4j works on constructs like functional interfaces, lambda expressions, and method references. 
 
-Let's have a look at the modules and their purpose:
+### Resilience4j Modules
+
+Let's have a quick look at the modules and their purpose:
 
 | **Module**      | Purpose                                                      |
 | :-------------- | :----------------------------------------------------------- |
@@ -61,7 +63,7 @@ Supplier<List<Flight>> retryingFlightSearch =
 System.out.println(retryingFlightSearch.get()); // ----> 6
 ```
 
-## A Short Primer on Remote Operations and Retries
+## When to Use Retry?
 
 **A remote operation can be any request made over the network.** Usually, it's one of these:
 

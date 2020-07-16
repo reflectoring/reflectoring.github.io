@@ -4,7 +4,7 @@ categories: [craft]
 date: 2020-06-30 06:00:00 +1100
 modified: 2020-06-30 06:00:00 +1100
 author: pratikdas
-excerpt: "This article describes LocalStack as a useful aid to test your AWS services locally."
+excerpt: "Develop and test your applications using AWS services locally with LocalStack."
 image:
   auto: 0072-aws
 ---
@@ -20,7 +20,7 @@ The method of temporarily using dummy (or mock, fake, proxy) objects in place of
 Some methods to create test doubles are:
 
 1. Manual - Creating and using mock objects with frameworks like Mockito during unit testing.
-2. DIY (Do It yourself) - Using a homegrown solution deployed as a service running in a separate process, or embedded in our code.
+2. DIY (Do It Yourself) - Using a homegrown solution deployed as a service running in a separate process, or embedded in our code.
 
 LocalStack gives a good alternative to both these approaches.**We will implement test doubles of our AWS services with LocalStack.** With LocalStack, we can:
 
@@ -39,11 +39,11 @@ Our usage of LocalStack is centered around two tasks:
 1. Running LocalStack.
 2. Overriding the AWS endpoint URL with the URL of LocalStack.
 
-#### Running LocalStack
+### Running LocalStack
 
 LocalStack is run inside a Docker container. We run LocalStack either as a Python application using our local Python installation or by directly using it's Docker image. 
 
-##### Running LocalStack With Python
+#### Running LocalStack With Python
 
 We first install LocalStack using pip.
 
@@ -56,10 +56,10 @@ localstack start
 ```
 This will start LocalStack inside a Docker container.
 
-##### Run LocalStack With Docker
+#### Run LocalStack With Docker
  We can also run LocalStack directly as a Docker image either with the Docker run command or docker-compose.
 
- For running with docker, we first pull the image from dockerhub and use docker run command need to allocate 4GB  memory.
+ For running with docker, we first pull the image from the docker hub and use the docker run command need to allocate 4GB  memory.
 
  With Docker-compose, we start LocalStack with docker-compose using the command:
 ```
@@ -67,8 +67,8 @@ TMPDIR=/private$TMPDIR docker-compose up
 ```
 The part `TMPDIR=/private$TMPDIR` is required only in macOS.
 
-##### Customize services
-We customize the behaviour of LocalStack by passing environment variables.
+#### Customize services
+We customize the behavior of LocalStack by passing environment variables.
 Next, we create a `docker-compose.yml` file that we can use to start up LocalStack:
 
 ```
@@ -94,14 +94,14 @@ We access AWS services from the CLI or our applications using the AWS SDK (Softw
 
 The AWS SDK and CLI are an integral part of our toolset for building applications with AWS services. The SDK provides client libraries in all the popular programming languages like Java, Node js, or Python for accessing various AWS services. 
 
-Both the AWS SDK and the CLI provide an option of overriding the URL of the AWS API. We usually use this to specify the URL of our proxy server when weconnecting to AWS services from behind a corporate proxy server. We will use this same feature in our local environment for connecting to LocalStack.
+Both the AWS SDK and the CLI provide an option of overriding the URL of the AWS API. We usually use this to specify the URL of our proxy server when connecting to AWS services from behind a corporate proxy server. We will use this same feature in our local environment for connecting to LocalStack.
 
 We do this in the AWS CLI using commands like this:
 ```
 aws --endpointurl http://localhost:4956 kinesis list-streams
 ```
 
-Executing this command will send the requests to the URL of LocalStack specified as the value of endpointurl command line parameter (localhost on port 4956) instead of the real AWS endpoint.
+Executing this command will send the requests to the URL of LocalStack specified as the value of the endpoint URL command line parameter (localhost on port 4956) instead of the real AWS endpoint.
 
 We adopt a similar approach when using the SDK.
  
@@ -113,7 +113,7 @@ S3Client s3 = S3Client.builder()
   .build();
 ```
 
-Here, we have overridden AWS endpoint of S3 by providing the value of URL of LocalStack as the value of endpointOverride method in the [S3ClientBuilder](https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/services/s3/S3ClientBuilder.html) class.
+Here, we have overridden the AWS endpoint of S3 by providing the value of the URL of LocalStack as the value of the endpointOverride method in the [S3ClientBuilder](https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/services/s3/S3ClientBuilder.html) class.
 
 
 
@@ -128,7 +128,7 @@ aws configure --profile localstack
 ```
 
 Here we create a profile named `localstack`. Any other name can be provided. 
-Provide any value you like for AWS Access Key and Secret Access Key and a valid AWS region like `us-east-1`, but donot leave them blank. 
+Provide any value you like for AWS Access Key and Secret Access Key and a valid AWS region like `us-east-1`, but do not leave them blank. 
 
 Unlike AWS, LocalStack does not validate these credentials but complains if no profile is set. So far, it is just like any other AWS profile which we will use to work with LocalStack.
 
@@ -158,38 +158,38 @@ If we want to run tests against the AWS APIs, we can do this from within a JUnit
 @LocalstackDockerProperties(services = { "s3", "sqs" })
 class AwsServiceClientTest {
 
-	private static final Logger logger = Logger.getLogger(AwsServiceClient.class.getName());
+    private static final Logger logger = Logger.getLogger(AwsServiceClient.class.getName());
 
-	private static final Region region = Region.US_EAST_1;
-	private static final String bucketName = "io.pratik.poc";
+    private static final Region region = Region.US_EAST_1;
+    private static final String bucketName = "io.pratik.poc";
 
-	private AwsServiceClient awsServiceClient = null;
+    private AwsServiceClient awsServiceClient = null;
 
-	@BeforeEach
-	void setUp() throws Exception {
-		String endpoint = Localstack.INSTANCE.getEndpointS3();
-		awsServiceClient = new AwsServiceClient(endpoint);
-		createBucket();
-	}
+    @BeforeEach
+    void setUp() throws Exception {
+        String endpoint = Localstack.INSTANCE.getEndpointS3();
+        awsServiceClient = new AwsServiceClient(endpoint);
+        createBucket();
+    }
 
-	@Test
-	void testStoreInS3() {
-		logger.info("Executing test...");
-		awsServiceClient.storeInS3("image1");
-		assertTrue(keyExistsInBucket(), "Object created");
-	}
+    @Test
+    void testStoreInS3() {
+        logger.info("Executing test...");
+        awsServiceClient.storeInS3("image1");
+        assertTrue(keyExistsInBucket(), "Object created");
+    }
 ```
 
 The code snippet is a JUnit Jupiter test used to test a java class to store an object in an S3 bucket.
 
-#### Configuring a Spring Boot Application using S3 and DynamoDB to use LocalStack
+#### Configuring a Spring Boot Application using [S3](https://aws.amazon.com/s3/) and [DynamoDB](https://aws.amazon.com/dynamodb/) to use LocalStack
 
 We will create a simple customer registration application using the popular [Spring Boot](https://spring.io/projects/spring-boot) framework. Our application will have an API that will take a first name, last name, email, mobile, and a profile picture. This API will save the record in DynamoDB, and store the profile picture in an S3 bucket. 
 
-We will start with creating a Spring Boot REST API using [https://start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.1.RELEASE&packaging=jar&jvmVersion=14&groupId=io.pratik&artifactId=customerregistration&name=customerregistration&description=Spring%20Boot%20with%20Dynamodb%20and%20S3%20to%20demonstrate%20LocalStack&packageName=io.pratik.customerregistration&dependencies=lombok,web) with minimum dependencies for web and Lombok. 
+We will start by creating a Spring Boot REST API using [https://start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.1.RELEASE&packaging=jar&jvmVersion=14&groupId=io.pratik&artifactId=customerregistration&name=customerregistration&description=Spring%20Boot%20with%20Dynamodb%20and%20S3%20to%20demonstrate%20LocalStack&packageName=io.pratik.customerregistration&dependencies=lombok,web) with minimum dependencies for web and Lombok. 
 
 
-Next, we add the dependencies to our pom.xml.
+Next, we add dependencies to our pom.xml.
 
 ```xml
 <dependency>
@@ -207,9 +207,9 @@ Next, we add the dependencies to our pom.xml.
     <scope>test</scope>
 </dependency>
 ```
-Here we have added two dependencies for the two AWS services - DynamoDB and S3. We also add a test scoped dependency on localstack to start the localstack container when the JUnit test starts and stop the container at the end of our test run.  
+Here we have added dependencies for the two AWS services - DynamoDB and S3. We also add a test scoped dependency on localstack to start the localstack container when the JUnit test starts and stops the container at the end of our test run.  
 
-After that we create the controller class containing the endpoint and two service classes for invoking the S3 and DynamoDB services.
+After that, we create the controller class containing the endpoint and two service classes for invoking the S3 and DynamoDB services.
 We use the default profile for real AWS services and create an additional profile named "local" for testing with LocalStack (mock AWS services). The LocalStack URL is configured in application-local.properties as shown here. 
 
 ```application-local.properties
@@ -221,33 +221,33 @@ Let us now take a look at our CustomerProfileStore class.
 ```java
 @Service
 public class CustomerProfileStore {
-	private static final String TABLE_NAME = "entities";
-	private static final Region region = Region.US_EAST_1;
-	
-	private final String awsEndpoint;
-	
-	public CustomerProfileStore(@Value("${aws.local.endpoint:#{null}}") String awsEndpoint) {
-		super();
-		this.awsEndpoint = awsEndpoint;
-	}
+    private static final String TABLE_NAME = "entities";
+    private static final Region region = Region.US_EAST_1;
+    
+    private final String awsEndpoint;
+    
+    public CustomerProfileStore(@Value("${aws.local.endpoint:#{null}}") String awsEndpoint) {
+        super();
+        this.awsEndpoint = awsEndpoint;
+    }
 
-	private DynamoDbClient getDdbClient() {
-		DynamoDbClient dynamoDB = null;;
-		try {
-			DynamoDbClientBuilder builder = DynamoDbClient.builder();
-			// awsLocalEndpoint is set only in local environments
-			if(awsEndpoint != null) {
-				// override aws endpoint with localstack URL in dev environment
-				builder.endpointOverride(new URI(awsEndpoint));
-			}
-			dynamoDB = builder.region(region).build();
-		}catch(URISyntaxException ex) {
-			log.error("Invalid url {}",awsEndpoint);
-			throw new IllegalStateException("Invalid url "+awsEndpoint,ex);
-		}
-		return dynamoDB;
-	}
-	
+    private DynamoDbClient getDdbClient() {
+        DynamoDbClient dynamoDB = null;;
+        try {
+            DynamoDbClientBuilder builder = DynamoDbClient.builder();
+            // awsLocalEndpoint is set only in local environments
+            if(awsEndpoint != null) {
+                // override aws endpoint with localstack URL in dev environment
+                builder.endpointOverride(new URI(awsEndpoint));
+            }
+            dynamoDB = builder.region(region).build();
+        }catch(URISyntaxException ex) {
+            log.error("Invalid url {}",awsEndpoint);
+            throw new IllegalStateException("Invalid url "+awsEndpoint,ex);
+        }
+        return dynamoDB;
+    }
+    
 ```
 We inject the URL of LocalStack using the variable `awsEndpoint`. The value is set only when we run our application using the local profile, else it has the default value null. 
 

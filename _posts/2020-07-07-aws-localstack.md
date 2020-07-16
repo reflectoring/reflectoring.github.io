@@ -8,7 +8,7 @@ excerpt: "Develop and test your applications using AWS services locally with Loc
 image:
   auto: 0072-aws
 ---
-During the early days of any development using AWS, we prefer to focus on writing code for our application instead of spending time on setting up the environment for accessing AWS services. We access various AWS services while building our applications - for example, upload files in S3, store some data in DynamoDb, send messages to SQS, write event handlers with lambda functions, etc.  
+During the early days of any development using AWS, we prefer to focus on writing code for our application instead of spending time on setting up the environment for accessing AWS services. We access various AWS services while building our applications - for example, upload files in S3, store some data in DynamoDB, send messages to SQS, write event handlers with lambda functions, etc.  
 
 **Setting up a development environment for using these services is complex and time-consuming.** Instead, we use [LocalStack](https://github.com/localstack/localstack) to develop and unit test our applications with mock implementations of these services. We switch to the real services only in the integration environment and beyond.
 
@@ -45,31 +45,30 @@ LocalStack is run inside a Docker container. We run LocalStack either as a Pytho
 
 #### Running LocalStack With Python
 
-We first install LocalStack using pip.
+We first install the LocalStack package using pip:
 
 ```
 pip install localstack
 ```
-We then start localstack.
+We then start localstack with the "start" command as shown below:
 ```
 localstack start
 ```
 This will start LocalStack inside a Docker container.
 
 #### Run LocalStack With Docker
- We can also run LocalStack directly as a Docker image either with the Docker run command or docker-compose.
+We can also run LocalStack directly as a Docker image either with the Docker run command or docker-compose.
 
- For running with docker, we first pull the image from the docker hub and use the docker run command need to allocate 4GB  memory.
+For running with docker, we first pull the image from the docker hub and use the docker run command. We need to allocate a minimum of 4GB  memory for the container.
 
- With Docker-compose, we start LocalStack with docker-compose using the command:
+We start LocalStack with docker-compose using the command:
 ```
 TMPDIR=/private$TMPDIR docker-compose up
 ```
-The part `TMPDIR=/private$TMPDIR` is required only in macOS.
+The part `TMPDIR=/private$TMPDIR` is required only in MacOS. We take the base version of `docker-compose.yml` from the [github repository of LocalStack](https://github.com/localstack/localstack/blob/master/docker-compose.yml) and customize it as shown in the next section or run it without changes if we prefer to use the default configuration.
 
-#### Customize services
-We customize the behavior of LocalStack by passing environment variables.
-Next, we create a `docker-compose.yml` file that we can use to start up LocalStack:
+#### Customize LocalStack
+The default behavior of LocalStack is to spin up all the [core services](https://github.com/localstack/localstack#overview) with each of them listening on port 4566. We can override this behavior of LocalStack by setting a few environment variables. The default port 4566 can be overridden by setting the environment variable EDGE_PORT. We can also configure LocalStack to spin a limited set of services by setting a comma-separated list of service names as value for the environment variable SERVICES as shown below:
 
 ```
 version: '2.1'
@@ -86,7 +85,7 @@ services:
 
 ```
 
-In `docker-compose.yml`, we set the environment variable `SERVICES` to the name of the services we want to use from our application (`s3` and `dynamodb`).
+In this `docker-compose.yml`, we set the environment variable `SERVICES` to the name of the services we want to use in our application (`S3` and `DynamoDB`). There is a quirky way to set the commonly used services used for serverless applications by setting SERVICES environment variable to "serverless".
 
 
 #### Connect With LocalStack By Overriding AWS Endpoints

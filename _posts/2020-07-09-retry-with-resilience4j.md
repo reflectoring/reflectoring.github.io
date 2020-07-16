@@ -1,8 +1,8 @@
 ---
 title: Implementing Retry with Resilience4j
 categories: [java]
-date: 2020-07-09 05:00:00 +1100
-modified: 2020-07-09 05:00:00 +1100
+date: 2020-07-16 05:00:00 +1100
+modified: 2020-07-16 05:00:00 +1100
 author: saajan
 excerpt: "Retry is a very useful pattern to handle remote operation failures. This article is a deep dive into the Resilience4j retry module and shows why, when and how to use it to build resilient applications."
 image:
@@ -134,7 +134,7 @@ Flight search successful
 [Flight{flightNumber='XY 765', flightDate='07/31/2020', from='NYC', to='LAX'}, ...]
 ```
 
-#### Working with Checked Exceptions
+### Retrying on Checked Exceptions
 
 Now, suppose we want to retry for both checked and unchecked exceptions. Let's say we're calling `FlightSearchService.searchFlightsThrowingException()` which can throw a checked `Exception`. Since a `Supplier` cannot throw a checked exception, we would get a compiler error on this line:
 

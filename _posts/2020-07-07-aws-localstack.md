@@ -69,9 +69,25 @@ The part `TMPDIR=/private$TMPDIR` is required only in macOS.
 
 ##### Customize services
 We customize the behaviour of LocalStack by passing environment variables.
+Next, we create a `docker-compose.yml` file that we can use to start up LocalStack:
 
-##### Open Issues
-I got a few errors when executing the cloudformation commands during deletiong and recreating the stack. I switched back to using 
+```
+version: '2.1'
+
+services:
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
+    image: localstack/localstack
+    ports:
+      - "4566-4599:4566-4599"
+      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+    environment:
+      - SERVICES=s3,dynamodb
+
+```
+
+In `docker-compose.yml`, we set the environment variable `SERVICES` to the name of the services we want to use from our application (`s3` and `dynamodb`).
+
 
 #### Connect With LocalStack By Overriding AWS Endpoints
 We access AWS services from the CLI or our applications using the AWS SDK (Software Development Kit).
@@ -172,24 +188,6 @@ We will create a simple customer registration application using the popular [Spr
 
 We will start with creating a Spring Boot REST API using [https://start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.1.RELEASE&packaging=jar&jvmVersion=14&groupId=io.pratik&artifactId=customerregistration&name=customerregistration&description=Spring%20Boot%20with%20Dynamodb%20and%20S3%20to%20demonstrate%20LocalStack&packageName=io.pratik.customerregistration&dependencies=lombok,web) with minimum dependencies for web and Lombok. 
 
-Next, we create a `docker-compose.yml` file that we can use to start up LocalStack:
-
-```
-version: '2.1'
-
-services:
-  localstack:
-    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
-    image: localstack/localstack
-    ports:
-      - "4566-4599:4566-4599"
-      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
-    environment:
-      - SERVICES=s3,dynamodb
-
-```
-
-In `docker-compose.yml`, we set the environment variable `SERVICES` to the name of the services we want to use from our application (`s3` and `dynamodb`).
 
 Next, we add the dependencies to our pom.xml.
 
@@ -212,8 +210,13 @@ Next, we add the dependencies to our pom.xml.
 Here we have added two dependencies for the two AWS services - DynamoDB and S3. We also add a test scoped dependency on localstack to start the localstack container when the JUnit test starts and stop the container at the end of our test run.  
 
 After that we create the controller class containing the endpoint and two service classes for invoking the S3 and DynamoDB services.
-We use the default profile for real AWS services and create an additional profile named "local" for testing with LocalStack (mock AWS services). The LocalStack URL is configured in application-local.properties. Let us take a look at our CustomerProfileStore class. 
+We use the default profile for real AWS services and create an additional profile named "local" for testing with LocalStack (mock AWS services). The LocalStack URL is configured in application-local.properties as shown here. 
 
+```application-local.properties
+aws.local.endpoint=http://localhost:4566
+```
+
+Let us now take a look at our CustomerProfileStore class. 
 
 ```java
 @Service
@@ -256,7 +259,7 @@ I created the AWS resources - S3 Bucket and DynamoDB table using a [cloudformati
 
 We start LocalStack with docker-compose using the command  as explained earlier in the section on running LocalStack with docker:
 
-We create our S3 bucket and DynamoDB table by executing our CloudFormation Template:
+Next, We will create our resources with the CloudFormation service:
 
 ```
 aws cloudformation create-stack \
@@ -265,22 +268,21 @@ aws cloudformation create-stack \
   --template-body file://sample.yaml \
   --profile localstack
 ```
-The output will look similar to the below if the command executes successfully.
-
-```
-{
-    "StackId": "arn:aws:cloudformation:us-east-1:000000000000:stack/samplestack/bb74d80d-0e02-4ddd-a2fc-b7432b22fd3a"
-}
-```
-
-After creating our resources, we will run our Spring Boot application with the local profile.
+Here we define the S3 bucket and DynamoDB table in a CloudFormation Template file - sample.yaml.
+After creating our resources, we will run our Spring Boot application with the spring profile named "local".
 ```
 java -Dspring.profiles.active=local -jar target/customerregistration-1.0.jar
 ```
 I have set 8085 as the port for my application. I tested my API by sending the request using curl. You can also use Postman or any other REST client.
 
 ```
-curl -X POST -H "Content-Type: application/json" -d '{"firstName":"Peter","lastName":"Parker", "email":"peter.parker@fox.com", "phone":"476576576", "photo":"rtruytiutiuyo"}' http://localhost:8085/customers/
+curl -X POST 
+     -H "Content-Type: application/json" 
+     -d '{"firstName":"Peter","lastName":"Parker", 
+          "email":"peter.parker@fox.com", "phone":"476576576", 
+          "photo":"rtruytiutiuyo"
+         }' 
+       http://localhost:8085/customers/
 ```
 
 Finally, we run our Spring Boot app connected to the real AWS services by switching to the default profile.

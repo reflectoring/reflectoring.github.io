@@ -12,7 +12,7 @@ During the early days of any development using AWS, we prefer to focus on writin
 
 **Setting up a development environment for using these services is complex and time-consuming.** Instead, we use [LocalStack](https://github.com/localstack/localstack) to develop and unit test our applications with mock implementations of these services. We switch to the real services only in the integration environment and beyond.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/aws" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples//tree/master/aws/localstack" %}
 
 ## Why Use LocalStack?
 The method of temporarily using dummy (or mock, fake, proxy) objects in place of actual ones is a time-tested way of running unit tests for applications having external dependencies. Most appropriately, these dummies are called [test doubles](http://xunitpatterns.com/Test%20Double.html). 
@@ -22,53 +22,28 @@ Some methods to create test doubles are:
 1. Manual - Creating and using mock objects with frameworks like Mockito during unit testing.
 2. DIY (Do It yourself) - Using a homegrown solution deployed as a service running in a separate process, or embedded in our code.
 
-**We will implement test doubles of our AWS services with LocalStack.**
-
-LocalStack gives a good alternative to both these approaches. With LocalStack, we can:
+LocalStack gives a good alternative to both these approaches.**We will implement test doubles of our AWS services with LocalStack.** With LocalStack, we can:
 
 1. run our applications without connecting to AWS.
 2. avoid the complexity of AWS configuration and focus on development.
 3. run tests in our CI/CD pipeline. 
 4. configure and test error scenarios.
 
-## Overriding AWS Endpoints
-Our usage of LocalStack revolves around two core aspects:  
+## How To Use LocalStack 
 
-1. Run LocalStack in a Docker container.
-2. Override the AWS endpoint URL with URL of LocalStack.
+**LocalStack is a Python application designed to run as an HTTP request processor while listening on specific ports.** 
 
-**LocalStack is a Python application designed to run as an HTTP request processor, listening on specific ports.** We run the Docker image of LocalStack.
 
-We access AWS services from the CLI or our applications using the AWS SDK (Software Development Kit).
+Our usage of LocalStack is centered around two tasks:  
 
-The AWS SDK (Software Development Kit) and CLI are an integral part of our toolset for building applications with AWS services. The SDK provides client libraries in all the popular programming languages like java, Node js, or Python for accessing various AWS services. 
+1. Running LocalStack inside a Docker container.
+2. Overriding the AWS endpoint URL with the URL of LocalStack.
 
-Both the AWS SDK and the CLI give an option of overriding the URL of the AWS API in the local environment for connecting to LocalStack.
+### Running LocalStack
 
-We do this in AWS CLI using commands like this:
-```
-aws --endpointurl http://localhost:4956 kinesis list-streams
-```
+LocalStack is run inside a Docker container. We run LocalStack either as a Python application using our local Python installation or by directly using it's Docker image. 
 
-Executing this command will send the requests to localhost on port 4956 instead of to the real AWS endpoint.
-
-We can do this similarly in the SDK:
- 
-```java
-URI endpointOverride = new URI("http://localhost:4566");
-S3Client s3 = S3Client.builder()
-  .endpointOverride(endpointOverride )  // Overriding the endpoint
-  .region(region)
-  .build();
-```
-
-Here, we have overridden the endpoint to S3.
-
-## Running LocalStack
-
-We run LocalStack either as a Python application using our local Python installation or alternately using a Docker image. 
-
-### Run With Python
+#### Running LocalStack With Python
 
 We first install LocalStack using pip.
 
@@ -81,7 +56,7 @@ localstack start
 ```
 This will start LocalStack inside a Docker container.
 
-### Run With Docker
+#### Run With Docker
  We can also run LocalStack directly as a Docker image either with the Docker run command or docker-compose.
 
  For running with docker, we first pull the image from dockerhub and use docker run command need to allocate 4GB  memory.
@@ -92,27 +67,56 @@ TMPDIR=/private$TMPDIR docker-compose up
 ```
 The part `TMPDIR=/private$TMPDIR` is required only in macOS.
 
-### Customize services
+#### Customize services
 
-### Open Issues
+#### Open Issues
+I did get few errors when executing the cloudformation commands.
+
+### Overriding AWS Endpoints
+We access AWS services from the CLI or our applications using the AWS SDK (Software Development Kit).
+
+The AWS SDK (Software Development Kit) and CLI are an integral part of our toolset for building applications with AWS services. The SDK provides client libraries in all the popular programming languages like Java, Node js, or Python for accessing various AWS services. 
+
+Both the AWS SDK and the CLI provide an option of overriding the URL of the AWS API. We usually use this to specify the URL of our proxy server when weconnecting to AWS services from behind a corporate proxy server. We will use this same feature in our local environment for connecting to LocalStack.
+
+We do this in the AWS CLI using commands like this:
+```
+aws --endpointurl http://localhost:4956 kinesis list-streams
+```
+
+Executing this command will send the requests to the URL of LocalStack specified as the value of endpointurl command line parameter (localhost on port 4956) instead of the real AWS endpoint.
+
+We adopt a similar approach when using the SDK.
+ 
+```java
+URI endpointOverride = new URI("http://localhost:4566");
+S3Client s3 = S3Client.builder()
+  .endpointOverride(endpointOverride )  // Overriding the endpoint
+  .region(region)
+  .build();
+```
+
+Here, we have overridden AWS endpoint of S3 by providing the value of URL of LocalStack as the value of endpointOverride method in the [S3ClientBuilder](https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/services/s3/S3ClientBuilder.html) class.
+
+
 
 
 ## Running CLI Commands Against LocalStack
 
 ### Create a Profile for the AWS CLI
-We start by creating a profile for the AWS CLI so that we can later use the AWS CLI against the services provided by LocalStack:
+We start by creating a fake profile in the AWS CLI so that we can later use the AWS CLI for invoking the services provided by LocalStack:
 
 ```
 aws configure --profile localstack
 ```
 
-Here we create a profile named `localstack`. You can use any other name. 
-Provide any value you like for AWS Access Key and Secret Access Key and a valid AWS region like `us-east-1`, but don't leave them blank. 
+Here we create a profile named `localstack`. Any other name can be provided. 
+Provide any value you like for AWS Access Key and Secret Access Key and a valid AWS region like `us-east-1`, but donot leave them blank. 
 
 Unlike AWS, LocalStack does not validate these credentials but complains if no profile is set. So far, it is just like any other AWS profile which we will use to work with LocalStack.
 
 ### Execute CLI Commands
-With our profile created, we execute CLI commands by passing an additional parameter for overriding the endpoint URL:
+With our profile created, we execute the AWS CLI commands by passing an additional parameter for overriding the endpoint URL:
 ```
 aws s3 --endpoint-url http://localhost:4566 create-bucket io.pratik.mybucket
 ```

@@ -8,11 +8,11 @@ excerpt: "This article describes LocalStack as a useful aid to test your AWS ser
 image:
   auto: 0072-aws
 ---
-During the initial days of any development using AWS, we prefer to focus on writing code for our application instead of spending time on setting up the environment for accessing AWS services. We access various AWS services while building our applications - for example, upload files in S3, store some data in DynamoDb, send messages to SQS, etc.  
+During the early days of any development using AWS, we prefer to focus on writing code for our application instead of spending time on setting up the environment for accessing AWS services. We access various AWS services while building our applications - for example, upload files in S3, store some data in DynamoDb, send messages to SQS, write event handlers with lambda functions, etc.  
 
 **Setting up a development environment for using these services is complex and time-consuming.** Instead, we use [LocalStack](https://github.com/localstack/localstack) to develop and unit test our applications with mock implementations of these services. We switch to the real services only in the integration environment and beyond.
 
-{% include github-project.html url="https://github.com/pratikdas/localstack" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/aws" %}
 
 ## Why Use LocalStack?
 The method of temporarily using dummy (or mock, fake, proxy) objects in place of actual ones is a time-tested way of running unit tests for applications having external dependencies. Most appropriately, these dummies are called [test doubles](http://xunitpatterns.com/Test%20Double.html). 
@@ -91,6 +91,10 @@ This will start LocalStack inside a Docker container.
 TMPDIR=/private$TMPDIR docker-compose up
 ```
 The part `TMPDIR=/private$TMPDIR` is required only in macOS.
+
+### Customize services
+
+### Open Issues
 
 
 ## Running CLI Commands Against LocalStack

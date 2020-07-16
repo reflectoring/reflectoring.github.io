@@ -134,6 +134,8 @@ Flight search successful
 [Flight{flightNumber='XY 765', flightDate='07/31/2020', from='NYC', to='LAX'}, ...]
 ```
 
+#### Working with Checked Exceptions
+
 Now, suppose we want to retry for both checked and unchecked exceptions. Let's say we're calling `FlightSearchService.searchFlightsThrowingException()` which can throw a checked `Exception`. Since a `Supplier` cannot throw a checked exception, we would get a compiler error on this line:
 
 ```

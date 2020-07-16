@@ -253,7 +253,7 @@ We inject the URL of LocalStack using the variable `awsEndpoint`. The value is s
 
 In the method `getDdbClient()`, we pass this variable to the `endpointOverride()` method in the DynamoDbClientBuilder class only if the variable awsLocalEndpoint has a value which is the case when using the local profile.
 
-I created the AWS resources - S3 Bucket and DynamoDB table using a [cloudformation template](https://github.com/pratikdas/localstack/blob/master/cloudformation/sample.yaml). I prefer this approach instead of creating the resources individually from the console. It allows me to create and clean up all the resources with a single command at the end of the exercise following IAC principles.
+I created the AWS resources - S3 Bucket and DynamoDB table using a [cloudformation template](https://github.com/thombergs/code-examples//tree/master/aws/localstack/cloudformation/sample.yaml). I prefer this approach instead of creating the resources individually from the console. It allows me to create and clean up all the resources with a single command at the end of the exercise following IAC principles.
 
 #### Running the Spring Boot application
 
@@ -292,4 +292,4 @@ Finally, we run our Spring Boot app connected to the real AWS services by switch
 
 We saw how to use LocalStack for testing the integration of our application with AWS services locally. Localstack also has an enterprise version available with more services. I hope this will help you to feel empowered and have more fun while working with AWS services during development. Ultimately leading to higher productivity, shorter development cycles, and lower AWS cloud bills.
 
-You can refer to all the source code used in the article in my [Github repository](https://github.com/pratikdas/localstack).
+You can refer to all the source code used in the article in my [Github repository](https://github.com/thombergs/code-examples/tree/master/aws/localstack).

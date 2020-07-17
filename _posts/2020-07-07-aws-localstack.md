@@ -149,7 +149,7 @@ aws cloudformation create-stack \
   --profile localstack
 ```
 
-#### Running JUnit Tests Against LocalStack
+#### Running JUnit Tests With LocalStack
 If we want to run tests against the AWS APIs, we can do this from within a JUnit test.
 
 **At the start of a test, we start LocalStack as a Docker container on a random port and after all tests have finished execution we stop it again:** 
@@ -181,14 +181,15 @@ class AwsServiceClientTest {
     }
 ```
 
-The code snippet is a JUnit Jupiter test used to test a java class to store an object in an S3 bucket.
+The code snippet is a JUnit Jupiter test used to test a java class to store an object in an S3 bucket. LocalstackDockerExtension in the `ExtendsWith` annotation is the JUnit test runner that pulls and runs the latest localstack docker image and stops the container when tests are complete. 
+The container is configured to spin up S3 and DynamoDB services with the @LocalstackDockerProperties annotation. 
+Please note that the LocalStack endpoint is allocated dynamically and is accessed using methods in the form of  Localstack.INSTANCE.getEndpointS3 in our setup method. Similarly, we use Localstack.INSTANCE.getEndpointDynamoDB to access the dynamically allocated port for DynamoDB.
 
 #### Configuring a Spring Boot Application using [S3](https://aws.amazon.com/s3/) and [DynamoDB](https://aws.amazon.com/dynamodb/) to use LocalStack
 
 We will create a simple customer registration application using the popular [Spring Boot](https://spring.io/projects/spring-boot) framework. Our application will have an API that will take a first name, last name, email, mobile, and a profile picture. This API will save the record in DynamoDB, and store the profile picture in an S3 bucket. 
 
-We will start by creating a Spring Boot REST API using [https://start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.1.RELEASE&packaging=jar&jvmVersion=14&groupId=io.pratik&artifactId=customerregistration&name=customerregistration&description=Spring%20Boot%20with%20Dynamodb%20and%20S3%20to%20demonstrate%20LocalStack&packageName=io.pratik.customerregistration&dependencies=lombok,web) with minimum dependencies for web and Lombok. 
-
+We will start by creating a Spring Boot REST API using [https://start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.1.RELEASE&packaging=jar&jvmVersion=14&groupId=io.pratik&artifactId=customerregistration&name=customerregistration&description=Spring%20Boot%20with%20Dynamodb%20and%20S3%20to%20demonstrate%20LocalStack&packageName=io.pratik.customerregistration&dependencies=lombok,web) with minimum dependencies for web and [Lombok](https://projectlombok.org/features/all). 
 
 Next, we add dependencies to our pom.xml.
 

@@ -8,9 +8,11 @@ excerpt: "Develop and test your applications using AWS services locally with Loc
 image:
   auto: 0072-aws
 ---
-During the early days of any development using AWS, we prefer to focus on writing code for our application instead of spending time on setting up the environment for accessing AWS services. We access various AWS services while building our applications - for example, upload files in S3, store some data in DynamoDB, send messages to SQS, write event handlers with lambda functions, etc.  
+In the early days of development using AWS, we prefer to focus on writing application code instead of spending time on setting up the environment for accessing AWS services. While building our applications, we access various AWS services  - for example, upload files in S3, store some data in DynamoDB, send messages to SQS, write event handlers with lambda functions, etc.  
 
-**Setting up a development environment for using these services is complex and time-consuming.** Instead, we use [LocalStack](https://github.com/localstack/localstack) to develop and unit test our applications with mock implementations of these services. We switch to the real services only in the integration environment and beyond.
+**Setting up a development environment for using these services requires creating different infrastructure resources coupled with giving the right level of access following the principles of least privilege.** To avoid getting bogged down by these mundane tasks, we use [LocalStack](https://github.com/localstack/localstack) to develop and unit test our applications with mock implementations of these services. 
+
+Simply put, LocalStack is an open-source test framework for developing applications with mock AWS services. It provides a testing environment on our local machine with the same APIs as real AWS. We switch to the real AWS services only in the integration environment and beyond.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples//tree/master/aws/localstack" %}
 
@@ -289,6 +291,6 @@ Finally, we run our Spring Boot app connected to the real AWS services by switch
 
 ## Summary
 
-We saw how to use LocalStack for testing the integration of our application with AWS services locally. Localstack also has an enterprise version available with more services. I hope this will help you to feel empowered and have more fun while working with AWS services during development. Ultimately leading to higher productivity, shorter development cycles, and lower AWS cloud bills.
+We saw how to use LocalStack for testing the integration of our application with AWS services locally. Localstack also has an [enterprise version](https://localstack.cloud/#pricing) available with more services and features. I hope this will help you to feel empowered and have more fun while working with AWS services during development. Ultimately leading to higher productivity, shorter development cycles, and lower AWS cloud bills.
 
 You can refer to all the source code used in the article in my [Github repository](https://github.com/thombergs/code-examples/tree/master/aws/localstack).

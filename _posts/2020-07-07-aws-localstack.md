@@ -12,7 +12,7 @@ In the early days of development using AWS, we prefer to focus on writing applic
 
 **Setting up a development environment for using these services requires creating different infrastructure resources coupled with giving the right level of access following the principles of least privilege.** To avoid getting bogged down by these mundane tasks, we use [LocalStack](https://github.com/localstack/localstack) to develop and unit test our applications with mock implementations of these services. 
 
-Simply put, LocalStack is an open-source test framework for developing applications with mock AWS services. It provides a testing environment on our local machine with the same APIs as real AWS. We switch to the real AWS services only in the integration environment and beyond.
+Simply put, **LocalStack is an open-source test framework for developing applications with mock AWS services. It provides a testing environment on our local machine with the same APIs as real AWS.** We switch to the real AWS services only in the integration environment and beyond.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples//tree/master/aws/localstack" %}
 

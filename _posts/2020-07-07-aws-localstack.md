@@ -8,11 +8,11 @@ excerpt: "Develop and test your applications using AWS services locally with Loc
 image:
   auto: 0072-aws
 ---
-In the early days of development using AWS, we prefer to focus on writing application code instead of spending time on setting up the environment for accessing AWS services. While building our applications, we access various AWS services  - for example, upload files in S3, store some data in DynamoDB, send messages to SQS, write event handlers with lambda functions, etc.  
+When we build applications with AWS, we access various AWS services for multiple purposes: store files in S3, save some data in DynamoDB, send messages to SQS, write event handlers with lambda functions, and many others. In the early days of development, we prefer to focus on writing application code instead of spending time on setting up the environment for accessing AWS services. 
 
 **Setting up a development environment for using these services requires creating different infrastructure resources coupled with giving the right level of access following the principles of least privilege.** To avoid getting bogged down by these mundane tasks, we use [LocalStack](https://github.com/localstack/localstack) to develop and unit test our applications with mock implementations of these services. 
 
-Simply put, **LocalStack is an open-source test framework for developing applications with mock AWS services. It provides a testing environment on our local machine with the same APIs as real AWS.** We switch to the real AWS services only in the integration environment and beyond.
+Simply put, **LocalStack is an open-source test framework for developing applications with mock AWS services. It provides a testing environment on our local machine with the same APIs as real AWS.** We switch to using the real AWS services only in the integration environment and beyond.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples//tree/master/aws/localstack" %}
 

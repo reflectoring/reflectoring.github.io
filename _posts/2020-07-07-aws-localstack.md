@@ -70,7 +70,7 @@ TMPDIR=/private$TMPDIR docker-compose up
 The part `TMPDIR=/private$TMPDIR` is required only in MacOS. We take the base version of `docker-compose.yml` from the [github repository of LocalStack](https://github.com/localstack/localstack/blob/master/docker-compose.yml) and customize it as shown in the next section or run it without changes if we prefer to use the default configuration.
 
 #### Customize LocalStack
-The default behavior of LocalStack is to spin up all the [core services](https://github.com/localstack/localstack#overview) with each of them listening on port 4566. We can override this behavior of LocalStack by setting a few environment variables. The default port 4566 can be overridden by setting the environment variable EDGE_PORT. We can also configure LocalStack to spin a limited set of services by setting a comma-separated list of service names as value for the environment variable SERVICES as shown below:
+The default behavior of LocalStack is to spin up all the [supported services](https://github.com/localstack/localstack#overview) with each of them listening on port 4566. We can override this behavior of LocalStack by setting a few environment variables. The default port 4566 can be overridden by setting the environment variable EDGE_PORT. We can also configure LocalStack to spin a limited set of services by setting a comma-separated list of service names as value for the environment variable SERVICES as shown below:
 
 ```
 version: '2.1'
@@ -128,7 +128,7 @@ Here, we have overridden the AWS endpoint of S3 by providing the value of the UR
 aws configure --profile localstack
 ```
 
-Here we create a profile named `localstack`. Any other name can be provided. 
+Here we create a profile named `localstack`. Any other name can be provided instead of `localstack`. 
 Provide any value you like for AWS Access Key and Secret Access Key and a valid AWS region like `us-east-1`, but do not leave them blank. 
 
 Unlike AWS, LocalStack does not validate these credentials but complains if no profile is set. So far, it is just like any other AWS profile which we will use to work with LocalStack.
@@ -148,6 +148,8 @@ aws cloudformation create-stack \
   --template-body file://sample.yaml \
   --profile localstack
 ```
+
+Similarly, we can run CLI commans for all the [services](https://github.com/localstack/localstack#overview) supported and spun up by our instance of LocalStack.
 
 #### Running JUnit Tests With LocalStack
 If we want to run tests against the AWS APIs, we can do this from within a JUnit test.
@@ -255,7 +257,7 @@ We inject the URL of LocalStack using the variable `awsEndpoint`. The value is s
 
 In the method `getDdbClient()`, we pass this variable to the `endpointOverride()` method in the DynamoDbClientBuilder class only if the variable awsLocalEndpoint has a value which is the case when using the local profile.
 
-I created the AWS resources - S3 Bucket and DynamoDB table using a [cloudformation template](https://github.com/thombergs/code-examples//tree/master/aws/localstack/cloudformation/sample.yaml). I prefer this approach instead of creating the resources individually from the console. It allows me to create and clean up all the resources with a single command at the end of the exercise following IAC principles.
+I created the AWS resources - S3 Bucket and DynamoDB table using a [cloudformation template](https://github.com/thombergs/code-examples//tree/master/aws/localstack/cloudformation/sample.yaml). I prefer this approach instead of creating the resources individually from the console. It allows me to create and clean up all the resources with a single command at the end of the exercise following the principles of Infrastructure as Code.
 
 #### Running the Spring Boot application
 

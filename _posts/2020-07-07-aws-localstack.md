@@ -10,7 +10,7 @@ image:
 ---
 When we build applications with AWS, we access various AWS services for multiple purposes: store files in S3, save some data in DynamoDB, send messages to SQS, write event handlers with lambda functions, and many others. 
 
-However, in the early days of development, we prefer to focus on writing application code instead of spending time on setting up the environment for accessing AWS services. **Setting up a development environment for using these services os time-consuming and costly.** 
+However, in the early days of development, we prefer to focus on writing application code instead of spending time on setting up the environment for accessing AWS services. **Setting up a development environment for using these services is time-consuming and incurs unwanted cost.** 
 
 To avoid getting bogged down by these mundane tasks, we can use [LocalStack](https://github.com/localstack/localstack) to develop and test our applications with mock implementations of these services. 
 
@@ -21,7 +21,7 @@ Simply put, **LocalStack is an open-source test framework for developing applica
 ## Why Use LocalStack?
 The method of temporarily using dummy (or mock, fake, proxy) objects in place of actual ones is a popular way of running tests for applications with external dependencies. Most appropriately, these dummies are called [test doubles](http://xunitpatterns.com/Test%20Double.html). 
 
-**With LocalStack, we'll implement test doubles of our AWS services with LocalStack.** LocalStack supports:
+**With LocalStack, we will implement test doubles of our AWS services with LocalStack.** LocalStack supports:
 
 1. running our applications without connecting to AWS.
 2. avoiding the complexity of AWS configuration and focus on development.
@@ -56,7 +56,7 @@ This will start LocalStack inside a Docker container.
 ### Running LocalStack With Docker
 We can also run LocalStack directly as a Docker image either with the Docker run command or with `docker-compose`.
 
-We'll use `docker-compose`. For that, we download the base version of `docker-compose.yml` from the [GitHub repository of LocalStack](https://github.com/localstack/localstack/blob/master/docker-compose.yml) and customize it as shown in the next section or run it without changes if we prefer to use the default configuration:
+We will use `docker-compose`. For that, we download the base version of `docker-compose.yml` from the [GitHub repository of LocalStack](https://github.com/localstack/localstack/blob/master/docker-compose.yml) and customize it as shown in the next section or run it without changes if we prefer to use the default configuration:
 
 ```
 TMPDIR=/private$TMPDIR docker-compose up
@@ -91,7 +91,7 @@ We access AWS services via the AWS CLI or from our applications using the AWS SD
 
 The AWS SDK and CLI are an integral part of our toolset for building applications with AWS services. The SDK provides client libraries in all the popular programming languages like Java, Node js, or Python for accessing various AWS services. 
 
-Both the AWS SDK and the CLI provide an option of overriding the URL of the AWS API. We usually use this to specify the URL of our proxy server when connecting to AWS services from behind a corporate proxy server. We'll use this same feature in our local environment for connecting to LocalStack.
+Both the AWS SDK and the CLI provide an option of overriding the URL of the AWS API. We usually use this to specify the URL of our proxy server when connecting to AWS services from behind a corporate proxy server. We will use this same feature in our local environment for connecting to LocalStack.
 
 We do this in the AWS CLI using commands like this:
 ```
@@ -194,7 +194,7 @@ Note that the LocalStack endpoint is allocated dynamically and is accessed using
 
 ### Configuring a Spring Boot Application to Use LocalStack
 
-Now, we'll create a simple customer registration application using the popular [Spring Boot](https://spring.io/projects/spring-boot) framework. Our application will have an API that will take a first name, last name, email, mobile, and a profile picture. This API will save the record in DynamoDB, and store the profile picture in an S3 bucket. 
+Now, we will create a simple customer registration application using the popular [Spring Boot](https://spring.io/projects/spring-boot) framework. Our application will have an API that will take a first name, last name, email, mobile, and a profile picture. This API will save the record in DynamoDB, and store the profile picture in an S3 bucket. 
 
 We start by creating a Spring Boot REST API using [https://start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.1.RELEASE&packaging=jar&jvmVersion=14&groupId=io.pratik&artifactId=customerregistration&name=customerregistration&description=Spring%20Boot%20with%20Dynamodb%20and%20S3%20to%20demonstrate%20LocalStack&packageName=io.pratik.customerregistration&dependencies=lombok,web) with dependencies to the web and [Lombok](https://projectlombok.org/features/all) modules. 
 

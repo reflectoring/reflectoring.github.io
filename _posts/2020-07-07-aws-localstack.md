@@ -264,7 +264,7 @@ We inject the URL of LocalStack from the configuration parameter `aws.local.endp
 
 In the method `getDdbClient()`, we pass this variable to the `endpointOverride()` method in the DynamoDbClientBuilder class only if the variable `awsLocalEndpoint` has a value which is the case when using the local profile.
 
-I created the AWS resources - S3 Bucket and DynamoDB table using a [cloudformation template](https://github.com/thombergs/code-examples/tree/master/aws/localstack/cloudformation/sample.yaml). I prefer this approach instead of creating the resources individually from the console. It allows me to create and clean up all the resources with a single command at the end of the exercise following the principles of Infrastructure as Code.
+I created the AWS resources - S3 Bucket and DynamoDB table using a [cloudformation template](https://github.com/thombergs/code-examples/tree/master/aws/localstack/sample.yaml). I prefer this approach instead of creating the resources individually from the console. It allows me to create and clean up all the resources with a single command at the end of the exercise following the principles of Infrastructure as Code.
 
 ### Running the Spring Boot Application
 
@@ -280,7 +280,7 @@ aws cloudformation create-stack \
   --profile localstack
 ```
 
-Here we define the S3 bucket and DynamoDB table in a CloudFormation Template file - [sample.yaml](https://github.com/thombergs/code-examples/tree/master/aws/localstack/cloudformation/sample.yaml).
+Here we define the S3 bucket and DynamoDB table in a CloudFormation Template file - [sample.yaml](https://github.com/thombergs/code-examples/tree/master/aws/localstack/sample.yaml).
 After creating our resources, we run our Spring Boot application with the spring profile named "local":
 
 ```
@@ -294,7 +294,7 @@ curl -X POST
      -H "Content-Type: application/json" 
      -d '{"firstName":"Peter","lastName":"Parker", 
           "email":"peter.parker@fox.com", "phone":"476576576", 
-          "photo":"rtruytiutiuyo"
+          "photo":"iVBORw0KGgo...AAAASUVORK5CYII="
          }' 
        http://localhost:8085/customers/
 ```

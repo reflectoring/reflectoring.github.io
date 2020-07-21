@@ -113,3 +113,6 @@
 - author: Nicole Forsgren, Jez Humble, and Gene Kim
   publication: Accelerate
   text: "The best thing you can do for your products, your company, and your people is institute a culture of experimentation and learning, and invest in the technical and management capabilities that enable it."
+- author: Michael Feathers
+  publication: https://blogs.itemis.com/en/unit-tests-are-tests-of-modularity
+  text: "With modularity, quality follows."

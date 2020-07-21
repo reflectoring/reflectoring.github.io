@@ -1,8 +1,8 @@
 ---
-title: "Local development with AWS on LocalStack"
+title: "Local Development with AWS on LocalStack"
 categories: [craft]
-date: 2020-06-30 06:00:00 +1100
-modified: 2020-06-30 06:00:00 +1100
+date: 2020-07-27 06:00:00 +1000
+modified: 2020-07-27 06:00:00 +1000
 author: pratikdas
 excerpt: "Developing a Spring Boot App Against AWS Services with LocalStack"
 image:
@@ -10,11 +10,11 @@ image:
 ---
 When we build applications with AWS, we access various AWS services for multiple purposes: store files in S3, save some data in DynamoDB, send messages to SQS, write event handlers with lambda functions, and many others. 
 
-However, in the early days of development, we prefer to focus on writing application code instead of spending time on setting up the environment for accessing AWS services. **Setting up a development environment for using these services is time-consuming and incurs unwanted cost.** 
+However, in the early days of development, we prefer to focus on writing application code instead of spending time on setting up the environment for accessing AWS services. **Setting up a development environment for using these services is time-consuming and incurs unwanted cost with AWS.** 
 
 To avoid getting bogged down by these mundane tasks, we can use [LocalStack](https://github.com/localstack/localstack) to develop and test our applications with mock implementations of these services. 
 
-Simply put, **LocalStack is an open-source test framework for developing applications against mock AWS services. It provides a testing environment on our local machine with the same APIs as the real AWS services.** We switch to using the real AWS services only in the integration environment and beyond.
+Simply put, **LocalStack is an open-source mock of the real AWS services. It provides a testing environment on our local machine with the same APIs as the real AWS services.** We switch to using the real AWS services only in the integration environment and beyond.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/localstack" %}
 

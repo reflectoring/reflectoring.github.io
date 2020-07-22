@@ -1,0 +1,14 @@
+name: Trigger Netlify Build
+on:
+  schedule:
+    # Run at 20:00 every day UTC (6:00 Sydney time)
+    - cron: '0 20 * * *'
+jobs:
+  build:
+    name: Trigger Netlify build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Curl request
+        env:
+          NETLIFY_DEPLOY_URL: ${{ secrets.NETLIFY_DEPLOY_URL }}
+        run: curl -X POST -d {} $NETLIFY_DEPLOY_URL

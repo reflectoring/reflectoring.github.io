@@ -14,5 +14,5 @@ Please re-read your article a day or so after you finished writing it and work t
 - [ ] code examples are formatted to avoid horizontal scrolling (manual line breaks and 2-spaces indentation)
 - [ ] the text has been checked with [Grammarly](https://grammarly.com) (the free tier is enough)
 
-**Feel free to raise the PR even if the checklist hasn't been worked through, yet**, to take advantage of the preview that is generated for each pull request (see "deploy/netlify" under "Show all checks"). Bu please only flag it to be reviewed after going through the checklist above.
+**Feel free to raise the PR even if the checklist hasn't been worked through, yet**, to take advantage of the preview that is generated for each pull request (see "deploy/netlify" under "Show all checks"). But please only flag it to be reviewed after going through the checklist above.
 

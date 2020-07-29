@@ -1,8 +1,8 @@
 ---
 title: Request-Response Pattern with Spring AMQP
 categories: [spring-boot]
-date: 2020-07-26 05:00:00 +1100
-modified: 2020-07-26 05:00:00 +1100
+date: 2020-07-29 05:00:00 +1100
+modified: 2020-07-29 05:00:00 +1100
 author: artur
 excerpt: "The response-request pattern is normally used for synchronous communication with one channel. It is possible to build it with asynchronous messaging mechanism."
 image:

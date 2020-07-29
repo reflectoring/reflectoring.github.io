@@ -12,7 +12,7 @@ image:
 The Request-Response pattern is well-known and widely used. This article shows how to implement 
 this pattern with a message broker using AMQP protocol and Spring Boot.  
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/cache" %}
+{% include github-project.html url="https://github.com/arkuksin/code-examples/tree/request-response" %}
 
 ## What is the Request-Response pattern?
 The request-response interaction between two parties is pretty easy. The client sends the request to the

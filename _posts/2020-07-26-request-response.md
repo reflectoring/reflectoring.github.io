@@ -16,7 +16,7 @@ this pattern with a message broker using AMQP protocol and Spring Boot.
 
 ## What is the Request-Response pattern?
 The request-response interaction between two parties is pretty easy. The client sends the request to the
-server, the server starts the procession and sends the response to the client, when the procession is done.
+server, the server starts the work and sends the response to the client, when the work is done.
 The most known example of this interaction is the communication over HTTP protocol, where the request and response are sent through the same channel.
 Normally the client sends the request directly to the server.
 In this case, the client has to know the API of the server. 
@@ -209,7 +209,7 @@ If we have several threads on the client-side, that are working in parallel and 
 or if we have several methods, that use the same response channel, or even if we have many instances of the 
 client, the Spring AMQP will always correlate the response message to the sender.
 
-That's it. Now the client can call a method and start with it the procession on the server-side.
+That's it. Now the client can call a method and start with it the work on the server-side.
 From the client perspective, it is a normal blocking remote call.
 
 ### Retrieving a Aynchronous Result Later

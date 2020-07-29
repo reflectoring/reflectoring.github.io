@@ -21,7 +21,7 @@ The most known example of this interaction is the communication over HTTP protoc
 Normally the client sends the request directly to the server.
 In this case, the client has to know the API of the server. 
 
-## Why do we need the Response-Request pattern.
+## Why do we need the Response-Request pattern?
 A software enterprise system often consists of many components.
 These components communicate with each other. Sometimes it is enough just to fire the event. But some components need to get the response to the request.
 When we use direct synchronous communication, the client has to know the
@@ -30,7 +30,7 @@ them, and the whole picture can become unclear. We can use a message broker as a
 for communication between the client and the server.
 
 ## Asynchronous Communication
-Since we use messaging for the requests and responses, the communication is working asynchronously.
+Since we use messaging for requests and responses, the communication is working asynchronously.
 Let's have a look at how to implement the request-response communication with its asynchronous nature. 
 These steps should be done:
 1. The client sends the request to the request channel.
@@ -48,8 +48,8 @@ add it to the response. Now the client is able to assign a response to its reque
 
 It's important to do two steps.
 
-* Create two channels. One for requests and one for the response.
-* Use correlation id on both ends of the communication.
+* Create two channels. One for requests and one for responses.
+* Use a correlation id on both ends of the communication.
 
 Another point we have to note is that the client has to have a state.
 The clients generate a unique correlation id, for example `my unique id`.
@@ -206,7 +206,7 @@ the value of the correlation id.
 
 The client will get this response from the callback queue, read the correlation id, and continue working.
 If we have several threads on the client-side, that are working in parallel and sending requests,
-or if we have several methods, that use the same response channel, or even if we have many instances of the 
+or if we have several methods, that use the same request channel, or even if we have many instances of the 
 client, the Spring AMQP will always correlate the response message to the sender.
 
 That's it. Now the client can call a method and start with it the work on the server-side.
@@ -305,7 +305,7 @@ public class StatefulCallbackClient {
 We declare `RabbitConverterFuture` as return type of the method `convertSendAndReceiveAsType()`.
 Then we add an `ListenableFutureCallback` to the `RabbitConverterFuture`.
 From this place, we can continue proceeding without waiting for the response. The `ListenableFutureCallback`
-will be called, when the response is in the queue.
+will be called, when the response is in the callback queue.
 
 Both approaches with using a `ListenableFuture` and registering a callback doesn't require
 changes on the server-side. 
@@ -313,12 +313,12 @@ changes on the server-side.
 ### Delayed Response with Separated Listener. 
 
 All these approaches work fine with Spring AMQP and RabbitMQ, but there are cases when they have a drawback.
-The client always has a state. It means if the client sends a response, the client has to keep the correlation id in memory
+The client always has a state. It means if the client sends a request, the client has to keep the correlation id in memory
 and assign the response to the request. 
 
 **It means, only the sender of the request can get the response.**
 
-Let's say we have many instances of the client. One instance sends a response to the server and this instance, unfortunately,
+Let's say we have many instances of the client. One instance sends a request to the server and this instance, unfortunately,
 crashes for some
 reasons and is not available anymore. The response cannot be proceeded anymore and is lost.
 Also, the server can take longer than usually for proceeding request and clients
@@ -383,12 +383,12 @@ It is important to add the information about the correlation id and the response
 The server will read this information and send the response to the response queue.
 We do it by using the `MessagePostProcessor`.  With `MessagePostProcessor` we can change
 the header if the message or message properties after the conversation. In this case,
-we add the correlation id we saved in the database and the name of the repose queue.
+we add the correlation id we saved in the database and the name of the response queue.
 
 **The request message has all data to proceed on the server-side properly, so we don't nee change
 anything on the server-side**
 
-Now we implement the listener, that listening to the response queue.
+Now we implement the listener, that is listening to the response queue.
 
 ````java
 @Component

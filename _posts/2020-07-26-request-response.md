@@ -21,7 +21,7 @@ The most known example of this interaction is the communication over HTTP protoc
 Normally the client sends the request directly to the server.
 In this case, the client has to know the API of the server. 
 
-# Why do we need the Response-Request pattern.
+## Why do we need the Response-Request pattern.
 A software enterprise system often consists of many components.
 These components communicate with each other. Sometimes it is enough just to fire the event. But some components need to get the response to the request.
 When we use direct synchronous communication, the client has to know the
@@ -62,14 +62,14 @@ On other hand, the server is still stateless. The server just reads the correlat
 and sends it to the response channel back.
    
 
-## Remote Procedure Call with AMQP
+### Remote Procedure Call with AMQP
 Now let's see how we can implement this asynchronous communication with Spring Boot as client and server, and RabbitMQ
 as a message broker. 
 Let's create two Spring Boot applications. A client application, that sends the request to the server and waits for 
 the response and a server application, that accept the request, processes it, and sent the response back to the client.
 We will also use Spring AMQP framework for sending and receiving messages.
 
-### Client
+#### Client
 First, we have to add the AMQP starter to the dependencies (Gradle notation)
 ````groovy
 implementation 'org.springframework.boot:spring-boot-starter-amqp:2.3.2.RELEASE'
@@ -138,7 +138,7 @@ server too. It is transparent for the caller.
 Since we configured `MessageConverter` in the configuration above,
 it will be used by the template and the `carDto` will be sent as JSON to the channel.
 
-### Server
+#### Server
 Now let's create a server application to proceed with the request and create the response.
 First, we create a configuration for the server.
 
@@ -212,7 +212,7 @@ client, the Spring AMQP will always correlate the response message to the sender
 That's it. Now the client can call a method and start with it the procession on the server-side.
 From the client perspective, it is a normal blocking remote call.
 
-## Retrieving a Aynchronous Result Later
+### Retrieving a Aynchronous Result Later
 
 Normally the APIs are fast, and the client expects the response after a few milliseconds or seconds.
 But there are cases when the server takes longer to send the response. It can be because of security policies,
@@ -270,7 +270,7 @@ can execute other code and then call the method `get()` on the `ListenableFuture
 the response from the server. If we call the method `get` and the response is not returned,
 we still have to wait and cannot execute further code.
 
-## Registering Callback
+### Registering Callback
 To avoid blocking call we can register a callback, that is called asynchronously when the response message
 is received. The `AsyncRabbitTemplate` supports this approach.
 
@@ -310,7 +310,7 @@ will be called, when the response is in the queue.
 Both approaches with using a `ListenableFuture` and registering a callback doesn't require
 changes on the server-side. 
 
-## Delayed Response with Separated Listener. 
+### Delayed Response with Separated Listener. 
 
 All these approaches work fine with Spring AMQP and RabbitMQ, but there are cases when they have a drawback.
 The client always has a state. It means if the client sends a response, the client has to keep the correlation id in memory

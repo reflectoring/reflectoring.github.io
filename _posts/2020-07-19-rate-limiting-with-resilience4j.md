@@ -255,9 +255,9 @@ RateLimiterEvent{type=FAILED_ACQUIRE, rateLimiterName='flightSearchService', cre
 
 ## RateLimiter Metrics
 
-Suppose after implementing client-side throttling we find that the response times of our APIs have increased. This is possible because our request processing threads sometimes wait to get permission before calling the remote operation. How can we find out how often we are throttling our requests? How can we ensure that the values we've set on the `RateLimiterConfig` are working well?
+Suppose after implementing client-side throttling we find that the response times of our APIs have increased. This is possible - as we have seen, if permissions are not available when a thread invokes a remote operation, the `RateLimiter` puts the thread in a waiting state. 
 
-Monitoring `RateLimiter` metrics helps us identify such issues. If most of our request handling threads are often waiting to get permission, it could mean that our `limitForPeriod` is too low. Perhaps we need to work with our service provider and get additional quota provisioned first. 
+If our request handling threads are often waiting to get permission, it could mean that our `limitForPeriod` is too low. Perhaps we need to work with our service provider and get additional quota provisioned first. Monitoring `RateLimiter` metrics helps us identify such capacity issues and ensure that the values we've set on the `RateLimiterConfig` are working well.
 
 `RateLimiter` tracks two metrics: the number of permissions available (`resilience4j.ratelimiter.available.permissions`), and the number of threads waiting for permissions (`resilience4j.ratelimiter.waiting.threads`).
 

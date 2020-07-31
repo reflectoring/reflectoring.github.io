@@ -1,10 +1,10 @@
 ---
 title: Implementing Rate Limiting with Resilience4j
 categories: [java]
-date: 2020-07-29 05:00:00 +1100
-modified: 2020-07-29 05:00:00 +1100
+date: 2020-08-05 05:00:00 +1100
+modified: 2020-08-05 05:00:00 +1100
 author: saajan
-excerpt: "A deep dive into the Resilience4j ratelimiter module, this article shows why, when and how to use it to build resilient applications."
+excerpt: "A deep dive into the Resilience4j ratelimiter module. This article shows why, when and how to use it to build resilient applications."
 image:
   auto: 0051-stop
 ---
@@ -257,7 +257,9 @@ RateLimiterEvent{type=FAILED_ACQUIRE, rateLimiterName='flightSearchService', cre
 
 Suppose after implementing client-side throttling we find that the response times of our APIs have increased. This is possible - as we have seen, if permissions are not available when a thread invokes a remote operation, the `RateLimiter` puts the thread in a waiting state. 
 
-If our request handling threads are often waiting to get permission, it could mean that our `limitForPeriod` is too low. Perhaps we need to work with our service provider and get additional quota provisioned first. Monitoring `RateLimiter` metrics helps us identify such capacity issues and ensure that the values we've set on the `RateLimiterConfig` are working well.
+If our request handling threads are often waiting to get permission, it could mean that our `limitForPeriod` is too low. Perhaps we need to work with our service provider and get additional quota provisioned first.
+
+Monitoring `RateLimiter` metrics helps us identify such capacity issues and ensure that the values we've set on the `RateLimiterConfig` are working well.
 
 `RateLimiter` tracks two metrics: the number of permissions available (`resilience4j.ratelimiter.available.permissions`), and the number of threads waiting for permissions (`resilience4j.ratelimiter.waiting.threads`).
 
@@ -296,12 +298,14 @@ The negative value for `resilience4j.ratelimiter.available.permissions` shows th
 
 ## Gotchas and Good Practices When Implementing Client-side Rate Limiting
 
+### Make the Rate Limiter a Singleton
 **All calls to a given remote service should go through the same `RateLimiter` instance. For a given remote service the `RateLimiter` must be a singleton**. 
 
 If we don't enforce this, some areas of our codebase may make a direct call to the remote service, bypassing the `RateLimiter`. To prevent this, the actual call to the remote service should be in a core, internal layer and other areas should use a rate-limited decorator exposed by the internal layer.
 
 How can we ensure that a new developer understands this intent in the future? Check out Tom's article which shows one way of solving such problems by [organizing the package structure to make such intents clear](https://reflectoring.io/java-components-clean-boundaries/). Additionally, it shows how to enforce this by codifying the intent in ArchUnit tests.
 
+### Configure the Rate Limiter for Multiple Server Instances
 **Figuring out the right values for the configurations can be tricky. If we are running multiple instances of our service in a cluster, the value for `limitForPeriod` must account for this.** 
 
 For example, if the upstream service has a rate limit of 100 rps and we have 4 instances of our service, then we would configure 25 rps as the limit on each instance. 
@@ -310,12 +314,14 @@ This assumes, however, that the load on each of our instances will be roughly th
 
 In that case, we would need a rate limiter that maintains its data in a distributed cache and not in-memory like Resilience4j `RateLimiter`. But that would impact the response times of our service. Another option is to implement some kind of adaptive rate limiting. While Resilience4j [may support](https://github.com/resilience4j/resilience4j/issues/201) it in the future, it is not clear when it will be available.
 
+### Choose the Right Timeout
 **For the `timeoutDuration` configuration value, we should keep the expected response times of our APIs in mind.** 
 
 If we set the `timeoutDuration` too high, the response times and throughput will suffer. If it is too low, our error rate may increase. 
 
 Since there could be some trial and error involved here, a good practice is to **maintain the values we use in `RateLimiterConfig` like `timeoutDuration`, `limitForPeriod`, and `limitRefreshPeriod` as a configuration outside our service**. Then we can change them without changing code.
 
+### Tune Client-side and Server-side Rate Limiters
 **Implementing client-side rate limiting does *not* guarantee that we will never get rate limited by our upstream service.** 
 
 Suppose we had a limit of 2 rps from the upstream service and we had configured `limitForPeriod` as 2 and `limitRefreshPeriod` as 1s. If we make two requests in the last few milliseconds of the second, with no other calls until then, the  `RateLimiter` would permit them. If we make another two calls in the first few milliseconds of the next second, the `RateLimiter` would permit them too since two new permissions would be available. But the upstream service could reject these two requests since servers often implement sliding window-based rate limiting. 

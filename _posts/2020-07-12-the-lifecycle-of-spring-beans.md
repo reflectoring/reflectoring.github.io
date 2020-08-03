@@ -170,7 +170,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
   We should pay attention that Spring's <code>BeanPostProcessor</code>s are executed for each bean defined in the spring context.
 </div>
 
-### Using Spring's `Aware` Interfaces
+### Using `Aware` Interfaces
 Another way of getting into the lifecycle, we can use `Aware` interfaces:
 ```java
 @Component

@@ -12,7 +12,7 @@ Like many other frameworks in the Java Ecosystem, providing an enterprise-level 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/bean-lifecycle" %}
 
 ## What Is a Spring Bean?
-Every class which is under the control of Spring's `ApplicationContext` in terms of **creation**, **orchestration**, and **destruction** are called Spring Beans.
+Every class which is under the control of Spring's `ApplicationContext` in terms of *creation*, *orchestration*, and *destruction* are called Spring Beans.
 
 The most common way to define a Spring bean is using annotations:
 ```java
@@ -28,10 +28,10 @@ class MySpringConfiguration {
 ```
 
 ## The Spring Bean Lifecycle
-When we look into the lifecycle of spring beans, we can see numerous phases starting **from the object instantiation up to their destruction.**
+When we look into the lifecycle of spring beans, we can see numerous phases starting from the object instantiation up to their destruction.
 
-To keep it simple, we group them into two parts as **creation** and **destruction** phases:
-<img src="/assets/img/posts/the-lifecycle-of-spring-beans/spring-bean-lifecycle.png" />
+To keep it simple, **we group them into two parts as creation and destruction phases:**
+<img alt="Spring Bean Lifecycle" src="/assets/img/posts/the-lifecycle-of-spring-beans/spring-bean-lifecycle.png" />
 
 Let's explain these phases in a little bit more detail.
 
@@ -171,7 +171,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
 </div>
 
 ### Using `Aware` Interfaces
-Another way of getting into the lifecycle, we can use `Aware` interfaces:
+For an another way of getting into the lifecycle, we can use `Aware` interfaces:
 ```java
 @Component
 public class MySpringBean implements BeanNameAware, ApplicationContextAware {

@@ -9,6 +9,8 @@ excerpt: ""
 
 Like many other frameworks in the Java Ecosystem, providing an enterprise-level IOC Container is one of the core provisions of the Spring Framework. Spring does a fluent orchestration of its beans and manages their lifecycle that we are going to explain in this tutorial.
 
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/bean-lifecycle" %}
+
 ## What Is a Spring Bean?
 Every class which is under the control of Spring's `ApplicationContext` in terms of **creation**, **orchestration**, and **destruction** are called Spring Beans.
 
@@ -239,7 +241,7 @@ public class IpToLocationService implements BeanFactoryAware {
   }
 }
 ```
-### Accessing Beans From the Outside Of the Spring Context
+### Accessing Beans From the Outside of the Spring Context
 Another scenario is accessing the `BeanFactory` instance from outside the Spring context.
 
 For example, we may want to inject `BeanFactory` to a non-spring class to be able to access Spring beans or configurations inside that class. Spring - Quartz integration is a good example to show this use-case:

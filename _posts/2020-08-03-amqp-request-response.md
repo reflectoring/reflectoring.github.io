@@ -48,7 +48,7 @@ To solve this problem,
 the client should send a unique correlation IDentifier along with each request. The server should obtain this identifier and
 add it to the response. Now the client can assign a response to its request.
 
-![Response Request with Message Broker](/assets/img/posts/request/response/request-response.png)
+![Response Request with Message Broker](/assets/img/posts/request-response/request-response.png)
 
 The important things are:
 

@@ -438,8 +438,8 @@ In this tutorial, we learned what the bean lifecycle phases are, why, and how we
 
 Spring has numerous phases in a bean lifecycle as well as many ways to receive callbacks. We can hook into these phases both via annotations on our beans or from a common class as we do in `BeanPostProcessor`.
 
-Although each method has its purpose, **we should avoid using Spring interfaces. This couples our code to the Spring Framework and violates the <a href="https://en.wikipedia.org/wiki/Dependency_inversion_principle">Dependency Inversion Principle</a>.**
+Although each method has its purpose, **we should notice that using Spring interfaces couples our code to the Spring Framework</a>.**
 
-On the other hand, **`@PostConstruct` and `@PreDestroy` annotations are a part of the Java API. Therefore, we can consider them a better alternative to receiving lifecycle callbacks because they decouple our components from Spring.**
+On the other hand, **`@PostConstruct` and `@PreDestroy` annotations are a part of the Java API. Therefore, we consider them a better alternative to receiving lifecycle callbacks because they decouple our components even from Spring.**
 
 All the code examples and more are over [on Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/bean-lifecycle) for you to play with.

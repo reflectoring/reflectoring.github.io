@@ -1,10 +1,10 @@
 ---
-title: The Lifecycle of Spring Beans
+title: Hooking Into Spring Bean Lifecycle
 categories: [spring-boot]
-date: 2020-07-12 06:00:00 +1000
-modified: 2020-07-12 06:00:00 +1000
+date: 2020-08-08 06:00:00 +1000
+modified: 2020-08-08 06:00:00 +1000
 author: yavuztas
-excerpt: ""
+excerpt: "Spring provides different callbacks and interfaces to hook into the lifecycle of Spring-managed beans. This article describes the lifecycle phases and how to hook into them."
 ---
 
 Providing an enterprise-level IOC Container is one of the core provisions of the Spring Framework. Spring does a fluent orchestration of its beans and manages their lifecycle. In this tutorial, we're looking at the lifecycle of those beans and how we can hook into it.

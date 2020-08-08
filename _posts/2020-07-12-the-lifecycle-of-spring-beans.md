@@ -7,14 +7,26 @@ author: yavuztas
 excerpt: ""
 ---
 
-Like many other frameworks in the Java Ecosystem, providing an enterprise-level IOC Container is one of the core provisions of the Spring Framework. Spring does a fluent orchestration of its beans and manages their lifecycle that we are going to explain in this tutorial.
+Providing an enterprise-level IOC Container is one of the core provisions of the Spring Framework. Spring does a fluent orchestration of its beans and manages their lifecycle. In this tutorial, we're looking at the lifecycle of those beans and how we can hook into it.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/bean-lifecycle" %}
 
 ## What Is a Spring Bean?
-Every class which is under the control of Spring's `ApplicationContext` in terms of *creation*, *orchestration*, and *destruction* are called Spring Beans.
+Let's start with the basics. Every object that is under the control of Spring's `ApplicationContext` in terms of *creation*, *orchestration*, and *destruction* is called a Spring Bean.
 
-The most common way to define a Spring bean is using annotations:
+The most common way to define a Spring bean is using the `@Component` annotation:
+
+```java
+@Component
+class MySpringBean {
+  ...
+}
+```
+
+If Spring's component scanning is enabled, an object of `MySpringBean` will be added to the application context.
+
+Another way is using Spring's Java config:
+
 ```java
 @Configuration
 class MySpringConfiguration {
@@ -28,36 +40,36 @@ class MySpringConfiguration {
 ```
 
 ## The Spring Bean Lifecycle
-When we look into the lifecycle of spring beans, we can see numerous phases starting from the object instantiation up to their destruction.
+When we look into the lifecycle of Spring beans, we can see numerous phases starting from the object instantiation up to their destruction.
 
-To keep it simple, **we group them into two parts as creation and destruction phases:**
+To keep it simple, **we group them into creation and destruction phases:**
 <img alt="Spring Bean Lifecycle" src="/assets/img/posts/the-lifecycle-of-spring-beans/spring-bean-lifecycle.png" />
 
 Let's explain these phases in a little bit more detail.
 
 ### Bean Creation Phases
-- **Instantiation:** This is where everything starts for a bean. Spring instantiates bean objects just like the same we create a Java object instance.
+- **Instantiation:** This is where everything starts for a bean. Spring instantiates bean objects just like we would manually create a Java object instance.
 - **Populating Properties:** After instantiating objects, Spring scans the beans that implement `Aware` interfaces and starts setting relevant properties.
-- **Pre-Initialization:** Spring's `BeanPostProcessor`s get into action in this phase. The `postProcessBeforeInitialization` methods do their job. Also, `@PostConstruct` annotated methods run right after them.
-- **AfterPropertiesSet:** Spring executes `afterPropertiesSet` methods of the beans which implements `InitializingBean`.
-- **Custom Initialization:** Spring triggers our custom initialization methods defined by `@Bean`'s `initMethod`.
-- **Post-Initialization:** Spring's `BeanPostProcessor`s are in action for the second time. In this phase `postProcessAfterInitialization` methods are executed.
+- **Pre-Initialization:** Spring's `BeanPostProcessor`s get into action in this phase. The `postProcessBeforeInitialization()` methods do their job. Also, `@PostConstruct` annotated methods run right after them.
+- **AfterPropertiesSet:** Spring executes the `afterPropertiesSet()` methods of the beans which implements `InitializingBean`.
+- **Custom Initialization:** Spring triggers the initialization methods that we defined in the `initMethod` attribute of our `@Bean`annotations.
+- **Post-Initialization:** Spring's `BeanPostProcessor`s are in action for the second time. This phase triggers the `postProcessAfterInitialization()` methods.
 
 ### Bean Destruction Phases
 - **Pre-Destroy:** Spring triggers`@PreDestroy` annotated methods in this phase.
-- **Destroy:** Spring executes the `destroy` methods of `DisposableBean` implementations.
-- **Custom Destruction:** We can define custom destruction hooks by `@Bean`'s `destroyMethod` and Spring runs them in the last phase.
+- **Destroy:** Spring executes the `destroy()` methods of `DisposableBean` implementations.
+- **Custom Destruction:** We can define custom destruction hooks with the `destroyMethod` attribute in the  `@Bean` annotation and Spring runs them in the last phase.
 
 ## Hooking Into the Bean Lifecycle
 There are numerous ways to hook into the phases of the bean lifecycle in a Spring application.
 
-Let's see some examples of each way of them.
+Let's see some examples for each of them.
 
 ### Using Spring's Interfaces
-We can use Spring's `InitializingBean` interface to run custom operations in `afterPropertiesSet` phase:
+We can implement Spring's `InitializingBean` interface to run custom operations in `afterPropertiesSet()` phase:
 ```java
 @Component
-public class MySpringBean implements InitializingBean {
+class MySpringBean implements InitializingBean {
 
   @Override
   public void afterPropertiesSet() {
@@ -66,10 +78,11 @@ public class MySpringBean implements InitializingBean {
 
 }
 ```
-Similarly, `DisposableBean` interface for destroy phase can be used:
+
+Similarly, we can implement `DisposableBean` to have Spring call the `destroy()` method in the destroy phase:
 ```java
 @Component
-public class MySpringBean implements DisposableBean {
+class MySpringBean implements DisposableBean {
 
   @Override
   public void destroy() {
@@ -80,12 +93,12 @@ public class MySpringBean implements DisposableBean {
 ```
 
 ### Using JSR-250 Annotations
-Spring supports the `@PostConstruct` and `@PreDestroy` annotations of <a href="https://jcp.org/en/jsr/detail?id=250">the JSR-250 specification.</a>
+Spring supports the `@PostConstruct` and `@PreDestroy` annotations of the <a href="https://jcp.org/en/jsr/detail?id=250">JSR-250 specification.</a>
 
-Therefore, we can use them respectively to hook into pre-initialization and destroy phases:  
+Therefore, we can use them to hook into the pre-initialization and destroy phases:  
 ```java
 @Component
-public class MySpringBean {
+class MySpringBean {
 
   @PostConstruct
   public void postConstruct() {
@@ -100,8 +113,9 @@ public class MySpringBean {
 }
 ```
 
-### Using `@Bean` Annotation's Attributes
-Additionally, when we define our Spring beans we can set `initMethod` and `destroyMethod` attributes of the `@Bean` annotation in Java configuration:
+### Using Attributes of the `@Bean` Annotation
+Additionally, when we define our Spring beans we can set the `initMethod` and `destroyMethod` attributes of the `@Bean` annotation in Java configuration:
+
 ```java
 @Configuration
 class MySpringConfiguration {
@@ -114,10 +128,10 @@ class MySpringConfiguration {
 }
 ```
 
-We should notice that **if we have a public method named `close` or `shutdown` in our bean, then it is automatically triggered with a destruction callback by default:**
+We should note that **if we have a public method named `close()` or `shutdown()` in our bean, then it is automatically triggered with a destruction callback by default:**
 ```java
 @Component
-public class MySpringBean {
+class MySpringBean {
 
   public void close() {
     //...
@@ -145,9 +159,9 @@ class MySpringConfiguration {
 </div>
 
 ### Using `BeanPostProcessor`
-Alternatively, we can make use of `BeanPostProcessor` interface and benefit to be able to run any custom operation before or after a spring bean initializes:
+Alternatively, we can make use of the `BeanPostProcessor` interface to be able to run any custom operation before or after a Spring bean initializes and even return a modified bean:
 ```java
-public class MyBeanPostProcessor implements BeanPostProcessor {
+class MyBeanPostProcessor implements BeanPostProcessor {
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String beanName)
@@ -171,10 +185,11 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
 </div>
 
 ### Using `Aware` Interfaces
-For an another way of getting into the lifecycle, we can use `Aware` interfaces:
+Another way of getting into the lifecycle is using the `Aware` interfaces:
+
 ```java
 @Component
-public class MySpringBean implements BeanNameAware, ApplicationContextAware {
+class MySpringBean implements BeanNameAware, ApplicationContextAware {
 
   @Override
   public void setBeanName(String name) {
@@ -189,7 +204,7 @@ public class MySpringBean implements BeanNameAware, ApplicationContextAware {
 
 }
 ```
-There are additional <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#aware-list">`Aware` interfaces</a> which we can use on purpose in Spring.
+There are additional <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#aware-list">`Aware` interfaces</a> which we can use to inject certain aspects of the Spring context into our beans.
 
 ## Why Would I Need to Hook Into the Bean Lifecycle?
 When we need to extend our software with new requirements, it is critical to find the best practices to keep our codebase maintainable in the long run.
@@ -197,10 +212,10 @@ When we need to extend our software with new requirements, it is critical to fin
 In Spring Framework, **hooking into the bean lifecycle is a good way to extend our application in most cases.**
 
 ### Acquiring Bean Properties
-One of the use-cases is acquiring the bean properties (like bean name) in runtime. For example, when we do some logging:
+One of the use cases is acquiring the bean properties (like bean name) in runtime. For example, when we do some logging:
 ```java
 @Component
-public class NamedSpringBean implements BeanNameAware {
+class NamedSpringBean implements BeanNameAware {
 
   Logger logger = LoggerFactory.getLogger(NamedSpringBean.class);
 
@@ -214,7 +229,7 @@ public class NamedSpringBean implements BeanNameAware {
 In some cases, we need to define Spring beans programmatically. This can be a practical solution when we need to re-create and change our bean instances on-demand:
 ```java
 @Service
-public class IpToLocationService implements BeanFactoryAware {
+class IpToLocationService implements BeanFactoryAware {
 
   DefaultListableBeanFactory listableBeanFactory;
   IpDatabaseRepository ipDatabaseRepository;
@@ -242,11 +257,12 @@ public class IpToLocationService implements BeanFactoryAware {
 }
 ```
 ### Accessing Beans From the Outside of the Spring Context
-Another scenario is accessing the `BeanFactory` instance from outside the Spring context.
+Another scenario is accessing the `BeanFactory` instance from outside of the Spring context.
 
-For example, we may want to inject `BeanFactory` to a non-spring class to be able to access Spring beans or configurations inside that class. Spring - Quartz integration is a good example to show this use-case:
+For example, we may want to inject `BeanFactory` to a non-Spring class to be able to access Spring beans or configurations inside that class. The integration between Spring and Quartz integration is a good example to show this use case:
+
 ```java
-public class AutowireCapableJobFactory
+class AutowireCapableJobFactory
     extends SpringBeanJobFactory implements ApplicationContextAware {
 
   private AutowireCapableBeanFactory beanFactory;
@@ -269,7 +285,7 @@ public class AutowireCapableJobFactory
 Also, a common Spring - Jersey integration is another clear example of this:
 ```java
 @Configuration
-public class JerseyConfig extends ResourceConfig {
+class JerseyConfig extends ResourceConfig {
 
   @Autowired
   private ApplicationContext applicationContext;
@@ -286,7 +302,7 @@ public class JerseyConfig extends ResourceConfig {
 ## The Execution Order
 Let's write a Spring bean to see the execution order of each phase of the lifecycle:
 ```java
-public class MySpringBean implements BeanNameAware, ApplicationContextAware,
+class MySpringBean implements BeanNameAware, ApplicationContextAware,
     InitializingBean, DisposableBean {
 
   private String message;
@@ -340,9 +356,10 @@ public class MySpringBean implements BeanNameAware, ApplicationContextAware,
 
 }
 ```
-Besides, we create a `BeanPostProcessor` to hook into the before and after initialization phases:
+
+Additionally, we create a `BeanPostProcessor` to hook into the before and after initialization phases:
 ```java
-public class MyBeanPostProcessor implements BeanPostProcessor {
+class MyBeanPostProcessor implements BeanPostProcessor {
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String beanName)
@@ -367,7 +384,7 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
 Next, we write a Spring configuration to define our beans:
 ```java
 @Configuration
-public class MySpringConfiguration {
+class MySpringConfiguration {
 
   @Bean
   public MyBeanPostProcessor myBeanPostProcessor(){
@@ -384,7 +401,7 @@ public class MySpringConfiguration {
 Finally, we write a `@SpringBootTest` to run our Spring context:
 ```java
 @SpringBootTest
-public class BeanLifecycleApplicationTests {
+class BeanLifecycleApplicationTests {
 
   @Autowired
   public MySpringBean mySpringBean;
@@ -399,8 +416,9 @@ public class BeanLifecycleApplicationTests {
 }
 ```
 
-As a result, our test method outputs the execution order between the lifecycle phases:
-```java
+As a result, our test method logs the execution order between the lifecycle phases:
+
+```
 --- setBeanName executed ---
 --- setApplicationContext executed ---
 --- postProcessBeforeInitialization executed ---
@@ -416,12 +434,12 @@ As a result, our test method outputs the execution order between the lifecycle p
 
 ## Conclusion
 
-In this tutorial, we explained what the bean lifecycle phases are, why, and how we hook into lifecycle phases in Spring.
+In this tutorial, we learned what the bean lifecycle phases are, why, and how we hook into lifecycle phases in Spring.
 
-Spring has numerous phases in a bean lifecycle as well as many ways to receive callbacks. We can hook into these phases both over on beans or from a common point as we do in `BeanPostProcessor`.
+Spring has numerous phases in a bean lifecycle as well as many ways to receive callbacks. We can hook into these phases both via annotations on our beans or from a common class as we do in `BeanPostProcessor`.
 
-Although each method has its purpose, **we should avoid using Spring interfaces. This will force us to couple our code to Spring Framework and violates the <a href="https://en.wikipedia.org/wiki/Dependency_inversion_principle">Dependency Inversion Principle.</a>**
+Although each method has its purpose, **we should avoid using Spring interfaces. This couples our code to the Spring Framework and violates the <a href="https://en.wikipedia.org/wiki/Dependency_inversion_principle">Dependency Inversion Principle</a>.**
 
-On the other hand, **`@PostConstruct` and `@PreDestroy` annotations are a part of Java API. Therefore, we can consider them a better alternative to receiving lifecycle callbacks because they decouple our components from Spring.**
+On the other hand, **`@PostConstruct` and `@PreDestroy` annotations are a part of the Java API. Therefore, we can consider them a better alternative to receiving lifecycle callbacks because they decouple our components from Spring.**
 
-All the code examples and more are over [on Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/bean-lifecycle) for you to play.
+All the code examples and more are over [on Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/bean-lifecycle) for you to play with.

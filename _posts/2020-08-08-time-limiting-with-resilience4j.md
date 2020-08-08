@@ -27,7 +27,8 @@ int slowMethod() {
   return 42;
 }
 
-CompletableFuture.supplyAsync(this::slowMethod).thenAccept(System.out::println);
+CompletableFuture.supplyAsync(this::slowMethod)
+  .thenAccept(System.out::println);
 ```
 
 The `slowMethod()` here could be some computation or remote operation. Usually, we want to set a time limit when making an asynchronous call like this. We don't want to wait indefinitely for `slowMethod()` to return. If `slowMethod()` takes more than a second, for example, we may want to return a previously computed, cached value or maybe even error out.
@@ -105,8 +106,10 @@ Supplier<CompletionStage<List<Flight>>> origCompletionStageSupplier =
 We can then decorate the `Supplier` using the `TimeLimiter`:
 
 ```java
-ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-Supplier<CompletionStage<List<Flight>>> decoratedCompletionStageSupplier =  limiter.decorateCompletionStage(scheduler, origCompletionStageSupplier);
+ScheduledExecutorService scheduler = 
+  Executors.newSingleThreadScheduledExecutor();
+Supplier<CompletionStage<List<Flight>>> decoratedCompletionStageSupplier =  
+  limiter.decorateCompletionStage(scheduler, origCompletionStageSupplier);
 ```
 
 Finally, we call the decorated asynchronous operation:
@@ -185,12 +188,16 @@ Consumer<Meter> meterConsumer = meter -> {
   String desc = meter.getId().getDescription();
   String metricName = meter.getId().getName();
   String metricKind = meter.getId().getTag("kind");
-  Double metricValue = StreamSupport.stream(meter.measure().spliterator(), false)
+  Double metricValue = 
+    StreamSupport.stream(meter.measure().spliterator(), false)
     .filter(m -> m.getStatistic().name().equals("COUNT"))
     .findFirst()
     .map(Measurement::getValue)
     .orElse(0.0);
-  System.out.println(desc + " - " + metricName + "(" + metricKind + ")" + ": " + metricValue);
+  System.out.println(desc + " - " + 
+                     metricName + 
+                     "(" + metricKind + ")" + 
+                     ": " + metricValue);
 };
 meterRegistry.forEachMeter(meterConsumer);
 ```

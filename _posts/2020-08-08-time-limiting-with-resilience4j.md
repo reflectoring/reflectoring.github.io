@@ -95,7 +95,7 @@ TimeLimiterRegistry registry = TimeLimiterRegistry.of(config);
 TimeLimiter limiter = registry.timeLimiter("flightSearch");
 ```
 
-We want to asynchronously call `FlightSearchService.searchFlights()` which returns a `List<Flight>`. We express this as a  `Supplier<CompletionStage<List<Flight>>>`:
+We want to asynchronously call `FlightSearchService.searchFlights()` which returns a `List<Flight>`. Let's express this as a  `Supplier<CompletionStage<List<Flight>>>`:
 
 ```java
 Supplier<List<Flight>> flightSupplier = () -> service.searchFlights(request);
@@ -112,7 +112,7 @@ Supplier<CompletionStage<List<Flight>>> decoratedCompletionStageSupplier =
   limiter.decorateCompletionStage(scheduler, origCompletionStageSupplier);
 ```
 
-Finally, we call the decorated asynchronous operation:
+Finally, let's call the decorated asynchronous operation:
 
 ```java
 decoratedCompletionStageSupplier.get().whenComplete((result, ex) -> {

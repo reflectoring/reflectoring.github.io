@@ -290,7 +290,7 @@ class AutowireCapableJobFactory
 ```
 In this way, we create an autowire capable Quartz `JobFactory` to inject Spring beans for created Quartz `Job` instances.  
 
-Also, a common Spring - Jersey integration is another clear example of this:
+Also, a common Spring - [Jersey](https://eclipse-ee4j.github.io/jersey/) integration is another clear example of this:
 ```java
 @Configuration
 class JerseyConfig extends ResourceConfig {

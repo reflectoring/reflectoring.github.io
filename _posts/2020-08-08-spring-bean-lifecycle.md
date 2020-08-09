@@ -185,7 +185,7 @@ class MyBeanPostProcessor implements BeanPostProcessor {
 </div>
 
 ### Using `Aware` Interfaces
-Another way of getting into the lifecycle is using the `Aware` interfaces:
+Another way of getting into the lifecycle is by using the `Aware` interfaces:
 
 ```java
 @Component
@@ -226,7 +226,9 @@ class NamedSpringBean implements BeanNameAware {
 }
 ```
 ### Dynamically Changing Spring Bean Instances
-In some cases, we need to define Spring beans programmatically. This can be a practical solution when we need to re-create and change our bean instances on-demand:
+In some cases, we need to define Spring beans programmatically. This can be a practical solution when we need to re-create and change our bean instances in runtime.
+
+Let's create an `IpToLocationService` service which is capable of dynamically updating `IpDatabaseRepository` to the latest version on-demand:
 ```java
 @Service
 class IpToLocationService implements BeanFactoryAware {
@@ -256,10 +258,14 @@ class IpToLocationService implements BeanFactoryAware {
   }
 }
 ```
-### Accessing Beans From the Outside of the Spring Context
-Another scenario is accessing the `BeanFactory` instance from outside of the Spring context.
+As we notice in `IpToLocationService`, we access `BeanFactory` instance with the help of `BeanFactoryAware` interface. Thus, we dynamically create our `IpDatabaseRepository` bean with the latest database file and update our bean definition by registering it to the Spring context.
 
-For example, we may want to inject `BeanFactory` to a non-Spring class to be able to access Spring beans or configurations inside that class. The integration between Spring and Quartz integration is a good example to show this use case:
+In addition, we call our `updateIpDatabase` method right after we acquire the `BeanFactory` instance in `setBeanFactory` method. Therefore, we can initially create the first instance of the `IpDatabaseRepository` bean while the Spring context boots up.
+
+### Accessing Beans From the Outside of the Spring Context
+Another scenario is accessing the `ApplicationContext` or `BeanFactory` instance from outside of the Spring context.
+
+For example, we may want to inject `BeanFactory` to a non-Spring class to be able to access Spring beans or configurations inside that class. The integration between Spring and [the Quartz library](http://www.quartz-scheduler.org) is a good example to show this use case:
 
 ```java
 class AutowireCapableJobFactory
@@ -269,19 +275,21 @@ class AutowireCapableJobFactory
 
   @Override
   public void setApplicationContext(final ApplicationContext context) {
-    this.beanFactory = context.getAutowireCapableBeanFactory();
+    beanFactory = context.getAutowireCapableBeanFactory();
   }
 
   @Override
   protected Object createJobInstance(final TriggerFiredBundle bundle)
       throws Exception {
     final Object job = super.createJobInstance(bundle);
-    this.beanFactory.autowireBean(job);
+    beanFactory.autowireBean(job);
     return job;
   }
 
 }
 ```
+In this way, we create an autowire capable Quartz `JobFactory` to inject Spring beans for created Quartz `Job` instances.  
+
 Also, a common Spring - Jersey integration is another clear example of this:
 ```java
 @Configuration
@@ -298,6 +306,7 @@ class JerseyConfig extends ResourceConfig {
 
 }
 ```
+By marking Jersey's `ResourceConfig` as a Spring `@Configuration`, we inject the `ApplicationContext` and lookup for the beans which are annotated by Jersey's `@Path`, to easily register them on application startup.
 
 ## The Execution Order
 Let's write a Spring bean to see the execution order of each phase of the lifecycle:

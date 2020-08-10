@@ -1,13 +1,15 @@
 ---
-title: Hooking Into Spring Bean Lifecycle
+title: Hooking Into the Spring Bean Lifecycle
 categories: [spring-boot]
-date: 2020-08-08 06:00:00 +1000
-modified: 2020-08-08 06:00:00 +1000
+date: 2020-08-11 06:00:00 +1000
+modified: 2020-08-11 06:00:00 +1000
 author: yavuztas
 excerpt: "Spring provides different callbacks and interfaces to hook into the lifecycle of Spring-managed beans. This article describes the lifecycle phases and how to hook into them."
+image:
+  auto: 0017-coffee-beans
 ---
 
-Providing an enterprise-level IOC Container is one of the core provisions of the Spring Framework. Spring does a fluent orchestration of its beans and manages their lifecycle. In this tutorial, we're looking at the lifecycle of those beans and how we can hook into it.
+Providing an Inversion-of-Control Container is one of the core provisions of the Spring Framework. Spring orchestrates the beans in its application context and manages their lifecycle. In this tutorial, we're looking at the lifecycle of those beans and how we can hook into it.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/bean-lifecycle" %}
 
@@ -51,7 +53,7 @@ Let's explain these phases in a little bit more detail.
 - **Instantiation:** This is where everything starts for a bean. Spring instantiates bean objects just like we would manually create a Java object instance.
 - **Populating Properties:** After instantiating objects, Spring scans the beans that implement `Aware` interfaces and starts setting relevant properties.
 - **Pre-Initialization:** Spring's `BeanPostProcessor`s get into action in this phase. The `postProcessBeforeInitialization()` methods do their job. Also, `@PostConstruct` annotated methods run right after them.
-- **AfterPropertiesSet:** Spring executes the `afterPropertiesSet()` methods of the beans which implements `InitializingBean`.
+- **AfterPropertiesSet:** Spring executes the `afterPropertiesSet()` methods of the beans which implement `InitializingBean`.
 - **Custom Initialization:** Spring triggers the initialization methods that we defined in the `initMethod` attribute of our `@Bean`annotations.
 - **Post-Initialization:** Spring's `BeanPostProcessor`s are in action for the second time. This phase triggers the `postProcessAfterInitialization()` methods.
 
@@ -93,7 +95,7 @@ class MySpringBean implements DisposableBean {
 ```
 
 ### Using JSR-250 Annotations
-Spring supports the `@PostConstruct` and `@PreDestroy` annotations of the <a href="https://jcp.org/en/jsr/detail?id=250">JSR-250 specification.</a>
+Spring supports the `@PostConstruct` and `@PreDestroy` annotations of the [JSR-250 specification](https://jcp.org/en/jsr/detail?id=250).
 
 Therefore, we can use them to hook into the pre-initialization and destroy phases:  
 ```java
@@ -212,7 +214,7 @@ When we need to extend our software with new requirements, it is critical to fin
 In Spring Framework, **hooking into the bean lifecycle is a good way to extend our application in most cases.**
 
 ### Acquiring Bean Properties
-One of the use cases is acquiring the bean properties (like bean name) in runtime. For example, when we do some logging:
+One of the use cases is acquiring the bean properties (like bean name) at runtime. For example, when we do some logging:
 ```java
 @Component
 class NamedSpringBean implements BeanNameAware {
@@ -226,7 +228,7 @@ class NamedSpringBean implements BeanNameAware {
 }
 ```
 ### Dynamically Changing Spring Bean Instances
-In some cases, we need to define Spring beans programmatically. This can be a practical solution when we need to re-create and change our bean instances in runtime.
+In some cases, we need to define Spring beans programmatically. This can be a practical solution when we need to re-create and change our bean instances at runtime.
 
 Let's create an `IpToLocationService` service which is capable of dynamically updating `IpDatabaseRepository` to the latest version on-demand:
 ```java
@@ -258,14 +260,14 @@ class IpToLocationService implements BeanFactoryAware {
   }
 }
 ```
-As we notice in `IpToLocationService`, we access `BeanFactory` instance with the help of `BeanFactoryAware` interface. Thus, we dynamically create our `IpDatabaseRepository` bean with the latest database file and update our bean definition by registering it to the Spring context.
+We access the `BeanFactory` instance with the help of `BeanFactoryAware` interface. Thus, we dynamically create our `IpDatabaseRepository` bean with the latest database file and update our bean definition by registering it to the Spring context.
 
-In addition, we call our `updateIpDatabase` method right after we acquire the `BeanFactory` instance in `setBeanFactory` method. Therefore, we can initially create the first instance of the `IpDatabaseRepository` bean while the Spring context boots up.
+Also, we call our `updateIpDatabase()` method right after we acquire the `BeanFactory` instance in the `setBeanFactory()` method. Therefore, we can initially create the first instance of the `IpDatabaseRepository` bean while the Spring context boots up.
 
 ### Accessing Beans From the Outside of the Spring Context
 Another scenario is accessing the `ApplicationContext` or `BeanFactory` instance from outside of the Spring context.
 
-For example, we may want to inject `BeanFactory` to a non-Spring class to be able to access Spring beans or configurations inside that class. The integration between Spring and [the Quartz library](http://www.quartz-scheduler.org) is a good example to show this use case:
+For example, we may want to inject the `BeanFactory` into a non-Spring class to be able to access Spring beans or configurations inside that class. The integration between Spring and [the Quartz library](http://www.quartz-scheduler.org) is a good example to show this use case:
 
 ```java
 class AutowireCapableJobFactory
@@ -288,7 +290,7 @@ class AutowireCapableJobFactory
 
 }
 ```
-In this way, we create an autowire capable Quartz `JobFactory` to inject Spring beans for created Quartz `Job` instances.  
+In this example, we're using the `ApplicationContextAware` interface to get access to the bean factory and use the bean factory to autowire the dependencies in a `Job` bean that is initially not managed by Spring.
 
 Also, a common Spring - [Jersey](https://eclipse-ee4j.github.io/jersey/) integration is another clear example of this:
 ```java
@@ -306,7 +308,7 @@ class JerseyConfig extends ResourceConfig {
 
 }
 ```
-By marking Jersey's `ResourceConfig` as a Spring `@Configuration`, we inject the `ApplicationContext` and lookup for the beans which are annotated by Jersey's `@Path`, to easily register them on application startup.
+By marking Jersey's `ResourceConfig` as a Spring `@Configuration`, we inject the `ApplicationContext` and lookup all the beans which are annotated by Jersey's `@Path`, to easily register them on application startup.
 
 ## The Execution Order
 Let's write a Spring bean to see the execution order of each phase of the lifecycle:
@@ -447,7 +449,7 @@ In this tutorial, we learned what the bean lifecycle phases are, why, and how we
 
 Spring has numerous phases in a bean lifecycle as well as many ways to receive callbacks. We can hook into these phases both via annotations on our beans or from a common class as we do in `BeanPostProcessor`.
 
-Although each method has its purpose, **we should notice that using Spring interfaces couples our code to the Spring Framework</a>.**
+Although each method has its purpose, **we should note that using Spring interfaces couples our code to the Spring Framework.**
 
 On the other hand, **`@PostConstruct` and `@PreDestroy` annotations are a part of the Java API. Therefore, we consider them a better alternative to receiving lifecycle callbacks because they decouple our components even from Spring.**
 

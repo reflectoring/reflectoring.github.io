@@ -69,16 +69,31 @@ Default configuration is seldom useful in real life. We will wish to make severa
 Spring Boot logger has three customization routes as represented in this schematic:
 
 ## Log Levels
-By default, info level logs are printed. We can change the log level by setting an environment variable - log.level.<package-name> and log.leve.root.
+By default, info level logs are printed. We can change the log level by setting an environment variable - log.level.<package-name> and log.level.root.
 
 
 ### From Command Line
 
+-Dlogging.level.org.springframework=ERROR 
+-Dlogging.level.io.app=TRACE
 
 ### Application Properties
+logging.level.org.springframework=ERROR 
+logging.level.io.app=TRACE
 
 ## Log To File
 Default options are often not enough so we need to customize it. We do this by specifying the additional configurations in logback-spring.xml file. Let us look at the customization we can do and where to do the logging.
+
+```
+# Output to a temp_folder/file
+logging.file=c:/temp/application.log
+ 
+#logging.path=/my-folder/
+ 
+# Logging pattern for file
+logging.pattern.file= %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%
+
+```
 ### File Appender
 
 ### Rotate Log Files

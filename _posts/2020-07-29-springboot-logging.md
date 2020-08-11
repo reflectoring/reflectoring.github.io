@@ -57,7 +57,7 @@ After compiling with maven or gradle and running the resulting jar file, we can 
 ```
 The first info log is printed, followed by a seven line banner of Spring and then the next info log. The debug statement is suppressed. So ** the default logger configuration is a logback implementation at info level.** 
 
-## Do We Need To Customize ?
+## Customizations
 Default configuration is seldom useful in real life. We will wish to make several customizations for various purposes :
 
 1. Print finer level logs for deeper analysis into the application behavior.
@@ -68,7 +68,7 @@ Default configuration is seldom useful in real life. We will wish to make severa
 
 Spring Boot logger has three customization routes as represented in this schematic:
 
-## Log Levels
+### Log Levels
 By default, info level logs are printed. We can change the log level by setting an environment variable - log.level.<package-name> and log.level.root.
 
 
@@ -81,7 +81,7 @@ By default, info level logs are printed. We can change the log level by setting 
 logging.level.org.springframework=ERROR 
 logging.level.io.app=TRACE
 
-## Log To File
+### Log To File
 Default options are often not enough so we need to customize it. We do this by specifying the additional configurations in logback-spring.xml file. Let us look at the customization we can do and where to do the logging.
 
 ```
@@ -94,9 +94,9 @@ logging.file=c:/temp/application.log
 logging.pattern.file= %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%
 
 ```
-### File Appender
+*** File Appender ***
 
-### Rotate Log Files
+*** Rotate Log Files ***
 
 ## Add Contextual Information
 Who made the request, which business service, understand the impact
@@ -112,7 +112,7 @@ costly operations
 ## Logs In Container Runtimes
 If we are building a docker app, we continue with console appender
 
-## Others
+## Other Customizations
 ### Switch off the banner
 The spring banner at the top of log file does not add any value. Let us switch off the banner by setting the property to off in application properties.
 
@@ -130,8 +130,7 @@ adding the log implementation in the default starter. It is included by adding s
 ## Best Practices
 ** use placeholders **
 ** avoid putting logs inside loops ** 
-
-Let us modify the log to print the arguments passed. We will print debug level logs by passing a variable.
+** Do not do heavy operations in custom appenders **
 
 
 ## Environment Flags
@@ -141,7 +140,6 @@ We will have separate properties for each environment. We do this using spring p
 Thinking of containers, the logs are printed to console. We activate spring-sleuth to add tracing information. This information is used by observability tools to aggregate logs from different microservices.
 
 We mask the sensitive fields in our payload to hide the info. At the same time useful info should be present.
-
 
 Istio can generate access logs for service traffic in a configurable set of formats, providing operators with full control of the how, what, when and where of logging. For more information, please refer to Getting Envoy’s Access Logs.
 
@@ -163,7 +161,6 @@ Some TSDB include web-based data visualization tools that can be used to query l
 
 ## Conclusion
 
-
-Create robust, standardized logging practices in your development teams. Use code reviews and code quality tools to enforce those standards. Open-source and commercial databases and tools round out a complete strategy for keeping your microservices healthy and your systems running.
+In this article we saw how to use logging in spring boot and customize it further to suit our requirements. But to fully leverage the benefits, the logging capabilities of the framework need to be complemented with robust and standardized logging practices in engineering teams. The logging standards also need to be enforced with reviews and code quality tools and help to give us visibliity into our systems in live environments.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/localstack).

@@ -1,15 +1,19 @@
 ---
 title: Optimize Your Dev Loop with Spring Boot Dev Tools
 categories: [java]
-date: 2020-08-05 05:00:00 +1100
-modified: 2020-08-05 05:00:00 +1100
+date: 2020-08-13 05:00:00 +1100
+modified: 2020-08-13 05:00:00 +1100
 author: tom
 excerpt: "Having to restart a Spring Boot application again and again to test changes costs a lot of time. If it takes long enough, we're not only losing the time of the restart but also have to pay the cost of context switching, because we've started to work on something else in the meantime. Spring Boot Dev Tools reduces the time we lose considerably, if configured correctly."
 image:
   auto: 0078-hourglass
 ---
 
-What are you doing when you've made a change to a Spring Boot app and want to test it? **You probably restart it, and go get a coffee or swipe through your Twitter feed until it's up and running again**. Then, you log back into the app, navigate to where you were before, and check if your changes work. 
+What are you doing when you've made a change to a Spring Boot app and want to test it? 
+
+**You probably restart it and go get a coffee or swipe through your Twitter feed until it's up and running again**. 
+
+Then, you log back into the app, navigate to where you were before, and check if your changes work. 
 
 Sound familiar? That's pretty much how I developed Spring Boot apps for a long time. Until I got fed up with it and gave Spring Boot Dev Tools a try. 
 
@@ -23,7 +27,7 @@ This article explains how Spring Boot Dev Tools works and how to configure it to
 
 Before we start, let's describe what we want to achieve for our developer experience with Spring Boot.
 
-**We want that any changes we do to files are visible in the running Spring Boot app a couple seconds later**.
+**We want that any changes we do to files are visible in the running Spring Boot app a couple of seconds later**.
 
 These files include:
 
@@ -56,13 +60,13 @@ To do this, Spring Boot Dev Tools divides the application's classpath into two c
 * the base classloader contains rarely changing resources like the Spring Boot JARs or 3rd party libraries
 * the restart classloader contains the files of our application, which are expected to change in our dev loop.
 
-The restart functionality of Spring Boot Dev Tools listens to changes to the files in our application and then throws away and restarts the restart classloader. **This is faster than a full restart, because only the classes of our application have to be reloaded**.
+The restart functionality of Spring Boot Dev Tools listens to changes to the files in our application and then throws away and restarts the restart classloader. **This is faster than a full restart because only the classes of our application have to be reloaded**.
 
 ## Installing a Live Reload Plugin
 
 Before configuring Spring Boot Dev Tools, make sure to have a [Livereload](http://livereload.com/) plugin installed for your browser. Spring Boot Dev Tools ships with a livereload server that will trigger such a plugin and cause the current page to be reloaded automatically.
 
-The Chrome plugin shows an icon with two arrows and a dot in the middle (<img style="display:inline" src="/assets/img/posts/spring-boot-dev-tools/livereload-inactive.png">). Click on it to activate live reload for the currently active browser tab and the dot in the middle will turn black (<img style="display:inline" src="/assets/img/posts/spring-boot-dev-tools/livereload-active.png">).
+The Chrome plugin shows an icon with two arrows and a dot in the middle (<img style="display:inline" src="/assets/img/posts/spring-boot-dev-tools/livereload-inactive.png">). Click on it to activate livereload for the currently active browser tab and the dot in the middle will turn black (<img style="display:inline" src="/assets/img/posts/spring-boot-dev-tools/livereload-active.png">).
 
 ## Setting up Dev Tools for a Single-Module App
 
@@ -91,11 +95,11 @@ The Spring Boot Gradle plugin automatically adds the `developmentOnly` configura
 
 With the dev tools declared as a dependency, all we need to do is to start the application with `./gradlew bootrun`, change a Java file, and hit "compile" in our IDE. The changed class will be compiled into the folder `/build/classes`, which is on the classpath for the running Spring Boot app.
 
-**Spring Boot Dev Tools will notice that a file has changed and trigger a restart of the application context**. Once that is done, the embedded live reload server will call out to the browser plugin which will refresh the page that's currently open in our browser.
+**Spring Boot Dev Tools will notice that a file has changed and trigger a restart of the application context**. Once that is done, the embedded livereload server will call out to the browser plugin which will refresh the page that's currently open in our browser.
 
 Pretty neat.
 
-**But changing a static file like an HTML template or a Javascript file will also trigger a restart, even though this isn't really necessary!**
+**But changing a static file like an HTML template or a Javascript file will also trigger a restart, even though this isn't necessary!**
 
 ### Reloading on Changes to Static Files
 
@@ -138,17 +142,17 @@ The above works quite well already for a single module app, i.e. when we're inte
 
 In addition to the main module that contains the Spring Boot application, we may have specialized modules that contribute the UI, a REST API, or a business component from a certain [bounded context](https://reflectoring.io/java-components-clean-boundaries/).
 
-Each of the sub modules is declared as a dependency in the main module and thus will contribute a JAR file to the final Spring Boot JAR (or WAR) file.
+Each of the submodules is declared as a dependency in the main module and thus will contribute a JAR file to the final Spring Boot JAR (or WAR) file.
 
 **But Spring Boot Dev Tools only listens for changes in the `build` folder of the main module and not for changes in a contributing JAR file**. 
 
-That means we have to go an extra mile to trigger a restart or a reload on changes in the contributing modules.
+That means we have to go the extra mile to trigger a restart or a reload on changes in the contributing modules.
 
-The [example app](https://github.com/thombergs/code-examples/tree/master/spring-boot/devtools-demo/) on GitHub contains a module named `module`, if you want to have a closer look.
+The [example app](https://github.com/thombergs/code-examples/tree/master/spring-boot/devtools-demo/) on GitHub contains a module named `module` if you want to have a closer look.
 
 ### Restarting on Changes in Java Files of the Module
 
-Like with changes to Java files in the main module, we want  change in a Java file of the contributing module to trigger a restart of the application context.  
+Like with changes to Java files in the main module, we want changes in a Java file of the contributing module to trigger a restart of the application context.  
 
 We can achieve this with two more custom Gradle tasks in the `build.gradle` of our main module (or their equivalent in Maven): 
 
@@ -166,11 +170,11 @@ task restartModule(type: Copy){
 }
 ```
 
-In the `restart` task, we make sure that the `classes` task of the main module will be called to update the files in the `build` folder. In addition, we trigger the `restartModule` task, which in turn triggers the same task in the module and copies the resulting files into the `build` folder of the main module. 
+In the `restart` task, we make sure that the `classes` task of the main module will be called to update the files in the `build` folder. Also, we trigger the `restartModule` task, which in turn triggers the same task in the module and copies the resulting files into the `build` folder of the main module. 
 
 Calling `./gradlew restart` will now compile all changed classes and resources and update the running app's classpath, triggering a restart.
 
-**This will work for changes in any file in the main module or the contributing sub module.**
+**This will work for changes in any file in the main module or the contributing submodule.**
 
 But again, this will always trigger a restart. For lightweight changes on static resources, we don't want to trigger a restart.
 
@@ -197,7 +201,7 @@ task reloadModule(type: Copy){
 }
 ```
 
-The task is basically the same as in the [single module example](#reloading-on-changes-to-static-files) above, with the addition of calling the `reloadModule` task, which will copy the module's resources into the `build` folder of the main module to update the running app's classpath. 
+The task is the same as in the [single module example](#reloading-on-changes-to-static-files) above, with the addition of calling the `reloadModule` task, which will copy the module's resources into the `build` folder of the main module to update the running app's classpath. 
 
 Now, as with the single module example, **we can call `./gradlew reload` to trigger a reload of static resources that does not trigger a restart of the application context**.
 
@@ -233,7 +237,7 @@ My [Gradle plugin](https://github.com/thombergs/spring-boot-devtools-gradle-plug
 
 If we were logged in before the restart, we'll see the login screen again after the restart. We have to log back in and then navigate to the page we're currently working on. This costs a lot of time.
 
-To fix this, I suggest to store the session in the database.
+To fix this, I suggest storing the session in the database.
 
 For this, we need to add this dependency to our `build.gradle`:
 

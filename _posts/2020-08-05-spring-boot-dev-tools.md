@@ -4,14 +4,14 @@ categories: [java]
 date: 2020-08-05 05:00:00 +1100
 modified: 2020-08-05 05:00:00 +1100
 author: tom
-excerpt: ""
+excerpt: "Having to restart a Spring Boot application again and again to test changes costs a lot of time. If it takes long enough, we're not only losing the time of the restart but also have to pay the cost of context switching, because we've started to work on something else in the meantime. Spring Boot Dev Tools reduces the time we lose considerably, if configured correctly."
 image:
-  auto: 0051-stop
+  auto: 0078-hourglass
 ---
 
 What are you doing when you've made a change to a Spring Boot app and want to test it? You probably restart it, and go get a coffee or swipe through your Twitter feed until it's up and running again. Then, you log back into the app, navigate to where you were before, and check if your changes work. 
 
-Sound familiar? That's pretty much how I developed Spring Boot apps for most of the time. Until I got fed up with it and gave Spring Boot Dev Tools a try.
+Sound familiar? That's pretty much how I developed Spring Boot apps for a long time. Until I got fed up with it and gave Spring Boot Dev Tools a try. It cost me some time to set it up to my satisfaction (and then some more time to build a [Gradle plugin](https://github.com/thombergs/spring-boot-devtools-gradle-plugin) that makes the setup easier), but it was worth it.
 
 This article explains how the Spring Boot Dev Tools work and how to configure it to your Spring Boot application consisting of a single or multiple Gradle modules. 
 
@@ -202,6 +202,39 @@ To fix these issues, we need to tell Spring Boot Dev Tools to include all the JA
 ```properties
 restart.include.modules=/devtools-demo.*\.jar
 ```
+
+### And What if I Have Multiple Modules?
+
+The above works nicely for a single module that contributes a JAR file to the Spring Boot application. But what if we have multiple modules like that?
+
+We can just create a `restartModule` and a `reloadModule` task for each of those modules and add them as a dependency to the main tasks `restart` and `reload` and it should work fine. 
+
+However, note that the more modules are involved during a restart or a reload, the longer it will take to run the Gradle tasks! At some point, we'll have lost most of the speed advantage over just restarting the Spring Boot app manually. So, choose wisely for which modules you want to support reloading and restarting or change the configuration to support only the module you're currently working on!
+
+My [Gradle plugin](https://github.com/thombergs/spring-boot-devtools-gradle-plugin) makes configuring multiple modules easy, by the way :).
+
+## Don't Lose Your Session
+
+When Spring Boot Dev Tools restarts the application context, any server-side user session will be lost.
+
+If you were logged in before the restart, we'll see the login screen after the restart. We have to log back in and then navigate to the page we're currently working on. This costs a lot of time.
+
+To fix this, I suggest to store the session in the database.
+
+For this, we need to add this dependency to our `build.gradle`:
+
+```
+dependencies {
+  implementation 'org.springframework.session:spring-session-jdbc'
+  ...
+}
+``` 
+
+Then, we need to provide the database tables for Spring Session JDBC to use. We can pick one of the schema files,  add it to our [Flyway](/database-migration-spring-boot-flyway/) or [Liquibase](/database-migration-spring-boot-liquibase/) scripts, and we're done. 
+
+The session will now be stored in the database and will survive a restart of the Spring Boot application context. Nice bonus: the session will also survive a failover from one application instance to another, so we don't have to configure sticky sessions in a load balancer if we're running more than one instance.
+
+Be aware, though, that everything stored in the session now has to implement the `Serializable` interface and we have to be a bit more careful about changing the classes that we store in the session to not cause problems to the users when we're updating our application.
 
 ## Using the Spring Boot Dev Tools Gradle Plugin
 

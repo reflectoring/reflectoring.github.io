@@ -119,8 +119,10 @@ The spring banner at the top of log file does not add any value. Let us switch o
 ### Change the color
 
 ### Lombok
+We have a useful lombok construct slf4j to provide a reference to the logger.
 
 ### Masking
+Sometimes we need to hide supress sensitive data by apply mask on sensitive data.
 
 ### Change Logger Implementation
 adding the log implementation in the default starter. It is included by adding starter for logback implementation. Starter for log4j and java util can also be added.

@@ -10,18 +10,12 @@ image:
 ---
 Logging forms an important part of development. A good percentage of our source code is log statements. They capture a footprint of the application execution which we refer post-facto to investigate any normal or unexpected behavior. Observability tools monitor the logs in real-time to gather important metrics useful for both business and operations. Developers use logs for debugging and tracing and even to capture important events for build and tests runs in CI/CD pipelines. 
 
-Like many goodies, Spring Boot comprises an implementation of a logger in its opinionated framework. This article is an in-depth guide into configuring logging with Spring Boot and includes some best practices for configuring logging in different environments.
+Like many good things, Spring Boot comprises an implementation of a logger in its opinionated framework. This article is an in-depth guide into configuring logging with Spring Boot and includes some best practices for configuring logging in different environments.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/localstack" %}
 
 
-## Default Configuration
-*** What do we log ***
-Request/Response payload
-headers
-Method entry/exit
-Useful checkpoints
-Exceptions
+## Default Logger In Spring Boot
 
 Let us see what we get as default after creating a Spring Boot application. We generate a minimal application named SpringLogger with just the web dependency using starter.spring.io. Next we add some log statements to the application class file - SpringLoggerApplication:
 
@@ -55,9 +49,10 @@ After compiling with maven or gradle and running the resulting jar file, we can 
 2020-08-08 13:21:48.969  INFO 27072 --- [           main] i.p.s.SpringLoggerApplication            : Starting my application 0
 
 ```
-The first info log is printed, followed by a seven line banner of Spring and then the next info log. The debug statement is suppressed. So ** the default logger configuration is a logback implementation at info level.** 
+The first info log is printed, followed by a seven line banner of Spring and then the next info log. The debug statement is suppressed. 
+So ** the default logger configuration in Spring Boot is a logback implementation at info level for logging to console. ** 
 
-## Customizations
+## Customizing The Logger In Spring Boot
 Default configuration is seldom useful in real life. We will wish to make several customizations for various purposes :
 
 1. Print finer level logs for deeper analysis into the application behavior.
@@ -68,18 +63,22 @@ Default configuration is seldom useful in real life. We will wish to make severa
 
 Spring Boot logger has three customization routes as represented in this schematic:
 
-### Log Levels
+### Change Log Level 
 By default, info level logs are printed. We can change the log level by setting an environment variable - log.level.<package-name> and log.level.root.
 
 
-### From Command Line
+#### From Command Line
 
+```
 -Dlogging.level.org.springframework=ERROR 
 -Dlogging.level.io.app=TRACE
+```
 
-### Application Properties
+#### Application Properties
+```
 logging.level.org.springframework=ERROR 
 logging.level.io.app=TRACE
+```
 
 ### Log To File
 Default options are often not enough so we need to customize it. We do this by specifying the additional configurations in logback-spring.xml file. Let us look at the customization we can do and where to do the logging.
@@ -98,18 +97,28 @@ logging.pattern.file= %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %
 
 *** Rotate Log Files ***
 
-## Add Contextual Information
+## Making Our Logging Useful
+We need to capture relevant information in our logs for our logging to be useful. Let us look at few of those:
+### What do we log
+1. Request/Response payload
+2. headers
+3. Method entry/exit
+4. Useful checkpoints
+5. Exceptions
+
+### Add Contextual Information
 Who made the request, which business service, understand the impact
 
-## Correlate Logs
+
+### Correlate Logs Across Microservices
 sleuth
 log aggregation
 
-## Log Format
+### Log Format
 Reader friendly vs machine friendly
 costly operations
 
-## Logs In Container Runtimes
+### Logs In Container Runtimes
 If we are building a docker app, we continue with console appender
 
 ## Other Customizations
@@ -131,6 +140,7 @@ adding the log implementation in the default starter. It is included by adding s
 ** use placeholders **
 ** avoid putting logs inside loops ** 
 ** Do not do heavy operations in custom appenders **
+** Use right log level **
 
 
 ## Environment Flags

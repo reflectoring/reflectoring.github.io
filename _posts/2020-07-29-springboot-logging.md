@@ -1,10 +1,10 @@
 ---
 title: "Spring Boot Logging"
 categories: [craft]
-date: 2020-07-28 06:00:00 +1100
-modified: 2020-07-28 06:00:00 +1100
+date: 2020-08-02 06:00:00 +1100
+modified: 2020-08-02 06:00:00 +1100
 author: pratikdas
-excerpt: "Configure Logback"
+excerpt: "Logging forms the bedrock of any well written application. We look at the logging capabilities in spring boot starting with the default. "
 image:
   auto: 0074-stack
 ---
@@ -81,18 +81,22 @@ logging.level.io.app=TRACE
 ```
 
 ### Log To File
-Default options are often not enough so we need to customize it. We do this by specifying the additional configurations in logback-spring.xml file. Let us look at the customization we can do and where to do the logging.
+Default options are often not enough so we need to customize it. Let us look at the customization we can do and where to do the logging.
 
 ```
 # Output to a temp_folder/file
-logging.file=c:/temp/application.log
- 
-#logging.path=/my-folder/
+logging.file=/app.log
  
 # Logging pattern for file
 logging.pattern.file= %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%
 
 ```
+We can apply the same customization in a separate file which we will see in the next section. 
+
+### logback 
+logback.xml or logback-spring.xml by specifying the additional configurations in logback-spring.xml file.
+Appender
+
 *** File Appender ***
 
 *** Rotate Log Files ***
@@ -119,11 +123,27 @@ they are deployed and run independently resulting in their logs being distribute
 1. Log Aggregation to aggregate logs from different microservices in a central location.
 2. Correlate Logs to trace a request across microservices. We can activate spring-sleuth to add tracing information.
 
+```xml
+  <properties>
+    <java.version>11</java.version>
+    <spring-cloud-sleuth.version>2.2.4.RELEASE</spring-cloud-sleuth.version>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-sleuth</artifactId>
+        <version>${spring-cloud-sleuth.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+```
+2020-08-11 21:59:50.442  INFO [users,66e2ecef2184c874,66e2ecef2184c874,true] 86982 --- [nio-8080-exec-1] i.p.s.SpringLoggerApplication            : Controller: Fetching user with id 7697698
+2020-08-11 21:59:50.442  INFO [users,66e2ecef2184c874,66e2ecef2184c874,true] 86982 --- [nio-8080-exec-1] io.pratik.springLogger.UserService       : Service: Fetching user with id 7697698
 
-This distributes the logging across many individual services, rather than just one. 
-
-Thinking of containers, the logs are printed to console.  This information is used by observability tools to aggregate logs from different microservices. sleuth
-log aggregation
+```
 
 
 ### Log Format

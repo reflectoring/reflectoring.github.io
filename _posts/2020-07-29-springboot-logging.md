@@ -109,10 +109,22 @@ We need to capture relevant information in our logs for our logging to be useful
 ### Add Contextual Information
 Who made the request, which business service, understand the impact
 
+### Different Logging For Each Environment
+We will have separate properties for each environment. We do this using spring profiles.
 
-### Correlate Logs Across Microservices
-sleuth
+### Monitoring, Debugging And Tracing Between Microservices
+Debugging and tracing in microservices is challenging since
+they are deployed and run independently resulting in their logs being distributed across many individual components. Good and effective logging is the best source of data to help troubleshoot, debug, and trace microservices. We apply two techniques to help simplify the log analysis process of multiple microservices : 
+
+1. Log Aggregation to aggregate logs from different microservices in a central location.
+2. Correlate Logs to trace a request across microservices. We can activate spring-sleuth to add tracing information.
+
+
+This distributes the logging across many individual services, rather than just one. 
+
+Thinking of containers, the logs are printed to console.  This information is used by observability tools to aggregate logs from different microservices. sleuth
 log aggregation
+
 
 ### Log Format
 Reader friendly vs machine friendly
@@ -121,44 +133,42 @@ costly operations
 ### Logs In Container Runtimes
 If we are building a docker app, we continue with console appender
 
-## Other Customizations
-### Switch off the banner
-The spring banner at the top of log file does not add any value. Let us switch off the banner by setting the property to off in application properties.
+## More Customizations
+We can apply further customizations to our logs using a mix of spring boot and logback features. Let us take a look at some of those :
 
-### Change the color
+### Switch off the banner
+The spring banner at the top of log file does not add any value. We can switch off the banner by setting the property to off in application properties.
+***Example:***
+src/main/resources/application.properties
+```
+spring.main.banner-mode=off 
+```
+
+### Change The Color Of Log Output In The Console
+We can display ANSI color coded output by setting the spring.output.ansi.enabled property. The possible values are ALWAYS, DETECT and NEVER.
+
+***Example:***
+src/main/resources/application.properties
+```
+spring.output.ansi.enabled=ALWAYS
+```
+The property spring.output.ansi.enabled is set to 'DETECT' by default. The colored output takes effect only if the target terminal supports ANSI codes.
 
 ### Lombok
 We have a useful lombok construct slf4j to provide a reference to the logger.
 
 ### Masking
-Sometimes we need to hide supress sensitive data by apply mask on sensitive data.
+Sometimes we need to hide supress sensitive data by apply mask on sensitive data. We mask the sensitive fields in our payload to hide the info. At the same time useful information should be present.
 
 ### Change Logger Implementation
 adding the log implementation in the default starter. It is included by adding starter for logback implementation. Starter for log4j and java util can also be added.
 
 ## Best Practices
-** use placeholders **
-** avoid putting logs inside loops ** 
-** Do not do heavy operations in custom appenders **
-** Use right log level **
-
-
-## Environment Flags
-We will have separate properties for each environment. We do this using spring profiles.
-
-## Tracing between Microservices
-Thinking of containers, the logs are printed to console. We activate spring-sleuth to add tracing information. This information is used by observability tools to aggregate logs from different microservices.
-
-We mask the sensitive fields in our payload to hide the info. At the same time useful info should be present.
-
-Istio can generate access logs for service traffic in a configurable set of formats, providing operators with full control of the how, what, when and where of logging. For more information, please refer to Getting Envoy’s Access Logs.
-
-Example Istio access log:
-
-## Logging For Microservices
-Debugging and tracing microservices is different from monoliths, and therefore must be treated differently.
-
-Microservices are deployed and operate independently of each other. This distributes the sources of logging across many individual services, rather than just one. Good logging is the best source of data to troubleshoot, debug, and trace microservices.
+1. use placeholders 
+2. avoid putting logs inside loops
+3. Do not do heavy operations in custom appenders 
+4. Use the right log level 
+5. Do not use log for audit
 
 
 ## Log Storage & Visualization

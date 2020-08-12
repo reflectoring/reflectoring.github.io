@@ -66,7 +66,7 @@ The restart functionality of Spring Boot Dev Tools listens to changes to the fil
 
 Before configuring Spring Boot Dev Tools, make sure to have a [Livereload](http://livereload.com/) plugin installed for your browser. Spring Boot Dev Tools ships with a livereload server that will trigger such a plugin and cause the current page to be reloaded automatically.
 
-The Chrome plugin shows an icon with two arrows and a dot in the middle (<img style="display:inline" src="/assets/img/posts/spring-boot-dev-tools/livereload-inactive.png">). Click on it to activate livereload for the currently active browser tab and the dot in the middle will turn black (<img style="display:inline" src="/assets/img/posts/spring-boot-dev-tools/livereload-active.png">).
+The Chrome plugin shows an icon with two arrows and a dot in the middle (<img alt="livereload inactive" style="display:inline" src="/assets/img/posts/spring-boot-dev-tools/livereload-inactive.png">). Click on it to activate livereload for the currently active browser tab and the dot in the middle will turn black (<img alt="livereload active" style="display:inline" src="/assets/img/posts/spring-boot-dev-tools/livereload-active.png">).
 
 ## Setting up Dev Tools for a Single-Module App
 

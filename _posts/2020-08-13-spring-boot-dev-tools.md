@@ -3,7 +3,7 @@ title: Optimize Your Dev Loop with Spring Boot Dev Tools
 categories: [java]
 date: 2020-08-13 05:00:00 +1100
 modified: 2020-08-13 05:00:00 +1100
-author: tom
+author: default
 excerpt: "Having to restart a Spring Boot application again and again to test changes costs a lot of time. If it takes long enough, we're not only losing the time of the restart but also have to pay the cost of context switching, because we've started to work on something else in the meantime. Spring Boot Dev Tools reduces the time we lose considerably, if configured correctly."
 image:
   auto: 0078-hourglass

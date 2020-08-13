@@ -17,7 +17,9 @@ If a component depends on all other components, we don't know what side effects 
 
 Over time, the component boundaries in a codebase tend to deteriorate. Bad dependencies creep in and make it harder to work with the code. This has all kinds of bad effects. Most notably, development gets slower.
 
-How can we protect our codebase from unwanted dependencies? **With careful design and persistent enforcement of component boundaries.** This article shows a set of practices that help in both regards when working with Spring Boot.   
+This is all the more important if we're working on a monolithic codebase that covers many different business areas or "bounded contexts", to use Domain-Driven Design lingo.
+
+How can we protect our codebase from unwanted dependencies? **With careful design of bounded contexts and persistent enforcement of component boundaries.** This article shows a set of practices that help in both regards when working with Spring Boot.   
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/boundaries" %}
 
@@ -39,7 +41,7 @@ I don't want to be restricted to a single package for my component! Maybe my com
 
 **So, yes, package-private visibility helps in avoiding unwanted dependencies, but on its own, it's a half-assed solution at best.**
 
-## An Approach to Clean Boundaries
+## A Modular Approach to Bounded Contexts
 
 What can we do about it? We can't rely on package-private visibility by itself. Let's look at an approach for keeping our codebase clean of unwanted dependencies using a smart package structure, package-private visibility where possible, and ArchUnit as an enforcer where we can't use package-private visibility.  
 
@@ -49,7 +51,9 @@ We discuss the approach alongside an example use case. Say we're building a bill
 
 ![A modules with external and internal dependencies](/assets/img/posts/clean-boundaries/components.jpg)
 
-The billing component exposes an invoice calculator to the outside. The invoice calculator generates an invoice for a certain customer and time period.
+The billing component implements exposes an invoice calculator to the outside. The invoice calculator generates an invoice for a certain customer and time period.
+
+To use Domain-Driven Design (DDD) languageL: the billing components implements a bounded context that implements billing use cases. We want that context to be as independent as possible from other bounded contexts. We'll use the terms "component" and "bounded context" synonymously in the rest of the article.
 
 For the invoice calculator to work, it needs to synchronize data from an external order system in a daily batch job. This batch job pulls the data from an external source and puts it into the database.
 

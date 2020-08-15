@@ -1,8 +1,8 @@
 ---
 title: "Spring Boot Logging"
-categories: [craft]
-date: 2020-08-02 06:00:00 +1100
-modified: 2020-08-02 06:00:00 +1100
+categories: [spring-boot]
+date: 2020-08-15 06:00:00 +1100
+modified: 2020-08-15 06:00:00 +1100
 author: pratikdas
 excerpt: "Logging forms the bedrock of any well written application. We look at the logging capabilities in spring boot starting with the default. "
 image:
@@ -100,10 +100,12 @@ logging.file.total-size-cap | total size of log archives. Backups are deleted wh
 logging.file.clean-history-on-start| force log archive cleanup on application startup | false |
 
 | Property        | What It Means           | Value If Not Set  |
-| --------------------- |:-------------:| -----:|
-| logging.file.max-size      | right-aligned | 10 Mb |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
+| --------------------- |:-------------| -----:|
+| logging.file.max-size      | total size of log archive | 10 Mb |
+| logging.file.max-history      | centered      |   $12 |
+| logging.file.total-size-cap | are neat      |    $1 |
+| logging.file.clean-history-on-start | are neat      |    false |
+
 
  10 MB and, as with console output, ERROR-level, WARN-level, and INFO-level messages are logged by default. Size limits can be changed using the logging.file.max-size property. Rotated log files of the last 7 days are kept by default unless the logging.file.max-history property has been set. The total size of log archives can be capped using logging.file.total-size-cap. When the total size of log archives exceeds that threshold, backups will be deleted. To force log archive cleanup on application startup, use the logging.file.clean-history-on-start property.
 

@@ -91,13 +91,19 @@ logging.pattern.file= %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %
 
 ```
 By default, the log file is rotated on reaching 10 MB and set to info level logging. 
-Other properties related to file:
+Other properties related to file :   
 | Property Name        | DESCRIPTION                        | Default Value |
 | -------------------- | -----------------------------------| ----------    |
 |logging.file.max-size | total size of log archives  | 10 MB |
 logging.file.max-history | Duration of keeping Rotated log files | 7 |
 logging.file.total-size-cap | total size of log archives. Backups are deleted when the total size of log archives exceeds that threshold. | na |
 logging.file.clean-history-on-start| force log archive cleanup on application startup | false |
+
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
 
  10 MB and, as with console output, ERROR-level, WARN-level, and INFO-level messages are logged by default. Size limits can be changed using the logging.file.max-size property. Rotated log files of the last 7 days are kept by default unless the logging.file.max-history property has been set. The total size of log archives can be capped using logging.file.total-size-cap. When the total size of log archives exceeds that threshold, backups will be deleted. To force log archive cleanup on application startup, use the logging.file.clean-history-on-start property.
 

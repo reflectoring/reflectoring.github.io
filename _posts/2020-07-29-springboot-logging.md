@@ -104,36 +104,47 @@ Other properties related to file :
 
 We can apply the same customization in a separate file which we will see in the next section. 
 
-### Using logback.xml
-We isolate the log configuration from the application by specifying the configuration in logback.xml or logback-spring.xml. Spring recommends to use logback-spring.xml.
-#### Appender
-Appender is the most important component of logback.xml. We can use either File or Console appender or write our own.
+### Using logback Configuration File logback.xml
+Logback uses a configuration library - Joran. Logback's default configuration mechanism invokes JoranConfigurator on the default configuration file it finds on the class path.
+We isolate the log configuration from the application by specifying the configuration in logback.xml or logback-spring.xml. Spring recommends to use logback-spring.xml. The configuration is comprised of :
+1. Appender
+2. Encoder
 
-
-*** File Appender ***
-
-*** Rotate Log Files ***
 
 ## Making Our Logging Useful
 We need to capture relevant information in our logs for our logging to be useful. Let us look at few of those:
 ### What do we log
-1. Request/Response payload
-2. headers
-3. Method entry/exit
-4. Useful checkpoints
-5. Exceptions
+The utility of logs depend on the information we capture during logging. Some common usages include data written by logs are :  
+1. Reqyest/Response payload: Log the request and response payload of an API. This forms the starting point of any abnormal conditions in the system behaviour. For instance, we check whether the input is valid, if the status of other sub-systems were healthy, etc.
+2. Headers: We log important request and response headers, for example the JWT authorization header, headers giving context information like model of the device that sent the request, geography of the user.
+3. Method entry/exit: Similar to API, we might log the inputs and output of important methods to ensure that all the statements within the method executed successfully.
+4. Useful checkpoints within our source code to indicate occurance of any important event, for example, payment successful with payment reference, message posted to a queue, etc.
+5. Exceptions are often captured in error logs with complete stacktrace and are a valuable component for any system diagnosis. 
 
 ### Add Contextual Information
-Who made the request, which business service, understand the impact
+Logs become even more useful if we add some contextual information to every message we log, for example the identifier of the user or the name of the business function. Instead of manually appending the contextual information to each log message, we can use Logback’s Mapped Diagnostic Context (MDC). Whatevver we put in the MDC can be used in the log pattern. This behaviour is comparable to a ThreadLocal variable.
+For example, we put the userID in the MDC for adding to the log message using :
+
+```java
+MDC.put(SecurityUtil.getUserId().toString());                                                 
+```
+  
+
+The userID in the MDC is then be added to the log message using :
+```
+%mdc{userId:--2}
+```
+The :–2 refers to the default value of -2 which will be logged in case the MDC is empty.
 
 ### Different Logging For Each Environment
-We will have separate properties for each environment. We do this using spring profiles.
+
+We often have different logging formats for local and production runtime environments. Spring profiles is an elegant way to implement different logging for each environment. You can refer to a very good usecase of (environment specific logging)[https://reflectoring.io/profile-specific-logging-spring-boot/]. 
 
 ### Monitoring, Debugging And Tracing Between Microservices
 Debugging and tracing in microservices is challenging since
 they are deployed and run independently resulting in their logs being distributed across many individual components. Good and effective logging is the best source of data to help troubleshoot, debug, and trace microservices. We apply two techniques to help simplify the log analysis process of multiple microservices : 
 
-1. Log Aggregation to aggregate logs from different microservices in a central location. We do this 
+1. Log Aggregation to aggregate logs from different microservices in a central location. ELK is popular platform for log aggregation. 
 2. Correlate Logs to trace a request across microservices. We can activate spring-sleuth to add tracing information.
 
 ```xml
@@ -157,14 +168,14 @@ they are deployed and run independently resulting in their logs being distribute
 2020-08-11 21:59:50.442  INFO [users,66e2ecef2184c874,66e2ecef2184c874,true] 86982 --- [nio-8080-exec-1] io.pratik.springLogger.UserService       : Service: Fetching user with id 7697698
 
 ```
-
-
-### Log Format
-Reader friendly vs machine friendly
-costly operations
+We have a more elaborate explanation of (tracing across distributed systems)[https://reflectoring.io/tracing-with-spring-cloud-sleuth/].
 
 ### Logs In Container Runtimes
-If we are building a docker app, we continue with console appender
+If we are building a docker app, we can use the console appender and view the logs using :
+
+```shell
+docker logs <container-ID>
+```
 
 ## More Customizations
 We can apply further customizations to our logs using a mix of spring boot and logback features. Let us take a look at some of those :
@@ -191,7 +202,7 @@ The property spring.output.ansi.enabled is set to 'DETECT' by default. The color
 We have a useful lombok construct slf4j to provide a reference to the logger.
 
 ### Masking
-Sometimes we need to hide supress sensitive data by apply mask on sensitive data. We mask the sensitive fields in our payload to hide the info. At the same time useful information should be present.
+Sometimes we need to hide or supress sensitive data by applying masking. We mask the sensitive fields in our payload to hide the info. At the same time useful information should be present.
 
 ### Change Logger Implementation
 adding the log implementation in the default starter. It is included by adding starter for logback implementation. Starter for log4j and java util can also be added.
@@ -205,7 +216,7 @@ adding the log implementation in the default starter. It is included by adding s
 
 
 ## Log Storage & Visualization
-Logs can be stored in files and relational databases. Many of the logging frameworks referred to earlier support both. Specialized databases called time-series databases (TSDB) are better suited to gathering telemetry.
+Logs can be stored in files and relational databases. Most of the logging frameworks support both. Specialized databases called time-series databases (TSDB) are better suited to gathering telemetry.
 
 Log data is used to capture events. Logs, once recorded, are never modified. TSDB are optimized for data that is only ever added and arrives in chronological order. Logging application events is a core use case for time-series databases. There are several open-source TSDB available, including Prometheus and Kibana (the “K” in the classic “ELK stack.”)
 
@@ -214,6 +225,7 @@ Some TSDB include web-based data visualization tools that can be used to query l
 
 ## Conclusion
 
-In this article we saw how to use logging in spring boot and customize it further to suit our requirements. But to fully leverage the benefits, the logging capabilities of the framework need to be complemented with robust and standardized logging practices in engineering teams. The logging standards also need to be enforced with reviews and code quality tools and help to give us visibliity into our systems in live environments.
+In this article we saw how to use logging in spring boot and customize it further to suit our requirements. But to fully leverage the benefits, the logging capabilities of the framework need to be complemented with robust and standardized logging practices in engineering teams. 
+These practices will also need to be enforced with a mix of peer reviews and automated code quality tools. Everything taken together will ensure that when production errors happen we have the maximum information to dig deeper start our diagnosis. 
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/localstack).

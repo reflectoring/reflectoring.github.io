@@ -99,9 +99,9 @@ logging.file.max-history | Duration of keeping Rotated log files | 7 |
 logging.file.total-size-cap | total size of log archives. Backups are deleted when the total size of log archives exceeds that threshold. | na |
 logging.file.clean-history-on-start| force log archive cleanup on application startup | false |
 
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
+| Property        | What It Means           | Value If Not Set  |
+| --------------------- |:-------------:| -----:|
+| logging.file.max-size      | right-aligned | 10 Mb |
 | col 2 is      | centered      |   $12 |
 | zebra stripes | are neat      |    $1 |
 

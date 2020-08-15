@@ -102,9 +102,9 @@ logging.file.clean-history-on-start| force log archive cleanup on application st
 | Property        | What It Means           | Value If Not Set  |
 | --------------------- |:-------------| -----:|
 | logging.file.max-size      | total size of log archive | 10 Mb |
-| logging.file.max-history      | centered      |   $12 |
-| logging.file.total-size-cap | are neat      |    $1 |
-| logging.file.clean-history-on-start | are neat      |    false |
+| logging.file.max-history      | how many days' rotated log files to be kept      |   7 Days |
+| logging.file.total-size-cap | total size of log archives. Backups are deleted when the total size of log archives exceeds that threshold.      |    $1 |
+| logging.file.clean-history-on-start | force log archive cleanup on application startup      |    false |
 
 
  10 MB and, as with console output, ERROR-level, WARN-level, and INFO-level messages are logged by default. Size limits can be changed using the logging.file.max-size property. Rotated log files of the last 7 days are kept by default unless the logging.file.max-history property has been set. The total size of log archives can be capped using logging.file.total-size-cap. When the total size of log archives exceeds that threshold, backups will be deleted. To force log archive cleanup on application startup, use the logging.file.clean-history-on-start property.

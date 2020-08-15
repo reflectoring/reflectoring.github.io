@@ -17,7 +17,7 @@ Like many good things, Spring Boot comprises an implementation of a logger in it
 
 ## Default Logger In Spring Boot
 
-Let us see what we get as default after creating a Spring Boot application. We generate a minimal application named SpringLogger with just the web dependency using starter.spring.io. Next we add some log statements to the application class file - SpringLoggerApplication:
+*** The default logger configuration in Spring Boot is a logback implementation at info level for logging to console. *** Let us see this behaviour in action by creating a Spring Boot application. We generate a minimal application named SpringLogger with just the web dependency using starter.spring.io. Next we add some log statements to the application class file - SpringLoggerApplication:
 
 ```java
 @SpringBootApplication
@@ -50,7 +50,7 @@ After compiling with maven or gradle and running the resulting jar file, we can 
 
 ```
 The first info log is printed, followed by a seven line banner of Spring and then the next info log. The debug statement is suppressed. 
-So ** the default logger configuration in Spring Boot is a logback implementation at info level for logging to console. ** 
+
 
 ## Customizing The Logger In Spring Boot
 Default configuration is seldom useful in real life. We will wish to make several customizations for various purposes :
@@ -64,8 +64,7 @@ Default configuration is seldom useful in real life. We will wish to make severa
 Spring Boot logger has three customization routes as represented in this schematic:
 
 ### Change Log Level 
-By default, info level logs are printed. We can change the log level by setting an environment variable - log.level.<package-name> and log.level.root.
-
+By default, info level logs are printed. We can change the log level by setting environment variables - log.level.<package-name> and log.level.root:
 
 #### From Command Line
 
@@ -81,7 +80,7 @@ logging.level.io.app=TRACE
 ```
 
 ### Log To File
-Default options are often not enough so we need to customize it. Let us look at the customization we can do and where to do the logging.
+We can write our logs to a file path by setting the properties logging.file and logging.file.path.logging.pattern.file in our application.properties :  
 
 ```
 # Output to a temp_folder/file
@@ -91,11 +90,24 @@ logging.file=/app.log
 logging.pattern.file= %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%
 
 ```
+By default, the log file is rotated on reaching 10 MB and set to info level logging. 
+Other properties related to file:
+| Property Name | DESCRIPTION                        | Default Value |
+| ------------- | -----------------------------------| ----------    |
+|logging.file.max-size | total size of log archives  | 10 MB |
+logging.file.max-history | Duration of keeping Rotated log files | 7 |
+logging.file.total-size-cap | total size of log archives. Backups are deleted when the total size of log archives exceeds that threshold.
+logging.file.clean-history-on-start| force log archive cleanup on application startup | false |
+
+ 10 MB and, as with console output, ERROR-level, WARN-level, and INFO-level messages are logged by default. Size limits can be changed using the logging.file.max-size property. Rotated log files of the last 7 days are kept by default unless the logging.file.max-history property has been set. The total size of log archives can be capped using logging.file.total-size-cap. When the total size of log archives exceeds that threshold, backups will be deleted. To force log archive cleanup on application startup, use the logging.file.clean-history-on-start property.
+
 We can apply the same customization in a separate file which we will see in the next section. 
 
-### logback 
-logback.xml or logback-spring.xml by specifying the additional configurations in logback-spring.xml file.
-Appender
+### Using logback.xml
+We isolate the log configuration from the application by specifying the configuration in logback.xml or logback-spring.xml. Spring recommends to use logback-spring.xml.
+#### Appender
+Appender is the most important component of logback.xml. We can use either File or Console appender or write our own.
+
 
 *** File Appender ***
 
@@ -120,7 +132,7 @@ We will have separate properties for each environment. We do this using spring p
 Debugging and tracing in microservices is challenging since
 they are deployed and run independently resulting in their logs being distributed across many individual components. Good and effective logging is the best source of data to help troubleshoot, debug, and trace microservices. We apply two techniques to help simplify the log analysis process of multiple microservices : 
 
-1. Log Aggregation to aggregate logs from different microservices in a central location.
+1. Log Aggregation to aggregate logs from different microservices in a central location. We do this 
 2. Correlate Logs to trace a request across microservices. We can activate spring-sleuth to add tracing information.
 
 ```xml

@@ -1,14 +1,16 @@
 ---
-title: "Spring Boot Logging"
+title: "Logging In Spring Boot With Applicable Benefits"
 categories: [spring-boot]
 date: 2020-08-15 06:00:00 +1100
 modified: 2020-08-15 06:00:00 +1100
 author: pratikdas
-excerpt: "Logging forms the bedrock of any well-written application. We look at the logging capabilities in spring boot starting with the default. "
+excerpt: "Logging forms the bedrock of any well-written application. We look at the logging capabilities in spring boot along with the specific configurations required for different application management functions. "
 image:
   auto: 0074-stack
 ---
-Logging forms an important part of development. A good percentage of our source code is log statements. They capture a footprint of the application execution which we refer post-facto to investigate any normal or unexpected behavior. Observability tools monitor the logs in real-time to gather important metrics useful for both business and operations. Developers use logs for debugging and tracing and even to capture important events for build and test runs in CI/CD pipelines. 
+Logging forms an important part of development. A good percentage of our source code is log statements. They capture a footprint of the application execution which we refer post-facto to investigate any normal or unexpected behavior. 
+
+Observability tools monitor the logs in real-time to gather important metrics useful for both business and operations. Developers use logs for debugging and tracing and even to capture important events for build and test runs in CI/CD pipelines. 
 
 Like many good things, Spring Boot comprises an implementation of a logger in its opinionated framework. This article is an in-depth guide into configuring logging with Spring Boot with a focus on the different techniques of using logging for several application management functions.
 

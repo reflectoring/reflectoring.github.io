@@ -156,22 +156,39 @@ The utility of logs depend on the information we capture during logging. Some co
 
 ### Add Contextual Information
 Logs become even more useful if we add some contextual information to every message we log, for example the identifier of the user or the name of the business function. Instead of manually appending the contextual information to each log message, we can use Logback’s Mapped Diagnostic Context (MDC). Whatevver we put in the MDC can be used in the log pattern. This behaviour is comparable to a ThreadLocal variable.
-For example, we put the userID in the MDC for adding to the log message using :
+For example, we put the user idenntifier and function name in the MDC for adding to the log message:
 
 ```java
-MDC.put(SecurityUtil.getUserId().toString());                                                 
+  @GetMapping("/users/{userID}")
+  public String getUser(@PathVariable("userID") final String userID) {
+    
+    MDC.put("user", userID);
+    MDC.put("function", "userInquiry");
+    
+    logger.info("Controller: Fetching user with id {}", userID);
+    
+    MDC.remove("user");
+    MDC.remove("function");
+    
+    return userService.getUser(userID);
+                                                 
 ```
-  
 
-The userID in the MDC is then be added to the log message using :
+The user identifier and function name in the MDC are then added to the log message in the pattern attribute :
 ```
-%mdc{userId:--2}
+%d{HH:mm:ss.SSS} [%X{user}] [%X{function}] [%thread] %-5level %logger{36} - %msg%n
 ```
-The :–2 refers to the default value of -2 which will be logged in case the MDC is empty.
+A sample of the log output with the MDC attributes user and function name :
+```shell
+...            : Controller: Fetching user with id john123
+... [john123] [userInquiry] ... - Controller: Fetching user with id john123
+...       : Service: Fetching user with id john123
+... [john123] [userInquiry] ... - Service: Fetching user with id john123
+```
 
 ### Different Logging For Each Environment
 
-We often have different logging formats for local and production runtime environments. Spring profiles is an elegant way to implement different logging for each environment. You can refer to a very good usecase of (environment specific logging)[https://reflectoring.io/profile-specific-logging-spring-boot/]. 
+We often have different logging formats for local and production runtime environments. Spring profiles is an elegant way to implement different logging for each environment. You can refer to a very good usecase in this article for (environment specific logging)[https://reflectoring.io/profile-specific-logging-spring-boot/]. 
 
 ### Monitoring, Debugging And Tracing Between Microservices
 Debugging and tracing in microservices is challenging since

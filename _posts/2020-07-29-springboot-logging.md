@@ -190,12 +190,27 @@ A sample of the log output with the MDC attributes user and function name :
 
 We often have different logging formats for local and production runtime environments. Spring profiles is an elegant way to implement different logging for each environment. You can refer to a very good usecase in this article for (environment specific logging)[https://reflectoring.io/profile-specific-logging-spring-boot/]. 
 
-### Monitoring, Debugging And Tracing Between Microservices
-Debugging and tracing in microservices is challenging since
-they are deployed and run independently resulting in their logs being distributed across many individual components. Good and effective logging is the best source of data to help troubleshoot, debug, and trace microservices. We apply two techniques to help simplify the log analysis process of multiple microservices : 
+### Tracing Requests Across Microservices
+Debugging and tracing in microservice applications is challenging since
+the microservices are deployed and run independently resulting in their logs being distributed across many individual components. We apply two techniques to help simplify the log analysis process of multiple microservices : 
 
-1. Log Aggregation to aggregate logs from different microservices in a central location. ELK is popular platform for log aggregation. 
-2. Correlate Logs to trace a request across microservices. We can activate spring-sleuth to add tracing information.
+#### Log Aggregation 
+Logs from different microservices are aggregated to a central location. For spring boot, we need to output logs in a format compatible with the log aggregation software. Let us look at an appender configured for logstash :
+
+```xml
+<configuration>
+  <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+    <destination>localhost:4560</destination>
+    <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
+  </appender>
+``` 
+Here the LogstashEncoder encodes logs in JSON format and sent to elastic search database. We can then apply various visualization tools to query logs.
+
+
+#### Correlate Logs To Trace Requests Across Microservices
+
+To add tracing information, we can activate Spring Cloud Sleuth which provides Spring Boot auto-configuration for distributed tracing. Sleuth adds trace and span identifiers to the Slf4J MDC, so that we can extract all the logs from a given trace or span in a log aggregator.
+Sleuth is added to the classpath as a maven dependency :
 
 ```xml
   <properties>
@@ -214,11 +229,13 @@ they are deployed and run independently resulting in their logs being distribute
     </dependencies>
   </dependencyManagement>
 ```
-2020-08-11 21:59:50.442  INFO [users,66e2ecef2184c874,66e2ecef2184c874,true] 86982 --- [nio-8080-exec-1] i.p.s.SpringLoggerApplication            : Controller: Fetching user with id 7697698
-2020-08-11 21:59:50.442  INFO [users,66e2ecef2184c874,66e2ecef2184c874,true] 86982 --- [nio-8080-exec-1] io.pratik.springLogger.UserService       : Service: Fetching user with id 7697698
+Executing API requests produces logs with trace and span identifiers with the application name.
+```shell
+...  INFO [users,66e2ecef2184c874,66e2ecef2184c874,true] ... : Controller: Fetching user with id 7697698
+...  INFO [users,66e2ecef2184c874,66e2ecef2184c874,true] ... : Service: Fetching user with id 7697698
 
 ```
-We have a more elaborate explanation of (tracing across distributed systems)[https://reflectoring.io/tracing-with-spring-cloud-sleuth/].
+We have a more elaborate explanation of in this article on (tracing across distributed systems)[https://reflectoring.io/tracing-with-spring-cloud-sleuth/].
 
 ### Logs In Container Runtimes
 If we are building a docker app, we can use the console appender and view the logs using :
@@ -249,28 +266,57 @@ spring.output.ansi.enabled=ALWAYS
 The property spring.output.ansi.enabled is set to 'DETECT' by default. The colored output takes effect only if the target terminal supports ANSI codes.
 
 ### Lombok
-We have a useful lombok construct slf4j to provide a reference to the logger.
+We have a useful lombok annotation Slf4j to provide a reference to the logger.
 
-### Masking
-Sometimes we need to hide or supress sensitive data by applying masking. We mask the sensitive fields in our payload to hide the info. At the same time useful information should be present.
+```java
+@Service
+@Slf4j
+public class UserService {
+  public String getUser(final String userID) {
+    log.info("Service: Fetching user with id {}", userID);
+
+```
 
 ### Change Logger Implementation
-adding the log implementation in the default starter. It is included by adding starter for logback implementation. Starter for log4j and java util can also be added.
+Logback starter is part of the default spring boot starter. We can change this to log4j or java util implementations by including their starters and excluding the default spring-boot-starter-logging.
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-log4j2</artifactId>
+</dependency>
+```
 
-## Best Practices
-1. use placeholders 
-2. avoid putting logs inside loops
-3. Do not do heavy operations in custom appenders 
-4. Use the right log level 
+
+## Additional Best Practices
+1. Use placeholders 
+
+```java
+    log.info("Service: Fetching user with id {}", userID);
+
+    // Not preferred
+    log.info("Service: Fetching user with id " + userID);
+```
+2. Avoid putting logs inside loops
+
+```java
+   // Not preferred
+   for(int i=0; i < 10; ++i){
+     log.info("loop counter {}", i);
+   }
+```
+3. Do not do heavy operations inside custom appenders 
+4. Use the appropriate log level , for example, ERROR for exceptions, INFO for important events in the application, etc.
 5. Do not use log for audit
-
-
-## Log Storage & Visualization
-Logs can be stored in files and relational databases. Most of the logging frameworks support both. Specialized databases called time-series databases (TSDB) are better suited to gathering telemetry.
-
-Log data is used to capture events. Logs, once recorded, are never modified. TSDB are optimized for data that is only ever added and arrives in chronological order. Logging application events is a core use case for time-series databases. There are several open-source TSDB available, including Prometheus and Kibana (the “K” in the classic “ELK stack.”)
-
-Some TSDB include web-based data visualization tools that can be used to query logs. Grafana is a dedicated visualization tool that works with most TSDBs.
 
 
 ## Conclusion

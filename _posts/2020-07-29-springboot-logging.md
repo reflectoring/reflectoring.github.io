@@ -1,5 +1,5 @@
 ---
-title: "Logging In Spring Boot With Applicable Benefits"
+title: "Logging In Spring Boot"
 categories: [spring-boot]
 date: 2020-08-15 06:00:00 +1100
 modified: 2020-08-15 06:00:00 +1100

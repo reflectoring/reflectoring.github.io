@@ -17,7 +17,7 @@ Like many good things, Spring Boot comprises an implementation of a logger in it
 
 ## Default Logger In Spring Boot
 
-*** The default logger configuration in Spring Boot is a logback implementation at info level for logging to console. *** Let us see this behaviour in action by creating a Spring Boot application. We generate a minimal application named SpringLogger with just the web dependency using starter.spring.io. Next we add some log statements to the application class file - SpringLoggerApplication:
+***The default logger configuration in Spring Boot is a logback implementation at info level for logging the output to console.*** Let us see this behaviour in action by creating a Spring Boot application. We generate a minimal application named SpringLogger with just the web dependency using starter.spring.io. Next we add some log statements to the application class file - SpringLoggerApplication:
 
 ```java
 @SpringBootApplication
@@ -61,25 +61,31 @@ Default configuration is seldom useful in real life. We will wish to make severa
 4. Add tracing information to correlate logs from different applications.
 5. Change the structure of our log to make it consumable by log readers. 
 
-Spring Boot logger has three customization routes as represented in this schematic:
+We usually take three routes to customize logging by overriding the default behaviour:
+ 1. Set the logging parameters as environment variables 
+ 2. Set the logging parameters in Application.properties
+ 3. Define the parammeters in logback configuration file
 
-### Change Log Level 
-By default, info level logs are printed. We can change the log level by setting environment variables - log.level.<package-name> and log.level.root:
-
-#### From Command Line
-
+### Reduce Log Level For Deeper Analysis
+Sometimes we need to see detailed logs to troubleshoot a application behaviour. To achieve that we send our desired log level as an argument when running our application. 
+```shell
+java -jar target/springLogger-0.0.1-SNAPSHOT.jar --trace
 ```
--Dlogging.level.org.springframework=ERROR 
--Dlogging.level.io.app=TRACE
-```
+This will start to output from trace level printing logs of trace, debug, info, warn, error. 
 
-#### Application Properties
+### Package Level Logging To Supress Less Important Logs
+We are more interested in log output of the code we have written instead of log output from Spring. We control the logging by specifying package names by setting an environment variable - log.level.<package-name> :
+```shell
+java -jar target/springLogger-0.0.1-SNAPSHOT.jar -Dlogging.level.org.springframework=ERROR -Dlogging.level.io.pratik=TRACE
 ```
+Alternately, we can specify our package in application.properties :
+
+```properties
 logging.level.org.springframework=ERROR 
 logging.level.io.app=TRACE
 ```
 
-### Log To File
+### Log To File For Archival Or Shipping To Log Aggregators
 We can write our logs to a file path by setting the properties logging.file and logging.file.path.logging.pattern.file in our application.properties :  
 
 ```

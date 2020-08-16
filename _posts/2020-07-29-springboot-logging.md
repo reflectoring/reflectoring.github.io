@@ -10,9 +10,9 @@ image:
 ---
 Logging forms an important part of development. A good percentage of our source code is log statements. They capture a footprint of the application execution which we refer post-facto to investigate any normal or unexpected behavior. Observability tools monitor the logs in real-time to gather important metrics useful for both business and operations. Developers use logs for debugging and tracing and even to capture important events for build and test runs in CI/CD pipelines. 
 
-Like many good things, Spring Boot comprises an implementation of a logger in its opinionated framework. This article is an in-depth guide into configuring logging with Spring Boot and includes some best practices for configuring logging in different environments.
+Like many good things, Spring Boot comprises an implementation of a logger in its opinionated framework. This article is an in-depth guide into configuring logging with Spring Boot with a focus on the different techniques of using logging for several application management functions.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/localstack" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-dtls" %}
 
 
 ## Default Logger In Spring Boot
@@ -24,10 +24,11 @@ Like many good things, Spring Boot comprises an implementation of a logger in it
 public class SpringLoggerApplication {
   static final Logger logger = LoggerFactory.getLogger(SpringLoggerApplication.class);
   public static void main(String[] args) {
-    logger.info("Before starting application");
+    logger.info("Before Starting application");
     SpringApplication.run(SpringLoggerApplication.class, args);
-    logger.debug("Starting my application {}", args.length);
-    logger.info("Starting my application {}", args.length);
+    logger.debug("Starting my application in debug with {} arguments", args.length);
+    logger.info("Starting my application with {} arguments.", args.length);
+
   }
 ```
 After compiling with maven or Gradle and running the resulting jar file, we can see our log statements getting printed in the console:
@@ -318,7 +319,7 @@ Logback starter is part of the default spring boot starter. We can change this t
 
 3. Do not perform heavy operations inside custom appenders 
 4. Use the appropriate log level, for example, ERROR for exceptions, INFO for important events in the application, etc.
-5. Do not use the log for audit
+5. Do not use the log for auditing functions.
 
 
 ## Conclusion
@@ -326,4 +327,4 @@ Logback starter is part of the default spring boot starter. We can change this t
 In this article, we saw how to use logging in spring boot and customize it further to suit our requirements. But to fully leverage the benefits, the logging capabilities of the framework need to be complemented with robust and standardized logging practices in engineering teams. 
 These practices will also need to be enforced with a mix of peer reviews and automated code quality tools. Everything taken together will ensure that when production errors happen we have the maximum information to dig deeper start our diagnosis. 
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/localstack).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-dtls).

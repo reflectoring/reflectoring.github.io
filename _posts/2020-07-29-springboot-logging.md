@@ -86,17 +86,27 @@ logging.level.io.app=TRACE
 ```
 
 ### Log To File For Archival Or Shipping To Log Aggregators
-We can write our logs to a file path by setting the properties logging.file and logging.file.path.logging.pattern.file in our application.properties :  
+We can write our logs to a file path by setting only one of the properties logging.file.name or logging.file.path in our application.properties. By default, for file output, the log level is set to info. 
 
 ```
-# Output to a temp_folder/file
-logging.file=/app.log
- 
+# Output to a file named application.log. 
+logging.file.name=application.log
+```
+```
+# Output to a file named spring.log in path /Users
+logging.file.path=/Users
+```
+If both properties are set, only logging.file.name takes effect. 
+
+Note: The name of these properties have changed in spring 2.2 onwards but the official documentation does not yet reflect this. Our example is working with version 2.3.2.RELEASE. 
+
+Apart from file name, we can override the default logging pattern with the property logging.pattern.file:
+``` 
 # Logging pattern for file
 logging.pattern.file= %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%
 
 ```
-By default, the log file is set to info level logging. 
+
 Other properties related to file :   
 
 
@@ -104,18 +114,35 @@ Other properties related to file :
 | --------------------- |:-------------| :-------------:|
 | logging.file.max-size      | total size of log archive | 10 Mb |
 | logging.file.max-history      | how many days' rotated log files to be kept      |   7 Days |
-| logging.file.total-size-cap | total size of log archives. Backups are deleted when the total size of log archives exceeds that threshold.      |    $1 |
+| logging.file.total-size-cap | total size of log archives. Backups are deleted when the total size of log archives exceeds that threshold.      |   Not Specified |
 | logging.file.clean-history-on-start | force log archive cleanup on application startup      |    false |
 
 
 We can apply the same customization in a separate file which we will see in the next section. 
 
-### Using logback Configuration File logback.xml
-Logback uses a configuration library - Joran. Logback's default configuration mechanism invokes JoranConfigurator on the default configuration file it finds on the class path.
-We isolate the log configuration from the application by specifying the configuration in logback.xml or logback-spring.xml. Spring recommends to use logback-spring.xml. The configuration is comprised of :
-1. Appender
-2. Encoder
+### Isolate Logging Configuration From Application With logback Configuration
+ 
+We can isolate the log configuration from the application by specifying the configuration in logback.xml or logback-spring in xml or groovy syntax. Spring recommends to use the names with spring like logback-spring.xml or logback-spring.groovy.
+The configuration is comprised of appender element inside a root configuration tag. The pattern is specified inside an encoder element :
 
+```xml
+<configuration >
+  <include
+    resource="/org/springframework/boot/logging/logback/base.xml" />
+  <appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+      </pattern>
+    </encoder>
+  </appender>
+```
+
+Logback uses a configuration library - Joran so we will see these logs during application start up if we set a debug property in the configuration tag to true.
+
+```xml
+<configuration debug="true">
+```
 
 ## Making Our Logging Useful
 We need to capture relevant information in our logs for our logging to be useful. Let us look at few of those:

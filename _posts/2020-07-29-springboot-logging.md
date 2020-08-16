@@ -299,7 +299,7 @@ Logback starter is part of the default spring boot starter. We can change this t
 
 
 ## Additional Best Practices
-1. Use placeholders instead of string concatenation.
+- Use placeholders instead of string concatenation.
 
 ```java
     log.info("Service: Fetching user with id {}", userID);
@@ -307,8 +307,7 @@ Logback starter is part of the default spring boot starter. We can change this t
     // Not preferred
     log.info("Service: Fetching user with id " + userID);
 ```     
-
-2. Avoid putting logs inside loops
+- Avoid putting logs inside loops
 
 ```java
    // Not preferred
@@ -316,10 +315,9 @@ Logback starter is part of the default spring boot starter. We can change this t
      log.info("loop counter {}", i);
    }
 ```
-
-3. Do not perform heavy operations inside custom appenders 
-4. Use the appropriate log level, for example, ERROR for exceptions, INFO for important events in the application, etc.
-5. Do not use the log for auditing functions.
+- Do not perform heavy operations inside custom appenders 
+- Use the appropriate log level, for example, ERROR for exceptions, INFO for important events in the application, etc.
+- Do not use the log for auditing functions. 
 
 
 ## Conclusion

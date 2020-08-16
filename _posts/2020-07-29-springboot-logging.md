@@ -22,13 +22,15 @@ Like many good things, Spring Boot comprises an implementation of a logger in it
 ```java
 @SpringBootApplication
 public class SpringLoggerApplication {
-  static final Logger logger = LoggerFactory.getLogger(SpringLoggerApplication.class);
-  public static void main(String[] args) {
-    logger.info("Before Starting application");
-    SpringApplication.run(SpringLoggerApplication.class, args);
-    logger.debug("Starting my application in debug with {} arguments", args.length);
-    logger.info("Starting my application with {} arguments.", args.length);
-
+    static final Logger log = 
+        LoggerFactory.getLogger(SpringLoggerApplication.class);
+  
+    public static void main(String[] args) {
+     log.info("Before Starting application");
+     SpringApplication.run(SpringLoggerApplication.class, args);
+     log.debug("Starting my application in debug with {} args", args.length);
+     log.info("Starting my application with {} args.", args.length);  
+    }
   }
 ```
 After compiling with maven or Gradle and running the resulting jar file, we can see our log statements getting printed in the console:
@@ -46,8 +48,8 @@ After compiling with maven or Gradle and running the resulting jar file, we can 
 .
 .
 .
-2020-08-08 13:21:48.965  INFO 27072 --- [           main] i.p.s.SpringLoggerApplication            : Started SpringLoggerApplication in 3.054 seconds (JVM running for 3.726)
-2020-08-08 13:21:48.969  INFO 27072 --- [           main] i.p.s.SpringLoggerApplication            : Starting my application 0
+... : Started SpringLoggerApplication in 3.054 seconds (JVM running for 3.726)
+... : Starting my application 0
 
 ```
 The first info log is printed, followed by a seven-line banner of Spring and then the next info log. The debug statement is suppressed. 
@@ -63,9 +65,9 @@ A default configuration is seldom useful in real life. We will wish to make seve
 5. Change the structure of our log to make it consumable by log readers. 
 
 We usually take three routes to customize logging by overriding the default behavior:
- 1. Set the logging parameters as environment variables 
- 2. Set the logging parameters in Application.properties
- 3. Define the parameters in logback configuration file
+ - Set the logging parameters as environment variables 
+ - Set the logging parameters in Application.properties
+ - Define the parameters in logback configuration file
 
 ### Reduce Log Level For Deeper Analysis
 Sometimes we need to see detailed logs to troubleshoot an application behavior. To achieve that we send our desired log level as an argument when running our application. 
@@ -199,10 +201,11 @@ the microservices are deployed and run independently resulting in their logs bei
 Logs from different microservices are aggregated to a central location. For spring boot, we need to output logs in a format compatible with the log aggregation software. Let us look at an appender configured for logstash :
 
 ```xml
-<configuration>
-  <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+  <appender name="LOGSTASH"
+    class="net.logstash.logback.appender.LogstashTcpSocketAppender">
     <destination>localhost:4560</destination>
-    <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
+    <encoder charset="UTF-8"
+      class="net.logstash.logback.encoder.LogstashEncoder" />
   </appender>
 ``` 
 Here the LogstashEncoder encodes logs in JSON format and sent to the elastic search database. We can then apply various visualization tools to query logs.
@@ -232,8 +235,10 @@ Sleuth is added to the classpath as a maven dependency :
 ```
 Executing API requests produces logs with trace and span identifiers with the application name.
 ```shell
-...  INFO [users,66e2ecef2184c874,66e2ecef2184c874,true] ... : Controller: Fetching user with id 7697698
-...  INFO [users,66e2ecef2184c874,66e2ecef2184c874,true] ... : Service: Fetching user with id 7697698
+...  INFO [users,66e2ecef2184c874,66e2ecef2184c874,true] ...
+     ... : Controller: Fetching user with id 7697698
+...  INFO [users,66e2ecef2184c874,66e2ecef2184c874,true] ... 
+     ... : Service: Fetching user with id 7697698
 
 ```
 We have a more elaborate explanation of this article on (tracing across distributed systems)[https://reflectoring.io/tracing-with-spring-cloud-sleuth/].
@@ -323,6 +328,7 @@ Logback starter is part of the default spring boot starter. We can change this t
 ## Conclusion
 
 In this article, we saw how to use logging in spring boot and customize it further to suit our requirements. But to fully leverage the benefits, the logging capabilities of the framework need to be complemented with robust and standardized logging practices in engineering teams. 
+
 These practices will also need to be enforced with a mix of peer reviews and automated code quality tools. Everything taken together will ensure that when production errors happen we have the maximum information to dig deeper start our diagnosis. 
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-dtls).

@@ -116,3 +116,12 @@
 - author: Michael Feathers
   publication: https://blogs.itemis.com/en/unit-tests-are-tests-of-modularity
   text: "With modularity, quality follows."
+- author: Alberto Brandolini
+  publication: https://blog.avanscoperta.it/2020/08/04/domain-driven-design-in-2020/
+  text: "Multiple models is the key for not evolving into a big ball of mud."
+- author: Alberto Brandolini
+  publication: https://blog.avanscoperta.it/2020/08/04/domain-driven-design-in-2020/
+  text: "Sharing resources is usually a threat on healthy evolution."
+- author: Alberto Brandolini
+  publication: https://blog.avanscoperta.it/2020/08/04/domain-driven-design-in-2020/
+  text: "Safety can be achieved only when we are in control of the behaviour of our system."

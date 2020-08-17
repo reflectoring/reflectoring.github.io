@@ -1,12 +1,12 @@
 ---
 title: Implementing Time Limiting with Resilience4j
 categories: [java]
-date: 2020-08-08 05:00:00 +1100
-modified: 2020-08-08 05:00:00 +1100
+date: 2020-08-18 05:00:00 +1100
+modified: 2020-18-08 05:00:00 +1100
 author: saajan
 excerpt: "Continuing the Resilience4j journey, this article on TimeLimiter shows when and how to use it to build resilient applications."
 image:
-  auto: 0073-broken
+  auto: 0079-stopwatch
 ---
 
 In this series so far, we have learned about Resilience4j and its [Retry](/retry-with-resilience4j/) and [RateLimiter](/rate-limiting-with-resilience4j/) modules. In this article, we will continue exploring Resilience4j with a look into the TimeLimiter. We will find out what problem it solves, when and how to use it, and also look at a few examples.
@@ -21,13 +21,15 @@ Please refer to the description in the previous article for a quick intro into [
 
 Setting a limit on the amount of time we are willing to wait for an operation to complete is called time limiting. If the operation does not complete within the time we specified, we want to be notified about it with a timeout error. 
 
-One main reason why we would do this is to ensure we don't make users or clients wait indefinitely. A slow service that does not give any feedback can be frustrating to the user. 
+Sometimes, this is also referred to as "setting a deadline".
 
-Another reason we set time limits on operations is to make sure we don't hold up server resources indefinitely. The `timeout` value that we specify when using the `@Transactional` Spring annotation is an example - we don't want to hold up database resources for long in this case.
+One main reason why we would do this is to ensure that we don't make users or clients wait indefinitely. A slow service that does not give any feedback can be frustrating to the user. 
+
+Another reason we set time limits on operations is to make sure we don't hold up server resources indefinitely. The `timeout` value that we specify when using Spring's `@Transactional` annotation is an example - we don't want to hold up database resources for long in this case.
 
 ## When to Use the Resilience4j TimeLimiter?
 
-Resilience4j TimeLimiter can be used to set time limits on asynchronous operations implemented using `CompleteableFuture`s.
+**Resilience4j's [TimeLimiter](https://resilience4j.readme.io/docs/timeout) can be used to set time limits (timeouts) on asynchronous operations implemented with `CompleteableFuture`s**.
 
 The `CompletableFuture` class introduced in Java 8 makes asynchronous, non-blocking programming easier. A slow method can be executed on a different thread, freeing up the current thread to handle other tasks. We can provide a callback to be executed when `slowMethod()` returns:
 
@@ -56,7 +58,7 @@ But there's a problem here - the `get()` method is a blocking call.  So it defea
 
 **This is the problem that Resilience4j's `TimeLimiter` solves - it lets us set a time limit on the asynchronous operation while retaining the benefit of being non-blocking when working with `CompletableFuture` in Java 8.**
 
-**This limitation with `CompletableFuture` has been addressed in Java 9. We can set time limits directly using methods like  `orTimeout()` or `completeOnTimeout()` on `CompletableFuture` in Java 9 and above.**
+This limitation of `CompletableFuture` has been addressed in Java 9. We can set time limits directly using methods like  `orTimeout()` or `completeOnTimeout()` on `CompletableFuture` in Java 9 and above. With Resilience4J's [metrics](#timelimiter-metrics) and [events](#timelimiter-events), it still provides added value compared to the plain Java 9 solution, however. 
 
 ## Resilience4j TimeLimiter Concepts
 

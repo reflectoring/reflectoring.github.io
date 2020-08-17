@@ -17,7 +17,17 @@ In this series so far, we have learned about Resilience4j and its [Retry](/retry
 
 Please refer to the description in the previous article for a quick intro into [how Resilience4j works in general](/retry-with-resilience4j/#what-is-resilience4j).
 
-## When to Use the TimeLimiter?
+## What is Time Limiting?
+
+Setting a limit on the amount of time we are willing to wait for an operation to complete is called time limiting. If the operation does not complete within the time we specified, we want to be notified about it with a timeout error. 
+
+One main reason why we would do this is to ensure we don't make users or clients wait indefinitely. A slow service that does not give any feedback can be frustrating to the user. 
+
+Another reason we set time limits on operations is to make sure we don't hold up server resources indefinitely. The `timeout` value that we specify when using the `@Transactional` Spring annotation is an example - we don't want to hold up database resources for long in this case.
+
+## When to Use the Resilience4j TimeLimiter?
+
+Resilience4j TimeLimiter can be used to set time limits on asynchronous operations implemented using `CompleteableFuture`s.
 
 The `CompletableFuture` class introduced in Java 8 makes asynchronous, non-blocking programming easier. A slow method can be executed on a different thread, freeing up the current thread to handle other tasks. We can provide a callback to be executed when `slowMethod()` returns:
 
@@ -214,7 +224,7 @@ In a real application, we would export the data to a monitoring system periodica
 
 ## Gotchas and Good Practices When Implementing Time Limiting
 
-Usually, we deal with two kinds of operations - queries (or reads) and commands (or writes). It is safe to time-limit queries because we know that they don't change state. The `searchFlights()` operation we saw was an example of a query operation.
+Usually, we deal with two kinds of operations - queries (or reads) and commands (or writes). It is safe to time-limit queries because we know that they don't change the state of the system. The `searchFlights()` operation we saw was an example of a query operation.
 
 Commands usually change the state of the system. A `bookFlights()` operation would be an example of a command. When time-limiting a command we have to keep in mind that the command is most likely still running when we timeout. A `TimeoutException` on a `bookFlights()` call for example doesn't necessarily mean that the command failed. 
 

@@ -4,22 +4,24 @@ categories: [spring-boot]
 date: 2020-08-15 06:00:00 +1100
 modified: 2020-08-15 06:00:00 +1100
 author: pratikdas
-excerpt: "Logging forms the bedrock of any well-written application. We look at the logging capabilities in spring boot along with the specific configurations required for different application management functions. "
+excerpt: "Logging is the bedrock for analysis if anything goes wrong, or even to see that everything is in order. In this tutorial, we look at the logging capabilities in Spring Boot to see what we can do with it and how we can customize it."
 image:
   auto: 0074-stack
 ---
-Logging forms an important part of development. A good percentage of our source code is log statements. They capture a footprint of the application execution which we refer post-facto to investigate any normal or unexpected behavior. 
+Logging is an important part of development. Log statements capture a footprint of the application execution which we refer to after the fact to investigate any normal or unexpected behavior. 
 
 Observability tools monitor the logs in real-time to gather important metrics useful for both business and operations. Developers use logs for debugging and tracing and even to capture important events for build and test runs in CI/CD pipelines. 
 
-Like many good things, Spring Boot comprises an implementation of a logger in its opinionated framework. This article is an in-depth guide into configuring logging with Spring Boot with a focus on the different techniques of using logging for several application management functions.
+Spring Boot includes an implementation of a logger in its opinionated framework. This article is an in-depth guide into configuring logging with Spring Boot with a focus on the different techniques of using logging for several application management functions.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-dtls" %}
 
 
 ## Default Logger In Spring Boot
 
-***The default logger configuration in Spring Boot is a logback implementation at info level for logging the output to console.*** Let us see this behaviour in action by creating a Spring Boot application. We generate a minimal application named SpringLogger with just the web dependency using starter.spring.io. Next we add some log statements to the application class file - SpringLoggerApplication:
+**The default logger configuration in Spring Boot is a logback implementation at info level for logging the output to console.** 
+
+Let's see this behaviour in action by creating a Spring Boot application. We generate a minimal application with just the web dependency using start.spring.io. Next we add some log statements to the application class file:
 
 ```java
 @SpringBootApplication
@@ -35,9 +37,9 @@ public class SpringLoggerApplication {
     }
   }
 ```
-After compiling with maven or Gradle and running the resulting jar file, we can see our log statements getting printed in the console:
+After compiling with Maven or Gradle and running the resulting jar file, we can see our log statements getting printed in the console:
 
-```shell
+```
 13:21:45.673 [main] INFO io.pratik.springLogger.SpringLoggerApplication - Before Starting application
 
   .   ____          _            __ _ _
@@ -60,38 +62,42 @@ The first info log is printed, followed by a seven-line banner of Spring and the
 ## Customizing The Logger In Spring Boot
 A default configuration is seldom useful in real life. We will wish to make several customizations for various purposes :
 
-1. Print finer level logs for deeper analysis into the application behavior.
-2. Log to a file that will be archived on exceeding a threshold size.
-3. Add contextual information to our log statements for better insights during the diagnosis of unexpected behavior of our application.
-4. Add tracking information to correlate logs from different applications.
-5. Change the structure of our log to make it consumable by log readers. 
+- Print finer level logs for deeper analysis into the application behavior.
+- Log to a file that will be archived on exceeding a threshold size.
+- Add contextual information to our log statements for better insights during the diagnosis of unexpected behavior of our application.
+- Add tracking information to correlate logs from different applications.
+- Change the structure of our log to make it consumable by log readers. 
 
 We usually take three routes to customize logging by overriding the default behavior:
  - Set the logging parameters as environment variables 
- - Set the logging parameters in Application.properties
+ - Set the logging parameters in `application.properties` or `application.yml`
  - Define the parameters in logback configuration file
 
-### Reduce Log Level For Deeper Analysis
+### Expanding the Log Level for Deeper Analysis
 Sometimes we need to see detailed logs to troubleshoot an application behavior. To achieve that we send our desired log level as an argument when running our application. 
 ```shell
 java -jar target/springLogger-0.0.1-SNAPSHOT.jar --trace
 ```
 This will start to output from trace level printing logs of trace, debug, info, warn, error. 
 
-### Package Level Logging To Suppress Less Important Logs
-We are more interested in the log output of the code we have written instead of log output from Spring. We control the logging by specifying package names by setting an environment variable - log.level.<package-name> :
+### Configuring Package-Level Logging 
+We are more interested in the log output of the code we have written instead of log output from frameworks like Spring. We control the logging by specifying package names in the environment variable `log.level.<package-name>` :
+
 ```shell
-java -jar target/springLogger-0.0.1-SNAPSHOT.jar -Dlogging.level.org.springframework=ERROR -Dlogging.level.io.pratik=TRACE
+java \\
+  -jar target/springLogger-0.0.1-SNAPSHOT.jar \\
+  -Dlogging.level.org.springframework=ERROR \\
+  -Dlogging.level.io.pratik=TRACE
 ```
-Alternatively, we can specify our package in the application.properties :
+Alternatively, we can specify our package in `application.properties`:
 
 ```properties
 logging.level.org.springframework=ERROR 
 logging.level.io.app=TRACE
 ```
 
-### Log To File For Archival Or Shipping To Log Aggregators
-We can write our logs to a file path by setting only one of the properties logging.file.name or logging.file.path in our application.properties. By default, for file output, the log level is set to info. 
+### Logging to a File
+We can write our logs to a file path by setting only one of the properties `logging.file.name` or `logging.file.path` in our `application.properties`. By default, for file output, the log level is set to info. 
 
 ```
 # Output to a file named application.log. 
@@ -101,34 +107,32 @@ logging.file.name=application.log
 # Output to a file named spring.log in path /Users
 logging.file.path=/Users
 ```
-If both properties are set, only the logging.file.name takes effect. 
+If both properties are set, only `logging.file.name` takes effect. 
 
-Note: The name of these properties has changed in spring 2.2 onwards but the official documentation does not yet reflect this. Our example is working with version 2.3.2.RELEASE. 
+Note that the name of these properties has changed in Spring 2.2 onwards but the official documentation does not yet reflect this. Our example is working with version 2.3.2.RELEASE. 
 
-Apart from file name, we can override the default logging pattern with the property logging.pattern.file:
+Apart from file name, we can override the default logging pattern with the property `logging.pattern.file`:
 ``` 
 # Logging pattern for file
 logging.pattern.file= %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%
-
 ```
 
-Other properties related to file :   
-
+Other properties related to the logging file :   
 
 | Property        | What It Means           | Value If Not Set  |
 | --------------------- |:-------------| :-------------:|
-| logging.file.max-size      | total size of log archive | 10 Mb |
-| logging.file.max-history      | how many days' rotated log files to be kept      |   7 Days |
-| logging.file.total-size-cap | total size of log archives. Backups are deleted when the total size of log archives exceeds that threshold.      |   Not Specified |
-| logging.file.clean-history-on-start | force log archive cleanup on application startup      |    false |
+| `logging.file.max-size`     | maximum total size of log archive before a file is rotated | 10 Mb |
+| `logging.file.max-history`      | how many days worth of rotated log files to be kept      |   7 Days |
+| `logging.file.total-size-cap` | total size of log archives. Backups are deleted when the total size of log archives exceeds that threshold.      |   not specified |
+| `logging.file.clean-history-on-start` | force log archive cleanup on application startup      |    false |
 
+We can apply the same customization in a separate configuration file as we will see in the next section. 
 
-We can apply the same customization in a separate file which we will see in the next section. 
-
-### Isolate Logging Configuration From Application With logback Configuration
+### Configuring `logback-spring.xml`
  
-We can isolate the log configuration from the application by specifying the configuration in logback.xml or logback-spring in XML or groovy syntax. Spring recommends using the names with spring-like logback-spring.xml or logback-spring.groovy.
-The configuration is comprised of appender element inside a root configuration tag. The pattern is specified inside an encoder element :
+We can isolate the log configuration from the application by specifying the configuration in `logback.xml` or `logback-spring.xml` in XML or groovy syntax. Spring recommends using `logback-spring.xml` or `logback-spring.groovy` because they are more powerful.
+
+The default configuration is comprised of an appender element inside a root configuration tag. The pattern is specified inside an encoder element :
 
 ```xml
 <configuration >
@@ -141,9 +145,10 @@ The configuration is comprised of appender element inside a root configuration t
       </pattern>
     </encoder>
   </appender>
+</configuration>
 ```
 
-Logback uses a configuration library - Joran so we will see these logs during application startup if we set a debug property in the configuration tag to true.
+Logback uses the configuration library Joran so we will see these logs during application startup if we set a debug property in the configuration tag to true.
 
 ```xml
 <configuration debug="true">
@@ -191,9 +196,11 @@ A sample of the log output with the MDC attributes user and function name :
 ... [john123] [userInquiry] ... - Service: Fetching user with id john123
 ```
 
+Depending on the context, there are [more things to add to the message context](/logging-context/) than a user and a function.
+
 ### Different Logging For Each Environment
 
-We often have different logging formats for local and production runtime environments. Spring profiles are an elegant way to implement different logging for each environment. You can refer to a very good use case in this article for (environment-specific logging)[https://reflectoring.io/profile-specific-logging-spring-boot/]. 
+We often have different logging formats for local and production runtime environments. Spring profiles are an elegant way to implement different logging for each environment. You can refer to a very good use case in [this article about environment-specific logging](/profile-specific-logging-spring-boot/). 
 
 ### Tracing Requests Across Microservices
 Debugging and tracing in microservice applications is challenging since

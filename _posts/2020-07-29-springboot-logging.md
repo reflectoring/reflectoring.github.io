@@ -9,7 +9,10 @@ image:
   auto: 0074-stack
 ---
  
-Logging is a vital part of all applications and brings benefits to diverse personas from developers to operations, and even business owners. Spring Boot applications also capture log data using standard logging implementations. Spring Boot includes logback as a default implementation of a logger in its opinionated framework. This article looks at different ways of configuring logging in Spring Boot.
+Logging is a vital part of all applications and brings benefits to diverse personas from developers to operations, and even business owners. Spring Boot applications likewise need to capture relevant log data mainly to help us diagnose and fix problems arising in live environments. 
+
+The Spring Boot framework is preconfigured with logback as a default implementation in its opinionated framework. This article looks at different ways of configuring logging in Spring Boot.
+
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-dtls" %}
 

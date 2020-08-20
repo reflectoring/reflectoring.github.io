@@ -8,20 +8,31 @@ excerpt: "Logging is the bedrock for analysis if anything goes wrong, or even to
 image:
   auto: 0074-stack
 ---
-Logging is an important part of development. Log statements capture a footprint of the application execution which we refer to after the fact to investigate any normal or unexpected behavior. 
+ 
+Logging is a vital part of all applications and brings benefits to diverse personas from developers to operations, and even business owners. Spring Boot applications also capture log data using standard logging implementations. Spring Boot includes logback as a default implementation of a logger in its opinionated framework. This article looks at different ways of configuring logging in Spring Boot.
+
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-dtls" %}
+
+## Why Is Logging Important
+Logging is an important part of development. Log statements capture a footprint of the application execution which we refer afterward to investigate any normal or unexpected behavior. 
 
 Observability tools monitor the logs in real-time to gather important metrics useful for both business and operations. Developers use logs for debugging and tracing and even to capture important events for build and test runs in CI/CD pipelines. 
 
-Spring Boot includes an implementation of a logger in its opinionated framework. This article is an in-depth guide into configuring logging with Spring Boot with a focus on the different techniques of using logging for several application management functions.
+The utility of logs depends on the information we capture during logging.
+Some common data written in logs include :  
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-dtls" %}
+1. Request and response payload of an API: This forms the starting point of investigation for any abnormal conditions in the system behavior. For instance, we check whether the input is valid, if the status of other sub-systems were healthy, etc.
+2. Request and Response Headers: We log important request and response headers, for example, the JWT authorization header, headers giving context information like model of the device that sent the request, geography of the user.
+3. Method entry and exit: Similar to API, we might log the inputs and output of important methods to ensure that all the statements within the method are executed successfully.
+4. Useful checkpoints within our source code to indicate the occurrence of any important event, for example, successful payment with a payment reference number, the message posted to a queue, etc.
+5. Exceptions are often captured in error logs with a complete stack trace and are a valuable component for any system diagnosis. 
 
 
 ## Default Logger In Spring Boot
 
 **The default logger configuration in Spring Boot is a logback implementation at info level for logging the output to console.** 
 
-Let's see this behaviour in action by creating a Spring Boot application. We generate a minimal application with just the web dependency using start.spring.io. Next we add some log statements to the application class file:
+Let us see this behaviour in action by creating a Spring Boot application. We generate a minimal application with just the web dependency using [start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.example&artifactId=springLogger&name=springLogger&description=Demo%20project%20for%20Spring%20Boot%20logging&packageName=io.example.springLogger&dependencies=web). Next we add some log statements to the application class file:
 
 ```java
 @SpringBootApplication
@@ -67,11 +78,6 @@ A default configuration is seldom useful in real life. We will wish to make seve
 - Add contextual information to our log statements for better insights during the diagnosis of unexpected behavior of our application.
 - Add tracking information to correlate logs from different applications.
 - Change the structure of our log to make it consumable by log readers. 
-
-We usually take three routes to customize logging by overriding the default behavior:
- - Set the logging parameters as environment variables 
- - Set the logging parameters in `application.properties` or `application.yml`
- - Define the parameters in logback configuration file
 
 ### Expanding the Log Level for Deeper Analysis
 Sometimes we need to see detailed logs to troubleshoot an application behavior. To achieve that we send our desired log level as an argument when running our application. 
@@ -148,63 +154,35 @@ The default configuration is comprised of an appender element inside a root conf
 </configuration>
 ```
 
-Logback uses the configuration library Joran so we will see these logs during application startup if we set a debug property in the configuration tag to true.
+If we set a debug property in the configuration tag to true, we can see the values of logback configuration during application start up.
 
 ```xml
 <configuration debug="true">
 ```
 
-## Making Our Logging Useful
-We need to capture relevant information in our logs for our logging to be useful. Let us look at few of those:
-### What do we log
-The utility of logs depends on the information we capture during logging. Some common usages include data written by logs are :  
-1. Request/Response payload: Log the request and response payload of an API. This forms the starting point of any abnormal conditions in the system behavior. For instance, we check whether the input is valid, if the status of other sub-systems were healthy, etc.
-2. Headers: We log important request and response headers, for example, the JWT authorization header, headers giving context information like model of the device that sent the request, geography of the user.
-3. Method entry/exit: Similar to API, we might log the inputs and output of important methods to ensure that all the statements within the method executed successfully.
-4. Useful checkpoints within our source code to indicate the occurrence of any important event, for example, payment successful with payment reference, the message posted to a queue, etc.
-5. Exceptions are often captured in error logs with a complete stack trace and are a valuable component for any system diagnosis. 
+Starting our application with this setting produces the output containing the configuration values of logback used in the application.
 
-### Add Contextual Information
-Logs become even more useful if we add some contextual information to every message we log, for example, the identifier of the user or the name of the business function. Instead of manually appending the contextual information to each log message, we can use Logback’s Mapped Diagnostic Context (MDC). Whatever we put in the MDC can be used in the log pattern. This behavior is comparable to a ThreadLocal variable.
-For example, we put the user idenntifier and function name in the MDC for adding to the log message:
-
-```java
-  @GetMapping("/users/{userID}")
-  public String getUser(@PathVariable("userID") final String userID) {
-    
-    MDC.put("user", userID);
-    MDC.put("function", "userInquiry");
-    
-    logger.info("Controller: Fetching user with id {}", userID);
-    
-    MDC.remove("user");
-    MDC.remove("function");
-    
-    return userService.getUser(userID);
-                                                 
-```
-
-The user identifier and function name in the MDC are then added to the log message in the pattern attribute :
-```
-%d{HH:mm:ss.SSS} [%X{user}] [%X{function}] [%thread] %-5level %logger{36} - %msg%n
-```
-A sample of the log output with the MDC attributes user and function name :
 ```shell
-...            : Controller: Fetching user with id john123
-... [john123] [userInquiry] ... - Controller: Fetching user with id john123
-...       : Service: Fetching user with id john123
-... [john123] [userInquiry] ... - Service: Fetching user with id john123
+...- About to instantiate appender of type [...ConsoleAppender]
+.
+...- About to instantiate appender of type [...RollingFileAppender]
+.
+..SizeAndTimeBasedRollingPolicy.. - setting totalSizeCap to 0 Bytes
+..SizeAndTimeBasedRollingPolicy.. - ..limited to [10 MB] each.
+..SizeAndTimeBasedRollingPolicy.. Will use gz compression
+..SizeAndTimeBasedRollingPolicy..use the pattern /var/folders/
+..RootLoggerAction - Setting level of ROOT logger to INFO
 ```
-
-Depending on the context, there are [more things to add to the message context](/logging-context/) than a user and a function.
-
-### Different Logging For Each Environment
-
-We often have different logging formats for local and production runtime environments. Spring profiles are an elegant way to implement different logging for each environment. You can refer to a very good use case in [this article about environment-specific logging](/profile-specific-logging-spring-boot/). 
 
 ### Tracing Requests Across Microservices
 Debugging and tracing in microservice applications is challenging since
-the microservices are deployed and run independently resulting in their logs being distributed across many individual components. We apply two techniques to help simplify the log analysis process of multiple microservices : 
+the microservices are deployed and run independently resulting in their logs being distributed across many individual components. 
+
+We correlate logs to trace requests across microservices. This is done by adding tracking information to activate Spring Cloud Sleuth which provides Spring Boot auto-configuration for distributed tracing. Sleuth adds trace and span identifiers to the Slf4J MDC so that we can extract all the logs from a given trace or span in a log aggregator.
+
+We have a more elaborate explanation of this article on (tracing across distributed systems)[https://reflectoring.io/tracing-with-spring-cloud-sleuth/].
+
+We apply two techniques to help simplify the log analysis process of multiple microservices : 
 
 #### Log Aggregation 
 Logs from different microservices are aggregated to a central location. For spring boot, we need to output logs in a format compatible with the log aggregation software. Let us look at an appender configured for logstash :
@@ -218,49 +196,6 @@ Logs from different microservices are aggregated to a central location. For spri
   </appender>
 ``` 
 Here the LogstashEncoder encodes logs in JSON format and sent to the elastic search database. We can then apply various visualization tools to query logs.
-
-
-#### Correlate Logs To Trace Requests Across Microservices
-
-To add tracking information, we can activate Spring Cloud Sleuth which provides Spring Boot auto-configuration for distributed tracing. Sleuth adds trace and span identifiers to the Slf4J MDC so that we can extract all the logs from a given trace or span in a log aggregator.
-Sleuth is added to the classpath as a maven dependency :
-
-```xml
-  <properties>
-    <java.version>11</java.version>
-    <spring-cloud-sleuth.version>2.2.4.RELEASE</spring-cloud-sleuth.version>
-  </properties>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-sleuth</artifactId>
-        <version>${spring-cloud-sleuth.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-```
-Executing API requests produces logs with trace and span identifiers with the application name.
-```shell
-...  INFO [users,66e2ecef2184c874,66e2ecef2184c874,true] ...
-     ... : Controller: Fetching user with id 7697698
-...  INFO [users,66e2ecef2184c874,66e2ecef2184c874,true] ... 
-     ... : Service: Fetching user with id 7697698
-
-```
-We have a more elaborate explanation of this article on (tracing across distributed systems)[https://reflectoring.io/tracing-with-spring-cloud-sleuth/].
-
-### Logs In Container Runtimes
-If we are building a docker app, we can use the console appender and view the logs using :
-
-```shell
-docker logs <container-ID>
-```
-
-## More Customizations
-We can apply further customizations to our logs using a mix of spring boot and logback features. Let us take a look at some of those :
 
 ### Switch off the banner
 The spring banner at the top of the log file does not add any value. We can switch off the banner by setting the property to off in application properties.
@@ -311,27 +246,43 @@ Logback starter is part of the default spring boot starter. We can change this t
 </dependency>
 ```
 
-
-## Additional Best Practices
-- Use placeholders instead of string concatenation.
-
-```java
-    log.info("Service: Fetching user with id {}", userID);
-
-    // Not preferred
-    log.info("Service: Fetching user with id " + userID);
-```     
-- Avoid putting logs inside loops
+### Add Contextual Information
+Logs become even more useful if we add some contextual information to every message we log, for example, the identifier of the user or the name of the business function. Instead of manually appending the contextual information to each log message, we can use Logback’s Mapped Diagnostic Context (MDC). Whatever we put in the MDC can be used in the log pattern. This behavior is comparable to a ThreadLocal variable.
+For example, we put the user idenntifier and function name in the MDC for adding to the log message:
 
 ```java
-   // Not preferred
-   for(int i=0; i < 10; ++i){
-     log.info("loop counter {}", i);
-   }
+  @GetMapping("/users/{userID}")
+  public String getUser(@PathVariable("userID") final String userID) {
+    
+    MDC.put("user", userID);
+    MDC.put("function", "userInquiry");
+    
+    logger.info("Controller: Fetching user with id {}", userID);
+    
+    MDC.remove("user");
+    MDC.remove("function");
+    
+    return userService.getUser(userID);
+                                                 
 ```
-- Do not perform heavy operations inside custom appenders 
-- Use the appropriate log level, for example, ERROR for exceptions, INFO for important events in the application, etc.
-- Do not use the log for auditing functions. 
+
+The user identifier and function name in the MDC are then added to the log message in the pattern attribute :
+```
+%d{HH:mm:ss.SSS} [%X{user}] [%X{function}] [%thread] %-5level %logger{36} - %msg%n
+```
+A sample of the log output with the MDC attributes user and function name :
+```shell
+...            : Controller: Fetching user with id john123
+... [john123] [userInquiry] ... - Controller: Fetching user with id john123
+...       : Service: Fetching user with id john123
+... [john123] [userInquiry] ... - Service: Fetching user with id john123
+```
+
+Depending on the context, there are [more things to add to the message context](/logging-context/) than a user and a function.
+
+### Different Logging For Each Environment
+
+We often have different logging formats for local and production runtime environments. Spring profiles are an elegant way to implement different logging for each environment. You can refer to a very good use case in [this article about environment-specific logging](/profile-specific-logging-spring-boot/). 
 
 
 ## Conclusion

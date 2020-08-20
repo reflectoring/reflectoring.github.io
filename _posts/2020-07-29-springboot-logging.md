@@ -11,24 +11,29 @@ image:
  
 Logging is a vital part of all applications and brings benefits to diverse personas from developers to operations, and even business owners. Spring Boot applications likewise need to capture relevant log data mainly to help us diagnose and fix problems arising in live environments. 
 
-The Spring Boot framework is preconfigured with logback as a default implementation in its opinionated framework. This article looks at different ways of configuring logging in Spring Boot.
+**The Spring Boot framework is preconfigured with logback as a default implementation in its opinionated framework.** This article looks at different ways of configuring logging in Spring Boot.
 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-dtls" %}
 
 ## Why Is Logging Important
-Logging is an important part of development. Log statements capture a footprint of the application execution which we refer afterward to investigate any normal or unexpected behavior. 
+ The decisions on what to log and where are often strategic and are taken considering that the application will malfunction in live environments. The utility of logs depends on the information we capture during logging. 
 
+ The distributed nature of today's applications built using microservice architecture introduces a lot of moving parts. Temporary problems in any of the surrounding systems can impact the end-user experience. Exception logs captured at the integration points will be a valuable pointer to the root cause and enable us to take timely mitigating actions.
+
+There could be customer complaints of an incorrect transaction amount. To diagnose this, we need to drill into our logs to find the sequence of operations starting from the request payload when the API is invoked until the response payload at the end of API processing.
+
+Log statements capture a footprint of the application execution. We refer afterward to these logs to investigate any normal or unexpected behavior. 
 Observability tools monitor the logs in real-time to gather important metrics useful for both business and operations. Developers use logs for debugging and tracing and even to capture important events for build and test runs in CI/CD pipelines. 
 
-The utility of logs depends on the information we capture during logging.
-Some common data written in logs include :  
+Overall to derive value from our logs, we can roughly summarize the data to be captured during logging into some common categories :  
 
-1. Request and response payload of an API: This forms the starting point of investigation for any abnormal conditions in the system behavior. For instance, we check whether the input is valid, if the status of other sub-systems were healthy, etc.
-2. Request and Response Headers: We log important request and response headers, for example, the JWT authorization header, headers giving context information like model of the device that sent the request, geography of the user.
-3. Method entry and exit: Similar to API, we might log the inputs and output of important methods to ensure that all the statements within the method are executed successfully.
+1. Request and response payload of an API: This forms the starting point of investigation for any abnormal conditions in the system behavior. For instance, we check whether the input is valid or if the status of other sub-systems were healthy at the time of the request.
+2. Method entry and exit: Similar to API, we might log the inputs and output of important methods to ensure that all the statements within the method are executed successfully.
+3. Request and Response Headers: We log important request and response headers, for example, the JWT authorization header or headers giving context information like model of the device that sent the request, geography of the user.
 4. Useful checkpoints within our source code to indicate the occurrence of any important event, for example, successful payment with a payment reference number, the message posted to a queue, etc.
-5. Exceptions are often captured in error logs with a complete stack trace and are a valuable component for any system diagnosis. 
+5. Exceptions are often captured in error logs with a complete stack trace and are a valuable component for any diagnosis involving inter-process communication. 
+ 
 
 
 ## Default Logger In Spring Boot
@@ -183,9 +188,7 @@ the microservices are deployed and run independently resulting in their logs bei
 
 We correlate logs to trace requests across microservices. This is done by adding tracking information to activate Spring Cloud Sleuth which provides Spring Boot auto-configuration for distributed tracing. Sleuth adds trace and span identifiers to the Slf4J MDC so that we can extract all the logs from a given trace or span in a log aggregator.
 
-We have a more elaborate explanation of this article on (tracing across distributed systems)[https://reflectoring.io/tracing-with-spring-cloud-sleuth/].
-
-We apply two techniques to help simplify the log analysis process of multiple microservices : 
+We have a more elaborate explanation of this article on [tracing across distributed systems](https://reflectoring.io/tracing-with-spring-cloud-sleuth/).
 
 #### Log Aggregation 
 Logs from different microservices are aggregated to a central location. For spring boot, we need to output logs in a format compatible with the log aggregation software. Let us look at an appender configured for logstash :

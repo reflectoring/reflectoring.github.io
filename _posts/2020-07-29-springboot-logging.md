@@ -17,9 +17,18 @@ Logging is a vital part of all applications and brings benefits to diverse perso
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-dtls" %}
 
 ## Why Is Logging Important
-The decisions on what to log and where are often strategic and are taken after considering that the application will malfunction in live environments. A log represents any event that is of interest to our application to have occured in a given instant in time. So the value of our log is derived from the data we capture about the event.
+The decisions on what to log and where are often strategic and are taken after considering that the application will malfunction in live environments. 
 
-Logs play a key role in helping the application to recover quickly and resume normal operations.
+A log represents any event :
+ - that is of interest to our application   
+ - has occurred in a given instant in time. 
+
+A typical log entry is composed of 
+ - the timestamp of the event
+ - Log Level for example INFO, DEBUG or WARN
+ - A text message with or without data received as input or generated in the application.
+
+Logs play a key role in helping the application to recover quickly and resume normal operations
 
 ### Exception Logs At Integration Points
 The distributed nature of today's applications built using microservice architecture introduces a lot of moving parts. As such, it is natural to encounter problems due to temporary interruptions in any of the surrounding systems. 

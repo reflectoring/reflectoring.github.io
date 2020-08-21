@@ -17,24 +17,28 @@ Logging is a vital part of all applications and brings benefits to diverse perso
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-dtls" %}
 
 ## Why Is Logging Important
- The decisions on what to log and where are often strategic and are taken considering that the application will malfunction in live environments. The utility of logs depends on the information we capture during logging. 
+ The decisions on what to log and where are often strategic and are taken after considering that the application will malfunction in live environments. Logs play a key role in helping the application to recover quickly and resume normal operations.
 
- The distributed nature of today's applications built using microservice architecture introduces a lot of moving parts. Temporary problems in any of the surrounding systems can impact the end-user experience. Exception logs captured at the integration points will be a valuable pointer to the root cause and enable us to take timely mitigating actions.
+### Exception Logs At Integration Points
+The distributed nature of today's applications built using microservice architecture introduces a lot of moving parts. As such, it is natural to encounter problems due to temporary interruptions in any of the surrounding systems. Exception logs captured at the integration points enable us to detect the root cause of the interruption and allow us to take appropriate actions to recover with minimum impact on the end-user experience. 
 
+### Diagnose Functional Errors In Production
 There could be customer complaints of an incorrect transaction amount. To diagnose this, we need to drill into our logs to find the sequence of operations starting from the request payload when the API is invoked until the response payload at the end of API processing.
 
-Log statements capture a footprint of the application execution. We refer afterward to these logs to investigate any normal or unexpected behavior. 
+### Event History For Post-Facto Analysis
+Log statements capture a footprint of the application execution. We refer afterward to these logs to analyze any normal or unexpected behavior of the application for a variety of tasks. We can find out the number of users logged in within a particular time window or how many users are actively making use of any newly released feature which is valuable feedbacks to plan the changes for future releases.
+
+ ### Monitoring
 Observability tools monitor the logs in real-time to gather important metrics useful for both business and operations. Developers use logs for debugging and tracing and even to capture important events for build and test runs in CI/CD pipelines. 
 
+### Types Of Data Captured In Logs
 Overall to derive value from our logs, we can roughly summarize the data to be captured during logging into some common categories :  
 
-1. Request and response payload of an API: This forms the starting point of investigation for any abnormal conditions in the system behavior. For instance, we check whether the input is valid or if the status of other sub-systems were healthy at the time of the request.
-2. Method entry and exit: Similar to API, we might log the inputs and output of important methods to ensure that all the statements within the method are executed successfully.
-3. Request and Response Headers: We log important request and response headers, for example, the JWT authorization header or headers giving context information like model of the device that sent the request, geography of the user.
-4. Useful checkpoints within our source code to indicate the occurrence of any important event, for example, successful payment with a payment reference number, the message posted to a queue, etc.
-5. Exceptions are often captured in error logs with a complete stack trace and are a valuable component for any diagnosis involving inter-process communication. 
- 
-
+1. **Request and response payload of an API** forms the starting point of investigation for any abnormal conditions in the system behavior. For instance, we check whether the input is valid or if the status of other sub-systems were healthy at the time of the request.
+2. **Method entry and exit to log the inputs and output of important methods** to ensure that all the statements within the method are executed successfully.
+3. **Request and Response Headers to log important request and response headers**, for example, the JWT authorization header or headers giving context information like model of the device that sent the request, geography of the user.
+4. **Useful checkpoints within our source code** to indicate the occurrence of any important event, for example, successful payment with a payment reference number, the message posted to a queue, etc.
+5. **Exceptions captured in error logs with a complete stack trace** and are a valuable component for any diagnosis involving inter-process communication. 
 
 ## Default Logger In Spring Boot
 

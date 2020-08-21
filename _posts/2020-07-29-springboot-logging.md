@@ -161,7 +161,7 @@ Other properties related to the logging file :
 
 We can apply the same customization in a separate configuration file as we will see in the next section. 
 
-### Log Configuration In A Seperate File - `logback-spring.xml`
+### Log Configuration In A Separate File - `logback-spring.xml`
  
 We can isolate the log configuration from the application by specifying the configuration in `logback.xml` or `logback-spring.xml` in XML or groovy syntax. Spring recommends using `logback-spring.xml` or `logback-spring.groovy` because they are more powerful.
 

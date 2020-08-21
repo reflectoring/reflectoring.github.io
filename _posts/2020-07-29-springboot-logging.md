@@ -41,7 +41,7 @@ There could be customer complaints of an incorrect transaction amount. To diagno
 ### Event History For Post-Facto Analysis
 Log statements capture a footprint of the application execution. We refer afterward to these logs to analyze any normal or unexpected behavior of the application for a variety of tasks. 
 
-We can find out the number of users logged in within a particular time window or how many users are actively making use of any newly released feature which is a valuable information to plan the changes for future releases.
+We can find out the number of users logged in within a particular time window or how many users are actively making use of any newly released feature which is valuable information to plan the changes for future releases.
 
 ### Monitoring
 Observability tools monitor the logs in real-time to gather important metrics useful for both business and operations and can also be configured to raise alarms when these metrics exceed specific thresholds. Developers use logs for debugging and tracing and even to capture important events for build and test runs in CI/CD pipelines. 
@@ -57,9 +57,9 @@ Overall to derive value from our logs, we can roughly summarize the data to be c
 
 ## Default Logger In Spring Boot
 
-**The default logger configuration in Spring Boot is a logback implementation at info level for logging the output to console.** 
+**The default logger configuration in Spring Boot is a logback implementation at the info level for logging the output to console.** 
 
-Let us see this behaviour in action by creating a Spring Boot application. We generate a minimal application with just the web dependency using [start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.example&artifactId=springLogger&name=springLogger&description=Demo%20project%20for%20Spring%20Boot%20logging&packageName=io.example.springLogger&dependencies=web). Next we add some log statements to the application class file:
+Let us see this behavior in action by creating a Spring Boot application. We generate a minimal application with just the web dependency using [start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.example&artifactId=springLogger&name=springLogger&description=Demo%20project%20for%20Spring%20Boot%20logging&packageName=io.example.springLogger&dependencies=web). Next we add some log statements to the application class file:
 
 ```java
 @SpringBootApplication
@@ -182,7 +182,7 @@ The default configuration is comprised of an appender element inside a root conf
 ```
 #### Output Logback Configuration
 
-If we set a debug property in the configuration tag to true, we can see the values of logback configuration during application start up.
+If we set a debug property in the configuration tag to true, we can see the values of logback configuration during application startup.
 
 ```xml
 <configuration debug="true">

@@ -26,9 +26,11 @@ The distributed nature of today's applications built using microservice architec
 There could be customer complaints of an incorrect transaction amount. To diagnose this, we need to drill into our logs to find the sequence of operations starting from the request payload when the API is invoked until the response payload at the end of API processing.
 
 ### Event History For Post-Facto Analysis
-Log statements capture a footprint of the application execution. We refer afterward to these logs to analyze any normal or unexpected behavior of the application for a variety of tasks. We can find out the number of users logged in within a particular time window or how many users are actively making use of any newly released feature which is valuable feedbacks to plan the changes for future releases.
+Log statements capture a footprint of the application execution. We refer afterward to these logs to analyze any normal or unexpected behavior of the application for a variety of tasks. 
 
- ### Monitoring
+We can find out the number of users logged in within a particular time window or how many users are actively making use of any newly released feature which is valuable feedbacks to plan the changes for future releases.
+
+### Monitoring
 Observability tools monitor the logs in real-time to gather important metrics useful for both business and operations. Developers use logs for debugging and tracing and even to capture important events for build and test runs in CI/CD pipelines. 
 
 ### Types Of Data Captured In Logs

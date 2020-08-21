@@ -161,7 +161,7 @@ Other properties related to the logging file :
 
 We can apply the same customization in a separate configuration file as we will see in the next section. 
 
-### Configuring `logback-spring.xml`
+### Log Configuration In A Seperate File - `logback-spring.xml`
  
 We can isolate the log configuration from the application by specifying the configuration in `logback.xml` or `logback-spring.xml` in XML or groovy syntax. Spring recommends using `logback-spring.xml` or `logback-spring.groovy` because they are more powerful.
 
@@ -180,6 +180,7 @@ The default configuration is comprised of an appender element inside a root conf
   </appender>
 </configuration>
 ```
+#### Output Logback Configuration
 
 If we set a debug property in the configuration tag to true, we can see the values of logback configuration during application start up.
 
@@ -201,13 +202,11 @@ Starting our application with this setting produces the output containing the co
 ..RootLoggerAction - Setting level of ROOT logger to INFO
 ```
 
-### Tracing Requests Across Microservices
+#### Tracing Requests Across Microservices
 Debugging and tracing in microservice applications is challenging since
 the microservices are deployed and run independently resulting in their logs being distributed across many individual components. 
 
-We correlate logs to trace requests across microservices. This is done by adding tracking information to activate Spring Cloud Sleuth which provides Spring Boot auto-configuration for distributed tracing. Sleuth adds trace and span identifiers to the Slf4J MDC so that we can extract all the logs from a given trace or span in a log aggregator.
-
-We have a more elaborate explanation of this article on [tracing across distributed systems](https://reflectoring.io/tracing-with-spring-cloud-sleuth/).
+We correlate our logs to trace requests across microservices by adding tracking information. Please check out [tracing across distributed systems](https://reflectoring.io/tracing-with-spring-cloud-sleuth/) for a more elaborate explanation on distributed tracing.
 
 #### Log Aggregation 
 Logs from different microservices are aggregated to a central location. For spring boot, we need to output logs in a format compatible with the log aggregation software. Let us look at an appender configured for logstash :

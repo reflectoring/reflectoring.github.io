@@ -41,10 +41,10 @@ There could be customer complaints of an incorrect transaction amount. To diagno
 ### Event History For Post-Facto Analysis
 Log statements capture a footprint of the application execution. We refer afterward to these logs to analyze any normal or unexpected behavior of the application for a variety of tasks. 
 
-We can find out the number of users logged in within a particular time window or how many users are actively making use of any newly released feature which is valuable feedbacks to plan the changes for future releases.
+We can find out the number of users logged in within a particular time window or how many users are actively making use of any newly released feature which is a valuable information to plan the changes for future releases.
 
 ### Monitoring
-Observability tools monitor the logs in real-time to gather important metrics useful for both business and operations. Developers use logs for debugging and tracing and even to capture important events for build and test runs in CI/CD pipelines. 
+Observability tools monitor the logs in real-time to gather important metrics useful for both business and operations and can also be configured to raise alarms when these metrics exceed specific thresholds. Developers use logs for debugging and tracing and even to capture important events for build and test runs in CI/CD pipelines. 
 
 ### Types Of Data Captured In Logs
 Overall to derive value from our logs, we can roughly summarize the data to be captured during logging into some common categories :  

@@ -271,7 +271,10 @@ Logback starter is part of the default spring boot starter. We can change this t
 ```
 
 ### Add Contextual Information
-Logs become even more useful if we add some contextual information to every message we log, for example, the identifier of the user or the name of the business function. Instead of manually appending the contextual information to each log message, we can use Logback’s Mapped Diagnostic Context (MDC). Whatever we put in the MDC can be used in the log pattern. This behavior is comparable to a ThreadLocal variable.
+Logs become even more useful if we add some contextual information to every message we log, for example, the identifier of the user or the name of the business function. 
+
+Instead of manually appending the contextual information to each log message, we can use Logback’s Mapped Diagnostic Context (MDC). Whatever we put in the MDC can be used in the log pattern. This behavior is comparable to a ThreadLocal variable.
+
 For example, we put the user idenntifier and function name in the MDC for adding to the log message:
 
 ```java

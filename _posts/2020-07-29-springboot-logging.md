@@ -2,7 +2,7 @@
 title: "Logging In Spring Boot"
 categories: [spring-boot]
 date: 2020-08-15 06:00:00 +1100
-modified: 2020-08-15 06:00:00 +1100
+modified: 2020-08-23 06:00:00 +1100
 author: pratikdas
 excerpt: "Logging is the bedrock for analyzing when anything goes wrong, or even for seeing that everything is in order. In this article, we look at the logging capabilities in Spring Boot to see what we can do with it and how we can customize it."
 image:
@@ -14,20 +14,20 @@ Logging is a vital part of all applications and brings benefits not only to us d
 **The Spring Boot framework is preconfigured with Logback as a default implementation in its opinionated framework.** This article looks at different ways of configuring logging in Spring Boot.
 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-dtls" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-2" %}
 
 ## Why Is Logging Important?
 The decisions on what to log and where are often strategic and are taken after considering that the application will malfunction in live environments. Logs play a key role in helping the application to recover quickly from any such failures and resume normal operations.
 
-### Make Errors At Integration Points Visible
+### Making Errors At Integration Points Visible
 The distributed nature of today's applications built using microservice architecture introduces a lot of moving parts. As such, it is natural to encounter problems due to temporary interruptions in any of the surrounding systems. 
 
 Exception logs captured at the integration points enable us to detect the root cause of the interruption and allow us to take appropriate actions to recover with minimum impact on the end-user experience. 
 
-### Diagnose Functional Errors In Production
+### Diagnosing Functional Errors In Production
 There could be customer complaints of an incorrect transaction amount. To diagnose this, we need to drill into our logs to find the sequence of operations starting from the request payload when the API is invoked until the response payload at the end of API processing.
 
-### Analyze Event History
+### Analyzing Event History
 Log statements capture a footprint of the application execution. We refer to these logs after the fact to analyze any normal or unexpected behavior of the application for a variety of tasks. 
 
 We can find out the number of users logged in within a particular time window or how many users are actively making use of any newly released feature which is valuable information to plan the changes for future releases.
@@ -194,7 +194,7 @@ The default configuration is comprised of an `appender` element inside a root `c
   </appender>
 </configuration>
 ```
-### Logging Logback Configuration
+### Logging with Logback Configuration
 
 If we set the `debug` property in the `configuration` tag to `true`, we can see the values of logback configuration during application startup.
 
@@ -256,4 +256,4 @@ In this article, we saw how to use logging in Spring Boot and how to customize i
 
 These practices will also need to be enforced with a mix of peer reviews and automated code quality tools. Everything taken together will ensure that when production errors happen we have the maximum information available for our diagnosis. 
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-dtls).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-2).

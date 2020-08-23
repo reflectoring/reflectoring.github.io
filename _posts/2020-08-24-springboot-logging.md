@@ -1,12 +1,12 @@
 ---
 title: "Logging In Spring Boot"
 categories: [spring-boot]
-date: 2020-08-15 06:00:00 +1100
-modified: 2020-08-23 06:00:00 +1100
+date: 2020-08-24 06:00:00 +1100
+modified: 2020-08-24 06:00:00 +1100
 author: pratikdas
 excerpt: "Logging is the bedrock for analyzing when anything goes wrong, or even for seeing that everything is in order. In this article, we look at the logging capabilities in Spring Boot to see what we can do with it and how we can customize it."
 image:
-  auto: 0074-stack
+  auto: 0031-matrix
 ---
  
 Logging is a vital part of all applications and brings benefits not only to us developers but also to ops and business people. Spring Boot applications need to capture relevant log data to help us diagnose and fix problems and measure business metrics. 

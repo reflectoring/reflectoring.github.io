@@ -53,7 +53,7 @@ We discuss the approach alongside an example use case. Say we're building a bill
 
 The billing component exposes an invoice calculator to the outside. The invoice calculator generates an invoice for a certain customer and time period.
 
-To use Domain-Driven Design (DDD) language: the billing component implements a bounded context that implements billing use cases. We want that context to be as independent as possible from other bounded contexts. We'll use the terms "component" and "bounded context" synonymously in the rest of the article.
+To use Domain-Driven Design (DDD) language: the billing component implements a bounded context that provides billing use cases. We want that context to be as independent as possible from other bounded contexts. We'll use the terms "component" and "bounded context" synonymously in the rest of the article.
 
 For the invoice calculator to work, it needs to synchronize data from an external order system in a daily batch job. This batch job pulls the data from an external source and puts it into the database.
 

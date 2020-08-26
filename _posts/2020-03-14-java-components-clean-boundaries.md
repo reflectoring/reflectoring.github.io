@@ -13,7 +13,7 @@ When we're building software, we want to build for "-ilities": understandability
 
 **Most - perhaps even all - of those "-ilities" go hand in hand with clean dependencies between components.** 
 
-If a component depends on all other components, we don't know what side effects changes to one component will have, making the codebase hard to maintain and even harder to extend and decompose. 
+If a component depends on all other components, we don't know what side effects a change to one component will have, making the codebase hard to maintain and even harder to extend and decompose. 
 
 Over time, the component boundaries in a codebase tend to deteriorate. Bad dependencies creep in and make it harder to work with the code. This has all kinds of bad effects. Most notably, development gets slower.
 
@@ -51,9 +51,9 @@ We discuss the approach alongside an example use case. Say we're building a bill
 
 ![A modules with external and internal dependencies](/assets/img/posts/clean-boundaries/components.jpg)
 
-The billing component implements exposes an invoice calculator to the outside. The invoice calculator generates an invoice for a certain customer and time period.
+The billing component exposes an invoice calculator to the outside. The invoice calculator generates an invoice for a certain customer and time period.
 
-To use Domain-Driven Design (DDD) languageL: the billing components implements a bounded context that implements billing use cases. We want that context to be as independent as possible from other bounded contexts. We'll use the terms "component" and "bounded context" synonymously in the rest of the article.
+To use Domain-Driven Design (DDD) language: the billing component implements a bounded context that implements billing use cases. We want that context to be as independent as possible from other bounded contexts. We'll use the terms "component" and "bounded context" synonymously in the rest of the article.
 
 For the invoice calculator to work, it needs to synchronize data from an external order system in a daily batch job. This batch job pulls the data from an external source and puts it into the database.
 

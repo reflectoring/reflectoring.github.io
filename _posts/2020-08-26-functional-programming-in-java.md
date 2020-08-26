@@ -1,8 +1,8 @@
 ---
 title: Functional Programming in Java 8
 categories: [java]
-date: 2020-07-22 05:00:00 +1100
-modified: 2020-07-22 05:00:00 +1100
+date: 2020-08-26 05:00:00 +1100
+modified: 2020-08-26 05:00:00 +1100
 author: sam
 excerpt: 'How to implement functional programming approaches in Java 8'
 ---

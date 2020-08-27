@@ -32,7 +32,7 @@ Can we reconcile the above concepts in Java? Well, Java is not a "Functional Pro
 
 Streams and Lambda Expressions: Java 8 provides the Streams API which can take a data structure (Arrays, Lists etc) as the source, and, pass it through a pipeline of functional-styled operations. These operations do not change the source but produces a new output stream (therefore, fulfilling the **no-side effect, immutability** condition of Functional Programming.
 
-For example, we can have a list of Strings. But, we need to get the Strings having the length of 4. Using streams, this becomes easy:
+For example, we can have a list of Strings. But, we only need the Strings having the length of 4. Using Streams, this becomes easy:
 
 ```java
 // Our original list
@@ -41,7 +41,7 @@ List<String> strList = new ArrayList<String>();
 strList = strList.stream().filter(str -> str.toString().length()==4).collect(Collectors.toList());
 ```
 
-The filtered list does not affect the original list, unless we assign it to that (like we're doing here). The ()-> notation in the 'filter' method is called Lambda expression.
+The filtered list does not affect the original list, unless we assign it to that (like we're doing here). The `()->` notation in the `filter` method is called Lambda expression.
 
 Functional Interfaces: An interface with only one abstract method is a Functional Interface. Let's see how we can define one:
 
@@ -53,7 +53,7 @@ interface FullName
 } 
 ```
 
-All we need to do is implement the getFullName method. How do we do it? Here, too, lambda expressions come to the rescue. We can directly declare an object of the Functional Interface Name and assign an implementation of the getFullName method:
+All we need to do is implement the `getFullName` method. How do we do it? Here, too, lambda expressions come to the rescue. We can directly declare an object of the Functional Interface and assign an implementation of the `getFullName` method:
 
 ```java
 FullName fullName = (String firstName, String lastName)->firstName + ' ' + lastName; 
@@ -71,10 +71,10 @@ That's the easiest way to make a Pure Function. See, the result will always be p
 
 Java 8's java.util.Function package provides a few Functional Interface that can help us mimic Functional Programming:
 
-- **Consumer**: Takes a single input and consumes it, i.e, returns no output. We can make use of its 'accept' and 'andThen methods to consume and compose function chains.
-- **Function**: Its 'apply' method takes an argument of one type and returns a result of another type. The 'map' method of Streams uses this.
-- **BiFunction**: As the name suggests, the  'apply' method takes two arguments and returns a result of another type.
-- **Predicate**: Uses the 'test' method to accept an argument and to return a boolean value (BiPredicates do the same, but take two input arguments). The 'filter' method of Streams takes a predicate as argument.
+- **Consumer**: Takes a single input and consumes it, i.e, returns no output. We can make use of its `accept` and `andThen` methods to consume and compose function chains.
+- **Function**: Its `apply` method takes an argument of one type and returns a result of another type. The `map` method of Streams uses this.
+- **BiFunction**: As the name suggests, the  `apply` method takes two arguments and returns a result of another type.
+- **Predicate**: Uses the `test` method to accept an argument and to return a boolean value (BiPredicates do the same, but take two input arguments). The `filter` method of Streams takes a predicate as argument.
 
 Let's see how we can make use of these to make our mock banking application. A bank app will normally have features to create an account, withdraw money, deposit money, get details of an account, get all accounts. 
 
@@ -122,7 +122,7 @@ public interface TriFunction<F, S, T, R> {
 }
 ```
 
-The 'apply' method in this interface will take as inputs arguments of type F,S,T and return a result of type R. So, our withdrawal method will be like:
+The `apply` method in this interface will take as inputs arguments of type `F,S,T` and return a result of type `R`. So, our withdrawal method will be like:
 
 ```java
 public static TriFunction<Account, Double, BiPredicate, Optional<Account>> WithdrawBalance = (account, amount,
@@ -144,7 +144,7 @@ Here comes the next part. How will we call these methods? Simple. We'll call the
 accounts = (List<Account>) BankService.CreateAccount
 					.apply(accounts, new Account(accounts.size() + 1, customerName, contactNo, balance)).get();
 ```
-We are passing the list of accounts and a new account object (by passing parameters in the constructor: id, name, contact and balance). The result is WeakReference, so we need to execute the get() method on it.
+We are passing the list of accounts and a new account object (by passing parameters in the constructor: id, name, contact and balance). The result is WeakReference, so we need to execute the `get()` method on it.
 
 Similarly, for deposit, we'll call the BiFunction method:
 

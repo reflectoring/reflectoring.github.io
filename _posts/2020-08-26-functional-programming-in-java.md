@@ -32,7 +32,7 @@ Can we reconcile the above concepts in Java? Well, Java is not a "Functional Pro
 
 Streams and Lambda Expressions: Java 8 provides the Streams API which can take a data structure (Arrays, Lists etc) as the source, and, pass it through a pipeline of functional-styled operations. These operations do not change the source but produces a new output stream (therefore, fulfilling the **no-side effect, immutability** condition of Functional Programming.
 
-For example, we can have a list of Strings. But, we need to get the Strings having the length of 4. Using streams, this becomes easy.
+For example, we can have a list of Strings. But, we need to get the Strings having the length of 4. Using streams, this becomes easy:
 
 ```java
 // Our original list
@@ -43,7 +43,7 @@ strList = strList.stream().filter(str -> str.toString().length()==4).collect(Col
 
 The filtered list does not affect the original list, unless we assign it to that (like we're doing here). The ()-> notation in the 'filter' method is called Lambda expression.
 
-Functional Interfaces: An interface with only one abstract method is a Functional Interface. Let's see how we can define one.
+Functional Interfaces: An interface with only one abstract method is a Functional Interface. Let's see how we can define one:
 
 ```java
 @FunctionalInterface
@@ -53,13 +53,13 @@ interface FullName
 } 
 ```
 
-All we need to do is implement the getFullName method. How do we do it? Here, too, lambda expressions come to the rescue. We can directly declare an object of the Functional Interface Name and assign an implementation of the getFullName method.
+All we need to do is implement the getFullName method. How do we do it? Here, too, lambda expressions come to the rescue. We can directly declare an object of the Functional Interface Name and assign an implementation of the getFullName method:
 
 ```java
 FullName fullName = (String firstName, String lastName)->firstName + ' ' + lastName; 
 ```
 
-Now, we can call the implemented method on the object. It will return the full name String.
+Now, we can call the implemented method on the object. It will return the full name String:
 
 ```java
 String resultFullName = fullName.getFullName("John","Doe"); 
@@ -78,7 +78,7 @@ Java 8's java.util.Function package provides a few Functional Interface that can
 
 Let's see how we can make use of these to make our mock banking application. A bank app will normally have features to create an account, withdraw money, deposit money, get details of an account, get all accounts. 
 
-First, we'll create an entity class for a bank account.
+First, we'll create an entity class for a bank account:
 
 ```java
 public class Account {
@@ -88,7 +88,7 @@ public class Account {
 }
 ```
 
-We'll create a  parameterized constructor, getters and a toString method. Setters aren't required, since we are going to make objects **immutable**. For creating an account, we'll make use of BiFunction. We'll take the list of accounts (representing all bank accounts), the newly created account object as inputs. The result will be an updated list of accounts with the new account added to it.
+We'll create a  parameterized constructor, getters and a toString method. Setters aren't required, since we are going to make objects **immutable**. For creating an account, we'll make use of BiFunction. We'll take the list of accounts (representing all bank accounts), the newly created account object as inputs. The result will be an updated list of accounts with the new account added to it:
 
 ```java
 public static BiFunction<List<Account>, Account, WeakReference<List<Account>>> CreateAccount = (List<Account> accountList,
@@ -99,21 +99,21 @@ public static BiFunction<List<Account>, Account, WeakReference<List<Account>>> C
 		return wRef;
 };
 ```
-In the same way, we'll use a BiFunction to deposit money to an account. Inputs: the account object, the deposit amount. Result: the updated account.
+In the same way, we'll use a BiFunction to deposit money to an account. Inputs: the account object, the deposit amount. Result: the updated account:
 
 ```java
 public static BiFunction<Account, Double, Account> DepositBalance = (Account account, Double amount) -> new Account(
 			account.getId(), account.getCustomerName(), account.getMobileNo(), account.getBalance() + amount);
 ```
 
-Now we need a method to withdraw money from the account. But, we need to check whether the account has sufficient balance for withdrawal or not. We'll write a simple BiPredicate to do that. 
+Now we need a method to withdraw money from the account. But, we need to check whether the account has sufficient balance for withdrawal or not. We'll write a simple BiPredicate to do that:
 
 ```java
 public static BiPredicate<Account, Double> insufficientBalance = (account,
 			withdrawalAmount) -> (account.getBalance() - withdrawalAmount) < 0 ? true : false;
 ```
 
-So, we have our balance checker ready. Now, we'll write a method to withdraw balance. We'll take the account object, the withdrawal amount and the above BiPredicate as inputs. The output will be the updated account object. But, wait, how can we take three inputs in a BiFunction? We can't. That's why we'll create a Functional Interface on our own: TriFunction.
+So, we have our balance checker ready. Now, we'll write a method to withdraw balance. We'll take the account object, the withdrawal amount and the above BiPredicate as inputs. The output will be the updated account object. But, wait, how can we take three inputs in a BiFunction? We can't. That's why we'll create a Functional Interface on our own: TriFunction:
 
 ```java
 @FunctionalInterface
@@ -131,14 +131,14 @@ public static TriFunction<Account, Double, BiPredicate, Optional<Account>> Withd
 							account.getBalance() - amount));
 ```
 
-We'll have other methods as well. You can find them in the detailed code example. For now, we'll create another method for viewing all accounts. We'll use a Consumer for this.
+We'll have other methods as well. You can find them in the detailed code example. For now, we'll create another method for viewing all accounts. We'll use a Consumer for this:
 
 ```java
 public static Consumer<List<Account>> ViewAllAccounts = accounts -> {
 		accounts.forEach(a -> System.out.println(a));
 	};
 ```
-Here comes the next part. How will we call these methods? Simple. We'll call the respective Functional Interface methods as necessary. For account creation, we will receive a new list of accounts once the account is created. 
+Here comes the next part. How will we call these methods? Simple. We'll call the respective Functional Interface methods as necessary. For account creation, we will receive a new list of accounts once the account is created:
 
 ```java
 accounts = (List<Account>) BankService.CreateAccount
@@ -146,7 +146,7 @@ accounts = (List<Account>) BankService.CreateAccount
 ```
 We are passing the list of accounts and a new account object (by passing parameters in the constructor: id, name, contact and balance). The result is WeakReference, so we need to execute the get() method on it.
 
-Similarly, for deposit, we'll call the BiFunction method.
+Similarly, for deposit, we'll call the BiFunction method:
 
 ```java
 Account account = BankService.DepositBalance.apply(myAccount.get(), depositAmount);
@@ -157,7 +157,7 @@ For withdrawal:
 Optional<Account> account = BankService.WithdrawBalance.apply(myAccount.get(), sc.nextDouble(),
 						Checkers.insufficientBalance);
 ```
-The insufficientBalance is the BiPredicate that checks if the account has enough balance for withdrawal.
+The `insufficientBalance` is the BiPredicate that checks if the account has enough balance for withdrawal.
 
 
 ## Conclusion

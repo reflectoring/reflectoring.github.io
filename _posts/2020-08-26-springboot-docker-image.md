@@ -9,27 +9,31 @@ image:
   auto: 0074-stack
 ---
  
-Off late containerization has emerged as a standard way of packaging an application with all software and operating system dependencies and then shipping that across different environments. The first step in containerizing is packaging our application inside a container image. The container runtime unpacks the image and runs the application inside it. Docker happens to be the most commonly used container implementations so all subsequent reference to a container in this article will mean Docker. 
+Containers have emerged as the preferred means of packaging an application with all the software and operating system dependencies and then shipping that across to different environments. 
 
-It is very easy to create Docker images of Spring Boot applications. We build an executable jar and then copy that over a base JRE image after applying customizations over that to package the [fat uber jar](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-executable-jar-format.html#executable-jar-jar-file-structure). But the resulting Docker image is unnecessarily large. 
+For containerizing, we enclose our application inside a container image and publish that image to a shared registry. The container runtime pulls this image from the registry, unpacks the image, and runs the application inside it. 
+
+[Docker](https://docs.docker.com/get-started/#docker-concepts) happens to be the most commonly used container implementation so all subsequent reference to a container in this article will mean Docker. 
+
+It is very easy to create Docker images of Spring Boot applications. We build an executable jar and then copy that over a base JRE image after applying customizations over that to package the [fat uber jar](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-executable-jar-format.html#executable-jar-jar-file-structure). 
 
 Release 2.3 of Spring Boot aims to provide tools to help manage the containerization process at build time and runtime. This article looks at the steps required for containerizing a Spring Boot application :
 - by building Docker Image with Dockerfile,
 - by building an OCI image from source code with Cloud-Native Buildpack 
 - and optimizing the image at runtime by splitting parts of the jar into different layers using layered tools. 
 
-
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-docker" %}
 
 ## What is An OCI Image
 The [Open Container Initiative (OCI)](https://opencontainers.org/about/overview/) defines industry standards for container image formats and runtimes to ensure that all container engines can run images produced by any build tool. The original image format of Docker has become the OCI Image Specification and is supported by various open-source build tools. 
 
-The 2.3 release of Spring Boot provides support for building OCI images. We will first conventionally build a Spring Boot image by specifying instructions in a Docker file. and then generate optimized images and compare the two
+The 2.3 release of Spring Boot provides support for building OCI images. We will first build a Container Image of a Spring Boot application in the conventional by specifying the instructions in a Docker file and then use the Spring Boot Plugin to generate the OCI image without using a Docker file.
 
 ## Building Docker Images In Conventional Way
-We create our Spring Boot application from [start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.users&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Container&packageName=io.pratik.users&dependencies=web,actuator,lombok) with dependencies for `web`, `lombok`, and `actuator`. We also add a rest controller to expose an API with the `GET` method. 
 
-Next, we  containerize this application by adding a Dockerfile :
+Let us create our Spring Boot application from [Spring Initializer](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.users&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Container&packageName=io.pratik.users&dependencies=web,actuator,lombok) with dependencies for `web`, `lombok`, and `actuator`. We also add a rest controller to expose an API with the `GET` method. 
+
+Next, we containerize this application by adding a Dockerfile :
 
 ```
 FROM adoptopenjdk:11-jre-hotspot
@@ -176,9 +180,9 @@ BOOT-INF/layers.idx
 The output shows an additional jar named `spring-boot-jarmode-layertools` and a `layer.idx` file. The layering feature is provided by `spring-boot-jarmode-layertools` as explained in the next section.
 
 
-#### Using Jarmode to Extract The Layers
+#### Jarmode to Extract The Layers
 
-In this step, we will extract dependencies into separate layers. We will use a system property - `jarmode` set to a value - `layertools` to launch our executable jar created in the previous step. This allows the bootstrap code to redirect the request to the spring-boot-jarmode-layertools jar instead of the application.
+We use a system property - `jarmode` set to value - `layertools` to launch the jar. It allows the bootstrap code to run something completely different from the application.
 
 Let us launch our jar with a `layertools jar mode` system property:
 ```shell
@@ -218,7 +222,7 @@ The default layers are:
 
 The layers are defined in a `layers.idx` file in the order that they should be added to the Docker Image. The order is important as it determines how likely previous layers are to be cached when part of the application changes. During the pull, only the application layer is downloaded which is faster because of the reduced size
 
-#### Building The Image With Layers Of Dependencies
+#### Build The Image With Layers Of Dependencies
 
 We proceed to build the final image in two stages using a method called [multi-stage build](https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds). In the first stage, we extract the dependencies and in the second stage, we copy the extracted dependencies to the final image.
 
@@ -241,31 +245,8 @@ COPY --from=builder application/application/ ./
 ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
 
 ```
-We save our multi-stage build configuration in a separate file named `Dockerfile2`.
-Next we build our image by running the command :
-```shell
-docker build -f Dockerfile2 -t userssignup:v1 .
 
-```
 
-```
-Sending build context to Docker daemon  20.41MB
-Step 1/12 : FROM adoptopenjdk:14-jre-hotspot as builder
-14-jre-hotspot: Pulling from library/adoptopenjdk
-.
-.
-Successfully built a9ebf6970841
-Successfully tagged userssignup:v1
-```
-Let us now check the size of the layers once more with Dive.
-```
-dive usersignup:v1
-```
-Here is the output from our Dive command.
-
-![dive screenshot](/assets/img/posts/springboot-docker-image/dive2.png)
-
-As we can see the layer containing the application is just 11 KB now.
 #### Customization with layers
 
 We can further reduce the applicatiion layer size by customize the layers by extracting any custom dependencies in a separate layer instead of packaging with the application in a `yml` like file named `layers.idx`:

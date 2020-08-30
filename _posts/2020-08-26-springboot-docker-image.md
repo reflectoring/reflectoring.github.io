@@ -1,10 +1,10 @@
 ---
-title: "Optimized Docker Images Of Spring Boot Applications"
+title: "Containerizing Spring Boot Applications"
 categories: [spring-boot]
 date: 2020-08-26 06:00:00 +1100
 modified: 2020-08-26 06:00:00 +1100
 author: pratikdas
-excerpt: "Optimized Docker images are important for performance and security "
+excerpt: "We will look at containerizing Spring Boot applications with Cloud-Native Buildpacks and optimizing the containerized image by enabling layering in the application's executable fat jar and Docker's multi-stage build."
 image:
   auto: 0074-stack
 ---
@@ -31,7 +31,7 @@ The 2.3 release of Spring Boot provides support for building OCI images. We will
 
 ## Building Docker Images In Conventional Way
 
-Let us create our Spring Boot application from [Spring Initializer](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.users&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Container&packageName=io.pratik.users&dependencies=web,actuator,lombok) with dependencies for `web`, `lombok`, and `actuator`. We also add a rest controller to expose an API with the `GET` method. 
+Let us create our Spring Boot application from [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.users&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Container&packageName=io.pratik.users&dependencies=web,actuator,lombok) with dependencies for `web`, `lombok`, and `actuator`. We also add a rest controller to expose an API with the `GET` method. 
 
 Next, we containerize this application by adding a Dockerfile :
 
@@ -62,8 +62,11 @@ REPOSITORY          TAG                 SIZE
 usersignup          v1                  249MB
 adoptopenjdk        11-jre-hotspot      229MB
 ```
-Let us see the stack of layers inside the image. We are using the [dive tool](https://github.com/wagoodman/dive) to view the layers. Here is part of the output from Dive :
-
+Let us see the stack of layers inside the image. We will use the [dive tool](https://github.com/wagoodman/dive) to view those layers: 
+```
+dive usersignup:v1
+```
+Here is part of the output from running the Dive command:
  ![dive screenshot](/assets/img/posts/springboot-docker-image/dive1.png)
 
 As we can see the application layer forms the bulk of the image size. We will aim to reduce the size of this layer in the following sections as part of our optimization.
@@ -80,7 +83,7 @@ Buildpacks were tightly coupled to the platform. **Cloud-Native Buildpacks bring
 
 The plugin creates OCI images from Spring Boot executable jar using a Buildpack. Images are built using the `bootBuildImage task(Gradle)` or `spring-boot:build-image goal(Maven)` and a local Docker installation. 
 
-We can customize the name of the image required for pushing to the Docker registry by specifying the name in the `image tag`:
+We can customize the name of the image required for pushing to the Docker Registry by specifying the name in the `image tag`:
 ```xml
       <plugin>
         <groupId>org.springframework.boot</groupId>
@@ -93,7 +96,7 @@ We can customize the name of the image required for pushing to the Docker regist
       </plugin>
 ``` 
 
-Let us use Maven to run the `build-image goal` to build the application and create the container image. We are not using any docker file now.
+Let us use Maven to run the `build-image goal` to build the application and create the container image. We are not using any Docker file now.
 
 ```shell
 mvn spring-boot:build-image
@@ -143,7 +146,7 @@ Spring Boot uses fat jar as its default packaging format. When we inspect the fa
 
 #### From Spring Boot's Fat Jars to Layered Jars
 
-Spring Boot uses fat jar as its default packaging format. If we inspect the jar produced after running maven build, we get this output:
+Spring Boot uses fat jar as its default packaging format. If we inspect the jar produced after running the Maven build, we get this output:
 
 ```
 META-INF/
@@ -185,9 +188,9 @@ BOOT-INF/layers.idx
 ```
 The output shows an additional jar named `spring-boot-jarmode-layertools` and a `layer.idx` file. The layering feature is provided by `spring-boot-jarmode-layertools` as explained in the next section.
 
-#### Jarmode to Extract The Layers
+#### Extracting The Layers Containing Dependencies
 
-We use a system property - `jarmode` set to value - `layertools` to launch the jar. It allows the bootstrap code to run something completely different from the application.
+We use a system property - `jarmode` set to value - `layertools` to launch the `spring-boot-jarmode-layertools` jar instead of the application. 
 
 Let us launch our jar with a `layertools jar mode` system property:
 ```shell
@@ -250,7 +253,30 @@ COPY --from=builder application/application/ ./
 ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
 
 ```
+We save this configuration in a separate file - `Dockerfile2`.
 
+We build the Docker Image using the command:
+```
+docker build -f Dockerfile2 -t usersignup:v1 .
+```
+After running this command, we get this output: 
+```shell
+Sending build context to Docker daemon  20.41MB
+Step 1/12 : FROM adoptopenjdk:14-jre-hotspot as builder
+14-jre-hotspot: Pulling from library/adoptopenjdk
+.
+.
+Successfully built a9ebf6970841
+Successfully tagged userssignup:v1
+```
+We can the Docker Image is created with the Image ID and the tagged. 
+
+We finally run the dive command as before to check the layers inside the generated Docker Image.
+```shell
+dive userssignup:v1
+```
+As we can see in the output the layer containing the application is only 11 kB now with the dependencies cached in separate layers.
+![dive screenshot](/assets/img/posts/springboot-docker-image/dive2.png)
 
 #### Customization with layers
 
@@ -301,7 +327,7 @@ mvn spring-boot:build-image
 
 View layers of dependencies. Ensure layering feature is enabled in spring-boot-maven-plugin before building the application jar:
 ```
-RUN java -Djarmode=layertools -jar application.jar list
+java -Djarmode=layertools -jar application.jar list
 ```
 
 Extract layers of dependencies. Ensure layering feature is enabled in spring-boot-maven-plugin before building the application jar:

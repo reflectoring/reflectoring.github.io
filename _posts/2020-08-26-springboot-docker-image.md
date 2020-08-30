@@ -72,6 +72,8 @@ As we can see the application layer forms the bulk of the image size. We will ai
 
 [Buildpacks](https://buildpacks.io/) is a generic term used by various Platform as a Service(PAAS) offerings to build a container image from source code. It was started by Heroku in 2011 and since been adopted by Cloud Foundry, Google App Engine, Gitlab, Knative, and some others. 
 
+![dive screenshot](/assets/img/posts/springboot-docker-image/Docker_buildpack.png)
+
 One main advantage of using Buildpack for building images is that **changes to the image configuration can be managed in a centralized place (the builder) and propagated to all applications which are using the builder.**
 
 Buildpacks were tightly coupled to the platform. **Cloud-Native Buildpacks bring standardization across platforms by supporting the OCI(Open container initiative) image format which ensures the image can be run by a Docker engine.**
@@ -104,9 +106,9 @@ Running this will produce an output similar to:
 [INFO]  > Pulling builder image 'gcr.io/paketo-buildpacks/builder:base-platform-api-0.3' 0%
 .
 .
-[INFO]     [creator]     Adding label 'org.springframework.boot.version'
-[INFO]     [creator]     *** Images (c311fe74ec73):
-[INFO]     [creator]           docker.io/pratikdas/usersignup:v1
+.. [creator]     Adding label 'org.springframework.boot.version'
+.. [creator]     *** Images (c311fe74ec73):
+.. [creator]           docker.io/pratikdas/usersignup:v1
 [INFO] 
 [INFO] Successfully built image 'docker.io/pratikdas/usersignup:v1'
 ```
@@ -125,15 +127,19 @@ pratikdas/usersignup                  257MB
 ## Motivations And Techniques for Optimized Images
 
 We have two main motivations for optimization: 
+
 Performance: Large-sized images result in long scheduling times in container orchestration systems, long build times in CI pipelines.
 
 Security: Large-sized images also have a greater surface area for vulnerabilities. 
 
 **A Docker Image is composed of a stack of layers each representing an instruction in our Dockerfile.** Each layer is a delta of the changes over the underlying layer. When we pull the Docker Image from the registry, it is pulled by layers and cached in the host. 
 
-Spring Boot uses `fat jar` as its default packaging format. When we inspect the `fat jar`, we can see that the application forms a very small part of the entire jar. This is the part that changes most frequently. The remaining part is composed of the Spring Framework dependencies. 
+Spring Boot uses fat jar as its default packaging format. When we inspect the fat jar, we can see that the application forms a very small part of the entire jar. This is the part that changes most frequently. The remaining part is composed of the Spring Framework dependencies. 
 
-The optimization formula centers around isolating the application into a separate layer from the Spring Framework dependencies. The dependencies layer forming the bulk of the fat jar is downloaded only once and cached in the host system. Only the thin layer of application is pulled during application updates and container scheduling.
+**The optimization formula centers around isolating the application into a separate layer from the Spring Framework dependencies.** The dependencies layer forming the bulk of the fat jar is downloaded only once and cached in the host system. **Only the thin layer of application is pulled during application updates and container scheduling** as illustrated in this schemata.
+
+![dive screenshot](/assets/img/posts/springboot-docker-image/Docker_optimized.png)
+
 
 #### From Spring Boot's Fat Jars to Layered Jars
 
@@ -178,7 +184,6 @@ BOOT-INF/classpath.idx
 BOOT-INF/layers.idx
 ```
 The output shows an additional jar named `spring-boot-jarmode-layertools` and a `layer.idx` file. The layering feature is provided by `spring-boot-jarmode-layertools` as explained in the next section.
-
 
 #### Jarmode to Extract The Layers
 

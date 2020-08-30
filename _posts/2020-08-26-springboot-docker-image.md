@@ -176,13 +176,9 @@ BOOT-INF/layers.idx
 The output shows an additional jar named `spring-boot-jarmode-layertools` and a `layer.idx` file. The layering feature is provided by `spring-boot-jarmode-layertools` as explained in the next section.
 
 
+#### Using Jarmode to Extract The Layers
 
-
-
-
-#### Jarmode to Extract The Layers
-
-We use a system property - `jarmode` set to a value - `layertools` to launch the jar. It allows the bootstrap code to run something completely different from the application.
+In this step, we will extract dependencies into separate layers. We will use a system property - `jarmode` set to a value - `layertools` to launch our executable jar created in the previous step. This allows the bootstrap code to redirect the request to the spring-boot-jarmode-layertools jar instead of the application.
 
 Let us launch our jar with a `layertools jar mode` system property:
 ```shell
@@ -222,7 +218,7 @@ The default layers are:
 
 The layers are defined in a `layers.idx` file in the order that they should be added to the Docker Image. The order is important as it determines how likely previous layers are to be cached when part of the application changes. During the pull, only the application layer is downloaded which is faster because of the reduced size
 
-#### Build The Image With Layers Of Dependencies
+#### Building The Image With Layers Of Dependencies
 
 We proceed to build the final image in two stages using a method called [multi-stage build](https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds). In the first stage, we extract the dependencies and in the second stage, we copy the extracted dependencies to the final image.
 
@@ -245,8 +241,31 @@ COPY --from=builder application/application/ ./
 ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
 
 ```
+We save our multi-stage build configuration in a separate file named `Dockerfile2`.
+Next we build our image by running the command :
+```shell
+docker build -f Dockerfile2 -t userssignup:v1 .
 
+```
 
+```
+Sending build context to Docker daemon  20.41MB
+Step 1/12 : FROM adoptopenjdk:14-jre-hotspot as builder
+14-jre-hotspot: Pulling from library/adoptopenjdk
+.
+.
+Successfully built a9ebf6970841
+Successfully tagged userssignup:v1
+```
+Let us now check the size of the layers once more with Dive.
+```
+dive usersignup:v1
+```
+Here is the output from our Dive command.
+
+![dive screenshot](/assets/img/posts/springboot-docker-image/dive2.png)
+
+As we can see the layer containing the application is just 11 KB now.
 #### Customization with layers
 
 We can further reduce the applicatiion layer size by customize the layers by extracting any custom dependencies in a separate layer instead of packaging with the application in a `yml` like file named `layers.idx`:

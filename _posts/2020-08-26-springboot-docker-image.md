@@ -277,6 +277,46 @@ In this `layers.idx` file we have added a custom dependency with name io.myorg c
 
 In this article, we looked at using Cloud-Native Buildpacks to create the container image directly from source code. This is an alternative to building the container image using the conventional way, by first building the fat executable jar and then package it in a container image by specifying the instructions in a Dockerfile. 
 
-We also looked at optimizing our container at runtime by extracting the dependencies in separate layers that get cached in the host and the thin layer of application is downloaded during scheduling in container runtime engines. We built the final image in two stages using a multi-stage build. The first stage extracts the dependencies and the second stage copies the extracted dependencies to the final image. 
+We also looked at optimizing our container at runtime by extracting the dependencies in separate layers that get cached in the host and the thin layer of application is downloaded during scheduling in container runtime engines. 
+
+We built the final image in two stages using a multi-stage build. The first stage extracts the dependencies and the second stage copies the extracted dependencies to the final image.
+
+## Command Summary
+Here is a summary of commands which we used through out this article for quick reference.
+
+Clean our environment:
+```
+docker system prune -a
+```
+
+Build container image with Docker file:
+```
+docker build -f <Docker file name> -t <tag> .
+```
+
+Build container image from source (without Dockerfile):
+```
+mvn spring-boot:build-image
+```
+
+View layers of dependencies. Ensure layering feature is enabled in spring-boot-maven-plugin before building the application jar:
+```
+RUN java -Djarmode=layertools -jar application.jar list
+```
+
+Extract layers of dependencies. Ensure layering feature is enabled in spring-boot-maven-plugin before building the application jar:
+```
+ java -Djarmode=layertools -jar application.jar extract
+```
+
+View list of container images
+```
+docker images
+```
+
+View layers inside container image (Ensure dive tool is installed):
+```
+dive <image ID or image tag>
+```
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-docker).

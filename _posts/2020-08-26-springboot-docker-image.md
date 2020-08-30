@@ -11,13 +11,13 @@ image:
  
 Containers have emerged as the preferred means of packaging an application with all the software and operating system dependencies and then shipping that across to different environments. 
 
-For containerizing, we enclose our application inside a container image and publish that image to a shared registry. The container runtime pulls this image from the registry, unpacks the image, and runs the application inside it. 
+**For containerizing, we enclose our application inside a container image and publish that image to a shared registry. The container runtime pulls this image from the registry, unpacks the image, and runs the application inside it.** 
 
 [Docker](https://docs.docker.com/get-started/#docker-concepts) happens to be the most commonly used container implementation so all subsequent reference to a container in this article will mean Docker. 
 
 It is very easy to create Docker images of Spring Boot applications. We build an executable jar and then copy that over a base JRE image after applying customizations over that to package the [fat uber jar](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-executable-jar-format.html#executable-jar-jar-file-structure). 
 
-Release 2.3 of Spring Boot aims to provide tools to help manage the containerization process at build time and runtime. This article looks at the steps required for containerizing a Spring Boot application :
+**Release 2.3 of Spring Boot aims to provide tools to help manage the containerization process at build time and runtime.** This article looks at the steps required for containerizing a Spring Boot application :
 - by building Docker Image with Dockerfile,
 - by building an OCI image from source code with Cloud-Native Buildpack 
 - and optimizing the image at runtime by splitting parts of the jar into different layers using layered tools. 
@@ -25,9 +25,9 @@ Release 2.3 of Spring Boot aims to provide tools to help manage the containeriza
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-docker" %}
 
 ## What is An OCI Image
-The [Open Container Initiative (OCI)](https://opencontainers.org/about/overview/) defines industry standards for container image formats and runtimes to ensure that all container engines can run images produced by any build tool. The original image format of Docker has become the OCI Image Specification and is supported by various open-source build tools. 
+The [Open Container Initiative (OCI)](https://opencontainers.org/about/overview/) is a lightweight, open governance structure formed under the Linux Foundation. **The OCI Image Specification defines industry standards for container image formats and runtimes to ensure that all container engines can run images produced by any build tool.** The original image format of Docker has become the OCI Image Specification and is supported by various open-source build tools. 
 
-The 2.3 release of Spring Boot provides support for building OCI images. We will first build a Container Image of a Spring Boot application in the conventional by specifying the instructions in a Docker file and then use the Spring Boot Plugin to generate the OCI image without using a Docker file.
+**The 2.3 release of Spring Boot provides support for building OCI images.** We will first build a Container Image of a Spring Boot application in the conventional by specifying the instructions in a Docker file and then use the Spring Boot Plugin to generate the OCI image without using a Docker file.
 
 ## Building Docker Images In Conventional Way
 

@@ -29,7 +29,7 @@ The [Open Container Initiative (OCI)](https://opencontainers.org/about/overview/
 
 **The 2.3 release of Spring Boot provides support for building OCI images.** We will first build a Container Image of a Spring Boot application in the conventional by specifying the instructions in a Docker file and then use the Spring Boot Plugin to generate the OCI image without using a Docker file.
 
-## Building Docker Images In Conventional Way
+## Building Docker Images in Conventional Way
 
 Let us create our Spring Boot application from [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.users&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Container&packageName=io.pratik.users&dependencies=web,actuator,lombok) with dependencies for `web`, `lombok`, and `actuator`. We also add a rest controller to expose an API with the `GET` method. 
 
@@ -70,7 +70,7 @@ Here is part of the output from running the Dive command:
 
 As we can see the application layer forms the bulk of the image size. We will aim to reduce the size of this layer in the following sections as part of our optimization.
 
-## Building OCI Image (Docker Compatible) With Buildpack Using Spring Boot Plugins
+## Building OCI Image with Buildpack Using Spring Boot Plugins
 
 [Buildpacks](https://buildpacks.io/) is a generic term used by various Platform as a Service(PAAS) offerings to build a container image from source code. It was started by Heroku in 2011 and since been adopted by Cloud Foundry, Google App Engine, Gitlab, Knative, and some others. 
 
@@ -126,7 +126,7 @@ paketobuildpacks/run                  84.3MB
 gcr.io/paketo-buildpacks/builder      652MB
 pratikdas/usersignup                  257MB
 ```
-## Motivations And Techniques for Optimized Images
+## Motivations and Techniques for Building Optimized Images
 
 We have two main motivations for optimization: 
 
@@ -187,7 +187,7 @@ BOOT-INF/layers.idx
 ```
 The output shows an additional jar named `spring-boot-jarmode-layertools` and a `layer.idx` file. The layering feature is provided by `spring-boot-jarmode-layertools` as explained in the next section.
 
-## Extracting The Dependencies In Separate Layers 
+## Extracting the Dependencies in Separate Layers 
 
 We use a system property - `jarmode` set to value - `layertools` to launch the `spring-boot-jarmode-layertools` jar instead of the application. 
 
@@ -216,9 +216,9 @@ spring-boot-loader
 snapshot-dependencies
 application
 ```
-We can see the list of dependencies that can be added as Layers. 
+We can see the list of dependencies that can be added as layers. 
 
-The default Layers are:
+The default layers are:
 
 | Library Name        | Contents           | 
 | :------------------------ |:-----------------|
@@ -227,9 +227,9 @@ The default Layers are:
 | `snapshot-dependencies` | any dependency whose version contains SNAPSHOT     |
 | `application` | application classes and resources      |
 
-The Layers are defined in a `layers.idx` file in the order that they should be added to the Docker Image. These layers get cached in the host after the first pull since they do not change. Only the updated application layer is downloaded to the host which is faster because of the reduced size.
+The layers are defined in a `layers.idx` file in the order that they should be added to the Docker Image. These layers get cached in the host after the first pull since they do not change. Only the updated application layer is downloaded to the host which is faster because of the reduced size.
 
-## Building The Image With Dependencies Extracted In Separate Layers
+## Building the Image with Dependencies Extracted in Separate Layers
 
 We proceed to build the final image in two stages using a method called [multi-stage build](https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds). In the first stage, we extract the dependencies and in the second stage, we copy the extracted dependencies to the final image.
 
@@ -270,11 +270,11 @@ Successfully tagged userssignup:v1
 ```
 We can see the Docker Image is created with an Image ID and then tagged. 
 
-We finally run the dive command as before to check the layers inside the generated Docker Image. We can specify either the Image ID or tag as input to the Dive command:
+We finally run the Dive command as before to check the layers inside the generated Docker Image. We can specify either the Image ID or tag as input to the Dive command:
 ```shell
 dive userssignup:v1
 ```
-As we can see in the output the layer containing the application is only 11 kB now with the dependencies cached in separate layers.
+As we can see in the output, the layer containing the application is only 11 kB now with the dependencies cached in separate layers.
 ![dive screenshot](/assets/img/posts/springboot-docker-image/dive2.png)
 
 ## Extracting Internal Dependencies in Separate Layers

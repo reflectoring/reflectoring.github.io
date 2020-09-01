@@ -11,7 +11,7 @@ image:
  
 Containers have emerged as the preferred means of packaging an application with all the software and operating system dependencies and then shipping that across to different environments. 
 
-**Release 2.3 of Spring Boot provides tools to help manage the containerizing process at build time and runtime.** This article looks at the steps required for containerizing a Spring Boot application :
+This article looks at the steps required for containerizing a Spring Boot application :
 - by building a Docker Image using a Docker file,
 - by building an OCI image from source code with Cloud-Native Buildpack 
 - and optimizing the image at runtime by splitting parts of the jar into different layers using layered tools. 

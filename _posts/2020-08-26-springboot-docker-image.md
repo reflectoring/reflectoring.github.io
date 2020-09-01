@@ -36,10 +36,10 @@ We will start with the container terminologies used through out the article:
 
 The 2.3 release of Spring Boot provides plugins for building OCI images. **For containerizing, we enclose our application inside a container image and publish that image to a shared registry. The container runtime pulls this image from the registry, unpacks the image, and runs the application inside it.** 
 
-[Docker](https://docs.docker.com/get-started/#docker-concepts) happens to be the most commonly used container implementation and we have Docker in our examples, so all subsequent reference to a container in this article will mean Docker. 
+[Docker](https://docs.docker.com/get-started/#docker-concepts) happens to be the most commonly used container implementation and we are using Docker in our examples, so all subsequent reference to a container in this article will mean Docker. 
 
 
-## Building Docker Images in Conventional Way
+## Building Container Images in Conventional Way with Docker
 
 It is very easy to create Docker images of Spring Boot applications by adding a few instructions in a Docker file. We first build an executable jar and as part of the Docker file instructions, copy the executable jar over a base JRE image after applying necessary customizations.
 

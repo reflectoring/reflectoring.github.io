@@ -187,7 +187,7 @@ BOOT-INF/layers.idx
 ```
 The output shows an additional jar named `spring-boot-jarmode-layertools` and a `layer.idx` file. The layering feature is provided by `spring-boot-jarmode-layertools` as explained in the next section.
 
-## Extracting The Layers Containing Dependencies
+## Extracting The Dependencies In Separate Layers 
 
 We use a system property - `jarmode` set to value - `layertools` to launch the `spring-boot-jarmode-layertools` jar instead of the application. 
 
@@ -216,9 +216,9 @@ spring-boot-loader
 snapshot-dependencies
 application
 ```
-This shows the list of dependencies that can be added as layers. 
+We can see the list of dependencies that can be added as Layers. 
 
-The default layers are:
+The default Layers are:
 
 | Library Name        | Contents           | 
 | :------------------------ |:-----------------|
@@ -227,9 +227,9 @@ The default layers are:
 | `snapshot-dependencies` | any dependency whose version contains SNAPSHOT     |
 | `application` | application classes and resources      |
 
-The layers are defined in a `layers.idx` file in the order that they should be added to the Docker Image. The order is important as it determines how likely previous layers are to be cached when part of the application changes. During the pull, only the application layer is downloaded which is faster because of the reduced size
+The Layers are defined in a `layers.idx` file in the order that they should be added to the Docker Image. These layers get cached in the host after the first pull since they do not change. Only the updated application layer is downloaded to the host which is faster because of the reduced size.
 
-## Build The Image With Layers Of Dependencies
+## Building The Image With Dependencies Extracted In Separate Layers
 
 We proceed to build the final image in two stages using a method called [multi-stage build](https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds). In the first stage, we extract the dependencies and in the second stage, we copy the extracted dependencies to the final image.
 

@@ -33,8 +33,7 @@ The [Open Container Initiative (OCI)](https://opencontainers.org/about/overview/
 
 Let us create our Spring Boot application from [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.users&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Container&packageName=io.pratik.users&dependencies=web,actuator,lombok) with dependencies for `web`, `lombok`, and `actuator`. We also add a rest controller to expose an API with the `GET` method. 
 
-Next, we containerize this application by adding a Dockerfile :
-
+Next, we containerize this application by adding a file - `Dockerfile` with contents :
 ```
 FROM adoptopenjdk:11-jre-hotspot
 ARG JAR_FILE=target/*.jar
@@ -47,10 +46,10 @@ We first build the application with Maven or Gradle. We are using Maven here:
 ```shell
 mvn clean package
 ```
-This creates an executable jar of the application. Then we put this executable jar in a Docker image by running the `docker build` command:
+This creates an executable jar of the application. Then we put this executable jar in a Docker Image by running the command from the root project directory containing the Docker file created earlier:
 
 ```shell
-docker build . -t usersignup:v1
+docker build  -t usersignup:v1 .
 ```
 We can see our image listed with the command:
 ```
@@ -71,7 +70,7 @@ Here is part of the output from running the Dive command:
 
 As we can see the application layer forms the bulk of the image size. We will aim to reduce the size of this layer in the following sections as part of our optimization.
 
-#### Building OCI Image (Docker Compatible) With Buildpack Using Spring Boot Plugins
+## Building OCI Image (Docker Compatible) With Buildpack Using Spring Boot Plugins
 
 [Buildpacks](https://buildpacks.io/) is a generic term used by various Platform as a Service(PAAS) offerings to build a container image from source code. It was started by Heroku in 2011 and since been adopted by Cloud Foundry, Google App Engine, Gitlab, Knative, and some others. 
 
@@ -144,7 +143,7 @@ Spring Boot uses fat jar as its default packaging format. When we inspect the fa
 ![dive screenshot](/assets/img/posts/springboot-docker-image/Docker_optimized.png)
 
 
-#### From Spring Boot's Fat Jars to Layered Jars
+## From Spring Boot's Fat Jars to Layered Jars
 
 Spring Boot uses fat jar as its default packaging format. If we inspect the jar produced after running the Maven build, we get this output:
 
@@ -176,7 +175,7 @@ The layering feature is explicitly enabled with the Spring Boot Maven plugin:
   </configuration> 
 </plugin>
 ```
-The contents of the resulting jar is shown: 
+The contents of the resulting jar are shown: 
 ```
 META-INF/
 .
@@ -188,7 +187,7 @@ BOOT-INF/layers.idx
 ```
 The output shows an additional jar named `spring-boot-jarmode-layertools` and a `layer.idx` file. The layering feature is provided by `spring-boot-jarmode-layertools` as explained in the next section.
 
-#### Extracting The Layers Containing Dependencies
+## Extracting The Layers Containing Dependencies
 
 We use a system property - `jarmode` set to value - `layertools` to launch the `spring-boot-jarmode-layertools` jar instead of the application. 
 
@@ -207,7 +206,7 @@ Available commands:
   help     Help about any command
 
 ```
-The output shows the commands `list`, `extract` and `help` with `help` being the default. Let us run the command with `list` option :
+The output shows the commands `list`, `extract`, and `help` with `help` being the default. Let us run the command with the `list` option :
 ```shell
 java -Djarmode=layertools -jar target/usersignup-0.0.1-SNAPSHOT.jar list
 ```
@@ -230,7 +229,7 @@ The default layers are:
 
 The layers are defined in a `layers.idx` file in the order that they should be added to the Docker Image. The order is important as it determines how likely previous layers are to be cached when part of the application changes. During the pull, only the application layer is downloaded which is faster because of the reduced size
 
-#### Build The Image With Layers Of Dependencies
+## Build The Image With Layers Of Dependencies
 
 We proceed to build the final image in two stages using a method called [multi-stage build](https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds). In the first stage, we extract the dependencies and in the second stage, we copy the extracted dependencies to the final image.
 
@@ -269,18 +268,18 @@ Step 1/12 : FROM adoptopenjdk:14-jre-hotspot as builder
 Successfully built a9ebf6970841
 Successfully tagged userssignup:v1
 ```
-We can the Docker Image is created with the Image ID and the tagged. 
+We can see the Docker Image is created with an Image ID and then tagged. 
 
-We finally run the dive command as before to check the layers inside the generated Docker Image.
+We finally run the dive command as before to check the layers inside the generated Docker Image. We can specify either the Image ID or tag as input to the Dive command:
 ```shell
 dive userssignup:v1
 ```
 As we can see in the output the layer containing the application is only 11 kB now with the dependencies cached in separate layers.
 ![dive screenshot](/assets/img/posts/springboot-docker-image/dive2.png)
 
-#### Customization with layers
+## Extracting Internal Dependencies in Separate Layers
 
-We can further reduce the applicatiion layer size by customize the layers by extracting any custom dependencies in a separate layer instead of packaging with the application in a `yml` like file named `layers.idx`:
+We can further reduce the application layer size by extracting any of our custom dependencies in a separate layer instead of packaging them with the application by declaring them in a `yml` like file named `layers.idx`:
 
 ```layers.idx
 - "dependencies":
@@ -297,7 +296,7 @@ We can further reduce the applicatiion layer size by customize the layers by ext
   - "META-INF/"
 
 ```
-In this `layers.idx` file we have added a custom dependency with name io.myorg containing organization dependencies.
+In this file -`layers.idx` we have added a custom dependency with the name `io.myorg` containing organization dependencies pulled from a shared repository.
 
 ## Conclusion
 
@@ -308,7 +307,7 @@ We also looked at optimizing our container at runtime by extracting the dependen
 We built the final image in two stages using a multi-stage build. The first stage extracts the dependencies and the second stage copies the extracted dependencies to the final image.
 
 ## Command Summary
-Here is a summary of commands which we used through out this article for quick reference.
+Here is a summary of commands which we used throughout this article for quick reference.
 
 Clean our environment:
 ```
@@ -325,12 +324,12 @@ Build container image from source (without Dockerfile):
 mvn spring-boot:build-image
 ```
 
-View layers of dependencies. Ensure layering feature is enabled in spring-boot-maven-plugin before building the application jar:
+View layers of dependencies. Ensure the layering feature is enabled in spring-boot-maven-plugin before building the application jar:
 ```
 java -Djarmode=layertools -jar application.jar list
 ```
 
-Extract layers of dependencies. Ensure layering feature is enabled in spring-boot-maven-plugin before building the application jar:
+Extract layers of dependencies. Ensure the layering feature is enabled in spring-boot-maven-plugin before building the application jar:
 ```
  java -Djarmode=layertools -jar application.jar extract
 ```

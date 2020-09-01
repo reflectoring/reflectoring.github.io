@@ -33,6 +33,7 @@ The [Open Container Initiative (OCI)](https://opencontainers.org/about/overview/
 
 Let us create our Spring Boot application from [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.users&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Container&packageName=io.pratik.users&dependencies=web,actuator,lombok) with dependencies for `web`, `lombok`, and `actuator`. We also add a rest controller to expose an API with the `GET` method. 
 
+### Adding a Docker File with Image Building Instructions
 Next, we containerize this application by adding a file - `Dockerfile` with contents :
 ```
 FROM adoptopenjdk:11-jre-hotspot
@@ -41,13 +42,17 @@ COPY ${JAR_FILE} application.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/application.jar"]
 ```
-This contains a base image over which we copy our jar file.
+Our Docker file contains a base image over which we copy our jar file.
+
+### Building the Application
 We first build the application with Maven or Gradle. We are using Maven here:
 ```shell
 mvn clean package
 ```
-This creates an executable jar of the application. Then we put this executable jar in a Docker Image by running the command from the root project directory containing the Docker file created earlier:
+This creates an executable jar of the application. We need to convert this executable jar into a Docker Image for running in a Docker engine.
 
+### Building the Container Image
+Next we put this executable jar in a Docker Image by running the command from the root project directory containing the Docker file created earlier:
 ```shell
 docker build  -t usersignup:v1 .
 ```
@@ -61,6 +66,7 @@ REPOSITORY          TAG                 SIZE
 usersignup          v1                  249MB
 adoptopenjdk        11-jre-hotspot      229MB
 ```
+### Viewing the Layers Inside the Container Image
 Let us see the stack of layers inside the image. We will use the [dive tool](https://github.com/wagoodman/dive) to view those layers: 
 ```
 dive usersignup:v1
@@ -70,17 +76,19 @@ Here is part of the output from running the Dive command:
 
 As we can see the application layer forms the bulk of the image size. We will aim to reduce the size of this layer in the following sections as part of our optimization.
 
-## Building OCI Image with Buildpack Using Spring Boot Plugins
+## Building the Container Image with Buildpack
 
 [Buildpacks](https://buildpacks.io/) is a generic term used by various Platform as a Service(PAAS) offerings to build a container image from source code. It was started by Heroku in 2011 and since been adopted by Cloud Foundry, Google App Engine, Gitlab, Knative, and some others. 
 
 ![dive screenshot](/assets/img/posts/springboot-docker-image/Docker_buildpack.png)
 
+### Advantage of Cloud-Native Buildpacks
 One main advantage of using Buildpack for building images is that **changes to the image configuration can be managed in a centralized place (the builder) and propagated to all applications which are using the builder.**
 
 Buildpacks were tightly coupled to the platform. **Cloud-Native Buildpacks bring standardization across platforms by supporting the OCI(Open container initiative) image format which ensures the image can be run by a Docker engine.**
 
-The plugin creates OCI images from Spring Boot executable jar using a Buildpack. Images are built using the `bootBuildImage task(Gradle)` or `spring-boot:build-image goal(Maven)` and a local Docker installation. 
+### Building the Container Image From Source Using Spring Boot Plugin
+The Spring Boot plugin creates OCI images from Spring Boot executable jar using a Buildpack. Images are built using the `bootBuildImage task(Gradle)` or `spring-boot:build-image goal(Maven)` and a local Docker installation. 
 
 We can customize the name of the image required for pushing to the Docker Registry by specifying the name in the `image tag`:
 ```xml
@@ -145,7 +153,10 @@ Spring Boot uses fat jar as its default packaging format. When we inspect the fa
 
 ## From Spring Boot's Fat Jars to Layered Jars
 
-Spring Boot uses fat jar as its default packaging format. If we inspect the jar produced after running the Maven build, we get this output:
+Spring Boot uses fat jar as its default packaging format. 
+
+### Fat Jar Format
+If we inspect the jar produced after running the Maven build, we get this output:
 
 ```
 META-INF/
@@ -160,6 +171,7 @@ BOOT-INF/classes/
 BOOT-INF/lib/
 BOOT-INF/classpath.idx
 ```
+### Enabling the Layering Feature
 Release 2.3 supports layering by extracting parts of this fat jar in separate layers.
 
 The layering feature is explicitly enabled with the Spring Boot Maven plugin:
@@ -175,7 +187,7 @@ The layering feature is explicitly enabled with the Spring Boot Maven plugin:
   </configuration> 
 </plugin>
 ```
-The contents of the resulting jar are shown: 
+The contents of the resulting jar after building with Maven are shown: 
 ```
 META-INF/
 .

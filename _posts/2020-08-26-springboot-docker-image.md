@@ -20,19 +20,19 @@ This article looks at the steps required for containerizing a Spring Boot applic
 
 ## Container Terminology
 
-We will start with the container terminologies used through out the article:
+We will start with the container terminologies used throughout the article:
 
 - Container Image is a file with a specific format. We convert our application into a Container Image by running a build tool. Repository is another name for Container Image.
 
-- Container is the runtime instance of a Container Image.
+- A Container is the runtime instance of a Container Image.
 
 - Container Engine: The daemon process responsible for running the Container.
 
 - Container Host: Host Machine on which the Container Engine runs.
 
-- Container Registry: The shared location used for publishing and distributing the Container Image.
+- Container Registry: The shared location that is used for publishing and distributing the Container Image.
 
-- OCI Standard : The [Open Container Initiative (OCI)](https://opencontainers.org/about/overview/) is a lightweight, open governance structure formed under the Linux Foundation. **The OCI Image Specification defines industry standards for container image formats and runtimes to ensure that all container engines can run container images produced by any build tool.**
+- OCI Standard: The [Open Container Initiative (OCI)](https://opencontainers.org/about/overview/) is a lightweight, open governance structure formed under the Linux Foundation. **The OCI Image Specification defines industry standards for container image formats and runtimes to ensure that all container engines can run container images produced by any build tool.**
 
 The 2.3 release of Spring Boot provides plugins for building OCI images. **For containerizing, we enclose our application inside a container image and publish that image to a shared registry. The container runtime pulls this image from the registry, unpacks the image, and runs the application inside it.** 
 
@@ -64,7 +64,7 @@ mvn clean package
 This creates an executable jar of the application. We need to convert this executable jar into a Docker Image for running in a Docker engine.
 
 ### Building the Container Image
-Next we put this executable jar in a Docker Image by running the command from the root project directory containing the Docker file created earlier:
+Next, we put this executable jar in a Docker Image by running the command from the root project directory containing the Docker file created earlier:
 ```shell
 docker build  -t usersignup:v1 .
 ```
@@ -100,7 +100,7 @@ One main advantage of using Buildpack for building images is that **changes to t
 Buildpacks were tightly coupled to the platform. **Cloud-Native Buildpacks bring standardization across platforms by supporting the OCI(Open container initiative) image format which ensures the image can be run by a Docker engine.**
 
 ### Building the Container Image From Source Using Spring Boot Plugin
-The Spring Boot plugin creates OCI images from Spring Boot executable jar using a Buildpack. Images are built using the `bootBuildImage task(Gradle)` or `spring-boot:build-image goal(Maven)` and a local Docker installation. 
+The Spring Boot plugin creates OCI images from the source code using a Buildpack. Images are built using the `bootBuildImage task(Gradle)` or `spring-boot:build-image goal(Maven)` and a local Docker installation. 
 
 We can customize the name of the image required for pushing to the Docker Registry by specifying the name in the `image tag`:
 ```xml
@@ -146,6 +146,34 @@ paketobuildpacks/run                  84.3MB
 gcr.io/paketo-buildpacks/builder      652MB
 pratikdas/usersignup                  257MB
 ```
+## Building the Container Image with Jib
+Jib is an image builder plugin from Google and provides an alternate method of building a container image from source code. 
+
+We configure the `jib-maven-plugin` in pom.xml:
+```xml
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>2.5.2</version>
+      </plugin>
+```
+Next, we trigger the Jib plugin with the Maven command to build the application and create the container image. As before, we are not using any Docker file here:
+```shell
+mvn compile jib:build -Dimage=<docker registry name>/usersignup:v1
+```
+We get the following output after running the above Maven command: 
+```shell
+[INFO] Containerizing application to pratikdas/usersignup:v1...
+.
+.
+[INFO] Container entrypoint set to [java, -cp, /app/resources:/app/classes:/app/libs/*, io.pratik.users.UsersignupApplication]
+[INFO] 
+[INFO] Built and pushed image as pratikdas/usersignup:v1
+[INFO] Executing tasks:
+[INFO] [==============================] 100.0% complete
+```
+The output shows that the container image is built and pushed to the registry.
+
 ## Motivations and Techniques for Building Optimized Images
 
 We have two main motivations for optimization: 

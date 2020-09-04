@@ -1,17 +1,17 @@
 ---
-title: "Containerizing Spring Boot Applications"
+title: "Creating Optimized Containers for a Spring Boot Application"
 categories: [spring-boot]
-date: 2020-08-26 06:00:00 +1100
-modified: 2020-08-26 06:00:00 +1100
+date: 2020-09-05 06:00:00 +1100
+modified: 2020-09-05 06:00:00 +1100
 author: pratikdas
-excerpt: "We will look at containerizing Spring Boot applications with Cloud-Native Buildpacks and Docker and optimizing the containerized image by enabling layering and extracting the application in a separate layer."
+excerpt: "We will look at containerizing Spring Boot applications with cloud-native Buildpacks and Docker and how to optimize the containerized image by enabling layering and extracting the application in a separate layer."
 image:
-  auto: 0074-stack
+  auto: 0080-containers
 ---
  
 Containers have emerged as the preferred means of packaging an application with all the software and operating system dependencies and then shipping that across to different environments. 
 
-This article looks at the steps required for containerizing a Spring Boot application by:
+This article looks at different ways of containerizing a Spring Boot application:
 - building a Docker image using a Docker file,
 - building an OCI image from source code with Cloud-Native Buildpack,
 - and optimizing the image at runtime by splitting parts of the JAR into different layers using layered tools. 
@@ -28,11 +28,11 @@ We will start with the container terminologies used throughout the article:
 
 - **Container engine**: the daemon process responsible for running the Container.
 
-- **Container host**: the host Machine on which the container engine runs.
+- **Container host**: the host machine on which the container engine runs.
 
-- **Container registry**: The shared location that is used for publishing and distributing the container image.
+- **Container registry**: the shared location that is used for publishing and distributing the container image.
 
-- **OCI Standard**: The [Open Container Initiative (OCI)](https://opencontainers.org/about/overview/) is a lightweight, open governance structure formed under the Linux Foundation. The OCI Image Specification defines industry standards for container image formats and runtimes to ensure that all container engines can run container images produced by any build tool.
+- **OCI Standard**: the [Open Container Initiative (OCI)](https://opencontainers.org/about/overview/) is a lightweight, open governance structure formed under the Linux Foundation. The OCI Image Specification defines industry standards for container image formats and runtimes to ensure that all container engines can run container images produced by any build tool.
 
 **To containerize an application, we enclose our application inside a container image and publish that image to a shared registry. The container runtime pulls this image from the registry, unpacks the image, and runs the application inside it.** 
 
@@ -45,7 +45,7 @@ The 2.3 release of Spring Boot provides plugins for building OCI images.
 
 It is very easy to create Docker images of Spring Boot applications by adding a few instructions to a Docker file. 
 
-We first build an executable jar and as part of the Docker file instructions, copy the executable jar over a base JRE image after applying necessary customizations.
+We first build an executable JAR and as part of the Docker file instructions, copy the executable JAR over a base JRE image after applying necessary customizations.
 
 Let us create our Spring Boot application from [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.users&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Container&packageName=io.pratik.users&dependencies=web,actuator,lombok) with dependencies for `web`, `lombok`, and `actuator`. We also add a rest controller to expose an API with the `GET` method. 
 
@@ -58,17 +58,17 @@ COPY ${JAR_FILE} application.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/application.jar"]
 ```
-Our Docker file contains a base image from `adoptopenjdk` over which we copy our jar file and then expose the port `8080` which will listen for requests.
+Our Docker file contains a base image from `adoptopenjdk` over which we copy our JAR file and then expose the port `8080` which will listen for requests.
 
 ### Building the Application
 We first build the application with Maven or Gradle. We are using Maven here:
 ```shell
 mvn clean package
 ```
-This creates an executable jar of the application. We need to convert this executable jar into a Docker image for running in a Docker engine.
+This creates an executable JAR of the application. We need to convert this executable JAR into a Docker image for running in a Docker engine.
 
 ### Building the Container Image
-Next, we put this executable jar in a Docker image by running the `docker build` command from the root project directory containing the Docker file created earlier:
+Next, we put this executable JAR in a Docker image by running the `docker build` command from the root project directory containing the Docker file created earlier:
 ```shell
 docker build  -t usersignup:v1 .
 ```
@@ -90,9 +90,9 @@ dive usersignup:v1
 Here is part of the output from running the Dive command:
  ![dive screenshot](/assets/img/posts/springboot-docker-image/dive1.png)
 
-As we can see the application layer (inside the red boundary) forms the bulk of the image size. We will aim to reduce the size of this layer in the following sections as part of our optimization.
+As we can see the application layer forms a significant part of the image size. We will aim to reduce the size of this layer in the following sections as part of our optimization.
 
-## Building the Container Image with Buildpack
+## Building a Container Image with Buildpack
 
 [Buildpacks](https://buildpacks.io/) is a generic term used by various Platform as a Service(PAAS) offerings to build a container image from source code. It was started by Heroku in 2011 and has since been adopted by Cloud Foundry, Google App Engine, Gitlab, Knative, and some others. 
 
@@ -103,7 +103,7 @@ One main advantage of using Buildpack for building images is that **changes to t
 
 Buildpacks were tightly coupled to the platform. **Cloud-Native Buildpacks bring standardization across platforms by supporting the OCI image format which ensures the image can be run by a Docker engine.**
 
-### Building a Container Image Using the Spring Boot Plugin
+### Using the Spring Boot Plugin
 The Spring Boot plugin creates OCI images from the source code using a Buildpack. Images are built using the `bootBuildImage` task (Gradle) or the `spring-boot:build-image` goal (Maven) and a local Docker installation. 
 
 We can customize the name of the image required for pushing to the Docker Registry by specifying the name in the `image tag`:
@@ -150,7 +150,8 @@ paketobuildpacks/run                  84.3MB
 gcr.io/paketo-buildpacks/builder      652MB
 pratikdas/usersignup                  257MB
 ```
-## Building the Container Image with Jib
+
+## Building a Container Image with Jib
 Jib is an image builder plugin from Google and provides an alternate method of building a container image from source code. 
 
 We configure the `jib-maven-plugin` in pom.xml:
@@ -182,27 +183,26 @@ The output shows that the container image is built and pushed to the registry.
 
 We have two main motivations for optimization: 
 
-* **Performance**: In a container orchestration system, the container image is pulled from the image registry to a host running a container engine. This process is called scheduling. Pulling large-sized images from the registry result in long scheduling times in container orchestration systems and long build times in CI pipelines.
+* **Performance**: in a container orchestration system, the container image is pulled from the image registry to a host running a container engine. This process is called scheduling. Pulling large-sized images from the registry result in long scheduling times in container orchestration systems and long build times in CI pipelines.
 * **Security**: large-sized images also have a greater surface area for vulnerabilities. 
 
 **A Docker image is composed of a stack of layers each representing an instruction in our Dockerfile.** Each layer is a delta of the changes over the underlying layer. When we pull the Docker image from the registry, it is pulled by layers and cached in the host. 
 
-Spring Boot uses a ["fat JAR"](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-executable-jar-format.html#executable-jar-jar-file-structure) as its default packaging format. When we inspect the fat jar, we can see that the application forms a very small part of the entire jar. This is the part that changes most frequently. The remaining part is composed of the Spring Framework dependencies. 
+Spring Boot uses a ["fat JAR"](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-executable-jar-format.html#executable-jar-jar-file-structure) as its default packaging format. When we inspect the fat JAR, we can see that the application forms a very small part of the entire JAR. This is the part that changes most frequently. The remaining part is composed of the Spring Framework dependencies. 
 
 The optimization formula centers around isolating the application into a separate layer from the Spring Framework dependencies. 
 
-The dependencies layer forming the bulk of the fat jar is downloaded only once and cached in the host system. 
+The dependencies layer forming the bulk of the fat JAR is downloaded only once and cached in the host system. 
 
 **Only the thin layer of application is pulled during application updates and container scheduling** as illustrated in this diagram:
 
 ![dive screenshot](/assets/img/posts/springboot-docker-image/Docker_optimized.png)
 
-## Building the Optimized Image with Layered Jar
-To extract the application into a separate layer, we will first convert our fat jar to a layered jar and then generate the container image using both Builpack and Docker.
+Let's have a look at how to build those optimized images for a Spring Boot application in the next sections.
 
-### Converting Spring Boot's Fat Jar to a Layered Jar 
+## Building an Optimized Container Image for a Spring Boot Application with Buildpack
 
- Spring Boot 2.3 supports layering by extracting parts of the fat jar into separate layers. The layering feature is turned off by default and needs to be explicitly enabled with the Spring Boot Maven plugin : 
+ Spring Boot 2.3 supports layering by extracting parts of the fat JAR into separate layers. The layering feature is turned off by default and needs to be explicitly enabled with the Spring Boot Maven plugin: 
 
 ```xml
 <plugin>
@@ -217,18 +217,20 @@ To extract the application into a separate layer, we will first convert our fat 
 ```
 We will use this configuration to generate our container image first with Buildpack and then with Docker in the following sections.
 
-### Building the Optimized Image with Buildpack
 Let us run the Maven `build-image` goal to create the container image: 
 
 ```shell
 mvn spring-boot:build-image
 ```
-If we run Dive to see the layers in the resulting image, we can see the application layer (encircled in red) is much smaller in the range of kilobytes compared to what we had obtained by using the fat jar format.
+If we run Dive to see the layers in the resulting image, we can see the application layer (encircled in red) is much smaller in the range of kilobytes compared to what we had obtained by using the fat JAR format:
 
 ![dive screenshot](/assets/img/posts/springboot-docker-image/dive-buildpack-layer.png)
 
 
-### Building the Optimized Image with Docker and Layered Jar
+## Building an Optimized Container Image for a Spring Boot Application with Docker
+
+Instead of using the Maven or Gradle plugin, we can also create a layered JAR Docker image with a Docker file.
+
 When we are using Docker, we need to perform two additional steps for extracting the layers and copying those in the final image.  
 
 The contents of the resulting JAR after building with Maven with the layering feature turned on will look like this: 
@@ -241,11 +243,11 @@ BOOT-INF/lib/spring-boot-jarmode-layertools-2.3.3.RELEASE.jar
 BOOT-INF/classpath.idx
 BOOT-INF/layers.idx
 ```
-The output shows an additional jar named `spring-boot-jarmode-layertools` and a `layersfle.idx` file. The layering feature is provided by this additional jar as explained in the next section.
+The output shows an additional JAR named `spring-boot-jarmode-layertools` and a `layersfle.idx` file. The layering feature is provided by this additional JAR as explained in the next section.
 
-#### Extracting the Dependencies in Separate Layers 
+### Extracting the Dependencies in Separate Layers 
 
-To  view and extract the layers from our layered jar, we use a system property `-Djarmode=layertools` to launch the `spring-boot-jarmode-layertools` jar instead of the application:
+To  view and extract the layers from our layered JAR, we use a system property `-Djarmode=layertools` to launch the `spring-boot-jarmode-layertools` JAR instead of the application:
 
 ```shell
 java -Djarmode=layertools -jar target/usersignup-0.0.1-SNAPSHOT.jar
@@ -284,11 +286,11 @@ The default layers are:
 
 The layers are defined in a `layers.idx` file in the order that they should be added to the Docker image. These layers get cached in the host after the first pull since they do not change. **Only the updated application layer is downloaded to the host which is faster because of the reduced size**.
 
-#### Building the Image with Dependencies Extracted in Separate Layers
+### Building the Image with Dependencies Extracted in Separate Layers
 
 We will build the final image in two stages using a method called [multi-stage build](https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds). In the first stage, we will extract the dependencies and in the second stage, we will copy the extracted dependencies to the final image.
 
-Let us modify our docker file for multi-stage build:
+Let us modify our Docker file for multi-stage build:
 ```
 # the first stage of our build will extract the layers
 FROM adoptopenjdk:14-jre-hotspot as builder
@@ -332,7 +334,7 @@ dive userssignup:v1
 As we can see in the output, the layer containing the application is only 11 kB now with the dependencies cached in separate layers.
 ![dive screenshot](/assets/img/posts/springboot-docker-image/dive2.png)
 
-#### Extracting Internal Dependencies in Separate Layers
+### Extracting Internal Dependencies in Separate Layers
 
 We can further reduce the application layer size by extracting any of our custom dependencies in a separate layer instead of packaging them with the application by declaring them in a `yml` like file named `layers.idx`:
 
@@ -355,9 +357,11 @@ In this file -`layers.idx` we have added a custom dependency with the name `io.m
 
 ## Conclusion
 
-In this article, we looked at using Cloud-Native Buildpacks to create the container image directly from source code. This is an alternative to using Docker for building the container image using the conventional way, by first building the fat executable jar and then packaging it in a container image by specifying the instructions in a Dockerfile. 
+In this article, we looked at using Cloud-Native Buildpacks to create the container image directly from source code. This is an alternative to using Docker for building the container image using the conventional way, by first building the fat executable JAR and then packaging it in a container image by specifying the instructions in a Dockerfile. 
 
 We also looked at optimizing our container by enabling the layering feature which extracts the dependencies in separate layers that get cached in the host and the thin layer of application is downloaded during scheduling in container runtime engines. 
+
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-docker).
 
 ## Command Reference
 Here is a summary of commands which we used throughout this article for quick reference.
@@ -377,12 +381,12 @@ Build container image from source (without Dockerfile):
 mvn spring-boot:build-image
 ```
 
-View layers of dependencies. Ensure the layering feature is enabled in spring-boot-maven-plugin before building the application jar:
+View layers of dependencies. Ensure the layering feature is enabled in spring-boot-maven-plugin before building the application JAR:
 ```
 java -Djarmode=layertools -jar application.jar list
 ```
 
-Extract layers of dependencies. Ensure the layering feature is enabled in spring-boot-maven-plugin before building the application jar:
+Extract layers of dependencies. Ensure the layering feature is enabled in spring-boot-maven-plugin before building the application JAR:
 ```
  java -Djarmode=layertools -jar application.jar extract
 ```
@@ -396,5 +400,3 @@ View layers inside container image (Ensure dive tool is installed):
 ```
 dive <image ID or image tag>
 ```
-
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-docker).

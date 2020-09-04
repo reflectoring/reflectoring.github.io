@@ -90,7 +90,7 @@ dive usersignup:v1
 Here is part of the output from running the Dive command:
  ![dive screenshot](/assets/img/posts/springboot-docker-image/dive1.png)
 
-As we can see the application layer forms the bulk of the image size. We will aim to reduce the size of this layer in the following sections as part of our optimization.
+As we can see the application layer (inside the red boundary) forms the bulk of the image size. We will aim to reduce the size of this layer in the following sections as part of our optimization.
 
 ## Building the Container Image with Buildpack
 
@@ -182,12 +182,12 @@ The output shows that the container image is built and pushed to the registry.
 
 We have two main motivations for optimization: 
 
-* **Performance**: large-sized images result in long scheduling times in container orchestration systems and long build times in CI pipelines.
+* **Performance**: In a container orchestration system, the container image is pulled from the image registry to a host running a container engine. This process is called scheduling. Pulling large-sized images from the registry result in long scheduling times in container orchestration systems and long build times in CI pipelines.
 * **Security**: large-sized images also have a greater surface area for vulnerabilities. 
 
 **A Docker image is composed of a stack of layers each representing an instruction in our Dockerfile.** Each layer is a delta of the changes over the underlying layer. When we pull the Docker image from the registry, it is pulled by layers and cached in the host. 
 
-Spring Boot uses a "fat JAR" as its default packaging format. When we inspect the fat jar, we can see that the application forms a very small part of the entire jar. This is the part that changes most frequently. The remaining part is composed of the Spring Framework dependencies. 
+Spring Boot uses a ["fat JAR"](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-executable-jar-format.html#executable-jar-jar-file-structure) as its default packaging format. When we inspect the fat jar, we can see that the application forms a very small part of the entire jar. This is the part that changes most frequently. The remaining part is composed of the Spring Framework dependencies. 
 
 The optimization formula centers around isolating the application into a separate layer from the Spring Framework dependencies. 
 
@@ -197,31 +197,12 @@ The dependencies layer forming the bulk of the fat jar is downloaded only once a
 
 ![dive screenshot](/assets/img/posts/springboot-docker-image/Docker_optimized.png)
 
+## Building the Optimized Image with Layered Jar
+To extract the application into a separate layer, we will first convert our fat jar to a layered jar and then generate the container image using both Builpack and Docker.
 
-## From Spring Boot's Fat Jars to Layered Jars
+### Converting Spring Boot's Fat Jar to a Layered Jar 
 
-Spring Boot uses [fat JAR](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-executable-jar-format.html#executable-jar-jar-file-structure) as its default packaging format. 
-
-### Fat Jar Format
-If we inspect the jar produced after running the Maven build, we get this output:
-
-```
-META-INF/
-META-INF/MANIFEST.MF
-org/
-.
-org/springframework/boot/loader/
-.
-BOOT-INF/
-BOOT-INF/classes/
-.
-BOOT-INF/lib/
-BOOT-INF/classpath.idx
-```
-### Enabling the Layering Feature
-Spring Boot 2.3 supports layering by extracting parts of this fat jar into separate layers.
-
-The layering feature is explicitly enabled with the Spring Boot Maven plugin:
+ Spring Boot 2.3 supports layering by extracting parts of the fat jar into separate layers. The layering feature is turned off by default and needs to be explicitly enabled with the Spring Boot Maven plugin : 
 
 ```xml
 <plugin>
@@ -234,7 +215,23 @@ The layering feature is explicitly enabled with the Spring Boot Maven plugin:
   </configuration> 
 </plugin>
 ```
-The contents of the resulting JAR after building with Maven look like this: 
+We will use this configuration to generate our container image first with Buildpack and then with Docker in the following sections.
+
+### Building the Optimized Image with Buildpack
+Let us run the Maven `build-image` goal to create the container image: 
+
+```shell
+mvn spring-boot:build-image
+```
+If we run Dive to see the layers in the resulting image, we can see the application layer (encircled in red) is much smaller in the range of kilobytes compared to what we had obtained by by using the fat jar format.
+
+![dive screenshot](/assets/img/posts/springboot-docker-image/dive-buildpack-layer.png)
+
+
+### Building the Optimized Image with Docker and Layered Jar
+When we are using Docker, we need to perform two additional steps for extracting the layers and copying those in the final image.  
+
+The contents of the resulting JAR after building with Maven with the layering feature turned on will look like this: 
 ```
 META-INF/
 .
@@ -246,9 +243,9 @@ BOOT-INF/layers.idx
 ```
 The output shows an additional jar named `spring-boot-jarmode-layertools` and a `layersfle.idx` file. The layering feature is provided by `spring-boot-jarmode-layertools` as explained in the next section.
 
-## Extracting the Dependencies in Separate Layers 
+#### Extracting the Dependencies in Separate Layers 
 
-We use a system property `-Djarmode=layertools` to launch the `spring-boot-jarmode-layertools` jar instead of the application:
+To  view and extract the layers from our layered jar, we use a system property `-Djarmode=layertools` to launch the `spring-boot-jarmode-layertools` jar instead of the application:
 
 ```shell
 java -Djarmode=layertools -jar target/usersignup-0.0.1-SNAPSHOT.jar
@@ -287,7 +284,7 @@ The default layers are:
 
 The layers are defined in a `layers.idx` file in the order that they should be added to the Docker image. These layers get cached in the host after the first pull since they do not change. **Only the updated application layer is downloaded to the host which is faster because of the reduced size**.
 
-## Building the Image with Dependencies Extracted in Separate Layers
+#### Building the Image with Dependencies Extracted in Separate Layers
 
 We proceed to build the final image in two stages using a method called [multi-stage build](https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds). In the first stage, we extract the dependencies and in the second stage, we copy the extracted dependencies to the final image.
 
@@ -335,7 +332,7 @@ dive userssignup:v1
 As we can see in the output, the layer containing the application is only 11 kB now with the dependencies cached in separate layers.
 ![dive screenshot](/assets/img/posts/springboot-docker-image/dive2.png)
 
-## Extracting Internal Dependencies in Separate Layers
+#### Extracting Internal Dependencies in Separate Layers
 
 We can further reduce the application layer size by extracting any of our custom dependencies in a separate layer instead of packaging them with the application by declaring them in a `yml` like file named `layers.idx`:
 
@@ -358,11 +355,9 @@ In this file -`layers.idx` we have added a custom dependency with the name `io.m
 
 ## Conclusion
 
-In this article, we looked at using Cloud-Native Buildpacks to create the container image directly from source code. This is an alternative to building the container image using the conventional way, by first building the fat executable jar and then package it in a container image by specifying the instructions in a Dockerfile. 
+In this article, we looked at using Cloud-Native Buildpacks to create the container image directly from source code. This is an alternative to using Docker for building the container image using the conventional way, by first building the fat executable jar and then packaging it in a container image by specifying the instructions in a Dockerfile. 
 
-We also looked at optimizing our container at runtime by extracting the dependencies in separate layers that get cached in the host and the thin layer of application is downloaded during scheduling in container runtime engines. 
-
-We built the final image in two stages using a multi-stage build. The first stage extracts the dependencies and the second stage copies the extracted dependencies to the final image.
+We also looked at optimizing our container by enabling the layering feature which extracts the dependencies in separate layers that get cached in the host and the thin layer of application is downloaded during scheduling in container runtime engines. 
 
 ## Command Reference
 Here is a summary of commands which we used throughout this article for quick reference.

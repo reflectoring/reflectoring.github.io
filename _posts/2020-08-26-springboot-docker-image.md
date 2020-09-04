@@ -4,7 +4,7 @@ categories: [spring-boot]
 date: 2020-08-26 06:00:00 +1100
 modified: 2020-08-26 06:00:00 +1100
 author: pratikdas
-excerpt: "We will look at containerizing Spring Boot applications with Cloud-Native Buildpacks and optimizing the containerized image by enabling layering in the application's executable fat jar and Docker's multi-stage build."
+excerpt: "We will look at containerizing Spring Boot applications with Cloud-Native Buildpacks and Docker and optimizing the containerized image by enabling layering and extracting the application in a separate layer."
 image:
   auto: 0074-stack
 ---

@@ -83,7 +83,7 @@ usersignup          v1                  249MB
 adoptopenjdk        11-jre-hotspot      229MB
 ```
 ### Viewing the Layers Inside the Container Image
-Let's see the stack of layers inside the image. We will use the [dive tool](https://github.com/wagoodman/dive) to view those layers: 
+Let us see the stack of layers inside the image. We will use the [dive tool](https://github.com/wagoodman/dive) to view those layers: 
 ```
 dive usersignup:v1
 ```
@@ -119,7 +119,7 @@ We can customize the name of the image required for pushing to the Docker Regist
 </plugin>
 ```` 
 
-Let's use Maven to run the `build-image` goal to build the application and create the container image. We are not using any Docker file now.
+Let us use Maven to run the `build-image` goal to build the application and create the container image. We are not using any Docker file now.
 
 ```shell
 mvn spring-boot:build-image
@@ -223,7 +223,7 @@ Let us run the Maven `build-image` goal to create the container image:
 ```shell
 mvn spring-boot:build-image
 ```
-If we run Dive to see the layers in the resulting image, we can see the application layer (encircled in red) is much smaller in the range of kilobytes compared to what we had obtained by by using the fat jar format.
+If we run Dive to see the layers in the resulting image, we can see the application layer (encircled in red) is much smaller in the range of kilobytes compared to what we had obtained by using the fat jar format.
 
 ![dive screenshot](/assets/img/posts/springboot-docker-image/dive-buildpack-layer.png)
 
@@ -241,7 +241,7 @@ BOOT-INF/lib/spring-boot-jarmode-layertools-2.3.3.RELEASE.jar
 BOOT-INF/classpath.idx
 BOOT-INF/layers.idx
 ```
-The output shows an additional jar named `spring-boot-jarmode-layertools` and a `layersfle.idx` file. The layering feature is provided by `spring-boot-jarmode-layertools` as explained in the next section.
+The output shows an additional jar named `spring-boot-jarmode-layertools` and a `layersfle.idx` file. The layering feature is provided by this additional jar as explained in the next section.
 
 #### Extracting the Dependencies in Separate Layers 
 
@@ -286,9 +286,9 @@ The layers are defined in a `layers.idx` file in the order that they should be a
 
 #### Building the Image with Dependencies Extracted in Separate Layers
 
-We proceed to build the final image in two stages using a method called [multi-stage build](https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds). In the first stage, we extract the dependencies and in the second stage, we copy the extracted dependencies to the final image.
+We will build the final image in two stages using a method called [multi-stage build](https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds). In the first stage, we will extract the dependencies and in the second stage, we will copy the extracted dependencies to the final image.
 
-We modify our docker file for multi-stage build:
+Let us modify our docker file for multi-stage build:
 ```
 # the first stage of our build will extract the layers
 FROM adoptopenjdk:14-jre-hotspot as builder

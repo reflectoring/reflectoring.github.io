@@ -184,15 +184,16 @@ After authenticating we can again access the resource:
 
 ![Todo API with lock secured 200](/assets/img/posts/reflect-92/todo-api-info-with-lock-secured-200.png)
 
-## Caveats when using Code First
+## Caveats When Using Code First
 
-Code First approach is really easy to use and can get you pretty fast to a good documented REST APIs. 
-But, sometimes might give us the sense that our documentation is up-to date when it is actually not, while annotations won't be executed and although being "code" they’re behave more like Javadoc in terms of outdatedness.
-
-A solution to that "problem" is [Spring REST docs](https://reflectoring.io/spring-restdocs/), which creates documentation based on tests. 
-That said, if a test fails, means that the documentation won't be created. That way, our REST API documentation, becomes part of the actual code, and its lifecycle. 
+The Code First approach is really easy to use and can get you pretty fast to a well documented REST API.
  
+Sometimes, however, it might give us the sense that our documentation is up-to date when it is actually not. That's because annotations can be added or removed accidentally. Unlike code, they're not executed during unit tests, so the documentation behaves more like Javadoc than code in terms of outdatedness.
 
+A solution to that problem is [Spring REST docs](https://reflectoring.io/spring-restdocs/), which creates documentation based on tests. 
+
+If a test fails, it means that the documentation won't be created. That way, our REST API documentation becomes part of the actual code and its lifecycle. 
+ 
 ## Conclusion
 
 As we saw in this article, the "code first" approach with Springdoc is all about speed. First, we build our API in code, then we generate the specification/documentation via annotations.

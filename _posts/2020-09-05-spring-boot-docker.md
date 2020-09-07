@@ -1,5 +1,5 @@
 ---
-title: "Creating Optimized Containers for a Spring Boot Application"
+title: "Creating Optimized Docker Images for a Spring Boot Application"
 categories: [spring-boot]
 date: 2020-09-05 06:00:00 +1100
 modified: 2020-09-05 06:00:00 +1100

@@ -1,15 +1,15 @@
 ---
 title: Implementing Bulkhead with Resilience4j
 categories: [java]
-date: 2020-09-16 05:00:00 +1100
-modified: 2020-09-16 05:00:00 +1100
+date: 2020-09-17 05:00:00 +1100
+modified: 2020-09-17 05:00:00 +1100
 author: saajan
 excerpt: "Next up in the Resilience4j series - this article explains the Bulkhead module and how to use it to build resilient applications."
 image:
-  auto: 0079-stopwatch
+  auto: 0081-safe
 ---
 
-In this series so far, we have learned about Resilience4j and its [Retry](/retry-with-resilience4j/), [RateLimiter](/rate-limiting-with-resilience4j/), and [TimeLimiter]((/bulkhead-with-resilience4j/)) modules. In this article, we will explore the Bulkhead module. We will find out what problem it solves, when and how to use it, and also look at a few examples.
+In this series so far, we have learned about Resilience4j and its [Retry](/retry-with-resilience4j/), [RateLimiter](/rate-limiting-with-resilience4j/), and [TimeLimiter](/time-limiting-with-resilience4j/) modules. In this article, we will explore the Bulkhead module. We will find out what problem it solves, when and how to use it, and also look at a few examples.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/resilience4j/bulkhead" %}
 
@@ -19,15 +19,25 @@ Please refer to the description in the previous article for a quick intro into [
 
 ## What is a Bulkhead?
 
-A few years back we had a production issue where one of the servers stopped responding to health checks and the load balancer took the server out of the pool. Even as we began investigating the issue, there was a second alert - another server had stopped responding to health checks and had also been taken out of the pool. In a few minutes, every server had stopped responding to health probes and our service was completely down.
+A few years back we had a production issue where one of the servers stopped responding to health checks and the load balancer took the server out of the pool. 
+
+Even as we began investigating the issue, there was a second alert - another server had stopped responding to health checks and had also been taken out of the pool. 
+
+In a few minutes, every server had stopped responding to health probes and our service was completely down.
 
 We were using Redis for caching some data for a couple of features supported by the application. As we found out later, there was some issue with the Redis cluster at the same time and it had stopped accepting new connections. We were using the Jedis library to connect to Redis and the default behavior of that library was to block the calling thread indefinitely until a connection was established. 
 
-Our service was hosted on Tomcat and it had a default request handling thread pool size of 200 threads. So every request which went through a code path that connected to Redis ended up blocking the thread indefinitely. Within minutes, all 2000 threads across the cluster had blocked indefinitely - there were no free threads to even respond to health checks from the load balancer.
+Our service was hosted on Tomcat and it had a default request handling thread pool size of 200 threads. So every request which went through a code path that connected to Redis ended up blocking the thread indefinitely. 
 
-The service itself supported several features and not all of them required accessing the Redis cache. But when a problem occurred in this one area, it ended up impacting the entire service. **This is exactly the problem that bulkhead addresses - it prevents a problem in one area of the service from affecting the entire service.** While what happened to our service was an extreme example, we can see how even a slow upstream service can impact an unrelated area of the calling service. 
+Within minutes, all 2000 threads across the cluster had blocked indefinitely - there were no free threads to even respond to health checks from the load balancer.
 
-If we had a limit of, say, 20 concurrent requests to Redis set on each of the server instances, only those threads would have got affected when the Redis connectivity issue occurred. The remaining request handling threads could have continued serving other requests. 
+The service itself supported several features and not all of them required accessing the Redis cache. But when a problem occurred in this one area, it ended up impacting the entire service. 
+
+**This is exactly the problem that bulkhead addresses - it prevents a problem in one area of the service from affecting the entire service.** 
+
+While what happened to our service was an extreme example, we can see how a slow upstream dependency can impact an unrelated area of the calling service. 
+
+If we had had a limit of, say, 20 concurrent requests to Redis set on each of the server instances, only those threads would have been affected when the Redis connectivity issue occurred. The remaining request handling threads could have continued serving other requests. 
 
 **The idea behind bulkheads is to set a limit on the number of concurrent calls we make to a remote service. We treat calls to different remote services as different, isolated pools and set a limit on how many calls can be made concurrently.** 
 
@@ -51,21 +61,23 @@ Let's look at the configurations associated with the semaphore bulkhead and what
 
 Any thread which attempts to call the remote service over this limit can either get a `BulkheadFullException` immediately or wait for some time for a permit to be released by another thread. This is determined by the `maxWaitDuration` value. 
 
-When there are multiple threads waiting for permits, the `fairCallHandlingEnabled` configuration determines if the waiting threads acquire permits in a first-in, first-out [order](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Semaphore.html#Semaphore-int-boolean-). 
+When there are multiple threads waiting for permits, the `fairCallHandlingEnabled` configuration determines if the waiting threads acquire permits in a [first-in, first-out order](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Semaphore.html#Semaphore-int-boolean-). 
 
 Finally, the `writableStackTraceEnabled` configuration lets us reduce the amount of information in the stack trace when a `BulkheadFullException` occurs. This can be useful because without it, our logs could get filled with a lot of similar information when the exception occurs multiple times. Usually when reading logs, just knowing that a `BulkheadFullException` has occurred is enough.
 
 ### `ThreadPoolBulkhead`
 
-`coreThreadPoolSize` , `maxThreadPoolSize` , `keepAliveDuration` and `queueCapacity`  are the main configurations associated with the `ThreadPoolBulkhead`. `ThreadPoolBulkhead` internally uses these configurations to [construct](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html#ThreadPoolExecutor-int-int-long-java.util.concurrent.TimeUnit-java.util.concurrent.BlockingQueue-java.util.concurrent.ThreadFactory-) a `ThreadPoolExecutor`. 
+`coreThreadPoolSize` , `maxThreadPoolSize` , `keepAliveDuration` and `queueCapacity`  are the main configurations associated with the `ThreadPoolBulkhead`. `ThreadPoolBulkhead` internally uses these configurations to [construct a `ThreadPoolExecutor`](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ThreadPoolExecutor.html#ThreadPoolExecutor-int-int-long-java.util.concurrent.TimeUnit-java.util.concurrent.BlockingQueue-java.util.concurrent.ThreadFactory-). 
 
 The  internal`ThreadPoolExecutor` executes incoming tasks using one of the available, free threads. If no thread is free to execute an incoming task, the task is enqueued for executing later when a thread becomes available. If the `queueCapacity` has been reached, then the remote call is rejected with a `BulkheadFullException`. 
 
-`ThreadPoolBulkhead` also has a`writableStackTraceEnabled` configuration to control the amount of information in the stack trace of a BulkheadFullException.
+`ThreadPoolBulkhead` also has a`writableStackTraceEnabled` configuration to control the amount of information in the stack trace of a `BulkheadFullException`.
 
 ## Using the Resilience4j Bulkhead Module
 
-Let's see how to use the various features available in the [resilience4j-bulkhead](https://resilience4j.readme.io/docs/bulkhead) module. We will use the same example as the previous articles in this series. Assume that we are building a website for an airline to allow its customers to search for and book flights. Our service talks to a remote service encapsulated by the class `FlightSearchService`. 
+Let's see how to use the various features available in the [resilience4j-bulkhead](https://resilience4j.readme.io/docs/bulkhead) module. 
+
+We will use the same example as the previous articles in this series. Assume that we are building a website for an airline to allow its customers to search for and book flights. Our service talks to a remote service encapsulated by the class `FlightSearchService`. 
 
 ### `SemaphoreBulkhead`
 
@@ -102,8 +114,10 @@ Bulkhead bulkhead = registry.bulkhead("flightSearchService");
 Let's now express our code to run a flight search as a `Supplier` and decorate it using the `bulkhead`:
 
 ```java
-Supplier<List<Flight>> flightsSupplier = () -> service.searchFlightsTakingOneSecond(request);
-Supplier<List<Flight>> decoratedFlightsSupplier = Bulkhead.decorateSupplier(bulkhead, flightsSupplier);
+Supplier<List<Flight>> flightsSupplier = 
+  () -> service.searchFlightsTakingOneSecond(request);
+Supplier<List<Flight>> decoratedFlightsSupplier =
+  Bulkhead.decorateSupplier(bulkhead, flightsSupplier);
 ```
 
 Finally, let's call the decorated operation a few times to understand how the bulkhead works. We can use `CompletableFuture` to simulate concurrent flight search requests from users:
@@ -170,11 +184,11 @@ Received results
 Received results
 ```
 
-Similar to the other Resilience4j modules we have seen, the `Bulkhead` also provides additional methods like `decorateCheckedSupplier()`, `decorateCompletionStage()`, `decorateRunnable()`, `decorateConsumer()` etc.
+Similar to the other Resilience4j modules we have seen, the `Bulkhead` also provides additional methods like `decorateCheckedSupplier()`, `decorateCompletionStage()`, `decorateRunnable()`, `decorateConsumer()` etc. so we can provide our code in other constructs than a `Supplier`.
 
 ### `ThreadPoolBulkhead`
 
-When using the semaphore-based bulkhead, `ThreadPoolBulkheadRegistry`, `ThreadPoolBulkheadConfig`, and `ThreadPoolBulkhead` are the main abstractions we work with.
+When using the thread pool-based bulkhead, `ThreadPoolBulkheadRegistry`, `ThreadPoolBulkheadConfig`, and `ThreadPoolBulkhead` are the main abstractions we work with.
 
 `ThreadPoolBulkheadRegistry` is a factory for creating and managing `ThreadPoolBulkhead` objects. 
 
@@ -183,10 +197,11 @@ When using the semaphore-based bulkhead, `ThreadPoolBulkheadRegistry`, `ThreadPo
 The first step is to create a `ThreadPoolBulkheadConfig`:
 
 ```java
-ThreadPoolBulkheadConfig config = ThreadPoolBulkheadConfig.ofDefaults();
+ThreadPoolBulkheadConfig config = 
+  ThreadPoolBulkheadConfig.ofDefaults();
 ```
 
-This creates a `ThreadPoolBulkheadConfig` with default values for `coreThreadPoolSize` (number of processors available - 1) , `maxThreadPoolSize` (number of processors available) , `keepAliveDuration`(20ms) and `queueCapacity` (100). 
+This creates a `ThreadPoolBulkheadConfig` with default values for `coreThreadPoolSize` (number of processors available - 1) , `maxThreadPoolSize` (maximum number of processors available) , `keepAliveDuration` (20ms) and `queueCapacity` (100). 
 
 Let's say we want to limit the number of concurrent calls to 2:
 
@@ -208,8 +223,10 @@ ThreadPoolBulkhead bulkhead = registry.bulkhead("flightSearchService");
 Let's now express our code to run a flight search as a `Supplier` and decorate it using the `bulkhead`:
 
 ```java
-Supplier<List<Flight>> flightsSupplier = () -> service.searchFlightsTakingOneSecond(request);
-Supplier<CompletionStage<List<Flight>>> decoratedFlightsSupplier = ThreadPoolBulkhead.decorateSupplier(bulkhead, flightsSupplier);
+Supplier<List<Flight>> flightsSupplier = 
+  () -> service.searchFlightsTakingOneSecond(request);
+Supplier<CompletionStage<List<Flight>>> decoratedFlightsSupplier = 
+  ThreadPoolBulkhead.decorateSupplier(bulkhead, flightsSupplier);
 ```
 
 Unlike the `SemaphoreBulkhead.decorateSupplier()` which returned a `Supplier<List<Flight>>`, the `ThreadPoolBulkhead.decorateSupplier()` returns a `Supplier<CompletionStage<List<Flight>>`. This is because the `ThreadPoolBulkHead` does not execute the code synchronously on the current thread. 
@@ -339,7 +356,7 @@ Flight search successful at 19:53:54 836
 Received results
 ```
 
-To solve this problem, `ThreadPoolBulkhead` provides a `ContextPropagator`. `ContextPropgator` is an abstraction for retrieving, copying and cleaning up values across thread boundaries. It defines an interface with methods to get a value from the current thread (`retrieve()`), copy it to the new executing thread (`copy()`) and finally cleaning up on the executing thread (`clear()`).
+To solve this problem, `ThreadPoolBulkhead` provides a `ContextPropagator`. `ContextPropagator` is an abstraction for retrieving, copying and cleaning up values across thread boundaries. It defines an interface with methods to get a value from the current thread (`retrieve()`), copy it to the new executing thread (`copy()`) and finally cleaning up on the executing thread (`clear()`).
 
 Let's implement a `RequestTrackingIdPropagator`:
 
@@ -373,11 +390,11 @@ We provide the `ContextPropagator` to the `ThreadPoolBulkhead` by setting it on 
 
 ```java
 ThreadPoolBulkheadConfig config = ThreadPoolBulkheadConfig.custom()
-.maxThreadPoolSize(2)
-.coreThreadPoolSize(1)
-.queueCapacity(1)
-.contextPropagator(new RequestTrackingIdPropagator())
-.build();        
+  .maxThreadPoolSize(2)
+  .coreThreadPoolSize(1)
+  .queueCapacity(1)
+  .contextPropagator(new RequestTrackingIdPropagator())
+  .build();        
 ```
 
 Now, the sample output shows that the request tracking id was made available in the bulkhead-managed thread:
@@ -401,7 +418,13 @@ Received results
 
 ## Bulkhead Events
 
-Both `Bulkhead` and `ThreadPoolBulkhead` have an `EventPublisher` which generates events of the types `BulkheadOnCallPermittedEvent`, `BulkheadOnCallRejectedEvent`, and `BulkheadOnCallFinishedEvent`. We can listen for these events and log them, for example:
+Both `Bulkhead` and `ThreadPoolBulkhead` have an `EventPublisher` which generates events of the types 
+
+* `BulkheadOnCallPermittedEvent`, 
+* `BulkheadOnCallRejectedEvent`, and 
+* `BulkheadOnCallFinishedEvent`. 
+
+We can listen for these events and log them, for example:
 
 ```java
 Bulkhead bulkhead = registry.bulkhead("flightSearchService");
@@ -424,7 +447,12 @@ The sample output shows what's logged:
 
 ### `SemaphoreBulkhead`
 
-`Bulkhead` exposes two metrics - the maximum number of available permissions (`resilience4j.bulkhead.max.allowed.concurrent.calls`) and the number of allowed concurrent calls (`resilience4j.bulkhead.available.concurrent.calls`).`resilience4j.bulkhead.max.allowed.concurrent.calls` is the same as `maxConcurrentCalls` that we configure on the `BulkheadConfig`.
+`Bulkhead` exposes two metrics:
+
+* the maximum number of available permissions (`resilience4j.bulkhead.max.allowed.concurrent.calls`), and 
+* the number of allowed concurrent calls (`resilience4j.bulkhead.available.concurrent.calls`). 
+
+The `bulkhead.available` metric is the same as `maxConcurrentCalls` that we configure on the `BulkheadConfig`.
 
 First, we create `BulkheadConfig`, `BulkheadRegistry`, and `Bulkhead` as usual. Then, we create a `MeterRegistry` and bind the `BulkheadRegistry` to it:
 
@@ -459,7 +487,12 @@ The number of available permissions - resilience4j.bulkhead.available.concurrent
 
 ### `ThreadPoolBulkhead`
 
-`ThreadPoolBulkhead` exposes five metrics - the current length of the queue (`resilience4j.bulkhead.queue.depth`), the current size of the thread pool (`resilience4j.bulkhead.thread.pool.size`), the core and maximum sizes of the thread pool (`resilience4j.bulkhead.core.thread.pool.size` and `resilience4j.bulkhead.max.thread.pool.size`) and the capacity of the queue (` resilience4j.bulkhead.queue.capacity`). 
+`ThreadPoolBulkhead` exposes five metrics:
+ 
+ * the current length of the queue (`resilience4j.bulkhead.queue.depth`), 
+ * the current size of the thread pool (`resilience4j.bulkhead.thread.pool.size`), 
+ * the core and maximum sizes of the thread pool (`resilience4j.bulkhead.core.thread.pool.size` and `resilience4j.bulkhead.max.thread.pool.size`), and 
+ * the capacity of the queue (` resilience4j.bulkhead.queue.capacity`). 
 
 First, we create `ThreadPoolBulkheadConfig`, `ThreadPoolBulkheadRegistry`, and `ThreadPoolBulkhead` as usual. Then, we create a `MeterRegistry` and bind the `ThreadPoolBulkheadRegistry` to it:
 
@@ -490,7 +523,7 @@ If we don't enforce this, some areas of our codebase may make a direct call to t
 
 How can we ensure that a new developer understands this intent in the future? Check out Tom's article which shows one way of solving such problems by [organizing the package structure to make such intents clear](https://reflectoring.io/java-components-clean-boundaries/). Additionally, it shows how to enforce this by codifying the intent in ArchUnit tests.
 
-### Combine with other Resilience4j modules
+### Combine with Other Resilience4j Modules
 
 It's more effective to combine a bulkhead with one or more of the other Resilience4j modules like retry and rate limiter. We may want to retry after some delay if there is a `BulkheadFullException`, for example.
 

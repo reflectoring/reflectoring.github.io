@@ -7,7 +7,7 @@ author: Murtuza Ranapurwala
 excerpt: "Hibernate Search lets you enable Fulltext search functionality in your existing Spring Boot application. Not 
 just that it also provides seamless integration with Fulltext powerhouses such as Elasticsearch."
 image:
-  auto:
+  auto: 0052-mock
 ---
 
 If you want to integrate extensive full-text search features in your Spring Boot application without having to make 
@@ -398,3 +398,5 @@ explore the following:
 
 Hibernate Search combined with Elasticsearch becomes a really powerful tool. With Elasticsearch taking care of scaling and availability, and Hibernate Search managing the synchronization, it makes up for a perfect match. But, this marriage
 comes at a cost. Keeping schemas in the database and Elasticsearch in-sync might require manual intervention in some cases. Plus there is also the cost of calling Elasticsearch API for index updates and queries. However, if it's allowing you to deliver more value to your customers in form of a Fulltext search than that cost becomes negligible.   
+
+Thank you for reading! You can find working code at [GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/hibernate-search)

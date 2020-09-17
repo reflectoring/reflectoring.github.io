@@ -15,7 +15,7 @@ major changes **Hibernate Search** is a way to go.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/hibernate-search" %}
 
-#Introduction
+##Introduction
 Adding full-text search functionality with Hibernate Search is as easy as adding a dependency, and a couple of annotations over your entities. Well, this is an oversimplification of the process, but yes, it's easy.
 
 Hibernate search provides integration with **Lucene** and **Elasticsearch** which are highly optimized for full-text search. While Lucene and Elasticsearch handle searches Hibernate search provides seamless integration with them. 
@@ -24,7 +24,7 @@ We only need to manage entities hibernate will manage indexes of us.
 This kind of setup allows us to redirect our text-based queries to search frameworks and join based queries to our RDBMS 
 database.  
 
-#Setting Things Up
+##Setting Things Up
 To get started first we need to add Hibernate search dependency into our Gradle file
 ```groovy
 implementation 'org.hibernate:hibernate-search-orm:5.11.5.Final'
@@ -69,7 +69,7 @@ spring:
       uris: <Elasticsearch-url>
 ```
 
-#Preparing Entities For Indexing
+##Preparing Entities For Indexing
 As I have said in the introduction to index entities we just need to annotate the entities, and it's fields with 
 a couple of annotations.
 
@@ -223,7 +223,7 @@ Elasticsearch already stores the value in the `_soucre` field. So, the only reas
 4. `@ContainedIn` just like `@OneToMany`-`@ManyToOne` annotation makes relationship bidirectional. When the values of this
 entity will be updated its values in the root entity i.e., in the `idx_post`(Post) index will also be updated.
 
-#Performing Queries
+##Performing Queries
 Before we perform any queries, we first need to load data into the Elasticsearch.
 
 Use the following snippet to do the same.
@@ -394,9 +394,9 @@ explore the following:
 `?` (Single Character)
 * Simple query Strings - It's a powerful function that can translate string input into Lucene query. With this, you can allow your platform to take queries directly from the end-users. Fields on which the query needs to perform will still need to be specified. 
 
-#Conclusion
+##Conclusion
 
 Hibernate Search combined with Elasticsearch becomes a really powerful tool. With Elasticsearch taking care of scaling and availability, and Hibernate Search managing the synchronization, it makes up for a perfect match. But, this marriage
 comes at a cost. Keeping schemas in the database and Elasticsearch in-sync might require manual intervention in some cases. Plus there is also the cost of calling Elasticsearch API for index updates and queries. However, if it's allowing you to deliver more value to your customers in form of a Fulltext search than that cost becomes negligible.   
 
-Thank you for reading! You can find working code at [GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/hibernate-search)
+Thank you for reading! You can find the working code at [GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/hibernate-search).

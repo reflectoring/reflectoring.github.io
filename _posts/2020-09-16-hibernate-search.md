@@ -3,7 +3,7 @@ title: "Supercharge your queries with Hibernate Search"
 categories: [spring-boot]
 date: 2020-09-16 20:00:00 +1100
 modified: 2020-09-16 20:00:00 +1100
-author: Murtuza Ranapurwala
+author: mmr
 excerpt: "Hibernate Search lets you enable Fulltext search functionality in your existing Spring Boot application. Not 
 just that it also provides seamless integration with Fulltext powerhouses such as Elasticsearch."
 image:

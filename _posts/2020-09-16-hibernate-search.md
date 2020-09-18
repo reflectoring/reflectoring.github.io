@@ -87,7 +87,8 @@ class Post {
   private String id;
 
   @Field(name = "body") //-> [1]
-  @Field(name = "bodyFiltered", analyzer = @Analyzer(definition = "stop"))//->[2]
+  @Field(name = "bodyFiltered", 
+        analyzer = @Analyzer(definition = "stop"))//->[2]
   private String body;
 
   @ManyToOne
@@ -239,7 +240,8 @@ class IndexingService {
   @Transactional
   public void initiateIndexing() throws InterruptedException {
       log.info("Initiating indexing...");
-      FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(em);
+      FullTextEntityManager fullTextEntityManager = 
+                            Search.getFullTextEntityManager(em);
       fullTextEntityManager.createIndexer().startAndWait();
       log.info("All entities indexed");
   }
@@ -268,13 +270,23 @@ public class SearchService {
   private final EntityManager entityManager;
   //.........
   public List<Post> getPostBasedOnWord(String word){
-      FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
-      QueryBuilder qb = fullTextEntityManager.getSearchFactory().buildQueryBuilder()
+    FullTextEntityManager fullTextEntityManager = 
+              Search.getFullTextEntityManager(entityManager);
+
+    QueryBuilder qb = fullTextEntityManager
+              .getSearchFactory()
+              .buildQueryBuilder()
               .forEntity(Post.class)
               .get();
-      Query foodQuery = qb.keyword().onFields("body","hashTags").matching(word).createQuery();
-      FullTextQuery fullTextQuery = fullTextEntityManager.createFullTextQuery(foodQuery, Post.class);
-      return (List<Post>) fullTextQuery.getResultList();
+
+    Query foodQuery = qb.keyword()
+              .onFields("body","hashTags")
+              .matching(word)
+              .createQuery();
+
+    FullTextQuery fullTextQuery = fullTextEntityManager
+                          .createFullTextQuery(foodQuery, Post.class);
+    return (List<Post>) fullTextQuery.getResultList();
   }
   //.........
   
@@ -298,28 +310,43 @@ Let's retrieve all the posts whose `likeCount` is greater than 1000 and should o
 'Literature' tag.
 
 ```java
-@Component
-@Slf4j
-@RequiredArgsConstructor
-public class SearchService {
+public List<Post> getBasedOnLikeCountTags(Long likeCount, 
+                                          String hashTags, 
+                                          String tag){
 
-  private final EntityManager entityManager;
-  //.........
-  public List<Post> getBasedOnLikeCountTags(Long likeCount, String hashTags, String tag){
-      FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
-      QueryBuilder qb = fullTextEntityManager.getSearchFactory().buildQueryBuilder()
-              .forEntity(Post.class)
-              .get();
-      Query likeCountGreater = qb.range().onField("likeCount").above(likeCount).createQuery();
-      Query hashTagsQuery = qb.keyword().onField("hashTags").matching(hashTags).createQuery();
-      Query tagQuery = qb.keyword().onField("tag").matching(tag).createQuery();
-      Query finalQuery = qb.bool().must(likeCountGreater).should(tagQuery).should(hashTagsQuery).createQuery();
-      FullTextQuery fullTextQuery = fullTextEntityManager.createFullTextQuery(finalQuery, Post.class);
-      fullTextQuery.setSort(qb.sort().byScore().createSort());
-      return (List<Post>) fullTextQuery.getResultList();
-  }
-  //.........
-  
+  FullTextEntityManager fullTextEntityManager = 
+                        Search.getFullTextEntityManager(entityManager);
+  QueryBuilder qb = fullTextEntityManager
+            .getSearchFactory()
+            .buildQueryBuilder()
+            .forEntity(Post.class)
+            .get();
+
+  Query likeCountGreater = qb.range()
+            .onField("likeCount")
+            .above(likeCount)
+            .createQuery();
+
+  Query hashTagsQuery = qb.keyword()
+            .onField("hashTags")
+            .matching(hashTags)
+            .createQuery();
+
+  Query tagQuery = qb.keyword()
+            .onField("tag")
+            .matching(tag)
+            .createQuery();
+
+  Query finalQuery = qb.bool()
+            .must(likeCountGreater)
+            .should(tagQuery)
+            .should(hashTagsQuery)
+            .createQuery();
+
+  FullTextQuery fullTextQuery = fullTextEntityManager
+                .createFullTextQuery(finalQuery, Post.class);
+  fullTextQuery.setSort(qb.sort().byScore().createSort());
+  return (List<Post>) fullTextQuery.getResultList();
 }
 ```
 
@@ -335,40 +362,51 @@ for the rest as they are optional. Optional queries wrapped in `should()` contri
 A couple of paragraphs ago I had promised you that I will show you a way to avoid queries to the database. So, here it is, and 
 it's called **Projection**.
 ```java
-@Component
-@Slf4j
-@RequiredArgsConstructor
-public class SearchService {
-  private final EntityManager entityManager;
-  //.......
-  public List<User> getUserByFirstWithProjection(String first, int max, int page){
-      FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
-      QueryBuilder qb = fullTextEntityManager.getSearchFactory().buildQueryBuilder()
-              .forEntity(User.class)
-              .get();
-      Query similarToUser = qb.keyword().fuzzy().withEditDistanceUpTo(2).onField("first")
-              .matching(first).createQuery();
-      Query finalQuery = qb.bool().must(similarToUser).createQuery();
-      FullTextQuery fullTextQuery = fullTextEntityManager.createFullTextQuery(finalQuery, User.class);
-      fullTextQuery.setProjection(FullTextQuery.ID, "first","last","middle","age");
-      fullTextQuery.setSort(qb.sort().byField("age").desc().andByScore().createSort());
-      fullTextQuery.setMaxResults(max);
-      fullTextQuery.setFirstResult(page);
-      return getUserList(fullTextQuery.getResultList());
+public List<User> getUserByFirstWithProjection(String first, 
+                                               int max, 
+                                               int page){
+
+  FullTextEntityManager fullTextEntityManager = 
+                        Search.getFullTextEntityManager(entityManager);
+  QueryBuilder qb = fullTextEntityManager
+            .getSearchFactory()
+            .buildQueryBuilder()
+            .forEntity(User.class)
+            .get();
+  
+  Query similarToUser = qb.keyword().fuzzy()
+            .withEditDistanceUpTo(2)
+            .onField("first")
+            .matching(first)
+            .createQuery();
+  Query finalQuery = qb.bool()
+            .must(similarToUser)
+            .createQuery();
+  FullTextQuery fullTextQuery = 
+            fullTextEntityManager.createFullTextQuery(finalQuery, User.class);
+  fullTextQuery.setProjection(FullTextQuery.ID, "first","last","middle","age");
+  fullTextQuery.setSort(qb.sort()
+                            .byField("age")
+                            .desc()
+                            .andByScore()
+                            .createSort());
+  fullTextQuery.setMaxResults(max);
+  fullTextQuery.setFirstResult(page);
+  return getUserList(fullTextQuery.getResultList());
+}
+
+private List<User> getUserList(List<Object[]> resultList) {
+  List<User> users = new ArrayList<>();
+  for (Object[] objects : resultList) {
+      User user = new User();
+      user.setId((String) objects[0]);
+      user.setFirst((String) objects[1]);
+      user.setLast((String) objects[2]);
+      user.setMiddle((String) objects[3]);
+      user.setAge((Integer) objects[4]);
+      users.add(user);
   }
-  private List<User> getUserList(List<Object[]> resultList) {
-      List<User> users = new ArrayList<>();
-      for (Object[] objects : resultList) {
-          User user = new User();
-          user.setId((String) objects[0]);
-          user.setFirst((String) objects[1]);
-          user.setLast((String) objects[2]);
-          user.setMiddle((String) objects[3]);
-          user.setAge((Integer) objects[4]);
-          users.add(user);
-      }
-      return users;
-  }
+  return users;
 }
 ```
 

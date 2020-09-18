@@ -16,24 +16,29 @@ Spring Boot is one of the popular frameworks for building microservices. We will
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check" %}
 
 ## Why Do we use Health Check?
-A distributed system is composed of many moving parts like database, queues, other services, and all of them are subject to the vagaries of the surrounding infrastructure. Health check functions will tell us the status of our running application like whether the service is slow or not available. This will allow us to take mitigating actions like falling back to a redundant instance or throttle the incoming requests. Timely Detection and proactive mitigations will ensure that the application is stable thereby minimizing any impact on business functions.
+A distributed system is composed of many moving parts like database, queues, other services, and all of them are subject to the vagaries of the surrounding infrastructure. **Health check functions will tell us the status of our running application like whether the service is slow or not available.**
+
+This will allow us to take mitigating actions like falling back to a redundant instance or throttle the incoming requests. **Timely Detection and proactive mitigations will ensure that the application is stable thereby minimizing any impact on business functions.**
 
 Health Check also plays an important role in the API ecosystem comprising API developers, partners, and third-party developers. The health status of APIs is regularly updated and published in a dashboard. Giving below health check dashboards from twitter APIs:![twitter API Health Status](/assets/img/posts/spring-boot-health-check/twitter-api-health-status.png)
+
 ## Common Health Checking Techniques
 
-The simplest way of implementing a health check is to periodically check the “heartbeat” of a running application by sending requests to some its API endpoints and getting a response payload containing the health of the system. These heartbeat endpoints are HTTP Get or Head requests that run light-weight processes and do not change the state of the system. The response is interpreted from either the HTTP response status like 200 or 201 indicating success or from specific fields in the response payload. 
+The simplest way of implementing a health check is to periodically check the “heartbeat” of a running application by sending requests to some its API endpoints and getting a response payload containing the health of the system. 
+
+These heartbeat endpoints are HTTP Get or Head requests that run light-weight processes and do not change the state of the system. The response is interpreted from either the HTTP response status like 200 or 201 indicating success or from specific fields in the response payload. 
 
 Although this method can tell us if the application itself is up and running, it does not tell us anything about the many services that the application depends on (for example, a database, cache, or another running service), even though these dependencies are critical for its functioning. So a better way is to use a composite health check. 
 
-A proactive approach involves monitoring a set of metrics indicating system health. These are more useful since they give us early indications of any deteriorating health of the system giving us time to take mitigating measures.
+**A more proactive approach involves monitoring a set of metrics indicating system health. These are more useful since they give us early indications of any deteriorating health of the system giving us time to take mitigating measures.**
 
 We will look at all of these approaches in the subsequent sections.
 
 
 ## Adding Health Check in Spring Boot Applications
-We will build a few APIs and devise mechanisms to check and monitor their health.
+We will build a few APIs with Spring Boot and devise mechanisms to check and monitor their health.
 
-Let us first create our application with the [Spring Initializer](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.healthcheck&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Health%20Check&packageName=io.pratik.healthcheck.usersignup&dependencies=web,actuator,webflux) by including the dependencies for web, actuator, and webflux. We next create a `signup` API by adding a `service` class.
+Let us create our application with the [Spring Initializer](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.healthcheck&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Health%20Check&packageName=io.pratik.healthcheck.usersignup&dependencies=web,actuator,lombok) by including the dependencies for web,lombok, and actuator. 
 
 
 ### Adding the Actuator Dependency

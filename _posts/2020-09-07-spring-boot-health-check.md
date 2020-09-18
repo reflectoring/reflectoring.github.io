@@ -4,7 +4,7 @@ categories: [spring-boot]
 date: 2020-09-07 06:00:00 +1000
 modified: 2020-09-07 06:00:00 +1000
 author: pratikdas
-excerpt: "Developing a Spring Boot App Against AWS Services with LocalStack"
+excerpt: "Developing a Spring Boot Application"
 image:
   auto: 0074-stack
 ---
@@ -43,7 +43,13 @@ Let us create our application with the [Spring Initializer](https://start.spring
 
 ### Adding the Actuator Dependency
 
-The `actuator` module provides functions for health check, metrics gathering, http tracing by exposing multiple endpoints over HTTP and JMX. We added the `actuator` dependency while creating the application from the `initializor`. We can choose to add it later in our `pom.xml` if we are using the Maven build tool :
+There is a Spring Boot add-on known as Actuator which provides a useful insight into the Spring environment for a running application. It has several endpoints, and a full discussion of this functionality can be found in the Actuator Documentation
+
+One of the more interesting endpoints provided by Actuator is /health. 
+
+The `actuator` module provides useful insight into the Spring environment for a running application with functions for health check, metrics gathering, http tracing by exposing multiple endpoints over HTTP and JMX. 
+
+We added the `actuator` dependency while creating the application from the `initializor`. We can choose to add it later in our `pom.xml` if we are using the Maven build tool :
 
 ```xml
     <dependency>
@@ -76,7 +82,7 @@ Running the curl command gives the output:
 ```shell
 {"status":"UP"}
 ```
-The status - UP indicates the application is running. This default health check aggregates health status. The status will show DOWN if the application becomes unhealthy anytime during the run. 
+The status - UP indicates the application is running. This default health check aggregates health status. The status will show DOWN if the application becomes unhealthy anytime during the run. This endpoint will provide an indication of the general health of the application, and for each of the @Component classes that implement the HealthIndicator interface, will actually check the health of that component. By default, all standard components (such as DataSource) implement this interface. The HealthCheck provided by a DataSource is to make a connection to a database and perform a simple query, such as select 1 from dual against an Oracle DataBase.
 
 ### Checking the Details of Health Status
 We will enable the details by adding the property `management.endpoint.health.show-details`:
@@ -105,8 +111,54 @@ management.endpoint.health.show-details=always
    }
 }
 ```
+We can see in this output that the health status is comprised of one component named `diskspace`.
+## Actuator Components - Health Indicators & Contributors
 
-## Actuator Components
+Let us now add some APIs to our application which will depend on a database. We will create three APIs by adding a controller, service and repository class. The repository class is based on JPA and uses the in-memory H2 database. 
+
+After we build and run our application as before and check the health status, we can see one additional component for database:
+```json
+{
+   "status": "UP",
+   "components": {
+      "db": {
+         "status": "UP",
+         "details": {
+            "database": "H2",
+            "validationQuery": "isValid()"
+         }
+      },    
+      "diskSpace": {
+         "status": "UP",
+         "details": {
+            "total": 250685575168,
+            "free": 12073996288,
+            "threshold": 10485760,
+            "exists": true
+         }
+      },
+      "ping": {
+         "status": "UP"
+      }
+   }
+}
+```
+As we can see from the output the health status is composed of status contributed by multiple components called HealthIndicator in Actuator vocabulary. In our case, our health status is composed of diskspace and database HealthIndicator implementations.
+
+Spring Boot Actuator comes with several predefined health indicators like DataSourceHealthIndicator, MongoHealthIndicator, RedisHealthIndicator, CassandraHealthIndicator etc. These health indicators are used as part of the health check-up process. If our application uses Redis, the RedisHealthIndicator is used for health check. The MongoHealthIndicator is used for health check if our application uses MongoDB, so on. 
+
+The aggregation is done by an implementation of StatusHealthAggregator which aggregates the statuses from each health indicator into a single overall status.
+
+Spring Boot auto-configures an instance of SimpleHealthAggregator. We can provide our own bean that implements StatusHealthAggregator to supercede the default behaviour. 
+
+We can also disable a particular health indicator using application properties :
+```
+management.health.mongo.enabled=false
+```
+ 
+Actuator is composed of the components shown in this schemata:
+
+Health of each component is represented by a HealthIndicator which contribute their health status to a HealthContributor. Multiple HealthContributors are registered in a registry - HealthContributorRegistry. The StatusAggregator aggregates status from the registry and publishes the health status to an endpoint.
 
 - HealthContributorRegistry
 - HealthContributors
@@ -115,24 +167,106 @@ management.endpoint.health.show-details=always
 - StatusAggregator 
 - Endpoints : **Every actuator endpoint can be explicitly enabled and disabled. The endpoints also need to be exposed over HTTP or JMX to make them remotely accessible.** Only the health and info endpoints are exposed over HTTP by default.
 
-Spring Boot Actuator comes with several predefined health indicators like DataSourceHealthIndicator, DiskSpaceHealthIndicator, MongoHealthIndicator, RedisHealthIndicator, CassandraHealthIndicator etc. It uses these health indicators as part of the health check-up process.
 
-For example, If your application uses Redis, the RedisHealthIndicator will be used as part of the health check-up. If your application uses MongoDB, the MongoHealthIndicator will be used as part of the health check-up and so on.
 
-You can also disable a particular health indicator using application properties like so -
+## Checking Health of APIs with Custom Health Indicators
+Predefined Health Indicators do not cover all use cases of Health Check. For example, if our API is dependent on any external service, we might like to know if the external service is available. 
+
+In our example, we are using an external service for shortening the URLs. We will monitor the availability of this service by building our own health indicator. 
+
+Creating custom health indicators is done in two steps:
+1. Implement the HealthIndicator interface and override the health method.
+2. Register the health indicator class as Spring Bean by adding the `component` annotation.
+
+Our custom Health Indicator for UrlShortener Service looks like this:
+
+```java
+@Component
+@Slf4j
+public class UrlShortenerServiceHealthIndicator implements HealthIndicator, HealthContributor {
+
+  private static final String URL = "https://cleanuri.com/api/v1/shorten";
+
+  @Override
+  public Health health() {
+    // check if url shortener service url is reachable
+        try {
+            URL url = new URL(URL);
+            int port = url.getPort();
+            if (port == -1) {
+                port = url.getDefaultPort();
+            }
+
+            try (Socket socket = new Socket(url.getHost(), port)) {
+            } catch (IOException e) {
+                log.warn("Failed to connect to : {}", URL);
+                return Health.down().withDetail("error", e.getMessage()).build();
+            }
+        } catch (MalformedURLException e1) {
+            log.warn("Invalid URL: {}",URL);
+            return Health.down().withDetail("error", e1.getMessage()).build();
+        }
+
+        return Health.up().build();
+  }
 ```
-management.health.mongo.enabled=false
+In this class we return status as "UP" if the URL is reachable, otherwise we return "DOWN" status with an error message.
+
+We can further increase the accuracy of the health checks by checking specific resources on a per API basis. 
+In the previous section we added three APIs to our application. It will be very useful to see the health of the APIs as part of our health check. We will do this by building a specific health indicator for our API. The health status of our API will be "UP" only if the resources like the database and external service on which it depends are available:
+
+A snippet of the `FetchUsersAPIHealthIndicator` is given below:
+```java
+@Component("FetchUsersAPI")
+@Slf4j
+public class FetchUsersAPIHealthIndicator implements HealthIndicator {
+
+  private static final String URL = "https://cleanuri.com/api/v1/shorten";
+
+  @Autowired
+    private DataSource ds;
+    
+  @Override
+  public Health health() {
+    
+    if(Status.UP.equals(dbIsHealthy().getStatus())) {
+      if(Status.UP.equals(externalServiceIsHealthy().getStatus())) {
+         return Health.up().build();
+      }
+    }
+    return Health.down().build();
+  }
+
 ```
-But by default, all these health indicators are enabled and used as part of the health checking process.
+In the health method we check the health of database by executing a query and reachability of our external service.
+
+Our health check output now contains the health status of `FetchUsers` API in the list of components.
+
+```json
+{
+   "status": "UP",
+   "components": {
+      "FetchUsersAPI": {
+         "status": "UP"
+      },
+      ...
+}
+```
+
+```json
+{
+   "status": "UP",
+   "components": {
+      "FetchUsersAPI": {
+         "status": "OUT_OF_SERVICE",
+         "details": {
+            "error": "org.h2.jdbc.JdbcSQLSyntaxErrorException: Table \"USER\" not found; ..."
+         }
+      },
+```
 
 
-
-## Composite Health Check 
-There is a Spring Boot add-on known as Actuator which provides a useful insight into the Spring environment for a running application. It has several endpoints, and a full discussion of this functionality can be found in the Actuator Documentation
-
-One of the more interesting endpoints provided by Actuator is /health. This endpoint will provide an indication of the general health of the application, and for each of the @Component classes that implement the HealthIndicator interface, will actually check the health of that component. By default, all standard components (such as DataSource) implement this interface. The HealthCheck provided by a DataSource is to make a connection to a database and perform a simple query, such as select 1 from dual against an Oracle DataBase.
-
-Health Indicators can be grouped for specific purposes. For example, we can have a group for database health and another for the health of our caches.
+Health Indicators can also be grouped for specific purposes. For example, we can have a group for database health and another for the health of our caches.
 
 
 ## Monitoring Application Health

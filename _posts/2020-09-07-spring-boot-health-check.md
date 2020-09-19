@@ -324,12 +324,10 @@ It is easier to understand the metrics with the help of graphs and dashboards wh
 We are using a standard JVM dashboard to view our application metrics.
 
 ## Configuring Kubernetes Probes
-Microservices built with Spring Boot are commonly packaged in containers and deployed to container orchestration systems like Kubernetes. One of the key features of Kubernetes is self-healing, which it does by regularly checking the health of the application. 
+Microservices built with Spring Boot are commonly packaged in containers and deployed to container orchestration systems like Kubernetes. One of the key features of Kubernetes is self-healing, which it does by regularly checking the health of the application. Among its many components,the [Kubelet](https://kubernetes.io/docs/concepts/overview/components/#kubelet) ensures that the containers are running and replaced with a healthy instance, anytime it goes down. This is detected using two properties:
 
-The container is replaced with a healthy instance, anytime it goes down. This is detected using two properties:
-\
-**Liveness Check**: An endpoint indicating that the application is available. The Kubelet process uses liveness probes to know when to restart a container.
-**Readiness Check**: The Kubelet process of Kubernetes uses readiness probes to know when a container is ready to start accepting traffic. 
+**Liveness Check**: An endpoint indicating that the application is available. The Kubelet uses liveness probes to know when to restart a container.
+**Readiness Check**: The Kubelet uses readiness probes to know when a container is ready to start accepting traffic. 
 
 We will enable these two health checks by setting the property in application.properties.
 ```

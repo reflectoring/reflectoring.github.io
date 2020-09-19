@@ -164,7 +164,7 @@ We can also disable a particular health indicator using application properties :
 management.health.mongo.enabled=false
 ```
 
-## Checking Health of APIs with Custom Health Indicators
+## Checking the Health of APIs with Custom Health Indicators
 Predefined Health Indicators do not cover all use cases of Health Check. For example, if our API is dependent on any external service, we might like to know if the external service is available. 
 
 In our example, we are using an external service for shortening the URLs. We will monitor the availability of this service by building our health indicator. 
@@ -275,9 +275,9 @@ Health Indicators can also be grouped for specific purposes. For example, we can
 
 We monitor the health of our application by observing a set of metrics. We will enable the metrics endpoint to get many useful metrics like JVM memory consumed, CPU usage, open files, and many more.
 
-Micrometer is a library for collecting metrics from JVM-based applications and converting them in a format accepted by the monitoring tools. It is a facade between application metrics and the metrics infrastructure developed by different monitoring systems like Prometheus, New Relic, and [many others](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-metrics). 
+**Micrometer is a library for collecting metrics from JVM-based applications and converting them in a format accepted by the monitoring tools.** It is a facade between application metrics and the metrics infrastructure developed by different monitoring systems like Prometheus, New Relic, and [many others](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-metrics). 
 
-To illustrate, we will integrate our Spring Boot application with one of these monitoring systems - Prometheus. Prometheus operates on a pull model by scraping metrics from an endpoint exposed by the application instances at fixed intervals.
+To illustrate, we will integrate our Spring Boot application with one of these monitoring systems - Prometheus. **Prometheus operates on a pull model by scraping metrics from an endpoint exposed by the application instances at fixed intervals.**
 
 We will first add the micrometer SDK for Prometheus:
 ```xml
@@ -324,7 +324,9 @@ It is easier to understand the metrics with the help of graphs and dashboards wh
 We are using a standard JVM dashboard to view our application metrics.
 
 ## Configuring Kubernetes Probes
-Microservices built with Spring Boot are commonly packaged in containers and deployed to container orchestration systems like Kubernetes. One of the key features of Kubernetes is self-healing, which it does by regularly checking the health of the application. Among its many components,the [Kubelet](https://kubernetes.io/docs/concepts/overview/components/#kubelet) ensures that the containers are running and replaced with a healthy instance, anytime it goes down. This is detected using two properties:
+Microservices built with Spring Boot are commonly packaged in containers and deployed to container orchestration systems like Kubernetes. One of the key features of Kubernetes is self-healing, which it does by regularly checking the health of the application. 
+
+Among its many components,the [Kubelet](https://kubernetes.io/docs/concepts/overview/components/#kubelet) ensures that the containers are running and replaced with a healthy instance, anytime it goes down. This is detected using two properties:
 
 **Liveness Check**: An endpoint indicating that the application is available. The Kubelet uses liveness probes to know when to restart a container.
 **Readiness Check**: The Kubelet uses readiness probes to know when a container is ready to start accepting traffic. 

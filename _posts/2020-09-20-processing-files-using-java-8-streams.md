@@ -1,26 +1,28 @@
-﻿
+﻿﻿
 ## Introduction
 
 Streams, introduced in Java 8 use functional-style operations to process data declaratively. The elements of streams are consumed from data sources such as collections, arrays, or I/O resources like files.   
 
 In this article, we shall explore the various possibilities of using streams to make life easier when it comes to the handling of files. We assume that you have a basic knowledge of Java 8 streams. If you are new to streams, please refer to https://stackify.com/streams-guide-java-8/
 
-With the Stream API, there are operations to filter, map, and reduce data in any order without you having to write extra code. Here is a classic example.
+In the Stream API, there are operations to filter, map, and reduce data in any order without you having to write extra code. Here is a classic example.
 ```java
 List<String> cities = Arrays.asList("London", "Sydney", "Colombo", "Cairo", "Beijing");
 cities.stream().filter(a -> a.startsWith("C")).map(String::toUpperCase).sorted().forEach(System.out::println);
 ```
-Here we filter a list of countries, convert to uppercase and sort them before printing the result to the console. The output is as below.
+Here we filter a list of countries, convert to uppercase and sort it before printing the result to the console. 
 
-CAIRO
-COLOMBO
+The output is as below.
+
+**CAIRO
+COLOMBO**
 
 As the returned streams are lazily loaded, the elements are not read until they are used (which happens when the terminal operation is called on the stream) and thus enhances performance. 
 
 Wouldn’t it be great to apply these SQL like processing capabilities to files as well? How do we get streams from files? Can we walk through directories and locate matching files using streams? Let us get the answers to these questions.
 
 ### Code Example
-This article is accompanied by a working code example on [GitHub](https://github.com/thombergs/code-examples/tree/master/core-java/streams/fileswithstreamsd).
+This article is accompanied by a working code example on [GitHub](https://github.com/thombergs/code-examples/tree/master/core-java/streams/fileswithstreams).
 
 ## Getting Started 
 
@@ -76,11 +78,11 @@ However, this method loads the entire contents of the file in one go and hence i
 ### Importance of try-with-resources
 The `try-with-resources` is an exception handling mechanism that allows us to declare resources to be used within a Java `try-with-resources` block. When the execution leaves the `try-with-resources` block, the used resources are automatically closed in the correct order (whether the method successfully completes or any exceptions are thrown). We can use `try-with-resources` to close any resource that implements either `AutoCloseable` or `Closeable`.
 
-**Streams are `AutoCloseable` implementations and need to be closed if they are backed by files. Hence, we have to declare them as resources in a `try-with-resources` statement as shown in the below code fragments.**
+**Streams are `AutoCloseable` implementations and need to be closed if they are backed by files.** Hence, we have to declare them as resources in a `try-with-resources` statement as shown in the below code fragments.
 
 #### Example 1 revised using try-with-resources
 ```java
-try (Stream<String> lines = Files.lines(Path.of(filePath))) {
+try (Stream<String> lines = 	   Files.lines(Path.of(filePath))) {
 	lines.forEach(System.out::println);
 }
 ```
@@ -91,7 +93,9 @@ try (Stream<String> lines = (Files.newBufferedReader(Paths.get(filePath)).lines(
 }
 ```
 ### Using Parallel Streams
-By default, streams are serial, meaning that each step of a process is executed one after the other, sequentially. However, streams can be easily parallelized i.e.; a source stream can be split into multiple sub-streams executing in parallel. **Each substream is processed independently in a separate thread and finally merged to produce the final result.** 
+By default, streams are serial, meaning that each step of a process is executed one after the other, sequentially. However, streams can be easily parallelized i.e.; a source stream can be split into multiple sub-streams executing in parallel. 
+
+**Each substream is processed independently in a separate thread and finally merged to produce the final result.** 
 
 The `parallel()` method can be invoked on any stream to get a parallel stream. Let us see a simple example to understand how parallel streams work.
 
@@ -177,7 +181,7 @@ The output is as below.
 ### Reading from CSV Files into Java objects
 If you need to load data from a CSV file into a list of POJOs, how can you achieve it with minimum code? Again, streams to the rescue. We can write a simple regex-based CSV parser by reading line by line from the file, splitting each line based on the comma separator, and then mapping the data into the POJO. 
 
-For example, assume that you want to read from the CSV file cakes.csv whose contents are below.
+For example, assume that you want to read from the CSV file cakes.csv whose contents are below.  
 **#Cakes  
 1, Pound Cake,100  
 2, Red Velvet Cake,500  
@@ -257,7 +261,7 @@ try (Stream<Path> paths = Files.list(Path.of(folderPath))) {
 ```
 As shown in the above example, we can use the `Files::IsRegularFile` operation to list only the regular files.
 
-The output is as below.
+The output is as below.  
 **src/main/resources/books/bookIndex.txt**
 
 ### Walking Recursively
@@ -317,7 +321,7 @@ try (JarFile jFile = new JarFile(jarFile)) {
 	jFile.stream().forEach(file -> System.out.println(file));
 }
 ```
-The contents of the JAR file will be iterated and displayed as shown below.
+The contents of the JAR file will be iterated and displayed as shown below.  
 **bookIndex.txt  
 fiction/  
 fiction/adults/  
@@ -349,7 +353,8 @@ In this article, we discussed how to generate Java 8 streams from files using th
 
 We saw that using parallel streams is an efficient approach for processing files, however you need to avoid any  operations that require state or order to be maintained. 
 
-To prevent resource leaks, it is important to use the try-with-resources construct, thus ensuring that the streams are automatically closed. In the latter half of the article, we also explored the rich set of API offered by the `Files` class in manipulating files and directories. 
+To prevent resource leaks, it is important to use the try-with-resources construct, thus ensuring that the streams are automatically closed. 
 
-The example code used in this article is available on [GitHub](https://github.com/thombergs/code-examples/tree/master/core-java/streams/fileswithstreamsd).
+In the latter half of the article, we also explored the rich set of API offered by the `Files` class in manipulating files and directories. 
 
+The example code used in this article is available on [GitHub](https://github.com/thombergs/code-examples/tree/master/core-java/streams/fileswithstreams).

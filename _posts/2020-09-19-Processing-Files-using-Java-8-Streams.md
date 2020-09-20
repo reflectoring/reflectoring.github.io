@@ -32,10 +32,10 @@ We can get a stream from the contents of a file line by line by calling the `lin
 
 Consider reading from a file bookIndex.txt with the following contents.
 
-**Pride and Prejudice- pride-and-prejudice.pdf
-Anne of Avonlea - anne-of-avonlea.pdf
-Anne of Green Gables  - anne-of-green-gables.pdf
-Matilda  - Matilda.pdf
+**Pride and Prejudice- pride-and-prejudice.pdf  
+Anne of Avonlea - anne-of-avonlea.pdf  
+Anne of Green Gables  - anne-of-green-gables.pdf  
+Matilda  - Matilda.pdf  
 Why Icebergs Float - Why-Icebergs-Float.pdf**
 
 As shown in the example below, the `lines()` method takes the `Path` representing the file as an argument. This method does not read all lines into a `List`, but instead populates lazily as the stream is consumed and this allows efficient use of memory.

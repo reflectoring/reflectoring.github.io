@@ -82,14 +82,14 @@ The `try-with-resources` is an exception handling mechanism that allows us to de
 
 #### Example 1 revised using try-with-resources
 ```java
-try (Stream<String> lines = 	   Files.lines(Path.of(filePath))) {
-	lines.forEach(System.out::println);
+try (Stream<String> lines =      Files.lines(Path.of(filePath))) {
+  lines.forEach(System.out::println);
 }
 ```
 #### Example 2 revised using try-with-resources
 ```java
 try (Stream<String> lines = (Files.newBufferedReader(Paths.get(filePath)).lines())) {
-	lines.forEach(System.out::println);
+  lines.forEach(System.out::println);
 }
 ```
 ### Using Parallel Streams
@@ -102,7 +102,7 @@ The `parallel()` method can be invoked on any stream to get a parallel stream. L
 ####	Example 4
 ```java
 try (Stream<String> lines = (Files.lines(Path.of(filePath)).parallel())) {
-	lines.forEach(System.out::println);
+  lines.forEach(System.out::println);
 }
 ```
 Here is the output.
@@ -128,7 +128,7 @@ Suppose we want to read from a file with Japanese characters as shown.
 #### Example 5
 ```java
 try (Stream<String> lines = Files.lines(Path.of(utfFilePath), StandardCharsets.UTF_8)) {
-	lines.forEach(System.out::println);
+  lines.forEach(System.out::println);
 }
 ```
 In the above case, you can see that `StandardCharsets.UTF_8` is passed as an argument to the `Files.lines()` method which allows the UTF-encoded file to be read.
@@ -152,9 +152,9 @@ Stream obtained by reading this file can be filtered to retain only some of thei
 
 #### Example 6
 ```java
-try (Stream<String> lines = Files.lines(Path.of(filePath))) {	
-	long i = lines.filter(line -> line.startsWith("A")).count();
-	System.out.println("The count of lines starting with 'A' is " + i);
+try (Stream<String> lines = Files.lines(Path.of(filePath))) {  
+  long i = lines.filter(line -> line.startsWith("A")).count();
+  System.out.println("The count of lines starting with 'A' is " + i);
 }
 ```
 In this example, only the lines starting with "A" are filtered out by calling the `filter()` method and the number of such lines counted using the `count()` method.
@@ -168,9 +168,9 @@ So what if you want to split the lines from this file into words and eliminate d
 #### Example 7
 ```java
 try (Stream<String> lines = Files.lines(Path.of(filePath))) {
-		Stream<String> words = lines.flatMap(line -> Stream.of(line.split("\\W+")));
-		Set<String> wordSet = words.collect(Collectors.toSet());
-		System.out.println(wordSet);
+  Stream<String> words = lines.flatMap(line -> Stream.of(line.split("\\W+")));
+  Set<String> wordSet = words.collect(Collectors.toSet());
+  System.out.println(wordSet);
 }
 ```
 As shown in the example above, each line from the file can be split into words by invoking the `split()` method.  Then we can combine all the individual streams of words into one single stream by invoking the `flatMap()` method. By collecting the resultant stream into a `Set`, duplicates can be eliminated.
@@ -192,10 +192,10 @@ You have a class ***Cake*** defined below.
 
 ```java
 public class Cake {
-	private int id;
-	private String name;
-	private int price;
-	……
+  private int id;
+  private String name;
+  private int price;
+  ……
 // Add a constructor to initialize the Cake objects
 }
 ```
@@ -243,7 +243,7 @@ Let us look at some sample code.
 ```java
 static String folderPath = "src/main/resources/books";
 try (Stream<Path> paths = Files.list(Path.of(folderPath))) {
-	paths.filter(Files::isDirectory).forEach(System.out::println);
+  paths.filter(Files::isDirectory).forEach(System.out::println);
 }
 ```
 In the example, the `Files.list()` method is invoked and a filter is applied to the resulting stream of paths to get only the directories printed out to the console.  
@@ -256,7 +256,7 @@ So what if you need to list the regular files and not the directories? Here is a
 #### Example 10
 ```java
 try (Stream<Path> paths = Files.list(Path.of(folderPath))) {
-	paths.filter(Files::isRegularFile).forEach(System.out::println);
+  paths.filter(Files::isRegularFile).forEach(System.out::println);
 }
 ```
 As shown in the above example, we can use the `Files::IsRegularFile` operation to list only the regular files.
@@ -293,9 +293,9 @@ Let us look at an example to see how the `find()` method can be invoked to find 
 ```java
 int depth = Integer.MAX_VALUE;
 try (Stream<Path> paths = Files.find(Path.of(folderPath), depth, (path, attr) -> {
-	return attr.isRegularFile() && path.toString().endsWith(".pdf");
-		})) {
-	paths.forEach(System.out::println);
+  return attr.isRegularFile() && path.toString().endsWith(".pdf");
+    })) {
+  paths.forEach(System.out::println);
 }
 ```
 In the above example, the `find()` method returns a stream with all the regular files having .pdf extension. The depth parameter is the maximum number of levels of directories to visit. A value of 0 means that only the starting file is visited, unless denied by the security manager. A value of `MAX_VALUE` may be used to indicate that all levels should be visited.
@@ -318,7 +318,7 @@ We can use the below code to iterate through the entries.
 ####	Example 13
 ```java
 try (JarFile jFile = new JarFile(jarFile)) {
-	jFile.stream().forEach(file -> System.out.println(file));
+  jFile.stream().forEach(file -> System.out.println(file));
 }
 ```
 The contents of the JAR file will be iterated and displayed as shown below.  
@@ -338,9 +338,9 @@ What if we need to look for specific entries within a JAR file? Once we get the 
 #### Example 14
 ```java
 try (JarFile jFile = new JarFile(jarFile)) {
-	Optional<JarEntry> searchResult = jFile.stream().filter(file -> file.getName().contains("Matilda"))
-			.findAny();
-	System.out.println(searchResult.get());
+  Optional<JarEntry> searchResult = jFile.stream().filter(file -> file.getName().contains("Matilda"))
+      .findAny();
+  System.out.println(searchResult.get());
 }
 ```
 In the above example, we are looking for filenames containing the word “Matilda”. So the output will be as follows.

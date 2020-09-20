@@ -226,6 +226,7 @@ Cake [id=5, name= Chiffon Cake, price=600]**
 `java.nio.file.Files` class has many useful methods that return lazy streams for listing folder contents, navigating file trees, finding files, getting JAR file entries etc. These can then be filtered, mapped, reduced, and so on using Java 8 Stream API. Let us explore this in more detail.
 
 Consider the folder structure below based on which we shall be looking at some examples below.
+
 ![Folder Structure](/assets/img/posts/Processing-Files-using-Java-8-Streams/folders_2020-09-16_21-03-40.png)
 
 ### Listing Directory Contents
@@ -305,8 +306,8 @@ src/main/resources/books/fiction/adults/pride-and-prejudice.pdf**
 We can also use streams to read the contents of JAR files. `JarFile.stream()` method returns an ordered Stream over the ZIP file entries. Entries appear in the stream in the order they appear in the central directory of the ZIP file. 
 
 Consider a JAR file with the following structure.
-[Zip file structure
-](/assets/img/posts/Processing-Files-using-Java-8-Streams/zip_2020-09-17_21-38-19.png)
+
+[Zip file structure](/assets/img/posts/Processing-Files-using-Java-8-Streams/zip_2020-09-17_21-38-19.png)
 
 We can use the below code to iterate through the entries.
 ####	Example 13

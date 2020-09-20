@@ -29,7 +29,7 @@
 			<!-- container -->
 			<div class="container">
 				<!-- row -->
-				<div class="row">
+				<div class="row" style="display:flex; flex-wrap: wrap;">
 					<!-- Post content -->
 					<div class="col-md-9">
 						<div class="section-row sticky-container">
@@ -38,8 +38,8 @@
 
 								{{ content }}
 
-								{% if page.author == null or page.author == 'tom' %}
-								<p>Follow me on <a href="https://twitter.com/TomHombergs">Twitter</a>, <a href="https://www.linkedin.com/in/tom-hombergs-74048777/">LinkedIn</a>, or my <a onclick="ml_webform_1449648('show')" style="cursor: pointer;">Mailing List</a> to be notified of new content.</p>
+								{% if page.author == null or page.author == 'default' or page.author == 'tom' %}
+								<p><strong><a href="https://twitter.com/TomHombergs"><strong>Follow me on Twitter</strong></a> for more tips on how to become a better software developer.</strong></p>
                                 {% endif %}
 
 							</div>
@@ -52,10 +52,6 @@
 
 						{% if page.ads.enabled != false %}
 						  {% include below-content-ad.html %}
-						{% endif %}
-
-						{% if page.comments.enabled != false %}
-						<div id="disqus_thread"></div>
 						{% endif %}
 
 					</div>

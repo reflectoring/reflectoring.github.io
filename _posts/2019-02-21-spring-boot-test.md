@@ -1,11 +1,10 @@
 ---
-title: "Integration Tests with @SpringBootTest"
+title: "Integration Tests with Spring Boot and @SpringBootTest"
 categories: [spring-boot]
-modified: 2019-02-23
+modified: 2020-09-15
 excerpt: "A tutorial on when and how to use Spring Boot's @SpringBootTest annotation and how to reduce test runtime."
 image:
   auto: 0018-cogs
-
 ---
 
 

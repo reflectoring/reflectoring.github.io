@@ -2,7 +2,7 @@
 title: "Marrying Vue.js and Thymeleaf: Embedding Javascript Components in Server-Side Templates"
 categories: [spring-boot]
 date: 2020-06-09 06:00 +1100
-modified: 
+modified: 2020-07-26 06:00 +1100
 excerpt: "Old-school server-side web applications aren't interactive enough nowadays. But full-blown Javascript applications create their own problems. Why not combine the best of both worlds? Let's include Vue.js components in server-side Thymeleaf templates."
 image:
   auto: 0018-cogs
@@ -15,7 +15,7 @@ Nowadays, every application frontend seems to be a single page application (SPA)
 
 What if we combine the two? This article shows a way of combining Vue.js components with a Thymeleaf-based server-side web application. 
 
-**I used this method in [blogtrack.io](https://blogtrack.io), a blog tracking service going into beta soon**. 
+**I'm using this method in [blogtrack.io](https://blogtrack.io), a blog tracking service going into beta soon**, and I'm very happy with it. 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/thymeleaf-vue" %}
 
@@ -26,10 +26,10 @@ While SPAs allow for building more interactive, desktop-like applications, they 
 * we need a mechanism to load only the Javascript resources we need on a certain page,
 * we might need to render part of the page on the server so that the user doesn't see a blank page (time to first content),
 * we have to handle page refreshs and the back-button,
-* we have to handle analytics ourselves because analytics providers usually count when a page is loaded,
+* we have to handle analytics ourselves because analytics providers usually only count when a page is loaded,
 * ... and a whole bunch of other problems I don't pretend to understand.
 
-Solutions to many of these problems exist, but they add new problems (like the "time to interactive" metric) and complexity to the SPA frameworks, making them harder to use and understand. This leads to [SPA fatigue](https://macwright.org/2020/05/10/spa-fatigue.html) in some people.
+Solutions to many of these problems exist, but they add new problems (like the "time to interactive" metric) and complexity to the SPA frameworks, making them harder to use and understand. This leads to [SPA fatigue](https://macwright.org/2020/05/10/spa-fatigue.html).
 
 **But building applications with only old-school server-side web frameworks is not a solution, either.** We want modern, interactive frontends, for which we need Javascript. 
 
@@ -92,7 +92,7 @@ Also, we add a controller that serves this page:
 @Controller
 class HelloVueController {
 
-  @GetMapping("/hello")
+  @GetMapping("/")
   ModelAndView showHelloPage() {
   Map<String, Object> model = new HashMap<>();
   model.put("title", "Hello Vue!");
@@ -102,11 +102,11 @@ class HelloVueController {
 }
 ```
 
-If we start the application with `./gradlew bootrun` and go to [http://localhost:8080/hello](http://localhost:8080/hello), we should see this page:
+If we start the application with `./gradlew bootrun` and go to [http://localhost:8080/](http://localhost:8080/), we should see this page:
 
 ![hello vue](/assets/img/posts/reusable-vue-components-in-thymeleaf/hello-vue.png)
 
-We now have a working server-side web application driven by a Thymeleaf template. Time to create some Javascript components.
+**We now have a working server-side web application driven by a Thymeleaf template**. Time to create some Javascript components.
 
 ### Building a Javascript Chart Component with Vue.js
 
@@ -141,6 +141,8 @@ thymeleaf-vue
 I omitted some files for clarity.
 
 Now, we want to create a Vue component that displays a chart. Let's say **the chart shall take 7 numbers as input, one for each day in the week, and display them in a bar chart**.
+
+Note that the chart is just an example. We can create any simple or complex client-side Javascript component with our without Vue.js and use it in a server-side template.
 
 First, we add the dependency to chart.js to our `package.json` file:
 
@@ -204,7 +206,7 @@ export default {
 </style>
 ```
 
-This component bundles the HTML markup, some Javascript, and some CSS into a self-sufficient UI component. Note that we're importing the `Chart` object from the `chart.js` library. The component has a single input parameter (or "prop" in JS speak) called `chartData`, which takes an array of values - one value for each day of the week. 
+This component bundles the HTML markup, some Javascript, and some CSS into a self-sufficient UI component. Note that we're importing the `Chart` object from the `chart.js` library. The component has a single input parameter (or "prop" in JS lingo) called `chartData`, which takes an array of values - one value for each day of the week. 
 
 Within the `mounted` function, we're creating a chart configuration according to the [chart.js docs](https://www.chartjs.org/docs/latest/), pass the `chartData` input parameter into this config, and finally bind this config to the `<canvas>` element in the template section via the `ref=chart` attribute.
 
@@ -404,16 +406,38 @@ plugins {
   id "com.github.node-gradle.node" version "2.2.4"
 }
 
-task build(type: NpmTask) {
-  inputs.dir("src")
-  outputs.dir("dist")
-  args = ['run', 'build']
+apply plugin: 'java'
+
+task npmBuild(type: NpmTask) {
+	inputs.dir("src")
+	outputs.dir("dist")
+	args = ['run', 'build']
 }
+
+task npmClean(type: NpmTask) {
+	args = ['run', 'clean']
+}
+
+jar {
+	into '/static', {
+		from 'dist'
+		include '**/*.umd.min.js'
+	}
+}
+
+jar.dependsOn('npmBuild')
+clean.dependsOn('npmClean')
 ``` 
 
 We include the [Gradle Node Plugin](https://github.com/node-gradle/gradle-node-plugin) which enables us to call NPM tasks from within our Gradle build. 
 
-We create a single task `build` (the same task name that is used in the Java build) which calls `npm run build`. We add the `src` folder as an input and the `dist` folder as an output. This way, Gradle will only execute the task if an input file has changed or the output files don't exist.
+We also apply the Java plugin, which allows us to create a JAR file as an output of the build.
+
+We create the tasks `npmBuild` and `npmClean` which call `npm run build` and `npm run clean`, respectively. 
+
+Then, we configure the `jar` task so that the resulting JAR file will contain a folder `static` with all files from the `dist` folder. Finally, with `dependsOn`, we configure that the `npmBuild` task will run before the `jar` task, because the `npmBuild` task will create the files that the `jar` task needs.
+
+The `static` folder has a special meaning in Thymeleaf: it's content will be served by the web server, so that it can be accessed from the browser. This is important in our case, since we want the browser to load the Javascript files with our Vue components.
 
 Since with the `server` and the `client` folders we now have a multi-module Gradle build, we need to create a `settings.gradle` file in the parent directory that lists all the modules: 
 
@@ -424,37 +448,14 @@ include 'client'
 include 'server'
 ```
 
-And finally, in the `build.gradle` file of the `server` module, we need to add the dependency to the Javascript components:
+And finally, in the `build.gradle` file of the `server` module, we need to add the dependency to the `client` project:
 
 ```groovy
 dependencies {
-  project(':client')
+  implementation project(':client')
   ...
 }
-
-task copyJavascriptComponents(type: Copy) {
-  from '../client/dist'
-  include '**/*.umd.min.js'
-  into 'src/main/resources/static/js/vue-components'
-}
-
-task cleanJavascriptComponents(type: Delete) {
-  delete 'src/main/resources/static/js/vue-components'
-}
-
-processResources.dependsOn copyJavascriptComponents
-clean.dependsOn cleanJavascriptComponents
 ```
-
-We also added the task `copyJavascriptComponents` which copies all `*.umd.min.js` files from the `client` module into the resources folder of the server module and added this task as a dependency to the `processResources` task so that it will always be executed before the resources are being processed by Gradle. This way, if the Gradle project is built, we can always be sure to get the latest version of the Javascript files. Also, we add a clean task that cleans up after a previous run.
-
-<div class="notice warning">
-  <h4>Copying Files Between Gradle Modules</h4>
-  
-  <p>Note that copying files between Gradle modules is not the most elegant solution for adding Javascript dependencies into our Spring Boot application. A cleaner way would be to have the <code>client</code> module export the Javascript files as real Gradle (or NPM) artifacts and declare a dependency on those artifacts within the <code>server</code> module. This way, Gradle would know the dependencies and could probably optimize the build even further.</p>
-  
-  <p>That said, it's by far the easiest solution and I'm very happy with it in my project, so far.</p>
-</div>
 
 ### Using the Vue Component in a Thymeleaf Template
 
@@ -471,7 +472,7 @@ We also added the task `copyJavascriptComponents` which copies all `*.umd.min.js
   </div>
   
   <script src="https://unpkg.com/vue"></script>
-  <script th:src="@{/js/vue-components/WeekChart/WeekChart.umd.min.js}"></script>
+  <script th:src="@{/WeekChart/WeekChart.umd.min.js}"></script>
   <script>
     (function() {
       new Vue({
@@ -490,7 +491,7 @@ We've added a `<div>` with the id `chart` that contains an instance of our `Week
 
 **We want to provide the data to the chart from the server**, so we add a `th:` (for "thymeleaf") in front of the attribute `v-bind:chart-data` that is expected by vue to pass an array prop into the component. This will let Thymeleaf know that we want this attribute populated with the value of the `chartData` variable.
 
-Also, we added `<script>` tags to load Vue.js and our chart component and another one to create the Vue component and bind it to the `<chart>` tag within the `chart` div. 
+Also, we added `<script>` tags to load Vue.js and our chart component (which will be served from out of the JAR file of the `client` module). And another `<script>` tag to instantiate the Vue component and bind it to the `<chart>` tag within the `chart` div. 
 
 Finally, we need to modify our server-side controller so that it populates the `chartData` variable:
 
@@ -498,7 +499,7 @@ Finally, we need to modify our server-side controller so that it populates the `
 @Controller
 class HelloVueController {
 
-  @GetMapping("/hello")
+  @GetMapping("/")
   ModelAndView showHelloPage() {
     Map<String, Object> model = new HashMap<>();
     model.put("title", "Hello Vue!");
@@ -509,11 +510,11 @@ class HelloVueController {
 }
 ```
 
-Running `./gradlew bootrun` and opening [http://localhost:8080/hello](http://localhost:8080/hello) in a browser will now proudly show our Vue chart component on the page, populated with data from the server.
+Running `./gradlew bootrun` and opening [http://localhost:8080/](http://localhost:8080/) in a browser will now proudly show our Vue chart component on the page, populated with data from the server.
 
 ## Conclusion
 
-In this article, we created a Spring Boot application with the server-side template engine Thymeleaf and a Javascript component library that provides a Javascript component built with NPM and Vue. **The result is a hybrid application that allows the server-side template engine to create static HTML pages while including Javascript components that allow more interactivity**.
+We have created a Spring Boot application with the server-side template engine Thymeleaf and a Javascript component library that provides a Javascript component built with NPM and Vue. **The result is a hybrid application that allows the server-side template engine to create static HTML pages while including Javascript components that allow more interactivity**.
 
 We have established a proper development environment for both, the server-side Java part, and the client-side Javascript part.
 

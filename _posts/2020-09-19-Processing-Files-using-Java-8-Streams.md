@@ -47,10 +47,10 @@ lines.forEach(System.out::println);
 ```
 The output is as below.
 
-**Pride and Prejudice- pride-and-prejudice.pdf
-Anne of Avonlea - anne-of-avonlea.pdf
-Anne of Green Gables  - anne-of-green-gables.pdf
-Matilda  - Matilda.pdf
+**Pride and Prejudice- pride-and-prejudice.pdf  
+Anne of Avonlea - anne-of-avonlea.pdf  
+Anne of Green Gables  - anne-of-green-gables.pdf  
+Matilda  - Matilda.pdf  
 Why Icebergs Float - Why-Icebergs-Float.pdf**
 
 The same results can be achieved by invoking the `lines()` method on `BufferedReader` also. 
@@ -177,12 +177,12 @@ The output is as below.
 If you need to load data from a CSV file into a list of POJOs, how can you achieve it with minimum code? Again, streams to the rescue. We can write a simple regex-based CSV parser by reading line by line from the file, splitting each line based on the comma separator, and then mapping the data into the POJO. 
 
 For example, assume that you want to read from the CSV file cakes.csv whose contents are below.
-**#Cakes
-1, Pound Cake,100
-2, Red Velvet Cake,500
-3, Carrot Cake,300
-4, Sponge Cake,400
-5, Chiffon Cake,600**
+**#Cakes  
+1, Pound Cake,100  
+2, Red Velvet Cake,500  
+3, Carrot Cake,300  
+4, Sponge Cake,400  
+5, Chiffon Cake,600**  
 You have a class ***Cake*** defined below.
 
 ```java
@@ -215,10 +215,10 @@ In the above example, we follow these steps.
 
 The output is as follows.
 
-**Cake [id=1, name= Pound Cake, price=100]
-Cake [id=2, name= Red Velvet Cake, price=500]
-Cake [id=3, name= Carrot Cake, price=300]
-Cake [id=4, name= Sponge Cake, price=400]
+**Cake [id=1, name= Pound Cake, price=100]  
+Cake [id=2, name= Red Velvet Cake, price=500]  
+Cake [id=3, name= Carrot Cake, price=300]  
+Cake [id=4, name= Sponge Cake, price=400]  
 Cake [id=5, name= Chiffon Cake, price=600]**
 
 ## Browsing, Walking, and Searching for Files
@@ -243,8 +243,8 @@ try (Stream<Path> paths = Files.list(Path.of(folderPath))) {
 ```
 In the example, the `Files.list()` method is invoked and a filter is applied to the resulting stream of paths to get only the directories printed out to the console.  
 
-The output is as below.
-**src/main/resources/books/non-fiction
+The output is as below.  
+**src/main/resources/books/non-fiction  
 src/main/resources/books/fiction**
 
 So what if you need to list the regular files and not the directories? Here is an example.
@@ -257,7 +257,7 @@ try (Stream<Path> paths = Files.list(Path.of(folderPath))) {
 As shown in the above example, we can use the `Files::IsRegularFile` operation to list only the regular files.
 
 The output is as below.
-`src/main/resources/books/bookIndex.txt`
+**src/main/resources/books/bookIndex.txt**
 
 ### Walking Recursively
 The `Files.list()` method we saw above is non-recursive i.e.; the subdirectories are not traversed. What if you need to visit the subdirectories too? The `Files.walk()` method returns a stream of Path elements by recursively walking the file tree rooted at a given directory. 
@@ -272,11 +272,11 @@ List<String> fileNames = stream
 In the above example, the stream returned by the `walk()` method is filtered to return only regular files (subfolders are excluded). 
 
 The output is as below.
-**src/main/resources/books/non-fiction/Why-Icebergs-Float.pdf
-src/main/resources/books/fiction/kids/anne-of-green-gables.pdf
-src/main/resources/books/fiction/kids/anne-of-avonlea.pdf
-src/main/resources/books/fiction/kids/Matilda.pdf
-src/main/resources/books/fiction/adults/pride-and-prejudice.pdf
+**src/main/resources/books/non-fiction/Why-Icebergs-Float.pdf  
+src/main/resources/books/fiction/kids/anne-of-green-gables.pdf  
+src/main/resources/books/fiction/kids/anne-of-avonlea.pdf  
+src/main/resources/books/fiction/kids/Matilda.pdf  
+src/main/resources/books/fiction/adults/pride-and-prejudice.pdf  
 src/main/resources/books/bookIndex.txt**
 
 ### Finding Files
@@ -296,10 +296,10 @@ try (Stream<Path> paths = Files.find(Path.of(folderPath), depth, (path, attr) ->
 In the above example, the `find()` method returns a stream with all the regular files having .pdf extension. The depth parameter is the maximum number of levels of directories to visit. A value of 0 means that only the starting file is visited, unless denied by the security manager. A value of `MAX_VALUE` may be used to indicate that all levels should be visited.
 
 Output is
-**src/main/resources/books/non-fiction/Why-Icebergs-Float.pdf
-src/main/resources/books/fiction/kids/anne-of-green-gables.pdf
-src/main/resources/books/fiction/kids/anne-of-avonlea.pdf
-src/main/resources/books/fiction/kids/Matilda.pdf
+**src/main/resources/books/non-fiction/Why-Icebergs-Float.pdf  
+src/main/resources/books/fiction/kids/anne-of-green-gables.pdf  
+src/main/resources/books/fiction/kids/anne-of-avonlea.pdf  
+src/main/resources/books/fiction/kids/Matilda.pdf  
 src/main/resources/books/fiction/adults/pride-and-prejudice.pdf**
 
 ### Streaming JAR Files
@@ -317,15 +317,15 @@ try (JarFile jFile = new JarFile(jarFile)) {
 }
 ```
 The contents of the JAR file will be iterated and displayed as shown below.
-**bookIndex.txt
-fiction/
-fiction/adults/
-fiction/adults/pride-and-prejudice.pdf
-fiction/kids/
-fiction/kids/Matilda.pdf
-fiction/kids/anne-of-avonlea.pdf
-fiction/kids/anne-of-green-gables.pdf
-non-fiction/
+**bookIndex.txt  
+fiction/  
+fiction/adults/  
+fiction/adults/pride-and-prejudice.pdf  
+fiction/kids/  
+fiction/kids/Matilda.pdf  
+fiction/kids/anne-of-avonlea.pdf  
+fiction/kids/anne-of-green-gables.pdf  
+non-fiction/  
 non-fiction/Why-Icebergs-Float.pdf**
 
 What if we need to look for specific entries within a JAR file? Once we get the stream from the JAR file, we can always perform a filtering operation to get the matching ***JarEntry*** objects. Here is some code that demonstrates that. 

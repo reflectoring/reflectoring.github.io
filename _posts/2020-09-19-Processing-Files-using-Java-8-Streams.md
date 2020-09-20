@@ -6,7 +6,7 @@ Streams, introduced in Java 8 use functional-style operations to process data de
 In this article, we shall explore the various possibilities of using streams to make life easier when it comes to the handling of files. We assume that you have a basic knowledge of Java 8 streams. If you are new to streams, please refer to https://stackify.com/streams-guide-java-8/
 
 ### Code Example
-This article is accompanied by a working code example on GitHub.
+This article is accompanied by a working code example on [GitHub](https://github.com/thombergs/code-examples/tree/master/core-java/streams/fileswithstreamsd).
 
 With the Stream API, there are operations to filter, map, and reduce data in any order without you having to write extra code. Here is a classic example.
 ```java
@@ -350,5 +350,5 @@ We saw that using parallel streams is an efficient approach for processing files
 
 To prevent resource leaks, it is important to use the try-with-resources construct, thus ensuring that the streams are automatically closed. In the latter half of the article, we also explored the rich set of API offered by the `Files` class in manipulating files and directories. 
 
-The example code used in this article is available on github.
+The example code used in this article is available on [GitHub](https://github.com/thombergs/code-examples/tree/master/core-java/streams/fileswithstreamsd).
 

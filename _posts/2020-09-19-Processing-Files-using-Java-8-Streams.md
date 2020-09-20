@@ -307,7 +307,7 @@ We can also use streams to read the contents of JAR files. `JarFile.stream()` me
 
 Consider a JAR file with the following structure.
 
-[Zip file structure](/assets/img/posts/Processing-Files-using-Java-8-Streams/zip_2020-09-17_21-38-19.png)
+![Zip file structure](/assets/img/posts/Processing-Files-using-Java-8-Streams/zip_2020-09-17_21-38-19.png)
 
 We can use the below code to iterate through the entries.
 ####	Example 13

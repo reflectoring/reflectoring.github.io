@@ -103,11 +103,11 @@ try (Stream<String> lines = (Files.lines(Path.of(filePath)).parallel())) {
 ```
 Here is the output.
 
-3. Anne of Green Gables  - anne-of-green-gables.pdf
-2. Anne of Avonlea - anne-of-avonlea.pdf
-1. Pride and Prejudice- pride-and-prejudice.pdf
-4. Matilda  - Matilda.pdf
-5. Why Icebergs Float - Why-Icebergs-Float.pdf
+**3. Anne of Green Gables  - anne-of-green-gables.pdf  
+2. Anne of Avonlea - anne-of-avonlea.pdf  
+1. Pride and Prejudice- pride-and-prejudice.pdf  
+4. Matilda  - Matilda.pdf  
+5. Why Icebergs Float - Why-Icebergs-Float.pdf**
 
 You can see that the stream elements are printed in random order. This is because the encounter order of the elements is not maintained when `forEach()` is executed in the case of parallel streams. 
 

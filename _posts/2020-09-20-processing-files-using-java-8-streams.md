@@ -5,9 +5,6 @@ Streams, introduced in Java 8 use functional-style operations to process data de
 
 In this article, we shall explore the various possibilities of using streams to make life easier when it comes to the handling of files. We assume that you have a basic knowledge of Java 8 streams. If you are new to streams, please refer to https://stackify.com/streams-guide-java-8/
 
-### Code Example
-This article is accompanied by a working code example on [GitHub](https://github.com/thombergs/code-examples/tree/master/core-java/streams/fileswithstreamsd).
-
 With the Stream API, there are operations to filter, map, and reduce data in any order without you having to write extra code. Here is a classic example.
 ```java
 List<String> cities = Arrays.asList("London", "Sydney", "Colombo", "Cairo", "Beijing");
@@ -21,6 +18,9 @@ COLOMBO
 As the returned streams are lazily loaded, the elements are not read until they are used (which happens when the terminal operation is called on the stream) and thus enhances performance. 
 
 Wouldn’t it be great to apply these SQL like processing capabilities to files as well? How do we get streams from files? Can we walk through directories and locate matching files using streams? Let us get the answers to these questions.
+
+### Code Example
+This article is accompanied by a working code example on [GitHub](https://github.com/thombergs/code-examples/tree/master/core-java/streams/fileswithstreamsd).
 
 ## Getting Started 
 

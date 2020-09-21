@@ -1,13 +1,11 @@
 ---
-title: "All You Need To Know About Bean Validation With Spring Boot"
+title: "Complete Guide to Validation With Spring Boot"
 categories: [spring-boot]
-modified: 2018-10-14
+modified: 2020-09-15
 excerpt: "A tutorial consolidating the most important features you'll need to integrate Bean Validation into your Spring Boot application. "
 image:
   auto: 0022-sorting
-
 ---
-
 
 
 [Bean Validation](https://beanvalidation.org/) is the de-facto standard for implementing validation

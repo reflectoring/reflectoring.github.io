@@ -29,6 +29,8 @@ This tutorial is part of a series:
 3. [Testing JPA Queries with Spring Boot and `@DataJpaTest`](/spring-boot-data-jpa-test/)
 4. [Integration Tests with `@SpringBootTest`](/spring-boot-test/)
 
+**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://transactions.sendowl.com/stores/13745/194393) (if you buy through this link, I get a cut). 
+
 ## Dependencies
 
 We're going to use JUnit Jupiter (JUnit 5) as the testing framework, Mockito for
@@ -579,6 +581,8 @@ the tests to be meaningful, we need to remember to cover all of the responsibili
 we may be in for ugly surprises at runtime.
 
 The example code from this article is available [on github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing).
+
+**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://transactions.sendowl.com/stores/13745/194393) (if you buy through this link, I get a cut). 
 
 
 

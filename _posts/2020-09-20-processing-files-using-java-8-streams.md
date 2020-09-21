@@ -1,21 +1,43 @@
-﻿﻿
+﻿---
+title: "Processing Files with Java 8 Streams"
+categories: [java]
+date: 2020-09-20 06:00:00 +1000
+modified: 2020-09-20 06:00:00 +1000
+author: default
+excerpt: ""
+image:
+  auto: 0061-cloud
+---
+
+Streams, introduced in Java 8, use functional-style operations to process data declaratively. The elements of streams are consumed from data sources such as collections, arrays, or I/O resources like files.   
+
+In this article, we'll explore the various possibilities of using streams to make life easier when it comes to the handling of files. We assume that you have a basic knowledge of Java 8 streams. If you are new to streams, you may want to check out [this guide](https://stackify.com/streams-guide-java-8/). 
+
 ## Introduction
-
-Streams, introduced in Java 8 use functional-style operations to process data declaratively. The elements of streams are consumed from data sources such as collections, arrays, or I/O resources like files.   
-
-In this article, we shall explore the various possibilities of using streams to make life easier when it comes to the handling of files. We assume that you have a basic knowledge of Java 8 streams. If you are new to streams, please refer to https://stackify.com/streams-guide-java-8/
 
 In the Stream API, there are operations to filter, map, and reduce data in any order without you having to write extra code. Here is a classic example.
 ```java
-List<String> cities = Arrays.asList("London", "Sydney", "Colombo", "Cairo", "Beijing");
-cities.stream().filter(a -> a.startsWith("C")).map(String::toUpperCase).sorted().forEach(System.out::println);
+List<String> cities = Arrays.asList(
+  "London",
+  "Sydney",
+  "Colombo",
+  "Cairo",
+  "Beijing");
+
+cities.stream()
+  .filter(a -> a.startsWith("C"))
+  .map(String::toUpperCase)
+  .sorted()
+  .forEach(System.out::println);
 ```
 Here we filter a list of countries, convert to uppercase and sort it before printing the result to the console. 
 
 The output is as below.
 
-**CAIRO
-COLOMBO**
+```
+CAIRO
+COLOMBO
+```
 
 As the returned streams are lazily loaded, the elements are not read until they are used (which happens when the terminal operation is called on the stream) and thus enhances performance. 
 

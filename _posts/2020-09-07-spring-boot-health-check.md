@@ -11,12 +11,12 @@ image:
 
 Monitoring and observability are essential in distributed environments and they rely on effective health checking mechanisms that can be observed at runtime. 
 
-We will build health check functions in Spring Boot applications and make them observable by capturing useful health metrics and integrate with popular monitoring and visualization tools - Prometheus and Grafana.
+We will build health check functions in Spring Boot applications and make them observable by capturing useful health metrics and integrate with popular monitoring tools.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check" %}
 
 ## Why Do we use Health Checks?
-A distributed system is composed of many moving parts like a database, queues, other services.**Health check functions tell us the status of our running application like whether the service is slow or not available.**
+A distributed system is composed of many moving parts like a database, queues, and other services.**Health check functions tell us the status of our running application like whether the service is slow or not available.**
 
 We also learn to predict the system health in the future by observing any anomalies in a series of metrics like memory utilization, errors, and disk space. This allows us to take mitigating actions like restarting instances, falling back to a redundant instance, or throttling the incoming requests. 
 
@@ -128,7 +128,8 @@ Let us add some real-life flavor to our application we created with [Spring Init
 We will create three APIs in our application:
 - add user
 - activate user
-- fetch users
+- fetch users 
+
 These APIs will be using a controller, service, and repository class. The repository is based on JPA and uses the in-memory H2 database. The API for `fetch users` will also use a URL shortener service for shortening the user's profile URL.
 
 ### Database Health Indicator
@@ -192,11 +193,11 @@ management.health.mongo.enabled=false
 Predefined health indicators do not cover all use cases of a health check. For example, if our API is dependent on any external service, we might like to know if the external service is available. Further, we might like to know the health of the individual APIs rather than the health of the entire application. 
 
 For this, we will now build two types of custom health checks in our application:
- - for individual components with Health Indicators
+ - health check for individual components with Health Indicators
  - composite health check with Composite Health Contributors 
 
 ### Checking the Health of Individual Components
-In our example, we are using an external service for shortening the URLs. We will monitor the availability of this service by building our health indicator. 
+In our example, we are using an external service for shortening the URLs. We will monitor the availability of this service by building a health indicator of this service. 
 
 Creating a custom health indicator is done in two steps:
 
@@ -228,7 +229,7 @@ In this class, we return the status as `UP` if the URL is reachable, otherwise w
 
 
 ### Composite Health Checking with Health Contributors
-Earlier, we added three APIs to our `user signup` application for adding, activating, and fetching users. It will be very useful to see the health of the individual APIs by checking specific resources on a per-endpoint basis. We will do this with `CompositeHealthIndicators`.
+Earlier, we added three APIs to our `user signup` application for adding, activating, and fetching users. It will be very useful to see the health of the individual APIs by checking specific resources on a per-endpoint basis. We will do this with `CompositeHealthContributors`.
 
 Our `Fetch Users` API depends on the database and the URL shortener service. This API can function only if both of these dependencies are available. We can do this in a single health indicator as described in the previous section. 
 
@@ -236,7 +237,7 @@ But this can be done more elegantly with a `CompositeHealthContributor` which wi
 
 1. Implement the `CompositeHealthContributor` interface in a Spring Bean.
 2. Mark the contributing health indicators with the `HealthContributor`interface.
-3. Override the `iterator` method with the list of health contributors which are health indicators marked with the `HealthContributor` interface.
+3. Override the `iterator` method in the `CompositeHealthContributor` interface with the list of health contributors which are health indicators marked with the `HealthContributor` interface.
 
 For our example, we will first create a database health indicator and mark it with the `HealthContributor` interface:
 
@@ -336,7 +337,7 @@ With this health indicator of the API added, our health check output now contain
 ...
 }
 ```
-The corresponding error output appears when we introduce an error by specifying a non-existent table as: 
+The corresponding error output appears when we introduce an error by specifying a non-existent table: 
 ```json
 "FetchUsersAPI": {
    "status": "OUT_OF_SERVICE",
@@ -449,7 +450,7 @@ For the HTTP probe, the Kubelet process sends an HTTP request to the specified p
 
 ## Conclusion
 
-We saw how we can build powerful monitoring and observability capabilities in Spring Boot applications with the help of the Actuator module. We configured health indicators and Kubernetes probes in a microservice application and enabled health check metrics to integrate with monitoring tool and visualization tool - Prometheus and Grafana.
+We saw how we can build powerful monitoring and observability capabilities in Spring Boot applications with the help of the Actuator module. We configured health indicators and Kubernetes probes in a microservice application and enabled health check metrics to integrate with monitoring tools like Prometheus.
 
 Observability is a rapidly evolving area and we should expect to see more features along these lines in future releases of Spring Boot.
 

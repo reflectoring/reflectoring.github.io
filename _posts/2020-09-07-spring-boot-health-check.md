@@ -16,15 +16,13 @@ We will build health check functions in Spring Boot applications and make them o
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check" %}
 
 ## Why Do we use Health Checks?
-A distributed system is composed of many moving parts like a database, queues, other services, and all of them are subject to the mood of the surrounding infrastructure. 
-
-**Health check functions tell us the status of our running application like whether the service is slow or not available.**
+A distributed system is composed of many moving parts like a database, queues, other services.**Health check functions tell us the status of our running application like whether the service is slow or not available.**
 
 We also learn to predict the system health in the future by observing any anomalies in a series of metrics like memory utilization, errors, and disk space. This allows us to take mitigating actions like restarting instances, falling back to a redundant instance, or throttling the incoming requests. 
 
 **Timely Detection and proactive mitigation will ensure that the application is stable and minimize any impact on business functions.**
 
-Apart from infrastructure and operations teams, health check metrics and insights derived from them are also becoming useful to the end-users. 
+Apart from infrastructure and operations teams, health check metrics, and insights derived from them are also becoming useful to the end-users. 
 
 In an API ecosystem, for instance, with API developers, partners, and third-party developers, the health status of APIs is regularly updated and published in a dashboard, like on this Dashboard by Twitter:
 
@@ -50,7 +48,7 @@ We will look at all of these approaches in the subsequent sections.
 ## Adding a Health Check in Spring Boot
 We will build a few APIs with Spring Boot and devise mechanisms to check and monitor their health.
 
-Let us create our application with the [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.healthcheck&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Health%20Check&packageName=io.pratik.healthcheck.usersignup&dependencies=web,actuator,lombok) by including the dependencies for web,lombok, and actuator. 
+Let us create our application with the [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.healthcheck&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Health%20Check&packageName=io.pratik.healthcheck.usersignup&dependencies=web,actuator,lombok,webflux) by including the dependencies for web,lombok, webflux, and actuator. 
 
 
 ### Adding the Actuator Dependency
@@ -90,7 +88,9 @@ Running the curl command gives the output:
 ```shell
 {"status":"UP"}
 ```
-The status `UP` indicates the application is running. The status will show `DOWN` if the application becomes unhealthy anytime during the run. This endpoint indicates the general health of the application.
+The status `UP` indicates the application is running. This is derived from an evaluation of the health of multiple components called "health indicators" in a specific order. The status will show `DOWN` if any of those health indicator components are 'unhealthy' for example a database is not reachable. 
+
+We will look at health indicators in more detail in the following sections. However, in summary, the "UP" status from the Actuator health endpoint indicates that the application is able to operate with full functionality.
 
 ### Checking Health Status Details
 To view some more information about the application's health, we will enable the property `management.endpoint.health.show-details` in `application.properties`:
@@ -119,13 +119,17 @@ After we compile and run the application, we get the output with details of the 
    }
 }
 ```
-We can see in this output that the health status contains a component named `diskspace` which is `UP` with details containing the `total`, `free`, and `threshold` space.
+We can see in this output that the health status contains a component named `diskspace` which is `UP` with details containing the `total`, `free`, and `threshold` space. This HealthIndicator checks available disk space and will report a status of DOWN when the `free` space drops below the `threshold` space.
 
 ## Aggregating Health Status from Multiple Health Indicators 
 
-Let us add some real-life flavor to our application by adding some APIs that will not only store information in a database but also read from it. 
+Let us add some real-life flavor to our application we created with [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.healthcheck&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Health%20Check&packageName=io.pratik.healthcheck.usersignup&dependencies=web,actuator,lombok,webflux) by adding some APIs that will not only store information in a database but also read from it. 
 
-We will create three APIs by adding a controller, service, and repository class. The repository is based on JPA and uses the in-memory H2 database. 
+We will create three APIs in our application:
+- add user
+- activate user
+- fetch users
+These APIs will be using a controller, service, and repository class. The repository is based on JPA and uses the in-memory H2 database. The API for `fetch users` will also use a URL shortener service for shortening the user's profile URL.
 
 ### Database Health Indicator
 After we build and run our application as before and check the health status, we can see one additional component for the database named `db` included under the `components` key:
@@ -155,7 +159,7 @@ After we build and run our application as before and check the health status, we
    }
 }
 ```
-The health status is composed of status contributed by multiple components called 'Health Indicators' in the Actuator vocabulary. In our case, our health status is composed of health indicators of diskspace and database.
+The health status is composed of status contributed by multiple components called 'Health Indicators' in the Actuator vocabulary. In our case, the health status is composed of health indicators of diskspace and database. The database health indicator is automatically added by Spring Boot if it detects a Datasource as we will see in the next section.
 
 ### Other Predefined Health Indicators
 Spring Boot Actuator comes with several predefined health indicators like 
@@ -167,7 +171,7 @@ Spring Boot Actuator comes with several predefined health indicators like
 
 Each of them is a Spring bean that implements the `HealthIndicator` interface and checks the health of that component. 
 
-By default, all standard components (such as `DataSource`) implement this interface. The health check provided by a `DataSource` creates a connection to a database and performs a simple query, such as `select 1 from dual` to check that it's working.
+By default, all standard components (such as `DataSource`) implement this interface. The health check provided by a `DataSource` creates a connection to a database and performs a simple query, such as `select 1 from dual` to check that it is working.
 
 ### Aggregating Health Indicators
 
@@ -185,11 +189,16 @@ management.health.mongo.enabled=false
 ```
 
 ## Checking the Health of APIs with Custom Health Indicators
-Predefined health indicators do not cover all use cases of a health check. For example, if our API is dependent on any external service, we might like to know if the external service is available. 
+Predefined health indicators do not cover all use cases of a health check. For example, if our API is dependent on any external service, we might like to know if the external service is available. Further, we might like to know the health of the individual APIs rather than the health of the entire application. 
 
+For this, we will now build two types of custom health checks in our application:
+ - for individual components with Health Indicators
+ - composite health check with Composite Health Contributors 
+
+### Checking the Health of Individual Components
 In our example, we are using an external service for shortening the URLs. We will monitor the availability of this service by building our health indicator. 
 
-Creating a custom health indicators is done in two steps:
+Creating a custom health indicator is done in two steps:
 
 1. Implement the `HealthIndicator` interface and override the health method.
 2. Register the health indicator class as Spring Bean by adding the `@Component` annotation (or by using Java Config).
@@ -199,102 +208,152 @@ Our custom health indicator for the `UrlShortener` Service looks like this:
 ```java
 @Component
 @Slf4j
-public class UrlShortenerServiceHealthIndicator implements HealthIndicator, HealthContributor {
+public class UrlShortenerServiceHealthIndicator implements HealthIndicator {
 
   private static final String URL = "https://cleanuri.com/api/v1/shorten";
 
   @Override
   public Health health() {
     // check if url shortener service url is reachable
-      try {
-        URL url = new URL(URL);
-        int port = url.getPort();
-        if (port == -1) {
-          port = url.getDefaultPort();
+    try (Socket socket = new Socket(new java.net.URL(URL).getHost(),80)) {
+        } catch (Exception e1) {
+            log.warn("Failed to connect to : {}",URL);
+            return Health.down().withDetail("error", e1.getMessage()).build();
         }
-  
-        try (Socket socket = new Socket(url.getHost(), port)) {
-        } catch (IOException e) {
-          log.warn("Failed to connect to : {}", URL);
-          return Health.down()
-            .withDetail("error", e.getMessage())
-            .build();
-        }
-      } catch (MalformedURLException e1) {
-        log.warn("Invalid URL: {}",URL);
-        return Health.down()
-          .withDetail("error", e1.getMessage())
-          .build();
-      }
-
-    return Health.up().build();
+        return Health.up().build();
   }
+}
 ```
 In this class, we return the status as `UP` if the URL is reachable, otherwise we return the `DOWN` status with an error message.
 
-We can further increase the accuracy of the health checks by checking specific resources on a per-endpoint basis. 
 
-In the previous section, we added three APIs to our application. It will be very useful to see the health of the APIs as part of our health check. We will do this by building a specific health indicator for our API. 
+### Composite Health Checking with Health Contributors
+Earlier, we added three APIs to our `user signup` application for adding, activating, and fetching users. It will be very useful to see the health of the individual APIs by checking specific resources on a per-endpoint basis. We will do this with `CompositeHealthIndicators`.
 
-The health status of our API will be `UP` only if the resources like the database and external service on which it depends are available.
+Our `Fetch Users` API depends on the database and the URL shortener service. This API can function only if both of these dependencies are available. We can do this in a single health indicator as described in the previous section. 
 
-A snippet of the `FetchUsersAPIHealthIndicator` is given below:
+But this can be done more elegantly with a `CompositeHealthContributor` which will combine health check from the database and the URL shortener service. The steps for building a composite health check are :
+
+1. Implement the `CompositeHealthContributor` interface in a Spring Bean.
+2. Mark the contributing health indicators with the `HealthContributor`interface.
+3. Override the `iterator` method with the list of health contributors which are health indicators marked with the `HealthContributor` interface.
+
+For our example, we will first create a database health indicator and mark it with the `HealthContributor` interface:
 
 ```java
-@Component("FetchUsersAPI")
-@Slf4j
-public class FetchUsersAPIHealthIndicator implements HealthIndicator {
-
-  private static final String URL = "https://cleanuri.com/api/v1/shorten";
+@Component("Database")
+public class DatabaseHealthContributor implements HealthIndicator, HealthContributor {
 
   @Autowired
-  private DataSource ds;
+    private DataSource ds;
   
   @Override
   public Health health() {
-  
-  Health dbHealth = dbIsHealthy();
-  Health serviceHealth = externalServiceIsHealthy();
-  
-  if(Status.UP.equals(dbHealth.getStatus())) {
-    if(Status.UP.equals(serviceHealth.getStatus())) {
-     return Health.up().build();
-    }else {
-    return serviceHealth;
+    try(Connection conn = ds.getConnection();){
+      Statement stmt = conn.createStatement();
+      stmt.execute("select FIRST_NAME,LAST_NAME,MOBILE,EMAIL from USERS");
+    } catch (SQLException ex) {
+      return Health.outOfService().withException(ex).build();
     }
-  }else {
-    return dbHealth;
+    return Health.up().build();
   }
+}
+```
+For checking the health status of the database we execute a query on the `USERS` table used in the `Fetch Users` API.
+
+We will next mark the URL shortener health indicator, we created in the previous section with the `HealthContributor` interface:
+
+```java
+public class UrlShortenerServiceHealthIndicator implements HealthIndicator, HealthContributor {
+...
+...
+```
+We will now create the composite health check of our `Fetch Users` API using the two health contributor components we created above :
+
+```java
+@Component("FetchUsersAPI")
+public class FetchUsersAPIHealthContributor 
+    implements CompositeHealthContributor {
+  private Map<String, HealthContributor> 
+          contributors = new LinkedHashMap<>();
+
+  @Autowired
+  public FetchUsersAPIHealthContributor(
+      UrlShortenerServiceHealthIndicator 
+              urlShortenerServiceHealthContributor,
+      DatabaseHealthContributor 
+              databaseHealthContributor) {
+    super();
+    // First check if URL shortener service is reachable with
+    // Health Indicator of URL shortener service
+    contributors.put("urlShortener", 
+        urlShortenerServiceHealthContributor);
+    // Check if USERS table used in the API can be queried with 
+    //Health Indicator of Database
+    contributors.put("database", 
+        databaseHealthContributor);
   }
 
-```
-In the health method, we check the health of the database by executing a query and checking the reachability of our external service.
+  /**
+   *  return list of health contributors
+   */
+  @Override
+  public Iterator<NamedContributor<HealthContributor>> 
+         iterator() {
+             return contributors.entrySet().stream()
+                .map((entry) -> 
+                   NamedContributor.of(entry.getKey(), 
+                       entry.getValue())).iterator();
+  }
+  
+  @Override
+  public HealthContributor getContributor(String name) {
+    return contributors.get(name);
+  }
+
+
+}
+  ```
+The `FetchUsersAPIHealthContributor` class will publish the health status of `Fetch Users` API as `UP` :
+1.  if the URL shortener service is reachable 
+2.  if we can run SQL queries on the USERS table used in the API
+
 
 With this health indicator of the API added, our health check output now contains the health status of `FetchUsers` API in the list of components.
 
 ```json
-{
+"FetchUsersAPI": {
    "status": "UP",
    "components": {
-    "FetchUsersAPI": {
-     "status": "UP"
-    },
-    ...
+      "database": {
+         "status": "UP"
+      },
+      "urlShortener": {
+         "status": "UP"
+      }
+   }
+},
+...
 }
 ```
-The corresponding error output appears as: 
+The corresponding error output appears when we introduce an error by specifying a non-existent table as: 
 ```json
-{
-   "status": "UP",
+"FetchUsersAPI": {
+   "status": "OUT_OF_SERVICE",
    "components": {
-    "FetchUsersAPI": {
-     "status": "OUT_OF_SERVICE",
-     "details": {
-      "error": "org.h2.jdbc.JdbcSQLSyntaxErrorException: Table \"USER\" not found; ..."
-     }
-    },
+      "database": {
+         "status": "OUT_OF_SERVICE",
+         "details": {
+            "error": "..."
+         }
+      },
+      "urlShortener": {
+         "status": "UP"
+      }
+   }
+},
 ```
-This output indicates that the API is out of service and cannot serve requests when the database is not set up.
+This output indicates that the Fetch Users API is `out-of-service` and cannot serve requests when the database is not set up although the URL shortener service is available.
 
 Health Indicators can also be grouped for specific purposes. For example, we can have a group for database health and another for the health of our caches.
 
@@ -321,7 +380,17 @@ Continuing with our example with Prometheus, we will expose the Prometheus endpo
 ```application.properties
 management.endpoints.web.exposure.include=health,info,prometheus
 ```
-Next, we will add the job in Prometheus with the configuration for scraping the metrics from our application.
+Here is a snippet of the metrics from the prometheus endpoint - http://localhost:8080/actuator/prometheus:
+```
+jvm_threads_daemon_threads 23.0
+jvm_buffer_count_buffers{id="mapped - 'non-volatile memory'",} 0.0
+jvm_buffer_count_buffers{id="mapped",} 0.0
+jvm_buffer_count_buffers{id="direct",} 14.0
+process_files_open_files 33.0
+hikaricp_connections_max{pool="HikariPool-1",} 10.0
+...
+```
+Next, we will add the job in Prometheus with the configuration for scraping the above metrics emitted from our application. This configuration will be saved in [prometheus-config.yml](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check/prometheus-config.yml).
 ```yml
   - job_name: 'user sign up'
   metrics_path: '/actuator/prometheus'
@@ -331,27 +400,20 @@ Next, we will add the job in Prometheus with the configuration for scraping the 
 ```
 This configuration will scrape the metrics at 5-second intervals.
 
-We will use Docker to run Prometheus:
+We will use Docker to run Prometheus. Specify the IP address of the host machine instead of `localhost` while running in Docker:
 ```shell
 docker run \
 -p 9090:9090 \
 -v prometheus-config.yml:/etc/prometheus/prometheus.yml \
 prom/prometheus
 ```
-Now we can check our application as a target in Prometheus:
+Now we can check our application as a target in Prometheus by visiting the URL - http://localhost:9090/targets :
 ![Prometheus Targets](/assets/img/posts/spring-boot-health-check/prometheus-ss.png)
 
 As stated above, due to the Micrometer metrics facade we can integrate with other [monitoring tools](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-metrics) only by adding the provider-specific Micrometer dependency to the application. 
 
-## Visualizing Application Health
-It is easier to understand the metrics with the help of graphs and dashboards which enable us to see the trends over different time windows. We will visualize the metrics collected by our application using Grafana:
-
-![Grafana Dashboard](/assets/img/posts/spring-boot-health-check/grafana-ss.png)
-
-We are using a standard JVM dashboard to view our application metrics.
-
 ## Configuring Kubernetes Probes
-Microservices built with Spring Boot are commonly packaged in containers and deployed to container orchestration systems like Kubernetes. One of the key features of Kubernetes is self healing, which it does by regularly checking the health of the application. 
+Microservices built with Spring Boot are commonly packaged in containers and deployed to container orchestration systems like Kubernetes. One of the key features of Kubernetes is self-healing, which it does by regularly checking the health of the application. 
 
 Among its many components, the [Kubelet](https://kubernetes.io/docs/concepts/overview/components/#kubelet) ensures that the containers are running and replaced with a healthy instance, anytime it goes down. This is detected using two properties:
 
@@ -366,7 +428,7 @@ After this when we compile and run the application, we can see these two health 
 
 ![Health Groups](/assets/img/posts/spring-boot-health-check/healthprobes-k8s.png)
 
-We can next use these two endpoints to configure HTTP probes for liveness and readiness checks in Kubernetes: 
+We can next use these two endpoints to configure HTTP probes for liveness and readiness checks in the container specification when creating the deployment object in Kubernetes. This definition of Deployment object along with the Service object is saved in [deployment.yml](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check/deployment.yml):
 
 ```yml
 livenessProbe:  
@@ -378,6 +440,10 @@ readinessProbe:
     path: /actuator/health/readiness  
     port: 8000  
 ```      
+We will create these objects in Kubernetes by running 
+```shell
+kubectl apply -f deployment.yml
+```
 For the HTTP probe, the Kubelet process sends an HTTP request to the specified path and port to perform the liveness and readiness checks.
 
 

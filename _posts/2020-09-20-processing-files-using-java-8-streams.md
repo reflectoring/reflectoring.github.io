@@ -41,41 +41,53 @@ COLOMBO
 
 As the returned streams are lazily loaded, the elements are not read until they are used (which happens when the terminal operation is called on the stream) and thus enhances performance. 
 
-Wouldn’t it be great to apply these SQL like processing capabilities to files as well? How do we get streams from files? Can we walk through directories and locate matching files using streams? Let us get the answers to these questions.
+Wouldn’t it be great to apply these SQL-like processing capabilities to files as well? How do we get streams from files? Can we walk through directories and locate matching files using streams? Let us get the answers to these questions.
 
 ### Code Example
-This article is accompanied by a working code example on [GitHub](https://github.com/thombergs/code-examples/tree/master/core-java/streams/fileswithstreams).
+This article is accompanied by a working code example on [GitHub](https://github.com/thombergs/code-examples/tree/master/core-java/streams/fileswithstreams/).
 
 ## Getting Started 
 
-Converting files to streams helps us perform many useful operations like counting words in the lines, filtering files based on conditions, removing duplicates from the data retrieved, and so on quite easily. First, let us see how we can obtain streams from files. 
+Converting files to streams helps us to easily perform many useful operations like 
+
+* counting words in the lines,
+* filtering files based on conditions,
+* removing duplicates from the data retrieved, 
+* and others. 
+
+First, let us see how we can obtain streams from files. 
 
 ### Building Streams from Files
 
 We can get a stream from the contents of a file line by line by calling the `lines()` method of `Files` class. 
 
-Consider reading from a file bookIndex.txt with the following contents.
+Consider reading from a file `bookIndex.txt` with the following contents.
 
-**Pride and Prejudice- pride-and-prejudice.pdf  
+```
+Pride and Prejudice- pride-and-prejudice.pdf  
 Anne of Avonlea - anne-of-avonlea.pdf  
 Anne of Green Gables  - anne-of-green-gables.pdf  
 Matilda  - Matilda.pdf  
-Why Icebergs Float - Why-Icebergs-Float.pdf**
+Why Icebergs Float - Why-Icebergs-Float.pdf
+```
 
 As shown in the example below, the `lines()` method takes the `Path` representing the file as an argument. This method does not read all lines into a `List`, but instead populates lazily as the stream is consumed and this allows efficient use of memory.
 
 #### Example 1
+
 ```java
 Stream<String> lines = Files.lines(Path.of(filePath));
 lines.forEach(System.out::println);
 ```
 The output is as below.
 
-**Pride and Prejudice- pride-and-prejudice.pdf  
+```
+Pride and Prejudice- pride-and-prejudice.pdf  
 Anne of Avonlea - anne-of-avonlea.pdf  
 Anne of Green Gables  - anne-of-green-gables.pdf  
 Matilda  - Matilda.pdf  
-Why Icebergs Float - Why-Icebergs-Float.pdf**
+Why Icebergs Float - Why-Icebergs-Float.pdf
+```
 
 The same results can be achieved by invoking the `lines()` method on `BufferedReader` also. 
 

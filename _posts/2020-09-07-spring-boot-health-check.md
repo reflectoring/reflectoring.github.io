@@ -440,21 +440,21 @@ After this when we compile and run the application, we can see these two health 
 
 ![Health Groups](/assets/img/posts/spring-boot-health-check/healthprobes-k8s.png)
 
-We can next use these two endpoints to configure HTTP probes for liveness and readiness checks in the container specification when creating the deployment object in Kubernetes. This definition of Deployment object along with the Service object is saved in [deployment.yml](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check/deployment.yml):
+We can next use these two endpoints to configure HTTP probes for liveness and readiness checks in the container specification when creating the deployment object in Kubernetes. This definition of Deployment object along with the Service object is saved in [deployment.yaml](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check/deployment.yaml):
 
 ```yml
 livenessProbe:  
   httpGet:  
     path: /actuator/health/liveness  
-    port: 8000  
+    port: 8080  
 readinessProbe:  
   httpGet:  
     path: /actuator/health/readiness  
-    port: 8000  
+    port: 8080  
 ```      
 We will create these objects in Kubernetes by running 
 ```shell
-kubectl apply -f deployment.yml
+kubectl apply -f deployment.yaml
 ```
 For the HTTP probe, the Kubelet process sends an HTTP request to the specified path and port to perform the liveness and readiness checks.
 

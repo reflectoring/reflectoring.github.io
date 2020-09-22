@@ -4,70 +4,86 @@ categories: [spring-boot]
 date: 2020-07-22 05:00:00 +1100
 modified: 2020-07-22 05:00:00 +1100
 author: nandan
-excerpt: 'How to use Spring Kafka to send messages to and receive messages from Kafka.'
+excerpt: 'What is Spring Component Scanning and how can we use it to build our application context?'
 image:
   auto: 0075-envelopes
 ---
 
-In this article, we'll look at what is component scanning and how to use it. We'll be using the Spring Boot application for all our examples throughout this article.
+In this article, we'll look at Spring component scanning and how to use it. We'll be using a Spring Boot application for all our examples throughout this article.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-kafka" %}
 
 ## What is Component Scanning?
 
-As we know Spring does dependency injection with the inversion of control principle. To achieve dependency injection Spring must know where components are present in the application and create a bean for them, so it can inject them wherever required. This process of searching for components that help in creating beans is called Component Scanning.
+To do dependency injection, Spring creates a so-called application context. 
+
+During startup, Spring instantiates objects and adds them to the application context. Objects in the application context are called "Spring beans" or "components". 
+
+Spring resolves dependencies between Spring beans and injects Spring beans into other Spring beans' fields or constructors.
+
+**The process of searching the classpath for classes that should contribute to the application context is called component scanning.**
 
 ## Stereotype Annotations
 
-Classes annotated with stereotypes are considered as candidates for auto-detection when using annotation-based configuration and classpath component scanning. Spring components are mainly made of four types:
+If Spring finds a class annotated with one of several annotations, it will consider this class as a candidate for a Spring bean to be added to the application context during component scanning. 
 
-### 1. `@Component`
+Spring components are mainly made up of four types.
 
-This is a generic stereotype annotation used to create and indicates that the class is a Spring-managed component. Other stereotypes are the specialization of `@Component`.
+### `@Component`
 
-### 2. `@Controller`
+This is a generic stereotype annotation used to create and indicates that the class is a Spring-managed component. Other stereotypes are a specialization of `@Component`.
 
-This indicates that the annotated class is a Spring-managed controller which is used with annotated handler methods based on `@RequestMapping`. And Spring 4.0 introduced `@RestController` which combines both `@Controller` and `@ResponseBody` and makes it easy to create RESTful services.
+### `@Controller`
 
-### 3. `@Service`
+This indicates that the annotated class is a Spring-managed controller which is used with annotated handler methods based on `@RequestMapping`. Spring 4.0 introduced `@RestController` which combines both `@Controller` and `@ResponseBody` and makes it easy to create RESTful services.
 
-We can use the `@Service` stereotype for classes that contains the business logic or the classes which come in the service layer.
+### `@Service`
 
-### 4. `@Respository`
+We can use the `@Service` stereotype for classes that contain business logic or classes which come in the service layer.
 
-We can use the `@Repository` stereotype for DAO classes which are responsible for providing CRUD operations on entities. If we are using Spring Data for managing database operations, then we should use the Spring Data Repository interface.
+### `@Repository`
+
+We can use the `@Repository` stereotype for DAO classes which are responsible for providing access to database entities. If we are using Spring Data for managing database operations, then we should use the Spring Data Repository interface instead of building our own `@Repository`-annotated classes.
 
 ## When to Use Component Scanning
 
-Spring provides a mechanism to identify managed components explicitly through `@ComponentScan` annotation, we'll look into various properties which we can use in further sections.
+Spring provides a mechanism to identify Spring bean candidates explicitly through the `@ComponentScan` annotation.
+ 
+We'll look into various properties which we can use in further sections.
 
 For a normal Spring application, we can tell Spring to perform a component scan by explicitly specifying in XML configuration or Java Configuration.
 
-If the application is a Spring Boot application, then all the packages under the parent package will be covered by an implicit component scan. Spring Boot's `@SpringBootApplication` annotation is comprised of `@Configuration`, `@ComponentScan`, and `@EnableAutoConfiguration` annotations. As we mentioned it includes `@ComponentScan`, which will scans for the components in the current package and all its sub-packages. So if your application doesn't have a varying package structure then there is no need for explicit component scanning.
+If the application is a Spring Boot application, then all the packages under the package containing the Spring Boot application class will be covered by an implicit component scan. 
 
-**Specifying `@Configuration` in the default package will tell Spring to scan all the classes in all the jars in the classpath.**
+Spring Boot's `@SpringBootApplication` annotation implies the `@Configuration`, `@ComponentScan`, and `@EnableAutoConfiguration` annotations. 
+
+The `@ComponentScan` annotation will scan for the components in the current package and all its sub-packages. So if your application doesn't have a varying package structure then there is no need for explicit component scanning.
+
+**Specifying `@Configuration` in the default package will tell Spring to scan all the classes in all the jars in the classpath. This is dangerous!**
 
 ## How to Use `@ComponentScan`
 
-`@ComponentScan` along with `@Configuration` annotation is used to tell Spring to scan classes that are annotated with stereotype annotation. The `@ComponentScan` annotation provides different attributes that we can modify to get desired scanning behavior.
+We use the `@ComponentScan` annotation along with the `@Configuration` annotation to tell Spring to scan classes that are annotated with any stereotype annotation. The `@ComponentScan` annotation provides different attributes that we can modify to get desired scanning behavior.
+
+We'll be using `ApplicationContext`'s `getBeanDefinitionNames()` method throughout this article to check out the list of beans created under the application context:
 
 ```java
 @Component
-public class BeanViewer {
+class BeanViewer {
 
   private final Logger LOG = LoggerFactory.getLogger(getClass());
 
   @EventListener
   public void showBeansRegistered(ApplicationReadyEvent event) {
-    String[] beanNames = event.getApplicationContext().getBeanDefinitionNames();
+    String[] beanNames = event.getApplicationContext()
+      .getBeanDefinitionNames();
+      
       for(String beanName: beanNames) {
         LOG.info("{}", beanName);
-    }
+      }
   }
 }
 ```
-
-We'll be using `ApplicationContext`'s `getBeanDefinitionNames()` method throughout this article to check out the list of beans created under the application context.
 
 The above `BeanViewer` will print all the beans that are registered with the application context. This will help us to check whether our components are loaded properly or not.
 
@@ -76,17 +92,16 @@ The above `BeanViewer` will print all the beans that are registered with the app
 As said earlier, Spring Boot does auto scanning for all the packages that fall under the parent package. Let's have a look at how it works:
 
 ```
-|- io.reflectoring.componentstan (main package)
+|- io.reflectoring.componentscan (main package)
    |- SpringComponentScanningApplication.java
    |- User.java (@Component stereotype)
    |- BeanViewer.java
    |- ExplicitScan.java
 ```
 
-We have created a `User` class with the `@Component` stereotype in our parent package `io.reflectoring.componentscan`. As said earlier, since these classes come under the parent package where we have our main method defined with `@SpringBootApplication` annotation, the component will be scanned by default.
+We have created a `User` class with the `@Component` stereotype in our parent package `io.reflectoring.componentscan`. As said earlier, since these classes are under the parent package where we have our main method defined with `@SpringBootApplication` annotation, the component will be scanned by default.
 
 ```
-OUTPUT
 ...
 INFO 95832 --- [main] i.reflectoring.componentscan.BeanViewer  : beanViewer
 INFO 95832 --- [main] i.reflectoring.componentscan.BeanViewer  : explicitScan
@@ -94,11 +109,13 @@ INFO 95832 --- [main] i.reflectoring.componentscan.BeanViewer  : users
 ...
 ```
 
-The above output shows the bean created for `BeanViewer`, `ExplicitScan`, and `Users` and printed by our `BeanViewer`. Since all these classes come under our parent package `io.reflectoring.componentscan` these are auto scanned by Spring.
+The above output shows the bean created for `BeanViewer`, `ExplicitScan`, and `Users` are printed out by our `BeanViewer`. 
 
 ### Using `@ComponentScan` without any attributes
 
-If we have a package that does not come under our parent package, we can use `@ComponentScan` along with `@Configuration`. This will tell Spring to scan the components in the package where this `@Configuration` class is present and its sub-packages.
+If we have a package that is not under our parent package, or we're not using Spring Boot at all, we can use `@ComponentScan` along with a `@Configuration` bean. 
+
+This will tell Spring to scan the components in the package of this `@Configuration` class and its sub-packages:
 
 ```java
 package io.reflectoring.birds;
@@ -108,6 +125,20 @@ package io.reflectoring.birds;
 public class BirdsExplicitScan {
 }
 ```
+
+The `birds` package is next to the main package of the application, so it's not caught by Spring Boot's default scanning:
+
+```
+|- io.reflectoring.componentscan
+   |- SpringComponentScanningApplication.java
+|- io.reflectoring.birds
+   |- BirdsExplicitScan.java
+   |- Eagle.java (@Component stereotype)
+   |- Sparrow.java (@Component stereotype)
+```
+
+
+If we want to include the `BirdsExplicitScan` into our Spring Boot application, we have to import it:
 
 ```java
 @SpringBootApplication
@@ -119,19 +150,9 @@ public class SpringComponentScanningApplication {
 }
 ```
 
-```
-|- io.reflectoring.componentstan
-   |- SpringComponentScanningApplication.java
-|- io.reflectoring.birds
-   |- BirdsExplicitScan.java
-   |- Eagle.java (@Component stereotype)
-   |- Sparrow.java (@Component stereotype)
-```
-
-We have created the `BirdsExplicitScan` class with the `@ComponentScan` annotation in the `io.reflectoring.birds` package, which tells spring to scan the `io.reflectoring.birds` package and its sub-packages. For Spring to know about this `BirdsExplicitScan` configuration class, we'll add this configuration to `@Import` in our `SpringComponentScanningApplication`.
+When we start the application, we get the following output:
 
 ```
-OUTPUT
 ...
 INFO 95832 --- [main] i.reflectoring.componentscan.BeanViewer  : beanViewer
 INFO 95832 --- [main] i.reflectoring.componentscan.BeanViewer  : explicitScan
@@ -143,22 +164,20 @@ INFO 84644 --- [main] i.reflectoring.componentscan.BeanViewer  : sparrow
 
 As we can see in the above output, beans got created for `Eagle` & `Sparrow` classes.
 
-### Using `@ComponentScan` with attributes
+### Using `@ComponentScan` with Attributes
 
 Let's have a look at attributes we can modify with `@ComponentScan`:
 
-- **`basePackages`**: Takes a list of package names which has to be scanned for components.
-- **`basePackageClasses`**: Takes a list of classes whose packages have to be scanned.
-- **`includeFilters`**: Enables us to specify what type of components has to be scanned.
+- **`basePackages`**: Takes a list of package names that should be scanned for components.
+- **`basePackageClasses`**: Takes a list of classes whose packages should be scanned.
+- **`includeFilters`**: Enables us to specify what types of components should be scanned.
 - **`excludeFilters`**: This is opposite of `includeFilters`. We can specify conditions to ignore some of the components based on criteria while scanning.
-- **`useDefaultFilters`**: If true, it enables the automatic detection of classes annotated with any stereotypes. If false, the components which fall under filter criteria will be included.
+- **`useDefaultFilters`**: If true, it enables the automatic detection of classes annotated with any stereotypes. If false, the components which fall under filter criteria defined by `includeFilters` and `excludeFilters` will be included.
 
-### `@ComponentScan` for Discrete Packages
-
-Let's see how we can scan a package which is not under our parent package with `basePackages` attribute:
+To demonstrate the different attributes, let's add some classes to the  package `io.reflectoring.vehicles` (which is *not* a sub package of our application main package `io.reflectoring.componentscan`):
 
 ```
-|- io.reflectoring.componentstan (Main Package)
+|- io.reflectoring.componentscan (Main Package)
    |- ExplicitScan.java
 |- io.reflectoring.birds
 |- io.reflectoring.vehicles
@@ -169,8 +188,12 @@ Let's see how we can scan a package which is not under our parent package with `
    |- Train.java (@Service stereotype)
 ```
 
-To demonstrate, we have created the `io.reflectoring.vehicles` package which is not a sub package of our parent package `io.reflectoring.componentscan`. Also, we have created some classes under this package as shown in the above package tree.
+Let's see how we can control which classes are loaded during a component scan.
 
+### Scanning a Whole Package with `basePackages`
+
+We'll create the class `ExplicitScan` and add the package `io.reflectoring.vehicles` via the `basePackages` attribute:
+ 
 ```java
 package io.reflectoring.componentscan;
 
@@ -180,10 +203,9 @@ public class ExplicitScan {
 }
 ```
 
-We have created an `ExplicitScan` class with `@Configuration` and `@ComponentScan` annotation. Also saying Spring to include `io.reflectoring.vehicles` for component scanning by specifying the package name in `basePackages` attribute.
+If we run the application, we see that all components in the `vehicles` package are included in the application context:
 
 ```
-OUTPUT
 ...
 INFO 65476 --- [main] i.reflectoring.componentscan.BeanViewer  : hyundai
 INFO 65476 --- [main] i.reflectoring.componentscan.BeanViewer  : spaceX
@@ -192,61 +214,70 @@ INFO 65476 --- [main] i.reflectoring.componentscan.BeanViewer  : train
 ...
 ```
 
-### `@ComponentScan` with Filters
+### Including Components with `includeFilters`
 
-Spring provides the `FilterType` enum for the type filters that can be used with `@ComponentScan`. Below are a list of available `FilterType`s which can be used with `includeFilters` or `excludeFilters`:
-
-- `ANNOTATION`: Filter classes with specific stereotype annotation.
-- `ASPECTJ`: Filter using an AspectJ type pattern expression
-- `ASSIGNABLE_TYPE`: Filter classes that extend or implement this class or interface.
-- `REGEX`: Filter classes using a regular expression for package names.
-
-#### Now let's have a look at `includeFilters`:
-
-With the combination of `includeFilters` and `FilterType`, we can tell Spring to include classes that follow filter criteria.
+Let's see how we can include only classes that extend the `Car` type for component scanning:
 
 ```java
 @Configuration
 @ComponentScan(basePackages= "io.reflectoring.vehicles",
-includeFilters=@ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, classes=Car.class), useDefaultFilters=false)
+  includeFilters=
+    @ComponentScan.Filter(
+      type=FilterType.ASSIGNABLE_TYPE,
+      classes=Car.class),
+    useDefaultFilters=false)
 public class ExplicitScan {
 }
 ```
 
-In the above example, we have modified our `ExplicitScan` class with `includeFilters` to include components that extend `Car.class` and we are changing `useDefaultFilters = false`.
+With a combination of `includeFilters` and `FilterType`, we can tell Spring to include classes that follow specified filter criteria.
+
+We used the filter type `ASSIGNABLE_TYPE` to catch all classes that are assignable to / extend the `Car` class.
+
+Other available filter types are:
+
+- `ANNOTATION`: Match only classes with a specific stereotype annotation.
+- `ASPECTJ`: Match classes using an AspectJ type pattern expression
+- `ASSIGNABLE_TYPE`: Match classes that extend or implement this class or interface.
+- `REGEX`: Match classes using a regular expression for package names.
+
+In the above example, we have modified our `ExplicitScan` class with `includeFilters` to include components that extend `Car.class` and we are changing `useDefaultFilters = false` so that only our specific filters are applied.
+
+Now, only the `Hyundai` and `Tesla` beans are being included in the component scan, because they extend the `Car` class:
 
 ```
-OUTPUT
 INFO 68628 --- [main] i.reflectoring.componentscan.BeanViewer  : hyundai
 INFO 68628 --- [main] i.reflectoring.componentscan.BeanViewer  : tesla
 ```
 
-Now we have only `Hyundai` and `Tesla` beans getting created which extends `Car.class` as shown in the above output.
-
-#### Now let's have a look at `excludeFilters`:
+### Excluding Components with `excludeFilters`
 
 Similar to `includeFilters`, we can use `FilterType` with `excludeFilters` to exclude classes from getting scanned based on matching criteria.
+
+Let's modify our `ExplicitScan` with `excludeFilters` and tell Spring to exclude classes which extend `Car` from component scanning.
 
 ```java
 @Configuration
 @ComponentScan(basePackages= "io.reflectoring.vehicles",
-excludeFilters=@ComponentScan.Filter(type=FilterType.ASSIGNABLE_TYPE, classes=Car.class))
+  excludeFilters=
+    @ComponentScan.Filter(
+      type=FilterType.ASSIGNABLE_TYPE,
+      classes=Car.class))
 public class ExplicitScan {
 }
 ```
 
-In the above example, we have modified our `ExplicitScan` with `excludeFilters` and telling Spring to exclude classes which extend `Car` from component scanning.
+Note that we did not set `useDefaultFilters` to false, so that by default, Spring would include all classes in the package. 
+
+The output shows that the `Hyundai` and `Tesla` beans we excluded and only the other two classes in the package were included in the scan:
 
 ```
-OUTPUT
 ...
 INFO 97832 --- [main] i.reflectoring.componentscan.BeanViewer  : spaceX
 INFO 97832 --- [main] i.reflectoring.componentscan.BeanViewer  : train
 ...
 ```
 
-As we can see in the above output, only `SpaceX` and `Train` beans were created. But `Hyundai` and `Tesla` beans got excluded as they were extending the `Car` class.
-
 ## Conclusion
 
-In this article, we've seen about Spring component stereotypes, what is component scanning and how to use component scanning, and its various attributes which we can modify to get the desired scanning behavior.
+In this article, we've learned about Spring component stereotypes, what is component scanning and how to use component scanning, and its various attributes which we can modify to get the desired scanning behavior.

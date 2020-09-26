@@ -65,7 +65,7 @@ identical across integrations.
 
 Working of the Hibernate Search can be summarized by the following points:
 * First, we need to tell hibernate what Entities we want to index. More on this is [Preparing Entities For Indexing](#preparing-entities-for-indexing)
-* We can also tell hibernate how to index the fields of those entities using [Analysers and Normalizers](#analysers-and-normalizers)
+* We can also tell hibernate how to index the fields of those entities using [Analysers and Normalizers](#analyzers-and-normalizers)
 * Then, when we boot up the application based on our selected `index_schema_management_strategy` hibernate will either 
 create, update or validate index mappings in the Elasticsearch. You can find more details for the same in [Hibernate Search Documentaion](https://docs.jboss.org/hibernate/stable/search/reference/en-US/html_single/#elasticsearch-integration-configuration)
 * Once the application has started, Hibernate Search will keep track of any operations performed on the entities and 
@@ -195,7 +195,7 @@ field and have also provided a different analyzer. This allows us to perform dif
 definition which refers to an in-built Elasticsearch analyzer called "Stop Analyzer". It removes common stop words ('is','an', etc) that aren't very helpful while querying. Here's a list of other 
 [Elasticsearch's Built-in Analyzers](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-analyzers.html).
 
-#### `@Field` on `hashTags`
+#### @Field on `hashTags`
 
 There is nothing special about the `@Field` annotation which is applied to `hashTags` field. I just want to highlight the fact that tokenizer splits the text on any nonalphanumeric character. So a value like '#food#health' will be 
 automatically tokenized to `['food','health]`.
@@ -353,7 +353,7 @@ function.
 One thing to note here is that although we are performing a query on Elasticsearch, Hibernate will still fire a query on the database to fetch the full entity. 
 
 Which make sense, because as we saw in the previous section we didn't store all the fields of 
-`Post` entity and those fields still need to be retrieved. If you only want to fetch what's stored in your index anyway and think this database call is redundant, you can make use of [Projection](###projection).
+`Post` entity and those fields still need to be retrieved. If you only want to fetch what's stored in your index anyway and think this database call is redundant, you can make use of [Projection](#projection).
 
 ### Range Queries
 
@@ -439,8 +439,8 @@ Query similarToUser = qb.keyword().wildcard()
 ```
 
 While Fuzzy queries allow us to search even when we have misspelled words in your query, wildcard queries allow us to 
-perform pattern-based searches. For instance, a search query with 's?ring*' will match 'spring','string','strings'' etc. 
-Here '*' indicates zero or more characters and '?' indicates a single character.  
+perform pattern-based searches. For instance, a search query with 's?ring\*' will match 'spring','string','strings'' etc. 
+Here '\*' indicates zero or more characters and '?' indicates a single character.  
 
 
 ### Projection
@@ -543,6 +543,7 @@ explore the following:
 * [Phrase queries](https://docs.jboss.org/hibernate/stable/search/reference/en-US/html_single/#_phrase_queries) - Which allows us to search complete sentences
 * [Simple query Strings](https://docs.jboss.org/hibernate/stable/search/reference/en-US/html_single/#_simple_query_string_queries) - It's a powerful function that can translate string input into Lucene query. With this, you can allow your platform to take queries directly from the end-users. Fields on which the query needs to perform will still need to be specified. 
 * [Faceting](https://docs.jboss.org/hibernate/stable/search/reference/en-US/html_single/#query-faceting) - Faceted search is a technique which allows to divide the results of a query into multiple categories. 
+
 ## Conclusion
 
 Hibernate Search combined with Elasticsearch becomes a really powerful tool. 

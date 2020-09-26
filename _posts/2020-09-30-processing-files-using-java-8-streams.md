@@ -1,8 +1,8 @@
 ﻿---
 title: "Processing Files With Java 8 Streams"
 categories: [java]
-date: 2020-09-23 06:00:00 +1000
-modified: 2020-09-23 06:00:00 +1000
+date: 2020-09-30 06:00:00 +1000
+modified: 2020-09-30 06:00:00 +1000
 author: seema
 excerpt: "An overview of the Java APIs that allow us to work with files in Java 8 streams."
 image:

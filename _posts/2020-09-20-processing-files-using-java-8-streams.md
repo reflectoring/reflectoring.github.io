@@ -17,7 +17,7 @@ In this article, we'll explore the various possibilities of using streams to mak
 
 ## Introduction
 
-In the Stream API, there are operations to filter, map, and reduce data in any order without you having to write extra code. Here is a classic example.
+In the Stream API, there are operations to filter, map, and reduce data in any order without you having to write extra code. Here is a classic example:
 ```java
 List<String> cities = Arrays.asList(
   "London",
@@ -64,7 +64,7 @@ First, let us see how we can obtain streams from files.
 
 We can get a stream from the contents of a file line by line by calling the `lines()` method of `Files` class. 
 
-Consider reading from a file `bookIndex.txt` with the following contents.
+Consider a file `bookIndex.txt` with the following contents.
 
 ```
 Pride and Prejudice- pride-and-prejudice.pdf  
@@ -75,6 +75,8 @@ Why Icebergs Float - Why-Icebergs-Float.pdf
 ```
 #### Example 1
 
+Let us take a look an example where we read the contents of the above file:
+
 ```java
 Stream<String> lines = Files.lines(Path.of(filePath));
 lines.forEach(System.out::println);
@@ -83,9 +85,9 @@ As shown in the example above, the `lines()` method takes the `Path` representin
 
 The output will be the contents of the file itself. 
 
-The same results can be achieved by invoking the `lines()` method on `BufferedReader` also. 
-
 #### Example 2
+
+The same results can be achieved by invoking the `lines()` method on `BufferedReader` also. Here is an example:
 
 ```java
 BufferedReader br = Files.newBufferedReader(Paths.get(filePath));
@@ -94,9 +96,9 @@ lines.forEach(System.out::println);
 ```
 **As streams are lazy-loaded in the above cases (ie; they generate elements upon request instead of storing them all in memory), reading and processing files will be efficient in terms of memory used.**
 
-The `Files.readAllLines()`  method can also be used to read a file into a `List` of `String` objects. It is possible to create a stream from this collection, by invoking the `stream()` method on it. Let us look at an example.
-
 #### Example 3
+
+The `Files.readAllLines()`  method can also be used to read a file into a `List` of `String` objects. It is possible to create a stream from this collection, by invoking the `stream()` method on it. Let us look at an example:
 
 ```java
 List<String> strList = Files
@@ -110,9 +112,11 @@ However, this method loads the entire contents of the file in one go and hence i
 
 The `try-with-resources` is an exception handling mechanism that allows us to declare resources to be used within a Java `try-with-resources` block. When the execution leaves the `try-with-resources` block, the used resources are automatically closed in the correct order (whether the method successfully completes or any exceptions are thrown). We can use `try-with-resources` to close any resource that implements either `AutoCloseable` or `Closeable`.
 
-**Streams are `AutoCloseable` implementations and need to be closed if they are backed by files.** Hence, we have to declare them as resources in a `try-with-resources` statement as shown in the below code fragments.
+**Streams are `AutoCloseable` implementations and need to be closed if they are backed by files.** 
 
 #### Example 1 revised using try-with-resources
+
+Let us now rewrite Example 1 with the try-with-resources statement as shown:
 
 ```java
 try (Stream<String> lines = Files
@@ -122,6 +126,8 @@ try (Stream<String> lines = Files
 ```
 #### Example 2 revised using try-with-resources
 
+As done in Example 1, we can rewrite Example 2 also with the try-with-resources statement as shown:
+
 ```java
 try (Stream<String> lines = 
   (Files.newBufferedReader(Paths.get(filePath))
@@ -129,15 +135,20 @@ try (Stream<String> lines =
   lines.forEach(System.out::println);
 }
 ```
+Hence, we have to declare them as resources in a `try-with-resources` statement as shown in the above code fragments.
+
 ### Using Parallel Streams
 
 By default, streams are serial, meaning that each step of a process is executed one after the other, sequentially. However, streams can be easily parallelized i.e.; a source stream can be split into multiple sub-streams executing in parallel. 
 
 **Each substream is processed independently in a separate thread and finally merged to produce the final result.** 
 
-The `parallel()` method can be invoked on any stream to get a parallel stream. Let us see a simple example to understand how parallel streams work.
+The `parallel()` method can be invoked on any stream to get a parallel stream.
 
 ####	Example 4
+
+ Let us see a simple example to understand how parallel streams work:
+
 ```java
 try (Stream<String> lines = 
   (Files.lines(Path.of(filePath)).parallel())) {
@@ -162,7 +173,7 @@ Parallel streams may perform better only if there is a large set of data to proc
 
 What if you need to read UTF-encoded files? All the methods we saw till now have overloaded forms that take a specified charset also as an argument. 
 
-Suppose we want to read from a file with Japanese characters as shown.
+Consider a file with Japanese characters as shown.
 
 #### Given file: input.txt
 
@@ -171,6 +182,8 @@ akarui     	_ あかるい  _   bright
 ```
 
 #### Example 5
+
+Let us see how we can read from the above file, which is UTF-encoded:
 
 ```java
 try (Stream<String> lines = Files
@@ -197,9 +210,12 @@ Let’s now look into a few of such cases to demonstrate how streams make file p
 
 ### Filtering by Data
 
-Stream obtained by reading this file can be filtered to retain only some of their elements by specifying conditions as demonstrated in the example below.
+We can apply various conditions on streams, using the filter() method which filters stream elements based on a given predicate.
 
 #### Example 6
+
+We can look at an example to understand how the stream obtained by reading this file can be filtered to retain only some of their elements by specifying conditions:
+
 ```java
 try (Stream<String> lines = Files
   .lines(Path.of(filePath))) {
@@ -219,9 +235,11 @@ The count of lines starting with 'A' is 2
 
 ### Splitting Words
 
-So what if you want to split the lines from this file into words and eliminate duplicates? Let us see how this can be done using Stream API.
+So what if you want to split the lines from this file into words and eliminate duplicates? 
 
 #### Example 7
+
+Let us look at a simple example to understand how this can be done using Stream API:
 
 ```java
 try (Stream<String> lines = Files
@@ -269,9 +287,10 @@ public class Cake {
 // Add a constructor to initialize the Cake objects
 }
 ```
-Here is the code to populate objects of class ***Cake*** using data from the ***cakes.csv*** file.
 
 #### Example 8
+
+So how do we populate objects of class ***Cake*** using data from the ***cakes.csv*** file? Here is an example:
 
 ```java
 Pattern pattern = Pattern.compile(",");
@@ -314,9 +333,9 @@ Consider the folder structure below based on which we shall be looking at some e
 ### Listing Directory Contents
 What if you just want to list the contents of a directory? A simple way to do this is by invoking the `Files.list()` method, which returns a stream of `Path` objects representing the files inside the directory passed as the argument. However, subdirectories are not traversed when this method is called.
 
-Let us look at some sample code. 
-
 #### Example 9
+
+Let us look at some sample code to list directories:
 
 ```java
 try (Stream<Path> paths = Files
@@ -334,9 +353,9 @@ src/main/resources/books/non-fiction
 src/main/resources/books/fiction
 ```
 
-So what if you need to list the regular files and not the directories? Here is an example.
-
 #### Example 10
+
+So what if you need to list the regular files and not the directories? Let us see an example:
 
 ```java
 try (Stream<Path> paths = Files
@@ -356,9 +375,9 @@ src/main/resources/books/bookIndex.txt
 
 The `Files.list()` method we saw above is non-recursive i.e.; the subdirectories are not traversed. What if you need to visit the subdirectories too? The `Files.walk()` method returns a stream of Path elements by recursively walking the file tree rooted at a given directory. 
 
-Let’s look at an example to understand more.
-
 #### Example 11
+
+Let’s look at an example to understand more:
 
 ```java
 try (Stream<Path> stream = Files
@@ -384,9 +403,9 @@ src/main/resources/books/bookIndex.txt
 
 In the previous example, we saw how the filtering is applied to the stream obtained from the `Files.walk()` method. There is a more efficient way of doing this by invoking the `Files.find()` method which evaluates a `BiPredicate` (a matcher function) for each file encountered while walking the file tree. The corresponding `Path` object is included in the returned stream if the `BiPredicate` returns true.
 
-Let us look at an example to see how the `find()` method can be invoked to find all PDF files anywhere within the given depth of the root folder.
-
 #### Example 12
+
+Let us look at an example to see how the `find()` method can be invoked to find all PDF files anywhere within the given depth of the root folder:
 
 ```java
 int depth = Integer.MAX_VALUE;
@@ -419,9 +438,9 @@ Consider a JAR file with the following structure.
 
 ![Zip file structure](/assets/img/posts/Processing-Files-using-Java-8-Streams/zip_2020-09-17_21-38-19.png)
 
-We can use the below code to iterate through the entries.
-
 ####	Example 13
+
+So how do we iterate through the entries of the JAR file? Here is an example which demonstrates this:
 
 ```java
 try (JarFile jFile = new JarFile(jarFile)) {
@@ -444,9 +463,9 @@ non-fiction/
 non-fiction/Why-Icebergs-Float.pdf
 ```
 
-What if we need to look for specific entries within a JAR file? Once we get the stream from the JAR file, we can always perform a filtering operation to get the matching ***JarEntry*** objects. Here is some code that demonstrates that. 
-
 #### Example 14
+
+What if we need to look for specific entries within a JAR file? Once we get the stream from the JAR file, we can always perform a filtering operation to get the matching ***JarEntry*** objects. Let us demonstrate it with an example:
 
 ```java
 try (JarFile jFile = new JarFile(jarFile)) {

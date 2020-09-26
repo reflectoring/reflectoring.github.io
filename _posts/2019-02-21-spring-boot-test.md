@@ -25,6 +25,8 @@ This tutorial is part of a series:
 3. [Testing JPA Queries with Spring Boot and `@DataJpaTest`](/spring-boot-data-jpa-test/)
 4. [Integration Tests with `@SpringBootTest`](/spring-boot-test/)
 
+**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://transactions.sendowl.com/stores/13745/194393) (if you buy through this link, I get a cut). 
+
 ## Dependencies
 
 The code examples in this article only need the dependencies to Spring Boot's test starter
@@ -415,4 +417,6 @@ as close to production as possible.
 `@SpringBootTest` brings the most value if we want to test the whole way through the application.
 For testing only certain slices or layers of the application, we have other options available.
 
-The example code used in this article is available on [github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing). 
+The example code used in this article is available on [github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing).
+
+**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://transactions.sendowl.com/stores/13745/194393) (if you buy through this link, I get a cut). 

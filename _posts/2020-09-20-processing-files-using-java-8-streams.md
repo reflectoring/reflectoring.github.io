@@ -238,7 +238,9 @@ As shown in the example above, each line from the file can be split into words b
 The output is as below.
 
 ```
-[green, anne, Why, Prejudice, Float, pdf, Pride, Avonlea, and, pride, of, prejudice, Matilda, gables, Anne, avonlea, Icebergs, Green, Gables]
+[green, anne, Why, Prejudice, Float, pdf, Pride, 
+Avonlea, and, pride, of, prejudice, Matilda, 
+gables, Anne, avonlea, Icebergs, Green, Gables]
 ```
 
 ### Reading from CSV Files into Java objects

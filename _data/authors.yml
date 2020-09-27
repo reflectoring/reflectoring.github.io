@@ -142,3 +142,10 @@ mmr:
   avatar: "/assets/img/authors/mmr.jpg"
   github: "murtuza-ranapur"
   bio: "Murtuza is a software engineer who is always on the outlook to find new ways to code."
+
+seema:
+  name: "Seema Richard"
+  email: "seema.richard@gmail.com"
+  avatar: "/assets/img/authors/seema.jpg"
+  github: "susetech"
+  bio: "Seema Richard is a Technical Architect with rich experience in Java-based enterprise applications. She is passionate about coding and authoring. She believes that teaching is the best way to learn."

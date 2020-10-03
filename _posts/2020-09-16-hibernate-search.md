@@ -60,7 +60,7 @@ The default value is `green`. If your Elasticsearch setup doesn't have the requi
 
 One more thing to note here is that Hibernate Search v.5 only supports Elasticsearch up to v.5.2.x, though I have been using it with v.6.8, and it's working just fine.
  
- ut, if you are using or planning on using Elasticsearch v.7 you might want to use Hibernate Search v.6 which is still in Beta at the time of this writing.
+But, if you are using or planning on using Elasticsearch v.7 you might want to use Hibernate Search v.6 which is still in Beta at the time of this writing.
 
 If you choose to stick with Lucene (which is the default integration) you can still follow along as the APIs are almost 
 identical across integrations.
@@ -131,78 +131,54 @@ To summarize:
 As I have said in the introduction to index entities we just need to annotate the entities and its fields with 
 a couple of annotations.
 
-Let's look at the `Post` entity to understand it better. 
-
-```java
-@Getter
-@Setter
-@Entity
-@Indexed(index = "idx_post")
-@NormalizerDef(name = "lower",
-    filters = @TokenFilterDef(factory = LowerCaseFilterFactory.class))
-class Post {
-  @Id
-  private String id;
-
-  @Field(name = "body") 
-  @Field(name = "bodyFiltered", 
-        analyzer = @Analyzer(definition = "stop"))
-  private String body;
-
-  @ManyToOne
-  @IndexedEmbedded
-  private User user;
-
-  @Field(normalizer = @Normalizer(definition = "lower"))
-  @Enumerated(EnumType.STRING)
-  private Tag tag;
-
-  private String imageUrl;
-
-  private String imageDescription;
-
-  @Field
-  private String hashTags;
-
-  @Field
-  @SortableField
-  private long likeCount;
-
-  @Field(analyze = Analyze.NO)
-  @SortableField
-  private LocalDateTime createdAt;
-}
-```
-
-**Note**: The examples make use of project Lombok to avoid boilerplate code such as getters and setters
-
-You will notice a couple of new annotations in the class above. 
+Let's start with the `@Indexed` annotation. 
 
 ### `@Indexed` Annotation
+
+```java
+@Entity
+@Indexed(index = "idx_post")
+class Post {
+  ....
+}
+```
 
 As the name suggests, with `@Indexed` we make this entity eligible for indexing. I have also 
 given the index the name `idx_post` which is not required. 
 
 By default, Hibernate Search will use the fully qualified class
-name as the index name. 
+name as the index name.
+
+Now, to understand `@Indexed` annotation better, let's draw an analogy between it and Hibernate `@Entity` annotation. With `@Entity` we map 
+a class to a database table and, it's fields to the table columns. Similarly, with `@Indexed` we map a class to Elasticsearch's index and, 
+it's fields to its document fields(An Index is collection of JSON documents). 
+
+In case of `@Entity` we have a companion annotation called `@Column` to map field while in case of `@Indexed` we have `@Field` 
+annotation to do the same. 
+
+Let's dive deeper into the `@Field` annotation. 
 
 ### `@Field` Annotation
 We need to apply the `@Field` annotation on all the fields that we wish to search, sort or need for projection.  
 
 `@Field` has several properties which we can set to customize its behavior but if we stick to the defaults it will 
 exhibit the following behavior:
-* Hibernate will index and store its value under the same field name on which it's annotated. For instance, value of `Post` classes' `hashTags` 
-will be stored in the `hashTags` field. 
-* Elasticsearch will map this field to it's `text` type and will also apply a default analyzer on it. For instance, if the `hashTags` field has the value '#food#health', it will be internally stored as `['food', 'health]` after being analyzed.
+* `@Field` has an attribute called `name` which when left empty picks the name of the field on which the annotation is placed. 
+Hibernate search then uses this name to store the field's value in the index document. 
+* Hibernate search maps this field to Elasticsearch native types. For instance, a field of type `String` gets mapped 
+to `text` type, `Boolean` to `boolean` type, `Date` to `date` type of Elasticsearch. 
+* Elasticsearch also applies a default analyzer on the value. The default analyzer
+first applies a tokenizer that splits text on non alphanumeric characters and then applies the lowercase filter.
+For instance, if the `hashTags` field has the value '#Food#Health', it will be internally stored as `['food', 'health]` after being analyzed.
 
-Now, let's look at the `Post` class and zoom in on some fields to see how we can change the handling of the fields by 
-setting various properties of `@Field` annotation.
-
-`@Field(name = "body")` - As I said in the previous section we don't need to set the `name` property if we are content with the class field name. 
-But, if that's not the case then we can always use `name` property to override it.
-
-### `@Analyzer` And Multi-Field Feature
-`@Field(name = "bodyFiltered", analyzer = @Analyzer(definition = "stop"))` - We can also apply multiple `@Field` annotations on a single field. 
+### `@Analyzer`
+```java
+@Field(name = "body") 
+@Field(name = "bodyFiltered", 
+       analyzer = @Analyzer(definition = "stop"))
+private String body;
+``` 
+We can also apply multiple `@Field` annotations on a single field. 
 Here I have given a different name to the 
 field and have also provided a different analyzer. 
 
@@ -214,70 +190,97 @@ Here's a list of other
 
 ### `@Normalizer`
 
+```java
+@Entity
+@Indexed(index = "idx_post")
+@NormalizerDef(name = "lowercase",
+    filters = @TokenFilterDef(factory = LowerCaseFilterFactory.class))
+class Post {
+  ...
+
+  @Field(normalizer = @Normalizer(definition = "lowercase"))
+  @Enumerated(EnumType.STRING)
+  private Tag tag;
+  
+  ...
+
+}
+```
+
 The `tag` field, which is an enum, will mostly consist of a single word. We don't need to analyze such fields. So, instead, we can either set the `analyze` property of `@Field` to 
 `Analyze.NO` or we can apply a `normalizer`. Hibernate will then treat this field as `keyword`. 
+
+Built-in Normalizers are directly translated to Elasticsearch supported normalizers but for this to work you 
+need to define Normalizer using `@NormalizerDef`
 
 The 'lowercase' normalizer
 that I have used here will be applied both at the time of indexing and searching. So, both 'MOVIE' or 'movie' value will be a match.  
 
 ### `@SortableField`
+```java
+@Field
+@SortableField
+private long likeCount;
+```
 
 The `@SortableField` annotation is a companion annotation of `@Field`. When we add `@SortableField` to a field, Elasticsearch will optimize the index for sorting operations over those fields.
 We can still perform sorting operations over other fields which are not marked with this annotation but that will have some
 performance penalties.
 
-We need to cover a few more properties of the `@Field` annotation before moving on. Let's look at the `User` class for that:
+### Exclude a Field From Indexing
+```java
+@Field(index = Index.NO, store = Store.YES) 
+private String middle;
+```
+
+`Index.NO` indicates that the field won't be indexed. We won't be able to perform any search operation over it. You might be
+thinking "Why not simply remove the `@Field` annotation?". And the answer is that we still need this field for [Projection](#projection).
+
+### Combine Field Data
+```java
+@Field(store = Store.YES)
+@Field(name = "fullName")
+private String first;
+
+@Field(store = Store.YES)
+@Field(name = "fullName")
+private String last;
+```
+In [Analyzer Section](#analyzer) we saw that we can map one entity field to multiple index document fields. We can also do the inverse. As 
+you can see `@Field(name = "fullName")` is mapped to `first` and `last` both. This way `fullName` will have the content of both fields. So, instead of searching over the `first` and `last` field separately, we can directly search over `fullName`. 
+
+### Store Property
+We can set store to `Store.YES` when we plan to use it in projection. Note that this will require extra space. Plus, 
+Elasticsearch already stores the value in the `_source` field(You can find more on source field in this [Elasticsearch Doc](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-source-field.html)). So, the only reason to set the store to true is that when we don't want Elasticsearch to look up and extract value from the `_source` field. 
+
+We need to set store to `Store.YES` when we set `Index.NO` though, or else Elasticsearch won't store it at all. 
+
+### `@IndexedEmbedded` And `@ContainedIn`
+```java
+@Entity
+@Indexed(index = "idx_post")
+class Post {
+  ...
+  @ManyToOne
+  @IndexedEmbedded
+  private User user;  
+  ...
+
+}
+```
+We use `@IndexedEmbedded` when we want to perform a search over nested objects fields. For instance, let's say we want to search
+all posts made by a user with the first name 'Joe' (`user.first: joe`). 
 
 ```java
-@Getter
-@Setter
 @Entity
 @Indexed(index = "idx_user")
 class User {
-  @Id
-  private String id;
-
-  @Field(store = Store.YES)
-  @Field(name = "fullName")
-  private String first;
-
-  @Field(index = Index.NO, store = Store.YES) 
-  private String middle;
-
-  @Field(store = Store.YES)
-  @Field(name = "fullName")
-  private String last;
-
-  @Field
-  private Integer age;
-
+  ...
   @ContainedIn
   @OneToMany(mappedBy = "user")
   private List<Post> post;
 }
 ```
-
-A couple of interesting things to notice here. Let's start with the `index` property.
-
-### Exclude a Field From Indexing
-`@Field(index = Index.NO, store = Store.YES)` - `Index.NO` indicates that the field won't be indexed. We won't be able to perform any search operation over it. You might be
-thinking "Why not simply remove the `@Field` annotation?". And the answer is that we still need this field for [Projection](#projection).
-
-### Combine Field Data
-`@Field(name = "fullName")` - In the `Post` class we saw that we can map one entity field to multiple index document fields. We can also do the inverse. As 
-you can see `@Field(name = "fullName")` is mapped to `first` and `last` both. This way `fullName` will have the content of both fields. So, instead of searching over the `first` and `last` field separately, we can directly search over `fullName`. 
-
-### Store Property
-`@Field(store = Store.YES)` - We can set store to `Store.YES` when we plan to use it in projection. Note that this will require extra space. Plus, 
-Elasticsearch already stores the value in the `_source` field. So, the only reason to set the store to true is that when we don't want Elasticsearch to look up and extract value from the `_source` field. 
-
-We need to set store to `Store.YES` when we set `Index.NO`m though, or else Elasticsearch won't store it at all. 
-
-### `@IndexedEmbedded` And `@ContainedIn`
-
-We use `@IndexedEmbedded` when we want to perform a search over nested objects fields. For instance, let's say we want to search
-all posts made by a user with the first name 'Joe' (`user.first: joe`). 
-
 `@ContainedIn` makes a `@OneToMany` relationship bidirectional. When the values of this
 entity are updated, its values in the root entity i.e., in the `idx_post`(Post) index will also be updated.
 
@@ -551,6 +554,8 @@ accordingly.
 
 Query DSL also provides us a way to define a sort field and order using `sort()`. We can also perform sort operation on multiple fields by 
 chaining with `andByField()`.
+
+## Further Reading
 
 That's it! I mean this is not everything, but I believe this is enough to get you started. For further reading you can 
 explore the following:

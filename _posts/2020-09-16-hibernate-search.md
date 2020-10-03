@@ -151,24 +151,24 @@ name as the index name.
 
 Now, to understand `@Indexed` annotation better, let's draw an analogy between it and Hibernate `@Entity` annotation. With `@Entity` we map 
 a class to a database table and, it's fields to the table columns. Similarly, with `@Indexed` we map a class to Elasticsearch's index and, 
-it's fields to its document fields(An Index is collection of JSON documents). 
+it's fields to its document fields(An Index is a collection of JSON documents). 
 
-In case of `@Entity` we have a companion annotation called `@Column` to map field while in case of `@Indexed` we have `@Field` 
+In the case of `@Entity`, we have a companion annotation called `@Column` to map field while in the case of `@Indexed` we have `@Field` 
 annotation to do the same. 
 
 Let's dive deeper into the `@Field` annotation. 
 
 ### `@Field` Annotation
-We need to apply the `@Field` annotation on all the fields that we wish to search, sort or need for projection.  
+We need to apply the `@Field` annotation on all the fields that we wish to search, sort, or need for projection.  
 
 `@Field` has several properties which we can set to customize its behavior but if we stick to the defaults it will 
 exhibit the following behavior:
-* `@Field` has an attribute called `name` which when left empty picks the name of the field on which the annotation is placed. 
+* `@Field` has a property called `name` which when left empty picks the name of the field on which the annotation is placed. 
 Hibernate search then uses this name to store the field's value in the index document. 
 * Hibernate search maps this field to Elasticsearch native types. For instance, a field of type `String` gets mapped 
 to `text` type, `Boolean` to `boolean` type, `Date` to `date` type of Elasticsearch. 
 * Elasticsearch also applies a default analyzer on the value. The default analyzer
-first applies a tokenizer that splits text on non alphanumeric characters and then applies the lowercase filter.
+first applies a tokenizer that splits text on non-alphanumeric characters and then applies the lowercase filter.
 For instance, if the `hashTags` field has the value '#Food#Health', it will be internally stored as `['food', 'health]` after being analyzed.
 
 ### `@Analyzer`
@@ -182,8 +182,8 @@ We can also apply multiple `@Field` annotations on a single field.
 Here I have given a different name to the 
 field and have also provided a different analyzer. 
 
-This allows us to perform different kinds of search operations on the same entity field. We can also pass different analyzers using the `analyzer` property. Here, I have passed `stop` value in the analyzer 
-definition which refers to an in-built Elasticsearch analyzer called "Stop Analyzer". It removes common stop words ('is','an', etc) that aren't very helpful while querying. 
+This allows us to perform different kinds of search operations on the same entity field. We can also pass different analyzers using the `analyzer` property. Here, I have passed the `stop` value in the analyzer 
+definition which refers to an in-built Elasticsearch analyzer called "Stop Analyzer". It removes common stop words ('is', 'an', etc) that aren't very helpful while querying. 
 
 Here's a list of other 
 [Elasticsearch's Built-in Analyzers](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-analyzers.html).
@@ -210,11 +210,14 @@ class Post {
 The `tag` field, which is an enum, will mostly consist of a single word. We don't need to analyze such fields. So, instead, we can either set the `analyze` property of `@Field` to 
 `Analyze.NO` or we can apply a `normalizer`. Hibernate will then treat this field as `keyword`. 
 
-Built-in Normalizers are directly translated to Elasticsearch supported normalizers but for this to work you 
-need to define Normalizer using `@NormalizerDef`
-
 The 'lowercase' normalizer
 that I have used here will be applied both at the time of indexing and searching. So, both 'MOVIE' or 'movie' value will be a match.  
+
+Normalizer can apply one or more filters on the input. In the above example, I have only added the lowercase filter using `LowerCaseFilterFactory` but if required we
+can also add multiple filters such as `StopFilterFactory` which removes common English [stop words](https://en.wikipedia.org/wiki/Stop_word), or `SnowballPorterFilterFactory` which performs stemming on the word 
+(Stemming is a process of converting a given word to its base word. E.g., 'Refactoring' get converted to 'Refactor'). 
+
+You can find a full list of other available filters in [Apache Solr doc](https://cwiki.apache.org/confluence/display/solr/AnalyzersTokenizersTokenFilters#AnalyzersTokenizersTokenFilters-TokenFilterFactories#).
 
 ### `@SortableField`
 ```java

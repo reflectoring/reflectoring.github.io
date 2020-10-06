@@ -1,8 +1,8 @@
 ---
 title: "Full-Text Search with Hibernate Search and Spring Boot"
 categories: [spring-boot]
-date: 2020-09-16 20:00:00 +1100
-modified: 2020-09-16 20:00:00 +1100
+date: 2020-10-07 00:00:00 +1100
+modified: 2020-10-07 20:00:00 +1100
 author: mmr
 excerpt: "Hibernate Search lets you enable Fulltext search functionality in your existing Spring Boot application. Not 
 just that it also provides seamless integration with Fulltext powerhouses such as Elasticsearch."
@@ -60,28 +60,28 @@ The default value is `green`. If your Elasticsearch setup doesn't have the requi
 
 One more thing to note here is that Hibernate Search v.5 only supports Elasticsearch up to v.5.2.x, though I have been using it with v.6.8, and it's working just fine.
  
-But, if you are using or planning on using Elasticsearch v.7 you might want to use Hibernate Search v.6 which is still in Beta at the time of this writing.
+If you are using or planning on using Elasticsearch v.7 you might want to use Hibernate Search v.6 which is still in Beta at the time of this writing.
 
 If you choose to stick with Lucene (which is the default integration) you can still follow along as the APIs are almost 
 identical across integrations.
 
 ## How Does Hibernate Search Work?
 
-Working of the Hibernate Search can be summarized by the following points:
+Let's have a look at how Hibernate Search works in general.
 
 First, we need to tell Hibernate [what entities we want to index](#preparing-entities-for-indexing).
 
 We can also tell Hibernate how to index the fields of those entities using [analyzers and normalizers](#analyzers-and-normalizers).
 
-Then, when we boot up the application based on our selected `index_schema_management_strategy` Hibernate will either create, update or validate index mappings in Elasticsearch.
+Then, when we boot up the application Hibernate will either create, update, or validate index mappings in Elasticsearch, depending on our selected `index_schema_management_strategy`.
 
 Once the application has started, Hibernate Search will keep track of any operations performed on the entities and 
 will apply the same on its corresponding indexes in the Elasticsearch. 
 
-Once we have loaded some data in Indexes we can [perform search queries](#performing-queries) using Hibernate Search APIs. 
+Once we have loaded some data into indexes we can [perform search queries](#performing-queries) using Hibernate Search APIs. 
 
 At searching time 
-Hibernate will again apply the same analyzers and normalizers that were used during indexing. 
+Hibernate Search will again apply the same analyzers and normalizers that were used during indexing. 
 
 ## Some Important Terms
 
@@ -89,7 +89,7 @@ Hibernate will again apply the same analyzers and normalizers that were used dur
 A `String` field can be either mapped to the `text` or the `keyword` type of Elasticsearch. 
 
 **The primary difference between `text` and
-a `keyword` is that a `text` field can be tokenized while a `keyword` cannot.** 
+a `keyword` is that a `text` field will be tokenized while a `keyword` cannot.** 
 
 We can use the `keyword` type when we 
 want to perform filtering or sorting operations on the field.
@@ -108,7 +108,7 @@ Elasticsearch supports [numerous other types](https://www.elastic.co/guide/en/el
 
 ### Analyzers and Normalizers
 
-Analyzers and normalizers are a kind of text analysis operations that are performed on `text` and `keyword` respectively, 
+Analyzers and normalizers are text analysis operations that are performed on `text` and `keyword` respectively, 
 before indexing them and searching for them. 
 
 When an analyzer is applied on `text`, it first tokenizes the text and then applies one or more 
@@ -128,10 +128,10 @@ To summarize:
 |Can perform term based search| Can only match exact text|
 
 ## Preparing Entities For Indexing
-As I have said in the introduction to index entities we just need to annotate the entities and its fields with 
+As mentioned in the introduction to index entities we just need to annotate the entities and their fields with 
 a couple of annotations.
 
-Let's start with the `@Indexed` annotation. 
+Let's have a look at those annotations. 
 
 ### `@Indexed` Annotation
 
@@ -143,29 +143,28 @@ class Post {
 }
 ```
 
-As the name suggests, with `@Indexed` we make this entity eligible for indexing. I have also 
+As the name suggests, with `@Indexed` we make this entity eligible for indexing. We have also 
 given the index the name `idx_post` which is not required. 
 
 By default, Hibernate Search will use the fully qualified class
 name as the index name.
 
-Now, to understand `@Indexed` annotation better, let's draw an analogy between it and Hibernate `@Entity` annotation. With `@Entity` we map 
-a class to a database table and, it's fields to the table columns. Similarly, with `@Indexed` we map a class to Elasticsearch's index and, 
-it's fields to its document fields(An Index is a collection of JSON documents). 
+With the `@Entity` annotation from JPA, we map 
+a class to a database table and, its fields to the table columns. 
 
-In the case of `@Entity`, we have a companion annotation called `@Column` to map field while in the case of `@Indexed` we have `@Field` 
+Similarly, with `@Indexed` we map a class to Elasticsearch's index and 
+its fields to the document fields in the index (an Index is a collection of JSON documents). 
+
+In the case of `@Entity`, we have a companion annotation called `@Column` to map fields while in the case of `@Indexed` we have the `@Field` 
 annotation to do the same. 
 
-Let's dive deeper into the `@Field` annotation. 
-
 ### `@Field` Annotation
-We need to apply the `@Field` annotation on all the fields that we wish to search, sort, or need for projection.  
+We need to apply the `@Field` annotation on all the fields that we wish to search, sort, or that we need for [projection](#projection).  
 
-`@Field` has several properties which we can set to customize its behavior but if we stick to the defaults it will 
-exhibit the following behavior:
+`@Field` has several properties which we can set to customize its behavior. By default, it will exhibit the following behavior:
 * `@Field` has a property called `name` which when left empty picks the name of the field on which the annotation is placed. 
-Hibernate search then uses this name to store the field's value in the index document. 
-* Hibernate search maps this field to Elasticsearch native types. For instance, a field of type `String` gets mapped 
+Hibernate Search then uses this name to store the field's value in the index document. 
+* Hibernate Search maps this field to Elasticsearch native types. For instance, a field of type `String` gets mapped 
 to `text` type, `Boolean` to `boolean` type, `Date` to `date` type of Elasticsearch. 
 * Elasticsearch also applies a default analyzer on the value. The default analyzer
 first applies a tokenizer that splits text on non-alphanumeric characters and then applies the lowercase filter.
@@ -179,14 +178,16 @@ For instance, if the `hashTags` field has the value '#Food#Health', it will be i
 private String body;
 ``` 
 We can also apply multiple `@Field` annotations on a single field. 
-Here I have given a different name to the 
+Here we have given a different name to the 
 field and have also provided a different analyzer. 
 
-This allows us to perform different kinds of search operations on the same entity field. We can also pass different analyzers using the `analyzer` property. Here, I have passed the `stop` value in the analyzer 
-definition which refers to an in-built Elasticsearch analyzer called "Stop Analyzer". It removes common stop words ('is', 'an', etc) that aren't very helpful while querying. 
+This allows us to perform different kinds of search operations on the same entity field. We can also pass different analyzers using the `analyzer` property. 
 
-Here's a list of other 
-[Elasticsearch's Built-in Analyzers](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-analyzers.html).
+Here, we have passed the `stop` value in the analyzer 
+definition which refers to a built-in Elasticsearch analyzer called "Stop Analyzer". It removes common stop words ('is', 'an', etc) that aren't very helpful while querying. 
+
+Here's a list of Elasticsearch's other 
+[Built-in analyzers](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-analyzers.html).
 
 ### `@Normalizer`
 
@@ -211,13 +212,13 @@ The `tag` field, which is an enum, will mostly consist of a single word. We don'
 `Analyze.NO` or we can apply a `normalizer`. Hibernate will then treat this field as `keyword`. 
 
 The 'lowercase' normalizer
-that I have used here will be applied both at the time of indexing and searching. So, both 'MOVIE' or 'movie' value will be a match.  
+that we have used here will be applied both at the time of indexing and searching. So, both 'MOVIE' or 'movie' will be a match.  
 
-Normalizer can apply one or more filters on the input. In the above example, I have only added the lowercase filter using `LowerCaseFilterFactory` but if required we
+`@Normalizer` can apply one or more filters on the input. In the above example, we have only added the lowercase filter using `LowerCaseFilterFactory` but if required we
 can also add multiple filters such as `StopFilterFactory` which removes common English [stop words](https://en.wikipedia.org/wiki/Stop_word), or `SnowballPorterFilterFactory` which performs stemming on the word 
-(Stemming is a process of converting a given word to its base word. E.g., 'Refactoring' get converted to 'Refactor'). 
+(Stemming is a process of converting a given word to its base word. E.g., 'Refactoring' gets converted to 'Refactor'). 
 
-You can find a full list of other available filters in [Apache Solr doc](https://cwiki.apache.org/confluence/display/solr/AnalyzersTokenizersTokenFilters#AnalyzersTokenizersTokenFilters-TokenFilterFactories#).
+You can find a full list of other available filters in the [Apache Solr docs](https://cwiki.apache.org/confluence/display/solr/AnalyzersTokenizersTokenFilters#AnalyzersTokenizersTokenFilters-TokenFilterFactories#).
 
 ### `@SortableField`
 ```java
@@ -227,7 +228,7 @@ private long likeCount;
 ```
 
 The `@SortableField` annotation is a companion annotation of `@Field`. When we add `@SortableField` to a field, Elasticsearch will optimize the index for sorting operations over those fields.
-We can still perform sorting operations over other fields which are not marked with this annotation but that will have some
+We can still perform sorting operations over other fields that are not marked with this annotation but that will have some
 performance penalties.
 
 ### Exclude a Field From Indexing
@@ -237,7 +238,7 @@ private String middle;
 ```
 
 `Index.NO` indicates that the field won't be indexed. We won't be able to perform any search operation over it. You might be
-thinking "Why not simply remove the `@Field` annotation?". And the answer is that we still need this field for [Projection](#projection).
+thinking "Why not simply remove the `@Field` annotation?". And the answer is that we still need this field for [projection](#projection).
 
 ### Combine Field Data
 ```java
@@ -249,16 +250,17 @@ private String first;
 @Field(name = "fullName")
 private String last;
 ```
-In [Analyzer Section](#analyzer) we saw that we can map one entity field to multiple index document fields. We can also do the inverse. As 
-you can see `@Field(name = "fullName")` is mapped to `first` and `last` both. This way `fullName` will have the content of both fields. So, instead of searching over the `first` and `last` field separately, we can directly search over `fullName`. 
+In the [section about `@Analyzer`](#analyzer), we saw that we can map one entity field to multiple index document fields. We can also do the inverse. 
+
+In the code above, `@Field(name = "fullName")` is mapped to `first` and `last` both. This way, the index property `fullName` will have the content of both fields. So, instead of searching over the `first` and `last` fields separately, we can directly search over `fullName`. 
 
 ### Store Property
-We can set store to `Store.YES` when we plan to use it in projection. Note that this will require extra space. Plus, 
-Elasticsearch already stores the value in the `_source` field(You can find more on source field in this [Elasticsearch Doc](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-source-field.html)). So, the only reason to set the store to true is that when we don't want Elasticsearch to look up and extract value from the `_source` field. 
+We can set `store` to `Store.YES` when we plan to use it in projection. Note that this will require extra space. Plus, 
+Elasticsearch already stores the value in the `_source` field (you can find more on the source field in the [Elasticsearch docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-source-field.html)). So, the only reason to set the `store` property to `true` is that when we don't want Elasticsearch to look up and extract value from the `_source` field. 
 
 We need to set store to `Store.YES` when we set `Index.NO` though, or else Elasticsearch won't store it at all. 
 
-### `@IndexedEmbedded` And `@ContainedIn`
+### `@IndexedEmbedded` and `@ContainedIn`
 ```java
 @Entity
 @Indexed(index = "idx_post")
@@ -285,7 +287,7 @@ class User {
 }
 ```
 `@ContainedIn` makes a `@OneToMany` relationship bidirectional. When the values of this
-entity are updated, its values in the root entity i.e., in the `idx_post`(Post) index will also be updated.
+entity are updated, its values in the index of the root `Post` entity will also be updated.
 
 ## Loading Current Data Into Elasticsearch
 Before we perform any queries, we first need to load data into Elasticsearch:
@@ -313,13 +315,13 @@ We can call the `initiateIndexing()` method either at the application startup or
 
 `createIndexer()` also takes in class references as input. This gives us more choice over which entities we want to index. 
 
-This is going to be a one-time thing. After this, Hibernate search will keep entities in both sources in sync. Unless of course for some reason our database goes out of sync with Elasticsearch in which case this indexing API might come in handy again. 
+This is going to be a one-time thing. After this, Hibernate Search will keep entities in both sources in sync. Unless of course for some reason our database goes out of sync with Elasticsearch in which case this indexing API might come in handy again. 
 
 ## Performing Queries
 With Elasticsearch integration we have two choices for writing queries:
 1. **Hibernate Search query DSL**: a nice way to write Lucene queries. If you are familiar with [Specifications](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#specifications) and the
 [Criteria API](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#criteria) you will find it easy to get your head around it.
-2. **Elasticsearch query**: Hibernate search supports both Elasticsearch native queries and JSON queries.
+2. **Elasticsearch query**: Hibernate Search supports both Elasticsearch native queries and JSON queries.
 
 In this tutorial, we are only going to look at Hibernate Search query DSL. 
 
@@ -426,9 +428,9 @@ operator. If we want to exclude the limits, we just call `excludeLimit()` after 
 For the other two fields, we have again used a keyword query. 
 
 Now, it's time to combine all queries. To do so, we will make use of `QueryBuilder`'s `bool()` function which 
-provides us with verbs such as `should()`, `must()` and `not()`. 
+provides us with verbs such as `should()`, `must()`, and `not()`. 
 
-I have used `must()` for `likeCount` query and `should()`
+We have used `must()` for `likeCount` query and `should()`
 for the rest as they are optional. Optional queries wrapped in `should()` contribute to the relevance score.
 
 ### Fuzzy And Wildcard Search Queries
@@ -446,7 +448,7 @@ it with the `fuzzy()` function it enables us to perform fuzzy searches too.
 Fuzzy search gives relevant results even if you have some typos in your query. It gives end-users some flexibility in terms 
 of searching by allowing some degree of error. The threshold of the error to be allowed can be decided by us. 
 
-For instance, here I have
+For instance, here we have
 set edit distance to 2 (default is also 2 by the way) which means Elasticsearch will match all the words with a maximum of 2 differences to 
 the input. e.g., 'jab' will match 'jane'.
 
@@ -552,7 +554,7 @@ Elasticsearch indexes in a single go.
 
 To perform pagination we need two things, the number of results we want per page and page offset (or page number, to put it plainly).
 
-Prior we can pass call `setMaxResult()` and `setFirstResult()` when building our `FullTextQuery`. Then query will return results 
+Prior we can pass call `setMaxResult()` and `setFirstResult()` when building our `FullTextQuery`. Then, the query will return results 
 accordingly.
 
 Query DSL also provides us a way to define a sort field and order using `sort()`. We can also perform sort operation on multiple fields by 
@@ -565,7 +567,7 @@ explore the following:
 
 * [Phrase queries](https://docs.jboss.org/hibernate/stable/search/reference/en-US/html_single/#_phrase_queries) - Which allows us to search complete sentences
 * [Simple query Strings](https://docs.jboss.org/hibernate/stable/search/reference/en-US/html_single/#_simple_query_string_queries) - It's a powerful function that can translate string input into Lucene query. With this, you can allow your platform to take queries directly from the end-users. Fields on which the query needs to perform will still need to be specified. 
-* [Faceting](https://docs.jboss.org/hibernate/stable/search/reference/en-US/html_single/#query-faceting) - Faceted search is a technique which allows to divide the results of a query into multiple categories. 
+* [Faceting](https://docs.jboss.org/hibernate/stable/search/reference/en-US/html_single/#query-faceting) - Faceted search is a technique which allows us to divide the results of a query into multiple categories. 
 
 ## Conclusion
 

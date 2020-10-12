@@ -16,7 +16,11 @@ To avoid getting bogged down by these mundane tasks, we can use [LocalStack](htt
 
 Simply put, **LocalStack is an open-source mock of the real AWS services. It provides a testing environment on our local machine with the same APIs as the real AWS services.** We switch to using the real AWS services only in the integration environment and beyond.
 
+**If you like to learn about deploying a production-ready Spring Boot application to AWS, have a look at the [Stratospheric book](https://stratospheric.dev)!**
+
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/localstack" %}
+
+
 
 ## Why Use LocalStack?
 The method of temporarily using dummy (or mock, fake, proxy) objects in place of actual ones is a popular way of running tests for applications with external dependencies. Most appropriately, these dummies are called [test doubles](http://xunitpatterns.com/Test%20Double.html). 
@@ -308,3 +312,5 @@ We saw how to use LocalStack for testing the integration of our application with
 I hope this will help you to feel empowered and have more fun while working with AWS services during development and lead to higher productivity, shorter development cycles, and lower AWS cloud bills.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/localstack).
+
+**If you like to learn about deploying a production-ready Spring Boot application to AWS, have a look at the [Stratospheric book](https://stratospheric.dev)!**

@@ -1,5 +1,5 @@
 ---
-title: "Health Checks with Spring Boot"
+title: "Twelve-Factor App with Spring Boot"
 categories: [spring-boot]
 date: 2020-09-27 06:00:00 +1000
 modified: 2020-09-27 06:00:00 +1000
@@ -9,21 +9,21 @@ image:
   auto: 0082-ekg
 ---
 
-[Twelve-factor app](https://12factor.net) is a set of guidelines for building good quality software. These guidelines were initially conceived in Heroku but have come to be considered as best practices for building cloud native applications. By cloud native we will mean application which is portable across environments, scalable to take advantage of the elastic capabilities of the cloud.
+[Twelve-factor app](https://12factor.net) is a set of guidelines for building Software as a Service(SAA) applications. These guidelines were initially conceived in Heroku and are regarded as best practices for building cloud-native applications. By cloud-native, we will mean an application that is portable across environments, scalable to take advantage of the elastic capabilities of the cloud, and easy to update.
 
-A majority of these principles are implicit in today's microservice frameworks. However we can also observe a shift from the 'older way' of building systems targetted to run on constrained infrastructure. Spring Boot is a popular framework for building microservice application. In this article, we will build a Twelve-factor application with Spring Boot and discuss these along.
+A majority of these principles are implicit in today's microservice frameworks. However, we can also observe a shift from the 'older way' of building systems targetted to run on constrained infrastructure. Spring Boot is a popular framework for building a microservice application. In this article, we will build a Twelve-factor application with Spring Boot and discuss these along.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check" %} 
 
 ## What are the Twelve-factors
-The Twelve-factor is a set of twelve principles encompassing guidelines on managing configuration data, abstracting library dependencies and backing services, log streaming, and administration. A common theme running through all the twelve principles is making the application portable to meet the demands of dynamic environment provisioning typical of cloud platforms. That is also the reason why they are often discussed along side cloud-native applications.
+The Twelve-factor is a set of twelve principles encompassing guidelines on managing configuration data, abstracting library dependencies and backing services, log streaming, and administration. A common theme running through all the twelve principles is making the application portable to meet the demands of a dynamic environment provisioning typical of cloud platforms. That is also the reason why they are often discussed alongside cloud-native applications.
 
 ## Codebase
 > One codebase tracked in revision control, many deploys
 
-When not using Cloud, we were used to working with a fixed set of environments like dev, qa, prod in on-premise infrastructure. Each have environment specific resources like database, api url's. This principle advocates having a single codebase that can be built and deployed to multiple environments. To achieve this we need to separate all the environment dependencies into a form that can be specified during build and run. 
+When not using Cloud, we were used to working with a fixed set of environments like dev, QA, prod in on-premise infrastructure. Each has environment-specific resources like database, API urls. This principle advocate having a single codebase that can be built and deployed to multiple environments. To achieve this we need to separate all the environment dependencies into a form that can be specified during the build and run. 
 
-Following this principle, we will have a single Git repository containing the source code of our Spring Boot application. This will be built for different environments by specifying environment specific properties. Spring Profiles and environment properties are standard ways of doing this. 
+Following this principle, we will have a single Git repository containing the source code of our Spring Boot application. This will be built for different environments by specifying environment-specific properties. Spring Profiles and environment properties are standard ways of doing this. 
 
 This rule will be violated if we have to change the source code before building for a specific environment.
 
@@ -36,19 +36,19 @@ Some of the key components of this condition are :
 - Declarative
 - Versioning 
 - Isolating the dependencies by bundling them with the application
-The dependencies are declared in external files leveraging dependency management tools of the platform, For Spring Boot application we declare the library dependencies in `pom.xml` or gradle depending on whether we are using Maven or Gradle. For our Spring Boot application, our pom.xml contains the dependencies of database driver and web framework.
+The dependencies are declared in external files leveraging dependency management tools of the platform, For the Spring Boot application, we declare the library dependencies in `pom.xml` or Gradle depending on whether we are using Maven or Gradle. For our Spring Boot application, our pom.xml contains the dependencies of database drivers and a web framework.
 
 ## Config
 > Store config in the environment
 
-Examples of configuration data include database connection URL and credentials, URLs of services on which an application depends. These most often have different values across environments. If these are hard-coded in the code or in property files bundled with the application, we need to update the application for deploying to different environments. Instead a better approach is to update the configuration with environment variables.
+Examples of configuration data include database connection URL and credentials, URLs of services on which an application depends. These most often have different values across environments. If these are hard-coded in the code or in property files bundled with the application, we need to update the application for deploying to different environments. Instead, a better approach is to update the configuration with environment variables.
 
-So all environment related information is extracted as environment variables. The snippet of our property files shows the URLs mapped to environment variables. We can supply the values from command line if the application is run standalone. If The default behaviour Spring Boot applications is to prefer using values from environment variables over values declared in property files. Kubernetes is used as container orchestration system. The environment variables are supplied in configmap or in env variables in container spec in Deployment object.
+So all environment-related information is extracted as environment variables. The snippet of our property files shows the URLs mapped to environment variables. We can supply the values from the command line if the application is run standalone. If the default behavior Spring Boot applications is to prefer using values from environment variables over values declared in property files. Kubernetes is used as a container orchestration system. The environment variables are supplied in configmap or in env variables in container spec in Deployment object.
 
 ## Backing Services
-> Treat backing services as attached resourcesTreat backing services as attached resources 
+> Treat backing services as attached resources
 
-Backing services should be attached and replacable instead of embedded in the code. Use of specifications like JPA help us achieve this for RDBMS databases. But in the absence of specifications some code creeps into the code although we can keep them separate with abstraction layers. Similar to JPA, we can use JMS for messaging and SMTP for mails.
+Backing services should be attached and replaceable instead of embedded in the code. The use of specifications like JPA helps us achieve this for RDBMS databases. But in the absence of specifications, some code creeps into the code although we can keep them separate with abstraction layers. Similar to JPA, we can use JMS for messaging and SMTP for mails.
 
 
 ## Build, release, run

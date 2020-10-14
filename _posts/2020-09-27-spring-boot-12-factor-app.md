@@ -11,504 +11,126 @@ image:
 
 [Twelve-factor app](https://12factor.net) is a set of guidelines for building good quality software. These guidelines were initially conceived in Heroku but have come to be considered as best practices for building cloud native applications. By cloud native we will mean application which is portable across environments, scalable to take advantage of the elastic capabilities of the cloud.
 
-In this article, we will build a Twelve-factor application with Spring Boot.
+A majority of these principles are implicit in today's microservice frameworks. However we can also observe a shift from the 'older way' of building systems targetted to run on constrained infrastructure. Spring Boot is a popular framework for building microservice application. In this article, we will build a Twelve-factor application with Spring Boot and discuss these along.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check" %} 
+
 ## What are the Twelve-factors
-The Twelve-factor is a set of twelve principles cvering guidelines on managing config data, abstracting library dependencies and backing services, log streaming, and administration. A common theme running through these principles is making the application portable to meet the demands of dynamic environment provisioning typical of cloud platforms. That is also the reason why they are also discussed along side cloud-native applications.
+The Twelve-factor is a set of twelve principles encompassing guidelines on managing configuration data, abstracting library dependencies and backing services, log streaming, and administration. A common theme running through all the twelve principles is making the application portable to meet the demands of dynamic environment provisioning typical of cloud platforms. That is also the reason why they are often discussed along side cloud-native applications.
 
 ## Codebase
-We are used to working with fixed set of environments like dev, qa, prod in on-premise infrastructure. Each have environment specific resources like database, api url's. This principles advocates having one codebase that can be built and deployed to multiple environments instead of environment wise multiple codebases. We do this by creating one repository for each application. For our Spring Boot we will store the application in a git repository.
+> One codebase tracked in revision control, many deploys
+
+When not using Cloud, we were used to working with a fixed set of environments like dev, qa, prod in on-premise infrastructure. Each have environment specific resources like database, api url's. This principle advocates having a single codebase that can be built and deployed to multiple environments. To achieve this we need to separate all the environment dependencies into a form that can be specified during build and run. 
+
+Following this principle, we will have a single Git repository containing the source code of our Spring Boot application. This will be built for different environments by specifying environment specific properties. Spring Profiles and environment properties are standard ways of doing this. 
+
+This rule will be violated if we have to change the source code before building for a specific environment.
 
 ## Dependencies
+> Explicitly declare and isolate dependencies
+An evolution from an earlier practice of sharing dependencies across applications by storing common libraries in a classpath shared by multiple applications. This introduces a dependency on the configuration of the host system. Host systems are ephemeral today having evolved into containers. 
+
+Some of the key components of this condition are :
+- Managing dependencies with Maven as Dependency Manager
+- Declarative
+- Versioning 
+- Isolating the dependencies by bundling them with the application
 The dependencies are declared in external files leveraging dependency management tools of the platform, For Spring Boot application we declare the library dependencies in `pom.xml` or gradle depending on whether we are using Maven or Gradle. For our Spring Boot application, our pom.xml contains the dependencies of database driver and web framework.
 
 ## Config
-The config data varies with the environment. So all environment related information is extracted as environment variables. The default behaviour Spring Boot applications is to prefer using values from environment variables over values declared in property files. Kubernetes is used as container orchestration system. The environment variables are supplied in configmap or in env variables in container spec in Deployment object.
+> Store config in the environment
+
+Examples of configuration data include database connection URL and credentials, URLs of services on which an application depends. These most often have different values across environments. If these are hard-coded in the code or in property files bundled with the application, we need to update the application for deploying to different environments. Instead a better approach is to update the configuration with environment variables.
+
+So all environment related information is extracted as environment variables. The snippet of our property files shows the URLs mapped to environment variables. We can supply the values from command line if the application is run standalone. If The default behaviour Spring Boot applications is to prefer using values from environment variables over values declared in property files. Kubernetes is used as container orchestration system. The environment variables are supplied in configmap or in env variables in container spec in Deployment object.
 
 ## Backing Services
-Backing services are meant to be attached. Use of specifications like JPA help us achieve this for RDBMS databases. 
+> Treat backing services as attached resourcesTreat backing services as attached resources 
 
-## Build, Release, Run
+Backing services should be attached and replacable instead of embedded in the code. Use of specifications like JPA help us achieve this for RDBMS databases. But in the absence of specifications some code creeps into the code although we can keep them separate with abstraction layers. Similar to JPA, we can use JMS for messaging and SMTP for mails.
 
-## Disposability
 
-## Port Binding
+## Build, release, run
+> Strictly separate build and run stages
+
+The stages for Build, Release, Run should be kept separate. For Spring Boot Applications, we compile the source code and build the Docker Image
+Tag the Image and push to the Registry.
+Run: Image is pulled and run as a container instance.
+
+✓Strong isolation between Build, Release, and Run:
+- Build Stage, compiling and producing binaries by including all the assets required.
+- Release Stage, combining binaries with environment- specific configuration parameters. - Run Stage, running application on a specific execution environment.
+✓ The pipeline is unidirectional, so it is not possible to propagate changes from the run stages back to the build stage.
+✓ANTI-PATTERN, Specific builds for production. SUGGESTION = Go through the pipeline.
+✓ANTI-PATTERN, Make changes to the code at runtime.
+SUGGESTION = Any change (or set of changes) must create a new release, following the
+Pipeline: Build -> Release -> Run.
+✓ SUGGESTION = Every release should always have a unique release ID, such as a timestamp of the release (such as 2011-04-06-20:32:17) or an incrementing number (such as v100).
+✓ BUILD = codebase + dependencies + assets ✓ RELEASE = BUILD + config
+✓ RUN = run process against RELEASE
+✓ ROLLBACK = just use the last release instead.
+
+
+
+
 
 ## Processes
-Applications should be stateless.
+> Execute the app as one or more stateless processes
 
-## Dev/Prod parity
-Movement of code across environments has traditionally been a major factor slowing down the development velocity. This resulted from difference in the infrastructure used for development and in production. Container made this possibleto build once and ship to multiple target environments. Container make it possible to package all the dependencies including the OS and all dependencies. Spring Boot applications are packaged in Docker containers. 
+Spring Boot applications execute as a Java process on the host system or inside a container runtime environment like Docker. This principle advocates that the processes should should be stateless and share-nothing. Any data that needs to persist must be stored in a stateful backing service like a database.
+
+Some web systems rely on “sticky sessions” – that is, caching user session data in memory of the app’s process and expecting future requests from the same visitor to be routed to the same process. Sticky sessions are a violation of twelve-factor and should never be used or relied upon. Session state data is a good candidate for a datastore that offers time-expiration, such as Memcached or Redis.
+
+
+## Port Binding
+> Export services via port binding
+
+Port binding is one of the fundamental requirements for microservices to be autonomous and self-contained.
+
+The default web container- Tomcat is embedded in the Spring Boot applications that exports HTTP as a service by binding to a port and listening to incoming requests in that port. a port that is specified by the property  ```server.port```. The default value is 8080. But we can override this value by passing this property as an environment variable. 
+
 
 ## Concurrency
+> Scale out via the process model
+Spring Boot applications are stateless. This helps them to scale out by creating more instances to support increasing loads. This is taken care of by container orchstration systems like Kubernetes and Docker Swarm. From an application perspective all state if any needs to be managed outside the application.
 
-## Logging
 
-## Admin
-Most applications need one-off tasks [Admin processes](https://12factor.net/admin-processes)
+## Disposability
+> Maximize robustness with fast startup and graceful shutdown
 
-## Conclusion
+Spring Boot applications are commonly run inside containers. Containers are ephemeral and can be started or stopped at any moment. So it is important to minimize the startup time and ensure that the application shuts down gracefully when the container stops. Startup time is minimized with lazy initialization of dependent resources and by building [optimized container images(https://reflectoring.io/spring-boot-docker/).
 
+## Dev/prod parity
+> Keep development, staging, and production as similar as possible
 
+Movement of code across environments has traditionally been a major factor slowing down the development velocity. This resulted from difference in the infrastructure used for development and in production. 
 
+Containers made this possible to build once and ship to multiple target environments. Container make it possible to package all the dependencies including the OS and all dependencies. 
 
+Spring Boot applications are packaged in Docker containers and pushed to a Docker registry. Apart from using a Docker file to create a Docker image, Spring Boot provides plugins for [building OCI image from source](https://reflectoring.io/spring-boot-docker/) with Cloud-Native buildpacks.
 
 
+## Logs
+> Treat Logs as Event Streams
 
+The application should only produce logs in the form of event streams. Storing the logs in files or database and shipping to other systems for further analysis should be delegated to specialized software. 
 
+Spring Boot logs only to the console by default, and does not write log files. It is preconfigured with Logback as the default Logger implementation. However the principle of producing logs as event streams enables it to be integrated with a rich ecosystem of log appenders, filters, shippers, monitoring and visualization tools to build a highly observable system. All these is elaborated in [configuring logging in Spring boot](https://reflectoring.io/springboot-logging/).
 
 
+## ADMIN Processes: Administering the Application
+> Run admin/management tasks as one-off processes
+Most applications need to run one-off tasks for administration and management. Examples of these tasks include database scripts to initialize the database or scripts for fixing bad records. This code should be packaged with the application and released together and run in the same environment. 
 
+In Spring Boot application we expose admin functions as separate endpoints that are invoked as one-off processes. Adding functions to execute one-off processes will go through the build, test, and release cycle.
 
-## Why Do we use Health Checks?
-A distributed system is composed of many moving parts like a database, queues, and other services. **Health check functions tell us the status of our running application like whether the service is slow or not available.**
-
-We also learn to predict the system health in the future by observing any anomalies in a series of metrics like memory utilization, errors, and disk space. This allows us to take mitigating actions like restarting instances, falling back to a redundant instance, or throttling the incoming requests. 
-
-**Timely detection and proactive mitigation will ensure that the application is stable and minimize any impact on business functions.**
-
-Apart from infrastructure and operations teams, health check metrics and insights derived from them are also becoming useful to the end-users. 
-
-In an API ecosystem, for instance, with API developers, partners, and third-party developers, the health status of APIs is regularly updated and published in a dashboard, like on this Dashboard by Twitter:
-
-![twitter API Health Status](/assets/img/posts/spring-boot-health-check/twitter-api-health-status.png)
-
-The dashboard gives a snapshot of the health status of the Twitter APIs as "Operational", "Degraded Performance", etc. helping us to understand the current status of those APIs.
-
-## Common Health Checking Techniques
-
-The simplest way of implementing a health check is to periodically check the “heartbeat” of a running application by sending requests to some of its API endpoints and getting a response payload containing the health of the system. 
-
-These heartbeat endpoints are HTTP GET or HEAD requests that run light-weight processes and do not change the state of the system. The response is interpreted from either the HTTP response status or from specific fields in the response payload. 
-
-Although this method can tell us if the application itself is up and running, it does not tell us anything about the services that the application depends on like a database, or another service. So a composite health check made up of the health of dependent systems aggregated together gives a more complete view. 
-
-A composite health check is sometimes also called a "deep check".
-
-**A more proactive approach involves monitoring a set of metrics indicating system health. These are more useful since they give us early indications of any deteriorating health of the system giving us time to take mitigating measures.**
-
-We will look at all of these approaches in the subsequent sections.
-
-
-## Adding a Health Check in Spring Boot
-We will build a few APIs with Spring Boot and devise mechanisms to check and monitor their health.
-
-Let us create our application with the [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.healthcheck&artifactId=usersignup&name=usersignup&description=Demo%20project%20for%20Spring%20Boot%20Health%20Check&packageName=io.pratik.healthcheck.usersignup&dependencies=web,actuator,lombok,webflux) by including the dependencies for web, lombok, webflux, and actuator. 
-
-
-### Adding the Actuator Dependency
-
-The Actuator module provides useful insight into the Spring environment for a running application with functions for health checking and metrics gathering by exposing multiple endpoints over HTTP and JMX. We can refer to the full description of the Actuator module in the [Actuator Documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html).
-
-We added the `actuator` dependency while creating the application from the Initializr. We can choose to add it later in our `pom.xml`:
-
-```xml
-<dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-actuator</artifactId>
-</dependency>
-```
-
-For gradle, we add our dependency as:
-```
-dependencies {
-  compile("org.springframework.boot:spring-boot-starter-actuator")
-}
-```
-### Checking the Health Status with Zero Configuration
-We will first build our application created above with Maven or Gradle:
-```shell
-mvn clean package
-```
-Running this command will generate the executable in the `fat jar` format containing the `actuator` module. Let us execute this jar with:
-
-```shell
-java -jar target/usersignup-0.0.1-SNAPSHOT.jar
-```
-We will now run the application and access the `/health` endpoint using `curl` or by hitting the URL from the browser:
-```shell
-curl http://localhost:8080/actuator/health
-```
-Running the curl command gives the output:
-```shell
-{"status":"UP"}
-```
-The status `UP` indicates the application is running. This is derived from an evaluation of the health of multiple components called "health indicators" in a specific order. 
-
-The status will show `DOWN` if any of those health indicator components are 'unhealthy' for example a database is not reachable. 
-
-We will look at health indicators in more detail in the following sections. However, in summary, the `UP` status from the Actuator health endpoint indicates that the application can operate with full functionality.
-
-### Checking Health Status Details
-To view some more information about the application's health, we will enable the property `management.endpoint.health.show-details` in `application.properties`:
-
-```application.properties
-# Show details of health endpoint
-management.endpoint.health.show-details=always
-```
-After we compile and run the application, we get the output with details of the components contributing to the health status:
-```json
-{
-   "status": "UP",
-   "components": {
-    "diskSpace": {
-     "status": "UP",
-     "details": {
-      "total": 250685575168,
-      "free": 12073996288,
-      "threshold": 10485760,
-      "exists": true
-     }
-    },
-    "ping": {
-     "status": "UP"
-    }
-   }
-}
-```
-We can see in this output that the health status contains a component named `diskSpace` which is `UP` with details containing the `total`, `free`, and `threshold` space. This `HealthIndicator checks` available disk space and will report a status of DOWN when the `free` space drops below the `threshold` space.
-
-## Aggregating Health Status from Multiple Health Indicators 
-
-Let us add some real-life flavor to our application by adding some APIs that will not only store information in a database but also read from it. 
-
-We will create three APIs in our application:
-- add user
-- activate user
-- fetch users 
-
-These APIs will be using a controller, service, and repository class. The repository is based on JPA and uses the in-memory H2 database. The API for `fetch users` will also use a URL shortener service for shortening the user's profile URL.
-
-You can check out the code [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check).
-
-### Database Health Indicator
-After we build and run our application as before and check the health status, we can see one additional component for the database named `db` included under the `components` key:
-```json
-{
-   "status": "UP",
-   "components": {
-    "db": {
-     "status": "UP",
-     "details": {
-      "database": "H2",
-      "validationQuery": "isValid()"
-     }
-    },  
-    "diskSpace": {
-     ...
-     }
-    },
-    "ping": {
-     "status": "UP"
-    }
-   }
-}
-```
-The health status is composed of status contributed by multiple components called "health Indicators" in the Actuator vocabulary. 
-
-In our case, the health status is composed of health indicators of disk space and database. 
-
-The database health indicator is automatically added by Spring Boot if it detects a Datasource as we will see in the next section.
-
-### Other Predefined Health Indicators
-Spring Boot Actuator comes with several predefined health indicators like 
-
-* `DataSourceHealthIndicator`, 
-* `MongoHealthIndicator`,
-* `RedisHealthIndicator`, or 
-* `CassandraHealthIndicator`. 
-
-Each of them is a Spring bean that implements the `HealthIndicator` interface and checks the health of that component. 
-
-Spring Boot automatically provides a health indicator for standard components (like a `DataSource`). The health check provided by a `DataSource` creates a connection to a database and performs a simple query, such as `select 1 from dual` to check that it is working.
-
-### Aggregating Health Indicators
-
-Spring Boot aggregates all health indicators it finds in the application context to create the result of the `/health` endpoint we have seen above.
-
-If our application uses Redis, a Redis component is added to the endpoint. If we use MongoDB, a MongoDB component is added to the endpoint. And so on. 
-
-The aggregation is done by an implementation of `StatusHealthAggregator` which aggregates the statuses from all health indicators into a single overall status.
-
-Spring Boot auto-configures an instance of `SimpleHealthAggregator`. We can provide our own implementation of `StatusHealthAggregator` to supersede the default behavior. 
-
-We can also disable a particular health indicator using `application properties`:
-```
-management.health.mongo.enabled=false
-```
-
-## Checking the Health of APIs with Custom Health Indicators
-Predefined health indicators do not cover all use cases of a health check. 
-
-For example, if our API is dependent on any external service, we might like to know if the external service is available. Further, we might like to know the health of the individual APIs rather than the health of the entire application. 
-
-For this, we will now build two types of custom health checks in our application:
- 
- - a health check for individual components with health indicators
- - a composite health check with composite health contributors 
-
-### Checking the Health of Individual Components
-In our example, we are using an external service for shortening the URLs. We will monitor the availability of this service by building a health indicator of this service. 
-
-Creating a custom health indicator is done in two steps:
-
-1. Implement the `HealthIndicator` interface and override the `health()` method.
-2. Register the health indicator class as a Spring bean by adding the `@Component` annotation (or by using Java Config).
-
-Our custom health indicator for the `UrlShortener` Service looks like this:
-
-```java
-@Component
-@Slf4j
-public class UrlShortenerServiceHealthIndicator 
-    implements HealthIndicator {
-
-  private static final String URL 
-    = "https://cleanuri.com/api/v1/shorten";
-
-  @Override
-  public Health health() {
-    // check if url shortener service url is reachable
-    try (Socket socket = 
-        new Socket(new java.net.URL(URL).getHost(),80)) {
-    } catch (Exception e) {
-      log.warn("Failed to connect to: {}",URL);
-      return Health.down()
-        .withDetail("error", e.getMessage())
-        .build();
-    }
-    return Health.up().build();
-  }
-
-}
-```
-In this class, we return the status as `UP` if the URL is reachable, otherwise, we return the `DOWN` status with an error message.
-
-
-### Composite Health Checking with Health Contributors
-Earlier, we added three APIs to our application for adding, activating, and fetching users. It will be very useful to see the health of the individual APIs by checking specific resources on a per-endpoint basis. We will do this with `CompositeHealthContributors`.
-
-Our `Fetch Users` API depends on the database and the URL shortener service. This API can function only if both of these dependencies are available. We can do this in a single health indicator as described in the previous section. 
-
-But this can be done more elegantly with a `CompositeHealthContributor` which will combine the health checks from the database and the URL shortener service. The steps for building a composite health check are:
-
-1. Implement the `CompositeHealthContributor` interface in a Spring bean.
-2. Mark the contributing health indicators with the `HealthContributor`interface.
-3. Override the `iterator()` method in the `CompositeHealthContributor` interface with the list of health contributors which are health indicators marked with the `HealthContributor` interface.
-
-For our example, we will first create a database health indicator and mark it with the `HealthContributor` interface:
-
-```java
-@Component("Database")
-public class DatabaseHealthContributor 
-    implements HealthIndicator, HealthContributor {
-
-  @Autowired
-  private DataSource ds;
-  
-  @Override
-  public Health health() {
-    try(Connection conn = ds.getConnection()){
-      Statement stmt = conn.createStatement();
-      stmt.execute("select FIRST_NAME,LAST_NAME,MOBILE,EMAIL from USERS");
-    } catch (SQLException ex) {
-      return Health.outOfService().withException(ex).build();
-    }
-    return Health.up().build();
-  }
-}
-```
-For checking the health status of the database we execute a query on the `USERS` table used in the `Fetch Users` API.
-
-We will next mark the URL shortener health indicator we created in the previous section with the `HealthContributor` interface:
-
-```java
-public class UrlShortenerServiceHealthIndicator 
-    implements HealthIndicator, HealthContributor {
-...
-}
-```
-We will now create the composite health check of our `Fetch Users` API using the two health contributor components we created above:
-
-```java
-@Component("FetchUsersAPI")
-public class FetchUsersAPIHealthContributor 
-    implements CompositeHealthContributor {
-  
-  private Map<String, HealthContributor> 
-          contributors = new LinkedHashMap<>();
-
-  @Autowired
-  public FetchUsersAPIHealthContributor(
-      UrlShortenerServiceHealthIndicator 
-              urlShortenerServiceHealthContributor,
-      DatabaseHealthContributor 
-              databaseHealthContributor) {
-  
-    contributors.put("urlShortener", 
-        urlShortenerServiceHealthContributor);
-  
-    contributors.put("database", 
-        databaseHealthContributor);
-  }
-
-  /**
-   *  return list of health contributors
-   */
-  @Override
-  public Iterator<NamedContributor<HealthContributor>> iterator() {
-    return contributors.entrySet().stream()
-       .map((entry) -> 
-          NamedContributor.of(entry.getKey(), 
-              entry.getValue())).iterator();
-  }
-  
-  @Override
-  public HealthContributor getContributor(String name) {
-    return contributors.get(name);
-  }
-
-}
-  ```
-The `FetchUsersAPIHealthContributor` class will publish the health status of `Fetch Users` API as `UP` if:
-
-1.  the URL shortener service is reachable, and 
-2.  we can run SQL queries on the USERS table used in the API.
-
-
-With this health indicator of the API added, our health check output now contains the health status of `FetchUsers` API in the list of components.
-
-```json
-"FetchUsersAPI": {
-   "status": "UP",
-   "components": {
-      "database": {
-         "status": "UP"
-      },
-      "urlShortener": {
-         "status": "UP"
-      }
-   }
-},
-...
-}
-```
-The corresponding error output appears when we introduce an error by specifying a non-existent table: 
-```json
-"FetchUsersAPI": {
-   "status": "OUT_OF_SERVICE",
-   "components": {
-      "database": {
-         "status": "OUT_OF_SERVICE",
-         "details": {
-            "error": "..."
-         }
-      },
-      "urlShortener": {
-         "status": "UP"
-      }
-   }
-},
-```
-This output indicates that the Fetch Users API is `out-of-service` and cannot serve requests when the database is not set up although the URL shortener service is available.
-
-Health Indicators can also be grouped for specific purposes. For example, we can have a group for database health and another for the health of our caches.
-
-
-## Monitoring Application Health
-
-We monitor the health of our application by observing a set of metrics. We will enable the metrics endpoint to get many useful metrics like JVM memory consumed, CPU usage, open files, and many more.
-
-**Micrometer is a library for collecting metrics from JVM-based applications and converting them in a format accepted by the monitoring tools.** It is a facade between application metrics and the metrics infrastructure developed by different monitoring systems like Prometheus, New Relic, and [many others](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-metrics). 
-
-To illustrate, we will integrate our Spring Boot application with one of these monitoring systems - Prometheus. **Prometheus operates on a pull model by scraping metrics from an endpoint exposed by the application instances at fixed intervals.**
-
-We will first add the micrometer SDK for Prometheus:
-```xml
-<dependency>
-  <groupId>io.micrometer</groupId>
-  <artifactId>micrometer-registry-prometheus</artifactId>
-</dependency>
-```
-We can integrate with another monitoring system like New Relic similarly by adding `micrometer-registry-newrelic` dependency for metric collection. New Relic in contrast to Prometheus works on a push model so we need to additionally configure credentials for New Relic in the Spring Boot application.
-
-Continuing with our example with Prometheus, we will expose the Prometheus endpoint by updating the `management.endpoints.web.exposure.include` property in our `application.properties`.
-
-```application.properties
-management.endpoints.web.exposure.include=health,info,prometheus
-```
-Here is a snippet of the metrics from the prometheus endpoint - `http://localhost:8080/actuator/prometheus`:
-```
-jvm_threads_daemon_threads 23.0
-jvm_buffer_count_buffers{id="mapped - 'non-volatile memory'",} 0.0
-jvm_buffer_count_buffers{id="mapped",} 0.0
-jvm_buffer_count_buffers{id="direct",} 14.0
-process_files_open_files 33.0
-hikaricp_connections_max{pool="HikariPool-1",} 10.0
-...
-```
-Next, we will add the job in Prometheus with the configuration for scraping the above metrics emitted from our application. This configuration will be saved in [prometheus-config.yml](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check/prometheus-config.yml).
-```yml
-  - job_name: 'user sign up'
-  metrics_path: '/actuator/prometheus'
-  scrape_interval: 5s
-  static_configs:
-  - targets: ['<HOST_NAME>:8080']
-```
-This configuration will scrape the metrics at 5-second intervals.
-
-We will use Docker to run Prometheus. Specify the IP address of the host machine instead of `localhost` while running in Docker:
-```shell
-docker run \
--p 9090:9090 \
--v prometheus-config.yml:/etc/prometheus/prometheus.yml \
-prom/prometheus
-```
-Now we can check our application as a target in Prometheus by visiting the URL - `http://localhost:9090/targets`:
-![Prometheus Targets](/assets/img/posts/spring-boot-health-check/prometheus-ss.png)
-
-As stated above, due to the Micrometer metrics facade we can integrate with other [monitoring tools](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-metrics) only by adding the provider-specific Micrometer dependency to the application. 
-
-## Configuring Kubernetes Probes
-Microservices built with Spring Boot are commonly packaged in containers and deployed to container orchestration systems like Kubernetes. One of the key features of Kubernetes is self-healing, which it does by regularly checking the health of the application and replacing unhealthy instances with healthy instances. 
-
-Among its many components, the [Kubelet](https://kubernetes.io/docs/concepts/overview/components/#kubelet) ensures that the containers are running and replaced with a healthy instance, anytime it goes down. This is detected using two properties:
-
-* **Liveness Check**: An endpoint indicating that the application is available. The Kubelet uses liveness probes to know when to restart a container.
-* **Readiness Check**: The Kubelet uses readiness probes to know when a container is ready to start accepting traffic. 
-
-We will enable these two health checks by setting the property in `application.properties`.
-```
-management.health.probes.enabled=true
-```
-After this when we compile and run the application, we can see these two health checks in the output of the health endpoint and also two health groups.
-
-![Health Groups](/assets/img/posts/spring-boot-health-check/healthprobes-k8s.png)
-
-We can next use these two endpoints to configure HTTP probes for liveness and readiness checks in the container specification when creating the deployment object in Kubernetes. This definition of Deployment object along with the Service object is saved in [deployment.yaml](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check/deployment.yaml):
-
-```yml
-livenessProbe:  
-  httpGet:  
-    path: /actuator/health/liveness  
-    port: 8080  
-readinessProbe:  
-  httpGet:  
-    path: /actuator/health/readiness  
-    port: 8080  
-```      
-We will create these objects in Kubernetes by running 
-```shell
-kubectl apply -f deployment.yaml
-```
-For the HTTP probe, the Kubelet process sends an HTTP request to the specified path and port to perform the liveness and readiness checks.
 
 
 ## Conclusion
+We looked at the twelve factor principles for building cloud native application. The diagram puts everything in one perspective:
 
-We saw how we can build powerful monitoring and observability capabilities in Spring Boot applications with the help of the Actuator module. We configured health indicators and Kubernetes probes in a microservice application and enabled health check metrics to integrate with monitoring tools like Prometheus.
+These principles should be adhered to when building cloud native applications when using other languages and frameworks.
 
-Observability is a rapidly evolving area and we should expect to see more features along these lines in future releases of Spring Boot.
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-12-factor).

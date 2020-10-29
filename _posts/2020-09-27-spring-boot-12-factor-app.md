@@ -9,33 +9,44 @@ image:
   auto: 0082-ekg
 ---
 
-[Twelve-factor app](https://12factor.net) is a set of guidelines for building Software as a Service(SAA) applications. These guidelines were initially conceived in Heroku and are regarded as best practices for building cloud-native applications. By cloud-native, we will mean an application that is portable across environments, scalable to take advantage of the elastic capabilities of the cloud, and easy to update.
+[Twelve-factor app](https://12factor.net) is a set of guidelines for building cloud-native applications. By cloud-native, we will mean an application that is portable across environments, scalable to take advantage of the elastic capabilities of the cloud, and easy to update.
 
-A majority of these principles are implicit in today's microservice frameworks. However, we can also observe a shift from the 'older way' of building systems targetted to run on constrained infrastructure. Spring Boot is a popular framework for building a microservice application. In this article, we will build a Twelve-factor application with Spring Boot and discuss these along.
+A majority of these principles are implicit in today's microservice frameworks. Spring Boot is a popular framework for building microservice applications. It does not need any major changes to make it fully compliant with the twelve factors. In this article, we will check the compliance of Spring Boot application with Twelve factor app with a mix of available features and necessary changes to make it adhere to those principles. 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check" %} 
 
-## What are the Twelve-factors
-The Twelve-factor is a set of twelve principles encompassing guidelines on managing configuration data, abstracting library dependencies and backing services, log streaming, and administration. A common theme running through all the twelve principles is making the application portable to meet the demands of a dynamic environment provisioning typical of cloud platforms. That is also the reason why they are often discussed alongside cloud-native applications.
+## Goals of the Twelve-factors
+The Twelve-factor is a set of twelve principles encompassing guidelines on managing configuration data, abstracting library dependencies and backing services, log streaming, and administration. A common theme running through all the twelve principles is making the application portable to meet the demands of a dynamic environment provisioning typical of cloud platforms. That is also the reason why they are often discussed alongside cloud-native applications. Some of the goals as stated in the [documentation](https://12factor.net) are:
+1. Using declarative formats for setup automation
+2. Maximizing portability across execution environments
+3. Suitable for deployment in Cloud Platforms
+4. Minimizing divergence between development and production, enabling continuous deployment for maximum agility;
+5. Ability to scale up without significant changes to tooling, architecture, or development practices.
 
 ## Codebase
 > One codebase tracked in revision control, many deploys
 
-When not using Cloud, we were used to working with a fixed set of environments like dev, QA, prod in on-premise infrastructure. Each has environment-specific resources like database, API urls. This principle advocate having a single codebase that can be built and deployed to multiple environments. To achieve this we need to separate all the environment dependencies into a form that can be specified during the build and run. 
+When not using Cloud, we were used to working with a fixed set of environments like development, QA, and production in on-premise infrastructure. Each environment has specific resources like database, configuration data, and API urls. 
 
-Following this principle, we will have a single Git repository containing the source code of our Spring Boot application. This will be built for different environments by specifying environment-specific properties. Spring Profiles and environment properties are standard ways of doing this. 
+This principle advocates having a single codebase that can be built and deployed to multiple environments. To achieve this we need to separate all the environment dependencies into a form that can be specified during the build and run. 
+
+Following this principle, we will have a single Git repository containing the source code of our Spring Boot application. This will be built for different environments by specifying environment-specific properties. 
+
+[Spring Profiles](https://reflectoring.io/spring-boot-profiles/) and [environment properties](https://reflectoring.io/profile-specific-logging-spring-boot/) are established ways of doing this. 
 
 This rule will be violated if we have to change the source code before building for a specific environment.
 
 ## Dependencies
 > Explicitly declare and isolate dependencies
-An evolution from an earlier practice of sharing dependencies across applications by storing common libraries in a classpath shared by multiple applications. This introduces a dependency on the configuration of the host system. Host systems are ephemeral today having evolved into containers. 
 
-Some of the key components of this condition are :
+This principle is an evolution of an earlier practice of sharing common dependencies across applications. A common used to be done by storing common libraries in a classpath shared by multiple applications. This introduces a dependency on the configuration of the host system. Host systems are ephemeral today having evolved into containers. 
+
+Some of the key components for complying with this condition are :
 - Managing dependencies with Maven as Dependency Manager
 - Declarative
 - Versioning 
 - Isolating the dependencies by bundling them with the application
+
 The dependencies are declared in external files leveraging dependency management tools of the platform, For the Spring Boot application, we declare the library dependencies in `pom.xml` or Gradle depending on whether we are using Maven or Gradle. For our Spring Boot application, our pom.xml contains the dependencies of database drivers and a web framework.
 
 ## Config
@@ -54,25 +65,10 @@ Backing services should be attached and replaceable instead of embedded in the c
 ## Build, release, run
 > Strictly separate build and run stages
 
-The stages for Build, Release, Run should be kept separate. For Spring Boot Applications, we compile the source code and build the Docker Image
-Tag the Image and push to the Registry.
+The stages for Build, Release, Run should be kept separate. For Spring Boot Applications, this is easy to achieve with the development workflow for containers. The activities in these stages are:
+Build: we compile the source code and build the Docker Image
+Release: Tag the Image and push to the Registry.
 Run: Image is pulled and run as a container instance.
-
-✓Strong isolation between Build, Release, and Run:
-- Build Stage, compiling and producing binaries by including all the assets required.
-- Release Stage, combining binaries with environment- specific configuration parameters. - Run Stage, running application on a specific execution environment.
-✓ The pipeline is unidirectional, so it is not possible to propagate changes from the run stages back to the build stage.
-✓ANTI-PATTERN, Specific builds for production. SUGGESTION = Go through the pipeline.
-✓ANTI-PATTERN, Make changes to the code at runtime.
-SUGGESTION = Any change (or set of changes) must create a new release, following the
-Pipeline: Build -> Release -> Run.
-✓ SUGGESTION = Every release should always have a unique release ID, such as a timestamp of the release (such as 2011-04-06-20:32:17) or an incrementing number (such as v100).
-✓ BUILD = codebase + dependencies + assets ✓ RELEASE = BUILD + config
-✓ RUN = run process against RELEASE
-✓ ROLLBACK = just use the last release instead.
-
-
-
 
 
 ## Processes
@@ -114,13 +110,14 @@ Spring Boot applications are packaged in Docker containers and pushed to a Docke
 ## Logs
 > Treat Logs as Event Streams
 
-The application should only produce logs in the form of event streams. Storing the logs in files or database and shipping to other systems for further analysis should be delegated to specialized software. 
+The application should only produce logs in the form of event streams. Storing the logs in files or database and shipping to other systems for further analysis should be delegated to purpose-built software. 
 
 Spring Boot logs only to the console by default, and does not write log files. It is preconfigured with Logback as the default Logger implementation. However the principle of producing logs as event streams enables it to be integrated with a rich ecosystem of log appenders, filters, shippers, monitoring and visualization tools to build a highly observable system. All these is elaborated in [configuring logging in Spring boot](https://reflectoring.io/springboot-logging/).
 
 
-## ADMIN Processes: Administering the Application
+## Admin Processes
 > Run admin/management tasks as one-off processes
+
 Most applications need to run one-off tasks for administration and management. Examples of these tasks include database scripts to initialize the database or scripts for fixing bad records. This code should be packaged with the application and released together and run in the same environment. 
 
 In Spring Boot application we expose admin functions as separate endpoints that are invoked as one-off processes. Adding functions to execute one-off processes will go through the build, test, and release cycle.
@@ -129,6 +126,21 @@ In Spring Boot application we expose admin functions as separate endpoints that 
 
 ## Conclusion
 We looked at the twelve factor principles for building cloud native application. The diagram puts everything in one perspective:
+
+| Factor        | Spring Boot Changes|
+| ------------- |:-------------:| 
+| Codebase      | right-aligned |
+| Dependencies      | right-aligned |
+| Config      | right-aligned |
+| Backing Services      | right-aligned |
+| Build/Release/Run      | right-aligned |
+| Processes      | No changes required |
+| Port Binding      | right-aligned |
+| Concurrency      | right-aligned |
+| Disposability      | right-aligned |
+| Dev/prod parity      | right-aligned |
+| Logs      | right-aligned | 
+| Admin Processes      | centered      |  
 
 These principles should be adhered to when building cloud native applications when using other languages and frameworks.
 

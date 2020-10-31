@@ -9,11 +9,11 @@ image:
   auto: 0082-ekg
 ---
 
-[Twelve-factor app](https://12factor.net) is a set of guidelines that are used for building cloud-native applications. By cloud-native, we will mean an application that is portable across environments, easy to update, and scalable to take advantage of the elastic capabilities of the cloud. These twelve factors comprise guidelines on managing configuration data, abstracting library dependencies and backing services, log streaming, and administration. 
+[Twelve-factor app](https://12factor.net) is a set of guidelines that are used for building cloud-native applications. By cloud-native, we will mean an application that is portable across environments, easy to update, and scalable enough to take advantage of the elastic capabilities of the cloud. These twelve factors comprise of best practices on managing configuration data, abstracting library dependencies and backing services, log streaming, and administration. 
 
-Few of these principles are already built into today's microservice frameworks by design and some are acquired by running the applications inside containers. Spring Boot is a popular framework for building microservice applications. 
+Few of these principles are already built into today's microservice frameworks by design and some are acquired by running the applications inside containers. 
 
-In this article, we will check the compliance of the Spring Boot application with the Twelve-factor app and the necessary changes required to make it adhere to those principles. However, this methodology can be applied to applications written in any other programming language and frameworks.
+Spring Boot is a popular framework for building microservice applications. In this article, we will check the compliance of the Spring Boot application with the Twelve-factor app and the necessary changes required to make it adhere to those principles. However, this methodology can be applied to applications written in any other programming language and frameworks.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check" %} 
 
@@ -72,9 +72,7 @@ The declarative style of specifying dependencies removed this coupling. In the c
 
 Few examples of configuration data are database connection URL and credentials, and URLs of services on which an application depends. These most often have different values across environments. If these are hard-coded in the code or property files bundled with the application, we need to update the application for deploying to different environments. 
 
-Instead, a better approach is to externalizing the configuration using environment variables. This is also called externalizing the configuration. An earlier [article](https://reflectoring.io/externalize-configuration/https://reflectoring.io/externalize-configuration/) provides a step-wise description for externalizing configuration properties in Spring Boot. 
-
-The values of the environment variables are supplied at runtime. We can supply the values from the command line if the application is run standalone. The default behavior in Spring Boot applications is to apply values from environment variables to override any values declared in property files.
+Instead, a better approach is to [externalizing](https://reflectoring.io/externalize-configuration/https://reflectoring.io/externalize-configuration/) the configuration using environment variables. The values of the environment variables are supplied at runtime. We can supply the values from the command line if the application is run standalone. The default behavior in Spring Boot applications is to apply values from environment variables to override any values declared in property files.
 
 ## Backing Services - Pluggable Datasources, and Queues
 > Treat backing services as attached resources
@@ -101,8 +99,8 @@ The stages for Build, Release, Run should be kept separate. For Spring Boot Appl
 The activities in these stages are:
 ***Build***: we compile the source code and build the Docker Image
 ***Release***: Tag the Image and push to the Registry.
-***Run***: Image is pulled and run as a container instance.
-
+***Run***:  The Image pushed to the registry during the release stage is pulled and run as a container instance. 
+ 
 If we are using containers to package and run our application, no application changes are required to adhere to the Twelve-factor app principle.
 
 
@@ -111,10 +109,7 @@ If we are using containers to package and run our application, no application ch
 
 Spring Boot applications execute as a Java process on the host system or inside a container runtime environment like Docker. This principle advocates that the processes should be stateless and share-nothing. Any data that needs to persist must be stored in a stateful backing service like a database.
 
-Some web systems rely on “sticky sessions” – that is, caching user session data in memory of the app’s process and expecting future requests from the same visitor to be routed to the same process. 
-
-Sticky sessions are a violation of twelve-factor and should never be used or relied upon. Session state data is a good candidate for a datastore that offers time-expiration, such as Memcached or Redis.
-
+This is a shift from the method of using “sticky sessions” in web applications that cache user session data in the memory of the application's process and expecting future requests from the same session to be routed to the same process. Sticky sessions are a violation of twelve-factor. Session state data should be stored outside the application in a datastore that offers time-expiration, such as Memcached or Redis.
 
 ## Port Binding - Port Defined as Environment Property
 > Export services via port binding
@@ -124,7 +119,7 @@ Port binding is one of the fundamental requirements for microservices to be auto
 The default web container- Tomcat is embedded in the Spring Boot applications that exports HTTP as a service by binding to a port and listening to incoming requests in that port. a port that is specified by the property  ```server.port```. The default value is 8080. But we can override this value by passing this property as an environment variable. 
 
 
-## Concurrency - Stateless Applications Helps to Scale Out
+## Concurrency - Stateless Applications Helps to Scale-Out
 > Scale out via the process model 
 
 Spring Boot applications are stateless. This helps them to scale out by creating more instances to support increasing loads. This is taken care of by container orchestration systems like Kubernetes and Docker Swarm. From an application perspective all state if any needs to be managed outside the application.
@@ -138,9 +133,9 @@ Spring Boot applications are commonly run inside containers. Containers are ephe
 ## Dev/prod Parity - Build Once - Ship it Anywhere
 > Keep development, staging, and production as similar as possible
 
-Movement of code across environments has traditionally been a major factor slowing down the development velocity. This resulted from difference in the infrastructure used for development and in production. 
+Movement of code across environments has traditionally been a major factor slowing down the development velocity. This resulted from a difference in the infrastructure used for development and production. 
 
-Containers made this possible to build once and ship to multiple target environments. Container make it possible to package all the dependencies including the OS and all dependencies. 
+Containers made this possible to build once and ship to multiple target environments. Containers make it possible to package all the dependencies including the OS and all dependencies. 
 
 Spring Boot applications are packaged in Docker containers and pushed to a Docker registry. Apart from using a Docker file to create a Docker image, Spring Boot provides plugins for [building OCI image from source](https://reflectoring.io/spring-boot-docker/) with Cloud-Native buildpacks.
 
@@ -148,9 +143,9 @@ Spring Boot applications are packaged in Docker containers and pushed to a Docke
 ## Logs - Publish Logs as Event Streams
 > Treat Logs as Event Streams
 
-The application should only produce logs in the form of event streams. Storing the logs in files or database and shipping to other systems for further analysis should be delegated to purpose-built software. 
+The application should only produce logs in the form of event streams. Storing the logs in files or databases and shipping to other systems for further analysis should be delegated to purpose-built software. 
 
-Spring Boot logs only to the console by default, and does not write log files. It is preconfigured with Logback as the default Logger implementation. However the principle of producing logs as event streams enables it to be integrated with a rich ecosystem of log appenders, filters, shippers, monitoring and visualization tools to build a highly observable system. All these is elaborated in [configuring logging in Spring boot](https://reflectoring.io/springboot-logging/).
+Spring Boot logs only to the console by default and does not write log files. It is preconfigured with Logback as the default Logger implementation. However, the principle of producing logs as event streams enables it to be integrated with a rich ecosystem of log appenders, filters, shippers, monitoring, and visualization tools to build a highly observable system. All these are elaborated in [configuring logging in Spring boot](https://reflectoring.io/springboot-logging/).
 
 
 ## Admin Processes - Built as API and Packaged with the Application
@@ -158,11 +153,11 @@ Spring Boot logs only to the console by default, and does not write log files. I
 
 Most applications need to run one-off tasks for administration and management. Examples of these tasks include database scripts to initialize the database or scripts for fixing bad records. This code should be packaged with the application and released together and run in the same environment. 
 
-In Spring Boot application we expose admin functions as separate endpoints that are invoked as one-off processes. Adding functions to execute one-off processes will go through the build, test, and release cycle.
+In the Spring Boot application, we expose admin functions as separate endpoints that are invoked as one-off processes. Adding functions to execute one-off processes will go through the build, test, and release cycle.
 
 
 ## Conclusion
-We looked at the twelve factor principles for building cloud native application. The following table puts everything in one perspective:
+We looked at the Twelve-factor principles for building a cloud-native application. The following table puts everything in one perspective:
 
 | Factor        | Spring Boot Changes|
 | ------------- |:-------------:| 

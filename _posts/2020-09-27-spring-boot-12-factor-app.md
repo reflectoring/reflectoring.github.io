@@ -9,13 +9,11 @@ image:
   auto: 0082-ekg
 ---
 
-[Twelve-factor app](https://12factor.net) is a set of guidelines that are used for building cloud-native applications. By cloud-native, we will mean an application that is portable across environments, easy to update, and scalable enough to take advantage of the elastic capabilities of the cloud. These twelve factors comprise of best practices on managing configuration data, abstracting library dependencies and backing services, log streaming, and administration. 
+[Twelve-factor app](https://12factor.net) is a set of guidelines used for building cloud-native applications. By cloud-native, we will mean an application that is portable across environments, easy to update, and scalable enough to take advantage of the elastic capabilities of the cloud. These twelve factors comprise of best practices on managing configuration data, abstracting library dependencies and backing services, log streaming, and administration. 
 
-Few of these principles are already built into today's microservice frameworks by design and some are acquired by running the applications inside containers. 
+Today's microservice frameworks already adhered to a few of these principles by design, while some are supported by running the applications inside containers. 
 
-Spring Boot is a popular framework for building microservice applications. In this article, we will check the compliance of the Spring Boot application with the Twelve-factor app and the necessary changes required to make it adhere to those principles. However, this methodology can be applied to applications written in any other programming language and frameworks.
-
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check" %} 
+Spring Boot is a popular framework for building microservice applications. In this article, we will check the compliance of the Spring Boot application with the Twelve-factor app and the necessary changes required to make it adhere to those principles. 
 
 ## Goals of the Twelve-factors
 A common theme running through all the twelve principles is making the application portable to meet the demands of a dynamic environment provisioning typical of cloud platforms. The goals of the Twelve-factor app as asserted in the [documentation](https://12factor.net) are:
@@ -29,23 +27,21 @@ A common theme running through all the twelve principles is making the applicati
 ## Building a Twelve-factor Spring Boot Application 
 
 Let us first create a Spring Boot Application with the [Spring Initializr]().
-We will see these principles in action by gradually building the application following principles borrowed from the Twelve-factor apps. Our application will use an RDBMS database as the backing service.
-
-Let us now look at each of the principles and what changes are required to make our application adhere to those principles.
+We will see these principles in action by applying them to a Spring Boot application. 
 
 ## Codebase - Single Codebase Under Version Control for All Environments
 
 > One codebase tracked in revision control, many deploys
 
-This principle advocate having a single codebase that can be built and deployed to multiple environments. Each environment has specific resource configurations like database, configuration data, and API URLs. To achieve this we need to separate all the environment dependencies into a form that can be specified during the build and run phases of the application. 
+This principle advocate having a single codebase that can be built and deployed to multiple environments. Each environment has specific resource configurations like database, configuration data, and API URLs. To achieve this, we need to separate all the environment dependencies into a form that can be specified during the build and run phases of the application. 
 
 This helps to achieve the first two goals of the Twelve-Factor app - maximizing portability across environments using declarative formats
 
 Following this principle, we will have a single Git repository containing the source code of our Spring Boot application. This will be built and run for different environments by specifying environment-specific properties. 
 
-[Spring Profiles](https://reflectoring.io/spring-boot-profiles/) and [environment properties](https://reflectoring.io/profile-specific-logging-spring-boot/) are established ways of doing this. 
+[Spring Profiles](https://reflectoring.io/spring-boot-profiles/) and [environment properties](https://reflectoring.io/profile-specific-logging-spring-boot/) are popular ways of doing this. 
 
-This rule will be violated if we have to change the source code before building for a specific environment or have separate repositories for different environments like development and production.
+This rule will be broken, if we have to change the source code before building for a specific environment or have separate repositories for different environments like development and production.
 
 ## Dependencies
 > Explicitly declare and isolate dependencies
@@ -72,7 +68,7 @@ The declarative style of specifying dependencies removed this coupling. In the c
 
 Few examples of configuration data are database connection URL and credentials, and URLs of services on which an application depends. These most often have different values across environments. If these are hard-coded in the code or property files bundled with the application, we need to update the application for deploying to different environments. 
 
-Instead, a better approach is to [externalizing](https://reflectoring.io/externalize-configuration/https://reflectoring.io/externalize-configuration/) the configuration using environment variables. The values of the environment variables are supplied at runtime. We can supply the values from the command line if the application is run standalone. The default behavior in Spring Boot applications is to apply values from environment variables to override any values declared in property files.
+Instead, a better approach is to [externalizing](https://reflectoring.io/externalize-configuration/https://reflectoring.io/externalize-configuration/) the configuration using environment variables. The values of the environment variables are provided at runtime. We can provide the values from the command line if the application is run standalone. The default behavior in Spring Boot applications is to apply the values from environment variables to override any values declared in property files.
 
 ## Backing Services - Pluggable Datasources, and Queues
 > Treat backing services as attached resources
@@ -99,7 +95,7 @@ The stages for Build, Release, Run should be kept separate. For Spring Boot Appl
 The activities in these stages are:
 ***Build***: we compile the source code and build the Docker Image
 ***Release***: Tag the Image and push to the Registry.
-***Run***:  The Image pushed to the registry during the release stage is pulled and run as a container instance. 
+***Run***:  The Image pushed to the Registry during the release stage is pulled and run as a container instance. 
  
 If we are using containers to package and run our application, no application changes are required to adhere to the Twelve-factor app principle.
 
@@ -107,7 +103,7 @@ If we are using containers to package and run our application, no application ch
 ## Processes - Stateless Applications
 > Execute the app as one or more stateless processes
 
-Spring Boot applications execute as a Java process on the host system or inside a container runtime environment like Docker. This principle advocates that the processes should be stateless and share-nothing. Any data that needs to persist must be stored in a stateful backing service like a database.
+Spring Boot applications execute as a Java process on the host system or inside a container runtime environment like Docker. This principle advocates that the processes should be stateless and share-nothing.  Any data that needs to persist must be stored in a stateful backing service like a database.
 
 This is a shift from the method of using “sticky sessions” in web applications that cache user session data in the memory of the application's process and expecting future requests from the same session to be routed to the same process. Sticky sessions are a violation of twelve-factor. Session state data should be stored outside the application in a datastore that offers time-expiration, such as Memcached or Redis.
 

@@ -166,18 +166,16 @@ We looked at the twelve factor principles for building cloud native application.
 
 | Factor        | Spring Boot Changes|
 | ------------- |:-------------:| 
-| Codebase      | right-aligned |
-| Dependencies      | right-aligned |
-| Config      | right-aligned |
-| Backing Services      | right-aligned |
+| Codebase      | One Codebase for all environments |
+| Dependencies      | Declare dependencies in pom.xml |
+| Config      | Externalize Configuration with Environment Properties. |
+| Backing Services      | Pluggable services by coding to specifications like JPA |
 | Build/Release/Run      | Container workflow |
 | Processes      | Framework Support.No changes required |
 | Port Binding      | Configured with server.port environment variable |
 | Concurrency      | Framework Support.No changes required |
 | Disposability      | Container feature |
 | Dev/prod parity      | Container feature |
-| Logs      | right-aligned | 
-| Admin Processes      | centered      |  
+| Logs      | Publish Logs as Event Streams | 
+| Admin Processes      | Build one-off processes as APIs  |  
 
-
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-12-factor).

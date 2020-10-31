@@ -24,9 +24,6 @@ A common theme running through all the twelve principles is making the applicati
 4. ***Minimizing divergence between development and production***, enabling continuous deployment for maximum agility
 5. Ability to ***scale up without significant changes*** to tooling, architecture, or development practices.
 
-## Building a Twelve-factor Spring Boot Application 
-
-Let us first create a Spring Boot Application with the [Spring Initializr]().
 We will see these principles in action by applying them to a Spring Boot application. 
 
 ## Codebase - Single Codebase Under Version Control for All Environments

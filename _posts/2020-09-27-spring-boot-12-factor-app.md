@@ -1,5 +1,5 @@
 ---
-title: "Twelve-Factor App with Spring Boot"
+title: "Twelve-Factor Apps with Spring Boot"
 categories: [spring-boot]
 date: 2020-09-27 06:00:00 +1000
 modified: 2020-09-27 06:00:00 +1000
@@ -9,43 +9,46 @@ image:
   auto: 0082-ekg
 ---
 
-[Twelve-factor app](https://12factor.net) is a set of guidelines used for building cloud-native applications. By cloud-native, we will mean an application that is portable across environments, easy to update, and scalable enough to take advantage of the elastic capabilities of the cloud. These twelve factors comprise of best practices on managing configuration data, abstracting library dependencies and backing services, log streaming, and administration. 
+[The Twelve-Factor App](https://12factor.net) is a set of guidelines for building cloud-native applications. By cloud-native, we will mean an application that is portable across environments, easy to update, and scalable enough to take advantage of the elastic capabilities of the cloud. 
 
-Today's microservice frameworks already adhered to a few of these principles by design, while some are supported by running the applications inside containers. 
+These twelve factors contain best practices on managing configuration data, abstracting library dependencies and backing services, log streaming, and administration. 
 
-Spring Boot is a popular framework for building microservice applications. In this article, we will check the compliance of the Spring Boot application with the Twelve-factor app and the necessary changes required to make it adhere to those principles. 
+Today's frameworks and methods already adhere to many of these principles by design, while some are supported by running the applications inside containers. 
 
-## Goals of the Twelve-factors
+Spring Boot is a popular framework for building microservice applications. In this article, we will check how a Spring Boot application can adhere to the twelve factors and what we have to do for that. 
+
+## Goals of the Twelve Factors
 A common theme running through all the twelve principles is making the application portable to meet the demands of a dynamic environment provisioning typical of cloud platforms. The goals of the Twelve-factor app as asserted in the [documentation](https://12factor.net) are:
 
-1. ***Using declarative formats*** to automate the setup.
-2. ***Maximizing portability*** across execution environments
-3. Suitable for ***deployment in Cloud Platforms***
-4. ***Minimizing divergence between development and production***, enabling continuous deployment for maximum agility
-5. Ability to ***scale up without significant changes*** to tooling, architecture, or development practices.
+1. **Using declarative formats** to automate the setup.
+2. **Maximizing portability** across execution environments
+3. Suitable for **deployment in Cloud Platforms**
+4. **Minimizing divergence between development and production** by enabling continuous deployment for maximum agility
+5. Ability to **scale up without significant changes** to tooling, architecture, or development practices.
 
 We will see these principles in action by applying them to a Spring Boot application. 
 
 ## Codebase - Single Codebase Under Version Control for All Environments
 
-> One codebase tracked in revision control, many deploys
+> One codebase tracked in revision control, many deploys.
 
-This principle advocate having a single codebase that can be built and deployed to multiple environments. Each environment has specific resource configurations like database, configuration data, and API URLs. To achieve this, we need to separate all the environment dependencies into a form that can be specified during the build and run phases of the application. 
+This principle advocates having a single codebase that can be built and deployed to multiple environments. Each environment has specific resource configurations like database, configuration data, and API URLs. To achieve this, we need to separate all the environment dependencies into a form that can be specified during the build and run phases of the application. 
 
-This helps to achieve the first two goals of the Twelve-Factor app - maximizing portability across environments using declarative formats
+This helps to achieve the first two goals of the Twelve-Factor app - maximizing portability across environments using declarative formats.
 
-Following this principle, we will have a single Git repository containing the source code of our Spring Boot application. This will be built and run for different environments by specifying environment-specific properties. 
+Following this principle, we will have a single Git repository containing the source code of our Spring Boot application. This will code is compiled and packaged and then deployed to one or more environments.
 
-[Spring Profiles](https://reflectoring.io/spring-boot-profiles/) and [environment properties](https://reflectoring.io/profile-specific-logging-spring-boot/) are popular ways of doing this. 
+We configure the application for a specific environment at runtime using [Spring profiles](/spring-boot-profiles/) and [environment-specific properties](/profile-specific-logging-spring-boot/). 
 
-This rule will be broken, if we have to change the source code before building for a specific environment or have separate repositories for different environments like development and production.
+This rule will be broken if we have to change the source to configure it for a specific environment or if we have separate repositories for different environments like development and production.
 
 ## Dependencies
-> Explicitly declare and isolate dependencies
 
-The most likely dependencies of an application are the libraries pulled from open source repositories or built inhouse by other teams. Dependencies could also take the form of specific software installed in the host system. The dependencies are declared in external files leveraging dependency management tools of the platform.
+> Explicitly declare and isolate dependencies.
 
-For the Spring Boot application, we declare the library dependencies in `pom.xml` or Gradle depending on whether we are using Maven or Gradle. Our Spring Boot application uses `spring-boot-starter-web` as one of its dependencies. The declarative form of this dependency is added to the `pom.xml`: 
+The most likely dependencies of an application are open-source libraries or libraries built in-house by other teams. Dependencies could also take the form of specific software installed on the host system. We declare in external files leveraging dependency management tools of the platform.
+
+For the Spring Boot application, we declare the library dependencies in `pom.xml` (or `build.gradle` if we use Gradle). Our Spring Boot application uses `spring-boot-starter-web` as one of its dependencies. We add the declarative form of this dependency to `pom.xml`: 
 
 ```xml
     <dependency>
@@ -54,23 +57,33 @@ For the Spring Boot application, we declare the library dependencies in `pom.xml
     </dependency>
 ```
 
-This principle is an evolution from an earlier practice of sharing libraries across applications by storing them in a shared classpath. But using this approach introduced a coupling with the configuration of the host system. 
+This principle is an evolution from an earlier practice of sharing libraries across applications by storing them in a shared classpath. Using that approach introduced a coupling with the configuration of the host system. 
 
-The declarative style of specifying dependencies removed this coupling. In the context of using Spring Boot, when using a dependency tool like Maven/Gradle also allows us in :
- - ***Versioning*** by declaring specific versions of the dependencies with which our application works, and
- - ***Isolating*** them by bundling them with the application.
+The declarative style of specifying dependencies removes this coupling. 
+
+In the context of using Spring Boot, when using a dependency tool like Maven/Gradle we get:
+
+ - **Versioning** by declaring specific versions of the dependencies with which our application works, and
+ - **Isolation** by bundling dependencies with the application.
 
 ## Config - Externalizing Configuration Properties
-> Store config in the environment
 
-Few examples of configuration data are database connection URL and credentials, and URLs of services on which an application depends. These most often have different values across environments. If these are hard-coded in the code or property files bundled with the application, we need to update the application for deploying to different environments. 
+> Store config in the environment.
 
-Instead, a better approach is to [externalizing](https://reflectoring.io/externalize-configuration/https://reflectoring.io/externalize-configuration/) the configuration using environment variables. The values of the environment variables are provided at runtime. We can provide the values from the command line if the application is run standalone. The default behavior in Spring Boot applications is to apply the values from environment variables to override any values declared in property files.
+A few examples of configuration data are database connection URLs and credentials, and URLs of services on which an application depends. These most often have different values across environments. If these are hard-coded in the code or property files bundled with the application, we need to update the application for deploying to different environments. 
 
-## Backing Services - Pluggable Datasources, and Queues
-> Treat backing services as attached resources
+Instead, a better approach is to [externalize the configuration](/externalize-configuration/) using environment variables. The values of the environment variables are provided at runtime. We can provide the values from the command line if the application is run standalone. 
 
-Backing services should be attached and replaceable instead of embedded in the code. The use of specifications like JPA helps us achieve this for RDBMS databases. But in the absence of specifications, some code creeps into the code although we can keep them separate with abstraction layers. Similar to JPA, we can use JMS for messaging and SMTP for mails.
+The default behavior in Spring Boot applications is to apply the values from environment variables to override any values declared in property files. We can use [configuration properties](/spring-boot-configuration-properties/) to read the configuration in the code.
+
+## Backing Services - Pluggable Data Sources, and Queues
+
+> Treat backing services as attached resources.
+
+Backing services should be attached and replaceable instead of embedded in the code. The use of specifications like JPA helps us to achieve this for RDBMS databases. 
+
+But in the absence of specifications, some code creeps into the code although we can keep them separate with abstraction layers. Similar to JPA, we can use JMS for messaging and SMTP for mails.
+
 ```xml
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -84,47 +97,57 @@ Backing services should be attached and replaceable instead of embedded in the c
 ```
 The declarative format allows us to replace the H2 database with any other RDBMS like Oracle or MySQL.
 
-## Build, Release, Run - Leverage Development Workflow for Containers
-> Strictly separate build and run stages
+## Build, Release, Run - Leverage Containers for the Development Workflow
 
-The stages for Build, Release, Run should be kept separate. For Spring Boot Applications, this is easy to achieve with the development workflow for containers. 
+> Strictly separate build and run stages.
+
+We should keep the stages for build, release, and run  separate. For Spring Boot Applications, this is easy to achieve with the development workflow for containers. 
 
 The activities in these stages are:
-***Build***: we compile the source code and build the Docker Image
-***Release***: Tag the Image and push to the Registry.
-***Run***:  The Image pushed to the Registry during the release stage is pulled and run as a container instance. 
+* **Build**: we compile the source code and build a Docker Image.
+* **Release**: we tag the image and push it to a registry.
+* **Run**:  we pull the image from the registry and run it as a container instance. 
  
-If we are using containers to package and run our application, no application changes are required to adhere to the Twelve-factor app principle.
+If we are using containers to package and run our application, no application changes are required to adhere to this Twelve-Factor App principle.
 
 
 ## Processes - Stateless Applications
-> Execute the app as one or more stateless processes
+
+> Execute the app as one or more stateless processes.
 
 Spring Boot applications execute as a Java process on the host system or inside a container runtime environment like Docker. This principle advocates that the processes should be stateless and share-nothing.  Any data that needs to persist must be stored in a stateful backing service like a database.
 
-This is a shift from the method of using “sticky sessions” in web applications that cache user session data in the memory of the application's process and expecting future requests from the same session to be routed to the same process. Sticky sessions are a violation of twelve-factor. Session state data should be stored outside the application in a datastore that offers time-expiration, such as Memcached or Redis.
+This is a shift from the method of using “sticky sessions” in web applications that cache user session data in the memory of the application's process and expecting future requests from the same session to be routed to the same process. 
+
+Sticky sessions are a violation of twelve-factor. Session state data should be stored outside the application in a datastore that offers time-expiration, such as Memcached or Redis.
 
 ## Port Binding - Port Defined as Environment Property
-> Export services via port binding
+
+> Export services via port binding.
 
 Port binding is one of the fundamental requirements for microservices to be autonomous and self-contained.
 
-The default web container- Tomcat is embedded in the Spring Boot applications that exports HTTP as a service by binding to a port and listening to incoming requests in that port. a port that is specified by the property  ```server.port```. The default value is 8080. But we can override this value by passing this property as an environment variable. 
+Spring Boot embeds Tomcat in applications and exports HTTP as a service by binding to a port and listening to incoming requests to that port. 
 
+We can configure the port by setting the `server.port`configuration property. The default value is 8080.
 
 ## Concurrency - Stateless Applications Helps to Scale-Out
-> Scale out via the process model 
+
+> Scale out via the process model. 
 
 Spring Boot applications are stateless. This helps them to scale out by creating more instances to support increasing loads. This is taken care of by container orchestration systems like Kubernetes and Docker Swarm. From an application perspective all state if any needs to be managed outside the application.
 
 
 ## Disposability - Leverage Ephemeral Containers
-> Maximize robustness with fast startup and graceful shutdown
 
-Spring Boot applications are commonly run inside containers. Containers are ephemeral and can be started or stopped at any moment. So it is important to minimize the startup time and ensure that the application shuts down gracefully when the container stops. Startup time is minimized with lazy initialization of dependent resources and by building [optimized container images(https://reflectoring.io/spring-boot-docker/).
+> Maximize robustness with fast startup and graceful shutdown.
 
-## Dev/prod Parity - Build Once - Ship it Anywhere
-> Keep development, staging, and production as similar as possible
+Spring Boot applications are commonly run inside containers. Containers are ephemeral and can be started or stopped at any moment. 
+
+So it is important to minimize the startup time and ensure that the application shuts down gracefully when the container stops. Startup time is minimized with lazy initialization of dependent resources and by building [optimized container images](https://reflectoring.io/spring-boot-docker/).
+
+## Dev/Prod Parity - Build Once - Ship Anywhere
+> Keep development, staging, and production as similar as possible.
 
 Movement of code across environments has traditionally been a major factor slowing down the development velocity. This resulted from a difference in the infrastructure used for development and production. 
 
@@ -134,7 +157,7 @@ Spring Boot applications are packaged in Docker containers and pushed to a Docke
 
 
 ## Logs - Publish Logs as Event Streams
-> Treat Logs as Event Streams
+> Treat Logs as Event Streams.
 
 The application should only produce logs in the form of event streams. Storing the logs in files or databases and shipping to other systems for further analysis should be delegated to purpose-built software. 
 
@@ -142,18 +165,18 @@ Spring Boot logs only to the console by default and does not write log files. It
 
 
 ## Admin Processes - Built as API and Packaged with the Application
-> Run admin/management tasks as one-off processes
+> Run admin/management tasks as one-off processes.
 
 Most applications need to run one-off tasks for administration and management. Examples of these tasks include database scripts to initialize the database or scripts for fixing bad records. This code should be packaged with the application and released together and run in the same environment. 
 
-In the Spring Boot application, we expose admin functions as separate endpoints that are invoked as one-off processes. Adding functions to execute one-off processes will go through the build, test, and release cycle.
+In a Spring Boot application, we expose admin functions as separate endpoints that are invoked as one-off processes. Adding functions to execute one-off processes will go through the build, test, and release cycle.
 
 
 ## Conclusion
-We looked at the Twelve-factor principles for building a cloud-native application. The following table puts everything in one perspective:
+We looked at the Twelve-factor principles for building a cloud-native application with Spring Boot. The following table summarizes what we have to do and what Spring Boot does for us to follow the 12 factors:
 
-| Factor        | Spring Boot Changes|
-| ------------- |:-------------:| 
+| Factor        | What do we have to do?|
+| ------------- |-------------| 
 | Codebase      | One Codebase for all environments |
 | Dependencies      | Declare dependencies in pom.xml |
 | Config      | Externalize Configuration with Environment Properties. |

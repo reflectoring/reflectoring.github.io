@@ -116,3 +116,33 @@
 - author: Michael Feathers
   publication: https://blogs.itemis.com/en/unit-tests-are-tests-of-modularity
   text: "With modularity, quality follows."
+- author: Alberto Brandolini
+  publication: https://blog.avanscoperta.it/2020/08/04/domain-driven-design-in-2020/
+  text: "Multiple models is the key for not evolving into a big ball of mud."
+- author: Alberto Brandolini
+  publication: https://blog.avanscoperta.it/2020/08/04/domain-driven-design-in-2020/
+  text: "Sharing resources is usually a threat on healthy evolution."
+- author: Alberto Brandolini
+  publication: https://blog.avanscoperta.it/2020/08/04/domain-driven-design-in-2020/
+  text: "Safety can be achieved only when we are in control of the behaviour of our system."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "Saying yes to any opportunity by definition requires saying no to several others."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "The faster and busier things get, the more we need to build thinking time into our schedule."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "The best asset we have for making a contribution to the world is ourselves."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "Courage is the key to the process of elimination."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "Of all forms of human motivation, the most effective is progress."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "Just a few seconds of preparation pay a valuable dividend."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "Routine is one of the most powerful tools for removing obstacles."

@@ -4,7 +4,7 @@ categories: [java]
 date: 2020-10-31 00:00:00 +1100
 modified: 2020-10-31 20:00:00 +1100
 author: petros
-excerpt: "As Java developers, we often need to switch between different versions of the JDK for different projects. SDKman makes this easy."
+excerpt: "As Java developers, we often need to switch between different versions of the JDK for different projects. SDKMAN! makes this easy."
 image:
   auto: 0085-numbers
 ---
@@ -102,11 +102,11 @@ OpenJDK Runtime Environment AdoptOpenJDK (build 11.0.9+11)
 OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.9+11, mixed mode)
 ```
 
-## Per Project JDK Usage
+## Setting Per Project JDK Usage
 
 When we often change versions between different projects we might want to create an env file where we define the desired JDK version for the project.
 
-Running the `sdk env init` command, generates for us the .sdkmanrc file.
+Running the `sdk env init` command, generates for us the `.sdkmanrc` file.
 
 The contents of this file look like:
 

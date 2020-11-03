@@ -17,6 +17,8 @@ This changed when the Java release cadence changed to every 6 months. Today, if 
 
 **jEnv is a tool that helps us to manage multiple JDK installations and configure each codebase to use a specific JDK version without having to change the `JAVA_HOME` environment variable.**
 
+Make sure to check out the [article about SDKMAN!](/manage-jdks-with-sdkman/), an alternative tool for managing JDKs (and other tools).
+
 ## Installing jEnv
 
 jEnv supports Linux and MacOS operating systems. If you're working with Windows, you'll need to install the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (or a bash emulator like [GitBash](https://gitforwindows.org/)) to use it.

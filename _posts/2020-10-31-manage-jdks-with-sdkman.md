@@ -9,21 +9,21 @@ image:
   auto: 0085-numbers
 ---
 
-In the world of microservices and 6-month cycle release of Java, it is quite often to change Java versions multiple times a day.
+In the world of microservices and the 6-month release cycle of Java, we often have to change between Java versions multiple times a day.
 
-**SDKMAN! is a tool that helps us manage multiple JDK installations  (and not only) and configure each codebase to use a specific JDK version without the hassle of changing the `JAVA_HOME` environment variable.**
+**SDKMAN! is a tool that helps us to manage multiple JDK installations (and installations of other SDKs) and to configure each codebase to use a specific JDK version without the hassle of changing the `JAVA_HOME` environment variable.**
 
-Make sure also to check out the latest [article](https://reflectoring.io/manage-jdks-with-jenv/) about another great tool [jEnv](https://www.jenv.be/).
+Make sure also to also check out the [article about jEnv](/manage-jdks-with-jenv/) which is an alternative tool for the same purpose.
 
 ## Installing SDKMAN!
 
-SDKMAN! is easy to install on any platform the only thing you need is a terminal.
+SDKMAN! is easy to install on any platform. The only thing you need is a terminal.
 
 For installing and running SDKMAN! on Windows consider using [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
 To install SDKMAN! follow the official [installation guide](https://sdkman.io/install).
 
-## Installing a JDK from SDKMAN! repository
+## Installing a JDK From the SDKMAN! Repository
 
 SDKMAN! offers multiple JDK vendors such as AdoptOpenJDK, Alibaba, Amazon, etc...
 
@@ -54,9 +54,10 @@ Available Java Versions
 ================================================================================
 ```
 
-Now to install the JDK of our choice run: `sdk install java <candidate>`. For example: `sdk install java 15.0.1.j9-adpt`
+To install the JDK of our choice run: `sdk install java <candidate>`. For example: `sdk install java 15.0.1.j9-adpt`.
 
 SDKMAN! will now download the desired JDK and will ask us if we want to set it as default.
+
 ```
 Downloading: java 15.0.1.j9-adpt
 
@@ -65,7 +66,7 @@ In progress...
 Do you want java 15.0.1.j9-adpt to be set as default? (Y/n):
 ```
 
-If we run now again `sdk list java` we should be able to see which versions we have installed:
+If we run `sdk list java` again now, we should now see the `installed` status in the version we have just installed:
 ```text
 ================================================================================
 Available Java Versions
@@ -77,9 +78,9 @@ Available Java Versions
 
 ## Setting the Global JDK
 
-With the 6-month version JDK cycle that is now being released, we might want to add a global (default) JDK for our computer that is sensible for example an LTS version.
+With the 6-month version JDK cycle that is now being released, we might want to add a global (default) JDK for our computer that is sensible - for example an LTS version.
 
-To do so run: `sdk default java <canditate>`. For example: `sdk default java 11.0.9.hs-adpt`.
+To do so run: `sdk default java <candidate>`. For example: `sdk default java 11.0.9.hs-adpt`.
 
 ```text
 Default java version set to 11.0.9.hs-adpt
@@ -106,9 +107,7 @@ OpenJDK 64-Bit Server VM AdoptOpenJDK (build 11.0.9+11, mixed mode)
 
 When we often change versions between different projects we might want to create an env file where we define the desired JDK version for the project.
 
-Running the `sdk env init` command, generates for us the `.sdkmanrc` file.
-
-The contents of this file look like:
+Running the command `sdk env init`, we can generate a file named `.sdkmanrc`:
 
 ```text
 # Enable auto-env through the sdkman_auto_env config
@@ -117,22 +116,22 @@ java=11.0.9.hs-adpt
 ```
 
 For now, it defaults to our default java version. But let's say that we want to use JDK 15 for this project.
-Just change the value of the java key to `15.0.0.hs-adpt`.
+Just change the value of the java key to `15.0.0.hs-adpt`:
 
 ```text
 java=15.0.0.hs-adpt
 ```
 
-To apply this we just run the `sdk env` command, where the .sdkmanrc exists.
+To apply this we just run the `sdk env` command in the folder with the `.sdkmanrc` file:
 
 ```
 Using java version 15.0.0.hs-adpt in this shell
 ``` 
 
 If we want to automatically apply the `sdk env` command when navigating to the directory, 
-we should change the SDKMAN! configuration which is located under `~/.sdkman/etc/config`. Changing the value from the `sdkman_auto_env` key from `false` to `true` will do the trick.
+we can change the SDKMAN! configuration which is located under `~/.sdkman/etc/config`. Changing the value of `sdkman_auto_env` key from `false` to `true` will do the trick.
 
-## Upgrading to newer JDK
+## Upgrading to a Newer JDK
 
 The `sdk upgrade` command makes it really easy to upgrade to a newer version of a JDK. For example, we want to upgrade our JDK 11 Version from 11.0.8.hs-adpt to 11.0.9.hs-adpt SDK:
 
@@ -153,28 +152,13 @@ Done installing!
 Setting java 11.0.9.hs-adpt as default.
 ```
 
-## More than a JDK Manager
+## More Than a JDK Manager
 
 SDKMAN! is not just a JDK manager, it supports many more SDKs such as Maven, Gradle, Springboot, Micronaut, etc...
 
 To see all available SDKs just run the command `sdk list`.
 
-```text
-================================================================================
-Available Candidates
-================================================================================
-q-quit                                  /-search down
-j-down                                  ?-search up
-k-up                                    h-help
-
---------------------------------------------------------------------------------
-Ant (1.10.8)                                             https://ant.apache.org/
-
-Apache Ant is a Java library and command-line tool whose mission is to drive
-processes described in build files as targets and extension points dependent
-```
-
 ## Conclusion
 
-SDKMAN! is such a great tool to manage the versions of our favourite tools. To explore all the features of the SDKMAN! just visit the [official site](https://sdkman.io/).
+SDKMAN! is a great tool to manage the versions of our favourite tools. To explore all the features of the SDKMAN! visit the [official site](https://sdkman.io/).
 

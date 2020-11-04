@@ -32,6 +32,8 @@ We will see these principles in action by applying them to a Spring Boot applica
 
 > One codebase tracked in revision control, many deploys.
 
+***This helps to establish clear ownership of an application with a single individual or group.*** The application has a single codebase that evolves with new features, defect fixes, and upgrades to existing features. The application owners are accountable for building different versions and deploying to multiple environments like test, stage, and production during the lifetime of the application. 
+
 This principle advocates having a single codebase that can be built and deployed to multiple environments. Each environment has specific resource configurations like database, configuration data, and API URLs. To achieve this, we need to separate all the environment dependencies into a form that can be specified during the build and run phases of the application. 
 
 This helps to achieve the first two goals of the Twelve-Factor app - maximizing portability across environments using declarative formats.
@@ -45,6 +47,8 @@ This rule will be broken if we have to change the source to configure it for a s
 ## Dependencies
 
 > Explicitly declare and isolate dependencies.
+
+This principle is in contrast to the previous principle of maintaining one codebase per application.***Dependencies provide guidelines for reusing code between applications. While the reusable code itself is maintained as a single codebase, it is packaged and distributed in the form of libraries to multiple applications.*** 
 
 The most likely dependencies of an application are open-source libraries or libraries built in-house by other teams. Dependencies could also take the form of specific software installed on the host system. We declare in external files leveraging dependency management tools of the platform.
 
@@ -70,6 +74,8 @@ In the context of using Spring Boot, when using a dependency tool like Maven/Gra
 
 > Store config in the environment.
 
+The environments are dynamically provisioned in the cloud, so very little information is available while building the application. ***Isolating configuration properties into environment variables makes it easy and faster to deploy the application to different environments without any code changes.*** 
+
 A few examples of configuration data are database connection URLs and credentials, and URLs of services on which an application depends. These most often have different values across environments. If these are hard-coded in the code or property files bundled with the application, we need to update the application for deploying to different environments. 
 
 Instead, a better approach is to [externalize the configuration](/externalize-configuration/) using environment variables. The values of the environment variables are provided at runtime. We can provide the values from the command line if the application is run standalone. 
@@ -80,9 +86,11 @@ The default behavior in Spring Boot applications is to apply the values from env
 
 > Treat backing services as attached resources.
 
-Backing services should be attached and replaceable instead of embedded in the code. The use of specifications like JPA helps us to achieve this for RDBMS databases. 
+***This principle provides flexibility to change the backing service implementations without major changes to the application.***
 
-But in the absence of specifications, some code creeps into the code although we can keep them separate with abstraction layers. Similar to JPA, we can use JMS for messaging and SMTP for mails.
+Pluggability can be best achieved by using an abstraction like JPA over an RDBMS data source and using configuration properties (like a JDBC URL) to configure the connection
+This way, we can just change the JDBC URL to swap out the database. And we can swap out the underlying database by changing the dependency. A snippet of a dependency on H2 database looks like this:
+
 
 ```xml
     <dependency>
@@ -95,13 +103,17 @@ But in the absence of specifications, some code creeps into the code although we
       <scope>runtime</scope>
     </dependency>
 ```
-The declarative format allows us to replace the H2 database with any other RDBMS like Oracle or MySQL.
+We can easily replace the H2 database with any other RDBMS like Oracle or MySQL. Similar to JPA, we can use JMS for messaging and SMTP for mails.
 
 ## Build, Release, Run - Leverage Containers for the Development Workflow
 
 > Strictly separate build and run stages.
 
-We should keep the stages for build, release, and run  separate. For Spring Boot Applications, this is easy to achieve with the development workflow for containers. 
+***We should keep the stages for build, release, and run as separate. This separation is important to maintain application fidelity and integrity.*** These stages occur in a sequence. Each stage has a different objective and produces output that is propagated to the subsequent stage. 
+
+Any code changes including emergency fixes should happen in the build stage and follow an established release cycle before being promoted to production. Violating this principle for example by making a fix in production environments however small makes it difficult to propagate to the build stage, disturbs existing branches, and above all increases risk and overall cost of following this practice.
+
+For Spring Boot Applications, this is easy to achieve with the development workflow for containers. 
 
 The activities in these stages are:
 * **Build**: we compile the source code and build a Docker Image.
@@ -115,7 +127,9 @@ If we are using containers to package and run our application, no application ch
 
 > Execute the app as one or more stateless processes.
 
-Spring Boot applications execute as a Java process on the host system or inside a container runtime environment like Docker. This principle advocates that the processes should be stateless and share-nothing.  Any data that needs to persist must be stored in a stateful backing service like a database.
+***Stateless processes give the application an ability to scale-out quickly to handle a sudden increase in traffic and scale-in when the traffic to the system decreases.*** To make it stateless, we need to store all data outside the application.
+
+Spring Boot applications execute as a Java process on the host system or inside a container runtime environment like Docker. This principle advocates that the processes should be stateless and share-nothing. Any data that needs to persist must be stored in a stateful backing service like a database.
 
 This is a shift from the method of using “sticky sessions” in web applications that cache user session data in the memory of the application's process and expecting future requests from the same session to be routed to the same process. 
 
@@ -124,6 +138,10 @@ Sticky sessions are a violation of twelve-factor. Session state data should be s
 ## Port Binding - Port Defined as Environment Property
 
 > Export services via port binding.
+
+***Port Binding refers to an application binding itself to a particular port and listening to all the requests from interested consumers on that port.*** The port is declared as an environment variable and provided during execution.
+
+Applications built following this principle does not depend on a web server. The application is completely self-contained and executes standalone. The web server is packaged as a library and bundled with the application.
 
 Port binding is one of the fundamental requirements for microservices to be autonomous and self-contained.
 
@@ -135,21 +153,27 @@ We can configure the port by setting the `server.port`configuration property. Th
 
 > Scale out via the process model. 
 
-Spring Boot applications are stateless. This helps them to scale out by creating more instances to support increasing loads. This is taken care of by container orchestration systems like Kubernetes and Docker Swarm. From an application perspective all state if any needs to be managed outside the application.
+Traditionally, whenever an application reached the limit of its capacity, the solution was to increase its capacity by adding RAM, CPU, and other resources - a process called vertical scaling. ***Horizontal scaling or scaling out, on the other hand, is a more modern approach, meant to work well with the elastic scalability of cloud environments. Instead of making a single process even larger, we create multiple processes and then distribute the load of our application among those processes.***
+
+Spring Boot does not help us much with this factor. We have to make sure that our application is stateless, and thus can be scaled out to many concurrent workers to support the increased load. All kinds of state should be managed outside the application.
+
+And we also have to make sure to split our applications into multiple smaller applications (i.e. microservices) if we want to scale certain processes independently. Scaling is taken care of by container orchestration systems like Kubernetes and Docker Swarm.
 
 
 ## Disposability - Leverage Ephemeral Containers
 
 > Maximize robustness with fast startup and graceful shutdown.
 
-Spring Boot applications are commonly run inside containers. Containers are ephemeral and can be started or stopped at any moment. 
+***Disposability in an application allows it to be started or stopped rapidly.*** The application cannot scale, deploy, or recover rapidly if it takes a long time to get into a steady-state and shut down gracefully. If our application is under increasing load, and we need to bring up more instances to handle that load, any delay to startup could mean denial of requests during the time the application is starting up.
+
+Spring Boot applications should be run inside containers to make them disposable. Containers are ephemeral and can be started or stopped at any moment. 
 
 So it is important to minimize the startup time and ensure that the application shuts down gracefully when the container stops. Startup time is minimized with lazy initialization of dependent resources and by building [optimized container images](https://reflectoring.io/spring-boot-docker/).
 
 ## Dev/Prod Parity - Build Once - Ship Anywhere
 > Keep development, staging, and production as similar as possible.
 
-Movement of code across environments has traditionally been a major factor slowing down the development velocity. This resulted from a difference in the infrastructure used for development and production. 
+***The purpose of dev/prod parity is to ensure that the application will work in all environments ideally with no changes.*** Movement of code across environments has traditionally been a major factor slowing down the development velocity. This resulted from a difference in the infrastructure used for development and production. 
 
 Containers made this possible to build once and ship to multiple target environments. Containers make it possible to package all the dependencies including the OS and all dependencies. 
 
@@ -159,34 +183,40 @@ Spring Boot applications are packaged in Docker containers and pushed to a Docke
 ## Logs - Publish Logs as Event Streams
 > Treat Logs as Event Streams.
 
-The application should only produce logs in the form of event streams. Storing the logs in files or databases and shipping to other systems for further analysis should be delegated to purpose-built software. 
+The application should only produce logs as a sequence of events. In cloud environments, we have limited knowledge about the instances running the application.  The instances can also be created and terminated, for example during elastic scaling. 
 
-Spring Boot logs only to the console by default and does not write log files. It is preconfigured with Logback as the default Logger implementation. However, the principle of producing logs as event streams enables it to be integrated with a rich ecosystem of log appenders, filters, shippers, monitoring, and visualization tools to build a highly observable system. All these are elaborated in [configuring logging in Spring boot](https://reflectoring.io/springboot-logging/).
+***An application diagnostic process based on logs stored in file systems of the host instances will be tedious and error-prone.*** So the responsibility of storing, aggregating, and shipping logs to other systems for further analysis should be delegated to purpose-built software or observability services available in the underlying cloud platform.
+
+Also simplifying your application’s log emission process allows us to reduce our codebase and focus more on our application’s core business value.
+
+Spring Boot logs only to the console by default and does not write log files. It is preconfigured with Logback as the default Logger implementation. However, the principle of producing logs as event streams enables it to be integrated with a rich ecosystem of log appenders, filters, shippers, and monitoring, and visualization tools to build a highly observable system. All these are elaborated in [configuring logging in Spring boot](https://reflectoring.io/springboot-logging/).
 
 
 ## Admin Processes - Built as API and Packaged with the Application
 > Run admin/management tasks as one-off processes.
 
-Most applications need to run one-off tasks for administration and management. Examples of these tasks include database scripts to initialize the database or scripts for fixing bad records. This code should be packaged with the application and released together and run in the same environment. 
+Most applications need to run one-off tasks for administration and management. The original recommendation emphasizes using programmatic interactive shells (REPL) more suited to languages like python and C. However this needs to be adapted suitably to align with the current development practices. 
 
-In a Spring Boot application, we expose admin functions as separate endpoints that are invoked as one-off processes. Adding functions to execute one-off processes will go through the build, test, and release cycle.
+Examples of administrative tasks include database scripts to initialize the database or scripts for fixing bad records. In keeping with the Twelve-Factor app's original goals of building for maximum portability, this code should be packaged with the application and released together, and also run in the same environment. 
+
+In a Spring Boot application, we should expose administrative functions as separate endpoints that are invoked as one-off processes. Adding functions to execute one-off processes will go through the build, test, and release cycle.
 
 
 ## Conclusion
-We looked at the Twelve-factor principles for building a cloud-native application with Spring Boot. The following table summarizes what we have to do and what Spring Boot does for us to follow the 12 factors:
+We looked at the Twelve-Factor principles for building a cloud-native application with Spring Boot. The following table summarizes what we have to do and what Spring Boot does for us to follow the twelve factors:
 
 | Factor        | What do we have to do?|
 | ------------- |-------------| 
-| Codebase      | One Codebase for all environments |
-| Dependencies      | Declare dependencies in pom.xml |
-| Config      | Externalize Configuration with Environment Properties. |
-| Backing Services      | Pluggable services by coding to specifications like JPA |
-| Build/Release/Run      | Container workflow |
-| Processes      | Framework Support.No changes required |
-| Port Binding      | Configured with server.port environment variable |
-| Concurrency      | Framework Support.No changes required |
-| Disposability      | Container feature |
-| Dev/prod parity      | Container feature |
+| Codebase      | Use one Codebase for all environments |
+| Dependencies      | Declare all the dependencies in pom.xml |
+| Config      | Externalize Configuration with Environment Variables. |
+| Backing Services      | Build pluggable services by using abstractions like JPA |
+| Build/Release/Run      | Build and publish a Docker Image |
+| Processes      | Build stateless services and store all kind of state information outside the application, for example, in a database|
+| Port Binding      | Configure port with server.port environment variable |
+| Concurrency      | Build smaller stateless applications (microservices) |
+| Disposability      | Package the application in a container image. |
+| Dev/prod parity      | Build Container images and ship to multiple environments  |
 | Logs      | Publish Logs as Event Streams | 
 | Admin Processes      | Build one-off processes as APIs  |  
 

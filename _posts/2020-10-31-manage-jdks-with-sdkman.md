@@ -89,6 +89,7 @@ Default java version set to 11.0.9.hs-adpt
 ## Setting the Local JDK
 
 Sometimes, we might want to try out the new Java version, but not set it globally.
+**To achieve that, we have to apply the new Java version only on the current shell session**.
 
 This is easy with SDKMAN!. Simply run: `sdk use java <candidate>`. For example: `sdk use java 11.0.9.hs-adpt`
 

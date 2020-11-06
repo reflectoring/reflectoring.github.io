@@ -15,7 +15,7 @@ These twelve factors contain best practices on managing configuration data, abst
 
 Today's frameworks and methods already adhere to many of these principles by design, while some are supported by running the applications inside containers. 
 
-Spring Boot is a popular framework for building microservice applications. In this article, we will check how a Spring Boot application can adhere to the twelve factors and what we have to do for that. 
+Spring Boot is a popular framework for building microservice applications. In this article, we will look at the changes required to make a Spring Boot application adhere to the twelve factors. 
 
 ## Goals of the Twelve Factors
 A common theme running through all the twelve principles is making the application portable to meet the demands of a dynamic environment provisioning typical of cloud platforms. The goals of the Twelve-Factor App as asserted in the [documentation](https://12factor.net) are:

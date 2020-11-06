@@ -1,19 +1,19 @@
 ---
 title: "Managing Multiple JDK Installations With SDKMAN!"
 categories: [java]
-date: 2020-10-31 00:00:00 +1100
-modified: 2020-10-31 20:00:00 +1100
+date: 2020-11-07 00:00:00 +1100
+modified: 2020-11-07 00:00:00 +1100
 author: petros
 excerpt: "As Java developers, we often need to switch between different versions of the JDK for different projects. SDKMAN! makes this easy."
 image:
-  auto: 0085-numbers
+  auto: 0087-hammers
 ---
 
 In the world of microservices and the 6-month release cycle of Java, we often have to change between Java versions multiple times a day.
 
 **SDKMAN! is a tool that helps us to manage multiple JDK installations (and installations of other SDKs) and to configure each codebase to use a specific JDK version without the hassle of changing the `JAVA_HOME` environment variable.**
 
-Make sure also to also check out the [article about jEnv](/manage-jdks-with-jenv/) which is an alternative tool for the same purpose.
+Make sure to also check out the [article about jEnv](/manage-jdks-with-jenv/) which is an alternative tool for the same purpose.
 
 ## Installing SDKMAN!
 
@@ -134,7 +134,7 @@ we can change the SDKMAN! configuration which is located under `~/.sdkman/etc/co
 
 ## Upgrading to a Newer JDK
 
-The `sdk upgrade` command makes it really easy to upgrade to a newer version of a JDK. For example, we want to upgrade our JDK 11 Version from 11.0.8.hs-adpt to 11.0.9.hs-adpt SDK:
+The `sdk upgrade` command makes it easy to upgrade to a newer version of a JDK. For example, we want to upgrade our JDK 11 Version from 11.0.8.hs-adpt to 11.0.9.hs-adpt SDK:
 
 ```text
 Upgrade:
@@ -161,5 +161,5 @@ To see all available SDKs just run the command `sdk list`.
 
 ## Conclusion
 
-SDKMAN! is a great tool to manage the versions of our favourite tools. To explore all the features of the SDKMAN! visit the [official site](https://sdkman.io/).
+SDKMAN! is a great tool to manage the versions of our favorite tools. To explore all the features of the SDKMAN! visit the [official site](https://sdkman.io/).
 

@@ -52,7 +52,6 @@ We configure the application for a specific environment at runtime using [Spring
 
 The most likely dependencies of an application are open-source libraries or libraries built in-house by other teams. Dependencies could also take the form of specific software installed on the host system. We declare dependencies in external files leveraging the dependency management tools of the platform.
 
-
 For the Spring Boot application, we declare the dependencies in a `pom.xml` file (or `build.gradle` if we use Gradle). Here is an example of a Spring Boot application using `spring-boot-starter-web` as one of its dependencies: 
 
 ```xml

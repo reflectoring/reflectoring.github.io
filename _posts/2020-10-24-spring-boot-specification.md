@@ -11,7 +11,7 @@ image:
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/specification" %}
 
-## What Are Specifications?
+## What Is Specification?
 
 Specification is yet another tool at our disposal to perform queries in Spring Boot.
 
@@ -28,15 +28,15 @@ interface Specification<T>{
 }
 ```
 
-When building criteria query we are required to build and manage `Root`, `CriteraQuery`, and `CriteriaBuilder` objects by ourselves. 
+When building [Criteria Query](https://docs.jboss.org/hibernate/stable/orm/userguide/html_single/Hibernate_User_Guide.html#criteria) we are required to build and manage `Root`, `CriteraQuery`, and `CriteriaBuilder` objects by ourselves. 
 But, in the case of Specification that responsibly is taken up by Spring itself.
 
 Spring JPA Specification is inspired by Domain Driven Design's Specification pattern. 
 
-Using specification we can build 
+Using Specification we can build 
 atomic predicates, and it further allows us to even combine those predicates to build compound queries. 
 
-## Why Do We Need Specifications?
+## Why Do We Need Specification?
 
 One of the most common ways to perform queries in the Spring boot is by using [Query Methods](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods). But, the problem with query 
 method is that as we can only specify a fixed number of criteria, the number of query methods can increase rapidly as the 
@@ -46,19 +46,34 @@ For instance consider the following `JpaRepository` for the `Product` entity:
 
 ```java
 List<Product> findAllByNameLike(String name);
-List<Product> findAllByNameLikeAndPriceLessThanEqual(String name, 
-                                                     Double price);
-List<Product> findAllByCategoryInAndPriceLessThanEqual(List<Category> categories, 
-                                                       Double price);
-List<Product> findAllByCategoryInAndPriceBetween(List<Category> categories,
-                                                 Double bottom, 
-                                                 Double top);
-List<Product> findAllByNameLikeAndCategoryIn(String name, 
-                                            List<Category> categories);
-List<Product> findAllByNameLikeAndCategoryInAndPriceBetween(String name, 
-                                                            List<Category> categories,
-                                                            Double bottom, 
-                                                            Double top);
+
+List<Product> findAllByNameLikeAndPriceLessThanEqual(
+                                String name, 
+                                Double price
+                                );
+
+List<Product> findAllByCategoryInAndPriceLessThanEqual(
+                                List<Category> categories, 
+                                Double price
+                                );
+
+List<Product> findAllByCategoryInAndPriceBetween(
+                                List<Category> categories,
+                                Double bottom, 
+                                Double top
+                                );
+
+List<Product> findAllByNameLikeAndCategoryIn(
+                                String name, 
+                                List<Category> categories
+                                );
+
+List<Product> findAllByNameLikeAndCategoryInAndPriceBetween(
+                                String name, 
+                                List<Category> categories,
+                                Double bottom, 
+                                Double top
+                                );
 ```  
 You can notice that there are many overlapping criteria and if there is a change in any one of those we will need to make
  changes in multiple query methods. 
@@ -87,7 +102,7 @@ First, we need to have Spring Data Jpa dependency in our `build.gradle` file.
 Next, we will add the `hibernate-jpamodelgen` annotation processor
 dependency which will allow writing queries in a strongly-typed manner, utilizing so-called static metamodel classes.
 
-```java
+```groovy
 ...
 implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
@@ -106,14 +121,14 @@ An equivalent Specification of this Query Method is:
 
 ```java
 private Specification<Product> nameLike(String name){
-    return new Specification<Product>() {
-        @Override
-        public Predicate toPredicate(Root<Product> root, 
-                                     CriteriaQuery<?> query, 
-                                     CriteriaBuilder criteriaBuilder) {
-            return criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
-        }
-    };
+  return new Specification<Product>() {
+     @Override
+     public Predicate toPredicate(Root<Product> root, 
+                                  CriteriaQuery<?> query, 
+                                  CriteriaBuilder criteriaBuilder) {
+         return criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
+     }
+  };
 }
 ``` 
 
@@ -121,7 +136,8 @@ With Java 8 Lambda we can simplify the above to the following:
 
 ```java
 private Specification<Product> nameLike(String name){
-    return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
+    return (root, query, criteriaBuilder) 
+            -> criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
 }
 ```
 
@@ -129,8 +145,9 @@ We can also write it in-line in our function itself:
 
 ```java
 ...
-Specification<Product> = (root, query, criteriaBuilder) -> 
-                            criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
+Specification<Product> = 
+            (root, query, criteriaBuilder) -> 
+                   criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
 ...
 ```
 But, this defeats our purpose of reusability, so let's avoid this unless our use case requires it.
@@ -171,19 +188,23 @@ Let's look at an example:
 
 ```java
 public List<Product> getPremiumProducts(List<Category> categories) {
-  return productRepository.findAll(where(belongsToCategory(categories)).and(isPremium()));
+  return productRepository.findAll(where(belongsToCategory(categories))
+                                                    .and(isPremium()));
 }
 
 private Specification<Product> belongsToCategory(List<Category> categories){
-  return (root, query, criteriaBuilder)-> criteriaBuilder.in(root.get(Product_.CATEGORY)).value(categories);
+  return (root, query, criteriaBuilder)-> 
+            criteriaBuilder.in(root.get(Product_.CATEGORY)).value(categories);
 }
 
 private Specification<Product> isPremium() {
   return (root, query, criteriaBuilder) ->
           criteriaBuilder.and(
-                  criteriaBuilder.equal(root.get(Product_.MANUFACTURING_PLACE).get(Address_.STATE),
+                  criteriaBuilder.equal(
+                          root.get(Product_.MANUFACTURING_PLACE).get(Address_.STATE),
                           STATE.CALIFORNIA),
-                  criteriaBuilder.greaterThanOrEqualTo(root.get(Product_.PRICE), PREMIUM_PRICE));
+                  criteriaBuilder.greaterThanOrEqualTo(
+                          root.get(Product_.PRICE), PREMIUM_PRICE));
 }
 ```
 
@@ -225,26 +246,35 @@ private Specification<Product> createSpecification(QueryInput input) {
     case EQ:
        return (root, query, criteriaBuilder) -> 
               criteriaBuilder.equal(root.get(input.getField()),
-               castToRequiredType(root.get(input.getField()).getJavaType(), input.getValue()));
+               castToRequiredType(root.get(input.getField()).getJavaType(), 
+                                                        input.getValue()));
     case NOT_EQ:
        return (root, query, criteriaBuilder) -> 
               criteriaBuilder.notEqual(root.get(input.getField()),
-               castToRequiredType(root.get(input.getField()).getJavaType(), input.getValue()));
+               castToRequiredType(root.get(input.getField()).getJavaType(), 
+                                                        input.getValue()));
     case GT:
        return (root, query, criteriaBuilder) -> 
               criteriaBuilder.gt(root.get(input.getField()),
-               (Number) castToRequiredType(root.get(input.getField()).getJavaType(), input.getValue()));
+               (Number) castToRequiredType(
+                                root.get(input.getField()).getJavaType(), 
+                                                        input.getValue()));
     case LT:
        return (root, query, criteriaBuilder) -> 
               criteriaBuilder.lt(root.get(input.getField()),
-               (Number) castToRequiredType(root.get(input.getField()).getJavaType(), input.getValue()));
+               (Number) castToRequiredType(
+                                root.get(input.getField()).getJavaType(), 
+                                                        input.getValue()));
     case LIKE:
       return (root, query, criteriaBuilder) -> 
-              criteriaBuilder.like(root.get(input.getField()), "%"+input.getValue()+"%");
+              criteriaBuilder.like(root.get(input.getField()), 
+                                                "%"+input.getValue()+"%");
     case IN:
       return (root, query, criteriaBuilder) -> 
               criteriaBuilder.in(root.get(input.getField()))
-              .value(castToRequiredType(root.get(input.getField()).getJavaType(), input.getValues()));
+              .value(castToRequiredType(
+                                root.get(input.getField()).getJavaType(), 
+                                input.getValues()));
     default:
       throw new RuntimeException("Operation not supported yet");
   }
@@ -281,8 +311,9 @@ private Object castToRequiredType(Class fieldType, List<String> value) {
 Finally, we add a function that will combine multiple Specifications:
 
 ```java
-private Specification<Product> getSpecificationFromQuery(List<QueryInput> queryInput) {
-    Specification<Product> specification = where(createSpecification(queryInput.remove(0)));
+private Specification<Product> getSpecificationFromQuery(List<QueryInput> queryInput){
+    Specification<Product> specification = 
+                        where(createSpecification(queryInput.remove(0)));
     for (QueryInput input : queryInput) {
         if(input.isOptional()){
             specification = specification.or(createSpecification(input));
@@ -301,7 +332,8 @@ our new shiny dynamic specification query generator.
 QueryInput categories = QueryInput.builder()
          .field("category")
          .operator(QueryOperator.IN)
-         .values(List.of(Category.MOBILE.name(), Category.TV_APPLIANCES.name()))
+         .values(List.of(Category.MOBILE.name(), 
+                         Category.TV_APPLIANCES.name()))
          .isOptional(false)
          .build();
 

@@ -113,10 +113,10 @@ List<Product> findAllByNameLikeAndCategoryInAndPriceBetweenAndManufacturingPlace
 
 With Specifications, we can tackle these issues by creating atomic predicates, and by giving those predicates a 
 meaningful name we can clearly specify its intent. We will see how we can convert the above into a much meaningful query in 
-[Writing Queries With Specification section](#writing-queries-with-specification).
+[Writing Queries With Specifications section](#writing-queries-with-specifications).
 
 Specifications allow us to write queries programmatically and because of this fact, we can build dynamic queries based 
-on user input. We will see it in more detail in [Dynamic Queries With Specification section](#dynamic-queries-with-specification).
+on user input. We will see it in more detail in [Dynamic Queries With Specifications section](#dynamic-queries-with-specifications).
 
 ## Setting Things Up
 

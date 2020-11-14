@@ -53,12 +53,12 @@ interface Specification<T>{
 Spring JPA Specifications is inspired by Domain Driven Design's Specification pattern. 
 
 Using Specifications we can build 
-atomic predicates, and it further allows us to even combine those predicates to build compound queries. 
+atomic predicates, and further combine those predicates to build compound queries. 
 
 ## Why Do We Need Specifications?
 
 One of the most common ways to perform queries in the Spring boot is by using [Query Methods](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods). But, the problem with query 
-method is that as we can only specify a fixed number of criteria, the number of query methods can increase rapidly as the 
+method is that we can only specify a fixed number of criteria. Also, the number of query methods can increase rapidly as the 
 use cases increases.
 
 For instance consider the following `JpaRepository` for the `Product` entity:
@@ -98,11 +98,11 @@ interface ProductRepository extends JpaRepository<Product, String>,
                                   );
 }
 ```  
-You can notice that there are many overlapping criteria and if there is a change in any one of those we will need to make
- changes in multiple Query Methods. 
+You can notice that there are many overlapping criteria and if there is a change in any one of those than we will have to make
+ changes in multiple query methods. 
 
-Also, the length of the Query Method might increase sufficiently when we have long field names and have multiple criteria
-in our query. Plus, it may take a while for someone to understand such a lengthy query, and it's purpose.
+Also, the length of the query method might increase significantly when we have long field names and have multiple criteria
+in our query. Plus, it might take a while for someone to understand such a lengthy query, and it's purpose.
 
 ```java
 List<Product> findAllByNameLikeAndCategoryInAndPriceBetweenAndManufacturingPlace_State(String name,
@@ -115,7 +115,7 @@ With Specifications, we can tackle these issues by creating atomic predicates, a
 meaningful name we can clearly specify its intent. We will see how we can convert the above into a much meaningful query in 
 [Writing Queries With Specifications section](#writing-queries-with-specifications).
 
-Specifications allow us to write queries programmatically and because of this fact, we can build dynamic queries based 
+Specifications allow us to write queries programmatically and because of this fact, we can build queries dynamically based 
 on user input. We will see it in more detail in [Dynamic Queries With Specifications section](#dynamic-queries-with-specifications).
 
 ## Setting Things Up
@@ -130,7 +130,7 @@ annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
 First, we need to have Spring Data Jpa dependency in our `build.gradle` file. 
 
 Next, we will add the `hibernate-jpamodelgen` annotation processor
-dependency which will generate static metamodel classes of our entities using which we will be able to write queries in 
+dependency which will generate static metamodel classes of our entities. Using which we will be able to write queries in 
 a strongly-typed manner.
 
 For instance the metamodel class of `Distributor` entity would look like the following:
@@ -205,7 +205,7 @@ We can also write it in-line in our function itself:
 ...
 Specification<Product> nameLike = 
             (root, query, criteriaBuilder) -> 
-                   criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
+                 criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
 ...
 ```
 But, this defeats our purpose of reusability, so let's avoid this unless our use case requires it.
@@ -245,10 +245,13 @@ multiple specifications. Also, a `not` method which allows us to do negation of 
 Let's look at an example:
 
 ```java
-public List<Product> getPremiumProducts(List<Category> categories) {
-  return productRepository.findAll(where(belongsToCategory(categories))
-                                                    .and(isPremium()));
-}
+    public List<Product> getPremiumProducts(String name, 
+                                            List<Category> categories) {
+        return productRepository.findAll(
+                where(belongsToCategory(categories))
+                        .and(nameLike(name))
+                        .and(isPremium()));
+    }
 
 private Specification<Product> belongsToCategory(List<Category> categories){
   return (root, query, criteriaBuilder)-> 
@@ -259,26 +262,27 @@ private Specification<Product> isPremium() {
   return (root, query, criteriaBuilder) ->
           criteriaBuilder.and(
                   criteriaBuilder.equal(
-                          root.get(Product_.MANUFACTURING_PLACE).get(Address_.STATE),
+                          root.get(Product_.MANUFACTURING_PLACE)
+                                                .get(Address_.STATE),
                           STATE.CALIFORNIA),
                   criteriaBuilder.greaterThanOrEqualTo(
                           root.get(Product_.PRICE), PREMIUM_PRICE));
 }
 ```
 
-Here, we have combined `belongsToCategory` and `isPremium` specifications into one using `where` and `and` helper functions. 
+Here, we have combined `belongsToCategory`, `nameLike` and `isPremium` specifications into one using `where` and `and` helper functions. 
 This also reads really nice right? Also, notice how `isPrimium` is giving more meaning to the query.
 
-Currently `isPremium` is combining two predicates, but if we want we can create separate Specifications for each of those 
-and combine again with `Specification`'s `and`. For now, we will keep it as is as the predicates used in `isPremium` are very 
+Currently `isPremium` is combining two predicates, but if we want, we can create separate Specifications for each of those 
+and combine again with `Specification`'s `and`. For now, we will keep it as is as, the predicates used in `isPremium` are very 
 specific to that query, and if in the future we need to use them in other queries too then we can always split them up without 
 impacting the clients of `isPremium` function.
 
 ## Dynamic Queries With Specifications
 
 Let's say we want to create an API which allows our clients to fetch all the products and also filter them based on a number 
-of properties such as categories, price, color, etc. Here we do not know beforehand what combination of properties client 
-is going to use, to filter the product. 
+of properties such as categories, price, color, etc. Here, we do not know beforehand what combination of properties client 
+is going to use, to filter the products. 
 
 One way to handle this is to write query methods for all possible combinations but 
 that would require writing a lot of query methods. And that number would further increase as we introduce new fields.
@@ -342,10 +346,10 @@ private Specification<Product> createSpecification(Filter input) {
 }
 ```
 
-As you can we here we have supported a number of operations such as Equals(EQ), Less than(LT), In (IN), etc. We can also 
-add more based on your requirement.
+As you can we here we have supported a number of operations such as `EQUALS`, `LESS_THAN`, `IN`, etc. We can also 
+add more based on our requirement.
 
-Now, as we know criteria API allows us to write typesafe queries. So, the values that we provide must be of the type compatible with the type of our field. `QueryInput` takes the value as `String` type which means we will have to cast the values to a required type 
+Now, as we know criteria API allows us to write typesafe queries. So, the values that we provide must be of the type compatible with the type of our field. `Filter` takes the value as `String` which means we will have to cast the values to a required type 
 before passing it to `CriteriaBuilder`. 
 
 ```java
@@ -382,7 +386,7 @@ private Specification<Product> getSpecificationFromFilters(List<Filter> filter){
 }
 ```
 
-Let's try to fetch all the products belonging to the `MOBILE` and `TV APPLIANCE` category and whose prices are below 1000 using 
+Now, let's try to fetch all the products belonging to the `MOBILE` and `TV APPLIANCE` category and whose prices are below 1000 using 
 our new shiny dynamic Specifications query generator.
 
 ```java
@@ -403,7 +407,7 @@ List<Filter> filters = new ArrayList<>();
 filters.add(lowRange);
 filters.add(categories);
 
-productAdapter.getQueryResult(filters);
+productRepository.getQueryResult(filters);
 ```
 
 The above code snippets should do for most filter cases but there is still a lot of room for improvement. Such as allowing queries 
@@ -415,10 +419,12 @@ Consider this as an open-end problem.
 Specifications provide us with a way to write reusable queries and also fluent APIs with which we can combine and build more
 sophisticated queries.
 
-One question that comes to mind is that if we can write any query with Specification then when do we prefer query methods? or should we ever prefer them?
-I believe there are a couple of cases where Query Methods could come in handy. Let's say our entity has only a handful of fields, and it only needs to be queried in a certain way then why bother writing Specification when we can 
-simply write a query method. And if in future requirements come in for more queries for the given entity then we can always refactor it to use Specifications. Also, Specifications won't be helpful in cases where we want to use database-specific 
-features in a query say performing JSON queries in the case of Postgres DB.
+One question that comes to mind is that if we can write any query with Specifications then when do we prefer query methods? or should we ever prefer them?
+I believe there are a couple of cases where Query Methods could come in handy. 
+
+Let's say our entity has only a handful of fields, and it only needs to be queried in a certain way then why bother writing Specifications when we can 
+simply write a query method. And if in future requirements come in for more queries for the given entity then we can always refactor it to use Specifications. 
+Also, Specifications won't be helpful in cases where we want to use database-specific features in a query say performing JSON queries in the case of Postgres DB.
 
 All in all, Spring JPA Specifications is a great tool whether we want to create reusable predicates or want to generate typesafe queries 
 programmatically.

@@ -415,13 +415,12 @@ Consider this as an open-end problem.
 Specifications provide us with a way to write reusable queries and also fluent APIs with which we can combine and build more
 sophisticated queries.
 
-One question that comes to mind is that if we can write any query with Specification then when do we prefer query methods? or should be ever prefer them?
-I believe there are couple of cases where Query Methods could come in handy. Let's say our entity has only handful of fields, and it only needs to be queried in a certain way then why bother writing Specification when we can 
+One question that comes to mind is that if we can write any query with Specification then when do we prefer query methods? or should we ever prefer them?
+I believe there are a couple of cases where Query Methods could come in handy. Let's say our entity has only a handful of fields, and it only needs to be queried in a certain way then why bother writing Specification when we can 
 simply write a query method. And if in future requirements come in for more queries for the given entity then we can always refactor it to use Specifications. Also, Specifications won't be helpful in cases where we want to use database-specific 
-features in a query say performing JSON queries in case of Postgres DB.
+features in a query say performing JSON queries in the case of Postgres DB.
 
 All in all, Spring JPA Specifications is a great tool whether we want to create reusable predicates or want to generate typesafe queries 
 programmatically.
 
 Thank you for reading! You can find the working code at [GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/specification).
-

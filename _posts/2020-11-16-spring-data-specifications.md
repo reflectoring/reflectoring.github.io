@@ -1,12 +1,12 @@
 ---
 title: "Getting Started with Spring Data Specifications"
 categories: [spring-boot]
-date: 2020-10-24 00:00:00 +1100
-modified: 2020-10-24 20:00:00 +1100
+date: 2020-11-16 00:00:00 +1100
+modified: 2020-11-16 00:00:00 +1100
 author: mmr
 excerpt: "All you need to know to get started with Spring Data JPA Specifications"
 image:
-  auto: 0084-search
+  auto: 0059-library
 ---
 
 If you are looking for a better way to manage your queries or want to generate dynamic and typesafe queries then you
@@ -16,7 +16,7 @@ might find your solution in Spring Data JPA Specifications.
 
 ## What Are Specifications?
 
-Spring Data JPA Specifications is yet another tool at our disposal to perform database queries in Spring Boot (or even without Spring Boot).
+Spring Data JPA Specifications is yet another tool at our disposal to perform database queries with Spring or Spring Boot.
 
 Specifications are built on top of the Criteria API. 
 

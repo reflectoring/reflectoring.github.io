@@ -45,3 +45,15 @@ accelerate:
   url: https://www.goodreads.com/book/show/35747076-accelerate
   title: "Accelerate"
   author: "Nicole Forsgren, Jez Humble, and Gene Kim"
+
+essentialism:
+  cover: /assets/img/covers/essentialism-260.jpg
+  url: https://www.goodreads.com/book/show/18077875-essentialism
+  title: "Essentialism"
+  author: "Greg McKeown"
+
+pragmatic-thinking:
+  cover: /assets/img/covers/pragmatic-thinking-260.jpg
+  url: https://www.goodreads.com/book/show/3063393-pragmatic-thinking-and-learning
+  title: "Pragmatic Thinking & Learning"
+  author: "Andy Hunt"

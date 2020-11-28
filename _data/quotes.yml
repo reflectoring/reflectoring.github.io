@@ -116,3 +116,72 @@
 - author: Michael Feathers
   publication: https://blogs.itemis.com/en/unit-tests-are-tests-of-modularity
   text: "With modularity, quality follows."
+- author: Alberto Brandolini
+  publication: https://blog.avanscoperta.it/2020/08/04/domain-driven-design-in-2020/
+  text: "Multiple models is the key for not evolving into a big ball of mud."
+- author: Alberto Brandolini
+  publication: https://blog.avanscoperta.it/2020/08/04/domain-driven-design-in-2020/
+  text: "Sharing resources is usually a threat on healthy evolution."
+- author: Alberto Brandolini
+  publication: https://blog.avanscoperta.it/2020/08/04/domain-driven-design-in-2020/
+  text: "Safety can be achieved only when we are in control of the behaviour of our system."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "Saying yes to any opportunity by definition requires saying no to several others."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "The faster and busier things get, the more we need to build thinking time into our schedule."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "The best asset we have for making a contribution to the world is ourselves."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "Courage is the key to the process of elimination."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "Of all forms of human motivation, the most effective is progress."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "Just a few seconds of preparation pay a valuable dividend."
+- author: Greg McKeown
+  publication: Essentialism
+  text: "Routine is one of the most powerful tools for removing obstacles."
+- author: Andy Hunt
+  publication: Pragmatic Thinking & Learning
+  text: "We tend to make programming much harder on ourselves than we need."
+- author: Andy Hunt
+  publication: Pragmatic Thinking & Learning
+  text: "The only path to a more correct self-assessment is to improve the individual's skill level."
+- author: Chinese Proverb
+  publication: Pragmatic Thinking & Learning
+  text: "The palest ink is better than the best memory."
+- author: Andy Hunt
+  publication: Pragmatic Thinking & Learning
+  text: "Learning isn't done to you, it's something you do."
+- author: Andy Hunt
+  publication: Pragmatic Thinking & Learning
+  text: "Reading is the least effective way of learning."
+- author: Andy Hunt
+  publication: Pragmatic Thinking & Learning
+  text: "Documenting is more important than documentation."
+- author: Andy Hunt
+  publication: Pragmatic Thinking & Learning
+  text: "Build to learn, not learn to build."
+- author: Andy Hunt
+  publication: Pragmatic Thinking & Learning
+  text: "Play more in order to learn more."
+- author: Andy Hunt
+  publication: Pragmatic Thinking & Learning
+  text: "First be aware of the what, then think about the how."
+- author: Andy Hunt
+  publication: Pragmatic Thinking & Learning
+  text: "Trying too hard is a guarantee for failure."
+- author: Andy Hunt
+  publication: Pragmatic Thinking & Learning
+  text: "If it's OK to fail, you won't."
+- author: Andy Hunt
+  publication: Pragmatic Thinking & Learning
+  text: "If failure is costly, there will be no experimentation."
+- author: Andy Hunt
+  publication: Pragmatic Thinking & Learning
+  text: "Always keep a beginner's mind."

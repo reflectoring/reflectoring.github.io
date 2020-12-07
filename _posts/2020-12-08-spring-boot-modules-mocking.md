@@ -51,7 +51,7 @@ There are more ways to split an application into modules, of course, and often i
 * like a Matryoshka doll, each module's `internal` sub-package may contain packages with sub-modules, each with their own `api` and `internal` packages
 * classes within a given `internal` package may only be accessed by classes within that package.
 
-This makes for a very clear codebase that is easy to navigate. Read more about this code structure in my article about [clear architecture boundaries](/java-modules-clean-boundaries/) or look at some code in the [code examples](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-mocking-modules).
+This makes for a very clear codebase that is easy to navigate. Read more about this code structure in my article about [clear architecture boundaries](/java-components-clean-boundaries/) or look at some code in the [code examples](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-mocking-modules).
 
 Now, that's a nice package structure, but what does that have to do with testing and mocking? 
 

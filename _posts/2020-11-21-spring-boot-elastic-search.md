@@ -24,7 +24,7 @@ In this article, we will use Spring Data Elasticsearch to build a simple search 
 ## Indexing a Document
 A Document is the unit of storage in Elasticsearch. It is the equivalent of a row in a traditional database. Documents are stored in an Index which is the equivalent of a table. How we index the document during storage influences the results of a search query. When using Spring Data we represent a document in the form of a POJO and decorate it with annotations to define the mapping with Elasticsearch documents. 
 
-Any text stored in Elasticsearch is first processed by an analyzer. The analyzer splits the text by common separators like space, and punctuation and removes common English words. If we store a text - "The sky is blue", the analyzer will store this as a document with the 'terms' - sky and blue. We will be able search this document with text in the form of "blue sky", "sky", "blue" with degree of match indicated by a score. 
+Any text stored in Elasticsearch is first processed by an analyzer. The analyzer splits the text by common separators like space, and punctuation and removes common English words. If we store a text - "The sky is blue", the analyzer will store this as a document with the 'terms' - sky and blue. We will be able to search this document with text in the form of "blue sky", "sky", "blue" with a degree of the match indicated by a score. 
 
 ## Starting our Elasticsearch Instance
 There are numerous ways of running an Elasticsearch instance :
@@ -53,11 +53,11 @@ This will start an Elasticsearch instance listening on port 9200. We can verify 
   "tagline" : "You Know, for Search"
 }
 ```
-We should get the above output, if our Elasticsearch instance is started successfully. 
+We should get the above output if our Elasticsearch instance is started successfully. 
 
 ## Indexing and Searching with REST API
 
-Elasticsearch operations are accessed with REST APIs. A simple PUT request to a Elasticsearch looks like this:
+Elasticsearch operations are accessed with REST APIs. A simple PUT request to an Elasticsearch instance looks like this:
 
 ```shell
 PUT /messages/_doc/1
@@ -78,7 +78,7 @@ GET /messages/search
   }
 }
 ```
-Here we are sending a a query of type match for fetching documents matching the attribute message with values "blue sky". There is an analysis process during query also. The text - "blue sky" will be tokenized into "blue" and "sky" and then matched with tokens associated with the documents in the index.
+Here we are sending a query of type match for fetching documents matching the attribute message with values "blue sky". There is an analysis process during the query also. The text - "blue sky" will be tokenized into "blue" and "sky" and then matched with tokens associated with the documents in the index.
 
 We can specify queries for searching documents in multiple ways, some of which are listed here : 
 |Query                           |Result|
@@ -89,9 +89,9 @@ We can specify queries for searching documents in multiple ways, some of which a
 ## Elasticsearch Operations with Spring Data
 
 We have two ways of accessing Elasticsearch with Spring Data.
-- Repositories : We define methods in an interface and Elasticsearch Queries are generated from method names at runtime.
+- Repositories: We define methods in an interface and Elasticsearch Queries are generated from method names at runtime.
 
-- Elasticsearch Operations: We create queries have more control on creating Elasticsearch Queries.
+- Elasticsearch Operations: We create queries that have more control over creating Elasticsearch Queries.
 
 Add diagram
 
@@ -108,7 +108,7 @@ We will now add the `Spring Data` dependencies for interacting with Elasticsearc
       <artifactId>spring-data-elasticsearch</artifactId>
     </dependency>
 ```
-Here we are adding the dependency for spring-data-elasticsearch which will enable us to use the Spring Data semmantics for accessing the Elasticsearch data store.
+Here we are adding the dependency for spring-data-elasticsearch which will enable us to use the Spring Data semantics for accessing the Elasticsearch data store.
 
 
 ## Connecting to the Elasticsearch Instance
@@ -134,7 +134,7 @@ public class ElasticsearchClientConfig extends AbstractElasticsearchConfiguratio
 ```
 Here we are connecting to our Elasticsearch instance running on localhost and listening on port 9200. We can further customize by adding more properties like enabling ssl, setting timeouts, etc. 
 
-**Enabling transport layer logging**: In order to see what is actually sent to and received from the server, Request / Response logging on the transport level needs to be turned on as outlined in this snippet:
+**Enabling transport layer logging**: To see what is sent to and received from the server, Request / Response logging on the transport level needs to be turned on as outlined in this snippet:
 
 <logger name="org.springframework.data.elasticsearch.client.WIRE" level="trace"/>
 
@@ -174,7 +174,7 @@ The @Field annotation configures the type of a field. We can also set the name t
 
 ## Indexing and Searching with Spring Data Repository
 
-Repositories provide the most elegant way to access data in Spring Data using finder methods. Queries get  created from method names. However we have to be careful about not ending up with inefficient queries thereby putting a high load on the cluster.
+Repositories provide the most elegant way to access data in Spring Data using finder methods. Queries get created from method names. However, we have to be careful about not ending up with inefficient queries thereby putting a high load on the cluster.
 
 We will create a repository by extending ElasticsearchRepository. Some methods like  `save` and `saveAll` are included by default. We will add the below finder methods to our interface.
 
@@ -315,11 +315,11 @@ CriteriaQuery uses method chaining to construct the Elasticsearch query as shown
 
 ## Building our Search Application
 
-We will build an application that will have a search input box for searching different products from an inventory. The products are stored with the attributes -  name, description, price, category, and manufacturer. We can search in three ways : 
+We will build an application that will have a search input box for searching for different products from an inventory. The products are stored with the attributes -  name, description, price, category, and manufacturer. We can search in three ways : 
 
-1. **Exact Search**: We will search a product by specifying it's exact name
-2. **Like Search**: We can list products produced by a manufacturer. Since manufacturer names are long we will specify part of the name in our search query, to get back the list of products from manufacturer whose name contains our search text.
-3. **Fuzzy Search**: We will search products by specifying a closely matching text in the description.
+1. **Exact Search**: We will search a product by specifying it's the exact name
+2. **Like Search**: We can list products produced by a manufacturer. Since manufacturer names are long we will specify part of the name in our search query, to get back the list of products from a manufacturer whose name contains our search text.
+3. **Fuzzy Search**: We will search for products by specifying a closely matching text in the description.
 
 We will next create an HTML page [`search.html`]() containing the input box along with some JQuery code to handle the click events and invoking the search APIs of our application. We will save this HTML page under the resources/templates folder.
 
@@ -330,7 +330,7 @@ We will next create an HTML page [`search.html`]() containing the input box alon
 
 
 ## Building the Search Index
-We will create an index for the products in our inventory. We will use a sample dataset of fifty products to build our Index. The products are arranged as separate rows in a csv file. Each row has three attributes - id, name, and description. We want the index to be created during application start up. However index creation is a separate process in real environments. We will read each row of the csv and add to product index. 
+We will create an index for the products in our inventory. We will use a sample dataset of fifty products to build our Index. The products are arranged as separate rows in a CSV file. Each row has three attributes - id, name, and description. We want the index to be created during application startup. However, index creation is a separate process in real environments. We will read each row of the csv and add to product index. 
 
 In the core Elasticsearch api, there are two ways of adding documents to an index - adding one document at a time or adding documents in bulk. The api for adding individual documents accept a document as parameter.
 

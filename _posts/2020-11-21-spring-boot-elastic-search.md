@@ -1,245 +1,379 @@
 ---
-title: "Using Elastic Search with Spring Boot"
+title: "Using Elasticsearch with Spring Boot"
 categories: [spring-boot]
 date: 2020-11-05 06:00:00 +1000
 modified: 2020-11-05 06:00:00 +1000
 author: pratikdas
-excerpt: "How do we build a search function in Spring Boot using Elastic Search?"
+excerpt: "How do we build a search function in Spring Boot using Elasticsearch?"
 image:
   auto: 0086-twelve
 ---
 
-We always work with some kind of data in our applications. The data is usually dead if it cannot be located and made use of. A search function provides the capability to locate and fetch this data relevant to our application. Elastic Search is a tool for searching documents. From the elastic website - Elasticsearch is a distributed, RESTful search and analytics engine.
+Elasticsearch is a distributed search and analytics engine for various types of data, including textual, numerical, geospatial, structured, and unstructured. The data is stored as a JSON document in a storage called Index. The operations are exposed as REST APIs. We search an Index with a Query to fetch one or more Documents. 
 
-In this article, we will look at the components of elastic search and then build a simple search application using Spring Boot to demonstrate it's main capabilities. 
+Spring Data Elasticsearch provides a simple interface to perform operations on Elasticsearch.
+
+In this article, we will use Spring Data Elasticsearch to build a simple search application and demonstrate:
+1. Indexing a Document
+2. Searching with Repositories
+3. Searching with Elasticsearch Queries 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch" %}
 
-## Components of Elastic Search
-Elastic Search has two principal components viz. Document and Index around which most of the other components work. **We query an Index to search a Document.** Let us look at the main ones.
 
-Document: Anything we can search in Elasticsearch is a Document.
+## Indexing a Document
+A Document is the unit of storage in Elasticsearch. It is the equivalent of a row in a traditional database. Documents are stored in an Index which is the equivalent of a table. How we index the document during storage influences the results of a search query. When using Spring Data we represent a document in the form of a POJO and decorate it with annotations to define the mapping with Elasticsearch documents. 
 
-Index: 
+Any text stored in Elasticsearch is first processed by an analyzer. The analyzer splits the text by common separators like space, and punctuation and removes common English words. If we store a text - "The sky is blue", the analyzer will store this as a document with the 'terms' - sky and blue. We will be able search this document with text in the form of "blue sky", "sky", "blue" with degree of match indicated by a score. 
+
+## Starting our Elasticsearch Instance
+There are numerous ways of running an Elasticsearch instance :
+1. Using a hosted service
+2. Using a managed service from a Cloud Provider
+3. DIY way by installing Elasticsearch in a cluster of VMs.
+4. Running a Docker Image
+
+We will use the Docker image from Dockerhub which is good enough for our demo application. Let us start our Elasticsearch instance by running the Docker `run` command:
+
+```shell
+docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+```
+
+This will start an Elasticsearch instance listening on port 9200. We can verify the instance by hitting the URL - http://localhost:9200 and check the resulting output in our browser:
+
+```xml
+{
+  "name" : "8c06d897d156",
+  "cluster_name" : "docker-cluster",
+  "cluster_uuid" : "Jkx..VyQ",
+  "version" : {
+    "number" : "7.10.0",
+    ...
+  },
+  "tagline" : "You Know, for Search"
+}
+```
+We should get the above output, if our Elasticsearch instance is started successfully. 
+
+## Indexing and Searching with REST API
+
+Elasticsearch operations are accessed with REST APIs. A simple PUT request to a Elasticsearch looks like this:
+
+```shell
+PUT /messages/_doc/1
+{
+  "message": "The Sky is blue today"
+}
+```
+This will store the message - "The Sky is blue today" as a document in an Index named "messages". 
+
+We can fetch this document with a search query sent to the `search` REST API: 
+```shell
+GET /messages/search
+{
+  "query": 
+  {
+    "match": {"message": "blue sky"}
+
+  }
+}
+```
+Here we are sending a a query of type match for fetching documents matching the attribute message with values "blue sky". There is an analysis process during query also. The text - "blue sky" will be tokenized into "blue" and "sky" and then matched with tokens associated with the documents in the index.
+
+We can specify queries for searching documents in multiple ways, some of which are listed here : 
+|Query                           |Result|
+| ---------------------|-------------| 
+|"match": {"message": "blue sky"}| 
+
+
+## Elasticsearch Operations with Spring Data
+
+We have two ways of accessing Elasticsearch with Spring Data.
+- Repositories : We define methods in an interface and Elasticsearch Queries are generated from method names at runtime.
+
+- Elasticsearch Operations: We create queries have more control on creating Elasticsearch Queries.
+
+Add diagram
+
+## Creating the Application and Adding Dependencies
+
+Let us first create our application with the [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.6.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.elasticsearch&artifactId=productsearchapp&name=productsearchapp&description=Demo%20project%20for%20Elasticsearch%20with%20Spring%20Boot&packageName=io.pratik.elasticsearch.productsearchapp&dependencies=web,lombok,thymeleaf) by including the dependencies for web, thymeleaf, and lombok. 
+
+
+We will now add the `Spring Data` dependencies for interacting with Elasticsearch. Spring Data is an umbrella project of multiple subprojects each of which are for a specific data store. 
+
+```xml
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-elasticsearch</artifactId>
+    </dependency>
+```
+Here we are adding the dependency for spring-data-elasticsearch which will enable us to use the Spring Data semmantics for accessing the Elasticsearch data store.
+
+
+## Connecting to the Elasticsearch Instance
+
+We will connect to our Elasticsearch Instance by creating a Spring Bean Configuration. The Java High Level REST Client is the default client of Elasticsearch.  We will configure the client to access the Elasticsearch operations for searching and indexing. Spring Data Elasticsearch uses an Elasticsearch REST client that is connected to a single Elasticsearch node or a cluster.
+
+```java
+@Configuration
+public class ElasticsearchClientConfig extends AbstractElasticsearchConfiguration {
+  @Override
+  @Bean
+  public RestHighLevelClient elasticsearchClient() {
+
+    final ClientConfiguration clientConfiguration = 
+        ClientConfiguration
+          .builder()
+          .connectedTo("localhost:9200")
+          .build();
+
+    return RestClients.create(clientConfiguration).rest();
+  }
+
+```
+Here we are connecting to our Elasticsearch instance running on localhost and listening on port 9200. We can further customize by adding more properties like enabling ssl, setting timeouts, etc. 
+
+**Enabling transport layer logging**: In order to see what is actually sent to and received from the server, Request / Response logging on the transport level needs to be turned on as outlined in this snippet:
+
+<logger name="org.springframework.data.elasticsearch.client.WIRE" level="trace"/>
+
+## Representing the Document
+Our model object looks like this:
+
+```java
+@Document(indexName = "productindex")
+public class Product {
+  @Id
+    private String id;
+  
+  @Field(type = FieldType.Text, name = "name")
+  private String name;
+  
+  @Field(type = FieldType.Double, name = "price")
+  private Double price;
+  
+  @Field(type = FieldType.Integer, name = "quantity")
+  private Integer quantity;
+  
+  @Field(type = FieldType.Keyword, name = "category")
+  private String category;
+  
+  @Field(type = FieldType.Text, name = "desc")
+  private String description;
+  
+  @Field(type = FieldType.Keyword, name = "manufacturer")
+  private String manufacturer;
+```
+
+First the @Document annotation: This one specifies, which index our entities should go into. By default the spring application creates the index based on the configuration in this annotation and the following field annotations.
+
+The @Id annotation, which makes this field the `_id` of our document, being the unique identifier in this index.
+
+The @Field annotation configures the type of a field. We can also set the name to a different field name. 
+
+## Indexing and Searching with Spring Data Repository
+
+Repositories provide the most elegant way to access data in Spring Data using finder methods. Queries get  created from method names. However we have to be careful about not ending up with inefficient queries thereby putting a high load on the cluster.
+
+We will create a repository by extending ElasticsearchRepository. Some methods like  `save` and `saveAll` are included by default. We will add the below finder methods to our interface.
+
+```java
+public interface ProductRepository 
+      extends ElasticsearchRepository<Product, String> {
+ 
+    List<Product> findByName(String name);
+    
+    List<Product> findByNameContaining(String name);
+ 
+    List<Product> findByManufacturerAndCategory(String manufacturer,String category);
+}
+```
+We will add a single document to the index by executing the JUnit method :
+
+```java
+  public void createProductIndex(final Product product) {
+    productRepository.save(product);
+  }
+```
+
+```java
+  @Test
+  void testCreateProductIndex() {
+    final Product product = Product.builder()
+        .id(UUID.randomUUID().toString())
+        .name("Dell Vostro ..")
+        ...
+        .build();
+    productSearchServiceWithRepo.createProductIndex(product);
+```
+
+For adding multiple documents we will execute saveAll method:
+
+```java
+  public void createProductIndexBulk(final List<Product> products) {
+    productRepository.saveAll(products);
+  }
+```
+## Indexing with ElasticsearchOperations
+
+ElasticsearchRestTemplate is the new client of Elasticsearch based on HTTP and replaces the TransportClient which used the Elasticsearch node-to-node binary protocol. 
+
+ElasticsearchRestTemplate implements ElasticsearchOperations, which does the heavy-lifting for low level search and cluster actions. 
+
+```java
+    List<IndexQuery> queries = products.stream()
+        .map(product->
+          new IndexQueryBuilder()
+          .withId(product.getId().toString())
+          .withObject(product).build())
+        .collect(Collectors.toList());;
+    
+    return elasticsearchOperations
+        .bulkIndex(queries,IndexCoordinates.of(INDEX_NAME));
+```
+
+```shell
+ Sending request POST /_bulk?timeout=1m with parameters: 
+Request body: {"index":{"_index":"productindex","_id":"383..35"}}
+{"_class":"..Product","id":"383..35","name":"New Apple iPh..ue","price":2300.0,"quantity":55,"category":"phone","desc":"6.7-inch ..ing","manufacturer":"apple"}
+{"index":{"_index":"productindex","_id":"c27..cd5"}}
+{"_class":"..Product","id":"c27..cd5","name":"New Apple iPh..Blue","price":2300.0,"quantity":15,"category":"phone","desc":"5.4-inch..ance","manufacturer":"apple"}
+{"index":{"_index":"productindex","_id":"e7e..29"}}
+{"_class":"..Product","id":"e7e..29","name":"Samsung ..sor","manufacturer":"samsung"}
+{"index":{"_index":"productindex","_id":"d7a..34"}}
+{"_class":"..Product","id":"d7a..34","name":"Sam..LED","price":2100.0,"quantity":5,"category":"television","desc":"Reso..esign","manufacturer":"samsung"}
+Received raw response: 200 OK
+ProductSearchServiceTest - documentIDs [3831..35, c27..5, e7e..29, d7a..34]
+```
+
+```shell
+Sending request PUT /productindex/_doc/59d..987?timeout=1m with parameters: 
+Request body: {"_class":"io.pratik.elasticsearch.productsearchapp.Product","id":"59d135f5-8683-424b-b64e-7dedb467c987","name":"Dell Vostro 3401 14inch FHD AG 2 Side Narrow Border Display Laptop","price":2100.0,"quantity":28,"category":"laptop","desc":"Processor:10th Genera... Display","manufacturer":"dell"}
+Received raw response: 201 CREATED
+ProductSearchServiceTest - documentID 59d1..987
+
+```
+
+## Searching with Elasticsearch Operations
+
+Searches look similar to Elasticsearch queries and are built by constructing a Query object and passing it to a search method. The queries are of three variants based on their method of construction. Let us build a few queries using these three variants:
+
+
+1. NativeQuery
+NativeQuery provides the maximum flexibility of building the query using objects representing Elasticsearch constructs like aggregation, filter, and sort.
+
+```java
+    QueryBuilder queryBuilder = 
+        QueryBuilders
+        .matchQuery("manufacturer", brandName);
+
+    Query searchQuery = new NativeSearchQueryBuilder()
+        .addAggregation(AggregationBuilders.cardinality("productName"))
+        .withFilter(queryBuilder).build();
+
+    SearchHits<Product> productHits = elasticsearchOperations.search(searchQuery, Product.class,
+        IndexCoordinates.of(INDEX_NAME));
+
+```
+```shell
+Sending request POST /productindex/_search..: 
+Request body: {.."query":{"match_all":{"boost":1.0}},"post_filter":{"match":{"manufacturer":{"query":"samsung","operator":"OR",..}}},"version":true}
+
+Received raw response: 200 OK
+ProductSearchService - [SearchHit{id='ee5..b4', score=1.0, sortValues=[], content=Product(id=ee5..b4, name=Sam..age), price=2100.0, quantity=25, category=phone, description=12MP U..sor, manufacturer=samsung), highlightFields={}},
+
+SearchHit{id='7a8..91', score=1.0, sortValues=[], content=Product(id=7a8..91, name=Samsung 163 cm (65 Inches) Q Series 4K Ultra HD QLED, price=2100.0, quantity=5, category=television, description=Res..ign, manufacturer=samsung), highlightFields={}}]
+
+```
+2. StringQuery
+
+A StringQuery is formed with a valid JSON string.
+
+```java
+  public void findByProductName(final String productName) {
+    Query searchQuery = new StringQuery(
+        "\"{ \\\"match\\\": { \\\"name\\\": { \\\"query\\\": \\\"macbook\\\" } } } \"");
+
+    SearchHits<Product> products = elasticsearchOperations.search(searchQuery, Product.class,
+        IndexCoordinates.of(INDEX_NAME));
+
+```
+
+3. CriteriaQuery
+CriteriaQuery uses method chaining to construct the Elasticsearch query as shown here:
+
+```java
+  public void findByProductPrice(final String productPrice) {
+    Criteria criteria = new Criteria("price").greaterThan(10.0).lessThan(100.0);
+    Query searchQuery = new CriteriaQuery(criteria);
+
+    SearchHits<Product> products = elasticsearchOperations.search(searchQuery, Product.class,
+        IndexCoordinates.of(INDEX_NAME));
+
+```
 
 ## Building our Search Application
 
-L
+We will build an application that will have a search input box for searching different products from an inventory. The products are stored with the attributes -  name, description, price, category, and manufacturer. We can search in three ways : 
+
+1. **Exact Search**: We will search a product by specifying it's exact name
+2. **Like Search**: We can list products produced by a manufacturer. Since manufacturer names are long we will specify part of the name in our search query, to get back the list of products from manufacturer whose name contains our search text.
+3. **Fuzzy Search**: We will search products by specifying a closely matching text in the description.
+
+We will next create an HTML page [`search.html`]() containing the input box along with some JQuery code to handle the click events and invoking the search APIs of our application. We will save this HTML page under the resources/templates folder.
 
 
-A common theme running through all the twelve principles is making the application portable to meet the demands of a dynamic environment provisioning typical of cloud platforms. The goals of the Twelve-Factor App as asserted in the [documentation](https://12factor.net) are:
 
-1. **Using declarative formats** to automate the setup.
-2. **Maximizing portability** across execution environments
-3. Suitable for **deployment in Cloud Platforms**
-4. **Minimizing divergence between development and production** by enabling continuous deployment for maximum agility
-5. Ability to **scale up without significant changes** to tooling, architecture, or development practices.
 
-We will see these principles in action by applying them to a Spring Boot application. 
 
-## 1. Codebase - Single Codebase Under Version Control for All Environments
 
-> One codebase tracked in revision control, many deploys.
 
-**This helps to establish clear ownership of an application with a single individual or group.** The application has a single codebase that evolves with new features, defect fixes, and upgrades to existing features. The application owners are accountable for building different versions and deploying to multiple environments like test, stage, and production during the lifetime of the application. 
+## Building the Search Index
+We will create an index for the products in our inventory. We will use a sample dataset of fifty products to build our Index. The products are arranged as separate rows in a csv file. Each row has three attributes - id, name, and description. We want the index to be created during application start up. However index creation is a separate process in real environments. We will read each row of the csv and add to product index. 
 
-This principle advocates having a single codebase that can be built and deployed to multiple environments. Each environment has specific resource configurations like database, configuration data, and API URLs. To achieve this, we need to separate all the environment dependencies into a form that can be specified during the build and run phases of the application. 
+In the core Elasticsearch api, there are two ways of adding documents to an index - adding one document at a time or adding documents in bulk. The api for adding individual documents accept a document as parameter.
 
-This helps to achieve the first two goals of the Twelve-Factor App - maximizing portability across environments using declarative formats.
+For bulk addition, we need to supply a json document containing entries similar to the following snippet:
 
-**Following this principle, we'll have a single Git repository containing the source code of our Spring Boot application. This code is compiled and packaged and then deployed to one or more environments.**
+Spring Data abstracts these method in save and saveAll methods in the repository. We have used the saveAll method to add our documents:
 
-We configure the application for a specific environment at runtime using [Spring profiles](/spring-boot-profiles/) and [environment-specific properties](/profile-specific-logging-spring-boot/). 
+```java
+  @PostConstruct
+  public void buildIndex() {
 
-**We're breaking this rule if we have to change the source code to configure it for a specific environment** or if we have separate repositories for different environments like development and production.
+    esOps.indexOps(Product.class).refresh();
 
-## 2. Dependencies
+    productRepo.saveAll(prepareDataset());
+  }
 
-> Explicitly declare and isolate dependencies.
+```
+In this snippet, we do some preprocessing by reading the rows from the dataset and passing those to the saveAll method of the repository. On running the application we can see the below trace logs in the application start up.
 
-**Dependencies provide guidelines for reusing code between applications. While the reusable code itself is maintained as a single codebase, it is packaged and distributed in the form of libraries to multiple applications.** 
-
-The most likely dependencies of an application are open-source libraries or libraries built in-house by other teams. Dependencies could also take the form of specific software installed on the host system. We declare dependencies in external files leveraging the dependency management tools of the platform.
-
-For the Spring Boot application, we declare the dependencies in a `pom.xml` file (or `build.gradle` if we use Gradle). Here is an example of a Spring Boot application using `spring-boot-starter-web` as one of its dependencies: 
-
-```xml
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
+```shell
+...Sending request POST /_bulk?timeout=1m with parameters: 
+Request body: {"index":{"_index":"productindex"}}
+{"_class":"io.pratik.elasticsearch.productsearchapp.Product","name":"Hornby 2014 Catalogue","description":"Product Desc..talogue","manufacturer":"Hornby"}
+{"index":{"_index":"productindex"}}
+{"_class":"io.pratik.elasticsearch.productsearchapp.Product","name":"FunkyBuys..","description":"Size Name:Lar..& Smoke","manufacturer":"FunkyBuys"}
+{"index":{"_index":"productindex"}}
+.
+...
 ```
 
-This principle is an evolution from an earlier practice of sharing libraries across applications by storing them in a shared classpath. Using that approach introduced a coupling with the configuration of the host system. 
 
-The declarative style of specifying dependencies removes this coupling. 
+## Executing Our Search
+We will now build mechanisms to search our product inventory leveraging the Elasticsearch Index we built in the previous step. 
+- **Exact Search**: We can search a product by exact name
+- **Like Search**: We can list products produced by a manufacturer. Since manufacturer names are long we will specify part of the name in our search query.
+- **Fuzzy Search**: We can use search products by closely matching text in the description.
 
-In the context of using Spring Boot, when using a dependency tool like Maven/Gradle we get:
 
- - **Versioning** by declaring specific versions of the dependencies with which our application works, and
- - **Isolation** by bundling dependencies with the application.
 
-## 3. Config - Externalizing Configuration Properties
 
-> Store config in the environment.
+## Conclusion 
+We looked at the Spring Data 
+When you’re creating a new index in Elasticsearch, it’s important to understand your data and choose your datatypes with care. Before creating the mapping for an index, it’s helpful to know how users might be searching for data in a specific field; this is especially true when you’re dealing with string data where partial matching may be needed. 
 
-Ideally, the environments are dynamically provisioned in the cloud, so very little information is available while building the application. 
 
-**Isolating configuration properties into environment variables makes it easy and faster to deploy the application to different environments without any code changes.** 
-
-A few examples of configuration data are database connection URLs and credentials, and URLs of services on which an application depends. These most often have different values across environments. If these are hard-coded in the code or property files bundled with the application, we need to update the application for deploying to different environments. 
-
-Instead, a better approach is to [externalize the configuration](/externalize-configuration/) using environment variables. The values of the environment variables are provided at runtime. We can provide the values from the command line if the application is run standalone. 
-
-The default behavior in Spring Boot applications is to apply the values from environment variables to override any values declared in property files. We can use [configuration properties](/spring-boot-configuration-properties/) to use the configuration parameters in the code.
-
-## 4. Backing Services - Pluggable Data Sources, and Queues
-
-> Treat backing services as attached resources.
-
-**This principle provides flexibility to change the backing service implementations without major changes to the application.**
-
-Pluggability can be best achieved by using an abstraction like JPA over an RDBMS data source and using configuration properties (like a JDBC URL) to configure the connection.
-
-This way, we can just change the JDBC URL to swap out the database. And we can swap out the underlying database by changing the dependency. A snippet of a dependency on H2 database looks like this:
-
-
-```xml
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-```
-We can easily replace the H2 database with any other RDBMS like Oracle or MySQL. Similar to JPA, we can use JMS for messaging and SMTP for mails.
-
-## 5. Build, Release, Run - Leverage Containers for the Development Workflow
-
-> Strictly separate build and run stages.
-
-**We should keep the stages for build, release, and run as separate. This separation is important to maintain application fidelity and integrity.**
- 
- These stages occur in a sequence. Each stage has a different objective and produces output that is propagated to the subsequent stage. 
-
-Any code changes including emergency fixes should happen in the build stage and follow an established release cycle before being promoted to production. Violating this principle for example by making a fix in production environments however small makes it difficult to propagate to the build stage, disturbs existing branches, and above all increases risk and overall cost of following this practice.
-
-For Spring Boot applications, this is easy to achieve with the development workflow for containers:
-
-* **Build**: we compile the source code and build a Docker image.
-* **Release**: we tag the image and push it to a registry.
-* **Run**:  we pull the image from the registry and run it as a container instance. 
- 
-If we are using containers to package and run our application, no application changes are required to adhere to this Twelve-Factor App principle.
-
-
-## 6. Processes - Stateless Applications
-
-> Execute the app as one or more stateless processes.
-
-**Stateless processes give the application an ability to scale out quickly to handle a sudden increase in traffic and scale in when the traffic to the system decreases.** To make it stateless, we need to store all data outside the application.
-
-Spring Boot applications execute as a Java process on the host system or inside a container runtime environment like Docker. This principle advocates that the processes should be stateless and share-nothing. Any data that needs to persist must be stored in a stateful backing service like a database.
-
-This is a shift from the method of using “sticky sessions” in web applications that cache user session data in the memory of the application's process and expecting future requests from the same session to be routed to the same process. 
-
-Sticky sessions are a violation of twelve-factor. Session state data should be stored outside the application in a datastore that offers time-expiration, such as Memcached or Redis.
-
-## 7. Port Binding - Port Defined as Environment Property
-
-> Export services via port binding.
-
-**Port Binding refers to an application binding itself to a particular port and listening to all the requests from interested consumers on that port.** The port is declared as an environment variable and provided during execution.
-
-Applications built following this principle do not depend on a web server. The application is completely self-contained and executes standalone. The web server is packaged as a library and bundled with the application.
-
-Port binding is one of the fundamental requirements for microservices to be autonomous and self-contained.
-
-Spring Boot embeds Tomcat in applications and exports HTTP as a service by binding to a port and listening to incoming requests to that port. 
-
-We can configure the port by setting the `server.port` configuration property. The default value is 8080.
-
-## 8. Concurrency - Stateless Applications Help to Scale Out
-
-> Scale out via the process model. 
-
-Traditionally, whenever an application reached the limit of its capacity, the solution was to increase its capacity by adding RAM, CPU, and other resources - a process called vertical scaling.
- 
-Horizontal scaling or "scaling out", on the other hand, is a more modern approach, meant to work well with the elastic scalability of cloud environments. **Instead of making a single process even larger, we create multiple processes and then distribute the load of our application among those processes.**
-
-Spring Boot does not help us much with this factor. We have to make sure that our application is stateless, and thus can be scaled out to many concurrent workers to support the increased load. All kinds of state should be managed outside the application.
-
-And we also have to make sure to split our applications into multiple smaller applications (i.e. microservices) if we want to scale certain processes independently. Scaling is taken care of by container orchestration systems like Kubernetes and Docker Swarm.
-
-
-## 9. Disposability - Leverage Ephemeral Containers
-
-> Maximize robustness with fast startup and graceful shutdown.
-
-**Disposability in an application allows it to be started or stopped rapidly.** 
-
-The application cannot scale, deploy, or recover rapidly if it takes a long time to get into a steady state and shut down gracefully. If our application is under increasing load, and we need to bring up more instances to handle that load, any delay to startup could mean denial of requests during the time the application is starting up.
-
-Spring Boot applications should be run inside containers to make them disposable. Containers are ephemeral and can be started or stopped at any moment. 
-
-So it is important to minimize the startup time and ensure that the application shuts down gracefully when the container stops. Startup time is minimized with lazy initialization of dependent resources and by building [optimized container images](/spring-boot-docker/).
-
-## 10. Dev/Prod Parity - Build Once - Ship Anywhere
-> Keep development, staging, and production as similar as possible.
-
-**The purpose of dev/prod parity is to ensure that the application will work in all environments ideally with no changes.** 
-
-Movement of code across environments has traditionally been a major factor slowing down the development velocity. This resulted from a difference in the infrastructure used for development and production. 
-
-Containers made it possible to build once and ship to multiple target environments. They also allow to package all the dependencies including the OS. 
-
-Spring Boot applications are packaged in Docker containers and pushed to a Docker registry. Apart from using a Docker file to create a Docker image, Spring Boot provides plugins for [building OCI image from source](/spring-boot-docker/) with Cloud-Native buildpacks.
-
-
-## 11. Logs - Publish Logs as Event Streams
-> Treat Logs as Event Streams.
-
-The application should only produce logs as a sequence of events. In cloud environments, we have limited knowledge about the instances running the application.  The instances can also be created and terminated, for example during elastic scaling. 
-
-**An application diagnostic process based on logs stored in file systems of the host instances will be tedious and error-prone.** 
-
-So the responsibility of storing, aggregating, and shipping logs to other systems for further analysis should be delegated to purpose-built software or observability services available in the underlying cloud platform.
-
-Also simplifying your application’s log emission process allows us to reduce our codebase and focus more on our application’s core business value.
-
-Spring Boot logs only to the console by default and does not write log files. It is preconfigured with Logback as the default Logger implementation. 
-
-Logback has a rich ecosystem of log appenders, filters, shippers, and thus supports many monitoring and visualization tools. All these are elaborated in [configuring logging in Spring boot](/springboot-logging/).
-
-
-## 12. Admin Processes - Built as API and Packaged with the Application
-> Run admin/management tasks as one-off processes.
-
-Most applications need to run one-off tasks for administration and management. The original recommendation emphasizes using programmatic interactive shells (REPL) more suited to languages like python and C. However this needs to be adapted suitably to align with the current development practices. 
-
-Examples of administrative tasks include database scripts to initialize the database or scripts for fixing bad records. In keeping with the Twelve-Factor App's original goals of building for maximum portability, this code should be packaged with the application and released together, and also run in the same environment. 
-
-In a Spring Boot application, we should expose administrative functions as separate endpoints that are invoked as one-off processes. Adding functions to execute one-off processes will go through the build, test, and release cycle.
-
-
-## Conclusion
-We looked at the Twelve-Factor principles for building a cloud-native application with Spring Boot. The following table summarizes what we have to do and what Spring Boot does for us to follow the twelve factors:
-
-| Factor        | What do we have to do?|
-| ------------- |-------------| 
-| Codebase      | Use one codebase for all environments. |
-| Dependencies      | Declare all the dependencies in `pom.xml` or `build.gradle`. |
-| Config      | Externalize configuration with environment variables. |
-| Backing Services      | Build pluggable services by using abstractions like JPA. |
-| Build/Release/Run      | Build and publish a Docker image. |
-| Processes      | Build stateless services and store all state information outside the application, for example in a database.|
-| Port Binding      | Configure port with the `server.port` environment variable. |
-| Concurrency      | Build smaller stateless applications (microservices). |
-| Disposability      | Package the application in a container image. |
-| Dev/prod parity      | Build container images and ship to multiple environments.  |
-| Logs      | Publish logs to a central log aggregator. | 
-| Admin Processes      | Build one-off processes as API endpoints.  |  
 

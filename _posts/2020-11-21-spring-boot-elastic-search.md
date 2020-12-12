@@ -9,29 +9,36 @@ image:
   auto: 0086-twelve
 ---
 
-Elasticsearch is a distributed search and analytics engine for various types of data, including textual, numerical, geospatial, structured, and unstructured. The data is stored as a JSON document in a storage called Index. The operations are exposed as REST APIs. We search an Index with a Query to fetch one or more Documents. 
+Elasticsearch is built on [Apache Lucene](https://lucene.apache.org) and was first released by Elasticsearch N.V. (now Elastic) in 2010. According to the website of [Elastic](https://www.elastic.co/what-is/elasticsearch), it is a distributed, open source **search and analytics engine** for all types of data, including textual, numerical, geospatial, structured, and unstructured.  
 
-Spring Data Elasticsearch provides a simple interface to perform operations on Elasticsearch.
+The operations of Elasticsearch are exposed as REST APIs. The primary functions are of storing Documents in an Index, searching the Index with powerful Queries to fetch those Documents, and also run analytic functions on the data. Spring Data Elasticsearch provides a simple interface to perform these operations on Elasticsearch instead of the REST APIs.
 
-In this article, we will use Spring Data Elasticsearch to build a simple search application and demonstrate:
-1. Indexing a Document
-2. Searching with Repositories
-3. Searching with Elasticsearch Queries 
+In this article, we will use Spring Data Elasticsearch to highlight the main capabilities of Elasticsearch - indexing of documents and searching and finally build a simple search application for searching products in a product inventory.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch" %}
 
 
 ## Indexing a Document
-A Document is the unit of storage in Elasticsearch. It is the equivalent of a row in a traditional database. Documents are stored in an Index which is the equivalent of a table. How we index the document during storage influences the results of a search query. When using Spring Data we represent a document in the form of a POJO and decorate it with annotations to define the mapping with Elasticsearch documents. 
+The easiest way to get introduced to Elasticsearch concepts is by drawing an analogy with a database as illustrated here:
 
-Any text stored in Elasticsearch is first processed by an analyzer. The analyzer splits the text by common separators like space, and punctuation and removes common English words. If we store a text - "The sky is blue", the analyzer will store this as a document with the 'terms' - sky and blue. We will be able to search this document with text in the form of "blue sky", "sky", "blue" with a degree of the match indicated by a score. 
+|Elasticsearch|Database|
+|-------------|--------|
+|Index|Table|
+|Document|Row|
+|Field|Column|
+
+Any data we want to search or analyze is stored as a Document in an Index. In Spring Data we represent a Document in the form of a POJO and decorate it with annotations to define the mapping with a Elasticsearch Document. 
+
+Unlike a database, the text stored in Elasticsearch is first processed by various analyzers. The default analyzer splits the text by common word separators like space, and punctuation, and also removes common English words. 
+
+If we store a text - "The sky is blue", the analyzer will store this as a Document with the 'terms' - sky and blue. We will be able to search this Document with text in the form of "blue sky", "sky", or "blue" with a degree of the match given as a score. Apart from text, Elasticsearch can store other types of data known as `Field Type` as explained [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html).
 
 ## Starting our Elasticsearch Instance
-There are numerous ways of running an Elasticsearch instance :
+Before going any further, let us start an Elasticsearch instance which we will use through out for running our examples. There are numerous ways of running an Elasticsearch instance :
 1. Using a hosted service
-2. Using a managed service from a Cloud Provider
+2. Using a managed service from a Cloud Provider like [AWS](https://aws.amazon.com/elasticsearch-service/) or [Azure](https://azuremarketplace.microsoft.com/en-in/marketplace/apps/elastic.elasticsearch)
 3. DIY way by installing Elasticsearch in a cluster of VMs.
-4. Running a Docker Image
+4. Running a [Docker Image](https://www.docker.elastic.co)
 
 We will use the Docker image from Dockerhub which is good enough for our demo application. Let us start our Elasticsearch instance by running the Docker `run` command:
 
@@ -57,7 +64,7 @@ We should get the above output if our Elasticsearch instance is started successf
 
 ## Indexing and Searching with REST API
 
-Elasticsearch operations are accessed with REST APIs. A simple PUT request to an Elasticsearch instance looks like this:
+Elasticsearch operations are accessed with REST APIs. A simple PUT request to an Elasticsearch instance for storing a Document looks like this:
 
 ```shell
 PUT /messages/_doc/1
@@ -78,22 +85,20 @@ GET /messages/search
   }
 }
 ```
-Here we are sending a query of type match for fetching documents matching the attribute message with values "blue sky". There is an analysis process during the query also. The text - "blue sky" will be tokenized into "blue" and "sky" and then matched with tokens associated with the documents in the index.
-
-We can specify queries for searching documents in multiple ways, some of which are listed here : 
-|Query                           |Result|
-| ---------------------|-------------| 
-|"match": {"message": "blue sky"}| 
+Here we are sending a query of type `match` for fetching documents matching the attribute message with values "blue sky". We can specify queries for searching documents in multiple ways.Elasticsearch provides a JSON based [Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) (Domain Specific Language) to define queries.
 
 
 ## Elasticsearch Operations with Spring Data
 
-We have two ways of accessing Elasticsearch with Spring Data.
+We have two ways of accessing Elasticsearch with Spring Data as shown here:
+
+![Elasticsearch Operations Types with Spring Data](/assets/img/posts/spring-data-elasticsearch/Elasticsearch-springdata.png)
+
 - Repositories: We define methods in an interface and Elasticsearch Queries are generated from method names at runtime.
 
-- Elasticsearch Operations: We create queries that have more control over creating Elasticsearch Queries.
+- Elasticsearch Operations: We create queries with method chaining and native queries to have more control over creating Elasticsearch Queries in relatively complex scenarios.
 
-Add diagram
+We will look at these two ways in much more detail in the following sections.
 
 ## Creating the Application and Adding Dependencies
 
@@ -113,7 +118,7 @@ Here we are adding the dependency for spring-data-elasticsearch which will enabl
 
 ## Connecting to the Elasticsearch Instance
 
-We will connect to our Elasticsearch Instance by creating a Spring Bean Configuration. The Java High Level REST Client is the default client of Elasticsearch.  We will configure the client to access the Elasticsearch operations for searching and indexing. Spring Data Elasticsearch uses an Elasticsearch REST client that is connected to a single Elasticsearch node or a cluster.
+  Spring Data Elasticsearch uses [Java High Level REST Client (JHLC)](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high.html#java-rest-high) to connect to Elasticsearch server. JHLC is the default client of Elasticsearch. We will create a Spring Bean Configuration to set this up:
 
 ```java
 @Configuration
@@ -132,20 +137,20 @@ public class ElasticsearchClientConfig extends AbstractElasticsearchConfiguratio
   }
 
 ```
-Here we are connecting to our Elasticsearch instance running on localhost and listening on port 9200. We can further customize by adding more properties like enabling ssl, setting timeouts, etc. 
+Here we are connecting to our Elasticsearch instance which we started earlier. We can further customize the connection by adding more properties like enabling ssl, setting timeouts, etc. 
 
-**Enabling transport layer logging**: To see what is sent to and received from the server, Request / Response logging on the transport level needs to be turned on as outlined in this snippet:
+**Enabling transport layer logging**: For debugging and diagnostics, we will turn on  request / response logging on the transport level as outlined in this snippet:
 
 <logger name="org.springframework.data.elasticsearch.client.WIRE" level="trace"/>
 
 ## Representing the Document
-Our model object looks like this:
+In our example, we will search for products by its name, brand, price, or description. So for storing the product as a Document in Elasticsearch, we will represent the product as a POJO, and decorate with `Field` annotations to configure the mapping with Elasticsearch as shown here:
 
 ```java
 @Document(indexName = "productindex")
 public class Product {
   @Id
-    private String id;
+  private String id;
   
   @Field(type = FieldType.Text, name = "name")
   private String name;
@@ -166,17 +171,45 @@ public class Product {
   private String manufacturer;
 ```
 
-First the @Document annotation: This one specifies, which index our entities should go into. By default the spring application creates the index based on the configuration in this annotation and the following field annotations.
+The `@Document` annotation specifies the index name. By default the spring application creates the index based on the configuration in this annotation along with annotations for Id and Field as explained next. 
 
-The @Id annotation, which makes this field the `_id` of our document, being the unique identifier in this index.
+The `@Id` annotation, which makes this field the `_id` of our document, being the unique identifier in this index. 
 
-The @Field annotation configures the type of a field. We can also set the name to a different field name. 
+The `@Field` annotation configures the type of a field. We can also set the name to a different field name. 
 
 ## Indexing and Searching with Spring Data Repository
 
-Repositories provide the most elegant way to access data in Spring Data using finder methods. Queries get created from method names. However, we have to be careful about not ending up with inefficient queries thereby putting a high load on the cluster.
+Repositories provide the most elegant way to access data in Spring Data using finder methods. The Elasticsearch queries get created from method names. However, we have to be careful about not ending up with inefficient queries thereby putting a high load on the cluster.
 
-We will create a repository by extending ElasticsearchRepository. Some methods like  `save` and `saveAll` are included by default. We will add the below finder methods to our interface.
+Let us create a Spring Data repository interface by extending [ElasticsearchRepository](https://docs.spring.io/spring-data/elasticsearch/docs/current/api/org/springframework/data/elasticsearch/repository/ElasticsearchRepository.html) interface: 
+
+```java
+public interface ProductRepository 
+      extends ElasticsearchRepository<Product, String> {
+}
+```
+Some methods like  `save` and `saveAll` are included from the `ElasticsearchRepository` interface.
+We will now store some products in the index by invoking the `save` method for storing one product and `saveAll` method for bulk indexing. Before that we will put the repository interface inside a service class:
+
+```java
+@Service
+..
+public class ProductSearchServiceWithRepo {
+
+  private ProductRepository productRepository;
+
+  public void createProductIndexBulk(final List<Product> products) {
+    productRepository.saveAll(products);
+  }
+
+  public void createProductIndex(final Product product) {
+    productRepository.save(product);
+  }
+```
+When we call these methods from JUnit, we can see in the trace log, the REST APIs for index and bulk index being called corresponding to invocation of `save` and `saveAll` methods.
+
+
+For fufilling our search requirements, we will add finder methods to our interface:
 
 ```java
 public interface ProductRepository 
@@ -189,39 +222,32 @@ public interface ProductRepository
     List<Product> findByManufacturerAndCategory(String manufacturer,String category);
 }
 ```
-We will add a single document to the index by executing the JUnit method :
 
-```java
-  public void createProductIndex(final Product product) {
-    productRepository.save(product);
-  }
+On running the method `findByName` with JUnit, we can see Elasticsearch queries generated before sending to server in the trace logs:
+```shell
+TRACE Sending request POST /productindex/_search? ..: 
+Request body: {.."query":{"bool":{"must":[{"query_string":{"query":"apple","fields":["name^1.0"],..}
 ```
 
-```java
-  @Test
-  void testCreateProductIndex() {
-    final Product product = Product.builder()
-        .id(UUID.randomUUID().toString())
-        .name("Dell Vostro ..")
-        ...
-        .build();
-    productSearchServiceWithRepo.createProductIndex(product);
+Simmilarly, by running the method `findByManufacturerAndCategory`, we can see the query generated with two `query_string` corresponding to the two fields - "manufacturer" and "category" being searched on.
+```shell
+TRACE .. Sending request POST /productindex/_search..: 
+Request body: {.."query":{"bool":{"must":[{"query_string":{"query":"samsung","fields":["manufacturer^1.0"],..}},{"query_string":{"query":"laptop","fields":["category^1.0"],..}}],..}},"version":true}
 ```
 
-For adding multiple documents we will execute saveAll method:
+
+## Indexing with ElasticsearchRestTemplate
+Spring Data repository may not be suitable in situations when we need more control over how we design our queries or teams already have expertise with Elasticsearch syntax. 
+
+In this situation, we use [ElasticsearchRestTemplate](https://docs.spring.io/spring-data/elasticsearch/docs/current/api/org/springframework/data/elasticsearch/core/ElasticsearchRestTemplate.html). It is the new client of Elasticsearch based on HTTP and replaces the TransportClient of earlier versions, which used a node-to-node binary protocol. 
+
+ElasticsearchRestTemplate implements the interface - ElasticsearchOperations, which does the heavy-lifting for low level search and cluster actions. This interface has the methods `index` for adding a single Document and `bulkIndex` for adding multiple Documents to the Index. The code snippet here shows the use of `bulkIndex` for adding multiple products to the Index - "productindex":
 
 ```java
-  public void createProductIndexBulk(final List<Product> products) {
-    productRepository.saveAll(products);
-  }
-```
-## Indexing with ElasticsearchOperations
+  private static final String PRODUCT_INDEX = "productindex";
 
-ElasticsearchRestTemplate is the new client of Elasticsearch based on HTTP and replaces the TransportClient which used the Elasticsearch node-to-node binary protocol. 
+  private ElasticsearchOperations elasticsearchOperations;
 
-ElasticsearchRestTemplate implements ElasticsearchOperations, which does the heavy-lifting for low level search and cluster actions. 
-
-```java
     List<IndexQuery> queries = products.stream()
         .map(product->
           new IndexQueryBuilder()
@@ -230,38 +256,43 @@ ElasticsearchRestTemplate implements ElasticsearchOperations, which does the hea
         .collect(Collectors.toList());;
     
     return elasticsearchOperations
-        .bulkIndex(queries,IndexCoordinates.of(INDEX_NAME));
+        .bulkIndex(queries,IndexCoordinates.of(PRODUCT_INDEX));
 ```
+The Document to be stored is enclosed within an IndexQuery object. The `bulkIndex` method takes as input a list of `IndexQuery` objects and name of the Index wrapped inside `IndexCoordinates` class. When we execute this method, we get a trace of the REST API for `bulk`request.
 
 ```shell
  Sending request POST /_bulk?timeout=1m with parameters: 
 Request body: {"index":{"_index":"productindex","_id":"383..35"}}
-{"_class":"..Product","id":"383..35","name":"New Apple iPh..ue","price":2300.0,"quantity":55,"category":"phone","desc":"6.7-inch ..ing","manufacturer":"apple"}
-{"index":{"_index":"productindex","_id":"c27..cd5"}}
-{"_class":"..Product","id":"c27..cd5","name":"New Apple iPh..Blue","price":2300.0,"quantity":15,"category":"phone","desc":"5.4-inch..ance","manufacturer":"apple"}
-{"index":{"_index":"productindex","_id":"e7e..29"}}
-{"_class":"..Product","id":"e7e..29","name":"Samsung ..sor","manufacturer":"samsung"}
-{"index":{"_index":"productindex","_id":"d7a..34"}}
-{"_class":"..Product","id":"d7a..34","name":"Sam..LED","price":2100.0,"quantity":5,"category":"television","desc":"Reso..esign","manufacturer":"samsung"}
-Received raw response: 200 OK
-ProductSearchServiceTest - documentIDs [3831..35, c27..5, e7e..29, d7a..34]
+{"_class":"..Product","id":"383..35","name":"New Apple .."manufacturer":"apple"}
+..
+{"_class":"..Product","id":"d7a..34",.."manufacturer":"samsung"}
+```
+Next, we use the index method to add a single Document:
+```java
+    IndexQuery indexQuery = new IndexQueryBuilder()
+           .withId(product.getId().toString())
+           .withObject(product).build();
+    .. elasticsearchOperations
+    .index(indexQuery, IndexCoordinates.of(PRODUCT_INDEX));
+
 ```
 
+The trace accordingly shows the REST API PUT request for adding a single Document.
 ```shell
-Sending request PUT /productindex/_doc/59d..987?timeout=1m with parameters: 
-Request body: {"_class":"io.pratik.elasticsearch.productsearchapp.Product","id":"59d135f5-8683-424b-b64e-7dedb467c987","name":"Dell Vostro 3401 14inch FHD AG 2 Side Narrow Border Display Laptop","price":2100.0,"quantity":28,"category":"laptop","desc":"Processor:10th Genera... Display","manufacturer":"dell"}
-Received raw response: 201 CREATED
-ProductSearchServiceTest - documentID 59d1..987
+Sending request PUT /productindex/_doc/59d..987..: 
+Request body: {"_class":"..Product","id":"59d..87",.."manufacturer":"dell"}
 
 ```
 
-## Searching with Elasticsearch Operations
+## Searching with ElasticsearchRestTemplate
 
-Searches look similar to Elasticsearch queries and are built by constructing a Query object and passing it to a search method. The queries are of three variants based on their method of construction. Let us build a few queries using these three variants:
+ElasticsearchRestTemplate also has the `search` method for searching Documents in an Index. This search operation resembles Elasticsearch queries and are built by constructing a Query object and passing it to a search method. 
+
+The Query object is of three variants - Native, String, and Criteria Query depending on the method of construction. Let us build a few queries for searching products:
 
 
 1. NativeQuery
-NativeQuery provides the maximum flexibility of building the query using objects representing Elasticsearch constructs like aggregation, filter, and sort.
+NativeQuery provides the maximum flexibility of building the query using objects representing Elasticsearch constructs like aggregation, filter, and sort. Here is `nativeQuery` for searching products matching a particular manufacturer. 
 
 ```java
     QueryBuilder queryBuilder = 
@@ -272,23 +303,21 @@ NativeQuery provides the maximum flexibility of building the query using objects
         .addAggregation(AggregationBuilders.cardinality("productName"))
         .withFilter(queryBuilder).build();
 
-    SearchHits<Product> productHits = elasticsearchOperations.search(searchQuery, Product.class,
-        IndexCoordinates.of(INDEX_NAME));
+    SearchHits<Product> productHits = 
+      elasticsearchOperations
+      .search(searchQuery, 
+              Product.class,
+              IndexCoordinates.of(PRODUCT_INDEX));
 
 ```
-```shell
-Sending request POST /productindex/_search..: 
-Request body: {.."query":{"match_all":{"boost":1.0}},"post_filter":{"match":{"manufacturer":{"query":"samsung","operator":"OR",..}}},"version":true}
+Here we are building query containing the components:
+- match: products manufactured by ?
+- filter:
+- aggragate:
 
-Received raw response: 200 OK
-ProductSearchService - [SearchHit{id='ee5..b4', score=1.0, sortValues=[], content=Product(id=ee5..b4, name=Sam..age), price=2100.0, quantity=25, category=phone, description=12MP U..sor, manufacturer=samsung), highlightFields={}},
-
-SearchHit{id='7a8..91', score=1.0, sortValues=[], content=Product(id=7a8..91, name=Samsung 163 cm (65 Inches) Q Series 4K Ultra HD QLED, price=2100.0, quantity=5, category=television, description=Res..ign, manufacturer=samsung), highlightFields={}}]
-
-```
 2. StringQuery
 
-A StringQuery is formed with a valid JSON string.
+A StringQuery is formed by constructing the query as a valid JSON string.
 
 ```java
   public void findByProductName(final String productName) {
@@ -313,30 +342,25 @@ CriteriaQuery uses method chaining to construct the Elasticsearch query as shown
 
 ```
 
+
 ## Building our Search Application
 
-We will build an application that will have a search input box for searching for different products from an inventory. The products are stored with the attributes -  name, description, price, category, and manufacturer. We can search in three ways : 
+We will finally add a user interface to our application to see the product search in action. The user interface will have a search input box for searching products on name or description. The input box will show a list of suggestions based on searches entered previously.
 
-1. **Exact Search**: We will search a product by specifying it's the exact name
-2. **Like Search**: We can list products produced by a manufacturer. Since manufacturer names are long we will specify part of the name in our search query, to get back the list of products from a manufacturer whose name contains our search text.
-3. **Fuzzy Search**: We will search for products by specifying a closely matching text in the description.
+We will create an HTML page [`search.html`]() containing the input box along with some JQuery code to handle the autocomplete and click events, and for invoking the APIs for searchin and fetching suggestions for search text. We will use [Thymeleaf](https://www.thymeleaf.org/index.html) as the templating engine and save this HTML page under the resources/templates folder.
 
-We will next create an HTML page [`search.html`]() containing the input box along with some JQuery code to handle the click events and invoking the search APIs of our application. We will save this HTML page under the resources/templates folder.
-
-
-
-
+We have already added some items to product index before.
 
 
 
 ## Building the Search Index
-We will create an index for the products in our inventory. We will use a sample dataset of fifty products to build our Index. The products are arranged as separate rows in a CSV file. Each row has three attributes - id, name, and description. We want the index to be created during application startup. However, index creation is a separate process in real environments. We will read each row of the csv and add to product index. 
+We will create an index for the products in our inventory. We will use a sample dataset of fifty products to build our Index. The products are arranged as separate rows in a CSV file. Each row has three attributes - id, name, and description. We want the index to be created during application startup. However, index creation is a separate process in real environments. We will read each row of the CSV and add it to the product index. 
 
-In the core Elasticsearch api, there are two ways of adding documents to an index - adding one document at a time or adding documents in bulk. The api for adding individual documents accept a document as parameter.
+In the core Elasticsearch API, there are two ways of adding documents to an index - adding one document at a time or adding documents in bulk. The API for adding individual documents accepts a document as a parameter.
 
-For bulk addition, we need to supply a json document containing entries similar to the following snippet:
+For bulk addition, we need to supply a JSON document containing entries similar to the following snippet:
 
-Spring Data abstracts these method in save and saveAll methods in the repository. We have used the saveAll method to add our documents:
+Spring Data abstracts these methods in save and saveAll methods in the repository. We have used the saveAll method to add our documents:
 
 ```java
   @PostConstruct

@@ -308,7 +308,7 @@ ElasticsearchRestTemplate also has the `search` method for searching Documents i
 The Query object is of three variants - Native, String, and Criteria Query depending on the method of construction. Let us build a few queries for searching products:
 
 
-1. **NativeQuery** provides the maximum flexibility of building a query using objects representing Elasticsearch constructs like aggregation, filter, and sort. Here is a `nativeQuery` for searching products matching a particular manufacturer. 
+1. **NativeQuery** provides the maximum flexibility of building a query using objects representing Elasticsearch constructs like aggregation, filter, and sort. Here is a `nativeQuery` for searching products matching a particular manufacturer:
 
 ```java
     QueryBuilder queryBuilder = 
@@ -316,8 +316,8 @@ The Query object is of three variants - Native, String, and Criteria Query depen
         .matchQuery("manufacturer", brandName);
 
     Query searchQuery = new NativeSearchQueryBuilder()
-        .addAggregation(AggregationBuilders.cardinality("productName"))
-        .withFilter(queryBuilder).build();
+        .withQuery(queryBuilder)
+        .build();
 
     SearchHits<Product> productHits = 
       elasticsearchOperations
@@ -326,7 +326,7 @@ The Query object is of three variants - Native, String, and Criteria Query depen
               IndexCoordinates.of(PRODUCT_INDEX));
 
 ```
-Here we are building a query containing the components match, filter, and aggregate.
+Here we are building a query with a NativeSearchQueryBuilder which uses a `MatchQueryBuilder` to specify the match query containing the field "manufacturer".
 
 2. StringQuery
 
@@ -365,10 +365,10 @@ We will now add a screen(User Interface) to our application to see the product s
 For building this application we will create :
 1. REST API for search with endpoint "/products"
 2. REST API for fetching suggestions for autocomplete with endpoint "/suggestions"
-3. Controller class - [SearchController]() for API endpoints
-4. Service class - [ProductSearchService]() containing methods for search and fetching suggestions.
-5. HTML page [`search.html`]() with an input textbox along with some JQuery code to handle the autocomplete and search events, and for invoking the APIs for searching and fetching suggestions for search text.
-6. We will use [Thymeleaf](https://www.thymeleaf.org/index.html) as the templating engine. So we will add a dependency for thymeleaf and save [`search.html`]() HTML page under the resources/templates folder.
+3. Controller class - [SearchController](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch/src/main/java/io/pratik/elasticsearch/controllers/SearchController.java) for API endpoints
+4. Service class - [ProductSearchService](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch/src/main/java/io/pratik/elasticsearch/services/ProductSearchService.java) containing methods for search and fetching suggestions.
+5. HTML page [`search.html`](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch/src/main/resources/templates/search.html) with an input textbox along with some JQuery code to handle the autocomplete and search events, and for invoking the APIs for searching and fetching suggestions for search text.
+6. We will use [Thymeleaf](https://www.thymeleaf.org/index.html) as the templating engine. So we will add a dependency for thymeleaf and save `search.html` HTML page under the resources/templates folder.
 
 ## Building the Product Search Index
 We will work with two indices here:
@@ -382,7 +382,9 @@ curl -X DELETE http://localhost:9200/productindex
 ```
 We will get the message `{"acknowledged": true}` if the delete operation is successful. 
 
-We will create an Index for the products in our inventory. We will use a sample dataset of fifty products to build our Index. The products are arranged as separate rows in a [CSV file](). Each row has three attributes - id, name, and description. We want the index to be created during application startup. However, index creation is a separate process in real environments. We will read each row of the CSV and add it to the product index. 
+We will create an Index for the products in our inventory. We will use a sample dataset of fifty products to build our Index. The products are arranged as separate rows in a [CSV file](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch/src/main/resources/fashion-products.csv). 
+
+Each row has three attributes - id, name, and description. We want the index to be created during application startup. However, index creation is a separate process in real environments. We will read each row of the CSV and add it to the product index. 
 
 ```java
     @PostConstruct
@@ -440,8 +442,6 @@ The `SearchSuggest` POJO contains the field - `searchText` for storing the query
     }
 ```    
 The `id` field has a constraint of 512 characters. In our case, a search text exceeding 512 bytes is unlikely so we will simply not store those texts in the `searchsuggest` Index.
-
-
 
 
 ## Searching Products with Multi-field and Fuzzy Search

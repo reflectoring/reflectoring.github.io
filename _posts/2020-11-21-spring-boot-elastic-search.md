@@ -24,14 +24,16 @@ The easiest way to get introduced to Elasticsearch concepts is by drawing an ana
 |Elasticsearch|->|Database|
 |-------------|--------|
 |Index|->|Table|
-|Document|->||Row|
+|Document|->|Row|
 |Field|->|Column|
 
 Any data we want to search or analyze is stored as a Document in an Index. In Spring Data we represent a Document in the form of a POJO and decorate it with annotations to define the mapping with a Elasticsearch Document. 
 
 Unlike a database, the text stored in Elasticsearch is first processed by various analyzers. The default analyzer splits the text by common word separators like space, and punctuation, and also removes common English words. 
 
-If we store a text - "The sky is blue", the analyzer will store this as a Document with the 'terms' - sky and blue. We will be able to search this Document with text in the form of "blue sky", "sky", or "blue" with a degree of the match given as a score. Apart from text, Elasticsearch can store other types of data known as `Field Type` as explained under the section on [mapping-types](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html) in the documentation.
+If we store a text - "The sky is blue", the analyzer will store this as a Document with the 'terms' - sky and blue. We will be able to search this Document with text in the form of "blue sky", "sky", or "blue" with a degree of the match given as a score. 
+
+Apart from text, Elasticsearch can store other types of data known as `Field Type` as explained under the section on [mapping-types](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html) in the documentation.
 
 ## Starting our Elasticsearch Instance
 Before going any further, let us start an Elasticsearch instance which we will use through out for running our examples. There are numerous ways of running an Elasticsearch instance :
@@ -91,6 +93,14 @@ Here we are sending a query of type `match` for fetching Documents matching the 
 
 For bulk addition, we need to supply a JSON document containing entries similar to the following snippet:
 
+```shell
+POST /_bulk
+{"index":{"_index":"productindex"}}
+{"_class":"..Product","name":"H..turer":"Hornby"}
+{"index":{"_index":"productindex"}}
+{"_class":"..Product","name":"CL..cturer":"ccf"}
+```
+
 ## Elasticsearch Operations with Spring Data
 
 We have two ways of accessing Elasticsearch with Spring Data as shown here:
@@ -124,6 +134,8 @@ Here we are adding the dependency for `spring-data-elasticsearch` which will ena
 
 ```java
 @Configuration
+@EnableElasticsearchRepositories(basePackages = "io.pratik.elasticsearch.repositories")
+@ComponentScan(basePackages = { "io.pratik.elasticsearch" })
 public class ElasticsearchClientConfig extends AbstractElasticsearchConfiguration {
   @Override
   @Bean
@@ -143,8 +155,9 @@ Here we are connecting to our Elasticsearch instance which we started earlier. W
 
 **Enabling transport layer logging**: For debugging and diagnostics, we will turn on  request / response logging on the transport level as outlined in this snippet:
 
+```xml
 <logger name="org.springframework.data.elasticsearch.client.WIRE" level="trace"/>
-
+```
 ## Representing the Document
 In our example, we will search for products by its name, brand, price, or description. So for storing the product as a Document in Elasticsearch, we will represent the product as a POJO, and decorate with `Field` annotations to configure the mapping with Elasticsearch as shown here:
 
@@ -243,7 +256,9 @@ Spring Data repository may not be suitable in situations when we need more contr
 
 In this situation, we use [ElasticsearchRestTemplate](https://docs.spring.io/spring-data/elasticsearch/docs/current/api/org/springframework/data/elasticsearch/core/ElasticsearchRestTemplate.html). It is the new client of Elasticsearch based on HTTP and replaces the TransportClient of earlier versions, which used a node-to-node binary protocol. 
 
-ElasticsearchRestTemplate implements the interface - ElasticsearchOperations, which does the heavy-lifting for low level search and cluster actions. This interface has the methods `index` for adding a single Document and `bulkIndex` for adding multiple Documents to the Index. The code snippet here shows the use of `bulkIndex` for adding multiple products to the Index - "productindex":
+ElasticsearchRestTemplate implements the interface - ElasticsearchOperations, which does the heavy-lifting for low level search and cluster actions. 
+
+This interface has the methods `index` for adding a single Document and `bulkIndex` for adding multiple Documents to the Index. The code snippet here shows the use of `bulkIndex` for adding multiple products to the Index - "productindex":
 
 ```java
   private static final String PRODUCT_INDEX = "productindex";

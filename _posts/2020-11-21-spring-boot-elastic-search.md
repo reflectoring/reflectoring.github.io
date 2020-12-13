@@ -236,7 +236,7 @@ Simmilarly, by running the method `findByManufacturerAndCategory`, we can see th
 TRACE .. Sending request POST /productindex/_search..: 
 Request body: {.."query":{"bool":{"must":[{"query_string":{"query":"samsung","fields":["manufacturer^1.0"],..}},{"query_string":{"query":"laptop","fields":["category^1.0"],..}}],..}},"version":true}
 ```
-
+There are numerous combinations of [method naming patterns](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#elasticsearch.query-methods.criterions) which generate a wide range of Elasticsearch queries. 
 
 ## Indexing with ElasticsearchRestTemplate
 Spring Data repository may not be suitable in situations when we need more control over how we design our queries or teams already have expertise with Elasticsearch syntax. 
@@ -469,15 +469,16 @@ The product search happens in two steps when we submit the search request. Here 
   }
 ...
 ```
-We will first update the suggestions Index and then perform a search on multiple fields on the product index on fields - name and description.
+Here we first update the `searchsuggest` Index in step 1 and then perform a search on multiple fields - name and description.
 
 ## Fetching Suggestions with Wild-card Search
-When we type into the search text field, we will fetch suggestions by performing a wild card search with the characters entered in the search box.
+Next we build the autocomplete function for the search textbox. When we type into the search text field, we will fetch suggestions by performing a wild card search with the characters entered in the search box. 
 
+We build this function in the `fetchRecentSuggestions` method shown here: 
 ```java
   public List<String> fetchRecentSuggestions(String query) {
     QueryBuilder queryBuilder = QueryBuilders
-        .wildcardQuery("searchText", "*");
+        .wildcardQuery("searchText", query+"*");
 
     Query searchQuery = new NativeSearchQueryBuilder()
         .withFilter(queryBuilder).build();
@@ -494,11 +495,18 @@ When we type into the search text field, we will fetch suggestions by performing
     return suggestions;
   }
 ```
+We are using wild-card query in the form of search input text appended with `*` so that if we type "red" we will get suggestions starting with "red". Some screenshots of the search results from the running application can be seen here:
 
+![Product Search Application](/assets/img/posts/spring-data-elasticsearch/searchapp.png)
 
 ## Conclusion 
-We looked at the Spring Data 
-When you’re creating a new index in Elasticsearch, it’s important to understand your data and choose your datatypes with care. Before creating the mapping for an index, it’s helpful to know how users might be searching for data in a specific field; this is especially true when you’re dealing with string data where partial matching may be needed. 
+We introduced the main operations of Elasticsearch - Indexing Documents, Bulk Indexing and Search which are provided as REST APIs. The Query DSL in combination with diifferent analyzers makes the search very powerful. 
+
+Spring Data Elasticsearch provides convenient interfaces to access those operations in an application either by using Spring Data Repositories or ElasticsearchRestTemplate. 
+
+We finally built an application where we saw how the bulk indexing and search capabilities can be used in a close to real life application. 
+
+Apart from text search, Elasticsearch has powerful analytical capabilities. It is commonly used in combination with logstash and Kibana for log diagnosis. 
 
 
 

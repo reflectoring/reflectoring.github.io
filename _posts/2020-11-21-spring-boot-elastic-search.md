@@ -368,7 +368,7 @@ For building this application we will create :
 3. Controller class - [SearchController](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch/src/main/java/io/pratik/elasticsearch/controllers/SearchController.java) for API endpoints
 4. Service class - [ProductSearchService](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch/src/main/java/io/pratik/elasticsearch/services/ProductSearchService.java) containing methods for search and fetching suggestions.
 5. HTML page [`search.html`](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch/src/main/resources/templates/search.html) with an input textbox along with some JQuery code to handle the autocomplete and search events, and for invoking the APIs for searching and fetching suggestions for search text.
-6. We will use [Thymeleaf](https://www.thymeleaf.org/index.html) as the templating engine. So we will add a dependency for thymeleaf and save `search.html` HTML page under the resources/templates folder.
+6. We will use [Thymeleaf](https://www.thymeleaf.org/index.html) as the templating engine. So we will add a dependency for thymeleaf and save the `search.html` HTML page under the resources/templates folder.
 
 ## Building the Product Search Index
 We will work with two indices here:
@@ -516,13 +516,8 @@ We are using a wild-card query in the form of search input text appended with `*
 ![Product Search Application](/assets/img/posts/spring-data-elasticsearch/searchapp.png)
 
 ## Conclusion 
-We introduced the main operations of Elasticsearch - Indexing Documents, Bulk Indexing, and Search which are provided as REST APIs. The Query DSL in combination with different analyzers makes the search very powerful. 
+In this article, we introduced the main operations of Elasticsearch - Indexing Documents, Bulk Indexing, and Search which are provided as REST APIs. The Query DSL in combination with different analyzers makes the search very powerful. 
 
 Spring Data Elasticsearch provides convenient interfaces to access those operations in an application either by using Spring Data Repositories or ElasticsearchRestTemplate. 
 
-We finally built an application where we saw how the bulk indexing and search capabilities can be used in a close to real-life application. 
-
-Apart from text search, Elasticsearch has powerful analytical capabilities. It is commonly used in combination with logstash and Kibana for log diagnosis. 
-
-
-
+We finally built an application where we saw how the bulk indexing and search capabilities of Elasticsearch can be used in a close to real-life application. 

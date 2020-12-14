@@ -305,10 +305,9 @@ Request body: {"_class":"..Product","id":"59d..87",.."manufacturer":"dell"}
 
 ElasticsearchRestTemplate also has the `search` method for searching Documents in an Index. This search operation resembles Elasticsearch queries and is built by constructing a Query object and passing it to a search method. 
 
-The Query object is of three variants - Native, String, and Criteria Query depending on the method of construction. Let us build a few queries for searching products:
+The Query object is of three variants - NativeQuery, StringQuery, and CriteriaQuery depending on the method of construction. Let us build a few queries for searching products:
 
-
-1. **NativeQuery** provides the maximum flexibility of building a query using objects representing Elasticsearch constructs like aggregation, filter, and sort. Here is a `nativeQuery` for searching products matching a particular manufacturer:
+**NativeQuery** provides the maximum flexibility of building a query using objects representing Elasticsearch constructs like aggregation, filter, and sort. Here is a `nativeQuery` for searching products matching a particular manufacturer:
 
 ```java
     QueryBuilder queryBuilder = 
@@ -328,35 +327,38 @@ The Query object is of three variants - Native, String, and Criteria Query depen
 ```
 Here we are building a query with a NativeSearchQueryBuilder which uses a `MatchQueryBuilder` to specify the match query containing the field "manufacturer".
 
-2. StringQuery
-
-A StringQuery is formed by constructing the query with a valid JSON string as shown here:
+**StringQuery**: A StringQuery gives full control by allowing use of the native Elasticsearch query as a JSON string as shown here:
 
 ```java
   public void findByProductName(final String productName) {
     Query searchQuery = new StringQuery(
         "{ \"match\": { \"name\": { \"query\": \""+ productName + "\" } } } \"");
 
-    SearchHits<Product> products = elasticsearchOperations
-    .search(searchQuery, 
-            Product.class,
-            IndexCoordinates.of(INDEX_NAME));
+    SearchHits<Product> products 
+                              = elasticsearchOperations
+                                    .search(searchQuery, 
+                                      Product.class,
+                                      IndexCoordinates.of(PRODUCT_INDEX_NAME));
 
 ```
+In this code snippet, we are specifying a simple `match` query for fetching products with a particular name sent as a method parameter.
 
-3. CriteriaQuery
-CriteriaQuery uses method chaining to construct the Elasticsearch query as shown here:
+**CriteriaQuery**: With CriteriaQuery we can build queries without knowing any terminology of Elasticsearch. The queries are built using method chaining with Criteria objects with each object specifying the criteria used for searching Documents as shown here:
 
 ```java
   public void findByProductPrice(final String productPrice) {
-    Criteria criteria = new Criteria("price").greaterThan(10.0).lessThan(100.0);
+    Criteria criteria = new Criteria("price")
+                                .greaterThan(10.0)
+                                .lessThan(100.0);
+
     Query searchQuery = new CriteriaQuery(criteria);
 
-    SearchHits<Product> products = elasticsearchOperations.search(searchQuery, Product.class,
-        IndexCoordinates.of(INDEX_NAME));
-
+    SearchHits<Product> products = elasticsearchOperations
+       .search(searchQuery, 
+               Product.class,
+               IndexCoordinates.of(PRODUCT_INDEX_NAME));
 ```
-
+In this code snippet, we are forming a query with CriteriaQuery for fetching products whose price is greater than 10.0 and less than 100.0.
 
 ## Building a Search Application
 
@@ -485,7 +487,7 @@ The product search happens in two steps when we submit the search request. Here 
   }
 ...
 ```
-Here we first update the `searchsuggest` Index in step 1 and then perform a search on multiple fields - name and description.
+Here we first update the `searchsuggest` Index in step 1 and then perform a search on multiple fields - name and description. We also specify `Fuzzyiness.AUTO` to search for closely matching text to account for spelling errors.
 
 ## Fetching Suggestions with Wild-card Search
 Next, we build the autocomplete function for the search textbox. When we type into the search text field, we will fetch suggestions by performing a wild card search with the characters entered in the search box. 

@@ -15,6 +15,8 @@ On the road to a production-grade, continuously deployable system, we now want t
 
 The result will be a reproducible, fully automated deployment of a virtual private network, a PostgreSQL RDS instance, and our Spring Boot application.
 
+**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
+
 ## Code Example
 
 This article is accompanied by working code examples of a [Spring Boot application](https://github.com/thombergs/code-examples/tree/master/aws/aws-rds-hello-world) and [CloudFormation templates](https://github.com/thombergs/code-examples/tree/master/aws/cloudformation/rds-in-private-subnet) on Github.
@@ -470,3 +472,5 @@ Here's a list of the questions I want to answer on this journey. If there's a li
 * How can I bind my application to a custom domain?
 * How can I access other AWS resources (like SQS queues and DynamoDB tables) from my application?
 * How can I implement HTTPS?
+
+**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**

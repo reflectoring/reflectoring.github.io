@@ -57,3 +57,9 @@ pragmatic-thinking:
   url: https://www.goodreads.com/book/show/3063393-pragmatic-thinking-and-learning
   title: "Pragmatic Thinking & Learning"
   author: "Andy Hunt"
+
+make-time:
+  cover: /assets/img/covers/make-time-260.jpg
+  url: https://www.goodreads.com/book/show/37880811-make-time
+  title: "Make Time"
+  author: "Jake Knapp and John Zeratsky"

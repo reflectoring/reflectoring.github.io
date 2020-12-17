@@ -1,12 +1,12 @@
 ---
 title: "Using Elasticsearch with Spring Boot"
 categories: [spring-boot]
-date: 2020-11-05 06:00:00 +1000
-modified: 2020-11-05 06:00:00 +1000
+date: 2020-12-18 06:00:00 +1000
+modified: 2020-12-18 06:00:00 +1000
 author: pratikdas
-excerpt: "How do we build a search function in Spring Boot using Elasticsearch?"
+excerpt: "How to index and search Data with Spring Boot and Elasticsearch"
 image:
-  auto: 0086-twelve
+  auto: 0019-magnifying-glass
 ---
 
 Elasticsearch is built on [Apache Lucene](https://lucene.apache.org) and was first released by Elasticsearch N.V. (now Elastic) in 2010. According to the website of [Elastic](https://www.elastic.co/what-is/elasticsearch), it is a **distributed open-source search and analytics engine for all types of data, including textual, numerical, geospatial, structured, and unstructured**.  
@@ -62,8 +62,8 @@ Executing this command will start an Elasticsearch instance listening on port 92
   "cluster_name" : "docker-cluster",
   "cluster_uuid" : "Jkx..VyQ",
   "version" : {
-    "number" : "7.10.0",
-    ...
+  "number" : "7.10.0",
+  ...
   },
   "tagline" : "You Know, for Search"
 }
@@ -94,7 +94,7 @@ GET /messages/search
 {
   "query": 
   {
-    "match": {"message": "blue sky"}
+  "match": {"message": "blue sky"}
   }
 }
 ```
@@ -129,10 +129,10 @@ Let us first create our application with the [Spring Initializr](https://start.s
 We will now add the `Spring Data` dependencies in our Maven `pom.xml` for interacting with Elasticsearch: 
 
 ```xml
-    <dependency>
-      <groupId>org.springframework.data</groupId>
-      <artifactId>spring-data-elasticsearch</artifactId>
-    </dependency>
+  <dependency>
+    <groupId>org.springframework.data</groupId>
+    <artifactId>spring-data-elasticsearch</artifactId>
+  </dependency>
 ```
 Here we are adding the dependency for `spring-data-elasticsearch` which will enable us to use the Spring Data semantics for accessing the Elasticsearch data store.
 
@@ -144,21 +144,21 @@ Spring Data Elasticsearch uses [Java High Level REST Client (JHLC)](https://www.
 ```java
 @Configuration
 @EnableElasticsearchRepositories(basePackages 
-              = "io.pratik.elasticsearch.repositories")
+        = "io.pratik.elasticsearch.repositories")
 @ComponentScan(basePackages = { "io.pratik.elasticsearch" })
 public class ElasticsearchClientConfig extends 
-                 AbstractElasticsearchConfiguration {
+         AbstractElasticsearchConfiguration {
   @Override
   @Bean
   public RestHighLevelClient elasticsearchClient() {
 
-    final ClientConfiguration clientConfiguration = 
-        ClientConfiguration
-          .builder()
-          .connectedTo("localhost:9200")
-          .build();
+  final ClientConfiguration clientConfiguration = 
+    ClientConfiguration
+      .builder()
+      .connectedTo("localhost:9200")
+      .build();
 
-    return RestClients.create(clientConfiguration).rest();
+  return RestClients.create(clientConfiguration).rest();
   }
 }
 
@@ -217,7 +217,7 @@ Let us create a Spring Data repository interface by extending [ElasticsearchRepo
 
 ```java
   public interface ProductRepository 
-      extends ElasticsearchRepository<Product, String> {
+    extends ElasticsearchRepository<Product, String> {
 
   }
 ```
@@ -233,11 +233,11 @@ public class ProductSearchServiceWithRepo {
   private ProductRepository productRepository;
 
   public void createProductIndexBulk(final List<Product> products) {
-    productRepository.saveAll(products);
+  productRepository.saveAll(products);
   }
 
   public void createProductIndex(final Product product) {
-    productRepository.save(product);
+  productRepository.save(product);
   }
 }
 ```
@@ -248,14 +248,14 @@ For fulfilling our search requirements, we will add finder methods to our reposi
 
 ```java
 public interface ProductRepository 
-      extends ElasticsearchRepository<Product, String> {
+    extends ElasticsearchRepository<Product, String> {
  
-    List<Product> findByName(String name);
-    
-    List<Product> findByNameContaining(String name);
+  List<Product> findByName(String name);
+  
+  List<Product> findByNameContaining(String name);
  
-    List<Product> findByManufacturerAndCategory
-             (String manufacturer, String category);
+  List<Product> findByManufacturerAndCategory
+       (String manufacturer, String category);
 }
 ```
 
@@ -292,17 +292,17 @@ public class ProductSearchService {
   private ElasticsearchOperations elasticsearchOperations;
 
   public List<String> createProductIndexBulk
-                      (final List<Product> products) {
+            (final List<Product> products) {
 
-          List<IndexQuery> queries = products.stream()
-            .map(product->
-              new IndexQueryBuilder()
-              .withId(product.getId().toString())
-              .withObject(product).build())
-            .collect(Collectors.toList());;
-        
-          return elasticsearchOperations
-            .bulkIndex(queries,IndexCoordinates.of(PRODUCT_INDEX));
+      List<IndexQuery> queries = products.stream()
+      .map(product->
+        new IndexQueryBuilder()
+        .withId(product.getId().toString())
+        .withObject(product).build())
+      .collect(Collectors.toList());;
+    
+      return elasticsearchOperations
+      .bulkIndex(queries,IndexCoordinates.of(PRODUCT_INDEX));
   }
   ...
   ...
@@ -323,21 +323,21 @@ Next, we use the `index()` method to add a single document:
 @Slf4j
 public class ProductSearchService {
 
-    private static final String PRODUCT_INDEX = "productindex";
+  private static final String PRODUCT_INDEX = "productindex";
    
-    private ElasticsearchOperations elasticsearchOperations;
+  private ElasticsearchOperations elasticsearchOperations;
 
-    public String createProductIndex(Product product) {
+  public String createProductIndex(Product product) {
 
-        IndexQuery indexQuery = new IndexQueryBuilder()
-               .withId(product.getId().toString())
-               .withObject(product).build();
+    IndexQuery indexQuery = new IndexQueryBuilder()
+         .withId(product.getId().toString())
+         .withObject(product).build();
 
-        String documentId = elasticsearchOperations
-         .index(indexQuery, IndexCoordinates.of(PRODUCT_INDEX));
+    String documentId = elasticsearchOperations
+     .index(indexQuery, IndexCoordinates.of(PRODUCT_INDEX));
 
-        return documentId;
-    }
+    return documentId;
+  }
 }
 ```
 
@@ -368,20 +368,20 @@ public class ProductSearchService {
 
   public void findProductsByBrand(final String brandName) {
 
-        QueryBuilder queryBuilder = 
-            QueryBuilders
-            .matchQuery("manufacturer", brandName);
+    QueryBuilder queryBuilder = 
+      QueryBuilders
+      .matchQuery("manufacturer", brandName);
 
-        Query searchQuery = new NativeSearchQueryBuilder()
-            .withQuery(queryBuilder)
-            .build();
+    Query searchQuery = new NativeSearchQueryBuilder()
+      .withQuery(queryBuilder)
+      .build();
 
-        SearchHits<Product> productHits = 
-          elasticsearchOperations
-          .search(searchQuery, 
-                  Product.class,
-                  IndexCoordinates.of(PRODUCT_INDEX));
-    }
+    SearchHits<Product> productHits = 
+      elasticsearchOperations
+      .search(searchQuery, 
+          Product.class,
+          IndexCoordinates.of(PRODUCT_INDEX));
+  }
 }
 
 ```
@@ -400,16 +400,16 @@ public class ProductSearchService {
   private ElasticsearchOperations elasticsearchOperations;
 
   public void findByProductName(final String productName) {
-    Query searchQuery = new StringQuery(
-        "{\"match\":{\"name\":{\"query\":\""+ productName + "\"}}}\"");
+  Query searchQuery = new StringQuery(
+    "{\"match\":{\"name\":{\"query\":\""+ productName + "\"}}}\"");
 
-    SearchHits<Product> products 
-                        = elasticsearchOperations
-                            .search(searchQuery, 
-                              Product.class,
-                              IndexCoordinates.of(PRODUCT_INDEX_NAME));
-    ...
-    ...                                
+  SearchHits<Product> products 
+            = elasticsearchOperations
+              .search(searchQuery, 
+                Product.class,
+                IndexCoordinates.of(PRODUCT_INDEX_NAME));
+  ...
+  ...                
    }
 }
 
@@ -424,22 +424,22 @@ With `CriteriaQuery` we can build queries without knowing any terminology of Ela
 @Slf4j
 public class ProductSearchService {
 
-    private static final String PRODUCT_INDEX = "productindex";
+  private static final String PRODUCT_INDEX = "productindex";
    
-    private ElasticsearchOperations elasticsearchOperations;
+  private ElasticsearchOperations elasticsearchOperations;
 
-    public void findByProductPrice(final String productPrice) {
-        Criteria criteria = new Criteria("price")
-                                    .greaterThan(10.0)
-                                    .lessThan(100.0);
+  public void findByProductPrice(final String productPrice) {
+    Criteria criteria = new Criteria("price")
+                  .greaterThan(10.0)
+                  .lessThan(100.0);
 
-        Query searchQuery = new CriteriaQuery(criteria);
+    Query searchQuery = new CriteriaQuery(criteria);
 
-        SearchHits<Product> products = elasticsearchOperations
-           .search(searchQuery, 
-                   Product.class,
-                   IndexCoordinates.of(PRODUCT_INDEX_NAME));
-    }
+    SearchHits<Product> products = elasticsearchOperations
+       .search(searchQuery, 
+           Product.class,
+           IndexCoordinates.of(PRODUCT_INDEX_NAME));
+  }
 }
 ```
 In this code snippet, we are forming a query with CriteriaQuery for fetching products whose price is greater than 10.0 and less than 100.0.
@@ -473,18 +473,18 @@ Each row has three attributes - id, name, and description. We want the index to 
 @SpringBootApplication
 @Slf4j
 public class ProductsearchappApplication {
-    ...
-    ...
-    @PostConstruct
-    public void buildIndex() {
-      esOps.indexOps(Product.class).refresh();
-      productRepo.saveAll(prepareDataset());
-    }
+  ...
+  ...
+  @PostConstruct
+  public void buildIndex() {
+    esOps.indexOps(Product.class).refresh();
+    productRepo.saveAll(prepareDataset());
+  }
 
-    private Collection<Product> prepareDataset() {
-    Resource resource = new ClassPathResource("fashion-products.csv");
-    ...
-    return productList;
+  private Collection<Product> prepareDataset() {
+  Resource resource = new ClassPathResource("fashion-products.csv");
+  ...
+  return productList;
   }
 }
 ```
@@ -515,30 +515,30 @@ public class ProductSearchService {
   private ElasticsearchOperations elasticsearchOperations;
 
   public List<Product> processSearch(final String query) {
-    log.info("Search with query {}", query);
-    
-    // 1. Create query on multiple fields enabling fuzzy search
-    QueryBuilder queryBuilder = 
-        QueryBuilders
-        .multiMatchQuery(query, "name", "description")
-        .fuzziness(Fuzziness.AUTO);
+  log.info("Search with query {}", query);
+  
+  // 1. Create query on multiple fields enabling fuzzy search
+  QueryBuilder queryBuilder = 
+    QueryBuilders
+    .multiMatchQuery(query, "name", "description")
+    .fuzziness(Fuzziness.AUTO);
 
-    Query searchQuery = new NativeSearchQueryBuilder()
-                        .withFilter(queryBuilder)
-                        .build();
+  Query searchQuery = new NativeSearchQueryBuilder()
+            .withFilter(queryBuilder)
+            .build();
 
-    // 2. Execute search
-    SearchHits<Product> productHits = 
-        elasticsearchOperations
-        .search(searchQuery, Product.class,
-        IndexCoordinates.of(PRODUCT_INDEX));
+  // 2. Execute search
+  SearchHits<Product> productHits = 
+    elasticsearchOperations
+    .search(searchQuery, Product.class,
+    IndexCoordinates.of(PRODUCT_INDEX));
 
-    // 3. Map searchHits to product list
-    List<Product> productMatches = new ArrayList<Product>();
-    productHits.forEach(searchHit->{
-      productMatches.add(searchHit.getContent());
-    });
-    return productMatches;
+  // 3. Map searchHits to product list
+  List<Product> productMatches = new ArrayList<Product>();
+  productHits.forEach(searchHit->{
+    productMatches.add(searchHit.getContent());
+  });
+  return productMatches;
   }
 ...
 }
@@ -554,29 +554,29 @@ We build this function in the `fetchSuggestions()` method shown here:
 @Slf4j
 public class ProductSearchService {
 
-    private static final String PRODUCT_INDEX = "productindex";
+  private static final String PRODUCT_INDEX = "productindex";
 
-    public List<String> fetchSuggestions(String query) {
-        QueryBuilder queryBuilder = QueryBuilders
-            .wildcardQuery("name", query+"*");
+  public List<String> fetchSuggestions(String query) {
+    QueryBuilder queryBuilder = QueryBuilders
+      .wildcardQuery("name", query+"*");
 
-        Query searchQuery = new NativeSearchQueryBuilder()
-            .withFilter(queryBuilder)
-            .withPageable(PageRequest.of(0, 5))
-            .build();
+    Query searchQuery = new NativeSearchQueryBuilder()
+      .withFilter(queryBuilder)
+      .withPageable(PageRequest.of(0, 5))
+      .build();
 
-        SearchHits<Product> searchSuggestions = 
-            elasticsearchOperations.search(searchQuery, 
-                Product.class,
-            IndexCoordinates.of(PRODUCT_INDEX));
-        
-        List<String> suggestions = new ArrayList<String>();
-        
-        searchSuggestions.getSearchHits().forEach(searchHit->{
-          suggestions.add(searchHit.getContent().getName());
-        });
-        return suggestions;
-    }
+    SearchHits<Product> searchSuggestions = 
+      elasticsearchOperations.search(searchQuery, 
+        Product.class,
+      IndexCoordinates.of(PRODUCT_INDEX));
+    
+    List<String> suggestions = new ArrayList<String>();
+    
+    searchSuggestions.getSearchHits().forEach(searchHit->{
+      suggestions.add(searchHit.getContent().getName());
+    });
+    return suggestions;
+  }
 }
 ```
 We are using a wildcard query in the form of search input text appended with `*` so that if we type "red" we will get suggestions starting with "red". We are restricting the number of suggestions to 5 with the `withPageable()` method. Some screenshots of the search results from the running application can be seen here:

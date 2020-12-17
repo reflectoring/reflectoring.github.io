@@ -18,7 +18,7 @@ image:
 ## Book Facts
 
 * **Title:** Pragmatic Thinking & Learning
-* **Authors:** Greg McKeown
+* **Authors:** Andy Hunt
 * **Word Count:** ~ 80.000 (5.5 hours at 250 words / minute)
 * **Reading Ease:** easy
 * **Writing Style:** conversational, rather long chapters, practical 

@@ -75,6 +75,7 @@ We should get the above output if our Elasticsearch instance is started successf
 Elasticsearch operations are accessed via REST APIs. There are two ways of adding documents to an index:
 - adding one document at a time, or 
 - adding documents in bulk. 
+
 The API for adding individual documents accepts a document as a parameter.
 
 A simple PUT request to an Elasticsearch instance for storing a document looks like this:
@@ -123,7 +124,7 @@ We will look at these two ways in much more detail in the following sections.
 
 ## Creating the Application and Adding Dependencies
 
-Let us first create our application with the [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.6.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.elasticsearch&artifactId=productsearchapp&name=productsearchapp&description=Demo%20project%20for%20Elasticsearch%20with%20Spring%20Boot&packageName=io.pratik.elasticsearch.productsearchapp&dependencies=web,lombok,thymeleaf) by including the dependencies for web, thymeleaf, and lombok. 
+Let us first create our application with the [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.6.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.elasticsearch&artifactId=productsearchapp&name=productsearchapp&description=Demo%20project%20for%20Elasticsearch%20with%20Spring%20Boot&packageName=io.pratik.elasticsearch.productsearchapp&dependencies=web,lombok,thymeleaf) by including the dependencies for web, thymeleaf, and lombok. We are adding `thymeleaf` dependencies to add an user interface to the application.
 
 We will now add the `Spring Data` dependencies in our Maven `pom.xml` for interacting with Elasticsearch: 
 
@@ -206,7 +207,7 @@ The `@Id` annotation makes the annotated field the `_id` of our document, being 
 
 The `@Field` annotation configures the type of a field. We can also set the name to a different field name.
 
-Spring will pick up this class and create the index in Elasticsearch based on these annotations.
+The index by the name of `productindex` is created in Elasticsearch based on these annotations.
 
 ## Indexing and Searching with Spring Data Repository
 
@@ -403,10 +404,10 @@ public class ProductSearchService {
         "{\"match\":{\"name\":{\"query\":\""+ productName + "\"}}}\"");
 
     SearchHits<Product> products 
-                              = elasticsearchOperations
-                                    .search(searchQuery, 
-                                      Product.class,
-                                      IndexCoordinates.of(PRODUCT_INDEX_NAME));
+                        = elasticsearchOperations
+                            .search(searchQuery, 
+                              Product.class,
+                              IndexCoordinates.of(PRODUCT_INDEX_NAME));
     ...
     ...                                
    }

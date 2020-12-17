@@ -51,7 +51,7 @@ Before going any further, let us start an Elasticsearch instance which we will u
 We will use the Docker image from Dockerhub which is good enough for our demo application. Let us start our Elasticsearch instance by running the Docker `run` command:
 
 ```shell
-docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+docker run -p 9200:9200 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.10.0
 ```
 
 This will start an Elasticsearch instance listening on port 9200. We can verify the instance by hitting the URL `http://localhost:9200` and check the resulting output in our browser:
@@ -384,7 +384,7 @@ public class ProductSearchService {
 Here we are building a query with a `NativeSearchQueryBuilder` which uses a `MatchQueryBuilder` to specify the match query containing the field "manufacturer".
 
 #### StringQuery
-A `StringQuery` gives full control by allowing use of the native Elasticsearch query as a JSON string as shown here:
+A `StringQuery` gives full control by allowing the use of the native Elasticsearch query as a JSON string as shown here:
 
 ```java
 @Service
@@ -442,7 +442,8 @@ In this code snippet, we are forming a query with CriteriaQuery for fetching pro
 
 ## Building a Search Application
 
-We will now add a user interface to our application to see the product search in action. The user interface will have a search input box for searching products on name or description. The input box will have a autocomplete feature to show a list of suggestions based on searches done earlier.
+We will now add a user interface to our application to see the product search in action. The user interface will have a search input box for searching products on name or description. The input box will have a autocomplete feature to show a list of suggestions based on the available products as shown here:
+![Suggestions for Autocomplete](/assets/img/posts/spring-data-elasticsearch/autocomplete.png)
 
 We will create auto-complete suggestions for user's search input. Then search for products on name or description closely matching the search text entered by the user. We will build two search services to implement this use case:
 - Fetch search suggestions for the auto-complete function
@@ -458,7 +459,7 @@ The `productindex` is the same index we had used earlier for running the JUnit t
 ```shell
 curl -X DELETE http://localhost:9200/productindex
 ```
-We will get the message `{"acknowledged": true}` if the delete operation is successful. 
+We will get the message `{"acknowledged": true}` if the delete operation is successful.
 
 We will create an index for the products in our inventory. We will use a sample dataset of fifty products to build our index. The products are arranged as separate rows in a [CSV file](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch/src/main/resources/fashion-products.csv). 
 
@@ -556,7 +557,9 @@ public class ProductSearchService {
             .wildcardQuery("name", query+"*");
 
         Query searchQuery = new NativeSearchQueryBuilder()
-            .withFilter(queryBuilder).build();
+            .withFilter(queryBuilder)
+            .withPageable(PageRequest.of(0, 5))
+            .build();
 
         SearchHits<Product> searchSuggestions = 
             elasticsearchOperations.search(searchQuery, 
@@ -572,7 +575,7 @@ public class ProductSearchService {
     }
 }
 ```
-We are using a wildcard query in the form of search input text appended with `*` so that if we type "red" we will get suggestions starting with "red". Some screenshots of the search results from the running application can be seen here:
+We are using a wildcard query in the form of search input text appended with `*` so that if we type "red" we will get suggestions starting with "red". We are restricting the number of suggestions to 5 with the `withPageable()` method. Some screenshots of the search results from the running application can be seen here:
 
 ![Product Search Application](/assets/img/posts/spring-data-elasticsearch/searchapp.png)
 

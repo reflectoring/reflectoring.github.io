@@ -33,11 +33,11 @@ The easiest way to get introduced to Elasticsearch concepts is by drawing an ana
 |Document|->|Row|
 |Field|->|Column|
 
-Any data we want to search or analyze is stored as a document in an index. In Spring Data, we represent a Document in the form of a POJO and decorate it with annotations to define the mapping of into an Elasticsearch document. 
+Any data we want to search or analyze is stored as a document in an index. In Spring Data, we represent a document in the form of a POJO and decorate it with annotations to define the mapping into an Elasticsearch document. 
 
-Unlike a database, the text stored in Elasticsearch is first processed by various analyzers. The default analyzer splits the text by common word separators like space and punctuation, and also removes common English words. 
+Unlike a database, the text stored in Elasticsearch is first processed by various analyzers. The default analyzer splits the text by common word separators like space and punctuation and also removes common English words. 
 
-If we store the text "The sky is blue", the analyzer will store this as a Document with the 'terms' "sky" and "blue". We will be able to search this Document with text in the form of "blue sky", "sky", or "blue" with a degree of the match given as a score. 
+If we store the text "The sky is blue", the analyzer will store this as a document with the 'terms' "sky" and "blue". We will be able to search this document with text in the form of "blue sky", "sky", or "blue" with a degree of the match given as a score. 
 
 Apart from text, Elasticsearch can store other types of data known as `Field Type` as explained under the section on [mapping-types](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html) in the documentation.
 
@@ -139,9 +139,11 @@ Spring Data Elasticsearch uses [Java High Level REST Client (JHLC)](https://www.
 
 ```java
 @Configuration
-@EnableElasticsearchRepositories(basePackages = "io.pratik.elasticsearch.repositories")
+@EnableElasticsearchRepositories(basePackages 
+              = "io.pratik.elasticsearch.repositories")
 @ComponentScan(basePackages = { "io.pratik.elasticsearch" })
-public class ElasticsearchClientConfig extends AbstractElasticsearchConfiguration {
+public class ElasticsearchClientConfig extends 
+                 AbstractElasticsearchConfiguration {
   @Override
   @Bean
   public RestHighLevelClient elasticsearchClient() {
@@ -154,6 +156,7 @@ public class ElasticsearchClientConfig extends AbstractElasticsearchConfiguratio
 
     return RestClients.create(clientConfiguration).rest();
   }
+}
 
 ```
 Here we are connecting to our Elasticsearch instance which we started earlier. We can further customize the connection by adding more properties like enabling ssl, setting timeouts, etc. 
@@ -189,6 +192,8 @@ public class Product {
   
   @Field(type = FieldType.Keyword, name = "manufacturer")
   private String manufacturer;
+
+  ...
 }
 ```
 
@@ -232,7 +237,7 @@ public class ProductSearchServiceWithRepo {
   }
 }
 ```
-When we call these methods from JUnit, we can see in the trace log that the REST APIs for indexing and bulk indexing are being called.
+When we call these methods from JUnit, we can see in the trace log that the REST APIs calls for indexing and bulk indexing.
 
 ### Searching
 For fulfilling our search requirements, we will add finder methods to our repository interface:
@@ -256,7 +261,7 @@ TRACE Sending request POST /productindex/_search? ..:
 Request body: {.."query":{"bool":{"must":[{"query_string":{"query":"apple","fields":["name^1.0"],..}
 ```
 
-Similarly, by running the method `findByManufacturerAndCategory()`, we can see the query generated with two `query_string` corresponding to the two fields - "manufacturer" and "category" being searched on.
+Similarly, by running the method `findByManufacturerAndCategory()`, we can see the query generated with two `query_string` corresponding to the two fields  - "manufacturer" and "category":
 ```shell
 TRACE .. Sending request POST /productindex/_search..: 
 Request body: {.."query":{"bool":{"must":[{"query_string":{"query":"samsung","fields":["manufacturer^1.0"],..}},{"query_string":{"query":"laptop","fields":["category^1.0"],..}}],..}},"version":true}
@@ -264,9 +269,9 @@ Request body: {.."query":{"bool":{"must":[{"query_string":{"query":"samsung","fi
 There are numerous combinations of [method naming patterns](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#elasticsearch.query-methods.criterions) which generate a wide range of Elasticsearch queries. 
 
 ## Indexing and Searching with ElasticsearchRestTemplate
-The Spring Data repository may not be suitable in situations when we need more control over how we design our queries or when the team already has expertise with Elasticsearch syntax. 
+The Spring Data repository may not be suitable when we need more control over how we design our queries or when the team already has expertise with Elasticsearch syntax. 
 
-In this situation, we use [ElasticsearchRestTemplate](https://docs.spring.io/spring-data/elasticsearch/docs/current/api/org/springframework/data/elasticsearch/core/ElasticsearchRestTemplate.html). It is the new client of Elasticsearch based on HTTP and replaces the TransportClient of earlier versions, which used a node-to-node binary protocol. 
+In this situation, we use [ElasticsearchRestTemplate](https://docs.spring.io/spring-data/elasticsearch/docs/current/api/org/springframework/data/elasticsearch/core/ElasticsearchRestTemplate.html). It is the new client of Elasticsearch based on HTTP, replacing the TransportClient of earlier versions, which used a node-to-node binary protocol. 
 
 `ElasticsearchRestTemplate` implements the interface `ElasticsearchOperations`, which does the heavy-lifting for low level search and cluster actions. 
 
@@ -299,7 +304,7 @@ public class ProductSearchService {
   ...
 }
 ```
-The document to be stored is enclosed within an `IndexQuery` object. The `bulkIndex()` method takes as input a list of `IndexQuery` objects and the name of the index wrapped inside `IndexCoordinates`. When we execute this method, we get a trace of the REST API for a `bulk` request.
+The document to be stored is enclosed within an `IndexQuery` object. The `bulkIndex()` method takes as input a list of `IndexQuery` objects and the name of the Index wrapped inside `IndexCoordinates`. We get a trace of the REST API for a `bulk` request, when we execute this method:
 
 ```shell
  Sending request POST /_bulk?timeout=1m with parameters: 
@@ -310,16 +315,25 @@ Request body: {"index":{"_index":"productindex","_id":"383..35"}}
 ```
 Next, we use the `index()` method to add a single document:
 ```java
-public String createProductIndex(Product product) {
+@Service
+@Slf4j
+public class ProductSearchService {
 
-    IndexQuery indexQuery = new IndexQueryBuilder()
-           .withId(product.getId().toString())
-           .withObject(product).build();
+    private static final String PRODUCT_INDEX = "productindex";
+   
+    private ElasticsearchOperations elasticsearchOperations;
 
-    String documentId = elasticsearchOperations
-     .index(indexQuery, IndexCoordinates.of(PRODUCT_INDEX));
+    public String createProductIndex(Product product) {
 
-    return documentId;
+        IndexQuery indexQuery = new IndexQueryBuilder()
+               .withId(product.getId().toString())
+               .withObject(product).build();
+
+        String documentId = elasticsearchOperations
+         .index(indexQuery, IndexCoordinates.of(PRODUCT_INDEX));
+
+        return documentId;
+    }
 }
 ```
 
@@ -334,12 +348,20 @@ Request body: {"_class":"..Product","id":"59d..87",..,"manufacturer":"dell"}
 
 `ElasticsearchRestTemplate` also has the `search()` method for searching documents in an index. This search operation resembles Elasticsearch queries and is built by constructing a `Query` object and passing it to a search method. 
 
-The `Query` object is of three variants - `NativeQuery`, `StringQuery`, and `CriteriaQuery` depending on the method of construction. Let's build a few queries for searching products:
+The `Query` object is of three variants - `NativeQuery`, `StringQuery`, and `CriteriaQuery` depending on how we construct the query. . Let us build a few queries for searching products:
 
 #### NativeQuery
 `NativeQuery` provides the maximum flexibility of building a query using objects representing Elasticsearch constructs like aggregation, filter, and sort. Here is a `NativeQuery` for searching products matching a particular manufacturer:
 
 ```java
+@Service
+@Slf4j
+public class ProductSearchService {
+
+  private static final String PRODUCT_INDEX = "productindex";
+ 
+  private ElasticsearchOperations elasticsearchOperations;
+
   public void findProductsByBrand(final String brandName) {
 
         QueryBuilder queryBuilder = 
@@ -356,6 +378,7 @@ The `Query` object is of three variants - `NativeQuery`, `StringQuery`, and `Cri
                   Product.class,
                   IndexCoordinates.of(PRODUCT_INDEX));
     }
+}
 
 ```
 Here we are building a query with a `NativeSearchQueryBuilder` which uses a `MatchQueryBuilder` to specify the match query containing the field "manufacturer".
@@ -364,6 +387,14 @@ Here we are building a query with a `NativeSearchQueryBuilder` which uses a `Mat
 A `StringQuery` gives full control by allowing use of the native Elasticsearch query as a JSON string as shown here:
 
 ```java
+@Service
+@Slf4j
+public class ProductSearchService {
+
+  private static final String PRODUCT_INDEX = "productindex";
+ 
+  private ElasticsearchOperations elasticsearchOperations;
+
   public void findByProductName(final String productName) {
     Query searchQuery = new StringQuery(
         "{\"match\":{\"name\":{\"query\":\""+ productName + "\"}}}\"");
@@ -376,6 +407,7 @@ A `StringQuery` gives full control by allowing use of the native Elasticsearch q
     ...
     ...                                
    }
+}
 
 ```
 In this code snippet, we are specifying a simple `match` query for fetching products with a particular name sent as a method parameter.
@@ -384,18 +416,27 @@ In this code snippet, we are specifying a simple `match` query for fetching prod
 With `CriteriaQuery` we can build queries without knowing any terminology of Elasticsearch. The queries are built using method chaining with Criteria objects. Each object specifies some criteria used for searching documents:
 
 ```java
-  public void findByProductPrice(final String productPrice) {
-      Criteria criteria = new Criteria("price")
-                                  .greaterThan(10.0)
-                                  .lessThan(100.0);
+@Service
+@Slf4j
+public class ProductSearchService {
 
-      Query searchQuery = new CriteriaQuery(criteria);
+    private static final String PRODUCT_INDEX = "productindex";
+   
+    private ElasticsearchOperations elasticsearchOperations;
 
-      SearchHits<Product> products = elasticsearchOperations
-         .search(searchQuery, 
-                 Product.class,
-                 IndexCoordinates.of(PRODUCT_INDEX_NAME));
-  }
+    public void findByProductPrice(final String productPrice) {
+        Criteria criteria = new Criteria("price")
+                                    .greaterThan(10.0)
+                                    .lessThan(100.0);
+
+        Query searchQuery = new CriteriaQuery(criteria);
+
+        SearchHits<Product> products = elasticsearchOperations
+           .search(searchQuery, 
+                   Product.class,
+                   IndexCoordinates.of(PRODUCT_INDEX_NAME));
+    }
+}
 ```
 In this code snippet, we are forming a query with CriteriaQuery for fetching products whose price is greater than 10.0 and less than 100.0.
 
@@ -403,15 +444,14 @@ In this code snippet, we are forming a query with CriteriaQuery for fetching pro
 
 We will now add a user interface to our application to see the product search in action. The user interface will have a search input box for searching products on name or description. The input box will have a autocomplete feature to show a list of suggestions based on searches done earlier.
 
-We will create auto-complete suggestions for user's input. Then search products on name and description. We will build a search service to implement this use case. The full-blown application with a UI is available in the [GitHub repo](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch).
+We will create auto-complete suggestions for user's search input. Then search for products on name or description closely matching the search text entered by the user. We will build two search services to implement this use case:
+- Fetch search suggestions for the auto-complete function
+- Process search for searching products based on user's search query
 
-For building this application we will create:
+A Service class - [ProductSearchService](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch/src/main/java/io/pratik/elasticsearch/services/ProductSearchService.java) containing methods for search and fetching suggestions.
 
-1. A REST API for search with endpoint "/products"
-2. A REST API for fetching suggestions for autocomplete with endpoint "/suggestions"
-3. A Controller class - [SearchController](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch/src/main/java/io/pratik/elasticsearch/controllers/SearchController.java) for API endpoints
-4. A Service class - [ProductSearchService](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch/src/main/java/io/pratik/elasticsearch/services/ProductSearchService.java) containing methods for search and fetching suggestions.
-5. An HTML page [`search.html`](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch/src/main/resources/templates/search.html) with an input textbox along with some JQuery code to handle the autocomplete and search events, and for invoking the APIs for searching and fetching suggestions for search text. We will use [Thymeleaf](https://www.thymeleaf.org/index.html) as the templating engine. So we will add a dependency for thymeleaf and save the `search.html` HTML page under the resources/templates folder.
+ The full-blown application with a user interface is available in the [GitHub repo](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch).
+
 
 ### Building the Product Search Index
 The `productindex` is the same index we had used earlier for running the JUnit tests. We will first delete the `productindex` with Elasticsearch REST API, so that the `productindex` is created fresh during application startup with products loaded from our sample dataset of 50 fashion-line products:
@@ -441,6 +481,7 @@ public class ProductsearchappApplication {
     ...
     return productList;
   }
+}
 ```
 In this snippet, we do some preprocessing by reading the rows from the dataset and passing those to the `saveAll()` method of the repository to add products to the index. On running the application we can see the below trace logs in the application startup.
 
@@ -467,7 +508,6 @@ public class ProductSearchService {
   private static final String PRODUCT_INDEX = "productindex";
 
   private ElasticsearchOperations elasticsearchOperations;
-  private SearchSuggestRepository searchSuggestRepository; 
 
   public List<Product> processSearch(final String query) {
     log.info("Search with query {}", query);
@@ -498,37 +538,38 @@ public class ProductSearchService {
 ...
 }
 ```
-Here we first update the `searchsuggest` index in step 1 and then perform a search on multiple fields - name and description. We also specify `Fuzzyiness.AUTO` to search for closely matching text to account for spelling errors.
+Here we perform a search on multiple fields - name and description. We also attach the `fuzziness()` to search for closely matching text to account for spelling errors.
 
 ### Fetching Suggestions with Wildcard Search
 Next, we build the autocomplete function for the search textbox. When we type into the search text field, we will fetch suggestions by performing a wild card search with the characters entered in the search box. 
 
-We build this function in the `fetchRecentSuggestions()` method shown here: 
+We build this function in the `fetchSuggestions()` method shown here: 
 ```java
 @Service
 @Slf4j
 public class ProductSearchService {
 
-  private static final String PRODUCT_INDEX = "productindex";
+    private static final String PRODUCT_INDEX = "productindex";
 
-  public List<String> fetchRecentSuggestions(String query) {
-    QueryBuilder queryBuilder = QueryBuilders
-        .wildcardQuery("searchText", query+"*");
+    public List<String> fetchSuggestions(String query) {
+        QueryBuilder queryBuilder = QueryBuilders
+            .wildcardQuery("name", query+"*");
 
-    Query searchQuery = new NativeSearchQueryBuilder()
-        .withFilter(queryBuilder).build();
+        Query searchQuery = new NativeSearchQueryBuilder()
+            .withFilter(queryBuilder).build();
 
-    SearchHits<SearchSuggest> searchSuggestions = 
-        elasticsearchOperations.search(searchQuery, 
-            SearchSuggest.class,
-        IndexCoordinates.of(SEARCH_SUGGEST_INDEX));
-    
-    List<String> suggestions = new ArrayList<String>();
-    searchSuggestions.getSearchHits().forEach(srchHit->{
-      suggestions.add(srchHit.getContent().getSearchText());
-    });
-    return suggestions;
-  }
+        SearchHits<Product> searchSuggestions = 
+            elasticsearchOperations.search(searchQuery, 
+                Product.class,
+            IndexCoordinates.of(PRODUCT_INDEX));
+        
+        List<String> suggestions = new ArrayList<String>();
+        
+        searchSuggestions.getSearchHits().forEach(searchHit->{
+          suggestions.add(searchHit.getContent().getName());
+        });
+        return suggestions;
+    }
 }
 ```
 We are using a wildcard query in the form of search input text appended with `*` so that if we type "red" we will get suggestions starting with "red". Some screenshots of the search results from the running application can be seen here:

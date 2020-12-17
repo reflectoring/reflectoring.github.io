@@ -11,7 +11,7 @@ image:
 
 Elasticsearch is built on [Apache Lucene](https://lucene.apache.org) and was first released by Elasticsearch N.V. (now Elastic) in 2010. According to the website of [Elastic](https://www.elastic.co/what-is/elasticsearch), it is a **distributed open-source search and analytics engine for all types of data, including textual, numerical, geospatial, structured, and unstructured**.  
 
-The operations of Elasticsearch are exposed as REST APIs. The primary functions are 
+The operations of Elasticsearch are available as REST APIs. The primary functions are :
 
 * storing documents in an index,
 * searching the index with powerful queries to fetch those documents, and
@@ -19,7 +19,7 @@ The operations of Elasticsearch are exposed as REST APIs. The primary functions 
   
 **Spring Data Elasticsearch provides a simple interface to perform these operations on Elasticsearch as an alternative to using the REST APIs directly.**
 
-In this article, we will use Spring Data Elasticsearch to highlight the main capabilities of Elasticsearch - indexing of documents and searching - and finally build a simple search application for searching products in a product inventory.
+Here we will use Spring Data Elasticsearch to demonstrate the indexing and search capabilities of Elasticsearch, and towards the end, build a simple search application for searching products in a product inventory.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch" %}
 
@@ -42,19 +42,19 @@ If we store the text "The sky is blue", the analyzer will store this as a docume
 Apart from text, Elasticsearch can store other types of data known as `Field Type` as explained under the section on [mapping-types](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html) in the documentation.
 
 ## Starting our Elasticsearch Instance
-Before going any further, let us start an Elasticsearch instance which we will use throughout for running our examples. There are numerous ways of running an Elasticsearch instance :
+Before going any further, let us start an Elasticsearch instance, which we will use for running our examples. There are numerous ways of running an Elasticsearch instance :
 1. Using a hosted service
 2. Using a managed service from a Cloud Provider like [AWS](https://aws.amazon.com/elasticsearch-service/) or [Azure](https://azuremarketplace.microsoft.com/en-in/marketplace/apps/elastic.elasticsearch)
 3. DIY way by installing Elasticsearch in a cluster of VMs.
 4. Running a [Docker Image](https://www.docker.elastic.co)
 
-We will use the Docker image from Dockerhub which is good enough for our demo application. Let us start our Elasticsearch instance by running the Docker `run` command:
+We will use the Docker image from Dockerhub, which is good enough for our demo application. Let us start our Elasticsearch instance by running the Docker `run` command:
 
 ```shell
 docker run -p 9200:9200 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.10.0
 ```
 
-This will start an Elasticsearch instance listening on port 9200. We can verify the instance by hitting the URL `http://localhost:9200` and check the resulting output in our browser:
+Executing this command will start an Elasticsearch instance listening on port 9200. We can verify the instance state by hitting the URL `http://localhost:9200` and check the resulting output in our browser:
 
 ```json
 {
@@ -72,7 +72,10 @@ We should get the above output if our Elasticsearch instance is started successf
 
 ## Indexing and Searching with the REST API
 
-Elasticsearch operations are accessed via REST APIs. There are two ways of adding documents to an index: adding one document at a time or adding documents in bulk. The API for adding individual documents accepts a document as a parameter.
+Elasticsearch operations are accessed via REST APIs. There are two ways of adding documents to an index:
+- adding one document at a time, or 
+- adding documents in bulk. 
+The API for adding individual documents accepts a document as a parameter.
 
 A simple PUT request to an Elasticsearch instance for storing a document looks like this:
 
@@ -112,7 +115,7 @@ We have two ways of accessing Elasticsearch with Spring Data as shown here:
 
 ![Elasticsearch Operations Types with Spring Data](/assets/img/posts/spring-data-elasticsearch/Elasticsearch-springdata.png)
 
-- **Repositories**: We define methods in an interface and Elasticsearch queries are generated from method names at runtime. 
+- **Repositories**: We define methods in an interface, and Elasticsearch queries are generated from method names at runtime. 
 
 - **ElasticsearchRestTemplate**: We create queries with method chaining and native queries to have more control over creating Elasticsearch queries in relatively complex scenarios.
 
@@ -159,7 +162,7 @@ public class ElasticsearchClientConfig extends
 }
 
 ```
-Here we are connecting to our Elasticsearch instance which we started earlier. We can further customize the connection by adding more properties like enabling ssl, setting timeouts, etc. 
+Here we are connecting to our Elasticsearch instance, which we started earlier. We can further customize the connection by adding more properties like enabling ssl, setting timeouts, etc. 
 
 **Enabling transport layer logging**: For debugging and diagnostics, we will turn on  request / response logging on the transport level in our logging configuration in `logback-spring.xml` as outlined in this snippet:
 

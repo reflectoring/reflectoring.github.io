@@ -127,7 +127,7 @@ We will look at these two ways in much more detail in the following sections.
 
 ## Creating the Application and Adding Dependencies
 
-Let's first create our application with the [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.6.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.elasticsearch&artifactId=productsearchapp&name=productsearchapp&description=Demo%20project%20for%20Elasticsearch%20with%20Spring%20Boot&packageName=io.pratik.elasticsearch.productsearchapp&dependencies=web,lombok,thymeleaf) by including the dependencies for web, thymeleaf, and lombok. We are adding `thymeleaf` dependencies to add an user interface to the application.
+Let's first create our application with the [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.3.6.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik.elasticsearch&artifactId=productsearchapp&name=productsearchapp&description=Demo%20project%20for%20Elasticsearch%20with%20Spring%20Boot&packageName=io.pratik.elasticsearch.productsearchapp&dependencies=web,lombok,thymeleaf) by including the dependencies for web, thymeleaf, and lombok. We are adding `thymeleaf` dependencies to add a user interface to the application.
 
 We will now add the `spring-data-elasticsearch` dependency in our Maven `pom.xml`:
 
@@ -260,7 +260,7 @@ public interface ProductRepository
 }
 ```
 
-On running the method `findByName()` with JUnit, we can see Elasticsearch queries generated before sending to server in the trace logs:
+On running the method `findByName()` with JUnit, we can see Elasticsearch queries generated in the trace logs before being sent to the server:
 ```shell
 TRACE Sending request POST /productindex/_search? ..: 
 Request body: {.."query":{"bool":{"must":[{"query_string":{"query":"apple","fields":["name^1.0"],..}
@@ -271,14 +271,14 @@ Similarly, by running the method `findByManufacturerAndCategory()`, we can see t
 TRACE .. Sending request POST /productindex/_search..: 
 Request body: {.."query":{"bool":{"must":[{"query_string":{"query":"samsung","fields":["manufacturer^1.0"],..}},{"query_string":{"query":"laptop","fields":["category^1.0"],..}}],..}},"version":true}
 ```
-There are numerous combinations of [method naming patterns](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#elasticsearch.query-methods.criterions) which generate a wide range of Elasticsearch queries. 
+There are numerous combinations of [method naming patterns](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#elasticsearch.query-methods.criterions) that generate a wide range of Elasticsearch queries. 
 
 ## Indexing and Searching with `ElasticsearchRestTemplate`
 The Spring Data repository may not be suitable when we need more control over how we design our queries or when the team already has expertise with Elasticsearch syntax. 
 
 In this situation, we use [`ElasticsearchRestTemplate`](https://docs.spring.io/spring-data/elasticsearch/docs/current/api/org/springframework/data/elasticsearch/core/ElasticsearchRestTemplate.html). It is the new client of Elasticsearch based on HTTP, replacing the TransportClient of earlier versions, which used a node-to-node binary protocol. 
 
-`ElasticsearchRestTemplate` implements the interface `ElasticsearchOperations`, which does the heavy lifting for low level search and cluster actions. 
+`ElasticsearchRestTemplate` implements the interface `ElasticsearchOperations`, which does the heavy lifting for low-level search and cluster actions. 
 
 ### Indexing
 This interface has the methods `index()` for adding a single document and `bulkIndex()` for adding multiple documents to the index. The code snippet here shows the use of `bulkIndex()` for adding multiple products to the index "productindex":

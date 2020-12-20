@@ -1,12 +1,12 @@
 ---
 title: Implementing a Circuit Breaker with Resilience4j
 categories: [java]
-date: 2020-12-06 05:00:00 +1100
-modified: 2020-12-14 05:00:00 +1100
+date: 2020-12-21 05:00:00 +1100
+modified: 2020-12-21 05:00:00 +1100
 author: saajan
 excerpt: "A deep dive into the Resilience4j circuit breaker module. This article shows why, when and how to use it to build resilient applications."
 image:
-  auto: 0081-safe
+  auto: 0089-circuitbreaker
 ---
 
 In this series so far, we have learned about Resilience4j and its [Retry](/retry-with-resilience4j/), [RateLimiter](/rate-limiting-with-resilience4j/), [TimeLimiter](/time-limiting-with-resilience4j/), and [Bulkhead](https://reflectoring.io/bulkhead-with-resilience4j/) modules. In this article, we will explore the CircuitBreaker module. We will find out when and how to use it, and also look at a few examples.
@@ -49,7 +49,11 @@ We specify the type of circuit breaker using the `slidingWindowType()` configura
 
 We can specify a `minimumNumberOfCalls()` that are required before the circuit breaker can calculate the error rate or slow call rate. 
 
-As mentioned earlier, the circuit breaker switches from the open state to the half-open state after a certain time to check how the remote service is doing. `waitDurationInOpenState()` specifies the time that the circuit breaker should wait before switching to a half-open state. `permittedNumberOfCallsInHalfOpenState()` configures the number of calls that will be allowed in the half-open state and `maxWaitDurationInHalfOpenState()` determines the amount of time a circuit breaker can stay in the half-open state before switching back to the open state. The default value of 0 for this configuration means that the circuit breaker will wait infinitely until all the` permittedNumberOfCallsInHalfOpenState()` is complete.
+As mentioned earlier, the circuit breaker switches from the open state to the half-open state after a certain time to check how the remote service is doing. `waitDurationInOpenState()` specifies the time that the circuit breaker should wait before switching to a half-open state. 
+
+`permittedNumberOfCallsInHalfOpenState()` configures the number of calls that will be allowed in the half-open state and `maxWaitDurationInHalfOpenState()` determines the amount of time a circuit breaker can stay in the half-open state before switching back to the open state. 
+
+The default value of 0 for this configuration means that the circuit breaker will wait infinitely until all the` permittedNumberOfCallsInHalfOpenState()` is complete.
 
 By default, the circuit breaker considers any `Exception` as a failure. But we can tweak this to specify a list of `Exception`s that should be treated as a failure using the `recordExceptions()` configuration and a list of `Exception`s to be ignored using the `ignoreExceptions()` configuration. 
 
@@ -334,7 +338,7 @@ Flight search successful
 
 A common pattern when using circuit breakers is to specify a fallback method to be called when the circuit is open. **The fallback method can provide some default value or behavior for the remote call that was not permitted**.
 
-We can use the `Decorators` utility class for setting this up. `Decorators` is a builder from the `resilience4j-all` module with methods like `withCircuitBreaker()`, `withRetry()`, `withRateLimiter()` to help apply multiple Resilience4j decorators to a `Supplier`, `Function` etc.
+We can use the `Decorators` utility class for setting this up. `Decorators` is a builder from the `resilience4j-all` module with methods like `withCircuitBreaker()`, `withRetry()`, `withRateLimiter()` to help apply multiple Resilience4j decorators to a `Supplier`, `Function`, etc.
 
 We will use its `withFallback()` method to return flight search results from a local cache when the circuit breaker is open and throws `CallNotPermittedException`:
 
@@ -372,7 +376,7 @@ Returning flight search results from cache
 ... other lines omitted ...
 ```
 
-### Reducing Information in stack trace
+### Reducing Information in the Stacktrace
 
 Whenever a circuit breaker is open, it throws a  `CallNotPermittedException`: 
 
@@ -462,10 +466,10 @@ Searching for flights; current time = 22:25:52 973
 
 `CircuitBreaker` exposes many metrics, these are some important ones:
 
-* Total number of successful, failed or ignored calls (`resilience4j.circuitbreaker.calls`)
+* Total number of successful, failed, or ignored calls (`resilience4j.circuitbreaker.calls`)
 * State of the circuit breaker (`resilience4j.circuitbreaker.state`)
 * Failure rate of the circuit breaker (`resilience4j.circuitbreaker.failure.rate`)
-* Total number of calls which have not been permitted (`resilience4.circuitbreaker.not.permitted.calls`)
+* Total number of calls that have not been permitted (`resilience4.circuitbreaker.not.permitted.calls`)
 * Slow call of the circuit breaker (`resilience4j.circuitbreaker.slow.call.rate`)
 
 First, we create `CircuitBreakerConfig`, `CircuitBreakerRegistry`, and `CircuitBreaker` as usual. Then, we create a `MeterRegistry` and bind the `CircuitBreakerRegistry` to it:

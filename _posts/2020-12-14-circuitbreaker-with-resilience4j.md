@@ -1,15 +1,15 @@
 ---
-title: Implementing Circuitbreaker with Resilience4j
+title: Implementing a Circuit Breaker with Resilience4j
 categories: [java]
 date: 2020-12-06 05:00:00 +1100
 modified: 2020-12-14 05:00:00 +1100
 author: saajan
-excerpt: "A deep dive into the Resilience4j circuitbreaker module. This article shows why, when and how to use it to build resilient applications."
+excerpt: "A deep dive into the Resilience4j circuit breaker module. This article shows why, when and how to use it to build resilient applications."
 image:
   auto: 0081-safe
 ---
 
-In this series so far, we have learned about Resilience4j and its [Retry](/retry-with-resilience4j/), [RateLimiter](/rate-limiting-with-resilience4j/), [TimeLimiter](/time-limiting-with-resilience4j/), and [Bulkhead](https://reflectoring.io/bulkhead-with-resilience4j/) modules. In this article, we will explore the Circuitbreaker module. We will find out when and how to use it, and also look at a few examples.
+In this series so far, we have learned about Resilience4j and its [Retry](/retry-with-resilience4j/), [RateLimiter](/rate-limiting-with-resilience4j/), [TimeLimiter](/time-limiting-with-resilience4j/), and [Bulkhead](https://reflectoring.io/bulkhead-with-resilience4j/) modules. In this article, we will explore the CircuitBreaker module. We will find out when and how to use it, and also look at a few examples.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/resilience4j/circuitbreaker" %}
 
@@ -19,15 +19,15 @@ Please refer to the description in the previous article for a quick intro into [
 
 ## What is a Circuit Breaker?
 
-The idea of circuit breakers is to prevent calls to a remote service if we know that the call is likely to fail or timeout. We do this so that we don't unnecessarily waste critical resources both in our service and in the remote service. Backing off like this also gives the remote service some time to recover.
+The idea of circuit breakers is to prevent calls to a remote service if we know that the call is likely to fail or time out. We do this so that we don't unnecessarily waste critical resources both in our service and in the remote service. Backing off like this also gives the remote service some time to recover.
 
-How do we know that a call is likely to fail? By keeping track of the results of the previous requests made to the remote service. If, say, 8 out of the previous 10 calls resulted in a failure or a timeout, likely, the next call will also fail. 
+How do we know that a call is likely to fail? By keeping track of the results of the previous requests made to the remote service. If, say, 8 out of the previous 10 calls resulted in a failure or a timeout, the next call will likely also fail. 
 
-A circuit breaker keeps track of the responses by wrapping the call to the remote service. During normal operation, when the remote service is responding successfully, the circuit breaker is said to be in a "closed" state. When in the closed state, a circuit breaker passes the request through to the remote service.
+A circuit breaker keeps track of the responses by wrapping the call to the remote service. During normal operation, when the remote service is responding successfully, we say that the circuit breaker is in a "closed" state. When in the closed state, a circuit breaker passes the request through to the remote service normally.
 
 When a remote service returns an error or times out, the circuit breaker increments an internal counter. If the count of errors exceeds a configured threshold, the circuit breaker switches to an "open" state. When in the open state, a circuit breaker immediately returns an error to the caller without even attempting the remote call.
 
-After some configured time, the circuit breaker switches from open to a "half-open" state. In this state, it lets a few requests to pass through to the remote service to check if it's still unavailable or slow. If the error rate or slow call rate is above the configured threshold, it switches back to the open state. However, if the error rate or slow call rate is below the configured threshold, it switches to the closed state.
+After some configured time, the circuit breaker switches from open to a "half-open" state. In this state, it lets a few requests pass through to the remote service to check if it's still unavailable or slow. If the error rate or slow call rate is above the configured threshold, it switches back to the open state. If the error rate or slow call rate is below the configured threshold, however, it switches to the closed state to resume normal operation.
 
 ### Types of Circuit Breakers
 
@@ -41,21 +41,21 @@ For example, we can configure a count-based circuit breaker to "open the circuit
 
 **Resilience4j supports both count-based and time-based circuit breakers.**
 
-We specify the type of circuit breaker using the `slidingWindowType` configuration. This configuration can take two values - `SlidingWindowType.COUNT_BASED` and `SlidingWindowType.TIME_BASED`.
+We specify the type of circuit breaker using the `slidingWindowType()` configuration. This configuration can take one of two values - `SlidingWindowType.COUNT_BASED` or `SlidingWindowType.TIME_BASED`.
 
-`failureRateThreshold` and `slowCallRateThreshold` configure the failure rate threshold and the slow call rate in percentage. 
+`failureRateThreshold()` and `slowCallRateThreshold()` configure the failure rate threshold and the slow call rate in percentage. 
 
-`slowCallDurationThreshold` configures the time in seconds beyond which a call is considered slow.
+`slowCallDurationThreshold()` configures the time in seconds beyond which a call is considered slow.
 
-We can specify `minimumNumberOfCalls` that are required before the circuit breaker can calculate the error rate or slow call rate. 
+We can specify a `minimumNumberOfCalls()` that are required before the circuit breaker can calculate the error rate or slow call rate. 
 
-As mentioned earlier, the circuit breaker switches from the open state to the half-open state after a certain time to check how the remote service is doing. `waitDurationInOpenState` specifies the time that the circuit breaker should wait before switching to a half-open state. `permittedNumberOfCallsInHalfOpenState` configures the number of calls that will be allowed in the half-open state and `maxWaitDurationInHalfOpenState` determines the amount of time a circuit breaker can stay in the half-open state before switching back to the open state. The default value of 0 for this configuration means that the circuit breaker will wait infinitely until all the` permittedNumberOfCallsInHalfOpenState` is complete.
+As mentioned earlier, the circuit breaker switches from the open state to the half-open state after a certain time to check how the remote service is doing. `waitDurationInOpenState()` specifies the time that the circuit breaker should wait before switching to a half-open state. `permittedNumberOfCallsInHalfOpenState()` configures the number of calls that will be allowed in the half-open state and `maxWaitDurationInHalfOpenState()` determines the amount of time a circuit breaker can stay in the half-open state before switching back to the open state. The default value of 0 for this configuration means that the circuit breaker will wait infinitely until all the` permittedNumberOfCallsInHalfOpenState()` is complete.
 
-By default, the circuit breaker considers any `Exception` as a failure. But we can tweak this to specify a list of `Exception`s that should be treated as a failure using the `recordExceptions` configuration and a list of `Exception`s to be ignored using the `ignoreExceptions` configuration. 
+By default, the circuit breaker considers any `Exception` as a failure. But we can tweak this to specify a list of `Exception`s that should be treated as a failure using the `recordExceptions()` configuration and a list of `Exception`s to be ignored using the `ignoreExceptions()` configuration. 
 
-If we want even finer control when determining if an `Exception` should be treated as a failure or ignored, we can provide a `<Predicate<Throwable>` as a `recordException` or `ignoreException` configuration.
+If we want even finer control when determining if an `Exception` should be treated as a failure or ignored, we can provide a `Predicate<Throwable>` as a `recordException()` or `ignoreException()` configuration.
 
-The circuit breaker throws a `CallNotPermittedException` when it is rejecting calls in the open state. We can control the amount of information in the stack trace of a `CallNotPermittedException` using the `writablestacktraceEnabled` configuration.
+The circuit breaker throws a `CallNotPermittedException` when it is rejecting calls in the open state. We can control the amount of information in the stack trace of a `CallNotPermittedException` using the `writablestacktraceEnabled()` configuration.
 
 ## Using the Resilience4j `CircuitBreaker` Module
 
@@ -75,9 +75,19 @@ The first step is to create a `CircuitBreakerConfig`:
 CircuitBreakerConfig config = CircuitBreakerConfig.ofDefaults();
 ```
 
-This creates a `CircuitBreakerConfig` with default values for `slidingWindowType` (`COUNT_BASED`), `slidingWindowSize` (100),  `failureRateThreshold`(50%), `slowCallRateThreshold` (100%), `slowCallDurationThreshold` (60s), `minimumNumberOfCalls` (100), `permittedNumberOfCallsInHalfOpenState`(10), `maxWaitDurationInHalfOpenState` (0s).
-
-### `Count-based Circuitbreaker`
+This creates a `CircuitBreakerConfig` with these default values:
+ 
+| Configuration | Default value |
+| --- | ---|
+| `slidingWindowType` | `COUNT_BASED` |
+| `failureRateThreshold` | 50% |
+| `slowCallRateThreshold` | 100% |
+| `slowCallDurationThreshold` | 60s |
+| `minimumNumberOfCalls` | 100 |
+| `permittedNumberOfCallsInHalfOpenState` | 10 |
+| `maxWaitDurationInHalfOpenState` | `0s |
+ 
+### Count-based Circuitbreaker
 
 Let's say we want the circuitbreaker to open if 70% of the last 10 calls failed:
 
@@ -90,7 +100,7 @@ CircuitBreakerConfig config = CircuitBreakerConfig
   .build();
 ```
 
-We then create a `CircuitBreaker`:
+We then create a `CircuitBreaker` with this config:
 
 ```java
 CircuitBreakerRegistry registry = CircuitBreakerRegistry.of(config);
@@ -106,7 +116,7 @@ Supplier<List<Flight>> decoratedFlightsSupplier =
   circuitBreaker.decorateSupplier(flightsSupplier);
 ```
 
-Finally, let's call the decorated operation a few times to understand how the bulkhead works. We can use `CompletableFuture` to simulate concurrent flight search requests from users:
+Finally, let's call the decorated operation a few times to understand how the circuit breaker works. We can use `CompletableFuture` to simulate concurrent flight search requests from users:
 
 ```java
 for (int i=0; i<20; i++) {
@@ -119,7 +129,7 @@ for (int i=0; i<20; i++) {
 }
 ```
 
-The output shows the first few flight searches succeeding followed by 7 flight search failures. At that point, the circuitbreaker opens and throws `CallNotPermittedException` for subsequent calls:
+The output shows the first few flight searches succeeding followed by 7 flight search failures. At that point, the circuit breaker opens and throws `CallNotPermittedException` for subsequent calls:
 
 ```
 Searching for flights; current time = 12:01:12 884
@@ -133,14 +143,6 @@ Flight search successful
 [Flight{flightNumber='XY 765', flightDate='12/31/2020', from='NYC', to='LAX'}, ... ]
 Searching for flights; current time = 12:01:12 958
 io.reflectoring.resilience4j.circuitbreaker.exceptions.FlightServiceException: Error occurred during flight search
-... stack trace omitted ...
-Searching for flights; current time = 12:01:12 961
-io.reflectoring.resilience4j.circuitbreaker.exceptions.FlightServiceException: Error occurred during flight search
-... stack trace omitted ...
-Searching for flights; current time = 12:01:12 962
-... other lines omitted ...
-Searching for flights; current time = 12:01:12 964
-  io.reflectoring.resilience4j.circuitbreaker.exceptions.FlightServiceException: Error occurred during flight search
 ... stack trace omitted ...
 io.github.resilience4j.circuitbreaker.CallNotPermittedException: CircuitBreaker 'flightSearchService' is OPEN and does not permit further calls
 ... other lines omitted ...
@@ -183,7 +185,7 @@ io.github.resilience4j.circuitbreaker.CallNotPermittedException: CircuitBreaker 
 	at io.reflectoring.resilience4j.circuitbreaker.Examples.main(Examples.java:231)
 ```
 
-Usually we would configure a single circuitbreaker with both failure rate and slow call rate thresholds:
+Usually we would configure a single circuit breaker with both failure rate and slow call rate thresholds:
 
 ```java
 CircuitBreakerConfig config = CircuitBreakerConfig
@@ -196,9 +198,9 @@ CircuitBreakerConfig config = CircuitBreakerConfig
   .build();
 ```
 
-### `Time-based Circuitbreaker`
+### Time-based Circuitbreaker
 
-Let's say we want the circuitbreaker to open if 70% of the requests in the last 10s failed:
+Let's say we want the circuit breaker to open if 70% of the requests in the last 10s failed:
 
 ```java
 CircuitBreakerConfig config = CircuitBreakerConfig
@@ -234,7 +236,7 @@ io.github.resilience4j.circuitbreaker.CallNotPermittedException: CircuitBreaker 
 
 The first 3 requests were successful and the next 7 requests failed. At this point the circuitbreaker opened and the subsequent requests failed by throwing `CallNotPermittedException`.
 
-Now, let's say we wanted the circuitbreaker to open if 70% of the calls in the last 10s took took 1s or more to complete:
+Now, let's say we wanted the circuitbreaker to open if 70% of the calls in the last 10s took 1s or more to complete:
 
 ```java
 CircuitBreakerConfig config = CircuitBreakerConfig
@@ -247,7 +249,7 @@ CircuitBreakerConfig config = CircuitBreakerConfig
   .build();
 ```
 
-The timestamps in the sample output show requests consistently taking 1s to complete. After 10 (`minimumNumberOfCalls`), when the circuitbreaker determines that 70% of the previous requests took 1s or more, it opens the circuit:
+The timestamps in the sample output show requests consistently taking 1s to complete. After 10 requests(`minimumNumberOfCalls`), when the circuit breaker determines that 70% of the previous requests took 1s or more, it opens the circuit:
 
 ```
 Start time: 19:06:37 957
@@ -266,7 +268,7 @@ io.github.resilience4j.circuitbreaker.CallNotPermittedException: CircuitBreaker 
 ... stack trace omitted ...
 ```
 
-Usually we would configure a single time-based circuitbreaker with both failure rate and slow call rate thresholds:
+Usually we would configure a single time-based circuit breaker with both failure rate and slow call rate thresholds:
 
 ```java
 CircuitBreakerConfig config = CircuitBreakerConfig
@@ -282,7 +284,7 @@ CircuitBreakerConfig config = CircuitBreakerConfig
 
 ### Specifying Wait Duration in Open State
 
-Let's say we want the circuitbreaker to wait 10s when it is in open state, then transition to half-open state and let a few requests pass through to the remote service:
+Let's say we want the circuit breaker to wait 10s when it is in open state, then transition to half-open state and let a few requests pass through to the remote service:
 
 ```java
 CircuitBreakerConfig config = CircuitBreakerConfig
@@ -295,7 +297,7 @@ CircuitBreakerConfig config = CircuitBreakerConfig
 	.build();
 ```
 
-The timestamps in the sample output shows the circuitbreaker transition to open state initially, blocking a few calls for the next 10s, and then changing to a half-open state. Later, consistent successful responses when in half-open state causes it to switch to closed state again:
+The timestamps in the sample output show the circuit breaker transition to open state initially, blocking a few calls for the next 10s, and then changing to a half-open state. Later, consistent successful responses when in half-open state causes it to switch to closed state again:
 
 ```
 Searching for flights; current time = 20:55:58 735
@@ -330,7 +332,7 @@ Flight search successful
 
 ### Specifying a Fallback Method
 
-A common pattern when using circuit breakers is to specify a fallback method to be called when the circuit is open. The fallback method can provide some default value or behavior for the remote call that was not permitted.
+A common pattern when using circuit breakers is to specify a fallback method to be called when the circuit is open. **The fallback method can provide some default value or behavior for the remote call that was not permitted**.
 
 We can use the `Decorators` utility class for setting this up. `Decorators` is a builder from the `resilience4j-all` module with methods like `withCircuitBreaker()`, `withRetry()`, `withRateLimiter()` to help apply multiple Resilience4j decorators to a `Supplier`, `Function` etc.
 
@@ -384,7 +386,7 @@ at io.reflectoring.resilience4j.circuitbreaker.Examples.timeBasedSlidingWindow_S
 
 Apart from the first line, the other lines in the stack trace are not adding much value. If the `CallNotPermittedException` occurs multiple times, these stack trace lines would repeat in our log files.
 
-We can reduce the amount of information that is generated in the stack trace by setting the `writablestacktraceEnabled` configuration to `false`:
+We can reduce the amount of information that is generated in the stack trace by setting the `writablestacktraceEnabled()` configuration to `false`:
 
 ```java
 CircuitBreakerConfig config = CircuitBreakerConfig
@@ -413,7 +415,7 @@ io.github.resilience4j.circuitbreaker.CallNotPermittedException: CircuitBreaker 
 
 ### Other Useful Methods
 
-Similar to the [Retry](https://reflectoring.io/retry-with-resilience4j/#exception-based-conditional-retry) module `CircuitBreaker` also has methods like `ignoreExceptions()`, `recordExceptions()` etc which let us specify which exceptions the `CircuitBreaker` should ignore and consider when tracking results of calls.
+Similar to the [Retry](https://reflectoring.io/retry-with-resilience4j/#exception-based-conditional-retry) module, `CircuitBreaker` also has methods like `ignoreExceptions()`, `recordExceptions()` etc which let us specify which exceptions the `CircuitBreaker` should ignore and consider when tracking results of calls.
 
 For example, we might not want to ignore a `SeatsUnavailableException` from the remote flight service - we don't really want to open the circuit in this case.
 
@@ -456,13 +458,13 @@ Searching for flights; current time = 22:25:52 973
 ... other lines omitted ... 
 ```
 
-## Circuitbreaker Metrics
+## `CircuitBreaker` Metrics
 
 `CircuitBreaker` exposes many metrics, these are some important ones:
 
 * Total number of successful, failed or ignored calls (`resilience4j.circuitbreaker.calls`)
 * State of the circuit breaker (`resilience4j.circuitbreaker.state`)
-* Failure rate of the circuit breaker (`resilience4j.circuitbreaker.failure.rat`)
+* Failure rate of the circuit breaker (`resilience4j.circuitbreaker.failure.rate`)
 * Total number of calls which have not been permitted (`resilience4.circuitbreaker.not.permitted.calls`)
 * Slow call of the circuit breaker (`resilience4j.circuitbreaker.slow.call.rate`)
 
@@ -474,7 +476,7 @@ TaggedCircuitBreakerMetrics.ofCircuitBreakerRegistry(registry)
   .bindTo(meterRegistry);
 ```
 
-After running the circuitbreaker-decorated operation a few times, we display the captured metrics. Here's some sample output:
+After running the circuit breaker-decorated operation a few times, we display the captured metrics. Here's some sample output:
 
 ```
 The number of slow failed calls which were slower than a certain threshold - resilience4j.circuitbreaker.slow.calls: 0.0
@@ -490,6 +492,6 @@ In a real application, we would export the data to a monitoring system periodica
 
 ## Conclusion
 
-In this article, we learned how we can use Resilience4j's Circuitbreaker module to set a limit on the concurrent calls that we make to a remote service. We learned why this is important and also saw some practical examples on how to configure it.
+In this article, we learned how we can use Resilience4j's Circuitbreaker module to pause making requests to a remote service when it returns errors. We learned why this is important and also saw some practical examples on how to configure it.
 
 You can play around with a complete application illustrating these ideas using the code [on GitHub](https://github.com/thombergs/code-examples/tree/master/resilience4j/circuitbreaker).

@@ -532,7 +532,7 @@ understand in brief how spring will handle it and when will one mechanism get pr
 
 Please go through the following flow chart which traces the process of the exception handling by Spring:
 
-![Spring Exception Handling Flow](assets/img/posts/spring-exception-handling/spring-exception-handling-mechanism.png) 
+![Spring Exception Handling Flow](/assets/img/posts/spring-exception-handling/spring-exception-handling-mechanism.png) 
 
 ## Important Points To Keep in Mind
 * To keep things simple always have only one Controller Adviser class in the project. It's good to have single repository of 

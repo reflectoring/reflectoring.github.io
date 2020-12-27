@@ -19,21 +19,21 @@ other.
 
 ## Introduction 
 
-Spring Boot provides us tools to handle exceptions beyond simple 'Try-Catch'. These tools are nothing, but a handful of 
-annotations which allow us to treat exception handling as a cross-cutting concern.
+Spring Boot provides us tools to handle exceptions beyond simple 'Try-Catch'. These tools are nothing, but a handful of
+annotations that allow us to treat exception handling as a cross-cutting concern.
 
-* [`@ResponseStatus`](#responsestatus)
-* [`@ExceptionHandler`](#exceptionhandler)
-* [`@ControllerAdvice`](#controlleradvice)
+* [@ResponseStatus](#responsestatus)
+* [@ExceptionHandler](#exceptionhandler)
+* [@ControllerAdvice](#controlleradvice)
 
-Before jumping onto these annotations we will first look at how Spring handles exceptions thrown by our controllers - Our last line of defence for catching exception. 
-We will also look at the number of configuration provided by the framework in order to modify the default behavior. 
+Before jumping onto these annotations we will first look at how Spring handles exceptions thrown by our controllers - Our last line of defense for catching an exception.
+We will also look at the number of configurations provided by the framework in order to modify the default behavior.
 We will identify the challenges we face while doing that, and then we will try to overcome those using these annotations.
 
 ## Spring Boot's Default Exception Handling Mechanism
 
 Let's say we have a controller named `ProductController` whose `getProduct(...)` method is throwing a runtime exception called
-`NoSuchElementFound` when `Product` with given id is not found.
+`NoSuchElementFound` when `Product` with a given id is not found.
 
 ```java
 @RestController
@@ -50,8 +50,8 @@ public class ProductController {
 }
 ```
 
-If we call `/product` api with invalid `id` the service will throw `NoSuchElementFoundException` and we will get the 
-following response: 
+If we call `/product` API with invalid `id` the service will throw `NoSuchElementFoundException` and we will get the
+following response:
 
 ```json
 {
@@ -63,13 +63,13 @@ following response:
 }
 ```
 
-We can see that besides from a well-formed error response payload it is not giving us any useful information. Even the `message` 
-field is empty which should at least have 'Item with id 1 not found' that our exception is carrying.
+We can see that besides a well-formed error response payload it is not giving us any useful information. Even the `message`
+the field is empty which should at least have 'Item with id 1 not found' that our exception is carrying.
 
-Let's start by fixing error message issue.
+Let's start by fixing the error message issue.
 
-Spring Boot provides number of properties using which we can add exception message, exception class or even have stack trace
-as part of response payload.
+Spring Boot provides a number of properties using which we can add exception message, exception class, or even have a stack trace
+as part of the response payload.
 
 ```yaml
 server:
@@ -93,8 +93,8 @@ Now if we call the `/product` API again with invalid `id` we will get the follow
   "path": "/product/1"
 } 
 ```
-You can notice that for `include-stacktrace` we have set value `on_trace_param` which means if we have `/product/1?trace=true` in the query param you 
-will get stack trace in the response payload.
+You can notice that for `include-stacktrace` we have set value `on_trace_param` which means if we have `/product/1?trace=true` in the query param you
+will get a stack trace in the response payload.
 
 ```json
 {
@@ -106,26 +106,26 @@ will get stack trace in the response payload.
   "path": "/product/1"
 } 
 ```
-We might want to keep value of `include-stacktrace` flag to `never` only, at least in production, as it might reveal internal 
-workings of the application.  
+We might want to keep the value of `include-stacktrace` flag to `never` only, at least in production, as it might reveal internal
+workings of the application.
 
-Moving on! The status and error message - `500` - indicates that something is wrong with our code but in actuality it's a client error, and 
-our current status code doesn't correctly indicate that. Unfortunately, this is as far as we can go with the `server.error` configurations.  
+Moving on! The status and error message - `500` - indicates that something is wrong with our code but in actuality, it's a client error, and
+our current status code doesn't correctly reflect that. Unfortunately, this is as far as we can go with the `server.error` configurations.
 
 ## `@ResponseStatus`
 
-`@ResponseStatus` as the name suggests it allows us to modify the http status of our response. It can be applied at following
+`@ResponseStatus` as the name suggests allows us to modify the HTTP status of our response. It can be applied at following
 places:
 * On the exception class itself
 * Along with `@ExceptionHandler` annotation on methods
 * Along with `@ControllerAdvice` annotation on classes
 
-In this section we will be looking at the first point only. 
+In this section, we will be looking at the first point only.
 
-Coming back to the problem at hand that is our error responses weren't giving us status codes that better represent the 
+Let's come back to the problem at hand which is our error responses aren't giving us status codes that better represent the
 corresponding error message.
 
-To address this we can we annotate our Exception class with `@ResponseStatus` and pass in the desired http response status 
+To address this we can we annotate our Exception class with `@ResponseStatus` and pass in the desired HTTP response status
 in its value property:
 
 ```java
@@ -135,7 +135,7 @@ public class NoSuchElementFound extends RuntimeException {
 }
 ```
 
-This change will result in much better response:
+This change will result in a much better response:
 
 ```json
 {
@@ -160,13 +160,13 @@ public class NoSuchElementFoundException extends ResponseStatusException {
 
 This approach comes in handy when we want to manipulate the response headers too.
 
-Now, as we can see `@ResponseStatus` along with `server.error` properties allows us to manipulate almost all the fields 
-in our Spring defined error response payload but, what if want to manipulate response payload fields too? Let's see how 
+Now, as we can see `@ResponseStatus` along with `server.error` properties allows us to manipulate almost all the fields
+in our Spring defined error response payload but, what if want to manipulate response payload structure too? Let's see how
 we can achieve that in the next section. 
 
 ## `@ExceptionHandler`
-`@ExceptionHandler` annotation gives us a lot of flexibility in terms of handling exception. For starters to use it we 
-simply need to create a method either in the controller itself or in a `@ControllerAdvice` class and 
+`@ExceptionHandler` annotation gives us a lot of flexibility in terms of handling exceptions. For starters, to use it, we
+simply need to create a method either in the controller itself or in a `@ControllerAdvice` class and
 annotate it with `@ExceptionHandler`.
 
 ```java
@@ -190,33 +190,32 @@ public class ProductController {
 }
 ```
 
-`@ExceptionHandler` takes in an exception, or a list of exceptions as argument that we want to handle in the defined 
-method. If we don't wish to do that then simply defining exception as parameter of the method will also do:
+`@ExceptionHandler` takes in an exception or a list of exceptions as an argument that we want to handle in the defined
+method. If we don't wish to do that then simply defining exception as a parameter of the method will also do:
 
 ```java
 @ExceptionHandler
 public ResponseEntity<String> handleNoSuchElementFoundException(NoSuchElementFoundException exception)
 ```
 
-Or we can keep both just as shown in the example controller above. It gives better readability. For the same reason we have
-kept `@ResponseStatus(HttpStatus.NOT_FOUND)` on the handler method. Although it's not required as we have already provided 
-http status in `ResponseEntity`.
+Or we can keep both just as shown in the example controller above. It gives better readability. For the same reason, we have
+kept `@ResponseStatus(HttpStatus.NOT_FOUND)` on the handler method. Although it's not required as we have already provided HTTP status in `ResponseEntity`.
 
 Apart from exception parameter we can also have `HttpServletRequest`, `WebRequest`, `HttpSession` types as parameters. Similarly, the handler
-methods supports variety of return types such as `ResponseEntity`, `String` or even `void`. 
-Find more input are return types in [`@ExceptionHandler` java documentation](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html).
+methods support a variety of return types such as `ResponseEntity`, `String`, or even `void`.
+Find more input and return types in [`@ExceptionHandler` java documentation](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html).
 
-With plethora of options available to us in form of both input parameters and return types in our exception handling function,
-we are in complete control of the error response. 
+With the plethora of options available to us in form of both input parameters and return types in our exception handling function,
+we are in complete control of the error response.
 
-Now, lets finalize an error response payload for our apis. In case of any error clients usually expect two things:
-* First is error code which tells what kind of error it is. Also, error codes can be used by clients in there code to drive 
-  some business logic based on it. Usually error codes are standards http status codes, but I have also seen APIs returning 
+Now, let's finalize an error response payload for our APIs. In case of any error clients usually expect two things:
+* First is error code which tells what kind of error it is. Also, error codes can be used by clients in their code to drive
+  some business logic based on it. Usually, error codes are standards HTTP status codes, but I have also seen APIs returning
   custom errors code likes `E001`.
 * Second is an additional human-readable message which gives more information on the error and even some hints
-on how to fix them or link to api doc(The way [GitHub APIs](https://docs.github.com/en/free-pro-team@latest/rest/guides/getting-started-with-the-rest-api) does).
+  on how to fix them or link to API doc(The way [GitHub APIs](https://docs.github.com/en/free-pro-team@latest/rest/guides/getting-started-with-the-rest-api) does).
 * We will add an optional `stackTrace` field which will help us in debugging in the development environment.
-* Lastly, we also we need to make provisions for giving validations errors in the response.
+* Lastly, we also need to make provisions for giving validations errors in the response.
 
 Keeping these points in mind we will go with the following payload:
 
@@ -323,22 +322,22 @@ public class ProductController {
 Couple of things to note here:
 
 ### Giving Stack Trace
-Giving stack trace in the error response can save our Developers and QAs trouble of crawling through the log files or console logs or by 
+Giving stack trace in the error response can save our Developers and QA's trouble of crawling through the log files or console logs or by
 whatever means we have used to expose our logs. As we saw in the [Spring Boot's Default Exception Handling Mechanism](#spring-boots-default-exception-handling-mechanism) section that Spring was already providing us
-with this functionality but now, as we are handling error responses this also needs to be handled by ourselves. 
+with this functionality but now, as we are handling error responses this also needs to be handled by ourselves.
 
-To achieve this similar to `server.error` first we have introduced a property named `reflectoring.trace` which if set to `true`
-will enable `stack_trace` in the response. In order to actually get `stack_trace` in an API response our clients must pass 
-`trace` parameter with value `true`.
+To achieve this, similar to `server.error` first we have introduced a property named `reflectoring.trace` which if set to `true`
+will enable `stack_trace` in the response. In order to actually get `stackTrace` in an API response, our clients must pass
+`trace` parameter with the value `true`.
 
 ```text
 curl --location --request GET 'http://localhost:8080/product/1?trace=true'
 ```
 
-Now, as the behavior of `strace_trace` is controlled by our feature flag in our properties file, we can remove it or set 
+Now, as the behavior of `strace_trace` is controlled by our feature flag in our properties file, we can remove it or set
 to `false` when we deploy in production environments.
 
-### Catch All Exception
+### Catch-All Exception
 
 *Gotta catch em all*
 
@@ -352,24 +351,24 @@ try{
 }
 ```
 
-As a cautionary measure we often surround our top level method's body with a catch all Try-Catch exception handler block
-in order to avoid any unwanted side effects or behavior. The `handleAllUncaughtException` method in our controller behaves 
+As a cautionary measure, we often surround our top level method's body with a catch-all Try-Catch exception handler block
+in order to avoid any unwanted side effects or behavior. The `handleAllUncaughtException` method in our controller behaves
 similarly. **It will catch all the exceptions for which a handler method doesn't exist**.
 
-One thing I would like to note here is that even if we don't have this catch all exception handler then Spring will handle it
-anyway. We handled it because we wanted the response to go in our format rather than Spring's. Also, we needed to log this 
+One thing I would like to note here is that even if we don't have this catch-all exception handler, Spring will handle it
+anyway. We handled it because we wanted the response to go in our format rather than Spring's. Also, we needed to log this
 exception.
 
 ### Order Of Exception Handler Method
 
 The order in which you mention the handler methods doesn't matter. **Spring will first look for the specific exception handler method**.
-If it fails to find it then it will look for its parent exception class which in our case is `RuntimeException` and hence 
+If it fails to find it then it will look for its parent class which in our case is `RuntimeException` and hence
 `handleAllUncaughtException` method will finally handle the exception.
 
 //What do create exception hanlders common for all the controllers? 
 
 ## `@ControllerAdvice`
-Controller Advice classes allows us to apply exception handlers to more than one or all controllers in our application. 
+Controller Advice classes allow us to apply exception handlers to more than one or all controllers in our application.
 
 ```java
 @ControllerAdvice
@@ -486,31 +485,31 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 }
 ```
 
-The handler functions defined in the above class, and the other support code is identical to that we saw in the [@ExceptionHandler](#exceptionhandler) section 
-apart from couple of things which we will talk about in while. The difference here is that these handlers will handle exceptions thrown by all the controllers 
+The handler functions defined in the above class, and the other support code is almost identical to that we saw in the [@ExceptionHandler](#exceptionhandler) section.  
+A couple of things are new which we will talk about in while. One major difference here is that these handlers will handle exceptions thrown by all the controllers
 in the application and not just `ProductController`.
 
-If we want to selectively apply or limit the scope of the Controller Advice to a particular controller, or a package we can do it 
-using number of its available properties:
-* `@ControllerAdvice("com.reflectoring.controller")` - We can pass package name or list of it in the annotation's `value` 
-  parameter. With this controller advice will only handle exceptions of this package's controllers.
-* `@ControllerAdvice(annotations = Adviced.class)` - Only controllers marked with `@Adivsed` annotation will be advised 
+If we want to selectively apply or limit the scope of the Controller Advice to a particular controller, or a package we can do it
+using a number of its available properties:
+* `@ControllerAdvice("com.reflectoring.controller")` - We can pass package name or list of it in the annotation's `value`
+  parameter. With this, Controller Advice will only handle exceptions of this package's controllers.
+* `@ControllerAdvice(annotations = Adviced.class)` - Only controllers marked with `@Adivsed` annotation will be advised
   by the Controller Adviser.
 
-Find other parameters in the [`@ControllerAdvice` annotation doc](https://www.javadoc.io/doc/org.springframework/spring-web/4.3.8.RELEASE/org/springframework/web/bind/annotation/ControllerAdvice.html).   
+Find other parameters in the [`@ControllerAdvice` annotation doc](https://www.javadoc.io/doc/org.springframework/spring-web/4.3.8.RELEASE/org/springframework/web/bind/annotation/ControllerAdvice.html).
 
 ### `ResponseEntityExceptionHandler`
-According to its documentation, `ResponseEntityExceptionHandler` is a convenient base class for a Controller advice classes. It provides
-exception handlers for internal Spring exceptions. If we don't extend it then all the exceptions will be redirected to 
- which returns `ModelAndView`. Since we are on the mission to handle all the exceptions 
+According to its documentation, `ResponseEntityExceptionHandler` is a convenient base class for Controller Advice classes. It provides
+exception handlers for internal Spring exceptions. If we don't extend it then all the exceptions will be redirected to `DefaultHandlerExceptionResolver`
+which returns `ModelAndView` object. Since we are on the mission to handle all the exceptions
 by ourselves, we don't want to miss those.
 
 As you can see we have overridden two of the `ResponseEntityExceptionHandler` methods:
-* `handleMethodArgumentNotValid` - In [@ExceptionHandler](#exceptionhandler) section we had implemented a handler for it ourselves. In here we only 
-overridden it's behavior.
-* `handleExceptionInternal` - All the handlers in the `ResponseEntityExceptionHandler` use this function to build the 
-`ResponseEntity` similar to our `buildErrorResponse`. If we don't override this then the clients will receive only Http status 
- in response and body but since we include http statues in our responses we have overridden the method.
+* `handleMethodArgumentNotValid` - In [@ExceptionHandler](#exceptionhandler) section we had implemented a handler for it ourselves. In here we have only
+  overridden its behavior.
+* `handleExceptionInternal` - All the handlers in the `ResponseEntityExceptionHandler` use this function to build the
+  `ResponseEntity` similar to our `buildErrorResponse`. If we don't override this then the clients will receive only HTTP status
+  in response but since we include HTTP statues in our response bodies as well, we have overridden the method.
 
 
 <div class="notice warning">
@@ -526,20 +525,24 @@ overridden it's behavior.
   <p>Credit: Stackoverflow user mengchengfeng <a href="https://stackoverflow.com/questions/36733254/spring-boot-rest-how-to-configure-404-resource-not-found">link</a>.</p>
 </div>
 
-## How Spring Processes The Exceptions
-Now that we have introduced ourselves with the mechanisms available to us for handling exceptions in Spring, let's 
-understand in brief how spring will handle it and when will one mechanism get prioritized over other.
-
-Please go through the following flow chart which traces the process of the exception handling by Spring:
-
-![Spring Exception Handling Flow](/assets/img/posts/spring-exception-handling/spring-exception-handling-mechanism.png) 
-
-## Important Points To Keep in Mind
-* To keep things simple always have only one Controller Adviser class in the project. It's good to have single repository of 
+### Some Points To Keep In Mind When Using @ControllerAdvice
+* To keep things simple always have only one Controller Adviser class in the project. It's good to have a single repository of
   all the exceptions in the application. In case you create multiple then try to utilize `basePackages` or `annotations` property
-  to make it clear what controllers it's going to advice.
-* **Spring can process Controller Advice classes in any order** so be mindful when you write a catch all handler in them. Especially 
+  to make it clear what controllers it's going to advise.
+* **Spring can process Controller Advice classes in any order** so be mindful when you write a catch-all handler in them. Especially
   when you have not specified `basepPackages` or `annotations` in the annotation.
 
+## How Does Spring Process The Exceptions?
+Now that we have introduced ourselves with the mechanisms available to us for handling exceptions in Spring, let's
+understand in brief how Spring handles it and when one mechanism gets prioritized over the other.
+
+Please go through the following flow chart that traces the process of the exception handling by Spring:
+
+![Spring Exception Handling Flow](/assets/img/posts/spring-exception-handling/spring-exception-handling-mechanism.png)
+
 ## Conclusion
-Thank you for reading!
+
+In this article was saw various ways to handle Exceptions in a Spring Boot application and also the problems which each approach 
+can help us solve.
+
+Thank you for reading! You can find the working code at [GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/hibernate-search).

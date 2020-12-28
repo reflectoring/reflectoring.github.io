@@ -4,7 +4,7 @@ categories: [spring-boot]
 date: 2020-12-03 00:00:00 +1100
 modified: 2020-12-03 00:00:00 +1100
 author: mmr
-excerpt: ""
+excerpt: "This article showcases various ways to handle exceptions in a Spring Boot Application"
 image:
   auto: 0059-library
 ---
@@ -183,8 +183,12 @@ public class ProductController {
 
     @ExceptionHandler(NoSuchElementFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleNoSuchElementFoundException(NoSuchElementFoundException exception) {
-        return ResponseEntity.status(httpStatus).body(exception.getMessage());
+    public ResponseEntity<String> handleNoSuchElementFoundException(
+            NoSuchElementFoundException exception
+    ) {
+        return ResponseEntity
+                .status(httpStatus)
+                .body(exception.getMessage());
     }
 
 }
@@ -195,7 +199,9 @@ method. If we don't wish to do that then simply defining exception as a paramete
 
 ```java
 @ExceptionHandler
-public ResponseEntity<String> handleNoSuchElementFoundException(NoSuchElementFoundException exception)
+public ResponseEntity<String> handleNoSuchElementFoundException(
+        NoSuchElementFoundException exception
+        )
 ```
 
 Or we can keep both just as shown in the example controller above. It gives better readability. For the same reason, we have
@@ -273,17 +279,25 @@ public class ProductController {
 
     @ExceptionHandler(NoSuchElementFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handleItemNotFoundException(NoSuchElementFoundException exception, 
-                                                                     WebRequest request){
+    public ResponseEntity<ErrorResponse> handleItemNotFoundException(
+            NoSuchElementFoundException exception, 
+            WebRequest request
+    ){
+        log.error("Failed to find the requested element", exception);
         return buildErrorResponse(exception, HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), 
-                "Validation error. Check 'errors' field for details.");
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            WebRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(), 
+                "Validation error. Check 'errors' field for details."
+        );
+        
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
             errorResponse.addValidationError(fieldError.getField(), 
                     fieldError.getDefaultMessage());
@@ -292,17 +306,41 @@ public class ProductController {
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handleAllUncaughtException(Exception exception, 
-                                                                    WebRequest request){
-        return buildErrorResponse(exception, HttpStatus.BAD_REQUEST, request);
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ErrorResponse> handleAllUncaughtException(
+            Exception exception, 
+            WebRequest request){
+        log.error("Unknown error occurred", exception);
+        return buildErrorResponse(
+                exception,
+                "Unknown error occurred", 
+                HttpStatus.INTERNAL_SERVER_ERROR, 
+                request
+        );
     }
 
-    private ResponseEntity<ErrorResponse> buildErrorResponse(BaseException baseException,
-                                                             HttpStatus httpStatus,
-                                                             WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), 
-                exception.getMessage());
+    private ResponseEntity<ErrorResponse> buildErrorResponse(
+            Exception exception,
+            HttpStatus httpStatus,
+            WebRequest request
+    ) {
+        return buildErrorResponse(
+                exception, 
+                exception.getMessage(), 
+                httpStatus, 
+                request);
+    }
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(
+            Exception exception,
+            String message,
+            HttpStatus httpStatus,
+            WebRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                httpStatus.value(), 
+                exception.getMessage()
+        );
         
         if(printStackTrace && isTraceOn(request)){
             errorResponse.setStackTrace(ExceptionUtils.getStackTrace(exception));
@@ -365,7 +403,12 @@ The order in which you mention the handler methods doesn't matter. **Spring will
 If it fails to find it then it will look for its parent class which in our case is `RuntimeException` and hence
 `handleAllUncaughtException` method will finally handle the exception.
 
-//What do create exception hanlders common for all the controllers? 
+This should help us handle the exceptions in this particular controller, but what if these same exceptions are being thrown
+by other controllers too? How do we handle those? Do we create the same handlers in all controllers or create a base class with
+common handlers and extend it in all controllers?
+
+Luckily, we don't have to do any of that. Spring provides a very elegant solution to this problem in form of Controller Advices
+let's study them.
 
 ## `@ControllerAdvice`
 Controller Advice classes allow us to apply exception handlers to more than one or all controllers in our application.
@@ -541,8 +584,8 @@ Please go through the following flow chart that traces the process of the except
 ![Spring Exception Handling Flow](/assets/img/posts/spring-exception-handling/spring-exception-handling-mechanism.png)
 
 ## Conclusion
+When an exception crosses the bounds of the Controller, it's destined to reach the client, either in form of a JSON response
+or an HTML web page. In this article, we saw how Spring translates those exceptions into a user-friendly output for our 
+clients and also configurations and annotations that allowed us to further mold them into the shape we desired.
 
-In this article was saw various ways to handle Exceptions in a Spring Boot application and also the problems which each approach 
-can help us solve.
-
-Thank you for reading! You can find the working code at [GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/hibernate-search).
+Thank you for reading! You can find the working code at [GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/exception-handling).

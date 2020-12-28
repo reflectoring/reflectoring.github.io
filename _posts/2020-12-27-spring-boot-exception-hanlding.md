@@ -194,7 +194,7 @@ public class ProductController {
 }
 ```
 
-`@ExceptionHandler` takes in an exception or a list of exceptions as an argument that we want to handle in the defined
+`@ExceptionHandler` takes in an exception, or a list of exceptions as an argument that we want to handle in the defined
 method. If we don't wish to do that then simply defining exception as a parameter of the method will also do:
 
 ```java
@@ -221,7 +221,8 @@ Now, let's finalize an error response payload for our APIs. In case of any error
 * Second is an additional human-readable message which gives more information on the error and even some hints
   on how to fix them or link to API doc(The way [GitHub APIs](https://docs.github.com/en/free-pro-team@latest/rest/guides/getting-started-with-the-rest-api) does).
 * We will add an optional `stackTrace` field which will help us in debugging in the development environment.
-* Lastly, we also need to make provisions for giving validations errors in the response.
+* Lastly, we also need to make provisions for giving validations errors in the response. You can find out more about bean 
+validations in this article on [Handling Validations with Spring Boot](https://reflectoring.io/bean-validation-with-spring-boot/).
 
 Keeping these points in mind we will go with the following payload:
 
@@ -394,8 +395,12 @@ in order to avoid any unwanted side effects or behavior. The `handleAllUncaughtE
 similarly. **It will catch all the exceptions for which a handler method doesn't exist**.
 
 One thing I would like to note here is that even if we don't have this catch-all exception handler, Spring will handle it
-anyway. We handled it because we wanted the response to go in our format rather than Spring's. Also, we needed to log this
-exception.
+anyway. We handled it because we wanted the response to go in our format rather than Spring's. 
+
+Handler method might also be a good place to log exceptions. This catch-all is one those exceptions that we must log, as 
+they might give insight into a possible bug. While we can skip logging field validation exceptions such as `MethodArgumentNotValidException`
+as they are raised because of syntactically invalid input.
+
 
 ### Order Of Exception Handler Method
 
@@ -535,7 +540,7 @@ in the application and not just `ProductController`.
 If we want to selectively apply or limit the scope of the Controller Advice to a particular controller, or a package we can do it
 using a number of its available properties:
 * `@ControllerAdvice("com.reflectoring.controller")` - We can pass package name or list of it in the annotation's `value`
-  parameter. With this, Controller Advice will only handle exceptions of this package's controllers.
+  or `basePackages` parameter. With this, Controller Advice will only handle exceptions of this package's controllers.
 * `@ControllerAdvice(annotations = Adviced.class)` - Only controllers marked with `@Adivsed` annotation will be advised
   by the Controller Adviser.
 

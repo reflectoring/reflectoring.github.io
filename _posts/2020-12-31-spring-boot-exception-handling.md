@@ -1,12 +1,12 @@
 ---
 title: "Complete Guide to Exception Handling in Spring Boot"
 categories: [spring-boot]
-date: 2020-12-03 00:00:00 +1100
-modified: 2020-12-03 00:00:00 +1100
+date: 2020-12-31 00:00:00 +1100
+modified: 2020-12-31 00:00:00 +1100
 author: mmr
 excerpt: "This article showcases various ways to handle exceptions in a Spring Boot Application"
 image:
-  auto: 0059-library
+  auto: 0090-404
 ---
 
 Handling exceptions is an important part of building a robust application. Spring Boot offers more than one way of doing it.

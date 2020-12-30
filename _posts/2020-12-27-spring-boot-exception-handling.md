@@ -32,7 +32,7 @@ We'll identify the challenges we face while doing that, and then we will try to 
 
 ## Spring Boot's Default Exception Handling Mechanism
 
-Let's say we have a controller named `ProductController` whose `getProduct(...)` method is throwing `NoSuchElementFound` runtime exception when a `Product` with a given id is not found:
+Let's say we have a controller named `ProductController` whose `getProduct(...)` method is throwing `NoSuchElementFoundException` runtime exception when a `Product` with a given id is not found:
 
 ```java
 @RestController
@@ -43,14 +43,14 @@ public class ProductController {
   
   @GetMapping("/{id}")
   public Response getProduct(@PathVariable String id){
-    // this method throws a "NoSuchElementFound" exception
+    // this method throws a "NoSuchElementFoundException" exception
     return productService.getProduct(id);
   }
   
 }
 ```
 
-If we call the `/product` API with an invalid `id` the service will throw a `NoSuchElementFound` runtime exception and we'll get the
+If we call the `/product` API with an invalid `id` the service will throw a `NoSuchElementFoundException` runtime exception and we'll get the
 following response:
 
 ```json
@@ -194,7 +194,7 @@ public class ProductController {
       NoSuchElementFoundException exception
   ) {
     return ResponseEntity
-        .status(httpStatus)
+        .status(HttpStatus.NOT_FOUND)
         .body(exception.getMessage());
   }
 
@@ -210,10 +210,11 @@ public ResponseEntity<String> handleNoSuchElementFoundException(
     NoSuchElementFoundException exception)
 ```
 
-Or we can keep both just as shown in the example controller above. It gives better readability. 
+Although, it's a good idea to mention exception class in the annotation even though we have mentioned it in method signature.
+It gives better readability. 
 
-For the same reason, we have
-kept `@ResponseStatus(HttpStatus.NOT_FOUND)` on the handler method. Although it's not required as we have already provided HTTP status in `ResponseEntity`.
+Also `@ResponseStatus(HttpStatus.NOT_FOUND)` on the handler method is not required as HTTP status passed in `ResponseEnity`
+will take precedence, but we have kept it any way for the same readability reasons.
 
 Apart from the exception parameter we can also have `HttpServletRequest`, `WebRequest`, or `HttpSession` types as parameters. 
 
@@ -433,6 +434,10 @@ Luckily, we don't have to do any of that. Spring provides a very elegant solutio
 Let's study them.
 
 ## `@ControllerAdvice`
+
+> The term 'Advice' in Controller Advice comes from Aspect Oriented programming which allows us to handle cross-cutting 
+> concerns. Similar to that, a Controller Advice allows us to treat exception handling as a cross-cutting concern.
+
 Controller advice classes allow us to apply exception handlers to more than one or all controllers in our application:
 
 ```java
@@ -452,18 +457,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       HttpStatus status,
       WebRequest request
   ) {
-    
-    ErrorResponse errorResponse = 
-        new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
-            "Validation error. Check 'errors' field for details.");
-    
-    for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
-      errorResponse.addValidationError(fieldError.getField(), 
-          fieldError.getDefaultMessage());
-    }
-    return ResponseEntity
-        .unprocessableEntity()
-        .body(errorResponse);
+      //Body omitted as it's similar to the method of same name
+      // in ProductController example...  
+      //.....
   }
 
   @ExceptionHandler(ItemNotFoundException.class)
@@ -472,12 +468,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       ItemNotFoundException itemNotFoundException, 
       WebRequest request
   ){
-    
-    return buildErrorResponse(
-        itemNotFoundException, 
-        HttpStatus.NOT_FOUND, 
-        request
-    );
+      //Body omitted as it's similar to the method of same name
+      // in ProductController example...  
+      //.....  
   }
 
   @ExceptionHandler(RuntimeException.class)
@@ -486,55 +479,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       RuntimeException exception, 
       WebRequest request
   ){
-    
-    return buildErrorResponse(
-        exception,
-        "Unknown error occurred",
-        HttpStatus.INTERNAL_SERVER_ERROR, 
-        request
-    );
+      //Body omitted as it's similar to the method of same name
+      // in ProductController example...  
+      //.....
   }
-
-  private ResponseEntity<Object> buildErrorResponse(
-      Exception exception,
-      HttpStatus httpStatus,
-      WebRequest request
-  ) {
-    
-    return buildErrorResponse(
-        exception, 
-        exception.getMessage(), 
-        httpStatus, request
-    );
-  }
-
-  private ResponseEntity<Object> buildErrorResponse(
-      Exception exception,
-      String message,
-      HttpStatus httpStatus,
-      WebRequest request
-  ) {
-    
-    ErrorResponse errorResponse = new ErrorResponse(
-        httpStatus.value(), 
-        message
-    );
-    
-    if(printStackTrace && isTraceOn(request)){
-      errorResponse.setStackTrace(ExceptionUtils.getStackTrace(exception));
-    }
-    
-    return ResponseEntity
-        .status(httpStatus)
-        .body(errorResponse);
-  }
-
-  private boolean isTraceOn(WebRequest request) {
-    String [] value = request.getParameterValues(TRACE);
-    return Objects.nonNull(value)
-        && value.length > 0
-        && value[0].contentEquals("true");
-  }
+  
+  //....
 
   @Override
   public ResponseEntity<Object> handleExceptionInternal(
@@ -550,7 +500,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 }
 ```
 
-The handler functions defined in the above class, and the other support code is almost identical to that we saw in the [@ExceptionHandler](#exceptionhandler) section.  
+The body of the handler functions defined in the above class, and the other support code is omitted as it's almost 
+identical to that we saw in the [@ExceptionHandler](#exceptionhandler) section.  
 
 A couple of things are new which we will talk about in while. One major difference here is that these handlers will handle exceptions thrown by all the controllers
 in the application and not just `ProductController`.
@@ -596,7 +547,7 @@ As you can see we have overridden two of the `ResponseEntityExceptionHandler` me
 * To keep things simple always have only one Controller Advice class in the project. It's good to have a single repository of
   all the exceptions in the application. In case you create multiple then try to utilize `basePackages` or `annotations` property
   to make it clear what controllers it's going to advise.
-* **Spring can process controller advice classes in any order** so be mindful when you write a catch-all handler in them. Especially
+* **Spring can process controller advice classes in any order** unless, of course, we haven't annotated it with `@Order` annotation. So, be mindful when you write a catch-all handler in them. Especially
   when you have not specified `basePackages` or `annotations` in the annotation.
 
 ## How Does Spring Process The Exceptions?

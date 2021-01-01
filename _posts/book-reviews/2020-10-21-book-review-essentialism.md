@@ -7,6 +7,7 @@ excerpt: "My notes on 'Essentialism' by Greg McKeown - a book about focusing on 
 image:
   teaser: /assets/img/covers/essentialism-teaser.jpg
   opengraph: /assets/img/covers/essentialism-teaser.jpg
+author: default
 ---
 
 ## TL;DR: Read this Book, when...

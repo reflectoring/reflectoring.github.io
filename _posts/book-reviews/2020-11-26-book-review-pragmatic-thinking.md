@@ -7,6 +7,7 @@ excerpt: "My notes on 'Pragmatic Thinking & Learning' by Andy Hunt - a book abou
 image:
   teaser: /assets/img/covers/pragmatic-thinking-teaser.jpg
   opengraph: /assets/img/covers/pragmatic-thinking-teaser.jpg
+author: default
 ---
 
 ## TL;DR: Read this Book, when...

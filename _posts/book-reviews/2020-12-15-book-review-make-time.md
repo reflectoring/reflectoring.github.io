@@ -7,6 +7,7 @@ excerpt: "My notes on 'Make Time', a book that offers a framework for concentrat
 image:
   teaser: /assets/img/covers/make-time-teaser.jpg
   opengraph: /assets/img/covers/make-time-teaser.jpg
+author: default
 ---
 
 ## TL;DR: Read this Book, when...

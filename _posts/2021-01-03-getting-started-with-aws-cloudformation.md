@@ -23,7 +23,7 @@ At the end of this article you will
 
 ## Check out the Book!
 
-<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
+<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" alt="Stratospheric - From Zero to Production with Spring Boot and AWS" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
 This article is a self-sufficient sample chapter from the book ["Stratospheric - From Zero to Production with Spring Boot and AWS"](https://stratospheric.dev), which I'm co-authoring. 
 
 If you're interested in learning about building applications with Spring Boot and AWS from top to bottom, make sure to check it out!
@@ -495,7 +495,7 @@ This concludes our first experiment with AWS. Feel free to explore the AWS conso
 
 ## Check out the Book!
 
-<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
+<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" alt="Stratospheric - From Zero to Production with Spring Boot and AWS" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
 This was a sample chapter from the book ["Stratospheric - From Zero to Production with Spring Boot and AWS"](https://stratospheric.dev). 
 
 If you enjoyed this article, make sure to check out the book to learn more about building Spring Boot applications with AWS.

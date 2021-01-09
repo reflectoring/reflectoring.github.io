@@ -84,47 +84,6 @@ git rebase -i origin/master
 
 In this way, we have successfully invoked interactive rebase on all the commits we have pushed so far.
 
-## Example Usecase
-
-Now it is time to get a hands-on practical example. The code we are going to write will create a new branch, add two commits to it, and finally, it will integrate it to the mainline by using fast-forward merge.
-
-### Start working on a new feature
-
-```
- git checkout -b new-feature master
-
- # Edit some files
-
- git add filename
-
- git commit -m "Start a feature"
-
- # Edit some files
-
- git add filename
-
- git commit -m "Finish a feature"
-
- # Merge in the new-feature branch
-
- git checkout master
-
- git merge new-feature
-
- git branch -d new-feature
-```
-
-It is to be noted that this is a common workflow for short-lived topic branches, that can be utilized for independent development as compared to an organizational tool for longer-running features.
-
-Since the new features are now accessible from the master branch, therefore, Git shouldn't complain about the git branch -d.
-
-If we require a merge commit during the fast forward merge for record-keeping purposes, then the git merge can be executed with the --no-ffoption.
-
-The command given below can be very useful if one wants to merge the specified branch into the current branch, but it is worth mentioning that it will always generate a merge commit. It can be very helpful for the documentation of all merges that occur in the repository.
-
-```
-git merge --no-ff <branch>
-```
 
 ## Git Rebase vs Git Merge
 

@@ -150,3 +150,10 @@ seema:
   avatar: "/assets/img/authors/seema.jpg"
   github: "susetech"
   bio: "Seema Richard is a Technical Architect with rich experience in Java-based enterprise applications. She is passionate about coding and authoring. She believes that teaching is the best way to learn."
+
+mujtaba:
+  name: "Mujtaba Mehdi"
+  email: "13besemmehdi@seecs.edu.pk"
+  avatar: "/assets/img/authors/Mujtaba.jpg"
+  github: "mujjazi"
+  bio: "Mujtaba is an Automation developer with a diverse range of experience working with Java Spring based projects. He is an advocate for DevOps and Test Automation while writing for various blogs to help young professionals"

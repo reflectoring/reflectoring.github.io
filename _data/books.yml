@@ -63,3 +63,9 @@ make-time:
   url: https://www.goodreads.com/book/show/37880811-make-time
   title: "Make Time"
   author: "Jake Knapp and John Zeratsky"
+
+hell-yeah:
+  cover: /assets/img/covers/hell-yeah-260.jpg
+  url: https://www.goodreads.com/en/book/show/52523856-hell-yeah-or-no
+  title: "Hell Yeah or No"
+  author: "Derek Sivers"

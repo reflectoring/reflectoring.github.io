@@ -47,16 +47,16 @@ Let's have a look at the concept of Git `rebase`. A `rebase` is the way of migra
 
 ![Git Rebasing](/assets/img/posts/git-rebase-merge/git-rebasing-basic.png)
 
-Let's understand the working of Git `rebase` by looking a history with a topic branch off another topic branch. For example, we have branched a topic branch (server) from the mainline , and added some server-side functionality to our project, and then made a commit. Now, we branch off the `server` branch to make some client-side changes. Finally, we go back to the server-side branch and commit a few more changes:
+Let's understand the working of Git `rebase` by looking a history with a topic branch off another topic branch. For example, we have branched a topic branch (feature2) from the mainline , and added some feature2-side functionality to our project, and then made a commit. Now, we branch off the `feature2` branch to make some client-side changes. Finally, we go back to the feature2-side branch and commit a few more changes:
 
 ![Git Rebase Example](/assets/img/posts/git-rebase-merge/git-rebase-working1.png)
 
 Now suppose that we have decided to merge the client-side changes to the mainline for the release, but we also want to hold the server-side changes until they are tested further. 
 
-With Git `rebase`, we can "replay" the changes in the `client` branch (that are not in the `server` branch, i.e. C8 and C9), and then replay them on the master branch by using the –onto option of git rebase, We have to specify all the three branches names in this case because we are holding the changes from server branch while replaying them in the master branch from client branch:
+With Git `rebase`, we can "replay" the changes in the `feature1` branch (that are not in the `feature2` branch, i.e. C8 and C9), and then replay them on the main branch by using the –onto option of git rebase, We have to specify all the three branches names in this case because we are holding the changes from feature2 branch while replaying them in the main branch from feature1 branch:
 
 ```
-git rebase --onto master server client
+git rebase --onto main feature2 feature1
 ```
 
 It gives us a bit complex but a pretty cool result:
@@ -64,22 +64,22 @@ It gives us a bit complex but a pretty cool result:
 ![Git Rebase Example](/assets/img/posts/git-rebase-merge/git-rebase-working2.png)
 
 
-Now it is time to fast forward our master branch, Remeber that fast forward is simply a unique instance of git rebase when there are no commits to be replayed (and the target branch has new commits while the history of the target branch has not been changed and all the commits on the target branch have the current one as their predecessor.)
+Now it is time to fast forward our main branch, Remeber that fast forward is simply a unique instance of git rebase when there are no commits to be replayed (and the target branch has new commits while the history of the target branch has not been changed and all the commits on the target branch have the current one as their predecessor.)
 We will use the following commands to do this,
 
 ```
-git checkout master
+git checkout main
 
-git merge client
+git merge feature1
 ```
-In simple words, fast forwarding master to the client branch means that previously the HEAD pointer for master branch was at 'C6' but after the the above command it fast forwards the master branch's HEAD pointer to the client branch.
+In simple words, fast forwarding main to the feature1 branch means that previously the HEAD pointer for main branch was at 'C6' but after the the above command it fast forwards the main branch's HEAD pointer to the client branch.
 
 ![Git Rebase Done](/assets/img/posts/git-rebase-merge/git-rebase-working3.png)
 
 Let's understand the concept of Interactive Rebasing, Interactive rebasing helps us to clean up the commits before they are moved on to another branch. It is done to make the project history simpler and easier to read, also helping to avoid any future conflicts among the commits. 
 Suppose we have several commits, and somehow we want to modify them during the rebase, we can do this by passing an ‘-i’, or ‘interactive’ to the original ‘git rebase’ command.
 ```
-git rebase -i origin/master
+git rebase -i origin/main
 ```
 
 In this way, we have successfully invoked interactive rebase on all the commits we have pushed so far.
@@ -95,7 +95,7 @@ When we merge, the branch we merge into will always preserve the ancestry of eac
 
 If we want to update the branch pointer to the last commit, then the fast-forward merge is the best option.
 
-We use `git rebase` to *re-write* the changes of one branch onto another branch without the creation of a merge commit. A new commit will be created on top of the branch we rebase onto, for every commit that is in the source branch, and not in the target branch. It will be just like all commits have been written on top of the master branch all along.
+We use `git rebase` to *re-write* the changes of one branch onto another branch without the creation of a merge commit. A new commit will be created on top of the branch we rebase onto, for every commit that is in the source branch, and not in the target branch. It will be just like all commits have been written on top of the main branch all along.
 
 ![Git Rebase updating history](/assets/img/posts/git-rebase-merge/git-rebase-history.png)
 
@@ -136,7 +136,7 @@ So, **if someone else checks out your branch before we rebase yours then it woul
 
 A problem that normally occurs when more than one developer is working on the same branch is explained in the following example, You are working with a developer on the same feature branch called login_branch.
 The problem in this case with using rebase directly for login_branch by both of the developers is that both of them would be merging changes repeatedly and will get conflicts due to the work on the same branch,
-however to avoid this problem both developers should rebase off a common branch and once their feature branch on which they are working simultaneously becomes stable then one of the developers can rebase off the master branch.
+however to avoid this problem both developers should rebase off a common branch and once their feature branch on which they are working simultaneously becomes stable then one of the developers can rebase off the main branch.
 
 To summarize:
 

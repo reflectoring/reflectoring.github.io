@@ -50,16 +50,16 @@ Let's have a look at the concept of `git rebase`. A `rebase` is the way of migra
 
 Let's understand the working of Git `rebase` by looking at history with a topic branch off another topic branch. 
 
-Let's say we have branched a feature branch (feature2) from the mainline , and added some feature2-side functionality to our project, and then made a commit. Now, we branch off the `feature2` branch to make some client-side changes. Finally, we go back to the feature2-side branch and commit a few more changes:
+Let's say we have branched a `feature1` branch from the mainline , and added some feature1-side functionality to our project, and then made a commit. Now, we branch off the `feature2` branch to make some feature2-side changes. Finally, we go back to the `feature1` branch and commit a few more changes:
 
 ![Git Rebase Example](/assets/img/posts/git-rebase-merge/git-rebase-working1.png)
 
-Now suppose that we have decided to merge the client-side changes to the mainline for the release, but we also want to hold the server-side changes until they are tested further. 
+Now suppose that we have decided to merge the feature2-side changes to the mainline for the release, but we also want to hold the feature1-side changes until they are tested further. 
 
-With `git rebase`, we can "replay" the changes in the `feature1` branch (that are not in the `feature2` branch, i.e. C8 and C9), and then replay them on the main branch by using the –onto option of git rebase, We have to specify all the three branches names in this case because we are holding the changes from feature2 branch while replaying them in the main branch from feature1 branch:
+With `git rebase`, we can "replay" the changes in the `feature2` branch (that are not in the `feature1` branch, i.e. C8 and C9), and then replay them on the main branch by using the –onto option of git rebase, We have to specify all the three branches names in this case because we are holding the changes from feature1 branch while replaying them in the main branch from feature2 branch:
 
 ```
-git rebase --onto main feature2 feature1
+git rebase --onto main feature1 feature2
 ```
 
 It gives us a bit complex but a pretty cool result:
@@ -67,16 +67,16 @@ It gives us a bit complex but a pretty cool result:
 ![Git Rebase Example](/assets/img/posts/git-rebase-merge/git-rebase-working2.png)
 
 
-Now it's time to fast forward our main branch. Fast forward is simply a unique instance of git rebase in which we are moving the tip of a branch to the latest commit. In our case, we want to move the tip of the main branch forward so it points to the latest commit of our feature branch.
+Now it's time to fast forward our main branch. Fast forward is simply a unique instance of git rebase in which we are moving the tip of a branch to the latest commit. In our case, we want to move the tip of the main branch forward so it points to the latest commit of our feature2 branch.
 
 We will use the following commands to do this:
 
 ```
 git checkout main
 
-git merge feature1
+git merge feature2
 ```
-In simple words, fast forwarding `main` to the `feature1` branch means that previously the HEAD pointer for main branch was at 'C6' but after the the above command it fast forwards the main branch's HEAD pointer to the client branch.
+In simple words, fast forwarding `main` to the `feature2` branch means that previously the HEAD pointer for main branch was at 'C6' but after the the above command it fast forwards the main branch's HEAD pointer to the feature2 branch.
 
 ![Git Rebase Done](/assets/img/posts/git-rebase-merge/git-rebase-working3.png)
 

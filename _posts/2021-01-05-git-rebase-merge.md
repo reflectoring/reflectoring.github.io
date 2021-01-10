@@ -28,7 +28,7 @@ Let's first have a look at Git `merge`. A `merge` is a way to put a forked histo
 
 It's important to note that while using Git `merge`, the current branch will be updated to reflect the merge, but the target branch remains untouched. 
 
-`git merge` is often used in combination with `git checkout` for the selection of the current branch, and `git branch -d` for deleting the obsolete target branch.
+`git merge` is often used in combination with `git checkout` for the selection of the current branch, and `git branch -d` for deleting the obsolete source branch.
 
 We use `git merge` for combining multiple sequences of commits into one unified history. In the most common cases, we use `git merge` to combine two branches. 
 

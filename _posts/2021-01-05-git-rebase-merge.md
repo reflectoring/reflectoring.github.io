@@ -10,9 +10,9 @@ image:
   auto: 0050-git
 ---
 
-In this article we are going to discuss some very important commands from [Git](https://git-scm.com/) and how they make the life of developers easy - working individually or in a team. We will compare `git rebase` with `git merge` and explore some ways of using them in our Git workflow. We will start from the very basic and level up with each section.
+In this article we are going to discuss some very important commands from [Git](https://git-scm.com/) and how they make the life of developers easy - working individually or in a team. We will compare `git rebase` with `git merge` and explore some ways of using them in our Git workflow. 
 
-If you are a beginner to Git and are looking to understand some of the basic commands used with git like fork, pull, checkout and commit then you should definitely give this [amazing article](https://reflectoring.io/github-fork-and-pull/) a read.
+If you are a beginner to Git and are looking to understand the basic fork & pull workflow with Git, then you should definitely give [this article](https://reflectoring.io/github-fork-and-pull/) a read.
 
 ## Introduction to Git
 
@@ -24,9 +24,9 @@ Git is an **open-source distributed version control system**. We can break that 
 
 ## What is Git Merge?
 
-Let's first have a look at Git `merge`. A `merge` is a way to put a forked history back together. **The git `merge` command lets us take independent branches of development and combine them into a single branch**.
+Let's first have a look at `git merge`. A `merge` is a way to put a forked history back together. **The `git merge` command lets us take independent branches of development and combine them into a single branch**.
 
-It's important to note that while using Git `merge`, the current branch will be updated to reflect the merge, but the target branch remains untouched. 
+It's important to note that while using `git merge`, the current branch will be updated to reflect the merge, but the target branch remains untouched. 
 
 `git merge` is often used in combination with `git checkout` for the selection of the current branch, and `git branch -d` for deleting the obsolete source branch.
 
@@ -40,23 +40,23 @@ Once Git has found a common base commit, it will create a new "merge commit", th
 
 ![Git Merge with Common Base](/assets/img/posts/git-rebase-merge/git-merge-working2.png)
 
-After a merge, we have a single new commit on the branch we merge into. This commit contains all the changes from the source branch.
+**After a merge, we have a single new commit on the branch we merge into. This commit contains all the changes from the source branch.**
 
 ## What is Git Rebase?
 
-Let's have a look at the concept of `git rebase`. A `rebase` is the way of migrating or combining a sequence of commits to a new base commit. If we consider it in the context of a feature branching workflow, then it is more useful and we can visualize it as follows:
+Let's have a look at the concept of `git rebase`. A `rebase` is the way of migrating or combining a sequence of commits to a new base commit. If we consider it in the context of a feature branching workflow, we can visualize it as follows:
 
 ![Git Rebasing](/assets/img/posts/git-rebase-merge/git-rebasing-basic.png)
 
-Let's understand the working of Git `rebase` by looking at history with a topic branch off another topic branch. 
+Let's understand the working of `git rebase` by looking at history with a topic branch off another topic branch. 
 
-Let's say we have branched a `feature1` branch from the mainline , and added some feature1-side functionality to our project, and then made a commit. Now, we branch off the `feature2` branch to make some feature2-side changes. Finally, we go back to the `feature1` branch and commit a few more changes:
+Let's say we have branched a `feature1` branch from the mainline , and added some functionality to our project, and then made a commit. Now, we branch off the `feature2` branch to make some additional changes. Finally, we go back to the `feature1` branch and commit a few more changes:
 
 ![Git Rebase Example](/assets/img/posts/git-rebase-merge/git-rebase-working1.png)
 
-Now suppose that we have decided to merge the feature2-side changes to the mainline for the release, but we also want to hold the feature1-side changes until they are tested further. 
+Now suppose that we have decided to merge the feature2 changes to the mainline for the release, but we also want to hold the feature1 changes until they are tested further. 
 
-With `git rebase`, we can "replay" the changes in the `feature2` branch (that are not in the `feature1` branch, i.e. C8 and C9), and then replay them on the main branch by using the –onto option of git rebase, We have to specify all the three branches names in this case because we are holding the changes from feature1 branch while replaying them in the main branch from feature2 branch:
+With `git rebase`, we can "replay" the changes in the `feature2` branch (that are not in the `feature1` branch, i.e. C8 and C9), and then replay them on the main branch by using the –onto option of git rebase. We have to specify all the three branches names in this case because we are holding the changes from feature1 branch while replaying them in the main branch from feature2 branch:
 
 ```
 git rebase --onto main feature1 feature2
@@ -67,7 +67,11 @@ It gives us a bit complex but a pretty cool result:
 ![Git Rebase Example](/assets/img/posts/git-rebase-merge/git-rebase-working2.png)
 
 
-Now it's time to fast forward our main branch. Fast forward is simply a unique instance of git rebase in which we are moving the tip of a branch to the latest commit. In our case, we want to move the tip of the main branch forward so it points to the latest commit of our feature2 branch.
+The commits from the `feature2` branch have been replayed onto the `main` branch, and the `feature2` branch now contains all the commits from the main branch plus the new commits from the `feature2` branch.
+
+Now it's time to fast forward our main branch so it will contain the new commits. 
+
+Fast forward is a unique instance of git rebase in which we are moving the tip of a branch to the latest commit. In our case, we want to move the tip of the main branch forward so it points to the latest commit of our feature2 branch.
 
 We will use the following commands to do this:
 
@@ -76,30 +80,21 @@ git checkout main
 
 git merge feature2
 ```
-In simple words, fast forwarding `main` to the `feature2` branch means that previously the HEAD pointer for main branch was at 'C6' but after the the above command it fast forwards the main branch's HEAD pointer to the feature2 branch.
+In simple words, fast forwarding `main` to the `feature2` branch means that previously the HEAD pointer for main branch was at 'C6' but after the the above command it fast forwards the main branch's HEAD pointer to the feature2 branch:
 
 ![Git Rebase Done](/assets/img/posts/git-rebase-merge/git-rebase-working3.png)
-
-Let's understand the concept of Interactive Rebasing, Interactive rebasing helps us to clean up the commits before they are moved on to another branch. It is done to make the project history simpler and easier to read, also helping to avoid any future conflicts among the commits. 
-Suppose we have several commits, and somehow we want to modify them during the rebase, we can do this by passing an ‘-i’, or ‘interactive’ to the original ‘git rebase’ command.
-```
-git rebase -i origin/main
-```
-
-In this way, we have successfully invoked interactive rebase on all the commits we have pushed so far.
-
 
 ## Git Rebase vs Git Merge
 
 Now let's go through the difference between `git rebase` and `git merge`. 
 
-When we merge, the branch we merge into will always preserve the ancestry of each commit history by generating a new commit:
+**When we merge, the branch we merge into will always preserve the ancestry of each commit history by generating a new commit**:
 
 ![Git Merge Preserving commit history](/assets/img/posts/git-rebase-merge/git-merge-history.png)
 
 If we want to update the branch pointer to the last commit, then the fast-forward merge is the best option.
 
-We use `git rebase` to *re-write* the changes of one branch onto another branch without the creation of a merge commit. A new commit will be created on top of the branch we rebase onto, for every commit that is in the source branch, and not in the target branch. It will be just like all commits have been written on top of the main branch all along.
+On the other hand, we use `git rebase` to *re-write* the changes of one branch onto another branch without the creation of a merge commit. A new commit will be created on top of the branch we rebase onto, for every commit that is in the source branch, and not in the target branch. It will be just like all commits have been written on top of the main branch all along.
 
 ![Git Rebase updating history](/assets/img/posts/git-rebase-merge/git-rebase-history.png)
 
@@ -112,13 +107,13 @@ We use `git rebase` to *re-write* the changes of one branch onto another branch 
 
 ### Arguments for Using `git rebase`
 
-Since a lot of developers are working on the same branch in parallel, therefore the history can be intensely populated by lots of merge commits. It can create a very messy look of the visual charts, which can create hurdles in extracting useful information.
+When a lot of developers are working on the same branch in parallel, the history can be intensely populated by lots of merge commits. It can create a very messy look of the visual charts, which can create hurdles in extracting useful information:
 
 ![Difficult to Debug](/assets/img/posts/git-rebase-merge/debugging.png)
 
 ### Choosing the Right Method
 
-When the team chooses to go for a feature-based workflow, then `git merge` is the right choice because of the following reasons,
+When the team chooses to go for a feature-based workflow, then `git merge` is the right choice because of the following reasons:
 
 - It helps in preserving the commit history, and we need not worry about the changing history and commits.
 - Avoids unnecessary git reverts or resets.
@@ -136,11 +131,14 @@ The basic purpose of `git rebase` and `git merge` is the same, i.e. they help us
 
 ![Git Rebase Rewrites Commit History](/assets/img/posts/git-rebase-merge/git-rebase-history.png)
 
-So, **if someone else checks out your branch before we rebase yours then it would be really hard to figure out what the history of each branch is**.
+So, **if someone else checks out your branch before we rebase ours then it would be really hard to figure out what the history of each branch is**.
 
-A problem that normally occurs when more than one developer is working on the same branch is explained in the following example, You are working with a developer on the same feature branch called login_branch.
-The problem in this case with using rebase directly for login_branch by both of the developers is that both of them would be merging changes repeatedly and will get conflicts due to the work on the same branch,
-however to avoid this problem both developers should rebase off a common branch and once their feature branch on which they are working simultaneously becomes stable then one of the developers can rebase off the main branch.
+A problem that normally occurs when more than one developer is working on the same branch is explained in the following example:
+
+You are working with a developer on the same feature branch called `login_branch`.
+The problem in this case with using rebase directly for `login_branch` by both of the developers is that both of them would be merging changes repeatedly and will get conflicts due to working on the same branch,
+
+To avoid this problem, both developers should rebase off a common branch and once the feature branch on which they are working simultaneously becomes stable then one of the developers can rebase onto the main branch.
 
 To summarize:
 
@@ -152,7 +150,7 @@ Some of the key points to keep in mind are:
 
 - `rebase` only your own local branches.
 - Don't rebase public branches.
-- Undo rebase with git reflog.
+- Undo rebase with `git reflog`.
 
 ## Conclusion
 
@@ -162,9 +160,9 @@ For repositories where multiple people work on the same branches, `git rebase` i
 
 For individuals, on the other hand, rebasing provides a lot of ease. If one wants to maintain the history track, then one must go for the merging option because merging preserves the history while rebase just overwrites it.
 
-However, if we have a complex history and we want to streamline it, then interactive rebasing can be very useful. It can help us to remove undesirable commits, squash two or more commits into each other, also providing the option to edit commit messages. 
+However, if we have a complex history and we want to streamline it, then rebasing can be very useful. It can help us to remove undesirable commits, squash two or more commits into each other, also providing the option to edit commit messages (during an "interactive" rebase). 
 
-Rebase focuses on presenting one commit at a time, whereas merging focuses on presenting all at once. But we should keep in mind that reverting a rebase is much more difficult than reverting a merge if there are many conflicts.
+Rebase focuses on presenting one commit at a time, whereas merging focuses on presenting all at once (in a merge commit). But we should keep in mind that reverting a rebase is much more difficult than reverting a merge if there are many conflicts.
 
 ## Further Reading
 * [Merging vs. Rebasing](https://www.atlassian.com/git/tutorials/merging-vs-rebasing)

@@ -88,7 +88,9 @@ In simple words, fast forwarding `main` to the `feature2` branch means that prev
 
 Now let's go through the difference between `git rebase` and `git merge`. 
 
-**When we merge, the branch we merge into will always preserve the ancestry of each commit history by generating a new commit**:
+**When we merge, the branch we merge into will always preserve the ancestry of each commit history by generating a new commit**
+
+If we look at the diagram below, we can see that the red commit is the merge commit while the golden commit shows the common base that is a pre-requisite for git merge. A common base is not required for the rebase as history gets overwritten in the case of git rebase whereas git merge preserves the history.
 
 ![Git Merge Preserving commit history](/assets/img/posts/git-rebase-merge/git-merge-history.png)
 

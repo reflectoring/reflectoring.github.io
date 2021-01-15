@@ -11,7 +11,7 @@ image:
 
 GraphQL was developed by Facebook in 2012 for their mobile apps. It was open-sourced in 2015 and is now used by many development teams, including some prominent ones like GitHub, Twitter, and Airbnb. Here we will see what is GraphQL and explain its usage with some simple examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/graphql" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/graphql" %}
 
 ## What is GraphQL
 
@@ -247,10 +247,15 @@ public class ProductResolver implements GraphQLResolver<Product>{
 ```
 This resolver fetches the `Manufacturer` record corresponding to a `Product`.
 
-### Connecting to Datasources
+### Connecting to Datasources and Applying Middleware Logic
 Next, we will enable our resolvers to fetch data from underlying data sources like a database or web service. For this example, we have configured an in-memory H2 database as the data store for `products` and `manufacturers`. We use Spring JDBC to retrieve data from the database and put this logic in separate repository classes. 
 
 Apart from fetching data, we can also build different categories of middleware logic in this business service layer, like authorization of incoming requests, applying filters on data fetched from backend, transformation into backend data models, and also caching any less frequently changing data.
+
+### Running Application
+After compiling and running the application, we can send GraphQL queries to the endpoint http://localhost:8080/graphql. A sample request and response captured in postman tool is shown here :
+
+![Snippet from Postman Tool](/assets/img/posts/graphql-intro/results.png)
 
 ## GraphQL vs REST
 REST has been the de-facto style for building APIs. Good API designs are usually driven by consumer needs which can be varied. If we consider an e-commerce site, we might want to show recent purchases of a customer on an order history page and last viewed products on a profile page. 

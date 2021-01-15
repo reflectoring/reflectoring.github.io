@@ -103,12 +103,12 @@ Support for GraphQL constructs varies across implementations. While the basic ty
 ## Client Side Implementations
 The consumers of the GraphQL API use this query language to request for the specific data of their interest instead of the complete payload from the API response. This is done by creating a strongly typed Schema of our API and instructions on how our API can resolve data and client queries.
 
-On the client-side, we can either send the query as a query string in a GET request or as a JSON payload in a POST request;
+On the client-side, at the most basic level, we can send the query as a JSON payload in a POST request to a `graphql` endpoint.
 
 ```shell
-curl --request POST 'localhost:0/graphql' --header 'Content-Type: application/json'  --data-raw '{"query":"query {myRecentPurchases(count:10){title,description}}"}'
+curl --request POST 'localhost:8080/graphql' --header 'Content-Type: application/json'  --data-raw '{"query":"query {myRecentPurchases(count:10){title,description}}"}'
 ```
-Here we send a request for fetching my 10 recent purchases with the fields title, and description in each record.
+Here we send a request for fetching 10 recent purchases with the fields title, and description in each record.
 
 To avoid making the low-level HTTP calls, we should use a GraphQL client as an abstraction layer to take care of:
 1. sending the request and handling the response

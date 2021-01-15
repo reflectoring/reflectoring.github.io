@@ -92,14 +92,11 @@ type Subscription {
 ## Server-Side Implementation
 GraphQL has several [server side](https://graphql.org/code/#javascript-server) implementations available in multiple languages. These implementations roughly follow a pipeline pattern with the following stages:
 
-1. an endpoint is exposed which accepts GraphQL queries. 
+1. An endpoint is exposed which accepts GraphQL queries. 
 2. We define a schema with types, query, and mutation. 
 3. We associate functions called resolvers with the types in the respective programming language to fetch data from underlying systems. 
 
-A GraphQL endpoint can live along with side Rest APIs. A layered architecture will look like this:
-
-//TODO: Add diagram
-Similar to REST, the GraphQL will also depend on a business logic layer for fetching data from underlying systems.
+A GraphQL endpoint can live along with side Rest APIs. Similar to REST, the GraphQL will also depend on a business logic layer for fetching data from underlying systems.
 
 Support for GraphQL constructs varies across implementations. While the basic types: Query and Mutations are supported across all implementations, subscription support is not available in a few.
 

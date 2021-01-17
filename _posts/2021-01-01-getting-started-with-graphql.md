@@ -245,20 +245,26 @@ public class QueryResolver implements GraphQLQueryResolver {
     this.productRepository = productRepository;
   }
 
-  public List<Product> getMyRecentPurchases(Integer count, String customerID) {
-    
-    List<Product> products = productRepository.getRecentPurchases(count);
-    
+  public List<Product> getMyRecentPurchases(
+      final Integer count, String customerID) {
+
+    List<Product> products = productRepository
+                         .getRecentPurchases(count);
+
     return products;
   }
-  
-  public List<Product> getLastVisitedProducts(final Integer count, final String customerID) {
-    List<Product> products = productRepository.getLastVisitedPurchases(count);
+
+  public List<Product> getLastVisitedProducts(
+      final Integer count, final String customerID) {
+    List<Product> products = productRepository
+                         .getLastVisitedPurchases(count);
     return products;
   }
-  
-  public List<Product> getProductsByCategory( final String category) {
-    List<Product> products = productRepository.getProductsByCategory(category);
+
+  public List<Product> getProductsByCategory(
+      final String category) {
+    List<Product> products = productRepository
+                         .getProductsByCategory(category);
     return products;
   }
 
@@ -292,9 +298,15 @@ Similar to the resolver for `Query` object types, let us add a resolver for the 
 @Service
 public class Mutation implements GraphQLMutationResolver{
 
-  public Product addRecentProduct(final String title, final String description, final String category) {
+  public Product addRecentProduct(
+    final String title, 
+    final String description, 
+    final String category) {
     
-    return Product.builder().title("television").category("electronic").build();
+    return Product.builder()
+           .title("television")
+           .category("electronic")
+           .build();
   }
 }
 

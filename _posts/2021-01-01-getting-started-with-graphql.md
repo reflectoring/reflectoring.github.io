@@ -82,27 +82,29 @@ Here we have defined the object types `Product` and `Manufacturer`.
 `Manufacturer` is composed of scalar types with the names `id`, `name`, and `address`. Similarly, the `Product` type is composed of four scalar types with the names `id`, `title`, `description`, `category`, and an object type `Manufacturer`.
 
 ### Special Types: Query, Mutation, and Subscription
-We need to add root types of the GraphQL schema for adding functionality to the API. GraphQL Schema has three root-level types: Query, Mutation, and Subscription. These are special Types and signify the entry point of a GraphQL service. Of these three, only the Query type is mandatory for every GraphQL service. 
+We need to add root types to the GraphQL schema for adding functionality to the API. GraphQL Schema has three root-level types: Query, Mutation, and Subscription. These are special Types and signify the entry point of a GraphQL service. Of these three, only the Query type is mandatory for every GraphQL service. 
 
 **The root types determine the shape of the queries and mutations that will be accepted by the server.** 
 
-An example Query root type for a GraphQL service that fetches a list of recent purchases looks like this:
+An example `Query` root type for a GraphQL service that fetches a list of recent purchases looks like this:
 
 ```
 type Query {
     myRecentPurchases(count: Int, customerID: String): [Product]!
 }
 ```
+This query fetches the specified number of recent purchases for a customer.
 
-A Mutation represents changes that we can make on our objects. Our schema with a mutation will look like this:
+A Mutation represents changes that we can make on our objects. Our schema with a `Mutation` will look like this:
 
 ```
 type Mutation {
     addPurchases(count: Int, customerID: String): [Product]!
 }
 ```
+This mutation is used to add purchases of a customer.
 
-Subscription is another special type for real-time push-style updates. Subscriptions depend on the use of a publishing mechanism to generate the event that notifies a subscription that is subscribed to that event. 
+Subscription is another special type for real-time push-style updates. Subscriptions depend on the use of a publishing mechanism to generate the event that notifies a subscription that is subscribed to that event. Our schema with a Subscription will look like this:
 
 ```
 type Subscription {
@@ -110,6 +112,7 @@ type Subscription {
 }
 
 ```
+This is a subscription for adding a new `Product`.
 
 ## Server-Side Implementation
 GraphQL has several [server side](https://graphql.org/code/#javascript-server) implementations available in multiple languages. These implementations roughly follow a pipeline pattern with the following stages:
@@ -128,11 +131,14 @@ The consumers of the GraphQL API use the query language defined by the server's 
 On the client-side, at the most basic level, we can send the query as a JSON payload in a POST request to a `graphql` endpoint:
 
 ```shell
-curl --request POST 'localhost:8080/graphql' --header 'Content-Type: application/json'  --data-raw '{"query":"query {myRecentPurchases(count:10){title,description}}"}'
+curl --request POST 'localhost:8080/graphql' \
+ --header 'Content-Type: application/json'  \
+ --data-raw \
+ '{"query":"query {myRecentPurchases(count:10){title,description}}"}'
 ```
 Here we send a request for fetching 10 recent purchases with the fields title, and description in each record.
 
-To avoid making the low-level HTTP calls, we should use a GraphQL client as an abstraction layer. Among other things, this GraphQL client will take care of
+To avoid making the low-level HTTP calls, we should use a GraphQL client as an abstraction layer. Among other things, the GraphQL client will take care of
 
 * sending the request and handling the response,
 * view layer integrations and optimistic UI updates, and
@@ -142,7 +148,7 @@ There are several [client frameworks](https://graphql.org/code/#javascript-clien
 
 ## Building a GraphQL Server with Spring Boot
 
-We will use a Spring Boot application to build a GraphQL server implementation. For this, let's first create a Spring Boot application with the [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.2.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=graphqldemo&name=graphqldemo&description=Demo%20project%20for%20GraphQL%20with%20Spring%20Boot&packageName=io.pratik.graphqldemo&dependencies=web,lombok,h2). 
+We will use a Spring Boot application to build a GraphQL server implementation. For this, let us first create a Spring Boot application with the [Spring Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.2.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=graphqldemo&name=graphqldemo&description=Demo%20project%20for%20GraphQL%20with%20Spring%20Boot&packageName=io.pratik.graphqldemo&dependencies=web,lombok,h2). 
 
 ### Adding GraphQL Dependencies
 For the GraphQL server, we will add the following Maven dependencies: 
@@ -162,11 +168,11 @@ For the GraphQL server, we will add the following Maven dependencies:
 Here we have added `graphql-spring-boot-starter` as a GraphQL starter and a Java tools module `graphql-java-tools`.
 
 ### Defining the GraphQL Schema 
-We can either take a top-down approach by defining the schema and then create POJOs for each type or a bottom-up approach by creating the POJOs first and generate a schema from those POJOs. 
+We can either take a top-down approach by defining the schema and then creating the POJOs for each type or a bottom-up approach by creating the POJOs first and generating a schema from those POJOs. 
 
-We opt for the first approach and create our schema first. The GraphQL schema needs to be defined in a file with the extension `graphqls`. 
+We opt for the first approach and create our schema first. The GraphQL schema needs to be defined in a file with the extension `graphqls` and put under the `resources` folder. 
 
-Let's define our schema in a file `product.graphqls`:
+Let us define our schema in a file `product.graphqls`:
 
 ```
 type Product {
@@ -301,7 +307,7 @@ Next, we will enable our resolvers to fetch data from underlying data sources li
 Apart from fetching data, we can also build different categories of middleware logic in this business service layer. Few examples of middleware logic are authorization of incoming requests, applying filters on data fetched from backend, transformation into backend data models, and also caching any less frequently changing data.
 
 ### Running the Application
-After compiling and running the application, we can send GraphQL queries to the endpoint `http://localhost:8080/graphql`. A sample request and response captured in the [Postman}(https://www.postman.com/downloads/) tool is shown here :
+After compiling and running the application, we can send GraphQL queries to the endpoint `http://localhost:8080/graphql`. A sample request and response captured in the [Postman](https://www.postman.com/downloads/) tool is shown here :
 
 Request:
 ```

@@ -40,11 +40,12 @@ comments:
             <img src="/assets/img/gyhdoca/cover-430.png" alt="Get Your Hands Dirty on Clean Architecture">
           </div>
           <ul>
+              <li><i class="fa fa-star" style="color: #f8c200"></i><i class="fa fa-star" style="color: #f8c200"></i><i class="fa fa-star" style="color: #f8c200"></i><i class="fa fa-star" style="color: #f8c200"></i><i class="fa fa-star" style="color: #f8c200"></i> rated 4.6 stars on <a href="https://www.goodreads.com/book/show/49238827-get-your-hands-dirty-on-clean-architecture">Goodreads</a></li>
               <li>e-book only (101-page PDF, .mobi, and .epub)</li>
-              <li>$14,99 suggested price</li> 
-              <li>$9,99 minimum price</li>
+              <li>$15 suggested price</li> 
+              <li>$10 minimum price</li>
               <li>support me directly by paying more than the minimum price</li>
-              <li>get it for $4,99 if you <a href="#" onclick="ml_webform_1449648(&#39;show&#39;)">subscribe</a> to my mailing list</li>
+              <li>get it for $5 if you <a href="#" onclick="ml_webform_1449648(&#39;show&#39;)">subscribe</a> to my mailing list</li>
               <li>get updated versions immediately and for free</li> 
           </ul> 
           <a class="primary-button btn-block" href="https://leanpub.com/get-your-hands-dirty-on-clean-architecture">Get it at Leanpub</a> 
@@ -56,6 +57,7 @@ comments:
             <img src="/assets/img/gyhdoca/cover-packt-450.png" alt="Get Your Hands Dirty on Clean Architecture">
           </div>
           <ul>
+              <li><i class="fa fa-star" style="color: #f8c200"></i><i class="fa fa-star" style="color: #f8c200"></i><i class="fa fa-star" style="color: #f8c200"></i><i class="fa fa-star" style="color: #f8c200"></i><i class="fa fa-star" style="color: #f8c200"></i> rated 4.8 stars on <a href="https://www.amazon.com/gp/product/1839211962/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=1839211962&linkCode=as2&tag=reflectorin0c-20&linkId=559e54b6599c4213252259df28d1d3e3">Amazon</a></li>
               <li>e-book and paperback (156 pages)</li>
               <li>available as PDF, .mobi, and .epub at <a href="https://www.packtpub.com/programming/get-your-hands-dirty-on-clean-architecture">Packt</a></li>
               <li>available in Kindle format at <a href="https://www.amazon.com/gp/product/1839211962/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=1839211962&linkCode=as2&tag=reflectorin0c-20&linkId=559e54b6599c4213252259df28d1d3e3">Amazon</a></li>

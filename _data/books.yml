@@ -45,3 +45,27 @@ accelerate:
   url: https://www.goodreads.com/book/show/35747076-accelerate
   title: "Accelerate"
   author: "Nicole Forsgren, Jez Humble, and Gene Kim"
+
+essentialism:
+  cover: /assets/img/covers/essentialism-260.jpg
+  url: https://www.goodreads.com/book/show/18077875-essentialism
+  title: "Essentialism"
+  author: "Greg McKeown"
+
+pragmatic-thinking:
+  cover: /assets/img/covers/pragmatic-thinking-260.jpg
+  url: https://www.goodreads.com/book/show/3063393-pragmatic-thinking-and-learning
+  title: "Pragmatic Thinking & Learning"
+  author: "Andy Hunt"
+
+make-time:
+  cover: /assets/img/covers/make-time-260.jpg
+  url: https://www.goodreads.com/book/show/37880811-make-time
+  title: "Make Time"
+  author: "Jake Knapp and John Zeratsky"
+
+hell-yeah:
+  cover: /assets/img/covers/hell-yeah-260.jpg
+  url: https://www.goodreads.com/en/book/show/52523856-hell-yeah-or-no
+  title: "Hell Yeah or No"
+  author: "Derek Sivers"

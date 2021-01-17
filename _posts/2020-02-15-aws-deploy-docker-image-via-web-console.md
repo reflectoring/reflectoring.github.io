@@ -13,6 +13,8 @@ Amazon Web Services is a beast. It offers so many different cloud services that 
 
 We'll start this series by creating a small win to boost our motivation: we'll deploy a Docker image  using the AWS Management Console. In a real-world scenario with multiple images and a more complex setup, we'd want to automate deployments using scripts and the AWS command-line interface. But using the web-based Management Console is a good way to get our bearings.
 
+**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
+
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/aws-hello-world" %}
 
 ## Prerequisites
@@ -248,5 +250,7 @@ Here's a list of the questions I want to answer on this journey. If there's a li
 The AWS web interface is intimidating. If we know where to look, though, we can deploy a Docker container in a matter of minutes. But this is a manual process and the web interface only provides basic means of configuration.
  
 In real-world scenarios, we need to [use the AWS CLI](/aws-cloudformation-deploy-docker-image/) to create production-grade configurations and to deploy those from within an automated CI/CD pipeline.
+
+**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
 
 

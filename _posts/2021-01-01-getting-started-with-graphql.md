@@ -286,7 +286,8 @@ public class ProductResolver implements GraphQLResolver<Product>{
   }
 
   public Manufacturer getMadeBy(final Product product) {
-    return manufacturerRepository.getManufacturerById(product.getManufacturerID());
+    return manufacturerRepository
+       .getManufacturerById(product.getManufacturerID());
   }
 }
 ```

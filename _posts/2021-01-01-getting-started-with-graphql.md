@@ -19,17 +19,33 @@ GraphQL is a specification of a query language for APIs. The client or API consu
 
 Instead of having many different endpoints, as we would have with REST, **we have a single endpoint on which the consumer sends different queries depending on the data of interest**. A sample request/response to a GraphQL endpoint looks like this:
 
+Request:
 ```
 {
-  product {
-    name
-    rating
-    price
-  }
+    Product
+    {
+        title
+        description
+        category      
+    }
 }
 
 ```
-In this sample, we send a request for fetching a product with attributes name, rating, and price, and the server returns the response containing only those fields (name, rating, and price). 
+
+Response:
+```
+{
+    "data": {
+        "Product": {
+            "title": "Television",
+            "description": "My 25 inch Television",
+            "category": "Electronic Goods"
+        }
+    }
+}
+
+```
+In this sample, we send a request for fetching a product with attributes title, description, and category, and the server returns the response containing only those fields (title, description, and category). 
 
 GraphQL shifts some responsibility to the client for constructing the query containing the fields of its interest. The server is responsible for processing the query and then fetching the data from an underlying system like a database or a web service.
 
@@ -102,7 +118,7 @@ GraphQL has several [server side](https://graphql.org/code/#javascript-server) i
 2. We define a schema with types, queries, and mutations. 
 3. We associate functions called resolvers with the types in the respective programming language to fetch data from underlying systems. 
 
-A GraphQL endpoint can live alongside of REST APIs. Similar to REST, the GraphQL endpoint will also depend on a business logic layer for fetching data from underlying systems.
+A GraphQL endpoint can live alongside REST APIs. Similar to REST, the GraphQL endpoint will also depend on a business logic layer for fetching data from underlying systems.
 
 Support for GraphQL constructs varies across implementations. While the basic types Query and Mutation are supported across all implementations,  support for the Subscription type is not available in a few.
 
@@ -185,7 +201,7 @@ Here we have added three operations to our Query and a Mutation for adding recen
 Next, we define the POJO classes for the Object types `Product` and `Manufacturer`:
 
 ```java
-@Data
+
 public class Product {
    private String id; 
    private String title;
@@ -193,15 +209,23 @@ public class Product {
    private String category;
    private Manufacturer madeBy;
 }
+
+public class Manufacturer {
+  private String id;
+  private String name;
+  private String address;
+}
 ```
-This `Product` POJO maps to the `product` type and `Manufacturer` maps to the `manufacturer` object defined in our GraphQL schema.
+This `Product` POJO maps to the `product` type and `Manufacturer` maps to the `manufacturer` object defined in our GraphQL schema. 
 
 
 ### Associate GraphQL Types with Resolvers
 
 Multiple resolver components convert the GraphQl request received from the API consumers and invoke operations to fetch data from applicable data sources. For each type, we define a `resolver`.
 
-We will now add resolvers for all the types defined in the schema. We first add a resolver class named `QueryResolver` containing the methods corresponding to our GraphQL operations: 
+We will now add resolvers for all the types defined in the schema. The resolver classes need to implement `GraphQLQueryResolver` for the `Query` object and `GraphQLMutationResolver`for the `Mutation` object. As explained earlier, `Query` and `Mutation` are the root GraphQL objects. 
+
+When a GraphQL request is received, the fields in the root types are resolved to the output of the executed methods in these resolver classes. Let us first add a resolver class named `QueryResolver` containing the methods corresponding to the fields in our GraphQL `Query` object: 
 
 ```java
 @Service
@@ -256,18 +280,60 @@ public class ProductResolver implements GraphQLResolver<Product>{
 ```
 This resolver fetches the `Manufacturer` record for a given `Product`.
 
+Similar to the resolver for `Query` object types, let us add a resolver for the `Mutation` root object type:
+
+```java
+@Service
+public class Mutation implements GraphQLMutationResolver{
+
+  public Product addRecentProduct(final String title, final String description, final String category) {
+    
+    return Product.builder().title("television").category("electronic").build();
+  }
+}
+
+```
+Here the `Mutation` class implements `GraphQLMutationResolver` and contains a method `addRecentProduct` which maps to the field in the `Mutation` root object type.
+
 ### Connecting to Datasources and Applying Middleware Logic
 Next, we will enable our resolvers to fetch data from underlying data sources like a database or web service. For this example, we have configured an in-memory H2 database as the data store for `products` and `manufacturers`. We use Spring JDBC to retrieve data from the database and put this logic in separate repository classes. 
 
-Apart from fetching data, we can also build different categories of middleware logic in this business service layer, like authorization of incoming requests, applying filters on data fetched from backend, transformation into backend data models, and also caching any less frequently changing data.
+Apart from fetching data, we can also build different categories of middleware logic in this business service layer. Few examples of middleware logic are authorization of incoming requests, applying filters on data fetched from backend, transformation into backend data models, and also caching any less frequently changing data.
 
 ### Running the Application
-After compiling and running the application, we can send GraphQL queries to the endpoint `http://localhost:8080/graphql`. A sample request and response captured in postman tool is shown here :
+After compiling and running the application, we can send GraphQL queries to the endpoint `http://localhost:8080/graphql`. A sample request and response captured in the [Postman}(https://www.postman.com/downloads/) tool is shown here :
 
-![Snippet from Postman Tool](/assets/img/posts/graphql-intro/results.png)
+Request:
+```
+query 
+{
+    myRecentPurchases(count: 2)
+    {
+        title
+        description
+    }
+}
+```
+Response:
+```
+{
+    "data": {
+        "myRecentPurchases": [
+            {
+                "title": "Samsung TV",
+                "description": "Samsung Television"
+            },
+            {
+                "title": "Macbook Pro 13",
+                "description": "Macbook pro 13 inch laptop"
+            }
+        ]
+    }
+}
+```
 
 ## GraphQL vs. REST
-REST has been the de-facto style for building APIs. Good API designs are usually driven by consumer needs which vary depending on the consumer. If we consider an e-commerce site, we might want to show recent purchases of a customer on an order history page and last viewed products on a profile page. 
+REST has been the de-facto style for building APIs. Good API designs are usually driven by consumer needs which vary depending on the consumer. Let us see some differences between REST and GraphQL. 
 
 ### Overfetching and Underfetching
 With REST, we will require two different APIs although we are working with the same product data. Alternately we might fetch the entire product data with all its relations every time even though we only need a part of the data. 
@@ -284,7 +350,9 @@ REST APIs are mostly designed to return 2xx status codes for success and 4xx and
 With REST APIs, we check for a 200 status code on a specific endpoint to check if the API is healthy and capable of serving the requests. In GraphQL, health checking is relatively complex since the monitoring function needs to parse the response body to check the server status.
 
 ### Caching
-With REST APIs, the GET endpoints are cached in the application layer or by using a CDN. With GraphQL, caching on the client-side is better supported than REST with the help of GraphQL client implementations. Apollo Client and URQL, for example, make use of GraphQL's schema and type system using introspection to maintain a client-side cache.
+With REST APIs, the GET endpoints are cached in the application layer or by using a CDN. With GraphQL, caching on the client-side is better supported than REST with the help of GraphQL client implementations. Apollo Client and URQL, for example, make use of GraphQL's schema and type system using introspection to maintain a client-side cache. 
+
+GraphQL is however known to break server-side caching because of the varying nature of requests. Server-side caching is at present not standardized across libraries. More information about server-side caching is found in the [GraphQL Portal](https://graphql.org/learn/caching/).
 
 ## Conclusion
 

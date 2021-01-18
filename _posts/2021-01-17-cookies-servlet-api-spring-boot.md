@@ -9,12 +9,13 @@ image:
   auto: 
 ---
 
-
 ## Introduction
 
 This article is about cookies and different ways we can implement them in spring boot. We are going to have a short overview of what cookies are, how they work, and how we can handle them using Servlet API and Spring Framework.
 
 If you are building a web application then you probably reached the point where there's the need to implement cookies. If you haven't, you will!
+
+{% include github-project.html url="" %}
 
 ## What are Cookies?
 
@@ -24,13 +25,13 @@ They are commonly used to track the activity of a website, to customize user ses
 
 ## How do Cookies work?
 
-Cookies are created by the server upon connection. Data stored inside the cookie is labeled with an ID, which has to be unique otherwise it would overwrite the existing cookie. When a connection is created, the server stores the cookie in the client(user's browser). In the next request done to the server the cookie is rotated back and based on the cookie ID the server knows what information to serve.
+Cookies are created by the server upon connection. Data stored inside the cookie is labeled with a name, which has to be unique otherwise it would overwrite the existing cookie. When a connection is created, the server stores the cookie in the client(user's browser). In the next request done to the server the cookie is rotated back and based on the cookie name the server knows what information to serve.
 
 ## Handling Cookies with the Servlet API
 
 ### Creating a Cookie
 
-For creating a cookie using the Servlet API we use the `Cookie` class which is defined inside the `javax.servlet.http` package and it has two constructors:
+For creating a cookie using the Servlet API we use the `Cookie` class which is defined inside the `javax.servlet.http` package and has two constructors:
 
 ```java
 Cookie()
@@ -54,7 +55,7 @@ A cookie is expired when the expiration date has passed and it is not valuable a
 ```java
 servletCookie.setMaxAge(60);
 ```
-Max Age specifies the age of the cookie. In this case, our servlet cookie will expire after 60 seconds and it will be removed from the browser's cache. If we set max-age a negative value or don't set it at all, it will not be persisted and will be deleted immediately after the browser is closed.
+Max Age specifies the age of the cookie. In this case, our servlet cookie will expire after 60 seconds and it will be removed from the browser's cache. If we set max age a negative value or don't set it at all, it will not be persisted and will be deleted immediately after the browser is closed.
 
 
 #### Set Cookie Domain
@@ -152,9 +153,9 @@ Spring Framework provides an annotation to read any cookie by specifying the nam
 `@CookieValue` is an annotation that is used in a controller and maps the value of a cookie to the controller's method parameter.
 
 ```java
- @GetMapping("/read-spring-cookie")
-        public String readCookie(@CookieValue(name = "cookie-name", defaultValue = "default-spring-cookie") String cookieName) {
-            return cookieName;
+@GetMapping("/read-spring-cookie")
+public String readCookie(@CookieValue(name = "cookie-name", defaultValue = "default-spring-cookie") String cookieName) {
+    return cookieName;
         }
 ```
 In the code snippet, there is also the `defaultValue = "spring-cookie"` inside the annotation `@CookieValue`. In cases where the cookie with the name "cookie-name" does not exist the controller will return the default value. If we do not set the default value and Spring fails to find the cookie in the request then it will throw `java.lang.IllegalStateException` exception

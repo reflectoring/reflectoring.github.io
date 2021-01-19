@@ -1,10 +1,10 @@
 ---
 title: "The Open-Closed Principle Explained"
 categories: [craft]
-date: 2021-01-16 00:00:00 +0100
-modified: 2021-01-16 00:00:00 +0100
+date: 2021-01-25 00:00:00 +0100
+modified: 2021-01-25 00:00:00 +0100
 author: skempken
-excerpt: "An explanation of the Open-Closed Principle" 
+excerpt: "An explanation of the Open-Closed Principle and its limitations alongside some code examples."
 image:
   auto: 0093-open-closed
 ---

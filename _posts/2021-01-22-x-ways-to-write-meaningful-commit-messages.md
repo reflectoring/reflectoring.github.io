@@ -10,7 +10,7 @@ image:
 
 Writing suitable commit messages can save a lot of time in producing applications and answers to many "why" and "how" questions.
 
-## Why good commit message is important?
+## Why is a good commit message important?
 Commit messages are a way of **communication between team members**. Let's say there's a bug in the application which was not there before. To find out what made the problem, reading the commit messages could be handy. The proper commit message can **save a great deal of time** finding the recent changes related to the bug.
 
 Being a new member of a team and working on projects you haven't seen before has its challenges. If you have a task to add some logic to some part of the code, previous good commit messages can help you find out **where and how** to add it.

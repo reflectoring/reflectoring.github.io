@@ -72,7 +72,7 @@ The type of commit message is that change made for a particular problem. For exa
 It's the package or module that is affected by the change. As mentioned before, it's optional.
 
 #### Summary:
-As Angular suggests: "It should be present tense. Not capitalized. No period in the end." And imperative like the type.
+As Angular suggests: "It should be present tense. Not capitalized. No period in the end.", and **imperative like the type**.
 As [Chris Beams](https://chris.beams.io/posts/git-commit/) mentions here, the summary should always be able to complete the following sentence: 
 
 If applied, this commit will ...
@@ -91,7 +91,7 @@ Bellow, part "Fix" is the type, and the sentence after ":" is the summary.
 
 #### Body:
 The format should be just like the summary, but the content goal is different. I should explain the motivation for the change.
-In other words, it should be an imperative sentence explaining why you're changing the code, compared to what it was before.
+In other words, it should be an imperative sentence explaining why you're changing the code, **compared to what it was before**.
 
 #### Footer: 
 You can mention the related task URL or the issue number in this section.

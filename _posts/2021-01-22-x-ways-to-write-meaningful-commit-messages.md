@@ -38,15 +38,15 @@ Although using a proper style is a good practice, but it's not enough. The disci
 If you commit two changes together, for example, a bug fix, and a minor refactoring, It might not cause a very long commit message, but it can cause some problems. Let's say the bug fix made some other bugs. In that case, you should roll back to your recent commit. It results in the loss of that refactoring as well. It's not efficient, and It's not atomic.
 
 ### Short and Unambiguous:
-The message should describe what changes your code makes to the base code. It should answer the question: **"What happens if the changes are applied?"**. If you can not be short, it might be because the commit is not atomic, and it's too much change in one commit. The
+The message should describe what changes your code makes to the base code. It should answer the question: **"What happens if the changes are applied?"**. If you can not be short, it might be because the commit is not atomic, and it's too much change in one commit.
 
-Active Voice:
+#### Active Voice:
  Use the **imperative, present tense**. It is easier to read and skim.
 > **Right**: Add feature for a user to upload pictures
 >
 > **Wrong**: Added feature ... (passive voice, past tense)
 
-Detailed Enough:
+#### Detailed Enough:
 Super-detailed commit messages are frustrated as well. You can find that much detail in the system. For example, If your version control is Git, you can see all the changed files in Git. So instead of answering "what are the changes? ", it's better to answer **"What are the changes for?"**.
 
 ### Formatting:

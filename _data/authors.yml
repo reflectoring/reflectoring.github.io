@@ -157,3 +157,11 @@ mujtaba:
   avatar: "/assets/img/authors/Mujtaba.jpg"
   github: "mujjazi"
   bio: "Mujtaba is an Automation developer with a diverse range of experience working with Java Spring based projects. He is an advocate for DevOps and Test Automation while writing for various blogs to help young professionals"
+
+
+godeortela:
+  name: "Ortela Gode"
+  email: "godeortela@gmail.com"
+  avatar: "/assets/img/authors/"
+  github: "ortelagode"
+  bio: "Enthusiastic Software Consultant with diverse experience in Java Enterprise applicactions. Always on the lookout to experiment new technologies"

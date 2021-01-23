@@ -27,8 +27,8 @@ They are commonly used to track the activity of a website, to customize user ses
 
 Cookies are created by the server upon connection and are stored in the client(user's browser).
 
-The server sets the cookie in the HTTP response header named `Set-Cookie`. Cookie is made of a key/value pair, plus other optional attributes.
-Let's suppose a scenario where a user logs in. A request is sent to the server with the user's credentials. The server authenticates the user, creates a cookie with a user id encoded and sets it in the response header. The header `Set-Cookie` in the HTTP response would look like this:
+The server sets the cookie in the HTTP response header named `Set-Cookie`. A cookie is made of a key/value pair, plus other optional attributes.
+Let's suppose a scenario where a user logs in. A request is sent to the server with the user's credentials. The server authenticates the user, creates a cookie with a user id encoded, and sets it in the response header. The header `Set-Cookie` in the HTTP response would look like this:
 
 ```sh
 Set-Cookie: user-id=c2FtLnNtaXRoQGV4YW1wbGUuY29t
@@ -74,13 +74,13 @@ Setting the domain to "example.com" not only will send the cookie to the "exampl
 
 The `Path` attribute specifies where a cookie will be delivered inside that domain. The client will contain the cookie in all requests to URLs that match the given path. This way we narrow down the URLs where the cookie is valid inside the domain.
 
-Lets consider that backend sets a cookie for its client, when a request to `http://example.com/login` is executed.
+Let's consider that backend sets a cookie for its client when a request to `http://example.com/login` is executed.
 
 ```sh
 Set-Cookie: user-id=c2FtLnNtaXRoQGV4YW1wbGUuY29t; Domain=example.com; Path=/user/; Max-Age=86400; Expires=Thu, 21-Jan-2021 20:06:48 GMT
 ```
 
-Notice the `Path` attribute is set to `/user/`. Now lets visit two different URLs and see what we have in the request cookies.
+Notice the `Path` attribute is set to `/user/`. Now let's visit two different URLs and see what we have in the request cookies.
 
 When we execute a request to `http://example.com/user/` in the request header we have:
 
@@ -88,7 +88,7 @@ When we execute a request to `http://example.com/user/` in the request header we
 Cookie: user-id=c2FtLnNtaXRoQGV4YW1wbGUuY29t
 ```
 
-As it is expected the cookie is rotated back to backend.
+As expected the cookie is rotated back to the backend.
 
 In the meantime when we try to do another request to `http://example.com/contacts/` the cookie header is missing and the server will not receive it under the path `/contacts/`.
 
@@ -98,7 +98,7 @@ When the path is not set during cookie creation, it defaults to `/`.
 
 #### Secure Cookie
 
-In cases when we store sensitive information inside the cookie and we want it to be sent only in secure connections then `Secure` attribute comes to our rescue.
+In cases when we store sensitive information inside the cookie and we want it to be sent only in secure connections then the `Secure` attribute comes to our rescue.
 
 ```sh
 Set-Cookie: user-id=c2FtLnNtaXRoQGV4YW1wbGUuY29t; Domain=example.com; Max-Age=86400; Expires=Thu, 21-Jan-2021 20:06:48 GMT; Secure
@@ -108,13 +108,13 @@ By setting `Secure`, we make sure our cookie is only transmitted over HTTPS, and
 
 #### HttpOnly Cookie
 
-`HttpOnly` is another important attribute of a cookie. It ensures that the cookie is not accessed by the client scripts. It is another form of securing a cookie from being changed by malicios code or XSS attacks.
+`HttpOnly` is another important attribute of a cookie. It ensures that the cookie is not accessed by the client scripts. It is another form of securing a cookie from being changed by malicious code or XSS attacks.
 
 ```sh
 Set-Cookie: user-id=c2FtLnNtaXRoQGV4YW1wbGUuY29t; Domain=example.com; Max-Age=86400; Expires=Thu, 21-Jan-2021 20:06:48 GMT; Secure; HttpOnly
 ```
 
-**Not all browsers support `HttpOnly` flag**. The good news is most of them do, but if it doesn't, it will ignore the `HttpOnly` even if it is set during cookie creation. Cookies should always be `HttpOnly` unless the browser doesn't support it or there is a requirement to expose them to clients scripts.
+**Not all browsers support `HttpOnly` flag**. The good news is most of them do, but if it doesn't, it will ignore the `HttpOnly` even if it is set during cookie creation. Cookies should always be `HttpOnly` unless the browser doesn't support it or there is a requirement to expose them to clients' scripts.
 
 Resources:
 
@@ -179,7 +179,7 @@ Now that we know how to handle a cookie using Servlet API, let's check how we ca
 
 ### Creating a Cookie
 
-In this section we will create a cookie with the same properties that we did using the Servlet API.
+In this section, we will create a cookie with the same properties that we did using the Servlet API.
 
 We will use the class `ResponseCookie` for the cookie and class `ResponseEntity` for setting the cookie in the response. They are both defined inside `org.springframework.http` package.
 
@@ -234,11 +234,11 @@ To delete a cookie, we will need to create the cookie with the same name and max
 
 In this article, we looked at what cookies are and how they(Http cookies) work.
 
-All in all cookies are simple text strings that carry some information and are identified with a name.
+All in all, cookies are simple text strings that carry some information and are identified with a name.
 
-We checked into some of the optional attributes we can "wear" to cookies to make them behave a certain way. We saw that we can make them persistant with `Max-Age` and `Expires`, narrow down their scope with `Domain` and `Path`, transmitted only over HTTPS with `Secure` and hide from client scripts with `HttpOnly`.
+We checked into some of the optional attributes we can "wear" to cookies to make them behave a certain way. We saw that we can make them persistent with `Max-Age` and `Expires`, narrow down their scope with `Domain` and `Path`, transmitted only over HTTPS with `Secure` and hide from client scripts with `HttpOnly`.
 
 We checked into two ways of handling cookies using Servlet API and Spring.
-Both of these apis offer the required methods for creating (with all atributtes), reading and deleting cookies.
+Both of these APIs offer the required methods for creating (with attributes), reading and deleting cookies.
 
 They are easy to implement and developers can choose either of them to implement cookies.

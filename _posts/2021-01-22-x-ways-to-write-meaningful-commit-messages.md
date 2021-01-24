@@ -14,13 +14,13 @@ Writing suitable commit messages can save a lot of time in producing application
 ## Why Is a Good Commit Message Important?
 Commit messages are a way of **communication between team members**. Let's say there's a bug in the application which was not there before. To find out what caused the problem, reading the commit messages could be handy. The proper commit message can **save a great deal of time** finding the recent changes related to the bug.
 
-Being a new member of a team and working on projects you haven't seen before has its challenges. If you have a task to add some logic to some part of the code, previous good commit messages can help you find out **where and how** to add it.
+Being a new member of a team and working on projects we haven't seen before has its challenges. If we have a task to add some logic to some part of the code, previous good commit messages **can help us find out where and how to add the code**.
 
-If you fix a bug and write: "Fixed the bug!". What happens is that you will probably completely forget about it a month or two later. It's not a good idea to think that if it's not clear for others, they can ask about it. It can waste a lot of time and energy as well.
+If we fix a bug and write: "Fixed the bug!". What happens is that we will probably completely forget about it a month or two later. It's not a good idea to think that if it's not clear for others, they can ask about it. It can waste a lot of time and energy as well.
 
 ## What Is a Good Commit Message?
 
-Good commit messages can be written in many different styles. The trick is to pick the best that suits you, the team, and the project and then stick to it. Like in so many other things, **being consistent in your commit message produces compound results over time**.
+Good commit messages can be written in many different styles. The trick is to pick the best that suits you, the team, and the project and then stick to it. Like in so many other things, **being consistent in our commit message produces compound results over time**.
 
 The perfect commit message should have certain qualities:
 
@@ -35,14 +35,14 @@ All styles and our commits should have some specific qualities to form a structu
 ### Atomic Commit
 Although using a proper style is a good practice, it's not enough. Discipline is crucial. **Our commits should be reasonably small and atomic**. 
 
-If the commit consists of multiple changes that make the message too long or inefficient, it's good practice to **separate it into several commits**. In other words: you don't want to commit a change that changes too much.
+If the commit consists of multiple changes that make the message too long or inefficient, it's good practice to **separate it into several commits**. In other words: we don't want to commit a change that changes too much.
 
-If you commit two changes together, for example a bug fix and a minor refactoring, it might not cause a very long commit message, but it can cause some other problems. 
+If we commit two changes together, for example a bug fix and a minor refactoring, it might not cause a very long commit message, but it can cause some other problems. 
 
-Let's say the bug fix created some other bugs. In that case, you should roll back to your recent commit. It results in the loss of the refactoring as well. It's not efficient, and it's not atomic.
+Let's say the bug fix created some other bugs. In that case, we should roll back to our recent commit. It results in the loss of the refactoring as well. It's not efficient, and it's not atomic.
 
 ### Short and Unambiguous
-The message should describe what changes your commit makes to the behavior of the code, not what changed in the code. We can see what changed in the diff with the previous commit, so we don't need to repeat it in the commit message. But to understand what behavior changed, a commit message can be helpful.
+The message should describe what changes our commit makes to the behavior of the code, not what changed in the code. We can see what changed in the diff with the previous commit, so we don't need to repeat it in the commit message. But to understand what behavior changed, a commit message can be helpful.
 
 It should answer the question: **"What happens if the changes are applied?"**. If the answer can't be short, it might be because the commit is not atomic, and it's too much change in one commit.
 
@@ -53,7 +53,7 @@ It should answer the question: **"What happens if the changes are applied?"**. I
 > **Wrong**: Added feature ... (passive voice, past tense)
 
 #### Detailed Enough
-Super-detailed commit messages are frustrating as well. You can find that level of detail in the code. For example, if your version control is Git, you can see all the changed files in Git, so you don't have to list them. 
+Super-detailed commit messages are frustrating as well. We can find that level of detail in the code. For example, if our version control is Git, we can see all the changed files in Git, so we don't have to list them. 
 
 So, instead of answering "what are the changes?", it's better to answer **"What are the changes for?"**.
 
@@ -100,13 +100,13 @@ In this example, "Fix" is the type, and the sentence after that is the summary.
 #### Body
 The format should be just like the summary, but the content goal is different. It should explain the motivation for the change.
 
-In other words, it should be an imperative sentence explaining why you're changing the code, **compared to what it was before**.
+In other words, it should be an imperative sentence explaining why we're changing the code, **compared to what it was before**.
 
 #### Footer
-You can mention the related task URL or the issue number in this section.
+We can mention the related task URL or the issue number in this section.
 
 ### Consistency in the Format
-All the rules above are beneficial only if you keep doing it in all your commits. If the structure changes in each commit,
+All the rules above are beneficial only if we keep doing it in all our commits. If the structure changes in each commit,
 the Git log would be unstructured and unreadable over time. Which misses the whole point of making these rules.
 
 ## Examples
@@ -126,10 +126,10 @@ the Git log would be unstructured and unreadable over time. Which misses the who
 >
 >add test scenario of user with zero credit
 >
->Payment-145 (or you can use the URL)
+>Payment-145 (or we can use the URL)
 
 #### Commit message 3
-You can even mix the type and description and write the message like this:
+We can even mix the type and description and write the message like this:
 >
 >Fix typo in tutorial
 >

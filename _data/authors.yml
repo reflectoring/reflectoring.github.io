@@ -166,3 +166,14 @@ skempken:
   stackoverflow: "1163345/skempken"
   twitter: "sebkempken"
   bio: "For more than a decade, I've been working as software engineer and architect. I love reasoning about our shared craft and writing down things I've learned." 
+
+hoorvash:
+  name: "Hoorvash Nikoo"
+  email: "hoorvash.nikoo@gmail.com"
+  avatar: "/assets/img/authors/hoorvash.jpg"
+  github: "hoorvash"
+  linkedin: "hoorvashnikoo"
+  bio: "As a software engineer and a Java developer, I love to learn new technologies, and solve
+        technical problems. Writing is another passion of mine. Combining these passions together,
+        and writing technical articles that might be helpful to even one individual in result
+        is rewarding."

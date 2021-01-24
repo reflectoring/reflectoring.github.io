@@ -4,6 +4,7 @@ categories: [craft]
 date: 2021-01-22 00:00:00 +1100
 modified: 2021-01-22 00:00:00 +1100
 excerpt: "This article discuss some important items that make a commit message, a good and understandable message"
+author: hoorvash
 image:
   auto: 0027-cover
 ---

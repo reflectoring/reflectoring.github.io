@@ -158,10 +158,18 @@ mujtaba:
   github: "mujjazi"
   bio: "Mujtaba is an Automation developer with a diverse range of experience working with Java Spring based projects. He is an advocate for DevOps and Test Automation while writing for various blogs to help young professionals"
 
-
 godeortela:
   name: "Ortela Gode"
   email: "godeortela@gmail.com"
   avatar: "/assets/img/authors/ortela.jpg"
   github: "ortelagode"
   bio: "Enthusiastic Software Consultant with diverse experience in Java Enterprise applicactions. Always on the lookout to experiment new technologies"
+
+skempken:
+  name: "Sebastian Kempken"
+  email: "contact@sebastian-kempken.de"
+  avatar: "/assets/img/authors/skempken.jpg"
+  github: "skempken"
+  stackoverflow: "1163345/skempken"
+  twitter: "sebkempken"
+  bio: "For more than a decade, I've been working as software engineer and architect. I love reasoning about our shared craft and writing down things I've learned." 

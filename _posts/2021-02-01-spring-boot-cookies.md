@@ -227,7 +227,7 @@ To delete a cookie, we will need to create the cookie with the same name and `ma
 
 ```java
  ResponseCookie deleteSpringCookie = ResponseCookie
-        .from("cookie-name", null)
+        .from("user-id", null)
         .build();
 
  ResponseEntity

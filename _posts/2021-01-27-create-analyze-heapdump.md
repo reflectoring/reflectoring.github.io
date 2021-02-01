@@ -154,7 +154,7 @@ For our example, it is more than 90%(31.5 out of 32.3 MB) of the whole heap.
 
 Then follows a short description, which tells us that One instance of "io.pratik.models.ProductGroup" loaded by "jdk.internal.loader.ClassLoaders$AppClassLoader @ 0x758627ae8" occupies 1,09,58,18,944 (61.63%) bytes. The memory is accumulated in one instance of "java.lang.Object[]", loaded by "<system class loader>", which occupies 1,09,58,18,904 (61.63%) bytes.
 
-![leakssuspectPieChart](/assets/img/posts/heapdump/leaksuspectsummary.png)
+![leakssuspectPieChart](/assets/img/posts/heapdump/leaksuspects.png)
 
 So, the report gives a short description of where the problem is:
 1. the name of the class keeping the memory, 

@@ -9,14 +9,20 @@ image:
   auto: 0001-network
 ---
 
-As Java developers, we are familiar with our applications throwing OutOfMemory exceptions or our server monitoring tools throwing alerts complaining about high JVM Memory utilization in the Java Virtual Machine (JVM). For investigating these problems, JVM Heap Memory is often the first place to look at. 
+As Java developers, we are familiar with our applications throwing OutOfMemory exceptions or our server monitoring tools throwing alerts complaining about high JVM Memory utilization in the Java Virtual Machine (JVM). 
 
-Diagnosing the JVM Heap Memory is a two-step process: first, we generate a heap dump on the server and then try to identify memory leak by analyzing all the objects on the heap. To see this in action, we will first trigger an OutOfMemoryException, and then capture the heap dump. We will next analyze this heap dump to identify the cause of the memory leak. 
+For investigating these problems, JVM Heap Memory is often the first place to look at. 
+
+Diagnosing the JVM Heap Memory is a two-step process: first, we generate a heap dump on the server and then try to identify memory leak by analyzing all the objects on the heap. 
+
+To see this in action, we will first trigger an OutOfMemoryException, and then capture the heap dump. We will next analyze this heap dump to identify the cause of the memory leak. 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/graphql" %}
 
 ## What is a Heap Dump
-Whenever we create a Java object by creating an instance of a class, it is always placed in an area known as the heap. Classes of the Java runtime are also created in this heap. The heap gets created when the JVM starts up and expands or collapses when the application runs to accommodate the objects created or destroyed while running the application. 
+Whenever we create a Java object by creating an instance of a class, it is always placed in an area known as the heap. Classes of the Java runtime are also created in this heap. 
+
+The heap gets created when the JVM starts up and expands or collapses when the application runs to accommodate the objects created or destroyed while running the application. 
 
 When the heap becomes full, the garbage collection process is run to collect the objects with no reference. More information on memory management can be found in the [Oracle docs](https://docs.oracle.com/cd/E13150_01/jrockit_jvm/jrockit/geninfo/diagnos/garbage_collect.html). 
 
@@ -35,36 +41,71 @@ public class OOMGenerator {
    * @throws Exception 
    */
   public static void main(String[] args) throws Exception {
- 
-        int dummyArraySize = 15;
-        System.out.println("Max JVM memory: " + Runtime.getRuntime().maxMemory());
-        long memoryConsumed = 0;
-        try {
-            ElectronicGood[] memoryAllocated = null;  
-            for (int loop = 0; loop < Integer.MAX_VALUE; loop++) {
-                memoryAllocated = new ElectronicGood[dummyArraySize];
-                memoryAllocated[0] = new ElectronicGood();
-                memoryConsumed += dummyArraySize * Long.SIZE;
-                System.out.println("Memory Consumed till now: " + memoryConsumed);
-                dummyArraySize *= dummyArraySize * 2;
-                Thread.sleep(5000);
-            }
-        } catch (OutOfMemoryError outofMemory) {
-            System.out.println("Catching out of memory error");
-            //Log the information,so that we can generate the statistics (latter on).
-            throw outofMemory;
-        }
+    
+    System.out.println("Max JVM memory: " + Runtime.getRuntime().maxMemory());
+    try {
+      ProductManager productManager = new ProductManager();
+      productManager.populateProducts();
+      
+    } catch (OutOfMemoryError outofMemory) {
+      System.out.println("Catching out of memory error");
+      // Log the information,so that we can generate the statistics (latter on).
+      throw outofMemory;
+    }
   }
+}
+```
+
+```java
+
+public class ProductManager {
+  private static ProductGroup regularItems = new ProductGroup();
+
+  private static ProductGroup discountedItems = new ProductGroup();
+
+  public void populateProducts() {
+
+    int dummyArraySize = 1;
+    for (int loop = 0; loop < Integer.MAX_VALUE; loop++) {
+      if(loop%2 == 0) {
+        createObjects(regularItems, dummyArraySize);
+      }else {
+        createObjects(discountedItems, dummyArraySize);
+      }
+      System.out.println("Memory Consumed till now: " + loop + "::"+ regularItems + " "+discountedItems );
+      dummyArraySize *= dummyArraySize * 2;
+      //Thread.sleep(5000);
+    }
+  }
+ 
+  private void createObjects(ProductGroup productGroup, int dummyArraySize) {   
+        switch (generateRandomIndex()) {
+        case 0:
+          for (int i = 0; i < dummyArraySize; ++i) {
+            productGroup.add( new ElectronicGood());
+          }
+          break;
+        case 1:
+          for (int i = 0; i < dummyArraySize; ++i) {
+            productGroup.add(new BrandedProduct());
+          }
+         ...
+         ...
+    }   
+  }
+
 }
 
 ```
-Running this program will trigger an OutOfMemoryError. In this program, we are allocating a large chunk of memory, which is exhausting heap memory storage.
+Running this program will trigger an OutOfMemoryError. In this program, we are creating and adding objects inside a `for` loop, which is exhausting heap memory storage.
 We keep on allocating the memory by running a `for` loop until a point is reached, when JVM does not have enough memory to allocate, resulting in an OutOfMemoryError being thrown. 
 
-## Finding the Cause of Outofmemory
-We will now find the cause of this error by doing a Heap Dump analysis. This is done in two steps. First, we capture the heap dump and then analyze the heap dump file to locate the suspected reason. We can capture heap dump in multiple ways.
+## Finding the Cause of OutofMemory Error
+We will now find the cause of this error by doing a heap dump analysis. This is done in two steps:
+1. Capture the heap dump 
+2. Analyze the heap dump file to locate the suspected reason. 
 
-Let us capture the heap map for our example first with jmap and then by passing a `VM` argument in the command line:
+We can capture heap dump in multiple ways.Let us capture the heap dump for our example first with `jmap` and then by passing a `VM` argument in the command line:
 
 ### Generating Heap Dump on Demand with jmap
 jmap is packaged with JDK and extracts the heap dump to a specified file location. 

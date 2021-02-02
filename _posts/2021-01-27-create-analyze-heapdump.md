@@ -4,25 +4,25 @@ categories: [spring-boot]
 date: 2021-01-20 06:00:00 +1000
 modified: 2021-01-20 06:00:00 +1000
 author: pratikdas
-excerpt: "We will introduce GraphQL and explain it alongside of an example implementation in Java and Spring Boot"
+excerpt: "We will investigate memory problems in a Java Application by creating a heap dump and analyzing it with analyzer tools. "
 image:
   auto: 0001-network
 ---
 
-As Java developers, we are familiar with our applications throwing OutOfMemory exception or our server monitoring tools throwing alerts complaining about high JVM Memory utilization in the Java Virtual Machine (JVM). For investigating these problems, JVM Heap Memory is often the first place to look at. 
+As Java developers, we are familiar with our applications throwing OutOfMemory exceptions or our server monitoring tools throwing alerts complaining about high JVM Memory utilization in the Java Virtual Machine (JVM). For investigating these problems, JVM Heap Memory is often the first place to look at. 
 
-Diagnosing the JVM Heap Memory is a two step process: first we generate a heap dump on the server and then try to identify memory leak by analyzing all the objects on the heap. To see this in action, we will first trigger an OutOfMemoryException, and then capture the heap dump. We will next analyze this heap dump to identify the cause of the momory leak. 
+Diagnosing the JVM Heap Memory is a two-step process: first, we generate a heap dump on the server and then try to identify memory leak by analyzing all the objects on the heap. To see this in action, we will first trigger an OutOfMemoryException, and then capture the heap dump. We will next analyze this heap dump to identify the cause of the memory leak. 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/graphql" %}
 
 ## What is a Heap Dump
-Whenever we create a Java object by creating an instance of a class , it is always placed in an area known as the heap. Classes of the Java runtime are also created in this heap. The heap gets created when the JVM starts up and expands or collapses when the application runs to accommodate the objects created or destroyed while running the application. 
+Whenever we create a Java object by creating an instance of a class, it is always placed in an area known as the heap. Classes of the Java runtime are also created in this heap. The heap gets created when the JVM starts up and expands or collapses when the application runs to accommodate the objects created or destroyed while running the application. 
 
-When the heap becomes full, garbage collection process is run to collect the objects with no reference. More information on memory management can be found in the [Oracle docs](https://docs.oracle.com/cd/E13150_01/jrockit_jvm/jrockit/geninfo/diagnos/garbage_collect.html). 
+When the heap becomes full, the garbage collection process is run to collect the objects with no reference. More information on memory management can be found in the [Oracle docs](https://docs.oracle.com/cd/E13150_01/jrockit_jvm/jrockit/geninfo/diagnos/garbage_collect.html). 
 
-**Heap dumps contain a snapshot of all the live objects that are being used by a running Java™ application on the Java heap.** We can obtain detailed information for each object instance, such as the address, type, class name, or size, and whether the instance has references to other objects.
+**Heap dumps contain a snapshot of all the live objects that are being used by a running Java application on the Java heap.** We can obtain detailed information for each object instance, such as the address, type, class name, or size, and whether the instance has references to other objects.
 
-Heap dumps have two formats: the classic format and the Portable Heap Dump (PHD) format. PHD is the default format. The classic format is readable since it is in ascii text, but the PHD format is binary and should be processed by appropriate tools for analysis.
+Heap dumps have two formats: the classic format and the Portable Heap Dump (PHD) format. PHD is the default format. The classic format is readable since it is in ASCII text, but the PHD format is binary and should be processed by appropriate tools for analysis.
 
 
 ## Sample Program to Generate OutofMemoryException
@@ -62,9 +62,9 @@ Running this program will trigger an OutOfMemoryError. In this program, we are a
 We keep on allocating the memory by running a `for` loop until a point is reached, when JVM does not have enough memory to allocate, resulting in an OutOfMemoryError being thrown. 
 
 ## Finding the Cause of Outofmemory
-We will now find the cause of this error by doing a Heap Dump analysis. This is done in two steps. First we capture the heap dump and then analyze the heap dump file to locate the suspected reason. We can capture heap dump in multiple ways.
+We will now find the cause of this error by doing a Heap Dump analysis. This is done in two steps. First, we capture the heap dump and then analyze the heap dump file to locate the suspected reason. We can capture heap dump in multiple ways.
 
-Let us capturing the heap map for our example first with jmap and then with a `VM` argument:
+Let us capture the heap map for our example first with jmap and then by passing a `VM` argument in the command line:
 
 ### Generating Heap Dump on Demand with jmap
 jmap is packaged with JDK and extracts the heap dump to a specified file location. 
@@ -80,7 +80,7 @@ For generating heap dump with `jmap`, we first find the process ID of our runnin
 ```
 After running the `jps` command, we can see the processes are listed in the format “<pid> <MainClass>”.
 
-Next we run the `jmap` command to generate the heap dump file:
+Next, we run the `jmap` command to generate the heap dump file:
 ```shell
 jmap -dump:live,file=mydump.hprof 41927
 ```
@@ -88,9 +88,9 @@ After running this command the heap dump file with extension `hprof` is created.
 
 ### Generating Heap Dump at the Point of Crash with VM argument HeapDumpOnOutOfMemoryError
 
-This option is used to capture heap dump at the point where OutOfMemoryError occured. This helps to diagnose the problem because we can see what objects were sitting in memory and what percentage of memory they were occupying when java.lang.OutOfMemoryError occurred.
+This option is used to capture heap dump at the point where OutOfMemoryError occurred. This helps to diagnose the problem because we can see what objects were sitting in memory and what percentage of memory they were occupying when java.lang.OutOfMemoryError occurred.
 
-We will use this option for our example, since we are more interested in the cause of the crash. Let us run the program with this VM option from the command line or our favourite IDE to generate the heap dump file.
+We will use this option for our example since we are more interested in the cause of the crash. Let us run the program with this VM option from the command line or our favorite IDE to generate the heap dump file.
  ```shell
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=<File path>hdump.hprof
 ```
@@ -111,7 +111,7 @@ Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
 As we can see from the output, the heap dump file with name : `hdump.hprof` is created when the `OutOfMemoryError` occurs.
 
 ### Other Methods of Generating Heap Dump
-Some of the other methods of genertaing Heap Dump are:
+Some of the other methods of generating a heap dump are:
  
 1. jcmd
 jcmd tool is used to send diagnostic command requests to the JVM. It is packaged as part of JDK. It can be found in \bin folder.
@@ -129,17 +129,32 @@ Let us understand the basic concepts of Java heap dump analysis with MAT by anal
 
 We will first start the Memory Analyzer Tool and open the heap dump file. In Eclipse MAT, two types of object sizes are reported:
 
-Shallow Size: The shallow heap of an object is its size in the memory
-Retained Size: Retained heap is the amount of memory that will be freed when an  object is garbage collected. 
+**Shallow heap size**: The shallow heap of an object is its size in the memory
+**Retained heap size**: Retained heap is the amount of memory that will be freed when an object is garbage collected. 
 
-After opening the heap dump, we see a piechart of the biggest objects by retained size as shown here:
+#### Overview
+After opening the heap dump, we see a piechart of the biggest objects by retained size in the `ovverview` tab as shown here:
 
 ![PieChart](/assets/img/posts/heapdump/piechart.png)
 
-`ProductGroup` and `ProductManager` are the biggest objects with retained sizes 1 GB and 650 MB.
+For our application, `ProductGroup` and `ProductManager` are the biggest objects with retained sizes 1 GB and 650 MB respectively.
 
-We can also see the objects present in the heap :
-![PieChart](/assets/img/posts/heapdump/objectsinheap.png)
+We will now see the objects present in the heap by selecting `ProductGroup` in the piechart and then selecting `List Objects` -> `with outgoing references` from the context menu:
+![path to list objects](/assets/img/posts/heapdump/pathtolistobjects.png)
+![Objects in heap](/assets/img/posts/heapdump/objectsinheap.png)
+
+Here we can see our `ArrayList` element named `products` as the outgoing reference for `ProductGroup` which appears in our code as:
+
+```java
+public class ProductGroup {
+  
+  private List<AbstractProduct> products = new ArrayList<AbstractProduct>();
+  
+  public void add(AbstractProduct product) {
+    products.add(product);
+  }
+}
+``` 
 
 ### Leak Suspects Report
 Next we generate the "Leak Suspects Report" by clicking the “Leak Suspects” link in the overview or by choosing this option from the menu.
@@ -156,13 +171,30 @@ Then follows a short description, which tells us that One instance of "io.pratik
 
 ![leakssuspectPieChart](/assets/img/posts/heapdump/leaksuspects.png)
 
-So, the report gives a short description of where the problem is:
+The report gives a short description of where the problem is:
 1. the name of the class keeping the memory, 
 2. the component to which this class belongs, 
 3. how much memory is kept, and 
 4. where exactly the memory is accumulated.
 
 ### Finding the Leak Suspect
+
+We get the `OutOfMemoryError` when the application tries to add more objects into the heap which is already full with objects and the garbage collector is not able to free up the memory because all the objects in heap still have some references. This situation will arise when :
+
+1. The application requires more memory to run because the currently allocated heap size is not enough to accommodate the objects generated during the run time.
+The other reason may be due to the coding error the application is keeping the references of unwanted objects
+
+
+2. The solution for the first reason is, increase the heap size. But the solution for the second is analyzing the code flow and heap dump to identify the unwanted objects in heap. To analyse the application heap we need to take the heap dump and open the same in memory analyzing tool.
+
+Memory Analyzer provides a leak suspect report which helps us to identify possible memory leak suspects. We can also investigate memory leaks without using this report with appropriate predefined queries to find memory leaks.
+
+Java Basics -> Open in Dominator Tree
+Java Basics -> Duplicate Classes
+Leak Identification -> Top Consumers
+Leak Identification -> Big Drops in Dominator Tree
+Path to GC Roots
+
 When the heap dump is opened for the first time, several index files get created, which enable us to access the data efficiently afterwards. A dominator tree is also built out of the object graph.
 
 The dominator tree models the keep alive dependencies among the objects in the heap. In this tree, every object is keeping alive all of its descendants. This means that if an object would be removed from the heap, then all of its descendants in the dominator tree would be garbage collected. The size of the object and all other objects it keeps alive we call retained size. 
@@ -189,9 +221,6 @@ Java Local: All local variables (parameters, objects or methods in thread stacks
 JNI Local: Local variables in native code
 JNI Global: Global variables in native code
 
-
-### Java Agent
-Java agents are a special type of class which can be used to profile our Java applications. They use the Java Instrumentation API to intercept applications running on the JVM and modify their bytecode. 
 
 ## Conclusion
 In this post we introduced Heap Dump as a snapshot of Java's object memory graph. We then saw different ways of capturing a Heap Dump.  We also looked at some of basic concepts of heap dump analysis with Eclipse Memory Analyzer using a sample application. I covered some basics of generating heap dumps, reachability, GC roots, shallow vs. retained heap, and dominator tree.

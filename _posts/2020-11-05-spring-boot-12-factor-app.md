@@ -15,7 +15,7 @@ These twelve factors contain best practices on managing configuration data, abst
 
 Today's frameworks and methods already adhere to many of these principles by design, while some are supported by running the applications inside containers. 
 
-Spring Boot is a popular framework for building microservice applications. In this article, we will check how a Spring Boot application can adhere to the twelve factors and what we have to do for that. 
+Spring Boot is a popular framework for building microservice applications. In this article, we will look at the changes required to make a Spring Boot application adhere to the twelve factors. 
 
 ## Goals of the Twelve Factors
 A common theme running through all the twelve principles is making the application portable to meet the demands of a dynamic environment provisioning typical of cloud platforms. The goals of the Twelve-Factor App as asserted in the [documentation](https://12factor.net) are:
@@ -52,7 +52,7 @@ We configure the application for a specific environment at runtime using [Spring
 
 The most likely dependencies of an application are open-source libraries or libraries built in-house by other teams. Dependencies could also take the form of specific software installed on the host system. We declare dependencies in external files leveraging the dependency management tools of the platform.
 
-For the Spring Boot application, we declare the dependencies in a `pom.xml` file (or `build.gradle` if we use Gradle). Our Spring Boot application uses `spring-boot-starter-web` as one of its dependencies, for example: 
+For the Spring Boot application, we declare the dependencies in a `pom.xml` file (or `build.gradle` if we use Gradle). Here is an example of a Spring Boot application using `spring-boot-starter-web` as one of its dependencies: 
 
 ```xml
     <dependency>

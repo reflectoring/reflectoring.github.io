@@ -14,6 +14,10 @@ main:
   - title: "Meta"
     url: /categories/meta
     style: "cat-5"
+  - title: "Book Me!"
+    url: /services
+    style: "cat-6"
+
 
 footer:
   - title: "Reflectoring"
@@ -21,7 +25,9 @@ footer:
     - title: "About"
       url: /about/
     - title: "Advertise"
-      url: /advertise
+      url: /advertise/
+    - title: "Book Me"
+      url: /services/
     - title: "Write With Me"
       url: /write-with-me
     - title: "Atom Feed"

@@ -13,7 +13,7 @@ comments:
 
 **You need an experienced software engineer for a mentoring or pairing session? To bounce off some ideas? To validate an architecture? Or to just talk through an idea?**
 
-I can help you! You can book me for an hour at a time - once, or regularly. Below is an incomplete list of things that I can help with. If what you're looking for is not listed, feel free to reach out anyways to discuss if I can help you.
+I can help you! You can book me remotely for an hour at a time - once, or regularly. Below is an incomplete list of things that I can help with. If what you're looking for is not listed, feel free to reach out anyways to discuss if I can help you.
 
 **Take advantage of me as a wildcard to get quick results without binding to a contract!** 
 

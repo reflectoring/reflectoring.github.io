@@ -11,7 +11,7 @@ image:
 
 This article is about cookies and different ways we can implement them in Spring Boot. We are going to have a short overview of what cookies are, how they work, and how we can handle them using the Servlet API and Spring Boot.
 
-If you are building a web application then you have probably already reached the point where there's the need to implement cookies. If you haven't, you will!
+If you are building a web application then you probably have reached the point where there's the need to implement cookies. If you haven't, you will!
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/cookie-demo" %}
 
@@ -119,11 +119,11 @@ Now that we know what cookies are and how they work let's check how we can handl
 
 ## Handling Cookies with the Servlet API
 
-Now, let's take a look at how to set cookies on the server-side with the Servlet API. 
+Now, let's take a look at how to set cookies on the server-side with the Servlet API.
 
 ### Creating a Cookie
 
-For creating a cookie with the Servlet API we use the `Cookie` class which is defined inside the `javax.servlet.http` package. 
+For creating a cookie with the Servlet API we use the `Cookie` class which is defined inside the `javax.servlet.http` package.
 
 The following snippet of code creates a cookie with name `user-id` and value `c2FtLnNtaXRoQGV4YW1wbGUuY29t` and sets all the attributes we discussed:
 

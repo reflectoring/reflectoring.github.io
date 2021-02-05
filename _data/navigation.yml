@@ -20,18 +20,20 @@ footer:
     children:
     - title: "About"
       url: /about/
-    - title: "Atom Feed"
-      url: /feed.xml
-    - title: "Meta"
-      url: /categories/meta
-    - title: "Privacy Policy"
-      url: /privacy/
+    - title: "Advertise"
+      url: /advertise
     - title: "Write With Me"
       url: /write-with-me
+    - title: "Atom Feed"
+      url: /feed.xml
+    - title: "Privacy Policy"
+      url: /privacy/
   - title: "Resources"
     children:
-    - title: "Book"
+    - title: "Clean Architecture"
       url: /get-your-hands-dirty-on-clean-architecture/
+    - title: "Newsletters"
+      url: /newsletters/
   - title: "Categories"
     children:
     - title: "Spring Boot"
@@ -44,3 +46,5 @@ footer:
       url: /categories/book-reviews
     - title: "Programming"
       url: /categories/programming
+    - title: "Meta"
+      url: /categories/meta

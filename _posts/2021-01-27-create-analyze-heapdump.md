@@ -107,7 +107,7 @@ We will now find the cause of this error by doing a heap dump analysis. This is 
 We can capture heap dump in multiple ways.Let us capture the heap dump for our example first with `jmap` and then by passing a `VM` argument in the command line:
 
 ### Generating Heap Dump on Demand with jmap
-jmap is packaged with JDK and extracts the heap dump to a specified file location. 
+`jmap` is packaged with JDK and extracts the heap dump to a specified file location. 
 
 For generating heap dump with `jmap`, we first find the process ID of our running Java program with the `jps` tool to list down all the running Java processes on our local machine:
 
@@ -159,11 +159,12 @@ Some of the other methods of generating a heap dump are:
 jcmd tool is used to send diagnostic command requests to the JVM. It is packaged as part of JDK. It can be found in \bin folder.
 
 2. JVisualVM
-Usually analyzing heap dump takes more memory than the actual heap dump size. This could be problematic if we are trying to analyze heap dump from a large server on a development machine. For instance, a server may have crashed with a heap dump of size 24 GB and your local machine may only have 16 GB of memory. Therefore, tools like MAT, Jhat won’t be able to load the heap dump file. In this case, you should either analyze the heap dump on the same server machine which doesn’t have memory constraint or use live memory sampling tools provided by VisualVM.
+Usually analyzing heap dump takes more memory than the actual heap dump size. This could be problematic if we are trying to analyze heap dump from a large server on a development machine. 
+
+For example, a server may have crashed with a heap dump of size 24 GB and our local machine may only have 16 GB of memory. Therefore, tools like MAT will not be able to load the heap dump file. In this case, we should either analyze the heap dump on the same server machine if it does not have any memory constraint or use live memory sampling tools provided by VisualVM.
 
 3. JMX
 
-4. Programmatic
 
 ### Analyzing the Heap Dump
 Some of the answers we look for by analyzing the heap dump are :
@@ -180,11 +181,38 @@ We will first start the Memory Analyzer Tool and open the heap dump file. In Ecl
 **Retained heap size**: Retained heap is the amount of memory that will be freed when an object is garbage collected. 
 
 #### Overview Section in MAT
-After opening the heap dump, we see a piechart of the biggest objects by retained size in the `overview` tab as shown here:
+After opening the heap dump, we will see an overview of the applications memory usage.
+The piechart shows the biggest objects by retained size in the `overview` tab as shown here:
 
 ![PieChart](/assets/img/posts/heapdump/piechart.png)
 
-For our application, `ProductGroup` and `ProductManager` are the biggest objects with retained sizes 1 GB and 650 MB respectively.
+For our application, this information in the overview means if we could dispose a particular instance of `java.lang.Thread` we will save 1.7 GB, and almost 100% of the memory used in this application. 
+
+#### Histogram View
+While that might look promising, java.lang.Thread is unlikely to be the real problem here. To get a better insight of what objects currently exist, we will use the Histogram view:
+
+![histogram](/assets/img/posts/heapdump/histogram.png)
+
+We have filtered the histogram with a regular expression "io.pratik.* " to show only the classes that match the pattern. With this view, we can see the number of live objects: for example, 243 `BrandedProduct` objects, and 309 `Price` Objects are alive in the system. We can also see the amount of memory each object is using. 
+
+There are two calculations, Shallow Heap and Retained Heap.  Shallow heap is the amount of memory consumed by one object. An Object requires 32 (or 64 bits, depending on the architecture) for each reference. Primitives such as integers and longs require 4 or 8 bytes, etc… While this can be interesting, the more useful metric is the Retained Heap.
+
+#### Retained Heap
+The retained heap is computed by adding the size all the objects in the retained set. A retained set of X is the set of objects which would be removed by the GC when X is collected.
+
+The retained heap can be calculated in two different ways, using the quick approximation or the precise retained size:
+
+![retainedheap](/assets/img/posts/heapdump/retainedheap.png)
+
+By calculating the Retained Heap we can now see that io.pratik.ProductGroup is holding the majority of the memory, even though it is only 32 bytes(shallow heap size) by itself. By finding a way to free up this object, we can certainly get our memory problem under control.
+
+#### Dominator Tree
+The key to understanding the retained heap, is looking at the dominator tree. The dominator tree is a tree produced by the complex object graph generated at runtime. The dominator tree helps to identify the largest memory graphs. An Object X is said to dominate an Object Y if every path from the Root to Y must pass through X. Looking at the dominator tree for our example, we can start to see where the bulk of our memory is leaking.
+![dominatortree](/assets/img/posts/heapdump/dominatortree.png)
+By looking at the dominator tree, we can easily see that it’s not the java.lang.Thread that’s the problem, but rather the `ProductGroup` object that holds the memory. All 100,000 Listeners are being retained by the Controller. By either removing freeing these objects, or freeing the lists that they contain, we can likely improve our situation. 
+
+#### Object References
+`ProductGroup` and `ProductManager` are the biggest objects with retained sizes 1 GB and 650 MB respectively.
 
 We will now see the objects present in the heap by selecting `ProductGroup` in the piechart and then selecting `List Objects` -> `with outgoing references` from the context menu:
 ![path to list objects](/assets/img/posts/heapdump/pathtolistobjects.png)
@@ -207,9 +235,9 @@ public class ProductGroup {
 #### Leak Suspects Report
 Next we generate the "Leak Suspects Report" by clicking the “Leak Suspects” link in the overview or by choosing this option from the menu.
 
-Before generating this report the Memory Analyzer Tool tries to find suspected big object or set of objects and presents the findings in a HTML report. The HTML report is also saved in a zip file next to the heap dump file. Due to its smaller size, it is preferable to share this report with specialized teams instead of the raw heap dump file.
+Before generating this report the Memory Analyzer Tool tries to find suspected big object or set of objects and presents the findings in a HTML report. The HTML report is also saved in a zip file next to the heap dump file. Due to its smaller size, it is preferable to share this report with teams specialized in performing analysis tasks instead of the raw heap dump file.
 
-The first thing in the report is the pie chart, which gives the size of the suspects: 
+The first thing in the report is the pie chart, which gives the size of the suspected objects: 
 
 ![leakssuspectPieChart](/assets/img/posts/heapdump/leaksuspectpiechart.png)
 
@@ -218,59 +246,6 @@ For our example, we have two suspects labelled as "Problem Suspect 1" and "Probl
 ![leakssuspects](/assets/img/posts/heapdump/leaksuspects.png)
 
 
-#### Locating the Leak Suspect
-
-We get the `OutOfMemoryError` when the application tries to add more objects into the heap which is already full with objects and the garbage collector is not able to free up the memory because all the objects in heap still have some references. This situation will arise when :
-
-1. The application requires more memory to run because the currently allocated heap size is not enough to accommodate the objects generated during the run time, or 
-
-2. The application is keeping the references of unwanted objects.
-
-The solution for the first reason is to increase the heap size. But the solution for the second is analyzing the heap dump to identify the unwanted objects in the heap. 
-
-Apart from the leak suspect report, we can also investigate memory leaks with predefined queries:
-
-**Java Basics -> Open in Dominator Tree**: The Dominator Tree is produced from the object graph in the heap dump and helps us to easily identify dependencies of objects. If an object would be removed from the heap, then all of its descendants in the dominator tree would be garbage collected.
-
-![dominatortree](/assets/img/posts/heapdump/dominatortree.png)
-
-The dominator tree for our example shows our 2 objects : `ProductGroup` and `ProductManager`.
-
-Java Basics -> Duplicate Classes
-Leak Identification -> Top Consumers
-Leak Identification -> Big Drops in Dominator Tree
-Path to GC Roots -> With All References
-Histogram:
-
-When the heap dump is opened for the first time, several index files get created, which enable us to access the data efficiently afterwards. A dominator tree is also built out of the object graph.
-
-The dominator tree models the keep alive dependencies among the objects in the heap. In this tree, every object is keeping alive all of its descendants. This means that if an object would be removed from the heap, then all of its descendants in the dominator tree would be garbage collected. The size of the object and all other objects it keeps alive we call retained size. 
-
-the dominator tree can show us the biggest objects in the heap. Using the property from the previous point it is very easy to compute the retained size for every single object. Then ordering the objects by size is trivial.
-
-It presents a part of the dominator tree and the size of the circles represents the retained size of the objects: the bigger the circle, the bigger the object.
-
-We simply treat all objects with size over a certain threshold as suspects. 
-In our case these are `ProductGroup` and `ProductManager`
-Then we go down the dominator tree and try to reach an object all of whose children are significantly smaller in size. This is what we call the “accumulation point”. Then we just take these two objects - the suspect and the accumulation point - and use them to describe the problem.
-
-### Reachability
-GC is perfomed in two steps:
-1. Mark all objects reachable from GC root. These are called reachable
-2. Sweep all objects not reachable from GC root.
-
-
-The GC roots are the objects accessible from outside the heap. The GC algorithms build a tree of live objects starting from these GC roots.
-Some GC roots are:
-
-System Class: Class loaded by bootstrap/system class loader.
-Thread Block: Objects referred to from currently active thread blocks. (Basically all objects in active thread blocks when a GC is happening are GC roots)
-Thread: Active Threads
-Java Local: All local variables (parameters, objects or methods in thread stacks)
-JNI Local: Local variables in native code
-JNI Global: Global variables in native code
-
-We can see that the GC root of the instance of class `ProductGroup` is the main thread.
 ## Conclusion
 In this post we introduced Heap Dump as a snapshot of Java's object memory graph. We then saw different ways of capturing a Heap Dump.  We also looked at some of basic concepts of heap dump analysis with Eclipse Memory Analyzer using a sample application. I covered some basics of generating heap dumps, reachability, GC roots, shallow vs. retained heap, and dominator tree.
 There are many more things that I haven’t covered. For example, the Object Query Language (OQL). The OQL is an SQL-like language. When comparing with SQL, we can consider classes as tables, objects as rows and fields as columns. I didn’t use OQL with the sample application, but there are many cases that OQL will be very useful. Eclipse MAT’s help is the best place to start learning OQL.

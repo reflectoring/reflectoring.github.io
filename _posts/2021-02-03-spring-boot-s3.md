@@ -3,68 +3,66 @@ title: "Getting Started with AWS S3 and Spring Boot"
 categories: [spring-boot]
 date: 2021-02-03 00:00:00 +0100
 modified: 2021-02-03 00:00:00 +0100
-author: mmr
-excerpt: "Learn how to use Spring Boot and AWS S3 to build you own file sharing application."
+author: jgoerner
+excerpt: "Learn how to use Spring Boot and AWS S3 by building our own file-sharing application."
 image:
   auto: 0090-404
 ---
 
 In this article, **we are going to explore AWS' Simple Storage Service (S3) together with Spring Boot to build a custom file-sharing application** (just like in the good old days before Google Drive, Dropbox & co).
 
-As you will learn, S3 is an extremely versatile and easy to use solution for a variety of use cases.
+As we will learn, S3 is an extremely versatile and easy to use solution for a variety of use cases.
 
-{% include github-project.html url="" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/s3" %}
 
-### What is S3?
+## What is S3?
 S3 stands for "simple storage service" and is an object store service hosted on Amazon Web Services (AWS) - but what does this exactly mean?
 
-You are probably familiar with databases (of any kind). Let's take Postgres for example. Postgres is a relational database, very well suited for storing structured data that has a schema that won't change too much over its lifetime (e.g. financial transaction records). But what if you want to store more than just plain data? What if you want to store a picture, a PDF, a document, or a video?
+You are probably familiar with databases (of any kind). Let's take Postgres for example. Postgres is a relational database, very well suited for storing structured data that has a schema that won't change too much over its lifetime (e.g. financial transaction records). But what if we want to store more than just plain data? What if we want to store a picture, a PDF, a document, or a video?
 
 It is technically possible to [store those binary files in Postgres](https://www.postgresql.org/docs/current/datatype-binary.html) but  **object stores like S3 might be better suited for storing unstructured data**.
 
-### Object Store vs. File Store 
+## Object Store vs. File Store 
 
-So you might ask yourself, how is an object store different from a file store? Without going into the gory details,  **an object store is a repository that stores objects in a flat structure**, similar to a key-value store. 
+So we might ask ourselves, how is an object store different from a file store? Without going into the gory details,  **an object store is a repository that stores objects in a flat structure**, similar to a key-value store. 
 
 Opposed to file-based storage where we have a hierarchy of files inside folders, inside folders,... **the only thing we need to get an item out of an object store is the key of the object we want to retrieve**. Additionally, we can provide metadata (data about data) that we attach to the object to further enrich it.
 
-If you want to take a deeper look into the differences, I recommend going through [this article](https://www.redhat.com/en/topics/data-storage/file-block-object-storage).
-
-## Basic S3 concepts
-S3 was one of the first services offered by AWS in 2006. Since then, a lot of features have been added, but **the core concepts of S3 are still Buckets and Objects**.
+## Understanding basic S3 concepts
+S3 was one of the first services offered by AWS in 2006. Since then, a lot of features have been added but **the core concepts of S3 are still Buckets and Objects**.
 
 ### Buckets
-Buckets are containers of objects you want to store. An important thing to note here is that S3 requires the name of the bucket to be globally unique.
+Buckets are containers of objects we want to store. An important thing to note here is that S3 requires the name of the bucket to be globally unique.
 
 ### Objects
-Objects are the actual things you are storing in S3. **They are identified by a key** which is a *sequence of Unicode characters whose UTF-8 encoding is at most 1,024 bytes long*.
+Objects are the actual things we are storing in S3. **They are identified by a key** which is a *sequence of Unicode characters whose UTF-8 encoding is at most 1,024 bytes long*.
 
 ### Key Delimiter
-By default, the "/" character gets special treatment if used in an object key. As written above, an object store does not use directories or folders but just keys. However, if you use a "/" in your object key, the AWS S3 console will render the object as if it was in a folder. 
+By default, the "/" character gets special treatment if used in an object key. As written above, an object store does not use directories or folders but just keys. However, if we use a "/" in our object key, the AWS S3 console will render the object as if it was in a folder. 
 
-So, if your object has the key "foo/bar/test.json" the console will show a "folder" *foo* which contains a "folder" *bar* which contains the actual object. This *key delimiter* helps you to group your data into logical hierarchies.
+So, if our object has the key "foo/bar/test.json" the console will show a "folder" *foo* which contains a "folder" *bar* which contains the actual object. This *key delimiter* helps us to group our data into logical hierarchies.
 
 ## Building an S3 Sample Application
-Going forward we are exploring the basic operations of S3. We do so by building our own file-sharing application that lets you securely & temporarily limited share files with other people.
+Going forward we are exploring the basic operations of S3. We do so by building our own file-sharing application ([code on GitHub](https://github.com/thombergs/code-examples/tree/master/aws/s3)) that lets us securely & temporarily limited share files with other people.
 
-> The sample application does include a lot of code that is not directly related to S3. If you are solely interested in the S3 specific parts, you might want to focus the `io.jgoerner.s3.adapter.out.s3.S3Repository` class
+> The sample application does include a lot of code that is not directly related to S3. The `io.jgoerner.s3.adapter.out.s3` package is solely focused around the S3 specific bits.
 
 The application's `Readme` has all instructions needed to launch it. You don't have to use the application to follow this article. It is merely meant as supportive means to explain certain S3 concepts.
 
-### Setup AWS & AWS SDK
-The first step is to set up an AWS account (if you haven't already) and to configure your AWS credentials. Here is [another article that explains this set up in great detail](https://reflectoring.io/getting-started-with-aws-cloudformation/#setting-up-an-aws-account) (only the initial configuration paragraphs are needed here, so feel free to come back after you're all set).
+### Setting up AWS & AWS SDK
+The first step is to set up an AWS account (if we haven't already) and to configure our AWS credentials. Here is [another article that explains this set up in great detail](https://reflectoring.io/getting-started-with-aws-cloudformation/##setting-up-an-aws-account) (only the initial configuration paragraphs are needed here, so feel free to come back after we are all set).
 
 ### Spring Boot & S3
 
-Our sample application is going to use the [Spring Cloud for Amazon Web Services](https://cloud.spring.io/spring-cloud-aws/reference/html/#using-amazon-web-services) project. The main advantage over the [official AWS SDK for Java](https://aws.amazon.com/sdk-for-java/) is the convenience and head start we get by using the Spring project. A lot of common operations are wrapped into higher-level APIs that reduce the amount of boilerplate code.
+Our sample application is going to use the [Spring Cloud for Amazon Web Services](https://cloud.spring.io/spring-cloud-aws/reference/html/##using-amazon-web-services) project. The main advantage over the [official AWS SDK for Java](https://aws.amazon.com/sdk-for-java/) is the convenience and head start we get by using the Spring project. A lot of common operations are wrapped into higher-level APIs that reduce the amount of boilerplate code.
 
 Spring Cloud AWS gives us the `org.springframework.cloud:spring-cloud-starter-aws` dependency which bundles all the dependencies we need to communicate with S3.
 
-### Configuration
+### Configuring Spring Boot
 Just as with any other Spring Boot application, we can make use of an `application.properties`/`application.yaml` file to store our configuration:
 
 ```yaml
-# application.yaml
+## application.yaml
 cloud:
   aws:
     region:
@@ -76,12 +74,12 @@ cloud:
 ```
 
 The snippet above does a few things:
-- `region/static`: we statically set our AWS region to be `eu-central-1` (because that is the region that is closest to me)
-- `stack/auto`: as we don't rely on AWS `CloudFormation` service, we want to disable the auto-detection
-- `credentials/profile-name`: we tell the application to use the credentials of the profile named `dev` (that's how I named my AWS profile locally)
+- `region.static`: we statically set our AWS region to be `eu-central-1` (because that is the region that is closest to me).
+- `stack.auto`: This option would have enabled the [automatic stack name detection of the application](https://cloud.spring.io/spring-cloud-aws/2.1.x/multi/multi__managing_cloud_environments.html#_cloudformation_configuration_in_spring_boot). As we don't rely on the AWS _CloudFormation_ service, we want to disable that setting (but here is a great article about [automatic deployment with CloudFormation](https://reflectoring.io/aws-cloudformation-deploy-docker-image/) in case we want to learn more about it).
+- `credentials.profile-name`: we tell the application to use the credentials of the profile named `dev` (that's how I named my AWS profile locally).
 
-If you configured your credentials properly you should be able to start the application. However, due to a [known issue](https://docs.spring.io/spring-cloud-aws/docs/2.2.3.RELEASE/reference/html/#amazon-sdk-configuration
-) you might want to add the following snippet to the configuration file to prevent noise in the application logs:
+If we configured our credentials properly we should be able to start the application. However, due to a [known issue](https://docs.spring.io/spring-cloud-aws/docs/2.2.3.RELEASE/reference/html/##amazon-sdk-configuration
+) we might want to add the following snippet to the configuration file to prevent noise in the application logs:
 
 ```yaml
 logging:
@@ -98,8 +96,6 @@ What the above configuration does is simply adjusting the log level for the clas
 The core class to handle the communication with S3 is the `com.amazonaws.services.s3.AmazonS3Client`. Thanks to Spring Boot's dependency injection we can simply use the constructor to get a reference to the client:
 
 ```java
-// io.jgoerner.s3.adapter.out.S3Repository
-
 public class S3Repository {
 
   private final AmazonS3Client s3Client;
@@ -138,14 +134,15 @@ We simply utilize the client's `waiters()` method and run a `HeadBucketRequest` 
 
 As mentioned before, **the name of the S3 bucket has to be globally unique**, so often I end up with rather long or non-human readable bucket names. Unfortunately, we can not attach any metadata to the bucket (as opposed to objects). Therefore, the sample application uses a little lookup table to map human and UI friendly names to globally unique ones. This is not required when working with S3, just something to improve the usability.
 
-> **Sample Application: Create a Bucket**
->
-> To use the sample application's UI to create a bucket:
-> 1. Navigate to the _Spaces_ section
-> 2. Click on _New Space_ 
-> 3. Enter the name and click _Submit_ 
-> 4. A message should pop up to indicate success
-
+<div class="notice success">
+ <h4><a href="https://github.com/thombergs/code-examples/tree/master/aws/s3" target="_blank">Sample Application</a>: Creating a Bucket</h4>
+ <ol>
+ <li>Navigate to the <em>Spaces</em> section</li>
+ <li>Click on <em>New Space</em></li>
+ <li>Enter the name and click <em>Submit</em></li>
+ <li>A message should pop up to indicate success</li>
+ </ol>
+</div>
 
 ### Uploading a File
 Now that our bucket is created we are all set to upload a file of our choice. The client provides us with the overloaded `putObject()` method. Besides the fine-grained `PutObjectRequest` we can use the function in three ways:
@@ -171,23 +168,24 @@ Only the last option gives us the possibility to directly attach metadata in the
 
 In our sample application, we attach a human-readable `name` to the object while making the key random to avoid collisions within the bucket - so we don't need any additional lookup tables.
 
-Object metadata can be quite useful, but we should note that S3 does not give us the possibility to directly search an object by metadata. If you are looking for a specific metadata key (e.g. `department` being set to `Engineering`) you have to touch all objects in your bucket and filter based on that property.
+Object metadata can be quite useful, but we should note that S3 does not give us the possibility to directly search an object by metadata. If we are looking for a specific metadata key (e.g. `department` being set to `Engineering`) we have to touch all objects in our bucket and filter based on that property.
 
-There are some upper boundaries worth mentioning when it comes to the size of the uploaded object. At the time of writing this article, you can upload an item of max 5GB within a single operation as we did with `putObject()`. If you use the client's `initiateMultipartUpload()` method, it is possible to upload an object of max 5TB through a [Multipart upload](https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html).
+There are some upper boundaries worth mentioning when it comes to the size of the uploaded object. At the time of writing this article, we can upload an item of max 5GB within a single operation as we did with `putObject()`. If we use the client's `initiateMultipartUpload()` method, it is possible to upload an object of max 5TB through a [Multipart upload](https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html).
 
-> **Sample Application: Upload a File**
->
-> To use the sample application's UI to upload a file:
-> 1. Navigate to the _Spaces_ section
-> 2. Select _Details_ on the target Space/Bucket
-> 3. Click on _Upload File_
-> 4. Pick our file, provide a name and click _Submit_
-> 5. A message should pop up to indicate success
+<div class="notice success">
+ <h4><a href="https://github.com/thombergs/code-examples/tree/master/aws/s3" target="_blank">Sample Application</a>: Uploading a File</h4>
+ <ol>
+ <li>Navigate to the <em>Spaces</em> section</li>
+ <li>Select <em>Details</em> on the target Space/Bucket</li>
+ <li>Click on <em>Upload File</em></li>
+ <li>Pick the file, provide a name and click <em>Submit</em></li>
+ <li>A message should pop up to indicate success</li>
+ </ol>
+</div>
 
 ### Listing Files
 Once we have uploaded our files, we want to be able to retrieve them and list the content of a bucket. The simplest way to do so is the client's `listObjectV2()` method:
 
-> AWS released `V2` of their [AWS SDK for Java in late 2018](https://aws.amazon.com/blogs/developer/aws-sdk-for-java-2-x-released/). Some of the client's methods offer both versions of the function, hence the `V2` suffix of the `listObjectsV2()` method.
 
 ```java
 s3Client
@@ -197,6 +195,14 @@ s3Client
 
 Similar to concepts of the [JSON API](https://jsonapi.org/), the object keys are not directly returned but wrapped in a payload that also contains other useful information about the request (e.g. such as pagination information). We get the object details by using the `getObjectSummaries()` method.
 
+<div class="notice success">
+ <h4>What does <code>V2</code> mean?</h4>
+ <p>
+ AWS released version 2 of their <a href="https://aws.amazon.com/blogs/developer/aws-sdk-for-java-2-x-released/" target="_blank">AWS SDK for Java in late 2018</a>. 
+ Some of the client's methods offer both versions of the function, hence the <code>V2</code> suffix of the <code>listObjectsV2()</code> method.
+ </p>
+ </div>
+ 
 As our sample application doesn't use the `S3ObjectSummary` model that the client provides us, we map those results into our domain model:
 
 ```java
@@ -211,12 +217,14 @@ Thanks to Java's `stream()` we can simply append the transformation to the reque
 
 Another noteworthy aspect is the handling of buckets that contain more than 1000 objects. By default, the client might only return a fraction, requiring pagination. However, the newer V2 SDK provides higher-level methods, that follow an [autopagination approach](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/pagination.html).
 
-> **Sample Application: List all Objects**
->
-> To use the sample application's UI to list all objects:
-> 1. Navigate to the _Spaces_ section
-> 2. Select _Details_ on the target Space/Bucket
-> 3. You see a list of all objects stored in the bucket
+<div class="notice success">
+ <h4><a href="https://github.com/thombergs/code-examples/tree/master/aws/s3" target="_blank">Sample Application</a>: Listing all Objects</h4>
+ <ol>
+ <li>Navigate to the <em>Spaces</em> section</li>
+ <li>Select <em>Details</em> on the target Space/Bucket</li>
+ <li>You see a list of all objects stored in the bucket</li>
+ </ol>
+</div>
 
 ### Making a File Public
 Every object in S3 has a URL that can be used to access that object. The URL follows a specific pattern of bucket name, region, and object key. Instead of manually creating this URL, we can use the `getUrl()` method, providing a bucket name and an object key:
@@ -226,21 +234,23 @@ s3Client
   .getUrl("my-awesome-bucket", "some-key");
 ```
 
-Depending on the region you are in, this yields an URL like the following (given that you are in the `eu-central-1` region):
+Depending on the region we are in, this yields an URL like the following (given that we are in the `eu-central-1` region):
 
 ```
 https://my-awesome-bucket.s3.eu-central-1.amazonaws.com/some-key
 ```
 
-> **Sample Application: Get Object's URL**
->
-> To use the sample application's UI get an object's URL:
-> 1. Navigate to the _Spaces_ section
-> 2. Select _Details_ on the target Space/Bucket
-> 3. Select _Download_ on the target object
-> 4. The object's URL shall be opened in a new tab
+<div class="notice success">
+ <h4><a href="https://github.com/thombergs/code-examples/tree/master/aws/s3" target="_blank">Sample Application</a>: Getting an Object's URL</h4>
+ <ol>
+ <li>Navigate to the <em>Spaces</em> section</li>
+ <li>Select <em>Details</em> on the target Space/Bucket</li>
+ <li>Select <em>Download</em> on the target object</li>
+ <li>The object's URL shall be opened in a new tab</li>
+ </ol>
+</div>
 
-When accessing this URL directly after uploading an object you should get an `Access Denied` error, since **all objects are private by default**: 
+When accessing this URL directly after uploading an object we should get an `Access Denied` error, since **all objects are private by default**: 
 
 ```xml
 <Error>
@@ -250,8 +260,6 @@ When accessing this URL directly after uploading an object you should get an `Ac
   <HostId>...</HostId>
 </Error>
 ```
-
-
 
 As our application is all about sharing things, we do want those objects to be publicly available though.
 
@@ -272,18 +280,20 @@ s3Client
 
 We are using the the clients' `setObjectAcl()` in combination with the high level `CannedAccessControlList.PublicRead`. The `PublicRead` is a prepared rule, that allows anyone (*grantee*) to have read access (*permission*) on the object.
 
-> **Sample Application: Make object public**
->
-> To use the sample application's UI to make an object public:
-> 1. Navigate to the _Spaces_ section
-> 2. Select _Details_ on the target Space/Bucket
-> 3. Select _Make Public_ on the target object
-> 4. A message should pop up to indicate success
+<div class="notice success">
+ <h4><a href="https://github.com/thombergs/code-examples/tree/master/aws/s3" target="_blank">Sample Application</a>: Making an Object public</h4>
+ <ol>
+ <li>Navigate to the <em>Spaces</em> section</li>
+ <li>Select <em>Details</em> on the target Space/Bucket</li>
+ <li>Select <em>Make Public</em> on the target object</li>
+ <li>A message should pop up to indicate success</li>
+ </ol>
+</div>
 
-If you reload the page that gave you an `Access Denied` error again, you will now be prompted to download the file.
+If we reload the page that gave us an `Access Denied` error again, we will now be prompted to download the file.
 
 ### Making a File Private
-Once the recipient downloaded the file, you might want to revoke the public access. This can be done following the same logic and methods, with slightly different parameters:
+Once the recipient downloaded the file, we might want to revoke the public access. This can be done following the same logic and methods, with slightly different parameters:
 
 
 ```java
@@ -297,13 +307,15 @@ s3Client
 
 The above snippet sets the object's ACL so that only the bucket owner (*grantee*) has full control (*permission*), which is the default setting.
 
-> **Sample Application: Make object private**
->
-> To use the sample application's UI to make an object public:
-> 1. Navigate to the _Spaces_ section
-> 2. Select _Details_ on the target Space/Bucket
-> 3. Select _Make Private_ on the target object
-> 4. A message should pop up to indicate success
+<div class="notice success">
+ <h4><a href="https://github.com/thombergs/code-examples/tree/master/aws/s3" target="_blank">Sample Application</a>: Making an Object private</h4>
+ <ol>
+ <li>Navigate to the <em>Spaces</em> section</li>
+ <li>Select <em>Details</em> on the target Space/Bucket</li>
+ <li>Select <em>Make Private</em> on the target object</li> 
+ <li>A message should pop up to indicate success</li>
+ </ol>
+</div>
 
 ### Deleting Files & Buckets
 
@@ -319,22 +331,26 @@ s3Client
 
 The `deleteObject()` method simply takes the name of the bucket and the key of the object.
 
-> **Sample Application: Delete an Object**
->
-> To use the sample application's UI to delete an object:
-> 1. Navigate to the _Spaces_ section
-> 2. Select _Details_ on the target Space/Bucket
-> 3. Select _Delete_ on the target object
-> 4. The list of objects should reload without the deleted one
+<div class="notice success">
+ <h4><a href="https://github.com/thombergs/code-examples/tree/master/aws/s3" target="_blank">Sample Application</a>: Deleting an Object</h4>
+ <ol>
+ <li>Navigate to the <em>Spaces</em> section</li>
+ <li>Select <em>Details</em> on the target Space/Bucket</li>
+ <li>Select <em>Delete</em> on the target object</li> 
+ <li>The list of objects should reload without the deleted one</li>
+ </ol>
+</div>
 
-One noteworthy aspect around deletion is that you can't delete non-empty buckets. So if you want to get rid of a complete bucket, you first have to make sure that you delete all the items first.
+One noteworthy aspect around deletion is that we can't delete non-empty buckets. So if we want to get rid of a complete bucket, we first have to make sure that we delete all the items first.
 
-> **Sample Application: Delete a Bucket**
->
-> To use the sample application's UI to delete a bucket:
-> 1. Navigate to the _Spaces_ section
-> 2. Select _Delete_ on the target Space/Bucket
-> 3. The list of buckets should reload without the deleted one
+<div class="notice success">
+ <h4><a href="https://github.com/thombergs/code-examples/tree/master/aws/s3" target="_blank">Sample Application</a>: Deleting a Bucket</h4>
+ <ol>
+ <li>Navigate to the <em>Spaces</em> section</li>
+ <li>Select <em>Delete</em> on the target Space/Bucket</li>
+ <li>The list of buckets should reload without the deleted one</li>
+ </ol>
+</div>
 
 ### Using Pre-Signed URLs
 
@@ -365,13 +381,15 @@ In the above snippet, we do so by simply multiplying the duration (in seconds) b
 
 The [official documentation](https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html) has some more information around the limitations of pre-signed URLs.
 
-> **Sample Application: Generate a pre-signed URL**
->
-> To use the sample application's UI to generate a pre-signed URL for an object:
-1. Navigate to the _Spaces_ section
-2. Select _Details_ on the target Space/Bucket
-3. Select _Magic Link_ on the target object
-4. A message should pop up, containing a pre-signed URL for that object (which is valid for 15 minutes)
+<div class="notice success">
+ <h4><a href="https://github.com/thombergs/code-examples/tree/master/aws/s3" target="_blank">Sample Application</a>: Generating a pre-signed URL</h4>
+ <ol>
+ <li>Navigate to the <em>Spaces</em> section</li>
+ <li>Select <em>Details</em> on the target Space/Bucket</li>
+ <li>Select <em>Magic Link</em> on the target object</li>
+ <li>A message should pop up, containing a pre-signed URL for that object (which is valid for 15 minutes)</li>
+ </ol>
+</div>
 
 ### Using Bucket Lifecycle Policies
 
@@ -402,23 +420,24 @@ We use the client's `setBucketLifecycleConfiguration()` method, given the bucket
 - a status of being `ENABLED`, so as soon as this rule is created, it is effective
 - an expiration of seven days, so after a week the object gets deleted
 
-It shall be noted that the snippet above overrides the old lifecycle configuration. That is ok for our use case but you might want to fetch the existing rules first and upload the combination of old and new rules.
+It shall be noted that the snippet above overrides the old lifecycle configuration. That is ok for our use case but we might want to fetch the existing rules first and upload the combination of old and new rules.
 
-> **Sample Application: Set expiration on Bucket**
->
-> To use the sample application's UI to set an expiration on a bucket's objects:
-> 1. Navigate to the _Spaces_ section
-> 2. Select _Make Temporary_ on the target Space/Bucket
-> 3. Select _Delete_ on the target object
-> 4. A message should pop up to indicate success
+<div class="notice success">
+ <h4><a href="https://github.com/thombergs/code-examples/tree/master/aws/s3" target="_blank">Sample Application</a>: Setting a Bucket's expiration</h4>
+ <ol>
+ <li>Navigate to the <em>Spaces</em> section</li>
+ <li>Select <em>Make Temporary</em> on the target Space/Bucket</li>
+ <li>A message should pop up to indicate success</li>
+ </ol>
+</div>
 
-Lifecycle rules are very versatile, as you can use the filter to only apply the rule to objects with a certain key prefix or carry out other actions like archiving of objects.
+Lifecycle rules are very versatile, as we can use the filter to only apply the rule to objects with a certain key prefix or carry out other actions like archiving of objects.
 
 ## Conclusion
 
-In this article, you've learned the basics of AWS' Simple Storage Service (S3) and how to use Spring Boot and the `Spring Cloud` project to get started with it.
+In this article, we've learned the basics of AWS' Simple Storage Service (S3) and how to use Spring Boot and the `Spring Cloud` project to get started with it.
 
-We used S3 to build a custom file-sharing application, that lets you upload & share your files in different ways. But it shall be said, that S3 is way more versatile, often also quoted to be the **backbone of the internet**.
+We used S3 to build a custom file-sharing application ([code on GitHub](https://github.com/thombergs/code-examples/tree/master/aws/s3)), that lets us upload & share our files in different ways. But it shall be said, that S3 is way more versatile, often also quoted to be the **backbone of the internet**.
 
-As this is a getting started article, we did not touch other topics like [storage tiers](https://aws.amazon.com/s3/storage-classes/), [object versioning](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html) or [static content hosting](https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html). So I can only recommend you get your hands dirty, and play around with S3!
+As this is a getting started article, we did not touch other topics like [storage tiers](https://aws.amazon.com/s3/storage-classes/), [object versioning](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html) or [static content hosting](https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html). So I can only recommend we get our hands dirty, and play around with S3!
 

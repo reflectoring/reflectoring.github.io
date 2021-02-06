@@ -197,8 +197,8 @@ We have filtered the histogram with a regular expression "io.pratik.* " to show 
 
 There are two calculations, Shallow Heap and Retained Heap.  Shallow heap is the amount of memory consumed by one object. An Object requires 32 (or 64 bits, depending on the architecture) for each reference. Primitives such as integers and longs require 4 or 8 bytes, etc… While this can be interesting, the more useful metric is the Retained Heap.
 
-#### Retained Heap
-The retained heap is computed by adding the size all the objects in the retained set. A retained set of X is the set of objects which would be removed by the GC when X is collected.
+#### Retained Heap Size
+The retained heap size is computed by adding the size all the objects in the retained set. A retained set of X is the set of objects which would be removed by the GC when X is collected.
 
 The retained heap can be calculated in two different ways, using the quick approximation or the precise retained size:
 
@@ -207,9 +207,9 @@ The retained heap can be calculated in two different ways, using the quick appro
 By calculating the Retained Heap we can now see that io.pratik.ProductGroup is holding the majority of the memory, even though it is only 32 bytes(shallow heap size) by itself. By finding a way to free up this object, we can certainly get our memory problem under control.
 
 #### Dominator Tree
-The key to understanding the retained heap, is looking at the dominator tree. The dominator tree is a tree produced by the complex object graph generated at runtime. The dominator tree helps to identify the largest memory graphs. An Object X is said to dominate an Object Y if every path from the Root to Y must pass through X. Looking at the dominator tree for our example, we can start to see where the bulk of our memory is leaking.
+ The dominator tree is produced by the complex object graph generated at runtime and helps to identify the largest memory graphs. An Object X is said to dominate an Object Y if every path from the Root to Y must pass through X. Looking at the dominator tree for our example, we can start to see where the bulk of our memory is leaking.
 ![dominatortree](/assets/img/posts/heapdump/dominatortree.png)
-By looking at the dominator tree, we can easily see that it’s not the java.lang.Thread that’s the problem, but rather the `ProductGroup` object that holds the memory. All 100,000 Listeners are being retained by the Controller. By either removing freeing these objects, or freeing the lists that they contain, we can likely improve our situation. 
+By looking at the dominator tree, we can easily see that the `ProductGroup` object  holds the memory instead of the `Thread` object. We can probably fix the memory problem by releasing these objects. 
 
 #### Object References
 `ProductGroup` and `ProductManager` are the biggest objects with retained sizes 1 GB and 650 MB respectively.
@@ -233,9 +233,7 @@ public class ProductGroup {
 ``` 
 
 #### Leak Suspects Report
-Next we generate the "Leak Suspects Report" by clicking the “Leak Suspects” link in the overview or by choosing this option from the menu.
-
-Before generating this report the Memory Analyzer Tool tries to find suspected big object or set of objects and presents the findings in a HTML report. The HTML report is also saved in a zip file next to the heap dump file. Due to its smaller size, it is preferable to share this report with teams specialized in performing analysis tasks instead of the raw heap dump file.
+We can also generate a "Leak Suspects Report" to find suspected big object or set of objects and presents the findings in a HTML report. The HTML report is also saved in a zip file next to the heap dump file. Due to its smaller size, it is preferable to share this report with teams specialized in performing analysis tasks instead of the raw heap dump file.
 
 The first thing in the report is the pie chart, which gives the size of the suspected objects: 
 

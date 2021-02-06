@@ -7,6 +7,8 @@ ads:
   enabled: false
 comments:
   enabled: false
+image:
+  auto: 0094-planner
 ---
 
 <img alt="Tom" src="/assets/img/authors/tom.jpg" class="circle pull-right"/>

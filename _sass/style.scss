@@ -87,7 +87,7 @@ a:hover, a:focus {
   color: $link-color;
 }
 
-p > a {
+p > a, li > a {
   font-weight: normal;
 }
 

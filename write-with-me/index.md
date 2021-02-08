@@ -16,6 +16,20 @@ I'm looking for authors to contribute to the reflectoring blog!
  
 Interested in writing about Spring and Java? In getting a better writer? In earning a little money on the side? Then read on!
 
+## What The Authors Say
+
+> **"Reflectoring gives me the opportunity to research, develop, and write about topics that interest me, as well as to connect and network with other professionals that have the same interests as me.**
+> <br/><br/>
+> **Also, as a beginner writer myself, writing for reflectoring helps me develop my writing skills. Tom's proof-reading is really valuable in order to write better articles."**
+
+*- Petros Stergioulas*
+
+> **"I like the structured process of writing here - from creating an outline, submitting the draft for review, and finally getting it published.**
+> <br/><br/>
+> **The reviews before publishing add valuable feedback from a reader's perspective. Above that, the use of Markdown formats, Trello boards, and GitHub gives a great experience not very different from what we are used to as developers."**
+
+*- Pratik Das*
+
 ## Why Should I Write at All?
 
 There's [plenty of reasons](https://www.google.com/search?q=why+should+i+write+a+programming+blog&rlz=1C1GCEA_enDE749DE749&oq=why+should+i+write+a+programming+blog&aqs=chrome..69i57j0j35i39j0l5.4855j0j4&sourceid=chrome&ie=UTF-8) for a software developer to write. Writing regularly has certainly created some contacts and opened a couple of doors for me.

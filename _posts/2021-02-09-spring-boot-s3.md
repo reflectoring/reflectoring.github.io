@@ -1,8 +1,8 @@
 ---
 title: "Getting Started with AWS S3 and Spring Boot"
 categories: [spring-boot]
-date: 2021-02-09 00:00:00 +0100
-modified: 2021-02-09 00:00:00 +0100
+date: 2021-02-09 00:00:00 +1100
+modified: 2021-02-09 00:00:00 +1100
 author: jgoerner
 excerpt: "Learn how to use Spring Boot and AWS S3 by building our own file-sharing application."
 image:

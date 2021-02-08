@@ -33,7 +33,7 @@ EditorConfig allows you to define commonly used coding styles in a file which ca
 
 With EditorConfig, you can define whether you want your indentation style to be tab or space, what should be the indentation size (the most common size I have seen is 4), and other properties that we will be discussing in the next section.
 
-Since there lot of IDEs and we cannot touch all of them, I have selected two IDEs: IntelliJ IDEA which comes with native support for EditorConfig and Eclipse which requires a plugin to be downloaded for it to work properly. 
+Since there are lot of IDEs and we cannot touch all of them, I have selected two IDEs: IntelliJ IDEA which comes with native support for EditorConfig and Eclipse which requires a plugin to be downloaded for it to work properly. 
 
 For a complete list of supported IDEs (those requiring plugin and those with native support), please check the [official website](https://editorconfig.org/).
 
@@ -63,15 +63,22 @@ trim_trailing_whitespace = true
 
 In the snippet above, I have defined two major sections: root definition section and the Java style section. 
 
-I have specified the **root** value to be *true* and what this means is that when a file is opened, editorConfig plugin will start searching for .editorConfig files starting from the current directory. The search will only stop when it has reached the root directory or when it sees a .editorConfig file with root value set to true.
+I have specified the **root** value to be *true* and what this means is that when a file is opened, editorConfig plugin will start searching for .editorconfig files starting from the current directory. The search will only stop when it has reached the root directory or when it sees a .editorconfig file with root value set to true.
 
-EditorConfig plugin applies styles in a top down fashion, so if you have several .editorConfig files in your project with some duplicated properties, the closet .editorConfig file takes precedence.
+EditorConfig plugin applies styles in a top down fashion, so if you have several .editorconfig files in your project with some duplicated properties, the closet .editorconfig file takes precedence.
 
 For the Java section, I have defined a pattern **[*.java]** to match all java files. If your requirement is to match some other type of files with a different extension, a complete list of Wildcard Pattern is available in the [official website](https://editorconfig.org/)
 
-You can use the Editor and Preview button at the top-right corner of IntelliJ to view the effect of the styles in realtime.
+You can use the Editor and Preview button (this requires that you create at least a Java class in your project) at the top-right corner of IntelliJ to view the effect of the styles in realtime. To apply the styles to all Java classes in your project, you would right click on the project and select *Reformat Code* from the list of options, a dialog box should apply, and you can click on the *Run* button to apply your style changes. Once done, you should see all your Java source files neatly formatted according to the styles you have defined in .editorconfig file.
 
 A complete list of universally supported properties across IDEs can be found in the  [official reference](https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties#current-universal-properties)
+
+## Using editorconfig with Eclipse
+Since Eclipse does not support EditorConfig out of the box, we have to install a plugin to make this work. Fortunately, its not too much of a hassle I promise.
+
+To install Eclipse EditorConfig plugin, kindly follow the [official installation guide](https://github.com/ncjones/editorconfig-eclipse#installation). Once it is installed in your workspace, you can go ahead to create a .editorconfig file in the root folder of your java project and apply the same coding styles as stated in the IntelliJ section.
+
+To format the java classes in your project to use this styles, you would right click on the project from the **Package Explorer** tab on the top-left corner of Eclipse and select *Source*, then click on *Format*, this would format all your java files using the coding styles in the .editorconfig file.
 
 ## Conclusion
 In this article, we learned how to use EditorConfig to achieve consistent coding styles by using universal properties that are supported across IDEs and EditorConfig plugins. 

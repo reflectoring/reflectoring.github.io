@@ -84,8 +84,11 @@ a:hover, a:focus {
 }
 
 .text a, .below-content-container p a, .media-body p a {
-  font-weight: normal;
   color: $link-color;
+}
+
+p > a, li > a {
+  font-weight: normal;
 }
 
 p {

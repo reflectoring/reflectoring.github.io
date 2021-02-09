@@ -368,6 +368,10 @@ textarea.input {
   transition: 0.2s color;
 }
 
+.nav-menu li a {
+    font-weight: 600;
+}
+
 .nav-menu li:first-child a {
   border-left: 1px solid #eceef2;
 }

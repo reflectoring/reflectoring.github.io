@@ -91,7 +91,7 @@ Preslav Rachev [in his article](https://p5v.medium.com/what-s-with-the-50-72-rul
 
 
 #### Conventional Commit Messages in Depth
-Firstly we discuss conventional commit messages in general, following by a brief review of what Semantic Versioning is. Then we explain the three most famous suggested styles.
+Firstly we discuss conventional commit messages in general, following by a brief review of what Semantic Versioning is. Then we explain the some most famous styles.
 
 [Conventionalcommits](https://www.conventionalcommits.org/en/v1.0.0/) **suggests great commit message formats that joint perfectly with semantic commits conventions**.
 We explain it thoroughly after a quick review of what semantic versioning is.
@@ -208,7 +208,7 @@ There was a mistype in the tutorial of our website. "Color" was misspelled. We c
 The following examples are based on [angular suggested format](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit) 
 and also [conventional message](https://www.conventionalcommits.org/en/v1.0.0/) styles.
 
-#### Example Two
+#### Example Twof
 We added a feature to the codebase. It gets the mobile number from the user and adds it to the user table.
 All positive and negative tests are ready except one. It should check that entering characters as mobile number is 
 not allowed to the user. We add this test scenario and then commit it with the message:

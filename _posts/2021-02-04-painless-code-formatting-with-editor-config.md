@@ -70,7 +70,7 @@ EditorConfig applies styles in a top down fashion, so if we have several `.edito
 
 For the Java section, we have defined a pattern `[*.java]` to apply the config to all java files. If your requirement is to match some other type of files with a different extension, a complete list of wildcard patterns is available on the [official website](https://editorconfig.org/)
 
-We can use the Editor and Preview button in the top-right corner of IntelliJ to view the effect of the styles in realtime (this requires that we create at least one Java class in your project). To apply the styles to all Java classes in our project, as shown in the screenshots below, you would right click on the project and select *Reformat Code* from the list of options, a dialog box should apply, and you can click on the *Run* button to apply your style changes. 
+We can use the Editor and Preview button in the top-right corner of IntelliJ to view the effect of the styles in realtime (this requires that we create at least one Java class in your project). To apply the styles to all Java classes in our project, as shown in the screenshots below, you would click on the *Code* tab and select *Reformat Code* from the list of options, a dialog box should apply, and you can click on the *Run* button to apply your style changes. 
 
 Step 1:
 ![IntelliJ Reformat Window]({{ base }}/assets/img/posts/painless-code-formatting-with-editor-config/intellij-reformat.png)

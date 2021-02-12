@@ -72,28 +72,31 @@ Super-detailed commit messages are frustrating as well. We can find that level o
 So, instead of answering "what are the changes?", **it's better to answer "What are the changes for?"**.
 
 ### Formatting
+Let's start with Git conventions. The rest of the styles have these conventions in their core. 
 
-**Git suggests a commit message should have three parts including a subject, a description, and a ticket number.** Let's see the exact template that git mentions in its [website](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration):
+**Git suggests a commit message should have three parts including a subject, a description, and a ticket number.** 
+Let's see the exact template mentioned in [Git's website](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration):
 
 > Subject line (try to keep under 50 characters)
 
 > Multi-line description of commit,
-> feel free to be detailed. 
+> feel free to be detailed. (Up to 72)
  
 > [Ticket: X]
 
----
+
 **The subject is better to be less than 50 characters** to get a clean output when executing the following command: git log --oneline. **The description is better to be up to 72 characters.**
 
 Preslav Rachev [in his article](https://p5v.medium.com/what-s-with-the-50-72-rule-8a906f61f09c) explains the reason for the 50/72 rule. The ideal size of a git commit summary is around 50 characters in length. Analyzing the average length of commit messages in the Linux kernel suggests this number. The 72 character rule is to center the description on an 80-column terminal in the git log since it adds four blank spaces at the left when displaying the commit message, so we want to add space for four more blank spaces on the right side.
 
----
 
 #### Conventional Commit Messages in Depth
-[Conventionalcommits](https://www.conventionalcommits.org/en/v1.0.0/) suggests great commit message formats that joint perfectly with semantic commits conventions.
-They stand on top of the meaning of the semantic versioning which we explain soon.
+Firstly we discuss conventional commit messages in general, following by a brief review of what Semantic Versioning is. Then we explain the three most famous suggested styles.
+
+[Conventionalcommits](https://www.conventionalcommits.org/en/v1.0.0/) **suggests great commit message formats that joint perfectly with semantic commits conventions**.
+We explain it thoroughly after a quick review of what semantic versioning is.
  
-##### Semantic Versioning
+#### Semantic Versioning
 As described on [semver website](https://semver.org/), semantic versioning is like MAJOR.MINOR.PATCH
 which every number increments based on the type of the changes.
 
@@ -101,8 +104,8 @@ which every number increments based on the type of the changes.
 - **MINOR version when we add functionality in a backward-compatible manner**
 - **PATCH version when we make backward-compatible bug fixes** 
 
-**The conventions correlate with this version numbering.** Generating the version number can be automated based on these commit message conventions. the general structure
-is like below:
+**Mentioned conventions correlate with this version numbering.** Generating the version number can be automated based on these commit message conventions. the general structure
+is like below with respect to the 50/72 rule:
 
 > [type][optional scope]: [description]
 
@@ -126,19 +129,18 @@ get confused if we run them together without space.
 
 Header: Mandatory - Up to 50 characters (as Git suggests)
 
-> (type) (scope): (short summary)
+> [type] [optional scope]: [short summary]
 
-Description: Mandatory (except for docs) - at least 20 characters up to 72
-> (body)
+> [body] - at least 20 characters up to 72, optional only for docs
 
-Footer: Optional
-> (footer)
+> [optional footer]
 
 The header consists of a type and a summary part. Some add scope in between. But since it's optional, we only discuss it briefly.
 
 #### Type
-The type of commit message says that the change was made for a particular problem. For example, if we've fixed a bug or added a feature, or maybe changed something related to the docs, the type would be "fix", "feat", or "docs". It allows 
-multiple types other than "fix:" and "feat:" mentioned in the conventional commit message part above.
+The type of commit message says that the change was made for a particular problem. For example, if we've fixed a bug or added a feature, or maybe changed something related to the docs, the type would be "fix", "feat", or "docs".
+ 
+this format allows multiple types other than "fix:" and "feat:" mentioned in the conventional commit message part above.
 Some other Angular's type suggestions are: "build:", "chore:", "ci:", "docs:", "style:", "refactor:", "perf:", "test:", and others.
 
 #### Scope
@@ -184,8 +186,6 @@ Below is an example based on mentioned format.
 
 The reason for capitalizing the first letter is that the upper case denotes the beginning of a sentence. When checking the git log history and scanning the header line by line, visually separating every commit can happen using this familiar convention. It represents each of them as an independent unit.
 If the commit is small and the subject is descriptive enough, the description part would not be necessary as it just would be repeating the subject.
----
-
 
 ### Consistency in the Format
 All the rules above are beneficial only if we keep doing it in all our commits. If the structure changes in each commit,
@@ -193,7 +193,8 @@ the Git log would be unstructured and unreadable over time. Which misses the who
 
 ## Examples
 In each Example, we describe a scenario and then show the shape of the commit message based on formats discussed previously in the article.
-#### Commit message 1
+
+#### Example One
 There was a mistype in the tutorial of our website. "Color" was misspelled. We change it and then commit it with the message:
 **Chris Beams' Suggested Format**
 > 
@@ -204,8 +205,10 @@ There was a mistype in the tutorial of our website. "Color" was misspelled. We c
 > Document-130
 >
 
+The following examples are based on [angular suggested format](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit) 
+and also [conventional message](https://www.conventionalcommits.org/en/v1.0.0/) styles.
 
-#### Commit message 2
+#### Example Two
 We added a feature to the codebase. It gets the mobile number from the user and adds it to the user table.
 All positive and negative tests are ready except one. It should check that entering characters as mobile number is 
 not allowed to the user. We add this test scenario and then commit it with the message:
@@ -216,10 +219,10 @@ not allowed to the user. We add this test scenario and then commit it with the m
 >
 > TST-145 
 
-#### Commit message 3
+#### Example Three
 We realized that getting a parameter from the API output is going to clean our code and make redundant codes go away. 
 So we did the refactoring and now the new input is mandatory. This means the client should send this specific input or
-the API does not respond. This refactoring made a major change that is not backward compatible. We commit our change with
+the API does not respond. This refactoring made a MAJOR change that is not backward-compatible. We commit our change with
 this commit message:
 
 >
@@ -233,6 +236,24 @@ this commit message:
 >
 >
 > PAYM-130
+>
+
+#### Example Four
+We add another language support to our code base. We can use scope in our commit message like this:
+>
+> feat(lang): add french language
+>
+
+#### Example Five
+This is a commit message with multiple body paragraph.
+>
+> fix: correct grammar mistakes in document
+
+> change misused 'they're' to 'their' 
+ 
+> in couple of sentences. 
+
+> Refs #206
 
 ## Conclusion
 

@@ -140,7 +140,7 @@ The header consists of a type and a summary part. Some add scope in between. But
 #### Type
 The type of commit message says that the change was made for a particular problem. For example, if we've fixed a bug or added a feature, or maybe changed something related to the docs, the type would be "fix", "feat", or "docs".
  
-this format allows multiple types other than "fix:" and "feat:" mentioned in the conventional commit message part above.
+This format allows multiple types other than "fix:" and "feat:" mentioned in the previous part about conventional messages.
 Some other Angular's type suggestions are: "build:", "chore:", "ci:", "docs:", "style:", "refactor:", "perf:", "test:", and others.
 
 #### Scope
@@ -196,7 +196,8 @@ In each Example, we describe a scenario and then show the shape of the commit me
 
 #### Example One
 There was a mistype in the tutorial of our website. "Color" was misspelled. We change it and then commit it with the message:
-**Chris Beams' Suggested Format**
+
+Chris Beams' Suggested Format:
 > 
 > Fix typo in the CSS tutorial
 >
@@ -208,7 +209,7 @@ There was a mistype in the tutorial of our website. "Color" was misspelled. We c
 The following examples are based on [angular suggested format](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit) 
 and also [conventional message](https://www.conventionalcommits.org/en/v1.0.0/) styles.
 
-#### Example Twof
+#### Example Two
 We added a feature to the codebase. It gets the mobile number from the user and adds it to the user table.
 All positive and negative tests are ready except one. It should check that entering characters as mobile number is 
 not allowed to the user. We add this test scenario and then commit it with the message:

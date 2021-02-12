@@ -243,7 +243,7 @@ We can also generate a "Leak Suspects Report" to find suspected big object or se
 
 Due to its smaller size, it is preferable to share "Leak Suspects Report" report with teams specialized in performing analysis tasks instead of the raw heap dump file.
 
-The first thing in the report is the pie chart, which gives the size of the suspected objects: 
+The report has a pie chart, which gives the size of the suspected objects: 
 
 ![leakssuspectPieChart](/assets/img/posts/heapdump/leaksuspectpiechart.png)
 
@@ -253,5 +253,7 @@ For our example, we have one suspect labelled as "Problem Suspect 1" which is fu
 
 
 ## Conclusion
-In this post, we introduced heap dump as a snapshot of a Java application's object memory graph at runtime. To illustrate heap dump, we captured the heap dump from a program which threw an OutOfMemory error at runtime. We then looked at some of the basic concepts of heap dump analysis with Eclipse Memory Analyzer like large objects, GC roots, shallow vs. retained heap, and dominator tree, all of which together will help us to identify the root cause of specific memory issues.
+In this post, we introduced heap dump as a snapshot of a Java application's object memory graph at runtime. To illustrate heap dump, we captured the heap dump from a program which threw an OutOfMemory error at runtime. 
+
+We then looked at some of the basic concepts of heap dump analysis with Eclipse Memory Analyzer like large objects, GC roots, shallow vs. retained heap, and dominator tree, all of which together will help us to identify the root cause of specific memory issues.
 

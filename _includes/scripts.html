@@ -4,3 +4,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/anchor-js/3.2.0/anchor.min.js"></script>
 <script src="/assets/js/anchor.js"></script>
 {% include mailerlite.html %}
+
+{% if page.ads.enabled != false %}
+    {% include carbon.html %}
+{% endif %}

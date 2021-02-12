@@ -4,7 +4,7 @@ categories: [spring-boot]
 date: 2021-01-20 06:00:00 +1000
 modified: 2021-01-20 06:00:00 +1000
 author: pratikdas
-excerpt: "We will investigate memory problems in a Java Application by creating a heap dump and analyzing it with analyzer tools. "
+excerpt: "This post looks at investigating memory problems in a Java Application by capturing a heap dump and then analyzing it with memory analyzer tools. "
 image:
   auto: 0001-network
 ---
@@ -13,7 +13,7 @@ As Java developers, we are familiar with our applications throwing OutOfMemory e
 
 For investigating these problems, JVM Heap Memory is often the first place to look at. 
 
-To see this in action, we will first trigger an OutOfMemoryException, and then capture the heap dump. We will next analyze this heap dump to identify the cause of the memory leak. 
+To see this in action, we will first trigger an OutOfMemoryException, and then capture the heap dump. We will next analyze this heap dump to identify the potential objects which could be the cause of the memory leak. 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/graphql" %}
 
@@ -76,20 +76,27 @@ public class ProductManager {
     }
   }
  
-  private void createObjects(ProductGroup productGroup, int dummyArraySize) {   
-        switch (generateRandomIndex()) {
-        case 0:
-          for (int i = 0; i < dummyArraySize; ++i) {
-            productGroup.add( new ElectronicGood());
-          }
-          break;
-        case 1:
-          for (int i = 0; i < dummyArraySize; ++i) {
-            productGroup.add(new BrandedProduct());
-          }
-         ...
-         ...
-    }   
+  private void createObjects(ProductGroup productGroup, int dummyArraySize) {
+    for (int i = 0; i < dummyArraySize; ) {
+      productGroup.add(createProduct());
+    }
+  }
+  
+  private AbstractProduct createProduct() {
+        int randomIndex = (int) Math.round(Math.random() * 10);
+        switch (randomIndex) {
+          case 0:
+            return  new ElectronicGood();
+          case 1:
+            return  new BrandedProduct();
+          case 2:
+            return new GroceryProduct();
+          case 3:
+            return new LuxuryGood();
+          default:
+            return  new BrandedProduct();
+        }
+    
   }
 
 }
@@ -163,13 +170,12 @@ Usually analyzing heap dump takes more memory than the actual heap dump size. Th
 
 For example, a server may have crashed with a heap dump of size 24 GB and our local machine may only have 16 GB of memory. Therefore, tools like MAT will not be able to load the heap dump file. In this case, we should either analyze the heap dump on the same server machine if it does not have any memory constraint or use live memory sampling tools provided by VisualVM.
 
-3. JMX
 
 
 ### Analyzing the Heap Dump
 Some of the answers we look for by analyzing the heap dump are :
 1. Objects with high memory usage
-2. Object graph to identify suspected
+2. Object graph to identify objects of not releasing memory
 3. Reachable and unreachable objects
 
 Eclipse Memory Analyzer Tool (MAT) is one of the best tools to analyze Java heap dumps.
@@ -186,7 +192,7 @@ The piechart shows the biggest objects by retained size in the `overview` tab as
 
 ![PieChart](/assets/img/posts/heapdump/piechart.png)
 
-For our application, this information in the overview means if we could dispose a particular instance of `java.lang.Thread` we will save 1.7 GB, and almost 100% of the memory used in this application. 
+For our application, this information in the overview means if we could dispose a particular instance of `java.lang.Thread` we will save 1.7 GB, and almost all of the memory used in this application. 
 
 #### Histogram View
 While that might look promising, java.lang.Thread is unlikely to be the real problem here. To get a better insight of what objects currently exist, we will use the Histogram view:
@@ -212,7 +218,7 @@ By calculating the Retained Heap we can now see that io.pratik.ProductGroup is h
 By looking at the dominator tree, we can easily see that the `ProductGroup` object  holds the memory instead of the `Thread` object. We can probably fix the memory problem by releasing these objects. 
 
 #### Object References
-`ProductGroup` and `ProductManager` are the biggest objects with retained sizes 1 GB and 650 MB respectively.
+`ProductGroup` and `ProductManager` are the biggest objects with retained sizes of 1 GB and 650 MB respectively.
 
 We will now see the objects present in the heap by selecting `ProductGroup` in the piechart and then selecting `List Objects` -> `with outgoing references` from the context menu:
 ![path to list objects](/assets/img/posts/heapdump/pathtolistobjects.png)
@@ -233,18 +239,19 @@ public class ProductGroup {
 ``` 
 
 #### Leak Suspects Report
-We can also generate a "Leak Suspects Report" to find suspected big object or set of objects and presents the findings in a HTML report. The HTML report is also saved in a zip file next to the heap dump file. Due to its smaller size, it is preferable to share this report with teams specialized in performing analysis tasks instead of the raw heap dump file.
+We can also generate a "Leak Suspects Report" to find suspected big object or set of objects. This report presents the findings in a HTML page and is also saved in a zip file next to the heap dump file. 
+
+Due to its smaller size, it is preferable to share "Leak Suspects Report" report with teams specialized in performing analysis tasks instead of the raw heap dump file.
 
 The first thing in the report is the pie chart, which gives the size of the suspected objects: 
 
 ![leakssuspectPieChart](/assets/img/posts/heapdump/leaksuspectpiechart.png)
 
-For our example, we have two suspects labelled as "Problem Suspect 1" and "Problem Suspect 2" which are further described with a a short description:
+For our example, we have one suspect labelled as "Problem Suspect 1" which is further described with a short description:
 
 ![leakssuspects](/assets/img/posts/heapdump/leaksuspects.png)
 
 
 ## Conclusion
-In this post we introduced Heap Dump as a snapshot of Java's object memory graph. We then saw different ways of capturing a Heap Dump.  We also looked at some of basic concepts of heap dump analysis with Eclipse Memory Analyzer using a sample application. I covered some basics of generating heap dumps, reachability, GC roots, shallow vs. retained heap, and dominator tree.
-There are many more things that I haven’t covered. For example, the Object Query Language (OQL). The OQL is an SQL-like language. When comparing with SQL, we can consider classes as tables, objects as rows and fields as columns. I didn’t use OQL with the sample application, but there are many cases that OQL will be very useful. Eclipse MAT’s help is the best place to start learning OQL.
+In this post, we introduced heap dump as a snapshot of a Java application's object memory graph at runtime. To illustrate heap dump, we captured the heap dump from a program which threw an OutOfMemory error at runtime. We then looked at some of the basic concepts of heap dump analysis with Eclipse Memory Analyzer like large objects, GC roots, shallow vs. retained heap, and dominator tree, all of which together will help us to identify the root cause of specific memory issues.
 

@@ -70,7 +70,15 @@ EditorConfig applies styles in a top down fashion, so if we have several `.edito
 
 For the Java section, we have defined a pattern `[*.java]` to apply the config to all java files. If your requirement is to match some other type of files with a different extension, a complete list of wildcard patterns is available on the [official website](https://editorconfig.org/)
 
-We can use the Editor and Preview button in the top-right corner of IntelliJ to view the effect of the styles in realtime (this requires that we create at least one Java class in your project). To apply the styles to all Java classes in our project, you would right click on the project and select *Reformat Code* from the list of options, a dialog box should apply, and you can click on the *Run* button to apply your style changes. Once done, you should see all your Java source files neatly formatted according to the styles you have defined in `.editorconfig` file.
+We can use the Editor and Preview button in the top-right corner of IntelliJ to view the effect of the styles in realtime (this requires that we create at least one Java class in your project). To apply the styles to all Java classes in our project, as shown in the screenshots below, you would right click on the project and select *Reformat Code* from the list of options, a dialog box should apply, and you can click on the *Run* button to apply your style changes. 
+
+Step 1:
+![IntelliJ Reformat Window]({{ base }}/assets/img/posts/painless-code-formatting-with-editor-config/intellij-reformat.png)
+
+Step 2:
+![IntelliJ Reformat Window]({{ base }}/assets/img/posts/painless-code-formatting-with-editor-config/intellij-run.png)
+
+Once done, you should see all your Java source files neatly formatted according to the styles you have defined in `.editorconfig` file.
 
 A complete list of universally supported properties across IDEs can be found in the  [official reference](https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties#current-universal-properties)
 
@@ -79,4 +87,6 @@ Since Eclipse does not support EditorConfig out of the box, we have to install a
 
 To install the EditorConfig plugin in Eclipse, follow the [official installation guide](https://github.com/ncjones/editorconfig-eclipse#installation). Once it is installed in our workspace, we can go ahead to create a `.editorconfig` file in the root folder of your java project and apply the same coding styles as discussed in the IntelliJ section above.
 
-To apply the editorconfig format to all java classes in our project, we would right click on the project from the **Package Explorer** tab on the top-left corner of Eclipse and select *Source*, then click on *Format*. This will format all our java files using the coding styles in the `.editorconfig` file.
+To apply the editorconfig format to all java classes in our project, as shown in the screenshot below, we would right click on the project from the **Package Explorer** tab on the top-left corner of Eclipse and select *Source*, then click on *Format*. This will format all our java files using the coding styles in the `.editorconfig` file.
+
+![Eclipse Reformat Window]({{ base }}/assets/img/posts/painless-code-formatting-with-editor-config/eclipse.png)

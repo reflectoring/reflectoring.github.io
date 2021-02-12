@@ -91,7 +91,7 @@ Preslav Rachev [in his article](https://p5v.medium.com/what-s-with-the-50-72-rul
 
 
 #### Conventional Commit Messages in Depth
-Firstly we discuss conventional commit messages in general, following by a brief review of what Semantic Versioning is. Then we explain the some most famous styles.
+Firstly we discuss conventional commit messages in general, following by a brief review of what Semantic Versioning is. Then we explain some of the most famous styles.
 
 [Conventionalcommits](https://www.conventionalcommits.org/en/v1.0.0/) **suggests great commit message formats that joint perfectly with semantic commits conventions**.
 We explain it thoroughly after a quick review of what semantic versioning is.

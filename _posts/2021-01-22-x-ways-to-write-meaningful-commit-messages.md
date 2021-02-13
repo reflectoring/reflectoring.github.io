@@ -123,7 +123,7 @@ The symbol **"!"** can be used with any type. It can even be used by the "BREAKI
 
 ---
 
-**[Angular](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit) is a conventional format too. It suggests that a commit message should
+**[Angular](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit) format is a conventional format too. It suggests that a commit message should
 consist of a header, a body, and a footer with a blank line between each section** because tools like rebase in git 
 get confused if we run them together without space.
 

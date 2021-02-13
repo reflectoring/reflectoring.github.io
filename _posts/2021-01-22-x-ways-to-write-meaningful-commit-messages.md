@@ -233,7 +233,7 @@ this commit message:
 
 > BREAKING CHANGE: add terminal as mandatory field
 
-> the terminal field is mandatory and the client needs to send it or else API does not work
+> the terminal field is mandatory and the client needs to send it or else API does not work (desc of footer)
 
 
 > PAYM-130

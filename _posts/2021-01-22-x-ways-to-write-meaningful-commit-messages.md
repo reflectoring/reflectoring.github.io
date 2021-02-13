@@ -198,13 +198,13 @@ In each Example, we describe a scenario and then show the shape of the commit me
 There was a mistype in the tutorial of our website. "Color" was misspelled. We change it and then commit it with the message:
 
 Chris Beams' Suggested Format:
-> 
+
 > Fix typo in the CSS tutorial
->
+
 > change colour to color in the introduction
->
+
 > Document-130
->
+
 
 The following examples are based on [angular suggested format](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit) 
 and also [conventional message](https://www.conventionalcommits.org/en/v1.0.0/) styles.
@@ -215,9 +215,9 @@ All positive and negative tests are ready except one. It should check that enter
 not allowed to the user. We add this test scenario and then commit it with the message:
 >
 > test: add negative test for entering mobile number
->
+
 > add test scenario to check if entering character as mobile number is forbidden 
->
+
 > TST-145 
 
 #### Example Three
@@ -228,16 +228,16 @@ this commit message:
 
 >
 > refactor!: add terminal field in the payment API  
->
+
 > add the terminal field as mandatory field to be able to buy products by different terminal numbers
->
+
 > BREAKING CHANGE: add terminal as mandatory field
->
+
 > the terminal field is mandatory and the client needs to send it or else API does not work
->
->
+
+
 > PAYM-130
->
+
 
 #### Example Four
 We add another language support to our code base. We can use scope in our commit message like this:
@@ -247,7 +247,7 @@ We add another language support to our code base. We can use scope in our commit
 
 #### Example Five
 This is a commit message with multiple body paragraph.
->
+
 > fix: correct grammar mistakes in document
 
 > change misused 'they're' to 'their' 

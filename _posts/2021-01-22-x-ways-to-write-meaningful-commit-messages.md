@@ -1,15 +1,15 @@
 ---
-title: "X Ways to Write Meaningful Commit Messages"
+title: "Writing Meaningful Commit Messages"
 categories: [craft]
 date: 2021-01-22 00:00:00 +1100
 modified: 2021-01-22 00:00:00 +1100
-excerpt: "This article discuss some important items that make a commit message, a good and understandable message"
+excerpt: "This article discusses different methods of formatting and writing meaningful commit messages."
 author: hoorvash
 image:
   auto: 0027-cover
 ---
 
-Writing suitable commit messages can save a lot of time in producing applications and answers to many "why" and "how" questions.
+Writing meaningful commit messages can save a lot of time answering many "why?" and "how?" questions, and thus gives us more time in the day to do productive work.
 
 ## Why Is a Good Commit Message Important?
 **Commit messages are a way of communication between team members**. Let's say there's a bug in the application which was not there before. To find out what caused the problem, reading the commit messages could be handy. **The proper commit message can save a great deal of time finding the recent changes related to the bug**.

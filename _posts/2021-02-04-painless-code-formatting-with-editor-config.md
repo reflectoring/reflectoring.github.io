@@ -9,7 +9,7 @@ image:
   auto: 0096-tools
 ---
 
-Are you working on a project with other developers where reading code is not as fun as you would want because of inconsistent coding styles? In this article, we;ll have a look at how to achieve painless code formatting with EditorConfig.
+Are you working on a project with other developers where reading code is not as fun as you would want because of inconsistent coding styles? In this article, we'll have a look at how to achieve painless code formatting with EditorConfig.
 
 ## The Challenges of Code Formatting
 

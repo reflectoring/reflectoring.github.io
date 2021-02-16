@@ -69,7 +69,9 @@ nandan:
   name: "Nandan BN"
   email: "its.nandanbn@gmail.com"
   avatar: "/assets/img/authors/nandan.jpg"
-  github: "Lucaarioo"
+  github: "itsLucario"
+  twitter: "ItsNandanDev"
+  linkedin: "nandan-bn"
   bio: "Full stack developer, passionate about technology, working for a better future with the help of digital world."
 
 petromir:
@@ -133,4 +135,69 @@ saajan:
   github: "saajn"
   bio: "Saajan is an architect with deep experience building systems in several business domains. With a clean and minimalist approach to design, he is
   passionate about code - the aesthetics of it and creating maintainable and flexible solutions. He enjoys both sharing with and learning from others."
-  
+
+mmr:
+  name: "Murtuza Ranapurwala"
+  email: "mranapurwala56@gmail.com"
+  avatar: "/assets/img/authors/mmr.jpg"
+  github: "murtuza-ranapur"
+  linkedin: "murtuza-ranapurwala-4b309315b"
+  bio: "Murtuza is a software engineer who is always on the outlook to find new ways to code."
+
+seema:
+  name: "Seema Richard"
+  email: "seema.richard@gmail.com"
+  avatar: "/assets/img/authors/seema.jpg"
+  github: "susetech"
+  bio: "Seema Richard is a Technical Architect with rich experience in Java-based enterprise applications. She is passionate about coding and authoring. She believes that teaching is the best way to learn."
+
+mujtaba:
+  name: "Mujtaba Mehdi"
+  email: "13besemmehdi@seecs.edu.pk"
+  avatar: "/assets/img/authors/Mujtaba.jpg"
+  github: "mujjazi"
+  bio: "Mujtaba is an Automation developer with a diverse range of experience working with Java Spring based projects. He is an advocate for DevOps and Test Automation while writing for various blogs to help young professionals"
+
+godeortela:
+  name: "Ortela Gode"
+  email: "godeortela@gmail.com"
+  avatar: "/assets/img/authors/ortela.jpg"
+  github: "ortelagode"
+  bio: "Enthusiastic Software Consultant with diverse experience in Java Enterprise applications. Always on the lookout to experiment new technologies"
+
+skempken:
+  name: "Sebastian Kempken"
+  email: "contact@sebastian-kempken.de"
+  avatar: "/assets/img/authors/skempken.jpg"
+  github: "skempken"
+  stackoverflow: "1163345/skempken"
+  twitter: "sebkempken"
+  bio: "For more than a decade, I've been working as software engineer and architect. I love reasoning about our shared craft and writing down things I've learned." 
+
+hoorvash:
+  name: "Hoorvash Nikoo"
+  email: "hoorvash.nikoo@gmail.com"
+  avatar: "/assets/img/authors/hoorvash.jpg"
+  github: "hoorvash"
+  linkedin: "hoorvashnikoo"
+  bio: "As a software engineer and a Java developer, I love to learn new technologies and solve
+        technical problems. Writing is another passion of mine. Combining these passions and writing
+        technical articles that might help even one individual is rewarding."
+
+jgoerner:
+  name: "Joshua Görner"
+  email: "joshua.goerner@gmail.com"
+  avatar: "/assets/img/authors/jgoerner.jpg"
+  github: "jgoerner"
+  bio: "Product Engineer, Online Instructor, Open Source Enthusiast and Father :-)"
+
+zeddysoft:
+  name: "Taiwo Azeez"
+  email: "azeeztaiwo942@gmail.com"
+  avatar: "/assets/img/authors/azeez.jpg"
+  github: "zeddysoft"
+  linkedin: "azeeztaiwo"
+  twitter: "zeddysoft"
+  bio: "Azeez is a skilled software engineer with experience in building highly scalable, reliable and maintainable back-end systems.
+  He enjoys general problem solving and likes to explore new technologies."
+

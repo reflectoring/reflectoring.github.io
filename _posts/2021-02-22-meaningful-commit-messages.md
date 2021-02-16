@@ -87,7 +87,7 @@ Preslav Rachev [in his article](https://p5v.medium.com/what-s-with-the-50-72-rul
 
 ## Conventional Commit Messages
 
-Let's now have a look at [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/), a specification that gives opinionated guar rails to format commit messages.
+Let's now have a look at [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/), a specification that gives opinionated guardrails to format commit messages.
 
 The Conventional Commits format goes hand in hand with semantic versioning, so let's talk about that first.
  

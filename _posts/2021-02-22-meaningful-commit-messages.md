@@ -1,12 +1,12 @@
 ---
 title: "Writing Meaningful Commit Messages"
 categories: [craft]
-date: 2021-01-22 00:00:00 +1100
-modified: 2021-01-22 00:00:00 +1100
+date: 2021-02-22 05:00:00 +1100
+modified: 2021-02-22 05:00:00 +1100
 excerpt: "This article discusses different methods of formatting and writing meaningful commit messages."
 author: hoorvash
 image:
-  auto: 0027-cover
+  auto: 0016-pen
 ---
 
 Writing meaningful commit messages can save a lot of time answering many "why?" and "how?" questions, and thus gives us more time in the day to do productive work.
@@ -16,7 +16,7 @@ Writing meaningful commit messages can save a lot of time answering many "why?" 
 
 Being a new member of a team and working on projects we haven't seen before has its challenges. If we have a task to add some logic to some part of the code, **previous good commit messages can help us find out where and how to add the code**.
 
-If we fix a bug, or add a feature we will probably completely forget about it a month or two later. It's not a good idea to think that if it's not clear for others, they can ask us about it. Instead, we should provide proper commit messages for people to use as a resource in their daily work.
+If we fix a bug or add a feature we will probably completely forget about it a month or two later. It's not a good idea to think that if it's not clear for others, they can ask us about it. Instead, we should provide proper commit messages for people to use as a resource in their daily work.
 
 ## What Is a Good Commit Message?
 
@@ -39,7 +39,7 @@ If we commit two changes together, for example, a bug fix and a minor refactorin
 
 Let's say the bug fix created some other bugs. In that case, we need to roll back the production code to the previous. This will result in the loss of the refactoring as well. It's not efficient, and it's not atomic.
 
-Also, if someone searches the commit history for the changes made for the refactoring, they have to figure out which files were touched for the refactoring and which for the bugix. This will cost more time than necessary.
+Also, if someone searches the commit history for the changes made for the refactoring, they have to figure out which files were touched for the refactoring and which for the bugfix. This will cost more time than necessary.
 
 ### Short and Unambiguous
 The commit message should describe what changes our commit makes to the behavior of the code, not what changed in the code. We can see *what* changed in the diff with the previous commit, so we don't need to repeat it in the commit message. But to understand what behavior changed, a commit message can be helpful.
@@ -70,7 +70,7 @@ So, instead of answering "what are the changes?", **it's better to answer "What 
 Let's start with Git conventions. Other conventions usually have the Git conventions in their core. 
 
 **Git suggests a commit message should have three parts including a subject, a description, and a ticket number.** 
-Let's see the exact template mentioned in [Git's website](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration):
+Let's see the exact template mentioned on [Git's website](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration):
 
 ```
 Subject line (try to keep under 50 characters)
@@ -92,7 +92,7 @@ Let's now have a look at [Conventional Commits](https://www.conventionalcommits.
 The Conventional Commits format goes hand in hand with semantic versioning, so let's talk about that first.
  
 ### Semantic Versioning
-As described on the [Semantiv Versioning website](https://semver.org/), semantic versioning consists of three numbers: MAJOR, MINOR, and PATCH. Each number is incremented in differen circumstances:
+As described on the [Semantic Versioning website](https://semver.org/), semantic versioning consists of three numbers: MAJOR, MINOR, and PATCH. Each number is incremented in different circumstances:
 
 - the MAJOR version when we make incompatible API changes,
 - the MINOR version when we add functionality in a backward-compatible manner, and
@@ -111,11 +111,11 @@ The general structure of a conventional commit message is this:
 [optional footer(s)]
 ```
 
-Each commit has a type that directly matches to semantic versioning practice:
+Each commit has a type that directly matches semantic versioning practice:
 
 - `fix`: patches a bug in our codebase (correlates with PATCH in semantic versioning)
 - `feat`: introduces a new feature to the codebase (correlates with MINOR in semantic versioning)
-- `refactor!`: introduces a breaking API change by refactoring because of the **!** symbol (correlating with MAJOR in semantic versioning)
+- `refactor!`: introduces a breaking API change by refactoring because of the "!" symbol (correlating with MAJOR in semantic versioning)
   
 The symbol **"!"** can be used with any type. It signifies a breaking change that correlates with MAJOR in semantic versioning.
 
@@ -199,7 +199,7 @@ this commit message:
 ```
 refactor!: add terminal field in the payment API  
 
-BREAKING CHANGE: add the terminal field as mandatory field to be able to buy products by different terminal numbers
+BREAKING CHANGE: add the terminal field as a mandatory field to be able to buy products by different terminal numbers
 
 the terminal field is mandatory and the client needs to send it or else the API does not work
 
@@ -208,11 +208,13 @@ PAYM-130
 
 
 ### Example Three
-We add another language support to our code base. We can use scope in our commit message like this:
+We add another language support to our codebase. We can use a scope in our commit message like this:
 
 ```
 feat(lang): add french language
 ```
+
+The available scopes must be defined for a codebase beforehand. Ideally, they match a component within the architecture of our code.
 
 ## Conclusion
 

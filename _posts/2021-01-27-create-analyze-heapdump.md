@@ -171,7 +171,7 @@ Some of the other methods of generating a heap dump are:
  
 1. **jcmd**: jcmd is used to send diagnostic command requests to the JVM. It is packaged as part of the JDK. It can be found in the `\bin` folder of a Java installation.
 
-2. **JVisualVM**: Usually, analyzing heap dump takes more memory than the actual heap dump size. This could be problematic if we are trying to analyze a heap dump from a large server on a development machine. JVisualVM provides live sampling of the Heap memory so it doesn't eat up the whole memory.
+2. **JVisualVM**: Usually, analyzing heap dump takes more memory than the actual heap dump size. This could be problematic if we are trying to analyze a heap dump from a large server on a development machine. JVisualVM provides a live sampling of the Heap memory so it does not eat up the whole memory.
 
 ## Analyzing the Heap Dump
 What we are looking for in a Heap dump is:
@@ -237,15 +237,16 @@ For our example, we have one suspect labeled as "Problem Suspect 1" which is fur
 
 Apart from the summary, this report also contains detailed information about the suspects which is accessed by following the “details” link at the bottom of the report:
 
-![leakssuspectdetails](/assets/img/posts/heapdump/leaksuspectsdetails.png)
+![leakssuspectdetails](/assets/img/posts/heapdump/leaksuspectdetails.png)
 
 The detailed information is comprised of :
-1. Shortest paths from GC root to the accumulation point: Here we can see all the classes and fields through which the reference chain is going, which gives a good understanding of how the objects are held. In this report , we can see the reference chain going from the `Thread` to the `ProductGroup` object.
+1. **Shortest paths from GC root to the accumulation point**: Here we can see all the classes and fields through which the reference chain is going, which gives a good understanding of how the objects are held. In this report, we can see the reference chain going from the `Thread` to the `ProductGroup` object.
 
-2. Accumulated Objects in Dominator Tree: This gives some information about the content which is accumulated which is collection of `GroceryProducts` here.
+2. **Accumulated Objects in Dominator Tree**: This gives some information about the content which is accumulated which is a collection of `GroceryProduct` objects here.
 
 
 ## Conclusion
-In this post, we introduced the heap dump as a snapshot of a Java application's object memory graph at runtime. To illustrate, we captured the heap dump from a program that threw an `OutOfMemoryError` at runtime. 
+In this post, we introduced heap dump which is a snapshot of a Java application's object memory graph at runtime. To illustrate, we captured the heap dump from a program that threw an `OutOfMemoryError` at runtime. 
 
 We then looked at some of the basic concepts of heap dump analysis with Eclipse Memory Analyzer: large objects, GC roots, shallow vs. retained heap, and dominator tree, all of which together will help us to identify the root cause of specific memory issues.
+

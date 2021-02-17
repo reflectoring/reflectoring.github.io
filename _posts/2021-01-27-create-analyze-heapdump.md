@@ -15,7 +15,7 @@ To investigate memory problems, the JVM Heap Memory is often the first place to 
 
 To see this in action, we will first trigger an `OutOfMemoryError` and then capture a heap dump. We will next analyze this heap dump to identify the potential objects which could be the cause of the memory leak. 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/heapdump" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/heapdump" %}
 
 ## What is a Heap Dump?
 Whenever we create a Java object by creating an instance of a class, it is always placed in an area known as the heap. Classes of the Java runtime are also created in this heap. 
@@ -146,6 +146,7 @@ We will use this option for our example since it will give us more insight into 
 
 Let us run the program with the VM option `HeapDumpOnOutOfMemoryError` from the command line or our favorite IDE to generate the heap dump file:
  ```shell
+java -jar target/oomegen-0.0.1-SNAPSHOT.jar \
 -XX:+HeapDumpOnOutOfMemoryError \
 -XX:HeapDumpPath=<File path>hdump.hprof
 ```
@@ -234,6 +235,14 @@ For our example, we have one suspect labeled as "Problem Suspect 1" which is fur
 
 ![leakssuspects](/assets/img/posts/heapdump/leaksuspects.png)
 
+Apart from the summary, this report also contains detailed information about the suspects which is accessed by following the “details” link at the bottom of the report:
+
+![leakssuspectdetails](/assets/img/posts/heapdump/leaksuspectsdetails.png)
+
+The detailed information is comprised of :
+1. Shortest paths from GC root to the accumulation point: Here we can see all the classes and fields through which the reference chain is going, which gives a good understanding of how the objects are held. In this report , we can see the reference chain going from the `Thread` to the `ProductGroup` object.
+
+2. Accumulated Objects in Dominator Tree: This gives some information about the content which is accumulated which is collection of `GroceryProducts` here.
 
 
 ## Conclusion

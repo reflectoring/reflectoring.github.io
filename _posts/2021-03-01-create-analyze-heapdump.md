@@ -1,12 +1,12 @@
 ---
 title: "Creating and Analyzing Java Heap Dumps"
 categories: [java]
-date: 2021-01-20 06:00:00 +1000
-modified: 2021-01-20 06:00:00 +1000
+date: 2021-03-01 05:00:00 +1100
+modified: 2021-03-01 05:00:00 +1100
 author: pratikdas
 excerpt: "This post looks at diagnosing memory problems in a Java Application by capturing a heap dump and then analyzing it with memory analyzer tools. "
 image:
-  auto: 0001-network
+  auto: 0019-magnifying-glass
 ---
 
 As Java developers, we are familiar with our applications throwing `OutOfMemoryErrors` or our server monitoring tools throwing alerts and complaining about high JVM memory utilization.
@@ -246,7 +246,7 @@ The detailed information is comprised of :
 
 
 ## Conclusion
-In this post, we introduced heap dump which is a snapshot of a Java application's object memory graph at runtime. To illustrate, we captured the heap dump from a program that threw an `OutOfMemoryError` at runtime. 
+In this post, we introduced the heap dump, which is a snapshot of a Java application's object memory graph at runtime. To illustrate, we captured the heap dump from a program that threw an `OutOfMemoryError` at runtime. 
 
 We then looked at some of the basic concepts of heap dump analysis with Eclipse Memory Analyzer: large objects, GC roots, shallow vs. retained heap, and dominator tree, all of which together will help us to identify the root cause of specific memory issues.
 

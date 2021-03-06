@@ -38,8 +38,8 @@ footer:
     children:
     - title: "Clean Architecture"
       url: /get-your-hands-dirty-on-clean-architecture/
-    - title: "Newsletters"
-      url: /newsletters/
+    - title: "Mailing List"
+      url: /mailing-list/
   - title: "Categories"
     children:
     - title: "Spring Boot"

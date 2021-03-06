@@ -79,7 +79,7 @@ Also, I will include a link and an intro to the article in my weekly newsletter.
 
 You leave a message to the audience of my weekly newsletter. 
 
-The newsletter usually contains a link to the latest article on the page, together with a short inspirational text from me ([see examples here](/newsletters)).
+The newsletter usually contains a link to the latest article on the page, together with a short inspirational text from me ([see examples here](/mailing-list)).
 
 You provide a logo and a message of up to about 60 words, plus a URL to link to, and it will show up as the first thing in the newsletter.
 

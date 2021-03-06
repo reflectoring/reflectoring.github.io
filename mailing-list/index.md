@@ -1,17 +1,26 @@
 ---
-title: Recent Newsletters
+title: Reflectoring Mailing List
 layout: static
 author:
   enabled: false
 ads:
   enabled: false
+newsletter:
+  enabled: true
 comments:
   enabled: false
+excerpt: "Get quality content about Java, AWS, and software development in general  delivered to your inbox every week."
+image:
+  auto: 0097-airmail
 ---
 
 **Want to know what's coming before signing up for the mailing list? Here's a peek at the most recent newsletters.**
 
-You'll get an email every week with a link to the latest reflectoring article about Java / Spring / AWS and a short inspirational text from me. Sometimes, you'll also get notes from the latest book I've been reading.
+You'll get an email every week with a link to the latest reflectoring article about Java / Spring / AWS and a short inspirational nugget from me. Sometimes, you'll also get notes from the latest book I've been reading.
+
+<div style="margin-top:30px">
+    <a href="#" class="primary-button btn" style="width:200px;background-color:#212631" onclick="ml_webform_1449648('show')">Subscribe now</a>
+</div>
 
 ## February 2021
 

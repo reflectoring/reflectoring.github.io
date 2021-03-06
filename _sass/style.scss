@@ -212,11 +212,6 @@ textarea.input {
   @include sans();
 }
 
-.primary-button:hover, .primary-button:focus {
-  color: #fff;
-  opacity: 0.9;
-}
-
 .section {
   padding-top: $space;
 }

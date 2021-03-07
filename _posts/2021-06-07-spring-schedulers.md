@@ -17,7 +17,7 @@ Some use cases where we can utilize Spring scheduler are calling an API periodic
 
 The good news is you do not need any additional dependency as it comes with the spring boot starter
 
-## Important Annotations for Spring EnableScheduling
+## Important Annotations for Spring Schedulers
 
 * `@EnableScedhuling`:to be used on @Configuration classes, it enables detection of @Scheduled annotations, generally, we use it on top of our MainClass, but no one is stopping us, to use it over the configuration class
 ```java

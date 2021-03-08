@@ -4,32 +4,40 @@ categories: [spring-boot]
 date: 2021-03-05 00:00:00 +0530
 modified: 2021-03-05 00:00:00 +0530
 author: default
-excerpt: "In this article, we look at spring schedulers, different annotations for scheduling tasks, internal deep dive, and how to schedule tasks without annotation"
+excerpt: "In this article, we're going to look at spring schedulers, different annotations for scheduling tasks, how it works internally, and how to schedule tasks without an annotation."
 image:
   auto: 0061-cloud
 ---
 
-We, developers, do have use cases where we need to execute some task periodically, it could be at a fixed time in a day or maybe every few hours, one way to do it  rather old fashioned way  would be to expose endpoints for those tasks and calling those endpoints via scheduling jobs like CAWA. But what if I told you we do not need to do this, Spring developers already took care of this and that's what we would be discussing in this article i.e. Spring Schedulers.
+We often come across use cases where we need to execute some task periodically. It could be at a fixed time in the day or maybe every few hours. One way to do it in an old-fashioned way  would be to expose endpoints for those tasks and calling those endpoints from an external scheduler. But what if I told you we do not need to do this? The Spring developers already took care of this and in this article we'll be discussing Spring schedulers.
 
-Some use cases where we can utilize Spring scheduler are calling an API periodically i.e every few hours, reading a file from an SFTP location which is uploaded there once a day by your upstream, or maybe checking your mail to see if your manager is on leave every morning :). Anything that you want to do periodically without depending on any external System can be done by Spring Scheduler
+Some cases where we can use Spring schedulers are:
 
-## How to add Spring Scheduler to your project
+* calling an API periodically, 
+* reading a file from an SFTP location which is uploaded there once a day,
+* or maybe checking your mail to see if your manager is on leave every morning :). 
+  
+Anything that you want to do periodically without depending on any external System can be done by Spring schedulers
 
-The good news is you do not need any additional dependency as it comes with the spring boot starter
+## Adding Spring Scheduler to a Project
+
+We don't need to add any additional dependency when working with a Spring Boot application, as it comes with the standard Spring Boot starter.
 
 ## Important Annotations for Spring Schedulers
 
-* `@EnableScedhuling`:to be used on @Configuration classes, it enables detection of @Scheduled annotations, generally, we use it on top of our MainClass, but no one is stopping us, to use it over the configuration class
+We need to add `@EnableScheduling` to one of our `@Configuration` classes to enable detection of `@Scheduled` annotations. Often, we use it on top of our main application class, but no one is stopping us to use it on of our other `@Configuration` classes:
+
 ```java
 @SpringBootApplication
 @EnableScheduling
 public class SpringSchedulerApplication {
- public static void main(String[] args) {
-   SpringApplication.run(SpringSchedulerApplication.class, args);
- }
+  public static void main(String[] args) {
+    SpringApplication.run(SpringSchedulerApplication.class, args);
+  }
 }
 ```
-* `@Scheduled`: is used over methods which will define the task, continue reading you will get a better understanding.
+
+Once the scheduling is enabled, we can use the `@Scheduled` annotation on methods that define the task we want to schedule. More about the `@Scheduled` annotation in the next sections.
   
 
 ## What are Spring Scheduler Tasks
@@ -37,15 +45,16 @@ public class SpringSchedulerApplication {
 Strictly talking about syntax, **any void method which does take any parameters and is decorated with @Scheduled annotation** can be termed as a spring scheduler task. 
 
 
-## Different ways to schedule tasks
+## Scheduling Tasks with `@Scheduled`
 
 
-As of now, we know `@Scheduled` is the way to schedule tasks, but now we will see different flavors of it.
+As of now, we know that `@Scheduled` is the way to schedule tasks, but we haven't seen it in action. Let's look at different ways on how to use this annotation:
+
 * `Schedule tasks with FixedRate`: Using this would execute our task, after every n milliseconds, which you provided. **An important thing to know here is that every execution is independent i.e. it will execute our task even if the previous execution is still `in progress`**.
 ```java
 @Scheduled(fixedRate = 1000)
 public void callApiViaFixedRate() {
- System.out.println("calling API using fixed rate");
+  System.out.println("calling API using fixed rate");
 }
 ```
 * Schedule tasks with FixedDelay: Using this would ensure, the gap between the execution of our task is always n milliseconds, i.e. **our task will invoke only `after the previous execution is complete.`**
@@ -79,10 +88,10 @@ public void callApiViaCronForASpecificZone() {
 }   
 ```  
 
-## Where do we run scheduled tasks
-**Generally, all tasks are queued over one thread pool.**
+## Configuring a Custom Thread Pool
+**All tasks are queued in the same thread pool that's reserved for scheduled tasks.**
 
-We can define a custom Thread pool and our scheduled tasks will run over it. 
+We can define a custom thread pool and our scheduled tasks will run over it. 
 
 ```java
 @SpringBootApplication
@@ -102,12 +111,12 @@ public ThreadPoolTaskScheduler taskScheduler() {
 }
 ```
 
-## How it all works, Deep Dive into internals
+## The Internals of Spring's Scheduling Framework
 
 
-So let's do a little deep dive and understand some internals and see how it all works
+Let's do a little deep dive to understand how it all works.
 
-The Spring Framework provides abstractions for scheduling tasks with the TaskScheduler interfaces, and the annotations we discussed earlier are all annotation support for these methods below.
+The Spring Framework provides abstractions for scheduling tasks with the `TaskScheduler` interface, and the annotations we discussed earlier are all annotation support for these methods below:
       
 
 ```java
@@ -137,7 +146,24 @@ public interface TaskScheduler {
 }
 ```
 
-**Now every task is run as a thread on the thread pool and spring internally manages it as a scheduled task which Internally has a task and which is runnable at its core**
+Every task is wrapped into a `Task` object, which contains the call to our `@Scheduled` method as a `Runnable`:
+
+```java
+public class Task {
+  private final Runnable runnable;
+
+  public Task(Runnable runnable) {
+    Assert.notNull(runnable, "Runnable must not be null");
+    this.runnable = runnable;
+  }
+
+  public Runnable getRunnable() {
+    return this.runnable;
+  }
+}
+```
+
+A `Task`, in turn, is wrapped by a `ScheduledTask` object:
 
 ```java
 //this is protected, so you cannot  create an instance of this manually 
@@ -157,29 +183,22 @@ public final class ScheduledTask {
  }
 }
 
-public class Task {
- private final Runnable runnable;
 
- public Task(Runnable runnable) {
-   Assert.notNull(runnable, "Runnable must not be null");
-   this.runnable = runnable;
- }
-
- public Runnable getRunnable() {
-   return this.runnable;
- }
-}
 ```
 
-Now hopefully all basics are clear, lets where all the magic happens and how these things come together to save the world
+Knowing the basic classes, we can now look at where all the magic happens.
 
-```java
-ScheduledAnnotationBeanPostProcessor
-```
- is the class, when you use `@Scheduled` annotation on any void method, this class holds the responsibility of registering that as ScheduledTask and its management.
+`ScheduledAnnotationBeanPostProcessor` is the class that holds the responsibility of creating a `ScheduledTask` for each `@Scheduled` annotation it finds.
 
-This class has a `processScheduled()` which is called when `@Scheduled` is used,
-And this class register the task, based on whatever type of flavour you have used for example **if its a `@Scheduled(cron=””)`  it will register a CronTask, if it is a `@Scheduled(fixedRate=””)` it will register a FixedRateTask.**
+This class registers a task based on whatever flavour we have used to define it:
+
+* if we used `@Scheduled(cron="...")`, it will register a `CronTask`
+* if we used `@Scheduled(fixedRate="")`, it will register a `FixedRateTask`
+* ...
+
+We won’t look at all the task types, you can look at the `processScheduled()` method for more detail.
+
+Let's look at the `CronTask` class, for example: 
 
 ```java
 public class CronTask extends TriggerTask {
@@ -200,33 +219,21 @@ public class CronTask extends TriggerTask {
 }
 ``` 
 
-Now we won’t look at all the tasks, you can look at the processScheduled method for more detail.
-Why I wanted to show is to have your attention on **private final String expression;** 
+The cron expression we define in the annotation (`@Scheduled(cron="...")`) is now stored in the field `expression` of this class. The expression is final, which means, we can't update it while the application is running. If we want to change it, we will need to register a new task and stop this one.
 
-**It is final which means once we use `@Scheduled(cron=””)`, we CANNOT update it programmatically later**, if we want to change it, we will need to register a new task and stop this one.
+The same goes for tasks of any other flavor. **All tasks are immutable when we create them with the `@Scheduled` annotation**.
 
-The Same goes with tasks of any other flavor, **they all are IMMUTABLE when we create it with `@Scheduled` annotation**.
+If we want to have mutable tasks, we will have create them manually, which we will look at in the next section.
 
-**Unfortunately, no annotation ssupports mutable tasks**. That means we will have to do it manually.
-
-Now to have the ability to change the scheduling at run time, we will need to use  
-```java
-ScheduledFuture schedule(Runnable task, Trigger trigger);
-```             
-Recollect we already saw this in `TaskScheduler` and that's what we will see in the next section.
-
-
-## How to schedule a task without annotation
+## Manually Scheduling (Mutable) Tasks
 
   The first question that comes to any developers mind is **Why schedule a task with annotation?**        
 
-  * **Tasks created with @Schedule annotation are immutable:** As we read in the previous section, `@Scheduled` annotation tasks are immutable, For example, we scheduled a task that pulls data at 4 AM every day, now if we want to change it on runtime, we can’t. We will need to stop the application and update the cron expression.
-  * **Tasks need custom trigger logic:** we can have use cases, where we want to run tasks based on some `custom logic`, **let's say we calculate the next execution time based on that day's weather forecast.**
+  * **Changing a task's configuration at runtime:** As we learned in the previous section, tasks created with the `@Scheduled` annotation tasks are immutable. For example, if we scheduled a task that pulls data at 4 AM every day and we want to change the time, we can’t. We will need to stop the application and update the cron expression.
+  * **Custom trigger logic:** we can have use cases, where we want to run tasks based on some custom logic. **Let's say we want to calculate the next execution time based on that day's weather forecast.**
 
 
-  We need to create a **custom Trigger**, which could even hold your custom logic. Here in this example, we will just update the expression via calling the updateCron method.
-
-
+  To implement these requirements, we need to create a custom `Trigger` implementation, which can hold our custom logic:
 
 ```java
 @Component
@@ -236,18 +243,18 @@ private String cron="initialCron";
 
 public void updateCron(String updatedCron){
   this.cron = updatedCron;
-;}
+}
 
  @Override
  public Date nextExecutionTime(TriggerContext triggerContext) {
-   CronTrigger crontrigger = new CronTrigger(cron)
+   CronTrigger crontrigger = new CronTrigger(cron);
    Date nextRunDate = crontrigger.nextExecutionTime(triggerContext);
    return nextRunDate;
  }
 }
-``` 
+```
 
-Now we have the trigger, we will create a config class and register our task for that we need to implement **SchedulingConfigurer**   interface
+To register our task with Spring's scheduling framework, we need to implement the `SchedulingConfigurer` interface:
 
 
 ```java
@@ -267,7 +274,6 @@ public class SchedulerConfig implements SchedulingConfigurer{
        }, customTrigger);
   }
 }
-
 ``` 
 
 

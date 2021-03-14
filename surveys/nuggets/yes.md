@@ -1,5 +1,5 @@
 ---
-title: Did you like that Newsletter Nugget?
+title: Did you like that Inspirational Nugget?
 comments: 
   enabled: false
 ads: 

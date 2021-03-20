@@ -33,11 +33,11 @@ Get in touch via e-mail to [tom@reflectoring.io](mailto:tom@reflectoring.io) if 
 
 The audience of the reflectoring blog consists of mainly **professional JVM developers** who come to the site through search engines to solve a problem. About 20% of the audience is located in the U.S. followed by 15% in India, and 5% in Germany.
 
-Here are some stats (numbers from January 2021):
+Here are some stats (numbers from March 20, 2021):
 
-| **Monthly Active Users**           | 110,000                |
-| **Monthly Sessions**           | 160,000                |
-| **Newsletter Subscribers**           | 2,500                |
+| **Monthly Active Users**           | 138,000                |
+| **Monthly Sessions**           | 198,000              |
+| **Newsletter Subscribers**           | 2,550               |
 | **Average Newsletter Open Rate**           | 42%                |
 | **Average Newsletter Click Rate**           | 9%                |
 {: .padded-table}

@@ -11,9 +11,9 @@ image:
 
 {% include github-project.html url="https://github.com/silenum/mockito-examples" %}
 
-Mockito allows you to write meaningful and tailored unit tests in Java. It is widely in use, since it is that easy to
-apply to *mock away* unused dependency to create a suitable fixture for your unit test! In this article we will face how
-to use Mockito, what are Dos and Don'ts and learn how to improve your unit test cases.
+Mockito allows you to write meaningful and tailored unit tests in Java. It is widely in use, since it is easy to use and
+to create a suitable fixture for your unit test! In this article we will face how to use Mockito, what are Dos and
+Don'ts and learn how to improve your unit test cases.
 
 ## Introduction to Mocks
 
@@ -21,24 +21,24 @@ Before we start talking about *Mocks*, we need to understand what *Test Doubles*
 your test cases. They make the hard work for you while you are shining, doing the nice work. So mocking is used, when we
 want to replace real objects with mocks, whose behaviour is under full control, so that we can advise them what to do.
 
-Here comes [Mockito](https://www.mockito.org) into play. Mockito is a very popular library to support such testing
-scenarios. Spring also uses Mockito and has own adaptors that provide easy handling for users. Don't worry - you must
-not have Spring to use Mockito. Mockito also comes with a standalone library that can be referenced within your build
-tool such as Maven and Gradle.
+Here comes [Mockito](https://www.mockito.org) into play. Mockito is a very popular library that supports such testing
+scenarios. Spring also uses Mockito and has own adaptors that provide easy handling for using developers. Don't worry -
+you must not have Spring to use Mockito! Mockito also comes with a standalone library that can be referenced within your
+build tool such as Maven and Gradle.
 
 Consider reading the article [Why Mock?](https://reflectoring.io/spring-boot-mock/#why-mock) for additional information
 about Mocking.
 
 ## Test Doubles and Their Duty
 
-In the world of code, there are lots of words for Test Doubles and definitions for their duty. I recommend you to define
-a common language, if different understanding within your team persist.
+In the world of code, there are lots of words for Test Doubles and definitions for their duty. We recommend you to
+define a common language, if different understanding within your team persist.
 
-Here is a little summary of the different types for Test Doubles and how I use them:
+Here is a little summary of the different types for Test Doubles and how we use them:
 
 | Type  | Description                                                  |
 | ----- | ------------------------------------------------------------ |
-| Dummy | A dummy is an object, that is oftenly used as a parameter for the method under test but without an actual need of it during the test itself. |
+| Dummy | A dummy is an object, that is often used as a parameter for the method under test but without an actual need of it during the test itself. |
 | Fake  | A fake is an object, that has an implementation, but which is restricted and simpler as the real implementation. Due to this restriction, the object is not meant to use in production. |
 | Stub  | A stub is an object, that always returns the same value, regardless of which parameters you provide on a stub's methods. |
 | Mock  | A mock is an object, whose behaviour previously was declared, before the test is run. (This is exactly what Mockito is made for!) |
@@ -52,16 +52,16 @@ Consider following example:
 
 ![Simple UML Diagram](../assets/img/posts/clean-unit-tests-with-mockito/city-uml-diagram.png)
 
-In order to test the `CityServiceImpl` we would need an implementation for `CityRepository` to test the service. Then
-again, the `CityRepository` has further dependencies to other components to the database and potentially to other
+In order to test the `CityServiceImpl` we would need an implementation for `CityRepository` to create the service. Then
+again, the `CityRepository` has further dependencies to other components, to the database and potentially to other
 systems and further components.
 
-Unfortunately, we **cannot** consider all those components as bug-free and working as expected. By chance, we include
+**Unfortunately, we can't consider all those components as bug-free and working as expected**. By chance, we include
 even more complexity so that there are numerous reasons that our test is going to fail. In Spring, you might think to
 extend your unit test to a Spring Boot Test applying `@SpringBootTest`. Apart from the performance issue you ignore
 there, what is the suitable solution for non-Spring projects?
 
-Here comes Mockito to the rescue! Mockito allows me to just create the suitable test double instead of creating all
+Here comes Mockito to the rescue! Mockito allows us to create the suitable test double instead of creating all
 those rat-tail objects for the real implementation.
 
 **In summary, what you want is a simple, fast and reliable unit test instead of a potentially complex, slow and flaky
@@ -180,7 +180,7 @@ class CityServiceImplTestMockitoAnnotationStyle {
 
 If the system under test has several dependencies that must be mocked, it gets cumbersome to create all these mocks with
 the variant shown above. You can annotate them with `@Mock` and initialize them all at once. Applying this variant, you
-don't have to deal with boilerplate code and are able to keep you unit test neat and concise.
+don't have to deal with boilerplate code and are able to keep your unit test neat and concise.
 
 ### Mockito JUnit Extension Style
 
@@ -292,13 +292,13 @@ class CityServiceImplTestMockitoDonts {
 ```
 
 Knowing how to create the mocks, let's have a look at what you should avoid. Otherwise, you test cases are confusing
-what decreases your code's maintainability. It will save you much time debugging and guessing your team members what's
-the intent of a test case.
+what decreases your code's maintainability. It will save you much time debugging and doesn't let your team members guess
+what the intent of the test case is.
 
-* Do not concentrate all the Mockito declarations in the setUp method! Even tough the test cases are reduced to a
+* Do not concentrate all the Mockito declarations in the `setUp` method! Even tough the test cases are reduced to a
   minimum, the readability suffers a lot. Besides, you must highly pay attention to not break any other test cases. Like
-  so, you avoid interfering other tests by overriding their setup (See example below)
-* Do not recycle your mocks! It's better to create new mocks for each test case. Otherwise, you will experience
+  so, you avoid interfering other tests by overriding the setup.
+* Do not recycle your mocks! It's better to create new mocks for each test case. Otherwise, you might experience
   unexpected behavior through interfering declarations.
 * Do not expect test cases to be always executed in the same order! Write everything that belongs to your test case into
   the test method, so that a test case can be executed alone in your IDE or all together within you CI!
@@ -307,14 +307,14 @@ the intent of a test case.
 
 ## Mockito Specialities and Restrictions
 
-In this section I want to point out important things which are nice to know.
+In this section we want to point out important things which are nice to know.
 
 * *What types can I mock?* Mockito allows you to mock not only interfaces but also concrete classes.
-* *What is returned, if I don't declare a mock's behaviour?* Mockito returns `null` for objects references, and the
+* *What is returned, if I don't declare a mock's behaviour?* Mockito returns `null` for reference objects, and the
   default values for primitive data types (for example `0` for `int` and `false` for `boolean`)
 * *How many times Mockito returns a previously declared value?* Mockito returns always the same value, regardless of how
   many times a method is called.
-* *Can I mock `final` classes?* No, final classes **cannot** be mocked and neither final methods are mockable. This has
+* *Can I mock `final` classes?* No, final classes **can't** be mocked and neither final methods are mockable. This has
   to do with the internal mechanism of how Mocktio creates the mock and the Java Language Specification.
 
 ### Testing Error Handling with Mockito
@@ -324,7 +324,7 @@ Mockito.when(cityRepository.find(expected.getId())).thenThrow(RuntimeException.c
 ```
 
 Mockito comes with a built-in mechanism to test your error handling. Instead of declaring a return value, advise Mockito
-to throw the expected exception. In case you throw checked exceptions, the compiler does not let you throwing checked
+to throw the expected exception. In case you throw checked exceptions, the compiler doesn't let you to throw checked
 exceptions, that are not declared on the method.
 
 ### Mocktio and `void` Methods

@@ -242,9 +242,11 @@ In the next section, we will see both of these reasons in a little more depth.
 ### Changing a task's configuration at runtime
 As we learned in the previous section, tasks created with the `@Scheduled` annotation tasks are immutable. For example, if we scheduled a task that pulls data at 4 AM every day and we want to change the time, we can’t. We will need to stop the application and update the cron expression.
 
-For example, maybe we can use [spring-cloud-config](https://spring.io/projects/spring-cloud-config) to update task configurations, without having downtime for our application).
+For example, maybe we can use [spring-cloud-config](https://spring.io/projects/spring-cloud-config) to update task configurations, without having downtime for our application) or may we can update cron via rest controller.
 
-To implement these requirements, we need to create a custom `Trigger` implementation, which uses RefreshScope or you can update cron via rest controller, in this article we see RefreshScope variation:
+In this article we will see spring-cloud-congig variation, as it can have more use cases in industry. 
+
+To implement these requirements, we need to create a custom `Trigger` implementation, which uses RefreshScope:
 
 ```java
 @RefreshScope// refresh bean when actuator refresh is done for reflecting cloud config changes, without restarting the app.

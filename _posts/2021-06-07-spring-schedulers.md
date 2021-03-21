@@ -3,7 +3,7 @@ title: "Scheduling with Spring Boot"
 categories: [spring-boot]
 date: 2021-03-05 00:00:00 +0530
 modified: 2021-03-05 00:00:00 +0530
-author: default
+author: yuvraj
 excerpt: "In this article, we're going to look at spring schedulers, different annotations for scheduling tasks, how it works internally, and how to schedule tasks without an annotation."
 image:
   auto: 0061-cloud
@@ -50,21 +50,24 @@ Strictly talking about syntax, **any void method which does take any parameters 
 
 As of now, we know that `@Scheduled` is the way to schedule tasks, but we haven't seen it in action. Let's look at different ways on how to use this annotation:
 
-* `Schedule tasks with FixedRate`: Using this would execute our task, after every n milliseconds, which you provided. **An important thing to know here is that every execution is independent i.e. it will execute our task even if the previous execution is still `in progress`**.
+### Schedule tasks with `FixedRate`
+Using this would execute our task, after every n milliseconds, which you provided. **An important thing to know here is that every execution is independent i.e. it will execute our task `EVEN if the previous execution is still in progress`**.
 ```java
 @Scheduled(fixedRate = 1000)
 public void callApiViaFixedRate() {
   System.out.println("calling API using fixed rate");
 }
 ```
-* Schedule tasks with FixedDelay: Using this would ensure, the gap between the execution of our task is always n milliseconds, i.e. **our task will invoke only `after the previous execution is complete.`**
+### Schedule tasks with `FixedDelay`
+Using this would ensure, the gap between the execution of our task is always n milliseconds, i.e. **our task will invoke `ONLY after the previous execution is complete.`**
 ```java
 @Scheduled(fixedDelay = 1000)
 public void callApiViaFixedDelay() {
  System.out.println("calling API using fixed delay");
 }
 ```
-* `Schedule tasks with Cron Expression`: Generally, our use cases are to execute tasks daily at some fixed time or weekly or any other `calendar schedule`, for those purposes we use cron expression.
+### Schedule tasks with `Cron Expression`
+Generally, our use cases are to execute tasks daily at some fixed time or weekly or any other `calendar schedule`, for those purposes we use cron expression.
 ```java
 @Scheduled(cron = "0/30 * * * * ?")
 public void callApiViaCron() {
@@ -72,6 +75,7 @@ public void callApiViaCron() {
 }
 ```
 
+### Support for `Initial Delay's and Time Zone` 
 For Fixed Rate, Fixed Delay and Cron, we can add **initial delays** for the FIRST execution-only, that is our task will be executed `after the initial delay specified`. So we can do some preparatory things if we want to.
 ```java
 @Scheduled(fixedRate = 1000, initialDelay = 200)
@@ -196,7 +200,7 @@ This class registers a task based on whatever flavour we have used to define it:
 * if we used `@Scheduled(fixedRate="")`, it will register a `FixedRateTask`
 * ...
 
-We won’t look at all the task types, you can look at the `processScheduled()` method for more detail.
+We won’t look at all the task types, you can look at the [processScheduled()](https://github.com/spring-projects/spring-framework/blob/master/spring-context/src/main/java/org/springframework/scheduling/annotation/ScheduledAnnotationBeanPostProcessor.java#L391) method for more detail.
 
 Let's look at the `CronTask` class, for example: 
 
@@ -227,57 +231,137 @@ If we want to have mutable tasks, we will have create them manually, which we wi
 
 ## Manually Scheduling (Mutable) Tasks
 
-  The first question that comes to any developers mind is **Why schedule a task with annotation?**        
+The first question that comes to any developer's mind is **Why schedule a task without annotation?**        
+There are two primary reasons for it:
+ * We want a custom trigger logic for our task.
+ * We want a mutable task, i.e. ability to change the task's configuration at run time.
 
-  * **Changing a task's configuration at runtime:** As we learned in the previous section, tasks created with the `@Scheduled` annotation tasks are immutable. For example, if we scheduled a task that pulls data at 4 AM every day and we want to change the time, we can’t. We will need to stop the application and update the cron expression.
-  * **Custom trigger logic:** we can have use cases, where we want to run tasks based on some custom logic. **Let's say we want to calculate the next execution time based on that day's weather forecast.**
+In the next section, we will see both of these reasons in a little more depth.
 
 
-  To implement these requirements, we need to create a custom `Trigger` implementation, which can hold our custom logic:
+### Changing a task's configuration at runtime
+As we learned in the previous section, tasks created with the `@Scheduled` annotation tasks are immutable. For example, if we scheduled a task that pulls data at 4 AM every day and we want to change the time, we can’t. We will need to stop the application and update the cron expression.
+
+For example, maybe we can use [spring-cloud-config](https://spring.io/projects/spring-cloud-config) to update task configurations, without having downtime for our application).
+
+To implement these requirements, we need to create a custom `Trigger` implementation, which uses RefreshScope or you can update cron via rest controller, in this article we see RefreshScope variation:
+
+```java
+@RefreshScope// refresh bean when actuator refresh is done for reflecting cloud config changes, without restarting the app.
+@Component
+public class CloudConfigTrigger implements Trigger {
+
+  // Cron expression from cloud config
+  @Value("${reflectoring.cron}")
+  private String cron;
+
+  @Override
+  public Date nextExecutionTime(TriggerContext triggerContext) {
+    CronTrigger crontrigger = new CronTrigger(cron);
+    Date nextRunDate = crontrigger.nextExecutionTime(triggerContext);
+    return nextRunDate;
+  }
+}
+```
+### Custom trigger logic
+we can have use cases, where we want to run tasks based on some custom logic. **Let's say we want to calculate the next execution time based on that day's weather forecast.**
+
+
+To implement these requirements, we need to create a custom `Trigger` implementation, which can hold our custom logic:
 
 ```java
 @Component
-public class CustomTrigger implements Trigger {
+public class WeatherForecastTrigger implements Trigger {
 
-private String cron="initialCron";
+  //custom trigger logic
+  private String cronAffectedByWeather() {
+    int currentTemperature = getCurrentTemperature();
 
-public void updateCron(String updatedCron){
-  this.cron = updatedCron;
-}
+    //if temperature is less then 25 degrees, execute task every 10 seconds 
+    //from next scheduled time
+    if (currentTemperature < 25) {
+      return "0/10 * * * * ?";
+    }
+    //if temperature is greater then 25 degrees, execute task every 30 seconds
+    // from next scheduled time
+    return "0/30 * * * * ?";
 
- @Override
- public Date nextExecutionTime(TriggerContext triggerContext) {
-   CronTrigger crontrigger = new CronTrigger(cron);
-   Date nextRunDate = crontrigger.nextExecutionTime(triggerContext);
-   return nextRunDate;
- }
+  }
+
+  // This gives us the current temperature between the range 0 and 50
+  private int getCurrentTemperature() {
+    return (int) Math.random() * (50);
+  }
+
+  @Override
+  public Date nextExecutionTime(TriggerContext triggerContext) {
+    CronTrigger crontrigger = new CronTrigger(cronAffectedByWeather());
+    Date nextRunDate = crontrigger.nextExecutionTime(triggerContext);
+    return nextRunDate;
+  }
+
 }
 ```
 
 To register our task with Spring's scheduling framework, we need to implement the `SchedulingConfigurer` interface:
 
-
 ```java
+package refactoring.io.springscheduler.service;
+
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import org.springframework.stereotype.Component;
+
+import java.util.concurrent.ScheduledFuture;
+
+// We will register our custom trigger tasks
 @Component
-public class SchedulerConfig implements SchedulingConfigurer{
+public class SchedulerConfig implements SchedulingConfigurer {
 
- private final CustomTrigger customTrigger;
+  private final WeatherForecastTrigger weatherForecastTrigger;
 
- private ScheduledFuture<?> future;
- @Override
- public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+  private final CloudConfigTrigger cloudConfigTrigger;
 
-   taskScheduler = taskRegistrar.getScheduler();
-   future = taskScheduler.schedule(
-       () -> {
-         System.out.println("call API from custom task");
-       }, customTrigger);
+  private ScheduledFuture<?> weatherTaskFuture;
+  private ScheduledFuture<?> cloudConfigTaskFuture;
+
+  public SchedulerConfig(WeatherForecastTrigger weatherForecastTrigger,
+                         CloudConfigTrigger cloudConfigTrigger) {
+    this.weatherForecastTrigger = weatherForecastTrigger;
+    this.cloudConfigTrigger = cloudConfigTrigger;
   }
+
+  @Override
+  public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+
+    TaskScheduler taskScheduler = taskRegistrar.getScheduler();
+    registerWeatherForecastTask(taskScheduler);
+    registerCloudConfigTask(taskScheduler);
+  }
+
+  //register weather forecast task
+  private void registerWeatherForecastTask(TaskScheduler taskScheduler) {
+
+    weatherTaskFuture = taskScheduler.schedule(
+        () -> {
+          System.out.println("call API from weather forecast task");
+        }, weatherForecastTrigger);
+  }
+
+  //register spring-cloud task
+  private void registerCloudConfigTask(TaskScheduler taskScheduler) {
+    cloudConfigTaskFuture = taskScheduler.schedule(
+        () -> {
+          System.out.println("call API from cloud sconfig task");
+        }, cloudConfigTrigger);
+  }
+
 }
 ``` 
 
 
-Now once you start the app, your app will run using the initial cron expression and when you call updateCron with some different cron, it will run on that updated expression.
+Now once you start the app, we will see two tasks running, one WeatherForecast task will be alternating between 2 crons shown in the above example based on the value from getCurrentTemperature() function, and second, the CloudConfig task will start with the initial value in your cloud-config and once you change the value in cloud-config and hit actuator refresh. CloudConfig task will start running on updated taken cron from the cloud-config
 
 ## Conclusion
 

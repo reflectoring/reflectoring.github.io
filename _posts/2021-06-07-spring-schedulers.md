@@ -3,7 +3,7 @@ title: "Scheduling with Spring Boot"
 categories: [spring-boot]
 date: 2021-03-05 00:00:00 +0530
 modified: 2021-03-05 00:00:00 +0530
-author: yuvraj
+author: default
 excerpt: "In this article, we're going to look at spring schedulers, different annotations for scheduling tasks, how it works internally, and how to schedule tasks without an annotation."
 image:
   auto: 0061-cloud

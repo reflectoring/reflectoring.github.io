@@ -1,21 +1,23 @@
 ---
-title: "Don't Use Spring's `@Profile` Annotation in Spring Boot Applications!"
-categories: [craft]
-date: 2021-03-06 00:00:00 +1100
-modified: 2021-03-06 00:00:00 +1100
+title: "Don't Use Spring's @Profile Annotation!"
+categories: [spring-boot]
+date: 2021-03-21 00:00:00 +1100
+modified: 2021-03-21 00:00:00 +1100
 author: default
 excerpt: "Why using Spring's @Profile annotation is a bad idea and what to do instead."
 image:
-  auto: 0061-cloud
+  auto: 0098-profile
 ---
 
-With profiles, Spring offers a very powerful feature to configure our applications. Spring also offers the `@Profile` annotation to add beans to the application context only when a certain profile is active. This article is about this `@Profile` annotation, why it's a bad idea to use it, and what to do instead.
+With profiles, Spring (Boot) provides a very powerful feature to configure our applications. Spring also offers the `@Profile` annotation to add beans to the application context only when a certain profile is active. This article is about this `@Profile` annotation, why it's a bad idea to use it, and what to do instead.
 
 ## What Are Spring Profiles?
 
-For an in-depth discussion of profiles in Spring Boot, have a look at my ["One-Stop Guide to Profiles with Spring Boot"](/spring-boot-profiles). The one-sentence-version of it is this: **when we start a Spring Boot application with a certain profile (or number of profiles) activated, the application can react to the activated profiles in some way**.
+For an in-depth discussion of profiles in Spring Boot, have a look at my ["One-Stop Guide to Profiles with Spring Boot"](/spring-boot-profiles). 
 
-The main use case of profiles in Spring Boot is to group configuration parameters for different environments into different `application-<profile>.yml` configuration files. Spring Boot will automatically pick up the right configuration file depending on the activated profile and load the configuration properties from that file.
+The one-sentence explanation of profiles is this: **when we start a Spring (Boot) application with a certain profile (or number of profiles) activated, the application can react to the activated profiles in some way**.
+
+The main use case for profiles in Spring Boot is to group configuration parameters for different environments into different `application-<profile>.yml` configuration files. Spring Boot will automatically pick up the right configuration file depending on the activated profile and load the configuration properties from that file.
 
 We might have an `application-local.yml` file to configure the application for local development, an `application-staging.yml` file to configure it for the staging environment, and an `application-prod.yml` file to configure it for production.
 
@@ -25,7 +27,7 @@ That's a powerful feature and we should make use of it!
 
 The `@Profile` annotation is one of the ways to react to an activated profile in a Spring (Boot) application. The other way is to call `Environment.getActiveProfiles()`, which you can read about [here](spring-boot-profiles/#checking-which-profiles-are-active).
 
-A pattern of using the `@Profile` annotation that I have observed in various projects is replacing "real" beans with mock beans depending on a profile, like this:
+One pattern of using the `@Profile` annotation that I have observed in various projects is replacing "real" beans with mock beans depending on a profile, something like this:
 
 ```java
 @Configuration
@@ -69,9 +71,9 @@ class MyConfiguration {
 }
 ```
 
-Depending on the profile, we use a different URL to connect to an external resource.
+We create a `Client` bean that connects against a different URL depending on the active profile.
 
-We could also use the `@Profile` annotation it like this:
+I have also seen the `@Profile` annotation used like this:
 
 ```java
 @Configuration
@@ -92,25 +94,31 @@ class MyConfiguration {
 }
 ```
 
-In this case, we have two profiles: `postgresql` and `h2`. If the `postgresql` profile is active, we connect to a "real" PostgreSQL database (assuming the `PostgresqlService` class does that for us). If the `h2` profile is active, we connect to an in-memory H2 database, instead. 
+If the `postgresql` profile is active, we connect to a "real" PostgreSQL database (assuming the `PostgresqlService` class does that for us). If the `h2` profile is active, we connect to an in-memory H2 database, instead. 
 
-Both of the above patterns are bad and you shouldn't use them. Actually, don't use the `@Profile` annotation at all, if you can. I will tell you why and what to do instead.
+**All of the above patterns are bad. Don't do it at home (or rather, at work)!**
+
+Actually, don't use the `@Profile` annotation at all, if you can avoid it. And I will tell you how to avoid it later.
 
 ## What's Wrong with the `@Profile` Annotation?
 
-The main issue I see with the `@Profile` annotation is that it spreads configuration parameters across the codebase. There probably won't be a single a configuration class where we use `@Profile("test")`, `@Profile("!test")`, `@Profile("postgresql")`, or `@Profile("h2")`. There will be many places, spread across multiple components of our codebase. 
+The main issue I see with the `@Profile` annotation is that **it spreads dependencies to the profiles across the codebase**. 
 
-With the `@Profile` annotations spread across the codebase, we can't see at a glance what effect a particular profile has on our application. What's more, we don't know what happens if we combine certain profiles. 
+There probably won't be a single a configuration class where we use `@Profile("test")`, `@Profile("!test")`, `@Profile("postgresql")`, or `@Profile("h2")`. There will be many places, spread across multiple components of our codebase. 
 
-What happens if we activate the `h2` profile? What happens if we activate the `h2` profile and we *do not* activate the `test` profile? What happens if we activate the `postgresql` profile together with the `test` profile? Will the application still work? 
+With the `@Profile` annotations spread across the codebase, **we can't see at a glance what effect a particular profile has on our application**. What's more, we don't know what happens if we combine certain profiles.
+
+What happens if we activate the `h2` profile? What happens if we activate the `h2` profile and we *do not* activate the `test` profile? What happens if we activate the `postgresql` profile together with the `test` profile? Will the application still work?
 
 To find out, we have to do a full text search for `@Profile` annotations in our codebase and try to make sense of the configuration. Which no one will do, because it's tedious. Which means that no one will understand the application configuration. In turn, this means that we'll trial-and-error our way through any issues we encounter... .
 
-OK, I'm being a bit provocative here, but you get the gist. And we've only been talking about a couple different profiles here. Imagine the combinatorial mess when there are more!
+Using negations like `@Profile("!test")` makes it even worse. We can't even use a full-text search to look for beans that are activated with a certain profile, because the profile is not visible in the code. Instead *we have to know* that we have to search for `!test`, instead. 
+
+You get the gist. And we've only been talking about a couple of different profiles here. Imagine the combinatorial mess when there are more!
 
 ## How to Avoid the `@Profile` Annotation?
 
-First of all, say goodbye to profiles like `postgresql`, `h2`, or `enableFoo`. Profiles should be used for exactly one reason: for environment profiles. 
+First of all, say goodbye to profiles like `postgresql`, `h2`, or `enableFoo`. **Profiles should be used for exactly one reason: to create a configuration profile for a runtime environment**. You can read more about when not to use profiles [here](http://localhost:4000/spring-boot-profiles/#when-not-to-use-profiles).
 
 For each environment the application is going to run in, we create a separate profile. Usually these are variations of the following:
 
@@ -123,7 +131,7 @@ There may be more environments, of course, depending on the application and the 
 
 But the idea is that we have an `application-<profile>.yml` configuration file for each profile which contains ALL configuration parameters that are different from the default. 
 
-Then, we can do the following to fix the examples from above:
+Then, we can fix the examples from above.
 
 Instead of using `@Profile("test")` and `@Profile("!test")` to load a `MockService` or a `RealService` instance, we add a property to our `application.yml`:
 
@@ -131,11 +139,11 @@ Instead of using `@Profile("test")` and `@Profile("!test")` to load a `MockServi
 service.mock: false
 ```
 
-In `application-test.yml`, we set this property to `true` instead, to load the mock during testing.
+In `application-test.yml`, we override this property to `true`, to load the mock during testing.
 
 In the code, we do the following:
 
-```Java
+```java
 @Configuration
 class MyConfiguration {
 
@@ -154,7 +162,7 @@ class MyConfiguration {
 }
 ```
 
-The code doesn't look much different from the original, but what we've achieved is that we no longer reference the profile in the code. Instead, we reference a configuration property. This property we can influence from any `application-<profile>.yml` configuration file. We're no longer bound to the `test` profile, but we have fine-grained control over the configuration property that influences mocking of the service.
+The code doesn't look much different from the original, but what we've achieved is that **we no longer reference the profile in the code**. Instead, we reference a configuration property. This property we can influence from any `application-<profile>.yml` configuration file. We're no longer bound to the `test` profile, but we have fine-grained control over the configuration property that influences mocking of the service.
 
 We do a very similar thing in the second example. Instead of hard-coding the staging and production URL of the external resource into the code, we create the property `client.resourceUrl` in `application-staging.yml` and `application-prod.yml` and set its value to the URL we need in the respective environment. Then, we access that configuration property from the code like this:
 
@@ -193,12 +201,12 @@ class MyConfiguration {
 
 The code looks a bit more complicated because we have introduced an if/else block, but again we have removed the dependency to a specific profile from the code and instead pushed it into the `application-<profile>.yml` configuration files where they belong.
 
-The pattern is this: **every time you want to use `@Profile`, create a configuration property instead**. Then, set the value of that configuration for each environment in the respective `application-<profile>.yml` file. This way, we have a single source of truth for the configuration of each environment and no longer need to search the codebase for all the `@Profile` annotations and then guess which combinations are valid and which are not.
+The pattern is this: **every time you want to use `@Profile`, create a configuration property instead**. Then, set the value of that configuration for each environment in the respective `application-<profile>.yml` file. 
+
+This way, **we have a single source of truth for the configuration of each environment** and no longer need to search the codebase for all the `@Profile` annotations and then guess which combinations are valid and which are not.
 
 ## Conclusion
 
-Don't use `@Profile`, because it spreads dependencies to profiles all across the codebase. Instead, reduce this dependency to depend on a specific configuration property instead, and control that property for each profile in the respective `application-<profile>.yml` file. 
+Don't use `@Profile`, because it spreads dependencies to profiles all across the codebase. Every time you need a profile-specific configuration, introduce a specific configuration property and control that property for each profile in the respective `application-<profile>.yml` file. 
 
-It will make your team's life easier!
-
-
+It will make your team's life easier because you now have a single source of truth for all your configuration properties instead of having to search the codebase every time you want to know how the application is configured.

@@ -244,7 +244,7 @@ As we learned in the previous section, tasks created with the `@Scheduled` annot
 
 For example, maybe we can use [spring-cloud-config](https://spring.io/projects/spring-cloud-config) to update task configurations, without having downtime for our application) or may we can update cron via rest controller.
 
-In this article we will see spring-cloud-congig variation, as it can have more use cases in industry. 
+In this article we will see spring-cloud-config variation, as it can have more use cases in industry. 
 
 To implement these requirements, we need to create a custom `Trigger` implementation, which uses RefreshScope:
 

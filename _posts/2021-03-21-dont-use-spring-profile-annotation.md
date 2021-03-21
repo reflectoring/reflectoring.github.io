@@ -25,7 +25,7 @@ That's a powerful feature and we should make use of it!
 
 ## What's the `@Profile` Annotation?
 
-The `@Profile` annotation is one of the ways to react to an activated profile in a Spring (Boot) application. The other way is to call `Environment.getActiveProfiles()`, which you can read about [here](spring-boot-profiles/#checking-which-profiles-are-active).
+The `@Profile` annotation is one of the ways to react to an activated profile in a Spring (Boot) application. The other way is to call `Environment.getActiveProfiles()`, which you can read about [here](/spring-boot-profiles/#checking-which-profiles-are-active).
 
 One pattern of using the `@Profile` annotation that I have observed in various projects is replacing "real" beans with mock beans depending on a profile, something like this:
 
@@ -118,7 +118,7 @@ You get the gist. And we've only been talking about a couple of different profil
 
 ## How to Avoid the `@Profile` Annotation?
 
-First of all, say goodbye to profiles like `postgresql`, `h2`, or `enableFoo`. **Profiles should be used for exactly one reason: to create a configuration profile for a runtime environment**. You can read more about when not to use profiles [here](http://localhost:4000/spring-boot-profiles/#when-not-to-use-profiles).
+First of all, say goodbye to profiles like `postgresql`, `h2`, or `enableFoo`. **Profiles should be used for exactly one reason: to create a configuration profile for a runtime environment**. You can read more about when not to use profiles [here](/spring-boot-profiles/#when-not-to-use-profiles).
 
 For each environment the application is going to run in, we create a separate profile. Usually these are variations of the following:
 

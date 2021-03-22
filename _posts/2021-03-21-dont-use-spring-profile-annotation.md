@@ -173,7 +173,7 @@ The code doesn't look much different from the original, but what we've achieved 
     In a plain Spring application, make sure that you're using profiles only for environment profiles like "local", "staging", and "prod", and not to control features (i.e. no "h2", "postgresql", or "enableFoo" profiles). Then, create a <code>@Configuration</code> class for each profile that's annotated with <code>@Profile("profileName")</code> that contains all beans that are loaded conditionally in that profile. 
   </p>
   <p>
-    This means you have to write a bit more code because you have to duplicate some bean definitions across profiles, but you have also centralized the dependency to profiles to a few classes and avoided to spread it across the codebase. Also, you can just search for a profile name and you will find the beans it controls (as long as you don't use negations like <code>@Profile("!test")</code>.
+    This means you have to write a bit more code because you have to duplicate some bean definitions across profiles, but you have also centralized the dependency to profiles to a few classes and avoided to spread it across the codebase. Also, you can just search for a profile name and you will find the beans it controls (as long as you don't use negations like <code>@Profile("!test")</code>).
   </p>
 </div>
 

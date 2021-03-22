@@ -1,5 +1,5 @@
 ---
-title: "Don't Use Spring's @Profile Annotation!"
+title: "Don't Use the @Profile Annotation in a Spring Boot App!"
 categories: [spring-boot]
 date: 2021-03-21 00:00:00 +1100
 modified: 2021-03-21 00:00:00 +1100
@@ -163,6 +163,19 @@ class MyConfiguration {
 ```
 
 The code doesn't look much different from the original, but what we've achieved is that **we no longer reference the profile in the code**. Instead, we reference a configuration property. This property we can influence from any `application-<profile>.yml` configuration file. We're no longer bound to the `test` profile, but we have fine-grained control over the configuration property that influences mocking of the service.
+
+<div class="notice success">
+  <h4>What To Do in a Plain Spring Application?</h4>
+  <p>
+     The <code>@ConditionalOnProperty</code> annotation is only available in Spring Boot, not in plain Spring. Also, we don't have Spring Boot's powerful configuration features with a different <code>application-&lt;profile&gt;.yml</code> configuration file for each profile. 
+  </p>
+  <p>
+    In a plain Spring application, make sure that you're using profiles only for environment profiles like "local", "staging", and "prod", and not to control features (i.e. no "h2", "postgresql", or "enableFoo" profiles). Then, create a <code>@Configuration</code> class for each profile that's annotated with <code>@Profile("profileName")</code> that contains all beans that are loaded conditionally in that profile. 
+  </p>
+  <p>
+    This means you have to write a bit more code because you have to duplicate some bean definitions across profiles, but you have also centralized the dependency to profiles to a few classes and avoided to spread it across the codebase. Also, you can just search for a profile name and you will find the beans it controls (as long as you don't use negations like <code>@Profile("!test")</code>).
+  </p>
+</div>
 
 We do a very similar thing in the second example. Instead of hard-coding the staging and production URL of the external resource into the code, we create the property `client.resourceUrl` in `application-staging.yml` and `application-prod.yml` and set its value to the URL we need in the respective environment. Then, we access that configuration property from the code like this:
 

@@ -3,7 +3,7 @@ title: "Clean Unit Tests with Mockito"
 categories: [java]
 date: 2021-03-20 00:00:00 +0100 
 modified: 2021-03-20 00:00:00 +0100 
-author: default 
+author: lleuenberger 
 excerpt: "Clean Unit Tests with Mockito"
 image:
   auto: 0098-profile

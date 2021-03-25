@@ -1,12 +1,12 @@
 ---
-title: "Service Provider Interface"
+title: "Implementing Plugins with Java's Service Provider Interface"
 categories: [java]
 date: 2021-03-15 00:00:00 +1100
 modified: 2021-03-15 00:00:00 +1100
 author: bakic
 excerpt: "This article explains the Service Provider Interface with an example."
 image:
-  auto: 0098-spi
+  auto: 0088-jigsaw
 ---
 
 # Service Provider Interface
@@ -16,7 +16,9 @@ In this article, we are going to talk about Java's Service Provider Interface (S
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/service-provider-interface" %}
 
 ## Overview
-**The Service Provider Interface was introduced to make applications more extensible**. It gives us a way to enhance specific parts of a product without modifying the core application. All we need to do is provide a new implementation of the service that follows certain rules and plug it into the application. Using the SPI mechanism, the application will load the new implementation and work with it.
+**The Service Provider Interface was introduced to make applications more extensible**. 
+
+It gives us a way to enhance specific parts of a product without modifying the core application. All we need to do is provide a new implementation of the service that follows certain rules and plug it into the application. Using the SPI mechanism, the application will load the new implementation and work with it.
 
 ## Terms and Definitions
 
@@ -41,18 +43,23 @@ Java by default includes many different service providers. Here is a list of som
 - **`CurrencyNameProvider`**: Used by service providers that provide localized currency symbols and display names for the `Currency` class.
 - **`Driver`**: Used by service providers to load database drivers.
 
-Let's go further with the `Driver` and try to understand how the database drivers are loaded in our applications. For example, if we examine the Postgresql jar file we will find a folder called `META-INF/services` which contains a file named `java.sql.Driver`. This configuration file contains the name of the implementation class provided by Postgresql for the Driver interface, in this case: `org.postgresql.Driver`.
+Let's go further with the `Driver` and try to understand how the database drivers are loaded in our applications. For example, if we examine the PostgreSQL JAR file we will find a folder called `META-INF/services` which contains a file named `java.sql.Driver`. This configuration file contains the name of the implementation class provided by PostgreSQL for the Driver interface, in this case: `org.postgresql.Driver`.
 
-We note the same thing with the MySQL driver: The `java.sql.Driver` located in `META-INF/services` contains `com.mysql.cj.jdbc.Driver` which is the implementation of the `Driver` interface of MySQL database.
+We note the same thing with the MySQL driver: The file with the name `java.sql.Driver` located in `META-INF/services` contains `com.mysql.cj.jdbc.Driver` which is the MySQL implementation of the `Driver` interface.
+
 If the two drivers are loaded in the classpath, the `ServiceLoader` will read the implementation class names from each file, then calls `Class.forName()` with the class names and then `newInstance()` to create an instance of the implementation classes.
 
 ## Implementing a Custom Service Provider
 Now that we have an understanding of the SPI concepts, let's create an example of an SPI and load providers using the `ServiceLoader` class.
+
 Let's say that we have a librarian who needs an application to check whether a book is available in the library or not when requested by customers.
 We can do this by defining a service represented by a class named `LibraryService` and a service provider interface called `Library`.
+
 The `LibraryService` provides a singleton `LibraryService` object. This object retrieves the book from `Library` providers.
+
 The library service client which is in our case the application that we are building gets an instance of this service, and the service will search, instantiate and use `Library` service providers.
-The application developers may in the first place use a standard list of books that can be available in all libraries. Other users who deal with computer science books may require a different list of books for their library (another library provider). In this case, it would be better if the user can add the new library with the desired books to the existing application without modifying its core functionality. The new library will just be plugged into the application.
+
+The application developers may in the first place use a standard list of books that can be available in all libraries. Other users who deal with computer science books may require a different list of books for their library (another library provider). In this case, it would be better if **the user can add the new library with the desired books to the existing application without modifying its core functionality. **The new library will just be plugged into the application**.
 
 ### Overview of Maven Modules
 We start by creating a Maven root project that will contain all our sub-modules. We will call it `library-service-provider-example`.
@@ -109,7 +116,7 @@ public class LibraryService {
 
 Using the `getInstance()` method, the clients will get a singleton `LibraryService` object to retrieve the books they need.
 
-In the constructor, `LibraryService` invoke the static factory method `load()` to get an instance of `ServiceLoader` that can retrieve `Library` implementations.
+In the constructor, `LibraryService` invokes the static factory method `load()` to get an instance of `ServiceLoader` that can retrieve `Library` implementations.
 
 In `getBook()`, we then iterate through all available `Library` implementations using the `iterate()` method and call their `getBook()` methods to find the book we are looking for.
   
@@ -150,11 +157,12 @@ This implementation provides access to two books through the `getBook()` method.
 Finally, we should create a folder called `META-INF/services` in the resources directory with a file named `org.library.spi.Library`. This file will contain the full class name of the implementation that will be used by the `ServiceLoader` to instantiate it. In our case, it will be `org.library.StandardLibrary`.
 
 ### The `custom-library` Module
-The custom-library submodule has the same structure and requirements as the standard-library submodule. However, the implementation of the Library SPI, the file name, and the class name that will be created in the `META-INF/services` folder will change.
+The `custom-library` submodule has the same structure and requirements as the `standard-library` submodule. However, the implementation of the Library SPI, the file name, and the class name that will be created in the `META-INF/services` folder will change.
 
 ### The `library-demo` Module
 In this submodule, we will call the `LibraryService` to get information about some books.
 In the beginning, we will use only the standard library as a library for our demo, then we will see how we can add more capabilities to our demo project by adding the custom-library jar file to the classpath. The `ServiceLoader` will then load and instantiate our provider.
+
 To start, let's add the standard-library submodule to the library-demo `pom.xml` file:
 ```xml
 <dependency>
@@ -186,13 +194,13 @@ public class LibraryDemo {
 }
 ```
 The output for this program will be:
-```java
+```
 The library doesn't have the book 'Clean Code' that you need.
-The book 'The Lord of the Rings'was found, here are the details:Book{name='The Lord of the Rings',...}
+The book 'The Lord of the Rings' was found, here are the details:Book{name='The Lord of the Rings',...}
 ```
 
-As seen above, the book "The Lord of the Rings" is available in the standard library, but not the 'Clean Code' book.
-In order to get that book, we can add our custom-library which contains the required book. All that we have to do is to add the dependency to the library-demo `pom` file:
+As seen above, the book "The Lord of the Rings" is available in the standard library, but not the "Clean Code" book.
+In order to get that book, we can add our `custom-library` which contains the required book. All that we have to do is to add the dependency to the library-demo `pom.xml` file:
 ```xml
 <dependency>
   <groupId>org.library</groupId>
@@ -201,11 +209,11 @@ In order to get that book, we can add our custom-library which contains the requ
 </dependency>
 ```
 When we run the demo application we get this output:
-```java
-The book 'Clean Code'was found, here are the details:Book{name='Clean Code...}
+```
+The book 'Clean Code' was found, here are the details:Book{name='Clean Code...}
 The book 'The Lord of the Rings' was found, here are the details: Book{name='The Lord of ...}
 ```
-Finally, we get the requested books. We only had to plug-in a provider to add extra behavior to our program.
+Finally, we get the requested books. **We only had to plug-in a provider to add extra behavior to our program**.
 
 ## Conclusion
 In this article, we described the capabilities of the Service Provider Interface and how it works.

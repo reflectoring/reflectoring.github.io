@@ -24,8 +24,8 @@ It gives us a way to enhance specific parts of a product without modifying the c
 
 To work with extensible applications, we need to understand the following terms:
 
--  **Service Provider**: Called also `Provider`, is a specific implementation of a service. It is identified by placing the provider configuration file in the resources directory  `META-INF/services`. It must be available in the application's classpath.
 - **Service Provider Interface**: A set of interfaces or abstract classes that a service defines. It represents the classes and methods available to your application.
+-  **Service Provider**: Called also `Provider`, is a specific implementation of a service. It is identified by placing the provider configuration file in the resources directory  `META-INF/services`. It must be available in the application's classpath.
 - **ServiceLoader**: The main class used to discover and load a service implementation lazily. The `ServiceLoader` maintains a cache of services already loaded. Each time we invoke the service loader to load services, it first lists the cache's elements in instantiation order, then discovers and instantiates the remaining providers.
 
 ## How Does `ServiceLoader` Work?
@@ -39,8 +39,8 @@ The `ServiceLoader` is the main tool used to do that by providing some methods t
   ```java
   Iterator<ServiceInterface> providers = loader.iterator();
   while (providers.hasNext()) {
-      ServiceProvider provider = providers.next();
-      //actions...
+    ServiceProvider provider = providers.next();
+    //actions...
   }
   ```
   
@@ -49,14 +49,15 @@ The `ServiceLoader` is the main tool used to do that by providing some methods t
   In the following example we can see how to use the `stream()` method to get the providers:
 
   ```java
-  Stream<ServiceInterface> providers = ServiceLoader.load(ServiceInterface.class)
-              .stream()
-              .map(Provider::get);
+  Stream<ServiceInterface> providers = 
+  ServiceLoader.load(ServiceInterface.class)
+        .stream()
+        .map(Provider::get);
   ```
 
 - `reload()`: Clears the loader's provider cache and reloads the providers. This method is used in situations in which new service providers are installed into a running JVM.
 
-Apart from the service providers implemented and the service provider Interface created, we need to register these providers so that the ServiceLoader can identify and load them. **The configuration files need to be created in a specific folder:  `META-INF/services`.**
+Apart from the service providers implemented and the service provider interface created, we need to register these providers so that the `ServiceLoader` can identify and load them. **The configuration files need to be created in the folder `META-INF/services`.**
 
 ![META-INF](/assets/img/posts/spi/spi-meta-inf.png)
 
@@ -70,13 +71,13 @@ package.name.ServiceProviderImplementation
 
 We can note that there will be many configuration files with the same name in the classpath. For this reason, the `ServiceLoader` uses `ClassLoader.getResources()` method to get an enumeration of all the configuration files to identify each provider.
 
-## Service Provider Interface Example in Java: `Driver`
+## Exploring the `Driver` Service in Java
 
 By default, Java includes many different service providers. One of them is the `Driver` used to load database drivers.
 
 Let's go further with the `Driver` and try to understand how the database drivers are loaded in our applications.
 
-If we examine the PostgreSQL jar file, we will find a folder called `META-INF/services` containing a file named `java.sql.Driver`. This configuration file holds the name of the implementation class provided by PostgreSQL for the Driver interface, in this case: `org.postgresql.Driver`.
+If we examine the PostgreSQL JAR file, we will find a folder called `META-INF/services` containing a file named `java.sql.Driver`. This configuration file holds the name of the implementation class provided by PostgreSQL for the Driver interface, in this case: `org.postgresql.Driver`.
 
 We note the same thing with the MySQL driver: The file with the name `java.sql.Driver` located in `META-INF/services` contains `com.mysql.cj.jdbc.Driver` which is the MySQL implementation of the `Driver` interface.
 
@@ -91,21 +92,22 @@ Here is the code of the `getConnection()` method:
 ```java
 for (DriverInfo aDriver : registeredDrivers) {
   if (isDriverAllowed(aDriver.driver, callerCL)) {
-    try {
-      println("trying " + aDriver.driver.getClass().getName());
-      Connection con = aDriver.driver.connect(url, info);
-      if (con != null) {
-        // Success!
-        println("getConnection returning " + aDriver.driver.getClass().getName());
-        return (con);
-      }
-    } catch (SQLException ex) {
-      if (reason == null) {
-        reason = ex;
-      }
+  try {
+    println("trying " + aDriver.driver.getClass().getName());
+    Connection con = aDriver.driver.connect(url, info);
+    if (con != null) {
+    // Success!
+    println("getConnection returning " + 
+      aDriver.driver.getClass().getName());
+    return (con);
     }
+  } catch (SQLException ex) {
+    if (reason == null) {
+    reason = ex;
+    }
+  }
   } else {
-    println("skipping: " + aDriver.getClass().getName());
+  println("skipping: " + aDriver.getClass().getName());
   }
 }
 ```
@@ -122,7 +124,7 @@ The `LibraryService` provides a singleton `LibraryService` object. This object r
 
 The library service client which is in our case the application that we are building gets an instance of this service, and the service will search, instantiate and use `Library` service providers.
 
-The application developers may in the first place use a standard list of books that can be available in all libraries. Other users who deal with computer science books may require a different list of books for their library (another library provider). In this case, it would be better if **the user can add the new library with the desired books to the existing application without modifying its core functionality. **The new library will just be plugged into the application**.
+The application developers may in the first place use a standard list of books that can be available in all libraries. Other users who deal with computer science books may require a different list of books for their library (another library provider). In this case, it would be better if the user can add the new library with the desired books to the existing application without modifying its core functionality. **The new library will just be plugged into the application**.
 
 ### Overview of Maven Modules
 We start by creating a Maven root project that will contain all our sub-modules. We will call it `service-provider-interface`.
@@ -137,14 +139,16 @@ The following diagram shows the dependencies between each module:
 
 ![Modules](/assets/img/posts/spi/spi-modules.png)
 
+Both, the `classics-library` and the `computer-science-library` implement the `library-service-provider`. The `library-client` module then uses the `library-service-provider` module to find books. The `library-client` doesn't have a compile-time dependency to the library implementations!
+
 ### The `library-service-provider` Module
 
 First, let's create a model class that represents a book:
 ```java
 public class Book {
-    String name;
-    String author;
-    String description;
+  String name;
+  String author;
+  String description;
 }
 ```
 Then, we define the service provider interface for our service:
@@ -152,45 +156,46 @@ Then, we define the service provider interface for our service:
 package org.library.spi;
 
 public interface Library {
-    String getCategory();
-    Book getBook(String name);
+  String getCategory();
+  Book getBook(String name);
 }
 ```
 Finally, we create the `LibraryService` class that the client will use to get the books from the library:
 ```java
 public class LibraryService {
-    private static LibraryService libraryService;
-    private final ServiceLoader<Library> loader;
+  private static LibraryService libraryService;
+  private final ServiceLoader<Library> loader;
 
-    public static synchronized LibraryService getInstance() {
-        if (libraryService == null) {
-            libraryService = new LibraryService();
-        }
-        return libraryService;
+  public static synchronized LibraryService getInstance() {
+    if (libraryService == null) {
+      libraryService = new LibraryService();
     }
+    return libraryService;
+  }
 
-    private LibraryService() {
-        loader = ServiceLoader.load(Library.class);
-    }
+  private LibraryService() {
+    loader = ServiceLoader.load(Library.class);
+  }
 
-    public Optional<Book> getBook(String name) {
-        Book book = null;
-        Iterator<Library> libraries = loader.iterator();
-        while (book == null && libraries.hasNext()) {
-            Library library = libraries.next();
-            book = library.getBook(name);
-        }
-        return Optional.ofNullable(book);
+  public Optional<Book> getBook(String name) {
+    Book book = null;
+    Iterator<Library> libraries = loader.iterator();
+    while (book == null && libraries.hasNext()) {
+      Library library = libraries.next();
+      book = library.getBook(name);
     }
-    
-    public Optional<Book> getBook(String name, String category) {
-        return loader.stream()
-                .map(ServiceLoader.Provider::get)
-                .filter(library -> library.getCategory().equals(category))
-                .map(library -> library.getBook(name))
-                .filter(Objects::nonNull)
-                .findFirst();
-    }
+    return Optional.ofNullable(book);
+  }
+  
+  public Optional<Book> getBook(String name, String category) {
+    return loader.stream()
+        .map(ServiceLoader.Provider::get)
+        .filter(library -> 
+                library.getCategory().equals(category))
+        .map(library -> library.getBook(name))
+        .filter(Objects::nonNull)
+        .findFirst();
+  }
 }
 ```
 
@@ -207,9 +212,9 @@ In `getBook(String name, String category)` we are looking for a book from a spec
 First, we include the dependency to the service API provider in the `pom.xml` file of this submodule:
 ```xml
 <dependency>
-    <groupId>org.library</groupId>
-    <artifactId>library-service-provider</artifactId>
-    <version>1.0-SNAPSHOT</version>
+  <groupId>org.library</groupId>
+  <artifactId>library-service-provider</artifactId>
+  <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
 Then we create a class that implements the Library SPI:
@@ -217,30 +222,30 @@ Then we create a class that implements the Library SPI:
 package org.library;
 
 public class ClassicsLibrary implements Library {
-    
-    public static final String CLASSICS_LIBRARY = "CLASSICS";
-    private final Map<String, Book> books;
+  
+  public static final String CLASSICS_LIBRARY = "CLASSICS";
+  private final Map<String, Book> books;
 
-    public ClassicsLibrary() {
-        books = new TreeMap<>();
-        Book nineteenEightyFour = new Book("Nineteen Eighty-Four",
-                "George Orwell", "Description");
-        Book theLordOfTheRings = new Book("The Lord of the Rings",
-                "J. R. R. Tolkien", "Description");
+  public ClassicsLibrary() {
+    books = new TreeMap<>();
+    Book nineteenEightyFour = new Book("Nineteen Eighty-Four",
+        "George Orwell", "Description");
+    Book theLordOfTheRings = new Book("The Lord of the Rings",
+        "J. R. R. Tolkien", "Description");
 
-        books.put("Nineteen Eighty-Four", nineteenEightyFour);
-        books.put("The Lord of the Rings", theLordOfTheRings);
-    }
-    
-    @Override
-    public String getCategory() {
-        return CLASSICS_LIBRARY;
-    }
+    books.put("Nineteen Eighty-Four", nineteenEightyFour);
+    books.put("The Lord of the Rings", theLordOfTheRings);
+  }
+  
+  @Override
+  public String getCategory() {
+    return CLASSICS_LIBRARY;
+  }
 
-    @Override
-    public Book getBook(String name) {
-        return books.get(name);
-    }
+  @Override
+  public Book getBook(String name) {
+    return books.get(name);
+  }
 }
 ```
 This implementation provides access to two books through the `getBook()` method.
@@ -258,38 +263,43 @@ In the beginning, we will use only the `classics-library` as a library for our d
 To start, let's add the `classics-library` submodule to the library-client`pom.xml` file:
 ```xml
 <dependency>
-    <groupId>org.library</groupId>
-    <artifactId>classics-library</artifactId>
-    <version>1.0-SNAPSHOT</version>
+  <groupId>org.library</groupId>
+  <artifactId>classics-library</artifactId>
+  <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
 Then, we try to get information about two books:
 ```java
 public class LibraryClient {
 
-    public static void main(String[] args) {
-        LibraryService libraryService = LibraryService.getInstance();
-        requestBook("Clean Code", libraryService);
-        requestBook("The Lord of the Rings", libraryService);
-        requestBook("The Lord of the Rings", "COMPUTER_SCIENCE", libraryService);
-    }
+  public static void main(String[] args) {
+    LibraryService libraryService = LibraryService.getInstance();
+    requestBook("Clean Code", libraryService);
+    requestBook("The Lord of the Rings", libraryService);
+    requestBook("The Lord of the Rings", "COMPUTER_SCIENCE", libraryService);
+  }
 
-    private static void requestBook(String bookName, LibraryService library) {
-        library.getBook(bookName)
-                .ifPresentOrElse(book -> System.out.println("The book '" + bookName +
-                                "' was found, here are the details:" + book),
-                        () -> System.out.println("The library doesn't have the book '"
-                                + bookName + "' that you need."));
-    }
-    
-    private static void requestBook(String bookName,String category, LibraryService library) {
-        library.getBook(bookName, category)
-                .ifPresentOrElse(book -> System.out.println("The book '" + bookName + 
-                                 "' was found in  " + category + ", here are the details:" + book),
-                        () -> System.out.println("The library " + category + " doesn't have the book '" 
-                                 + bookName + "' that you need."));
-    }
-    
+  private static void requestBook(String bookName, LibraryService library) {
+    library.getBook(bookName)
+      .ifPresentOrElse(
+        book -> System.out.println("The book '" + bookName +
+          "' was found, here are the details:" + book),
+        () -> System.out.println("The library doesn't have the book '"
+          + bookName + "' that you need."));
+  }
+  
+  private static void requestBook(
+      String bookName,
+      String category, 
+      LibraryService library) {
+    library.getBook(bookName, category)
+      .ifPresentOrElse(
+        book -> System.out.println("The book '" + bookName + 
+          "' was found in  " + category + ", here are the details:" + book),
+        () -> System.out.println("The library " + category + " doesn't have the book '" 
+          + bookName + "' that you need."));
+  }
+  
 }
 ```
 The output for this program will be:
@@ -301,13 +311,13 @@ The library COMPUTER_SCIENCE doesn't have the book 'The Lord of the Rings' that 
 
 As seen above, the book "The Lord of the Rings" is available in the classics library, but not in the computer science library which is expected behavior. 
 
-The  'Clean Code' book is not available in the computer science library. In order to get it, we can add our `computer-science-library` which contains the required book. All that we have to do is to add the dependency to the library-client`pom` file:
+The  "Clean Code" book is not available in the classics library. In order to get it, we can add our `computer-science-library` which contains the required book. All that we have to do is to add the dependency to the library-client`pom` file:
 
 ```xml
 <dependency>
-    <groupId>org.library</groupId>
-    <artifactId>computer-science-library</artifactId>
-    <version>1.0-SNAPSHOT</version>
+  <groupId>org.library</groupId>
+  <artifactId>computer-science-library</artifactId>
+  <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
 When we run the demo application we get this output:

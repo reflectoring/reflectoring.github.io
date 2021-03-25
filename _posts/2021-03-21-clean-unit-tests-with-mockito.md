@@ -4,49 +4,40 @@ categories: [java]
 date: 2021-03-20 00:00:00 +0100 
 modified: 2021-03-20 00:00:00 +0100 
 author: lleuenberger 
-excerpt: "Clean Unit Tests with Mockito"
+excerpt: "Intro to writing clean unit tests with Mockito."
 image:
   auto: 0098-profile
 ---
 
-In this article we will learn how to mock objects with Mockito. Therefore, we first need to understand what test doubles
+In this article we will learn how to mock objects with Mockito. We'll first talk about what test doubles
 are and then how we can use them so that we create meaningful and tailored unit tests. We will also have a look at the
-most important Dos and Dont's in such way that we are able to write our own unit tests with Mockito.
+most important Dos and Dont's so that we are able to write our own clean unit tests with Mockito.
 
 {% include github-project.html url="https://github.com/silenum/mockito-examples" %}
 
 ## Introduction to Mocks
 
-The basic concept of mocking is replacing real objects with doubles, that we are able to advise how to behave. So to
-say, mocks are stuntmen for our test cases. Each stuntman has his speciality at what he is good at, and so do mocks. In
-software engineering we differentiate in **Test Doubles**. Don't get confused with *Mocks* and *Test Doubles*, we will
-cover the difference in detail later in this article.
+The basic concept of mocking is replacing real objects with doubles. We can control how these doubles behave. These doubles we call "Test doubles". We'll cover the different kinds of test doubles later in this article.
 
-Let's imagine we have a service, that processes orders from a database. It's very unhandy to set up a whole database
-just to test that service. In that case we create a *mock* that pretends to be the database, but in the eyes from the
-service it looks like a real database. Furthermore, we can exactly advise the mock how it shall behave. That's exactly
-what stuntmen do. They do the hard and cumbersome work, while we can enjoy doing the nice work! Having this tool, we
+Let's imagine we have a service that processes orders from a database. It's very unhandy to set up a whole database
+just to test that service. To avoid setting up a database for the test, we create a *mock* that pretends to be the database, but in the eyes of the
+service it looks like a real database. We can advise the mock exactly how it shall behave. Having this tool, we
 are able to test the service but don't actually need a database.
 
-Here [Mockito](https://www.mockito.org) comes into play. Mockito is a very popular library that supports such testing
-scenarios. Spring also uses Mockito and has its own adapters that provide convenience for developers. Don't worry -
-we don't need to have Spring to use Mockito! Mockito also comes with a standalone library that can be referenced within
-our build tool such as Maven and Gradle.
+Here [Mockito](https://www.mockito.org) comes into play. Mockito is a very popular library that allows us to create such mock objects.
 
 Consider reading the section [Why Mock?](https://reflectoring.io/spring-boot-mock/#why-mock) for additional information
-about Mocking.
+about mocking.
 
 ## Different Types of Test Doubles
 
-In the world of code, there are lots of words for test doubles and definitions for their duty. I recommend to
+In the world of code, there are many different words for test doubles and definitions for their duty. I recommend to
 define a common language within the team.
 
-Here is a little summary of the different types for test doubles and how we use them:
+Here is a little summary of the different types for test doubles and how we use them in this article:
 
 | Type  | Description                          |
 | ----- | ------------------------------------------------------------ |
-| Dummy | A dummy is an object that is often used as a parameter for the method under test but without an actual need of it during the test itself. |
-| Fake  | A fake is an object that has an implementation, but which is restricted and simpler as the real implementation. Due to this restriction, the object is not meant to be used in production. |
 | Stub  | A stub is an object that always returns the same value, regardless of which parameters you provide on a stub's methods. |
 | Mock  | A mock is an object whose behaviour is declared before the test is run. (This is exactly what Mockito is made for!) |
 | Spy   | A spy is an object that logs each method call that is performed on it (including argument values). It can be queried to create assertions in order to verify the behaviour of the system under test. (Spies are supported by Mockito!) |
@@ -58,8 +49,12 @@ Consider following example:
 ![Simple UML Diagram](../assets/img/posts/clean-unit-tests-with-mockito/city-uml-diagram.png)
 
 Let's quickly recapitulate this UML diagram. If you're familiar with UML and understood the diagram, hop to the next
-paragraph. The green arrow with the continuous line and filled triangle stands for inheritance. With other words,
-the `CityService` *inherits* from `BaseService` or `CityService` *is a* `BaseService`. The green arrow with the dotted
+paragraph. 
+
+The green arrow with the continuous line and filled triangle stands for inheritance. With other words,
+the `CityService` *inherits* from `BaseService` or `CityService` *is a* `BaseService`. 
+
+The green arrow with the dotted
 line and filled triangle stands for *implements*. `CityServiceImpl` is the implementation of `CityService` and
 therefore *an instance of* `CityService`. The white arrows with the diamond says, that `CityRepository` *is part of*
 `CityService`. It is also known as *composition*. The remaining white arrow with the dotted line stands for a reference.
@@ -100,7 +95,7 @@ The test case consists of the system under test `CityService` and its dependenci
 is `CityRepository`. We need those references in oder to test the expected behaviour and reset the test double to not
 interfere with other test cases (more about that later).
 
-Within the setup section, we create the double as previously explained with `Mockito.mock(<T> classToMock)`. Then, we
+Within the setup section, we create a test double with `Mockito.mock(<T> classToMock)`. Then, we
 inject this test double into the `CityService` so that its dependencies are satisfied. Now we are ready to create the test
 cases:
 
@@ -158,10 +153,11 @@ the shown examples can be used for test driven development and regression tests.
 ## How to Create Mocks with Mockito
 
 Until now, we have seen how to create fast and simple test cases. Now let's look at the different ways of creating mocks for our needs.
-Before we'll continue, we must understand what kind of test double Mockito creates. Mockito creates test doubles of type
-*mock* and adds extra spice from a *spy*. That allows us to verify, if a certain method was called after we executed
-our test case. In comparison with normal spies where we don't have to declare the behaviour, it is mandatory for a
-Mockito mock.
+Before we'll continue, we must understand what kind of test double Mockito creates. 
+
+Mockito creates test doubles of the type
+*mock*, but they have some features of a *spy*. These extra features allow us to verify if a certain method was called after we executed
+our test case.
 
 ### Creating Mocks with Plain Mockito
 
@@ -203,7 +199,7 @@ Applying this variant, we don't have to deal with boilerplate code and are able 
 `MockitoAnnotations.openMocks(this)` initializes the fields annotated with `@Mock` for the given test class, which is in
 our case the class itself.
 
-### Delegating the Initialization to an Extension
+### Using JUnit Jupiter's MockitoExtension
 
 As an alternative to the Mockito annotation style we can make use of JUnit Jupiter's `@ExtendWith` and extend JUnit
 Jupiter's context with `MockitoExtension.class`:
@@ -263,13 +259,12 @@ for a deep dive how to mock Beans in Spring Boot.
 
 ## Mockito Best Practices
 
-Knowing how to create the mocks, let's have a look at what we should avoid. Otherwise, our test cases are confusing
-what decreases our code's maintainability. It will save us much time debugging and doesn't let our team members guess
+Knowing how to create the mocks, let's have a look at some best practices to keep our tests clean and maintainable. It will save us much time debugging and doesn't let our team members guess
 what the intent of the test case is.
 
 ### Avoid Concatenation in `setUp()`
 
-Even tough the test cases are reduced to a minimum, the readability suffers a lot. Besides, we must highly pay 
+Even though the test cases are reduced to a minimum, the readability suffers a lot. Besides, we must highly pay 
 attention to not break any other test cases. Like so, we avoid interfering other tests by overriding the setup.
 
 Avoid `setUp()` methods like this:
@@ -322,7 +317,7 @@ To get simple test cases like this:
 
 ### Don't Recycle Mocks
 
-Having a complex scenario might entrap us to recycle our mocks. However, this will lead us sooner or later to unexpected
+Having a complex scenario might tempt us to recycle our mocks. However, this will lead us sooner or later to unexpected
 behaviour of our mocks. Each scenario shall be well reflected and set up and in case we need the same setup twice,
 initialize it by calling a method.  It's better to create new mocks for each test case. Otherwise, we might experience 
 unexpected behavior through interfering declarations.
@@ -351,18 +346,19 @@ unexpected behavior through interfering declarations.
   }
 ```
 
-### Write Test Cases Independent
+### Write Test Cases Independently
 
-Don't expected test cases to be always executed in the same order! Write everything that belongs to our test case into
+Don't expect test cases to be always executed in the same order! Write everything that belongs to our test case into
 the test method, so that a test case can be executed alone in our IDE or all together within our CI!
+
 This mistake often comes together with recycled mocks. At least now our alarm bell should ring, and it's time to
 reconsider our test case! Especially, if we need to call `reset()` in a test procedure, which is considered as code
 smell by Mockito.
 
-### Don't Mock Collections nor Values
+### Don't Mock Collections or Value Objects
 
-Mockito is a framework to mock objects with behaviour, that can be declared at the beginning of our test.
-It is common to have *Data Transfer Objects* so called DTOs. The intent of such an DTO is, as its name says, to 
+Mockito is a framework to mock objects with behaviour that can be declared at the beginning of our test.
+It is common to have *Data Transfer Objects* (or DTOs). The intent of such a DTO is, as its name says, to 
 transport data from a source to a destination. In order to retrieve this data from the object, we could declare
 the behaviour of each getter. Albeit this is possible, we should better use real values and set them to the DTO.
 The same rule applies for collections too, since they are container for values as well.
@@ -406,9 +402,9 @@ verification modes such as `atLeastOnce` or `never` already present and ready to
 In this section we want to point out important things which are nice to know.
 
 * *What types can I mock?* Mockito allows us to mock not only interfaces but also concrete classes.
-* *What is returned, if I don't declare a mock's behaviour?* Mockito returns `null` for reference objects, and the
+* *What is returned if I don't declare a mock's behaviour?* Mockito returns `null` for reference objects, and the
   default values for primitive data types (for example `0` for `int` and `false` for `boolean`)
-* *How many times Mockito returns a previously declared value?* Mockito returns always the same value, regardless of how
+* *How many times does Mockito return a previously declared value?* Mockito returns always the same value, regardless of how
   many times a method is called.
 * *Can I mock `final` classes?* No, final classes **can't** be mocked and neither final methods are mockable. This has
   to do with the internal mechanism of how Mocktio creates the mock and the Java Language Specification. If we want to

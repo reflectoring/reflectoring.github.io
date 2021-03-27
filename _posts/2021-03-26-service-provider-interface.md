@@ -9,8 +9,6 @@ image:
   auto: 0088-jigsaw
 ---
 
-# Service Provider Interface
-
 In this article, we are going to talk about Java's Service Provider Interface (SPI). We will have a short overview of what the SPI is and describe some cases where we can use it. Then we will give an implementation of an SPI for a practical use case.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/service-provider-interface" %}

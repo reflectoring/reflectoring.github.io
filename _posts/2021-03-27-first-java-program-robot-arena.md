@@ -33,7 +33,9 @@ Click on "New project", to open this dialog:
 
 If you have a different IntelliJ project open already, you can reach the "New project" dialog through the option "File -> New -> Project".
 
-Select "Java" on the left side, click "Next", click "Next" again, enter the name "robot-arena" as the name of the project, and finally click "Finish".
+If the "Project SDK" drop down box shows "No JDK", select the option "Download JDK" in the dropdown box to install a JDK (Java Development Kit) before you continue.
+
+Then, click "Next", click "Next" again, enter "robot-arena" as the name of the project, and finally click "Finish".
 
 Congratulations, you have just created a Java project! Now, it's time to actually create some code!
 
@@ -57,7 +59,7 @@ In this folder, create a new package by right-clicking on it and selecting "New 
   In Java, source code files are organized into so-called "packages". A package is just a folder in your file system and can contain files and other packages, just like a normal file system folder. 
   </p>
   <p>
-  Depending on which package a source file is in, it may or may not access source files in other packages, depending on their access modifiers.
+  Depending on which package a source file is in, it may or may not access source files in other packages, depending on their access modifiers. We're going to use the <code>public</code> modifier in this tutorial, so the files can be accessed from any package.
   </p>
 </div>
 
@@ -77,21 +79,27 @@ public class Application {
 
 Java programs are organized into "classes", where each class is usually in its own separate Java file with the same name of the class (more about classes later). You will see that IntelliJ has created a file with the name `Application.java` and the class within is also called `Application`. Each class is in a certain package, which is declared with `package level1;` in our case above. 
 
-Our `Application` class contains a method called `main()`. A class can declare many methods like that with names that we choose. A method is something that that does something for us and which we can execute. A method named `main()` is a special method, because it's considered the entry point into our program. When we tell the operating system to run our program, it will execute this `main()` method.
+Our `Application` class contains a *method* called `main()`. A class can declare many methods like that with names that we choose - we'll see how later in this tutorial. A method is a unit of code that we can execute. It can have an input in the form of arguments and an output. Our `main()` method takes an array of `String`s as input and returns a `void` output, which means it returns no output.
+
+A method named `main()` with the `public` and `static` modifiers is a special method, because it's considered the entry point into our program. When we tell the operating system to run our program, it will execute this `main()` method.
 
 Let's do this now. Run the program by right-clicking the `Application` class in the project explorer on the left side and select "Run 'Application.main()'" from the context menu.
 
 IntelliJ should now open up a console and run the program for us. You should see the output "Hello World" in the console.
 
-Congratulations! You have just run your first Java program!
+Congratulations! You have just run your first Java program! We executed the `main()` method which printed out some text. Feel free to play around a bit, change the text, and run the application again to see what happens.
 
-Let's explore some more concepts of the Java language in the next level.
+Let's now explore some more concepts of the Java language in the next level.
 
 ## Level 2 - Personalized Greeting
 
-leveling up the code example to something like this:
+Let's modify our example somewhat to get to know about some more Java concepts. The goal in this level, is to make the program more flexible, so it can greet the person executing the program.
+
+First, create a new package `level2`, and create a new class named `Application` in it. Paste the following code into that class:
 
 ```java
+package level2;
+
 public class Application {
   public static void main(String[] arguments){
     String name = arguments[0];
@@ -100,9 +108,32 @@ public class Application {
 }
 ```
 
-* go through the code example and explain the concepts of:
-  * variables
-  * operators
+Let's inspect this code before we execute it. We added the line `String name = arguments[0];`, but what does it mean?
+
+With `String name;`, we would declare a *variable* of type `String`. A variable is a placeholder that can hold a certain value. In this case, this value is of the type `String`, which is a string of characters (you can think of it as "text").
+
+With `String name = "Bob";`, we would declare a String variable that holds the value "Bob". You can read the equals sign as "is assigned the value of".
+
+With `String name = arguments[0];`, we declare a String variable that holds the value of the first entry in the `arguments` variable. The `arguments` variable is passed into the `main()` method as an input parameter. It is of type `String[]`, which means it's an array of `String` variables, so it can contain more than one string. With `arguments[0]`, we're telling Java that we want to take the first `String` variable from the array.
+
+Then, with `System.out.println("Hello, " + name);`, we print out the string "Hello, " and add the value of the `name` variable to it with the "+" operator. 
+
+What do you think will happen when you execute this code? Try it out and see if you're right.
+
+Most probably, you will get an error message like this:
+
+```json
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 0 out of bounds for length 0
+	at level2.Application.main(Application.java:5)
+```
+
+The reason for this error is that in line 5, we're trying to get the first value from the `arguments` array, but the `arguments` array is empty. There is no first value to get. Java doesn't like that and tells us with this error.
+
+To solve this, we need to pass at least one argument to our program, so that the `arguments` array will actually contain at least one value. 
+
+To add an argument to the program call, right-click on the `Application` class again, and select "Modify Run Configuration". In the field "Program arguments", enter your name. Then, execute the program again. The program should now greet you with your name!
+
+Change the program argument to a different name and run the application again to see what happens.
 
 ## Level 3 - Play Rock, Paper, Scissors with a Robot
 

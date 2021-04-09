@@ -7,6 +7,7 @@ excerpt: "My notes on 'Accelerate' by Nicole Forsgren, Jez Humble, and Gene Kim 
 image:
   teaser: /assets/img/covers/accelerate-teaser.jpg
   opengraph: /assets/img/covers/accelerate-teaser.jpg
+author: default
 ---
 
 ## TL;DR: Read this Book, when...

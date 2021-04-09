@@ -10,4 +10,6 @@ header:
   enabled: true
 comments:
   enabled: false
+image:
+  auto: 0031-matrix
 ---

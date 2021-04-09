@@ -14,7 +14,7 @@ You are just beginning your programming career? Or you have dabbled a bit in pro
 
 Then this article is for you. **We'll go from zero to building a robot arena in Java**. 
 
-If you get stuck anywhere during this tutorial, [check out codegym](https://codegym.cc). They take you through story-based Java tutorials and explain more details and coding exercises.
+If you get stuck anywhere during this tutorial, [check out codegym](https://codegym.cc). They take you through detailed and story-based Java tutorials with in-browser coding exercises that are ideal for Java beginners.
 
 Have fun building robots with Java!
 
@@ -40,11 +40,11 @@ Click on "New project", to open this dialog:
 
 If you have a different IntelliJ project open already, you can reach the "New project" dialog through the option "File -> New -> Project".
 
-If the "Project SDK" drop down box shows "No JDK", select the option "Download JDK" in the dropdown box to install a JDK (Java Development Kit) before you continue.
+If the "Project SDK" drop-down box shows "No JDK", select the option "Download JDK" in the dropdown box to install a JDK (Java Development Kit) before you continue.
 
 Then, click "Next", click "Next" again, enter "robot-arena" as the name of the project, and finally click "Finish".
 
-**Congratulations, you have just created a Java project!** Now, it's time to actually create some code!
+**Congratulations, you have just created a Java project!** Now, it's time to create some code!
 
 ## Level 1 - Hello World
 
@@ -88,9 +88,9 @@ public class Application {
 
 Java programs are organized into "classes", where each class is usually in its own separate Java file with the same name of the class (more about classes later). You will see that IntelliJ has created a file with the name `Application.java` and the class within is also called `Application`. Each class is in a certain package, which is declared with `package level1;` in our case above. 
 
-Our `Application` class contains a *method* called `main()`. A class can declare many methods like that with names that we choose - we'll see how later in this tutorial. **A method is a unit of code in a class that we can execute**. It can have an input in the form of *arguments* and an output in the form of a *return value*. Our `main()` method takes an *array* of `String`s as input and returns a `void` output, which means it returns no output.
+Our `Application` class contains a *method* called `main()`. A class can declare many methods like that with names that we choose - we'll see how later in this tutorial. **A method is a unit of code in a class that we can execute**. It can have input in the form of *arguments* and output in the form of a *return value*. Our `main()` method takes an *array* of `String`s as input and returns a `void` output, which means it returns no output (check out the [vocabulary](#java-vocabulary) at the end of this article if you want to recap what a certain term means). 
 
-**A method named `main()` with the `public` and `static` modifiers is a special method, because it's considered the entry point into our program.** When we tell Java to run our program, it will execute this `main()` method.
+**A method named `main()` with the `public` and `static` modifiers is a special method because it's considered the entry point into our program.** When we tell Java to run our program, it will execute this `main()` method.
 
 Let's do this now. Run the program by right-clicking the `Application` class in the project explorer on the left side and select "Run 'Application.main()'" from the context menu.
 
@@ -113,8 +113,8 @@ package level2;
 
 public class Application {
   public static void main(String[] arguments){
-  String name = arguments[0];
-  System.out.println("Hello, " + name);
+    String name = arguments[0];
+    System.out.println("Hello, " + name);
   }
 }
 ```
@@ -123,9 +123,9 @@ Let's inspect this code before we execute it. We added the line `String name = a
 
 With `String name`, we declare a *variable* of type `String`. A *variable* is a placeholder that can hold a certain value, just like in a mathematical equation. In this case, this value is of the type `String`, which is a string of characters (you can think of it as "text").
 
-With `String name = "Bob";`, we would declare a String variable that holds the value "Bob". You can read the equals sign as "is assigned the value of".
+With `String name = "Bob"`, we would declare a String variable that holds the value "Bob". You can read the equals sign as "is assigned the value of".
 
-With `String name = arguments[0];`, finally, we declare a String variable that holds the value of the first entry in the `arguments` variable. The `arguments` variable is passed into the `main()` method as an input parameter. It is of type `String[]`, which means it's an array of `String` variables, so it can contain more than one string. With `arguments[0]`, we're telling Java that we want to take the first `String` variable from the array.
+With `String name = arguments[0]`, finally, we declare a String variable that holds the value of the first entry in the `arguments` variable. The `arguments` variable is passed into the `main()` method as an input parameter. It is of type `String[]`, which means it's an array of `String` variables, so it can contain more than one string. With `arguments[0]`, we're telling Java that we want to take the first `String` variable from the array.
 
 Then, with `System.out.println("Hello, " + name);`, we print out the string "Hello, " and add the value of the `name` variable to it with the "+" operator. 
 
@@ -138,11 +138,11 @@ Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 0 out
 	at level2.Application.main(Application.java:5)
 ```
 
-The reason for this error is that in line 5, we're trying to get the first value from the `arguments` array, but the `arguments` array is empty. There is no first value to get. Java doesn't like that and tells us with this error.
+The reason for this error is that in line 5, we're trying to get the first value from the `arguments` array, but the `arguments` array is empty. There is no first value to get. Java doesn't like that and tells us by throwing this exception at us.
 
-To solve this, we need to pass at least one argument to our program, so that the `arguments` array will actually contain at least one value. 
+To solve this, we need to pass at least one argument to our program, so that the `arguments` array will contain at least one value. 
 
-To add an argument to the program call, right-click on the `Application` class again, and select "Modify Run Configuration". In the field "Program arguments", enter your name. Then, execute theprogram again. The program should now greet you with your name!
+To add an argument to the program call, right-click on the `Application` class again, and select "Modify Run Configuration". In the field "Program arguments", enter your name. Then, execute the program again. The program should now greet you with your name!
 
 Change the program argument to a different name and run the application again to see what happens.
 
@@ -190,7 +190,7 @@ With `class Robot`, we declare a new class with the name "Robot". As mentioned b
   If you haven't been in contact with object-oriented programming before, the concepts of classes and objects can be a lot to take in. Don't worry if you don't understand all the concepts from reading this article alone ... it'll come with practice. 
 </p>
 <p>
-If you want to go through a more thorough, hands-on introduction into object-oriented programming with Java, you might want to take a look at <a href="https://codegym.cc">codegym</a>.
+If you want to go through a more thorough, hands-on introduction to object-oriented programming with Java, you might want to take a look at <a href="https://codegym.cc">codegym</a>.
   </p>
 </div>
 
@@ -228,7 +228,7 @@ We now have an object of type `Robot` and can let it play Rock, Paper, Scissors 
 
 Before you run the program, think about what will happen. Then, run it, and see if you were right!
 
-The program should print out either "rock", "paper", or "scissors". Run it a couple times to see what happens!
+The program should print out either "rock", "paper", or "scissors". Run it a couple of times to see what happens!
 
 ## Level 4 - A Robot Arena
 
@@ -252,23 +252,23 @@ class Arena {
   }
 
   Robot startDuel() {
-    String robot1Shape = robot1.rockPaperScissors();
-    String robot2Shape = robot2.rockPaperScissors();
+    String shape1 = robot1.rockPaperScissors();
+    String shape2 = robot2.rockPaperScissors();
 
-    System.out.println(robot1.name + ": " + robot1Shape);
-    System.out.println(robot2.name + ": " + robot2Shape);
+    System.out.println(robot1.name + ": " + shape1);
+    System.out.println(robot2.name + ": " + shape2);
 
-    if (robot1Shape.equals("rock") && robot2Shape.equals("scissors")) {
+    if (shape1.equals("rock") && shape2.equals("scissors")) {
       return robot1;
-    } else if (robot1Shape.equals("paper") && robot2Shape.equals("rock")) {
+    } else if (shape1.equals("paper") && shape2.equals("rock")) {
       return robot1;
-    } else if (robot1Shape.equals("scissors") && robot2Shape.equals("paper")) {
+    } else if (shape1.equals("scissors") && shape2.equals("paper")) {
       return robot1;
-    } else if (robot2Shape.equals("rock") && robot1Shape.equals("scissors")) {
+    } else if (shape2.equals("rock") && shape1.equals("scissors")) {
       return robot2;
-    } else if (robot2Shape.equals("paper") && robot1Shape.equals("rock")) {
+    } else if (shape2.equals("paper") && shape1.equals("rock")) {
       return robot2;
-    } else if (robot2Shape.equals("scissors") && robot1Shape.equals("paper")) {
+    } else if (shape2.equals("scissors") && shape1.equals("paper")) {
       return robot2;
     } else {
       // both robots chose the same shape: no winner
@@ -284,7 +284,7 @@ An arena has two attributes of type `Robot`: `robot1`, and `robot2`. Since an ar
 
 The fun part happens in the `startDuel()` method. This method pitches the two robots against each other in battle. It expects no input parameters, but it returns an object of type `Robot`. **We want the method to return the robot that won the duel.**
 
-In the first two lines, we call each of the robots' `rockPaperScissors()` methods to find out which shape each of the robots chose and store them in two `String` variables `robot1Shape` and `robot2Shape`. 
+In the first two lines, we call each of the robots' `rockPaperScissors()` methods to find out which shape each of the robots chose and store them in two `String` variables `shape1` and `shape2`. 
 
 In the next two lines, we just print the shapes out to the console so that we can later see which robot chose which shape.
 
@@ -318,7 +318,7 @@ class Application {
 
 What's happening in this code?
 
-In the first two lines we create two `Robot` objects.
+In the first two lines, we create two `Robot` objects.
 
 In the next line, we create an `Arena` object, using the previously discussed constructor `Arena()` that expects two robots as input. We pass in the two robot objects we created earlier.
 
@@ -330,7 +330,7 @@ If the `winner` variable does have a value, we print out the name of the winner.
 
 Go through the code again and trace in your mind what happens in each line of code. Then run the application and see what happens!
 
-Every time we run the program, it should now print out the Rock, Paper, or Scissor shapes that each of the robots has chosen and then print out the name of winner or "Draw!" if there was no winner.
+Every time we run the program, it should now print out the Rock, Paper, or Scissor shapes that each of the robots has chosen and then print out the name of the winner or "Draw!" if there was no winner.
 
 **We have built a robot arena!**
 
@@ -346,14 +346,14 @@ We're going to fix three main issues with the code:
 1. The big if/else construct in the `Arena` class is repetitive and error-prone: we could easily introduce an error through copy & paste here.
 1. The `startDuel()` method in the `Arena` class returns `null` if there was no winner. We might expect the method to always return a winner and forget to handle the case when it returns `null`.
 
-Before we start, create a new package `level5` and copy all the classes from `level4` into it. 
+Before we start, create a new package `level5`, and copy all the classes from `level4` into it. 
 
 To make the code a bit safer, we'll first introduce a new class `Shape`. Create this class and copy the following code into it:
 
 ```java
 package level5;
 
-public enum Shape {
+enum Shape {
 
   ROCK("rock", "scissors"),
 
@@ -384,7 +384,7 @@ The class declares three valid shapes: `ROCK`, `PAPER`, and `SCISSORS`. Each of 
 
 The constructor `Shape()` takes these parameters and stores them in class attributes as we have seen in the other classes earlier.
 
-We additionally create a method `beats()` that is supposed to decide whether the shape beats another shape. It expects another shape as input parameter and returns `true` if that shape is the shape that `this` shape beats.  
+We additionally create a method `beats()` that is supposed to decide whether the shape beats another shape. It expects another shape as an input parameter and returns `true` if that shape is the shape that `this` shape beats.  
 
 With the `Shape` enum in place, we can now change the method `rockPaperScissors()` in the `Robot` class to return a `Shape` instead of a string:
 
@@ -411,15 +411,15 @@ class Arena {
    ...
 
   Optional<Robot> startDuel() {
-    Shape robot1Shape = robot1.rockPaperScissors();
-    Shape robot2Shape = robot2.rockPaperScissors();
+    Shape shape1 = robot1.rockPaperScissors();
+    Shape shape2 = robot2.rockPaperScissors();
 
-    System.out.println(robot1.name + ": " + robot1Shape.name);
-    System.out.println(robot2.name + ": " + robot2Shape.name);
+    System.out.println(robot1.name + ": " + shape1.name);
+    System.out.println(robot2.name + ": " + shape2.name);
 
-    if (robot1Shape.beats(robot2Shape)) {
+    if (shape1.beats(shape2)) {
       return Optional.of(robot1);
-    } else if (robot2Shape.beats(robot1Shape)) {
+    } else if (shape2.beats(shape1)) {
       return Optional.of(robot2);
     } else {
       return Optional.empty();
@@ -428,11 +428,11 @@ class Arena {
 }
 ```
 
-We changed the type of the shape variables from `String` to `Shape`, since the robots now returns `Shape`s. 
+We changed the type of the shape variables from `String` to `Shape`, since the robots now return `Shape`s. 
 
 Then, we have simplified the if/else construct considerably by taking advantage of the `beats()` method we have introduced in the `Shape` enum. If the shape of robot 1 beats the shape of robot 2, we return robot 1 as the winner. If the shape of robot 2 beats the shape of robot 1, we return robot 2 as the winner. If no shape won, we have a draw, so we return no winner.
 
-You might notice that the `startDuel()` method now returns an object of type `Optional<Robot>`. This signifies that the return value can be a robot or it can be empty. Returning an *Optional* is preferable to returning a `null` object as we did before, because it makes it clear to the caller of the method that the return value may be empty. 
+You might notice that the `startDuel()` method now returns an object of type `Optional<Robot>`. This signifies that the return value can be a robot or it can be empty. Returning an *Optional* is preferable to returning a `null` object as we did before because it makes it clear to the caller of the method that the return value may be empty. 
 
 To accommodate the new type of the return value, we have changed the `return` statements to return either a robot with `Optional.of(robot)` or an empty value with `Optional.empty()`.
 
@@ -481,23 +481,23 @@ Phew, there were a lot of terms in the tutorial above. The following table sums 
 
 |Term| Description |
 |----|----|
-| Array | A variable type that contains multiple elements. An array can be declared by appending brackets (`[]`) to the type of a variable: `String[] myArray;`. The elments in an array can be accessed by adding brackets with the index of the wanted element to the variable name, starting with 0 for the first element: `myArray[0]`.
+| Array | A variable type that contains multiple elements. An array can be declared by appending brackets (`[]`) to the type of a variable: `String[] myArray;`. The elements in an array can be accessed by adding brackets with the index of the wanted element to the variable name, starting with 0 for the first element: `myArray[0]`.
 | Attribute | A class can have zero or more attributes. An attribute is a variable of a certain type that belongs to that class. Attributes can be used like normal variables within the methods of the class. |
 | Boolean | A variable type that contains either the value `true` or the value `false`. |
 | Class | A class is a unit to organize code and can be used as a template to create many objects with the same set of attributes and methods.|
-| Constructor | A special method that is called when we use the `new` key word to create a new object from a class. It can have input parameters like any other method and implicitly returns an object of the type of the class it's in. |
+| Constructor | A special method that is called when we use the `new` keyword to create a new object from a class. It can have input parameters like any other method and implicitly returns an object of the type of the class it's in. |
 | Enum | A special class that declares an enumeration of one or more valid values. |
 | Input parameter | A variable of a specific type that can be passed into a method. |
 | Method | A method is a function that takes some input parameters, does something with them, and then returns a return value.|
 | Null | A special value that signals "no value". |
 | Object | An object is an instance of a class. A class describes the "type" of an object. Many objects can have the same type. |
 | Operator | Operators are used to compare, concatenate or modify variables. |
-| `Optional` | A class provided by Java that signifies that a variable can have an optional value, but the value can also be empty.|
+| Optional | A class provided by Java that signifies that a variable can have an optional value, but the value can also be empty.|
 | Package | High-level unit to organize code. It's just a folder in the file system.|
 | Return value | A method may return an object of a specified type. When you call the method, you can assign the return value to a variable. |
 | String | A variable type that contains a string of characters (i.e. a "text", if you will). |
-| `this` | A special keyword that means "this object". Can be used to access attributes of a class in the classes' methods.|
-| Variable | A variable can contain a value of a certain type / class. Variables can be passed into methods, combined with operators, and returned from methods. |
+| this | A special keyword that means "this object". Can be used to access attributes of a class in the classes' methods.|
+| Variable | A variable can contain a value of a certain type/class. Variables can be passed into methods, combined with operators, and returned from methods. |
 {: .table}
 
 ## Where to Go From Here?

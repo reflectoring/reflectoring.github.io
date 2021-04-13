@@ -14,7 +14,7 @@ You are just beginning your programming career? Or you have dabbled a bit in pro
 
 Then this article is for you. **We'll go from zero to building a robot arena in Java**. 
 
-If you get stuck anywhere in this tutorial, know that this is totally fine. In this case, might want to [learn Java on CodeGym](https://codegym.cc). They take you through detailed and story-based Java tutorials with in-browser coding exercises that are ideal for Java beginners.
+If you get stuck anywhere in this tutorial, know that this is totally fine. In this case, you might want to [learn Java on CodeGym](https://codegym.cc). They take you through detailed and story-based Java tutorials with in-browser coding exercises that are ideal for Java beginners.
 
 Have fun building robots with Java!
 

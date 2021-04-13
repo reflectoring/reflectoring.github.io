@@ -8,12 +8,12 @@ excerpt: "We will see how Terraform can be used to provision AWS resources."
 image:
   auto: 0074-stack
 ---
-Provisioning infrastructure has always been a time consuming manual process. Infrastructure has now moved away from physical hardware in data centers to software defined resources using virtualization technology and cloud computing. All the cloud providers allow creation of infrastructure resources through code like AWS Cloudformation and Azure Resource Manager. Terraform provides a common language for creating infrastructure for multiple cloud providers thereby becoming a key enabler for multi-cloud computing.
+Provisioning infrastructure has always been a time-consuming manual process. Infrastructure has now moved away from physical hardware in data centers to software-defined infrastructure using virtualization technology and cloud computing. All the cloud providers allow the creation of infrastructure resources through code like AWS Cloudformation and Azure Resource Manager. Terraform provides a common language for creating infrastructure for multiple cloud providers thereby becoming a key enabler for multi-cloud computing.
 
-In this post we will look at capabilities of Terraform with examples of creating resources in AWS Cloud.
+In this post, we will look at the capabilities of Terraform with examples of creating resources in AWS Cloud.
 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/localstack" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/terraform" %}
 
 ## Infrastructure as Code with Terraform
 Infrastructure as Code (IaC) is the managing and provisioning of infrastructure through code instead of through manual processes. Terraform is an open-source infrastructure as code software tool from Hashicorp that provides a consistent CLI workflow to manage hundreds of cloud services. Terraform codifies cloud APIs into declarative configuration files. We specify the provider in the configuration file and add configurations for the resources we want to create for that provider. 
@@ -24,7 +24,13 @@ Terraform distributions come in three variants:
 2. Terraform Cloud: Using Terraform in a SAS environment
 3. Terraform Enterprise
 
-Since we will be creating resources in AWS, we First we will run set up the AWS CLI by running the below command:
+For local installation, we can download a [binary distribution](!https://www.terraform.io/downloads.html) for our specific operating system. After installation, we can check by running the below command:
+
+```
+terraform -v
+```
+
+Since we will be creating resources in AWS, first we will run set up the AWS CLI by running the below command:
 ```shell
 aws configure
 ```
@@ -47,6 +53,10 @@ Terraform  in two steps:
 The configuration is defined in a JSON like language called Hashicorp Configuration Language(HCL). A Terraform configuration is a complete document in the Terraform language that tells Terraform how to manage a given collection of infrastructure. A configuration can consist of multiple files and directories.
 
 ### Init, Plan, and Apply Cycle
+Terraform has the concept of state. Our desired state is what infrastructure resources we wish to create. When we run the `plan`, Terraform pulls the resource information and compares with the desired infrastructure. It then outputs a report containing the changes which will happen when the configuration is applied(in the `Apply` stage).
+
+The comparison happens against a persisted state usually a file with extension `.tfstate`. The state can also be stored remotely and subjected to version control which is useful in a team environment.
+
 
 
 The main steps for any basic task with Terraform are:
@@ -84,14 +94,14 @@ resource "aws_instance" "vm-web" {
   }
 }
 ```
-Here we are creating a aws EC2 instance named "vm-web" of type "t2.micro" using an ami `ami-830c94e3`. We also define two tags with names - `Name` and `Env`.
+Here we are creating a aws EC2 instance named "vm-web" of type `t2.micro` using an ami `ami-830c94e3`. We also define two tags with names - `Name` and `Env`.
 We can also see the three main parts of configuration :
 1. Provider
-2. Resource: We define our infrastructure in terms of resources. Example of a resource could be an EC2 instance, a S3 bucket, lambda function or their equivalents from other providers. We represent these resources in the form of a configuration in a text file using HCL. 
+2. Resource: We define our infrastructure in terms of resources. Example of a resource could be an EC2 instance, a S3 bucket, lambda function or their equivalents from other providers. We represent these resources in the form of a configuration in a text file in HCL syntax. 
 
 3. Terraform block
 
-### Initialize the Workspace
+### Initializing the Workspace
 We will now initialize the workspace folder by running the command:
 
 ```shell
@@ -158,6 +168,7 @@ To perform exactly these actions, run the following command to apply:
     terraform apply "aws-ec2-plan"
 
 ```
+
 
 
 ### Applying the Plan
@@ -268,7 +279,7 @@ When we design software, most of the time we think about CI/CD approach to impro
 
 ## Conclusion
 
-In this post we looked at the capabilities of Terraform as IaC pltform that supports the creation and provisioning of many types of resources across an array of cloud providers like aws, azure, and gcp. We started with the basic init, plan and apply cycle for creating and modifying infrastructure resources. Then we used modules as a better way of organizing our IaC code into logical constructs in layers similar to what we do with application programming. We finally introduced two more variants : Terraform Cloud and Terraform Enterprise. 
+In this post we looked at the capabilities of Terraform as IaC platform that supports the creation and provisioning of many types of resources across an array of cloud providers like aws, azure, and gcp. We started with the basic init, plan and apply cycle for creating and modifying infrastructure resources. Then we used modules as a better way of organizing our IaC code into logical constructs in layers similar to what we do with application programming. We finally introduced two more variants : Terraform Cloud and Terraform Enterprise. 
 
 Some of the popular choices in the IaC domain are :
 

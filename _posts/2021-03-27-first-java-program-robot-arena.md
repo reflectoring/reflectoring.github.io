@@ -14,7 +14,7 @@ You are just beginning your programming career? Or you have dabbled a bit in pro
 
 Then this article is for you. **We'll go from zero to building a robot arena in Java**. 
 
-If you get stuck anywhere during this tutorial, [check out codegym](https://codegym.cc). They take you through detailed and story-based Java tutorials with in-browser coding exercises that are ideal for Java beginners.
+If you get stuck anywhere in this tutorial, know that this is totally fine. In this case, might want to [learn Java on CodeGym](https://codegym.cc). They take you through detailed and story-based Java tutorials with in-browser coding exercises that are ideal for Java beginners.
 
 Have fun building robots with Java!
 
@@ -190,7 +190,7 @@ With `class Robot`, we declare a new class with the name "Robot". As mentioned b
   If you haven't been in contact with object-oriented programming before, the concepts of classes and objects can be a lot to take in. Don't worry if you don't understand all the concepts from reading this article alone ... it'll come with practice. 
 </p>
 <p>
-If you want to go through a more thorough, hands-on introduction to object-oriented programming with Java, you might want to take a look at <a href="https://codegym.cc">codegym</a>.
+If you want to go through a more thorough, hands-on introduction to object-oriented programming with Java, you might want to take a look at <a href="https://codegym.cc">CodeGym</a>.
   </p>
 </div>
 
@@ -467,7 +467,7 @@ Then, run this program and see what happens.
 
 It should do the same as before, but we have taken advantage of some more advanced Java features to make the code more clear and less prone to accidental errors. 
 
-Don't worry if you didn't understand all the features we have used in detail. If you want to go through a more detailed tutorial of everything Java, you'll want to check out the [codegym Java tutorials](https://codegym.cc).
+Don't worry if you didn't understand all the features we have used in detail. If you want to go through a more detailed tutorial of everything Java, you'll want to check out the CodeGym Java tutorials.
 
 ## Java Vocabulary
 
@@ -502,6 +502,6 @@ Phew, there were a lot of terms in the tutorial above. The following table sums 
 
 ## Where to Go From Here?
 
-If this article made you want to learn more about Java, [head over to codegym](https://codegym.cc/). They provide a very entertaining and motivating learning experience for Java. Exercises are embedded in stories and you can create and run code right in the browser!
+If this article made you want to learn more about Java, [head over to CodeGym](https://codegym.cc/). They provide a very entertaining and motivating learning experience for Java. Exercises are embedded in stories and you can create and run code right in the browser!
 
 And, of course, you can play around with the code examples from this article [on GitHub](https://github.com/thombergs/robot-arena).

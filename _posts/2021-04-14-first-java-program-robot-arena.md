@@ -48,7 +48,7 @@ Then, click "Next", click "Next" again, enter "robot-arena" as the name of the p
 
 ## Level 1 - Hello World
 
-Let's start with the simplest possible program, the infamous "Hello World". 
+Let's start with the simplest possible program, the infamous "Hello World" (actually, in Java there are already quite a few concepts required to build a "Hello World" program ... it's definitely simpler in other programming languages). 
 
 **The goal is to create a program that simply prints "Hello World" to a console.**
 
@@ -81,7 +81,7 @@ package level1;
 
 public class Application {
   public static void main(String[] arguments){
-  System.out.println("Hello World");
+    System.out.println("Hello World");
   }
 }
 ```

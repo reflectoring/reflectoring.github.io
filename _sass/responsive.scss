@@ -2,17 +2,17 @@
   #nav .nav-menu {
     display: none;
   }
-}
 
-@media only screen and (max-width: 991px) {
   #nav .nav-buttons {
     display: none;
   }
-}
 
-@media only screen and (max-width: 991px) {
   .hide-without-sidebar {
     display: none;
+  }
+
+  .full-width-on-mobile {
+    width: 100%;
   }
 }
 

@@ -1,8 +1,8 @@
 ---
 title: "Your First Java Program: Building a Robot Arena"
 categories: [java]
-date: 2021-04-14 00:00:00 +1100
-modified: 2021-04-14 00:00:00 +1100
+date: 2021-04-15 00:00:00 +1100
+modified: 2021-04-15 00:00:00 +1100
 author: default
 excerpt: "Get started with Java and build your first program. We'll start simple and level up until we have built a robot arena!"
 image:

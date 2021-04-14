@@ -7,6 +7,7 @@ excerpt: "My notes on 'Mindset' - a book about the power of having a growth mind
 image:
   teaser: /assets/img/covers/mindset-teaser.jpg
   opengraph: /assets/img/covers/mindset-teaser.jpg
+author: default
 ---
 
 ## TL;DR: Read this Book, when...

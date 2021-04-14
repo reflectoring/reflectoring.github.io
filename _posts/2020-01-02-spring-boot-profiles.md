@@ -124,11 +124,14 @@ class BaseConfiguration {
 <div class="notice success">
   <h4>Use Profile-Specific Beans Responsibly!</h4>
   <p>
-  Adding certain beans to the application context for one profile, but not for another, can quickly add complexity to our application! We always have to pause and think if a bean is available in a particular profile or not, otherwise, this may cause <code>NoSuchBeanDefinitionException</code>s when other beans depend on it!
+  Adding certain beans to the application context for one profile, but not for another, can quickly add complexity to our application! We always have to pause and think if a bean is available in a particular profile or not, otherwise, this may cause <code>NoSuchBeanDefinitionException</code>s when other beans depend on it! 
   </p>
   <p>
   <strong>Most use cases can and should be implemented using profile-specific properties instead of profile-specific beans.</strong> This makes the configuration of our application easier to understand because everything specific to a profile is collected in a single <code>application.yml</code> file and we don't have to scan our codebase to find out which beans are actually loaded for which profile. 
   </p>
+<p>
+Read more about why you should avoid the <code>@Profile</code> annotation in <a href="/dont-use-spring-profile-annotation">this article</a>.
+</p>
 </div>
 
 ## How to Activate Profiles?

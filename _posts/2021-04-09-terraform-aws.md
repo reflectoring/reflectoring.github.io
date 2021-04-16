@@ -10,7 +10,7 @@ image:
 ---
 Provisioning infrastructure has always been a time-consuming manual process. Infrastructure has now moved away from physical hardware in data centers to software-defined infrastructure using virtualization technology and cloud computing. 
 
-All the cloud providers provide services for the creation and modification of infrastructure resources through code like AWS Cloudformation and Azure Resource Manager. Terraform provides a common language for creating infrastructure for multiple cloud providers thereby becoming a key enabler for multi-cloud computing.
+All the cloud providers provide services for the creation and modification of infrastructure resources through code like [AWS Cloudformation](https://aws.amazon.com/cloudformation/) and [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview). Terraform provides a common language for creating infrastructure for multiple cloud providers thereby becoming a key enabler for multi-cloud computing.
 
 In this post, we will look at the capabilities of Terraform with examples of creating resources in AWS Cloud.
 
@@ -85,12 +85,12 @@ Default output format [json]:
 We are using us-east-1 as the region and JSON as the output format.
 
 ## Terraform Concepts with Simple Workflow
-Froa basic workflow in Terraform , we first design the infrastructure resources in a configuration file. We then use this configuration to create the actual infrastructure.
+Froa basic workflow in Terraform , we first design the infrastructure resources in a configuration file, called the desired state. We then use this configuration to create the actual infrastructure.
 
 The configuration is defined in [Terraform language](https://www.terraform.io/docs/language/index.html) using a JSON-like syntax called Hashicorp Configuration Language(HCL) that tells Terraform how to manage a collection of infrastructure. A configuration can consist of one or more files and directories.
 
 ### Init, Plan, and Apply Cycle
-Terraform has the concept of state. Our desired state is what infrastructure resources we wish to create. When we run the `plan`, Terraform pulls the resource information and compares it with the desired infrastructure. It then outputs a report containing the changes which will happen when the configuration is applied(during the `Apply` stage).
+We start with our desired state that is the collection of infrastructure resources we wish to create. When we run the `plan`, Terraform pulls the actual resource information from the provider and compares it with the desired infrastructure. It then outputs a report containing the changes which will happen when the configuration is applied(during the `Apply` stage).
 
 The main steps for any basic task with Terraform are:
 1. Create a workspace folder
@@ -100,7 +100,7 @@ The main steps for any basic task with Terraform are:
 5. Apply the plan
 
 ### Defining the Configuration
-We write terraform configurations in Terraform language. Let us define our configuration in a file `main.tf`:
+Let us define our Terraform configuration in Terraform language in a file `main.tf`:
 
 ```
 terraform {
@@ -127,7 +127,8 @@ resource "aws_instance" "vm-web" {
   }
 }
 ```
-Here we are creating an aws EC2 instance named "vm-web" of type `t2.micro` using an ami `ami-830c94e3`. We also define two tags with names - `Name` and `Env`.
+Here we are creating an aws EC2 instance named "vm-web" of type `t2.micro` using an ami `ami-830c94e3`. We also define two tags with names - `Name` and `Env` for associating with ec2 instance.
+
 We can also see the three main parts of configuration :
 
 1. **Resource**: We define our infrastructure in terms of resources. Each resource block in the configuration file describes one or more infrastructure objects. EC2 instance, an S3 bucket, lambda function, or their equivalents from other Cloud platforms are examples of different resource types. 
@@ -417,7 +418,11 @@ We ran Terraform using Terraform CLI which performed operations on the workstati
 
 Terraform has two more variants Terraform Cloud and Terraform Enterprise for using Terraform in a team environment. Terraform Cloud is a hosted service at https://app.terraform.io where Terraform runs on disposable virtual machines in its cloud infrastructure. Terraform Enterprise is available for hosting in a private data center which will be an option preferred by large enterprises. 
 
-Let us run remote plans in the terraform Cloud from our local command line, also called the CLI workflow. First, we need to log in to https://app.terraform.io/session after creating an account with our email address. Similar to our working directory in the CLI, we will create a `workspace`. We will modify our configuration to add a backend block to configure our remote backend as shown here: 
+Let us run remote plans in the terraform Cloud from our local command line, also called the CLI workflow. First, we need to log in to https://app.terraform.io/session after creating an account with our email address. Similar to our working directory in the CLI, we will create a `workspace` with a `CLI driven workflow` as shown here:
+
+![Workspace with CLI driven workflow](/assets/img/posts/aws-terraform/workspace-create-with-cli-workflow.png)
+
+We will modify our configuration to add a backend block to configure our remote backend as shown here: 
 
 ```hcl
 terraform {
@@ -439,7 +444,9 @@ terraform {
 }
 
 ```
-We configure AWS credentials by adding two environment variables:
+We configure AWS credentials by adding two environment variables for `access token` and `secret key`:
+
+![Workspace with CLI driven workflow](/assets/img/posts/aws-terraform/workspace-env-variables.png)
 
 Running `terraform plan` command will start a remote run in the configured Terraform Cloud workspace. Running `terraform plan` will output the following log:
 

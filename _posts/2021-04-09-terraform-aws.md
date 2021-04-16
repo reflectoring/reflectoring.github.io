@@ -18,7 +18,8 @@ In this post, we will look at the capabilities of Terraform with examples of cre
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/terraform" %}
 
 ## Infrastructure as Code with Terraform
-Infrastructure as Code (IaC) is the managing and provisioning of infrastructure through code instead of through manual processes. From the website of Terraform: >Terraform is an open-source infrastructure as code software tool that provides a consistent CLI workflow to manage hundreds of cloud services. 
+Infrastructure as Code (IaC) is the managing and provisioning of infrastructure through code instead of through manual processes. From the website of Terraform: 
+>Terraform is an open-source infrastructure as code software tool that provides a consistent CLI workflow to manage hundreds of cloud services. 
 
 For defining resources with Terraform, we specify the provider in the configuration file and add configurations for the resources in one or more files. 
 

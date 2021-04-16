@@ -23,7 +23,11 @@ Terraform is logically split into two main parts:
 1. Terraform Core 
 2. Terraform Plugins
 
-Terraform plugin exposes an implementation for a specific service, such as AWS, or provisioner, such as bash. All Providers and Provisioners used in Terraform configurations are plugins. 
+Terraform Core is a binary written in [Go](https://golang.org) and provides the Terraform command-line interface(CLI).
+Terraform Plugin is an executable binary also written in [Go](https://golang.org) and exposes an implementation for a specific service, like AWS or Azure, or a provisioner, like bash. All Providers and Provisioners used in Terraform configurations are plugins. Terraform Core communicates with Plugins using remote procedure calls(RPC) and does resource state management and constructs the resource tree.
+
+The [Terraform AWS provider](https://registry.terraform.io/providers/hashicorp/aws/latest) is a plugin for Terraform that allows for the full lifecycle management of AWS resources.
+
 
 ## Terraform Setup
 
@@ -212,25 +216,24 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 
 ------------------------------------------------------------------------
 
-This plan was saved to: aws-ec2-plan
+This plan was saved to: aws-app-stack-plan
 
 To perform exactly these actions, run the following command to apply:
-    terraform apply "aws-ec2-plan"
+    terraform apply "aws-app-stack-plan"
 
 ```
 From the output we can see that one resource will be added, zero changed and zero destroyed. The plan is saved in the file specified in the output.
 
 
 ### Applying the Plan
-We use the terraform [apply](https://www.terraform.io/docs/cli/commands/apply.html) command to apply our changes and create or modify the changes. By default, apply scans the current directory for the configuration and applies the changes appropriately. However, we can optionally give the path to a saved plan file that was previously created by running `terraform plan`.
+We use the terraform [apply](https://www.terraform.io/docs/cli/commands/apply.html) command to apply our changes and create or modify the changes. By default, apply scans the current directory for the configuration and applies the changes appropriately. However, we can give the path to a file that was previously created by running `terraform plan`.
 
-If we do not give a plan file on the command line, running `terraform apply`  creates a new plan automatically and then prompts for approval to apply it. If the created plan does not include any changes to resources or root module output values then running `terraform apply` exits immediately, without prompting.
-
+Let us now run the `terraform apply` command to create or update the resources using the plan file we created in the previous step:
 
 ```shell
 terraform apply "aws-app-stack-plan"
 ```
-
+After running this command, we can see the resources getting created in the output log:
 ```shell
 aws_instance.vm-web: Creating...
 aws_instance.vm-web: Still creating... [10s elapsed]
@@ -248,9 +251,12 @@ use the `terraform show` command.
 State path: terraform.tfstate
 
 ```
+here we introduce an important concept: terraform state. The state is stored locally in terraform.tfstate.
+
+If we do not give a plan file on the command line, running `terraform apply`  creates a new plan automatically and then prompts for approval to apply it. If the created plan does not include any changes to resources or root module output values then running `terraform apply` exits immediately, without prompting.
 
 ### Destroy
-
+at last we destroy our infrastructure by running the `terraform destroy` command:
 ```shell
 terraform destroy
 ```
@@ -272,8 +278,9 @@ Destroy complete! Resources: 1 destroyed.
 ```
 
 ### Parameterizing the Configuration with Input Variables
-Instead of putting the values in the configuration file, we can use variables and receive their values when applying the configuration. Let us modify the configuration file created in the earlier with variables for instance type:
+In our last example, instead of putting the values of ami, tag and instance type directly in the configuration file, we can use variables to allow these aspects of our configuration to be modified without changing the source code. We can receive their values when applying the configuration. 
 
+Let us modify the configuration file created in the earlier with variables for instance type:
 
 ```
 resource "aws_instance" "vm-web" {
@@ -286,15 +293,26 @@ resource "aws_instance" "vm-web" {
   }
 
 ```
-The configuration now has a variable by the name `ec2_instance_type`. When we run the plan, it prompts for the value of the variable:
+As we can see here, we have introduced a variable by the name `ec2_instance_type` in our resource configuration. We have declared our variable in a file `variables.tf` in a `variable` block as shown here:
+
+```
+variable "ec2_instance_type" {
+  description = "AWS EC2 instance type."
+  type        = string
+}
+
+```
+This is a variable of type `string` with an appropriate `description`. We can similarly declare variables of types number and bool and complex types like `list`, `map`, `set` and `tuple`. Some additional arguments we can specify for a variable are `default`, [`validation`](https://www.terraform.io/docs/language/values/variables.html#custom-validation-rules), and [`sensitive`](https://www.terraform.io/docs/language/values/variables.html#suppressing-values-in-cli-output).
+
+When we run the plan, it prompts for the value of the variable:
 ```shell
-Pratiks-MacBook-Pro:aws-app-stack-input-vars pratikdas$ terraform plan
+terraform plan
 var.ec2_instance_type
   AWS EC2 instance type.
-
   Enter a value: t2.micro
 ```
-The variable values can also be supplied in a separate file with extension `tfvars`.
+We supply a value `t2.micro` to allow Terraform to create our desired ec2 instance.
+Apart from this method of setting variable values, we can the values in a variable definition file ending in .tfvars and specify the file on command line.
 
 ### Organizing and Reusing Configurations with Modules
 In our previous example, we represented our architecture by directly creating an EC2 instance. In real-life situations, our application stack will have many more resources with dependencies between them. We might also like to reuse certain constructs for the consistency and compactness of our configuration code. Functions fulfill this need In programming languages. Terraform has a similar concept called modules. Similar to functions, a module has an input, output, and a body. 
@@ -394,7 +412,7 @@ We ran Terraform using Terraform CLI which performed operations on the workstati
 
 Terraform has two more variants Terraform Cloud and Terraform Enterprise for using Terraform in a team environment. Terraform Cloud is a hosted service at https://app.terraform.io where Terraform runs on disposable virtual machines in its cloud infrastructure. Terraform Enterprise is available for hosting in a private data center which will be an option preferred by large enterprises. 
 
-Let us run remote plans in the terraform Cloud from our local command line, also called the CLI workflow. First, we need to log in to https://app.terraform.io/session after creating an account with our email address. Similar to our working directory in the CLI, we will create a `workspace`. We will modify our configuration to add a backend block to configure our remote backend and the `terraform plan` command will start a remote run in the configured Terraform Cloud workspace. 
+Let us run remote plans in the terraform Cloud from our local command line, also called the CLI workflow. First, we need to log in to https://app.terraform.io/session after creating an account with our email address. Similar to our working directory in the CLI, we will create a `workspace`. We will modify our configuration to add a backend block to configure our remote backend as shown here: 
 
 ```hcl
 terraform {
@@ -416,7 +434,9 @@ terraform {
 }
 
 ```
-Running `terraform plan` will output the following log:
+We configure AWS credentials by adding two environment variables:
+
+Running `terraform plan` command will start a remote run in the configured Terraform Cloud workspace. Running `terraform plan` will output the following log:
 
 ```shell
 Running plan in the remote backend. Output will stream here. Pressing Ctrl-C
@@ -437,21 +457,7 @@ Initializing Terraform configuration...
 ```
 
 
-Terraform Cloud is available as a hosted service at https://app.terraform.io. It is an application to use Terraform in a team environment with the help of the below components:
-1. Shared instance of Terraform running in a consistent and reliable environment, 
-2. Shared state and secret data, 
-3. Access controls for approving changes to infrastructure, 
-4. Private registry for sharing Terraform modules, 
-5. detailed policy controls for governing the contents of Terraform configurations.
-
-
-Large enterprises can purchase Terraform Enterprise, our self-hosted distribution of Terraform Cloud. It offers enterprises a private instance of the Terraform Cloud application, with no resource limits and with additional enterprise-grade architectural features like audit logging and SAML single sign-on.
-
-### Providers
-https://registry.terraform.io/providers/hashicorp/aws/latest
-
-
-### Terraform Configuration with 
+### Terraform Configuration with Version Control Systems for Continuous Integration
 
 Apart from the CLI workflow, Terraform Cloud/Enterprise has two more types of workflows targetted for continuous integration. Here the Terraform workspace is connected to a repository of a supported [version control systems](https://www.terraform.io/docs/cloud/vcs/index.html#supported-vcs-providers) which provides Terraform configurations for that workspace. Terraform Cloud monitors new commits and pull requests to the repository using webhooks. After any commit to a branch, a Terraform Cloud workspace based on that branch will run Terraform.  
 
@@ -460,26 +466,17 @@ We can find elaborate documentation for configuring Terraform for specific VCS p
 
 ## Conclusion
 
-In this post, we looked at the capabilities of Terraform as IaC platform that supports the creation and provisioning of many types of resources across an array of cloud providers like aws, azure, and gcp. We started with the basic init, plan and apply cycle for creating and modifying infrastructure resources. Then we used modules as a better way of organizing our IaC code into logical constructs in layers similar to what we do with application programming. We finally introduced two more variants : Terraform Cloud and Terraform Enterprise. 
+In this post, we introduced the following concepts of Terraform with examples of creating resources in AWS Cloud:
 
-Some of the popular choices in the IaC domain are :
+1. Resource as basic building block of creating infrastructure with Terraform
+2. Plugins as executable Go binaries which expose implementation for a specific service, like AWS or Azure
+3. Terraform resources are defined in a configuration files ending with `.tf` and written in Terraform language using HCL syntax
+4. Modules are used for organizing and grouping resources to create logical abstractions
+5. Basic workflow is composed of `init-plan-apply` cycle
+6. Terraform backend is configured as local or remote where state information is stored.
+6. Terraform Cloud and Terraform Enterprise use remote backends and are suitable for use in team environments.
 
-Chef
-Puppet
-Red Hat Ansible Automation Platform
-Saltstack
-Terraform 
-AWS CloudFormation
-
-However, Terraform stands out for supporting multicloud solutions, defining concise configuration language and modular support to help build complex infrastructures.
-, we can It can also compose highly complex, multiplatform and multicloud solutions.
-With IaC, configuration files are created that contain our infrastructure specifications, which makes it easier to edit and distribute configurations. It also ensures that you provision the same environment every time.
-
-By codifying and documenting your configuration specifications, IaC aids configuration management and helps you to avoid undocumented, ad-hoc configuration changes.
-
-Version control is an important part of IaC, and your configuration files should be under source control just like any other software source code file. 
-
-Deploying your infrastructure as code also means that you can divide your infrastructure into modular components that can then be combined in different ways through automation.
+These concepts should help you to get started with Terraform and inspire you to explore more advanced features like automation, extension and integration capabilities.
 
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/terraform).

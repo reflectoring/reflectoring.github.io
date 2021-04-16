@@ -15,7 +15,7 @@ All the cloud providers provide services for the creation and modification of in
 In this post, we will look at the capabilities of Terraform with examples of creating resources in AWS Cloud.
 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/terraform" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/aws-terraform" %}
 
 ## Infrastructure as Code with Terraform
 Infrastructure as Code (IaC) is the managing and provisioning of infrastructure through code instead of through manual processes. From the website of Terraform: 
@@ -491,4 +491,4 @@ In this post, we introduced the following concepts of Terraform with examples of
 These concepts should help you to get started with Terraform and inspire you to explore more advanced features like automation, extending its features, and integration capabilities.
 
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/terraform).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/aws-terraform).

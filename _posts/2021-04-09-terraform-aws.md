@@ -8,7 +8,9 @@ excerpt: "Terraform is a popular infrastructure provisioning tool which is flexi
 image:
   auto: 0074-stack
 ---
-Provisioning infrastructure has always been a time-consuming manual process. Infrastructure has now moved away from physical hardware in data centers to software-defined infrastructure using virtualization technology and cloud computing. All the cloud providers provide services for the creation and modification of infrastructure resources through code like AWS Cloudformation and Azure Resource Manager. Terraform provides a common language for creating infrastructure for multiple cloud providers thereby becoming a key enabler for multi-cloud computing.
+Provisioning infrastructure has always been a time-consuming manual process. Infrastructure has now moved away from physical hardware in data centers to software-defined infrastructure using virtualization technology and cloud computing. 
+
+All the cloud providers provide services for the creation and modification of infrastructure resources through code like AWS Cloudformation and Azure Resource Manager. Terraform provides a common language for creating infrastructure for multiple cloud providers thereby becoming a key enabler for multi-cloud computing.
 
 In this post, we will look at the capabilities of Terraform with examples of creating resources in AWS Cloud.
 
@@ -16,7 +18,8 @@ In this post, we will look at the capabilities of Terraform with examples of cre
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/terraform" %}
 
 ## Infrastructure as Code with Terraform
-Infrastructure as Code (IaC) is the managing and provisioning of infrastructure through code instead of through manual processes. From the website of Terraform: "Terraform is an open-source infrastructure as code software tool that provides a consistent CLI workflow to manage hundreds of cloud services."
+Infrastructure as Code (IaC) is the managing and provisioning of infrastructure through code instead of through manual processes. From the website of Terraform: >Terraform is an open-source infrastructure as code software tool that provides a consistent CLI workflow to manage hundreds of cloud services. 
+
 For defining resources with Terraform, we specify the provider in the configuration file and add configurations for the resources in one or more files. 
 
 Terraform is logically split into two main parts: 
@@ -24,7 +27,9 @@ Terraform is logically split into two main parts:
 2. Terraform Plugins
 
 Terraform Core is a binary written in [Go](https://golang.org) and provides the Terraform command-line interface(CLI).
-Terraform Plugin is an executable binary also written in [Go](https://golang.org) and exposes an implementation for a specific service, like AWS or Azure, or a provisioner, like bash. All Providers and Provisioners used in Terraform configurations are plugins. Terraform Core communicates with Plugins using remote procedure calls(RPC) and does resource state management and constructs the resource tree.
+Terraform Plugin is an executable binary also written in [Go](https://golang.org) and exposes an implementation for a specific service, like AWS or Azure, or a provisioner, like bash. 
+
+All Providers and Provisioners used in Terraform configurations are plugins. Terraform Core communicates with Plugins using remote procedure calls(RPC) and does resource state management and constructs the resource tree.
 
 The [Terraform AWS provider](https://registry.terraform.io/providers/hashicorp/aws/latest) is a plugin for Terraform that allows for the full lifecycle management of AWS resources.
 
@@ -79,14 +84,12 @@ Default output format [json]:
 We are using us-east-1 as the region and JSON as the output format.
 
 ## Terraform Concepts with Simple Workflow
-Terraform  in two steps:
-1. Designing the infrastructure resources in a configuration file and 
-2. Using this configuration to create the actual infrastructure
+Froa basic workflow in Terraform , we first design the infrastructure resources in a configuration file. We then use this configuration to create the actual infrastructure.
 
-The configuration is defined in [Terraform language](https://www.terraform.io/docs/language/index.html) using a JSON-like syntax called Hashicorp Configuration Language(HCL) that tells Terraform how to manage a collection of infrastructure. A configuration can consist of multiple files and directories.
+The configuration is defined in [Terraform language](https://www.terraform.io/docs/language/index.html) using a JSON-like syntax called Hashicorp Configuration Language(HCL) that tells Terraform how to manage a collection of infrastructure. A configuration can consist of one or more files and directories.
 
 ### Init, Plan, and Apply Cycle
-Terraform has the concept of state. Our desired state is what infrastructure resources we wish to create. When we run the `plan`, Terraform pulls the resource information and compares it with the desired infrastructure. It then outputs a report containing the changes which will happen when the configuration is applied(in the `Apply` stage).
+Terraform has the concept of state. Our desired state is what infrastructure resources we wish to create. When we run the `plan`, Terraform pulls the resource information and compares it with the desired infrastructure. It then outputs a report containing the changes which will happen when the configuration is applied(during the `Apply` stage).
 
 The main steps for any basic task with Terraform are:
 1. Create a workspace folder
@@ -126,13 +129,13 @@ resource "aws_instance" "vm-web" {
 Here we are creating an aws EC2 instance named "vm-web" of type `t2.micro` using an ami `ami-830c94e3`. We also define two tags with names - `Name` and `Env`.
 We can also see the three main parts of configuration :
 
-1. Resource: We define our infrastructure in terms of resources. Each resource block in the configuration file describes one or more infrastructure objects. EC2 instance, an S3 bucket, lambda function, or their equivalents from other Cloud platforms are examples of different resource types. 
+1. **Resource**: We define our infrastructure in terms of resources. Each resource block in the configuration file describes one or more infrastructure objects. EC2 instance, an S3 bucket, lambda function, or their equivalents from other Cloud platforms are examples of different resource types. 
 
 
-2. Provider: Terraform uses `providers` to connect to remote systems. Each resource type is implemented by a provider. Most providers configure a specific infrastructure platform (either cloud or self-hosted). Providers can also offer local utilities for tasks like generating random numbers for generating unique resource names.
+2. **Provider**: Terraform uses `providers` to connect to remote systems. Each resource type is implemented by a provider. Most providers configure a specific infrastructure platform (either cloud or self-hosted). Providers can also offer local utilities for tasks like generating random numbers for generating unique resource names.
 
 
-3. Terraform Settings: We configure some behaviors of Terraform like the minimum Terraform version in the terraform block. Here we also specify all of the providers each with a source address and a version constraint required by the current module in the required_providers block.
+3. **Terraform Settings**: We configure some behaviors of Terraform like the minimum Terraform version in the terraform block. Here we also specify all of the providers each with a source address and a version constraint required by the current module in the required_providers block.
 
 ### Initializing the Working Directory
 We run terraform commands from a working directory that contains one or more configuration files. Terraform reads configuration content from this directory, and also uses this directory to store settings, caching plugins and modules, and sometimes state data.
@@ -158,7 +161,9 @@ Terraform has been successfully initialized!
 ```
 From the output, we can see initialization messages for the `backend` and `provider plugins`. 
 
-The backend is used to store state information. Here we are using the default local backend, which requires no configuration. In real-life situations, a remote backend should be used where state information can be persisted. This works only in cloud and enterprise variants where multiple individuals work with common infrastructure.
+The backend is used to store state information. Here we are using the default local backend, which requires no configuration. 
+
+In real-life situations, a remote backend should be used where state information can be persisted. This works only in cloud and enterprise variants where multiple individuals work with common infrastructure.
 
 The first run of this command will download the plugins required for the configured provider.
 
@@ -176,20 +181,18 @@ Our working directory contents after running the terraform `init` command looks 
 The plugin for the configured provider AWS is downloaded and stored as `terraform-provider-aws_v3.36.0_x5`. 
 
 ### Creating the Plan
-An execution plan is generated by running the terraform [plan](https://www.terraform.io/docs/cli/commands/plan.html) command. Terraform first performs a refresh, unless explicitly disabled, and then determines what actions are necessary to achieve the desired state specified in the configuration files.
+An execution plan is generated by running the terraform [plan](https://www.terraform.io/docs/cli/commands/plan.html) command. Terraform first performs a refresh and then determines the actions required to achieve the desired state specified in the configuration files.
 
-This command is a convenient way to check whether the execution plan for a set of changes matches your expectations without making any changes to real resources or to the state. For example, terraform plan might be run before committing a change to version control, to create confidence that it will behave as expected.
+This command is a convenient way to check whether the execution plan for a set of changes matches our expectations without making any changes to real resources. n automation.
 
-The optional -out argument can be used to save the generated plan to a file for later execution with terraform apply, which can be useful when running Terraform in automation.
-
-If Terraform detects no changes to resource or root module output values, terraform plan will indicate that no changes are required.
-
-Let us run terraform plan to generate an execution plan:
+Let us run `terraform plan` command to generate an execution plan:
 
 ```
-terraform plan -out aws-ec2-plan
+terraform plan -out aws-app-stack-plan
 ```
-Running the command gives the following output:
+We specify the optional -out argument to save the generated plan to a file `aws-app-stack-plan` for later execution with `terraform apply`, which can be useful when running terraform in automation environments.
+
+Running the `terraform plan` command gives the following output:
 ```shell
 Refreshing Terraform state in-memory prior to plan...
 The refreshed state will be used to calculate this plan, but will not be
@@ -222,7 +225,7 @@ To perform exactly these actions, run the following command to apply:
     terraform apply "aws-app-stack-plan"
 
 ```
-From the output we can see that one resource will be added, zero changed and zero destroyed. The plan is saved in the file specified in the output.
+From the output we can see that one resource will be added, zero changed and zero destroyed. No actual changes to the infrastructure have taken place yet. The plan is saved in the file specified in the output.
 
 
 ### Applying the Plan
@@ -251,16 +254,16 @@ use the `terraform show` command.
 State path: terraform.tfstate
 
 ```
-here we introduce an important concept: terraform state. The state is stored locally in terraform.tfstate.
+Here we come across the all important concept of `terraform state`. After applying our changes to the infrastructure, the state of the infrastructure is stored locally in a file `terraform.tfstate`.
 
 If we do not give a plan file on the command line, running `terraform apply`  creates a new plan automatically and then prompts for approval to apply it. If the created plan does not include any changes to resources or root module output values then running `terraform apply` exits immediately, without prompting.
 
 ### Destroy
-at last we destroy our infrastructure by running the `terraform destroy` command:
+At last we destroy our infrastructure by running the `terraform destroy` command:
 ```shell
 terraform destroy
 ```
-
+Running the `destroy` command first asks for a confirmation and proceeds to delete the infrastructure on receiving a `yes` answer:
 ```shell
 Plan: 0 to add, 0 to change, 1 to destroy.
 
@@ -276,6 +279,7 @@ aws_instance.vm-web: Destruction complete after 48s
 
 Destroy complete! Resources: 1 destroyed.
 ```
+The output log states the number of resources destroyed: one ec2 instance in this case.
 
 ### Parameterizing the Configuration with Input Variables
 In our last example, instead of putting the values of ami, tag and instance type directly in the configuration file, we can use variables to allow these aspects of our configuration to be modified without changing the source code. We can receive their values when applying the configuration. 

@@ -31,7 +31,7 @@ The [Terraform AWS provider](https://registry.terraform.io/providers/hashicorp/a
 
 ## Terraform Setup
 
-For running our examples, let us download a [binary distribution](!https://www.terraform.io/downloads.html) for our specific operating system for local installation. We will use this to install the Terraform command-line interface(CLI) where we will execute different Terraform commands. We can check for successful installation by running the below command:
+For running our examples, let us download a [binary distribution](https://www.terraform.io/downloads.html) for our specific operating system for local installation. We will use this to install the Terraform command-line interface(CLI) where we will execute different Terraform commands. We can check for successful installation by running the below command:
 
 ```
 terraform -v

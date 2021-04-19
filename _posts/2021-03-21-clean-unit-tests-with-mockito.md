@@ -103,7 +103,7 @@ class CityServiceImplTest {
   // System under Test (SuT)
   private CityService cityService;
 
-  // Mocks
+  // Mock
   private CityRepository cityRepository;
 
   @BeforeEach
@@ -188,7 +188,7 @@ class CityServiceImplTestMockitoAnnotationStyle {
   // System under Test (SuT)
   private CityService cityService;
 
-  // Mocks
+  // Mock
   @Mock
   private CityRepository cityRepository;
 
@@ -218,7 +218,7 @@ class CityServiceImplTestMockitoJUnitExtensionStyle {
   // System under Test (SuT)
   private CityService cityService;
 
-  // Mocks
+  // Mock
   @Mock
   private CityRepository cityRepository;
 
@@ -245,7 +245,7 @@ class CityServiceImplTestMockitoSpringStyle {
   // System under Test (SuT)
   private CityService cityService;
 
-  // Mocks
+  // Mock
   @MockBean
   private CityRepository cityRepository;
 
@@ -440,12 +440,12 @@ If we explicitly want to re-use a certain mock behavior in multiple test cases, 
 
 We can then use these methods in the test cases like above. **It's important to make methods with shared mock behavior very specific and name them properly to keep the test cases readable**.
 
-### Write Test Cases Independently
+### Write Self-Contained Test Cases 
 
-Don't expect test cases to be always executed in the same order! We write everything that belongs to our test case into 
-the test method, so that a test case can be executed alone in our IDE or all together within our CI!
+The unit tests we write should be runnable on any machine with the same result. They shouldn't affect other test cases
+in any way. So we must write every unit test self-contained and independent of test execution order.
 
-This mistake often comes together with setup blocks that declare behavior shared between test methods. If we need to add a new behavior at the end of the
+It's likely that the errors in non-self-contained test cases are caused by setup blocks that declare behavior shared between test methods. If we need to add a new behavior at the end of the
 block, each previous declaration must be executed before we are able to call ours. Or vice versa: if a new declaration
 is inserted at the beginning, causes a shift of all other declarations towards the end. At least now our alarm bell
 should ring, and it's time to reconsider our test case!
@@ -484,7 +484,9 @@ What is this test case doing?
 2. Deletes a city and a verifies the delete method on the repository has been called
 3. Tries to find the previously created city again but expecting an exception.
 
-This test case's design is unfortunate. It tests too much and could be split in simpler and smaller units:
+We must call `cityRepository.reset()` to let Mockito forget what was declared before that line.  This is necessary,
+because we declared two different behaviours of `cityService(expected.getId())` in the same test. This test case's
+design is unfortunate. It tests too much for one single test and could be split in simpler and smaller units:
 
 ```java
   @BeforeEach
@@ -519,13 +521,66 @@ This test case's design is unfortunate. It tests too much and could be split in 
 Now each test is simple and easy understandable. We don't have to reset the mocks anymore, since this is achieved in
 the `setUp()` method. The effectively tested code is the same but a lot more meaningful than before.
 
-### Don't Mock Collections or Value Objects
+### Don't Mock Value Objects or Collections
 
 Mockito is a framework to mock objects with behaviour that can be declared at the beginning of our test. It is common to
 have *Data Transfer Objects* (or DTOs). The intent of such a DTO is, as its name says, to transport data from a source
 to a destination. In order to retrieve this data from the object, we could declare the behaviour of each getter. Albeit
 this is possible, we should rather use real values and set them to the DTO. The same rule applies for collections too,
 since they are container for values as well.
+
+As explained, it is possible to mock a `City`, which is a wrapper for the city name and other properties.
+
+```java
+  @Test
+  void mockCity() {
+    String cityName = "MockTown";
+    City mockTown = Mockito.mock(City.class);
+    Mockito.when(mockTown.getName()).thenReturn(cityName);
+    Assertions.assertEquals(cityName, mockTown.getName());
+  }
+```
+
+It's not worth the effort to declare the behaviour for numerous of getters of an object. We better create a **real
+object containing the values** and don't cover implicitly clear behaviour of objects. Now let's see a mocked `List`:
+
+```java
+  @Test
+  void mockList() {
+    List<City> cities = Mockito.mock(List.class);
+
+    City city = createCity();
+    City anotherCity = createCity();
+    
+    Mockito.when(cities.get(0)).thenReturn(city);
+    Mockito.when(cities.get(1)).thenReturn(anotherCity);
+
+    assertEquals(city, cities.get(0));
+    assertEquals(anotherCity, cities.get(1));
+  }
+```
+
+There is no value added to mock the list. It's even harder to understand what we expected from our list.
+In comparison with a real `List` (i. e. `ArrayList`) things get clearer right away.
+
+```java
+  @Test
+  void mockListResolution() {
+    List<City> cities = new ArrayList<>();
+
+    City city = createCity();
+    City anotherCity = createCity();
+
+    cities.add(city);
+    cities.add(anotherCity);
+
+    assertEquals(city, cities.get(0));
+    assertEquals(anotherCity, cities.get(1));
+  }
+```
+
+Using mocks for collections we might hide natural behaviour of a `List`. In the worst case, our application fails in
+production because we assumed a `List` to behave different from how it actually does!
 
 **Mockito is a framework to mock behaviour of components based on values and not to mock values.** This means that we
 better create tests for components that process DTOs rather than for the DTOs themselves.
@@ -537,9 +592,12 @@ Mockito.when(cityRepository.find(expected.getId()))
    .thenThrow(RuntimeException.class);
 ```
 
-Mockito comes with a built-in mechanism to test our error handling. Instead of declaring a return value, advise Mockito
-to throw the expected exception. In case we throw checked exceptions, the compiler doesn't let us throw checked
-exceptions that are not declared on the method.
+We often only test the *happy flow* of our application. But how to test the correct behaviour in our try-catch-blocks?
+Mockito has the answer: Instead of declaring a return value, we can declare an exception to be thrown. This allows us,
+to write unit tests, that ensure our try-catch-blocks work as expected! 
+
+Important to know: In case we throw checked exceptions, **the compiler doesn't let us throw checked exceptions that
+are not declared on the method**!
 
 ### Mocking `void` Methods
 

@@ -28,7 +28,7 @@ layout: none
         {% assign author = site.data.authors['default'] %}
         {% endif %}
         <author>
-            <name>{{ author.name }}</name>
+            <name>{{ author.name | xml_escape }}</name>
             <email>{{ author.email }}</email>
         </author>
         {% for category_key in post.categories %}
@@ -36,7 +36,7 @@ layout: none
         <category term="{{ category.title }}"/>
         {% endfor %}
         <summary type="html">
-            {{ post.excerpt }}
+            {{ post.excerpt | xml_escape }}
         </summary>
         {% if post.image.opengraph %}
         <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="{{ post.image.opengraph | absolute_url }}"/>

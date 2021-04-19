@@ -13,6 +13,8 @@ In the first article of my AWS Journey, [we deployed a Docker image via the AWS 
 
 The goal of this journey is to create a production-grade, continuously deployable system, so the next step in this journey is to automate the deployment of Docker images. In this article, **we'll use AWS's CloudFormation service to deploy and undeploy a highly available virtual private cloud running multiple instances of our Docker image behind a load balancer** - all with a single CLI command. 
 
+**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
+
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/cloudformation/ecs-in-two-public-subnets" %}
 
 ## What is CloudFormation?
@@ -761,3 +763,5 @@ Here's a list of the questions I want to answer on this journey. If there's a li
 * How can I bind my application to a custom domain?
 * How can I access other AWS resources (like SQS queues and DynamoDB tables) from my application?
 * How can I implement HTTPS?
+
+**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**

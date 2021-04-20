@@ -18,7 +18,7 @@ For this reason, it is a vital tool for understanding issues related to applicat
 In this post, we will look at different thread dumps and understanding the information they contain to diagnose application threading issues.
 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/thread-dump-analysis" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/threaddump" %}
 
 
 ## Lifecycle States of a Thread
@@ -241,7 +241,7 @@ Let us upload our thread dump file generated from a Kafka broker to the fastThre
 5. **CPU consuming threads**: The report lists all threads which need to be analyzed for high CPU consumption.
 6. **Blocking threads**: Blocking threads that are responsible for making an application unresponsive are listed under this section.
 7. **Deadlocks**: This section contains threads that are causing a deadlock. The deadlock section of the previous example is shown here:
-![Deadlock section](/assets/img/posts/fastthread-deadlock.png)
+![Deadlock section](/assets/img/posts/thread-dump-analysis/fastthread-deadlock.png)
 8. **Exceptions**: Thread dumps contain Exceptions and Errors in the thread's stack trace. These should be investigated to look for the root cause of a problem. 
 9. **Flame graph**: Flame Graph condenses all the information from the thread dump into one single compact flame graph format. It helps to identify hot code paths for effective debugging/troubleshooting.
 
@@ -256,4 +256,4 @@ Manual analysis of raw thread dump files is always an option but is often tediou
 
 In this post, we looked at the five states of a java thread during its lifecycle and described thread dumps as a snapshot of thread states at a particular instant. We then ran a simple java application to simulate a web server and took its thread dump with the `jcmd` tool. After that, we introduced tools to analyze thread dumps and ended with some use cases and best practices of using thread dumps. A thread dump is often used in combination with [heap dump](https://reflectoring.io/create-analyze-heapdump/) and GC logs to diagnose java applications. I hope this will enable you to use thread dumps for the use cases described here and also find other areas where it can be put to use like automation with Ci/CD.
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/thread-dump-analysis).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/core-java/threaddump).

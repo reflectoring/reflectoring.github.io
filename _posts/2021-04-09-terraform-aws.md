@@ -22,7 +22,7 @@ Infrastructure as Code (IaC) is the managing and provisioning of infrastructure 
 
 >"Terraform is an open-source infrastructure as code software tool that provides a consistent CLI workflow to manage hundreds of cloud services."
 
-For defining resources with Terraform, we specify the provider in the configuration file and add configurations for the resources in one or more files. 
+For defining resources with Terraform, we specify the provider in a configuration file and add configurations for the resources in one or more files. 
 
 Terraform is logically split into two main parts: 
 1. Terraform Core 
@@ -89,24 +89,24 @@ We are using us-east-1 as the region and JSON as the output format.
 For more details about the AWS CLI, have a look at our [CloudFormation article](/getting-started-with-aws-cloudformation/#installing-the-aws-cli).
 
 ## Terraform Concepts with a Simple Workflow
-For a basic workflow in Terraform, we first design the infrastructure resources in a configuration file, called the "desired state". We then use this configuration to create the actual infrastructure.
+For a basic workflow in Terraform, we first design the infrastructure resources in a configuration file. We call this activity defining our "desired state". We then use this configuration to create the actual infrastructure.
 
-The configuration is defined in [Terraform language](https://www.terraform.io/docs/language/index.html) using a JSON-like syntax called Hashicorp Configuration Language (HCL) that tells Terraform how to manage a collection of infrastructure resources. A configuration can consist of one or more files and directories.
+The configuration is defined in [Terraform language](https://www.terraform.io/docs/language/index.html) using a JSON-like syntax called [Hashicorp Configuration Language (HCL)](https://github.com/hashicorp/hcl/blob/main/hclsyntax/spec.md) that tells Terraform how to manage a collection of infrastructure resources. A configuration can consist of one or more files and directories.
 
 ### The Terraform Development Loop
-We start with our desired state that is the collection of infrastructure resources we wish to create. When we run the `plan` command, Terraform pulls the actual resource information from the provider and compares it with the desired state. It then outputs a report containing the changes which will happen when the configuration is applied (during the `apply` stage).
+We start with our "desired state" which is the collection of infrastructure resources we wish to create. When we run the `plan` command, Terraform pulls the actual resource information from the provider and compares it with the "desired state". It then outputs a report containing the changes which will happen when the configuration is applied (during the `apply` stage).
 
 The main steps for any basic task with Terraform are:
-1. Configure the desired state in Terraform files (`*.tf`)
-2. Initialize the workspace using the command `terraform init`
-3. Create the plan using `terraform plan`
-4. Apply the plan using `terraform apply`
-5. Destroy the provisioned resources with `terraform destroy`
+1. Configure the "desired state" in Terraform files (`*.tf`).
+2. Initialize the workspace using the command `terraform init`.
+3. Create the plan using `terraform plan`.
+4. Apply the plan using `terraform apply`.
+5. Destroy the provisioned resources with `terraform destroy`, when we want to dispose of the infrastructure.
 
 Let us go through each of these steps.
 
-### Configuriong the Desired State
-Let us define our Terraform configuration in Terraform language in a file `main.tf`:
+### Configuring the Desired State
+Let us define our Terraform configuration in the Terraform language in a file `main.tf`:
 
 ```hcl
 terraform {
@@ -133,17 +133,17 @@ resource "aws_instance" "vm-web" {
   }
 }
 ```
-Here we are creating an AWS EC2 instance named "vm-web" of type `t2.micro` using an AMI (Amazon Machine Image) `ami-830c94e3`. We also associate two tags with the names `Name` and `Env` with the EC2 instance.
+Here we are creating an [AWS EC2 instance](https://aws.amazon.com/ec2/features/) named "vm-web" of type `t2.micro` using an AMI (Amazon Machine Image) `ami-830c94e3`. We also associate two tags with the names `Name` and `Env` with the EC2 instance.
 
 We can also see the three main parts of configuration :
 
-1. **Resource**: We define our infrastructure in terms of [resources](https://www.terraform.io/docs/language/resources/index.html). Each resource block in the configuration file describes one or more infrastructure objects. EC2 instance, an S3 bucket, a Lambda function, or their equivalents from other Cloud platforms are examples of different resource types. 
+1. **Resource**: We define our infrastructure in terms of [resources](https://www.terraform.io/docs/language/resources/index.html). Each resource block in the configuration file describes one or more infrastructure objects. [S3 bucket](https://aws.amazon.com/s3/), [Lambda function](https://aws.amazon.com/lambda/), or their equivalents from other Cloud platforms are some examples of different resource types. 
 
 
 2. **Provider**: Terraform uses `providers` to connect to remote systems. Each resource type is implemented by a [provider](https://www.terraform.io/docs/language/providers/index.html). Most providers configure a specific infrastructure platform (either cloud or self-hosted). Providers can also offer local utilities for tasks like generating random numbers for generating unique resource names.
 
 
-3. **Terraform Settings**: We configure some behaviors of Terraform like the minimum Terraform version in the [terraform](https://www.terraform.io/docs/language/settings/index.html) block. Here we also specify all of the providers each with a source address and a version constraint required by the current module in the `required_providers` block.
+3. **Terraform Settings**: We configure some behaviors of Terraform like the minimum Terraform version in the [terraform](https://www.terraform.io/docs/language/settings/index.html) block. Here we also specify all of the providers, each with a source address and a version constraint required by the current module using the `required_providers` block.
 
 ### Initializing the Working Directory
 We run Terraform commands from a working directory that contains one or more configuration files. Terraform reads configuration content from this directory, and also uses this directory to store settings, caches for plugins and modules, and sometimes state data.
@@ -415,13 +415,21 @@ module "app_storage" {
 }
 
 ```
-During invocation of the child modules, we are using the `module` construct with a `source` argument containing the path of the child modules `application` and `storage`. Here we are using the local directory to store our modules. Other than the local path, we can also use different [source types](https://www.terraform.io/docs/language/modules/sources.html) like a `terraform registry`, `GitHub, `s3`, etc to reuse modules published by other individuals or teams. When using remote sources, terraform will download these modules when we run `terraform init` and store them in the local directory.
+During invocation of the child modules, we are using the `module` construct with a `source` argument containing the path of the child modules `application` and `storage`. Here we are using the local directory to store our modules. 
+
+Other than the local path, we can also use different [source types](https://www.terraform.io/docs/language/modules/sources.html) like a `terraform registry`, `GitHub`, `s3`, etc to reuse modules published by other individuals or teams. When using remote sources, terraform will download these modules when we run `terraform init` and store them in the local directory.
 
 ### Terraform Cloud and Terraform Enterprise
 
-We ran Terraform using Terraform CLI which performed operations on the workstation where it is invoked and stored state in a local working directory. This is called the "local workflow". However, we will need a remote workflow when using Terraform in a team which will require the state to be shared and Terraform to run in a remote environment.
+We ran Terraform using Terraform CLI which performed operations on the workstation where it is invoked and stored state in a local working directory. This is called the "local workflow". 
 
-Terraform has two more variants Terraform Cloud and Terraform Enterprise for using Terraform in a team environment. Terraform Cloud is a hosted service at [https://app.terraform.io](https://app.terraform.io) where Terraform runs on disposable virtual machines in its cloud infrastructure. Terraform Enterprise is available for hosting in a private data center which might be an option preferred by large enterprises. 
+However, we will need a remote workflow when using Terraform in a team which will require the state to be shared and Terraform to run in a remote environment.
+
+Terraform has two more variants Terraform Cloud and Terraform Enterprise for using Terraform in a team environment:
+
+1. Terraform Cloud is a hosted service at [https://app.terraform.io](https://app.terraform.io) where Terraform runs on disposable virtual machines in its cloud infrastructure. 
+
+2. Terraform Enterprise is available for hosting in a private data center which might be an option preferred by large enterprises. 
 
 Let us run remote plans in Terraform Cloud from our local command line, also called the "CLI workflow". First, we need to log in to [https://app.terraform.io](https://app.terraform.io/session) after creating an account with our email address. Similar to our working directory in the CLI, we will create a `workspace` with a "CLI driven workflow" as shown here:
 
@@ -476,7 +484,9 @@ Initializing Terraform configuration...
 
 ### Terraform Configuration with Version Control Systems for Continuous Integration
 
-Apart from the CLI workflow, Terraform Cloud/Enterprise has two more types of workflows targeted for continuous integration. Here the Terraform workspace is connected to a repository on one of the supported [version control systems](https://www.terraform.io/docs/cloud/vcs/index.html#supported-vcs-providers) which provides Terraform configurations for that workspace. Terraform Cloud monitors new commits and pull requests to the repository using webhooks. After any commit to a branch, a Terraform Cloud workspace based on that branch will run Terraform.  
+Apart from the CLI workflow, Terraform Cloud/Enterprise has two more types of workflow targeted for continuous integration. 
+
+Here the Terraform workspace is connected to a repository on one of the supported [version control systems](https://www.terraform.io/docs/cloud/vcs/index.html#supported-vcs-providers) which provides Terraform configurations for that workspace. Terraform Cloud monitors new commits and pull requests to the repository using webhooks. After any commit to a branch, a Terraform Cloud workspace based on that branch will run Terraform.  
 
 We can find elaborate documentation for configuring Terraform for specific VCS providers by following their respective [links](https://www.terraform.io/docs/cloud/vcs/index.html#configuring-vcs-access). 
 
@@ -485,11 +495,11 @@ We can find elaborate documentation for configuring Terraform for specific VCS p
 
 In this post, we introduced the following concepts of Terraform with examples of creating resources in AWS Cloud:
 
-1. Resource as the basic building block of creating infrastructure with Terraform
-2. Plugins as executable Go binaries which expose implementation for a specific service, like AWS or Azure
-3. Terraform resources are defined in a configuration file ending with `.tf` and written in Terraform language using HCL syntax
-4. Modules are used for organizing and grouping resources to create logical abstractions
-5. Basic workflow is composed of `init-plan-apply` cycle
+1. Resource as the basic building block of creating infrastructure with Terraform.
+2. Plugins as executable Go binaries which expose implementation for a specific service, like AWS or Azure.
+3. Terraform resources are defined in a configuration file ending with `.tf` and written in Terraform language using HCL syntax.
+4. Modules are used for organizing and grouping resources to create logical abstractions.
+5. Basic workflow is composed of `init-plan-apply` cycle.
 6. Terraform backend is configured as local or remote where state information is stored.
 7. Terraform Cloud and Terraform Enterprise use remote backends and are suitable for use in team environments.
 

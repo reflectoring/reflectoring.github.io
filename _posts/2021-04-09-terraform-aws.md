@@ -1,12 +1,12 @@
 ---
 title: "Using Terraform to Deploy AWS Resources"
 categories: [craft]
-date: 2021-04-09 06:00:00 +1000
-modified: 2021-04-09 06:00:00 +1000
+date: 2021-04-22 06:00:00 +1000
+modified: 2021-04-22 06:00:00 +1000
 author: pratikdas
 excerpt: "Terraform is a popular infrastructure provisioning tool that makes it very easy to define infrastructure as code. In this post, we will introduce Terraform basics and see how Terraform can be used to provision AWS resources."
 image:
-  auto: 0074-stack
+  auto: 0099-desert
 ---
 Provisioning infrastructure resources has always been a time-consuming manual process. Infrastructure has now moved away from physical hardware in data centers to software-defined infrastructure using virtualization technology and cloud computing. 
 
@@ -495,7 +495,7 @@ We can find elaborate documentation for configuring Terraform for specific VCS p
 
 In this post, we introduced the following concepts of Terraform with examples of creating resources in AWS Cloud:
 
-1. Resource as the basic building block of creating infrastructure with Terraform.
+1. A resource is the basic building block of creating infrastructure with Terraform.
 2. Plugins as executable Go binaries which expose implementation for a specific service, like AWS or Azure.
 3. Terraform resources are defined in a configuration file ending with `.tf` and written in Terraform language using HCL syntax.
 4. Modules are used for organizing and grouping resources to create logical abstractions.

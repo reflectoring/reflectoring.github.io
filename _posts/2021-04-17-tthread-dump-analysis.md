@@ -139,13 +139,20 @@ Let us now understand the fields present in each thread dump line by looking at 
   at java.util.concurrent.LinkedBlockingQueue.take(java.base@14.0.1/LinkedBlockingQueue.java:435)
   at org.apache.zookeeper.ClientCnxn$EventThread.run(ClientCnxn.java:506)
 ```
-The thread dump entry shown here starts with the name of the thread `main-EventThread` which is the 20th thread(indicated by`#20`) created by the JVM after it started. The daemon keyword after the thread number indicates that this is a daemon thread, which means that it will not prevent the JVM from shutting down if it is the last running thread. Then there are less important pieces of metadata about the thread, like a priority, os priority, thread identifier, and native identifier. The last pieces of information are the most important the state of the thread and its address in the JVM. The thread can be in one of the four states as explained earlier.
+The thread dump entry shown here starts with the name of the thread `main-EventThread` which is the 20th thread(indicated by`#20`) created by the JVM after it started. 
+
+The daemon keyword after the thread number indicates that this is a daemon thread, which means that it will not prevent the JVM from shutting down if it is the last running thread. 
+
+Then there are less important pieces of metadata about the thread, like a priority, os priority, thread identifier, and native identifier. 
+
+The last pieces of information are the most important the state of the thread and its address in the JVM. The thread can be in one of the four states as explained earlier.
 
 
 ## Taking a Thread Dump
 There are various methods of taking the thread dump. We used JDK's `jcmd` utility in the previous section for taking the thread dumps. Let us look at some of the other methods.
 
 ### Taking Thread Dump with Tools
+Some of the commonly used tools for taking thread dump are: 
 
 1. **jstack**: `Jstack` is part of JDK since Java 5 and is widely used for taking thread dumps. We take thread dump with `jstack` with the below command:
 ```shell
@@ -231,16 +238,18 @@ INFO: "Thread2" prio=5 Id=15 BLOCKED on io.pratik.threadops.ThreadSample@34c45dc
 We can see the two threads `Thread1` and `Thread2` in the `BLOCKED` state. If we follow the stack trace of `Thread1`, `ThreadSample` object is `locked` at method `executeMethod1` and `blocked` at `executeMethod2`.
 
 ## Analyzing Thread Dumps
-[fastThread](https://fastthread.io/) is one of the available tools for analyzing thread dumps.
+![FastThread](https://fastthread.io/) is one of the available tools for analyzing thread dumps.
 
-Let us upload our thread dump file generated from a Kafka broker to the fastThread tool. FastThread generates a report from the thread dump which is much easier to understand compared to the raw file. Let us look at some of the useful sections of the report:
+Let us upload our thread dump file generated from a Kafka broker to the fastThread tool. 
+
+FastThread generates a report from the thread dump which is much easier to understand compared to the raw file. Let us look at some of the useful sections of the report:
 
 3. **Threads with identical stack trace**: This section of the report shows information when several threads in a thread dump working on one single method. This is indicative of resource contention on external resources like databases or APIs or infinite loops. That particular method needs to be analyzed to find the root cause.
-[identical-stack-trace](/assets/img/posts/thread-dump-analysis/identical-stack-trace.png)
+![identical-stack-trace](/assets/img/posts/thread-dump-analysis/identical-stack-trace.png)
 4. **Most used methods**: By taking multiple consecutive thread dumps in a sequence, we can get an overview of the parts of our Java application that are used the most. 
-[most-used-methods](/assets/img/posts/thread-dump-analysis/most-used-methods.png)
+![most-used-methods](/assets/img/posts/thread-dump-analysis/most-used-methods.png)
 5. **CPU consuming threads**: The report lists all threads which need to be analyzed for high CPU consumption.
-[cpu-consuming-threads](/assets/img/posts/thread-dump-analysis/cpu-consuming-threads.png)
+![cpu-consuming-threads](/assets/img/posts/thread-dump-analysis/cpu-consuming-threads.png)
 6. **Blocking threads**: Blocking threads that are responsible for making an application unresponsive are listed under this section.
 7. **Deadlocks**: This section contains threads that are causing a deadlock. The deadlock section of the previous example is shown here:
 ![Deadlock section](/assets/img/posts/thread-dump-analysis/fastthread-deadlock.png)
@@ -260,6 +269,10 @@ Manual analysis of raw thread dump files is always an option but is often tediou
 
 ## Conclusion
 
-In this post, we looked at the five states of a java thread during its lifecycle and described thread dumps as a snapshot of thread states at a particular instant. We then ran a simple java application to simulate a web server and took its thread dump with the `jcmd` tool. After that, we introduced tools to analyze thread dumps and ended with some use cases and best practices of using thread dumps. A thread dump is often used in combination with [heap dump](https://reflectoring.io/create-analyze-heapdump/) and GC logs to diagnose java applications. I hope this will enable you to use thread dumps for the use cases described here and also find other areas where it can be put to use like automation with Ci/CD.
+In this post, we looked at the different lifecycle states of a Java thread and described thread dumps as a snapshot of thread states at a particular instant. We then ran a simple Java application to simulate a web server and took its thread dump with the `jcmd` tool. 
+
+After that, we introduced tools to analyze thread dumps and ended with some use cases and best practices of using thread dumps. A thread dump is often used in combination with [heap dump](https://reflectoring.io/create-analyze-heapdump/) and GC logs to diagnose java applications. 
+
+I hope this will enable you to use thread dumps for the use cases described here and also find other areas where it can be put to use like automation with Ci/CD.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/core-java/threaddump).

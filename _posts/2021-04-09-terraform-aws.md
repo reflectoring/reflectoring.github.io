@@ -18,7 +18,7 @@ In this post, we will look at the capabilities of Terraform with examples of cre
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/aws-terraform" %}
 
 ## Infrastructure as Code with Terraform
-Infrastructure as Code (IaC) is the managing and provisioning of infrastructure through code instead of through a manual processes. From the website of Terraform:
+Infrastructure as Code (IaC) is the managing and provisioning of infrastructure through code instead of a manual process. From the website of Terraform:
 
 >"Terraform is an open-source infrastructure as code software tool that provides a consistent CLI workflow to manage hundreds of cloud services."
 
@@ -103,7 +103,7 @@ The main steps for any basic task with Terraform are:
 4. Apply the plan using `terraform apply`
 5. Destroy the provisioned resources with `terraform destroy`
 
-Let's go through each of these steps.
+Let us go through each of these steps.
 
 ### Configuriong the Desired State
 Let us define our Terraform configuration in Terraform language in a file `main.tf`:
@@ -137,13 +137,13 @@ Here we are creating an AWS EC2 instance named "vm-web" of type `t2.micro` using
 
 We can also see the three main parts of configuration :
 
-1. **Resource**: We define our infrastructure in terms of resources. Each resource block in the configuration file describes one or more infrastructure objects. EC2 instance, an S3 bucket, a Lambda function, or their equivalents from other Cloud platforms are examples of different resource types. 
+1. **Resource**: We define our infrastructure in terms of [resources](https://www.terraform.io/docs/language/resources/index.html). Each resource block in the configuration file describes one or more infrastructure objects. EC2 instance, an S3 bucket, a Lambda function, or their equivalents from other Cloud platforms are examples of different resource types. 
 
 
-2. **Provider**: Terraform uses `providers` to connect to remote systems. Each resource type is implemented by a provider. Most providers configure a specific infrastructure platform (either cloud or self-hosted). Providers can also offer local utilities for tasks like generating random numbers for generating unique resource names.
+2. **Provider**: Terraform uses `providers` to connect to remote systems. Each resource type is implemented by a [provider](https://www.terraform.io/docs/language/providers/index.html). Most providers configure a specific infrastructure platform (either cloud or self-hosted). Providers can also offer local utilities for tasks like generating random numbers for generating unique resource names.
 
 
-3. **Terraform Settings**: We configure some behaviors of Terraform like the minimum Terraform version in the `terraform` block. Here we also specify all of the providers each with a source address and a version constraint required by the current module in the `required_providers` block.
+3. **Terraform Settings**: We configure some behaviors of Terraform like the minimum Terraform version in the [terraform](https://www.terraform.io/docs/language/settings/index.html) block. Here we also specify all of the providers each with a source address and a version constraint required by the current module in the `required_providers` block.
 
 ### Initializing the Working Directory
 We run Terraform commands from a working directory that contains one or more configuration files. Terraform reads configuration content from this directory, and also uses this directory to store settings, caches for plugins and modules, and sometimes state data.
@@ -231,7 +231,7 @@ To perform exactly these actions, run the following command to apply:
     terraform apply "aws-app-stack-plan"
 
 ```
-From the output we can see that one resource will be added (the EC2 instance), zero changed and zero destroyed. No actual changes to the infrastructure have taken place yet. The plan is saved in the file specified in the output.
+From the output, we can see that one resource will be added (the EC2 instance), zero changed and zero destroyed. No actual changes to the infrastructure have taken place yet. The plan is saved in the file specified in the output.
 
 
 ### Applying the Plan
@@ -265,7 +265,7 @@ Here we come across the important concept of `terraform state`. After applying o
 If we do not give a plan file on the command line, running `terraform apply`  creates a new plan automatically and then prompts for approval to apply it. If the created plan does not include any changes to resources or root module output values then running `terraform apply` exits immediately, without prompting.
 
 ### Destroy
-At last we destroy our infrastructure by running the `terraform destroy` command.
+At last, we destroy our infrastructure by running the `terraform destroy` command.
 
 Running the `destroy` command first asks for a confirmation and proceeds to delete the infrastructure on receiving a `yes` answer:
 ```shell
@@ -286,7 +286,7 @@ Destroy complete! Resources: 1 destroyed.
 The output log states the number of resources destroyed: one EC2 instance in this case.
 
 ### Parameterizing the Configuration with Input Variables
-In our last example, instead of putting the values of ami, tag and instance type directly in the configuration file, we can use variables to allow these aspects of our configuration to be modified without changing the source code. We can receive their values when applying the configuration. 
+In our last example, instead of putting the values of ami, tag, and instance type directly in the configuration file, we can use variables to allow these aspects of our configuration to be modified without changing the source code. We can receive their values when applying the configuration. 
 
 Let us modify the configuration file (`main.tf`) created earlier with variables for instance type:
 
@@ -320,7 +320,7 @@ var.ec2_instance_type
   Enter a value: t2.micro
 ```
 We supply a value `t2.micro` to allow Terraform to create our desired ec2 instance.
-Apart from this method of setting variable values, we can the values in a variable definition file ending in `.tfvars` and specify the file on command line.
+Apart from this method of setting variable values, we can define the values in a variable definition file ending in `.tfvars` and specify the file on the command line.
 
 ### Organizing and Reusing Configurations with Modules
 In our previous example, we represented our architecture by directly creating an EC2 instance. In real-life situations, our application stack will have many more resources with dependencies between them. 
@@ -415,7 +415,7 @@ module "app_storage" {
 }
 
 ```
-During invocation of the child modules, we are using the `module` construct with a `source` argument containing the path of the child modules `application` and `storage`. Here we are using the local directory to store our modules. Other than the local path, we can also use different [source types](https://www.terraform.io/docs/language/modules/sources.html) like a `terraform registry`, `github`, `s3`, etc to reuse modules published by other individuals or teams. When using remote sources, terraform will download these modules when we run `terrafom init` and store them in the local directory.
+During invocation of the child modules, we are using the `module` construct with a `source` argument containing the path of the child modules `application` and `storage`. Here we are using the local directory to store our modules. Other than the local path, we can also use different [source types](https://www.terraform.io/docs/language/modules/sources.html) like a `terraform registry`, `GitHub, `s3`, etc to reuse modules published by other individuals or teams. When using remote sources, terraform will download these modules when we run `terraform init` and store them in the local directory.
 
 ### Terraform Cloud and Terraform Enterprise
 
@@ -453,7 +453,7 @@ We configure AWS credentials by adding two environment variables for `access tok
 
 ![Workspace with CLI driven workflow](/assets/img/posts/aws-terraform/workspace-env-variables.png)
 
-Running `terraform plan` command will start a remote run in the configured Terraform Cloud workspace. Running `terraform plan` will output the following log:
+Running the `terraform plan` command will start a remote run in the configured Terraform Cloud workspace. Running `terraform plan` will output the following log:
 
 ```shell
 Running plan in the remote backend. Output will stream here. Pressing Ctrl-C

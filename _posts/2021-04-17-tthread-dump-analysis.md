@@ -8,20 +8,19 @@ excerpt: "Thread dump is a snapshot of the states of all the threads in an appli
 image:
   auto: 0074-stack
 ---
-A thread is a basic path of execution in a program.  Most of the applications we build today execute in a multi-threaded environment. 
+A thread is a basic path of execution in a program.  Most of the applications we build today execute in a multi-threaded environment. They might become unresponsive, if the thread executing at that point of time is stuck due to various reasons. In these situations, thread dumps help in getting sufficient insights into the environment where the application is executing.
 
-As such a program running perfectly in the development environment may encounter thread-related issues when promoted to higher environments where it is serving multiple concurrent requests. A program becomes unresponsive if the thread executing at that point of time is stuck due to various reasons. 
+In this post, we will look at creating thread dumps and understand the information they contain to diagnose various runtime errors in applications.
+
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/threaddump" %}
+
+## What is a Thread Dump
 
 A thread dump provides a snapshot of all the threads in a program executing at a specific instant. Some of the threads belong to our Java application being run while the remaining are JVM internal threads. 
 
 The state of each thread is followed by a stack trace containing the information about the application’s thread activity that can help us diagnose problems and optimize application and JVM performance;
 
 For this reason, it is a vital tool for understanding issues related to application slowness, an application becoming unresponsive, or deadlock situations. 
-
-In this post, we will look at different thread dumps and understanding the information they contain to diagnose application threading issues.
-
-
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/threaddump" %}
 
 
 ## Lifecycle States of a Thread

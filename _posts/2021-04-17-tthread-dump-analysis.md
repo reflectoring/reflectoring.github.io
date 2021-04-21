@@ -8,10 +8,13 @@ excerpt: "Thread dump is a snapshot of the states of all the threads in an appli
 image:
   auto: 0074-stack
 ---
-A thread is a basic path of execution in a program.  Most of the applications we build today execute in a multi-threaded environment. As such a program running perfectly in the development environment may encounter thread-related issues when promoted to higher environments where it is serving multiple concurrent requests. A program becomes unresponsive if the thread executing at that point of time is stuck due to various reasons. 
+A thread is a basic path of execution in a program.  Most of the applications we build today execute in a multi-threaded environment. 
 
-A thread dump provides a snapshot of all the threads in a program executing at a specific instant. Some of the threads belong to our Java application being run while the remaining are JVM internal threads. The state of each thread is followed by a stack trace containing the information about the application’s thread activity that can help us diagnose problems and optimize application and JVM performance;
+As such a program running perfectly in the development environment may encounter thread-related issues when promoted to higher environments where it is serving multiple concurrent requests. A program becomes unresponsive if the thread executing at that point of time is stuck due to various reasons. 
 
+A thread dump provides a snapshot of all the threads in a program executing at a specific instant. Some of the threads belong to our Java application being run while the remaining are JVM internal threads. 
+
+The state of each thread is followed by a stack trace containing the information about the application’s thread activity that can help us diagnose problems and optimize application and JVM performance;
 
 For this reason, it is a vital tool for understanding issues related to application slowness, an application becoming unresponsive, or deadlock situations. 
 

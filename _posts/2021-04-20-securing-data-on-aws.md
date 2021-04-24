@@ -231,7 +231,7 @@ make more than 20.000 requests in a month it costs between 0,03 and 12,00 USD fo
 Cloud HSM costs between 1,4 and 2,00 USD per hour and per device depending on the region. There are no costs for single
 operations. If we have two HSMs in the cluster for a price of 1,50 USD, we pay 72 USD per day.
 
-if we want to use a custom key store in KMS we have to pay for both.
+If we want to use a custom key store in KMS we have to pay for both.
 
 # Encryption of Storages
 

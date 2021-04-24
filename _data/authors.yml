@@ -201,6 +201,16 @@ zeddysoft:
   bio: "Azeez is a skilled software engineer with experience in building highly scalable, reliable and maintainable back-end systems.
   He enjoys general problem solving and likes to explore new technologies."
 
+lleuenberger:
+  name: "Lukas Leuenberger"
+  email: "lukas.leuenberger@hotmail.com"
+  avatar: "/assets/img/authors/lleuenberger.png"
+  github: "silenum"
+  linkedin: "lukas-leuenberger-a76924194"
+  bio: "I am a professional Software Engineer and part time student from Zurich. I like the everyday challenge to solve
+  problems and find simple solutions for complex problems. This can only be achieved if the problem is mastered from
+  design to implementation. This is what I like the most about software engineering. It's not only about what, but also how."
+
 bakic:
   name: "Abdelbaki BEN ELHAJ SLIMENE"
   email: "belhaj.abdelbaki@gmail.com"

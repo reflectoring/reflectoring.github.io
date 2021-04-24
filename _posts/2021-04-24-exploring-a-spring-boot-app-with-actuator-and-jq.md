@@ -154,7 +154,7 @@ Let's unpack the `jq` command to understand what's happening.
 
 `.students[]` -> iterate over the `students` array
 
-| -> output each `student` to the next filter
+\| -> output each `student` to the next filter
 
 `.name` -> extract `name` from the `student` object
 
@@ -188,7 +188,7 @@ Let's unpack the command again:
 
 `.students[]` -> iterate over the `students` array
 
-| -> output each `student` to the next filter
+\| -> output each `student` to the next filter
 
 `select(.subjects[] | contains("science"))` -> select a student if their `subjects` array contains an item with the string "science"
 

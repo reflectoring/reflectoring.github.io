@@ -25,7 +25,7 @@ Let's imagine we are working on a new Spring Boot-based codebase for the first t
 
 While these are essential steps, they only give us a static picture of the application. We can't get a complete picture without understanding what happens at runtime. E.g., what are all the Spring Beans that are created? Which API endpoints are available? What are all the filters that a request goes through?
 
-Constructing this mental model of the runtime shape of the application is very helpful. We can then dive deeper to read and understand code in the important areas more effectively.
+**Constructing this mental model of the runtime shape of the application is very helpful. We can then dive deeper to read and understand code in the important areas more effectively.**
 
 ## High-level Overview of Spring Actuator
 
@@ -99,11 +99,11 @@ We can expose endpoints by setting the `management.endpoints.[web|jmx].exposure.
 management.endpoints.web.exposure.include=metrics
 ```
 
-An endpoint has to be both enabled and exposed to be available.
+**An endpoint has to be both enabled and exposed to be available.**
 
 ### Step 3: Secure and Configure the Endpoints
 
-Since many of these endpoints contain sensitive information, it's important to secure them. The endpoints should be accessible only to authorized users managing and operating our application in production and not to our normal application users. Imagine the disastrous consequences of a normal application user having access to `heapdump` or `shutdown` endpoints!
+Since many of these endpoints contain sensitive information, it's important to secure them. **The endpoints should be accessible only to authorized users managing and operating our application in production and not to our normal application users.** Imagine the disastrous consequences of a normal application user having access to `heapdump` or `shutdown` endpoints!
 
 We will not look at securing endpoints in any detail in this article since we are mainly interested in using Spring Actuator to explore the application in our local, development environment. You can find details in the documentation [here](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-endpoints-security).
 
@@ -262,7 +262,7 @@ management.endpoints.web.exposure.include=mappings,beans,startup,env,scheduledta
 
 ### Using the `mappings` Endpoint
 
-Checking out the available APIs is usually a good place to start exploring a service. The `mappings` endpoint provides all the routes and handlers, along with additional details.
+**Checking out the available APIs is usually a good place to start exploring a service**. The `mappings` endpoint provides all the routes and handlers, along with additional details.
 
 Let's hit the endpoint with a `curl` command and pipe the response into `jq` to pretty-print it:
 
@@ -408,7 +408,7 @@ $ curl http://localhost:8080/actuator/mappings | jq '.contexts.application.mappi
 }
 ```
 
-We can see the APIs available and details about the HTTP method, the request path etc. In a complex, real-world application, this would give a consolidated view of all the APIs and their details irrespective of how the various modules and controller packages were organized in the codebase. This is a useful technique to start exploring the application especially when working on a multi-module legacy codebase where even Swagger documentation may not be available.
+We can see the APIs available and details about the HTTP method, the request path etc. In a complex, real-world application, this would give a consolidated view of all the APIs and their details irrespective of how the various modules and controller packages were organized in the codebase. **This is a useful technique to start exploring the application especially when working on a multi-module legacy codebase where even Swagger documentation may not be available.**
 
 Similarly, we can check what are the filters that our requests pass through before reaching the controllers:
 
@@ -454,7 +454,7 @@ $ curl http://localhost:8080/actuator/beans | jq
 
 ```
 
-This gives a consolidated view of all the beans in the `ApplicationContext`. Going through this gives us some idea of the shape of the application at the runtime - what are the Spring internal beans, what are the application beans, what are their scopes, what are the dependencies of each bean etc.
+This gives a consolidated view of all the beans in the `ApplicationContext`. **Going through this gives us some idea of the shape of the application at the runtime - what are the Spring internal beans, what are the application beans, what are their scopes, what are the dependencies of each bean etc.**
 
 Again, we can use `jq` to filter the responses and focus on those parts of the response that we are interested in:
 
@@ -491,7 +491,7 @@ $ curl http://localhost:8080/actuator/beans | jq '.contexts.application.beans | 
 }
 ```
 
-This gives a bird's-eye view of all the application beans and their dependencies. How is this useful? We can derive additional information from this type of view: for e.g., if we see some dependency repeated in multiple beans, it likely has important functionality encapsulated that impacts multiple flows. We could mark that class as an important one that we would want to understand when we dive deeper into the code. Or perhaps, that bean is a [God object](https://en.wikipedia.org/wiki/God_object) that needs some refactoring once we understand the codebase.
+This gives a bird's-eye view of all the application beans and their dependencies. How is this useful? We can derive additional information from this type of view: for e.g., **if we see some dependency repeated in multiple beans, it likely has important functionality encapsulated that impacts multiple flows**. We could mark that class as an important one that we would want to understand when we dive deeper into the code. Or perhaps, that bean is a [God object](https://en.wikipedia.org/wiki/God_object) that needs some refactoring once we understand the codebase.
 
 ### Using the startup Endpoint
 
@@ -571,7 +571,7 @@ $ curl -XPOST 'http://localhost:8080/actuator/startup' | jq
 
 The response is an array of events with details about the event's `name`, `startTime`, `endTime` and `duration`.
 
-How can this information help is in our exploration of the application? If we know which steps are taking more time during startup, we can check that area of the codebase to understand why. It could be that a cache warmer is pre-fetching data from a database or pre-computing some data, for example. 
+How can this information help is in our exploration of the application? **If we know which steps are taking more time during startup, we can check that area of the codebase to understand why.** It could be that a cache warmer is pre-fetching data from a database or pre-computing some data, for example. 
 
 Since the above response contains a lot of details, let's narrow it down by filtering on `spring.beans.instantiate` step and also sort the events by duration in a descending order:
 
@@ -758,7 +758,7 @@ $ curl http://localhost:8080/actuator/health
 
 This is usually a shallow healthcheck. While this is useful in production environment for a loadbalancer to check against frequently, it does not help us in our goal of understanding the application.
 
-Many applications also implement deep healthchecks. This can help us - we can quickly find out what are the external dependencies of the application, which databases and message brokers does it connect to etc.
+Many applications also implement **deep healthchecks** which **can help us quickly find out what are the external dependencies of the application, which databases and message brokers does it connect to etc**.
 
 Check out this Reflectoring [article](https://reflectoring.io/spring-boot-health-check/) to learn more about implementing healthchecks using Actuator.
 
@@ -817,7 +817,7 @@ $ curl http://localhost:8080/actuator/metrics/jvm.memory.used | jq
 }
  ```
 
-Checking out the available custom API metrics is especially useful. It can give us some insight into what is important about this application from a business's point of view. For e.g., we can see from the metrics list that there is an `orders.placed.counter`.
+**Checking out the available custom API metrics is especially useful. It can give us some insight into what is important about this application from a business's point of view.** For e.g., we can see from the metrics list that there is an `orders.placed.counter`.
 
 ## Conclusion
 

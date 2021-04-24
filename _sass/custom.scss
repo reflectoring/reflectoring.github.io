@@ -57,8 +57,12 @@ a.primary-button {
 
 // SYNTAX HIGHLIGHTING
 
+a code {
+  color: $link-color;
+}
+
 code {
-  color: black;
+  color: #3d455c;
   font-family: $font-family-code;
   background-color: #eeeeee;
 }

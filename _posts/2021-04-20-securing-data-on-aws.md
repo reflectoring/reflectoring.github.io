@@ -6,7 +6,7 @@ modified: 2021-04-09 05:00:00 +1100
 author: artur
 excerpt: "Working with data in the cloud it is recommended to protect it. This article shows how to encrypt data on storage in AWS Cloud"
 image:
-  auto: 0099-keylock
+  auto: 0100-keylock
 ---
 
 Amazon Web Services provide many possibilities to secure data in the cloud. In this article, we will have a closer look

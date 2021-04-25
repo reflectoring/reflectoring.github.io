@@ -11,49 +11,55 @@ image:
 
 In this article we will learn how to mock objects with Mockito. We'll first talk about what test doubles are and then
 how we can use them to create meaningful and tailored unit tests. We will also have a look at the most important
-Dos and Dont's while writing clean unit tests with Mockito.
+Dos and Don'ts while writing clean unit tests with Mockito.
 
-{% include github-project.html url="https://github.com/silenum/reflectoring.io-mockito-examples" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/mockito" %}
 
 ## Introduction to Mocks
 
-The basic concept of mocking is replacing real objects with doubles. We can control how these doubles behave. These
+The basic concept of mocking is **replacing real objects with doubles**. We can control how these doubles behave. These
 doubles we call *test doubles*. We'll cover the different kinds of test doubles later in this article.
 
 Let's imagine we have a service that processes orders from a database. It's very cumbersome to set up a whole database just
 to test that service. To avoid setting up a database for the test, we create a *mock* that pretends to be the database,
 but in the eyes of the service it looks like a real database. We can advise the mock exactly how it shall behave. Having
-this tool, we are able to test the service but don't actually need a database.
+this tool, we can test the service but don't actually need a database.
 
 Here [Mockito](https://www.mockito.org) comes into play. Mockito is a very popular library that allows us to create such
 mock objects.
 
-Consider reading the section [Why Mock?](https://reflectoring.io/spring-boot-mock/#why-mock) for additional information
+Consider reading [Why Mock?](https://reflectoring.io/spring-boot-mock/#why-mock) for additional information
 about mocking.
 
 ## Different Types of Test Doubles
 
-In the world of code, there are many different words for test doubles and definitions for their duty. I recommend to
-define a common language within the team.
+In the world of code, there are many different words for test doubles and definitions for their duty. I recommend defining a common language within the team.
 
 Here is a little summary of the different types for test doubles and how we use them in this article:
 
+<style>
+.table td {
+  padding: 5px;
+}
+</style>
+
 | Type  | Description                          |
 | ----- | ------------------------------------------------------------ |
-| Stub  | A stub is an object that always returns the same value, regardless of which parameters you provide on a stub's methods. |
-| Mock  | A mock is an object whose behaviour - in the form of parameters and return values - is declared before the test is run. (This is exactly what Mockito is made for!) |
-| Spy   | A spy is an object that logs each method call that is performed on it (including parameter values). It can be queried to create assertions in order to verify the behaviour of the system under test. (Spies are supported by Mockito!) |
+| Stub  | A *stub* is an object that always returns the same value, regardless of which parameters you provide on a stub's methods. |
+| Mock  | A *mock* is an object whose behavior - in the form of parameters and return values - is declared before the test is run. (This is exactly what Mockito is made for!) |
+| Spy   | A *spy* is an object that logs each method call that is performed on it (including parameter values). It can be queried to create assertions to verify the behavior of the system under test. (Spies are supported by Mockito!) |
+{: .table}
 
 ## Mockito in Use
 
-Consider following example:
+Consider the following example:
 
 ![Simple UML Diagram](../assets/img/posts/clean-unit-tests-with-mockito/city-service-diagram.png)
 
 The green arrow with the dotted line and filled triangle stands for *implements*. `CityServiceImpl` is the
 implementation of `CityService` and therefore *an instance of* `CityService`. 
 
-The white arrows with the diamond says
+The white arrow with the diamond says
 that `CityRepository` *is part of* `CityService`. It is also known as *composition*. 
 
 The remaining white arrow with the
@@ -62,10 +68,11 @@ dotted line stands for the fact that `CityServiceImpl` owns *a reference* to `Ci
 **We don't want to consider the `CityRepository` implementation when unit testing `CityServiceImpl`**. If we used a real `CityRepository` implementation in the test, we would have to connect it to a database, which makes the test setup more complicated and would increase the number of reasons why our test could fail, since we have added complexity in our test fixture
 with potentially failing components.
 
-Here Mockito comes to the rescue! Mockito allows us to create a suitable test double for the `CityRepository` interface and lets us define the behaviour we expect from it. Applying this possibility we can create meaningful unit
-tests to ensure the correct behaviour of the service.
+Here Mockito comes to the rescue! Mockito allows us to create a suitable test double for the `CityRepository` interface and lets us define the behavior we expect from it. Applying this possibility we can create meaningful unit
+Here Mockito comes to the rescue! Mockito allows us to create a suitable test double for the `CityRepository` interface and lets us define the behavior we expect from it. Applying this possibility we can create meaningful unit
+tests to ensure the correct behavior of the service.
 
-**In summary, what we want is a simple, fast and reliable unit test instead of a potentially complex, slow and flaky
+**In summary, what we want is a simple, fast, and reliable unit test instead of a potentially complex, slow, and flaky
 test!**
 
 Let's look at an example:
@@ -91,7 +98,7 @@ class CityServiceImplTest {
 ```
 
 The test case consists of the system under test `CityService` and its dependencies. In this case, the only dependency 
-is an instance of `CityRepository`. We need those references in oder to test the expected behaviour and reset the test double to not
+is an instance of `CityRepository`. We need those references to test the expected behavior and reset the test double to not
 interfere with other test cases (more about that later).
 
 Within the setup section, we create a test double with `Mockito.mock(<T> classToMock)`. Then, we inject this test double
@@ -113,7 +120,7 @@ class CityServiceImplTest {
   }
 
   @Test
-  void find() throws ElementNotFoundException {
+  void find() throws Exception {
     City expected = createCity();
     Mockito.when(cityRepository.find(expected.getId()))
         .thenReturn(Optional.of(expected));
@@ -122,7 +129,7 @@ class CityServiceImplTest {
   }
 
   @Test
-  void delete() throws ElementNotFoundException {
+  void delete() throws Exception {
     City expected = createCity();
     cityService.delete(expected);
     Mockito.verify(cityRepository).delete(expected);
@@ -133,24 +140,21 @@ class CityServiceImplTest {
 
 Here we have two example test cases. 
 
-The first one is about finding a city via the `CityService`. Therefore, we create an instance of `City`. This city is
-the object which we expect to be returned from the `CityService`. Now we have to advise the repository to return that
-value, if and only if the declared ID has been provided.
+The first one (`find()`) is about finding a city via the `CityService`. We create an instance of `City` as the object which we expect to be returned from the `CityService`. Now we have to advise the repository to return that
+value if - and only if - the declared ID has been provided.
 
-Since `cityRepository` is a Mockito mock, we can declare its behaviour with `Mockito.when()`. Now we can call
+Since `cityRepository` is a Mockito mock, we can declare its behavior with `Mockito.when()`. Now we can call
 the `find()` method on the service, which will return an instance of `City`. 
 
-Having the expected and th actually returned `City` objects, we can create a
-corresponding assertion.
+Having the expected and the actually returned `City` objects, we can assert that they have the same field values.
 
 In case a method has no return value (like `cityService.delete()` in the code example), we can't create an assertion on
-the return value. Here Mockito's spy features comes into play.
+the return value. Here Mockito's spy features come into play.
 
 We can query the test double and ask if a method was called with the expected parameter. This is what `Mockito.verify()`
 does.
 
-**These two features - mocking return values and verifying method calls on test doubles - give us a
-huge possibility to create various simple test cases**. Also, the shown examples can be used for test driven development
+**These two features - mocking return values and verifying method calls on test doubles - give us great power to create various simple test cases**. Also, the shown examples can be used for test-driven development
 and regression tests. Mockito fits both needs!
 
 ## How to Create Mocks with Mockito
@@ -172,7 +176,7 @@ CityService cityService = new CityServiceImpl(cityRepository);
 ```
 
 We can simply declare a variable with the type of the component we want to mock. Taking the example from above, we want
-`CityRepository` to be a mock, so that we don't have to rely on its dependencies (like a database). The mock is then passed to the
+`CityRepository` to be a mock so that we don't have to rely on its dependencies (like a database). The mock is then passed to the
 service, which is the *system under test*.
 
 That's all we need to set up our first mock with Mockito!
@@ -204,7 +208,7 @@ class CityServiceImplTestMockitoAnnotationStyle {
 We can annotate each field to be a mock with the annotation of `@Mock`. Annotating them doesn't initialize them yet. To
 do so, we call `MockitoAnnotations.openMocks(this)` in the `@BeforeEach` section of our test. The annotated fields of the
 provided object are then initialized and ready to use, which is in our case is the class instance itself (`this`). We don't have to deal
-with boilerplate code anymore and are able to keep our unit tests neat and concise.
+with boilerplate code anymore and can keep our unit tests neat and concise.
 
 ### Using JUnit Jupiter's `MockitoExtension`
 
@@ -230,8 +234,8 @@ class CityServiceImplTestMockitoJUnitExtensionStyle {
 }
 ```
 
-The extension assumes the initialization for annotated fields, so we must not do it ourselves. This makes our setup even
-neater and conciser!
+The extension assumes the initialization for annotated fields, so we must not do it ourselves. This makes our setup even more
+neat and concise!
 
 ### Injecting Mocks with Spring
 
@@ -257,22 +261,22 @@ class CityServiceImplTestMockitoSpringStyle {
 }
 ```
 
-But caution: `@MockBean` is not an annotation from Mockito but from Spring! In the startup process Spring places the
-mock in the context, so that we don't need to do it ourselves. Wherever a bean requests to have its dependency satisfied,
+Note that `@MockBean` is not an annotation from Mockito but from Spring Boot! In the startup process, Spring places the
+mock in the context so that we don't need to do it ourselves. Wherever a bean requests to have its dependency satisfied,
 Spring injects the mock instead of the real object. This becomes handy if we want to have the same mock in different
 places.
 
 See [Mocking with Mockito and Spring Boot](https://reflectoring.io/spring-boot-mock/#mocking-with-mockito-and-spring-boot)
-for a deep dive how to mock Beans in Spring Boot.
+for a deep dive on how to mock Beans in Spring Boot.
 
-## Defining the Behaviour of Mocks
+## Defining the Behavior of Mocks
 
-In this section we have a look at how to define the behaviour of the mocks in our test. What we have seen until now is
+In this section, we have a look at how to define the behavior of the mocks in our test. What we have seen until now is
 what mocks are used for and how to create them. We are ready to use them in our test cases.
 
 ### How to Return an Expected Object
 
-The probably most common case when using Mockito is to return expected objects. If we call `findByName(name)` of `CityService`
+The probably most common case when using Mockito is to return expected objects. If we call `findByName(name)` on `CityService`
 we would expect that the argument for `name` is forwarded to the repository which returns an `Optional` of a `City`. The
 service unpacks the `Optional` if present or otherwise throws an exception.
 
@@ -287,9 +291,9 @@ service unpacks the `Optional` if present or otherwise throws an exception.
   }
 ```
 
-We first create the expected object for `City`. Having that expected instance for a `City`, we can define the behaviour
-of the mock which is in that case to return the `Optional` of the expected instance. We do so by
-calling `Mockito.when()` with the call we want to make. As a last step we must declare the return value of that call at
+We first create the expected object for `City`. Having that expected instance for a `City`, we can define the behavior
+of the mock which is to return the `Optional` of the expected instance. We do so by
+calling `Mockito.when()` with the call we want to make. As a last step, we must declare the return value of that call at
 the end of the method chain.
 
 If we try to find the expected city by its name, the service will return the previously declared object without throwing
@@ -311,7 +315,7 @@ to test error handling blocks in our code.
   }
 ```
 
-Declaring the behaviour only differs by the last call in the method chain. With `thenThrow()`, we advise Mockito to throw an
+Declaring the behavior only differs by the last call in the method chain. With `thenThrow()`, we advise Mockito to throw an
 `IllegalArgumentException` in this case. 
 
 In our case, we just assert that our `CityService` implementation re-throws the exception.
@@ -330,15 +334,25 @@ was called. This can be achieved by using `Mockito.verify()`:
   }
 ```
 
-In this example, it isn't necessary to declare the behaviour of the mock beforehand. Instead, we just query the mock if it has been
+In this example, it isn't necessary to declare the behavior of the mock beforehand. Instead, we just query the mock if it has been
 called during the test case. If not, the test case fails.
+
+### How To Verify the Number of Method Calls
+
+```java
+Mockito.verify(cityRepository, Mockito.times(1)).delete(expected);
+```
+
+We can verify how many times a mock was called by simply use the built-in `verify()` method. If the condition is not met,
+our test case will fail. This is extremely handy for algorithms or similar processes. There are other predefined
+verification modes such as `atLeastOnce()` or `never()` already present and ready to use!
 
 ## Mockito Best Practices
 
 Knowing how to create the mocks, let's have a look at some best practices to keep our tests clean and maintainable. It
 will save us much time debugging and doesn't let our team members guess what the intent of the test case is.
 
-### Don't Share Mock Behavior Between Tests
+### Don't Share Mock behavior Between Tests
 
 We might be tempted to put all behavior declarations using `Mockito.when()` into a setup method that runs before each test (i.e. annotated with `@BeforeEach`) 
 to have them in a common place. Even though this reduces the test cases to a minimum, the readability suffers a lot:
@@ -364,7 +378,7 @@ to have them in a common place. Even though this reduces the test cases to a min
   }
 ```
 
-This will get us simple test cases like this, because we don't have to define the behavior in each test case:
+This will get us simple test cases like this because we don't have to define the behavior in each test case:
 
 ```java
   @Test
@@ -386,7 +400,7 @@ This will get us simple test cases like this, because we don't have to define th
 
 But, because all mocking behavior is in a central place, we must pay attention to not break any  test cases when modifying this central code. Also, we don't know which test case requires which behavior when reading the test case. We have to guess or investigate the actual code to find out.
 
-We better declare the behaviour for each test case in isolation, so that the test cases are independent of each other. The code from above should be refactored to something like the following:
+We better declare the behavior for each test case in isolation, so that the test cases are independent of each other. The code from above should be refactored to something like the following:
 
 ```java
   @BeforeEach
@@ -446,7 +460,7 @@ The unit tests we write should be runnable on any machine with the same result. 
 in any way. So we must write every unit test self-contained and independent of test execution order.
 
 It's likely that the errors in non-self-contained test cases are caused by setup blocks that declare behavior shared between test methods. If we need to add a new behavior at the end of the
-block, each previous declaration must be executed before we are able to call ours. Or vice versa: if a new declaration
+block, each previous declaration must be executed before we can to call ours. Or vice versa: if a new declaration
 is inserted at the beginning, causes a shift of all other declarations towards the end. At least now our alarm bell
 should ring, and it's time to reconsider our test case!
 
@@ -481,11 +495,12 @@ testing too much in a single unit test. But let's look at an example for this si
 What is this test case doing?
 
 1. Tries to find a city and asserts that it's equal to the expected city
-2. Deletes a city and a verifies the delete method on the repository has been called
+2. Deletes a city and verifies that the delete method on the repository has been called
 3. Tries to find the previously created city again but expecting an exception.
 
 We must call `cityRepository.reset()` to let Mockito forget what was declared before that line.  This is necessary,
-because we declared two different behaviours of `cityService(expected.getId())` in the same test. This test case's
+because we declared two different behaviors of `cityService(expected.getId())` in the same test. This test case's
+because we declared two different behaviors of `cityService(expected.getId())` in the same test. This test case's
 design is unfortunate. It tests too much for one single test and could be split in simpler and smaller units:
 
 ```java
@@ -518,16 +533,16 @@ design is unfortunate. It tests too much for one single test and could be split 
   }
 ```
 
-Now each test is simple and easy understandable. We don't have to reset the mocks anymore, since this is achieved in
+Now each test is simple and easily understandable. We don't have to reset the mocks anymore, since this is achieved in
 the `setUp()` method. The effectively tested code is the same but a lot more meaningful than before.
 
 ### Don't Mock Value Objects or Collections
 
-Mockito is a framework to mock objects with behaviour that can be declared at the beginning of our test. It is common to
+Mockito is a framework to mock objects with behavior that can be declared at the beginning of our test. It is common to
 have *Data Transfer Objects* (or DTOs). The intent of such a DTO is, as its name says, to transport data from a source
-to a destination. In order to retrieve this data from the object, we could declare the behaviour of each getter. Albeit
+to a destination. To retrieve this data from the object, we could declare the behavior of each getter. Albeit
 this is possible, we should rather use real values and set them to the DTO. The same rule applies for collections too,
-since they are container for values as well.
+since they are a container for values as well.
 
 As explained, it is possible to mock a `City`, which is a wrapper for the city name and other properties.
 
@@ -541,8 +556,8 @@ As explained, it is possible to mock a `City`, which is a wrapper for the city n
   }
 ```
 
-It's not worth the effort to declare the behaviour for numerous of getters of an object. We better create a **real
-object containing the values** and don't cover implicitly clear behaviour of objects. Now let's see a mocked `List`:
+It's not worth the effort to declare the behavior for numerous getters of an object. We better create a **real
+object containing the values** and don't cover implicitly clear behavior of objects. Now let's see a mocked `List`:
 
 ```java
   @Test
@@ -579,10 +594,10 @@ In comparison with a real `List` (i. e. `ArrayList`) things get clearer right aw
   }
 ```
 
-Using mocks for collections we might hide natural behaviour of a `List`. In the worst case, our application fails in
-production because we assumed a `List` to behave different from how it actually does!
+Using mocks for collections we might hide the natural behavior of a `List`. In the worst case, our application fails in
+production because we assumed a `List` to behave differently from how it actually does!
 
-**Mockito is a framework to mock behaviour of components based on values and not to mock values.** This means that we
+**Mockito is a framework to mock behavior of components based on values and not to mock values.** This means that we
 better create tests for components that process DTOs rather than for the DTOs themselves.
 
 ### Testing Error Handling with Mockito
@@ -592,45 +607,19 @@ Mockito.when(cityRepository.find(expected.getId()))
    .thenThrow(RuntimeException.class);
 ```
 
-We often only test the *happy flow* of our application. But how to test the correct behaviour in our try-catch-blocks?
+We often only test the *happy flow* of our application. But how to test the correct behavior in our try-catch blocks?
 Mockito has the answer: Instead of declaring a return value, we can declare an exception to be thrown. This allows us,
 to write unit tests, that ensure our try-catch-blocks work as expected! 
 
 Important to know: In case we throw checked exceptions, **the compiler doesn't let us throw checked exceptions that
 are not declared on the method**!
 
-### Mocking `void` Methods
-
-```java
-// Causes a compiler error
-Mockito.when(cityRepository.delete())
-  .thenThrow(RuntimeException.class);
-```
-
-In case we want to declare a special behaviour for `void` methods, we must change our approach. The compiler doesn't
-like void methods in brackets, since they have no arguments. Change our approach to following:
-
-```java
-Mockito.doThrow(RuntimeException.class)
-  .when(cityRepository).delete(expected);
-```
-
-### Verify the Number of Method Calls
-
-```java
-Mockito.verify(cityRepository, Mockito.times(1)).delete(expected);
-```
-
-We can verify how many times a mock was called by simply use the built-in `verify()` method. If the condition is not met,
-our test case will fail. This is extremely handy for algorithms or similar processes. There are other predefined
-verification modes such as `atLeastOnce()` or `never()` already present and ready to use!
-
 ## Mockito FAQ
 
-In this section we want to point out important things which are nice to know.
+In this section, we want to point out important things which are nice to know.
 
 * **What types can I mock?** Mockito allows us to mock not only interfaces but also concrete classes.
-* **What is returned if I don't declare a mock's behaviour?** Mockito by default returns `null` for complex objects, and the
+* **What is returned if I don't declare a mock's behavior?** Mockito by default returns `null` for complex objects, and the
   default values for primitive data types (for example `0` for `int` and `false` for `boolean`)
 * **How many times does Mockito return a previously declared value?** If we have declared a return value once, Mockito returns always the same value, regardless of
   how many times a method is called. If we have multiple calls to `Mockito.when()` with different return values, the first method call will return the first declared value, the second method call the second value, and so on.
@@ -638,27 +627,27 @@ In this section we want to point out important things which are nice to know.
   to do with the internal mechanism of how Mocktio creates the mock and the Java Language Specification. If we want to
   do so, we can use [PowerMock](https://github.com/powermock/powermock).
 * **Can I mock a constructor?** Mockito can't mock constructors, static methods, `equals()` nor `hashCode()` out of the box.
-  In order to achieve that, [PowerMock](https://github.com/powermock/powermock) must be used.
+  To achieve that, [PowerMock](https://github.com/powermock/powermock) must be used.
 
 ## Pros and Cons
 
-Mockito helps us to create simple mocks fast. The Mockito API is easy to read, since they are written in
+Mockito helps us to create simple mocks fast. The Mockito API is easy to read since it allows us to write tests in
 fluent style. Mockito can be used in plain Java projects or together with frameworks such as Spring Boot. It is well
-documented and has lots of examples in it. In case of problems there is a huge community behind it and questions are
-answered frequently on StackOverflow. It disposes great flexibility to its users which can contribute their ideas, since
-it is an open source project. Therefore, the development is ongoing, and the project is maintained.
+documented and has lots of examples in it. In case of problems, there is a huge community behind it and questions are
+answered frequently on StackOverflow. It provides great flexibility to its users which can contribute their ideas since
+it is an open-source project. Therefore, the development is ongoing, and the project is maintained.
 
 Mockito can't mock everything out of the box. In case we want to mock `final` or `static` methods, `equals()` or the
 construction of an object, we need [PowerMock](https://github.com/powermock/powermock).
 
 ## Conclusion
 
-In this post we learned how to create mocks for unit tests in various variants. Mockito gives us a lot of flexibility,
+In this post, we learned how to create mocks for unit tests in various variants. Mockito gives us a lot of flexibility,
 and the freedom to choose between numerous tools to achieve our goals. When working in teams, we define a common
-language and Mockito code style guideline how we want to use this powerful tool for testing. This will improve our
+language and Mockito code style guideline on how we want to use this powerful tool for testing. This will improve our
 performance and helps to discuss and communicate.
 
 Although Mockito comes with a lot of features, be aware of its restrictions. Don't spend time to make the impossible
 possible, better reconsider our approach to test a scenario.
 
-You will find all examples on [GitHub](https://github.com/silenum/mockito-examples).
+You will find all examples on [GitHub](https://github.com/thombergs/code-examples/tree/master/mockito).

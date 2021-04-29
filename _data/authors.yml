@@ -218,3 +218,11 @@ bakic:
   github: "bakic"
   linkedin: "abdelbaki-ben-elhaj-slimene-b797028"
   bio: "As a software developer, I am looking for new challenges. Being a developer made me a student for life. I enjoy sharing knowledge and learn from the others."
+
+pimterry:
+  name: "Tim Perry"
+  email: "tim@httptoolkit.tech"
+  avatar: "/assets/img/authors/tim.jpg"
+  github: "pimterry"
+  twitter: "pimterry"
+  bio: "The developer behind <a href=\"https://httptoolkit.tech/java/\">HTTP Toolkit</a>: Beautiful & open-source tools to debug, test and develop with HTTP(S)."

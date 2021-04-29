@@ -1,15 +1,13 @@
 ---
 title: Exploring a Spring Boot App with Actuator and jq
 categories: [spring-boot]
-date: 2021-04-24 05:00:00 +1100
-modified: 2021-04-24 05:00:00 +1100
+date: 2021-04-30 05:00:00 +1100
+modified: 2021-04-30 05:00:00 +1100
 author: saajan
 excerpt: "This article shows why and how to use Spring Actuator and jq JSON processor to explore a new Spring Boot application."
 image:
-  auto: 0089-circuitbreaker
+  auto: 0100-motor
 ---
-
-## Introduction
 
 Spring Boot Actuator helps us monitor and manage our applications in production. It exposes endpoints that provide health, metrics, and other information about the running application. We can also use it to change the logging level of the application, take a thread dump, and so on - in short, capabilities that make it easier to operate in production.
 
@@ -29,9 +27,9 @@ While these are essential steps, they only give us a static picture of the appli
 
 ## High-level Overview of Spring Actuator
 
-Let's start with a short primer on Spring Actuator.
+Let's start with a short primer on Spring Boot Actuator.
 
-At a high level, when we work with Actuator, we do the following steps:
+On a high level, when we work with Actuator, we do the following steps:
 
 1. Add Actuator as a dependency to our project
 2. Enable and expose the endpoints
@@ -41,7 +39,7 @@ Let's look at each of these steps briefly.
 
 ### Step 1: Add Actuator
 
-Adding Actuator to our project is like adding any other library dependency. Here's the snippet for Maven's pom.xml:
+Adding Actuator to our project is like adding any other library dependency. Here's the snippet for Maven's `pom.xml`:
 
 ```xml
 <dependencies>
@@ -52,7 +50,7 @@ Adding Actuator to our project is like adding any other library dependency. Here
 </dependencies>
 ```
 
-If we were using Gradle, we'd add the below snippet to build.gradle file:
+If we were using Gradle, we'd add the below snippet to `build.gradle` file:
 
 ```groovy
 dependencies {
@@ -60,7 +58,7 @@ dependencies {
 }
 ```
 
-Just adding the above dependency to a Spring Boot application provides out-of-the-box some endpoints like /actuator/health which can be used for a shallow health check by a load balancer, for example.
+Just adding the above dependency to a Spring Boot application provides some endpoints like `/actuator/health` out-of-the-box which can be used for a shallow health check by a load balancer, for example.
 
 ```sh
 $ curl http://localhost:8080/actuator/health
@@ -76,9 +74,9 @@ $ curl http://localhost:8080/actuator
 
 ### Step 2: Enable and Expose Endpoints
 
-Endpoints are identified by IDs like "health", "info", "metrics" and so on. Enabling and exposing an endpoint makes it available for use under the "/actuator" path of the application URL, like "http://your-service.com/actuator/health", "http://your-service.com/actuator/metrics" etc.
+Endpoints are identified by IDs like `health`, `info`, `metrics` and so on. Enabling and exposing an endpoint makes it available for use under the `/actuator` path of the application URL, like `http://your-service.com/actuator/health`, `http://your-service.com/actuator/metrics` etc.
 
-Most endpoints except `shutdown` are enabled by default. We can disable an endpoint by setting the `management.endpoint.<id>.enabled` property to `false` in the application.properties file. For example, here's how we would disable the `metrics` endpoint:
+Most endpoints except `shutdown` are enabled by default. We can disable an endpoint by setting the `management.endpoint.<id>.enabled` property to `false` in the `application.properties` file. For example, here's how we would disable the `metrics` endpoint:
 
 ```properties
 management.endpoint.metrics.enabled=false
@@ -109,9 +107,9 @@ We will not look at securing endpoints in any detail in this article since we ar
 
 ## A Quick Introduction to `jq`
 
-`jq` is a command-line JSON processor. It works like a filter by taking an input and producing an output. Many builtin filters, operators and functions are available. We can combine filters, pipe the output of one filter as input to another etc. 
+`jq` is a command-line JSON processor. It works like a filter by taking an input and producing an output. Many built-in filters, operators and functions are available. We can combine filters, pipe the output of one filter as input to another etc. 
 
-Suppose we had the following JSON in a file sample.json:
+Suppose we had the following JSON in a file `sample.json`:
 
 ```json
 {
@@ -150,13 +148,21 @@ $ cat sample.json | jq '.students[] | .name'
 "James"
 ```
 
-Let's unpack the `jq` command to understand what's happening.
+Let's unpack the `jq` command to understand what's happening:
 
-`.students[]` -> iterate over the `students` array
+<style>
+.table td {
+  padding-top:3px
+  padding-bottom:3px
+}
+</style>
 
-\| -> output each `student` to the next filter
-
-`.name` -> extract `name` from the `student` object
+| Expression  | Effect |
+| ----------- | ------------ | 
+| `.students[]` | iterate over the `students` array |
+| \ | output each `student` to the next filter |
+| `.name` | extract `name` from the `student` object |
+{: .table}
 
 Now, let's get the list of students who have subjects like "environmental science", "social science" etc.:
 
@@ -186,11 +192,12 @@ $ cat sample.json | jq '.students[] | select(.subjects[] | contains("science"))'
 
 Let's unpack the command again:
 
-`.students[]` -> iterate over the `students` array
-
-\| -> output each `student` to the next filter
-
-`select(.subjects[] | contains("science"))` -> select a student if their `subjects` array contains an item with the string "science"
+| Expression  | Effect |
+| ----------- | ------------ | 
+| `.students[]` | iterate over the `students` array |
+| \ | output each `student` to the next filter |
+| `select(.subjects[] | contains("science"))` | select a student if their `subjects` array contains an item with the string "science" |
+{: .table}
 
 With one small change, we can collect these items into an array again:
 
@@ -250,7 +257,7 @@ Check out the [tutorial](https://stedolan.github.io/jq/tutorial/) and [manual](h
 
 ## Exploring a Spring Boot Application
 
-In the remainder of this article, we'll look using Actuator to explore a running Spring Boot application. The application itself is a very simplified example of an eCommerce order processing application. It only has skeleton code needed to illustrate ideas. 
+In the remainder of this article, we'll use Actuator to explore a running Spring Boot application. The application itself is a very simplified example of an eCommerce order processing application. It only has skeleton code needed to illustrate ideas. 
 
 While there are many Actuator endpoints available, we will focus only on those which help us understand the runtime shape of the application.
 
@@ -333,7 +340,7 @@ Here's the response:
 
  It can still be a bit overwhelming to go through this response JSON - it has a lot of details about all the request handlers, servlets and servlet filters.
 
-Let's use `jq` and filter this information further. Since we know the package names from our service, we will have `jq` `select` only those handlers which `contains` our package name `io.reflectoring.springboot.actuator`:
+Let's use `jq` to filter this information further. Since we know the package names from our service, we will have `jq` `select` only those handlers which `contains` our package name `io.reflectoring.springboot.actuator`:
 
 ```shell
 $ curl http://localhost:8080/actuator/mappings | jq '.contexts.application.mappings.dispatcherServlets.dispatcherServlet[] | select(.handler | contains("io.reflectoring.springboot.actuator"))'
@@ -408,7 +415,7 @@ $ curl http://localhost:8080/actuator/mappings | jq '.contexts.application.mappi
 }
 ```
 
-We can see the APIs available and details about the HTTP method, the request path etc. In a complex, real-world application, this would give a consolidated view of all the APIs and their details irrespective of how the various modules and controller packages were organized in the codebase. **This is a useful technique to start exploring the application especially when working on a multi-module legacy codebase where even Swagger documentation may not be available.**
+We can see the APIs available and details about the HTTP method, the request path etc. In a complex, real-world application, this would give a consolidated view of all the APIs in a package and their details irrespective of how the packages were organized in a multi-module codebase. **This is a useful technique to start exploring the application especially when working on a multi-module legacy codebase where even Swagger documentation may not be available.**
 
 Similarly, we can check what are the filters that our requests pass through before reaching the controllers:
 
@@ -491,9 +498,11 @@ $ curl http://localhost:8080/actuator/beans | jq '.contexts.application.beans | 
 }
 ```
 
-This gives a bird's-eye view of all the application beans and their dependencies. How is this useful? We can derive additional information from this type of view: for e.g., **if we see some dependency repeated in multiple beans, it likely has important functionality encapsulated that impacts multiple flows**. We could mark that class as an important one that we would want to understand when we dive deeper into the code. Or perhaps, that bean is a [God object](https://en.wikipedia.org/wiki/God_object) that needs some refactoring once we understand the codebase.
+This gives a bird's-eye view of all the application beans and their dependencies. 
 
-### Using the startup Endpoint
+How is this useful? We can derive additional information from this type of view: for example, **if we see some dependency repeated in multiple beans, it likely has important functionality encapsulated that impacts multiple flows**. We could mark that class as an important one that we would want to understand when we dive deeper into the code. Or perhaps, that bean is a [God object](https://en.wikipedia.org/wiki/God_object) that needs some refactoring once we understand the codebase.
+
+### Using the `startup` Endpoint
 
 Unlike the other endpoints we have seen, configuring the `startup` endpoint requires some additional steps. We have to provide an implementation of `ApplicationStartup` to our application:
 
@@ -505,7 +514,7 @@ app.run(args);
 
 Here, we have set our application's `ApplicationStartup` to  a `BufferingApplicationStartup` which is an in-memory implementation that captures the events in Spring's complex startup process. The internal buffer will have the capacity we specified - 2048.
 
-Now, let's hit the `startup` endpoint. Unlike the other endpoints `startup` supports `POST method:
+Now, let's hit the `startup` endpoint. Unlike the other endpoints `startup` supports the `POST` method:
 
 ```shell
 $ curl -XPOST 'http://localhost:8080/actuator/startup' | jq
@@ -611,20 +620,23 @@ So it takes more than a second to create the `orderController` and `orderService
 The `jq` command here was a bit complex compared to the earlier ones. Let's break it down to understand what's happening:
 
 ```shell
-jq '[.timeline.events | sort_by(.duration) | reverse[] | select(.startupStep.name | contains("instantiate")) | {beanName: .startupStep.tags[0].value, duration: .duration}]'
+jq '[.timeline.events \
+  | sort_by(.duration) \
+  | reverse[] \
+  | select(.startupStep.name \
+  | contains("instantiate")) \
+  | {beanName: .startupStep.tags[0].value, duration: .duration}]'
 ```
 
-`.timeline.events | sort_by(.duration) | reverse` -> sort the `timeline.events` array on the `duration` property and reverse the result to have it sorted in descending order
+| Expression  | Effect |
+| ----------- | ------------ | 
+| `.timeline.events | sort_by(.duration) | reverse` | sort the `timeline.events` array on the `duration` property and reverse the result to have it sorted in descending order |
+| `[]` | iterate over the resulting array |
+| `select(.startupStep.name | contains("instantiate"))` | select an element only if the element's  `startupStep` object's `name` property contains the text "instantiate" |
+| `{beanName: .startupStep.tags[0].value, duration: .duration}` | construct a new JSON object with properties `beanName` and `duration`
+{: .table}
 
-`[]` -> iterate over the resulting array
-
-`select(.startupStep.name | contains("instantiate")) ` -> select an element only if the element's  `startupStep` object's `name` property contains the text "instantiate"
-
-`{beanName: .startupStep.tags[0].value, duration: .duration}` -> construct a new JSON object with properties `beanName` and `duration`.
-
-The brackets over the entire expression indicates we want to collect all the constructed JSON objects into an array.
-
-We could say all of that with a single command!
+The brackets over the entire expression indicate we want to collect all the constructed JSON objects into an array.
 
 ### Using the `env` Endpoint
 
@@ -694,7 +706,7 @@ $ curl http://localhost:8080/actuator/env | jq
 
 ### Using the `scheduledtasks` Endpoint
 
-This endpoint let's us check if the application is running any task periodically using Spring `@Scheduled` annotation:
+This endpoint let's us check if the application is running any task periodically using Spring's `@Scheduled` annotation:
 
 ```shell
 $ curl http://localhost:8080/actuator/scheduledtasks | jq
@@ -721,7 +733,7 @@ $ curl http://localhost:8080/actuator/scheduledtasks | jq
 }
 ```
 
-From the response we can see that the application generates some reports every day at 12 p.m. and that there is a background process that does some clean up every 15 minutes. We could then read those specific classes' code if we we wanted to know what those reports are, what are the steps involved in cleaning up an abandoned basket etc.
+From the response we can see that the application generates some reports every day at 12 pm and that there is a background process that does some clean up every 15 minutes. We could then read those specific classes' code if we we wanted to know what those reports are, what are the steps involved in cleaning up an abandoned basket etc.
 
 ### Using the `caches` Endpoint
 
@@ -756,7 +768,7 @@ $ curl http://localhost:8080/actuator/health
 {"status":"UP"}
 ```
 
-This is usually a shallow healthcheck. While this is useful in production environment for a loadbalancer to check against frequently, it does not help us in our goal of understanding the application.
+This is usually a shallow healthcheck. While this is useful in a production environment for a loadbalancer to check against frequently, it does not help us in our goal of understanding the application.
 
 Many applications also implement **deep healthchecks** which **can help us quickly find out what are the external dependencies of the application, which databases and message brokers does it connect to etc**.
 
@@ -764,7 +776,7 @@ Check out this Reflectoring [article](https://reflectoring.io/spring-boot-health
 
 ### Using the `metrics` Endpoint
 
-This endpoint list all the metrics generated by the application:
+This endpoint lists all the metrics generated by the application:
 
 ```shell
 $ curl http://localhost:8080/actuator/metrics | jq
@@ -783,7 +795,7 @@ $ curl http://localhost:8080/actuator/metrics | jq
 }
 ```
 
-We can then fetch the individual metrics data. For e.g., 
+We can then fetch the individual metrics data: 
 
  ```shell
 $ curl http://localhost:8080/actuator/metrics/jvm.memory.used | jq
@@ -817,10 +829,10 @@ $ curl http://localhost:8080/actuator/metrics/jvm.memory.used | jq
 }
  ```
 
-**Checking out the available custom API metrics is especially useful. It can give us some insight into what is important about this application from a business's point of view.** For e.g., we can see from the metrics list that there is an `orders.placed.counter`.
+**Checking out the available custom API metrics is especially useful. It can give us some insight into what is important about this application from a business's point of view.** For example, we can see from the metrics list that there is an `orders.placed.counter` that probably tells us how many orders have been placed in a period of time.
 
 ## Conclusion
 
-In this article, we learnt how we can use Spring Actuator in our local, development environment to explore a new application. We looked at a few actuator endpoints that can help us identify important areas of the codebase that may need a deeper study. Along the way, we also learnt how to process JSON on the command line using the lightweight and extremely powerful `jq` tool.
+In this article, we learned how we can use Spring Actuator in our local, development environment to explore a new application. We looked at a few actuator endpoints that can help us identify important areas of the codebase that may need a deeper study. Along the way, we also learned how to process JSON on the command line using the lightweight and extremely powerful `jq` tool.
 
 You can play around with a complete application illustrating these ideas using the code [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-actuator).

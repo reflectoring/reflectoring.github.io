@@ -158,9 +158,9 @@ Let's unpack the `jq` command to understand what's happening:
 </style>
 
 | Expression  | Effect |
-| ----------- | ------------ | 
+| ----------- | ------------ |
 | `.students[]` | iterate over the `students` array |
-| \ | output each `student` to the next filter |
+| \| | output each `student` to the next filter |
 | `.name` | extract `name` from the `student` object |
 {: .table}
 
@@ -193,9 +193,9 @@ $ cat sample.json | jq '.students[] | select(.subjects[] | contains("science"))'
 Let's unpack the command again:
 
 | Expression  | Effect |
-| ----------- | ------------ | 
+| ----------- | ------------ |
 | `.students[]` | iterate over the `students` array |
-| \ | output each `student` to the next filter |
+| \| | output each `student` to the next filter |
 | `select(.subjects[] | contains("science"))` | select a student if their `subjects` array contains an item with the string "science" |
 {: .table}
 
@@ -629,7 +629,7 @@ jq '[.timeline.events \
 ```
 
 | Expression  | Effect |
-| ----------- | ------------ | 
+| ----------- | ------------ |
 | `.timeline.events | sort_by(.duration) | reverse` | sort the `timeline.events` array on the `duration` property and reverse the result to have it sorted in descending order |
 | `[]` | iterate over the resulting array |
 | `select(.startupStep.name | contains("instantiate"))` | select an element only if the element's  `startupStep` object's `name` property contains the text "instantiate" |

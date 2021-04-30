@@ -757,7 +757,7 @@ $ curl http://localhost:8080/actuator/caches | jq
 }
 ```
 
-We can tell that the application is caching some `states` and `shippingPrices` data. This gives us another area of the application to explore and learn more about: how are the caches built, when are cache entries evicted etc.
+We can tell that the application is caching some `states` and `shippingPrice` data. This gives us another area of the application to explore and learn more about: how are the caches built, when are cache entries evicted etc.
 
 ### Using the `health` Endpoint
 

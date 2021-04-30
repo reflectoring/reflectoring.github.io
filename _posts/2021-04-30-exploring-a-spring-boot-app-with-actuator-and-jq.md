@@ -415,7 +415,7 @@ $ curl http://localhost:8080/actuator/mappings | jq '.contexts.application.mappi
 }
 ```
 
-We can see the APIs available and details about the HTTP method, the request path etc. In a complex, real-world application, this would give a consolidated view of all the APIs in a package and their details irrespective of how the packages were organized in a multi-module codebase. **This is a useful technique to start exploring the application especially when working on a multi-module legacy codebase where even Swagger documentation may not be available.**
+We can see the APIs available and details about the HTTP method, the request path etc. In a complex, real-world application, this would give a consolidated view of all the APIs and their details irrespective of how the packages were organized in a multi-module codebase. **This is a useful technique to start exploring the application especially when working on a multi-module legacy codebase where even Swagger documentation may not be available.**
 
 Similarly, we can check what are the filters that our requests pass through before reaching the controllers:
 

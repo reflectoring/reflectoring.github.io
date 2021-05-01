@@ -12,7 +12,7 @@ Spring Cloud is a suite of projects containing many of the services required to 
 
 [Spring Cloud for Amazon Web Services(AWS)](https://spring.io/projects/spring-cloud-aws) is a sub-project of [Spring Cloud](https://spring.io/projects/spring-cloud) which makes it easy to integrate with AWS services using Spring idioms and APIs familiar to Spring developers.
 
-In this article, we will look at using Spring Cloud AWS for interacting with AWS [Simple Queue Service (SQS)](https://aws.amazon.com/sqs/) with the help of some basic concepts of queue and messaging along with code examples.
+In this article, we will look at using Spring Cloud AWS for interacting with AWS [Simple Queue Service (SQS)](https://aws.amazon.com/sqs/) with the help of some basic concepts of the queue and messaging along with code examples.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springcloudsqs" %}
 
@@ -24,32 +24,32 @@ It follows the familiar messaging semantics of a producer sending a message to a
 
 ![SQS queue](/assets/img/posts/aws-sqs-spring-cloud/SQS-Queue.png)
 
-The producer will continue to function normally even if the consumer application is temporarily not available. This enables decoupling the producer system from the consumer by facilitating asynchronous mode of communication.
+The producer will continue to function normally even if the consumer application is temporarily not available. This enables decoupling the producer system from the consumer by facilitating asynchronous modes of communication.
 
-The SQS queue used for storing messages is highly-scalable, and reliable with its storage distributed across multiple servers. The SQS queue can be of two types: 
-1. **Standard**:  Standard queues have maximum throughput, best-effort ordering, and at-least-once delivery. 
+The SQS queue used for storing messages is highly scalable, and reliable with its storage distributed across multiple servers. The SQS queue can be of two types: 
+1. **Standard**:  Standard queues have maximum throughput, best-effort ordering, and at least once delivery. 
 2. **First In First Out(FIFO)**:  FIFO queues guarantee the messages to be processed exactly once by the receiver, in the order that they are sent.
 
-Spring Cloud AWS is built as a collection of modules, with each module being responsible for providing integration with a AWS Service.  
+Spring Cloud AWS is built as a collection of modules, with each module being responsible for providing integration with an AWS Service.  
 
 Spring Cloud AWS Messaging is the module that does the integration with AWS SQS to simplify the publication and consumption of messages over SQS using Spring's [Messaging API](https://docs.spring.io/spring-integration/docs/5.0.5.RELEASE/reference/html/spring-integration-core-messaging.html). 
 
-Amazon SQS allows only payloads of type string, so any object sent to SQS must be transformed into a string representation before being put in the SQS queue. Spring Cloud AWS enables transfering Java objects to SQS by converting them to string in JSON format.
+Amazon SQS allows only payloads of type string, so any object sent to SQS must be transformed into a string representation before being put in the SQS queue. Spring Cloud AWS enables transferring Java objects to SQS by converting them to string in [JSON](https://www.json.org/json-en.html) format.
 
-## Introducing the Classes of Interest from the Message API
+## Introducing the Classes of Interest
 The important classes which play different roles for interaction with AWS SQS are shown in this class diagram :
 
 ![SQS classes](/assets/img/posts/aws-sqs-spring-cloud/SQSClasses.png)
 
-A SQS message is represented by the `Message` interface. 
+An SQS message is represented by the `Message` interface. 
 
-`QueueMessageChannel` and `QueueMessagingTemplate` are two of the main classes used to send and receive messages. For receiving we have a more convenient method of adding polling behavior to a method by adding a `SQSListener` annotation.
+`QueueMessageChannel` and `QueueMessagingTemplate` are two of the main classes used to send and receive messages. For receiving we have a more convenient method of adding polling behavior to a method by adding an `SQSListener` annotation.
 
 We can override the default configuration used by all integrations with `ClientConfiguration`. The client configuration options control how a client connects to Amazon SQS with attributes like proxy settings, retry counts, etc.
 
 ## Setting up the Environment
 
-With this basic understanding SQS and the involved classes, let us work with a few examples by first setting up our environment.
+With this basic understanding of SQS and the involved classes, let us work with a few examples by first setting up our environment.
 
 Let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=springcloudsqs&description=Demo%20project%20for%20Spring%20cloud%20sqs&packageName=io.pratik.springcloudsqs&dependencies=web,lombok), and then open the project in our favorite IDE.
 
@@ -99,7 +99,7 @@ Messages are created using the `MessageBuilder` helper class. The MessageBuilder
 ## Queue Identifiers
 A queue is identified with a URL or physical name. It can also be identified with a logical identifier. 
 
-We create a queue with a queue name which is unique for the AWS account and region. Amazon SQS assigns each queue an identifier in the form of a queue URL that includes the queue name and other Amazon SQS components. 
+We create a queue with a queue name that is unique for the AWS account and region. Amazon SQS assigns each queue an identifier in the form of a queue URL that includes the queue name and other Amazon SQS components. 
 
 ![SQS classes](/assets/img/posts/aws-sqs-spring-cloud/queue-id.png)
 
@@ -107,7 +107,7 @@ We provide the queue URL whenever we want to perform any action on a queue,
 
 The name of a FIFO queue must end with the .fifo suffix. The suffix counts towards the 80-character queue name quota. To determine whether a queue is FIFO, you can check whether the queue name ends with the suffix.
 
-Let us create a SQS queue named "testQueue" using the AWS Console as shown here:
+Let us create an SQS queue named "testQueue" using the AWS Console as shown here:
 
 ![create Queue](/assets/img/posts/aws-sqs-spring-cloud/create-queue.png)
 
@@ -157,7 +157,7 @@ In this code snippet, we first create the `QueueMessageChannel` with the queue U
 Finally, we invoke the send method by specifying a timeout interval. The `send` method is a blocking call so it is always advisable to set a timeout when calling this method.
 
 ### Sending with QueueMessagingTemplate
-The `QueueMessagingTemplate` contains many convenient methods to send a message. The destination can be specified as a `QueueMessageChannel` object created with a queue URL as in previous example or the queue name supplied as a primitive string. 
+The `QueueMessagingTemplate` contains many convenient methods to send a message. The destination can be specified as a `QueueMessageChannel` object created with a queue URL as in the previous example or the queue name supplied as a primitive string. 
 
 We create the `QueueMessagingTemplate` bean in our configuration with `AmazonSQSAsync` client, which is available by default in the application context when using Spring Boot starters:
 ```java
@@ -189,7 +189,7 @@ public class MessageSenderWithTemplate {
     }
 }
 ```
-In this example, we first create a message with the `MessageBuilder` class, similar to our previous example and use the `convertAndSend` method to send the message to the queue.
+In this example, we first create a message with the `MessageBuilder` class, similar to our previous example, and use the `convertAndSend` method to send the message to the queue.
 
 ## Receiving a Message
 
@@ -241,7 +241,7 @@ public class MessageReceiver {
   }
 }
 ```
-Next we will send a JSON message matching the structure of our objects from the SQS console:
+Next, we will send a JSON message matching the structure of our objects from the SQS console:
 ![sqs json message](/assets/img/posts/aws-sqs-spring-cloud/messsage-sent.png)
 
 If we run our Spring Boot application, we will get an exception of the following form in the log: 
@@ -293,7 +293,7 @@ public class CustomSqsConfiguration {
 
 ```
 
-Here, we have defined a new message converter using our applications' default object mapper and then passed it to an instance of `QueueMessageHandlerFactory`. The  `QueueMessageHandlerFactory` allows Spring to use our custom message converter for deserialising the messages it receives in its listener method. 
+Here, we have defined a new message converter using our applications' default object mapper and then passed it to an instance of `QueueMessageHandlerFactory`. The  `QueueMessageHandlerFactory` allows Spring to use our custom message converter for deserializing the messages it receives in its listener method. 
 
 Let us send the same JSON message again using the AWS SQS console.
 
@@ -305,7 +305,7 @@ When we run our application after making this change, we get the following outpu
 From the logs, we can see the JSON message deserialized into `SingupEvent` object in our `receiveMessage` method with the help of the configured custom converter.
 
 ## Consuming AWS Event messages
-SQS message listeners can also receive events generated by other AWS services. Messages originating from AWS events does not contain the mime-type header. So the Jackson message converter needs to be configured with the `strictContentTypeMatch` property false as shown below: 
+SQS message listeners can also receive events generated by other AWS services. Messages originating from AWS events do not contain the mime-type header. So the Jackson message converter needs to be configured with the `strictContentTypeMatch` property false as shown below: 
 
 ```java
 
@@ -328,11 +328,11 @@ public class CustomSqsConfiguration {
 ```
 Here we have modified our earlier configuration by setting `strictContentTypeMatch` property in the `MappingJackson2MessageConverter` object to `false`.
 
-Let us add a listener class for receiving the notification messages sent by an AWS S3 bucket when certain configured events occur in the bucket. We can enable certain AWS S3 bucket events to send a notification message to a destination like SQS queue when the events occur. Before running this example, we will create an S3 bucket and attach a notification event as shown below: 
+Let us add a listener class for receiving the notification messages sent by an AWS S3 bucket when certain configured events occur in the bucket. We can enable certain AWS S3 bucket events to send a notification message to a destination like the SQS queue when the events occur. Before running this example, we will create an S3 bucket and attach a notification event as shown below: 
 
 ![s3-notification-event](/assets/img/posts/aws-sqs-spring-cloud/s3-notification-event.png)
 
-Here we can see a notification event which will get triggered when an object is uploaded to the S3 bucket. This notification event is configured to send a message to our SQS queue `testQueue`. 
+Here we can see a notification event that will get triggered when an object is uploaded to the S3 bucket. This notification event is configured to send a message to our SQS queue `testQueue`. 
 
 Our class `S3EventListener` containing the listener method which will receive this event from S3 looks like this:
 ```java
@@ -359,7 +359,7 @@ We saw how to use Spring Cloud AWS for the integration of our applications with 
 1. Message, QueueMessageTemplate, QueueMessageChannel, MessageBuilder are some of the important classes used.
 2. SQS messages are built using MessageBuilder class where we specify the message payload along with message headers and other message attributes.
 3. QueueMessageTemplate and QueueMessageChannel are used to send messages.
-4. Appplying `SqsListener` annotation to a method enables receiving of SQS messages from a specific SQS queue , sent by other applications.
+4. Applying `SqsListener` annotation to a method enables receiving of SQS messages from a specific SQS queue, sent by other applications.
 5. Methods annotated with `SqsListener` can take both `string` and complex objects. For receiving complex objects, we need to configure a custom converter.
 
 I hope this will help you to get started with building applications using AWS SQS.

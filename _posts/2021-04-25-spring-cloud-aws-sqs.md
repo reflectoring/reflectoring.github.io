@@ -20,11 +20,11 @@ In this article, we will look at using Spring Cloud AWS for interacting with AWS
 
 Amazon Simple Queue Service (SQS) is a distributed messaging system for point-to-point communication and is offered as a fully managed service in the AWS Cloud. 
 
-It follows the familiar messaging semantics of a producer sending a message to a queue and a consumer reading this message from the queue once the message is available. 
+It follows the familiar messaging semantics of a producer sending a message to a queue and a consumer reading this message from the queue once the message is available as shown here: 
 
 ![SQS queue](/assets/img/posts/aws-sqs-spring-cloud/SQS-Queue.png)
 
-This enables decoupling the producer system from the consumer by facilitating asynchronous mode of communication.
+The producer will continue to function normally even if the consumer application is temporarily not available. This enables decoupling the producer system from the consumer by facilitating asynchronous mode of communication.
 
 The SQS queue used for storing messages is highly-scalable, and reliable with its storage distributed across multiple servers. The SQS queue can be of two types: 
 1. **Standard**:  Standard queues have maximum throughput, best-effort ordering, and at-least-once delivery. 
@@ -32,7 +32,7 @@ The SQS queue used for storing messages is highly-scalable, and reliable with it
 
 Spring Cloud AWS is built as a collection of modules, with each module being responsible for providing integration with a AWS Service.  
 
-Spring Cloud AWS Messaging is the module that does the integration with AWS SQS to simplify the publication and consumption of messages over SQS using Spring's [Messaging API} (https://docs.spring.io/spring-integration/docs/5.0.5.RELEASE/reference/html/spring-integration-core-messaging.html). 
+Spring Cloud AWS Messaging is the module that does the integration with AWS SQS to simplify the publication and consumption of messages over SQS using Spring's [Messaging API](https://docs.spring.io/spring-integration/docs/5.0.5.RELEASE/reference/html/spring-integration-core-messaging.html). 
 
 Amazon SQS allows only payloads of type string, so any object sent to SQS must be transformed into a string representation before being put in the SQS queue. Spring Cloud AWS enables transfering Java objects to SQS by converting them to string in JSON format.
 

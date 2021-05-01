@@ -28,7 +28,7 @@ The producer will continue to function normally even if the consumer application
 
 The SQS queue used for storing messages is highly scalable, and reliable with its storage distributed across multiple servers. The SQS queue can be of two types: 
 1. **Standard**:  Standard queues have maximum throughput, best-effort ordering, and at least once delivery. 
-2. **First In First Out(FIFO)**:  FIFO queues guarantee the messages to be processed exactly once by the receiver, in the order that they are sent.
+2. **First In First Out(FIFO)**: When a high volume of transactions are received, messages might get delivered more than one once, which might require complex handling of message sequence. For this scenario, we use FIFO queues where the messages are delivered in a `First in first out` manner. The message is delivered only once and is made available only till the consumer processes it. After the message is processed by the consumer, it is deleted thereby preventing chances of duplicate processing.
 
 Spring Cloud AWS is built as a collection of modules, with each module being responsible for providing integration with an AWS Service.  
 
@@ -173,11 +173,10 @@ public QueueMessagingTemplate queueMessagingTemplate(
 ```
 Then, we can send the messages using the `convertAndSend` method:
 ```java
+@Slf4j
 @Service
 public class MessageSenderWithTemplate {
   private static final String TEST_QUEUE = "testQueue";
-
-  private static final Logger logger = LoggerFactory.getLogger(MessageSenderWithTemplate.class);
 
   @Autowired
   private QueueMessagingTemplate messagingTemplate;
@@ -195,17 +194,45 @@ public class MessageSenderWithTemplate {
 ```
 In this example, we first create a message with the `MessageBuilder` class, similar to our previous example, and use the `convertAndSend` method to send the message to the queue.
 
+### Sending Message to FIFO Queue
+For sending a message to a FIFO Queue, we need to add two fields: `messageGroupId` and `messageDeduplicationId` in the header like in the example below:
+
+```java
+@Slf4j
+@Service
+public class MessageSenderWithTemplate {
+    private static final String TEST_QUEUE = "testQueue";
+
+    @Autowired
+    private QueueMessagingTemplate messagingTemplate;
+  
+    public void sendToFifoQueue(final String messagePayload, final String messageGroupID, final String messageDedupID) {
+      
+          Message<String> msg = MessageBuilder.withPayload(messagePayload)
+              .setHeader("message-group-id", messageGroupID)
+              .setHeader("message-deduplication-id", messageDedupID)
+              .build();
+              messagingTemplate.convertAndSend(TEST_QUEUE, msg);
+              log.info("message sent");
+    }  
+}
+
+```
+Here we are using the `MessageBuilder` class to add the two header fields required for creating a message for sending to a FIFO queue.
+
 ## Receiving a Message
 
-We need to check the SQS queue repeatedly for the availability of messages. Messages can be received in two ways from the SQS queue:
-1. using the receive methods of the `QueueMessagingTemplate`
-2. with annotation-driven listener endpoints. This is the more convenient way of receiving messages.
+Let us now look at how we can receive messages from an SQS queue. There are two ways to receive messages from SQS:
+1. **Short Polling**: Short polling returns immediately, even if the message queue being polled is empty. For short polling, we call the `receive` method of `QueueMessagingTemplate` in an infinite loop that regularly polls the queue. The `receive` method returns empty if there are no messages in the queue.
+2. **Long Polling**: long-polling does not return a response until a message arrives in the message queue, or the long poll times out. We do this with the `SQSListener` annotation.
 
- We annotate a method with `SqsListener` annotation for subscribing to a queue. The `SqsListener` annotation adds polling behavior to the method and also provides support for serializing and converting the received message to a Java object as shown here:
+In most cases, Amazon SQS Long-Polling is preferable to short polling since Long-polling requests let the queue consumers receive messages as soon as they arrive in the queue while reducing the number of empty responses returned.
+
+We annotate a method with `SqsListener` annotation for subscribing to a queue. The `SqsListener` annotation adds polling behavior to the method and also provides support for serializing and converting the received message to a Java object as shown here:
  ```java
+ @Slf4j
 @Service
 public class MessageReceiver {
-  private static final Logger logger = LoggerFactory.getLogger(MessageReceiver.class.getName());
 
   @SqsListener(value = "testQueue", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
   public void receiveMessage(String message, 
@@ -214,12 +241,12 @@ public class MessageReceiver {
   }
 }
  ```
-In this example, the SQS message payload is serialized and passed to our `receiveMessage` method. We have also defined the deletion policy `ON_SUCCESS` for acknowledging the message when no exception is thrown.
+In this example, the SQS message payload is serialized and passed to our `receiveMessage` method. We have also defined the deletion policy `ON_SUCCESS` for acknowledging the message when no exception is thrown. A deletion policy is used to define when a message must be deleted after the listener method is called. For an overview of the available deletion policies, refer to the Java documentation of [SqsMessageDeletionPolicy](https://javadoc.io/doc/org.springframework.cloud/spring-cloud-aws-messaging/2.1.3.RELEASE/org/springframework/cloud/aws/messaging/listener/SqsMessageDeletionPolicy.html).
 
 ## Working with Object Messages
 So far we have used payloads of type `string`. We can also send object payloads by serializing them to a JSON `string`. We do this by using the `MessageConverter` interface which defines a simple contract for conversion between Java objects and SQS messages. The default implementation is `SimpleMessageConverter` which unwraps the message payload if it matches the target type. 
 
-Let us define a model to represent a `signup` event:
+Let us define another SQS queue named `testObjectQueue` and define a model to represent a `signup` event:
 
 ```java
 @Data
@@ -238,7 +265,7 @@ Now let us change our `receiveMessage` method to receive the `SignupEvent` :
 @Service
 public class MessageReceiver {
 
-  @SqsListener(value = "testQueue", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+  @SqsListener(value = "testObjectQueue", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
   public void receiveMessage(final SignupEvent message, 
     @Header("SenderId") String senderId) {
     log.info("message received {} {}",senderId,message);
@@ -332,11 +359,11 @@ public class CustomSqsConfiguration {
 ```
 Here we have modified our earlier configuration by setting `strictContentTypeMatch` property in the `MappingJackson2MessageConverter` object to `false`.
 
-Let us add a listener class for receiving the notification messages sent by an AWS S3 bucket when certain configured events occur in the bucket. We can enable certain AWS S3 bucket events to send a notification message to a destination like the SQS queue when the events occur. Before running this example, we will create an S3 bucket and attach a notification event as shown below: 
+Let us add a listener class for receiving the notification messages sent by an AWS S3 bucket when certain configured events occur in the bucket. We can enable certain AWS S3 bucket events to send a notification message to a destination like the SQS queue when the events occur. Before running this example, we will create an SQS queue and S3 bucket and attach a notification event as shown below: 
 
 ![s3-notification-event](/assets/img/posts/aws-sqs-spring-cloud/s3-notification-event.png)
 
-Here we can see a notification event that will get triggered when an object is uploaded to the S3 bucket. This notification event is configured to send a message to our SQS queue `testQueue`. 
+Here we can see a notification event that will get triggered when an object is uploaded to the S3 bucket. This notification event is configured to send a message to our SQS queue `testS3Queue`. 
 
 Our class `S3EventListener` containing the listener method which will receive this event from S3 looks like this:
 ```java
@@ -345,7 +372,7 @@ Our class `S3EventListener` containing the listener method which will receive th
 @Service
 public class S3EventListener {
   
-  @SqsListener(value = "testQueue", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+  @SqsListener(value = "testS3Queue", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
   public void receive(S3EventNotification s3EventNotificationRecord) {
     S3EventNotification.S3Entity s3Entity = s3EventNotificationRecord.getRecords().get(0).getS3();
     String objectKey = s3Entity.getObject().getKey();

@@ -8,7 +8,9 @@ excerpt: "AWS SQS is one of the important services in AWS Cloud. Spring Cloud pr
 image:
   auto: 0074-stack
 ---
-Spring Cloud is a suite of projects containing many of the services required to make an application cloud-native by conforming to the [12-Factor](https://12factor.net/) principles. [Spring Cloud for Amazon Web Services(AWS)](https://spring.io/projects/spring-cloud-aws) is a sub-project of [Spring Cloud](https://spring.io/projects/spring-cloud) which makes it easy to integrate with AWS services using Spring idioms and APIs familiar to Spring developers.
+Spring Cloud is a suite of projects containing many of the services required to make an application cloud-native by conforming to the [12-Factor](https://12factor.net/) principles. 
+
+[Spring Cloud for Amazon Web Services(AWS)](https://spring.io/projects/spring-cloud-aws) is a sub-project of [Spring Cloud](https://spring.io/projects/spring-cloud) which makes it easy to integrate with AWS services using Spring idioms and APIs familiar to Spring developers.
 
 In this article, we will look at using Spring Cloud AWS for interacting with AWS [Simple Queue Service (SQS)](https://aws.amazon.com/sqs/) with the help of some basic concepts of queue and messaging along with code examples.
 
@@ -35,20 +37,19 @@ Spring Cloud AWS Messaging is the module that does the integration with AWS SQS 
 Amazon SQS allows only payloads of type string, so any object sent to SQS must be transformed into a string representation before being put in the SQS queue. Spring Cloud AWS enables transfering Java objects to SQS by converting them to string in JSON format.
 
 ## Introducing the Classes of Interest from the Message API
-The important classes used are shown in the class diagram :
+The important classes which play different roles for interaction with AWS SQS are shown in this class diagram :
 
 ![SQS classes](/assets/img/posts/aws-sqs-spring-cloud/SQSClasses.png)
+
 A SQS message is represented by the `Message` interface. 
 
 `QueueMessageChannel` and `QueueMessagingTemplate` are two of the main classes used to send and receive messages. For receiving we have a more convenient method of adding polling behavior to a method by adding a `SQSListener` annotation.
 
-## Configuring Client Configuration
-clientConfiguration - The client configuration options control how a client connects to Amazon SQS with attributes like proxy settings, retry counts, etc. We can override the default configuration used by all integrations with ...
-We will configure Spring Cloud AWS to use ClientConfiguration by defining a bean of type ClientConfiguration and 
+We can override the default configuration used by all integrations with `ClientConfiguration`. The client configuration options control how a client connects to Amazon SQS with attributes like proxy settings, retry counts, etc.
 
 ## Setting up the Environment
 
-With this basic understanding, let us work with a few examples by first setting up our environment.
+With this basic understanding SQS and the involved classes, let us work with a few examples by first setting up our environment.
 
 Let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=springcloudsqs&description=Demo%20project%20for%20Spring%20cloud%20sqs&packageName=io.pratik.springcloudsqs&dependencies=web,lombok), and then open the project in our favorite IDE.
 
@@ -96,8 +97,13 @@ Messages are created using the `MessageBuilder` helper class. The MessageBuilder
 ```
 
 ## Queue Identifiers
-A queue is identified with a URL or physical name. It can also be identified with a logical identifier.
-We create a queue with a queue name which is unique for the AWS account and region. Amazon SQS assigns each queue an identifier in the form of a queue URL that includes the queue name and other Amazon SQS components. We provide the queue URL whenever we want to perform any action on a queue,
+A queue is identified with a URL or physical name. It can also be identified with a logical identifier. 
+
+We create a queue with a queue name which is unique for the AWS account and region. Amazon SQS assigns each queue an identifier in the form of a queue URL that includes the queue name and other Amazon SQS components. 
+
+![SQS classes](/assets/img/posts/aws-sqs-spring-cloud/queue-id.png)
+
+We provide the queue URL whenever we want to perform any action on a queue,
 
 The name of a FIFO queue must end with the .fifo suffix. The suffix counts towards the 80-character queue name quota. To determine whether a queue is FIFO, you can check whether the queue name ends with the suffix.
 

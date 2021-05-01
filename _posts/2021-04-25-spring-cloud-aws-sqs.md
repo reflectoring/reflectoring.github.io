@@ -107,7 +107,7 @@ We provide the queue URL whenever we want to perform any action on a queue,
 
 The name of a FIFO queue must end with the .fifo suffix. The suffix counts towards the 80-character queue name quota. To determine whether a queue is FIFO, you can check whether the queue name ends with the suffix.
 
-Let us create a SQS queue named "testQueue" using the AWs Console as shown here:
+Let us create a SQS queue named "testQueue" using the AWS Console as shown here:
 
 ![create Queue](/assets/img/posts/aws-sqs-spring-cloud/create-queue.png)
 
@@ -152,7 +152,9 @@ public class MessageSender {
 
 }
 ```
-In this code snippet, we first create the `QueueMessageChannel` with the queue URL. Then we construct the message to be sent with the `MessageBuilder` class where apart from the payload, we also set two header fields. Finally, we invoke the send method by specifying a timeout interval. The `send` method is a blocking call so it is always advisable to set a timeout when calling this method.
+In this code snippet, we first create the `QueueMessageChannel` with the queue URL. Then we construct the message to be sent with the `MessageBuilder` class where apart from the payload, we also set two header fields. 
+
+Finally, we invoke the send method by specifying a timeout interval. The `send` method is a blocking call so it is always advisable to set a timeout when calling this method.
 
 ### Sending with QueueMessagingTemplate
 The `QueueMessagingTemplate` contains many convenient methods to send a message. The destination can be specified as a `QueueMessageChannel` object created with a queue URL as in previous example or the queue name supplied as a primitive string. 

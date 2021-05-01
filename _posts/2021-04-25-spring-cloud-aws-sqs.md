@@ -8,29 +8,49 @@ excerpt: "AWS SQS is one of the important services in AWS Cloud. Spring Cloud pr
 image:
   auto: 0074-stack
 ---
-Spring Cloud is a suite of projects containing many of the services required to make an application cloud-native by conforming to the [12-Factor](https://12factor.net/) principles. Spring Cloud for Amazon Web Services(AWS) is a sub-project of [Spring Cloud](https://spring.io/projects/spring-cloud) built to make it easy to integrate with AWS services.
+Spring Cloud is a suite of projects containing many of the services required to make an application cloud-native by conforming to the [12-Factor](https://12factor.net/) principles. [Spring Cloud for Amazon Web Services(AWS)\(https://spring.io/projects/spring-cloud-aws) is a sub-project of [Spring Cloud](https://spring.io/projects/spring-cloud) which makes it easy to integrate with AWS services using Spring idioms and APIs familiar to Spring developers.
 
-In this article, we will look at using Spring Cloud AWS for working with Amazon Simple Queue Service (SQS) with the help of some basic concepts and code examples.
+In this article, we will look at using Spring Cloud AWS for interacting with AWS [Simple Queue Service (SQS)](https://aws.amazon.com/sqs/) with the help of some basic concepts of queue and messaging along with code examples.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springcloudsqs" %}
 
 ## What is SQS?
 
-Amazon Simple Queue Service (SQS) is a distributed messaging system for point-to-point communication and offered as a fully managed service in the AWS Cloud. It follows the familiar message semantics of a producer sending a message to a queue and a consumer reading this message from the queue once the message is available. This enables decoupling the producer system from the consumer by facilitating asynchronous modes of communication.
+Amazon Simple Queue Service (SQS) is a distributed messaging system for point-to-point communication and is offered as a fully managed service in the AWS Cloud. 
+
+It follows the familiar messaging semantics of a producer sending a message to a queue and a consumer reading this message from the queue once the message is available. 
+
+![SQS queue](/assets/img/posts/aws-sqs-spring-cloud/SQS-Queue.png)
+
+This enables decoupling the producer system from the consumer by facilitating asynchronous mode of communication.
 
 The SQS queue used for storing messages is highly-scalable, and reliable with its storage distributed across multiple servers. The SQS queue can be of two types: 
 1. **Standard**:  Standard queues have maximum throughput, best-effort ordering, and at-least-once delivery. 
-2. **First In First Out(FIFO)**:  FIFO queues guarantee that messages are processed exactly once, in the order that they are sent.
+2. **First In First Out(FIFO)**:  FIFO queues guarantee the messages to be processed exactly once by the receiver, in the order that they are sent.
 
-Spring Cloud AWS is built as a collection of modules, with each module being responsible for providing integration with a AWS Service.  SQS to simplify the publication and consumption of messages over SQS. 
+Spring Cloud AWS is built as a collection of modules, with each module being responsible for providing integration with a AWS Service.  
 
 Spring Cloud AWS Messaging is the module that does the integration with AWS SQS to simplify the publication and consumption of messages over SQS using Spring's [Messaging API} (https://docs.spring.io/spring-integration/docs/5.0.5.RELEASE/reference/html/spring-integration-core-messaging.html). 
 
-Amazon SQS allows only String payloads, so any Object must be transformed into a String representation. Spring Cloud AWS has support to transfer Java objects to Amazon SQS  by converting them to string in JSON format.
+Amazon SQS allows only payloads of type string, so any object sent to SQS must be transformed into a string representation before being put in the SQS queue. Spring Cloud AWS enables transfering Java objects to SQS by converting them to string in JSON format.
 
-## Configuring the Dependencies
+## Introducing the Classes of Interest from the Message API
+The important classes used are shown in the class diagram :
 
-Let us create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=springcloudsqs&description=Demo%20project%20for%20Spring%20cloud%20sqs&packageName=io.pratik.springcloudsqs&dependencies=web,lombok), and then open the project in our favorite IDE.
+![SQS classes](/assets/img/posts/aws-sqs-spring-cloud/SQSClasses.png)
+A SQS message is represented by the `Message` interface. 
+
+`QueueMessageChannel` and `QueueMessagingTemplate` are two of the main classes used to send and receive messages. For receiving we have a more convenient method of adding polling behavior to a method by adding a `SQSListener` annotation.
+
+## Configuring Client Configuration
+clientConfiguration - The client configuration options control how a client connects to Amazon SQS with attributes like proxy settings, retry counts, etc. We can override the default configuration used by all integrations with ...
+We will configure Spring Cloud AWS to use ClientConfiguration by defining a bean of type ClientConfiguration and 
+
+## Setting up the Environment
+
+With this basic understanding, let us work with a few examples by first setting up our environment.
+
+Let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=springcloudsqs&description=Demo%20project%20for%20Spring%20cloud%20sqs&packageName=io.pratik.springcloudsqs&dependencies=web,lombok), and then open the project in our favorite IDE.
 
 
 For configuring Spring Cloud AWS, let us add a separate Spring Cloud AWS BOM in our `pom.xml` file using this `dependencyManagement` block :
@@ -61,14 +81,7 @@ Next, we will add the dependency with a starter for the AWS SQS service:
 ```
 `spring-cloud-starter-aws-messaging` includes the transitive dependencies for `spring-cloud-starter-aws`, and `spring-cloud-aws-messaging`.
 
-## Introducing the Classes of Message API
-A SQS message is represented by the `Message` interface. 
-
-`QueueMessageChannel` and `QueueMessagingTemplate` are two of the main classes used to send and receive messages. For receiving we have a more convenient method of adding polling behavior to a method by adding a `SQSListener` annotation.
-
-## Configuring Client Configuration
-clientConfiguration - The client configuration options control how a client connects to Amazon SQS with attributes like proxy settings, retry counts, etc. We can override the default configuration used by all integrations with ...
-We will configure Spring Cloud AWS to use ClientConfiguration by defining a bean of type ClientConfiguration and a name specific to the integration `sqsClientConfiguration`
+a name specific to the integration `sqsClientConfiguration`
 
 ## Creating the Message
 Messages are created using the `MessageBuilder` helper class. The MessageBuilder provides two factory methods for creating Messages from either an existing Message or with a payload Object. When building from an existing Message, the headers and payload of that Message will be copied to the new Message:
@@ -278,8 +291,7 @@ Let us send the same JSON message again using the AWS SQS console.
 
 When we run our application after making this change, we get the following output:
 ```shell
-2021-04-28 20:33:59.910  INFO 2587 --- [           main] i.p.s.SpringcloudsqsApplicationTests     : Started SpringcloudsqsApplicationTests in 3.651 seconds (JVM running for 4.583)
-2021-04-28 20:34:00.179  INFO 2587 --- [enerContainer-2] i.pratik.springcloudsqs.MessageReceiver  : message received {"signupTime":"20/04/2021 11:40 AM", "userName":"jackie","email":"jackie.chan@gmail.com"} SignupEvent(signupTime=20/04/2021 11:40 AM, userName=jackie, email=jackie.chan@gmail.com)
+ io.pratik.springcloudsqs.MessageReceiver  : message received {"signupTime":"20/04/2021 11:40 AM", "userName":"jackie","email":"jackie.chan@gmail.com"} SignupEvent(signupTime=20/04/2021 11:40 AM, userName=jackie, email=jackie.chan@gmail.com)
 
 ```
 From the logs, we can see the JSON message deserialized into `SingupEvent` object in our `receiveMessage` method with the help of the configured custom converter.

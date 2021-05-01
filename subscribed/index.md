@@ -1,5 +1,5 @@
 ---
-title: Mailing List
+title: Subscribed!
 comments: 
   enabled: false
 ads: 

@@ -32,7 +32,7 @@ The SQS queue used for storing messages is highly scalable, and reliable with it
 
 Spring Cloud AWS is built as a collection of modules, with each module being responsible for providing integration with an AWS Service.  
 
-Spring Cloud AWS Messaging is the module that does the integration with AWS SQS to simplify the publication and consumption of messages over SQS using Spring's [Messaging API](https://docs.spring.io/spring-integration/docs/5.0.5.RELEASE/reference/html/spring-integration-core-messaging.html). 
+Spring Cloud AWS Messaging is the module that does the integration with AWS SQS to simplify the publication and consumption of messages over SQS. 
 
 Amazon SQS allows only payloads of type string, so any object sent to SQS must be transformed into a string representation before being put in the SQS queue. Spring Cloud AWS enables transferring Java objects to SQS by converting them to string in [JSON](https://www.json.org/json-en.html) format.
 
@@ -69,32 +69,38 @@ For configuring Spring Cloud AWS, let us add a separate Spring Cloud AWS BOM in 
     </dependencies>
   </dependencyManagement>
 ```
-For adding the support for messaging, we need to include the module dependency for Spring Cloud AWS Messaging into our Maven configuration.  We do this by including the starter `spring-cloud-starter-aws-messaging`. 
-
-Next, we will add the dependency with a starter for the AWS SQS service:
+For adding the support for messaging, we need to include the module dependency for Spring Cloud AWS Messaging into our Maven configuration.  We do this by adding the starter module`spring-cloud-starter-aws-messaging`:
 
 ```xml
     <dependency>
       <groupId>io.awspring.cloud</groupId>
       <artifactId>spring-cloud-starter-aws-messaging</artifactId>
     </dependency>
-
 ```
 `spring-cloud-starter-aws-messaging` includes the transitive dependencies for `spring-cloud-starter-aws`, and `spring-cloud-aws-messaging`.
 
-a name specific to the integration `sqsClientConfiguration`
-
 ## Creating the Message
-Messages are created using the `MessageBuilder` helper class. The MessageBuilder provides two factory methods for creating Messages from either an existing Message or with a payload Object. When building from an existing Message, the headers and payload of that Message will be copied to the new Message:
+Messages are created using the `MessageBuilder` helper class. The MessageBuilder provides two factory methods for creating messages from either an existing message or with a payload Object:
 
 ```java
+@Service
+public class MessageSenderWithTemplate {
+...
+...
+  
+  public void send(final String messagePayload) {
+      
+       Message<String> msg = MessageBuilder.withPayload(messagePayload)
+              .setHeader("sender", "app1")
+              .setHeaderIfAbsent("country", "AE")
+              .build();
 
-    Message<String> msg = MessageBuilder.withPayload(messagePayload)
-        .setHeader("sender", "app1")
-        .setHeaderIfAbsent("country", "AE")
-        .build();
-
+ ...
+ ...
+  }
+}
 ```
+Here we are using the `MessageBuilder` class to construct the message with a string payload and two headers inside the `send` method.
 
 ## Queue Identifiers
 A queue is identified with a URL or physical name. It can also be identified with a logical identifier. 
@@ -104,8 +110,6 @@ We create a queue with a queue name that is unique for the AWS account and regio
 ![SQS classes](/assets/img/posts/aws-sqs-spring-cloud/queue-id.png)
 
 We provide the queue URL whenever we want to perform any action on a queue,
-
-The name of a FIFO queue must end with the .fifo suffix. The suffix counts towards the 80-character queue name quota. To determine whether a queue is FIFO, you can check whether the queue name ends with the suffix.
 
 Let us create an SQS queue named "testQueue" using the AWS Console as shown here:
 
@@ -152,9 +156,9 @@ public class MessageSender {
 
 }
 ```
-In this code snippet, we first create the `QueueMessageChannel` with the queue URL. Then we construct the message to be sent with the `MessageBuilder` class where apart from the payload, we also set two header fields. 
+In this code snippet, we first create the `QueueMessageChannel` with the queue URL. Then we construct the message to be sent with the `MessageBuilder` class. 
 
-Finally, we invoke the send method by specifying a timeout interval. The `send` method is a blocking call so it is always advisable to set a timeout when calling this method.
+Finally, we invoke the `send` method on the `MessageChannel` by specifying a timeout interval. The `send` method is a blocking call so it is always advisable to set a timeout when calling this method.
 
 ### Sending with QueueMessagingTemplate
 The `QueueMessagingTemplate` contains many convenient methods to send a message. The destination can be specified as a `QueueMessageChannel` object created with a queue URL as in the previous example or the queue name supplied as a primitive string. 

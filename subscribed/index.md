@@ -11,6 +11,6 @@ layout: static
 
 Thank you! You are now subscribed to the reflectoring newsletter.
 
-You will shortly receive an email with links to your welcome gifts :).
+In a bit, you'll receive an email with links to your welcome gifts.
 
 Welcome on board!

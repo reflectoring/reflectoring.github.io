@@ -158,9 +158,9 @@ Let's unpack the `jq` command to understand what's happening:
 </style>
 
 | Expression  | Effect |
-| ----------- | ------------ | 
+| ----------- | ------------ |
 | `.students[]` | iterate over the `students` array |
-| \ | output each `student` to the next filter |
+| \| | output each `student` to the next filter |
 | `.name` | extract `name` from the `student` object |
 {: .table}
 
@@ -193,9 +193,9 @@ $ cat sample.json | jq '.students[] | select(.subjects[] | contains("science"))'
 Let's unpack the command again:
 
 | Expression  | Effect |
-| ----------- | ------------ | 
+| ----------- | ------------ |
 | `.students[]` | iterate over the `students` array |
-| \ | output each `student` to the next filter |
+| \| | output each `student` to the next filter |
 | `select(.subjects[] | contains("science"))` | select a student if their `subjects` array contains an item with the string "science" |
 {: .table}
 
@@ -415,7 +415,7 @@ $ curl http://localhost:8080/actuator/mappings | jq '.contexts.application.mappi
 }
 ```
 
-We can see the APIs available and details about the HTTP method, the request path etc. In a complex, real-world application, this would give a consolidated view of all the APIs in a package and their details irrespective of how the packages were organized in a multi-module codebase. **This is a useful technique to start exploring the application especially when working on a multi-module legacy codebase where even Swagger documentation may not be available.**
+We can see the APIs available and details about the HTTP method, the request path etc. In a complex, real-world application, this would give a consolidated view of all the APIs and their details irrespective of how the packages were organized in a multi-module codebase. **This is a useful technique to start exploring the application especially when working on a multi-module legacy codebase where even Swagger documentation may not be available.**
 
 Similarly, we can check what are the filters that our requests pass through before reaching the controllers:
 
@@ -629,7 +629,7 @@ jq '[.timeline.events \
 ```
 
 | Expression  | Effect |
-| ----------- | ------------ | 
+| ----------- | ------------ |
 | `.timeline.events | sort_by(.duration) | reverse` | sort the `timeline.events` array on the `duration` property and reverse the result to have it sorted in descending order |
 | `[]` | iterate over the resulting array |
 | `select(.startupStep.name | contains("instantiate"))` | select an element only if the element's  `startupStep` object's `name` property contains the text "instantiate" |
@@ -757,7 +757,7 @@ $ curl http://localhost:8080/actuator/caches | jq
 }
 ```
 
-We can tell that the application is caching some `states` and `shippingPrices` data. This gives us another area of the application to explore and learn more about: how are the caches built, when are cache entries evicted etc.
+We can tell that the application is caching some `states` and `shippingPrice` data. This gives us another area of the application to explore and learn more about: how are the caches built, when are cache entries evicted etc.
 
 ### Using the `health` Endpoint
 

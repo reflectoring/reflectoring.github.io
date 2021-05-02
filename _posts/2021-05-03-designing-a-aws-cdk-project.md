@@ -522,7 +522,7 @@ We pass the stack or construct from which we're calling the method as the `scope
 
 The parameters never leave our CDK apps, which means we don't have to pass them around in scripts or command line parameters!
 
-You might remember the `Outputs` section in the CloudFormation template in chapter ["Getting Warm with AWS"](#getting-warm) and wonder why we're not using the feature of CloudFormation output parameters. With the `CfnOutput` level 1 construct, CDK actually supports CloudFormation outputs.
+If you have read ["Getting Started with AWS CloudFormation"](/getting-started-with-aws-cloudformation) you might remember the `Outputs` section in the CloudFormation template and wonder why we're not using the feature of CloudFormation output parameters. With the `CfnOutput` level 1 construct, CDK actually supports CloudFormation outputs.
 
 These outputs, however, are tightly coupled with the *stack* that creates them, while we want to create output parameters for *constructs* that can later be composed into a stack. Also, the SSM store serves as a welcome overview of all the parameters that exist across different environments, which makes debugging configuration errors a lot easier.
 
@@ -711,7 +711,7 @@ public Service(
 }
 ```
 
-It accomplishes quite a bit more than the service stack from the chapter ["Getting Warm with AWS"](#getting-warm):
+It accomplishes quite a bit:
 
 * It creates a `CfnTaskDefinition` to define an ECS task that hosts the given Docker image.
 * It adds a `CfnService` to the ECS cluster previously deployed in the `Network` construct and adds the tasks to it.

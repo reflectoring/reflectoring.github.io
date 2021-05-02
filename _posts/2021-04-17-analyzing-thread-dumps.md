@@ -20,22 +20,34 @@ A thread dump provides a snapshot of all the threads in a program executing at a
 
 The state of each thread is followed by a stack trace containing the information about the application’s thread activity that can help us diagnose problems and optimize application and JVM performance.
 
-For this reason, **a thread dump is a vital tool for analyzing performance degradation (slowness), an application becoming unresponsive, or deadlock situations**. 
+For this reason, **a thread dump is a vital tool for analyzing performance degradation (slowness), finding the root cause of an application becoming unresponsive, or for diagnosing deadlock situations**. 
 
 
 ## Lifecycle of a Thread
 
-For understanding a thread dump, it is essential to know all the states a thread passes through during its lifecycle. A thread can assume one of these four states:
+For understanding a thread dump, it is essential to know all the states a thread passes through during its lifecycle. 
+
+### Lifecycle States
+A thread can assume one of these following states:
 
 * **`NEW`**: Initial state of a thread when we create an instance of `Thread` or `Runnable`. It remains in this state until the program starts the thread.
   
-* **`RUNNABLE`**: After a new thread is started, the thread becomes runnable. A thread in this state is considered to be executing its task.
-  
-* **Non-Runnable (`BLOCKED`, `WAITING`, or `TIMED_WAITING`)**: Sometimes, a thread transitions to this waiting state while waiting for another thread to perform a task. A thread transitions back to the runnable state only when another thread signals the waiting thread to continue executing.
-A timed waiting state is a thread waiting for a specified interval of time and transitioning back to the runnable state when that time interval expires.
-  
+* **`RUNNABLE`**: The thread becomes runnable after a new thread is started.  A thread in this state is considered to be executing its task.
+
+* **`BLOCKED`**: A thread is in the blocked state when it tries to access an object that is currently used(locked) by some other thread. When the locked object is unlocked and hence available for the thread, it is no longer blocked and moves to the runnable state.
+
+* **`WAITING`**: A thread transitions to the waiting state while waiting for another thread to perform a task and transitions back to the runnable state only when another thread signals the waiting thread to resume execution.
+
+* **`TIMED_WAITING`**: A timed waiting state is a thread waiting for a specified interval of time and transitioning back to the runnable state when that time interval expires. The thread is waiting for another thread to do some work for up to a specified waiting time.
+   
 * **Terminated (Dead)** A runnable thread enters the terminated state after it finishes its task.
 
+### Scheduling a Thread for Execution
+The Java Virtual Machine (JVM) schedules the execution of a thread using a preemptive,  and priority-based scheduling algorithm. 
+
+All Java threads have a priority in the range of 1 to 10. The thread in the runnable state with the highest priority is scheduled to run by the JVM.
+
+The CPU is consumed only from the time the scheduler picks up the thread for execution to the time it is running before going into one of the above states.
 
 ## Generating a Thread Dump
 We will now generate some thread dumps by running a simple Java program. 
@@ -66,7 +78,7 @@ java -jar target/ServerApp-1.0-SNAPSHOT.jar
 The Java application now listens for requests on port 8080 and responds with a JSON string on receiving HTTP GET requests on the URL [http://localhost:8080/](http://localhost:8080/).
 
 ### Generating the Thread Dump
-We will now generate a thread dump of the application that we started in the previous step by using a utility named `jcmd`. The [jcmd](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/tooldescr006.html) utility is used to send diagnostic command requests to the Java Virtual Machine(JVM). 
+We will now use a utility named `jcmd` to generate a thread dump of the application we started in the previous step. The [jcmd](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/tooldescr006.html) utility sends diagnostic command requests to the Java Virtual Machine(JVM). 
 
 For this, we will first find the process identifier(PID) of the application by running the `jps` command:
 ```shell
@@ -159,9 +171,11 @@ Some of the commonly used tools for taking thread dump are:
 
 * **jstack**: `jstack` is part of JDK since Java 5 and is widely used for taking thread dumps. We take thread dump with `jstack` with the below command:
 ```shell
-sudo su java-service jstack -l <pid>
+sudo -u <java-user> java-service jstack -l <pid>
 ```
-Using the -l option, we can include in the output, ownable synchronizers in the heap, and locks. However, with the release of JDK 8, Oracle suggests using it for taking thread dumps instead of the `jstack` for enhanced diagnostics and reduced performance overhead.
+In this command, we should replace <java-user> with the id of the user that the Java process is running as. 
+
+Using the -l option, we can include in the output, ownable synchronizers in the heap, and locks. However, with the release of JDK 8, Oracle suggests using `jcmd` for taking thread dumps instead of the `jstack` for enhanced diagnostics and reduced performance overhead.
 
 * **VisualVM**: VisualVM is a graphical user interface (GUI) tool that provides detailed runtime information about the Java application. We use this runtime information to monitor, troubleshoot, and profile those applications. It has the additional capability to capture thread dumps from the java processes running in a remote host. From Java 9 onwards, VisualVM is distributed separately from JDK and can be downloaded from the [project's website](https://visualvm.github.io/).
 

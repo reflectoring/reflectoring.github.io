@@ -329,7 +329,7 @@ With this `package.json` file, we now have a central location where we can look 
 
 ## The Network CDK App
 
-The next stack we're going to look at is the Network stack. The CDK app containing that step is the `NetworkApp`. You can find its code [on GitHub](https://github.com/stratospheric-dev/stratospheric/blob/main/chapters/chapter-6/cdk/package.json):
+The next stack we're going to look at is the Network stack. The CDK app containing that step is the `NetworkApp`. You can find its code [on GitHub](https://github.com/stratospheric-dev/stratospheric/blob/main/chapters/chapter-6/cdk/src/main/java/dev/stratospheric/todoapp/cdk/NetworkApp.java):
 
 ```java
 public class NetworkApp {

@@ -218,12 +218,14 @@ If we want to use a custom key store in KMS we have to pay for both.
 
 ## Encryption of Storages
 
-Now we know how to manage keys in AWS. Let's go over AWS storage types and look at how we can encrypt the data on these
+Now that we know how to manage our encryption keys in AWS, let's go over AWS storage types and look at how we can encrypt the data on these
 storages.
 
 ### Amazon Elastic File System
 
-AWS EFS is used as shared file storage. When we create a new file system, for example from AWS Console, the default
+AWS EFS is a serverless file storage service for use with AWS compute services and on-premise servers. 
+
+When we create a new file system, for example from AWS Console, the default
 settings are configured to encrypt the data on this file system. We don't need to do anything. The new file system uses
 AWS Service by default to get the CMK. A key with the name `aws/elasticfilesystem` already exists or will be created
 automatically in KMS at every AWS account. Such keys are called **AWS managed keys**, because they are created and

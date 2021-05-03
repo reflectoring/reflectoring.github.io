@@ -57,7 +57,7 @@ If we encrypt data on an AWS storage we have two approaches:
 
 In Client-side encryption, the data is encrypted outside of the AWS Cloud and then sent to storage. It is stored on an AWS storage in encrypted form, but AWS has nothing to do with the encryption. 
 
-When the client wants to read data, it has to decrypt the data on the client-side after extracting the encrypting data from AWS. We use this approach if
+When the client wants to read data, it has to decrypt the data on the client-side after extracting the encrypted data from AWS. We use this approach if
 we want to use cloud storage, but we don't trust the security service of the cloud provider and want to secure the data on our own.
 
 Server-side encryption means, that AWS takes care of the encryption of the data in its storage, and it is transparent
@@ -83,8 +83,7 @@ Most storage services in AWS support encryption and have a good integration with
 
 ### Advantages of KMS
 
-**KMS provides a centralized system for managing our encryption keys **. If we use many Amazon services we have always one
-service to manage all keys.
+**KMS provides a centralized system for managing our encryption keys **. 
 
 The first thing we have to know working with KMS is a **customer master key** (CMK). The Customer Master Key is a key, that
 

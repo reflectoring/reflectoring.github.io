@@ -20,35 +20,25 @@ All cloud providers like AWS have several customers in the entire world. When we
 
 Due to these reasons, many customers have a concern about unauthorized access to the data stored in plain text in the cloud. **Encryption solves this problem of securing data stored in the cloud.**
 
->The primary reason for encrypting data is confidentiality.
+>The primary reason for encrypting data is **confidentiality**.
 
 # Encryption basics for storages
-We need keys to encrypt data. Keys, that we need for encryption, can be divided into two types
+We need keys to encrypt data. Keys, that we need for encryption, are of two types:
 
-* symmetric keys
-* asymmetric keys
+* Symmetric keys
+* Asymmetric keys
 
 Symmetric keys are used, when we want to encrypt and decrypt data with the same key. It means somebody who encrypts
-data has to share the key with somebody, who decrypts the data.
+data has to share the key with someone who wants to decrypts the data.
 
-When we speak about asymmetric keys, we mean a key pair, that consists of a private and a public key. The data, that is
+When we speak about asymmetric keys, we mean a key pair, that consists of a pair of private key and public key. The data, that is
 encrypted with the public key can be decrypted with the private key only. It means, if a sender wants to encrypt data for a
-receiver, the public key of the receiver is used for the encryption. The receiver can use his securely stored private
-key for decryption.
+receiver, the public key of the receiver is used for the encryption. The receiver can use the private
+key for decryption which is securely stored in an appropriate storage like a protected file system or specialized software or hardware.
 
-The encryption with a symmetric key is much faster than with an asymmetric key, but it is a little more dangerous,
-because we can perform both operations.
+The encryption and decryption with a symmetric key is much faster than with an asymmetric key because the keys used are much shorter than they are in asymmetric cryptography, and only one key gets used (versus two for asymmetric cryptography). 
 
-In this article, we are interested in the encryption of data on storage. **It is called encryption of the data at
-rest.**
-Oppositely to this, we can encrypt the data in transit.
-
-Speaking about storage encryption we have to note, that we want to encrypt and decrypt data at one place with the same
-account on the storage. It means, we want to encrypt the data before writing and decrypt data after reading. We don't
-need to protect the data for transport. Hence, we can use symmetric encryption for this goal. It is completely enough!
-
-Sometimes we encrypt data with a key and after that, we encrypt this key with another one. It is called enveloped
-encryption. The enveloped encryption is actively used by AWS services.
+It is however less secure since the entities which want to correspond via symmetric encryption must share the key, and if the channel used to share the key is compromised, the entire system for sharing secure messages gets broken since anyone with the key can encrypt or decrypt all communications between the entities.
 
 # Overview Over Data Encryption on AWS
 

@@ -14,14 +14,13 @@ at how to encrypt different types of data on AWS.
 
 # Why Encryption?
 
-If we work with AWS service, we create data, that is stored in some storage of AWS. Why should this data be encrypted?
-If we have our data in the cloud we want to protect this data from the cloud provider or other customers of this
-cloud. We want to be sure, that only we can read the data, that is stored in the cloud. Such cloud as AWS has
-thousands of other customers in the whole world. If our data comes to other people, intentional or accidental, we want
-to prevent reading this data by these people or devices. Since the data is in the cloud, many customers have a concern
-about unauthorized access to the data in plain text. Encryption solves this problem.
+If we work with any AWS service, we create data, that is stored in some storage of AWS. Why should this data be encrypted?
 
-**Everything about encrypting data is confidentiality.**
+All cloud providers like AWS have several customers in the entire world. When we have our data in the cloud, we want to protect this data from the cloud provider and other customers of this cloud provider. We want to be sure, that only we can read the data, that is stored in the cloud.  We also want to prevent our data from being read, even if it gets into the hands of unauthorized people or applications through intentional or accidental means. 
+
+Due to these reasons, many customers have a concern about unauthorized access to the data stored in plain text in the cloud. **Encryption solves this problem of securing data stored in the cloud.**
+
+>The primary reason for encrypting data is confidentiality.
 
 # Encryption basics for storages
 We need keys to encrypt data. Keys, that we need for encryption, can be divided into two types

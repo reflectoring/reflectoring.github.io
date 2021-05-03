@@ -24,25 +24,23 @@ Due to these reasons, many customers have a concern about unauthorized access to
 
 >The primary reason for encrypting data is **confidentiality**.
 
-## Encryption basics for storages
+## Encryption Basics for Storage
 We need keys to encrypt data. Keys, that we need for encryption, are of two types:
 
 * Symmetric keys
 * Asymmetric keys
 
-Symmetric keys are used, when we want to encrypt and decrypt data with the same key. It means somebody who encrypts
-data has to share the key with someone who wants to decrypts the data.
+**Symmetric keys are used to encrypt and decrypt data with the same key**. It means somebody who encrypts data has to share the encryption key with someone who needs to decrypts the data.
 
-By asymmetric keys, we mean a key pair, that consists of a pair of private key and public key. The data, that is
-encrypted with the public key can be decrypted with the private key only. 
+**Asymmetric key is a key pair, that consists of a private key and public key**. The data, that is encrypted with the public key can be decrypted with the private key only. It means, if a sender wants to send encrypted data to a receiver, it uses the public key of the receiver for encryption of the data. The receiver then uses the private key for decryption of the data. 
 
-It means, if a sender wants to send encrypted data to a
-receiver, it uses the public key of the receiver for encryption of the dara. The receiver then uses the private
-key for decryption of the data. The receiver also securely stores the private key in an appropriate storage like a protected file system or specialized software or hardware.
+The receiver also securely stores the private key in an appropriate storage like a protected file system or specialized software or hardware.
 
 The encryption and decryption with a symmetric key is much faster than with an asymmetric key because the keys used are much shorter than they are in asymmetric cryptography, and only one key gets used (versus two for asymmetric cryptography). 
 
-It is however less secure since the entities which want to correspond via symmetric encryption must share the key, and if the channel used to share the key is compromised, the entire system for sharing secure messages gets broken since anyone with the key can encrypt or decrypt all communications between the entities.
+It is however less secure since the entities which want to correspond via symmetric encryption must share the encryption key. 
+
+If the channel used to share the key is compromised, the entire system for sharing secure messages gets broken. This can be exploited by anyone with the key since they can encrypt or decrypt all communications between the entities.
 
 ## Overview of Data Encryption on AWS
 
@@ -52,16 +50,16 @@ Let us have a deeper look at the encryption of data at rest.
 
 If we encrypt data on an AWS storage we have two approaches:
 
-* client-side encryption
-* server-side encryption
+* Client-side encryption
+* Server-side encryption
 
-In Client-side encryption, the data is encrypted outside of the AWS Cloud and then sent to storage. It is stored on an AWS storage in encrypted form, but AWS has nothing to do with the encryption. 
+**In Client-side encryption, the data is encrypted outside of the AWS Cloud and then sent to storage**. It is stored on an AWS storage in encrypted form, but AWS has nothing to do with the encryption. 
 
-When the client wants to read data, it has to decrypt the data on the client-side after extracting the encrypted data from AWS. We use this approach if
-we want to use cloud storage, but we don't trust the security service of the cloud provider and want to secure the data on our own.
+When the client wants to read data, it has to decrypt the data on the client-side after extracting the encrypted data from AWS. We use this approach if we want to use cloud storage, but we don't trust the security service of the cloud provider and want to secure the data on our own.
 
-Server-side encryption means, that AWS takes care of the encryption of the data in its storage, and it is transparent
-for the client, who writes or reads this data. AWS provides several possibilities for server-side encryption on storage.
+**In Server-side encryption, AWS takes care of the encryption of the data in its storage**. The encryption process is transparent for the client, who writes or reads this data. 
+
+AWS provides several possibilities for server-side encryption on storage.
 
 In general , we need to perform three steps to protect our data:
 
@@ -99,11 +97,7 @@ creating a data key.
 
 Again, all data is encrypted by data keys. But the data keys are encrypted by CMK.
 **If an AWS service wants to perform an encryption operation, it requires a new data key every time at KMS.**
-It means a new data key is generated for every volume or every S3 object etc. We have a unique data key for each
-encryption request. KMS creates a new data key and returns it to a storage service in encrypted form. This data key can
-be stored with metadata on the storage. After that, a storage service send the encrypted data key to KMS, KMS decrypts
-this data key with CMK and sends it as plain back to the service. The service uses this key for encryption and erases the key from
-memory after that.
+It means a new data key is generated for every volume or every S3 object etc. We have a unique data key for each encryption request. KMS creates a new data key and returns it to a storage service in encrypted form. This data key can be stored with metadata on the storage. After that, a storage service send the encrypted data key to KMS, KMS decrypts this data key with CMK and sends it as plain back to the service. The service uses this key for encryption and erases the key from memory after that.
 
 ![Customer master key](/assets/img/posts/securing-data-in-aws/AWSCMK.png)
 

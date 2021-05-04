@@ -30,38 +30,39 @@ We need keys to encrypt data. Keys, that we need for encryption, are of two type
 * Symmetric keys
 * Asymmetric keys
 
-**Symmetric keys are used to encrypt and decrypt data with the same key**. It means somebody who encrypts data has to share the encryption key with someone who needs to decrypts the data.
+**Symmetric keys are used to encrypt and decrypt data with the same key**. It means somebody who encrypts data has to share the encryption key with someone who needs to decrypt the data.
 
-**Asymmetric key is a key pair, that consists of a private key and public key**. The data, that is encrypted with the public key can be decrypted with the private key only. It means, if a sender wants to send encrypted data to a receiver, it uses the public key of the receiver for encryption of the data. The receiver then uses the private key for decryption of the data. 
+**Asymmetric key is a key pair, that consists of a private key and public key**. The data, that is encrypted with the public key can be decrypted with the private key only. It means, if a sender wants to send encrypted data to a receiver, it uses the public key of the receiver for encryption of the data. The receiver then uses the private key for the decryption of the data.
 
-The receiver also securely stores the private key in an appropriate storage like a protected file system or specialized software or hardware.
+The receiver also securely stores the private key in appropriate storage like a protected file system or specialized software or hardware.
 
-The encryption and decryption with a symmetric key is much faster than with an asymmetric key because the keys used are much shorter than they are in asymmetric cryptography, and only one key gets used (versus two for asymmetric cryptography). 
+The encryption and decryption with a symmetric key are much faster than with an asymmetric key.
 
-It is however less secure since the entities which want to correspond via symmetric encryption must share the encryption key. 
+It is however less secure since the entities which want to correspond via symmetric encryption must share the encryption key.
 
 If the channel used to share the key is compromised, the entire system for sharing secure messages gets broken. This can be exploited by anyone with the key since they can encrypt or decrypt all communications between the entities.
 
 ## Overview of Data Encryption on AWS
 
-As mentioned above we can use encryption to secure data at rest and in transit. 
+As mentioned above we can use encryption to secure data at rest and in transit.
 
 Let us have a deeper look at the encryption of data at rest.
 
+Since we want to encrypt and decrypt data at one and not at different places, we can use a symmetric key for that. 
 If we encrypt data on an AWS storage we have two approaches:
 
 * Client-side encryption
 * Server-side encryption
 
-**In Client-side encryption, the data is encrypted outside of the AWS Cloud and then sent to storage**. It is stored on an AWS storage in encrypted form, but AWS has nothing to do with the encryption. 
+**In Client-side encryption, the data is encrypted outside of the AWS Cloud and then sent to storage**. It is stored on an AWS storage in encrypted form, but AWS has nothing to do with the encryption.
 
 When the client wants to read data, it has to decrypt the data on the client-side after extracting the encrypted data from AWS. We use this approach if we want to use cloud storage, but we don't trust the security service of the cloud provider and want to secure the data on our own.
 
-**In Server-side encryption, AWS takes care of the encryption of the data in its storage**. The encryption process is transparent for the client, who writes or reads this data. 
+**In Server-side encryption, AWS takes care of the encryption of the data in its storage**. The encryption process is transparent for the client, who writes or reads this data.
 
 AWS provides several possibilities for server-side encryption on storage.
 
-In general , we need to perform three steps to protect our data:
+In general, we need to perform three steps to protect our data:
 
 1. Get a key for encryption
 2. Encrypt data
@@ -77,12 +78,27 @@ AWS provides two services for managing encryption keys:
 
 Let's look at AWS KMS service which we can use to manage our encryption keys.
 
-Most storage services in AWS support encryption and have a good integration with AWS KMS for managing the encryption keys to encrypt their data.
-
+Most storage services in AWS support encryption and have good integration with AWS KMS for managing the encryption keys to encrypt their data.
 ### Advantages of KMS
 
-**KMS provides a centralized system for managing our encryption keys **. 
+**KMS provides a centralized system for managing our encryption keys**.
 
+**If we create CMK we can define usage policies for the keys.** It means we can choose who can manage key, or who can
+delete the key.
+
+Also, we can use [AWS CloudTrail](https://aws.amazon.com/cloudtrail/?nc1=h_ls) service for auditing key usage. **Every
+request encryption operation can be tracked.**
+
+**KMS provides many APIs, that can be used not only from other AWS services but for example from a custom application.**
+It is the case if the application requires key management. The application can use the existing solution of KMS
+instead to develop a new one.
+
+
+### Working with KMS
+
+Let's have a look at the keys, that are used in KMS
+
+#### Key Types
 The first thing we have to know working with KMS is a **customer master key** (CMK). The Customer Master Key is a key, that
 
 * is stored securely in KMS
@@ -101,17 +117,8 @@ It means a new data key is generated for every volume or every S3 object etc. We
 
 ![Customer master key](/assets/img/posts/securing-data-in-aws/AWSCMK.png)
 
-**If we create CMK we can define usage policies for the keys.** It means we can choose who can manage key, or who can
-delete the key.
 
-Also, we can use [AWS CloudTrail](https://aws.amazon.com/cloudtrail/?nc1=h_ls) service for auditing key usage. **Every
-request encryption operation can be tracked.**
-
-**KMS provides many APIs, that can be used not only from other AWS services but for example from a custom application.**
-It is the case if the application requires a key management. The application can use the existing solution of KMS
-instead to develop a new one.
-
-### Source of Key Material
+#### Source of Key Material
 
 If we create a CMK we have two possibilities to get the key:
 
@@ -125,7 +132,7 @@ The second way means, we have a key outside AWS Cloud, we don't want to use keys
 to use all advantages, that are provided by KMS.
 **In this case we can import our key to KMS and use it as CMK.**
 
-### Key Rotation
+#### Key Rotation
 
 Reusing the key for many cryptographic operations is not a good idea. Should the key be stolen, all encrypted data can
 be decrypted. That's why it is important to rotate CMK. We can do it manually if we want to schedule the rotation on
@@ -138,42 +145,41 @@ usage of the old and current CMKs.
 ### KMS storage
 
 We said several times, that a key is stored in KMS. But what does it mean to store the key in KMS? KMS uses a Cloud HSM service
-for generating and storing CMKs. HSM is a special hardware device for cryptographic operation and storing
+for generating and storing CMKs. HSM is special hardware for cryptographic operation and storing
 sensitive material.
-**This device is very secure.** The CMKs, that are persisted in this device can not be exported from it.
+**This hardware is very secure.** The CMKs, that are persisted in this can not be exported from it.
 
-**But KMS uses one device for many customers. So the KMS is a multi-tenant service.** The keys, that are persisted in a
-device can belong to different tenants. It can be enough for many use cases. But some customers or applications can have
-higher security requirements. Multi-tenancy can be not secure enough for such kinds of applications. In this case, we can use a
-separate HSM, only for us.
-
+**But KMS uses the same hardware for many customers. So the KMS is a multi-tenant service.** KSM is a shared hardware tenancy.
+The keys, that are persisted in an HSM can belong to different tenants. It can be enough for many use cases. But some customers or applications can have
+higher security requirements. For instance, we have to ensure our keys are isolated on their own hardware module because of compliance.
+Multi-tenancy can be not secure enough for such kinds of applications. In this case, we can use a separate HSM, only for us.
 ## Cloud HSM
 
-HSM means Hardware Security Module. It is a device, that is designed for cryptographic operations and key storage. AWS
-Cloud HSM is a service, that provides hardware to an AWS customer. If we require a Cloud HSM, we get a device located
-in AWS data center. Keys, that are created in this HSM are not shared with other AWS customers. They are located
-on dedicated hardware.
+HSM means Hardware Security Module. It is hardware, that is designed for cryptographic operations and key storage. AWS
+Cloud HSM is a service, that provides hardware to an AWS customer. If we require a Cloud HSM, we get dedicated hardware located
+in AWS data center. Keys, that are created in this HSM are not persisted on storage, which is shared with other AWS customers.
+
+### Benefits of CloudHSM
 
 **Cloud HSM allows having a secure single-tenant key storage**
 
-Every HSM device is isolated inside the customer VPC. If we want to create an HSM, we need to create an AWS CloudHSM
-cluster first. We can get up to 28 devices in the cluster. AWS takes care of the load balancing and synchronizing the
-keys between devices. Working with a Cloud HSM means working with the CloudHSM cluster, even if we have only one device
+Every HSM is isolated inside the customer VPC. If we want to create an HSM, we need to create an AWS CloudHSM
+cluster first. We can get up to 28 HSMs in the cluster. AWS takes care of the load balancing and synchronizing the
+keys between HSM. Working with a Cloud HSM means working with the CloudHSM cluster, even if we have only one HSM
 in the cluster. If we choose the CLoudHSM service for key management, it means it is very important for us how secure
-the keys stored. It is recommended to have at least two HSMs in a cluster to avoid losing keys in case of device
-problems.
+the keys stored. **It is recommended to have at least two HSMs in a cluster to avoid losing keys in case of hardware
+problems.**
 
-Since we get a device from AWS, it is important to understand what an AWS customer can do on the HSM and what does
-Amazon.
+### Working With CloudHSM
 
-In a CloudHSM cluster, the AWS customer has full control over the key management. Amazon has nothing to do with the
-keys. But Amazon manages and monitors the HSM. AWS takes care of backups, updates, synchronization, etc. The AWS customer
+**In a CloudHSM cluster, the AWS customer has full control over the key management.** Amazon has nothing to do with the
+keys. But Amazon manages and monitors the HSM. AWS takes care of backups, firmware updates, synchronization, etc. The AWS customer
 has more functionality for key management than in KMS. The customer can generate a symmetric and asymmetric key of
 different lengths, perform encryption with many algorithms, import and export keys, make key non-exportable, and so on.
 
 If we want to encrypt data on storage it seems to be a very good solution for key management, especially if we have very
-high-security requirements for our encryption. But CloudHSM doesn't have such good integration with other AWS services
-as KMS. Since AWS has no access to the keys at all, it is harder to use this key for encryption of S3 Objects, EFS
+high-security requirements for our encryption. **But CloudHSM doesn't have such good integration with other AWS services
+as KMS.** Since AWS has no access to the keys at all, it is harder to use this key for encryption of S3 Objects, EFS
 volume, or EBS immediately.
 
 AWS provides several tools to manage the keys on an HSM cluster. We can use Command Line Tools
@@ -206,7 +212,9 @@ HSM cluster, because we have full control over it.
 Finally, we can use KMS integration with all AWS services, and we don't share the storage environment of the keys with other
 customers.
 
-Another thing we have to know is the costs. AWS KMS is much cheaper than Cloud HSM.
+### Cost comparison
+Another thing we have to know is the costs. [AWS KMS](https://aws.amazon.com/kms/pricing/?nc1=h_ls) is much cheaper
+than [Cloud HSM](https://aws.amazon.com/cloudhsm/pricing/?nc1=h_ls).
 
 Every CMK in AWS costs currently 1 USD per month. Also, we have 20.000 cryptographic requests in a month for free. If we
 make more than 20.000 requests in a month it costs between 0,03 and 12,00 USD for 10.000 requests depending on the key type.
@@ -223,7 +231,8 @@ storages.
 
 ### Amazon Elastic File System
 
-AWS EFS is a serverless file storage service for use with AWS compute services and on-premise servers. 
+AWS EFS is a serverless file storage service for use with AWS compute services and on-premise servers.
+EFS is a durable, high throughput file system, that can be mounted on an Amazon EC2 instance.
 
 When we create a new file system, for example from AWS Console, the default
 settings are configured to encrypt the data on this file system. We don't need to do anything. The new file system uses
@@ -233,10 +242,6 @@ managed by AWS without custom request. Even more, if we don't want to encrypt th
 disable it actively in the custom settings when creating a file system.
 
 The AWS KMS uses a symmetric key with AES-256 encryption algorithm.
-
-If we want to have more control over the keys, we can create a new CMK in the KMS service and use it for the encryption
-of data keys. If we create the CMK and choose KMS, the CMK is created and stored in KMS storage. It is a CloudHSM
-cluster, that is shared between many AWS customers.
 
 We have also a third option to use a custom key store for key generation and storing. In this case, the CMK is generated
 and stored in a dedicated Cloud HSM cluster, that we provided before.
@@ -253,6 +258,7 @@ the moment of creation. It is not possible to disable or enable the encryption a
 
 Every time we want to write or read data, KMS will make encrypt or decrypt operations. So we won't see any difference in
 the normal work and our data are safe.
+
 
 ### Amazon FSx
 
@@ -291,10 +297,7 @@ In all cases, it is about server-side encryption.
 #### Amazon S3 Key
 
 Amazon S3 key is an encryption option, that is provided by the S3 service. It
-has nothing to do with AWS KMS. If we choose it, the S3 service creates a master key. After that every time, when we want to
-upload a file a new data key is created, the object is encrypted with this data key, the data key is encrypted by the master key
-and stored along with the object. If we want to download the S3 object, the encrypted data key is decrypted with the master key
-and is used to decrypt the S3 object.
+has nothing to do with AWS KMS. If we choose it, the S3 service creates a master key.
 
 We can configure the encryption not only with AWS console but also with REST API or with AWS SDK.
 
@@ -313,7 +316,7 @@ Currently, it is not possible with the AWS console.
 
 Of course, we can use the AWS KMS as well. It is similar to other storage services. We can use the AWS managed key. It
 is called `aws/s3` or we can use a key from custom managed keys in the KMS service. It can be a normal KMS CMK or a CMK from
-a custom key store. If we use the AWS console, we can use an existing key from the list or just put an ARN of the key.
+a custom key store.
 
 Some buckets are growing very fast and can have thousands of objects. Moreover, some objects can be downloaded very often.
 Remember, that we pay for every cryptographical request by using KMS. Such a scenario can be expensive.
@@ -322,14 +325,12 @@ Remember, that we pay for every cryptographical request by using KMS. Such a sce
 
 A bucket key is a symmetric key, that is created on the bucket level. It is encrypted once by a CMK in KMS and returned to
 the S3 Service. Now the S3 Service can generate data keys for every object and encrypt them with a bucket key outside KMS.
-It reduced the traffic to AWS KMS from the S3 storage service, and the number of cryptographic operations inside KMS. We can
-define the using bucket keys in the console, via REST API, in AWS SDK, AWS CLI, or using CloudFormation
+It reduced the traffic to AWS KMS from the S3 storage service, and the number of cryptographic operations inside KMS.
 
 ![Bucket Key](/assets/img/posts/securing-data-in-aws/BucketKey.png)
 
 Unlike the other storage service, we can change encryption options after the encryption for every object. It means we
-can change the encryption of an object for example from AWS managed key to the AWS Customer Managed Key anytime. In this
-case, this object will be decrypted with the AWS managed key and encrypted with the Customer Managed Key.
+can change the encryption of an object for example from AWS managed key to the AWS Customer Managed Key anytime.
 
 Using REST API or AWS SDK we can define the encryption option of single objects every time by upload. So we can encrypt
 every S3 object differently. For example, we can have three files. The first file is encrypted with Amazon S3 Key, the

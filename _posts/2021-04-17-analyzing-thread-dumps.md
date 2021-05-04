@@ -27,27 +27,19 @@ For this reason, **a thread dump is a vital tool for analyzing performance degra
 
 For understanding a thread dump, it is essential to know all the states a thread passes through during its lifecycle. 
 
-### Lifecycle States
-A thread can assume one of these following states:
+A thread can assume one of these states:
 
 * **`NEW`**: Initial state of a thread when we create an instance of `Thread` or `Runnable`. It remains in this state until the program starts the thread.
   
 * **`RUNNABLE`**: The thread becomes runnable after a new thread is started.  A thread in this state is considered to be executing its task.
 
-* **`BLOCKED`**: A thread is in the blocked state when it tries to access an object that is currently used(locked) by some other thread. When the locked object is unlocked and hence available for the thread, it is no longer blocked and moves to the runnable state.
+* **`BLOCKED`**: A thread is in the blocked state when it tries to access an object that is currently used (locked) by some other thread. When the locked object is unlocked and hence available for the thread, the thread moves back to the runnable state.
 
 * **`WAITING`**: A thread transitions to the waiting state while waiting for another thread to perform a task and transitions back to the runnable state only when another thread signals the waiting thread to resume execution.
 
 * **`TIMED_WAITING`**: A timed waiting state is a thread waiting for a specified interval of time and transitioning back to the runnable state when that time interval expires. The thread is waiting for another thread to do some work for up to a specified waiting time.
    
-* **Terminated (Dead)** A runnable thread enters the terminated state after it finishes its task.
-
-### Scheduling a Thread for Execution
-The Java Virtual Machine (JVM) schedules the execution of a thread using a preemptive,  and priority-based scheduling algorithm. 
-
-All Java threads have a priority in the range of 1 to 10. The thread in the runnable state with the highest priority is scheduled to run by the JVM.
-
-The CPU is consumed only from the time the scheduler picks up the thread for execution to the time it is running before going into one of the above states.
+* **`TERMINATED` (Dead)** A runnable thread enters the terminated state after it finishes its task.
 
 ## Generating a Thread Dump
 We will now generate some thread dumps by running a simple Java program. 

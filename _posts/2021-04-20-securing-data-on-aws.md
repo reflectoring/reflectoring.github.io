@@ -74,86 +74,74 @@ AWS provides two services for managing encryption keys:
 * [AWS Cloud HSM](https://aws.amazon.com/cloudhsm/?nc1=h_ls)
 
 
-## Amazon Key Management Service
+## Amazon Key Management Service (KMS)
 
 Let's look at AWS KMS service which we can use to manage our encryption keys.
 
 Most storage services in AWS support encryption and have good integration with AWS KMS for managing the encryption keys to encrypt their data.
+
 ### Advantages of KMS
 
-**KMS provides a centralized system for managing our encryption keys**.
+1. KMS provides a centralized system for managing our encryption keys.
 
-**If we create CMK we can define usage policies for the keys.** It means we can choose who can manage key, or who can
-delete the key.
+2. KMS uses hardware security modules(HSM) to protect the confidentiality and integrity of your keys encryption keys. Noone, including AWS employees, can retrieve our plaintext keys from the service.
 
-Also, we can use [AWS CloudTrail](https://aws.amazon.com/cloudtrail/?nc1=h_ls) service for auditing key usage. **Every
-request encryption operation can be tracked.**
+3. Each KMS request can be audited by enabling [AWS CloudTrail](https://aws.amazon.com/cloudtrail). The audit logs contains details of the user, time, date, API action and,key used.
 
-**KMS provides many APIs, that can be used not only from other AWS services but for example from a custom application.**
-It is the case if the application requires key management. The application can use the existing solution of KMS
-instead to develop a new one.
+4. We also get the advantages of scalability, durability and high availability compared to an on-premise Key management solution. 
 
+5. KMS functions are available as APIs and bundled into SDKs which make it possible to integrate with any custom application for key amanagement.
 
-### Working with KMS
+### Working of KMS
 
-Let's have a look at the keys, that are used in KMS
+It is important to understand CMK and data keys to understand the working of KMS.
+#### CMK
+KMS maintains a logical representation of the key it manages in the form of a Customer master key (CMK). The CMK also contains the key ID, creation date, description, and state of the key. CMKs in any one of the states: Enabled, Disabled, PendingImport, PendingDeletion, or Unavailable.
 
-#### Key Types
-The first thing we have to know working with KMS is a **customer master key** (CMK). The Customer Master Key is a key, that
+AWS KMS has three types of CMKs: 
+1. **Customer managed CMK**: The customer has creates and manages these CMKs and have full control over these.
+2. **AWS managed CMK**: These CMKs are created, managed, and used on our behalf by an AWS service that is integrated with AWS KMS.
+3. **AWS owned CMK**: These are owned and managed by the AWS services for use in multiple AWS accounts. We cannot view and use these CMKs and are not charged any fee for their usage.
 
-* is stored securely in KMS
-* never leaves KMS
-* is used for encryption other keys only, but not the data.
+Some AWS services support only an AWS managed CMK. Others use an AWS owned CMK or offer a choice of CMKs.
 
-While creating a CMK we have to choose the type of key. Normally we choose a symmetric key for encryption of
-storages.
-**If we configure the KMS for use by other AWS Services like S3 or EBS, then KMS will create other keys for encryption
-of data. The keys are called data keys.** Data keys cannot be created by a separate customer request. KMS decides when
-creating a data key.
+#### Data Key
+Data keys are the keys that we use to encrypt data and other data encryption keys.
 
-Again, all data is encrypted by data keys. But the data keys are encrypted by CMK.
-**If an AWS service wants to perform an encryption operation, it requires a new data key every time at KMS.**
-It means a new data key is generated for every volume or every S3 object etc. We have a unique data key for each encryption request. KMS creates a new data key and returns it to a storage service in encrypted form. This data key can be stored with metadata on the storage. After that, a storage service send the encrypted data key to KMS, KMS decrypts this data key with CMK and sends it as plain back to the service. The service uses this key for encryption and erases the key from memory after that.
+We use AWS KMS customer master keys (CMKs) to generate, encrypt, and decrypt data keys.
 
-![Customer master key](/assets/img/posts/securing-data-in-aws/AWSCMK.png)
+The data key is used outside of KMS, such as when using OpenSSL for client-side encryption using a unique symmetric data key.
 
+#### Data Key Pairs
+Data key pairs are asymmetric data keys consisting of a pair of public key and private key. They are used for client-side encryption and decryption, or signing and verification of messages outside of AWS KMS. 
+
+The private key in each data key pair is protected under a symmetric CMK in AWS KMS. Both RSA and Elliptic curve key pair are supported.
+
+For signing, the private key of the data key pair is used to generate a cryptographic signature for a message. Anyone with the corresponding public key can use it to verify the integrity of the message.
 
 #### Source of Key Material
 
 If we create a CMK we have two possibilities to get the key:
-
-* let the KMS create the key
-* import the key from outside
-
-The first way is pretty easy. We just define what kind of key we want to have and KMS creates the key for us. We get the
-reference to the key and can use it for some encryption operations.
-
-The second way means, we have a key outside AWS Cloud, we don't want to use keys, which are created by KMS, but we want
-to use all advantages, that are provided by KMS.
-**In this case we can import our key to KMS and use it as CMK.**
+1. **KMS generates the key material**: We define what kind of key we want to have and KMS creates the key material for us. We get the reference to the key and use it for encryption operations.
+2. **Bring your own key (BYOK)**: We create a CMK without key material and then import the key material from outside into the CMK.
 
 #### Key Rotation
 
-Reusing the key for many cryptographic operations is not a good idea. Should the key be stolen, all encrypted data can
-be decrypted. That's why it is important to rotate CMK. We can do it manually if we want to schedule the rotation on
-our own, but **AWS KMS provides the possibility of the automatic rotation**. If we enable the automatic CMK rotation, a
-new key is created with every rotation and all new data keys will be encrypted with a new CMK. The old CMK is not
-deleted and will be used for the decryption of old data keys, that were created before rotation. But everything is
-transparent for AWS customers. The ID or NAME of the CMK is not changed. The KMS managed automatically the
-usage of the old and current CMKs.
+Reusing the key for many cryptographic operations is not a good idea. Should the key be stolen, all encrypted data can be decrypted. That's why it is important to rotate CMK. We can do it manually if we want to schedule the rotation on our own, but **AWS KMS provides the possibility of the automatic rotation**. 
 
-### KMS storage
+If we enable the automatic CMK rotation, a new key is created with every rotation and all new data keys will be encrypted with a new CMK. The old CMK is not deleted and will be used for the decryption of old data keys, that were created before rotation. But everything is transparent for AWS customers. The ID or NAME of the CMK is not changed. The KMS managed automatically the usage of the old and current CMKs.
 
-We said several times, that a key is stored in KMS. But what does it mean to store the key in KMS? KMS uses a Cloud HSM service
-for generating and storing CMKs. HSM is special hardware for cryptographic operation and storing
-sensitive material.
-**This hardware is very secure.** The CMKs, that are persisted in this can not be exported from it.
+#### KMS storage
 
-**But KMS uses the same hardware for many customers. So the KMS is a multi-tenant service.** KSM is a shared hardware tenancy.
-The keys, that are persisted in an HSM can belong to different tenants. It can be enough for many use cases. But some customers or applications can have
-higher security requirements. For instance, we have to ensure our keys are isolated on their own hardware module because of compliance.
-Multi-tenancy can be not secure enough for such kinds of applications. In this case, we can use a separate HSM, only for us.
-## Cloud HSM
+AWS KMS key store is used as the default storage for keys managed by KMS but this storage is shared by many customers.
+
+It can be enough for most use cases. But some customers or applications can have higher security requirements. For instance, we have to ensure our keys are isolated by using a dedicated infrastructure to ensure any regulatory compliance.
+
+A custom key store can be configured to address these scenarios.The custom key store is associated with an AWS CloudHSM cluster which is a managed Hardware Security Module (HSM) service set up in our own AWS account. 
+
+HSM is a special hardware for cryptographic operation and storing sensitive material.
+
+## AWS CloudHSM
 
 HSM means Hardware Security Module. It is hardware, that is designed for cryptographic operations and key storage. AWS
 Cloud HSM is a service, that provides hardware to an AWS customer. If we require a Cloud HSM, we get dedicated hardware located

@@ -127,9 +127,11 @@ If we create a CMK we have two possibilities to get the key:
 
 #### Key Rotation
 
-Reusing the key for many cryptographic operations is not a good idea. Should the key be stolen, all encrypted data can be decrypted. That's why it is important to rotate CMK. We can do it manually if we want to schedule the rotation on our own, but **AWS KMS provides the possibility of the automatic rotation**. 
+Reusing the key for many cryptographic operations is not a good idea. Should the key be stolen, all encrypted data can be decrypted. That's why it is important to rotate CMK. We can do it manually by creating new CMKs at specific intervals and update our applications to use the new CMK. 
 
-If we enable the automatic CMK rotation, a new key is created with every rotation and all new data keys will be encrypted with a new CMK. The old CMK is not deleted and will be used for the decryption of old data keys, that were created before rotation. But everything is transparent for AWS customers. The ID or NAME of the CMK is not changed. The KMS managed automatically the usage of the old and current CMKs.
+In AWS KMS, we can enable the automatic CMK rotation. With automatic CMK rotation enabled, a new key is created with every rotation and all new data keys are encrypted with a new CMK. 
+
+The old CMK is not deleted and is be used for the decryption of old data keys, that were created before rotation. 
 
 #### KMS storage
 
@@ -143,72 +145,56 @@ HSM is a special hardware for cryptographic operation and storing sensitive mate
 
 ## AWS CloudHSM
 
-HSM means Hardware Security Module. It is hardware, that is designed for cryptographic operations and key storage. AWS
-Cloud HSM is a service, that provides hardware to an AWS customer. If we require a Cloud HSM, we get dedicated hardware located
-in AWS data center. Keys, that are created in this HSM are not persisted on storage, which is shared with other AWS customers.
+AWS CloudHSM is a managed service providing a hardware security module (HSM) to generate and use our own encryption keys on the AWS Cloud.
 
 ### Benefits of CloudHSM
 
-**Cloud HSM allows having a secure single-tenant key storage**
+1. CloudHSM protects our keys with exclusive, single-tenant access to tamper-resistant HSM instances in our own Virtual Private Cloud (VPC).
+2. We can configure AWS KMS to use our AWS CloudHSM cluster as a custom key store instead of the default KMS key store as explained earlier.
+3. The HSM provided by AWS CloudHSM is based on open industry standards. This makes it easy to integrate with custom applications with standard APIs like PKCS#11, JCE, and CNG libraries and also migrate keys to and from other commercial HSM solutions.
+4. AWS CloudHSM provides access to HSMs over a secure channel to create users and set HSM policies so that the encryption keys which are generated and used with CloudHSM are accessible only by those HSM users.
+5. The AWS customer has more functionality for key management than in KMS. The customer can generate a symmetric and asymmetric key of different lengths, perform encryption with many algorithms, import and export keys, make key non-exportable, and so on.
+6. If we want to encrypt data on storage it seems to be a very good solution for key management, especially if we have very
+high-security requirements for our encryption. 
 
-Every HSM is isolated inside the customer VPC. If we want to create an HSM, we need to create an AWS CloudHSM
-cluster first. We can get up to 28 HSMs in the cluster. AWS takes care of the load balancing and synchronizing the
-keys between HSM. Working with a Cloud HSM means working with the CloudHSM cluster, even if we have only one HSM
-in the cluster. If we choose the CLoudHSM service for key management, it means it is very important for us how secure
-the keys stored. **It is recommended to have at least two HSMs in a cluster to avoid losing keys in case of hardware
-problems.**
+**But CloudHSM doesn't such good integration with other AWS services
+like KMS. Since AWS has no access to the keys at all, it is relatively harder than KMS, to use this solution for encryption of S3 Objects, EFS volume, or EBS immediately.
 
-### Working With CloudHSM
+### Working of CloudHSM
 
-**In a CloudHSM cluster, the AWS customer has full control over the key management.** Amazon has nothing to do with the
-keys. But Amazon manages and monitors the HSM. AWS takes care of backups, firmware updates, synchronization, etc. The AWS customer
-has more functionality for key management than in KMS. The customer can generate a symmetric and asymmetric key of
-different lengths, perform encryption with many algorithms, import and export keys, make key non-exportable, and so on.
+AWS CloudHSM runs in our own VPC, enabling easy integration of HSMs with applications running on our EC2 instances. 
 
-If we want to encrypt data on storage it seems to be a very good solution for key management, especially if we have very
-high-security requirements for our encryption. **But CloudHSM doesn't have such good integration with other AWS services
-as KMS.** Since AWS has no access to the keys at all, it is harder to use this key for encryption of S3 Objects, EFS
-volume, or EBS immediately.
+#### CloudHSM Cluster
+For using the AWS CloudHSM service, we first create a CloudHSM Cluster which can have multiple HSMs spread across two or more Availability Zones in an AWS region. 
 
-AWS provides several tools to manage the keys on an HSM cluster. We can use Command Line Tools
+HSMs in a cluster are automatically synchronized and load-balanced. Each HSM appears as a network resource in our VPC. After creating and initializing a CloudHSM Cluster, we can configure a client on an EC2 instance that allows our applications to use the cluster over a secure, authenticated network connection.
+
+#### Monitoring
+CloudHSM monitors the health and network availability of our HSMs. Amazon has no access to the keys. the AWS customer has full control over the key management.
+
+#### Secure Access
+The client software maintains a secure channel to all of the HSMs in the cluster and sends requests on this channel, and the HSM performs the operations and returns the results over the secure channel. The client then returns the result to the application through the cryptographic API.
+
+**In a CloudHSM cluster, the AWS customer has full control over the key management.** Amazon has no access to the keys. But Amazon manages and monitors the HSM. AWS takes care of backups, firmware updates synchronization, etc. 
+
+#### Tools and SDKs
+We can use Command Line Tools
 like [CloudHSM Management Utility](https://docs.aws.amazon.com/cloudhsm/latest/userguide/cloudhsm_mgmt_util.html)
 for user management
 and [Key Management Utility](https://docs.aws.amazon.com/cloudhsm/latest/userguide/key_mgmt_util.html) for key
-management. AWS provides a Client SDK for integration of the custom application with CloudHSM. But these tools cannot help
-us to use the keys for storage encryption of AWS services.
+management. 
 
-## Cloud HSM and KMS integration
+AWS provides a Client SDK for integration of the custom application with CloudHSM.
 
-Fortunately, we can combine the advantages of both services KMS and CloudHSM.
-**We can bind a Cloud HSM cluster to Key Management Service in an AWS account.**
-
-First, we have to create a CloudHSM cluster and create a crypto user with the name `kmsuser` in the HSM, not an AWS user.
-Second, we have to configure a **custom key store** in KMS. Custom Key Store means a store in KMS, that is provided by
-the customer. We can provide only a CloudHSM cluster currently. There are no other options. By configuring the
-custom key store we have to provide:
-
-* the Cloud HSM cluster
-* the credentials of the crypto user
-* a certificate, we got by creating the CloudHSM cluster.
-
-That's it. Now we can use KMS interfaces with the CloudHSM cluster in the backend. We can create CMKs using KMS. In this
-case, we don't care about generating and storing the key in the backend. Alternatively, we can create CMKs directly in Cloud
-HSM cluster, because we have full control over it.
-
-**Custom key store allows having all benefits of KMS with the single-tenant key storage**
-
-Finally, we can use KMS integration with all AWS services, and we don't share the storage environment of the keys with other
-customers.
 
 ### Cost comparison
-Another thing we have to know is the costs. [AWS KMS](https://aws.amazon.com/kms/pricing/?nc1=h_ls) is much cheaper
+[AWS KMS](https://aws.amazon.com/kms/pricing/?nc1=h_ls) is much cheaper
 than [Cloud HSM](https://aws.amazon.com/cloudhsm/pricing/?nc1=h_ls).
 
-Every CMK in AWS costs currently 1 USD per month. Also, we have 20.000 cryptographic requests in a month for free. If we
+Every CMK in AWS currently costs 1 USD per month. Also, we get 20.000 cryptographic requests in a month for free. If we
 make more than 20.000 requests in a month it costs between 0,03 and 12,00 USD for 10.000 requests depending on the key type.
 
-Cloud HSM costs between 1,4 and 2,00 USD per hour and per device depending on the region. There are no costs for single
-operations. If we have two HSMs in the cluster for a price of 1,50 USD, we pay 72 USD per day.
+Cloud HSM costs between 1,4 and 2,00 USD per hour and per device depending on the region. If we have two HSMs in the cluster for a price of 1,50 USD, we pay 72 USD per day.
 
 If we want to use a custom key store in KMS we have to pay for both.
 
@@ -220,40 +206,20 @@ storages.
 ### Amazon Elastic File System
 
 AWS EFS is a serverless file storage service for use with AWS compute services and on-premise servers.
-EFS is a durable, high throughput file system, that can be mounted on an Amazon EC2 instance.
 
-When we create a new file system, for example from AWS Console, the default
-settings are configured to encrypt the data on this file system. We don't need to do anything. The new file system uses
-AWS Service by default to get the CMK. A key with the name `aws/elasticfilesystem` already exists or will be created
-automatically in KMS at every AWS account. Such keys are called **AWS managed keys**, because they are created and
-managed by AWS without custom request. Even more, if we don't want to encrypt the data on our file system we have to
-disable it actively in the custom settings when creating a file system.
+When we create a new file system from AWS Console, encryption at rest is enabled by default. With encryption enabled, every time we want to write or read data, KMS will perform encrypt or decrypt operations on that data. 
 
-The AWS KMS uses a symmetric key with AES-256 encryption algorithm.
+EFS uses customer master keys (CMKs) to encrypt our file system. It uses the AWS managed CMK for Amazon EFS stored under `aws/elasticfilesystem`, to encrypt and decrypt the file system metadata. We choose the CMK to encrypt and decrypt file data (actual file contents). This CMK can be one of the two types:
+1. AWS managed CMK: This is the default CMK `aws/elasticfilesystem`. Wedo not pay only for the usage.
+2. Customer-managed CMK: With this CMK type, we can configure the key policies and grants for multiple users or services. If we use a customer-managed CMK as our master key for file data encryption and decryption, we can enable key rotation.
 
-We have also a third option to use a custom key store for key generation and storing. In this case, the CMK is generated
-and stored in a dedicated Cloud HSM cluster, that we provided before.
-
-So we had three options for key management KMS:
-
-* AWS managed key - AWS KMS creates key for us with minimal effort from our side,
-* Customer master key in KMS store - we create actively the key in KMS, and the key is stored in a shared environment
-* Customer master key in custom key store - we create the key actively through KMS, but with a dedicated HSM cluster in
-  backend.
-
-It is important to know, that we have to decide on encryption while creating an EFS. We can set it only at
-the moment of creation. It is not possible to disable or enable the encryption after creation.
-
-Every time we want to write or read data, KMS will make encrypt or decrypt operations. So we won't see any difference in
-the normal work and our data are safe.
-
+It is important to know, that we have to decide on encryption while creating an EFS. We can set it only at the time of creating the file system. It is not possible to disable or enable the encryption after creation.
 
 ### Amazon FSx
 
 Amazon FSx is used as Windows storage for Windows servers. This storage is always encrypted, and we cannot disable this.
 Similar to EFS storage we can use the default CMK of KMS, which is called `aws/fsx`. If we want to use a CMK for
-encryption we have to put the ARN of the key. ARN is Amazon Resource Names and is unique for every resource in the whole
-AWS cloud. In this case, the FSx service doesn't know where our key sore is. It can be a KMS key store or a custom key store.
+encryption we have to put the ARN of the key. ARN is Amazon Resource Names and is unique for every resource in the whole AWS cloud. In this case, the FSx service doesn't know where our key store is. It can be a KMS key store or a custom key store.
 We just put the ARN of the CMK and the service uses it.
 
 ### Amazon Elastic Block Store

@@ -70,7 +70,7 @@ In general, we need to perform three steps to protect our data:
 AWS provides two services for managing encryption keys:
 
 * [AWS Key Management Service](https://aws.amazon.com/kms/?nc1=h_ls)
-* [AWS Cloud HSM](https://aws.amazon.com/cloudhsm/?nc1=h_ls)
+* [AWS CloudHSM](https://aws.amazon.com/cloudhsm/?nc1=h_ls)
 
 
 ## Amazon Key Management Service (KMS)
@@ -98,7 +98,7 @@ It is important to understand CMK and data keys to understand the working of KMS
 KMS maintains a logical representation of the key it manages in the form of a customer master key (CMK). The CMK also contains the key ID, creation date, description, and state of the key. CMKs in any one of the states: Enabled, Disabled, PendingImport, PendingDeletion, or Unavailable.
 
 AWS KMS has three types of CMKs: 
-1. ** Customer-managed CMK**: The customer creates and manages these CMKs and has full control over them.
+1. **Customer-managed CMK**: The customer creates and manages these CMKs and has full control over them.
 2. **AWS managed CMK**: These CMKs are created, managed, and used on our behalf by an AWS service that is integrated with AWS KMS.
 3. **AWS owned CMK**: These are owned and managed by the AWS services for use in multiple AWS accounts. We cannot view and use these CMKs and are not charged any fee for their usage.
 
@@ -156,8 +156,8 @@ AWS CloudHSM is a managed service providing a hardware security module (HSM) to 
 6. If we want to encrypt data on storage it seems to be a very good solution for key management, especially if we have very
 high-security requirements for our encryption. 
 
-**But CloudHSM doesn't such good integration with other AWS services
-like KMS. Since AWS has no access to the keys at all, it is relatively harder than KMS, to use this solution for encryption of S3 Objects, EFS volume, or EBS immediately.
+But CloudHSM does not have good integration with other AWS services
+like KMS. Since AWS has no access to the keys in cloudHSM, it is relatively harder to integrate than KMS, to use this solution for encryption of S3 objects, EFS volume, or EBS immediately.
 
 ### Working of CloudHSM
 
@@ -188,12 +188,12 @@ AWS provides a Client SDK for integration of the custom application with CloudHS
 
 ### Cost comparison
 [AWS KMS](https://aws.amazon.com/kms/pricing/?nc1=h_ls) is much cheaper
-than [Cloud HSM](https://aws.amazon.com/cloudhsm/pricing/?nc1=h_ls).
+than [CloudHSM](https://aws.amazon.com/cloudhsm/pricing/?nc1=h_ls).
 
 Every CMK in AWS currently costs 1 USD per month. Also, we get 20.000 cryptographic requests in a month for free. If we
 make more than 20.000 requests in a month it costs between 0,03 and 12,00 USD for 10.000 requests depending on the key type.
 
-Cloud HSM costs between 1,4 and 2,00 USD per hour and per device depending on the region. If we have two HSMs in the cluster for a price of 1,50 USD, we pay 72 USD per day.
+CloudHSM costs between 1,4 and 2,00 USD per hour and per device depending on the region. If we have two HSMs in the cluster for a price of 1,50 USD, we pay 72 USD per day.
 
 If we want to use a custom key store in KMS we have to pay for both.
 

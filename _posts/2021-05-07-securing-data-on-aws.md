@@ -187,7 +187,7 @@ management.
 AWS provides a Client SDK for integration of the custom application with CloudHSM.
 
 
-### Cost comparison
+## Cost Comparison Between KMS and CloudHSM
 [AWS KMS](https://aws.amazon.com/kms/pricing/?nc1=h_ls) is much cheaper
 than [CloudHSM](https://aws.amazon.com/cloudhsm/pricing/?nc1=h_ls).
 

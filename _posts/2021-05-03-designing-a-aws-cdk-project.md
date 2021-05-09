@@ -4,7 +4,7 @@ categories: [craft, java]
 date: 2021-05-03 06:00:00 +1000
 modified: 2021-05-03 06:00:00 +1000
 author: default
-excerpt: "With AWS CDK, we can codify our infrastructure in code. In this articles, we're going to explore an opinionated way of designing a CDK project to make its components re-usable and easily extensible."
+excerpt: "With AWS CDK, we can codify our infrastructure in Java code. In this article, we're going to explore an opinionated way of designing a CDK project to make its components re-usable and easily extensible."
 image:
   auto: 0074-stack
 ---

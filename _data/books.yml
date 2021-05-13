@@ -69,3 +69,15 @@ hell-yeah:
   url: https://www.goodreads.com/en/book/show/52523856-hell-yeah-or-no
   title: "Hell Yeah or No"
   author: "Derek Sivers"
+
+psychology-of-money:
+  cover: /assets/img/covers/hell-yeah-260.jpg
+  url: https://www.goodreads.com/book/show/41881472-the-psychology-of-money
+  title: "The Psychology of Money"
+  author: "Morgan Housel"
+
+measure-what-matters:
+  cover: /assets/img/covers/measure-what-matters-260.jpg
+  url: https://www.goodreads.com/book/show/39286958-measure-what-matters
+  title: "Measure What Matters"
+  author: "John Doerr"

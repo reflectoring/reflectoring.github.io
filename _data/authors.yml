@@ -158,6 +158,13 @@ mujtaba:
   github: "mujjazi"
   bio: "Mujtaba is an Automation developer with a diverse range of experience working with Java Spring based projects. He is an advocate for DevOps and Test Automation while writing for various blogs to help young professionals"
 
+godeortela:
+  name: "Ortela Gode"
+  email: "godeortela@gmail.com"
+  avatar: "/assets/img/authors/ortela.jpg"
+  github: "ortelagode"
+  bio: "Enthusiastic Software Consultant with diverse experience in Java Enterprise applications. Always on the lookout to experiment new technologies"
+
 skempken:
   name: "Sebastian Kempken"
   email: "contact@sebastian-kempken.de"
@@ -166,6 +173,7 @@ skempken:
   stackoverflow: "1163345/skempken"
   twitter: "sebkempken"
   bio: "For more than a decade, I've been working as software engineer and architect. I love reasoning about our shared craft and writing down things I've learned."
+  bio: "For more than a decade, I've been working as software engineer and architect. I love reasoning about our shared craft and writing down things I've learned." 
 
 hoorvash:
   name: "Hoorvash Nikoo"
@@ -176,3 +184,38 @@ hoorvash:
   bio: "As a software engineer and a Java developer, I love to learn new technologies and solve
         technical problems. Writing is another passion of mine. Combining these passions and writing
         technical articles that might help even one individual is rewarding."
+
+jgoerner:
+  name: "Joshua Görner"
+  email: "joshua.goerner@gmail.com"
+  avatar: "/assets/img/authors/jgoerner.jpg"
+  github: "jgoerner"
+  bio: "Product Engineer, Online Instructor, Open Source Enthusiast and Father :-)"
+
+zeddysoft:
+  name: "Taiwo Azeez"
+  email: "azeeztaiwo942@gmail.com"
+  avatar: "/assets/img/authors/azeez.jpg"
+  github: "zeddysoft"
+  linkedin: "azeeztaiwo"
+  twitter: "zeddysoft"
+  bio: "Azeez is a skilled software engineer with experience in building highly scalable, reliable and maintainable back-end systems.
+  He enjoys general problem solving and likes to explore new technologies."
+
+lleuenberger:
+  name: "Lukas Leuenberger"
+  email: "lukas.leuenberger@hotmail.com"
+  avatar: "/assets/img/authors/lleuenberger.png"
+  github: "silenum"
+  linkedin: "lukas-leuenberger-a76924194"
+  bio: "I am a professional Software Engineer and part time student from Zurich. I like the everyday challenge to solve
+  problems and find simple solutions for complex problems. This can only be achieved if the problem is mastered from
+  design to implementation. This is what I like the most about software engineering. It's not only about what, but also how."
+
+bakic:
+  name: "Abdelbaki BEN ELHAJ SLIMENE"
+  email: "belhaj.abdelbaki@gmail.com"
+  avatar: "/assets/img/authors/baki.jpg"
+  github: "bakic"
+  linkedin: "abdelbaki-ben-elhaj-slimene-b797028"
+  bio: "As a software developer, I am looking for new challenges. Being a developer made me a student for life. I enjoy sharing knowledge and learn from the others."

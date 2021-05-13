@@ -146,6 +146,27 @@ The first set of three properties are used to specify the security credentials f
 
 Database name is the name of the database `msql` (selected in the MySQL Shell in the previous section) in the AWS RDS DB instance we want our application to connect from our application.
 
+## Configuring the Data Source Pool
+With the configuration done so far, Spring Cloud AWS creates the Tomcat JDBC pool with the default properties.We can configure the pool further inside our configuration class using `RdsInstanceConfigurer` class for instantiating a `DataSourceFactory` class with custom pool attributes as shown here:
+
+```java
+@Configuration
+public class ApplicationConfiguration {
+  @Bean
+  public RdsInstanceConfigurer instanceConfigurer() {
+    return ()-> {
+        TomcatJdbcDataSourceFactory dataSourceFactory = new TomcatJdbcDataSourceFactory();
+        dataSourceFactory.setInitialSize(10);
+        dataSourceFactory.setValidationQuery("SELECT 1 FROM DUAL");
+        return dataSourceFactory;
+    };
+  }
+}
+```
+
+Here we are overriding the validation query and the initial size during instatiation of `dataSourceFactory`.
+
+## Injecting the Data Source
 This data source can now be injected into any Spring Bean like our repository class in our example as shown here: 
 
 ```java
@@ -207,7 +228,7 @@ currentDate 2021-05-12
 ```
 We can see a warning in the log for using a deprecated driver class which is safe to be ignored. We have not specified any driver class here. The driver class `com.mysql.jdbc.Driver` is registered based on the metadata read from the database connection to AWS RDS. 
 
-## Read-Replica Configuration
+## Configuring the Read-Replica for Increasing Throughput
 Replication is a process by which we can copy data from one database server (also known as source database) to be copied to one or more database servers (known as replicas). It is a feature of the database engines of MariaDB, Microsoft SQL Server, MySQL, Oracle, and PostgreSQL DB which can be configured with AWS RDS. 
 
 Amazon RDS uses this built-in replication feature of these databases to create a special type of DB instance called a read replica from a source DB instance. The source DB instance plays the role of the primary DB instance and updates made to the primary DB instance are asynchronously copied to the read replica. This way we can increase the overall throughput of the database by reducing the load on our primary DB instance by routing read queries from your applications to the read replica.

@@ -9,7 +9,7 @@ image:
   auto: 0074-stack
 ---
 
-Amazon Relational Database Service (AWS RDS) is a relational database service available in AWS Cloud. [Spring Cloud for Amazon Web Services(AWS)](https://spring.io/projects/spring-cloud-aws). Spring Framework always had good support for database access technologies built on top of JDBC. By configuring the data source through dependency injection and by the use of JdbcTemplates, the application code is decoupled from any database-specific constructs. Spring Cloud AWS uses the same principles to provide integration with AWS RDS service through the JDBC module. 
+Amazon Relational Database Service (AWS RDS) is a relational database service available in AWS Cloud. The Spring Framework always had good support for database access technologies built on top of [JDBC](https://docs.oracle.com/javase/8/docs/technotes/guides/jdbc/). Spring Cloud AWS uses the same principles to provide integration with AWS RDS service through the Spring Cloud AWS JDBC module. 
 
 In this article, we will look at using the Spring Cloud AWS JDBC module of Spring Cloud AWS to integrate with the AWS RDS service with the help of some basic concepts of AWS RDS along with code examples.
 
@@ -17,7 +17,9 @@ In this article, we will look at using the Spring Cloud AWS JDBC module of Sprin
 
 
 ## AWS RDS Concepts
-Amazon Relational Database Service (Amazon RDS) is a managed service for a set of supported relational databases. As of today, the supported databases are Amazon Aurora, PostgreSQL, MySQL, MariaDB, Oracle Database, and SQL Server. Apart from providing reliable infrastructure and scalable capacity, AWS takes care of all the database administration tasks like taking backups and applying database patches while leaving us free to focus on building our applications.
+[Amazon Relational Database Service (AWS RDS)](https://aws.amazon.com/rds/) is a managed service for a set of supported relational databases. As of today, the supported databases are Amazon Aurora, PostgreSQL, MySQL, MariaDB, Oracle Database, and SQL Server. 
+
+Apart from providing a reliable infrastructure and scalable capacity, AWS takes care of all the database administration tasks like taking backups and applying database patches while leaving us free to focus on building our applications.
 
 ### DB Instance
 An RDS DB instance is the basic building block of Amazon RDS. It is an isolated database environment in the cloud and is accessed using the same database-specific client tools used to access on-premise databases. Each DB instance has a DB instance identifier used to uniquely identify the DB instance when interacting with the Amazon RDS service using the API or AWS CLI commands.

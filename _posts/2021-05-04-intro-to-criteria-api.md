@@ -72,7 +72,9 @@ public class ProductRepositoryImpl {
   @PersistenceContext
   EntityManager em;
 
-  public List<Product> findProductsByNameAndCategory(String name, String category) {
+  public List<Product> findProductsByNameAndCategory(
+                                            String name,
+                                            String category) {
       
   CriteriaBuilder cBuilder = em.getCriteriaBuilder();
   CriteriaQuery<Product> cQuery = cBuilder.createQuery(Product.class);
@@ -80,8 +82,10 @@ public class ProductRepositoryImpl {
   Root<Product> root = cQuery.from(Product.class);
 
   /* Conditions **/
-  Predicate namePredicate = cBuilder.like(root.get("name"), '%' + (name == null ? "" : name) + '%');
-  Predicate categoryPredicate = cBuilder.equal(root.get("category"), (category == null ? Category.TOOLS : category));
+  Predicate namePredicate = cBuilder.
+    like(root.get("name"), '%' + (name == null ? "" : name) + '%');
+  Predicate categoryPredicate = cBuilder.
+    equal(root.get("category"), (category == null ? Category.TOOLS : category));
 
   cQuery.where(namePredicate, categoryPredicate);
 
@@ -181,25 +185,29 @@ public class ProductRepositoryImpl {
   @PersistenceContext
   EntityManager em;
 
-  public List<Product> findProductsByNameAndCategory(String name, String category) {
+  public List<Product> findProductsByNameAndCategory(
+                                      String name,
+                                      String category) {
 
-      CriteriaBuilder cBuilder = em.getCriteriaBuilder();
-      CriteriaQuery<Product> cQuery = cBuilder.createQuery(Product.class);
+    CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+    CriteriaQuery<Product> cQuery = cBuilder.createQuery(Product.class);
 
-      /* FROM **/
-      Root<Product> root = cQuery.from(Product.class);
+    /* FROM **/
+    Root<Product> root = cQuery.from(Product.class);
 
-      /* Conditions using Metamodel **/
-      Predicate namePredicate = cBuilder.like(root.get(Product_.NAME), '%' + (name == null ? "" : name) + '%');
-      Predicate categoryPredicate = cBuilder.equal(root.get(Product_.CATEGORY), (category == null ? Category.TOOLS : category));
+    /* Conditions using Metamodel **/
+    Predicate namePredicate = cBuilder.
+      like(root.get(Product_.NAME), '%' + (name == null ? "" : name) + '%');
+    Predicate categoryPredicate = cBuilder.
+      equal(root.get(Product_.CATEGORY), (category == null ? Category.TOOLS : category));
 
-      /* WHERE **/
-      cQuery.where(namePredicate, categoryPredicate);
+    /* WHERE **/
+    cQuery.where(namePredicate, categoryPredicate);
 
-      /* Create Query object **/
-      TypedQuery<Product> query = em.createQuery(cQuery);
+    /* Create Query object **/
+    TypedQuery<Product> query = em.createQuery(cQuery);
 
-      return query.getResultList();
+    return query.getResultList();
   }
 }
 ````
@@ -231,17 +239,23 @@ In the following code, we can see a sample of using Specifications to create som
 ````java
 public class ProductSpecification {
 
-  public static Specification<Product> belongsToCategory(List<Category> categories) {
-      return (root, query, criteriaBuilder) ->
-              criteriaBuilder.in(root.get(Product_.CATEGORY)).value(categories);
+  public static Specification<Product> belongsToCategory(
+    List<Category> categories) {
+      return (root, query, cBuilder) ->
+        cBuilder.
+        in(root.get(Product_.CATEGORY)).value(categories);
   }
 
   public static Specification<Product> hasNameLike(String name) {
-      return ((root, cQuery, cBuilder) -> cBuilder.like(root.get(Product_.NAME), '%' + (name == null ? "" : name) + '%'));
+    return ((root, cQuery, cBuilder) -> 
+      cBuilder.
+      like(root.get(Product_.NAME), '%' + (name == null ? "" : name) + '%'));
   }
 
   public static Specification<Product> isCheap() {
-      return ((root, cQuery, cBuilder) -> cBuilder.lessThan(root.get(Product_.PRICE), 10));
+    return ((root, cQuery, cBuilder) ->
+      cBuilder.
+      lessThan(root.get(Product_.PRICE), 10));
   }
 }
 ````
@@ -250,7 +264,10 @@ To execute these Specifications, `ProductRepository` should `extends` an interfa
 
 ````java
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> , JpaSpecificationExecutor<Product> {
+public interface ProductRepository extends
+     JpaRepository<Product, Long> ,
+     JpaSpecificationExecutor<Product> {
+
   // query methods here
   List<Product> findByName(String name);
   // query methods here
@@ -328,11 +345,17 @@ public class ProductSpecificationBuilder {
       params = new ArrayList<>();
   }
 
-  public final ProductSpecificationBuilder with(final String key, final String operation, final Object value) {
+  public final ProductSpecificationBuilder with(
+        final String key, final String operation, final Object value) {
       return with(false, key, operation, value);
   }
 
-  public final ProductSpecificationBuilder with(final boolean orPredicate, final String key, final String operation, final Object value) {
+  public final ProductSpecificationBuilder with(
+                            final boolean orPredicate,
+                            final String key,
+                            final String operation,
+                            final Object value) {
+
       Operation op = Operation.getSimpleOperation(operation.charAt(0));
       if (op != null) {
           params.add(new Criteria(orPredicate, key, op, value));
@@ -341,15 +364,18 @@ public class ProductSpecificationBuilder {
   }
 
   public Specification<Product> build() {
+      
       if (params.size() == 0)
-          return null;
+        return null;
 
       Specification<Product> result = new ProductSpecification(params.get(0));
 
       for (int i = 1; i < params.size(); i++) {
           result = params.get(i).isOrPredicate()
-                  ? Objects.requireNonNull(Specification.where(result)).or(new ProductSpecification(params.get(i)))
-                  : Objects.requireNonNull(Specification.where(result)).and(new ProductSpecification(params.get(i)));
+                  ? Objects.requireNonNull(Specification.where(result)).
+                      or(new ProductSpecification(params.get(i)))
+                  : Objects.requireNonNull(Specification.where(result)).
+                      and(new ProductSpecification(params.get(i)));
       }
       return result;
   }
@@ -370,19 +396,25 @@ public class ProductSpecification implements Specification<Product> {
   }
 
   @Override
-  public Predicate toPredicate(final Root<Product> root, final CriteriaQuery<?> cQuery, final CriteriaBuilder cBuilder) {
-      switch (criteria.getOperation()) {
-          case EQ:
-              return cBuilder.equal(root.get(criteria.getKey()), criteria.getValue());
-          case GT:
-              return cBuilder.greaterThan(root.get(criteria.getKey()), criteria.getValue().toString());
-          case LT:
-              return cBuilder.lessThan(root.get(criteria.getKey()), criteria.getValue().toString());
-          case LIKE:
-              return cBuilder.like(root.get(criteria.getKey()), criteria.getValue().toString());
-          default:
-              return null;
-      }
+  public Predicate toPredicate(
+     final Root<Product> root, final CriteriaQuery<?> cQuery, final CriteriaBuilder cBuilder) {
+
+       switch (criteria.getOperation()) {
+           case EQ:
+             return cBuilder.equal(
+                root.get(criteria.getKey()), criteria.getValue());
+           case GT:
+             return cBuilder.greaterThan(
+                root.get(criteria.getKey()), criteria.getValue().toString());
+           case LT:
+             return cBuilder.lessThan(
+                root.get(criteria.getKey()), criteria.getValue().toString());
+           case LIKE:
+             return cBuilder.like(
+                root.get(criteria.getKey()), criteria.getValue().toString());
+           default:
+             return null;
+       }
   }
 }
 ````
@@ -411,7 +443,10 @@ public class ProductController {
   }
 
   @GetMapping(value = "/product/{search}/{predicate}")
-  public List<Product> search(@PathVariable(value = "search") String search, @PathVariable(value = "predicate") PredicateEnum predicate) {
+  public List<Product> search(
+                @PathVariable(value = "search") String search,
+                @PathVariable(value = "predicate") PredicateEnum predicate) {
+
       ProductSpecificationBuilder specificationBuilder = new ProductSpecificationBuilder();
       Pattern pattern = Pattern.compile("(\\w+?)([:<%>])(\\w+?),");
       Matcher matcher = pattern.matcher(search + ",");

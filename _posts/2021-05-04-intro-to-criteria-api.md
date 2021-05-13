@@ -45,20 +45,20 @@ with the Spring Data Jpa approach:
 @Table(name = "t_product")
 public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    @Column(name = "c_name")
-    private String name;
+  @Column(name = "c_name")
+  private String name;
 
-    @Column(name = "c_category")
-    private String category;
+  @Column(name = "c_category")
+  private String category;
 
-    @Column(name = "c_price")
-    private String price;
+  @Column(name = "c_price")
+  private String price;
 
-    //  getter and setter
+  //  getter and setter
 
 }
 ````
@@ -70,27 +70,27 @@ We're going to retrieve products that have specific names and categories using C
 @Repository
 public class ProductRepositoryImpl {
         
-    @PersistenceContext
-    EntityManager em;
+  @PersistenceContext
+  EntityManager em;
 
-    public List<Product> findProductsByNameAndCategory(String name, String category) {
-        
-        CriteriaBuilder cBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<Product> cQuery = cBuilder.createQuery(Product.class);
+  public List<Product> findProductsByNameAndCategory(String name, String category) {
+      
+      CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+      CriteriaQuery<Product> cQuery = cBuilder.createQuery(Product.class);
 
-        Root<Product> root = cQuery.from(Product.class);
+      Root<Product> root = cQuery.from(Product.class);
 
-        /* Conditions **/
-        Predicate namePredicate = cBuilder.like(root.get("name"), '%' + (name == null ? "" : name) + '%');
-        Predicate categoryPredicate = cBuilder.equal(root.get("category"), (category == null ? Category.TOOLS : category));
+      /* Conditions **/
+      Predicate namePredicate = cBuilder.like(root.get("name"), '%' + (name == null ? "" : name) + '%');
+      Predicate categoryPredicate = cBuilder.equal(root.get("category"), (category == null ? Category.TOOLS : category));
 
-        cQuery.where(namePredicate, categoryPredicate);
+      cQuery.where(namePredicate, categoryPredicate);
 
-        /* Create Query object **/
-        TypedQuery<Product> query = em.createQuery(cQuery);
+      /* Create Query object **/
+      TypedQuery<Product> query = em.createQuery(cQuery);
 
-        return query.getResultList();
-    }
+      return query.getResultList();
+  }
 }
 ````
 
@@ -121,36 +121,36 @@ In this tutorial, we're going to use the Metamodel generator tool provided by [J
 The first step is to add Metamodel Generator dependency and also a required plugin in `pom.xml` as compiler argument: 
 
 ````xml
-    <dependencies>
-        <!-- Other required dependencies ... -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-jpamodelgen</artifactId>
-            <version>5.3.7.Final</version>
-        </dependency>
-    </dependencies>
+  <dependencies>
+      <!-- Other required dependencies ... -->
+      <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-jpamodelgen</artifactId>
+          <version>5.3.7.Final</version>
+      </dependency>
+  </dependencies>
     
 ````
 
 ````xml   
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                    <compilerArguments>
-                        <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
-                    </compilerArguments>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+      <plugins>
+          <plugin>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-maven-plugin</artifactId>
+          </plugin>
+          <plugin>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <configuration>
+                  <source>11</source>
+                  <target>11</target>
+                  <compilerArguments>
+                      <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
+                  </compilerArguments>
+              </configuration>
+          </plugin>
+      </plugins>
+  </build>
 ```` 
 By building the project, the Metamodel classes will be generated automatically in the `target/generated-classes` folder. 
 **We can access all our entity object fields through these classes. Metamodel class name for `Product` entity will be `Product_` 
@@ -161,15 +161,15 @@ like the following**:
 @StaticMetamodel(Product.class)
 public abstract class Product_ {
 
-	public static volatile SingularAttribute<Product, Double> price;
-	public static volatile SingularAttribute<Product, String> name;
-	public static volatile SingularAttribute<Product, Long> id;
-	public static volatile SingularAttribute<Product, String> category;
+  public static volatile SingularAttribute<Product, Double> price;
+  public static volatile SingularAttribute<Product, String> name;
+  public static volatile SingularAttribute<Product, Long> id;
+  public static volatile SingularAttribute<Product, String> category;
 
-	public static final String PRICE = "price";
-	public static final String NAME = "name";
-	public static final String ID = "id";
-	public static final String CATEGORY = "category";
+  public static final String PRICE = "price";
+  public static final String NAME = "name";
+  public static final String ID = "id";
+  public static final String CATEGORY = "category";
 
 }
 ````
@@ -181,29 +181,29 @@ definition as you can see here:
 @Repository
 public class ProductRepositoryImpl {
 
-    @PersistenceContext
-    EntityManager em;
+  @PersistenceContext
+  EntityManager em;
 
-    public List<Product> findProductsByNameAndCategory(String name, String category) {
+  public List<Product> findProductsByNameAndCategory(String name, String category) {
 
-        CriteriaBuilder cBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<Product> cQuery = cBuilder.createQuery(Product.class);
+      CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+      CriteriaQuery<Product> cQuery = cBuilder.createQuery(Product.class);
 
-        /* FROM **/
-        Root<Product> root = cQuery.from(Product.class);
+      /* FROM **/
+      Root<Product> root = cQuery.from(Product.class);
 
-        /* Conditions using Metamodel **/
-        Predicate namePredicate = cBuilder.like(root.get(Product_.NAME), '%' + (name == null ? "" : name) + '%');
-        Predicate categoryPredicate = cBuilder.equal(root.get(Product_.CATEGORY), (category == null ? Category.TOOLS : category));
+      /* Conditions using Metamodel **/
+      Predicate namePredicate = cBuilder.like(root.get(Product_.NAME), '%' + (name == null ? "" : name) + '%');
+      Predicate categoryPredicate = cBuilder.equal(root.get(Product_.CATEGORY), (category == null ? Category.TOOLS : category));
 
-        /* WHERE **/
-        cQuery.where(namePredicate, categoryPredicate);
+      /* WHERE **/
+      cQuery.where(namePredicate, categoryPredicate);
 
-        /* Create Query object **/
-        TypedQuery<Product> query = em.createQuery(cQuery);
+      /* Create Query object **/
+      TypedQuery<Product> query = em.createQuery(cQuery);
 
-        return query.getResultList();
-    }
+      return query.getResultList();
+  }
 }
 ````
 **By using Metamodel we can use `Product_.name` and `Product_.category` instead of `"name"` and `"category"`**.
@@ -214,10 +214,10 @@ Data Jpa query method's downsides first. Then we see how it can be better by JPA
 
 ````java
 interface ProductRepository {
-    List<Product> findAllByNameLikeAndPriceLessThanEqual(
-            String name,
-            Double price
-    );
+  List<Product> findAllByNameLikeAndPriceLessThanEqual(
+          String name,
+          Double price
+  );
 }
 ````
 **Using the Spring Data query methods has some problems**:
@@ -234,18 +234,18 @@ In the following code, we can see a sample of using Specifications to create som
 ````java
 public class ProductSpecification {
 
-    public static Specification<Product> belongsToCategory(List<Category> categories) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.in(root.get(Product_.CATEGORY)).value(categories);
-    }
+  public static Specification<Product> belongsToCategory(List<Category> categories) {
+      return (root, query, criteriaBuilder) ->
+              criteriaBuilder.in(root.get(Product_.CATEGORY)).value(categories);
+  }
 
-    public static Specification<Product> hasNameLike(String name) {
-        return ((root, cQuery, cBuilder) -> cBuilder.like(root.get(Product_.NAME), '%' + (name == null ? "" : name) + '%'));
-    }
+  public static Specification<Product> hasNameLike(String name) {
+      return ((root, cQuery, cBuilder) -> cBuilder.like(root.get(Product_.NAME), '%' + (name == null ? "" : name) + '%'));
+  }
 
-    public static Specification<Product> isCheap() {
-        return ((root, cQuery, cBuilder) -> cBuilder.lessThan(root.get(Product_.PRICE), 10));
-    }
+  public static Specification<Product> isCheap() {
+      return ((root, cQuery, cBuilder) -> cBuilder.lessThan(root.get(Product_.PRICE), 10));
+  }
 }
 ````
 
@@ -254,16 +254,16 @@ To execute these Specifications, `ProductRepository` should `extends` an interfa
 ````java
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> , JpaSpecificationExecutor<Product> {
-    // query methods here
-    List<Product> findByName(String name);
-    // query methods here
+  // query methods here
+  List<Product> findByName(String name);
+  // query methods here
 }
 ````
 
 Now we see this Specification execution:
 
 ````java
-    productRepository.findAll(ProductSpecification.isCheap());
+  productRepository.findAll(ProductSpecification.isCheap());
 ````
 
 ### Combine Specifications
@@ -271,11 +271,11 @@ Combining the predicates happens via `Specification` interface `public static` h
 `where()` to get the desired result. 
 
 ````java
-    public static Specification<Product> getCheapProductsWithNameLike(String name) {
-        return Specification.where(ProductSpecification.isCheap().and(
-                ProductSpecification.hasNameLike(name)
-        ));
-    }
+  public static Specification<Product> getCheapProductsWithNameLike(String name) {
+      return Specification.where(ProductSpecification.isCheap().and(
+              ProductSpecification.hasNameLike(name)
+      ));
+  }
 ````
 As we can see, the structure of the method still does not support dynamic queries. **To achieve a dynamic
 search method, generate the predicates more general vis the Specifications**. To dynamically combine multiple criteria
@@ -283,28 +283,28 @@ Let's take a look at the code here:
 
 ````java
 public enum Operation {
-    EQ, GT, LT, LIKE;
-    public static final String[] SIMPLE_OPERATION_SET =
-            { ":", ">", "<", "%" };
-    public static Operation getSimpleOperation(final char input)
-    {
-        switch (input) {
-            case ':': return EQ;
-            case '>': return GT;
-            case '<': return LT;
-            case '%': return LIKE;
-            default: return null;
-        }
-    }
+  EQ, GT, LT, LIKE;
+  public static final String[] SIMPLE_OPERATION_SET =
+          { ":", ">", "<", "%" };
+  public static Operation getSimpleOperation(final char input)
+  {
+      switch (input) {
+          case ':': return EQ;
+          case '>': return GT;
+          case '<': return LT;
+          case '%': return LIKE;
+          default: return null;
+      }
+  }
 }
 
 ````
 ````java
 public class Criteria {
-   private String key;
-   private Object value;
-   private Operation operation;
-   private boolean orPredicate;
+  private String key;
+  private Object value;
+  private Operation operation;
+  private boolean orPredicate;
 }
 ````
 We create a `Criteria` class that contains the `Operation` field.
@@ -324,68 +324,68 @@ Let's see a simple `ProductSpecificationBuilder` implementation:
 ````java
 public class ProductSpecificationBuilder {
 
-    private final List<Criteria> params;
+  private final List<Criteria> params;
 
-    public ProductSpecificationBuilder() {
-        params = new ArrayList<>();
-    }
+  public ProductSpecificationBuilder() {
+      params = new ArrayList<>();
+  }
 
-    public final ProductSpecificationBuilder with(final String key, final String operation, final Object value) {
-        return with(false, key, operation, value);
-    }
+  public final ProductSpecificationBuilder with(final String key, final String operation, final Object value) {
+      return with(false, key, operation, value);
+  }
 
-    public final ProductSpecificationBuilder with(final boolean orPredicate, final String key, final String operation, final Object value) {
-        Operation op = Operation.getSimpleOperation(operation.charAt(0));
-        if (op != null) {
-            params.add(new Criteria(orPredicate, key, op, value));
-        }
-        return this;
-    }
+  public final ProductSpecificationBuilder with(final boolean orPredicate, final String key, final String operation, final Object value) {
+      Operation op = Operation.getSimpleOperation(operation.charAt(0));
+      if (op != null) {
+          params.add(new Criteria(orPredicate, key, op, value));
+      }
+      return this;
+  }
 
-    public Specification<Product> build() {
-        if (params.size() == 0)
-            return null;
+  public Specification<Product> build() {
+      if (params.size() == 0)
+          return null;
 
-        Specification<Product> result = new ProductSpecification(params.get(0));
+      Specification<Product> result = new ProductSpecification(params.get(0));
 
-        for (int i = 1; i < params.size(); i++) {
-            result = params.get(i).isOrPredicate()
-                    ? Objects.requireNonNull(Specification.where(result)).or(new ProductSpecification(params.get(i)))
-                    : Objects.requireNonNull(Specification.where(result)).and(new ProductSpecification(params.get(i)));
-        }
-        return result;
-    }
+      for (int i = 1; i < params.size(); i++) {
+          result = params.get(i).isOrPredicate()
+                  ? Objects.requireNonNull(Specification.where(result)).or(new ProductSpecification(params.get(i)))
+                  : Objects.requireNonNull(Specification.where(result)).and(new ProductSpecification(params.get(i)));
+      }
+      return result;
+  }
 }
 ````
 ````java
 public class ProductSpecification implements Specification<Product> {
 
-    private Criteria criteria;
+  private Criteria criteria;
 
-    public ProductSpecification(final Criteria criteria) {
-        super();
-        this.criteria = criteria;
-    }
+  public ProductSpecification(final Criteria criteria) {
+      super();
+      this.criteria = criteria;
+  }
 
-    public Criteria getCriteria() {
-        return criteria;
-    }
+  public Criteria getCriteria() {
+      return criteria;
+  }
 
-    @Override
-    public Predicate toPredicate(final Root<Product> root, final CriteriaQuery<?> cQuery, final CriteriaBuilder cBuilder) {
-        switch (criteria.getOperation()) {
-            case EQ:
-                return cBuilder.equal(root.get(criteria.getKey()), criteria.getValue());
-            case GT:
-                return cBuilder.greaterThan(root.get(criteria.getKey()), criteria.getValue().toString());
-            case LT:
-                return cBuilder.lessThan(root.get(criteria.getKey()), criteria.getValue().toString());
-            case LIKE:
-                return cBuilder.like(root.get(criteria.getKey()), criteria.getValue().toString());
-            default:
-                return null;
-        }
-    }
+  @Override
+  public Predicate toPredicate(final Root<Product> root, final CriteriaQuery<?> cQuery, final CriteriaBuilder cBuilder) {
+      switch (criteria.getOperation()) {
+          case EQ:
+              return cBuilder.equal(root.get(criteria.getKey()), criteria.getValue());
+          case GT:
+              return cBuilder.greaterThan(root.get(criteria.getKey()), criteria.getValue().toString());
+          case LT:
+              return cBuilder.lessThan(root.get(criteria.getKey()), criteria.getValue().toString());
+          case LIKE:
+              return cBuilder.like(root.get(criteria.getKey()), criteria.getValue().toString());
+          default:
+              return null;
+      }
+  }
 }
 ````
 
@@ -406,30 +406,30 @@ but for simplicity, we are going to write all the code in the controller.
 @RequestMapping("/api")
 public class ProductController {
     
-    private final ProductRepository productRepository;
+  private final ProductRepository productRepository;
 
-    public ProductController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+  public ProductController(ProductRepository productRepository) {
+      this.productRepository = productRepository;
+  }
 
-    @GetMapping(value = "/product/{search}/{predicate}")
-    public List<Product> search(@PathVariable(value = "search") String search, @PathVariable(value = "predicate") PredicateEnum predicate) {
-        ProductSpecificationBuilder specificationBuilder = new ProductSpecificationBuilder();
-        Pattern pattern = Pattern.compile("(\\w+?)([:<%>])(\\w+?),");
-        Matcher matcher = pattern.matcher(search + ",");
-        while (matcher.find()) {
-            if (predicate.equals(PredicateEnum.OR)) {
-                specificationBuilder.with(true, matcher.group(1), matcher.group(2), matcher.group(3));
-            } else {
-                specificationBuilder.with(matcher.group(1), matcher.group(2), matcher.group(3));
-            }
-        }
-        Specification<Product> spec = specificationBuilder.build();
-        return productRepository.findAll(spec);
-    }
+  @GetMapping(value = "/product/{search}/{predicate}")
+  public List<Product> search(@PathVariable(value = "search") String search, @PathVariable(value = "predicate") PredicateEnum predicate) {
+      ProductSpecificationBuilder specificationBuilder = new ProductSpecificationBuilder();
+      Pattern pattern = Pattern.compile("(\\w+?)([:<%>])(\\w+?),");
+      Matcher matcher = pattern.matcher(search + ",");
+      while (matcher.find()) {
+          if (predicate.equals(PredicateEnum.OR)) {
+              specificationBuilder.with(true, matcher.group(1), matcher.group(2), matcher.group(3));
+          } else {
+              specificationBuilder.with(matcher.group(1), matcher.group(2), matcher.group(3));
+          }
+      }
+      Specification<Product> spec = specificationBuilder.build();
+      return productRepository.findAll(spec);
+  }
 }
 ````  
-The full implementation of this tutorial is in the [Github](https://github.com/hoorvash/code-examples/tree/criteria-api).
+The full implementation of this tutorial is on [Github](https://github.com/hoorvash/code-examples/tree/criteria-api).
 We can access the Rest API with URL `http://localhost:1112/swagger-ui.html#/` to test this query: `name:broom,price<30`.
 We can learn more about Specification from [Getting Started with Spring Data Specifications](https://reflectoring.io/spring-data-specifications/).
 

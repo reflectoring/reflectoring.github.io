@@ -37,8 +37,7 @@ Metamodel API and Specifications are the topics we're going to discuss in this t
 so it's kind of what reflection is towards general java types**
 - Specification: **It's what makes Criteria API predicates reusable and eliminates boilerplates**
 
-Let's define our entity object `Product` first, then explain what all these means by comparing Criteria API queries
-with the Spring Data Jpa approach:
+Let's define our entity object `Product` first:
 
 ````java
 @Entity
@@ -75,47 +74,45 @@ public class ProductRepositoryImpl {
 
   public List<Product> findProductsByNameAndCategory(String name, String category) {
       
-      CriteriaBuilder cBuilder = em.getCriteriaBuilder();
-      CriteriaQuery<Product> cQuery = cBuilder.createQuery(Product.class);
+  CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+  CriteriaQuery<Product> cQuery = cBuilder.createQuery(Product.class);
 
-      Root<Product> root = cQuery.from(Product.class);
+  Root<Product> root = cQuery.from(Product.class);
 
-      /* Conditions **/
-      Predicate namePredicate = cBuilder.like(root.get("name"), '%' + (name == null ? "" : name) + '%');
-      Predicate categoryPredicate = cBuilder.equal(root.get("category"), (category == null ? Category.TOOLS : category));
+  /* Conditions **/
+  Predicate namePredicate = cBuilder.like(root.get("name"), '%' + (name == null ? "" : name) + '%');
+  Predicate categoryPredicate = cBuilder.equal(root.get("category"), (category == null ? Category.TOOLS : category));
 
-      cQuery.where(namePredicate, categoryPredicate);
+  cQuery.where(namePredicate, categoryPredicate);
 
-      /* Create Query object **/
-      TypedQuery<Product> query = em.createQuery(cQuery);
+  /* Create Query object **/
+  TypedQuery<Product> query = em.createQuery(cQuery);
 
-      return query.getResultList();
+  return query.getResultList();
   }
 }
 ````
 
 The above code's description is as follows:
 
-* First two lines of the method shows how to get `CriteriaBuilder` and `CriteriaQuery` to create different parts of the query from
-query statement to type of  the result row
-* Variable `root` is kind `FROM table_name` in our query declaration introduced to the `cQuery` object
-* Variables `namePredicate` and `categoryPredicate` are defined as conditions in the query. They're not effective unless 
-we use the where part of the query to introduce these conditions to the `cQuery` object that we defined earlier in the code
-* We apply the predicates via `cQuery.where(namePredicate, categoryPredicate)` in the method
+* First two lines of the method shows how to get `CriteriaBuilder` and `CriteriaQuery` to create different parts of the query
+* Variable `root` is like `FROM table_name` in our query declaration introduced to the `cQuery` object
+* Variables `namePredicate` and `categoryPredicate` are defined as conditions in the query. Only applied if used
+as parameters of `where` method of `cQuery` object.
 * We finally create the `TypedQuery` object with `em.createQuery(cQuery)`. `TypedQuery` interface is a
  subclass of `Query` interface.
  
- Objects `namePredicate` and `categoryPredicate` are predicates that construct `where` clause as mentioned before.
+ Objects `namePredicate` and `categoryPredicate` are predicates that construct `where` clause.
 
 ## JPA Metamodel
-As we can see in the above code, we used the name of the fields of the entity classes in the predicates like `"name"` and `"category"`.
+In the above code example, We used the name of the fields of the entity classes in the predicates like `"name"` and `"category"`.
 **Using string names of entities in the predicates has some flaws**:
 - **It's hard to remember the name so we might need to look it up**
 - **Query will need refactoring if the column's name change later**
-- **It increases the chance of error in runtime because of the possible mistype** 
+- **It increases the chance of errors in runtime because of the possible mistype** 
 
-**Using JPA Metamodels fixes the above problems**. **It helps us to avoid using the column's name by generating 
-some classes similar to the name of corresponding entities with an added "_" at the end**.
+**Using JPA Metamodels fixes the above problems**. **It helps us to avoid using the column's name**. It does
+ that by generating some classes similar to the name of corresponding entities but with an "_" at the end**.
 In this tutorial, we're going to use the Metamodel generator tool provided by [JBoss](https://docs.jboss.org/hibernate/orm/5.0/topical/html/metamodelgen/MetamodelGenerator.html).
 
 The first step is to add Metamodel Generator dependency and also a required plugin in `pom.xml` as compiler argument: 
@@ -153,7 +150,7 @@ The first step is to add Metamodel Generator dependency and also a required plug
   </build>
 ```` 
 By building the project, the Metamodel classes will be generated automatically in the `target/generated-classes` folder. 
-**We can access all our entity object fields through these classes. Metamodel class name for `Product` entity will be `Product_` 
+**We can access all our entity object fields through the generated classes. Metamodel class name for `Product` entity is `Product_` 
 like the following**: 
 
 ````java
@@ -278,7 +275,7 @@ Combining the predicates happens via `Specification` interface `public static` h
   }
 ````
 As we can see, the structure of the method still does not support dynamic queries. **To achieve a dynamic
-search method, generate the predicates more general vis the Specifications**. To dynamically combine multiple criteria
+search method, generate the predicates more general via the Specifications**. To dynamically combine multiple criteria
 Let's take a look at the code here:
 
 ````java
@@ -308,6 +305,7 @@ public class Criteria {
 }
 ````
 We create a `Criteria` class that contains the `Operation` field.
+
 Our purpose is to get a `String` input. Then parse it to get the desired query. After that, we pass it through 
 `ProductSpecificationBuilder` to generate the proper Specification and retrieve the data. 
 The input String of our dynamic search method is going to be like this: `name:broom,price<30`. 
@@ -315,7 +313,7 @@ This means that we want a product that its name is `equal` to `broom` and its `p
 
 The `Criteria` implementation holds a basic representation of a constraint meaning:
 - key: The field that the query is based on it - for example : `price`, `name`, ...etc
-- value: The value of the field - for example : 10, Sara, ... etc
+- value: The value of the field - for example : 10, pizza, ... etc
 - operation: It's the condition - for example :  equality, like, ...etc
 - orPredicate: It shows `or` or `and` between specifications 
 
@@ -389,7 +387,7 @@ public class ProductSpecification implements Specification<Product> {
 }
 ````
 
-In `ProductSpecification`, we executes the Specifications.
+In `ProductSpecification`, we execute the Specifications.
 
 The `params` in `ProductSpecificationBuilder` is the separated SpecificationCriteria that is extracted from input String.
 So if the input is  `name:broom,price<30` with a false value in `orPredict` field, the params size is `2`.
@@ -399,7 +397,7 @@ And there's a `and` between these two specifications because of `orPredicate` va
 
 
 Let's implement a Rest API, and use the Specifications. It's better to write some part of the code to a service layer, 
-but for simplicity, we are going to write all the code in the controller. 
+but for simplicity, we write all the code in the controller. 
 
 ````java
 @RestController

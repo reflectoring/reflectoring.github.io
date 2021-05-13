@@ -9,25 +9,25 @@ image:
   auto: 0074-stack
 ---
 
-AWS provides the RDS service for relational databases. [Spring Cloud for Amazon Web Services(AWS)](https://spring.io/projects/spring-cloud-aws) . Spring Framework always had good support for database access technologies built on top of JDBC. By configuring the datasource through dependency injection and by the use of JdbcTemplates, the application code is decoupled from any database specific constructs. Spring Cloud AWS uses the same principles to provide integration with AWS RDS service through the jdbc module. 
+Amazon Relational Database Service (AWS RDS) is a relational database service available in AWS Cloud. [Spring Cloud for Amazon Web Services(AWS)](https://spring.io/projects/spring-cloud-aws). Spring Framework always had good support for database access technologies built on top of JDBC. By configuring the data source through dependency injection and by the use of JdbcTemplates, the application code is decoupled from any database-specific constructs. Spring Cloud AWS uses the same principles to provide integration with AWS RDS service through the JDBC module. 
 
-In this article, we will look at using the Spring Cloud AWS JDBC module of Spring Cloud AWS to integrate with AWS RDS service with the help of some basic concepts of the AWS RDS service along with code examples.
+In this article, we will look at using the Spring Cloud AWS JDBC module of Spring Cloud AWS to integrate with the AWS RDS service with the help of some basic concepts of AWS RDS along with code examples.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springcloudrds" %}
 
 
 ## AWS RDS Concepts
-Amazon Relational Database Service (Amazon RDS) is a managed service for a set of supported relational databases. As of today the supported datases are:  Amazon Aurora, PostgreSQL, MySQL, MariaDB, Oracle Database, and SQL Server. Apart from providing a reliable infrastructure and scalable capacity, AWS takes care of all the database administration tasks like taking back ups and applying database patches leaving us free to focus on building our applications.
+Amazon Relational Database Service (Amazon RDS) is a managed service for a set of supported relational databases. As of today, the supported databases are Amazon Aurora, PostgreSQL, MySQL, MariaDB, Oracle Database, and SQL Server. Apart from providing reliable infrastructure and scalable capacity, AWS takes care of all the database administration tasks like taking backups and applying database patches while leaving us free to focus on building our applications.
 
 ### DB Instance
-An RDS DB instance is the basic building block of Amazon RDS. It is an isolated database environment in the cloud and is accessed using the same database specific client tools used to access on-premise databases. Each DB instance has a DB instance identifier used to uniquely identify the DB instance when interacting with the Amazon RDS service using the API or AWS CLI commands.
+An RDS DB instance is the basic building block of Amazon RDS. It is an isolated database environment in the cloud and is accessed using the same database-specific client tools used to access on-premise databases. Each DB instance has a DB instance identifier used to uniquely identify the DB instance when interacting with the Amazon RDS service using the API or AWS CLI commands.
 
 ### DB Instance Class
-The DB instance class is used to specify the computate and storage capacity of the RDS DB instance. RDS supports three types of instance classes: 
+The DB instance class is used to specify the compute and storage capacity of the AWS RDS DB instance. RDS supports three types of instance classes: 
 ![RDS DB instance Classes](/assets/img/posts/aws-rds-spring-cloud/dbinstance-classes.png)
 
-**Standard**: These are general-purpose instance classes that deliver balanced compute, memory, and networking for a broad range a general purpose workloads.
-**Memory Optimized**: These class of instances are optimized for memory-intensive applications offering both high compute capacity and a high memory footprint. 
+**Standard**: These are general-purpose instance classes that deliver balanced compute, memory, and networking for a broad range of general-purpose workloads.
+**Memory Optimized**: This class of instances is optimized for memory-intensive applications offering both high compute capacity and a high memory footprint. 
 **Burstable Performance**: These instance classes provide a baseline performance level, with the ability to burst to full CPU usage.
 
 ### Storage Types
@@ -40,8 +40,8 @@ magnetic (also known as standard) which differ in performance characteristics an
 ## Features of Spring Cloud JDBC
 Spring Cloud AWS JDBC module enables our Java applications to access databases created in AWS RDS with standard JDBC protocol using a declarative configuration. Some of the main features provided by this module are:
 
-1. Automatic data source configuration by creation of an Amazon RDS backed datasource to other beans as a javax.sql.DataSource
-2. Automatic detection of read-replica and sending requests to the read-replica for read-only transactions to increase overall throughput.
+1. Data source configuration by the creation of an Amazon RDS backed data source to other beans as a javax.sql.DataSource
+2. Detection of read-replica instance and sending requests to the read-replica for read-only transactions to increase overall throughput.
 3. Retry-support to send failed database requests to a secondary instance in a different Availability Zone.
 
 ## Setting up the Environment
@@ -68,7 +68,7 @@ Let us create a DB instance using the AWS Management Console.
 
 ![RDS DB Instance Creation](/assets/img/posts/aws-rds-spring-cloud/create-db-instance.png)
 
-Here we have chosen to create the DB instance using the `Easy Create` option which sets default values for most of the priperties. We have chosen [MySQL](https://www.mysql.com) as our database engine and soecified the database identifier, user name and password. We also need to enable public access and allow access from our host if we wish to access this instance from public network over internet.
+Here we have chosen to create the DB instance using the `Easy Create` option which sets default values for most of the properties. We have chosen [MySQL](https://www.mysql.com) as our database engine and specified the database identifier, user name, and password. We also need to enable public access and allow access from our host if we wish to access this instance from the public network over the internet.
 
 ## Connecting to RDS Instance
 After the DB instance is available, we have to connect to it from our development environment to run our database operations. For this, let us retrieve its endpoint from the DB instance connectivity description in the AWS Management Console :
@@ -79,16 +79,16 @@ After the DB instance is available, we have to connect to it from our developmen
 We can see the endpoint of our DB instance that we created in the previous step as `testinstance.cfkcguht5mdw.us-east-1.rds.amazonaws.com`. 
 We can also retrieve the endpoint with the `DescribeDBInstances` API or by running the `describe-db-instances` command in AWS CLI. We use this endpoint to construct the connection string required to connect with our DB instance from our favorite database tool or programming language. 
 
-Since we have chosen MySQL as our database engine when creating our DB instance, we will use a MySQL client to connect to it. [MySQL Shell](https://dev.mysql.com/doc/mysql-shell/8.0/en/) is a command line shell for MySQL database where we can run SQL statements and scripts written in JavaScript and Python. 
+Since we have chosen MySQL as our database engine when creating our DB instance, we will use a MySQL client to connect to it. [MySQL Shell](https://dev.mysql.com/doc/mysql-shell/8.0/en/) is a command-line shell for MySQL database where we can run SQL statements and scripts written in JavaScript and Python. 
 
-Let us [download the MySQL Shell](https://dev.mysql.com/downloads/shell/) installer for our operating system and install it in our environment. We will be able to run the MySQL commands in the shell. But before that, let us use connect to our DB instance in AWS RDS with the endpoint of our DB instance in AWS RDS using the below command:
+Let us [download the MySQL Shell](https://dev.mysql.com/downloads/shell/) installer for our operating system and install it in our environment. We will be able to run the MySQL commands in the shell. But before that, let us connect to our DB instance in AWS RDS which we created earlier with the endpoint of the DB instance using the below command:
 
 ```shell
 mysqlsh -h testinstance.cfkcguht5mdw.us-east-1.rds.amazonaws.com -P 3306 -u pocadmin
 ```
-We have specified the port and user , apart from specifying the endpoint of our DB instance in the connection string. 
+We have specified the port and user, apart from specifying the endpoint of our DB instance in the connection string. 
 
-We also need to ensure that the AWS RDS instance is reachable from our network where MySQL Shell is running. If we are accessing AWS RDS from a public network over internet, we need to enable public access property of our DB instance and associate a security group to accept connections from our host IP. With our connection established, we can run MySQL commands in the shell as shown below:
+We also need to ensure that the AWS RDS instance is reachable from our network where MySQL Shell is running. If we are accessing AWS RDS from a public network over the internet, we need to enable the public access property of our DB instance and associate a security group to accept connections from our host IP. With our connection established, we can run MySQL commands in the shell as shown below:
 
 ```shell
  MySQL  testinstance.cfkcguht5mdw.us-east-1.rds SQL > SHOW DATABASES;
@@ -112,7 +112,7 @@ Fetching table and column names from `mysql` for auto-completion... Press ^C to 
 1 row in set (0.1967 sec)
 
 ```
-Here we list the default set of databases in MySQL and then select a database named `mysql` before running a simple SQL command to fetch the current date. We will use the same database in our application. We have to specify this database name in the configuration of our datasource in our Spring Boot application which we will cover in the next section.
+Here we list the default set of databases in MySQL and then select a database named `mysql` before running a simple SQL command to fetch the current date. We will use the same database in our application. We have to specify this database name in the configuration of our data source in our Spring Boot application which we will cover in the next section.
 
 ## Configuring the Data Source
 A datasource is a factory for obtaining connections to a physical data source. include the module dependency for Spring Cloud AWS JDBC into our Maven configuration.  If we were to use the JDBC module of Spring we would have added a module dependency on `spring-boot-starter-jdbc` for configuring our datasource:
@@ -130,7 +130,7 @@ We will not need this now, since we are using AWS RDS with Spring cloud. We will
       <artifactId>spring-cloud-starter-aws-jdbc</artifactId>
     </dependency>
 ```
-At runtime, Spring Cloud AWS will pull all the required metadata from AWS RDS DB instance and create a Tomcat JDBC pool with default properties. We will further configure this datasource by configuring two set of properties in a resource file `Application.properties`:
+At runtime, Spring Cloud AWS will pull all the required metadata from the AWS RDS DB instance and create a Tomcat JDBC pool with default properties. We will further configure this data source by configuring two sets of properties in our resource file named `Application. properties`:
 
 ```.properties
 cloud.aws.credentials.profile-name=pratikpoc
@@ -142,9 +142,9 @@ cloud.aws.rds.instances[0].username=pocadmin
 cloud.aws.rds.instances[0].password=pocadmin
 cloud.aws.rds.instances[0].databaseName=mysql
 ```
-The first set of three properties are used to specify the security credentials for connecting to AWS and the region as `us-east-1`. The next set of four properties are used to specify the AWS RDS instance name, user name, password and the database name. We had specified the AWS RDS instance name when we created our DB instance in RDS along with user name and password. RDS intances are referred by `instances[0]` for first instance, `instances[1]` for second instance, and so on.
+The first set of three properties are used to specify the security credentials for connecting to AWS and the region as `us-east-1`. The next set of four properties are used to specify the AWS RDS instance name, user name, password, and database name. We had specified the AWS RDS instance name when we created our DB instance in RDS along with the user name and password. RDS instances are referred to by `instances[0]` for the first instance, `instances[1]` for the second instance, and so on.
 
-Database name is the name of the database `msql` (selected in the MySQL Shell in the previous section) in the AWS RDS DB instance we want our application to connect from our application.
+The database name is the name of the database `msql` (selected in the MySQL Shell in the previous section) in the AWS RDS DB instance we want our application to connect from our application.
 
 ## Configuring the Data Source Pool
 With the configuration done so far, Spring Cloud AWS creates the Tomcat JDBC pool with the default properties.We can configure the pool further inside our configuration class using `RdsInstanceConfigurer` class for instantiating a `DataSourceFactory` class with custom pool attributes as shown here:
@@ -164,7 +164,7 @@ public class ApplicationConfiguration {
 }
 ```
 
-Here we are overriding the validation query and the initial size during instatiation of `dataSourceFactory`.
+Here we are overriding the validation query and the initial size during instantiation of `dataSourceFactory`.
 
 ## Injecting the Data Source
 This data source can now be injected into any Spring Bean like our repository class in our example as shown here: 
@@ -194,10 +194,10 @@ public class SystemRepository {
 }
 
 ```
-As we can see here, it is completely decoupled from the database configuration. We can easily change the database configuration or the database itself(mysql ro postgres or Oracle) in RDS without any change to the code. If we work with multiple data source configurations inside one application context, we need to qualify the data source injection point with an @Qualifier annotation .
+As we can see here, it is completely decoupled from the database configuration. We can easily change the database configuration or the database itself( to MySQL or PostgreSQL, or Oracle) in RDS without any change to the code. If we work with multiple data source configurations inside one application context, we need to qualify the data source injection point with an @Qualifier annotation.
 
 ## Running the Example
-With our datasource set up and injected in a repository class, let us now run this example with a JUnit test:
+With our data source set up and injected in a repository class, let us now run this example with a JUnit test:
 
 ```java
 @SpringBootTest
@@ -233,7 +233,7 @@ Replication is a process by which we can copy data from one database server (als
 
 Amazon RDS uses this built-in replication feature of these databases to create a special type of DB instance called a read replica from a source DB instance. The source DB instance plays the role of the primary DB instance and updates made to the primary DB instance are asynchronously copied to the read replica. This way we can increase the overall throughput of the database by reducing the load on our primary DB instance by routing read queries from your applications to the read replica.
 
-Spring Cloud AWS supports the use of read-replicas with the help of Spring Framework's declarative transaction support with the read-only transactions. We do this by enable read-replica support in our datasource configuration. When enabled, any read-only transaction will be routed to a read-replica instance and the primary database will be used only for write operations.
+Spring Cloud AWS supports the use of read-replicas with the help of Spring Framework's declarative transaction support with read-only transactions. We do this by enabling read-replica support in our data source configuration. When enabled, any read-only transaction will be routed to a read-replica instance and the primary database will be used only for write operations.
 
 We enable read-replica support by setting a property `readReplicaSupport`:
 
@@ -253,7 +253,7 @@ cloud.aws.rds.instances[0].readReplicaSupport=true
 ```
 Here we have set the `readReplicaSupport` to true to enable read-replica support.
 
-Our service class with a read only method looks like this:
+Our service class with a read-only method looks like this:
 
 ```java
 @Service
@@ -286,34 +286,41 @@ public class SystemRepository {
 Here we have decorated the method `getUsers` with `Transactional(readOnly = true)`. At runtime, all the invocations of this method will be sent to the read-replica.
 
 
-## Fail-over Support with the Retry Interceptor
-High availability environment in AWS RDS is provided by creating the DB instance in multiple Availability Zones. This type of deployment also called Multi-AZ deployment provides failover support for the DB instances if one availability zone is not available due to an outage of the primary instance. This replication is synchronous as compared to the read-replica described in the previous section.
+## Configuring Fail-over for High Availability
+A high availability environment in AWS RDS is provided by creating the DB instance in multiple Availability Zones. This type of deployment also called Multi-AZ deployment provides failover support for the DB instances if one availability zone is not available due to an outage of the primary instance. This replication is synchronous as compared to the read-replica described in the previous section.
 
-Spring Cloud AWS JDBC module supports the Multi-AZ failover with a retry interceptor which can be associated with a method  to retry any failed transactions during a Multi-AZ failover. The retry mechanism is supported by the following classes:
+Spring Cloud AWS JDBC module supports the Multi-AZ failover with a retry interceptor which can be associated with a method to retry any failed transactions during a Multi-AZ failover. The configuration of our retry interceptor is shown below: 
 
-retry-interceptor: Creates an AOP Interceptor which can be used to retry database operations which failed due to transient error (e.g. connection lost due to failover
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ...>
 
-back-off-policy: The reference to a BackOffPolicy which defines what should happen between retry approaches. Normally a back-off-policy will sleep in between the retry attempts. 
+  <jdbc:retry-interceptor 
+    db-instance-identifier="testinstance" 
+    id="interceptor" 
+    max-number-of-retries="3" 
+    amazon-rds="customRdsClient"/>
 
-amazon-rds: Reference to an externally configured Amazon RDS instance used to retrieve instance status during retry.
+    <bean id="customRdsClient" class="io.pratik.springcloudrds.SystemRepository" >
+         <constructor-arg value="com.amazonaws.services.rds.AmazonRDS"/>
+    </bean>
+</beans>
+```
 
-SqlRetryPolicy: Checks for retriable database errors and also permanent exceptions related to a database connection. This is useful because Amazon RDS database instances might
-be retryable even if there is a permanent error. This is typically the case in a primary a/z failover where the source instance might not be available but a second attempt might succeed because the DNS record has been updated to the failover instance.
+The `retry-interceptor` tag in the XML configuration creates an AOP Interceptor which can be used to retry any database operations which failed due to a temporary error like connectivity loss due to failover to a DB instance in a secondary availability zone.
 
-RdbmsRetryOperationsInterceptor: checks that there is no transaction available while starting a retryable operation.
-
-However, it is better to provide direct feedback to a user in online transactions instead of trying potentially long and frequent retries. Therefore the fail-over support is mainly useful for batch application where the responsiveness of a service call is not important.
+However, it is better to provide direct feedback to a user in online transactions instead of frequent retries. So the fail-over support is mainly useful for batch applications where the responsiveness of a service call is not important.
 
 
 ## Conclusion
 
-We saw how to use Spring Cloud AWS JDBC for accessing the database of our applications with the AWS RDS service. A summary of the things we covered:
-1. Message, QueueMessageTemplate, QueueMessageChannel, MessageBuilder are some of the important classes used.
-2. SQS messages are built using MessageBuilder class where we specify the message payload along with message headers and other message attributes.
-3. QueueMessageTemplate and QueueMessageChannel are used to send messages.
-4. Applying `SqsListener` annotation to a method enables receiving of SQS messages from a specific SQS queue, sent by other applications.
-5. Methods annotated with `SqsListener` can take both `string` and complex objects. For receiving complex objects, we need to configure a custom converter.
+We saw how to use the Spring Cloud AWS JDBC module for accessing the database of our application with the AWS RDS service. A summary of the things we covered:
+1. A DB instance is the foundational block that needs to be created when working with AWS Relational Database Service (RDS). It is the container for multiple databases.
+2. A DB instance is configured with a storage class and DB instance class based on our storage and processing requirements. These need to be specified when creating a DB instance in AWS Relational Data Service.
+2. The data source backed by a DB instance in AWS RDS, is created in the application at runtime.
+3. Read-replica feature of RDS is used to increase throughput and is can be enabled in Spring Cloud JDBC by setting a property and decorating a method with `Transaction read only` annotation.
+4. Failover support is provided with the help of retry interceptors.
 
-I hope this will help you to get started with building applications using Spring Cloud AWS using AWS RDS as the data source.
+I hope this will help you to get started with building applications using Spring Cloud AWS using AWS RDS as the data source. You can also read an [article](https://reflectoring.io/spring-cloud-aws-sqs/) published earlier on using Spring Cloud AWS Messaging for accessing [Amazon Simple Queue Service (SQS)](https://aws.amazon.com/sqs/) since a majority of real-life applications need to use a mix of database persistence and message queuing for performing a wide variety of business functions.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springcloudrds).

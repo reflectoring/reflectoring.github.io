@@ -12,13 +12,13 @@ In this article, we will see how to create custom beans or override specific bea
 
 ### Introducing @TestConfiguration
 
-The `@TestConfiguration` annotation could be used during spring boot application testing to create custom beans and/or override specific beans.
+We use the `@TestConfiguration` annotation during unit testing of Spring Boot applications for creating custom beans and/or overriding the behavior of specific beans.
 
-Let us assume that, we have a service implementation, which talks to external Restful APIs to get data. Once the data is fetched, the service completes its operation. To talk to external Restful API, the service uses [Spring WebClient](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/reactive/function/client/WebClient.html), a Non-blocking, reactive client to perform HTTP requests.
+Let us assume that, we have a service implementation, which talks to an external restful API to get some data. The service completes its operation once the data is fetched. The service uses [Spring WebClient](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/reactive/function/client/WebClient.html) to invoke the restful API. Web Client is a non-blocking, reactive client for making HTTP requests.
 
 During application runtime, the WebClient will be created as a bean with appropriate configurations set such as Domain, Port, TLS version, Request/Response handlers, Metrics, default headers, etc.,
 
-However, during testing, WebClient is not required to be configured with such a full configuration. What the service need is, a simple instance of WebClient, that is configured to talk to a mock web server.
+However, during testing, the WebClient is not required to be configured with such a full configuration. What the service need is, a simple instance of WebClient, that is configured to talk to a mock web server.
 
 We could use `@TestConfiguration` annotation to create a WebClient bean with less configuration and override the original WebClient bean during testing.
 
@@ -39,14 +39,14 @@ public class WebClientTestConfiguration {
 ```
 
 ### Note on Bean Overriding
-From `Spring 5.1` onwards, the bean overriding functionality is disabled by default. An attempting to override one or more beans will throw a [BeanDefinitionOverrideException](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/support/BeanDefinitionOverrideException.html).
+From `Spring 5.1` onwards, the bean overriding functionality is disabled by default. A [BeanDefinitionOverrideException](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/support/BeanDefinitionOverrideException.html) is thrown if we attempt to override the behaviour of one or more beans.
 
 It is recommended not to turn off this behavior during application runtime. However, we need to turn this feature off to be able to override the bean definition during testing.
 
 To turn this feature on, set the flag `spring.main.allow-bean-definition-overriding` to `true` in `src/test/resources/test.properties` file.
 
 ### Configuration vs TestConfiguration
-Though the TestConfiguration annotation inherits from the Configuration annotations, the key difference is, the TestConfiguration will be excluded during the spring boot component scan.
+Though the `TestConfiguration` annotation inherits from the `Configuration` annotation, the key difference is, the TestConfiguration will be excluded during the spring boot component scan.
 
 Also, the @TestConfiguration annotation is annotated with `@TestComponent` to indicate that the annotation should be used for testing.
 

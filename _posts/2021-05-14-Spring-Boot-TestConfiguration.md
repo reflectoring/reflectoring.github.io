@@ -2,16 +2,13 @@
 title: Spring Boot @TestConfiguration Annotation
 categories: [spring-boot]
 date: 2021-05-15 00:00:00 +0530
-author: cbenaveen
 excerpt: "Create custom beans or override specific beans during Spring Boot Test execution"
 image:
-auto: 0101-keylock
+  auto: 0035-switchboard
 ---
-
 In this article, we will see how to create custom beans or override specific beans during testing using @TestConfiguration annotation.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testconfiguration" %}
-
 
 ### Introducing @TestConfiguration
 

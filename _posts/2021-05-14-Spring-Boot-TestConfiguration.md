@@ -2,7 +2,9 @@
 title: Spring Boot @TestConfiguration Annotation
 categories: [spring-boot]
 date: 2021-05-15 00:00:00 +0530
-excerpt: "Create custom beans or override specific beans during Spring Boot Test execution"
+modified: 2021-05-15 06:00:00 +1000
+author: naveen
+excerpt: "Create custom beans or override specific bean behaviours during unit testing of Spring Boot applications "
 image:
   auto: 0035-switchboard
 ---
@@ -170,7 +172,7 @@ class TestConfigurationExampleAppTests {
 ```
 
 ### Implementing Test using Static Inner Class
-Let us implement a simple unit test that imports the @TestConfiguration declared as a static inner class. In this case, we don't need to instruct the spring content to load the @TestConfiguration class:
+Let us implement a simple unit test that imports the `@TestConfiguration` declared as a static inner class. In this case, we don't need to instruct the Spring context to load the `@TestConfiguration` class:
 
 ```java
 @SpringBootTest

@@ -22,7 +22,7 @@ However, during testing, WebClient is not required to be configured with such a 
 
 We could use `@TestConfiguration` annotation to create a WebClient bean with less configuration and override the original WebClient bean during testing.
 
-Let us create a simple version of WebClient bean that could be used during testing.
+Let us create a simple version of WebClient bean that could be used during testing:
 
 ```java
 @TestConfiguration
@@ -57,7 +57,7 @@ There are 2 ways in which we can use the @TestConfiguration during testing:
 
 
 #### Via @Import
-The @Import annotation allows us to import bean definitions from multiple @Configuration classes. This annotation could be used to instruct the spring test context to load the bean definition from the TestConfiguration class.
+The @Import annotation allows us to import bean definitions from multiple @Configuration classes. This annotation could be used to instruct the spring test context to load the bean definition from the TestConfiguration class:
 
 ```java
 @SpringBootTest
@@ -68,7 +68,7 @@ class TestConfigurationExampleAppTests {
 ```
 
 #### Static Inner Class
-In this approach, the TestConfiguration class is implemented as a static inner class in the test class itself. The spring boot test context will discover and load the TestConfiguration by default if it's declared as a static inner class.
+In this approach, the @TestConfiguration class is implemented as a static inner class in the test class itself. The spring boot test context will discover and load the @TestConfiguration by default if it's declared as a static inner class:
 
 ```java
 @SpringBootTest
@@ -92,7 +92,7 @@ public class UsingStaticInnerTestConfiguration {
 Let us put all these pieces together to see how the @TestConfiguration could be used during testing.
 
 #### Service Implementation
-Below is a simple service implementation that takes an instance of WebClient as a constructor argument to perform the Restful API calls.
+Below is a simple service implementation that takes an instance of WebClient as a constructor argument to perform the Restful API calls:
 
 ```java
 package io.reflectoring.springboot.testconfiguration.service;
@@ -113,7 +113,7 @@ public class DataService {
 ```
 
 #### Configuration Implementation
-The actual instance of WebClient is created as a bean by a @Configuration implementation during application runtime. The hostname or domain name of the Restful API is supplied to the configuration class as an environment variable. Along with using the hostname or domain name as the base URL, the configuration class configures the WebClient with other required configurations.
+The actual instance of WebClient is created as a bean by a @Configuration implementation during application runtime. The hostname or domain name of the Restful API is supplied to the configuration class as an environment variable. Along with using the hostname or domain name as the base URL, the configuration class configures the WebClient with other required configurations:
 
 ```java
 package io.reflectoring.springboot.testconfiguration;
@@ -146,7 +146,7 @@ public class WebClientConfiguration {
 #### Running the application
 Let us run the application using `mvn spring-boot:run` to verify that the WebClient created by the @Configuration class is injected into the service.
 
-In the console log, we can observe that has `webClient.toString()` in both configuration and service class prints the same value.
+In the console log, we can observe that has `webClient.toString()` in both configuration and service class prints the same value:
 
 ```
 WebClient Instance Created During Testing: org.springframework.web.reactive.function.client.DefaultWebClient@e4533f3a
@@ -154,7 +154,7 @@ WebClient instance org.springframework.web.reactive.function.client.DefaultWebCl
 ```
 
 #### Implementing Test using @Import
-Let us implement a simple unit test that imports the @TestConfiguration to overwrite the WebClient and inject the same to the service class.
+Let us implement a simple unit test that imports the @TestConfiguration to overwrite the WebClient and inject the same to the service class:
 
 ```java
 @SpringBootTest
@@ -170,7 +170,7 @@ class TestConfigurationExampleAppTests {
 ```
 
 #### Implementing Test using Static Inner Class
-Let us implement a simple unit test that imports the @TestConfiguration declared as a static inner class. In this case, we don't need to instruct the spring content to load the @TestConfiguration class.
+Let us implement a simple unit test that imports the @TestConfiguration declared as a static inner class. In this case, we don't need to instruct the spring content to load the @TestConfiguration class:
 
 ```java
 @SpringBootTest

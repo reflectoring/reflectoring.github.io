@@ -16,11 +16,12 @@ In this article, we will see how to create custom beans or override specific bea
 
 We use the `@TestConfiguration` annotation during unit testing of Spring Boot applications for creating custom beans and/or overriding the behavior of specific beans.
 
-Let us assume that, we have a service implementation, which talks to an external REST API to get some data. The service completes its operation once the data is fetched. 
+Let us assume that, we have a service implementation, which talks to an external REST API to get some data. The service completes its operation once the data is fetched from the API.
+
 
 The service uses [Spring WebClient](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/reactive/function/client/WebClient.html) to invoke the REST API. WebClient is a non-blocking, reactive client for making HTTP requests that works over the HTTP/1.1 protocol.
 
-During application runtime, the `WebClient` will be created as a bean with appropriate configurations set such as Domain, Port, TLS version, Request/Response handlers, Metrics, default headers, etc.,
+During application runtime, we create the `WebClient` bean instance with appropriate configurations such as domain,port, TLS version, request/response handlers, Metrics, default headers, etc.,
 
 However, during testing, the `WebClient` is not required to be configured with such a full configuration. What the service needs is, a simple instance of `WebClient`, that is configured to talk to a mock web server.
 

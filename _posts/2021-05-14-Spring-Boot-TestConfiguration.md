@@ -3,6 +3,7 @@ title: Spring Boot @TestConfiguration Annotation
 categories: [spring-boot]
 date: 2021-05-15 00:00:00 +0530
 modified: 2021-05-15 06:00:00 +1000
+author: naveen
 excerpt: "Create custom beans or override specific bean behaviors during unit testing of Spring Boot applications "
 image:
  auto: 0035-switchboard

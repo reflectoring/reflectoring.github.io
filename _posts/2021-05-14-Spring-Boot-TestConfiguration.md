@@ -46,11 +46,17 @@ public class WebClientTestConfiguration {
 ```
 
 ## Note on Bean Overriding
-From `Spring 5.1` onwards, the bean overriding functionality is disabled by default. A [BeanDefinitionOverrideException](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/support/BeanDefinitionOverrideException.html) is thrown if we attempt to override the behavior of one or more beans.
 
-It is recommended not to turn off this behavior during application runtime. However, we need to turn this feature off to be able to override the bean definition during testing.
+### What is bean overriding?
+When we register a bean with the spring application context, the bean will get a name. Bean overriding is registering another bean with the same name. In case of bean definition overriding, the previous bean definition will be overridden with a new version of bean.
 
-To turn this feature on, set the flag `spring.main.allow-bean-definition-overriding` to `true` in `src/test/resources/test.properties` file.
+### Spring version 5.1 behaviour
+From `Spring version 5.1` onwards, the bean definition overriding is disabled by default. A [BeanDefinitionOverrideException](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/support/BeanDefinitionOverrideException.html) is raised if we attempt to override one or more beans.
+
+It is recommended not to enable bean overriding during application runtime. However, we need to enable this feature to be able to override the bean definition during testing.
+
+To enable this feature, set the flag `spring.main.allow-bean-definition-overriding` to `true` in `src/test/resources/test.properties` file.
+
 
 ## Configuration vs TestConfiguration
 Though the `TestConfiguration` annotation inherits from the `Configuration` annotation, the key difference is, the `TestConfiguration` will be excluded during the Spring Boot component scan.

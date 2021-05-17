@@ -20,7 +20,6 @@ Let us see an example ...
 
 Let us assume that, we have a service implementation, which talks to an external REST API to get some data. The service completes its operation once the data is fetched from the API.
 
-
 The service uses [Spring WebClient](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/reactive/function/client/WebClient.html) to invoke the REST API. WebClient is a non-blocking, reactive client for making HTTP requests that works over the HTTP/1.1 protocol.
 
 During application runtime, we create the `WebClient` bean instance with appropriate configurations such as domain,port, TLS version, request/response handlers, Metrics, default headers, etc.,
@@ -34,14 +33,10 @@ Let us create a simple version of `WebClient` bean that can be used during testi
 ```java
 @TestConfiguration
 public class WebClientTestConfiguration {
- @Bean
- public WebClient getWebClient(final WebClient.Builder builder) {
- WebClient webClient = builder.baseUrl("http://localhost")
- .build();
- System.out.println("WebClient Instance Created During Testing: "
- + webClient.toString());
- return webClient;
- }
+    @Bean
+    public WebClient getWebClient(final WebClient.Builder builder) {
+        return builder.baseUrl("http://localhost").build();
+    }
 }
 ```
 
@@ -51,11 +46,11 @@ public class WebClientTestConfiguration {
 When we register a bean with the spring application context, the bean will get a name. Bean overriding is registering another bean with the same name. In case of bean definition overriding, the previous bean definition will be overridden with a new version of bean.
 
 ### Spring version 5.1 behaviour
-From `Spring version 5.1` onwards, the bean definition overriding is disabled by default. A [BeanDefinitionOverrideException](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/support/BeanDefinitionOverrideException.html) is raised if we attempt to override one or more beans.
+From `Spring version 5.1` onwards, the bean definition overriding is `disabled` by default. A [BeanDefinitionOverrideException](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/support/BeanDefinitionOverrideException.html) is raised if we attempt to override one or more beans.
 
-It is recommended not to enable bean overriding during application runtime. However, we need to enable this feature to be able to override the bean definition during testing.
+It is not recommended enabling the bean definition overriding during application runtime. <i>However, we need to enable this feature to be able to override the bean definition during testing.</i>
 
-To enable this feature, set the flag `spring.main.allow-bean-definition-overriding` to `true` in `src/test/resources/test.properties` file.
+To enable this feature, set the environment variable `spring.main.allow-bean-definition-overriding` to `true` in `src/test/resources/test.properties` file.
 
 
 ## Configuration vs TestConfiguration
@@ -76,7 +71,7 @@ The @Import annotation allows us to import bean definitions from multiple `@Conf
 @SpringBootTest
 @Import(WebClientTestConfiguration.class)
 class TestConfigurationExampleAppTests {
- // Test case implementations
+    // Test case implementations
 }
 ```
 
@@ -86,16 +81,11 @@ In this approach, the `@TestConfiguration` class is implemented as a static inne
 ```java
 @SpringBootTest
 public class UsingStaticInnerTestConfiguration {
- // Test case implementations
-
   @TestConfiguration
   public static class WebClientConfiguration {
     @Bean
     public WebClient getWebClient(final WebClient.Builder builder) {
-     WebClient webClient = builder.baseUrl("http://localhost").build();
-     System.out.println("WebClient Instance Created During Testing, " +
-     "using static inner class: " + webClient.toString());
-     return webClient;
+     return builder.baseUrl("http://localhost").build();
    }
  }
 }
@@ -108,20 +98,11 @@ Let us put all these pieces together to see how the `@TestConfiguration` can be 
 Below is a simple service implementation that takes an instance of `WebClient` as a constructor argument to perform the REST API calls:
 
 ```java
-package io.reflectoring.springboot.testconfiguration.service;
-
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-
 @Service
 public class DataService {
- 
-   private final WebClient webClient;
- 
-   public DataService(final WebClient webClient) {
-      this.webClient = webClient;
-      System.out.println("WebClient instance " + 
-          this.webClient.toString());
+    private final WebClient webClient;
+    public DataService(final WebClient webClient) {
+        this.webClient = webClient;
    }
 }
 ```
@@ -130,30 +111,17 @@ public class DataService {
 The actual instance of `WebClient` is created as a bean by a `@Configuration` implementation during application runtime. The hostname or domain name of the REST API is provided to the configuration class as an environment variable. Along with using the hostname or domain name as the base URL, the configuration class configures the WebClient with other required configurations:
 
 ```java
-package io.reflectoring.springboot.testconfiguration;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.client.WebClient;
-
 @Configuration
 public class WebClientConfiguration {
-        @Bean
-        public WebClient getWebClient(final WebClient.Builder builder,
-               @Value("${data.service.endpoint:https://google.com}") 
-                  final String url) {
-            WebClient webClient = builder.baseUrl(url)
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, 
-             MediaType.APPLICATION_JSON_VALUE)
-             // more configurations and customizations
-             .build();
-                System.out.println("WebClient Instance Created During Testing: " 
-                + webClient.toString());
-                return webClient;
-        }
+    @Bean
+    public WebClient getWebClient(final WebClient.Builder builder, 
+                                  @Value("${data.service.endpoint:https://google.com}") final String url) {
+        WebClient webClient = builder.baseUrl(url)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                // more configurations and customizations
+                .build();
+        return webClient; 
+    }
 }
 ```
 
@@ -175,11 +143,10 @@ Let us implement a simple unit test that imports the @TestConfiguration to overw
 @Import(WebClientTestConfiguration.class)
 @TestPropertySource(locations="classpath:test.properties")
 class TestConfigurationExampleAppTests {
- @Autowired
- private DataService dataService;
- @Test
- void contextLoads() {
- }
+    @Autowired
+    private DataService dataService;
+    @Test
+    void contextLoads() {}
 }
 ```
 
@@ -190,29 +157,24 @@ Let us implement a simple unit test that imports the `@TestConfiguration` declar
 @SpringBootTest
 @TestPropertySource(locations="classpath:test.properties")
 public class UsingStaticInnerTestConfiguration {
- @Autowired
- private DataService dataService;
-
- @Test
- void contextLoads() {
- }
-
- @TestConfiguration
- public static class WebClientConfiguration {
- @Bean
- public WebClient getWebClient(final WebClient.Builder builder) {
- WebClient webClient = builder
- .baseUrl("http://localhost")
- .build();
- System.out.println("WebClient Instance Created During Testing, " +
- "using static inner class: " + webClient.toString());
- return webClient;
- }
- }
+    @Autowired
+    private DataService dataService;
+    
+    @Test
+    void contextLoads() {
+    }
+    
+    @TestConfiguration
+    public static class WebClientTestConfiguration {
+        @Bean
+        public WebClient getWebClient(final WebClient.Builder builder) {
+            return builder.baseUrl("http://localhost").build();
+        }
+    }
 }
 ```
 
-When we run the above JUnit test, we can observe that the `@Configuration` class is not called to create the WebClient, but the @TestConfiguration class is called to create the WebClient instance.
+When we run the above JUnit tests, we can observe that the WebClient bean is created by the `WebClientTestConfiguration` (annotated with @TestConfiguration), not from the `WebClientConfiguration` (annotated with @Configuration).
 
 We can compare and observe the webClient.toString() method in both the `@TestConfiguration` class and the service implementation, which are found to be the same.
 

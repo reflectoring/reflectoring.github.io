@@ -8,13 +8,17 @@ excerpt: "Create custom beans or override specific bean behaviors during unit te
 image:
  auto: 0035-switchboard
 ---
-In this article, we will see how to create custom beans or override specific beans during unit testing by using the `@TestConfiguration` annotation.
+Unit test is used to verify the smallest part of an application ("units") independent of other parts. This makes the verification process easy and fast since the scope of testing is restricted to a narrow scope of a class or method. 
+
+Spring Boot applications are usually built with sequence of multiple dependencies which make writing unit tests difficult. `@TestConfiguration` annotation is used to decouple these dependencies.
+
+In this article, we will see the use of `@TestConfiguration` annotation to create custom beans or override specific beans during unit testing of Spring Boot.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testconfiguration" %}
 
 ## Introducing @TestConfiguration
 
-We use the `@TestConfiguration` annotation during unit testing of Spring Boot applications for creating custom beans and/or overriding a specific beans definition.
+We use the `@TestConfiguration` annotation during unit testing of Spring Boot applications for creating custom beans and/or overriding a specific bean definition.
 
 Let us see an example ...
 

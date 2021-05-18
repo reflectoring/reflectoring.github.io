@@ -37,10 +37,12 @@ public class WebClientTestConfiguration {
 ```
 A simple version of `WebClient` bean that can be used during testing.
 
-## Note on Bean Overriding
+## Overriding Bean with TestConfiguration
 
 ### What is bean overriding?
-When we register a bean with the spring application context, the bean will get a name. Bean overriding is registering another bean with the same name. In case of bean definition overriding, the previous bean definition will be overridden with a new version of bean.
+Every bean in the spring application context will have one or more `unique identifiers`. We can add more identifiers to a bean which will be considered as aliases. We can provide a unique identifier while defining the bean. If an identifier is not provided, then the spring container generates a unique identifier for that bean.
+
+Bean overriding is, registering or defining another bean with the same identifier. In case of bean definition overriding, the previous bean definition will be overridden with a new version of bean.
 
 ### Spring version 5.1 behaviour
 From `Spring version 5.1` onwards, the bean definition overriding is `disabled` by default. A [BeanDefinitionOverrideException](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/support/BeanDefinitionOverrideException.html) is raised if we attempt to override one or more beans.

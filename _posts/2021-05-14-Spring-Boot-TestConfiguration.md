@@ -10,15 +10,17 @@ image:
 ---
 A unit test is used to verify the smallest part of an application ("units") independent of other parts. This makes the verification process easy and fast since the scope of the testing is narrowed down to a class or method. 
 
-In this article, we will see the use of `TestConfiguration` annotation for creating custom beans or overriding specific beans during unit testing of Spring Boot applications.
+Spring Boot applications are often created with a sequence of multiple dependencies that make writing unit tests difficult.`TestConfiguration` annotation is a useful aid to write unit tests of Spring Boot applications. It helps to decouple these dependencies by allowing us to define additional beans or for modifying the behavior of existing beans in the Spring application context. 
+
+In this article, we will see the use of `TestConfiguration` annotation for writing tests for unit testing of Spring Boot applications.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testconfiguration" %}
 
-## Introducing TestConfiguration
-
-Spring Boot applications are often created with a sequence of multiple dependencies that make writing unit tests difficult. `TestConfiguration` annotation is used to decouple these dependencies. It does this by allowing us to define additional beans or for modifying the behavior of existing beans in the Spring application context. We use this capability for applying customizations for abstracting the external dependencies and run our unit test. 
+## Introducing TestConfiguration Annotation
 
 We use the [TestConfiguration](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/TestConfiguration.html) to create configurations for our tests.
+
+We use this capability for applying customizations for abstracting the external dependencies and run our unit test in an isolated environment. 
 
 We can best understand the `TestConfiguration` annotation by first looking at the `Configuration` annotation which is the parent annotation it inherits from. 
 

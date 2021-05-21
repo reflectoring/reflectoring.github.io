@@ -83,7 +83,7 @@ Let us create a DB instance using the AWS Management Console:
 
 Here we have chosen to create the DB instance using the `Easy Create` option which sets default values for most of the properties. We have chosen [MySQL](https://www.mysql.com) as our database engine and specified the database identifier, user name, and password. 
 
-We also need to enable public access and allow access from our host if we wish to access this instance from the public network over the internet. Read [this article](/aws-cloudformation-rds/) to learn how to deploy an RDS instance into a private subnet with CloudFormation, so it's not publicly accessible.
+We also need to enable public access and allow access from our host if we wish to access this instance from the public network over the internet. Read [this article](/aws-cloudformation-rds/) to learn how to deploy an RDS instance into a private subnet with CloudFormation, so that it is not publicly accessible.
 
 ## Connecting to the RDS Instance
 After the DB instance is available, we have to connect to it from our development environment to run our database operations. For this, let us retrieve its endpoint from the DB instance connectivity description in the AWS Management Console :

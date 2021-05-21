@@ -8,7 +8,9 @@ excerpt: "We will see the use of `TestConfiguration` annotation for creating cus
 image:
  auto: 0035-switchboard
 ---
-A unit test is used to verify the smallest part of an application ("units") independent of other parts. This makes the verification process easy and fast since the scope of the testing is narrowed down to a class or method. `TestConfiguration` annotation is a useful aid for writing unit tests of Spring Boot applications. It allows us to define additional beans or for modifying the behavior of existing beans in the Spring application context. 
+A unit test is used to verify the smallest part of an application ("units") independent of other parts. This makes the verification process easy and fast since the scope of the testing is narrowed down to a class or method. 
+
+`TestConfiguration` annotation is a useful aid for writing unit tests of Spring Boot applications. It allows us to define additional beans or for modifying the behavior of existing beans in the Spring application context. 
 
 In this article, we will see the use of the`TestConfiguration` annotation for writing tests for unit testing of Spring Boot applications.
 

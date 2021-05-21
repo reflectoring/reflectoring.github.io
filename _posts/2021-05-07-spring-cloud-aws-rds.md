@@ -19,7 +19,7 @@ In this article, we will look at using the Spring Cloud AWS JDBC module of Sprin
 ## AWS RDS Concepts
 [Amazon Relational Database Service (AWS RDS)](https://aws.amazon.com/rds/) is a managed service for a set of supported relational databases. As of today, the supported databases are Amazon Aurora, PostgreSQL, MySQL, MariaDB, Oracle Database, and SQL Server. 
 
-Apart from providing a reliable infrastructure and scalable capacity, AWS takes care of all the database administration tasks like taking backups and applying database patches while leaving us free to focus on building our applications.
+Apart from providing reliable infrastructure and scalable capacity, AWS takes care of all the database administration tasks like taking backups and applying database patches while leaving us free to focus on building our applications.
 
 ### DB Instance
 An RDS DB instance is the basic building block of Amazon RDS. It is an isolated database environment in the cloud and is accessed using the same database-specific client tools used to access on-premise databases. 
@@ -45,6 +45,8 @@ General Purpose SSD (also known as gp2), Provisioned IOPS SSD (also known as io1
 General Purpose SSD volumes offer cost-effective storage that is ideal for a broad range of workloads. 
 
 Provisioned IOPS storage is designed to meet the needs of I/O-intensive workloads, particularly database workloads, that require low I/O latency and consistent I/O throughput.
+
+The magnetic storage type is still supported for backward compatibility and is not used for any new storage needs. 
 
 ## Features of Spring Cloud AWS JDBC
 Spring Cloud AWS JDBC module enables our Java applications to access databases created in AWS RDS with standard JDBC protocol using a declarative configuration. Some of the main features provided by this module are:
@@ -257,7 +259,7 @@ currentDate 2021-05-12
 ... : Shutting down ExecutorService 'applicationTaskExecutor'
 
 ```
-We can see a warning in the log for using a deprecated driver class which is safe to be ignored. We have not specified any driver class here. The driver class `com.mysql.jdbc.Driver` is registered based on the metadata read from the database connection to AWS RDS. 
+We can see a warning in the log for using a [deprecated driver](https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-api-changes.html) class which is safe to be ignored. We have not specified any driver class here. The driver class `com.mysql.jdbc.Driver` is registered based on the metadata read from the database connection to AWS RDS. 
 
 ## Configuring the Read-Replica for Increasing Throughput
 Replication is a process by which we can copy data from one database server (also known as source database) to be copied to one or more database servers (known as replicas). It is a feature of the database engines of MariaDB, Microsoft SQL Server, MySQL, Oracle, and PostgreSQL DB which can be configured with AWS RDS. 
@@ -266,11 +268,17 @@ Amazon RDS uses this built-in replication feature of these databases to create a
 
 The source DB instance plays the role of the primary DB instance and updates made to the primary DB instance are asynchronously copied to the read replica. 
 
-This way we can increase the overall throughput of the database by reducing the load on our primary DB instance by routing read queries from your applications to the read replica.
+This way we can increase the overall throughput of the database by reducing the load on our primary DB instance by routing read queries from your applications to the read replica. 
+
+Let us create a read-replica of the DB instance from the RDS console:
+![RDS read-replica creation](/assets/img/posts/aws-rds-spring-cloud/read-replica.png)
+
+Here we are creating a replica of the DB instance we created earlier.
+
 
 Spring Cloud AWS supports the use of read-replicas with the help of Spring Framework's declarative transaction support with read-only transactions. We do this by enabling read-replica support in our data source configuration. 
 
-When read-replica enabled, any read-only transaction will be routed to a read-replica instance and the primary database will be used only for write operations.
+When read-replica is enabled, any read-only transaction will be routed to a read-replica instance and the primary database will be used only for write operations.
 
 We enable read-replica support by setting a property `readReplicaSupport`. Our `application.properties` with this property set looks like this:
 
@@ -318,7 +326,9 @@ public class SystemRepository {
 }
 
 ```
-Here we have decorated the method `getUsers()` with `Transactional(readOnly = true)`. At runtime, all the invocations of this method will be sent to the read-replica.
+Here we have decorated the method `getUsers()` with `Transactional(readOnly = true)`. At runtime, all the invocations of this method will be sent to the read-replica. 
+
+We can also see that we have not created any separate data source for the read-replica of our DB instance. With the read-replica support, Spring Cloud AWS JDBC searches for any read-replica that is created for the master DB instance and routes the read-only transactions to one of the available read-replicas.
 
 
 ## Configuring Fail-Over for High Availability

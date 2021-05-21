@@ -8,11 +8,9 @@ excerpt: "We will see the use of `TestConfiguration` annotation for creating cus
 image:
  auto: 0035-switchboard
 ---
-A unit test is used to verify the smallest part of an application ("units") independent of other parts. This makes the verification process easy and fast since the scope of the testing is narrowed down to a class or method. `TestConfiguration` annotation is a useful aid to write unit tests of Spring Boot applications.
+A unit test is used to verify the smallest part of an application ("units") independent of other parts. This makes the verification process easy and fast since the scope of the testing is narrowed down to a class or method. `TestConfiguration` annotation is a useful aid for writing unit tests of Spring Boot applications. It allows us to define additional beans or for modifying the behavior of existing beans in the Spring application context. 
 
-Spring Boot applications are often created with a sequence of multiple dependencies that make writing unit tests difficult. It helps to decouple these dependencies by allowing us to define additional beans or for modifying the behavior of existing beans in the Spring application context. 
-
-In this article, we will see the usage of the`TestConfiguration` annotation for writing tests for unit testing of Spring Boot applications.
+In this article, we will see the use of the`TestConfiguration` annotation for writing tests for unit testing of Spring Boot applications.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testconfiguration" %}
 
@@ -94,7 +92,8 @@ public class WebClientTestConfiguration {
         WebClient webClient = builder
         .baseUrl("http://localhost")
         .build();
-        LOGGER.info("WebClient Instance Created During Testing: {}", webClient);
+        ...
+        ...
         return webClient;
     }
  }
@@ -103,6 +102,7 @@ public class WebClientTestConfiguration {
 @Import(WebClientTestConfiguration.class)
 @TestPropertySource(locations="classpath:test.properties")
 class TestConfigurationExampleAppTests {
+
     @Autowired
     private DataService dataService;
     ...

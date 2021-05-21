@@ -80,7 +80,9 @@ In this code snippet, the `DataService` bean injected in the test class uses the
 
 ## Configuring Test with TestConfiguration
 
-To make our unit tests run without any dependency on an external API, we may want to use a modified test configuration that will connect to a locally running mock service instead of bootstrapping the actual application context. We do this by using the `TestConfiguration` annotation over our configuration class being used for the test. This test configuration class can be an inner class within a test class or a separate class as shown here:
+To make our unit tests run without any dependency on an external API, we may want to use a modified test configuration that will connect to a locally running mock service instead of bootstrapping the actual application context. 
+
+We do this by using the `TestConfiguration` annotation over our configuration class being used for the test. This test configuration class can be an inner class within a test class or a separate class as shown here:
 
 ```java
 @TestConfiguration
@@ -108,18 +110,19 @@ class TestConfigurationExampleAppTests {
 ```
 Here the `DataService` bean is injected in the test class and uses the `WebClient` bean configured in the test configuration class with `TestConfiguration` annotation with local URL. This way we can execute our unit test without any dependency on an external system. 
 
-Here we are overriding the behavior of the `WebClient` bean to point to `localhost` so that we can use a local instance of the REST API only for unit testing. 
+We are also overriding the behavior of the `WebClient` bean to point to `localhost` so that we can use a local instance of the REST API only for unit testing. 
 
 `TestConfiguration` annotation provides the capability for defining additional beans or for modifying the behavior of existing beans in the Spring Application Context for applying customizations primarily required for running a unit test. 
 
 ## Enabling the Bean Overriding Behavior
 
-Every bean in the Spring application context will have one or more unique identifiers. Bean overriding is, registering or defining another bean with the same identifier as a result of which the previous bean definition is overridden with a new bean implementation.
+Every bean in the Spring application context will have one or more unique identifiers. Bean overriding is, registering or defining another bean with the same identifier as a result of which the previous bean definition is overridden with a new bean implementation. 
+
 The bean overriding feature is disabled by default from [Spring Boot 2.1](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.1-Release-Notes#bean-overriding). A [BeanDefinitionOverrideException](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/support/BeanDefinitionOverrideException.html) is thrown if we attempt to override one or more beans.
 
 We should not enable this feature during application runtime. However, we need to enable this feature during testing to override one or more bean definitions.
 
-We need to enable this feature by switching on an application property `spring.main.allow-bean-definition-overriding` in a resource file as shown here: 
+We enable this feature by switching on an application property `spring.main.allow-bean-definition-overriding` in a resource file as shown here: 
 
 ```properties
 spring.main.allow-bean-definition-overriding=true

@@ -10,15 +10,15 @@ image:
 ---
 A unit test is used to verify the smallest part of an application ("units") independent of other parts. This makes the verification process easy and fast since the scope of the testing is narrowed down to a class or method. 
 
-`TestConfiguration` annotation is a useful aid for writing unit tests of Spring Boot applications. It allows us to define additional beans or modify the behavior of existing beans in the Spring application context. 
+`TestConfiguration` annotation is a useful aid for writing unit tests of Spring Boot applications. It allows us to define additional beans or override existing beans in the Spring application context to add specialized configurations for testing. 
 
-In this article, we will see the use of the`TestConfiguration` annotation for writing tests for unit testing of Spring Boot applications.
+In this article, we will see the use of the `TestConfiguration` annotation for writing tests for unit testing of Spring Boot applications.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testconfiguration" %}
 
 ## Introducing TestConfiguration Annotation
 
-We use the [TestConfiguration](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/TestConfiguration.html) to create configurations for our tests. We use this capability for applying customizations for abstracting the external dependencies and run our unit test in an isolated environment. 
+We use the [TestConfiguration](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/TestConfiguration.html) to create configurations for our tests. We use this capability for applying customizations for abstracting the external dependencies and run our test in a standalone environment. 
 
 We can best understand the `TestConfiguration` annotation by first looking at the `Configuration` annotation which is the parent annotation it inherits from. 
 
@@ -34,33 +34,33 @@ Let us look at the structure of a unit test in Spring Boot where we define the b
 @Configuration
 public class WebClientConfiguration {
  ...
-   @Bean
-   public WebClient getWebClient
-       (final WebClient.Builder builder,
-       @Value("${data.service.endpoint}") String url) {
+ @Bean
+ public WebClient getWebClient
+ (final WebClient.Builder builder,
+ @Value("${data.service.endpoint}") String url) {
 
-        WebClient webClient = builder.baseUrl(url)
-           .defaultHeader(HttpHeaders.CONTENT_TYPE, 
-                        MediaType.APPLICATION_JSON_VALUE)
-           // more configurations and customizations
-           .build();
-        LOGGER.info("WebClient Bean Instance: {}", webClient);
-        return webClient;
-    }
+ WebClient webClient = builder.baseUrl(url)
+ .defaultHeader(HttpHeaders.CONTENT_TYPE, 
+ MediaType.APPLICATION_JSON_VALUE)
+ // more configurations and customizations
+ .build();
+ LOGGER.info("WebClient Bean Instance: {}", webClient);
+ return webClient;
+ }
  }
 ```
-In this code snippet, we define the `WebClient` bean with an external URL. We will next define a service class where we will inject this `webclient` to call a REST API:
+In this code snippet, we define the `WebClient` bean with an external URL. We will next define a service class where we will inject this `WebClient` bean to call a REST API:
 
 ```java
 @Service
  public class DataService {
  ...
-    private final WebClient webClient;
+ private final WebClient webClient;
 
-    public DataService(final WebClient webClient) {
-        this.webClient = webClient;
-        LOGGER.info("WebClient instance {}", this.webClient);
-    }
+ public DataService(final WebClient webClient) {
+ this.webClient = webClient;
+ LOGGER.info("WebClient instance {}", this.webClient);
+ }
  }
  ```
  In this code snippet, the `DataService` bean is injected in the test class uses the `WebClient` bean configured with an external URL. 
@@ -71,9 +71,9 @@ In this code snippet, we define the `WebClient` bean with an external URL. We wi
 @SpringBootTest
 @TestPropertySource(locations="classpath:test.properties")
 class TestConfigurationExampleAppTests {
-    @Autowired
-    private DataService dataService;
-    ...
+ @Autowired
+ private DataService dataService;
+ ...
  }
 ```
 In this code snippet, the `DataService` bean injected in the test class uses the `WebClient` bean configured with an external URL. This makes our unit test dependent on an external dependency which might fail if we run our test as part of any automated test or in any other environment with restricted connectivity. 
@@ -88,16 +88,16 @@ We do this by using the `TestConfiguration` annotation over our configuration cl
 @TestConfiguration
 public class WebClientTestConfiguration {
  ...
-    @Bean
-    public WebClient getWebClient(final WebClient.Builder builder) {
-        //customized for running unit tests
-        WebClient webClient = builder
-        .baseUrl("http://localhost")
-        .build();
-        ...
-        ...
-        return webClient;
-    }
+ @Bean
+ public WebClient getWebClient(final WebClient.Builder builder) {
+ //customized for running unit tests
+ WebClient webClient = builder
+ .baseUrl("http://localhost")
+ .build();
+ ...
+ ...
+ return webClient;
+ }
  }
 
 @SpringBootTest
@@ -105,9 +105,9 @@ public class WebClientTestConfiguration {
 @TestPropertySource(locations="classpath:test.properties")
 class TestConfigurationExampleAppTests {
 
-    @Autowired
-    private DataService dataService;
-    ...
+ @Autowired
+ private DataService dataService;
+ ...
 }
 ```
 Here the `DataService` bean is injected in the test class and uses the `WebClient` bean configured in the test configuration class with `TestConfiguration` annotation with local URL. This way we can execute our unit test without any dependency on an external system. 
@@ -134,9 +134,9 @@ Here we are setting the application property `spring.main.allow-bean-definition-
 ## Component Scanning Behavior
 Though the `TestConfiguration` annotation inherits from the `Configuration` annotation, the main difference is that the `TestConfiguration` is excluded during Spring Boot's [component scanning](https://reflectoring.io/spring-component-scanning/).
 
-Configuration classes annotated with @TestConfiguration are excluded from component scanning, so we have to import them explicitly in every test where we want to autowire them. 
+Configuration classes annotated with `TestConfiguration` are excluded from component scanning, so we need to import them explicitly in every test where we want to autowire them. 
 
-The `TestConfiguration` annotation is also annotated with the [TestComponent](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/TestComponent.html) annotation in its definition. This indicates that the `TestConfiguration` annotation should only be used for testing.
+The `TestConfiguration` annotation is also annotated with the [TestComponent](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/TestComponent.html) annotation in its definition to indicate that this annotation should only be used for testing.
 
 ## Using TestConfiguration in Unit Tests
 As explained earlier, we can use the `TestConfiguration` annotation in two ways during testing:
@@ -145,36 +145,75 @@ As explained earlier, we can use the `TestConfiguration` annotation in two ways 
 
 
 ### Using TestConfiguration with the Import Annotation
-The `Import` annotation allows us to import bean definitions from multiple `@Configuration` classes. This annotation is used to instruct the Spring test Context to load the bean definition from the `TestConfiguration` class as well:
+The `Import` annotation is a class-level annotation that allows us to import the bean definitions from multiple classes annotated with the `Configuration` annotation or `TestConfiguration` annotation into the application context or Spring test context:
 
 ```java
+@TestConfiguration
+public class WebClientTestConfiguration {
+ ...
+ @Bean
+ public WebClient getWebClient(final WebClient.Builder builder) {
+ //customized for running unit tests
+ WebClient webClient = builder
+ .baseUrl("http://localhost")
+ .build();
+ ...
+ ...
+ return webClient;
+ }
+}
+
 @SpringBootTest
 @Import(WebClientTestConfiguration.class)
 class TestConfigurationExampleAppTests {
  // Test case implementations
 }
 ```
-The above code example shows how to import a test configuration annotated with `TestConfiguration` using the `Import` annotation.
+In this code snippet, our test configuration is defined in a separate class `WebClientTestConfiguration` which is annotated with the `TestConfiguration` annotation. We then use the `Import` annotation in our test class `TestConfigurationExampleAppTests` to import this test configuration.
+
+We should use the autowired injection to access the `@Bean` definitions declared in imported `@TestConfiguration` classes.
 
 ### Using TestConfiguration with the Static Inner Class
-In this approach, the class annotated with `TestConfiguration` is implemented as a static inner class in the test class itself. The Spring Boot test context will discover and load the test configuration if it is declared as a static inner class:
+
+In this approach, the class annotated with `TestConfiguration` is implemented as a static inner class in the test class itself :
+
+The Spring Boot test context will discover and load the test configuration if it is declared as a static inner class:
 
 ```java
 @SpringBootTest
 public class UsingStaticInnerTestConfiguration {
-    @TestConfiguration
-    public static class WebClientConfiguration {
-        @Bean
-        public WebClient getWebClient(final WebClient.Builder builder) {
-            return builder.baseUrl("http://localhost").build();
-        }
-    }
+
+ @TestConfiguration
+ public static class WebClientConfiguration {
+ @Bean
+ public WebClient getWebClient(final WebClient.Builder builder) {
+ return builder.baseUrl("http://localhost").build();
+ }
+ }
+
+ @Autowired
+ private DataService dataService;
+
+ // Test methods of dataService
+
 }
 ```
-Here we can see how we can define the test configuration as a static inner class. In this static inner class approach, we do not need to import the test configuration explicitly.
+The test configuration is defined as a static inner class in this test. Here we do not need to import the test configuration explicitly.
 
 
 ## Conclusion
 
-In this post, we looked at how to use the `TestConfiguration` annotation for creating a custom bean or for overriding the behavior of an existing bean for unit testing. 
+In this post, we looked at how we can use the `TestConfiguration` annotation for creating a custom bean or for overriding an existing bean for unit testing of Spring applications. 
+
+Although we have talked of unit tests here, we can also use `TestConfiguration` in integration tests to add specialized bean configurations required for component interactions in specific test environments.
+
+Here is a summary of the things we covered:
+
+1. `TestConfiguration` annotation allows us to define additional beans or override existing beans in the Spring application context to add specialized configuration for testing. 
+2. This capability is used for applying customizations to abstract the external dependencies and run our test in a standalone environment.
+3. We can use the `TestConfiguration` annotation in two ways during testing: 
+- Declare the configuration in a separate class and then import the configuration in the test class
+- Declare the configuration in a static inner class inside the test class
+4. The bean overriding feature is disabled by default. We enable this feature by switching on an application property `spring.main.allow-bean-definition-overriding` in our test.
+
 

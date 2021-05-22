@@ -34,33 +34,35 @@ Let us look at the structure of a unit test in Spring Boot where we define the b
 @Configuration
 public class WebClientConfiguration {
  ...
- @Bean
- public WebClient getWebClient
- (final WebClient.Builder builder,
- @Value("${data.service.endpoint}") String url) {
+    @Bean
+    public WebClient getWebClient
+      (final WebClient.Builder builder,
+      @Value("${data.service.endpoint}") String url) {
 
- WebClient webClient = builder.baseUrl(url)
- .defaultHeader(HttpHeaders.CONTENT_TYPE, 
- MediaType.APPLICATION_JSON_VALUE)
- // more configurations and customizations
- .build();
- LOGGER.info("WebClient Bean Instance: {}", webClient);
- return webClient;
- }
+        WebClient webClient = builder.baseUrl(url)
+        .defaultHeader(HttpHeaders.CONTENT_TYPE, 
+        MediaType.APPLICATION_JSON_VALUE)
+        // more configurations and customizations
+        .build();
+
+        LOGGER.info("WebClient Bean Instance: {}", webClient);
+        return webClient;
+    }
  }
 ```
 In this code snippet, we define the `WebClient` bean with an external URL. We will next define a service class where we will inject this `WebClient` bean to call a REST API:
 
 ```java
 @Service
- public class DataService {
- ...
- private final WebClient webClient;
+public class DataService {
+    ...
+    private final WebClient webClient;
 
- public DataService(final WebClient webClient) {
- this.webClient = webClient;
- LOGGER.info("WebClient instance {}", this.webClient);
- }
+    public DataService(final WebClient webClient) {
+
+        this.webClient = webClient;
+        LOGGER.info("WebClient instance {}", this.webClient);
+    }
  }
  ```
  In this code snippet, the `DataService` bean is injected in the test class uses the `WebClient` bean configured with an external URL. 
@@ -71,9 +73,9 @@ In this code snippet, we define the `WebClient` bean with an external URL. We wi
 @SpringBootTest
 @TestPropertySource(locations="classpath:test.properties")
 class TestConfigurationExampleAppTests {
- @Autowired
- private DataService dataService;
- ...
+    @Autowired
+    private DataService dataService;
+    ...
  }
 ```
 In this code snippet, the `DataService` bean injected in the test class uses the `WebClient` bean configured with an external URL. This makes our unit test dependent on an external dependency which might fail if we run our test as part of any automated test or in any other environment with restricted connectivity. 
@@ -87,17 +89,17 @@ We do this by using the `TestConfiguration` annotation over our configuration cl
 ```java
 @TestConfiguration
 public class WebClientTestConfiguration {
- ...
- @Bean
- public WebClient getWebClient(final WebClient.Builder builder) {
- //customized for running unit tests
- WebClient webClient = builder
- .baseUrl("http://localhost")
- .build();
- ...
- ...
- return webClient;
- }
+    ...
+    @Bean
+    public WebClient getWebClient(final WebClient.Builder builder) {
+        //customized for running unit tests
+        WebClient webClient = builder
+           .baseUrl("http://localhost")
+           .build();
+        ...
+        ...
+        return webClient;
+    }
  }
 
 @SpringBootTest
@@ -105,9 +107,9 @@ public class WebClientTestConfiguration {
 @TestPropertySource(locations="classpath:test.properties")
 class TestConfigurationExampleAppTests {
 
- @Autowired
- private DataService dataService;
- ...
+    @Autowired
+    private DataService dataService;
+    ...
 }
 ```
 Here the `DataService` bean is injected in the test class and uses the `WebClient` bean configured in the test configuration class with `TestConfiguration` annotation with local URL. This way we can execute our unit test without any dependency on an external system. 
@@ -150,17 +152,17 @@ The `Import` annotation is a class-level annotation that allows us to import the
 ```java
 @TestConfiguration
 public class WebClientTestConfiguration {
- ...
- @Bean
- public WebClient getWebClient(final WebClient.Builder builder) {
- //customized for running unit tests
- WebClient webClient = builder
- .baseUrl("http://localhost")
- .build();
- ...
- ...
- return webClient;
- }
+    ...
+    @Bean
+    public WebClient getWebClient(final WebClient.Builder builder) {
+       //customized for running unit tests
+        WebClient webClient = builder
+              .baseUrl("http://localhost")
+              .build();
+        ...
+        ...
+        return webClient;
+    }
 }
 
 @SpringBootTest
@@ -185,10 +187,10 @@ public class UsingStaticInnerTestConfiguration {
 
  @TestConfiguration
  public static class WebClientConfiguration {
- @Bean
- public WebClient getWebClient(final WebClient.Builder builder) {
- return builder.baseUrl("http://localhost").build();
- }
+    @Bean
+    public WebClient getWebClient(final WebClient.Builder builder) {
+        return builder.baseUrl("http://localhost").build();
+    }
  }
 
  @Autowired

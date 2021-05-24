@@ -11,7 +11,7 @@ image:
 
 Amazon Relational Database Service (AWS RDS) is a relational database service available in AWS Cloud. The Spring Framework always had good support for database access technologies built on top of [JDBC](https://docs.oracle.com/javase/8/docs/technotes/guides/jdbc/). Spring Cloud AWS uses the same principles to provide integration with AWS RDS service through the Spring Cloud AWS JDBC module. 
 
-In this article, we will look at using the Spring Cloud AWS JDBC module of Spring Cloud AWS to integrate with the AWS RDS service with the help of some basic concepts of AWS RDS along with code examples.
+In this tutorial, we will look at using the Spring Cloud AWS JDBC module of Spring Cloud AWS to integrate with the AWS RDS service with the help of some basic concepts of AWS RDS along with code examples.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springcloudrds" %}
 

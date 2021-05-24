@@ -1,5 +1,5 @@
 ---
-title: "Working with AWS SQS and Spring Cloud"
+title: "Getting Started With AWS SQS and Spring Cloud"
 categories: [spring-boot]
 date: 2021-05-10 06:00:00 +1000
 author: pratikdas
@@ -11,7 +11,7 @@ Spring Cloud is a suite of projects containing many of the services required to 
 
 [Spring Cloud for Amazon Web Services(AWS)](https://spring.io/projects/spring-cloud-aws) is a sub-project of [Spring Cloud](https://spring.io/projects/spring-cloud) which makes it easy to integrate with AWS services using Spring idioms and APIs familiar to Spring developers.
 
-In this article, we will look at using Spring Cloud AWS for interacting with [Simple Queue Service (SQS)](https://aws.amazon.com/sqs/) with the help of some basic concepts of queueing and messaging along with code examples.
+In this tutorial, we will look at using Spring Cloud AWS for interacting with [Simple Queue Service (SQS)](https://aws.amazon.com/sqs/) with the help of some basic concepts of queueing and messaging along with code examples.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springcloudsqs" %}
 

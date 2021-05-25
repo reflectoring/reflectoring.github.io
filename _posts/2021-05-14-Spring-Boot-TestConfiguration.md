@@ -70,9 +70,9 @@ public class DataService {
     }
  }
  ```
- In this code snippet, the `DataService` bean is injected in the test class uses the `WebClient` bean configured with an external URL. 
+In this code snippet, the `WebClient` bean is injected into the `DataService` class. During testing, a `WebClient` instance configured to use a different URL will be injected rather than the actual `WebClient` bean.
 
- We will now create our test class and annotate it with `SpringBootTest`. **This results in bootstrapping of the full application context containing the beans selected by component scanning.** Due to this, we can inject any bean from the application context by [autowiring](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Autowired.html) the bean into our test class:
+We will now create our test class and annotate it with `SpringBootTest`. **This results in bootstrapping of the full application context containing the beans selected by component scanning.** Due to this, we can inject any bean from the application context by [autowiring](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Autowired.html) the bean into our test class:
 
 ```java
 @SpringBootTest

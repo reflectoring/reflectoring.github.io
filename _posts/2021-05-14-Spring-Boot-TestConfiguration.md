@@ -18,7 +18,7 @@ In this article, we will see the use of the `@TestConfiguration` annotation for 
 
 ## Introducing the `@TestConfiguration` Annotation
 
-We use [`@TestConfiguration`](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/TestConfiguration.html) to create configurations for our tests. We use this capability for applying customizations for abstracting the external dependencies and run our test in a standalone environment. 
+We use [`@TestConfiguration`](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/TestConfiguration.html) to create or customize beans for our tests. By using the `@TestConfiguration`, we can eliminate the need of having one or more complex bean dependencies in the standalone test environment and run them independently.
 
 We can best understand the `@TestConfiguration` annotation by first looking at the `@Configuration` annotation which is the parent annotation it inherits from. 
 

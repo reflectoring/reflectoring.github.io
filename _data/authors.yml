@@ -226,3 +226,13 @@ pimterry:
   github: "pimterry"
   twitter: "pimterry"
   bio: "The developer behind <a href=\"https://httptoolkit.tech/java/\">HTTP Toolkit</a>: Beautiful & open-source tools to debug, test and develop with HTTP(S)."
+
+naveen:
+  name: "Naveen Kumar Kanagaraj"
+  email: "cbenaveen@gmail.com"
+  avatar: "/assets/img/authors/naveen.jpeg"
+  github: "https://github.com/cbenaveen"
+  twitter: "CbenaveenK"
+  linkedin: "https://www.linkedin.com/in/cbenaveen/"
+  bio: "A Cloud Architect, passionate about building large-scale, resilient, and highly available systems using microservice architecture. I enjoy developing microservices using Java and Spring ecosystem and various author technologies."
+

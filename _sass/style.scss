@@ -47,6 +47,12 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0px 0px 15px;
 }
 
+.main-post {
+  h1, h2, h3, h4, h5, h6 {
+    clear: both;
+  }
+}
+
 h1 {
   font-size: 38px;
   @include underline();
@@ -232,6 +238,7 @@ textarea.input {
 
 .section-row {
   margin-bottom: 40px;
+  clear: both;
 }
 
 /*=========================================================

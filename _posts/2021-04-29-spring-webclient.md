@@ -1,8 +1,8 @@
 ---
 title: "Sending HTTP requests with Spring WebClient"
 categories: [spring-boot]
-date: 2021-04-29 00:00:00 +0200
-modified: 2021-04-29 00:00:00 +0200
+date: 2021-05-25 00:00:00 +0200
+modified: 2021-05-25 00:00:00 +0200
 author: pimterry
 excerpt: "How to get started using Spring WebClient to talk to REST APIs."
 image:
@@ -259,6 +259,23 @@ client.get()
 ```
 
 There's a wide variety of assertion methods to check the response status, headers and body - see [the JavaDoc](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/test/web/reactive/server/WebTestClient.ResponseSpec.html) for the full list.
+
+### Inspecting and Mocking `WebClient` HTTP traffic with HTTP Toolkit
+
+After you've deployed your `WebClient` code, you need to be able to debug it. HTTP requests are often the linchpin within complex interactions, and they can fail in many interesting ways. It's useful to be able to see the requests and responses your client is working with to understand what your system is doing, and injecting your own data or errors can be a powerful technique for manual testing.
+
+To do this, you can use [HTTP Toolkit](https://httptoolkit.tech/java/), a cross-platform open-source tool that can capture traffic from a wide variety of Java HTTP clients, and which includes a specific integration to automatically intercept Spring `WebClient`.
+
+Once you have HTTP Toolkit installed, the next step is to intercept your Java HTTP traffic. To do so you can either:
+
+* Click the 'Fresh Terminal' button in HTTP Toolkit to open a terminal, and launch your application from there; or
+* Start your application as normal, then click the 'Attach to JVM' button in HTTP Toolkit to attach to the already running JVM
+
+Once you've intercepted your traffic, you can inspect every request and response sent by your application from the 'View' page inside HTTP Toolkit:
+
+![HTTP Toolkit inspecting HTTP requests]({{ base }}/assets/img/posts/http_toolkit.png)
+
+You can also add rules from the 'Mock' page, to interactively mock HTTP responses, breakpoint requests, or inject errors like connection failures and timeouts.
 
 ## Conclusion
 

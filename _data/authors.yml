@@ -218,3 +218,12 @@ bakic:
   github: "bakic"
   linkedin: "abdelbaki-ben-elhaj-slimene-b797028"
   bio: "As a software developer, I am looking for new challenges. Being a developer made me a student for life. I enjoy sharing knowledge and learn from the others."
+
+naveen:
+  name: "Naveen Kumar Kanagaraj"
+  email: "cbenaveen@gmail.com"
+  avatar: "/assets/img/authors/naveen.jpeg"
+  github: "https://github.com/cbenaveen"
+  twitter: "CbenaveenK"
+  linkedin: "https://www.linkedin.com/in/cbenaveen/"
+  bio: "A Cloud Architect, passionate about building large-scale, resilient, and highly available systems using microservice architecture. I enjoy developing microservices using Java and Spring ecosystem and various author technologies."

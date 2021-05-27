@@ -260,7 +260,7 @@ client.get()
 
 There's a wide variety of assertion methods to check the response status, headers and body - see [the JavaDoc](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/test/web/reactive/server/WebTestClient.ResponseSpec.html) for the full list.
 
-### Inspecting and Mocking `WebClient` HTTP traffic with HTTP Toolkit
+## Inspecting and Mocking `WebClient` HTTP Traffic with HTTP Toolkit
 
 After you've deployed your `WebClient` code, you need to be able to debug it. HTTP requests are often the linchpin within complex interactions, and they can fail in many interesting ways. It's useful to be able to see the requests and responses your client is working with to understand what your system is doing, and injecting your own data or errors can be a powerful technique for manual testing.
 

@@ -1,12 +1,12 @@
 ---
 title: Testing with Spring Boot's @TestConfiguration Annotation
 categories: [spring-boot]
-date: 2021-05-15 00:00:00 +0530
-modified: 2021-05-15 06:00:00 +1000
+date: 2021-05-28 00:00:00 +0530
+modified: 2021-05-28 06:00:00 +1000
 author: naveen
 excerpt: "We will see the use of the `@TestConfiguration` annotation for creating custom beans or overriding specific beans for providing specialized behavior to the application during unit testing of Spring Boot applications."
 image:
- auto: 0035-switchboard
+ auto: 0102-traffic-light
 ---
 A unit test is used to verify the smallest part of an application (a "unit") independent of other parts. This makes the verification process easy and fast since the scope of the testing is narrowed down to a class or method. 
 
@@ -18,7 +18,7 @@ In this article, we will see the use of the `@TestConfiguration` annotation for 
 
 ## Introducing the `@TestConfiguration` Annotation
 
-We use [`@TestConfiguration`](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/TestConfiguration.html) to create or customize beans for our tests. By using the `@TestConfiguration`, we can eliminate the need of having one or more complex bean dependencies in the standalone test environment and run them independently.
+We use [`@TestConfiguration`](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/TestConfiguration.html) to modify Spring's application context during test runtime. We can use it to override certain bean definitions, for example to replace real beans with fake beans or to change the configuration of a bean to make it better testable.
 
 We can best understand the `@TestConfiguration` annotation by first looking at the `@Configuration` annotation which is the parent annotation it inherits from. 
 
@@ -216,11 +216,10 @@ Although we have talked of unit tests here, we can also use `@TestConfiguration`
 
 Here is a summary of the things we covered:
 
-1. `@TestConfiguration` annotation allows us to define additional beans or override existing beans in the Spring application context to add specialized configuration for testing. 
-2. Eliminate the need of having one or more complex bean dependencies and run our tests in a standalone environment and run them independently.
-3. We can use the `@TestConfiguration` annotation in two ways during testing: 
+1. `@TestConfiguration` annotation allows us to define additional beans or override existing beans in the Spring application context to add specialized configuration for testing.
+2. We can use the `@TestConfiguration` annotation in two ways during testing: 
 - Declare the configuration in a separate class and then import the configuration in the test class
 - Declare the configuration in a static inner class inside the test class
-4. The bean overriding feature is disabled by default. We enable this feature by switching on an application property `spring.main.allow-bean-definition-overriding` in our test.
+3. The bean overriding feature is disabled by default. We enable this feature by switching on an application property `spring.main.allow-bean-definition-overriding` in our test.
 
 

@@ -26,7 +26,7 @@ $( document ).ready(function() {
             iconColor: "#000000",
             header: "",
             width: "666px",
-            content: "<a href=\"https://learn.launchdarkly.com/effective-feature-management/\"><img src=\"/assets/img/launchdarkly/2021_02_EffectiveFeatureManagementGuide_Ad_640x100@2x.png\"/></a>",
+            content: "<a href=\"https://learn.launchdarkly.com/effective-feature-management/\"><img alt=\"Effective Feature Management\" src=\"/assets/img/launchdarkly/2021_02_EffectiveFeatureManagementGuide_Ad_640x100@2x.png\"/></a>",
             afterPopup: function() {
               setCookie("launchdarkly", "true", 7);
             }

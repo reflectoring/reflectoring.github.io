@@ -64,7 +64,7 @@ Let's talk a bit more about them.
 In this mode we can only have one Shard with one primary node and zero or more replicas for high availability. This mode
 allows us to scale vertically by increasing the size of the node.
    
-![No cluster mode](assets/img/posts/spring-elasticache-redis/cluster-01.png)   
+![No cluster mode](/assets/img/posts/spring-elasticache-redis/cluster-01.png)   
 
 To configure ElatiCache in this mode simply make sure not to check "**Cluster mode enabled**" checkbox. Also make sure 
 you have enabled "**Multi A-Z**" this will enable auto failover. In case of a primary node's failure a replica will take 
@@ -73,7 +73,7 @@ over as primary.
 Once you are done with creating the cluster, your configuration should something similar to the following screenshot. Most 
 of the configurations are default:
 
-![No cluster mode configuration](assets/img/posts/spring-elasticache-redis/no-cluster.png)
+![No cluster mode configuration](/assets/img/posts/spring-elasticache-redis/no-cluster.png)
 
 Couple of things to note here:
 
@@ -88,12 +88,12 @@ without worrying about changing of the node's endpoint.
 
 This mode allows us to add more Shards into our cluster.
    
-![cluster mode](assets/img/posts/spring-elasticache-redis/cluster-02.png)
+![cluster mode](/assets/img/posts/spring-elasticache-redis/cluster-02.png)
 
 To configure ElatiCache in this mode just make sure to check "**Cluster mode enabled**" checkbox. Now, we will see options to specify 
 number of shards and also options to specify regions of shards.
 
-![No cluster mode configuration](assets/img/posts/spring-elasticache-redis/cluster-mode.png)
+![No cluster mode configuration](/assets/img/posts/spring-elasticache-redis/cluster-mode.png)
 
 Here we can note that we don't have primary and reader endpoints, instead we have a single configuration endpoint. Our redis
 clients can retrieve the cluster topology - Address and roles of all nodes - using this URL. 
@@ -164,15 +164,19 @@ public class EnableCache {
   private String readerEndpoint;
   @Bean
   public LettuceConnectionFactory redisConnectionFactory() {
-      LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-         .readFrom(ReadFrom.REPLICA_PREFERRED)
-         .build();
+      LettuceClientConfiguration clientConfig = LettuceClientConfiguration
+              .builder()
+              .readFrom(ReadFrom.REPLICA_PREFERRED)
+              .build();
       
       var staticMasterReplicaConfiguration = 
-          new RedisStaticMasterReplicaConfiguration(this.primaryEndpoint, PORT);
+        new RedisStaticMasterReplicaConfiguration(this.primaryEndpoint, PORT);
       
       staticMasterReplicaConfiguration.addNode(readerEndpoint, PORT);
-      return new LettuceConnectionFactory(staticMasterReplicaConfiguration, clientConfig);
+      return new LettuceConnectionFactory(
+              staticMasterReplicaConfiguration, 
+              clientConfig
+      );
   }
 }
 ```
@@ -200,7 +204,7 @@ spring:
     type: redis
   redis:
     cluster:
-      nodes: spring-redis-cluster.xxxx.clustercfg.use2.cache.amazonaws.com:6379
+      nodes: spring-redis-cluster.xx.clustercfg.use2.cache.amazonaws.com:6379
     lettuce:
       cluster:
         refresh:
@@ -310,7 +314,7 @@ Our Example application comes with a `DockerFile` and a Terraform script to depl
 As a first step create an ECR repository and upload the image of example application. You should be able to find push commands
 for the same from ECR repository page.
 
-![Push commands](assets/img/posts/spring-elasticache-redis/push-commands.png)
+![Push commands](/assets/img/posts/spring-elasticache-redis/push-commands.png)
 
 Rest of the job will be done by the Terraform script, just make sure to provide required details in the `input.tf` file.
 ```terraform
@@ -389,11 +393,11 @@ In ElastiCache we can set this by overriding `maxmemory-policy`.
 
 To do that you need to create a Parameter Group using `redis.6.x` or whichever redis version you are using:
 
-![Parameter Group create](assets/img/posts/spring-elasticache-redis/parameter-group-create.png)
+![Parameter Group create](/assets/img/posts/spring-elasticache-redis/parameter-group-create.png)
 
 Then we need to edit the parameter group:
 
-![Parameter Group edit](assets/img/posts/spring-elasticache-redis/parameter-group-edit.png)
+![Parameter Group edit](/assets/img/posts/spring-elasticache-redis/parameter-group-edit.png)
 
 Finally, apply it to the redis cluster.
 

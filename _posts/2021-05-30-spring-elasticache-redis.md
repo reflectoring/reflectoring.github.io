@@ -1,5 +1,5 @@
 ---
-title: "Caching in Spring Boot with AWS ElastiCache for Redis"
+title: "Caching in Spring Boot Application with AWS ElastiCache for Redis"
 categories: [spring-boot]
 date: 2021-05-31 00:00:00 +1100
 modified: 2021-05-31 00:00:00 +1100
@@ -317,16 +317,18 @@ Our Example application comes with a `DockerFile` and a Terraform script to depl
 As a first step create an ECR repository and upload the image of the example application. You should be able to find push commands
 for the same from the ECR repository page.
 
-![Push commands](/assets/img/posts/spring-elasticache-redis/push-commands.png)
-
 The rest of the job will be done by the Terraform script, just make sure to provide the required details in the `input.tf` file.
 ```terraform
 variable "profile" {
-  default = "sandbox"//If you have multiple profiles replace this with your profile name
+  default = "default"
 }
 
 variable "region" {
   default = "us-east-2"
+}
+
+variable "port" {
+  default = 8080
 }
 
 variable "name" {
@@ -334,19 +336,19 @@ variable "name" {
 }
 
 variable "account" {
-  default = "12222333"
+  default = "<YOUR_ACCOUNT>"
 }
 
 variable "repository" {
-  default = "example-repository"
+  default = "<YOUR_REPO_NAME>"
 }
 
 variable "vpc" {
-  default = "vpc-axxxx"
+  default = "<YOUR_VPC>"
 }
 
-variable "public-subnet" {
-  default = ["subnet-a","subnet-b"]
+variable "subnet" {
+  default = ["<YOUR_PUBLIC_SUBNETS>"]
 }
 
 ```

@@ -412,4 +412,10 @@ operation.
 
 ## Conclusion
 
-Thank you for reading!
+Caching if done right with a proper tool can be a game changer for our applications in terms of improving performance 
+and stability. 
+
+While implementing caching can result in an improved user experience, using managed caching service such as 
+ElastiCache can make our jobs easier in making our cache resilient and highly available.
+
+Thank you for reading! You can find the working code at [GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/caching-with-elasticache-redis).

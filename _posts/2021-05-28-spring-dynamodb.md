@@ -85,7 +85,7 @@ Add dependency
 
 Let us first create a DynamoDB table to store customers:
 
-![Table creation](/assets/img/posts/table-creation.png)
+![Table creation](/assets/img/posts/aws-dynamodb-java/table-creation.png)
 We are using the AWS console to create a table named `Customer` with `CustomerID` as partition key and `OrderID` as the sort key. We are following the partitioning best practices here. Having customerID as partition key will ensure that order items of same customer will be stored and fetched together resulting in efficient fetch times.
 
 Create a DynamoDB entity `Customer` for this table:
@@ -180,7 +180,7 @@ class CustomerServiceTest {
 
 Let us first create a DynamoDB table to store the orders placed by a customer:
 
-![Table creation](/assets/img/posts/table-creation.png)
+![Table creation](/assets/img/posts/aws-dynamodb-java/table-creation.png)
 We are using the AWS console to create a table named `Order` with `CustomerID` as partition key and `OrderID` as the sort key. We are following the partitioning best practices here. Having customerID as partition key will ensure that order items of same customer will be stored and fetched together resulting in efficient fetch times.
 
 We broadly do this in four Steps
@@ -265,7 +265,7 @@ class OrderRepositoryTest {
 ```
 
 AFter running thus test we can view the item created in the DynamoDB console:
-![Item created](/assets/img/posts/item-created.png)
+![Item created](/assets/img/posts/aws-dynamodb-java/item-created.png)
 
 
 Handling Nested Types

@@ -19,7 +19,7 @@ In this article, we will look at using the DynamoDB database in microservice app
 ## AWS DynamoDB Concepts
 [Amazon DynamoDB](https://aws.amazon.com/dynamodb/) is a key-value database. A key-value database stores data as a collection of key-value pairs. Both the keys and the values can be simple or complex objects.
 
-There is plenty to know about DynamoDB for building a good understanding for which we should refer to the official documentation. We will only skim through the important concepts in this section which is essential for designing our applications.
+There is plenty to know about DynamoDB for building a good understanding for which we should refer to the [official documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html). We will only skim through the important concepts in this section which is essential for designing our applications.
 
 ### Tables, Items and Attributes
 Like all databases, **a table is the fundamental component of DynamoDB where we store our data**. DynamoDB tables are schemaless. Other than the primary key, we do not need to define any additional attributes when we create a table..

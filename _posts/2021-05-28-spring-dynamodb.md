@@ -61,27 +61,24 @@ We can run a local instance of DynamoDB for development and testing. When we are
 ## Writing Applications with DynamoDB
 DynamoDB is a web service, and interactions with it are stateless. We interact with DynamoDB by REST API calls over HTTP(S). Unlike connection protocols like JDBC, applications do not need to maintain persistent network connections. We send the name of the operation  that we want to perform in the API request. The main operations are grouped into control plane and data plane. 
 
-We usually donot work with APIs directly. AWS provides SDK in different programming languages which we integrate in our applications for performing database operations.
+We usually do not work with APIs directly. AWS provides SDK in different programming languages which we integrate in our applications for performing database operations.
 
 We will describe two ways for accessing DynamoDB from Spring applications:
-- Spring Data
-- Enhanced Client
+- Using DynamoDB module of Spring Data
+- Using Enhanced Client for DynamoDB
 
-Let us see some examples in the following sections.
+Let us see some examples of using this two methods in the following sections.
+
 ## Accessing DynamoDB with Spring Data
-The primary goal of the Spring® Data project is to make it easier to build Spring-powered applications that use data access technologies.
+The primary goal of the [Spring® Data](https://spring.io/projects/spring-data) project is to make it easier to build Spring-powered applications by providing a consistent framework to use different data access technologies. Spring Data is an umbrella project composed of many different sub-projects each corresponding to specific database technologies. 
 
-Support for DynamoDB in Spring Data is available as a community module. This module deals with enhanced support for a data access layer built on AWS DynamoDB.
+[Spring Data module for DynamoDB](https://github.com/derjust/spring-data-dynamodb) is a community module for accessing AWS DynamoDB with familiar Spring Data constructs of data objects and repository interfaces.
 
-Add dependency
+### Initial Setup
+Let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=dynamodbspringdata&description=Demo%20project%20for%20Spring%20data&packageName=io.pratik.springdata&dependencies=web), and then open the project in our favorite IDE.
 
-```xml
-<dependency>
-  <groupId>com.github.derjust</groupId>
-  <artifactId>spring-data-dynamodb</artifactId>
-  <version>5.1.0</version>
-</dependency>
-```
+
+For configuring Spring Data, let us add a separate Spring Data release train BOM in our `pom.xml` file using this `dependencyManagement` block :
 
 ```xml
   <dependencyManagement>
@@ -97,13 +94,44 @@ Add dependency
   </dependencyManagement>
 
 ```
+For adding the support for Spring Data, we need to include the module dependency for Spring Data DynamoDB into our Maven configuration.  We do this by adding the module`spring-data-dynamodb` in our `pom.xml`:
 
-Let us first create a DynamoDB table to store customers:
+```xml
+    <dependency>
+      <groupId>com.github.derjust</groupId>
+      <artifactId>spring-data-dynamodb</artifactId>
+      <version>5.1.0</version>
+    </dependency>
+```
+### Creating the Configuration
+
+We will initialize `dynamodbEnhancedClient` in our Spring configuration:
+
+```java
+Configuration
+@EnableDynamoDBRepositories
+(basePackages = "io.pratik.dynamodbspring.repositories")
+public class AppConfig {
+
+    @Bean
+    public AmazonDynamoDB amazonDynamoDB() {
+        AWSCredentialsProvider credentials = new ProfileCredentialsProvider("pratikpoc");
+    AmazonDynamoDB amazonDynamoDB 
+          = AmazonDynamoDBClientBuilder.standard().withCredentials(credentials).build();
+        
+        return amazonDynamoDB;
+    }
+
+}
+
+```
+### Creating the Mapping with DynamoDB Table in a Data Class
+Let us now create a DynamoDB table which we will use to store customer records from our application:
 
 ![Table creation](/assets/img/posts/aws-dynamodb-java/table-creation.png)
-We are using the AWS console to create a table named `Customer` with `CustomerID` as partition key and `OrderID` as the sort key. We are following the partitioning best practices here. Having customerID as partition key will ensure that order items of the same customer will be stored and fetched together resulting in efficient fetch times.
+We are using the AWS console to create a table named `Customer` with `CustomerID` as partition key. 
 
-Create a DynamoDB entity `Customer` for this table:
+We will next create a class to represent `Customer` DynamoDB table which will contain the mapping with the keys and attributes of a item stored in the table:
 ```java
 @DynamoDBTable(tableName = "Customer")
 public class Customer {
@@ -144,9 +172,11 @@ public class Customer {
 
 }
 ```
-We have decorated the getter methods with `@DynamoDBAttribute` passing in the name of the attribute.
 
-To define a repository interface, we first need to define a domain class-specific repository interface. The interface must extend Repository and be typed to the domain class and an ID type. Next, let us create our repository interface `CustomerRepository` and invoke it from a `service` class: 
+We have defined the mappings with the table by decorating the class with `@DynamoDBTable` annotation and passing in the table name. We have used the `DynamoDBHashKey` attribute over the getter method of `customerID` field. For mapping the remaining attributes, we have decorated the getter methods of the remianing fields with the  `@DynamoDBAttribute` passing in the name of the attribute.
+
+### Defining the Repository Interface
+We will next define a repository interface by extending CrudRepository and be typed to the domain class and an ID type. Next, let us create our repository interface `CustomerRepository` and invoke it from a `service` class: 
 
 ```java
 @EnableScan
@@ -193,11 +223,10 @@ class CustomerServiceTest {
 
 ## Using the DynamoDB enhanced Client
 Enhanced DynamoDB client is a new module of the AWS SDK for Java 2.0. This module provides a more idiomatic code authoring experience. We can integrate applications with  DynamoDB using an adaptive API that allows us to execute database operations directly with the data classes our application already works with.
-Let us now create a DynamoDB table to store the orders placed by a customer. This `Order` table will have a composite primary key :
 
-![Table creation](/assets/img/posts/aws-dynamodb-java/table-creation.png)
+### Initial Setup
+Let us create one more Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=dynamodbec&description=Demo%20project%20for%20SEnhanced%20client&packageName=io.pratik&dependencies=web) where we will use the enhanced client to access DynamoDB..
 
-As we can see here, we are using the AWS console to create a table named `Order` with `CustomerID` as the partition key and `OrderID` as the sort key. We are following the partitioning best practices here. Having customerID as a partition key will ensure that order items of the same customer will be stored and fetched together resulting in efficient fetch times.
 
 Let us create one more Spring Boot project where we will use the enhanced client to access DynamoDB.
 The first step of using the DynamoDB Enhanced Client for Java is to include its dependency in our project:
@@ -209,7 +238,47 @@ The first step of using the DynamoDB Enhanced Client for Java is to include its 
       <version>2.16.74</version>
     </dependency>
 ```
-Here we adding enhanced client as a Maven dependency of `dynamodb-enhanced` module in our `pom.xml`.
+Here we are adding enhanced client as a Maven dependency of `dynamodb-enhanced` module in our `pom.xml`.
+
+### Creating the Configuration
+
+We will initialize `dynamodbEnhancedClient` in our Spring configuration:
+
+```java
+@Configuration
+public class AppConfig {
+
+  @Bean
+  public DynamoDbClient getDynamoDbClient() {
+    AwsCredentialsProvider credentialsProvider = 
+              DefaultCredentialsProvider.builder()
+               .profileName("pratikpoc")
+               .build();
+
+    return DynamoDbClient.builder().region(Region.US_EAST_1).credentialsProvider(credentialsProvider).build();
+  }
+  
+  @Bean
+  public DynamoDbEnhancedClient getDynamoDbEnhancedClient() {
+    return DynamoDbEnhancedClient.builder()
+                .dynamoDbClient(getDynamoDbClient())
+                .build();
+  }
+
+}
+
+```
+
+Here we are creating a bean `dynamodbClient` with our AWS credentials and using this to create a bean for `DynamoDbEnhancedClient`;
+
+### Creating the Mapping Class
+Let us now create one more DynamoDB table to store the orders placed by a customer. This time we will define a composite primary key for the `Order` table :
+
+![Table creation](/assets/img/posts/aws-dynamodb-java/table-creation.png)
+
+As we can see here, we are using the AWS console to create a table named `Order` with a composite primary key composed of`CustomerID` as the partition key and `OrderID` as the sort key. 
+
+
 We will next create a `Order` class to represent the items in the `Order` table:
 
 ```java
@@ -246,34 +315,7 @@ public class Order {
 ```
 Here we are decorating the `Order` data class with the `@DynamoDB` annotation to designate the class as a DynamoDB bean’. We have also added an annotation `@DynamoDbPartitionKey` for the partition key and another annotation `@DynamoDbSortKey` on the getter for the sort key of the record. 
 
-We will initialize `dynamodbEnhancedClient` in our Spring configuration:
-
-```java
-@Configuration
-public class AppConfig {
-
-  @Bean
-  public DynamoDbClient getDynamoDbClient() {
-    AwsCredentialsProvider credentialsProvider = 
-              DefaultCredentialsProvider.builder()
-               .profileName("pratikpoc")
-               .build();
-
-    return DynamoDbClient.builder().region(Region.US_EAST_1).credentialsProvider(credentialsProvider).build();
-  }
-  
-  @Bean
-  public DynamoDbEnhancedClient getDynamoDbEnhancedClient() {
-    return DynamoDbEnhancedClient.builder()
-                .dynamoDbClient(getDynamoDbClient())
-                .build();
-  }
-
-}
-
-```
-
-Here we are creating a bean `dynamodbClient` with our AWS credentials and using this to create a bean for `DynamoDbEnhancedClient`;
+### Creating the Repository Class
 
 In the last step we will inject this `DynamoDbEnhancedClient` in a repository class and use the data class created earlier for performing different database operations:
 
@@ -382,7 +424,7 @@ public class OrderRepository {
 
 }
 ```
-In this snippet, we are calling the `delete`, `scan`, and `query` methods on the mapped object `orderTable`.
+In this snippet, we are calling the `delete`, `scan`, and `query` methods on the mapped object `orderTable`. 
 
 
 ## Handling Nested Types
@@ -416,27 +458,14 @@ public class Product {
 
 Here we have added a nested collection of `Product` class to the `Order` class and annotated the `Product` class with `@DynamoDbBean` annotation.
 
-## Batch Requests
-
-
-## Filtered Query
-
-## Using secondary indices
-
-## Non-blocking asynchronous operations
-
-If your application requires non-blocking asynchronous calls to DynamoDb, then you can use the asynchronous implementation of the mapper. It's very similar to the synchronous implementation with a few key differences:
-
-Certain operations (Query and Scan) may be executed against a secondary index. Here's an example of how to do this:
-
 
 ## Conclusion
 
 In this article, we looked at the important concepts of AWS DynamoDB. we also saw how to use Spring Data for accessing the database of our application with the AWS RDS service. Here is a summary of the things we covered:
 1. We store our data in a table in AWS Dynamo DB. A table is composed of items and each item has attributes.
 2. A DynamoDB table must have a partition key and optionally a sort key.
-2. We create a secondary Index to search on other fields
-3. We accessed DynamoDB with Spring data module and then with enhanced dynamoDB client module of AWS Java SDK.
+3. We create a secondary Index to search on other fields
+4. We accessed DynamoDB with Spring data module and then with enhanced dynamoDB client module of AWS Java SDK.
 
 I hope this will help you to get started with building applications using Spring with AWS DynamoDB as the database. 
 

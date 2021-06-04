@@ -38,13 +38,11 @@ This diagram represents all these concepts in one place:
 
 ### Data Distribution Across Partitions
 
-A partition is a unit of storage for a table where the data is stored by DynamoDB. 
+**A partition is a unit of storage for a table where the data is stored by DynamoDB**. 
 
 When we write an item to the table, DynamoDB uses the value of the partition key as input to an internal hash function. The output of the hash function determines the partition in which the item will be stored.
 
 When we read an item from the table, we must specify the partition key value for the item. DynamoDB uses this value as input to its hash function, to locate the partition in which the item can be found.
-
-We should design our application for uniform activity across all partitions by determining the access patterns that our application requires, and estimate the total read capacity units (RCU) and write capacity units (WCU) that each table and secondary index requires.
 
 ### Querying with Secondary Indexes
 We can use a secondary index to query the data in the table using an alternate key, in addition to queries against the primary key. Secondary Indexes are of two types:
@@ -62,7 +60,7 @@ We can run a local instance of DynamoDB for development and testing. When we are
 
 
 ## Writing Applications with DynamoDB
-DynamoDB is a web service, and interactions with it are stateless. We interact with DynamoDB by REST API calls over HTTP(S). Unlike connection protocols like JDBC, applications do not need to maintain persistent network connections. We send the name of the operation  that we want to perform in the API request. The main operations are grouped into control plane and data plane. 
+DynamoDB is a web service, and interactions with it are stateless. We interact with DynamoDB by REST API calls over HTTP(S). Unlike connection protocols like JDBC, applications do not need to maintain persistent network connections. We send the name of the operation  that we want to perform in the API request. 
 
 We usually do not work with APIs directly. AWS provides SDK in different programming languages which we integrate in our applications for performing database operations.
 
@@ -70,7 +68,7 @@ We will describe two ways for accessing DynamoDB from Spring applications:
 - Using DynamoDB module of Spring Data
 - Using Enhanced Client for DynamoDB
 
-Let us see some examples of using this two methods in the following sections.
+Let us see some examples of using these two methods in the following sections.
 
 ## Accessing DynamoDB with Spring Data
 The primary goal of the [Spring® Data](https://spring.io/projects/spring-data) project is to make it easier to build Spring-powered applications by providing a consistent framework to use different data access technologies. Spring Data is an umbrella project composed of many different sub-projects each corresponding to specific database technologies. 

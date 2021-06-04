@@ -9,9 +9,7 @@ image:
   auto: 0074-stack
 ---
 
-AWS DynamoDB is a NoSQL database service available in AWS Cloud. It is a fully managed service and provides fast and predictable performance for storing and retrieving any amount of data. Being fully managed, all the database administration tasks like patching, hardware provisioning, capacity scaling and replication are done by the DynamoDB service.
-
-DynamoDB provides many benefits starting from a flexible pricing model, stateless connection and a consistent response time irrespective of the database size. Due to this DynamoDB is widely used with serverless compute services like AWS lambda and in microservices architectures. 
+AWS DynamoDB is a NoSQL database service available in AWS Cloud. DynamoDB provides many benefits starting from a flexible pricing model, stateless connection and a consistent response time irrespective of the database size. Due to this DynamoDB is widely used with serverless compute services like AWS lambda and in microservices architectures. 
 
 In this article, we will look at using the DynamoDB database in microservice application built with Spring Boot along with code examples.
 
@@ -19,12 +17,12 @@ In this article, we will look at using the DynamoDB database in microservice app
 
 
 ## AWS DynamoDB Concepts
-[Amazon DynamoDB](https://aws.amazon.com/dynamodb/) is a key-value and document database. A key-value database is a type of nonrelational database that stores data as a collection of key-value pairs. Both the keys and the values can be simple or complex objects. It is also referred as a document database in some texts since we can store JSON documents.  But AWS recently released DocumentDB service which is more purpose built for storing and quering data as JSON-like documents.
+[Amazon DynamoDB](https://aws.amazon.com/dynamodb/) is a key-value database. A key-value database stores data as a collection of key-value pairs. Both the keys and the values can be simple or complex objects.
 
 There is plenty to know about DynamoDB for building a good understanding for which we should refer to the official documentation. We will only skim through the important concepts in this section which is essential for designing our applications.
 
 ### Tables, Items and Attributes
-Like all databases, a table is the fundamental component of DynamoDB where we store our data. DynamoDB tables are schemaless. other than the primary key, you do not need to define any extra attributes or data types when we create a table..
+Like all databases, a table is the fundamental component of DynamoDB where we store our data. DynamoDB tables are schemaless. Other than the primary key, we do not need to define any extra attributes or data types when we create a table..
 
 A table contains one or more items. An item is composed of attributes, which are different elements of data for a particular item. For example, an item in a Customer table might have a Name attribute, an email attribute, a phone attribute, and more. They are similar to columns in a relational database. We also specify the type of the attribute that can be simple types like strings and numbers or composite types like lists, maps, or sets.
 

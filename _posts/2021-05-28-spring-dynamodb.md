@@ -22,11 +22,9 @@ In this article, we will look at using the DynamoDB database in microservice app
 There is plenty to know about DynamoDB for building a good understanding for which we should refer to the [official documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html). We will only skim through the important concepts in this section which is essential for designing our applications.
 
 ### Tables, Items and Attributes
-Like all databases, **a table is the fundamental component of DynamoDB where we store our data**. DynamoDB tables are schemaless. Other than the primary key, we do not need to define any additional attributes when we create a table..
+Like all databases, **a table is the fundamental component of DynamoDB where we store our data**. DynamoDB tables are schemaless. Other than the primary key, we do not need to define any additional attributes when we create a table.
 
-**A table contains one or more items. An item is composed of attributes, which are different elements of data for a particular item**. For example, an item in a Customer table might have a Name attribute, an email attribute, a phone attribute, and more. They are similar to columns in a relational database. We also specify the type of the attribute that can be simple types like strings and numbers or composite types like lists, maps, or sets.
-
-We do not require most of the attributes for every item. This allows for a more flexible data model than a relational databases. We can store completely different kinds of objects (items in the table) in a single DynamoDB table, such as a Customer object with Name, email, and phone attributes, and an Address object with street, city, and zip attributes. This is an established design pattern called a single table design for storing multiple different entity types in a single table.
+**A table contains one or more items. An item is composed of attributes, which are different elements of data for a particular item**. They are similar to columns in a relational database. We also specify the type of the attribute that can be simple types like strings and numbers or composite types like lists, maps, or sets.
 
 ### Uniquely Identifying Items in a Table with Primary Key
 The primary key is used to uniquely identify each item in an Amazon DynamoDB table. A primary key is of two types:
@@ -34,6 +32,9 @@ The primary key is used to uniquely identify each item in an Amazon DynamoDB tab
 1. **Simple Primary Key**: This is composed of one attribute called the Partition Key.
 2. **Composite Primary Key**: This is composed of two attributes Partition and Sort Keys.
 
+This diagram represents all these concepts in one place:
+
+![Table creation](/assets/img/posts/aws-dynamodb-java/tablitemattr.png)
 
 ### Data Distribution Across Partitions
 
@@ -50,6 +51,10 @@ We can use a secondary index to query the data in the table using an alternate k
 
 - **Global Secondary Index (GSI)**: An index with a partition key and sort key that are different from the partition key and sort key of the table.
 - **Local Secondary Index (LSI)**: An index that has the same partition key as the table, but a different sort key.
+
+### Single Table
+
+We do not require most of the attributes for every item. This allows for a more flexible data model than a relational databases. We can store completely different kinds of objects (items in the table) in a single DynamoDB table, such as a Customer object with Name, email, and phone attributes, and an Address object with street, city, and zip attributes. This is an established design pattern called a single table design for storing multiple different entity types in a single table.
 
 
 ## Setting up DynamoDB

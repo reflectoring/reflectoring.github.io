@@ -4,55 +4,70 @@ categories: [craft]
 date: 2021-04-25 06:00:00 +1000
 modified: 2021-04-25 06:00:00 +1000
 author: pratikdas
-excerpt: "AWS Relational Database Service (RDS) is a managed database service in AWS Cloud. Spring Cloud AWS provides convenient configurable components to integrate applications with the RDS service. In this article, we will look at using Spring Cloud AWS for working with AWS RDS with the help of some code examples"
+excerpt: "AWS DynamoDB is a fully managed NoSQL database service in AWS Cloud. In this article, we will look at accessing DynamoDB from our Java applications with Spring Data and enhanced high-level client with the help of some code examples"
 image:
   auto: 0074-stack
 ---
 
-Amazon DynamoDB is a NoSQL database service available in AWS Cloud. It is fully managed and provides fast and predictable performance for storing and retrieving any amount of data, and serve any level of request traffic. Amazon DynamoDB automatically spreads the data and traffic for the table over a sufficient number of servers to handle the request capacity specified by the customer and the amount of data stored, while maintaining consistent and fast performance.
+AWS DynamoDB is a NoSQL database service available in AWS Cloud. It is a fully managed service and provides fast and predictable performance for storing and retrieving any amount of data. Being fully managed, all the database administration tasks like patching, hardware provisioning, capacity scaling and replication are done by the DynamoDB service.
 
-In this article, we will look at using the DynamoDB database in Spring Boot applications along with code examples.
+DynamoDB provides many benefits starting from a flexible pricing model, stateless connection and a consistent response time irrespective of the database size. Due to this DynamoDB is widely used with serverless compute services like AWS lambda and in microservices architectures. 
+
+In this article, we will look at using the DynamoDB database in microservice application built with Spring Boot along with code examples.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springdynamodb" %}
 
 
 ## AWS DynamoDB Concepts
-[Amazon DynamoDB](https://aws.amazon.com/dynamodb/) is a fully managed service key-value and document database. Being a managed service, AWS takes care of  operating and scaling database so we don’t have to worry about hardware provisioning, setup and configuration, throughput capacity planning, replication, software patching, or cluster scaling. We will introduce the concepts which are required to know for building applications.
+[Amazon DynamoDB](https://aws.amazon.com/dynamodb/) is a key-value and document database. A key-value database is a type of nonrelational database that stores data as a collection of key-value pairs. Both the keys and the values can be simple or complex objects. It is also referred as a document database in some texts since we can store JSON documents.  But AWS recently released DocumentDB service which is more purpose built for storing and quering data as JSON-like documents.
+
+There is plenty to know about DynamoDB for building a good understanding for which we should refer to the official documentation. We will only skim through the important concepts in this section which is essential for designing our applications.
 
 ### Tables, Items and Attributes
-Like all databases,we start with a table to represent our entities like a person, customer, product. A table contains items similar to the rows in a RDBMS.
+Like all databases, a table is the fundamental component of DynamoDB where we store our data. DynamoDB tables are schemaless. other than the primary key, you do not need to define any extra attributes or data types when we create a table..
+
+A table contains one or more items. An item is composed of attributes, which are different elements of data for a particular item. For example, an item in a Customer table might have a Name attribute, an email attribute, a phone attribute, and more. They are similar to columns in a relational database. We also specify the type of the attribute that can be simple types like strings and numbers or composite types like lists, maps, or sets.
+
+We do not require most of the attributes for every item. This allows for a more flexible data model than a relational databases. We can store completely different kinds of objects (items in the table) in a single DynamoDB table, such as a Customer object with Name, email, and phone attributes, and an Address object with street, city, and zip attributes. This is an established design pattern called a single table design for storing multiple different entity types in a single table.
+
+We have one exception to the flexible model of DynamoDB items -- each item must have the attribute(s) for the defined primary key of the table to uniquely identify an item.
 
 ### Uniquely Identifying Items in a Table with Primary Key
-We specify a primary key to uniquely identify an item in the table. Primary Keys are of two types:
+The primary key is used to uniquely identify each item in an Amazon DynamoDB table. A primary key is of two types:
+
 1. **Simple Primary Key**: This is composed of one attribute called the Partition Key.
 2. **Composite Primary Key**: This is composed of two attributes Partition and Sort Keys.
+
+DynamoDB uses the value of the partition key as input to an internal hash function. The output of the hash function determines the partition in which the item will be stored.
+A partition is a unit of storage for a table where the data is stored by DynamoDB. It is replicated across multiple Availability Zones within an AWS Region. If our table has a simple primary key (partition key only), DynamoDB stores and retrieves each item based on its partition key value.
+
+When we write an item to the table, DynamoDB uses the value of the partition key as input to an internal hash function. The output of the hash function determines the partition in which the item will be stored.
+
+When we read an item from the table, we must specify the partition key value for the item. DynamoDB uses this value as input to its hash function, to locate the partition in which the item can be found.
+
+We should design our application for uniform activity across all partitions by determining the access patterns that our application requires, and estimate the total read capacity units (RCU) and write capacity units (WCU) that each table and secondary index requires.
 
 ### Querying with Secondary Indexes
 We can use a secondary index to query the data in the table using an alternate key, in addition to queries against the primary key. Secondary Indexes are of two types:
 
-- **Global secondary index** : An index with a partition key and sort key that are different from the partition key and sort key of the table.
-- **Local secondary index** :An index that has the same partition key as the table, but a different sort key.
+- **Global Secondary Index (GSI)**: An index with a partition key and sort key that are different from the partition key and sort key of the table.
+- **Local Secondary Index (LSI)**: An index that has the same partition key as the table, but a different sort key.
 
-### Data Distribution in Partitions
-A partition is a unit of storage for a table where the data is stored by DynamoDB. It is backed by solid state drives (SSDs) and replicated across multiple Availability Zones within an AWS Region. If our table has a simple primary key (partition key only), DynamoDB stores and retrieves each item based on its partition key value.
-
-To write an item to the table, DynamoDB uses the value of the partition key as input to an internal hash function. The output value from the hash function determines the partition in which the item will be stored.
-
-To read an item from the table, we must specify the partition key value for the item. DynamoDB uses this value as input to its hash function, yielding the partition in which the item can be found.
-
-### Designing Partition Key for Efficiency
-The primary key that uniquely identifies each item in an Amazon DynamoDB table can be simple (a partition key only) or composite (a partition key combined with a sort key).
-
-We should design your application for uniform activity across all logical partition keys in the table and its secondary indexes. We can determine the access patterns that our application requires, and estimate the total read capacity units (RCU) and write capacity units (WCU) that each table and secondary index requires.
 
 ## Setting up DynamoDB
-We can run a local instance of DynamoDB for development and testing. We can remove the local endpoint in the code, and then it will points to the DynamoDB web service, When we are ready to deploy our application in production. DynamoDB Local is available as a download (requires JRE), as an Apache Maven dependency, or as a Docker image.
-
+We can run a local instance of DynamoDB for development and testing. When we are ready to deploy our application in production, we can remove the local endpoint in the code, to make it point to the DynamoDB web service. DynamoDB Local is available as a download (requires JRE), as an Apache Maven dependency, or as a Docker image.
 
 
 ## Writing Applications with DynamoDB
-We can interact with AWS DynamoDB with the AWS SDK. Spring applications
+DynamoDB is a web service, and interactions with it are stateless. We interact with DynamoDB by REST API calls over HTTP(S). Unlike connection protocols like JDBC, applications do not need to maintain persistent network connections. We send the name of the operation  that we want to perform in the API request. The main operations are grouped into control plane and data plane. 
 
+We usually donot work with APIs directly. AWS provides SDK in different programming languages which we integrate in our applications for performing database operations.
+
+We will describe two ways for accessing DynamoDB from Spring applications:
+- Spring Data
+- Enhanced Client
+
+Let us see some examples in the following sections.
 ## Accessing DynamoDB with Spring Data
 The primary goal of the Spring® Data project is to make it easier to build Spring-powered applications that use data access technologies.
 
@@ -86,7 +101,7 @@ Add dependency
 Let us first create a DynamoDB table to store customers:
 
 ![Table creation](/assets/img/posts/aws-dynamodb-java/table-creation.png)
-We are using the AWS console to create a table named `Customer` with `CustomerID` as partition key and `OrderID` as the sort key. We are following the partitioning best practices here. Having customerID as partition key will ensure that order items of same customer will be stored and fetched together resulting in efficient fetch times.
+We are using the AWS console to create a table named `Customer` with `CustomerID` as partition key and `OrderID` as the sort key. We are following the partitioning best practices here. Having customerID as partition key will ensure that order items of the same customer will be stored and fetched together resulting in efficient fetch times.
 
 Create a DynamoDB entity `Customer` for this table:
 ```java
@@ -131,7 +146,7 @@ public class Customer {
 ```
 We have decorated the getter methods with `@DynamoDBAttribute` passing in the name of the attribute.
 
-To define a repository interface, we first need to define a domain class-specific repository interface. The interface must extend Repository and be typed to the domain class and an ID type. Next let us create our repository interface `CustomerRepository` and invoke it from a `service` class: 
+To define a repository interface, we first need to define a domain class-specific repository interface. The interface must extend Repository and be typed to the domain class and an ID type. Next, let us create our repository interface `CustomerRepository` and invoke it from a `service` class: 
 
 ```java
 @EnableScan
@@ -177,19 +192,15 @@ class CustomerServiceTest {
 ```
 
 ## Using the DynamoDB enhanced Client
-
-Let us first create a DynamoDB table to store the orders placed by a customer:
+Enhanced DynamoDB client is a new module of the AWS SDK for Java 2.0. This module provides a more idiomatic code authoring experience. We can integrate applications with  DynamoDB using an adaptive API that allows us to execute database operations directly with the data classes our application already works with.
+Let us now create a DynamoDB table to store the orders placed by a customer. This `Order` table will have a composite primary key :
 
 ![Table creation](/assets/img/posts/aws-dynamodb-java/table-creation.png)
-We are using the AWS console to create a table named `Order` with `CustomerID` as partition key and `OrderID` as the sort key. We are following the partitioning best practices here. Having customerID as partition key will ensure that order items of same customer will be stored and fetched together resulting in efficient fetch times.
 
-We broadly do this in four Steps
-Including the `dynamodb-enhanced` as a dependency.
-Defining the data class to represent the DynamoDB item in the table.
-Defining the DynamoDbEnhancedAsyncClient.
-Defining the repository class.
+As we can see here, we are using the AWS console to create a table named `Order` with `CustomerID` as the partition key and `OrderID` as the sort key. We are following the partitioning best practices here. Having customerID as a partition key will ensure that order items of the same customer will be stored and fetched together resulting in efficient fetch times.
 
-Let us first add the Maven dependency in our `pom.xml`:
+Let us create one more Spring Boot project where we will use the enhanced client to access DynamoDB.
+The first step of using the DynamoDB Enhanced Client for Java is to include its dependency in our project:
 
 ```xml
     <dependency>
@@ -198,7 +209,7 @@ Let us first add the Maven dependency in our `pom.xml`:
       <version>2.16.74</version>
     </dependency>
 ```
-
+Here we adding enhanced client as a Maven dependency of `dynamodb-enhanced` module in our `pom.xml`.
 We will next create a `Order` class to represent the items in the `Order` table:
 
 ```java
@@ -233,42 +244,150 @@ public class Order {
 }
 
 ```
+Here we are decorating the `Order` data class with the `@DynamoDB` annotation to designate the class as a DynamoDB bean’. We have also added an annotation `@DynamoDbPartitionKey` for the partition key and another annotation `@DynamoDbSortKey` on the getter for the sort key of the record. 
 
-In order for the AWS SDK v2 for Java’s Enhanced Client to detect an attribute on a @DynamoDbBean, the field must have a setter. 
+We will initialize `dynamodbEnhancedClient` in our Spring configuration:
 
 ```java
-@SpringBootTest
-class OrderRepositoryTest {
-  
-  @Autowired
-  private OrderRepository orderRepository;
+@Configuration
+public class AppConfig {
 
-  @Test
-  void testCreateOrder() {
-    Order order = new Order();
-    order.setOrderID("ORD-007");
-    order.setCustomerID("CUST-001");
-    order.setOrderValue(56.7);
-    order.setCreatedDate(Instant.now());
-    orderRepository.save(order);
+  @Bean
+  public DynamoDbClient getDynamoDbClient() {
+    AwsCredentialsProvider credentialsProvider = 
+              DefaultCredentialsProvider.builder()
+               .profileName("pratikpoc")
+               .build();
+
+    return DynamoDbClient.builder().region(Region.US_EAST_1).credentialsProvider(credentialsProvider).build();
   }
   
-  @Test
-  void testGetOrder() {
-    Order order = 
-        orderRepository.getOrder("CUST-001", "ORD-007");
-    System.out.println("order "+order.getOrderID());
+  @Bean
+  public DynamoDbEnhancedClient getDynamoDbEnhancedClient() {
+    return DynamoDbEnhancedClient.builder()
+                .dynamoDbClient(getDynamoDbClient())
+                .build();
   }
 
 }
 
 ```
 
-AFter running thus test we can view the item created in the DynamoDB console:
-![Item created](/assets/img/posts/aws-dynamodb-java/item-created.png)
+Here we are creating a bean `dynamodbClient` with our AWS credentials and using this to create a bean for `DynamoDbEnhancedClient`;
+
+In the last step we will inject this `DynamoDbEnhancedClient` in a repository class and use the data class created earlier for performing different database operations:
+
+```java
+@Repository
+public class OrderRepository {
+  
+  @Autowired
+  private DynamoDbEnhancedClient dynamoDbenhancedClient ;
+
+  // Store the order item in the database
+  public void save(final Order order) {
+    DynamoDbTable<Order> orderTable = getTable();
+    orderTable.putItem(order);
+  }
+
+  // Retrieve a single order item from the database
+  public Order getOrder(final String customerID, final String orderID) {
+    DynamoDbTable<Order> orderTable = getTable();
+    // Construct the key with partition and sort key
+    Key key = Key.builder().partitionValue(customerID)
+                       .sortValue(orderID)
+                       .build();
+    
+    Order order = orderTable.getItem(key);
+    
+    return order;
+  }
+
+  /**
+   * @return
+   */
+  private DynamoDbTable<Order> getTable() {
+    // Create a tablescheme to scan our bean class order
+    DynamoDbTable<Order> orderTable = 
+        dynamoDbenhancedClient.table("Order", TableSchema.fromBean(Order.class));
+    return orderTable;
+  }
+
+}
+
+```
+
+Here we are constructing a `TableSchema` by calling `TableSchema.fromBean(Order.class)` to scan our bean class `Order`. This will use the annotations in the `Order` class defined earlier to determine the attributes which are partition and sort keys. We are then associating this `Tableschema` with our actual table name `Order` to create an instance of `DynamoDbTable` which represents the object with a mapped table resource `Order`. 
+
+We are using this mapped resource to save the order item in the `save` method by calling the `putItem` method and fetch item by calling the `getItem` method.
+
+We can similarly perform all other table level operations on this mapped resource as shown here:
+
+```java
+@Repository
+public class OrderRepository {
+
+  @Autowired
+  private DynamoDbEnhancedClient dynamoDbenhancedClient;
+
+ ...
+ ...
+
+  public void deleteOrder(final String customerID, final String orderID) {
+    DynamoDbTable<Order> orderTable = getTable();
+
+    Key key = Key.builder().partitionValue(customerID).sortValue(orderID).build();
+
+    DeleteItemEnhancedRequest deleteRequest = DeleteItemEnhancedRequest
+        .builder()
+        .key(key)
+        .build();
+    
+    orderTable.deleteItem(deleteRequest);
+  }
+  
+  public PageIterable<Order> scanOrders(final String customerID, final String orderID) {
+    DynamoDbTable<Order> orderTable = getTable();
+    
+    return orderTable.scan();
+  }
+
+  public PageIterable<Order> findOrdersByValue(final String customerID, final double orderValue) {
+    DynamoDbTable<Order> orderTable = getTable();
+        
+        AttributeValue attributeValue = AttributeValue.builder()
+                .n(String.valueOf(orderValue))
+                .build();
+
+        Map<String, AttributeValue> expressionValues = new HashMap<>();
+        expressionValues.put(":value", attributeValue);
+
+        Expression expression = Expression.builder()
+                .expression("orderValue > :value")
+                .expressionValues(expressionValues)
+                .build();
+
+        // Create a QueryConditional object that is used in the query operation
+        QueryConditional queryConditional = QueryConditional
+                .keyEqualTo(Key.builder().partitionValue(customerID)
+                        .build());
+
+        // Get items in the Customer table and write out the ID value
+        PageIterable<Order> results = orderTable
+                                        .query(r -> r.queryConditional(queryConditional)
+                                                 .filterExpression(expression));
+        return results;
+  }
 
 
-Handling Nested Types
+}
+```
+In this snippet, we are calling the `delete`, `scan`, and `query` methods on the mapped object `orderTable`.
+
+
+## Handling Nested Types
+
+We can handle nested types by adding `@DynamoDbBean` annotation to the class being nested as shown in this example:
 
 ```java
 @DynamoDbBean
@@ -295,14 +414,20 @@ public class Product {
 
 ```
 
-```shell
-java.lang.IllegalStateException: Converter not found for EnhancedType(io.pratik.dynamodbapps.models.Product)
-  at software.amazon.awssdk.enhanced.dynamodb.DefaultAttributeConverterProvider.lambda$converterFor$0(DefaultAttributeConverterProvider.java:134)
-  ...
-  ...
+Here we have added a nested collection of `Product` class to the `Order` class and annotated the `Product` class with `@DynamoDbBean` annotation.
 
-```
+## Batch Requests
 
+
+## Filtered Query
+
+## Using secondary indices
+
+## Non-blocking asynchronous operations
+
+If your application requires non-blocking asynchronous calls to DynamoDb, then you can use the asynchronous implementation of the mapper. It's very similar to the synchronous implementation with a few key differences:
+
+Certain operations (Query and Scan) may be executed against a secondary index. Here's an example of how to do this:
 
 
 ## Conclusion
@@ -310,10 +435,9 @@ java.lang.IllegalStateException: Converter not found for EnhancedType(io.pratik.
 In this article, we looked at the important concepts of AWS DynamoDB. we also saw how to use Spring Data for accessing the database of our application with the AWS RDS service. Here is a summary of the things we covered:
 1. We store our data in a table in AWS Dynamo DB. A table is composed of items and each item has attributes.
 2. A DynamoDB table must have a partition key and optionally a sort key.
-2. Indexes
-3. Read-replica feature of RDS is used to increase throughput and is can be enabled in Spring Cloud JDBC by setting a property and decorating a method with `Transaction read only` annotation.
-4. Failover support is provided with the help of retry interceptors.
+2. We create a secondary Index to search on other fields
+3. We accessed DynamoDB with Spring data module and then with enhanced dynamoDB client module of AWS Java SDK.
 
-I hope this will help you to get started with building applications using Spring with AWS DynamoDB as the data source. 
+I hope this will help you to get started with building applications using Spring with AWS DynamoDB as the database. 
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springdynamodb).

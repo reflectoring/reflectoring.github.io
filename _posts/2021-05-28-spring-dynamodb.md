@@ -42,6 +42,7 @@ We also specify the type of the attribute when creating a table. A type can be s
 The primary key is used to uniquely identify each item in an Amazon DynamoDB table. A primary key is of two types:
 
 1. **Simple Primary Key**: This is composed of one attribute called the Partition Key. If we wanted to store a customer record, then we could have used `customerID` or `email` as a partition key to uniquely identify the customer in the DynamoDB table.
+
 2. **Composite Primary Key**: This is composed of two attributes Partition and Sort Keys. In our example above, each order is uniquely identified by a composite primary key with `customerID` as the partition key and `orderID` as the sort key.
 
 
@@ -69,15 +70,21 @@ We can run a local instance of DynamoDB for development and testing. When we are
 
 
 ## Writing Applications with DynamoDB
-DynamoDB is a web service, and interactions with it are stateless. We interact with DynamoDB by REST API calls over HTTP(S). Unlike connection protocols like JDBC, applications do not need to maintain persistent network connections. We send the name of the operation that we want to perform in the API request. 
+DynamoDB is a web service, and interactions with it are stateless. So we can interact with DynamoDB by REST API calls over HTTP(S). Unlike connection protocols like JDBC, applications do not need to maintain a persistent network connections. 
 
-We usually do not work with APIs directly. AWS provides SDK in different programming languages which we integrate with our applications for performing database operations.
+We usually do not work with APIs directly. AWS provides [SDK](https://aws.amazon.com/sdk-for-java/) in different programming languages which we integrate with our applications for performing database operations.
 
 We will describe two ways for accessing DynamoDB from Spring applications:
 - Using DynamoDB module of Spring Data
-- Using Enhanced Client for DynamoDB
+- Using Enhanced Client for DynamoDB which is part of AWS SDK 2.0.
 
-Let us see some examples of using these two methods in the following sections.
+Both these methods roughly follow the similar steps as in any Object Relational Mapping (ORM) frameworks:
+
+1.  We define a data class for our domain objects like customer, product, order, etc and then define the mapping of this data class with table residing in the database. The mapping is defined by putting annotations on the fields of the data class to specify the keys and attributes. 
+2.  We define a repository class to define the CRUD methods using the mapping object created in the previous step.
+
+Let us see some examples creating applications by using these two methods in the following sections.
+
 
 ## Accessing DynamoDB with Spring Data
 The primary goal of the [Spring® Data](https://spring.io/projects/spring-data) project is to make it easier to build Spring-powered applications by providing a consistent framework to use different data access technologies. Spring Data is an umbrella project composed of many different sub-projects each corresponding to specific database technologies. 
@@ -115,7 +122,7 @@ For adding the support for Spring Data, we need to include the module dependency
 ```
 ### Creating the Configuration
 
-We will initialize `dynamodbEnhancedClient` in our Spring configuration:
+We will initialize `amazonDynamoDB` bean in our Spring configuration:
 
 ```java
 Configuration
@@ -186,7 +193,7 @@ public class Customer {
 We have defined the mappings with the table by decorating the class with `@DynamoDBTable` annotation and passing in the table name. We have used the `DynamoDBHashKey` attribute over the getter method of the `customerID` field. For mapping the remaining attributes, we have decorated the getter methods of the remaining fields with the  `@DynamoDBAttribute` passing in the name of the attribute.
 
 ### Defining the Repository Interface
-We will next define a repository interface by extending CrudRepository and be typed to the domain class and an ID type. Next, let us create our repository interface `CustomerRepository` and invoke it from a `service` class: 
+We will next define a repository interface by extending CrudRepository typed to the domain or data class and an `ID` type for the type of primary key. Next, let us create our repository interface `CustomerRepository` and invoke it from a `service` class: 
 
 ```java
 @EnableScan
@@ -230,9 +237,10 @@ class CustomerServiceTest {
 }
 
 ```
+In our test, we are calling the `createCustomer` method in our service class to create a customer record in the table.
 
 ## Using the DynamoDB enhanced Client
-Enhanced DynamoDB client is a new module of the AWS SDK for Java 2.0. This module provides a more idiomatic code authoring experience. We can integrate applications with  DynamoDB using an adaptive API that allows us to execute database operations directly with the data classes our application already works with.
+Enhanced DynamoDB client is a module of the AWS SDK for Java 2.0. It is a higher level API that allows us to execute database operations directly with the data classes in our application.
 
 ### Initial Setup
 Let us create one more Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=dynamodbec&description=Demo%20project%20for%20SEnhanced%20client&packageName=io.pratik&dependencies=web) where we will use the enhanced client to access DynamoDB.
@@ -468,6 +476,44 @@ public class Product {
 
 Here we have added a nested collection of `Product` class to the `Order` class and annotated the `Product` class with `@DynamoDbBean` annotation.
 
+## A Quick Note on Source Code Organization
+
+The source code is organized as a multi-module Maven project into two separate Maven projects under a common parent project. We have used [Spring boot Initializr](https://start.spring.io/) to generate these projects which gets generated with this parent tag in `pom.xml` :
+
+```xml
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.4.5</version>
+    <relativePath /> <!-- lookup parent from repository -->
+  </parent>
+```
+
+We have changed this to point to the common parent project:
+
+```xml
+  <parent>
+    <groupId>io.pratik</groupId>
+    <artifactId>dynamodbapp</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+```
+
+The Spring Boot dependency is added under the `dependencyManagement`:
+
+```xml
+  <dependencyManagement>
+    <dependencies>
+          <dependency>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-dependencies</artifactId>
+              <version>2.4.0</version>
+              <type>pom</type>
+              <scope>import</scope>
+          </dependency>
+    </dependencies>
+  </dependencyManagement>
+```
 
 ## Conclusion
 

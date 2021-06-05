@@ -25,14 +25,14 @@ In this article, we will look at using the DynamoDB database in microservice app
 
 There is plenty to know about DynamoDB for building a good understanding for which we should refer to the [official documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html). 
 
-We will only skim through the main concepts represented in this diagram, which are essential for designing our applications:
-
-![Table creation](/assets/img/posts/aws-dynamodb-java/tablitemattr.png)
-
-This diagram shows the organization of order records placed by a customer in a `Order` table. Each order is uniquely identified by a combination of `customerID` and `orderID`. Let us understand this structure in detail.
+Here we will only skim through the main concepts that are essential for designing our applications:
 
 ### Tables, Items and Attributes
 Like all databases, **a table is the fundamental concept in DynamoDB where we store our data**. DynamoDB tables are schemaless. Other than the primary key, we do not need to define any additional attributes when creating a table. 
+
+![Table items attributes](/assets/img/posts/aws-dynamodb-java/tablitemattr.png)
+
+This diagram shows the organization of order records placed by a customer in a `Order` table. Each order is uniquely identified by a combination of `customerID` and `orderID`. 
 
 **A table contains one or more items. An item is composed of attributes, which are different elements of data for a particular item**. They are similar to columns in a relational database. 
 
@@ -44,7 +44,6 @@ The primary key is used to uniquely identify each item in an Amazon DynamoDB tab
 1. **Simple Primary Key**: This is composed of one attribute called the Partition Key. If we wanted to store a customer record, then we could have used `customerID` or `email` as a partition key to uniquely identify the customer in the DynamoDB table.
 
 2. **Composite Primary Key**: This is composed of two attributes Partition and Sort Keys. In our example above, each order is uniquely identified by a composite primary key with `customerID` as the partition key and `orderID` as the sort key.
-
 
 ### Data Distribution Across Partitions
 
@@ -60,15 +59,6 @@ We can use a secondary index to query the data in the table using an alternate k
 - **Global Secondary Index (GSI)**: An index with a partition key and sort key that are different from the partition key and sort key of the table.
 - **Local Secondary Index (LSI)**: An index that has the same partition key as the table, but a different sort key.
 
-### Single Table Data Model
-
-We can create a more flexible data model compared to relational databases since most of the attributes for every item are optional. This allows us to store completely different kinds of objects (items in the table) in a single DynamoDB table, such as a Customer object with Name, email, and phone attributes, and an Address object with street, city, and zip attributes. This is a recommended design pattern called a single table design for storing multiple different entity types in a single table.
-
-
-## Setting up DynamoDB
-We can run a local instance of DynamoDB for development and testing. When we are ready to deploy our application in production, we can remove the local endpoint in the code, to make it point to the DynamoDB web service. DynamoDB Local is available as a download (requires JRE), as an Apache Maven dependency, or as a Docker image.
-
-
 ## Writing Applications with DynamoDB
 DynamoDB is a web service, and interactions with it are stateless. So we can interact with DynamoDB by REST API calls over HTTP(S). Unlike connection protocols like JDBC, applications do not need to maintain a persistent network connections. 
 
@@ -76,7 +66,7 @@ We usually do not work with APIs directly. AWS provides [SDK](https://aws.amazon
 
 We will describe two ways for accessing DynamoDB from Spring applications:
 - Using DynamoDB module of Spring Data
-- Using Enhanced Client for DynamoDB which is part of AWS SDK 2.0.
+- Using Enhanced Client for DynamoDB which is part of [AWS SDK 2.0](https://aws.amazon.com/sdk-for-java/).
 
 Both these methods roughly follow the similar steps as in any Object Relational Mapping (ORM) frameworks:
 
@@ -200,7 +190,7 @@ public class Customer {
 We have defined the mappings with the table by decorating the class with `@DynamoDBTable` annotation and passing in the table name. We have used the `DynamoDBHashKey` attribute over the getter method of the `customerID` field. For mapping the remaining attributes, we have decorated the getter methods of the remaining fields with the  `@DynamoDBAttribute` passing in the name of the attribute.
 
 ### Defining the Repository Interface
-We will next define a repository interface by extending CrudRepository typed to the domain or data class and an `ID` type for the type of primary key. Next, let us create our repository interface `CustomerRepository` and invoke it from a `service` class: 
+We will next define a repository interface by extending `CrudRepository` typed to the domain or data class and an `ID` type for the type of primary key. 
 
 ```java
 @EnableScan
@@ -220,9 +210,9 @@ public class CustomerService {
   }
 }
 ```
-We are extending `CrudRepository` to expose CRUD methods for our domain class `Customer`.
+Here we have created a repository interface `CustomerRepository` and injected it in a `service` class `CustomerService` and defined a method `createCustomer` for creating a customer record in the DynamoDB table.
 
-Let us execute the service from a test class:
+We will use invoke this method a JUnit test:
 
 ```java
 @SpringBootTest

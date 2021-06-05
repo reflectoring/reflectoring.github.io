@@ -152,7 +152,7 @@ Here we are creating a bean `amazonDynamoDB` and initializing it with the creden
 ### Creating the Mapping with DynamoDB Table in a Data Class
 Let us now create a DynamoDB table which we will use to store customer records from our application:
 
-![Table creation](/assets/img/posts/aws-dynamodb-java/table-creation.png)
+![Table creation](/assets/img/posts/aws-dynamodb-java/table-creation-cust.png)
 We are using the AWS console to create a table named `Customer` with `CustomerID` as the partition key. 
 
 We will next create a class to represent the `Customer` DynamoDB table which will contain the mapping with the keys and attributes of an item stored in the table:

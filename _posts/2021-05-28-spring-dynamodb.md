@@ -36,7 +36,7 @@ This diagram shows the organization of order records placed by a customer in a `
 
 **A table contains one or more items. An item is composed of attributes, which are different elements of data for a particular item**. They are similar to columns in a relational database. 
 
-We also specify the type of the attribute when creating a table. A type can be simple types like strings and numbers or composite types like lists, maps, or sets. In our example, each `order` item has `OrderValue`, `OrderDate` as simple type attributes and `products` list as a composite type attribute.
+Each item has its own attributes. Most of the attributes are scalar like strings and numbers while some are of nested types like lists, maps, or sets. In our example, each `order` item has `OrderValue`, `OrderDate` as scaler attributes and `products` list as a nested type attribute.
 
 ### Uniquely Identifying Items in a Table with Primary Key
 The primary key is used to uniquely identify each item in an Amazon DynamoDB table. A primary key is of two types:

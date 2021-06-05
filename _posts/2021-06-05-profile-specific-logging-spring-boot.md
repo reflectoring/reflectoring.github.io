@@ -36,9 +36,11 @@ If you want to follow along with sending logs to the cloud, set up an account wi
 
 ## Per-Environment Logging for a Plain Java Application
 
-If you're building a plain Java application that needs configurable logging, this is the tutorial to follow. We'll have a look at both Log4J and Logback and how to configure them to do different things in different runtime environments.
+If you're building a plain Java application that needs configurable logging, this is the tutorial to follow. We'll have a look at both Log4J and Logback and how to configure them to do different things in different runtime environments. You can clone or browse the example applications for [Log4J](https://github.com/thombergs/code-examples/tree/master/logging/log4j) and [Logback](https://github.com/thombergs/code-examples/tree/master/logging/log4j) on GitHub.
 
 ### Application Code
+
+Our example application is very simple:
 
 ```java
 public class Main {
@@ -52,17 +54,37 @@ public class Main {
 }
 ```
 
-### Starting the Application
+It's just a small Java program with a `main()` method that logs a few lines using an SLF4J `Logger` instance. This program is a placeholder for any real Java application. SLF4J is a logging API that abstracts over the actual logging implementation, so we can use it for both Log4J and Logback (and other logging implementations, for that matter). This allows us to always implement against the same logging API, even if we decide to swap out the actual logging library underneath.
 
+### Passing Environment Variables to the Application
 
-### Configuring Log4J 
-The logging library you're using is Log4J? Then let's take a look at how we can configure Log4J to do different things in different environments.
+We want to make the logging behave differently depending on the environment the application is running in. If the application is running on the local machine, we want the above log events to be send to the console. If it's running in a staging or production environment, we want it to log to our cloud logging provider.
 
-You can browse or clone the full example code [on GitHub](https://github.com/thombergs/code-examples/tree/master/logging/log4j).
+But how does the application decide which environment it's running in? This is exactly what environment variables are there for. 
 
-#### Dependencies
+**We'll pass an environment variable with the name `LOG_TARGET` to the application on startup.** There are two possible values for this variable:
 
-To get Log4J working properly, we need to include it in our dependencies. In the example project, we're using Maven to manage dependencies for us, so we have to add them into the `pom.xml` file:
+* `CONSOLE`: the app shall send the logs to the console 
+* `LOGZIO`: the app shall send the logs to logz.io cloud 
+  
+This command will then start the app in "local" logging mode:
+```
+LOG_TARGET=CONSOLE java -jar app.jar 
+```
+
+And this command will start the app in "staging", or "production" logging mode:
+```
+LOG_TARGET=LOGZIO java -jar app.jar 
+```
+
+Let's now see how we can configure Log4J and Logback in our application to respect the `LOG_TARGET` environment variable.
+
+### Configuring Log4J with Environment Variables
+You can browse or clone the full example code of the Log4J application [on GitHub](https://github.com/thombergs/code-examples/tree/master/logging/log4j).
+
+#### Adding Log4J Dependencies
+
+To get Log4J working properly, we need to add the following dependencies to our application's `pom.xml`:
 
 ```xml
 <dependencies>
@@ -93,30 +115,43 @@ The first two dependencies are the log4j API and the log4J implementation. We co
 
 The last dependency is a log appender that sends the logs to logz.io so we can view them online. 
 
-#### Log4J Configuration
+#### Configuring Log4J with Environment Variables
+
+Next, we need to create a `log4j2.xml` file in the `src/main/resources` folder of the codebase. Log4J will automatically pick up this configuration file from the classpath when the application starts up:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
 
   <Appenders>
-  <Console name="CONSOLE" target="SYSTEM_OUT">
-    <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-  </Console>
-  <LogzioAppender name="LOGZIO">
-    <logzioToken>YOUR_LOGZIO_TOKEN></logzioToken>
-    <logzioUrl>https://listener.logz.io:8071</logzioUrl>
-    <logzioType>java</logzioType>
-  </LogzioAppender>
+    <Console name="CONSOLE" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  
+    <LogzioAppender name="LOGZIO">
+      <logzioToken>YOUR_LOGZIO_TOKEN></logzioToken>
+      <logzioUrl>https://listener.logz.io:8071</logzioUrl>
+      <logzioType>java</logzioType>
+    </LogzioAppender>
   </Appenders>
 
   <Loggers>
-  <Root level="INFO">
-    <AppenderRef ref="${env:LOG_APPENDER:-CONSOLE}"/>
-  </Root>
+    <Root level="INFO">
+      <AppenderRef ref="${env:LOG_TARGET:-CONSOLE}"/>
+    </Root>
   </Loggers>
 </Configuration>
 ```
+
+In the `log4j2.xml` file above we have configured two appenders. An appender is a Log4J concept that takes log events, transforms them, and then sends them to a certain destination.
+
+The appender with the name `CONSOLE` is a standard Log4J appender that sends the logs to the console. We can define a pattern in which to format the log output.
+
+The appender with the name `LOGZIO` is a special appender that sends the logs to logz.io. We can only use the `<LogzioAppender>` XML element because we have included the dependency to `logzio-log4j2-appender` in the `pom.xml` above. If you want to try sending logs, you have to put your logz.io token into the `<logzioToken>` element.w
+
+Finally, in the `<Root>` element, we configure which appender the root logger should use. We could just put one of the appender names into the `ref` attribute of the `<AppenderRef>` element, but this would hard-code the appender and it wouldn't be configurable. So, instead, we set it to `${env:LOG_TARGET:-CONSOLE}`, which tells Log4J to use the value of the `LOG_TARGET` environment variable and if this variable is not set, use the value `CONSOLE` as a default.
+
+That's it. If we run the app without any environment variables, it will log to the console. If we set the environment variable `LOG_TARGET` to `LOGZIO`, it will log to logz.io.
 
 ## Configuring Spring Boot Logging for Different Environments
 

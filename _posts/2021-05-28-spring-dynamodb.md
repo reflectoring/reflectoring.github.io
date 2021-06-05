@@ -62,7 +62,7 @@ We can use a secondary index to query the data in the table using an alternate k
 
 ### Single Table Data Model
 
-We do not require most of the attributes for every item. This allows for a more flexible data model compared to relational databases. We can store completely different kinds of objects (items in the table) in a single DynamoDB table, such as a Customer object with Name, email, and phone attributes, and an Address object with street, city, and zip attributes. This is an established design pattern called a single table design for storing multiple different entity types in a single table.
+We can create a more flexible data model compared to relational databases since most of the attributes for every item are optional. This allows us to store completely different kinds of objects (items in the table) in a single DynamoDB table, such as a Customer object with Name, email, and phone attributes, and an Address object with street, city, and zip attributes. This is a recommended design pattern called a single table design for storing multiple different entity types in a single table.
 
 
 ## Setting up DynamoDB
@@ -122,7 +122,7 @@ For adding the support for Spring Data, we need to include the module dependency
 ```
 ### Creating the Configuration
 
-We will initialize `amazonDynamoDB` bean in our Spring configuration:
+Next let us establish the connectivity with AWS by initializing a bean with our AWS credentials in our Spring configuration:
 
 ```java
 Configuration
@@ -132,9 +132,13 @@ public class AppConfig {
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
-        AWSCredentialsProvider credentials = new ProfileCredentialsProvider("pratikpoc");
-    AmazonDynamoDB amazonDynamoDB 
-          = AmazonDynamoDBClientBuilder.standard().withCredentials(credentials).build();
+        AWSCredentialsProvider credentials = 
+                new ProfileCredentialsProvider("pratikpoc");
+        AmazonDynamoDB amazonDynamoDB 
+          = AmazonDynamoDBClientBuilder
+               .standard()
+               .withCredentials(credentials)
+               .build();
         
         return amazonDynamoDB;
     }
@@ -142,6 +146,9 @@ public class AppConfig {
 }
 
 ```
+
+Here we are creating a bean `amazonDynamoDB` and initializing it with the credentials from a [named profile](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html). 
+
 ### Creating the Mapping with DynamoDB Table in a Data Class
 Let us now create a DynamoDB table which we will use to store customer records from our application:
 
@@ -239,15 +246,13 @@ class CustomerServiceTest {
 ```
 In our test, we are calling the `createCustomer` method in our service class to create a customer record in the table.
 
-## Using the DynamoDB enhanced Client
-Enhanced DynamoDB client is a module of the AWS SDK for Java 2.0. It is a higher level API that allows us to execute database operations directly with the data classes in our application.
+## Using the DynamoDB Enhanced Client
+If we do not want to use Spring Data in our application, we can use choose to access DynamoDB with the Enhanced DynamoDB Client module of the AWS SDK for Java 2.0. The Enhanced DynamoDB Client module provides a higher level API to execute database operations directly with the data classes in our application. We will follow similar steps as our previous example using Spring Data.
 
 ### Initial Setup
-Let us create one more Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=dynamodbec&description=Demo%20project%20for%20SEnhanced%20client&packageName=io.pratik&dependencies=web) where we will use the enhanced client to access DynamoDB.
+Let us create one more Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=dynamodbec&description=Demo%20project%20for%20SEnhanced%20client&packageName=io.pratik&dependencies=web). We will access DynamoDB using the Enhanced DynamoDB Client in this application.
 
-
-Let us create one more Spring Boot project where we will use the enhanced client to access DynamoDB.
-The first step of using the DynamoDB Enhanced Client for Java is to include its dependency in our project:
+First let us include the DynamoDB Enhanced Client module in our application:
 
 ```xml
     <dependency>
@@ -256,11 +261,11 @@ The first step of using the DynamoDB Enhanced Client for Java is to include its 
       <version>2.16.74</version>
     </dependency>
 ```
-Here we are adding enhanced client as a Maven dependency of `dynamodb-enhanced` module in our `pom.xml`.
+Here we are adding the`dynamodb-enhanced` module as a Maven dependency in our `pom.xml`.
 
 ### Creating the Configuration
 
-We will initialize `dynamodbEnhancedClient` in our Spring configuration:
+We will next initialize the `dynamodbEnhancedClient` in our Spring configuration:
 
 ```java
 @Configuration
@@ -287,7 +292,7 @@ public class AppConfig {
 
 ```
 
-Here we are creating a bean `dynamodbClient` with our AWS credentials and using this to create a bean for `DynamoDbEnhancedClient`;
+Here we are creating a bean `dynamodbClient` with our AWS credentials and using this to create a bean for `DynamoDbEnhancedClient`.
 
 ### Creating the Mapping Class
 Let us now create one more DynamoDB table to store the orders placed by a customer. This time we will define a composite primary key for the `Order` table :
@@ -295,7 +300,6 @@ Let us now create one more DynamoDB table to store the orders placed by a custom
 ![Table creation](/assets/img/posts/aws-dynamodb-java/table-creation.png)
 
 As we can see here, we are using the AWS console to create a table named `Order` with a composite primary key composed of`CustomerID` as the partition key and `OrderID` as the sort key. 
-
 
 We will next create a `Order` class to represent the items in the `Order` table:
 

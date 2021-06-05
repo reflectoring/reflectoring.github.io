@@ -9,9 +9,13 @@ image:
   auto: 0074-stack
 ---
 
-AWS DynamoDB is a NoSQL database service available in AWS Cloud. DynamoDB provides many benefits starting from a flexible pricing model, stateless connection, and a consistent response time irrespective of the database size. Due to this DynamoDB is widely used with serverless compute services like AWS Lambda and in microservices architectures. 
+AWS DynamoDB is a NoSQL database service available in AWS Cloud. 
 
-In this article, we will look at using the DynamoDB database in microservice applications built with Spring Boot along with code examples.
+DynamoDB provides many benefits starting from a flexible pricing model, stateless connection, and a consistent response time irrespective of the database size. 
+
+Due to this reason, DynamoDB is widely used as a database with serverless compute services like AWS Lambda and in microservice architectures. 
+
+In this article, we will look at using the DynamoDB database in microservice applications built with [Spring Boot](https://spring.io/projects/spring-boot) along with code examples.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springdynamodb" %}
 
@@ -19,22 +23,25 @@ In this article, we will look at using the DynamoDB database in microservice app
 ## AWS DynamoDB Concepts
 [Amazon DynamoDB](https://aws.amazon.com/dynamodb/) is a key-value database. A key-value database stores data as a collection of key-value pairs. Both the keys and the values can be simple or complex objects.
 
-There is plenty to know about DynamoDB for building a good understanding for which we should refer to the [official documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html). We will only skim through the important concepts in this section which is essential for designing our applications.
+There is plenty to know about DynamoDB for building a good understanding for which we should refer to the [official documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html). 
+
+We will only skim through the main concepts represented in this diagram, which are essential for designing our applications:
+
+![Table creation](/assets/img/posts/aws-dynamodb-java/tablitemattr.png)
+
+This diagram shows the organization of order records placed by a customer in a `Order` table. Each order is uniquely identified by a combination of `customerID` and `orderID`. Let us understand this structure in detail.
 
 ### Tables, Items and Attributes
-Like all databases, **a table is the fundamental component of DynamoDB where we store our data**. DynamoDB tables are schemaless. Other than the primary key, we do not need to define any additional attributes when we create a table.
+Like all databases, **a table is the fundamental component of DynamoDB where we store our data**. DynamoDB tables are schemaless. Other than the primary key, we do not need to define any additional attributes when creating a table. 
 
-**A table contains one or more items. An item is composed of attributes, which are different elements of data for a particular item**. They are similar to columns in a relational database. We also specify the type of the attribute that can be simple types like strings and numbers or composite types like lists, maps, or sets.
+**A table contains one or more items. An item is composed of attributes, which are different elements of data for a particular item**. They are similar to columns in a relational database. We also specify the type of the attribute when creating a table. A type can be simple types like strings and numbers or composite types like lists, maps, or sets.
 
 ### Uniquely Identifying Items in a Table with Primary Key
 The primary key is used to uniquely identify each item in an Amazon DynamoDB table. A primary key is of two types:
 
 1. **Simple Primary Key**: This is composed of one attribute called the Partition Key.
-2. **Composite Primary Key**: This is composed of two attributes Partition and Sort Keys.
+2. **Composite Primary Key**: This is composed of two attributes Partition and Sort Keys.  
 
-This diagram represents all these concepts in one place:
-
-![Table creation](/assets/img/posts/aws-dynamodb-java/tablitemattr.png)
 
 ### Data Distribution Across Partitions
 

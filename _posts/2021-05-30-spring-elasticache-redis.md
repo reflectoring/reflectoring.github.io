@@ -14,7 +14,7 @@ of security to autoconfiguring the beans required for the communication, it take
 Currently, Spring Cloud AWS provides support for services such as S3, SES, SNS, RDS, and ElastiCache. In this article, we will look at how we can use it
 to connect our application to AWS ElastiCache.
 
-ElastiCache is a fully managed in-memory cache service by AWS. It currently supports two popular cache implementations
+ElastiCache is a fully managed in-memory cache service by AWS. It currently supports two caching engines
 [Memcached](https://memcached.org/) and [Redis](https://redis.io/).
 
 Let's talk a bit about Redis and ElastiCache first.
@@ -48,18 +48,18 @@ our dependency versions:
 
 ```groovy
 dependencyManagement {
-    imports {
-        mavenBom 'io.awspring.cloud:spring-cloud-aws-dependencies:2.3.1'
-    }
+  imports {
+    mavenBom 'io.awspring.cloud:spring-cloud-aws-dependencies:2.3.1'
+  }
 }
 ```
 
 Next, we need to add the following dependencies:
 
 ```groovy
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation 'io.awspring.cloud:spring-cloud-starter-aws'
-    implementation 'com.amazonaws:aws-java-sdk-elasticache'
+implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+implementation 'io.awspring.cloud:spring-cloud-starter-aws'
+implementation 'com.amazonaws:aws-java-sdk-elasticache'
 ```
 
 Let's talk a bit about these dependencies:
@@ -137,7 +137,7 @@ cloud:
           expiration: 6000
 ```
 
-Here as you can see we can also define Time-To-Live for the keys in each
+We can also define Time-To-Live for the keys in each
 cache via `expiration` properties.
 
 If we are using CloudFormation to deploy our application stack in the AWS then one more
@@ -149,7 +149,7 @@ Let's say we are using the following CloudFormation to create Clusters:
 Parameters:
 
   InstanceType:
-    Description: Which instance type should we use to build the ECS cluster?
+    Description: Instance Type to use for Cache Cluster
     Type: String
     Default: cache.t2.micro
 
@@ -164,7 +164,7 @@ Resources:
       EngineVersion: "6.x"
       CacheNodeType: !Ref InstanceType
       NumCacheNodes: 1
-      VpcSecurityGroupIds: ["sg-3de82545"]
+      VpcSecurityGroupIds: ["sg-xxxx"]
 
   UserCache:
     Type: AWS::ElastiCache::CacheCluster
@@ -174,7 +174,7 @@ Resources:
       EngineVersion: "6.x"
       CacheNodeType: !Ref InstanceType
       NumCacheNodes: 1
-      VpcSecurityGroupIds: [ "sg-3de82545" ]
+      VpcSecurityGroupIds: [ "sg-xxxx" ]
 ```
 
 Then instead of giving cluster names, we only need to provide the stack name. Say the stack name

@@ -8,11 +8,11 @@ excerpt: "In this article will look at how we can configure our Spring Boot Appl
 image:
     auto: 0090-404
 ---
-Spring Cloud AWS helps us in simplifying the way our Spring Boot application communicates with AWS resources. From taking care
+[Spring Cloud AWS](https://docs.awspring.io/spring-cloud-aws/docs/current/reference/html/index.html) helps us in simplifying the way our Spring Boot application communicates with AWS resources. From taking care
 of security to autoconfiguring the beans required for the communication, it takes care of a lot of essential steps.
 
 Currently, Spring Cloud AWS provides support for services such as S3, SES, SNS, RDS, and ElastiCache. In this article, we will look at how we can use it
-to connect our application to AWS ElastiCache.
+to connect our application to [AWS ElastiCache for Redis](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html).
 
 ElastiCache is a fully managed in-memory cache service by AWS. It currently supports two caching engines
 [Memcached](https://memcached.org/) and [Redis](https://redis.io/).

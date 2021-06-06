@@ -1,7 +1,7 @@
 ---
-title: "Per-Environment Logging With Plain Java and Spring Boot" 
+title: "Per-Environment Logging With Plain Java or Spring Boot" 
 categories: [spring-boot, java]
-excerpt: "A guide to configuring different logging behavior in different runtime environments."
+excerpt: "How to configure a plain Java or Spring Boot application to send logs to different targets in different runtime environments."
 image:
   auto: 0031-matrix
 ---
@@ -14,14 +14,16 @@ In this tutorial, **we're going to configure a Java application to send logs to 
 
 We're going to look at:
 
-* [Configuring a plain Java application with Log4J](#configuring-log4j-in-a-plain-java-application) 
-* Configuring a plain Java application with Logback, and
-* Configuring a Spring Boot application with Logback
+* [Configuring a plain Java application with Log4J](#configuring-log4j-with-environment-variables) 
+* [Configuring a plain Java application with Logback](#configuring-logback-with-environment-variables), and
+* [Configuring a Spring Boot application with Logback](#per-environment-logging-with-spring-boot).
 
 In all cases, the application will be started with certain environment variables that control the logging behavior to send logs wither to the console or to the cloud.
 
 ## Why Should I Send My Logs to a Log Server?
-Back in the days, logs were written into log files. There were sysadmins who guarded these log files. Every time I wanted to access the logs, I would write an email to the sysadmins. Once they read their mail, they would run some scripts to collect the log files from all server instances, filter them for the time period I was interested in, and put the resulting files on a shared network folder from where I would download them.
+Before we're looking at the logging configuration details, let's answer the question why we're going through all the fuss to configure our logging. Isn't it enough to just log everything to standard out or to a log file?
+
+That's how it was done back in the days. There were sysadmins who guarded these log files. Every time I wanted to access the logs, I would write an email to the sysadmins. Once they read their mail, they would run some scripts to collect the log files from all server instances, filter them for the time period I was interested in, and put the resulting files on a shared network folder from where I would download them.
 
 Then I would use command-line tools like `grep` and `sed` to search the log files for anything I'm interested in. Most often, I would find that the logs I had access to were not enough and I would have to repeat the whole procedure with the sysadmins for logs from a different time period - that was no fun!
 
@@ -31,14 +33,18 @@ The whole team now has access to a web UI to search the logs. Everybody who need
 
 To make things even easier, today we don't even have to set up our own log server, but we can send the logs to a fully managed log server provider in the cloud. In this article, we'll be sending logs to [Logz.io](https://logz.io) and then query the logs via their web UI.
 
+So, **we'll definitely want to send our logs to a log server**. Either by logging to standard out and having some infrastructure in place that forwards them from there to the log server, or by configuring our application to send the logs directly to the log server. In this article, we're going to look at configuring our application to send them directly to the log server. But, we only want to send the logs to the server in a staging or production environment. During local development, we don't want to be dependent on an external log server.
+
+Let's see what we can do to achieve this.
+
 ## Setting Up a Logz.io Account
-If you want to follow along with sending logs to the cloud, set up an account with [logz.io](https://logz/io). When logged in, click on the gear icon in the upper right and select Settings -> General. Under "Account settings", the page will show your token. Copy this token - we'll need it later to configure our application to send logs to the cloud.
+If you want to follow along with sending logs to the cloud, set up a free trial account with [logz.io](https://logz/io). When logged in, click on the gear icon in the upper right and select Settings -> General. Under "Account settings", the page will show your "shipping token". Copy this token - we'll need it later to configure our application to send logs to the cloud.
 
 ## Per-Environment Logging for a Plain Java Application
 
-If you're building a plain Java application that needs configurable logging, this is the tutorial to follow. We'll have a look at both Log4J and Logback and how to configure them to do different things in different runtime environments. You can clone or browse the example applications for [Log4J](https://github.com/thombergs/code-examples/tree/master/logging/log4j) and [Logback](https://github.com/thombergs/code-examples/tree/master/logging/log4j) on GitHub.
+Let's first discuss how we can configure the logging behavior of a plain Java application. We'll have a look at both Log4J and Logback and how to configure them to do different things in different runtime environments. You can clone or browse the example applications for [Log4J](https://github.com/thombergs/code-examples/tree/master/logging/log4j) and [Logback](https://github.com/thombergs/code-examples/tree/master/logging/log4j) on GitHub.
 
-### Application Code
+### Example Application
 
 Our example application is very simple:
 
@@ -79,10 +85,20 @@ LOG_TARGET=LOGZIO java -jar app.jar
 
 Let's now see how we can configure Log4J and Logback in our application to respect the `LOG_TARGET` environment variable.
 
+<div class="notice info">
+  <h4>Don't Put Secret Tokens Into Configuration Files!</h4>
+  <p>
+  In the configuration files of Log4J and Logback below, you will see that we're using another environment variable called `LOGZIO_TOKEN`. This variable contains a secret token that you get when creating a logz.io account. You could just as well hard-code the token into the configuration variables, but that's a security risk. You will probably want to push the configuration file to a Git repository and a Git repository is no place for secrets, even if it's a private repository! 
+  </p>
+  <p>
+  Instead, use environment variables to store secrets and set their values when starting the application so you don't have to handle files with secret contents in a Git repo.
+  </p>
+</div>
+
 ### Configuring Log4J with Environment Variables
 You can browse or clone the full example code of the Log4J application [on GitHub](https://github.com/thombergs/code-examples/tree/master/logging/log4j).
 
-#### Adding Log4J Dependencies
+#### Log4J Dependencies
 
 To get Log4J working properly, we need to add the following dependencies to our application's `pom.xml`:
 
@@ -115,7 +131,7 @@ The first two dependencies are the log4j API and the log4J implementation. We co
 
 The last dependency is a log appender that sends the logs to logz.io so we can view them online. 
 
-#### Configuring Log4J with Environment Variables
+#### Log4J Configuration
 
 Next, we need to create a `log4j2.xml` file in the `src/main/resources` folder of the codebase. Log4J will automatically pick up this configuration file from the classpath when the application starts up:
 
@@ -127,9 +143,9 @@ Next, we need to create a `log4j2.xml` file in the `src/main/resources` folder o
     <Console name="CONSOLE" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
     </Console>
-  
+    
     <LogzioAppender name="LOGZIO">
-      <logzioToken>YOUR_LOGZIO_TOKEN></logzioToken>
+      <logzioToken>${env:LOGZIO_TOKEN}</logzioToken>
       <logzioUrl>https://listener.logz.io:8071</logzioUrl>
       <logzioType>java</logzioType>
     </LogzioAppender>
@@ -147,40 +163,215 @@ In the `log4j2.xml` file above we have configured two appenders. An appender is 
 
 The appender with the name `CONSOLE` is a standard Log4J appender that sends the logs to the console. We can define a pattern in which to format the log output.
 
-The appender with the name `LOGZIO` is a special appender that sends the logs to logz.io. We can only use the `<LogzioAppender>` XML element because we have included the dependency to `logzio-log4j2-appender` in the `pom.xml` above. If you want to try sending logs, you have to put your logz.io token into the `<logzioToken>` element.w
+The appender with the name `LOGZIO` is a special appender that sends the logs to logz.io. We can only use the `<LogzioAppender>` XML element because we have included the dependency to `logzio-log4j2-appender` in the `pom.xml` above. If you want to try sending logs, you have to put the "shipping token" from your logz.io account into the `<logzioToken>` element.
 
 Finally, in the `<Root>` element, we configure which appender the root logger should use. We could just put one of the appender names into the `ref` attribute of the `<AppenderRef>` element, but this would hard-code the appender and it wouldn't be configurable. So, instead, we set it to `${env:LOG_TARGET:-CONSOLE}`, which tells Log4J to use the value of the `LOG_TARGET` environment variable and if this variable is not set, use the value `CONSOLE` as a default.
 
 That's it. If we run the app without any environment variables, it will log to the console. If we set the environment variable `LOG_TARGET` to `LOGZIO`, it will log to logz.io.
 
-## Configuring Spring Boot Logging for Different Environments
+### Configuring Logback with Environment Variables
 
-### Spring Boot's Default Logging Configuration
+Let's see how we can control Logback to send logs to different places depending on an environment variable.
 
--   investigate the default logging configuration
--   by default, Spring Boot logs to standard out
--   we have to either capture the standard output and send it to a log server, or we have to configure the logger to send it to a log server directly
--   look into the default `logback-spring.xml`
+The full example application is available [on GitHub](https://github.com/thombergs/code-examples/tree/master/logging/logback).
 
-### Using Log4J Instead of Logback
-- how to do this?
+#### Logback Dependencies
 
-### Activating a Spring Profile
-- link to Profiles article
-- start the app with Gradle or Maven and the Spring Boot plugin
+To include Logback in the application, we need to add these dependencies to our `pom.xml`:
 
-### Sending Logs to a File in the `local` Environment
-- configure Spring Boot to send logs to a file in the local environment
-- code examples, link to example application
+```xml
+<dependencies>
+  <dependency>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-classic</artifactId>
+    <version>1.2.3</version>
+  </dependency>
+  <dependency>
+    <groupId>io.logz.logback</groupId>
+    <artifactId>logzio-logback-appender</artifactId>
+    <version>1.0.24</version>
+  </dependency>
+</dependencies>
+```
 
-### Sending Logs to Logz.io  in the `staging` Environment
--   configure Spring Boot to send logs to Logz.io in test/production environment, but not in local development
--   code examples, link to example application
+Logback's dependencies are a bit more convenient than Log4J's. We only have to include the `logback-classic` dependency to enable Logback. It automatically pulls in the SLF4J dependencies so we can use the SLF4J logging abstraction without explicitly adding a dependency to it.
 
-### Querying Logs with Logz.io
--   show that the logs have reached Logz.io
--   do some basic queries in the hosted Kibana
+The second dependency is a Logback-specific appender that can send logs to logz.io.
 
- 
+#### Logback Configuration
 
- 
+The logback configuration looks very similar to the configuration we've done for Log4J above. We create a file named `logback.xml` in the `src/main/resources` folder so Logback finds it in the classpath:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  
+  <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="LOGZIO" class="io.logz.logback.LogzioLogbackAppender">
+    <token>${LOGZIO_TOKEN}</token>
+    <logzioUrl>https://listener.logz.io:8071</logzioUrl>
+    <logzioType>myType</logzioType>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="${LOG_TARGET}"/>
+  </root>
+</configuration>
+```
+
+In the `logback.xml` file, we declare two appenders. The appender concept is the same as in Log4J: it takes log data, potentially transforms it, and then sends it to a destination.
+
+The `CONSOLE` appender formats logs in a human-readable way and then sends the logs to standard out.
+
+The `LOGZIO` appender transforms the logs into JSON and sends them to logz.io. We have to specify the "shipping token" from the logz.io account in the `<token>` element so that logz.io knows it's us sending the logs.
+
+Finally, we configure the root logger to use the appender that we define with the environment variable `LOG_TARGET`. If `LOG_TARGET` is set to `CONSOLE`, the application will log to standard out, and if it's set to `LOGZIO`, the application will log to logz.io.
+
+You might notice the `<shutdownHook>` element in the logging configuration. The shutdown hook takes care of sending all logs that are currently still in the buffer to the target location when the application shuts down. If we don't add this hook, the logs from our sample application might never be sent to logz.io, because the application shuts down before they are sent. Using the hook we can be reasonably sure that the logs of a dying application still reach their destination.
+
+## Per-Environment Logging with Spring Boot
+
+As we've seen above, configuring a plain Java application to log to different destinations requires managing environment variables. 
+
+When we're building a Spring Boot application instead, we can make use of Spring Boot's powerful configuration mechanism to make our logging configuration a bit more elegant.
+
+The full example project is available [on GitHub](https://github.com/thombergs/code-examples/tree/master/logging/spring-boot).
+
+### Using Spring Profiles 
+
+Spring supports the notion of configuration "profiles". Each profile is made up of a set of configuration properties with specific values. 
+
+Since we need a different set of configuration properties for every environment that our application is running in (local machine, staging, production, ...), Spring profiles are very well suited for this task. 
+
+In this article, we'll only look at the features of Spring profiles that we need to configure different logging behavior. If you want to learn more about profiles, have a look at our [guide to Spring Boot profiles](https://reflectoring.io/spring-boot-profiles/#how-to-activate-profiles).
+
+### Example Application
+
+To start, we create a new Spring Boot application using [start.spring.io](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.5.0.RELEASE&packaging=jar&jvmVersion=11&groupId=com.example&artifactId=demo&name=demo&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.demo&dependencies=web). This application is pre-configured with everything we need.
+
+We add a class to the code so that we'll see some log output once the app starts:
+
+```java
+@Component
+public class StartupLogger implements ApplicationListener<ApplicationReadyEvent> {
+
+  private static final Logger logger = LoggerFactory.getLogger(StartupLogger.class);
+
+  @Override
+  public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+    logger.debug("This is a debug message");
+    logger.info("This is an info message");
+    logger.warn("This is a warn message");
+    logger.error("This is an error message");
+  }
+}
+```
+
+This just generates some test log events once Spring Boot sends the `ApplicationReadyEvent`.
+
+### Configuring Logback
+
+By default, Spring Boot uses Logback as the logging library. Spring Boot configures Logback with reasonable defaults, but if we want to log to different destinations depending on the environment, we need to override that default configuration.
+
+We could just add a `logback.xml` file like we did in the [plain Java application](#logback-configuration) and use the `LOG_TARGET` environment variable to define where the application should send the logs. Spring Boot would then back off and use this configuration instead. 
+
+However, Spring Boot makes configuring Logback even more convenient. Instead of creating a `logback.xml` file, we instead create a file named `logback-spring.xml` in the `src/main/resources` folder. This file is parsed by Spring Boot before it configures Logback and provides some extra XML elements that we can use for more dynamic logging configuration:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <springProperty name="logzioToken" source="logzio.token"/>
+
+  <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+  <appender name="LOGZIO" class="io.logz.logback.LogzioLogbackAppender">
+    <token>${logzioToken}</token>
+    <logzioUrl>https://listener.logz.io:8071</logzioUrl>
+    <logzioType>spring-boot-example-app-configurable-token</logzioType>
+  </appender>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>
+        %cyan(%d{ISO8601}) %highlight(%-5level) [%blue(%-30t)] %yellow(%C{1.}): %msg%n%throwable
+      </Pattern>
+    </layout>
+  </appender>
+
+  <springProfile name="local">
+    <root level="WARN">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+    <logger name="io.reflectoring" level="DEBUG"/>
+  </springProfile>
+
+  <springProfile name="staging">
+    <root level="WARN">
+      <appender-ref ref="CONSOLE"/>
+      <appender-ref ref="LOGZIO"/>
+    </root>
+    <logger name="io.reflectoring" level="DEBUG"/>
+  </springProfile>
+
+  <springProfile name="production">
+    <root level="WARN">
+      <appender-ref ref="LOGZIO"/>
+    </root>
+    <logger name="io.reflectoring" level="WARN"/>
+  </springProfile>
+
+</configuration>
+```
+
+The `logback-spring.xml` file looks very similar to the static `logback.xml` file that we created for the [plain Java application](#logback-configuration). 
+
+The main difference is that we're now using the `<springProfile>` element to configure the logging for the `local`, `staging`, and `production` profiles. Whatever is in the `<springProfile>` element is only valid for a certain profile. This way, we're sending logs to the `CONSOLE` appender in the `local` environment, to the `CONSOLE` and the `LOGZIO` appender in the `staging` environment, and only to the `LOGZIO` appender in the `production` profile.
+
+This lets us configure each environment fully independent of the other environments, without managing an environment variable like `LOG_TARGET`, as we did with the plain `logback.xml` file above. 
+
+Another change is that we use the `<springProperty>` element to load the `logzio.token` from Spring Boot's environment configuration and map it to the `${logzioToken}` variable that we're using to configure the `LOGZIO` appender. The property `logzio.token` comes from the `application.yml` file:
+
+```yaml
+logzio:
+  token: ${LOGZIO_TOKEN}
+```
+
+Here, we're declaring the `logzio.token` configuration property to be set to the value of the environment variable `LOGZIO_TOKEN`. We could have used the environment variable directly in the `logback-spring.xml` file, but it's good practice to declare all configuration properties that the application needs in the `application.yml` file, so that the properties are easier to find and modify.
+
+### Starting the Application in a Specific Profile
+
+Now, all we need to do is to start the Spring Boot application in a certain profile and it will configure Logback accordingly. 
+
+To start the app locally, we can use the Maven Spring Boot plugin:
+
+```
+LOGZIO_TOKEN=<YOUR_LOGZIO_TOKEN> ./mvnw spring-boot:run -Dspring-boot.run.profiles=staging
+```
+
+This would start the application in the `staging` profile, which would send the logs to logz.io and the console. If you're interested in other ways of activating Spring Boot profiles, check out the [guide to Spring Boot profiles](https://reflectoring.io/spring-boot-profiles/#how-to-activate-profiles).
+
+## Querying Logs in the Logz.io GUI
+
+If you went along and created a logz.io account to play with the example applications, you can now query the logs the "Kibana" view on logz.io: 
+
+![The Kibana view on logz.io](/assets/img/posts/logzio/kibana.png)
+
+If you configured your token correctly and then started on of the plain Java applications with the environment variable `LOG_TARGET` set to `LOGZIO`, or the Spring Boot application in the `staging` or `production` profile, you should see the logs in your dashboard.
+
+## Conclusion
+
+In any investigation of an incident, logs are an invaluable resource. No matter what other observability tools you use, you will always look at the logs.
+
+This means we should put some thought into our logging configuration. 
+
+This tutorial has shown how we can configure a Java application to send logs to the places we want them to be.
+
+You can check out the fully functional examples applications for [Log4J](https://github.com/thombergs/code-examples/tree/master/logging/log4j), [Logback](https://github.com/thombergs/code-examples/tree/master/logging/logback), and [Spring Boot](https://github.com/thombergs/code-examples/tree/master/logging/spring-boot) on GitHub.

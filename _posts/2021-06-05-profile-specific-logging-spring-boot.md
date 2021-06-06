@@ -6,34 +6,44 @@ image:
   auto: 0031-matrix
 ---
 
-Application logs are the most important resource when it comes to investigating issues and incidents. Imagine something goes wrong during your on-call rotation and you don't have any logs! If applied smartly, we can even harvest important business metrics from our logs. **Having no logs is equivalent to driving a car with your eyes closed.** You don't know where you're going and you're very likely to crash.
+Application logs are the most important resource when it comes to investigating issues and incidents. Imagine something goes wrong during your on-call rotation and you don't have any logs! 
 
-To make log data usable, we need to send it to the right place. When developing an app locally, we usually want to send the logs to the console or a local log file. When the app is running in a staging or production environment, we'll want to send the logs to a log server which the whole team can use to query the logs.
+If applied smartly, we can even harvest important business metrics from our logs. 
 
-In this tutorial, **we're going to configure a Java application to send logs to the console or to a cloud logging provider depending on the environment the application is running in**. As the cloud provider we're going to use [Logz.io](https://logz.io), which provides a managed ELK stack solution with a nice frontend for querying logs.
+**Having no logs is equivalent to driving a car with your eyes closed.** You don't know where you're going and you're very likely to crash.
+
+To make log data usable, we need to send it to the right place. When developing an app locally, we usually want to send the logs to the console or a local log file. When the app is running in a staging or production environment, we'll want to send the logs to a log server that the whole team has access to.
+
+In this tutorial, **we're going to configure a Java application to send logs to the console or to a cloud logging provider depending on the environment the application is running in**. 
+
+As the cloud provider we're going to use [logz.io](https://logz.io), which provides a managed ELK stack solution with a nice frontend for querying logs. But even if you use a different logging provider, this tutorial will help you configure your Java application's logging.
 
 We're going to look at:
 
-* [Configuring a plain Java application with Log4J](#configuring-log4j-with-environment-variables) 
-* [Configuring a plain Java application with Logback](#configuring-logback-with-environment-variables), and
-* [Configuring a Spring Boot application with Logback](#per-environment-logging-with-spring-boot).
+* [How to configure a plain Java application with Log4J](#configuring-log4j-with-environment-variables) 
+* [How to configure a plain Java application with Logback](#configuring-logback-with-environment-variables), and
+* [How to configure a Spring Boot application with Logback](#per-environment-logging-with-spring-boot).
 
 In all cases, the application will be started with certain environment variables that control the logging behavior to send logs wither to the console or to the cloud.
 
 ## Why Should I Send My Logs to a Log Server?
-Before we're looking at the logging configuration details, let's answer the question why we're going through all the fuss to configure our logging. Isn't it enough to just log everything to standard out or to a log file?
+Before we look at the logging configuration details, let's answer the question why we're going through all the fuss to configure our logging at all. Isn't it enough to just log everything to standard out or to a log file?
 
-That's how it was done back in the days. There were sysadmins who guarded these log files. Every time I wanted to access the logs, I would write an email to the sysadmins. Once they read their mail, they would run some scripts to collect the log files from all server instances, filter them for the time period I was interested in, and put the resulting files on a shared network folder from where I would download them.
+That's how it was done back in the days. There were sysadmins who guarded the log files. Every time I wanted to access the logs, I would write an email to the sysadmins. Once they read their mail (which was totally dependent on the time of day and their mood), they would run some scripts to collect the log files from all server instances, filter them for the time period I was interested in, and put the resulting files on a shared network folder from where I would download them.
 
 Then I would use command-line tools like `grep` and `sed` to search the log files for anything I'm interested in. Most often, I would find that the logs I had access to were not enough and I would have to repeat the whole procedure with the sysadmins for logs from a different time period - that was no fun!
 
 At some point, log servers like Logstash and Graylog came along. Instead of sending logs into files, we could now send the logs to a server. Instead of asking sysadmins to send us the logs we need, we could now search the logs through a web UI!
 
-The whole team now has access to a web UI to search the logs. Everybody who needs log data can easily get it. A log server is a key enabler for a "you built it, you run it" culture! It also reduces the mean time to restore (MTTR) - i.e. the time a team needs to restore a service after an incident - because the log data is directly available for analysis. **DevOps is unthinkable without a log server!**
+The whole team now had access to a web UI to search the logs. Everybody who needs log data can easily get it. 
 
-To make things even easier, today we don't even have to set up our own log server, but we can send the logs to a fully managed log server provider in the cloud. In this article, we'll be sending logs to [Logz.io](https://logz.io) and then query the logs via their web UI.
+A log server is a key enabler for a "you built it, you run it" culture! It also reduces the mean time to restore (MTTR) - i.e. the time a team needs to restore a service after an incident - because the log data is directly available for analysis. **DevOps is unthinkable without a log server!**
 
-So, **we'll definitely want to send our logs to a log server**. Either by logging to standard out and having some infrastructure in place that forwards them from there to the log server, or by configuring our application to send the logs directly to the log server. In this article, we're going to look at configuring our application to send them directly to the log server. But, we only want to send the logs to the server in a staging or production environment. During local development, we don't want to be dependent on an external log server.
+To make things even easier, today we don't even have to set up our own log server, but we can send the logs to a fully managed log server provider in the cloud. In this article, we'll be sending logs to [logz.io](https://logz.io) and then query the logs via their web UI.
+
+So, **we'll definitely want to send our logs to a log server**. Either by logging to standard out and having some infrastructure in place that forwards them from there to the log server, or by configuring our application to send the logs directly to the log server. 
+
+In this article, we're going to look at configuring our application to send them directly to the log server. But, we only want to send the logs to the server in a staging or production environment. During local development, we don't want to be dependent on an external log server.
 
 Let's see what we can do to achieve this.
 
@@ -42,7 +52,9 @@ If you want to follow along with sending logs to the cloud, set up a free trial 
 
 ## Per-Environment Logging for a Plain Java Application
 
-Let's first discuss how we can configure the logging behavior of a plain Java application. We'll have a look at both Log4J and Logback and how to configure them to do different things in different runtime environments. You can clone or browse the example applications for [Log4J](https://github.com/thombergs/code-examples/tree/master/logging/log4j) and [Logback](https://github.com/thombergs/code-examples/tree/master/logging/log4j) on GitHub.
+Let's first discuss how we can configure the logging behavior of a plain Java application. We'll have a look at both [Log4J](http://logging.apache.org/log4j/) and [Logback](http://logback.qos.ch/) and how to configure them to do different things in different runtime environments. 
+
+You can clone or browse the full example applications on GitHub ([Log4J app](https://github.com/thombergs/code-examples/tree/master/logging/log4j), [Logback app](https://github.com/thombergs/code-examples/tree/master/logging/logback)).
 
 ### Example Application
 
@@ -60,11 +72,13 @@ public class Main {
 }
 ```
 
-It's just a small Java program with a `main()` method that logs a few lines using an SLF4J `Logger` instance. This program is a placeholder for any real Java application. SLF4J is a logging API that abstracts over the actual logging implementation, so we can use it for both Log4J and Logback (and other logging implementations, for that matter). This allows us to always implement against the same logging API, even if we decide to swap out the actual logging library underneath.
+It's just a small Java program with a `main()` method that logs a few lines using an SLF4J `Logger` instance. This program is a placeholder for any real Java application. 
+
+[SLF4J](http://www.slf4j.org/) is a logging API that abstracts over the actual logging implementation, so we can use it for both Log4J and Logback (and other logging implementations, for that matter). This allows us to always implement against the same logging API, even if we decide to swap out the actual logging library underneath.
 
 ### Passing Environment Variables to the Application
 
-We want to make the logging behave differently depending on the environment the application is running in. If the application is running on the local machine, we want the above log events to be send to the console. If it's running in a staging or production environment, we want it to log to our cloud logging provider.
+We want to make the logging behave differently depending on the environment the application is running in. If the application is running on the local machine, we want the above log events to be sent to the console. If it's running in a staging or production environment, we want it to log to our cloud logging provider.
 
 But how does the application decide which environment it's running in? This is exactly what environment variables are there for. 
 
@@ -84,16 +98,6 @@ LOG_TARGET=LOGZIO java -jar app.jar
 ```
 
 Let's now see how we can configure Log4J and Logback in our application to respect the `LOG_TARGET` environment variable.
-
-<div class="notice info">
-  <h4>Don't Put Secret Tokens Into Configuration Files!</h4>
-  <p>
-  In the configuration files of Log4J and Logback below, you will see that we're using another environment variable called `LOGZIO_TOKEN`. This variable contains a secret token that you get when creating a logz.io account. You could just as well hard-code the token into the configuration variables, but that's a security risk. You will probably want to push the configuration file to a Git repository and a Git repository is no place for secrets, even if it's a private repository! 
-  </p>
-  <p>
-  Instead, use environment variables to store secrets and set their values when starting the application so you don't have to handle files with secret contents in a Git repo.
-  </p>
-</div>
 
 ### Configuring Log4J with Environment Variables
 You can browse or clone the full example code of the Log4J application [on GitHub](https://github.com/thombergs/code-examples/tree/master/logging/log4j).
@@ -127,7 +131,7 @@ To get Log4J working properly, we need to add the following dependencies to our 
 </dependencies>
 ```
 
-The first two dependencies are the log4j API and the log4J implementation. We could implement logging with just these two dependencies, already, but we additionally add the `log4j-slf4j-impl` dependency to include SLF4J. This way, we can use the SLF4J API for our logging, which is a logging abstraction that allows us to swap out the underlying logger without changing our code, should we decide so.
+The first two dependencies are the log4j API and the log4J implementation. We could implement logging with just these two dependencies, but we additionally add the `log4j-slf4j-impl` dependency to include SLF4J. This way, we can use the SLF4J API for our logging instead of relying directly on the Log4J API.
 
 The last dependency is a log appender that sends the logs to logz.io so we can view them online. 
 
@@ -161,17 +165,32 @@ Next, we need to create a `log4j2.xml` file in the `src/main/resources` folder o
 
 In the `log4j2.xml` file above we have configured two appenders. An appender is a Log4J concept that takes log events, transforms them, and then sends them to a certain destination.
 
-The appender with the name `CONSOLE` is a standard Log4J appender that sends the logs to the console. We can define a pattern in which to format the log output.
+The appender with the name `CONSOLE` is a standard Log4J appender that sends the logs to standard out. We can define a pattern in which to format the log output.
 
-The appender with the name `LOGZIO` is a special appender that sends the logs to logz.io. We can only use the `<LogzioAppender>` XML element because we have included the dependency to `logzio-log4j2-appender` in the `pom.xml` above. If you want to try sending logs, you have to put the "shipping token" from your logz.io account into the `<logzioToken>` element.
+The appender with the name `LOGZIO` is a special appender that sends the logs to logz.io. We can only use the `<LogzioAppender>` XML element because we have included the dependency to `logzio-log4j2-appender` in the `pom.xml` above. If you want to try sending logs, you have to put the "shipping token" from your logz.io account into the `<logzioToken>` element (or, even better, set the `LOGZIO_TOKEN` environment variable when starting the app).
 
-Finally, in the `<Root>` element, we configure which appender the root logger should use. We could just put one of the appender names into the `ref` attribute of the `<AppenderRef>` element, but this would hard-code the appender and it wouldn't be configurable. So, instead, we set it to `${env:LOG_TARGET:-CONSOLE}`, which tells Log4J to use the value of the `LOG_TARGET` environment variable and if this variable is not set, use the value `CONSOLE` as a default.
+Finally, in the `<Root>` element, we configure which appender the root logger should use. We could just put one of the appender names into the `ref` attribute of the `<AppenderRef>` element, but this would hard-code the appender and it wouldn't be configurable. 
+
+So, instead, we set it to `${env:LOG_TARGET:-CONSOLE}`, which tells Log4J to use the value of the `LOG_TARGET` environment variable and if this variable is not set, use the value `CONSOLE` as a default.
 
 That's it. If we run the app without any environment variables, it will log to the console. If we set the environment variable `LOG_TARGET` to `LOGZIO`, it will log to logz.io.
 
+<div class="notice info">
+  <h4>Don't Put Secrets Into Configuration Files!</h4>
+  <p>
+  In the configuration files of Log4J and Logback, you will see that we're using an environment variable called <code>LOGZIO_TOKEN</code>. This variable contains a secret token that you get when creating a logz.io account. 
+</p>
+<p>
+You could just as well hard-code the token into the configuration files, but that's a security risk. You will probably want to push the configuration file to a Git repository and <strong>a Git repository is no place for secrets, even if it's a private repository!</strong> 
+  </p>
+  <p>
+  Instead, use environment variables to store secrets and set their values when starting the application so you don't have to handle files with secret contents in a Git repo.
+  </p>
+</div>
+
 ### Configuring Logback with Environment Variables
 
-Let's see how we can control Logback to send logs to different places depending on an environment variable.
+Let's see how we can configure Logback to send logs to different places depending on an environment variable.
 
 The full example application is available [on GitHub](https://github.com/thombergs/code-examples/tree/master/logging/logback).
 
@@ -226,7 +245,7 @@ The logback configuration looks very similar to the configuration we've done for
 </configuration>
 ```
 
-In the `logback.xml` file, we declare two appenders. The appender concept is the same as in Log4J: it takes log data, potentially transforms it, and then sends it to a destination.
+In the `logback.xml` file, we declare two appenders. The appender concept is the same as in Log4J - it takes log data, potentially transforms it, and then sends it to a destination.
 
 The `CONSOLE` appender formats logs in a human-readable way and then sends the logs to standard out.
 
@@ -238,9 +257,9 @@ You might notice the `<shutdownHook>` element in the logging configuration. The 
 
 ## Per-Environment Logging with Spring Boot
 
-As we've seen above, configuring a plain Java application to log to different destinations requires managing environment variables. 
+As we've seen above, configuring a plain Java application to log to different destinations requires managing environment variables. To add more environment-specific configuration, we would have to add more and more environment variables. This would quickly become cumbersome.
 
-When we're building a Spring Boot application instead, we can make use of Spring Boot's powerful configuration mechanism to make our logging configuration a bit more elegant.
+When we're building a Spring Boot application, we can make use of Spring Boot's powerful configuration mechanism to make our logging configuration a bit more elegant.
 
 The full example project is available [on GitHub](https://github.com/thombergs/code-examples/tree/master/logging/spring-boot).
 
@@ -282,7 +301,7 @@ By default, Spring Boot uses Logback as the logging library. Spring Boot configu
 
 We could just add a `logback.xml` file like we did in the [plain Java application](#logback-configuration) and use the `LOG_TARGET` environment variable to define where the application should send the logs. Spring Boot would then back off and use this configuration instead. 
 
-However, Spring Boot makes configuring Logback even more convenient. Instead of creating a `logback.xml` file, we instead create a file named `logback-spring.xml` in the `src/main/resources` folder. This file is parsed by Spring Boot before it configures Logback and provides some extra XML elements that we can use for more dynamic logging configuration:
+However, Spring Boot makes configuring Logback even more convenient. Instead of creating a `logback.xml` file, we create a file named `logback-spring.xml` in the `src/main/resources` folder. This file is parsed by Spring Boot before it configures Logback and provides some extra XML elements that we can use for more dynamic logging configuration:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -344,7 +363,7 @@ logzio:
   token: ${LOGZIO_TOKEN}
 ```
 
-Here, we're declaring the `logzio.token` configuration property to be set to the value of the environment variable `LOGZIO_TOKEN`. We could have used the environment variable directly in the `logback-spring.xml` file, but it's good practice to declare all configuration properties that the application needs in the `application.yml` file, so that the properties are easier to find and modify.
+Here, we're declaring the `logzio.token` configuration property to be set to the value of the environment variable `LOGZIO_TOKEN`. We could have used the environment variable directly in the `logback-spring.xml` file, but it's good practice to declare all configuration properties that a Spring Boot application needs in the `application.yml` file, so that the properties are easier to find and modify.
 
 ### Starting the Application in a Specific Profile
 
@@ -356,7 +375,7 @@ To start the app locally, we can use the Maven Spring Boot plugin:
 LOGZIO_TOKEN=<YOUR_LOGZIO_TOKEN> ./mvnw spring-boot:run -Dspring-boot.run.profiles=staging
 ```
 
-This would start the application in the `staging` profile, which would send the logs to logz.io and the console. If you're interested in other ways of activating Spring Boot profiles, check out the [guide to Spring Boot profiles](https://reflectoring.io/spring-boot-profiles/#how-to-activate-profiles).
+This will start the application in the `staging` profile, which would send the logs to logz.io and the console. If you're interested in other ways of activating Spring Boot profiles, check out the [guide to Spring Boot profiles](https://reflectoring.io/spring-boot-profiles/#how-to-activate-profiles).
 
 ## Querying Logs in the Logz.io GUI
 
@@ -364,13 +383,13 @@ If you went along and created a logz.io account to play with the example applica
 
 ![The Kibana view on logz.io](/assets/img/posts/logzio/kibana.png)
 
-If you configured your token correctly and then started on of the plain Java applications with the environment variable `LOG_TARGET` set to `LOGZIO`, or the Spring Boot application in the `staging` or `production` profile, you should see the logs in your dashboard.
+If you configured your token correctly and then started one of the plain Java applications with the environment variable `LOG_TARGET` set to `LOGZIO`, or the Spring Boot application in the `staging` or `production` profile, you should see the logs in your dashboard.
 
 ## Conclusion
 
 In any investigation of an incident, logs are an invaluable resource. No matter what other observability tools you use, you will always look at the logs.
 
-This means we should put some thought into our logging configuration. 
+This means you should put some thought into your logging configuration. 
 
 This tutorial has shown how we can configure a Java application to send logs to the places we want them to be.
 

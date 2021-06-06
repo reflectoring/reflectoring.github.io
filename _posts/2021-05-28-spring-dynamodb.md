@@ -190,7 +190,7 @@ public class Customer {
 We have defined the mappings with the table by decorating the class with `@DynamoDBTable` annotation and passing in the table name. We have used the `DynamoDBHashKey` attribute over the getter method of the `customerID` field. For mapping the remaining attributes, we have decorated the getter methods of the remaining fields with the  `@DynamoDBAttribute` passing in the name of the attribute.
 
 ### Defining the Repository Interface
-We will next define a repository interface by extending `CrudRepository` typed to the domain or data class and an `ID` type for the type of primary key. 
+We will next define a repository interface by extending `CrudRepository` typed to the domain or data class and an `ID` type for the type of primary key. By extending the  `CrudRepository` interface, we inherit ready to call queries like findAll, findById, save, etc.
 
 ```java
 @EnableScan
@@ -511,11 +511,12 @@ The Spring Boot dependency is added under the `dependencyManagement`:
 
 ## Conclusion
 
-In this article, we looked at the important concepts of AWS DynamoDB. we also saw how to use Spring Data for accessing the database of our application with the AWS RDS service. Here is a summary of the things we covered:
-1. We store our data in a table in AWS Dynamo DB. A table is composed of items and each item has attributes.
-2. A DynamoDB table must have a partition key and optionally a sort key.
-3. We create a secondary Index to search on other fields
-4. We accessed DynamoDB with Spring data module and then with enhanced dynamoDB client module of AWS Java SDK.
+In this article, we looked at the important concepts of AWS DynamoDB and performed database operations from two applications written in Spring Boot first with Spring Data and then using the Enhanced DynamoDB Client. Here is a summary of the things we covered:
+1. AWS DynamoDB is a NoSQL Key-value data store and helps us to store flexible data models.
+2. We store our data in a table in AWS DynamoDB. A table is composed of items and each item has a primary key and a set of attributes.
+3. A DynamoDB table must have a primary key which can be composed of a partition key and optionally a sort key.
+4. We create a secondary Index to search the DynamoDB on fields other than the primary key.
+5. We accessed DynamoDB with Spring Data module and then with Enhanced DynamoDB Client module of AWS Java SDK.
 
 I hope this will help you to get started with building applications using Spring with AWS DynamoDB as the database. 
 

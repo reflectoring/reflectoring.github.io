@@ -1,423 +1,240 @@
 ---
-title: "Caching in Spring Boot Application with AWS ElastiCache for Redis"
+title: "Caching with ElastiCache for Redis and Spring cloud AWS"
 categories: [spring-boot]
 date: 2021-05-31 00:00:00 +1100
 modified: 2021-05-31 00:00:00 +1100
 author: mmr
-excerpt: "In this article will look at how we can configure our Spring Boot to use AWS ElastiCache for Redis as cache store"
+excerpt: "In this article will look at how we can configure our Spring Boot Application to use AWS ElastiCache for Redis as cache store using Spring Cloud AWS"
 image:
     auto: 0090-404
 ---
+Spring Cloud AWS helps in simplifying the way our Spring Boot application communicates with AWS resources. From taking care 
+of security to autoconfiguring the beans required for the communication, it takes care of a lot of things.
 
+It provides support services such as S3, SES, ElastiCache etc. In this article, we will look at how we can use Spring Cloud AWS 
+to connect our application to AWS ElastiCache.
 
-ElastiCache is a managed in-memory cache service by AWS. It currently supports two popular cache implementations
-[Memcached](https://memcached.org/) and [Redis](https://redis.io/).
+ElastiCache is a fully managed in-memory cache service by AWS. It currently supports two popular cache implementations
+[Memcached](https://memcached.org/) and [Redis](https://redis.io/). 
 
-In this article, we will look at how we can setup AWS ElatiCache for Redis and also how we can configure our Spring Boot
-Application to use it as cache-store.
-
-But, before diving into that let's talk a bit about Caching and Redis in general. 
+Let's talk a bit about Redis and ElastiCache first.
  
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/caching-with-elasticache-redis" %}
 
-## Why Caching?
-
-
-Caching is a common technique of temporarily storing a copy of data or result of a computation in-memory for quick and frequent access. We tend
-to use caching primarily for the following two reasons:
-
-1. **Improving the throughput of the application.**
-2. **Avoiding overwhelming the application or downstream applications with redundant requests.**
-
-Implementing caching may result in a fluid user experience and a robust system.
-
-Some common use cases of caching in a web application include storing results of operation that require complex Database queries, heavy computations, and
-responses of API calls.
-
-A simple in-memory cache can be easily implemented in an application using some implementation of a `Map` data structure.
-This should serve us well if we have a very limited amount of data to cache. But, if we have a lot of data and are considering scaling the
-application (Which is true for most modern applications today) we might want to move cache out of our application.
-
-That's where caching solutions such as Redis or fully managed solutions such as ElastiCache come in. They are high performant, scalable and
-resilient to any failure.
-
-## AWS ElastiCache for Redis
+## Caching with ElastiCache for Redis
 
 Redis is a very popular in-memory data structure store. It's open-source and widely used in the industry for caching. It stores
 the data in key-value pair and supports data structure ranging from `String` and `List` to `hyperloglogs` and `stream`.
 
-**The basic building block of ElastiCache for Redis is the cluster**. A cluster can have one or more nodes. Each
-node runs an instance of the Redis server. A group of interrelated nodes is called a **Shard**. In a single Shard, we have one primary and
-one or more read-only replicas. By default, an ElastiCache cluster has a single Shard.
+In AWS, one of the ways of using Redis for caching is by using ElastiCache service. ElastiCache is like a container that host's 
+caching engines such as Redis and provides High availability, Scalability, and Resiliency to it.
+
+**The basic building block of ElastiCache is the cluster**. A cluster can have one or more nodes. Each
+node runs in an instance of the Redis server. A group of interrelated nodes is called a **Shard**. In a single Shard, we can have one primary and
+zero or more read-only replicas. By default, an ElastiCache cluster has a single Shard.
 
 ElastiCache also supports the partitioning feature of Redis. With partitioning, we can easily scale our Redis cache horizontally. When partitioning is enabled,
 we can add more shards into our cluster. In ElastiCache we can enable partitioning by enabling cluster mode.
 
-Just to summarize Redis can be configured in ElastiCache in two modes:
-1. No Cluster mode
-2. Cluster mode
+In summary Redis can be configured in ElastiCache in one the following modes:
+1. **Single Node** - Only one node.
+2. **Cluster mode disabled** - Single shard with one primary Node and read-only replicas.
+3. **Cluster mode enabled** - More than one shard.
 
-Let's talk a bit more about them.
+## Configuring Dependencies
 
-### No Cluster mode
-
-In this mode, we can only have one Shard with one primary node and zero or more replicas for high availability. This mode
-allows us to scale vertically by increasing the size of the node.
-
-![No cluster mode](/assets/img/posts/spring-elasticache-redis/cluster-01.png)
-
-To configure ElatiCache in this mode simply make sure not to check "**Cluster mode enabled**" checkbox. Also, make sure
-you have enabled "**Multi A-Z**" this will enable auto-failover. In case of a primary node's failure, a replica will take
-over as primary.
-
-Once you are done with creating the cluster, your configuration should something similar to the following screenshot. Most
-of the configurations is the default:
-
-![No cluster mode configuration](/assets/img/posts/spring-elasticache-redis/no-cluster.png)
-
-Couple of things to note here:
-
-* **Security**: According to [AWS ElastiCache Guide](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/GettingStarted.AuthorizeAccess.html) cluster is designed to be accessed from an EC2 instance. So, just a head's up, do not spend time trying to connect from your local environment as it won't work.
-  The document also provides some steps on how a resource can access the cluster. This is also true for Cluster Mode.
-* **Primary Endpoint**: URL that always points to the primary node. This URL will remain the same even in case of failover as ElastiCache will
-  always update the DNS entry of the actual primary node registered against it.
-* **Reader Endpoint**: URL of the load balancer that points to our replicas. This allows us to add and remove replicas on demand
-  without worrying about changing the node's endpoint.
-
-  
-### Cluster mode
-
-This mode allows us to add more Shards into our cluster.
-
-![cluster mode](/assets/img/posts/spring-elasticache-redis/cluster-02.png)
-
-To configure ElatiCache in this mode just make sure to check "**Cluster mode enabled**" checkbox. Now, we will see options to specify
-the number of shards and also options to specify regions of shards.
-
-![No cluster mode configuration](/assets/img/posts/spring-elasticache-redis/cluster-mode.png)
-
-Here we can note that we don't have primary and reader endpoints, instead we have a single configuration endpoint. Our Redis
-clients can retrieve the cluster topology - Address and roles of all nodes - using this URL.
-
-Now let's configure our Spring application to point to ElastiCache.
-
-## Configuring Dependencies for Redis Cache
-
-The only dependency that we need to enable caching with Redis is [Spring Data Redis](https://docs.spring.io/spring-data/redis/docs/2.5.1/reference/html/#redis).
+In order to use Spring Cloud AWS, first we need add Spring cloud AWS BOM(Bill of material). BOM will help us manage
+our dependency versions:
 
 ```groovy
-implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-```
-
-This will give us access to Spring Cache abstraction, and [Lettuce](https://lettuce.io/) which is a popular Redis client.
-
-Now that we have our dependencies we need to get to configuring our cache client.
-
-## Configuring Caching in Spring Boot
-
-Out of the box Spring Data Redis is configured to locate Redis instance running on the `localhost` and port `6379`. This
-configuration is good enough for testing on a local machine.
-
-Let's see how we can connect to ElastiCache, first when it's running on [No Cluster Mode](#no-cluster-mode) and then in
-[Cluster Mode](#cluster-mode).
-
-### Connecting to ElastiCahce when Cluster mode is disabled
-
-We read in the [No Cluster Mode](#no-cluster-mode) section that ElastiCache gives us two endpoints: Primary node's and Reader node's.
-So, one choice is to use the primary node's endpoint and read/write directly to and from the primary node. In which case our configurations will
-be following:
-
-```yaml
-spring:
-  cache:
-    type: redis
-  redis:
-    host: spring-cluster.xxxx.ng.001.use2.cache.amazonaws.com
-```
-
-Please note that **Redis performs replication asynchronously**, so if we always read from and write to primary, we will always get
-the latest data. This is recommended when strong consistency is required.
-
-The second choice is to write to primary and read from replicas:
-
-```yaml
-spring:
-  cache:
-    type: redis
-  redis:
-    primary: spring-cluster.xxxx.ng.001.use2.cache.amazonaws.com
-    reader: spring-cluster-ro.xxxx.ng.001.use2.cache.amazonaws.com
-```
-
-We will also have to create a `LettuceConnectionFactory` bean since spring doesn't seem to have a configuration for specifying
-primary and readers host. Here `spring.cache.redis.primary` and `spring.cache.redis.reader` are our custom properties.
-
-```java
-@Configuration
-@EnableCaching
-public class EnableCache {
-  public static final int PORT = 6379;
-  
-  @Value("${spring.redis.primary}")
-  private String primaryEndpoint;
-  
-  @Value("${spring.redis.reader}")
-  private String readerEndpoint;
-  @Bean
-  public LettuceConnectionFactory redisConnectionFactory() {
-      LettuceClientConfiguration clientConfig = LettuceClientConfiguration
-              .builder()
-              .readFrom(ReadFrom.REPLICA_PREFERRED)
-              .build();
-      
-      var staticMasterReplicaConfiguration = 
-        new RedisStaticMasterReplicaConfiguration(this.primaryEndpoint, PORT);
-      
-      staticMasterReplicaConfiguration.addNode(readerEndpoint, PORT);
-      return new LettuceConnectionFactory(
-              staticMasterReplicaConfiguration, 
-              clientConfig
-      );
-  }
+dependencyManagement {
+    imports {
+        mavenBom 'io.awspring.cloud:spring-cloud-aws-dependencies:2.3.1'
+    }
 }
 ```
 
-`RedisStaticMasterReplicaConfiguration` is one of the many available configurations class in Lettuce. We use this when
-our nodes have a fixed URL which is true for our case.
+Next, we need to add the following dependencies:
 
-We have also specified our read preference to `ReadFrom.REPLICA_PREFERRED`. This means Spring will prefer replica to perform
-read operations and will only prefer primary when all the replicas are down. Please find the full list of available read settings in [Lettuce reference doc](https://lettuce.io/core/release/reference/#readfrom.read-from-settings).
-
-This mode allows us to improve our read throughput by distributing the load of read requests among replicas. Another benefit is that
-in case of the primary node's failure, clients will still be able to read the data.
-
-One downside of this configuration is that since replication is asynchronous, you might get stale data sometimes if there
-is a lag in replications.
-
-### Connecting to ElatiCahce when Cluster mode is Enabled
-
-When cluster mode is enabled, we will only receive the endpoint of the configuration URL or seed URL in Lettuce client's
-terminology.
-
-```yaml
-spring:
-  cache:
-    type: redis
-  redis:
-    cluster:
-      nodes: spring-redis-cluster.xx.clustercfg.use2.cache.amazonaws.com:6379
-    lettuce:
-      cluster:
-        refresh:
-          period: PT10M
+```groovy
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws'
+    implementation 'com.amazonaws:aws-java-sdk-elasticache'
 ```
 
-Lettuce will use this seed URL to retrieve the complete topology of the cluster: URL of all the nodes and their roles. It will
-also periodically refresh the topology based on the `Duration` configured. We have set refresh duration to `PT10M` i.e., 10 minutes.
-If new shards are added or removed it will discover it.
+Let's talk a bit about these dependencies: 
 
-This mode is ideal when you want to increase your write throughput as the load will be distributed among partitions.
+* `spring-cloud-starter-aws` provides core AWS cloud dependencies such as `core`, `context` and `autoconfiguration`.
+* Out of the box `context` provides support for Memacached but for Redis, it needs Spring Data Redis dependency. 
+* Spring Data Redis gives us access to Spring Cache abstraction, and also [Lettuce](https://lettuce.io/) which is a popular Redis client.
+* `autoconfiguration` also needs `aws-java-sdk-elasticache` dependency is required in order to fetch ElastiCache cluster descriptions.
 
-Now that we are done with all the configurations, let's make some operations cacheable.
+`autoconfiguration` glues everything together and configures a `CacheManager` which is required by Spring Cache abstraction.
+
+Spring AWS Cloud does all the heavy lifting of configuring the caches for us. All we need to do is to provide the name of 
+the cache. Let's look at how we can do that.
 
 ## Caching with Spring Boot
 
-Spring provides Cache abstraction to do caching in a Spring Boot application. Please read our article on
-[Spring Boot Cache](https://reflectoring.io/spring-boot-cache/) to read more about it in detail. In this section, we will
-just see a quick overview of the same.
+Spring Cloud AWS requires clusters of the same name as cache names to exist in the ElastiCache. 
 
-First, to use Spring cache we need to enable caching in our application with `@EnableCaching` annotation:
-
-```java
-@Configuration
-@EnableCaching
-public class EnableCache {
-    ....
-}
-```
-
-Next, we need to annotate our methods whose results we want to cache with Spring cache annotations:
+For instance, our example application two caches. One named `product-cache` in `ProductService`:
 
 ```java
 @Service
 @AllArgsConstructor
-@CacheConfig(cacheNames = "product")
+@CacheConfig(cacheNames = "product-cache")
 public class ProductService {
-  private final ProductRepository repository;
-  
-  @Cacheable
-  public Product getProduct(String id) {
-    return repository.findById(id).orElseThrow(()->
-            new RuntimeException("No such product found with id"));
-  }
-  
-  public Product addProduct(ProductInput productInput){
-    var product = new Product();
-    product.setName(productInput.getName());
-    product.setPrice(productInput.getPrice());
-    product.setWeight(product.getWeight());
-    product.setCategory(
-            Objects.isNull(productInput.getCategory())? 
-                    Category.BOOKS: 
-                    productInput.getCategory()
-    );
-    return repository.save(product);
-  }
-  
-  @CacheEvict
-  public void deleteProduct(String id) {
-      repository.deleteById(id);
-  }
-  
-  @CachePut(key = "#id")
-  public Product updateProduct(String id, ProductInput productInput) {
-      var product = new Product();
-      product.setId(id);
-      product.setName(productInput.getName());
-      product.setPrice(productInput.getPrice());
-      product.setWeight(product.getWeight());
-      product.setCategory(
-              Objects.isNull(productInput.getCategory())?
-                      Category.BOOKS: 
-                      productInput.getCategory()
-      );
-      return repository.save(product);
-  }
+    private final ProductRepository repository;
+
+    @Cacheable
+    public Product getProduct(String id) {
+        return repository.findById(id).orElseThrow(()->
+                new RuntimeException("No such product found with id"));
+    }
+    //....
 }
 ```
 
-Let's talk about some common features and properties of the annotations before talking about them one by one:
+Another named `user-cache` in `UserService`:
 
-* `cacheNames`: Providing cache name is mandatory in all cache annotations. We can provide more than one cache name too.
-* `key`: Spring does a good job of creating a default key for our values. In case of `getProduct` function, it will use the argument of `id` parameter as a key.
-  In case if we have more than one parameter or complex object parameter we need to override its `key` property and provide on using SEpL
-  e.g., `@CachePut(key = "#id")` on `updateProduct`
+```java
+@Service
+@AllArgsConstructor
+@CacheConfig(cacheNames = "user-cache")
+public class UserService {
 
-Now let's look at the annotations one by one:
+    private final UserRepository repository;
 
-* `@CacheConfig(cacheNames = "product")`: We use this annotation in cases where all the cache annotations used in the annotated
-  class share some common configuration. In our case, all share a common cache.
-* `@Cacheable`: It caches the result of the annotated method.
-* `@CacheEvit`: Removes the value from the cache.
-* `@CachePut`: Updates the value of the given key.
-
-One last thing about Spring cache abstraction before we move on.
-
-Spring cache abstraction is well, an abstraction, it still needs a concrete implementation to function.
-To be precise, it needs an implementation of `CacheManager`. Since we have added Spring Data Redis dependency in our project,
-the implementation for the same is already provided by it in form of `RedisCacheManger`. So now all we need to do is
-to run our application.
-
-Congratulations on finishing the Spring Cache Abstraction crash course!🎉
-
-## Running our example application
-
-Our Example application comes with a `DockerFile` and a Terraform script to deploy the application on AWS ECS as a Fargate instance.
-
-As a first step create an ECR repository and upload the image of the example application. You should be able to find push commands
-for the same from the ECR repository page.
-
-The rest of the job will be done by the Terraform script, just make sure to provide the required details in the `input.tf` file.
-```terraform
-variable "profile" {
-  default = "default"
+    @Cacheable
+    public User getUser(String id){
+        return repository.findById(id).orElseThrow(()->
+                new RuntimeException("No such user found with id"));
+    }
 }
-
-variable "region" {
-  default = "us-east-2"
-}
-
-variable "port" {
-  default = 8080
-}
-
-variable "name" {
-  default = "example-app"
-}
-
-variable "account" {
-  default = "<YOUR_ACCOUNT>"
-}
-
-variable "repository" {
-  default = "<YOUR_REPO_NAME>"
-}
-
-variable "vpc" {
-  default = "<YOUR_VPC>"
-}
-
-variable "subnet" {
-  default = ["<YOUR_PUBLIC_SUBNETS>"]
-}
-
 ```
-Replace all the default values with your environment details. Then execute `terraform init` and then `terraform apply`.
 
-Finally, in the Redis cluster's security group give this service's security group as an inbound rule. Done!
+Clusters of the same name needs to exist in the ElastiCache:
 
-The service has public-facing IP. Once the service is up, use that to try the APIs.
+![ElastiCache Clusters](/assets/img/posts/spring-elasticache-redis/cache-clusters.png)
 
-## Things to keep in mind while caching.
+Technically Spring Cloud AWS looks for nodes with same name but since these are **Single Node** clusters the name of 
+the node is same the cluster name.
 
-### What to cache?
-
-Whatever we can! As retrieving data from cache will always be more efficient than retrieving from a database, or an API
-call. Being said that we should still be a bit careful with what we cache.
-
-We cache data so that the consecutive request for the same resource are served faster. But, what if the data is updated more
-frequently than it's fetched? In this case, overall write overhead will be more since Spring needs to update database
-and cache in every call. In such cases caching should be considered only if our requirements demand it.
-
-### Cache Eviction 
-
-Deciding when to evict the data from the cache can be even more challenging than deciding what to cache.
-
-Let's say we cached an API response, but data on the remote server might change without our
-knowledge. Here one question arises is that should we even cache this data? If we must then Time-to-live (TTL) for
-keys should be considered. Once the TTL passes, the keys will be automatically be removed from the cache.
+We also need to define cluster names in the `application.yml` in order for Spring Cloud AWS to scan the ElastiCache for 
+the given clusters:
 
 ```yaml
-spring:
-  cache:
-    type: redis
-    redis:
-      time-to-live: 60000
+cloud:
+  aws:
+    elasticache:
+      clusters:
+        -
+          name: product-cache
+          expiration: 100
+        -
+          name: user-cache
+          expiration: 6000
 ```
 
-Another benefit of TTL is that let's say due to a glitch in our system the key was not removed then TTL will come in handy
-in this case.
+Here as you can see we can also define Time-To-Live for the keys in each 
+cache via `expiration` properties.
 
-Other than TTL Redis also has an auto eviction policy in place. For ElastiCahe Redis by default, it's `volatile-lru`. This policy will
-evict the least recently used keys out of all the keys with an “expire” field set. Furthermore, this policy will be enacted only
-when an instance is about to hit `maxmemory`.
+Now, if we are using CloudFormation to deploy our application stack in the AWS then one more 
+approach exists for us:
 
-If we are not using TTL then we might want to use `allkeys-lru` eviction policy which will evict the least recently used key.
+Let's say we are using the following CloudFormation to create Clusters:
 
-In ElastiCache we can set this by overriding `maxmemory-policy`.
+```yaml
+Parameters:
 
-To do that you need to create a Parameter Group using `redis.6.x` or whichever Redis version we are using as a base:
+  InstanceType:
+    Description: Which instance type should we use to build the ECS cluster?
+    Type: String
+    Default: cache.t2.micro
 
-![Parameter Group create](/assets/img/posts/spring-elasticache-redis/parameter-group-create.png)
 
-Then we need to edit the parameter group:
+Resources:
 
-![Parameter Group edit](/assets/img/posts/spring-elasticache-redis/parameter-group-edit.png)
+  ProductCache:
+    Type: AWS::ElastiCache::CacheCluster
+    Properties:
+      ClusterName: product-cache
+      Engine: "Redis"
+      EngineVersion: "6.x"
+      CacheNodeType: !Ref InstanceType
+      NumCacheNodes: 1
+      VpcSecurityGroupIds: ["sg-3de82545"]
 
-Finally, we need to apply it to the Redis cluster.
+  UserCache:
+    Type: AWS::ElastiCache::CacheCluster
+    Properties:
+      ClusterName: user-cache
+      Engine: "Redis"
+      EngineVersion: "6.x"
+      CacheNodeType: !Ref InstanceType
+      NumCacheNodes: 1
+      VpcSecurityGroupIds: [ "sg-3de82545" ]
+```
 
-### Key size
+Then instead of giving cluster names we need to provide the stack name. Say the stack name 
+is `example-stack`:
 
-Redis supports keys of size up to 512 MB. Quite big! Redis keys are binary-safe Strings means you can set anything as a key
-a string, an object, or even an image. We should prefer shorter keys as it will impact the performance of the fetch
-operation.
+```yaml
+cloud:
+  aws:
+    stack:
+      name: example-stack
+```
+
+Spring Cloud AWS retrieves all the cache clusters from our stack and builds `CacheManager` with 
+the names of the resources as cache names instead of cluster names. With this we need to
+update our cache names in our application to resource names instead of cluster names:
+
+```java
+@CacheConfig(cacheNames = "ProductCache")
+public class ProductService {
+    //...
+}
+
+@CacheConfig(cacheNames = "UserCache")
+public class UserService {
+    //...
+}
+```
+
+Make sure to add the following dependency when using stack name property:
+
+```groovy
+implementation 'com.amazonaws:aws-java-sdk-cloudformation'
+```
+
+## How Does Spring Cloud AWS Configures the `CacheManager`?
+
+In this section we will dive a bit deeper into the inner workings of the Spring Cloud AWS 
+and see how it autoconfigures cache for us.
+
+As we know that in order for Caching to work in a Spring application we need a `CacheManager` bean. The job of Spring Cloud 
+AWS is to essentially create that bean for us.
+
+Let's look at the steps it performs along with the classes involved in building `CacheManager`:
+
+![Spring Cloud AWS](/assets/img/posts/spring-elasticache-redis/spring-cloud-classes.png)
+
+* When our application starts in the AWS environment, `ElastiCacheAutoConfiguration` reads cluster names from the 
+`application.yml` and passes it on to the `ElastiCacheCacheConfigurer` object. 
+* Then `ElastiCacheCacheConfigurer` creates the `CacheManager` with the help of `ElastiCacheFactoryBean` class.
+* `ElastiCacheFactoryBean` actually queries the ElastiCache in the same availability zone and retrieves the host and port 
+  names of the nodes. To allow our service to query ElatiCache we need to provide `AmazonElastiCacheReadOnlyAccess` permission 
+  to our service or `AWSCloudFormationReadOnlyAccess` if we are using stack name.
+* Also `ElastiCacheFactoryBean` passes this host and port to `RedisCacheFactory` which then uses Redis client such as Lettuce to 
+  create the connection object.
 
 ## Conclusion
 
-Caching if done right with a proper tool can be a game changer for our applications in terms of improving performance 
-and stability. 
+While ElastiCache is already making our life easier by managing our Redis Clusters, Spring Cloud AWS further simplifies 
+our lives by simplifying the configurations required for connecting with it. 
 
-While implementing caching can result in an improved user experience, using managed caching service such as 
-ElastiCache can make our jobs easier in making our cache resilient and highly available.
+In this article we saw those configurations and also how to apply them. Hope this was helpful!
 
 Thank you for reading! You can find the working code at [GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/caching-with-elasticache-redis).

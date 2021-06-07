@@ -151,7 +151,7 @@ Next, we need to create a `log4j2.xml` file in the `src/main/resources` folder o
     <LogzioAppender name="LOGZIO">
       <logzioToken>${env:LOGZIO_TOKEN}</logzioToken>
       <logzioUrl>https://listener.logz.io:8071</logzioUrl>
-      <logzioType>java</logzioType>
+      <logzioType>log4j-example-application</logzioType>
     </LogzioAppender>
   </Appenders>
 
@@ -172,6 +172,8 @@ The appender with the name `LOGZIO` is a special appender that sends the logs to
 Finally, in the `<Root>` element, we configure which appender the root logger should use. We could just put one of the appender names into the `ref` attribute of the `<AppenderRef>` element, but this would hard-code the appender and it wouldn't be configurable. 
 
 So, instead, we set it to `${env:LOG_TARGET:-CONSOLE}`, which tells Log4J to use the value of the `LOG_TARGET` environment variable, and if this variable is not set, use the value `CONSOLE` as a default.
+
+You can read all about the details of Log4J's configuration in [the Log4J docs](https://logging.apache.org/log4j/2.x/manual/configuration.html).
 
 That's it. If we run the app without any environment variables, it will log to the console. If we set the environment variable `LOG_TARGET` to `LOGZIO`, it will log to logz.io.
 
@@ -236,7 +238,7 @@ The logback configuration looks very similar to the configuration we've done for
   <appender name="LOGZIO" class="io.logz.logback.LogzioLogbackAppender">
     <token>${LOGZIO_TOKEN}</token>
     <logzioUrl>https://listener.logz.io:8071</logzioUrl>
-    <logzioType>myType</logzioType>
+    <logzioType>logback-example-application</logzioType>
   </appender>
 
   <root level="debug">
@@ -254,6 +256,8 @@ The `LOGZIO` appender transforms the logs into JSON and sends them to logz.io. W
 Finally, we configure the root logger to use the appender that we define with the environment variable `LOG_TARGET`. If `LOG_TARGET` is set to `CONSOLE`, the application will log to standard out, and if it's set to `LOGZIO`, the application will log to logz.io.
 
 You might notice the `<shutdownHook>` element in the logging configuration. The shutdown hook takes care of sending all logs that are currently still in the buffer to the target location when the application shuts down. If we don't add this hook, the logs from our sample application might never be sent to logz.io, because the application shuts down before they are sent. Using the hook we can be reasonably sure that the logs of a dying application still reach their destination.
+
+You can read about more details of Logback configuration in the [Logback docs](http://logback.qos.ch/manual/configuration.html).
 
 ## Per-Environment Logging with Spring Boot
 
@@ -314,7 +318,7 @@ However, Spring Boot makes configuring Logback even more convenient. Instead of 
   <appender name="LOGZIO" class="io.logz.logback.LogzioLogbackAppender">
     <token>${logzioToken}</token>
     <logzioUrl>https://listener.logz.io:8071</logzioUrl>
-    <logzioType>spring-boot-example-app-configurable-token</logzioType>
+    <logzioType>spring-boot-example-application</logzioType>
   </appender>
 
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -364,6 +368,8 @@ logzio:
 ```
 
 Here, we're declaring the `logzio.token` configuration property to be set to the value of the environment variable `LOGZIO_TOKEN`. We could have used the environment variable directly in the `logback-spring.xml` file, but it's good practice to declare all configuration properties that a Spring Boot application needs in the `application.yml` file so that the properties are easier to find and modify.
+
+More details about the Spring Boot logging features in the [Spring Boot docs](https://docs.spring.io/spring-boot/docs/2.1.18.RELEASE/reference/html/boot-features-logging.html).
 
 ### Starting the Application in a Specific Profile
 

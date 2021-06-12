@@ -59,6 +59,14 @@ These are units of integration constructs like filters, converters, processors w
 ### Domain Specific Language (DSL)
 We define routes in Apache Camel with two variants of Domain Specific Languages (DSL) for defining routes: a Java DSL and a Spring XML DSL. Endpoints and processors are The basic building blocks for defining routes with DSL. The processor is configured by setting its attributes with expressions or logical predicates.
 
+```java
+file:/myFolder").split().tokenize("\n").to("jms:queue:myQueue
+```
+
+```xml
+
+
+```
 ## Example of using Apache Camel in Spring Boot
 Let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=dynamodbspringdata&description=Demo%20project%20for%20Spring%20data&packageName=io.pratik.springdata&dependencies=web), and then open the project in our favorite IDE.
 
@@ -76,7 +84,9 @@ To use the starter, let us add the our spring boot pom.xml file :
 ```
 
 
-### Building Route with RouteBuilder
+### Defining Route with Java DSL with RouteBuilder
+We extend the `RouteBuilder` class and override its `configure` method to define our routing rules in Java Domain Specific Language (DSL).
+We can define as many RouteBuilder classes as necessary. Each class is instantiated once and is registered with the `CamelContext` object. Normally, the lifecycle of each RouteBuilder object is managed automatically by the container in which you deploy the router.
 
 Let us start by creating a route for fetching products using a spring bean method:
 
@@ -148,21 +158,33 @@ public class AppConfig {
 
 Here we have defined a `GET` method for fetching products. 
 
-## Integrating with Splitter-Aggregator Enterprise Integration Pattern
+## Defining a Route with Splitter-Aggregator Enterprise Integration Pattern
 
-Camel provides implementations of most of the [Enterprise Integration Patterns]() from the book by Gregor Hohpe and Bobby Woolf. The full list of EIPs supported are available here. For our example, let us consider building a API in an E-Commerce application for processing a order placed by a customer. The API will perform these steps:
-1. fetch the list of items from the shopping cart 
-2. fetch price of each orderline item in the cart 
+Camel provides implementations for most of the [Enterprise Integration Patterns]() from the book by Gregor Hohpe and Bobby Woolf. Here is a snippet of the list of those patterns :
+
+[EIP Snippet](/assets/img/posts/spring-camel/eip-snippet.png)
+
+We should look for the integration pattern most appropriate for fulfilling our usecase. 
+
+Let us see an example of defining a route with the Splitter and Aggregate integration patterns.  Here we will consider a hypothetical scenario of building a REST API for an E-Commerce application for processing a order placed by a customer. We will expect our order processing API to perform the following steps:
+
+1. Fetch the list of items from the shopping cart 
+2. Fetch price of each orderline item in the cart 
 3. Calculate the sum of prices of all orderline items to generate the order invoice.
 
-We want to perform steps 1 and 2 in parallel since they are not dependent on each other. There are multiple ways of doing this but we will use a pattern from EIP here. The Splitter and Aggregator patterns From the EIP is best suited to do this processing.
+After finishing step 1, we want to fetch the price of each orderline item in parallel in step 2, since they are not dependent on each other. There are multiple ways of doing this kind of processing. However, since design patterns are accepted solutions to recurring problems within a given context, we will search for a pattern closely resembling our problem from our list of Enterprise Integration Patterns. After looking through the list, we find that the [Splitter](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Sequencer.html) and [Aggregator](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Aggregator.html) patterns are best suited to do this processing.
 
-We can split a message into a number of pieces with the Splitter and process them individually. After that we can use the Aggregator pattern to combine those individual pieces together into a single message. 
+Next we will refer to the Apache Camel's documentation for the chosen pattern's usage:
 
-We will apply this pattern by doing these steps:   
+![Splitter-Aggregator](/assets/img/posts/spring-camel/splitter-aggregator.png)
+
+We can split a single message into a multiple fragments with the [Splitter](https://camel.apache.org/components/3.4.x/eips/split-eip.html) and process them individually. After that we can use the [Aggregator](https://camel.apache.org/components/latest/eips/aggregate-eip.html) to combine those individual fragments together into a single message. 
+
+Let us apply these patterns by performing the below steps:   
+
 1. Fetch the orderlines from the shopping cart and then split them into individual orderline items with the Splitter EIP.
-For each orderline item, fetch the price, apply discounts etc. These steps are running in parallel.
-Aggregate price from each line item.
+2. For each orderline item, fetch the price, apply discounts etc. These steps are running in parallel.
+3. Aggregate price from each line item in `PriceAggregationStrategy` class which implements `AggregationStrategy` interface.
 
 Our route for using this EIP looks like this:
 
@@ -227,9 +249,13 @@ public class PricingService {
 ```
 Here we have used an aggregator 
 
-## Connecting the EIP with Rest Definition
+## Consuming the Route with Splitter Aggregator Pattern from REST Styled DSL
+We can use the REST styled DSL in Apache Camel to define REST APIs with the HTTP verbs like get, post, put, and, delete. The actual REST transport is leveraged by using Camel REST components such as Netty HTTP, Servlet, and others that has native REST integration.
 
-We will create our REST endpoint using Camel's RestDefinition.
+To use the Rest DSL in Java, we need to extend the `RouteBuilder` class and define the routes in the `configure` method similar to how we created regular Camel routes earlier. 
+
+Let us define a hypothetical REST service for processing orders by using the `rest` construct in the Java DSL to define the API. We will also generate a specification for the API in Open API format:
+
 ```java
 @Component
 public class RestApiRoute  extends RouteBuilder {
@@ -243,15 +269,15 @@ public class RestApiRoute  extends RouteBuilder {
     restConfiguration()
         .contextPath("/ecommapp")
         .apiContextPath("/api-doc")
-        .apiProperty("api.title", "JAVA DEV JOURNAL REST API")
+        .apiProperty("api.title", "REST API for processing Order")
         .apiProperty("api.version", "1.0")
         .apiProperty("cors", "true")
         .apiContextRouteId("doc-api")
         .port(env.getProperty("server.port", "8080"))
         .bindingMode(RestBindingMode.json);
     
-    rest("/order/process")
-    .get("/").description("Process order")
+    rest("/order/")
+    .get("/process").description("Process order")
     .route().routeId("orders-api")
     .bean(OrderService.class, "generateOrder")
     .to("direct:fetchProcess")
@@ -260,6 +286,13 @@ public class RestApiRoute  extends RouteBuilder {
   }
 
 ```
+This defines a REST service with the following url mappings:
+
+Base Path: /order
+Uri: /process
+Verb: GET
+
+We then route directly to the Camel endpoint of our route named `direct:fetchProcess` using the Splitter and Aggregator Enterprise Integration pattern that we created earlier using the `to` construct in the DSL. 
 
 ## Testing 
 

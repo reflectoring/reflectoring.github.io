@@ -15,7 +15,7 @@ Apache Camel is also a good fit for microservice architectures where we need to 
 
 In this article, we will look at using Apache Camel for building integration logic in microservice applications built with [Spring Boot](https://spring.io/projects/spring-boot)with the help of code examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springcamel" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring/springcamel" %}
 
 
 ## Why Apache Camel
@@ -38,7 +38,7 @@ As explained at the start, Apache Camel is an integration framework for routing 
 The important concepts of Apache Camel used during integration are shown in this diagram:
 
 
-![Table items attributes](/assets/img/posts/spring-camel/camel-concepts.png)
+![Table items attributes](/assets/img/posts/camel-spring/camel-concepts.png)
 
 Let us understand these concepts :
 
@@ -64,7 +64,7 @@ Here is an example of a route defined using Java DSL :
 ```java
 ("file:/mysrc").split().tokenize("\n").to("jms:queue:myQueue")
 ```
-Here we have defined a route with a file endpoint as source and a JMS queue as destination. We are reading the input file, applying the processors for split and tokenize and sending each line to the JMS queue.
+Here we have defined a route with a file endpoint as source and a JMS queue as destination. We are reading files from the input folder `mysrc`, read each file by applying the split processor and tokenize contents of each file with the newline separator and sending each line to the JMS queue.
 
 The same route defined using Spring XML DSL looks like this :
 ```xml
@@ -186,7 +186,7 @@ Here we have defined a REST endpoint in our `resource` class with a `GET` method
 
 Camel provides implementations for most of the [Enterprise Integration Patterns]() from the book by Gregor Hohpe and Bobby Woolf. Here is a snippet of the list of those patterns :
 
-[EIP Snippet](/assets/img/posts/spring-camel/eip-snippet.png)
+[EIP Snippet](/assets/img/posts/camel-spring/eip-snippet.png)
 
 We should look for the integration pattern most appropriate for fulfilling our usecase. 
 
@@ -200,7 +200,7 @@ After finishing step 1, we want to fetch the price of each orderline item in par
 
 Next we will refer to the Apache Camel's documentation for the chosen pattern's usage:
 
-![Splitter-Aggregator](/assets/img/posts/spring-camel/splitter-aggregator.png)
+![Splitter-Aggregator](/assets/img/posts/camel-spring/splitter-aggregator.png)
 
 We can split a single message into a multiple fragments with the [Splitter](https://camel.apache.org/components/3.4.x/eips/split-eip.html) and process them individually. After that we can use the [Aggregator](https://camel.apache.org/components/latest/eips/aggregate-eip.html) to combine those individual fragments together into a single message. 
 

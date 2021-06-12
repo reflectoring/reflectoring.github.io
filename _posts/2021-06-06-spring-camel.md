@@ -57,16 +57,42 @@ These are units of integration constructs like filters, converters, processors w
  transport of a message from source to destination goes through processing stages. Components process or modify the original message or redirect it. Apache Camel ships with an [extensive set of components](https://camel.apache.org/components/latest/). Component references are references used to place a component in an assembly. Apache Component references provides various references that offers services for messaging, sending data, notifications and various other services that can not only resolve easy messaging and transferring data but also provide securing of data.
 
 ### Domain Specific Language (DSL)
-We define routes in Apache Camel with two variants of Domain Specific Languages (DSL) for defining routes: a Java DSL and a Spring XML DSL. Endpoints and processors are The basic building blocks for defining routes with DSL. The processor is configured by setting its attributes with expressions or logical predicates.
+We define routes in Apache Camel with two variants of Domain Specific Languages (DSL) for defining routes: a Java DSL and a Spring XML DSL. Endpoints and processors are the basic building blocks for defining routes with DSL. The processor is configured by setting its attributes with expressions or logical predicates.
+
+Here is an example of a route defined using Java DSL :
 
 ```java
-file:/myFolder").split().tokenize("\n").to("jms:queue:myQueue
+("file:/mysrc").split().tokenize("\n").to("jms:queue:myQueue")
 ```
+Here we have defined a route with a file endpoint as source and a JMS queue as destination. We are reading the input file, applying the processors for split and tokenize and sending each line to the JMS queue.
 
+The same route defined using Spring XML DSL looks like this :
 ```xml
 
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring 
+       http://camel.apache.org/schema/spring/camel-spring.xsd
+    ">
 
+  <camelContext id="sendtoqueue" xmlns="http://camel.apache.org/schema/spring">
+    <route>
+      <from uri="file:/myFolder"/>
+      <split/>
+      <tokenize token="\n"/>
+      <to uri="jms:queue:myQueue"/>
+    </route>
+  </camelContext>
+
+</beans>
 ```
+
+To use the Domain Specific Language (DSL), we extend the RouteBuilder class and override its `configure` method.
+You can define as many RouteBuilder classes as necessary. Each class is instantiated once and is registered with the CamelContext object. Normally, the lifecycle of each RouteBuilder object is managed automatically by the container in which you deploy the router.
+
 ## Example of using Apache Camel in Spring Boot
 Let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=dynamodbspringdata&description=Demo%20project%20for%20Spring%20data&packageName=io.pratik.springdata&dependencies=web), and then open the project in our favorite IDE.
 
@@ -108,12 +134,10 @@ public class FetchProductsRoute extends RouteBuilder {
 ```
 Here we are creating the route by defining the Java DSL in a class `FetchProductsRoute` by extending `RouteBuilder` class. We defined the endpoint as `direct:fetchProducts` and provided a route identifier `direct-fetchProducts`. The prefix `direct:` in the name of the endpoint makes it possible to call the route from another camel route. 
 
-## Triggering a Route
-We can invoke the routes with `ProducerTemplate` and `ConsumerTemplate`. The ProducerTemplate used as an easy way of sending messages to a Camel endpoint. Both of these templates are inspired by the template utility classes in the Spring Framework that simplify access to an API. In Spring, you may have used a JmsTemplate or JdbcTemplate to simplify access to the JMS and JDBC APIs. In the case of Camel, the ProducerTemplate and ConsumerTemplate interfaces allow you to easily work with producers and consumers.
+### Triggering a Route with Templates
+We can invoke the routes with `ProducerTemplate` and `ConsumerTemplate`. The ProducerTemplate used as an easy way of sending messages to a Camel endpoint. Both of these templates are similar to the template utility classes in the Spring Framework like JmsTemplate or JdbcTemplate that simplify access to the JMS and JDBC APIs. 
 
-By “easily work,” we mean you can send a message to any kind of Camel component in only one line of code. 
-
-Let us invoke this route from our application by creating a resource class:
+Let us invoke the route we created earlier from a resource class in our application :
 
 ```java
 @RestController
@@ -156,7 +180,7 @@ public class AppConfig {
 
 ```
 
-Here we have defined a `GET` method for fetching products. 
+Here we have defined a REST endpoint in our `resource` class with a `GET` method for fetching products by category. We are invoking our Camel route inside the method by using the `producerTemplate` which we configured in our Spring configuration. In our Spring configuration we have defined the `producerTemplate` and `consumerTemplate` by calling corresponding methods on the `CamelContext` which is available in the `ApplicationContext`.
 
 ## Defining a Route with Splitter-Aggregator Enterprise Integration Pattern
 

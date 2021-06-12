@@ -9,9 +9,9 @@ image:
   auto: 0074-stack
 ---
 
-Apache Camel is an open source framework for integrating a wide variety of applications. It plays the role of a message oriented middleware (MoM) by taking a data payload (message) from a source system to a destination system with optional processing stages along the way. When using Camel to transport messages, we get to choose from a set of [Enterprise Integration Patterns (EIP)](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) most suitable for our use case.
+Apache Camel is an lightweight integration framework with a consistent API and programming model for integrating a wide variety of applications. Camel implements most of the [Enterprise Integration Patterns (EIP)](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) and provides a wide range of integration constructs which we can use for our integration needs.
 
-Integration in microservice architecture is a common problem which is best solved by applying one of the proven EIPs. Apache Camel provides implementations of most of the EIPs which we configure in our integration flows with DSLs.
+Apache Camel is also a good fit for microservice architectures where we need to communicate between different microservices, and other upstream and downstream systems like databases and messaging systems.
 
 In this article, we will look at using Apache Camel for building integration logic in microservice applications built with [Spring Boot](https://spring.io/projects/spring-boot)with the help of code examples.
 
@@ -31,65 +31,239 @@ Supporting EIP
 Extensible: with new custom connectors. application can be extended
 Multiple deployment options
 
-## Important Camel Components
+## What is Apache Camel
 
-Now let us understand the important concepts of Apache Camel.
+As explained at the start, Apache Camel is an integration framework for routing (taking a data payload (message) from a source system to a destination system) and mediation (processing like filtering the message based on one or more message attributes, modifying certain fields of the message, enrichment by making API calls, etc). 
 
-As explained at the start, Apache Camel plays the role of a message oriented middleware (MoM) by taking a data payload (message) from a source system to a destination system with optional processing stages along the way.
-
-![Table items attributes](/assets/img/posts/aws-dynamodb-java/tablitemattr.png)
-
-Here we are moving a message from system A to system B. A system in this context is an application or any othe
-A Route is the most basic construct which we use to define the path a message should take while moving from source to a destination. A route is built by extending RouteBuilder class.
-
-Camel uses a Java based Routing Domain Specific Language (DSL) or an XML Configuration to configure routing and mediation rules which are added to a CamelContext to implement the various Enterprise Integration Patterns.
-
-Component references are references used to place a component in an assembly. Apache Component references provides various references that offers services for messaging, sending data, notifications and various other services that can not only resolve easy messaging and transferring data but also provide securing of data.
-
-Routes
-
-Endpoints
-
-There is plenty to know about Apache for building a good understanding for which we should refer to the [official documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html). 
+The important concepts of Apache Camel used during integration are shown in this diagram:
 
 
+![Table items attributes](/assets/img/posts/spring-camel/camel-concepts.png)
 
-Let us see some examples creating applications by using these two methods in the following sections.
+Let us understand these concepts :
 
+Camel Context is the runtime container of all the Camel constructs and executes the routing logic.
 
-## Routing Example
+### Routes and Endpoints
 
-### XML
+A Route is the most basic construct which we use to define the path a message should take while moving from source to a destination. We build routes with DSL. These  are loaded in the Camel context and used to execute the routing logic when the route is triggered. Each route is identified by a unique identifier in the camel context.
 
-### DSL
+Endpoints represent the source and destinations. Endpoints are usually created by a Component and Endpoints are usually referred to in the DSL via their URIs.
 
-## Spring Integration
+### Components
 
-Apache Camel ships a Spring Boot Starter module `camel-spring-boot-starter` that allows you to develop Spring Boot applications using starters. 
+These are units of integration constructs like filters, converters, processors which we can assemble together to build a message flow path between source and destination endpoints. An Endpoint is either a URI or URL in a web application or a Destination in a JMS system. We communicate with an endpoint either by sending messages to it or consuming messages from it.
 
-To use the starter, add the following to your spring boot pom.xml file :
+ transport of a message from source to destination goes through processing stages. Components process or modify the original message or redirect it. Apache Camel ships with an [extensive set of components](https://camel.apache.org/components/latest/). Component references are references used to place a component in an assembly. Apache Component references provides various references that offers services for messaging, sending data, notifications and various other services that can not only resolve easy messaging and transferring data but also provide securing of data.
 
+### Domain Specific Language (DSL)
+We define routes in Apache Camel with two variants of Domain Specific Languages (DSL) for defining routes: a Java DSL and a Spring XML DSL. Endpoints and processors are The basic building blocks for defining routes with DSL. The processor is configured by setting its attributes with expressions or logical predicates.
 
+## Example of using Apache Camel in Spring Boot
+Let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=dynamodbspringdata&description=Demo%20project%20for%20Spring%20data&packageName=io.pratik.springdata&dependencies=web), and then open the project in our favorite IDE.
+
+### Adding the Dependencies
+Apache Camel ships a Spring Boot Starter module `camel-spring-boot-starter` that allows us to develop Spring Boot applications using starters. 
+
+To use the starter, let us add the our spring boot pom.xml file :
+
+```xml
 <dependency>
     <groupId>org.apache.camel</groupId>
     <artifactId>camel-spring-boot-starter</artifactId>
     <version>${camel.version}</version> <!-- use the same version as your Camel core version -->
 </dependency>
+```
 
-## Example
-Let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=dynamodbspringdata&description=Demo%20project%20for%20Spring%20data&packageName=io.pratik.springdata&dependencies=web), and then open the project in our favorite IDE.
 
 ### Building Route with RouteBuilder
 
-```java
-from("REST").process(saveToDB).dynamicRouter(method(dynamicRouter));
-```
-
-### Triggering the Route
+Let us start by creating a route for fetching products using a spring bean method:
 
 ```java
-Exchange response = producerTemplate.send("REST", exchange);
+@Component
+public class FetchProductsRoute extends RouteBuilder {
+
+  @Override
+  public void configure() throws Exception {
+    from("direct:fetchProducts")
+      .routeId("direct-fetchProducts")
+      .tracing()
+      .log(">>> ${body}")
+      .bean(ProductService.class, "fetchProductsByCategory")
+      .end();
+  }
+
+}
 ```
+Here we are creating the route by defining the Java DSL in a class `FetchProductsRoute` by extending `RouteBuilder` class. We defined the endpoint as `direct:fetchProducts` and provided a route identifier `direct-fetchProducts`. The prefix `direct:` in the name of the endpoint makes it possible to call the route from another camel route. 
+
+## Triggering a Route
+We can invoke the routes with `ProducerTemplate` and `ConsumerTemplate`. The ProducerTemplate used as an easy way of sending messages to a Camel endpoint. Both of these templates are inspired by the template utility classes in the Spring Framework that simplify access to an API. In Spring, you may have used a JmsTemplate or JdbcTemplate to simplify access to the JMS and JDBC APIs. In the case of Camel, the ProducerTemplate and ConsumerTemplate interfaces allow you to easily work with producers and consumers.
+
+By “easily work,” we mean you can send a message to any kind of Camel component in only one line of code. 
+
+Let us invoke this route from our application by creating a resource class:
+
+```java
+@RestController
+public class ProductResource {
+  
+  @Autowired
+  private ProducerTemplate producerTemplate;
+  
+  @GetMapping("/products/{category}")
+  @ResponseBody
+  public List<Product> getProductsByCategory(@PathVariable("category") final String category){
+    producerTemplate.start();
+    List<Product> products = producerTemplate.requestBody("direct:fetchProducts", category, List.class);
+      System.out.println("products "+products);
+    producerTemplate.stop();
+    return products;
+  
+  }
+} 
+
+@Configuration
+public class AppConfig {
+  
+  @Autowired
+  private  CamelContext camelContext;
+ ...
+ ...
+  
+  @Bean
+  ProducerTemplate producerTemplate() {
+    return camelContext.createProducerTemplate();
+  }
+  
+  @Bean
+  ConsumerTemplate consumerTemplate() {
+    return camelContext.createConsumerTemplate();
+  }
+
+}
+
+```
+
+Here we have defined a `GET` method for fetching products. 
+
+## Integrating with Splitter-Aggregator Enterprise Integration Pattern
+
+Camel provides implementations of most of the [Enterprise Integration Patterns]() from the book by Gregor Hohpe and Bobby Woolf. The full list of EIPs supported are available here. For our example, let us consider building a API in an E-Commerce application for processing a order placed by a customer. The API will perform these steps:
+1. fetch the list of items from the shopping cart 
+2. fetch price of each orderline item in the cart 
+3. Calculate the sum of prices of all orderline items to generate the order invoice.
+
+We want to perform steps 1 and 2 in parallel since they are not dependent on each other. There are multiple ways of doing this but we will use a pattern from EIP here. The Splitter and Aggregator patterns From the EIP is best suited to do this processing.
+
+We can split a message into a number of pieces with the Splitter and process them individually. After that we can use the Aggregator pattern to combine those individual pieces together into a single message. 
+
+We will apply this pattern by doing these steps:   
+1. Fetch the orderlines from the shopping cart and then split them into individual orderline items with the Splitter EIP.
+For each orderline item, fetch the price, apply discounts etc. These steps are running in parallel.
+Aggregate price from each line item.
+
+Our route for using this EIP looks like this:
+
+
+```java
+@Component
+public class OrderProcessingRoute extends RouteBuilder {
+  
+  @Autowired
+  private PriceAggregationStrategy priceAggregationStrategy;
+
+  @Override
+  public void configure() throws Exception {
+    from("direct:fetchProcess")
+    .split(body(), priceAggregationStrategy).parallelProcessing()
+    .to("bean:pricingService?method=calculatePrice")
+    .end();
+  }
+}
+
+@Component
+public class PriceAggregationStrategy implements AggregationStrategy{
+  
+  @Override
+  public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
+    OrderLine newBody = newExchange.getIn().getBody(OrderLine.class);
+        if (oldExchange == null) {
+            Order order = new Order();
+            order.setOrderNo(UUID.randomUUID().toString());
+            order.setOrderDate(Instant.now().toString());
+            order.setOrderPrice(newBody.getPrice());
+            order.addOrderLine(newBody);
+                 
+            newExchange.getIn().setBody(order, Order.class);
+            return newExchange;
+        }
+        OrderLine newOrderLine = newExchange.getIn().getBody(OrderLine.class);
+        Order order = oldExchange.getIn().getBody(Order.class);
+        order.setOrderPrice(order.getOrderPrice() + newOrderLine.getPrice());
+        order.addOrderLine(newOrderLine);
+        oldExchange.getIn().setBody(order);
+        
+        return oldExchange;
+  }
+
+}
+
+@Service
+public class PricingService {
+  
+  public OrderLine calculatePrice(final OrderLine orderLine ) {
+    String category = orderLine.getProduct().getProductCategory();
+    if("Electronics".equalsIgnoreCase(category))
+       orderLine.setPrice(300.0);
+...
+...
+    return orderLine;
+    
+  }
+
+}
+```
+Here we have used an aggregator 
+
+## Connecting the EIP with Rest Definition
+
+We will create our REST endpoint using Camel's RestDefinition.
+```java
+@Component
+public class RestApiRoute  extends RouteBuilder {
+  
+  @Autowired
+  private Environment env;
+
+  @Override
+  public void configure() throws Exception {
+    
+    restConfiguration()
+        .contextPath("/ecommapp")
+        .apiContextPath("/api-doc")
+        .apiProperty("api.title", "JAVA DEV JOURNAL REST API")
+        .apiProperty("api.version", "1.0")
+        .apiProperty("cors", "true")
+        .apiContextRouteId("doc-api")
+        .port(env.getProperty("server.port", "8080"))
+        .bindingMode(RestBindingMode.json);
+    
+    rest("/order/process")
+    .get("/").description("Process order")
+    .route().routeId("orders-api")
+    .bean(OrderService.class, "generateOrder")
+    .to("direct:fetchProcess")
+    .endRest();
+    
+  }
+
+```
+
+## Testing 
+
+## Monitoring
 
 ## Conclusion
 

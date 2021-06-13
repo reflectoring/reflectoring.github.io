@@ -1,17 +1,15 @@
 ---
-title: "Getting Started with Camel and Spring Boot"
+title: "Getting Started with Apache Camel and Spring Boot"
 categories: [spring-boot]
 date: 2021-04-25 06:00:00 +1000
 modified: 2021-06-12 06:00:00 +1000
 author: pratikdas
-excerpt: "Apache Camel is also a good fit for microservice architectures where we need to communicate between different microservices and other upstream and downstream systems like databases and messaging systems. In this article, we will look at using Apache Camel for building integration logic in microservice applications built with Spring Boot with the help of code examples."
+excerpt: "Apache Camel is an integration framework with a programming model for integrating a wide variety of applications. It is also a good fit for microservice architectures where we need to communicate between different microservices and other upstream and downstream systems like databases and messaging systems. In this article, we will look at using Apache Camel for building integration logic in microservice applications built with Spring Boot with the help of code examples."
 image:
   auto: 0074-stack
 ---
 
-Apache Camel is an integration framework with a programming model for integrating a wide variety of applications. Camel implements many of the [Enterprise Integration Patterns (EIP)](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) and provides a wide range of integration constructs which we can use for our integration needs.
-
-Apache Camel is also a good fit for microservice architectures where we need to communicate between different microservices and other upstream and downstream systems like databases and messaging systems.
+Apache Camel is an integration framework with a programming model for integrating a wide variety of applications. It is also a good fit for microservice architectures where we need to communicate between different microservices and other upstream and downstream systems like databases and messaging systems.
 
 In this article, we will look at using Apache Camel for building integration logic in microservice applications built with [Spring Boot](https://spring.io/projects/spring-boot) with the help of code examples.
 
@@ -25,7 +23,7 @@ As explained at the start, Apache Camel is an integration framework for routing 
 The important concepts of Apache Camel used during integration are shown in this diagram:
 
 
-![Table items attributes](/assets/img/posts/camel-spring/camel-arch.png)
+![Camel Message Flow](/assets/img/posts/camel-spring/camel-arch.png)
 
 Let us get a basic understanding of these concepts before proceeding further.
 
@@ -175,7 +173,7 @@ public class FetchProductsRoute extends RouteBuilder {
 Here we are creating the route by defining the Java DSL in a class `FetchProductsRoute` by extending `RouteBuilder` class. We defined the endpoint as `direct:fetchProducts` and provided a route identifier `direct-fetchProducts`. The prefix `direct:` in the name of the endpoint makes it possible to call the route from another camel route. 
 
 ### Triggering a Route with Templates
-We can invoke the routes with `ProducerTemplate` and `ConsumerTemplate`. The ProducerTemplate is used as an easy way of sending messages to a Camel endpoint. Both of these templates are similar to the template utility classes in the Spring Framework like JmsTemplate or JdbcTemplate that simplify access to the JMS and JDBC APIs. 
+We can invoke the routes with `ProducerTemplate` and `ConsumerTemplate`. The `ProducerTemplate` is used as an easy way of sending messages to a Camel endpoint. Both of these templates are similar to the template utility classes in the Spring Framework like `JmsTemplate` or `JdbcTemplate` that simplify access to the JMS and JDBC APIs. 
 
 Let us invoke the route we created earlier from a resource class in our application :
 
@@ -358,11 +356,7 @@ public class RestApiRoute  extends RouteBuilder {
   }
 
 ```
-This defines a REST service with the following URL mappings:
-
-Base Path: /order
-Uri: /process
-Verb: GET
+This defines a REST service of type GET with URL mappings `/order/process`.
 
 We then route directly to the Camel endpoint of our route named `direct:fetchProcess` using the Splitter and Aggregator Enterprise Integration pattern that we created earlier using the `to` construct in the DSL. 
 
@@ -376,9 +370,9 @@ As we saw in our examples, we can easily accomplish the above tasks with custom 
 4. Apache Camel works very well with Java and Spring applications.
 4. Working with Java Objects (POJOs): Apache Camel is a Java framework, so it is especially good at working with Java objects. So if we are working with a file format like XML, JSON that can be de-serialized into a Java object then it will be handled easily by Camel.
 
-On the contrary we should prefer avoid custom
+On the contrary we should avoid using Apache Camel in the following scenarios:
 1. If we have simple integration involving calling few APIs
-2. Camel is not known to perform well for data processing
+2. Camel is not known to perform well for heavy data processing
 3. Camel will also not be good for teams lacking in Java skills
 
 Generally, the best use cases for Camel are where we have a source of data that we want to consume from like incoming messages on a queue, or fetching data from an API and a target, where we want to send the data to.
@@ -386,14 +380,14 @@ Generally, the best use cases for Camel are where we have a source of data that 
 ## Conclusion
 
 In this article, we looked at the important concepts of Apache Camel and used it to build integration logic in a Spring Boot application. Here is a summary of the things we covered:
-1. Apache Camel is an integration framework providing implementations of many Enterprise Integration Patterns.
-2. Route is the building block
-3. DSL
-4. example of eip
-5. Rest DSL
-2. CamelContext is the runtime container for executing Camel routes
+1. Apache Camel is an integration framework providing a programming model along with implementations of many Enterprise Integration Patterns.
+2. We use different types of Domain Specific Languages (DSL) to define the routing rules of the message. 
+3. A Route is the most basic construct which we specify with a DSL to define the path a message should take while moving from source to destination.
+4. CamelContext is the runtime container for executing Camel routes.
+5. We built a route with the Splitter and Aggregator Enterprise Integration Patterns and invoked it from a REST DSL.
+6. Finally we looked at some scenarios where using Apache Camel will benefit us.
 
 
-I hope this will help you to get started with building applications using Spring with Apache Camel. 
+I hope this post has given you a good introduction of Apache Camel and we can use Camel with Spring Boot applications. This should help you to get started with building applications using Spring with Apache Camel. 
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-camel).

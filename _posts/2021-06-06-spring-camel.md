@@ -83,13 +83,40 @@ The same route defined using Spring XML DSL looks like this :
 To use the Domain Specific Language (DSL), we extend the RouteBuilder class and override its `configure` method.
 You can define as many RouteBuilder classes as necessary. Each class is instantiated once and is registered with the CamelContext object. Normally, the lifecycle of each RouteBuilder object is managed automatically by the container in which you deploy the router.
 
-## Example of using Apache Camel in Spring Boot
+## Using Apache Camel in Spring Boot
+Camel support for Spring Boot includes an opinionated auto-configuration of the Camel context  and starters for many Camel components. The auto-configuration of the Camel context detects Camel routes available in the Spring context and registers the key Camel utilities (like producer template, consumer template and the type converter) as Spring beans. 
+
+Let us understand this with the help of an example. We will set up a simple route for calling a bean method and call that route from a REST endpoint.
+
 Let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=dynamodbspringdata&description=Demo%20project%20for%20Spring%20data&packageName=io.pratik.springdata&dependencies=web), and then open the project in our favorite IDE.
 
 ### Adding the Dependencies
-Apache Camel ships a Spring Boot Starter module `camel-spring-boot-starter` that allows us to develop Spring Boot applications using starters. 
+Apache Camel ships a Spring Boot Starter module `camel-spring-boot-starter` that allows us to use Camel in Spring Boot applications. 
 
-To use the starter, let us add the our spring boot pom.xml file :
+Let us first add the Camel Spring Boot BOM to your Maven `pom.xml` :
+
+```xml
+<dependencyManagement>
+
+    <dependencies>
+        <!-- Camel BOM -->
+        <dependency>
+            <groupId>org.apache.camel.springboot</groupId>
+            <artifactId>camel-spring-boot-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <!-- ... other BOMs or dependencies ... -->
+    </dependencies>
+
+</dependencyManagement>
+
+```
+
+The `camel-spring-boot-bom` contains all the Camel Spring Boot starter JAR files.
+
+Next, let us add the Camel Spring Boot starter to set up the Camel Context by adding the following dependency to our `pom.xml` file :
 
 ```xml
 <dependency>
@@ -99,12 +126,35 @@ To use the starter, let us add the our spring boot pom.xml file :
 </dependency>
 ```
 
+We need to further add starters for the components required by our Spring Boot application :
+
+```xml
+    <dependency>
+      <groupId>org.apache.camel.springboot</groupId>
+      <artifactId>camel-servlet-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel.springboot</groupId>
+      <artifactId>camel-jackson-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel.springboot</groupId>
+      <artifactId>camel-swagger-java-starter</artifactId>
+    </dependency>
+
+```
+
+Here we have added three starters for servlet, jackson and swagger. 
 
 ### Defining Route with Java DSL with RouteBuilder
-We extend the `RouteBuilder` class and override its `configure` method to define our routing rules in Java Domain Specific Language (DSL).
-We can define as many RouteBuilder classes as necessary. Each class is instantiated once and is registered with the `CamelContext` object. Normally, the lifecycle of each RouteBuilder object is managed automatically by the container in which you deploy the router.
 
-Let us start by creating a route for fetching products using a spring bean method:
+Let us now create a route for fetching products by using a Spring bean method. 
+We create Camel routes by extending the `RouteBuilder` class and overriding its `configure` method to define our routing rules in Java Domain Specific Language (DSL).
+
+Each of the router class is instantiated once and is registered with the `CamelContext` object. 
+
+Our class containing the routing rule defined using Java Domain Specific Language (DSL) looks like this:
+
 
 ```java
 @Component
@@ -174,11 +224,15 @@ Here we have defined a REST endpoint in our `resource` class with a `GET` method
 
 ## Defining a Route with Splitter-Aggregator Enterprise Integration Pattern
 
+Let us now look at a route where we will use a Enterprise Integration Pattern.
+
 Camel provides implementations for many of the [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) from the book by Gregor Hohpe and Bobby Woolf. Here is a snippet of the list of those patterns :
 
 ![EIP Snippet](/assets/img/posts/camel-spring/eip-snippet.png)
 
-We should look for the integration pattern most appropriate for fulfilling our use case. 
+
+### Selecting the Enterprise Integration Pattern (EIP)
+Before trying to build our own integration logic, we should look for the integration pattern most appropriate for fulfilling our use case. 
 
 Let us see an example of defining a route with the Splitter and Aggregate integration patterns.  Here we will consider a hypothetical scenario of building a REST API for an E-Commerce application for processing an order placed by a customer. We will expect our order processing API to perform the following steps:
 
@@ -187,6 +241,8 @@ Let us see an example of defining a route with the Splitter and Aggregate integr
 3. Calculate the sum of prices of all order line items to generate the order invoice.
 
 After finishing step 1, we want to fetch the price of each order line item in parallel in step 2, since they are not dependent on each other. There are multiple ways of doing this kind of processing. However, since design patterns are accepted solutions to recurring problems within a given context, we will search for a pattern closely resembling our problem from our list of Enterprise Integration Patterns. After looking through the list, we find that the [Splitter](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Sequencer.html) and [Aggregator](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Aggregator.html) patterns are best suited to do this processing.
+
+### Applying the Enterprise Integration Pattern (EIP)
 
 Next, we will refer to the Apache Camel's documentation for the chosen pattern's usage:
 
@@ -200,7 +256,7 @@ Let us apply these patterns by performing the below steps:
 2. For each order line item, fetch the price, apply discounts, etc. These steps are running in parallel.
 3. Aggregate price from each line item in `PriceAggregationStrategy` class which implements `AggregationStrategy` interface.
 
-Our route for using this EIP looks like this:
+Our route for using this Enterprise Integration Pattern (EIP) looks like this:
 
 
 ```java
@@ -261,10 +317,12 @@ public class PricingService {
 
 }
 ```
-Here we have used an aggregator 
+Here we have defined a route in Java DSL which splits the incoming message (collection of Order lines) into individual order line items. Each Order line item is sent to the `calculatePrice` method of `PricingService` class to compute the price of the items .
+
+Next we have tied up an aggregator after the split step. The aggregator implements the `AggregationStrategy` interface and our aggregation logic is inside the overriden `aggregate` method. In the `aggregate` method, we take each of the order line item and consolidate them into a single `order` object. 
 
 ## Consuming the Route with Splitter Aggregator Pattern from REST Styled DSL
-We can use the REST styled DSL in Apache Camel to define REST APIs with the HTTP verbs like GET, POST, PUT, and, DELETE. The actual REST transport is leveraged by using Camel REST components such as Netty HTTP, Servlet, and others that have native REST integration.
+Let us next use the REST styled DSL in Apache Camel to define REST APIs with the HTTP verbs like GET, POST, PUT, and, DELETE. The actual REST transport is leveraged by using Camel REST components such as Netty HTTP, Servlet, and others that have native REST integration.
 
 To use the Rest DSL in Java, we need to extend the `RouteBuilder` class and define the routes in the `configure` method similar to how we created regular Camel routes earlier. 
 

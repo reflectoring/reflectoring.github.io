@@ -4,57 +4,47 @@ categories: [craft]
 date: 2021-04-25 06:00:00 +1000
 modified: 2021-04-25 06:00:00 +1000
 author: pratikdas
-excerpt: "AWS DynamoDB is a fully managed NoSQL database service in AWS Cloud. In this article, we will see how to integrate Apache Camel with a Spring Boot Application with the help of some code examples"
+excerpt: "Apache Camel is also a good fit for microservice architectures where we need to communicate between different microservices and other upstream and downstream systems like databases and messaging systems. In this article, we will look at using Apache Camel for building integration logic in microservice applications built with Spring Boot with the help of code examples."
 image:
   auto: 0074-stack
 ---
 
-Apache Camel is an lightweight integration framework with a consistent API and programming model for integrating a wide variety of applications. Camel implements most of the [Enterprise Integration Patterns (EIP)](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) and provides a wide range of integration constructs which we can use for our integration needs.
+Apache Camel is an integration framework with a consistent API and programming model for integrating a wide variety of applications. Camel implements many of the [Enterprise Integration Patterns (EIP)](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) and provides a wide range of integration constructs which we can use for our integration needs.
 
-Apache Camel is also a good fit for microservice architectures where we need to communicate between different microservices, and other upstream and downstream systems like databases and messaging systems.
+Apache Camel is also a good fit for microservice architectures where we need to communicate between different microservices and other upstream and downstream systems like databases and messaging systems.
 
-In this article, we will look at using Apache Camel for building integration logic in microservice applications built with [Spring Boot](https://spring.io/projects/spring-boot)with the help of code examples.
+In this article, we will look at using Apache Camel for building integration logic in microservice applications built with [Spring Boot](https://spring.io/projects/spring-boot) with the help of code examples.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring/springcamel" %}
 
 
-## Why Apache Camel
-Before going further, we should understand why we should use Apache Camel in our applications. Alternatively, we have the option of using custom code for writing integration logic like making an API call or sending a message to a Queue of a message provider system. Apart from making our application code look verbose with lots of LOC, we may not to it in the way it is best done by taking care of all the exception scenarios. Design patterns are a solution for applying proven approaches to common set of problems and Apache Camel provides implementation of most of the EIPs. Here are some more reasons we should consider using Apache Camel for our integration requirements:
-
-
-[Amazon Camel](https://aws.amazon.com/dynamodb/) is a framework for integrating applications. A typical integration framework consists of data flowing from source to destination with some transformations along the way, Almost every technology you can imagine is available, for example HTTP, FTP, JMS, EJB, JPA, RMI, JMS, JMX, LDAP, Netty, and many, many more (of course most ESBs also offer support for them). Besides, own custom components can be created very easily. 
-
-Lightweight: Camel is acknowledged as a lean framework compared to other integration frameworks like Mule, Kafka, and Spark.
-Easy to change: by configuring connectors. 
-Wide collection of connectors
-Supporting EIP
-Extensible: with new custom connectors. application can be extended
-Multiple deployment options
-
 ## What is Apache Camel
 
-As explained at the start, Apache Camel is an integration framework for routing (taking a data payload (message) from a source system to a destination system) and mediation (processing like filtering the message based on one or more message attributes, modifying certain fields of the message, enrichment by making API calls, etc). 
+As explained at the start, Apache Camel is an integration framework for routing (taking a data payload also called message) from a source system to a destination system) and mediation (processing like filtering the message based on one or more message attributes, modifying certain fields of the message, enrichment by making API calls, etc). 
 
 The important concepts of Apache Camel used during integration are shown in this diagram:
 
 
-![Table items attributes](/assets/img/posts/camel-spring/camel-concepts.png)
+![Table items attributes](/assets/img/posts/camel-spring/camel-arch.png)
 
-Let us understand these concepts :
+Let us get a basic understanding of these concepts before proceeding further:
 
-Camel Context is the runtime container of all the Camel constructs and executes the routing logic.
+### Camel Context
+Camel context is the runtime container of all the Camel constructs and executes the routing rules. The Camel context activates the routing rules at start up by loading all the resources required for their execution.
+
+The Camel context is described by the [org.apache.camel.CamelContext](http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/CamelContext.html) interface and is autoconfigured by default if running in a Spring container.
 
 ### Routes and Endpoints
 
-A Route is the most basic construct which we use to define the path a message should take while moving from source to a destination. We build routes with DSL. These  are loaded in the Camel context and used to execute the routing logic when the route is triggered. Each route is identified by a unique identifier in the camel context.
+A Route is the most basic construct which we use to define the path a message should take while moving from source to destination. We define routes using a Domain Specific Language (DSL). These are loaded in the Camel context and are used to execute the routing logic when the route is triggered. Each route is identified by a unique identifier in the Camel context.
 
-Endpoints represent the source and destinations. Endpoints are usually created by a Component and Endpoints are usually referred to in the DSL via their URIs.
+Endpoints represent the source and destination of a message. They are usually referred to in the Domain Specific Language (DSL) via their URIs.
 
 ### Components
 
-These are units of integration constructs like filters, converters, processors which we can assemble together to build a message flow path between source and destination endpoints. An Endpoint is either a URI or URL in a web application or a Destination in a JMS system. We communicate with an endpoint either by sending messages to it or consuming messages from it.
+These are units of integration constructs like filters, converters, processors which we can assemble to build a message flow path between source and destination endpoints. An Endpoint is either a URI or URL in a web application or a Destination in a JMS system. We communicate with an endpoint either by sending messages to it or consuming messages from it.
 
- transport of a message from source to destination goes through processing stages. Components process or modify the original message or redirect it. Apache Camel ships with an [extensive set of components](https://camel.apache.org/components/latest/). Component references are references used to place a component in an assembly. Apache Component references provides various references that offers services for messaging, sending data, notifications and various other services that can not only resolve easy messaging and transferring data but also provide securing of data.
+The transport of a message from the source to the destination goes through multiple processing steps. Components process or modify the original message or redirect it to a different endpoint. Apache Camel ships with an [extensive set of components](https://camel.apache.org/components/latest/) that offer services for messaging and different type of transformations. We can also build our own components to fulfill any specific needs.
 
 ### Domain Specific Language (DSL)
 We define routes in Apache Camel with two variants of Domain Specific Languages (DSL) for defining routes: a Java DSL and a Spring XML DSL. Endpoints and processors are the basic building blocks for defining routes with DSL. The processor is configured by setting its attributes with expressions or logical predicates.
@@ -64,7 +54,7 @@ Here is an example of a route defined using Java DSL :
 ```java
 ("file:/mysrc").split().tokenize("\n").to("jms:queue:myQueue")
 ```
-Here we have defined a route with a file endpoint as source and a JMS queue as destination. We are reading files from the input folder `mysrc`, read each file by applying the split processor and tokenize contents of each file with the newline separator and sending each line to the JMS queue.
+Here we have defined a route with a file endpoint as a source and a JMS queue as a destination. We are reading files from the input folder `mysrc`, read each file by applying the split processor, and tokenize the contents of each file with the newline separator, and sending each line to the JMS queue.
 
 The same route defined using Spring XML DSL looks like this :
 ```xml
@@ -135,7 +125,7 @@ public class FetchProductsRoute extends RouteBuilder {
 Here we are creating the route by defining the Java DSL in a class `FetchProductsRoute` by extending `RouteBuilder` class. We defined the endpoint as `direct:fetchProducts` and provided a route identifier `direct-fetchProducts`. The prefix `direct:` in the name of the endpoint makes it possible to call the route from another camel route. 
 
 ### Triggering a Route with Templates
-We can invoke the routes with `ProducerTemplate` and `ConsumerTemplate`. The ProducerTemplate used as an easy way of sending messages to a Camel endpoint. Both of these templates are similar to the template utility classes in the Spring Framework like JmsTemplate or JdbcTemplate that simplify access to the JMS and JDBC APIs. 
+We can invoke the routes with `ProducerTemplate` and `ConsumerTemplate`. The ProducerTemplate is used as an easy way of sending messages to a Camel endpoint. Both of these templates are similar to the template utility classes in the Spring Framework like JmsTemplate or JdbcTemplate that simplify access to the JMS and JDBC APIs. 
 
 Let us invoke the route we created earlier from a resource class in our application :
 
@@ -184,30 +174,30 @@ Here we have defined a REST endpoint in our `resource` class with a `GET` method
 
 ## Defining a Route with Splitter-Aggregator Enterprise Integration Pattern
 
-Camel provides implementations for most of the [Enterprise Integration Patterns]() from the book by Gregor Hohpe and Bobby Woolf. Here is a snippet of the list of those patterns :
+Camel provides implementations for many of the [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) from the book by Gregor Hohpe and Bobby Woolf. Here is a snippet of the list of those patterns :
 
-[EIP Snippet](/assets/img/posts/camel-spring/eip-snippet.png)
+![EIP Snippet](/assets/img/posts/camel-spring/eip-snippet.png)
 
-We should look for the integration pattern most appropriate for fulfilling our usecase. 
+We should look for the integration pattern most appropriate for fulfilling our use case. 
 
-Let us see an example of defining a route with the Splitter and Aggregate integration patterns.  Here we will consider a hypothetical scenario of building a REST API for an E-Commerce application for processing a order placed by a customer. We will expect our order processing API to perform the following steps:
+Let us see an example of defining a route with the Splitter and Aggregate integration patterns.  Here we will consider a hypothetical scenario of building a REST API for an E-Commerce application for processing an order placed by a customer. We will expect our order processing API to perform the following steps:
 
 1. Fetch the list of items from the shopping cart 
-2. Fetch price of each orderline item in the cart 
-3. Calculate the sum of prices of all orderline items to generate the order invoice.
+2. Fetch price of each order line item in the cart 
+3. Calculate the sum of prices of all order line items to generate the order invoice.
 
-After finishing step 1, we want to fetch the price of each orderline item in parallel in step 2, since they are not dependent on each other. There are multiple ways of doing this kind of processing. However, since design patterns are accepted solutions to recurring problems within a given context, we will search for a pattern closely resembling our problem from our list of Enterprise Integration Patterns. After looking through the list, we find that the [Splitter](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Sequencer.html) and [Aggregator](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Aggregator.html) patterns are best suited to do this processing.
+After finishing step 1, we want to fetch the price of each order line item in parallel in step 2, since they are not dependent on each other. There are multiple ways of doing this kind of processing. However, since design patterns are accepted solutions to recurring problems within a given context, we will search for a pattern closely resembling our problem from our list of Enterprise Integration Patterns. After looking through the list, we find that the [Splitter](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Sequencer.html) and [Aggregator](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Aggregator.html) patterns are best suited to do this processing.
 
-Next we will refer to the Apache Camel's documentation for the chosen pattern's usage:
+Next, we will refer to the Apache Camel's documentation for the chosen pattern's usage:
 
 ![Splitter-Aggregator](/assets/img/posts/camel-spring/splitter-aggregator.png)
 
-We can split a single message into a multiple fragments with the [Splitter](https://camel.apache.org/components/3.4.x/eips/split-eip.html) and process them individually. After that we can use the [Aggregator](https://camel.apache.org/components/latest/eips/aggregate-eip.html) to combine those individual fragments together into a single message. 
+We can split a single message into multiple fragments with the [Splitter](https://camel.apache.org/components/3.4.x/eips/split-eip.html) and process them individually. After that, we can use the [Aggregator](https://camel.apache.org/components/latest/eips/aggregate-eip.html) to combine those individual fragments into a single message. 
 
 Let us apply these patterns by performing the below steps:   
 
-1. Fetch the orderlines from the shopping cart and then split them into individual orderline items with the Splitter EIP.
-2. For each orderline item, fetch the price, apply discounts etc. These steps are running in parallel.
+1. Fetch the order lines from the shopping cart and then split them into individual order line items with the Splitter EIP.
+2. For each order line item, fetch the price, apply discounts, etc. These steps are running in parallel.
 3. Aggregate price from each line item in `PriceAggregationStrategy` class which implements `AggregationStrategy` interface.
 
 Our route for using this EIP looks like this:
@@ -274,7 +264,7 @@ public class PricingService {
 Here we have used an aggregator 
 
 ## Consuming the Route with Splitter Aggregator Pattern from REST Styled DSL
-We can use the REST styled DSL in Apache Camel to define REST APIs with the HTTP verbs like get, post, put, and, delete. The actual REST transport is leveraged by using Camel REST components such as Netty HTTP, Servlet, and others that has native REST integration.
+We can use the REST styled DSL in Apache Camel to define REST APIs with the HTTP verbs like GET, POST, PUT, and, DELETE. The actual REST transport is leveraged by using Camel REST components such as Netty HTTP, Servlet, and others that have native REST integration.
 
 To use the Rest DSL in Java, we need to extend the `RouteBuilder` class and define the routes in the `configure` method similar to how we created regular Camel routes earlier. 
 
@@ -310,7 +300,7 @@ public class RestApiRoute  extends RouteBuilder {
   }
 
 ```
-This defines a REST service with the following url mappings:
+This defines a REST service with the following URL mappings:
 
 Base Path: /order
 Uri: /process
@@ -318,19 +308,40 @@ Verb: GET
 
 We then route directly to the Camel endpoint of our route named `direct:fetchProcess` using the Splitter and Aggregator Enterprise Integration pattern that we created earlier using the `to` construct in the DSL. 
 
-## Testing 
+## When to Use and Not to Use Apache Camel
 
-## Monitoring
+Here are some reasons we should consider using Apache Camel for our integration requirements:
+
+1. Integrating Applications: where we need to move data between different protocols and applications (like files, emails, APIs, or web apps).
+2. Pattern-based Integration
+3. Orchestration
+4. Working with Java Objects (POJOs): Apache Camel is a Java framework, so it is especially good at working with Java objects. So if we are working with a file format like XML, JSON that can be de-serialized into a Java object then it will be handled easily by Camel.
+
+Examples:
+
+1. Scheduled Jobs like generating a report from a database and send to a set of emails 
+2. Read transactions from a message queue, transform each transaction, and store them in database
+3. Orchestration and choreography in microservices
+
+Generally, the best use cases for Camel are where we have a source of data that we want to consume from like incoming messages on a queue, or fetching data from an API and a target, where we want to send the data to.
+
+## When Not to Use Apache Camel
+
+1. Few integrations flows
+2. Heavy data transformation like ETL
+3. Non-Java 
 
 ## Conclusion
 
-In this article, we looked at the important concepts of Apache Camel and performed database operations from two applications written in Spring Boot first with Spring Data and then using the Enhanced DynamoDB Client. Here is a summary of the things we covered:
-1. AWS DynamoDB is a NoSQL Key-value data store and helps us to store flexible data models.
-2. We store our data in a table in AWS DynamoDB. A table is composed of items and each item has a primary key and a set of attributes.
-3. A DynamoDB table must have a primary key which can be composed of a partition key and optionally a sort key.
-4. We create a secondary Index to search the DynamoDB on fields other than the primary key.
-5. We accessed DynamoDB with Spring Data module and then with Enhanced DynamoDB Client module of AWS Java SDK.
+In this article, we looked at the important concepts of Apache Camel and used it to build integration logic in a Spring Boot application. Here is a summary of the things we covered:
+1. Apache Camel is an integration framework providing implementations of many Enterprise Integration Patterns.
+2. Route is the building block
+3. DSL
+4. example of eip
+5. Rest DSL
+2. CamelContext is the runtime container for executing Camel routes
 
-I hope this will help you to get started with building applications using Spring with AWS DynamoDB as the database. 
+
+I hope this will help you to get started with building applications using Spring with Apache Camel. 
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springdynamodb).

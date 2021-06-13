@@ -1,15 +1,15 @@
 ---
 title: "Getting Started with Camel and Spring Boot"
-categories: [craft]
+categories: [spring-boot]
 date: 2021-04-25 06:00:00 +1000
-modified: 2021-04-25 06:00:00 +1000
+modified: 2021-06-12 06:00:00 +1000
 author: pratikdas
 excerpt: "Apache Camel is also a good fit for microservice architectures where we need to communicate between different microservices and other upstream and downstream systems like databases and messaging systems. In this article, we will look at using Apache Camel for building integration logic in microservice applications built with Spring Boot with the help of code examples."
 image:
   auto: 0074-stack
 ---
 
-Apache Camel is an integration framework with a consistent API and programming model for integrating a wide variety of applications. Camel implements many of the [Enterprise Integration Patterns (EIP)](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) and provides a wide range of integration constructs which we can use for our integration needs.
+Apache Camel is an integration framework with a programming model for integrating a wide variety of applications. Camel implements many of the [Enterprise Integration Patterns (EIP)](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) and provides a wide range of integration constructs which we can use for our integration needs.
 
 Apache Camel is also a good fit for microservice architectures where we need to communicate between different microservices and other upstream and downstream systems like databases and messaging systems.
 

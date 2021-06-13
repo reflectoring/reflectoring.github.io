@@ -27,7 +27,7 @@ The important concepts of Apache Camel used during integration are shown in this
 
 ![Table items attributes](/assets/img/posts/camel-spring/camel-arch.png)
 
-Let us get a basic understanding of these concepts before proceeding further:
+Let us get a basic understanding of these concepts before proceeding further.
 
 ### Camel Context
 Camel context is the runtime container of all the Camel constructs and executes the routing rules. The Camel context activates the routing rules at start up by loading all the resources required for their execution.
@@ -36,15 +36,17 @@ The Camel context is described by the [org.apache.camel.CamelContext](http://cam
 
 ### Routes and Endpoints
 
-A Route is the most basic construct which we use to define the path a message should take while moving from source to destination. We define routes using a Domain Specific Language (DSL). These are loaded in the Camel context and are used to execute the routing logic when the route is triggered. Each route is identified by a unique identifier in the Camel context.
+A Route is the most basic construct which we use to define the path a message should take while moving from source to destination. We define routes using a Domain Specific Language (DSL). 
 
-Endpoints represent the source and destination of a message. They are usually referred to in the Domain Specific Language (DSL) via their URIs.
+These are loaded in the Camel context and are used to execute the routing logic when the route is triggered. Each route is identified by a unique identifier in the Camel context.
+
+Endpoints represent the source and destination of a message. They are usually referred to in the Domain Specific Language (DSL) via their URIs. Examples of endpoint is either a URI or URL in a web application or a Destination in a JMS system.
 
 ### Components
 
-These are units of integration constructs like filters, converters, processors which we can assemble to build a message flow path between source and destination endpoints. An Endpoint is either a URI or URL in a web application or a Destination in a JMS system. We communicate with an endpoint either by sending messages to it or consuming messages from it.
+These are units of integration constructs like filters, converters, processors which we can assemble to build a message flow path between source and destination endpoints.  We communicate with an endpoint either by sending messages to it or consuming messages from it.
 
-The transport of a message from the source to the destination goes through multiple processing steps. Components process or modify the original message or redirect it to a different endpoint. Apache Camel ships with an [extensive set of components](https://camel.apache.org/components/latest/) that offer services for messaging and different type of transformations. We can also build our own components to fulfill any specific needs.
+The transport of a message from the source to the destination goes through multiple processing steps. Processing in each step is done by a Camel component. Components process or modify the original message or redirect it to a different endpoint. Apache Camel ships with an [extensive set of components](https://camel.apache.org/components/latest/) and we can also [build our own components](https://camel.apache.org/manual/latest/writing-components.html) by implementing the [Component](https://www.javadoc.io/doc/org.apache.camel/camel-api/latest/org/apache/camel/Component.html) interface to fulfill any specific integration needs.
 
 ### Domain Specific Language (DSL)
 We define routes in Apache Camel with two variants of Domain Specific Languages (DSL) for defining routes: a Java DSL and a Spring XML DSL. Endpoints and processors are the basic building blocks for defining routes with DSL. The processor is configured by setting its attributes with expressions or logical predicates.

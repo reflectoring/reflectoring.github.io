@@ -414,7 +414,8 @@ public class OrderRepository {
     return orderTable.scan();
   }
 
-  public PageIterable<Order> findOrdersByValue(final String customerID, final double orderValue) {
+  public PageIterable<Order> findOrdersByValue(final String customerID, 
+                                             final double orderValue) {
     DynamoDbTable<Order> orderTable = getTable();
         
         AttributeValue attributeValue = AttributeValue.builder()
@@ -435,9 +436,10 @@ public class OrderRepository {
                         .build());
 
         // Get items in the Customer table and write out the ID value
-        PageIterable<Order> results = orderTable
-                                        .query(r -> r.queryConditional(queryConditional)
-                                                 .filterExpression(expression));
+        PageIterable<Order> results = 
+                orderTable
+                 .query(r -> r.queryConditional(queryConditional)
+                 .filterExpression(expression));
         return results;
   }
 

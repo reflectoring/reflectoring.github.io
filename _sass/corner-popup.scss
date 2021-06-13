@@ -1,0 +1,21 @@
+#corner-popup {
+  padding: 0 !important;
+
+  .p-col {
+    padding: 0 !important;
+  }
+
+  .corner-close {
+    top: -20px !important;
+    right: -20px !important;
+  }
+
+}
+
+@media only screen and (max-width: 767px) {
+  #corner-popup {
+    .corner-close {
+      right: 0px !important;
+    }
+  }
+}

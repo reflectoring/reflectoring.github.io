@@ -20,9 +20,11 @@ In this article, we will look at using Apache Camel for building integration log
 
 ## What is Apache Camel
 
-As explained at the start, Apache Camel is an integration framework for routing (taking a data payload also called message) from a source system to a destination system) and mediation (processing like filtering the message based on one or more message attributes, modifying certain fields of the message, enrichment by making API calls, etc). 
+As explained at the start, Apache Camel is an integration framework. Camel can do :
+1. **Routing** : Take a data payload also called message from a source system to a destination system
+2. **Mediation** : Message processing like filtering the message based on one or more message attributes, modifying certain fields of the message, enrichment by making API calls, etc. 
 
-The important concepts of Apache Camel used during integration are shown in this diagram:
+Some of the important concepts of Apache Camel used during integration are shown in this diagram:
 
 
 ![Camel Message Flow](/assets/img/posts/camel-spring/camel-arch.png)

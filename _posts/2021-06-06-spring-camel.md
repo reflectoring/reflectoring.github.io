@@ -9,7 +9,9 @@ image:
   auto: 0074-stack
 ---
 
-Apache Camel is an integration framework with a programming model for integrating a wide variety of applications. It is also a good fit for microservice architectures where we need to communicate between different microservices and other upstream and downstream systems like databases and messaging systems.
+Apache Camel is an integration framework with a programming model for integrating a wide variety of applications. 
+
+It is also a good fit for microservice architectures where we need to communicate between different microservices and other upstream and downstream systems like databases and messaging systems.
 
 In this article, we will look at using Apache Camel for building integration logic in microservice applications built with [Spring Boot](https://spring.io/projects/spring-boot) with the help of code examples.
 
@@ -34,11 +36,11 @@ The Camel context is described by the [org.apache.camel.CamelContext](http://cam
 
 ### Routes and Endpoints
 
-A Route is the most basic construct which we use to define the path a message should take while moving from source to destination. We define routes using a Domain Specific Language (DSL). 
+**A Route is the most basic construct which we use to define the path a message should take while moving from source to destination.** We define routes using a Domain Specific Language (DSL). 
 
 These are loaded in the Camel context and are used to execute the routing logic when the route is triggered. Each route is identified by a unique identifier in the Camel context.
 
-Endpoints represent the source and destination of a message. They are usually referred to in the Domain Specific Language (DSL) via their URIs. Examples of endpoint is either a URI or URL in a web application or a Destination in a JMS system.
+E**ndpoints represent the source and destination of a message.** They are usually referred to in the Domain Specific Language (DSL) via their URIs. Examples of endpoint is either a URI or URL in a web application or a Destination in a JMS system.
 
 ### Components
 
@@ -82,11 +84,11 @@ The same route defined using Spring XML DSL looks like this :
 
 
 ## Using Apache Camel in Spring Boot
-Camel support for Spring Boot includes an opinionated auto-configuration of the Camel context  and starters for many Camel components. The auto-configuration of the Camel context detects Camel routes available in the Spring context and registers the key Camel utilities (like producer template, consumer template and the type converter) as Spring beans. 
+Camel support for Spring Boot includes an opinionated auto-configuration of the Camel context and starters for many Camel components. The auto-configuration of the Camel context detects Camel routes available in the Spring context and registers the key Camel utilities (like producer template, consumer template and the type converter) as Spring beans. 
 
-Let us understand this with the help of an example. We will set up a simple route for calling a bean method and call that route from a REST endpoint.
+Let us understand this with the help of an example. We will set up a simple route for calling a bean method and invoke that route from a REST endpoint.
 
-Let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=dynamodbspringdata&description=Demo%20project%20for%20Spring%20data&packageName=io.pratik.springdata&dependencies=web), and then open the project in our favorite IDE.
+Let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.7.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=camelapp&name=camelapp&description=Demo%20project%20for%20Spring%20with%20camel&packageName=io.pratik&dependencies=web), and then open the project in our favorite IDE.
 
 ### Adding the Dependencies
 Apache Camel ships a Spring Boot Starter module `camel-spring-boot-starter` that allows us to use Camel in Spring Boot applications. 
@@ -142,7 +144,7 @@ We need to further add starters for the components required by our Spring Boot a
 
 ```
 
-Here we have added three starters for servlet, jackson and swagger. 
+Here we have added three starters for `servlet`, `jackson` and `swagger`. 
 
 ### Defining Route with Java DSL with RouteBuilder
 

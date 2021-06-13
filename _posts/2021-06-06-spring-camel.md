@@ -15,7 +15,7 @@ Apache Camel is also a good fit for microservice architectures where we need to 
 
 In this article, we will look at using Apache Camel for building integration logic in microservice applications built with [Spring Boot](https://spring.io/projects/spring-boot) with the help of code examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring/springcamel" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-camel" %}
 
 
 ## What is Apache Camel
@@ -49,14 +49,14 @@ These are units of integration constructs like filters, converters, processors w
 The transport of a message from the source to the destination goes through multiple processing steps. Processing in each step is done by a Camel component. Components process or modify the original message or redirect it to a different endpoint. Apache Camel ships with an [extensive set of components](https://camel.apache.org/components/latest/) and we can also [build our own components](https://camel.apache.org/manual/latest/writing-components.html) by implementing the [Component](https://www.javadoc.io/doc/org.apache.camel/camel-api/latest/org/apache/camel/Component.html) interface to fulfill any specific integration needs.
 
 ### Domain Specific Language (DSL)
-We define routes in Apache Camel with two variants of Domain Specific Languages (DSL) for defining routes: a Java DSL and a Spring XML DSL. Endpoints and processors are the basic building blocks for defining routes with DSL. The processor is configured by setting its attributes with expressions or logical predicates.
+We define routes in Apache Camel with a variety of [Domain Specific Languages (DSL)](https://camel.apache.org/manual/latest/dsl.html). Java DSL, and Spring XML DSL are the two main types of DSLs used in Spring applications.  
 
-Here is an example of a route defined using Java DSL :
+Here is an example of a route defined using a Java DSL :
 
 ```java
 ("file:/mysrc").split().tokenize("\n").to("jms:queue:myQueue")
 ```
-Here we have defined a route with a file endpoint as a source and a JMS queue as a destination. We are reading files from the input folder `mysrc`, read each file by applying the split processor, and tokenize the contents of each file with the newline separator, and sending each line to the JMS queue.
+Here we have defined a route with a file endpoint as a source and a JMS queue as a destination. When we execute this route, it will read all files from the input folder `mysrc`, pick up each file due to the `split` method, and call `tokenize` method on the contents of each file with a newline separator, and finally send each line to the JMS queue.
 
 The same route defined using Spring XML DSL looks like this :
 ```xml
@@ -82,8 +82,6 @@ The same route defined using Spring XML DSL looks like this :
 </beans>
 ```
 
-To use the Domain Specific Language (DSL), we extend the RouteBuilder class and override its `configure` method.
-You can define as many RouteBuilder classes as necessary. Each class is instantiated once and is registered with the CamelContext object. Normally, the lifecycle of each RouteBuilder object is managed automatically by the container in which you deploy the router.
 
 ## Using Apache Camel in Spring Boot
 Camel support for Spring Boot includes an opinionated auto-configuration of the Camel context  and starters for many Camel components. The auto-configuration of the Camel context detects Camel routes available in the Spring context and registers the key Camel utilities (like producer template, consumer template and the type converter) as Spring beans. 
@@ -398,4 +396,4 @@ In this article, we looked at the important concepts of Apache Camel and used it
 
 I hope this will help you to get started with building applications using Spring with Apache Camel. 
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springdynamodb).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-camel).

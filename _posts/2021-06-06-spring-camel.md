@@ -368,26 +368,20 @@ We then route directly to the Camel endpoint of our route named `direct:fetchPro
 
 ## When to Use and Not to Use Apache Camel
 
-Here are some reasons we should consider using Apache Camel for our integration requirements:
+As we saw in our examples, we can easily accomplish the above tasks with custom coding instead of using Apache Camel. Let us understand some of the situations when we should consider using Apache Camel for our integration requirements:
 
-1. Integrating Applications: where we need to move data between different protocols and applications (like files, emails, APIs, or web apps).
-2. Pattern-based Integration
-3. Orchestration
+1. Apache Camel with a rich set of compoents will be useful in applications requiring integration with systems over different protocols (like files, APIs, or JMS Queues).
+2. Apache Camel's implementions of Enterprise Integration Patterns is useful to fulfill complex integration requirements with tried and tested solutions for recurring integration scenarios.
+3. Orchestration and choreography in microservices can be defined with Domain Specific Language in Apache Camel routes. Routes helps to keep the core business logic decoupled from the communication logic and satisfies one of the key MS principles of SRP.
+4. Apache Camel works very well with Java and Spring applications.
 4. Working with Java Objects (POJOs): Apache Camel is a Java framework, so it is especially good at working with Java objects. So if we are working with a file format like XML, JSON that can be de-serialized into a Java object then it will be handled easily by Camel.
 
-Examples:
-
-1. Scheduled Jobs like generating a report from a database and send to a set of emails 
-2. Read transactions from a message queue, transform each transaction, and store them in database
-3. Orchestration and choreography in microservices
+On the contrary we should prefer avoid custom
+1. If we have simple integration involving calling few APIs
+2. Camel is not known to perform well for data processing
+3. Camel will also not be good for teams lacking in Java skills
 
 Generally, the best use cases for Camel are where we have a source of data that we want to consume from like incoming messages on a queue, or fetching data from an API and a target, where we want to send the data to.
-
-## When Not to Use Apache Camel
-
-1. Few integrations flows
-2. Heavy data transformation like ETL
-3. Non-Java 
 
 ## Conclusion
 

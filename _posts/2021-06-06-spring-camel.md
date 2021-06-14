@@ -2,9 +2,9 @@
 title: "Getting Started with Apache Camel and Spring Boot"
 categories: [spring-boot]
 date: 2021-04-25 06:00:00 +1000
-modified: 2021-06-12 06:00:00 +1000
+modified: 2021-06-13 06:00:00 +1000
 author: pratikdas
-excerpt: "Apache Camel is an integration framework with a programming model for integrating a wide variety of applications. It is also a good fit for microservice architectures where we need to communicate between different microservices and other upstream and downstream systems like databases and messaging systems. In this article, we will look at using Apache Camel for building integration logic in microservice applications built with Spring Boot with the help of code examples."
+excerpt: "Apache Camel is an integration framework with a programming model for integrating a wide variety of applications. In this article, we will look at using Apache Camel for building integration logic in microservice applications built with Spring Boot with the help of code examples."
 image:
   auto: 0074-stack
 ---
@@ -42,13 +42,29 @@ The Camel context is described by the [org.apache.camel.CamelContext](http://cam
 
 These are loaded in the Camel context and are used to execute the routing logic when the route is triggered. Each route is identified by a unique identifier in the Camel context.
 
-E**ndpoints represent the source and destination of a message.** They are usually referred to in the Domain Specific Language (DSL) via their URIs. Examples of endpoint is either a URI or URL in a web application or a Destination in a JMS system.
+**Endpoints represent the source and destination of a message.** They are usually referred to in the Domain Specific Language (DSL) via their URIs. Examples of endpoint is either a URI or URL in a web application or a Destination in a JMS system.
 
 ### Components
 
-These are units of integration constructs like filters, converters, processors which we can assemble to build a message flow path between source and destination endpoints.  We communicate with an endpoint either by sending messages to it or consuming messages from it.
+The transport of a message from the source to the destination goes through multiple steps. Processing in each step might require accessing different types of resources in the message flow like invocation of a bean method or calling an API. **We use components to perform the function of adapters in Camel.** 
 
-The transport of a message from the source to the destination goes through multiple processing steps. Processing in each step is done by a Camel component. Components process or modify the original message or redirect it to a different endpoint. Apache Camel ships with an [extensive set of components](https://camel.apache.org/components/latest/) and we can also [build our own components](https://camel.apache.org/manual/latest/writing-components.html) by implementing the [Component](https://www.javadoc.io/doc/org.apache.camel/camel-api/latest/org/apache/camel/Component.html) interface to fulfill any specific integration needs.
+
+For example, the route defined with the below Java DSL uses the `file` component to bridge to the file system and `jms` component to bridge to the JMS provider. 
+
+```java
+("file:/mysrc").split().tokenize("\n").to("jms:queue:myQueue")
+```
+
+Camel has several [pre-built components]((https://camel.apache.org/components/latest/)) and many others built by communities. Here is a snippet of the components in Camel to give an idea of the type of the wide variety of systems we can integrate :
+
+|ActiveMQ|AMQP|Async HTTP Client (AHC)|Atom|Avro RPC|AWS 2 DynamoDB|AWS 2 Lambda|
+|AWS2 SQS|AWS2 SNS|Azure CosmosDB|Azure Storage Blob|Azure Storage Queue|Bean|Cassandra CQL|
+|Consul|CouchDB|Cron|Direct|Docker|Elasticsearch Rest|Facebook|
+|FTP|Google Storage|Google Cloud Functions|GraphQL|Google Pubsub|gRPC|HTTP|
+
+These functions are grouped in separate Jar files . Depending on the component we are using, we need to incude the corresponding Jar dependency.
+
+We can also [build our own components](https://camel.apache.org/manual/latest/writing-components.html) by implementing the [Component](https://www.javadoc.io/doc/org.apache.camel/camel-api/latest/org/apache/camel/Component.html) interface.
 
 ### Domain Specific Language (DSL)
 We define routes in Apache Camel with a variety of [Domain Specific Languages (DSL)](https://camel.apache.org/manual/latest/dsl.html). Java DSL, and Spring XML DSL are the two main types of DSLs used in Spring applications.  
@@ -192,8 +208,9 @@ public class ProductResource {
   @ResponseBody
   public List<Product> getProductsByCategory(@PathVariable("category") final String category){
     producerTemplate.start();
-    List<Product> products = producerTemplate.requestBody("direct:fetchProducts", category, List.class);
-      System.out.println("products "+products);
+    List<Product> products = producerTemplate
+       .requestBody("direct:fetchProducts", category, List.class);
+    
     producerTemplate.stop();
     return products;
   
@@ -222,7 +239,9 @@ public class AppConfig {
 
 ```
 
-Here we have defined a REST endpoint in our `resource` class with a `GET` method for fetching products by category. We are invoking our Camel route inside the method by using the `producerTemplate` which we configured in our Spring configuration. In our Spring configuration we have defined the `producerTemplate` and `consumerTemplate` by calling corresponding methods on the `CamelContext` which is available in the `ApplicationContext`.
+Here we have defined a REST endpoint in our `resource` class with a `GET` method for fetching products by category. We are invoking our Camel route inside the method by using the `producerTemplate` which we configured in our Spring configuration. 
+
+In our Spring configuration we have defined the `producerTemplate` and `consumerTemplate` by calling corresponding methods on the `CamelContext` which is available in the `ApplicationContext`.
 
 ## Defining a Route with Splitter-Aggregator Enterprise Integration Pattern
 
@@ -242,7 +261,9 @@ Let us see an example of defining a route with the Splitter and Aggregate integr
 2. Fetch price of each order line item in the cart 
 3. Calculate the sum of prices of all order line items to generate the order invoice.
 
-After finishing step 1, we want to fetch the price of each order line item in parallel in step 2, since they are not dependent on each other. There are multiple ways of doing this kind of processing. However, since design patterns are accepted solutions to recurring problems within a given context, we will search for a pattern closely resembling our problem from our list of Enterprise Integration Patterns. After looking through the list, we find that the [Splitter](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Sequencer.html) and [Aggregator](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Aggregator.html) patterns are best suited to do this processing.
+After finishing step 1, we want to fetch the price of each order line item in parallel in step 2, since they are not dependent on each other. There are multiple ways of doing this kind of processing. 
+
+However, since design patterns are accepted solutions to recurring problems within a given context, we will search for a pattern closely resembling our problem from our list of Enterprise Integration Patterns. After looking through the list, we find that the [Splitter](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Sequencer.html) and [Aggregator](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Aggregator.html) patterns are best suited to do this processing.
 
 ### Applying the Enterprise Integration Pattern (EIP)
 
@@ -293,7 +314,8 @@ public class PriceAggregationStrategy implements AggregationStrategy{
             newExchange.getIn().setBody(order, Order.class);
             return newExchange;
         }
-        OrderLine newOrderLine = newExchange.getIn().getBody(OrderLine.class);
+        OrderLine newOrderLine = newExchange.getIn()
+                                .getBody(OrderLine.class);
         Order order = oldExchange.getIn().getBody(Order.class);
         order.setOrderPrice(order.getOrderPrice() + newOrderLine.getPrice());
         order.addOrderLine(newOrderLine);
@@ -328,7 +350,7 @@ Let us next use the REST styled DSL in Apache Camel to define REST APIs with the
 
 To use the Rest DSL in Java, we need to extend the `RouteBuilder` class and define the routes in the `configure` method similar to how we created regular Camel routes earlier. 
 
-Let us define a hypothetical REST service for processing orders by using the `rest` construct in the Java DSL to define the API. We will also generate a specification for the API in Open API format:
+Let us define a hypothetical REST service for processing orders by using the `rest` construct in the Java DSL to define the API. We will also generate a specification for the API based on the [OpenAPI Specification (OAS)](https://swagger.io/specification/):
 
 ```java
 @Component

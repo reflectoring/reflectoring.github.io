@@ -39,8 +39,6 @@ In summary, Redis can be configured in ElastiCache in one of the following modes
 2. **Cluster mode disabled** - Single shard with one primary Node and read-only replicas.
 3. **Cluster mode enabled** - More than one shard.
 
-## Spring AWS 
-Spring Framework provides support for declarative caching in applications. Spring Cloud AWS integrates the AWS ElastiCache service into the Spring unified caching abstraction providing a cache manager based on the memcached and Redis protocols. The caching support for Spring Cloud AWS provides its own memcached implementation for ElastiCache and uses Spring Data Redis for Redis caches.
 
 ## Configuring Dependencies
 

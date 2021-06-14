@@ -80,7 +80,7 @@ The same route defined using Spring XML DSL looks like this :
 
 ### Components
 
-The transport of a message from the source to the destination goes through multiple steps. Processing in each step might require accessing different types of resources in the message flow like invocation of a bean method or calling an API. **We use components to perform the function of adapters in Camel.** 
+The transport of a message from the source to the destination goes through multiple steps. Processing in each step might require accessing different types of resources in the message flow like invocation of a bean method or calling an API. **We use components to perform the function of connecting to these resources.** 
 
 
 For example, the route defined with the below Java DSL uses the `file` component to bridge to the file system and `jms` component to bridge to the JMS provider. 

@@ -44,28 +44,6 @@ These are loaded in the Camel context and are used to execute the routing logic 
 
 **Endpoints represent the source and destination of a message.** They are usually referred to in the Domain Specific Language (DSL) via their URIs. Examples of endpoint is either a URI or URL in a web application or a Destination in a JMS system.
 
-### Components
-
-The transport of a message from the source to the destination goes through multiple steps. Processing in each step might require accessing different types of resources in the message flow like invocation of a bean method or calling an API. **We use components to perform the function of adapters in Camel.** 
-
-
-For example, the route defined with the below Java DSL uses the `file` component to bridge to the file system and `jms` component to bridge to the JMS provider. 
-
-```java
-("file:/mysrc").split().tokenize("\n").to("jms:queue:myQueue")
-```
-
-Camel has several [pre-built components](https://camel.apache.org/components/latest/) and many others built by communities. Here is a snippet of the components in Camel to give an idea of the type of the wide variety of systems we can integrate :
-
-|ActiveMQ|AMQP|Async HTTP Client (AHC)|Atom|Avro RPC|AWS 2 DynamoDB|AWS 2 Lambda|
-|AWS2 SQS|AWS2 SNS|Azure CosmosDB|Azure Storage Blob|Azure Storage Queue|Bean|Cassandra CQL|
-|Consul|CouchDB|Cron|Direct|Docker|Elasticsearch Rest|Facebook|
-|FTP|Google Storage|Google Cloud Functions|GraphQL|Google Pubsub|gRPC|HTTP|
-
-These functions are grouped in separate Jar files . Depending on the component we are using, we need to incude the corresponding Jar dependency.
-
-We can also [build our own components](https://camel.apache.org/manual/latest/writing-components.html) by implementing the [Component](https://www.javadoc.io/doc/org.apache.camel/camel-api/latest/org/apache/camel/Component.html) interface.
-
 ### Domain Specific Language (DSL)
 We define routes in Apache Camel with a variety of [Domain Specific Languages (DSL)](https://camel.apache.org/manual/latest/dsl.html). Java DSL, and Spring XML DSL are the two main types of DSLs used in Spring applications.  
 
@@ -99,6 +77,28 @@ The same route defined using Spring XML DSL looks like this :
 
 </beans>
 ```
+
+### Components
+
+The transport of a message from the source to the destination goes through multiple steps. Processing in each step might require accessing different types of resources in the message flow like invocation of a bean method or calling an API. **We use components to perform the function of adapters in Camel.** 
+
+
+For example, the route defined with the below Java DSL uses the `file` component to bridge to the file system and `jms` component to bridge to the JMS provider. 
+
+```java
+("file:/mysrc").split().tokenize("\n").to("jms:queue:myQueue")
+```
+
+Camel has several [pre-built components](https://camel.apache.org/components/latest/) and many others built by communities. Here is a snippet of the components in Camel to give an idea of the type of the wide variety of systems we can integrate :
+
+|ActiveMQ|AMQP|Async HTTP Client (AHC)|Atom|Avro RPC|AWS 2 DynamoDB|AWS 2 Lambda|
+|AWS2 SQS|AWS2 SNS|Azure CosmosDB|Azure Storage Blob|Azure Storage Queue|Bean|Cassandra CQL|
+|Consul|CouchDB|Cron|Direct|Docker|Elasticsearch Rest|Facebook|
+|FTP|Google Storage|Google Cloud Functions|GraphQL|Google Pubsub|gRPC|HTTP|
+
+These functions are grouped in separate Jar files . Depending on the component we are using, we need to incude the corresponding Jar dependency.
+
+We can also [build our own components](https://camel.apache.org/manual/latest/writing-components.html) by implementing the [Component](https://www.javadoc.io/doc/org.apache.camel/camel-api/latest/org/apache/camel/Component.html) interface.
 
 
 ## Using Apache Camel in Spring Boot

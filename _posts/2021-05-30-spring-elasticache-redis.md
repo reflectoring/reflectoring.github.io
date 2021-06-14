@@ -8,7 +8,10 @@ excerpt: "In this article we will look at configuring a Spring Boot Application 
 image:
     auto: 0090-404
 ---
-[Spring Cloud AWS](https://docs.awspring.io/spring-cloud-aws/docs/current/reference/html/index.html) helps us in simplifying the communication of our Spring Boot application with AWS resources. From taking care
+
+ElastiCache is a fully managed caching service available in AWS Cloud. 
+
+[Spring Cloud AWS](https://docs.awspring.io/spring-cloud-aws/docs/current/reference/html/index.html) helps us to simplify the communication of Spring Boot application with AWS services. From taking care
 of security to autoconfiguring the beans required for the communication, it takes care of a lot of essential steps.
 
 Currently, Spring Cloud AWS provides support for services such as S3, SES, SNS, RDS, and ElastiCache. In this article, we will look at how we can use it
@@ -16,11 +19,10 @@ to connect our application to [AWS ElastiCache for Redis](https://docs.aws.amazo
  
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/caching-with-elasticache-redis" %}
 
-## Caching with ElastiCache for Redis
-ElastiCache is a fully managed in-memory cache service by AWS. It currently supports two caching engines
-[Memcached](https://memcached.org/) and [Redis](https://redis.io/).
+## What is ElastiCache
+ElastiCache is a fully managed in-memory caching service in AWS Cloud. It currently supports two caching engines :[Memcached](https://memcached.org/) and [Redis](https://redis.io/).
 
-Let's talk a bit about Redis and ElastiCache first.
+## ElastiCache for Redis
 
 Redis is a very popular in-memory data structure store. It is open-source and widely used in the industry for caching. It stores the data as key-value pairs and supports many varieties of data structures like string, hash, list, set, sorted set with range queries, bitmap, hyperloglog, geospatial index, and streams.
 
@@ -36,6 +38,9 @@ In summary, Redis can be configured in ElastiCache in one of the following modes
 1. **Single Node** - Only one node.
 2. **Cluster mode disabled** - Single shard with one primary Node and read-only replicas.
 3. **Cluster mode enabled** - More than one shard.
+
+## Spring AWS 
+Spring Framework provides support for declarative caching in applications. Spring Cloud AWS integrates the AWS ElastiCache service into the Spring unified caching abstraction providing a cache manager based on the memcached and Redis protocols. The caching support for Spring Cloud AWS provides its own memcached implementation for ElastiCache and uses Spring Data Redis for Redis caches.
 
 ## Configuring Dependencies
 

@@ -94,13 +94,9 @@ Camel has several [pre-built components](https://camel.apache.org/components/lat
  | | | | | |
 -|-|-|-|-|-|-
 ActiveMQ|AMQP|Async HTTP Client|Atom|Avro RPC|AWS2 DynamoDB|AWS2 Lambda
--|-|-|-|-|-|-
 AWS2 SQS|AWS2 SNS|Azure CosmosDB|Azure Storage Blob|Azure Storage Queue|Bean|Cassandra CQL
--|-|-|-|-|-|-
 Consul|CouchDB|Cron|Direct|Docker|Elasticsearch|Facebook
--|-|-|-|-|-|-
 FTP|GCP Storage|Google Cloud Function|GraphQL|Google Pubsub|gRPC|HTTP
--|-|-|-|-|-|-
 
 
 These functions are grouped in separate Jar files . Depending on the component we are using, we need to incude the corresponding Jar dependency. For our example, we need to include the `camel-jms` dependency and use the component by referring to the documentation of [Camel JMS component](https://camel.apache.org/components/3.4.x/jms-component.html).

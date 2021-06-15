@@ -94,9 +94,9 @@ Camel has several [pre-built components](https://camel.apache.org/components/lat
  | | | | | |
 -|-|-|-|-|-|-
 ActiveMQ|AMQP|Async HTTP Client|Atom|Avro RPC|AWS2 DynamoDB|AWS2 Lambda
-AWS2 SQS|AWS2 SNS|Azure CosmosDB|Az Storage Blob|Az Storage Queue|Bean|Cassandra CQL
+AWS2 SQS|AWS2 SNS|Azure CosmosDB|Azure Storage Blob|Azure Storage Queue|Bean|Cassandra CQL
 Consul|CouchDB|Cron|Direct|Docker|Elasticsearch|Facebook
-FTP|GCP Storage|GCP Function|GraphQL|GCP Pubsub|gRPC|HTTP
+FTP|GCP Storage|Google Cloud Function|GraphQL|Google Pubsub|gRPC|HTTP
 
 
 ... 

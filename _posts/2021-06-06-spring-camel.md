@@ -91,14 +91,15 @@ For example, the route defined with the below Java DSL uses the `file` component
 
 Camel has several [pre-built components](https://camel.apache.org/components/latest/) and many others built by communities. Here is a snippet of the components in Camel to give an idea of the type of the wide variety of systems we can integrate :
 
-|------------|------------|------------|------------|------------|------------|------------|
-|ActiveMQ|AMQP|Async HTTP Client (AHC)|Atom|Avro RPC|AWS 2 DynamoDB|AWS 2 Lambda|
-|AWS2 SQS|AWS2 SNS|Azure CosmosDB|Azure Storage Blob|Azure Storage Queue|Bean|Cassandra CQL|
-|Consul|CouchDB|Cron|Direct|Docker|Elasticsearch Rest|Facebook|
-|FTP|Google Storage|Google Cloud Functions|GraphQL|Google Pubsub|gRPC|HTTP|
+ | | | | | |
+-|-|-|-|-|-|-
+ActiveMQ|AMQP|Async HTTP Client|Atom|Avro RPC|AWS2 DynamoDB|AWS2 Lambda
+AWS2 SQS|AWS2 SNS|Azure CosmosDB|Az Storage Blob|Az Storage Queue|Bean|Cassandra CQL
+Consul|CouchDB|Cron|Direct|Docker|Elasticsearch|Facebook
+FTP|GCP Storage|GCP Function|GraphQL|GCP Pubsub|gRPC|HTTP
 
 
-...
+... 
 ...
 
 These functions are grouped in separate Jar files . Depending on the component we are using, we need to incude the corresponding Jar dependency. For our example, we need to include the `camel-jms` dependency and use the component by referring to the documentation of [Camel JMS component](https://camel.apache.org/components/3.4.x/jms-component.html).

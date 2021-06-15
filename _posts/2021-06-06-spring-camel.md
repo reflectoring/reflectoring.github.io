@@ -89,7 +89,7 @@ For example, the route defined with the below Java DSL uses the `file` component
 ("file:/mysrc").split().tokenize("\n").to("jms:queue:myQueue")
 ```
 
-Camel has several [pre-built components](https://camel.apache.org/components/latest/) and many others built by communities. Here is a snippet of the components in Camel to give an idea of the type of the wide variety of systems we can integrate :
+Camel has several [pre-built components](https://camel.apache.org/components/latest/) and many others built by communities. Here is a snippet of the components available in Camel which gives us an idea of the wide range of systems we can integrate using the framework:
 
  | | | | | |
 -|-|-|-|-|-|-

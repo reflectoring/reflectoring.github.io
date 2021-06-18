@@ -21,8 +21,8 @@ In this article, we will look at using Apache Camel for building integration log
 ## What is Apache Camel
 
 As explained at the start, Apache Camel is an integration framework. Camel can do :
-1. **Routing** : Take a data payload also called message from a source system to a destination system
-2. **Mediation** : Message processing like filtering the message based on one or more message attributes, modifying certain fields of the message, enrichment by making API calls, etc. 
+1. **Routing**: Take a data payload also called "message" from a source system to a destination system
+2. **Mediation**: Message processing like filtering the message based on one or more message attributes, modifying certain fields of the message, enrichment by making API calls, etc. 
 
 Some of the important concepts of Apache Camel used during integration are shown in this diagram:
 
@@ -34,7 +34,7 @@ Let us get a basic understanding of these concepts before proceeding further.
 ### Camel Context
 Camel context is the runtime container of all the Camel constructs and executes the routing rules. The Camel context activates the routing rules at start up by loading all the resources required for their execution.
 
-The Camel context is described by the [org.apache.camel.CamelContext](http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/CamelContext.html) interface and is autoconfigured by default if running in a Spring container.
+The Camel context is described by the [org.apache.camel.CamelContext](https://github.com/Talend/apache-camel/blob/master/camel-core/src/main/java/org/apache/camel/CamelContext.java) interface and is autoconfigured by default if running in a Spring container.
 
 ### Routes and Endpoints
 
@@ -42,17 +42,20 @@ The Camel context is described by the [org.apache.camel.CamelContext](http://cam
 
 These are loaded in the Camel context and are used to execute the routing logic when the route is triggered. Each route is identified by a unique identifier in the Camel context.
 
-**Endpoints represent the source and destination of a message.** They are usually referred to in the Domain Specific Language (DSL) via their URIs. Examples of endpoint is either a URI or URL in a web application or a Destination in a JMS system.
+**Endpoints represent the source and destination of a message.** They are usually referred to in the Domain Specific Language (DSL) via their URIs. Examples of an endpoint are either a URI or URL in a web application or a Destination in a JMS system.
 
 ### Domain Specific Language (DSL)
-We define routes in Apache Camel with a variety of [Domain Specific Languages (DSL)](https://camel.apache.org/manual/latest/dsl.html). Java DSL, and Spring XML DSL are the two main types of DSLs used in Spring applications.  
+We define routes in Apache Camel with a variety of [Domain Specific Languages (DSL)](https://camel.apache.org/manual/latest/dsl.html). The Java DSL and the Spring XML DSL are the two main types of DSLs used in Spring applications.  
 
 Here is an example of a route defined using a Java DSL :
 
 ```java
-("file:/mysrc").split().tokenize("\n").to("jms:queue:myQueue")
+("file:/mysrc")
+    .split()
+    .tokenize("\n")
+    .to("jms:queue:myQueue")
 ```
-Here we have defined a route with a file endpoint as a source and a JMS queue as a destination. When we execute this route, it will read all files from the input folder `mysrc`, pick up each file due to the `split` method, and call `tokenize` method on the contents of each file with a newline separator, and finally send each line to the JMS queue.
+Here we have defined a route with a file endpoint as a source and a JMS queue as a destination. When we execute this route, it will read all files from the input folder `mysrc`, pick up each file due to the `split()` method, and call the `tokenize()` method on the contents of each file with a newline separator, and finally send each line to the JMS queue.
 
 The same route defined using Spring XML DSL looks like this :
 ```xml
@@ -119,17 +122,17 @@ Let us first add the Camel Spring Boot BOM to your Maven `pom.xml` :
 ```xml
 <dependencyManagement>
 
-    <dependencies>
-        <!-- Camel BOM -->
-        <dependency>
-            <groupId>org.apache.camel.springboot</groupId>
-            <artifactId>camel-spring-boot-bom</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-        <!-- ... other BOMs or dependencies ... -->
-    </dependencies>
+  <dependencies>
+    <!-- Camel BOM -->
+    <dependency>
+      <groupId>org.apache.camel.springboot</groupId>
+      <artifactId>camel-spring-boot-bom</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+    <!-- ... other BOMs or dependencies ... -->
+  </dependencies>
 
 </dependencyManagement>
 
@@ -141,33 +144,32 @@ Next, let us add the Camel Spring Boot starter to set up the Camel Context by ad
 
 ```xml
 <dependency>
-    <groupId>org.apache.camel</groupId>
-    <artifactId>camel-spring-boot-starter</artifactId>
-    <version>${camel.version}</version> <!-- use the same version as your Camel core version -->
+  <groupId>org.apache.camel</groupId>
+  <artifactId>camel-spring-boot-starter</artifactId>
+  <version>${camel.version}</version> <!-- use the same version as your Camel core version -->
 </dependency>
 ```
 
 We need to further add starters for the components required by our Spring Boot application :
 
 ```xml
-    <dependency>
-      <groupId>org.apache.camel.springboot</groupId>
-      <artifactId>camel-servlet-starter</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel.springboot</groupId>
-      <artifactId>camel-jackson-starter</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.camel.springboot</groupId>
-      <artifactId>camel-swagger-java-starter</artifactId>
-    </dependency>
-
+<dependency>
+  <groupId>org.apache.camel.springboot</groupId>
+  <artifactId>camel-servlet-starter</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.apache.camel.springboot</groupId>
+  <artifactId>camel-jackson-starter</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.apache.camel.springboot</groupId>
+  <artifactId>camel-swagger-java-starter</artifactId>
+</dependency>
 ```
 
 Here we have added three starters for `servlet`, `jackson` and `swagger`. 
 
-### Defining Route with Java DSL with RouteBuilder
+### Defining a Route with the Java DSL's RouteBuilder
 
 Let us now create a route for fetching products by using a Spring bean method. 
 We create Camel routes by extending the `RouteBuilder` class and overriding its `configure` method to define our routing rules in Java Domain Specific Language (DSL).
@@ -225,8 +227,8 @@ public class AppConfig {
   
   @Autowired
   private  CamelContext camelContext;
- ...
- ...
+  ...
+  ...
   
   @Bean
   ProducerTemplate producerTemplate() {
@@ -250,7 +252,7 @@ In our Spring configuration we have defined the `producerTemplate` and `consumer
 
 Let us now look at a route where we will use a Enterprise Integration Pattern.
 
-Camel provides implementations for many of the [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) from the book by Gregor Hohpe and Bobby Woolf. Here is a snippet of the list of those patterns :
+Camel provides implementations for many of the [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) from the book by Gregor Hohpe and Bobby Woolf. Here is a snippet of the list of those patterns:
 
 ![EIP Snippet](/assets/img/posts/camel-spring/eip-snippet.png)
 
@@ -261,7 +263,7 @@ Before trying to build our own integration logic, we should look for the integra
 Let us see an example of defining a route with the Splitter and Aggregate integration patterns.  Here we will consider a hypothetical scenario of building a REST API for an E-Commerce application for processing an order placed by a customer. We will expect our order processing API to perform the following steps:
 
 1. Fetch the list of items from the shopping cart 
-2. Fetch price of each order line item in the cart 
+2. Fetch the price of each order line item in the cart 
 3. Calculate the sum of prices of all order line items to generate the order invoice.
 
 After finishing step 1, we want to fetch the price of each order line item in parallel in step 2, since they are not dependent on each other. There are multiple ways of doing this kind of processing. 
@@ -344,9 +346,9 @@ public class PricingService {
 
 }
 ```
-Here we have defined a route in Java DSL which splits the incoming message (collection of Order lines) into individual order line items. Each Order line item is sent to the `calculatePrice` method of `PricingService` class to compute the price of the items .
+Here we have defined a route in Java DSL which splits the incoming message (collection of order lines) into individual order line items. Each order line item is sent to the `calculatePrice` method of `PricingService` class to compute the price of the items .
 
-Next we have tied up an aggregator after the split step. The aggregator implements the `AggregationStrategy` interface and our aggregation logic is inside the overriden `aggregate` method. In the `aggregate` method, we take each of the order line item and consolidate them into a single `order` object. 
+Next we have tied up an aggregator after the split step. The aggregator implements the `AggregationStrategy` interface and our aggregation logic is inside the overridden `aggregate()` method. In the `aggregate()` method, we take each of the order line item and consolidate them into a single `order` object. 
 
 ## Consuming the Route with Splitter Aggregator Pattern from REST Styled DSL
 Let us next use the REST styled DSL in Apache Camel to define REST APIs with the HTTP verbs like GET, POST, PUT, and, DELETE. The actual REST transport is leveraged by using Camel REST components such as Netty HTTP, Servlet, and others that have native REST integration.

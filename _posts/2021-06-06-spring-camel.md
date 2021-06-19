@@ -47,15 +47,19 @@ These are loaded in the Camel context and are used to execute the routing logic 
 ### Domain Specific Language (DSL)
 We define routes in Apache Camel with a variety of [Domain Specific Languages (DSL)](https://camel.apache.org/manual/latest/dsl.html). The Java DSL and the Spring XML DSL are the two main types of DSLs used in Spring applications.  
 
-Here is an example of a route defined using a Java DSL :
+Here is an example of a route defined in Java DSL using the `RouteBuilder` class:
 
 ```java
-("file:/mysrc")
-    .split()
-    .tokenize("\n")
-    .to("jms:queue:myQueue")
+    RouteBuilder builder = new RouteBuilder() {
+
+      @Override
+      public void configure() throws Exception {
+        from("jms:queue:myQueue").to("file://mysrc");
+      }
+        
+    };
 ```
-Here we have defined a route with a file endpoint as a source and a JMS queue as a destination. When we execute this route, it will read all files from the input folder `mysrc`, pick up each file due to the `split()` method, and call the `tokenize()` method on the contents of each file with a newline separator, and finally send each line to the JMS queue.
+Here we have defined a route with a JMS queue as a source and a file endpoint as a destination. 
 
 The same route defined using Spring XML DSL looks like this :
 ```xml
@@ -71,10 +75,9 @@ The same route defined using Spring XML DSL looks like this :
 
   <camelContext id="sendtoqueue" xmlns="http://camel.apache.org/schema/spring">
     <route>
-      <from uri="file:/myFolder"/>
-      <split/>
-      <tokenize token="\n"/>
-      <to uri="jms:queue:myQueue"/>
+      <from uri="jms:queue:myQueue"/>
+ 
+      <to uri="file://mysrc"/>
     </route>
   </camelContext>
 

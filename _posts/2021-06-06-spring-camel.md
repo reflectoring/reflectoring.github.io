@@ -34,7 +34,7 @@ Let us get a basic understanding of these concepts before proceeding further.
 ### Camel Context
 Camel context is the runtime container of all the Camel constructs and executes the routing rules. The Camel context activates the routing rules at start up by loading all the resources required for their execution.
 
-The Camel context is described by the [org.apache.camel.CamelContext](https://github.com/Talend/apache-camel/blob/master/camel-core/src/main/java/org/apache/camel/CamelContext.java) interface and is autoconfigured by default if running in a Spring container.
+The Camel context is described by the [CamelContext](https://github.com/Talend/apache-camel/blob/master/camel-core/src/main/java/org/apache/camel/CamelContext.java) interface and is autoconfigured by default if running in a Spring container.
 
 ### Routes and Endpoints
 
@@ -54,12 +54,14 @@ Here is an example of a route defined in Java DSL using the `RouteBuilder` class
 
       @Override
       public void configure() throws Exception {
+        // Route definition in Java DSL for 
+        // moving file from jms queue to file system.
         from("jms:queue:myQueue").to("file://mysrc");
       }
         
     };
 ```
-Here we have defined a route with a JMS queue as a source and a file endpoint as a destination by using the `RouteBuilder` class. The [RouteBuilder](https://www.javadoc.io/doc/org.apache.camel/camel-core/3.0.0-M2/org/apache/camel/builder/RouteBuilder.html) creates routing rules using the DSL. Instances of RouteBuilder are added to the CamelContext.
+Here we have defined a route with a JMS queue as a source and a file endpoint as a destination by using the `RouteBuilder` class. The [RouteBuilder](https://www.javadoc.io/doc/org.apache.camel/camel-core/3.0.0-M2/org/apache/camel/builder/RouteBuilder.html) class creates routing rules using the DSL. Instances of RouteBuilder are added to the CamelContext.
 
 The same route defined using Spring XML DSL looks like this :
 ```xml
@@ -70,10 +72,10 @@ The same route defined using Spring XML DSL looks like this :
        http://www.springframework.org/schema/beans 
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring 
-       http://camel.apache.org/schema/spring/camel-spring.xsd
-    ">
+       http://camel.apache.org/schema/spring/camel-spring.xsd" >
 
-  <camelContext id="sendtoqueue" xmlns="http://camel.apache.org/schema/spring">
+  <camelContext id="sendtoqueue" 
+                  xmlns="http://camel.apache.org/schema/spring">
     <route>
       <from uri="jms:queue:myQueue"/>
  
@@ -86,7 +88,7 @@ The same route defined using Spring XML DSL looks like this :
 
 ### Components
 
-The transport of a message from the source to the destination goes through multiple steps. Processing in each step might require accessing different types of resources in the message flow like invocation of a bean method or calling an API. **We use components to perform the function of connecting to these resources.** 
+The transport of a message from the source to the destination goes through multiple steps. Processing in each step might require connecting to different types of resources in the message flow like invocation of a bean method or calling an API. **We use components to perform the function of connecting to these resources.** 
 
 
 For example, the route defined with `RouteBuilder` class in Java DSL uses the `file` component to bridge to the file system and `jms` component to bridge to the JMS provider. 
@@ -96,7 +98,8 @@ For example, the route defined with `RouteBuilder` class in Java DSL uses the `f
 
       @Override
       public void configure() throws Exception {
-        // Route definition in Java DSL for moving file from jms queue to file system.
+        // Route definition in Java DSL for 
+        // moving file from jms queue to file system.
         from("jms:queue:myQueue").to("file://mysrc");
       }
         
@@ -105,10 +108,11 @@ For example, the route defined with `RouteBuilder` class in Java DSL uses the `f
 
 Camel has several [pre-built components](https://camel.apache.org/components/latest/) and many others built by communities. Here is a snippet of the components available in Camel which gives us an idea of the wide range of systems we can integrate using the framework:
 
- 
-- ActiveMQ|AMQP
+- ActiveMQ
+- AMQP
 - Async HTTP Client
-- Atom|Avro RPC
+- Atom
+- Avro RPC
 - AWS2 DynamoDB
 - AWS2 Lambda
 - AWS2 SQS
@@ -119,7 +123,7 @@ Camel has several [pre-built components](https://camel.apache.org/components/lat
 - Bean
 - Cassandra CQL
 - Consul
-- CouchDB|
+- CouchDB
 - Cron
 - Direct
 - Docker
@@ -134,7 +138,9 @@ Camel has several [pre-built components](https://camel.apache.org/components/lat
 - HTTP
 
 
-These functions are grouped in separate Jar files . Depending on the component we are using, we need to incude the corresponding Jar dependency. For our example, we need to include the `camel-jms` dependency and use the component by referring to the documentation of [Camel JMS component](https://camel.apache.org/components/3.4.x/jms-component.html).
+These functions are grouped in separate Jar files . Depending on the component we are using, we need to incude the corresponding Jar dependency. 
+
+For our example, we need to include the `camel-jms` dependency and use the component by referring to the documentation of [Camel JMS component](https://camel.apache.org/components/3.4.x/jms-component.html).
 
 We can also [build our own components](https://camel.apache.org/manual/latest/writing-components.html) by implementing the [Component](https://www.javadoc.io/doc/org.apache.camel/camel-api/latest/org/apache/camel/Component.html) interface.
 
@@ -178,11 +184,10 @@ Next, let us add the Camel Spring Boot starter to set up the Camel Context by ad
 <dependency>
   <groupId>org.apache.camel</groupId>
   <artifactId>camel-spring-boot-starter</artifactId>
-  <version>${camel.version}</version> <!-- use the same version as your Camel core version -->
 </dependency>
 ```
 
-We need to further add starters for the components required by our Spring Boot application :
+We need to further add the starters for the components required by our Spring Boot application :
 
 ```xml
 <dependency>
@@ -199,9 +204,12 @@ We need to further add starters for the components required by our Spring Boot a
 </dependency>
 ```
 
-Here we have added three starters for `servlet`, `jackson` and `swagger`. 
+Here we have added three dependencies with the starters for using the components for `servlet`, `jackson` and `swagger` which will perform the following functions:
+1. The Servlet component will provide HTTP based endpoints for consuming HTTP requests arriving at a HTTP endpoint bound to a published Servlet. 
+2. The Jackson component will be used for marshalling and unmarshalling between [JavaScript Object Notation (JSON)](https://www.json.org/json-en.html) and object representations.
+3. The Swagger component will expose the REST services and their APIs using [Swagger/Open API specification](https://swagger.io/docs/specification/about/).
 
-### Defining a Route with the Java DSL's RouteBuilder
+### Defining a Route with Java DSL's RouteBuilder
 
 Let us now create a route for fetching products by using a Spring bean method. 
 We create Camel routes by extending the `RouteBuilder` class and overriding its `configure` method to define our routing rules in Java Domain Specific Language (DSL).
@@ -227,10 +235,12 @@ public class FetchProductsRoute extends RouteBuilder {
 
 }
 ```
-Here we are creating the route by defining the Java DSL in a class `FetchProductsRoute` by extending `RouteBuilder` class. We defined the endpoint as `direct:fetchProducts` and provided a route identifier `direct-fetchProducts`. The prefix `direct:` in the name of the endpoint makes it possible to call the route from another camel route. 
+Here we are creating the route by defining the Java DSL in a class `FetchProductsRoute` by extending `RouteBuilder` class. We defined the endpoint as `direct:fetchProducts` and provided a route identifier `direct-fetchProducts`. The prefix `direct:` in the name of the endpoint makes it possible to call the route from another camel route using the `direct` camel component. 
 
 ### Triggering a Route with Templates
-We can invoke the routes with `ProducerTemplate` and `ConsumerTemplate`. The `ProducerTemplate` is used as an easy way of sending messages to a Camel endpoint. Both of these templates are similar to the template utility classes in the Spring Framework like `JmsTemplate` or `JdbcTemplate` that simplify access to the JMS and JDBC APIs. 
+We can invoke the routes with `ProducerTemplate` and `ConsumerTemplate`. The `ProducerTemplate` is used as an easy way of sending messages to a Camel endpoint. 
+
+Both of these templates are similar to the template utility classes in the Spring Framework like `JmsTemplate` or `JdbcTemplate` that simplify access to the [JMS](https://www.oracle.com/java/technologies/java-message-service.html) and [JDBC](https://docs.oracle.com/javase/8/docs/technotes/guides/jdbc/) APIs. 
 
 Let us invoke the route we created earlier from a resource class in our application :
 
@@ -243,7 +253,8 @@ public class ProductResource {
   
   @GetMapping("/products/{category}")
   @ResponseBody
-  public List<Product> getProductsByCategory(@PathVariable("category") final String category){
+  public List<Product> getProductsByCategory(
+                @PathVariable("category") final String category){
     producerTemplate.start();
     List<Product> products = producerTemplate
        .requestBody("direct:fetchProducts", category, List.class);
@@ -284,10 +295,9 @@ In our Spring configuration we have defined the `producerTemplate` and `consumer
 
 Let us now look at a route where we will use a Enterprise Integration Pattern.
 
-Camel provides implementations for many of the [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) from the book by Gregor Hohpe and Bobby Woolf. Here is a snippet of the list of those patterns:
+Camel provides implementations for many of the [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) from the [book](https://www.amazon.com/o/asin/0321200683/ref=nosim/enterpriseint-20) by Gregor Hohpe and Bobby Woolf. We will use the `Splitter` and `Aggregator` integration patterns in our example.
 
-![EIP Snippet](/assets/img/posts/camel-spring/eip-snippet.png)
-
+We can split a single message into multiple fragments with the [Splitter](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Sequencer.html) and process them individually. After that, we can use the [Aggregator](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Aggregator.html) to combine those individual fragments into a single message. 
 
 ### Selecting the Enterprise Integration Pattern (EIP)
 Before trying to build our own integration logic, we should look for the integration pattern most appropriate for fulfilling our use case. 
@@ -304,11 +314,7 @@ However, since design patterns are accepted solutions to recurring problems with
 
 ### Applying the Enterprise Integration Pattern (EIP)
 
-Next, we will refer to the Apache Camel's documentation for the chosen pattern's usage:
-
-![Splitter-Aggregator](/assets/img/posts/camel-spring/splitter-aggregator.png)
-
-We can split a single message into multiple fragments with the [Splitter](https://camel.apache.org/components/3.4.x/eips/split-eip.html) and process them individually. After that, we can use the [Aggregator](https://camel.apache.org/components/latest/eips/aggregate-eip.html) to combine those individual fragments into a single message. 
+Next, we will refer to Apache Camel's documentation to learn about the usage of the [Splitter](https://camel.apache.org/components/3.4.x/eips/split-eip.html) and [Aggregator](https://camel.apache.org/components/latest/eips/aggregate-eip.html) integration patterns to build our routes.
 
 Let us apply these patterns by performing the below steps:   
 

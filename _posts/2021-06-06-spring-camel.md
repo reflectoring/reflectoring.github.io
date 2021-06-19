@@ -178,7 +178,7 @@ Let us first add the Camel Spring Boot BOM to our Maven `pom.xml` :
 
 The `camel-spring-boot-bom` contains all the Camel Spring Boot starter JAR files.
 
-Next, let us add the Camel Spring Boot starter to set up the Camel Context by adding the following dependency to our `pom.xml` file :
+Next, let us add the Camel Spring Boot starter: 
 
 ```xml
 <dependency>
@@ -186,6 +186,7 @@ Next, let us add the Camel Spring Boot starter to set up the Camel Context by ad
   <artifactId>camel-spring-boot-starter</artifactId>
 </dependency>
 ```
+Adding the `camel-spring-boot-starter` sets up the Camel Context.
 
 We need to further add the starters for the components required by our Spring Boot application :
 
@@ -205,9 +206,9 @@ We need to further add the starters for the components required by our Spring Bo
 ```
 
 Here we have added three dependencies with the starters for using the components for `servlet`, `jackson`, and `swagger` which will perform the following functions:
-1. The Servlet component will provide HTTP based endpoints for consuming HTTP requests arriving at an HTTP endpoint bound to a published Servlet. 
-2. The Jackson component will be used for marshaling and unmarshalling between [JavaScript Object Notation (JSON)](https://www.json.org/json-en.html) and object representations.
-3. The Swagger component will expose the REST services and their APIs using [Swagger/Open API specification](https://swagger.io/docs/specification/about/).
+1. The `servlet` component will provide HTTP based endpoints for consuming HTTP requests arriving at an HTTP endpoint bound to a published Servlet. 
+2. The `jackson` component will be used for marshaling and unmarshalling between [JavaScript Object Notation (JSON)](https://www.json.org/json-en.html) and object representations.
+3. The `swagger` component will expose the REST services and their APIs using [Swagger/Open API specification](https://swagger.io/docs/specification/about/).
 
 ### Defining a Route with Java DSL's RouteBuilder
 
@@ -452,8 +453,8 @@ In this article, we looked at the important concepts of Apache Camel and used it
 1. Apache Camel is an integration framework providing a programming model along with implementations of many Enterprise Integration Patterns.
 2. We use different types of Domain Specific Languages (DSL) to define the routing rules of the message. 
 3. A Route is the most basic construct which we specify with a DSL to define the path a message should take while moving from source to destination.
-4. CamelContext is the runtime container for executing Camel routes.
-5. We built a route with the Splitter and Aggregator Enterprise Integration Patterns and invoked it from a REST DSL.
+4. Camel context is the runtime container for executing Camel routes.
+5. We built a route with the Splitter and Aggregator Enterprise Integration Patterns and invoked it from a REST DSL to demonstrate solving integration problems by applying Enterprise Integration Patterns because patterns are accepted solutions to recurring problems within a given context.
 6. Finally we looked at some scenarios where using Apache Camel will benefit us.
 
 

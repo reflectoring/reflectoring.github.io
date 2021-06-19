@@ -59,7 +59,7 @@ Here is an example of a route defined in Java DSL using the `RouteBuilder` class
         
     };
 ```
-Here we have defined a route with a JMS queue as a source and a file endpoint as a destination. 
+Here we have defined a route with a JMS queue as a source and a file endpoint as a destination by using the `RouteBuilder` class. The [RouteBuilder](https://www.javadoc.io/doc/org.apache.camel/camel-core/3.0.0-M2/org/apache/camel/builder/RouteBuilder.html) creates routing rules using the DSL. Instances of RouteBuilder are added to the CamelContext.
 
 The same route defined using Spring XML DSL looks like this :
 ```xml

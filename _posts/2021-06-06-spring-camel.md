@@ -88,10 +88,10 @@ The same route defined using Spring XML DSL looks like this :
 
 ### Components
 
-The transport of a message from the source to the destination goes through multiple steps. Processing in each step might require connecting to different types of resources in the message flow like invocation of a bean method or calling an API. **We use components to perform the function of connecting to these resources.** 
+The transport of a message from the source to the destination goes through multiple steps. Processing in each step might require connecting to different types of resources in the message flow like an invocation of a bean method or calling an API. **We use components to perform the function of connecting to these resources.** 
 
 
-For example, the route defined with `RouteBuilder` class in Java DSL uses the `file` component to bridge to the file system and `jms` component to bridge to the JMS provider. 
+For example, the route defined with the `RouteBuilder` class in Java DSL uses the `file` component to bridge to the file system and the `jms` component to bridge to the JMS provider. 
 
 ```java
     RouteBuilder builder = new RouteBuilder() {
@@ -138,7 +138,7 @@ Camel has several [pre-built components](https://camel.apache.org/components/lat
 - HTTP
 
 
-These functions are grouped in separate Jar files . Depending on the component we are using, we need to incude the corresponding Jar dependency. 
+These functions are grouped in separate Jar files. Depending on the component we are using, we need to include the corresponding Jar dependency. 
 
 For our example, we need to include the `camel-jms` dependency and use the component by referring to the documentation of [Camel JMS component](https://camel.apache.org/components/3.4.x/jms-component.html).
 
@@ -146,7 +146,7 @@ We can also [build our own components](https://camel.apache.org/manual/latest/wr
 
 
 ## Using Apache Camel in Spring Boot
-Camel support for Spring Boot includes an opinionated auto-configuration of the Camel context and starters for many Camel components. The auto-configuration of the Camel context detects Camel routes available in the Spring context and registers the key Camel utilities (like producer template, consumer template and the type converter) as Spring beans. 
+Camel support for Spring Boot includes an opinionated auto-configuration of the Camel context and starters for many Camel components. The auto-configuration of the Camel context detects Camel routes available in the Spring context and registers the key Camel utilities (like producer template, consumer template, and the type converter) as Spring beans. 
 
 Let us understand this with the help of an example. We will set up a simple route for calling a bean method and invoke that route from a REST endpoint.
 
@@ -204,9 +204,9 @@ We need to further add the starters for the components required by our Spring Bo
 </dependency>
 ```
 
-Here we have added three dependencies with the starters for using the components for `servlet`, `jackson` and `swagger` which will perform the following functions:
-1. The Servlet component will provide HTTP based endpoints for consuming HTTP requests arriving at a HTTP endpoint bound to a published Servlet. 
-2. The Jackson component will be used for marshalling and unmarshalling between [JavaScript Object Notation (JSON)](https://www.json.org/json-en.html) and object representations.
+Here we have added three dependencies with the starters for using the components for `servlet`, `jackson`, and `swagger` which will perform the following functions:
+1. The Servlet component will provide HTTP based endpoints for consuming HTTP requests arriving at an HTTP endpoint bound to a published Servlet. 
+2. The Jackson component will be used for marshaling and unmarshalling between [JavaScript Object Notation (JSON)](https://www.json.org/json-en.html) and object representations.
 3. The Swagger component will expose the REST services and their APIs using [Swagger/Open API specification](https://swagger.io/docs/specification/about/).
 
 ### Defining a Route with Java DSL's RouteBuilder
@@ -214,7 +214,7 @@ Here we have added three dependencies with the starters for using the components
 Let us now create a route for fetching products by using a Spring bean method. 
 We create Camel routes by extending the `RouteBuilder` class and overriding its `configure` method to define our routing rules in Java Domain Specific Language (DSL).
 
-Each of the router class is instantiated once and is registered with the `CamelContext` object. 
+Each of the router classes is instantiated once and is registered with the `CamelContext` object. 
 
 Our class containing the routing rule defined using Java Domain Specific Language (DSL) looks like this:
 
@@ -293,14 +293,14 @@ In our Spring configuration we have defined the `producerTemplate` and `consumer
 
 ## Defining a Route with Splitter-Aggregator Enterprise Integration Pattern
 
-Let us now look at a route where we will use a Enterprise Integration Pattern.
+Let us now look at a route where we will use an Enterprise Integration Pattern.
 
 Camel provides implementations for many of the [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/patterns/messaging/toc.html) from the [book](https://www.amazon.com/o/asin/0321200683/ref=nosim/enterpriseint-20) by Gregor Hohpe and Bobby Woolf. We will use the `Splitter` and `Aggregator` integration patterns in our example.
 
 We can split a single message into multiple fragments with the [Splitter](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Sequencer.html) and process them individually. After that, we can use the [Aggregator](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Aggregator.html) to combine those individual fragments into a single message. 
 
 ### Selecting the Enterprise Integration Pattern (EIP)
-Before trying to build our own integration logic, we should look for the integration pattern most appropriate for fulfilling our use case. 
+Before trying to build our integration logic, we should look for the integration pattern most appropriate for fulfilling our use case. 
 
 Let us see an example of defining a route with the Splitter and Aggregate integration patterns.  Here we will consider a hypothetical scenario of building a REST API for an E-Commerce application for processing an order placed by a customer. We will expect our order processing API to perform the following steps:
 
@@ -308,7 +308,7 @@ Let us see an example of defining a route with the Splitter and Aggregate integr
 2. Fetch the price of each order line item in the cart 
 3. Calculate the sum of prices of all order line items to generate the order invoice.
 
-After finishing step 1, we want to fetch the price of each order line item in parallel in step 2, since they are not dependent on each other. There are multiple ways of doing this kind of processing. 
+After finishing step 1, we want to fetch the price of each order line item in step 2. We want to fetch them in parallel since they are not dependent on each other. There are multiple ways of doing this kind of processing. 
 
 However, since design patterns are accepted solutions to recurring problems within a given context, we will search for a pattern closely resembling our problem from our list of Enterprise Integration Patterns. After looking through the list, we find that the [Splitter](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Sequencer.html) and [Aggregator](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Aggregator.html) patterns are best suited to do this processing.
 
@@ -384,9 +384,9 @@ public class PricingService {
 
 }
 ```
-Here we have defined a route in Java DSL which splits the incoming message (collection of order lines) into individual order line items. Each order line item is sent to the `calculatePrice` method of `PricingService` class to compute the price of the items .
+Here we have defined a route in Java DSL which splits the incoming message (collection of order lines) into individual order line items. Each order line item is sent to the `calculatePrice` method of the `PricingService` class to compute the price of the items.
 
-Next we have tied up an aggregator after the split step. The aggregator implements the `AggregationStrategy` interface and our aggregation logic is inside the overridden `aggregate()` method. In the `aggregate()` method, we take each of the order line item and consolidate them into a single `order` object. 
+Next, we have tied up an aggregator after the split step. The aggregator implements the `AggregationStrategy` interface and our aggregation logic is inside the overridden `aggregate()` method. In the `aggregate()` method, we take each of the order line items and consolidate them into a single `order` object. 
 
 ## Consuming the Route with Splitter Aggregator Pattern from REST Styled DSL
 Let us next use the REST styled DSL in Apache Camel to define REST APIs with the HTTP verbs like GET, POST, PUT, and, DELETE. The actual REST transport is leveraged by using Camel REST components such as Netty HTTP, Servlet, and others that have native REST integration.
@@ -433,13 +433,13 @@ We then route directly to the Camel endpoint of our route named `direct:fetchPro
 
 As we saw in our examples, we can easily accomplish the above tasks with custom coding instead of using Apache Camel. Let us understand some of the situations when we should consider using Apache Camel for our integration requirements:
 
-1. Apache Camel with a rich set of compoents will be useful in applications requiring integration with systems over different protocols (like files, APIs, or JMS Queues).
-2. Apache Camel's implementions of Enterprise Integration Patterns is useful to fulfill complex integration requirements with tried and tested solutions for recurring integration scenarios.
-3. Orchestration and choreography in microservices can be defined with Domain Specific Language in Apache Camel routes. Routes helps to keep the core business logic decoupled from the communication logic and satisfies one of the key MS principles of SRP.
+1. Apache Camel with a rich set of components will be useful in applications requiring integration with systems over different protocols (like files, APIs, or JMS Queues).
+2. Apache Camel's implementation of Enterprise Integration Patterns is useful to fulfill complex integration requirements with tried and tested solutions for recurring integration scenarios.
+3. Orchestration and choreography in microservices can be defined with Domain Specific Language in Apache Camel routes. Routes help to keep the core business logic decoupled from the communication logic and satisfy one of the key Microservice principles of SRP (single responsibility principle).
 4. Apache Camel works very well with Java and Spring applications.
 4. Working with Java Objects (POJOs): Apache Camel is a Java framework, so it is especially good at working with Java objects. So if we are working with a file format like XML, JSON that can be de-serialized into a Java object then it will be handled easily by Camel.
 
-On the contrary we should avoid using Apache Camel in the following scenarios:
+On the contrary, we should avoid using Apache Camel in the following scenarios:
 1. If we have simple integration involving calling few APIs
 2. Camel is not known to perform well for heavy data processing
 3. Camel will also not be good for teams lacking in Java skills
@@ -457,6 +457,6 @@ In this article, we looked at the important concepts of Apache Camel and used it
 6. Finally we looked at some scenarios where using Apache Camel will benefit us.
 
 
-I hope this post has given you a good introduction of Apache Camel and we can use Camel with Spring Boot applications. This should help you to get started with building applications using Spring with Apache Camel. 
+I hope this post has given you a good introduction to Apache Camel and we can use Camel with Spring Boot applications. This should help you to get started with building applications using Spring with Apache Camel. 
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-camel).

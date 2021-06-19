@@ -32,7 +32,7 @@ Some of the important concepts of Apache Camel used during integration are shown
 Let us get a basic understanding of these concepts before proceeding further.
 
 ### Camel Context
-Camel context is the runtime container of all the Camel constructs and executes the routing rules. The Camel context activates the routing rules at start up by loading all the resources required for their execution.
+Camel context is the runtime container of all the Camel constructs and executes the routing rules. The Camel context activates the routing rules at startup by loading all the resources required for their execution.
 
 The Camel context is described by the [CamelContext](https://github.com/Talend/apache-camel/blob/master/camel-core/src/main/java/org/apache/camel/CamelContext.java) interface and is autoconfigured by default if running in a Spring container.
 
@@ -40,9 +40,9 @@ The Camel context is described by the [CamelContext](https://github.com/Talend/a
 
 **A Route is the most basic construct which we use to define the path a message should take while moving from source to destination.** We define routes using a Domain Specific Language (DSL). 
 
-These are loaded in the Camel context and are used to execute the routing logic when the route is triggered. Each route is identified by a unique identifier in the Camel context.
+Routes are loaded in the Camel context and are used to execute the routing logic when the route is triggered. Each route is identified by a unique identifier in the Camel context.
 
-**Endpoints represent the source and destination of a message.** They are usually referred to in the Domain Specific Language (DSL) via their URIs. Examples of an endpoint are either a URI or URL in a web application or a Destination in a JMS system.
+**Endpoints represent the source and destination of a message.** They are usually referred to in the Domain Specific Language (DSL) via their URIs. Examples of an endpoint can be a URL of a web application or source or destination of a messaging system.
 
 ### Domain Specific Language (DSL)
 We define routes in Apache Camel with a variety of [Domain Specific Languages (DSL)](https://camel.apache.org/manual/latest/dsl.html). The Java DSL and the Spring XML DSL are the two main types of DSLs used in Spring applications.  
@@ -61,7 +61,7 @@ Here is an example of a route defined in Java DSL using the `RouteBuilder` class
         
     };
 ```
-Here we have defined a route with a JMS queue as a source and a file endpoint as a destination by using the `RouteBuilder` class. The [RouteBuilder](https://www.javadoc.io/doc/org.apache.camel/camel-core/3.0.0-M2/org/apache/camel/builder/RouteBuilder.html) class creates routing rules using the DSL. Instances of RouteBuilder are added to the CamelContext.
+Here we have defined a route with a JMS queue as a source and a file endpoint as a destination by using the `RouteBuilder` class. The [RouteBuilder](https://www.javadoc.io/doc/org.apache.camel/camel-core/3.0.0-M2/org/apache/camel/builder/RouteBuilder.html) class creates routing rules using the DSL. Instances of `RouteBuilder` class are added to the Camel context.
 
 The same route defined using Spring XML DSL looks like this :
 ```xml
@@ -155,7 +155,7 @@ Let us first create a Spring Boot project with the help of the [Spring boot Init
 ### Adding the Dependencies
 Apache Camel ships a Spring Boot Starter module `camel-spring-boot-starter` that allows us to use Camel in Spring Boot applications. 
 
-Let us first add the Camel Spring Boot BOM to your Maven `pom.xml` :
+Let us first add the Camel Spring Boot BOM to our Maven `pom.xml` :
 
 ```xml
 <dependencyManagement>
@@ -235,7 +235,7 @@ public class FetchProductsRoute extends RouteBuilder {
 
 }
 ```
-Here we are creating the route by defining the Java DSL in a class `FetchProductsRoute` by extending `RouteBuilder` class. We defined the endpoint as `direct:fetchProducts` and provided a route identifier `direct-fetchProducts`. The prefix `direct:` in the name of the endpoint makes it possible to call the route from another camel route using the `direct` camel component. 
+Here we are creating the route by defining the Java DSL in a class `FetchProductsRoute` by extending `RouteBuilder` class. We defined the endpoint as `direct:fetchProducts` and provided a route identifier `direct-fetchProducts`. The prefix `direct:` in the name of the endpoint makes it possible to call the route from another Camel route using the `direct` Camel component. 
 
 ### Triggering a Route with Templates
 We can invoke the routes with `ProducerTemplate` and `ConsumerTemplate`. The `ProducerTemplate` is used as an easy way of sending messages to a Camel endpoint. 

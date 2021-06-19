@@ -86,20 +86,49 @@ The same route defined using Spring XML DSL looks like this :
 The transport of a message from the source to the destination goes through multiple steps. Processing in each step might require accessing different types of resources in the message flow like invocation of a bean method or calling an API. **We use components to perform the function of connecting to these resources.** 
 
 
-For example, the route defined with the below Java DSL uses the `file` component to bridge to the file system and `jms` component to bridge to the JMS provider. 
+For example, the route defined with `RouteBuilder` class in Java DSL uses the `file` component to bridge to the file system and `jms` component to bridge to the JMS provider. 
 
 ```java
-("file:/mysrc").split().tokenize("\n").to("jms:queue:myQueue")
+    RouteBuilder builder = new RouteBuilder() {
+
+      @Override
+      public void configure() throws Exception {
+        // Route definition in Java DSL for moving file from jms queue to file system.
+        from("jms:queue:myQueue").to("file://mysrc");
+      }
+        
+    };
 ```
 
 Camel has several [pre-built components](https://camel.apache.org/components/latest/) and many others built by communities. Here is a snippet of the components available in Camel which gives us an idea of the wide range of systems we can integrate using the framework:
 
- | | | | | |
--|-|-|-|-|-|-
-ActiveMQ|AMQP|Async HTTP Client|Atom|Avro RPC|AWS2 DynamoDB|AWS2 Lambda
-AWS2 SQS|AWS2 SNS|Azure CosmosDB|Azure Storage Blob|Azure Storage Queue|Bean|Cassandra CQL
-Consul|CouchDB|Cron|Direct|Docker|Elasticsearch|Facebook
-FTP|GCP Storage|Google Cloud Function|GraphQL|Google Pubsub|gRPC|HTTP
+ 
+- ActiveMQ|AMQP
+- Async HTTP Client
+- Atom|Avro RPC
+- AWS2 DynamoDB
+- AWS2 Lambda
+- AWS2 SQS
+- AWS2 SNS
+- Azure CosmosDB
+- Azure Storage Blob
+- Azure Storage Queue
+- Bean
+- Cassandra CQL
+- Consul
+- CouchDB|
+- Cron
+- Direct
+- Docker
+- Elasticsearch
+- Facebook
+- FTP
+- Google Cloud Storage
+- Google Cloud Function
+- GraphQL
+- Google Pubsub
+- gRPC
+- HTTP
 
 
 These functions are grouped in separate Jar files . Depending on the component we are using, we need to incude the corresponding Jar dependency. For our example, we need to include the `camel-jms` dependency and use the component by referring to the documentation of [Camel JMS component](https://camel.apache.org/components/3.4.x/jms-component.html).

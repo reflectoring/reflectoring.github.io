@@ -144,9 +144,9 @@ One important requirement of the `@Cacheable` annotation is the cache name which
 `@CacheConfig` is used in case we have used multiple Spring Cache annotations in the class and all them have some common configuration. 
 In our case that is cache name.
 
-Now Spring Cloud AWS provides us two ways to connect to ElastiCache:
-1. Cluster Name Approach
-2. Stack Name Approach
+Now, Spring Cloud AWS provides us two ways to connect to ElastiCache:
+1. **Cluster Name Approach**
+2. **Stack Name Approach**
 
 ### Cluster Name Approach
 

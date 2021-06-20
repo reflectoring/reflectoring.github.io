@@ -29,12 +29,12 @@ to use caching primarily for the following two reasons:
 
 Implementing caching may result in a fluid user experience and a robust system.
 
-We can either implement caching by ourselves in our application by using a `Map` based data structure or use a full-blown caching 
+We can either implement caching by ourselves in our application by using a `Map` based data structure, or we can use a full-blown caching 
 solutions such as Redis or ElastiCache.
 
 ## What is ElastiCache?
 
-ElastiCache is a fully managed in-memory caching service in AWS Cloud. It currently supports two caching engines :[Memcached](https://memcached.org/) and [Redis](https://redis.io/).
+ElastiCache is a fully managed in-memory caching service in AWS Cloud. It currently supports two caching engines : [Memcached](https://memcached.org/) and [Redis](https://redis.io/).
 
 ## ElastiCache for Redis
 
@@ -88,10 +88,10 @@ Spring Cloud AWS does all the heavy lifting of configuring the caches for us. Al
 
 ## Caching with Spring Boot
 
-The Easiest way to implement caching in a Spring Boot application is by using [Spring Boot Cache Abstraction](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache). 
+The easiest way to implement caching in a Spring Boot application is by using [Spring Boot Cache Abstraction](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache). 
 Please read our article on [Implementing Cache in a Spring Application](https://reflectoring.io/spring-boot-cache/) to dive deeper into the topic.
 
-In this section we will only go through just enough configuration required of us to showcase the integration of Spring Cloud AWS with ElastiCache.
+In this section, we will only go through just enough configuration required of us to showcase the integration of Spring Cloud AWS with ElastiCache.
 
 The first thing we need to do is to enable caching in our application using `@EnableCaching` annotation:
 
@@ -144,7 +144,13 @@ One important requirement of the `@Cacheable` annotation is the cache name which
 `@CacheConfig` is used in case we have used multiple Spring Cache annotations in the class and all them have some common configuration. 
 In our case that is cache name.
 
-Now, the Spring Cloud AWS requires clusters of the same name as cache names to exist in the ElastiCache:
+Now Spring Cloud AWS provides us two ways to connect to ElastiCache:
+1. Cluster Name Approach
+2. Stack Name Approach
+
+### Cluster Name Approach
+
+Spring Cloud AWS requires clusters of the same name as cache names to exist in the ElastiCache:
 
 ![ElastiCache Clusters](/assets/img/posts/spring-elasticache-redis/cache-clusters.png)
 
@@ -165,9 +171,11 @@ cloud:
           expiration: 6000
 ```
 
-Here, we have provided list of clusters since we have used two caches in our application: `product-cache` and `user-cache`. We have also provided different
+Here, we can provide list of clusters. Since we have used two caches in our application we have to specify both `product-cache` and `user-cache`. We have also provided different
 Time-To-Live(expiration) in seconds for both caches. In case we want a common expiration time for all the caches we can do so using `cloud.aws.elasticache.default-expiration` 
 property.
+
+### Stack Name Approach
 
 If we are using CloudFormation to deploy our application stack in the AWS then one more approach exists for us.
 
@@ -224,8 +232,8 @@ Let's look at the steps it performs along with the classes involved in building 
 * Then `ElastiCacheCacheConfigurer` creates the `CacheManager` with the help of `ElastiCacheFactoryBean` class.
 * `ElastiCacheFactoryBean` scans the ElastiCache in the same availability zone and retrieves the host and port
   names of the nodes. 
-* To allow our service to scan ElastiCache we need to provide `AmazonElastiCacheReadOnlyAccess` permission
-  to our service and also `AWSCloudFormationReadOnlyAccess` if we are using the stack name approach.
+* **To allow our service to scan ElastiCache we need to provide `AmazonElastiCacheReadOnlyAccess` permission
+  to our service and also `AWSCloudFormationReadOnlyAccess` if we are using the stack name approach.**
 * `ElastiCacheFactoryBean` passes this host and port to `RedisCacheFactory` which then uses Redis clients such as Lettuce 
   to create the connection object which then actually establishes connection with the nodes and performs required operations.
 

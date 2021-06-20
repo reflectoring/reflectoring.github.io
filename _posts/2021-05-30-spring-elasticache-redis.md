@@ -88,9 +88,25 @@ Spring Cloud AWS does all the heavy lifting of configuring the caches for us. Al
 
 ## Caching with Spring Boot
 
-Spring Cloud AWS requires clusters of the same name as cache names to exist in the ElastiCache.
+The Easiest way to implement caching in a Spring Boot application is by using [Spring Boot Cache Abstraction](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache). 
+Please read our article on [Implementing Cache in a Spring Application](https://reflectoring.io/spring-boot-cache/) to dive deeper into the topic.
 
-For instance, in our example application, we have used two caches. One named `product-cache` in `ProductService` and another named `user-cache` in `UserService`::
+In this section we will only go through just enough configuration required of us to showcase the integration of Spring Cloud AWS with ElastiCache.
+
+The first thing we need to do is to enable caching in our application using `@EnableCaching` annotation:
+
+```java
+@Configuration
+@EnableCaching
+public class EnableCache {
+    //...
+}
+```
+
+Here we have used a separate configuration class approach to enable caching.
+
+Next, we need to identify the methods that we need to cache. In our example application we have decided to cache methods 
+of two services `ProductService` and `UserService`:
 
 ```java
 @Service
@@ -121,9 +137,14 @@ public class UserService {
     }
 }
 ```
-We have specified the cache name in `@CacheConfig` annotation.
+With `@Cacheable` we have marked method `getProduct` of the `ProductService` and `getUser` of `UserService` to be cached. 
+Both methods are simply retrieving entities from the database. 
 
-Clusters of the same name need to exist in the ElastiCache:
+One important requirement of the `@Cacheable` annotation is the cache name which is provided via `@CacheConfig` annotation. 
+`@CacheConfig` is used in case we have used multiple Spring Cache annotations in the class and all them have some common configuration. 
+In our case that is cache name.
+
+Now, the Spring Cloud AWS requires clusters of the same name as cache names to exist in the ElastiCache:
 
 ![ElastiCache Clusters](/assets/img/posts/spring-elasticache-redis/cache-clusters.png)
 
@@ -144,13 +165,13 @@ cloud:
           expiration: 6000
 ```
 
-We can also define Time-To-Live for the keys in each cache via `expiration` properties.
+Here, we have provided list of clusters since we have used two caches in our application: `product-cache` and `user-cache`. We have also provided different
+Time-To-Live(expiration) in seconds for both caches. In case we want a common expiration time for all the caches we can do so using `cloud.aws.elasticache.default-expiration` 
+property.
 
-If we are using CloudFormation to deploy our application stack in the AWS then one more
-approach exists for us.
+If we are using CloudFormation to deploy our application stack in the AWS then one more approach exists for us.
 
-Instead of giving cluster names, we only need to provide the stack name. Say the stack name
-is `example-stack`:
+Instead of giving cluster names, we only need to provide the stack name. Say the stack name is `example-stack`:
 
 ```yaml
 cloud:
@@ -160,8 +181,10 @@ cloud:
 ```
 
 Spring Cloud AWS retrieves all the cache clusters from our stack and builds `CacheManager` with
-the names of the resources as cache names instead of cluster names. With this, we need to
-update our cache names in our application to resource names instead of cluster names:
+the names of the resources as cache names instead of the actual cluster names. The correct terminology here is the **Logical Name** which is the
+name of the resource in the Cloudformation script and **Physical Name** which is the name of the cache cluster.
+
+We need to specify the **Logical Name** of the cache cluster as cache names in our configuration:
 
 ```java
 @CacheConfig(cacheNames = "ProductCache")
@@ -175,12 +198,13 @@ public class UserService {
 }
 ```
 
-Make sure to add the following dependency when using the stack name approach:
+We also need to make sure to add the following dependency when using the stack name approach:
 
 ```groovy
 implementation 'com.amazonaws:aws-java-sdk-cloudformation'
 ```
 
+Spring Cloud AWS uses this dependency to retrieve the Cloudformation stack details at the time of application startup. 
 
 ## How Does Spring Cloud AWS Configure the `CacheManager`?
 

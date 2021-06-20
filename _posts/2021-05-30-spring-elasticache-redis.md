@@ -19,12 +19,28 @@ to [AWS ElastiCache for Redis](https://docs.aws.amazon.com/AmazonElastiCache/lat
  
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-caching-redis" %}
 
-## What is ElastiCache
+## Why Caching?
+
+Caching is a common technique of temporarily storing a copy of data or result of a computation in-memory for quick and frequent access. We tend
+to use caching primarily for the following two reasons:
+
+1. **Improving the throughput of the application.**
+2. **Avoiding overwhelming the application or downstream applications with redundant requests.**
+
+Implementing caching may result in a fluid user experience and a robust system.
+
+We can either implement caching by ourselves in our application by using a `Map` based data structure or use a full-blown caching 
+solutions such as Redis or ElastiCache.
+
+## What is ElastiCache?
+
 ElastiCache is a fully managed in-memory caching service in AWS Cloud. It currently supports two caching engines :[Memcached](https://memcached.org/) and [Redis](https://redis.io/).
 
 ## ElastiCache for Redis
 
-Redis is a very popular in-memory data structure store. It is open-source and widely used in the industry for caching. It stores the data as key-value pairs and supports many varieties of data structures like string, hash, list, set, sorted set with range queries, bitmap, hyperloglog, geospatial index, and streams.
+Redis is a very popular in-memory data structure store. It is open-source and widely used in the industry for caching. It 
+stores the data as key-value pairs and supports many varieties of data structures like string, hash, list, set, sorted 
+set with range queries, bitmap, hyperloglog, geospatial index, and streams.
 
 In AWS, one of the ways of using Redis for caching is by using the ElastiCache service. 
 ElastiCache hosts the caching engines such as Redis and provides High Availability, Scalability, and Resiliency to it. It 
@@ -32,6 +48,12 @@ also takes care of all the networking and security requirements.
 
 **The basic building block of ElastiCache is the cluster**. A cluster can have one or more nodes. Each
 node runs an instance of the Redis cache engine software. Please refer [AWS ElastiCache User Guide](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) for more details.
+
+## Spring Cloud AWS For Caching
+
+Spring Cloud AWS integrates the Amazon ElastiCache service into the Spring unified caching abstraction providing a cache 
+manager based on the memcached and Redis protocols. The caching support for Spring Cloud AWS provides its own memcached 
+implementation for ElastiCache and uses Spring Data Redis for Redis caches.
 
 ## Configuring Dependencies for Spring Cloud AWS
 

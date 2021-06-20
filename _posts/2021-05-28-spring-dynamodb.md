@@ -45,6 +45,7 @@ The primary key is used to uniquely identify each item in an Amazon DynamoDB tab
 
 2. **Composite Primary Key**: This is composed of two attributes - a partition key and a sort keys. In our example above, each order is uniquely identified by a composite primary key with `customerID` as the partition key and `orderID` as the sort key.
 
+
 ### Data Distribution Across Partitions
 
 **A partition is a unit of storage for a table where the data is stored by DynamoDB**. 
@@ -60,6 +61,7 @@ We can use a secondary index to query the data in the table using an alternate k
 - **Local Secondary Index (LSI)**: An index that has the same partition key as the table, but a different sort key.
 
 ## Writing Applications with DynamoDB
+
 DynamoDB is a web service, and interactions with it are stateless. So we can interact with DynamoDB via REST API calls over HTTP(S). Unlike connection protocols like JDBC, applications do not need to maintain a persistent network connections. 
 
 We usually do not work with the DynamoDB APIs directly. AWS provides an [SDK](https://aws.amazon.com/sdk-for-java/) in different programming languages which we integrate with our applications for performing database operations.
@@ -71,6 +73,7 @@ We will describe two ways for accessing DynamoDB from Spring applications:
 Both these methods roughly follow the similar steps as in any Object Relational Mapping (ORM) frameworks:
 
 1.  We define a data class for our domain objects like customer, product, order, etc. and then define the mapping of this data class with table residing in the database. The mapping is defined by putting annotations on the fields of the data class to specify the keys and attributes. 
+
 2.  We define a repository class to define the CRUD methods using the mapping object created in the previous step.
 
 Let us see some examples creating applications by using these two methods in the following sections.
@@ -80,6 +83,7 @@ Let us see some examples creating applications by using these two methods in the
 The primary goal of the [Spring® Data](https://spring.io/projects/spring-data) project is to make it easier to build Spring-powered applications by providing a consistent framework to use different data access technologies. Spring Data is an umbrella project composed of many different sub-projects each corresponding to specific database technologies. 
 
 The [Spring Data module for DynamoDB](https://github.com/derjust/spring-data-dynamodb) is a community module for accessing AWS DynamoDB with familiar Spring Data constructs of data objects and repository interfaces.
+
 
 ### Initial Setup
 Let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=dynamodbspringdata&description=Demo%20project%20for%20Spring%20data&packageName=io.pratik.springdata&dependencies=web), and then open the project in our favorite IDE.
@@ -187,9 +191,12 @@ public class Customer {
 }
 ```
 
-We have defined the mappings with the table by decorating the class with `@DynamoDBTable` annotation and passing in the table name. We have used the `DynamoDBHashKey` attribute over the getter method of the `customerID` field. For mapping the remaining attributes, we have decorated the getter methods of the remaining fields with the  `@DynamoDBAttribute` passing in the name of the attribute.
+We have defined the mappings with the table by decorating the class with `@DynamoDBTable` annotation and passing in the table name. We have used the `DynamoDBHashKey` attribute over the getter method of the `customerID` field. 
+
+For mapping the remaining attributes, we have decorated the getter methods of the remaining fields with the  `@DynamoDBAttribute` passing in the name of the attribute.
 
 ### Defining the Repository Interface
+
 We will next define a repository interface by extending `CrudRepository` typed to the domain or data class and an `ID` type for the type of primary key. By extending the  `CrudRepository` interface, we inherit ready to call queries like `findAll()`, `findById()`, `save()`, etc.
 
 ```java
@@ -210,6 +217,7 @@ public class CustomerService {
   }
 }
 ```
+
 Here we have created a repository interface `CustomerRepository` and injected it in a `service` class `CustomerService` and defined a method `createCustomer()` for creating a customer record in the DynamoDB table.
 
 We will use invoke this method a JUnit test:
@@ -234,10 +242,16 @@ class CustomerServiceTest {
 }
 
 ```
+
 In our test, we are calling the `createCustomer()` method in our service class to create a customer record in the table.
 
+
 ## Using the DynamoDB Enhanced Client
-If we do not want to use Spring Data in our application, we can use choose to access DynamoDB with the Enhanced DynamoDB Client module of the AWS SDK for Java 2.0. The Enhanced DynamoDB Client module provides a higher level API to execute database operations directly with the data classes in our application. We will follow similar steps as our previous example using Spring Data.
+If we do not want to use Spring Data in our application, we can use choose to access DynamoDB with the Enhanced DynamoDB Client module of the AWS SDK for Java 2.0. 
+
+The Enhanced DynamoDB Client module provides a higher level API to execute database operations directly with the data classes in our application. 
+
+We will follow similar steps as our previous example using Spring Data.
 
 ### Initial Setup
 Let us create one more Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.4.5.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=springcloudsqs&name=dynamodbec&description=Demo%20project%20for%20SEnhanced%20client&packageName=io.pratik&dependencies=web). We will access DynamoDB using the Enhanced DynamoDB Client in this application.
@@ -359,10 +373,12 @@ public class OrderRepository {
     return order;
   }
 
+
   private DynamoDbTable<Order> getTable() {
     // Create a tablescheme to scan our bean class order
     DynamoDbTable<Order> orderTable = 
-        dynamoDbenhancedClient.table("Order", TableSchema.fromBean(Order.class));
+        dynamoDbenhancedClient.table("Order", 
+          TableSchema.fromBean(Order.class));
     return orderTable;
   }
 
@@ -370,7 +386,9 @@ public class OrderRepository {
 
 ```
 
-Here we are constructing a `TableSchema` by calling `TableSchema.fromBean(Order.class)` to scan our bean class `Order`. This will use the annotations in the `Order` class defined earlier to determine the attributes which are partition and sort keys. We are then associating this `Tableschema` with our actual table name `Order` to create an instance of `DynamoDbTable` which represents the object with a mapped table resource `Order`. 
+Here we are constructing a `TableSchema` by calling `TableSchema.fromBean(Order.class)` to scan our bean class `Order`. This will use the annotations in the `Order` class defined earlier to determine the attributes which are partition and sort keys. 
+
+We are then associating this `Tableschema` with our actual table name `Order` to create an instance of `DynamoDbTable` which represents the object with a mapped table resource `Order`. 
 
 We are using this mapped resource to save the `order` item in the `save` method by calling the `putItem` method and fetch the item by calling the `getItem` method.
 
@@ -386,10 +404,14 @@ public class OrderRepository {
  ...
  ...
 
-  public void deleteOrder(final String customerID, final String orderID) {
+  public void deleteOrder(final String customerID, 
+                          final String orderID) {
     DynamoDbTable<Order> orderTable = getTable();
 
-    Key key = Key.builder().partitionValue(customerID).sortValue(orderID).build();
+    Key key = Key.builder()
+                .partitionValue(customerID)
+                .sortValue(orderID)
+                .build();
 
     DeleteItemEnhancedRequest deleteRequest = DeleteItemEnhancedRequest
         .builder()
@@ -399,13 +421,15 @@ public class OrderRepository {
     orderTable.deleteItem(deleteRequest);
   }
   
-  public PageIterable<Order> scanOrders(final String customerID, final String orderID) {
+  public PageIterable<Order> scanOrders(final String customerID, 
+                                        final String orderID) {
     DynamoDbTable<Order> orderTable = getTable();
     
     return orderTable.scan();
   }
 
-  public PageIterable<Order> findOrdersByValue(final String customerID, final double orderValue) {
+  public PageIterable<Order> findOrdersByValue(final String customerID, 
+                                             final double orderValue) {
     DynamoDbTable<Order> orderTable = getTable();
         
         AttributeValue attributeValue = AttributeValue.builder()
@@ -420,15 +444,17 @@ public class OrderRepository {
                 .expressionValues(expressionValues)
                 .build();
 
-        // Create a QueryConditional object that is used in the query operation
+        // Create a QueryConditional object that is used in 
+        // the query operation
         QueryConditional queryConditional = QueryConditional
                 .keyEqualTo(Key.builder().partitionValue(customerID)
                         .build());
 
         // Get items in the Customer table and write out the ID value
-        PageIterable<Order> results = orderTable
-                                        .query(r -> r.queryConditional(queryConditional)
-                                                 .filterExpression(expression));
+        PageIterable<Order> results = 
+                orderTable
+                 .query(r -> r.queryConditional(queryConditional)
+                 .filterExpression(expression));
         return results;
   }
 
@@ -470,6 +496,7 @@ public class Product {
 Here we have added a nested collection of `Product` class to the `Order` class and annotated the `Product` class with `@DynamoDbBean` annotation.
 
 ## A Quick Note on Source Code Organization
+
 
 The source code of the [example project](https://github.com/thombergs/code-examples/tree/master/aws/springdynamodb) is organized as a multi-module Maven project into two separate Maven projects under a common parent project. We have used [Spring boot Initializr](https://start.spring.io/) to generate these projects which gets generated with this parent tag in `pom.xml` :
 

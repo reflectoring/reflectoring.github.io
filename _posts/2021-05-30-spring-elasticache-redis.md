@@ -21,15 +21,12 @@ to [AWS ElastiCache for Redis](https://docs.aws.amazon.com/AmazonElastiCache/lat
 
 ## Why Caching?
 
-Caching is a common technique of temporarily storing a copy of data or result of a computation in-memory for quick and frequent access. We use caching primarily for the following two reasons:
+Caching is a common technique of temporarily storing a copy of data or result of a computation in-memory for quick and frequent access. We use caching primarily for :
 
 1. **Improving the throughput of the application.**
-2. **Avoiding overwhelming the application or downstream applications with redundant requests.**
+2. **Prevent overwhelming the application or downstream applications with redundant requests.**
 
-Implementing caching may result in a fluid user experience and a robust system.
-
-We can either implement caching by ourselves in our application by using an in-memory `Map` based data structure, or we can use a full-blown caching 
-solutions such as Redis or ElastiCache.
+We can either implement caching in our application by using an in-memory `Map` based data structure, or we can use a full-blown caching solution such as [Redis](https://redis.io/).
 
 ## What is ElastiCache?
 
@@ -50,7 +47,7 @@ node runs an instance of the Redis cache engine software. Please refer [AWS Elas
 
 ## Spring Cloud AWS For Caching
 
-Spring supports a unified caching abstraction by providing the [Cache](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/cache/Cache.html) and [CacheManger](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/cache/CacheManager.html to unify different caching technologies. 
+Spring supports a unified caching abstraction by providing the [Cache](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/cache/Cache.html) and [CacheManger](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/cache/CacheManager.html) interfaces to unify different caching technologies. 
 
 It also supports JCache (JSR-107) annotations to allow us to leverage a variety of caching technologies.
 

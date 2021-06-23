@@ -1,10 +1,10 @@
 ---
-title: "Sending E-Mails with AWS SES and Spring Cloud AWS"
+title: "Sending E-Mails with Amazon SES and Spring Cloud AWS"
 categories: [craft]
 date: 2021-06-14 06:00:00 +1000
 modified: 2021-06-13 06:00:00 +1000
 author: pratikdas
-excerpt: "Apache Camel is an integration framework with a programming model for integrating a wide variety of applications. In this article, we will look at using Apache Camel for building integration logic in microservice applications built with Spring Boot with the help of code examples."
+excerpt: "Amazon Simple Email Service (SES) provides an email platform for sending and receiving emails. Spring Cloud AWS makes it convenient to integrate applications with different AWS services. In this article, we will look at using Spring Cloud AWS for working with Amazon Simple Email Service (SES) with the help of some basic concepts of SES along with code examples."
 image:
   auto: 0074-stack
 ---
@@ -28,7 +28,7 @@ When we request SES to send an email, the request is processed in multiple stage
 
 After this the following outcomes are possible:
 
-|-|-|
+|-| - |
 |**Successful Delivery**|The email is accepted by the Internet service provider (ISP), and the ISP delivers the email to the recipient.|
 |**Hard Bounce**|The email is rejected by the ISP because the recipient's address is invalid. The ISP sends the hard bounce notification back to Amazon SES, which notifies the sender through email or by publishing to a Amazon Simple Notification Service (Amazon SNS) topic set up to receive this notification.|
 |**Soft Bounce**| The ISP cannot deliver the email to the recipient due to reasons like the recipient's mailbox is full,the domain does not exist, or due to any temporary condition, such as the ISP being too busy to handle the request. 

@@ -58,7 +58,7 @@ We can find the information for connecting to the SMTP endpoint from the SES con
    ![smtp-settings](/assets/img/posts/aws-ses-spring-cloud/smtp-settings.png)
 
 ### Calling the SES API
-We can send emails by calling the SES Query API with any REST client or by using the AWS SDK.
+We can send emails by calling the SES Query API with any REST client or by using the AWS SDK. We can send both formatted email or emails in plain text.
 
 ## Sending Mails with Amazon SES using Spring Cloud AWS
 
@@ -192,10 +192,10 @@ class NotificationServiceTest {
 
 ```
 
-Here we are using two test emails as our `from` and `to` email addresses which we verified earlier from the SES console. We are setting these emails along with subject and email contents in the `SimpleMailMessage` class. As explained before, we are using a sandbox environment that will only work with verified email addresses. 
+Here we are using two test emails as our `from` and `to` email addresses which we verified earlier from the SES console. We are setting these emails along with the subject and contents of the email in the `SimpleMailMessage` class. As explained before, we are using a sandbox environment that will only work with verified email addresses. 
 
 
-### Send Email with Attachments
+### Sending Email with Attachments
 
 We will now send an email with an attachment for which we will use the `SimpleEmailServiceJavaMailSender` class.
 Let us update our configuration by setting up the bean for `SimpleEmailServiceJavaMailSender`:
@@ -260,8 +260,7 @@ public class NotificationService {
 }
 
 ```
-Here we are using the callback interface `MimeMessagePreparator` to construct the email message. 
-
+Here we are using the callback interface `MimeMessagePreparator` to construct the email message by setting the `to` and `from` email addresses along with the subject and text of the email. 
 
 ## Conclusion
 

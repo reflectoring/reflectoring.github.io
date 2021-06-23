@@ -19,9 +19,6 @@ In this article, we will look at using Spring Cloud AWS for interacting with AWS
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-ses" %}
 
-## What is SMTP and Email
-Simple mail transfer protocol (SMTP) is the communication protocol for sending emails, receiving emails, and relaying outgoing mail between email senders and receivers. When we send an email, the SMTP server processes our email, decides which server to send the message to, and relays the message to that server.
-
 ## How does SES Send Email
 When we request SES to send an email, the request is processed in multiple stages:
 
@@ -34,20 +31,10 @@ After this the following outcomes are possible:
 |-|-|
 |**Successful Delivery**|The email is accepted by the Internet service provider (ISP), and the ISP delivers the email to the recipient.|
 |**Hard Bounce**|The email is rejected by the ISP because the recipient's address is invalid. The ISP sends the hard bounce notification back to Amazon SES, which notifies the sender through email or by publishing to a Amazon Simple Notification Service (Amazon SNS) topic set up to receive this notification.|
-|**Soft Bounce**| The ISP cannot deliver the email to the recipient due to reasons like the recipient's mailbox is full,the domain does not exist, or due to a temporary condition, such as the ISP is too busy to handle the request. The ISP sends a soft bounce notification back to Amazon SES and retries the email for a specified time. If SES cannot deliver the email in that time, it sends a bounce notification through email or by publishing to Amazon SNS topic.|
+|**Soft Bounce**| The ISP cannot deliver the email to the recipient due to reasons like the recipient's mailbox is full,the domain does not exist, or due to any temporary condition, such as the ISP being too busy to handle the request. 
+The ISP sends a soft bounce notification to SES and retries the email upto a specified time. If SES cannot deliver the email within that time, it sends a bounce notification through email or by publishing the event to a SNS topic.|
 |**Complaint**|The recipient marks the email as spam in his or her email client. If Amazon SES has a feedback loop set up with the ISP, then a complaint notification is sent to Amazon SES, which forwards the complaint notification to the sender.|
 |**Auto response**|The receiver ISP sends an automatic response such as an out-of-office message to Amazon SES, which forwards the auto-response notification to the sender. |
-
-
-1. **Successful Delivery**: The email is accepted by the Internet service provider (ISP), and the ISP delivers the email to the recipient.
-
-2. **Hard Bounce**: The email is rejected by the ISP because the recipient's address is invalid. The ISP sends the hard bounce notification back to Amazon SES, which notifies the sender through email or by publishing to a Amazon Simple Notification Service (Amazon SNS) topic set up to receive this notifucation.
-
-3. **Soft Bounce**: The ISP cannot deliver the email to the recipient due to reasons like the recipient's mailbox is full,the domain does not exist, or due to a temporary condition, such as the ISP is too busy to handle the request. The ISP sends a soft bounce notification back to Amazon SES and retries the email for a specified time. If SES cannot deliver the email in that time, it sends a bounce notification through email or by publishing to Amazon SNS topic.
-
-4. **Complaint**: The recipient marks the email as spam in his or her email client. If Amazon SES has a feedback loop set up with the ISP, then a complaint notification is sent to Amazon SES, which forwards the complaint notification to the sender.
-
-5. **Auto response**: The receiver ISP sends an automatic response such as an out-of-office message to Amazon SES, which forwards the auto-response notification to the sender. 
 
 When delivery fails, Amazon SES will respond to the sender with an error and will drop the email.
 
@@ -55,18 +42,21 @@ When delivery fails, Amazon SES will respond to the sender with an error and wil
 When we send an email with SES, we are using SES as our outbound email server. We can also use any other email server and configure it to send outgoing emails through SES.
 We can send email with SES in multiple ways:
 
-
-1. **From the SES console**: We can use the console send emails with minimal set up. However it is mainly used to monitor our sending activity. We can view the number of emails that we have sent along with the number of bounces and complaints as shown here:
+### From the SES console
+We can use the SES console to send emails with minimal set up. However it is mainly used to monitor our sending activity. We can view the number of emails that we have sent along with the number of bounces and complaints as shown here:
 
 ![monitoring](/assets/img/posts/aws-ses-spring-cloud/monitoring.png)
 
-2. **Using the Simple Mail Transfer Protocol (SMTP) interface**: We can access Amazon SES through the SMTP in two ways : 
+### Using SMTP interface
+Simple mail transfer protocol (SMTP) is the communication protocol for sending emails, receiving emails, and relaying outgoing mail between email senders and receivers. When we send an email, the SMTP server processes our email, decides which server to send the message to, and relays the message to that server.
+We can access Amazon SES through the SMTP in two ways : 
    - by sending emails to SES from a SMTP enabled software 
    - from a SMTP-compatible programming language like the Java by using the Java Mail API
    We can find the information for conneting to the SMTP endpoint from the SES console.
    ![smtp-settings](/assets/img/posts/aws-ses-spring-cloud/smtp-settings.png)
 
-3. **Calling the SES API**: We can send email by calling the SES Query API with any REST client or by using the AWS SDK.
+### Calling the SES API
+We can send email by calling the SES Query API with any REST client or by using the AWS SDK.
 
 ## Sending Mails with Amazon SES using Spring Cloud AWS
 

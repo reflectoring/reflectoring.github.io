@@ -9,7 +9,7 @@ image:
   auto: 0074-stack
 ---
 
-Notification by email is a common way to implement notification use cases like sending OTP, transaction, or low balance alerts. 
+Email is a convenient way to send communicate different kinds of events from applications to interested parties.
 
 Amazon Simple Email Service (SES) is an email platform that provides an easy and cost-effective way to send and receive emails.
 
@@ -29,9 +29,9 @@ When we request SES to send an email, the request is processed in multiple stage
 After this the following outcomes are possible:
 
 |-| - |
-|**Successful Delivery**|The email is accepted by the Internet service provider (ISP), and the ISP delivers the email to the recipient.|
+|**Successful Delivery**|The email is accepted by the Internet service provider (ISP) which delivers the email to the recipient.|
 |**Hard Bounce**|The email is rejected by the ISP because the recipient's address is invalid. The ISP sends the hard bounce notification back to Amazon SES, which notifies the sender through email or by publishing it to an Amazon Simple Notification Service (Amazon SNS) topic set up to receive this notification.|
-|**Soft Bounce**| The ISP cannot deliver the email to the recipient due to reasons like the recipient's mailbox is full, the domain does not exist, or due to any temporary condition, such as the ISP being too busy to handle the request. The ISP sends a soft bounce notification to SES and retries the email up to a specified time. If SES cannot deliver the email within that time, it sends a bounce notification through email or by publishing the event to an SNS topic.|
+|**Soft Bounce**| The ISP cannot deliver the email to the recipient due to reasons like the recipient's mailbox is full, the domain does not exist, or due to any temporary condition, such as the ISP being too busy to handle the request. The ISP sends a soft bounce notification to SES and retries the email up to a specified period of time. If SES cannot deliver the email within that time, it sends a hard bounce notification through email or by publishing the event to an SNS topic.|
 |**Complaint**|The recipient marks the email as spam in his or her email client. If Amazon SES has a feedback loop set up with the ISP, then a complaint notification is sent to Amazon SES, which forwards the complaint notification to the sender.|
 |**Auto response**|The receiver ISP sends an automatic response such as an out-of-office message to Amazon SES, which forwards the auto-response notification to the sender. |
 
@@ -48,10 +48,13 @@ We can use the SES console to send emails with minimal setup. However, it is mai
 
 ### Using SMTP interface
 Simple mail transfer protocol (SMTP) is the communication protocol for sending emails, receiving emails, and relaying outgoing mail between email senders and receivers. When we send an email, the SMTP server processes our email, decides which server to send the message to, and relays the message to that server.
+
 We can access Amazon SES through the SMTP in two ways : 
    - by sending emails to SES from an SMTP enabled software 
    - from an SMTP compatible programming language like Java by using the Java Mail API
-   We can find the information for connecting to the SMTP endpoint from the SES console.
+   
+We can find the information for connecting to the SMTP endpoint from the SES console:
+
    ![smtp-settings](/assets/img/posts/aws-ses-spring-cloud/smtp-settings.png)
 
 ### Calling the SES API
@@ -75,9 +78,11 @@ The Amazon SES provides a sandbox environment to test the capabilities of Amazon
 
 We can only send emails to verified identities when our account is in sandbox mode. There are also limits to the volume of email we can send each day, and on the number of messages, we can send per second.
 
-We will need a few email addresses to test our examples. Let us verify these first by following the steps in the AWS console:
+We will need a few email addresses to test our examples. Let us verify these first by following the steps in the [SES documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html). The figure below outlines some of the steps we need to perform in the AWS SES console:
 
 ![SES classes](/assets/img/posts/aws-ses-spring-cloud/email-verify.png)
+
+As we can see in this figure, we first add our email in SES which triggers a verification email which the owner of the email needs to verify by visiting the link in the verification email.  
 
 ## Sending Emails in Spring Boot
 
@@ -112,7 +117,7 @@ For adding the support for SES, we need to include the module dependency which i
 `spring-cloud-starter-aws-ses` includes the transitive dependencies for `spring-cloud-starter-aws`, and `spring-cloud-aws-ses`.
 
 
-### Configuring the MailSender
+### Configuring the Mail Sender Beans
 
 Spring Cloud AWS provides `SimpleEmailServiceMailSender` and configure a Spring org.springframework.mail.MailSender implementation for the client to be used. 
 `SimpleEmailServiceMailSender` sends emails with the Amazon Simple Email Service in AWS Java SDK.
@@ -142,7 +147,7 @@ public class MailConfig {
 Here we are setting up the `AmazonSimpleEmailService` bean with credentials for our AWS account using the `ProfileCredentialsProvider`. After that, we are using this `AmazonSimpleEmailService` bean for creating the `SimpleEmailServiceMailSender` bean.
 
 ### Sending Simple Email 
-We will now inject the `SimpleEmailServiceMailSender` bean in our service class from where we will send the email:
+We will now inject the `SimpleEmailServiceMailSender` bean in our service class from where we will send an email in text format without any attachments:
 
 ```java
 @Service
@@ -162,9 +167,9 @@ public class NotificationService {
 }
 
 ```
-Here we are calling the `send` method on the `mailSender` reference to send our email.
+Here we are calling the `send` method on the `mailSender` reference to send our email. The method takes `SimpleMailMessage` as parameter which is a container for email attributes like from address, to address and email text which we will send from our test class below.
 
-We test this by setting up a test class :
+We test this set up by calling this method from a test class :
 
 ```java
 @SpringBootTest
@@ -189,7 +194,7 @@ class NotificationServiceTest {
 
 ```
 
-Here we are using two test emails as our `from` and `to` email addresses which we verified earlier from the SES console. As explained before, we are using a sandbox environment that will only work with verified email addresses. 
+Here we are using two test emails as our `from` and `to` email addresses which we verified earlier from the SES console. We are setting these emails along with subject and email contents in the `SimpleMailMessage` class. As explained before, we are using a sandbox environment that will only work with verified email addresses. 
 
 
 ### Send Email with Attachments

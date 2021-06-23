@@ -119,11 +119,9 @@ For adding the support for SES, we need to include the module dependency which i
 
 ### Configuring the Mail Sender Beans
 
-Spring Cloud AWS provides `SimpleEmailServiceMailSender` and configure a Spring org.springframework.mail.MailSender implementation for the client to be used. 
-`SimpleEmailServiceMailSender` sends emails with the Amazon Simple Email Service in AWS Java SDK.
-So it does not have dependencies on the Java Mail API. It can be used to send simple mail messages in plain text without any attachments. A configuration with the necessary elements will look like this:
+Spring Cloud AWS provides `SimpleEmailServiceMailSender` which is an implementation of the `MailSender` interface from Spring's mail abstraction. 
+`SimpleEmailServiceMailSender` sends emails with Amazon SES using the AWS SDK for Java. It can be used to send simple email messages in plain text without any attachments. A configuration with the necessary elements will look like this:
 
-Let us first set up the `MailSender` in a Spring `configuration` class:
 ```java
 @Configuration
 public class MailConfig {

@@ -132,7 +132,8 @@ public class MailConfig {
     }
     
     @Bean
-    public MailSender mailSender(AmazonSimpleEmailService amazonSimpleEmailService) {
+    public MailSender mailSender(
+                AmazonSimpleEmailService amazonSimpleEmailService) {
       return new SimpleEmailServiceMailSender(amazonSimpleEmailService);
     }
 }
@@ -237,13 +238,15 @@ public class NotificationService {
         this.javaMailSender.send(new MimeMessagePreparator() {
 
             @Override
-            public void prepare(MimeMessage mimeMessage) throws Exception {
+            public void prepare(MimeMessage mimeMessage) 
+                   throws Exception {
                   MimeMessageHelper helper =
                     new MimeMessageHelper(mimeMessage, true, "UTF-8");
                   helper.addTo("foo@bar.com");
                   helper.setFrom("bar@baz.com");
                   
-                  InputStreamSource data = new ByteArrayResource("".getBytes());
+                  InputStreamSource data = 
+                           new ByteArrayResource("".getBytes());
 
                   helper.addAttachment("test.txt", data );
                   helper.setSubject("test subject with attachment");

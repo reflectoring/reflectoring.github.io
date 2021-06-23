@@ -31,6 +31,14 @@ When we request SES to send an email, the request is processed in multiple stage
 
 After this the following outcomes are possible:
 
+|-|-|
+|**Successful Delivery**|The email is accepted by the Internet service provider (ISP), and the ISP delivers the email to the recipient.|
+|**Hard Bounce**|The email is rejected by the ISP because the recipient's address is invalid. The ISP sends the hard bounce notification back to Amazon SES, which notifies the sender through email or by publishing to a Amazon Simple Notification Service (Amazon SNS) topic set up to receive this notification.|
+|**Soft Bounce**| The ISP cannot deliver the email to the recipient due to reasons like the recipient's mailbox is full,the domain does not exist, or due to a temporary condition, such as the ISP is too busy to handle the request. The ISP sends a soft bounce notification back to Amazon SES and retries the email for a specified time. If SES cannot deliver the email in that time, it sends a bounce notification through email or by publishing to Amazon SNS topic.|
+|**Complaint**|The recipient marks the email as spam in his or her email client. If Amazon SES has a feedback loop set up with the ISP, then a complaint notification is sent to Amazon SES, which forwards the complaint notification to the sender.|
+|**Auto response**|The receiver ISP sends an automatic response such as an out-of-office message to Amazon SES, which forwards the auto-response notification to the sender. |
+
+
 1. **Successful Delivery**: The email is accepted by the Internet service provider (ISP), and the ISP delivers the email to the recipient.
 
 2. **Hard Bounce**: The email is rejected by the ISP because the recipient's address is invalid. The ISP sends the hard bounce notification back to Amazon SES, which notifies the sender through email or by publishing to a Amazon Simple Notification Service (Amazon SNS) topic set up to receive this notifucation.
@@ -165,8 +173,9 @@ public class NotificationService {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    public void sendMailMessage(final SimpleMailMessage simpleMailMessage) {
-        System.out.println("mailSender "+mailSender.getClass().getName());
+    public void sendMailMessage(
+           final SimpleMailMessage simpleMailMessage) {
+        
         this.mailSender.send(simpleMailMessage);
     }
 }
@@ -220,8 +229,10 @@ public class MailConfig {
     }
 
     @Bean
-    public JavaMailSender javaMailSender(AmazonSimpleEmailService amazonSimpleEmailService) {
-      return new SimpleEmailServiceJavaMailSender(amazonSimpleEmailService);
+    public JavaMailSender javaMailSender(
+               AmazonSimpleEmailService amazonSimpleEmailService) {
+      return new 
+        SimpleEmailServiceJavaMailSender(amazonSimpleEmailService);
     }
 }
 

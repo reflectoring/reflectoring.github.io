@@ -1,5 +1,5 @@
 ---
-title: "Sending E-Mails with Amazon SES and Spring Cloud AWS"
+title: "Sending Emails with Amazon SES and Spring Cloud AWS"
 categories: [craft]
 date: 2021-06-14 06:00:00 +1000
 modified: 2021-06-13 06:00:00 +1000
@@ -167,7 +167,7 @@ public class NotificationService {
 }
 
 ```
-Here we are calling the `send` method on the `mailSender` reference to send our email. The method takes `SimpleMailMessage` as parameter which is a container for email attributes like from address, to address and email text which we will send from our test class below.
+Here we are calling the `send` method on the `mailSender` reference to send our email. The method takes `SimpleMailMessage` as parameter which is a container for email attributes like `from` address, `to` address and email text which we will send from our test class below.
 
 We test this set up by calling this method from a test class :
 

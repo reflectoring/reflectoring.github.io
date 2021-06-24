@@ -1,5 +1,5 @@
 ---
-title: "Caching with ElastiCache for Redis and Spring cloud AWS"
+title: "Caching with ElastiCache for Redis and Spring Cloud AWS"
 categories: [craft]
 date: 2021-05-31 00:00:00 +1100
 modified: 2021-05-31 00:00:00 +1100
@@ -12,10 +12,9 @@ image:
 ElastiCache is a fully managed caching service available in AWS Cloud. 
 
 [Spring Cloud AWS](https://docs.awspring.io/spring-cloud-aws/docs/current/reference/html/index.html) helps us to simplify the communication of Spring Boot application with AWS services. From taking care
-of security to autoconfiguring the beans required for the communication, it takes care of a lot of essential steps.
+of security to auto-configuring the beans required for the communication, it takes care of a lot of essential steps.
 
-In this article, we will look at how we can use it to connect our application 
-to [AWS ElastiCache for Redis](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html).
+In this article, we will look at how we can use it to connect our application to [AWS ElastiCache for Redis](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html).
  
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-caching-redis" %}
 
@@ -23,8 +22,8 @@ to [AWS ElastiCache for Redis](https://docs.aws.amazon.com/AmazonElastiCache/lat
 
 Caching is a common technique of temporarily storing a copy of data or result of a computation in memory for quick and frequent access. We use caching primarily for :
 
-1. **Improving the throughput of the application.**
-2. **Prevent overwhelming the application or downstream applications with redundant requests.**
+1. Improving the throughput of the application.
+2. Prevent overwhelming the application or downstream applications with redundant requests.
 
 We can either implement caching in our application by using an in-memory `Map` based data structure, or we can use a full-blown caching solution such as [Redis](https://redis.io/).
 
@@ -34,13 +33,11 @@ ElastiCache is a fully managed in-memory caching service in AWS Cloud. It curren
 
 ## ElastiCache for Redis
 
-Redis is a popular in-memory data structure store. It is open-source and widely used in the industry for caching. It 
-stores the data as key-value pairs and supports many varieties of data structures like string, hash, list, set, sorted set with range queries, bitmap, hyperloglog, geospatial index, and streams.
+Redis is a popular in-memory data structure store. It is open-source and widely used in the industry for caching. It stores the data as key-value pairs and supports many varieties of data structures like string, hash, list, set, sorted set with range queries, bitmap, hyperloglog, geospatial index, and streams.
 
 In AWS, one of the ways of using Redis for caching is by using the ElastiCache service. 
 
-ElastiCache hosts the Redis caching engine and provides High Availability, Scalability, and Resiliency to it. It 
-also takes care of all the networking and security requirements under the [shared responsibility model](https://aws.amazon.com/compliance/shared-responsibility-model/).
+ElastiCache hosts the Redis caching engine and provides High Availability, Scalability, and Resiliency to it. It also takes care of all the networking and security requirements under the [shared responsibility model](https://aws.amazon.com/compliance/shared-responsibility-model/).
 
 **The basic building block of ElastiCache is the cluster**. A cluster can have one or more nodes. Each
 node runs an instance of the Redis cache engine software. Please refer [AWS ElastiCache User Guide](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) for more details.
@@ -78,7 +75,6 @@ Let's talk a bit about these dependencies:
 * `spring-cloud-starter-aws` provides core AWS Cloud dependencies such as `spring-cloud-aws-context` and `spring-cloud-aws-autoconfiguration`.
 * Out of the box `spring-cloud-aws-context` provides support for Memcached but for Redis, it needs Spring Data Redis dependency.
 * Spring Data Redis gives us access to Spring Cache abstraction, and also [Lettuce](https://lettuce.io/) which is a popular Redis client.
-* `spring-cloud-aws-autoconfiguration` also needs `aws-java-sdk-elasticache` dependency to fetch ElastiCache cluster descriptions.
 
 `spring-cloud-aws-autoconfiguration` glues everything together and configures a `CacheManager` which is required by Spring Cache abstraction to provide caching services to the application.
 
@@ -221,20 +217,17 @@ Let's look at the steps it performs along with the classes involved in building 
 
 ![Spring Cloud AWS](/assets/img/posts/spring-elasticache-redis/spring-cloud-aws.png)
 
-* When our application starts in the AWS environment, `ElastiCacheAutoConfiguration` reads cluster names from the
- `application.yml` or stack name if cluster configuration is not provided.
+* When our application starts in the AWS environment, `ElastiCacheAutoConfiguration` reads cluster names from the `application.yml` or stack name if cluster configuration is not provided.
 * `ElastiCacheAutoConfiguration` then passes the Cache Cluster names to `ElastiCacheCacheConfigurer` object.
 * In the case of Stack configuration it first retrieves all the ElastiCache Cluster details from the Cloudformation stack.
 * Then `ElastiCacheCacheConfigurer` creates the `CacheManager` with the help of `ElastiCacheFactoryBean` class.
 * `ElastiCacheFactoryBean` scans the ElastiCache in the same availability zone and retrieves the host and port names of the nodes. 
-* **To allow our service to scan ElastiCache we need to provide `AmazonElastiCacheReadOnlyAccess` permission
- to our service and also `AWSCloudFormationReadOnlyAccess` if we are using the stack name approach.**
+* **To allow our service to scan ElastiCache we need to provide `AmazonElastiCacheReadOnlyAccess` permission to our service and also `AWSCloudFormationReadOnlyAccess` if we are using the stack name approach.**
 * `ElastiCacheFactoryBean` passes this host and port to `RedisCacheFactory` which then uses Redis clients such as Lettuce to create the connection object which then actually establishes a connection with the nodes and performs the required operations.
 
 ## Conclusion
 
-While ElastiCache is already making our life easier by managing our Redis Clusters, Spring Cloud AWS further simplifies
-our lives by simplifying the configurations required for communicating with it.
+While ElastiCache is already making our life easier by managing our Redis Clusters, Spring Cloud AWS further simplifies our lives by simplifying the configurations required for communicating with it.
 
 In this article, we saw those configurations and also how to apply them. Hope this was helpful!
 

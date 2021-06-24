@@ -76,7 +76,9 @@ The `SimpleEmailServiceJavaMailSender` class allows sending emails with attachme
 ## Setting up the SES Sandbox Environment
 The Amazon SES provides a sandbox environment to test the capabilities of Amazon SES. By default, our account is in sandbox mode. 
 
-We can only send emails to verified identities when our account is in sandbox mode. There are also limits to the volume of email we can send each day, and on the number of messages, we can send per second.
+We can only send emails to verified identities when our account is in sandbox mode. A verified identity is a domain or email address that we use to send email. Before we can send an email using SES in sandbox mode, we must create and verify each identity that we want to use as a `From`, `To`, `Source`, `Sender`, or `Return-Path` address. Verifying an identity with Amazon SES confirms our ownership and helps to prevent it's unauthorized use.
+
+There are also limits to the volume of email we can send each day, and on the number of messages, we can send per second.
 
 We will need a few email addresses to test our examples. Let us verify these first by following the steps in the [SES documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html). The figure below outlines some of the steps we need to perform in the AWS SES console:
 
@@ -261,6 +263,16 @@ public class NotificationService {
 
 ```
 Here we are using the callback interface `MimeMessagePreparator` to construct the email message by setting the `to` and `from` email addresses along with the subject and text of the email. 
+
+## Enabling Production Access
+
+We finally need to move our account out of the sandbox so that we can send emails to any recipient, irrespective of whether the recipient's address or domain is verified. But, we still have to verify all identities that we use such as `From`, `Source`, `Sender`, or `Return-Path` addresses. We need to submit a request for production aceess as shown below:
+
+![prod mode](/assets/img/posts/aws-ses-spring-cloud/prodmode.png)
+
+Here We are submiting the production access request from the AWS Management Console. 
+
+We can also submit the production access request from the AWS CLI. Submitting the request with the AWS CLI is useful when we want to request production access for a large number of identities (domains or email addresses), or when we want to automate the process of setting up Amazon SES.
 
 ## Conclusion
 

@@ -153,14 +153,14 @@ We also need to define cluster names in the `application.yml`. Spring Cloud AWS 
 ```yaml
 cloud:
  aws:
- elasticache:
- clusters:
- -
- name: product-cache
- expiration: 100
- -
- name: user-cache
- expiration: 6000
+  elasticache:
+   clusters:
+    -
+     name: product-cache
+     expiration: 100
+    -
+     name: user-cache
+     expiration: 6000
 ```
 
 Here, we can provide a list of clusters. Since we have used two caches in our application we have to specify both `product-cache` and `user-cache`. We have also provided different
@@ -176,8 +176,8 @@ Instead of giving cluster names, we only need to provide the stack name. Say the
 ```yaml
 cloud:
  aws:
- stack:
- name: example-stack
+  stack:
+   name: example-stack
 ```
 
 Spring Cloud AWS retrieves all the cache clusters from our stack and builds `CacheManager` with

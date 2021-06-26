@@ -17,7 +17,7 @@ Amazon Simple Email Service (SES) is an email platform that provides an easy and
 
 In this article, we will look at using Spring Cloud AWS for interacting with AWS [Simple Email Service (SES)](https://aws.amazon.com/ses/) to send emails with the help of some code examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-ses" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springcloudses" %}
 
 ## How Does SES Send Email?
 When we ask SES to send an email, the request is processed in multiple stages:
@@ -281,4 +281,4 @@ In this article, we looked at the important concepts of Amazon Simple Email Serv
 
 I hope this post has given you a good introduction to Amazon Simple Email Service (SES) and how we can use this service to send emails. 
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-ses).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springcloudses).

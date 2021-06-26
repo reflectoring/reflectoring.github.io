@@ -11,12 +11,12 @@ main:
   - title: "Book Reviews"
     url: /categories/book-reviews
     style: "cat-4"
+  - title: "Grow!"
+    url: /categories/grow
+    style: "cat-6"
   - title: "Meta"
     url: /categories/meta
     style: "cat-5"
-  - title: "Book Me!"
-    url: /services
-    style: "cat-6"
 
 
 footer:
@@ -52,5 +52,7 @@ footer:
       url: /categories/book-reviews
     - title: "Programming"
       url: /categories/programming
+    - title: "Grow!"
+      url: /categories/grow
     - title: "Meta"
       url: /categories/meta

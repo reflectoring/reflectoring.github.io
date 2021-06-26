@@ -1,12 +1,12 @@
 ---
 title: "Caching with ElastiCache for Redis and Spring Cloud AWS"
-categories: [craft]
-date: 2021-05-31 00:00:00 +1100
-modified: 2021-05-31 00:00:00 +1100
+categories: [spring-boot]
+date: 2021-06-27 00:00:00 +1100
+modified: 2021-06-27 00:00:00 +1100
 author: mmr
 excerpt: "In this article, we will look at configuring a Spring Boot Application to use AWS ElastiCache for Redis using Spring Cloud AWS"
 image:
- auto: 0090-404
+ auto: 0071-disk
 ---
 
 ElastiCache is a fully managed caching service available in AWS Cloud. 
@@ -20,16 +20,16 @@ In this article, we will look at how we can use it to connect our application to
 
 ## Why Caching?
 
-Caching is a common technique of temporarily storing a copy of data or result of a computation in memory for quick and frequent access. We use caching primarily for :
+Caching is a common technique of temporarily storing a copy of data or result of a computation in memory for quick and frequent access. We use caching primarily to:
 
-1. Improving the throughput of the application.
-2. Prevent overwhelming the application or downstream applications with redundant requests.
+1. Improve the throughput of the application.
+2. Prevent overwhelming the application or services the application is calling with redundant requests.
 
 We can either implement caching in our application by using an in-memory `Map` based data structure, or we can use a full-blown caching solution such as [Redis](https://redis.io/).
 
 ## What is ElastiCache?
 
-ElastiCache is a fully managed in-memory caching service in AWS Cloud. It currently supports two caching engines : [Memcached](https://memcached.org/) and [Redis](https://redis.io/).
+ElastiCache is a fully managed in-memory caching service in AWS Cloud. It currently supports two caching engines: [Memcached](https://memcached.org/) and [Redis](https://redis.io/).
 
 ## ElastiCache for Redis
 
@@ -44,7 +44,7 @@ node runs an instance of the Redis cache engine software. Please refer [AWS Elas
 
 ## Spring Cloud AWS For Caching
 
-Spring supports a unified caching abstraction by providing the [Cache](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/cache/Cache.html) and [CacheManger](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/cache/CacheManager.html) interfaces to unify different caching technologies. 
+Spring supports a unified caching abstraction by providing the [Cache](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/cache/Cache.html) and [CacheManager](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/cache/CacheManager.html) interfaces to unify different caching technologies. 
 
 It also supports JCache (JSR-107) annotations to allow us to leverage a variety of caching technologies.
 
@@ -52,13 +52,13 @@ Spring Cloud AWS integrates the Amazon ElastiCache service into the Spring unifi
 
 ## Configuring Dependencies for Spring Cloud AWS
 
-To use Spring Cloud AWS, first, we need to add Spring Cloud AWS BOM(Bill of material). BOM will help us to manage our dependency versions:
+To use Spring Cloud AWS, first, we need to add Spring Cloud AWS BOM (Bill of material). BOM will help us to manage our dependency versions:
 
 ```groovy
 dependencyManagement {
- imports {
- mavenBom 'io.awspring.cloud:spring-cloud-aws-dependencies:2.3.1'
- }
+  imports {
+    mavenBom 'io.awspring.cloud:spring-cloud-aws-dependencies:2.3.1'
+  }
 }
 ```
 
@@ -73,16 +73,16 @@ implementation 'com.amazonaws:aws-java-sdk-elasticache'
 Let's talk a bit about these dependencies:
 
 * `spring-cloud-starter-aws` provides core AWS Cloud dependencies such as `spring-cloud-aws-context` and `spring-cloud-aws-autoconfiguration`.
-* Out of the box `spring-cloud-aws-context` provides support for Memcached but for Redis, it needs Spring Data Redis dependency.
+* Out of the box `spring-cloud-aws-context` provides support for Memcached but for Redis, it needs the Spring Data Redis dependency.
 * Spring Data Redis gives us access to Spring Cache abstraction, and also [Lettuce](https://lettuce.io/) which is a popular Redis client.
 
-`spring-cloud-aws-autoconfiguration` glues everything together and configures a `CacheManager` which is required by Spring Cache abstraction to provide caching services to the application.
+`spring-cloud-aws-autoconfiguration` glues everything together and configures a `CacheManager` which is required by the Spring Cache abstraction to provide caching services to the application.
 
 Spring Cloud AWS does all the heavy lifting of configuring the caches for us. All we need to do is to provide the name of the cache. Let's look at how we can do that.
 
 ## Caching with Spring Boot
 
-The easiest way to implement caching in a Spring Boot application is by using [Spring Boot Cache Abstraction](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache). Please read our article on [Implementing Cache in a Spring Application](https://reflectoring.io/spring-boot-cache/) to dive deeper into the topic.
+The easiest way to implement caching in a Spring Boot application is by using Spring Boot's Cache Abstraction. Please read our article on [Implementing Cache in a Spring Application](https://reflectoring.io/spring-boot-cache/) to dive deeper into the topic.
 
 In this section, we will only understand the configuration required for the integration of Spring Cloud AWS with ElastiCache.
 
@@ -92,7 +92,7 @@ The first thing we need to do is to enable caching in our application using `@En
 @Configuration
 @EnableCaching
 public class EnableCache {
- //...
+  //...
 }
 ```
 
@@ -105,14 +105,14 @@ Next, we need to identify the methods that we need to cache. In our example appl
 @AllArgsConstructor
 @CacheConfig(cacheNames = "product-cache")
 public class ProductService {
- private final ProductRepository repository;
+  private final ProductRepository repository;
 
- @Cacheable
- public Product getProduct(String id) {
- return repository.findById(id).orElseThrow(()->
- new RuntimeException("No such product found with id"));
- }
- //....
+  @Cacheable
+  public Product getProduct(String id) {
+    return repository.findById(id).orElseThrow(()->
+      new RuntimeException("No such product found with id"));
+  }
+  //....
 }
 
 @Service
@@ -120,16 +120,16 @@ public class ProductService {
 @CacheConfig(cacheNames = "user-cache")
 public class UserService {
 
- private final UserRepository repository;
+  private final UserRepository repository;
 
- @Cacheable
- public User getUser(String id){
- return repository.findById(id).orElseThrow(()->
- new RuntimeException("No such user found with id"));
- }
+  @Cacheable
+  public User getUser(String id){
+    return repository.findById(id).orElseThrow(()->
+      new RuntimeException("No such user found with id"));
+  }
 }
 ```
-Here we have decorated the `getProduct` and `getUser` methods with `@Cacheable` annotation to cache their responses. 
+Here we have decorated the `getProduct()` and `getUser()` methods with `@Cacheable` annotation to cache their responses. 
 Both the methods will retrieve entities from the database when called for the first time. Subsequent calls to these methods with the same value of parameter `id` will return the response from the cache instead of the database. 
 
 One important requirement of the `@Cacheable` annotation is that the cache name is provided via the `@CacheConfig` annotation. 
@@ -152,19 +152,17 @@ We also need to define cluster names in the `application.yml`. Spring Cloud AWS 
 
 ```yaml
 cloud:
- aws:
-  elasticache:
-   clusters:
-    -
-     name: product-cache
-     expiration: 100
-    -
-     name: user-cache
-     expiration: 6000
+  aws:
+    elasticache:
+        clusters:
+          - name: product-cache
+            expiration: 100
+          - name: user-cache
+            expiration: 6000
 ```
 
 Here, we can provide a list of clusters. Since we have used two caches in our application we have to specify both `product-cache` and `user-cache`. We have also provided different
-Time-To-Live(expiration) in seconds for both caches. In case we want a common expiration time for all the caches we can do so using `cloud.aws.elasticache.default-expiration` 
+Time-To-Live (expiration) in seconds for both caches. In case we want a common expiration time for all the caches we can do so using `cloud.aws.elasticache.default-expiration` 
 property.
 
 ### Stack Name Approach
@@ -175,9 +173,9 @@ Instead of giving cluster names, we only need to provide the stack name. Say the
 
 ```yaml
 cloud:
- aws:
-  stack:
-   name: example-stack
+  aws:
+    stack:
+      name: example-stack
 ```
 
 Spring Cloud AWS retrieves all the cache clusters from our stack and builds `CacheManager` with
@@ -189,12 +187,12 @@ We need to specify the **Logical Name** of the cache cluster as cache names in o
 ```java
 @CacheConfig(cacheNames = "ProductCache")
 public class ProductService {
- //...
+  //...
 }
 
 @CacheConfig(cacheNames = "UserCache")
 public class UserService {
- //...
+  //...
 }
 ```
 
@@ -208,7 +206,7 @@ Spring Cloud AWS uses this dependency to retrieve the Cloudformation stack detai
 
 ## How Does Spring Cloud AWS Configure the `CacheManager`?
 
-In this section, we will dive a bit deeper into the inner workings of the Spring Cloud AWS
+In this section, we will dive a bit deeper into the inner workings of Spring Cloud AWS
 and see how it autoconfigures the cache for us.
 
 As we know that for caching to work in a Spring application we need a `CacheManager` bean. The job of Spring Cloud AWS is to essentially create that bean for us.

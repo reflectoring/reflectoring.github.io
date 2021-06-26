@@ -1,52 +1,51 @@
 ---
 title: "Sending Emails with Amazon SES and Spring Cloud AWS"
-categories: [craft]
-date: 2021-06-14 06:00:00 +1000
-modified: 2021-06-13 06:00:00 +1000
+categories: [spring-boot]
+date: 2021-06-27 06:00:00 +1000
+modified: 2021-06-27 06:00:00 +1000
 author: pratikdas
 excerpt: "Amazon Simple Email Service (SES) provides an email platform for sending and receiving emails. Spring Cloud AWS makes it convenient to integrate applications with different AWS services. In this article, we will look at using Spring Cloud AWS for working with Amazon Simple Email Service (SES) with the help of some basic concepts of SES along with code examples."
 image:
-  auto: 0074-stack
+  auto: 0075-envelopes
 ---
 
-Email is a convenient way to send communicate different kinds of events from applications to interested parties.
+Email is a convenient way to communicate different kinds of events from applications to interested parties.
 
 Amazon Simple Email Service (SES) is an email platform that provides an easy and cost-effective way to send and receive emails.
 
-[Spring Cloud for Amazon Web Services(AWS)](https://spring.io/projects/spring-cloud-aws) is a sub-project of [Spring Cloud](https://spring.io/projects/spring-cloud) which makes it easy to integrate with AWS services using Spring idioms and APIs familiar to Spring developers.
+[Spring Cloud for Amazon Web Services (AWS)](https://spring.io/projects/spring-cloud-aws) is a sub-project of [Spring Cloud](https://spring.io/projects/spring-cloud) which makes it easy to integrate with AWS services using Spring idioms and APIs familiar to Spring developers.
 
 In this article, we will look at using Spring Cloud AWS for interacting with AWS [Simple Email Service (SES)](https://aws.amazon.com/ses/) to send emails with the help of some code examples.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-ses" %}
 
-## How does SES Send Email
-When we request SES to send an email, the request is processed in multiple stages:
+## How Does SES Send Email?
+When we ask SES to send an email, the request is processed in multiple stages:
 
-1. The email sender either an application or email client requests Amazon SES to send an email to one or more recipients.
+1. The email sender (either an application or email client) requests Amazon SES to send an email to one or more recipients.
 2. SES first validates the request and if successful, creates an email message with the request parameters. This email message is compliant with the Internet Message Format specification ([RFC 5322](https://www.ietf.org/rfc/rfc5322.txt)) and consists of header, body, and envelope. 
 3. SES also scans the message for malicious content and then sends it over the Internet using Simple Mail Transfer Protocol (SMTP) to the recipient's receiver ISP. 
 
 After this the following outcomes are possible:
 
-|-| - |
-|**Successful Delivery**|The email is accepted by the Internet service provider (ISP) which delivers the email to the recipient.|
-|**Hard Bounce**|The email is rejected by the ISP because the recipient's address is invalid. The ISP sends the hard bounce notification back to Amazon SES, which notifies the sender through email or by publishing it to an Amazon Simple Notification Service (Amazon SNS) topic set up to receive this notification.|
-|**Soft Bounce**| The ISP cannot deliver the email to the recipient due to reasons like the recipient's mailbox is full, the domain does not exist, or due to any temporary condition, such as the ISP being too busy to handle the request. The ISP sends a soft bounce notification to SES and retries the email up to a specified period of time. If SES cannot deliver the email within that time, it sends a hard bounce notification through email or by publishing the event to an SNS topic.|
-|**Complaint**|The recipient marks the email as spam in his or her email client. If Amazon SES has a feedback loop set up with the ISP, then a complaint notification is sent to Amazon SES, which forwards the complaint notification to the sender.|
-|**Auto response**|The receiver ISP sends an automatic response such as an out-of-office message to Amazon SES, which forwards the auto-response notification to the sender. |
+* **Successful Delivery**: The email is accepted by the Internet service provider (ISP) which delivers the email to the recipient.
+* **Hard Bounce**: The email is rejected by the ISP because the recipient's address is invalid. The ISP sends the hard bounce notification back to Amazon SES, which notifies the sender through email or by publishing it to an Amazon Simple Notification Service (Amazon SNS) topic set up to receive this notification.
+* **Soft Bounce**: The ISP cannot deliver the email to the recipient due to reasons like the recipient's mailbox is full, the domain does not exist, or due to any temporary condition, such as the ISP being too busy to handle the request. The ISP sends a soft bounce notification to SES and retries the email up to a specified period of time. If SES cannot deliver the email within that time, it sends a hard bounce notification through email or by publishing the event to an SNS topic.
+ * **Complaint**: The recipient marks the email as spam in his or her email client. If Amazon SES has a feedback loop set up with the ISP, then a complaint notification is sent to Amazon SES, which forwards the complaint notification to the sender.
+* **Auto response**: The receiver ISP sends an automatic response such as an out-of-office message to Amazon SES, which forwards the auto-response notification to the sender.
 
 When delivery fails, Amazon SES will respond to the sender with an error and will drop the email.
 
-## Sending Mails with SES
+## Sending Mails With SES
 When we send an email with SES, we are using SES as our outbound email server. We can also use any other email server and configure it to send outgoing emails through SES.
 We can send emails with SES in multiple ways:
 
-### From the SES console
+### Sending Mails From the SES Console
 We can use the SES console to send emails with minimal setup. However, it is mainly used to monitor our sending activity. We can view the number of emails that we have sent along with the number of bounces and complaints as shown here:
 
 ![monitoring](/assets/img/posts/aws-ses-spring-cloud/monitoring.png)
 
-### Using SMTP interface
+### Sending Mails Using SMTP
 Simple mail transfer protocol (SMTP) is the communication protocol for sending emails, receiving emails, and relaying outgoing mail between email senders and receivers. When we send an email, the SMTP server processes our email, decides which server to send the message to, and relays the message to that server.
 
 We can access Amazon SES through the SMTP in two ways : 
@@ -57,8 +56,10 @@ We can find the information for connecting to the SMTP endpoint from the SES con
 
    ![smtp-settings](/assets/img/posts/aws-ses-spring-cloud/smtp-settings.png)
 
-### Calling the SES API
+### Sending Mails Using the SES API
 We can send emails by calling the SES Query API with any REST client or by using the AWS SDK. We can send both formatted email or emails in plain text.
+
+We're going to look at this in the upcoming section.
 
 ## Sending Mails with Amazon SES using Spring Cloud AWS
 
@@ -66,14 +67,14 @@ Spring Cloud AWS includes a module for SES called `spring-cloud-aws-ses` which s
 
 ![SES classes](/assets/img/posts/aws-ses-spring-cloud/ses-classes.png)
 
-This class diagram shows that the `SimpleEmailServiceJavaMailSender` class inherits from the `SimpleEmailServiceMailSender` which implements the `MailSender` interface. The `MailSender` interface is part of Spring's [mail abstraction](https://docs.spring.io/spring-framework/docs/1.2.x/reference/mail.html) that contains the `send` method for sending emails.
+This class diagram shows that the `SimpleEmailServiceJavaMailSender` class inherits from the `SimpleEmailServiceMailSender` which implements the `MailSender` interface. The `MailSender` interface is part of Spring's [mail abstraction](https://docs.spring.io/spring-framework/docs/1.2.x/reference/mail.html) that contains the `send()` method for sending emails.
 
 The `SimpleEmailServiceMailSender` class sends E-Mails with the Amazon Simple Email Service. This implementation has no dependencies on the Java Mail API. It can be used to send simple mail messages that do not have any attachments.
 
 The `SimpleEmailServiceJavaMailSender` class allows sending emails with attachments and other mime parts inside mail messages
 
 
-## Setting up the SES Sandbox Environment
+## Setting Up the SES Sandbox Environment
 The Amazon SES provides a sandbox environment to test the capabilities of Amazon SES. By default, our account is in sandbox mode. 
 
 We can only send emails to verified identities when our account is in sandbox mode. A verified identity is a domain or email address that we use to send email. Before we can send an email using SES in sandbox mode, we must create and verify each identity that we want to use as a `From`, `To`, `Source`, `Sender`, or `Return-Path` address. Verifying an identity with Amazon SES confirms our ownership and helps to prevent it's unauthorized use.

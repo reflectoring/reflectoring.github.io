@@ -9,23 +9,23 @@ image:
   auto: 0074-stack
 ---
 
- Most web applications we build today need to communicate with separately hosted or even third-party sites for fetching various resources like images, maps, data and also send data for processing. Asynchronous Java script (Ajax) is the most common method of doing this. Although it gives powerful capabilities of composing sites by assembling a set of readymade assets managed separately, it also opens up security vulnerabilties which can be exploited by sending malicious requests.
+ Most web applications we build today need to communicate with separately hosted or even third-party sites for fetching various resources like images, maps, data and also send data for processing. Asynchronous Javascript (Ajax) is the most common method of doing this. Although it gives powerful capabilities of composing sites by assembling a set of readymade assets managed separately, it also opens up security vulnerabilities that can be exploited by sending malicious requests.
 
  “CORS” stands for Cross-Origin Resource Sharing that lays down the standard for communication between browser and server hosted in different origins. 
 
 
-In this article, we will understand cross-origin resource sharing (CORS) , describe some common examples of cross-origin resource sharing vulnerabilitires, and discuss how to protect against these attacks.
+In this article, we will understand cross-origin resource sharing (CORS), describe some common examples of cross-origin resource sharing vulnerabilities, and discuss how to protect against these attacks.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-ses" %}
 
 
 ## What is CORS
-Cross-origin resource sharing (CORS) is a browser mechanism which enables controlled access to resources located outside of a given domain. 
-CORS is a security standard created with an objective to control the communication through URL or scripts running in a browser with servers residing in a different origin.
+Cross-origin resource sharing (CORS) is a browser mechanism that enables controlled access to resources located outside of a given domain. 
+CORS is a security standard created to control communication through URLs or scripts running in a browser with servers residing in a different origin.
 
-It is implemented by browsers that allows the browser to load resources hosted in a server which is in a different `origin` than its own.  It is a controlled relaxation of the default browser security policy called the Same-Origin Policy (SOP) which permits the browser to load resources only from a server hosted in the same `origin` as the browser. 
+It is implemented by browsers that allow the browser to load resources hosted in a server that is in a different `origin` than its own.  It is a controlled relaxation of the default browser security policy called the Same-Origin Policy (SOP) which permits the browser to load resources only from a server hosted in the same `origin` as the browser. 
 
-A `origin` in this context consists of a scheme, host, and port. We consider two `origins` as same only if all of them match.
+An `origin` in this context consists of a scheme, host, and port. We consider two `origins` as same only if all of them match.
 
 Same Origin Request between HTML page at http://www.mydomain.com:8000 and a REST API endpoint at http://www.mydomain.com:8000/orders :
 
@@ -41,25 +41,25 @@ Cross Origin Request between HTML page at http://www.mydomain.com:8000 and a RES
 |REST API|http://www.otherdomain.com:8000/orders|http|otherdomain|8000|
 
 Here are some examples of CORS requests:
-The front-end JavaScript code served from https://www.domain-1.com uses `XMLHttpRequest` to make a request for https://www.domain-2.com/data.json. XMLHttpRequest (XHR) is used to interact with servers to retrieve data from a URL without having to do a full page refresh. This enables a Web page to perform a partial page refresh without disrupting what the user is doing. XMLHttpRequest is used heavily in AJAX programming. Despite its name, XMLHttpRequest can be used to retrieve any type of data, not just XML.
+The front-end JavaScript code served from https://www.domain-1.com uses `XMLHttpRequest` to request https://www.domain-2.com/data.json. XMLHttpRequest (XHR) is used to interact with servers to retrieve data from a URL without having to do a full page refresh. This enables a Web page to perform a partial page refresh without disrupting what the user is doing. XMLHttpRequest is used heavily in AJAX programming. Despite its name, XMLHttpRequest can be used to retrieve any type of data, not just XML.
 
 
-An Single Page Application (SPA) loaded from https// www.example.com  needs to send API requests to  https://api.example.com.
+A Single Page Application (SPA) loaded from https:// www.example.com  needs to send API requests to  https://api.example.com.
 
 ## How Cross-Origin Requests Work
 
-Browsers implement the Cross-Origin Resource Sharing standard by adding new HTTP headers to the request sent to the server. These headers allow the server to specify which origins are allowed to read that information from a web browser. For HTTP request methods that can modify existing resources on server,  the browsers sends a "preflight" request to fetch the supported methods from the server with the HTTP OPTIONS request method, and then, upon "approval" from the server, sends the actual request. Servers can also inform clients whether "credentials" (such as Cookies and HTTP Authentication) should be sent with requests.
+Browsers implement the Cross-Origin Resource Sharing standard by adding new HTTP headers to the request sent to the server. These headers allow the server to specify which origins are allowed to read that information from a web browser. For HTTP request methods that can modify existing resources on the server,  the browser sends a "preflight" request to fetch the supported methods from the server with the HTTP OPTIONS request method, and then, upon "approval" from the server, sends the actual request. Servers can also inform clients whether "credentials" (such as Cookies and HTTP Authentication) should be sent with requests.
 
 CORS failures result in errors, but for security reasons, specifics about the error are not available to JavaScript. All the code knows is that an error occurred. The only way to determine what specifically went wrong is to look at the browser's console for details.
 
-Whenever a browser makes a cross-origin request to server, it sends an `Origin` header with the request. To serve the cross-origin request, the server needs to send back a `Access-Control-Allow-Origin` header in the response. The browser checks the value of `Access-Control-Allow-Origin` header in the response and renders the response only if the value of `Access-Control-Allow-Origin` header is same as the `Origin` header sent in the request or a matching wild card ranging from `*` for all origins to partial matches with the source origin.
+Whenever a browser makes a cross-origin request to the server, it sends an `Origin` header with the request. To serve the cross-origin request, the server needs to send back an `Access-Control-Allow-Origin` header in the response. The browser checks the value of the `Access-Control-Allow-Origin` header in the response and renders the response only if the value of the `Access-Control-Allow-Origin` header is the same as the `Origin` header sent in the request or a matching wild card ranging from `*` for all origins to partial matches with the source origin.
 
 ## Patterns of Cross-Origin Requests
 Browsers implement the CORS standard by adding new HTTP headers to the request sent to the server. These headers allow the server to specify which origins are allowed to read that information from a web browser. 
 
 ### CORS Errors
 
-We will now get a CORS error in the response, :
+We will now get a CORS error in the response :
 
 ```shell
 Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
@@ -68,11 +68,11 @@ Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://l
 
 For fixing the CORS error, the server needs to return a response header named `Access-Control-Allow-Origin` with a value of :
 1. `*` : Wild-card
-2. Same value as request header named `Origin`. In our example, the value of `Origin` header is `http://localhost:9000`.
+2. Same value as request header named `Origin`. In our example, the value of the `Origin` header is `http://localhost:9000`.
 
 Let us run our server again by modifying the server code to return a response header with a value of `*`
 
-Now the we can see the response rendered in the browser:
+Now we can see the response rendered in the browser:
 
 ```shell
 
@@ -94,10 +94,10 @@ Origin: http://localhost:9000
 
 ```
 
-There are three scenarios of CORS requests depending on the type of operations we want to perform with the server resource. These three scenarios that demonstrate how Cross-Origin Resource Sharing works. All these examples use XMLHttpRequest, which can make cross-origin requests in any supporting browser.
+There are three scenarios of CORS requests depending on the type of operations we want to perform with the server resource. These three scenarios demonstrate how Cross-Origin Resource Sharing works. All these examples use XMLHttpRequest, which can make cross-origin requests in any supporting browser.
 
 ### Simple Requests
-This scenario applies to requests that the browser considers as safe because they do not change the state of any existing resource on the server. These include GET, POST, and HEAD HTTP methods. A request header `Origin` containing URL of the source is sent to the server. The server returns the response header `Access-Control-Allow-Origin`.  The browser is able to render the response only if the value of the response header contains * or value contained in the origin header sent in the request. 
+This scenario applies to requests that the browser considers safe because they do not change the state of any existing resource on the server. These include GET, POST, and HEAD HTTP methods. A request header `Origin` containing the URL of the source is sent to the server. The server returns the response header `Access-Control-Allow-Origin`.  The browser can render the response only if the value of the response header contains * or the value contained in the origin header sent in the request. 
 
 Request URL: http://localhost:8000/orders
 Request Method: GET

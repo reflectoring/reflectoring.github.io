@@ -281,16 +281,17 @@ We will now send a credential in the form of a `Authorization` header in our COR
 
 ```js
 function sendAuthRequestToCrossOrigin() {
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                      document.getElementById("demo").innerHTML = this.responseText;
-                    }
-                };
-                xhr.open('GET', "http://localhost:8000/orders", true);
-                xhr.setRequestHeader('Authorization', 'Bearer rtikkjhgffw456tfdd');
-                xhr.send();
-            }
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("demo").innerHTML = this.responseText;
+        }
+    };
+    xhr.open('GET', "http://localhost:8000/orders", true);
+    xhr.setRequestHeader('Authorization', 'Bearer rtikkjhgffw456tfdd');
+    xhr.withCredentials = true;
+    xhr.send();
+}
 ```
 Here we are sending a bearer token as the value of our `Authorization` header. To allow the browser to read the response, the server needs to send the `Access-Control-Allow-Credentials` header in the response:
 ```js
@@ -313,6 +314,29 @@ app.put('/orders', (req, res) => {
 });
 
 ```
+
+```shell
+Request URL: http://localhost:8000/orders
+Request Method: GET
+Status Code: 200 OK
+
+Request Headers:
+
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+Access-Control-Allow-Origin: http://localhost:9000
+
+Response Headers:
+
+Accept: */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+Authorization: Bearer rtikkjhgffw456tfdd
+
+Origin: http://localhost:9000
+
+```
 We have modified our server side code to send a value `true` for the `Access-Control-Allow-Credentials` header so that the browser is able to read the response. We have also added the `Authorization` in the list of allowed request headers in the header `Access-Control-Allow-Headers`.
 
 ## Vulnerabilities Caused by CORS Misconfiguration 
@@ -331,15 +355,25 @@ The most important response headers for security are:
 ## How to Avoid CORS Security Vulnerabilities
 
 To implement CORS securely, 
-1. We need to associate a whitelist with Access-Control-Allow-Origin that identifies which specific domains (e.g., your company’s other domains) can access resources. 
-2. Then your application can validate against this list when a domain requests access. 
-3. You also don’t want to define your Access-Control-Allow-Origin header as NULL, as an attacker can send a request with a NULL origin that would bypass other controls.
-4. Similarly, with Access-Control-Allow-Methods you should specify exactly what methods are valid for approved domains to use. Some may only need to view resources, while others need to read and update them, and so on.
-5. It is quite easy for a hacker to setup a traffic viewer and observe what requests are passing back and forth from your site and what the responses are. From this, they can determine whether your site is vulnerable to a CORS-based attack.
-6. Therefore, you should be validating each and every domain that is requesting your site’s resources, as well as the methods other domains can use if their requests for access are granted. Y
-7. ou can easily identify CORS security vulnerabilities by reviewing the above headers in the application’s response and validating the values of those headers. Using open source scanners is also a great way to discover CORS security vulnerabilities.
+1. We need to associate a whitelist with Access-Control-Allow-Origin that identifies which specific domains can access resources. 
+2. Then our application can validate against this list when a domain requests access. 
+3. We should not define your `Access-Control-Allow-Origin` header as NULL, since an attacker can send a request with a NULL origin that will bypass other controls.
+4. Similarly, with `Access-Control-Allow-Methods` we should specify exactly what methods are valid for approved domains to use. Some may only need to view resources, while others need to read and update them, and so on.
+5. It is quite easy for a hacker to setup a traffic viewer and observe what requests are passing back and forth from our site and what the responses are. From this, they can determine whether our site is vulnerable to a CORS-based attack.
+6. Therefore, we should be validating each and every domain that is requesting our site’s resources, as well as the methods other domains can use if their requests for access are granted. 
+7. We can easily identify CORS security vulnerabilities by reviewing the above headers in the application’s response and validating the values of those headers. Using open source scanners is also a great way to discover CORS security vulnerabilities.
 
 
 
 ## Conclusion
+Here is a summary of the topics we covered:
+1. CORS is a security standard implemented by browsers to enable access to resources in a different origin. 
+2. CORS requests are of three types: Simple, Preflight, and Request with Credentials.
+3. Simple requests are used to perform safe operations like a HTTP GET method.
+4. Preflighted requests are for performing operations with side-affects like PUT and DELETE methods.
+5. CORS uses Headers to exchange information with servers. Important CORS headers are:
+Origin
+6. We looked at some CORS vulnerabilities and potential remediations like whitelist.
+
+
 

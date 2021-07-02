@@ -13,6 +13,7 @@ image:
 
  “CORS” stands for Cross-Origin Resource Sharing that lays down the standard for communication between browser and server hosted in different origins. A web application executes a cross-origin HTTP request when it requests a resource that has a different origin (domain, protocol, and port). Cross-origin Resource Sharing (CORS) is a mechanism that uses additional HTTP headers to tell a browser to let a web application running at one origin (domain) have permission to access selected resources from a server at a different origin.
 
+As the developer, we don't normally need to care about CORS when we are constructing requests to be sent to a server. However, we may see the different types of requests appear in our network log and, since it may have a performance impact on our application, it may benefit us to know why and when these requests are sent.
 
 In this article, we will understand cross-origin resource sharing (CORS), describe some common examples of cross-origin resource sharing vulnerabilities, and discuss how to protect against these attacks.
 
@@ -21,10 +22,12 @@ In this article, we will understand cross-origin resource sharing (CORS), descri
 
 ## What is CORS
 Cross-origin resource sharing (CORS) is a browser mechanism that enables controlled access to resources located outside of a given domain. 
+
 CORS is a security standard created to control communication through URLs or scripts running in a browser with servers residing in a different origin.
 
 It is implemented by browsers that allow the browser to load resources hosted in a server that is in a different `origin` than its own.  It is a controlled relaxation of the default browser security policy called the Same-Origin Policy (SOP) which permits the browser to load resources only from a server hosted in the same `origin` as the browser. 
 
+### Same Origin vs Cross Origin
 An `origin` in this context consists of a scheme, host, and port. We consider two `origins` as same only if all of them match.
 
 Same Origin Request between HTML page at http://www.mydomain.com:8000 and a REST API endpoint at http://www.mydomain.com:8000/orders :
@@ -40,26 +43,34 @@ Cross Origin Request between HTML page at http://www.mydomain.com:8000 and a RES
 |HTML Page|http://www.mydomain.com:8000|http|mydomain|8000|
 |REST API|http://www.otherdomain.com:8000/orders|http|otherdomain|8000|
 
+
+### Scenarios for Sending CORS Requests
+
 Here are some examples of CORS requests:
+
 The front-end JavaScript code served from https://www.domain-1.com uses `XMLHttpRequest` to request https://www.domain-2.com/data.json. XMLHttpRequest (XHR) is used to interact with servers to retrieve data from a URL without having to do a full page refresh. This enables a Web page to perform a partial page refresh without disrupting what the user is doing. XMLHttpRequest is used heavily in AJAX programming. Despite its name, XMLHttpRequest can be used to retrieve any type of data, not just XML.
 
 
 A Single Page Application (SPA) loaded from https://www.example.com  needs to send API requests to https://api.example.com.
 
 
-## Types of Cross-Origin Request
+## How Browsers Implement Cross-Origin Request
 
-There are three types of CORS request: "simple" requests, and "preflight" requests, and it's the browser that determines which is used. As the developer, you don't normally need to care about this when you are constructing requests to be sent to a server. However, you may see the different types of requests appear in your network log and, since it may have a performance impact on your application, it may benefit you to know why and when these requests are sent.
+Browsers implement the Cross-Origin Resource Sharing standard by exchanging a set of headers with the server. Based on the header values returned from the server, the browser provides access the server response or blocks access with a CORS error. 
 
-Browsers implement the Cross-Origin Resource Sharing standard by sending an `Origin` header with the request for cross-origin requests sent to the server. To serve the cross-origin request, the server needs to send back an `Access-Control-Allow-Origin` header in the response. The browser checks the value of the `Access-Control-Allow-Origin` header in the response and renders the response only if the value of the `Access-Control-Allow-Origin` header is the same as the `Origin` header sent in the request or a matching wild card ranging from `*` for all origins to partial matches with the source origin.
+### Origin Header sent by Browser and Access-Control-Allow-Origin Header Sent by Server
+The browser sending an `Origin` header with the request for cross-origin requests sent to the server. To serve the cross-origin request, the server needs to send back an `Access-Control-Allow-Origin` header in the response. 
 
+The browser checks the value of the `Access-Control-Allow-Origin` header in the response and renders the response only if the value of the `Access-Control-Allow-Origin` header is the same as the `Origin` header sent in the request or a matching wild card ranging from `*` for all origins to partial matches with the source origin.
+
+### CORS Failures
 CORS failures cause errors but specifics about the error are not available to the browser for security reasons. The only way to determine know about the error is by looking at the browser's console for details of the error which is usually in following form:
 
 ```shell
 Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
 ```
+There are three types of CORS requests: simple, preflight, and requests with credentials depending on the kind of operations we want to perform with the server resource. 
 
-There are three types of CORS requests: simple, preflight, and requests with credentials depending on the kind of operations we want to perform with the server resource. These three scenarios demonstrate how Cross-Origin Resource Sharing works. All these examples use XMLHttpRequest, which can make cross-origin requests in any supporting browser.
 
 Let's have a look at what that means in more detail in the next couple of sections.
 
@@ -72,87 +83,43 @@ Simple requests are sent by the browser for server operations it considers safe 
 - No event listeners are registered on any XMLHttpRequestUpload object
 - No ReadableStream object is used in the request
 
-The request is allowed to continue as normal if it meets these criteria, and the Access-Control-Allow-Origin header is checked when the response is returned.
-
-
-The CORS relevant request headers and response headers from a simple request is shown below:
-
-```
-Request URL: http://localhost:8000/orders
-Request Method: GET
-Status Code: 200 OK
-
-**Request Headers**
-Host: localhost:8000
-Origin: http://localhost:9000
-
-**Response Headers**
-Access-Control-Allow-Origin: http://localhost:9000
-
-```
-
-In this example, the browser served from `http://localhost:9000` sends a cross-origin request to a REST API with URL `http://localhost:8000/orders`. This is a simple request since it is a `GET` request. We can see an `Origin` header sent in the request with a value of `http://localhost:9000` which is the origin URL of the browser. The server responds with a response header `Access-Control-Allow-Origin`.  The browser is able to render the response only since the response header `Access-Control-Allow-Origin` has the value `http://localhost:9000` which exactly matches the value of the `Origin` header sent in the request. We can also have partial matches using wild cards like `*` or `http://*localhost:9000.` 
+The request is allowed to continue as normal if it meets these criteria, and the `Access-Control-Allow-Origin` header is checked when the response is returned.
 
 
 ### Preflight Requests
-In contrast to simple requests, the browser sends preflight requests for operations which intend to change the state of existing resources in the server. We use the HTTP methods PUT,and DELETE for these operations. These requests are not considered safe so the web browser first makes sure that cross-origin communication is allowed by first sending a preflight request before sending the actual request. Requests which do not satisfy the criteria for simple request also also fall under this category.
+In contrast to simple requests, the browser sends preflight requests for operations which intend to change the state of existing resources in the server. We use the HTTP methods PUT, and DELETE for these operations. These requests are not considered safe so the web browser first makes sure that cross-origin communication is allowed by first sending a preflight request before sending the actual request. Requests which do not satisfy the criteria for simple request also fall under this category.
 
-Preflight uses HTTP OPTIONS method which is sent automatically by the browser to the server hosting the cross-origin resource, to check that the server will permit the actual request. Along with the preflight request, the browser sends headers that indicate the HTTP method and headers that will be used in the actual request. 
+Preflight uses HTTP OPTIONS method which is sent automatically by the browser to the server hosting the cross-origin resource, to check that the server will permit the actual request. Along with the preflight request, the browser sends the following headers:
 
-Access-Control-Request-Method: The intended method of the request (e.g., GET or POST)
-Access-Control-Request-Headers: An indication of the custom headers that will be sent with the request
-Origin: The usual origin header that contains the script's current origin
+ that indicate the HTTP method and headers that will be used in the actual request. 
 
-If the result of the OPTIONS method is that the request cannot be made, the actual request to the server will not be executed.
+**Access-Control-Request-Method**: This is a list of HTTP methods of the request (e.g., GET, POST, PUT, DELETE)
+**Access-Control-Request-Headers**: This is a list of headers that will be sent with the request
+**Origin**: The origin header that contains the source origin of the request
 
-An example of request and response headers of a preflight request is shown below:
-
-```
-Request URL: http://localhost:8000/orders
-Request Method: OPTIONS
-Status Code: 200 OK
-Remote Address: [::1]:8000
-Referrer Policy: strict-origin-when-cross-origin
-
-Request Headers:
-Accept: */*
-Accept-Encoding: gzip, deflate, br
-Accept-Language: en-US,en;q=0.9
-Access-Control-Request-Method: PUT
-
-
-Response Headers
-
-Allow: GET,HEAD,PUT
-```
-
-In this example, the browser served from `http://localhost:9000` sends a PUT request to a REST API with URL `http://localhost:8000/orders`. Since this is a PUT request which will change the state of an existing resource in the server, the browser sends a preflight request using the HTTP OPTIONS method. In response, the server informs the browser that GET,HEAD,PUT methods are allowed.
+The actual request to the server will not be sent, if the result of the `OPTIONS` method is that the request cannot be made,.
 
 After the preflight request is complete, the actual PUT method with CORS headers is sent.
 
-
 ### CORS Requests with Credentials
 
-By default, CORS does not include cookies on cross-origin requests. To include credentials on cross-origin requests, you must change the CORS settings.
+For all practical purposes we need to send CORS requests loaded with some kind of access credentials which could be a `Authorization` header or cookies. The default behavior of cross-origin resource requests is for requests to be passed without any credentials like cookies and the `Authorization` header. 
 
-In this scenario we can send CORS requests loaded with access credentials. The default behavior of cross-origin resource requests is for requests to be passed without any credentials like cookies and the Authorization header. However, the cross-domain server can permit reading of the response when credentials are passed to it by setting the CORS Access-Control-Allow-Credentials header to true.
+If credentials are passed with the request, the browser will not allow access to the response unless the server sends a CORS header `Access-Control-Allow-Credentials` with a value of `true`.
 
-like HTTP cookies and HTTP Authentication information. By default, in cross-site XMLHttpRequest or Fetch invocations, browsers will not send credentials. A specific flag has to be set on the XMLHttpRequest object or the Request constructor when it is invoked.
-
-In this example, content originally loaded from http://foo.example makes a simple GET request to a resource on http://bar.other which sets Cookies. Content on foo.example might contain JavaScript like this:
-
-
-
-Then the browser will permit the requesting website to read the response, because the Access-Control-Allow-Credentials response header is set to true. Otherwise, the browser will not allow access to the response.
-
-## Example of CORS Configuration
+## Example of Working with CORS
 Let us run two web applications written in Node.Js which will communicate with each other with CORS:
 1. A `OrderProcessor` web application containing a REST API with GET and PUT methods
 2. A web application hosting the HTML page which will communicate with the REST APIs in the `OrderProcessor` application.
 
-We can run these applications in our local machine using npm and node. The application hosting the HTML page is running on http://localhost:8000. This makes Ajax calls with the `XMLHttpRequest` to the `OrderProcessor` application.
+We can run these applications in our local machine using `npm` and `node`. The application hosting the HTML page is running on `http://localhost:9000`. This makes Ajax calls with the `XMLHttpRequest` to the `OrderProcessor` application running on `http://localhost:8000`. 
 
-Here is a snippet of our server side GET method running on `localhost:8000`:
+These are CORS requests since the HTML page and `OrderProcessor` application are running in different Origins (because of different port number 8000 and 9000 although they use same scheme: http and host: `localhost`).
+
+### Server Side Handling CORS Requests in Node.Js
+We are using a very simple Node.JS application named `OrderProcessor` built with Express as our server. We have created two REST APIs with a GET and PUT methods or fetching updating `orders`. 
+
+This is a snippet of the GET method of our `OrderProcessor` application running on `localhost:8000`:
 
 ```js
 app.get('/orders', (req, res) => {
@@ -161,7 +128,12 @@ app.get('/orders', (req, res) => {
 });
 
 ```
-We will call this `GET` method from an HTML page running on `localhost:9000` using the `XMLHttpRequest` javascript object:
+The `GET` method defined here is used to return a collection of `orders`.
+
+### Client Side Sending CORS Requests from Javascript 
+For sending requests to the `OrderProcessor` application described in the previous section, we will use a HTML page and package this inside another Node.JS application running on `localhost:9000`.
+
+We will call the `GET` and `PUT` methods from this HTML page using the `XMLHttpRequest` javascript object:
 
 ```html
 <html>
@@ -196,14 +168,19 @@ We will call this `GET` method from an HTML page running on `localhost:9000` usi
 </body>
 </html>
 ```
-Here we click the button in our HTML page to trigger the CORS request.
-We will get a CORS error in our browser console as shown below:
+The HTML shown here contains a button which have to click to trigger the CORS request from the javascript method `loadFromCrossOrigin`.
+
+### CORS Error Due to Same Origin Policy
+If we run these applications without any additional configurations(setting CORS headers) in the server, we will get a CORS error in our browser console as shown below:
 
 ![cors failure](/assets/img/posts/cors/cors-fail.png)
 
-Let us modify the server side code to return the CORS header `Access-Control-Allow-Origin` as shown:
+This is an error caused by the restriction of accessing cross origins due to the Same Origin Policy.  Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
 
-```javascript
+### Fixing the CORS Error For Simple Requests
+As suggested in the CORS error description, let us modify the server side code to return the CORS header `Access-Control-Allow-Origin` in the response:
+
+```js
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:9000");
   next();
@@ -216,14 +193,35 @@ app.get('/orders', (req, res) => {
 ```
 We are returning a CORS header `Access-Control-Allow-Origin` with a value of source origin `http://localhost:9000` to fix the CORS error.
 
-Now we will make a preflight request to a PUT method which looks like this:
+The CORS relevant request headers and response headers from a simple request is shown below:
+
+```
+Request URL: http://localhost:8000/orders
+Request Method: GET
+Status Code: 200 OK
+
+**Request Headers**
+Host: localhost:8000
+Origin: http://localhost:9000
+
+**Response Headers**
+Access-Control-Allow-Origin: http://localhost:9000
+
+```
+In this example, the HTML served from `http://localhost:9000` sends a cross-origin request to a REST API with URL `http://localhost:8000/orders`. This is a simple request since it is a `GET` request. We can see an `Origin` header sent in the request with a value of `http://localhost:9000` which is the origin URL of the browser. 
+
+The server responds with a response header `Access-Control-Allow-Origin`.  The browser is able to render the response only since the response header `Access-Control-Allow-Origin` has the value `http://localhost:9000` which exactly matches the value of the `Origin` header sent in the request. We can also configure partial matches by using wild cards in the form of `*` or `http://*localhost:9000`.  
+
+
+### CORS Handling for Preflight Request
+Now we will modify our server side application to handle preflight request for calls made to the `PUT` method which looks like this:
 
 ```js
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:9000");
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    "Origin, X-Requested-With, Content-Type, Accept"
   );
   res.header(
     "Access-Control-Allow-Methods",
@@ -238,12 +236,63 @@ app.put('/orders', (req, res) => {
 
 ```
 
-We have added a PUT method and returning few more headers.
-Access-Control-Allow-Headers: Allowed headers
-Access-Control-Allow-Methods: Allowed methods
+For handling the preflight request, we are returning two more headers:
+`Access-Control-Allow-Headers` containing the headers `Origin`, `X-Requested-With`, `Content-Type`, `Accept` the server should accept.
+`Access-Control-Allow-Methods` containing the HTTP methods `GET`, `POST`, `PUT`, `DELETE` that the browser should send to the server.
 
-![cors failure](/assets/img/posts/cors/preflight.png)
+When we send the PUT request from our HTML page, we can see two requests in the browser network log:
 
+![cors preflight](/assets/img/posts/cors/preflight.png)
+
+The preflight request with OPTIONS method is followed by the actual request with `PUT` method.
+
+The request and response headers of the preflight request is shown:
+
+```
+Request URL: http://localhost:8000/orders
+Request Method: OPTIONS
+Status Code: 200 OK
+..
+..
+
+Request Headers:
+Accept: */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+Access-Control-Request-Headers: content-type
+Access-Control-Request-Method: PUT
+Connection: keep-alive
+Host: localhost:8000
+Origin: http://localhost:9000
+
+
+Response Headers
+
+Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+Access-Control-Allow-Origin: http://localhost:9000
+Allow: GET,HEAD,PUT
+```
+
+In this example, the browser served from `http://localhost:9000` sends a PUT request to a REST API with URL `http://localhost:8000/orders`. Since this is a PUT request which will change the state of an existing resource in the server, the browser sends a preflight request using the HTTP OPTIONS method. In response, the server informs the browser that GET,HEAD,PUT methods are allowed.
+
+### CORS Handling for Request with Credentials
+We will now send a credential in the form of a `Authorization` header in our CORS request:
+
+```js
+function sendAuthRequestToCrossOrigin() {
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                      document.getElementById("demo").innerHTML = this.responseText;
+                    }
+                };
+                xhr.open('GET', "http://localhost:8000/orders", true);
+                xhr.setRequestHeader('Authorization', 'Bearer rtikkjhgffw456tfdd');
+                xhr.send();
+            }
+```
+Here we are sending a bearer token as the value of our `Authorization` header. To allow the browser to read the response, the server needs to send the `Access-Control-Allow-Credentials` header in the response:
 ```js
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:9000");
@@ -264,7 +313,7 @@ app.put('/orders', (req, res) => {
 });
 
 ```
-
+We have modified our server side code to send a value `true` for the `Access-Control-Allow-Credentials` header so that the browser is able to read the response. We have also added the `Authorization` in the list of allowed request headers in the header `Access-Control-Allow-Headers`.
 
 ## Vulnerabilities Caused by CORS Misconfiguration 
 

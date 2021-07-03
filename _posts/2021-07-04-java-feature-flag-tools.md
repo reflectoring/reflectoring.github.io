@@ -1,13 +1,12 @@
 ---
 title: "Feature Flagging in Java - Should I Use Togglz or LaunchDarkly?"
 categories: [java]
-date: 2021-06-23 00:00:00 +1100
-modified: 2021-06-23 00:00:00 +1100
+date: 2021-07-04 00:00:00 +1100
+modified: 2021-07-04 00:00:00 +1100
 author: default
 excerpt: ""
 image:
-  teaser: /assets/img/special/robot-arena.jpg
-  opengraph: /assets/img/special/robot-arena.jpg
+  auto: 0104-on-off
 ---
 
 With feature flags, we can reduce the risk of rolling out software changes to a minimum. We deploy the software with the changes, but the changes are behind a (deactivated) feature flag. After successful deployment, we can choose when and for which users to activate the feature. 
@@ -540,7 +539,7 @@ So, for small teams who are working on a small number of exclusively Java codeba
 
 Big teams or enterprises with codebases across multiple programming languages and hundreds or even thousands of feature flags, there is no way around a feature management platform like LaunchDarkly.
 
-Here's an (incomplete) list of aspects to think about when deciding for a feature flagging solution for your context.
+Here's an (incomplete) list of aspects to think about when deciding for a feature flagging solution for your context:
 
 <style>
 .table td {
@@ -555,7 +554,7 @@ Here's an (incomplete) list of aspects to think about when deciding for a featur
 | Targeting by application environment (staging, prod, ...) | No concept of application environments | Feature flags evaluate differently for different  environments
 | Programming Languages       | Java                            | [Many](https://launchdarkly.com/features/sdk/) |
 | Feature variations          | Only boolean                    | Booleans, strings, numbers              |
-| Feature management          | Via web console (that has to be self-hosted) | Via web console in the cloud |
+| Feature management          | Via self-hosted web console | Via web console in the cloud |
 | Feature state               | By implementing a `StateRepository` interface | Managed by LaunchDarkly |
 | Feature analytics           | Needs to be custom-built        | Out-of-the-box
 | Working in a team           | Simple feature management in the web console | Audit logs, user dashboard, feature ownership, ... |

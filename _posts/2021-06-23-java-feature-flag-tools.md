@@ -353,34 +353,212 @@ In addition to what we discussed above, Togglz offers:
 * [grouping features](https://www.togglz.org/documentation/feature-groups.html) in the admin console,
 * [support for JUnit 4 and 5](https://www.togglz.org/documentation/testing.html) to help control feature state in tests.
 
+Togglz provide a great framework to build your own feature flagging solution, but there's quite some manual work involved. Let's see how we can delegate that work using a feature management service in the cloud.
+
 ## LaunchDarkly
 
+LaunchDarkly is a full-fledged feature management service that does most of the dirty feature flagging work for us. The name stems from the concept of a "dark launch", which is deploying a feature in a deactivated state and only activating it when the time is right.
+
+Let's take a look at the core LaunchDarkly concepts before diving into the technicalities of controlling feature flags in Java:
 
 ![LaunchDarkly Concepts](/assets/img/posts/feature-flag-tools/launchdarkly.png)
 
-Implementing feature flags using the LaunchDarkly SDK. This will probably be very similar to the section "Feature Flags Backed by a Feature Management Service" in the article [[Implementing Feature Flags with Spring Boot]].
+Being a cloud service, LaunchDarkly provides a web UI for us to create and configure **feature flags**.
 
-"Feature Management Platform"
-name from "dark launch"
+For each feature flag, we can define one or more **variations**. A variation is a possible value the feature flag can have for a specific user. A boolean flag, for example, has exactly two variations: `true` and `false`. But we're not limited to boolean feature flags, but can create flags with arbitrary numbers, string values or even JSON snippets.
 
+To decide which variation a feature flag will show to a given user, we can define **targeting rules** for each feature flag. The simplest targeting rule is "show variation A for all users". A more complex targeting rule is "show variation A for all users with attribute X, variation B for all users with attribute Y, and variation C for all other users". We will define a different targeting rule for each of our [feature flagging use cases](#feature-flagging-use-cases) shortly.
 
-### Global Boolean Feature Flag
-### User-Based Percentage Rollout
-### Implementing a Rollout Based on User Attributes
-- https://docs.launchdarkly.com/sdk/features/track#java
-- DON'T rely on the server-side state of the attributes! The feature flag rules are evaluated on the client-side!
-- the User dashboard only updates attributes every 5 minutes!
+By default, targeting for a feature flag is deactivated. That means that the targeting rules will not be evaluated. In this state, a feature flag always serves its **default variation** (which would be the value `false` for a boolean flag, for example).
+
+To make their decision about which variation to serve, a targeting rule needs to know about the **user** for whom it's making the decision.
+
+In our code, we'll be asking a **LaunchDarkly client** to tell us the variation of a given feature flag for a given user. The client loads the targeting rules that we have defined in the web UI from the LaunchDarkly server and evaluates them locally. 
+
+So, even though we are defining the targeting rules in the LaunchDarkly web UI (i.e. on a LaunchDarkly server), the LaunchDarkly client doesn't call out to a LaunchDarkly server to ask for the variation we should serve to a given user! Instead, the client connects to the server on startup, downloads the targeting rules, and then evaluates them on the client side. 
+
+This architecture is interesting from a scalability perspective because our application doesn't have to make a network call every time we need to evaluate a feature flag. It's also interesting from a resilience perspective, because feature flag evaluation will still work if the LaunchDarkly server has exploded and is not answering our calls anymore.
+
+With these concepts in mind, let's see how we can use LaunchDarkly in a Spring Boot application.
+
+### Initial Setup
+
+To use the LaunchDarkly Java client, we need to first include it as a dependency in our application. We add the following to our `pom.xml` file:
+
+```xml
+<dependency>
+    <groupId>com.launchdarkly</groupId>
+    <artifactId>launchdarkly-java-server-sdk</artifactId>
+    <version>5.3.0</version>
+</dependency>
+```
+
+Before the client can talk to the LaunchDarkly server, we also need to create a LaunchDarkly account. If you want to play along with the example, you can sign up for a free trial account [here](https://app.launchdarkly.com/signup).
+
+After signup, you get an "SDK key" that the client uses to authenticate to the server. 
+
+We will put this key into Spring Boot's `application.yml` configuration file:
+
+```yaml
+launchdarkly:
+  sdkKey: ${LAUNCHDARKLY_SDK_KEY}
+```
+
+This will set the configuration property `launchdarkly.sdkKey` to the value of the environment variable `LAUNCHDARKLY_SDK_KEY` on startup of the Spring Boot application.
+
+We could have hard-coded the SDK key into the `application.yml` file, but it's better practice to inject secrets like this via environment variables so they don't accidentally end up in version control and who knows where from there.
+
+The final piece of setup is to create an instance of the LaunchDarkly client and make it available to our application:
+
+```java
+@Configuration
+public class LaunchDarklyConfiguration {
+
+    private LDClient launchdarklyClient;
+
+    @Bean
+    public LDClient launchdarklyClient(@Value("${launchdarkly.sdkKey}") String sdkKey) {
+        this.launchdarklyClient = new LDClient(sdkKey);
+        return this.launchdarklyClient;
+    }
+
+    @PreDestroy
+    public void destroy() throws IOException {
+        this.launchdarklyClient.close();
+    }
+
+}
+```
+
+This configuration class will create a `LDClient` instance and add it to the Spring application context. It's important that the client is a singleton because it is stateful and we don't want to waste resources by having multiple client instances with the same state.
+
+To create the `LDClient` instance, we inject the SDK key.
+
+We also implement a `@PreDestroy` method that is called when the Spring application context is shutting down (i.e. when the application is shutting down). This method tells the client to close gracefully, sending any events that it might have queued up to the server. Such events include evaluation counters for feature flags and changes in a user's attributes, for example.
+
+With this setup, we're ready to implement our first feature flag!
+
+### Global Boolean Rollout with LaunchDarkly
+
+Let's start with the simplest feature flag possible: a simple boolean toggle that activates a feature for all users or none.
+
+First, we create a feature flag with the key `global-boolean-flag` in the LaunchDarkly UI:
+
+![Global Boolean Flag in LaunchDarkly](/assets/img/posts/feature-flag-tools/launchdarkly-global-boolean-rollout.png)
+
+Note that we created the feature flag as a boolean flag, which means that it has exactly two variations: `true` and `false`. We also have not created a specific targeting rule, so the default rule will always serve the `false` variation.
+
+In the screenshot you can see that the targeting is already set to "on", which means that whatever targeting rules we define will be "live" and have an effect on our users.
+
+As soon as the feature is saved, we can ask our `LDClient` to evaluate the feature for us:
+
+```java
+LDUser user = new LDUser.Builder(userSession.getUsername())
+        .build();
+
+boolean booleanFlagActive = launchdarklyClient
+        .boolVariation("global-boolean-flag", user, false);
+```
+
+To evaluate a feature flag, the LaunchDarkly client needs to know which user the feature should be evaluated for. With our simple global boolean flag, we don't really need a user, because we want to enable the feature for everyone or nobody, but most targeting rules will evaluate differently for different users, so we need to always pass a user to the client.
+
+In the example, we're just getting the (unique) username from our session and creating an `LDUser` object with it. Whatever we pass into the `LDUser`, it needs to be a unique identifier for the user so that LaunchDarkly can recognize the user. A username is not the best identifier, by the way, because it's personally identifiable information, so a more opaque user ID is probably the better choice in most contexts.
+
+In our code, we need to know what kind of variations the feature flag provides to call the appropriate method. In our case, we know the feature flag is a boolean flag, so we use the method `boolVariation()`. The third parameter to this method (`false`) is the value the feature should evaluate to in case the client could not make a connection to the LaunchDarkly server.
+
+If the feature flag is configured as shown in the screenshot above, the client will know that the targeting is "on" for the feature `global-boolean-flag`, and then evaluate the default rule, which evaluates to `false`. If we change the default rule to `true`, LaunchDarkly will inform our client and the next call to `boolVariation()` will evaluate to `true`.
+
+### Percentage Rollout with LaunchDarkly
+
+To implement a percentage rollout with LaunchDarkly, we create a new feature named `user-based-percentage-rollout` in the LaunchDarkly UI and set the default targeting rule to a percentage rollout:
+
+![Percentage Feature Flag in LaunchDarkly](/assets/img/posts/feature-flag-tools/launchdarkly-percentage-rollout.png)
+
+In our code, we can now evaluate this feature flag the same as we did before:
+
+```java
+boolean percentageFlagActive = launchdarklyClient
+        .boolVariation("user-based-percentage-rollout", user, false);
+```
+
+For each variation of a percentage feature flag, LaunchDarkly creates a bucket. In the case of our example, we have two buckets, one for the variation `true`, and one for the variation `false`, and each bucket has the same size (50%).
+
+The LaunchDarkly client knows about these buckets. To determine which bucket the current user falls into, the LaunchDarkly client creates a hashcode for the user and uses it to decide on which bucket the user to put in. This allows multiple, distributed LaunchDarkly clients to evaluate to the same value for the same user, because they calculate the same hashcode.
+
+### Rollout Based on a User Attribute with LaunchDarkly
+
+More complex targeting strategies work after the same pattern. We configure the targeting rules in the LaunchDarkly UI, and then ask the LaunchDarkly client for the variation for the given user.
+
+Let's assume that we want to enable a certain feature for users only after they have clicked a certain button in our application. For this case, we can create the following targeting rule:
+
+![Feature Flag based on a user attribute in LaunchDarkly](/assets/img/posts/feature-flag-tools/launchdarkly-attribute-rollout.png)
+
+But how does LaunchDarkly know the user's attributes? Because we pass it into the client:
+
+```java
+LDUser user = new LDUser.Builder(userSession.getUsername())
+        .custom("clicked", userSession.hasClicked())
+        .build();
+
+boolean clickedFlagActive = launchdarklyClient
+        .boolVariation("user-clicked-flag", user, false);
+```
+
+When we create the `LDUser` object that we pass into the `boolVariation()` method, we now set the `clicked` custom attribute to a value that - in our example - we get from the user session. With the `clicked` attribute, the LaunchDarkly client can now properly evaluate the feature flag.
+
+After a feature has been evaluated for a user with a given attribute, LaunchDarkly will show the user's attributes in its user dashboard:
+
+![User attributes in the LaunchDarkly user dashboard](/assets/img/posts/feature-flag-tools/launchdarkly-alice.png)
+
+Note that LaunchDarkly only shows these user attributes as a convenience. The user attributes are evaluated by the LaunchDarkly client, not the LaunchDarkly server! So, if our application doesn't set the `clicked` attribute of the `LDUser` object, our example feature flag will evaluate to `false`, even if we have set the `clicked` attribute to `true` in a previous call!
+
+### Additional Features
+
+The targeting rules in our examples above are still rather simple examples, given the feature set LaunchDarkly offers. As mentioned, LaunchDarkly not only supports boolean feature flags, but any number of variations of different types like strings, numbers, or JSON. This opens the door to pretty much every feature flagging use case one can think of.
+
+In addition to flexible targeting rules, LaunchDarkly offers a lot of features that a geared towards big teams and even Enterprises:
+
+* analytics across our feature flags,
+* designing [feature workflows](https://launchdarkly.com/features/feature-workflows/) with scheduled feature releases and approval steps,
+* auditing on feature flag changes, so we can reconstruct they variation of a feature flag at a given point in time,
+* debugging feature flags in the LaunchDarkly UI to verify that features are evaluated to the expected variation,
+* slicing our user base into segments to target each segment in a different way,
+* running [experiments](https://launchdarkly.com/features/experimentation/) by pairing a feature flag with a certain metric from our application to gauge how the feature impacts the metric.
+* and a lot more. 
 
 - not bound to any rollout strategy at implementation time
 
-## What's the Best Solution for Me?
-Comparing the different tools, maybe in form of a table.
+## Conclusion - What's the Best Feature Flagging Solution for Me?
 
-Summary table:
+Obviously, the two solutions discussed in this article are very different. As is often the case when deciding on a tool that solves a specific problem, you can't really say that one solution is "better" than another without taking your context into account.
 
-- supported languages
-- basic on/off features
-- percentage rollouts
-- non-boolean feature flags
-- rollouts based on custom user actions
-- custom targeting cohorts
+Togglz is a Java library that we can easily extend by implementing some interfaces, but it doesn't scale well with a lot of features (because they will be hard to find in the web console) and we have some custom work to do to self-host the web console and to integrate it with a database, for example.
+
+LaunchDarkly, on the other hand, is a full-blown feature management platform that supports many programming languages, does a lot of the dirty work for us and scales to an almost limitless number of feature flags without impacting performance too much. But it costs money and we're sharing our feature data with them.
+
+So, for small teams who are working on a small number of exclusively Java codebases with tens of features, Togglz may be the solution to go for.
+
+Big teams or enterprises with codebases across multiple programming languages and hundreds or even thousands of feature flags, there is no way around a feature management platform like LaunchDarkly.
+
+Here's an (incomplete) list of aspects to think about when deciding for a feature flagging solution for your context.
+
+<style>
+.table td {
+  padding: 5px;
+}
+</style>
+
+| Aspect                      | Togglz                          | LaunchDarkly                             |
+| ----------------------------|---------------------------------|------------------------------------------|
+| Targeting strategies        | By implementing the `ActivationStrategy` interface | By configuring a targeting rule in the UI |
+| Changing the targeting      | Might need redeployment of a new `ActivationStrategy` | Any time by changing a rule in the UI | 
+| Targeting by application environment (staging, prod, ...) | No concept of application environments | Feature flags evaluate differently for different  environments
+| Programming Languages       | Java                            | [Many](https://launchdarkly.com/features/sdk/) |
+| Feature variations          | Only boolean                    | Booleans, strings, numbers              |
+| Feature management          | Via web console (that has to be self-hosted) | Via web console in the cloud |
+| Feature state               | By implementing a `StateRepository` interface | Managed by LaunchDarkly |
+| Feature analytics           | Needs to be custom-built        | Out-of-the-box
+| Working in a team           | Simple feature management in the web console | Audit logs, user dashboard, feature ownership, ... |
+| Enterprise                  | Simple feature management in the web console | Workflows, approvals, code references, ... |
+| Cost                        | Cost of customizing             | Per-seat fee |
+{: .table}

@@ -4,31 +4,38 @@ categories: [craft]
 date: 2021-06-14 06:00:00 +1000
 modified: 2021-06-13 06:00:00 +1000
 author: pratikdas
-excerpt: "Amazon Simple Email Service (SES) provides an email platform for sending and receiving emails. Spring Cloud AWS makes it convenient to integrate applications with different AWS services. In this article, we will look at using Spring Cloud AWS for working with Amazon Simple Email Service (SES) with the help of some basic concepts of SES along with code examples."
+excerpt: "We will understand cross-origin resource sharing (CORS), describe some common examples of cross-origin resource sharing vulnerabilities, and discuss how to protect against these attacks."
 image:
   auto: 0074-stack
 ---
 
- Most web applications we build today need to communicate with separately hosted or even third-party sites for fetching various resources like images, fonts, maps, data and also send data for processing. Asynchronous Javascript (Ajax) is the most common method of doing this. Although it gives powerful capabilities of composing sites by assembling a set of readymade assets managed separately, it also opens up security vulnerabilities that can be exploited by sending malicious requests.
+“CORS” stands for Cross-Origin Resource Sharing. CORS is a security standard implemented by browsers that enables controlled access to resources located outside of a given origin.
 
- “CORS” stands for Cross-Origin Resource Sharing that lays down the standard for communication between browser and server hosted in different origins. A web application executes a cross-origin HTTP request when it requests a resource that has a different origin (domain, protocol, and port). Cross-origin Resource Sharing (CORS) is a mechanism that uses additional HTTP headers to tell a browser to let a web application running at one origin (domain) have permission to access selected resources from a server at a different origin.
+lays down a protocol that allows JavaScripts running in a web page to communicate with resources from a different origin. 
 
-As the developer, we don't normally need to care about CORS when we are constructing requests to be sent to a server. However, we may see the different types of requests appear in our network log and, since it may have a performance impact on our application, it may benefit us to know why and when these requests are sent.
+In this article, we will understand cross-origin resource sharing (CORS), describe some common examples of cross-origin resource sharing vulnerabilities, and suggest methods to protect against these attacks.
 
-In this article, we will understand cross-origin resource sharing (CORS), describe some common examples of cross-origin resource sharing vulnerabilities, and discuss how to protect against these attacks.
-
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-ses" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/cors" %}
 
 
 ## What is CORS
-Cross-origin resource sharing (CORS) is a browser mechanism that enables controlled access to resources located outside of a given domain. 
 
-CORS is a security standard created to control communication through URLs or scripts running in a browser with servers residing in a different origin.
+For understanding CORS, it is important to understand Same-Origin Policy (SOP).
 
-It is implemented by browsers that allow the browser to load resources hosted in a server that is in a different `origin` than its own.  It is a controlled relaxation of the default browser security policy called the Same-Origin Policy (SOP) which permits the browser to load resources only from a server hosted in the same `origin` as the browser. 
+### Same-Origin Policy
+Browsers implement a default security policy called the Same-Origin Policy (SOP) which permits the browser to load resources only from a server hosted in the same `origin` as the browser. 
+
+Without SOP, any web page would be able to access the document object model (DOM) of other pages and allow it to access potentially sensitive data as well as perform malicious actions on other web sites without user consent.
+
+However the SOP security policy turned to be too restrictive for the new age applications where we often need to fetch different kind of resources from multiple origins.
+
+SOP was conceived in the early years of the web which  CORS standard was defined with an objective of relaxing this restriction.
+
+The Cross-origin resource sharing (CORS) standard implemented by browsers enables controlled access to resources located outside of the browser's origin. 
 
 ### Same Origin vs Cross Origin
-An `origin` in this context consists of a scheme, host, and port. We consider two `origins` as same only if all of them match.
+Same-Origin Policy (SOP) which permits the browser to load resources only from a server hosted in the same `origin` as the browser. 
+An `origin` in the context of CORS consists of a scheme, host, and port. We consider two URLs to be of same `origins` only if all three of them match.
 
 Same Origin Request between HTML page at http://www.mydomain.com:8000 and a REST API endpoint at http://www.mydomain.com:8000/orders :
 
@@ -48,7 +55,9 @@ Cross Origin Request between HTML page at http://www.mydomain.com:8000 and a RES
 
 Here are some examples of CORS requests:
 
-The front-end JavaScript code served from https://www.domain-1.com uses `XMLHttpRequest` to request https://www.domain-2.com/data.json. XMLHttpRequest (XHR) is used to interact with servers to retrieve data from a URL without having to do a full page refresh. This enables a Web page to perform a partial page refresh without disrupting what the user is doing. XMLHttpRequest is used heavily in AJAX programming. Despite its name, XMLHttpRequest can be used to retrieve any type of data, not just XML.
+The front-end JavaScript code served from https://www.domain-1.com uses `XMLHttpRequest` to request https://www.domain-2.com/data.json. 
+
+XMLHttpRequest (XHR) is used to interact with servers to retrieve data from a URL without having to do a full page refresh. This enables a Web page to perform a partial page refresh without disrupting what the user is doing. XMLHttpRequest is used heavily in AJAX programming. Despite its name, XMLHttpRequest can be used to retrieve any type of data, not just XML.
 
 
 A Single Page Application (SPA) loaded from https://www.example.com  needs to send API requests to https://api.example.com.

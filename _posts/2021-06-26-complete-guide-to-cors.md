@@ -9,9 +9,7 @@ image:
   auto: 0074-stack
 ---
 
-“CORS” stands for Cross-Origin Resource Sharing. CORS is a security standard implemented by browsers that enables controlled access to resources located outside of a given origin.
-
-lays down a protocol that allows JavaScripts running in a web page to communicate with resources from a different origin. 
+“CORS” stands for Cross-Origin Resource Sharing. CORS is a security standard implemented by browsers that enables controlled access to resources located outside of a given origin. 
 
 In this article, we will understand cross-origin resource sharing (CORS), describe some common examples of cross-origin resource sharing vulnerabilities, and suggest methods to protect against these attacks.
 
@@ -20,36 +18,25 @@ In this article, we will understand cross-origin resource sharing (CORS), descri
 
 ## What is CORS
 
-For understanding CORS, it is important to understand Same-Origin Policy (SOP).
 
-### Same-Origin Policy
+### What is an Origin
+
+An `origin` in the context of CORS consists of a scheme, host, and port. We consider two URLs to be of same `origins` only if all three of them match. For example, the HTML documents served with URLs: http://www.mydomain.com/mypage.html and http://www.mydomain.com/subpage/mypage1.html have the same origin: the scheme is HTTP, the domain is www.mydomain.com, and the port is 80.
+
+In contrast, the HTML documents served with URLs:
+http://www.mydomain.com/page.html and https://www.mydomain.com/page.html have a different origin due to a different schemes (HTTP vs HTTPS).
+
+
+### CORS is a Controlled Relaxation of Same-Origin Policy
+For understanding CORS, it is important to understand the Same-Origin Policy (SOP).
+
 Browsers implement a default security policy called the Same-Origin Policy (SOP) which permits the browser to load resources only from a server hosted in the same `origin` as the browser. 
 
-Without SOP, any web page would be able to access the document object model (DOM) of other pages and allow it to access potentially sensitive data as well as perform malicious actions on other web sites without user consent.
+In the absence of Same-Origin Policy, any web page would be able to access the document object model (DOM) of other pages and allow it to access potentially sensitive data as well as perform malicious actions on other web sites without user consent.
 
-However the SOP security policy turned to be too restrictive for the new age applications where we often need to fetch different kind of resources from multiple origins.
+However the the Same-Origin Policy policy turned out to be too restrictive for the new age applications where we often need to fetch different kind of resources from multiple origins.
 
-SOP was conceived in the early years of the web which  CORS standard was defined with an objective of relaxing this restriction.
-
-The Cross-origin resource sharing (CORS) standard implemented by browsers enables controlled access to resources located outside of the browser's origin. 
-
-### Same Origin vs Cross Origin
-Same-Origin Policy (SOP) which permits the browser to load resources only from a server hosted in the same `origin` as the browser. 
-An `origin` in the context of CORS consists of a scheme, host, and port. We consider two URLs to be of same `origins` only if all three of them match.
-
-Same Origin Request between HTML page at http://www.mydomain.com:8000 and a REST API endpoint at http://www.mydomain.com:8000/orders :
-
-|Resource Type|-URL-|-Scheme-|-Host-|-Port-|
-|HTML Page|http://www.mydomain.com:8000|http|mydomain|8000|
-|REST API|http://www.mydomain.com:8000/orders|http|mydomain|8000|
-
-
-Cross Origin Request between HTML page at http://www.mydomain.com:8000 and a REST API endpoint at http://www.otherdomain.com:8000/orders :
-
-|Resource Type|-URL-|-Scheme-|-Host-|-Port-|
-|HTML Page|http://www.mydomain.com:8000|http|mydomain|8000|
-|REST API|http://www.otherdomain.com:8000/orders|http|otherdomain|8000|
-
+The CORS standard was defined with an objective of relaxing this restriction.It is implemented by browsers to enable controlled access to resources located outside of the browser's origin. 
 
 ### Scenarios for Sending CORS Requests
 
@@ -65,10 +52,10 @@ A Single Page Application (SPA) loaded from https://www.example.com  needs to se
 
 ## How Browsers Implement Cross-Origin Request
 
-Browsers implement the Cross-Origin Resource Sharing standard by exchanging a set of headers with the server. Based on the header values returned from the server, the browser provides access the server response or blocks access with a CORS error. 
+Browsers implement the Cross-Origin Resource Sharing standard by exchanging a set of headers with the server. Based on the header values returned from the server, the browser provides access to the server response or blocks access with a CORS error. 
 
-### Origin Header sent by Browser and Access-Control-Allow-Origin Header Sent by Server
-The browser sending an `Origin` header with the request for cross-origin requests sent to the server. To serve the cross-origin request, the server needs to send back an `Access-Control-Allow-Origin` header in the response. 
+### Important CORS Headers
+The browser sends an `Origin` header with the request for cross-origin requests sent to the server. To serve the cross-origin request, the server needs to send back an `Access-Control-Allow-Origin` header in the response. 
 
 The browser checks the value of the `Access-Control-Allow-Origin` header in the response and renders the response only if the value of the `Access-Control-Allow-Origin` header is the same as the `Origin` header sent in the request or a matching wild card ranging from `*` for all origins to partial matches with the source origin.
 
@@ -80,10 +67,7 @@ Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://l
 ```
 There are three types of CORS requests: simple, preflight, and requests with credentials depending on the kind of operations we want to perform with the server resource. 
 
-
-Let's have a look at what that means in more detail in the next couple of sections.
-
-### Simple Requests (GET, POST, and HEAD)
+### Simple CORS Requests (GET, POST, and HEAD)
 Simple requests are sent by the browser for server operations it considers safe because they do not change the state of any existing resource on the server. The request sent by the browser is simple if the one of the below conditions apply: These include GET, POST, and HEAD HTTP methods. 
 
 - The HTTP request method is GET, POST, or HEAD

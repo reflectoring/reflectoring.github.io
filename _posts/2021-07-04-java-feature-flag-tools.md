@@ -1,5 +1,5 @@
 ---
-title: "Feature Flagging in Java - Should I Use Togglz or LaunchDarkly?"
+title: "Feature Flags in Java with Togglz and LaunchDarkly"
 categories: [java]
 date: 2021-07-04 00:00:00 +1100
 modified: 2021-07-04 00:00:00 +1100
@@ -9,15 +9,24 @@ image:
   auto: 0104-on-off
 ---
 
-With feature flags, we can reduce the risk of rolling out software changes to a minimum. We deploy the software with the changes, but the changes are behind a (deactivated) feature flag. After successful deployment, we can choose when and for which users to activate the feature. 
+With feature flags, we can reduce the risk of rolling out software changes to a minimum. We deploy the software with the changes, but the changes are behind a deactivated feature flag. After successful deployment, we can choose when and for which users to activate the feature. 
 
-By reducing the deployment risk, feature flags are a main driver of DevOps metrics like lead time and deployment frequency - which are proven to have a positive impact on organizational performance (see my book notes on "[Accelerate](https://reflectoring.io/book-review-accelerate/)"). 
+By reducing the deployment risk, feature flags are a main driver of DevOps metrics like lead time and deployment frequency - which are proven to have a positive impact on organizational performance (see my book notes on "[Accelerate](https://reflectoring.io/book-review-accelerate/)" for more about DevOps metrics). 
 
-In this article, **we're going to compare some tools that support feature flagging in Java**. This will help you decide which tool fits your needs.
+In this article, **we're going to implement feature flags with Togglz and LaunchDarkly**: Togglz is an extensible Java library, and LaunchDarkly is a cloud-based feature management platform. We'll explore how we can implement some common feature flagging use cases with each of them and discuss the pros and cons of each tool.
+
+If you're only interested in one of the two solutions, jump ahead to the section covering it:
+
+* [How to implement feature flags with Togglz](#togglz)
+* [How to implement feature flags with LaunchDarkly](#launchdarkly)
+
+<h2><a href="https://github.com/thombergs/code-examples/tree/master/spring-boot/feature-flags"><i class="fa fa-github"></i></a> Code Example</h2>
+
+You can follow along with the code examples in this article by browsing or cloning the code of a fully functional example application [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/feature-flags).
 
 ## Feature Flagging Use Cases
 
-Before we dive into the tools, let's take a look at some common feature flagging use cases. We'll try to implement each of these use cases with each of the feature flag tools so we get a feeling which one is best in which context.
+Before we dive into the tools, let's take a look at some common feature flagging use cases. We'll try to implement each of these use cases with each of the feature flag tools so we get a feeling of what we can do with them.
 
 There are more than the use cases discussed in this article, of course. The idea is to look at the most common use cases to compare what the different feature flagging tools can do.
 
@@ -31,19 +40,19 @@ We deploy a new version of the application with a deactivated feature and after 
 
 ### Use Case 2: Percentage Rollout 
 
-The global rollout use case is very simple and raises the question of why we would even need a feature flagging tool because we could just implement it ourselves.
+The global rollout use case is very simple and raises the question of why we would even need a feature flagging tool because we could just implement it ourselves with a simple if/else construct. So let's look at a bit more complex use case.
 
 A percentage rollout is another very common rollout strategy in which we activate a feature for a small percentage of users first, to see if it's working as expected, and then ramp up the percentage over days or weeks until the feature is active for all users: 
 
 ![A percentage rollout](/assets/img/posts/feature-flag-tools/percentage-rollout.png)
 
-Important in this use case is that a user stays in the same cohort over time. It's not enough to just enable a feature for 20% of the *requests*, because a user could make multiple requests and have the feature enabled for some requests and disabled for others - which would be a rather awkward user experience. So, the evaluation of the feature flag has to take the user into account.
+Important in this use case is that a user stays in the same cohort over time. It's not enough to just enable a feature for 20% of the *requests*, because a user could issue multiple requests and have the feature enabled for some requests and disabled for others - which make for a rather awkward user experience. So, the evaluation of the feature flag has to take the user into account.
 
-Also, if the percentage is increased from 20% to 30%, the new 30% cohort should include the previous 20% cohort so the feature is not suddently deactivated for the early adopters. 
+Also, if the percentage is increased from 20% to 30%, the new 30% cohort should include the previous 20% cohort so the feature is not suddenly deactivated for the early adopters. 
 
-You can see that we don't really want to implement this ourselves from scratch.
+You can see that we don't really want to implement this ourselves but instead rely on a tool to do it for us.
 
-### Use Case 3: Rollout Based on User Attributes
+### Use Case 3: Rollout Based on a User Attribute
 
 The last use case we're going to look at is a targeted rollout based on a user attribute or behavior. A user attribute can be anything: the location of the user, demographic information, or attributes that are specific to our application like "the user has done a specific thing in our application".
 
@@ -55,7 +64,7 @@ Our application will set the user's `clicked` attribute to `true` after clicking
 
 ## Togglz
 
-Togglz is a Java library that we can include into our application. The concepts of the library rotate around the `FeatureManager` class:
+Togglz is a Java library that we can include as a dependency into our application. The concepts of the library rotate around the `FeatureManager` class:
 
 ![Togglz concepts](/assets/img/posts/feature-flag-tools/togglz.png)
 
@@ -63,7 +72,7 @@ Once configured, we can ask the `FeatureManager` if a certain feature is *active
 
 The `FeatureManager` has access to a `UserProvider`, which knows about the user who is currently using our application. This way, Togglz can distinguish between users and we can build features that are active for some users and inactive for others.
 
-The `FeatureProvider` provides the `Feature`s that we want to control in our application. Different `FeatureProvider` implementations load the feature data from different locations. This feature data contains the names of the features and whether they are enabled or active by default. We can decide to define our features in a config file, or in environment variables, for example.
+The `FeatureProvider` provides the `Feature`s that we want to control in our application. Different `FeatureProvider` implementations load the feature data from different locations. This feature data contains the names of the features, whether they are enabled by default, and their activation strategy. We can decide to load our features from a Java enum, a config file, or from environment variables, for example.
 
 Each `Feature` has an `ActivationStrategy` that defines under which circumstances the feature will be active for a given user.
 
@@ -83,7 +92,7 @@ We're going to set Togglz up in a Spring Boot application. We need to declare th
 </dependency>
 ```
 
-To get Togglz running, we need to declare our features in an enum:
+To get Togglz running, we need to declare our features somewhere. We're choosing to do this in an enum:
 
 ```java
 public enum Features implements Feature {
@@ -100,7 +109,7 @@ public enum Features implements Feature {
 
 For each feature that we want to use, we add a new enum constant. We can influence the features with a handful of [different annotations](https://github.com/togglz/togglz/tree/master/core/src/main/java/org/togglz/core/annotation).
 
-What's left to do is to tell Togglz that is should use this `Features` enum. We do this by setting the `togglz.feature-enums` property in Spring Boot's `application.yml` configuration file:
+What's left to do is to tell Togglz that it should use this `Features` enum. We do this by setting the `togglz.feature-enums` property in Spring Boot's `application.yml` configuration file:
 
 ```yaml
 togglz:
@@ -128,7 +137,7 @@ public enum Features implements Feature {
 
 We can check if the feature is active by asking the Feature Manager like in the `isActive()` convenience method in the code above. 
 
-`Features.GLOBAL_BOOLEAN_FLAG.isActive()` would return `false`, currently, because features are disabled by default. Only if a feature is *enabled* will an `ActivationStrategy` decide whether the feature should be *active* for a given user.
+`Features.GLOBAL_BOOLEAN_FLAG.isActive()` would return `false`, currently, because features are disabled by default. Only if a feature is *enabled* will its `ActivationStrategy` decide whether the feature should be *active* for a given user.
 
 We can enable the feature by setting a property in `application.yml`:
 
@@ -143,7 +152,7 @@ Alternatively, we could start the application with the environment variable `TOG
 
 If we call `Features.GLOBAL_BOOLEAN_FLAG.isActive()` now, it will return `true`. 
 
-But why is the feature *active* now when we only *enabled* it? Aren't *enabled* and *active* different things as explained above? Yes, they are, but we haven't declared an `ActivationStrategy` for our feature. 
+But why is the feature *active* as soon as we *enabled* it? Aren't *enabled* and *active* different things as explained above? Yes, they are, but we haven't declared an `ActivationStrategy` for our feature. 
 
 Without an `ActivationStrategy` all *enabled* features are automatically *active*. 
 
@@ -159,37 +168,37 @@ A proper percentage rollout only works when Togglz knows which user is currently
 @Component
 public class TogglzUserProvider implements UserProvider {
 
-    private final UserSession userSession;
+  private final UserSession userSession;
 
-    public TogglzUserProvider(UserSession userSession) {
-        this.userSession = userSession;
-    }
+  public TogglzUserProvider(UserSession userSession) {
+    this.userSession = userSession;
+  }
 
-    @Override
-    public FeatureUser getCurrentUser() {
-        return new FeatureUser() {
-            @Override
-            public String getName() {
-                return userSession.getUsername();
-            }
+  @Override
+  public FeatureUser getCurrentUser() {
+    return new FeatureUser() {
+      @Override
+      public String getName() {
+        return userSession.getUsername();
+      }
 
-            @Override
-            public boolean isFeatureAdmin() {
-                return false;
-            }
+      @Override
+      public boolean isFeatureAdmin() {
+        return false;
+      }
 
-            @Override
-            public Object getAttribute(String attributeName) {
-                return null;
-            }
-        };
-    }
+      @Override
+      public Object getAttribute(String attributeName) {
+        return null;
+      }
+    };
+  }
 }
 ```
 
-This implementation of `UserProvider` reads the current user from the session. `UserSession` is a session-scoped bean in the Spring application context (see the full code [here](TODO)). 
+This implementation of `UserProvider` reads the current user from the session. `UserSession` is a session-scoped bean in the Spring application context (see the full code in the [example application](https://github.com/thombergs/code-examples/tree/master/spring-boot/feature-flags)). 
 
-We annotate our implementation with the `@Component` annotation, so that Spring creates an object of it during startup and puts it into the application context. The Spring Boot starter dependency we added automatically picks up `UserProvider` implementations from the application context and configure Togglz' `FeatureManager` with it. Togglz will now know which user is currently browsing our application.
+We annotate our implementation with the `@Component` annotation so that Spring creates an object of it during startup and puts it into the application context. The Spring Boot starter dependency we added previously will automatically pick up `UserProvider` implementations from the application context and configure Togglz' `FeatureManager` with it. Togglz will now know which user is currently browsing our application.
 
 Next, we define our feature in the `Features` enum like this:
 
@@ -206,7 +215,7 @@ public enum Features implements Feature {
 }
 ```
 
-This time, we're using the `@EnabledByDefault` annotation. That means the feature is enabled and will let its activation strategy decide whether the feature is active or not for a given user. We don't need to add `togglz.features.GLOBAL_BOOLEAN_FLAG.enabled: true` to `application.yml` to enable it.
+This time, we're using the `@EnabledByDefault` annotation. That means the feature is enabled and will let its activation strategy decide whether the feature is active or not for a given user. That means we don't need to add `togglz.features.GLOBAL_BOOLEAN_FLAG.enabled: true` to `application.yml` to enable it.
 
 We're also using the `@DefaultActivationStrategy` annotation to configure this new feature to use the `GradualActivationStrategy` and configure it to activate the feature for 50% of the users.
 
@@ -224,34 +233,34 @@ For this, we're going to implement the `getAttribute()` method in our `UserProvi
 @Component
 public class TogglzUserProvider implements UserProvider {
 
-    // ...
+  // ...
 
-    @Override
-    public FeatureUser getCurrentUser() {
-        return new FeatureUser() {
-            @Override
-            public String getName() {
-                return userSession.getUsername();
-            }
+  @Override
+  public FeatureUser getCurrentUser() {
+    return new FeatureUser() {
+      @Override
+      public String getName() {
+        return userSession.getUsername();
+      }
 
-            @Override
-            public boolean isFeatureAdmin() {
-                return false;
-            }
+      @Override
+      public boolean isFeatureAdmin() {
+        return false;
+      }
 
-            @Override
-            public Object getAttribute(String attributeName) {
-                if (attributeName.equals("clicked")) {
-                    return userSession.hasClicked();
-                }
-                return null;
-            }
-        };
-    }
+      @Override
+      public Object getAttribute(String attributeName) {
+        if (attributeName.equals("clicked")) {
+          return userSession.hasClicked();
+        }
+        return null;
+      }
+    };
+  }
 }
 ```
 
-Similar to the `getUsername()`, the `getAttribute()` method returns a value from the session. We're assuming here that `userSession.hasClicked()` returns `true` only after a user has clicked a certain button in our application. In a real application, we should persist this value in the database so it will stay the same even between user sessions!
+Similar to `getName()`, the `getAttribute()` method returns a value from the session. We're assuming here that `userSession.hasClicked()` returns `true` only after a user has clicked a certain button in our application. In a real application, we should persist this value in the database so it will stay the same even between user sessions!
 
 Our Togglz user objects now have the attribute `clicked` set to `true` after they have clicked the button.
 
@@ -297,7 +306,7 @@ public enum Features implements Feature {
 }
 ```
 
-Again, we enable it by default, so that we don't have to so manually. As the activation strategy we're using our custom `UserClickedActivationStrategy` by passing the ID of that strategy into the `DefaultActivationStrategy` annotation.
+Again, we enable it by default, so that we don't have to so manually. As the activation strategy, we're using our custom `UserClickedActivationStrategy` by passing the ID of that strategy into the `DefaultActivationStrategy` annotation.
 
 `Features.USER_ACTION_TARGETED_FEATURE.isActive()` will now return `true` only after the user has clicked a certain button in our application.
 
@@ -305,7 +314,7 @@ Again, we enable it by default, so that we don't have to so manually. As the act
 
 Now that we have a few features, we want to toggle them on or off. For example, we want to do a "dark launch" for a feature. That means we don't enable it by default, deploy the feature in its disabled state, and only then decide to activate it. 
 
-We could, of course, change the `enabled` state in the `application.yml` file and then re-reploy the application, but the point of feature flagging is that we separate deployments from enabling features, so we don't want to do this.
+We could, of course, change the `enabled` state in the `application.yml` file and then re-deploy the application, but the point of feature flagging is that we separate deployments from enabling features, so we don't want to do this.
 
 For managing features, Togglz offers a web console that we can deploy next to our application. With the Spring Boot integration, we can set a few properties in `application.yml` to activate it:
 
@@ -326,7 +335,7 @@ Once the application is started with this configuration, we can access the web c
 
 ![The Togglz web console](/assets/img/posts/feature-flag-tools/togglz-console.png)
 
-The web console allows us to enable and disable features and even to change their activation strategy on the fly. The `GLOBAL_BOOLEAN_FLAG` is listed twice, probably because the web console reads it from the `Features` enum and from the `application.yml` file.
+The web console allows us to enable and disable features and even to change their activation strategy on the fly. There seems to be a bug that causes the `GLOBAL_BOOLEAN_FLAG` to be listed twice, probably because the web console reads it once from the `Features` enum *and* once from the `application.yml` file.
 
 ### Deploying Togglz into Production
 
@@ -352,7 +361,7 @@ In addition to what we discussed above, Togglz offers:
 * [grouping features](https://www.togglz.org/documentation/feature-groups.html) in the admin console,
 * [support for JUnit 4 and 5](https://www.togglz.org/documentation/testing.html) to help control feature state in tests.
 
-Togglz provide a great framework to build your own feature flagging solution, but there's quite some manual work involved. Let's see how we can delegate that work using a feature management service in the cloud.
+In conclusion, Togglz provides a great framework to build your own feature flagging solution, but there's quite some manual work involved. Let's see how we can delegate that work using a feature management service in the cloud.
 
 ## LaunchDarkly
 
@@ -364,9 +373,9 @@ Let's take a look at the core LaunchDarkly concepts before diving into the techn
 
 Being a cloud service, LaunchDarkly provides a web UI for us to create and configure **feature flags**.
 
-For each feature flag, we can define one or more **variations**. A variation is a possible value the feature flag can have for a specific user. A boolean flag, for example, has exactly two variations: `true` and `false`. But we're not limited to boolean feature flags, but can create flags with arbitrary numbers, string values or even JSON snippets.
+For each feature flag, we can define one or more **variations**. A variation is a possible value the feature flag can have for a specific user. A boolean flag, for example, has exactly two variations: `true` and `false`. But we're not limited to boolean feature flags, but can create flags with arbitrary numbers, string values, or even JSON snippets.
 
-To decide which variation a feature flag will show to a given user, we can define **targeting rules** for each feature flag. The simplest targeting rule is "show variation A for all users". A more complex targeting rule is "show variation A for all users with attribute X, variation B for all users with attribute Y, and variation C for all other users". We will define a different targeting rule for each of our [feature flagging use cases](#feature-flagging-use-cases) shortly.
+To decide which variation a feature flag will show to a given user, we can define **targeting rules** for each feature flag. The simplest targeting rule is "show variation A for all users". A more complex targeting rule is "show variation A for all users with attribute X, variation B for all users with attribute Y, and variation C for all other users". We will define a different targeting rule for each of our feature flagging use cases shortly.
 
 By default, targeting for a feature flag is deactivated. That means that the targeting rules will not be evaluated. In this state, a feature flag always serves its **default variation** (which would be the value `false` for a boolean flag, for example).
 
@@ -374,9 +383,9 @@ To make their decision about which variation to serve, a targeting rule needs to
 
 In our code, we'll be asking a **LaunchDarkly client** to tell us the variation of a given feature flag for a given user. The client loads the targeting rules that we have defined in the web UI from the LaunchDarkly server and evaluates them locally. 
 
-So, even though we are defining the targeting rules in the LaunchDarkly web UI (i.e. on a LaunchDarkly server), the LaunchDarkly client doesn't call out to a LaunchDarkly server to ask for the variation we should serve to a given user! Instead, the client connects to the server on startup, downloads the targeting rules, and then evaluates them on the client side. 
+So, even though we are defining the targeting rules in the LaunchDarkly web UI (i.e. on a LaunchDarkly server), **the LaunchDarkly client doesn't call out to a LaunchDarkly server to ask for the variation we should serve to a given user**! Instead, the client connects to the server on startup, downloads the targeting rules, and then evaluates them on the client side. 
 
-This architecture is interesting from a scalability perspective because our application doesn't have to make a network call every time we need to evaluate a feature flag. It's also interesting from a resilience perspective, because feature flag evaluation will still work if the LaunchDarkly server has exploded and is not answering our calls anymore.
+This architecture is interesting from a scalability perspective because our application doesn't have to make a network call every time we need to evaluate a feature flag. It's also interesting from a resilience perspective because feature flag evaluation will still work if the LaunchDarkly server has exploded and is not answering our calls anymore.
 
 With these concepts in mind, let's see how we can use LaunchDarkly in a Spring Boot application.
 
@@ -429,7 +438,7 @@ public class LaunchDarklyConfiguration {
 }
 ```
 
-This configuration class will create a `LDClient` instance and add it to the Spring application context. It's important that the client is a singleton because it is stateful and we don't want to waste resources by having multiple client instances with the same state.
+This configuration class will create an `LDClient` instance and add it to the Spring application context. On instantiation, the client will download the current targeting rules from a LaunchDarkly server. This means we should make sure that we don't instantiate a new `LDClient` instance for each feature flag evaluation. 
 
 To create the `LDClient` instance, we inject the SDK key.
 
@@ -447,7 +456,7 @@ First, we create a feature flag with the key `global-boolean-flag` in the Launch
 
 Note that we created the feature flag as a boolean flag, which means that it has exactly two variations: `true` and `false`. We also have not created a specific targeting rule, so the default rule will always serve the `false` variation.
 
-In the screenshot you can see that the targeting is already set to "on", which means that whatever targeting rules we define will be "live" and have an effect on our users.
+In the screenshot, you can see that the targeting is already set to "on", which means that whatever targeting rules we define will be "live" and have an effect on our users.
 
 As soon as the feature is saved, we can ask our `LDClient` to evaluate the feature for us:
 
@@ -461,7 +470,9 @@ boolean booleanFlagActive = launchdarklyClient
 
 To evaluate a feature flag, the LaunchDarkly client needs to know which user the feature should be evaluated for. With our simple global boolean flag, we don't really need a user, because we want to enable the feature for everyone or nobody, but most targeting rules will evaluate differently for different users, so we need to always pass a user to the client.
 
-In the example, we're just getting the (unique) username from our session and creating an `LDUser` object with it. Whatever we pass into the `LDUser`, it needs to be a unique identifier for the user so that LaunchDarkly can recognize the user. A username is not the best identifier, by the way, because it's personally identifiable information, so a more opaque user ID is probably the better choice in most contexts.
+In the example, we're just getting the (unique) username from our session and creating an `LDUser` object with it. Whatever we pass as a key into the `LDUser`, it needs to be a unique identifier for the user so that LaunchDarkly can recognize the user. 
+
+A username is not the best kry, by the way, because it's personally identifiable information, so a more opaque user ID is probably the better choice in most contexts.
 
 In our code, we need to know what kind of variations the feature flag provides to call the appropriate method. In our case, we know the feature flag is a boolean flag, so we use the method `boolVariation()`. The third parameter to this method (`false`) is the value the feature should evaluate to in case the client could not make a connection to the LaunchDarkly server.
 
@@ -482,17 +493,17 @@ boolean percentageFlagActive = launchdarklyClient
 
 For each variation of a percentage feature flag, LaunchDarkly creates a bucket. In the case of our example, we have two buckets, one for the variation `true`, and one for the variation `false`, and each bucket has the same size (50%).
 
-The LaunchDarkly client knows about these buckets. To determine which bucket the current user falls into, the LaunchDarkly client creates a hashcode for the user and uses it to decide on which bucket the user to put in. This allows multiple, distributed LaunchDarkly clients to evaluate to the same value for the same user, because they calculate the same hashcode.
+The LaunchDarkly client knows about these buckets. To determine which bucket the current user falls into, the LaunchDarkly client creates a hashcode for the user and uses it to decide on which bucket the user to put in. This allows multiple - potentially distributed - LaunchDarkly clients to evaluate to the same value for the same user, because they calculate the same hashcode.
 
 ### Rollout Based on a User Attribute with LaunchDarkly
 
-More complex targeting strategies work after the same pattern. We configure the targeting rules in the LaunchDarkly UI, and then ask the LaunchDarkly client for the variation for the given user.
+We can implement more complex targeting strategies in the same fashion. We configure the targeting rules in the LaunchDarkly UI, and then ask the LaunchDarkly client for the variation for the given user.
 
-Let's assume that we want to enable a certain feature for users only after they have clicked a certain button in our application. For this case, we can create the following targeting rule:
+Let's assume that we want to enable a certain feature for users only after they have clicked a certain button in our application. For this case, we can create a targeting rule that serves `true` only for users with the `clicked` attribute set to `true`:
 
 ![Feature Flag based on a user attribute in LaunchDarkly](/assets/img/posts/feature-flag-tools/launchdarkly-attribute-rollout.png)
 
-But how does LaunchDarkly know the user's attributes? Because we pass it into the client:
+But how does LaunchDarkly know about the `clicked` attribute of a user? We need to pass it into the client:
 
 ```java
 LDUser user = new LDUser.Builder(userSession.getUsername())
@@ -503,43 +514,43 @@ boolean clickedFlagActive = launchdarklyClient
         .boolVariation("user-clicked-flag", user, false);
 ```
 
-When we create the `LDUser` object that we pass into the `boolVariation()` method, we now set the `clicked` custom attribute to a value that - in our example - we get from the user session. With the `clicked` attribute, the LaunchDarkly client can now properly evaluate the feature flag.
+When we create the `LDUser` object, we now set the `clicked` custom attribute to a value that - in our example - we get from the user session. With the `clicked` attribute, the LaunchDarkly client can now properly evaluate the feature flag.
 
 After a feature has been evaluated for a user with a given attribute, LaunchDarkly will show the user's attributes in its user dashboard:
 
 ![User attributes in the LaunchDarkly user dashboard](/assets/img/posts/feature-flag-tools/launchdarkly-alice.png)
 
-Note that LaunchDarkly only shows these user attributes as a convenience. The user attributes are evaluated by the LaunchDarkly client, not the LaunchDarkly server! So, if our application doesn't set the `clicked` attribute of the `LDUser` object, our example feature flag will evaluate to `false`, even if we have set the `clicked` attribute to `true` in a previous call!
+Note that LaunchDarkly only shows these user attributes as a convenience. **The user attributes are evaluated by the LaunchDarkly client, not the LaunchDarkly server**! So, if our application doesn't set the `clicked` attribute of the `LDUser` object, our example feature flag will evaluate to `false`, even if we have set the `clicked` attribute to `true` in a previous call!
 
 ### Additional Features
 
-The targeting rules in our examples above are still rather simple examples, given the feature set LaunchDarkly offers. As mentioned, LaunchDarkly not only supports boolean feature flags, but any number of variations of different types like strings, numbers, or JSON. This opens the door to pretty much every feature flagging use case one can think of.
+The targeting rules in our examples above are still rather simple examples, given the flexibilty the LaunchDarkly UI offers to create targeting rules. 
 
-In addition to flexible targeting rules, LaunchDarkly offers a lot of features that a geared towards big teams and even Enterprises:
+As mentioned, LaunchDarkly not only supports boolean feature flags, but any number of variations of different types like strings, numbers, or JSON. This opens the door to pretty much every feature flagging use case one can think of.
+
+In addition to flexible targeting rules, LaunchDarkly offers a lot of features that a geared towards teams and even Enterprises:
 
 * analytics across our feature flags,
 * designing [feature workflows](https://launchdarkly.com/features/feature-workflows/) with scheduled feature releases and approval steps,
-* auditing on feature flag changes, so we can reconstruct they variation of a feature flag at a given point in time,
+* auditing on feature flag changes, so we can reconstruct the variations of a feature flag at a given point in time,
 * debugging feature flags in the LaunchDarkly UI to verify that features are evaluated to the expected variation,
-* slicing our user base into segments to target each segment in a different way,
-* running [experiments](https://launchdarkly.com/features/experimentation/) by pairing a feature flag with a certain metric from our application to gauge how the feature impacts the metric.
-* and a lot more. 
-
-- not bound to any rollout strategy at implementation time
+* slicing our user base into segments to target each segment differently,
+* running [experiments](https://launchdarkly.com/features/experimentation/) by pairing a feature flag with a certain metric from our application to gauge how the feature impacts the metric,
+* and a lot more.
 
 ## Conclusion - What's the Best Feature Flagging Solution for Me?
 
-Obviously, the two solutions discussed in this article are very different. As is often the case when deciding on a tool that solves a specific problem, you can't really say that one solution is "better" than another without taking your context into account.
+The two solutions discussed in this article are very different. As is often the case when deciding on a tool that solves a specific problem, you can't really say that one solution is "better" than another without taking your context into account.
 
-Togglz is a Java library that we can easily extend by implementing some interfaces, but it doesn't scale well with a lot of features (because they will be hard to find in the web console) and we have some custom work to do to self-host the web console and to integrate it with a database, for example.
+Togglz is a Java library that we can easily extend by implementing some interfaces, but it doesn't scale well with a lot of features (because they will be hard to find in the web console) and we have some custom work to self-host the web console and to integrate it with a database, for example.
 
-LaunchDarkly, on the other hand, is a full-blown feature management platform that supports many programming languages, does a lot of the dirty work for us and scales to an almost limitless number of feature flags without impacting performance too much. But it costs money and we're sharing our feature data with them.
+LaunchDarkly, on the other hand, is a full-blown feature management platform that supports many programming languages, allows very flexible targeting rules and scales to an almost limitless number of feature flags without impacting performance too much. But it follows a subscription model and we're sharing our feature data with them.
 
-So, for small teams who are working on a small number of exclusively Java codebases with tens of features, Togglz may be the solution to go for.
+For small teams who are working on a small number of exclusively Java codebases with tens of features, Togglz may be the solution to go for.
 
-Big teams or enterprises with codebases across multiple programming languages and hundreds or even thousands of feature flags, there is no way around a feature management platform like LaunchDarkly.
+For bigger teams or enterprises with multiple codebases - potentially across multiple programming languages - and hundreds or even thousands of feature flags, there is no way around a feature management platform like LaunchDarkly.
 
-Here's an (incomplete) list of aspects to think about when deciding for a feature flagging solution for your context:
+Here's an (incomplete) list of aspects to think about when deciding on a feature flagging solution for your context:
 
 <style>
 .table td {
@@ -560,4 +571,5 @@ Here's an (incomplete) list of aspects to think about when deciding for a featur
 | Working in a team           | Simple feature management in the web console | Audit logs, user dashboard, feature ownership, ... |
 | Enterprise                  | Simple feature management in the web console | Workflows, approvals, code references, ... |
 | Cost                        | Cost of customizing             | Per-seat fee |
+| Integrations | Spring Boot, Spring Security, EJB | No out-of-the-box integrations with Java frameworks |
 {: .table}

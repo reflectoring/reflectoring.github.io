@@ -546,7 +546,7 @@ Togglz is a Java library that we can easily extend by implementing some interfac
 
 LaunchDarkly, on the other hand, is a full-blown feature management platform that supports many programming languages, allows very flexible targeting rules and scales to an almost limitless number of feature flags without impacting performance too much. But it follows a subscription model and we're sharing our feature data with them.
 
-For small teams who are working on a small number of exclusively Java codebases with tens of features, Togglz may be the solution to go for.
+For small teams who are working on a few - exclusively Java - codebases with tens of features, Togglz is a great way to get started with feature flags.
 
 For bigger teams or enterprises with multiple codebases - potentially across multiple programming languages - and hundreds or even thousands of feature flags, there is no way around a feature management platform like LaunchDarkly.
 

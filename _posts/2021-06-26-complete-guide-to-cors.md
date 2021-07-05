@@ -50,14 +50,17 @@ The Same-Origin Policy (SOP) is a default security policy implemented by Browser
 
 In the absence of the Same-Origin Policy, any website will be able to access the document object model (DOM) of other websites and allow it to access potentially sensitive data as well as perform malicious actions on other websites without requiring user consent.
 
-The following table shows origins which match or do not match with the origin: http://www.mydomain.com :
+The following table shows URLs which the browser considers to be of same or different origin as the URL: `http://www.mydomain.com/mypage.html`:
 
-|Origin being matched| Match Result | Reason |
+|URLs being Matched| Same Origin or Cross Origin| Reason |
 |-|-|-|
-|http://www.mydomain.com/mypage.html|Match|same scheme, host, and port|
-|http://www.mydomain.com/subpage/mypage1.html|Match|same scheme, host, and port|
+|http://www.mydomain.com/mypage1.html|Same|same scheme, host, and port|
+|http://www.mydomain.com/subpage/mypage1.html|Same|same scheme, host, and port|
+|http://www.mydomain.com/subpage/mypage1.html|Same|same scheme, host, and port|
+|https://www.mydomain.com/mypage1.html|Cross|same host and port but different scheme|
+|http://pg.mydomain.com/mypage1.html|Cross|different host|
 
-For example, the HTML documents served with URLs: http://www.mydomain.com/mypage.html and http://www.mydomain.com/subpage/mypage1.html have the same origin: the scheme is HTTP, the domain is www.mydomain.com, and the port is 80. We can run JavaScripts in `mypage.html` which will be able to fetch contents from `mypage1.html`.
+If the origins corresponding to the URLs are same, we can run JavaScripts in `mypage.html` which resides in the source domain which will be able to fetch contents from `mypage1.html`.
 
 In contrast, the HTML documents served with URLs:
 http://www.mydomain.com/page.html and https://www.mydomain.com/page1.html have different origins due to the mismatch in their schemes (HTTP vs HTTPS). JavaScripts running in `page.html` will be prevented from fetching contents from `page1.html` without a CORS policy configured correctly.

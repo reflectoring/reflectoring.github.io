@@ -54,20 +54,20 @@ The following table shows URLs of a HTML page `mypage1.html` which the browser c
 
 |URLs being Matched| Same Origin or Cross Origin| Reason |
 |-|-|-|
-|http://www.mydomain.com/mypage1.html|Same|same scheme, host, and port|
-|http://www.mydomain.com/subpage/mypage1.html|Same|same scheme, host, and port|
-|http://www.mydomain.com/subpage/mypage1.html|Same|same scheme, host, and port|
-|https://www.mydomain.com/mypage1.html|Cross|same host and port but different scheme|
-|http://pg.mydomain.com/mypage1.html|Cross|different host|
+|http://www.mydomain.com/mypage1.html|Same Origin|same scheme, host, and port|
+|http://www.mydomain.com/subpage/mypage1.html|Same Origin|same scheme, host, and port|
+|http://www.mydomain.com/subpage/mypage1.html|Same Origin|same scheme, host, and port|
+|https://www.mydomain.com/mypage1.html|Cross Origin|same host and port but different scheme|
+|http://pg.mydomain.com/mypage1.html|Cross Origin|different host|
 
 If the origins corresponding to the URLs are same, we can run JavaScripts in `mypage.html` which will can fetch contents from `mypage1.html`.
 
-In contrast, for cross origins, JavaScripts running in `mypage.html` will be prevented from fetching contents from `mypage1.html` without a CORS policy configured correctly.
+In contrast, for cross-origin URLs, JavaScripts running in `mypage.html` will be prevented from fetching contents from `mypage1.html` without a CORS policy configured correctly.
 
 
 ## How Browsers Implement CORS Policy
 
-When a web page sends a request to a server, the browser detects whether the request is to a server from the same origin and determines whether to apply CORS policy. The browser applies the CORS policy, If the web page sending the request is not in the same origin as the browser, then the CORS policy is applied.
+When a web page sends a request to a server, the browser detects whether the request is to a server from the same origin or different origin. The browser applies the CORS policy, if the web page sending the request is not in the same origin as the server.
 
 The browser does this by exchanging a set of CORS headers with the server. Based on the header values returned from the server, the browser provides access to the server response or blocks the access by throwing a CORS error. 
 
@@ -87,7 +87,7 @@ Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://l
 
 ## Type of CORS Requests
 
-The browser sends three types of CORS requests: simple, preflight, and requests with credentials. The browser determines the type of request to be sent to the server depending on the kind of operations we want to perform with the server resource. Let us understand these request types and observe these requests in the browsers' network log by running an example.
+The browser sends three types of CORS requests: `simple`, `preflight`, and `requests with credentials`. The browser determines the type of request to be sent to the server depending on the kind of operations we want to perform with the server resource. Let us understand these request types and observe these requests in the browsers' network log by running an example.
 
 ### Simple CORS Requests (GET, POST, and HEAD)
 Simple requests are sent by the browser for server operations it considers safe because they do not change the state of any existing resource on the server. The request sent by the browser is simple if one of the below conditions applies: 
@@ -95,20 +95,20 @@ Simple requests are sent by the browser for server operations it considers safe 
 - The HTTP request method is GET, POST, or HEAD
 - The HTTP request contains a CORS safe-listed header: Accept, Accept-Language, Content-Language, Content-Type.
 - When using the Content-Type header, the only values allowed are: application/x-www-form-urlencoded, multipart/form-data, or text/plain
-- No event listeners are registered on any XMLHttpRequestUpload object
+- No event listeners are registered on any [XMLHttpRequestUpload](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/upload) object
 - No ReadableStream object is used in the request
 
 The browser sends the simple request as a normal request similar to the Same Origin request, and the `Access-Control-Allow-Origin` header is checked by the browser when the response is returned.
 
 
 ### Preflight Requests
-In contrast to simple requests, the browser sends preflight requests for operations that intend to change the state of existing resources in the server. We use the HTTP methods PUT and DELETE for these operations. 
+In contrast to simple requests, the browser sends preflight requests for operations that intend to change the state of existing resources in the server. We use the HTTP methods `PUT` and `DELETE` for these operations. 
 
 These requests are not considered safe so the web browser first makes sure that cross-origin communication is allowed by first sending a preflight request before sending the actual request. Requests which do not satisfy the criteria for simple request also fall under this category.
 
 The preflight request is an HTTP `OPTIONS` method which is sent automatically by the browser to the server hosting the cross-origin resource, to check that the server will permit the actual request. Along with the preflight request, the browser sends the following headers:
 
-**Access-Control-Request-Method**: This is a list of HTTP methods of the request (e.g., GET, POST, PUT, DELETE)
+**Access-Control-Request-Method**: This is a list of HTTP methods of the request (e.g., `GET`, `POST`, `PUT`, `DELETE`)
 **Access-Control-Request-Headers**: This is a list of headers that will be sent with the request
 **Origin**: The origin header that contains the source origin of the request
 
@@ -190,7 +190,7 @@ If we run these applications without any additional configurations (setting CORS
 
 ![cors failure](/assets/img/posts/cors/cors-fail.png)
 
-This is an error caused by the restriction of accessing cross origins due to the Same Origin Policy.  Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+This is an error caused by the restriction of accessing cross-origins due to the Same Origin Policy.  Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
 
 ### Fixing the CORS Error For Simple Requests
 As suggested in the CORS error description, let us modify the server side code to return the CORS header `Access-Control-Allow-Origin` in the response:

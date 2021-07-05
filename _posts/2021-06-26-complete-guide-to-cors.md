@@ -16,7 +16,7 @@ In this article, we will understand cross-origin resource sharing (CORS), descri
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/cors" %}
 
 ## What is CORS
-CORS is a security standard implemented by browsers that enable scripts running in browsers to access resources located outside of the browser's domain. The CORS policy is published under the [Fetch standard](https://fetch.spec.whatwg.org) defined by the [WHATWG](https://whatwg.org) community which also publishes many web standards like HTML5, DOM, and URL.
+CORS is a security standard implemented by browsers that enable scripts running in browsers to access resources located outside of the browser's domain. The CORS policy is published under the [Fetch standard](https://fetch.spec.whatwg.org) defined by the [WHATWG](https://whatwg.org) community which also publishes many web standards like [HTML5](https://html.spec.whatwg.org/multipage/), [DOM](https://dom.spec.whatwg.org), and [URL](https://url.spec.whatwg.org).
 
 ## Why do we need CORS
 
@@ -49,6 +49,13 @@ For understanding CORS, it is important to first understand the Same-Origin Poli
 The Same-Origin Policy (SOP) is a default security policy implemented by Browsers, which permits the browser to load resources only from a server hosted in the same origin as the browser. 
 
 In the absence of the Same-Origin Policy, any website will be able to access the document object model (DOM) of other websites and allow it to access potentially sensitive data as well as perform malicious actions on other websites without requiring user consent.
+
+The following table shows origins which match or do not match with the origin: http://www.mydomain.com :
+
+|Origin being matched| Match Result | Reason |
+|-|-|-|
+|http://www.mydomain.com/mypage.html|Match|same scheme, host, and port|
+|http://www.mydomain.com/subpage/mypage1.html|Match|same scheme, host, and port|
 
 For example, the HTML documents served with URLs: http://www.mydomain.com/mypage.html and http://www.mydomain.com/subpage/mypage1.html have the same origin: the scheme is HTTP, the domain is www.mydomain.com, and the port is 80. We can run JavaScripts in `mypage.html` which will be able to fetch contents from `mypage1.html`.
 

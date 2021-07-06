@@ -136,8 +136,8 @@ We can run these applications in our local machine using `npm` and `node`. The a
 
 These are CORS requests since the HTML page and `OrderProcessor` application is running in different Origins (because of different port numbers: 8000 and 9000 although they use the same scheme: HTTP and host: `localhost`).
 
-### Server Side Handling CORS Requests in Node.Js
-We are using a very simple Node.JS application named `OrderProcessor` built with Express as our server. We have created two REST APIs with `GET` and `PUT` methods or fetching updating `orders`. 
+### Server Side Handling CORS Requests in Node.js
+We are using a very simple [Node.js](https://nodejs.org/en/) application named `OrderProcessor` built with [Express](https://expressjs.com) framework as our server. We have created two REST APIs with `GET` and `PUT` methods or fetching updating `orders`. 
 
 This is a snippet of the `GET` method of our `OrderProcessor` application running on `localhost:8000`:
 
@@ -150,10 +150,10 @@ app.get('/orders', (req, res) => {
 ```
 The `GET` method defined here is used to return a collection of `orders`.
 
-### Client-Side Sending CORS Requests from Javascript 
-For sending requests to the `OrderProcessor` application described in the previous section, we will use an HTML page and package this inside another Node.JS application running on `localhost:9000`.
+### Client-Side Sending CORS Requests from JavaScript 
+For sending requests to the `OrderProcessor` application described in the previous section, we will use an HTML page and package this inside another Node.js application running on `localhost:9000`.
 
-We will call the `GET` and `PUT` methods from this HTML page using the `XMLHttpRequest` javascript object:
+We will call the `GET` and `PUT` methods from this HTML page using the `XMLHttpRequest` JavaScript object:
 
 ```html
 <html>
@@ -188,14 +188,14 @@ We will call the `GET` and `PUT` methods from this HTML page using the `XMLHttpR
 </body>
 </html>
 ```
-The HTML shown here contains a button which we need to click to trigger the CORS request from the javascript method `loadFromCrossOrigin`.
+The HTML shown here contains a button which we need to click to trigger the CORS request from the JavaScript method `loadFromCrossOrigin`.
 
 ### CORS Error Due to Same Origin Policy
 If we run these applications without any additional configurations (setting CORS headers) in the server, we will get a CORS error in our browser console as shown below:
 
 ![cors failure](/assets/img/posts/cors/cors-fail.png)
 
-This is an error caused by the restriction of accessing cross-origins due to the Same Origin Policy.  Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+This is an error caused by the restriction of accessing cross-origins due to the Same Origin Policy.  Access to `XMLHttpRequest` at `http://localhost:8000/orders` from origin `http://localhost:9000` has been blocked by CORS policy: No `Access-Control-Allow-Origin` header is present on the requested resource.
 
 ### Fixing the CORS Error For Simple Requests
 As suggested in the CORS error description, let us modify the server side code to return the CORS header `Access-Control-Allow-Origin` in the response:
@@ -294,7 +294,7 @@ Access-Control-Allow-Origin: http://localhost:9000
 Allow: GET,HEAD,PUT
 ```
 
-In this example, the browser served from `http://localhost:9000` sends a PUT request to a REST API with URL: `http://localhost:8000/orders`. Since this is a PUT request which will change the state of an existing resource in the server, the browser sends a preflight request using the HTTP OPTIONS method. In response, the server informs the browser that `GET`, `HEAD`, `PUT` methods are allowed.
+In this example, the browser served from `http://localhost:9000` sends a `PUT` request to a REST API with URL: `http://localhost:8000/orders`. Since this is a `PUT` request which will change the state of an existing resource in the server, the browser sends a preflight request using the HTTP `OPTIONS` method. In response, the server informs the browser that `GET`, `HEAD`, `PUT` methods are allowed.
 
 ### CORS Handling for Request with Credentials
 We will now send a credential in the form of a `Authorization` header in our CORS request:
@@ -413,7 +413,7 @@ app.get('/orders', (req, res) => {
 });
 
 ```
-Since the dot character in the regular expression is not escaped, requests from sites like https://xyzmydomain.com will also be served. Any attacker can exploit this vulnerability by buying xyzmydomain.com and hosting the malicious code there.
+Since the dot character in the regular expression is not escaped, requests from sites like `https://xyzmydomain.com` will also be served. Any attacker can exploit this vulnerability by buying xyzmydomain.com and hosting the malicious code there.
 
 ## Avoiding Security Vulnerabilities Caused by CORS Misconfiguration
 Here are some of the best practices we can use to implement CORS securely:
@@ -427,7 +427,7 @@ Here are some of the best practices we can use to implement CORS securely:
 ## Conclusion
 In this article, we learned about CORS and how to use CORS policy to communicate between websites from different origins.
 
-Here is a summary of the topics we covered:
+To recap, here are the main points that we covered:
 
 1. CORS is a security standard implemented by browsers that enables us to allow access to resources from a different origin. 
 2. CORS requests are of three types: Simple, Preflight, and Request with Credentials.

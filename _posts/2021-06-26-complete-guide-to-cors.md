@@ -11,12 +11,12 @@ image:
 
 “CORS” stands for Cross-Origin Resource Sharing that defines the protocol to use between a web browser and a server to determine whether a cross-origin request is allowed. 
 
-In this article, we will understand :
+In this article, we will understand the following aspects about CORS:
 - Cross-origin resource sharing (CORS) standard
 - Different types of CORS requests
 - CORS headers, and 
 - Some examples of security vulnerabilities caused by CORS misconfigurations 
-- best practices for secure CORS implementations
+- Best practices for secure CORS implementations
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/cors" %}
 
@@ -420,7 +420,7 @@ Here are some of the best practices we can use to implement CORS securely:
 
 1. We can define a whitelist of specific domains which are allowed to access the server. When the request arrives, validate the `Origin` header against the whitelist to allow or deny access.
 2. Similarly, for the `Access-Control-Allow-Methods` header we should specify exactly what methods are valid for the whitelisted domains to use. 
-3. We should be validating each and every domain that needs to access resources, as well as the methods other domains can use if their requests for access are granted. You can easily identify CORS security vulnerabilities by reviewing the above headers in the application’s response and validating the values of those headers. 
+3. We should be validating each and every domain that needs to access resources, as well as the methods other domains can use if their requests for access are granted. We can easily identify CORS security vulnerabilities by reviewing the above headers in the application’s response and validating the values of those headers. 
 4. We should also be using CORS scanners to detect security vulnerabilities caused by CORS misconfigurations.
 5. CORS checks should also be part of penetration testing of critical applications. [OWASP guidance on testing CORS](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/11-Client-side_Testing/07-Testing_Cross_Origin_Resource_Sharing) provides guidelines for identifying endpoints that implement CORS and ensure the security of the CORS configuration.
 

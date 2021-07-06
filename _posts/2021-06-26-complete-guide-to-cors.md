@@ -4,14 +4,19 @@ categories: [craft]
 date: 2021-06-14 06:00:00 +1000
 modified: 2021-06-13 06:00:00 +1000
 author: pratikdas
-excerpt: "In this article, we will understand cross-origin resource sharing (CORS), different types of CORS requests, CORS headers, and describe some common examples of security vulnerabilities caused by CORS misconfigurations and best practices for secure implementations."
+excerpt: "In this article, we will understand cross-origin resource sharing (CORS), different types of CORS requests, CORS headers, and describe some common examples of security vulnerabilities caused by CORS misconfigurations along with best practices for secure CORS implementations."
 image:
   auto: 0074-stack
 ---
 
 “CORS” stands for Cross-Origin Resource Sharing that defines the protocol to use between a web browser and a server to determine whether a cross-origin request is allowed. 
 
-In this article, we will understand cross-origin resource sharing (CORS), different types of CORS requests, CORS headers, and describe some common examples of security vulnerabilities caused by CORS misconfigurations and best practices for secure implementations.
+In this article, we will understand :
+- Cross-origin resource sharing (CORS) standard
+- Different types of CORS requests
+- CORS headers, and 
+- Some examples of security vulnerabilities caused by CORS misconfigurations 
+- best practices for secure CORS implementations
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/cors" %}
 

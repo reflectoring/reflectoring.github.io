@@ -361,7 +361,7 @@ Origin: http://localhost:9000
 ```
 We can see the security credential in the form of the `Authorization` header containing the bearer token in the request and server including the `Authorization` header in the `Access-Control-Allow-Headers` list of allowed headers in the request. The browser can access the response since the value of the `Access-Control-Allow-Credentials` header sent by the server is `true`.
 
-## CORS Vulnerabilities
+## Vulnerabilities Caused by CORS Misconfiguration
 Communications with CORS protocol also have the potential to introduce security vulnerabilities caused by misconfiguration of CORS protocol on the webserver. Some misconfigurations can allow malicious domains to access the API endpoints, while others allow credentials like cookies to be sent from untrusted sources and access sensitive data. 
 
 Let us look at two examples of CORS vulnerabilities caused by any misconfiguration in the code:
@@ -431,8 +431,8 @@ Let us recap the main points that we covered:
 
 1. CORS is a security standard implemented by browsers that enables us to allow access to resources from a different origin. 
 2. CORS requests are of three types: Simple, Preflight, and Request with Credentials.
-3. Simple requests are used to perform safe operations like an HTTP GET method.
-4. Preflighted requests are for performing operations with side-affects like PUT and DELETE methods.
+3. Simple requests are used to perform safe operations like an HTTP `GET` method.
+4. Preflight requests are for performing operations with side-affects like `PUT` and `DELETE` methods.
 5. We sent cross-origin requests from an HTML page of one application to APIs in the other application. We then observed the CORS requests in the console log of the browser.
 6. At the end we looked at examples of security vulnerabilities caused by CORS misconfigurations and some best practices for secure CORS implementation.
 

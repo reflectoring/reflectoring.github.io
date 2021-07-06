@@ -427,7 +427,7 @@ Here are some of the best practices we can use to implement CORS securely:
 ## Conclusion
 In this article, we learned about CORS and how to use CORS policy to communicate between websites from different origins.
 
-To recap, here are the main points that we covered:
+Let us recap the main points that we covered:
 
 1. CORS is a security standard implemented by browsers that enables us to allow access to resources from a different origin. 
 2. CORS requests are of three types: Simple, Preflight, and Request with Credentials.

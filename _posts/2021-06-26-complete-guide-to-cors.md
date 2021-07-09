@@ -31,15 +31,17 @@ The following steps happen, when a user types in a URL: http://www.example.com/i
  1. The browser sends the request to a server in a domain named `www.example.com`. We will call this server as "Origin server" which hosts the page named `index.html`.
  2. The "Origin server" returns the page named `index.html` as response to the browser.
  3. The "Origin server" also hosts other resources like `fetchCitiesByState.json`.
- 4. The browser can also fetch resources from a server in a different domain. We will call this server as "Cross-Origin server".
- 5. The browser uses Ajax technology. The built-in XMLHttpRequest object, or since 2017 the new fetch function within JavaScript, is commonly used to execute Ajax on webpages, allowing websites to load content onto the screen without refreshing the page.
+ 4. The browser can also fetch resources from a server in a different domain like `www.xyz.com`. We will call this server as "Cross-Origin server".
+ 5. The browser uses Ajax technology with the built-in `XMLHttpRequest` object, or since 2017 the new `fetch` function within JavaScript to load content on the screen without refreshing the page.
 
-  XMLHttpRequest Javascript object to make API calls.
-
- Let us assume that the page `index.html` needs to show cities of a particular state which is fetches by making an API call from 
+We will use the terms "Origin server" and "Cross-Origin server" through out the article. "Origin server" will refer to the server from which the web page is fetched and "Cross-Origin server" will represent any server that is different from the "Origin server".
 
 ## What is CORS
-CORS is a security standard implemented by browsers that enable scripts running in browsers to access resources located outside of the browser's domain. The CORS policy is published under the [Fetch standard](https://fetch.spec.whatwg.org) defined by the [WHATWG](https://whatwg.org) community which also publishes many web standards like [HTML5](https://html.spec.whatwg.org/multipage/), [DOM](https://dom.spec.whatwg.org), and [URL](https://url.spec.whatwg.org).
+CORS is a security standard implemented by browsers that enable scripts running in browsers to access resources located outside of the browser's domain. The CORS policy is published under the [Fetch standard](https://fetch.spec.whatwg.org/#http-cors-protocol) defined by the [WHATWG](https://whatwg.org) community which also publishes many web standards like [HTML5](https://html.spec.whatwg.org/multipage/), [DOM](https://dom.spec.whatwg.org), and [URL](https://url.spec.whatwg.org).
+
+According to the spec:
+
+> The CORS protocol consists of a set of headers that indicates whether a response can be shared cross-origin. For requests that are more involved than what is possible with HTML’s form element, a CORS-preflight request is performed, to ensure request’s current URL supports the CORS protocol.
 
 ## Why do we need CORS
 

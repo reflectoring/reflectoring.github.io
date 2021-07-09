@@ -25,7 +25,9 @@ While explaining CORS, we will frequently toss around terms like browsers, serve
 
 The diagram here represents the main participants of a CORS flow:
 
-The follwing steps happen,When a user Alice types in a URL: http://www.example.com/index.html in her browser:
+![cors terms](/assets/img/posts/cors/CORS-terms.png)
+
+The following steps happen, when a user types in a URL: http://www.example.com/index.html in her browser:
  1. The browser sends the request to a server in a domain named `www.example.com`. We will call this server as "Origin server" which hosts the page named `index.html`.
  2. The "Origin server" returns the page named `index.html` as response to the browser.
  3. The "Origin server" also hosts other resources like `fetchCitiesByState.json`.
@@ -209,7 +211,7 @@ We will call the `GET` and `PUT` methods from this HTML page using the `XMLHttpR
 The HTML shown here contains a button which we need to click to trigger the CORS request from the JavaScript method `loadFromCrossOrigin`.
 
 ### CORS Error Due to Same Origin Policy
-If we run these applications without any additional configurations (setting CORS headers) in the server, we will get a CORS error in our browser console as shown below:
+If we run these applications without any additional configurations (setting CORS headers) in the "Cross-Origin server", we will get a CORS error in our browser console as shown below:
 
 ![cors failure](/assets/img/posts/cors/cors-fail.png)
 

@@ -6,12 +6,12 @@ excerpt: "what features Kotlin offers over Java?"
 image:
   auto: 0018-cogs
 ---
-## Introduction 
+# Introduction 
 
 I’ve been programming with Java for almost 3 years, by the end of 2020, I decided to start learning Kotlin for the backend development. After two months of learning, I really liked the way of programming and the set of features that Kotlin offers.
 In this article we are going to explore some features of using Kotlin through a working code example that includes the following prerequisites:
 
-#### Prerequisites
+### Prerequisites
 
 *JDK8+ *(I installed JDK11)*
 *Gradle *(project management tool, recommended to compile your Kotlin code)*
@@ -60,8 +60,7 @@ Within this file we add a `main function` that will print a `Hello World!` state
 Let’s now run our program and see what we get.
 ```
 Hello World!
-```
-```
+
 Process finished with exit code 0
 ```
 
@@ -143,20 +142,25 @@ To make a `null` as a valid value for `name` variable, you need to add `?` after
 Let’s run our program to see the result
 ```
 null
-```
-```
+
 Process finished with exit code 0
 ```
 
 The output shows us `null`, which mean `null` value is now supported by kotlin compiler.
+
 #Null Safety Operators
+
 Kotlin offers 4 types of Null Safety Operators which are:
+
 *Safe Call Operator `?`.
 *Elvis Operator `?:`
 *Not-Null Assertion `!!`
 *Safe Call with `?.let{ }` scope function
+
 In this section, we’re going to shade some light on the first two operators `Safe Call Operator` & `Elvis Operator`.
+
 Safe Call Operator `?.`
+
 Let’s now check our data class `Company` 
 ```
 data class Company(val name: String, val founded: Int, val founder: String) {
@@ -190,16 +194,14 @@ in this case, the output of the program will be `null` if name variable is null,
 ##Null Variable
 ```
 null
-```
-```
+
 Process finished with exit code 0
 ```
 
 ## Non-Null Variable
 ```
 3
-```
-```
+
 Process finished with exit code 0
 ```
 
@@ -221,8 +223,7 @@ fun main() {
 Let’s now run the program and see what happened.
 ```
 4
-```
-```
+
 Process finished with exit code 0
 ```
 Safe Operator `?.`  will control the nullability of ` name`  property, if its ` not-null`, ` result`  variable will get length of ` name`  variable. In our case the compiler prints out `4` as the length of `name`  variable.
@@ -248,8 +249,7 @@ As we can see from the snippet code above, we assign a `null` value to `name` pr
 Now, let’s run again our program and see what we get as an output
 ```
 name property is null
-```
-```
+
 Process finished with exit code 0
 ```
 
@@ -343,9 +343,7 @@ class User() {
     }
 
 }
-```
 
-```
 fun main() {
     var user = User()
     user.name =  "Jack Black"
@@ -399,8 +397,7 @@ inside `kotlin_feature_06` file, within the `main function`, we created two obje
 Let’s now check the output when we run our program.
 ```
 NOT EQUAL
-```
-```
+
 Process finished with exit code 0
 ```
 
@@ -411,8 +408,7 @@ We can clearly see from the class definition above that we added `data`  keyword
 Now, let’s run again our program and see what we get as a result.
 ```
 EQUAL
-```
-```
+
 Process finished with exit code 0
 ```
 
@@ -424,8 +420,7 @@ As we clearly see from the above snippet code, we call the `print` statement to 
 As a result, we got the following output
 ```
 Company(name=IBM, founded=2000, founder=Jack Mezus)
-```
-```
+
 Process finished with exit code 0
 ```
 
@@ -457,8 +452,7 @@ When we run the program, we get the following output
 ```
 Company(name=IBM, founded=2000, founder=Jack Mezus)
 Company(name=IBM, founded=2000, founder=Jack Mezus)
-```
-```
+
 Process finished with exit code 0
 ```
 
@@ -488,8 +482,7 @@ Then, when we run our program, let’s see what we get as an output
 ```
 Company(name=IBM, founded=2000, founder=Jack Mezus)
 Company(name=Youtube, founded=2000, founder=Jack Mezus)
-```
-```
+
 Process finished with exit code 0
 ```
 
@@ -516,8 +509,7 @@ Now let’s see as a result what we get when we run the program
 
 ```
 Achraf Amellal
-```
-```
+
 Process 
 
 
@@ -550,8 +542,7 @@ As we can see from the code example above, I create an instance of Company `Data
 Let’s run our program to see the output
 ```
 Company(name=IBM, founded=1993, founder=Achraf Amellal)
-```
-```
+
 Process finished with exit code 0
 ```
 

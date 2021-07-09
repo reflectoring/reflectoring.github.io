@@ -49,7 +49,7 @@ Now, download the Ultimate version.
 Now, we will navigate into the `src/main/kotlin` directory, and then we create a `main.kt` file.
 
 Let’s see the snippet code below within our `main.kt` file
-```
+```kotlin
 fun main() {
     println("Hello World!")
 }
@@ -76,7 +76,7 @@ There are two types of variables in Koltin:
 
 ## *val* keyword
 Let’s have a look at `kotlin_feature_01.kt` file
-```
+```kotlin
 fun main() {
     val name: String = "Achraf Amellal"
     println(name)
@@ -85,7 +85,7 @@ fun main() {
 
 As you can see, I declared a variable called `name` of type `String`, then I assign a value to this variable using `=` keyword.
 Now, if you try to update the value of `name` variable, let’s take a look what will happen. 
-```
+```kotlin
 fun main() {
     val name: String = "Achraf Amellal"
     name = "Kotlin Developer"
@@ -97,7 +97,7 @@ The question that arises is how could we reassign a new value to a variable?
 
 ## *var* keyword
 Let’s take a look at the following code
-```
+```kotlin
 fun main() {
     var content = "Achraf"
     content = "Achraf is a Kotlin developer"
@@ -120,7 +120,7 @@ Now as a result we got the second value assigned to `content` variable as shown 
 # Null Types
 An interesting difference between Java and Kotlin, is that types in Kotlin are by default `non-null`.
 Let me explain by showing you the example below
-```
+```kotlin
 fun main() {
     var name: String = null
     println(name)
@@ -131,7 +131,7 @@ As it appears clearly we assign a `null` value to `name` variable, by default ko
 
 The question that arises how can we make `null` value a valid value in Kotlin?
 Let’s check our program again
-```
+```kotlin
 fun main() {
     var name: String? = null
     println(name)
@@ -162,7 +162,7 @@ In this section, we’re going to shade some light on the first two operators `S
 Safe Call Operator `?.`
 
 Let’s now check our data class `Company` 
-```
+```kotlin
 data class Company(val name: String, val founded: Int, val founder: String) {
 
 }
@@ -171,7 +171,7 @@ data class Company(val name: String, val founded: Int, val founder: String) {
 We added a new kotlin data class called `Company`, then we defined a primary constructor with 3 properties `(name + founded + founder)`.
 If you pay attention to `name` property, you will see that we assigned `?` operator to it, which means `name` property is a `nullable String`.
 Now, let’s see an example using `Company` data class
-```
+```kotlin
 fun main() {
     val company = Company("IBM", 1993, "Yann Pierre")
     println("the length of this variable is ${company.name.length}")
@@ -181,7 +181,7 @@ Within our `main function`, we declared a new object of type `Company` and withi
 Then we call `length` function to get the length of `name` property.
 As shown above, we can clearly see that compiler generates an error saying `only safe (?.) are allowed on a nullable receiver`
 Let’s see the following code to see how we solved this error.
-```
+```kotlin
 fun main() {
     val company = Company("IBM", 1993, "Yann Pierre")
     println("the length of this variable is ${company.name?.length}")
@@ -208,7 +208,7 @@ Process finished with exit code 0
 # Elvis Operator `?:`
 For a `nullable` variable, we’ll add Elvis Operator `?:` to control the content of `name` variable. 
 Let’s check the snippet code below
-```
+```kotlin
 fun main() {
     val company = Company("Uber", 1993, "Yann Piette")
     val result = company.name?.length ?: "name property is null"
@@ -231,7 +231,7 @@ Safe Operator `?.`  will control the nullability of ` name`  property, if its ` 
 
 
 Let’s make some changes on our kotlin file `kotlin_feature_05` 
-```
+```kotlin
 fun main() {
     val company = Company(null, 1993, "Yann Piette")
     val result = company.name?.length ?: "name property is null"
@@ -256,7 +256,7 @@ Process finished with exit code 0
 # Type Inference
 Normally, when you declare a variable, you need to determine the `data-type` of this variable. 
 Back to our kotlin file `kotlin_feature_05`, let’s check the code below first
-```
+```kotlin
 fun main() {
     val company = Company(null, 1993, "Yann Piette")
     val result = company.name?.length ?: "name property is null"
@@ -276,7 +276,7 @@ In addition, when we use a Data Class kotlin compiler provides a new method for 
 Using a Data Class, we can make effective use of the mentioned methods.
 Before understanding what Data Class is actually used for ?, we’re going to understand the concept of primary constructor.
 Let’s check the below code definition of `Company` class
-```
+```kotlin
 class Company(val name: String, val founded: Int, val founder: String) {
 
 }
@@ -285,7 +285,7 @@ class Company(val name: String, val founded: Int, val founder: String) {
 in case of kotlin as shown in the code example above this is how we declare a primary constructor. Unlike in Java, we declare a constructor explicitly inside the class body.
 The question arises, how can we initialize our properties in case of kotlin?
 To get the answer to this question, let’s check the snippet code below.
-```
+```kotlin
 class Company(val name: String, val founded: Int, val founder: String) {
     
     init {
@@ -299,7 +299,7 @@ Let us now procced to explore two more concepts
 - Primary Constructor with parameters
 - Primary Constructor with property
 Let’s now check the following code example of User class
-```
+```kotlin
 class User() {
     
     var name = "Achraf Amellal"
@@ -309,7 +309,7 @@ class User() {
 As we can see from the snippet code above, we declare a variable `name`, then we assign a value as `Achraf Amellal`.
 
 
-```
+```kotlin
 fun main() {
     var user = User()
     user.name =  "Jack Black"
@@ -320,7 +320,7 @@ fun main() {
 In the same file, we added a `main function` then inside this main function we declared an object of type `User`, after that we accessed the property `name` from the object created and finally, we print out the result using the print statement.
 Suppose now we want to print the value of `name` property within our class `User`.
 to do so, we will add an `init` block as it shows the following snippet code.
-```
+```kotlin
 class User() {
 
     var name = "Achraf Amellal"
@@ -332,7 +332,7 @@ class User() {
 ```
 The `init` block is immediately executed when a new object of type `User` is created.
 Let’s now check the changes I have made 
-```
+```kotlin
 class User() {
 
     var name = "Achraf Amellal"
@@ -357,7 +357,7 @@ From the code above, I moved the print statement from the `main function` to the
 If we run again the program, we will get the same output
 
 What we saw earlier still not a cleaner code to represent a `class` in case of kotlin, what we can do instead is using a concept called primary constructor. So, our previous code will be something like following:
-```
+```kotlin
 class User(var name: String) {
     
     init {
@@ -367,7 +367,7 @@ class User(var name: String) {
 ```
 What we did actually is to remove the property `name` from the body of class `User`, and use it instead inside a `primary constructor`. Finally, any parameter declared inside this primary constructor is going to be accessible directly inside `init` block.
 Now, inside our `main function` the code will become more concise.
-```
+```kotlin
 fun main() {
     var user = User("Achraf Amellal")
 
@@ -375,7 +375,7 @@ fun main() {
 }
 ```
 Let’s now move back the main function, let’s check the snippet code within `kotlin_feature_06` file.
-```
+```kotlin
 fun main() {
 
     val com01 = Company("IBM", 2000, "Jack Mezus")
@@ -431,7 +431,7 @@ As I said earlier when we use `data class` concept, kotlin compiler implicitly c
 
 # *copy()* method
 let’s now see the following code of `kotlin_feature_06` file
-```
+```kotlin
 fun main() {
 
     val com01 = Company("IBM", 2000, "Jack Mezus")
@@ -458,7 +458,7 @@ Process finished with exit code 0
 
 Now, `com03` object holds the same data as `com01` object
 Now back to our working code example
-```
+```kotlin
 fun main() {
 
     val com01 = Company("IBM", 2000, "Jack Mezus")
@@ -493,7 +493,7 @@ Now you can see clearly that we changed only the value of the property `name` wh
 
 # Accessing Properties 
 Let’s see the working code example below inside `kotlin_feature_04` file
-```
+```kotlin
 fun main() {
     val company = Company("IBM", 1993, "Yann Pierre")
     company.founder = "Achraf Amellal"
@@ -526,7 +526,7 @@ data class Company(val name: String, val founded: Int, var founder: String = "Ac
 
 As we can see, we assigned a default value to `founder` property inside our primary constructor.
 Let’s now check the following main function of `kotlin_feature_04` file
-```
+```kotlin
 fun main() {
     val company = Company("IBM", 1993, "Yann Pierre")
     company.founder = "Achraf Amellal"

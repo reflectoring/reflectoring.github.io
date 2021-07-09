@@ -19,7 +19,7 @@ In this article we are going to explore some features of using Kotlin through a 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 
-By the end of this article, you’ll be able to understand:
+By the end of this article, you’ll get a solid understanding:
 *How to create your first kotlin application?
 *How to create your first kotlin file?
 *The difference between val keyword and var keyword and when to use them with your properties?
@@ -64,18 +64,18 @@ Hello World!
 Process finished with exit code 0
 ```
 
-As shown above, we get an output window at the bottom with `Hello World! ` statement that means our program is running correctly.
+As shown above, we get an output window at the bottom with `Hello World! ` statement, that means our program is running correctly.
 Now, let’s dive in and start learning the language.
 
 
 
 # Variables 
 There are two types of variables in Koltin:
-*We can define a mutable variables, which their values are reassigned using the `var` keyword.
-*We can define a local read-only variables, which can have their values assigned only once using `val` keyword 
+* We can define a mutable variables, which their values are reassigned using the `var` keyword.
+* We can define a local read-only variables, which can have their values assigned only once using `val` keyword 
 
 ## *val* keyword
-Let’s have a look at `kotlin_feature_01.kt` file
+Let’s have a look at our `kotlin_feature_01.kt` file
 ```kotlin
 fun main() {
     val name: String = "Achraf Amellal"
@@ -83,7 +83,7 @@ fun main() {
 }
 ```
 
-As you can see, I declared a variable called `name` of type `String`, then I assign a value to this variable using `=` keyword.
+As you can see, I declared a variable called `name` of type `String`, then I assigned a value to this variable using `=` keyword.
 Now, if you try to update the value of `name` variable, let’s take a look what will happen. 
 ```kotlin
 fun main() {
@@ -92,7 +92,7 @@ fun main() {
     println(name)
 }
 ```
-As we can see from the snippet code above, kotlin compiler shows us an error saying `val cannot be reassigned`.
+As we can see from the snippet code above, **kotlin compiler** shows us an error saying `val cannot be reassigned`.
 The question that arises is how could we reassign a new value to a variable?
 
 ## *var* keyword
@@ -105,7 +105,7 @@ fun main() {
     println(content)
 }
 ```
-The above snippet code is added within a new kotlin file called `kotlin_features_02`, then inside our main function we assign a value to the variable `content` using `var` keyword. Then, we reassign a new value to this variable and finally we printed the output using the print statement.
+The above snippet code is added within a new kotlin file called `kotlin_features_02`, then inside our main function we assigned a value to the variable `content` using `var` keyword. Then, we reassigned a new value to this variable and finally we printed the output using the print statement.
 
 Now, let’s see what we get when we run our program
 ```
@@ -127,7 +127,8 @@ fun main() {
 }
 ```
 
-As it appears clearly we assign a `null` value to `name` variable, by default kotlin compiler show us an error saying that `a null value cannot be assigned to a non-null type String`.
+As it appears clearly we assigned a `null` value to `name` variable, by default 
+does not accept `null` values that why **kotlin compiler** shows us an error saying that `a null value cannot be assigned to a non-null type String`.
 
 The question that arises how can we make `null` value a valid value in Kotlin?
 Let’s check our program again
@@ -138,7 +139,7 @@ fun main() {
 
 }
 ```
-To make a `null` as a valid value for `name` variable, you need to add `?` after your `data-type` as shown in the code above.
+To make a `null` as a valid value for `name` variable, you need to add `?` after your `data-type` as shown in the code example above.
 Let’s run our program to see the result
 ```
 null
@@ -146,9 +147,9 @@ null
 Process finished with exit code 0
 ```
 
-The output shows us `null`, which mean `null` value is now supported by kotlin compiler.
+The output shows us `null`, which mean `null` value is now supported by **kotlin compiler**.
 
-#Null Safety Operators
+# Null Safety Operators
 
 Kotlin offers 4 types of Null Safety Operators which are:
 
@@ -159,7 +160,7 @@ Kotlin offers 4 types of Null Safety Operators which are:
 
 In this section, we’re going to shade some light on the first two operators `Safe Call Operator` & `Elvis Operator`.
 
-Safe Call Operator `?.`
+## Safe Call Operator `?.`
 
 Let’s now check our data class `Company` 
 ```kotlin
@@ -177,7 +178,7 @@ fun main() {
     println("the length of this variable is ${company.name.length}")
 }
 ```
-Within our `main function`, we declared a new object of type `Company` and within this object we assign some data using primary constructor for `name` property and `founded` property.
+Within our `main function`, we declared a new object of type `Company` and within this object we assigned some data using primary constructor for `name` property and `founded` property.
 Then we call `length` function to get the length of `name` property.
 As shown above, we can clearly see that compiler generates an error saying `only safe (?.) are allowed on a nullable receiver`
 Let’s see the following code to see how we solved this error.

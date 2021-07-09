@@ -20,24 +20,10 @@ In this article, we will understand the following aspects about CORS:
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/cors" %}
 
-## Basic Terminology
-While explaining CORS, we will frequently toss around terms like browsers, servers, origins, cross-origins. These terms may turn out to be confusing. To avoid this, we will define them first and then use them consistently through out this article.
 
-The diagram here represents the main participants of a CORS flow:
-
-![cors terms](/assets/img/posts/cors/CORS-terms.png)
-
-The following steps happen, when a user types in a URL: http://www.example.com/index.html in her browser:
- 1. The browser sends the request to a server in a domain named `www.example.com`. We will call this server as "Origin server" which hosts the page named `index.html`.
- 2. The "Origin server" returns the page named `index.html` as response to the browser.
- 3. The "Origin server" also hosts other resources like `fetchCitiesByState.json`.
- 4. The browser can also fetch resources from a server in a different domain like `www.xyz.com`. We will call this server as "Cross-Origin server".
- 5. The browser uses Ajax technology with the built-in `XMLHttpRequest` object, or since 2017 the new `fetch` function within JavaScript to load content on the screen without refreshing the page.
-
-We will use the terms "Origin server" and "Cross-Origin server" through out the article. "Origin server" will refer to the server from which the web page is fetched and "Cross-Origin server" will represent any server that is different from the "Origin server".
 
 ## What is CORS
-CORS is a security standard implemented by browsers that enable scripts running in browsers to access resources located outside of the browser's domain. The CORS policy is published under the [Fetch standard](https://fetch.spec.whatwg.org/#http-cors-protocol) defined by the [WHATWG](https://whatwg.org) community which also publishes many web standards like [HTML5](https://html.spec.whatwg.org/multipage/), [DOM](https://dom.spec.whatwg.org), and [URL](https://url.spec.whatwg.org).
+CORS is a security standard implemented by browsers that enable scripts running in browsers to access resources located outside of the browser's domain. The CORS policy is published under the [Fetch standard](https://fetch.spec.whatwg.org/#http-cors-protocol) defined by the [WHATWG](https://whatwg.org) community which also publishes many web standards like [HTML5](https://html.spec.whatwg.org/multipage/),[DOM](https://dom.spec.whatwg.org), and [URL](https://url.spec.whatwg.org).
 
 According to the spec:
 
@@ -45,11 +31,15 @@ According to the spec:
 
 ## Why do we need CORS
 
-CORS helps to maintain the integrity of a website and secure it from unauthorized access. Browsers protect their resources by applying a default security policy called the Same-Origin Policy which was defined in the early years of the web.
+CORS helps to maintain the integrity of a website and secure it from unauthorized access. 
 
-The Same-Origin Policy however turned out to be too restrictive for the new age applications where we often need to fetch different kinds of resources from multiple origins. 
+The CORS protocol was defined to relax the default security policy called the Same-Origin Policy (SOP) used by the browsers to protect their resources. 
 
-The CORS standard was defined to relax this restriction. It is implemented by all modern browsers to allow controlled access to resources located outside of the browser's origin. 
+The Same-Origin Policy permits the browser to load resources only from a server hosted in the same origin as the browser. 
+
+The SOP was defined in the early years of the web and turned out to be too restrictive for the new age applications where we often need to fetch different kinds of resources from multiple origins.
+
+The CORS protocol is implemented by all modern browsers to allow controlled access to resources located outside of the browser's origin. 
 
 To understand CORS, we should first understand Origin along with the Same-Origin Policy (SOP).
 
@@ -87,6 +77,21 @@ If the origins corresponding to the URLs are same, we can run JavaScripts in `cu
 
 In contrast, for cross-origin URLs, JavaScripts running in `currentPage.html` will be prevented from fetching contents from `targetPage.html` without a CORS policy configured correctly.
 
+## Some Essential Terminology
+Before going further for explaining CORS, let us define some frequently used terms like browsers, servers, origins, cross-origins and then use them consistently through out this article.
+
+The diagram here represents the main participants of a CORS flow:
+
+![cors terms](/assets/img/posts/cors/CORS-terms.png)
+
+The following steps happen, when a user types in a URL: http://www.example.com/index.html in her browser:
+ 1. The browser sends the request to a server in a domain named `www.example.com`. We will call this server as "Origin server" which hosts the page named `index.html`.
+ 2. The "Origin server" returns the page named `index.html` as response to the browser.
+ 3. The "Origin server" also hosts other resources like `fetchCitiesByState.json`.
+ 4. The browser can also fetch resources from a server in a different domain like `www.xyz.com`. We will call this server as "Cross-Origin server".
+ 5. The browser uses Ajax technology with the built-in `XMLHttpRequest` object, or since 2017 the new `fetch` function within JavaScript to load content on the screen without refreshing the page.
+
+We will use the terms "Origin server" and "Cross-Origin server" through out the article. "Origin server" will refer to the server from which the web page is fetched and "Cross-Origin server" will represent any server that is different from the "Origin server".
 
 ## How Browsers Implement CORS Policy
 

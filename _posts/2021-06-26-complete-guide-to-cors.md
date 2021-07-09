@@ -9,10 +9,10 @@ image:
   auto: 0074-stack
 ---
 
-“CORS” stands for Cross-Origin Resource Sharing. It is a protocol that enables Javascripts running in browsers to connect to APIs and other web resources like fonts, media, images, etc from multiple origins.
+“CORS” stands for Cross-Origin Resource Sharing. It is a protocol that enables JavaScripts running in browsers to connect to APIs and other web resources like fonts, media, images, etc from multiple origins.
 
 In this article, we will understand the following aspects about CORS:
-- Cross-origin resource sharing (CORS) protocol or standard
+- Cross-Origin resource sharing (CORS) protocol or standard
 - Different types of CORS requests
 - Important CORS headers like the `Origin` and `Access-Control-Allow-Origin`
 - Some examples of security vulnerabilities caused by CORS misconfigurations 
@@ -41,9 +41,10 @@ The SOP was defined in the early years of the web and turned out to be too restr
 
 The CORS protocol is implemented by all modern browsers to allow controlled access to resources located outside of the browser's origin. 
 
-To understand CORS, we should first understand Origin along with the Same-Origin Policy (SOP).
+## Some Essential Terminology
+Before going further, let us define some frequently used terms like browsers, servers, origins, cross-origins. We will then use these terms consistently through out this article.
 
-## What is Origin
+### What is an Origin
 
 An Origin in the context of CORS consists of three elements:
 
@@ -55,15 +56,26 @@ We consider two URLs to be of the same Origins only if all three elements match.
 
 A more elaborate explanation of - the Web Origin Concept, is available in [RFC 6454](https://tools.ietf.org/html/rfc6454).
 
+### Main Participants of a CORS flow
+The diagram here shows the main participants of a CORS flow:
 
-## Same Origin vs Cross Origin
-For understanding CORS, it is important to first understand the Same-Origin Policy (SOP).
+![cors terms](/assets/img/posts/cors/CORS-terms.png)
 
-The Same-Origin Policy (SOP) is a default security policy implemented by Browsers, which permits the browser to load resources only from a server hosted in the same origin as the browser. 
+The following steps happen, when a user types in a URL: http://www.example.com/index.html in the browser:
+ 1. The browser sends the request to a server in a domain named `www.example.com`. We will call this server as "**Origin server**" which hosts the page named `index.html`.
+ 2. The "Origin server" returns the page named `index.html` as response to the browser.
+ 3. The "Origin server" also hosts other resources like `movies.json` api in this example.
+ 4. The browser can also fetch resources from a server in a different domain like `www.xyz.com`. We will call this server as "**Cross-Origin server**".
+ 5. The browser uses Ajax technology with the built-in `XMLHttpRequest` object, or since 2017 the new `fetch` function within JavaScript to load content on the screen without refreshing the page.
+
+We will use the terms "Origin server" and "Cross-Origin server" through out this article. **"Origin server" will refer to the server from which the web page is fetched and "Cross-Origin server" will represent any server that is different from the "Origin server".**
+
+### Same Origin vs Cross Origin
+As stated earlier, the Same-Origin Policy (SOP) is a default security policy implemented by browsers. The SOP permits the browser to load resources only from the "Origin server".
 
 In the absence of the Same-Origin Policy, any website will be able to access the document object model (DOM) of other websites and allow it to access potentially sensitive data as well as perform malicious actions on other websites without requiring user consent.
 
-The following table shows URLs of an HTML page `targetPage.html` which the browser considers as of the same or different origin as the URL `http://www.mydomain.com/currentPage.html` of the HTML page `currentPage.html`. The URLs in which we have not specified any port, the default port is `80` for HTTP and `443` for HTTPS.
+The following figure and the table shows URLs of an HTML page `targetPage.html` which the browser considers as of the same or different origin as the URL `http://www.mydomain.com/currentPage.html` of the HTML page `currentPage.html`. The default port is `80` for HTTP and `443` for HTTPS for the URLs in which we have not specified any port.
 
 |URLs being Matched| Same Origin or Cross Origin| Reason |
 |-|-|-|
@@ -73,35 +85,21 @@ The following table shows URLs of an HTML page `targetPage.html` which the brows
 |http://pg.mydomain.com/targetPage.html|Cross Origin|different host|
 |http://www.mydomain.com:8080/targetPage.html|Cross Origin|different port|
 
+![same vs cross origin urls](/assets/img/posts/cors/samevscross.png)
+
 If the origins corresponding to the URLs are same, we can run JavaScripts in `currentPage.html` which can fetch contents from `targetPage.html`.
 
 In contrast, for cross-origin URLs, JavaScripts running in `currentPage.html` will be prevented from fetching contents from `targetPage.html` without a CORS policy configured correctly.
 
-## Some Essential Terminology
-Before going further for explaining CORS, let us define some frequently used terms like browsers, servers, origins, cross-origins and then use them consistently through out this article.
-
-The diagram here represents the main participants of a CORS flow:
-
-![cors terms](/assets/img/posts/cors/CORS-terms.png)
-
-The following steps happen, when a user types in a URL: http://www.example.com/index.html in her browser:
- 1. The browser sends the request to a server in a domain named `www.example.com`. We will call this server as "Origin server" which hosts the page named `index.html`.
- 2. The "Origin server" returns the page named `index.html` as response to the browser.
- 3. The "Origin server" also hosts other resources like `fetchCitiesByState.json`.
- 4. The browser can also fetch resources from a server in a different domain like `www.xyz.com`. We will call this server as "Cross-Origin server".
- 5. The browser uses Ajax technology with the built-in `XMLHttpRequest` object, or since 2017 the new `fetch` function within JavaScript to load content on the screen without refreshing the page.
-
-We will use the terms "Origin server" and "Cross-Origin server" through out the article. "Origin server" will refer to the server from which the web page is fetched and "Cross-Origin server" will represent any server that is different from the "Origin server".
-
 ## How Browsers Implement CORS Policy
 
-When a request is made, the browser detects whether the request is to the "Origin Server" or the "Cross-Origin Server" and applies the CORS policy if the request is for the "Cross-Origin Server".
+When a request for fetching a resource is made from a web page, the browser detects whether the request is to the "Origin Server" or the "Cross-Origin Server" and applies the CORS policy if the request is for the "Cross-Origin Server".
 
-The browser does this by exchanging a set of CORS headers with the "Cross-origin server". Based on the header values returned from the "Cross-Origin server", the browser provides access to the response or blocks the access by throwing a CORS error. 
+The browser does this by exchanging a set of CORS headers with the "Cross-Origin server". Based on the header values returned from the "Cross-Origin server", the browser provides access to the response or blocks the access by throwing a CORS error. 
 
 ### Important CORS Headers
 
-When we make a CORS request, the browser sends a header named `Origin` with the request to the "Cross-Origin Server". The "Cross-Origin Server" processes this request and sends back a header named `Access-Control-Allow-Origin` in the response. 
+The browser sends a header named `Origin` with the request to the "Cross-Origin Server". The "Cross-Origin Server" processes this request and sends back a header named `Access-Control-Allow-Origin` in the response. 
 
 The browser checks the value of the `Access-Control-Allow-Origin` header in the response and renders the response only if the value of the `Access-Control-Allow-Origin` header is the same as the `Origin` header sent in the request. 
 
@@ -111,9 +109,9 @@ The "Cross-Origin Server" can also use wild cards like `*` as the value of the `
 
 CORS failures cause errors but specifics about the error are not available to the browser for security reasons. The only way to know about the error is by looking at the browser's console for details of the error which is usually in the following form:
 
-```shell
-Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-```
+`Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.`
+
+The error displayed in the browser console is accompanied with an error "reason" message. The list of  reason messages for [Firefox browser](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors#cors_error_messages) .
 
 ## Type of CORS Requests
 

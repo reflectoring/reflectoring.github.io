@@ -110,8 +110,7 @@ The above snippet code is added within a new kotlin file called `kotlin_features
 Now, let’s see what we get when we run our program
 ```
 Achraf is a Kotlin developer
-```
-```
+
 Process finished with exit code 0
 ```
 

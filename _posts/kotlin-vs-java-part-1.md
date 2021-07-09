@@ -557,11 +557,11 @@ We get the constructor of Company data class
 
 
 Let’s now summarize what we learn from this article:
-*`val` keyword is used when you want to assign a value only once to a property.
+* val` keyword is used when you want to assign a value only once to a property.
 *`var` keyword is used when you want to reassign a new value to a property.
-*Kotlin compiler by default does not accept `null` values, hence to make a `null` value a valid value, we add `?` next to data-type.
-*For a `nullable` variable, to control its value we use `safe call operators` such as `Safe Call Operator` and `Elvis Operator`.
-*In kotlin, when you assign a value to variable, you can ignore to define the data-type for this variable, this concept is called `type inference`.
-*Difference between `class` definition and `data class` definition and when to use each concept.
+* Kotlin compiler by default does not accept `null` values, hence to make a `null` value a valid value, we add `?` next to data-type.
+* For a `nullable` variable, to control its value we use `safe call operators` such as `Safe Call Operator` and `Elvis Operator`.
+* In kotlin, when you assign a value to variable, you can ignore to define the data-type for this variable, this concept is called `type inference`.
+* Difference between `class` definition and `data class` definition and when to use each concept.
  
 

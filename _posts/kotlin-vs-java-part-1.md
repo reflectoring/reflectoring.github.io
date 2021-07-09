@@ -55,7 +55,7 @@ fun main() {
 }
 ```
 
-Within this file we add a `main function` that will print a `Hello World!` statement.
+Within this file we add a `main function` that will print on the console a `Hello World!`using the `print` statement.
 
 Let’s now run our program and see what we get.
 ```
@@ -105,7 +105,7 @@ fun main() {
     println(content)
 }
 ```
-The above snippet code is added within a new kotlin file called `kotlin_features_02`, then inside our main function we assigned a value to the variable `content` using `var` keyword. Then, we reassigned a new value to this variable and finally we printed the output using the print statement.
+The above snippet code is added within a new kotlin file called `kotlin_features_02`, then inside our main function we assigned a value to the variable `content` using this time the `var` keyword. Then, we reassigned a new value to this variable and finally we printed the output using the print statement.
 
 Now, let’s see what we get when we run our program
 ```
@@ -114,7 +114,7 @@ Achraf is a Kotlin developer
 Process finished with exit code 0
 ```
 
-Now as a result we got the second value assigned to `content` variable as shown from the output above.
+Now as a result we got the second value assigned to `content` variable as shown from the output above. I hope now its clearly enough for you to get the difference between `var` keyword and `val` keyword in case of kotlin.
 
 # Null Types
 An interesting difference between Java and Kotlin, is that types in Kotlin are by default `non-null`.
@@ -126,10 +126,10 @@ fun main() {
 }
 ```
 
-As it appears clearly we assigned a `null` value to `name` variable, by default 
-does not accept `null` values that why **kotlin compiler** shows us an error saying that `a null value cannot be assigned to a non-null type String`.
+As it appears clearly we assigned a `null` value to `name` variable, by default **kotlin compiler**
+does not accept `null` values, that's why we got an error saying that `a null value cannot be assigned to a non-null type String`.
 
-The question that arises how can we make `null` value a valid value in Kotlin?
+The question that arises is how can we make `null` value a valid value in Kotlin?
 Let’s check our program again
 ```kotlin
 fun main() {
@@ -138,24 +138,24 @@ fun main() {
 
 }
 ```
-To make a `null` as a valid value for `name` variable, you need to add `?` after your `data-type` as shown in the code example above.
-Let’s run our program to see the result
+To make a `null` as a valid value for `name` variable, you need to add `?` keyword after your `data-type` as shown in the code example above.
+Let’s run our program again to see the result
 ```
 null
 
 Process finished with exit code 0
 ```
 
-The output shows us `null`, which mean `null` value is now supported by **kotlin compiler**.
+The output now shows us `null`, which mean `null` value is supported by **kotlin compiler**.
 
 # Null Safety Operators
 
-Kotlin offers 4 types of Null Safety Operators which are:
+Kotlin offers 4 types of `Null Safety Operators` which are:
 
-*Safe Call Operator `?`.
-*Elvis Operator `?:`
-*Not-Null Assertion `!!`
-*Safe Call with `?.let{ }` scope function
+* Safe Call Operator `?`.
+* Elvis Operator `?:`
+* Not-Null Assertion `!!`
+* Safe Call with `?.let{ }` scope function
 
 In this section, we’re going to shade some light on the first two operators `Safe Call Operator` & `Elvis Operator`.
 
@@ -168,7 +168,7 @@ data class Company(val name: String, val founded: Int, val founder: String) {
 }
 ```
 
-We added a new kotlin data class called `Company`, then we defined a primary constructor with 3 properties `(name + founded + founder)`.
+We added a new kotlin data class called `Company` with a primary constructor that contains 3 properties `(name + founded + founder)`.
 If you pay attention to `name` property, you will see that we assigned `?` operator to it, which means `name` property is a `nullable String`.
 Now, let’s see an example using `Company` data class
 ```kotlin

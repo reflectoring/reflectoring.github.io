@@ -13,9 +13,9 @@ In this article we are going to explore some features of using Kotlin through a 
 
 ### Prerequisites
 
-*JDK8+ *(I installed JDK11)*
-*Gradle *(project management tool, recommended to compile your Kotlin code)*
-*IntelliJ IDEA 
+* JDK8+ *(I installed JDK11)*
+* Gradle *(project management tool, recommended to compile your Kotlin code)*
+* IntelliJ IDEA 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
 

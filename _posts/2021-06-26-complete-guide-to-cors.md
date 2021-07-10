@@ -21,15 +21,23 @@ In this article, we will understand the following aspects about CORS:
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/cors" %}
 
 
-
 ## What is CORS
-CORS is a security standard implemented by browsers that enable scripts running in browsers to access resources located outside of the browser's domain. The CORS policy is published under the [Fetch standard](https://fetch.spec.whatwg.org/#http-cors-protocol) defined by the [WHATWG](https://whatwg.org) community which also publishes many web standards like [HTML5](https://html.spec.whatwg.org/multipage/),[DOM](https://dom.spec.whatwg.org), and [URL](https://url.spec.whatwg.org).
+**CORS is a security standard implemented by browsers that enable scripts running in browsers to access resources located outside of the browser's domain.** 
+
+The CORS policy is published under the [Fetch standard](https://fetch.spec.whatwg.org/#http-cors-protocol) defined by the [WHATWG](https://whatwg.org) community which also publishes many web standards like [HTML5](https://html.spec.whatwg.org/multipage/),[DOM](https://dom.spec.whatwg.org), and [URL](https://url.spec.whatwg.org).
 
 According to the spec:
 
 > The CORS protocol consists of a set of headers that indicates whether a response can be shared cross-origin. For requests that are more involved than what is possible with HTML’s form element, a CORS-preflight request is performed, to ensure request’s current URL supports the CORS protocol.
 
-## Why do we need CORS
+Some examples where CORS comes into play are:
+- We display a map of the user's location in a HTML or single page application hosted in our domain by calling google's map API `https://maps.googleapis.com/maps/api/js`.
+- We show tweets from a public tweeter handle by calling a twitter API `https://api.twitter.com/xxx/tweets/xxxxx`
+- Using web fonts like Typekit and Google Fonts in our HTML from a remote domain like `https://test.zinoui.com/cross-domain-fonts/disabled/OpenSans.woff2` and `https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap`.
+
+Let us understand the working of CORS and how we implement CORS in our applications in the subsequent sections.
+
+## Why do we Need CORS
 
 CORS helps to maintain the integrity of a website and secure it from unauthorized access. 
 
@@ -56,8 +64,8 @@ We consider two URLs to be of the same Origins only if all three elements match.
 
 A more elaborate explanation of - the Web Origin Concept, is available in [RFC 6454](https://tools.ietf.org/html/rfc6454).
 
-### Main Participants of a CORS flow
-The diagram here shows the main participants of a CORS flow:
+### Origin Server and Cross-Origin Server
+"Origin server" and "Cross-Origin server" are not CORS terms. But we will be using these terms for referring to the server that is hosting the source application and server to which the browser will send the CORS request. This diagram shows the main participants of a CORS flow:
 
 ![cors terms](/assets/img/posts/cors/CORS-terms.png)
 
@@ -111,7 +119,7 @@ CORS failures cause errors but specifics about the error are not available to th
 
 `Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.`
 
-The error displayed in the browser console is accompanied with an error "reason" message. The list of  reason messages for [Firefox browser](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors#cors_error_messages) .
+The error displayed in the browser console is accompanied with an error "reason" message. We can look at the [reason messages for Firefox](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors#cors_error_messages) to better understand the reason of CORS errors.
 
 ## Type of CORS Requests
 

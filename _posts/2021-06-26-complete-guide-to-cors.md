@@ -13,7 +13,7 @@ image:
 
 It enables JavaScripts running in browsers to connect to APIs and other web resources like fonts, and stylesheets, etc from multiple different providers.
 
-In this article, we will understand the following aspects about CORS:
+In this article, we will understand the following aspects of CORS:
 - Cross-Origin resource sharing (CORS) protocol or standard
 - Different types of CORS requests
 - Important CORS headers like the `Origin` and `Access-Control-Allow-Origin`
@@ -30,14 +30,14 @@ The CORS policy is published under the [Fetch standard](https://fetch.spec.whatw
 
 According to the spec:
 
-> The CORS protocol consists of a set of headers that indicates whether a response can be shared cross-origin. For requests that are more involved than what is possible with HTML’s form element, a CORS-preflight request is performed, to ensure request’s current URL supports the CORS protocol.
+> The CORS protocol consists of a set of headers that indicates whether a response can be shared cross-origin. For requests that are more involved than what is possible with HTML’s form element, a CORS-preflight request is performed, to ensure the request’s current URL supports the CORS protocol.
 
 Some examples where CORS comes into play are:
-- Display a map of a user's location in a HTML or single page application hosted in our domain by calling google's Map API `https://maps.googleapis.com/maps/api/js`.
-- Show tweets from a public twitter handle by calling a twitter API `https://api.twitter.com/xxx/tweets/xxxxx`
+- Display a map of a user's location in an HTML or single page application hosted in our domain by calling google's Map API `https://maps.googleapis.com/maps/api/js`.
+- Show tweets from a public Twitter handle by calling a Twitter API `https://api.twitter.com/xxx/tweets/xxxxx`
 - Using web fonts like [Typekit](https://fonts.adobe.com/typekit) and [Google Fonts](https://fonts.googleapis.com) in our HTML from their remote domains.
 
-Let us understand in greater detail the role of a CORS policy for fetching resources from remote-origins, followed by how CORS policy is enforced by browsers, and how we implement CORS in our applications in the subsequent sections.
+Let us understand in greater detail the role of a CORS policy for fetching resources from remote origins, followed by how CORS policy is enforced by browsers, and how we implement CORS in our applications in the subsequent sections.
 
 ## Relaxation of the Same-Origin Policy
 
@@ -52,7 +52,7 @@ The SOP was defined in the early years of the web and turned out to be too restr
 The CORS protocol is implemented by all modern browsers to allow controlled access to resources located outside of the browser's origin. 
 
 ## Some Essential Terminology
-Before going further, let us define some frequently used terms like browsers, servers, origins, cross-origins. We will then use these terms consistently through out this article.
+Before going further, let us define some frequently used terms like browsers, servers, origins, cross-origins. We will then use these terms consistently throughout this article.
 
 ### What is an Origin
 
@@ -67,25 +67,25 @@ We consider two URLs to be of the same Origins only if all three elements match.
 A more elaborate explanation of - the Web Origin Concept, is available in [RFC 6454](https://tools.ietf.org/html/rfc6454).
 
 ### Origin Server and Cross-Origin Server
-"Origin server" and "Cross-Origin server" are not CORS terms. But we will be using these terms for referring to the server that is hosting the source application and server to which the browser will send the CORS request. This diagram shows the main participants of a CORS flow:
+"Origin server" and "Cross-Origin server" are not CORS terms. But we will be using these terms for referring to the server that is hosting the source application and the server to which the browser will send the CORS request. This diagram shows the main participants of a CORS flow:
 
 ![cors terms](/assets/img/posts/cors/CORS-terms.png)
 
 The following steps happen, when a user types in a URL: http://www.example.com/index.html in the browser:
- 1. The browser sends the request to a server in a domain named `www.example.com`. We will call this server as "**Origin server**" which hosts the page named `index.html`.
- 2. The "Origin server" returns the page named `index.html` as response to the browser.
- 3. The "Origin server" also hosts other resources like `movies.json` api in this example.
- 4. The browser can also fetch resources from a server in a different domain like `www.xyz.com`. We will call this server as "**Cross-Origin server**".
+ 1. The browser sends the request to a server in a domain named `www.example.com`. We will call this server "**Origin server**" which hosts the page named `index.html`.
+ 2. The "Origin server" returns the page named `index.html` as a response to the browser.
+ 3. The "Origin server" also hosts other resources like the `movies.json` API in this example.
+ 4. The browser can also fetch resources from a server in a different domain like `www.xyz.com`. We will call this server "**Cross-Origin server**".
  5. The browser uses Ajax technology with the built-in `XMLHttpRequest` object, or since 2017 the new `fetch` function within JavaScript to load content on the screen without refreshing the page.
 
-We will use the terms "Origin server" and "Cross-Origin server" through out this article. **"Origin server" will refer to the server from which the web page is fetched and "Cross-Origin server" will represent any server that is different from the "Origin server".**
+We will use the terms "Origin server" and "Cross-Origin server" throughout this article. **"Origin server" will refer to the server from which the web page is fetched and "Cross-Origin server" will represent any server that is different from the "Origin server".**
 
 ### Same Origin vs Cross Origin
 As stated earlier, the Same-Origin Policy (SOP) is a default security policy implemented by browsers. The SOP permits the browser to load resources only from the "Origin server".
 
 In the absence of the Same-Origin Policy, any website will be able to access the document object model (DOM) of other websites and allow it to access potentially sensitive data as well as perform malicious actions on other websites without requiring user consent.
 
-The following figure and the table shows URLs of an HTML page `targetPage.html` which the browser considers as of the same or different origin as the URL `http://www.mydomain.com/currentPage.html` of the HTML page `currentPage.html`. The default port is `80` for HTTP and `443` for HTTPS for the URLs in which we have not specified any port.
+The following figure and the table show URLs of an HTML page `targetPage.html` which the browser considers as of the same or different origin as the URL `http://www.mydomain.com/currentPage.html` of the HTML page `currentPage.html`. The default port is `80` for HTTP and `443` for HTTPS for the URLs in which we have not specified any port.
 
 |URLs being Matched| Same Origin or Cross Origin| Reason |
 |-|-|-|
@@ -121,14 +121,14 @@ CORS failures cause errors but specifics about the error are not available to th
 
 `Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.`
 
-The error displayed in the browser console is accompanied with an error "reason" message. We can look at the [reason messages for Firefox](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors#cors_error_messages) to better understand the reason of CORS errors.
+The error displayed in the browser console is accompanied by an error "reason" message. For seeing some examples of CORS errors, we can check the [reason messages in Firefox](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors#cors_error_messages).
 
 ## Type of CORS Requests
 
 The browser sends three types of CORS requests: `simple`, `preflight`, and `requests with credentials`. The browser determines the type of request to be sent to the "Cross-Origin server" depending on the kind of operations we want to perform with the resource in the "Cross-Origin server". Let us understand these request types and observe these requests in the browsers' network log by running an example.
 
 ### Simple CORS Requests (GET, POST, and HEAD)
-Simple requests are sent by the browser for performing operations it considers safe in the "Cross-origin server", because they do not change the state of any existing resource. The request sent by the browser is simple if one of the below conditions applies: 
+Simple requests are sent by the browser for performing operations it considers safe in the "Cross-origin server" because they do not change the state of any existing resource. The request sent by the browser is simple if one of the below conditions applies: 
 
 - The HTTP request method is `GET`, `POST`, or `HEAD`
 - The HTTP request contains a CORS safe-listed header: `Accept`, `Accept-Language`, `Content-Language`, `Content-Type`.
@@ -138,15 +138,15 @@ Simple requests are sent by the browser for performing operations it considers s
 
 The browser sends the simple request as a normal request similar to the Same Origin request after adding the `Origin` header, and the `Access-Control-Allow-Origin` header is checked by the browser when the response is returned. 
 
-The browser is able to read and render the response only if the value of `Access-Control-Allow-Origin` header matches the value of `Origin` header sent in the request. The `Origin` header contains the source origin of the request.
+The browser is able to read and render the response only if the value of the `Access-Control-Allow-Origin` header matches the value of the `Origin` header sent in the request. The `Origin` header contains the source origin of the request.
 
 
 ### Preflight Requests
-In contrast to simple requests, the browser sends preflight requests for operations that intend to change the state of existing resources in the in the "Cross-origin server". We use the HTTP methods `PUT` and `DELETE` for these operations. 
+In contrast to simple requests, the browser sends preflight requests for operations that intend to change the state of existing resources in the "Cross-origin server". We use the HTTP methods `PUT` and `DELETE` for these operations. 
 
 These requests are not considered safe so the web browser first makes sure that cross-origin communication is allowed by first sending a preflight request before sending the actual request. Requests which do not satisfy the criteria for simple request also fall under this category.
 
-The preflight request is an HTTP `OPTIONS` method which is sent automatically by the browser to the in the "Cross-origin server" hosting the resource, to check that the in the "Cross-origin server" will permit the actual request. Along with the preflight request, the browser sends the following headers:
+The preflight request is an HTTP `OPTIONS` method which is sent automatically by the browser to the  "Cross-origin server" hosting the resource, to check that the "Cross-origin server" will permit the actual request. Along with the preflight request, the browser sends the following headers:
 
 **Access-Control-Request-Method**: This is a list of HTTP methods of the request (e.g., `GET`, `POST`, `PUT`, `DELETE`)
 **Access-Control-Request-Headers**: This is a list of headers that will be sent with the request
@@ -160,21 +160,21 @@ After the preflight request is complete, the actual `PUT` method with CORS heade
 
 In most real-life situations, we need to send CORS requests loaded with some kind of access credentials which could be an `Authorization` header or cookies. The default behavior of cross-origin resource requests is for the requests to be passed without any of these credentials. 
 
-If credentials are passed with the request, the browser will not allow access to the response unless the in the "Cross-origin server" sends a CORS header `Access-Control-Allow-Credentials` with a value of `true`.
+If credentials are passed with the request, the browser will not allow access to the response unless the "Cross-origin server" sends a CORS header `Access-Control-Allow-Credentials` with a value of `true`.
 
 ## Example of Working with CORS
 For observing the CORS requests, let us run two web applications written in Node.Js which will communicate with each other by following the CORS standard:
 1. For "Cross-Origin server" we will use a web application named [OrderProcessor](https://github.com/thombergs/code-examples/blob/master/cors/orderprocessor/server.js) that will contain a REST API with `GET` and `PUT` methods.
-2. For "Origin server" we wll use another web application containing an [HTML page](https://github.com/thombergs/code-examples/blob/master/cors/ecommapp/index.html). We will run JavaScript in this HTML page to communicate with the REST APIs in the `OrderProcessor` application which is our "Cross-Origin server".
+2. For "Origin server" we will use another web application containing an [HTML page](https://github.com/thombergs/code-examples/blob/master/cors/ecommapp/index.html). We will run JavaScript in this HTML page to communicate with the REST APIs in the `OrderProcessor` application which is our "Cross-Origin server".
 
 We can run these applications in our local machine using `npm` and `node`. The "Origin server" hosting the HTML page is running on `http://localhost:9000`. This makes Ajax calls with the `XMLHttpRequest` object to the `OrderProcessor` application running on the "Cross-Origin server" with URL: `http://localhost:8000` as shown in this figure: 
 
 ![cors example](/assets/img/posts/cors/cors-example.png)
 
-These are CORS requests since the HTML page and `OrderProcessor` application are running in different Origins (because of different port numbers: 8000 and 9000 although they use the same scheme: HTTP and host: `localhost`).
+These are CORS requests since the HTML in the "Origin server" and `OrderProcessor` application in the  "Cross-Origin server" are running in different Origins (because of different port numbers: 8000 and 9000 although they use the same scheme: HTTP and host: `localhost`).
 
 ### Cross-Origin Server Handling CORS Requests in Node.js
-Our "Cross-Origin server" is a simple [Node.js](https://nodejs.org/en/) application named `OrderProcessor` built with [Express](https://expressjs.com) framework. We have created two REST APIs in `OrderProcessor` application with `GET` and `PUT` methods for fetching and updating `orders`. 
+Our "Cross-Origin server" is a simple [Node.js](https://nodejs.org/en/) application named `OrderProcessor` built with [Express](https://expressjs.com) framework. We have created two REST APIs in the `OrderProcessor` application with `GET` and `PUT` methods for fetching and updating `orders`. 
 
 This is a snippet of the `GET` method of our `OrderProcessor` application running on "Cross-Origin server" on URL: `localhost:8000`:
 
@@ -406,7 +406,7 @@ Let us look at two examples of CORS vulnerabilities caused by any misconfigurati
 ### Origin Reflection - Copy the Value of Origin Header in the Response
 As we have seen earlier, when the browser makes a cross-origin request, it adds an `Origin` header containing the value of the domain the request originates from. The "Cross-Origin server" needs to return an `Access-Control-Allow-Origin` header with the value of the `Origin` header received in the request. 
 
-There could be a scenario of multiple domains that need access to the resources of the "Cross-Origin server". In that case the "Cross-Origin server" might set the value of the `Access-Control-Allow-Origin` header dynamically to the value of the domain it receives in the `Origin` header. A Node.js code setting the header dynamically may look like this:
+There could be a scenario of multiple domains that need access to the resources of the "Cross-Origin server". In that case, the "Cross-Origin server" might set the value of the `Access-Control-Allow-Origin` header dynamically to the value of the domain it receives in the `Origin` header. A Node.js code setting the header dynamically may look like this:
 
 ```js
 const express = require('express');
@@ -422,13 +422,13 @@ app.get('/orders', (req, res) => {
   res.send(orders);
 });
 ```
-Here we are reading the value of the `Origin` header received in the request and setting it to the value of `Access-Control-Allow-Origin` sent in the response.
+Here we are reading the value of the `Origin` header received in the request and set it to the value of `Access-Control-Allow-Origin` sent in the response.
 
 Doing this will allow any domain including malicious ones to send requests to the "Cross-Origin server".
 
 ### Lenient regular expression
 
-Similar to the earlier example, we can check the origin in the "Cross-Origin server" code by applying a regular expression. If we want to allow all subdomains to send requests to the "Cross-Origin server", the code will look like this:
+Similar to the earlier example, we can check for the value of `Origin` header in the "Cross-Origin server" code by applying a regular expression. If we want to allow all subdomains to send requests to the "Cross-Origin server", the code will look like this:
 
 ```js
 const express = require('express');
@@ -455,9 +455,9 @@ Since the dot character in the regular expression is not escaped, requests from 
 ## Avoiding Security Vulnerabilities Caused by CORS Misconfiguration
 Here are some of the best practices we can use to implement CORS securely:
 
-1. We can define a whitelist of specific domains which are allowed to access the "Cross-Origin server". When the request arrives, we should validate the `Origin` header against the whitelist to allow or deny access.
+1. We can define a whitelist of specific domains that are allowed to access the "Cross-Origin server". When the request arrives, we should validate the `Origin` header against the whitelist to allow or deny access.
 2. Similarly, for the `Access-Control-Allow-Methods` header we should specify exactly what methods are valid for the whitelisted domains to use. 
-3. We should be validating each and every domain that needs to access resources, as well as the methods other domains can use if their requests for access are granted. We can easily identify CORS security vulnerabilities by reviewing the above headers in the "Cross-Origin server" response and validating the values of those headers. 
+3. We should be validating all domains that need to access resources, and the methods other domains are allowed to use if their request for access is granted. 
 4. We should also be using CORS scanners to detect security vulnerabilities caused by CORS misconfigurations.
 5. CORS checks should also be part of penetration testing of critical applications. [OWASP guidance on testing CORS](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/11-Client-side_Testing/07-Testing_Cross_Origin_Resource_Sharing) provides guidelines for identifying endpoints that implement CORS and ensure the security of the CORS configuration.
 
@@ -466,12 +466,12 @@ In this article, we learned about CORS and how to use CORS policy to communicate
 
 Let us recap the main points that we covered:
 
-1. CORS is a security standard implemented by browsers that enables us to allow access to resources from a different origin. 
+1. CORS is a security standard implemented by browsers that allows us to access resources from a different origin. 
 2. CORS requests are of three types: `Simple`, `Preflight`, and `Request with Credentials`.
 3. Simple requests are used to perform safe operations like an HTTP `GET` method.
 4. Preflight requests are for performing operations with side-affects like `PUT` and `DELETE` methods.
 5. We sent cross-origin requests from an HTML page of one application to APIs in the other application. We then observed the CORS requests in the console log of the browser.
-6. At the end we looked at examples of security vulnerabilities caused by CORS misconfigurations and some best practices for secure CORS implementation.
+6. Towards the end, we looked at examples of security vulnerabilities caused by CORS misconfigurations and some best practices for secure CORS implementation.
 
 I hope this guide will help you to get started with implementing CORS securely and fixing CORS errors.
 

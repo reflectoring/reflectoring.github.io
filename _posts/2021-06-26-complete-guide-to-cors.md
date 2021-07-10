@@ -93,7 +93,13 @@ As stated earlier, the Same-Origin Policy (SOP) is a default security policy imp
 
 In the absence of the Same-Origin Policy, any website will be able to access the document object model (DOM) of other websites and allow it to access potentially sensitive data as well as perform malicious actions on other websites without requiring user consent.
 
-The following figure and the table show URLs of an HTML page `targetPage.html` which the browser considers as of the same or different origin as the URL `http://www.mydomain.com/currentPage.html` of the HTML page `currentPage.html`. The default port is `80` for HTTP and `443` for HTTPS for the URLs in which we have not specified any port.
+The following figure shows a HTML page `currentPage.html` making same or cross-origin requests to `targetPage.html`: 
+
+![same vs cross origin urls](/assets/img/posts/cors/samevscross.png)
+
+As we can see in this diagram, same-origin requests are allowed and cross-origin requests are blocked by default by the browser. 
+
+The URLs of `targetPage.html` that the browser rendering `currentPage.html` considers to be of same or cross origin are listed in this table. The default port is `80` for HTTP and `443` for HTTPS for the URLs in which we have not specified any port:
 
 |URLs being Matched| Same Origin or Cross Origin| Reason |
 |-|-|-|
@@ -103,7 +109,6 @@ The following figure and the table show URLs of an HTML page `targetPage.html` w
 |http://pg.mydomain.com/targetPage.html|Cross Origin|different host|
 |http://www.mydomain.com:8080/targetPage.html|Cross Origin|different port|
 
-![same vs cross origin urls](/assets/img/posts/cors/samevscross.png)
 
 If the origins corresponding to the URLs are same, we can run JavaScripts in `currentPage.html` which can fetch contents from `targetPage.html`.
 
@@ -115,9 +120,7 @@ When a request for fetching a resource is made from a web page, the browser dete
 
 The browser does this by exchanging a set of CORS headers with the "Cross-Origin server". Based on the header values returned from the "Cross-Origin server", the browser provides access to the response or blocks the access by throwing a CORS error. 
 
-### Important CORS Headers
-
-The browser sends a header named `Origin` with the request to the "Cross-Origin Server". The "Cross-Origin Server" processes this request and sends back a header named `Access-Control-Allow-Origin` in the response. 
+The browser sends a header named `Origin` with the request to the "Cross-Origin server". The "Cross-Origin server" processes this request and sends back a header named `Access-Control-Allow-Origin` in the response. 
 
 The browser checks the value of the `Access-Control-Allow-Origin` header in the response and renders the response only if the value of the `Access-Control-Allow-Origin` header is the same as the `Origin` header sent in the request. 
 

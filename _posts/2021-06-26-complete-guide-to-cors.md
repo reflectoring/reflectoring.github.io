@@ -64,7 +64,7 @@ An Origin in the context of CORS consists of three elements:
 
 We consider two URLs to be of the same Origins only if all three elements match.
 
-A more elaborate explanation of - the Web Origin Concept, is available in [RFC 6454](https://tools.ietf.org/html/rfc6454).
+A more elaborate explanation of the Web Origin Concept, is available in [RFC 6454](https://tools.ietf.org/html/rfc6454).
 
 ### Origin Server and Cross-Origin Server
 "Origin server" and "Cross-Origin server" are not CORS terms. But we will be using these terms for referring to the server that is hosting the source application and the server to which the browser will send the CORS request. This diagram shows the main participants of a CORS flow:
@@ -124,17 +124,19 @@ The "Cross-Origin Server" can also use wild cards like `*` as the value of the `
 
 ### CORS Failures
 
-CORS failures cause errors but specifics about the error are not available to the browser for security reasons. The only way to know about the error is by looking at the browser's console for details of the error which is usually in the following form:
+CORS failures cause errors but specifics about the error are not available to the browser for security reasons. An attacker can take hints from the error message to fine tune subsequent attacks to increase the chances of success. 
+
+The only way to know about the error is by looking at the browser's console for details of the error which is usually in the following form:
 
 `Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.`
 
-The error displayed in the browser console is accompanied by an error "reason" message. For seeing some examples of CORS errors, we can check the [reason messages in Firefox](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors#cors_error_messages).
+The error displayed in the browser console is accompanied by an error "reason" message. The reason message can differ across browsers depending on the implementation. To get an idea of the reason behind CORS errors, we can check the error [reason messages for Firefox browser](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors#cors_error_messages).
 
-## Type of CORS Requests
+### Type of CORS Requests
 
 The browser sends three types of CORS requests: `simple`, `preflight`, and `requests with credentials`. The browser determines the type of request to be sent to the "Cross-Origin server" depending on the kind of operations we want to perform with the resource in the "Cross-Origin server". Let us understand these request types and observe these requests in the browsers' network log by running an example.
 
-### Simple CORS Requests (GET, POST, and HEAD)
+#### Simple CORS Requests (GET, POST, and HEAD)
 Simple requests are sent by the browser for performing operations it considers safe in the "Cross-origin server" because they do not change the state of any existing resource. The request sent by the browser is simple if one of the below conditions applies: 
 
 - The HTTP request method is `GET`, `POST`, or `HEAD`
@@ -148,7 +150,7 @@ The browser sends the simple request as a normal request similar to the Same Ori
 The browser is able to read and render the response only if the value of the `Access-Control-Allow-Origin` header matches the value of the `Origin` header sent in the request. The `Origin` header contains the source origin of the request.
 
 
-### Preflight Requests
+#### Preflight Requests
 In contrast to simple requests, the browser sends preflight requests for operations that intend to change the state of existing resources in the "Cross-origin server". We use the HTTP methods `PUT` and `DELETE` for these operations. 
 
 These requests are not considered safe so the web browser first makes sure that cross-origin communication is allowed by first sending a preflight request before sending the actual request. Requests which do not satisfy the criteria for simple request also fall under this category.
@@ -163,7 +165,7 @@ The actual request to the "Cross-origin server" will not be sent if the result o
 
 After the preflight request is complete, the actual `PUT` method with CORS headers is sent.
 
-### CORS Requests with Credentials
+#### CORS Requests with Credentials
 
 In most real-life situations, we need to send CORS requests loaded with some kind of access credentials which could be an `Authorization` header or cookies. The default behavior of cross-origin resource requests is for the requests to be passed without any of these credentials. 
 

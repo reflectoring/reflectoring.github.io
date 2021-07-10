@@ -11,12 +11,12 @@ image:
 
 “CORS” stands for **C**ross-**O**rigin **R**esource **S**haring. CORS is a protocol and security standard for browsers that helps to maintain the integrity of a website and secure it from unauthorized access. 
 
-It enables JavaScripts running in browsers to connect to APIs and other web resources like fonts, and stylesheets, etc from multiple different providers.
+It enables JavaScripts running in browsers to connect to APIs and other web resources like fonts, and stylesheets from multiple different providers.
 
 In this article, we will understand the following aspects of CORS:
 - Cross-Origin resource sharing (CORS) protocol or standard
 - Different types of CORS requests
-- Important CORS headers like the `Origin` and `Access-Control-Allow-Origin`
+- Example of CORS implementation in a Node.js application
 - Some examples of security vulnerabilities caused by CORS misconfigurations 
 - Best practices for secure CORS implementations
 

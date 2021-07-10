@@ -9,7 +9,7 @@ image:
   auto: 0074-stack
 ---
 
-“CORS” stands for Cross-Origin Resource Sharing. CORS is a protocol and security standard for browsers that helps to maintain the integrity of a website and secure it from unauthorized access. 
+“CORS” stands for **C**ross-**O**rigin **R**esource **S**haring. CORS is a protocol and security standard for browsers that helps to maintain the integrity of a website and secure it from unauthorized access. 
 
 It enables JavaScripts running in browsers to connect to APIs and other web resources like fonts, and stylesheets, etc from multiple different providers.
 
@@ -33,9 +33,9 @@ According to the spec:
 > The CORS protocol consists of a set of headers that indicates whether a response can be shared cross-origin. For requests that are more involved than what is possible with HTML’s form element, a CORS-preflight request is performed, to ensure the request’s current URL supports the CORS protocol.
 
 Some examples where CORS comes into play are:
-- Display a map of a user's location in an HTML or single page application hosted in our domain by calling google's Map API `https://maps.googleapis.com/maps/api/js`.
-- Show tweets from a public Twitter handle by calling a Twitter API `https://api.twitter.com/xxx/tweets/xxxxx`
-- Using web fonts like [Typekit](https://fonts.adobe.com/typekit) and [Google Fonts](https://fonts.googleapis.com) in our HTML from their remote domains.
+- Display a map of a user's location in an HTML or single page application hosted in a domain xyz.com by calling google's Map API `https://maps.googleapis.com/maps/api/js`.
+- Show tweets from a public Twitter handle in an HTML hosted in a domain xyz.com by calling a Twitter API `https://api.twitter.com/xxx/tweets/xxxxx`
+- Using web fonts like [Typekit](https://fonts.adobe.com/typekit) and [Google Fonts](https://fonts.googleapis.com) in a HTML hosted in a domain xyz.com from their remote domains.
 
 Let us understand in greater detail the role of a CORS policy for fetching resources from remote origins, followed by how CORS policy is enforced by browsers, and how we implement CORS in our applications in the subsequent sections.
 
@@ -78,7 +78,14 @@ The following steps happen, when a user types in a URL: http://www.example.com/i
  4. The browser can also fetch resources from a server in a different domain like `www.xyz.com`. We will call this server "**Cross-Origin server**".
  5. The browser uses Ajax technology with the built-in `XMLHttpRequest` object, or since 2017 the new `fetch` function within JavaScript to load content on the screen without refreshing the page.
 
-We will use the terms "Origin server" and "Cross-Origin server" throughout this article. **"Origin server" will refer to the server from which the web page is fetched and "Cross-Origin server" will represent any server that is different from the "Origin server".**
+These sequence of steps are represented in this sequence diagram:
+
+![cors seq](/assets/img/posts/cors/seq.png)
+
+
+We will use the terms "Origin server" and "Cross-Origin server" throughout this article. 
+
+The **"Origin server" will refer to the server from which the web page is fetched and "Cross-Origin server" will represent any server that is different from the "Origin server".**
 
 ### Same Origin vs Cross Origin
 As stated earlier, the Same-Origin Policy (SOP) is a default security policy implemented by browsers. The SOP permits the browser to load resources only from the "Origin server".

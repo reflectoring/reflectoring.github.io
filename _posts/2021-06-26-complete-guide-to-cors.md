@@ -138,7 +138,7 @@ The error displayed in the browser console is accompanied by an error "reason" m
 The browser sends three types of CORS requests: `simple`, `preflight`, and `requests with credentials`. The browser determines the type of request to be sent to the "Cross-Origin server" depending on the kind of operations we want to perform with the resource in the "Cross-Origin server". Let us understand these request types and observe these requests in the browsers' network log by running an example.
 
 #### Simple CORS Requests (GET, POST, and HEAD)
-Simple requests are sent by the browser for performing operations it considers safe in the "Cross-origin server" because they do not change the state of any existing resource. The request sent by the browser is simple if one of the below conditions applies: 
+Simple requests are sent by the browser for performing operations it considers safe in the "Cross-Origin server" because they do not change the state of any existing resource. The request sent by the browser is simple if one of the below conditions applies: 
 
 - The HTTP request method is `GET`, `POST`, or `HEAD`
 - The HTTP request contains a CORS safe-listed header: `Accept`, `Accept-Language`, `Content-Language`, `Content-Type`.
@@ -152,7 +152,7 @@ The browser is able to read and render the response only if the value of the `Ac
 
 
 #### Preflight Requests
-In contrast to simple requests, the browser sends preflight requests for operations that intend to change the state of existing resources in the "Cross-origin server". We use the HTTP methods `PUT` and `DELETE` for these operations. 
+In contrast to simple requests, the browser sends preflight requests for operations that intend to change the state of existing resources in the "Cross-Origin server". We use the HTTP methods `PUT` and `DELETE` for these operations. 
 
 These requests are not considered safe so the web browser first makes sure that cross-origin communication is allowed by first sending a preflight request before sending the actual request. Requests which do not satisfy the criteria for simple request also fall under this category.
 
@@ -243,10 +243,11 @@ If we run these applications without any additional configurations (setting CORS
 
 ![cors failure](/assets/img/posts/cors/cors-fail.png)
 
-This is an error caused by the restriction of accessing cross-origins due to the Same Origin Policy.  Access to `XMLHttpRequest` at `http://localhost:8000/orders` from origin `http://localhost:9000` has been blocked by CORS policy: No `Access-Control-Allow-Origin` header is present on the requested resource.
+This is an error caused by the restriction of accessing cross-origins due to the Same Origin Policy. The error reason is :
+`Access to `XMLHttpRequest` at `http://localhost:8000/orders` from origin `http://localhost:9000` has been blocked by CORS policy: No `Access-Control-Allow-Origin` header is present on the requested resource.`
 
 ### Fixing the CORS Error For Simple Requests
-As suggested in the CORS error description, let us modify the code in the in the "Cross-origin server" to return the CORS header `Access-Control-Allow-Origin` in the response:
+As suggested in the CORS error description, let us modify the code in the "Cross-Origin server" to return the CORS header `Access-Control-Allow-Origin` in the response:
 
 ```js
 app.use(function(req, res, next) {
@@ -282,7 +283,7 @@ The "Cross-origin server" responds with a response header `Access-Control-Allow-
 
 
 ### CORS Handling for Preflight Request
-Now we will modify our code in the "Cross-origin server" application to handle preflight request for calls made to the `PUT` method:
+Now we will modify our code in the "Cross-Origin server" application to handle preflight request for calls made to the `PUT` method:
 
 ```js
 app.use(function(req, res, next) {
@@ -342,7 +343,7 @@ Access-Control-Allow-Origin: http://localhost:9000
 Allow: GET,HEAD,PUT
 ```
 
-In this example, the browser served from `http://localhost:9000` sends a `PUT` request to a REST API with URL: `http://localhost:8000/orders`. Since this is a `PUT` request which will change the state of an existing resource in the "Cross-origin server", the browser sends a preflight request using the HTTP `OPTIONS` method. In response, the "Cross-Origin server" informs the browser that `GET`, `HEAD`, and `PUT` methods are allowed.
+In this example, the browser served from `http://localhost:9000` sends a `PUT` request to a REST API with URL: `http://localhost:8000/orders`. Since this is a `PUT` request which will change the state of an existing resource in the "Cross-Origin server", the browser sends a preflight request using the HTTP `OPTIONS` method. In response, the "Cross-Origin server" informs the browser that `GET`, `HEAD`, and `PUT` methods are allowed.
 
 ### CORS Handling for Request with Credentials
 We will now send a credential in the form of a `Authorization` header in our CORS request:
@@ -361,7 +362,7 @@ function sendAuthRequestToCrossOrigin() {
     xhr.send();
 }
 ```
-Here we are sending a bearer token as the value of our `Authorization` header. To allow the browser to read the response, the in the "Cross-origin server" needs to send the `Access-Control-Allow-Credentials` header in the response:
+Here we are sending a bearer token as the value of our `Authorization` header. To allow the browser to read the response, the "Cross-Origin server" needs to send the `Access-Control-Allow-Credentials` header in the response:
 ```js
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:9000");
@@ -382,7 +383,7 @@ app.put('/orders', (req, res) => {
 });
 
 ```
-We have modified our code in the "Cross-origin server" to send a value of `true` for the `Access-Control-Allow-Credentials` header so that the browser is able to read the response. We have also added the `Authorization` in the list of allowed request headers in the header `Access-Control-Allow-Headers`.
+We have modified our code in the "Cross-Origin server" to send a value of `true` for the `Access-Control-Allow-Credentials` header so that the browser is able to read the response. We have also added the `Authorization` in the list of allowed request headers in the header `Access-Control-Allow-Headers`.
 
 We can see the request and response headers in the browser console:
 ```shell

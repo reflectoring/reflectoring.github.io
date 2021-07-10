@@ -28,11 +28,12 @@ In this article, we will understand the following aspects of CORS:
 
 The CORS policy is published under the [Fetch standard](https://fetch.spec.whatwg.org/#http-cors-protocol) defined by the [WHATWG](https://whatwg.org) community which also publishes many web standards like [HTML5](https://html.spec.whatwg.org/multipage/),[DOM](https://dom.spec.whatwg.org), and [URL](https://url.spec.whatwg.org).
 
-According to the spec:
+According to the Fetch standard spec:
 
 > The CORS protocol consists of a set of headers that indicates whether a response can be shared cross-origin. For requests that are more involved than what is possible with HTML’s form element, a CORS-preflight request is performed, to ensure the request’s current URL supports the CORS protocol.
 
 Some examples where CORS comes into play are:
+
 - Display a map of a user's location in an HTML or single page application hosted in a domain xyz.com by calling google's Map API `https://maps.googleapis.com/maps/api/js`.
 - Show tweets from a public Twitter handle in an HTML hosted in a domain xyz.com by calling a Twitter API `https://api.twitter.com/xxx/tweets/xxxxx`
 - Using web fonts like [Typekit](https://fonts.adobe.com/typekit) and [Google Fonts](https://fonts.googleapis.com) in a HTML hosted in a domain xyz.com from their remote domains.
@@ -132,7 +133,7 @@ The only way to know about the error is by looking at the browser's console for 
 
 The error displayed in the browser console is accompanied by an error "reason" message. The reason message can differ across browsers depending on the implementation. To get an idea of the reason behind CORS errors, we can check the error [reason messages for Firefox browser](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors#cors_error_messages).
 
-### Type of CORS Requests
+### Type of CORS Requests Sent By Browser
 
 The browser sends three types of CORS requests: `simple`, `preflight`, and `requests with credentials`. The browser determines the type of request to be sent to the "Cross-Origin server" depending on the kind of operations we want to perform with the resource in the "Cross-Origin server". Let us understand these request types and observe these requests in the browsers' network log by running an example.
 
@@ -171,7 +172,8 @@ In most real-life situations, we need to send CORS requests loaded with some kin
 
 If credentials are passed with the request, the browser will not allow access to the response unless the "Cross-origin server" sends a CORS header `Access-Control-Allow-Credentials` with a value of `true`.
 
-## Example of Working with CORS
+## Example of Implementing with CORS in Applications
+
 For observing the CORS requests, let us run two web applications written in Node.Js which will communicate with each other by following the CORS standard:
 1. For "Cross-Origin server" we will use a web application named [OrderProcessor](https://github.com/thombergs/code-examples/blob/master/cors/orderprocessor/server.js) that will contain a REST API with `GET` and `PUT` methods.
 2. For "Origin server" we will use another web application containing an [HTML page](https://github.com/thombergs/code-examples/blob/master/cors/ecommapp/index.html). We will run JavaScript in this HTML page to communicate with the REST APIs in the `OrderProcessor` application which is our "Cross-Origin server".

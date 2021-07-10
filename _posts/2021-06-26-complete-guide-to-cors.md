@@ -9,7 +9,9 @@ image:
   auto: 0074-stack
 ---
 
-“CORS” stands for Cross-Origin Resource Sharing. It is a protocol that enables JavaScripts running in browsers to connect to APIs and other web resources like fonts, media, images, etc from multiple origins.
+“CORS” stands for Cross-Origin Resource Sharing. CORS is a protocol and security standard for browsers that helps to maintain the integrity of a website and secure it from unauthorized access. 
+
+It enables JavaScripts running in browsers to connect to APIs and other web resources like fonts, and stylesheets, etc from multiple different providers.
 
 In this article, we will understand the following aspects about CORS:
 - Cross-Origin resource sharing (CORS) protocol or standard
@@ -31,19 +33,19 @@ According to the spec:
 > The CORS protocol consists of a set of headers that indicates whether a response can be shared cross-origin. For requests that are more involved than what is possible with HTML’s form element, a CORS-preflight request is performed, to ensure request’s current URL supports the CORS protocol.
 
 Some examples where CORS comes into play are:
-- We display a map of the user's location in a HTML or single page application hosted in our domain by calling google's map API `https://maps.googleapis.com/maps/api/js`.
-- We show tweets from a public tweeter handle by calling a twitter API `https://api.twitter.com/xxx/tweets/xxxxx`
-- Using web fonts like Typekit and Google Fonts in our HTML from a remote domain like `https://test.zinoui.com/cross-domain-fonts/disabled/OpenSans.woff2` and `https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap`.
+- Display a map of a user's location in a HTML or single page application hosted in our domain by calling google's Map API `https://maps.googleapis.com/maps/api/js`.
+- Show tweets from a public twitter handle by calling a twitter API `https://api.twitter.com/xxx/tweets/xxxxx`
+- Using web fonts like [Typekit](https://fonts.adobe.com/typekit) and [Google Fonts](https://fonts.googleapis.com) in our HTML from their remote domains.
 
-Let us understand the working of CORS and how we implement CORS in our applications in the subsequent sections.
+Let us understand in greater detail the role of a CORS policy for fetching resources from remote-origins, followed by how CORS policy is enforced by browsers, and how we implement CORS in our applications in the subsequent sections.
 
-## Why do we Need CORS
+## Relaxation of the Same-Origin Policy
 
-CORS helps to maintain the integrity of a website and secure it from unauthorized access. 
+The role of a CORS policy is to maintain the integrity of a website and secure it from unauthorized access. 
 
 The CORS protocol was defined to relax the default security policy called the Same-Origin Policy (SOP) used by the browsers to protect their resources. 
 
-The Same-Origin Policy permits the browser to load resources only from a server hosted in the same origin as the browser. 
+**The Same-Origin Policy permits the browser to load resources only from a server hosted in the same origin as the browser.** 
 
 The SOP was defined in the early years of the web and turned out to be too restrictive for the new age applications where we often need to fetch different kinds of resources from multiple origins.
 
@@ -167,7 +169,7 @@ For observing the CORS requests, let us run two web applications written in Node
 
 We can run these applications in our local machine using `npm` and `node`. The "Origin server" hosting the HTML page is running on `http://localhost:9000`. This makes Ajax calls with the `XMLHttpRequest` object to the `OrderProcessor` application running on the "Cross-Origin server" with URL: `http://localhost:8000` as shown in this figure: 
 
-![same vs cross origin urls](/assets/img/posts/cors/cors-example.png)
+![cors example](/assets/img/posts/cors/cors-example.png)
 
 These are CORS requests since the HTML page and `OrderProcessor` application are running in different Origins (because of different port numbers: 8000 and 9000 although they use the same scheme: HTTP and host: `localhost`).
 

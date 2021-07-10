@@ -142,9 +142,9 @@ The preflight request is an HTTP `OPTIONS` method which is sent automatically by
 **Access-Control-Request-Headers**: This is a list of headers that will be sent with the request
 **Origin**: The origin header that contains the source origin of the request similar to the simple request.
 
-The actual request to the in the "Cross-origin server" will not be sent if the result of the `OPTIONS` method is that the request cannot be made.
+The actual request to the "Cross-origin server" will not be sent if the result of the `OPTIONS` method is that the request cannot be made.
 
-After the preflight request is complete, the actual PUT method with CORS headers is sent.
+After the preflight request is complete, the actual `PUT` method with CORS headers is sent.
 
 ### CORS Requests with Credentials
 
@@ -154,15 +154,17 @@ If credentials are passed with the request, the browser will not allow access to
 
 ## Example of Working with CORS
 For observing the CORS requests, let us run two web applications written in Node.Js which will communicate with each other by following the CORS standard:
-1. For "Cross-Origin server" we will use a web application named `OrderProcessor` that will contain a REST API with `GET` and `PUT` methods
-2. For "Origin server" we wll use a web application hosting a HTML page. We will run Javascript in this HTML page to communicate with the REST APIs in the `OrderProcessor` application which is our "Cross-Origin server".
+1. For "Cross-Origin server" we will use a web application named [OrderProcessor](https://github.com/thombergs/code-examples/blob/master/cors/orderprocessor/server.js) that will contain a REST API with `GET` and `PUT` methods.
+2. For "Origin server" we wll use another web application containing an [HTML page](https://github.com/thombergs/code-examples/blob/master/cors/ecommapp/index.html). We will run JavaScript in this HTML page to communicate with the REST APIs in the `OrderProcessor` application which is our "Cross-Origin server".
 
-We can run these applications in our local machine using `npm` and `node`. The "Origin server" hosting the HTML page is running on `http://localhost:9000`. This makes Ajax calls with the `XMLHttpRequest` to the `OrderProcessor` application running on the "Cross-Origin server" with URL: `http://localhost:8000`. 
+We can run these applications in our local machine using `npm` and `node`. The "Origin server" hosting the HTML page is running on `http://localhost:9000`. This makes Ajax calls with the `XMLHttpRequest` object to the `OrderProcessor` application running on the "Cross-Origin server" with URL: `http://localhost:8000` as shown in this figure: 
+
+![same vs cross origin urls](/assets/img/posts/cors/cors-example.png)
 
 These are CORS requests since the HTML page and `OrderProcessor` application are running in different Origins (because of different port numbers: 8000 and 9000 although they use the same scheme: HTTP and host: `localhost`).
 
 ### Cross-Origin Server Handling CORS Requests in Node.js
-We are using a simple [Node.js](https://nodejs.org/en/) application named `OrderProcessor` built with [Express](https://expressjs.com) framework as our "Cross-Origin server". We have created two REST APIs with `GET` and `PUT` methods for fetching and updating `orders`. 
+Our "Cross-Origin server" is a simple [Node.js](https://nodejs.org/en/) application named `OrderProcessor` built with [Express](https://expressjs.com) framework. We have created two REST APIs in `OrderProcessor` application with `GET` and `PUT` methods for fetching and updating `orders`. 
 
 This is a snippet of the `GET` method of our `OrderProcessor` application running on "Cross-Origin server" on URL: `localhost:8000`:
 

@@ -1,5 +1,5 @@
 ---
-title: "Preliminary Guide to CORS"
+title: "Complete Guide to CORS"
 categories: [craft]
 date: 2021-06-14 06:00:00 +1000
 modified: 2021-06-13 06:00:00 +1000
@@ -16,9 +16,9 @@ It enables JavaScripts running in browsers to connect to APIs and other web reso
 In this article, we will understand the following aspects of CORS:
 - What's the CORS standard?
 - What are the different types of CORS requests?
-- What are CORS headers and what do we need them for?
+- What are different CORS headers and what do we need them for?
 - What security vulnerabilities exist around cross-origin requests?
-- What are best practices for secure CORS implementations?
+- What are the best practices for secure CORS implementations?
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/cors" %}
 
@@ -143,7 +143,7 @@ The only way to know about the error is by looking at the browser's console for 
 
 `Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.`
 
-The error displayed in the browser console is accompanied by an error "reason" message. The reason message can differ across browsers depending on the implementation. To get an idea of the reason behind CORS errors, we can check the error [reason messages for Firefox browser](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors#cors_error_messages).
+The error displayed in the browser console is accompanied by an error "reason" message. The reason message can differ across browsers depending on the implementation. To get an idea of some reasons behind CORS errors, we can check the error [reason messages for Firefox browser](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors#cors_error_messages).
 
 ### Type of CORS Requests Sent By Browser
 

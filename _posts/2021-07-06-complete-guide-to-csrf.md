@@ -9,7 +9,9 @@ image:
   auto: 0074-stack
 ---
 
-Cross-site request forgery (CSRF), also called CSRF, is a type of web security vulnerability. It is among the [OWASP](https://owasp.org/www-community/attacks/csrf) top ten Web Application Security Risks. An attacker uses a CSRF attack to send forged requests to a vulnerable website on behalf of an authenticated user for performing malicious actions. 
+Cross-site request forgery (CSRF), also called CSRF, is a type of web security vulnerability. In a CSRF attack, an attacker typically uses social engineering techniques to manipulate an authenticated user into executing malicious actions without their awareness or consent. Simply by clicking on a legitimate-seeming link in an email or chat message, the user may unwittingly give an attacker the ability to co-opt their identity and access privileges.
+
+When successful, a CSRF attack can be harmful both to the business operating the site and the user who has accessed it. Such exploits can negatively impact client relationships, damage customer confidence, and result in instances of fraud or theft of financial resources.
 
 In this article, we will understand :
 - What constitutes a Cross-site Request Forgery (CSRF) attack
@@ -19,6 +21,8 @@ In this article, we will understand :
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/cors" %}
 
 ## What is CSRF
+
+It is among the [OWASP](https://owasp.org/www-community/attacks/csrf) top ten Web Application Security Risks. An attacker uses a CSRF attack to send forged requests to a vulnerable website on behalf of an authenticated user for performing malicious actions. 
 
 This allows an attacker to craft malicious content to trick users who are already logged in and authenticated on a legitimate website to perform actions that they do not intend to and may remain unaware of.
 

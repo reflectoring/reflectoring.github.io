@@ -1,17 +1,18 @@
 ---
-title: "Kotlin vs Java part 1”
-categories: [kotlin]
-modified: 2021-07-09
-excerpt: "what features Kotlin offers over Java?"
+title: "Kotlin vs. Java"
+categories: [java]
+date: 2021-07-09 06:00:00 +1000
+modified: 2021-07-09 06:00:00 +1000
+author: default
+excerpt: "Kotlin vs. Java"
 image:
-  auto: 0018-cogs
+  auto: 0075-envelopes
 ---
-# Introduction 
 
 I’ve been programming with Java for almost 3 years, by the end of 2020, I decided to start learning Kotlin for the backend development. After two months of learning, I really liked the way of programming and the set of features that Kotlin offers.
 In this article we are going to explore some features of using Kotlin through a working code example that includes the following prerequisites:
 
-### Prerequisites
+## Prerequisites
 
 * JDK8+ *(I installed JDK11)*
 * Gradle *(project management tool, recommended to compile your Kotlin code)*
@@ -32,20 +33,20 @@ Before getting into the Kotlin project and expose some of the features of progra
 **P.S:** This article is mostly recommended to developers who’ve already tackled and practice Java programming Language.
 
 
-# What is Kotlin?
+## What is Kotlin?
 
 
 Kotlin is relatively a new programming language, it appeared only 10 years ago in 2011 by JetBrains. One of the main features of Kotlin is that it is a Java-interoperable programming language, which means if you’re not able to completely code with Kotlin, you can start using Java a long side without running into any annoying problems building your project.
 
 Now, let’s jump into our first working code example to understand some of the key features of Kotlin.
 
-# Create Your First Kotlin Project
+## Create Your First Kotlin Project
 
 First thing to do is to open up your browser to download IntelliJ using this link [download IntelliJ]( https://www.jetbrains.com/idea/download/#section=windows)
 , then you should be taken directly to the download page. In my case I’ve already installed IntelliJ on my windows, but this IDE is available on Mac and Linux as well.
 Now, download the Ultimate version.
 
-# Create Your First Kotlin File
+## Create Your First Kotlin File
 Now, we will navigate into the `src/main/kotlin` directory, and then we create a `main.kt` file.
 
 Let’s see the snippet code below within our `main.kt` file
@@ -69,12 +70,12 @@ Now, let’s dive in and start learning the language.
 
 
 
-# Variables 
+## Variables 
 There are two types of variables in Koltin:
 * We can define a mutable variables, which their values are reassigned using the `var` keyword.
 * We can define a local read-only variables, which can have their values assigned only once using `val` keyword 
 
-## *val* keyword
+### *val* keyword
 Let’s have a look at our `kotlin_feature_01.kt` file
 ```kotlin
 fun main() {
@@ -95,7 +96,7 @@ fun main() {
 As we can see from the snippet code above, **kotlin compiler** shows us an error saying `val cannot be reassigned`.
 The question that arises is how could we reassign a new value to a variable?
 
-## *var* keyword
+### *var* keyword
 Let’s take a look at the following code
 ```kotlin
 fun main() {
@@ -116,7 +117,7 @@ Process finished with exit code 0
 
 Now as a result we got the second value assigned to `content` variable as shown from the output above. I hope now its clearly enough for you to get the difference between `var` keyword and `val` keyword in case of kotlin.
 
-# Null Types
+## Null Types
 An interesting difference between Java and Kotlin, is that types in Kotlin are by default `non-null`.
 Let me explain by showing you the example below
 ```kotlin
@@ -148,7 +149,7 @@ Process finished with exit code 0
 
 The output now shows us `null`, which mean `null` value is supported by **kotlin compiler**.
 
-# Null Safety Operators
+## Null Safety Operators
 
 Kotlin offers 4 types of `Null Safety Operators` which are:
 
@@ -159,7 +160,7 @@ Kotlin offers 4 types of `Null Safety Operators` which are:
 
 In this section, we’re going to shade some light on the first two operators `Safe Call Operator` & `Elvis Operator`.
 
-## Safe Call Operator `?.`
+### Safe Call Operator `?.`
 
 Let’s now check our data class `Company` 
 ```kotlin
@@ -191,21 +192,21 @@ fun main() {
 
 To solve this error, we added `?` operator as shown in the snippet code above.
 in this case, the output of the program will be `null` if name variable is null, else we’ll get the `length` of the variable.
-##Null Variable
+### Null Variable
 ```
 null
 
 Process finished with exit code 0
 ```
 
-## Non-Null Variable
+### Non-Null Variable
 ```
 3
 
 Process finished with exit code 0
 ```
 
-# Elvis Operator `?:`
+## Elvis Operator `?:`
 For a `nullable` variable, we’ll add Elvis Operator `?:` to control the content of `name` variable. 
 Let’s check the snippet code below
 ```kotlin
@@ -253,7 +254,7 @@ name property is null
 Process finished with exit code 0
 ```
 
-# Type Inference
+## Type Inference
 Normally, when you declare a variable, you need to determine the `data-type` of this variable. 
 Back to our kotlin file `kotlin_feature_05`, let’s check the code below first
 ```kotlin
@@ -270,7 +271,8 @@ fun main() {
 ```
 As we can see from the code above, we assigned a value to `firstName` property without defining a `data-type`. Well, this is possible in kotlin!
 Kotlin uses a concept known as **Type Inference** which you can use to declare a variable without defining a `data-type` in condition you should initialize a value to it. as illustrated below, since I initialize the variable `firstName` with a value, there is no need to define String data-type to it. then, the compiler will automatically determine the `data-type` bases on its value.
-#Data Class
+
+## Data Class
 Kotlin introduces a new concept called `Data Class`, please note that every class in kotlin uses by default a predefined methods such as `equals()`, `hashCode()`, `toString()`
 In addition, when we use a Data Class kotlin compiler provides a new method for us such as `copy()` that we will explore in a working code example.
 Using a Data Class, we can make effective use of the mentioned methods.
@@ -414,7 +416,7 @@ Process finished with exit code 0
 
 We got `EQUAL` as a result, simply because `data class` concept deals only with data not objects, so in our working code example, it compares data of the two objects that’s why we got `EQUAL` on the output console.
 
-# *toString()* method
+## *toString()* method
 
 As we clearly see from the above snippet code, we call the `print` statement to print out data of the object `com01`
 As a result, we got the following output
@@ -429,7 +431,7 @@ As I said earlier when we use `data class` concept, kotlin compiler implicitly c
 
 
 
-# *copy()* method
+## *copy()* method
 let’s now see the following code of `kotlin_feature_06` file
 ```kotlin
 fun main() {
@@ -491,7 +493,7 @@ Now you can see clearly that we changed only the value of the property `name` wh
 
 **P.S: Please note that inside a primary constructor of a `data class`, you should use either `val` or `var` keyword to define your properties.**
 
-# Accessing Properties 
+## Accessing Properties 
 Let’s see the working code example below inside `kotlin_feature_04` file
 ```kotlin
 fun main() {
@@ -515,7 +517,7 @@ Process
 ```
 
 
-# Default Arguments
+## Default Arguments
 Let’s see Company data class
 ```kotlin
 data class Company(val name: String, val founded: Int, var founder: String = "Achraf Amellal") {

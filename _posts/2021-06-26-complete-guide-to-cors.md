@@ -14,16 +14,16 @@ image:
 It enables JavaScripts running in browsers to connect to APIs and other web resources like fonts, and stylesheets from multiple different providers.
 
 In this article, we will understand the following aspects of CORS:
-- Cross-Origin resource sharing (CORS) protocol or standard
-- Different types of CORS requests
-- Example of CORS implementation in a Node.js application
-- Some examples of security vulnerabilities caused by CORS misconfigurations 
-- Best practices for secure CORS implementations
+- What's the CORS standard?
+- What are the different types of CORS requests?
+- What are CORS headers and what do we need them for?
+- What security vulnerabilities exist around cross-origin requests?
+- What are best practices for secure CORS implementations?
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/cors" %}
 
 
-## What is CORS
+## What is CORS?
 **CORS is a security standard implemented by browsers that enable scripts running in browsers to access resources located outside of the browser's domain.** 
 
 The CORS policy is published under the [Fetch standard](https://fetch.spec.whatwg.org/#http-cors-protocol) defined by the [WHATWG](https://whatwg.org) community which also publishes many web standards like [HTML5](https://html.spec.whatwg.org/multipage/),[DOM](https://dom.spec.whatwg.org), and [URL](https://url.spec.whatwg.org).
@@ -52,18 +52,18 @@ The SOP was defined in the early years of the web and turned out to be too restr
 
 The CORS protocol is implemented by all modern browsers to allow controlled access to resources located outside of the browser's origin. 
 
-## Some Essential Terminology
+## CORS Terminology
 Before going further, let us define some frequently used terms like browsers, servers, origins, cross-origins. We will then use these terms consistently throughout this article.
 
-### What is an Origin
+### What is an Origin?
 
 An Origin in the context of CORS consists of three elements:
 
-- URI scheme for example `http://` or `https://`
+- URI scheme, for example `http://` or `https://`
 - Hostname like `www.xyz.com`
 - Port number like `8000` or `80` (default HTTP port)
 
-We consider two URLs to be of the same Origins only if all three elements match.
+**We consider two URLs to be of the same Origin only if all three elements match**.
 
 A more elaborate explanation of the Web Origin Concept is available in [RFC 6454](https://tools.ietf.org/html/rfc6454).
 
@@ -101,6 +101,12 @@ As we can see in this diagram, same-origin requests are allowed and cross-origin
 
 The URLs of `targetPage.html` that the browser rendering `currentPage.html` considers to be of the same or cross-origin are listed in this table. The default port is `80` for HTTP and `443` for HTTPS for the URLs in which we have not specified any port:
 
+<style>
+.table td {
+  padding: 5px
+}
+</style>
+
 |URLs being Matched| Same Origin or Cross Origin| Reason |
 |-|-|-|
 |http://www.mydomain.com/targetPage.html|Same Origin|same scheme, host, and port|
@@ -108,6 +114,8 @@ The URLs of `targetPage.html` that the browser rendering `currentPage.html` cons
 |https://www.mydomain.com/targetPage.html|Cross Origin|same host but different scheme and port|
 |http://pg.mydomain.com/targetPage.html|Cross Origin|different host|
 |http://www.mydomain.com:8080/targetPage.html|Cross Origin|different port|
+|http://pg.mydomain.com/mypage1.html|Cross Origin|different host|
+{: .table}
 
 
 If the origins corresponding to the URLs are same, we can run JavaScripts in `currentPage.html` which can fetch contents from `targetPage.html`.
@@ -256,7 +264,10 @@ If we run these applications without any additional configurations (setting CORS
 ![cors failure](/assets/img/posts/cors/cors-fail.png)
 
 This is an error caused by the restriction of accessing cross-origins due to the Same Origin Policy. The error reason is :
-`Access to `XMLHttpRequest` at `http://localhost:8000/orders` from origin `http://localhost:9000` has been blocked by CORS policy: No `Access-Control-Allow-Origin` header is present on the requested resource.`
+
+```
+Access to `XMLHttpRequest` at `http://localhost:8000/orders` from origin `http://localhost:9000` has been blocked by CORS policy: No `Access-Control-Allow-Origin` header is present on the requested resource.`
+```
 
 ### Fixing the CORS Error For Simple Requests
 As suggested in the CORS error description, let us modify the code in the "Cross-Origin server" to return the CORS header `Access-Control-Allow-Origin` in the response:
@@ -454,7 +465,7 @@ Here we are reading the value of the `Origin` header received in the request and
 
 Doing this will allow any domain including malicious ones to send requests to the "Cross-Origin server".
 
-### Lenient regular expression
+### Lenient Regular Expression
 
 Similar to the earlier example, we can check for the value of the `Origin` header in the "Cross-Origin server" code by applying a regular expression. If we want to allow all subdomains to send requests to the "Cross-Origin server", the code will look like this:
 

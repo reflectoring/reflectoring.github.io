@@ -371,7 +371,7 @@ Let's take a look at the core LaunchDarkly concepts before diving into the techn
 
 ![LaunchDarkly Concepts](/assets/img/posts/feature-flag-tools/launchdarkly.png)
 
-Being a cloud service, LaunchDarkly provides a web UI for us to create and configure **feature flags**.
+Being a cloud service, LaunchDarkly provides web UI for us to create and configure **feature flags**. We could also create Feature Flag programmatically via the UI or various integrations with other tools, but we'll stick to the UI in this article.
 
 For each feature flag, we can define one or more **variations**. A variation is a possible value the feature flag can have for a specific user. A boolean flag, for example, has exactly two variations: `true` and `false`. But we're not limited to boolean feature flags, but can create flags with arbitrary numbers, string values, or even JSON snippets.
 
@@ -383,7 +383,7 @@ To make their decision about which variation to serve, a targeting rule needs to
 
 In our code, we'll be asking a **LaunchDarkly client** to tell us the variation of a given feature flag for a given user. The client loads the targeting rules that we have defined in the web UI from the LaunchDarkly server and evaluates them locally. 
 
-So, even though we are defining the targeting rules in the LaunchDarkly web UI (i.e. on a LaunchDarkly server), **the LaunchDarkly client doesn't call out to a LaunchDarkly server to ask for the variation we should serve to a given user**! Instead, the client connects to the server on startup, downloads the targeting rules, and then evaluates them on the client side. 
+So, even though we are defining the targeting rules in the LaunchDarkly web UI (i.e. on a LaunchDarkly server), **the LaunchDarkly client doesn't call out to a LaunchDarkly server to poll for the variation we should serve to a given user**! Instead, the client connects to the server on startup, downloads the targeting rules, and then evaluates them on the client side. LaunchDarkly is using what they call a [streaming architecture](https://launchdarkly.com/blog/launchdarklys-evolution-from-polling-to-streaming/) instead of a polling architecture.
 
 This architecture is interesting from a scalability perspective because our application doesn't have to make a network call every time we need to evaluate a feature flag. It's also interesting from a resilience perspective because feature flag evaluation will still work if the LaunchDarkly server has exploded and is not answering our calls anymore.
 
@@ -472,7 +472,7 @@ To evaluate a feature flag, the LaunchDarkly client needs to know which user the
 
 In the example, we're just getting the (unique) username from our session and creating an `LDUser` object with it. Whatever we pass as a key into the `LDUser`, it needs to be a unique identifier for the user so that LaunchDarkly can recognize the user. 
 
-A username is not the best kry, by the way, because it's personally identifiable information, so a more opaque user ID is probably the better choice in most contexts.
+A username is not the best key, by the way, because it's personally identifiable information, so a more opaque user ID is probably the better choice in most contexts.
 
 In our code, we need to know what kind of variations the feature flag provides to call the appropriate method. In our case, we know the feature flag is a boolean flag, so we use the method `boolVariation()`. The third parameter to this method (`false`) is the value the feature should evaluate to in case the client could not make a connection to the LaunchDarkly server.
 
@@ -536,7 +536,7 @@ In addition to flexible targeting rules, LaunchDarkly offers a lot of features t
 * debugging feature flags in the LaunchDarkly UI to verify that features are evaluated to the expected variation,
 * slicing our user base into segments to target each segment differently,
 * running [experiments](https://launchdarkly.com/features/experimentation/) by pairing a feature flag with a certain metric from our application to gauge how the feature impacts the metric,
-* and a lot more.
+* and [a lot more](https://launchdarkly.com/pricing/).
 
 ## Conclusion - What's the Best Feature Flagging Solution for Me?
 
@@ -560,16 +560,16 @@ Here's an (incomplete) list of aspects to think about when deciding on a feature
 
 | Aspect                      | Togglz                          | LaunchDarkly                             |
 | ----------------------------|---------------------------------|------------------------------------------|
-| Targeting strategies        | By implementing the `ActivationStrategy` interface | By configuring a targeting rule in the UI |
+| Targeting strategies        | By implementing the `ActivationStrategy` interface | By configuring a targeting rule in the UI, via API, or via integration |
 | Changing the targeting      | Might need redeployment of a new `ActivationStrategy` | Any time by changing a rule in the UI | 
-| Targeting by application environment (staging, prod, ...) | No concept of application environments | Feature flags evaluate differently for different  environments
+| Targeting by application environment (staging, prod, ...) | No concept of application environments | Feature flags can be configured to evaluate differently for different  environments
 | Programming Languages       | Java                            | [Many](https://launchdarkly.com/features/sdk/) |
-| Feature variations          | Only boolean                    | Booleans, strings, numbers              |
+| Feature variations          | Only boolean                    | Booleans, strings, numbers, and JSON              |
 | Feature management          | Via self-hosted web console | Via web console in the cloud |
-| Feature state               | By implementing a `StateRepository` interface | Managed by LaunchDarkly |
+| Feature state               | By implementing a `StateRepository` interface | Managed by LaunchDarkly servers or a self-hosted [Relay Proxy](https://docs.launchdarkly.com/home/relay-proxy) |
 | Feature analytics           | Needs to be custom-built        | Out-of-the-box
 | Working in a team           | Simple feature management in the web console | Audit logs, user dashboard, feature ownership, ... |
-| Enterprise                  | Simple feature management in the web console | Workflows, approvals, code references, ... |
+| Enterprise                  | Simple feature management in the web console | Workflows, custom roles, SSO/SCIM/SAML login, code references, ... |
 | Cost                        | Cost of customizing             | Per-seat fee |
 | Integrations | Spring Boot, Spring Security, EJB | No out-of-the-box integrations with Java frameworks |
 {: .table}

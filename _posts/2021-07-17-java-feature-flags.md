@@ -1,10 +1,10 @@
 ---
 title: "Feature Flags in Java with Togglz and LaunchDarkly"
 categories: [java]
-date: 2021-07-04 00:00:00 +1100
-modified: 2021-07-04 00:00:00 +1100
+date: 2021-07-017 00:00:00 +1100
+modified: 2021-07-17 00:00:00 +1100
 author: default
-excerpt: ""
+excerpt: "With feature flags, we can reduce the risk of rolling out software changes to a minimum. Let's compare two popular tools to implement feature flags in Java."
 image:
   auto: 0104-on-off
 ---

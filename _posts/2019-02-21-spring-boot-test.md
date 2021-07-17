@@ -59,50 +59,46 @@ fire up a whole application context each time the test is started.
 
 ## Test Slices
 
-We can test our Spring Boot application as whole, unit by unit, and also layer by layer. Using Spring Boot's [test slice annotations](https://docs.spring.io/spring-boot/docs/current/reference/html/test-auto-configuration.html)
-we can test each layer separately. 
+We can test our Spring Boot application as a whole, unit by unit, and also layer by layer. Using Spring Boot's [test slice annotations](https://docs.spring.io/spring-boot/docs/current/reference/html/test-auto-configuration.html)
+we can test each layer separately.
 
-Unlike `@SpringBootTest` annotation which loads all the beans by default, test slice annotations only load beans that are 
-required to test that particular layer. With test slices we can avoid unnecessary mocking and side effects which would otherwise be present
-if we had loaded the complete application context just to test a certain portion of the application.
+Unlike the `@SpringBootTest` annotation that loads all the beans by default, test slice annotations only load beans required to test a particular layer. With test slices, we can avoid unnecessary mocking and side effects.
 
 Let's talk a bit about some of the most common test slice annotations:
 
 ### `@WebMvcTest`
 
-Our web controllers bear many responsibilities: Listening to the HTTP request, Validating the input, Calling the business logic, Serializing the output 
-and Translating the Exceptions to a proper response. It's important that we write tests to verify all these functionalities. 
+Our web controllers bear many responsibilities, such as Listening to the HTTP request, Validating the input, Calling the business logic, Serializing the output, and Translating the Exceptions to a proper response. We must try to write tests to verify all these functionalities.
 
-We can either use `@SpringBootTest` or we can use `@WebMvcTest` which would only load beans and configurations required to test our 
-web controllers. For instance, it will load `@Controller`, `@ControllerAdvice`, `ObjectMapper` and other auto configurations listed in
+We can either use `@SpringBootTest`, or we can use `@WebMvcTest` which would only load beans and configurations required to test our web controllers. For instance, it will load `@Controller`'s, `@ControllerAdvice`'s, `ObjectMapper` bean, and other auto configurations listed in
 this document [Test autoconfiguration annotation document](https://docs.spring.io/spring-boot/docs/current/reference/html/test-auto-configuration.html#test-auto-configuration).
 
-There is a lot more to `@WebMvcTest`, to find out read my article on [Testing MVC Web Controllers with Spring Boot and @WebMvcTest](/spring-boot-web-controller-test/).
+There is a lot more to `@WebMvcTest` annotation to find out, read my article on [Testing MVC Web Controllers with Spring Boot and @WebMvcTest](/spring-boot-web-controller-test/).
 
 
 ### `@WebFluxTest`
 
-[`@WebFluxTest`](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing.spring-boot-applications.spring-webflux-tests) 
-is used when we want to test our webflux controllers. It also configures `WebTestClient` which we can use
-to test our webflux endpoints. `@WebFluxTest` works similarly as `@WebMvcTest` annotation, the difference is that instead of 
-`WebMvc` components and configuration, it spins up `WebFlux` ones. 
+[`@WebFluxTest`](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing.spring-boot-applications.spring-webflux-tests)
+is used when we want to test our WebFlux controllers. It also configures the `WebTestClient` object that we can use
+to test our WebFlux endpoints. `@WebFluxTest` works similarly to the `@WebMvcTest` annotation difference here is that instead of the
+`WebMvc` components and configurations, it spins up the `WebFlux` ones.
 
 ### `@DataJpaTest`
 
-Just like `@WebMvcTest` which allows us to test our web layer, `@DataJpaTest` allows us to test our persistence layer.
+Just like the `@WebMvcTest` that allows us to test our web layer, `@DataJpaTest` allows us to test our persistence layer.
 
-It configures our entities, repositories and also sets up an embedded database to test against. Now, this is all good but,
+It configures our entities, repositories and also sets up an embedded database. Now, this is all good but,
 what does testing our persistence layer mean? What exactly are we testing? If queries then what kind of queries? To find out answers for all these questions
 and more read my article on [`@DataJpaTest`](/spring-boot-data-jpa-test/).
 
 ### `@DataJdbcTest`
 
-Spring Data JDBC is another member of the Spring Data family which sits along at the persistence layer. If we are using this project
-and want to test the persistence layer than we can make use of the [`@DataJdbcTest`](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing.spring-boot-applications.autoconfigured-spring-data-jdbc) annotation. 
-`@DataJdbcTest` automatically configures an embedded test database and JDBC repositories defined in our project for us. 
+Spring Data JDBC is another member of the Spring Data family that sits along at the persistence layer. If we are using this project
+and want to test the persistence layer then we can make use of the [`@DataJdbcTest`](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing.spring-boot-applications.autoconfigured-spring-data-jdbc) annotation.
+`@DataJdbcTest` automatically configures an embedded test database and JDBC repositories defined in our project for us.
 
-Another similar project is the Spring JDBC which gives us `JdbcTemplate` object to perform direct queries. `@JdbcTest` annotation 
-autoconfigures `DataSource` object which is required in order to test our JDBC queries. 
+Another similar project is the Spring JDBC which gives us the `JdbcTemplate` object to perform direct queries. The `@JdbcTest` annotation
+autoconfigures the `DataSource` object that is required to test our JDBC queries.
 
 
 ## Dependencies
@@ -216,14 +212,12 @@ class RegisterUseCaseIntegrationTest {
 ```
 
 There's a lot of other [auto-configurations](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html#boot-features-testing-spring-boot-applications-testing-autoconfigured-tests)
-available that each add other beans to the application context. Here are some other useful ones from the documentation:
+available that each adds other beans to the application context. Here are some other useful ones from the documentation:
 
-* `@AutoConfigureWebTestClient`: Adds `WebTestClient` to the test application context. It allows us test WebFlux server endpoints.
-* `@AutoConfigureTestDatabase`: Allows us to run test against a real database instead of the embedded one.
-* `@RestClientTest`: It comes handy when we want to test our `RestTemplate`s. It autoconfigures required components
-  plus a `MockRestServiceServer` object which helps us mock responses for the requests coming from `RestTemplate`.
-* `@JsonTest`: Auto configures JSON Mappers and classes such as `JacksonTester` or `GsonTester`which allows us to verify 
-  whether our json serialization/deserialization is working properly or not.
+* `@AutoConfigureWebTestClient`: Adds `WebTestClient` to the test application context. It allows us to test WebFlux server endpoints.
+* `@AutoConfigureTestDatabase`: This allows us to run the test against a real database instead of the embedded one.
+* `@RestClientTest`: It comes in handy when we want to test our `RestTemplate`s. It autoconfigures required components plus a `MockRestServiceServer` object which helps us mock responses for the requests coming from the `RestTemplate` calls.
+* `@JsonTest`: Auto configures JSON Mappers and classes such as `JacksonTester` or `GsonTester`. Using these we can verify whether our JSON serialization/deserialization is working properly or not.
 
 ### Setting Custom Configuration Properties
 
@@ -374,7 +368,7 @@ beans from other packages.
 
 ### Overriding Beans With `@TestConfiguration`
 
-With `@TestConfiguration` we can not only include additional beans required for test but also override the 
+With `@TestConfiguration` we can not only include additional beans required for tests but also override the
 beans already defined in the application. Read more about it in our article on [Testing with `@TestConfiguration`](https://reflectoring.io/spring-boot-testconfiguration/)
 
 ### Creating a Custom `@SpringBootApplication`

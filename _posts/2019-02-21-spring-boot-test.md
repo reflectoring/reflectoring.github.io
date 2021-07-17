@@ -218,6 +218,10 @@ available that each add other beans to the application context. Here are some ot
 
 * `@AutoConfigureWebTestClient`: Adds `WebTestClient` to the test application context. It allows us test WebFlux server endpoints.
 * `@AutoConfigureTestDatabase`: Allows us to run test against a real database instead of the embedded one.
+* `@RestClientTest`: It comes handy when we want to test our `RestTemplate`s. It autoconfigures required components
+  plus a `MockRestServiceServer` object which helps us mock responses for the requests coming from `RestTemplate`.
+* `@JsonTest`: Auto configures JSON Mappers and classes such as `JacksonTester` or `GsonTester`which allows us to verify 
+  whether our json serialization/deserialization is working properly or not.
 
 ### Setting Custom Configuration Properties
 
@@ -369,7 +373,7 @@ beans from other packages.
 ### Overriding Beans With `@TestConfiguration`
 
 With `@TestConfiguration` we can not only include additional beans required for test but also override the 
-beans defined in the application. Read more about it in our article on [Testing with `@TestConfiguration`](https://reflectoring.io/spring-boot-testconfiguration/)
+beans already defined in the application. Read more about it in our article on [Testing with `@TestConfiguration`](https://reflectoring.io/spring-boot-testconfiguration/)
 
 ### Creating a Custom `@SpringBootApplication`
 

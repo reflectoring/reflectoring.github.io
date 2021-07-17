@@ -18,21 +18,36 @@ In this article, we will understand :
 - What makes Websites vulnerable to a CSRF attack
 - What are some methods to secure Websites from CSRF attack
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/cors" %}
-
 ## What is CSRF?
 
 CSRF attacks websites which trust some form of authentication by users before they perform any actions. Attackers exploit this trust of the website on an authenticated user and send forged requests on behalf of the user. An example will make this more clear:
 
-Let us suppose an user Alice logs in to a website xyz.com which is vulnerable to a CSRF attack. After authentication with her credentials the user can make payments to different parties added by the her. She does this by filling up some fields and clicking a URL: xyz.com?toAccount=yyyyy.
+1. A user logs into a website `www.myfriendlybank.com` from a login page. The website is vulnerable to CSRF attack.
+2. The server authenticates the user and sends back a cookie in the response. The cookie contains the information that the user is logged in.
+3. The user next visits a malicious web site without logging out of `myfriendlybank.com`. This malicious site contains the following HTML form:
 
-The attacker can create a forged request of the form xyz.com?toAccount=attacker's-AccountNumber and send this URL in an email to Alice with an inducement like "click here to win 1000 USD". If Alice clicks this link in the same browser, the request will go through and the amount will get transferred to the attacker's account.
+```html
+<h1>Congratulations. You won a bonus of 1 million dollars!!!</h1>
+  <form action="http://myfriendlybank.com/account/transfer" method="post">
+    <input type="hidden" name="TransferAccount" value="9876865434" />
+    <input type="hidden" name="Amount" value="1000000" />
+  <input type="submit" value="Click Me"/>
+</form>
+
+```
+We can notice in this HTML that the form action posts to the vulnerable site `myfriendlybank.com`, and not to the malicious site. This is the "cross-site" part of CSRF.
+
+4. The user is enticed into clicking the submit button. The browser sends the cookie to the server that was received from the server after login.
+5. The server processes the request with the user's authentication context, and can do anything that an authenticated user is allowed to do. For example, transfer the amount to the attacker's account.
+
+
+Although this example requires the user to click the form button, the malicious page could just as easily run a script that submits the form automatically.
 
 This example although very trivial can be extended to scenarios where an attacker can performing other actions with more damaging potential like changing Alice's password and registered email which will block her access completely.
 
 Attackers often use social engineering websites to launch a CSRF attack by sending maliciously crafted URLs with attractive inducements. When the victim user clicks this URL, the user’s browser then sends the maliciously crafted request to the targeted Web application. The request will be processed, if the Web application is vulnerable to CSRF attack.
 
-CSRF is considered a flaw under the [A5 category]((https://owasp.org/www-community/attacks/csrf)) in the OWASP Top ten Web Application Security Risks.
+CSRF is considered a flaw in the OWASP Top ten Web Application Security Risks.
 
 The OWASP website defines CSRF as:
 > Cross-Site Request Forgery (CSRF) is an attack that forces an end user to execute unwanted actions on a web application in which they’re currently authenticated. With a little help of social engineering (such as sending a link via email or chat), an attacker may trick the users of a web application into executing actions of the attacker’s choosing.
@@ -51,7 +66,9 @@ The attacker hijacks this cookie to send requests to the server.
 
 There are many ways for an attacker to try and exploit a CSRF vulnerability. An attacker constructs a CSRF attack through the following steps:
 
-### Identify Vulnerable site
+![CSRF Attack Steps](/assets/img/posts/csrf/csrf-attack-steps.png)
+
+### Identify the Vulnerable site
 Before planning a CSRF attack, the attacker needs to identify a site having CSRF vulnerabilities. Web applications which are vulnerable to CSRF attack do not have mechanisms to differentiate between valid requests sent by a trusted user and forged requests sent by any fake source. 
 
 The attacker also needs to know a valid URL in the website, along with the corresponding patterns of valid requests accepted by the URL.
@@ -65,10 +82,10 @@ In contrast to state-changing actions, any inquiry is a non-state changing actio
 
 The attacker also needs to find the right values for the URL parameters. Otherwise, the target application might reject the malicious request.
 
-Let us assume that the attacker has zeroed in on an website at https://myfriendlybank.com to try a CSRF attack. From this website he finds a URL https://myfriendlybank.com/account/transfer with CSRF vulnerabilities.
+Let us assume that the attacker has identified an website at https://myfriendlybank.com to try a CSRF attack. From this website the attacker has found a URL https://myfriendlybank.com/account/transfer with CSRF vulnerabilities which is used to transferring funds.
 
 ### Build an Exploit URL
-The attacker will next try to build an exploit URL. Let us assume that the transfer function in the application is built using a GET method to submit a request for transfer. Accordingly, a legitimate  request to transfer $100 to another account with account number `1234567` will look like this:
+The attacker will next try to build an exploit URL for sharing with the victim. Let us assume that the transfer function in the application is built using a GET method to submit a request for transfer. Accordingly, a legitimate  request to transfer $100 to another account with account number `1234567` will look like this:
 
 GET https://myfriendlybank.com/account/transfer?amount=100&accountNumber=1234567 
 
@@ -76,26 +93,24 @@ The attacker will create an exploit URL to transfer `$15,000` to another dubious
 
 https://myfriendlybank.com/account/transfer?amount=15000&accountNumber=4567876
 
+If the victim clicks this exploit URL, `$15,000` will get transferred to the attacker's account.
 ### Create an Inducement for the Victim to Click the Exploit URL
-The attacker must also trick the victim user into clicking the exploit URL. For this, the attacker sends an inducement through an email or uses any social engineering attack methods to trick Bob into loading the malicious URL. This can be achieved in various ways. For instance, including malicious HTML image elements onto forms, placing a malicious URL on pages that are often accessed by users while logged into the application, or by sending a malicious URL through email.
+After creating the exploit URL, the attacker must also trick the victim user into clicking it. For this, the attacker creates an inducement and uses any social engineering attack methods to trick the victim user into clicking the malicious URL. Some examples of these methods are:
+- including exploit HTML image elements onto forms
+- placing a exploit URL on pages that are often accessed by the victim user while being logged into the application
+- sending the exploit URL through email.
 
-The following is an example of a disguised URL:
+The following is an example of an image with an exploit URL:
 
 <img src=“https://samplebank.com/onlinebanking/transfer?amount=5000&accountNumber=425654” width=“0” height=“0”>
 
-Consider the scenario that includes an image tag in an attacker-crafted email to Bob. Upon receiving it, Bob’s browser application opens this URL automatically—without human intervention. As a result, without Bob’s permission, a malicious request is sent to the online banking application. If Bob has an active session with samplebank.com, the application would treat this as an authorized amount transfer request coming from Bob. It would then transfer the amount to the account specified by an attacker.
+This scenario includes an image tag in an attacker-crafted email to the victim user. Upon receiving it, the victim user's browser application opens this URL automatically—without human intervention. As a result, without the victim user's permission, a malicious request is sent to the online banking application. If the victim user has an active session opened with `myfriendlybank.com`, the application would treat this as an authorized amount transfer request coming from the victim user. It would then transfer the amount to the account specified by an attacker.
 
 ### Active Session
-Bob needs to have an active session with samplebank.com. There are some limitations. To carry out a successful CSRF attack, consider the following:
-
-The success of a CSRF attack depends on a user’s session with a vulnerable application. The attack will only be successful if the user is in an active session with the vulnerable application.
-
-
-To give an example, let’s say that Bob has an online banking account on samplebank.com. He regularly visits this site to conduct transactions with his friend Alice. Bob is unaware that samplebank.com is vulnerable to CSRF attacks. Meanwhile, an attacker aims to transfer $5,000 from Bob’s account by exploiting this vulnerability. To successfully launch this attack:
-
+The victim user needs to have an active session with `myfriendlybank.com`. The success of a CSRF attack depends on a user’s session with a vulnerable application. The attack will only be successful if the user is in an active session with the vulnerable application.
 
 ## Preventing CSRF attacks
-To defeat a CSRF attack, applications need a way to determine if the HTTP request is legitimately generated via the application’s user interface. 
+To prevent a CSRF attack, applications need to build mechanisms to determine if the source of HTTP request is legitimately generated via the application’s user interface. 
 
 ### CSRF Token
 The best way to achieve this is through a CSRF token. A CSRF token is a secure random token (e.g., synchronizer token or challenge token) that is used to prevent CSRF attacks. The token needs to be unique per user session and should be of large random value to make it difficult to guess.

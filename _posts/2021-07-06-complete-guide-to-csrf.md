@@ -20,24 +20,23 @@ In this article, we will understand :
 
 ## What is CSRF?
 
-CSRF attacks websites which trust some form of authentication by users before they perform any actions. Attackers exploit this trust of the website on an authenticated user and send forged requests on behalf of the user. An example will make this more clear:
+CSRF attacks target websites which trust some form of authentication by users before they perform any actions. Attackers exploit this trust and send forged requests on behalf of the authenticated user. An example will make this more clear:
 
 1. A user logs into a website `www.myfriendlybank.com` from a login page. The website is vulnerable to CSRF attack.
-2. The server authenticates the user and sends back a cookie in the response. The cookie contains the information that the user is logged in.
-3. The user next visits a malicious web site without logging out of `myfriendlybank.com`. This malicious site contains the following HTML form:
+2. The server authenticates the user and sends back a cookie in the response. The server populates the cookie with the information that the user is authenticated. The browser will send this cookie to the server for all subsequent interactions.
+3. The user next visits a malicious web site without logging out of `myfriendlybank.com`. This malicious site contains the following HTML:
 
 ```html
-<h1>Congratulations. You won a bonus of 1 million dollars!!!</h1>
+<h1>Congratulations. You just won a bonus of 1 million dollars!!!</h1>
   <form action="http://myfriendlybank.com/account/transfer" method="post">
     <input type="hidden" name="TransferAccount" value="9876865434" />
-    <input type="hidden" name="Amount" value="1000000" />
-  <input type="submit" value="Click Me"/>
-</form>
-
+    <input type="hidden" name="Amount" value="1000" />
+    <input type="submit" value="Click here to claim your bonus"/>
+  </form>
 ```
-We can notice in this HTML that the form action posts to the vulnerable site `myfriendlybank.com`, and not to the malicious site. This is the "cross-site" part of CSRF.
+We can notice in this HTML that the form action posts to the vulnerable website `myfriendlybank.com` instead of the malicious website. This represents the "cross-site" part of CSRF. The request sent to the vulnerable website is forged with values crafted by the attacker. In this example, the attacker sets the request parameters: `TransferAccount` and `Amount` to dubious values which are unknown to the actual user.
 
-4. The user is enticed into clicking the submit button. The browser sends the cookie to the server that was received from the server after login.
+4. The user is enticed into visiting the malicious website and clicking the submit button. The browser sends the cookie to the server that was received from the server after login.
 5. The server processes the request with the user's authentication context, and can do anything that an authenticated user is allowed to do. For example, transfer the amount to the attacker's account.
 
 

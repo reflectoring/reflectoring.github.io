@@ -64,13 +64,13 @@ we can test each layer separately.
 
 Unlike the `@SpringBootTest` annotation that loads all the beans by default, test slice annotations only load beans required to test a particular layer. With test slices, we can avoid unnecessary mocking and side effects.
 
-Let's talk a bit about some of the most common test slice annotations:
+Let's talk a bit about some of the most commonly used test slice annotations:
 
 ### `@WebMvcTest`
 
 Our web controllers bear many responsibilities, such as Listening to the HTTP request, Validating the input, Calling the business logic, Serializing the output, and Translating the Exceptions to a proper response. We must try to write tests to verify all these functionalities.
 
-We can either use `@SpringBootTest`, or we can use `@WebMvcTest` which would only load beans and configurations required to test our web controllers. For instance, it will load `@Controller`'s, `@ControllerAdvice`'s, `ObjectMapper` bean, and other auto configurations listed in
+We can either use `@SpringBootTest` which would load the whole application context, or we can use `@WebMvcTest` which would only load beans and configurations required to test our web controllers. For instance, it will load `@Controller`'s, `@ControllerAdvice`'s, `ObjectMapper` bean, and other auto configurations listed in
 this document [Test autoconfiguration annotation document](https://docs.spring.io/spring-boot/docs/current/reference/html/test-auto-configuration.html#test-auto-configuration).
 
 There is a lot more to `@WebMvcTest` annotation to find out, read my article on [Testing MVC Web Controllers with Spring Boot and @WebMvcTest](/spring-boot-web-controller-test/).
@@ -79,17 +79,15 @@ There is a lot more to `@WebMvcTest` annotation to find out, read my article on 
 ### `@WebFluxTest`
 
 [`@WebFluxTest`](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing.spring-boot-applications.spring-webflux-tests)
-is used when we want to test our WebFlux controllers. It also configures the `WebTestClient` object that we can use
-to test our WebFlux endpoints. `@WebFluxTest` works similarly to the `@WebMvcTest` annotation difference here is that instead of the
-`WebMvc` components and configurations, it spins up the `WebFlux` ones.
+is used when we want to test our WebFlux controllers. `@WebFluxTest` works similarly to the `@WebMvcTest` annotation difference here is that instead of the
+WebMvc components and configurations, it spins up the WebFlux ones. One such bean is the `WebTestClient`, using which we can test our WebFlux endpoints.
 
 ### `@DataJpaTest`
-
-Just like the `@WebMvcTest` that allows us to test our web layer, `@DataJpaTest` allows us to test our persistence layer.
+Just like the `@WebMvcTest` that allows us to test our web layer, `@DataJpaTest` is used to test the persistence layer.
 
 It configures our entities, repositories and also sets up an embedded database. Now, this is all good but,
-what does testing our persistence layer mean? What exactly are we testing? If queries then what kind of queries? To find out answers for all these questions
-and more read my article on [`@DataJpaTest`](/spring-boot-data-jpa-test/).
+what does testing our persistence layer mean? What exactly are we testing? If queries, then what kind of queries? To find out answers for all these questions
+and more, read my article on [`@DataJpaTest`](/spring-boot-data-jpa-test/).
 
 ### `@DataJdbcTest`
 

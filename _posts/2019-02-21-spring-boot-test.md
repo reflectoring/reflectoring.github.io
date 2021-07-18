@@ -70,10 +70,10 @@ Let's talk a bit about some of the most commonly used test slice annotations:
 
 Our web controllers bear many responsibilities, such as Listening to the HTTP request, Validating the input, Calling the business logic, Serializing the output, and Translating the Exceptions to a proper response. We must try to write tests to verify all these functionalities.
 
-We can either use `@SpringBootTest` which would load the whole application context, or we can use `@WebMvcTest` which would only load beans and configurations required to test our web controllers. For instance, it will load `@Controller`'s, `@ControllerAdvice`'s, `ObjectMapper` bean, and other auto configurations listed in
-this document [Test autoconfiguration annotation document](https://docs.spring.io/spring-boot/docs/current/reference/html/test-auto-configuration.html#test-auto-configuration).
+The `@WebMvcTest` test slice annotation will set up our application context with just enough components and configurations required to test our web controller layer. For instance, it will scan and load `@Controller`'s, `@ControllerAdvice`'s, `MockMvc` bean, and other auto configurations listed in
+the [Test Autoconfiguration Annotation Document](https://docs.spring.io/spring-boot/docs/current/reference/html/test-auto-configuration.html#test-auto-configuration).
 
-There is a lot more to `@WebMvcTest` annotation to find out, read my article on [Testing MVC Web Controllers with Spring Boot and @WebMvcTest](/spring-boot-web-controller-test/).
+To read more on `@WebMvcTest` and to find out how we can verify each of those responsibilities, read my article on [Testing MVC Web Controllers with Spring Boot and @WebMvcTest](/spring-boot-web-controller-test/).
 
 
 ### `@WebFluxTest`

@@ -62,7 +62,7 @@ fire up a whole application context each time the test is started.
 We can test our Spring Boot application as a whole, unit by unit, and also layer by layer. Using Spring Boot's [test slice annotations](https://docs.spring.io/spring-boot/docs/current/reference/html/test-auto-configuration.html)
 we can test each layer separately.
 
-Unlike the `@SpringBootTest` annotation that loads all the beans by default, test slice annotations only load beans required to test a particular layer. With test slices, we can avoid unnecessary mocking and side effects.
+We know that the `@SpringBootTest` annotation scans and loads all the beans by default.  In contrast, a test slice annotation would only load beans required to test a particular layer. And because of this, we can avoid unnecessary mocking and side effects.
 
 Let's talk a bit about some of the most commonly used test slice annotations:
 

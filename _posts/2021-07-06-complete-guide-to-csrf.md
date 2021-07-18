@@ -22,10 +22,10 @@ In this article, we will understand :
 
 CSRF attacks target websites which trust some form of authentication by users before they perform any actions. Attackers exploit this trust and send forged requests on behalf of the authenticated user. An example will make this more clear:
 
-1. A user logs into a website `www.myfriendlybank.com` from a login page. The website is vulnerable to CSRF attack.
-2. The server authenticates the user and sends back a cookie in the response. The server populates the cookie with the information that the user is authenticated. The browser will send this cookie to the server for all subsequent interactions.
-3. The user next visits a malicious web site without logging out of `myfriendlybank.com`. This malicious site contains the following HTML:
-
+1. Let us suppose a user logs into a website `www.myfriendlybank.com` from a login page. The website is vulnerable to CSRF attack.
+2. The server authenticates the user and sends back a cookie in the response. The server populates the cookie with the information that the user is authenticated. As part of the web browser's behavior regarding cookie handling, it will send this cookie to the server for all subsequent interactions.
+3. The user next visits a malicious web site without logging out of `myfriendlybank.com`. This malicious site contains a banner with HTML with these contents:
+![CSRF Banner](/assets/img/posts/csrf/csrf-banner.png)
 ```html
 <h1>Congratulations. You just won a bonus of 1 million dollars!!!</h1>
   <form action="http://myfriendlybank.com/account/transfer" method="post">
@@ -37,12 +37,12 @@ CSRF attacks target websites which trust some form of authentication by users be
 We can notice in this HTML that the form action posts to the vulnerable website `myfriendlybank.com` instead of the malicious website. This represents the "cross-site" part of CSRF. The request sent to the vulnerable website is forged with values crafted by the attacker. In this example, the attacker sets the request parameters: `TransferAccount` and `Amount` to dubious values which are unknown to the actual user.
 
 4. The user is enticed into visiting the malicious website and clicking the submit button. The browser sends the cookie to the server that was received from the server after login.
-5. The server processes the request with the user's authentication context, and can do anything that an authenticated user is allowed to do. For example, transfer the amount to the attacker's account.
 
+5. Since the website is vulnerable to CSRF attack, the forged request with the user's authentication context, and can do anything that an authenticated user is allowed to do. In this example, transfer the amount to the attacker's account.
 
 Although this example requires the user to click the form button, the malicious page could just as easily run a script that submits the form automatically.
 
-This example although very trivial can be extended to scenarios where an attacker can performing other actions with more damaging potential like changing Alice's password and registered email which will block her access completely.
+This example although very trivial can be extended to scenarios where an attacker can performing other damaging actions like changing the user's password and registered email address which will block her access completely.
 
 Attackers often use social engineering websites to launch a CSRF attack by sending maliciously crafted URLs with attractive inducements. When the victim user clicks this URL, the user’s browser then sends the maliciously crafted request to the targeted Web application. The request will be processed, if the Web application is vulnerable to CSRF attack.
 
@@ -52,7 +52,7 @@ The OWASP website defines CSRF as:
 > Cross-Site Request Forgery (CSRF) is an attack that forces an end user to execute unwanted actions on a web application in which they’re currently authenticated. With a little help of social engineering (such as sending a link via email or chat), an attacker may trick the users of a web application into executing actions of the attacker’s choosing.
 
 ## How does CSRF work?
-After understanding the extent of damage a CSRF attack can cause, let us understand how CSRF works in greater detail. 
+Let us now understand how CSRF works in greater detail. 
 
 ### Hijacking the Session Cookie
 A CSRF attack exploits the behavior of a type of cookies called session cookies shared between a browser and server. HTTP requests are stateless due to which the server cannot distinguish between two requests sent by a browser. 

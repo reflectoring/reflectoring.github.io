@@ -1,5 +1,5 @@
 ---
-title: "Integration Tests with Spring Boot and @SpringBootTest"
+title: "Testing with Spring Boot and @SpringBootTest"
 categories: [spring-boot]
 modified: 2020-09-15
 excerpt: "A tutorial on when and how to use Spring Boot's @SpringBootTest annotation and how to reduce test runtime."
@@ -23,21 +23,9 @@ This tutorial is part of a series:
 1. [Unit Testing with Spring Boot](/unit-testing-spring-boot/)
 2. [Testing Spring MVC Web Controllers with Spring Boot and `@WebMvcTest`](/spring-boot-web-controller-test/)
 3. [Testing JPA Queries with Spring Boot and `@DataJpaTest`](/spring-boot-data-jpa-test/)
-4. [Integration Tests with `@SpringBootTest`](/spring-boot-test/)
+4. [Testing with Spring Boot and `@SpringBootTest`](/spring-boot-test/)
 
-**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://transactions.sendowl.com/stores/13745/194393) (if you buy through this link, I get a cut). 
-
-## Dependencies
-
-The code examples in this article only need the dependencies to Spring Boot's test starter
-and to JUnit Jupiter:
-
-```groovy
-dependencies {
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-	testCompile('org.junit.jupiter:junit-jupiter:5.4.0')
-}
-```
+**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://transactions.sendowl.com/stores/13745/194393) (if you buy through this link, I get a cut).
 
 ## Integration Tests vs. Unit Tests
 
@@ -69,14 +57,59 @@ in which we manually create the
 object graph needed for the test and mock away the rest. This way, Spring doesn't
 fire up a whole application context each time the test is started.
 
-For tests that cover integration with the web layer or persistence layer, we can use
-[`@WebMvcTest`](/spring-boot-web-controller-test/) or [`@DataJpaTest`](/spring-boot-data-jpa-test/) instead. 
-For integration with other layers, have a look at Spring Boot's other [test slice annotations](https://docs.spring.io/spring-boot/docs/current/reference/html/test-auto-configuration.html).
-Note that these test slices will also take some time to boot up, though.
+## Test Slices
 
-Finally, for tests that cover the whole Spring Boot application from incoming
-request to database, or tests that cover certain parts of the application that
-are hard to set up manually, we can and should use `@SpringBootTest`.   
+We can test our Spring Boot application as a whole, unit by unit, and also layer by layer. Using Spring Boot's [test slice annotations](https://docs.spring.io/spring-boot/docs/current/reference/html/test-auto-configuration.html)
+we can test each layer separately.
+
+We know that the `@SpringBootTest` annotation scans and loads all the beans by default.  In contrast, a test slice annotation would only load beans required to test a particular layer. And because of this, we can avoid unnecessary mocking and side effects.
+
+Let's talk a bit about some of the most commonly used test slice annotations:
+
+### `@WebMvcTest`
+
+Our web controllers bear many responsibilities, such as Listening to the HTTP request, Validating the input, Calling the business logic, Serializing the output, and Translating the Exceptions to a proper response. We must try to write tests to verify all these functionalities.
+
+The `@WebMvcTest` test slice annotation will set up our application context with just enough components and configurations required to test our web controller layer. For instance, it will scan and load `@Controller`'s, `@ControllerAdvice`'s, `MockMvc` bean, and other auto configurations listed in
+the [Test Autoconfiguration Annotation Document](https://docs.spring.io/spring-boot/docs/current/reference/html/test-auto-configuration.html#test-auto-configuration).
+
+To read more on `@WebMvcTest` and to find out how we can verify each of those responsibilities, read my article on [Testing MVC Web Controllers with Spring Boot and @WebMvcTest](/spring-boot-web-controller-test/).
+
+
+### `@WebFluxTest`
+
+[`@WebFluxTest`](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing.spring-boot-applications.spring-webflux-tests)
+is used when we want to test our WebFlux controllers. `@WebFluxTest` works similarly to the `@WebMvcTest` annotation difference here is that instead of the
+WebMvc components and configurations, it spins up the WebFlux ones. One such bean is the `WebTestClient`, using which we can test our WebFlux endpoints.
+
+### `@DataJpaTest`
+Just like the `@WebMvcTest` that allows us to test our web layer, `@DataJpaTest` is used to test the persistence layer.
+
+It configures our entities, repositories and also sets up an embedded database. Now, this is all good but,
+what does testing our persistence layer mean? What exactly are we testing? If queries, then what kind of queries? To find out answers for all these questions
+and more, read my article on [`@DataJpaTest`](/spring-boot-data-jpa-test/).
+
+### `@DataJdbcTest`
+
+Spring Data JDBC is another member of the Spring Data family that sits along at the persistence layer. If we are using this project
+and want to test the persistence layer then we can make use of the [`@DataJdbcTest`](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing.spring-boot-applications.autoconfigured-spring-data-jdbc) annotation.
+`@DataJdbcTest` automatically configures an embedded test database and JDBC repositories defined in our project for us.
+
+Another similar project is the Spring JDBC which gives us the `JdbcTemplate` object to perform direct queries. The `@JdbcTest` annotation
+autoconfigures the `DataSource` object that is required to test our JDBC queries.
+
+
+## Dependencies
+
+The code examples in this article only need the dependencies to Spring Boot's test starter
+and to JUnit Jupiter:
+
+```groovy
+dependencies {
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile('org.junit.jupiter:junit-jupiter:5.4.0')
+}
+```
 
 ## Creating an ApplicationContext with `@SpringBootTest`
 
@@ -177,7 +210,12 @@ class RegisterUseCaseIntegrationTest {
 ```
 
 There's a lot of other [auto-configurations](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html#boot-features-testing-spring-boot-applications-testing-autoconfigured-tests)
-available that each add other beans to the application context. 
+available that each adds other beans to the application context. Here are some other useful ones from the documentation:
+
+* `@AutoConfigureWebTestClient`: Adds `WebTestClient` to the test application context. It allows us to test WebFlux server endpoints.
+* `@AutoConfigureTestDatabase`: This allows us to run the test against a real database instead of the embedded one.
+* `@RestClientTest`: It comes in handy when we want to test our `RestTemplate`s. It autoconfigures required components plus a `MockRestServiceServer` object which helps us mock responses for the requests coming from the `RestTemplate` calls.
+* `@JsonTest`: Auto configures JSON Mappers and classes such as `JacksonTester` or `GsonTester`. Using these we can verify whether our JSON serialization/deserialization is working properly or not.
 
 ### Setting Custom Configuration Properties
 
@@ -325,6 +363,11 @@ class SpringBootImportTest {
 By default, a Spring Boot application includes all components it finds within its
 package and sub-packages, so this will usually only be needed if we want to include 
 beans from other packages.
+
+### Overriding Beans With `@TestConfiguration`
+
+With `@TestConfiguration` we can not only include additional beans required for tests but also override the
+beans already defined in the application. Read more about it in our article on [Testing with `@TestConfiguration`](https://reflectoring.io/spring-boot-testconfiguration/)
 
 ### Creating a Custom `@SpringBootApplication`
 

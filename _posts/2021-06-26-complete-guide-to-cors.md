@@ -86,7 +86,7 @@ The browser checks the value of the `Access-Control-Allow-Origin` header in the 
 
 CORS failures cause errors but specifics about the error are not available to the browser for security reasons. The only way to know about the error is by looking at the browser's console for details of the error which is usually in the following form:
 
-> Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested 
+Access to XMLHttpRequest at 'http://localhost:8000/orders' from origin 'http://localhost:9000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested 
 resource.
 
 

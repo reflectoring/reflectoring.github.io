@@ -23,9 +23,11 @@ In this article, we will understand:
 
 ## What is CSRF?
 
-An attacker launching a CSRF attack misleads a user into performing actions on his/her behalf. 
+New age websites often need to fetch data from other websites for various purposes. For example, the website might call a google map API to display a map of user's current location or render a video from youtube. These are examples of cross-site requests and can also be a target of CSRF attacks. 
 
-CSRF attacks target websites that trust some form of authentication by users before they perform any actions. Attackers exploit this trust and send forged requests on behalf of the authenticated user. 
+When a website requests data from another website on behalf of a user, there are no security concerns when the request is unauthenticated.
+
+CSRF attacks target websites that trust some form of authentication by users before they perform any actions. Attackers exploit this trust and send forged requests on behalf of the authenticated user. This illustration shows the construct of a CSRF attack:
 
 ![CSRF intro](/assets/img/posts/csrf/csrf-intro.png)
 
@@ -35,7 +37,13 @@ As represented in this diagram, a Cross Site Request Forgery attack is roughly c
 
 2. **Request Forgery**: The request sent to the user's website is forged with values crafted by the attacker. When the victim user opens the link in the same browser, a forged request is sent to the website with values set by the attacker along with all the cookies that the victim has associated with that website. 
 
-An example will make this more clear:
+CSRF is considered a flaw in the [OWASP Top ten](https://owasp.org/www-project-top-ten/) Web Application Security Risks. OWASP Top ten is a standard awareness document for developers and web application security. It represents a broad consensus about the most critical security risks to web applications.
+
+The OWASP website defines CSRF as:
+> Cross-Site Request Forgery (CSRF) is an attack that forces an end user to execute unwanted actions on a web application in which they’re currently authenticated. With a little help from social engineering (such as sending a link via email or chat), an attacker may trick the users of a web application into executing actions of the attacker’s choosing.
+
+## Example of CSRF Attack
+Let us now understand the anatomy of a CSRF attack with the help of an example:
 
 1. Let us suppose a user logs in to a website `www.myfriendlybank.com` from a login page. The website is vulnerable to CSRF attacks.
 2. The server authenticates the user and sends back a cookie in the response. The server populates the cookie with the information that the user is authenticated. As part of a web browser's behavior concerning cookie handling, it will send this cookie to the server for all subsequent interactions.
@@ -61,16 +69,9 @@ Although this example requires the user to click the submit button, the maliciou
 
 This example although very trivial can be extended to scenarios where an attacker can perform additional damaging actions like changing the user's password and registered email address which will block their access completely.
 
-CSRF is considered a flaw in the OWASP Top ten Web Application Security Risks.
-
-The OWASP website defines CSRF as:
-> Cross-Site Request Forgery (CSRF) is an attack that forces an end user to execute unwanted actions on a web application in which they’re currently authenticated. With a little help from social engineering (such as sending a link via email or chat), an attacker may trick the users of a web application into executing actions of the attacker’s choosing.
-
 ## How does CSRF work?
 
 Let us now understand how CSRF works in greater detail. 
-
-
 
 ### Hijacking the Session Cookie
 A CSRF attack exploits the behavior of a type of cookies called session cookies shared between a browser and server. HTTP requests are stateless due to which the server cannot distinguish between two requests sent by a browser. 

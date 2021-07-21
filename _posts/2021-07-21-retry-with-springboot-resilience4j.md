@@ -34,9 +34,9 @@ Adding Spring Boot Resilience4j starter to our project is like adding any other 
 <dependencies>
   <dependency>
     <groupId>io.github.resilience4j</groupId>
-		<artifactId>resilience4j-spring-boot2</artifactId>
-		<version>1.7.0</version>
-	</dependency>
+    <artifactId>resilience4j-spring-boot2</artifactId>
+    <version>1.7.0</version>
+  </dependency>
 </dependencies>
 ```
 
@@ -44,15 +44,15 @@ In addition, we need to add dependencies to Spring Boot Actuator and Spring Boot
 
 ```xml
 <dependency>
-	<groupId>org.springframework.boot</groupId>
-	<artifactId>spring-boot-starter-actuator</artifactId>
-	<version>2.4.1</version>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-actuator</artifactId>
+  <version>2.4.1</version>
 </dependency>
 
 <dependency>
-	<groupId>org.springframework.boot</groupId>
-	<artifactId>spring-boot-starter-aop</artifactId>
-	<version>2.4.1</version>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-aop</artifactId>
+  <version>2.4.1</version>
 </dependency>
 ```
 

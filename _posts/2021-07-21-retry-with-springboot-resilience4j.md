@@ -33,10 +33,10 @@ Adding Spring Boot Resilience4j starter to our project is like adding any other 
 ```xml
 <dependencies>
   <dependency>
-			<groupId>io.github.resilience4j</groupId>
-			<artifactId>resilience4j-spring-boot2</artifactId>
-			<version>1.7.0</version>
-		</dependency>
+    <groupId>io.github.resilience4j</groupId>
+		<artifactId>resilience4j-spring-boot2</artifactId>
+		<version>1.7.0</version>
+	</dependency>
 </dependencies>
 ```
 

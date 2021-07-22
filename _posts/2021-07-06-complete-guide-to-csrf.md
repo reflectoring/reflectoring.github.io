@@ -25,7 +25,7 @@ In this article, we will understand:
 
 New-age websites often need to fetch data from other websites for various purposes. For example, the website might call a [Google Map API](https://maps.googleapis.com/maps/api) to display a map of the user's current location or render a video from [YouTube](https://www.youtube.com). These are examples of cross-site requests and can also be a potential target of CSRF attacks. 
 
-**CSRF attacks target websites that trust some form of authentication by users before they perform any actions.** For example, a user logs into a ecommerce site and makes a payment after purchasing goods. The trust is established when the user authenticated during login and the payment function in the website uses this trust to identify the user. 
+**CSRF attacks target websites that trust some form of authentication by users before they perform any actions.** For example, a user logs into an e-commerce site and makes a payment after purchasing goods. The trust is established when the user is authenticated during login and the payment function in the website uses this trust to identify the user. 
 
 Attackers exploit this trust and send forged requests on behalf of the authenticated user. This illustration shows the making of a CSRF attack:
 
@@ -33,7 +33,7 @@ Attackers exploit this trust and send forged requests on behalf of the authentic
 
 As represented in this diagram, a Cross Site Request Forgery attack is roughly composed of two parts:
 
-1. **Cross-Site**: The user is logged into a website and is tricked into clicking a link in a different website that belongs to the attacker or an email opened in the same browser. The link is crafted by the attacker in a way that it will submit a request to the website the user is logged in to. This represents the "cross-site" part of CSRF. 
+1. **Cross-Site**: The user is logged into a website and is tricked into clicking a link in a different website that belongs to the attacker. The link is crafted by the attacker in a way that it will submit a request to the website the user is logged in to. This represents the "cross-site" part of CSRF. 
 
 2. **Request Forgery**: The request sent to the user's website is forged with values crafted by the attacker. When the victim user opens the link in the same browser, a forged request is sent to the website with values set by the attacker along with all the cookies that the victim has associated with that website. 
 
@@ -64,34 +64,37 @@ We can notice in this HTML that the form action posts to the vulnerable website 
 
 4. The user is enticed to claim the bonus by visiting the malicious website and clicking the submit button. 
 
-4. On form submit after user clicks the submit button, the browser sends the user's authentication cookie to the web application that was received after login to the website in step 2.
+4. On form submit after the user clicks the submit button, the browser sends the user's authentication cookie to the web application that was received after login to the website in step 2.
 
-5. Since the website is vulnerable to CSRF attack, the forged request with the user's authentication cookie is processed. Forged requests can be sent for all actions that an authenticated user is allowed to do in the website. In this example, the forged request transfers the amount to the attacker's account.
+5. Since the website is vulnerable to CSRF attacks, the forged request with the user's authentication cookie is processed. Forged requests can be sent for all actions that an authenticated user is allowed to do on the website. In this example, the forged request transfers the amount to the attacker's account.
 
 Although this example requires the user to click the submit button, the malicious website could have run JavaScript to submit the form without the user knowing anything about it.
 
-This example although very trivial can be extended to scenarios where an attacker can perform additional damaging actions like changing the user's password and registered email address which will block their access completely depending on the user's privileges.
+This example although very trivial can be extended to scenarios where an attacker can perform additional damaging actions like changing the user's password and registered email address which will block their access completely depending on the user's permissions in the website.
 
 ## How does CSRF work?
 
 As explained earlier, a CSRF attack leverages the implicit trust placed in user session cookies by many web applications. 
 
-In these applications, once the user authenticates, a session cookie is created and all subsequent transactions for that session are authenticated using that cookie including potential actions initiated by an attacker by "riding" the existing session cookie. Due to this reason, CSRF attack is also called "Session riding".
+In these applications, once the user authenticates, a session cookie is created and all subsequent transactions for that session are authenticated using that cookie including potential actions initiated by an attacker by "riding" the existing session cookie. Due to this reason, CSRF is also called "Session Riding".
 
-### Hijacking the Session Cookie
+### Riding the Session Cookie
 A CSRF attack exploits the behavior of a type of cookies called session cookies shared between a browser and server. HTTP requests are stateless due to which the server cannot distinguish between two requests sent by a browser. 
 
 But there are many scenarios where we want the server to be able to relate one HTTP request with another. For example, a login request followed by a request to check account balance or transfer funds. The server will only allow these requests if the login request was successful. We call this group of requests as belonging to a session. 
 
 Cookies are used to hold this session information. The server packages the session information for a particular client in a cookie and sends it to the client's browser. For each new request, the browser re-identifies itself by sending the cookie (with the session key) back to the server.
 
-The attacker hijacks(or rides) this cookie to trick the user into sending requests to the server. 
+The attacker hijacks(or rides) this cookie to trick the user into sending requests crafted by the attacker to the server. 
 
+### Constructing a CSRF Attack
 The broad sequence of steps followed by the attacker to construct a CSRF attack include the following:
 
 1. Identifying and exploring the vulnerable website for functions of interest that can be exploited
 2. Building an Exploit URL
 3. Creating an Inducement for the Victim to open the Exploit URL
+
+Let us understand each step in greater detail.
 
 ### Identifying and Exploring the Vulnerable Website
 Before planning a CSRF attack, the attacker needs to identify pieces of functionality that are of interest for example fund transfers. The attacker also needs to know a valid URL in the website, along with the corresponding patterns of valid requests accepted by the URL.
@@ -108,10 +111,10 @@ The attacker also needs to find the right values for the URL parameters. Otherwi
 Some common techniques used to explore the vulnerable website are:
 
 - **View HTML Source**: Check the HTML source of web pages to identify links or buttons that contain functions of interest.
-- **Web Application Debugging Tools**: Analyze the information exchanged between the client and the server using web application debugging tools such as WebScarab, Tamper Data, or TamperIE.
-- **Network Sniffing Tools**: Analyze the information exchanged between the client and the server with a network sniffing tool such as Wireshark. 
+- **Web Application Debugging Tools**: Analyze the information exchanged between the client and the server using web application debugging tools such as [WebScarab](https://wiki.owasp.org/index.php/Category:OWASP_WebScarab_Project), and [Tamper Dev](https://tamper.dev).
+- **Network Sniffing Tools**: Analyze the information exchanged between the client and the server with a network sniffing tool such as [Wireshark](https://www.wireshark.org/docs/wsug_html/#ChIntroWhatIs). 
 
-For example, let us assume that the attacker has identified a website at https://myfriendlybank.com to try a CSRF attack. The attacker explored this website using the above techniques and found a URL https://myfriendlybank.com/account/transfer with CSRF vulnerabilities which is used to transfer funds.
+For example, let us assume that the attacker has identified a website at `https://myfriendlybank.com` to try a CSRF attack. The attacker explored this website using the above techniques and found a URL `https://myfriendlybank.com/account/transfer` with CSRF vulnerabilities which is used to transfer funds.
 
 ### Building an Exploit URL
 The attacker will next try to build an exploit URL for sharing with the victim. Let us assume that the transfer function in the application is built using a `GET` method to submit a transfer request. Accordingly, a legitimate  request to transfer `100` USD to another account with account number `1234567` will look like this:
@@ -134,9 +137,13 @@ The following is an example of an image with an exploit URL:
 
 <img src=“http://myfriendlybank.com/account/transfer?amount=5000&accountNumber=425654” width=“0” height=“0”>
 
-This scenario includes an image tag with zero dimensions embedded in an attacker-crafted email sent to the victim user. Upon receiving and opening the email, the victim user's browser application will open this URL in the image without any human intervention. As a result, without the victim user's permission, a forged request crafted by the attacker is sent to the web application at `myfriendlybank.com`. 
+This scenario includes an image tag with zero dimensions embedded in an attacker-crafted email sent to the victim user. Upon receiving and opening the email, the victim user's browser will load the HTML containing the HTML image. 
 
-If the victim user has an active session opened with `myfriendlybank.com`, the application would treat this as an authorized amount transfer request coming from the victim user. It would then transfer an amount of `5000` to the account `425654` specified by an attacker.
+The `IMG` tag of the image will make a `GET` request to the link in its `src` attribute. Since browsers send the cookies by default with requests, the request is authenticated, even though it is sent from a different origin than the bank’s website.
+
+As a result, without the victim user's permission, a forged request crafted by the attacker is sent to the web application at `myfriendlybank.com`. 
+
+If the victim user has an active session opened with `myfriendlybank.com`, the application would treat this as an authorized account transfer request coming from the victim user. It would then transfer an amount of `5000` to the account `425654` specified by an attacker.
 
 
 ## Preventing CSRF attacks
@@ -149,7 +156,7 @@ All the solutions to build defenses against CSRF attacks are built around this p
 
 An anti-CSRF token is a type of server-side CSRF protection. It is a random string shared between the user’s browser and the web application. The anti-CSRF token is usually stored in a session variable or data store. On an HTML page, it is typically sent in a hidden field or HTTP request header that is sent with the request.
 
-An attacker creating a forged request will not have any knowledge about the anti-CSRF token. So the web application will reject the requests which do not have a matching value of anti-CSRF token which it had shared with the browser. 
+An attacker creating a forged request will not have any knowledge about the anti-CSRF token. So the web application will reject the requests which do not have a matching value of the anti-CSRF token which it had shared with the browser. 
 
 There are two common implementation techniques of Anti-CSRF Tokens known as :
 1. **Synchronizer Token Pattern** where the web application is stateful and stores the token
@@ -160,36 +167,36 @@ A random token is generated by the web application and sent to the browser. The 
 
 ![CSRF token synchronizer](/assets/img/posts/csrf/csrf-token-synchronizer.png)
 
-As we can see in this sequence diagram, when the input form is requested, it is initialized with a random token generated by the web application. The web application stores the generated token either in a data store or in-memory in HTTP session.
+As we can see in this sequence diagram, when the input form is requested, it is initialized with a random token generated by the web application. The web application stores the generated token either in a data store or in-memory in an HTTP session.
 
-When the input form is submitted, the token is sent as a request parameter. On receiving the request, the web application matches the token received as request parameter with the token stored in the token store. The request is processed only if the two values match.
+When the input form is submitted, the token is sent as a request parameter. On receiving the request, the web application matches the token received as a request parameter with the token stored in the token store. The request is processed only if the two values match.
 
 #### Double Submit Cookie Pattern
 
-When using the Double Submit Cookie Pattern the token is not stored by the web application. Instead, the web application sets the token in a cookie.The browser should be able to read the token from the cookie and send it as a request parameter in subsequent requests.  
+When using the Double Submit Cookie Pattern the token is not stored by the web application. Instead, the web application sets the token in a cookie. The browser should be able to read the token from the cookie and send it as a request parameter in subsequent requests.  
 
 
 ![CSRF token double submit](/assets/img/posts/csrf/csrf-token-double-submit.png)
 
 In this sequence diagram, when the input form is requested, the web application generates a random token and sets it in a cookie. The browser reads the token from the cookie and sends it as a request parameter when submitting the form.  
 
-On receiving the request, the web application verifies if the cookie value and the value sent as request parameter match. If both of them match, the web application accepts it as legitimate request processes the request.
+On receiving the request, the web application verifies if the cookie value and the value sent as request parameter match. If both the values match, the web application accepts it as a legitimate request processes the request.
 
-This cookie must be stored separately from the cookie used as session identifier.
+This cookie must be stored separately from the cookie used as a session identifier.
 
 ### Using the SameSite Flag in Cookies
 
-The SameSite flag in cookies is a relatively new method of preventing CSRF attacks and improving web application security. In an earlier example, we saw that the  website controlled by the attacker could send a request to https://myfriendlybank.com/ together with a session cookie. This session cookie is unique for every user, so the web application uses it to distinguish between users and to determine if they are logged in.
+The SameSite flag in cookies is a relatively new method of preventing CSRF attacks and improving web application security. In an earlier example, we saw that the website controlled by the attacker could send a request to https://myfriendlybank.com/ together with a session cookie. This session cookie is unique for every user, so the web application uses it to distinguish between users and determine if they are logged in.
 
-If the session cookie is marked as a SameSite cookie, it is only sent along with requests that originate from the same domain. Therefore, when `http://myfriendlybank.com` wants to make a POST request to `http://myfriendlybank/transfer`, it is allowed. 
+If the session cookie is marked as a SameSite cookie, it is only sent along with requests that originate from the same domain. Therefore, when `http://myfriendlybank.com` wants to make a POST request to `http://myfriendlybank/transfer` it is allowed. 
 
-However, the website controlled by the attacker with a domain like `http://malicious.com/` cannot send HTTP requests to `http://myfriendlybank.com/transfer` since the session cookie originates from a different domain so it is not sent with the request.
+However, the website controlled by the attacker with a domain like `http://malicious.com/` cannot send HTTP requests to `http://myfriendlybank.com/transfer`. This is because the session cookie originates from a different domain, and thus it is not sent with the request.
 
 ## Defenses against CSRF 
 As users, we can defend ourselves from falling victim to a CSRF attack by cultivating two simple web browsing habits:
 
-1. We should log off from a website after using it. This will invalidate the cookies which the attacker sends in the exploit URL.
-2. We should use different browsers, for example, one browser for accessing sensitive sites and another browser for random surfing.
+1. We should log off from a website after using it. This will invalidate the session cookies that the attacker needs to execute the forged request in the exploit URL.
+2. We should use different browsers, for example, one browser for accessing sensitive sites and another browser for random surfing. This will prevent the session cookies set in sensitive sites being used for CSRF attacks launched from a page opened from a different browser.
 
 As developers, we can use the following best practices other than the anti-CSRF token described earlier:
 1. Configure lower session time out value invalidate the session after a period of inactivity

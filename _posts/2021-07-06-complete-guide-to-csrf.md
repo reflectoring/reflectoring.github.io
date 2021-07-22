@@ -9,9 +9,9 @@ image:
   auto: 0074-stack
 ---
 
-Protecting a web application against various security threats and attacks is vital for the health and security of a website. The process of protecting websites includes an assessment of these threats and building effective mechanisms to counter them and falling victim to any attack.
+Protecting a web application against various security threats and attacks is vital for the health and security of a website. Cross Site Request Forgery (CSRF) is a type of such attack on websites. 
 
-Cross Site Request Forgery (CSRF) is a type of attack on websites. With a successful CSRF attack, an attacker can mislead an authenticated user in a website to perform actions with inputs set by the attacker. 
+**With a successful CSRF attack, an attacker can mislead an authenticated user in a website to perform actions with inputs set by the attacker.** 
 
 This can have serious consequences like the loss of user confidence in the website and even fraud or theft of financial resources if the website under attack belongs to any financial realm.
 
@@ -23,11 +23,11 @@ In this article, we will understand:
 
 ## What is CSRF?
 
-New-age websites often need to fetch data from other websites for various purposes. For example, the website might call a Google Map API to display a map of the user's current location or render a video from youtube. These are examples of cross-site requests and can also be a target of CSRF attacks. 
+New-age websites often need to fetch data from other websites for various purposes. For example, the website might call a [Google Map API](https://maps.googleapis.com/maps/api) to display a map of the user's current location or render a video from [YouTube](https://www.youtube.com). These are examples of cross-site requests and can also be a potential target of CSRF attacks. 
 
-When a website requests data from another website on behalf of a user, there are no security concerns when the request is unauthenticated.
+CSRF attacks target websites that trust some form of authentication by users before they perform any actions. For example, a user logs into a ecommerce site and makes a payment after purchasing goods. The trust is established when the user authenticated during login and the payment function in the website uses this trust to identify the user. 
 
-CSRF attacks target websites that trust some form of authentication by users before they perform any actions. Attackers exploit this trust and send forged requests on behalf of the authenticated user. This illustration shows the making of a CSRF attack:
+Attackers exploit this trust and send forged requests on behalf of the authenticated user. This illustration shows the making of a CSRF attack:
 
 ![CSRF intro](/assets/img/posts/csrf/csrf-intro.png)
 
@@ -37,7 +37,7 @@ As represented in this diagram, a Cross Site Request Forgery attack is roughly c
 
 2. **Request Forgery**: The request sent to the user's website is forged with values crafted by the attacker. When the victim user opens the link in the same browser, a forged request is sent to the website with values set by the attacker along with all the cookies that the victim has associated with that website. 
 
-CSRF is considered a flaw in the [OWASP Top ten](https://owasp.org/www-project-top-ten/) Web Application Security Risks. OWASP Top Ten represents a broad consensus about the most critical security risks to web applications.
+CSRF is a common form of attack and has figured several times in the [OWASP Top ten](https://owasp.org/www-project-top-ten/) Web Application Security Risks. Open Web Application Security Project (OWASP)  Top Ten represents a broad consensus about the most critical security risks to web applications.
 
 The OWASP website defines CSRF as:
 > Cross-Site Request Forgery (CSRF) is an attack that forces an end user to execute unwanted actions on a web application in which they’re currently authenticated. With a little help from social engineering (such as sending a link via email or chat), an attacker may trick the users of a web application into executing actions of the attacker’s choosing.
@@ -46,8 +46,9 @@ The OWASP website defines CSRF as:
 Let us now understand the anatomy of a CSRF attack with the help of an example:
 
 1. Let us suppose a user logs in to a website `www.myfriendlybank.com` from a login page. The website is vulnerable to CSRF attacks.
-2. The server authenticates the user and sends back a cookie in the response. The server populates the cookie with the information that the user is authenticated. As part of a web browser's behavior concerning cookie handling, it will send this cookie to the server for all subsequent interactions.
-3. The user next visits a malicious website without logging out of `myfriendlybank.com`. This malicious site contains a banner that looks like this:
+2. The web application for the website authenticates the user and sends back a cookie in the response. The web application populates the cookie with the information that the user is authenticated. 
+3. As part of a web browser's behavior concerning cookie handling, it will send this cookie to the server for all subsequent interactions.
+4. The user next visits a malicious website without logging out of `myfriendlybank.com`. This malicious site contains a banner that looks like this:
 ![CSRF Banner](/assets/img/posts/csrf/csrf-banner.png)
 
 The HTML used to create the banner has the below contents:
@@ -61,9 +62,11 @@ The HTML used to create the banner has the below contents:
 ```
 We can notice in this HTML that the form action posts to the vulnerable website `myfriendlybank.com` instead of the malicious website. In this example, the attacker sets the request parameters: `TransferAccount` and `Amount` to values that are unknown to the actual user.
 
-4. The user is enticed into visiting the malicious website and clicking the submit button. The browser sends the user's authentication cookie to the server that was received from the server after login in step 2.
+4. The user is enticed to claim the bonus by visiting the malicious website and clicking the submit button. 
 
-5. Since the website is vulnerable to CSRF attack, the forged request with the user's authentication cookie is processed, and can do anything that an authenticated user is allowed to do. In this example, transfer the amount to the attacker's account.
+4. On form submit after user clicks the submit button, the browser sends the user's authentication cookie to the web application that was received after login to the website in step 2.
+
+5. Since the website is vulnerable to CSRF attack, the forged request with the user's authentication cookie is processed. Forged requests can be sent for all actions that an authenticated user is allowed to do in the website. In this example, the forged request transfers the amount to the attacker's account.
 
 Although this example requires the user to click the submit button, the malicious website could have run JavaScript to submit the form without the user knowing anything about it.
 
@@ -71,8 +74,9 @@ This example although very trivial can be extended to scenarios where an attacke
 
 ## How does CSRF work?
 
-A CSRF attack leverages the implicit trust placed in user session cookies by many web applications. these applications, once the user authenticates to an application and a session cookie is created on the user's system, all following transactions for that session are authenticated using that cookie including potential actions initiated by an attacker and simply "riding" the existing session cookie.
-Let us now understand how CSRF works in greater detail. 
+As explained earlier, a CSRF attack leverages the implicit trust placed in user session cookies by many web applications. 
+
+In these applications, once the user authenticates, a session cookie is created and all subsequent transactions for that session are authenticated using that cookie including potential actions initiated by an attacker by "riding" the existing session cookie. Due to this reason, CSRF attack is also called "Session riding".
 
 ### Hijacking the Session Cookie
 A CSRF attack exploits the behavior of a type of cookies called session cookies shared between a browser and server. HTTP requests are stateless due to which the server cannot distinguish between two requests sent by a browser. 
@@ -81,15 +85,15 @@ But there are many scenarios where we want the server to be able to relate one H
 
 Cookies are used to hold this session information. The server packages the session information for a particular client in a cookie and sends it to the client's browser. For each new request, the browser re-identifies itself by sending the cookie (with the session key) back to the server.
 
-The attacker hijacks this cookie to send requests to the server. 
+The attacker hijacks(or rides) this cookie to trick the user into sending requests to the server. 
 
-There are many ways for an attacker to try and exploit a CSRF vulnerability. An attacker constructs a CSRF attack through the following steps:
+The broad sequence of steps followed by the attacker to construct a CSRF attack include the following:
 
-1. Identifying the Vulnerable site
+1. Identifying and exploring the vulnerable website for functions of interest that can be exploited
 2. Building an Exploit URL
-3. Creating an Inducement for the Victim to Click the Exploit URL
+3. Creating an Inducement for the Victim to open the Exploit URL
 
-### Identifying the Vulnerable site
+### Identifying and Exploring the Vulnerable Website
 Before planning a CSRF attack, the attacker needs to identify pieces of functionality that are of interest for example fund transfers. The attacker also needs to know a valid URL in the website, along with the corresponding patterns of valid requests accepted by the URL.
 
 This URL should cause a state-changing action in the target application. Some examples of state-changing actions are:
@@ -99,18 +103,18 @@ This URL should cause a state-changing action in the target application. Some ex
 
 In contrast to state-changing actions, an inquiry does not change any state in the server. For example, view user profile, view account balance, etc which do not update anything in the server.
 
-The attacker also needs to find the right values for the URL parameters. Otherwise, the target application might reject the malicious request.
+The attacker also needs to find the right values for the URL parameters. Otherwise, the target application might reject the forged request.
 
-Some common techniques used to explore the vulnerable site are:
+Some common techniques used to explore the vulnerable website are:
 
-- **View HTML Source**: Check the HTML source of web pages to identify links or buttons that contain actions of interest.
+- **View HTML Source**: Check the HTML source of web pages to identify links or buttons that contain functions of interest.
 - **Web Application Debugging Tools**: Analyze the information exchanged between the client and the server using web application debugging tools such as WebScarab, Tamper Data, or TamperIE.
 - **Network Sniffing Tools**: Analyze the information exchanged between the client and the server with a network sniffing tool such as Wireshark. 
 
-Let us assume that the attacker has identified a website at https://myfriendlybank.com to try a CSRF attack. From this website, the attacker has found a URL https://myfriendlybank.com/account/transfer with CSRF vulnerabilities which is used to transfer funds.
+For example, let us assume that the attacker has identified a website at https://myfriendlybank.com to try a CSRF attack. The attacker explored this website using the above techniques and found a URL https://myfriendlybank.com/account/transfer with CSRF vulnerabilities which is used to transfer funds.
 
 ### Building an Exploit URL
-The attacker will next try to build an exploit URL for sharing with the victim. Let us assume that the transfer function in the application is built using a GET method to submit a transfer request. Accordingly, a legitimate  request to transfer `100` USD to another account with account number `1234567` will look like this:
+The attacker will next try to build an exploit URL for sharing with the victim. Let us assume that the transfer function in the application is built using a `GET` method to submit a transfer request. Accordingly, a legitimate  request to transfer `100` USD to another account with account number `1234567` will look like this:
 
 GET https://myfriendlybank.com/account/transfer?amount=100&accountNumber=1234567 
 
@@ -122,20 +126,18 @@ If the victim clicks this exploit URL, `15,000` USD will get transferred to the 
 
 ### Creating an Inducement for the Victim to Click the Exploit URL
 After creating the exploit URL, the attacker must also trick the victim user into clicking it. For this, the attacker creates an inducement and uses any social engineering attack methods to trick the victim user into clicking the malicious URL. Some examples of these methods are:
-- including exploit HTML image elements onto forms
-- placing an exploit URL on pages that are often accessed by the victim user while being logged into the application
+- including the exploit URL in HTML image elements 
+- placing the exploit URL on pages that are often accessed by the victim user while being logged into the application
 - sending the exploit URL through email.
 
 The following is an example of an image with an exploit URL:
 
 <img src=“http://myfriendlybank.com/account/transfer?amount=5000&accountNumber=425654” width=“0” height=“0”>
 
-This scenario includes an image tag in an attacker-crafted email to the victim user. Upon receiving it, the victim user's browser application opens this URL without any human intervention. As a result, without the victim user's permission, a forged request crafted by the attacker is sent to the web application at `myfriendlybank.com`. 
+This scenario includes an image tag with zero dimensions embedded in an attacker-crafted email sent to the victim user. Upon receiving and opening the email, the victim user's browser application will open this URL in the image without any human intervention. As a result, without the victim user's permission, a forged request crafted by the attacker is sent to the web application at `myfriendlybank.com`. 
 
 If the victim user has an active session opened with `myfriendlybank.com`, the application would treat this as an authorized amount transfer request coming from the victim user. It would then transfer an amount of `5000` to the account `425654` specified by an attacker.
 
-### Presence of an Active Session
-The victim user needs to have an active session with `myfriendlybank.com`. The success of a CSRF attack depends on a user’s session with a vulnerable application. The attack will only be successful if the user is in an active session with the vulnerable application.
 
 ## Preventing CSRF attacks
 

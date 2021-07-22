@@ -198,7 +198,7 @@ However, the website controlled by the attacker with a domain like `http://malic
 As users, we can defend ourselves from falling victim to a CSRF attack by cultivating two simple web browsing habits:
 
 1. We should log off from a website after using it. This will invalidate the session cookies that the attacker needs to execute the forged request in the exploit URL.
-2. We should use different browsers, for example, one browser for accessing sensitive sites and another browser for random surfing. This will prevent the session cookies set in sensitive sites being used for CSRF attacks launched from a page opened from a different browser.
+2. We should use different browsers, for example, one browser for accessing sensitive sites and another browser for random surfing. This will prevent the session cookies set in sensitive sites from being used for CSRF attacks launched from a page opened from a different browser.
 
 As developers, we can use the following best practices other than the anti-CSRF token described earlier:
 1. Configure lower session time out value invalidate the session after a period of inactivity
@@ -244,7 +244,7 @@ app.listen(3000, (err) => {
 );
 ```
 
-In this code block, we initialize the library `csrf` by setting the value of `cookie` to `true`. This means that the random token for the user will be stored in a cookie instead of the HTTP session. Storing the random token in a cookie implements the double submit cookie pattern explained earlier.
+In this code block, we initialize the `csrf` library by setting the value of `cookie` to `true`. This means that the random token for the user will be stored in a cookie instead of the HTTP session. Storing the random token in a cookie implements the double submit cookie pattern explained earlier.
 
 The below HTML page is rendered with the `GET` request. The random token is generated in this step:
 
@@ -278,17 +278,17 @@ After we set up and run the application, we can test a valid request by loading 
 
 ![CSRF token](/assets/img/posts/csrf/form-with-csrf-token.png)
 
-The form is loaded with the csrf token set in a hidden field. When we submit the form after providing the values of amount and account the request is sent with the csrf token and is processed successfully.
+The form is loaded with the `csrf` token set in a hidden field. When we submit the form after providing the values of the `amount` and `account` the request is sent with the `csrf` token and is processed successfully.
 
-Next we can try to send a request from [postman](https://www.postman.com/product/api-client/) tool to simulate a forged request in a CSRF attack. The results are shown in this screenshot:
+Next, we can try to send a request from [postman](https://www.postman.com/product/api-client/) tool to simulate a forged request in a CSRF attack. The results are shown in this screenshot:
 
 ![CSRF token error](/assets/img/posts/csrf/csrf-error.png)
 
 Since our code is protected with CSRF token, the request is denied by the web application with an error: `ForbiddenError: invalid csrf token`.
 
-If we are using Ajax with JSON requests, then it is not possible to submit the CSRF token within an HTTP request parameter. In this situation, we include the token within a HTTP request header.
+If we are using Ajax with JSON requests, then it is not possible to submit the CSRF token within an HTTP request parameter. In this situation, we include the token within an HTTP request header.
 
-Libraries of CSRF protection similar to [csurf](https://github.com/expressjs/csurf) are available in other languages. We should prefer to use vetted library or framework instead of building our own for CSRF prevention. Some other examples are [CSRFGuard](https://owasp.org/www-project-csrfguard/), and [Spring Security](https://docs.spring.io/spring-security/site/docs/5.0.x/reference/html/csrf.html).
+Libraries of CSRF protection similar to [csurf](https://github.com/expressjs/csurf) are available in other languages. We should prefer to use a vetted library or framework instead of building our own for CSRF prevention. Some other examples are [CSRFGuard](https://owasp.org/www-project-csrfguard/), and [Spring Security](https://docs.spring.io/spring-security/site/docs/5.0.x/reference/html/csrf.html).
 
 ## Conclusion
 

@@ -364,7 +364,7 @@ By default, a Spring Boot application includes all components it finds within it
 package and sub-packages, so this will usually only be needed if we want to include 
 beans from other packages.
 
-### Overriding Beans with `@TestConfiguration`
+### Overriding Beans wworith `@TestConfiguration`
 
 With `@TestConfiguration` we can not only include additional beans required for tests but also override the
 beans already defined in the application. Read more about it in our article on [Testing with `@TestConfiguration`](https://reflectoring.io/spring-boot-testconfiguration/)

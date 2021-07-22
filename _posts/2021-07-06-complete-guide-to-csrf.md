@@ -25,7 +25,7 @@ In this article, we will understand:
 
 New-age websites often need to fetch data from other websites for various purposes. For example, the website might call a [Google Map API](https://maps.googleapis.com/maps/api) to display a map of the user's current location or render a video from [YouTube](https://www.youtube.com). These are examples of cross-site requests and can also be a potential target of CSRF attacks. 
 
-CSRF attacks target websites that trust some form of authentication by users before they perform any actions. For example, a user logs into a ecommerce site and makes a payment after purchasing goods. The trust is established when the user authenticated during login and the payment function in the website uses this trust to identify the user. 
+**CSRF attacks target websites that trust some form of authentication by users before they perform any actions.** For example, a user logs into a ecommerce site and makes a payment after purchasing goods. The trust is established when the user authenticated during login and the payment function in the website uses this trust to identify the user. 
 
 Attackers exploit this trust and send forged requests on behalf of the authenticated user. This illustration shows the making of a CSRF attack:
 
@@ -45,7 +45,7 @@ The OWASP website defines CSRF as:
 ## Example of CSRF Attack
 Let us now understand the anatomy of a CSRF attack with the help of an example:
 
-1. Let us suppose a user logs in to a website `www.myfriendlybank.com` from a login page. The website is vulnerable to CSRF attacks.
+1. Suppose a user logs in to a website `www.myfriendlybank.com` from a login page. The website is vulnerable to CSRF attacks.
 2. The web application for the website authenticates the user and sends back a cookie in the response. The web application populates the cookie with the information that the user is authenticated. 
 3. As part of a web browser's behavior concerning cookie handling, it will send this cookie to the server for all subsequent interactions.
 4. The user next visits a malicious website without logging out of `myfriendlybank.com`. This malicious site contains a banner that looks like this:
@@ -70,7 +70,7 @@ We can notice in this HTML that the form action posts to the vulnerable website 
 
 Although this example requires the user to click the submit button, the malicious website could have run JavaScript to submit the form without the user knowing anything about it.
 
-This example although very trivial can be extended to scenarios where an attacker can perform additional damaging actions like changing the user's password and registered email address which will block their access completely.
+This example although very trivial can be extended to scenarios where an attacker can perform additional damaging actions like changing the user's password and registered email address which will block their access completely depending on the user's privileges.
 
 ## How does CSRF work?
 

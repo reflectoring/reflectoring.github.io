@@ -21,6 +21,8 @@ In this article, we will understand:
 - What makes websites vulnerable to a CSRF attack
 - What are some methods to secure websites from CSRF attack
 
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/csrf/" %}
+
 ## What is CSRF?
 
 New-age websites often need to fetch data from other websites for various purposes. For example, the website might call a [Google Map API](https://maps.googleapis.com/maps/api) to display a map of the user's current location or render a video from [YouTube](https://www.youtube.com). These are examples of cross-site requests and can also be a potential target of CSRF attacks. 
@@ -204,9 +206,101 @@ As developers, we can use the following best practices other than the anti-CSRF 
 3. Seek confirmation from the user before processing any state-changing action with a confirmation dialog or a captcha.
 5. Make it difficult for an attacker to know the structure of the URLs to attack
 
+## Example of CSRF Protection in Node.js Application
+
+This is an example of implementing CSRF protection in a web application written in [Node.js](https://nodejs.org/en/) using the express framework. We have used an npm library [csurf](https://github.com/expressjs/csurf) which provides the middleware for CSRF token creation and validation:
+
+```JS
+const express = require('express');
+const csrf = require('csurf');
+const cookieParser = require('cookie-parser');
+
+// Implement the the double submit cookie pattern
+// and Store the token secret in a cookie 
+var csrfProtection = csrf({ cookie: true });
+var parseForm = express.urlencoded({ extended: false });
+
+var app = express();
+app.set('view engine','ejs')
+
+app.use(cookieParser());
+
+// render the input form
+app.get('/transfer', csrfProtection, function (req, res) {
+// pass the csrfToken to the view
+res.render('transfer', { csrfToken: req.csrfToken() });
+});
+
+// post the form to this URL
+app.post('/process', parseForm,
+  csrfProtection, function (req, res) {
+    res.send('Transfer Successful!!');
+});
+
+app.listen(3000, (err) => {
+    if (err) console.log(err);
+        console.log('Server listening on 3000');
+    }
+);
+```
+
+In this code block, we initialize the library `csrf` by setting the value of `cookie` to `true`. This means that the random token for the user will be stored in a cookie instead of the HTTP session. Storing the random token in a cookie implements the double submit cookie pattern explained earlier.
+
+The below HTML page is rendered with the `GET` request. The random token is generated in this step:
+
+```html
+<html>
+<head>
+  <title>CSRF Token Demo</title>
+</head>
+<body>
+  <form action="process" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div>     
+    <label>Amount:</label><input type="text" name="amount">
+    </div>
+    <br/>
+    <div>     
+      <label>Transfer To:</label><input type="text" name="account">
+    </div>
+    <br/>
+    <div> 
+        <input type="submit" value="Transfer">
+    </div>
+  </form>
+</body>
+</html>
+
+```
+We can see in this HTML snippet, that the random token is set in a hidden field named `_csrf`.
+
+After we set up and run the application, we can test a valid request by loading the HTML form with URL `http://localhost:3000/transfer` :
+
+![CSRF token](/assets/img/posts/csrf/form-with-csrf-token.png)
+
+The form is loaded with the csrf token set in a hidden field. When we submit the form after providing the values of amount and account the request is sent with the csrf token and is processed successfully.
+
+Next we can try to send a request from [postman](https://www.postman.com/product/api-client/) tool to simulate a forged request in a CSRF attack. The results are shown in this screenshot:
+
+![CSRF token error](/assets/img/posts/csrf/csrf-error.png)
+
+Since our code is protected with CSRF token, the request is denied by the web application with an error: `ForbiddenError: invalid csrf token`.
+
+If we are using Ajax with JSON requests, then it is not possible to submit the CSRF token within an HTTP request parameter. In this situation, we include the token within a HTTP request header.
+
+Libraries of CSRF protection similar to [csurf](https://github.com/expressjs/csurf) are available in other languages. We should prefer to use vetted library or framework instead of building our own for CSRF prevention. Some other examples are [CSRFGuard](https://owasp.org/www-project-csrfguard/), and [Spring Security](https://docs.spring.io/spring-security/site/docs/5.0.x/reference/html/csrf.html).
 
 ## Conclusion
 
 CSRF attacks comprise a good percentage of web-based attacks. It is crucial to be aware of the vulnerabilities that could make our website a potential target for CSRF attacks and prevent these attacks by building proper CSRF defenses in our application.
 
+Here is a list of important points from the article for quick reference:
+1. A CSRF attack leverages the implicit trust placed in user session cookies by many web applications.
+2. To prevent CSRF attacks, web applications need to build mechanisms to distinguish a legitimate request from a trusted user of a website from a forged request crafted by an attacker but sent by the trusted user. 
+3. An anti-CSRF token is a random string shared between the user’s browser and the web application and is a common type of server-side CSRF protection. 
+4. There are two common implementation techniques of Anti-CSRF Tokens known as :
+ - Synchronizer Token Pattern
+ - Double Submit Cookie
+
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/csrf/).
 

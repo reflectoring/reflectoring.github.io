@@ -1,12 +1,12 @@
 ---
-title: Implementing Retry with Spring Boot Resilience4j
+title: Implementing Retry with Resilience4j and Spring Boot
 categories: [spring-boot]
-date: 2021-07-21 05:00:00 +1100
-modified: 2021-07-21 05:00:00 +1100
+date: 2021-07-24 05:00:00 +1100
+modified: 2021-07-24 05:00:00 +1100
 author: saajan
 excerpt: "A deep dive into the Spring Boot Resilience4j Retry module, this article shows why, when and how to use it to build resilient applications."
 image:
-  auto: 0073-broken
+  auto: 0106-fail
 
 ---
 
@@ -26,7 +26,7 @@ On a high level, when we work with resilience4j-spring-boot2, we do the followin
 
 Let's look at each of these steps briefly.
 
-### Step 1: Add Spring Boot Resilience4j starter
+### Step 1: Adding the Resilience4j Spring Boot Starter
 
 Adding Spring Boot Resilience4j starter to our project is like adding any other library dependency. Here's the snippet for Maven's `pom.xml`:
 
@@ -66,28 +66,32 @@ dependencies {
 }
 ```
 
-### Step 2: Configure the Resilience4j instance
+### Step 2: Configuring the Resilience4j Instance
 
-We can configure the Resilience4j instances we need in Spring Boot's application.properties file.
+We can configure the Resilience4j instances we need in Spring Boot's `application.yml` file.
 
-```properties
-resilience4j.retry.instances.flightSearch.maxRetryAttempts=3
-resilience4j.retry.instances.flightSearch.waitDuration=2s
+```yml
+resilience4j:
+  retry:
+    instances:
+      flightSearch:
+        maxRetryAttempts: 3
+        waitDuration: 2s
 ```
 
 Let's unpack the configuration to understand what it means.
 
-The `resilience4j.retry` indicates which module we want to use. For the other Resilience4j modules, we'd use `resilience4j.ratelimiter`, `resilience4j.timelimiter` etc.
+The `resilience4j.retry` prefix indicates which module we want to use. For the other Resilience4j modules, we'd use `resilience4j.ratelimiter`, `resilience4j.timelimiter` etc.
 
-`flightSearch` is the name of the instance. We will be referring to the instance by this name in the next step when we use it.
+`flightSearch` is the name of the retry instance we're configuring. We will be referring to the instance by this name in the next step when we use it.
 
 `maxRetryAttempts` and `waitDuration` are the actual module configurations. These correspond to the available configurations in the corresponding `Config` class, such as `RetryConfig`.
 
-Alternatively, we could use YAML and configure these properties in the application.yml file.
+Alternatively, we could configure these properties in the `application.properties` file.
 
-### Step 3: Use the Resilience4j instance
+### Step 3: Using the Resilience4j Instance
 
-Finally, we use the Resilience4j instance that we configured above. We do this by annotating the method:
+Finally, we use the Resilience4j instance that we configured above. We do this by annotating the method we want to add retry functionality to:
 
 ```java
 @Retry(name = "flightSearch")
@@ -98,13 +102,13 @@ public List<Flight> searchFlights(SearchRequest request) {
 
 For the other Resilience4j modules, we'd use annotations `@RateLimiter`, `@Bulkhead`, `@CircuitBreaker`, etc.
 
-### Usage Pattern Comparison with Core Modules
+### Comparing with Plain Resilience4J
 
 Spring Boot Resilience4j lets us easily use the Resilience4j modules in a standard, idiomatic way. 
 
-We don't have to create Resilience4j configuration object (`RetryConfig`), Registry  object (`RetryRegsitry`), etc. as we did in the previous articles in this series. All that is handled by the framework based on the configurations we provide in the `application.properties` file.
+We don't have to create Resilience4j configuration object (`RetryConfig`), Registry  object (`RetryRegsitry`), etc. as we did in the previous articles in this series. All that is handled by the framework based on the configurations we provide in the `application.yml` file.
 
-We also don't need to code invocation of the remote operation as a lambda expression or a functional interface. We just need to annotate the method to which we want the resilience pattern to be applied.
+We also don't need to write code to invoke the operation as a lambda expression or a functional interface. We just need to annotate the method to which we want the resilience pattern to be applied.
 
 ## Using the Spring Boot Resilience4j Retry Module
 
@@ -132,13 +136,18 @@ Let's say we're calling `FlightSearchService.searchFlightsThrowingException()` w
 
 Let's configure a retry instance called `throwingException`:
 
-```properties
-resilience4j.retry.instances.throwingException.maxRetryAttempts=3
-resilience4j.retry.instances.throwingException.waitDuration=2s
-resilience4j.retry.instances.throwingException.retryExceptions[0]=java.lang.Exception
+```yml
+resilience4j:
+  retry:
+    instances:
+      throwingException:
+        maxRetryAttempts: 3
+        waitDuration: 2s
+        retryExceptions:
+          - java.lang.Exception
 ```
 
-If there were other `Exception`s we wanted to configure, we would specify them as `retryExceptions[1]`, `retryExceptions[2]` etc.  Similarly we could also specify `ignoreExceptions` on the retry instance.
+If there were other `Exception`s we wanted to configure, we would add them to the list of `retryExceptions`.  Similarly, we could also specify `ignoreExceptions` on the retry instance.
 
 Next, we annotate the method that calls the remote service:
 
@@ -162,7 +171,7 @@ Flight search successful
 [Flight{flightNumber='XY 765', flightDate='07/31/2021', from='NYC', to='LAX'}, ... }]
 ```
 
-### Predicate-based Conditional Retry
+### Conditional Retry
 
 In real-world applications, we may not want to retry for all exceptions. We may want to check the HTTP response status code or look for a particular application error code in the response to decide if we should retry. Let's see how to implement such conditional retries.
 
@@ -186,10 +195,14 @@ The logic in this `Predicate` can be as complex as we want - it could be a check
 
 We then specify this `Predicate` when configuring the retry instance:
 
-```properties
-resilience4j.retry.instances.predicateExample.maxRetryAttempts=3
-resilience4j.retry.instances.predicateExample.waitDuration=3s
-resilience4j.retry.instances.predicateExample.resultPredicate=io.reflectoring.resilience4j.springboot.predicates.ConditionalRetryPredicate
+```yml
+resilience4j:
+  retry:
+    instances:
+      predicateExample:
+        maxRetryAttempts: 3
+        waitDuration: 3s
+        resultPredicate: io.reflectoring.resilience4j.springboot.predicates.ConditionalRetryPredicate
 ```
 
 The sample output shows sample output showing the first request failing and then succeeding on the next attempt:
@@ -212,14 +225,18 @@ Our examples so far had a fixed wait time for the retries. Often we want to incr
 
 Here we specify a random wait time between attempts:
 
-```properties
-resilience4j.retry.instances.intervalFunctionRandomExample.maxRetryAttempts=3
-resilience4j.retry.instances.intervalFunctionRandomExample.waitDuration=2s
-resilience4j.retry.instances.intervalFunctionRandomExample.enableRandomizedWait=true
-resilience4j.retry.instances.intervalFunctionRandomExample.randomizedWaitFactor=0.5
+```yml
+resilience4j:
+  retry:
+  instances:
+    intervalFunctionRandomExample:
+      maxRetryAttempts: 3
+      waitDuration: 2s
+      enableRandomizedWait: true
+      randomizedWaitFactor: 0.5
 ```
 
-The `randomizedWaitFactor` determines the range over which the random value will be spread w.r.t. the specifiied `waitDuration`. So for the value of 0.5 above, the wait times generated will be between 1000ms (2000 - 2000 * 0.5) and 3000ms (2000 + 2000 * 0.5).
+The `randomizedWaitFactor` determines the range over which the random value will be spread with regard to the specifiied `waitDuration`. So for the value of 0.5 above, the wait times generated will be between 1000ms (2000 - 2000 * 0.5) and 3000ms (2000 + 2000 * 0.5).
 
 The sample output shows this behavior:
 
@@ -239,11 +256,15 @@ For exponential backoff, we specify two values - an initial wait time and a mult
 
 Let's configure the retry instance for exponential backoff:
 
-```properties
-resilience4j.retry.instances.intervalFunctionExponentialExample.maxRetryAttempts=6
-resilience4j.retry.instances.intervalFunctionExponentialExample.waitDuration=1s
-resilience4j.retry.instances.intervalFunctionExponentialExample.enableExponentialBackoff=true
-resilience4j.retry.instances.intervalFunctionExponentialExample.exponentialBackoffMultiplier=2
+```yml
+resilience4j:
+  retry:
+    instances:
+      intervalFunctionExponentialExample:
+        maxRetryAttempts: 6
+        waitDuration: 1s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
 ```
 
 The sample output below shows this behavior:
@@ -264,7 +285,7 @@ Flight search successful
 [Flight{flightNumber='XY 765', flightDate='07/31/2021', from='NYC', to='LAX'}, ... }]
 ```
 
-### Retry Events
+### Acting on Retry Events
 
 In all these examples, the decorator has been a black box - we don't know when an attempt failed and the framework code is attempting a retry. Suppose for a given request, we wanted to log some details like the attempt count or the wait time until the next attempt. 
 
@@ -344,13 +365,13 @@ private List<Flight> localCacheFlightSearch(SearchRequest request, RuntimeExcept
 
 Spring Boot Resilience4j makes the retry metrics and the details about the last 100 retry events available through Actuator endpoints:
 
-1. /actuator/retries
-2. /actuator/retryevents
-3. /actuator/metrics/resilience4j.retry.calls
+1. `/actuator/retries`
+2. `/actuator/retryevents`
+3. `/actuator/metrics/resilience4j.retry.calls`
 
 Let's look at the data returned by doing a `curl` to these endpoints.
 
-### Endpoint /actuator/retries
+### Endpoint `/actuator/retries`
 
 This endpoint lists the names of all the retry instances available:
 
@@ -369,7 +390,7 @@ $ curl http://localhost:8080/actuator/retries
 }
 ```
 
-### Endpoint /actuator/retryevents
+### Endpoint `/actuator/retryevents`
 
 This endpoint provides details about the last 100 retry events in the application:
 
@@ -402,9 +423,9 @@ $ curl http://localhost:8080/actuator/retryevents
  }
 ```
 
-Under the `retryevents` endpoint, there are two more endpoints available: /actuator/retryevents/{retryName} and /actuator/retryevents/{retryName}/{type}. These provide similar data as the above one, but we can filter further by the `retryName` and `type` (`success`/`error`/`retry`).
+Under the `retryevents` endpoint, there are two more endpoints available: `/actuator/retryevents/{retryName}` and `/actuator/retryevents/{retryName}/{type}`. These provide similar data as the above one, but we can filter further by the `retryName` and `type` (`success`/`error`/`retry`).
 
-### Endpoint /actuator/metrics/resilience4j.retry.calls
+### Endpoint `/actuator/metrics/resilience4j.retry.calls`
 
 This endpoint exposes the retry-related metrics:
 

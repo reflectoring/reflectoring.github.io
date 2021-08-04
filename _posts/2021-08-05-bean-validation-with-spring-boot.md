@@ -1,10 +1,11 @@
 ---
-title: "Complete Guide to Validation With Spring Boot"
+title: "Validation with Spring Boot - the Complete Guide"
 categories: [spring-boot]
-modified: 2020-09-15
+date: 2021-08-05 00:00:00 +1100
+modified: 2021-08-05 00:00:00 +1100
 excerpt: "A tutorial consolidating the most important features you'll need to integrate Bean Validation into your Spring Boot application. "
 image:
-  auto: 0022-sorting
+  auto: 0051-stop
 ---
 
 
@@ -16,7 +17,7 @@ and sports code examples for each.
   
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/validation" %} 
 
-## Setting Up Validation
+## Using the Spring Boot Validation Starter
 
 Spring Boot's Bean Validation support comes with the validation starter, which we can include into 
 our project (Gradle notation):
@@ -44,10 +45,53 @@ the most widely used implementation of the Bean Validation specification.
 Very basically, Bean Validation works by defining constraints to the fields of a class by annotating
 them with certain [annotations](https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/javax/validation/constraints/package-summary.html). 
 
-Then, you pass an object of that class into a [Validator](https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/javax/validation/Validator.html)
-which checks if the constraints are satisfied.
+### Common Validation Annotations
 
-We'll see more details in the examples below.
+Some of the most common validation annotations are:
+
+* **`@NotNull`:** to say that a field must not be null.
+* **`@NotEmpty`:** to say that a list field must not empty.
+* **`@NotBlank`:** to say that a string field must not be the empty string (i.e. it must have at least one character).
+* **`@Min` and `@Max`:** to say that a numerical field is only valid when it's value is above or below a certain value.
+* **`@Pattern`:** to say that a string field is only valid when it matches a certain regular expression.
+* **`@Email`:** to say that a string field must be a valid email address.
+
+An example of such a class would look like this:
+
+```java
+class Customer {
+
+  @Email
+  private String email;
+
+  @NotBlank
+  private String name;
+  
+  // ...
+}
+```
+
+### Validator
+
+To validate if an object is valid, we pass it into a [Validator](https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/javax/validation/Validator.html)
+which checks if the constraints are satisfied:
+
+```java
+Set<ConstraintViolation<Input>> violations = validator.validate(customer);
+if (!violations.isEmpty()) {
+  throw new ConstraintViolationException(violations);
+}
+```
+
+More about using a `Validator` in the [section about validating programmatically](#validating-programmatically).
+
+### `@Validated` and `@Valid`
+
+In many cases, however, Spring does the validation for us. We don't even need to create a validator object ourselves. Instead, we can let Spring know that we want to have a certain object validated. This works by using the the `@Validated` and `@Valid` annotations. 
+
+The `@Validated` annotation is a class-level annotation that we can use to tell Spring to validate parameters that are passed into a method of the annotated class. We'll learn more about how to use it in the section about [validating path variables and request parameters](#validating-path-variables-and-request-parameters).  
+
+We can put the `@Valid` annotation on method parameters and fields to tell Spring that we want a method parameter or field to be validated. We'll learn all about this annotation in the [section about validating a request body](#validating-a-request-body).   
 
 ## Validating Input to a Spring MVC Controller
 
@@ -81,11 +125,11 @@ class Input {
 }
 ```
 
-We have an `int` field that must have a value between 1 and 10, inclusively, and a `String`
-field that must contain an IP address (the regex actually still allows invalid IP addresses with octets
-greater than 255, but we're fixing that later in the tutorial).
+We have an `int` field that must have a value between 1 and 10, inclusively, as defined by the `@Min` and `@Max` annotations. We also have a `String`
+field that must contain an IP address, as defined by the regex in the `@Pattern` annotation (the regex actually still allows invalid IP addresses with octets
+greater than 255, but we're going to fix that later in the tutorial, [when we're building a custom validator](#a-custom-validator-with-spring-boot)).
 
-Here's the REST controller that takes an `Input` object in the request body and validates it:
+To validate the request body of an incoming HTTP request, we annotate the request body with the `@Valid` annotation in a REST controller:
 
 ```java
 @RestController
@@ -350,7 +394,7 @@ we have to do this by hand.
 If for any reason we want to disable Bean Validation in our Spring Data repositories, we can set the
 Spring Boot property `spring.jpa.properties.javax.persistence.validation.mode` to `none`.
 
-## Implementing A Custom Validator
+## A Custom Validator with Spring Boot
 
 If the available [constraint annotations](https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/javax/validation/constraints/package-summary.html)
 do not suffice for our use cases, we might want to create one ourselves.
@@ -436,9 +480,9 @@ class InputWithCustomValidator {
 ## Validating Programmatically
 
 There may be cases when we want to invoke validation programmatically instead of relying on Spring's built-in
-Bean Validation support.
+Bean Validation support. In this case, we can use the Bean Validation API directly.
 
-In this case, **we can just create a `Validator` by hand** and invoke it to trigger a validation:  
+**We create a `Validator` by hand** and invoke it to trigger a validation:  
 
 ```java
 class ProgrammaticallyValidatingService {
@@ -618,7 +662,7 @@ class ValidatingServiceWithGroupsTest {
   <a href="/bean-validation-anti-patterns/#anti-pattern-3-using-validation-groups-for-use-case-validations">Bean Validation anti-patterns</a>.
 </div>
 
-## Returning Structured Error Responses
+## Handling Validation Errors
 
 When a validation fails, we want to return a meaningful error message to the client. In order to enable the client
 to display a helpful error message, **we should return a data structure that contains an error message for each 
@@ -696,5 +740,6 @@ If you want to get your hands dirty on the example code, have a look at the
 [github repository](https://github.com/thombergs/code-examples/tree/master/spring-boot/validation).
 
 ## Update History
-* **10-25-2018:** added a word of caution on using bean validation in the persistence layer 
+* **2021-08-05:** updated and polished the article a bit. 
+* **2018-10-25:** added a word of caution on using bean validation in the persistence layer 
 (see [this](https://twitter.com/olivergierke/status/1055015506326052865) thread on Twitter). 

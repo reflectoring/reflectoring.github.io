@@ -344,7 +344,7 @@ This will bring up a list of error events that have a root cause. We can also cr
 
 This chart shows that almost half of the errors are caused by a `ThingyException`, so it might be a good idea to check if this exception can be avoided somehow. If it can't be avoided, we should log it on `WARN` instead of `ERROR` to keep the error logs clean.
 
-## Error Distribution Across a Code Path
+### Error Distribution Across a Code Path
 
 Say, for example, that users are complaining that scheduled jobs aren't working correctly. If we have added a `job_status` field to the scheduled method code, we can filter the logs by those jobs that have failed:
 

@@ -338,7 +338,9 @@ We can, for example, query for all log events that have a value in the `rootCaus
 __exists__: "rootCause"
 ```
 
-This will bring up a list of error events that have a root cause. We can also create a Visualization in the Logz.io UI to show the distribution of errors in a given time frame:
+This will bring up a list of error events that have a root cause. 
+
+We can also create a Visualization in the Logz.io UI to show the distribution of errors in a given time frame:
 
 ![Error distribution](/assets/img/posts/structured-logging/errors.png)
 

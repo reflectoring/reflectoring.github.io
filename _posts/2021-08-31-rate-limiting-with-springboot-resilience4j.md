@@ -1,5 +1,5 @@
 ---
-title: Implementing Rate Limiting with Resilience4j
+title: Implementing Rate Limiting with Spring Boot Resilience4j
 categories: [java]
 date: 2021-08-31 05:00:00 +1100
 modified: 2021-08-31 05:00:00 +1100
@@ -117,7 +117,7 @@ List<Flight> multipleRateLimitsExample2(SearchRequest request) {
 }
 ```
 
-However, this does not work. Since the `@RateLimiter` annotation is not a repeatable annotation, the compiler does not allow it to be added multiple times to the same method:
+**However, this approach does not work. Since the `@RateLimiter` annotation is not a repeatable annotation, the compiler does not allow it to be added multiple times to the same method**:
 
 ```shell
 java: io.github.resilience4j.ratelimiter.annotation.RateLimiter is not a repeatable annotation type
@@ -141,9 +141,9 @@ List<Flight> rpmLimitedSearch(SearchRequest request) {
 }
 ```
 
-If we run this, we'll find that this doesn't work too. Only the first `@RateLimiter` is applied and not the second one.
+**If we run this, we'll find that this approach doesn't work too.** Only the first `@RateLimiter` is applied and not the second one.
 
-This is because when a Spring bean calls another method defined in the same bean, the call does not go through the Spring proxy. It would just be a call from one method in the target object to another one in the same object. 
+**This is because when a Spring bean calls another method defined in the same bean, the call does not go through the Spring proxy. It would just be a call from one method in the target object to another one in the same object.** 
 
 To get around this, let's define the `rpmRateLimitedSearch()` method in a new Spring bean:
 

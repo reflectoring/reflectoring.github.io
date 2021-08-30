@@ -32,7 +32,7 @@ In production, we'd configure the `RateLimiter` based on our contract with the r
 
 ### Basic Example
 
-Suppose our contract with the airline's service says that we can call their search API at 2 rps. Then we would create the `RateLimiterConfig` like this:
+Suppose our contract with the airline's service says that we can call their search API at 2 rps. Then we would configure the `RateLimiter` like this:
 
 ```yaml
   ratelimiter:
@@ -329,7 +329,7 @@ Flight search successful
 
 When a method has both the `@RateLimiter` and `@Retry` annotations, Spring Boot Resilience4j applies them in this order: Retry ( RateLimiter (method) ).
 
-### Fallback Method
+### Specifying a Fallback Method
 
 Sometimes we may want to take a default action when a request gets throttled. In other words, if the thread is unable to acquire permission in time and a `RequestNotPermitted` exception occurs, we may want to return a default value or some data from a local cache.
 

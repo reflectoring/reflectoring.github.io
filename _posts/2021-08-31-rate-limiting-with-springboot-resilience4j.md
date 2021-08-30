@@ -1,8 +1,8 @@
 ---
 title: Implementing Rate Limiting with Spring Boot Resilience4j
 categories: [java]
-date: 2021-08-31 05:00:00 +1100
-modified: 2021-08-31 05:00:00 +1100
+date: 2021-08-30 05:00:00 +1100
+modified: 2021-08-30 05:00:00 +1100
 author: saajan
 excerpt: "A deep dive into the Spring Boot Resilience4j RateLimiter module, this article shows why, when and how to use it to build resilient applications."
 image:

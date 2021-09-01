@@ -26,7 +26,7 @@ $( document ).ready(function() {
             iconColor: "#000000",
             header: "",
             width: "424px",
-            content: "<a href=\"https://learn.launchdarkly.com/progressive-delivery/?utm_source=reflectoring&utm_medium=display&utm_campaign=21q2-reflectoring.io&utm_content=ebook_oreilly_efm\"><img alt=\"Progressive Delivery\" src=\"/assets/img/launchdarkly/2021_02_ProgressiveDeliveryGuide_Ad_200x200@2x.png\"/></a>",
+            content: "<a href=\"https://learn.launchdarkly.com/progressive-delivery/?utm_source=reflectoring&utm_medium=display&utm_campaign=21q3-reflectoring.io&utm_term=smart_display&utm_content=ebook_pd\"><img alt=\"Progressive Delivery\" src=\"/assets/img/launchdarkly/2021_02_ProgressiveDeliveryGuide_Ad_200x200@2x.png\"/></a>",
             afterPopup: function() {
               setCookie("launchdarkly", "true", 7);
             }

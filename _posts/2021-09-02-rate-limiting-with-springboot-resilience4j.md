@@ -1,18 +1,18 @@
 ---
-title: Implementing Rate Limiting with Spring Boot Resilience4j
-categories: [java]
-date: 2021-08-30 05:00:00 +1100
-modified: 2021-08-30 05:00:00 +1100
+title: Rate-Limiting with Spring Boot and Resilience4j
+categories: [spring-boot]
+date: 2021-09-02 05:00:00 +1100
+modified: 2021-09-02 05:00:00 +1100
 author: saajan
 excerpt: "A deep dive into the Spring Boot Resilience4j RateLimiter module, this article shows why, when and how to use it to build resilient applications."
 image:
-  auto: 0051-stop
+  auto: 0108-speed-limit
 
 ---
 
 In this series so far, we've learned how to use the Resilience4j [Retry](https://reflectoring.io/retry-with-resilience4j/), [RateLimiter](https://reflectoring.io/rate-limiting-with-resilience4j/), [TimeLimiter](https://reflectoring.io/time-limiting-with-resilience4j/), [Bulkhead](https://reflectoring.io/bulkhead-with-resilience4j/), [Circuitbreaker](https://reflectoring.io/circuitbreaker-with-resilience4j/) core modules and [seen](https://reflectoring.io/retry-with-springboot-resilience4j/) its Spring Boot support for the Retry module. 
 
-In this article, we'll focus on the RateLimiter and see how the Spring Boot support makes it simple and more convenient to implement rate limiting in our applications. 
+In this article, we'll focus on the RateLimiter and see how the Spring Boot support makes it simple and more convenient to implement rate-limiting in our applications. 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/resilience4j/springboot-resilience4j" %}
 
@@ -20,7 +20,7 @@ In this article, we'll focus on the RateLimiter and see how the Spring Boot supp
 
 If you haven't read the previous article on RateLimiter, check out the ["What is Rate Limiting?"](https://reflectoring.io/rate-limiting-with-resilience4j/#what-is-rate-limiting),  ["When to Use RateLimiter?"](https://reflectoring.io/rate-limiting-with-resilience4j/#when-to-use-ratelimiter), and ["Resilience4j RateLimiter Concepts"](https://reflectoring.io/rate-limiting-with-resilience4j/#resilience4j-ratelimiter-concepts) sections for a quick intro.
 
-You can find out how to setup Maven or Gradle for your project [here](https://reflectoring.io/retry-with-springboot-resilience4j/#step-1-adding-the-resilience4j-spring-boot-starter).
+You can find out how to set up Maven or Gradle for your project [here](https://reflectoring.io/retry-with-springboot-resilience4j/#step-1-adding-the-resilience4j-spring-boot-starter).
 
 ## Using the Spring Boot Resilience4j RateLimiter Module
 
@@ -32,7 +32,7 @@ In production, we'd configure the `RateLimiter` based on our contract with the r
 
 ### Basic Example
 
-Suppose our contract with the airline's service says that we can call their search API at 2 rps. Then we would configure the `RateLimiter` like this:
+Suppose our contract with the airline's service says that we can call their search API at 2 rps (requests per second). Then we would configure the `RateLimiter` like this:
 
 ```yaml
   ratelimiter:
@@ -89,7 +89,7 @@ io.github.resilience4j.ratelimiter.RequestNotPermitted: RateLimiter 'timeoutExam
 
 ### Applying Multiple Rate Limits
 
-Suppose the airline's flight search had multiple rate limits: 2 rps *and* 40 rpm. 
+Suppose the airline's flight search had multiple rate limits: 2 rps *and* 40 rpm (requests per minute). 
 
 Let's first configure the two `RateLimiter`s:
 
@@ -141,9 +141,9 @@ List<Flight> rpmLimitedSearch(SearchRequest request) {
 }
 ```
 
-**If we run this, we'll find that this approach doesn't work too.** Only the first `@RateLimiter` is applied and not the second one.
+**If we run this, we'll find that this approach doesn't work either.** Only the first `@RateLimiter` is applied and not the second one.
 
-**This is because when a Spring bean calls another method defined in the same bean, the call does not go through the Spring proxy. It would just be a call from one method in the target object to another one in the same object.** 
+**This is because when a Spring bean calls another method defined in the same bean, the call does not go through the Spring proxy, and thus the annotation is not evaluated.** It would just be a call from one method in the target object to another one in the same object.
 
 To get around this, let's define the `rpmRateLimitedSearch()` method in a new Spring bean:
 
@@ -215,11 +215,11 @@ Flight search successful
 io.github.resilience4j.ratelimiter.RequestNotPermitted: RateLimiter 'multipleRateLimiters_rpm_limiter' does not permit further calls
 ```
 
-And the last part of the output above shows the 41st request being throtlled.
+And the last part of the output above shows the 41st request being throttled due to the 40 rpm rate limit.
 
 ### Changing Limits at Runtime
 
-Sometimes, we may want to change at runtime the values we configured for `limitForPeriod` and `timeoutDuration`. For example, the remote service may have specified different rate limits based on the time of day or normal hours vs peak hours, etc.
+Sometimes, we may want to change at runtime the values we configured for `limitForPeriod` and `timeoutDuration`. For example, the remote service may have specified different rate limits based on the time of day or normal hours vs. peak hours, etc.
 
 We can do this by calling the `changeLimitForPeriod()` and `changeTimeoutDuration()` methods on the `RateLimiter`, just as we did when working with the `RateLimiter` core module.
 
@@ -298,7 +298,7 @@ resilience4j:
         maxRetryAttempts: 2
         waitDuration: 1s
 
-ratelimiter:
+  ratelimiter:
     instances:
       limitForPeriod: 1
       limitRefreshPeriod: 1s
@@ -342,7 +342,7 @@ public List<Flight> fallbackExample(SearchRequest request) {
 }
 ```
 
-The fallback method should be defined in the same class as the rate limiting class. It should have the same method signature as the original method with one additional parameter - the `Exception` that caused the original one to fail:
+The fallback method should be defined in the same class as the rate-limiting class. It should have the same method signature as the original method with one additional parameter - the `Exception` that caused the original one to fail:
 
 ```java
 private List<Flight> localCacheFlightSearch(SearchRequest request, RequestNotPermitted rnp) {
@@ -377,7 +377,7 @@ Then we add a `@PostConstruct` method which sets up the `onSuccess` and  `onFail
 ```java
 @PostConstruct
 public void postConstruct() {
-  io.github.resilience4j.ratelimiter.RateLimiter.EventPublisher eventPublisher = registry
+  EventPublisher eventPublisher = registry
         .rateLimiter("rateLimiterEventsExample")
         .getEventPublisher();
   
@@ -411,9 +411,9 @@ Spring Boot Resilience4j makes the details about the last 100 rate limit events 
 
 Let's look at the data returned by doing a `curl` to these endpoints.
 
-### Endpoint `/actuator/ratelimiters`
+### Ratelimiters Endpoint
 
-This endpoint lists the names of all the ratelimiter instances available:
+This endpoint lists the names of all the rate-limiter instances available:
 
 ```bash
 $ curl http://localhost:8080/actuator/ratelimiters
@@ -431,7 +431,7 @@ $ curl http://localhost:8080/actuator/ratelimiters
 }
 ```
 
-### Endpoint `/actuator/metrics/resilience4j.ratelimiter.available.permissions`
+### Permissions Endpoint
 
 This endpoint exposes the `resilience4j.ratelimiter.available.permissions` metric:
 
@@ -459,7 +459,7 @@ $ curl http://localhost:8080/actuator/metrics/resilience4j.ratelimiter.available
 }
 ```
 
-### Endpoint `/actuator/metrics/resilience4j.ratelimiter.waiting_threads`
+### Waiting Threads Endpoint
 
 This endpoint exposes the `resilience4j.ratelimiter.waiting_threads` metric:
 
@@ -489,8 +489,8 @@ $ curl http://localhost:8080/actuator/metrics/resilience4j.ratelimiter.available
 
 ## Conclusion
 
-In this article, we learned how we can use Resilience4j RateLimter's built-in Spring Boot support to implement client-side rate limiting. We looked at the different ways to configure it with practical examples. 
+In this article, we learned how we can use Resilience4j RateLimiter's built-in Spring Boot support to implement client-side rate-limiting. We looked at the different ways to configure it with practical examples. 
 
-For a deeper understanding of Resilience4j RateLimiter concepts and some good practices to follow when implementing rate limiting in general, check out the related, previous [article](https://reflectoring.io/rate-limiting-with-resilience4j/) in this series. 
+For a deeper understanding of Resilience4j RateLimiter concepts and some good practices to follow when implementing rate-limiting in general, check out the related, previous [article](https://reflectoring.io/rate-limiting-with-resilience4j/) in this series. 
 
 You can play around with a complete application illustrating these ideas using the code [on GitHub](https://github.com/thombergs/code-examples/tree/master/resilience4j/springboot-resilience4j).

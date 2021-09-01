@@ -25,8 +25,8 @@ $( document ).ready(function() {
             slide: 1,
             iconColor: "#000000",
             header: "",
-            width: "666px",
-            content: "<a href=\"https://learn.launchdarkly.com/effective-feature-management/?utm_source=reflectoring&utm_medium=display&utm_campaign=21q2-reflectoring.io&utm_content=ebook_oreilly_efm\"><img alt=\"Effective Feature Management\" src=\"/assets/img/launchdarkly/2021_02_EffectiveFeatureManagementGuide_Ad_640x100@2x.png\"/></a>",
+            width: "424px",
+            content: "<a href=\"https://learn.launchdarkly.com/progressive-delivery/?utm_source=reflectoring&utm_medium=display&utm_campaign=21q2-reflectoring.io&utm_content=ebook_oreilly_efm\"><img alt=\"Progressive Delivery\" src=\"/assets/img/launchdarkly/2021_02_ProgressiveDeliveryGuide_Ad_200x200@2x.png\"/></a>",
             afterPopup: function() {
               setCookie("launchdarkly", "true", 7);
             }

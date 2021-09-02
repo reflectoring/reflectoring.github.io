@@ -179,11 +179,160 @@ Next we create the meter registry by providing the `CloudWatch` config, a system
 The full list of configuration properties available for CloudWatch integration are:
 
 
-## Creating the Meters
+After configuring the MeterRegistry, we will look at how we register and update our meters in the next sections.
 
-After configuring the MeterRegistry, we will next register our meters. We will do this in the constructor of our controller class holding the signature of our REST API.
+We will register three meters:
+1. Meter to count page views. This will be of type counter since this measure always goes up.
+2. Meter to track the price of a product.  computed by a pricing engine. We have used a simple java method for PE but in real life it could be a rules based engine. The price can go up and down so we will use a meter of type Gauge here.
+3. Meter to measure time of execution. We will use a meter of type timer here.
 
-We have registered the meters of type Counter, Gauge, and Timer using two methods as shown below:
+## Registering and Incrementing the Counter
+
+We want to count the number of views of products list page in our application. We do this by updating the meter of type counter since this measure always goes up. In our application we register the counter for page views in the constructor and increment the counter when the API is invoked as shown in the code snippet below: 
+
+@RestController
+@Slf4j
+public class ProductController {
+  private Counter pageViewsCounter;
+  
+  private MeterRegistry meterRegistry;
+ 
+  @Autowired
+  ProductController(MeterRegistry meterRegistry, PricingEngine pricingEngine){
+    
+     this.meterRegistry = meterRegistry;
+      
+     pageViewsCounter = meterRegistry
+         .counter("PAGE_VIEWS.ProductList");
+  }
+  
+  @GetMapping("/products")
+  @ResponseBody
+  public List<Product> fetchProducts() {
+    long startTime = System.currentTimeMillis();
+    
+    List<Product> products = fetchProductsFromStore();
+    
+    // increment page views counter
+    pageViewsCounter.increment();
+        
+    return products;
+  }
+  
+  private List<Product> fetchProductsFromStore(){
+    List<Product> products = new ArrayList<Product>();
+    products.add(Product.builder().name("Television").build());
+    products.add(Product.builder().name("Book").build());
+    return products;
+  }
+}
+
+Here we are registering the meter of type counter by calling the `counter` method on our cloudWatchregistry object created in the previous section. This method is accepting a name of the meter.
+
+## Registering and Recording the Timer
+Now we want to record the time taken to execute the API for fetching products. This is a measure of short duration latency so we will make use of a meter of type `Timer`.
+
+We will register the `Timer` by calling the `Timer` static method on the registry object in the constructor of our controller class as shown here: 
+
+```java
+@RestController
+@Slf4j
+public class ProductController {
+  private Timer productTimer;
+  private MeterRegistry meterRegistry;
+ 
+  @Autowired
+  ProductController(MeterRegistry meterRegistry, PricingEngine pricingEngine){
+    
+     this.meterRegistry = meterRegistry;
+     productTimer = meterRegistry
+         .timer("execution.time.fetchProducts"); 
+  }
+  
+  
+  @GetMapping("/products")
+  @ResponseBody
+  public List<Product> fetchProducts() {
+    long startTime = System.currentTimeMillis();
+    
+    List<Product> products = fetchProductsFromStore();
+ 
+    // record time to execute the method
+    productTimer.record(Duration.ofMillis(System.currentTimeMillis() - startTime));
+        
+    return products;
+  }
+  
+  private List<Product> fetchProductsFromStore(){
+    List<Product> products = new ArrayList<Product>();
+    // Fetch products from database or external API
+    return products;
+  }
+}
+
+```
+We have set the name of the timer as `execution.time.fetchProducts` when registering in the constructor. In the `fetchProducts` method body we record the execution time by calling the `record` method. 
+
+## Registering and Updating the Gauge
+We will next register a meter of type Gauge to track the price of a product. For the purpose of our example, we are using a fictitious pricing engine to compute the price at regular intervals. We have used a simple java method for pricing engine but in real life it could be a sophisticated rules based component. The price can go up and down so Gauge is an appropriate meter to track this measure.
+
+We are constructing the Gauge using the fluent builder interface of the Gauge as shown below:
+
+```java
+@RestController
+@Slf4j
+public class ProductController {
+  private Gauge priceGauge;
+  
+  private MeterRegistry meterRegistry;
+  
+  private PricingEngine pricingEngine;
+
+  @Autowired
+  ProductController(MeterRegistry meterRegistry, PricingEngine pricingEngine){
+    
+     this.meterRegistry = meterRegistry;
+     this.pricingEngine = pricingEngine;
+         
+     priceGauge = Gauge
+            .builder("product.price", pricingEngine , 
+               (pe)->{return pe != null? pe.getProductPrice() : null;})
+            .description("Product price")
+            .baseUnit("ms")
+            .register(meterRegistry);
+  }
+  
+ ...
+ ...
+ 
+}
+
+@Service
+public class PricingEngine {
+  
+  private Double price;
+  
+  public Double getProductPrice() {
+    return price; 
+  }
+  
+  @Scheduled(fixedRate = 70000)
+  public void computePrice() {
+    
+    Random random = new Random();
+    price = random.nextDouble() * 100;
+
+  }
+
+}
+```
+As we can see in this code snippet, the price is computed every `70000` milliseconds specified by the  `Scheduled` annotation over the `computePrice` method.
+
+We have already set up the gauge during registration to track the price automatically by specifying the function `getProductPrice`.
+
+
+
+We will do this in the constructor of our controller class as shown below:
 
 ```java
 @RestController
@@ -191,7 +340,7 @@ We have registered the meters of type Counter, Gauge, and Timer using two method
 public class ProductController {
   private Counter pageViewsCounter;
   private Timer productTimer;
-  private Gauge priceGauge = null;
+  private Gauge priceGauge;
   
   private MeterRegistry meterRegistry;
   
@@ -206,7 +355,7 @@ public class ProductController {
      // Meter registrations     
      priceGauge = Gauge
             .builder("product.price", pricingEngine , 
-               (pe)->{return pe!=null?pe.getProductPrice():null;})
+               (pe)->{return pe != null?pe.getProductPrice():null;})
             .description("Product price")
             .baseUnit("ms")
             .register(meterRegistry);
@@ -224,7 +373,10 @@ public class ProductController {
 
 }
 ```
-Here we are initializing three meters:
+In this code snippet, we are registering the meter of type counter by calling the `counter` method on our cloudWatchregistry object created in the previous section. We also register the timer in a similar way by calling the timer method on the registry object. Both these methods are accepting a name of the meter.
+
+We register the Gauge to track the price using the fluent builder which gives us more flexibility to use the meter builders and call the register method at the end.
+
 1. Counter to measure the count of views of the product list page.
 2. Gauge to track the price of a product
 3. Timer to record time of execution of `fetchProducts` method.
@@ -233,74 +385,37 @@ Here we are initializing three meters:
 
 At every step the CloudWatch registry will collect the data for all registered meters and publish CloudWatch metrics accordingly. Those metrics will be published in the namespace specified in the registry configuration. The metric dimensions are directly derived from the meter tags.
 
-Next we create our meters in a controller class:
-
-## Generating Application Metrics
-Here we increment the counter for page views meter using the `increment` method. 
-```java
-@RestController
-@Slf4j
-public class ProductController {
-  private Counter pageViews;
-  private Timer productTimer;
-  private Gauge priceGauge = null;
-  
-  private MeterRegistry meterRegistry;
-  
-  private PricingEngine pricingEngine;
-
-  @Autowired
-  ProductController(MeterRegistry meterRegistry, PricingEngine pricingEngine){
- // Meter registrations 
- ...
- ...
-
-  }
-  
-  @GetMapping("/products")
-  @ResponseBody
-  public List<Product> fetchProducts() {
-    long startTime = System.currentTimeMillis();
-    
-    List<Product> products = fetchProductsFromStore();
-    
-    // increment page views counter
-    pageViewsCounter.increment();
-
-    // record time to execute the method
-    productTimer.record(Duration.ofMillis(System.currentTimeMillis() - startTime));
-        
-    return products;
-  }
-}
-
-@Service
-public class PricingEngine {
-  
-  private Double price;
-  
-  public Double getProductPrice() {
-    return price;
-  }
-  
-  @Scheduled(fixedRate = 70000)
-  public void computePrice() {
-    Random random = new Random();
-    price = random.nextDouble() * 100;
-  }
-}
-
-```
-
-### Increamenting Counter
-
-### Updating Gauge
-
-### Recording Timer
 
 ## Visualizing the Metrics in CloudWatch
 
-Let us open the AWS console and visualize the metrics generated in the previous section.
+Let us open the [AWS CloudWatch console](https://console.aws.amazon.com/cloudwatch/) to see the metrics generated in the previous section. Our metrics will be grouped under the namespace configured when generating the metrics. 
+
+The namespace we have used to create our metrics appears under the custom namespaces section as can be seen in this screenshot:
+
+![CloudWatch Metrics namespaces](/assets/img/posts/aws-spring-cloudwatch/cw-namespaces.png)
+
+Here we can see our namespace `productApp` containing `6 metrics`. Let us get inside the namespace to see the list of metrics as shown below:
+
+![CloudWatch Metrics](/assets/img/posts/aws-spring-cloudwatch/cloudwatch-metrics.png)
+
+We can find our metrics with the name of the metrics we had specified when registering the Micrometer `meters` of type counter, timer, and gauge. We can see the metrics corresponding to the metrics we had created with Micrometer:
+
+|Micrometer Meter|Meter Type|CloudWatch Metric|
+|-|-|-|
+|product.price|Gauge|product.price.value|
+|PAGE_VIEWS.ProductList|Counter|PAGE_VIEWS.ProductList.count|
+|execution.time.fetchProducts|Timer|execution.time.fetchProducts.avg
+execution.time.fetchProducts.count
+execution.time.fetchProducts.max
+execution.time.fetchProducts.sum|
+
+The metric values viewed in the CloudWatch graph is shown below:
+
+![CloudWatch Gauge](/assets/img/posts/aws-spring-cloudwatch/cw-gauge.png)
+
+![CloudWatch Counter](/assets/img/posts/aws-spring-cloudwatch/cw-counter.png)
+
+![CloudWatch Timer](/assets/img/posts/aws-spring-cloudwatch/cw-timer.png)
 
 
 ## Conclusion

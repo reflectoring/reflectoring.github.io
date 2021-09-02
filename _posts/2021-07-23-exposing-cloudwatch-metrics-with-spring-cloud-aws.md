@@ -28,32 +28,33 @@ Hence it will be worthwhile to introduce a few concepts before moving ahead:
 **Metric**: Metric is a fundamental concept in CloudWatch. It is associated with one or more measures of any application attribute at any point of time. Some examples of metrics are:
 
  like number of http requests, CPU utilization, etc. 
- |-|10:00|10:05|10.10|10:15|
+ |Time Stamps->|10:00|10:05|10.10|10:15|
  |-|-|-|-|-|
  |cpu|40|63|10.10|10:15|
 
 
-**NameSpace**: A namespace is a container for CloudWatch metrics. We specify a namespace for each data point you publish to CloudWatch. 
+**NameSpace**: A namespace is a container for CloudWatch metrics. We specify a namespace for each data point published to CloudWatch. 
 
 Metrics are uniquely defined by a name, a namespace, and zero or more dimensions. Each data point in a metric has a time stamp, and (optionally) a unit of measure. 
 
-Each metric data point must be associated with a time stamp. The time stamp can be up to two weeks in the past and up to two hours into the future. If you do not provide a time stamp, CloudWatch creates a time stamp for you based on the time the data point was received.
+Each metric data point must be associated with a time stamp. The time stamp can be up to two weeks in the past and up to two hours into the future.
 
-A dimension is a name/value pair that is part of the identity of a metric. We can assign up to 10 dimensions to a metric.
+**Dimension**: A dimension is a name/value pair that is part of the identity of a metric. We can assign up to 10 dimensions to a metric.
 
-In the subsequent sections, we will create a Spring Boot application, generate metrics, and ship them to Amazon CloudWatch.
+In the subsequent sections, we will create a Spring Boot application, generate metrics, and ship them to Amazon CloudWatch and visualize them using CloudWatch graphs.
 
-## Setting up the Environment
+## Setting up the Environment and Adding the Dependencies
 
 With this basic understanding of CloudWatch, let us work with a few examples by first setting up our environment.
 
 Let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.5.3.RELEASE&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=metricscapture&name=metricscapture&description=Demo%20project%20for%20capturing%20cloudwatch%20metrics%20in%20Spring%20Boot&packageName=io.pratik.metricscapture&dependencies=web,lombok), and then open the project in our favorite IDE.
 
-We want to create a REST API for fetching a list of products in an online shopping application. Accordingly we have added dependencies on web and lombok modules in our pom.xml. 
+We want to create a REST API for fetching a list of products in an online shopping application. Accordingly we have added dependencies on `web` and `lombok` modules in our Maven `pom.xml`. 
 
-In the next sections we will enrich our application to capture the following metrics each with a specific purpose:
-1. number of http requests for the fetch products api
-2. Price of product
+In the next sections, we will enrich our application to capture the following metrics each with a specific purpose:
+1. number of http requests for the fetch products api.
+2. Price of product.
+3. Total execution time of fetch products api.
 
 ## Using Micrometer to Decouple the Application from CloudWatch
 We are using Amazon CloudWatch to collect the metrics from our application. In future we might want to switch to a different metrics collector like datadog, prometheus, etc. Micrometer provides a tool agnostic interface for collecting metrics from our application and publish the metrics to our target metrics collector. This enables us to support multiple metrics collectors and switch between them with minimal changes in configuration.
@@ -400,13 +401,12 @@ Here we can see our namespace `productApp` containing `6 metrics`. Let us get in
 
 We can find our metrics with the name of the metrics we had specified when registering the Micrometer `meters` of type counter, timer, and gauge. We can see the metrics corresponding to the metrics we had created with Micrometer:
 
-|Micrometer Meter|Meter Type|CloudWatch Metric|
+| Micrometer Meter |Meter Type|CloudWatch Metric|
 |-|-|-|
 |product.price|Gauge|product.price.value|
 |PAGE_VIEWS.ProductList|Counter|PAGE_VIEWS.ProductList.count|
-|execution.time.fetchProducts|Timer|execution.time.fetchProducts.avg
-execution.time.fetchProducts.count
-execution.time.fetchProducts.max
+|execution.time.fetchProducts|Timer|execution.time.fetchProducts.avg, execution.time.fetchProducts.count
+, execution.time.fetchProducts.max, 
 execution.time.fetchProducts.sum|
 
 The metric values viewed in the CloudWatch graph is shown below:

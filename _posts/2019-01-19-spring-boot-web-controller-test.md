@@ -182,7 +182,7 @@ class RegisterRestControllerTest {
 </div> 
 
 We can now `@Autowire` all the beans we need from the application context. Spring Boot automatically 
-provides beans like an `@ObjectMapper` to map to and from JSON and a
+provides beans like an `ObjectMapper` to map to and from JSON and a
 `MockMvc` instance to simulate HTTP requests. 
 
 We use `@MockBean` to mock away the business logic, since we don't want

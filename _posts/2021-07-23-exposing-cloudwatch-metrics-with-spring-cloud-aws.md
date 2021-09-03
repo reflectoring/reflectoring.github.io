@@ -258,16 +258,24 @@ public class AppConfig {
 
   @Bean
   public CloudWatchAsyncClient cloudWatchAsyncClient() {
-    return CloudWatchAsyncClient.builder().region(Region.US_EAST_1)
-        .credentialsProvider(ProfileCredentialsProvider.create("pratikpoc")).build();
+    return CloudWatchAsyncClient
+        .builder()
+        .region(Region.US_EAST_1)
+        .credentialsProvider(
+          ProfileCredentialsProvider
+          .create("pratikpoc"))
+        .build();
   }
   
   @Bean
   public MeterRegistry getMeterRegistry() {
     CloudWatchConfig cloudWatchConfig = setupCloudWatchConfig();
     
-    CloudWatchMeterRegistry cloudWatchMeterRegistry = new CloudWatchMeterRegistry(cloudWatchConfig, Clock.SYSTEM,
-        cloudWatchAsyncClient());
+    CloudWatchMeterRegistry cloudWatchMeterRegistry = 
+        new CloudWatchMeterRegistry(cloudWatchConfig, 
+                                    Clock.SYSTEM,
+                                    cloudWatchAsyncClient()
+                                    );
         
     return cloudWatchMeterRegistry;
   }
@@ -487,10 +495,14 @@ execution.time.fetchProducts.sum|
 
 The metric values viewed in the CloudWatch graph is shown below:
 
+The Gauge is mapped to 1 Metric with a suffix of value.
+
 ![CloudWatch Gauge](/assets/img/posts/aws-spring-cloudwatch/cw-gauge.png)
 
+The Counter is mapped to 1 Metric with a suffix of value.
 ![CloudWatch Counter](/assets/img/posts/aws-spring-cloudwatch/cw-counter.png)
 
+The Timer is mapped to 4 Metric with a suffix of value.
 ![CloudWatch Timer](/assets/img/posts/aws-spring-cloudwatch/cw-timer.png)
 
 

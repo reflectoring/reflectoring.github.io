@@ -1,10 +1,10 @@
 ---
 title: "Publishing Metrics from Spring Boot Application to Amazon CloudWatch"
 categories: [craft]
-date: 2021-06-14 06:00:00 +1000
-modified: 2021-06-13 06:00:00 +1000
+date: 2021-09-02 06:00:00 +1000
+modified: 2021-09-02 06:00:00 +1000
 author: pratikdas
-excerpt: "Amazon CloudWatch is a monitoring and observability service in AWS Cloud. Spring Cloud AWS provides convenient methods to make it easy to integrate applications with the AWS Services. In this article, we will look at using Spring Cloud AWS for working with Amazon CloudWatch Service with the help of some basic concepts of observality."
+excerpt: "Amazon CloudWatch is a monitoring and observability service in AWS Cloud. In this article, we will generate different types of application metrics in a Spring Boot web application and send those metrics to Amazon CloudWatch. Amazon CloudWatch will store the metrics data, and help us to derive insights about our application by visualizing the metric data in graphs."
 image:
   auto: 0074-stack
 ---
@@ -87,10 +87,103 @@ In the next sections, we will enrich this application to capture three metrics e
 3. Total execution time of the fetch products API.
 
 ## Integrating the Application with CloudWatch
-The simplest way of sending metrics to CloudWatch is by using the AWS Java SDK. By default, Amazon EC2 sends metric data to CloudWatch in 5-minute periods. To send metric data for your instance to CloudWatch in 1-minute periods, you can enable detailed monitoring on the instance. For more information, see Enable or turn off detailed monitoring for your instances.
+The simplest way for an application to send metrics to CloudWatch is by using the AWS Java SDK. The below code shows a service class for sending metrics to CloudWatch using AWS Java SDK:
+
+
+```java
+
+@Configuration
+public class AppConfig {
+  @Bean
+  public CloudWatchAsyncClient cloudWatchAsyncClient() {
+    return CloudWatchAsyncClient
+           .builder()
+           .region(Region.US_EAST_1)
+           .credentialsProvider(
+             ProfileCredentialsProvider
+             .create("pratikpoc"))
+           .build();
+  }
+}
+
+@Service
+public class MetricPublisher {
+  
+  private CloudWatchAsyncClient cloudWatchAsyncClient;
+  
+  @Autowired
+  public MetricPublisher(CloudWatchAsyncClient cloudWatchAsyncClient) {
+    super();
+    this.cloudWatchAsyncClient = cloudWatchAsyncClient;
+  }
+
+  public void putMetricData(final String nameSpace, 
+            final String metricName, 
+            final Double dataPoint,
+            final List<MetricTag> metricTags) {
+
+    try {
+      
+      List<Dimension> dimensions = metricTags
+          .stream()
+          .map((metricTag)->{
+                 return Dimension
+                   .builder()
+                   .name(metricTag.getName())
+                   .value(metricTag.getValue())
+                   .build();
+      }).collect(Collectors.toList());      
+      
+      // Set an Instant object
+      String time = ZonedDateTime
+                 .now(ZoneOffset.UTC)
+                 .format(DateTimeFormatter.ISO_INSTANT);
+      Instant instant = Instant.parse(time);
+      
+      MetricDatum datum = MetricDatum
+               .builder()
+               .metricName(metricName)
+               .unit(StandardUnit.NONE)
+               .value(dataPoint)
+               .timestamp(instant)
+               .dimensions(dimensions)
+               .build();
+      
+      PutMetricDataRequest request = 
+                 PutMetricDataRequest
+                 .builder()
+                 .namespace(nameSpace)
+                 .metricData(datum)
+                 .build();
+      
+      cloudWatchAsyncClient.putMetricData(request);
+    
+    } catch (CloudWatchException e) {
+       System.err.println(e.awsErrorDetails().errorMessage());
+    }
+  }
+}
+
+public class MetricTag {
+  private String name;
+  private String value;
+  public MetricTag(String name, String value) {
+    super();
+    this.name = name;
+    this.value = value;
+  }
+  // Getters
+  ...
+  ...
+}
+
+```
+In this code snippet, we are establishing the connection to Amazon CloudWatch by setting up the `CloudWatchAsyncClient` with our AWS profile credentials. The request for sending the metric is created in the `putMetricData` method. 
+
+The metric is created by specifying the name of the metric, and the namespace under which the metrics will be created along with one or more tags associated with the metric called dimensions.
 
 ## Using Micrometer to Decouple the Application from CloudWatch
-Instead of using the CloudWatch SDK, we will make use of MicroMeter library to create our metrics and send to CloudWatch. 
+We will make use of MicroMeter library, instead of the AWS Java SDK, to create our metrics and send to Amazon CloudWatch. 
 
 MicroMeter acts as a facade to different monitoring systems by providing a tool agnostic interface for collecting metrics from our application and publishing the metrics to our target metrics collector. 
 
@@ -98,24 +191,20 @@ MicroMeter acts as a facade to different monitoring systems by providing a tool 
 
 This enables us to support multiple metrics collectors and switch between them with minimal changes in configuration.
 
-## Classes of Interest
+## Micrometer MeterRegistry and Meters 
 `MeterRegistry` and `Meter` are the two central concepts in Micrometer. A `Meter` is the interface for collecting metrics about an application. `Meters` in Micrometer are created from and held in a `MeterRegistry`. A sample code for instantiating a `MeterRegistry` will look like this:
 
 ```java
 MeterRegistry registry = new SimpleMeterRegistry();
 ```
-`SimpleMeterRegistry` is a default implementation of `MeterRegistry` bundled with Micrometer. It holds the latest value of each meter in memory and does not export the data to any metrics collector.
-
-`MeterRegistry` represents the monitoring system where we want to push the metrics for storage and visualization. Each supported monitoring system has an implementation of `MeterRegistry`. `CloudWatchMeterRegistry` is the `MeterRegistry` implementation for Amazon CloudWatch. 
+`SimpleMeterRegistry` is a default implementation of `MeterRegistry` bundled with Micrometer. It holds the latest value of each meter in memory and does not export the data to any metrics collector. The diagram here shows the hierarchy and relationships of important classes and interfaces of Micrometer.
 
 ![CloudWatch Metrics](/assets/img/posts/aws-spring-cloudwatch/micrometer-classes.png)
 
 
-We will create this class in our example in the next section to push the application metrics to Amazon CloudWatch. 
+We can see different types of Meter and MeterRegistries in this diagram.
 
-Metrics are a set of measurements about an application.
-
-A `Meter` is the interface for collecting metrics and is created from a `MeterRegistry`. `Counter`, `Gauge`, and `Timer` are different types of `Meter`. We will collect these types in our application.
+**MeterRegistry represents the monitoring system where we want to push the metrics for storage and visualization**.
 
 Each [supported monitoring system](https://micrometer.io/docs/concepts#_supported_monitoring_systems) has an implementation of `MeterRegistry`. For example, for sending metrics to Amazon CloudWatch we will use `CloudWatchMeterRegistry`. 
 
@@ -126,20 +215,15 @@ Timer, Counter, Gauge, DistributionSummary, LongTaskTimer, FunctionCounter, Func
 
 Let us understand the kind of measures they can be typically used for:
 
-### Counters
-Counter represents a single numerical value that only goes up. They are used to count requests served, tasks completed, errors occurred, etc. Counters should not be used for counts of items whose number can also go down. For these items we should use gauges described in the next section.
+1. **Counter**: Counter is used to measure numerical values which only increase. They can be used to count requests served, tasks completed, errors occurred, etc. 
 
-### Gauges
-A gauge represents a single numerical value that can arbitrarily go up and down. Gauges are used for measured values like current memory usage, but also “counts” that can go up and down, like the number of messages in a queue.
+2. **Gauge**: A gauge represents a numerical value that can both increase and decrease. Gauge is used to measure values like current CPU usage, cache size, the number of messages in a queue, etc.
 
-### Timers
-Timers measure both the rate that a particular piece of code is called and the distribution of its duration. They do not record the duration until the task is complete. These are useful for measuring short-duration latencies and the frequency of such events.
-
-Different meter types result in a different number of time series metrics. For example, while there is a single metric that represents a Gauge, a Timer measures both the count of timed events and the total time of all events timed.
+3. **Timer**: Timer is used to measure both the rate that a particular piece of code is called and the distribution of its duration. Timer does not record the duration until the task is complete. It is useful for measuring short-duration latencies and the frequency of such events.
 
 
 ## Spring Boot Integration with Micrometer
-Getting back to our application, we will first integrate Micrometer with our Spring Boot application to produce these metrics. We do this by first adding a dependency on micrometer core library named `micrometer-core` :
+Coming back to our application, we will first integrate Micrometer with our Spring Boot application to produce these metrics. We do this by first adding a dependency on micrometer core library named `micrometer-core` :
 
 ```xml
     <dependency>
@@ -147,7 +231,7 @@ Getting back to our application, we will first integrate Micrometer with our Spr
       <artifactId>micrometer-core</artifactId>
     </dependency>
 ```
-This library provides classes for creating the meters and pushing to the target monitoring system.
+This library provides classes for creating the meters and pushing the metrics to the target monitoring system.
 
 We next add dependency for the target monitoring system. We are using Amazon CloudWatch so we will add a dependency to `micrometer-registry-cloudwatch2` module in our project:
 
@@ -159,12 +243,12 @@ We next add dependency for the target monitoring system. We are using Amazon Clo
 ```
 This module uses AWS Java SDK version 2 to integrate with Amazon CloudWatch. An earlier version of the module named `micrometer-registry-cloudwatch` uses the AWS Java SDK version 1. Version 2 is the recommended version to use.
 
-This library does the transformation from Micrometer meters to the format of the target monitoring system. Here the `micrometer-registry-cloudwatch2` library converts micrometer meters to cloudwatch metrics. 
+This library does the transformation from Micrometer meters to the format of the target monitoring system. Here the `micrometer-registry-cloudwatch2` library converts Micrometer meters to CloudWatch metrics. 
 
 
-## Creating the Registry
+## Creating the MeterRegistry
 
-We will now create the `MeterRegistry` implementation for Amazon CloudWatch to create our meters and push the metrics to Amazon CloudWatch. We do this in a Spring configuration class as shown here:
+We will now create the `MeterRegistry` implementation for Amazon CloudWatch to create our Meters and push the metrics to Amazon CloudWatch. We do this in a Spring configuration class as shown here:
 
 
 ```java
@@ -206,31 +290,22 @@ public class AppConfig {
 }
 
 ```
-In this code snippet, we have defined `CloudWatchMeterRegistry` as a Spring bean and initialized the bean with two configuration properties: `cloudwatch.namespace` and `cloudwatch.step` to store and send the metrics to CloudWatch. The complete set of configurable properties are listed in this table:
+In this code snippet, we have defined `CloudWatchMeterRegistry` as a Spring bean. For creating our registry we are first creating a new `CloudWatchConfig` which is initialized with two configuration properties: `cloudwatch.namespace` and `cloudwatch.step` so that it publishes all metrics to the `productsApp` namespace every minute. 
+
+The complete set of configurable properties are listed in this table:
 
 |Property Name| Description| Default |
 |-|-|-|
-
-
-A namespace is used as a container to group the metrics as explained earlier in the section describing cloudWatch.
-
-For creating our registry we are first creating a `CloudWatchConfig`. The CloudWatch registry is a `StepMeterRegistry`. `CloudWatchConfig` inherits from the `StepConfig` interface. A step meter registry publishes metrics in predefined intervals called steps and normalizes the metric values for each step, for example by aggregating individual counter increments.
-
-In addition to the configuration options available for every step meter registry, the CloudWatch config requires to specify a namespace for the metrics to be published. 
-
-The following snippet creates a new `CloudWatch` config that publishes all metrics to the Company/App namespace every minute.
-
-Next we create the meter registry by providing the `CloudWatch` config, a system clock, and an asynchronous CloudWatch client. The asynchronous CloudWatch client is created with our AWS security credentials. 
-
-The full list of configuration properties available for CloudWatch integration are:
+|cloudwatch.namespace|container to group the metrics|none|
+|cloudwatch.step|Interval to send Metrics to CloudWatch|1 Minute|
 
 
 After configuring the MeterRegistry, we will look at how we register and update our meters in the next sections.
 
 We will register three meters:
-1. Meter to count page views. This will be of type counter since this measure always goes up.
-2. Meter to track the price of a product.  computed by a pricing engine. We have used a simple java method for PE but in real life it could be a rules based engine. The price can go up and down so we will use a meter of type Gauge here.
-3. Meter to measure time of execution. We will use a meter of type timer here.
+1. Counter to measure the count of views of the product list page.
+2. Gauge to track the price of a product
+3. Timer to record time of execution of `fetchProducts` method.
 
 ## Registering and Incrementing the Counter
 
@@ -245,7 +320,8 @@ public class ProductController {
   private MeterRegistry meterRegistry;
  
   @Autowired
-  ProductController(MeterRegistry meterRegistry, PricingEngine pricingEngine){
+  ProductController(MeterRegistry meterRegistry,
+                    PricingEngine pricingEngine){
     
      this.meterRegistry = meterRegistry;
       
@@ -276,7 +352,7 @@ public class ProductController {
 ```
 
 
-Here we are registering the meter of type counter by calling the `counter` method on our cloudWatchregistry object created in the previous section. This method is accepting a name of the meter.
+Here we are registering the meter of type counter by calling the `counter` method on our `CloudWatchregistry` object created in the previous section. This method is accepting a name of the meter as parameter.
 
 ## Registering and Recording the Timer
 Now we want to record the time taken to execute the API for fetching products. This is a measure of short duration latency so we will make use of a meter of type `Timer`.
@@ -291,7 +367,8 @@ public class ProductController {
   private MeterRegistry meterRegistry;
  
   @Autowired
-  ProductController(MeterRegistry meterRegistry, PricingEngine pricingEngine){
+  ProductController(MeterRegistry meterRegistry, 
+                    PricingEngine pricingEngine){
     
      this.meterRegistry = meterRegistry;
      productTimer = meterRegistry
@@ -307,7 +384,9 @@ public class ProductController {
     List<Product> products = fetchProductsFromStore();
  
     // record time to execute the method
-    productTimer.record(Duration.ofMillis(System.currentTimeMillis() - startTime));
+    productTimer.record(Duration
+      .ofMillis(System.currentTimeMillis() 
+                - startTime));
         
     return products;
   }
@@ -338,14 +417,18 @@ public class ProductController {
   private PricingEngine pricingEngine;
 
   @Autowired
-  ProductController(MeterRegistry meterRegistry, PricingEngine pricingEngine){
+  ProductController(MeterRegistry meterRegistry, 
+                    PricingEngine pricingEngine){
     
      this.meterRegistry = meterRegistry;
      this.pricingEngine = pricingEngine;
          
      priceGauge = Gauge
             .builder("product.price", pricingEngine , 
-               (pe)->{return pe != null? pe.getProductPrice() : null;})
+               (pe)->{
+                   return pe != null? 
+                      pe.getProductPrice() : null;}
+                )
             .description("Product price")
             .baseUnit("ms")
             .register(meterRegistry);
@@ -378,61 +461,6 @@ public class PricingEngine {
 As we can see in this code snippet, the price is computed every `70000` milliseconds specified by the  `Scheduled` annotation over the `computePrice` method.
 
 We have already set up the gauge during registration to track the price automatically by specifying the function `getProductPrice`.
-
-
-
-We will do this in the constructor of our controller class as shown below:
-
-```java
-@RestController
-@Slf4j
-public class ProductController {
-  private Counter pageViewsCounter;
-  private Timer productTimer;
-  private Gauge priceGauge;
-  
-  private MeterRegistry meterRegistry;
-  
-  private PricingEngine pricingEngine;
-
-  @Autowired
-  ProductController(MeterRegistry meterRegistry, PricingEngine pricingEngine){
-    
-     this.meterRegistry = meterRegistry;
-     this.pricingEngine = pricingEngine;
-         
-     // Meter registrations     
-     priceGauge = Gauge
-            .builder("product.price", pricingEngine , 
-               (pe)->{return pe != null?pe.getProductPrice():null;})
-            .description("Product price")
-            .baseUnit("ms")
-            .register(meterRegistry);
-      
-     pageViewsCounter = meterRegistry
-         .counter("PAGE_VIEWS.ProductList");
-     
-     productTimer = meterRegistry
-         .timer("execution.time.fetchProducts");
-  
-  }
-  
-  ...
-  ...
-
-}
-```
-In this code snippet, we are registering the meter of type counter by calling the `counter` method on our cloudWatchregistry object created in the previous section. We also register the timer in a similar way by calling the timer method on the registry object. Both these methods are accepting a name of the meter.
-
-We register the Gauge to track the price using the fluent builder which gives us more flexibility to use the meter builders and call the register method at the end.
-
-1. Counter to measure the count of views of the product list page.
-2. Gauge to track the price of a product
-3. Timer to record time of execution of `fetchProducts` method.
-
- can either use the factory methods provided by the global Metrics singleton (if you added the CloudWatch registry before) or the ones provided directly by the registry. The meter examples of the previous section were created like this. For more flexibility you can use the meter builders and call the register method at the end.
-
-At every step the CloudWatch registry will collect the data for all registered meters and publish CloudWatch metrics accordingly. Those metrics will be published in the namespace specified in the registry configuration. The metric dimensions are directly derived from the meter tags.
 
 
 ## Visualizing the Metrics in CloudWatch
@@ -469,7 +497,16 @@ The metric values viewed in the CloudWatch graph is shown below:
 ## Conclusion
 
 Here is a list of important points from the article for quick reference:
-In this post we have seen how Micrometer can be used to publish metrics from your application to different monitoring systems. It works as a flexible layer of abstraction between your code and the monitoring systems so that you can easily swap or combine them.
+
+1. Micrometer is used as a facade to publish metrics from our application to different monitoring systems. 
+2. Micrometer works as a flexible layer of abstraction between our code and the monitoring systems so that we can easily swap or combine them.
+3. MeterRegistry and Meter are two important concepts in Micrometer.
+4. Counter, Timer, and Gauge are the three commonly used types of Meter.
+5. Each monitoring system supported by Micrometer has an implementation of MeterRegistry.
+6. The meter types are converted to one or more time-series metrics at the time of publishing to the target monitoring system.
+7. Amazon CloudWatch is a monitoring and observability service in AWS Cloud.
+8. Namespace, metric, and dimension are three important concepts in Amazon CloudWatch.
+9. A metric in CloudWatch is uniquely identified by its name, namespace, and dimension.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/cloudwatch).
 

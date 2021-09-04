@@ -300,15 +300,7 @@ public class AppConfig {
 ```
 In this code snippet, we have defined `CloudWatchMeterRegistry` as a Spring bean. For creating our registry we are first creating a new `CloudWatchConfig` which is initialized with two configuration properties: `cloudwatch.namespace` and `cloudwatch.step` so that it publishes all metrics to the `productsApp` namespace every minute. 
 
-The complete set of configurable properties are listed in this table:
-
-|Property Name| Description| Default |
-|-|-|-|
-|cloudwatch.namespace|container to group the metrics|none|
-|cloudwatch.step|Interval to send Metrics to CloudWatch|1 Minute|
-
-
-After configuring the MeterRegistry, we will look at how we register and update our meters in the next sections.
+After configuring the `MeterRegistry`, we will look at how we register and update our meters in the next sections.
 
 We will register three meters:
 1. Counter to measure the count of views of the product list page.
@@ -410,7 +402,7 @@ public class ProductController {
 We have set the name of the timer as `execution.time.fetchProducts` when registering in the constructor. In the `fetchProducts` method body we record the execution time by calling the `record` method. 
 
 ## Registering and Updating the Gauge
-We will next register a meter of type Gauge to track the price of a product. For our example, we are using a fictitious pricing engine to compute the price at regular intervals. We have used a simple java method for the pricing engine but in real life, it could be a sophisticated rules-based component. The price can go up and down so Gauge is an appropriate meter to track this measure.
+We will next register a meter of type `Gauge` to track the price of a product. For our example, we are using a fictitious pricing engine to compute the price at regular intervals. We have used a simple Java method for the pricing engine but in real life, it could be a sophisticated rules-based component. The price can go up and down so `Gauge` is an appropriate meter to track this measure.
 
 We are constructing the Gauge using the fluent builder interface of the Gauge as shown below:
 
@@ -483,15 +475,13 @@ Here we can see our namespace `productApp` containing `6 metrics`. Let us get in
 
 ![CloudWatch Metrics](/assets/img/posts/aws-spring-cloudwatch/cloudwatch-metrics.png)
 
-We can find our metrics with the name of the metrics we had specified when registering the Micrometer `meters` of type counter, timer, and gauge. We can see the metrics corresponding to the metrics we had created with Micrometer:
+We can find our metrics with the name of the metrics with a suffix. We had specified this name when registering the Micrometer `meters` of type `Counter`, `Timer`, and `Gauge` in the earlier sections. We can see the metrics corresponding to the metrics we had created with Micrometer:
 
 | Micrometer Meter |Meter Type|CloudWatch Metric|
 |-|-|-|
 |product.price|Gauge|product.price.value|
 |PAGE_VIEWS.ProductList|Counter|PAGE_VIEWS.ProductList.count|
-|execution.time.fetchProducts|Timer|execution.time.fetchProducts.avg, execution.time.fetchProducts.count
-, execution.time.fetchProducts.max, 
-execution.time.fetchProducts.sum|
+|execution.time.fetchProducts|Timer|execution.time.fetchProducts.avg|
 
 The metric values viewed in the CloudWatch graph is shown below:
 

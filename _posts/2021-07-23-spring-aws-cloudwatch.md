@@ -481,7 +481,10 @@ We can find our metrics with the name of the metrics with a suffix. We had speci
 |-|-|-|
 |product.price|Gauge|product.price.value|
 |PAGE_VIEWS.ProductList|Counter|PAGE_VIEWS.ProductList.count|
-|execution.time.fetchProducts|Timer|execution.time.fetchProducts.avg|
+|execution.time.fetchProducts|Timer|- execution.time.fetchProducts.avg 
+- execution.time.fetchProducts.count
+- execution.time.fetchProducts.max 
+- execution.time.fetchProducts.sum|
 
 The metric values viewed in the CloudWatch graph is shown below:
 

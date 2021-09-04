@@ -485,10 +485,10 @@ Here we can see our namespace `productApp` containing `6 metrics`. Let us get in
 We can find our metrics with the name of the metrics with a suffix. We had specified this name when registering the Micrometer `meters` of type `Counter`, `Timer`, and `Gauge` in the earlier sections. We can see the metrics corresponding to the metrics we had created with Micrometer:
 
 | Micrometer Meter | Meter Type | CloudWatch Metric |
-| :- | :- | :-: |
+| :--- | :--- | :---: |
 | product.price | Gauge | product.price.value |
 | PAGE_VIEWS.ProductList | Counter | PAGE_VIEWS.ProductList.count |
-| execution.time.fetchProducts | Timer | execution.time.fetchProducts.avg <br />execution.time.fetchProducts.count <br />execution.time.fetchProducts.max <br />execution.time.fetchProducts.sum|
+| execution.time.fetchProducts | Timer | execution.time.fetchProducts.avg <br /> execution.time.fetchProducts.count <br /> execution.time.fetchProducts.max <br /> execution.time.fetchProducts.sum |
 
 The metric values viewed in the CloudWatch graph is shown below:
 

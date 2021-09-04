@@ -39,7 +39,7 @@ Hence it will be worthwhile to introduce a few concepts important for creating t
 
 Metrics are uniquely defined by a name, a namespace, and zero or more dimensions. Each data point in a metric has a time stamp, and optionally a unit of measure. 
 
-When we choose CloudWatch to monitor our application, then the data about to certain attributes of the application is sent to CloudWatch as a data point for a metric at regular intervals.
+When we choose CloudWatch to monitor our application, then the data about certain attributes of the application is sent to CloudWatch as a data point for a metric at regular intervals.
 
 Please refer to the [official documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html) for a more elaborate explanation of Amazon CloudWatch concepts and capabilities.
 
@@ -90,7 +90,7 @@ In the next sections, we will enrich this application to capture three metrics e
 3. Total execution time of the fetch products API.
 
 ## Integrating the Application with CloudWatch
-The simplest way for an application to send metrics to CloudWatch is by using the AWS Java SDK. The below code shows a service class for sending metrics to CloudWatch using AWS Java SDK:
+The simplest way for an application to send metrics to CloudWatch is by using the [AWS Java SDK](https://aws.amazon.com/sdk-for-java/). The below code shows a service class for sending metrics to CloudWatch using AWS Java SDK:
 
 
 ```java
@@ -186,6 +186,7 @@ In this code snippet, we are establishing the connection to Amazon CloudWatch by
 The metric is created by specifying the name of the metric, and the namespace under which the metrics will be created along with one or more tags associated with the metric called dimensions.
 
 ## Using Micrometer to Decouple the Application from CloudWatch
+
 We will make use of the Micrometer library, instead of the AWS Java SDK, to create our metrics and send them to Amazon CloudWatch. 
 
 Micrometer acts as a facade to different monitoring systems by providing a tool agnostic interface for collecting metrics from our application and publishing the metrics to our target metrics collector. 
@@ -222,8 +223,7 @@ Let us understand the kind of measures they can be typically used for:
 
 2. **Gauge**: A gauge represents a numerical value that can both increase and decrease. Gauge is used to measure values like current CPU usage, cache size, the number of messages in a queue, etc.
 
-3. **Timer**: Timer is used to measure both the rate that a particular piece of code is called and the distribution of its duration. The timer does not record the duration until the task is complete. It is useful for measuring short-duration latencies and the frequency of such events.
-
+3. **Timer**: Timer is used for measuring short-duration latencies, and the frequency of such events. All implementations of Timer report at least the total time and count of events as separate time series.
 
 ## Spring Boot Integration with Micrometer
 Coming back to our application, we will first integrate Micrometer with our Spring Boot application to produce these metrics. We do this by first adding a dependency on micrometer core library named `micrometer-core` :

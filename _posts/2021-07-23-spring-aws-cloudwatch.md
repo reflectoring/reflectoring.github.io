@@ -15,7 +15,7 @@ Amazon CloudWatch is a monitoring and observability service in the AWS cloud pla
 
 In this article, we will generate different types of application metrics in a Spring Boot web application and send those metrics to Amazon CloudWatch. Amazon CloudWatch will store the metrics data, and help us to derive insights about our application by visualizing the metric data in graphs.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/cloudwatch" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springcloudwatch" %}
 
 ## What is Amazon CloudWatch?
 
@@ -520,5 +520,5 @@ Here is a list of important points from the article for quick reference:
 8. Namespace, metric, and dimension are three important concepts in Amazon CloudWatch.
 9. A metric in CloudWatch is uniquely identified by its name, namespace, and dimension.
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/cloudwatch).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springcloudwatch).
 

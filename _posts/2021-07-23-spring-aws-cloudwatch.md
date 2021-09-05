@@ -499,6 +499,60 @@ The Counter for measuring the number of page views of `productList` page is mapp
 The Timer meter for measuring the execution time of the `fetchProducts` API is mapped to 3 metrics named `execution.time.fetchProducts.count`, `execution.time.fetchProducts.max`, and `execution.time.fetchProducts.sum` representing the API's total execution time, and maximum and sum of the execution times during an interval.
 ![CloudWatch Timer](/assets/img/posts/aws-spring-cloudwatch/cw-timer.png)
 
+## Generating JVM and System Metrics with Actuator
+We can use the Spring Boot Actuator module to generate useful JVM and system metrics. Spring Boot's  Actuator provides dependency management and auto-configuration for Micrometer. So when we add the Actuator dependency, we need to remove the dependency on Micrometer's core module `micrometer-core`:
+
+```xml
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <dependency> 
+        <groupId>io.micrometer</groupId> 
+        <artifactId>micrometer-registry-cloudwatch2</artifactId> 
+    </dependency> 
+
+```
+
+Spring Boot provides automatic meter registration for a wide variety of technologies. In most situations, the out-of-the-box defaults provide sensible metrics that can be published to any of the supported monioring systems.
+
+For sending the metrics to CloudWatch we need to add two properties to our `application.properties` as sho:
+
+```properties
+management.metrics.export.cloudwatch.namespace=productsApp
+management.metrics.export.cloudwatch.batchSize=10
+```
+
+Auto-configuration will enable JVM metrics using core Micrometer classes. JVM metrics are published under the meter name starting with "jvm." as shown below:
+
+![CloudWatch Actuator JVM](/assets/img/posts/aws-spring-cloudwatch/cw-actuator-jvm.png)
+
+JVM metrics are provided the following information:
+1. Memory and buffer pool details
+2. Garbage collection Statistics
+3. Thread utilization
+4. The number of classes loaded and unloaded
+
+Auto-configuration will also enable system metrics using core Micrometer classes. System metrics are published under the the meter names starting with "system." and "process.":
+
+![CloudWatch Actuator System](/assets/img/posts/aws-spring-cloudwatch/cw-actuator-system.png)
+
+System metrics include the following information :
+1. CPU metrics
+2. File descriptor metrics
+3. Uptime metrics (both the amount of time the application has been running as well as a fixed gauge of the absolute start time)
+
+## Using the Metrics to Setup Alarms
+We will now create an alarm to watch over some metrics we captured earlier. A metric alarm watches a single CloudWatch metric and performs one or more actions based on the value of the metric. 
+
+The diagram here shows the sequence of steps to create an alarm to watch over the metric for execution time of the fetch products API. If the API execution time exceeds a particular band, we want to send an email to notify interested parties to take remedial action:
+
+![CloudWatch Alert](/assets/img/posts/aws-spring-cloudwatch/alert-create.png)
+
+
+The action can be sending a notification to an Amazon SNS topic, performing an Auto Scaling action, or creating an OpsItem or incident in Systems Manager.
+
+
 
 ## Conclusion
 

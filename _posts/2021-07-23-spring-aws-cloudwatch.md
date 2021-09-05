@@ -492,7 +492,7 @@ The Gauge for tracking the price of a product is mapped to 1 metric named `produ
 
 ![CloudWatch Gauge](/assets/img/posts/aws-spring-cloudwatch/cw-gauge.png)
 
-The Counter for measuring the number of page views of `productList` page is mapped to 1 metric named `PAGE_VIEWS.ProductList.count`. We measured this in our application by incrementing the meter for page views on every invocation of the `fetchProducts` API.
+The Counter for measuring the number of page views of a web page showing list of products is mapped to 1 metric named `PAGE_VIEWS.ProductList.count`. We measured this in our application by incrementing the meter for page views on every invocation of the `fetchProducts` API.
 
 ![CloudWatch Counter](/assets/img/posts/aws-spring-cloudwatch/cw-counter.png)
 
@@ -514,15 +514,15 @@ We can use the Spring Boot Actuator module to generate useful JVM and system met
 
 ```
 
-Spring Boot provides automatic meter registration for a wide variety of technologies. In most situations, the out-of-the-box defaults provide sensible metrics that can be published to any of the supported monioring systems.
+Spring Boot provides automatic meter registration for a wide variety of technologies. In most situations, the out-of-the-box defaults provide sensible metrics that can be published to any of the supported monitoring systems.
 
-For sending the metrics to CloudWatch we need to add two properties to our `application.properties` as sho:
+For sending the metrics to CloudWatch we need to add two properties to our `application.properties`: 
 
 ```properties
 management.metrics.export.cloudwatch.namespace=productsApp
 management.metrics.export.cloudwatch.batchSize=10
 ```
-
+Here we have added a property for namespace where the metrics will be collected in CloudWatch. The other property for `batchsize` is the value of the number of metrics sent in a single batch to CloudWatch.
 Auto-configuration will enable JVM metrics using core Micrometer classes. JVM metrics are published under the meter name starting with "jvm." as shown below:
 
 ![CloudWatch Actuator JVM](/assets/img/posts/aws-spring-cloudwatch/cw-actuator-jvm.png)
@@ -533,7 +533,7 @@ JVM metrics are provided the following information:
 3. Thread utilization
 4. The number of classes loaded and unloaded
 
-Auto-configuration will also enable system metrics using core Micrometer classes. System metrics are published under the the meter names starting with "system." and "process.":
+Auto-configuration will also enable system metrics using core Micrometer classes. System metrics are published under the meter names starting with "system." and "process.":
 
 ![CloudWatch Actuator System](/assets/img/posts/aws-spring-cloudwatch/cw-actuator-system.png)
 
@@ -543,16 +543,16 @@ System metrics include the following information :
 3. Uptime metrics (both the amount of time the application has been running as well as a fixed gauge of the absolute start time)
 
 ## Using the Metrics to Setup Alarms
-Alarms are one of the key components of any monitoring solution. Without going too deep, we will only look at how we can make use the metrics from our application to set up an alarm. A metric alarm watches a single CloudWatch metric and performs one or more actions based on the value of the metric. 
+Alarms are one of the key components of any monitoring solution. Without going too deep, we will only look at how we can make use of the metrics from our application to set up an alarm. A metric alarm watches a single CloudWatch metric and performs one or more actions based on the value of the metric. 
 
 We will create an alarm to monitor the fetch products API. If the API execution time exceeds a particular band, we want to send an email to notify interested parties to take remedial actions.
 
-The diagram here shows the sequence of steps to create this alarm to watch over the metric for execution time of the fetch products API:
+The diagram here shows the sequence of steps to create this alarm to watch over the metric for the execution time of the fetch products API:
 
 ![CloudWatch Alert](/assets/img/posts/aws-spring-cloudwatch/alert-create.png)
 
 
-Here we are creating the alarm to watch over metric named "execution.time.fetchProducts.max". We have set up the condition for triggering the alarm as "execution.time.fetchProducts.max is outside the band (width: 2) for 1 datapoints within 5 minutes". When the alarm is triggered , the action is set to fire a notification to an SNS topic where we have subscribed an endpoint to send an email.
+Here we are creating the alarm to watch over metric named "execution.time.fetchProducts.max". We have set up the condition for triggering the alarm as "execution.time.fetchProducts.max is outside the band (width: 2) for 1 datapoint within 5 minutes". When the alarm is triggered, the action is set to fire a notification to an SNS topic, where we have subscribed to an endpoint to send an email.
 
 ## Conclusion
 

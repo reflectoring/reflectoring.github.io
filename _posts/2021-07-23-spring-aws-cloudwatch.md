@@ -221,12 +221,12 @@ Let us understand the kind of measures they can be typically used for:
 
 1. **Counter**: Counter is used to measure numerical values which only increase. They can be used to count requests served, tasks completed, errors that occurred, etc. 
 
-2. **Gauge**: A gauge represents a numerical value that can both increase and decrease. Gauge is used to measure values like current CPU usage, cache size, the number of messages in a queue, etc.
+2. **Gauge**: A Gauge represents a numerical value that can both increase and decrease. Gauge is used to measure values like current CPU usage, cache size, the number of messages in a queue, etc.
 
-3. **Timer**: Timer is used for measuring short-duration latencies, and the frequency of such events. All implementations of Timer report at least the total time and count of events as separate time series.
+3. **Timer**: Timer is used for measuring short-duration latencies, and the frequency of such events. All implementations of `Timer` report at least the total time and count of events as separate time series.
 
 ## Spring Boot Integration with Micrometer
-Coming back to our application, we will first integrate Micrometer with our Spring Boot application to produce these metrics. We do this by first adding a dependency on micrometer core library named `micrometer-core` :
+Coming back to our application, we will first integrate Micrometer with our Spring Boot application to produce these metrics. We do this by first adding a dependency on Micrometer core library named `micrometer-core` :
 
 ```xml
     <dependency>
@@ -355,7 +355,7 @@ public class ProductController {
 ```
 
 
-Here we are registering the meter of type counter by calling the `counter` method on our `CloudWatchregistry` object created in the previous section. This method is accepting the name of the meter as a parameter.
+Here we are registering the meter of type counter by calling the `counter` method on our `CloudWatchRegistry` object created in the previous section. This method is accepting the name of the meter as a parameter.
 
 ## Registering and Recording the Timer
 Now we want to record the time taken to execute the API for fetching products. This is a measure of short duration latency so we will make use of a meter of type `Timer`.
@@ -402,7 +402,7 @@ public class ProductController {
 }
 
 ```
-We have set the name of the timer as `execution.time.fetchProducts` when registering in the constructor. In the `fetchProducts` method body we record the execution time by calling the `record` method. 
+We have set the name of the `Timer` as `execution.time.fetchProducts` when registering in the constructor. In the `fetchProducts` method body we record the execution time by calling the `record` method. 
 
 ## Registering and Updating the Gauge
 We will next register a meter of type `Gauge` to track the price of a product. For our example, we are using a fictitious pricing engine to compute the price at regular intervals. We have used a simple Java method for the pricing engine but in real life, it could be a sophisticated rules-based component. The price can go up and down so `Gauge` is an appropriate meter to track this measure.
@@ -468,7 +468,7 @@ We have already set up the gauge during registration to track the price automati
 
 ## Visualizing the Metrics in CloudWatch
 
-Let us open the [AWS CloudWatch console](https://console.aws.amazon.com/cloudwatch/) to see the metrics generated in the previous section. Our metrics will be grouped under the namespace configured when generating the metrics. 
+Let us open the [AWS CloudWatch console](https://console.aws.amazon.com/cloudwatch/) to see the metrics in CloudWatch generated from the Micrometer meters in the previous section. Our metrics will be grouped under the namespace `productApp` which we had configured in our application when generating the metrics. 
 
 The namespace we have used to create our metrics appears under the custom namespaces section as can be seen in this screenshot:
 
@@ -488,14 +488,15 @@ These are the metrics for each of the meters (Counter, Timer, and Gauge) of Micr
 
 The metric values rendered in the CloudWatch graph is shown below:
 
-The Gauge is mapped to 1 Metric.
+The Gauge for tracking the price of a product is mapped to 1 metric named `product.price.value`.
 
 ![CloudWatch Gauge](/assets/img/posts/aws-spring-cloudwatch/cw-gauge.png)
 
-The Counter is mapped to 1 Metric.
+The Counter for measuring the number of page views of `productList` page is mapped to 1 metric named `PAGE_VIEWS.ProductList.count`. We measured this in our application by incrementing the meter for page views on every invocation of the `fetchProducts` API.
+
 ![CloudWatch Counter](/assets/img/posts/aws-spring-cloudwatch/cw-counter.png)
 
-The Timer is mapped to 3 Metrics.
+The Timer meter for measuring the execution time of the `fetchProducts` API is mapped to 3 metrics named `execution.time.fetchProducts.count`, `execution.time.fetchProducts.max`, and `execution.time.fetchProducts.sum` representing the API's total execution time, and maximum and sum of the execution times during an interval.
 ![CloudWatch Timer](/assets/img/posts/aws-spring-cloudwatch/cw-timer.png)
 
 

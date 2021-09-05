@@ -543,16 +543,16 @@ System metrics include the following information :
 3. Uptime metrics (both the amount of time the application has been running as well as a fixed gauge of the absolute start time)
 
 ## Using the Metrics to Setup Alarms
-We will now create an alarm to watch over some metrics we captured earlier. A metric alarm watches a single CloudWatch metric and performs one or more actions based on the value of the metric. 
+Alarms are one of the key components of any monitoring solution. Without going too deep, we will only look at how we can make use the metrics from our application to set up an alarm. A metric alarm watches a single CloudWatch metric and performs one or more actions based on the value of the metric. 
 
-The diagram here shows the sequence of steps to create an alarm to watch over the metric for execution time of the fetch products API. If the API execution time exceeds a particular band, we want to send an email to notify interested parties to take remedial action:
+We will create an alarm to monitor the fetch products API. If the API execution time exceeds a particular band, we want to send an email to notify interested parties to take remedial actions.
+
+The diagram here shows the sequence of steps to create this alarm to watch over the metric for execution time of the fetch products API:
 
 ![CloudWatch Alert](/assets/img/posts/aws-spring-cloudwatch/alert-create.png)
 
 
-The action can be sending a notification to an Amazon SNS topic, performing an Auto Scaling action, or creating an OpsItem or incident in Systems Manager.
-
-
+Here we are creating the alarm to watch over metric named "execution.time.fetchProducts.max". We have set up the condition for triggering the alarm as "execution.time.fetchProducts.max is outside the band (width: 2) for 1 datapoints within 5 minutes". When the alarm is triggered , the action is set to fire a notification to an SNS topic where we have subscribed an endpoint to send an email.
 
 ## Conclusion
 

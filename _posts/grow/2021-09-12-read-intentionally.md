@@ -23,7 +23,7 @@ If I was to guess the ratio of information I retain to all information that I re
 
 The second category I can avoid by reading intentionally. Some things that I do are:
 
-## Maintain a Reading Links
+## Maintain a Reading List
 
 I maintain a list of things I need to read on a Trello board with a comment on the card that answers the question of why I should read it. 
 

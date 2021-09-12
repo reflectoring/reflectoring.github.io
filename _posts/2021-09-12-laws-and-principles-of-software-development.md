@@ -4,6 +4,10 @@ categories: [craft]
 date: 2021-09-12 06:00:00 +1000
 modified: 2021-09-12 06:00:00 +1000
 excerpt: "Read about the most often cited laws and principles in software development and what we can learn from them."
+toc:
+  enabled: true
+  min: 1
+  max: 1
 image:
   auto: 0111-hammer
 ---
@@ -12,7 +16,7 @@ In discussions around software development, it's almost impossible to avoid quot
 
 "This won't work because of 'The Law of X'!" you might have heard people say. Or "Don't you know 'The Y Principle'? What kind of software developer are you?".
 
-There are many laws and principles to quote and most of the are based on truth. Applying them blindly using absolute statements like above is a sure path toward bruised egos and failure, however.
+There are many laws and principles to quote and most of them are based on truth. Applying them blindly using absolute statements like above is a sure path toward bruised egos and failure, however.
 
 This article enumerates some of the most popular laws and principles that can be applied to software development. For each law, we will quickly discuss its main proposition and then explore how we can apply it to software development (and maybe when we shouldn't).
 

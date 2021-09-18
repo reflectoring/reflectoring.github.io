@@ -77,25 +77,25 @@ Here we have specified the property name as `scheduler.enabled`. We want to enab
 
 ## Adding Scheduled Jobs
 
-After enabling scheduling, we will add jobs to our application for scheduling. We can turn any method in a Spring bean for scheduling by adding the `@Scheduled` annotation over it. 
+After enabling scheduling, we will add jobs to our application for scheduling. We can turn any method in a Spring bean for scheduling by adding the `@Scheduled` annotation to it. 
 
-The `@Scheduled` is a method-level annotation applied at runtime to mark the method to be scheduled. It takes one attribute from `cron`, `fixedDelay`, or `fixedRate` attributes for specifying the schedule of execution in different formats.
-The annotated method must expect no arguments. It will typically have a void return type; if not, the returned value will be ignored when called through the scheduler.
+The `@Scheduled` is a method-level annotation applied at runtime to mark the method to be scheduled. It takes one attribute from `cron`, `fixedDelay`, or `fixedRate` for specifying the schedule of execution in different formats.
 
 The annotated method needs to fulfill two conditions:
-1. The method needs should not have a return type and so return `void`. For methods that have a  return type, the returned value is ignored when invoked through the scheduler.
+1. The method should not have a return type and so return `void`. For methods that have a  return type, the returned value is ignored when invoked through the scheduler.
 2. The method should not accept any input parameters.
 
-In the next sections, we will examine different options for specifying the scheduler to trigger the scheduled jobs. The `@Scheduled` is a method level [annotation](https://docs.oracle.com/javase/tutorial/java/annotations/index.html) and we need to add it on a method of a Spring Bean class. We can provide parameters to the annotations to specify if we wish the method to be executed on a fixed interval or at a specific schedule of time and date.
+In the next sections, we will examine different options for specifying the scheduler to trigger the scheduled jobs. The `@Scheduled` is a method level [annotation](https://docs.oracle.com/javase/tutorial/java/annotations/index.html) and we need to add it on a method of a Spring Bean class. We can provide parameters to the annotations to specify if we wish the method to be executed on a fixed interval or at a specific schedule of time and date:
 
-| fixedRate | fixedDelay |
-| - | - |
-| The method is run on periodic intervals even if the last invocation may still be running |  specifically controls the next execution time when the last execution finishes|
+* `fixedRate`: The method is run on periodic intervals even if the last invocation may still be running
+* `fixedDelay`: Starts the timer for the next execution only after an execution has finished.
 
 Let us look at their behavior by running the example.
 
 ## Running the Job with Fixed Delay
-We use the `fixedDelay` attribute to configure a job to run after a fixed delay which means the interval between the end of the previous job and the beginning of the new job is fixed. The new job always waits for the previous job to finish. It should be used in situations where method invocations need to happen in a sequence. 
+We use the `fixedDelay` attribute to configure a job to run after a fixed delay which means the interval between the end of the previous job and the beginning of the new job is fixed. 
+
+**The new job will always wait for the previous job to finish**. It should be used in situations where method invocations need to happen in a sequence. 
 
 In this example, we are computing the price of a product by executing the method in a Spring bean with a fixed delay :
 
@@ -129,11 +129,11 @@ public class PricingEngine {
 ```
 Here we have scheduled the execution of the `computePrice` method with a fixed delay by setting the  `fixedDelay` attribute to `2000` milliseconds or `2` seconds. 
 
-We also make the method to sleep for `4` seconds with `Thread.sleep` to simulate the situation of a method that takes longer to execute than the delay interval. The next execution will start only after the previous execution ends at least after `4` seconds, even though the delay interval of 2 seconds is elapsed.
+We also make the method to sleep for `4` seconds with `Thread.sleep()` to simulate the situation of a method that takes longer to execute than the delay interval. The next execution will start only after the previous execution ends at least after `4` seconds, even though the delay interval of 2 seconds is elapsed.
 
 ## Running the Job at Fixed Rate
 
-We use the `fixedRate` attribute to specify the interval for executing a job at a fixed interval of time. It should be used in situations where method invocations are independent. The execution time of the method is not taken into consideration when we use a fixed rate as the interval. 
+We use the `fixedRate` attribute to specify the interval for executing a job at a fixed interval of time. It should be used in situations where method invocations are independent. **The execution time of the method is not taken into consideration when deciding when to start the next job**. 
 
 In this example, we are refreshing the pricing parameters by executing a method at a fixed rate:
 
@@ -161,6 +161,8 @@ public class SchedulerConfig {
 
 ```
 }
+``````
+
 Here we have annotated the `refreshPricingParameters` method with the `@Scheduled` annotation and set the `fixedRate` attribute to `3000` milliseconds or `3` seconds. This will trigger the method every `3` seconds. 
 
 We have also added an `@Async` annotation to the method and `@EnableAsync` to the configuration class: `SchedulerConfig`.  The `@Async` annotation over a method allows it to execute in a separate thread. As a result of this, when the previous execution of the method takes longer than the fixed-rate interval, the subsequent invocation of a method will trigger even if the previous invocation is still executing. This will allow multiple executions of the method to run in parallel for the overlapped time interval.
@@ -186,12 +188,15 @@ public class PricingEngine {
     LOGGER.info("computing price at "+ LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
   }
 }
-
 ```
+
 Here we have set the `initialDelay` to delay the first execution of the method by `2000` milliseconds or `2` seconds.
 
-## Specifying Interval in Duration Format
-So far in our examples, we have specified the time interval in milliseconds. Specifying higher values of an interval in hours or days which is most often the case in real situations is difficult to read. So instead of specifying a large value like `7200000` for `2` hours, we can specify the time in Java Duration format like `PT02H`. `@Scheduler` annotation has methods `fixedRateString` and `fixedDelayString` which take the interval in java Duration format as shown in this code example:
+## Specifying Intervals in ISO Duration Format
+
+So far in our examples, we have specified the time interval in milliseconds. Specifying higher values of an interval in hours or days which is most often the case in real situations is difficult to read. So instead of specifying a large value like `7200000` for `2` hours, we can specify the time in thre [ISO duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations) like `PT02H`. 
+
+The `@Scheduler` annotation provides the attributes `fixedRateString` and `fixedDelayString` which take the interval in duration format as shown in this code example:
 
 ```java
 @Service
@@ -272,7 +277,7 @@ interval-in-cron=0 * * * * *
 ```
 Here we have specified the interval using a cron expression externalized to a property named `interval-in-cron` defined in our `application.properties` file.
 
-A cron expression is a string of six to seven fields separated by white space to represent triggers on the second, minute, hour, day of the month, month, day of the week, and optionally on year. However, the cron expression in Spring Scheduler is comprised of six fields as shown below:
+A cron expression is a string of six to seven fields separated by white space to represent triggers on the second, minute, hour, day of the month, month, day of the week, and optionally the year. However, the cron expression in Spring Scheduler is comprised of six fields as shown below:
 
 
 ```shell
@@ -307,11 +312,20 @@ public class PricingEngine {
 }
 
 ```
-Here we have specified an hourly interval with a cron macro: `hourly` instead of the less readable cron expression `0 0 * * * *`. Similar to this, Spring also provides the macros `@yearly`, `@monthly`, `@weekly`, and `@daily`
+Here we have specified an hourly interval with a cron macro: `hourly` instead of the less readable cron expression `0 0 * * * *`. 
+
+Spring provides the following macros 
+
+* `@hourly`,
+* `@yearly`, 
+* `@monthly`, 
+* `@weekly`, and 
+* `@daily`
+
 
 ## Deploying Multiple Scheduler Instances with ShedLock
 
-As we have seen so far with Spring Scheduler, it is very easy to schedule jobs by attaching the `@Scheduler` annotation over methods in Spring Beans. However, in distributed environments when we deploy multiple instances of our application, it cannot handle scheduler synchronization over multiple instances. Instead, it executes the jobs simultaneously on every node.
+As we have seen so far with Spring Scheduler, it is very easy to schedule jobs by attaching the `@Scheduler` annotation to methods in Spring Beans. However, in distributed environments when we deploy multiple instances of our application, **it cannot handle scheduler synchronization over multiple instances**. Instead, it executes the jobs simultaneously on every node.
 
 
 ShedLock is a library that ensures our scheduled tasks when deployed in multiple instances are executed at most once at the same time. It uses a locking mechanism by acquiring a lock on one instance of the executing job which prevents the execution of another instance of the same job. 
@@ -355,12 +369,12 @@ public class SchedulerConfig {
   
   @Bean
   public LockProvider lockProvider(DataSource dataSource) {
-              return new JdbcTemplateLockProvider(
-                  JdbcTemplateLockProvider.Configuration.builder()
-                  .withJdbcTemplate(new JdbcTemplate(dataSource))
-                  .usingDbTime() // Works on Postgres, MySQL, MariaDb, MS SQL, Oracle, DB2, HSQL and H2
-                  .build()
-              );
+    return new JdbcTemplateLockProvider(
+        JdbcTemplateLockProvider.Configuration.builder()
+        .withJdbcTemplate(new JdbcTemplate(dataSource))
+        .usingDbTime() // Works on Postgres, MySQL, MariaDb, MS SQL, Oracle, DB2, HSQL and H2
+        .build()
+    );
   }
 
 }
@@ -407,34 +421,34 @@ public class PricingEngine {
 
 ```
 
-Here we have added the `@SchedulerLock` annotation to the `computePrice`.
+Here we have added the `@SchedulerLock` annotation to the `computePrice()` method.
 Only methods annotated with the `@SchedulerLock` annotation are locked, the library ignores all other scheduled tasks. We have also specified a name for the lock as `myscheduledTask`. We can execute only one task with the same name at the same time.
 
 ## Conditions for using Distributed Job Scheduler Quartz
 
 [Quartz Scheduler](http://www.quartz-scheduler.org) is an open-source distributed job scheduler that provides many enterprise-class features like support for JTA transactions and clustering. 
 
-Among its main capabilities is Job Persistence support to an external database that is very useful for resuming failed jobs as well as for reporting purposes.
+Among its main capabilities is job persistence support to an external database that is very useful for resuming failed jobs as well as for reporting purposes.
 
 Clustering is another key feature of Quartz that can be used for Fail-safe and/or Load Balancing. 
 
 Spring Scheduler is preferred when we want to implement a simple form of job scheduling like executing methods on a bean every X seconds, or on a cron schedule without worrying about any side-affects of retstarting jobs after failures. 
 
-On the other hand, if we need clustering along with support for Job Persistence then Quartz is a better alternative.
+On the other hand, if we need clustering along with support for job persistence then Quartz is a better alternative.
 
 ## Conclusion
 
 Here is a list of major points from the tutorial for quick reference:
 
 1. Scheduling is part of the core module, so we do not need to add any dependencies. 
-2. Scheduling is not enabled by default. We explicitly enable scheduling by adding the `@enableScheduling` annotation to a Spring configuration class. 
+2. Scheduling is not enabled by default. We explicitly enable scheduling by adding the `@EnableScheduling` annotation to a Spring configuration class. 
 3. We can make the scheduling conditional on a property so that we can enable and disable scheduling by setting the property.
-3. We create scheduled jobs by decorating a method with the `@scheduled` annotation.
+3. We create scheduled jobs by decorating a method with the `@Scheduled` annotation.
 4. Only methods with `void` return type and zero parameters can be converted into scheduled jobs by adding `@Scheduled` annotation.
-5. We set the interval of executing by specifying the `fixedRate` or `fixedDelay` attribute in the `@scheduled` annotation.
+5. We set the interval of executing by specifying the `fixedRate` or `fixedDelay` attribute in the `@Scheduled` annotation.
 6. We can choose to delay the first execution of the method by specifying the interval using the `initialDelay` attribute.
 7. We can deploy multiple Scheduler Instances using the ShedLock library which ensures only one instance to run at a time by using a locking mechanism in a shared database.
-8. We can use a Distributed Job Scheduler: Quartz to address more complex scenarios of scheduling like resuming failed jobs, and reporting. 
+8. We can use a Distributed Job Scheduler like Quartz to address more complex scenarios of scheduling like resuming failed jobs, and reporting. 
 
 
 

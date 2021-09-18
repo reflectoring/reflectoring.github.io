@@ -4,13 +4,13 @@ categories: [spring-boot]
 date: 2021-09-15 06:00:00 +1000
 modified: 2021-09-15 06:00:00 +1000
 author: pratikdas
-excerpt: "Scheduled jobs are a piece of business logic that should run on a scheduled basis. Spring allows us to run scheduled jobs in the Spring container by using some simple annotations. In this article, we will illustrate how to configure and run scheduled jobs in applications built using the Spring Boot framework."
+excerpt: "Scheduled jobs are a piece of business logic that should run on a timer. Spring allows us to run scheduled jobs in the Spring container by using some simple annotations. In this article, we will illustrate how to configure and run scheduled jobs in applications built using the Spring Boot framework."
 image:
   auto: 0074-stack
 ---
 
 Scheduling is the process of executing a piece of logic at a specific time in the future.
-Scheduled jobs are a piece of business logic that should run on a scheduled basis. Spring allows us to run scheduled jobs in the Spring container by using some simple annotations.
+Scheduled jobs are a piece of business logic that should run on a timer. Spring allows us to run scheduled jobs in the Spring container by using some simple annotations.
 
 In this article, we will illustrate how to configure and run scheduled jobs in Spring Boot applications.
 
@@ -43,7 +43,7 @@ public class JobschedulingApplication {
 ```
 Here we have added the `@enableScheduling` annotation to our application class `JobschedulingApplication` to enable scheduling. 
 
-As a best practice we should move this annotation to a dedicated class under a package for maintaining configuration as shown below:
+As a best practice we should move this annotation to a dedicated class under a package that contains the code for our scheduled jobs:
 
 ```java
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -54,10 +54,12 @@ public class SchedulerConfig {
 }
 ```
 
+The scheduling will now only be activated when we load the `SchedulerConfig` class into the application, providing better modularization.
+
 When the `@EnableScheduling` annotation is processed, Spring scans the application packages to find all the Spring Beans decorated with `@Scheduled` methods and sets up their execution schedule.
 
 ## Enable Scheduling Based on a Property
-We would also like to disable scheduling during running tests. For this, we need to add another annotation `@ConditionalOnProperty` with the name of the property.
+We would also like to disable scheduling during running tests. For this, we need to add a [condition](/spring-boot-conditionals/) to our `SchedulerConfig`. Let's add the `@ConditionalOnProperty` annotation with the name of the property we want to use to control scheduling:
 
 ```java
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

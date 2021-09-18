@@ -4,7 +4,7 @@ categories: [craft]
 date: 2021-09-02 06:00:00 +1000
 modified: 2021-09-02 06:00:00 +1000
 author: pratikdas
-excerpt: "Scheduled jobs are a piece of business logic that should run on a scheduled basis. Spring allows us to run scheduled jobs in the Spring container by using some simple annotations. We will illustrate how to configure and run scheduled jobs in Spring Boot applications"
+excerpt: "Scheduled jobs are a piece of business logic that should run on a scheduled basis. Spring allows us to run scheduled jobs in the Spring container by using some simple annotations. We will illustrate how to configure and run scheduled jobs in applications built using the Spring Boot  framework."
 image:
   auto: 0074-stack
 ---
@@ -416,7 +416,9 @@ Among its main capabilities is Job Persistence support to an external database t
 
 Clustering is another key feature of Quartz that can be used for Fail-safe and/or Load Balancing. 
 
-Spring Scheduler is preferred when we want to implement a simple form of job scheduling without the need for fail-safe scenarios. On the other hand, if we need clustering along with support for Job Persistence then Quartz is a better alternative.
+Spring Scheduler is preferred when we want to implement a simple form of job scheduling like executing methods on a bean every X seconds, or on a cron schedule without worrying about any side-affects of retstarting jobs after failures. 
+
+On the other hand, if we need clustering along with support for Job Persistence then Quartz is a better alternative.
 
 ## Conclusion
 

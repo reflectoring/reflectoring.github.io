@@ -127,7 +127,7 @@ public class PricingEngine {
 ```
 Here we have scheduled the execution of the `computePrice` method with a fixed delay by setting the  `fixedDelay` attribute to `2000` milliseconds or `2` seconds. 
 
-We also make the method to sleep for `4` seconds with `Thread.sleep` to simulate the situation of a method that takes longer to execute than the delay interval. The next execution will start only after the previous execution ends at least after `4` seconds even though the delay interval of 2 seconds is elapsed.
+We also make the method to sleep for `4` seconds with `Thread.sleep` to simulate the situation of a method that takes longer to execute than the delay interval. The next execution will start only after the previous execution ends at least after `4` seconds, even though the delay interval of 2 seconds is elapsed.
 
 ## Running the Job at Fixed Rate
 
@@ -158,15 +158,16 @@ public class PricingEngine {
 public class SchedulerConfig {
 
 ```
+}
 Here we have annotated the `refreshPricingParameters` method with the `@Scheduled` annotation and set the `fixedRate` attribute to `3000` milliseconds or `3` seconds. This will trigger the method every `3` seconds. 
 
-We have also added an `@Async` annotation to the method and `@EnableAsync` to the configuration class `SchedulerConfig`. The `@Async` annotation over a method allows it to execute in a separate thread. As a result of this, when the previous execution of the method takes longer than the fixed-rate interval, the subsequent invocation of a method will trigger even if the previous invocation is still executing. This will allow multiple executions of the method to run in parallel for the overlapped time interval.
+We have also added an `@Async` annotation to the method and `@EnableAsync` to the configuration class: `SchedulerConfig`.  The `@Async` annotation over a method allows it to execute in a separate thread. As a result of this, when the previous execution of the method takes longer than the fixed-rate interval, the subsequent invocation of a method will trigger even if the previous invocation is still executing. This will allow multiple executions of the method to run in parallel for the overlapped time interval.
 
 Without applying `@Async` annotation, the method will always execute after the previous execution is completed, even if the fixed-rate interval is expired. 
 
 ## Delaying the First Execution with Initial Delay
 
-With both `fixedDelay` and `fixedRate` the first invocation of the method starts immediately after the application context is initialized. However, we can choose to delay the first execution of the method by specifying the interval using the `initialDelay` attribute as shown below:
+With both `fixedDelay` and `fixedRate`,  the first invocation of the method starts immediately after the application context is initialized. However, we can choose to delay the first execution of the method by specifying the interval using the `initialDelay` attribute as shown below:
 
 ```java
 @Service
@@ -188,7 +189,7 @@ public class PricingEngine {
 Here we have set the `initialDelay` to delay the first execution of the method by `2000` milliseconds or `2` seconds.
 
 ## Specifying Interval in Duration Format
-So far in our examples, we have specified the time interval in milliseconds. Specifying higher values of an interval in hours or days which is most often the case in real situations becomes difficult to read. So instead of specifying a large value like `7200000` for `2` hours, we can specify the time in Java Duration format like `PT02H`. `@Scheduler` annotation has methods `fixedRateString` and `fixedDelayString` which take the interval in java Duration format as shown in this code example:
+So far in our examples, we have specified the time interval in milliseconds. Specifying higher values of an interval in hours or days which is most often the case in real situations is difficult to read. So instead of specifying a large value like `7200000` for `2` hours, we can specify the time in Java Duration format like `PT02H`. `@Scheduler` annotation has methods `fixedRateString` and `fixedDelayString` which take the interval in java Duration format as shown in this code example:
 
 ```java
 @Service
@@ -306,7 +307,7 @@ public class PricingEngine {
 ```
 Here we have specified an hourly interval with a cron macro: `hourly` instead of the less readable cron expression `0 0 * * * *`. Similar to this, Spring also provides the macros `@yearly`, `@monthly`, `@weekly`, and `@daily`
 
-## Running Multiple Scheduler Instances with ShedLock
+## Deploying Multiple Scheduler Instances with ShedLock
 
 As we have seen so far with Spring Scheduler, it is very easy to schedule jobs by attaching the `@Scheduler` annotation over methods in Spring Beans. However, in distributed environments when we deploy multiple instances of our application, it cannot handle scheduler synchronization over multiple instances. Instead, it executes the jobs simultaneously on every node.
 
@@ -427,6 +428,9 @@ Here is a list of major points from the tutorial for quick reference:
 3. We create scheduled jobs by decorating a method with the `@scheduled` annotation.
 4. Only methods with `void` return type and zero parameters can be converted into scheduled jobs by adding `@Scheduled` annotation.
 5. We set the interval of executing by specifying the `fixedRate` or `fixedDelay` attribute in the `@scheduled` annotation.
+6. We can choose to delay the first execution of the method by specifying the interval using the `initialDelay` attribute.
+7. We can deploy multiple Scheduler Instances using the ShedLock library which ensures only one instance to run at a time by using a locking mechanism in a shared database.
+8. We can use a Distributed Job Scheduler: Quartz to address more complex scenarios of scheduling like resuming failed jobs, and reporting. 
 
 
 

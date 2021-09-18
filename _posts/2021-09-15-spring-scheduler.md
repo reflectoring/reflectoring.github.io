@@ -12,9 +12,9 @@ image:
 Scheduling is the process of executing a piece of logic at a specifuc time in future.
 Scheduled jobs are a piece of business logic that should run on a scheduled basis. Spring allows us to run scheduled jobs in the Spring container by using some simple annotations.
 
-In this tutorial, we'll illustrate how the Spring @Scheduled annotation can be used to configure and schedule tasks.
+In this article, we will illustrate how to configure and run scheduled jobs in Spring Boot applications.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springcloudwatch" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-scheduler" %}
 
 
 ## Creating the Spring Boot Application for Scheduling
@@ -90,47 +90,12 @@ In the next sections, we will examine different options for specifying the sched
 | - | - |
 | The method is run on periodic intervals even if the last invocation may still be running |  specifically controls the next execution time when the last execution finishes|
 
-Let us look at their behavaviour by running the example.
+Let us look at their behavviour by running the example.
 
 ## Running the Job with Fixed Delay
+We use the `fixedDelay` attribute to configure a job to run after a fixed delay which means the interval between the end of previous job and beginning of the new job is fixed. The new job always waits for the previous job to finish. It should be used in situations where method invocations need to happen in a sequence. 
 
-For repeated execution of the method with `Scheduled` annotation at regular intervals, we use the `fixedRate` attribute of the annotation to specify the interval in milliseconds.
-
-In this example, we are computing the price at regular intervals of 2 seconds:
-
-When a fixedDelay is specified, the next execution will only begin a specified number of milliseconds after the previous execution is finished. 
-
-Unlike fixed rate, with fixed delay, the method execution starts after the previous execution ends. 
-
-```java
-@Service
-public class PricingEngine {
-  
-  private Double price;
-  
-  public Double getProductPrice() {
-    return price;
-    
-  }
-  
-  @Scheduled(fixedDelay = 7000)
-  public void computePrice() {    
-    Random random = new Random();
-    price = random.nextDouble() * 100;
-    System.out.println("computing price "+price);   
-  }
-
-}
-
-```
-Spring executes the above method at a fixed delay of 2 seconds. Which means, the duration between the end of first execution and the start of the next will always be 2 seconds. In other words, the next execution won’t start until the specific fixed delay is elapsed after the completion of the current execution.
-
-
-## Running the Job at Fixed Rate
-
-For repeated execution of the method annotated with `Scheduled` annotation at regular intervals, we use the `fixedRate` attribute of the annotation to specify the interval in milliseconds.
-
-In this example, we are computing the price at regular intervals of 2 seconds:
+In this example, we are computing the price of a product by executing the method in a Spring bean with a fixed delay :
 
 ```java
 @Service
@@ -144,41 +109,100 @@ public class PricingEngine {
     
   }
   
-  @Scheduled(fixedRate = 2000)
-  @Async
-  public void computePrice() {
+  @Scheduled(fixedDelay = 2000)
+  public void computePrice() throws InterruptedException {
     
-    Random random = new Random();
-    price = random.nextDouble() * 100;
-    LOGGER.info("computing price at "+ LocalDateTime.now());  
+    ...
+    ...
+    LOGGER.info("computing price at "+ 
+      LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)); 
+
+    // added sleep to simulate method 
+    // which takes longer to execute.   
+    Thread.sleep(4000); 
   }
 
 }
 
 ```
-Here we have annotated the `computePrice` method with the `@Scheduled` annotation and set the `fixedRate` attribute to `2000` milliseconds. 
+Here we have have scheduled the execution of the `computePrice` method with a fixed delay by setting the  `fixedDelay` attribute to `2000` milliseconds or `2` seconds. 
 
-When we run the application, we get the following output in the console:
+We also make the method to sleep for `4` seconds with `Thread.sleep` to simulate the situation of a method which takes longer to execute than the delay interval. The next execution will start only after the previous execution ends atleast after `4` seconds even though the delay interval of 2 seconds is elapsed.
 
-```shell
-: computing price at 1631452537
-: computing price at 1631452539
-: computing price at 1631452541
-: computing price at 1631452543
-: computing price at 1631452545
-: computing price at 1631452547
-...
-```
-As we can see from the output, the epoch time is printed after every 2 seconds.
+## Running the Job at Fixed Rate
 
-Let us add a delay of 4 seconds to the method to check the behaviour of the method.
+We use the `fixedRate` attribute to specify the interval for executing a job at a fixed interval of time. It should be used in situations where method invocations are independent. Execution time of the method is not taken into consideration when we use fixed rate. 
+
+In this example, we are refreshing the pricing parameters by executing a method at a fixed rate:
 
 ```java
 @Service
 public class PricingEngine {
-...
   
-  @Scheduled(fixedRate = 2000)
+  static final Logger LOGGER = Logger.getLogger(PricingEngine.class.getName());
+ 
+  
+  @Scheduled(fixedRate = 3000)
+  @Async
+  public void refreshPricingParameters() {
+    ...
+    ...
+    LOGGER.info("computing price at "+ LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
+  }
+}
+
+@Configuration
+@EnableScheduling
+@EnableAsync
+@ConditionalOnProperty(name="scheduler.enabled", matchIfMissing = true)
+public class SchedulerConfig {
+
+```
+Here we have annotated the `refreshPricingParameters` method with the `@Scheduled` annotation and set the `fixedRate` attribute to `3000` milliseconds or `3` seconds. This will trigger the method every `3` seconds. 
+
+We have also added an `@Async` annotation to the method and `@EnableAsync` to the configuration class `SchedulerConfig`. The `@Async` annotation over a method allows it execute in a separate thread. As a result of this, when the previous execution of the method takes longer than the fixed rate interval, the subsequent invocation of a method will trigger even if the previous invocation is still executing. This will allow multiple executions of the method to run in parallel for the overlapped time interval.
+
+Without applying `@Async` annotation, the method will always execute after the previous execution is completed, even if fixed rate interval is expired. 
+
+## Delaying the First Execution with Initial Delay
+
+With both `fixedDelay` and `fixedRate` the first invocation of the method starts immediately after the application context is initialized. However we can choose to delay the first execution of the method by specyfing the interval using the `initialDelay` attribute as shown below:
+
+```java
+@Service
+public class PricingEngine {
+  
+  static final Logger LOGGER = Logger.getLogger(PricingEngine.class.getName());
+
+  @Scheduled(initialDelay = 2000, fixedRate = 3000)
+  @Async
+  public void refreshPricingParameters() {
+    
+    Random random = new Random();
+    price = random.nextDouble() * 100;
+    LOGGER.info("computing price at "+ LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
+  }
+}
+
+```
+Here we have set the `initialDelay` to delay the first execution of the method by `2000` milliseconds or `2` seconds.
+
+## Specifying Interval in Duration Format
+So far in our examples, we have specified the time interval in milliseconds. Specifying higher values of an interval in hours or days which is most often the case in real situations becomes difficult to read. So instead of specifying a large value like `7200000` for `2` hours, we can specify the time in Java Duration format like `PT02H`. `@Scheduler` annotation has methods `fixedRateString` and `fixedDelayString` which take the interval in java Duration format as shown in this code example:
+
+```java
+@Service
+public class PricingEngine {
+  
+  static final Logger LOGGER = Logger.getLogger(PricingEngine.class.getName());
+  private Double price;
+  
+  public Double getProductPrice() {
+    return price;
+    
+  }
+  
+  @Scheduled(fixedDelayString = "PT02S"))
   public void computePrice() throws InterruptedException {
     
     Random random = new Random();
@@ -188,32 +212,17 @@ public class PricingEngine {
   }
 
 }
-
 ```
+Here we have set the value of `fixedDelayString` as `PT02S` to specify a fixed delay of atleast 2 seconds between successive invocations. Similarly we can use `fixedRateString` to specify a fixed rate in this format. 
 
-When we run the application, we can see the method executing at intervals of 4 seconds completely ignoring the interval set for the `fixedRate` attribute. 
-```shell
-: computing price at 1631452933
-: computing price at 1631452937
-: computing price at 1631452941
-: computing price at 1631452945
-...
-...
-```
-This behaviour of waiting for the method to finish execution when the `fixedRate` interval is expired is very similar to the behaviour of the scheduler with `fixedDelay` explained in the previous section.
-We will fix this in the next section using another annotation `@Async`.
-
-the method every 2 seconds that is 2 seconds between each invocation. First invocation starts immediately after the application context is initialized. Execution time of the method is not taken into consideration when we use fixed rate. 
-
-
-
-## Running the Job with an Initial Delay
-We can specify the initial start time. We specify these values in milliseconds. Specifying higher values becomes difficult to read. So we can specify a Java Duration 
+## Externalizing the Interval to a Properties File
+We can also reference a property value from our properties file as the value of `fixedDelayString` or `fixedRateString` attributes to externalize the interval values as shown below:
 
 ```java
 @Service
 public class PricingEngine {
   
+  static final Logger LOGGER = Logger.getLogger(PricingEngine.class.getName());
   private Double price;
   
   public Double getProductPrice() {
@@ -221,40 +230,192 @@ public class PricingEngine {
     
   }
   
-  @Scheduled(initialDelay = 100, fixedDelay = 7000)
-  public void computePrice() {    
+  @Scheduled(fixedDelayString = "${interval}")
+  public void computePrice() throws InterruptedException {
+    
     Random random = new Random();
     price = random.nextDouble() * 100;
-    System.out.println("computing price "+price);   
+    LOGGER.info("computing price at "+ 
+      LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
+    Thread.sleep(4000);
+  }
+
+}
+```
+```.properties
+interval=PT02S
+```
+Here we have set the fixed delay interval as a property in our `application.properties` file. The property named `interval` is set to `2` seconds in the duration format `PT02S`.
+
+## Using Cron Expressions to Define the Interval
+We can also specify the time interval in UNIX style cron-like expression for more complex scheduling requirements as shown in this example:
+
+```java
+@Service
+public class PricingEngine {
+...
+...
+  @Scheduled(cron = "${interval-in-cron}")
+  public void computePrice() throws InterruptedException {
+    ...
+    ...
+    LOGGER.info("computing price at "+ LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
+  }
+
+}
+```
+```.properties
+interval-in-cron=0 * * * * *
+```
+Here we have specified the interval using a cron expression externalized to a property named `interval-in-cron` defined in our `application.properties` file.
+
+A cron expression is a string of six to seven fields separated by white space to represent triggers on second, minute, hour, day of month, month, day of week and optionally on year. However, the cron expression in Spring Scheduler is comprised of six fields as shown below:
+
+
+```shell
+ ┌───────────── second (0-59)
+ │ ┌───────────── minute (0 - 59)
+ │ │ ┌───────────── hour (0 - 23)
+ │ │ │ ┌───────────── day of the month (1 - 31)
+ │ │ │ │ ┌───────────── month (1 - 12) (or JAN-DEC)
+ │ │ │ │ │ ┌───────────── day of the week (0 - 7)
+ │ │ │ │ │ │          (or MON-SUN -- 0 or 7 is Sunday)
+ │ │ │ │ │ │
+ * * * * * *
+```
+
+For example, a cron expression : `0 15 10 * * *` is triggered to run at 10:15 a.m. every day ( every 0th second, 15th minute, 10th hour, every day). `*` indicates the cron expression matches for all values of the field. For example, `*` in the minute field means every minute.
+
+
+Expressions such as 0 0 * * * * are hard to read. To improve readability, Spring supports macros to represent commonly used sequences like in the following code sample:. 
+
+```java
+@Service
+public class PricingEngine {
+...
+...
+  @Scheduled(cron = "@hourly")
+  public void computePrice() throws InterruptedException {
+    ...
+    ...
+    LOGGER.info("computing price at "+ LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
+  }
+
+}
+
+```
+Here we have specified an hourly interval with a cron macro : `hourly` instead of the less readable cron expression `0 0 * * * *`. Similar to this, Spring also provides the macros `@yearly`, `@monthly`, `@weekly`, and `@daily`
+
+## Running Multiple Scheduler Instances with ShedLock
+
+As we have seen so far with Spring Scheduler, it is very easy to schedule jobs by attaching the `@Scheduler` annotation over methods in Spring Beans. However in distributed environments when we deploy multiple instances of our application, it cannot handle scheduler synchronization over multiple instances. Instead, it executes the jobs simultaneously on every node.
+
+
+ShedLock is a library that ensures our scheduled tasks when deployed in multiple instances are executed at most once at the same time. It uses a locking mechanism by acquiring a lock on one instance of the executing job which prevents execution of another instance of the same job. 
+
+ShedLock uses an external data store shared across multiple instances for coordination. like Mongo, any JDBC database, Redis, Hazelcast, ZooKeeper or others for coordination.
+
+ShedLock is designed to be used in situations where we have scheduled tasks that are not ready to be executed in parallel, but can be safely executed repeatedly. Moreover, the locks are time-based and ShedLock assumes that clocks on the nodes are synchronized.
+
+Let us modify our example by adding the dependencies:
+
+```xml
+<dependency>
+    <groupId>net.javacrumbs.shedlock</groupId>
+    <artifactId>shedlock-spring</artifactId>
+    <version>4.27.0</version>
+</dependency>
+
+<dependency>
+  <groupId>net.javacrumbs.shedlock</groupId>
+  <artifactId>shedlock-provider-jdbc-template</artifactId>
+  <version>4.27.0</version>
+</dependency>
+
+<dependency>
+  <groupId>com.h2database</groupId>
+  <artifactId>h2</artifactId>
+  <scope>runtime</scope>
+</dependency>
+
+```
+We have added dependencies on the core module `shedlock-spring` along with dependencies on `shedlock-provider-jdbc-template` for jdbc template and on h2 database to be used as the shared database. In production scenarios we should use a persistent database like mysql, postgres, etc.
+
+Next we update our scheduler configuration to integrate the library with Spring:
+```java
+@Configuration
+@EnableScheduling
+@EnableSchedulerLock(defaultLockAtMostFor = "10m")
+@EnableAsync
+@ConditionalOnProperty(name="scheduler.enabled", matchIfMissing = true)
+public class SchedulerConfig {
+  
+  @Bean
+  public LockProvider lockProvider(DataSource dataSource) {
+              return new JdbcTemplateLockProvider(
+                  JdbcTemplateLockProvider.Configuration.builder()
+                  .withJdbcTemplate(new JdbcTemplate(dataSource))
+                  .usingDbTime() // Works on Postgres, MySQL, MariaDb, MS SQL, Oracle, DB2, HSQL and H2
+                  .build()
+              );
   }
 
 }
 
 ```
 
-## Specifying Interval in Duration Format
-In our previous examples, we have specified the time interval in milliseconds. Specifying higher values becomes difficult to read. So we can specify the time in Java Duration format like "".
+Here we have enabled schedule locking by using the `@EnableSchedulerLock` annotation. We have also configured the `LockProvider` by creating an instance of `JdbcTemplateLockProvider` which is connected to a datasource with the in-memory H2 database. 
 
-## Cron Expressions
-To specify more complex time interval, we use cron expressions. A cron-like expression, extending the usual UN*X definition to include triggers on the second, minute, hour, day of month, month, and day of week.
-For example, "0 * * * * MON-FRI" means once per minute on weekdays (at the top of the minute - the 0th second). "
+Next we will create a table which will be used as the shared database.
+```sql
+DROP TABLE IF EXISTS shedlock;
 
-The fields read from left to right are interpreted as follows.
+CREATE TABLE shedlock(
+  name VARCHAR(64) NOT NULL, 
+  lock_until TIMESTAMP(3) NOT NULL,
+  locked_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3), 
+  locked_by VARCHAR(255) NOT NULL, 
+  PRIMARY KEY (name)
+);
+```
 
-second
-minute
-hour
-day of month
-month
-day of week
-The special value "-" indicates a disabled cron trigger, primarily meant for externally specified values resolved by a ${...} placeholder.
+Finally we will annotate our scheduled jobs by applying the `@SchedulerLock` annotation:
+```java
+@Service
+public class PricingEngine {
+  
+  static final Logger LOGGER = Logger.getLogger(PricingEngine.class.getName());
 
+  
+  @Scheduled(cron = "${interval-in-cron}")
+  @SchedulerLock(name = "myscheduledTask")
+  public void computePrice() throws InterruptedException {
+    
+    Random random = new Random();
+    price = random.nextDouble() * 100;
+    LOGGER.info("computing price at "+ LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
+    Thread.sleep(4000);
+  }
+  
+...
+...
 
+}
 
+```
 
-## Handling Multiple Instances of a Scheduled Job
+Here we have added the `@SchedulerLock` annotation to the `computePrice`.
+Only methods annotated with the `@SchedulerLock` annotation are locked, the library ignores all other scheduled tasks. We have also specified a name for the lock as `myscheduledTask`. We can execute only one task with the same name at the same time.
 
+## Conditions for using Distributed Job Scheduler Quartz
 
+[Quartz Scheduler](http://www.quartz-scheduler.org) is an open source distributed job scheduler that provides many enterprise-class features like support for JTA transactions and clustering. 
+
+Among its main capabilities is Job Persistence support to an external database that is very useful for resuming failed jobs as well as for reporting purposes.
+
+Clustering is another key feature of Quartz that can be used for Fail-safe and/or Load Balancing. 
+
+Spring Scheduler is preferred when we want to implement a simple form of job scheduling without need for fail-safe scenarios. On the other hand, if we need clustering along with support for Job Persistence then Quartz is a better alternative.
 
 ## Conclusion
 
@@ -264,9 +425,10 @@ Here is a list of important points from the tutorial for quick reference:
 2. Scheduling is not enabled by default. We explicitly enable by adding the `@enableScheduling` annotation to a Spring configuration class. 
 3. We can make the scheduling conditional on a property so that we can enable and disable scheduling by setting the property.
 3. We create scheduled jobs by decorating a method with the `@scheduled` annotation.
-4. Only methods with `void` return type and zero parameters can be converted into scheduled jobs by adding `@scheduled` annotation.
+4. Only methods with `void` return type and zero parameters can be converted into scheduled jobs by adding `@Scheduled` annotation.
 5. We set the interval of executing by specifying the `fixedRate` or `fixedDelay` attribute in the `@scheduled` annotation.
 
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springscheduler).
+
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-scheduler).
 

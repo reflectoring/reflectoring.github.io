@@ -1,10 +1,10 @@
 ---
 title: "Running Scheduled Jobs in Spring Boot"
-categories: [craft]
-date: 2021-09-02 06:00:00 +1000
-modified: 2021-09-02 06:00:00 +1000
+categories: [spring-boot]
+date: 2021-09-15 06:00:00 +1000
+modified: 2021-09-15 06:00:00 +1000
 author: pratikdas
-excerpt: "Scheduled jobs are a piece of business logic that should run on a scheduled basis. Spring allows us to run scheduled jobs in the Spring container by using some simple annotations. We will illustrate how to configure and run scheduled jobs in applications built using the Spring Boot  framework."
+excerpt: "Scheduled jobs are a piece of business logic that should run on a scheduled basis. Spring allows us to run scheduled jobs in the Spring container by using some simple annotations. In this article, we will illustrate how to configure and run scheduled jobs in applications built using the Spring Boot framework."
 image:
   auto: 0074-stack
 ---

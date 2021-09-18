@@ -25,8 +25,8 @@ $( document ).ready(function() {
             slide: 1,
             iconColor: "#000000",
             header: "",
-            width: "666px",
-            content: "<a href=\"https://learn.launchdarkly.com/effective-feature-management/?utm_source=reflectoring&utm_medium=display&utm_campaign=21q2-reflectoring.io&utm_content=ebook_oreilly_efm\"><img alt=\"Effective Feature Management\" src=\"/assets/img/launchdarkly/2021_02_EffectiveFeatureManagementGuide_Ad_640x100@2x.png\"/></a>",
+            width: "324px",
+            content: "<a href=\"https://learn.launchdarkly.com/digital-transformation/?utm_source=reflectoring&utm_medium=display&utm_campaign=21q3-reflectoring.io&utm_term=smart_display&utm_content=ebook_adt\"><img alt=\"Accelerating Digital Transformation\" src=\"/assets/img/launchdarkly/2021_acceleratingdigitaltransform_Ad_300x250.jpg\"/></a>",
             afterPopup: function() {
               setCookie("launchdarkly", "true", 7);
             }

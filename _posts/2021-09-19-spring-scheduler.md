@@ -21,7 +21,7 @@ In this article, we will illustrate how to configure and run scheduled jobs in S
 
 To work with some examples, let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.5.4&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=jobscheduling&name=jobscheduling&description=Demo%20project%20for%20Schedulers%20in%20Spring%20Boot&packageName=io.pratik.jobscheduling), and then open the project in our favorite IDE. We have not added any dependencies to Maven `pom.xml` since the scheduler is part of the core module of the Spring framework.
 
-## Enable Scheduling
+## Enabling Scheduling
 
 Scheduling is not enabled by default. Before adding any scheduled jobs we need to enable scheduling explicitly by adding the `@enableScheduling` annotation:
 
@@ -58,8 +58,8 @@ The scheduling will now only be activated when we load the `SchedulerConfig` cla
 
 When the `@EnableScheduling` annotation is processed, Spring scans the application packages to find all the Spring Beans decorated with `@Scheduled` methods and sets up their execution schedule.
 
-## Enable Scheduling Based on a Property
-We would also like to disable scheduling during running tests. For this, we need to add a [condition](/spring-boot-conditionals/) to our `SchedulerConfig`. Let's add the `@ConditionalOnProperty` annotation with the name of the property we want to use to control scheduling:
+## Enabling Scheduling Based on a Property
+We would also like to disable scheduling during running tests. For this, we need to add a [condition](/spring-boot-conditionals/) to our `SchedulerConfig` class. Let us add the `@ConditionalOnProperty` annotation with the name of the property we want to use to control scheduling:
 
 ```java
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -79,18 +79,13 @@ Here we have specified the property name as `scheduler.enabled`. We want to enab
 
 After enabling scheduling, we will add jobs to our application for scheduling. We can turn any method in a Spring bean for scheduling by adding the `@Scheduled` annotation to it. 
 
-The `@Scheduled` is a method-level annotation applied at runtime to mark the method to be scheduled. It takes one attribute from `cron`, `fixedDelay`, or `fixedRate` for specifying the schedule of execution in different formats.
+The `@Scheduled` is a [method-level annotation](https://docs.oracle.com/javase/tutorial/java/annotations/index.html) applied at runtime to mark the method to be scheduled. It takes one attribute from `cron`, `fixedDelay`, or `fixedRate` for specifying the schedule of execution in different formats.
 
 The annotated method needs to fulfill two conditions:
 1. The method should not have a return type and so return `void`. For methods that have a  return type, the returned value is ignored when invoked through the scheduler.
 2. The method should not accept any input parameters.
 
-In the next sections, we will examine different options for specifying the scheduler to trigger the scheduled jobs. The `@Scheduled` is a method level [annotation](https://docs.oracle.com/javase/tutorial/java/annotations/index.html) and we need to add it on a method of a Spring Bean class. We can provide parameters to the annotations to specify if we wish the method to be executed on a fixed interval or at a specific schedule of time and date:
-
-* `fixedRate`: The method is run on periodic intervals even if the last invocation may still be running
-* `fixedDelay`: Starts the timer for the next execution only after an execution has finished.
-
-Let us look at their behavior by running the example.
+In the next sections, we will examine different options for specifying the scheduler to trigger the scheduled jobs. 
 
 ## Running the Job with Fixed Delay
 We use the `fixedDelay` attribute to configure a job to run after a fixed delay which means the interval between the end of the previous job and the beginning of the new job is fixed. 
@@ -103,7 +98,8 @@ In this example, we are computing the price of a product by executing the method
 @Service
 public class PricingEngine {
   
-  static final Logger LOGGER = Logger.getLogger(PricingEngine.class.getName());
+  static final Logger LOGGER = 
+    Logger.getLogger(PricingEngine.class.getName());
   private Double price;
   
   public Double getProductPrice() {
@@ -141,7 +137,8 @@ In this example, we are refreshing the pricing parameters by executing a method 
 @Service
 public class PricingEngine {
   
-  static final Logger LOGGER = Logger.getLogger(PricingEngine.class.getName());
+  static final Logger LOGGER = 
+     Logger.getLogger(PricingEngine.class.getName());
  
   
   @Scheduled(fixedRate = 3000)
@@ -149,7 +146,8 @@ public class PricingEngine {
   public void refreshPricingParameters() {
     ...
     ...
-    LOGGER.info("computing price at "+ LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
+    LOGGER.info("computing price at "+ 
+      LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
   }
 }
 
@@ -159,9 +157,9 @@ public class PricingEngine {
 @ConditionalOnProperty(name="scheduler.enabled", matchIfMissing = true)
 public class SchedulerConfig {
 
-```
+
 }
-``````
+```
 
 Here we have annotated the `refreshPricingParameters` method with the `@Scheduled` annotation and set the `fixedRate` attribute to `3000` milliseconds or `3` seconds. This will trigger the method every `3` seconds. 
 
@@ -177,7 +175,8 @@ With both `fixedDelay` and `fixedRate`,  the first invocation of the method star
 @Service
 public class PricingEngine {
   
-  static final Logger LOGGER = Logger.getLogger(PricingEngine.class.getName());
+  static final Logger LOGGER = 
+    Logger.getLogger(PricingEngine.class.getName());
 
   @Scheduled(initialDelay = 2000, fixedRate = 3000)
   @Async
@@ -185,7 +184,8 @@ public class PricingEngine {
     
     Random random = new Random();
     price = random.nextDouble() * 100;
-    LOGGER.info("computing price at "+ LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
+    LOGGER.info("computing price at "+ 
+      LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
   }
 }
 ```
@@ -202,7 +202,8 @@ The `@Scheduler` annotation provides the attributes `fixedRateString` and `fixed
 @Service
 public class PricingEngine {
   
-  static final Logger LOGGER = Logger.getLogger(PricingEngine.class.getName());
+  static final Logger LOGGER = 
+    Logger.getLogger(PricingEngine.class.getName());
   private Double price;
   
   public Double getProductPrice() {
@@ -215,7 +216,8 @@ public class PricingEngine {
     
     Random random = new Random();
     price = random.nextDouble() * 100;
-    LOGGER.info("computing price at "+ LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
+    LOGGER.info("computing price at "+ 
+      LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
     Thread.sleep(4000);
   }
 
@@ -267,7 +269,8 @@ public class PricingEngine {
   public void computePrice() throws InterruptedException {
     ...
     ...
-    LOGGER.info("computing price at "+ LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
+    LOGGER.info("computing price at "+ 
+      LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
   }
 
 }
@@ -306,7 +309,8 @@ public class PricingEngine {
   public void computePrice() throws InterruptedException {
     ...
     ...
-    LOGGER.info("computing price at "+ LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
+    LOGGER.info("computing price at "+ 
+      LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
   }
 
 }

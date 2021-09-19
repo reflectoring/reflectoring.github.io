@@ -73,7 +73,7 @@ public class SchedulerConfig {
 
 }
 ``` 
-Here we have specified the property name as `scheduler.enabled`. We want to enable it by default. For this, we have also set the value of `matchIfMissing` to `true` which means we do not have to set this property to enable scheduling but have to set this property to explicitly disable scheduler.
+Here we have specified the property name as `scheduler.enabled`. We want to enable it by default. For this, we have also set the value of `matchIfMissing` to `true` which means we do not have to set this property to enable scheduling but have to set this property to explicitly disable the scheduler.
 
 ## Adding Scheduled Jobs
 
@@ -85,7 +85,7 @@ The annotated method needs to fulfill two conditions:
 1. The method should not have a return type and so return `void`. For methods that have a  return type, the returned value is ignored when invoked through the scheduler.
 2. The method should not accept any input parameters.
 
-In the next sections, we will examine different options for specifying the scheduler to trigger the scheduled jobs. 
+In the next sections, we will examine different options of configuring the scheduler to trigger the scheduled jobs. 
 
 ## Running the Job with Fixed Delay
 We use the `fixedDelay` attribute to configure a job to run after a fixed delay which means the interval between the end of the previous job and the beginning of the new job is fixed. 
@@ -198,9 +198,11 @@ Here we have set the `initialDelay` to delay the first execution of the method b
 
 ## Specifying Intervals in ISO Duration Format
 
-So far in our examples, we have specified the time interval in milliseconds. Specifying higher values of an interval in hours or days which is most often the case in real situations is difficult to read. So instead of specifying a large value like `7200000` for `2` hours, we can specify the time in the [ISO duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations) like `PT02H`. 
+So far in our examples, we have specified the time interval in milliseconds. Specifying higher values of an interval in hours or days which is most often the case in real situations is difficult to read. 
 
-The `@Scheduler` annotation provides the attributes `fixedRateString` and `fixedDelayString` which take the interval in duration format as shown in this code example:
+So instead of specifying a large value like `7200000` for `2` hours, we can specify the time in the [ISO duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations) like `PT02H`. 
+
+The `@Scheduler` annotation provides the attributes `fixedRateString` and `fixedDelayString` which take the interval in the ISO duration format as shown in this code example:
 
 ```java
 @Service
@@ -236,7 +238,8 @@ We can also reference a property value from our properties file as the value of 
 @Service
 public class PricingEngine {
   
-  static final Logger LOGGER = Logger.getLogger(PricingEngine.class.getName());
+  static final Logger LOGGER = 
+    Logger.getLogger(PricingEngine.class.getName());
   private Double price;
   
   public Double getProductPrice() {
@@ -409,7 +412,8 @@ Finally, we will annotate our scheduled jobs by applying the `@SchedulerLock` an
 @Service
 public class PricingEngine {
   
-  static final Logger LOGGER = Logger.getLogger(PricingEngine.class.getName());
+  static final Logger LOGGER = 
+    Logger.getLogger(PricingEngine.class.getName());
 
   
   @Scheduled(cron = "${interval-in-cron}")
@@ -418,7 +422,8 @@ public class PricingEngine {
     
     Random random = new Random();
     price = random.nextDouble() * 100;
-    LOGGER.info("computing price at "+ LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
+    LOGGER.info("computing price at "+ 
+      LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));  
     Thread.sleep(4000);
   }
   

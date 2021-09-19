@@ -163,7 +163,11 @@ public class SchedulerConfig {
 
 Here we have annotated the `refreshPricingParameters` method with the `@Scheduled` annotation and set the `fixedRate` attribute to `3000` milliseconds or `3` seconds. This will trigger the method every `3` seconds. 
 
-We have also added an `@Async` annotation to the method and `@EnableAsync` to the configuration class: `SchedulerConfig`.  The `@Async` annotation over a method allows it to execute in a separate thread. As a result of this, when the previous execution of the method takes longer than the fixed-rate interval, the subsequent invocation of a method will trigger even if the previous invocation is still executing. This will allow multiple executions of the method to run in parallel for the overlapped time interval.
+We have also added an `@Async` annotation to the method and `@EnableAsync` to the configuration class: `SchedulerConfig`.  
+
+The `@Async` annotation over a method allows it to execute in a separate thread. As a result of this, when the previous execution of the method takes longer than the fixed-rate interval, the subsequent invocation of a method will trigger even if the previous invocation is still executing. 
+
+This will allow multiple executions of the method to run in parallel for the overlapped time interval.
 
 Without applying `@Async` annotation, the method will always execute after the previous execution is completed, even if the fixed-rate interval is expired. 
 
@@ -194,7 +198,7 @@ Here we have set the `initialDelay` to delay the first execution of the method b
 
 ## Specifying Intervals in ISO Duration Format
 
-So far in our examples, we have specified the time interval in milliseconds. Specifying higher values of an interval in hours or days which is most often the case in real situations is difficult to read. So instead of specifying a large value like `7200000` for `2` hours, we can specify the time in thre [ISO duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations) like `PT02H`. 
+So far in our examples, we have specified the time interval in milliseconds. Specifying higher values of an interval in hours or days which is most often the case in real situations is difficult to read. So instead of specifying a large value like `7200000` for `2` hours, we can specify the time in the [ISO duration format](https://en.wikipedia.org/wiki/ISO_8601#Durations) like `PT02H`. 
 
 The `@Scheduler` annotation provides the attributes `fixedRateString` and `fixedDelayString` which take the interval in duration format as shown in this code example:
 
@@ -318,7 +322,7 @@ public class PricingEngine {
 ```
 Here we have specified an hourly interval with a cron macro: `hourly` instead of the less readable cron expression `0 0 * * * *`. 
 
-Spring provides the following macros 
+Spring provides the following macros: 
 
 * `@hourly`,
 * `@yearly`, 
@@ -436,7 +440,7 @@ Among its main capabilities is job persistence support to an external database t
 
 Clustering is another key feature of Quartz that can be used for Fail-safe and/or Load Balancing. 
 
-Spring Scheduler is preferred when we want to implement a simple form of job scheduling like executing methods on a bean every X seconds, or on a cron schedule without worrying about any side-affects of retstarting jobs after failures. 
+Spring Scheduler is preferred when we want to implement a simple form of job scheduling like executing methods on a bean every X seconds, or on a cron schedule without worrying about any side-effects of restarting jobs after failures. 
 
 On the other hand, if we need clustering along with support for job persistence then Quartz is a better alternative.
 

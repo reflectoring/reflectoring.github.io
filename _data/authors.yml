@@ -13,7 +13,14 @@ default:
           I've been practicing the software craft for more than ten years and I'm still learning
           something new every day. I love sharing the things I learned, so you (and future me)
           can get a head start."
-
+mateo:
+  name: "Mateo Stjepanović"
+  email: "mateostjepanovic@gmail.com"
+  avatar: "/assets/img/authors/mateo.jpg"
+  github: "Mufa0"
+  linkedin: "mateo-stjepanović-8a618b169/"
+  bio: "Fullstack developer focused on Spring and Angular. Started writing to continue my learning path and give something back to dev community."
+  
 pratikdas:
   name: "Pratik Das"
   email: "pratikd2000@gmail.com"

@@ -5,7 +5,7 @@ date: 2021-09-22 00:00:00 +1100
 modified: 2021-09-22 00:00:00 +1100  
 excerpt: "Deploying database changes can be tricky. This article provides a step-by-step approach with feature flags that you can use to deploy database changes without a downtime."  
 image:  
-auto: 0039-start
+auto: 0112-ide
 ---  
 
 Compound interest is both a powerful and apt analogy for when it comes to devising your workflows. Improving a process' efficiency and efficacy by 2% can feel negligible. But **when the procedures you're optimizing are daily habits, the overall impact of these changes can produce staggering results**.

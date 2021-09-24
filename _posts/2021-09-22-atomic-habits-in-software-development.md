@@ -3,7 +3,8 @@ title: "Atomic Habits in Software Development"
 categories: [craft]  
 date: 2021-09-22 00:00:00 +1100  
 modified: 2021-09-22 00:00:00 +1100  
-excerpt: "Deploying database changes can be tricky. This article provides a step-by-step approach with feature flags that you can use to deploy database changes without a downtime."  
+author: jcregg
+excerpt: "Investing in daily habits pays out. Here are some software development habits you might want to try out." 
 image:  
 auto: 0112-ide
 ---  

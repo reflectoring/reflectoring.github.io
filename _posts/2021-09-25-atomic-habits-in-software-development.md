@@ -6,7 +6,7 @@ modified: 2021-09-25 00:00:00 +1100
 author: jcregg
 excerpt: "Investing in daily habits pays out. Here are some software development habits you might want to try out." 
 image:  
-auto: 0112-ide
+  auto: 0112-ide
 ---  
 
 Compound interest is both a powerful and apt analogy for when it comes to devising your workflows. Improving a process' efficiency and efficacy by 2% can feel negligible. But **when the procedures you're optimizing are daily habits, the overall impact of these changes can produce staggering results**.

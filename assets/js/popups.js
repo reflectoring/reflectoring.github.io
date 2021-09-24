@@ -26,7 +26,7 @@ $( document ).ready(function() {
             iconColor: "#000000",
             header: "",
             width: "324px",
-            content: "<a href=\"https://trajectoryconf.com/trajectory-2021/?utm_source=reflectoring&utm_medium=display&utm_campaign=22q3-reflectoring.io&utm_term=smart_display&utm_content=trajectory_conf_2021\"><img width="300" alt=\"Trajectory Conference\" src=\"/assets/img/launchdarkly/2021_Trajectory_Ad_300x250.png\"/></a>",
+            content: "<a href=\"https://trajectoryconf.com/trajectory-2021/?utm_source=reflectoring&utm_medium=display&utm_campaign=22q3-reflectoring.io&utm_term=smart_display&utm_content=trajectory_conf_2021\"><img width=\"300\" alt=\"Trajectory Conference\" src=\"/assets/img/launchdarkly/2021_Trajectory_Ad_300x250.png\"/></a>",
             afterPopup: function() {
               setCookie("launchdarkly", "true", 7);
             }

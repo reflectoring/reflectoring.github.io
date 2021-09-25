@@ -243,3 +243,8 @@ naveen:
   linkedin: "https://www.linkedin.com/in/cbenaveen/"
   bio: "A Cloud Architect, passionate about building large-scale, resilient, and highly available systems using microservice architecture. I enjoy developing microservices using Java and Spring ecosystem and various author technologies."
 
+jcregg:
+  name: "Jessica Cregg"
+  avatar: "/assets/img/authors/jcregg.jpg"
+  bio: "Jessica is a Developer Advocate at <a href=\"https://launchdarkly.com\">LaunchDarkly</a> where she speaks about change and writes about the human implications of engineering decisions. She also writes for a selection of tech publications and works with Coding Black Females to improve equal and equitable representation within the technology industry."
+

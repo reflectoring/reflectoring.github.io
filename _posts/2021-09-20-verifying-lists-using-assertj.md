@@ -17,7 +17,7 @@ When we're working with lists, however, things quickly get complicated. How can 
 
 This article shows how to work with lists in AssertJ.
 
-Let’s start with setting it AssertJ.
+Let’s start with setting it up.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/testing/assertj" %}
 
@@ -129,7 +129,7 @@ AssertJ provides us a more elegant way to assert on the list. We call this field
 
 ### Field Filtering with Basic Condition
 
-Previously, [we wanted to assert that there is a person in our application that is named “Tony”](#filtering-with-basic-conditions). This example will show us howwe can do this using field filtering:
+Previously, [we wanted to assert that there is a person in our application that is named “Tony”](#filtering-with-basic-conditions). This example will show us how we can do this using field filtering:
 
 ```java
 @Test

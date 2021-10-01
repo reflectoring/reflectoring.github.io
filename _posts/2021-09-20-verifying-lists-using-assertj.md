@@ -4,7 +4,7 @@ categories: [spring-boot]
 date: 2021-09-20 06:00:00 +1000
 modified: 2021-09-27 06:00:00 +1000
 author: mateo
-excerpt: "AssertJ"
+excerpt: "Asserting lists in unit tests can be painful. AssertJ provides handy support for lists that we're going to explore in this article."
 image: 
   auto: 0032-dashboard
 ---

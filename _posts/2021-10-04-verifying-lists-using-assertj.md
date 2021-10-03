@@ -1,12 +1,12 @@
 ---
 title: "Asserting Lists with AssertJ"
 categories: [spring-boot]
-date: 2021-09-20 06:00:00 +1000
-modified: 2021-09-27 06:00:00 +1000
+date: 2021-10-04 06:00:00 +1000
+modified: 2021-10-04 06:00:00 +1000
 author: mateo
 excerpt: "Asserting lists in unit tests can be painful. AssertJ provides handy support for lists that we're going to explore in this article."
 image: 
-  auto: 0032-dashboard
+  auto: 0019-magnifying-glass
 ---
 
 In tests, we need to add assertions to make sure that a result is the expected result. For this, we can make use of the AssertJ assertion library.
@@ -115,8 +115,7 @@ void filterOnAllSessionsThatAreFromToday_nestedFiltering() {
       .filter(session -> session.getStart().isAfter(LocalDateTime.now().minusHours(1)))
         .count())
     .filteredOn(sessions -> sessions > 0)
-    .size()
-    .isEqualTo(4);
+    .hasSize(4);
 }
 ```
 The entities were modeled so that the session contains the time, and we are provided with a list of persons where each of them contains a list of sessions. 

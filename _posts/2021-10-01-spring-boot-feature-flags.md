@@ -2,7 +2,7 @@
 title: "Feature Flags with Spring Boot"
 categories: [spring-boot]
 date: 2021-10-01 00:00:00 +1100 
-modified: 2021-09-22 00:00:00 +1100 
+modified: 2021-10-01 00:00:00 +1100 
 excerpt: "Feature flags don't need to be simple if/else blocks. Instead, we can replace whole methods or even whole beans with a bit of Spring Boot magic."
 image:
   auto: 0112-decision
@@ -20,11 +20,11 @@ the users until we flip the switch.
 Sometimes, however, new features are a bit bigger and a single if/else statement is not the right tool to feature flag
 the change. Instead, we want to replace a whole method, object, or even a whole module with the flip of a feature flag.
 
-This tutorial introduces several ways of feature flagging code in a Spring Boot app.
+**This tutorial introduces several ways of feature flagging code in a Spring Boot app.**
 
 If you are interested in feature flags in general, I recently wrote about
-using [different feature flagging tools](https://reflectoring.io/java-feature-flags/)
-and [how to do zero-downtime database changes](https://reflectoring.io/zero-downtime-deployments-with-feature-flags/)
+using [different feature flagging tools](/java-feature-flags/)
+and [how to do zero-downtime database changes](/zero-downtime-deployments-with-feature-flags/)
 with feature flags.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/feature-flags" %}
@@ -47,9 +47,9 @@ class Service {
 
   public int doSomething() {
     if (featureFlagService.isNewServiceEnabled()) {
-      return 42;
+      return "new value";
     } else {
-      return 1;
+      return "old value";
     }
   }
 }
@@ -59,7 +59,7 @@ We have a `FeatureFlagService` that we can ask if a certain feature flag is enab
 
 In our code, we simply ask the `FeatureFlagService` if a certain feature is enabled, and return a value depending on whether the feature is enabled or not.
 
-That's pretty straightforward and doesn't even rely on any specific Spring Boot features. Many new changes are small enough to be introduces with a simple if/else block.
+That's pretty straightforward and doesn't even rely on any specific Spring Boot features. Many new changes are small enough to be introduced with a simple if/else block.
 
 Sometimes, however, a change is bigger than that. We would have to add multiple if/else blocks across the codebase and that would unnecessarily pollute the code.
 
@@ -67,7 +67,7 @@ In this case, we might want to replace a whole method instead.
 
 ## Replacing a Method
 
-If we have a bigger feature or simply don't want to sprinkle feature flags all over the code of a long method, we can replace a whole method. 
+If we have a bigger feature or simply don't want to sprinkle feature flags all over the code of a long method, we can replace a whole method with a new method. 
 
 If you want to play along, have a look at the code [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/feature-flags/src/main/java/io/reflectoring/featureflags/patterns/replacemethod).
 
@@ -77,8 +77,8 @@ Say we have a class called `OldService` that implements two methods:
 @Component
 class OldService {
   
-  public int doSomething() {
-    return 1;
+  public String doSomething() {
+    return "old value";
   }
 
   public int doAnotherThing() {
@@ -87,16 +87,16 @@ class OldService {
 }
 ```
 
-We want to replace the behavior of the `doSomething()` method behind a feature flag.
+We want to replace the `doSomething()` method with a new method that is only active behind a feature flag.
 
 ### Introduce an Interface
 
-The first thing we do, is to introduce an interface for the methods that we want to make feature flaggable:
+The first thing we do is to introduce an interface for the method(s) that we want to make feature flaggable:
 
 ```java
 interface Service {
 
-  int doSomething();
+  String doSomething();
 
 }
 
@@ -104,8 +104,8 @@ interface Service {
 class OldService {
 
   @Override
-  public int doSomething() {
-    return 1;
+  public String doSomething() {
+    return "old value";
   }
 
   public int doAnotherThing() {
@@ -114,7 +114,9 @@ class OldService {
 }
 ```
 
-### Put The New Feature Behind the Interface
+Notice that the interface only declares the `doSomething()` method and not the other method, because we only want to make this one method flaggable.
+
+### Put the New Feature Behind the Interface
 Then, we create a class called `NewService` that implements this interface as well:
 
 ```java
@@ -122,13 +124,15 @@ Then, we create a class called `NewService` that implements this interface as we
 class NewService implements Service {
   
   @Override
-  public int doSomething() {
-    return 42;
+  public String doSomething() {
+    return "new value";
   }
 }
 ```
 
-Now we have two classes `OldService` and `NewService` implementing the `doSomething()` method and we want to toggle between those two implementations.
+This class defines the new behavior we want to see, i.e. the behavior that will be activated when we activate the feature flag.
+
+Now we have two classes `OldService` and `NewService` implementing the `doSomething()` method and we want to toggle between those two implementations with a feature flag.
 
 ### Implement a Feature Flag Proxy
 
@@ -143,14 +147,17 @@ class FeatureFlaggedService implements Service {
   private final NewService newService;
   private final OldService oldService;
 
-  public FeatureFlaggedService(FeatureFlagService featureFlagService, NewService newService, OldService oldService) {
+  public FeatureFlaggedService(
+          FeatureFlagService featureFlagService, 
+          NewService newService, 
+          OldService oldService) {
     this.featureFlagService = featureFlagService;
     this.newService = newService;
     this.oldService = oldService;
   }
 
   @Override
-  public int doSomething() {
+  public String doSomething() {
     if (featureFlagService.isNewServiceEnabled()) {
       return newService.doSomething();
     } else {
@@ -163,7 +170,7 @@ class FeatureFlaggedService implements Service {
 
 This class takes an instance of `OldService` and an instance of `NewService` and acts as a proxy for the `doSomething()` method. 
 
-If the feature flag is enabled, `FeatureFlaggedService.doSomething()` will call the new service, otherwise it will stick to the old service's implementation of `doSomething()`. 
+If the feature flag is enabled, `FeatureFlaggedService.doSomething()` will call the `NewService.doSomething()`, otherwise it will stick to the old service's implementation `OldService.doSomething()`. 
 
 ### Replacing a Method in Action
 
@@ -190,15 +197,16 @@ public class ReplaceMethodTest {
   @Test
   void oldServiceTest() {
     given(featureFlagService.isNewServiceEnabled()).willReturn(false);
-    assertThat(service.doSomething()).isEqualTo(1);
+    assertThat(service.doSomething()).isEqualTo("old value");
     assertThat(oldService.doSomethingElse()).isEqualTo(2);
   }
 
   @Test
   void newServiceTest() {
     given(featureFlagService.isNewServiceEnabled()).willReturn(true);
-    assertThat(service.doSomething()).isEqualTo(42);
-    // doSomethingElse() is not behind a feature flag, so it should return the same value independent of the feature flag
+    assertThat(service.doSomething()).isEqualTo("new value");
+    // doSomethingElse() is not behind a feature flag, so it 
+    // should return the same value independent of the feature flag
     assertThat(oldService.doSomethingElse()).isEqualTo(2);
   }
 
@@ -207,13 +215,15 @@ public class ReplaceMethodTest {
 
 In this test, we mock the `FeatureFlagService` so that we can define the feature flag state to be either enabled or disabled. 
 
-We let Spring autowire a bean of type `Service` and a bean of type `OldService`. The injected `Service` bean will be backed by the `FeatureFlaggedService` bean, because we have marked it as `@Primary` above. That means Spring will pick the `FeatureFlaggedService` bean over the `OldService` and `NewService` beans, which are also implementations of `Service` and also available in the application context, because they are both annotated with `@Component` above.
+We let Spring autowire a bean of type `Service` and a bean of type `OldService`. 
+
+The injected `Service` bean will be backed by the `FeatureFlaggedService` bean because we have marked it as `@Primary` above. That means Spring will pick the `FeatureFlaggedService` bean over the `OldService` and `NewService` beans, which are also implementations of `Service` and which are also available in the application context (because they are both annotated with `@Component` above).
 
 In `oldServiceTest()`, we disable the feature flag and make sure that `service.doSomething()` returns the value calculated by the `OldService` bean. 
 
-In `newServiceTest()`, we enable the feature flag and assert that `service.doSomething()` now returns the value calculated by the `NewService` bean. We also check that `oldService.doSomethingElse()` still returns the old value, because this method is not backed by the feature flag.
+In `newServiceTest()`, we enable the feature flag and assert that `service.doSomething()` now returns the value calculated by the `NewService` bean. We also check that `oldService.doSomethingElse()` still returns the old value, because this method is not backed by the feature flag and thus shouldn't be affected by it.
 
-To recap, we can introduce a interface for the method(s) that we want to put behind a feature flag and implement a "proxy" bean that switches between two (or more) implementations of that interface.
+**To recap, we can introduce an interface for the method(s) that we want to put behind a feature flag and implement a "proxy" bean that switches between two (or more) implementations of that interface**.
 
 Sometimes, changes are even bigger and we would like to replace a whole bean instead of just a method or two, though.
 
@@ -229,7 +239,7 @@ Again, we have two beans, `OldService` and `NewService` implementing the `Servic
 
 ![Two beans implementing the same interface](/assets/img/posts/spring-boot-feature-flags/services.png)
 
-We now want to completely replace the `OldService` bean with the `NewService` bean depending on the value of a feature flag. And we want to be able to do this in an adhoc fashion, without having to restart the application!
+We now want to completely replace the `OldService` bean with the `NewService` bean depending on the value of a feature flag. And we want to be able to do this in an ad-hoc fashion, without having to restart the application!
 
 If you want to have a look at the code, it's [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/feature-flags/src/main/java/io/reflectoring/featureflags/patterns/replacebean).
 
@@ -253,7 +263,11 @@ public class FeatureFlagFactoryBean<T> implements FactoryBean<T> {
   private final T beanWhenTrue;
   private final T beanWhenFalse;
 
-  public FeatureFlagFactoryBean(Class<T> targetClass, Supplier<Boolean> featureFlagEvaluation, T beanWhenTrue, T beanWhenFalse) {
+  public FeatureFlagFactoryBean(
+          Class<T> targetClass, 
+          Supplier<Boolean> featureFlagEvaluation, 
+          T beanWhenTrue, 
+          T beanWhenFalse) {
     this.targetClass = targetClass;
     this.featureFlagEvaluation = featureFlagEvaluation;
     this.beanWhenTrue = beanWhenTrue;
@@ -270,7 +284,10 @@ public class FeatureFlagFactoryBean<T> implements FactoryBean<T> {
       }
     };
 
-    Object proxy = Proxy.newProxyInstance(targetClass.getClassLoader(), new Class[]{targetClass}, invocationHandler);
+    Object proxy = Proxy.newProxyInstance(
+            targetClass.getClassLoader(), 
+            new Class[]{targetClass}, 
+            invocationHandler);
 
     return (T) proxy;
   }
@@ -285,8 +302,8 @@ public class FeatureFlagFactoryBean<T> implements FactoryBean<T> {
 Let's look at what the code does:
 
 * We implement the `FactoryBean<T>` interface, which requires us to implement the `getObject()` and `getObjectType()` methods.
-* In the constructor, we pass a `Supplier<Boolean>` that evaluates if a feature flag is true or false. It's important that we pass a callback like this instead of just passing the value of the feature flag, because the feature flag value can change over time! 
-* In the constructor, we also pass two beans of type `<T>`: one for when the feature flag is true (`beanWhenTrue`), another for when it's false (`beanWhenFalse`).
+* In the constructor, we pass a `Supplier<Boolean>` that evaluates if a feature flag is true or false. We must pass a callback like this instead of just passing the value of the feature flag because the feature flag value can change over time! 
+* In the constructor, we also pass two beans of type `<T>`: one to use when the feature flag is true (`beanWhenTrue`), another for when it's false (`beanWhenFalse`).
 * The interesting bit happens in the `getObject()` method: here we use Java's built-in `Proxy` feature to create a proxy for the interface of type `T`. Every time a method on the proxy gets called, it decides based on the feature flag which of the beans to call the method on.
 
 The TL;DR is that the `FeatureFlagFactoryBean` returns a proxy that forwards method calls to one of two beans, depending on a feature flag. **This works for all methods declared on the generic interface of type `<T>`**.
@@ -339,13 +356,13 @@ public class ReplaceBeanTest {
   @Test
   void oldServiceTest() {
     given(featureFlagService.isNewServiceEnabled()).willReturn(false);
-    assertThat(service.doSomething()).isEqualTo(1);
+    assertThat(service.doSomething()).isEqualTo("old value");
   }
 
   @Test
   void newServiceTest() {
     given(featureFlagService.isNewServiceEnabled()).willReturn(true);
-    assertThat(service.doSomething()).isEqualTo(42);
+    assertThat(service.doSomething()).isEqualTo("new value");
   }
 
 }
@@ -362,9 +379,9 @@ In `newServiceTest()` we enable the feature flag and assert that the `doSomethin
 
 This article has shown that you don't need to sprinkle messy `if/else` statements all over your codebase to implement feature flags.
 
-Instead, make the features evident in your code by creating interfaces and implementing them in different versions.
+Instead, make the features evident in your code by creating interfaces and implementing them in different versions. 
 
-This allows for easy switching between implementations, easier-to-understand code, and fewer headaches when deploying features into production.
+This allows for simple code, easy switching between implementations, easier-to-understand code, quick cleanup of feature flags, and fewer headaches when deploying features into production.
 
 The code from this article (and other articles on feature flags) is available [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/feature-flags) for browsing and forking.
 

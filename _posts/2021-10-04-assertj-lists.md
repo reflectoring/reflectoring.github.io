@@ -25,7 +25,7 @@ Let’s start with setting it up.
 ### Maven Setup
 
 If you are using Maven and not using Spring or Spring Boot dependencies, you can just import the `assertj-core` dependency into your project:
-```java
+```xml
 <dependencies>
   <dependency>
     <groupId>org.assertj</groupId>
@@ -35,12 +35,13 @@ If you are using Maven and not using Spring or Spring Boot dependencies, you can
 </dependencies>
 ```
 If you are using Spring Boot, you can import `spring-boot-starter-test` as a dependency and start writing your unit test:
-```java
+
+```xml
 <dependencies>
   <dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-test</artifactId>
-  <version>2.5.4</version>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-test</artifactId>
+    <version>2.5.4</version>
   </dependency>
 </dependencies>
 ```
@@ -48,15 +49,16 @@ If you are using Spring Boot, you can import `spring-boot-starter-test` as a dep
 
 If you like Gradle more, or your project just uses Gradle as a build tool, you can import `assertj-core` like this:
 
-```java
+```groovy
 dependencies {
-	testImplementation 'org.assertj:assertj-core:3.11.1'
+  testImplementation 'org.assertj:assertj-core:3.11.1'
 }
 ```
 Or, if you are working with Spring:
-```java
+
+```groovy
 dependencies {
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 ```
 

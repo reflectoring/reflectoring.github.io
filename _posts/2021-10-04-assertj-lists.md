@@ -421,7 +421,7 @@ void filterOnAllSesionThatAreFomToday_methodCallExtractingMethod(){
 After fetching all sessions, we call a method called `getDurationInMinutes()` using `extractingResultOf()`. This method has to be an inside class we are filtering on. After that, we get the list of outputs on that method, in our use case we get a list of durations of all sessions. Now, we can filter on that one and assert that there is only one session that is shorter than two hours. We passed another argument to `extractingResultOf()` that represents the type that we expect back. If we don’t provide it method will return `Object.class` type.
 
 
-# Conclusion
+## Conclusion
 
 AssertJ provides us full functionality on asserting lists. We can split them into two groups:
   

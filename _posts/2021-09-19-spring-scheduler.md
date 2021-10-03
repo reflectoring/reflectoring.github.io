@@ -171,6 +171,9 @@ This will allow multiple executions of the method to run in parallel for the ove
 
 Without applying `@Async` annotation, the method will always execute after the previous execution is completed, even if the fixed-rate interval is expired. 
 
+The main cause of all the scheduled tasks not running in parallel by default is that the thread pool for scheduled task has a default size of 1. So instead of using the `@Async` annotation,  we can also set the property `spring.task.scheduling.pool.size` to a higher value to allow multiple executions of a method to run in parallel during the overlapped time interval.
+
+
 ## Delaying the First Execution with Initial Delay
 
 With both `fixedDelay` and `fixedRate`,  the first invocation of the method starts immediately after the application context is initialized. However, we can choose to delay the first execution of the method by specifying the interval using the `initialDelay` attribute as shown below:

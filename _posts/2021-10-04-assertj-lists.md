@@ -1,6 +1,6 @@
 ---
 title: "Asserting Lists with AssertJ"
-categories: [spring-boot]
+categories: [Java]
 date: 2021-10-04 06:00:00 +1000
 modified: 2021-10-04 06:00:00 +1000
 author: mateo
@@ -19,7 +19,7 @@ This article shows how to work with lists in AssertJ.
 
 Let’s start with setting it up.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/testing/assertj" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/testing/assertJ" %}
 
 ## Setting up AssertJ
 ### Maven Setup
@@ -64,7 +64,7 @@ dependencies {
 
 ## Example Use Case
 
-For this article, we will build a backend for a simple gym buddy app. We will pick a set of workouts that we want to do, add several sets and the number of reps on each set. Also, we will add friends as our gym buddies and see their workout sessions. You can see the example code [on GitHub](https://github.com/thombergs/code-examples/tree/master/testing/assertj).
+For this article, we will build a backend for a simple gym buddy app. We will pick a set of workouts that we want to do, add several sets and the number of reps on each set. Also, we will add friends as our gym buddies and see their workout sessions. You can see the example code [on GitHub](https://github.com/thombergs/code-examples/tree/master/testing/assertJ).
 
 ## Filtering Lists
 

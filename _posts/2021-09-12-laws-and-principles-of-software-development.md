@@ -154,7 +154,7 @@ Software development is a profession where a lot of things go wrong. The main so
 
 We can defend against Murphy's Law by building habits into our daily software development practices that reduce the effect of bugs. We can't avoid bugs altogether, but we can and should reduce their impact to the users.
 
-The most helpful practice to fight Murphy's Law is feature flagging. If we use a feature flagging platform like [LaunchDarkly](https://launchdarkly.com), we can release a change into production behind a feature flag. Then, we can activate the flag for internal dogfooding before activating it for a small number of friendly beta users and finally activating it for all users. This way, we can get feedback about the change from increasingly critical user groups. If a change goes wrong (and it will, at some point), the impact is minimal, because only a small user group will be affected by it.
+The most helpful practice to fight Murphy’s Law is feature flagging. If we use a feature flagging platform like [LaunchDarkly](https://launchdarkly.com), we can deploy a change into production behind a feature flag. Then, we can use a targeted rollout to activate the flag for internal dogfooding before activating it for a small number of friendly beta users and finally releasing it to all users. This way, we can get feedback about the change from increasingly critical user groups. If a change goes wrong (and it will, at some point), the impact is minimal, because only a small user group will be affected by it. And, the flag can be quickly toggled off.
 
 ## Brook's Law
 ### What Does It Mean?

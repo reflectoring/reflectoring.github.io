@@ -12,6 +12,8 @@ According to Google's DevOps Research and Assessment (DORA) group, software deli
 
 In this article, we'll discuss why the practice of using feature flags helps to become good in software delivery and then go through different ways of building a homegrown feature flagging solution. Finally, we'll contrast the homegrown feature flagging solution with using a full-blown feature delivery platform like [LaunchDarkly](https://launchdarkly.com) to help you decide whether to make that solution yourself or just buy it.
 
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/feature-flags/src/main/java/io/reflectoring/featureflags/implementations" %}
+
 ## How Do You Become Good at Delivering Software?
 
 So how do you become good at delivering software? The DORA group found out that the following metrics have a big impact on software delivery performance:
@@ -122,11 +124,6 @@ public class FeatureProperties {
 
   private boolean featureOne;
   private int featureTwo;
-
-  public FeatureProperties(boolean featureOne, int featureTwo) {
-    this.featureOne = featureOne;
-    this.featureTwo = featureTwo;
-  }
 
   // getters and setters omitted
 }
@@ -418,3 +415,5 @@ This confidence makes us better at delivering software, as the DORA research sho
 It's also fun to build a homegrown solution to support feature flags in our codebase! It's an interesting technical problem to solve. 
 
 But as soon as we want to include the user context in the decision to serve a certain feature or not, things get complicated and we're likely to get them wrong the first time. So we should bet on solutions like [Togglz or LaunchDarkly](https://reflectoring.io/java-feature-flags) instead, so we can focus on the code that brings value to our customers.
+
+You can browse the code examples from this article [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/feature-flags/src/main/java/io/reflectoring/featureflags/implementations).

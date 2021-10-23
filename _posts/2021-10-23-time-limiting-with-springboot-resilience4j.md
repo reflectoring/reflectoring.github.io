@@ -222,23 +222,23 @@ $ curl http://localhost:8080/actuator/timelimiterevents
     {
       "timeLimiterName": "eventsExample",
       "type": "SUCCESS",
-      "creationTime": "2021-10-07T08:19:45.958112+05:30[Asia/Kolkata]"
+      "creationTime": "2021-10-07T08:19:45.958112"
     },
     {
       "timeLimiterName": "eventsExample",
       "type": "SUCCESS",
-      "creationTime": "2021-10-07T08:19:46.079618+05:30[Asia/Kolkata]"
+      "creationTime": "2021-10-07T08:19:46.079618"
     },
 ... other lines omitted ...
     {
       "timeLimiterName": "eventsExample",
       "type": "TIMEOUT",
-      "creationTime": "2021-10-07T08:19:47.908422+05:30[Asia/Kolkata]"
+      "creationTime": "2021-10-07T08:19:47.908422"
     },
     {
       "timeLimiterName": "eventsExample",
       "type": "TIMEOUT",
-      "creationTime": "2021-10-07T08:19:47.909806+05:30[Asia/Kolkata]"
+      "creationTime": "2021-10-07T08:19:47.909806"
     }
   ]
 }

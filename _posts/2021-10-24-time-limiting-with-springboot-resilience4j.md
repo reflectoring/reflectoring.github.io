@@ -1,8 +1,8 @@
 ---
-title: Time-Limiting with Spring Boot and Resilience4j
+title: Timeouts with Spring Boot and Resilience4j
 categories: [java]
-date: 2021-10-23 05:00:00 +1100
-modified: 2021-10-23 05:00:00 +1100
+date: 2021-10-24 05:00:00 +1100
+modified: 2021-10-24 05:00:00 +1100
 author: saajan
 excerpt: "Continuing the Resilience4j journey, this article on Spring Boot TimeLimiter shows when and how to use it to build resilient applications."
 image:
@@ -100,7 +100,7 @@ The timestamps and thread names above show that the caller got a `TimeoutExcepti
 
 ### Specifying a Fallback Method
 
-Sometimes we may want to take a default action when a request gets timed out. For example, if we are not able to fetch a value from a remote service in time, we may want to return a default value or some data from a local cache.
+Sometimes we may want to take a default action when a request times out. For example, if we are not able to fetch a value from a remote service in time, we may want to return a default value or some data from a local cache.
 
 We can do this by specifying a `fallbackMethod` in the `@TimeLimiter` annotation:
 
@@ -196,7 +196,7 @@ Spring Boot Resilience4j makes the details about the last one hundred timelimit 
 
 Let's look at the data returned by doing a `curl` to these endpoints.
 
-### Timelimiters Endpoint
+### `/timelimiters` Endpoint
 
 This endpoint lists the names of all the time-limiter instances available:
 
@@ -211,7 +211,7 @@ $ curl http://localhost:8080/actuator/timelimiters
 }
 ```
 
-### TimeLimiterEvents Endpoint
+### `timelimiterevents` Endpoint
 
 This endpoint provides details about the last 100 time limit events in the application:
 
@@ -246,7 +246,7 @@ $ curl http://localhost:8080/actuator/timelimiterevents
 
 Under the `timelimiterevents` endpoint, there are two more endpoints available: `/actuator/timelimiterevents/{timelimiterName}` and `/actuator/timelimiterevents/{timeLimiterName}/{type}`. These provide similar data as the above one, but we can filter further by the `retryName` and `type` (`success`/`timeout`).
 
-### Timelimiter Calls Endpoint
+### `calls` Endpoint
 
 This endpoint exposes the `resilience4j.timelimiter.calls` metric:
 

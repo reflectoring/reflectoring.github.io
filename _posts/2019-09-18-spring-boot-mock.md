@@ -1,7 +1,7 @@
 ---
 title: Mocking with (and without) Spring Boot
 categories: [spring-boot, java]
-modified: 2017-09-18
+modified: 2019-09-18
 excerpt: "An intro to Mockito and how to use it with Spring Boot."
 image:
   auto: 0052-mock

@@ -25,8 +25,8 @@ $( document ).ready(function() {
             slide: 1,
             iconColor: "#000000",
             header: "",
-            width: "424px",
-            content: "<a href=\"https://learn.launchdarkly.com/progressive-delivery/?utm_source=reflectoring&utm_medium=display&utm_campaign=21q3-reflectoring.io&utm_term=smart_display&utm_content=ebook_pd\"><img alt=\"Progressive Delivery\" src=\"/assets/img/launchdarkly/2021_02_ProgressiveDeliveryGuide_Ad_200x200@2x.png\"/></a>",
+            width: "324px",
+            content: "<a href=\"https://trajectoryconf.com/trajectory-2021/?utm_source=reflectoring&utm_medium=display&utm_campaign=22q3-reflectoring.io&utm_term=smart_display&utm_content=trajectory_conf_2021\"><img width=\"300\" alt=\"Trajectory Conference\" src=\"/assets/img/launchdarkly/2021_Trajectory_Ad_300x250.png\"/></a>",
             afterPopup: function() {
               setCookie("launchdarkly", "true", 7);
             }

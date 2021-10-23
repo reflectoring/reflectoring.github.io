@@ -1,12 +1,15 @@
 ---
-title: Why Immutables Are the Better Objects and How to Implement Them
+title: Immutables in Java - Are Setters Allowed?
 categories: [java, craft]
-modified: 2017-09-25
+date: 2019-09-25 00:00:00 +1100
+modified: 2021-10-22 00:00:00 +1100  
 excerpt: "Why are immutable objects a way to create safer software that is easier to maintain? And what are best practices to implement them? This article provides answers."
 image:
   auto: 0053-rock-wave
 tags: ["immutable", "factory method", "final"]
 ---
+
+In short, no. Feel free to jump right ahead to the section on [bad practices](#immutable-bad-practices). If you want to read a bit more on the why and how of immutables, have a look at the rest of this article.
 
 Immutable objects are a way to create safer software that is easier to maintain. Why is that? And what should we do and what not when implementing them? This article provides answers.
 
@@ -22,7 +25,7 @@ However clear this definition is, there are still enough questions to write a 20
 
 In this article, we'll explore why immutable objects are a good idea, how to (and how not to) implement them, and finally discuss some use cases in which they shine.
 
-## Why Should I Care about Immutables?
+## Why Should I Make an Object Immutable?
 
 It's good to know what an immutable object is, but why should we use them? Here is a (most certainly incomplete) list of reasons why immutable objects are a good idea. Let me know in the comments if you find more reasons.
 
@@ -295,6 +298,32 @@ The class in the code above is still technically immutable since its fields are 
 This pattern works against the idea of an immutable, though. **We're using an immutable as if it were mutable**. If we see wither methods like this used on an immutable, we should check if the class should rather be mutable because that's what the code implies.
 
 There may be valid use cases for immutables with wither methods, but I would at least be skeptical if I found an immutable using this pattern.
+
+### Don't Use Setters
+
+It's obvious that an immutable shouldn't have a setter, because its fields are final and cannot be changed. However, similar to withers described above, we might implement setters so that they return a new object:
+
+```java
+@RequiredArgsConstructor
+class User {
+
+  private final Long id;
+  private final String name;
+
+  User setId(Long id) {
+    return new User(id, this.name);
+  }
+
+  User setName(String name) {
+    return new User(this.id, name);
+  }
+
+}
+```
+
+Don't do this. At first glance, the class looks like it's mutable. And it might be used like a mutable class.
+
+If you find yourself using setter methods like this often, the class should probably be mutable after all.
 
 ### Don't Provide Getters by Default
 

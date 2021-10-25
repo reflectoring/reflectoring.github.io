@@ -1,5 +1,5 @@
 ---
-title: Interface Segregation Principle: Everything You Need to Know
+title: "Interface Segregation Principle: Everything You Need to Know"
 categories: [craft]
 date: 2020-03-03 06:00:00 +1100
 modified: 2021-10-24 07:44:00 +1100

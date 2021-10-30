@@ -6,8 +6,8 @@ modified: 2021-10-31 06:00:00 +1000
 excerpt: "Read about the most often cited laws and principles in software development and what we can learn from them."
 toc:
   enabled: true
-  min: 1
-  max: 1
+  min: 2
+  max: 2
 image:
   auto: 0111-hammer
 ---

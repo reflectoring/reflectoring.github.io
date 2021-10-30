@@ -9,13 +9,19 @@ image:
   auto: 0112-ide
 ---  
 
-Let's talk about what it means to find the one best way of doing something. We've been trying to answer this question since the dawn of someone teaching anyone how to do a task. Quite simply, it only makes sense to lead the best way you know how to do something if you're going to teach it at all.
+Let's talk about what it means to find the one best way of doing something. We've been trying to answer this question since the dawn of someone teaching anyone how to do a task. 
+
+Quite simply, it only makes sense to lead the best way you know how to do something if you're going to teach it at all.
 
 ## What's the "One Best Way"?
 
-When we take a step back to consider what goes into declaring the best way, we have to look at what this meant 100 years ago. Indeed, a century before, this dilemma was being pondered by Frederick Taylor, Frank and Lillian Gilbreth, Henry Gantt of Gantt Chart fame, and Karl Barth, who invented the compound slide rule and others. With mass production slowly gaining traction, finding a 'one best way' wasn't simply an academic thought experiment but a million-dollar question.
+When we take a step back to consider what goes into declaring the best way, we have to look at what this meant 100 years ago. 
 
-Taylor felt that you should find the most efficient worker in the factory and train everybody else to do things the same way that that worker did. Gilbert's thought that maybe there was a little more to it and that maybe there wasn't just a single one best way. Frank and especially Lillian Gilbreth are also doing some studies that sound modern to us about worker satisfaction, psychological fitness for jobs, feedback loops and fatigue reduction. These discussions were happening simultaneously in silos with Ford Motor Company, essentially reinventing the wheel that scientific management was still building.
+Indeed, a century ago, this dilemma was being pondered by Frederick Taylor, Frank and Lillian Gilbreth, Henry Gantt of Gantt Chart fame, and Karl Barth, who invented the compound slide rule and others. With mass production slowly gaining traction, finding a 'one best way' wasn't simply an academic thought experiment but a million-dollar question.
+
+Taylor felt that you should find the most efficient worker in the factory and train everybody else to do things the same way that that worker did. 
+
+The Gilbreths thought that maybe there was a little more to it and that maybe there wasn't just a single one best way. Frank and especially Lillian Gilbreth are also doing some studies that sound modern to us about worker satisfaction, psychological fitness for jobs, feedback loops and fatigue reduction. These discussions were happening simultaneously in silos with Ford Motor Company, essentially reinventing the wheel that scientific management was still building.
 
 The emphasis of the conversation was very much on manufacturing physical goods as quickly as efficiently and efficiently as possible. While today's 'One Best Way' discussion centres more on the production of digital goods and services, one salient point stands: if you're going to teach someone to do a task, you're going to set the standards for what's good enough, and you're going to push for the best way to be the cheapest way to make a buck. None of this is inherently wrong. The pursuit of maximizing our output levels is a natural byproduct of industry. It's just how business works.
 
@@ -52,12 +58,12 @@ The act of observing can flip a beam to a particle and make people use their met
 
 So when we're thinking about how to make continuous improvement, it's really important that we measure something that shows what we care about, and I really feel like the Accelerate book and the DORA report is a great way to look at things that you can measure that are useful proxies for what you want to be doing is expensive. We resist change because it's expensive.
 
-### Implementation through validation
+### Implementation Through Validation
 
 Change is something that we automatically resist because we know how to do the old way, and we don't know how to do the new one, and that's pretty terrifying for us. So what do we do? First, we measure what matters. You know this problem; whatever you measure becomes the goal, so if you choose to major in any proxy, humans will game that system. Monitor for improvements in productivity, reduction in issues and overall adoption. Make it easy for your team to determine whether the change was effective.
 
 
-### Remain indefinitely iterative
+### Remain Indefinitely Iterative
 
 Remember to ask yourself, 'where's the feedback loop?' in your proposed solution. If we operate with a waterfall method and information only flows one way, it can't really come back to improve anything. The waterfall is about top-down, being taught, and the one best way. But if we improve the feedback loop. We get continuous improvement. We get a fountain that can power itself at least for a while, and the more rich and useful our feedback loop is, the faster we can improve, the more continuous our improvement is.
 

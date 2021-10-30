@@ -1,8 +1,8 @@
 ---
 title: "Comparison of Java Http Clients"
 categories: [craft]
-date: 2021-04-25 06:00:00 +1000
-modified: 2021-04-25 06:00:00 +1000
+date: 2021-10-25 28:00:00 +1000
+modified: 2021-10-28 06:00:00 +1000
 author: pratikdas
 excerpt: "HTTP is a widely used protocol for communication between applications which publish their capabilities in the form of REST APIs. Applications built with Java rely on some form of HTTP client to make API invocations on other applications. A wide array of alternatives exist for choosing an HTTP client. This article aims to provide an overview of the major libraries that are used as HTTP clients in Java applications for making HTTP calls."
 image:
@@ -18,7 +18,7 @@ A wide array of alternatives exist for choosing an HTTP client. This article aim
 
 The HTTP Clients we will look at in this post are :
 
-1. HttpClient included in JDK for Applications written in Java 11 and above
+1. HttpClient included from Java 11 for applications written in Java 11 and above
 2. Apache HTTPClient from Apache HttpComponents project
 3. OkHttpClient from [Square](https://developer.squareup.com/)
 4. Spring WebClient for Spring Boot Applications

@@ -8,7 +8,7 @@
     <meta name="robots" content="noindex">
     {% endif %}
 
-    <title>{{ page.title }}</title>
+    <title>{{ page.title }} - Reflectoring</title>
 
     <link rel="canonical" href="{{ page.url | absolute_url | replace: "/index.html", "/" }}">
 
@@ -47,6 +47,7 @@
     <link rel="icon" type="image/x-icon" href="{{ base }}/assets/img/logo/favicon.ico">
 
     <link type="text/css" rel="stylesheet" href="/assets/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/assets/css/corner-popup.min.css"/>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -55,7 +56,11 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    {% include cookie-consent.html %}
+    {% if page.ads.enabled != false %}
+
+    {% endif %}
+
+    <script defer data-domain="reflectoring.io" src="https://plausible.io/js/plausible.js"></script>
 
 </head>
 

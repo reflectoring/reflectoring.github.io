@@ -1,7 +1,7 @@
 ---
 title: Bean Validation Anti-Patterns
 categories: [spring-boot, java]
-modified: 2017-09-07
+modified: 2019-09-07
 excerpt: "Some thoughts about validation in general, Bean Validation in particular, and why I consider some applications of Bean Validation an anti-pattern."
 image:
   auto: 0051-stop

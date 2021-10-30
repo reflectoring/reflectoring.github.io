@@ -8,6 +8,7 @@ excerpt: "HTTP is a widely used protocol for communication between applications 
 image:
   auto: 0074-stack
 ---
+
 HTTP is a widely used protocol for communication between applications that publish their capabilities in the form of REST APIs. Applications built with Java rely on some form of HTTP client to make API invocations on other applications.
 
 A wide array of alternatives exist for choosing an HTTP client. This article aims to provide an overview of the major libraries which are used as HTTP clients in Java applications for making HTTP calls.
@@ -210,8 +211,6 @@ Please refer to an [earlier post](https://reflectoring.io/spring-webclient/) for
 ## Conclusion
 
 In this post, we looked at the types of HTTP clients available in the Java ecosystem.
-
-We’d recommend avoiding HttpURLConnection unless you have no alternative, particularly now that the Java 11+ HttpClient is available.
 
 If ultimate flexibility is what you need and you can do without HTTP/2 for the time being, the venerable Apache client may be the one to aim for. You’ll also benefit from its very widespread use and the abundance of information on the internet.
 

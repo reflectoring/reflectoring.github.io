@@ -119,9 +119,9 @@ To keep scope creep at bay, we should have a very clear picture of what we're tr
 ### What Does It Mean?
 Hofstadter's law states that **"It always takes longer than you expect, even when you take into account Hofstadter's Law".
 
-Even when you know about this law, and increase the allotment of time for a project, it will still take longer than you expect. This is closely related to [[Laws of Software Development#Parkinson's Law|Parkinson's law]], which says that work will always fill the time allotted for it. Only that Hofstadter's law says that it fill more than the time allotted.
+Even when you know about this law, and increase the allotment of time for a project, it will still take longer than you expect. This is closely related to Parkinson's Law, which says that work will always fill the time allotted for it. Only that Hofstadter's law says that it fill more than the time allotted.
 
-This law is backed by psychology. We're prone to the so-called [[Planning Fallacy]] that states that when estimating work we usually don't take all available information into account, even if we think we did. Our estimates are almost always subjective and very seldom correct.
+This law is backed by psychology. We're prone to the so-called "Planning Fallacy" that states that when estimating work we usually don't take all available information into account, even if we think we did. Our estimates are almost always subjective and very seldom correct.
 
 ### How Does It Help in Software Development?
 

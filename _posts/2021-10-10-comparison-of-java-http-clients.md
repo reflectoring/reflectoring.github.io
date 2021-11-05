@@ -12,9 +12,9 @@ Hypertext Transfer Protocol (HTTP) is an [application-layer](https://en.wikipedi
 
 It is a commonly used protocol for communication between applications that publish their capabilities in the form of REST APIs. Applications built with Java rely on some form of HTTP client to make API invocations on other applications.
 
-A wide array of alternatives exist for choosing an HTTP client. This article provides an overview of some of the major libraries which are used as HTTP clients in Java applications for making the HTTP calls.
+A wide array of alternatives exist for choosing an HTTP client. This article provides an overview of some of the major libraries which are used as HTTP clients in Java applications for making HTTP calls.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/httpclients" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/http-clients" %}
 
 ## Different Types of HTTP Clients
 
@@ -48,7 +48,7 @@ Some of its features include:
 
 1. Support for HTTP/1.1, [HTTP/2](https://http2.github.io), and Web Socket.
 2. Support for synchronous and asynchronous programming models.
-3. Handling of request and response bodies as reactive-streams.
+3. Handling of request and response bodies as reactive streams.
 4. Support for cookies.
 
 ## Asynchronous GET Request with Native HttpClient
@@ -90,10 +90,10 @@ public class HttpClientApp {
 }
 
 ```
-Here we have used the builder pattern to create an instance of `HttpClient` and `HttpRequest` and then made an asynchronous call to the REST API. When creating the request, we have set the HTTP method as GET by calling the GET method and also set the API URL and API key in the header along with a timeout value of `10` seconds.
+Here we have used the builder pattern to create an instance of `HttpClient` and `HttpRequest` and then made an asynchronous call to the REST API. When creating the request, we have set the HTTP method as `GET` by calling the `GET` method and also set the API URL and API key in the header along with a timeout value of `10` seconds.
 
 ## Synchronous POST Request with Native HttpClient
-For HTTP POST and PUT, we call the methods `POST(BodyPublisher body)` and `PUT(BodyPublisher body)` on the builder. The `BodyPublisher` parameter has a number of out-of-the-box implementations which simplify passing the request body.
+For HTTP POST and PUT, we call the methods `POST(BodyPublisher body)` and `PUT(BodyPublisher body)` on the builder. The `BodyPublisher` parameter has several out-of-the-box implementations which simplify sending the request body.
 
 ```java
 public class HttpClientApp {
@@ -219,7 +219,7 @@ public class ApacheHttpClientApp {
 
 }
 ```
-Here we are creating the client by instantiating the `CloseableHttpAsyncClient` with default parameters within an extended `try` block. After that we start the client. Next we are creating the request using `SimpleHttpRequest` and making the asynchronous call by calling the `execute()` method and attaching a `FutureCallback` class to capture and process the HTTP response.
+Here we are creating the client by instantiating the `CloseableHttpAsyncClient` with default parameters within an extended `try` block. After that, we start the client. Next, we are creating the request using `SimpleHttpRequest` and making the asynchronous call by calling the `execute()` method and attaching a `FutureCallback` class to capture and process the HTTP response.
 
 
 
@@ -347,7 +347,7 @@ Here we are customizing the client by using the builder pattern to set the timeo
 Next, we are creating the request using the `Request.Builder` for setting the API URL and API keys in the HTTP request header. Then we make an asynchronous HTTP call on the client and receive the response by attaching a `Callback` handler.
 
 ## Synchronous POST Request with OkHttpClient
-The below code illustrates the executing a synchronous HTTP `POST` request using the `OkHttpClient` API.
+The below code illustrates executing a synchronous HTTP `POST` request using the `OkHttpClient` API:
 
 ```java
 public class OkHttpClientApp {
@@ -419,7 +419,7 @@ For using `WebClient`, we need to add a dependency on the Spring WebFlux starter
       <version>2.3.5.RELEASE</version>
     </dependency>
 ```
-Here we have added a Maven dependency on `spring-boot-starter-webflux` in `pom.xml`. Spring WebFlux is  part of Spring 5 and provides support for reactive programming in web applications.
+Here we have added a Maven dependency on `spring-boot-starter-webflux` in `pom.xml`. Spring WebFlux is part of Spring 5 and provides support for reactive programming in web applications.
 
 ## Asynchronous GET Request with WebClient
 This is an example of an asynchronous GET request made with the WebClient:
@@ -441,14 +441,14 @@ public class WebClientApp {
   }
 }
 ```
-In this code fragment, we first create the client with default settings. Next we call the `get()` method on the client for the HTTP GET request and `uri` and `header` methods for setting the API endpoint URL and access control header. 
+In this code fragment, we first create the client with default settings. Next, we call the `get()` method on the client for the HTTP GET request and `uri` and `header` methods for setting the API endpoint URL and access control header. 
 
 The `retrieve()` method called next in the chain is used to make the API call and get the response body which is converted to `Mono` with the `bodyToMono()` method. We finally subscribe in a non-blocking way on the `Mono` wrapper returned by the `bodyToMono()` method using the `subscribe()` method. 
 
 ## Synchronous POST Request with WebClient
 We make a synchronous call with the WebClient by calling the `block()` method which blocks the thread until the end of execution. We get the result after the method execution.
 
-Next let us see an example of a synchronous POST request made with the WebClient:
+Next, let us see an example of a synchronous POST request made with the WebClient:
 ```java
 public class WebClientApp {
   
@@ -488,9 +488,9 @@ public class WebClientApp {
 
 }
 ```
-Here we have created a JSON string in the `prepareRequest()` method and then sending this string as the request body in the HTTP `POST` method. 
+Here we have created a JSON string in the `prepareRequest()` method and then sent this string as the request body in the HTTP `POST` method. 
 
-We have used the `exchange()` method to call the API here. The `exchange()` method provides more control in contrast to the retrieve method used previously by providing access to the ClientResponse.
+We have used the `exchange()` method to call the API here. The `exchange()` method provides more control in contrast to the retrieve method used previously by providing access to the response from the HTTP client.
 
 Please refer to an [earlier post](https://reflectoring.io/spring-webclient/) for a more elaborate explanation of using Spring WebClient.
 
@@ -500,8 +500,8 @@ In this post, we looked at the commonly used HTTP clients in Java applications.
 
 Spring WebClient is the preferred choice for Spring Boot applications.
 
-For maximum flexibility Apache HttpClient should be used. We can also benefit from the available documentation on various sites in the internet due its widespread use.
+For maximum customization and flexibility, Apache HttpClient should be used. We can also benefit from the available documentation on various sites on the internet due to its widespread use.
 
 Square’s OkHttpClient is a recommendation for teams choosing a new client library. It’s feature-rich, highly configurable, and works well in production out of the box.
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/httpclients).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/http-clients).

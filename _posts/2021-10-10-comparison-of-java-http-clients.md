@@ -408,7 +408,7 @@ We are then setting this in the `OkHttpClient` request while creating the reques
 OkHttp performs best when we create a single `OkHttpClient` instance and reuse it for all HTTP calls in the application. Popular HTTP clients like Retrofit and Picasso used in Android applications use OkHttp underneath.
 
 ## Spring WebClient
-Spring WebClient is an asynchronous, reactive web client introduced in Spring 5 in the Spring WebFlux project to replace the older [RestTemplate](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html) for making REST API calls in applications built with the Spring Boot framework. It supports synchronous, asynchronous, and streaming scenarios.
+Spring WebClient is an asynchronous, reactive HTTP client introduced in Spring 5 in the Spring WebFlux project to replace the older [RestTemplate](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html) for making REST API calls in applications built with the Spring Boot framework. It supports synchronous, asynchronous, and streaming scenarios.
 
 For using `WebClient`, we need to add a dependency on the Spring WebFlux starter module:
 
@@ -421,7 +421,7 @@ For using `WebClient`, we need to add a dependency on the Spring WebFlux starter
 ```
 Here we have added a Maven dependency on `spring-boot-starter-webflux` in `pom.xml`. Spring WebFlux is part of Spring 5 and provides support for reactive programming in web applications.
 
-## Asynchronous GET Request with WebClient
+## Asynchronous GET Request with Spring WebClient
 This is an example of an asynchronous GET request made with the WebClient:
 ```java
 public class WebClientApp {
@@ -445,10 +445,10 @@ In this code fragment, we first create the client with default settings. Next, w
 
 The `retrieve()` method called next in the chain is used to make the API call and get the response body which is converted to `Mono` with the `bodyToMono()` method. We finally subscribe in a non-blocking way on the `Mono` wrapper returned by the `bodyToMono()` method using the `subscribe()` method. 
 
-## Synchronous POST Request with WebClient
-We make a synchronous call with the WebClient by calling the `block()` method which blocks the thread until the end of execution. We get the result after the method execution.
+## Synchronous POST Request with Spring WebClient
+Although Spring WebClient is asynchronous, we make still make a synchronous call by calling the `block()` method which blocks the thread until the end of execution. We get the result after the method execution.
 
-Next, let us see an example of a synchronous POST request made with the WebClient:
+Let us see an example of a synchronous POST request made with the WebClient:
 ```java
 public class WebClientApp {
   
@@ -490,18 +490,20 @@ public class WebClientApp {
 ```
 Here we have created a JSON string in the `prepareRequest()` method and then sent this string as the request body in the HTTP `POST` method. 
 
-We have used the `exchange()` method to call the API here. The `exchange()` method provides more control in contrast to the retrieve method used previously by providing access to the response from the HTTP client.
+We have used the `exchange()` method to call the API here. The `exchange()` method provides more control in contrast to the `retrieve()` method used previously by providing access to the response from the HTTP client.
 
 Please refer to an [earlier post](https://reflectoring.io/spring-webclient/) for a more elaborate explanation of using Spring WebClient.
 
 ## Conclusion
 
-In this post, we looked at the commonly used HTTP clients in Java applications.
+In this post, we looked at the commonly used HTTP clients in Java applications. We also explored the usage of each of those clients with the help of examples of making HTTP `GET` and `POST` requests. Here is a summary of the important points:
 
-Spring WebClient is the preferred choice for Spring Boot applications.
+If we do not want to add any external libraries, Java's native `HTTPClient` is the first choice for Java 11+ applications.
 
-For maximum customization and flexibility, Apache HttpClient should be used. We can also benefit from the available documentation on various sites on the internet due to its widespread use.
+Spring WebClient is the preferred choice for Spring Boot applications more importantly if we are using reactive APIs.
 
-Square’s OkHttpClient is a recommendation for teams choosing a new client library. It’s feature-rich, highly configurable, and works well in production out of the box.
+Apache HttpClient is used in situations when we want maximum customization and flexibility for configuring the HTTP client. It also has the maximum available documentation on various sites on the internet compared to other libraries due to its widespread use in the community.
+
+Square’s OkHttpClient is recommended when we are using an external client library. It is feature-rich, highly configurable, and has APIs which are easier to use compared to the other libraries, as we saw in the examples earlier.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/http-clients).

@@ -169,7 +169,7 @@ Let us imagine we want to create list of strings from our input from the command
 ```
 This annotation will ensure that our, newly created, list is not empty. This is perfect example of how to use type annotations on constructor.
 
-#### Generic type
+#### Generic Type
 Our application is acceppting set of strings as argument, and we want save them into new `List<String> emails`. One of our requirements is that each email has to be in right format `<name>@<company>.com`. We can ensure this in two ways. First of which is by looping through all of our incoming strings and ensuring that each of those values corresponds with our desired format. 
 But, if we use type annotations, we can do it really easy:
 ```java
@@ -227,14 +227,14 @@ When creating the new module we need to provide several informations:
 
 Without going into much of the details let us craete our first module. Inside our example we will show several options and keywords that one can use when creating module.
 
-#### Creating modules inside IntelliJ
+#### Creating Modules Inside IntelliJ
 First, we will go with a simple example. We will build Hello World application where we print "Hello" from one module and we call second module to print "World!". Since I am working in the IntelliJ IDEA there is something that we need to understand first. IntelliJ IDEA supports its own modules. For Java modules to work each module has to correspond to the IntelliJ module. 
 
 ![Package structure!](../assets/img/posts/java-release-notes/package-structure.png "Package structure")
 
 Here we see how we structured our packages and modules. We have two modules: `hello.module` and `world.module`. They corresponds to `hello` and `world` IntelliJ modules repectively. Inside each of them we  have created the `have module-info.java` file. This very file is defining our Java module. Inside of it we need to declare which packages we need to export and on which modules are we dependen upon.
 
-#### Defining our first module
+#### Defining our First Module
 
 For this example we are going to use the `hello` module to print "Hello". Inside of it we will call method inside `world` module, which will print "World !". First thing that we need to do is to declare export of the package containing our `World.class`  inside `module-info.java`:
 ```java
@@ -256,7 +256,7 @@ There are several other keywords that can be used:
 
 Out of these we will show only `requires` declaration. Others can be found on [the link.](https://www.oracle.com/corporate/features/understanding-java-9-modules.html)
 
-#### Defining our second module
+#### Defining our Second Module
 After we created and exported our `world` module we can proceed with creating `hello` module that will use previously created module and call it from its code:
 
 ```java
@@ -266,7 +266,7 @@ After we created and exported our `world` module we can proceed with creating `h
 ```
 After defining name of module we define our dependencies using `requires` keyword. We are referencing our, newly created, `hello.module`. Since we are not exporting anything from this module all packages are module private and cannot be seen from outside of the module. 
 
-#### Using Java modules inside of the code
+#### Using Java Modules Inside of the Code
 Now that we have showns how to create modules and dependencies between them, let us show how to use those modules inside of the code. We have main method inside `hello.module` that prints "Hello" to the console. We want to call method from `world.module` to print out " World!" to the console:
 ```java
   package com.reflectoring.io.app.hello;
@@ -290,20 +290,128 @@ Since `com.reflectoring.io.app.world` is exported from its module and set as req
       }
   }
 ```
+To read more about Java module system please refer to [oracle page.](https://openjdk.java.net/jeps/261)
 
-To do this we 
-- https://www.oracle.com/corporate/features/understanding-java-9-modules.html
-- https://www.baeldung.com/java-9-modularity
-- https://openjdk.java.net/jeps/261
 ### Try-with-resources Improvement
-- https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-- https://docs.oracle.com/en/java/javase/17/language/java-language-changes.html#GUID-A920DB06-0FD1-4F9C-8A9A-15FC979D5DA3
-### Diamond Syntax with Inner Anonymous Classes
-- https://beginnersbook.com/2018/05/java-9-anonymous-inner-classes-and-diamond-operator/
-### Private Interface Methods
-- https://www.javatpoint.com/java-9-interface-private-methods
-- https://www.baeldung.com/java-interface-private-methods
+`Try-with-resources` is feature that enables us to declare new resource on `try-catch` block which will autoclose upon completion.
+#### Manual Closing of Resource
+Before Java 8 we had to do our resource closing manually. Let us say that we want to read some `string` using `BufferedReader`. `BufferedReader` is, by its nature, closable resource so we need to make sure that it is properly closed after use. Before Java 8 we would do it like this:
+```java
+  BufferedReader br = new BufferedReader(new StringReader("Hello world example!"));
+  try {
+      System.out.println(br.readLine());
+  } catch (IOException e) {
+      e.printStackTrace();
+  }finally {
+      try {
+          br.close();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+  }
+```
+After using it, we would, in `finally` block call `close()` method upon our `BufferedReader`. Since `finally` block is always triggered we are sure that , even if exception pops out, our reader will be properly closed. Since our `close()` method can throw exception we need to make sure to surround it with `try-catch` block.
 
+#### Improvement on Autoclosable
+Java 8 introduced try with resource feature that enable us to declare our resource inside `try` definition. This will ensure that our closable is closed properly every time. Let us take a look into same example of using the `BufferedReader` to read string:
+```java
+ final BufferedReader br3 = new BufferedReader(new StringReader("Hello world example3!"));
+  try(BufferedReader reader = br3){
+      System.out.println(reader.readLine());
+  }catch (IOException e){
+      System.out.println("Error happened!");
+  }
+```
+Inside our `try` definition we assigned our, previously created, reader to the new variable. Now we know that our reader will get closed everytime.
+#### Improvement upon Try-with-resource
+How can we example [above](#improvement-on-autoclosable) improve ? Well, defining variable in one place only to reassign it to another inside `try` definition is a little bit of pain in the eye.
+Hopefully Java 9 introduced some changes with which we can avoid that scenario. We will be looking into the same example of reading input string through `BufferedReader`:
+```java
+  final BufferedReader br2 = new BufferedReader(new StringReader("Hello world example2!"));
+  try(br2){
+      System.out.println(br2.readLine());
+  }
+  catch (IOException e){
+      System.out.println("Error happened!");
+  }
+```
+Now we don't need to create new variable only to be able to autoclose it inside `try-catch` block. We are using the same one from original definition.
+
+To read more about `try-with-resources` feature please refer to [oracle page.](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html)
+### Diamond Syntax with Inner Anonymous Classes
+#### What Java 9 Fixed
+Before Java 9 we could use diamond operators but couldn't use them inside inner Anonymous classes.
+For our example we will try to create abstract class that has only one method, method for appending two strings with `-` between them. 
+Since this is abstact class we will use the anonymous class for providing the implementation for `append()` method:
+```java
+  public static void main(String[] args) {
+          AppendingString<String> appending = new AppendingString<>() {
+              @Override
+              public String append(String a, String b) {
+                  return new StringBuilder(a).append("-").append(b).toString();
+              }
+          };
+
+          String result = appending.append("Reflectoring", "Blog");
+          System.out.println(result);
+      }
+
+      public abstract static class AppendingString<T>{
+          public abstract T append(String a, String b);
+      }
+```
+We are using diamond operator to tell our method which type we expect.
+Since we are using Java 8 in this example we will get next compiler time error:
+
+```java
+java: cannot infer type arguments for com.reflectoring.io.java9.DiamondOperator.AppendingString<T>
+  reason: '<>' with anonymous inner classes is not supported in -source 8
+    (use -source 9 or higher to enable '<>' with anonymous inner classes)
+```
+
+### Private Interface Methods
+We already mentioned how can we use default methods in interfaces. What happens when we have, relatively, complex implementation and we want to split it into several methods?
+When working with classes we can achieve it using private methods. Could that be the solution in our case ? As of Java 9 yes. We can create private methods inside our interfaces.
+
+#### Usage of Private Interface Methods
+For our next example we want to print out set of names. That list of names should come from a database. Since our app is up and running for quite some time, and we have sevaral clients using our code, we wanted to make sure that our app doesn't break after introducing new method to this interface.
+That is the reason why we moved forward with the default method implementation.
+If client doesn't implement this method we still want to return something. Since we don't know any implementation details of our client one thing that we can do is provide set of predefined names.
+
+```java
+  public class PrivateInterfaceMethods {
+      public static void main(String[] args) {
+          TestingNames names = new TestingNames();
+          System.out.println(names.fetchInitialData());
+      }
+
+      public static class TestingNames implements NamesInterface{
+          public TestingNames(){}
+      }
+      public interface NamesInterface{
+          default List<String> fetchInitialData(){
+              try(BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/names.txt")))) {
+                  return readNames(br);
+              } catch (IOException e) {
+                  e.printStackTrace();
+                  return null;
+              }
+          }
+          private List<String> readNames(BufferedReader br) throws IOException {
+              ArrayList<String> names = new ArrayList<>();
+              String name;
+              while((name = br.readLine()) != null){
+                  names.add(name);
+              }
+              return names;
+          }
+      }
+  }
+```
+We used `BufferedReader` to read file containing default names that we want to share with client.
+To encapsulate our code, and, possibly, make it reusable in other methods, we decided to move code for reading and saving names into `List` to the separate method.
+This method is private and , now, we can use it anywhere inside our interface. 
+As mentioned, main benefit of this feature inside Java 9 is better encapsulation and reusability of the code.
 ## Java 10
 ### Local Variable Type Inference
 - https://docs.oracle.com/en/java/javase/17/language/local-variable-type-inference.html

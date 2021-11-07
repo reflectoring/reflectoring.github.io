@@ -16,9 +16,9 @@ Intention of this article is to be single stop point for all major features that
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/versions" %}
 
-## Java 8 ( https://docs.oracle.com/javase/8/docs/technotes/guides/language/enhancements.html#javase8)
+## Java 8
 
-Java 8 was such a revolutionary release that it put Java back on the pedistal of programming languages. Its new features helped with productivity, ease of use and readability of code. 
+Java 8 was such a revolutionary release that it put Java back on the pedistal of programming languages. Its new features helped with the productivity, ease of use and the readability of the code. 
 In this chapter we will go through some of the most important changes made to the Java language in the Java 8 release:
 
 * [Lambda expressions](#lambda-expression)
@@ -29,7 +29,7 @@ In this chapter we will go through some of the most important changes made to th
 * [Method Parameter Reflection](#method-parameter-reflection)
 
 ### Lambda Expressions
-`Lambda expressions` is the new feature in Java 8 that put us a bit closer to functional programming. Java was always known for having a lot of boilerplate code, and with release of Java 8 this statement became less trues. In our next examples we will see how can we use lambdas in few different scenarios. Let us begin.
+`Lambda expressions` is the new feature in Java 8 that put us a bit closer to functional programming. Java was always known for having a lot of boilerplate code, and with release of Java 8 this statement became less true. In our next examples we will see how can we use lambdas in few different scenarios. Let us begin.
 
 #### World before lambda expressions
 
@@ -414,29 +414,269 @@ This method is private and , now, we can use it anywhere inside our interface.
 As mentioned, main benefit of this feature inside Java 9 is better encapsulation and reusability of the code.
 ## Java 10
 ### Local Variable Type Inference
-- https://docs.oracle.com/en/java/javase/17/language/local-variable-type-inference.html
-- http://openjdk.java.net/projects/amber/LVTIstyle.html
+Java has always needed explicity types on local variables. This was always then double edged sword.
+When writing and reading code one could always know which type is asked for and what to expect, but, on the other hand, a lot of the code is just types with no real usability.
+#### Old Way of Working
+Let us look into the example here. We want to create small set of people, put everything in one list and then go through that list in the for loop to print out their name and lastname:
+```java
+  public void explicitTypes(){
+      Person Roland = new Person("Roland", "Deschain");
+      Person Susan = new Person("Susan", "Delgado");
+      Person Eddie = new Person("Eddie", "Dean");
+      Person Detta = new Person("Detta", "Walker");
+      Person Jake = new Person("Jake", "Chambers");
 
+      List<Person> persons = List.of(Roland, Susan, Eddie, Detta, Jake);
+
+      for(Person person : persons){
+          System.out.println(person.name + " - " + person.lastname);
+      }
+  }
+```
+This is the type of the code that we can see in most cases in Java. We use explicity types to make sure that we know what is expeceted and sent into methods.
+#### Using var as Type
+Now, we will look into same example, but with `var` type introduced in the Java 10. We still want to create sevaral persons and put the into the list. After that we will go through that list and print out the name of each person:
+```java
+public void varTypes(){
+        var Roland = new Person("Roland", "Deschain");
+        var Susan = new Person("Susan", "Delgado");
+        var Eddie = new Person("Eddie", "Dean");
+        var Detta = new Person("Detta", "Walker");
+        var Jake = new Person("Jake", "Chambers");
+
+        var persons = List.of(Roland, Susan, Eddie, Detta, Jake);
+
+        for(var person : persons){
+            System.out.println(person.name + " - " + person.lastname);
+        }
+    }
+```
+We can se some of the most typical examples of using `var` type on local variables. First, we can use them on defining local variable. It can be standalon object or even list with diamond operator. 
+From now on, Java will know how to handle it. We can also use it when we define variable inside `for-each` loop.
+There are several more usecases. For more details about local type inference please visit [oracle page.](https://docs.oracle.com/en/java/javase/17/language/local-variable-type-inference.html)
 ## Java 11
 ### Local Variable Type in Lambda Expressions
-- https://openjdk.java.net/jeps/323
+Java 11 introduced improvement on, previously mentioned, [local type inference](#local-variable-type-inference). This allowed us to use `var` inside lambda expresions.
+#### Using var in Lambda
+For our example we will, again, create list of persons, collect them into the list and filter out all that don't have 'a' inside their name:
+```java
+  public void explicitTypes(){
+      var Roland = new Person("Roland", "Deschain");
+      var Susan = new Person("Susan", "Delgado");
+      var Eddie = new Person("Eddie", "Dean");
+      var Detta = new Person("Detta", "Walker");
+      var Jake = new Person("Jake", "Chambers");
 
-
+      var filteredPersons = List.of(Roland, Susan, Eddie, Detta, Jake)
+              .stream().filter((var x) -> x.name.contains("a")).collect(Collectors.toList());;
+      System.out.println(filteredPersons);
+  }
+```
+Inside `filter()` method we are using `var` as type for object on which we are going to filter. Please note that it doesn't make difference if we use `var` or type inference without it. It will work same for both.
 ## Java 14
 ### Switch Expressions
-- https://docs.oracle.com/en/java/javase/14/language/switch-expressions.html
-
-
+#### Old Way of Switch Statements
+To avoid using multiple nested `if-else` statements we are using `switch-case`. Let's imagine that we have method where client provides desired month and we return number of days inside that month. First thing that comes to our mind is to build it with `switch-case` statements:
+```java
+  switch (month){
+      case JANUARY, MARCH,MAY, JULY, AUGUST,OCTOBER,DECEMBER:
+          days=31;
+          break;
+      case FEBRUARY:
+          days=28;
+          break;
+      case APRIL, JUNE, SEPTEMBER,NOVEMBER:
+          days = 30;
+          break;
+      default:
+          throw new IllegalStateException();
+  }
+```
+We need to make sure that we put break statement inside our `case` code block so we don't continue checking on another conditions after first one is matched. 
+#### Using Switch Expressions
+Java 14 introduces us with switch expressions that allows us to omit `break` statement. It helps with readibiliy of code and better understanding.
+We are going to look into same method as before. User wants to send the month and get number of days in that month:
+```java
+  days = switch (month){
+            case JANUARY, MARCH,MAY, JULY, AUGUST,OCTOBER,DECEMBER -> 31;
+            case FEBRUARY -> 28;
+            case APRIL, JUNE, SEPTEMBER,NOVEMBER ->  30;
+            default -> throw new IllegalStateException();
+        };
+```
+We can see that we are using a bit different notation in our `case` block. We are using `->` instead of colon.
+This will do same thing as code shown in [previous example](#old-way-of-switch-statements).
+#### Introduction of yield keyword
+Our logic inside `case` block can be a bit more complicated then just returning value. For example, we want to log which month user did user send us:
+```java
+  days = switch (month){
+      case JANUARY, MARCH,MAY, JULY, AUGUST,OCTOBER,DECEMBER -> {
+          System.out.println(month);
+          yield 31;
+      }
+      case FEBRUARY -> {
+          System.out.println(month);
+          yield 28;
+      }
+      case APRIL, JUNE, SEPTEMBER,NOVEMBER -> {
+          System.out.println(month);
+          yield 30;
+      }
+      default -> throw new IllegalStateException();
+  };
+```
+To this to work we had to put `yield` keyword at end or our code block. We can say that this will return value and break out of our `switch-case` statement.
+To read more about using switch expressions please refer to [oracle page.](https://docs.oracle.com/en/java/javase/14/language/switch-expressions.html)
 ## Java 15
 ### Text Blocks
-- https://docs.oracle.com/en/java/javase/15/text-blocks/index.html
-
+#### Example Without Using Text Blocks
+We have the string that spans into multiple lines that we want to store into the variable. First example that comes into my mind is some simple html document, so let't start with that. We want to show simple html document into out page, e.g email template. 
+For this to work we need to store template into a variable:
+```java
+  System.out.println(
+          "<!DOCTYPE html>\n" +
+          "<html>\n" +
+          "     <head>\n" +
+          "        <title>Example</title>\n" +
+          "    </head>\n" +
+          "    <body>\n" +
+          "        <p>This is an example of a simple HTML page with one paragraph.</p>\n" +
+          "    </body>\n" +
+          "</html>\n");
+```
+Standard way that we can do is to format our string like example above. Here we need to take care about new line, special syntax to append line to another one etc. Java 15 introduced easier way of doing this. It is called the `text block`.
+#### Example of Using Text Blocks
+Let us look into same example of html template for email. We want to send example email with some straightforward html formatting. This time we will use the text block:
+```java
+  System.out.println(
+          """
+          <!DOCTYPE html>
+          <html>
+              <head>
+                  <title>Example</title>
+              </head>
+              <body>
+                  <p>This is an example of a simple HTML page with one paragraph.</p>
+              </body>
+          </html>      
+          """
+  );
+```
+We used special syntaxt for openning quotes: `"""`. Creating these openning quotes allows us to treat our string as if we are writing it in standard .txt file.
+There are some rules that we need to abide to when using text blocks. We need to make sure that we put new line after our openning quotes or our compiler will throw error: `Illegal text block start: missing new line after opening quotes`.
+If we want to end our string with `\n` we can do it by putting new line before closing `"""` like in example above.
+To read more about text blocks please refer to [oracle page.](https://docs.oracle.com/en/java/javase/15/text-blocks/index.html)
 ## Java 16
-### Pattern Matching fo instanceof
-- https://docs.oracle.com/en/java/javase/16/language/pattern-matching-instanceof-operator.html
-### Record Classes
-- https://docs.oracle.com/en/java/javase/16/language/records.html
+### Pattern Matching of instanceof
 
+#### Example without pattern matching
+Let us imagine that we built application for car dealership buissness. Among other things, we build the method for calculating price of vehicle depending on type of the car. We have base class called `Vehicle` and two classes that extend that one: `Car` and `Bicycle`.
+Code for that is omitted and you can look it up on the [github page](https://github.com/thombergs/code-examples/tree/master/core-java/versions). Our algorithm for calculating prices is depending on the instance of vehicle that is sent to it:
+```java
+  public static double priceOld(Vehicle v){
+      if(v instanceof Car){
+          Car c = (Car)v;
+          return 10000 - c.kilomenters*0.01 - (Calendar.getInstance().get(Calendar.YEAR) - c.year)*100;
+      }else if(v instanceof Bicycle){
+          Bicycle b = (Bicycle)v;
+          return 1000 + b.wheelSize*10;
+      }else throw new IllegalArgumentException();
+  }
+```
+Since we are not using pattern matching we need to make sure to cast vehicle into correct type inside each `if-else` block. As we can se, it is typical example of boilerplate code for which Java is notoriously familiar.
+#### Working with pattern matching
+Now, we will se how can we discard boilerplate part from example [above](#example-without-pattern-matching):
+```java
+  public static double price(Vehicle v){
+      if(v instanceof Car c){
+          return 10000 - c.kilomenters*0.01 - (Calendar.getInstance().get(Calendar.YEAR) - c.year)*100;
+      }else if(v instanceof Bicycle b){
+          return 1000 + b.wheelSize*10;
+      }else throw new IllegalArgumentException();
+  }
+```
+Pattern matching on the `instanceof` allows us to cast our variable inline and use it inside desired `if-else` block. One thing to note is the scope of casted variable. We can see it in any part of the code that can be reached only if `instanceof` is true.
+For more information about pattern matching in `instanceof` method please refer to [oracle page.](https://docs.oracle.com/en/java/javase/16/language/pattern-matching-instanceof-operator.html)
+### Record Classes
+Let us start this chapter with question.
+How many times have you started to work on the new project and realize that, for next few days, you will be writing nothing but POJO(Plain Old Java Object) classes?
+Well, i can answer for myself: "To many times!".
+We all know how Java had bad reputation about boilerplate code , to be honest, that reputation follows Java today also.
+After many years of writing all of those getters, setters, constructors etc. Lombok came for the help. We realized that it is much more fun to work on new project without to worry about did we put all getters, setters etc.
+Lombok provided us with many more features but this one is what people form Java fondation tried to tackle in `Record class`.
+Record class is nothing more then regular POJO for most of code is generated out of definition.
+
+#### Plain Old Java Object definition
+Let us look into example of POJO class before introducing `record` in Java 16:
+```java
+public class Vehicle {
+    String code;
+    String engineType;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getEngineType() {
+        return engineType;
+    }
+
+    public void setEngineType(String engineType) {
+        this.engineType = engineType;
+    }
+
+    public Vehicle(String code, String engineType) {
+        this.code = code;
+        this.engineType = engineType;
+    }
+
+    @Override
+    public boolean equals(Object o) ...
+
+    @Override
+    public int hashCode() ...
+
+    @Override
+    public String toString() ...
+}
+```
+As we can see, there are almost 50 lines of code for object that contains only two properties. To be honest, this code was generated using IDE , but still it is there, it is inside our class.
+#### Record Definition
+Definition of vehicle, with same two properties, can be done in just one line:
+```java
+  public record VehicleRecord(String code, String engineType) {}
+```
+This one line has all same getters, setters, constructors etc. as from example [above](#plain-old-java-object-definition).
+One thing to note is that `record` class is, by default, final and we need to comply with that. That means we cannot extand a `record` class, but most of other things is available for us.
+
+To read more about record classes please refer to [oracle page.](https://docs.oracle.com/en/java/javase/16/language/records.html);
 ## Java 17
 ### Sealed Classes
-- https://docs.oracle.com/en/java/javase/17/language/sealed-classes-and-interfaces.html
+To not allow class to be extended we need to add `final` modifier to its definiton. What about when we want to be able to extend class but only by some classes.
+This behaviour can be desired when we are writing a library that is going to be used by other developers.
+We are back at our car dealership business. We are so proud of our algorythm for calculating prices that we want to expose it to other developers through library, but we don't want them use our Vehicle representation, since it is valid just for our buisness. 
+We can see a bit problem here. We need to expose class but constrain it also. 
+This is where Java 17 comes into play with `sealed` classes. Sealed class allows us to make class effectively final for everyone expect explicitly mentioned classes.
+```java
+  public sealed class Vehicle permits Bicycle, Car {...}
+```
+We added `sealed` modifier to our Vehicle class and needed to add `permits` keyword with list of classes that we allow to extend it. 
+After this change we are still getting errors from compiler. There is one more thing that we need to do here. We need to add `final`, `sealed` or `non-sealed` modifiers to classes that are going to extend our class.
+
+```java
+  public final class Bicycle extends Vehicle {...}
+```
+#### Constraints 
+There are several constraint that has to be met for sealed class to work. We are just mention them , for more details please go to official documentation:
+* Permitted subclasses must be accessible by the sealed class as compile time
+* Permitted subclasses must directly extend the sealed class
+* Permitted subclasses must have one of following modifiers:
+  * final
+  * sealed
+  * non-sealed
+* Permitted subclasses must be in same Java module
+More details about sealed classes can be found on [oracle page.](https://docs.oracle.com/en/java/javase/17/language/sealed-classes-and-interfaces.html)

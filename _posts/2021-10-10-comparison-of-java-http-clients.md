@@ -25,18 +25,22 @@ We will look at the following HTTP clients in this post :
 3. OkHttpClient from [Square](https://developer.squareup.com/)
 4. Spring WebClient for [Spring Boot](https://spring.io/projects/spring-boot) applications
 
-For all our examples, we will invoke an API `https://weatherbit-v1-mashape.p.rapidapi.com/forecast/3hourly?lat=35.5&lon=-78.5` with API keys created from the API portal. These values are stored in a constants file `URLConstants.java`:
+In order to cover the most common scenarios we will look at examples of sending asynchronous HTTP `GET` request and synchronous POST request fot each type of client. 
 
-```java
-public interface URLConstants {
+For HTTP `GET` requests, we will invoke an API: `https://weatherbit-v1-mashape.p.rapidapi.com/forecast/3hourly?lat=35.5&lon=-78.5` with API keys created from the API portal. These values are stored in a constants file `URLConstants.java`. The API key and value will be sent as a request header along with the HTTP `GET` requests. 
 
-  String URL = "https://weatherbit-v1-mashape.p.rapidapi.com/forecast/3hourly?lat=35.5&lon=-78.5";
-  String API_KEY_NAME = "x-rapidapi-key";
-  String API_KEY_VALUE = "xxxxxxx";
-  
-}
-```
-The API key and value will be sent as a request header. Other APIs will have different controls for access and the corresponding HTTP client need to be adapted accordingly.
+Other APIs will have different controls for access and the corresponding HTTP client need to be adapted accordingly.
+
+For HTTP `POST` requests, we will invoke the API: ` https://reqbin.com/echo/post/json` which takes a JSON body in the request.
+
+We can observe a common pattern of steps among all the HTTP clients during their usage in our examples:
+
+1. Create an instance of HTTP client.
+2. Create a request object for sending HTTP request.
+3. Make the HTTP call either synchronous or asynchronous.
+4. Process the HTTP response received in the previous step.
+
+Let us look at each type of client and understand how to use them in our applications:
 
 ## Native HttpClient for Applications in Java 11 and Above
 
@@ -136,7 +140,9 @@ public class HttpClientApp {
 }
 
 ```
-Here we have created a JSON string in the `prepareRequest` method for sending the request body in the HTTP `POST` method. Next, we are using the builder pattern to create an instance of `HttpRequest` and then making a synchronous call to the REST API. 
+Here we have created a JSON string in the `prepareRequest` method for sending the request body in the HTTP `POST` method. 
+
+Next, we are using the builder pattern to create an instance of `HttpRequest` and then making a synchronous call to the REST API. 
 
 When creating the request, we have set the HTTP method as `POST` by calling the `POST` method and also set the API URL and body of the request by wrapping the JSON string in a `BodyPublisher` instance.
 
@@ -172,7 +178,8 @@ public class ApacheHttpClientApp {
    public void invoke() {
         
             try(
-                CloseableHttpAsyncClient client = HttpAsyncClients.createDefault();) {
+                CloseableHttpAsyncClient client = 
+                           HttpAsyncClients.createDefault();) {
                 client.start();
                     
                     final SimpleHttpRequest request = 
@@ -212,15 +219,20 @@ public class ApacheHttpClientApp {
                   System.out.println(response.getCode());   // 200
                   System.out.println(response.getReasonPhrase()); // OK
   
-            } catch (InterruptedException | ExecutionException | IOException e) {
-        e.printStackTrace();
-      } 
+            } catch (InterruptedException 
+                     | ExecutionException 
+                     | IOException e) {
+                  e.printStackTrace();
+            } 
     }
 
 }
 ```
-Here we are creating the client by instantiating the `CloseableHttpAsyncClient` with default parameters within an extended `try` block. After that, we start the client. Next, we are creating the request using `SimpleHttpRequest` and making the asynchronous call by calling the `execute()` method and attaching a `FutureCallback` class to capture and process the HTTP response.
+Here we are creating the client by instantiating the `CloseableHttpAsyncClient` with default parameters within an extended `try` block. 
 
+After that, we start the client. 
+
+Next, we are creating the request using `SimpleHttpRequest` and making the asynchronous call by calling the `execute()` method and attaching a `FutureCallback` class to capture and process the HTTP response.
 
 
 ## Synchronous POST Request with Apache HttpClient
@@ -288,7 +300,9 @@ Here we have created a JSON string in the `prepareRequest` method for sending th
 
 Next, we are creating the request by wrapping the JSON string in a `StringEntity` class and setting it in the `HttpPost` class.
 
-We are making a synchronous call to the API by invoking the `execute()` method on the `CloseableHttpClient` class which takes the `HttpPost` object populated with the StringEntity instance as the input parameter. The response is extracted from the `CloseableHttpResponse` object returned by the `execute()` method.
+We are making a synchronous call to the API by invoking the `execute()` method on the `CloseableHttpClient` class which takes the `HttpPost` object populated with the StringEntity instance as the input parameter. 
+
+The response is extracted from the `CloseableHttpResponse` object returned by the `execute()` method.
 
 The Apache `HttpClient` is preferred when we need extreme flexibility in configuring the behavior for example providing support for mutual TLS. 
 

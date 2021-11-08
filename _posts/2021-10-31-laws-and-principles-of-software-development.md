@@ -197,9 +197,9 @@ Instead, rely on publicly vetted and trusted symmetric and asymmetric encryption
 
 ## Linus's Law
 ### What Does It Mean?
-Linus Torvalds was reported to say that "**given enough eyballs, all bugs are shallow**".
+In his book "The Cathedral & the Bazaar" about the development of the Linux Kernel, Eric Raymond wrote that "**given enough eyballs, all bugs are shallow**". He called this "Linus's Law" in honor of Linus Torvalds.
 
-Meaning that bugs in code can be better exposed if many people look at the code than if few people look at the code.
+The meaning is that bugs in code can be better exposed if many people look at the code than if few people look at the code.
 
 ### How Does It Help in Software Development?
 If you want to get rid of bugs, have other people look at your code.

@@ -248,3 +248,7 @@ jcregg:
   avatar: "/assets/img/authors/jcregg.jpg"
   bio: "Jessica is a Developer Advocate at <a href=\"https://launchdarkly.com\">LaunchDarkly</a> where she speaks about change and writes about the human implications of engineering decisions. She also writes for a selection of tech publications and works with Coding Black Females to improve equal and equitable representation within the technology industry."
 
+heidi:
+  name: "Heidi Waterhouse"
+  avatar: "/assets/img/authors/heidi.png"
+  bio: "Heidi is a Principal Developer Advocate. She is working in the intersection of risk, usability, and happy deployments. Her passions include documentation, clear concepts, and skirts with pockets."

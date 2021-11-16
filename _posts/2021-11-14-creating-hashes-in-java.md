@@ -4,7 +4,7 @@ categories: [java]
 date: 2021-11-14 06:00:00 +1000
 modified: 2021-11-14 06:00:00 +1000
 author: pratikdas
-excerpt: "A hash is a piece of text computed with a cryptographic hashing function. It is used for various purposes in the security domain like creating a checksum of a data file, generating signatures, and securely storing a piece of data as a digest instead of in the plain text. In this post, we will look at various types of hashes and how they are created in Java."
+excerpt: "A hash is a piece of text computed with a cryptographic hashing function. It is used for various purposes mainly in the security realm like securely storing sensitive information and safeguarding data integrity. In this post, we will illustrate the creation of common types of hashes in Java along with examples of using hashes for generating checksums of data files and for storing sensitive data like passwords and secrets."
 image:
   auto: 0074-stack
 ---

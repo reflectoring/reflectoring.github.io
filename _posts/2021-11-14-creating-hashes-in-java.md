@@ -17,7 +17,9 @@ In this post, we will illustrate the creation of common types of hashes in Java 
 
 ## Features of Hash Functions
 
-Most cryptographic hash functions take a string of any arbitrary length as input and produce the hash as a fixed-length value. It is a one-way function, that is, a function for which it is practically infeasible to invert or reverse the computation to produce the original plain text from the hashed output.
+Most cryptographic hash functions take a string of any arbitrary length as input and produce the hash as a fixed-length value. 
+
+A hashing function is a one-way function, that is, a function for which it is practically infeasible to invert or reverse the computation to produce the original plain text from the hashed output.
 
 Apart from being produced by a one-directional function, some of the essential features of a hash are:
 
@@ -41,9 +43,12 @@ The below example uses the MD5 hashing algorithm to produce a hash value from a 
 import java.security.MessageDigest;
 public class HashCreator {
 
-    public String createMD5Hash(final String input) throws NoSuchAlgorithmException{
+    public String createMD5Hash(final String input) 
+        throws NoSuchAlgorithmException{
+
         String hashtext = null;
         MessageDigest md = MessageDigest.getInstance("MD5");
+
         // Compute message digest of the input
         byte[] messageDigest = md.digest(input.getBytes());
 
@@ -87,10 +92,13 @@ We will the same `MessageDigest` class used before to produce a hash value using
 ```java
 public class HashCreator {
 
-    public String createSHAHash(String input) throws NoSuchAlgorithmException { 
+    public String createSHAHash(String input) 
+       throws NoSuchAlgorithmException { 
+
        String hashtext = null;
-       MessageDigest md = MessageDigest.getInstance("SHA3-224");
-       byte[] messageDigest =  md.digest(input.getBytes(StandardCharsets.UTF_8)); 
+       MessageDigest md = MessageDigest.getInstance("SHA-256");
+       byte[] messageDigest =  
+          md.digest(input.getBytes(StandardCharsets.UTF_8)); 
        
        hashtext = convertToHex(messageDigest);
        return hashtext;
@@ -183,7 +191,10 @@ public class HashCreator {
     
     
     //Create salt
-    private byte[] createSalt() throws NoSuchAlgorithmException, NoSuchProviderException{
+    private byte[] createSalt() 
+        throws NoSuchAlgorithmException, 
+               NoSuchProviderException{
+
         //Always use a SecureRandom generator for random salt
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "SUN");
         //Create array for salt
@@ -226,7 +237,9 @@ public class HashCreator {
             byte[] hash = createPBEHash(password,iterations, salt, 64); 
             
             // prepend iterations and salt to the hash
-            return iterations + ":" + convertToHex(salt) + ":" + convertToHex(hash);
+            return iterations + ":" 
+                   + convertToHex(salt) + ":" 
+                   + convertToHex(hash);
     }
 
     //Create salt
@@ -273,7 +286,9 @@ This algorithm is used for hashing passwords before storing them in secure stora
 
 A sample password hash generated with this program looks like this:
 
-`1000:de4239996e6112a67fb89361def4933f:a7983b33763eb754faaf4c87f735b76c5a1410bb4a81f2a3f23c8159eab67569916e3a86197cc2c2c16d4af616705282a828e0990a53e15be6b82cfa343c70ef`
+```shell
+1000:de4239996e6112a67fb89361def4933f:a7983b33763eb754faaf4c87f735b76c5a1410bb4a81f2a3f23c8159eab67569916e3a86197cc2c2c16d4af616705282a828e0990a53e15be6b82cfa343c70ef
+```
 
 If we observe the hash closely, we can see the password hash is composed of three parts containing the number of iterations, salt, and the hash which are separated by `:`.
 
@@ -283,9 +298,11 @@ We will now verify this hash using the below program:
 public class HashCreator {
 
 
-   private boolean validatePassword(final String originalPassword, final String storedPasswordHash) 
-            throws NoSuchAlgorithmException, InvalidKeySpecException
-        {
+   private boolean validatePassword(final String originalPassword, 
+            final String storedPasswordHash) 
+            throws NoSuchAlgorithmException, 
+                   InvalidKeySpecException {
+
             // Split the string by :
             String[] parts = storedPasswordHash.split(":");
 
@@ -302,9 +319,12 @@ public class HashCreator {
                                                 hash.length);
 
             int diff = hash.length ^ originalPasswordHash.length;
-            for(int i = 0; i < hash.length && i < originalPasswordHash.length; i++){
+            for(int i = 0; i < hash.length 
+                && i < originalPasswordHash.length; i++){
+
                 diff |= hash[i] ^ originalPasswordHash[i];
             }
+
             return diff == 0;
     }
 
@@ -328,7 +348,9 @@ public class HashCreator {
 }
 ```
 
-The `validatePassword` method in this code snippet takes the password in plain text which we want to verify against the stored hash of the password generated in the previous step. In the first step, we split the stored hash to extract the iterations, salt, and the hash and then use these to regenerate the hash for comparing with the stored hash of the password.
+The `validatePassword` method in this code snippet takes the password in plain text which we want to verify against the stored hash of the password generated in the previous step. 
+
+In the first step, we have split the stored hash to extract the iterations, salt, and the hash and then used these values to regenerate the hash for comparing with the stored hash of the original password.
 
 ## Generating Checksum
 Another common utility of hashes is for verifying whether the data (or file) at rest or during transit between two environments has been tampered known as data integrity. 
@@ -340,7 +362,11 @@ For this, we generate a hash of the data called the checksum before storing or t
 Here is a code snippet for generating a checksum of a file:
 ```java
 public class HashCreator {
-    public String createChecksum(final String filePath) throws FileNotFoundException, IOException, NoSuchAlgorithmException {
+    public String createChecksum(final String filePath) 
+        throws FileNotFoundException, 
+               IOException, 
+               NoSuchAlgorithmException {
+
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         try (
                 
@@ -358,7 +384,9 @@ public class HashCreator {
 The `createChecksum` method in this code snippet generates a SHA-256 hash of a file stored in a disk.
 A sample checksum for textual data stored in a csv file looks like this:
 
-`bcd7affc0dd150c42505513681c01bf6e07a039c592569588e73876d52f0fa27`
+```shell
+bcd7affc0dd150c42505513681c01bf6e07a039c592569588e73876d52f0fa27
+```
 
 The hash is generated again before using the data. If the two hashes match, we determine that the integrity check is passed and the data in the file has not been tampered with. 
 
@@ -374,11 +402,7 @@ Data Structures: Hash tables are extensively used in data structures. Almost all
 
 In this post, we looked at the different types of hashes and how they can be generated in Java applications. Some key points from the post:
 
-1. It is a one-way function, that is, a function for which it is practically infeasible to invert or reverse the computation to produce the original plain text from the hashed output.
-
-Apart from being produced by a one-directional function, some of the essential features of a hash are:
-
-1. A hash is a piece of text computed with a cryptographic hashing function.
+1. A hash is a piece of text computed with a hashing function which is a one-way function for which it is practically infeasible to invert or reverse the computation to produce the original plain text from the hashed output.
 2. The size of the hash is always fixed and does not depend on the size of the input data.
 3. No two distinct data sets are able to produce the same hash. This behavior is called a collision. Collision resistance is one of the measures of the strength of a hashing function.
 4. The SHA (Secure Hash Algorithm) family of cryptographic hash functions generate stronger hashes than the hashes generated by MD5.

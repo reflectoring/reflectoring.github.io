@@ -49,7 +49,6 @@ $( document ).ready(function() {
               showAdPopup();
             }
         });
-        $.fn.cornerpopup.showPopup();
       } else {
         showAdPopup();
       }

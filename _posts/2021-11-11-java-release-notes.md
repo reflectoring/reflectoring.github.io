@@ -9,15 +9,15 @@ image:
   auto: 0065-java
 ---
 A lot has changed in Java from its beginnings in 1995 until today.
-Java 8 vas a revolutionary release that put Java back on the pedestal of the best programming languages.
+Java 8 was a revolutionary release that put Java back on the pedestal of the best programming languages.
 
-We will go through the most changes in the Java language that happened from Java 8 in 2014 until today. We will try to go as brief as possible on every feature. The intention is to have __a single point__ for reading through most of the features between Java 8 and Java 17 inclusively.
+We will go through most of the changes in the Java language that happened from Java 8 in 2014 until today. We will try to be as brief as possible on every feature. The intention is to have __a single point__ for reading through most of the features between Java 8 and Java 17 inclusively.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/versions" %}
 
 ## Java 8
 
-We will go through some of the changes made to the Java language in the Java 8 release:
+The main changes of the Java 8 release were these:
 
 * [Lambda expressions](#lambda-expressions)
 * [Method Reference](#method-reference)
@@ -28,13 +28,13 @@ We will go through some of the changes made to the Java language in the Java 8 r
 
 ### Lambda Expression
 Java was always known for having a lot of boilerplate code. With the release of Java 8, this statement became a little less valid. 
-`Lambda expression` is the new feature that moves us a bit closer to functional programming. 
+Lambda expressions are the new feature that moves us a bit closer to functional programming. 
 In our examples, we will see how we use lambdas in a few different scenarios. 
 
 Let us begin.
-#### World Before Lambda Expressions
+#### The World Before Lambda Expressions
 
-We own a car dealership business, and we are software developer at the same time. To discard all the paperwork, we created a webpage that should help us find all currently available cars. Each car has its model and distance run. Let us take a look at how we would implement a function for something like this in a naive way:
+We own a car dealership business. To discard all the paperwork, we want to create some code that finds all currently available cars that have run less than 50,000 km. Let us take a look at how we would implement a function for something like this in a naive way:
 ```java
 public static List<Car> findCarsOldWay(List<Car> cars){
     List<Car> selectedCars = new ArrayList<>();
@@ -47,8 +47,8 @@ public static List<Car> findCarsOldWay(List<Car> cars){
 }
 ```
 To implement this, we a created static function which accepts a `List` of cars. It should return filtered list according to specified condition.
-#### Expanding Function With New Criteria
-If we want to expand our selection condition to filter only Mercedes Benz, our method will look something like this:
+#### Adding Search Criteria
+If we want to expand our ssearch criteria to filter only Mercedes cars, our method will look something like this:
 ```java
 public static List<Car> findCarsWithModelOldWay(List<Car> cars){
     List<Car> selectedCars = new ArrayList<>();
@@ -60,9 +60,9 @@ public static List<Car> findCarsWithModelOldWay(List<Car> cars){
     return selectedCars;
 }
 ```
-We added a new condition into `if` statement. This helps us move into our next set of examples, where we will see how to use `lambda expression` on the stream API and as the method argument.
+We added a new condition to the `if` statement. This helps us move into our next set of examples, where we will see how to use a Lambda expression on the stream API and as the method argument.
 
-#### World after lambda expressions
+#### The World After Lambda Expressions
 We have the same problem as in the [previous example](#world-before-lambda-expressions). Our client wants to find all cars with some criteria. Let us see a little less rigid solution to this problem:
 ```java
 public interface Criteria<T>{
@@ -82,30 +82,29 @@ public static List<Car> findCarsUsingLambdaCriteria(List<Car> cars, Criteria<Car
 List<Car> criteriaLambda = findCarsUsingLambdaCriteria(cars,
     (Car car) -> car.kilometers < 500000 && car.model.equals("Mercedes"));
 ```
-The first thing that we want to create is a functional interface. We can pass that functional interface as a parameter to our filtering function and call upon its method to evaluate criteria. The last row of our code shows how we use a `lambda expression` to pass the implementation of the functional interface method.
+The first thing that we want to create is a functional interface. We can pass that functional interface as a parameter to our filtering function and call upon its method to evaluate criteria. The last line of our code shows how we use a Lambda expression to pass the implementation of the functional interface method.
 
-More about `lambda expression` can be found on [oracle page.](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html)
+More about Lambda expressions can be found in the [docs](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html).
 
 ### Method Reference
-#### Usecase Showcase
-We still own a car dealership shop, and we want to print out all cars in the shop. For that, we will use the `method reference`. `Method reference` allows us to call functions in classes using a special kind of syntax `::`. Let us see how to do it using the standard method call:
+#### Usecase
+We still own a car dealership shop, and we want to print out all cars in the shop. For that, we will use a method reference. A method reference allows us to call functions in classes using a special kind of syntax `::`. Let us see how to do it using the standard method call:
 ```java
 List<String> withoutMethodReference = cars.stream()
-                                        .map(car -> car.toString())
-                                        .collect(Collectors.toList());
+    .map(car -> car.toString())
+    .collect(Collectors.toList());
 ```
-We used `lambda expression` to map car object into its `string` variant. 
+We used a Lambda expression to map the car objects into their String variant. 
 #### Method Reference Example
-Now, let us see how to use `method reference` in the same situation:
+Now, let us see how to use a Method reference in the same situation:
 ```java
 List<String> methodReference = cars.stream()
-                                    .map(Car::toString)
-                                    .collect(Collectors.toList());
-
+    .map(Car::toString)
+    .collect(Collectors.toList());
 ```
-We are, again, using the `lambda expression`, but now we call the `toString()` method by `method reference`. We can see how it is more concise and easier to read. 
+We are, again, using a Lambda expression, but now we call the `toString()` method by method reference. We can see how it is more concise and easier to read. 
 
-To read more about method reference please look into [oracle page.](https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html)
+To read more about method reference please look at the [docs](https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html).
 ### Default Methods
 Let us imagine that we have a simple `log(String message)` that prints log messages on invocation. We realized that we want to provide timestamps to messages so that logs are easily searchable. We don't want our clients to break after we introduce this change.
 #### Usecase showcase

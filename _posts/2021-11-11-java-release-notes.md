@@ -106,9 +106,9 @@ We are, again, using a Lambda expression, but now we call the `toString()` metho
 
 To read more about method reference please look at the [docs](https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html).
 ### Default Methods
-Let us imagine that we have a simple `log(String message)` that prints log messages on invocation. We realized that we want to provide timestamps to messages so that logs are easily searchable. We don't want our clients to break after we introduce this change.
-#### Usecase showcase
-For that scenario, we can use `default methods`. `Default methods` allow us to fall back to default implementation if a developer didn't provide the implementation in the class.
+Let us imagine that we have a simple method `log(String message)` that prints log messages on invocation. We realized that we want to provide timestamps to messages so that logs are easily searchable. We don't want our clients to break after we introduce this change.
+#### Usecase
+For that scenario, we can use default methods. Default methods allow us to fall back to a default implementation if a developer didn't provide the implementation in the class.
 
 Let us see how our contract looks:
 ```java
@@ -127,9 +127,11 @@ public class LoggingImplementation implements Logging{
 
 We are creating a simple interface with just one method and implementing it in `LoggingImplementation` class. 
 #### Default Methods Usage
-If we want to introduce a new method inside `Logging` interface compiler will fail with exception: 
+If we want to introduce a new method `log(String, Date)` inside the `Logging` interface, the compiler will fail with this exception: 
 
-`Class 'LoggingImplementation' must either be declared abstract or implement abstract method 'log(String, Date)' in 'Logging'`. 
+```
+Class 'LoggingImplementation' must either be declared abstract or implement abstract method 'log(String, Date)' in 'Logging'`.
+``` 
 
 The example shows the solution to this using `default methods`: 
 ```java
@@ -141,14 +143,14 @@ public interface Logging{
     }
 }
 ```
-We used the `default` keyword on method definition and put the implementation of that method inside the interface. Now, our `LoggingImplementation` class does not fail with compiler error even though we didn't implement this new method inside of it. 
+We used the `default` keyword on the method definition and put the implementation of that method inside the interface. Now, our `LoggingImplementation` class does not fail with a compiler error even though we didn't implement this new method inside of it. 
 
-To read more about `default methods` please refer to the [oracle page](https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html)
+To read more about default methods please refer to the [docs](https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html).
 
 ### Type Annotations
-Type annotations are one more feature introduced in Java 8. Even though we had annotations available before, now we can use them wherever we use type. This means that we can use them on:
-- local variable definition 
-- constructor call
+Type annotations are one more feature introduced in Java 8. Even though we had annotations available before, now we can use them wherever we use a type. This means that we can use them on:
+- a local variable definition 
+- constructor calls
 - type casting
 - generics 
 - throw clauses and more
@@ -159,8 +161,8 @@ Let us see how to ensure that our local variable doesn't end up as `null` value:
 @NotNull String userName = args[0];
 ```
 We are using annotation on the local variable definition here.
-#### Constructor Calling
-We want to make sure that we cannot create empty `ArrayList`:
+#### Constructor Call
+We want to make sure that we cannot create an empty `ArrayList`:
 ```java
 List<String> request = new @NotEmpty ArrayList<>(Arrays.stream(args).toList());
 ```
@@ -172,13 +174,13 @@ If we use type annotations, we can do it really easy:
 ```java
 List<@Email String> emails;
 ```
-This here is our definition of local variable *emails* which accept incoming strings at one point in time. We use `@Email` annotation that ensures that every record inside this list is in the desired format.
+This is a definition of a list of email addresses. We use `@Email` annotation that ensures that every record inside this list is in the desired format.
 
-For more information about type annotations please refer to [oracle page.](https://docs.oracle.com/javase/tutorial/java/annotations/type_annotations.html)
+For more information about type annotations please refer to [the docs](https://docs.oracle.com/javase/tutorial/java/annotations/type_annotations.html).
 
 ### Repeating Annotations
-#### Creating Repeating Annotation
-Let us imagine we have an application with fully implemented security. It has different levels of authorization. Even though we implemented everything carefully, we want to make sure that we log every unauthorized attempt. On each unauthorized action, we are sending an email to the owner of the company and our security admin group email. 
+#### Creating a Repeating Annotation
+Let us imagine we have an application with fully implemented security. It has different levels of authorization. Even though we implemented everything carefully, we want to make sure that we log every unauthorized action. On each unauthorized action, we are sending an email to the owner of the company and our security admin group email. 
 
 This is where we can use repeatable annotations:
 ```java
@@ -191,10 +193,10 @@ public @interface  Notifications{
     Notify[] value();
 }
 ```
-The first thing that we want to do is to create a `repeating annotation`. We create it as regular annotation, but we provide `@Repeatable` annotation to our definitions.
+The first thing that we want to do is to create a repeating annotation. We create it as regular annotation, but we provide `@Repeatable` annotation to our definitions.
 #### Using Repeating Annotations
 
-We will show how to use, [previously created](#creating-repeating-annotation), repeating annotation:
+We can add a repating annotation multiple times to the same construct:
 ```java
 @Notify(email="admin@company.com")
 @Notify(email="owner@company.com")
@@ -209,10 +211,10 @@ final String user;
 ```
 We have our custom exception class that we will throw whenever a user tries to do something that the user is not allowed. Our annotations to this class say that we want to notify two emails when code throws this exception.
 
-To read more about repeating annotations please refer to [oracle page.](https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html)
+To read more about repeating annotations please refer to the [docs](https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html).
 
 ## Java 9
-Java 9 introduced next features:
+Java 9 introduced these main features:
 * [Java Module System](#java-module-system)
 * [Try-with-resources](#try-with-resources-improvement)
 * [Diamond Syntax with Inner Anonymous Classes](#diamond-syntax-with-inner-anonymous-classes)
@@ -242,13 +244,15 @@ We have two modules: `hello.module` and `world.module`. They correspond to `hell
 
 #### Defining our First Module
 
-We are using the `hello` module to print the word: "Hello". Inside, we callc the method inside the `world` module, which will print "World !". The first thing that we need to do is to declare export of the package containing our `World.class`  inside `module-info.java`:
+We are using the `hello` module to print the word: "Hello". Inside, we call the method inside the `world` module, which will print "World !". The first thing that we need to do is to declare export of the package containing our `World.class`  inside `module-info.java`:
 ```java
 module world.module {
     exports com.reflectoring.io.app.world;
 }
 ```
-We use the keyword `module` next to the name of the module. We will use the name for referencing the module. The next keyword that we use is `exports`. It tells us that we are making our `com.reflectoring.io.app.world` package visible outside of our module. 
+We use the keyword `module` with the module name to reference the module. 
+
+The next keyword that we use is `exports`. It tells the module system that we are making our `com.reflectoring.io.app.world` package visible outside of our module. 
 
 There are several other keywords that can be used:
 * requires
@@ -260,7 +264,7 @@ There are several other keywords that can be used:
 * opens
 * opens to
 
-Out of these we will show only `requires` declaration. Others can be found on [the link.](https://www.oracle.com/corporate/features/understanding-java-9-modules.html)
+Out of these we will show only `requires` declaration. Others can be found in the [docs](https://www.oracle.com/corporate/features/understanding-java-9-modules.html).
 
 #### Defining our Second Module
 After we created, and exported, the `world` module, we can proceed with creating `hello` module:
@@ -272,18 +276,20 @@ module hello.module {
 ```
 We define dependencies using `requires` keyword. We are referencing our newly created, `hello.module`. Packages that are not exported are, by default, module private and cannot be seen from outside of the module. 
 
-To read more about Java module system please refer to [oracle page.](https://openjdk.java.net/jeps/261)
-### Try-with-resources Improvement
-`Try-with-resources` is a feature that enables us to declare new resources on the `try-catch`. The only condition is that the declared resource implements an `Autoclosable` interface.
+To read more about Java module system please refer to [the docs](https://openjdk.java.net/jeps/261).
+
+### Try-with-resources
+Try-with-resources is a feature that enables us to declare new resources on a `try-catch` block to tell the JVM to release these resources after the code has run. The only condition is that the declared resource implements an `Autoclosable` interface.
 #### Manual Closing of Resource
-We want to read text using `BufferedReader`. `BufferedReader` is, by its nature, closable a resource, so we need to make sure that it is properly closed after use. Before Java 8 we would do it like this:
+We want to read text using `BufferedReader`. `BufferedReader` is a closable resource, so we need to make sure that it is properly closed after use. Before Java 8 we would do it like this:
+
 ```java
 BufferedReader br = new BufferedReader(new StringReader("Hello world example!"));
 try {
     System.out.println(br.readLine());
 } catch (IOException e) {
     e.printStackTrace();
-}finally {
+} finally {
     try {
         br.close();
     } catch (IOException e) {
@@ -291,10 +297,10 @@ try {
     }
 }
 ```
-After calling upon method on autoclosable interface, we would, in `finally` block, call `close()` method. The `finally` block ensures that the reader is always properly closed.
+In `finally` block, we would call `close()`. The `finally` block ensures that the reader is always properly closed.
 
-#### Improvement on Autoclosable
-Java 8 introduced `try with resource` feature that enables us to declare our resource inside `try` definition. This will ensure that our closable is closed without using `finally`. Let us take a look at some example of using the `BufferedReader` to read string:
+#### Using try-with-resource
+Java 8 introduced the try-with-resource feature that enables us to declare our resource inside `try` definition. This will ensure that our closable is closed without using `finally`. Let us take a look at some example of using the `BufferedReader` to read string:
 ```java
 final BufferedReader br3 = new BufferedReader(new StringReader("Hello world example3!"));
 try(BufferedReader reader = br3){
@@ -323,11 +329,15 @@ Now we don't need to create a new variable only to autoclose it inside the `try-
 To read more about `try-with-resources` feature please refer to [oracle page.](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html)
 ### Diamond Syntax with Inner Anonymous Classes
 #### What Java 9 Fixed
-Before Java 9 we couldn't use a diamond operator inside inner anonymus class.
+Before Java 9 we couldn't use a diamond operator inside inner anonymous class.
 
-For our example, we will create an abstract class. It has only one method that appends two strings with `-` between them. 
+For our example, we will create an abstract class `AppendingString`. It has only one method that appends two strings with `-` between them. 
 Since this is an abstract class, we will use the anonymous class for providing the implementation for the `append()` method:
 ```java
+public abstract static class AppendingString<T>{
+  public abstract T append(String a, String b);
+}
+
 public static void main(String[] args) {
     AppendingString<String> appending = new AppendingString<>() {
         @Override
@@ -339,19 +349,17 @@ public static void main(String[] args) {
     String result = appending.append("Reflectoring", "Blog");
     System.out.println(result);
 }
-
-public abstract static class AppendingString<T>{
-    public abstract T append(String a, String b);
-}
 ```
 We are using the diamond operator to tell our method which type we expect.
-Since we are using Java 8, in this example we will get the compiler error:
+Since we are using Java 8, in this example we will get a compiler error:
 
 ```java
 java: cannot infer type arguments for com.reflectoring.io.java9.DiamondOperator.AppendingString<T>
 reason: '<>' with anonymous inner classes is not supported in -source 8
     (use -source 9 or higher to enable '<>' with anonymous inner classes)
 ```
+
+In Java 9, this compiler error is no longer happening.
 
 ### Private Interface Methods
 We already mentioned how we use default methods in interfaces. 
@@ -367,6 +375,7 @@ We decided that we should if the client doesn't provide the implementation, prov
 
 ```java
 public class PrivateInterfaceMethods {
+    
     public static void main(String[] args) {
         TestingNames names = new TestingNames();
         System.out.println(names.fetchInitialData());
@@ -375,7 +384,9 @@ public class PrivateInterfaceMethods {
     public static class TestingNames implements NamesInterface{
         public TestingNames(){}
     }
+    
     public interface NamesInterface{
+        
         default List<String> fetchInitialData(){
             try(BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/names.txt")))) {
                 return readNames(br);
@@ -383,6 +394,7 @@ public class PrivateInterfaceMethods {
                 e.printStackTrace();
                 return null;
             }
+            
         }
         private List<String> readNames(BufferedReader br) throws IOException {
             ArrayList<String> names = new ArrayList<>();
@@ -396,7 +408,7 @@ public class PrivateInterfaceMethods {
 }
 ```
 We used `BufferedReader` to read the file containing default names that we share with the client.
-To encapsulate our code and, possibly, make it reusable in other methods, we decided to move code for reading and saving names into `List` to the separate method.
+To encapsulate our code and, possibly, make it reusable in other methods, we decided to move code for reading and saving names into a `List` to the separate method.
 This method is private and, now, we can use it anywhere inside our interface. 
 
 As mentioned, the main benefit of this feature inside Java 9 is better encapsulation and reusability of the code.
@@ -404,8 +416,8 @@ As mentioned, the main benefit of this feature inside Java 9 is better encapsula
 ### Local Variable Type Inference
 Java always needed explicit types on local variables. 
 
-When writing and reading code, we always know which we expect. On the other hand, a lot of the code is just types with no usability.
-#### Old Way of Working
+When writing and reading code, we always know which type we expect. On the other hand, a lot of the code is just types with no usability.
+#### Old Way
 Let us look into the example here. We want to create small a set of people, put everything in one list and then go through that list in the for loop to print out their name and last name:
 ```java
 public void explicitTypes(){
@@ -423,8 +435,8 @@ public void explicitTypes(){
 }
 ```
 This is the type of code that we can see in most cases in Java. We use explicit types to make sure that we know what the method expects.
-#### Using var as Type
-Now, we will look into the same example, but with `var` type. We still want to create sevarsl persons and put them in a list. After that, we will go through that list and print out the name of each person:
+#### Implicit Typing with `var` 
+Now, we will look into the same example, but using the `var` keyword that Java 10 introduced. We still want to create several person objects and put them in a list. After that, we will go through that list and print out the name of each person:
 ```java
 public void varTypes(){
     var Roland = new Person("Roland", "Deschain");
@@ -432,7 +444,7 @@ public void varTypes(){
     var Eddie = new Person("Eddie", "Dean");
     var Detta = new Person("Detta", "Walker");
     var Jake = new Person("Jake", "Chambers");
-å
+
     var persons = List.of(Roland, Susan, Eddie, Detta, Jake);
 
     for(var person : persons){
@@ -443,12 +455,12 @@ public void varTypes(){
 We can see some of the most typical examples of using `var` type on local variables. First, we use them for defining local variables. It can be a standalone object or even a list with the diamond operator. 
 From now on, Java will know how to handle it.
 
-For more details about local type inference please visit [oracle page.](https://docs.oracle.com/en/java/javase/17/language/local-variable-type-inference.html)
+For more details about local type inference please visit [the docs](https://docs.oracle.com/en/java/javase/17/language/local-variable-type-inference.html).
 ## Java 11
 ### Local Variable Type in Lambda Expressions
-Java 11 introduced improvement on, previously mentioned, [local type inference](#local-variable-type-inference). This allowed us to use `var` inside lambda expressions.
+Java 11 introduced an improvement to the previously mentioned [local type inference](#local-variable-type-inference). This allows us to use `var` inside lambda expressions.
 #### Using var in Lambda
-We will, again, create several persons, collect them into the list and filter out all that doesn't have 'a' inside their name:
+We will, again, create several persons, collect them into the list and filter out all that don't have an 'a' inside their name:
 ```java
 public void explicitTypes(){
     var Roland = new Person("Roland", "Deschain");
@@ -462,20 +474,21 @@ public void explicitTypes(){
     System.out.println(filteredPersons);
 }
 ```
-Inside the `filter()` method we are using `var` as a type. Please note that it doesn't make a difference if we use `var` or type inference without it. It will work same for both.
+Inside the `filter()` method we are using `var` to infer the type instead of explicitly mentioning the type. 
+
 ## Java 14
 ### Switch Expressions
 #### Old Way of Switch Statements
 We have a method where a client provides the desired month, and we return the number of days inside that month. The first thing that comes to our mind is to build it with `switch-case` statements:
 ```java
 switch (month){
-    case JANUARY, MARCH,MAY, JULY, AUGUST,OCTOBER,DECEMBER:
+    case JANUARY, MARCH, MAY, JULY, AUGUST, OCTOBER, DECEMBER:
         days=31;
         break;
     case FEBRUARY:
         days=28;
         break;
-    case APRIL, JUNE, SEPTEMBER,NOVEMBER:
+    case APRIL, JUNE, SEPTEMBER, NOVEMBER:
         days = 30;
         break;
     default:
@@ -489,20 +502,20 @@ Java 14 introduces the switch expression. They allow us to omit the `break` stat
 We will look into the same method as before. The user wants to send the month and get the number of days in that month:
 ```java
 days = switch (month){
-        case JANUARY, MARCH,MAY, JULY, AUGUST,OCTOBER,DECEMBER -> 31;
+        case JANUARY, MARCH, MAY, JULY, AUGUST, OCTOBER, DECEMBER -> 31;
         case FEBRUARY -> 28;
-        case APRIL, JUNE, SEPTEMBER,NOVEMBER ->  30;
+        case APRIL, JUNE, SEPTEMBER, NOVEMBER ->  30;
         default -> throw new IllegalStateException();
     };
 ```
 We are using a bit different notation in the `case` block. We are using `->` instead of the colon.
 
 This will do the same thing as the code shown in [the previous example](#old-way-of-switch-statements).
-#### Introduction of Yield Keyword
-The logic inside the `case` block can be a bit more complicated than just returning a value. For example, we want to log which month did user send us:
+#### The `yield` Keyword
+The logic inside the `case` block can be a bit more complicated than just returning a value. For example, we want to log which month the user sent us:
 ```java
 days = switch (month){
-    case JANUARY, MARCH,MAY, JULY, AUGUST,OCTOBER,DECEMBER -> {
+    case JANUARY, MARCH, MAY, JULY, AUGUST, OCTOBER, DECEMBER -> {
         System.out.println(month);
         yield 31;
     }
@@ -510,20 +523,21 @@ days = switch (month){
         System.out.println(month);
         yield 28;
     }
-    case APRIL, JUNE, SEPTEMBER,NOVEMBER -> {
+    case APRIL, JUNE, SEPTEMBER, NOVEMBER -> {
         System.out.println(month);
         yield 30;
     }
     default -> throw new IllegalStateException();
 };
 ```
-We had to put the `yield` keyword at the end of the code block. Let's say that this will return the value and break out of the `switch-case` statement.
+In a multi-line code block, we have to use the `yield` keyword to return a value from a `case` block. 
 
-To read more about using switch expressions please refer to [oracle page.](https://docs.oracle.com/en/java/javase/14/language/switch-expressions.html)
+To read more about using switch expressions please refer to the [docs](https://docs.oracle.com/en/java/javase/14/language/switch-expressions.html).
+
 ## Java 15
 ### Text Blocks
 #### Example Without Using Text Blocks
-We want to send simple HTML document through email. 
+We want to send an HTML document via email. 
 For this to work, we need to store the template into a variable:
 ```java
   System.out.println(
@@ -537,9 +551,9 @@ For this to work, we need to store the template into a variable:
           "    </body>\n" +
           "</html>\n");
 ```
-We can format our string like in the example above. We need to take care of a new line, special syntax for appending, etc. Java 15 introduced an easier way of doing this. It is called the `text block`.
+We can format our string like in the example above. We need to take care of new lines and append all the lines to a single string. Java 15 introduced an easier way of doing this. It is called  text blocks.
 #### Example of Using Text Blocks
-Let us look into the same example of an HTML template for email. We want to send an example email with some straightforward HTML formatting. This time we will use the text block:
+Let us look into the same example of an HTML template for email. We want to send an example email with some straightforward HTML formatting. This time we will use a text block:
 ```java
   System.out.println(
           """
@@ -555,61 +569,63 @@ Let us look into the same example of an HTML template for email. We want to send
           """
   );
 ```
-We used special syntax for opening quotes: `"""`. Creating them allowed us to treat our string as if we are writing it in a .txt file.
+We used special syntax for opening and closing quotes: `"""`. This allows us to treat our string as if we are writing it in a .txt file.
 
 There are some rules that we need to abide by when using a text block. We need to make sure that we put a new line after our opening quotes, or our compiler will throw an error: 
 
-`Illegal text block start: missing new line after opening quotes`.
+```
+Illegal text block start: missing new line after opening quotes.
+```
 
 If we want to end our string with `\n` we can do it by putting new line before closing `"""` like in the example above.
 
-To read more about text blocks please refer to [oracle page.](https://docs.oracle.com/en/java/javase/15/text-blocks/index.html)
+To read more about text blocks please refer to the [docs](https://docs.oracle.com/en/java/javase/15/text-blocks/index.html).
 ## Java 16
 ### Pattern Matching of instanceof
 
 #### Example Without Pattern Matching
 We have a base class called `Vehicle` and two classes that extend that one: `Car` and `Bicycle`.
-We omitted the code for this, and you can look it up on the [GitHub page](https://github.com/thombergs/code-examples/tree/master/core-java/versions). 
+We omitted the code for this, and you can look it up in the [GitHub repo](https://github.com/thombergs/code-examples/tree/master/core-java/versions). 
 
-Our algorithm for calculating prices is depending on the instance of vehicle that is sent to it:
+Our algorithm for calculating prices is depending on the instance of the vehicle that is sent to it:
 ```java
-public static double priceOld(Vehicle v){
-    if(v instanceof Car){
-        Car c = (Car)v;
+public static double priceOld(Vehicle v) {
+    if (v instanceof Car) {
+        Car c = (Car) v;
         return 10000 - c.kilomenters*0.01 - (Calendar.getInstance().get(Calendar.YEAR) - c.year)*100;
-    }else if(v instanceof Bicycle){
-        Bicycle b = (Bicycle)v;
+    } else if (v instanceof Bicycle){
+        Bicycle b = (Bicycle) v;
         return 1000 + b.wheelSize*10;
-    }else throw new IllegalArgumentException();
+    } else throw new IllegalArgumentException();
 }
 ```
-Since we are not using pattern matching, we need to cast the vehicle into the correct type inside each `if-else` block. As we can see, it is a typical example of boilerplate code for which Java is notoriously familiar.
-#### Working with pattern matching
-We will see how can we discard the boilerplate part from the example [above](#example-without-pattern-matching):
+Since we are not using pattern matching, we need to cast the vehicle into the correct type inside each `if-else` block. As we can see, it is a typical example of boilerplate code for which Java is famous.
+#### Using Pattern Matching
+Let's see how can we can discard the boilerplate part from the example [above](#example-without-pattern-matching):
 ```java
-public static double price(Vehicle v){
-    if(v instanceof Car c){
+public static double price(Vehicle v) { 
+    if (v instanceof Car c) {
         return 10000 - c.kilomenters*0.01 - (Calendar.getInstance().get(Calendar.YEAR) - c.year)*100;
-    }else if(v instanceof Bicycle b){
+    } else if (v instanceof Bicycle b) {
         return 1000 + b.wheelSize*10;
-    }else throw new IllegalArgumentException();
+    } else throw new IllegalArgumentException();
 }
 ```
-Pattern matching on the `instanceof` allows us to cast our variable inline and use it inside the desired `if-else` block. One thing to note is the scope of the casted variable. We can see it in any part of the code that is reachable only if `instanceof` is true.
+Pattern matching on the `instanceof` allows us to cast our variable inline and use it inside the desired `if-else` block without explicitly casting it. One thing to note is the scope of the casted variable. It's visible only in withing the if statement.
 
-For more information about pattern matching in `instanceof` method please refer to [oracle page.](https://docs.oracle.com/en/java/javase/16/language/pattern-matching-instanceof-operator.html)
-### Record Classes
-How many POJO(Plain Old Java Class) classes have you written?
+For more information about pattern matching in `instanceof` method please refer to the [docs](https://docs.oracle.com/en/java/javase/16/language/pattern-matching-instanceof-operator.html).
+### Records
+How many POJOs (Plain Old Java Objects) have you written?
 
-Well, I can answer for myself: "One too many times!".
+Well, I can answer for myself: "Too many!".
 
-Java has had a bad reputation for the boilerplate code. To be honest, that reputation follows Java today.
-Lombok allowed us to stop worrying about getters, setters, etc. After Lombok's success people from the Java foundation tried to tackle it in `Record class`.
+Java has had a bad reputation for boilerplate code. 
+Lombok allowed us to stop worrying about getters, setters, etc. Java 16 finally introduced records to remove a lot of boilerplate code.
 
-Record class is nothing more than regular POJO, for which most of the code is generated from the definition.
+A record class is nothing more than regular POJO, for which most of the code is generated from the definition.
 
 #### Plain Old Java Object definition
-Let us look into the example of the POJO class before introducing `record` in Java 16:
+Let us look into the example of the POJO class before Java 16 introduced records:
 ```java
 public class Vehicle {
     String code;
@@ -646,28 +662,28 @@ public class Vehicle {
     public String toString() ...
 }
 ```
-There are almost 50 lines of code for object that contains only two properties. IDE generated this code, but still, it is there. It is inside our class.
+There are almost 50 lines of code for object that contains only two properties. The IDE generated this code, but still, it is there and has to be maintained.
 #### Record Definition
-Definition of the vehicle, with the same two properties, can be done in just one line:
+Definition of a vehicle record, with the same two properties, can be done in just one line:
 ```java
   public record VehicleRecord(String code, String engineType) {}
 ```
 This one line has all the same getters, setters, constructors, etc. as from the example [above](#plain-old-java-object-definition).
 One thing to note is that the `record` class is, by default, final, and we need to comply with that. That means we cannot extend a `record` class, but most other things are available for us.
 
-To read more about record classes please refer to [oracle page.](https://docs.oracle.com/en/java/javase/16/language/records.html);
+To read more about record classes please refer to the [docs](https://docs.oracle.com/en/java/javase/16/language/records.html).
 ## Java 17
 ### Sealed Classes
-The `final` modifier on the class doesn't allow anyone to extend it. What about when we want to be able to extend class but only by some classes.
+The `final` modifier on a class doesn't allow anyone to extend it. What about when we want to extend a class but only allow it for some classes?
 
-We are back at our car dealership business. We are so proud of our algorithm for calculating prices that we want to expose it. We don't want anyone using our Vehicle representation. It is valid just for our business. 
-We can see a bit problem here. We need to expose class but constrain it also. 
+We are back at our car dealership business. We are so proud of our algorithm for calculating prices that we want to expose it. We don't want anyone using our Vehicle representation, though. It is valid just for our business. 
+We can see a bit of a problem here. We need to expose class but constrain it also. 
 
 This is where Java 17 comes into play with `sealed` classes. The sealed class allows us to make class effectively final for everyone except explicitly mentioned classes.
 ```java
 public sealed class Vehicle permits Bicycle, Car {...}
 ```
-We added a `sealed` modifier to our Vehicle class, and we had to add the `permits` keyword with a list of classes that we allow to extend it. 
+We added a `sealed` modifier to our `Vehicle` class, and we had to add the `permits` keyword with a list of classes that we allow to extend it. 
 After this change, we are still getting errors from the compiler. 
 
 There is one more thing that we need to do here.
@@ -678,7 +694,7 @@ There is one more thing that we need to do here.
 public final class Bicycle extends Vehicle {...}
 ```
 #### Constraints 
-Several constraints has to be met for the sealed class to work:
+Several constraints have to be met for the sealed class to work:
 
 * Permitted subclasses must be accessible by the sealed class as compile time
 * Permitted subclasses must directly extend the sealed class
@@ -688,4 +704,4 @@ Several constraints has to be met for the sealed class to work:
   * non-sealed
 * Permitted subclasses must be in the same Java module
 
-More details about sealed classes can be found on [oracle page.](https://docs.oracle.com/en/java/javase/17/language/sealed-classes-and-interfaces.html)
+More details about sealed classes can be found in the [docs](https://docs.oracle.com/en/java/javase/17/language/sealed-classes-and-interfaces.html).

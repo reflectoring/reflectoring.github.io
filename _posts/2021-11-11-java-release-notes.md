@@ -1,10 +1,10 @@
 ---
-title: "Java 8 to 17 - what has changed?"
+title: "Java Features from Java 8 to Java 17"
 categories: [java]
 date: 2021-11-05 06:00:00 +1000
 modified: 2021-11-05 06:00:00 +1000
 author: mateo
-excerpt: "Examples of key language changes in each major release from Java 8 to 17."
+excerpt: "One place to get information about all the major Java features."
 image: 
   auto: 0065-java
 ---
@@ -26,12 +26,11 @@ The main changes of the Java 8 release were these:
 * [Repeating Annotations](#repeating-annotations)
 * [Method Parameter Reflection](#method-parameter-reflection)
 
-### Lambda Expression and Stream API
+### Lambda Expressions and Stream API
 Java was always known for having a lot of boilerplate code. With the release of Java 8, this statement became a little less valid. 
-Stream API, together with the lambda expression, is the new feature that moves us a bit closer to functional programming. 
+The stream API, together with lambda expressions, are a new feature that moves us a bit closer to functional programming. 
 In our examples, we will see how we use lambdas and streams in a few different scenarios. 
 
-Let us begin.
 #### The World Before Lambda Expressions
 
 We own a car dealership business. To discard all the paperwork, we want to create some code that finds all currently available cars that have run less than 50,000 km. Let us take a look at how we would implement a function for something like this in a naive way:
@@ -47,39 +46,41 @@ public static List<Car> findCarsOldWay(List<Car> cars){
 }
 ```
 To implement this, we a created static function that accepts a `List` of cars. It should return a filtered list according to a specified condition.
-#### Using Lambda Expression on Stream
-We have the same problem as in the [previous example](#world-before-lambda-expressions). Our client wants to find all cars with some criteria. Let us see a little solution that was introduced with lambda expression and stream api:
+#### Using a Stream and a Lambda Expression
+We have the same problem as in the [previous example](#world-before-lambda-expressions). Our client wants to find all cars with some criteria. Let us see a little solution that was introduced with the stream API and a lambda expression:
 ```java
 public static List<Car> findCarsUsingLambda(List<Car> cars){
-    return cars.stream().filter(car -> car.kilometers < 50000).collect(Collectors.toList());
+    return cars.stream()
+        .filter(car -> car.kilometers < 50000)
+        .collect(Collectors.toList());
 }
 ```
-This code shows how to use stream API with a lambda expression. Since we have a list of cars we need to transfer it into a stream by calling the `stream()` method. Inside the `filter()` method we are setting our condition. Every entry inside the list will be evaluated against this condition and only those that have less than 50000 kilometers will be left inside our new list. The last thing that we need to do is to wrap it up into a list.
+This code shows how to use the stream API with a lambda expression. Since we have a list of cars we need to transfer it into a stream by calling the `stream()` method. Inside the `filter()` method we are setting our condition. Every entry inside the list will be evaluated against this condition and only those that have less than 50,000 kilometers will be left inside our new list. The last thing that we need to do is to wrap it up into a list.
 
-More about lambda expressions can be found on [the oracle page.](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html)
+More about lambda expressions can be found in the [docs](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html).
 
 ### Method Reference
-#### Usecase Showcase
-We still own a car dealership shop, and we want to print out all cars in the shop. For that, we will use the method reference. Method reference allows us to call functions in classes using a special kind of syntax `::`. Let us see how to do it using the standard method call:
+#### Without Method Reference
+We still own a car dealership shop, and we want to print out all cars in the shop. For that, we will use a method reference. A method reference allows us to call functions in classes using a special kind of syntax `::`. Let us see how to do it using the standard method call:
 ```java
 List<String> withoutMethodReference = cars.stream()
     .map(car -> car.toString())
     .collect(Collectors.toList());
 ```
 We used a Lambda expression to map the car objects into their String variant. 
-#### Method Reference Example
+#### Using a Method Reference 
 Now, let us see how to use a Method reference in the same situation:
 ```java
 List<String> methodReference = cars.stream()
     .map(Car::toString)
     .collect(Collectors.toList());
 ```
-We are, again, using a Lambda expression, but now we call the `toString()` method by the method reference. We can see how it is more concise and easier to read. 
+We are, again, using a Lambda expression, but now we call the `toString()` method by method reference. We can see how it is more concise and easier to read. 
 
 To read more about method reference please look at the [docs](https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html).
 ### Default Methods
 Let us imagine that we have a simple method `log(String message)` that prints log messages on invocation. We realized that we want to provide timestamps to messages so that logs are easily searchable. We don't want our clients to break after we introduce this change.
-#### Usecase
+#### Use Case
 For that scenario, we can use default methods. Default methods allow us to fall back to a default implementation if a developer didn't provide the implementation in the class.
 
 Let us see how our contract looks:
@@ -144,13 +145,13 @@ This is the perfect example of how to use type annotations on constructor.
 
 #### Generic Type
 One of our requirements is that each email has to be in a format `<name>@<company>.com`.
-If we use type annotations, we can do it easy:
+If we use type annotations, we can do it easily:
 ```java
 List<@Email String> emails;
 ```
 This is a definition of a list of email addresses. We use `@Email` annotation that ensures that every record inside this list is in the desired format.
 
-For more information about type annotations please refer to [the oracle page.](https://docs.oracle.com/javase/tutorial/java/annotations/type_annotations.html)
+For more information about type annotations please refer to the [docs](https://docs.oracle.com/javase/tutorial/java/annotations/type_annotations.html).
 
 ### Repeating Annotations
 #### Creating a Repeating Annotation
@@ -167,10 +168,9 @@ public @interface  Notifications{
     Notify[] value();
 }
 ```
-The first thing that we want to do is to create a repeating annotation. We create it as regular annotation, but we provide `@Repeatable` annotation to our definitions.
-Our annotation should send email notification when triggered.
+The first thing that we want to do is to create a repeating annotation `Notify`. We create it as regular annotation, but we add the `@Repeatable` (meta-)annotation to it. Additionally, we have to create a "container" annotation `Notifications` that contains an array of `Notify` objects. An annotation processor can now get access to all repeating `Notify` annotations through the container annotation `Noifications`.
 
-Please note that this is the mock annotation just for demonstration purposes. This annotation will not work without correct implmentation.
+Please note that this is a mock annotation just for demonstration purposes. This annotation will not send emails without an annotation processor that reads it and then sends emails.
 #### Using Repeating Annotations
 
 We can add a repating annotation multiple times to the same construct:
@@ -190,12 +190,12 @@ We have our custom exception class that we will throw whenever a user tries to d
 
 Please note that this is the mock annotation just for demonstration purposes. This annotation will not work without correct implmentation.
 
-To read more about repeating annotations please refer to [the oracle page.](https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html)
+To read more about repeating annotations please refer to the [docs](https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html).
 
 ## Java 9
 Java 9 introduced these main features:
 * [Java Module System](#java-module-system)
-* [Try-with-resources](#try-with-resources-improvement)
+* [Try-with-resources](#try-with-resources)
 * [Diamond Syntax with Inner Anonymous Classes](#diamond-syntax-with-inner-anonymous-classes)
 * [Private Interface Methods](#private-interface-methods)
 
@@ -256,9 +256,9 @@ module hello.module {
 We define dependencies using `requires` keyword. We are referencing our newly created, `hello.module`. Packages that are not exported are, by default, module private and cannot be seen from outside of the module. 
 
 To read more about the Java module system please refer to [the docs](https://openjdk.java.net/jeps/261)
-### Try-with-resources Improvement
+### Try-with-resources
 Try-with-resources is a feature that enables us to declare new resources on a `try-catch` block to tell the JVM to release these resources after the code has run. The only condition is that the declared resource implements an `Autoclosable` interface.
-#### Manual Closing of Resource
+#### Closing a Resource Manually
 We want to read text using `BufferedReader`. `BufferedReader` is a closable resource, so we need to make sure that it is properly closed after use. Before Java 8 we would do it like this:
 
 ```java
@@ -277,7 +277,7 @@ try {
 ```
 In `finally` block, we would call `close()`. The `finally` block ensures that the reader is always properly closed.
 
-#### Improvement on Autoclosable
+#### Closing a Resource with `try-with-resources`
 Java 8 introduced the try-with-resource feature that enables us to declare our resource inside `try` definition. This will ensure that our closable is closed without using `finally`. Let us take a look at some example of using the `BufferedReader` to read string:
 ```java
 final BufferedReader br3 = new BufferedReader(new StringReader("Hello world example3!"));
@@ -289,9 +289,9 @@ try(BufferedReader reader = br3){
 ```
 Inside `try` definition, we assigned our previously created reader to the new variable. Now we know that our reader will get closed every time.
 
-To read more about the try-with-resources feature please refer to [the oracle page.](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html)
+To read more about the try-with-resources feature please refer to the [docs](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html).
+
 ### Diamond Syntax with Inner Anonymous Classes
-#### What Java 9 Fixed
 Before Java 9 we couldn't use a diamond operator inside the inner anonymous class.
 
 For our example, we will create an abstract class `AppendingString`. It has only one method that appends two strings with `-` between them. 
@@ -313,7 +313,7 @@ public static void main(String[] args) {
 We are using the diamond operator to tell our method which type we expect.
 Since we are using Java 8, in this example we will get a compiler error:
 
-```java
+```
 java: cannot infer type arguments for com.reflectoring.io.java9.DiamondOperator.StringAppender<T>
 reason: '<>' with anonymous inner classes is not supported in -source 8
     (use -source 9 or higher to enable '<>' with anonymous inner classes)

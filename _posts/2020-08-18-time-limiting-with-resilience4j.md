@@ -1,5 +1,5 @@
 ---
-title: Implementing Time Limiting with Resilience4j
+title: Implementing Timeouts with Resilience4j
 categories: [java]
 date: 2020-08-18 05:00:00 +1100
 modified: 2020-18-08 05:00:00 +1100

@@ -14,7 +14,7 @@ image:
   auto: 0097-airmail
 ---
 
-Join **more than 3,800 software engineers** and sign up for the weekly reflectoring newsletter.
+Join **more than 4,000 software engineers** and sign up for the weekly reflectoring newsletter.
 
 You'll get a **weekly 5-minutes-to-read email** with inspiration on:
 

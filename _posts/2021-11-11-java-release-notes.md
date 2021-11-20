@@ -19,17 +19,17 @@ We will go through most of the changes in the Java language that happened from J
 
 The main changes of the Java 8 release were these:
 
-* [Lambda expressions](#lambda-expressions)
+* [Lambda Expression and Stream API](#lambda-expressions-and-stream-api)
 * [Method Reference](#method-reference)
 * [Default Methods](#default-methods)
 * [Type Annotations](#type-annotations)
 * [Repeating Annotations](#repeating-annotations)
 * [Method Parameter Reflection](#method-parameter-reflection)
 
-### Lambda Expression
+### Lambda Expression and Stream API
 Java was always known for having a lot of boilerplate code. With the release of Java 8, this statement became a little less valid. 
-Lambda expressions are the new feature that moves us a bit closer to functional programming. 
-In our examples, we will see how we use lambdas in a few different scenarios. 
+Stream API, together with the lambda expression, is the new feature that moves us a bit closer to functional programming. 
+In our examples, we will see how we use lambdas and streams in a few different scenarios. 
 
 Let us begin.
 #### The World Before Lambda Expressions
@@ -46,49 +46,21 @@ public static List<Car> findCarsOldWay(List<Car> cars){
     return selectedCars;
 }
 ```
-To implement this, we a created static function which accepts a `List` of cars. It should return filtered list according to specified condition.
-#### Adding Search Criteria
-If we want to expand our ssearch criteria to filter only Mercedes cars, our method will look something like this:
+To implement this, we a created static function that accepts a `List` of cars. It should return a filtered list according to a specified condition.
+#### Using Lambda Expression on Stream
+We have the same problem as in the [previous example](#world-before-lambda-expressions). Our client wants to find all cars with some criteria. Let us see a little solution that was introduced with lambda expression and stream api:
 ```java
-public static List<Car> findCarsWithModelOldWay(List<Car> cars){
-    List<Car> selectedCars = new ArrayList<>();
-    for(Car car: cars){
-        if(car.kilometers < 50000 && car.model.equals("Mercedes")){
-            selectedCars.add(car);
-        }
-    }
-    return selectedCars;
+public static List<Car> findCarsUsingLambda(List<Car> cars){
+    return cars.stream().filter(car -> car.kilometers < 50000).collect(Collectors.toList());
 }
 ```
-We added a new condition to the `if` statement. This helps us move into our next set of examples, where we will see how to use a Lambda expression on the stream API and as the method argument.
+This code shows how to use stream API with a lambda expression. Since we have a list of cars we need to transfer it into a stream by calling the `stream()` method. Inside the `filter()` method we are setting our condition. Every entry inside the list will be evaluated against this condition and only those that have less than 50000 kilometers will be left inside our new list. The last thing that we need to do is to wrap it up into a list.
 
-#### The World After Lambda Expressions
-We have the same problem as in the [previous example](#world-before-lambda-expressions). Our client wants to find all cars with some criteria. Let us see a little less rigid solution to this problem:
-```java
-public interface Criteria<T>{
-    boolean evaluate(T t);
-}
-
-public static List<Car> findCarsUsingLambdaCriteria(List<Car> cars, Criteria<Car> criteria){
-    List<Car> selectedCars = new ArrayList<>();
-    for(Car car: cars){
-        if(criteria.evaluate(car)){
-            selectedCars.add(car);
-        }
-    }
-    return selectedCars;
-}
-
-List<Car> criteriaLambda = findCarsUsingLambdaCriteria(cars,
-    (Car car) -> car.kilometers < 500000 && car.model.equals("Mercedes"));
-```
-The first thing that we want to create is a functional interface. We can pass that functional interface as a parameter to our filtering function and call upon its method to evaluate criteria. The last line of our code shows how we use a Lambda expression to pass the implementation of the functional interface method.
-
-More about Lambda expressions can be found in the [docs](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html).
+More about lambda expressions can be found on [the oracle page.](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html)
 
 ### Method Reference
-#### Usecase
-We still own a car dealership shop, and we want to print out all cars in the shop. For that, we will use a method reference. A method reference allows us to call functions in classes using a special kind of syntax `::`. Let us see how to do it using the standard method call:
+#### Usecase Showcase
+We still own a car dealership shop, and we want to print out all cars in the shop. For that, we will use the method reference. Method reference allows us to call functions in classes using a special kind of syntax `::`. Let us see how to do it using the standard method call:
 ```java
 List<String> withoutMethodReference = cars.stream()
     .map(car -> car.toString())
@@ -102,7 +74,7 @@ List<String> methodReference = cars.stream()
     .map(Car::toString)
     .collect(Collectors.toList());
 ```
-We are, again, using a Lambda expression, but now we call the `toString()` method by method reference. We can see how it is more concise and easier to read. 
+We are, again, using a Lambda expression, but now we call the `toString()` method by the method reference. We can see how it is more concise and easier to read. 
 
 To read more about method reference please look at the [docs](https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html).
 ### Default Methods
@@ -133,7 +105,7 @@ If we want to introduce a new method `log(String, Date)` inside the `Logging` in
 Class 'LoggingImplementation' must either be declared abstract or implement abstract method 'log(String, Date)' in 'Logging'`.
 ``` 
 
-The example shows the solution to this using `default methods`: 
+The example shows the solution to this using default methods: 
 ```java
 public interface Logging{
     void log(String message);
@@ -155,8 +127,10 @@ Type annotations are one more feature introduced in Java 8. Even though we had a
 - generics 
 - throw clauses and more
 
+Please note that we need a bean validation implementation inside our project for these annotations to work. We can use, for example, the Hibernate Validator.
+
 #### Local Variable Definition
-Let us see how to ensure that our local variable doesn't end up as `null` value:
+Let us see how to ensure that our local variable doesn't end up as a `null` value:
 ```java
 @NotNull String userName = args[0];
 ```
@@ -170,13 +144,13 @@ This is the perfect example of how to use type annotations on constructor.
 
 #### Generic Type
 One of our requirements is that each email has to be in a format `<name>@<company>.com`.
-If we use type annotations, we can do it really easy:
+If we use type annotations, we can do it easy:
 ```java
 List<@Email String> emails;
 ```
 This is a definition of a list of email addresses. We use `@Email` annotation that ensures that every record inside this list is in the desired format.
 
-For more information about type annotations please refer to [the docs](https://docs.oracle.com/javase/tutorial/java/annotations/type_annotations.html).
+For more information about type annotations please refer to [the oracle page.](https://docs.oracle.com/javase/tutorial/java/annotations/type_annotations.html)
 
 ### Repeating Annotations
 #### Creating a Repeating Annotation
@@ -194,6 +168,9 @@ public @interface  Notifications{
 }
 ```
 The first thing that we want to do is to create a repeating annotation. We create it as regular annotation, but we provide `@Repeatable` annotation to our definitions.
+Our annotation should send email notification when triggered.
+
+Please note that this is the mock annotation just for demonstration purposes. This annotation will not work without correct implmentation.
 #### Using Repeating Annotations
 
 We can add a repating annotation multiple times to the same construct:
@@ -211,7 +188,9 @@ final String user;
 ```
 We have our custom exception class that we will throw whenever a user tries to do something that the user is not allowed. Our annotations to this class say that we want to notify two emails when code throws this exception.
 
-To read more about repeating annotations please refer to the [docs](https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html).
+Please note that this is the mock annotation just for demonstration purposes. This annotation will not work without correct implmentation.
+
+To read more about repeating annotations please refer to [the oracle page.](https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html)
 
 ## Java 9
 Java 9 introduced these main features:
@@ -240,26 +219,26 @@ Since I am working in the IntelliJ IDEA there is something that we need to under
 
 ![Package structure!](../assets/img/posts/java-release-notes/package-structure.png "Package structure")
 
-We have two modules: `hello.module` and `world.module`. They correspond to `hello` and `world` IntelliJ modules, respectively. Inside each of them, we  have created the `module-info.java` file. This file defines our Java module. Inside, we declare which packages we need to export and on which modules we are dependent upon.
+We have two modules: `hello.module` and `world.module`. They correspond to `hello` and `world` IntelliJ modules, respectively. Inside each of them, we  have created the `module-info.java` file. This file defines our Java module. Inside, we declare which packages we need to export and on which modules we are dependent.
 
 #### Defining our First Module
 
 We are using the `hello` module to print the word: "Hello". Inside, we call the method inside the `world` module, which will print "World !". The first thing that we need to do is to declare export of the package containing our `World.class`  inside `module-info.java`:
 ```java
-module world.module {
-    exports com.reflectoring.io.app.world;
-}
+    module world.module {
+        exports com.reflectoring.io.app.world;
+    }
 ```
 We use the keyword `module` with the module name to reference the module. 
 
 The next keyword that we use is `exports`. It tells the module system that we are making our `com.reflectoring.io.app.world` package visible outside of our module. 
 
-There are several other keywords that can be used:
+There are several other keywords can be used:
 * requires
 * requires transitive
 * exports to
 * uses
-* provdies with
+* provides with
 * open
 * opens
 * opens to
@@ -267,7 +246,7 @@ There are several other keywords that can be used:
 Out of these we will show only `requires` declaration. Others can be found in the [docs](https://www.oracle.com/corporate/features/understanding-java-9-modules.html).
 
 #### Defining our Second Module
-After we created, and exported, the `world` module, we can proceed with creating `hello` module:
+After we created and exported the `world` module, we can proceed with creating the `hello` module:
 
 ```java
 module hello.module {
@@ -276,9 +255,8 @@ module hello.module {
 ```
 We define dependencies using `requires` keyword. We are referencing our newly created, `hello.module`. Packages that are not exported are, by default, module private and cannot be seen from outside of the module. 
 
-To read more about Java module system please refer to [the docs](https://openjdk.java.net/jeps/261).
-
-### Try-with-resources
+To read more about the Java module system please refer to [the docs](https://openjdk.java.net/jeps/261)
+### Try-with-resources Improvement
 Try-with-resources is a feature that enables us to declare new resources on a `try-catch` block to tell the JVM to release these resources after the code has run. The only condition is that the declared resource implements an `Autoclosable` interface.
 #### Manual Closing of Resource
 We want to read text using `BufferedReader`. `BufferedReader` is a closable resource, so we need to make sure that it is properly closed after use. Before Java 8 we would do it like this:
@@ -299,7 +277,7 @@ try {
 ```
 In `finally` block, we would call `close()`. The `finally` block ensures that the reader is always properly closed.
 
-#### Using try-with-resource
+#### Improvement on Autoclosable
 Java 8 introduced the try-with-resource feature that enables us to declare our resource inside `try` definition. This will ensure that our closable is closed without using `finally`. Let us take a look at some example of using the `BufferedReader` to read string:
 ```java
 final BufferedReader br3 = new BufferedReader(new StringReader("Hello world example3!"));
@@ -310,51 +288,33 @@ try(BufferedReader reader = br3){
 }
 ```
 Inside `try` definition, we assigned our previously created reader to the new variable. Now we know that our reader will get closed every time.
-#### Improvement upon Try-with-resource
-How can we improve [the example](#improvement-on-autoclosable) from above? 
 
-Well, defining a variable in one place only to reassign it to another inside `try` definition is a little bit of pain in the eye.
-With Java 9, we got changes with which we can avoid that scenario. We will be looking into the same example of reading input string through `BufferedReader`:
-```java
-final BufferedReader br2 = new BufferedReader(new StringReader("Hello world example2!"));
-try(br2){
-    System.out.println(br2.readLine());
-}
-catch (IOException e){
-    System.out.println("Error happened!");
-}
-```
-Now we don't need to create a new variable only to autoclose it inside the `try-catch` block. We are using the same one from the original definition.
-
-To read more about `try-with-resources` feature please refer to [oracle page.](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html)
+To read more about the try-with-resources feature please refer to [the oracle page.](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html)
 ### Diamond Syntax with Inner Anonymous Classes
 #### What Java 9 Fixed
-Before Java 9 we couldn't use a diamond operator inside inner anonymous class.
+Before Java 9 we couldn't use a diamond operator inside the inner anonymous class.
 
 For our example, we will create an abstract class `AppendingString`. It has only one method that appends two strings with `-` between them. 
 Since this is an abstract class, we will use the anonymous class for providing the implementation for the `append()` method:
 ```java
-public abstract static class AppendingString<T>{
-  public abstract T append(String a, String b);
+public abstract static class StringAppender<T>{
+    public abstract T append(String a, String b);
 }
 
 public static void main(String[] args) {
-    AppendingString<String> appending = new AppendingString<>() {
+    StringAppender<String> appending = new StringAppender<String>() {
         @Override
         public String append(String a, String b) {
             return new StringBuilder(a).append("-").append(b).toString();
         }
     };
-
-    String result = appending.append("Reflectoring", "Blog");
-    System.out.println(result);
 }
 ```
 We are using the diamond operator to tell our method which type we expect.
 Since we are using Java 8, in this example we will get a compiler error:
 
 ```java
-java: cannot infer type arguments for com.reflectoring.io.java9.DiamondOperator.AppendingString<T>
+java: cannot infer type arguments for com.reflectoring.io.java9.DiamondOperator.StringAppender<T>
 reason: '<>' with anonymous inner classes is not supported in -source 8
     (use -source 9 or higher to enable '<>' with anonymous inner classes)
 ```
@@ -476,6 +436,7 @@ public void explicitTypes(){
 ```
 Inside the `filter()` method we are using `var` to infer the type instead of explicitly mentioning the type. 
 
+Please note that it doesn't make a difference if we use `var` or type inference without it. It will work the same for both.
 ## Java 14
 ### Switch Expressions
 #### Old Way of Switch Statements
@@ -669,7 +630,7 @@ Definition of a vehicle record, with the same two properties, can be done in jus
   public record VehicleRecord(String code, String engineType) {}
 ```
 This one line has all the same getters, setters, constructors, etc. as from the example [above](#plain-old-java-object-definition).
-One thing to note is that the `record` class is, by default, final, and we need to comply with that. That means we cannot extend a `record` class, but most other things are available for us.
+One thing to note is that the record class is, by default, final, and we need to comply with that. That means we cannot extend a record class, but most other things are available for us.
 
 To read more about record classes please refer to the [docs](https://docs.oracle.com/en/java/javase/16/language/records.html).
 ## Java 17
@@ -679,7 +640,7 @@ The `final` modifier on a class doesn't allow anyone to extend it. What about wh
 We are back at our car dealership business. We are so proud of our algorithm for calculating prices that we want to expose it. We don't want anyone using our Vehicle representation, though. It is valid just for our business. 
 We can see a bit of a problem here. We need to expose class but constrain it also. 
 
-This is where Java 17 comes into play with `sealed` classes. The sealed class allows us to make class effectively final for everyone except explicitly mentioned classes.
+This is where Java 17 comes into play with sealed classes. The sealed class allows us to make class effectively final for everyone except explicitly mentioned classes.
 ```java
 public sealed class Vehicle permits Bicycle, Car {...}
 ```
@@ -696,7 +657,7 @@ public final class Bicycle extends Vehicle {...}
 #### Constraints 
 Several constraints have to be met for the sealed class to work:
 
-* Permitted subclasses must be accessible by the sealed class as compile time
+* Permitted subclasses must be accessible by the sealed class at compile time
 * Permitted subclasses must directly extend the sealed class
 * Permitted subclasses must have one of the following modifiers:
   * final

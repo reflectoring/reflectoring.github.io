@@ -294,7 +294,7 @@ To read more about the try-with-resources feature please refer to the [docs](htt
 ### Diamond Syntax with Inner Anonymous Classes
 Before Java 9 we couldn't use a diamond operator inside the inner anonymous class.
 
-For our example, we will create an abstract class `AppendingString`. It has only one method that appends two strings with `-` between them. 
+For our example, we will create an abstract class `StringAppender`. It has only one method that appends two strings with `-` between them. 
 Since this is an abstract class, we will use the anonymous class for providing the implementation for the `append()` method:
 ```java
 public abstract static class StringAppender<T>{

@@ -7,6 +7,7 @@ excerpt: "My notes on 'The Nature of Software Development' by Ron Jeffries - a b
 image:
   teaser: /assets/img/covers/nature-of-software-development-teaser.jpg
   opengraph: /assets/img/covers/nature-of-software-development-teaser.jpg
+author: default
 ---
 
 ## TL;DR: Read this Book, when...

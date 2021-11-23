@@ -81,11 +81,13 @@ hash in bytes and then converted those bytes to hex format to generate the hash 
 
 Some sample hashes generated as output of this program look like this:
 
+
 | Input | Hash | 
 | - | - | 
 | aristotle | 51434272DDCB40E9CA2E2A3AE6231FA9 | 
 | MyPassword | 48503DFD58720BD5FF35C102065A52D7 | 
 | password123 | 482C811DA5D5B4BC6D497FFA98491E38 |
+
 
 **The MD5 hashing function has been found to suffer from extensive vulnerabilities**. However, it remains suitable for
 other non-cryptographic purposes, for example for determining the partition key for a particular record in a partitioned
@@ -97,6 +99,7 @@ Secure Hash Algorithms (SHA) algorithms covered in the next section.
 ## Secure Hash Algorithm (SHA)
 
 The SHA (Secure Hash Algorithm) is a family of cryptographic hash functions very similar to MD5 except it generates stronger hashes.
+
 
 We will use the same `MessageDigest` class as before to produce a hash value using the SHA-256 hashing algorithm:
 
@@ -377,6 +380,7 @@ Since the hash function always produces the same output for the same given input
 
 For this, we generate a hash of the data called the checksum before storing or transferring. We generate the hash again before using the data. If the two hashes match, we determine that the integrity check is passed and the data has not been tampered with.
 
+
 Here is a code snippet for generating a checksum of a file:
 
 ```java
@@ -407,6 +411,7 @@ bcd7affc0dd150c42505513681c01bf6e07a039c592569588e73876d52f0fa27
 
 The hash is generated again before using the data. If the two hashes match, we determine that the integrity check is passed and the data in the file has not been tampered with.
 
+
 MD5 hashes are also used to generate checksums files because of their higher computation speed.
 
 ## Some Other Uses for Hashes
@@ -414,6 +419,7 @@ MD5 hashes are also used to generate checksums files because of their higher com
 **Finding Duplicates:** Simple rule of hashing is that the same input generates the same hash. Thus, if two hashes are the same, then it means the inputs are also the same.
 
 **Data Structures:** Hash tables are extensively used in data structures. Almost all data structures that support key-value pairs use hash tables. For example, `HashMap` and `HashSet` in Java, `map`, and `unordered_map` in C++ use hash tables.
+
 
 ## Conclusion
 
@@ -427,6 +433,7 @@ Here are some key points from the post:
 4. We can make a hash more secure by adding a random piece of data called salt to the data that is inputted into the hashing function.
 5. The goal of salting is to defend against dictionary attacks or attacks against hashed passwords using a rainbow table.
 6. We also saw the usage of hashes for verifying the data integrity of files during transfer and for storing sensitive data like passwords.
+
 
 You can refer to all the source code used in the article
 on [Github](https://github.com/thombergs/code-examples/tree/master/java-hashes).

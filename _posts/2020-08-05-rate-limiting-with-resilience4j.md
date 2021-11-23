@@ -6,7 +6,7 @@ modified: 2020-08-05 05:00:00 +1100
 author: saajan
 excerpt: "A deep dive into the Resilience4j ratelimiter module. This article shows why, when and how to use it to build resilient applications."
 image:
-  auto: 0051-stop
+  auto: 0108-speed-limit
 ---
 
 In the previous article in this series, we learned about Resilience4j and how to use its [Retry module](/retry-with-resilience4j/). Let's now learn about the RateLimiter - what it is, when and how to use it, and what to watch out for when implementing rate limiting (or "throttling", as it's also called).

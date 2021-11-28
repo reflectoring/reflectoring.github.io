@@ -1,8 +1,8 @@
 ---
 title: "Java Features from Java 8 to Java 17"
 categories: [java]
-date: 2021-11-05 06:00:00 +1000
-modified: 2021-11-05 06:00:00 +1000
+date: 2021-11-29 06:00:00 +1000
+modified: 2021-11-29 06:00:00 +1000
 author: mateo
 excerpt: "One place to get information about all the major Java features."
 image: 
@@ -11,7 +11,7 @@ image:
 A lot has changed in Java from its beginnings in 1995 until today.
 Java 8 was a revolutionary release that put Java back on the pedestal of the best programming languages.
 
-We will go through most of the changes in the Java language that happened from Java 8 in 2014 until today. We will try to be as brief as possible on every feature. The intention is to have __a single point__ for reading through most of the features between Java 8 and Java 17 inclusively.
+We will go through most of the changes in the Java language that happened from Java 8 in 2014 until today. We will try to be as brief as possible on every feature. The intention is to have **a reference for all features between Java 8 and Java 17 inclusively**.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/versions" %}
 
@@ -169,7 +169,7 @@ Type annotations are one more feature introduced in Java 8. Even though we had a
 - generics 
 - throw clauses and more
 
-Please note that we need a bean validation implementation inside our project for these annotations to work. We can use, for example, the Hibernate Validator.
+Tools like IDEs can then read these annotations and show warnings or errors based on the annotations.
 
 #### Local Variable Definition
 Let us see how to ensure that our local variable doesn't end up as a `null` value:
@@ -181,7 +181,8 @@ public class TypeAnnotations {
     }
 }
 ```
-We are using annotation on the local variable definition here. We need a bean validation implementation library inside our project for this annotation to work.
+We are using annotation on the local variable definition here. A compile-time annotation processor could now read the `@NotNull` annotation and throw an error when the string is null.
+
 #### Constructor Call
 We want to make sure that we cannot create an empty `ArrayList`:
 ```java
@@ -194,7 +195,8 @@ public class TypeAnnotations {
     }
 }
 ```
-This is the perfect example of how to use type annotations on constructor. We need a bean validation implementation library inside our project for this annotation to work.
+This is the perfect example of how to use type annotations on a constructor. Again, an annotation processor can evaluate the annotation and check if the array list is not empty.
+
 #### Generic Type
 One of our requirements is that each email has to be in a format `<name>@<company>.com`.
 If we use type annotations, we can do it easily:
@@ -207,8 +209,8 @@ public class TypeAnnotations {
 }
 ```
 This is a definition of a list of email addresses. We use `@Email` annotation that ensures that every record inside this list is in the desired format.
-We need a bean validation implementation library inside our project for this annotation to work.
 
+A tool could use reflection to evaluate the annotation and check that each of the elements in the list is a valid email address.
 
 For more information about type annotations please refer to the [docs](https://docs.oracle.com/javase/tutorial/java/annotations/type_annotations.html).
 
@@ -251,8 +253,6 @@ public class UserNotAllowedForThisActionException
 }
 ```
 We have our custom exception class that we will throw whenever a user tries to do something that the user is not allowed. Our annotations to this class say that we want to notify two emails when code throws this exception.
-
-Please note that this is the mock annotation just for demonstration purposes. This annotation will not work without correct implmentation.
 
 To read more about repeating annotations please refer to the [docs](https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html).
 

@@ -1,13 +1,14 @@
 ---
 title: "Java Features from Java 8 to Java 17"
 categories: [java]
-date: 2021-11-29 06:00:00 +1000
-modified: 2021-11-29 06:00:00 +1000
+date: 2021-11-29 05:00:00 +1000
+modified: 2021-11-29 05:00:00 +1000
 author: mateo
 excerpt: "One place to get information about all the major Java features."
 image: 
   auto: 0065-java
 ---
+
 A lot has changed in Java from its beginnings in 1995 until today.
 Java 8 was a revolutionary release that put Java back on the pedestal of the best programming languages.
 

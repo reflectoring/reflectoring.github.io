@@ -1,12 +1,12 @@
 ---
 title: "How to Internationalize a Spring Boot Application"
 categories: [spring-boot]
-date: 2021-11-21 06:00:00 +1000
-modified: 2021-11-21 06:00:00 +1000
+date: 2021-12-04 06:00:00 +1000
+modified: 2021-12-04 06:00:00 +1000
 author: pratikdas
 excerpt: "Internationalization is the process of making an application adaptable to multiple languages and regions without major changes in the source code. In this article, we will understand the concepts of internationalization, and illustrate how to internationalize a Spring Boot application."
 image:
-  auto: 0074-stack
+  auto: 0113-flags
 ---
 
 Internationalization is the process of making an application adaptable to multiple languages and regions without major changes in the source code.
@@ -38,7 +38,7 @@ Amazon e-commerce site in French language from `www.amazon.fr`:
 
 ![i18n example fr](/assets/img/posts/spring-boot-i18n/i18nexamplefr.png)
 
-In these diagrams, we can observe that the content of the Amazon website is being rendered in the French and German languages depending on whether the HTTP URL used in the browser ends with `.fr` or `.de`.
+In these screenshots, we can observe that the content of the Amazon website is being rendered in the French and German languages depending on whether the HTTP URL used in the browser ends with `.fr` or `.de`.
 
 **Internationalization is most often a one-time process undertaken during the initial stages of design and development**. 
 
@@ -57,7 +57,7 @@ Localization is also abbreviated as l10n because there is a total of `10` charac
 
 A locale is a fundamental concept in internationalization. It represents a user's language, geographical region, and any specific variant like dialect. 
 
-We use the locale of a user to tailor the information displayed to the user according to the users' language or region. These operations are called locale-sensitive. For example, we can display a date formatted according to the locale of the user as `dd/MM/yy` or `MM/dd/yy` or display a number with a locale-specific decimal separator like a comma (3,14 in French) or dot (3.14 in the US).
+We use the locale of a user to tailor the information displayed to the user according to the user's language or region. These operations are called locale-sensitive. For example, we can display a date formatted according to the locale of the user as `dd/MM/yy` or `MM/dd/yy` or display a number with a locale-specific decimal separator like a comma (3,14 in French) or dot (3.14 in the US).
 
 Java provides the [Locale](https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html) class for working with internationalization use cases. The `Locale` class is used by many classes in Java containing locale-sensitive functions like the `NumberFormat` class used for formatting numbers. 
 
@@ -65,7 +65,7 @@ We will see the use of locale to perform various kinds of locale-sensitive opera
 
 ## Creating the Spring Boot Application for Internationalization
 
-To work with some examples of internationalization, let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.5.4&packaging=jar&jvmVersion=11&groupId=io.pratik.i18n&artifactId=productapp&name=productapp&description=Demo%20project%20for%20Spring%20Boot%20Internationalization&packageName=io.pratik.i18n.productapp), and then open the project in our favorite IDE. We have not added any dependencies to Maven `pom.xml` since the internationalization support is part of the core module of the Spring framework.
+To work with some examples of internationalization, let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.5.4&packaging=jar&jvmVersion=11&groupId=io.pratik.i18n&artifactId=productapp&name=productapp&description=Demo%20project%20for%20Spring%20Boot%20Internationalization&packageName=io.pratik.i18n.productapp), and then open the project in our favorite IDE. We don't need to add any extra dependencies to the Maven `pom.xml` since the internationalization support is part of the core module of the Spring framework.
 
 We will next create a web application with this project using [Spring Web MVC](https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/mvc.html) framework which will render an HTML page in different languages depending on the user's language selection.
 
@@ -87,14 +87,14 @@ We use the `LocaleResolver` interface for resolving the locale of a user from th
 
 Spring provides the following implementations of the `LocaleResolver` interface that determine the current locale based on the session, cookies, the `Accept-Language` header, or sets the locale to a fixed value:
 
-- `FixedLocaleResolver`: Mostly used for debugging purposes. It resolves the locale to a fixed language mentioned in the `application. properties`.
-- `AcceptHeaderLocaleResolver`: Resolves the locale using an `accept-language` HTTP header retrieved from an HTTP request. 
+- **`FixedLocaleResolver`**: mostly used for debugging purposes. It resolves the locale to a fixed language mentioned in the `application. properties`.
+- **`AcceptHeaderLocaleResolver`**: resolves the locale using an `accept-language` HTTP header retrieved from an HTTP request. 
 
 Sometimes web applications provide options to the users to select a preferred language. After a user selects a language, it is remembered for subsequent user interactions. 
 These scenarios of remembering a locale selected by a user are handled with the following implementations of `LocaleResolver`:
 
-- `SessionLocaleResolver`: stores the locale selected by a user in an attribute of HTTPSession of the user and resolves the locale by reading that attribute from the HTTPSession for all subsequent requests from the same user.
-- `CookieLocaleResolver`: stores the locale selected by a user in a cookie on the user’s machine and resolves the locale by reading that cookie for all subsequent requests from the same user.
+- **`SessionLocaleResolver`**: stores the locale selected by a user in an attribute of HTTPSession of the user and resolves the locale by reading that attribute from the HTTPSession for all subsequent requests from the same user.
+- **`CookieLocaleResolver`**: stores the locale selected by a user in a cookie on the user’s machine and resolves the locale by reading that cookie for all subsequent requests from the same user.
 
 Let us update our application by adding a `LocaleResolver` bean to our Spring configuration class:
 
@@ -118,13 +118,13 @@ public class MessageConfig implements WebMvcConfigurer{
 Here we have configured a `SessionLocaleResolver` that will store the locale in a session. The default locale is set to `US`. We have also set the names of the session attributes that will store the current locale and time zone.
 
 ## Intercepting the Locale Change with `LocaleChangeInterceptor`
-Next, our application will need to detect the change in the user's locale and switch to the new locale. 
+Next, our application will need to detect any change in the user's locale and then switch to the new locale. 
 
 This function is performed with the help of the `LocaleChangeInterceptor` class.  
 
 The `LocaleChangeInterceptor` class is a specialization of the `HandlerInterceptor` component of the [Spring MVC framework](https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/mvc.html) which is used for changing the current locale on every request, via a configurable request parameter (default parameter name: `locale`). 
 
-Let us add a `LocaleChangeInterceptor` bean to our Spring configuration class:
+Let's add a `LocaleChangeInterceptor` bean to our Spring configuration class:
 
 ```java
 @Configuration
@@ -203,7 +203,6 @@ public class MessageConfig implements WebMvcConfigurer{
       return messageSource;
   }
   
-  ...
   ...
 
 }

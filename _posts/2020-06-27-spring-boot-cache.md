@@ -2,7 +2,7 @@
 title: Implementing a Cache with Spring Boot
 categories: [spring-boot]
 date: 2020-06-27 05:00:00 +1100
-modified: 2020-06-27 05:00:00 +1100
+modified: 2021-09-30 05:00:00 +1100
 author: artur
 excerpt: "Spring provides a powerful abstraction to implement a cache without binding to a specific cache provider. This article shows how to use it with Hazelcast as cache provider."
 image:
@@ -45,7 +45,7 @@ If Spring Boot finds a cache provider
 provider. If it doesn't find a provider, it configures the `Simple` provider, which is just a 
 `ConcurrentHashMap`.
 
-## Enabling Spring's Cache Abstraction
+## Enabling Spring's Cache Abstraction with `@EnableCaching`
 Let's have a look at how to enable caching in a Spring Boot application.
 
 First, we have to add a dependency to the cache starter (Gradle notation):
@@ -176,7 +176,7 @@ For demo purposes, we're looking at a Spring Boot application with an in-memory 
 
 We assume that the operations for accessing the database are slow because of heavy database use. Our goal is to avoid unnecessary operations by using a cache.
 
-### Putting Data into the Cache
+### Putting Data into the Cache with `@Cacheable`
 We create a `CarService` to manage car data. This service has a method for reading data:
 
 ```java
@@ -215,7 +215,7 @@ Spring will search for the value by the key. Now it hits.
 
 **The value is found in the cache, and the method will not be executed.**
 
-### Updating the Cache
+### Updating the Cache with `@CachePut`
 The data in the cache is just a copy of the data in the primary storage. 
 If this primary storage is changed, the data in the cache may become stale.
 We can solve this by using the `@CachePut` annotation:
@@ -238,7 +238,7 @@ class CarService {
 **The body of the `update()` method will always be executed.**
 Spring will put the result of the method into the cache. In this case, we also defined the key that should be used to update the data in the cache.
 
-### Evicting Data from the Cache
+### Evicting Data from the Cache with `@CacheEvict`
 
 If we delete data from our primary storage, we would have stale data in the cache.
 We can annotate the `delete()` method to update the cache:

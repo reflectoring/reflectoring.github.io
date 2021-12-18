@@ -13,7 +13,14 @@ default:
           I've been practicing the software craft for more than ten years and I'm still learning
           something new every day. I love sharing the things I learned, so you (and future me)
           can get a head start."
-
+mateo:
+  name: "Mateo Stjepanović"
+  email: "mateostjepanovic@gmail.com"
+  avatar: "/assets/img/authors/mateo.jpg"
+  github: "Mufa0"
+  linkedin: "mateo-stjepanović-8a618b169/"
+  bio: "Fullstack developer focused on Spring and Angular. I started writing to continue my learning path and give something back to the dev community."
+  
 pratikdas:
   name: "Pratik Das"
   email: "pratikd2000@gmail.com"
@@ -69,7 +76,9 @@ nandan:
   name: "Nandan BN"
   email: "its.nandanbn@gmail.com"
   avatar: "/assets/img/authors/nandan.jpg"
-  github: "Lucaarioo"
+  github: "itsLucario"
+  twitter: "ItsNandanDev"
+  linkedin: "nandan-bn"
   bio: "Full stack developer, passionate about technology, working for a better future with the help of digital world."
 
 petromir:
@@ -133,4 +142,113 @@ saajan:
   github: "saajn"
   bio: "Saajan is an architect with deep experience building systems in several business domains. With a clean and minimalist approach to design, he is
   passionate about code - the aesthetics of it and creating maintainable and flexible solutions. He enjoys both sharing with and learning from others."
-  
+
+mmr:
+  name: "Murtuza Ranapurwala"
+  email: "mranapurwala56@gmail.com"
+  avatar: "/assets/img/authors/mmr.jpg"
+  github: "murtuza-ranapur"
+  linkedin: "murtuza-ranapurwala-4b309315b"
+  bio: "Murtuza is a software engineer who is always on the outlook to find new ways to code."
+
+seema:
+  name: "Seema Richard"
+  email: "seema.richard@gmail.com"
+  avatar: "/assets/img/authors/seema.jpg"
+  github: "susetech"
+  bio: "Seema Richard is a Technical Architect with rich experience in Java-based enterprise applications. She is passionate about coding and authoring. She believes that teaching is the best way to learn."
+
+mujtaba:
+  name: "Mujtaba Mehdi"
+  email: "13besemmehdi@seecs.edu.pk"
+  avatar: "/assets/img/authors/Mujtaba.jpg"
+  github: "mujjazi"
+  bio: "Mujtaba is an Automation developer with a diverse range of experience working with Java Spring based projects. He is an advocate for DevOps and Test Automation while writing for various blogs to help young professionals"
+
+godeortela:
+  name: "Ortela Gode"
+  email: "godeortela@gmail.com"
+  avatar: "/assets/img/authors/ortela.jpg"
+  github: "ortelagode"
+  bio: "Enthusiastic Software Consultant with diverse experience in Java Enterprise applications. Always on the lookout to experiment new technologies"
+
+skempken:
+  name: "Sebastian Kempken"
+  email: "contact@sebastian-kempken.de"
+  avatar: "/assets/img/authors/skempken.jpg"
+  github: "skempken"
+  stackoverflow: "1163345/skempken"
+  twitter: "sebkempken"
+  bio: "For more than a decade, I've been working as software engineer and architect. I love reasoning about our shared craft and writing down things I've learned." 
+
+hoorvash:
+  name: "Hoorvash Nikoo"
+  email: "hoorvash.nikoo@gmail.com"
+  avatar: "/assets/img/authors/hoorvash.jpg"
+  github: "hoorvash"
+  linkedin: "hoorvashnikoo"
+  bio: "As a software engineer and a Java developer, I love to learn new technologies and solve
+        technical problems. Writing is another passion of mine. Combining these passions and writing
+        technical articles that might help even one individual is rewarding."
+
+jgoerner:
+  name: "Joshua Görner"
+  email: "joshua.goerner@gmail.com"
+  avatar: "/assets/img/authors/jgoerner.jpg"
+  github: "jgoerner"
+  bio: "Product Engineer, Online Instructor, Open Source Enthusiast and Father :-)"
+
+zeddysoft:
+  name: "Taiwo Azeez"
+  email: "azeeztaiwo942@gmail.com"
+  avatar: "/assets/img/authors/azeez.jpg"
+  github: "zeddysoft"
+  linkedin: "azeeztaiwo"
+  twitter: "zeddysoft"
+  bio: "Azeez is a skilled software engineer with experience in building highly scalable, reliable and maintainable back-end systems.
+  He enjoys general problem solving and likes to explore new technologies."
+
+lleuenberger:
+  name: "Lukas Leuenberger"
+  email: "lukas.leuenberger@hotmail.com"
+  avatar: "/assets/img/authors/lleuenberger.png"
+  github: "silenum"
+  linkedin: "lukas-leuenberger-a76924194"
+  bio: "I am a professional Software Engineer and part time student from Zurich. I like the everyday challenge to solve
+  problems and find simple solutions for complex problems. This can only be achieved if the problem is mastered from
+  design to implementation. This is what I like the most about software engineering. It's not only about what, but also how."
+
+bakic:
+  name: "Abdelbaki BEN ELHAJ SLIMENE"
+  email: "belhaj.abdelbaki@gmail.com"
+  avatar: "/assets/img/authors/baki.jpg"
+  github: "bakic"
+  linkedin: "abdelbaki-ben-elhaj-slimene-b797028"
+  bio: "As a software developer, I am looking for new challenges. Being a developer made me a student for life. I enjoy sharing knowledge and learn from the others."
+
+pimterry:
+  name: "Tim Perry"
+  email: "tim@httptoolkit.tech"
+  avatar: "/assets/img/authors/tim.jpg"
+  github: "pimterry"
+  twitter: "pimterry"
+  bio: "The developer behind <a href=\"https://httptoolkit.tech/java/\">HTTP Toolkit</a>: Beautiful & open-source tools to debug, test and develop with HTTP(S)."
+
+naveen:
+  name: "Naveen Kumar Kanagaraj"
+  email: "cbenaveen@gmail.com"
+  avatar: "/assets/img/authors/naveen.jpeg"
+  github: "https://github.com/cbenaveen"
+  twitter: "CbenaveenK"
+  linkedin: "https://www.linkedin.com/in/cbenaveen/"
+  bio: "A Cloud Architect, passionate about building large-scale, resilient, and highly available systems using microservice architecture. I enjoy developing microservices using Java and Spring ecosystem and various author technologies."
+
+jcregg:
+  name: "Jessica Cregg"
+  avatar: "/assets/img/authors/jcregg.jpg"
+  bio: "Jessica is a Developer Advocate at <a href=\"https://launchdarkly.com\">LaunchDarkly</a> where she speaks about change and writes about the human implications of engineering decisions. She also writes for a selection of tech publications and works with Coding Black Females to improve equal and equitable representation within the technology industry."
+
+heidi:
+  name: "Heidi Waterhouse"
+  avatar: "/assets/img/authors/heidi.png"
+  bio: "Heidi is a Principal Developer Advocate. She is working in the intersection of risk, usability, and happy deployments. Her passions include documentation, clear concepts, and skirts with pockets."

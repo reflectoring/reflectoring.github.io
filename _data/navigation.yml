@@ -11,27 +11,35 @@ main:
   - title: "Book Reviews"
     url: /categories/book-reviews
     style: "cat-4"
+  - title: "Grow!"
+    url: /categories/grow
+    style: "cat-6"
   - title: "Meta"
     url: /categories/meta
     style: "cat-5"
+
 
 footer:
   - title: "Reflectoring"
     children:
     - title: "About"
       url: /about/
-    - title: "Atom Feed"
-      url: /feed.xml
-    - title: "Meta"
-      url: /categories/meta
-    - title: "Privacy Policy"
-      url: /privacy/
+    - title: "Advertise"
+      url: /advertise/
+    - title: "Book Me"
+      url: /services/
     - title: "Write With Me"
       url: /write-with-me
+    - title: "Atom Feed"
+      url: /feed.xml
+    - title: "Privacy Policy"
+      url: /privacy/
   - title: "Resources"
     children:
-    - title: "Book"
+    - title: "Clean Architecture"
       url: /get-your-hands-dirty-on-clean-architecture/
+    - title: "Mailing List"
+      url: /mailing-list/
   - title: "Categories"
     children:
     - title: "Spring Boot"
@@ -44,3 +52,7 @@ footer:
       url: /categories/book-reviews
     - title: "Programming"
       url: /categories/programming
+    - title: "Grow!"
+      url: /categories/grow
+    - title: "Meta"
+      url: /categories/meta

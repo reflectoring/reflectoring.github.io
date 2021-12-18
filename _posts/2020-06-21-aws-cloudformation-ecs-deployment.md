@@ -13,6 +13,8 @@ The AWS journey started with [deploying a Spring Boot application in a Docker co
 
 On the road to a production-grade, continuously deployable system, we now want to find out **how we can deploy a new version of our Docker image without any downtime** using CloudFormation and ECS.
 
+**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
+
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/cloudformation/ecs-zero-downtime-deployment" %}
 
 ## Recap: The CloudFormation Stacks
@@ -247,3 +249,5 @@ Here's a list of the questions I want to answer on this journey. If there's a li
 * How can I bind my application to a custom domain?
 * How can I access other AWS resources (like SQS queues and DynamoDB tables) from my application?
 * How can I implement HTTPS?
+
+**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**

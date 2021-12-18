@@ -1,7 +1,7 @@
 ---
 title: "Testing MVC Web Controllers with Spring Boot and @WebMvcTest"
 categories: [spring-boot]
-modified: 2019-01-19
+modified: 2021-12-16
 excerpt: "An in-depth look at the responsibilities of a Spring Boot web controller and how to cover those responsibilities with meaningful tests."
 image:
   auto: 0021-controller
@@ -28,6 +28,8 @@ This tutorial is part of a series:
 2. [Testing Spring MVC Web Controllers with Spring Boot and `@WebMvcTest`](/spring-boot-web-controller-test/)
 3. [Testing JPA Queries with Spring Boot and `@DataJpaTest`](/spring-boot-data-jpa-test/)
 4. [Integration Tests with `@SpringBootTest`](/spring-boot-test/)
+
+**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://transactions.sendowl.com/stores/13745/194393) (if you buy through this link, I get a cut). 
 
 ## Dependencies
 
@@ -180,7 +182,7 @@ class RegisterRestControllerTest {
 </div> 
 
 We can now `@Autowire` all the beans we need from the application context. Spring Boot automatically 
-provides beans like an `@ObjectMapper` to map to and from JSON and a
+provides beans like an `ObjectMapper` to map to and from JSON and a
 `MockMvc` instance to simulate HTTP requests. 
 
 We use `@MockBean` to mock away the business logic, since we don't want
@@ -237,9 +239,9 @@ Note that this test would still fail, yet, since our controller expects some inp
 More options to match HTTP requests can be found in the Javadoc of 
 [MockHttpServletRequestBuilder](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/test/web/servlet/request/MockHttpServletRequestBuilder.html).
 
-### 2. Verifying Input Serialization
+### 2. Verifying Input Deserialization
 
-To verify that the input is successfully serialized into Java objects, we have to provide it in the 
+To verify that the input is successfully deserialized into Java objects, we have to provide it in the 
 test request. Input can be either the JSON content of the request body (`@RequestBody`), a
 variable within the URL path (`@PathVariable`), or an HTTP request parameter (`@RequestParam`):
 
@@ -579,6 +581,8 @@ the tests to be meaningful, we need to remember to cover all of the responsibili
 we may be in for ugly surprises at runtime.
 
 The example code from this article is available [on github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing).
+
+**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://transactions.sendowl.com/stores/13745/194393) (if you buy through this link, I get a cut). 
 
 
 

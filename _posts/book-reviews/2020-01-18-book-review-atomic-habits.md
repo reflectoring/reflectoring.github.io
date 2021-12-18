@@ -7,6 +7,7 @@ excerpt: "'Atomic Habits' provides an actionable framework for making or breakin
 image:
   teaser: /assets/img/covers/atomic-habits-teaser.jpg
   opengraph: /assets/img/covers/atomic-habits-teaser.jpg
+author: default
 ---
 
 ## TL;DR: Read this Book, when...

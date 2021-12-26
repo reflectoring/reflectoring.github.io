@@ -4,7 +4,7 @@ rvm:
 
 before_install:
   - gem uninstall bundler
-  - gem install bundler --version 2.2.33
+  - gem install bundler --version 2.2.23
 
 # Assume bundler is being used, therefore
 # the `install` step will run `bundle install` by default.

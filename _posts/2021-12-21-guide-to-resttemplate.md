@@ -4,7 +4,7 @@ categories: [spring-boot]
 date: 2021-12-21 06:00:00 +1000
 modified: 2021-12-21 06:00:00 +1000
 author: pratikdas
-excerpt: "REST styled APIs are all around us and as such even the most simple applications need to invoke REST APIs for some or all of their functions. These REST APIs could be either of their own or from other sources. Hence applications need to consume APIs elegantly and consistently. RestTemplate is a library of Spring that helps us to do just that. In this article, we will understand the different methods of invoking REST API with Spring RestTemplate."
+excerpt: "REST styled APIs are all around us and as such most applications need to invoke REST APIs for some or all of their functions. These REST APIs could be either of their own or from other sources. Hence applications need to consume APIs elegantly and consistently. RestTemplate is a library of Spring that helps us to do just that. In this article, we will understand the different methods of invoking REST API with Spring RestTemplate."
 image:
   auto: 0074-stack
 ---
@@ -69,7 +69,7 @@ We will see the use of the above methods of `RestTemplate` with the help of some
 To work with the examples of using `RestTemplate`, let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.6.1&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=restclient&name=restclient&description=Project%20to%20demo%20Spring%20Rest%20Client&packageName=io.pratik.restclient&dependencies=web), and then open the project in our favorite IDE. We have added the `web` dependency to Maven `pom.xml.
 `.
 
-We will also add a dependency on httpClient. The Dependency spring-boot-starter-web is a starter for building web applications. This dependency contains the class RestTemplate, the option to publish REST web services, and many other web-related things.
+We will also add a dependency on httpClient module for Apache HttpComponents. The Dependency `spring-boot-starter-web` is a starter for building web applications. This dependency contains the class RestTemplate, the option to publish REST web services, and many other web-related things.
 
 As HTTP client API we use Apache HttpComponents for our examples.
 

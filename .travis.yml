@@ -3,7 +3,6 @@ rvm:
   - 2.3.8
 
 before_install:
-  - gem uninstall bundler
   - gem install bundler --version 2.3.3
 
 # Assume bundler is being used, therefore

@@ -3,7 +3,7 @@ rvm:
   - 2.3.8
 
 before_install:
-  - gem install bundler --version 2.3.3
+  - gem install bundler --version 2.2.23
 
 # Assume bundler is being used, therefore
 # the `install` step will run `bundle install` by default.

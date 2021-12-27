@@ -19,15 +19,13 @@ REST-styled APIs are all around us. Hence many applications need to invoke REST 
 
 According to the official [documentation](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html), `RestTemplate` is a synchronous client to perform HTTP requests. 
 
-It is a higher-order API since it performs HTTP requests by using an HTTP client library like the JDK HttpURLConnection, Apache HttpClient, and others.
+It is a higher-order API since it performs HTTP requests by using an HTTP client library like the JDK [HttpURLConnection](https://docs.oracle.com/en/java/javase/12/docs/api/java.base/java/net/HttpURLConnection.html), Apache HttpClient, and others.
 
-The HTTP client library takes care of all the low-level details of communication over HTTP while the `RestTemplate` adds the capability of transforming the request and response in JSON or XML to Java objects.
+The HTTP client library takes care of all the low-level details of communication over HTTP while the `RestTemplate` adds the capability of transforming the request and response in [JSON](https://www.json.org/json-en.html) or [XML](https://www.w3.org/XML/) to Java objects.
 By default, `RestTemplate` uses the class `java.net.HttpURLConnection` as the HTTP client. However, we can switch to another HTTP client library which we will see in a later section. 
 
-Starting with Spring 5, the `RestTemplate` class is in maintenance mode. The non-blocking and [reactive](https://spring.io/reactive) `WebClient` is provided by the framework as a modern alternative to the `RestTemplate`. `WebClient` offers support for both synchronous and asynchronous HTTP requests and streaming scenarios. Therefore, `RestTemplate` will be marked as deprecated in a future version of the Spring Framework and will not contain any new functionalities.
 
-
-## Some useful methods of RestTemplate
+## Some Useful Methods of RestTemplate
 
 Before looking at the examples, it will be helpful to take a look at the important methods of the `RestTemplate` class.
 
@@ -285,7 +283,7 @@ public class RestConsumer {
 ```
 We use the `Void` class to represent the empty body here.
 
-## Using the Exchange method for Downloading Large Files
+## Using the Exchange Method for Downloading Large Files
 
 Now we will use the `execute()` method for downloading large files. The `getForObject()` and `getForEntity()` methods which we saw earlier load the complete response of the REST service in memory. 
 
@@ -329,7 +327,7 @@ The request callback method is used to prepare the HTTP request by setting diffe
 The `responseExtractor` used here extracts the response and creates a file in a folder in the server.
 
 
-## Invoking APIs with application/form type Input
+## Invoking APIs with application/form Type Input
 
 Another class of APIs takes `HTTP form` as an input. To call these APIs, we need to set the `Content-Type` header to `application/x-www-form-urlencoded` in addition to setting the request body. This allows us to send a large query string containing name and value pairs separated by `& ` to the server. 
 
@@ -531,7 +529,7 @@ As we can see this is more elegant and can be produced in a format compatible wi
 
 When using `RestTemplate` in Spring Boot applications, we can use an auto-configured `RestTemplateBuilder` to create RestTemplate instances. 
 
-## Attaching MessageConverters
+## Attaching MessageConverters to the RestTemplate
 REST APIs can serve resources in multiple formats(XML, JSON, etc) to the same URI following a REST principle called [content negotiation](https://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html). REST clients request for the format they can support by sending the `accept` header in the request. Similarly, the `Content-Type` header is used to specify the format of the request.
 
 The conversion of objects passed to the methods of `RestTemplate` is converted to HTTP requests by instances of `HttpMessageConverter` interface. This converter also converts HTTP responses to Java objects.
@@ -582,9 +580,13 @@ Here we have set up the `RestTemplate` with a message converter `XStreamMarshall
 
 As briefly mentioned in the beginning `RestTemplate` is a higher-level construct which makes use of a lower-level HTTP client.
 
-`RestTemplate` is deprecated in favor of the reactive `WebClient` which is more performant. It is based on the thread-per-request model. Every request to `RestTemplate` blocks until the response is received. As a result, applications using `RestTemplate` will not scale well with an increasing number of concurrent users.
+Starting with Spring 5, the `RestTemplate` class is in maintenance mode. The non-blocking and [reactive](https://spring.io/reactive) `WebClient` is provided by the Spring framework as a modern alternative to the `RestTemplate`. 
 
-The official Spring documentation also advocates using `WebClient` instead of `RestTemplate`. `WebClient` has all the capabilities of `RestTemplate`. But it also has asynchronous capabilities and supports a functional style of programming. 
+`WebClient` offers support for both synchronous and asynchronous HTTP requests and streaming scenarios. Therefore, `RestTemplate` will be marked as deprecated in a future version of the Spring Framework and will not contain any new functionalities.
+
+`RestTemplate` is based on a thread-per-request model. Every request to `RestTemplate` blocks until the response is received. As a result, applications using `RestTemplate` will not scale well with an increasing number of concurrent users.
+
+The official Spring documentation also advocates using `WebClient` instead of `RestTemplate`. 
 
 However, `RestTemplate` is still the preferred choice for applications stuck with an older version(< 5.0) of Spring or those evolving from a substantial legacy codebase. 
 

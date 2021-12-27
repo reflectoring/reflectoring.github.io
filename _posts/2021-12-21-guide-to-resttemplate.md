@@ -504,11 +504,16 @@ Default error handler::org.springframework.web.client.DefaultResponseErrorHandle
 ...
 ...
 ...org.springframework.web.client.RestTemplate - Response 404 NOT_FOUND
-Exception in thread "main" org.springframework.web.client.HttpClientErrorException$NotFound: 404 : \n"{"timestamp":"2021-12-20T07:20:34.865+00:00","status":404,"error":"Not Found","path":"/product/error"}" \n
-    at org.springframework.web.client.HttpClientErrorException.create(HttpClientErrorException.java:113)
-    ... \n
-    at org.springframework.web.client.DefaultResponseErrorHandler.handleError(DefaultResponseErrorHandler.java:122) \n
-    at org.springframework.web.client.ResponseErrorHandler.handleError(ResponseErrorHandler.java:63)
+Exception in thread "main" org.springframework.web.client
+.HttpClientErrorException$NotFound: 404 : 
+"{"timestamp":"2021-12-20T07:20:34.865+00:00","status":404,
+"error":"Not Found","path":"/product/error"}" 
+    at org.springframework.web.client.HttpClientErrorException
+    .create(HttpClientErrorException.java:113)
+    ... 
+    at org.springframework.web.client.DefaultResponseErrorHandler.handleError(DefaultResponseErrorHandler.java:122) 
+    at org.springframework.web.client.ResponseErrorHandler
+    .handleError(ResponseErrorHandler.java:63)
 ```
 
 `RestTemplate` allows us to attach a custom error handler. Our custom error handler looks like this:

@@ -169,7 +169,7 @@ public class RestConsumer {
 ```
 Here we are using the `getForEntity()` method of the `RestTemplate` class to invoke the API and get the response as a JSON string. We need to further work with the JSON response to extract the individual fields with the help of JSON parsing libraries like Jackson. 
 
-We prefer to work with raw JSON responses when we are interested only in a small subset of a HTTP response composed of many fields. 
+We prefer to work with raw JSON responses when we are interested only in a small subset of an HTTP response composed of many fields. 
 
 ## Making an HTTP GET Request to Obtain the Response as a POJO
 
@@ -260,7 +260,7 @@ public class RestConsumer {
 }
 
 ```
-Here we are making the POST request by passing the `HttpMethod.POST` as a parameter in addition to the request body and the response type POJO.
+Here we are making the POST request by sending  `HttpMethod.POST` as a parameter in addition to the request body and the response type POJO.
 
 ## Using the Exchange method for PUT with Empty Response Body
 
@@ -386,7 +386,7 @@ Let us add a dependency on the `httpclient` module from the Apache [HttpComponen
     </dependencies>
 
 ```
-Here we can see the the dependency on `httpclient` added in Our Maven `pom.xml`.
+Here we can see the dependency on `httpclient` added in Our Maven `pom.xml`.
 
 Next we will configure the HTTP client with settings like connect timeout, socket read timeout, pooled connection limit, idle connection timeout, etc as shown below:
 
@@ -426,19 +426,14 @@ In this example, we have specified the HTTP connection timeout and socket read t
 
 Other than the default `HttpURLConnection` and Apache HttpClient, Spring also supports Netty and OkHttp client libraries through the `ClientHttpRequestFactory` abstraction.
 
-## HTTP Message Conversion
-Objects passed to and returned from the methods getForObject(), getForEntity(), postForLocation(), postForObject() and put() are converted to HTTP requests and from HTTP responses by HttpMessageConverter instances.
-
-For performance reasons, the default `RestTemplate` constructor does not register any message converters. However, if we pass true to the alternate constructor, then converters for the main mime types are registered. We can also write our own converter and register it via the messageConverters property.
-
 ## Attaching an ErrorHandler to RestTemplate
-`RestTemplate` is associated with default error handler which throws the following exceptions:
+`RestTemplate` is associated with a default error handler which throws the following exceptions:
 
 * HTTP status 4xx: HttpClientErrorException
 * HTTP status 5xx: HttpServerErrorException 
 * unknown HTTP status: UnknownHttpStatusCodeException
 
-These exceptions are subclasses of `RestClientResponseException` which is a subclass of RuntimeException. So if we do not catch them they bubble up to the top layer. 
+These exceptions are subclasses of `RestClientResponseException` which is a subclass of RuntimeException. So if we do not catch them they will bubble up to the top layer. 
 
 The following is a sample of an error produced by the default error handler when the service responds with an HTTP status of 404:
 
@@ -500,24 +495,31 @@ public class CustomErrorHandler implements ResponseErrorHandler{
                 || response.getStatusCode().is5xxServerError()) {
 
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.getBody()))) {
-              String httpBodyResponse = reader.lines().collect(Collectors.joining(""));
+            try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(response.getBody()))) {
+              String httpBodyResponse = reader.lines()
+                        .collect(Collectors.joining(""));
               
               ObjectMapper mapper = new ObjectMapper();
-              RestTemplateError restTemplateError = mapper.readValue(httpBodyResponse, RestTemplateError.class);
+              RestTemplateError restTemplateError = mapper
+               .readValue(httpBodyResponse, 
+                RestTemplateError.class);
 
               
-              throw new RestServiceException(restTemplateError.getPath(), response.getStatusCode(), restTemplateError.getError());
+              throw new RestServiceException(restTemplateError.getPath(), 
+                            response.getStatusCode(), 
+                            restTemplateError.getError());
             }   
         
         }
-        
-    
+   
     }
 }
 
 ```
-We override two methods: `hasError()` and `handleError()`. The error handling logic is in the handleError() method. In this method, we are extracting the service path and error message from the error response body returned as a JSON with the Jackson ObjectMapper.
+As we can see the `CustomErrorHandler` class implements the `ResponseErrorHandler` interface. It also uses an error POJO: `RestTemplateError` and a runtime exception class `RestServiceException`.
+
+We override two methods of the `ResponseErrorHandler` interface: `hasError()` and `handleError()`. The error handling logic is in the `handleError()` method. In this method, we are extracting the service path and error message from the error response body returned as a JSON with the Jackson ObjectMapper.
 
 The response with our custom error handler looks like this:
 
@@ -527,74 +529,76 @@ error occured: [Not Found] in service:: /product/error
 
 As we can see this is more elegant and can be produced in a format compatible with our logging systems for further diagnosis.
 
-
-Spring Boot provides an auto-configured `RestTemplateBuilder` which can be used to create RestTemplate instances when needed. The auto-configured RestTemplateBuilder ensures that sensible HttpMessageConverters are applied to RestTemplate instances.RestTemplateBuilder includes a number of useful methods that can be used to quickly configure a RestTemplate. 
+When using `RestTemplate` in Spring Boot applications, we can use an auto-configured `RestTemplateBuilder` to create RestTemplate instances. 
 
 ## Attaching MessageConverters
-We use message converters to marshall and unmarshall POJOs to and from JSON, XML, etc sent and received over HTTP.
+REST APIs can serve resources in multiple formats(XML, JSON, etc) to the same URI following a REST principle called [content negotiation](https://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html). REST clients request for the format they can support by sending the `accept` header in the request. Similarly, the `Content-Type` header is used to specify the format of the request.
 
-We can further customize with messageTransformers.
-## RestTemplate customization
-There are three main approaches to RestTemplate customization depending on how broadly we want the customizations to apply.
+The conversion of objects passed to the methods of `RestTemplate` is converted to HTTP requests by instances of `HttpMessageConverter` interface. This converter also converts HTTP responses to Java objects.
 
-* inject the auto-configured RestTemplateBuilder and then call its methods as required
+We can write our converter and register it with `RestTemplate` to request specific representations of a resource. In this example, we are requesting the XML representation of the `Product` resource:
 
-To make the scope of any customizations as narrow as possible, inject the auto-configured RestTemplateBuilder and then call its methods as required. Each method call returns a new RestTemplateBuilder instance so the customizations will only affect this use of the builder.
+```java
+public class RestConsumer {
+    public void getProductAsXML() {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setMessageConverters(getXmlMessageConverter());
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        
+        String productID = "P123445";
 
-To make an application-wide, additive customization a RestTemplateCustomizer bean can be used. All such beans are automatically registered with the auto-configured RestTemplateBuilder and will be applied to any templates that are built with it.
+        String resourceUrl
+          = "http://localhost:8080/products/"+productID;
 
-Here’s an example of a customizer that configures the use of a proxy for all hosts except 192.168.0.5:
+        ResponseEntity<Product> response = 
+          restTemplate.exchange(
+            resourceUrl, 
+            HttpMethod.GET, 
+            entity, Product.class, "1");
+        Product resource = response.getBody();
+    }
+    
+    private List<HttpMessageConverter<?>> getXmlMessageConverter() {
+        XStreamMarshaller marshaller = new XStreamMarshaller();
+        marshaller.setAnnotatedClasses(Product.class);
+        MarshallingHttpMessageConverter marshallingConverter = 
+          new MarshallingHttpMessageConverter(marshaller);
+
+        List<HttpMessageConverter<?>> converters = new ArrayList<>();
+        converters.add(marshallingConverter);
+        return converters;
+    }
+}
+
+```
+
+Here we have set up the `RestTemplate` with a message converter `XStreamMarshaller` since we are consuming XML representation of the `Product` resource.
 
 
 ## Comparison with Other HTTP Clients
 
-As briefly touched in the beginning RestTemplate is a higher-level API that makes use of lower-level APIs like Java's API client.
+As briefly mentioned in the beginning `RestTemplate` is a higher-level construct which makes use of a lower-level HTTP client.
 
-RestTemplate is deprecated in favor of the WebClient which is more performant. Being synchronous calls to RestTemplate are blocking threads.
+`RestTemplate` is deprecated in favor of the reactive `WebClient` which is more performant. It is based on the thread-per-request model. Every request to `RestTemplate` blocks until the response is received. As a result, applications using `RestTemplate` will not scale well with an increasing number of concurrent users.
 
-### Benefits
+The official Spring documentation also advocates using `WebClient` instead of `RestTemplate`. `WebClient` has all the capabilities of `RestTemplate`. But it also has asynchronous capabilities and supports a functional style of programming. 
 
-Spring RestTemplate provides many functionalities for interacting with Rest client. It deals with JSON/XML transformation of entities, …
-
-Spring RestTemplate is a higher-level abstraction than Apache HttpClient. By default, Spring RestTemplate uses Apache HttpClient internally. We can use other implementation with configuring ClientHttpRequestFactory class.
-
-RestTemplate is thread-safe once constructed, and that we can use callbacks to customize its operations.
-
-### Drawbacks
-
-It takes so much time when we have multiple user access.
-
-Under the hood, RestTemplate uses the Java Servlet API, which is based on the thread-per-request model. The thread will block until the web client receives the response.
-
-When we have multiple users, our application will create multiple threads, which will exhaust the thread pool or occupy all the available memory.
-
-Degrade our application’s performance.
+However, `RestTemplate` is still the preferred choice for applications stuck with an older version(< 5.0) of Spring or those evolving from a substantial legacy codebase. 
 
 ## Conclusion
 
 Here is a list of the major points for a quick reference:
 
-1. RestTemplate is a synchronous client for making API calls
-2. RestTemplate has generalized methods which take the HTTP method as a parameter.
-3. RestTemplate also has separate methods for making different HTTP method calls(GET, POST, PUTa, etc).
-4. We can get the response body in raw JSON format which needs to be further processed with a JSON parser or a structured POJO that can be directly used in the application.
-5. Request body is sent using HttpEntity class which is constructed with a POJO representing the API request.
-
-We use HttpHeaders class to fill some key-values into our http header.
-Normally, we will use HttpEntity to wrap all request body and all parameters of http header.
-The common way to send request is to use exchange() method and use HttpMethod class that define all request methods we need.
-
-With get request, we can use getForEntity() method or getForObject() method.
-
-With post request, use postForObject(), postForEntity(), postForLocation() methods.
-
-With put request, use put() method.
-
-With delete request, use delete() method.
-
-To get all headers information, use headForHeaders() method.
-
-6. Lastly using RestTemplate results in blocking calls. WebClient is advised to be used for new applications.
+1. RestTemplate is a synchronous client for making REST API calls over HTTP
+2. RestTemplate has generalized methods like `execute()` and `exchange()` which take the HTTP method as a parameter.
+3. RestTemplate also has separate methods for making different HTTP method  like `getForObject()` and `getForEntity()`.
+4. We have the option of getting the response body in raw JSON format which needs to be further processed with a JSON parser or a structured POJO that can be directly used in the application.
+5. Request body is sent wrapped in a `HttpEntity` class.
+6. `RestTemplate` can be customized with an HTTP client library, error handler, and message converter.
+7. Lastly, calling `RestTemplate` methods results in blocking of the request thread till the response is received. Reactive `WebClient` is advised to be used for new applications.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/resttemplate).
 

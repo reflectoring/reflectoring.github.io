@@ -336,10 +336,7 @@ Here we are sending `HttpMethod.PUT` as a parameter to the `exchange()` method. 
 
 The `execute()` in contrast to the `exchange()` method is the most generalized way to perform a request, with full control over request preparation and response extraction via callback interfaces.
 
-We will use the `execute()` method for downloading large files. The `getForObject()` and `getForEntity()` methods which we saw earlier load the complete response of the REST service in memory. 
-
-This is not desired for downloading large files because it can result in out-of-memory exceptions. 
-To handle this problem, we can use the `ResponseExtractor` class as an argument of the `execute()` method of `RestTemplate`.
+We will use the `execute()` method for downloading large files. 
 
 The `execute()` method takes a callback parameter for creating the request and a response extractor callback for processing the response as shown in this example:
 

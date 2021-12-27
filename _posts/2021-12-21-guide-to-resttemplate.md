@@ -50,7 +50,7 @@ For example, the method `getForObject()` will perform a GET and return an object
 
 **optionsForAllow()**: This method executes an OPTIONS request and uses the Allow header to return the HTTP methods that are allowed under the specified URL.
 
-**delete()** : This method deletes the resources at the given URL using the HTTP DELETE method.
+**delete()**: This method deletes the resources at the given URL using the HTTP DELETE method.
 
 **put()**: This method updates a resource for a given URL using the HTTP PUT method.
 
@@ -103,8 +103,10 @@ public class ProductController {
                new Product("Washing Machine", "LG",114.67,"L001"),
                new Product("Laptop", "Apple",11453.67,"A001"));
     
-    @GetMapping(value="/products/{id}", produces=MediaType.APPLICATION_XML_VALUE)
-    public @ResponseBody Product fetchProducts(@PathParam("id") String productId){
+    @GetMapping(value="/products/{id}", 
+        produces=MediaType.APPLICATION_XML_VALUE)
+    public @ResponseBody Product fetchProducts(
+        @PathParam("id") String productId){
         
         return products.get(1);
     }
@@ -124,7 +126,8 @@ public class ProductController {
         product.setId(productID);
         products.add(product);
         
-        return ResponseEntity.ok().body("{\"productID\":\""+productID+"\"}");
+        return ResponseEntity.ok().body(
+            "{\"productID\":\""+productID+"\"}");
     }
 
     @PutMapping("/products")
@@ -149,7 +152,9 @@ public class ProductController {
 
 ```
 
-The REST web service contains the methods to create, read, update, and delete `product` resources and supports the HTTP verbs GET, POST, PUT, and DELETE. When we run our example, this web service will be available at the endpoint `http://localhost:8080/products`.
+The REST web service contains the methods to create, read, update, and delete `product` resources and supports the HTTP verbs GET, POST, PUT, and DELETE. 
+
+When we run our example, this web service will be available at the endpoint `http://localhost:8080/products`.
 
 We will consume all these APIs using `RestTemplate` in the following sections.
 
@@ -314,7 +319,11 @@ public class RestConsumer {
             new Product("Television", "Samsung",1145.67,"S001"));
 
         // Send the PUT method as a method parameter
-        restTemplate.exchange(resourceUrl, HttpMethod.PUT, request, Void.class);
+        restTemplate.exchange(
+            resourceUrl, 
+            HttpMethod.PUT, 
+            request, 
+            Void.class);
         
         
     }
@@ -338,16 +347,25 @@ The `execute()` method takes a callback parameter for creating the request and a
 public class RestConsumer {
     
     public void getProductasStream() {
-        final Product updatedProduct = new Product("Television", "Samsung",1145.67,"S001");
+        final Product fetchProductRequest = 
+        new Product("Television", "Samsung",1145.67,"S001");
+
         RestTemplate restTemplate = new RestTemplate();
+
         String resourceUrl
           = "http://localhost:8080/products";
     
         // Set HTTP headers in the request callback
-        RequestCallback requestCallback = request -> request.getHeaders()
-                 .setAccept(
-                    Arrays.asList
-                    (MediaType.APPLICATION_OCTET_STREAM, MediaType.ALL));
+        RequestCallback requestCallback = request -> {
+            ObjectMapper mapper = new ObjectMapper();
+                mapper.writeValue(request.getBody(), 
+                        fetchProductRequest);
+
+                request.getHeaders()
+                 .setAccept(Arrays.asList(
+                         MediaType.APPLICATION_OCTET_STREAM, 
+                         MediaType.ALL));
+                };
 
         // Processing the response. Here we are extracting the 
         // response and copying the file to a folder in the server.
@@ -357,8 +375,10 @@ public class RestConsumer {
                  return null;
              };
 
-        restTemplate.execute(resourceUrl, HttpMethod.GET, requestCallback(updatedProduct), responseExtractor );
-        
+        restTemplate.execute(resourceUrl, 
+            HttpMethod.GET, 
+            requestCallback, 
+            responseExtractor );    
         
     }
 }
@@ -405,7 +425,7 @@ public class RestConsumer {
 }
 
 ```
-Here we have sent three form variables `sku`, `name`, and `brand` in the request by first adding them to a `MultiValueMap` and then wrapping the map in `HttpEntity`. After that we are invoking the `postForEntity()` method to get the response in a `ResponseEntity` object.
+Here we have sent three form variables `sku`, `name`, and `brand` in the request by first adding them to a `MultiValueMap` and then wrapping the map in `HttpEntity`. After that, we are invoking the `postForEntity()` method to get the response in a `ResponseEntity` object.
 
 ## Configuring the HTTP Client in RestTemplate
 The simplest form of `RestTemplate` is created as a new instance of the class with an empty constructor as seen in the examples so far.
@@ -678,7 +698,7 @@ Here is a list of the major points for a quick reference:
 4. We have the option of getting the response body in raw JSON format which needs to be further processed with a JSON parser or a structured POJO that can be directly used in the application.
 5. Request body is sent by wrapping the POJOs in a `HttpEntity` class.
 6. `RestTemplate` can be customized with an HTTP client library, error handler, and message converter.
-7. Lastly, calling `RestTemplate` methods results in blocking of the request thread till the response is received. Reactive `WebClient` is advised to be used for new applications.
+7. Lastly, calling `RestTemplate` methods results in blocking the request thread till the response is received. Reactive `WebClient` is advised to be used for new applications.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/resttemplate).
 

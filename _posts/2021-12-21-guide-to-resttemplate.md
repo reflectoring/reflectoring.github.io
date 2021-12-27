@@ -504,10 +504,10 @@ Default error handler::org.springframework.web.client.DefaultResponseErrorHandle
 ...
 ...
 ...org.springframework.web.client.RestTemplate - Response 404 NOT_FOUND
-Exception in thread "main" org.springframework.web.client.HttpClientErrorException$NotFound: 404 : "{"timestamp":"2021-12-20T07:20:34.865+00:00","status":404,"error":"Not Found","path":"/product/error"}"
+Exception in thread "main" org.springframework.web.client.HttpClientErrorException$NotFound: 404 : \n"{"timestamp":"2021-12-20T07:20:34.865+00:00","status":404,"error":"Not Found","path":"/product/error"}" \n
     at org.springframework.web.client.HttpClientErrorException.create(HttpClientErrorException.java:113)
-    ...
-    at org.springframework.web.client.DefaultResponseErrorHandler.handleError(DefaultResponseErrorHandler.java:122)
+    ... \n
+    at org.springframework.web.client.DefaultResponseErrorHandler.handleError(DefaultResponseErrorHandler.java:122) \n
     at org.springframework.web.client.ResponseErrorHandler.handleError(ResponseErrorHandler.java:63)
 ```
 
@@ -638,7 +638,8 @@ public class RestConsumer {
         restTemplate.setMessageConverters(getXmlMessageConverter());
         
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
+        headers.setAccept(
+            Collections.singletonList(MediaType.APPLICATION_XML));
         HttpEntity<String> entity = new HttpEntity<>(headers);
         
         String productID = "P123445";

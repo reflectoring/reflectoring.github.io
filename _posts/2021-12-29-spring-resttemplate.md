@@ -1,21 +1,21 @@
 ---
-title: "Exhaustive Guide to Spring RestTemplate"
+title: "Complete Guide to Spring RestTemplate"
 categories: [spring-boot]
-date: 2021-12-21 06:00:00 +1000
-modified: 2021-12-21 06:00:00 +1000
+date: 2021-12-29 06:00:00 +1000
+modified: 2021-12-29 06:00:00 +1000
 author: pratikdas
 excerpt: "REST styled APIs are all around us and as such most applications need to invoke REST APIs for some or all of their functions. These REST APIs could be either of their own or from other sources. Hence applications need to consume APIs elegantly and consistently. RestTemplate is a library of Spring that helps us to do just that. In this article, we will understand the different methods of invoking REST API with Spring RestTemplate."
 image:
   auto: 0074-stack
 ---
 
-REST-styled APIs are all around us. Hence many applications need to invoke REST APIs for some or all of their functions. These REST APIs could be either of their own or from other sources. Hence for applications to function gracefully, they need to consume APIs elegantly and consistently.
+REST-styled APIs are all around us. Many applications need to invoke REST APIs for some or all of their functions. Hence for applications to function gracefully, they need to consume APIs elegantly and consistently.
 
-`RestTemplate` is a class within the Spring framework that helps us to do just that. In this article, we will understand how to use `RestTemplate` for invoking REST APIs of different shapes.
+`RestTemplate` is a class within the Spring framework that helps us to do just that. In this tutorial, we will understand how to use `RestTemplate` for invoking REST APIs of different shapes.
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/resttemplate" %}
 
-## What is Spring RestTemplate
+## What is Spring `RestTemplate`?
 
 According to the official [documentation](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html), `RestTemplate` is a synchronous client to perform HTTP requests. 
 
@@ -26,7 +26,7 @@ The HTTP client library takes care of all the low-level details of communication
 By default, `RestTemplate` uses the class `java.net.HttpURLConnection` as the HTTP client. However, we can switch to another HTTP client library which we will see in a later section. 
 
 
-## Some Useful Methods of RestTemplate
+## Some Useful Methods of `RestTemplate`
 
 Before looking at the examples, it will be helpful to take a look at the important methods of the `RestTemplate` class.
 
@@ -38,25 +38,25 @@ The names of most of the methods are based on a naming convention:
 
 For example, the method `getForObject()` will perform a GET and return an object. 
 
-**getForEntity()**: This method executes a GET request and returns an object of ResponseEntity class that contains both the status code and the resource as an object. 
+**`getForEntity()`**: executes a GET request and returns an object of `ResponseEntity` class that contains both the status code and the resource as an object. 
 
-**getForObject()** : This is similar to `getForEntity()`, but returns the resource directly. 
+**`getForObject()`** : similar to `getForEntity()`, but returns the resource directly. 
 
-**exchange()**: This method executes a specified HTTP method, such as GET, POST, PUT, etc, and returns a ResponseEntity containing both the HTTP status code and the resource as an object.
+**`exchange()`**: executes a specified HTTP method, such as GET, POST, PUT, etc, and returns a `ResponseEntity` containing both the HTTP status code and the resource as an object.
 
-**execute()** : This method is similar to the `exchange` method, but takes additional parameters: `RequestCallback` and `ResultSetExtractor`. 
+**`execute()`** : similar to the `exchange()` method, but takes additional parameters: `RequestCallback` and `ResultSetExtractor`. 
 
-**headForHeaders()**: This method executes a HEAD request and returns all HTTP headers for the specified URL. 
+**`headForHeaders()`**: executes a HEAD request and returns all HTTP headers for the specified URL. 
 
-**optionsForAllow()**: This method executes an OPTIONS request and uses the Allow header to return the HTTP methods that are allowed under the specified URL.
+**`optionsForAllow()`**: executes an OPTIONS request and uses the Allow header to return the HTTP methods that are allowed under the specified URL.
 
-**delete()**: This method deletes the resources at the given URL using the HTTP DELETE method.
+**`delete()`**: deletes the resources at the given URL using the HTTP DELETE method.
 
-**put()**: This method updates a resource for a given URL using the HTTP PUT method.
+**`put()`**: updates a resource for a given URL using the HTTP PUT method.
 
-**postForObject()** : This method creates a new resource using HTTP POST method and returns an entity.
+**`postForObject()`** : creates a new resource using HTTP POST method and returns an entity.
 
-**postForLocation()**: This method creates a new resource using the HTTP POST method and returns the location of the newly created resource.
+**`postForLocation()`**: creates a new resource using the HTTP POST method and returns the location of the newly created resource.
 
 For additional information on the methods of `RestTemplate`, please refer to the [Javadoc](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html).
 
@@ -65,12 +65,12 @@ We will see how to use the above methods of `RestTemplate` with the help of some
 
 ## Project Setup for Running the Examples
 
-To work with the examples of using `RestTemplate`, let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.6.1&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=restclient&name=restclient&description=Project%20to%20demo%20Spring%20Rest%20Client&packageName=io.pratik.restclient&dependencies=web), and then open the project in our favorite IDE. We have added the `web` dependency to Maven `pom.xml.
+To work with the examples of using `RestTemplate`, let us first create a Spring Boot project with the help of the [Spring boot Initializr](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.6.1&packaging=jar&jvmVersion=11&groupId=io.pratik&artifactId=restclient&name=restclient&description=Project%20to%20demo%20Spring%20Rest%20Client&packageName=io.pratik.restclient&dependencies=web), and then open the project in our favorite IDE. We have added the `web` dependency to the Maven `pom.xml.
 `.
 
-The dependency `spring-boot-starter-web` is a starter for building web applications. This dependency contains the `RestTemplate` class.
+The dependency `spring-boot-starter-web` is a starter for building web applications. This dependency contains a dependency to the `RestTemplate` class.
 
-We will use a POJO class: `Product` in most of the examples which looks like this:
+We will use this POJO class `Product` in most of the examples:
 
 ```java
 public class Product {
@@ -92,7 +92,7 @@ public class Product {
 }
 ```
 
-We also have a minimal REST web service built with the `@RestController` annotation: `ProductController` for testing our examples:
+We also have built a minimal REST web service with the following `@RestController`:
 
 ```java
 @RestController
@@ -233,7 +233,7 @@ public class RestConsumer {
     }
 
 ```
-As we can see here, instead of the `ResponseEntity` object, we are directly getting back the response object. 
+Instead of the `ResponseEntity` object, we are directly getting back the response object. 
 
 While `getForObject()` looks better at first glance, `getForEntity()` returns additional important metadata like the response headers and the HTTP status code in the `ResponseEntity` object.
 
@@ -265,9 +265,9 @@ public class RestConsumer {
 }
     
 ```
-Here the `postForObject` method takes the request body in the form of an `HttpEntity` class. The `HttpEntity` is constructed with the `Product` class which is the POJO class representing the HTTP request.
+Here the `postForObject()` method takes the request body in the form of an `HttpEntity` class. The `HttpEntity` is constructed with the `Product` class which is the POJO class representing the HTTP request.
 
-## Using the Exchange method for POST
+## Using `exchange()` for POST
 In the earlier examples, we saw separate methods for making API calls like `postForObject()` for HTTP POST and `getForEntity()` for GET. `RestTemplate` class has similar methods for other HTTP verbs like PUT, DELETE, and PATCH.
 
 The `exchange()` method in contrast is more generalized and can be used for different HTTP verbs. The HTTP verb is sent as a parameter as shown in this example:
@@ -301,7 +301,7 @@ public class RestConsumer {
 ```
 Here we are making the POST request by sending  `HttpMethod.POST` as a parameter in addition to the request body and the response type POJO.
 
-## Using the Exchange method for PUT with an Empty Response Body
+## Using `exchange()` for PUT with an Empty Response Body
 
 Here is another example of using the `exchange()` for making a PUT request which returns an empty response body:
 ```java
@@ -332,7 +332,7 @@ public class RestConsumer {
 ```
 Here we are sending `HttpMethod.PUT` as a parameter to the `exchange()` method. Since the REST API returns an empty body, we are using the `Void` class to represent the same.
 
-## Using the Execute Method for Downloading Large Files
+## Using `execute()` for Downloading Large Files
 
 The `execute()` in contrast to the `exchange()` method is the most generalized way to perform a request, with full control over request preparation and response extraction via callback interfaces.
 
@@ -386,7 +386,7 @@ Here we are sending a request callback and a response callback to the `execute()
 The `responseExtractor` used here extracts the response and creates a file in a folder in the server.
 
 
-## Invoking APIs with application/form Type Input
+## Invoking APIs with `application/form` Type Input
 
 Another class of APIs takes `HTTP form` as an input. To call these APIs, we need to set the `Content-Type` header to `application/x-www-form-urlencoded` in addition to setting the request body. This allows us to send a large query string containing name and value pairs separated by `& ` to the server. 
 
@@ -424,7 +424,7 @@ public class RestConsumer {
 ```
 Here we have sent three form variables `sku`, `name`, and `brand` in the request by first adding them to a `MultiValueMap` and then wrapping the map in `HttpEntity`. After that, we are invoking the `postForEntity()` method to get the response in a `ResponseEntity` object.
 
-## Configuring the HTTP Client in RestTemplate
+## Configuring the HTTP Client in `RestTemplate`
 The simplest form of `RestTemplate` is created as a new instance of the class with an empty constructor as seen in the examples so far.
 
 As explained earlier, `RestTemplate` uses the class `java.net.HttpURLConnection` as the HTTP client by default. However, we can switch to a different HTTP client library like Apache HttpComponents, Netty, OkHttp, etc. We do this by calling the `setRequestFactory()` method on the class. 
@@ -488,12 +488,12 @@ In this example, we have specified the HTTP connection timeout and socket read t
 
 Other than the default `HttpURLConnection` and Apache HttpClient, Spring also supports Netty and OkHttp client libraries through the `ClientHttpRequestFactory` abstraction.
 
-## Attaching an ErrorHandler to RestTemplate
+## Attaching an ErrorHandler to `RestTemplate`
 `RestTemplate` is associated with a default error handler which throws the following exceptions:
 
-* HTTP status 4xx: HttpClientErrorException
-* HTTP status 5xx: HttpServerErrorException 
-* unknown HTTP status: UnknownHttpStatusCodeException
+* *HTTP status 4xx*: `HttpClientErrorException`
+* *HTTP status 5xx*: `HttpServerErrorException` 
+* *unknown HTTP status*: `UnknownHttpStatusCodeException`
 
 These exceptions are subclasses of `RestClientResponseException` which is a subclass of `RuntimeException`. So if we do not catch them they will bubble up to the top layer. 
 
@@ -597,7 +597,7 @@ public class CustomErrorHandler implements ResponseErrorHandler{
 }
 
 ```
-As we can see the `CustomErrorHandler` class implements the `ResponseErrorHandler` interface. It also uses an error POJO: `RestTemplateError` and a runtime exception class `RestServiceException`.
+The `CustomErrorHandler` class implements the `ResponseErrorHandler` interface. It also uses an error POJO: `RestTemplateError` and a runtime exception class `RestServiceException`.
 
 We override two methods of the `ResponseErrorHandler` interface: `hasError()` and `handleError()`. The error handling logic is in the `handleError()` method. In this method, we are extracting the service path and error message from the error response body returned as a JSON with the Jackson ObjectMapper.
 
@@ -607,7 +607,7 @@ The response with our custom error handler looks like this:
 error occured: [Not Found] in service:: /product/error
 ```
 
-As we can see that the output is more elegant and can be produced in a format compatible with our logging systems for further diagnosis.
+The output is more elegant and can be produced in a format compatible with our logging systems for further diagnosis.
 
 When using `RestTemplate` in Spring Boot applications, we can use an auto-configured `RestTemplateBuilder` to create `RestTemplate` instances as shown in this code snippet:
 
@@ -629,8 +629,8 @@ public class InventoryServiceClient {
 ```
 Here the `RestTemplateBuilder` autoconfigured by Spring is injected in the class and used to attach the `CustomErrorHandler` class we created earlier.
 
-## Attaching MessageConverters to the RestTemplate
-REST APIs can serve resources in multiple formats(XML, JSON, etc) to the same URI following a REST principle called [content negotiation](https://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html). REST clients request for the format they can support by sending the `accept` header in the request. Similarly, the `Content-Type` header is used to specify the format of the request.
+## Attaching `MessageConverters` to the `RestTemplate`
+REST APIs can serve resources in multiple formats (XML, JSON, etc) to the same URI following a principle called [content negotiation](https://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html). REST clients request for the format they can support by sending the `accept` header in the request. Similarly, the `Content-Type` header is used to specify the format of the request.
 
 The conversion of objects passed to the methods of `RestTemplate` is converted to HTTP requests by instances of `HttpMessageConverter` interface. This converter also converts HTTP responses to Java objects.
 
@@ -681,7 +681,7 @@ Here we have set up the `RestTemplate` with a message converter `XStreamMarshall
 
 As briefly mentioned in the beginning `RestTemplate` is a higher-level construct which makes use of a lower-level HTTP client.
 
-Starting with Spring 5, the `RestTemplate` class is in maintenance mode. The non-blocking and [reactive](https://spring.io/reactive) `WebClient` is provided by the Spring framework as a modern alternative to the `RestTemplate`. 
+Starting with Spring 5, the `RestTemplate` class is in maintenance mode. The non-blocking [`WebClient` is provided by the Spring framework as a modern alternative to the `RestTemplate`](/spring-webclient). 
 
 `WebClient` offers support for both synchronous and asynchronous HTTP requests and streaming scenarios. Therefore, `RestTemplate` will be marked as deprecated in a future version of the Spring Framework and will not contain any new functionalities.
 
@@ -695,9 +695,9 @@ However, `RestTemplate` is still the preferred choice for applications stuck wit
 
 Here is a list of the major points for a quick reference:
 
-1. RestTemplate is a synchronous client for making REST API calls over HTTP
-2. RestTemplate has generalized methods like `execute()` and `exchange()` which take the HTTP method as a parameter. `execute()` method is most generalized since it takes request and response callbacks which can be used to add more customizations to the request and response processing.
-3. RestTemplate also has separate methods for making different HTTP methods like `getForObject()` and `getForEntity()`.
+1. `RestTemplate` is a synchronous client for making REST API calls over HTTP
+2. `RestTemplate` has generalized methods like `execute()` and `exchange()` which take the HTTP method as a parameter. `execute()` method is most generalized since it takes request and response callbacks which can be used to add more customizations to the request and response processing.
+3. `RestTemplate` also has separate methods for making different HTTP methods like `getForObject()` and `getForEntity()`.
 4. We have the option of getting the response body in raw JSON format which needs to be further processed with a JSON parser or a structured POJO that can be directly used in the application.
 5. Request body is sent by wrapping the POJOs in a `HttpEntity` class.
 6. `RestTemplate` can be customized with an HTTP client library, error handler, and message converter.

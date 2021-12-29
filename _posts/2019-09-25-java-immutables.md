@@ -1,13 +1,15 @@
 ---
-title: Immutables in Java - Best and Worst Practices
+title: Immutables in Java - Are Setters Allowed?
 categories: [java, craft]
 date: 2019-09-25 00:00:00 +1100
-modified: 2021-09-30 00:00:00 +1100  
+modified: 2021-10-22 00:00:00 +1100  
 excerpt: "Why are immutable objects a way to create safer software that is easier to maintain? And what are best practices to implement them? This article provides answers."
 image:
   auto: 0053-rock-wave
 tags: ["immutable", "factory method", "final"]
 ---
+
+In short, no. Feel free to jump right ahead to the section on [bad practices](#immutable-bad-practices). If you want to read a bit more on the why and how of immutables, have a look at the rest of this article.
 
 Immutable objects are a way to create safer software that is easier to maintain. Why is that? And what should we do and what not when implementing them? This article provides answers.
 
@@ -297,7 +299,7 @@ This pattern works against the idea of an immutable, though. **We're using an im
 
 There may be valid use cases for immutables with wither methods, but I would at least be skeptical if I found an immutable using this pattern.
 
-### Don't User Setters
+### Don't Use Setters
 
 It's obvious that an immutable shouldn't have a setter, because its fields are final and cannot be changed. However, similar to withers described above, we might implement setters so that they return a new object:
 

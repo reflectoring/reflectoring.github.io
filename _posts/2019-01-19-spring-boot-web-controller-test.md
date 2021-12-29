@@ -1,7 +1,7 @@
 ---
 title: "Testing MVC Web Controllers with Spring Boot and @WebMvcTest"
 categories: [spring-boot]
-modified: 2019-01-19
+modified: 2021-12-16
 excerpt: "An in-depth look at the responsibilities of a Spring Boot web controller and how to cover those responsibilities with meaningful tests."
 image:
   auto: 0021-controller
@@ -239,9 +239,9 @@ Note that this test would still fail, yet, since our controller expects some inp
 More options to match HTTP requests can be found in the Javadoc of 
 [MockHttpServletRequestBuilder](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/test/web/servlet/request/MockHttpServletRequestBuilder.html).
 
-### 2. Verifying Input Serialization
+### 2. Verifying Input Deserialization
 
-To verify that the input is successfully serialized into Java objects, we have to provide it in the 
+To verify that the input is successfully deserialized into Java objects, we have to provide it in the 
 test request. Input can be either the JSON content of the request body (`@RequestBody`), a
 variable within the URL path (`@PathVariable`), or an HTTP request parameter (`@RequestParam`):
 

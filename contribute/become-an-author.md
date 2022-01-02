@@ -1,5 +1,5 @@
 ---
-title: Write With Me
+title: Become an Author
 layout: static
 author: 
   enabled: false
@@ -16,7 +16,7 @@ I'm looking for authors to contribute to the reflectoring blog!
  
 Interested in writing about Spring and Java? In getting a better writer? In earning a little money on the side? Then read on!
 
-## What The Authors Say
+## What the Authors Say
 
 > **"Reflectoring gives me the opportunity to research, develop, and write about topics that interest me, as well as to connect and network with other professionals that have the same interests as me.**
 > <br/><br/>
@@ -44,7 +44,7 @@ You also get some money for the effort (see below).
 
 ## What Should I Write About?
 
-There's a big backlog of potential topics that you can choose from. You can also bring your own topic of interest. The topic should fit into the reflectoring blog, though, so it should have something to do with Spring, Java, or software development best practices. 
+There's a big backlog of potential topics that you can choose from. You can also bring your own topic of interest. The topic should fit into the reflectoring blog, though, so it should have something to do with Spring, Java, Kotlin, AWS, Node.js or software development best practices. 
 
 The content must be exclusive to reflectoring.
 
@@ -66,7 +66,7 @@ Other than that, just have fun sharing your experience!
 
 ## How Will I Be Paid?
 
-You will be paid by the number of words in the published article. A 1000-word article (including code snippets) about a high-potential topic will be rated at USD 60, for instance. A 1000-word article about a lower potential topic will be rated at USD 45.
+You will be [paid by the number of words in the published article](/contribute/author-payment/). A 1000-word article (including code snippets) about a high-potential topic will be rated at USD 60, for instance. A 1000-word article about a lower potential topic will be rated at USD 45.
 
 I reserve the right not to publish (and not to pay) articles that are too much work to get to the quality standard I expect. In this case, the content is yours to do with whatever you want.
 
@@ -88,7 +88,13 @@ So, to get the stuff out there before I die - to grow the reflectoring blog fast
  
 ## I'm In - What Do I Do?
 
-Simply [drop me an email](mailto:tom@reflectoring.io) explaining your motivation, a little background on yourself and some links to stuff you have written so far (if any).
+Have a read through these documents to check if writing on reflectoring excites you:
+
+- [Writing Guide](/contribute/writing-guide/)
+- [Author Workflow](/contribute/author-workflow/)
+- [Author Payment](/contribute/author-payment/)
+
+If you want to try it out, [drop me an email](mailto:tom@reflectoring.io) explaining your motivation, a little background on yourself and, if applicable, some links to stuff you have written so far.
 
 
 

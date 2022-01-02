@@ -14,6 +14,7 @@ Collections are an important feature of almost all programming languages. These 
 In this article, we will look at the following logical operations on Java Collections:
 
 1. Joining Two Collections (Addition)
+2. Joining Two Collections with Filter (Addition)
 2. Finding the Difference between Two Collections (Subtraction)
 3. Finding the Union of Two Collections
 4. Finding the Intersection of Two Collections
@@ -40,9 +41,6 @@ class CollectionHelperTest {
     
     CollectionHelper collectionHelper;
 
-    /**
-     * @throws java.lang.Exception
-     */
     @BeforeEach
     void setUp() throws Exception {
         collectionHelper = new CollectionHelper();
@@ -64,6 +62,134 @@ class CollectionHelperTest {
 
 ```
 Here we are concatenating two collections in the `add` method in the `CollectionHelper`. For adding, we have used the `concat` method of the `Stream` class.
+
+## Joining Two Collections with Filter
+We can enhance the previous example to concatenate elements of a collection only if they meet a certain criteria as shown below: 
+```java
+public class CollectionHelper {
+    
+    public List<Integer> addWithFilter(final List<Integer> collA, final List<Integer> collB){
+
+        return Stream.concat(collA.stream(), 
+                collB.stream())
+                .filter(element -> element > 2 )
+        .collect(Collectors.toList());
+    }    
+}
+
+class CollectionHelperTest {
+    
+    CollectionHelper collectionHelper;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        collectionHelper = new CollectionHelper();
+    }
+    
+    @Test
+    void testAdditionWithFilter() {
+        List<Integer> list = collectionHelper.addWithFilter(
+                List.of(9,8,5,4), 
+                List.of(1,3,99,4,7));
+        
+        
+        Assertions.assertArrayEquals(
+                List.of(9,8,5,4,3,99,4,7).toArray(), 
+                list.toArray());
+    }
+
+}
+
+```
+Here we are concatenating two collections in the `addWithFilter` method. In addition to the `concat` method we are also applying the `filter` method of the `Stream` class to concatenate only elements greater than `2`.
+
+## Union of Two Collections (OR)
+The union of two collections A and B is a set containing all elements that are in A or in B or both.
+ 
+We are finding the union of two collections by using the Set type collection of Java which can hold only distinct elements:
+```java
+public class CollectionHelper {
+    public List<Integer> union(final List<Integer> collA, final List<Integer> collB){
+        Set<Integer> set = new HashSet<>();
+        set.addAll(collA);
+        set.addAll(collB);
+        
+        return new ArrayList<>(set);
+        
+    }
+}
+
+class CollectionHelperTest {
+    
+    private CollectionHelper collectionHelper;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        collectionHelper = new CollectionHelper();
+    }
+
+    @Test
+    void testUnion() {
+        List<Integer> union = collectionHelper.union(
+                List.of(9,8,5,4,7), 
+                List.of(1,3,99,4,7));
+        
+        
+        Assertions.assertArrayEquals(
+                List.of(1, 3, 99, 4, 5, 7, 8, 9).toArray(), 
+                union.toArray());
+        
+    }
+}
+
+```
+Here we are first adding all elements of each collection to a `Set`. The set eliminates repeating elements if any.
+
+## Intersection of Two Collections (AND)
+Next, we will use Java's `Stream` class for finding the intersection of two collections:
+```java
+public class CollectionHelper {
+    public List<Integer> intersection(
+                            final List<Integer> collA, 
+                            final List<Integer> collB){
+
+        List<Integer> intersectElements = collA.stream()
+                .filter(collB :: contains)
+                .collect(Collectors.toList());
+        
+        if(!intersectElements.isEmpty()) {
+            return intersectElements;
+        }else {
+            return Collections.emptyList();
+        }
+        
+    }
+}
+
+class CollectionHelperTest {
+    
+    private CollectionHelper collectionHelper;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        collectionHelper = new CollectionHelper();
+    }
+    
+    @Test
+    void testIntersection() {
+        List<Integer> intersection = collectionHelper.intersection(
+                List.of(9,8,5,4,7, 15, 15), 
+                List.of(1,3,99,4,7));
+        
+        Assertions.assertArrayEquals(
+                List.of(4,7).toArray(), 
+                intersection.toArray());
+    }
+}
+
+```
+For finding the intersection, we run Stream class' filter method on the first collection to identify and collect the matching elements of the second collection. 
+
 
 ## Finding the Difference between Two Collections (Subtraction)
 In this example also, we are using Java's `Stream` class for finding the collection of different elements contained in two collections:
@@ -135,48 +261,6 @@ The difference is found in two steps:
 1. Finding the common set of elements with the `intersection` method seen above.
 2. Applying the `filter` method of `Stream` class on the first collection to exclude those elements.
 
-## Intersection of Two Collections (AND)
-Next, we will use Java's `Stream` class for finding the intersection of two collections:
-```java
-public class CollectionHelper {
-    public List<Integer> intersection(
-                            final List<Integer> collA, 
-                            final List<Integer> collB){
-
-        List<Integer> intersectElements = collA.stream()
-                .filter(collB :: contains)
-                .collect(Collectors.toList());
-        
-        if(!intersectElements.isEmpty()) {
-            return intersectElements;
-        }else {
-            return Collections.emptyList();
-        }
-        
-    }
-}
-
-```
-For finding the intersection, we run Stream class' filter method on the first collection to identify and collect the matching elements of the second collection. 
-
-## Union of Two Collections (OR)
-The union of two collections A and B is a set containing all elements that are in A or in B or both.
- 
-We are finding the union of two collections by using the Set type collection of Java which can hold only distinct elements:
-```java
-public class CollectionHelper {
-    public List<Integer> union(final List<Integer> collA, final List<Integer> collB){
-        Set<Integer> set = new HashSet<>();
-        set.addAll(collA);
-        set.addAll(collB);
-        
-        return new ArrayList<>(set);
-        
-    }
-}
-
-```
-Here we are first adding all elements of each collection to the set. The set eliminates the overlapping properties.
 
 ## Extract Subset - Split a List into Two Sublists
 
@@ -198,7 +282,15 @@ class CollectionHelper {
 }
 
 class CollectionHelperTest {
-        @Test
+    
+    private CollectionHelper collectionHelper;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        collectionHelper = new CollectionHelper();
+    }
+
+    @Test
     void testSplit() {
         List<Integer>[] subLists = collectionHelper.split(
                 List.of(9,8,5,4,7, 15, 15));

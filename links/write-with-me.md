@@ -1,5 +1,5 @@
 ---
 layout: redirect
-permalink: /write-for-me/
+permalink: /write-with-me
 redirect_url: /contribute/become-an-author
 ---

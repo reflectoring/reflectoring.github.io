@@ -66,7 +66,7 @@ Other than that, just have fun sharing your experience!
 
 ## How Will I Be Paid?
 
-You will be paid by the number of words in the published article. A 1000-word article (including code snippets) about a high-potential topic will be rated at USD 60, for instance. A 1000-word article about a lower potential topic will be rated at USD 45.
+You will be [paid by the number of words in the published article](/contribute/author-payment/). A 1000-word article (including code snippets) about a high-potential topic will be rated at USD 60, for instance. A 1000-word article about a lower potential topic will be rated at USD 45.
 
 I reserve the right not to publish (and not to pay) articles that are too much work to get to the quality standard I expect. In this case, the content is yours to do with whatever you want.
 
@@ -88,7 +88,13 @@ So, to get the stuff out there before I die - to grow the reflectoring blog fast
  
 ## I'm In - What Do I Do?
 
-Simply [drop me an email](mailto:tom@reflectoring.io) explaining your motivation, a little background on yourself and some links to stuff you have written so far (if any).
+Have a read through these documents to check if writing on reflectoring excites you:
+
+- [Writing Guide](/contribute/writing-guide/)
+- [Author Workflow](/contribute/author-workflow/)
+- [Author Payment](/contribute/author-payment/)
+
+If you want to try it out, [drop me an email](mailto:tom@reflectoring.io) explaining your motivation, a little background on yourself and, if applicable, some links to stuff you have written so far.
 
 
 

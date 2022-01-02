@@ -9,22 +9,30 @@ image:
   auto: 0074-stack
 ---
 
-Collections are an important feature of all programming languages. In this article, we will look at the following logical operations on Java Collections.
+Collections are an important feature of almost all programming languages. These languages support different type of collections such as List, Set, Queue, Stack, etc. The Java Collections Framework is one of the core parts of the Java programming language.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/resttemplate" %}
+In this article, we will look at the following logical operations on Java Collections:
 
-## Adding Two Collections
+1. Joining Two Collections (Addition)
+2. Finding the Difference between Two Collections (Subtraction)
+3. Finding the Union of Two Collections
+4. Finding the Intersection of Two Collections
+5. Splitting a list into two sublists
 
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/java/resttemplate" %}
+
+## Joining Two Collections (Addition)
+The `Stream` class introduced since Java 8 provides useful methods for supporting sequential and parallel aggregate operations. In this example, we are performing the concatenation of elements from two collections using the `Stream` class:
 ```java
 public class CollectionHelper {
     
-    public List<Integer> add(final List<Integer> collA, final List<Integer> collB){
+    public List<Integer> add(final List<Integer> collA, 
+                             final List<Integer> collB){
 
-        return Stream.concat(collA.stream(), 
+        return Stream.concat(
+                collA.stream(), 
                 collB.stream())
-        .collect(Collectors.toList());
-        
-        
+            .collect(Collectors.toList());     
     }   
 }
 
@@ -39,8 +47,6 @@ class CollectionHelperTest {
     void setUp() throws Exception {
         collectionHelper = new CollectionHelper();
     }
-
- 
     
     @Test
     void testAddition() {
@@ -54,36 +60,45 @@ class CollectionHelperTest {
                 sub.toArray());
     }
 
-    
-    @Test
-    void testSubtraction() {
-        List<Integer> sub = collectionHelper.subtract(
-                List.of(9,8,5,4,7, 15, 15), 
-                List.of(1,3,99,4,7));
-        
-        
-        Assertions.assertArrayEquals(
-                List.of(9,8,5,15,15).toArray(), 
-                sub.toArray());
-    }
-
 }
 
 ```
+Here we are concatenating two collections in the `add` method in the `CollectionHelper`. For adding, we have used the `concat` method of the `Stream` class.
 
-
-## Subtracting Two Collections
-
+## Finding the Difference between Two Collections (Subtraction)
+In this example also, we are using Java's `Stream` class for finding the collection of different elements contained in two collections:
 ```java
 public class CollectionHelper {
     
-    public List<Integer> subtract(final List<Integer> collA, final List<Integer> collB){
+    public List<Integer> subtract(
+        final List<Integer> collA, 
+        final List<Integer> collB){
+
         List<Integer> intersectElements = intersection(collA,collB);
         
-        List<Integer> subtractedElements = collA.stream().filter(element->!intersectElements.contains(element)).collect(Collectors.toList());
+        List<Integer> subtractedElements = collA.stream()
+            .filter(element->!intersectElements
+                .contains(element))
+            .collect(Collectors.toList());
         
         if(!subtractedElements.isEmpty()) {
             return subtractedElements;
+        }else {
+            return Collections.emptyList();
+        }
+        
+    }
+
+    public List<Integer> intersection(
+                            final List<Integer> collA, 
+                            final List<Integer> collB){
+
+        List<Integer> intersectElements = collA.stream()
+                .filter(collB :: contains)
+                .collect(Collectors.toList());
+        
+        if(!intersectElements.isEmpty()) {
+            return intersectElements;
         }else {
             return Collections.emptyList();
         }
@@ -116,23 +131,102 @@ class CollectionHelperTest {
 }
 
 ```
-## Intersection of Two Collections (AND)
+The difference is found in two steps:
+1. Finding the common set of elements with the `intersection` method seen above.
+2. Applying the `filter` method of `Stream` class on the first collection to exclude those elements.
 
+## Intersection of Two Collections (AND)
+Next, we will use Java's `Stream` class for finding the intersection of two collections:
+```java
+public class CollectionHelper {
+    public List<Integer> intersection(
+                            final List<Integer> collA, 
+                            final List<Integer> collB){
+
+        List<Integer> intersectElements = collA.stream()
+                .filter(collB :: contains)
+                .collect(Collectors.toList());
+        
+        if(!intersectElements.isEmpty()) {
+            return intersectElements;
+        }else {
+            return Collections.emptyList();
+        }
+        
+    }
+}
+
+```
+For finding the intersection, we run Stream class' filter method on the first collection to identify and collect the matching elements of the second collection. 
 
 ## Union of Two Collections (OR)
+The union of two collections A and B is a set containing all elements that are in A or in B or both.
+ 
+We are finding the union of two collections by using the Set type collection of Java which can hold only distinct elements:
+```java
+public class CollectionHelper {
+    public List<Integer> union(final List<Integer> collA, final List<Integer> collB){
+        Set<Integer> set = new HashSet<>();
+        set.addAll(collA);
+        set.addAll(collB);
+        
+        return new ArrayList<>(set);
+        
+    }
+}
+
+```
+Here we are first adding all elements of each collection to the set. The set eliminates the overlapping properties.
+
+## Extract Subset - Split a List into Two Sublists
+
+Splitting a collection into multiple sub-collections is another common requirement. In this example we are splitting a collection from the center into two sub lists: 
+```java
+class CollectionHelper {
+    public <T> List<T>[] split(List<T> listToSplit){
+        // determine the endpoints to use in `list.subList()` method
+        int[] endpoints = {0, (listToSplit.size() + 1)/2, listToSplit.size()};
+     
+        List<List<T>> sublists =
+                IntStream.rangeClosed(0, 1)
+                        .mapToObj(i -> listToSplit.subList(endpoints[i], endpoints[i + 1]))
+                        .collect(Collectors.toList());
+     
+        // return an array containing both lists
+        return new List[] {sublists.get(0), sublists.get(1)};
+    }
+}
+
+class CollectionHelperTest {
+        @Test
+    void testSplit() {
+        List<Integer>[] subLists = collectionHelper.split(
+                List.of(9,8,5,4,7, 15, 15));
+             
+        Assertions.assertArrayEquals(
+                List.of(9,8,5,4).toArray(), 
+                subLists[0].toArray());
+        
+        Assertions.assertArrayEquals(
+                List.of(7,15,15).toArray(), 
+                subLists[1].toArray());
+    }
+}
+
+```
+Here we have used the `subList` method of `List` to split the collection passed as input into two sublists and returned as an array of `List`. We can see the expected result in the JUnit test using a sample collection.
+
+## Using Guava Library
+
+
+## Using Apache Commons Collections
 
 
 ## Conclusion
 
 Here is a list of the major points for a quick reference:
 
-1. RestTemplate is a synchronous client for making REST API calls over HTTP
-2. RestTemplate has generalized methods like `execute()` and `exchange()` which take the HTTP method as a parameter. `execute()` method is most generalized since it takes request and response callbacks which can be used to add more customizations to the request and response processing.
-3. RestTemplate also has separate methods for making different HTTP methods like `getForObject()` and `getForEntity()`.
-4. We have the option of getting the response body in raw JSON format which needs to be further processed with a JSON parser or a structured POJO that can be directly used in the application.
-5. Request body is sent by wrapping the POJOs in a `HttpEntity` class.
-6. `RestTemplate` can be customized with an HTTP client library, error handler, and message converter.
-7. Lastly, calling `RestTemplate` methods results in blocking the request thread till the response is received. Reactive `WebClient` is advised to be used for new applications.
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/resttemplate).
+
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/java/collectionops).
 

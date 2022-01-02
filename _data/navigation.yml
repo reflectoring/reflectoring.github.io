@@ -28,8 +28,12 @@ footer:
       url: /advertise/
     - title: "Book Me"
       url: /services/
-    - title: "Write With Me"
-      url: /write-with-me
+    - title: "Become an Author"
+      url: /contribute/become-an-author
+    - title: "Writing Guide"
+      url: /contribute/writing-guide
+    - title: "Author Workflow"
+      url: /contribute/author-workflow
     - title: "Atom Feed"
       url: /feed.xml
     - title: "Privacy Policy"

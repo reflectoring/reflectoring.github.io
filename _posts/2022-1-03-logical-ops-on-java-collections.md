@@ -1,10 +1,10 @@
 ---
 title: "Logical Operations Between Java Collections"
 categories: [java]
-date: 2022-01-03 06:00:00 +1000
-modified: 2022-01-03 06:00:00 +1000
+date: 2022-01-02 06:00:00 +1000
+modified: 2022-01-02 06:00:00 +1000
 author: pratikdas
-excerpt: "Collections are in important feature of all programming languages. In this article, we will look at the some logical operations on Java Collections."
+excerpt: "Collections are an important feature of all programming languages. In this article, we will look at the some logical operations on Java Collections."
 image:
   auto: 0074-stack
 ---
@@ -188,7 +188,7 @@ class CollectionHelperTest {
 }
 
 ```
-For finding the intersection, we run Stream class' filter method on the first collection to identify and collect the matching elements of the second collection. 
+For finding the intersection, we run the `filter` method on the first collection to identify and collect the matching elements from the second collection. 
 
 
 ## Finding the Difference between Two Collections (Subtraction)
@@ -316,7 +316,7 @@ Here we have used the `subList` method of `List` to split the collection passed 
 
 ## Conclusion
 
-Here is a list of the major points for a quick reference:
+In this quick tutorial, we 
 
 
 

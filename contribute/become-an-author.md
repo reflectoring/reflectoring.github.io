@@ -1,5 +1,5 @@
 ---
-title: Write With Me
+title: Become an Author
 layout: static
 author: 
   enabled: false
@@ -16,7 +16,7 @@ I'm looking for authors to contribute to the reflectoring blog!
  
 Interested in writing about Spring and Java? In getting a better writer? In earning a little money on the side? Then read on!
 
-## What The Authors Say
+## What the Authors Say
 
 > **"Reflectoring gives me the opportunity to research, develop, and write about topics that interest me, as well as to connect and network with other professionals that have the same interests as me.**
 > <br/><br/>
@@ -44,7 +44,7 @@ You also get some money for the effort (see below).
 
 ## What Should I Write About?
 
-There's a big backlog of potential topics that you can choose from. You can also bring your own topic of interest. The topic should fit into the reflectoring blog, though, so it should have something to do with Spring, Java, or software development best practices. 
+There's a big backlog of potential topics that you can choose from. You can also bring your own topic of interest. The topic should fit into the reflectoring blog, though, so it should have something to do with Spring, Java, Kotlin, AWS, Node.js or software development best practices. 
 
 The content must be exclusive to reflectoring.
 

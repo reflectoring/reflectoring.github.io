@@ -25,6 +25,8 @@ Java does not provide direct implementations of the Collection interface but pro
 In the subsequent sections, we will look at using the operations on collections to build perform logical operations between elements of two or more collections. 
 
 ## Joining Two Collections (Addition)
+![adding two collections](/assets/img/posts/logical-ops-java-coll/add.png)
+
 The `Stream` class introduced since Java 8 provides useful methods for supporting sequential and parallel aggregate operations. In this example, we are performing the concatenation of elements from two collections using the `Stream` class:
 ```java
 public class CollectionHelper {
@@ -106,6 +108,7 @@ class CollectionHelperTest {
 Here we are concatenating two collections in the `addWithFilter` method. In addition to the `concat` method, we are also applying the `filter` method of the `Stream` class to concatenate only elements greater than `2`.
 
 ## Union of Two Collections (OR)
+![union of two collections](/assets/img/posts/logical-ops-java-coll/union.png)
 The union of two collections A and B is a set containing all elements that are in A or B or both.
  
 We are finding the union of two collections by using the Set type collection of Java which can hold only distinct elements:
@@ -148,6 +151,7 @@ class CollectionHelperTest {
 Here we are first adding all elements of each collection to a `Set`. The set eliminates repeating elements if any.
 
 ## Intersection of Two Collections (AND)
+![intersection of two collections](/assets/img/posts/logical-ops-java-coll/intersection.png)
 Next, we will use Java's `Stream` class for finding the intersection of two collections:
 ```java
 public class CollectionHelper {
@@ -194,6 +198,7 @@ For finding the intersection, we run the `filter` method on the first collection
 
 
 ## Finding the Difference between Two Collections (Subtraction)
+![subtracting two collections](/assets/img/posts/logical-ops-java-coll/minus.png)
 In this example also, we are using Java's `Stream` class for finding the collection of different elements contained in two collections:
 ```java
 public class CollectionHelper {

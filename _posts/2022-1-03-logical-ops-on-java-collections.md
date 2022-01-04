@@ -4,30 +4,33 @@ categories: [java]
 date: 2022-01-02 06:00:00 +1000
 modified: 2022-01-02 06:00:00 +1000
 author: pratikdas
-excerpt: "Collections are an important feature of all programming languages. In this article, we will look at some logical operations on Java Collections."
+excerpt: "Collections are containers to group multiple items in a single unit. For example, a collection can represent a stack of books, products of a category, a queue of text messages, etc. They are an essential feature of almost all programming languages, most of which support different types of collections such as List, Set, Queue, Stack, etc.
+In this article, we will look at some logical operations on Java Collections."
 image:
   auto: 0074-stack
 ---
 
-Collections are containers to group multiple items in a single unit. For example, a stack of books, products of a category, a queue of text messages, etc. They are an important feature of almost all programming languages most of which support different types of collections such as List, Set, Queue, Stack, etc. 
+Collections are containers to group multiple items in a single unit. For example, a collection can represent a stack of books, products of a category, a queue of text messages, etc. They are an essential feature of almost all programming languages, most of which support different types of collections such as List, Set, Queue, Stack, etc. 
+
+Java also supports a rich set of collections packaged in the Java Collections Framework.
 
 In this article, we will look at examples of performing some useful operations between one or more Java Collections. 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/java/collectionops" %}
 
 ## Java Collections Framework
-The Java Collections Framework is one of the core parts of the Java programming language. It provides a set of interfaces and classes to implement various data structures and algorithms along with several methods to perform various operations on collections. 
+A Collections Framework is a unified architecture for representing and manipulating collections. The Java Collections Framework is one of the core parts of the Java programming language. It provides a set of interfaces and classes to implement various data structures and algorithms along with several methods to perform various operations on collections. 
 
-The Collection interface is the root interface of the collections framework hierarchy.
+The `Collection` interface is the root interface of the collections framework hierarchy.
 
-Java does not provide direct implementations of the Collection interface but provides implementations of its subinterfaces like List, Set, and Queue. To learn more, visit: Java Collection Interface.
-
-In the subsequent sections, we will look at using the operations on collections to build perform logical operations between elements of two or more collections. 
+Java does not provide direct implementations of the `Collection` interface but provides implementations of its subinterfaces like List, Set, and Queue. While the official documentation of the [Java Collection Interface](https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html) is the go-to guide for everything related to collections, here we will look at some examples of performing common logical operations like addition (joining), subtraction (difference), union, and the intersection between two or more collections. 
 
 ## Joining Two Collections (Addition)
+
+Let us start with the simplest of all: addition or joining two collections.
 ![adding two collections](/assets/img/posts/logical-ops-java-coll/add.png)
 
-The `Stream` class introduced since Java 8 provides useful methods for supporting sequential and parallel aggregate operations. In this example, we are performing the concatenation of elements from two collections using the `Stream` class:
+The [Stream](https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html) class introduced since Java 8 provides useful methods for supporting sequential and parallel aggregate operations. In this example, we are performing the concatenation of elements from two collections using the `Stream` class:
 ```java
 public class CollectionHelper {
     
@@ -65,14 +68,16 @@ class CollectionHelperTest {
 }
 
 ```
-Here we are concatenating two collections in the `add` method in the `CollectionHelper`. For adding, we have used the `concat` method of the `Stream` class.
+Here we are concatenating two collections in the `add` method in the `CollectionHelper`class. For adding, we have used the `concat` method of the `Stream` class. This method can easily be generalized further to join an array of collections. 
 
 ## Joining Two Collections with Filter
-We can enhance the previous example to concatenate elements of a collection only if they meet certain criteria as shown below: 
+We can enrich the previous example further to concatenate elements of a collection only if they meet certain criteria as shown below: 
 ```java
 public class CollectionHelper {
     
-    public List<Integer> addWithFilter(final List<Integer> collA, final List<Integer> collB){
+    public List<Integer> addWithFilter(
+        final List<Integer> collA, 
+        final List<Integer> collB){
 
         return Stream.concat(collA.stream(), 
                 collB.stream())
@@ -105,13 +110,16 @@ class CollectionHelperTest {
 }
 
 ```
-Here we are concatenating two collections in the `addWithFilter` method. In addition to the `concat` method, we are also applying the `filter` method of the `Stream` class to concatenate only elements greater than `2`.
+Here we are concatenating two collections in the `addWithFilter` method. In addition to the `concat` method, we are also applying the `filter` method of the `Stream` class to concatenate only elements that are greater than `2`.
 
 ## Union of Two Collections (OR)
+
+The union of two collections `A` and `B` is a set containing all elements that are in `A` or `B` or both.
+
 ![union of two collections](/assets/img/posts/logical-ops-java-coll/union.png)
-The union of two collections A and B is a set containing all elements that are in A or B or both.
+
  
-We are finding the union of two collections by using the Set type collection of Java which can hold only distinct elements:
+We can find the union of two collections by using the Set type collection of Java which can hold only distinct elements:
 ```java
 public class CollectionHelper {
     public List<Integer> union(final List<Integer> collA, final List<Integer> collB){
@@ -148,11 +156,13 @@ class CollectionHelperTest {
 }
 
 ```
-Here we are first adding all elements of each collection to a `Set`. The set eliminates repeating elements if any.
+Here we are first adding all the elements of each collection to a [Set](https://docs.oracle.com/javase/8/docs/api/java/util/Set.html). A collection of type `Set` does not contain any duplicate elements. 
 
-## Intersection of Two Collections (AND)
+## Intersection of Two Collections
 ![intersection of two collections](/assets/img/posts/logical-ops-java-coll/intersection.png)
+
 Next, we will use Java's `Stream` class for finding the intersection of two collections:
+
 ```java
 public class CollectionHelper {
     public List<Integer> intersection(
@@ -194,7 +204,7 @@ class CollectionHelperTest {
 }
 
 ```
-For finding the intersection, we run the `filter` method on the first collection to identify and collect the matching elements from the second collection. 
+For finding the intersection of two collections, we run the `filter` method on the first collection to identify and collect the matching elements from the second collection. 
 
 
 ## Finding the Difference between Two Collections (Subtraction)
@@ -317,7 +327,9 @@ Here we have used the `subList` method of `List` to split the collection passed 
 
 ## Conclusion
 
-In this short tutorial, we created functions to perform logical operations between two or more Java Collections. The Guava Library and Apache Commons Collections also contain a rich set of operations. We can use a mix of building our own and using operations from these libraries to handle use cases related to operating between multiple collections.
+In this short tutorial, we wrote methods in Java to perform logical operations between two or more Collections. Similar operations on collections are also available in open source libraries like the [Guava Library](https://github.com/google/guava/wiki/CollectionUtilitiesExplained) and [Apache Commons Collections](https://commons.apache.org/proper/commons-collections/).
+
+When creating Java applications, we can use a judicious mix of using methods available in the open-source libraries or build custom functions to work with collections efficiently.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/java/collectionops).
 

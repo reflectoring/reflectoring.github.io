@@ -16,7 +16,7 @@ Java also supports a rich set of collections packaged in the Java Collections Fr
 
 In this article, we will look at examples of performing some useful operations between one or more Java Collections. 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/java/collectionops" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/collectionops" %}
 
 ## Java Collections Framework
 A Collections Framework is a unified architecture for representing and manipulating collections. The Java Collections Framework is one of the core parts of the Java programming language. It provides a set of interfaces and classes to implement various data structures and algorithms along with several methods to perform various operations on collections. 
@@ -331,5 +331,5 @@ In this short tutorial, we wrote methods in Java to perform logical operations b
 
 When creating Java applications, we can use a judicious mix of using methods available in the open-source libraries or build custom functions to work with collections efficiently.
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/java/collectionops).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/core-java/collectionops).
 

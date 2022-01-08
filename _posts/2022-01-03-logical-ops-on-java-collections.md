@@ -1,5 +1,5 @@
 ---
-title: "Logical Operations Between Java Collections"
+title: "Logical Operations on Java Collections"
 categories: [java]
 date: 2022-01-02 06:00:00 +1000
 modified: 2022-01-02 06:00:00 +1000
@@ -10,11 +10,11 @@ image:
   auto: 0074-stack
 ---
 
-Collections are containers to group multiple items in a single unit. For example, a collection can represent a stack of books, products of a category, a queue of text messages, etc. They are an essential feature of almost all programming languages, most of which support different types of collections such as List, Set, Queue, Stack, etc. 
+Collections are containers to group multiple items in a single unit. For example, a collection can represent a stack of books, products of a category, a queue of text messages, etc. They are an essential feature of almost all programming languages, most of which support different types of collections such as `List`, `Set`, `Queue`, `Stack`, etc. 
 
 Java also supports a rich set of collections packaged in the Java Collections Framework.
 
-In this article, we will look at examples of performing some useful operations between one or more Java Collections. 
+In this article, we will look at examples of performing some useful operations on one or more Java Collections. 
 
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/collectionops" %}
 
@@ -23,9 +23,9 @@ A Collections Framework is a unified architecture for representing and manipulat
 
 The `Collection` interface is the root interface of the collections framework hierarchy.
 
-Java does not provide direct implementations of the `Collection` interface but provides implementations of its subinterfaces like List, Set, and Queue. While the official documentation of the [Java Collection Interface](https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html) is the go-to guide for everything related to collections, here we will look at some examples of performing common logical operations like addition (joining), subtraction (difference), union, and the intersection between two or more collections. 
+Java does not provide direct implementations of the `Collection` interface but provides implementations of its subinterfaces like `List`, `Set`, and `Queue`. While the official documentation of the [Java Collection Interface](https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html) is the go-to guide for everything related to collections, here we will look at some examples of performing common logical operations like addition (joining), subtraction (difference), union, and the intersection between two or more collections. 
 
-## Joining Two Collections (Addition)
+## Adding one Collection to Another
 
 Let us start with the simplest of all: addition or joining two collections.
 ![adding two collections](/assets/img/posts/logical-ops-java-coll/add.png)
@@ -43,7 +43,13 @@ public class CollectionHelper {
             .collect(Collectors.toList());     
     }   
 }
+```
 
+Here we are concatenating two collections in the `add` method in the `CollectionHelper`class. For adding, we have used the `concat()` method of the `Stream` class. We can also use this method to join more than 2 collections at a time. 
+
+The corresponding unit tests looks like this:
+
+```java
 class CollectionHelperTest {
     
     CollectionHelper collectionHelper;
@@ -66,11 +72,9 @@ class CollectionHelperTest {
     }
 
 }
-
 ```
-Here we are concatenating two collections in the `add` method in the `CollectionHelper`class. For adding, we have used the `concat` method of the `Stream` class. This method can easily be generalized further to join an array of collections. 
 
-## Joining Two Collections with Filter
+## Adding Collections with Filter
 We can enrich the previous example further to concatenate elements of a collection only if they meet certain criteria as shown below: 
 ```java
 public class CollectionHelper {
@@ -85,7 +89,12 @@ public class CollectionHelper {
         .collect(Collectors.toList());
     }    
 }
+```
+Here we are concatenating two collections in the `addWithFilter()` method. In addition to the `concat()` method, we are also applying the `filter()` method of the `Stream` class to concatenate only elements that are greater than `2`.
 
+The corresponding unit test looks like this:
+
+```java
 class CollectionHelperTest {
     
     CollectionHelper collectionHelper;
@@ -108,9 +117,7 @@ class CollectionHelperTest {
     }
 
 }
-
 ```
-Here we are concatenating two collections in the `addWithFilter` method. In addition to the `concat` method, we are also applying the `filter` method of the `Stream` class to concatenate only elements that are greater than `2`.
 
 ## Union of Two Collections (OR)
 
@@ -119,7 +126,7 @@ The union of two collections `A` and `B` is a set containing all elements that a
 ![union of two collections](/assets/img/posts/logical-ops-java-coll/union.png)
 
  
-We can find the union of two collections by using the Set type collection of Java which can hold only distinct elements:
+We can find the union of two collections by using the `Set` type collection of Java which can hold only distinct elements:
 ```java
 public class CollectionHelper {
     public List<Integer> union(final List<Integer> collA, final List<Integer> collB){
@@ -131,7 +138,12 @@ public class CollectionHelper {
         
     }
 }
+```
+Here we are first adding all the elements of each collection to a [Set](https://docs.oracle.com/javase/8/docs/api/java/util/Set.html). A collection of type `Set` does not contain any duplicate elements. 
 
+The corresponding unit test looks like this:
+
+```java
 class CollectionHelperTest {
     
     private CollectionHelper collectionHelper;
@@ -154,14 +166,13 @@ class CollectionHelperTest {
         
     }
 }
-
 ```
-Here we are first adding all the elements of each collection to a [Set](https://docs.oracle.com/javase/8/docs/api/java/util/Set.html). A collection of type `Set` does not contain any duplicate elements. 
 
-## Intersection of Two Collections
-![intersection of two collections](/assets/img/posts/logical-ops-java-coll/intersection.png)
+## Intersection of Two Collections (AND)
 
 Next, we will use Java's `Stream` class for finding the intersection of two collections:
+
+![intersection of two collections](/assets/img/posts/logical-ops-java-coll/intersection.png)
 
 ```java
 public class CollectionHelper {
@@ -181,7 +192,12 @@ public class CollectionHelper {
         
     }
 }
+```
+For finding the intersection of two collections, we run the `filter()` method on the first collection to identify and collect the matching elements from the second collection. 
 
+The corresponding unit test looks like this:
+
+```java
 class CollectionHelperTest {
     
     private CollectionHelper collectionHelper;
@@ -202,14 +218,13 @@ class CollectionHelperTest {
                 intersection.toArray());
     }
 }
-
 ```
-For finding the intersection of two collections, we run the `filter` method on the first collection to identify and collect the matching elements from the second collection. 
 
+## Subtracting one Collection from Another
+In this example we are again using Java's `Stream` class to find the collection of different elements contained in two collections:
 
-## Finding the Difference between Two Collections (Subtraction)
 ![subtracting two collections](/assets/img/posts/logical-ops-java-coll/minus.png)
-In this example also, we are using Java's `Stream` class for finding the collection of different elements contained in two collections:
+
 ```java
 public class CollectionHelper {
     
@@ -235,20 +250,18 @@ public class CollectionHelper {
     public List<Integer> intersection(
                             final List<Integer> collA, 
                             final List<Integer> collB){
-
-        List<Integer> intersectElements = collA.stream()
-                .filter(collB :: contains)
-                .collect(Collectors.toList());
-        
-        if(!intersectElements.isEmpty()) {
-            return intersectElements;
-        }else {
-            return Collections.emptyList();
-        }
-        
+        // see implementation above
     }
 }
+```
 
+The difference between to collections is found in two steps:
+1. Finding the common set of elements with the `intersection()` method seen above.
+2. Applying the `filter()` method of the `Stream` class on the first collection to exclude those elements.
+
+The corresponding unit test looks like this:
+
+```java
 class CollectionHelperTest {
     
     CollectionHelper collectionHelper;
@@ -272,21 +285,16 @@ class CollectionHelperTest {
     }
 
 }
-
 ```
-The difference is found in two steps:
-1. Finding the common set of elements with the `intersection` method seen above.
-2. Applying the `filter` method of the `Stream` class on the first collection to exclude those elements.
-
 
 ## Extract Subset - Split a List into Two Sublists
 
-Splitting a collection into multiple sub-collections is another common requirement. In this example we are splitting a collection from the center into two sub lists: 
+Splitting a collection into multiple sub-collections is another common task. In this example we are splitting a collection from the center into two sub lists: 
 ```java
 class CollectionHelper {
     public <T> List<T>[] split(List<T> listToSplit){
         // determine the endpoints to use in `list.subList()` method
-        int[] endpoints = {0, (listToSplit.size() + 1)/2, listToSplit.size()};
+      int[] endpoints = {0, (listToSplit.size() + 1)/2, listToSplit.size()};
      
         List<List<T>> sublists =
                 IntStream.rangeClosed(0, 1)
@@ -297,7 +305,10 @@ class CollectionHelper {
         return new List[] {sublists.get(0), sublists.get(1)};
     }
 }
+```
+Here we have used the `subList()` method of `List` to split the collection passed as input into two sublists and returned as an array of `List`. We can see the expected result in the following unit test:
 
+```java
 class CollectionHelperTest {
     
     private CollectionHelper collectionHelper;
@@ -321,9 +332,7 @@ class CollectionHelperTest {
                 subLists[1].toArray());
     }
 }
-
 ```
-Here we have used the `subList` method of `List` to split the collection passed as input into two sublists and returned as an array of `List`. We can see the expected result in the JUnit test using a sample collection.
 
 ## Conclusion
 

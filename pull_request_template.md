@@ -1,8 +1,14 @@
-Please re-read your article a day or so after you finished writing it and work through this checklist to polish the quality. This will save all of us a lot of time during review.
+Please read through the [writing guide](https://reflectoring.io/contribute/writing-guide/) before submitting a pull request and go through this checklist (at least for your first article).
+
+**Feel free to raise the pull request even if the checklist hasn't been worked through, yet**, to take advantage of the online preview that is generated for each pull request (see "deploy/netlify" under "Show all checks" in your pull request). But please only flag it to be reviewed by your editor after going through the checklist.
+
+## Review
+- [ ] you have reviewed the text a day after finishing it (you'd be surprised how many errors you can avoid by just getting some distance to what you've written)
 
 ## Content
 - [ ] the article explains *why* and not only *how*
 - [ ] (half-)sentences that express a meaningful idea that is understandable by itself own are **bold** to allow quick scanning of the text
+- [ ] the text has been checked with [Grammarly](https://grammarly.com) (the free tier is enough)
 
 ## Text
 - [ ] the text is conversational ("we" instead of "you", easy language)
@@ -21,7 +27,6 @@ Please re-read your article a day or so after you finished writing it and work t
 ## Code Examples
 - [ ] code examples are introduced with a ":" and explained below the code example
 - [ ] code examples are formatted to avoid horizontal scrolling (manual line breaks and 2-spaces indentation)
-- [ ] the text has been checked with [Grammarly](https://grammarly.com) (the free tier is enough)
 
-**Feel free to raise the PR even if the checklist hasn't been worked through, yet**, to take advantage of the preview that is generated for each pull request (see "deploy/netlify" under "Show all checks"). But please only flag it to be reviewed after going through the checklist above.
+
 

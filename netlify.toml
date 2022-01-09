@@ -19,7 +19,7 @@
 HUGO_ENV = "production"
 
 [context.deploy-preview]
-command = "hugo --baseUrl $DEPLOY_PRIME_URL"
+command = "hugo --baseUrl https://deploy-preview"
 
 [context.deploy-preview.environment]
 HUGO_ENV = "staging"

@@ -1,0 +1,129 @@
+pre {
+  padding: 10px;
+}
+
+// background for in-text code highlighting only
+p {
+  code {
+    background-color: #EEEEEE;
+  }
+}
+
+h3 {
+  .highlight {
+    color: $primary;
+  }
+}
+
+.sticky {
+  position: sticky;
+  position: -webkit-sticky;
+  top:20px;
+}
+
+.sticky-container {
+  position: relative;
+}
+
+.content {
+
+  .btn-primary {
+    color: $white;
+    text-decoration: none;
+  }
+
+  blockquote {
+    // to make blockquotes not bleed into the table of contents
+    display: inline-block;
+    width: 100%;
+  }
+
+}
+
+.pull-right{
+  float: right;
+}
+
+.pull-left{
+  float:left;
+}
+
+.widget {
+  strong {
+    font-weight: bold;
+  }
+}
+
+.content {
+  strong {
+    font-weight: bold;
+  }
+}
+
+.footer-widget {
+
+  text-align: left;
+
+  ul.footer-links {
+    list-style-type: none;
+
+    li {
+      margin-bottom: 10px;
+    }
+
+  }
+
+}
+
+.content {
+  table {
+
+    margin-bottom: 1rem;
+
+    th {
+      background-color: $primary;
+      color: $white;
+    }
+
+    td {
+      background-color: $light;
+    }
+
+    th, td {
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border: 5px solid $white;
+    }
+  }
+}
+
+.toc {
+  float: right;
+  width: 400px;
+  text-align: left;
+  margin-left: 10px;
+
+  @include desktop-lg {
+      width: 100%;
+      margin-left: 0;
+      padding-left: 40px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  ul {
+    font-size: 14px;
+    list-style-type: none;
+
+    ul {
+      margin-left: 20px;
+      ul {
+        margin-left: 20px;
+      }
+    }
+  }
+}

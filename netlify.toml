@@ -14,11 +14,14 @@
   Referrer-Policy = "same-origin"
   Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
 
+[context.production]
+command = "hugo --minify --gc --baseUrl https://reflectoring.io"
+
 [context.production.environment]
 HUGO_ENV = "production"
 
 [context.deploy-preview]
-command = "hugo --minify --gc --baseUrl https://deploy-preview"
+command = "hugo --minify --gc --baseUrl ${DEPLOY_PRIME_URL}"
 
 [context.deploy-preview.environment]
 HUGO_ENV = "staging"

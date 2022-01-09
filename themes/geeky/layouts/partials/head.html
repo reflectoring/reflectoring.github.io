@@ -6,6 +6,10 @@
 <base href="{{ site.BaseURL }}">
 {{ end }}
 
+{{ if not (eq (getenv "HUGO_ENV") "production") }}
+<meta name="robots" content="noindex">
+{{ end }}
+
 <!-- multilingual SEO optimizations -->
 {{ if .IsTranslated }}
 {{ range .AllTranslations }}

@@ -1,6 +1,6 @@
 [build]
   publish = "public"
-  command = "./env.sh && hugo --minify --gc --baseUrl ${BASE_URL}"
+  command = "chmod 755 ./env.sh && ./env.sh && hugo --minify --gc --baseUrl ${BASE_URL}"
 
 [build.environment]
   HUGO_VERSION = "0.85.0"

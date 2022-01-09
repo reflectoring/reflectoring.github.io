@@ -61,8 +61,8 @@
 
 {{ template "_internal/opengraph.html" . }}
 
-<link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Oswald&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap" rel="preload" as="font">
+<link href="https://fonts.googleapis.com/css?family=Oswald&display=swap" rel="preload" as="font">
 
 {{ range .AlternativeOutputFormats -}}
 {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}

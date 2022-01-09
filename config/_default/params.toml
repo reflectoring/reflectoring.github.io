@@ -13,7 +13,7 @@ navbar_fixed = false
 # OpenGraph / Twitter Card metadata
 description = "This is meta description"
 author = "Tom Hombergs"
-image = "images/logo.png" # this image will be used as fallback if a page has no image of its own
+image = "images/stock/0065-java-1200x628-branded.jpg" # this image will be used as fallback if a page has no image of its own
 # contact info
 address = "9567 Turner Trace Apt. BC C3G8A4"
 mobile = "+211234565523"

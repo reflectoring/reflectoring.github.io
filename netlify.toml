@@ -1,5 +1,100 @@
+[build]
+  publish = "public"
+  command = "hugo --minify --gc"
+
+[build.environment]
+  HUGO_VERSION = "0.85.0"
+  HUGO_BASEURL = "/"
+
+[[headers]]
+  for = "/*" # This defines which paths this specific [[headers]] block will cover.
+
+[headers.values]
+  X-Frame-Options = "DENY"
+  X-XSS-Protection = "1; mode=block"
+  Referrer-Policy = "same-origin"
+  Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
 [context.production.environment]
-JEKYLL_ENV = "production"
+HUGO_ENV = "production"
 
 [context.deploy-preview.environment]
-JEKYLL_ENV = "staging"
+HUGO_ENV = "staging"
+
+[[redirects]]
+  from = "/feed.xml"
+  to = "/index.xml"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/e/book/"
+  to = "/book"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/get-your-hands-dirty-on-clean-architecture"
+  to = "/book"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/newsletters"
+  to = "/simplify"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/mailing-list"
+  to = "/simplify"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/review-clean-architecture"
+  to = "/book-review-clean-architecture"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/review-java-by-comparison"
+  to = "/book-review-java-by-comparison"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/review-your-code-as-a-crime-scene"
+  to = "/book-review-your-code-as-a-crime-scene"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/spring-boot-testcontainers"
+  to = "/spring-boot-flyway-testcontainers"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/spring-data-mvc-pagination"
+  to = "/spring-boot-paging"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tracing-with-spring-cloud-sleuth"
+  to = "/spring-boot-tracing"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/write-for-me"
+  to = "/contribute/become-an-author"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/write-with-me"
+  to = "/contribute/become-an-author"
+  status = 301
+  force = true

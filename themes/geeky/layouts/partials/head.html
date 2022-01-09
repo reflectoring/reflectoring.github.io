@@ -49,17 +49,15 @@
 {{ $image_ext := trim (path.Ext $image_path | lower) "." -}}
 {{ if fileExists (add `assets/` $image_path) }}
   {{ $image:= resources.Get $image_path }}
-  <meta property="og:image" content="{{ $image.Permalink }}" />
-  <meta property="twitter:image" content="{{ $image.Permalink }}" />
+  <meta property="og:image" content="{{ $image.Permalink | absURL }}" />
+  <meta property="twitter:image" content="{{ $image.Permalink | absURL }}" />
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="og:image:type" content="image/{{ if eq $image_ext `svg` }}svg+xml{{ else }}{{ replaceRE `^jpg$` `jpeg` $image_ext }}{{ end }}">
 {{ end -}}
 <meta name="twitter:title" content="{{ with .Title }}{{ . }}{{ else }}{{ site.Title }}{{ end }}"/>
 <meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{ if .IsPage }}{{ .Summary }}{{ else }}{{ with site.Params.description }}{{ . }}{{ end }}{{ end }}{{ end }}"/>
-{{ with site.Social.twitter -}}<meta name="twitter:site" content="@{{ . }}"/>{{ end -}}
-{{ range site.Authors }}
-  {{ with .twitter -}}<meta name="twitter:creator" content="@{{ . }}"/>{{ end -}}
-{{ end -}}
+<meta name="twitter:site" content="@TomHombergs"/>
+<meta name="twitter:creator" content="@TomHombergs"/>
 
 {{ template "_internal/opengraph.html" . }}
 

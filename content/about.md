@@ -1,6 +1,6 @@
 ---
-title: "About The Author"
-description: "this is meta-description"
+title: "About Reflectoring"
+description: "About Reflectoring"
 layout: "about"
 draft: false
 ---

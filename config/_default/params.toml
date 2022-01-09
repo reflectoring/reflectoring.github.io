@@ -11,7 +11,7 @@ logo_text = "Boilerplate"
 # navbar fixed to top
 navbar_fixed = false
 # OpenGraph / Twitter Card metadata
-description = "This is meta description"
+description = "Where the HOW meets the WHY."
 author = "Tom Hombergs"
 image = "images/stock/0065-java-1200x628-branded.jpg" # this image will be used as fallback if a page has no image of its own
 # contact info

@@ -1,6 +1,6 @@
 ---
 title: "Get Your Hands Dirty on Clean Architecture"
-description: "this is meta-description"
+description: "If you want to learn about clean and hexagonal architecture, you've come to the right place."
 layout: "static"
 draft: false
 toc: false

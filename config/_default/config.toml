@@ -1,5 +1,5 @@
 ######################## default configuration ####################
-baseURL = "http://localhost:1313/"
+baseURL = "http://localhost:1313"
 title = "Reflectoring - Where the HOW meets the WHY"
 theme = "geeky"
 languageName = "En"

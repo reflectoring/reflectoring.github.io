@@ -54,7 +54,7 @@ Installing the AWS CLI differs across operating systems, so please follow the [o
 
 Once it's installed, run `aws configure`. You will be asked to provide 4 parameters:
 
-```
+```text
 ~ aws configure
 AWS Access Key ID [****************OGBE]: 
 AWS Secret Access Key [****************CmqH]: 
@@ -94,7 +94,7 @@ At this point, the app is no more than a stateless "Hello World" Spring Boot app
 
 It has a single controller `IndexController` that shows nothing more than the message "Welcome to the Todo Application!". Feel free to start the application via this command:
 
-```
+```text
 ./gradlew bootrun
 ``` 
 
@@ -110,7 +110,7 @@ If you're interested in the steps to create and publish a basic Docker image, st
 
 First, we need a `Dockerfile`. The repository already contains a `Dockerfile` with this content:
 
-```
+```text
 FROM openjdk:11.0.9.1-jre
 
 ARG JAR_FILE=build/libs/*.jar
@@ -127,7 +127,7 @@ Then, Docker will start the app by calling `java -jar /app.jar`.
 
 Before we can build a Docker image, we need to build the app with
 
-```
+```text
 ./gradlew build
 ```
 
@@ -135,7 +135,7 @@ This will create the file `/build/libs/todo-application-0.0.1-SNAPSHOT.jar`, whi
 
 To create a Docker image we can now call this command:
 
-```
+```text
 docker build -t stratospheric/todo-app-v1:latest .
 ```
 
@@ -143,7 +143,7 @@ Docker will now build an image in the namespamce `stratospheric` and the name `t
 
 A call to `docker image ls` should list the Docker image now:
 
-```
+```text
 ~ docker image ls
 REPOSITORY                  TAG      IMAGE ID       CREATED     SIZE
 stratospheric/todo-app-v1   latest   5d3ef7cda994   3 days ago  647MB
@@ -151,14 +151,14 @@ stratospheric/todo-app-v1   latest   5d3ef7cda994   3 days ago  647MB
 
 To deploy this Docker image to AWS, we need to make it available to AWS somehow. One way to do that is to publish it to Docker Hub, which is the official registry for Docker images (in the [book](https://stratospheric.dev), we'll also learn how use Amazon's ECR service to deploy Docker images). To do this, we call `docker login` and `docker push`:
 
-```
+```text
 docker login
 docker push stratospheric/todo-app-v1:latest
 ``` 
 
 The login command will ask for your credentials, so you need to have an account at hub.docker.com. The push command will upload the image to the Docker Hub, so that anyone can pull it from there with this command:
 
-```
+```text
 docker pull stratospheric/todo-app-v1:latest
 ``` 
 
@@ -360,7 +360,7 @@ Go ahead and run the `create.sh` script now, if you want. While you're waiting f
 
 The script starts with calling `aws cloudformation create-stack` to create the network stack:
 
-```
+```text
 aws cloudformation create-stack \
   --stack-name stratospheric-basic-network \
   --template-body file://network.yml \
@@ -376,7 +376,7 @@ Since the `create-stack` command executes asynchronously, we call `aws cloudform
 
 Next, we're doing the same for the service stack:
 
-```
+```text
 aws cloudformation create-stack \
   --stack-name stratospheric-basic-service \
   --template-body file://service.yml \
@@ -394,7 +394,7 @@ With `--parameters`, we're passing in all the parameters that we want different 
 
 After both stacks are up and running, we're using some AWS command-line magic to extract the public IP address of the running application:
 
-```
+```text
 CLUSTER_NAME=$(
   aws cloudformation describe-stacks \
     --stack-name stratospheric-basic-network \
@@ -436,7 +436,7 @@ All commands use the AWS CLI to output the results as `text` and we extract cert
 
 The output of the script should look something like that:
 
-```
+```text
 StackId: arn:aws:cloudformation:.../stratospheric-basic-network/...
 StackId: arn:aws:cloudformation:.../stratospheric-basic-service/...
 ECS Cluster:        stratospheric-basic-network-ECSCluster-qqX6Swdw54PP

@@ -166,7 +166,7 @@ myapp.mail.enabled=foo
 
 By default, Spring Boot will refuse to start the application with an exception:
 
-```
+```text
 java.lang.IllegalArgumentException: Invalid boolean value 'foo'
 ```
 
@@ -225,7 +225,7 @@ We'll now be rewarded with an exception on application startup that tells us tha
 property could not be bound to a field in our `MailModuleProperties` class since there
 was no matching field:
 
-```
+```text
 org.springframework.boot.context.properties.bind.UnboundConfigurationPropertiesException:
   The elements [myapp.mail.unknown-property] were left unbound.
 ```
@@ -267,7 +267,7 @@ on startup:
 myapp.mail.default-subject=
 ```
 
-```
+```text
 org.springframework.boot.context.properties.bind.validation.BindValidationException: 
    Binding validation errors on myapp.mail
    - Field error in object 'myapp.mail' on field 'enabled': rejected value [null]; ...

@@ -150,7 +150,7 @@ To activate other profiles than the default profile, we have to let Spring know 
 
 The first way to do this is via the environment variable `SPRING_PROFILES_ACTIVE`:
 
-```
+```text
 export SPRING_PROFILES_ACTIVE=foo,bar
 java -jar profiles-0.0.1-SNAPSHOT.jar
 ```
@@ -161,7 +161,7 @@ This will activate the profiles `foo` and `bar`.
 
 We can achieve the same using the Java system property `spring.profiles.active`:
 
-```
+```text
 java -Dspring.profiles.active=foo -jar profiles-0.0.1-SNAPSHOT.jar
 ```
 
@@ -216,7 +216,7 @@ It's important to note that the `@ActiveProfiles` annotation will create a new a
 
 To check which profiles are active, we can simply have a look at the log output. Spring Boot logs the active profiles on each application start:
 
-```
+```text
 ... i.r.profiles.ProfilesApplication: The following profiles are active: foo
 ```
 

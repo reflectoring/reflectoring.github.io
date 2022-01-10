@@ -1,10 +1,11 @@
 ---
+authors: [tom]
 title: "Assumptions and Conditional Test Execution with JUnit 4 and 5"
-categories: ["Java"]
-modified: 2017-10-10
+categories: ["WIP", "Java"]
+date: 2017-10-10
 excerpt: "A comparison on how to implement assumptions and conditional test execution between JUnit 4 and 5."
-image:
-  auto: 0019-magnifying-glass
+image: images/stock/0019-magnifying-glass-1200x628-branded.jpg
+url: conditional-junit4-junit5-tests
 ---
 
 
@@ -103,7 +104,7 @@ public class AssumingConnection implements TestRule {
   }
 
 }
-```
+```text
 We use our `ConnectionChecker` to check the connection and throw an 
 `AssumptionViolatedException` if the connection could not be established.
 

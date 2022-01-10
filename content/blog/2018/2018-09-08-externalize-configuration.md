@@ -144,7 +144,7 @@ All operating systems support environment variables. They can be set to a certai
 * for Unix systems using the Bourne shell:  
   ```
   export myparameter=myvalue
-  ```
+  ```text
 * for Unix systems using the Korn shell:   
   ```
   myparameter=myvalue

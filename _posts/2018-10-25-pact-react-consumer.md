@@ -40,7 +40,7 @@ installed.
 First, we need to install the `create-react-app` bootstrapper, then we can use it to create
 a project template containing a minimal React app for us:
 
-```
+```text
 npm install -g create-react-app
 create-react-app pact-consumer
 ```
@@ -187,7 +187,7 @@ The options in detail:
 
 Now, we can run the tests:
 
-```
+```text
 npm run test:pact
 ```
 
@@ -545,7 +545,7 @@ Also, we add this script to our `package.json`:
 After setting the environment variables `PACT_USERNAME` and `PACT_PASSWORD` (how to do this
 depends on your operating system), we can publish the pact with this command:
 
-```
+```text
 npm run publish:pact
 ```
 

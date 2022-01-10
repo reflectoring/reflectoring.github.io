@@ -56,7 +56,7 @@ $ cd geeky-hugo/exampleSite/
 
 # Start local dev server
 $ hugo server --themesDir ../..
-```
+```text
 Or Check out [Full Documentation](https://docs.gethugothemes.com/geeky/?ref=github).
 
 ## Content Management System

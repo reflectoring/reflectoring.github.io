@@ -39,7 +39,7 @@ can be grasped completely at a glance. We don't want to look at a log message an
 figure out what information it actually contains. 
 
 Let's consider this log excerpt:
-```
+```text
 2018-07-29 21:10:29.178 thread-1 INFO com.example.MyService Service started in 3434 ms.
 2018-07-29 21:10:29.178 main WARN some.external.Configuration parameter 'foo' is missing. Using default value 'bar'!
 2018-07-29 21:10:29.178 scheduler ERROR com.example.jobs.ScheduledJob Scheduled job cancelled due to NullPointerException!
@@ -57,7 +57,7 @@ But wouldn't it be nice to grasp a log message at first glance?
 
 Here's another example with the same content, only formatted differently:
 
-```
+```text
 2018-07-29 | 21:10:29.178 | thread-1  | INFO  | com.example.MyService         | Service started in 3434 ms.
 2018-07-29 | 21:10:29.178 | main      | WARN  | some.external.Configuration   | Parameter 'foo' is missing. Using default value 'bar'!
 2018-07-29 | 21:10:29.178 | scheduler | ERROR | com.example.jobs.ScheduledJob | Scheduled job cancelled due to NullPointerException!
@@ -111,7 +111,7 @@ that's a topic for another article.
 
 With the information above, the final log format I propose is this: 
 
-```
+```text
 2018-07-29 | 21:10:29.178 | thread-1  | INFO  | com.example.MyService         | 000425 | Service started in 3434 ms.
 2018-07-29 | 21:10:29.178 | main      | WARN  | some.external.Configuration   |        | Parameter 'foo' is missing. Using default value 'bar'!
 2018-07-29 | 21:10:29.178 | scheduler | ERROR | com.example.jobs.ScheduledJob | 000972 | Scheduled job cancelled due to NullPointerException! 

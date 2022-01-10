@@ -67,7 +67,7 @@ Now we want to change the type
 of the column `registration_timestamp` from `INTEGER` to `timestamp with time zone` and of course, we want to migrate the data
 in this column. So, we write an SQL script for migrating the `registration_timestamp` column:
 
-```
+```text
 ALTER TABLE car
   ALTER COLUMN registration_timestamp SET DATA TYPE timestamp with time zone
    USING

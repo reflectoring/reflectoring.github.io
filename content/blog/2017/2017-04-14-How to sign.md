@@ -1,12 +1,11 @@
 ---
-
 title: Digital Signature in Java
-categories: ["Java"]
-modified: 2017-04-14
-author: artur
+categories: ["WIP", "Java"]
+date: 2017-04-14
+authors: [artur]
 excerpt: "A tutorial on how to create digital signatures with Java."
-image:
-  auto: 0025-signature
+image: images/stock/0025-signature-1200x628-branded.jpg
+url: How to sign
 ---
 
 
@@ -111,7 +110,7 @@ while (it.hasNext()){
 If you want to use the whole functionality of a JCE implementation you have to install the "unlimited strength jurisdiction policy files" for the JVM. If you don't,
 you'll get something like this
 
-```
+```text
 java.lang.SecurityException: Unsupported keysize or algorithm parameters 
 or java.security.InvalidKeyException: Illegal key size
 ```

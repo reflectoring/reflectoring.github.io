@@ -108,7 +108,7 @@ For Spring Cloud AWS, we will add a separate Spring Cloud AWS BOM in our `pom.xm
       </dependency>
     </dependencies>
   </dependencyManagement>
-```
+```text
 For adding the support for SES, we need to include the module dependency which is available as a starter module`spring-cloud-starter-aws-ses`:
 
 ```xml
@@ -116,7 +116,7 @@ For adding the support for SES, we need to include the module dependency which i
       <groupId>io.awspring.cloud</groupId>
       <artifactId>spring-cloud-starter-aws-ses</artifactId>
     </dependency>
-```
+```text
 `spring-cloud-starter-aws-ses` includes the transitive dependencies for `spring-cloud-starter-aws`, and `spring-cloud-aws-ses`.
 
 
@@ -144,7 +144,7 @@ public class MailConfig {
     }
 }
 
-```
+```text
 Here we are setting up the `AmazonSimpleEmailService` bean with credentials for our AWS account using the `ProfileCredentialsProvider`. After that, we are using this `AmazonSimpleEmailService` bean for creating the `SimpleEmailServiceMailSender` bean.
 
 ### Sending Simple Email 
@@ -167,7 +167,7 @@ public class NotificationService {
     }
 }
 
-```
+```text
 Here we are calling the `send` method on the `mailSender` reference to send our email. The method takes `SimpleMailMessage` as parameter which is a container for email attributes like `from` address, `to` address and email text which we will send from our test class below.
 
 We test this set up by calling this method from a test class :
@@ -223,7 +223,7 @@ public class MailConfig {
     }
 }
 
-```
+```text
 Here we follow similar steps as we did for configuring the `SimpleEmailServiceMailSender` earlier.
 
 We will now inject the `SimpleEmailServiceJavaMailSender` through the `JavaMailSender` interface in our service class. The `JavaMailSender` interface is part of Spring's mail abstraction which adds specialized JavaMail features like MIME message support. `JavaMailSender` also provides a callback interface for the preparation of `JavaMail` MIME messages, called `MimeMessagePreparator`.
@@ -262,7 +262,7 @@ public class NotificationService {
      }
 }
 
-```
+```text
 Here we are using the callback interface `MimeMessagePreparator` to construct the email message by setting the `to` and `from` email addresses along with the subject and text of the email. 
 
 ## Enabling Production Access

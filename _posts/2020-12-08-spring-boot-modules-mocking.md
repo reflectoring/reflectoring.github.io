@@ -127,7 +127,7 @@ Ok, let's look at how we can implement reusable mock modules with Spring Boots.
 
 Here's the folder structure of an example application. You can find the code [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-mocking-modules) if you want to follow along:
 
-```
+```text
 ├── github
 |   ├── api
 |   |  ├── <I> GitHubMutations

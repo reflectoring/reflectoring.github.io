@@ -91,12 +91,12 @@ But how does the application decide which environment it's running in? This is e
 * `LOGZIO`: the app shall send the logs to logz.io cloud 
   
 This command will then start the app in "local" logging mode:
-```
+```text
 LOG_TARGET=CONSOLE java -jar app.jar 
 ```
 
 And this command will start the app in "staging", or "production" logging mode:
-```
+```text
 LOG_TARGET=LOGZIO java -jar app.jar 
 ```
 
@@ -380,7 +380,7 @@ Now, all we need to do is to start the Spring Boot application in a certain prof
 
 To start the app locally, we can use the Maven Spring Boot plugin:
 
-```
+```text
 LOGZIO_TOKEN=<YOUR_LOGZIO_TOKEN> ./mvnw spring-boot:run -Dspring-boot.run.profiles=staging
 ```
 

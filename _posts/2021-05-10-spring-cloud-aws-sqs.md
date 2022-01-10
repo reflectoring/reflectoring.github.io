@@ -75,7 +75,7 @@ For configuring Spring Cloud AWS, let us add a separate Spring Cloud AWS BOM in 
       </dependency>
     </dependencies>
   </dependencyManagement>
-```
+```text
 For adding the support for messaging, we need to include the module dependency for Spring Cloud AWS Messaging into our Maven configuration.  We do this by adding the starter module`spring-cloud-starter-aws-messaging`:
 
 ```xml
@@ -83,7 +83,7 @@ For adding the support for messaging, we need to include the module dependency f
       <groupId>io.awspring.cloud</groupId>
       <artifactId>spring-cloud-starter-aws-messaging</artifactId>
     </dependency>
-```
+```text
 `spring-cloud-starter-aws-messaging` includes the transitive dependencies for `spring-cloud-starter-aws`, and `spring-cloud-aws-messaging`.
 
 ## Creating a Message
@@ -105,7 +105,7 @@ public class MessageSenderWithTemplate {
     ...
   }
 }
-```
+```text
 Here we are using the `MessageBuilder` class to construct the message with a string payload and two headers inside the `send` method.
 
 ## Queue Identifiers
@@ -161,7 +161,7 @@ public class MessageSender {
   }
 
 }
-```
+```text
 In this code snippet, we first create the `QueueMessageChannel` with the queue URL. Then we construct the message to be sent with the `MessageBuilder` class. 
 
 Finally, we invoke the `send()` method on the `MessageChannel` by specifying a timeout interval. The `send()` method is a blocking call so it is always advisable to set a timeout when calling this method.
@@ -176,7 +176,7 @@ public QueueMessagingTemplate queueMessagingTemplate(
   AmazonSQSAsync amazonSQSAsync) {
     return new QueueMessagingTemplate(amazonSQSAsync);
 }
-```
+```text
 Then, we can send the messages using the `convertAndSend()` method:
 ```java
 @Slf4j
@@ -197,7 +197,7 @@ public class MessageSenderWithTemplate {
         messagingTemplate.convertAndSend(TEST_QUEUE, msg);
     }
 }
-```
+```text
 In this example, we first create a message with the `MessageBuilder` class, similar to our previous example, and use the `convertAndSend()` method to send the message to the queue.
 
 ### Sending a Message to a FIFO Queue
@@ -223,7 +223,7 @@ public class MessageSenderWithTemplate {
     }  
 }
 
-```
+```text
 Here we are using the `MessageBuilder` class to add the two header fields required for creating a message for sending to a FIFO queue.
 
 ## Receiving a Message
@@ -246,7 +246,7 @@ public class MessageReceiver {
     logger.info("message received {} {}",senderId,message);
   }
 }
- ```
+ ```text
 In this example, the SQS message payload is serialized and passed to our `receiveMessage()` method. We have also defined the deletion policy `ON_SUCCESS` for acknowledging (deleting) the message when no exception is thrown. A deletion policy is used to define in which cases a message must be deleted after the listener method is called. For an overview of the available deletion policies, refer to the Java documentation of [SqsMessageDeletionPolicy](https://javadoc.io/doc/org.springframework.cloud/spring-cloud-aws-messaging/2.1.3.RELEASE/org/springframework/cloud/aws/messaging/listener/SqsMessageDeletionPolicy.html).
 
 ## Working With Object Messages
@@ -277,7 +277,7 @@ public class MessageReceiver {
     log.info("message received {} {}",senderId,message);
   }
 }
-```
+```text
 Next, we will send a JSON message matching the structure of our objects from the SQS console:
 ![sqs json message](/assets/img/posts/aws-sqs-spring-cloud/messsage-sent.png)
 
@@ -293,7 +293,7 @@ for GenericMessage /
 "email":"jackie.chan@gmail.com"}, headers={
   ...
   ...
-```
+```text
 We can see a `MessageConversionException` here since the default converter `SimpleMessageConverter` can only convert between `String` and SQS messages. For complex objects like `SignupEvent` in our example, a custom converter needs to be configured like this:
 
 ```java
@@ -338,7 +338,7 @@ When we run our application after making this change, we get the following outpu
 ```shell
  io.pratik.springcloudsqs.MessageReceiver  : message received {"signupTime":"20/04/2021 11:40 AM", "userName":"jackie","email":"jackie.chan@gmail.com"} SignupEvent(signupTime=20/04/2021 11:40 AM, userName=jackie, email=jackie.chan@gmail.com)
 
-```
+```text
 From the logs, we can see the JSON message deserialized into `SingupEvent` object in our `receiveMessage()` method with the help of the configured custom converter.
 
 ## Consuming AWS Event Messages
@@ -364,7 +364,7 @@ public class CustomSqsConfiguration {
   }
 }
 
-```
+```text
 Here we have modified our earlier configuration by setting `strictContentTypeMatch` property in the `MappingJackson2MessageConverter` object to `false`.
 
 Let us add a listener class for receiving the notification messages sent by an AWS S3 bucket when certain configured events occur in the bucket. We can enable certain AWS S3 bucket events to send a notification message to a destination like the SQS queue when the events occur. Before running this example, we will create an SQS queue and S3 bucket and attach a notification event as shown below: 
@@ -388,7 +388,7 @@ public class S3EventListener {
   }
 
 }
-```
+```text
 When we upload an object to our S3 bucket, the listener method receives this event payload in the `S3EventNotification` object for further processing. 
 
 

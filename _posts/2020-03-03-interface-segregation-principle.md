@@ -72,7 +72,7 @@ class BurgerOrderService implements OrderService {
         throw new UnsupportedOperationException("No combo in burger only order");
     }
 }
-```
+```text
 Similarly, **for a fries-only order, we'd also need to throw an exception in `orderBurger()` method**.
 
 And this is not the only downside of this design. The `BurgerOrderService` and `FriesOrderService` classes will also have unwanted side effects whenever we make changes to our abstraction. 
@@ -111,7 +111,7 @@ interface BurgerOrderService {
 interface FriesOrderService {
     void orderFries(int fries);
 }
-```
+```text
 In case when we have an external dependency, we can use the [adapter pattern](https://en.wikipedia.org/wiki/Adapter_pattern) to abstract away the unwanted methods, which makes two incompatible interfaces compatible by using an adapter class.
 
 For example, let's say that `OrderService` is an external dependency that we can't modify and needs to use to place an order. We will use the [Object Adapter Pattern](https://en.wikipedia.org/wiki/Adapter_pattern#Object_adapter_pattern) to adapt `OrderService` to our target interface i.e. `BurgerOrderService`. For this, we will create the `OrderServiceObjectAdapter` class which holds a reference to the external `OrderService`.

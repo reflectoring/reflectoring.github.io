@@ -1,11 +1,11 @@
 ---
-
+authors: [tom]
 title: Monitoring the Error Rate of a Spring Boot Web Application
-categories: ["Spring Boot"]
-modified: 2017-05-07
+categories: ["WIP", "Spring Boot"]
+date: 2017-05-07
 excerpt: "How to monitor the error rate of a Spring Boot web application."
-image:
-  auto: 0032-dashboard
+image: images/stock/0032-dashboard-1200x628-branded.jpg
+url: monitoring-error-rate-spring-boot
 ---
 
 
@@ -122,7 +122,7 @@ request has been processed, regardless of an exception being thrown or not.
 If we translate the Dropwizard metrics into the Prometheus data format (see my [previous blog post](/monitoring-spring-boot-with-prometheus/)),
 we will see the following metrics when typing "/prometheus" into the browser:
 
-```
+```text
 http_requests_total 13.0
 http_status_500_total 4.0
 ```
@@ -144,20 +144,20 @@ the metrics you queried.
 
 To get the average rate of errors per second within the last minute, we can use the `rate()` function like this:
 
-```
+```text
 rate(http_status_500_total [1m])
 ```
 
 Likewise we can query the average rate of total requests per second:
 
-```
+```text
 rate(http_http_requests_total [1m])
 ```
 
 And finally, we can relate both metrics by calculating the percentage of erroneously processed requests 
 within the last minute
 
-```
+```text
 rate(http_status_500_total [1m]) / rate(http_requests_total [1m])
 ```
 

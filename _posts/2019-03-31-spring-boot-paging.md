@@ -210,7 +210,7 @@ class PaginationConfiguration {
 If we're using `Pageable` or `Sort` arguments in web controller methods *without having 
 activated Spring Data Web support*, we'll get exceptions like these:
 
-```
+```text
 java.lang.NoSuchMethodException: org.springframework.data.domain.Pageable.<init>()
 java.lang.NoSuchMethodException: org.springframework.data.domain.Sort.<init>()
 ```
@@ -339,7 +339,7 @@ class PagedControllerTest {
     assertThat(sort).hasSort("id", Sort.Direction.DESC);
   }
 }
-```
+```text
 ### Customizing Global Paging Defaults
 
 If we don't provide the `page`, `size`, or `sort` query parameters when calling a 
@@ -350,7 +350,7 @@ Spring Boot uses
 [the `@ConfigurationProperties` feature](/spring-boot-configuration-properties/) to
 bind the following properties to a bean of type `SpringDataWebProperties`: 
 
-```
+```text
 spring.data.web.pageable.size-parameter=size
 spring.data.web.pageable.page-parameter=page
 spring.data.web.pageable.default-page-size=20
@@ -482,7 +482,7 @@ interface MovieCharacterRepository
       @Param("movie") String movieName, Pageable pageable);
 
 }
-```
+```text
 Every method returning a `Slice` or `Page` must have exactly one `Pageable` parameter, otherwise
 Spring Data will complain with an exception on startup.
 

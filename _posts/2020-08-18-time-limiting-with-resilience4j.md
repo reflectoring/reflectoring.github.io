@@ -175,7 +175,7 @@ limiter.getEventPublisher().onTimeout(e -> System.out.println(e.toString()));
 
 The sample output shows what's logged:
 
-```
+```text
 2020-08-07T11:31:48.181944: TimeLimiter 'flightSearch' recorded a successful call.
 ... other lines omitted ...
 2020-08-07T11:31:48.582263: TimeLimiter 'flightSearch' recorded a timeout exception.
@@ -216,7 +216,7 @@ meterRegistry.forEachMeter(meterConsumer);
 
 Here's some sample output:
 
-```
+```text
 The number of timed out calls - resilience4j.timelimiter.calls(timeout): 6.0
 The number of successful calls - resilience4j.timelimiter.calls(successful): 4.0
 The number of failed calls - resilience4j.timelimiter.calls(failed): 0.0

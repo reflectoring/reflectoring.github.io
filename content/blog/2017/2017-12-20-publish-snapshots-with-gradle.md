@@ -1,12 +1,13 @@
 ---
+authors: [tom]
 title: "Publishing Open Source Snapshots with Gradle"
-categories: ["Java"]
-modified: 2017-12-20
+categories: ["WIP", "Java"]
+date: 2017-12-20
 excerpt: "One of the most fulfilling things in open source development is getting feedback from your users. 
           This article shows how to publish snapshots of
           your Java projects to oss.jfrog.org to enable your users to give feedback early."
-image:
-  auto: 0038-package
+image: images/stock/0038-package-1200x628-branded.jpg
+url: publish-snapshots-with-gradle
 ---
 
 
@@ -137,7 +138,7 @@ Once everything is set up, you can publish a snapshot with the following Gradle 
 where `$BINTRAY_USER`, `$BINTRAY_KEY` and `$BUILD_NUMBER` are replaced by their respective values. You should get
 an output like this:
 
-```
+```text
 :artifactoryPublish
 Deploying artifact: http://oss.jfrog.org/oss-snapshot-local/.../...-1.0.1-SNAPSHOT-javadoc.jar
 Deploying artifact: http://oss.jfrog.org/oss-snapshot-local/.../...-1.0.1-SNAPSHOT-sources.jar

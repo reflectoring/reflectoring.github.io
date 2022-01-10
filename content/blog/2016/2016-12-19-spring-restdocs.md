@@ -77,7 +77,7 @@ into the folder `build/generated-snippets/projects/create`.
 
 http-request.adoc:
 
-```
+```text
 [source,http,options="nowrap"]
 ----
 POST /projects HTTP/1.1
@@ -97,7 +97,7 @@ Content-Length: 129
 
 http-response.adoc:
 
-```
+```text
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 201 Created

@@ -77,7 +77,7 @@ note these changes:
 
 Now, we can run the pact tests with this command:
 
-```
+```text
 npm run test:pact:graphql
 ```
 

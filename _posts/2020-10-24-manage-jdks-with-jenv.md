@@ -39,7 +39,7 @@ You can still use brew, yum, or apt to install your JDKs, you just need to find 
 
 To use the new JDK with jEnv, we need to tell jEnv where to find it. Let's check first which versions of the JDK jEnv already knows about with the command `jenv versions`:
 
-```
+```text
 * system (set by /home/tom/.jenv/version)
   11
   11.0
@@ -61,7 +61,7 @@ Let's say we've downloaded JDK 15 and extracted it into the folder `~/software/j
 
 Now, we add the new JDK to jEnv:
 
-```
+```text
 jenv add /home/tom/software/java/jdk-15+36/
 ```
 
@@ -100,19 +100,19 @@ We can use this to configure different JDKs for different projects (as long as t
 
 First, we check the version of the global JDK:
 
-```
+```text
 jenv global
 ```
 
 The output in my case is:
 
-```
+```text
 system
 ```
 
 This means that the system-installed JDK will be used as a global JDK. The name `system` is not very helpful because it doesn't say which version it is. Let's change the global JDK to a more meaningful JDK with a version number:
 
-```
+```text
 jenv global 11
 ```
 
@@ -126,7 +126,7 @@ Let's say this project lives in the folder `~/shiny-project`. Let's `cd` into th
 
 If I type `java -version` now, I get the following result:
 
-```
+```text
 openjdk version "11.0.8" 2020-07-14
 OpenJDK Runtime Environment (build 11.0.8+10-post-Ubuntu-0ubuntu118.04.1)
 OpenJDK 64-Bit Server VM (build 11.0.8+10-post-Ubuntu-0ubuntu118.04.1, mixed mode, sharing)
@@ -136,13 +136,13 @@ That is because JDK 11 is my global JDK.
 
 Let's change it to JDK 15 for this project:
 
-```
+```text
 jenv local 15
 ```
 
 Now, type `java -version` again, and the output will be:
 
-```
+```text
 openjdk version "15" 2020-09-15
 OpenJDK Runtime Environment AdoptOpenJDK (build 15+36)
 OpenJDK 64-Bit Server VM AdoptOpenJDK (build 15+36, mixed mode, sharing)
@@ -172,7 +172,7 @@ Making Maven work with the local JDK defined by jEnv is easy. We just need to in
 
 If we run `mvn -version` in our `~/shiny-project` folder from above now, we'll get the following output:
 
-```
+```text
 Maven home: .../apache-maven-3.6.3
 Java version: 15, vendor: AdoptOpenJDK, runtime: /home/tom/software/java/jdk-15+36
 Default locale: en_AU, platform encoding: UTF-8
@@ -187,13 +187,13 @@ Maven is using the new JDK 15 now. Yay!
 
 If it doesn't work out of the box for you, you can install the gradle plugin analogously to the Maven plugin above:
 
-```
+```text
 jenv enable-plugin gradle
 ```
 
 If we run `gradle -version` in our `~/shiny-project` folder from above now, we'll get the following output:
 
-```
+```text
 ------------------------------------------------------------
 Gradle 6.5
 ------------------------------------------------------------

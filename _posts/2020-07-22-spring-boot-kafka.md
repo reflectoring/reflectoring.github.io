@@ -41,7 +41,7 @@ We should have a Kafka server running on our machine. If you don't have Kafka se
 
 Let's start by adding `spring-kafka` dependency to our `pom.xml`:
 
-```
+```text
 <dependency>
   <groupId>org.springframework.kafka</groupId>
   <artifactId>spring-kafka</artifactId>
@@ -136,7 +136,7 @@ We use `ConcurrentKafkaListenerContainerFactory` to create containers for method
 
 **Spring Boot does most of the configuration automatically**, so we can focus on building the listeners and producing the messages. It also provides the option to override the default configuration through `application.properties`. The Kafka configuration is controlled by the configuration properties with the prefix `spring.kafka.*`:
 
-```
+```text
 spring.kafka.bootstrap-servers=localhost:9092
 spring.kafka.consumer.group-id=myGroup
 ```

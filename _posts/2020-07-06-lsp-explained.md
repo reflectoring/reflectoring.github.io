@@ -368,7 +368,7 @@ class RewardsCard implements IPaymentInstrument {
 
 And here's client code using the new card:
 
-```
+```text
 RewardsCard card = new RewardsCard(name, cardNum);
 paymentProcessor.process(order, card);
 ```

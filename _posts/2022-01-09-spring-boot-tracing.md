@@ -72,7 +72,7 @@ public class Controller {
     return new CustomerAndAddress(customer, address);
   }
 }
-```
+```text
 This is a pretty standard REST controller. The interesting bit is that it's making use of an `AddressClient` and a `CustomerClient` to call the customer service to get the customer addresses and names, respectively.
 
 Let's take a look at one of these clients:
@@ -116,7 +116,7 @@ Both base URLs for the `addressClient` and the `customerClient` are pointing to 
 
 Finally, to make the service runnable in Docker, we create a `Dockerfile`:
 
-```
+```text
 FROM adoptopenjdk/openjdk11:alpine-jre  
 ARG JAR_FILE=target/*.jar  
 COPY ${JAR_FILE} application.jar  
@@ -164,7 +164,7 @@ As mentioned above, we change the port of the customer service to `8081` so it d
 
 The `Dockerfile` of the customer service looks exactly like the `Dockerfile` of the API service:
 
-```
+```text
 FROM adoptopenjdk/openjdk11:alpine-jre  
 ARG JAR_FILE=target/*.jar  
 COPY ${JAR_FILE} application.jar  
@@ -340,7 +340,7 @@ With the Docker Compose stack up and running, we can now hit the API service's e
 
 If you look at the log output from the `docker-compose` command, you should also see some activity there. It will show something like this:
 
-```
+```text
 api-service_1       | INFO [api-service,e9d9d371ac07ea32bdb12c4d898535ee,a96ea4b352976715] : COLLECTING CUSTOMER AND ADDRESS WITH ID 1 FROM UPSTREAM SERVICE
 customer-service_1  | INFO [customer-service,e9d9d371ac07ea32bdb12c4d898535ee,f69c5aa9ddf8624c] : GETTING CUSTOMER WITH ID 1
 customer-service_1  | INFO [customer-service,e9d9d371ac07ea32bdb12c4d898535ee,dd27f1fefaf7b9aa] : GETTING ADDRESS FOR CUSTOMER WITH ID 1

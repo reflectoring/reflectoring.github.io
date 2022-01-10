@@ -1,12 +1,11 @@
 ---
-
 title: A Random Pitfall
-categories: ["Java"]
-modified: 2017-02-16
-author: rudi
+categories: ["WIP", "Java"]
+date: 2017-02-16
+authors: [rudi]
 excerpt: "An intro on how to create random numbers in Java."
-image:
-  auto: 0049-dice
+image: images/stock/0049-dice-1200x628-branded.jpg
+url: how-to-random
 ---
 
 

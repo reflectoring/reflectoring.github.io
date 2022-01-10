@@ -93,7 +93,7 @@ public class HttpClientApp {
 
 }
 
-```
+```text
 Here we have used the builder pattern to create an instance of `HttpClient` and `HttpRequest` and then made an asynchronous call to the REST API. When creating the request, we have set the HTTP method as `GET` by calling the `GET()` method and also set the API URL and API key in the header along with a timeout value of `10` seconds.
 
 ### Synchronous POST Request
@@ -139,7 +139,7 @@ public class HttpClientApp {
 
 }
 
-```
+```text
 Here we have created a JSON string in the `prepareRequest()` method for sending the request body in the HTTP `POST()` method. 
 
 Next, we are using the builder pattern to create an instance of `HttpRequest` and then making a synchronous call to the REST API. 
@@ -166,7 +166,7 @@ For API invocation with HttpClient, first we need to include the Apache HTTP Cli
    <artifactId>httpclient5</artifactId>
    <version>5.1.1</version>
   </dependency>
-```
+```text
 Here we have added the `httpclient5` as a Maven dependency in our `pom.xml`.
 
 ### Asynchronous GET Request
@@ -228,7 +228,7 @@ public class ApacheHttpClientApp {
  }
 
 }
-```
+```text
 Here we are creating the client by instantiating the `CloseableHttpAsyncClient` with default parameters within an extended `try` block. 
 
 After that, we start the client. 
@@ -292,7 +292,7 @@ public class ApacheHttpClientApp {
  }
 }
 
-```
+```text
 Here we have created a JSON string in the `prepareRequest` method for sending the request body in the HTTP `POST` method. 
 
 Next, we are creating the request by wrapping the JSON string in a `StringEntity` class and setting it in the `HttpPost` class.
@@ -315,7 +315,7 @@ For API invocation with `OkHttpClient`, we need to include the `okhttp` librarie
    <artifactId>okhttp</artifactId>
    <version>4.9.2</version>
   </dependency>
-```
+```text
 Here we have added the `okhttp` module as a Maven dependency in our `pom.xml`.
 
 
@@ -407,7 +407,7 @@ public class OkHttpClientApp {
   }
 }
 
-```
+```text
 Here we have created a JSON string in the `prepareRequest()` method for sending the request body in the HTTP `POST` method. 
 
 Next, we are creating the request using the `Request.Builder` for setting the API URL and API keys in the HTTP request header.
@@ -429,7 +429,7 @@ For using `WebClient`, we need to add a dependency on the Spring WebFlux starter
    <artifactId>spring-boot-starter-webflux</artifactId>
    <version>2.3.5.RELEASE</version>
   </dependency>
-```
+```text
 Here we have added a Maven dependency on `spring-boot-starter-webflux` in `pom.xml`. Spring WebFlux is part of Spring 5 and provides support for reactive programming in web applications.
 
 ### Asynchronous GET Request
@@ -451,7 +451,7 @@ public class WebClientApp {
 
  }
 }
-```
+```text
 In this code fragment, we first create the client with default settings. Next, we call the `get()` method on the client for the HTTP GET request and `uri` and `header` methods for setting the API endpoint URL and access control header. 
 
 The `retrieve()` method called next in the chain is used to make the API call and get the response body which is converted to `Mono` with the `bodyToMono()` method. We finally subscribe in a non-blocking way on the `Mono` wrapper returned by the `bodyToMono()` method using the `subscribe()` method. 
@@ -498,7 +498,7 @@ public class WebClientApp {
   }
 
 }
-```
+```text
 Here we have created a JSON string in the `prepareRequest()` method and then sent this string as the request body in the HTTP `POST` method. 
 
 We have used the `exchange()` method to call the API here. The `exchange()` method provides more control in contrast to the `retrieve()` method used previously by providing access to the response from the HTTP client.

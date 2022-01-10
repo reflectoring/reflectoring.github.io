@@ -133,7 +133,7 @@ What do you think will happen when you execute this code? Try it out and see if 
 
 Most probably, you will get an error message like this:
 
-```
+```text
 Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 0 out of bounds for length 0
 	at level2.Application.main(Application.java:5)
 ```

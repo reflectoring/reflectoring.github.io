@@ -45,7 +45,7 @@ dependencies {
   testCompile('org.springframework.boot:spring-boot-starter-test')
   testCompile('org.junit.jupiter:junit-jupiter-engine:5.2.0')
 }
-```
+```text
 ## What to Test?
 
 The first question to answer to ourselves is what we need to test.
@@ -78,7 +78,7 @@ checks if the query is valid at startup**. If we renamed the method
 to `findByFoo()` and the `UserEntity` does not have a property `foo`,
 Spring Data will point that out to us with an exception:
 
-```
+```text
 org.springframework.data.mapping.PropertyReferenceException: 
   No property foo found for type UserEntity!
 ```
@@ -114,7 +114,7 @@ we'll get a `QuerySyntaxException` on startup if it found an
 invalid query:
 
 
-```
+```text
 org.hibernate.hql.internal.ast.QuerySyntaxException: 
   unexpected token: foo near line 1, column 64 [select u from ...]
 ```
@@ -247,7 +247,7 @@ If we set it to `always`, it will always execute.
 
 The following log output confirms that the file has been executed:
 
-```
+```text
 Executing SQL script from URL [file:.../out/production/resources/schema.sql]
 ```
 

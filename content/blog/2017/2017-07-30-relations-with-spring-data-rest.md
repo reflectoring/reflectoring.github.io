@@ -1,11 +1,11 @@
 ---
-
+authors: [tom]
 title: "Handling Associations Between Entities with Spring Data REST"
-categories: ["Spring Boot"]
-modified: 2017-07-30
+categories: ["WIP", "Spring Boot"]
+date: 2017-07-30
 excerpt: "How to implement an API with Spring Data TEST that spans over multiple database entities."
-image:
-  auto: 0001-network
+image: images/stock/0001-network-1200x628-branded.jpg
+url: relations-with-spring-data-rest
 ---
 
 

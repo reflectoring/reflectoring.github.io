@@ -57,13 +57,13 @@ Next, we have to build the Java application with `./gradlew clean build`. This w
 
 Now, we can build the Docker image. From the folder containing the `Dockerfile`, we run:
 
-```
+```text
 docker build -t reflectoring/aws-hello-world:latest .
 ```
 
 To check if everything worked out, we can run 
 
-```
+```text
 docker images | grep aws-hello-world
 ```
 
@@ -73,7 +73,7 @@ which will display all Docker images available locally that contain `aws-hello-w
 
 Let's check if the Docker image we just built actually works. We start the image up with `docker run`:
 
-```
+```text
 docker run -p 8081:8080 reflectoring/aws-hello-world:latest
 ```
 
@@ -83,7 +83,7 @@ Without specifying these ports, Docker won't expose a port on which we can acces
 
 When the Docker container has successfully started up, we should see log output similar to this:
 
-```
+```text
 ... Tomcat started on port(s) 8080 (http) with context path ''
 ... Started AwsHelloWorldApplication in 3.222 seconds ...
 ```
@@ -100,7 +100,7 @@ For business-critical applications that we don't want to share with the world, w
 
 First, we need to log in with Docker:
 
-```
+```text
 docker login registry-1.docker.io
 ```
 
@@ -110,7 +110,7 @@ We can leave out the `registry-1.docker.io` part because Docker will use this as
 
 Next, we push the Docker image to the registry:
 
-```
+```text
 docker push reflectoring/aws-hello-world:latest
 ```
 

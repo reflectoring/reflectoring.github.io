@@ -1,11 +1,11 @@
 ---
-
+authors: [tom]
 title: Exposing Metrics of a Spring Boot Application using Dropwizard
-categories: ["Spring Boot"]
-modified: 2017-04-21
+categories: ["WIP", "Spring Boot"]
+date: 2017-04-21
 excerpt: "A tutorial on how to use the Dropwizard library to expose monitoring metrics in a Spring Boot application."
-image:
-  auto: 0047-transparent
+image: images/stock/0047-transparent-1200x628-branded.jpg
+url: transparency-with-spring-boot
 ---
 
 
@@ -130,7 +130,7 @@ public class ImportantBusinessService {
   }  
   
 }
-```
+```text
 A `Timer` creates the following metrics for us:
 
 * the min, max, mean and median duration of transactions

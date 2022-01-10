@@ -201,7 +201,7 @@ Looks good, doesn't it? Spot the error if you want to make a game of it :).
 
 The test is failing with a `ConditionTimeoutException` indicating that not all messages have been processed within the timeout. Processing is too slow. Let's look at the log output:
 
-```
+```text
 1580500514456 Test worker: subscribed
 1580500514472 pool-1-thread-1: MessageBatch{messages=[1-1, 1-2, 1-3]}
 1580500514974 pool-1-thread-1: processed message 1-1
@@ -263,7 +263,7 @@ class ReactiveBatchProcessorV2 {
 
 With the `Single.defer()` in place, the message processing should now take place in the worker threads: 
 
-```
+```text
 1580500834588 Test worker: subscribed
 1580500834603 pool-1-thread-1: MessageBatch{messages=[1-1, 1-2, 1-3]}
 1580500834618 pool-1-thread-1: MessageBatch{messages=[2-1, 2-2, 2-3]}
@@ -313,7 +313,7 @@ class ReactiveBatchProcessorV3 {
 
 Now, it should finally work, shouldn't it? Let's look at the test output:
 
-```
+```text
 1580501297031 Test worker: subscribed
 1580501297044 pool-3-thread-1: MessageBatch{messages=[1-1, 1-2, 1-3]}
 1580501297056 pool-3-thread-1: MessageBatch{messages=[2-1, 2-2, 2-3]}
@@ -394,7 +394,7 @@ Within the `threadPoolScheduler()` method, we add our `WaitForCapacityPolicy()` 
 
 The log output of the test now looks complete:
 
-```
+```text
 1580601895022 Test worker: subscribed
 1580601895039 pool-3-thread-1: MessageBatch{messages=[1-1, 1-2, 1-3]}
 1580601895055 pool-3-thread-1: MessageBatch{messages=[2-1, 2-2, 2-3]}

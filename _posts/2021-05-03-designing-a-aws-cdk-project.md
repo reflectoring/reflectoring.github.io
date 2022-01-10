@@ -274,7 +274,7 @@ In essence, our custom `DockerRepository` construct is just a glorified wrapper 
 
 With the above CDK app we can now deploy a Docker repository with this command using the CDK CLI:
 
-```
+```text
 cdk deploy \
   -c accountId=... \
   -c region=... \
@@ -285,7 +285,7 @@ That will work as long as we have a single CDK app, but as you might suspect by 
 
 To work around this problem, we use the `--app` parameter:
 
-```
+```text
 cdk deploy \
   --app "./mvnw -e -q compile exec:java \
     -Dexec.mainClass=dev.stratospheric.todoapp.cdk.DockerRepositoryApp" \
@@ -319,7 +319,7 @@ To make it a bit more convenient to execute a command with many arguments, most 
 
 Once we've run `npm install` to install the CDK dependency (and its transitive dependencies, for that matter), we can deploy our Docker repository stack with a simple `npm run repository:deploy`. We can hardcode most of the parameters for each command as part of the `package.json` file. Should the need arise, we can override a parameter in the command line with:
 
-```
+```text
 npm run repository:deploy -- -c applicationName=...
 ```
 

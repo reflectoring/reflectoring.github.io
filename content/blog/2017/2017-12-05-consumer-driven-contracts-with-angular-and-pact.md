@@ -1,10 +1,11 @@
 ---
+authors: [tom]
 title: "Creating a Consumer-Driven Contract with Angular and Pact"
-categories: [programming]
-modified: 2017-12-10
+categories: ["WIP", programming]
+date: 2017-12-10
 excerpt: "A tutorial on testing an Angular REST client against a contract with the Pact framework."
-image:
-  auto: 0029-contract
+image: images/stock/0029-contract-1200x628-branded.jpg
+url: consumer-driven-contracts-with-angular-and-pact
 ---
 
 
@@ -89,7 +90,7 @@ created user.
 In order to get Pact up and running in our Angular tests, we need to include the
 following dependencies as `devDependencies` in the `package.json` file:
 
-```
+```text
 "devDependencies": {
   ...
   "@pact-foundation/pact-node": "6.5.0",
@@ -249,7 +250,7 @@ describe('create()', () => {
   });
 
 });
-```
+```text
 By calling `provider.addInteraction()` we send a request / response pair to the mock server.
 This request / response pair is then considered to be part of the API contract. Since the `UserService`
 is the consumer of that API, we're creating a real consumer-driven contract here.

@@ -151,7 +151,7 @@ The third and the fourth requests were able to acquire permits only 1s later, af
 
 If a thread is not able to acquire a permit in the 2s  `maxWaitDuration` we specified, a `BulkheadFullException` is thrown:
 
-```
+```text
 Caused by: io.github.resilience4j.bulkhead.BulkheadFullException: Bulkhead 'flightSearchService' is full and does not permit further calls
 	at io.github.resilience4j.bulkhead.BulkheadFullException.createBulkheadFullException(BulkheadFullException.java:49)
 	at io.github.resilience4j.bulkhead.internal.SemaphoreBulkhead.acquirePermission(SemaphoreBulkhead.java:164)
@@ -174,7 +174,7 @@ BulkheadConfig config = BulkheadConfig.custom()
 
 Now, when a `BulkheadFullException` occurs, only a single line is present in the stack trace:
 
-```
+```text
 Searching for flights; current time = 12:27:58 658; current thread = ForkJoinPool.commonPool-worker-3
 Searching for flights; current time = 12:27:58 658; current thread = ForkJoinPool.commonPool-worker-5
 io.github.resilience4j.bulkhead.BulkheadFullException: Bulkhead 'flightSearchService' is full and does not permit further calls
@@ -264,7 +264,7 @@ Received results
 
 If there are no free threads and no capacity in the queue, a `BulkheadFullException` is thrown:
 
-```
+```text
 Exception in thread "main" io.github.resilience4j.bulkhead.BulkheadFullException: Bulkhead 'flightSearchService' is full and does not permit further calls
 	at io.github.resilience4j.bulkhead.BulkheadFullException.createBulkheadFullException(BulkheadFullException.java:64)
 	at io.github.resilience4j.bulkhead.internal.FixedThreadPoolBulkhead.submit(FixedThreadPoolBulkhead.java:157)
@@ -284,7 +284,7 @@ ThreadPoolBulkheadConfig config = ThreadPoolBulkheadConfig.custom()
 
 Now, when a `BulkheadFullException` occurs, only a single line is present in the stack trace:
 
-```
+```text
 Searching for flights; current time = 12:27:58 658; current thread = ForkJoinPool.commonPool-worker-3
 Searching for flights; current time = 12:27:58 658; current thread = ForkJoinPool.commonPool-worker-5
 io.github.resilience4j.bulkhead.BulkheadFullException: Bulkhead 'flightSearchService' is full and does not permit further calls
@@ -345,7 +345,7 @@ for (int i=0; i<2; i++) {
 
 The sample output shows that this value was not available in the bulkhead-managed thread:
 
-```
+```text
 Setting trackingId 98ff99df-466a-47f7-88f7-5e31fc8fcb6b on parent, main thread before calling flight search
 Setting trackingId 6b98d73c-a590-4a20-b19d-c85fea783caf on parent, main thread before calling flight search
 Searching for flights; current time = 19:53:53 799; current thread = bulkhead-flightSearchService-1; Request Tracking Id = null
@@ -399,7 +399,7 @@ ThreadPoolBulkheadConfig config = ThreadPoolBulkheadConfig.custom()
 
 Now, the sample output shows that the request tracking id was made available in the bulkhead-managed thread:
 
-```
+```text
 Setting trackingId 71d44cb8-dab6-4222-8945-e7fd023528ba on parent, main thread before calling flight search
 Getting request tracking id from thread: main
 Setting trackingId 5f9dd084-f2cb-4a20-804b-038828abc161 on parent, main thread before calling flight search
@@ -435,7 +435,7 @@ bulkhead.getEventPublisher().onCallRejected(e -> System.out.println(e.toString()
 
 The sample output shows what's logged:
 
-```
+```text
 2020-08-26T12:27:39.790435: Bulkhead 'flightSearch' permitted a call.
 ... other lines omitted ...
 2020-08-26T12:27:40.290987: Bulkhead 'flightSearch' rejected a call.
@@ -480,7 +480,7 @@ meterRegistry.forEachMeter(meterConsumer);
 
 Here's some sample output:
 
-```
+```text
 The maximum number of available permissions - resilience4j.bulkhead.max.allowed.concurrent.calls: 8.0
 The number of available permissions - resilience4j.bulkhead.available.concurrent.calls: 3.0
 ```
@@ -503,7 +503,7 @@ TaggedThreadPoolBulkheadMetrics.ofThreadPoolBulkheadRegistry(registry).bindTo(me
 
 After running the bulkhead-decorated operation a few times, we display the captured metrics:
 
-```
+```text
 The queue capacity - resilience4j.bulkhead.queue.capacity: 5.0
 The queue depth - resilience4j.bulkhead.queue.depth: 1.0
 The thread pool size - resilience4j.bulkhead.thread.pool.size: 5.0

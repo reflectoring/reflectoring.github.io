@@ -1,12 +1,12 @@
 ---
-
+authors: [tom]
 title: Github's Fork & Pull Workflow for Git Beginners
-categories: ["Software Craft"]
-modified: 2017-01-02
+categories: ["WIP", "Software Craft"]
+date: 2017-01-02
 excerpt: "If you are new to Git and/or GitHub, it's easy to get overwhelmed by the different workflow models you can use. 
           This post explains the basic fork and pull workflow model that is used on a lot of GitHub repositories." 
-image:
-  auto: 0050-git
+image: images/stock/0050-git-1200x628-branded.jpg
+url: github-fork-and-pull
 ---
 
 
@@ -57,9 +57,9 @@ work on multiple pull requests to the same repository at once.
 2. **Clone your Fork**  
    The standard `clone` command creates a local git repository from your remote fork on GitHub. 
 
-   ```
-   git clone https://github.com/USERNAME/REPOSITORY.git
-   ```
+```text
+git clone https://github.com/USERNAME/REPOSITORY.git
+```
 
 3. **Modify the Code**  
    In your local clone, modify the code and commit them to your local clone 
@@ -85,7 +85,7 @@ Other developers don't sleep while you are coding. Thus, it may happen that whil
 are editing your fork (step #3) other changes are made to the original repository.
 To fetch these changes into your fork, use these commands in your fork workspace:
 
-```
+```text
 # add the original repository as remote repository called "upstream"
 git remote add upstream https://github.com/OWNER/REPOSITORY.git
 
@@ -105,7 +105,7 @@ other. Thus, you need to create a separate pull request for each feature. A pull
 request is always bound to a branch of a git repository, so you have to create
 a separate branch for each feature. 
 
-```
+```text
 # change to the master branch so the master serves as source branch for the 
 # next command
 git checkout master
@@ -127,7 +127,7 @@ You may want to pull changes made to the original repository into a local featur
 As described in [Updating your Fork](#updating-your-fork) above, merge the upstream repository
 to your master branch. Then `rebase` your feature branch from the updated master branch:
 
-```
+```text
 # switch to your feature branch
 git checkout my-feature-branch
 

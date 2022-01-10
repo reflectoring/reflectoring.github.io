@@ -228,7 +228,7 @@ Maven repository, it should resolve just fine.
 
 When running the test, you may run into the following exception:
 
-```
+```text
 com.netflix.client.ClientException: Load balancer does not have available server for client: userservice
 ```
 

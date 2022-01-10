@@ -57,7 +57,7 @@ Now suppose that we have decided to merge the feature2 changes to the mainline f
 
 With `git rebase`, we can "replay" the changes in the `feature2` branch (that are not in the `feature1` branch, i.e. C8 and C9), and then replay them on the main branch by using the –onto option of git rebase. We have to specify all the three branches names in this case because we are holding the changes from feature1 branch while replaying them in the main branch from feature2 branch:
 
-```
+```text
 git rebase --onto main feature1 feature2
 ```
 
@@ -74,11 +74,11 @@ Fast forward is a unique instance of git rebase in which we are moving the tip o
 
 We will use the following commands to do this:
 
-```
+```text
 git checkout main
 
 git merge feature2
-```
+```text
 In simple words, fast-forwarding `main` to the `feature2` branch means that previously the HEAD pointer for main branch was at 'C6' but after the above command it fast forwards the main branch's HEAD pointer to the feature2 branch:
 
 ![Git Rebase Done](/assets/img/posts/git-rebase-merge/git-rebase-working3.png)

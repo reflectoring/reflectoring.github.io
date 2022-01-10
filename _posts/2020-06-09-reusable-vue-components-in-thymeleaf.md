@@ -60,7 +60,7 @@ For this article, imagine we're building a dashboard application that displays s
 
 In our project directory, we create a folder for the server-side Spring Boot application and another for the client-side Javascript components:
 
-```
+```text
 thymeleaf-vue
 ├── server
 └── client
@@ -117,19 +117,19 @@ We'll need Node.js installed on our machine to support the Vue development envir
 
 When Node is installed, we can install the Vue CLI:
 
-```
+```text
 npm install -g @vue/cli
 ```
 
 This brings us the `vue` command, which we use to create our Vue project. From the parent folder of our project (`thymeleaf-vue`), we run
 
-```
+```text
 vue create client
 ```
 
 to create the `client` subfolder and fill it with a default Vue application. We end up with a file structure like this:
 
-```
+```text
 thymeleaf-vue
 ├── server
 └── client
@@ -147,7 +147,7 @@ Note that the chart is just an example. We can create any simple or complex clie
 
 First, we add the dependency to chart.js to our `package.json` file:
 
-```
+```text
 npm install --save chart.js
 ```
 
@@ -232,7 +232,7 @@ Now that we've built a chart component, we want to see if it works without havin
 
 [Integrating Storybook with Vue](https://storybook.js.org/docs/guides/guide-vue/) is surprisingly simple, we merely have to execute this command in our `client` folder:
 
-```
+```text
 npx -p @storybook/cli sb init --type vue
 ``` 
 
@@ -323,7 +323,7 @@ We can run the test with `npm run test`.
 
 The test will pass, but it will show some error output on the console:
 
-```
+```text
 Error: Not implemented: HTMLCanvasElement.prototype.getContext 
   (without installing the canvas npm package)
 ```
@@ -368,7 +368,7 @@ module.exports = {
 
 To fix the underlying problem of the unavailable canvas element, we add a mock canvas to our development dependencies in `package.json`:
 
-```
+```text
 npm install --save-dev jest-canvas-mock
 ```
 

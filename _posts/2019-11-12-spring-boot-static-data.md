@@ -51,7 +51,7 @@ Note that we prefixed the data with `static:quotes`. **This is necessary to crea
 
 Now we have to make Spring Boot aware of this configuration file. We can do this by setting the system property `spring.config.location` each time we start the Spring Boot application: 
 
-```
+```text
 -Dspring.config.location=./,./quotes.yml
 ```
 

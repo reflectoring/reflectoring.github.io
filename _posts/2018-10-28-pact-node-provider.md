@@ -34,13 +34,13 @@ Let's start by creating an Express server from scratch.
 
 Since we don't want to do this by hand, we'll install the `express-generator`:
 
-```
+```text
 npm install -g express-generator 
 ```
 
 Then, we simply call the generator to create a project template for us:
 
-```
+```text
 express --no-view pact-node-provider
 ```
 
@@ -352,7 +352,7 @@ running the `pact:providerTests` task.
 
 We can now run the provider tests and they should be green:
 
-```
+```text
 npm run test:pact
 ``` 
 

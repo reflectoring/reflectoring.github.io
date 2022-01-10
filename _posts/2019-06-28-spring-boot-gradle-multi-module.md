@@ -65,7 +65,7 @@ which splits the codebase into separate, clearly defined architectural elements.
 For each of those architectural elements, we'll create a separate Gradle build module,
 as indicated by the following folder structure: 
  
-```
+```text
 ├── adapters
 |   ├── buckpal-persistence
 |   |  ├── src
@@ -112,7 +112,7 @@ boundaries, but that's a story for a [different article](/spring-boot-modules/).
 To include all modules in the parent build, we first need to list them in the
 `settings.gradle` file in the parent folder: 
 
-```
+```text
 include 'common'
 include 'adapters:buckpal-web'
 include 'adapters:buckpal-persistence'

@@ -1,10 +1,11 @@
 ---
+authors: [tom]
 title: "Robust Java Object Mapping With Minimal Testing Overhead Using reMap"
-categories: ["Java"]
-modified: 2017-10-01
+categories: ["WIP", "Java"]
+date: 2017-10-01
 excerpt: "An intro to the reMap Java mapping library that has a focus on minimal testing overhead."
-image:
-  auto: 0041-adapter
+image: images/stock/0041-adapter-1200x628-branded.jpg
+url: autotmatic-refactoring-safe-java-mapping
 ---
 
 

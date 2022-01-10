@@ -66,7 +66,7 @@ We're later going to override these properties to tell the application to connec
 
 Finally, we're packaging the Spring Boot application into a Docker image with this `Dockerfile`:
 
-```
+```text
 FROM openjdk:8-jdk-alpine
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} app.jar
@@ -395,7 +395,7 @@ With those changes to the stacks, we can start them one after another.
 </div>
 
 The network stack has to be up first:
-```
+```text
 aws cloudformation create-stack \ 
   --stack-name reflectoring-hello-rds-network \
   --template-body file://network.yml \
@@ -403,7 +403,7 @@ aws cloudformation create-stack \
 ```
 
 Once the network stack has reached the status `CREATE_COMPLETE`, we can start the database stack:
-```
+```text
 aws cloudformation create-stack \ 
   --stack-name reflectoring-hello-rds-database \
   --template-body file://database.yml \
@@ -414,7 +414,7 @@ aws cloudformation create-stack \
 ```
 
 And finally the service stack:
-```
+```text
 aws cloudformation create-stack \ 
   --stack-name reflectoring-hello-rds-service \
   --template-body file://service.yml \
@@ -434,7 +434,7 @@ Note that we're starting the service stack with the Docker image `reflectoring/a
 
 Once the service stack reaches the status `CREATE_COMPLETE`, we should test that everything works as expected. For this, we need to find out the public URL of the load balancer which is available in the EC2 console under "Load Balancers". There, we find the DNS name of the load balancer, copy that into a browser and add the `/hello` endpoint. The browser should show the following text:
 
-```
+```text
 Hello AWS! Successfully connected to the database!
 ```
 

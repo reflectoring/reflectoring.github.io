@@ -236,7 +236,7 @@ s3Client
 
 Depending on the region we are in, this yields an URL like the following (given that we are in the `eu-central-1` region):
 
-```
+```text
 https://my-awesome-bucket.s3.eu-central-1.amazonaws.com/some-key
 ```
 

@@ -56,13 +56,13 @@ When Spring Boot finds a `CommandLineRunner` bean in the application context, it
 
 We can now start the application with a command-line parameter like this:
 
-```
+```text
 java -jar application.jar --foo=bar
 ```
 
 This will produce the following log output:
 
-```
+```text
 first command-line parameter: '--foo=bar'
 ```
 
@@ -108,13 +108,13 @@ The `ApplicationArguments` object gives us access to the parsed command-line arg
 
 Let's start the application with the `foo` parameter again:
  
-```
+```text
 java -jar application.jar --foo=bar
 ```
 
 The resulting log output looks like this:
 
-```
+```text
 foo: [bar]
 ```
 

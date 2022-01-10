@@ -259,7 +259,7 @@ class SendMoneyControllerWebMvcMockBeanTest {
 
 The application context created by `@WebMvcTest` will not pick up our `SendMoneyService` bean (which implements the `SendMoneyUseCase` interface), even though it is marked as a Spring bean with the `@Component` annotation. We have to provide a bean of type  `SendMoneyUseCase` ourselves, otherwise, we'll get an error like this:
 
-```
+```text
 No qualifying bean of type 'io.reflectoring.mocking.SendMoneyUseCase' available:
   expected at least 1 bean which qualifies as autowire candidate.
 ```

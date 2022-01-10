@@ -135,7 +135,7 @@ for (int i=0; i<20; i++) {
 
 The output shows the first few flight searches succeeding followed by 7 flight search failures. At that point, the circuit breaker opens and throws `CallNotPermittedException` for subsequent calls:
 
-```
+```text
 Searching for flights; current time = 12:01:12 884
 Flight search successful
 [Flight{flightNumber='XY 765', flightDate='12/31/2020', from='NYC', to='LAX'}, ... ]
@@ -168,7 +168,7 @@ CircuitBreakerConfig config = CircuitBreakerConfig
 
 The timestamps in the sample output show requests consistently taking 2s to complete. After 7 slow responses, the circuitbreaker opens and does not permit further calls:
 
-```
+```text
 Searching for flights; current time = 12:26:27 901
 Flight search successful
 [Flight{flightNumber='XY 765', flightDate='12/31/2020', from='NYC', to='LAX'}, ... ]
@@ -220,7 +220,7 @@ We create the `CircuitBreaker`, express the flight search call as a `Supplier<Li
 
 Here's sample output after calling the decorated operation a few times:
 
-```
+```text
 Start time: 18:51:01 552
 Searching for flights; current time = 18:51:01 582
 Flight search successful
@@ -255,7 +255,7 @@ CircuitBreakerConfig config = CircuitBreakerConfig
 
 The timestamps in the sample output show requests consistently taking 1s to complete. After 10 requests(`minimumNumberOfCalls`), when the circuit breaker determines that 70% of the previous requests took 1s or more, it opens the circuit:
 
-```
+```text
 Start time: 19:06:37 957
 Searching for flights; current time = 19:06:37 979
 Flight search successful
@@ -303,7 +303,7 @@ CircuitBreakerConfig config = CircuitBreakerConfig
 
 The timestamps in the sample output show the circuit breaker transition to open state initially, blocking a few calls for the next 10s, and then changing to a half-open state. Later, consistent successful responses when in half-open state causes it to switch to closed state again:
 
-```
+```text
 Searching for flights; current time = 20:55:58 735
 Flight search successful
 [Flight{flightNumber='XY 765', flightDate='12/31/2020', from='NYC', to='LAX'}, ... }]
@@ -354,7 +354,7 @@ Supplier<List<Flight>> decorated = Decorators
 
 Here's sample output showing search results being returned from cache after the circuit breaker opens:
 
-```
+```text
 Searching for flights; current time = 22:08:29 735
 Flight search successful
 [Flight{flightNumber='XY 765', flightDate='12/31/2020', from='NYC', to='LAX'}, ... }]
@@ -380,7 +380,7 @@ Returning flight search results from cache
 
 Whenever a circuit breaker is open, it throws a  `CallNotPermittedException`: 
 
-```
+```text
 io.github.resilience4j.circuitbreaker.CallNotPermittedException: CircuitBreaker 'flightSearchService' is OPEN and does not permit further calls
 	at io.github.resilience4j.circuitbreaker.CallNotPermittedException.createCallNotPermittedException(CallNotPermittedException.java:48)
 ... other lines in stack trace omitted ...
@@ -404,7 +404,7 @@ CircuitBreakerConfig config = CircuitBreakerConfig
 
 Now, when a `CallNotPermittedException` occurs, only a single line is present in the stack trace:
 
-```
+```text
 Searching for flights; current time = 20:29:24 476
 Flight search successful
 [Flight{flightNumber='XY 765', flightDate='12/31/2020', from='NYC', to='LAX'}, ... ]
@@ -452,7 +452,7 @@ circuitBreaker.getEventPublisher().onStateTransition(e -> System.out.println(e.t
 
 The sample output shows what's logged:
 
-```
+```text
 2020-12-13T22:25:52.972943+05:30: CircuitBreaker 'flightSearchService' recorded an error: 'io.reflectoring.resilience4j.circuitbreaker.exceptions.FlightServiceException: Error occurred during flight search'. Elapsed time: 0 ms
 Searching for flights; current time = 22:25:52 973
 ... other lines omitted ... 
@@ -482,7 +482,7 @@ TaggedCircuitBreakerMetrics.ofCircuitBreakerRegistry(registry)
 
 After running the circuit breaker-decorated operation a few times, we display the captured metrics. Here's some sample output:
 
-```
+```text
 The number of slow failed calls which were slower than a certain threshold - resilience4j.circuitbreaker.slow.calls: 0.0
 The states of the circuit breaker - resilience4j.circuitbreaker.state: 0.0, state: metrics_only
 Total number of not permitted calls - resilience4j.circuitbreakernot.permitted.calls: 0.0

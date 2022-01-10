@@ -138,7 +138,7 @@ class TransactionInstrumentation {
     alertingService.sendAlert(new FraudTransactionAlert(t));
   }
 }
-```
+```text
 We extracted the observation part of the logic into a separate `TransactionInstrumentation` class. This approach is not unreasonable. Compared to the original version, it aids the *flexibility* and the *testability* of the code, as we will discuss below in this article. (In fact, I took the idea directly from the excellent article about [domain-oriented observability](https://martinfowler.com/articles/domain-oriented-observability.html) by Pete Hodgson.)
 
 On the other hand, it smears the logic so thin across multiple classes and methods that it would take longer to learn it than the original, at least for me.
@@ -165,7 +165,7 @@ class TransactionProcessor {
 
   private boolean isFraud(Transaction t) { ... }
 }
-```
+```text
 To allow the operators of the system to disable alerting, we can create a `NoOpAlertingService` and make it configurable for `TransactionProcessor` via dependency injection. On the other hand, if the `sendAlert()` responsibility was not separated into the `AlertingService` interface, but rather was just a method in `TransactionProcessor`, to make alerting configurable we would have to add a boolean field `sendAlerts` to the class.
 
 Imagine now that we want to analyze historical transactions in a batch process. Since the `isFraud()` method (that is, the fraud detection responsibility) is a part of `TransactionProcessor`, this method is called during batch processing. If online and batch processing require different initialization logic, `TransactionProcessor` has to provide a different constructor for each use case. On the other hand, if fraud detection was a concern of a separate `FraudDetection` class, we could prevent `TransactionProcessor` from swelling.
@@ -201,7 +201,7 @@ class TransactionProcessor {
     }
   }
 }
-```
+```text
 In this variant, there is no separate `isFraud()` method. `processTransaction()` combines fraud detection and the reporting logic. 
 
 Then, to test the fraud detection, we may need to mock the `alertingService`, which pollutes the test code with boilerplate. **Not only does it take effort to set up mocks in the first place, but mock-based tests also tend to break every time we change anything in the production code.** Such tests become a permanent maintenance burden.

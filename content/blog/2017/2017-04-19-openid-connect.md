@@ -1,12 +1,11 @@
 ---
-
 title: OpenID Connect
-categories: ["Software Craft"]
-modified: 2017-04-19
-author: david
+categories: ["WIP", "Software Craft"]
+date: 2017-04-19
+authors: [david]
 excerpt: "A short introduction to OpenID Connect - the standard for Identity Management and Single-Sign-On."
-image:
-  auto: 0048-passport
+image: images/stock/0048-passport-1200x628-branded.jpg
+url: openid-connect
 ---
 
 

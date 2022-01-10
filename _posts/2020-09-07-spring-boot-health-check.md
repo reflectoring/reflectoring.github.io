@@ -65,29 +65,29 @@ We added the `actuator` dependency while creating the application from the Initi
 ```
 
 For gradle, we add our dependency as:
-```
+```text
 dependencies {
   compile("org.springframework.boot:spring-boot-starter-actuator")
 }
-```
+```text
 ### Checking the Health Status with Zero Configuration
 We will first build our application created above with Maven or Gradle:
 ```shell
 mvn clean package
-```
+```text
 Running this command will generate the executable in the `fat jar` format containing the `actuator` module. Let us execute this jar with:
 
 ```shell
 java -jar target/usersignup-0.0.1-SNAPSHOT.jar
-```
+```text
 We will now run the application and access the `/health` endpoint using `curl` or by hitting the URL from the browser:
 ```shell
 curl http://localhost:8080/actuator/health
-```
+```text
 Running the curl command gives the output:
 ```shell
 {"status":"UP"}
-```
+```text
 The status `UP` indicates the application is running. This is derived from an evaluation of the health of multiple components called "health indicators" in a specific order. 
 
 The status will show `DOWN` if any of those health indicator components are 'unhealthy' for example a database is not reachable. 
@@ -100,7 +100,7 @@ To view some more information about the application's health, we will enable the
 ```application.properties
 # Show details of health endpoint
 management.endpoint.health.show-details=always
-```
+```text
 After we compile and run the application, we get the output with details of the components contributing to the health status:
 ```json
 {
@@ -120,7 +120,7 @@ After we compile and run the application, we get the output with details of the 
     }
    }
 }
-```
+```text
 We can see in this output that the health status contains a component named `diskSpace` which is `UP` with details containing the `total`, `free`, and `threshold` space. This `HealthIndicator checks` available disk space and will report a status of DOWN when the `free` space drops below the `threshold` space.
 
 ## Aggregating Health Status from Multiple Health Indicators 
@@ -158,7 +158,7 @@ After we build and run our application as before and check the health status, we
     }
    }
 }
-```
+```text
 The health status is composed of status contributed by multiple components called "health Indicators" in the Actuator vocabulary. 
 
 In our case, the health status is composed of health indicators of disk space and database. 
@@ -188,7 +188,7 @@ The aggregation is done by an implementation of `StatusHealthAggregator` which a
 Spring Boot auto-configures an instance of `SimpleHealthAggregator`. We can provide our own implementation of `StatusHealthAggregator` to supersede the default behavior. 
 
 We can also disable a particular health indicator using `application properties`:
-```
+```text
 management.health.mongo.enabled=false
 ```
 
@@ -236,7 +236,7 @@ public class UrlShortenerServiceHealthIndicator
   }
 
 }
-```
+```text
 In this class, we return the status as `UP` if the URL is reachable, otherwise, we return the `DOWN` status with an error message.
 
 
@@ -272,7 +272,7 @@ public class DatabaseHealthContributor
     return Health.up().build();
   }
 }
-```
+```text
 For checking the health status of the database we execute a query on the `USERS` table used in the `Fetch Users` API.
 
 We will next mark the URL shortener health indicator we created in the previous section with the `HealthContributor` interface:
@@ -282,7 +282,7 @@ public class UrlShortenerServiceHealthIndicator
     implements HealthIndicator, HealthContributor {
 ...
 }
-```
+```text
 We will now create the composite health check of our `Fetch Users` API using the two health contributor components we created above:
 
 ```java
@@ -324,7 +324,7 @@ public class FetchUsersAPIHealthContributor
   }
 
 }
-  ```
+  ```text
 The `FetchUsersAPIHealthContributor` class will publish the health status of `Fetch Users` API as `UP` if:
 
 1.  the URL shortener service is reachable, and 
@@ -347,7 +347,7 @@ With this health indicator of the API added, our health check output now contain
 },
 ...
 }
-```
+```text
 The corresponding error output appears when we introduce an error by specifying a non-existent table: 
 ```json
 "FetchUsersAPI": {
@@ -364,7 +364,7 @@ The corresponding error output appears when we introduce an error by specifying 
       }
    }
 },
-```
+```text
 This output indicates that the Fetch Users API is `out-of-service` and cannot serve requests when the database is not set up although the URL shortener service is available.
 
 Health Indicators can also be grouped for specific purposes. For example, we can have a group for database health and another for the health of our caches.
@@ -384,16 +384,16 @@ We will first add the micrometer SDK for Prometheus:
   <groupId>io.micrometer</groupId>
   <artifactId>micrometer-registry-prometheus</artifactId>
 </dependency>
-```
+```text
 We can integrate with another monitoring system like New Relic similarly by adding `micrometer-registry-newrelic` dependency for metric collection. New Relic in contrast to Prometheus works on a push model so we need to additionally configure credentials for New Relic in the Spring Boot application.
 
 Continuing with our example with Prometheus, we will expose the Prometheus endpoint by updating the `management.endpoints.web.exposure.include` property in our `application.properties`.
 
 ```application.properties
 management.endpoints.web.exposure.include=health,info,prometheus
-```
+```text
 Here is a snippet of the metrics from the prometheus endpoint - `http://localhost:8080/actuator/prometheus`:
-```
+```text
 jvm_threads_daemon_threads 23.0
 jvm_buffer_count_buffers{id="mapped - 'non-volatile memory'",} 0.0
 jvm_buffer_count_buffers{id="mapped",} 0.0
@@ -401,7 +401,7 @@ jvm_buffer_count_buffers{id="direct",} 14.0
 process_files_open_files 33.0
 hikaricp_connections_max{pool="HikariPool-1",} 10.0
 ...
-```
+```text
 Next, we will add the job in Prometheus with the configuration for scraping the above metrics emitted from our application. This configuration will be saved in [prometheus-config.yml](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check/prometheus-config.yml).
 ```yml
   - job_name: 'user sign up'
@@ -409,7 +409,7 @@ Next, we will add the job in Prometheus with the configuration for scraping the 
   scrape_interval: 5s
   static_configs:
   - targets: ['<HOST_NAME>:8080']
-```
+```text
 This configuration will scrape the metrics at 5-second intervals.
 
 We will use Docker to run Prometheus. Specify the IP address of the host machine instead of `localhost` while running in Docker:
@@ -418,7 +418,7 @@ docker run \
 -p 9090:9090 \
 -v prometheus-config.yml:/etc/prometheus/prometheus.yml \
 prom/prometheus
-```
+```text
 Now we can check our application as a target in Prometheus by visiting the URL - `http://localhost:9090/targets`:
 ![Prometheus Targets](/assets/img/posts/spring-boot-health-check/prometheus-ss.png)
 
@@ -433,9 +433,9 @@ Among its many components, the [Kubelet](https://kubernetes.io/docs/concepts/ove
 * **Readiness Check**: The Kubelet uses readiness probes to know when a container is ready to start accepting traffic. 
 
 We will enable these two health checks by setting the property in `application.properties`.
-```
+```text
 management.health.probes.enabled=true
-```
+```text
 After this when we compile and run the application, we can see these two health checks in the output of the health endpoint and also two health groups.
 
 ![Health Groups](/assets/img/posts/spring-boot-health-check/healthprobes-k8s.png)
@@ -455,7 +455,7 @@ readinessProbe:
 We will create these objects in Kubernetes by running 
 ```shell
 kubectl apply -f deployment.yaml
-```
+```text
 For the HTTP probe, the Kubelet process sends an HTTP request to the specified path and port to perform the liveness and readiness checks.
 
 

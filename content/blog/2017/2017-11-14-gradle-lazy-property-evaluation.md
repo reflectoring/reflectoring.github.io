@@ -1,11 +1,11 @@
 ---
 title: "Lazy Evaluation of Gradle Properties"
-categories: ["Java"]
-modified: 2017-11-14
-author: matthias
+categories: ["WIP", "Java"]
+date: 2017-11-14
+authors: [matthias]
 excerpt: "A guide on lazy evaluation in Gradle scripts and when it makes sense to use it."
-image:
-  auto: 0040-hammock
+image: images/stock/0040-hammock-1200x628-branded.jpg
+url: gradle-lazy-property-evaluation
 ---
 
 
@@ -49,7 +49,7 @@ project('B') {
 ```
 
 The above code should do exactly what we want:
-```
+```text
 ./gradlew printArtifactName
 :A:printArtifactName
 Artifact  A-1.0.0.jar
@@ -70,7 +70,7 @@ task printArtifactName {
 }
 ```
 
-```
+```text
 ./gradlew printArtifactName
 :A:printArtifactName
 Artifact  A-1.0.0.jar
@@ -89,7 +89,7 @@ dockerArtifact = "${name}-${version}.${-> artifactExt}"
 
 Now Gradle evaluates `name` and `version` properties eagerly but `artifactExt` gets evaluated lazily **each time** `dockerArtifact` is used.
 Running the modified code again gives us the expected result:
-```
+```text
 ./gradlew printArtifactName
 :A:printArtifactName
 Artifact  A-1.0.0.jar
@@ -143,7 +143,7 @@ As you can see the real difference to lazy String evaluation is how the closure 
 
 Running the modified code again gives us the expected result:
 
-```
+```text
 ./gradlew printArtifactName
 :A:printArtifactName
 Artifact  A-1.0.0.jar

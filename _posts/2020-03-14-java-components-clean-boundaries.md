@@ -63,7 +63,7 @@ Our component has three sub-components: the invoice calculator, the batch job, a
 
 Let's take at the look at the package structure I propose for our billing component:
 
-```
+```text
 billing
 ├── api
 └── internal
@@ -94,7 +94,7 @@ Now, let's look into those packages.
 
 Let's start with the `database` sub-component:
 
-```
+```text
 database
 ├── api
 |   ├── + LineItem
@@ -127,7 +127,7 @@ In the case of the `database` sub-component, for instance, we don't care what da
 
 Let's have a peek into the `batchjob` sub-component, too:
 
-```
+```text
 batchjob
 └── internal
     └── o LoadInvoiceDataBatchJob
@@ -155,7 +155,7 @@ Note that we use Spring's `@Scheduled` annotation to regularly check for new ite
 
 Finally, the content of the top-level `billing` component:
 
-```
+```text
 billing
 ├── api
 |   ├── + Invoice
@@ -197,7 +197,7 @@ Now that we have a clean structure in place, we need dependency injection to wir
 
 To wire everything together to an application, we make use of Spring's Java Config feature and add a `Configuration` class to each module's `internal` package:
 
-```
+```text
 billing
 └── internal
     ├── batchjob

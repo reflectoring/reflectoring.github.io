@@ -51,42 +51,42 @@ Let us create our Spring Boot application from [Spring Initializr](https://start
 
 ### Creating a Docker File
 Next, we containerize this application by adding a `Dockerfile`:
-```
+```text
 FROM adoptopenjdk:11-jre-hotspot
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} application.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/application.jar"]
-```
+```text
 Our Docker file contains a base image from `adoptopenjdk` over which we copy our JAR file and then expose the port `8080` which will listen for requests.
 
 ### Building the Application
 We first build the application with Maven or Gradle. We are using Maven here:
 ```shell
 mvn clean package
-```
+```text
 This creates an executable JAR of the application. We need to convert this executable JAR into a Docker image for running in a Docker engine.
 
 ### Building the Container Image
 Next, we put this executable JAR in a Docker image by running the `docker build` command from the root project directory containing the Docker file created earlier:
 ```shell
 docker build  -t usersignup:v1 .
-```
+```text
 We can see our image listed with the command:
-```
+```text
 docker images 
-```
+```text
 The output of the above command includes our image `usersignup` along with the base image `adoptopenjdk` specified in our Docker file.
 ```shell
 REPOSITORY          TAG                 SIZE
 usersignup          v1                  249MB
 adoptopenjdk        11-jre-hotspot      229MB
-```
+```text
 ### Viewing the Layers Inside the Container Image
 Let us see the stack of layers inside the image. We will use the [dive tool](https://github.com/wagoodman/dive) to view those layers: 
-```
+```text
 dive usersignup:v1
-```
+```text
 Here is part of the output from running the Dive command:
  ![dive screenshot](/assets/img/posts/springboot-docker-image/dive1.png)
 
@@ -123,7 +123,7 @@ Let us use Maven to run the `build-image` goal to build the application and crea
 
 ```shell
 mvn spring-boot:build-image
-```
+```text
 Running this will produce an output similar to:
 ```shell
 [INFO] --- spring-boot-maven-plugin:2.3.3.RELEASE:build-image (default-cli) @ usersignup ---
@@ -137,12 +137,12 @@ Running this will produce an output similar to:
 .. [creator]           docker.io/pratikdas/usersignup:v1
 [INFO] 
 [INFO] Successfully built image 'docker.io/pratikdas/usersignup:v1'
-```
+```text
 From the output, we can see the `paketo Cloud-Native buildpack` being used to build a runnable OCI image. As we did earlier, we can see the image listed as a Docker image by running the command:
 
 ```shell
 docker images 
-```
+```text
 Output:
 ```shell
 REPOSITORY                             SIZE
@@ -161,11 +161,11 @@ We configure the `jib-maven-plugin` in pom.xml:
         <artifactId>jib-maven-plugin</artifactId>
         <version>2.5.2</version>
       </plugin>
-```
+```text
 Next, we trigger the Jib plugin with the Maven command to build the application and create the container image. As before, we are not using any Docker file here:
 ```shell
 mvn compile jib:build -Dimage=<docker registry name>/usersignup:v1
-```
+```text
 We get the following output after running the above Maven command: 
 ```shell
 [INFO] Containerizing application to pratikdas/usersignup:v1...
@@ -176,7 +176,7 @@ We get the following output after running the above Maven command:
 [INFO] Built and pushed image as pratikdas/usersignup:v1
 [INFO] Executing tasks:
 [INFO] [==============================] 100.0% complete
-```
+```text
 The output shows that the container image is built and pushed to the registry.
 
 ## Motivations and Techniques for Building Optimized Images
@@ -214,14 +214,14 @@ Let's have a look at how to build those optimized images for a Spring Boot appli
     </layers>
   </configuration> 
 </plugin>
-```
+```text
 We will use this configuration to generate our container image first with Buildpack and then with Docker in the following sections.
 
 Let us run the Maven `build-image` goal to create the container image: 
 
 ```shell
 mvn spring-boot:build-image
-```
+```text
 If we run Dive to see the layers in the resulting image, we can see the application layer (encircled in red) is much smaller in the range of kilobytes compared to what we had obtained by using the fat JAR format:
 
 ![dive screenshot](/assets/img/posts/springboot-docker-image/dive-buildpack-layer.png)
@@ -234,7 +234,7 @@ Instead of using the Maven or Gradle plugin, we can also create a layered JAR Do
 When we are using Docker, we need to perform two additional steps for extracting the layers and copying those in the final image.  
 
 The contents of the resulting JAR after building with Maven with the layering feature turned on will look like this: 
-```
+```text
 META-INF/
 .
 BOOT-INF/lib/
@@ -242,7 +242,7 @@ BOOT-INF/lib/
 BOOT-INF/lib/spring-boot-jarmode-layertools-2.3.3.RELEASE.jar
 BOOT-INF/classpath.idx
 BOOT-INF/layers.idx
-```
+```text
 The output shows an additional JAR named `spring-boot-jarmode-layertools` and a `layersfle.idx` file. The layering feature is provided by this additional JAR as explained in the next section.
 
 ### Extracting the Dependencies in Separate Layers 
@@ -251,7 +251,7 @@ To  view and extract the layers from our layered JAR, we use a system property `
 
 ```shell
 java -Djarmode=layertools -jar target/usersignup-0.0.1-SNAPSHOT.jar
-```
+```text
 Running this command produces the output containing available command options:
 ```shell
 Usage:
@@ -262,17 +262,17 @@ Available commands:
   extract  Extracts layers from the jar for image creation
   help     Help about any command
 
-```
+```text
 The output shows the commands `list`, `extract`, and `help` with `help` being the default. Let us run the command with the `list` option:
 ```shell
 java -Djarmode=layertools -jar target/usersignup-0.0.1-SNAPSHOT.jar list
-```
+```text
 ```shell
 dependencies
 spring-boot-loader
 snapshot-dependencies
 application
-```
+```text
 We can see the list of dependencies that can be added as layers. 
 
 The default layers are:
@@ -291,7 +291,7 @@ The layers are defined in a `layers.idx` file in the order that they should be a
 We will build the final image in two stages using a method called [multi-stage build](https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds). In the first stage, we will extract the dependencies and in the second stage, we will copy the extracted dependencies to the final image.
 
 Let us modify our Docker file for multi-stage build:
-```
+```text
 # the first stage of our build will extract the layers
 FROM adoptopenjdk:14-jre-hotspot as builder
 WORKDIR application
@@ -308,13 +308,13 @@ COPY --from=builder application/snapshot-dependencies/ ./
 COPY --from=builder application/application/ ./
 ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
 
-```
+```text
 We save this configuration in a separate file - `Dockerfile2`.
 
 We build the Docker image using the command:
-```
+```text
 docker build -f Dockerfile2 -t usersignup:v1 .
-```
+```text
 After running this command, we get this output: 
 ```shell
 Sending build context to Docker daemon  20.41MB
@@ -324,13 +324,13 @@ Step 1/12 : FROM adoptopenjdk:14-jre-hotspot as builder
 .
 Successfully built a9ebf6970841
 Successfully tagged userssignup:v1
-```
+```text
 We can see the Docker image is created with an Image ID and then tagged. 
 
 We finally run the Dive command as before to check the layers inside the generated Docker image. We can specify either the Image ID or tag as input to the Dive command:
 ```shell
 dive userssignup:v1
-```
+```text
 As we can see in the output, the layer containing the application is only 11 kB now with the dependencies cached in separate layers.
 ![dive screenshot](/assets/img/posts/springboot-docker-image/dive2.png)
 
@@ -352,7 +352,7 @@ We can further reduce the application layer size by extracting any of our custom
   - "BOOT-INF/layers.idx"
   - "META-INF/"
 
-```
+```text
 In this file -`layers.idx` we have added a custom dependency with the name `io.myorg` containing organization dependencies pulled from a shared repository.
 
 ## Conclusion
@@ -367,22 +367,22 @@ You can refer to all the source code used in the article on [Github](https://git
 Here is a summary of commands which we used throughout this article for quick reference.
 
 Clean our environment:
-```
+```text
 docker system prune -a
 ```
 
 Build container image with Docker file:
-```
+```text
 docker build -f <Docker file name> -t <tag> .
 ```
 
 Build container image from source (without Dockerfile):
-```
+```text
 mvn spring-boot:build-image
 ```
 
 View layers of dependencies. Ensure the layering feature is enabled in spring-boot-maven-plugin before building the application JAR:
-```
+```text
 java -Djarmode=layertools -jar application.jar list
 ```
 
@@ -392,11 +392,11 @@ Extract layers of dependencies. Ensure the layering feature is enabled in spring
 ```
 
 View list of container images
-```
+```text
 docker images
 ```
 
 View layers inside container image (Ensure dive tool is installed):
-```
+```text
 dive <image ID or image tag>
 ```

@@ -1,11 +1,11 @@
 ---
-
+authors: [tom]
 title: "Accessing a Spring Data REST API with Feign"
-categories: ["Spring Boot"]
-modified: 2017-07-31
+categories: ["WIP", "Spring Boot"]
+date: 2017-07-31
 excerpt: "A tutorial on how to use the Feign REST client library to access an API created with Spring Data REST."
-image:
-  auto: 0036-notebooks
+image: images/stock/0036-notebooks-1200x628-branded.jpg
+url: accessing-spring-data-rest-with-feign
 ---
 
 
@@ -25,7 +25,7 @@ to access a Spring Data REST API with a Spring Boot Feign client.
 
 When accessing a Spring Data REST API with a Feign client you may trip over serialization issues like this one:
 
-```
+```text
 Can not deserialize instance of java.util.ArrayList out of START_OBJECT token
 ```
 

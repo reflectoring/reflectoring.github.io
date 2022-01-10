@@ -127,13 +127,13 @@ To generate a heap dump with `jmap`, we first find the process ID of our running
 24007 
 41927 OOMGenerator
 41949 Jps
-```
+```text
 After running the `jps` command, we can see the processes are listed in the format “<pid> <MainClass>”.
 
 Next, we run the `jmap` command to generate the heap dump file:
 ```shell
 jmap -dump:live,file=mydump.hprof 41927
-```
+```text
 After running this command the heap dump file with extension `hprof` is created. 
 
 The option `live` is used to collect only the live objects that still have a reference in the running code. With the live option, a full GC is triggered to sweep away unreachable objects and then dump only the live objects.
@@ -149,7 +149,7 @@ Let us run the program with the VM option `HeapDumpOnOutOfMemoryError` from the 
 java -jar target/oomegen-0.0.1-SNAPSHOT.jar \
 -XX:+HeapDumpOnOutOfMemoryError \
 -XX:HeapDumpPath=<File path>hdump.hprof
-```
+```text
 After running our Java program with these `VM` arguments, we get this output:
 ```shell
 Max JVM memory: 2147483648
@@ -163,7 +163,7 @@ Catching out of memory error
 Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
   at io.pratik.OOMGenerator.main(OOMGenerator.java:25)
 
-```
+```text
 As we can see from the output, the heap dump file with the name: `hdump.hprof` is created when the `OutOfMemoryError` occurs.
 
 ### Other Methods of Generating Heap Dumps

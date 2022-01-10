@@ -60,7 +60,7 @@ Here is an example of a route defined in Java DSL using the `RouteBuilder` class
       }
         
     };
-```
+```text
 Here we have defined a route with a JMS queue as a source and a file endpoint as a destination by using the `RouteBuilder` class. The [RouteBuilder](https://www.javadoc.io/doc/org.apache.camel/camel-core/3.0.0-M2/org/apache/camel/builder/RouteBuilder.html) class creates routing rules using the DSL. Instances of `RouteBuilder` class are added to the Camel context.
 
 The same route defined using Spring XML DSL looks like this :
@@ -185,7 +185,7 @@ Next, let us add the Camel Spring Boot starter:
   <groupId>org.apache.camel</groupId>
   <artifactId>camel-spring-boot-starter</artifactId>
 </dependency>
-```
+```text
 Adding the `camel-spring-boot-starter` sets up the Camel Context.
 
 We need to further add the starters for the components required by our Spring Boot application :
@@ -235,7 +235,7 @@ public class FetchProductsRoute extends RouteBuilder {
   }
 
 }
-```
+```text
 Here we are creating the route by defining the Java DSL in a class `FetchProductsRoute` by extending `RouteBuilder` class. We defined the endpoint as `direct:fetchProducts` and provided a route identifier `direct-fetchProducts`. The prefix `direct:` in the name of the endpoint makes it possible to call the route from another Camel route using the `direct` Camel component. 
 
 ### Triggering a Route with Templates
@@ -384,7 +384,7 @@ public class PricingService {
   }
 
 }
-```
+```text
 Here we have defined a route in Java DSL which splits the incoming message (collection of order lines) into individual order line items. Each order line item is sent to the `calculatePrice` method of the `PricingService` class to compute the price of the items.
 
 Next, we have tied up an aggregator after the split step. The aggregator implements the `AggregationStrategy` interface and our aggregation logic is inside the overridden `aggregate()` method. In the `aggregate()` method, we take each of the order line items and consolidate them into a single `order` object. 
@@ -425,7 +425,7 @@ public class RestApiRoute  extends RouteBuilder {
     
   }
 
-```
+```text
 This defines a REST service of type GET with URL mappings `/order/process`.
 
 We then route directly to the Camel endpoint of our route named `direct:fetchProcess` using the Splitter and Aggregator Enterprise Integration pattern that we created earlier using the `to` construct in the DSL. 

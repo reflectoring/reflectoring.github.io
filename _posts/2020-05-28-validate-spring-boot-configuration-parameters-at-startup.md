@@ -26,7 +26,7 @@ We wake up early to a frustrated call. Our client complains about not having rec
 
 Finally, we realize the cause. A typo in the e-mail address we defined in the configuration:
 
-```
+```text
 app.properties.report-email-address = manager.analysisapp.com
 ```
 
@@ -45,7 +45,7 @@ However, to validate them we need to follow a couple of more steps.
 
 First, let's take a look at our `application.properties` file:
 
-```
+```text
 app.properties.name = Analysis Application
 app.properties.send-report-emails = true
 app.properties.report-type = HTML
@@ -90,7 +90,7 @@ class AppConfiguration {
 
 When we start the Spring Boot application now with the (invalid) email address from the example above, the application won't start up:
 
-```
+```text
 ***************************
 APPLICATION FAILED TO START
 ***************************
@@ -127,7 +127,7 @@ class AppProperties {
   private ReportType reportType = ReportType.HTML;
   // ...
 }
-```
+```text
 Even if we don't define any values for the properties `send-report-emails` and `report-type` in `application.properties`, we will now get the default values `Boolean.FALSE` and `ReportType.HTML` respectively.
 
 ### Validate Nested Configuration Objects
@@ -175,7 +175,7 @@ class AppProperties {
 This tells Spring to validate the properties of the nested objects.
 
 Finally, we should change the prefix of the report-related properties to `report.*` in our `application.properties` file as well:
-```
+```text
 ...
 app.properties.report.send-emails = true
 app.properties.report.type = HTML
@@ -234,7 +234,7 @@ class ReportEmailAddressValidator implements Validator {
 
   }
 }
-```
+```text
 Then, we need to register our custom Spring validator with the special method name `configurationPropertiesValidator()`:
 ```java
 @Configuration
@@ -275,7 +275,7 @@ class AppProperties implements Validator {
     // validation logic
   }
 }
-```
+```text
 By doing so, we can implement a different `Validator` implementation for each `@ConfigurationProperties` class.
 
 ## Conclusion

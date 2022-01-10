@@ -58,7 +58,7 @@ To install the JDK of our choice run: `sdk install java <candidate>`. For exampl
 
 SDKMAN! will now download the desired JDK and will ask us if we want to set it as default.
 
-```
+```text
 Downloading: java 15.0.1.j9-adpt
 
 In progress...
@@ -125,7 +125,7 @@ java=15.0.0.hs-adpt
 
 To apply this we just run the `sdk env` command in the folder with the `.sdkmanrc` file:
 
-```
+```text
 Using java version 15.0.0.hs-adpt in this shell
 ``` 
 

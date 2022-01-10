@@ -54,7 +54,7 @@ public class WebClientConfiguration {
         return webClient;
     }
  }
-```
+```text
 In this code snippet, we configure the `WebClient` bean to run requests against an external URL. We will next define a service class where we will inject this `WebClient` bean to call a REST API:
 
 ```java
@@ -69,7 +69,7 @@ public class DataService {
         LOGGER.info("WebClient instance {}", this.webClient);
     }
  }
- ```
+ ```text
 In this code snippet, the `WebClient` bean is injected into the `DataService` class. During testing, a `WebClient` instance configured to use a different URL will be injected rather than the actual `WebClient` bean.
 
 We will now create our test class and annotate it with `SpringBootTest`. **This results in bootstrapping of the full application context containing the beans selected by component scanning.** Due to this, we can inject any bean from the application context by [autowiring](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/beans/factory/annotation/Autowired.html) the bean into our test class:
@@ -82,7 +82,7 @@ class TestConfigurationExampleAppTests {
     private DataService dataService;
     ...
  }
-```
+```text
 In this code snippet, the `DataService` bean injected in the test class uses the `WebClient` bean configured with an external URL, which is defined in the property `data.service.endpoint` located in the properties file `test.properties`. **This makes our unit test dependent on an external dependency**, because the `WebClient` is accessing a remote URL. This might fail if we run our test as part of any automated test or in any other environment with restricted connectivity. 
 
 ## Configuring a Test with `@TestConfiguration`
@@ -116,7 +116,7 @@ class TestConfigurationExampleAppTests {
     private DataService dataService;
     ...
 }
-```
+```text
 Here the `DataService` bean is injected in the test class and uses the `WebClient` bean configured in the test configuration class with `@TestConfiguration` annotation with local URL. This way we can execute our unit test without any dependency on an external system. 
 
 We are also overriding the behavior of the `WebClient` bean to point to `localhost` so that we can use a local instance of the REST API only for unit testing. 
@@ -135,7 +135,7 @@ We enable this feature by enabling the application property `spring.main.allow-b
 
 ```properties
 spring.main.allow-bean-definition-overriding=true
-```
+```text
 Here we are setting the application property `spring.main.allow-bean-definition-overriding` to `true` in our resource file:`test.properties` under test to enable bean overriding feature during testing.
 
 ## Component Scanning Behavior
@@ -175,7 +175,7 @@ public class WebClientTestConfiguration {
 class TestConfigurationExampleAppTests {
  // Test case implementations
 }
-```
+```text
 In this code snippet, our test configuration is defined in a separate class `WebClientTestConfiguration` which is annotated with the `@TestConfiguration` annotation. We then use the `Import` annotation in our test class `TestConfigurationExampleAppTests` to import this test configuration.
 
 We should use the autowired injection to access the bean definitions declared in imported `@TestConfiguration` classes.
@@ -204,7 +204,7 @@ public class UsingStaticInnerTestConfiguration {
  // Test methods of dataService
 
 }
-```
+```text
 The test configuration is defined as a static inner class in this test. Here we do not need to import the test configuration explicitly.
 
 

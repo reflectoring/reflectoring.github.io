@@ -1,12 +1,13 @@
 ---
+authors: [tom]
 title: "Publishing Open Source Releases with Gradle"
-categories: ["Java"]
-modified: 2017-12-04
+categories: ["WIP", "Java"]
+date: 2017-12-04
 excerpt: "When working on an open source Java project, you always come to the point where 
           you want to share your work with the developer community. This article gives a 
           step-by-step guide on how to publish your artifacts Bintray."
-image:
-  auto: 0038-package
+image: images/stock/0038-package-1200x628-branded.jpg
+url: guide-publishing-to-bintray-with-gradle
 ---
 
 
@@ -218,7 +219,7 @@ into the same repository, you could create a package for each of them.
 ## Upload!
 You can run the build and upload the artifacts on Bintray by running
 
-```
+```text
 ./gradlew bintrayUpload -Dbintray.user=<YOUR_USER_NAME> -Dbintray.key=<YOUR_API_KEY>
 ```
  

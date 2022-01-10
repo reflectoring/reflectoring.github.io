@@ -48,7 +48,7 @@ public class User {
   private String name;
 
 }
-```
+```text
 In order to reduce boilerplate code, we use [Lombok's](https://projectlombok.org/) `@Data` annotation to
 automatically generate getters and setters for us.
 

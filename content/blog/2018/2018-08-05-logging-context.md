@@ -30,7 +30,7 @@ the connection to the cloud database.
 
 The root cause information I got from the log was this:
 
-```
+```text
 Caused by: java.net.SocketTimeoutException: connect timed out
         at java.net.PlainSocketImpl.socketConnect(Native Method) ~[na:1.8.0_171]
         at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350) ~[na:1.8.0_171]
@@ -64,13 +64,13 @@ If these "not found" errors are being logged, the log should contain:
 
 **Bad Example**:
 
-```
+```text
 User not found.
 ```
 
 **Good Examples**:
 
-```
+```text
 User with ID '42' was not found.
 No Contract found for client '42'.
 ```
@@ -85,13 +85,13 @@ information that should be contained when logging an exception:
 
 **Bad Example**:
 
-```
+```text
 Registration failed.
 ```
 
 **Good Examples**:
 
-```
+```text
 Registration failed because the user name 'superman42' is already taken.
 Registration failed due to database error: 
   (stacktrace of root exception)
@@ -118,14 +118,14 @@ client can directly see what went wrong. But even then, clients will ask questio
 we can be prepared by having set up good logging.
 
 **Bad Examples**:
-```
+```text
 Validation failed.
 Validation failed for field "name".
 Validation failed: field must not be null.
 ```
 
 **Good Examples**:
-```
+```text
 Registration failed: field "name" must not be null.
 Registration failed due to the following reasons: 
   "age" must be a number; 
@@ -143,13 +143,13 @@ help in a log message:
 * the new state of the entity.
 
 **Bad Examples**:
-```
+```text
 Status changed.
 Status changed to "PROCESSED".
 ```
 
 **Good Example**:
-```
+```text
 Status of Job "42" changed from "IN_PROGRESS" to "PROCESSED".
 ```
 
@@ -166,13 +166,13 @@ When a configuration parameter changes during the life time of the application
 it should be logged just like a [status change](#status-changes). 
 
 **Bad Example**:
-```
+```text
 Parameter "waitTime" has not been set.
 Parameter "timeout" has been set.
 ```
 
 **Good Examples**:
-```
+```text
 Parameter "waitTime" falls back to default value "5".
 Parameter "timeout" set to "10". 
 ```
@@ -190,13 +190,13 @@ Note that if the trace log is automatically processed to gather statistics about
 it's obviously better to log the execution time in milliseconds instead of human-readable form. 
 
 **Bad Example**:
-```
+```text
 Took 543ms to finish.
-```
+```text
 (Yes, I actually stumble over log messages like that in production code from time to time... .)
 
 **Good Example**:
-```
+```text
 Method "FooBar.myMethod()" took "1s 345ms" to finish.
 FooBar.myMethod() processed "432" records in "1s 345ms".
 ```
@@ -217,13 +217,13 @@ to the log can help when analyzing them:
 * the success status of the job (success / failure)
 
 **Bad Examples**:
-```
+```text
 Batch Job finished.
 Batch Job "SendNewsletter" finished in 5123ms.
 ```
 
 **Good Examples**:
-```
+```text
 Batch Job "SendNewsLetter" sent "3456" mails in "5s 123ms". 
   324 mails were not sent due to an invalid mail address.  
 ```

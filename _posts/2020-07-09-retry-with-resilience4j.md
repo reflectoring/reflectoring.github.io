@@ -128,7 +128,7 @@ List<Flight> flights = retry.executeSupplier(
 
 Here's sample output showing the first request failing and then succeeding on the second attempt:
 
-```
+```text
 Searching for flights; current time = 20:51:34 975
 Operation failed
 Searching for flights; current time = 20:51:36 985
@@ -140,7 +140,7 @@ Flight search successful
 
 Now, suppose we want to retry for both checked and unchecked exceptions. Let's say we're calling `FlightSearchService.searchFlightsThrowingException()` which can throw a checked `Exception`. Since a `Supplier` cannot throw a checked exception, we would get a compiler error on this line:
 
-```
+```text
 Supplier<List<Flight>> flightSearchSupplier = 
   () -> service.searchFlightsThrowingException(request);
 ```
@@ -250,7 +250,7 @@ The `IntervalFunction.ofRandomized()` has a `randomizationFactor` associated wit
 
 The sample output shows this behavior:
 
-```
+```text
 Searching for flights; current time = 20:27:08 729
 Operation failed
 Searching for flights; current time = 20:27:10 643
@@ -277,7 +277,7 @@ RetryConfig config = RetryConfig.custom()
 
 The sample output below shows this behavior:
 
-```
+```text
 Searching for flights; current time = 20:37:02 684
 Operation failed
 Searching for flights; current time = 20:37:03 727
@@ -376,7 +376,7 @@ meterRegistry.forEachMeter(meterConsumer);
 
 Here's some sample output:
 
-```
+```text
 The number of successful calls without a retry attempt - successful_without_retry: 4.0
 The number of failed calls without a retry attempt - failed_without_retry: 0.0
 The number of failed calls after a retry attempt - failed_with_retry: 0.0

@@ -241,7 +241,7 @@ To fix this, I suggest storing the session in the database.
 
 For this, we need to add this dependency to our `build.gradle`:
 
-```
+```text
 dependencies {
   implementation 'org.springframework.session:spring-session-jdbc'
   ...

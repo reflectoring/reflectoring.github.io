@@ -88,7 +88,7 @@ public class ProductController {
  
 }
 
-```
+```text
 The fetch products API is created with the `fetchProducts()` method in this `ProductController` class will accept HTTP GET requests at `http://localhost:8080/products` and respond with a JSON representation of a list of products.
 
 In the next sections, we will enrich this application to capture three metrics with a specific purpose:
@@ -188,7 +188,7 @@ public class MetricTag {
   ...
 }
 
-```
+```text
 In this code snippet, we are establishing the connection to Amazon CloudWatch by setting up the `CloudWatchAsyncClient` with our AWS profile credentials. The request for sending the metric is created in the `putMetricData()` method. 
 
 The metric is created by specifying the name of the metric, and the namespace under which the metrics will be created along with one or more tags associated with the metric called dimensions.
@@ -208,7 +208,7 @@ This enables us to support multiple metrics collectors and switch between them w
 
 ```java
 MeterRegistry registry = new SimpleMeterRegistry();
-```
+```text
 `SimpleMeterRegistry` is a default implementation of `MeterRegistry` bundled with Micrometer. It holds the latest value of each meter in memory and does not export the data to any metrics collector. The diagram here shows the hierarchy and relationships of important classes and interfaces of the Micrometer.
 
 ![CloudWatch Metrics](/assets/img/posts/aws-spring-cloudwatch/micrometer-classes.png)
@@ -251,7 +251,7 @@ Coming back to our application, we will first integrate Micrometer with our Spri
       <groupId>io.micrometer</groupId>
       <artifactId>micrometer-core</artifactId>
     </dependency>
-```
+```text
 This library provides classes for creating the meters and pushing the metrics to the target monitoring system.
 
 We next add the dependency for the target monitoring system. We are using Amazon CloudWatch so we will add a dependency to `micrometer-registry-cloudwatch2` module in our project:
@@ -261,7 +261,7 @@ We next add the dependency for the target monitoring system. We are using Amazon
         <groupId>io.micrometer</groupId> 
         <artifactId>micrometer-registry-cloudwatch2</artifactId> 
     </dependency> 
-```
+```text
 This module uses the AWS Java SDK version 2 to integrate with Amazon CloudWatch. An earlier version of the module named `micrometer-registry-cloudwatch` uses the AWS Java SDK version 1. Version 2 is the recommended version to use.
 
 This library does the transformation from Micrometer meters to the format of the target monitoring system. Here the `micrometer-registry-cloudwatch2` library converts Micrometer meters to CloudWatch metrics. 
@@ -318,7 +318,7 @@ public class AppConfig {
 
 }
 
-```
+```text
 In this code snippet, we have defined `CloudWatchMeterRegistry` as a Spring bean. For creating our registry we are first creating a new `CloudWatchConfig` which is initialized with two configuration properties: `cloudwatch.namespace` and `cloudwatch.step` so that it publishes all metrics to the `productsApp` namespace every minute. 
 
 After configuring the `MeterRegistry`, we will look at how we register and update our meters in the next sections.
@@ -419,7 +419,7 @@ public class ProductController {
   }
 }
 
-```
+```text
 We have set the name of the `Timer` as `execution.time.fetchProducts` when registering in the constructor. In the `fetchProducts` method body we record the execution time by calling the `record()` method. 
 
 ### Registering and Updating a Gauge
@@ -478,7 +478,7 @@ public class PricingEngine {
   }
 
 }
-```
+```text
 As we can see in this code snippet, the price is computed every `70000` milliseconds specified by the  `Scheduled` annotation over the `computePrice()` method.
 
 We have already set up the gauge during registration to track the price automatically by specifying the function `getProductPrice`.
@@ -547,7 +547,7 @@ For sending the metrics to CloudWatch we need to add two properties to our `appl
 ```properties
 management.metrics.export.cloudwatch.namespace=productsApp
 management.metrics.export.cloudwatch.batchSize=10
-```
+```text
 Here we have added a property for namespace where the metrics will be collected in CloudWatch. The other property for `batchsize` is the value of the number of metrics sent in a single batch to CloudWatch.
 Auto-configuration will enable JVM metrics using core Micrometer classes. JVM metrics are published under the meter name starting with "jvm." as shown below:
 

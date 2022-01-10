@@ -222,7 +222,7 @@ that allows Pact to dynamically create one test for each interaction found in th
 the request defined in the interaction verify the result against the pact. 
 
 The test should output something like this in the log:
-```
+```text
 Verifying a pact between ui and userservice
   Given provider accepts a new person
   a request to POST a person

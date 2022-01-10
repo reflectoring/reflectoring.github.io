@@ -62,7 +62,7 @@ The following steps will help to pinpoint the problem:
 First, we need to find out where the class containing the method in question comes from. We find this information
 in the error message of the `NoSuchMethodError`:
 
-```
+```text
 Exception in thread "main" java.lang.NoSuchMethodError: 
   io.reflectoring.nosuchmethod.Service.sayHello(Ljava/lang/String;)Ljava/lang/String;
 ```
@@ -73,7 +73,7 @@ above, we can see that it's the `Service` class from our own codebase and not a 
 If we have trouble finding the JAR file of the class, we can add the Java option `-verbose:class` when running
 our application. **This will cause Java to print out all classes and the JARs they have been loaded from**:
 
-```
+```text
 [Loaded io.reflectoring.nosuchmethod.Service from file:
   /C:/daten/workspaces/code-examples2/patterns/build/libs/java-1.0.jar]
 
@@ -84,7 +84,7 @@ our application. **This will cause Java to print out all classes and the JARs th
 Next, we want find out where the method is being called. This information is available in the first element of
 the stack trace:
 
-```
+```text
 Exception in thread "main" java.lang.NoSuchMethodError: 
   io.reflectoring.nosuchmethod.Service.sayHello(Ljava/lang/String;)Ljava/lang/String;
   at io.reflectoring.nosuchmethod.ProvokeNoSuchMethodError.main(ProvokeNoSuchMethodError.java:7)
@@ -101,7 +101,7 @@ Now that we know where the `NoSuchMethodError` is provoked and what method is mi
 
 In Gradle, we can call:
 
-```
+```text
 ./gradlew dependencies > dependencies.txt
 ```
 
@@ -116,7 +116,7 @@ that tries to call this method**.
 
 Usually we'll find an output like this somewhere:
 
-```
+```text
 \--- org.springframework.retry:spring-retry:1.2.2.RELEASE
 |     \--- org.springframework:spring-core:4.3.13.RELEASE -> 5.0.8.RELEASE
 ``` 

@@ -47,14 +47,14 @@ LocalStack usually runs inside a Docker container, but we can also run it as a P
 
 We first install the LocalStack package using pip:
 
-```
+```text
 pip install localstack
-```
+```text
 We then start localstack with the "start" command as shown below:
 
-```
+```text
 localstack start
-```
+```text
 This will start LocalStack inside a Docker container.
 
 ### Running LocalStack With Docker
@@ -62,7 +62,7 @@ We can also run LocalStack directly as a Docker image either with the Docker run
 
 We will use `docker-compose`. For that, we download the base version of `docker-compose.yml` from the [GitHub repository of LocalStack](https://github.com/localstack/localstack/blob/master/docker-compose.yml) and customize it as shown in the next section or run it without changes if we prefer to use the default configuration:
 
-```
+```text
 TMPDIR=/private$TMPDIR docker-compose up
 ```
 
@@ -73,7 +73,7 @@ The default behavior of LocalStack is to spin up all the [supported services](ht
 
 The default port 4566 can be overridden by setting the environment variable EDGE_PORT. We can also configure LocalStack to spin up a limited set of services by setting a comma-separated list of service names as value for the environment variable SERVICES:
 
-```
+```text
 version: '2.1'
 
 services:
@@ -98,7 +98,7 @@ The AWS SDK and CLI are an integral part of our toolset for building application
 Both the AWS SDK and the CLI provide an option of overriding the URL of the AWS API. We usually use this to specify the URL of our proxy server when connecting to AWS services from behind a corporate proxy server. We will use this same feature in our local environment for connecting to LocalStack.
 
 We do this in the AWS CLI using commands like this:
-```
+```text
 aws --endpointurl http://localhost:4956 kinesis list-streams
 ```
 
@@ -122,7 +122,7 @@ Here, we have overridden the AWS endpoint of S3 by providing the value of the UR
 
 **We start by creating a fake profile in the AWS CLI** so that we can later use the AWS CLI for invoking the services provided by LocalStack:
 
-```
+```text
 aws configure --profile localstack
 ```
 
@@ -136,7 +136,7 @@ Unlike AWS, LocalStack does not validate these credentials but complains if no p
 
 With our profile created, **we proceed to execute the AWS CLI commands** by passing an additional parameter for overriding the endpoint URL:
 
-```
+```text
 aws s3 --endpoint-url http://localhost:4566 create-bucket io.pratik.mybucket
 ```
 
@@ -144,7 +144,7 @@ aws s3 --endpoint-url http://localhost:4566 create-bucket io.pratik.mybucket
 
 We can also execute a regular CloudFormation template that describes multiple AWS resources:
 
-```
+```text
 aws cloudformation create-stack \
   --endpoint-url http://localhost:4566 \
   --stack-name samplestack \
@@ -263,7 +263,7 @@ public class CustomerProfileStore {
         return dynamoDB;
     }
     
-```
+```text
 We inject the URL of LocalStack from the configuration parameter `aws.local.endpoint`. The value is set only when we run our application using the local profile, else it has the default value `null`. 
 
 In the method `getDdbClient()`, we pass this variable to the `endpointOverride()` method in the DynamoDbClientBuilder class only if the variable `awsLocalEndpoint` has a value which is the case when using the local profile.
@@ -276,7 +276,7 @@ First, we start LocalStack with `docker-compose` as we did before.
 
 Next, We create our resources with the CloudFormation service:
 
-```
+```text
 aws cloudformation create-stack \
   --endpoint-url http://localhost:4566 \
   --stack-name samplestack \
@@ -287,13 +287,13 @@ aws cloudformation create-stack \
 Here we define the S3 bucket and DynamoDB table in a CloudFormation Template file - [sample.yaml](https://github.com/thombergs/code-examples/tree/master/aws/localstack/sample.yaml).
 After creating our resources, we run our Spring Boot application with the spring profile named "local":
 
-```
+```text
 java -Dspring.profiles.active=local -jar target/customerregistration-1.0.jar
 ```
 
 I have set 8085 as the port for my application. I tested my API by sending the request using curl. You can also use Postman or any other REST client:
 
-```
+```text
 curl -X POST 
      -H "Content-Type: application/json" 
      -d '{"firstName":"Peter","lastName":"Parker", 

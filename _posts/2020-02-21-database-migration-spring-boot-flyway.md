@@ -50,7 +50,7 @@ Flyway tries to find user-provided migrations both on the filesystem and on the 
 
 Flyway has a [naming convention](https://flywaydb.org/documentation/migrations#naming) for database migration scripts which can be adjusted to our needs using the following [configuration properties](https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#data-migration-properties) in `application.properties` (or `application.yml`):
 
-```
+```text
 spring.flyway.sql-migration-prefix=V
 spring.flyway.repeatable-sql-migration-prefix=R
 spring.flyway.sql-migration-separator=__
@@ -136,7 +136,7 @@ implementation 'org.flywaydb:flyway-core'
 
 In case we put our migrations in different locations from the default folder, we can provide a comma-separated list of one or more `classpath:` or `filesystem:` locations in the `spring.flyway.locations` property in `application.properties`:
 
-```
+```text
 spring.flyway.locations=classpath:db/migration,filesystem:/another/migration/directory
 ```
 
@@ -209,21 +209,21 @@ Next, we should create our SQL-based migrations in a folder named `sql` or `jars
  
 As with other running options, we can override the default configuration by modifying the `flyway.conf` file located in the `conf` folder. Here is a minimal configuration for H2 database:
 
-```
+```text
 flyway.url=jdbc:h2:mem:
 flyway.user=sa
 ```
 
 Calling the Flyway executable is different for each operating system. On macOS/Linux we must call:
 
-```
+```text
 cd flyway-<version>
 ./flyway migrate
 ```
 
 On Windows:
 
-```
+```text
 cd flyway-<version>
 flyway.cmd migrate
 ```
@@ -239,7 +239,7 @@ CREATE TABLE ${schema_name}.test_user(
 
 By default, we can use Ant-style placeholders, but when we run Flyway with Spring Boot, we can easily override it by changing the following properties in `application.properties`:
 
-```
+```text
 spring.flyway.placeholder-prefix=${
 spring.flyway.placeholder-replacement=true
 spring.flyway.placeholder-suffix=}
@@ -276,7 +276,7 @@ Repair of failed migration in Schema History table "PUBLIC"."flyway_schema_histo
 Repairing Schema History table for version 1 (Description: init, Type: SQL, Checksum: -1438254535)  ...
 Successfully repaired schema history table "PUBLIC"."flyway_schema_history" (execution time 00:00.026s).
 Manual cleanup of the remaining effects the failed migration may still be required.
-```
+```text
 Flyway now has updated the checksum of migration script version 1 to the local value so that future migrations won't cause this error again.
 
 ### Support of Undo

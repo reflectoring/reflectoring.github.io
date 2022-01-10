@@ -49,7 +49,7 @@ The commit message should describe what changes our commit makes to the behavior
 ### Active Voice
  **Use the imperative, present tense**. It is easier to read and scan quickly:
 
-```
+```text
 Right: Add feature to alert admin for new user registration
 Wrong: Added feature ... (past tense)
 ```
@@ -72,7 +72,7 @@ Let's start with Git conventions. Other conventions usually have the Git convent
 **Git suggests a commit message should have three parts including a subject, a description, and a ticket number.** 
 Let's see the exact template mentioned on [Git's website](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration):
 
-```
+```text
 Subject line (try to keep under 50 characters)
 
 Multi-line description of commit,
@@ -103,7 +103,7 @@ As we'll see, if we follow semantic versioning consistently, generating the vers
 ### Conventional Commits Structure
 The general structure of a conventional commit message is this:
 
-```
+```text
 [type] [optional scope]: [description]
 
 [optional body]
@@ -125,7 +125,7 @@ The [Angular commit message format](https://github.com/angular/angular/blob/mast
 consist of a header, a body, and a footer with a blank line between each section because tools like `rebase` in Git 
 get confused if we run them together without space.
 
-```
+```text
 [type] [optional scope]: [short summary]
 
 [body] - at least 20 characters up to 72, optional only for docs
@@ -152,7 +152,7 @@ As Chris Beams mentions [in his article about commit messages](https://chris.bea
 **If applied, this commit will...** add authorization for document access
 
 Let's look at some summary examples:
-```
+```text
 Right: fix: add authorization for document access
 Wrong: fix: Add authorization for document access (capitalized)
 Wrong: fix: added authorization for document access (not present tense)
@@ -182,7 +182,7 @@ In each Example, we describe a scenario and then show the shape of the commit me
 We added a feature to the codebase. It gets the mobile number from the user and adds it to the user table.
 All positive and negative tests are ready except one. It should check that a user is not allowed to enter characters as the mobile number. We add this test scenario and then commit it with this message:
 
-```
+```text
 test: add negative test for entering mobile number
 
 add test scenario to check if entering character as mobile number is forbidden 
@@ -196,7 +196,7 @@ So we did the refactoring and now the new input is mandatory. This means the cli
 the API does not respond. This refactoring made a MAJOR change that is not backward-compatible. We commit our change with
 this commit message:
 
-```
+```text
 refactor!: add terminal field in the payment API  
 
 BREAKING CHANGE: add the terminal field as a mandatory field to be able to buy products by different terminal numbers
@@ -210,7 +210,7 @@ PAYM-130
 ### Example Three
 We add another language support to our codebase. We can use a scope in our commit message like this:
 
-```
+```text
 feat(lang): add french language
 ```
 

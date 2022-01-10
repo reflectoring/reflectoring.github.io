@@ -50,7 +50,7 @@ public class LambdaExpressions {
         return selectedCars;
     }
 }
-```
+```text
 To implement this, we are creating a static function that accepts a `List` of cars. It should return a filtered list according to a specified condition.
 #### Using a Stream and a Lambda Expression
 We have the same problem as in the [previous example](#the-world-before-lambda-expressions). 
@@ -65,7 +65,7 @@ public class LambdaExpressions {
                 .collect(Collectors.toList());
     }
 }
-```
+```text
 We need to transfer the list of cars into a stream by calling the `stream()` method. Inside the `filter()` method we are setting our condition. We are evaluating every entry against the desired condition. We are keeping only those entries that have less than 50,000 kilometers. The last thing that we need to do is to wrap it up into a list.
 
 More about lambda expressions can be found in the [docs](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html).
@@ -88,7 +88,7 @@ public class MethodReference {
             cars.stream().map(car -> car.toString())
                     .collect(Collectors.toList());
 }
-```
+```text
 We are using a lambda expression to call the `toString()` method on each car.
 #### Using a Method Reference 
 Now, let us see how to use a method reference in the same situation:
@@ -97,7 +97,7 @@ public class MethodReference {
     List<String> methodReference = cars.stream().map(Car::toString)
             .collect(Collectors.toList());
 }
-```
+```text
 We are, again, using a lambda expression, but now we call the `toString()` method by method reference. We can see how it is more concise and easier to read. 
 
 To read more about method reference please look at the [docs](https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html).
@@ -136,9 +136,9 @@ public class DefaultMethods {
         void log(String message, Date date);
     }
 }
-```
+```text
 We are adding a new method but not implementing it inside all client classes. The compiler will fail with exception:
-```
+```text
 Class 'LoggingImplementation' must either be declared abstract 
 or implement abstract method 'log(String, Date)' in 'Logging'`.
 ``` 
@@ -157,7 +157,7 @@ public class DefaultMethods {
         }
     }
 }
-```
+```text
 Putting the `default` keyword allows us to add the implementation of the method inside the interface. Now, our `LoggingImplementation` class does not fail with a compiler error even though we didn't implement this new method inside of it. 
 
 To read more about default methods please refer to the [docs](https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html).
@@ -181,7 +181,7 @@ public class TypeAnnotations {
         @NotNull String userName = args[0];
     }
 }
-```
+```text
 We are using annotation on the local variable definition here. A compile-time annotation processor could now read the `@NotNull` annotation and throw an error when the string is null.
 
 #### Constructor Call
@@ -195,7 +195,7 @@ public class TypeAnnotations {
                         Collectors.toList()));
     }
 }
-```
+```text
 This is the perfect example of how to use type annotations on a constructor. Again, an annotation processor can evaluate the annotation and check if the array list is not empty.
 
 #### Generic Type
@@ -208,7 +208,7 @@ public class TypeAnnotations {
         List<@Email String> emails;
     }
 }
-```
+```text
 This is a definition of a list of email addresses. We use `@Email` annotation that ensures that every record inside this list is in the desired format.
 
 A tool could use reflection to evaluate the annotation and check that each of the elements in the list is a valid email address.
@@ -233,7 +233,7 @@ public class RepeatingAnnotations {
         Notify[] value();
     }
 }
-```
+```text
 We create `@Notify` as a regular annotation, but we add the `@Repeatable` (meta-)annotation to it. Additionally, we have to create a "container" annotation `Notifications` that contains an array of `Notify` objects. An annotation processor can now get access to all repeating `Notify` annotations through the container annotation `Noifications`.
 
 Please note that this is a mock annotation just for demonstration purposes. This annotation will not send emails without an annotation processor that reads it and then sends emails.
@@ -252,7 +252,7 @@ public class UserNotAllowedForThisActionException
 
     }
 }
-```
+```text
 We have our custom exception class that we will throw whenever a user tries to do something that the user is not allowed. Our annotations to this class say that we want to notify two emails when code throws this exception.
 
 To read more about repeating annotations please refer to the [docs](https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html).
@@ -293,7 +293,7 @@ We are using the `hello` module to print the word: "Hello". Inside, we call the 
 module world.module {
     exports com.reflectoring.io.app.world;
 }
-```
+```text
 We use the keyword `module` with the module name to reference the module. 
 
 The next keyword that we use is `exports`. It tells the module system that we are making our `com.reflectoring.io.app.world` package visible outside of our module. 
@@ -317,7 +317,7 @@ After we created and exported the `world` module, we can proceed with creating t
 module hello.module {
     requires world.module;
 }
-```
+```text
 We define dependencies using `requires` keyword. We are referencing our newly created, `hello.module`. Packages that are not exported are, by default, module private and cannot be seen from outside of the module. 
 
 To read more about the Java module system please refer to [the docs](https://openjdk.java.net/jeps/261)
@@ -344,7 +344,7 @@ public class TryWithResources {
         }
     }
 }
-```
+```text
 In `finally` block, we would call `close()`. The `finally` block ensures that the reader is always properly closed.
 
 #### Closing a Resource with `try-with-resources`
@@ -361,7 +361,7 @@ public class TryWithResources {
         }
     }
 }
-```
+```text
 Inside the `try` definition, we are assigning our previously created reader to the new variable. Now we know that our reader will get closed every time.
 
 To read more about the try-with-resources feature please refer to the [docs](https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html).
@@ -385,11 +385,11 @@ public class DiamondOperator {
         public abstract T append(String a, String b);
     }
 }
-```
+```text
 We use the diamond operator to omit type on the constructor call `new StringAppender<>()`.
 Since we are using Java 8, in this example we will get a compiler error:
 
-```
+```text
 java: cannot infer type arguments for 
 com.reflectoring.io.java9.DiamondOperator.StringAppender<T>
 
@@ -447,7 +447,7 @@ public class PrivateInterfaceMethods {
         }
     }
 }
-```
+```text
 We are using `BufferedReader` to read the file containing default names that we share with the client.
 To encapsulate our code and, possibly, make it reusable in other methods, we decided to move code for reading and saving names into a `List` to the separate method.
 This method is private and, now, we can use it anywhere inside our interface. 
@@ -480,7 +480,7 @@ public class LocalTypeVar {
         }
     }
 }
-```
+```text
 This is the type of code that we can see in most cases in Java. We use explicit types to make sure that we know what the method expects.
 #### Implicit Typing with `var` 
 Now, we will look into the same example, but using the `var` keyword that Java 10 introduced. We still want to create several person objects and put them in a list. After that, we will go through that list and print out the name of each person:
@@ -501,7 +501,7 @@ public class LocalTypeVar {
         }
     }
 }
-```
+```text
 We can see some of the most typical examples of using `var` type on local variables. First, we use them for defining local variables. It can be a standalone object or even a list with the diamond operator.
 
 For more details about local type inference please visit [the docs](https://docs.oracle.com/en/java/javase/17/language/local-variable-type-inference.html).
@@ -528,7 +528,7 @@ public class LocalTypeVarLambda {
         System.out.println(filteredPersons);
     }
 }
-```
+```text
 Inside the `filter()` method we are using `var` to infer the type instead of explicitly mentioning the type. 
 
 Please note that it doesn't make a difference if we use `var` or type inference without it. It will work the same for both.
@@ -563,7 +563,7 @@ public class SwitchExpression {
         }
     }
 }
-```
+```text
 We need to make sure that we put a break statement inside our case code block. Failing it will result in checking on other conditions after we match the first one.
 #### Using Switch Expressions
 We will look into the same method as before. The user wants to send the month and get the number of days in that month:
@@ -582,7 +582,7 @@ public class SwitchExpression {
         };
     }
 }
-```
+```text
 We are using a bit different notation in the `case` block. We are using `->` instead of the colon. Even though we are not invoking the `break` statement, we will still jump out of the switch statement on the first valid condition.
 
 This will do the same thing as the code shown in [the previous example](#old-way-of-switch-statements).
@@ -612,7 +612,7 @@ public class SwitchExpression {
         };
     }
 }
-```
+```text
 In a multi-line code block, we have to use the `yield` keyword to return a value from a `case` block. 
 
 To read more about using switch expressions please refer to the [docs](https://docs.oracle.com/en/java/javase/14/language/switch-expressions.html).
@@ -640,7 +640,7 @@ public class TextBlocks {
                 "</html>\n");
     }
 }
-```
+```text
 We are formatting our string like in the example above. 
 We need to take care of new lines and append all the lines to a single string.
 #### Example of Using Text Blocks
@@ -665,12 +665,12 @@ public class TextBlocks {
         );
     }
 }
-```
+```text
 We used special syntax for opening and closing quotes: `"""`. This allows us to treat our string as if we are writing it in a .txt file.
 
 There are some rules that we need to abide by when using a text block. We need to make sure that we put a new line after our opening quotes, or our compiler will throw an error: 
 
-```
+```text
 Illegal text block start: missing new line after opening quotes.
 ```
 
@@ -699,7 +699,7 @@ public class PatternMatching {
         } else throw new IllegalArgumentException();
     }
 }
-```
+```text
 Since we are not using pattern matching, we need to cast the vehicle into the correct type inside each `if-else` block. As we can see, it is a typical example of boilerplate code for which Java is famous.
 #### Using Pattern Matching
 Let's see how can we can discard the boilerplate part from the example [above](#example-without-pattern-matching):
@@ -715,7 +715,7 @@ public class PatternMatching {
         } else throw new IllegalArgumentException();
     }
 }
-```
+```text
 One thing to note is the scope of the casted variable. It's visible only within the if statement.
 
 For more information about pattern matching in `instanceof` method please refer to the [docs](https://docs.oracle.com/en/java/javase/16/language/pattern-matching-instanceof-operator.html).
@@ -766,13 +766,13 @@ public class Vehicle {
     @Override
     public String toString() ...
 }
-```
+```text
 There are almost 50 lines of code for object that contains only two properties. The IDE generated this code, but still, it is there and has to be maintained.
 #### Record Definition
 Definition of a vehicle record, with the same two properties, can be done in just one line:
 ```java
 public record VehicleRecord(String code, String engineType) {}
-```
+```text
 This one line has all the same getters, setters, constructors, etc. as from the example [above](#plain-old-java-object-definition).
 One thing to note is that the record class is, by default, final, and we need to comply with that. That means we cannot extend a record class, but most other things are available for us.
 
@@ -787,7 +787,7 @@ We can see a bit of a problem here. We need to expose class but constrain it als
 This is where Java 17 comes into play with sealed classes. The sealed class allows us to make class effectively final for everyone except explicitly mentioned classes.
 ```java
 public sealed class Vehicle permits Bicycle, Car {...}
-```
+```text
 We added a `sealed` modifier to our `Vehicle` class, and we had to add the `permits` keyword with a list of classes that we allow to extend it. 
 After this change, we are still getting errors from the compiler. 
 
@@ -797,7 +797,7 @@ There is one more thing that we need to do here.
 
 ```java
 public final class Bicycle extends Vehicle {...}
-```
+```text
 #### Constraints 
 Several constraints have to be met for the sealed class to work:
 

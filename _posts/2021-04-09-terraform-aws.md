@@ -41,9 +41,9 @@ The [Terraform AWS provider](https://registry.terraform.io/providers/hashicorp/a
 
 For running our examples, let us download a [binary distribution](https://www.terraform.io/downloads.html) for our specific operating system for local installation. We will use this to install the Terraform command-line interface (CLI) where we will execute different Terraform commands. We can check for successful installation by running the below command:
 
-```
+```text
 terraform -v
-```
+```text
 This gives the below output on my Mac OS showing the version of Terraform that is installed:
 ```shell
 Terraform v0.15.0
@@ -68,7 +68,7 @@ All other commands:
   fmt        
 ...
 ...
-```
+```text
 We will use the main commands `init`, `plan`, and `apply` throughout this post.
 
 Since we will be creating resources in AWS, we will also set up the AWS CLI by running the below command:
@@ -83,7 +83,7 @@ AWS Access Key ID [****************2345]: ....
 AWS Secret Access Key [****************2345]: ...
 Default region name [us-east-1]: 
 Default output format [json]: 
-```
+```text
 We are using us-east-1 as the region and JSON as the output format.
 
 For more details about the AWS CLI, have a look at our [CloudFormation article](/getting-started-with-aws-cloudformation/#installing-the-aws-cli).
@@ -132,7 +132,7 @@ resource "aws_instance" "vm-web" {
     Env = "dev"
   }
 }
-```
+```text
 Here we are creating an [AWS EC2 instance](https://aws.amazon.com/ec2/features/) named "vm-web" of type `t2.micro` using an AMI (Amazon Machine Image) `ami-830c94e3`. We also associate two tags with the names `Name` and `Env` with the EC2 instance.
 
 We can also see the three main parts of configuration :
@@ -154,7 +154,7 @@ Let us now create a working directory and save under it the configuration file t
 
 After running this command, we get this output:
 
-```
+```text
 Initializing the backend...
 
 Initializing provider plugins...
@@ -163,7 +163,7 @@ Initializing provider plugins...
 
 Terraform has been successfully initialized!
 ...
-```
+```text
 From the output, we can see initialization messages for the `backend` and `provider plugins`. 
 
 The backend is used to store state information. Here we are using the default local backend, which requires no configuration. 
@@ -182,7 +182,7 @@ Our working directory contents after running the terraform `init` command look l
 │           ├── lock.json
 │           └── terraform-provider-aws_v3.36.0_x5
 └── main.tf
-```
+```text
 The plugin for the configured provider AWS is downloaded and stored as `terraform-provider-aws_v3.36.0_x5`. 
 
 ### Creating the Plan
@@ -192,14 +192,14 @@ This command is a convenient way to check whether the execution plan for a set o
 
 Let us run the `terraform plan` command to generate an execution plan:
 
-```
+```text
 terraform plan -out aws-app-stack-plan
-```
+```text
 We specify the optional `-out` argument to save the generated plan to a file `aws-app-stack-plan` for later execution with `terraform apply`, which can be useful when running terraform in automation environments.
 
 Running the `terraform plan` command gives the following output:
 
-```
+```text
 Refreshing Terraform state in-memory prior to plan...
 The refreshed state will be used to calculate this plan, but will not be
 persisted to local or remote state storage.
@@ -230,7 +230,7 @@ This plan was saved to file `aws-app-stack-plan`
 To perform exactly these actions, run the following command to apply:
     terraform apply "aws-app-stack-plan"
 
-```
+```text
 From the output, we can see that one resource will be added (the EC2 instance), zero changed and zero destroyed. No actual changes to the infrastructure have taken place yet. The plan is saved in the file specified in the output.
 
 
@@ -241,7 +241,7 @@ Let us now run the `terraform apply` command to create or update the resources u
 
 ```shell
 terraform apply "aws-app-stack-plan"
-```
+```text
 After running this command, we can see the resources getting created in the output log:
 ```shell
 aws_instance.vm-web: Creating...
@@ -259,7 +259,7 @@ use the `terraform show` command.
 
 State path: terraform.tfstate
 
-```
+```text
 Here we come across the important concept of `terraform state`. After applying our changes to the infrastructure, the state of the infrastructure is stored locally in a file `terraform.tfstate`.
 
 If we do not give a plan file on the command line, running `terraform apply`  creates a new plan automatically and then prompts for approval to apply it. If the created plan does not include any changes to resources or root module output values then running `terraform apply` exits immediately, without prompting.
@@ -282,7 +282,7 @@ aws_instance.vm-web: Destroying... [id=i-0f07186f0c1481df4]
 aws_instance.vm-web: Destruction complete after 48s
 
 Destroy complete! Resources: 1 destroyed.
-```
+```text
 The output log states the number of resources destroyed: one EC2 instance in this case.
 
 ### Parameterizing the Configuration with Input Variables
@@ -300,7 +300,7 @@ resource "aws_instance" "vm-web" {
     Env = "dev"
   }
 
-```
+```text
 As we can see here, we have introduced a variable by the name `ec2_instance_type` in our resource configuration. We have declared our variable in a file `variables.tf` in a `variable` block as shown here:
 
 ```hcl
@@ -309,7 +309,7 @@ variable "ec2_instance_type" {
   type        = string
 }
 
-```
+```text
 This is a variable of type `string` with an appropriate `description`. We can similarly declare variables of types number and bool and complex types like `list`, `map`, `set` and `tuple`. Some additional arguments we can specify for a variable are `default`, [`validation`](https://www.terraform.io/docs/language/values/variables.html#custom-validation-rules), and [`sensitive`](https://www.terraform.io/docs/language/values/variables.html#suppressing-values-in-cli-output).
 
 When we run the plan, it prompts for the value of the variable:
@@ -318,7 +318,7 @@ terraform plan
 var.ec2_instance_type
   AWS EC2 instance type.
   Enter a value: t2.micro
-```
+```text
 We supply a value `t2.micro` to allow Terraform to create our desired ec2 instance.
 Apart from this method of setting variable values, we can define the values in a variable definition file ending in `.tfvars` and specify the file on the command line.
 
@@ -333,7 +333,7 @@ Every Terraform configuration has at least one module called the root module tha
 
 Let us create two modules for our application stack, one for creating an EC2 instance and another for creating an S3 bucket. Our directory structure now looks like this:
 
-```
+```text
 ├── main.tf
 └── modules
     ├── application
@@ -345,7 +345,7 @@ Let us create two modules for our application stack, one for creating an EC2 ins
         ├── outputs.tf
         └── variables.tf
 
-```
+```text
 Here we have defined two child modules named `application` and `storage` under the `modules` folder which will be invoked from the root module.
 Each of these modules has a configuration file `main.tf` (it can also be any other name) and input variables in `variables.tf` and output variables in `outputs.tf`.
 
@@ -414,7 +414,7 @@ module "app_storage" {
   env = "dev"
 }
 
-```
+```text
 During invocation of the child modules, we are using the `module` construct with a `source` argument containing the path of the child modules `application` and `storage`. Here we are using the local directory to store our modules. 
 
 Other than the local path, we can also use different [source types](https://www.terraform.io/docs/language/modules/sources.html) like a `terraform registry`, `GitHub`, `s3`, etc to reuse modules published by other individuals or teams. When using remote sources, terraform will download these modules when we run `terraform init` and store them in the local directory.
@@ -456,7 +456,7 @@ terraform {
   }
 }
 
-```
+```text
 We configure AWS credentials by adding two environment variables for `access token` and `secret key`:
 
 ![Workspace with CLI driven workflow](/assets/img/posts/aws-terraform/workspace-env-variables.png)

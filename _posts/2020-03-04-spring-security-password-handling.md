@@ -129,7 +129,7 @@ that creates an instance with the default work factor. We can use other construc
 It's recommended to use a `SecureRandom` as salt generator, because it provides a cryptographically strong random number.
 
 The output looks like this:
-```
+```text
 $2a$10$EzbrJCN8wj8M8B5aQiRmiuWqVvnxna73Ccvm38aoneiJb88kkwlH2
 ```
 
@@ -158,7 +158,7 @@ make the password encoding more secure.
 
 The output looks like this:
 
-```
+```text
 lLDINGz0YLUUFQuuj5ChAsq0GNM9yHeUAJiL2Be7WUh43Xo3gmXNaw==
 ```
 
@@ -187,9 +187,9 @@ String encodedPassword = sCryptPasswordEncoder.encode(plainPassword);
 The `scrypt` algorithm can not only configure the CPU cost but also memory cost. This way, we can make an attack even more expensive.
 
 The output looks like this:
-```
+```text
 $e0801$jRlFuIUd6eAZcuM1wKrzswD8TeKPed9wuWf3lwsWkStxHs0DvdpOZQB32cQJnf0lq/dxL+QsbDpSyyc9Pnet1A==$P3imAo3G8k27RccgP5iR/uoP8FgWGSS920YnHj+CRVA=
-```
+```text
 This encoder puts the parameter for work factor and salt in the result string, so there is no additional information to save.
 
 #### `Argon2PasswordEncoder`
@@ -207,7 +207,7 @@ Argon2PasswordEncoder argon2PasswordEncoder = new Argon2PasswordEncoder(
   memory,
   iterations);
 String encodePassword = argon2PasswordEncoder.encode(plainPassword);
-```
+```text
 Argon2 is the winner of [Password Hashing Competition](https://password-hashing.net/) in 2015. This algorithm, too, allows us to tune CPU and memory
 costs. The  Argon2 encoder saves all the parameters in the result string. If we want to use this password encoder,
 we'll have to import the BouncyCastle crypto library. 
@@ -258,7 +258,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   // ...
 
 }
-```
+```text
 This code creates rules that requires authentication for all endpoints except `/registration`
 and enables HTTP basic authentication. 
 
@@ -290,7 +290,7 @@ class DatabaseUserDetailsService implements UserDetailsService {
     return userDetailsMapper.toUserDetails(userCredentials);
   }
 }
-```
+```text
 In the service we implement the method `loadUserByUsername()`, that loads user data from the database.
 
 An implementation of the `AuthenticationProvider` interface will use the `UserDetailsService`  to perform the authentication logic.
@@ -323,7 +323,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   // ...
 
 }
-```
+```text
 We created a `DaoAuthenticationProvider` and passed in a `BCryptPasswordEncoder`.
 That's all we need to do to enable password encoding and password matching.
 
@@ -399,7 +399,7 @@ class DatabaseUserDetailPasswordService
     return userDetailsMapper.toUserDetails(userCredentials);
   }
 }
-```
+```text
 In the method `updatePassword()` we just set the new password to the user in the database.
 
 Second, we make this interface known to `AuthenticationProvider`:
@@ -423,7 +423,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
   // ...
 }
-```
+```text
 That's it. Now, whenever a user starts the authentication, Spring Security compares the work factor in the encoded password
 of the user with the current work factor of `PasswordEncoder`. 
 
@@ -474,14 +474,14 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
   // ...
 }
-```
+```text
 The simplest way is to let `PasswordEncoderFactories` generate the `DelegatingPasswordEncoder` for us. This factory generates a `DelegatingPasswordEncoder` that supports all encoders of Spring Security for matching.
 
 `DelegatingPasswordEncoder` has one default encoder. The `PasswordEncoderFactories` sets
 `BCryptPasswordEncoder` as the default encoder. Now, when user data is saved during registration,
 the password encoder will encode the password and add a prefix at the beginning
 of the result string. The encoded password looks like this:
-```
+```text
 {bcrypt}$2a$10$4V9kA793Pi2xf94dYFgKWuw8ukyETxWb7tZ4/mfco9sWkwvBQndxW
 ```
 
@@ -533,7 +533,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
   // ...
 }
-```
+```text
 This code creates a password encoder that supports `SHA-1` and `scrypt` for matching and uses `scrypt` for encoding new passwords. Now we have users in the database with both password encodings `SHA-1` and `scrypt` and the application supports both.
 
 

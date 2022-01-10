@@ -104,7 +104,7 @@ For configuring Spring Data, let us add a separate Spring Data release train BOM
     </dependencies>
   </dependencyManagement>
 
-```
+```text
 For adding the support for Spring Data, we need to include the module dependency for Spring Data DynamoDB into our Maven configuration.  We do this by adding the module`spring-data-dynamodb` in our `pom.xml`:
 
 ```xml
@@ -113,7 +113,7 @@ For adding the support for Spring Data, we need to include the module dependency
       <artifactId>spring-data-dynamodb</artifactId>
       <version>5.1.0</version>
     </dependency>
-```
+```text
 ### Creating the Configuration
 
 Next let us establish the connectivity with AWS by initializing a bean with our AWS credentials in our Spring configuration:
@@ -264,7 +264,7 @@ First let us include the DynamoDB Enhanced Client module in our application:
       <artifactId>dynamodb-enhanced</artifactId>
       <version>2.16.74</version>
     </dependency>
-```
+```text
 Here we are adding the`dynamodb-enhanced` module as a Maven dependency in our `pom.xml`.
 
 ### Creating the Configuration
@@ -340,7 +340,7 @@ public class Order {
     
 }
 
-```
+```text
 Here we are decorating the `Order` data class with the `@DynamoDB` annotation to designate the class as a DynamoDB bean’. We have also added an annotation `@DynamoDbPartitionKey` for the partition key and another annotation `@DynamoDbSortKey` on the getter for the sort key of the record. 
 
 ### Creating the Repository Class
@@ -460,7 +460,7 @@ public class OrderRepository {
 
 
 }
-```
+```text
 In this snippet, we are calling the `delete`, `scan`, and `query` methods on the mapped object `orderTable`. 
 
 

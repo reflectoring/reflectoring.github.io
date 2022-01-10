@@ -40,7 +40,7 @@ public class JobschedulingApplication {
   }
 
 }
-```
+```text
 Here we have added the `@enableScheduling` annotation to our application class `JobschedulingApplication` to enable scheduling. 
 
 As a best practice we should move this annotation to a dedicated class under a package that contains the code for our scheduled jobs:
@@ -122,7 +122,7 @@ public class PricingEngine {
 
 }
 
-```
+```text
 Here we have scheduled the execution of the `computePrice` method with a fixed delay by setting the  `fixedDelay` attribute to `2000` milliseconds or `2` seconds. 
 
 We also make the method to sleep for `4` seconds with `Thread.sleep()` to simulate the situation of a method that takes longer to execute than the delay interval. The next execution will start only after the previous execution ends at least after `4` seconds, even though the delay interval of 2 seconds is elapsed.
@@ -230,7 +230,7 @@ public class PricingEngine {
   }
 
 }
-```
+```text
 Here we have set the value of `fixedDelayString` as `PT02S` to specify a fixed delay of at least 2 seconds between successive invocations. Similarly, we can use `fixedRateString` to specify a fixed rate in this format. 
 
 ## Externalizing the Interval to a Properties File
@@ -260,10 +260,10 @@ public class PricingEngine {
   }
 
 }
-```
+```text
 ```.properties
 interval=PT02S
-```
+```text
 Here we have set the fixed delay interval as a property in our `application.properties` file. The property named `interval` is set to `2` seconds in the duration format `PT02S`.
 
 ## Using Cron Expressions to Define the Interval
@@ -283,10 +283,10 @@ public class PricingEngine {
   }
 
 }
-```
+```text
 ```.properties
 interval-in-cron=0 * * * * *
-```
+```text
 Here we have specified the interval using a cron expression externalized to a property named `interval-in-cron` defined in our `application.properties` file.
 
 A cron expression is a string of six to seven fields separated by white space to represent triggers on the second, minute, hour, day of the month, month, day of the week, and optionally the year. However, the cron expression in Spring Scheduler is comprised of six fields as shown below:
@@ -324,7 +324,7 @@ public class PricingEngine {
 
 }
 
-```
+```text
 Here we have specified an hourly interval with a cron macro: `hourly` instead of the less readable cron expression `0 0 * * * *`. 
 
 Spring provides the following macros: 
@@ -368,7 +368,7 @@ Let us modify our example by adding the dependencies:
   <scope>runtime</scope>
 </dependency>
 
-```
+```text
 We have added dependencies on the core module `shedlock-spring` along with dependencies on `shedlock-provider-jdbc-template` for jdbc template and on the h2 database to be used as the shared database. In production scenarios, we should use a persistent database like MySQL, Postgres, etc.
 
 Next we update our scheduler configuration to integrate the library with Spring:

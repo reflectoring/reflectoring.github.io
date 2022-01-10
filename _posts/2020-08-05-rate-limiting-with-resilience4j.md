@@ -106,7 +106,7 @@ for (int i=0; i<3; i++) {
 
 The timestamps in the sample output show one request being made every second:
 
-```
+```text
 Searching for flights; current time = 15:29:39 847
 Flight search successful
 [Flight{flightNumber='XY 765', ... }, ... ]
@@ -181,7 +181,7 @@ Supplier<List<Flight>> flightsSupplier
 
 The sample output shows 2 requests being made every second and being limited to 40 requests:
 
-```
+```text
 Searching for flights; current time = 15:13:21 246
 ...
 Searching for flights; current time = 15:13:21 249
@@ -222,7 +222,7 @@ Supplier<List<Flight>> retryingFlightsSupplier =
 
 The sample output shows the request being retried for a `RequestNotPermitted` exception:
 
-```
+```text
 Searching for flights; current time = 17:10:09 218
 ...
 [Flight{flightNumber='XY 765', flightDate='07/31/2020', from='NYC', to='LAX'}, ...]
@@ -247,7 +247,7 @@ limiter.getEventPublisher().onFailure(e -> System.out.println(e.toString()));
 
 The sample output shows what's logged:
 
-```
+```text
 RateLimiterEvent{type=SUCCESSFUL_ACQUIRE, rateLimiterName='flightSearchService', creationTime=2020-07-21T19:14:33.127+05:30}
 ... other lines omitted ...
 RateLimiterEvent{type=FAILED_ACQUIRE, rateLimiterName='flightSearchService', creationTime=2020-07-21T19:14:33.186+05:30}
@@ -289,7 +289,7 @@ meterRegistry.forEachMeter(meterConsumer);
 
 Here's some sample output:
 
-```
+```text
 The number of available permissions - resilience4j.ratelimiter.available.permissions: -6.0
 The number of waiting threads - resilience4j.ratelimiter.waiting_threads: 7.0
 ```

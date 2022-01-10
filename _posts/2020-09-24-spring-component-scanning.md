@@ -91,7 +91,7 @@ The above `BeanViewer` will print all the beans that are registered with the app
 
 As said earlier, Spring Boot does auto scanning for all the packages that fall under the parent package. Let's look at the folder structure:
 
-```
+```text
 |- io.reflectoring.componentscan (main package)
    |- SpringComponentScanningApplication.java
    |- UserService.java (@Service stereotype)
@@ -100,7 +100,7 @@ As said earlier, Spring Boot does auto scanning for all the packages that fall u
 
 We have created a `UserService` class with the `@Service` stereotype in our parent package `io.reflectoring.componentscan`. As said earlier, since these classes are under the parent package where we have our `@SpringBootApplication`-annotated application class, the component will be scanned by default when we start the Spring Boot application:
 
-```
+```text
 ...
 INFO 95832 --- [main] i.reflectoring.componentscan.BeanViewer  : beanViewer
 INFO 95832 --- [main] i.reflectoring.componentscan.BeanViewer  : users
@@ -126,7 +126,7 @@ public class BirdsExplicitScan {
 
 The `birds` package is next to the main package of the application, so it's not caught by Spring Boot's default scanning:
 
-```
+```text
 |- io.reflectoring.componentscan
    |- SpringComponentScanningApplication.java
 |- io.reflectoring.birds
@@ -149,7 +149,7 @@ public class SpringComponentScanningApplication {
 
 When we start the application, we get the following output:
 
-```
+```text
 ...
 INFO 95832 --- [main] i.reflectoring.componentscan.BeanViewer  : beanViewer
 INFO 95832 --- [main] i.reflectoring.componentscan.BeanViewer  : users
@@ -172,7 +172,7 @@ Let's have a look at attributes of the `@ComponentScan` annotation that we can u
 
 To demonstrate the different attributes, let's add some classes to the package `io.reflectoring.vehicles` (which is _not_ a sub package of our application main package `io.reflectoring.componentscan`):
 
-```
+```text
 |- io.reflectoring.componentscan (Main Package)
    |- ExplicitScan.java (@Configuration)
 |- io.reflectoring.birds
@@ -201,7 +201,7 @@ public class ExplicitScan {
 
 If we run the application, we see that all components in the `vehicles` package are included in the application context:
 
-```
+```text
 ...
 INFO 65476 --- [main] i.reflectoring.componentscan.BeanViewer  : hyundai
 INFO 65476 --- [main] i.reflectoring.componentscan.BeanViewer  : spaceX
@@ -241,7 +241,7 @@ In the above example, we have modified our `ExplicitScan` class with `includeFil
 
 Now, only the `Hyundai` and `Tesla` beans are being included in the component scan, because they extend the `Car` class:
 
-```
+```text
 INFO 68628 --- [main] i.reflectoring.componentscan.BeanViewer  : hyundai
 INFO 68628 --- [main] i.reflectoring.componentscan.BeanViewer  : tesla
 ```
@@ -267,7 +267,7 @@ Note that we did not set `useDefaultFilters` to false, so that by default, Sprin
 
 The output shows that the `Hyundai` and `Tesla` beans we excluded and only the other two classes in the package were included in the scan:
 
-```
+```text
 ...
 INFO 97832 --- [main] i.reflectoring.componentscan.BeanViewer  : spaceX
 INFO 97832 --- [main] i.reflectoring.componentscan.BeanViewer  : train

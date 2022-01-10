@@ -275,7 +275,7 @@ creating a contract test for a Node REST provider.
 
 We can now run the provider tests and they should be green:
 
-```
+```text
 npm run test:pact:graphql
 ``` 
 

@@ -1,12 +1,12 @@
 ---
-
+authors: [tom]
 title: Exposing Metrics of a Spring Boot Application for Prometheus
-categories: ["Spring Boot"]
-modified: 2017-05-01
+categories: ["WIP", "Spring Boot"]
+date: 2017-05-01
 excerpt: "A tutorial on using Dropwizard to expose monitoring metrics from within a Spring Boot application
           to be consumed by a Prometheus monitoring server."
-image:
-  auto: 0032-dashboard
+image: images/stock/0032-dashboard-1200x628-branded.jpg
+url: monitoring-spring-boot-with-prometheus
 ---
 
 
@@ -46,7 +46,7 @@ in the time-series database for later querying.
 
 The data format looks pretty simple on first look. A simple `counter` can be expressed like this:
  
-```
+```text
 # HELP counter_name A human-readable help text for the metric
 # TYPE counter_name counter
 counter_name 42
@@ -57,7 +57,7 @@ exposes a `summary` metric that defines the duration of certain requests in cert
 (a quantile of 0.99 meaning that 99% of the requests took less that the value and the other 1% 
 took more):
 
-```
+```text
 # HELP summary_metric A human-readable help text for the metric
 # TYPE summary_metric summary
 summary_metric{quantile="0.5",} 5.0
@@ -87,7 +87,7 @@ be scraped by Prometheus. Thus, we need to transform our metrics into the Promet
 First off, we need to add the following dependencies to our Spring Boot application
 (Gradle notation):
 
-```
+```text
 compile "io.prometheus:simpleclient_spring_boot:0.0.21"
 compile "io.prometheus:simpleclient_hotspot:0.0.21"
 compile "io.prometheus:simpleclient_dropwizard:0.0.21"

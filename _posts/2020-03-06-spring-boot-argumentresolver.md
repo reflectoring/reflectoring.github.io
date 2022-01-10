@@ -85,7 +85,7 @@ This test performs a `GET` request to the endpoint `/repositories/42` and checks
 
 By running the test before having the solution in place, we can make sure that we actually have a problem to solve. It turns out, we do, because running the test will result in an error like this:
 
-```
+```text
 Failed to convert value of type 'java.lang.String' 
   to required type '...GitRepositoryId';
   nested exception is java.lang.IllegalStateException: 
@@ -222,7 +222,7 @@ The second test checks the error path. If the `GitRepositoryFinder` doesn't find
 
 If we run the test without doing anything, we'll get an error like this:
 
-```
+```text
 Caused by: java.lang.AssertionError: Expecting actual not to be null
 ```
 

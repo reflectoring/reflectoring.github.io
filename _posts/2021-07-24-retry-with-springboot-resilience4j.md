@@ -122,7 +122,7 @@ The example we saw in the previous section was for a simple retry.
 
 Here's sample output showing the first request failing and then succeeding on the second attempt:
 
-```
+```text
 Searching for flights; current time = 15:46:42 399
 Operation failed
 Searching for flights; current time = 15:46:44 413
@@ -161,7 +161,7 @@ public List<Flight> searchFlightsThrowingException(SearchRequest request) throws
 
 Here's sample output showing the first two requests failing and then succeeding on the third attempt:
 
-```
+```text
 Searching for flights; current time = 11:41:12 908
 Operation failed, exception occurred
 Searching for flights; current time = 11:41:14 924
@@ -207,7 +207,7 @@ resilience4j:
 
 The sample output shows sample output showing the first request failing and then succeeding on the next attempt:
 
-```
+```text
 Searching for flights; current time = 12:15:11 212
 Operation failed
 Flight data initialization in progress, cannot search at this time
@@ -240,7 +240,7 @@ The `randomizedWaitFactor` determines the range over which the random value will
 
 The sample output shows this behavior:
 
-```
+```text
 Searching for flights; current time = 14:32:48 804
 Operation failed
 Searching for flights; current time = 14:32:50 450
@@ -269,7 +269,7 @@ resilience4j:
 
 The sample output below shows this behavior:
 
-```
+```text
 Searching for flights; current time = 14:49:45 706
 Operation failed
 Searching for flights; current time = 14:49:46 736
@@ -326,7 +326,7 @@ Instead of the `@PostConstruct` method, we could have also done the same in the 
 
 Now, the sample output shows details of the retry event:
 
-```
+```text
 Searching for flights; current time = 18:03:07 198
 Operation failed
 2021-07-20T18:03:07.203944: Retry 'loggedRetryExample', waiting PT2S until attempt '1'. Last attempt failed with exception 'java.lang.RuntimeException: Operation failed'.

@@ -148,7 +148,7 @@ public class Book {
   String author;
   String description;
 }
-```
+```text
 Then, we define the service provider interface for our service:
 ```java
 package org.library.spi;
@@ -157,7 +157,7 @@ public interface Library {
   String getCategory();
   Book getBook(String name);
 }
-```
+```text
 Finally, we create the `LibraryService` class that the client will use to get the books from the library:
 ```java
 public class LibraryService {
@@ -214,7 +214,7 @@ First, we include the dependency to the service API provider in the `pom.xml` fi
   <artifactId>library-service-provider</artifactId>
   <version>1.0-SNAPSHOT</version>
 </dependency>
-```
+```text
 Then we create a class that implements the Library SPI:
 ```java
 package org.library;
@@ -245,7 +245,7 @@ public class ClassicsLibrary implements Library {
     return books.get(name);
   }
 }
-```
+```text
 This implementation provides access to two books through the `getBook()` method.
 Finally, we should create a folder called `META-INF/services` in the resources directory with a file named `org.library.spi.Library`. This file will contain the full class name of the implementation that will be used by the `ServiceLoader` to instantiate it. In our case, it will be `org.library.ClassicsLibrary`.
 
@@ -265,7 +265,7 @@ To start, let's add the `classics-library` submodule to the library-client`pom.x
   <artifactId>classics-library</artifactId>
   <version>1.0-SNAPSHOT</version>
 </dependency>
-```
+```text
 Then, we try to get information about two books:
 ```java
 public class LibraryClient {
@@ -299,7 +299,7 @@ public class LibraryClient {
   }
   
 }
-```
+```text
 The output for this program will be:
 ```markdown
 The library doesn't have the book 'Clean Code' that you need.
@@ -317,13 +317,13 @@ The  "Clean Code" book is not available in the classics library. In order to get
   <artifactId>computer-science-library</artifactId>
   <version>1.0-SNAPSHOT</version>
 </dependency>
-```
+```text
 When we run the demo application we get this output:
 ```markdown
 The book 'Clean Code'was found, here are the details:Book{name='Clean Code...}
 The book 'The Lord of the Rings' was found, here are the details: Book{name='The Lord of ...}
 The library COMPUTER_SCIENCE doesn't have the book 'The Lord of the Rings' that you need.
-```
+```text
 Finally, we get the requested books. **We only had to plug-in a provider to add extra behavior to our program**.
 
 The book "The Lord of the Rings" is not found in the 'COMPUTER_SCIENCE' category when we choose the wrong library during the fetch.

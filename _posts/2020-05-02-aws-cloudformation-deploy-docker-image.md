@@ -622,7 +622,7 @@ Spinning up our stacks is now a matter of running a CLI command. Make sure you h
 
 Let's start with spinning up our network stack:
 
-```
+```text
 aws cloudformation create-stack \
   --stack-name reflectoring-hello-world-network \
   --template-body file://network.yml \
@@ -641,7 +641,7 @@ It should only take a couple of minutes until the stack has reached the status `
 
 One the network stack is up and running, we can create the service stack:
 
-```
+```text
 aws cloudformation create-stack \
   --stack-name reflectoring-hello-world-service \
   --template-body file://service.yml \
@@ -684,14 +684,14 @@ Paste this URL into the browser, and add `/hello` to the end, and you should see
 
 When we're done, we can delete the stacks:
 
-```
+```text
 aws cloudformation delete-stack \
   --stack-name reflectoring-hello-world-service  
 ```
 
 Wait a bit until the service stack has reached the status `DELETE_COMPLETE` before deleting the network stack:
 
-```
+```text
 aws cloudformation delete-stack \
   --stack-name reflectoring-hello-world-network  
 ```
@@ -706,7 +706,7 @@ At some point when starting the service stack, it got stuck in the `CREATE_IN_PR
 
 To find the root cause of this, I went to the ECS page of the AWS console and clicked on the ECS Cluster. In the "Tasks" tab, expand the container under "Containers". Under "Details" I found a reason why the containers weren't starting:
 
-```
+```text
 CannotPullContainerError: Error response from daemon: Get https://registry-1.docker.io/v2/: 
   net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)
 ```
@@ -721,13 +721,13 @@ Another problem I had was that ECS Tasks seemed to be restarting again and again
 
 I observed this on the ECS page of the AWS console in the list of stopped tasks of my service, which grew longer and longer. Sometimes, a task would show an error message next to the `STOPPED` status:
 
-```
+```text
 Task failed ELB health checks in (target-group arn:aws:elasticloadbalancing:<your-target-group>))
 ```
 
 On the EC2 page of the AWS console, under "Load Balancing -> Target Groups -> Select target group -> Registered Targets", I saw this error message: 
 
-```
+```text
 Health checks failed with these codes: [502]
 ```
 

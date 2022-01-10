@@ -44,7 +44,7 @@ IntelliJ comes with native support for EditorConfig, which means that we do not 
 
 Since I would like my Java code to use tab indentation with a tab size of 4, the UTF-8 character set, and trim any trailing whitespaces in my code, I will define the following properties in the `.editorconfig` file to achieve this:
 
-```
+```text
 # Topmost editor config file
 root = true
 

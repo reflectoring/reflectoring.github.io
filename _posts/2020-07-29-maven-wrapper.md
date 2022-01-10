@@ -27,13 +27,13 @@ The Maven Wrapper makes it easy to build our code on any machine, including CI/C
 
 From the project's root directory (where `pom.xml` is located), we run this Maven command:
 
-```
+```text
 mvn -N io.takari:maven:0.7.7:wrapper
 ```
 
 If we wanted to use a particular Maven version, we can specify it like this:
 
-```
+```text
 mvn -N io.takari:maven:wrapper -Dmaven=3.6.3
 ```
 
@@ -41,7 +41,7 @@ This creates two files (`mvnw`, `mvnw.cmd`) and a hidden directory (`.mvn`). `mv
 
 **Along with our code, we check in the two files and the `.mvn` directory and its contents into our source control system like Git**. Here's how other developers can now build the code:
 
-```
+```text
 ./mvnw clean install
 ```
 
@@ -57,7 +57,7 @@ The `.mvn/wrapper` directory has a jar file `maven-wrapper.jar` that downloads t
 
 Where does it download Maven from? This information is present in the `mvn/wrapper/maven-wrapper.properties` file:
 
-```
+```text
 distributionUrl=https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.5.2/apache-maven-3.5.2-bin.zip
 wrapperUrl=https://repo.maven.apache.org/maven2/io/takari/maven-wrapper/0.5.6/maven-wrapper-0.5.6.jar
 ```

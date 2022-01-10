@@ -73,7 +73,7 @@ Let's say we have started our service stack with the `aws cloudformation create-
 
 Now, let's say we have published a new version of our Docker image and want to deploy this new version. We can simply run an `update-stack` command:
 
-```
+```text
 aws cloudformation update-stack \
   --stack-name reflectoring-service \
   --use-previous-template \
@@ -104,7 +104,7 @@ If we want to make sure not to apply accidental changes during an `aws cloudform
 
 To create a changeset, we use the `create-change-set` command:
 
-```
+```text
 aws cloudformation create-change-set \
   --change-set-name update-reflectoring-service \
   --stack-name reflectoring-service \
@@ -120,7 +120,7 @@ Again, we pass the `--use-previous-template` parameter to avoid accidental chang
 
 After having created a changeset, we can review it in the AWS console or with this CLI command:  
 
-```
+```text
 aws cloudformation describe-change-set \
   --stack-name reflectoring-service \
   --change-set-name update-reflectoring-service
@@ -130,7 +130,7 @@ This outputs a bunch of JSON or YAML (depending on your preferences), which list
 
 When we're happy with the changes, we can execute the changeset:
 
-```
+```text
 aws cloudformation execute-change-set \
   --stack-name reflectoring-service \
   --change-set-name update-reflectoring-service
@@ -198,13 +198,13 @@ To create the above file, we need to research some parameters from the CloudForm
 
 Then, we register the task with ECS:
 
-```
+```text
 aws ecs register-task-definition --cli-input-json file://ecs-task.json
 ```
 
 And finally, we update the ECS service that we created with the CloudFormation stack and replace the existing ECS task with the new one:  
 
-```
+```text
 aws ecs update-service \
   --cluster <ecs-cluster-name> \
   --service <ecs-service-name> \

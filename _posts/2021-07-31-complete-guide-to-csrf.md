@@ -61,7 +61,7 @@ The HTML used to create the banner has the below contents:
     <input type="hidden" name="Amount" value="1000" />
     <input type="submit" value="Click here to claim your bonus"/>
   </form>
-```
+```text
 We can notice in this HTML that the form action posts to the vulnerable website `myfriendlybank.com` instead of the malicious website. In this example, the attacker sets the request parameters: `TransferAccount` and `Amount` to values that are unknown to the actual user.
 
 4. The user is enticed to claim the bonus by visiting the malicious website and clicking the submit button. 
@@ -121,14 +121,14 @@ For example, let us assume that the attacker has identified a website at `https:
 ### Building an Exploit URL
 The attacker will next try to build an exploit URL for sharing with the victim. Let us assume that the transfer function in the application is built using a `GET` method to submit a transfer request. Accordingly, a legitimate  request to transfer `100` USD to another account with account number `1234567` will look like this:
 
-```
+```text
 GET https://myfriendlybank.com/account/transfer?
       amount=100&accountNumber=1234567 
 ```
 
 The attacker will create an exploit URL to transfer `15,000` USD to an account with account number `4567876` probably belonging to the attacker:
 
-```
+```text
 GET https://myfriendlybank.com/account/transfer
       ?amount=15000&accountNumber=4567876
 ```
@@ -143,7 +143,7 @@ The attacker then creates an enticement and uses any social engineering attack m
 
 The following is an example of an image with an exploit URL:
 
-```
+```text
 <img src=“http://myfriendlybank.com/account/transfer
            ?amount=5000&accountNumber=425654” 
      width=“0” 
@@ -281,7 +281,7 @@ The below HTML page is rendered with the `GET` request. The random token is gene
 </body>
 </html>
 
-```
+```text
 We can see in this HTML snippet, that the random token is set in a hidden field named `_csrf`.
 
 After we set up and run the application, we can test a valid request by loading the HTML form with URL `http://localhost:3000/transfer` :

@@ -59,7 +59,7 @@ Like many modern development CLIs, the CDK CLI provides the functionality to boo
 
 Let's create a new folder for our app, change into it, and run this command:
 
-```
+```text
 cdk init app --language=java
 ```
 
@@ -167,7 +167,7 @@ Let's try to deploy the generated CDK app.
 
 This is as easy as executing the `cdk deploy` command in the folder of the app. It will take a couple of seconds and we'll be rewarded with a success message like this one:
 
-```
+```text
 TestStack: deploying...
 TestStack: creating CloudFormation changeset...
 [========================================================] (2/2)
@@ -248,7 +248,7 @@ The first apparent change is that we're now accepting two parameters. With `app.
 
 We can pass such parameters to the `cdk` command line with the `-c` parameter, for example like this:
 
-```
+```text
 cdk deploy -c accountId=123456789 -c region=ap-southeast-2
 ```
 
@@ -268,7 +268,7 @@ You might wonder why we're not doing anything with the `SpringBootApplicationSta
 
 Let's try out our shiny new CDK app! Let's run this command:
 
-```
+```text
 cdk deploy -c accountId=<ACCOUNT_ID> -c region=<REGION>
 ```
 
@@ -276,7 +276,7 @@ Replace `ACCOUNT_ID` and `REGION` with your AWS account number and region, respe
 
 The CDK will show a list of "IAM Statement Changes" and "Security Group Changes" for you to confirm. This is a security measure to avoid unintended changes in security configuration. After confirming, the console should show the deployment progress like this:
 
-```
+```text
 Do you wish to deploy these changes (y/n)? y
 SpringBootApplication: deploying...
 SpringBootApplication: creating CloudFormation changeset...
@@ -293,7 +293,7 @@ Since the `SpringBootApplicationStack` contains a lot of resources under the hoo
 
 When it's done we should see an output like this in the console:
 
-```
+```text
 Outputs:
 SpringBootApplication.loadbalancerDnsName = prod-loadbalancer-810384126.ap-southeast-2.elb.amazonaws.com
 
@@ -311,7 +311,7 @@ Inspecting the CloudFormation web console again, we should see a stack with a bu
 
 When done inspecting the stack don't forget to destroy it to avoid unnecessary costs:
 
-```
+```text
 cdk destroy -c accountId=<ACCOUNT_ID> -c region=<REGION>
 ```
 

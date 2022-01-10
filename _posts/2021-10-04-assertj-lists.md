@@ -33,7 +33,7 @@ If you are using Maven and not using Spring or Spring Boot dependencies, you can
     <version>3.20.2</version>
   </dependency>
 </dependencies>
-```
+```text
 If you are using Spring Boot, you can import `spring-boot-starter-test` as a dependency and start writing your unit test:
 
 ```xml
@@ -44,7 +44,7 @@ If you are using Spring Boot, you can import `spring-boot-starter-test` as a dep
     <version>2.5.4</version>
   </dependency>
 </dependencies>
-```
+```text
 ### Gradle Setup
 
 If you like Gradle more, or your project just uses Gradle as a build tool, you can import `assertj-core` like this:
@@ -53,7 +53,7 @@ If you like Gradle more, or your project just uses Gradle as a build tool, you c
 dependencies {
   testImplementation 'org.assertj:assertj-core:3.11.1'
 }
-```
+```text
 Or, if you are working with Spring:
 
 ```groovy
@@ -79,7 +79,7 @@ void checkIfTonyIsInList_basicFiltering(){
   assertThat(personService.getAll())
     .filteredOn(person -> person.getName().equals("Tony").isNotEmpty();
 }
-```
+```text
 To do this, we used `filteredOn()` with a predicate. Predicates use lambda expressions syntax and are easy to write ad-hoc.
 
 ### Filtering with Multiple Basic Conditions
@@ -99,7 +99,7 @@ void filterOnNameContainsOAndNumberOfFriends_complexFiltering(){
                 && person.getFriends().size() > 1)
     .hasSize(1);
 }
-```
+```text
 The implementation is pretty straightforward, but you can see that, with more complex conditions, our filtering statement will grow ever bigger. This could cause issues like lack of readability with more than two conditions.
 
 ### Filtering on Nested Properties
@@ -119,7 +119,7 @@ void filterOnAllSessionsThatAreFromToday_nestedFiltering() {
     .filteredOn(sessions -> sessions > 0)
     .hasSize(4);
 }
-```
+```text
 The entities were modeled so that the session contains the time, and we are provided with a list of persons where each of them contains a list of sessions. 
 
 As an answer to this issue, we had to count all sessions that are done today, and group them by their owners. Then, we could use predicate filtering to assert that four persons have at least one workout session done today. We will look at how to make this more readable using other AssertJ features.
@@ -139,7 +139,7 @@ void checkIfTonyIsInList_basicFieldFiltering(){
     .filteredOn("name", "Tony")
     .isNotEmpty();
 }
-```
+```text
 Again, we are using `filteredOn()`. But this time there is no predicate. We are providing just the name of the property as a method argument. The name of the property is hard-coded as a string and this can cause problems in the future. If someone changes the name of the property to something else, and forgets to change the test also, this test will fail with: `java.lang.IllegalArgumentException: Cannot locate field “attribute_name” on class “class_name”.`
 
 ### Field Filtering with Complex Conditions
@@ -154,7 +154,7 @@ void filterOnNameContainsOAndNumberOfFriends_complexFieldFiltering() {
     .filteredOn(person -> person.getFriends().size() > 1)
     .hasSize(1);
 }
-```
+```text
 For the first filter, we use field filtering as in the previous example. Here we can see the usage of `in()` to check if our property value is part of provided list. 
 
 Aside from `in()`, we can use:
@@ -194,7 +194,7 @@ void checkIfTonyIsInList_NullValue_basicFiltering(){
 assertThat(sessions)
   .filteredOn(session -> session.getPerson().getName().equals("Tony")).isEmpty(); // <-- NullPointer!
 }
-```
+```text
 The first thing that we do is to replace all of Tony’s sessions with a new session where the `person` property is set to `null`. After that, we use standard predicate filtering, as explained [above](#filtering-with-basic-conditions). The output of running this part of code will be a `NullPointerException` since we want to call `getName()` on a `null` object.
 
 ### Field Filtering with Null Values
@@ -221,7 +221,7 @@ void checkIfTonyIsInList_NullValue_basicFieldFiltering(){
 
   assertThat(sessions).filteredOn("person.name","Tony").isEmpty(); // <-- no NullPointer!
 }
-```
+```text
 After setting `person` properties to `null` for all Tony’s sessions, we do field filtering on `person.name`. In this example, **we will not face a `NullPointerException`**. Field filtering is null-safe and `isEmpty()` will return `false`.
 
 ## Using Custom Conditions
@@ -247,7 +247,7 @@ void filterOnNameContainsOAndNumberOfFriends_customConditionFiltering(){
       .filteredOn(nameAndFriendsCondition)
       .hasSize(1);
 }
-```
+```text
 Here we created the custom condition `nameAndFriendsCondition`. We can see that the filtering code is the same as we did with [predicate filtering](#filtering-with-multiple-basic-conditions). We created conditions inside our test method using an anonymous class. This way is good when you know you will have a just couple of custom conditions and you will not need to share them with another test.
 
 ### Creating a Condition in a Separate Class
@@ -279,7 +279,7 @@ void filterOnAllSessionsThatAreFromToday_customConditionFiltering() {
     .filteredOn(sessionStartedToday)
     .hasSize(4);
 }
-```
+```text
 We first need to create an instance of our condition. Then, we call `filteredOn()` with the given condition as the parameter. Important note is that **the condition is validated on each element of the list, one by one.**
 
 ## Extracting Fields
@@ -318,7 +318,7 @@ void checkByNameAndLastname_UsingExtracting(){
       .contains(tuple("Tony","Stark"), tuple("Carol", "Danvers"), tuple("Bruce", "Banner"),tuple("Natalia","Romanova"))
       .doesNotContain(tuple("Peter", "Parker"), tuple("Steve","Rogers"));
 }
-```
+```text
 We implemented it, again, using `extracting()`, but this time we wanted to extract two properties at the same time. In `contains()` and `doesNotContain()` we are using `tuple()` to represent a tuple of name and last name.
 
 ### Extracting Null Values
@@ -347,7 +347,7 @@ void checkByNestedAtrribute_PersonIsNUll_UsingExtracting(){
       .extracting("person.name")
       .contains("Bruce","Carol","Natalia");
 }
-```
+```text
 Extracting properties on `null` values behaves the same as in [field filtering](#field-filtering-behavior). All properties that we try to extract from `null` object are considered `null`. No `NullPointerException` is thrown in this case.
 
 ## Flatmap and Method Call Extracting
@@ -366,7 +366,7 @@ void filterOnAllSessionsThatAreFromToday_flatMapExtracting(){
       .extracting("person.name")
       .contains("Tony", "Carol","Bruce","Natalia");
 }
-```
+```text
 After fetching all persons we want to find sessions that started today. In our example, we start by calling `flatExtracting()` on the session property of a person. Now, our list is changed from list of persons to list of sessions, and we are doing our further assertion on that new list. Since we have the list of sessions that started today, we can extract names of persons that own that session, and assert the desired values are among them.
 
 ### Flatmap Extracting Using Extractor
@@ -386,7 +386,7 @@ public class PersonExtractors {
     } 
   }
 }
-```
+```text
 We need to create a class that will have a static method that returns a Java `Function`. It will return a static object that implements the `Function` interface and where we set our desired input type and desired output type. In our use case, we are taking one person and returning a list of sessions to that person. Inside that new static function, we override method `apply()`.
 
 Let’s see an example of how to use the extractor class:
@@ -400,7 +400,7 @@ void filterOnAllSessionsThatAreFromToday_flatMapExtractingMethod(){
       .extracting("person.name")
       .contains("Tony", "Carol","Bruce","Natalia");
 }
-```
+```text
 Extracting itself is done inside `flatExtracting()` method into which we pass the static function called `PersonExtractors.sessions()`.
 
 ### Method Call Extracting
@@ -417,7 +417,7 @@ void filterOnAllSesionThatAreFomToday_methodCallExtractingMethod(){
       .filteredOn(duration -> duration < 120l)
       .hasSize(1);
 }
-```
+```text
 After fetching all sessions, we call a method called `getDurationInMinutes()` using `extractingResultOf()`. This method has to be an inside class we are filtering on. After that, we get the list of outputs on that method, in our use case we get a list of durations of all sessions. Now, we can filter on that one and assert that there is only one session that is shorter than two hours. We passed another argument to `extractingResultOf()` that represents the type that we expect back. If we don’t provide it method will return `Object.class` type.
 
 

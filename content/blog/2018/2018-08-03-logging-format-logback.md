@@ -21,7 +21,7 @@ and [Descriptive Logger](https://github.com/thombergs/descriptive-logger) librar
 
 The Logging format we want to achieve looks something like this:
 
-```
+```text
 2018-07-29 | 21:10:29.178 | thread-1  | INFO  | com.example.MyService         | 000425 | Service started in 3434 ms.
 2018-07-29 | 21:10:29.178 | main      | WARN  | some.external.Configuration   |        | Parameter 'foo' is missing. Using default value 'bar'!
 2018-07-29 | 21:10:29.178 | scheduler | ERROR | com.example.jobs.ScheduledJob | 000972 | Scheduled job cancelled due to NullPointerException! 
@@ -134,7 +134,7 @@ Within the `<pattern>` xml tag, we define the logging format. The formats that h
 
 However, if we try out this logging format, it will not be formatted properly:
 
-```
+```text
 2018-08-03 | 22:04:29.119 | main | DEBUG | o.s.a.f.JdkDynamicAopProxy | ID:          | Creating JDK dynamic proxy: target source is EmptyTargetSource: no target class, static
 2018-08-03 | 22:04:29.133 | very-long-thread-name | DEBUG | i.r.l.LoggingFormatTest | ID:    14556 | This is a DEBUG message.
 2018-08-03 | 22:04:29.133 | short |  INFO | i.r.l.LoggingFormatTest | ID:     5456 | This is an INFO message.
@@ -166,7 +166,7 @@ The final pattern looks like this:
 
 Now, if we run our logging code again, we have the output we wanted, **without any overflowing columns**:
 
-```
+```text
 2018-08-11 | 21:31:20.436 | main                 | DEBUG | .s.a.f.JdkDynamicAopProxy | ID:          | Creating JDK dynamic proxy: target source is EmptyTargetSource: no target class, static
 2018-08-11 | 21:31:20.450 | ery-long-thread-name | DEBUG | i.r.l.LoggingFormatTest   | ID:    14556 | This is a DEBUG message.
 2018-08-11 | 21:31:20.450 | short                |  INFO | i.r.l.LoggingFormatTest   | ID:     5456 | This is an INFO message.

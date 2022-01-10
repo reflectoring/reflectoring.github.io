@@ -202,7 +202,7 @@ Link to the code example in the repositories at the start and the end of the art
 
 At the start of the article, use this include after the introductory paragraph:
 
-```
+```text
 {{%/* github "url_to_example_module" */%}}
 ```
 

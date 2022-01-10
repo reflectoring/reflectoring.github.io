@@ -183,7 +183,7 @@ paths:
       summary: Get user by user name
 security: 
   - api_key: []
-```
+```text
 Now, all of our paths should be secured with the `api_key` scheme.
 
 ## Generating Code From an API Specification
@@ -390,7 +390,7 @@ Spring will inject our implementation of `UserApiDelegate` into the controller's
 
 Let's start our application and hit the GET endpoint `/v2/user/{username}`.
 
-```
+```text
 curl -I http://localhost:8080/v2/user/Petros
 HTTP/1.1 501
 Content-Length: 0

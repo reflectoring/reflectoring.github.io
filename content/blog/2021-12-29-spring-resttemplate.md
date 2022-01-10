@@ -182,7 +182,7 @@ public class RestConsumer {
     
 }
 
-```
+```text
 Here we are using the `getForEntity()` method of the `RestTemplate` class to invoke the API and get the response as a JSON string. We need to further work with the JSON response to extract the individual fields with the help of JSON parsing libraries like Jackson. 
 
 We prefer to work with raw JSON responses when we are interested only in a small subset of an HTTP response composed of many fields. 
@@ -209,7 +209,7 @@ public class RestConsumer {
     }
 }
 
-```
+```text
 Here also we are calling the `getForEntity()` method for receiving the response as a `List` of `Product` objects.
 
 Instead of using `getForEntity()` method, we could have used the `getForObject()` method as shown below:
@@ -231,7 +231,7 @@ public class RestConsumer {
         System.out.println(products);
     }
 
-```
+```text
 Instead of the `ResponseEntity` object, we are directly getting back the response object. 
 
 While `getForObject()` looks better at first glance, `getForEntity()` returns additional important metadata like the response headers and the HTTP status code in the `ResponseEntity` object.
@@ -263,7 +263,7 @@ public class RestConsumer {
     }
 }
     
-```
+```text
 Here the `postForObject()` method takes the request body in the form of an `HttpEntity` class. The `HttpEntity` is constructed with the `Product` class which is the POJO class representing the HTTP request.
 
 ## Using `exchange()` for POST
@@ -297,7 +297,7 @@ public class RestConsumer {
     }
 }
 
-```
+```text
 Here we are making the POST request by sending  `HttpMethod.POST` as a parameter in addition to the request body and the response type POJO.
 
 ## Using `exchange()` for PUT with an Empty Response Body
@@ -328,7 +328,7 @@ public class RestConsumer {
     }
 }
 
-```
+```text
 Here we are sending `HttpMethod.PUT` as a parameter to the `exchange()` method. Since the REST API returns an empty body, we are using the `Void` class to represent the same.
 
 ## Using `execute()` for Downloading Large Files
@@ -379,7 +379,7 @@ public class RestConsumer {
     }
 }
 
-```
+```text
 Here we are sending a request callback and a response callback to the `execute()` method. The request callback is used to prepare the HTTP request by setting different HTTP headers like `Content-Type` and `Authorization`.
 
 The `responseExtractor` used here extracts the response and creates a file in a folder in the server.
@@ -420,7 +420,7 @@ public class RestConsumer {
     }
 }
 
-```
+```text
 Here we have sent three form variables `sku`, `name`, and `brand` in the request by first adding them to a `MultiValueMap` and then wrapping the map in `HttpEntity`. After that, we are invoking the `postForEntity()` method to get the response in a `ResponseEntity` object.
 
 ## Configuring the HTTP Client in `RestTemplate`
@@ -446,7 +446,7 @@ Let us add a dependency on the `httpclient` module from the Apache [HttpComponen
         </dependency>
     </dependencies>
 
-```
+```text
 Here we can see the dependency on `httpclient` added in Our Maven `pom.xml`.
 
 Next we will configure the HTTP client with settings like connect timeout, socket read timeout, pooled connection limit, idle connection timeout, etc as shown below:
@@ -595,7 +595,7 @@ public class CustomErrorHandler implements ResponseErrorHandler{
     }
 }
 
-```
+```text
 The `CustomErrorHandler` class implements the `ResponseErrorHandler` interface. It also uses an error POJO: `RestTemplateError` and a runtime exception class `RestServiceException`.
 
 We override two methods of the `ResponseErrorHandler` interface: `hasError()` and `handleError()`. The error handling logic is in the `handleError()` method. In this method, we are extracting the service path and error message from the error response body returned as a JSON with the Jackson ObjectMapper.
@@ -625,7 +625,7 @@ public class InventoryServiceClient {
         ...
     }
 }
-```
+```text
 Here the `RestTemplateBuilder` autoconfigured by Spring is injected in the class and used to attach the `CustomErrorHandler` class we created earlier.
 
 ### Attaching `MessageConverters` to the `RestTemplate`

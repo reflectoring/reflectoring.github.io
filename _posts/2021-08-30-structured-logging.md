@@ -20,7 +20,7 @@ We'll go through some very hands-on tips on what to do to improve the value of a
 ## What are Structured Logs?
 "Normal" logs are unstructured. They usually contain a message string:
 
-```
+```text
 2021-08-08 18:04:14.721  INFO 12402 --- [           main] i.r.s.StructuredLoggingApplication       : Started StructuredLoggingApplication in 0.395 seconds (JVM running for 0.552)
 ```
 
@@ -334,7 +334,7 @@ If we have set up logging to [Logz.io](https://logz.io) like described in the ar
 ### Error Distribution
 We can, for example, query for all log events that have a value in the `rootCause` field:
 
-```
+```text
 __exists__: "rootCause"
 ```
 
@@ -350,7 +350,7 @@ This chart shows that almost half of the errors are caused by a `ThingyException
 
 Say, for example, that users are complaining that scheduled jobs aren't working correctly. If we have added a `job_status` field to the scheduled method code, we can filter the logs by those jobs that have failed:
 
-```
+```text
 job_status: "ERROR"
 ```
 
@@ -365,7 +365,7 @@ Or, let's say that the user with the username "user" has raised a support reques
 
 We can also extend the query to show only log events of that user that have a `rootCause` to directly learn about what went wrong when.
 
-```
+```text
 username: "user" AND _exists_: "rootCause"
 ```
 

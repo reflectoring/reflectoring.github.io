@@ -5,6 +5,7 @@ categories: ["Book Notes"]
 date: 2019-09-02
 excerpt: "A review of the Book 'The Power of Habit' by Charles Duhigg."
 image: images/covers/power-of-habit-teaser.jpg
+url: book-review-the-power-of-habit
 ---
 
 ## TL;DR: Read this Book, when...

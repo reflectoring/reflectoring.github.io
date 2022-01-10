@@ -5,6 +5,7 @@ categories: ["Book Notes"]
 date: 2019-07-17
 excerpt: "A review of the Book 'Everybody Writes' by Ann Handley."
 image: images/covers/everybody-writes-teaser.jpg
+url: book-review-everybody-writes
 ---
 
 ## TL;DR: Read this Book, when...

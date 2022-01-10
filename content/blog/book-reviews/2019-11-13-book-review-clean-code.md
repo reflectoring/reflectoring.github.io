@@ -3,9 +3,9 @@ authors: [tom]
 title: "Book Review: Clean Code"
 categories: ["Book Notes"]
 date: 2019-11-19 06:00:00 +1100
-date: 2019-11-19 06:00:00 +1100
 excerpt: "Everyone is talking about Clean Code, so I finally took the time to read it. So here's my review of Uncle Bob's 'Clean Code'."
 image: images/covers/clean-code-teaser.jpg
+url: book-review-clean-code
 ---
 
 ## TL;DR: Read this Book, when...

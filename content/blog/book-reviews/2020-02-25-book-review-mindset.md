@@ -3,10 +3,9 @@ authors: [tom]
 title: "Book Notes: Mindset"
 categories: ["Book Notes"]
 date: 2020-02-25 05:00:00 +1100
-date: 2020-02-25 05:00:00 +1100
 excerpt: "My notes on 'Mindset' - a book about the power of having a growth mindset."
 image: images/covers/mindset-teaser.jpg
-author: default
+url: book-review-mindset
 ---
 
 ## TL;DR: Read this Book, when...

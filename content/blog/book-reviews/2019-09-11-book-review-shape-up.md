@@ -5,6 +5,7 @@ categories: ["Book Notes"]
 date: 2019-09-11
 excerpt: "A review of the online Book 'Shape Up' by Ryan Singer, describing the set of techniques Basecamp uses to develop software."
 image: images/covers/shape-up.png
+url: book-review-shape-up
 ---
 
 ## TL;DR: Read this Book, when...

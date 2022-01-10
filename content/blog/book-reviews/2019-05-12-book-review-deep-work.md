@@ -5,6 +5,7 @@ categories: ["Book Notes"]
 date: 2019-05-12
 excerpt: "A review of the Book 'Deep Work' by Cal Newport."
 image: images/covers/deep-work-teaser.jpg
+url: book-review-deep-work
 ---
 
 

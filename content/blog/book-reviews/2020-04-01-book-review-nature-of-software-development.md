@@ -3,10 +3,9 @@ authors: [tom]
 title: "Book Notes: The Nature of Software Development"
 categories: ["Book Notes"]
 date: 2020-04-01 05:00:00 +1100
-date: 2020-04-01 05:00:00 +1100
 excerpt: "My notes on 'The Nature of Software Development' by Ron Jeffries - a book about the 'natural way' of building software."
 image: images/covers/nature-of-software-development-teaser.jpg
-author: default
+url: book-review-nature-of-software-development
 ---
 
 ## TL;DR: Read this Book, when...

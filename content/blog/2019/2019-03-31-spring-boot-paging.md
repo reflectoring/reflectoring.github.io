@@ -339,7 +339,7 @@ class PagedControllerTest {
     assertThat(sort).hasSort("id", Sort.Direction.DESC);
   }
 }
-```text
+```
 ### Customizing Global Paging Defaults
 
 If we don't provide the `page`, `size`, or `sort` query parameters when calling a 
@@ -482,7 +482,7 @@ interface MovieCharacterRepository
       @Param("movie") String movieName, Pageable pageable);
 
 }
-```text
+```
 Every method returning a `Slice` or `Page` must have exactly one `Pageable` parameter, otherwise
 Spring Data will complain with an exception on startup.
 

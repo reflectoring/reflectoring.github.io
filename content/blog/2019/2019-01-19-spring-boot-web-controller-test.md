@@ -452,7 +452,7 @@ void whenNullValue_thenReturns400AndErrorResult() throws Exception {
   assertThat(actualResponseBody)
       .isEqualToIgnoringWhitespace(expectedResponseBody);
 }
-```text
+```
 Again, we read the JSON string from the response body and compare it against an expected JSON string.
 Additionally, we check that the response status is 400.
 

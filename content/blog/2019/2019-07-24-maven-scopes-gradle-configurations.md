@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: Maven Scopes and Gradle Configurations Explained
-categories: ["WIP", "Java"]
+categories: ["Java"]
 date: 2019-07-24
 excerpt: "An explanation and comparison of Maven scopes and Gradle configurations to declare dependencies in a build file."
 image:  images/stock/0002-telescope-1200x628-branded.jpg

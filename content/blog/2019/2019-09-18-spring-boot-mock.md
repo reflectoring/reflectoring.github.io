@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: Mocking with (and without) Spring Boot
-categories: ["WIP", "Spring Boot", "Java"]
+categories: ["Spring Boot", "Java"]
 date: 2019-09-18
 excerpt: "An intro to Mockito and how to use it with Spring Boot."
 image:  images/stock/0052-mock-1200x628-branded.jpg

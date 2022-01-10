@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: "Unit Testing with Spring Boot"
-categories: ["WIP", "Spring Boot"]
+categories: ["Spring Boot"]
 date: 2019-01-12
 excerpt: "In this tutorial we'll learn how to build testable Spring beans and get to know the tools that Spring Boot by default imports for writing maintainable unit tests."
 image:  images/stock/0020-black-box-1200x628-branded.jpg

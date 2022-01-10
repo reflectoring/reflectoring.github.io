@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: "Testing a Spring Message Producer and Consumer against a Contract with Pact"
-categories: ["WIP", "Spring Boot"]
+categories: ["Spring Boot"]
 date: 2018-09-13
 excerpt: "A tutorial on using Spring and Pact to create a contract between a message
           producer and a message consumer and to verify if both producer and consumer

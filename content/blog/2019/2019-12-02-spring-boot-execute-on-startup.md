@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: Executing Code on Spring Boot Application Startup
-categories: ["WIP", "Spring Boot"]
+categories: ["Spring Boot"]
 date: 2019-12-02 06:00:00 +1100
 excerpt: "Spring Boot offers many different solutions to run code at application startup. This article explains how they work and when to use which."
 image:  images/stock/0039-start-1200x628-branded.jpg

@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: "Implementing a Consumer-Driven Contract for a GraphQL Provider with Node and Express"
-categories: ["WIP", programming]
+categories: [programming]
 date: 2018-11-10
 excerpt: "In this tutorial, we're exploring how to create a GraphQL provider with Node and Express and how to implement a contract test with Pact that verifies that this GraphQL provider works as expected by the consumer-defined contract."
 image:  images/stock/0026-signature-1200x628-branded.jpg

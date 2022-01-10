@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: "Creating a Consumer-Driven Contract with Feign and Pact"
-categories: ["WIP", "Spring Boot"]
+categories: ["Spring Boot"]
 date: 2018-08-10
 excerpt: "A guide on how to implement a consumer-driven contract test with Pact that verifies that a REST consumer based on
           Feign and Spring Boot works as defined in the contract."

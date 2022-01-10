@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: Pollution-Free Dependency Management with Gradle
-categories: ["WIP", "Java"]
+categories: ["Java"]
 date: 2019-07-28
 excerpt: "Unwanted compile-time dependencies can lead to problems. This article discusses these
           problems and the solution Gradle provides to keep dependencies clean."

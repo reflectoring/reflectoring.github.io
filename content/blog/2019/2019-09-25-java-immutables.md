@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: Immutables in Java - Are Setters Allowed?
-categories: ["WIP", "Java", "Software Craft"]
+categories: ["Java", "Software Craft"]
 date: 2019-09-25 00:00:00 +1100
 modified: 2021-10-22 00:00:00 +1100  
 excerpt: "Why are immutable objects a way to create safer software that is easier to maintain? And what are best practices to implement them? This article provides answers."

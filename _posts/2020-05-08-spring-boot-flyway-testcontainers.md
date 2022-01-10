@@ -1,6 +1,6 @@
 ---
 title: Testing Database Migration Scripts with Spring Boot and Testcontainers
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-05-08 05:00:00 +1100
 modified: 2020-05-08 05:00:00 +1100
 author: artur

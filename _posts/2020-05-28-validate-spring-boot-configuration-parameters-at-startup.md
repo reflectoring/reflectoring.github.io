@@ -1,6 +1,6 @@
 ---
 title: Validate Spring Boot Configuration Parameters at Startup
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-05-28 06:00:00 +1000
 modified: 2020-05-28 06:00:00 +1000
 author: yavuztas

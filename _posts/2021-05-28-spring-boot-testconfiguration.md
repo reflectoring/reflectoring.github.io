@@ -1,6 +1,6 @@
 ---
 title: Testing with Spring Boot's @TestConfiguration Annotation
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-05-28 00:00:00 +0530
 modified: 2021-05-28 06:00:00 +1000
 author: naveen

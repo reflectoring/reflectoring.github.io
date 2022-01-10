@@ -1,6 +1,6 @@
 ---
 title: "12 Factor Apps with Spring Boot"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-11-05 06:00:00 +1000
 modified: 2020-11-05 06:00:00 +1000
 author: pratikdas

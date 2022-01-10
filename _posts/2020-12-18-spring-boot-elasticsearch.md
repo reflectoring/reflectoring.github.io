@@ -1,6 +1,6 @@
 ---
 title: "Using Elasticsearch with Spring Boot"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-12-18 05:00:00 +1000
 modified: 2020-12-18 05:00:00 +1000
 author: pratikdas

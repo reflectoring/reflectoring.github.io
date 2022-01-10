@@ -1,6 +1,6 @@
 ---
 title: "Getting Started with AWS S3 and Spring Boot"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-02-09 00:00:00 +1100
 modified: 2021-02-09 00:00:00 +1100
 author: jgoerner

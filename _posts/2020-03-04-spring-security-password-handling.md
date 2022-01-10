@@ -1,6 +1,6 @@
 ---
 title: Handling Passwords with Spring Boot and Spring Security
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-03-04 05:00:00 +1100
 modified: 2020-03-04 05:00:00 +1100
 author: artur

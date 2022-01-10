@@ -1,6 +1,6 @@
 ---
 title: "Running Scheduled Jobs in Spring Boot"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-09-19 06:00:00 +1000
 modified: 2021-09-19 06:00:00 +1000
 author: pratikdas

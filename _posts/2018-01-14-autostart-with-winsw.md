@@ -1,6 +1,6 @@
 ---
 title: Autostart for your Spring Boot Application
-categories: [spring-boot]
+categories: ["Spring Boot"]
 modified: 2018-01-14
 author: david
 excerpt: "A guide on how to use WinSW to create an autostart for a Spring Boot application in Windows."

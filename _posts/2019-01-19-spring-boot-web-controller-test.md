@@ -1,6 +1,6 @@
 ---
 title: "Testing MVC Web Controllers with Spring Boot and @WebMvcTest"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 modified: 2021-12-16
 excerpt: "An in-depth look at the responsibilities of a Spring Boot web controller and how to cover those responsibilities with meaningful tests."
 image:

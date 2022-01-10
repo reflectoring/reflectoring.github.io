@@ -1,6 +1,6 @@
 ---
 title: Request/Response Pattern with Spring AMQP
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-08-03 05:00:00 +1100
 modified: 2020-08-03 05:00:00 +1100
 author: artur

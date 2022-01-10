@@ -1,6 +1,6 @@
 ---
 title: "Complete Guide to Exception Handling in Spring Boot"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-12-31 00:00:00 +1100
 modified: 2020-12-31 00:00:00 +1100
 author: mmr

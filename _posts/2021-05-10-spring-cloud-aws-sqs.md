@@ -1,6 +1,6 @@
 ---
 title: "Getting Started With AWS SQS and Spring Cloud"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-05-10 06:00:00 +1000
 author: pratikdas
 excerpt: "Amazon Simple Queue Service (SQS) is one of the important services in AWS Cloud. Spring Cloud provides convenient methods to make it easy to integrate applications with the SQS service. In this article, we will look at using Spring Cloud for working with SQS with the help of some basic concepts and code examples"

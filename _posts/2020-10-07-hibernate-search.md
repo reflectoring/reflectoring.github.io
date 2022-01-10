@@ -1,6 +1,6 @@
 ---
 title: "Full-Text Search with Hibernate Search and Spring Boot"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-10-07 00:00:00 +1100
 modified: 2020-10-07 20:00:00 +1100
 author: mmr

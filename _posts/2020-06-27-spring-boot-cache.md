@@ -1,6 +1,6 @@
 ---
 title: Implementing a Cache with Spring Boot
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-06-27 05:00:00 +1100
 modified: 2021-09-30 05:00:00 +1100
 author: artur

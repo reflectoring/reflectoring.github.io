@@ -1,6 +1,6 @@
 ---
 title: "Testing a Spring Boot REST API against a Contract with Spring Cloud Contract"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 modified: 2018-08-16
 excerpt: "A guide on how to implement a consumer-driven contract test with Spring Cloud Contract that verifies that a REST provider based on
           Spring Boot works as defined in the contract."

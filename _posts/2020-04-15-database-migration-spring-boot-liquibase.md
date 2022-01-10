@@ -1,6 +1,6 @@
 ---
 title: One-Stop Guide to Database Migration with Liquibase and Spring Boot
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-04-15 05:00:00 +1100
 author: prabhakar
 excerpt: "A comprehensive guide for database migrations using Liquibase with Spring Boot."

@@ -1,7 +1,7 @@
 ---
 
 title: "Documenting a Spring Data REST API with Springfox and Swagger"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 modified: 2017-08-02
 excerpt: "A tutorial on how to document a REST API created with Spring Data REST using Springfox and Swagger."
 image:

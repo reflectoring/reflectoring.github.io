@@ -1,6 +1,6 @@
 ---
 title: Clean Architecture Boundaries with Spring Boot and ArchUnit
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-03-14 05:00:00 +1100
 modified: 2020-03-14 05:00:00 +1100
 author: default

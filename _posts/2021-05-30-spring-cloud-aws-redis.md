@@ -1,6 +1,6 @@
 ---
 title: "Caching with ElastiCache for Redis and Spring Cloud AWS"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-06-27 00:00:00 +1100
 modified: 2021-06-27 00:00:00 +1100
 author: mmr

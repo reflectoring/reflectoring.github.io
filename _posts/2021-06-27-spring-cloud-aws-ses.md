@@ -1,6 +1,6 @@
 ---
 title: "Sending Emails with Amazon SES and Spring Cloud AWS"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-06-27 06:00:00 +1000
 modified: 2021-06-27 06:00:00 +1000
 author: pratikdas

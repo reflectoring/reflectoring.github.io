@@ -1,7 +1,7 @@
 ---
 
 title: Loading External Application Properties in the Gradle bootRun Task
-categories: [spring-boot]
+categories: ["Spring Boot"]
 modified: 2017-01-25
 excerpt: "Configuration parameters should not be baked into code - including 
           the code of your build scripts. This tutorial shows how use the Gradle bootRun task to

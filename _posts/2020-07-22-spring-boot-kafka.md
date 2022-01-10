@@ -1,6 +1,6 @@
 ---
 title: Using Kafka with Spring Boot
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-07-22 05:00:00 +1100
 modified: 2020-07-22 05:00:00 +1100
 author: nandan

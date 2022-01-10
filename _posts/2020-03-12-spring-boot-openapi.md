@@ -1,6 +1,6 @@
 ---
 title: API-First Development with Spring Boot and Swagger
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-03-12 05:00:00 +1100
 modified: 2020-03-12 05:00:00 +1100
 excerpt: "What's the 'API-First' Approach? And how do we go about it with Swagger and Spring Boot? This guide shows how to make APIs a first-class citizen in our project."

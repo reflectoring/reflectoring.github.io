@@ -1,6 +1,6 @@
 ---
 title: "Building a Multi-Module Spring Boot Application with Gradle"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 modified: 2019-06-28
 excerpt: "A tutorial on how to split up a Spring Boot application into multiple Gradle modules."
 image:

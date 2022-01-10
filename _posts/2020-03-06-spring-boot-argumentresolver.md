@@ -1,6 +1,6 @@
 ---
 title: Custom Web Controller Arguments with Spring MVC and Spring Boot
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-03-06 06:00:00 +1100
 modified: 2020-03-06 06:00:00 +1100
 author: default

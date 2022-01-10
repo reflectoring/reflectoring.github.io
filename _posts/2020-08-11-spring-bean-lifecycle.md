@@ -1,6 +1,6 @@
 ---
 title: Hooking Into the Spring Bean Lifecycle
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-08-11 06:00:00 +1000
 modified: 2020-08-11 06:00:00 +1000
 author: yavuztas

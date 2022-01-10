@@ -1,6 +1,6 @@
 ---
 title: "Zero Downtime Database Changes with Feature Flags - Step by Step"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-09-22 00:00:00 +1100
 modified: 2021-09-22 00:00:00 +1100
 excerpt: "Deploying database changes can be tricky. This article provides a step-by-step approach with feature flags that you can use to deploy database changes without a downtime."

@@ -1,6 +1,6 @@
 ---
 title: Spring Boot Application Events Explained
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-02-13 05:00:00 +1100
 modified: 2020-02-13 05:00:00 +1100
 author: nandan

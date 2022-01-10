@@ -1,6 +1,6 @@
 ---
 title: Multitenancy Applications with Spring Boot and Flyway
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-02-04 05:00:00 +1100
 modified: 2020-02-04 05:00:00 +1100
 author: artur

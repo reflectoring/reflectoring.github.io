@@ -1,6 +1,6 @@
 ---
 title: "How to Internationalize a Spring Boot Application"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-12-04 06:00:00 +1000
 modified: 2021-12-04 06:00:00 +1000
 author: pratikdas

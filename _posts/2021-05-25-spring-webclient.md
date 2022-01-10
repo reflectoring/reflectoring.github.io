@@ -1,6 +1,6 @@
 ---
 title: "Sending HTTP requests with Spring WebClient"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-05-25 00:00:00 +0200
 modified: 2021-05-25 00:00:00 +0200
 author: pimterry

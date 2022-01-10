@@ -1,6 +1,6 @@
 ---
 title: "Working with AWS DynamoDB and Spring"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-06-13 06:00:00 +1000
 modified: 2021-06-13 06:00:00 +1000
 author: pratikdas

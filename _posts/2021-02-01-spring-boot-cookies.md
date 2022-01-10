@@ -1,6 +1,6 @@
 ---
 title: "Handling Cookies with Spring Boot and the Servlet API"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-02-01 06:00:00 +1100
 modified: 2021-02-01 06:00:00 +1100
 author: godeortela

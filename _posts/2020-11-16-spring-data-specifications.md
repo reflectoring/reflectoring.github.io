@@ -1,6 +1,6 @@
 ---
 title: "Getting Started with Spring Data Specifications"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-11-16 00:00:00 +1100
 modified: 2020-11-16 00:00:00 +1100
 author: mmr

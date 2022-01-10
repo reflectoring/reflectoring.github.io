@@ -1,6 +1,6 @@
 ---
 title: "Saving Time with Structured Logging"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-08-30 00:00:00 +1100
 modified: 2021-08-30 00:00:00 +1100
 excerpt: "Plain text logs are hard to process. Use structured log events to make the information searchable and filterable."

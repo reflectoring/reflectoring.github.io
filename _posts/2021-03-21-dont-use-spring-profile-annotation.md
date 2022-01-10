@@ -1,6 +1,6 @@
 ---
 title: "Don't Use the @Profile Annotation in a Spring Boot App!"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-03-21 00:00:00 +1100
 modified: 2021-03-21 00:00:00 +1100
 author: default

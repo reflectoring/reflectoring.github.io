@@ -1,11 +1,11 @@
 ---
-
+authors: [tom]
 title: Documenting your REST API with Spring Rest Docs
-categories: [spring-boot]
-modified: 2016-12-19
+categories: ["Spring Boot"]
+date: 2016-12-19
 excerpt: "A tutorial on how to create REST API docs with Spring Rest Docs."
-image:
-  auto: 0016-pen
+image: images/stock/0016-pen-1200x628-branded.jpg
+url: spring-restdocs
 ---
 
 

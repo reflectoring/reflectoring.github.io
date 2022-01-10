@@ -1,6 +1,6 @@
 ---
 title: "'Code First' API Documentation with Springdoc and Spring Boot"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-06-06 06:00 +1100
 modified: 
 author: petros

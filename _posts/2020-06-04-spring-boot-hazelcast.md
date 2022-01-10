@@ -1,6 +1,6 @@
 ---
 title: Distributed Cache with Hazelcast and Spring
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2020-06-04 05:00:00 +1100
 modified: 2020-06-14 05:00:00 +1100
 author: artur

@@ -1,6 +1,6 @@
 ---
 title: Exploring a Spring Boot App with Actuator and jq
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2021-04-30 05:00:00 +1100
 modified: 2021-04-30 05:00:00 +1100
 author: saajan

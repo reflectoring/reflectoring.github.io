@@ -1,6 +1,6 @@
 ---
 title: "Tracing with Spring Boot, OpenTelemetry, and Jaeger"
-categories: [spring-boot]
+categories: ["Spring Boot"]
 date: 2022-01-09 00:00:00 +1100
 excerpt: "A guide on how to set up your Spring Boot applications to emit traces and analyze them with Jaeger"
 image:

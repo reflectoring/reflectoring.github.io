@@ -7,6 +7,7 @@ excerpt: "Combining the Object Mother Pattern with the Fluent Builder Pattern al
           Test Data Factories that reduce code duplication and promote the Single Responsibility Principle.
           Learn why and how in this tutorial."
 image: images/stock/0030-builder-1200x628-branded.jpg
+url: objectmother-fluent-builder
 ---
 
 

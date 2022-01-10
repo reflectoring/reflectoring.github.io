@@ -6,6 +6,7 @@ date: 2018-09-01
 excerpt: "Everyone knows that aiming for 100% code coverage is bullshit. This article re-defines code coverage
           to make 100% a meaningful and worthwhile goal."
 image: images/stock/0027-cover-1200x628-branded.jpg
+url: percent-test-coverage
 ---
 
 

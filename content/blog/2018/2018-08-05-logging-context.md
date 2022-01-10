@@ -6,6 +6,7 @@ date: 2018-08-05
 excerpt: "A guide to which contextual information is helpful in which 
           logging situation."
 image: images/stock/0031-matrix-1200x628-branded.jpg
+url: logging-context
 ---
 
 

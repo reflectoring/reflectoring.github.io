@@ -5,6 +5,7 @@ categories: ["Java"]
 date: 2018-08-11
 excerpt: "A guide to configuring Logback to use a human-readable logging format."
 image: images/stock/0031-matrix-1200x628-branded.jpg
+url: logging-format-logback
 ---
 
 

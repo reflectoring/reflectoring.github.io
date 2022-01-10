@@ -8,6 +8,7 @@ excerpt: "Software that does more than a \"hello world\" usually needs to be con
           why this configuration must not be part of the software itself and explores
           some ways on how to externalize configuration parameters."
 image: images/stock/0013-switchboard-1200x628-branded.jpg
+url: externalize-configuration
 ---
 
 

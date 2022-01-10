@@ -6,6 +6,7 @@ date: 2018-07-30
 excerpt: "A guide to create a logging format that can be scanned at
           a single glance."
 image: images/stock/0008-glasses-1200x628-branded.jpg
+url: logging-format
 ---
 
 

@@ -52,19 +52,7 @@ asserts (again in the UI) if the results meet the expectations defined in the co
 In a mock test, we no longer set up a whole runtime environment, but run isolated tests
 between the consumer and a mock provider and between a mock consumer and the real provider.
 
-{% capture img_mocks %}
 {{% image alt="Mocks" src="images/posts/7-reasons-for-consumer-driven-contracts/mocks.jpg" %}}
-{% endcapture %}
-
-{% capture img_mocks_caption %}
-In mock tests, consumer and provider each test against a mock that is fed with requests and
-responses from a common API contract.
-{% endcapture %}
-
-<figure>
-  {{ img_mocks | markdownify | remove: "<p>" | remove: "</p>" }}
-  <figcaption>{{ img_mocks_caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
-</figure>
 
 We now have two sets of tests instead of one. The first set of tests is between the consumer
 and a provider mock.The consumer service is started up and triggered so that
@@ -82,19 +70,7 @@ like mock tests with the specialty that the interface contract is driven by the 
 as one would expect naturally, by the provider. This provides some interesting advantages 
 we will come to later in this article.
 
-{% capture img_cdc %}
 {{% image alt="CDC" src="images/posts/7-reasons-for-consumer-driven-contracts/cdc.jpg" %}}
-{% endcapture %}
-
-{% capture img_cdc_caption %}
-In Consumer-Driven Contract tests, the API consumer is the driving force that defines
-the API contract between provider and consumer.
-{% endcapture %}
-
-<figure>
-  {{ img_cdc | markdownify | remove: "<p>" | remove: "</p>" }}
-  <figcaption>{{ img_cdc_caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
-</figure>
 
 ## Comparing the Integration Testing Strategies
 Let's have a look at certain issues in testing and check how the testing strategies deal with them.
@@ -105,21 +81,7 @@ famous testing pyramid (see image below). The base of the pyramid consists of is
 them unit tests, if you like). Thus, your test suite should consist of a high number of isolated tests
 followed by few integration tests and even fewer end-to-end tests. The reason for this is simple: isolated tests are easy to execute and their results are easy to interpret, thus we should rely on them as long as it's possible.
 
-{% capture img_pyramid %}
 {{% image alt="Testing Pyramid" src="images/posts/7-reasons-for-consumer-driven-contracts/pyramid.jpg" %}}
-{% endcapture %}
-
-{% capture img_pyramid_caption %}
-Your tests should have a large base of isolated unit tests, followed by fewer costly integration tests and
-even fewer very costly end-to-end tests which are represented by the top of the pyramid. 
-To save effort, we want to make our integration tests as isolated as possible and thus move them as far
-to the bottom of the pyramid as possible.
-{% endcapture %}
-
-<figure>
-  {{ img_pyramid | markdownify | remove: "<p>" | remove: "</p>" }}
-  <figcaption>{{ img_pyramid_caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
-</figure>
 
 E2E tests obviously aren't isolated tests since each test potentially calls a whole lot of services.
 While I wouldn't call mock tests and CDC tests "isolated", they are definitely more
@@ -146,18 +108,7 @@ fragile interface structure (while covering your business logic with a separate 
 For an E2E runtime environment, you have to deploy containers running your services, their databases
 and any other dependencies they might have, each in a specified versions (see image below). 
 
-{% capture img_containers %}
 {{% image alt="E2E Runtime Environment" src="images/posts/7-reasons-for-consumer-driven-contracts/containers.jpg" %}}
-{% endcapture %}
-
-{% capture img_containers_caption %}
-A runtime environment for E2E test is potentially complex due to many services being deployed.
-{% endcapture %}
-
-<figure>
-  {{ img_containers | markdownify | remove: "<p>" | remove: "</p>" }}
-  <figcaption>{{ img_containers_caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
-</figure>
 
 Nowadays, tools like Docker and 
 kubernetes make this a lot easier than it was when services were hosted on bare metal. However,
@@ -211,18 +162,7 @@ Usually, an API is defined by the API provider. Consumers then may choose which 
 use and which not. Thus, the provider does not really know which operations of its API are used by which consumer.
 This may lead to a situation where an operation of the API is not used by any consumer.
 
-{% capture img_unused %}
 {{% image alt="Unused Interface" src="images/posts/7-reasons-for-consumer-driven-contracts/unused-interface.jpg" %}}
-{% endcapture %}
-
-{% capture img_unused_caption %}
-If the provider defines the API contract, some of the API operations may not be used by any consumer.
-{% endcapture %}
-
-<figure>
-  {{ img_unused | markdownify | remove: "<p>" | remove: "</p>" }}
-  <figcaption>{{ img_unused_caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
-</figure>
 
 We obviously want to find out which operations of an API are not used so that we can throw away unneeded code 
 cluttering our codebase. Running E2E tests or even plain mock tests, however, you cannot easily find out which operations of an
@@ -239,19 +179,7 @@ A very similar issue is the issue of well-fittedness of the API operations for a
 an API contract, it may not fit certain use cases of certain consumers optimally. If the consumer defines the contract,
 it may be defined to fit its use case better.
 
-{% capture img_well_fittedness %}
 {{% image alt="Unused Interface" src="images/posts/7-reasons-for-consumer-driven-contracts/well-fittedness.jpg" %}}
-{% endcapture %}
-
-{% capture img_well_fittedness_caption %}
-If the provider defines the API contract, a consumer may use an API operation that was designed for
-a different purpose since it doesn't find an operation that better suits its use case.
-{% endcapture %}
-
-<figure>
-  {{ img_well_fittedness | markdownify | remove: "<p>" | remove: "</p>" }}
-  <figcaption>{{ img_well_fittedness_caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
-</figure>
 
 With E2E tests and plain provider-dicated mock tests, the consumer has no real say in matters of well-fittedness. 
 Only consumer-driven contracts allow the consumer to match the API to his needs.
@@ -273,14 +201,6 @@ you setup your provider in an E2E runtime environment and hit it with mocked req
 ## Feature Overview
 
 Here's an overview table of the features of the different testing strategies discussed above.
-
-{% capture plus %}
-<i class="fa fa-plus" style="color:green" title="plus"></i>
-{% endcapture %}
-
-{% capture minus %}
-<i class="fa fa-minus" style="color:red" title="minus"></i>
-{% endcapture %}
 
 |                                                       |  E2E Tests                                                    |   Mock Tests                                                  |  CDC Tests                                                   |
 |-------------------------------------------------------|---------------------------------------------------------------|---------------------------------------------------------------|--------------------------------------------------------------|

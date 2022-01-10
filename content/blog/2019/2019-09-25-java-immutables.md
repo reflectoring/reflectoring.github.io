@@ -1,12 +1,12 @@
 ---
+authors: [tom]
 title: Immutables in Java - Are Setters Allowed?
-categories: [java, craft]
+categories: ["WIP", "Java", "Software Craft"]
 date: 2019-09-25 00:00:00 +1100
 modified: 2021-10-22 00:00:00 +1100  
 excerpt: "Why are immutable objects a way to create safer software that is easier to maintain? And what are best practices to implement them? This article provides answers."
-image:
-  auto: 0053-rock-wave
-tags: ["immutable", "factory method", "final"]
+image:  images/stock/0053-rock-wave-1200x628-branded.jpg
+url: java-immutables
 ---
 
 In short, no. Feel free to jump right ahead to the section on [bad practices](#immutable-bad-practices). If you want to read a bit more on the why and how of immutables, have a look at the rest of this article.

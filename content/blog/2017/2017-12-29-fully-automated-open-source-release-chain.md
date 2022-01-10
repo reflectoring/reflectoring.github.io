@@ -21,13 +21,7 @@ when the release process is not automated. This article is a guide to a fully au
 release chain that is able to publish snapshots and releases from a 
 Github repository using Gradle, Bintray and Travis CI.   
 
-{% capture notice %}
-You can see a working example of the setup described in this article in my 
-[diffparser](https://github.com/thombergs/diffparser) project on Github!
-
-{% endcapture %}
-{% assign text = notice | markdownify %}
-{% include github-project.html text=text %}
+{{% github "https://github.com/thombergs/diffparser" %}}
 
 ## The Release Chain 
 

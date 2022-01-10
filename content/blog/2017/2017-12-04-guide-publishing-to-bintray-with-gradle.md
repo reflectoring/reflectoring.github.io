@@ -19,13 +19,8 @@ this is usually done by publishing your artifacts to a publicly accessible
 Maven repository. This article gives a step-by-step guide on how to publish 
 your artifacts to your own Maven Repository on Bintray.
 
-{% capture notice %}
-You can see a working example of the setup described in this article in my 
-[diffparser](https://github.com/thombergs/diffparser) project on Github!
 
-{% endcapture %}
-{% assign text = notice | markdownify %}
-{% include github-project.html text=text %}
+{{% github "https://github.com/thombergs/diffparser" %}}
 
 ## Bintray vs. Maven Central
 You might be asking why you should publish your artifacts to a custom repository

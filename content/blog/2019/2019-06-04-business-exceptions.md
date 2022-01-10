@@ -1,11 +1,11 @@
 ---
+authors: [tom]
 title: "5 Reasons Why Business Exceptions Are a Bad Idea"
-categories: ["Java"]
-modified: 2019-06-04
+categories: ["WIP", "Java"]
+date: 2019-06-04
 excerpt: "An article discussing some reasons why you shouldn't work with exceptions when validating business rules."
-image:
-  auto: 0011-exception
-
+image:  images/stock/0011-exception-1200x628-branded.jpg
+url: business-exceptions
 ---
 
 I recently had a conversation about exception handling. I argued that business exceptions are 

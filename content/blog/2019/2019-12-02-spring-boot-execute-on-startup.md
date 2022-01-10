@@ -1,12 +1,11 @@
 ---
+authors: [tom]
 title: Executing Code on Spring Boot Application Startup
-categories: ["Spring Boot"]
+categories: ["WIP", "Spring Boot"]
 date: 2019-12-02 06:00:00 +1100
-modified: 2019-12-02 06:00:00 +1100
 excerpt: "Spring Boot offers many different solutions to run code at application startup. This article explains how they work and when to use which."
-image:
-  auto: 0039-start
-tags: ["configuration"]
+image:  images/stock/0039-start-1200x628-branded.jpg
+url: spring-boot-execute-on-startup
 ---
 
 Sometimes we just need to run a snippet of code on application startup, be it only to log that a certain bean has loaded or the application is ready to process requests.

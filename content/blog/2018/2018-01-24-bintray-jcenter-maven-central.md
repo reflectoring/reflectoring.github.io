@@ -20,13 +20,7 @@ and / or [Maven Central](https://search.maven.org/) repositories
 because those are widely known and supported by build tools. This article explains how to
 publish a release from your Bintray repository to JCenter and Maven Central.
 
-{% capture notice %}
-You can see a working example of the setup described in this article in my 
-[diffparser](https://github.com/thombergs/diffparser) project on Github!
-
-{% endcapture %}
-{% assign text = notice | markdownify %}
-{% include github-project.html text=text %}
+{{% github "https://github.com/thombergs/diffparser" %}}
 
 ## JCenter vs. Maven Central
 Before we go into the details of publishing to JCenter and Maven Central, let's disuss the difference

@@ -1,11 +1,11 @@
 ---
+authors: [tom]
 title: Quick Guide to Building a Spring Boot Starter
-categories: ["Spring Boot"]
-modified: 2019-08-30
+categories: ["WIP", "Spring Boot"]
+date: 2019-08-30
 excerpt: "Everything you need to know to build a Spring Boot Starter bringing a cross-cutting concern to any Spring Boot application."
-image:
-  auto: 0039-start
-tags: ["cross-cutting concern", "starter", "auto-configuration"]
+image:  images/stock/0039-start-1200x628-branded.jpg
+url: spring-boot-starter
 ---
 
 There are certain cross-cutting concerns that we don't want to implement from scratch for each Spring Boot application we're building. **Instead, we want to implement those features *once* and include them into any application as needed**.

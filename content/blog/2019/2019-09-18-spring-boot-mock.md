@@ -1,11 +1,11 @@
 ---
+authors: [tom]
 title: Mocking with (and without) Spring Boot
-categories: [spring-boot, java]
-modified: 2019-09-18
+categories: ["WIP", "Spring Boot", "Java"]
+date: 2019-09-18
 excerpt: "An intro to Mockito and how to use it with Spring Boot."
-image:
-  auto: 0052-mock
-tags: ["mockito", "mock", "spring boot"]
+image:  images/stock/0052-mock-1200x628-branded.jpg
+url: spring-boot-mock
 ---
 
 Mockito is a very popular library to support testing. It allows us to replace real objects with "mocks", i.e. with objects that are not the real thing and whose behavior we can control within our test. 

@@ -8,8 +8,6 @@ image:  images/stock/0011-exception-1200x628-branded.jpg
 url: nosuchmethod
 ---
 
-
-
 A [*NoSuchMethodError*](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/NoSuchMethodError.html) occurs
 when we're calling a method that does not exist at runtime. 
 
@@ -108,7 +106,7 @@ In Gradle, we can call:
 
 If we're using Maven, a similiar result can be achieved with: 
 
-``` 
+```text
 mvn dependency:list > dependencies.txt`
 ```
 

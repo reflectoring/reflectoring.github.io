@@ -20,18 +20,7 @@ with RabbitMQ.
 Before jumping into the solution let's define some requirements that an eventing mechanism
 in a distributed system should fulfill. We'll use the following diagram to derive those requirements.
 
-{% capture eventing_img %}
 {{% image alt="Event Producer and Consumers" src="images/posts/event-messaging-with-spring-boot-and-rabbitmq/eventing.png" %}}
-{% endcapture %}
-
-{% capture eventing_img_caption %}
-An event producer sends events which are consumed by other services within the distributed system.
-{% endcapture %}
-
-<figure>
-  {{ eventing_img | markdownify | remove: "<p>" | remove: "</p>" }}
-  <figcaption>{{ eventing_img_caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
-</figure>
 
 * The event producing service must not call the event consuming services directly in order to preserve loose coupling.
 * The event producing service must be able to send events of different types (e.g. "customer.created" or "customer.deleted").
@@ -83,18 +72,7 @@ be routed to the specified queue.
 Using the concepts above, we can create an eventing solution with RabbitMQ. The solution is depicted in the 
 figure below.
 
-{% capture eventing_amqp_img %}
 {{% image alt="Eventing with RabbitMQ" src="images/posts/event-messaging-with-spring-boot-and-rabbitmq/eventing_rabbitmq.png" %}}
-{% endcapture %}
-
-{% capture eventing_amqp_img_caption %}
-Event producer and consumers are loosely coupled since an exchange serves as intermediary. 
-{% endcapture %}
-
-<figure>
-  {{ eventing_amqp_img | markdownify | remove: "<p>" | remove: "</p>" }}
-  <figcaption>{{ eventing_amqp_img_caption | markdownify | remove: "<p>" | remove: "</p>" }}</figcaption>
-</figure>
 
 Each service cluster gets its own queue. This is necessary since not all events are relevant to each service
 cluster. An order service may be interested in all customer events (`customer.*`) whereas an archiving service may be 

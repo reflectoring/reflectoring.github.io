@@ -3,10 +3,9 @@ title: Retry with Spring Boot and Resilience4j
 categories: ["Spring Boot"]
 date: 2021-07-24 05:00:00 +1100
 modified: 2021-07-24 05:00:00 +1100
-author: saajan
+authors: [saajan]
 excerpt: "A deep dive into the Spring Boot Resilience4j Retry module, this article shows why, when and how to use it to build resilient applications."
-image:
-  auto: 0106-fail
+image: images/stock/0106-fail-1200x628-branded.jpg
 
 ---
 

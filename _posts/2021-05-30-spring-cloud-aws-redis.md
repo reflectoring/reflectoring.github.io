@@ -3,9 +3,9 @@ title: "Caching with ElastiCache for Redis and Spring Cloud AWS"
 categories: ["Spring Boot"]
 date: 2021-06-27 00:00:00 +1100
 modified: 2021-06-27 00:00:00 +1100
-author: mmr
+authors: [mmr]
 excerpt: "In this article, we will look at configuring a Spring Boot Application to use AWS ElastiCache for Redis using Spring Cloud AWS"
-image:
+image: images/stock/-1200x628-branded.jpg
  auto: 0071-disk
 ---
 

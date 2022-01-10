@@ -3,10 +3,9 @@ title: Exploring a Spring Boot App with Actuator and jq
 categories: ["Spring Boot"]
 date: 2021-04-30 05:00:00 +1100
 modified: 2021-04-30 05:00:00 +1100
-author: saajan
+authors: [saajan]
 excerpt: "This article shows why and how to use Spring Actuator and jq JSON processor to explore a new Spring Boot application."
-image:
-  auto: 0100-motor
+image: images/stock/0100-motor-1200x628-branded.jpg
 ---
 
 Spring Boot Actuator helps us monitor and manage our applications in production. It exposes endpoints that provide health, metrics, and other information about the running application. We can also use it to change the logging level of the application, take a thread dump, and so on - in short, capabilities that make it easier to operate in production.

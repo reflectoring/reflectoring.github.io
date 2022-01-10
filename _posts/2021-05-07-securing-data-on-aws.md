@@ -3,9 +3,9 @@ title: Securing Data in AWS
 categories: ["Software Craft"]
 date: 2021-05-07 05:00:00 +1100
 modified: 2021-05-07 05:00:00 +1100
-author: artur
+authors: [artur]
 excerpt: "We need to protect our data in the cloud from unauthorized access and tampering. In this article, we discuss how to encrypt data on storage in AWS Cloud"
-image:
+image: images/stock/-1200x628-branded.jpg
  auto: 0101-keylock
 ---
 

@@ -3,10 +3,9 @@ title: "Don't Use the @Profile Annotation in a Spring Boot App!"
 categories: ["Spring Boot"]
 date: 2021-03-21 00:00:00 +1100
 modified: 2021-03-21 00:00:00 +1100
-author: default
+authors: [tom]
 excerpt: "Why using Spring's @Profile annotation is a bad idea and what to do instead."
-image:
-  auto: 0098-profile
+image: images/stock/0098-profile-1200x628-branded.jpg
 ---
 
 With profiles, Spring (Boot) provides a very powerful feature to configure our applications. Spring also offers the `@Profile` annotation to add beans to the application context only when a certain profile is active. This article is about this `@Profile` annotation, why it's a bad idea to use it, and what to do instead.

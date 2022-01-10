@@ -3,10 +3,9 @@ title: "Feature Flags in Java with Togglz and LaunchDarkly"
 categories: ["Java"]
 date: 2021-07-17 00:00:00 +1100
 modified: 2021-07-17 00:00:00 +1100
-author: default
+authors: [tom]
 excerpt: "With feature flags, we can reduce the risk of rolling out software changes to a minimum. Let's compare two popular tools to implement feature flags in Java."
-image:
-  auto: 0104-on-off
+image: images/stock/0104-on-off-1200x628-branded.jpg
 ---
 
 With feature flags, we can reduce the risk of rolling out software changes to a minimum. We deploy the software with the changes, but the changes are behind a deactivated feature flag. After successful deployment, we can choose when and for which users to activate the feature. 

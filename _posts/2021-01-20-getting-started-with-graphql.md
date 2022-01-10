@@ -3,10 +3,9 @@ title: "Getting Started with GraphQL"
 categories: ["Spring Boot"]
 date: 2021-01-20 06:00:00 +1000
 modified: 2021-01-20 06:00:00 +1000
-author: pratikdas
+authors: [pratikdas]
 excerpt: "We will introduce GraphQL and explain it alongside of an example implementation in Java and Spring Boot"
-image:
-  auto: 0001-network
+image: images/stock/0001-network-1200x628-branded.jpg
 ---
 
 GraphQL was developed by Facebook in 2012 for their mobile apps. It was open-sourced in 2015 and is now used by many development teams, including some prominent ones like GitHub, Twitter, and Airbnb. Here we will see what GraphQL is and explain its usage with some simple examples.

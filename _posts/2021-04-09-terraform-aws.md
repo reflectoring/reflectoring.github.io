@@ -3,10 +3,9 @@ title: "Using Terraform to Deploy AWS Resources"
 categories: ["Software Craft"]
 date: 2021-04-22 06:00:00 +1000
 modified: 2021-04-22 06:00:00 +1000
-author: pratikdas
+authors: [pratikdas]
 excerpt: "Terraform is a popular infrastructure provisioning tool that makes it very easy to define infrastructure as code. In this post, we will introduce Terraform basics and see how Terraform can be used to provision AWS resources."
-image:
-  auto: 0099-desert
+image: images/stock/0099-desert-1200x628-branded.jpg
 ---
 Provisioning infrastructure resources has always been a time-consuming manual process. Infrastructure has now moved away from physical hardware in data centers to software-defined infrastructure using virtualization technology and cloud computing. 
 

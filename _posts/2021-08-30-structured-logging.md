@@ -4,8 +4,7 @@ categories: ["Spring Boot"]
 date: 2021-08-30 00:00:00 +1100
 modified: 2021-08-30 00:00:00 +1100
 excerpt: "Plain text logs are hard to process. Use structured log events to make the information searchable and filterable."
-image:
-  auto: 0107-puzzle
+image: images/stock/0107-puzzle-1200x628-branded.jpg
 ---
 
 

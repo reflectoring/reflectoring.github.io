@@ -3,9 +3,9 @@ title: "Asserting Lists with AssertJ"
 categories: ["Java"]
 date: 2021-10-04 06:00:00 +1000
 modified: 2021-10-04 06:00:00 +1000
-author: mateo
+authors: [mateo]
 excerpt: "Asserting lists in unit tests can be painful. AssertJ provides handy support for lists that we're going to explore in this article."
-image: 
+image: images/stock/-1200x628-branded.jpg
   auto: 0019-magnifying-glass
 ---
 

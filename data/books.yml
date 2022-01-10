@@ -2,79 +2,79 @@ clean-code:
   cover: /assets/img/covers/clean-code-260.jpg
   url: https://www.goodreads.com/book/show/3735293-clean-code
   title: "Clean Code"
-  author: "Robert C. Martin"
+  authors: ["Robert C. Martin"]
 
 deep-work:
   cover: /assets/img/covers/deep-work-260.jpg
   url: https://www.goodreads.com/book/show/25744928-deep-work
   title: "Deep Work"
-  author: "Cal Newport"
+  authors: ["Cal Newport"]
 
 power-of-habit:
   cover: /assets/img/covers/power-of-habit-260.jpg
   url: https://www.goodreads.com/book/show/12609433-the-power-of-habit
   title: "The Power of Habit"
-  author: "Charles Duhigg"
+  authors: ["Charles Duhigg"]
 
 everybody-writes:
   cover: /assets/img/covers/everybody-writes-260.jpg
   url: https://www.goodreads.com/book/show/23001125-everybody-writes
   title: "Everybody Writes"
-  author: "Ann Handley"
+  authors: ["Ann Handley"]
 
 atomic-habits:
   cover: /assets/img/covers/atomic-habits-260.jpg
   url: https://www.goodreads.com/book/show/40121378-atomic-habits
   title: "Atomic Habits"
-  author: "James Clear"
+  authors: ["James Clear"]
 
 mindset:
   cover: /assets/img/covers/mindset-260.jpg
   url: https://www.goodreads.com/book/show/13614924-mindset
   title: "Mindset"
-  author: "Carol S. Dweck"
+  authors: ["Carol S. Dweck"]
 
 nature-of-software-development:
   cover: /assets/img/covers/nature-of-software-development-260.jpg
   url: https://www.goodreads.com/book/show/39709198-the-nature-of-software-development
   title: "The Nature of Software Development"
-  author: "Ron Jeffries"
+  authors: ["Ron Jeffries"]
 
 accelerate:
   cover: /assets/img/covers/accelerate-260.jpg
   url: https://www.goodreads.com/book/show/35747076-accelerate
   title: "Accelerate"
-  author: "Nicole Forsgren, Jez Humble, and Gene Kim"
+  authors: ["Nicole Forsgren, Jez Humble, and Gene Kim"]
 
 essentialism:
   cover: /assets/img/covers/essentialism-260.jpg
   url: https://www.goodreads.com/book/show/18077875-essentialism
   title: "Essentialism"
-  author: "Greg McKeown"
+  authors: ["Greg McKeown"]
 
 pragmatic-thinking:
   cover: /assets/img/covers/pragmatic-thinking-260.jpg
   url: https://www.goodreads.com/book/show/3063393-pragmatic-thinking-and-learning
   title: "Pragmatic Thinking & Learning"
-  author: "Andy Hunt"
+  authors: ["Andy Hunt"]
 
 make-time:
   cover: /assets/img/covers/make-time-260.jpg
   url: https://www.goodreads.com/book/show/37880811-make-time
   title: "Make Time"
-  author: "Jake Knapp and John Zeratsky"
+  authors: ["Jake Knapp and John Zeratsky"]
 
 hell-yeah:
   cover: /assets/img/covers/hell-yeah-260.jpg
   url: https://www.goodreads.com/en/book/show/52523856-hell-yeah-or-no
   title: "Hell Yeah or No"
-  author: "Derek Sivers"
+  authors: ["Derek Sivers"]
 
 psychology-of-money:
   cover: /assets/img/covers/hell-yeah-260.jpg
   url: https://www.goodreads.com/book/show/41881472-the-psychology-of-money
   title: "The Psychology of Money"
-  author: "Morgan Housel"
+  authors: ["Morgan Housel"]
 
 measure-what-matters:
   cover: /assets/img/covers/measure-what-matters-260.jpg

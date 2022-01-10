@@ -3,10 +3,9 @@ title: "How to Internationalize a Spring Boot Application"
 categories: ["Spring Boot"]
 date: 2021-12-04 06:00:00 +1000
 modified: 2021-12-04 06:00:00 +1000
-author: pratikdas
+authors: [pratikdas]
 excerpt: "Internationalization is the process of making an application adaptable to multiple languages and regions without major changes in the source code. In this article, we will understand the concepts of internationalization, and illustrate how to internationalize a Spring Boot application."
-image:
-  auto: 0113-flags
+image: images/stock/0113-flags-1200x628-branded.jpg
 ---
 
 Internationalization is the process of making an application adaptable to multiple languages and regions without major changes in the source code.

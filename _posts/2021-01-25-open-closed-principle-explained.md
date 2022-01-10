@@ -3,10 +3,9 @@ title: "The Open-Closed Principle Explained"
 categories: ["Software Craft"]
 date: 2021-01-25 00:00:00 +1100
 modified: 2021-01-25 00:00:00 +1100
-author: skempken
+authors: [skempken]
 excerpt: "An explanation of the Open-Closed Principle and its limitations alongside some code examples."
-image:
-  auto: 0093-open-closed
+image: images/stock/0093-open-closed-1200x628-branded.jpg
 ---
 
 Robert C. Martin, maybe better known to you as „Uncle Bob“, has defined a set of principles for software engineering and software architecture.

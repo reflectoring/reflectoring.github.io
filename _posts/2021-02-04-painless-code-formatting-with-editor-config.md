@@ -3,10 +3,9 @@ title: "Painless Code Formatting with EditorConfig"
 categories: ["Java"]
 date: 2021-02-15 00:00:00 +1100
 modified: 2021-02-15 00:00:00 +1100
-author: zeddysoft
+authors: [zeddysoft]
 excerpt: "As Java developers working in a team on a project, we need a consistent coding style in our project to enhance readability and make our code a lot cleaner and uniform - that's where EditorConfig comes into play"
-image:
-  auto: 0096-tools
+image: images/stock/0096-tools-1200x628-branded.jpg
 ---
 
 Are you working on a project with other developers where reading code is not as fun as you would want because of inconsistent coding styles? In this article, we'll have a look at how to achieve painless code formatting with EditorConfig.

@@ -3,9 +3,9 @@ title: Testing with Spring Boot's @TestConfiguration Annotation
 categories: ["Spring Boot"]
 date: 2021-05-28 00:00:00 +0530
 modified: 2021-05-28 06:00:00 +1000
-author: naveen
+authors: [naveen]
 excerpt: "We will see the use of the `@TestConfiguration` annotation for creating custom beans or overriding specific beans for providing specialized behavior to the application during unit testing of Spring Boot applications."
-image:
+image: images/stock/-1200x628-branded.jpg
  auto: 0102-traffic-light
 ---
 A unit test is used to verify the smallest part of an application (a "unit") independent of other parts. This makes the verification process easy and fast since the scope of the testing is narrowed down to a class or method. 

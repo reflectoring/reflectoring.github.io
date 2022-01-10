@@ -8,8 +8,7 @@ toc:
   enabled: true
   min: 2
   max: 2
-image:
-  auto: 0111-hammer
+image: images/stock/0111-hammer-1200x628-branded.jpg
 ---
 
 In discussions around software development, it's almost impossible to avoid quoting a law or two.

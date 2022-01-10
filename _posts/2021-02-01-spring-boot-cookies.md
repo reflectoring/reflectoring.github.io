@@ -3,10 +3,9 @@ title: "Handling Cookies with Spring Boot and the Servlet API"
 categories: ["Spring Boot"]
 date: 2021-02-01 06:00:00 +1100
 modified: 2021-02-01 06:00:00 +1100
-author: godeortela
+authors: [godeortela]
 excerpt: "This article demonstrates how to handle cookies in a Spring Boot or Servlet-based application."
-image:
-  auto: 0093-cookie
+image: images/stock/0093-cookie-1200x628-branded.jpg
 ---
 
 This article is about cookies and different ways we can implement them in Spring Boot. We are going to have a short overview of what cookies are, how they work, and how we can handle them using the Servlet API and Spring Boot.

@@ -3,10 +3,9 @@ title: "Complete Guide to CORS"
 categories: ["Software Craft"]
 date: 2021-07-18 06:00:00 +1000
 modified: 2021-07-18 06:00:00 +1000
-author: pratikdas
+authors: [pratikdas]
 excerpt: "CORS is a protocol and security standard for browsers that helps to maintain the integrity of a website and secure it from unauthorized access. In this article, we will understand cross-origin resource sharing (CORS) and describe some common examples of security vulnerabilities caused by CORS misconfigurations along with best practices for secure CORS implementations."
-image:
-  auto: 0105-shield
+image: images/stock/0105-shield-1200x628-branded.jpg
 ---
 
 “CORS” stands for **C**ross-**O**rigin **R**esource **S**haring. CORS is a protocol and security standard for browsers that helps to maintain the integrity of a website and secure it from unauthorized access. 

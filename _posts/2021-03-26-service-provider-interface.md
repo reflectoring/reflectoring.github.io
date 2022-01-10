@@ -3,10 +3,9 @@ title: "Implementing Plugins with Java's Service Provider Interface"
 categories: ["Java"]
 date: 2021-03-26 00:00:00 +1100
 modified: 2021-03-26 00:00:00 +1100
-author: bakic
+authors: [bakic]
 excerpt: "This article explains the Service Provider Interface with an example."
-image:
-  auto: 0088-jigsaw
+image: images/stock/0088-jigsaw-1200x628-branded.jpg
 ---
 
 In this article, we are going to talk about Java's Service Provider Interface (SPI). We will have a short overview of what the SPI is and describe some cases where we can use it. Then we will give an implementation of an SPI for a practical use case.

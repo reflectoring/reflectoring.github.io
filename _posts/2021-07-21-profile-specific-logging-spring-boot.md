@@ -4,9 +4,8 @@ categories: ["Spring Boot", "Java"]
 date: 2021-07-21 06:00:00 +1000
 modified: 2021-07-21 06:00:00 +1000
 excerpt: "How to configure a plain Java or Spring Boot application to send logs to different targets in different runtime environments."
-author: default
-image:
-  auto: 0031-matrix
+authors: [tom]
+image: images/stock/0031-matrix-1200x628-branded.jpg
 ---
 
 Application logs are the most important resource when it comes to investigating issues and incidents. Imagine something goes wrong during your on-call rotation and you don't have any logs! 

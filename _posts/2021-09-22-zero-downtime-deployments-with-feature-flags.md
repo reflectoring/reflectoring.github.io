@@ -4,8 +4,7 @@ categories: ["Spring Boot"]
 date: 2021-09-22 00:00:00 +1100
 modified: 2021-09-22 00:00:00 +1100
 excerpt: "Deploying database changes can be tricky. This article provides a step-by-step approach with feature flags that you can use to deploy database changes without a downtime."
-image:
-  auto: 0039-start
+image: images/stock/0039-start-1200x628-branded.jpg
 ---
 
 Whenever we make a change in our database schema, we also have to make a change in the code that uses that database schema.

@@ -3,10 +3,9 @@ title: "Sending HTTP requests with Spring WebClient"
 categories: ["Spring Boot"]
 date: 2021-05-25 00:00:00 +0200
 modified: 2021-05-25 00:00:00 +0200
-author: pimterry
+authors: [pimterry]
 excerpt: "How to get started using Spring WebClient to talk to REST APIs."
-image:
-  auto: 0001-network
+image: images/stock/0001-network-1200x628-branded.jpg
 ---
 
 In Spring 5, Spring gained a reactive web framework: Spring WebFlux. This is designed to co-exist alongside the existing Spring Web MVC APIs, but to add support for non-blocking designs. Using WebFlux, you can build asynchronous web applications, using reactive streams and functional APIs to better support concurrency and scaling.

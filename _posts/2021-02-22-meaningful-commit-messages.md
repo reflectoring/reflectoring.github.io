@@ -4,9 +4,8 @@ categories: ["Software Craft"]
 date: 2021-02-22 05:00:00 +1100
 modified: 2021-02-22 05:00:00 +1100
 excerpt: "This article discusses different methods of formatting and writing meaningful commit messages."
-author: hoorvash
-image:
-  auto: 0016-pen
+authors: [hoorvash]
+image: images/stock/0016-pen-1200x628-branded.jpg
 ---
 
 Writing meaningful commit messages can save a lot of time answering many "why?" and "how?" questions, and thus gives us more time in the day to do productive work.

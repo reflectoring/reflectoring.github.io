@@ -3,10 +3,9 @@ title: "Getting Started with AWS Java CDK"
 categories: ["Software Craft"]
 date: 2021-03-06 00:00:00 +1100
 modified: 2021-03-06 00:00:00 +1100
-author: default
+authors: [tom]
 excerpt: "From zero to deploying a Spring Boot app to the cloud with the AWS CDK."
-image:
-  auto: 0061-cloud
+image: images/stock/0061-cloud-1200x628-branded.jpg
 ---
 
 In the article ["Getting Started with AWS CloudFormation"](/getting-started-with-aws-cloudformation), we have already played around a bit with AWS CloudFormation. We have deployed a network stack that provides the network infrastructure we need, and a service stack that deploys a Docker image with our Spring Boot application into that network.

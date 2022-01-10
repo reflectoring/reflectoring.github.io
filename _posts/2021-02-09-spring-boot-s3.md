@@ -3,10 +3,9 @@ title: "Getting Started with AWS S3 and Spring Boot"
 categories: ["Spring Boot"]
 date: 2021-02-09 00:00:00 +1100
 modified: 2021-02-09 00:00:00 +1100
-author: jgoerner
+authors: [jgoerner]
 excerpt: "Learn how to use Spring Boot and AWS S3 by building our own file-sharing application."
-image:
-  auto: 0095-bucket
+image: images/stock/0095-bucket-1200x628-branded.jpg
 ---
 
 In this article, **we are going to explore AWS' Simple Storage Service (S3) together with Spring Boot to build a custom file-sharing application** (just like in the good old days before Google Drive, Dropbox & co).

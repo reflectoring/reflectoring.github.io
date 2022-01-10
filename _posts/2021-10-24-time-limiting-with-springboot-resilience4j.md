@@ -3,10 +3,9 @@ title: Timeouts with Spring Boot and Resilience4j
 categories: ["Java"]
 date: 2021-10-24 05:00:00 +1100
 modified: 2021-10-24 05:00:00 +1100
-author: saajan
+authors: [saajan]
 excerpt: "Continuing the Resilience4j journey, this article on Spring Boot TimeLimiter shows when and how to use it to build resilient applications."
-image:
-  auto: 0079-stopwatch
+image: images/stock/0079-stopwatch-1200x628-branded.jpg
 ---
 
 In this series so far, we have learned how to use the Resilience4j [Retry](https://reflectoring.io/retry-with-resilience4j/), [RateLimiter](https://reflectoring.io/rate-limiting-with-resilience4j/), [TimeLimiter](https://reflectoring.io/time-limiting-with-resilience4j/), [Bulkhead](https://reflectoring.io/bulkhead-with-resilience4j/), [Circuitbreaker](https://reflectoring.io/circuitbreaker-with-resilience4j/) core modules and also seen its Spring Boot support for the [Retry](https://reflectoring.io/retry-with-springboot-resilience4j/) and the [RateLimiter](https://reflectoring.io/rate-limiting-with-springboot-resilience4j/) modules. 

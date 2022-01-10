@@ -3,9 +3,9 @@ title: "Comparison of Java HTTP Clients"
 categories: ["Java"]
 date: 2021-11-09 06:00:00 +1000
 modified: 2021-11-09 06:00:00 +1000
-author: pratikdas
+authors: [pratikdas]
 excerpt: "This post provides an overview of some of the major libraries that are used as HTTP clients by Java applications for making HTTP calls."
-image:
+image: images/stock/-1200x628-branded.jpg
  auto: 0046-rack
 ---
 Hypertext Transfer Protocol (HTTP) is an [application-layer](https://en.wikipedia.org/wiki/OSI_model#Layer_7:_Application_Layer) protocol for transmitting hypermedia documents, such as HTML, and API payloads in a standard format like JSON and XML. 

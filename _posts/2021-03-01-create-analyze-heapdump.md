@@ -3,10 +3,9 @@ title: "Creating and Analyzing Java Heap Dumps"
 categories: ["Java"]
 date: 2021-03-01 05:00:00 +1100
 modified: 2021-03-01 05:00:00 +1100
-author: pratikdas
+authors: [pratikdas]
 excerpt: "This post looks at diagnosing memory problems in a Java Application by capturing a heap dump and then analyzing it with memory analyzer tools. "
-image:
-  auto: 0019-magnifying-glass
+image: images/stock/0019-magnifying-glass-1200x628-branded.jpg
 ---
 
 As Java developers, we are familiar with our applications throwing `OutOfMemoryErrors` or our server monitoring tools throwing alerts and complaining about high JVM memory utilization.

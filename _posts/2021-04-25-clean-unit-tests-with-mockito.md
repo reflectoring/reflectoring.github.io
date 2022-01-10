@@ -3,10 +3,9 @@ title: "Clean Unit Tests with Mockito"
 categories: ["Java"]
 date: 2021-04-25 00:00:00 +0100 
 modified: 2021-04-25 00:00:00 +0100 
-author: lleuenberger 
+authors: [lleuenberger ]
 excerpt: "Intro to writing clean unit tests with Mockito."
-image:
-  auto: 0052-mock
+image: images/stock/0052-mock-1200x628-branded.jpg
 ---
 
 In this article we will learn how to mock objects with Mockito. We'll first talk about what test doubles are and then

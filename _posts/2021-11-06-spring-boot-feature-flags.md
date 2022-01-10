@@ -4,8 +4,7 @@ categories: ["Spring Boot"]
 date: 2021-11-06 00:00:00 +1100 
 modified: 2021-11-06 00:00:00 +1100 
 excerpt: "Feature flags don't need to be simple if/else blocks. Instead, we can replace whole methods or even whole beans with a bit of Spring Boot magic."
-image:
-  auto: 0112-decision
+image: images/stock/0112-decision-1200x628-branded.jpg
 ---
 
 Feature flags are a great tool to improve confidence in deployments and to avoid impacting customers with unintended

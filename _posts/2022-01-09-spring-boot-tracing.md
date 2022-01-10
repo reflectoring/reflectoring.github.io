@@ -3,8 +3,7 @@ title: "Tracing with Spring Boot, OpenTelemetry, and Jaeger"
 categories: ["Spring Boot"]
 date: 2022-01-09 00:00:00 +1100
 excerpt: "A guide on how to set up your Spring Boot applications to emit traces and analyze them with Jaeger"
-image:
-  auto: 0115-footsteps
+image: images/stock/0115-footsteps-1200x628-branded.jpg
 ---
 
 In a distributed system, many services can be involved in creating a response to a single request. Not only for debugging purposes it’s essential that the path of such a request can be traced through all involved services. This tutorial gives an overview of the traceability problem in distributed systems and provides a complete guide on how to implement tracing with Spring Boot, OpenTelemetry, and Jaeger.
@@ -288,18 +287,18 @@ services:
   
   api-service:  
     build: api-service/  
-    image: api-service:latest  
+    image: images/stock/api-service:latest  -1200x628-branded.jpg
     ports:  
       - "8080:8080"  
   
   customer-service:  
     build: ./customer-service/  
-    image: customer-service:latest  
+    image: images/stock/customer-service:latest  -1200x628-branded.jpg
     ports:  
       - "8081:8081"  
   
   collector:  
-    image: logzio/otel-collector-traces  
+    image: images/stock/logzio/otel-collector-traces  -1200x628-branded.jpg
     environment:  
       - LOGZIO_REGION=${LOGZIO_REGION}  
       - LOGZIO_TRACES_TOKEN=${LOGZIO_TRACES_TOKEN}  

@@ -3,9 +3,9 @@ title: "Getting Started With Java: Build a Robot Arena"
 categories: ["Java"]
 date: 2021-04-15 00:00:00 +1100
 modified: 2021-04-15 00:00:00 +1100
-author: default
+authors: [tom]
 excerpt: "Get started with Java and build your first program. We'll start simple and level up until we have built a robot arena!"
-image:
+image: images/stock/-1200x628-branded.jpg
   teaser: /assets/img/special/robot-arena.jpg
   opengraph: /assets/img/special/robot-arena.jpg
 ---

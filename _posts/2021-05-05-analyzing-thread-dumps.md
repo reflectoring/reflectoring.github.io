@@ -3,10 +3,9 @@ title: "Creating and Analyzing Thread Dumps"
 categories: ["Java"]
 date: 2021-05-05 06:00:00 +1000
 modified: 2021-05-05 06:00:00 +1000
-author: pratikdas
+authors: [pratikdas]
 excerpt: "A thread dump is a snapshot of the states of all the threads in an application. They are useful to identify the root cause of various problems in live applications. In this post, we will look at the contents of a thread dump, different means of generating thread dumps, and analyzing them to identify the potential causes of a problem."
-image:
-  auto: 0101-threads
+image: images/stock/0101-threads-1200x628-branded.jpg
 ---
 A thread is a basic path of execution in a program.  Most of the applications we build today execute in a multi-threaded environment. They might become unresponsive if the thread executing at that point of time is stuck due to some reason. In these situations, thread dumps help to narrow down the problem.
 

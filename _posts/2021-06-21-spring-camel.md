@@ -3,10 +3,9 @@ title: "Getting Started with Apache Camel and Spring Boot"
 categories: ["Spring Boot"]
 date: 2021-06-21 06:00:00 +1000
 modified: 2021-06-21 06:00:00 +1000
-author: pratikdas
+authors: [pratikdas]
 excerpt: "Apache Camel is an integration framework with a programming model for integrating a wide variety of applications. In this article, we will look at using Apache Camel for building integration logic in microservice applications built with Spring Boot with the help of code examples."
-image:
-  auto: 0046-rack
+image: images/stock/0046-rack-1200x628-branded.jpg
 ---
 
 Apache Camel is an integration framework with a programming model for integrating a wide variety of applications. 

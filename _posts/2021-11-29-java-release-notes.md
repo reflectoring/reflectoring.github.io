@@ -3,9 +3,9 @@ title: "Java Features from Java 8 to Java 17"
 categories: ["Java"]
 date: 2021-11-29 05:00:00 +1000
 modified: 2021-11-29 05:00:00 +1000
-author: mateo
+authors: [mateo]
 excerpt: "One place to get information about all the major Java features."
-image: 
+image: images/stock/-1200x628-branded.jpg
   auto: 0065-java
 ---
 

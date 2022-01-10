@@ -1,12 +1,12 @@
 ---
 title: "Read Intentionally"
-categories: [grow]
+categories: ["Simplify!"]
 date: 2021-09-12 09:00:00 +1100
 modified: 2021-09-12 09:00:00 +1100
-author: default
+authors: [tom]
 excerpt: "How much of what you're reading can you remember? Read intentionally to increase memory retention."
-image:
-  auto: 0110-reading
+image:  images/stock/0110-reading-1200x628-branded.jpg
+url: read-intentionally
 ---
 
 How many words are you reading every day?

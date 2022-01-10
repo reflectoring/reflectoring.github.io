@@ -1,12 +1,12 @@
 ---
 title: "Start Clean!"
-categories: [grow]
+categories: ["Simplify!"]
 date: 2021-06-21 09:00:00 +1100
 modified: 2021-06-21 09:00:00 +1100
-author: default
+authors: [tom]
 excerpt: "Start clean to battle technical debt from the start and have a good conscience."
-image:
-  auto: 0103-blank
+image:  images/stock/0103-blank-1200x628-branded.jpg
+url: start-clean
 ---
 
 As software developers, we're painfully aware of technical debt.

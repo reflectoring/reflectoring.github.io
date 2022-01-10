@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: "Publishing Open Source Snapshots with Gradle"
-categories: ["WIP", "Java"]
+categories: ["Java"]
 date: 2017-12-20
 excerpt: "One of the most fulfilling things in open source development is getting feedback from your users. 
           This article shows how to publish snapshots of

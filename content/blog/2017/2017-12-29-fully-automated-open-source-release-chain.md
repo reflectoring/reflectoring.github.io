@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: "A Fully Automated Open Source Release Chain with Gradle and Travis CI"
-categories: ["WIP", "Java"]
+categories: ["Java"]
 date: 2017-12-29
 excerpt: "Releasing often is a major pain
           when the release process is not automated. This article is a guide to a fully automated

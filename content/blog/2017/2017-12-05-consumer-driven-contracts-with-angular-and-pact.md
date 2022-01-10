@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: "Creating a Consumer-Driven Contract with Angular and Pact"
-categories: ["WIP", programming]
+categories: [programming]
 date: 2017-12-10
 excerpt: "A tutorial on testing an Angular REST client against a contract with the Pact framework."
 image: images/stock/0029-contract-1200x628-branded.jpg

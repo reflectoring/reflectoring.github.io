@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: "Event Messaging for Microservices with Spring Boot and RabbitMQ"
-categories: ["WIP", "Spring Boot"]
+categories: ["Spring Boot"]
 date: 2017-09-16
 excerpt: "A tutorial on creating an event messaging solution with Spring Boot and RabbitMQ."
 image: images/stock/0035-switchboard-1200x628-branded.jpg

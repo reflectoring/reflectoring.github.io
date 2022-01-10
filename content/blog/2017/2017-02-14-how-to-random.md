@@ -1,6 +1,6 @@
 ---
 title: A Random Pitfall
-categories: ["WIP", "Java"]
+categories: ["Java"]
 date: 2017-02-16
 authors: [rudi]
 excerpt: "An intro on how to create random numbers in Java."

@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: "A Guide to Formatting Code Snippets in Javadoc"
-categories: ["WIP", "Java"]
+categories: ["Java"]
 date: 2017-08-14
 excerpt: "A thorough explanation of different ways to format code snippets within a Javadoc comment."
 image: images/stock/0031-matrix-1200x628-branded.jpg

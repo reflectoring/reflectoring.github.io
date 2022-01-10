@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: Exposing Metrics of a Spring Boot Application for Prometheus
-categories: ["WIP", "Spring Boot"]
+categories: ["Spring Boot"]
 date: 2017-05-01
 excerpt: "A tutorial on using Dropwizard to expose monitoring metrics from within a Spring Boot application
           to be consumed by a Prometheus monitoring server."

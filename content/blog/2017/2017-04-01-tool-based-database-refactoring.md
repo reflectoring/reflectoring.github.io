@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: Tool-based Database Refactoring
-categories: ["WIP", "Software Craft"]
+categories: ["Software Craft"]
 date: 2017-04-01
 excerpt: "A short introduction to database refactoring and an argument why a database 
           refactoring tool is a must-have in any project using a database with a schema."

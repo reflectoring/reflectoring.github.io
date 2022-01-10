@@ -1,12 +1,11 @@
 ---
+authors: [tom]
 title: "Book Notes: Make Time"
-categories: [book-reviews]
+categories: ["Book Notes"]
 date: 2020-12-15 05:00:00 +1100
-modified: 2020-12-15 05:00:00 +1100
+date: 2020-12-15 05:00:00 +1100
 excerpt: "My notes on 'Make Time', a book that offers a framework for concentrating on the things that matter."
-image:
-  teaser: /assets/img/covers/make-time-teaser.jpg
-  opengraph: /assets/img/covers/make-time-teaser.jpg
+image: images/covers/make-time-teaser.jpg
 author: default
 ---
 

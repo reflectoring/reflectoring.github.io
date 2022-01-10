@@ -1,12 +1,11 @@
 ---
-
+authors: [tom]
 title: "Book Review: Clean Architecture by Robert C. Martin"
-categories: [book-reviews]
-modified: 2018-08-25
+categories: ["Book Notes"]
+date: 2018-08-25
 excerpt: "A review of Robert C. Martin's book on 'Clean Architecture'. "
-image:
-  teaser: /assets/img/covers/clean-architecture-teaser.jpg
-  opengraph: /assets/img/covers/clean-architecture-teaser.jpg
+image: images/covers/clean-architecture-teaser.jpg
+url: /book-review-clean-architecture
 ---
 
 

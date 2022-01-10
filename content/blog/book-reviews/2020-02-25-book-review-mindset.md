@@ -1,12 +1,11 @@
 ---
+authors: [tom]
 title: "Book Notes: Mindset"
-categories: [book-reviews]
+categories: ["Book Notes"]
 date: 2020-02-25 05:00:00 +1100
-modified: 2020-02-25 05:00:00 +1100
+date: 2020-02-25 05:00:00 +1100
 excerpt: "My notes on 'Mindset' - a book about the power of having a growth mindset."
-image:
-  teaser: /assets/img/covers/mindset-teaser.jpg
-  opengraph: /assets/img/covers/mindset-teaser.jpg
+image: images/covers/mindset-teaser.jpg
 author: default
 ---
 

@@ -1,11 +1,10 @@
 ---
+authors: [tom]
 title: "Book Review: The 7 Habits of Highly Effective People"
-categories: [book-reviews]
-modified: 2019-06-26
+categories: ["Book Notes"]
+date: 2019-06-26
 excerpt: "A review of the Book 'The 7 Habits of Highly Effective People' by Stephen Covey."
-image:
-  teaser: /assets/img/covers/7-habits-teaser.jpg
-  opengraph: /assets/img/covers/7-habits-teaser.jpg
+image: images/covers/7-habits-teaser.jpg
 ---
 
 

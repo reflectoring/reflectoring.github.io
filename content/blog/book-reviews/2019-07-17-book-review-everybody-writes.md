@@ -1,11 +1,10 @@
 ---
+authors: [tom]
 title: "Book Review: Everybody Writes"
-categories: [book-reviews]
-modified: 2019-07-17
+categories: ["Book Notes"]
+date: 2019-07-17
 excerpt: "A review of the Book 'Everybody Writes' by Ann Handley."
-image:
-  teaser: /assets/img/covers/everybody-writes-teaser.jpg
-  opengraph: /assets/img/covers/everybody-writes-teaser.jpg
+image: images/covers/everybody-writes-teaser.jpg
 ---
 
 ## TL;DR: Read this Book, when...

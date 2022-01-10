@@ -1,11 +1,10 @@
 ---
+authors: [tom]
 title: "Book Review: The Power of Habit"
-categories: [book-reviews]
-modified: 2019-09-02
+categories: ["Book Notes"]
+date: 2019-09-02
 excerpt: "A review of the Book 'The Power of Habit' by Charles Duhigg."
-image:
-  teaser: /assets/img/covers/power-of-habit-teaser.jpg
-  opengraph: /assets/img/covers/power-of-habit-teaser.jpg
+image: images/covers/power-of-habit-teaser.jpg
 ---
 
 ## TL;DR: Read this Book, when...

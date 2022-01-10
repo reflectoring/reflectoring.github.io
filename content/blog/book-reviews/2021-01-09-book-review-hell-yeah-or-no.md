@@ -1,12 +1,11 @@
 ---
+authors: [tom]
 title: "Book Notes: Hell Yeah or No"
-categories: [book-reviews]
+categories: ["Book Notes"]
 date: 2021-01-09 05:00:00 +1100
-modified: 2021-01-09 05:00:00 +1100
+date: 2021-01-09 05:00:00 +1100
 excerpt: "My notes on 'Hell Yeah or No', a book with some lessons on when to say yes and when to say no, among other things."
-image:
-  teaser: /assets/img/covers/hell-yeah-teaser.jpg
-  opengraph: /assets/img/covers/hell-yeah-teaser.jpg
+image: images/covers/hell-yeah-teaser.jpg
 author: default
 ---
 

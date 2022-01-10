@@ -1,12 +1,11 @@
 ---
+authors: [tom]
 title: "Book Notes: Accelerate"
-categories: [book-reviews]
+categories: ["Book Notes"]
 date: 2020-05-15 05:00:00 +1100
-modified: 2020-05-15 05:00:00 +1100
+date: 2020-05-15 05:00:00 +1100
 excerpt: "My notes on 'Accelerate' by Nicole Forsgren, Jez Humble, and Gene Kim - a book about research on the factors contribute to the performance in software development."
-image:
-  teaser: /assets/img/covers/accelerate-teaser.jpg
-  opengraph: /assets/img/covers/accelerate-teaser.jpg
+image: images/covers/accelerate-teaser.jpg
 author: default
 ---
 

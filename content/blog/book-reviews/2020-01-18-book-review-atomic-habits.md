@@ -1,12 +1,11 @@
 ---
+authors: [tom]
 title: "Book Review: Atomic Habits"
-categories: [book-reviews]
+categories: ["Book Notes"]
 date: 2020-01-18 06:00:00 +1100
-modified: 2020-01-18 06:00:00 +1100
+date: 2020-01-18 06:00:00 +1100
 excerpt: "'Atomic Habits' provides an actionable framework for making or breaking habits. Here are my notes."
-image:
-  teaser: /assets/img/covers/atomic-habits-teaser.jpg
-  opengraph: /assets/img/covers/atomic-habits-teaser.jpg
+image: images/covers/atomic-habits-teaser.jpg
 author: default
 ---
 

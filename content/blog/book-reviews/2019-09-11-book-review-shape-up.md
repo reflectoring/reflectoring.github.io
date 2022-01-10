@@ -1,11 +1,10 @@
 ---
+authors: [tom]
 title: "Book Review: Shape Up"
-categories: [book-reviews]
-modified: 2019-09-11
+categories: ["Book Notes"]
+date: 2019-09-11
 excerpt: "A review of the online Book 'Shape Up' by Ryan Singer, describing the set of techniques Basecamp uses to develop software."
-image:
-  teaser: /assets/img/teasers/shape-up-1200x628.png
-  opengraph: /assets/img/teasers/shape-up-1200x628-branded.png
+image: images/covers/shape-up.png
 ---
 
 ## TL;DR: Read this Book, when...
@@ -38,7 +37,7 @@ The text is accompanied by hand-drawn figures which do a great job of explaining
 
 Here are my notes from reading the book, along with a map of some of the keywords that I have assembled while reading ....
 
-![Keywords of "Shape Up"](/assets/img/teasers/shape-up-1200x628.png)
+![Keywords of "Shape Up"](images/covers/teasers/shape-up-1200x628.png)
 
 ### Introduction
 

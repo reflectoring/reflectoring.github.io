@@ -1,8 +1,8 @@
 ---
 title: "Working with AWS DynamoDB and Spring"
 categories: ["Spring Boot"]
-date: 2021-06-13 06:00:00 +1000
-modified: 2021-06-13 06:00:00 +1000
+date: 2021-06-13T06:00:00
+modified: 2021-06-13T06:00:00
 authors: [pratikdas]
 excerpt: "AWS DynamoDB is a fully managed NoSQL database service in AWS Cloud. In this article, we will look at accessing DynamoDB from our Java applications with Spring Data and an enhanced high-level client with the help of some code examples."
 image: images/stock/0102-dynamo-1200x628-branded.jpg

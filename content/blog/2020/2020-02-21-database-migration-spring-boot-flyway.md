@@ -1,7 +1,7 @@
 ---
 title: One-Stop Guide to Database Migration with Flyway and Spring Boot
 categories: ["Spring Boot"]
-date: 2020-02-21 05:00:00 +1100
+date: 2020-02-21T05:00:00
 authors: [petromir]
 excerpt: "A comprehensive guide for database migrations using Flyway with and without Spring Boot."
 image: images/stock/0060-data-1200x628-branded.jpg

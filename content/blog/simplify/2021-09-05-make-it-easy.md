@@ -1,8 +1,8 @@
 ---
 title: "Make it Easy"
 categories: ["Simplify!"]
-date: 2021-09-05 09:00:00 +1100
-modified: 2021-09-05 09:00:00 +1100
+date: 2021-09-05T09:00:00
+modified: 2021-09-05T09:00:00
 authors: [tom]
 excerpt: "Easy work is smarter work than hard work. What you can do to make things easy."
 image:  images/stock/0109-baloons-1200x628-branded.jpg

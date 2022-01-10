@@ -1,8 +1,8 @@
 ---
 title: "Complete Guide to Exception Handling in Spring Boot"
 categories: ["Spring Boot"]
-date: 2020-12-31 00:00:00 +1100
-modified: 2020-12-31 00:00:00 +1100
+date: 2020-12-31T00:00:00
+modified: 2020-12-31T00:00:00
 authors: [mmr]
 excerpt: "This article showcases various ways to handle exceptions in a Spring Boot Application"
 image: images/stock/0090-404-1200x628-branded.jpg

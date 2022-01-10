@@ -1,8 +1,8 @@
 ---
 title: My System for Organizing Work in a Distracted World
 categories: ["Meta"]
-date: 2020-03-22 05:00:00 +1100
-modified: 2020-03-22 05:00:00 +1100
+date: 2020-03-22T05:00:00
+modified: 2020-03-22T05:00:00
 authors: [tom]
 excerpt: "A peek into the system I use to organize my workday."
 image: images/stock/0067-todo-1200x628-branded.jpg

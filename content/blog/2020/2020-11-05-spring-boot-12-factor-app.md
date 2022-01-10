@@ -1,8 +1,8 @@
 ---
 title: "12 Factor Apps with Spring Boot"
 categories: ["Spring Boot"]
-date: 2020-11-05 06:00:00 +1000
-modified: 2020-11-05 06:00:00 +1000
+date: 2020-11-05T06:00:00
+modified: 2020-11-05T06:00:00
 authors: [pratikdas]
 excerpt: "How does Spring Boot support building a 12-Factor app? What do we have left to do?"
 image: images/stock/0086-twelve-1200x628-branded.jpg

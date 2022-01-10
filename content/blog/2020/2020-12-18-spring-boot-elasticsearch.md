@@ -1,8 +1,8 @@
 ---
 title: "Using Elasticsearch with Spring Boot"
 categories: ["Spring Boot"]
-date: 2020-12-18 05:00:00 +1000
-modified: 2020-12-18 05:00:00 +1000
+date: 2020-12-18T05:00:00
+modified: 2020-12-18T05:00:00
 authors: [pratikdas]
 excerpt: "How to index and search Data with Spring Boot and Elasticsearch"
 image: images/stock/0019-magnifying-glass-1200x628-branded.jpg

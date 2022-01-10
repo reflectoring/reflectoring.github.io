@@ -1,8 +1,8 @@
 ---
 title: "Comparison of Java HTTP Clients"
 categories: ["Java"]
-date: 2021-11-09 06:00:00 +1000
-modified: 2021-11-09 06:00:00 +1000
+date: 2021-11-09T06:00:00
+modified: 2021-11-09T06:00:00
 authors: [pratikdas]
 excerpt: "This post provides an overview of some of the major libraries that are used as HTTP clients by Java applications for making HTTP calls."
 image: images/stock/-1200x628-branded.jpg

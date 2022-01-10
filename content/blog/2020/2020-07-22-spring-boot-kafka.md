@@ -1,8 +1,8 @@
 ---
 title: Using Kafka with Spring Boot
 categories: ["Spring Boot"]
-date: 2020-07-22 05:00:00 +1100
-modified: 2020-07-22 05:00:00 +1100
+date: 2020-07-22T05:00:00
+modified: 2020-07-22T05:00:00
 authors: [nandan]
 excerpt: 'How to use Spring Kafka to send messages to and receive messages from Kafka.'
 image: images/stock/0075-envelopes-1200x628-branded.jpg

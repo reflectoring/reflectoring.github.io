@@ -1,8 +1,8 @@
 ---
 title: Building a Robust SQS Client with Spring Boot
 categories: ["Spring Boot"]
-date: 2020-04-13 05:00:00 +1100
-modified: 2020-04-13 05:00:00 +1100
+date: 2020-04-13T05:00:00
+modified: 2020-04-13T05:00:00
 authors: [tom]
 excerpt: "A top-to-bottom approach of building an SQS client for publishing and receiving messages from an SQS queue in a robust and scalable way."
 image: images/stock/0035-switchboard-1200x628-branded.jpg

@@ -1,8 +1,8 @@
 ---
 title: "Creating Optimized Docker Images for a Spring Boot Application"
 categories: ["Spring Boot"]
-date: 2020-09-05 06:00:00 +1100
-modified: 2020-09-05 06:00:00 +1100
+date: 2020-09-05T06:00:00
+modified: 2020-09-05T06:00:00
 authors: [pratikdas]
 excerpt: "We will look at containerizing Spring Boot applications with cloud-native Buildpacks and Docker and how to optimize the containerized image by enabling layering and extracting the application in a separate layer."
 image: images/stock/0080-containers-1200x628-branded.jpg

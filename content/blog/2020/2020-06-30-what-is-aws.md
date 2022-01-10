@@ -1,8 +1,8 @@
 ﻿---
 title: "What is AWS? A High-Level Overview of the Most Important AWS Services"
 categories: ["Software Craft"]
-date: 2020-06-30 06:00:00 +1100
-modified: 2020-06-30 06:00:00 +1100
+date: 2020-06-30T06:00:00
+modified: 2020-06-30T06:00:00
 authors: [pratikdas]
 excerpt: "New to AWS? We've got you covered. AWS is a vast ocean of services across a bunch of different domains. This article introduces the most commonly used AWS services."
 image: images/stock/0072-aws-1200x628-branded.jpg

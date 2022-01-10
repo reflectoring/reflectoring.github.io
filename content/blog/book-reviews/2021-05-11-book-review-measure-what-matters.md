@@ -2,7 +2,7 @@
 authors: [tom]
 title: "Book Notes: Measure What Matters"
 categories: ["Book Notes"]
-date: 2021-05-11 05:00:00 +1100
+date: 2021-05-11T05:00:00
 excerpt: "My notes on 'The Psychology of Money', a book that communicates a solid mindset about investing money to build wealth."
 image: images/covers/measure-what-matters-teaser.jpg
 url: book-review-measure-what-matters

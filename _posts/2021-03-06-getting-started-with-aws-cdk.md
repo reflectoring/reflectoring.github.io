@@ -1,8 +1,8 @@
 ---
 title: "Getting Started with AWS Java CDK"
 categories: ["Software Craft"]
-date: 2021-03-06 00:00:00 +1100
-modified: 2021-03-06 00:00:00 +1100
+date: 2021-03-06T00:00:00
+modified: 2021-03-06T00:00:00
 authors: [tom]
 excerpt: "From zero to deploying a Spring Boot app to the cloud with the AWS CDK."
 image: images/stock/0061-cloud-1200x628-branded.jpg

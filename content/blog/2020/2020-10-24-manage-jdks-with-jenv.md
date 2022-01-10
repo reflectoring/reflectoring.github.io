@@ -1,8 +1,8 @@
 ---
 title: "Managing Multiple JDK Installations With jEnv"
 categories: ["Java"]
-date: 2020-10-24 00:00:00 +1100
-modified: 2020-10-24 20:00:00 +1100
+date: 2020-10-24T00:00:00
+modified: 2020-10-24T20:00:00
 authors: [tom]
 excerpt: "As Java developers, we often need to switch between different versions of the JDK for different projects. jEnv makes this easy."
 image: images/stock/0085-numbers-1200x628-branded.jpg

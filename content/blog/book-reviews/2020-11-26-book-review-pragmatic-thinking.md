@@ -2,7 +2,7 @@
 authors: [tom]
 title: "Book Notes: Pragmatic Thinking & Learning"
 categories: ["Book Notes"]
-date: 2020-11-26 05:00:00 +1100
+date: 2020-11-26T05:00:00
 excerpt: "My notes on 'Pragmatic Thinking & Learning' by Andy Hunt - a book about understanding our brain and making the most of it."
 image: images/covers/pragmatic-thinking-teaser.jpg
 url: book-review-pragmatic-thinking

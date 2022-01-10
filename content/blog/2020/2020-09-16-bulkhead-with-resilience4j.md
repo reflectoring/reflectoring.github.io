@@ -1,8 +1,8 @@
 ---
 title: Implementing Bulkhead with Resilience4j
 categories: ["Java"]
-date: 2020-09-17 05:00:00 +1100
-modified: 2020-09-17 05:00:00 +1100
+date: 2020-09-17T05:00:00
+modified: 2020-09-17T05:00:00
 authors: [saajan]
 excerpt: "Next up in the Resilience4j series - this article explains the Bulkhead module and how to use it to build resilient applications."
 image: images/stock/0081-safe-1200x628-branded.jpg

@@ -1,8 +1,8 @@
 ---
 title: "The AWS Journey Part 2: Deploying a Docker Image with AWS CloudFormation"
 categories: ["Software Craft"]
-date: 2020-05-02 05:00:00 +1000
-modified: 2020-05-02 05:00:00 +1000
+date: 2020-05-02T05:00:00
+modified: 2020-05-02T05:00:00
 authors: [tom]
 excerpt: "Learn the details of creating an AWS CloudFormation template to spin up a virtual private cloud and deploy your Docker containers into it with a single CLI command."
 image: images/stock/0061-cloud-1200x628-branded.jpg

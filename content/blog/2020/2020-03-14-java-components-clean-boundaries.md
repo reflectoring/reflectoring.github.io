@@ -1,8 +1,8 @@
 ---
 title: Clean Architecture Boundaries with Spring Boot and ArchUnit
 categories: ["Spring Boot"]
-date: 2020-03-14 05:00:00 +1100
-modified: 2020-03-14 05:00:00 +1100
+date: 2020-03-14T05:00:00
+modified: 2020-03-14T05:00:00
 authors: [tom]
 excerpt: "How can we avoid the dreaded Big Ball of Mud when developing software? This article gives an opinionated approach using packages and ArchUnit together with Spring to enforce clean boundaries between software components."
 image: images/stock/0065-boundary-1200x628-branded.jpg

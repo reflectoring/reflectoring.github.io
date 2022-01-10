@@ -1,8 +1,8 @@
 ---
 title: Implementing Timeouts with Resilience4j
 categories: ["Java"]
-date: 2020-08-18 05:00:00 +1100
-modified: 2020-18-08 05:00:00 +1100
+date: 2020-08-18T05:00:00
+modified: 2020-18-08T05:00:00
 authors: [saajan]
 excerpt: "Continuing the Resilience4j journey, this article on TimeLimiter shows when and how to use it to build resilient applications."
 image: images/stock/0079-stopwatch-1200x628-branded.jpg

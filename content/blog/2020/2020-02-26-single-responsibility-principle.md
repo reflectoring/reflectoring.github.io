@@ -1,8 +1,8 @@
 ---
 title: Single Responsibility Principle Unpacked
 categories: ["Software Craft"]
-date: 2020-02-26 05:00:00 +1100
-modified: 2020-02-26 05:00:00 +1100
+date: 2020-02-26T05:00:00
+modified: 2020-02-26T05:00:00
 authors: [leventov]
 excerpt: "A deep-dive into the benefits and potential drawbacks of designing software components so that they each have a single responsibility."
 image: images/stock/0062-lego-1200x628-branded.jpg

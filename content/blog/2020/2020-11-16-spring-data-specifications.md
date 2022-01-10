@@ -1,8 +1,8 @@
 ---
 title: "Getting Started with Spring Data Specifications"
 categories: ["Spring Boot"]
-date: 2020-11-16 00:00:00 +1100
-modified: 2020-11-16 00:00:00 +1100
+date: 2020-11-16T00:00:00
+modified: 2020-11-16T00:00:00
 authors: [mmr]
 excerpt: "All you need to know to get started with Spring Data JPA Specifications"
 image: images/stock/0059-library-1200x628-branded.jpg

@@ -1,8 +1,8 @@
 ---
 title: "Painless Code Formatting with EditorConfig"
 categories: ["Java"]
-date: 2021-02-15 00:00:00 +1100
-modified: 2021-02-15 00:00:00 +1100
+date: 2021-02-15T00:00:00
+modified: 2021-02-15T00:00:00
 authors: [zeddysoft]
 excerpt: "As Java developers working in a team on a project, we need a consistent coding style in our project to enhance readability and make our code a lot cleaner and uniform - that's where EditorConfig comes into play"
 image: images/stock/0096-tools-1200x628-branded.jpg

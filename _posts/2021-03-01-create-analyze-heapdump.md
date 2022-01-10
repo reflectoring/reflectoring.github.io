@@ -1,8 +1,8 @@
 ---
 title: "Creating and Analyzing Java Heap Dumps"
 categories: ["Java"]
-date: 2021-03-01 05:00:00 +1100
-modified: 2021-03-01 05:00:00 +1100
+date: 2021-03-01T05:00:00
+modified: 2021-03-01T05:00:00
 authors: [pratikdas]
 excerpt: "This post looks at diagnosing memory problems in a Java Application by capturing a heap dump and then analyzing it with memory analyzer tools. "
 image: images/stock/0019-magnifying-glass-1200x628-branded.jpg

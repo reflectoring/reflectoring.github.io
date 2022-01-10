@@ -1,8 +1,8 @@
 ---
 title: Exploring a Spring Boot App with Actuator and jq
 categories: ["Spring Boot"]
-date: 2021-04-30 05:00:00 +1100
-modified: 2021-04-30 05:00:00 +1100
+date: 2021-04-30T05:00:00
+modified: 2021-04-30T05:00:00
 authors: [saajan]
 excerpt: "This article shows why and how to use Spring Actuator and jq JSON processor to explore a new Spring Boot application."
 image: images/stock/0100-motor-1200x628-branded.jpg

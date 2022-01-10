@@ -1,8 +1,8 @@
 ---
 title: Implementing a Circuit Breaker with Resilience4j
 categories: ["Java"]
-date: 2020-12-21 05:00:00 +1100
-modified: 2020-12-21 05:00:00 +1100
+date: 2020-12-21T05:00:00
+modified: 2020-12-21T05:00:00
 authors: [saajan]
 excerpt: "A deep dive into the Resilience4j circuit breaker module. This article shows why, when and how to use it to build resilient applications."
 image: images/stock/0089-circuitbreaker-1200x628-branded.jpg

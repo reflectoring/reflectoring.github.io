@@ -1,8 +1,8 @@
 ---
 title: Run Your Maven Build Anywhere with the Maven Wrapper
 categories: ["Java"]
-date: 2020-07-29 05:00:00 +1100
-modified: 2020-07-29 05:00:00 +1100
+date: 2020-07-29T05:00:00
+modified: 2020-07-29T05:00:00
 authors: [saajan]
 excerpt: "A short article about Maven Wrapper - what problem it solves, how to set it up, and how it works"
 image: images/stock/0076-airmail-1200x628-branded.jpg

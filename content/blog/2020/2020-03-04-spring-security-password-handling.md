@@ -1,8 +1,8 @@
 ---
 title: Handling Passwords with Spring Boot and Spring Security
 categories: ["Spring Boot"]
-date: 2020-03-04 05:00:00 +1100
-modified: 2020-03-04 05:00:00 +1100
+date: 2020-03-04T05:00:00
+modified: 2020-03-04T05:00:00
 authors: [artur]
 excerpt: "When we store user passwords, we should do it securely. Let's have a look how to handle passwords with Spring Security in a Spring Boot application."
 image: images/stock/0064-password-1200x628-branded.jpg

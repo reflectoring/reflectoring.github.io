@@ -1,8 +1,8 @@
 ---
 title: "Building Reusable Mock Modules with Spring Boot"
 categories: ["Spring Boot"]
-date: 2020-12-08 00:00:00 +1100
-modified: 2020-12-08 20:00:00 +1100
+date: 2020-12-08T00:00:00
+modified: 2020-12-08T20:00:00
 authors: [tom]
 excerpt: "Having a modular codebase is nice, but wouldn't it be nicer to have a mock module for each real module to use in tests? Let's discuss a way to do that with Spring Boot!"
 image: images/stock/0088-jigsaw-1200x628-branded.jpg

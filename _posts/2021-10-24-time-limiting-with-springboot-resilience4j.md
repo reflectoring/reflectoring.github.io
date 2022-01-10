@@ -1,8 +1,8 @@
 ---
 title: Timeouts with Spring Boot and Resilience4j
 categories: ["Java"]
-date: 2021-10-24 05:00:00 +1100
-modified: 2021-10-24 05:00:00 +1100
+date: 2021-10-24T05:00:00
+modified: 2021-10-24T05:00:00
 authors: [saajan]
 excerpt: "Continuing the Resilience4j journey, this article on Spring Boot TimeLimiter shows when and how to use it to build resilient applications."
 image: images/stock/0079-stopwatch-1200x628-branded.jpg

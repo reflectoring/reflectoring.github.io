@@ -1,8 +1,8 @@
 ---
 title: "Implementing Plugins with Java's Service Provider Interface"
 categories: ["Java"]
-date: 2021-03-26 00:00:00 +1100
-modified: 2021-03-26 00:00:00 +1100
+date: 2021-03-26T00:00:00
+modified: 2021-03-26T00:00:00
 authors: [bakic]
 excerpt: "This article explains the Service Provider Interface with an example."
 image: images/stock/0088-jigsaw-1200x628-branded.jpg

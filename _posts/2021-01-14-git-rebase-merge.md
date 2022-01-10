@@ -1,8 +1,8 @@
 ---
 title: "Git Rebase vs. Git Merge Explained"
 categories: ["Software Craft"]
-date: 2021-01-14 00:00:00 +1100
-modified: 2021-01-14 00:00:00 +1100
+date: 2021-01-14T00:00:00
+modified: 2021-01-14T00:00:00
 authors: [mujtaba]
 excerpt: "A discussion of the Git commands 'merge' and 'rebase', what their difference is, and when to use which." 
 image: images/stock/0050-git-1200x628-branded.jpg

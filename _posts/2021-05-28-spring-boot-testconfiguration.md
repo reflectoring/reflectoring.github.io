@@ -1,8 +1,8 @@
 ---
 title: Testing with Spring Boot's @TestConfiguration Annotation
 categories: ["Spring Boot"]
-date: 2021-05-28 00:00:00 +0530
-modified: 2021-05-28 06:00:00 +1000
+date: 2021-05-28T00:00:00
+modified: 2021-05-28T06:00:00
 authors: [naveen]
 excerpt: "We will see the use of the `@TestConfiguration` annotation for creating custom beans or overriding specific beans for providing specialized behavior to the application during unit testing of Spring Boot applications."
 image: images/stock/-1200x628-branded.jpg

@@ -1,8 +1,8 @@
 ---
 title: "Local Development with AWS on LocalStack"
 categories: ["Software Craft"]
-date: 2020-07-27 06:00:00 +1000
-modified: 2020-07-27 06:00:00 +1000
+date: 2020-07-27T06:00:00
+modified: 2020-07-27T06:00:00
 authors: [pratikdas]
 excerpt: "Developing a Spring Boot App Against AWS Services with LocalStack"
 image: images/stock/0074-stack-1200x628-branded.jpg

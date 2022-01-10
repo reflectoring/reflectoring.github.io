@@ -1,8 +1,8 @@
 ---  
 title: "One Best Way - Continuous Improvement in Software Engineering"  
 categories: ["Software Craft"]  
-date: 2021-11-07 00:00:00 +1100  
-modified: 2021-11-07 00:00:00 +1100  
+date: 2021-11-07T00:00:00
+modified: 2021-11-07T00:00:00
 authors: [heidi]
 excerpt: "Copy Japanese manufacturing principles to implement continuous improvement in your software development processes." 
 image: images/stock/-1200x628-branded.jpg

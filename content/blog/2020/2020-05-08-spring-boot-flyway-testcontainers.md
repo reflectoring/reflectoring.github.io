@@ -1,8 +1,8 @@
 ---
 title: Testing Database Migration Scripts with Spring Boot and Testcontainers
 categories: ["Spring Boot"]
-date: 2020-05-08 05:00:00 +1100
-modified: 2020-05-08 05:00:00 +1100
+date: 2020-05-08T05:00:00
+modified: 2020-05-08T05:00:00
 authors: [artur]
 excerpt: "In-memory databases are popular for testing locally. But why test against an in-memory database when Testcontainers can easily spin up a production-like database for us?"
 image: images/stock/0069-testcontainers-1200x628-branded.jpg

@@ -2,7 +2,7 @@
 authors: [tom]
 title: "Book Notes: Make Time"
 categories: ["Book Notes"]
-date: 2020-12-15 05:00:00 +1100
+date: 2020-12-15T05:00:00
 excerpt: "My notes on 'Make Time', a book that offers a framework for concentrating on the things that matter."
 image: images/covers/make-time-teaser.jpg
 url: book-review-make-time

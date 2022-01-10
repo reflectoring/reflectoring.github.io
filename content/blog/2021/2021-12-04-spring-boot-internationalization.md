@@ -114,7 +114,7 @@ public class MessageConfig implements WebMvcConfigurer{
 
 }
 
-```text
+```
 Here we have configured a `SessionLocaleResolver` that will store the locale in a session. The default locale is set to `US`. We have also set the names of the session attributes that will store the current locale and time zone.
 
 ## Intercepting the Locale Change with `LocaleChangeInterceptor`
@@ -146,7 +146,7 @@ public class MessageConfig implements WebMvcConfigurer{
   }
 
 }
-```text
+```
 Here we have defined the `LocaleChangeInterceptor` bean in a Spring configuration class: `MessageConfig` that will switch to a new locale based on the value of the `language` parameter appended to an HTTP request URL. 
 
 For example, the application will use a German locale when the HTTP URL of the web application is `http://localhost:8080/index?language=de` based on the value of the request parameter `language` as `de`. Similarly, the application will switch to a French locale, when the HTTP URL of the web application is `http://localhost:8080/index?language=fr`.
@@ -235,7 +235,7 @@ Spring Boot provides auto-configuration for Thymeleaf when we add the thymeleaf 
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>
-```text
+```
 Adding the `spring-boot-starter-thymeleaf` dependency configures the necessary defaults including the path for HTML files for the view. By default, the HTML files are placed in the `resources/templates` location. We have created an HTML file `index.html` in the same path.
 
 Here is the Thymeleaf HTML code to display the value associated with the key `label.title` in our resource bundle configured to a `MessageSource` bean in the Spring configuration class:
@@ -261,7 +261,7 @@ The values of the text for the key `label.title` for different locales are in th
 Label in English defined in `messages.properties`:
 ```properties
 label.title = List of Products
-```text
+```
 Label in French defined in `messages_fr.properties`:
 ```properties
 label.title = Liste des produits
@@ -270,7 +270,7 @@ label.title = Liste des produits
 Label in German defined in `messages_de.properties`:
 ```properties
 label.title = Produktliste
-```text
+```
 In `messages.properties`, we have assigned 'List of Products' as the value of the key `label.title` and the french and German translations of 'List of Products' text in `messages_fr.properties` and `messages_de.properties` for the same key.
 
 We can similarly define the remaining HTML labels in the resource bundles:
@@ -284,7 +284,7 @@ label.product.lastUpdated = Last Updated
 label.title = List of Products
 label.chooseLang = Choose language
 ...
-```text
+```
 Similarly the text for the French language are defined in `messages_fr.properties` :
 
 ```properties
@@ -295,7 +295,7 @@ label.product.lastUpdated = Dernière mise à jour
 label.title = Liste des produits
 label.chooseLang = Choisissez la langue
 ...
-```text
+```
 As we can see from these resource bundles for the French and English (used as default),
 the keys for the values that will be localized are the same in every file.
 
@@ -362,7 +362,7 @@ public class ProductsController {
   }
 }
 
-```text
+```
 Here we have added `ProductsController` as the controller class. We have added the `index` method where we are populating the model for a collection of products. The view name is set to `index` which maps to the view `index.html`.
 
 ```html

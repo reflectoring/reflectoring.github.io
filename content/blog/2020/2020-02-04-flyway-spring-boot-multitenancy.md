@@ -56,7 +56,7 @@ public class HeaderTenantInterceptor implements WebRequestInterceptor {
   // other methods omitted
 
 }
-```text
+```
 In the method `preHandle()`, we read every request's `tenantId` from the header and forward it
 to `ThreadTenantStorage`. 
 
@@ -137,7 +137,7 @@ tenants:
       driverClassName: org.h2.Driver
       username: sa
       password: password
-```text
+```
 In this case, we configured data sources for two tenants: `vw` and `bmw`. 
 
 To get access to these `DataSource`s in our code, we can bind the properties to a Spring bean using [`@ConfigurationProperties`](/spring-boot-configuration-properties/):
@@ -167,7 +167,7 @@ public class DataSourceProperties {
         .build();
   }
 }
-```text
+```
 In `DataSourceProperties`, we build a `Map` with the data source names as keys and the `DataSource` objects as values.
 Now we can add a new tenant to `application.yaml` and the `DataSource` for this new tenant will be loaded automatically
 when the application is started.  
@@ -186,7 +186,7 @@ public class TenantRoutingDataSource extends AbstractRoutingDataSource {
   }
 
 }
-````text
+```
 The `AbstractRoutingDataSource` will call `determineCurrentLookupKey()` whenever a client requests a connection.
 The current tenant is available from `ThreadTenantStorage`, so the method `determineCurrentLookupKey()`
 returns this current tenant. This way, `TenantRoutingDataSource` will find the `DataSource` of this tenant and return a connection to this data source automatically.
@@ -229,7 +229,7 @@ To enable Flyway for all of our tenants' data sources, first we have do disable 
 spring:
   flyway:
     enabled: false
-```text
+```
 If we don't do this, Flyway will try to migrate scripts to the current `DataSource` when starting the application. But during startup, we don't have a current tenant, so `ThreadTenantStorage.getTenantId()` would return `null` and the application would crash.
 
 Next, we want to apply the Flyway-managed SQL scripts to all `DataSource`s we defined in the application.

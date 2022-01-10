@@ -104,7 +104,7 @@ But before that, let us connect to our DB instance in AWS RDS which we created e
 
 ```shell
 mysqlsh -h testinstance.cfkcguht5mdw.us-east-1.rds.amazonaws.com -P 3306 -u pocadmin
-```text
+```
 We have specified the port and user, apart from specifying the endpoint of our DB instance in the connection string. 
 
 We also need to ensure that the AWS RDS instance is reachable from our network where MySQL Shell is running. If we are accessing AWS RDS from a public network over the internet, we need to enable the public access property of our DB instance and associate a security group to accept connections from our host IP. 
@@ -132,7 +132,7 @@ Fetching table and column names from `mysql` for auto-completion... Press ^C to 
 +--------------+
 1 row in set (0.1967 sec)
 
-```text
+```
 Here we list the default set of databases in MySQL and then select a database named `mysql` before running a simple SQL command to fetch the current date. 
 
 We will use the same database in our application. We have to specify this database name in the configuration of our data source in our Spring Boot application which we will cover in the next section.
@@ -144,7 +144,7 @@ A datasource is a factory for obtaining connections to a physical data source. L
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-jdbc</artifactId>
     </dependency>
-```text
+```
 We will not need this now, since we are using AWS RDS with Spring cloud. We will instead add a dependency on `spring-cloud-starter-aws-jdbc` module for configuring database source for AWS RDS:
 
 ```xml
@@ -152,7 +152,7 @@ We will not need this now, since we are using AWS RDS with Spring cloud. We will
       <groupId>io.awspring.cloud</groupId>
       <artifactId>spring-cloud-starter-aws-jdbc</artifactId>
     </dependency>
-```text
+```
 At runtime, Spring Cloud AWS will pull all the required metadata from the AWS RDS DB instance and create a Tomcat JDBC pool with default properties. We will further configure this data source by configuring two sets of properties in our resource file named `application.properties`:
 
 ```.properties
@@ -164,7 +164,7 @@ cloud.aws.rds.instances[0].db-instance-identifier=testinstance
 cloud.aws.rds.instances[0].username=pocadmin
 cloud.aws.rds.instances[0].password=pocadmin
 cloud.aws.rds.instances[0].databaseName=mysql
-```text
+```
 The first set of three properties are used to specify the security credentials for connecting to AWS and the region as `us-east-1`. The next set of four properties are used to specify the AWS RDS instance name, user name, password, and database name. 
 
 We had specified the AWS RDS instance name when we created our DB instance in RDS along with the user name and password. RDS instances are referred to by `instances[0]` for the first instance, `instances[1]` for the second instance, and so on.
@@ -221,7 +221,7 @@ public class SystemRepository {
 
 }
 
-```text
+```
 As we can see here, it is completely decoupled from the database configuration. We can easily change the database configuration or the database itself (to MySQL or PostgreSQL, or Oracle) in RDS without any change to the code. 
 
 If we work with multiple data source configurations inside one application context, we need to qualify the data source injection point with a `@Qualifier` annotation.
@@ -243,7 +243,7 @@ class SpringcloudrdsApplicationTests {
   }
 }
 
-```text
+```
 Once again, there is nothing specific to Spring Cloud here. All the magic happens in the configuration. 
 
 In this JUnit test, we are invoking our repository class method to print the current date. The output log after running the test is shown below:
@@ -258,7 +258,7 @@ The new driver class is `com.mysql.cj.jdbc.Driver'...
 currentDate 2021-05-12
 ... : Shutting down ExecutorService 'applicationTaskExecutor'
 
-```text
+```
 We can see a warning in the log for using a [deprecated driver](https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-api-changes.html) class which is safe to be ignored. We have not specified any driver class here. The driver class `com.mysql.jdbc.Driver` is registered based on the metadata read from the database connection to AWS RDS. 
 
 ## Configuring the Read-Replica for Increasing Throughput
@@ -293,7 +293,7 @@ cloud.aws.rds.instances[0].password=pocadmin
 cloud.aws.rds.instances[0].databaseName=mysql
 
 cloud.aws.rds.instances[0].readReplicaSupport=true
-```text
+```
 Here we have set the `readReplicaSupport` to true to enable read-replica support.
 
 Our service class with a read-only method looks like this:
@@ -324,7 +324,7 @@ public class SystemRepository {
   }
 
 }
-```text
+```
 Here we have decorated the method `getUsers()` with `Transactional(readOnly = true)`. At runtime, all the invocations of this method will be sent to the read-replica. 
 
 We can also see that we have not created any separate data source for the read-replica of our DB instance. With the read-replica support, Spring Cloud AWS JDBC searches for any read-replica that is created for the master DB instance and routes the read-only transactions to one of the available read-replicas.

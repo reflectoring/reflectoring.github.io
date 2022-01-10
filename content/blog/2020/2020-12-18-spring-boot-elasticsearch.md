@@ -70,7 +70,7 @@ Executing this command will start an Elasticsearch instance listening on port 92
   },
   "tagline" : "You Know, for Search"
 }
-```text
+```
 We should get the above output if our Elasticsearch instance is started successfully. 
 
 ## Indexing and Searching with the REST API
@@ -88,7 +88,7 @@ PUT /messages/_doc/1
 {
   "message": "The Sky is blue today"
 }
-```text
+```
 This will store the message - "The Sky is blue today" as a document in an index named "messages". 
 
 We can fetch this document with a search query sent to the `search` REST API: 
@@ -100,7 +100,7 @@ GET /messages/search
   "match": {"message": "blue sky"}
   }
 }
-```text
+```
 Here we are sending a query of type `match` for fetching documents matching the string "blue sky". We can specify queries for searching documents in multiple ways. Elasticsearch provides a JSON based [Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) (Domain Specific Language) to define queries.
 
 For bulk addition, we need to supply a JSON document containing entries similar to the following snippet:
@@ -163,14 +163,14 @@ public class ElasticsearchClientConfig extends
   }
 }
 
-```text
+```
 Here we are connecting to our Elasticsearch instance, which we started earlier. We can further customize the connection by adding more properties like enabling ssl, setting timeouts, etc. 
 
 For debugging and diagnostics, we will turn on  request / response logging on the transport level in our logging configuration in `logback-spring.xml`:
 
 ```xml
 <logger name="org.springframework.data.elasticsearch.client.WIRE" level="trace"/>
-```text
+```
 ## Representing the Document
 In our example, we will search for products by their name, brand, price, or description. So for storing the product as a document in Elasticsearch, we will represent the product as a POJO, and decorate it with `Field` annotations to configure the mapping with Elasticsearch as shown here:
 
@@ -221,7 +221,7 @@ public interface ProductRepository
     extends ElasticsearchRepository<Product, String> {
 
 }
-```text
+```
 Here the `ProductRepository` class inherits the methods like `save()`, `saveAll()`, `find()`, and `findAll()` are included from the `ElasticsearchRepository` interface.
 
 ### Indexing
@@ -241,7 +241,7 @@ public class ProductSearchServiceWithRepo {
     productRepository.save(product);
   }
 }
-```text
+```
 When we call these methods from JUnit, we can see in the trace log that the REST APIs calls for indexing and bulk indexing.
 
 ### Searching
@@ -270,7 +270,7 @@ Similarly, by running the method `findByManufacturerAndCategory()`, we can see t
 ```shell
 TRACE .. Sending request POST /productindex/_search..: 
 Request body: {.."query":{"bool":{"must":[{"query_string":{"query":"samsung","fields":["manufacturer^1.0"],..}},{"query_string":{"query":"laptop","fields":["category^1.0"],..}}],..}},"version":true}
-```text
+```
 There are numerous combinations of [method naming patterns](https://docs.spring.io/spring-data/elasticsearch/docs/current/reference/html/#elasticsearch.query-methods.criterions) that generate a wide range of Elasticsearch queries. 
 
 ## Indexing and Searching with `ElasticsearchRestTemplate`
@@ -307,7 +307,7 @@ public class ProductSearchService {
   }
   ...
 }
-```text
+```
 The document to be stored is enclosed within an `IndexQuery` object. The `bulkIndex()` method takes as input a list of `IndexQuery` objects and the name of the Index wrapped inside `IndexCoordinates`. We get a trace of the REST API for a `bulk` request when we execute this method:
 
 ```shell
@@ -316,7 +316,7 @@ Request body: {"index":{"_index":"productindex","_id":"383..35"}}
 {"_class":"..Product","id":"383..35","name":"New Apple..phone",..manufacturer":"apple"}
 ..
 {"_class":"..Product","id":"d7a..34",.."manufacturer":"samsung"}
-```text
+```
 Next, we use the `index()` method to add a single document:
 ```java
 @Service
@@ -384,7 +384,7 @@ public class ProductSearchService {
   }
 }
 
-```text
+```
 Here we are building a query with a `NativeSearchQueryBuilder` which uses a `MatchQueryBuilder` to specify the match query containing the field "manufacturer".
 
 #### StringQuery
@@ -411,7 +411,7 @@ public class ProductSearchService {
    }
 }
 
-```text
+```
 In this code snippet, we are specifying a simple `match` query for fetching products with a particular name sent as a method parameter.
 
 #### CriteriaQuery
@@ -439,7 +439,7 @@ public class ProductSearchService {
            IndexCoordinates.of(PRODUCT_INDEX_NAME));
   }
 }
-```text
+```
 In this code snippet, we are forming a query with `CriteriaQuery` for fetching products whose price is greater than 10.0 and less than 100.0.
 
 ## Building a Search Application
@@ -461,7 +461,7 @@ The Service class [`ProductSearchService`](https://github.com/thombergs/code-exa
 The `productindex` is the same index we had used earlier for running the JUnit tests. We will first delete the `productindex` with Elasticsearch REST API, so that the `productindex` is created fresh during application startup with products loaded from our sample dataset of 50 fashion-line products:
 ```shell
 curl -X DELETE http://localhost:9200/productindex
-```text
+```
 We will get the message `{"acknowledged": true}` if the delete operation is successful.
 
 Now, let's create an index for the products in our inventory. We'll use a sample dataset of fifty products to build our index. The products are arranged as separate rows in a [CSV file](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch/src/main/resources/fashion-products.csv). 
@@ -485,7 +485,7 @@ public class ProductsearchappApplication {
     return productList;
   }
 }
-```text
+```
 In this snippet, we do some preprocessing by reading the rows from the dataset and passing those to the `saveAll()` method of the repository to add products to the index. On running the application we can see the below trace logs in the application startup.
 
 ```shell
@@ -540,7 +540,7 @@ public class ProductSearchService {
   }
 ...
 }
-```text
+```
 Here we perform a search on multiple fields - name and description. We also attach the `fuzziness()` to search for closely matching text to account for spelling errors.
 
 ### Fetching Suggestions with Wildcard Search
@@ -576,7 +576,7 @@ public class ProductSearchService {
     return suggestions;
   }
 }
-```text
+```
 We are using a wildcard query in the form of search input text appended with `*` so that if we type "red" we will get suggestions starting with "red". We are restricting the number of suggestions to 5 with the `withPageable()` method. Some screenshots of the search results from the running application can be seen here:
 
 {{% image alt="Product Search Application" src="images/posts/spring-data-elasticsearch/searchapp.png" %}}

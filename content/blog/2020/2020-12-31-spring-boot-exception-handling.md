@@ -92,7 +92,7 @@ Now if we call the `/product` API again with an invalid `id` we'll get the follo
   "message": "Item with id 1 not found",
   "path": "/product/1"
 } 
-```text
+```
 Note that we've set the property `include-stacktrace` to `on_trace_param` which means that only if we include the `trace` param in the URL (`?trace=true`), we'll get a stack trace in the response payload:
 
 ```json
@@ -104,7 +104,7 @@ Note that we've set the property `include-stacktrace` to `on_trace_param` which 
   "trace": "io.reflectoring.exception.exception.NoSuchElementFoundException: Item with id 1 not found...", 
   "path": "/product/1"
 } 
-```text
+```
 We might want to keep the value of `include-stacktrace` flag to `never`, at least in production, as it might reveal the internal
 workings of our application.
 

@@ -29,7 +29,7 @@ cities.stream()
   .map(String::toUpperCase)
   .sorted()
   .forEach(System.out::println);
-```text
+```
 Here we filter a list of countries starting with the letter "C", convert to uppercase and sort it before printing the result to the console. 
 
 The output is as below:
@@ -68,7 +68,7 @@ Anne of Avonlea - anne-of-avonlea.pdf
 Anne of Green Gables  - anne-of-green-gables.pdf  
 Matilda  - Matilda.pdf  
 Why Icebergs Float - Why-Icebergs-Float.pdf
-```text
+```
 #### Using `Files.lines()`
 
 Let us take a look an example where we read the contents of the above file:
@@ -76,7 +76,7 @@ Let us take a look an example where we read the contents of the above file:
 ```java
 Stream<String> lines = Files.lines(Path.of("bookIndex.txt"));
 lines.forEach(System.out::println);
-```text
+```
 As shown in the example above, the `lines()` method takes the `Path` representing the file as an argument. This method does not read all lines into a `List`, but instead populates lazily as the stream is consumed and this allows efficient use of memory.
 
 The output will be the contents of the file itself. 
@@ -89,7 +89,7 @@ The same results can be achieved by invoking the `lines()` method on `BufferedRe
 BufferedReader br = Files.newBufferedReader(Paths.get("bookIndex.txt"));
 Stream<String> lines = br.lines();
 lines.forEach(System.out::println);
-```text
+```
 As streams are lazy-loaded in the above cases (i.e. they generate elements upon request instead of storing them all in memory), **reading and processing files will be efficient in terms of memory used.**
 
 #### Using `Files.readAllLines()`
@@ -101,7 +101,7 @@ List<String> strList = Files
   .readAllLines(Path.of("bookIndex.txt"));
 Stream<String> lines = strList.stream();
 lines.forEach(System.out::println);
-```text
+```
 However, this method loads the entire contents of the file in one go and hence **is not memory efficient like the `Files.lines()` method**.
 
 ### Importance of try-with-resources
@@ -152,7 +152,7 @@ try (Stream<String> lines = Files.lines(Path.of("bookIndex.txt"))
     .parallel()) {
   lines.forEach(System.out::println);
 }
-```text
+```
 Here is the output:
 
 ```text
@@ -190,7 +190,7 @@ try (Stream<String> lines =
   lines.forEach(System.out::println);
 
 }
-```text
+```
 In the above case, you can see that we pass `StandardCharsets.UTF_8` as an argument to the `Files.lines()` method which allows us to read the UTF-encoded file.
 
 **Bytes from the file are decoded into characters using the specified charset.** 
@@ -200,7 +200,7 @@ We could also have used the overloaded version of `BufferedReader` for reading t
 ```java
 BufferedReader reader = 
   Files.newBufferedReader(path, StandardCharsets.UTF_8);
-```text
+```
 ## Using Streams to Process Files
 
 Streams support functional programming operations such as filter, map, find, etc. which we can chain to form a pipeline to produce the necessary results.
@@ -221,7 +221,7 @@ try (Stream<String> lines = Files.lines(Path.of("bookIndex.txt"))) {
   
   System.out.println("The count of lines starting with 'A' is " + i);
 }
-```text
+```
 In this example, only the lines starting with "A" are filtered out by calling the `filter()` method and the number of such lines counted using the `count()` method.
 
 The output is as below:
@@ -244,7 +244,7 @@ try (Stream<String> lines = Files.lines(Path.of("bookIndex.txt"))) {
 
   System.out.println(wordSet);
 }
-```text
+```
 As shown in the example above, each line from the file can be split into words by invoking the `split()` method.
   
 Then we can combine all the individual streams of words into one single stream by invoking the `flatMap()` method. 
@@ -307,7 +307,7 @@ try (Stream<String> lines = Files.lines(Path.of(csvPath))) {
 
   cakes.forEach(System.out::println);
 }
-```text
+```
 In the above example, we follow these steps:
 
  1. Read the lines one by one using `Files.lines()` method to get a stream.
@@ -368,7 +368,7 @@ try (Stream<Path> paths = Files.list(Path.of(folderPath))) {
   paths.filter(Files::isRegularFile)
     .forEach(System.out::println);
 }
-```text
+```
 As shown in the above example, we can use the `Files::IsRegularFile` operation to list only the regular files.
 
 The output is as below:  
@@ -390,7 +390,7 @@ try (Stream<Path> stream = Files.walk(Path.of(folderPath))) {
   stream.filter(Files::isRegularFile)
     .forEach(System.out::println);
 }
-```text
+```
 In the above example, we filter the stream returned by the `Files.walk()` method to return only regular files (subfolders are excluded). 
 
 The output is as below:
@@ -422,7 +422,7 @@ try (Stream<Path> paths = Files.find(
     })) {
   paths.forEach(System.out::println);
 }
-```text
+```
 In the above example, the `find()` method returns a stream with all the regular files having the `.pdf` extension. 
 
 The depth parameter is the maximum number of levels of directories to visit. A value of 0 means that only the starting file is visited, unless denied by the security manager. A value of `MAX_VALUE` may be used to indicate that all levels should be visited.
@@ -453,7 +453,7 @@ So how do we iterate through the entries of the JAR file? Here is an example whi
 try (JarFile jFile = new JarFile(jarFile)) {
   jFile.stream().forEach(file -> System.out.println(file));
 }
-```text
+```
 The contents of the JAR file will be iterated and displayed as shown below: 
 
 ```text
@@ -481,7 +481,7 @@ try (JarFile jFile = new JarFile(jarFile)) {
     .findAny();
   System.out.println(searchResult.get());
 }
-```text
+```
 In the above example, we are looking for filenames containing the word “Matilda”. So the output will be as follows.
 
 ```text

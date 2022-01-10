@@ -104,7 +104,7 @@ public class AssumingConnection implements TestRule {
   }
 
 }
-```text
+```
 We use our `ConnectionChecker` to check the connection and throw an 
 `AssumptionViolatedException` if the connection could not be established.
 

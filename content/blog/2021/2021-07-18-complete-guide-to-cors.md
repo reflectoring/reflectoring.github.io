@@ -218,8 +218,7 @@ app.get('/orders', (req, res) => {
   console.log('Returning orders');
   res.send(orders);
 });
-
-```text
+```
 The `GET` method defined here is used to return a collection of `orders`.
 
 ### Client Sending CORS Requests from JavaScript 
@@ -259,7 +258,7 @@ We will call the `GET` and `PUT` methods from this HTML page using the `XMLHttpR
   </div>
 </body>
 </html>
-```text
+```
 The HTML shown here contains a button which we need to click to trigger the CORS request from the JavaScript method `loadFromCrossOrigin`.
 
 ### CORS Error Due to Same-Origin Policy
@@ -286,7 +285,7 @@ app.get('/orders', (req, res) => {
   console.log('Returning orders');
   res.send(orders);
 });
-```text
+```
 We are returning a CORS header `Access-Control-Allow-Origin` with a value of source origin `http://localhost:9000` to fix the CORS error.
 
 The CORS relevant request headers and response headers from a simple CORS request are shown below:
@@ -303,7 +302,7 @@ Origin: http://localhost:9000
 **Response Headers**
 Access-Control-Allow-Origin: http://localhost:9000
 
-```text
+```
 In this example, the HTML served from `http://localhost:9000` sends a request to the cross-origin server containing a REST API with the URL `http://localhost:8000/orders`. 
 
 This is a simple CORS request since it is a `GET` request. 
@@ -333,7 +332,6 @@ app.put('/orders', (req, res) => {
   console.log('updating orders');
   res.send(orders);
 });
-
 ```
 
 For handling the preflight request, we are returning two more headers:
@@ -392,7 +390,7 @@ function sendAuthRequestToCrossOrigin() {
     xhr.withCredentials = true;
     xhr.send();
 }
-```text
+```
 Here we are sending a bearer token as the value of our `Authorization` header. To allow the browser to read the response, the cross-origin server needs to send the `Access-Control-Allow-Credentials` header in the response:
 ```js
 app.use(function(req, res, next) {
@@ -413,7 +411,7 @@ app.put('/orders', (req, res) => {
   res.send(orders);
 });
 
-```text
+```
 We have modified our code in the cross-origin server to send a value of `true` for the `Access-Control-Allow-Credentials` header so that the browser is able to read the response. We have also added the `Authorization` header in the list of allowed request headers in the header `Access-Control-Allow-Headers`.
 
 We can see the request and response headers in the browser console:
@@ -438,7 +436,7 @@ Authorization: Bearer rtikkjhgffw456tfdd
 
 Origin: http://localhost:9000
 
-```text
+```
 In this log, we can see the security credential in the form of the `Authorization` header in the request which contains a bearer token. The `Authorization` header is also included in the header named `Access-Control-Allow-Headers` returned from the cross-origin server. The browser can access the response since the value of the `Access-Control-Allow-Credentials` header sent by the server is `true`.
 
 ## Vulnerabilities Caused by CORS Misconfiguration
@@ -464,7 +462,7 @@ app.get('/orders', (req, res) => {
   res.header("Access-Control-Allow-Origin", req.header('Origin'));
   res.send(orders);
 });
-```text
+```
 Here we are reading the value of the `Origin` header received in the request and setting it to the value of the `Access-Control-Allow-Origin` header sent in the response.
 
 Doing this will allow any domain including malicious ones to send requests to the cross-origin server.
@@ -492,7 +490,7 @@ app.get('/orders', (req, res) => {
   res.send(orders);
 });
 
-```text
+```
 Since the dot character in the regular expression is not escaped, requests from sites like `https://xyzmydomain.com` will also be served. Any attacker can exploit this vulnerability by buying `xyzmydomain.com` and hosting the malicious code there.
 
 ## Avoiding Security Vulnerabilities Caused by CORS Misconfiguration

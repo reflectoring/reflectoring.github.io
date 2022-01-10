@@ -130,7 +130,8 @@ public class ImportantBusinessService {
   }  
   
 }
-```text
+```
+
 A `Timer` creates the following metrics for us:
 
 * the min, max, mean and median duration of transactions

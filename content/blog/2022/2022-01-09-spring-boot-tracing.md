@@ -73,7 +73,7 @@ public class Controller {
     return new CustomerAndAddress(customer, address);
   }
 }
-```text
+```
 This is a pretty standard REST controller. The interesting bit is that it's making use of an `AddressClient` and a `CustomerClient` to call the customer service to get the customer addresses and names, respectively.
 
 Let's take a look at one of these clients:

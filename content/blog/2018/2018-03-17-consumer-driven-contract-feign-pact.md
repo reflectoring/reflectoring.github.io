@@ -148,7 +148,7 @@ public class IdObject {
   private Long id;
   // getters / setters / constructors omitted
 }
-```text
+```
 The `@FeignClient` annotation tells Spring Boot to create an implementation of the `UserClient` interface
 that should run against the host that configured under the name `userservice`. The `@RequestMapping` and `@RequestBody`
 annotations specify the details of the POST request and the corresponding response defined in the contract. 

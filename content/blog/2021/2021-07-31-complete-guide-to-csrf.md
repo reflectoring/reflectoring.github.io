@@ -61,7 +61,7 @@ The HTML used to create the banner has the below contents:
     <input type="hidden" name="Amount" value="1000" />
     <input type="submit" value="Click here to claim your bonus"/>
   </form>
-```text
+```
 We can notice in this HTML that the form action posts to the vulnerable website `myfriendlybank.com` instead of the malicious website. In this example, the attacker sets the request parameters: `TransferAccount` and `Amount` to values that are unknown to the actual user.
 
 4. The user is enticed to claim the bonus by visiting the malicious website and clicking the submit button. 
@@ -281,7 +281,7 @@ The below HTML page is rendered with the `GET` request. The random token is gene
 </body>
 </html>
 
-```text
+```
 We can see in this HTML snippet, that the random token is set in a hidden field named `_csrf`.
 
 After we set up and run the application, we can test a valid request by loading the HTML form with URL `http://localhost:3000/transfer` :

@@ -42,7 +42,7 @@ Response:
         }
     }
 }
-```text
+```
 In this sample, we send a request for fetching a product with attributes title, description, and category, and the server returns the response containing only those fields (title, description, and category). 
 
 GraphQL shifts some responsibility to the client for constructing the query containing only the fields of its interest. The server is responsible for processing the query and then fetching the data from an underlying system like a database or a web service.
@@ -74,7 +74,7 @@ type Manufacturer {
     name: String!
     address: String
 }
-```text
+```
 Here we have defined the object types `Product` and `Manufacturer`. 
 
 `Manufacturer` is composed of scalar types with the names `id`, `name`, and `address`. Similarly, the `Product` type is composed of four scalar types with the names `id`, `title`, `description`, `category`, and an object type `Manufacturer`.
@@ -90,7 +90,7 @@ An example `Query` root type for a GraphQL service that fetches a list of recent
 type Query {
     myRecentPurchases(count: Int, customerID: String): [Product]!
 }
-```text
+```
 This query fetches the specified number of recent purchases for a customer.
 
 A Mutation represents changes that we can make on our objects. Our schema with a `Mutation` will look like this:
@@ -99,7 +99,7 @@ A Mutation represents changes that we can make on our objects. Our schema with a
 type Mutation {
     addPurchases(count: Int, customerID: String): [Product]!
 }
-```text
+```
 This mutation is used to add purchases of a customer.
 
 Subscription is another special type for real-time push-style updates. Subscriptions depend on the use of a publishing mechanism to generate the event that notifies a subscription that is subscribed to that event. Our schema with a Subscription will look like this:
@@ -109,7 +109,7 @@ type Subscription {
   newProduct: Product!
 }
 
-```text
+```
 This is a subscription for adding a new `Product`.
 
 ## Server-Side Implementation
@@ -133,7 +133,7 @@ curl --request POST 'localhost:8080/graphql' \
  --header 'Content-Type: application/json'  \
  --data-raw \
  '{"query":"query {myRecentPurchases(count:10){title,description}}"}'
-```text
+```
 Here we send a request for fetching 10 recent purchases with the fields title, and description in each record.
 
 To avoid making the low-level HTTP calls, we should use a GraphQL client library as an abstraction layer. Among other things, the GraphQL client library will take care of
@@ -164,7 +164,7 @@ For the GraphQL server, we will add the following Maven dependencies:
       <artifactId>graphql-java-tools</artifactId>
       <version>5.2.4</version>
     </dependency>
-```text
+```
 Here we have added `graphql-spring-boot-starter` as a GraphQL starter and a Java tools module `graphql-java-tools`.
 
 ### Defining the GraphQL Schema 
@@ -201,7 +201,7 @@ type Mutation {
     addRecentProduct(title: String!, description: String!, category: String) : Product!
 }
 
-```text
+```
 Here we have added three operations to our Query and a Mutation for adding recent products.
 
 Next, we define the POJO classes for the Object types `Product` and `Manufacturer`:
@@ -220,7 +220,7 @@ public class Manufacturer {
   private String name;
   private String address;
 }
-```text
+```
 This `Product` POJO maps to the `product` type and `Manufacturer` maps to the `manufacturer` object defined in our GraphQL schema. 
 
 
@@ -270,7 +270,7 @@ public class QueryResolver implements GraphQLQueryResolver {
   }
 
 }
-```text
+```
 We have defined the `QueryResolver` class as a Service class to resolve the root Query type in our GraphQL schema. In our example app, this service class is injected with a `ProductRepository` object to fetch product data from an H2 Database.
 
 We next add a resolver for the `Manufacturer` object type:
@@ -291,7 +291,7 @@ public class ProductResolver implements GraphQLResolver<Product>{
        .getManufacturerById(product.getManufacturerID());
   }
 }
-```text
+```
 The GraphQL library will automatically call this resolver for each `Product` to resolve its `madeBy` field with a `Manufacturer` object. This happens only if the consumer has requested the `madeBy` field, of course.
 
 Similar to the resolver for `Query` object types, let us add a resolver for the `Mutation` root object type:
@@ -312,7 +312,7 @@ public class Mutation implements GraphQLMutationResolver{
   }
 }
 
-```text
+```
 Here the `Mutation` class implements `GraphQLMutationResolver` and contains a method `addRecentProduct` which maps to the field in the `Mutation` root object type.
 
 ### Connecting to Datasources and Applying Middleware Logic

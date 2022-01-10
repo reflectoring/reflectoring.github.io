@@ -127,7 +127,7 @@ class AppProperties {
   private ReportType reportType = ReportType.HTML;
   // ...
 }
-```text
+```
 Even if we don't define any values for the properties `send-report-emails` and `report-type` in `application.properties`, we will now get the default values `Boolean.FALSE` and `ReportType.HTML` respectively.
 
 ### Validate Nested Configuration Objects
@@ -234,7 +234,7 @@ class ReportEmailAddressValidator implements Validator {
 
   }
 }
-```text
+```
 Then, we need to register our custom Spring validator with the special method name `configurationPropertiesValidator()`:
 ```java
 @Configuration
@@ -275,7 +275,7 @@ class AppProperties implements Validator {
     // validation logic
   }
 }
-```text
+```
 By doing so, we can implement a different `Validator` implementation for each `@ConfigurationProperties` class.
 
 ## Conclusion

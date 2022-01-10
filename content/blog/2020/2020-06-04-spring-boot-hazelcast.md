@@ -97,7 +97,7 @@ class CacheClient {
    // other methods omitted
 
 }
-```text
+```
 That's it. Now the application has a distributed cache. The most important part of this code is the creation of
 a cluster member. It happens by calling the method `Hazelcast.newHazelcastInstance()`. The method `getMap()`
 creates a `Map` in the cache or returns an existing one. The only thing we have to do to set the name of the `Map`.
@@ -196,7 +196,7 @@ compile group: 'com.hazelcast', name: 'hazelcast', version: '4.0.1'
 
 Next, we create a Hazelcast client in a Spring application, similar as we did for the embedded cache topology:
 
-````java
+```java
 @Component
 class CacheClient {
 
@@ -217,7 +217,7 @@ class CacheClient {
   // other methods omitted
 
 }
-````text
+```
 To create a Hazelcast client we need to call the method  `HazelcastClient.newHazelcastClient()`.
 Hazelcast will find the cache cluster automatically. After that, we can use the cache by using the `Map`
 again. If we put or get data from the Map, the Hazelcast client connects the cluster to access data.
@@ -392,7 +392,7 @@ class CarStreamSerializer implements StreamSerializer<Car> {
     return 1;
   }
 }
-```text
+```
 The methods `write()` and `read()` serialize and deserialize the object `Car`, respectively. We have to have the same order of 
 writing and reading fields again. The method `getTypeId()` return the identifier of this serializer.
 

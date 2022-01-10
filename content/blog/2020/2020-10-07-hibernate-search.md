@@ -31,7 +31,7 @@ database.
 To get started first we need to add the Hibernate Search dependency (Gradle notation):
 ```groovy
 implementation 'org.hibernate:hibernate-search-orm:5.11.5.Final'
-```text
+```
 For this tutorial, we're going to use the Elasticsearch integration. The motivation is that it's far easier
 to scale with Elasticsearch than with Lucene.  
 ```groovy
@@ -50,7 +50,7 @@ spring:
               host: <Elasticsearch-url>
               index_schema_management_strategy: drop-and-create
               required_index_status: yellow
-```text
+```
 A few things to note here:
 * `default` means the following configurations apply to all the indexes. Hibernate Search allows us to apply configurations to a specific index, too. In this case, `default` must be replaced with the fully qualified class name of the indexed entity. The above configurations are common for all indexes.
 * `required_index_status` indicates the safest status of the index after which further operations can be performed. 
@@ -249,7 +249,7 @@ private String first;
 @Field(store = Store.YES)
 @Field(name = "fullName")
 private String last;
-```text
+```
 In the [section about `@Analyzer`](#analyzer), we saw that we can map one entity field to multiple index document fields. We can also do the inverse. 
 
 In the code above, `@Field(name = "fullName")` is mapped to `first` and `last` both. This way, the index property `fullName` will have the content of both fields. So, instead of searching over the `first` and `last` fields separately, we can directly search over `fullName`. 
@@ -272,7 +272,7 @@ class Post {
   ...
 
 }
-```text
+```
 We use `@IndexedEmbedded` when we want to perform a search over nested objects fields. For instance, let's say we want to search
 all posts made by a user with the first name 'Joe' (`user.first: joe`). 
 
@@ -285,7 +285,7 @@ class User {
   @OneToMany(mappedBy = "user")
   private List<Post> post;
 }
-```text
+```
 `@ContainedIn` makes a `@OneToMany` relationship bidirectional. When the values of this
 entity are updated, its values in the index of the root `Post` entity will also be updated.
 
@@ -548,7 +548,7 @@ fullTextQuery.setSort(qb.sort()
    .createSort());
 fullTextQuery.setMaxResults(max);
 fullTextQuery.setFirstResult(page);
-```text
+```
 Finally, let's talk about pagination and sorting as we don't want to fetch millions of records that we have stored in our 
 Elasticsearch indexes in a single go.
 

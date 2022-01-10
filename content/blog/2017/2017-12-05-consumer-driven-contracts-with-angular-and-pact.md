@@ -250,7 +250,7 @@ describe('create()', () => {
   });
 
 });
-```text
+```
 By calling `provider.addInteraction()` we send a request / response pair to the mock server.
 This request / response pair is then considered to be part of the API contract. Since the `UserService`
 is the consumer of that API, we're creating a real consumer-driven contract here.

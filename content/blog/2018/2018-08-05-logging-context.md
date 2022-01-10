@@ -192,7 +192,7 @@ it's obviously better to log the execution time in milliseconds instead of human
 **Bad Example**:
 ```text
 Took 543ms to finish.
-```text
+```
 (Yes, I actually stumble over log messages like that in production code from time to time... .)
 
 **Good Example**:

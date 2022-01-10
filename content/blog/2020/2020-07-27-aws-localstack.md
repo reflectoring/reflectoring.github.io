@@ -49,12 +49,12 @@ We first install the LocalStack package using pip:
 
 ```text
 pip install localstack
-```text
+```
 We then start localstack with the "start" command as shown below:
 
 ```text
 localstack start
-```text
+```
 This will start LocalStack inside a Docker container.
 
 ### Running LocalStack With Docker
@@ -263,7 +263,7 @@ public class CustomerProfileStore {
         return dynamoDB;
     }
     
-```text
+```
 We inject the URL of LocalStack from the configuration parameter `aws.local.endpoint`. The value is set only when we run our application using the local profile, else it has the default value `null`. 
 
 In the method `getDdbClient()`, we pass this variable to the `endpointOverride()` method in the DynamoDbClientBuilder class only if the variable `awsLocalEndpoint` has a value which is the case when using the local profile.

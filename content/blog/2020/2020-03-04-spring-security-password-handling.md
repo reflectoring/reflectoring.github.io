@@ -189,7 +189,7 @@ The `scrypt` algorithm can not only configure the CPU cost but also memory cost.
 The output looks like this:
 ```text
 $e0801$jRlFuIUd6eAZcuM1wKrzswD8TeKPed9wuWf3lwsWkStxHs0DvdpOZQB32cQJnf0lq/dxL+QsbDpSyyc9Pnet1A==$P3imAo3G8k27RccgP5iR/uoP8FgWGSS920YnHj+CRVA=
-```text
+```
 This encoder puts the parameter for work factor and salt in the result string, so there is no additional information to save.
 
 #### `Argon2PasswordEncoder`
@@ -207,7 +207,7 @@ Argon2PasswordEncoder argon2PasswordEncoder = new Argon2PasswordEncoder(
   memory,
   iterations);
 String encodePassword = argon2PasswordEncoder.encode(plainPassword);
-```text
+```
 Argon2 is the winner of [Password Hashing Competition](https://password-hashing.net/) in 2015. This algorithm, too, allows us to tune CPU and memory
 costs. The  Argon2 encoder saves all the parameters in the result string. If we want to use this password encoder,
 we'll have to import the BouncyCastle crypto library. 
@@ -258,7 +258,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   // ...
 
 }
-```text
+```
 This code creates rules that requires authentication for all endpoints except `/registration`
 and enables HTTP basic authentication. 
 
@@ -290,7 +290,7 @@ class DatabaseUserDetailsService implements UserDetailsService {
     return userDetailsMapper.toUserDetails(userCredentials);
   }
 }
-```text
+```
 In the service we implement the method `loadUserByUsername()`, that loads user data from the database.
 
 An implementation of the `AuthenticationProvider` interface will use the `UserDetailsService`  to perform the authentication logic.
@@ -323,7 +323,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   // ...
 
 }
-```text
+```
 We created a `DaoAuthenticationProvider` and passed in a `BCryptPasswordEncoder`.
 That's all we need to do to enable password encoding and password matching.
 
@@ -399,7 +399,7 @@ class DatabaseUserDetailPasswordService
     return userDetailsMapper.toUserDetails(userCredentials);
   }
 }
-```text
+```
 In the method `updatePassword()` we just set the new password to the user in the database.
 
 Second, we make this interface known to `AuthenticationProvider`:
@@ -423,7 +423,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
   // ...
 }
-```text
+```
 That's it. Now, whenever a user starts the authentication, Spring Security compares the work factor in the encoded password
 of the user with the current work factor of `PasswordEncoder`. 
 
@@ -474,7 +474,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
   // ...
 }
-```text
+```
 The simplest way is to let `PasswordEncoderFactories` generate the `DelegatingPasswordEncoder` for us. This factory generates a `DelegatingPasswordEncoder` that supports all encoders of Spring Security for matching.
 
 `DelegatingPasswordEncoder` has one default encoder. The `PasswordEncoderFactories` sets
@@ -533,7 +533,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   
   // ...
 }
-```text
+```
 This code creates a password encoder that supports `SHA-1` and `scrypt` for matching and uses `scrypt` for encoding new passwords. Now we have users in the database with both password encodings `SHA-1` and `scrypt` and the application supports both.
 
 

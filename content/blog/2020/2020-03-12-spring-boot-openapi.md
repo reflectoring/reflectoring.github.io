@@ -182,7 +182,7 @@ paths:
       summary: Get user by user name
 security: 
   - api_key: []
-```text
+```
 Now, all of our paths should be secured with the `api_key` scheme.
 
 ## Generating Code From an API Specification

@@ -142,16 +142,16 @@ environment variables provided by the operating system.
 All operating systems support environment variables. They can be set to a certain value by an easy command:
 
 * for Unix systems using the Bourne shell:  
-  ```text
+  ```shell
   export myparameter=myvalue
-  ```text
+  ```
 * for Unix systems using the Korn shell:   
-  ```text
+  ```shell
   myparameter=myvalue
   export myparameter
   ``` 
 * for Windows systems:   
-  ```text
+  ```shell
   SET myparameter=myvalue
   ``` 
 

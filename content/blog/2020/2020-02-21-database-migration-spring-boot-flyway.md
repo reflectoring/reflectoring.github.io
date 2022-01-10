@@ -275,7 +275,8 @@ Repair of failed migration in Schema History table "PUBLIC"."flyway_schema_histo
 Repairing Schema History table for version 1 (Description: init, Type: SQL, Checksum: -1438254535)  ...
 Successfully repaired schema history table "PUBLIC"."flyway_schema_history" (execution time 00:00.026s).
 Manual cleanup of the remaining effects the failed migration may still be required.
-```text
+```
+
 Flyway now has updated the checksum of migration script version 1 to the local value so that future migrations won't cause this error again.
 
 ### Support of Undo

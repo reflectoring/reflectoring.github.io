@@ -180,7 +180,8 @@ class MyBeanPostProcessor implements BeanPostProcessor {
   }
 
 }
-```text
+```
+
 <div class="notice warning">
   <h4><code>BeanPostProcessor</code> Is Not Bean Specific</h4>
   We should pay attention that Spring's <code>BeanPostProcessor</code>s are executed for each bean defined in the spring context.
@@ -205,7 +206,7 @@ class MySpringBean implements BeanNameAware, ApplicationContextAware {
   }
 
 }
-```text
+```
 There are additional <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#aware-list">`Aware` interfaces</a> which we can use to inject certain aspects of the Spring context into our beans.
 
 ## Why Would I Need to Hook Into the Bean Lifecycle?
@@ -226,7 +227,7 @@ class NamedSpringBean implements BeanNameAware {
   }
 
 }
-```text
+```
 ### Dynamically Changing Spring Bean Instances
 In some cases, we need to define Spring beans programmatically. This can be a practical solution when we need to re-create and change our bean instances at runtime.
 
@@ -259,7 +260,7 @@ class IpToLocationService implements BeanFactoryAware {
         .getBean(IpDatabaseRepository.class);
   }
 }
-```text
+```
 We access the `BeanFactory` instance with the help of `BeanFactoryAware` interface. Thus, we dynamically create our `IpDatabaseRepository` bean with the latest database file and update our bean definition by registering it to the Spring context.
 
 Also, we call our `updateIpDatabase()` method right after we acquire the `BeanFactory` instance in the `setBeanFactory()` method. Therefore, we can initially create the first instance of the `IpDatabaseRepository` bean while the Spring context boots up.
@@ -289,7 +290,7 @@ class AutowireCapableJobFactory
   }
 
 }
-```text
+```
 In this example, we're using the `ApplicationContextAware` interface to get access to the bean factory and use the bean factory to autowire the dependencies in a `Job` bean that is initially not managed by Spring.
 
 Also, a common Spring - [Jersey](https://eclipse-ee4j.github.io/jersey/) integration is another clear example of this:
@@ -307,7 +308,7 @@ class JerseyConfig extends ResourceConfig {
   }
 
 }
-```text
+```
 By marking Jersey's `ResourceConfig` as a Spring `@Configuration`, we inject the `ApplicationContext` and lookup all the beans which are annotated by Jersey's `@Path`, to easily register them on application startup.
 
 ## The Execution Order
@@ -391,7 +392,7 @@ class MyBeanPostProcessor implements BeanPostProcessor {
   }
 
 }
-```text
+```
 Next, we write a Spring configuration to define our beans:
 ```java
 @Configuration
@@ -408,7 +409,7 @@ class MySpringConfiguration {
   }
 
 }
-```text
+```
 Finally, we write a `@SpringBootTest` to run our Spring context:
 ```java
 @SpringBootTest

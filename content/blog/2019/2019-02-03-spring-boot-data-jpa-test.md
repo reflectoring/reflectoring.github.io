@@ -45,7 +45,7 @@ dependencies {
   testCompile('org.springframework.boot:spring-boot-starter-test')
   testCompile('org.junit.jupiter:junit-jupiter-engine:5.2.0')
 }
-```text
+```
 ## What to Test?
 
 The first question to answer to ourselves is what we need to test.

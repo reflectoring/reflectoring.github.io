@@ -33,7 +33,7 @@ CriteriaQuery<Product> productQuery = builder.createQuery(Product.class);
 
 Root<Person> personRoot = productQuery.from(Product.class);
 ...
-```text
+```
 Specifications build on top of the Criteria API to simplify the developer experience. We simply need to implement the `Specification` interface:
 
 ```java
@@ -211,7 +211,7 @@ Specification<Product> nameLike =
       (root, query, criteriaBuilder) -> 
          criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
 ...
-```text
+```
 But this defeats our purpose of reusability, so let's avoid this unless our use case requires it.
 
 To execute Specifications we need to extend the `JpaSpecificationExecutor` interface in our Spring Data JPA repository:

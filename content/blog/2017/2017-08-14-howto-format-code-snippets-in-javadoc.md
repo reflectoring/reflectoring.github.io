@@ -56,9 +56,9 @@ in the rendered Javadoc HTML so they have to be escaped.
  * </pre>
  */
 public class PreTest {}
-```text
+```
 renders to ...
-```text
+```
 public class JavadocTest {
    // indentation and line breaks are kept 
  
@@ -83,7 +83,7 @@ Within a `<code>` tag, not even the indentation and line breaks are kept and our
  * An annotation <code>&#64;Foo</code>; and a generic List&#60;String&#62;.
  */
 public class CodeHtmlTagTest {}
-```text
+```
 renders to ...
 ```text
 Using <code>, indentation and line breaks are lost. '@', '<' and '>' have to be escaped with HTML codes. An annotation @Foo; and a generic List<String>.
@@ -105,7 +105,7 @@ with `<pre>`, though (see next section).
  * {@code An annotation <code>@Foo</code>; and a generic List<String>}.
  */
 public class CodeJavadocTagTest {}
-```text
+```
 renders to ...
 ```text
 Using @code alone, indentation will be lost, but you don't have to escape special characters: An annotation <code>@Foo</code>; and a generic List<String>.
@@ -133,7 +133,7 @@ would be literalized by `{@code}`.
  * }</pre>
  */
 public class PreTest {}
-```text
+```
 renders to ...
 ```text
 public class JavadocTest {

@@ -195,7 +195,7 @@ class CarService {
    
   // other methods omitted. 
 }
-```text
+```
 The method `saveCar()` is supposed to be used only for inserting new cars. Normally we don't
 need any cache behavior in this case. The car is just stored in the database.
 
@@ -234,7 +234,7 @@ class CarService {
   
   // other methods omitted.
 }
-```text
+```
 **The body of the `update()` method will always be executed.**
 Spring will put the result of the method into the cache. In this case, we also defined the key that should be used to update the data in the cache.
 

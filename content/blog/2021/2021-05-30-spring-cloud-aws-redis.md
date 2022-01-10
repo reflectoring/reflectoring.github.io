@@ -128,7 +128,7 @@ public class UserService {
       new RuntimeException("No such user found with id"));
   }
 }
-```text
+```
 Here we have decorated the `getProduct()` and `getUser()` methods with `@Cacheable` annotation to cache their responses. 
 Both the methods will retrieve entities from the database when called for the first time. Subsequent calls to these methods with the same value of parameter `id` will return the response from the cache instead of the database. 
 

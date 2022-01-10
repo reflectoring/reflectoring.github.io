@@ -105,7 +105,7 @@ This way, we can just change the JDBC URL to swap out the database. And we can s
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
     </dependency>
-```text
+```
 We can easily replace the H2 database with any other RDBMS like Oracle or MySQL. Similar to JPA, we can use JMS for messaging and SMTP for mails.
 
 ## 5. Build, Release, Run - Leverage Containers for the Development Workflow

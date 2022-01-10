@@ -54,7 +54,7 @@ public class SpringLoggerApplication {
      log.info("Starting my application with {} args.", args.length);  
     }
   }
-```text
+```
 After compiling with Maven or Gradle and running the resulting jar file, we can see our log statements getting printed in the console:
 
 ```text
@@ -73,7 +73,7 @@ After compiling with Maven or Gradle and running the resulting jar file, we can 
 ... : Started SpringLoggerApplication in 3.054 seconds (JVM running for 3.726)
 ... : Starting my application 0
 
-```text
+```
 The first info log is printed, followed by a seven-line banner of Spring and then the next info log. The debug statement is suppressed. 
 
 
@@ -88,7 +88,7 @@ Spring Boot offers considerable [support for configuring the logger](https://doc
 Sometimes we need to see detailed logs to troubleshoot an application behavior. To achieve that we send our desired log level as an argument when running our application. 
 ```shell
 java -jar target/springLogger-0.0.1-SNAPSHOT.jar --trace
-```text
+```
 This will start to output from trace level printing logs of trace, debug, info, warn, and error. 
 
 ### Configuring Package-Level Logging 
@@ -99,7 +99,7 @@ java \\
   -jar target/springLogger-0.0.1-SNAPSHOT.jar \\
   -Dlogging.level.org.springframework=ERROR \\
   -Dlogging.level.io.pratik=TRACE
-```text
+```
 Alternatively, we can specify our package in `application.properties`:
 
 ```properties
@@ -113,11 +113,11 @@ We can write our logs to a file path by setting only one of the properties `logg
 ```text
 # Output to a file named application.log. 
 logging.file.name=application.log
-```text
 ```
+```text
 # Output to a file named spring.log in path /Users
 logging.file.path=/Users
-```text
+```
 If both properties are set, only `logging.file.name` takes effect. 
 
 Note that the name of these properties has changed in Spring 2.2 onwards but the official documentation does not yet reflect this. Our example is working with version 2.3.2.RELEASE. 
@@ -193,7 +193,7 @@ The default configuration is comprised of an `appender` element inside a root `c
     </encoder>
   </appender>
 </configuration>
-```text
+```
 ### Logging with Logback Configuration
 
 If we set the `debug` property in the `configuration` tag to `true`, we can see the values of logback configuration during application startup.

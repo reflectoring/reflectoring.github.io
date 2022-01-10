@@ -1,6 +1,6 @@
 ---
 title: Maven Scopes and Gradle Configurations Explained
-categories: [java]
+categories: ["Java"]
 modified: 2019-07-24
 excerpt: "An explanation and comparison of Maven scopes and Gradle configurations to declare dependencies in a build file."
 image:

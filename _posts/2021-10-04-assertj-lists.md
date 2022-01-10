@@ -1,6 +1,6 @@
 ---
 title: "Asserting Lists with AssertJ"
-categories: [java]
+categories: ["Java"]
 date: 2021-10-04 06:00:00 +1000
 modified: 2021-10-04 06:00:00 +1000
 author: mateo

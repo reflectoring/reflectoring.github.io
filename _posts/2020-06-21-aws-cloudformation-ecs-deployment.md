@@ -1,6 +1,6 @@
 ---
 title: "The AWS Journey Part 4: Zero-Downtime Deployment with CloudFormation and ECS"
-categories: [craft]
+categories: ["Software Craft"]
 date: 2020-07-13 06:00:00 +1000
 modified: 2020-07-13 06:00:00 +1000
 author: default

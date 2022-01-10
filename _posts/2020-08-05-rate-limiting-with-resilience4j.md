@@ -1,6 +1,6 @@
 ---
 title: Implementing Rate Limiting with Resilience4j
-categories: [java]
+categories: ["Java"]
 date: 2020-08-05 05:00:00 +1100
 modified: 2020-08-05 05:00:00 +1100
 author: saajan

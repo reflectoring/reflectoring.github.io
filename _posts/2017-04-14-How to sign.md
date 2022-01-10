@@ -1,7 +1,7 @@
 ---
 
 title: Digital Signature in Java
-categories: [java]
+categories: ["Java"]
 modified: 2017-04-14
 author: artur
 excerpt: "A tutorial on how to create digital signatures with Java."

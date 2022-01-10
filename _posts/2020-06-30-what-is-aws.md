@@ -1,6 +1,6 @@
 ﻿---
 title: "What is AWS? A High-Level Overview of the Most Important AWS Services"
-categories: [craft]
+categories: ["Software Craft"]
 date: 2020-06-30 06:00:00 +1100
 modified: 2020-06-30 06:00:00 +1100
 author: pratikdas

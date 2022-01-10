@@ -1,6 +1,6 @@
 ---
 title: "Managing Multiple JDK Installations With SDKMAN!"
-categories: [java]
+categories: ["Java"]
 date: 2020-11-07 00:00:00 +1100
 modified: 2020-11-07 00:00:00 +1100
 author: petros

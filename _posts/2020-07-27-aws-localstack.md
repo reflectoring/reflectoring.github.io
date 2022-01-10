@@ -1,6 +1,6 @@
 ---
 title: "Local Development with AWS on LocalStack"
-categories: [craft]
+categories: ["Software Craft"]
 date: 2020-07-27 06:00:00 +1000
 modified: 2020-07-27 06:00:00 +1000
 author: pratikdas

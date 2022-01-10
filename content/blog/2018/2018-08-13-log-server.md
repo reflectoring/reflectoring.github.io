@@ -1,12 +1,12 @@
 ---
-
+authors: [tom]
 title: "5 Good Reasons to Use a Log Server"
-categories: [craft]
+categories: ["Software Craft"]
+date: 2018-08-13
 excerpt: "Logging to files and analyzing them by hand is not the way to go anymore.
           This article explains the reasons why a log server is the way to go
           for collecting and analyzing log data."
-image:
-  auto: 0032-dashboard
+image: images/stock/0032-dashboard-1200x628-branded.jpg
 ---
 
 

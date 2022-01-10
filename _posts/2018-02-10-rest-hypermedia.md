@@ -1,6 +1,6 @@
 ---
 title: "REST with Hypermedia - Hot or Not?"
-categories: [craft]
+categories: ["Software Craft"]
 excerpt: "A discussion of what Hypermedia with REST means and a guide to decide whether hypermedia is a match for your use case."
 image:
   auto: 0036-notebooks

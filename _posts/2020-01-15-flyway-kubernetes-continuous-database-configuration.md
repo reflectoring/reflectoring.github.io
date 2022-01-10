@@ -1,7 +1,7 @@
 ---
 
 title: Continuous Database Configuration with Flyway and Kubernetes
-categories: [craft]
+categories: ["Software Craft"]
 date: 2020-01-15 05:00:00 +1100
 modified: 2020-01-15 05:00:00 +1100
 author: artur

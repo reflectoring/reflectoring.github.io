@@ -1,6 +1,6 @@
 ---
 title: "Microservice Communication Patterns"
-categories: [craft]
+categories: ["Software Craft"]
 modified: 2018-05-14
 excerpt: "A discussion of several different communication patterns between distributed micro services."
 image:

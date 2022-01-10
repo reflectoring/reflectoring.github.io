@@ -1,7 +1,7 @@
 ---
 
 title: OpenID Connect
-categories: [craft]
+categories: ["Software Craft"]
 modified: 2017-04-19
 author: david
 excerpt: "A short introduction to OpenID Connect - the standard for Identity Management and Single-Sign-On."

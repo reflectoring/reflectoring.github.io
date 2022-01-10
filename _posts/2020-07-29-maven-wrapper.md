@@ -1,6 +1,6 @@
 ---
 title: Run Your Maven Build Anywhere with the Maven Wrapper
-categories: [java]
+categories: ["Java"]
 date: 2020-07-29 05:00:00 +1100
 modified: 2020-07-29 05:00:00 +1100
 author: saajan

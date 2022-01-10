@@ -1,6 +1,6 @@
 ---
 title: Optimize Your Dev Loop with Spring Boot Dev Tools
-categories: [java]
+categories: ["Java"]
 date: 2020-08-13 05:00:00 +1100
 modified: 2020-08-13 05:00:00 +1100
 author: default

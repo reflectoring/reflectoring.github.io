@@ -1,6 +1,6 @@
 ---
 title: "Getting Started With Java: Build a Robot Arena"
-categories: [java]
+categories: ["Java"]
 date: 2021-04-15 00:00:00 +1100
 modified: 2021-04-15 00:00:00 +1100
 author: default

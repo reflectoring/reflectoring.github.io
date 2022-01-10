@@ -1,6 +1,6 @@
 ---
 title: "Java Features from Java 8 to Java 17"
-categories: [java]
+categories: ["Java"]
 date: 2021-11-29 05:00:00 +1000
 modified: 2021-11-29 05:00:00 +1000
 author: mateo

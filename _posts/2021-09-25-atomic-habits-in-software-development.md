@@ -1,6 +1,6 @@
 ---  
 title: "Atomic Habits in Software Development"  
-categories: [craft]  
+categories: ["Software Craft"]  
 date: 2021-09-25 00:00:00 +1100  
 modified: 2021-09-25 00:00:00 +1100  
 author: jcregg

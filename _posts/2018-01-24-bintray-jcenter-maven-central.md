@@ -1,6 +1,6 @@
 ---
 title: "Publishing Open Source Releases to JCenter and Maven Central"
-categories: [craft]
+categories: ["Software Craft"]
 modified: 2018-01-24
 excerpt: "For your open source projects to be accessible, it's worthwile to publish them   
           to JCenter and / or Maven Central. This article explains how to

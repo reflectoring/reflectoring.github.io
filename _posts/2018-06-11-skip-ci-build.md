@@ -1,6 +1,6 @@
 ---
 title: "Skipping a CI Build for non-code changes"
-categories: [craft]
+categories: ["Software Craft"]
 modified: 2018-06-11
 excerpt: "A guide on how to skip a CI build when only certain documentation files have changed."
 image:

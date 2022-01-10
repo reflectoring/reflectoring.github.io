@@ -1,6 +1,6 @@
 ---  
 title: "One Best Way - Continuous Improvement in Software Engineering"  
-categories: [craft]  
+categories: ["Software Craft"]  
 date: 2021-11-07 00:00:00 +1100  
 modified: 2021-11-07 00:00:00 +1100  
 author: heidi

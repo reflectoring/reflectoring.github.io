@@ -1,7 +1,7 @@
 ---
 
 title: 'Tool-based Database Refactoring: Flyway vs. Liquibase'
-categories: [java]
+categories: ["Java"]
 modified: 2017-05-14
 excerpt: "A comparison of Flyway and Liquibase - the two most popular tools for database refactoring."
 image:

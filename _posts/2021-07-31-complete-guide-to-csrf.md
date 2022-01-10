@@ -1,6 +1,6 @@
 ---
 title: "Complete Guide to CSRF/XSRF (Cross-Site Request Forgery)"
-categories: [craft]
+categories: ["Software Craft"]
 date: 2021-07-31 06:00:00 +1000
 modified: 2021-07-31 06:00:00 +1000
 author: pratikdas

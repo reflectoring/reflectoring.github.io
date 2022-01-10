@@ -1,6 +1,6 @@
 ---
 title: "Designing an AWS CDK Project with Java"
-categories: [craft, java]
+categories: ["Software Craft", "Java"]
 date: 2021-05-03 06:00:00 +1000
 modified: 2021-05-03 06:00:00 +1000
 author: default

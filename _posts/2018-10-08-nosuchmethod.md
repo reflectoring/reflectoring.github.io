@@ -1,6 +1,6 @@
 ---
 title: "3 Steps to Fix NoSuchMethodErrors and NoSuchMethodExceptions"
-categories: [java]
+categories: ["Java"]
 modified: 2018-10-08
 excerpt: "A tutorial on how identify the root cause of NoSuchMethodErrors and NoSuchMethodExceptions."
 image:

@@ -1,6 +1,6 @@
 ---
 title: Reactive Multi-Threading with RxJava - Pitfalls and Solutions
-categories: [java]
+categories: ["Java"]
 date: 2020-02-03 05:00:00 +1100
 modified: 2020-02-03 05:00:00 +1100
 author: default

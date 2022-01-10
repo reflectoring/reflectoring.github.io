@@ -1,6 +1,6 @@
 ---
 title: "The AWS Journey Part 1: Deploying Your First Docker Image"
-categories: [craft]
+categories: ["Software Craft"]
 date: 2020-02-15 05:00:00 +1100
 modified: 2020-02-15 05:00:00 +1100
 author: default

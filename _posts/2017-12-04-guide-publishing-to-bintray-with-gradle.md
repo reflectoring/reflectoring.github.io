@@ -1,6 +1,6 @@
 ---
 title: "Publishing Open Source Releases with Gradle"
-categories: [java]
+categories: ["Java"]
 modified: 2017-12-04
 excerpt: "When working on an open source Java project, you always come to the point where 
           you want to share your work with the developer community. This article gives a 

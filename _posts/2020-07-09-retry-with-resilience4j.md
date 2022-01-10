@@ -1,6 +1,6 @@
 ---
 title: Implementing Retry with Resilience4j
-categories: [java]
+categories: ["Java"]
 date: 2020-07-16 05:00:00 +1100
 modified: 2020-07-16 05:00:00 +1100
 author: saajan

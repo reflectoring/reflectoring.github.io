@@ -1,6 +1,6 @@
 ---
 title: "Writing Meaningful Commit Messages"
-categories: [craft]
+categories: ["Software Craft"]
 date: 2021-02-22 05:00:00 +1100
 modified: 2021-02-22 05:00:00 +1100
 excerpt: "This article discusses different methods of formatting and writing meaningful commit messages."

@@ -1,6 +1,6 @@
 ---
 title: "Managing Multiple JDK Installations With jEnv"
-categories: [java]
+categories: ["Java"]
 date: 2020-10-24 00:00:00 +1100
 modified: 2020-10-24 20:00:00 +1100
 author: default

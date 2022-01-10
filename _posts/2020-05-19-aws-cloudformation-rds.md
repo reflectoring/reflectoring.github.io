@@ -1,6 +1,6 @@
 ---
 title: "The AWS Journey Part 3: Connecting a Spring Boot Application to an RDS Instance with CloudFormation"
-categories: [craft]
+categories: ["Software Craft"]
 date: 2020-05-19 05:00:00 +1000
 modified: 2020-05-19 05:00:00 +1000
 author: default

@@ -1,13 +1,13 @@
 ---
+authors: [tom]
 title: "Build Once, Run Anywhere: Externalize Your Configuration"
-categories: [craft]
-modified: 2018-09-09
+categories: ["Software Craft"]
+date: 2018-09-09
 excerpt: "Software that does more than a \"hello world\" usually needs to be configured in some
           way or another in order to function in a certain environment. This article explains
           why this configuration must not be part of the software itself and explores
           some ways on how to externalize configuration parameters."
-image:
-  auto: 0013-switchboard
+image: images/stock/0013-switchboard-1200x628-branded.jpg
 ---
 
 

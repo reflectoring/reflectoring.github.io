@@ -1,6 +1,6 @@
 ---
 title: "Laws and Principles of Software Development"
-categories: [craft]
+categories: ["Software Craft"]
 date: 2021-10-31 06:00:00 +1000
 modified: 2021-10-31 06:00:00 +1000
 excerpt: "Read about the most often cited laws and principles in software development and what we can learn from them."

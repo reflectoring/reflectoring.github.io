@@ -1,6 +1,6 @@
 ---
 title: "Complete Guide to CSRF"
-categories: [craft]
+categories: ["Software Craft"]
 date: 2021-06-14 06:00:00 +1000
 modified: 2021-06-13 06:00:00 +1000
 author: pratikdas

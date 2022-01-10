@@ -1,7 +1,7 @@
 ---
 
 title: A Random Pitfall
-categories: [java]
+categories: ["Java"]
 modified: 2017-02-16
 author: rudi
 excerpt: "An intro on how to create random numbers in Java."

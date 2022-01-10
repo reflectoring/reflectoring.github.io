@@ -1,12 +1,11 @@
 ---
-
+authors: [tom]
 title: "Tip: Provide Contextual Information in Log Messages"
-categories: [craft]
-modified: 2018-08-05
+categories: ["Software Craft"]
+date: 2018-08-05
 excerpt: "A guide to which contextual information is helpful in which 
           logging situation."
-image:
-  auto: 0031-matrix
+image: images/stock/0031-matrix-1200x628-branded.jpg
 ---
 
 

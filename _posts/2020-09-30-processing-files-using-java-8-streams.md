@@ -1,6 +1,6 @@
 ﻿---
 title: "Processing Files With Java 8 Streams"
-categories: [java]
+categories: ["Java"]
 date: 2020-09-30 06:00:00 +1000
 modified: 2020-09-30 06:00:00 +1000
 author: seema

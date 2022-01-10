@@ -24,7 +24,7 @@ testing.
 Note that this article only discusses *unit tests*. Integration tests, tests of the web layer
 and tests of the persistence layer will be discussed in upcoming articles of this series.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}}
 
 ## The "Testing with Spring Boot" Series
 

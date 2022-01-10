@@ -17,7 +17,7 @@ Amazon Simple Email Service (SES) is an email platform that provides an easy and
 
 In this article, we will look at using Spring Cloud AWS for interacting with AWS [Simple Email Service (SES)](https://aws.amazon.com/ses/) to send emails with the help of some code examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springcloudses" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/aws/springcloudses" %}}
 
 ## How Does SES Send Email?
 When we ask SES to send an email, the request is processed in multiple stages:
@@ -43,7 +43,7 @@ We can send emails with SES in multiple ways:
 ### Sending Mails From the SES Console
 We can use the SES console to send emails with minimal setup. However, it is mainly used to monitor our sending activity. We can view the number of emails that we have sent along with the number of bounces and complaints as shown here:
 
-![monitoring](/assets/img/posts/aws-ses-spring-cloud/monitoring.png)
+{{% image alt="monitoring" src="images/posts/aws-ses-spring-cloud/monitoring.png" %}}
 
 ### Sending Mails Using SMTP
 Simple mail transfer protocol (SMTP) is the communication protocol for sending emails, receiving emails, and relaying outgoing mail between email senders and receivers. When we send an email, the SMTP server processes our email, decides which server to send the message to, and relays the message to that server.
@@ -54,7 +54,7 @@ We can access Amazon SES through the SMTP in two ways :
    
 We can find the information for connecting to the SMTP endpoint from the SES console:
 
-   ![smtp-settings](/assets/img/posts/aws-ses-spring-cloud/smtp-settings.png)
+   {{% image alt="smtp-settings" src="images/posts/aws-ses-spring-cloud/smtp-settings.png" %}}
 
 ### Sending Mails Using the SES API
 We can send emails by calling the SES Query API with any REST client or by using the AWS SDK. We can send both formatted email or emails in plain text.
@@ -65,7 +65,7 @@ We're going to look at this in the upcoming section.
 
 Spring Cloud AWS includes a module for SES called `spring-cloud-aws-ses` which simplifies working with Amazon SES. This module for SES contains two classes: `SimpleEmailServiceMailSender` and `SimpleEmailServiceJavaMailSender`. The class hierarchy containing these classes is shown in this diagram: 
 
-![SES classes](/assets/img/posts/aws-ses-spring-cloud/ses-classes.png)
+{{% image alt="SES classes" src="images/posts/aws-ses-spring-cloud/ses-classes.png" %}}
 
 This class diagram shows that the `SimpleEmailServiceJavaMailSender` class inherits from the `SimpleEmailServiceMailSender` which implements the `MailSender` interface. The `MailSender` interface is part of Spring's [mail abstraction](https://docs.spring.io/spring-framework/docs/1.2.x/reference/mail.html) that contains the `send()` method for sending emails.
 
@@ -83,7 +83,7 @@ There are also limits to the volume of email we can send each day, and on the nu
 
 We will need a few email addresses to test our examples. Let us verify these first by following the steps in the [SES documentation](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html). The figure below outlines some of the steps we need to perform in the AWS SES console:
 
-![SES classes](/assets/img/posts/aws-ses-spring-cloud/email-verify.png)
+{{% image alt="SES classes" src="images/posts/aws-ses-spring-cloud/email-verify.png" %}}
 
 As we can see in this figure, we first add our email in SES which triggers a verification email which the owner of the email needs to verify by visiting the link in the verification email.  
 
@@ -269,7 +269,7 @@ Here we are using the callback interface `MimeMessagePreparator` to construct th
 
 We finally need to move our account out of the sandbox so that we can send emails to any recipient, irrespective of whether the recipient's address or domain is verified. But, we still have to verify all identities that we use such as `From`, `Source`, `Sender`, or `Return-Path` addresses. We need to submit a request for production aceess as shown below:
 
-![prod mode](/assets/img/posts/aws-ses-spring-cloud/prodmode.png)
+{{% image alt="prod mode" src="images/posts/aws-ses-spring-cloud/prodmode.png" %}}
 
 Here We are submiting the production access request from the AWS Management Console. 
 

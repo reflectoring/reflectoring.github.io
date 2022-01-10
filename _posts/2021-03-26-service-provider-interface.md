@@ -11,7 +11,7 @@ image:
 
 In this article, we are going to talk about Java's Service Provider Interface (SPI). We will have a short overview of what the SPI is and describe some cases where we can use it. Then we will give an implementation of an SPI for a practical use case.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/service-provider-interface" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/core-java/service-provider-interface" %}}
 
 ## Overview
 **The Service Provider Interface was introduced to make applications more extensible**. 
@@ -57,7 +57,7 @@ The `ServiceLoader` is the main tool used to do that by providing some methods t
 
 Apart from the service providers implemented and the service provider interface created, we need to register these providers so that the `ServiceLoader` can identify and load them. **The configuration files need to be created in the folder `META-INF/services`.**
 
-![META-INF](/assets/img/posts/spi/spi-meta-inf.png)
+{{% image alt="META-INF" src="images/posts/spi/spi-meta-inf.png" %}}
 
 We should name these files with the fully qualified class name of the service provider interface. Each file will contain the fully qualified class name of one or many providers, one provider per line.
 
@@ -135,7 +135,7 @@ The sub-modules will be:
 
 The following diagram shows the dependencies between each module:
 
-![Modules](/assets/img/posts/spi/spi-modules.png)
+{{% image alt="Modules" src="images/posts/spi/spi-modules.png" %}}
 
 Both, the `classics-library` and the `computer-science-library` implement the `library-service-provider`. The `library-client` module then uses the `library-service-provider` module to find books. The `library-client` doesn't have a compile-time dependency to the library implementations!
 

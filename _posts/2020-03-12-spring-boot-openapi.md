@@ -16,7 +16,7 @@ Those description languages specify endpoints, security schemas, object schemas,
 
 Often, an API specification also becomes the documentation of the API. 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-openapi" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-openapi" %}}
 
 ## Benefits of API-First
 

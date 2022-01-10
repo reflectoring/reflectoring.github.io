@@ -27,7 +27,7 @@ using [different feature flagging tools](/java-feature-flags/)
 and [how to do zero-downtime database changes](/zero-downtime-deployments-with-feature-flags/)
 with feature flags.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/feature-flags" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/feature-flags" %}}
 
 ## Simple `if/else`
 
@@ -237,7 +237,7 @@ With the `FactoryBean` concept, Spring provides a more elegant mechanism to repl
 
 Again, we have two beans, `OldService` and `NewService` implementing the `Service` interface:
 
-![Two beans implementing the same interface](/assets/img/posts/spring-boot-feature-flags/services.png)
+{{% image alt="Two beans implementing the same interface" src="images/posts/spring-boot-feature-flags/services.png" %}}
 
 We now want to completely replace the `OldService` bean with the `NewService` bean depending on the value of a feature flag. And we want to be able to do this in an ad-hoc fashion, without having to restart the application!
 

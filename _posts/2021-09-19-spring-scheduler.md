@@ -14,7 +14,7 @@ Scheduled jobs are a piece of business logic that should run on a timer. Spring 
 
 In this article, we will illustrate how to configure and run scheduled jobs in Spring Boot applications.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-scheduler" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-scheduler" %}}
 
 
 ## Creating the Spring Boot Application for Scheduling

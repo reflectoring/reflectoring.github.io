@@ -15,7 +15,7 @@ Profiles are perfect for setting up our application for different environments, 
 
 Read on to learn how profiles work, what use cases they support and in which cases we should rather not use them.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/profiles" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/profiles" %}}
 
 ## What Do Profiles Control?
 

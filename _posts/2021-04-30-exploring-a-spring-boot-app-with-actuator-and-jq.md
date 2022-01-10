@@ -15,7 +15,7 @@ While its primary use is in production, it can also help us during development a
 
 In this article, we'll see how to use some of its endpoints to explore a new application that we are not familiar with. We will work on the command line and use `curl` and `jq`, a nifty and powerful command-line JSON processor. 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-actuator" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-actuator" %}}
 
 ## Why Use Actuator to Analyze and Explore an Application?
 

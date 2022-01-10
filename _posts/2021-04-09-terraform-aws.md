@@ -15,7 +15,7 @@ All the cloud providers provide services for the creation and modification of in
 In this post, we will look at the capabilities of Terraform with examples of creating resources in the AWS cloud.
 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/aws-terraform" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/aws/aws-terraform" %}}
 
 ## Infrastructure as Code with Terraform
 Infrastructure as Code (IaC) is the managing and provisioning of infrastructure through code instead of a manual process. From the website of Terraform:
@@ -433,7 +433,7 @@ Terraform has two more variants Terraform Cloud and Terraform Enterprise for usi
 
 Let us run remote plans in Terraform Cloud from our local command line, also called the "CLI workflow". First, we need to log in to [https://app.terraform.io](https://app.terraform.io/session) after creating an account with our email address. Similar to our working directory in the CLI, we will create a `workspace` with a "CLI driven workflow" as shown here:
 
-![Workspace with CLI driven workflow](/assets/img/posts/aws-terraform/workspace-create-with-cli-workflow.png)
+{{% image alt="Workspace with CLI driven workflow" src="images/posts/aws-terraform/workspace-create-with-cli-workflow.png" %}}
 
 We will modify our configuration to add a backend block to configure our remote backend as shown here: 
 
@@ -459,7 +459,7 @@ terraform {
 ```text
 We configure AWS credentials by adding two environment variables for `access token` and `secret key`:
 
-![Workspace with CLI driven workflow](/assets/img/posts/aws-terraform/workspace-env-variables.png)
+{{% image alt="Workspace with CLI driven workflow" src="images/posts/aws-terraform/workspace-env-variables.png" %}}
 
 Running the `terraform plan` command will start a remote run in the configured Terraform Cloud workspace. Running `terraform plan` will output the following log:
 

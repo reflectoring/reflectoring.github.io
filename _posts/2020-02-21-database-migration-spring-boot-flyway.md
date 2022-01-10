@@ -11,7 +11,7 @@ tags: ["data migration", "spring-boot", "flyway"]
 
 Spring Boot simplifies database migrations by providing integration with [Flyway](https://flywaydb.org/), one of the most widely used database migration tools. This guide presents various options of using Flyway as part of a Spring Boot application, as well as running it within a CI build. We'll also cover the main advantages of having [Database Migrations Done Right](https://reflectoring.io/tool-based-database-refactoring/).
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/data-migration/flyway" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/data-migration/flyway" %}}
 
 ## Why Do We Need Database Migrations?
 

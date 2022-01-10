@@ -16,7 +16,7 @@ This article looks at different ways of containerizing a Spring Boot application
 - building an OCI image from source code with Cloud-Native Buildpack,
 - and optimizing the image at runtime by splitting parts of the JAR into different layers using layered tools. 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-docker" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-docker" %}}
 
 ## Container Terminology
 
@@ -88,7 +88,7 @@ Let us see the stack of layers inside the image. We will use the [dive tool](htt
 dive usersignup:v1
 ```text
 Here is part of the output from running the Dive command:
- ![dive screenshot](/assets/img/posts/springboot-docker-image/dive1.png)
+ {{% image alt="dive screenshot" src="images/posts/springboot-docker-image/dive1.png" %}}
 
 As we can see the application layer forms a significant part of the image size. We will aim to reduce the size of this layer in the following sections as part of our optimization.
 
@@ -96,7 +96,7 @@ As we can see the application layer forms a significant part of the image size. 
 
 [Buildpacks](https://buildpacks.io/) is a generic term used by various Platform as a Service(PAAS) offerings to build a container image from source code. It was started by Heroku in 2011 and has since been adopted by Cloud Foundry, Google App Engine, Gitlab, Knative, and some others. 
 
-![dive screenshot](/assets/img/posts/springboot-docker-image/Docker_buildpack.png)
+{{% image alt="dive screenshot" src="images/posts/springboot-docker-image/Docker_buildpack.png" %}}
 
 ### Advantage of Cloud-Native Buildpacks
 One main advantage of using Buildpack for building images is that **changes to the image configuration can be managed in a centralized place (the builder) and propagated to all applications which are using the builder.**
@@ -196,7 +196,7 @@ The dependencies layer forming the bulk of the fat JAR is downloaded only once a
 
 **Only the thin layer of application is pulled during application updates and container scheduling** as illustrated in this diagram:
 
-![dive screenshot](/assets/img/posts/springboot-docker-image/Docker_optimized.png)
+{{% image alt="dive screenshot" src="images/posts/springboot-docker-image/Docker_optimized.png" %}}
 
 Let's have a look at how to build those optimized images for a Spring Boot application in the next sections.
 
@@ -224,7 +224,7 @@ mvn spring-boot:build-image
 ```text
 If we run Dive to see the layers in the resulting image, we can see the application layer (encircled in red) is much smaller in the range of kilobytes compared to what we had obtained by using the fat JAR format:
 
-![dive screenshot](/assets/img/posts/springboot-docker-image/dive-buildpack-layer.png)
+{{% image alt="dive screenshot" src="images/posts/springboot-docker-image/dive-buildpack-layer.png" %}}
 
 
 ## Building an Optimized Container Image for a Spring Boot Application with Docker
@@ -332,7 +332,7 @@ We finally run the Dive command as before to check the layers inside the generat
 dive userssignup:v1
 ```text
 As we can see in the output, the layer containing the application is only 11 kB now with the dependencies cached in separate layers.
-![dive screenshot](/assets/img/posts/springboot-docker-image/dive2.png)
+{{% image alt="dive screenshot" src="images/posts/springboot-docker-image/dive2.png" %}}
 
 ### Extracting Internal Dependencies in Separate Layers
 

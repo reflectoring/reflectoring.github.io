@@ -15,7 +15,7 @@ The goal of this journey is to create a production-grade, continuously deployabl
 
 **This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/cloudformation/ecs-in-two-public-subnets" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/aws/cloudformation/ecs-in-two-public-subnets" %}}
 
 ## What is CloudFormation?
 
@@ -33,7 +33,7 @@ In this article, however, we'll use CloudFormation to learn the basics.
 
 On a very high level, this is what we're going to build in this article:
 
-![ECS Tasks in two public subnets](/assets/img/posts/aws-cloudformation-deploy-docker-image/ecs-in-two-public-subnets.svg)
+{{% image alt="ECS Tasks in two public subnets" src="images/posts/aws-cloudformation-deploy-docker-image/ecs-in-two-public-subnets.svg" %}}
 
 We'll create two CloudFormation stacks:
 
@@ -676,7 +676,7 @@ Assuming that the stacks were created successfully and have both reached the sta
 
 To send some test requests to our application, we first need to know the URL of the load balancer. For this, we go to the EC2 page in the AWS Console and click on "Load Balancers" in the menu on the left. Clicking on the load balancer in the list, we see the "DNS name" in the "Description" tab at the bottom:
 
-![Finding the Loadbalancer URL](/assets/img/posts/aws-cloudformation-deploy-docker-image/loadbalancer.png)
+{{% image alt="Finding the Loadbalancer URL" src="images/posts/aws-cloudformation-deploy-docker-image/loadbalancer.png" %}}
 
 Paste this URL into the browser, and add `/hello` to the end, and you should see a "Hello World" greeting!
 

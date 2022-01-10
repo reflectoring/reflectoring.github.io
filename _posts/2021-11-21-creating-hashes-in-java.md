@@ -15,7 +15,7 @@ security realm like securely storing sensitive information and safeguarding data
 In this post, we will illustrate the creation of common types of hashes in Java along with examples of using hashes for
 generating checksums of data files and for storing sensitive data like passwords and secrets.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/java-hashes" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/java-hashes" %}}
 
 ## Features of Hash Functions
 

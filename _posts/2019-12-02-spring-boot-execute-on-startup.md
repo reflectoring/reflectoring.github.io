@@ -15,7 +15,7 @@ Spring Boot offers at least 5 different ways of executing code on startup, so wh
 
 Let's start by looking at some use cases, though. 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/startup" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/startup" %}}
 
 ## Why Would I Want to Execute Code at Startup?
 

@@ -11,7 +11,7 @@ image:
 
 In the previous article in this series, we learned about Resilience4j and how to use its [Retry module](/retry-with-resilience4j/). Let's now learn about the RateLimiter - what it is, when and how to use it, and what to watch out for when implementing rate limiting (or "throttling", as it's also called).
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/resilience4j/ratelimiter" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/resilience4j/ratelimiter" %}}
 
 ## What is Resilience4j?
 

@@ -26,7 +26,7 @@ convenient way to access such parameters from within the application code.
 This tutorial goes into the details of this annotation and shows how to
 use it to configure a Spring Boot application module.  
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/configuration" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/configuration" %}}
 
 ## Using `@ConfigurationProperties` to Configure a Module
 
@@ -498,7 +498,7 @@ To get auto-completion in IntelliJ, we just install the [Spring Assistant](https
 plugin. If we now hit CMD+Space in an `application.properties` or `application.yml`
 file, we get an auto-completion popup:
 
-![Auto-Completion in IntelliJ](/assets/img/posts/spring-boot-configuration-properties/intellij.png)
+{{% image alt="Auto-Completion in IntelliJ" src="images/posts/spring-boot-configuration-properties/intellij.png" %}}
  
 ### Eclipse
 
@@ -551,7 +551,7 @@ include deprecation information in the meta data:
 This information is then provided to us when typing away in the properties file 
 (IntelliJ, in this case):
 
-![Deprecated info in auto-completion](/assets/img/posts/spring-boot-configuration-properties/deprecated.png)
+{{% image alt="Deprecated info in auto-completion" src="images/posts/spring-boot-configuration-properties/deprecated.png" %}}
 
 ## Conclusion
 

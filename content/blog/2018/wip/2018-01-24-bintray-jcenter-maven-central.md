@@ -1,12 +1,13 @@
 ---
+authors: [tom]
 title: "Publishing Open Source Releases to JCenter and Maven Central"
-categories: ["Software Craft"]
-modified: 2018-01-24
+categories: ["WIP", "Software Craft"]
+date: 2018-01-24
 excerpt: "For your open source projects to be accessible, it's worthwile to publish them   
           to JCenter and / or Maven Central. This article explains how to
           publish a release from your Bintray repository to JCenter and Maven Central."
-image:
-  auto: 0038-package
+image:  images/stock/0038-package-1200x628-branded.jpg
+url: bintray-jcenter-maven-central
 ---
 
 
@@ -63,7 +64,7 @@ else to do.
 
 To publish **manually**, click the "Publish" link shown below after you uploaded some files.
 
-![publish manually](/assets/img/posts/bintray-jcenter-maven-central/bintray-publish-manually.png)
+{{% image alt="publish manually" src="images/posts/bintray-jcenter-maven-central/bintray-publish-manually.png" %}}
 
 To publish **automatically** from a Gradle build, add the `publish` flag to the bintray configuration:
 

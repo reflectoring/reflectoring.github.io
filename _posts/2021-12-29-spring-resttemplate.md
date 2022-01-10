@@ -13,7 +13,7 @@ REST-styled APIs are all around us. Many applications need to invoke REST APIs f
 
 `RestTemplate` is a class within the Spring framework that helps us to do just that. In this tutorial, we will understand how to use `RestTemplate` for invoking REST APIs of different shapes.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/resttemplate" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/resttemplate" %}}
 
 ## What is Spring `RestTemplate`?
 

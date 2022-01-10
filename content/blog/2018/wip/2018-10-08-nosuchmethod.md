@@ -1,10 +1,11 @@
 ---
+authors: [tom]
 title: "3 Steps to Fix NoSuchMethodErrors and NoSuchMethodExceptions"
-categories: ["Java"]
-modified: 2018-10-08
+categories: ["WIP", "Java"]
+date: 2018-10-08
 excerpt: "A tutorial on how identify the root cause of NoSuchMethodErrors and NoSuchMethodExceptions."
-image:
-  auto: 0011-exception
+image:  images/stock/0011-exception-1200x628-branded.jpg
+url: nosuchmethod
 ---
 
 

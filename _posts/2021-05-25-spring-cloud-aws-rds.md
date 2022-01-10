@@ -13,7 +13,7 @@ Amazon Relational Database Service (AWS RDS) is a relational database service av
 
 In this tutorial, we will look at using the Spring Cloud AWS JDBC module of Spring Cloud AWS to integrate with the AWS RDS service with the help of some basic concepts of AWS RDS along with code examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springcloudrds" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/aws/springcloudrds" %}}
 
 
 ## AWS RDS Concepts
@@ -28,7 +28,7 @@ Each DB instance has a DB instance identifier used to uniquely identify the DB i
 
 ### DB Instance Class
 The DB instance class is used to specify the compute and storage capacity of the AWS RDS DB instance. RDS supports three types of instance classes: 
-![RDS DB instance Classes](/assets/img/posts/aws-rds-spring-cloud/dbinstance-classes.png)
+{{% image alt="RDS DB instance Classes" src="images/posts/aws-rds-spring-cloud/dbinstance-classes.png" %}}
 
 **Standard**: These are general-purpose instance classes that deliver balanced compute, memory, and networking for a broad range of general-purpose workloads. 
 
@@ -40,7 +40,7 @@ The DB instance class is used to specify the compute and storage capacity of the
 DB instances for AWS RDS use AWS Elastic Block Store (Amazon EBS) volumes for database and log storage. AWS RDS provides three types of storage: 
 General Purpose SSD (also known as gp2), Provisioned IOPS SSD (also known as io1), and magnetic (also known as standard) which differ in performance characteristics and price:
 
-![RDS DB Storage Classes](/assets/img/posts/aws-rds-spring-cloud/storage-classes.png)
+{{% image alt="RDS DB Storage Classes" src="images/posts/aws-rds-spring-cloud/storage-classes.png" %}}
 
 General Purpose SSD volumes offer cost-effective storage that is ideal for a broad range of workloads. 
 
@@ -79,7 +79,7 @@ For configuring Spring Cloud AWS, let us add a separate Spring Cloud AWS BOM in 
 ## Creating the AWS RDS Instance
 Let us create a DB instance using the AWS Management Console:
 
-![RDS DB Instance Creation](/assets/img/posts/aws-rds-spring-cloud/create-db-instance.png)
+{{% image alt="RDS DB Instance Creation" src="images/posts/aws-rds-spring-cloud/create-db-instance.png" %}}
 
 Here we have chosen to create the DB instance using the `Easy Create` option which sets default values for most of the properties. We have chosen [MySQL](https://www.mysql.com) as our database engine and specified the database identifier, user name, and password. 
 
@@ -88,7 +88,7 @@ We also need to enable public access and allow access from our host if we wish t
 ## Connecting to the RDS Instance
 After the DB instance is available, we have to connect to it from our development environment to run our database operations. For this, let us retrieve its endpoint from the DB instance connectivity description in the AWS Management Console :
 
-![RDS DB Instance Endpoint](/assets/img/posts/aws-rds-spring-cloud/db-endpoint.png)
+{{% image alt="RDS DB Instance Endpoint" src="images/posts/aws-rds-spring-cloud/db-endpoint.png" %}}
 
 
 We can see the endpoint of our DB instance that we created in the previous step as `testinstance.cfkcguht5mdw.us-east-1.rds.amazonaws.com`. 
@@ -271,7 +271,7 @@ The source DB instance plays the role of the primary DB instance and updates mad
 This way we can increase the overall throughput of the database by reducing the load on our primary DB instance by routing read queries from your applications to the read replica. 
 
 Let us create a read-replica of the DB instance from the RDS console:
-![RDS read-replica creation](/assets/img/posts/aws-rds-spring-cloud/read-replica.png)
+{{% image alt="RDS read-replica creation" src="images/posts/aws-rds-spring-cloud/read-replica.png" %}}
 
 Here we are creating a replica of the DB instance we created earlier.
 

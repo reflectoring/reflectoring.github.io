@@ -15,7 +15,7 @@ It is also a good fit for microservice architectures where we need to communicat
 
 In this article, we will look at using Apache Camel for building integration logic in microservice applications built with [Spring Boot](https://spring.io/projects/spring-boot) with the help of code examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-camel" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-camel" %}}
 
 
 ## What is Apache Camel
@@ -27,7 +27,7 @@ As explained at the start, Apache Camel is an integration framework. Camel can d
 Some of the important concepts of Apache Camel used during integration are shown in this diagram:
 
 
-![Camel Message Flow](/assets/img/posts/camel-spring/camel-arch.png)
+{{% image alt="Camel Message Flow" src="images/posts/camel-spring/camel-arch.png" %}}
 
 Let us get a basic understanding of these concepts before proceeding further.
 

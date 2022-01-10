@@ -1,11 +1,12 @@
 ---
+authors: [tom]
 title: "Testing a Spring Boot REST API Consumer against a Contract with Spring Cloud Contract"
-categories: ["Spring Boot"]
-modified: 2018-01-18
+categories: ["WIP", "Spring Boot"]
+date: 2018-01-18
 excerpt: "A guide on how to implement a consumer-driven contract test with Spring Cloud Contract that verifies that a REST consumer based on
           Feign and Spring Boot works as defined in the contract."
-image:
-  auto: 0025-signature
+image:  images/stock/0025-signature-1200x628-branded.jpg
+url: consumer-driven-contract-consumer-spring-cloud-contract
 ---
 
 
@@ -20,7 +21,7 @@ is a framework that facilitates consumer-driven contract tests.
 So let's have a look at how to verify a Spring Boot REST client against a contract
 with Spring Cloud Contract.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-cloud/spring-cloud-contract-consumer" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-cloud/spring-cloud-contract-consumer" %}}
 
 ## In this Article
 

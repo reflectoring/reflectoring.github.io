@@ -22,7 +22,7 @@ she is looking for.
 In this tutorial, we're examining Spring Data's paging support and create examples of how to use
 and configure it along with some information about how it works under the covers.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/paging" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/paging" %}}
 
 ## Paging vs. Pagination
 The terms "paging" and "pagination" are often used as synonyms. They don't exactly mean the same,

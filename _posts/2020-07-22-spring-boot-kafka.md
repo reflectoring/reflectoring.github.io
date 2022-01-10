@@ -11,7 +11,7 @@ image:
 
 In this article, we'll look at how to integrate a Spring Boot application with Apache Kafka and start sending and consuming messages from our application. We'll be going through each section with code examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-kafka" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-kafka" %}}
 
 ## Why Kafka?
 

@@ -1,10 +1,11 @@
 ---
+authors: [tom]
 title: "Implementing a Consumer-Driven Contract for a GraphQL Consumer with Node and Apollo"
-categories: [programming]
-modified: 2018-11-10
+categories: ["WIP", programming]
+date: 2018-11-10
 excerpt: "In this tutorial, we're exploring how to create a GraphQL consumer with Node and Apollo. We're then going to create a contract for this GraphQL Consumer and a test that validates that the consumer works accoring to the contract."
-image:
-  auto: 0025-signature
+image:  images/stock/0025-signature-1200x628-branded.jpg
+url: pact-node-graphql-consumer
 ---
 
 
@@ -24,7 +25,7 @@ our consumer is working as expected by the contract. For this, we're using the N
 This tutorial builds upon a [recent tutorial](/pact-react-consumer) about creating a React
 consumer for a REST API, so you'll find some links to that tutorial for more detailed explanations.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/pact/pact-react-consumer" %}}
 
 ## Creating the Node App
 

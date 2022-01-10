@@ -9,7 +9,7 @@ image:
 
 In a distributed system, many services can be involved in creating a response to a single request. Not only for debugging purposes it’s essential that the path of such a request can be traced through all involved services. This tutorial gives an overview of the traceability problem in distributed systems and provides a complete guide on how to implement tracing with Spring Boot, OpenTelemetry, and Jaeger.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-cloud/tracing" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-cloud/tracing" %}}
 
 ## Spans and Traces
 
@@ -19,7 +19,7 @@ In a distributed system, tracing gets even harder since many different services 
 
 As an example for this article, let’s have a look at a distributed system with two services:
 
-![Spans and traces](/assets/img/posts/spring-boot-tracing/trace.png)
+{{% image alt="Spans and traces" src="images/posts/spring-boot-tracing/trace.png" %}}
 
 The browser makes a request to the API service to get a detail view of a customer and display it to the user. The API service can't answer that request by itself and has to make two calls to the customer service to get the names and addresses of the customers, respectively.
 
@@ -34,7 +34,7 @@ In addition to using trace and span IDs in logs, to correlate log output from di
 ## The Tracing Setup
 Let's have a look at what we're going to build in this article:
 
-![The tracing setup](/assets/img/posts/spring-boot-tracing/tracing-setup.png)
+{{% image alt="The tracing setup" src="images/posts/spring-boot-tracing/tracing-setup.png" %}}
 
 We have the API and customer service that we mentioned above. The API service depends on the customer service to provide customer data. Both services are Spring Boot applications.
 
@@ -353,13 +353,13 @@ After a minute or so, we should also see the traces in the Logz.io Jaeger dashbo
 ### Browsing Traces
 In the Jaeger UI, we can now browse the traces and will see something like this:
 
-![A trace in the Jaeger UI](/assets/img/posts/spring-boot-tracing/jaeger-trace.png)
+{{% image alt="A trace in the Jaeger UI" src="images/posts/spring-boot-tracing/jaeger-trace.png" %}}
 
 This is exactly what we expected: the API service received an HTTP GET request and then makes two consecutive calls to the customer service. We can see that the API service made the first call to the customer service approximately 2ms after it got the request from the browser and that the customer service took 1.35ms to respond. This gives great visibility to where our services spend their time!
 
 Clicking on one of the elements of the trace, we can expand it and view all the tags that Spring Cloud Sleuth has added to the trace:
 
-![A trace in the Jaeger UI - expanded](/assets/img/posts/spring-boot-tracing/jaeger-trace-expanded.png)
+{{% image alt="A trace in the Jaeger UI - expanded" src="images/posts/spring-boot-tracing/jaeger-trace-expanded.png" %}}
 
 If we want, we can add custom tags to our traces using Spring Cloud Sleuth's [tagging feature](https://docs.spring.io/spring-cloud-sleuth/docs/current-SNAPSHOT/reference/html/using.html#using-annotations-advanced-tag-setting).
 
@@ -373,7 +373,7 @@ Imagine that users are complaining about slowly loading pages but every user is 
 
 The Jaeger UI allows us to search for traces that have been longer than a given time. We can search for all traces that have taken longer than 1000ms, for example. Drilling down into one of the long-running traces of our example app, we might get a result like this:
 
-![Finding long spans](/assets/img/posts/spring-boot-tracing/jaeger-trace-long.png)
+{{% image alt="Finding long spans" src="images/posts/spring-boot-tracing/jaeger-trace-long.png" %}}
 
 This shows very clearly that the most time in this trace is spent in the second call to the customer service, so we can focus our investigation on that code to improve it. And indeed, I had added a `Thread.sleep()` to that piece of code.
 
@@ -383,7 +383,7 @@ Say a user is complaining about getting errors on a certain page of the applicat
 
 In the Jaeger UI, we can search for `http.status_code=500` and will see something like this:
 
-![Finding error spans](/assets/img/posts/spring-boot-tracing/jaeger-trace-error.png)
+{{% image alt="Finding error spans" src="images/posts/spring-boot-tracing/jaeger-trace-error.png" %}}
 
 This shows clearly that the call to `http://customer-service:8081/customers/1` is the culprit and we can focus on that code to fix the error.
 

@@ -16,7 +16,7 @@ But this code doesn't run in the application that we develop and cannot be teste
 
 This article shows how to test database migration scripts with [Flyway](/database-migration-spring-boot-flyway/) and Testcontainers in a Spring Boot application and to keep the tests close to production.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/testcontainers" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/testcontainers" %}}
 
 ## Key Takeaways
 
@@ -83,7 +83,7 @@ other databases.
 
 **We could, of course, maintain two sets of SQL scripts**, one for `H2`, to be used in the tests, and one for PostgreSQL, to be used in production:
 
-![Two sets of SQL scripts.](/assets/img/posts/testcontainers/two_sets_of_sql_scripts.png)
+{{% image alt="Two sets of SQL scripts." src="images/posts/testcontainers/two_sets_of_sql_scripts.png" %}}
 
 But now,:
  * we have to configure Spring Boot profiles for different folders with scripts,

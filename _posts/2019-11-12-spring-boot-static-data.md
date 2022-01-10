@@ -26,7 +26,7 @@ In this article, we'll have a look at:
  
 We'll take the "Quote of the Day" use case as an example (I actually built that a couple weeks back as a farewell present to my previous team :)).
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/static" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/static" %}}
 
 ## Storing Static Data in a Config File
 

@@ -15,7 +15,7 @@ With real events, we are more flexible than with direct method calls. We can dyn
 
 This tutorial gives an overview of how to publish and listen to custom events and explains Spring Boot's built-in events.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-events" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-events" %}}
 
 ## Why Should I Use Events Instead of Direct Method Calls?
 

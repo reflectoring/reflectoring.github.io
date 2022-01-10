@@ -26,7 +26,7 @@ results in too many dependencies being available at compile time.**
 
 Say we have a project X. It depends on libraries A and B. And C is a consumer of project X. 
 
-![Transitive dependencies are implicit dependencies.](/assets/img/posts/gradle-dependency-pollution/implicit-dependency.jpg)
+{{% image alt="Transitive dependencies are implicit dependencies." src="images/posts/gradle-dependency-pollution/implicit-dependency.jpg" %}}
 
 **C has a transitive dependency to A and B** because X needs A and B to function.
 
@@ -71,7 +71,7 @@ Now, the developers of X decide that with the next version of X, they no longer 
 They sell this as a minor update that is completely backward-compatible because
 they haven't changed the API of X at all.
 
-![A transitive dependency can change without us doing anything.](/assets/img/posts/gradle-dependency-pollution/explicit-dependency-error.jpg)
+{{% image alt="A transitive dependency can change without us doing anything." src="images/posts/gradle-dependency-pollution/explicit-dependency-error.jpg" %}}
 
 When the developer of C updates to this next version of X, **she will get compile errors even though the update of X 
 has been backward-compatible** because the classes of A are no longer available. And 
@@ -130,7 +130,7 @@ to the [`implementation` configuration](/maven-scopes-gradle-configurations/#imp
 instead of the `compile` configuration (which has been deprecated in favor of `implementation` for 
 some time now).
 
-![With Gradle's implementation configuration, compile-time dependencies are no longer transitive.](/assets/img/posts/gradle-dependency-pollution/explicit-dependency.jpg)
+{{% image alt="With Gradle's implementation configuration, compile-time dependencies are no longer transitive." src="images/posts/gradle-dependency-pollution/explicit-dependency.jpg" %}}
 
 So, if the dependency of X to A is declared to the `implementation` configuration, **C no longer
 has a transitive compile-time dependency to A**. C can no longer accidentally use classes of A.

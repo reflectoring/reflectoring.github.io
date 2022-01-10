@@ -21,13 +21,13 @@ contract framework that allows consumer and provider to be written in different 
 this article takes a look on how to 
 create a contract from an Angular client that consumes a REST API.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-angular" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/pact/pact-angular" %}}
 
 ## The Big Picture
 
 The big picture of Consumer-Driven Contract tests is shown in the figure below.
 
-![Mocking Overview](/assets/img/posts/consumer-driven-contracts-with-angular-and-pact/mocks.jpg)
+{{% image alt="Mocking Overview" src="images/posts/consumer-driven-contracts-with-angular-and-pact/mocks.jpg" %}}
 
 Instead of testing consumer and provider in an end-to-end manner, which requires a [complex
 server environment](/7-reasons-for-consumer-driven-contracts/#complexity),

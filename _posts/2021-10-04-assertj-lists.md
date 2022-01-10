@@ -19,7 +19,7 @@ This article shows how to work with lists in AssertJ.
 
 Let’s start with setting it up.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/testing/assertJ" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/testing/assertJ" %}}
 
 ## Setting up AssertJ
 ### Maven Setup

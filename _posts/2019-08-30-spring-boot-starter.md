@@ -23,7 +23,7 @@ Some example use cases for a Spring Boot starter are:
 
 In this article, we'll build a Spring Boot starter that allows a Spring Boot application to easily send and receive Events over an imaginary central messaging infrastructure.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/starter" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/starter" %}}
 
 ## Spring Boot Starter Vocabulary
 

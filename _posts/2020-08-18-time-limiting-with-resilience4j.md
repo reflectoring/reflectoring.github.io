@@ -11,7 +11,7 @@ image:
 
 In this series so far, we have learned about Resilience4j and its [Retry](/retry-with-resilience4j/) and [RateLimiter](/rate-limiting-with-resilience4j/) modules. In this article, we will continue exploring Resilience4j with a look into the TimeLimiter. We will find out what problem it solves, when and how to use it, and also look at a few examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/resilience4j/timelimiter" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/resilience4j/timelimiter" %}}
 
 ## What is Resilience4j?
 

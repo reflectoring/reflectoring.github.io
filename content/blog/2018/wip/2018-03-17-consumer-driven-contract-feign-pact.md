@@ -1,11 +1,12 @@
 ---
+authors: [tom]
 title: "Creating a Consumer-Driven Contract with Feign and Pact"
-categories: ["Spring Boot"]
-modified: 2018-08-10
+categories: ["WIP", "Spring Boot"]
+date: 2018-08-10
 excerpt: "A guide on how to implement a consumer-driven contract test with Pact that verifies that a REST consumer based on
           Feign and Spring Boot works as defined in the contract."
-image:
-  auto: 0026-signature
+image:  images/stock/0026-signature-1200x628-branded.jpg
+url: consumer-driven-contract-feign-pact
 ---
 
 
@@ -20,7 +21,7 @@ is a popular stack for creating API clients in a distributed architecture. [Pact
 is a polyglot framework that facilitates consumer-driven contract tests. 
 So let's have a look at how to create a contract with Feign and Pact and test a Feign client against that contract.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-feign-consumer" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/pact/pact-feign-consumer" %}}
 
 ## In this Article
 

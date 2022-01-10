@@ -1,6 +1,6 @@
 ---
 title: My System for Organizing Work in a Distracted World
-categories: [meta]
+categories: ["Meta"]
 date: 2020-03-22 05:00:00 +1100
 modified: 2020-03-22 05:00:00 +1100
 author: default
@@ -70,7 +70,7 @@ So we need a system for capturing our work. We need to trust this system to remi
 
 My system is a visual board, using Trello as a tool. It has one column for each day of the workweek (i.e. Monday through Friday) and one column for "Next week":
 
-![The board I use for organizing work](/assets/img/posts/organizing-work/board.png)
+{{% image alt="The board I use for organizing work" src="images/posts/organizing-work/board.png" %}}
 
 **It's not a Kanban or Scrum board**! The columns don't represent a status. It's more like a calendar that I can use to organize my work day.
 

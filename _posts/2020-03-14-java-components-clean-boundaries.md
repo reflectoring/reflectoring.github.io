@@ -21,7 +21,7 @@ This is all the more important if we're working on a monolithic codebase that co
 
 How can we protect our codebase from unwanted dependencies? **With careful design of bounded contexts and persistent enforcement of component boundaries.** This article shows a set of practices that help in both regards when working with Spring Boot.   
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/boundaries" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/boundaries" %}}
 
 ## Package-Private Visibility 
 
@@ -49,7 +49,7 @@ What can we do about it? We can't rely on package-private visibility by itself. 
 
 We discuss the approach alongside an example use case. Say we're building a billing component that looks like this:
 
-![A modules with external and internal dependencies](/assets/img/posts/clean-boundaries/components.jpg)
+{{% image alt="A modules with external and internal dependencies" src="images/posts/clean-boundaries/components.jpg" %}}
 
 The billing component exposes an invoice calculator to the outside. The invoice calculator generates an invoice for a certain customer and time period.
 

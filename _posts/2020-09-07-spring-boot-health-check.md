@@ -13,7 +13,7 @@ Monitoring and observability are essential in distributed environments and they 
 
 In this article, we will build health check functions in Spring Boot applications and make them observable by capturing useful health metrics and integrate with popular monitoring tools.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check" %}}
 
 ## Why Do we use Health Checks?
 A distributed system is composed of many moving parts like a database, queues, and other services. **Health check functions tell us the status of our running application like whether the service is slow or not available.**
@@ -26,7 +26,7 @@ Apart from infrastructure and operations teams, health check metrics and insight
 
 In an API ecosystem, for instance, with API developers, partners, and third-party developers, the health status of APIs is regularly updated and published in a dashboard, like on this Dashboard by Twitter:
 
-![twitter API Health Status](/assets/img/posts/spring-boot-health-check/twitter-api-health-status.png)
+{{% image alt="twitter API Health Status" src="images/posts/spring-boot-health-check/twitter-api-health-status.png" %}}
 
 The dashboard gives a snapshot of the health status of the Twitter APIs as "Operational", "Degraded Performance", etc. helping us to understand the current status of those APIs.
 
@@ -420,7 +420,7 @@ docker run \
 prom/prometheus
 ```text
 Now we can check our application as a target in Prometheus by visiting the URL - `http://localhost:9090/targets`:
-![Prometheus Targets](/assets/img/posts/spring-boot-health-check/prometheus-ss.png)
+{{% image alt="Prometheus Targets" src="images/posts/spring-boot-health-check/prometheus-ss.png" %}}
 
 As stated above, due to the Micrometer metrics facade we can integrate with other [monitoring tools](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-metrics) only by adding the provider-specific Micrometer dependency to the application. 
 
@@ -438,7 +438,7 @@ management.health.probes.enabled=true
 ```text
 After this when we compile and run the application, we can see these two health checks in the output of the health endpoint and also two health groups.
 
-![Health Groups](/assets/img/posts/spring-boot-health-check/healthprobes-k8s.png)
+{{% image alt="Health Groups" src="images/posts/spring-boot-health-check/healthprobes-k8s.png" %}}
 
 We can next use these two endpoints to configure HTTP probes for liveness and readiness checks in the container specification when creating the deployment object in Kubernetes. This definition of Deployment object along with the Service object is saved in [deployment.yaml](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-health-check/deployment.yaml):
 

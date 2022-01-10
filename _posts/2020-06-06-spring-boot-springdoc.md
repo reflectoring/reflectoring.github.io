@@ -16,7 +16,7 @@ When following a "code first" approach in API development, we first start with w
 
 Let's discuss the benefits of using this approach and how to implement it with Springdoc and Spring Boot.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-springdoc" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-springdoc" %}}
 
 ## When to Choose the "Code First" Approach
 
@@ -77,7 +77,7 @@ Note that we don't need to define the class above as a Spring bean. Springdoc wi
 
 Now, if we start the Spring Boot application and navigate to [http://localhost:8080/swagger-ui/index.html?configUrl=/reflectoring-openapi/swagger-config](http://localhost:8080/swagger-ui/index.html?configUrl=/reflectoring-openapi/swagger-config), we should see the information we defined above:
 
-![General Information](/assets/img/posts/reflect-92/general-info.png)
+{{% image alt="General Information" src="images/posts/reflect-92/general-info.png" %}}
 
 ### Defining the REST API
 
@@ -123,7 +123,7 @@ class TodoController implements TodoApi {
 
 Let's start the application again and take a look at the [Swagger UI](http://localhost:8080/swagger-ui/index.html?configUrl=/reflectoring-openapi/swagger-config). It should look something like this:
 
-![Todo API Information](/assets/img/posts/reflect-92/todo-api-info.png)
+{{% image alt="Todo API Information" src="images/posts/reflect-92/todo-api-info.png" %}}
 
 Springdoc did its magic and created a documentation for our API!
 
@@ -148,11 +148,11 @@ The above `@SecurityScheme` will be referred to as `api` and will do a basic aut
 
 Let's see what this annotation produced for us:
 
-![Secure Scheme](/assets/img/posts/reflect-92/secure-scheme.png)
+{{% image alt="Secure Scheme" src="images/posts/reflect-92/secure-scheme.png" %}}
 
 Our documentation has now also an "Authorize" Button! If we press this button we will get a dialog where we can authenticate:
 
-![Secure Scheme Dialog](/assets/img/posts/reflect-92/secure-scheme-dialog.png)
+{{% image alt="Secure Scheme Dialog" src="images/posts/reflect-92/secure-scheme-dialog.png" %}}
 
 To define that an API endpoint uses the above security scheme we have to annotate it with the `@SecurityRequirement` annotation.
 
@@ -168,21 +168,21 @@ interface TodoApi {
 
 Now, the Swagger UI will show a lock on each of our endpoints to mark them as "secured":
 
-![Todo API with lock](/assets/img/posts/reflect-92/todo-api-info-with-lock.png)
+{{% image alt="Todo API with lock" src="images/posts/reflect-92/todo-api-info-with-lock.png" %}}
 
 Actually, the endpoints are not secured, yet. If we try to request the `/api/todos` resource, for example, **we will still be able to receive the data without authentication**:
 
-![Todo API with lock unsecured](/assets/img/posts/reflect-92/todo-api-info-with-lock-unsecured.png)
+{{% image alt="Todo API with lock unsecured" src="images/posts/reflect-92/todo-api-info-with-lock-unsecured.png" %}}
 
 We have to implement the actual security ourselves. See the code in the [repository](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-springdoc) for the full implementation with Spring Security.
 
 After securing the application we can now see that we receive a `401` status code if we try to access any resource under `/api/todos`.
 
-![Todo API with lock secured 401](/assets/img/posts/reflect-92/todo-api-info-with-lock-secured-401.png)
+{{% image alt="Todo API with lock secured 401" src="images/posts/reflect-92/todo-api-info-with-lock-secured-401.png" %}}
 
 After authenticating we can again access the resource:
 
-![Todo API with lock secured 200](/assets/img/posts/reflect-92/todo-api-info-with-lock-secured-200.png)
+{{% image alt="Todo API with lock secured 200" src="images/posts/reflect-92/todo-api-info-with-lock-secured-200.png" %}}
 
 ## Caveats When Using Code First
 

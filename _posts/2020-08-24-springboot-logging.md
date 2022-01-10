@@ -14,7 +14,7 @@ Logging is a vital part of all applications and brings benefits not only to us d
 **The Spring Boot framework is preconfigured with Logback as a default implementation in its opinionated framework.** This article looks at different ways of configuring logging in Spring Boot.
 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-2" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-logging-2" %}}
 
 ## Why Is Logging Important?
 The decisions on what to log and where are often strategic and are taken after considering that the application will malfunction in live environments. Logs play a key role in helping the application to recover quickly from any such failures and resume normal operations.

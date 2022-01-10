@@ -16,7 +16,7 @@ When we delete a column from the database, we need to change the code to not use
 
 In this tutorial, we'll discuss how we can coordinate the code changes with the database changes and deploy them to our production environment without a downtime. We'll go through an example use case step by step and use feature flags to help us.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/zero-downtime" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/zero-downtime" %}}
 
 ## The Problem: Coordinating Database Changes with Code Changes
 
@@ -38,7 +38,7 @@ As the example use case we're going to split a database column into two.
 
 Initially, our application looks like this:
 
-![Initial state](/assets/img/posts/zero-downtime/initial-state.png)
+{{% image alt="Initial state" src="images/posts/zero-downtime/initial-state.png" %}}
 
 We have a `CustomerController` that provides a REST API for our Customer entities. It uses the `CustomerRepository`, which is a Spring Data repository that maps entries in the `CUSTOMER` database table to objects of type `Customer`. The `CUSTOMER` table has the columns `id` and `address` for our example.
 
@@ -46,7 +46,7 @@ The `address` column contains both the street name and street number in the same
 
 In the end, we want the application to look like this:
 
-![Final state](/assets/img/posts/zero-downtime/final-state.png)
+{{% image alt="Final state" src="images/posts/zero-downtime/final-state.png" %}}
 
 In this guide, we'll go through all the changes we need to do to the database and the code and how to release them as safely as possible using feature flags and multiple deployments.
 
@@ -106,7 +106,7 @@ With this change in place, we can deploy a new version of the code without being
 
 Next, we write the code that we need to work with the new database schema:
 
-![State 1](/assets/img/posts/zero-downtime/state-1.png)
+{{% image alt="State 1" src="images/posts/zero-downtime/state-1.png" %}}
 
 Since we're going to change the structure of the `CUSTOMER` database table, we create the class `NewCustomer` that maps to the new columns of the table (i.e. `streetNumber` and `street` instead of just `address`). We also create `NewCustomerRepository` as a new Spring Data repository that binds to the same table as the `CustomerRepository` but uses the `NewCustomer` class to map database rows into Java.
 
@@ -151,7 +151,7 @@ With the help of feature flags, we have deployed the new code without even touch
 
 With the deployment of the new code in the previous step, we have also deployed a new SQL script for Flyway to execute. After successful deployment, we can now call the `/flywayMigrate` endpoint that we prepared in step 1. This will execute the SQL script and update the database schema with the new `streetNumber` and `street` fields:
 
-![State 2](/assets/img/posts/zero-downtime/state-2.png)
+{{% image alt="State 2" src="images/posts/zero-downtime/state-2.png" %}}
 
 These new columns will be empty for now. Note that we have kept the existing `address` column untouched for now. In the end state, we'll want to remove this column, but we have to migrate the data into the new columns first. 
 
@@ -161,7 +161,7 @@ The feature flags are still disabled for now, so that both reads and writes go i
 
 Next, we activate the `writeToNewCustomerSchema` feature flag so that the application now writes to the new database columns but still reads from the old one:
 
-![State 2](/assets/img/posts/zero-downtime/state-3.png)
+{{% image alt="State 2" src="images/posts/zero-downtime/state-3.png" %}}
 
 Every time the application now writes a new customer to the database, it uses the new code. Note that the new code will still fill the old `address` column in addition to the new columns `streetNumber` and `street` for backwards compatibility because the old code is still responsible for reading from the database.
 
@@ -173,7 +173,7 @@ To fill the new columns for *all* customers, we need to run a migration.
 
 Next, we're going to run a migration that goes through all customers in the database whose `streetNumber` and `street` fields are still empty, reads the `address` field, and migrates it into the new fields:
 
-![Database migration](/assets/img/posts/zero-downtime/migration.png)
+{{% image alt="Database migration" src="images/posts/zero-downtime/migration.png" %}}
 
 This migration can be an SQL script, some custom code, or actual people looking at the customer data one by one and making the migration manually. It depends on the use case, data quality, and complexity of the migration task to decide the best way.
 
@@ -191,7 +191,7 @@ Yes, Flyway <em>can</em> be used for migrating data. After all, a data migration
 
 Now that all the customer data is migrated into the new data structure, we can activate the feature flag to use the new code to read from the database:
 
-![State 3](/assets/img/posts/zero-downtime/state-4.png)
+{{% image alt="State 3" src="images/posts/zero-downtime/state-4.png" %}}
 
 The new code is now being used to write *and* read from the database. The old code and the old `address` database column are both not used anymore.
 
@@ -199,7 +199,7 @@ The new code is now being used to write *and* read from the database. The old co
 
 The last step is to clean up:
 
-![Final state](/assets/img/posts/zero-downtime/final-state.png)
+{{% image alt="Final state" src="images/posts/zero-downtime/final-state.png" %}}
 
 We can remove the old code that isn't used anymore. And we can run another Flyway migration that removes the old `address` column from the database.
 

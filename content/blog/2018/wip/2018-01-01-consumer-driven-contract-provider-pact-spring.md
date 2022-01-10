@@ -1,11 +1,12 @@
 ---
+authors: [tom]
 title: "Testing a Spring Boot REST API against a Consumer-Driven Contract with Pact"
-categories: ["Spring Boot"]
-modified: 2018-08-11
+categories: ["WIP", "Spring Boot"]
+date: 2018-08-11
 excerpt: "A guide on how to implement a consumer-driven contract test with Pact that verifies that a REST provider based on
           Spring Boot works as defined in the contract."
-image:
-  auto: 0026-signature
+image:  images/stock/0026-signature-1200x628-branded.jpg
+url: consumer-driven-contract-provider-pact-spring
 ---
 
 
@@ -20,7 +21,7 @@ is a framework that facilitates consumer-driven contract tests.
 So let's have a look at how to test a REST API provided by a Spring Boot application 
 against a contract previously defined by the API consumer.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-spring-provider" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/pact/pact-spring-provider" %}}
 
 ## In this Article
 

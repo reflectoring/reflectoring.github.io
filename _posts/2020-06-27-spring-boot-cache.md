@@ -13,7 +13,7 @@ We use a cache to protect the database or to avoid cost-intensive calculations.
 Spring provides an abstraction layer for implementing a cache. This article shows how to use
 this abstraction support with [Hazelcast](https://hazelcast.org/) as a cache provider.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/cache" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/cache" %}}
 
 # Why Do We Need a Cache Abstraction?
 

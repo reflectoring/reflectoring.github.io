@@ -21,7 +21,7 @@ The operations of Elasticsearch are available as REST APIs. The primary function
 
 Here we will use Spring Data Elasticsearch to demonstrate the indexing and search capabilities of Elasticsearch, and towards the end, build a simple search application for searching products in a product inventory.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-elasticsearch" %}}
 
 
 ## Elasticsearch Concepts
@@ -117,7 +117,7 @@ POST /_bulk
 
 We have two ways of accessing Elasticsearch with Spring Data as shown here:
 
-![Elasticsearch Operations Types with Spring Data](/assets/img/posts/spring-data-elasticsearch/Elasticsearch-springdata.png)
+{{% image alt="Elasticsearch Operations Types with Spring Data" src="images/posts/spring-data-elasticsearch/Elasticsearch-springdata.png" %}}
 
 - **Repositories**: We define methods in an interface, and Elasticsearch queries are generated from method names at runtime. 
 
@@ -446,7 +446,7 @@ In this code snippet, we are forming a query with `CriteriaQuery` for fetching p
 
 We will now add a user interface to our application to see the product search in action. The user interface will have a search input box for searching products on name or description. The input box will have a autocomplete feature to show a list of suggestions based on the available products as shown here:
 
-![Suggestions for Autocomplete](/assets/img/posts/spring-data-elasticsearch/autocomplete.png)
+{{% image alt="Suggestions for Autocomplete" src="images/posts/spring-data-elasticsearch/autocomplete.png" %}}
 
 We will create auto-complete suggestions for user's search input. Then search for products on name or description closely matching the search text entered by the user. We will build two search services to implement this use case:
 - Fetch search suggestions for the auto-complete function
@@ -579,7 +579,7 @@ public class ProductSearchService {
 ```text
 We are using a wildcard query in the form of search input text appended with `*` so that if we type "red" we will get suggestions starting with "red". We are restricting the number of suggestions to 5 with the `withPageable()` method. Some screenshots of the search results from the running application can be seen here:
 
-![Product Search Application](/assets/img/posts/spring-data-elasticsearch/searchapp.png)
+{{% image alt="Product Search Application" src="images/posts/spring-data-elasticsearch/searchapp.png" %}}
 
 ## Conclusion 
 In this article, we introduced the main operations of Elasticsearch - indexing documents, bulk indexing, and search - which are provided as REST APIs. The Query DSL in combination with different analyzers makes the search very powerful. 

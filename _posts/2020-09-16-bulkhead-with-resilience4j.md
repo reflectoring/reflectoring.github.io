@@ -11,7 +11,7 @@ image:
 
 In this series so far, we have learned about Resilience4j and its [Retry](/retry-with-resilience4j/), [RateLimiter](/rate-limiting-with-resilience4j/), and [TimeLimiter](/time-limiting-with-resilience4j/) modules. In this article, we will explore the Bulkhead module. We will find out what problem it solves, when and how to use it, and also look at a few examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/resilience4j/bulkhead" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/resilience4j/bulkhead" %}}
 
 ## What is Resilience4j?
 

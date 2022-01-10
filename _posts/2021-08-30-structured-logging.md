@@ -15,7 +15,7 @@ Often, however, those logs are messy and it takes a lot of effort to analyze the
 
 We'll go through some very hands-on tips on what to do to improve the value of an application's log data and use [Logz.io](https://logz.io) as a logging platform to query the logs.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/logging/structured-logging" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/logging/structured-logging" %}}
 
 ## What are Structured Logs?
 "Normal" logs are unstructured. They usually contain a message string:
@@ -60,7 +60,7 @@ Let's now look into a few use cases that show the power of structured logging.
 
 The first thing we're going to look at is code paths. Each application usually has a couple of different paths that incoming requests can take through the application. Consider this diagram:
 
-![Code paths](/assets/img/posts/structured-logging/code-paths.png)
+{{% image alt="Code paths" src="images/posts/structured-logging/code-paths.png" %}}
 
 This example has (at least) three different code paths that an incoming request can take:
 
@@ -266,7 +266,7 @@ If we're running more than one service, for example in a microservice environmen
 
 A trace ID helps to connect log events in one service and log events in another service:
 
-![Traces and spans](/assets/img/posts/structured-logging/trace.png)
+{{% image alt="Traces and spans" src="images/posts/structured-logging/trace.png" %}}
 
 In the example diagram above, Service 1 is called and generates the trace ID "1234". It then calls Services 2 and 3, propagating the same trace ID to them, so that they can add the same trace ID to their log events, making it possible to connect log events across all services by searching for a specific trace ID.
 
@@ -342,7 +342,7 @@ This will bring up a list of error events that have a root cause.
 
 We can also create a Visualization in the Logz.io UI to show the distribution of errors in a given time frame:
 
-![Error distribution](/assets/img/posts/structured-logging/errors.png)
+{{% image alt="Error distribution" src="images/posts/structured-logging/errors.png" %}}
 
 This chart shows that almost half of the errors are caused by a `ThingyException`, so it might be a good idea to check if this exception can be avoided somehow. If it can't be avoided, we should log it on `WARN` instead of `ERROR` to keep the error logs clean.
 
@@ -356,7 +356,7 @@ job_status: "ERROR"
 
 To get a more high-level view, we can create another pie chart visualization that shows the distribution of `job_status` and `rootCause`:
 
-![Error distribution per code path](/assets/img/posts/structured-logging/job-errors.png)
+{{% image alt="Error distribution per code path" src="images/posts/structured-logging/job-errors.png" %}}
 
 We can now see that the majority of our scheduled jobs is failing! We should add some alerting around this! We can also see which exceptions are the root causes of the most scheduled jobs and start to investigate.
 

@@ -1,10 +1,11 @@
 ---
+authors: [tom]
 title: "Implementing a Consumer-Driven Contract for a GraphQL Provider with Node and Express"
-categories: [programming]
-modified: 2018-11-10
+categories: ["WIP", programming]
+date: 2018-11-10
 excerpt: "In this tutorial, we're exploring how to create a GraphQL provider with Node and Express and how to implement a contract test with Pact that verifies that this GraphQL provider works as expected by the consumer-defined contract."
-image:
-  auto: 0026-signature
+image:  images/stock/0026-signature-1200x628-branded.jpg
+url: pact-node-graphql-provider
 ---
 
 
@@ -25,7 +26,7 @@ verifies that our provider works as specified in the contract.
 
 This tutorial assumes you have a current version of Node installed.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider" %}}
 
 ## Creating an Express Server
 
@@ -197,7 +198,7 @@ type the URL `http://localhost:3000/graphql` into a browser.
 
 We should see the graphiql interface that looks something like this:
 
-![GraphiQL Web Interface](/assets/img/posts/pact-node-graphql-provider/graphiql.png) 
+{{% image alt="GraphiQL Web Interface" src="images/posts/pact-node-graphql-provider/graphiql.png" %}} 
 
 We can play around and enter a query like shown in the screenshot to check if the server responds
 accordingly.

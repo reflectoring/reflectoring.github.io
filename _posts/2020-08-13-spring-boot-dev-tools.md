@@ -21,7 +21,7 @@ It took me some time to set it up to my satisfaction (and then some more time to
 
 This article explains how Spring Boot Dev Tools works and how to configure it to your Spring Boot application consisting of a single or multiple Gradle modules (it will probably also work with Maven, with some changes, but this article will only show the Gradle configuration). 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/devtools-demo/" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/devtools-demo/" %}}
 
 ## The Perfect Dev Loop
 

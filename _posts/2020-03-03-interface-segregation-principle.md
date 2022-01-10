@@ -14,7 +14,7 @@ tags: ["Interface Segregation Principle", "ISP", "SOLID", "Principles of softwar
 
 Abstraction is the heart of object-oriented design. It allows the client to be unconcerned with the implementation details of functionality. In Java, abstraction is achieved through abstract classes and interfaces. This article explains the idea of the Interface Segregation Principle, which is the "I" in the [SOLID](https://en.wikipedia.org/wiki/SOLID) principles.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/solid" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/solid" %}}
 
 ## What Is an Interface?
 An Interface is a set of abstractions that an implementing class must follow. We define the behavior but don't implement it:

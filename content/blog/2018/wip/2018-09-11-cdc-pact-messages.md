@@ -1,13 +1,13 @@
 ---
-
+authors: [tom]
 title: "Testing a Spring Message Producer and Consumer against a Contract with Pact"
-categories: ["Spring Boot"]
-modified: 2018-09-13
+categories: ["WIP", "Spring Boot"]
+date: 2018-09-13
 excerpt: "A tutorial on using Spring and Pact to create a contract between a message
           producer and a message consumer and to verify if both producer and consumer
           work as expected by this contract."
-image:
-  auto: 0029-contract
+image:  images/stock/0029-contract-1200x628-branded.jpg
+url: cdc-pact-messages
 ---
 
 
@@ -68,7 +68,7 @@ those classes that are responsible for consuming and producing messages.
 
 The figure below shows the data flow through our consumer and provider code base.
 
-![Architecture](/assets/img/posts/cdc-pact-messages/architecture.jpg)
+{{% image alt="Architecture" src="images/posts/cdc-pact-messages/architecture.jpg" %}}
 
 1. In the **domain logic** on the producer side, something happens that triggers a message.
 1. The message is passed as a Java object to the **`MessageProducer`** class which transforms it into a JSON string.

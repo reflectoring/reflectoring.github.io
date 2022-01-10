@@ -14,7 +14,7 @@ In this series so far, we have learned how to use the Resilience4j [Retry](https
 
 We will walk through many of the same examples as in the previous articles in this series and some new ones and understand how the Spring support makes Resilience4j usage more convenient.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/resilience4j/springboot-resilience4j" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/resilience4j/springboot-resilience4j" %}}
 
 ## High-level Overview
 

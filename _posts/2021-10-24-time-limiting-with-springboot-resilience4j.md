@@ -13,7 +13,7 @@ In this series so far, we have learned how to use the Resilience4j [Retry](https
 
 In this article, we'll focus on the TimeLimiter and see how the Spring Boot support makes it simple and more convenient to implement time limiting in our applications. 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/resilience4j/springboot-resilience4j" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/resilience4j/springboot-resilience4j" %}}
 
 ## High-level Overview
 

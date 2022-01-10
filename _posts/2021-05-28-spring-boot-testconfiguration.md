@@ -14,7 +14,7 @@ The `@TestConfiguration` annotation is a useful aid for writing unit tests of co
 
 In this article, we will see the use of the `@TestConfiguration` annotation for writing unit tests for a Spring Boot applications.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testconfiguration" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testconfiguration" %}}
 
 ## Introducing the `@TestConfiguration` Annotation
 

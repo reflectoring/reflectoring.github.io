@@ -18,7 +18,7 @@ What if we combine the two? This article shows a way of combining Vue.js compone
 
 **I'm using this method in [blogtrack.io](https://blogtrack.io), a blog tracking service going into beta soon**, and I'm very happy with it. 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/thymeleaf-vue" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/thymeleaf-vue" %}}
 
 ## The Problems of SPAs
 
@@ -105,7 +105,7 @@ class HelloVueController {
 
 If we start the application with `./gradlew bootrun` and go to [http://localhost:8080/](http://localhost:8080/), we should see this page:
 
-![hello vue](/assets/img/posts/reusable-vue-components-in-thymeleaf/hello-vue.png)
+{{% image alt="hello vue" src="images/posts/reusable-vue-components-in-thymeleaf/hello-vue.png" %}}
 
 **We now have a working server-side web application driven by a Thymeleaf template**. Time to create some Javascript components.
 
@@ -260,7 +260,7 @@ This file creates an instance of our `WeekChart` component with the name `Defaul
 
 Running `npm run storybook` will start a local web server and serve the stories in a nice UI when we open [http://localhost:6006](http://localhost:6006) in a browser:
 
-![Storybook](/assets/img/posts/reusable-vue-components-in-thymeleaf/storybook.png)
+{{% image alt="Storybook" src="images/posts/reusable-vue-components-in-thymeleaf/storybook.png" %}}
 
 We know that our bar chart component is working now. Storybook is nice to use during development to make sure that our changes have the desired effect. **But if we do a refactoring to any of our components and forget to check it in Storybook, we may still break our components**. So, let's add an automated test that runs during the build.
 

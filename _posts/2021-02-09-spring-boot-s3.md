@@ -13,7 +13,7 @@ In this article, **we are going to explore AWS' Simple Storage Service (S3) toge
 
 As we will learn, S3 is an extremely versatile and easy to use solution for a variety of use cases.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/s3" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/aws/s3" %}}
 
 ## What is S3?
 S3 stands for "simple storage service" and is an object store service hosted on Amazon Web Services (AWS) - but what does this exactly mean?

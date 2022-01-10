@@ -15,7 +15,7 @@ logic in the Java ecosystem. It's well integrated with Spring and Spring Boot.
 However, there are some pitfalls. This tutorial goes over all major validation use cases
 and sports code examples for each.   
   
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/validation" %} 
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/validation" %}} 
 
 ## Using the Spring Boot Validation Starter
 

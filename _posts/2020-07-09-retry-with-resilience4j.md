@@ -11,7 +11,7 @@ image:
 
 In this article, we'll start with a quick intro to Resilience4j and then deep dive into its Retry module. We'll learn when and how to use it, and what features it provides. Along the way, we'll also learn a few good practices when implementing retries.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/resilience4j/retry" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/resilience4j/retry" %}}
 
 ## What is Resilience4j?
 

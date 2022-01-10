@@ -1,9 +1,10 @@
 ---
+authors: [tom]
 title: "REST with Hypermedia - Hot or Not?"
-categories: ["Software Craft"]
+categories: ["WIP", "Software Craft"]
 excerpt: "A discussion of what Hypermedia with REST means and a guide to decide whether hypermedia is a match for your use case."
-image:
-  auto: 0036-notebooks
+image:  images/stock/0036-notebooks-1200x628-branded.jpg
+url: rest-hypermedia
 ---
 
 
@@ -19,7 +20,7 @@ drawbacks you might encounter when using it.
 Before starting with Hypermedia, let's have a look at the [REST Maturity Model](https://www.crummy.com/writing/speaking/2008-QCon/act3.html)
 conceived by Leonard Richardson:
 
-![REST Maturity Model](/assets/img/posts/rest-hypermedia/rest-maturity-model.jpg)
+{{% image alt="REST Maturity Model" src="images/posts/rest-hypermedia/rest-maturity-model.jpg" %}}
 
 At the bottom of the maturity pyramid we find the "Swamp of POX (Plain old XML)". This means sending XML fragments back and forth
 that contain a command for executing one of several procedures as well as some payload data to a single URL. 
@@ -50,7 +51,7 @@ link to other related resources.
 
 Let's try this concept on a simple book store example:
 
-![Links and Relations](/assets/img/posts/rest-hypermedia/state-diagram-relations.png)
+{{% image alt="Links and Relations" src="images/posts/rest-hypermedia/state-diagram-relations.png" %}}
 
 In the diagram above, each node is a URL within our API and each edge is a link relating one URL with another.
 

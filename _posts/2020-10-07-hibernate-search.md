@@ -13,7 +13,7 @@ image:
 If you want to integrate extensive full-text search features in your Spring Boot application without having to make 
 major changes, Hibernate Search may be a way to go.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/hibernate-search" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/hibernate-search" %}}
 
 ## Introduction
 Adding full-text search functionality with Hibernate Search is as easy as adding a dependency and a couple of annotations to your entities. 

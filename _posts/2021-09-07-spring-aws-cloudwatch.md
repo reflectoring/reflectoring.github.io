@@ -17,7 +17,7 @@ In this article, we will generate different types of application metrics in a Sp
 
 **Amazon CloudWatch will store the metrics data and help us to derive insights about our application by visualizing the metric data in graphs**.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springcloudwatch" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/aws/springcloudwatch" %}}
 
 ## Check out the Book!
 
@@ -199,7 +199,7 @@ We will make use of the Micrometer library, instead of the AWS Java SDK, to crea
 
 Micrometer acts as a facade to different monitoring systems by providing a tool-agnostic interface for collecting metrics from our application and publishing the metrics to our target metrics collector:
 
-![CloudWatch Metrics](/assets/img/posts/aws-spring-cloudwatch/monitoringfacade.png)
+{{% image alt="CloudWatch Metrics" src="images/posts/aws-spring-cloudwatch/monitoringfacade.png" %}}
 
 This enables us to support multiple metrics collectors and switch between them with minimal configuration changes.
 
@@ -211,7 +211,7 @@ MeterRegistry registry = new SimpleMeterRegistry();
 ```text
 `SimpleMeterRegistry` is a default implementation of `MeterRegistry` bundled with Micrometer. It holds the latest value of each meter in memory and does not export the data to any metrics collector. The diagram here shows the hierarchy and relationships of important classes and interfaces of the Micrometer.
 
-![CloudWatch Metrics](/assets/img/posts/aws-spring-cloudwatch/micrometer-classes.png)
+{{% image alt="CloudWatch Metrics" src="images/posts/aws-spring-cloudwatch/micrometer-classes.png" %}}
 
 
 We can see different types of Meters and MeterRegistries in this diagram.
@@ -490,11 +490,11 @@ Let us open the [AWS CloudWatch console](https://console.aws.amazon.com/cloudwat
 
 The namespace we have used to create our metrics appears under the custom namespaces section as can be seen in this screenshot:
 
-![CloudWatch Metrics namespaces](/assets/img/posts/aws-spring-cloudwatch/cw-namespaces.png)
+{{% image alt="CloudWatch Metrics namespaces" src="images/posts/aws-spring-cloudwatch/cw-namespaces.png" %}}
 
 Here we can see our namespace `productApp` containing `6 metrics`. Let us get inside the namespace to see the list of metrics as shown below:
 
-![CloudWatch Metrics](/assets/img/posts/aws-spring-cloudwatch/cloudwatch-metrics.png)
+{{% image alt="CloudWatch Metrics" src="images/posts/aws-spring-cloudwatch/cloudwatch-metrics.png" %}}
 
 These are the metrics for each of the meters (Counter, Timer, and Gauge) of Micrometer which we had registered and updated in the application in the earlier sections:
 
@@ -516,14 +516,14 @@ The metric values rendered in the CloudWatch graph is shown below:
 
 The Gauge for tracking the price of a product is mapped to 1 metric named `product.price.value`.
 
-![CloudWatch Gauge](/assets/img/posts/aws-spring-cloudwatch/cw-gauge.png)
+{{% image alt="CloudWatch Gauge" src="images/posts/aws-spring-cloudwatch/cw-gauge.png" %}}
 
 The Counter for measuring the number of page views of a web page showing list of products is mapped to 1 metric named `PAGE_VIEWS.ProductList.count`. We measured this in our application by incrementing the meter for page views on every invocation of the `fetchProducts` API.
 
-![CloudWatch Counter](/assets/img/posts/aws-spring-cloudwatch/cw-counter.png)
+{{% image alt="CloudWatch Counter" src="images/posts/aws-spring-cloudwatch/cw-counter.png" %}}
 
 The Timer meter for measuring the execution time of the `fetchProducts` API is mapped to 3 metrics named `execution.time.fetchProducts.count`, `execution.time.fetchProducts.max`, and `execution.time.fetchProducts.sum` representing the API's total execution time, and maximum and sum of the execution times during an interval.
-![CloudWatch Timer](/assets/img/posts/aws-spring-cloudwatch/cw-timer.png)
+{{% image alt="CloudWatch Timer" src="images/posts/aws-spring-cloudwatch/cw-timer.png" %}}
 
 ## Generating JVM and System Metrics with Actuator
 We can use the Spring Boot Actuator module to generate useful JVM and system metrics. Spring Boot's  Actuator provides dependency management and auto-configuration for Micrometer. So when we add the Actuator dependency, we can remove the dependency on Micrometer's core module `micrometer-core`:
@@ -551,7 +551,7 @@ management.metrics.export.cloudwatch.batchSize=10
 Here we have added a property for namespace where the metrics will be collected in CloudWatch. The other property for `batchsize` is the value of the number of metrics sent in a single batch to CloudWatch.
 Auto-configuration will enable JVM metrics using core Micrometer classes. JVM metrics are published under the meter name starting with "jvm." as shown below:
 
-![CloudWatch Actuator JVM](/assets/img/posts/aws-spring-cloudwatch/cw-actuator-jvm.png)
+{{% image alt="CloudWatch Actuator JVM" src="images/posts/aws-spring-cloudwatch/cw-actuator-jvm.png" %}}
 
 JVM metrics are provided the following information:
 1. Memory and buffer pool details
@@ -561,7 +561,7 @@ JVM metrics are provided the following information:
 
 Auto-configuration will also enable system metrics using core Micrometer classes. System metrics are published under the meter names starting with "system." and "process.":
 
-![CloudWatch Actuator System](/assets/img/posts/aws-spring-cloudwatch/cw-actuator-system.png)
+{{% image alt="CloudWatch Actuator System" src="images/posts/aws-spring-cloudwatch/cw-actuator-system.png" %}}
 
 System metrics include the following information :
 1. CPU metrics
@@ -575,7 +575,7 @@ We will create an alarm to monitor the fetch products API. If the API execution 
 
 The diagram here shows the sequence of steps to create this alarm to watch over the metric for the execution time of the fetch products API:
 
-![CloudWatch Alert](/assets/img/posts/aws-spring-cloudwatch/alert-create.png)
+{{% image alt="CloudWatch Alert" src="images/posts/aws-spring-cloudwatch/alert-create.png" %}}
 
 
 Here we are creating the alarm to watch over metric named `execution.time.fetchProducts.max`. We have set up the condition for triggering the alarm as "`execution.time.fetchProducts.max` is outside the band (width: 2) for 1 datapoint within 5 minutes". When the alarm is triggered, the action is set to fire a notification to an SNS topic, where we have subscribed to an endpoint to send an email.

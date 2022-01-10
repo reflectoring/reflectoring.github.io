@@ -13,7 +13,7 @@ This article is about cookies and different ways we can implement them in Spring
 
 If you are building a web application then you probably have reached the point where there's the need to implement cookies. If you haven't, you will!
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/cookie-demo" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/cookie-demo" %}}
 
 ## What are Cookies?
 

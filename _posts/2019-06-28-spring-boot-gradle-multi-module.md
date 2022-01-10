@@ -20,7 +20,7 @@ into multiple build modules for better maintainability and understandability.
 This article shows **how to split up a Spring Boot application into multiple build modules**
 with Gradle.
 
-{% include github-project.html url="https://github.com/thombergs/buckpal" %}
+{{% github "https://github.com/thombergs/buckpal" %}}
 
 ## What's a Module?
 

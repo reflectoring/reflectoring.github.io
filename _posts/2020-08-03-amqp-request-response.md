@@ -12,7 +12,7 @@ image:
 The request/response pattern is well-known and widely used, mainly in synchronous communication. This article shows how to implement 
 this pattern asynchronously with a message broker using the AMQP protocol and Spring Boot.  
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/request-response" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/request-response" %}}
 
 ## What is the Request/Response Pattern?
 The request/response interaction between two parties is pretty easy. The client sends a request to the
@@ -48,7 +48,7 @@ To solve this problem,
 the client should send a unique correlation IDentifier along with each request. The server should obtain this identifier and
 add it to the response. Now the client can assign a response to its request.
 
-![Response Request with Message Broker](/assets/img/posts/request-response/request-response.png)
+{{% image alt="Response Request with Message Broker" src="images/posts/request-response/request-response.png" %}}
 
 The important things are:
 

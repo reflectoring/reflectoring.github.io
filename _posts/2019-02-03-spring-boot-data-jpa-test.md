@@ -18,7 +18,7 @@ an environment with an embedded database to test our database queries against.
 In this tutorial, we'll first discuss which types of queries are worthy of tests and then
 discuss different ways of creating a database schema and database state to test against.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing" %}}
 
 ## The "Testing with Spring Boot" Series
 

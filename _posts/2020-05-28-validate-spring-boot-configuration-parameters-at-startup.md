@@ -15,7 +15,7 @@ For some configuration parameters it makes sense to fail application startup if 
 
 Spring Boot offers us a neat way of validating configuration parameters. We're going to bind input values to `@ConfigurationProperties` and use [Bean Validation](https://beanvalidation.org/) to validate them.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/configuration" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/configuration" %}}
 
 ## Why Do We Need to Validate Configuration Parameters?
 Doing proper validation of our configuration parameters can be critical sometimes.

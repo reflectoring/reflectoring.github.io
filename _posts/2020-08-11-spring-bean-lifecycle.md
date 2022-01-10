@@ -11,7 +11,7 @@ image:
 
 Providing an Inversion-of-Control Container is one of the core provisions of the Spring Framework. Spring orchestrates the beans in its application context and manages their lifecycle. In this tutorial, we're looking at the lifecycle of those beans and how we can hook into it.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/bean-lifecycle" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/bean-lifecycle" %}}
 
 ## What Is a Spring Bean?
 Let's start with the basics. Every object that is under the control of Spring's `ApplicationContext` in terms of *creation*, *orchestration*, and *destruction* is called a Spring Bean.

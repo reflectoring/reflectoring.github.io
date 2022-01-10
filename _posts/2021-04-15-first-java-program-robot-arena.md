@@ -18,7 +18,7 @@ If you get stuck anywhere in this tutorial, know that this is totally fine. In t
 
 Have fun building robots with Java!
 
-{% include github-project.html url="https://github.com/thombergs/robot-arena" %}
+{{% github "https://github.com/thombergs/robot-arena" %}}
 
 ## Getting Ready to Code
 
@@ -32,11 +32,11 @@ IntelliJ is installed and ready? Let's get started, then!
 
 Before we get our hands dirty on code, we create a new Java project in IntelliJ. When you start IntelliJ for the first time, you should see a dialog something like this:
 
-![First time starting IntelliJ](/assets/img/posts/robot-arena/first-start.png)
+{{% image alt="First time starting IntelliJ" src="images/posts/robot-arena/first-start.png" %}}
 
 Click on "New project", to open this dialog:
 
-![New project dialog](/assets/img/posts/robot-arena/new-project.png)
+{{% image alt="New project dialog" src="images/posts/robot-arena/new-project.png" %}}
 
 If you have a different IntelliJ project open already, you can reach the "New project" dialog through the option "File -> New -> Project".
 
@@ -54,7 +54,7 @@ Let's start with the simplest possible program, the infamous "Hello World" (actu
 
 In your fresh Java project, you should see the following folder structure on the left: 
 
-![Empty project structure](/assets/img/posts/robot-arena/empty-project-structure.png)
+{{% image alt="Empty project structure" src="images/posts/robot-arena/empty-project-structure.png" %}}
 
 There are folders named `.idea` and `out`, in which IntellJ stores some configuration and compiled Java classes ... we don't bother with them for now.
 

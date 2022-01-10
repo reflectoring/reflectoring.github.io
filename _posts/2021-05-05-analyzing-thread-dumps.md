@@ -12,7 +12,7 @@ A thread is a basic path of execution in a program.  Most of the applications we
 
 In this post, we create thread dumps and understand the information they contain to diagnose various runtime errors in applications.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/threaddump" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/core-java/threaddump" %}}
 
 ## What is a Thread Dump?
 
@@ -254,20 +254,20 @@ Let us upload our thread dump file generated from a Kafka broker to the FastThre
 FastThread generates a report from the thread dump which is much easier to understand compared to the raw file. Let us look at some of the useful sections of the report:
 
 * **Threads with identical stack trace**: This section of the report shows information when several threads in a thread dump working on one single method. This is indicative of resource contention on external resources like databases or APIs or infinite loops. That particular method needs to be analyzed to find the root cause.
-![identical-stack-trace](/assets/img/posts/thread-dump-analysis/identical-stack-trace.png)
+{{% image alt="identical-stack-trace" src="images/posts/thread-dump-analysis/identical-stack-trace.png" %}}
 * **Most used methods**: By taking multiple consecutive thread dumps in a sequence, we can get an overview of the parts of our Java application that are used the most. 
-![most-used-methods](/assets/img/posts/thread-dump-analysis/most-used-methods.png)
+{{% image alt="most-used-methods" src="images/posts/thread-dump-analysis/most-used-methods.png" %}}
 * **CPU consuming threads**: The report lists all threads which need to be analyzed for high CPU consumption.
-![cpu-consuming-threads](/assets/img/posts/thread-dump-analysis/cpu-consuming-threads.png)
+{{% image alt="cpu-consuming-threads" src="images/posts/thread-dump-analysis/cpu-consuming-threads.png" %}}
 * **Blocking threads**: Blocking threads that are responsible for making an application unresponsive are listed under this section.
 * **Deadlocks**: This section contains threads that are causing a deadlock. The deadlock section of the previous example is shown here:
-![Deadlock section](/assets/img/posts/thread-dump-analysis/fastthread-deadlock.png)
+{{% image alt="Deadlock section" src="images/posts/thread-dump-analysis/fastthread-deadlock.png" %}}
 * **Exceptions**: Thread dumps contain exceptions and errors in the thread's stack trace. These should be investigated to look for the root cause of a problem. 
 * **Flame Graph**: A flame graph condenses all the information from the thread dump into one single compactgraph. It helps to identify hot code paths for effective debugging/troubleshooting. The flame graph of our previous program for causing deadlock is shown here:
-![Flamegraph section](/assets/img/posts/thread-dump-analysis/flame-graph.png)
+{{% image alt="Flamegraph section" src="images/posts/thread-dump-analysis/flame-graph.png" %}}
 We can see the flame graph is searched for classes in the package `threadops` and showing the search results in pink color. The number of threads of that class is displayed on hovering over the cell.
 Another flame graph of a Kafka broker is given here:
-![Flamegraph section](/assets/img/posts/thread-dump-analysis/flame-graph1.png)
+{{% image alt="Flamegraph section" src="images/posts/thread-dump-analysis/flame-graph1.png" %}}
 
 
 [IBM TDMA](https://www.ibm.com/support/pages/ibm-thread-and-monitor-dump-analyzer-java-tmda), [samurai](https://github.com/yusuke/samurai), and 

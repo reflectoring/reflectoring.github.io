@@ -1,11 +1,12 @@
 ---
+authors: [tom]
 title: "Implementing a Consumer-Driven Contract for a Node Express Server with Pact"
-categories: [programming]
-modified: 2018-10-28
+categories: ["WIP", programming]
+date: 2018-10-28
 excerpt: "A tutorial that shows how to implement a REST provider with a Node Express Server
           using the Pact framework."
-image:
-  auto: 0026-signature
+image:  images/stock/0026-signature-1200x628-branded.jpg
+url: pact-node-provider
 ---
 
 
@@ -26,7 +27,7 @@ verifies that our provider works as specified in the contract.
 
 This tutorial assumes you have a current version of Node installed.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/pact/pact-node-provider" %}}
 
 ## Creating an Express Server
 

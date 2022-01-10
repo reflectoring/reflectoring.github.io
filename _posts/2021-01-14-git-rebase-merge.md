@@ -35,9 +35,9 @@ Let's take an example in which we will mainly focus on branch merging patterns. 
 
 Once Git has found a common base commit, it will create a new "merge commit", that will combine the changes of each queued merge commit sequence.
 
-![Git Merge combining branches](/assets/img/posts/git-rebase-merge/git-merge-working1.png)
+{{% image alt="Git Merge combining branches" src="images/posts/git-rebase-merge/git-merge-working1.png" %}}
 
-![Git Merge with Common Base](/assets/img/posts/git-rebase-merge/git-merge-working2.png)
+{{% image alt="Git Merge with Common Base" src="images/posts/git-rebase-merge/git-merge-working2.png" %}}
 
 **After a merge, we have a single new commit on the branch we merge into. This commit contains all the changes from the source branch.**
 
@@ -45,13 +45,13 @@ Once Git has found a common base commit, it will create a new "merge commit", th
 
 Let's have a look at the concept of `git rebase`. A `rebase` is the way of migrating or combining a sequence of commits to a new base commit. If we consider it in the context of a feature branching workflow, we can visualize it as follows:
 
-![Git Rebasing](/assets/img/posts/git-rebase-merge/git-rebasing-basic.png)
+{{% image alt="Git Rebasing" src="images/posts/git-rebase-merge/git-rebasing-basic.png" %}}
 
 Let's understand the working of `git rebase` by looking at history with a topic branch off another topic branch. 
 
 Let's say we have branched a `feature1` branch from the mainline, and added some functionality to our project, and then made a commit. Now, we branch off the `feature2` branch to make some additional changes. Finally, we go back to the `feature1` branch and commit a few more changes:
 
-![Git Rebase Example](/assets/img/posts/git-rebase-merge/git-rebase-working1.png)
+{{% image alt="Git Rebase Example" src="images/posts/git-rebase-merge/git-rebase-working1.png" %}}
 
 Now suppose that we have decided to merge the feature2 changes to the mainline for the release, but we also want to hold the feature1 changes until they are tested further. 
 
@@ -63,7 +63,7 @@ git rebase --onto main feature1 feature2
 
 It gives us a bit complex but a pretty cool result:
 
-![Git Rebase Example](/assets/img/posts/git-rebase-merge/git-rebase-working2.png)
+{{% image alt="Git Rebase Example" src="images/posts/git-rebase-merge/git-rebase-working2.png" %}}
 
 
 The commits from the `feature2` branch have been replayed onto the `main` branch, and the `feature2` branch now contains all the commits from the main branch plus the new commits from the `feature2` branch.
@@ -81,7 +81,7 @@ git merge feature2
 ```text
 In simple words, fast-forwarding `main` to the `feature2` branch means that previously the HEAD pointer for main branch was at 'C6' but after the above command it fast forwards the main branch's HEAD pointer to the feature2 branch:
 
-![Git Rebase Done](/assets/img/posts/git-rebase-merge/git-rebase-working3.png)
+{{% image alt="Git Rebase Done" src="images/posts/git-rebase-merge/git-rebase-working3.png" %}}
 
 ## Git Rebase vs Git Merge
 
@@ -89,7 +89,7 @@ Now let's go through the difference between `git rebase` and `git merge`.
 
 Let's have a look at `git merge` first:
 
-![Git Merge Preserving commit history](/assets/img/posts/git-rebase-merge/git-merge-history.png)
+{{% image alt="Git Merge Preserving commit history" src="images/posts/git-rebase-merge/git-merge-history.png" %}}
 
 If we look at the diagram above, the golden commit is the latest commit on the base branch before the merge and the red commit is the merge commit. The merge commit has both - the latest commit in the base branch and the latest commit in the feature branch - as ancestors. 
 
@@ -97,7 +97,7 @@ If we look at the diagram above, the golden commit is the latest commit on the b
 
 `git rebase`, on the other hand, *re-writes* the changes of one branch onto another branch without the creation of a merge commit:
 
-![Git Rebase updating history](/assets/img/posts/git-rebase-merge/git-rebase-history.png)
+{{% image alt="Git Rebase updating history" src="images/posts/git-rebase-merge/git-rebase-history.png" %}}
 
  A new commit will be created on top of the branch we rebase onto, for every commit that is in the source branch, and not in the target branch. **It will be just like all commits have been written on top of the main branch all along.**
 
@@ -112,7 +112,7 @@ If we look at the diagram above, the golden commit is the latest commit on the b
 
 When a lot of developers are working on the same branch in parallel, the history can be intensely populated by lots of merge commits. It can create a very messy look of the visual charts, which can create hurdles in extracting useful information:
 
-![Difficult to Debug](/assets/img/posts/git-rebase-merge/debugging.png)
+{{% image alt="Difficult to Debug" src="images/posts/git-rebase-merge/debugging.png" %}}
 
 `git rebase` will help keep the history clean.
 
@@ -134,7 +134,7 @@ When it comes to rebasing and merging, most people hesitate to use `git rebase` 
 
 The basic purpose of `git rebase` and `git merge` is the same, i.e. they help us to bring changes from one branch into another. The difference is that **`git rebase` re-writes the commit history**: 
 
-![Git Rebase Rewrites Commit History](/assets/img/posts/git-rebase-merge/git-rebase-history.png)
+{{% image alt="Git Rebase Rewrites Commit History" src="images/posts/git-rebase-merge/git-rebase-history.png" %}}
 
 So, **if someone else checks out your branch before we rebase ours then it would be really hard to figure out what the history of each branch is**.
 

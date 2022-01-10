@@ -15,7 +15,7 @@ To investigate memory problems, the JVM Heap Memory is often the first place to 
 
 To see this in action, we will first trigger an `OutOfMemoryError` and then capture a heap dump. We will next analyze this heap dump to identify the potential objects which could be the cause of the memory leak. 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/heapdump" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/core-java/heapdump" %}}
 
 ## What is a Heap Dump?
 Whenever we create a Java object by creating an instance of a class, it is always placed in an area known as the heap. Classes of the Java runtime are also created in this heap. 
@@ -192,14 +192,14 @@ We will first start the Memory Analyzer Tool and open the heap dump file. In Ecl
 After opening the heap dump, we will see an overview of the application's memory usage.
 The piechart shows the biggest objects by retained size in the `overview` tab as shown here:
 
-![PieChart](/assets/img/posts/heapdump/piechart.png)
+{{% image alt="PieChart" src="images/posts/heapdump/piechart.png" %}}
 
 For our application, this information in the overview means if we could dispose of a particular instance of `java.lang.Thread` we will save 1.7 GB, and almost all of the memory used in this application. 
 
 ### Histogram View
 While that might look promising, java.lang.Thread is unlikely to be the real problem here. To get a better insight into what objects currently exist, we will use the Histogram view:
 
-![histogram](/assets/img/posts/heapdump/histogram.png)
+{{% image alt="histogram" src="images/posts/heapdump/histogram.png" %}}
 
 We have filtered the histogram with a regular expression "io.pratik.* " to show only the classes that match the pattern. With this view, we can see the number of live objects: for example, 243 `BrandedProduct` objects, and 309 `Price` Objects are alive in the system. We can also see the amount of memory each object is using. 
 
@@ -210,7 +210,7 @@ The retained heap size is computed by adding the size of all the objects in the 
 
 The retained heap can be calculated in two different ways, using the quick approximation or the precise retained size:
 
-![retainedheap](/assets/img/posts/heapdump/retainedheap.png)
+{{% image alt="retainedheap" src="images/posts/heapdump/retainedheap.png" %}}
 
 By calculating the Retained Heap we can now see that `io.pratik.ProductGroup` is holding the majority of the memory, even though it is only 32 bytes (shallow heap size) by itself. By finding a way to free up this object, we can certainly get our memory problem under control.
 
@@ -218,7 +218,7 @@ By calculating the Retained Heap we can now see that `io.pratik.ProductGroup` is
 The dominator tree is used to identify the retained heap. It is produced by the complex object graph generated at runtime and helps to identify the largest memory graphs. An Object X is said to dominate an Object Y if every path from the Root to Y must pass through X. 
 
 Looking at the dominator tree for our example, we can see which objects are retained in the memory.
-![dominatortree](/assets/img/posts/heapdump/dominatortree.png)
+{{% image alt="dominatortree" src="images/posts/heapdump/dominatortree.png" %}}
 We can see that the `ProductGroup` object holds the memory instead of the `Thread` object. We can probably fix the memory problem by releasing objects contained in this object. 
 
 
@@ -229,15 +229,15 @@ Due to its smaller size, it is preferable to share the "Leak Suspects Report" re
 
 The report has a pie chart, which gives the size of the suspected objects: 
 
-![leakssuspectPieChart](/assets/img/posts/heapdump/leaksuspectpiechart.png)
+{{% image alt="leakssuspectPieChart" src="images/posts/heapdump/leaksuspectpiechart.png" %}}
 
 For our example, we have one suspect labeled as "Problem Suspect 1" which is further described with a short description:
 
-![leakssuspects](/assets/img/posts/heapdump/leaksuspects.png)
+{{% image alt="leakssuspects" src="images/posts/heapdump/leaksuspects.png" %}}
 
 Apart from the summary, this report also contains detailed information about the suspects which is accessed by following the “details” link at the bottom of the report:
 
-![leakssuspectdetails](/assets/img/posts/heapdump/leaksuspectdetails.png)
+{{% image alt="leakssuspectdetails" src="images/posts/heapdump/leaksuspectdetails.png" %}}
 
 The detailed information is comprised of :
 1. **Shortest paths from GC root to the accumulation point**: Here we can see all the classes and fields through which the reference chain is going, which gives a good understanding of how the objects are held. In this report, we can see the reference chain going from the `Thread` to the `ProductGroup` object.

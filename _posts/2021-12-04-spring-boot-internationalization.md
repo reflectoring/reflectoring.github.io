@@ -13,7 +13,7 @@ Internationalization is the process of making an application adaptable to multip
 
 In this tutorial, we will understand the concepts of internationalization, and illustrate how to internationalize a Spring Boot application.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-i18n" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-i18n" %}}
 
 ## Internationalization (i18n) vs. Localization (l10n)
 
@@ -32,11 +32,11 @@ The following figures illustrate a website supporting internationalization.
 
 Amazon e-commerce site in German language from `www.amazon.de`: 
 
-![i18n example de](/assets/img/posts/spring-boot-i18n/i18nexamplede.png)
+{{% image alt="i18n example de" src="images/posts/spring-boot-i18n/i18nexamplede.png" %}}
 
 Amazon e-commerce site in French language from `www.amazon.fr`: 
 
-![i18n example fr](/assets/img/posts/spring-boot-i18n/i18nexamplefr.png)
+{{% image alt="i18n example fr" src="images/posts/spring-boot-i18n/i18nexamplefr.png" %}}
 
 In these screenshots, we can observe that the content of the Amazon website is being rendered in the French and German languages depending on whether the HTTP URL used in the browser ends with `.fr` or `.de`.
 
@@ -166,7 +166,7 @@ The resource bundle should also have a default properties file with the same nam
 
 The following diagram shows the properties files of a resource bundle with a base name of `language/messages`:
 
-![resource-files](/assets/img/posts/spring-boot-i18n/resource-bundle-structure.png)
+{{% image alt="resource-files" src="images/posts/spring-boot-i18n/resource-bundle-structure.png" %}}
 
 Here, we can see resource bundles for three languages: English, French, and German with English being the default. 
 
@@ -398,11 +398,11 @@ Next, we run the application and open the URL: `http://localhost:8080/index` in 
 
 When we click on the links, the page is refreshed with the text elements rendered in the language selected by the user by a click on the link:
 
-![website-in-english](/assets/img/posts/spring-boot-i18n/website-in-english.png)
+{{% image alt="website-in-english" src="images/posts/spring-boot-i18n/website-in-english.png" %}}
 
-![website-in-german](/assets/img/posts/spring-boot-i18n/website-in-german.png)
+{{% image alt="website-in-german" src="images/posts/spring-boot-i18n/website-in-german.png" %}}
 
-![website-in-french](/assets/img/posts/spring-boot-i18n/website-in-french.png)
+{{% image alt="website-in-french" src="images/posts/spring-boot-i18n/website-in-french.png" %}}
 
 The links are formed with the URL appended with a parameter: `language`. The locale is switched with the help of `LocaleChangeInterceptor` defined in our Spring configuration class: `MessageConfig` that switches to a new locale based on the value of the `language` parameter appended to an HTTP request URL like `http://localhost:8080/index?language=de`, as explained in a previous section.
 

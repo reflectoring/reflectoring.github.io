@@ -32,7 +32,7 @@ If you're interested in learning about building applications with Spring Boot an
 
 The basic goal for this chapter is still the same as in the article ["Getting Started with AWS CDK"](/getting-started-with-aws-cdk): we want to deploy a simple "Hello World" Spring Boot application (in a Docker image) into a public subnet in our own private virtual network (VPC). This time, however, we want to do it with reusable CDK constructs and we're adding some more requirements:
 
-![We want to deploy our application into a staging and a production environment](/assets/img/posts/designing-a-aws-cdk-project/cdk-stacks.png)
+{{% image alt="We want to deploy our application into a staging and a production environment" src="images/posts/designing-a-aws-cdk-project/cdk-stacks.png" %}}
 
 The image above shows what we want to achieve. Each box is a CloudFormation resource (or a set of CloudFormation resources) that we want to deploy. This is a high-level view. So, there are actually more resources involved but let's not worry about that, yet. Each color corresponds to a different CloudFormation stack. Let's go through each of the stacks one by one.
 

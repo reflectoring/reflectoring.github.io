@@ -15,7 +15,7 @@ On the road to a production-grade, continuously deployable system, we now want t
 
 **This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/cloudformation/ecs-zero-downtime-deployment" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/aws/cloudformation/ecs-zero-downtime-deployment" %}}
 
 ## Recap: The CloudFormation Stacks
 

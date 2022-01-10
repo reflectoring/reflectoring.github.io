@@ -180,7 +180,7 @@ arn:aws:cloudformation:ap-southeast-2:...
 
 This means that CDK has successfully deployed the (empty) stack. If we log in to the AWS web console and navigate to the CloudFormation service, we should see a stack called "TestStack" deployed there:
 
-![The default CDK Stack](/assets/img/posts/getting-started-with-aws-cdk/cdk-stack.png)
+{{% image alt="The default CDK Stack" src="images/posts/getting-started-with-aws-cdk/cdk-stack.png" %}}
 
 The stack contains a single resource called `CDKMetadata`, which the CDK needs to work with that stack.
 
@@ -307,7 +307,7 @@ If we copy this URL into our browser, we should see our hello world application.
 
 Inspecting the CloudFormation web console again, we should see a stack with a bunch of resources
 
-![The Spring Boot CDK Stack](/assets/img/posts/getting-started-with-aws-cdk/spring-boot-stack.png)
+{{% image alt="The Spring Boot CDK Stack" src="images/posts/getting-started-with-aws-cdk/spring-boot-stack.png" %}}
 
 When done inspecting the stack don't forget to destroy it to avoid unnecessary costs:
 

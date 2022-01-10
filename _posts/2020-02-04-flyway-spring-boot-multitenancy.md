@@ -15,7 +15,7 @@ And as if that's not hard enough, if we want to make some changes to the databas
 
 This article shows a way **how to implement a Spring Boot application with a data source for each tenant and how to use Flyway to make updates to all tenant databases at once**.
 
-{% include github-project.html url="https://github.com/arkuksin/flyway-multitenancy" %}
+{{% github "https://github.com/arkuksin/flyway-multitenancy" %}}
 
 ## General Approach
 To work with multiple tenants in an application we'll have a look at:

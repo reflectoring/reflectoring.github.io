@@ -12,7 +12,7 @@ Mockito is a very popular library to support testing. It allows us to replace re
 
 This article gives a quick intro to the how and why of Mockito and Spring Boot's integration with it. 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/mocking" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/mocking" %}}
 
 ## The System Under Test
 

@@ -14,7 +14,7 @@ It is a commonly used protocol for communication between applications that publi
 
 A wide array of alternatives exist for choosing an HTTP client. This article provides an overview of some of the major libraries which are used as HTTP clients in Java applications for making HTTP calls.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/http-clients" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/http-clients" %}}
 
 ## Overview of HTTP Clients
 

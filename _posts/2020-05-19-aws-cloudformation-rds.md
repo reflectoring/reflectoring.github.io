@@ -82,7 +82,7 @@ There isn't really much more to this Spring Boot application. If you want to see
 
 Now that we have a Spring Boot application wrapped in Docker, we can start looking at how to deploy it to AWS and connect it to a database. This picture shows what we're building:
 
-![RDS instance in two private subnets](/assets/img/posts/aws-cloudformation-rds/rds-in-private-subnet.svg)
+{{% image alt="RDS instance in two private subnets" src="images/posts/aws-cloudformation-rds/rds-in-private-subnet.svg" %}}
 
 We'll create three CloudFormation stacks:
 

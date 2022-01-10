@@ -11,7 +11,7 @@ image:
 
 GraphQL was developed by Facebook in 2012 for their mobile apps. It was open-sourced in 2015 and is now used by many development teams, including some prominent ones like GitHub, Twitter, and Airbnb. Here we will see what GraphQL is and explain its usage with some simple examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/graphql" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/graphql" %}}
 
 ## What is GraphQL?
 

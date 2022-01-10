@@ -14,7 +14,7 @@ Java 8 was a revolutionary release that put Java back on the pedestal of the bes
 
 We will go through most of the changes in the Java language that happened from Java 8 in 2014 until today. We will try to be as brief as possible on every feature. The intention is to have **a reference for all features between Java 8 and Java 17 inclusively**.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/versions" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/core-java/versions" %}}
 
 ## Java 8
 

@@ -11,7 +11,7 @@ image:
 
 In this article, we'll look at Spring component scanning and how to use it. We'll be using a Spring Boot application for all our examples throughout this article.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-component-scanning" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-component-scanning" %}}
 
 ## What is Component Scanning?
 

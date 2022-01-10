@@ -13,7 +13,7 @@ In this article we will learn how to mock objects with Mockito. We'll first talk
 how we can use them to create meaningful and tailored unit tests. We will also have a look at the most important
 Dos and Don'ts while writing clean unit tests with Mockito.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/mockito" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/mockito" %}}
 
 ## Introduction to Mocks
 

@@ -20,7 +20,7 @@ In this article, we will understand the following aspects of CORS:
 - What security vulnerabilities exist around cross-origin requests?
 - What are the best practices for secure CORS implementations?
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/cors" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/cors" %}}
 
 
 ## What is CORS?
@@ -70,7 +70,7 @@ A more elaborate explanation of the Web Origin Concept is available in [RFC 6454
 ### Origin Server and Cross-Origin Server
 The terms origin server and cross-origin server are not CORS terms. But we will be using these terms for referring to the server that is hosting the source application and the server to which the browser will send the CORS request. This diagram shows the main participants of a CORS flow:
 
-![cors terms](/assets/img/posts/cors/CORS-terms.png)
+{{% image alt="cors terms" src="images/posts/cors/CORS-terms.png" %}}
 
 The following steps happen, when a user types in a URL: http://www.example.com/index.html in the browser:
  1. The browser sends the request to a server in a domain named `www.example.com`. We will call this server "**Origin server**" which hosts the page named `index.html`.
@@ -81,7 +81,7 @@ The following steps happen, when a user types in a URL: http://www.example.com/i
 
 These sequence of steps are represented in this sequence diagram:
 
-![cors seq](/assets/img/posts/cors/seq.png)
+{{% image alt="cors seq" src="images/posts/cors/seq.png" %}}
 
 
 We will use the terms "origin server" and "cross-origin server" throughout this article. 
@@ -95,7 +95,7 @@ In the absence of the Same-Origin Policy, any scripts downloaded from cross-orig
 
 The following figure shows an HTML page `currentPage.html` making same or cross-origin requests to `targetPage.html`: 
 
-![same vs cross origin urls](/assets/img/posts/cors/samevscross.png)
+{{% image alt="same vs cross origin urls" src="images/posts/cors/samevscross.png" %}}
 
 As we can see in this diagram, same-origin requests are allowed and cross-origin requests are blocked by default by the browser. 
 
@@ -204,7 +204,7 @@ For observing the CORS requests, let us run two web applications written in Node
 
 We can run these applications in our local machine using `npm` and `node`. The origin server hosting the HTML page is running on `http://localhost:9000`. This makes Ajax calls with the `XMLHttpRequest` object to the `OrderProcessor` application running on the cross-origin server with URL: `http://localhost:8000` as shown in this figure: 
 
-![cors example](/assets/img/posts/cors/cors-example.png)
+{{% image alt="cors example" src="images/posts/cors/cors-example.png" %}}
 
 These are CORS requests since the HTML in the origin server and `OrderProcessor` application in the  cross-origin server are running in different Origins (because of different port numbers: 8000 and 9000 although they use the same scheme: HTTP and host: `localhost`).
 
@@ -265,7 +265,7 @@ The HTML shown here contains a button which we need to click to trigger the CORS
 ### CORS Error Due to Same-Origin Policy
 If we run these applications without any additional configurations (setting CORS headers) in the cross-origin server, we will get a CORS error in our browser console as shown below:
 
-![cors failure](/assets/img/posts/cors/cors-fail.png)
+{{% image alt="cors failure" src="images/posts/cors/cors-fail.png" %}}
 
 This is an error caused by the restriction of accessing cross-origins due to the Same-Origin Policy. The error reason is :
 
@@ -342,7 +342,7 @@ For handling the preflight request, we are returning two more headers:
 
 When we send the `PUT` request from our HTML page, we can see two requests in the browser network log:
 
-![cors preflight](/assets/img/posts/cors/preflight.png)
+{{% image alt="cors preflight" src="images/posts/cors/preflight.png" %}}
 
 The preflight request with the `OPTIONS` method is followed by the actual request with the `PUT` method.
 

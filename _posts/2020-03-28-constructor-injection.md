@@ -13,7 +13,7 @@ Dependency injection is an approach to implement loose coupling among the classe
 
 There are different ways of injecting dependencies and this article explains why constructor injection should be the preferred way.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/dependency-injection" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/dependency-injection" %}}
 
 ## What is Dependency Injection?
 

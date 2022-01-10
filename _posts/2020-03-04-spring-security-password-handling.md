@@ -13,7 +13,7 @@ Systems with user management require authentication. If we use password-based au
 we have to handle users' passwords in our system. This article shows how to encode and store passwords securely
 with Spring Security.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/password-encoding/" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/password-encoding/" %}}
 
 ## Password Handling
 If we want to authenticate the user on the server side, we have to follow these steps:

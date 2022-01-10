@@ -259,7 +259,7 @@ Among the server-side encryption options, SSE-KMS is most expensive particularly
 A bucket key is a symmetric key, that is created at the bucket level. It is encrypted once by a CMK in KMS and returned to the S3 service. Now, the S3 service can generate data keys for every object and encrypt them with a bucket key outside KMS.
 This way the volume of traffic to AWS KMS from the S3 storage service gets reduced thereby reducing the number of cryptographic operations with KMS.
 
-![Bucket Key](/assets/img/posts/securing-data-in-aws/BucketKey.png)
+{{% image alt="Bucket Key" src="images/posts/securing-data-in-aws/BucketKey.png" %}}
 
 #### Modifying the Encryption Options
 Unlike the other storage service, we can change encryption options after the encryption for every object for example from SSE-S3 to SSE-KMS.

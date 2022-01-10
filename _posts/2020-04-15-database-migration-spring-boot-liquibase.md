@@ -19,7 +19,7 @@ tags: ["data migration", "spring-boot", "liquibase"]
 
 Spring Boot provides integration with database migration tools [Liquibase](https://www.liquibase.org) and [Flyway](https://flywaydb.org/). This guide provides an overview of Liquibase and how to use it in a Spring Boot application for managing and applying database schema changes.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/data-migration/liquibase" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/data-migration/liquibase" %}}
 
 
 ## Why Do We Need Database Migration Tools?

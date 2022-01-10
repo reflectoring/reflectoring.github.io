@@ -13,7 +13,7 @@ In some applications, we need to protect the database or avoid cost-intensive ca
 We can use a cache for this goal. This article shows how to use [Hazelcast](https://hazelcast.org/) as a cache with Spring 
 in a distributed and scalable application.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/hazelcast" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/hazelcast" %}}
 
 ## Caching 101
 Normally, an application reads data from storage, for example, from a database. If we want to increase the performance
@@ -56,7 +56,7 @@ Let's have a look at how to implement each topology with Spring.
 ## Embedded Cache Topology
 This topology means that every instance of the application has an integrated member: 
 
-![Embedded Cache Topology](/assets/img/posts/hazelcast/embedded-cache.png)
+{{% image alt="Embedded Cache Topology" src="images/posts/hazelcast/embedded-cache.png" %}}
 
 In this case, the application and the cache data are running on the same node. **When a new cache entry is written in
 the cache, Hazelcast takes care of distributing it to the other members.** When data is read from the cache, 
@@ -173,7 +173,7 @@ An entry is "touched" with each read operation. If an entry is not touched for 2
 This topology means that we set up a separate cache cluster, and our application is a client of this
 cluster.
 
-![Client-Server Cache Topology](/assets/img/posts/hazelcast/client-server-cache.png)
+{{% image alt="Client-Server Cache Topology" src="images/posts/hazelcast/client-server-cache.png" %}}
 
 The members form a separate cluster, and the clients access the cluster from outside.
 
@@ -254,7 +254,7 @@ the cache. It happens in two cases:
 Near-cache is a local cache that is created on a Hazelcast member or the client. Let's look at how it works when
 we create a near-cache on a hazelcast client:
 
-![Near Cahce](/assets/img/posts/hazelcast/near-cache.png)
+{{% image alt="Near Cahce" src="images/posts/hazelcast/near-cache.png" %}}
 
 Every client creates its near-cache. When an application request data from the cache, it first looks 
 for the data in the near-cache. **If it doesn't find the data, we call it a cache miss.** In this case, the data is

@@ -13,7 +13,7 @@ Handling exceptions is an important part of building a robust application. Sprin
 
 This article will explore these ways and will also provide some pointers on when a given way might be preferable over another.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/exception-handling" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/exception-handling" %}}
 
 ## Introduction 
 
@@ -564,7 +564,7 @@ understand in brief how Spring handles it and when one mechanism gets prioritize
 
 Have a look through the following flow chart that traces the process of the exception handling by Spring if we have not built our own exception handler:
 
-![Spring Exception Handling Flow](/assets/img/posts/spring-exception-handling/spring-exception-handling-mechanism.png)
+{{% image alt="Spring Exception Handling Flow" src="images/posts/spring-exception-handling/spring-exception-handling-mechanism.png" %}}
 
 ## Conclusion
 When an exception crosses the boundary of the controller, it's destined to reach the client, either in form of a JSON response

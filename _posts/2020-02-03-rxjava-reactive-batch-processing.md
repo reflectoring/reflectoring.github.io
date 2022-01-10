@@ -15,13 +15,13 @@ I recently had a rough time refactoring a multi-threaded, reactive message proce
 
 We'll be using [RxJava 3](https://github.com/ReactiveX/RxJava), which is an implementation of the [ReactiveX](http://reactivex.io/) specification. It should be relatively easy to transfer the code to other reactive libraries.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/reactive" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/reactive" %}}
 
 ## The Batch Processing Use Case
 
 Let's start with a literally painted picture of what we're trying to achieve:
 
-![A coordinator thread fans items out to worker threads to be processed.](/assets/img/posts/rxjava-reactive-batch-processing/usecase.jpg)
+{{% image alt="A coordinator thread fans items out to worker threads to be processed." src="images/posts/rxjava-reactive-batch-processing/usecase.jpg" %}}
 
 We want to create a paginating processor that fetches batches (or pages) of items (we'll call them "messages") from a source. This source can be a queue system, or a REST endpoint, or any other system providing input messages for us. 
 

@@ -12,7 +12,7 @@ tags: ["Spring MVC"]
 
 Spring MVC provides a very convenient programming model for creating web controllers. We declare a method signature and the method arguments will be resolved automatically by Spring. We can make it even more convenient by letting Spring pass custom objects from our domain into controller methods so we don't have to map them each time.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/argumentresolver" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/argumentresolver" %}}
 
 ## Why Would I Want Custom Arguments in My Web Controllers?
 

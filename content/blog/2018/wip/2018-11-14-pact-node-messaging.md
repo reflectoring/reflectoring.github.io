@@ -1,11 +1,12 @@
 ---
+authors: [tom]
 title: "Implementing a Consumer-Driven Contract between a Node Message Consumer and a Node Message Producer"
-categories: [programming]
-modified: 2018-11-14
+categories: ["WIP", programming]
+date: 2018-11-14
 excerpt: "In this tutorial, we're exploring how to implement a consumer-driven contract
           with Pact between a message consumer and provider both based on Node."
-image:
-  auto: 0025-signature
+image:  images/stock/0025-signature-1200x628-branded.jpg
+url: pact-node-messaging
 ---
 
 
@@ -22,7 +23,7 @@ of asynchronous messages with [Pact](https://pact.io).
 We'll then create a consumer and a provider test verifying that both the consumer and provider
 work as defined by the contract.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/pact/pact-node-messages" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/pact/pact-node-messages" %}}
 
 ## Setting Up a Node Project
 

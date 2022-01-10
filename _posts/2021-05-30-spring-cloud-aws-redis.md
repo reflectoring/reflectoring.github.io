@@ -16,7 +16,7 @@ of security to auto-configuring the beans required for the communication, it tak
 
 In this article, we will look at how we can use it to connect our application to [AWS ElastiCache for Redis](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html).
  
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-caching-redis" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-caching-redis" %}}
 
 ## Why Caching?
 
@@ -144,7 +144,7 @@ Now, Spring Cloud AWS provides us two ways to connect to ElastiCache:
 
 Spring Cloud AWS requires clusters of the same name as the cache name to exist in the ElastiCache:
 
-![ElastiCache Clusters](/assets/img/posts/spring-elasticache-redis/cache-clusters.png)
+{{% image alt="ElastiCache Clusters" src="images/posts/spring-elasticache-redis/cache-clusters.png" %}}
 
 Technically, Spring Cloud AWS looks for nodes with the same name but since these are **Single Node** clusters the name of the node is the same as the cluster name.
 
@@ -213,7 +213,7 @@ As we know that for caching to work in a Spring application we need a `CacheMana
 
 Let's look at the steps it performs along with the classes involved in building `CacheManager`:
 
-![Spring Cloud AWS](/assets/img/posts/spring-elasticache-redis/spring-cloud-aws.png)
+{{% image alt="Spring Cloud AWS" src="images/posts/spring-elasticache-redis/spring-cloud-aws.png" %}}
 
 * When our application starts in the AWS environment, `ElastiCacheAutoConfiguration` reads cluster names from the `application.yml` or stack name if cluster configuration is not provided.
 * `ElastiCacheAutoConfiguration` then passes the Cache Cluster names to `ElastiCacheCacheConfigurer` object.

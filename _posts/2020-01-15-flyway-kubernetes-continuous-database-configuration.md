@@ -16,7 +16,7 @@ a change to its configuration?
 
 This article shows a way of implementing continuous delivery for database configuration using Kubernetes and Flyway. 
 
-{% include github-project.html url="https://github.com/arkuksin/scs-db-versioning" %}
+{{% github "https://github.com/arkuksin/scs-db-versioning" %}}
 
 ## The Problem
 

@@ -36,7 +36,7 @@ This is the simplest feature flag possible. We want to enable or disable a certa
 
 We deploy a new version of the application with a deactivated feature and after successful deployment, we activate (roll out) the feature for all users. We can later decide to deactivate it again - also for all users:
 
-![A global rollout](/assets/img/posts/feature-flag-tools/global-feature-flag.png)
+{{% image alt="A global rollout" src="images/posts/feature-flag-tools/global-feature-flag.png" %}}
 
 ### Use Case 2: Percentage Rollout 
 
@@ -44,7 +44,7 @@ The global rollout use case is very simple and raises the question of why we wou
 
 A percentage rollout is another very common rollout strategy in which we activate a feature for a small percentage of users first, to see if it's working as expected, and then ramp up the percentage over days or weeks until the feature is active for all users: 
 
-![A percentage rollout](/assets/img/posts/feature-flag-tools/percentage-rollout.png)
+{{% image alt="A percentage rollout" src="images/posts/feature-flag-tools/percentage-rollout.png" %}}
 
 Important in this use case is that a user stays in the same cohort over time. It's not enough to just enable a feature for 20% of the *requests*, because a user could issue multiple requests and have the feature enabled for some requests and disabled for others - which make for a rather awkward user experience. So, the evaluation of the feature flag has to take the user into account.
 
@@ -58,7 +58,7 @@ The last use case we're going to look at is a targeted rollout based on a user a
 
 In our example, we'll activate a certain feature after a user has clicked a certain button:
 
-![A rollout based on user attributes](/assets/img/posts/feature-flag-tools/user-attribute-rollout.png)
+{{% image alt="A rollout based on user attributes" src="images/posts/feature-flag-tools/user-attribute-rollout.png" %}}
 
 Our application will set the user's `clicked` attribute to `true` after clicking the button. The feature flagging tool should take this attribute into account when evaluating the feature flag.
 
@@ -66,7 +66,7 @@ Our application will set the user's `clicked` attribute to `true` after clicking
 
 Togglz is a Java library that we can include as a dependency into our application. The concepts of the library rotate around the `FeatureManager` class:
 
-![Togglz concepts](/assets/img/posts/feature-flag-tools/togglz.png)
+{{% image alt="Togglz concepts" src="images/posts/feature-flag-tools/togglz.png" %}}
 
 Once configured, we can ask the `FeatureManager` if a certain feature is *active* for a given user. Before a feature can be active, it needs to be *enabled*. This is to ensure that we're not accidentally activating features that are not ready to be served to our users, yet.  
 
@@ -333,7 +333,7 @@ Setting `use-management-port` to `false` will start the web console on the same 
 
 Once the application is started with this configuration, we can access the web console on `http://localhost:8080/togglz`:
 
-![The Togglz web console](/assets/img/posts/feature-flag-tools/togglz-console.png)
+{{% image alt="The Togglz web console" src="images/posts/feature-flag-tools/togglz-console.png" %}}
 
 The web console allows us to enable and disable features and even to change their activation strategy on the fly. There seems to be a bug that causes the `GLOBAL_BOOLEAN_FLAG` to be listed twice, probably because the web console reads it once from the `Features` enum *and* once from the `application.yml` file.
 
@@ -343,7 +343,7 @@ In a production environment, we usually want to deploy multiple nodes of our app
 
 This diagram outlines what a production deployment could look like:
 
-![Example of a production deployment with Togglz](/assets/img/posts/feature-flag-tools/togglz-deployment.png)
+{{% image alt="Example of a production deployment with Togglz" src="images/posts/feature-flag-tools/togglz-deployment.png" %}}
 
 Our users are accessing the application over a load balancer that shares the traffic across multiple application nodes. Each of these nodes is using Togglz to decide whether certain features are active or not. 
 
@@ -369,7 +369,7 @@ LaunchDarkly is a full-fledged feature management service that does most of the 
 
 Let's take a look at the core LaunchDarkly concepts before diving into the technicalities of controlling feature flags in Java:
 
-![LaunchDarkly Concepts](/assets/img/posts/feature-flag-tools/launchdarkly.png)
+{{% image alt="LaunchDarkly Concepts" src="images/posts/feature-flag-tools/launchdarkly.png" %}}
 
 Being a cloud service, LaunchDarkly provides web UI for us to create and configure **feature flags**. We could also create Feature Flag programmatically via the UI or various integrations with other tools, but we'll stick to the UI in this article.
 
@@ -452,7 +452,7 @@ Let's start with the simplest feature flag possible: a simple boolean toggle tha
 
 First, we create a feature flag with the key `global-boolean-flag` in the LaunchDarkly UI:
 
-![Global Boolean Flag in LaunchDarkly](/assets/img/posts/feature-flag-tools/launchdarkly-global-boolean-rollout.png)
+{{% image alt="Global Boolean Flag in LaunchDarkly" src="images/posts/feature-flag-tools/launchdarkly-global-boolean-rollout.png" %}}
 
 Note that we created the feature flag as a boolean flag, which means that it has exactly two variations: `true` and `false`. We also have not created a specific targeting rule, so the default rule will always serve the `false` variation.
 
@@ -482,7 +482,7 @@ If the feature flag is configured as shown in the screenshot above, the client w
 
 To implement a percentage rollout with LaunchDarkly, we create a new feature named `user-based-percentage-rollout` in the LaunchDarkly UI and set the default targeting rule to a percentage rollout:
 
-![Percentage Feature Flag in LaunchDarkly](/assets/img/posts/feature-flag-tools/launchdarkly-percentage-rollout.png)
+{{% image alt="Percentage Feature Flag in LaunchDarkly" src="images/posts/feature-flag-tools/launchdarkly-percentage-rollout.png" %}}
 
 In our code, we can now evaluate this feature flag the same as we did before:
 
@@ -501,7 +501,7 @@ We can implement more complex targeting strategies in the same fashion. We confi
 
 Let's assume that we want to enable a certain feature for users only after they have clicked a certain button in our application. For this case, we can create a targeting rule that serves `true` only for users with the `clicked` attribute set to `true`:
 
-![Feature Flag based on a user attribute in LaunchDarkly](/assets/img/posts/feature-flag-tools/launchdarkly-attribute-rollout.png)
+{{% image alt="Feature Flag based on a user attribute in LaunchDarkly" src="images/posts/feature-flag-tools/launchdarkly-attribute-rollout.png" %}}
 
 But how does LaunchDarkly know about the `clicked` attribute of a user? We need to pass it into the client:
 
@@ -518,7 +518,7 @@ When we create the `LDUser` object, we now set the `clicked` custom attribute to
 
 After a feature has been evaluated for a user with a given attribute, LaunchDarkly will show the user's attributes in its user dashboard:
 
-![User attributes in the LaunchDarkly user dashboard](/assets/img/posts/feature-flag-tools/launchdarkly-alice.png)
+{{% image alt="User attributes in the LaunchDarkly user dashboard" src="images/posts/feature-flag-tools/launchdarkly-alice.png" %}}
 
 Note that LaunchDarkly only shows these user attributes as a convenience. **The user attributes are evaluated by the LaunchDarkly client, not the LaunchDarkly server**! So, if our application doesn't set the `clicked` attribute of the `LDUser` object, our example feature flag will evaluate to `false`, even if we have set the `clicked` attribute to `true` in a previous call!
 

@@ -18,7 +18,7 @@ Simply put, **LocalStack is an open-source mock of the real AWS services. It pro
 
 **If you like to learn about deploying a production-ready Spring Boot application to AWS, have a look at the [Stratospheric book](https://stratospheric.dev)!**
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/localstack" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/aws/localstack" %}}
 
 
 

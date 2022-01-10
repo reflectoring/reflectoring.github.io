@@ -15,7 +15,7 @@ We'll start this series by creating a small win to boost our motivation: we'll d
 
 **This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/aws-hello-world" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/aws/aws-hello-world" %}}
 
 ## Prerequisites
 
@@ -153,7 +153,7 @@ If you want to follow along, open the [ECS start page](https://console.aws.amazo
 
 First, we configure the Docker container:
 
-![Configuring a Container](/assets/img/posts/aws-deploy-docker-image-via-web-console/container.jpg)
+{{% image alt="Configuring a Container" src="images/posts/aws-deploy-docker-image-via-web-console/container.jpg" %}}
 
 We can select a pre-defined Docker image or choose our own. We want to use the Docker image we published previously, so we'll click on the "Configure" button in the "custom" box to open the "Edit container" form and will be prompted to enter a bunch of information:
 
@@ -169,7 +169,7 @@ In the "Advanced container configuration"`" section, we could configure more, bu
 
 Next, we configure the task, which wraps our Docker image:
 
-![Configuring a Task](/assets/img/posts/aws-deploy-docker-image-via-web-console/task.jpg)
+{{% image alt="Configuring a Task" src="images/posts/aws-deploy-docker-image-via-web-console/task.jpg" %}}
 
 We leave everything in the default setting except the name, so we can find the task later.
 
@@ -177,7 +177,7 @@ We leave everything in the default setting except the name, so we can find the t
 
 Next, the wizard takes us to a screen configuring the service that's going to wraps the task we just configured:
 
-![Configuring a Service](/assets/img/posts/aws-deploy-docker-image-via-web-console/service.jpg)
+{{% image alt="Configuring a Service" src="images/posts/aws-deploy-docker-image-via-web-console/service.jpg" %}}
 
 Again, we just change the name and leave everything in the default setting.
 
@@ -185,7 +185,7 @@ Again, we just change the name and leave everything in the default setting.
 
 We do the same with the cluster configuration:
 
-![Configuring a Cluster](/assets/img/posts/aws-deploy-docker-image-via-web-console/cluster.jpg)
+{{% image alt="Configuring a Cluster" src="images/posts/aws-deploy-docker-image-via-web-console/cluster.jpg" %}}
 
 Change the name, leave the rest on default, hit "Next".
 
@@ -193,11 +193,11 @@ Change the name, leave the rest on default, hit "Next".
 
 After checking everything again and hitting the "Create" button, we'll be redirected to a screen showing the steps AWS performs to set everything up: 
 
-![Launch Status](/assets/img/posts/aws-deploy-docker-image-via-web-console/launch.jpg)
+{{% image alt="Launch Status" src="images/posts/aws-deploy-docker-image-via-web-console/launch.jpg" %}}
 
 When all steps are completed, hit the "View service" button, and we'll a screen like this:
 
-![Service Status](/assets/img/posts/aws-deploy-docker-image-via-web-console/service-status.jpg)
+{{% image alt="Service Status" src="images/posts/aws-deploy-docker-image-via-web-console/service-status.jpg" %}}
 
 This screen shows a whole bunch of information about the status of the service we have just started. **But where do we find the URL it's available at so that I can test it out?**
 

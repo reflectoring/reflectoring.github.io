@@ -43,7 +43,7 @@ As the returned streams are lazily loaded, the elements are not read until they 
 
 Wouldn’t it be great to apply these SQL-like processing capabilities to files as well? How do we get streams from files? Can we walk through directories and locate matching files using streams? Let us get the answers to these questions.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/streams/fileswithstreams/" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/core-java/streams/fileswithstreams/" %}}
 
 ## Getting Started 
 
@@ -333,7 +333,7 @@ These can then be filtered, mapped, reduced, and so on using Java 8 Stream API. 
 
 Consider the folder structure below based on which we shall be looking at some examples below.
 
-![Folder Structure](/assets/img/posts/Processing-Files-using-Java-8-Streams/folders_2020-09-16_21-03-40.png)
+{{% image alt="Folder Structure" src="images/posts/Processing-Files-using-Java-8-Streams/folders_2020-09-16_21-03-40.png" %}}
 
 ### Listing Directory Contents
 What if we just want to list the contents of a directory? A simple way to do this is by invoking the `Files.list()` method, which returns a stream of `Path` objects representing the files inside the directory passed as the argument. 
@@ -445,7 +445,7 @@ The `JarFile.stream()` method returns an ordered Stream over the ZIP file entrie
 
 Consider a JAR file with the following structure.
 
-![Zip file structure](/assets/img/posts/Processing-Files-using-Java-8-Streams/zip_2020-09-17_21-38-19.png)
+{{% image alt="Zip file structure" src="images/posts/Processing-Files-using-Java-8-Streams/zip_2020-09-17_21-38-19.png" %}}
 
 So how do we iterate through the entries of the JAR file? Here is an example which demonstrates this:
 

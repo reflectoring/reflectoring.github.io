@@ -17,7 +17,7 @@ Due to this reason, DynamoDB is widely used as a database with serverless comput
 
 In this tutorial, we will look at using the DynamoDB database in microservice applications built with [Spring Boot](https://spring.io/projects/spring-boot) along with code examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springdynamodb" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/aws/springdynamodb" %}}
 
 
 ## AWS DynamoDB Concepts
@@ -30,7 +30,7 @@ Here we will only skim through the main concepts that are essential for designin
 ### Tables, Items and Attributes
 Like in many databases, **a table is the fundamental concept in DynamoDB where we store our data**. DynamoDB tables are schemaless. Other than the primary key, we do not need to define any additional attributes when creating a table. 
 
-![Table items attributes](/assets/img/posts/aws-dynamodb-java/tablitemattr.png)
+{{% image alt="Table items attributes" src="images/posts/aws-dynamodb-java/tablitemattr.png" %}}
 
 This diagram shows the organization of order records placed by a customer in a `Order` table. Each order is uniquely identified by a combination of `customerID` and `orderID`. 
 
@@ -146,7 +146,7 @@ Here we are creating a bean `amazonDynamoDB` and initializing it with the creden
 ### Creating the Mapping with DynamoDB Table in a Data Class
 Let us now create a DynamoDB table which we will use to store customer records from our application:
 
-![Table creation](/assets/img/posts/aws-dynamodb-java/table-creation-cust.png)
+{{% image alt="Table creation" src="images/posts/aws-dynamodb-java/table-creation-cust.png" %}}
 We are using the AWS console to create a table named `Customer` with `CustomerID` as the partition key. 
 
 We will next create a class to represent the `Customer` DynamoDB table which will contain the mapping with the keys and attributes of an item stored in the table:
@@ -303,7 +303,7 @@ Here we are creating a bean `dynamodbClient` with our AWS credentials and using 
 ### Creating the Mapping Class
 Let us now create one more DynamoDB table to store the orders placed by a customer. This time we will define a composite primary key for the `Order` table :
 
-![Table creation](/assets/img/posts/aws-dynamodb-java/table-creation.png)
+{{% image alt="Table creation" src="images/posts/aws-dynamodb-java/table-creation.png" %}}
 
 As we can see here, we are using the AWS console to create a table named `Order` with a composite primary key composed of`CustomerID` as the partition key and `OrderID` as the sort key. 
 

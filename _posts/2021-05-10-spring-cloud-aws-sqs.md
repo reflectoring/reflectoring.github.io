@@ -13,7 +13,7 @@ Spring Cloud is a suite of projects containing many of the services required to 
 
 In this tutorial, we will look at using Spring Cloud AWS for interacting with [Simple Queue Service (SQS)](https://aws.amazon.com/sqs/) with the help of some basic concepts of queueing and messaging along with code examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/springcloudsqs" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/aws/springcloudsqs" %}}
 
 ## Check out the Book!
 
@@ -27,7 +27,7 @@ SQS is a distributed messaging system for point-to-point communication and is of
 
 It follows the familiar messaging semantics of a producer sending a message to a queue and a consumer reading this message from the queue once the message is available as shown here: 
 
-![SQS queue](/assets/img/posts/aws-sqs-spring-cloud/SQS-Queue.png)
+{{% image alt="SQS queue" src="images/posts/aws-sqs-spring-cloud/SQS-Queue.png" %}}
 
 The producer will continue to function normally even if the consumer application is temporarily not available. **SQS decouples the producer system from the consumer by facilitating asynchronous modes of communication**.
 
@@ -46,7 +46,7 @@ Amazon SQS allows only payloads of type string, so any object sent to SQS must b
 ## Introducing the Spring Cloud AWS Messaging API
 The important classes which play different roles for interaction with AWS SQS are shown in this class diagram :
 
-![SQS classes](/assets/img/posts/aws-sqs-spring-cloud/SQSClasses.png)
+{{% image alt="SQS classes" src="images/posts/aws-sqs-spring-cloud/SQSClasses.png" %}}
 
 An SQS message is represented by the `Message` interface. 
 
@@ -113,13 +113,13 @@ A queue is identified with a URL or physical name. It can also be identified wit
 
 We create a queue with a queue name that is unique for the AWS account and region. Amazon SQS assigns each queue an identifier in the form of a queue URL that includes the queue name and other Amazon SQS components. 
 
-![SQS classes](/assets/img/posts/aws-sqs-spring-cloud/queue-id.png)
+{{% image alt="SQS classes" src="images/posts/aws-sqs-spring-cloud/queue-id.png" %}}
 
 We provide the queue URL whenever we want to perform any action on a queue.
 
 Let us create an SQS queue named "testQueue" using the AWS Console as shown here:
 
-![create Queue](/assets/img/posts/aws-sqs-spring-cloud/create-queue.png)
+{{% image alt="create Queue" src="images/posts/aws-sqs-spring-cloud/create-queue.png" %}}
 
 
 We can see the URL of the queue as `https://sqs.us-east-1.amazonaws.com/<aws account ID>/testQueue`. We will be using either the queue name or queue URL as identifiers of our queue in our examples.
@@ -279,7 +279,7 @@ public class MessageReceiver {
 }
 ```text
 Next, we will send a JSON message matching the structure of our objects from the SQS console:
-![sqs json message](/assets/img/posts/aws-sqs-spring-cloud/messsage-sent.png)
+{{% image alt="sqs json message" src="images/posts/aws-sqs-spring-cloud/messsage-sent.png" %}}
 
 If we run our Spring Boot application, we will get an exception of the following form in the log: 
 
@@ -369,7 +369,7 @@ Here we have modified our earlier configuration by setting `strictContentTypeMat
 
 Let us add a listener class for receiving the notification messages sent by an AWS S3 bucket when certain configured events occur in the bucket. We can enable certain AWS S3 bucket events to send a notification message to a destination like the SQS queue when the events occur. Before running this example, we will create an SQS queue and S3 bucket and attach a notification event as shown below: 
 
-![s3-notification-event](/assets/img/posts/aws-sqs-spring-cloud/s3-notification-event.png)
+{{% image alt="s3-notification-event" src="images/posts/aws-sqs-spring-cloud/s3-notification-event.png" %}}
 
 Here we can see a notification event that will get triggered when an object is uploaded to the S3 bucket. This notification event is configured to send a message to our SQS queue `testS3Queue`. 
 

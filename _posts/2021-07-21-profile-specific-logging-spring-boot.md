@@ -390,7 +390,7 @@ This will start the application in the `staging` profile, which would send the l
 
 If you went along and created a logz.io account to play with the example applications, you can now query the logs via the "Kibana" view on logz.io: 
 
-![The Kibana view on logz.io](/assets/img/posts/logzio/kibana.png)
+{{% image alt="The Kibana view on logz.io" src="images/posts/logzio/kibana.png" %}}
 
 If you configured your token correctly and then started one of the plain Java applications with the environment variable `LOG_TARGET` set to `LOGZIO`, or the Spring Boot application in the `staging` or `production` profile, you should see the logs in your dashboard.
 

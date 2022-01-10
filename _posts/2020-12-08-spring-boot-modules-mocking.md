@@ -17,7 +17,7 @@ And, since each module has its own API, it would mean that **we can create a reu
 
 In this article, we're going to look at creating such modules, discuss why mocking whole modules is better than mocking single beans, and then introduce a simple but effective way of mocking complete modules for easy test setup with Spring Boot.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-mocking-modules" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-mocking-modules" %}}
 
 ## What's a Module?
 

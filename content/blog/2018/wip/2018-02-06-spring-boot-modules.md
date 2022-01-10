@@ -1,10 +1,11 @@
 ---
+authors: [tom]
 title: "Modularizing a Spring Boot Application"
-categories: ["Spring Boot"]
-modified: 2018-02-06
+categories: ["WIP", "Spring Boot"]
+date: 2018-02-06
 excerpt: "A guide on different ways Spring Boot offers to split an application into distinct modules."
-image:
-  auto: 0037-rubics-cube
+image:  images/stock/0037-rubics-cube-1200x628-branded.jpg
+url: spring-boot-modules
 ---
 
 
@@ -14,7 +15,7 @@ These may be modules within a single code base or modules that each live in thei
 code base. This article explains some Spring Boot features that help to split up
 your Spring Boot application into several modules. 
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/modular" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/modular" %}}
 
 ## What's a Module in Spring Boot?
 

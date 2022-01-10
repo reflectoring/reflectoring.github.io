@@ -14,13 +14,13 @@ I found, however, that there are very few resources about how to actually implem
 
 If you'd like to dive deeper into the topic, have a look at my [book](/book/).
 
-{% include github-project.html url="https://github.com/thombergs/buckpal" %}
+{{% github "https://github.com/thombergs/buckpal" %}}
 
 ## What is "Hexagonal Architecture"?
 
 The main feature of "Hexagonal Architecture", as opposed to the common layered architecture style, is that the dependencies between our components point "inward", towards our domain objects: 
 
-![Hexagonal Architecture](/assets/img/posts/spring-hexagonal/hexagonal-architecture.png)
+{{% image alt="Hexagonal Architecture" src="images/posts/spring-hexagonal/hexagonal-architecture.png" %}}
 
 The hexagon is just a fancy way to describe the core of the application that is made up of domain objects, use cases that operate on them, and input and output ports that provide an interface to the outside world.
 

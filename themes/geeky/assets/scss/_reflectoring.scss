@@ -75,6 +75,25 @@ h3 {
 
 }
 
+.notice {
+  padding: 20px;
+  h4 {
+    margin-top: 0;
+  }
+}
+
+.success{
+  background-color: rgba(43, 162, 131, 0.2);
+}
+
+.danger {
+  background-color: rgba(255,0,0,0.2)
+}
+
+.warning {
+  background-color: rgba(255,220,0,0.2)
+}
+
 .content {
   table {
 

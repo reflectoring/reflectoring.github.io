@@ -38,6 +38,8 @@ It’s important to note that these articles don’t just reiterate the content 
 
 The main categories of the reflectoring blog contain tutorials about the [Java](https://reflectoring.io/categories/java) programming language in general and the [Spring Boot](https://reflectoring.io/categories/spring-boot) framework in particular. Also of interest are articles about software development and architecture best practices in a category called [Software Craft](https://reflectoring.io/categories/craft).
 
+Any topic that is valuable to software engineers, is interesting, though, so don't hesitate to propose topics that don't fit into these categories.
+
 ### Article Length
 
 There is no hard-and-fast rule for how long an article should be. Given the goal of comprehensiveness, however,  good reflectoring articles tend to be between 1000 and 2000 words (including code examples).
@@ -209,5 +211,79 @@ At the start of the article, use this include after the introductory paragraph:
 This will include a Heading with a little default text and a link.
 
 At the end of the article, remind the reader that he can look up the code on [GitHub](https://github.com/thombergs/code-examples/tree/master/logging) like this.
+
+## Elements You Can Use
+
+### GitHub Link
+
+After the intro paragraph, you should include a link to the example code on GitHub (if there is any example code):
+
+```text
+{{%/* github "url_to_example_module" */%}}
+```
+
+This will be rendered into an H2 with a link to the GitHub project like this:
+
+{{% github "https://github.com/thombergs/code-examples" %}}
+
+### Tables
+
+You can use standard Markdown tables:
+
+```markdown
+| Header 1 | Header 2 |
+|----------|----------|
+| One      | Two      |
+| Three    | Four     |
+```
+
+They will be rendered into nice-looking tables like this:
+
+| Header 1 | Header 2 |
+|----------|----------|
+| One      | Two      |
+| Three    | Four     |
+
+### Images
+
+Instead of standard Markdown images, please use this shortcode for any image you want to include:
+
+```
+{{%/* image src="images/posts/your-article/your-image.png" alt="A meaningful description of the image." */%}}
+```
+
+### Asides
+
+For information that doesn't fit into the text, but rather into an "aside", you can use information boxes like below.
+
+{{% danger title="A danger box" %}}
+Use this markup to create a "danger" box:
+```
+{{%/* danger title="Title of your danger box" */%}}
+Any markdown content
+{{%/* /danger */%}}
+```
+{{% /danger %}}
+
+{{% warning title="A warning box" %}}
+Use this markup to create a "warning" box:
+```
+{{%/* warning title="Title of your warning box" */%}}
+Any markdown content
+{{%/* /warning */%}}
+```
+{{% /warning %}}
+
+{{% info title="An info box" %}}
+Use this markup to create an "info" box:
+```
+{{%/* info title="Title of your info box" */%}}
+Any markdown content
+{{%/* /info */%}}
+```
+{{% /info %}}
+
+
+
 
 {{% author-form %}}

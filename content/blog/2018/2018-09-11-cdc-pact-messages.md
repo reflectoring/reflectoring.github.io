@@ -298,7 +298,6 @@ Pact will automatically send the produced string message to the `Target` field a
 `@TestTarget` (in this case an instance of `AmqpTarget`) where it will be checked against the
 contract.
 
-{% capture notice %}
 #### Classpath Issues
 I couldn't quite get the `AmqpTarget` class to work due to [classpath issues](https://github.com/DiUS/pact-jvm/issues/763). 
 Hence, I created a [subclass](https://github.com/thombergs/code-examples/blob/master/pact/pact-message-provider/src/test/java/io/reflectoring/CustomAmqpTarget.java)
@@ -306,7 +305,6 @@ that overrides some of the reflection magic. Have a look at [the code](https://g
 if you run into the same problem.
 {% endcapture %}
 
-<div class="notice warning">{{ notice | markdownify }}</div>
 
 ## Conclusion
 

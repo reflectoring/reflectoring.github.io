@@ -42,7 +42,7 @@ We will look at the following logical Operations between two collections :
 
 ### OR - Union of Two Collections
 
-The union of two collection `A` and `B` is a set containing all elements that are in `A` or `B` or both.
+The union of two collections `A` and `B` is a set containing all elements that are in `A` or `B` or both.
 
 ![union of two Collections](/assets/img/posts/logical-ops-java-coll/union.png)
 

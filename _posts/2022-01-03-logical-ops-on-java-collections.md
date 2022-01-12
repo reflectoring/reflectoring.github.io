@@ -9,7 +9,9 @@ image:
   auto: 0074-stack
 ---
 
-Collections are containers to group multiple items in a single unit. For example, a collection can represent a stack of books, products of a category, a queue of text messages, etc. They are an essential feature of almost all programming languages, most of which support different types of Collections such as `List`, `Set`, `Queue`, `Stack`, etc. 
+Collections are containers to group multiple items in a single unit. For example, a collection can represent a stack of books, products of a category, a queue of text messages, etc. 
+
+They are an essential feature of almost all programming languages, most of which support different types of collections such as `List`, `Set`, `Queue`, `Stack`, etc. 
 
 Java also supports a rich set of collections packaged in the Java Collections Framework.
 
@@ -18,18 +20,21 @@ In this article, we will look at some examples of performing common operations o
 {% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/core-java/collectionops" %}
 
 ## Java Collections Framework
-A Collections Framework is a unified architecture for representing and manipulating collections. The Java Collections Framework is one of the core parts of the Java programming language. It provides a set of interfaces and classes to implement various data structures and algorithms along with several methods to perform various operations on collections. 
+A Collections Framework is a unified architecture for representing and manipulating collections and is one of the core parts of the Java programming language. It provides a set of interfaces and classes to implement various data structures and algorithms along with several methods to perform various operations on collections. 
 
 The `Collection` interface is the root interface of the Collections framework hierarchy.
 
-Java does not provide direct implementations of the `Collection` interface but provides implementations of its subinterfaces like `List`, `Set`, and `Queue`. The official documentation of the [Java Collection Interface](https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html) is the go-to guide for everything related to collections. Here, we will cover the methods to perform common operations between one or more collections.
+Java does not provide direct implementations of the `Collection` interface but provides implementations of its subinterfaces like `List`, `Set`, and `Queue`. 
+
+The official documentation of the [Java Collection Interface](https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html) is the go-to guide for everything related to collections. Here, we will cover only the methods to perform common operations between one or more collections.
 
 We have divided the common operations on collections which  we will look at here, into two groups:
 * Logical Operations: AND, OR, NOT, and XOR between two collections
 * Other Operations on Collections based on class methods of the `Collection` and `Stream` classes.
 
 ## Logical Operations on Collections
-We will cover the following logical Operations between two collections :
+We will look at the following logical Operations between two collections :
+
 * **OR**: for getting a union of elements in two collections
 * **AND**: for getting an intersection of elements in two collections
 * **XOR**: exclusive OR for finding mismatched elements from two collections
@@ -68,7 +73,9 @@ We have used the `LinkedHashSet` implementation of the `Set` interface to preser
 The output of running this `union()` method on a sample data of two collections looks like this:
 
 Collection A: [9, 8, 5, 4, 7] 
+
 Collection B: [1, 3, 99, 4, 7] 
+
    A union B: [9, 8, 5, 4, 7, 1, 3, 99]
 
 
@@ -106,8 +113,10 @@ The intersection of two Collections [9, 8, 5, 4, 7] and [1, 3, 99, 4, 7] results
 ### XOR - Finding Different Elements from Two Collections
 XOR (eXclusive OR) is a boolean logic operation that returns `0` or false if the bits are the same and 1 or true for different bits. Our XOR function for collections will exclude matching elements from two collections:
 
-Collection A: [1, 2, 3, 4, 5, 6]
-Collection B: [3, 4, 5, 6, 7, 8, 9]
+Collection A: [1, 2, 3, 4, 5, 6] 
+
+Collection B: [3, 4, 5, 6, 7, 8, 9] 
+
      A XOR B: [1, 2, 7, 8, 9] - matching elements 3, 4, 5, and 6 are excluded.
 
 ```java
@@ -149,10 +158,13 @@ Here we are first using the `filter()` method to include only the elements in th
 
 We use the NOT function to select elements from one collection which are not present in the second collection as shown in this example:
 
-Collection A: [1,2,3,4,5,6]
-Collection B: [3,4,5,6,7,8,9]
-     A NOT B: [1, 2, 7, 8, 9] - elements of A not in B 
-     B NOT A: [7, 8, 9]       - elements of B not in A 
+Collection A: [1, 2, 3, 4, 5, 6] 
+
+Collection B: [3, 4, 5, 6, 7, 8, 9] 
+
+     A NOT B: [1, 2] - these are elements of A not contained in B 
+
+     B NOT A: [7, 8, 9]       - these elements of B not contained in A 
 
 ```java
 public class CollectionHelper {
@@ -269,11 +281,13 @@ Here we are concatenating two collections in the `add` method of the `Collection
 
 Here is the output of running this method over these two collections:
 
-Collection A: [9, 8, 5,  4]
-Collection B: [1, 3, 99, 4, 7]
-      Output: [9, 8, 5,  4, 1, 3, 99, 4, 7].
-The output is an aggregation of the elements from the two collections.  
+Collection A: [9, 8, 5,  4] 
 
+Collection B: [1, 3, 99, 4, 7] 
+
+      Output: [9, 8, 5,  4, 1, 3, 99, 4, 7]. 
+
+The output is an aggregation of the elements from the two collections.  
 
 
 ## Joining Collections by Applying a Condition
@@ -297,14 +311,17 @@ Here we are concatenating two collections in the `addWithFilter()` method. In ad
 
 Here is the output of running this method over these two collections:
 
-Collection A: [9, 8, 5,  4]
-Collection B: [1, 3, 99, 4, 7]
-      Output: [9, 8, 5,  4, 3, 99, 4, 7].
+Collection A: [9, 8, 5,  4] 
+
+Collection B: [1, 3, 99, 4, 7] 
+
+      Output: [9, 8, 5,  4, 3, 99, 4, 7]. 
+
 Element `1` in collection B is excluded from the output since it does not meet the filter criteria.      
 
 ## Conclusion
 
-In this short tutorial, we wrote methods in Java to perform many common operations between two or more collections. Similar operations on collections are also available in open source libraries like the [Guava Library](https://github.com/google/guava/wiki/CollectionUtilitiesExplained) and [Apache Commons Collections](https://commons.apache.org/proper/commons-collections/).
+In this tutorial, we wrote methods in Java to perform many common operations between two or more collections. Similar operations on collections are also available in open source libraries like the [Guava Library](https://github.com/google/guava/wiki/CollectionUtilitiesExplained) and [Apache Commons Collections](https://commons.apache.org/proper/commons-collections/).
 
 When creating Java applications, we can use a judicious mix of using methods available in the open-source libraries or build custom functions to work with collections efficiently.
 

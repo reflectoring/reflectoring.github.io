@@ -42,7 +42,7 @@
         <!-- show the TOC unless it's explicitly set to false -->
         <aside class="toc widget">
           <h2>On this page</h2>
-          {{ .TableOfContents }}
+          {{ .TableOfContents | replaceRE `href="#(.*)"` (printf `href="%s#%s"` .Page.RelPermalink "$1") | safeHTML }}
         </aside>
         {{ end }}
 

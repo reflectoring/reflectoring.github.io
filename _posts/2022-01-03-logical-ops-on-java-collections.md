@@ -107,7 +107,7 @@ public class CollectionHelper {
 ```
 For finding the intersection of two collections, we run the `filter()` method on the first collection to identify and collect the matching elements from the second collection. 
 
-The intersection of two Collections [9, 8, 5, 4, 7] and [1, 3, 99, 4, 7] results in a single collection : [ 4, 7].
+The intersection of two Collections [9, 8, 5, 4, 7] and [1, 3, 99, 4, 7] results in a single collection : [ 4, 7] containing only the matching elements.
 
 
 ### XOR - Finding Different Elements from Two Collections
@@ -125,27 +125,27 @@ public class CollectionHelper {
     public List<Integer> xor(final List<Integer> collA, 
                              final List<Integer> collB){
           
-          // Filter elements of A not in B
-          List<Integer> listOfAnotInB = collA
-                                          .stream()
-                                          .filter(element->{
-                                              return !collB.contains(element);
-                                          })
-                                          .collect(Collectors.toList());
-          
-          // Filter elements of B not in A
-          List<Integer> listOfBnotInA = collB
-                                          .stream()
-                                          .filter(element->{
-                                              return !collA.contains(element);
-                                          })
-                                          .collect(Collectors.toList());
-          
-          // Concatenate the two filtered lists
-          return Stream.concat(
-                  listOfAnotInB.stream(), 
-                  listOfBnotInA.stream())
-                .collect(Collectors.toList());
+      // Filter elements of A not in B
+      List<Integer> listOfAnotInB = collA
+                                      .stream()
+                                      .filter(element->{
+                                          return !collB.contains(element);
+                                      })
+                                      .collect(Collectors.toList());
+      
+      // Filter elements of B not in A
+      List<Integer> listOfBnotInA = collB
+                                      .stream()
+                                      .filter(element->{
+                                          return !collA.contains(element);
+                                      })
+                                      .collect(Collectors.toList());
+      
+      // Concatenate the two filtered lists
+      return Stream.concat(
+              listOfAnotInB.stream(), 
+              listOfBnotInA.stream())
+            .collect(Collectors.toList());
     }
 }
     
@@ -196,11 +196,17 @@ class CollectionHelper {
     public <T> List<T>[] split(List<T> listToSplit){
 
         // determine the endpoints to use in `list.subList()` method
-      int[] endpoints = {0, (listToSplit.size() + 1)/2, listToSplit.size()};
+      int[] endpoints = {0, 
+                          (listToSplit.size() + 1)/2, 
+                           listToSplit.size()};
      
-        List<List<T>> sublists =
+      List<List<T>> sublists =
                 IntStream.rangeClosed(0, 1)
-                        .mapToObj(i -> listToSplit.subList(endpoints[i], endpoints[i + 1]))
+                        .mapToObj(
+                            i -> listToSplit
+                                   .subList(
+                                        endpoints[i], 
+                                        endpoints[i + 1]))
                         .collect(Collectors.toList());
      
         // return an array containing both lists
@@ -219,19 +225,18 @@ public class CollectionHelper {
 
     // partition collection into size equal to chunkSize
     public Collection<List<Integer>> partition(
-
         final List<Integer> collA, 
         final int chunkSize){
 
         final AtomicInteger counter = new AtomicInteger();
 
         final Collection<List<Integer>> result = 
-                            collA
-                            .stream()
-                            .collect(
-                                Collectors.groupingBy(
-                                    it -> counter.getAndIncrement() / chunkSize))
-                            .values();
+                    collA
+                    .stream()
+                    .collect(
+                        Collectors.groupingBy(
+                            it -> counter.getAndIncrement() / chunkSize))
+                    .values();
 
         return result;
         
@@ -285,7 +290,7 @@ Collection A: [9, 8, 5,  4]
 
 Collection B: [1, 3, 99, 4, 7] 
 
-      Output: [9, 8, 5,  4, 1, 3, 99, 4, 7]. 
+Output: [9, 8, 5,  4, 1, 3, 99, 4, 7]. 
 
 The output is an aggregation of the elements from the two collections.  
 
@@ -315,7 +320,7 @@ Collection A: [9, 8, 5,  4]
 
 Collection B: [1, 3, 99, 4, 7] 
 
-      Output: [9, 8, 5,  4, 3, 99, 4, 7]. 
+Output: [9, 8, 5,  4, 3, 99, 4, 7]. 
 
 Element `1` in collection B is excluded from the output since it does not meet the filter criteria.      
 

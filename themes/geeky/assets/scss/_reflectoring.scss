@@ -147,3 +147,19 @@ h3 {
     }
   }
 }
+
+.dropdown-item {
+  &:hover,
+  &:focus {
+    color: $white !important;
+    background-color: $primary !important;
+    text-decoration: none !important;
+  }
+
+  &.active,
+  &:active {
+    color: $white !important;
+    background-color: $primary !important;
+    text-decoration: none !important;
+  }
+}

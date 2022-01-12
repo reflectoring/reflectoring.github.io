@@ -19,7 +19,13 @@ Here's a quick overview of the options for sponsoring reflectoring:
 | **Sponsored Blog Post**     | $750 |  [Details](#sponsored-blog-post) |
 | **Sponsored Newsletter**     | $100               | [Details](#sponsored-newsletter) |
 
-Get in touch via e-mail to [tom@reflectoring.io](mailto:tom@reflectoring.io) if you have any questions or want to discuss a sponsoring opportunity.
+[Get in touch](#get-in-touch) if you have any questions or want to discuss a sponsoring opportunity.
+
+## What Customers Say
+
+> Tom and the Reflectoring brand represent a fantastic opportunity for any organization such as ours that is seeking to build authentic engagement with a developer audience. This is primarily the case because he writes so clearly from a "for developers by developers" perspective. The use cases and the value streams are optimized for real-world consumption and even implementation. In addition to this practical, hands-on approach with individual posts, the content offered across the Reflectoring site and in its email newsletter is positive, encouraging and insightful.
+
+Matt Hines - Director of Product Marketing at [Logz.io](https://logz.io)
 
 ## The reflectoring Audience
 

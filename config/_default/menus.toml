@@ -52,14 +52,20 @@ weight = 3
     weight = 4
 
 [[main]]
-name = "Book me"
-url = "/book-me"
+name = "Services"
 weight = 4
 
-[[main]]
-name = "Advertise"
-url = "advertise"
-weight = 5
+    [[main]]
+    parent = "Services"
+    name = "Book me"
+    url = "/book-me"
+    weight = 4
+
+    [[main]]
+    parent = "Services"
+    name = "Advertise"
+    url = "advertise"
+    weight = 5
 
 [[main]]
 name = "Categories"

@@ -152,7 +152,7 @@ public class CollectionHelper {
 
 
 ```
-Here we are first using the `filter()` method to include only the elements in the first collection which are not present in the second collection. Then we perform a similar operation on the second collection to include only the elements which are not present in the first collection followed by concatenating the two filtered collections.
+Here we are first using the `filter()` method of the `Stream` interface to include only the elements in the first collection which are not present in the second collection. Then we perform a similar operation on the second collection to include only the elements which are not present in the first collection followed by concatenating the two filtered collections.
 
 ### NOT - Collection of elements of one Collection Not Present in the Second Collection
 

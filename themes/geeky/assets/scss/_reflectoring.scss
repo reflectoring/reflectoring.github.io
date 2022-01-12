@@ -167,3 +167,9 @@ h3 {
 h1, h2, h3, h4, h5, h6, .btn, .navbar {
   letter-spacing: 1px;
 }
+
+header {
+  .logo {
+    max-width: 100px;
+  }
+}

@@ -3,6 +3,7 @@
 favicon = "images/favicon.png"
 # logo
 logo = "images/logo.png"
+logo_small = "images/logo_small.png"
 # use `x` with logo_width, example: "100x".
 # Note: logo_width is not work with .svg file
 logo_width = "150x"
@@ -54,7 +55,7 @@ enable = true
 title_large = "Reflectoring"
 title_small = "Where the HOW meets the WHY."
 image = "images/illustrations/undraw_lightbulb_moment_re_ulyo.png"
-background_image = "/images/banner-bg-shape.svg"
+background_image = ""
 content = "Software development tutorials, thoughts about the software craft, and tips on how to grow as a software engineer."
 button_label = "Join the Newsletter"
 button_link = "/"

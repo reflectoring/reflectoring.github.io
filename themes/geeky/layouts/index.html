@@ -4,8 +4,7 @@
 {{ with site.Params.banner }}
 {{ if .enable }}
 
-{{ $bgImage:= resources.Get .background_image }}
-<section class="banner text-center text-lg-start" style="background-image: url('{{ $bgImage.RelPermalink }}');">
+<section class="banner text-center text-lg-start">
   <div class="container">
     <div class="row align-items-center flex-column-reverse flex-lg-row">
       <div class="col-lg-6 mb-5 mb-lg-0">
@@ -15,6 +14,7 @@
         {{ if .button_label }}
         <a href="/#newsletter" class="btn btn-primary">{{ .button_label }}</a>
         {{ end }}
+        <a href="/#recent-articles" class="btn btn-primary" style="margin-left: 20px">Browse the Articles</a>
       </div>
       {{ with .image }}
       <div class="col-lg-6 col-sm-6 col-9 mx-auto mb-5 mb-lg-0">
@@ -44,8 +44,7 @@
 
         {{ partial "widgets/newsletter.html" . }}
 
-        {{ partial "widgets/community.html" . }}
-
+        <a id="recent-articles"></a>
         {{with site.Params.recent_post_title}}
         <div class="section-title">
           <h2 class="h4 title-border">{{ . | markdownify}}</h2>

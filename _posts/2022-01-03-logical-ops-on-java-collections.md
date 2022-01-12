@@ -117,7 +117,7 @@ Collection A: [1, 2, 3, 4, 5, 6]
 
 Collection B: [3, 4, 5, 6, 7, 8, 9] 
 
-     A XOR B: [1, 2, 7, 8, 9] - matching elements 3, 4, 5, and 6 are excluded.
+A XOR B: [1, 2, 7, 8, 9] - matching elements 3, 4, 5, and 6 are excluded.
 
 ```java
 public class CollectionHelper {
@@ -162,9 +162,9 @@ Collection A: [1, 2, 3, 4, 5, 6]
 
 Collection B: [3, 4, 5, 6, 7, 8, 9] 
 
-     A NOT B: [1, 2] - these are elements of A not contained in B 
+A NOT B: [1, 2] - these are elements of A not contained in B 
 
-     B NOT A: [7, 8, 9]       - these elements of B not contained in A 
+B NOT A: [7, 8, 9] - these elements of B not contained in A 
 
 ```java
 public class CollectionHelper {

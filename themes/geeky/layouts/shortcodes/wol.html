@@ -1,0 +1,12 @@
+<!-- when using this shortcode, make sure that the template includes masonry.js! -->
+
+<div class="row" data-masonry='{"percentPosition": true }'>
+  {{ range site.Params.wol.items }}
+  <div class="col-xl-6">
+  <blockquote class="wol mt-2 mb-2">
+    <p>{{ . | markdownify }}</p>
+  </blockquote>
+</div>
+  {{ end }}
+
+</div>

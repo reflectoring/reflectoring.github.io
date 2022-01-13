@@ -1,0 +1,86 @@
+.ml-form-embedSubmitLoad {
+	display: inline-block;
+	width: 20px;
+	height: 20px
+}
+
+.g-recaptcha {
+	transform: scale(1);
+	-webkit-transform: scale(1);
+	transform-origin: 0 0;
+	-webkit-transform-origin: 0 0
+}
+
+.ml-form-embedSubmitLoad:after {
+	content: " ";
+	display: block;
+	width: 11px;
+	height: 11px;
+	margin: 1px;
+	border-radius: 50%;
+	border: 4px solid #fff;
+	border-color: #fff #fff #fff transparent;
+	animation: ml-form-embedSubmitLoad 1.2s linear infinite
+}
+
+@keyframes ml-form-embedSubmitLoad {
+	0% {
+		transform: rotate(0)
+	}
+	100% {
+		transform: rotate(360deg)
+	}
+}
+
+
+.ml-error input,
+.ml-error select,
+.ml-error textarea {
+	border-color: red!important
+}
+
+.ml-error .custom-checkbox-radio-list {
+	border: 1px solid red!important;
+	border-radius: 4px;
+	padding: 10px
+}
+
+.ml-error .label-description,
+.ml-error .label-description p,
+.ml-error .label-description p a,
+.ml-error label:first-child {
+	color: red!important
+}
+
+#mlb2-3734881.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-checkboxRow.ml-error .label-description p,
+#mlb2-3734881.ml-form-embedContainer .ml-form-embedWrapper .ml-form-embedBody .ml-form-checkboxRow.ml-error .label-description p:first-letter {
+	color: red!important
+}
+
+@media only screen and (max-width:900px) {
+	.ml-form-embedWrapper.embedDefault,
+	.ml-form-embedWrapper.embedPopup {
+		width: 100%!important
+	}
+	.ml-form-formContent.horozintalForm {
+		float: left!important
+	}
+	.ml-form-formContent.horozintalForm .ml-form-horizontalRow {
+		height: auto!important;
+		width: 100%!important;
+		float: left!important
+	}
+	.ml-form-formContent.horozintalForm .ml-form-horizontalRow .ml-input-horizontal {
+		width: 100%!important
+	}
+	.ml-form-formContent.horozintalForm .ml-form-horizontalRow .ml-input-horizontal>div {
+		padding-right: 0!important;
+		padding-bottom: 10px
+	}
+	.ml-form-formContent.horozintalForm .ml-button-horizontal {
+		width: 100%!important
+	}
+	.ml-form-formContent.horozintalForm .ml-button-horizontal.labelsOn {
+		padding-top: 0!important
+	}
+}

@@ -1,0 +1,46 @@
+#feedletter-wol *,
+#feedletter-wol *:before,
+#feedletter-wol *:after {
+  box-sizing: inherit;
+}
+#feedletter-wol {
+  box-sizing: border-box;
+  width: 95%;
+  margin: 1.5em auto;
+}
+
+#feedletter-wol .wol {
+  width: 100%;
+  margin: 1.5em 0;
+  padding: 0;
+  -moz-column-gap: 1.5em;
+  -webkit-column-gap: 1.5em;
+  column-gap: 1.5em;
+  column-count: 1;
+}
+
+#feedletter-wol .wol .item {
+  background-color: white;
+  text-align: left;
+  border-radius: 6px;
+  color: #4a4a4a;
+  display: inline-block;
+  border: 1px solid #e1e1e1;
+
+  padding: 1.25rem;
+  margin: 0 0 1em;
+  font-size: 1.25rem;
+  width: 100%;
+}
+
+@media screen and (min-width: 600px) {
+  #feedletter-wol .wol {
+    column-count: 2;
+  }
+}
+
+@media screen and (min-width: 780px) {
+  #feedletter-wol .wol {
+    column-count: 3;
+  }
+}

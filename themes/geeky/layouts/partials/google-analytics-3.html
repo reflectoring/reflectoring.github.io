@@ -1,0 +1,12 @@
+{{ if isset site.Params.analytics "google_analytics_3_id" }}
+{{ if eq (getenv "HUGO_ENV") "production" }}
+<script type="text/javascript">
+    if (document.location.hostname == "reflectoring.io") {
+        window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+        ga('create', '{{ site.Params.analytics.google_analytics_3_id }}', 'auto');
+        ga('send', 'pageview');
+    }
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+{{ end }}
+{{ end }}

@@ -1,6 +1,6 @@
 ---
 title: "Feature Flags in Java with Togglz and LaunchDarkly"
-categories: ["WIP","Java"]
+categories: ["Java"]
 date: 2021-07-17T00:00:00
 modified: 2021-07-17T00:00:00
 authors: [tom]

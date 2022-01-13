@@ -1,6 +1,6 @@
 ---
 title: Timeouts with Spring Boot and Resilience4j
-categories: ["WIP","Java"]
+categories: ["Java"]
 date: 2021-10-24T05:00:00
 modified: 2021-10-24T05:00:00
 authors: [saajan]

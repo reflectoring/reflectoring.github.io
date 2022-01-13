@@ -1,6 +1,6 @@
 ---
 title: "Getting Started with AWS CloudFormation"
-categories: ["WIP","Software Craft"]
+categories: ["Software Craft"]
 date: 2021-01-03T00:00:00
 modified: 2021-01-03T00:00:00
 authors: [tom]

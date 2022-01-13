@@ -1,6 +1,6 @@
 ---
 title: "Getting Started with GraphQL"
-categories: ["WIP","Spring Boot"]
+categories: ["Spring Boot"]
 date: 2021-01-20T06:00:00
 modified: 2021-01-20T06:00:00
 authors: [pratikdas]

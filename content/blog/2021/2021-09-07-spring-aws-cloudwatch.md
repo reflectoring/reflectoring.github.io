@@ -1,6 +1,6 @@
 ---
 title: "Publishing Metrics from Spring Boot to Amazon CloudWatch"
-categories: ["WIP","Spring Boot"]
+categories: ["Spring Boot"]
 date: 2021-09-07T06:00:00
 modified: 2021-09-07T06:00:00
 authors: [pratikdas]

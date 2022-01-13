@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: "Testing with Spring Boot and @SpringBootTest"
-categories: ["WIP","Spring Boot"]
+categories: ["Spring Boot"]
 date: 2021-07-22T00:00:00
 modified: 2021-07-22T00:00:00
 excerpt: "A tutorial on when and how to use Spring Boot's @SpringBootTest annotation and how to reduce test runtime."

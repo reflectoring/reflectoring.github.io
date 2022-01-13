@@ -1,6 +1,6 @@
 ---
 title: "The Open-Closed Principle Explained"
-categories: ["WIP","Software Craft"]
+categories: ["Software Craft"]
 date: 2021-01-25T00:00:00
 modified: 2021-01-25T00:00:00
 authors: [skempken]

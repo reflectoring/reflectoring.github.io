@@ -1,6 +1,6 @@
 ---
 title: "Creating and Analyzing Thread Dumps"
-categories: ["WIP","Java"]
+categories: ["Java"]
 date: 2021-05-05T06:00:00
 modified: 2021-05-05T06:00:00
 authors: [pratikdas]

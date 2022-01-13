@@ -1,6 +1,6 @@
 ---
 title: "Using Terraform to Deploy AWS Resources"
-categories: ["WIP","Software Craft"]
+categories: ["Software Craft"]
 date: 2021-04-22T06:00:00
 modified: 2021-04-22T06:00:00
 authors: [pratikdas]

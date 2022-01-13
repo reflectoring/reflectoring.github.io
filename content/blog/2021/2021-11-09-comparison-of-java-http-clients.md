@@ -1,6 +1,6 @@
 ---
 title: "Comparison of Java HTTP Clients"
-categories: ["WIP","Java"]
+categories: ["Java"]
 date: 2021-11-09T06:00:00
 modified: 2021-11-09T06:00:00
 authors: [pratikdas]

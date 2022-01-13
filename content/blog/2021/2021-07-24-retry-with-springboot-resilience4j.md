@@ -1,6 +1,6 @@
 ---
 title: Retry with Spring Boot and Resilience4j
-categories: ["WIP","Spring Boot"]
+categories: ["Spring Boot"]
 date: 2021-07-24T05:00:00
 modified: 2021-07-24T05:00:00
 authors: [saajan]

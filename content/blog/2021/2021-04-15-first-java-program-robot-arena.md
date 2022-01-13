@@ -1,6 +1,6 @@
 ---
 title: "Getting Started With Java: Build a Robot Arena"
-categories: ["WIP","Java"]
+categories: ["Java"]
 date: 2021-04-15T00:00:00
 modified: 2021-04-15T00:00:00
 authors: [tom]

@@ -1,6 +1,6 @@
 ---
 title: "Getting Started With AWS RDS and Spring Cloud"
-categories: ["WIP","Software Craft"]
+categories: ["Software Craft"]
 date: 2021-05-25T06:00:00
 modified: 2021-05-25T06:00:00
 authors: [pratikdas]

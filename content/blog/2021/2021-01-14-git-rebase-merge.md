@@ -1,6 +1,6 @@
 ---
 title: "Git Rebase vs. Git Merge Explained"
-categories: ["WIP","Software Craft"]
+categories: ["Software Craft"]
 date: 2021-01-14T00:00:00
 modified: 2021-01-14T00:00:00
 authors: [mujtaba]

@@ -1,6 +1,6 @@
 ---
 title: "Painless Code Formatting with EditorConfig"
-categories: ["WIP","Java"]
+categories: ["Java"]
 date: 2021-02-15T00:00:00
 modified: 2021-02-15T00:00:00
 authors: [zeddysoft]

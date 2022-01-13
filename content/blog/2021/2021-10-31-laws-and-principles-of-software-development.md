@@ -1,7 +1,7 @@
 ---
 authors: [tom]
 title: "Laws and Principles of Software Development"
-categories: ["WIP","Software Craft"]
+categories: ["Software Craft"]
 date: 2021-10-31T06:00:00
 modified: 2021-10-31T06:00:00
 excerpt: "Read about the most often cited laws and principles in software development and what we can learn from them."

@@ -1,6 +1,6 @@
 ---
 title: "Clean Unit Tests with Mockito"
-categories: ["WIP","Java"]
+categories: ["Java"]
 date: 2021-04-25T00:00:00
 modified: 2021-04-25T00:00:00
 authors: [lleuenberger ]

@@ -1,6 +1,6 @@
 ---
 title: "Per-Environment Logging with Plain Java and Spring Boot" 
-categories: ["WIP","Spring Boot", "Java"]
+categories: ["Spring Boot", "Java"]
 date: 2021-07-21T06:00:00
 modified: 2021-07-21T06:00:00
 excerpt: "How to configure a plain Java or Spring Boot application to send logs to different targets in different runtime environments."

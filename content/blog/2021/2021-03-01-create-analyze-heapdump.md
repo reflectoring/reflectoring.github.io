@@ -1,6 +1,6 @@
 ---
 title: "Creating and Analyzing Java Heap Dumps"
-categories: ["WIP","Java"]
+categories: ["Java"]
 date: 2021-03-01T05:00:00
 modified: 2021-03-01T05:00:00
 authors: [pratikdas]

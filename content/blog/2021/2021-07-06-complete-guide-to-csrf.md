@@ -1,6 +1,6 @@
 ---
 title: "Complete Guide to CSRF"
-categories: ["WIP","Software Craft"]
+categories: ["Software Craft"]
 date: 2021-06-14T06:00:00
 modified: 2021-06-13T06:00:00
 authors: [pratikdas]

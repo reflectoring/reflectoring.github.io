@@ -1,6 +1,6 @@
 ---
 title: Securing Data in AWS
-categories: ["WIP","Software Craft"]
+categories: ["Software Craft"]
 date: 2021-05-07T05:00:00
 modified: 2021-05-07T05:00:00
 authors: [artur]

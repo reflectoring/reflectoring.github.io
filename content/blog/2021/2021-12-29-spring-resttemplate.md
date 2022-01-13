@@ -1,6 +1,6 @@
 ---
 title: "Complete Guide to Spring RestTemplate"
-categories: ["WIP","Spring Boot"]
+categories: ["Spring Boot"]
 date: 2021-12-29T05:00:00
 modified: 2021-12-29T05:00:00
 authors: [pratikdas]

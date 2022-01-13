@@ -1,6 +1,6 @@
 ---
 title: "Implementing Plugins with Java's Service Provider Interface"
-categories: ["WIP","Java"]
+categories: ["Java"]
 date: 2021-03-26T00:00:00
 modified: 2021-03-26T00:00:00
 authors: [bakic]

@@ -1,6 +1,6 @@
 ---
 title: "Complete Guide to CORS"
-categories: ["WIP","Software Craft"]
+categories: ["Software Craft"]
 date: 2021-07-18T06:00:00
 modified: 2021-07-18T06:00:00
 authors: [pratikdas]

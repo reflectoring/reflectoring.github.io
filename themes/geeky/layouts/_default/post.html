@@ -7,7 +7,7 @@
   <div class="mb-4 position-relative">
     <!-- image CDN -->
     {{ if hasPrefix $imagePath "http" }}
-    <img loading="lazy" decoding="async" src="{{ $imagePath | safeURL }}" alt="{{ .Title }}"
+    <img loading="eager" decoding="async" src="{{ $imagePath | safeURL }}" alt="{{ .Title }}"
       class="img-fluid w-100 rounded-4">
     {{ else }}
     <!-- /image cdn -->
@@ -23,7 +23,7 @@
       <source srcset="{{ $imageSM.RelPermalink }}" media="(max-width: 575px)">
       <source srcset="{{ $imageMD.RelPermalink }}" media="(max-width: 767px)">
       <source srcset="{{ $imageLG.RelPermalink }}">
-      <img loading="lazy" decoding="async" class="img-fluid w-100 rounded-4" src="{{$imageFallback.RelPermalink}}"
+      <img loading="eager" decoding="async" class="img-fluid w-100 rounded-4" src="{{$imageFallback.RelPermalink}}"
         alt="{{.Title}}" width="{{$image.Width}}" height="{{$image.Height}}">
     </picture>
     {{ end }}

@@ -1,9 +1,12 @@
 {{ define "main" }}
 
+{{ $paginator:= .Paginate (where site.RegularPages "Section" "in" site.Params.mainSections ) }}
+
 <!--=================== banner section start ===================-->
 {{ with site.Params.banner }}
 {{ if .enable }}
 
+{{ if (eq $paginator.PageNumber 1) }}
 <section class="banner text-center text-lg-start">
   <div class="container">
     <div class="row align-items-center flex-column-reverse flex-lg-row">
@@ -32,6 +35,7 @@
 </section>
 {{ end }}
 {{ end }}
+{{ end }}
 <!--=================== banner section end ===================-->
 
 <!--=================== blog section start ===================-->
@@ -42,7 +46,9 @@
 
       <div class="col-lg-8 mb-5 mb-lg-0">
 
+        {{ if (eq $paginator.PageNumber 1) }}
         {{ partial "widgets/newsletter.html" . }}
+        {{ end }}
 
         <a id="recent-articles"></a>
         {{with site.Params.recent_post_title}}
@@ -53,7 +59,7 @@
         <div class="border pt-4 mb-5 rounded">
           <div class="row mx-0 g-5">
             <!-- recent post -->
-            {{ $paginator:= .Paginate (where site.RegularPages "Section" "in" site.Params.mainSections ) }}
+
             {{ range $paginator.Pages }}
             <div class="col-sm-6 mb-4">
               {{ .Render "post" }}

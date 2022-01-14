@@ -8,18 +8,26 @@ This blog runs on [Hugo](https://gohugo.io/), a static site generator.
 If you have Docker installed, you can run the blog locally with this command:
 
 ```shell
-docker run --rm -it \
+docker-compose up
+```
+
+or, if you want to have more control over the Hugo command:
+
+```shell
+docker run -it \
   -v "$(pwd):/src" \
   -p 1313:1313 \
   "peaceiris/hugo:v0.91.2" \
-  server
+  server --bind 0.0.0.0 --buildDrafts
 ```
 
-You can then browse the site via [http://localhost:1313](http://localhost:1313).
+You can replace `server ...` with the [Hugo command](https://gohugo.io/commands/) that you want to run.
+
+In any case, you can then browse the site via [http://localhost:1313](http://localhost:1313).
 
 ## Local preview by installing Hugo
 
-If you don't have Docker, you can [install Hugo on your machine](https://gohugo.io/getting-started/installing/) and then run this command:
+If you don't have Docker, you can [install Hugo on your machine](https://gohugo.io/getting-started/installing/) (version 0.91.2+extended) and then run this command:
 
 ```
 hugo server

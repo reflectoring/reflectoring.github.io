@@ -3,7 +3,7 @@
   command = "hugo --minify --gc"
 
 [build.environment]
-  HUGO_VERSION = "0.91.2"
+  HUGO_VERSION = "0.91.2+extended"
 
 [[headers]]
   for = "/*" # This defines which paths this specific [[headers]] block will cover.

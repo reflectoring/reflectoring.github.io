@@ -9,11 +9,13 @@ If you have Docker installed, you can run the blog locally with this command:
 
 ```shell
 docker run --rm -it \
-  -v $(pwd):/src \
+  -v "$(pwd):/src" \
   -p 1313:1313 \
-  klakegg/hugo:0.91.2 \
+  "peaceiris/hugo:v0.91.2" \
   server
 ```
+
+You can then browse the site via [http://localhost:1313](http://localhost:1313).
 
 ## Local preview by installing Hugo
 
@@ -22,6 +24,8 @@ If you don't have Docker, you can [install Hugo on your machine](https://gohugo.
 ```
 hugo server
 ```
+
+You can then browse the site via [http://localhost:1313](http://localhost:1313).
 
 ## Contributing to this Blog
 

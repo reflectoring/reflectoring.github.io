@@ -5,8 +5,9 @@
   .social-icons {
     margin: 0 60px 0 25px;
 
-    @include desktop-lg {
+    @include desktop-xl {
       margin: 0 35px 0 15px;
+      display: none;
     }
 
     @include desktop {

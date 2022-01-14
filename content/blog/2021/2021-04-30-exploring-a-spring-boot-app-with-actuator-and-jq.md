@@ -150,19 +150,11 @@ $ cat sample.json | jq '.students[] | .name'
 
 Let's unpack the `jq` command to understand what's happening:
 
-<style>
-.table td {
-  padding-top:3px
-  padding-bottom:3px
-}
-</style>
-
 | Expression  | Effect |
 | ----------- | ------------ |
 | `.students[]` | iterate over the `students` array |
 | \| | output each `student` to the next filter |
 | `.name` | extract `name` from the `student` object |
-{: .table}
 
 Now, let's get the list of students who have subjects like "environmental science", "social science" etc.:
 
@@ -634,7 +626,6 @@ jq '[.timeline.events \
 | `[]` | iterate over the resulting array |
 | `select(.startupStep.name | contains("instantiate"))` | select an element only if the element's  `startupStep` object's `name` property contains the text "instantiate" |
 | `{beanName: .startupStep.tags[0].value, duration: .duration}` | construct a new JSON object with properties `beanName` and `duration`
-{: .table}
 
 The brackets over the entire expression indicate we want to collect all the constructed JSON objects into an array.
 

@@ -37,18 +37,11 @@ In the world of code, there are many different words for test doubles and defini
 
 Here is a little summary of the different types for test doubles and how we use them in this article:
 
-<style>
-.table td {
-  padding: 5px;
-}
-</style>
-
 | Type  | Description                          |
 | ----- | ------------------------------------------------------------ |
 | Stub  | A *stub* is an object that always returns the same value, regardless of which parameters you provide on a stub's methods. |
 | Mock  | A *mock* is an object whose behavior - in the form of parameters and return values - is declared before the test is run. (This is exactly what Mockito is made for!) |
 | Spy   | A *spy* is an object that logs each method call that is performed on it (including parameter values). It can be queried to create assertions to verify the behavior of the system under test. (Spies are supported by Mockito!) |
-{: .table}
 
 ## Mockito in Use
 

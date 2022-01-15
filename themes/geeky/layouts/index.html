@@ -14,10 +14,16 @@
         {{ with .title_large }}<h1 class="banner-title mb-0">{{ . | markdownify }}</h1>{{ end }}
         {{ with .title_small }}<h2 class="h2 fw-normal mb-4">{{ . | markdownify}}</h2>{{ end }}
         <p class="mb-4 fs-6 text-light-600">{{.content | markdownify}}</p>
-        {{ if .button_label }}
-        <a href="/#newsletter" class="btn btn-primary">{{ .button_label }}</a>
-        {{ end }}
-        <a href="/#recent-articles" class="btn btn-primary" style="margin-left: 20px">Browse the Articles</a>
+
+        <div class="row">
+          <div class="col-lg-6 mt-3">
+            <a href="/#newsletter" class="btn btn-primary w-100">{{ .button_label }}</a>
+          </div>
+          <div class="col-lg-6 mt-3">
+            <a href="/#recent-articles" class="btn btn-primary w-100">Browse the Articles</a>
+          </div>
+        </div>
+
       </div>
       {{ with .image }}
       <div class="col-lg-6 col-sm-6 col-9 mx-auto mb-5 mb-lg-0">
@@ -26,8 +32,8 @@
         {{ $options := add (string $imageWidth) " webp" }}
         {{ $imageWebp:= $image.Resize $options }}
         <img decoding="async" loading="lazy" width="{{$image.Width}}" height="{{$image.Height}}"
-          src="{{ $imageWebp.RelPermalink }}" onerror="this.onerror=null;this.src='{{$image.RelPermalink}}'"
-          alt="banner-img" class="img-fluid">
+             src="{{ $imageWebp.RelPermalink }}" onerror="this.onerror=null;this.src='{{$image.RelPermalink}}'"
+             alt="banner-img" class="img-fluid">
       </div>
       {{ end }}
     </div>
@@ -86,13 +92,13 @@
             {{ if $paginator.HasPrev }}
             <li class="page-item prev d-flex align-items-center">
               <a class="page-link disabled" href="{{ $paginator.Prev.URL }}" aria-label="Pagination Arrow"><i
-                  class="fas fa-arrow-left me-3"></i><span class="d-none d-sm-inline">Previous</span>
+                class="fas fa-arrow-left me-3"></i><span class="d-none d-sm-inline">Previous</span>
               </a>
             </li>
             {{ else }}
             <li class="page-item prev d-flex align-items-center disabled">
               <span class="page-link disabled" aria-label="Pagination Arrow"><i
-                  class="fas fa-arrow-left me-3"></i><span class="d-none d-sm-inline">Previous</span>
+                class="fas fa-arrow-left me-3"></i><span class="d-none d-sm-inline">Previous</span>
               </span>
             </li>
             {{ end }}
@@ -117,7 +123,8 @@
             {{ end }}
             <!-- Middle pages. -->
             {{ else }}
-            {{ if and ( ge .PageNumber (sub $paginator.PageNumber $adjacent_links) ) ( le .PageNumber (add $paginator.PageNumber $adjacent_links) ) }}
+            {{ if and ( ge .PageNumber (sub $paginator.PageNumber $adjacent_links) ) ( le .PageNumber (add
+            $paginator.PageNumber $adjacent_links) ) }}
             {{ $.Scratch.Set "page_number_flag" true }}
             {{ end }}
             {{ end }}
@@ -137,13 +144,15 @@
             <!-- Next page. -->
             {{ if $paginator.HasNext }}
             <li class="page-item next d-flex align-items-center">
-              <a class="page-link arrow" href="{{ $paginator.Next.URL }}" aria-label="Pagination"><span class="d-none d-sm-inline">Next</span><i
-                  class="fas fa-arrow-right ms-3"></i>
+              <a class="page-link arrow" href="{{ $paginator.Next.URL }}" aria-label="Pagination"><span
+                class="d-none d-sm-inline">Next</span><i
+                class="fas fa-arrow-right ms-3"></i>
               </a>
             </li>
             {{ else }}
             <li class="page-item next d-flex align-items-center disabled">
-              <span class="page-link arrow" aria-label="Pagination"><span class="d-none d-sm-inline">Next</span><i class="fas fa-arrow-right ms-3"></i>
+              <span class="page-link arrow" aria-label="Pagination"><span class="d-none d-sm-inline">Next</span><i
+                class="fas fa-arrow-right ms-3"></i>
               </span>
             </li>
             {{ end }}

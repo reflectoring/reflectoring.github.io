@@ -1,12 +1,13 @@
 ---
 title: "Be Scrappy, Not Crappy"
-categories: ["Simplify!"]
+categories: ["Simplify"]
 date: 2021-12-12T09:00:00
 modified: 2021-12-12T09:00:00
 authors: [tom]
 excerpt: "Don't use 'being scrappy' as an excuse to writing crappy code."
 image:  images/stock/0114-scrap-1200x628-branded.jpg
 url: be-scrappy-not-crappy
+widgets: ["stratospheric-ad", "gyhdoca-ad", "simplify-form"]
 ---
 
 It's not so long ago that I learned the term "scrappy". Someone was looking to build a "scrappy" team of software engineers to build the next big thing, and build it fast.

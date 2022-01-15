@@ -1,12 +1,13 @@
 ---
 title: "Make it Easy"
-categories: ["Simplify!"]
+categories: ["Simplify"]
 date: 2021-09-05T09:00:00
 modified: 2021-09-05T09:00:00
 authors: [tom]
 excerpt: "Easy work is smarter work than hard work. What you can do to make things easy."
 image:  images/stock/0109-baloons-1200x628-branded.jpg
 url: make-it-easy
+widgets: ["stratospheric-ad", "gyhdoca-ad", "simplify-form"]
 ---
 
 We like telling other people that we're working hard. Hard work gains us respect. We just have to push through to get the results we want. Hard work is glorified.

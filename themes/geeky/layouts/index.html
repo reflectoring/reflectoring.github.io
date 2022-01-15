@@ -53,7 +53,7 @@
       <div class="col-lg-8 mb-5 mb-lg-0">
 
         {{ if (eq $paginator.PageNumber 1) }}
-        {{ partial "widgets/newsletter.html" . }}
+        {{ partial "widgets/simplify-form.html" (dict "sticky" false) }}
         {{ end }}
 
         <a id="recent-articles"></a>

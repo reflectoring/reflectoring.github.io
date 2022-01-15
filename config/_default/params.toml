@@ -74,9 +74,9 @@ button = "I Accept"
 
 ######################## sidebar widgets #########################
 [widgets]
-static = ["skyscraper-ad", "newsletter"]
+static = ["skyscraper-ad"]
 # dynamic sidebar widgets can be overriden by setting the "widgets" attribute in the front matter - the last widget will be sticky
-dynamic = ["stratospheric-ad", "gyhdoca-ad"]
+dynamic = ["simplify-form", "stratospheric-ad", "gyhdoca-ad"]
 
 [ads]
 skyscraper_image = "images/launchdarkly/2021_StateofFM_Ad_320x1200.png"

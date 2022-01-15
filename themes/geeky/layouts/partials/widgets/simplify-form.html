@@ -1,5 +1,7 @@
+{{ $sticky := (cond (isset . "sticky") .sticky false) }}
+{{ $stickyClass := (cond $sticky "sticky" "") }}
 <a id="newsletter"></a>
-<div class="widget newsletter-widget">
+<div class="widget newsletter-widget {{ $stickyClass }}">
   <div class="widget-title">
     <h3 class="title-border">Simplify<span class="highlight">!</span> Newsletter</h3>
   </div>

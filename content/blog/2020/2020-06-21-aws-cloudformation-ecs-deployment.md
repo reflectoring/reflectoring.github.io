@@ -1,12 +1,13 @@
 ---
 title: "The AWS Journey Part 4: Zero-Downtime Deployment with CloudFormation and ECS"
-categories: ["Software Craft"]
+categories: ["AWS"]
 date: 2020-07-13T06:00:00
 modified: 2020-07-13T06:00:00
 authors: [tom]
 excerpt: "Having automated scripts to deploy an application via AWS CloudFormation is nice, but we want to replace the application with a new version every now and then, don't we? This article discusses some options for replacing a Docker image with a new version when using ECS and Fargate in combination with CloudFormation."
 image: images/stock/0061-cloud-1200x628-branded.jpg
 url: aws-cloudformation-ecs-deployment
+widgets: ["gyhdoca-ad", "stratospheric-ad"]
 ---
 
 The AWS journey started with [deploying a Spring Boot application in a Docker container manually](/aws-deploy-docker-image-via-web-console/) and we continued with [automatically deploying it with CloudFormation](/aws-cloudformation-deploy-docker-image/) and [connecting it to an RDS database instance](/aws-cloudformation-rds).

@@ -1,6 +1,6 @@
 ---
 title: My System for Organizing Work in a Distracted World
-categories: ["Meta"]
+categories: ["Simplify"]
 date: 2020-03-22T05:00:00
 modified: 2020-03-22T05:00:00
 authors: [tom]

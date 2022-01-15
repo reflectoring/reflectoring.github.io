@@ -86,9 +86,15 @@ hasChildren = true
 
       [[main]]
       parent = "Categories"
-      name = "Software Craft"
-      url = "/categories/craft/"
+      name = "AWS"
+      url = "/categories/aws/"
       weight = 3
+
+      [[main]]
+      parent = "Categories"
+      name = "Software Craft"
+      url = "/categories/software-craft/"
+      weight = 4
 
       [[main]]
       parent = "Categories"
@@ -121,8 +127,14 @@ weight = 1
 
     [[footer]]
     parent = "Content"
+    name = "AWS"
+    url = "/categories/aws/"
+    weight = 2
+
+    [[footer]]
+    parent = "Content"
     name = "Software Craft"
-    url = "/categories/craft/"
+    url = "/categories/software-craft/"
     weight = 3
 
     [[footer]]

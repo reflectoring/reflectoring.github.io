@@ -1,12 +1,13 @@
 ---
 title: "The AWS Journey Part 3: Connecting a Spring Boot Application to an RDS Instance with CloudFormation"
-categories: ["Software Craft"]
+categories: ["AWS"]
 date: 2020-05-19T05:00:00
 modified: 2020-05-19T05:00:00
 authors: [tom]
 excerpt: "Deploy a Spring Boot application and a PostgreSQL database in a fully automated way with AWS CloudFormation."
 image: images/stock/0061-cloud-1200x628-branded.jpg
 url: aws-cloudformation-rds
+widgets: ["gyhdoca-ad", "stratospheric-ad"]
 ---
 
 The AWS journey started with [deploying a Spring Boot application in a Docker container manually](/aws-deploy-docker-image-via-web-console/). In the previous episode, we then [automated the deployment with CloudFormation](/aws-cloudformation-deploy-docker-image/).

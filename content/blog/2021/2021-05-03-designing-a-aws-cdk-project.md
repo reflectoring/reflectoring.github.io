@@ -1,12 +1,13 @@
 ---
 title: "Designing an AWS CDK Project with Java"
-categories: ["Software Craft", "Java"]
+categories: ["AWS", "Java"]
 date: 2021-05-03T06:00:00
 modified: 2021-05-03T06:00:00
 authors: [tom]
 excerpt: "With AWS CDK, we can codify our infrastructure in Java code. In this article, we're going to explore an opinionated way of designing a CDK project to make its components re-usable and easily extensible."
 image: images/stock/0074-stack-1200x628-branded.jpg
 url: designing-a-aws-cdk-project
+widgets: ["gyhdoca-ad", "stratospheric-ad"]
 ---
 
 In the article ["Getting Started with AWS CDK"](/getting-started-with-aws-cdk), we have already deployed a Spring Boot application to AWS with the CDK. We used a pre-configured "black box" construct named `SpringBootApplicationStack`, passed in a few parameters, and wrapped it in a CDK app to deploy it with the CDK CLI.

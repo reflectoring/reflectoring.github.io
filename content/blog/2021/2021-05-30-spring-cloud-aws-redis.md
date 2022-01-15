@@ -1,12 +1,13 @@
 ---
 title: "Caching with ElastiCache for Redis and Spring Cloud AWS"
-categories: ["Spring Boot"]
+categories: ["Spring Boot", "AWS"]
 date: 2021-06-27T00:00:00
 modified: 2021-06-27T00:00:00
 authors: [mmr]
 excerpt: "In this article, we will look at configuring a Spring Boot Application to use AWS ElastiCache for Redis using Spring Cloud AWS"
 image: images/stock/0071-disk-1200x628-branded.jpg
 url: spring-cloud-aws-redis
+widgets: ["gyhdoca-ad", "stratospheric-ad"]
 ---
 
 ElastiCache is a fully managed caching service available in AWS Cloud. 

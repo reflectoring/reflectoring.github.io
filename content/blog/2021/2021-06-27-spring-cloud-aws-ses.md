@@ -1,12 +1,13 @@
 ---
 title: "Sending Emails with Amazon SES and Spring Cloud AWS"
-categories: ["Spring Boot"]
+categories: ["Spring Boot", "AWS"]
 date: 2021-06-27T06:00:00
 modified: 2021-06-27T06:00:00
 authors: [pratikdas]
 excerpt: "Amazon Simple Email Service (SES) provides an email platform for sending and receiving emails. Spring Cloud AWS makes it convenient to integrate applications with different AWS services. In this article, we will look at using Spring Cloud AWS for working with Amazon Simple Email Service (SES) with the help of some basic concepts of SES along with code examples."
 image: images/stock/0075-envelopes-1200x628-branded.jpg
 url: spring-cloud-aws-ses
+widgets: ["gyhdoca-ad", "stratospheric-ad"]
 ---
 
 Email is a convenient way to communicate different kinds of events from applications to interested parties.

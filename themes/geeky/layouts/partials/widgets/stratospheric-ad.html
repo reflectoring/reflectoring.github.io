@@ -1,0 +1,22 @@
+{{ $sticky := (cond (isset . "sticky") .sticky false) }}
+{{ $stickyClass := (cond $sticky "sticky" "") }}
+<div class="widget {{ $stickyClass }}">
+
+  {{ $image:= resources.Get "images/stratospheric/stratospheric-mockup-338.png" }}
+  <a href="https://stratospheric.dev">
+    <picture>
+      <source srcset="{{ $image.RelPermalink }}" media="(max-width: 350px)">
+      <img loading="lazy" decoding="async" class="img-fluid mb-3 w-100 rounded-4"
+           src="{{$image.RelPermalink}}" alt="{{.Title}}" width="{{$image.Width}}"
+           height="{{$image.Height}}">
+    </picture>
+  </a>
+
+  <p class="mb-3 small text-light-900">Join more than 700 <a href="https://stratospheric.dev/#testimonials">happy readers</a>.</p>
+  <p class="mb-3 small text-light-900">
+    <strong>Save $12.00</strong> by joining the <a href="https://stratospheric.dev/#mailing-list">Stratospheric newsletter</a>.
+  </p>
+
+  <a href="https://leanpub.com/stratospheric" type="submit" name="subscribe" class="btn btn-primary w-100">Learn Spring Boot & AWS</a>
+
+</div>

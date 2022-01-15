@@ -1,14 +1,13 @@
-{{ with site.Params.ads }}
-<div class="widget sticky">
+{{ $sticky := (cond (isset . "sticky") .sticky false) }}
+{{ $stickyClass := (cond $sticky "sticky" "") }}
+<div class="widget {{ $stickyClass }}">
 
-  {{ $image:= resources.Get .product_image }}
-  {{ $imageFallback:= $image.Resize "300x" }}
-  {{ $imageStandard:= $image.Resize "300x webp" }}
-  <a href="{{ .product_href }}">
+  {{ $image:= resources.Get "images/gyhdoca/cover-338.png" }}
+  <a href="/book/">
     <picture>
-      <source srcset="{{ $imageStandard.RelPermalink }}" media="(max-width: 350px)">
+      <source srcset="{{ $image.RelPermalink }}" media="(max-width: 350px)">
       <img loading="lazy" decoding="async" class="img-fluid mb-3 w-100 rounded-4"
-           src="{{$imageFallback.RelPermalink}}" alt="{{.Title}}" width="{{$image.Width}}"
+           src="{{$image.RelPermalink}}" alt="{{.Title}}" width="{{$image.Width}}"
            height="{{$image.Height}}">
     </picture>
   </a>
@@ -27,8 +26,6 @@
     <strong>Save $7.50</strong> by joining the <a href="/simplify">Simplify! newsletter</a>.
   </p>
 
-  <a href="{{ .product_cta_href }}" type="submit" name="subscribe" class="btn btn-primary w-100">{{ .product_cta_title
-    }}</a>
+  <a href="https://gum.co/gyhdoca" type="submit" name="subscribe" class="btn btn-primary w-100">Get Your Hands Dirty</a>
 
 </div>
-{{ end }}

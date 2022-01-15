@@ -1,12 +1,13 @@
 ---
 title: "Local Development with AWS on LocalStack"
-categories: ["Software Craft"]
+categories: ["AWS"]
 date: 2020-07-27T06:00:00
 modified: 2020-07-27T06:00:00
 authors: [pratikdas]
 excerpt: "Developing a Spring Boot App Against AWS Services with LocalStack"
 image: images/stock/0074-stack-1200x628-branded.jpg
 url: aws-localstack
+widgets: ["gyhdoca-ad", "stratospheric-ad"]
 ---
 When we build applications with AWS, we access various AWS services for multiple purposes: store files in S3, save some data in DynamoDB, send messages to SQS, write event handlers with lambda functions, and many others. 
 

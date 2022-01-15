@@ -1,12 +1,13 @@
 ---
 title: "Getting Started with AWS CloudFormation"
-categories: ["Software Craft"]
+categories: ["AWS"]
 date: 2021-01-03T00:00:00
 modified: 2021-01-03T00:00:00
 authors: [tom]
 excerpt: "Let's deploy our first application to AWS with CloudFormation. No previous CloudFormation knowledge required!"
 image: images/stock/0061-cloud-1200x628-branded.jpg
 url: getting-started-with-aws-cloudformation
+widgets: ["gyhdoca-ad", "stratospheric-ad"]
 ---
 
 Continuous deployment is an important part in today's software development loop. We want to ship the latest version of our software in no time to provide our users with the newest features or bugfixes. This is a major pillar of the DevOps movement.

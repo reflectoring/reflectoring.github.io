@@ -1,12 +1,13 @@
 ---
 title: "Publishing Metrics from Spring Boot to Amazon CloudWatch"
-categories: ["Spring Boot"]
+categories: ["Spring Boot", "AWS"]
 date: 2021-09-07T06:00:00
 modified: 2021-09-07T06:00:00
 authors: [pratikdas]
 excerpt: "Amazon CloudWatch is a monitoring and observability service in the AWS Cloud. In this article, we will generate different types of application metrics in a Spring Boot web application and send those metrics to Amazon CloudWatch. Amazon CloudWatch will store the metrics data, and help us to derive insights about our application by visualizing the metric data in graphs."
 image: images/stock/0032-dashboard-1200x628-branded.jpg
 url: spring-aws-cloudwatch
+widgets: ["gyhdoca-ad", "stratospheric-ad"]
 ---
 
 Metrics provide a quantifiable measure of specific attributes of an application. A collection of different metrics give intelligent insights into the health and performance of an application. 

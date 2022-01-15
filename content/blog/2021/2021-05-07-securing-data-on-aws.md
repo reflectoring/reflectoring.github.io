@@ -1,12 +1,13 @@
 ---
 title: Securing Data in AWS
-categories: ["Software Craft"]
+categories: ["Software Craft", "AWS"]
 date: 2021-05-07T05:00:00
 modified: 2021-05-07T05:00:00
 authors: [artur]
 excerpt: "We need to protect our data in the cloud from unauthorized access and tampering. In this article, we discuss how to encrypt data on storage in AWS Cloud"
 image: images/stock/0101-keylock-1200x628-branded.jpg
 url: securing-data-on-aws
+widgets: ["gyhdoca-ad", "stratospheric-ad"]
 ---
 
 Amazon Web Services provide many possibilities to secure data in the cloud. In this article, we will have a closer look at how to encrypt different types of data at rest on AWS.

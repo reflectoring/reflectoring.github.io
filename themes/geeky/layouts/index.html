@@ -1,0 +1,165 @@
+{{ define "main" }}
+
+{{ $paginator:= .Paginate (where site.RegularPages "Section" "in" site.Params.mainSections ) }}
+
+<!--=================== banner section start ===================-->
+{{ with site.Params.banner }}
+{{ if .enable }}
+
+{{ if (eq $paginator.PageNumber 1) }}
+<section class="banner text-center text-lg-start">
+  <div class="container">
+    <div class="row align-items-center flex-column-reverse flex-lg-row">
+      <div class="col-lg-6 mb-5 mb-lg-0">
+        {{ with .title_large }}<h1 class="banner-title mb-0">{{ . | markdownify }}</h1>{{ end }}
+        {{ with .title_small }}<h2 class="h2 fw-normal mb-4">{{ . | markdownify}}</h2>{{ end }}
+        <p class="mb-4 fs-6 text-light-600">{{.content | markdownify}}</p>
+        {{ if .button_label }}
+        <a href="/#newsletter" class="btn btn-primary">{{ .button_label }}</a>
+        {{ end }}
+        <a href="/#recent-articles" class="btn btn-primary" style="margin-left: 20px">Browse the Articles</a>
+      </div>
+      {{ with .image }}
+      <div class="col-lg-6 col-sm-6 col-9 mx-auto mb-5 mb-lg-0">
+        {{ $image:= resources.Get . }}
+        {{ $imageWidth:= add (string $image.Width) "x"}}
+        {{ $options := add (string $imageWidth) " webp" }}
+        {{ $imageWebp:= $image.Resize $options }}
+        <img decoding="async" loading="lazy" width="{{$image.Width}}" height="{{$image.Height}}"
+          src="{{ $imageWebp.RelPermalink }}" onerror="this.onerror=null;this.src='{{$image.RelPermalink}}'"
+          alt="banner-img" class="img-fluid">
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+{{ end }}
+{{ end }}
+{{ end }}
+<!--=================== banner section end ===================-->
+
+<!--=================== blog section start ===================-->
+<section class="section">
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-lg-8 mb-5 mb-lg-0">
+
+        {{ if (eq $paginator.PageNumber 1) }}
+        {{ partial "widgets/newsletter.html" . }}
+        {{ end }}
+
+        <a id="recent-articles"></a>
+        {{with site.Params.recent_post_title}}
+        <div class="section-title">
+          <h2 class="h4 title-border">{{ . | markdownify}}</h2>
+        </div>
+        {{end}}
+        <div class="border pt-4 mb-5 rounded">
+          <div class="row mx-0 g-5">
+            <!-- recent post -->
+
+            {{ range $paginator.Pages }}
+            <div class="col-sm-6 mb-4">
+              {{ .Render "post" }}
+            </div>
+            {{ end }}
+          </div>
+        </div>
+
+        <!-- custom pagination -->
+        {{ $paginator := .Paginator }}
+        <!-- Number of links either side of the current page. -->
+        {{ $adjacent_links := 2 }}
+        <!-- $max_links = ($adjacent_links * 2) + 1 -->
+        {{ $max_links := (add (mul $adjacent_links 2) 1) }}
+        <!-- $lower_limit = $adjacent_links + 1 -->
+        {{ $lower_limit := (add $adjacent_links 1) }}
+        <!-- $upper_limit = $paginator.TotalPages - $adjacent_links -->
+        {{ $upper_limit := (sub $paginator.TotalPages $adjacent_links) }}
+        <!-- If there's more than one page. -->
+        {{ if gt $paginator.TotalPages 1 }}
+        <nav aria-label="Page navigation">
+          <ul class="pagination align-items-center justify-content-center">
+            <!-- Previous page. -->
+            {{ if $paginator.HasPrev }}
+            <li class="page-item prev d-flex align-items-center">
+              <a class="page-link disabled" href="{{ $paginator.Prev.URL }}" aria-label="Pagination Arrow"><i
+                  class="fas fa-arrow-left me-3"></i><span class="d-none d-sm-inline">Previous</span>
+              </a>
+            </li>
+            {{ else }}
+            <li class="page-item prev d-flex align-items-center disabled">
+              <span class="page-link disabled" aria-label="Pagination Arrow"><i
+                  class="fas fa-arrow-left me-3"></i><span class="d-none d-sm-inline">Previous</span>
+              </span>
+            </li>
+            {{ end }}
+            <!-- Page numbers. -->
+            {{ range $paginator.Pagers }}
+            {{ $.Scratch.Set "page_number_flag" false }}
+            <!-- Advanced page numbers. -->
+            {{ if gt $paginator.TotalPages $max_links }}
+            <!-- Lower limit pages. -->
+            <!-- If the user is on a page which is in the lower limit.  -->
+            {{ if le $paginator.PageNumber $lower_limit }}
+            <!-- If the current loop page is less than max_links. -->
+            {{ if le .PageNumber $max_links }}
+            {{ $.Scratch.Set "page_number_flag" true }}
+            {{ end }}
+            <!-- Upper limit pages. -->
+            <!-- If the user is on a page which is in the upper limit. -->
+            {{ else if ge $paginator.PageNumber $upper_limit }}
+            <!-- If the current loop page is greater than total pages minus $max_links -->
+            {{ if gt .PageNumber (sub $paginator.TotalPages $max_links) }}
+            {{ $.Scratch.Set "page_number_flag" true }}
+            {{ end }}
+            <!-- Middle pages. -->
+            {{ else }}
+            {{ if and ( ge .PageNumber (sub $paginator.PageNumber $adjacent_links) ) ( le .PageNumber (add $paginator.PageNumber $adjacent_links) ) }}
+            {{ $.Scratch.Set "page_number_flag" true }}
+            {{ end }}
+            {{ end }}
+            <!-- Simple page numbers. -->
+            {{ else }}
+            {{ $.Scratch.Set "page_number_flag" true }}
+            {{ end }}
+            <!-- Output page numbers. -->
+            {{ if eq ($.Scratch.Get "page_number_flag") true }}
+            <li class="page-item">
+              <a href="{{ .URL }}" class="page-link {{if eq . $paginator}}active{{end}}">
+                {{ .PageNumber }}
+              </a>
+            </li>
+            {{ end }}
+            {{ end }}
+            <!-- Next page. -->
+            {{ if $paginator.HasNext }}
+            <li class="page-item next d-flex align-items-center">
+              <a class="page-link arrow" href="{{ $paginator.Next.URL }}" aria-label="Pagination"><span class="d-none d-sm-inline">Next</span><i
+                  class="fas fa-arrow-right ms-3"></i>
+              </a>
+            </li>
+            {{ else }}
+            <li class="page-item next d-flex align-items-center disabled">
+              <span class="page-link arrow" aria-label="Pagination"><span class="d-none d-sm-inline">Next</span><i class="fas fa-arrow-right ms-3"></i>
+              </span>
+            </li>
+            {{ end }}
+          </ul>
+        </nav>
+        {{ end }}
+      </div>
+
+      <!-- sidebar widgets -->
+      <aside class="col-lg-4">
+        {{ $widget:= site.Params.widgets.sidebar }}
+        {{ partialCached "widgets/widget-wrapper" ( dict "Widgets" $widget "Scope" . )}}
+      </aside>
+    </div>
+  </div>
+</section>
+<!--=================== blog section end ===================-->
+
+{{ end }}

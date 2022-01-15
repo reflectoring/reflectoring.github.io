@@ -1,0 +1,10 @@
+<div class="col-md-3 ml-5">
+  <div class="footer-widget mb-5">
+    <h5 class="footer-title">{{ .Name }}</h5>
+    <ul class="footer-links">
+      {{ range .Children }}
+      <li><a href="{{ .URL }}">{{ .Name }}</a></li>
+      {{ end }}
+    </ul>
+  </div>
+</div>

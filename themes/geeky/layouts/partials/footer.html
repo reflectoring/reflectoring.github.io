@@ -1,0 +1,33 @@
+{{ $bgImage:= resources.Get "images/footer-bg-shape.svg" }}
+<footer class="footer" style="background-image: url('{{ $bgImage.RelPermalink }}');">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-8 text-center">
+        <!-- footer brand/logo -->
+        <a class="footer-brand mb-4 d-block" href="{{ site.BaseURL | relLangURL }}">
+          {{ partialCached "logo.html" . }}
+        </a>
+        <p class="text-light mb-5">{{site.Params.footer_content | markdownify}}</p>
+
+        <div class="row mb-5">
+
+          {{ range site.Menus.footer }}
+
+          {{ partial "footer-links.html" . }}
+
+          {{ end }}
+
+        </div>
+
+        <ul class="list-unstyled social-icons">
+          {{ range site.Params.social }}
+          <li class="list-inline-item">
+            <a href="{{.link | safeURL}}"><i class="{{ .icon }}"></i></a>
+          </li>
+          {{ end }}
+        </ul>
+        <p class="content">{{ site.Params.copyright | markdownify }}</p>
+      </div>
+    </div>
+  </div>
+</footer>

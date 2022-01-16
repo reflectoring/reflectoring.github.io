@@ -1,47 +1,57 @@
 ---
-title: "Immutables Library"
-categories: [java]
-date: 2022-01-10 00:00:00 +1100
-modified: 2022-01-10 00:00:00 +1100
-author: mateo
-excerpt: "Examples rich guide of Immutables library."
-image: 
-  auto: 0065-java
+title: "Complete Guide to the Immutables Java Library"
+categories: ["Java"]
+date: 2022-01-10 00:00:00 +1100 
+modified: 2022-01-10 00:00:00 +1100 
+authors: [mateo]
+excerpt: "Example-rich guide to the Immutables library."
+image: images/stock/0065-java-1200x628-branded.jpg 
+url: immutables-library
 ---
-# Introduction
 
-The immutable object means that the object's state is constant after the initialization.
+Immutability means that an object's state is constant after the initialization. It cannot change afterward.
 
-Java, by definition, passes parameters as values. When we pass a primitive, we pass the value of that primitive. On the other hand, passing an object passes the reference as a value. The parameter of the method and the original object now reference the same value on the heap.
+When we pass an object into a method, we actually pass the reference to that object. The parameter of the method and the
+original object now reference the same value on the heap.
 
-Behavior like this can cause multiple side effects. For example in a multithreaded system, one thread can change the value under reference, and it will cause other threads to misbehave. 
+This can cause multiple side effects. For example, in a multi-threaded system, one thread can change the value under
+reference, and it will cause other threads to misbehave.
 
-The immutables library generates classes that are immutable, thread-safe, and null-safe. Aside from creating immutable class, the library helps us write readable and clean code.
+The [Immutables](https://immutables.github.io/) library generates classes that are immutable, thread-safe, and
+null-safe, and help us avoid these side effects. Aside from creating immutable classes, the library helps us write
+readable and clean code.
 
 We will go through several examples showing key functionalities and how to use them properly.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/immutables" %}
-# Setting up Immutables in Maven
+{{% github "https://github.com/thombergs/code-examples/tree/master/immutables" %}}
+
+# Setting up Immutables with Maven
+
+Adding the immutables is as simple as can be. We just need to add the dependency:
 
 ```xml
-  <dependencies>
+
+<dependencies>
     <dependency>
         <groupId>org.immutables</groupId>
         <artifactId>value</artifactId>
         <version>2.8.8</version>
     </dependency>
-  </dependencies>
+</dependencies>
 ```
-Adding the immutables is as simple as can be. We need to add the dependency as shown in the example above, and we are good to go.
 
-# Use-case
+## Example Use Case
+
 Let us start building a webpage for creating and reading news articles. There are two entities that we want to write:
-- user
-- article
 
-Each user can write multiple articles, and each article has to have its author. We won't go into more details about the logic of the application.
+- `User`
+- `Article`
 
-## The User Entity
+Each user can write multiple articles, and each article has to have an author of type `User`. We won't go into more
+details about the logic of the application.
+
+### The User Entity
+
 ```java
 public class UserWithoutImmutable {
 
@@ -59,10 +69,14 @@ public class UserWithoutImmutable {
 
     private List<ArticleWithoutImmutable> articles;
 
-    private UserWithoutImmutable(long id, String name,
-                                 String lastname, String email,
-                                 String password, Role role,
-                                 List<ArticleWithoutImmutable> articles) {
+    private UserWithoutImmutable(
+            long id,
+            String name,
+            String lastname,
+            String email,
+            String password,
+            Role role,
+            List<ArticleWithoutImmutable> articles) {
         this.id = id;
         this.name = name;
         this.lastname = lastname;
@@ -201,17 +215,15 @@ public class UserWithoutImmutable {
     }
 }
 ```
-The code shows a manually created User.java class. Each user has:
-- id
-- name
-- last name
-- email
-- password
-- list of articles
 
-We can see how much code is needed to write POJO(Plain old Java object) class that doesn't contain any business logic. We added the builder pattern for easier object initializtion.
+The code shows a manually created `User` class. Each user has a couple of attributes and a list of articles they wrote.
 
-## The Article Entity
+**We can see how much code is needed to write a POJO (Plain old Java object) class that doesn't contain any business logic.**
+
+We added the builder pattern for easier object initializtion.
+
+### The Article Entity
+
 ```java
 public class ArticleWithoutImmutable {
 
@@ -303,15 +315,22 @@ public class ArticleWithoutImmutable {
 }
 
 ```
-We built the article entity by hand to present how much code we needed for a relatively simple entity class. 
+
+We built the `Article` entity by hand to present how much code we needed for a relatively simple entity class.
 
 The article class is a standard POJO (Plain old java object) class that doesn't contain any business logic.
 
-# Creating a Basic Immutable Entity
-We will show how to create a simple immutable entity. One more perk of using the immutable library is writing the clean code. We will omit the creation of the user entity since it is the same as for the article entity.
-## Immutable Article Entity
-In the [standard article implementation](#the-article-entity), we saw how much code we need for creating a simple POJO class. Thankfully, there is a solution to this problem:
+## Creating a Basic Immutable Entity
+
+Let's now look at how the Immutables library makes it simple to create an immutable entity without that much boilerplate code. We will only look at the `Article` entity, because it will be very similar for the `User` entity.
+
+### Immutable `Article` Definition
+
+In the [standard article implementation](#the-article-entity), we saw how much code we need for creating a simple POJO
+class. Thankfully, with Immutables, we can get all that for free by annotating an abstract class: 
+
 ```java
+
 @Value.Immutable
 public abstract class Article {
 
@@ -324,15 +343,19 @@ public abstract class Article {
     abstract long getUserId();
 }
 ```
-The first thing that we notice is the special annotation. 
 
-The `@Value.Immutable` annotation says to the annotation processor that it should generate an implementation for this class.
+The `@Value.Immutable` annotation says to the annotation processor that it should generate an implementation for this
+class.
 
-It is important to mention that we can place the `@Value.Immutable` annotation on the class, interface or annotation type. 
+It is important to mention that we can place the `@Value.Immutable` annotation on a class, an interface or an annotation
+type.
 
-## Immutable Article Entity Implementation
-[The previous chapter](#immutable-article-entity) showed us how to define the immutable class. Now, let's look into the generated implementation:
+### Immutable `Article` Implementation
+
+Let's look at what the Immutables library generates from the definition above:
+
 ```java
+
 @Generated(from = "Article", generator = "Immutables")
 @SuppressWarnings({"all"})
 @javax.annotation.processing.Generated(
@@ -350,6 +373,7 @@ public final class ImmutableArticle extends Article {
         this.content = content;
         this.userId = userId;
     }
+
     @Override
     long getId() {
         return id;
@@ -434,24 +458,37 @@ public final class ImmutableArticle extends Article {
     }
 }
 ```
-The annotation processor generates the implementation class from the skeleton that we defined. The naming convention is, "Immutable" followed by the abstract class name.
 
-The implementation class contains each abstract method as the attribute. Each getter method in the implementation class was the abstract method inside the skeleton code.
+The annotation processor generates the implementation class from the skeleton that we defined. The naming convention
+is "Immutable" followed by the name of the annotated class.
 
-If we name our methods "get*", the implementation will strip the "get" part and take the rest as the attribute name. Every other naming will take the full method name as the attribute name.
+The implementation class contains each of the methods we defined on the annotated class or interface, backed by attribute values. 
 
-In the basic implementation, there is no constructor. The annotation processor generates the builder pattern. We omitted the implementation code for the builder class to save some space. If you want to look into the implementation details, please refer to the [Github page.](https://github.com/thombergs/code-examples/tree/master/immutables)
+If we name our methods `get*`, the implementation will strip the "get" part and take the rest as the attribute name.
+Every other naming will take the full method name as the attribute name.
 
-Since we are working with the immutable objects, the annotation processor created withers methods that help us build the new object from the current one. Each attribute has its own "with" method.
+In the basic implementation, there is no constructor. The annotation processor generates a builder by default. We omitted
+the implementation code for the builder class to save some space. If you want to look into the implementation details,
+please refer to the [Github repo](https://github.com/thombergs/code-examples/tree/master/immutables).
 
-We can see how it is easy to create a class that provides us with all the perks of immutability. We didn't have to write any boilerplate code.
+For working with the immutable objects, the annotation processor created `wither*` methods that help us to build a
+new object from the current one. Each attribute has its own `with` method.
 
-# The Builder Implementation
-Even though the constructor is the standard way for creating the object instance, the builder pattern makes things easier. The builder pattern allows optional and defaults attributes.
+We can see how it is easy to create a class that provides us with all the perks of immutability. We didn't have to write
+any boilerplate code.
 
-## Default Builder
-The immutable library comes with the builder pattern by default. We don't need to add anything specific to the class definition:
+## Using a Builder
+
+Even though the constructor is the standard way for creating the object instance, the builder pattern makes things
+easier. The builder pattern allows optional and default attributes.
+
+### Default Builder
+
+The immutable library comes with the builder pattern by default. We don't need to add anything specific to the class
+definition:
+
 ```java
+
 @Value.Immutable
 public abstract class Article {
 
@@ -464,11 +501,16 @@ public abstract class Article {
     abstract long getUserId();
 }
 ```
-The class definition is the same as in our previous examples. The `@Value.Immutable` annotation defines the builder on this entity.
 
-## Strict Builder
+The class definition is the same as in our previous examples. The `@Value.Immutable` annotation defines the builder on
+this entity.
+
+### Strict Builder
+
 The builder class is not immutable by default. If we want to use an immutable builder, we can use the strict builder:
+
 ```java
+
 @Value.Immutable
 @Value.Style(strictBuilder = true)
 abstract class StrictBuilderArticle {
@@ -479,16 +521,16 @@ abstract class StrictBuilderArticle {
     abstract String getContent();
 }
 ```
-After defining the immutable class, we need to add one more annotation to the class definition. 
 
-The `@Value.Style` annotation is a meta-annotation for defining what will the annotation processor generate. We set the strictBuilder attribute to true, meaning that generated builder should be strict.
+The `@Value.Style` annotation is a meta-annotation for defining what will the annotation processor generate. We set the
+strictBuilder attribute to true, meaning that generated builder should be strict.
 
-### Strict Builder Usage
-Strict builder means that we cannot set the value to the same variable twice inside building steps. We are making the builder implementation immutable:
+A strict builder means that we cannot set the value to the same variable twice inside building steps. We are making the
+builder implementation immutable:
 
 ```java
 public class BuildersService {
-    public static StrictBuilderArticle createStrictArticle(){
+    public static StrictBuilderArticle createStrictArticle() {
         return ImmutableStrictBuilderArticle.builder()
                 .id(0)
                 .id(1)
@@ -496,17 +538,24 @@ public class BuildersService {
     }
 }
 ```
-We are setting the id attribute twice, producing the error:
+
+Here, we are setting the `id` attribute twice, producing the following error:
 
 ```java
-Exception in thread "main" java.lang.IllegalStateException: 
-Builder of StrictBuilderArticle is strict, attribute is already set: id
+Exception in thread"main"java.lang.IllegalStateException:
+        Builder of StrictBuilderArticle is strict,attribute is already set:id
 ```
-The system throws the IllegalStateException showing us that we cannot add value to the same attribute twice. If we were to use a regular builder, the code above wouldn't throw this error.
 
-## Staged builder
-If we want to make sure that all required attributes are provided to the builder before we create the actual instance, we can use the stage builder:
+If we were
+to use a regular builder, the code above wouldn't throw this error.
+
+### Staged builder
+
+If we want to make sure that all required attributes are provided to the builder before we create the actual instance,
+we can use a staged builder:
+
 ```java
+
 @Value.Immutable
 @Value.Style(stagedBuilder = true)
 abstract class StagedBuilderArticle {
@@ -518,71 +567,93 @@ abstract class StagedBuilderArticle {
     abstract String getContent();
 }
 ```
+
 We use the `@Value.Style` annotation to tell the annotation processor that we need the staged builder generated.
 
-__Note: The staged builder is, implicitely, strict.__
+The staged builder is a strict builder by implication.
 
-# The Constructor
-Some use-cases require that we use the regular constructor. As mentioned, the immutable library created the builder by default, leaving the constructor in the private scope. 
+## Using a Constructor
 
-Let us look at how to define the class that generates the constructor for us:
+Some use cases require that we use the regular constructor. As mentioned, the Immutables library creates a builder by
+default, leaving the constructor in the private scope.
+
+Let's look at how to define a class that generates a constructor for us, instead:
+
 ```java
+
 @Value.Immutable
 public abstract class ConstructorArticle {
     @Value.Parameter
     public abstract long getId();
+
     @Value.Parameter
     public abstract String getTitle();
+
     @Value.Parameter
     public abstract String getContent();
 }
 ```
-By setting the `@Value.Immutable` annotation we defined that we are building the immutable class. 
 
-To define the constructor, we need to annotate each attribute that should be part of that constructor with the `@Value.Parameter` annotation.
+By setting the `@Value.Immutable` annotation we defined that we are building the immutable class.
+
+To define the constructor, we need to annotate each attribute that should be part of that constructor with
+the `@Value.Parameter` annotation.
 
 If we would look into the generated implementation we would see that the constructor has the public scope.
 
-## Using the of() Method
-By default, the immutable library forces us to create the instance using the `of()` method:
+### Using the `of()` Method
+
+By default, the Immutables library provides the `of()` method to create a new immutable object:
+
 ```java
-public class ConstructorService{
-    public static ConstructorArticle createConstructorArticle(){
-        return ImmutableConstructorArticle.of(0,"Lorem ipsum article!", "Lorem ipsum...");
+public class ConstructorService {
+    public static ConstructorArticle createConstructorArticle() {
+        return ImmutableConstructorArticle.of(0, "Lorem ipsum article!", "Lorem ipsum...");
     }
 }
 ```
-We need to call the static `of()` method to create the object instance.
 
-## Using the new Method
-If we want to use the plain public constructor with the `new` keyword, we need to define it through the `@Value.Style` annotation:
+
+### Using the `new` Keyword
+
+If we want to use the plain public constructor with the `new` keyword, we need to define it through the `@Value.Style`
+annotation:
+
 ```java
+
 @Value.Immutable
 @Value.Style(of = "new")
 public abstract class PlainPublicConstructorArticle {
     @Value.Parameter
     public abstract long getId();
+
     @Value.Parameter
     public abstract String getTitle();
+
     @Value.Parameter
     public abstract String getContent();
 }
 ```
-First, we define that our class should be immutable. Then we annotate which attribute should be part of the public constructor. 
+
+First, we define that our class should be immutable. Then we annotate which attribute should be part of the public
+constructor.
 
 The last thing that we need to do is to add `@Value.Style(of="new")` annotation to the class definition.
 
-# Optional and Default Attributes
-All attributes in the immutable class are mandatory by default. If we want to create a field where we can omit the value, we can approach it in two different ways:
-- Optional API
-- Default provider
+## Optional and Default Attributes
 
-## Optional Attributes
-The immutable library supports the Optional API. If we want to make sure some fields doesn't have to be set, we can mark them optional. The optional wrapper will not put the null value but create the empty instance of the optional object.  
+All attributes in the immutable class are mandatory by default. If we want to create a field where we can omit the
+value, we can approach it in two different ways:
 
-It is highly discouraged to create nullable objects at all.
+- use Java's `Optional` type
+- use a default provider
+
+### `Optional` Attributes
+
+The Immutables library supports Java's `Optional` type. If we want to make some fields optional, we can just wrap them into an `Optional` object:
 
 ```java
+
 @Value.Immutable
 abstract class OptionalArticle {
 
@@ -593,20 +664,26 @@ abstract class OptionalArticle {
     abstract Optional<String> getContent();
 }
 ```
-By wrapping each object into the Optional, we are sure that the code will not fail if we don't provide the value. 
 
-We need to be careful not to overuse this approach. We should wrap only those attributes that should be optional. Everything else, by default, should go as standard attribute.
+By wrapping each object into the `Optional`, we are sure that the code will not fail if we don't provide the value.
 
-## Default Attributes
-If we want to provide default values to the attributes that are not set using the builder or the constructor we can use the `@Value.Default` annotation:
+We need to be careful not to overuse this approach. We should wrap only those attributes that should be optional.
+Everything else, by default, should go as a mandatory attribute.
+
+### Default Attributes
+
+If we want to provide default values to the attributes that are not set using the builder or the constructor we can use
+the `@Value.Default` annotation:
+
 ```java
+
 @Value.Immutable
 abstract class DefaultArticle {
 
     abstract Long getId();
 
     @Value.Default
-    String getTitle(){
+    String getTitle() {
         return "Default title!";
     }
 
@@ -614,12 +691,17 @@ abstract class DefaultArticle {
 
 }
 ```
-After putting the `@Value.Default` annotation we can create the logic of how will our title be generated.
 
-# Derived and Lazy Attributes
-## Derived Attributes
-In the [default attributes chapter](#default-attributes), we saw the creation of a default value inside the attribute. If we need to create the value from other attributes, we can use `@Value.Derived` annotation:
+The methods annotated with the `@Value.Default` annotation should then return the default value.
+
+## Derived and Lazy Attributes
+
+### Derived Attributes
+
+If we need to create a default value from other attributes, we can use the `@Value.Derived` annotation:
+
 ```java
+
 @Value.Immutable
 abstract class DerivedArticle {
 
@@ -630,48 +712,61 @@ abstract class DerivedArticle {
     abstract String getContent();
 
     @Value.Derived
-    String getSummary(){
+    String getSummary() {
         String summary = getContent().substring(0,
-                getContent().length()>50 ? 50 :
+                getContent().length() > 50 ? 50 :
                         getContent().length());
         return summary.length() == getContent().length() ? summary
-                : summary+"...";
+                : summary + "...";
     }
 }
 ```
-Again, we first annotated the abstract class with the `@Value.Immutable` annotation. 
 
-The summary attribute should be derived from the value inside the content. We want to take only first fifty charaters from the content. After creating the method for getting the summary we need to annotate it with the `@Value.Derived` annotation.
+Again, we first annotated the abstract class with the `@Value.Immutable` annotation.
 
-## Lazy Attributes
-Deriving the value can be expensive operation we might want to do it only once and only when it is needed. To do this we can use the `@Value.Lazy` annotation:
+The `summary` attribute should be derived from the value of the `content` attribute. We want to take only first fifty characters
+from the content. After creating the method for getting the summary we need to annotate it with the `@Value.Derived`
+annotation.
+
+### Lazy Attributes
+
+Deriving the value can be expensive operation we might want to do it only once and only when it is needed. To do this we
+can use the `@Value.Lazy` annotation:
+
 ```java
+
 @Value.Immutable
 abstract class LazyArticle {
 
     abstract Long getId();
-    
+
     abstract String getTitle();
 
     abstract String getContent();
 
     @Value.Lazy
-    String summary(){
+    String summary() {
         String summary = getContent().substring(0,
-                getContent().length()>50 ? 50 :
+                getContent().length() > 50 ? 50 :
                         getContent().length());
         return summary.length() == getContent().length() ? summary
-                : summary+"...";
+                : summary + "...";
     }
 }
 ```
 
-After initializing the method with the `@Value.Lazy` we are sure that this value will be computed only when it is used the first time.
+After initializing the method with the `@Value.Lazy` we are sure that this value will be computed only when it is used
+the first time.
 
-# Working with Collections
-## The User Entity
-Our user entity has a list of articles. When I started writing this article, I was wondering how do collections behave with immutability.
+## Working with Collections
+
+### The `User` Entity
+
+Our user entity has a list of articles. When I started writing this article, I was wondering how do collections behave
+with immutability.
+
 ```java
+
 @Value.Immutable
 public abstract class User {
 
@@ -683,39 +778,30 @@ public abstract class User {
 
     public abstract String getEmail();
 
-    public abstract  String getPassword();
+    public abstract String getPassword();
 
     public abstract List<Article> getArticles();
 }
 ```
-The user entity was built as any other immutable entity we created in this article. We annotated the class with the `@Value.Immutable` annotation and created abstract methods for attributes that we wanted.
-## Adding to the Collection
+
+The `User` entity was built as any other immutable entity we created in this article. We annotated the class with
+the `@Value.Immutable` annotation and created abstract methods for attributes that we wanted.
+
+### Adding to a Collection
+
 Let us see how, and when, can we add values to the articles list inside the user entity:
+
 ```java
 public class CollectionsService {
 
     public static void main(String[] args) {
 
-        Article article1 = ImmutableArticle.builder()
-                .id(0l)
-                .title("Lorem ipsum!")
-                .content("Lorem ipsum")
-                .userId(1l)
-                .build();
+        Article article1 = ...;
 
-        Article article2 = ImmutableArticle.builder()
-                .id(2l)
-                .title("Lorem ipsum!")
-                .content("Lorem ipsum")
-                .userId(1l)
-                .build();
+        Article article2 = ...;
 
-        Article article3 = ImmutableArticle.builder()
-                .id(3l)
-                .title("Lorem ipsum!")
-                .content("Lorem ipsum")
-                .userId(1l)
-                .build();
+        Article article3 = ...;
+        
         User user = ImmutableUser.builder()
                 .id(1l)
                 .name("Mateo")
@@ -725,49 +811,60 @@ public class CollectionsService {
                 .addArticles(article1)
                 .addArticles(article2)
                 .build();
-        System.out.println(user);
 
         user.getArticles().add(article3);
 
     }
 }
 ```
-After creating several articles, we can move on to user creation. The immutable library provided us with the method `addArticles()`. The method allows us to add one by one article, even when we use the strict builder. If we print out the user, we will see that everything was added properly.
+
+After creating several articles, we can move on to user creation. The Immutables library provided us with the
+method `addArticles()`. The method allows us to add articles one by one, even when we use the strict builder.
 
 But what happens when we try to add a new article on an already built user?
-```java
-Exception in thread "main" java.lang.UnsupportedOperationException
-at java.base/java.util.Collections$UnmodifiableCollection.add(Collections.java:1060)
-at com.reflectoring.io.immutables.collections.CollectionsService.main(CollectionsService.java:45)
-```
-After adding the new article on the already built user, we get the UnsupportedOperationException. After building, the list is immutable, and we cannot add anything new to it. If we want to expand this list, we need to create a new user.
 
-# Styles
-The `@Value.Style` is the annotation with which we control what will the annotation process generate. In the [prevous example](#using-the-new-method), we used the `@Value.Style` annotation to generate the standard constructor format. 
+```java
+Exception in thread"main"java.lang.UnsupportedOperationException
+        at java.base/java.util.Collections$UnmodifiableCollection.add(Collections.java:1060)
+        at com.reflectoring.io.immutables.collections.CollectionsService.main(CollectionsService.java:45)
+```
+
+After adding the new article on the already built user, we get an `UnsupportedOperationException`. After building, the
+list is immutable, and we cannot add anything new to it. If we want to expand this list, we need to create a new user.
+
+## Styles
+
+The `@Value.Style` is the annotation with which we control what code the annotation processor will generate. So far, we have used the `@Value.Style` annotation to generate the standard constructor
+format.
 
 We can use the annotation on several levels:
+
 - on the package level
 - on the top class level
 - on the nested class level
 - on the annotation level
 
-The package level annotation will apply the used style to the whole package. 
+The package level annotation will apply the style to the whole package.
 
-The class level will take effect on the class where we placed it and on all nested classes. 
+The class level will take effect on the class where we placed it and on all nested classes.
 
-The annotation level class will create the new annotation as the meta-annotation. We can then use this new meta-annotation for class levels.
+Used on an annotation as a meta-annotation, all classes annotated with that annotation will use the given style.
 
 __Note: It is the recommendation to use one or more meta-annotations instead of class or package level__
 
 There are several things that we need to be aware of:
-- If there is mixing in the applied styles they will be selected indeterministic. They are never merged.
-- Style can be a powerful tool, and we need to be careful when using them.
+
+- If there is mixing in the applied styles they will be selected indeterministically. Styles are never merged.
+- A style can be a powerful tool, and we need to be careful when using them.
 - Styles are cached. When changing something on the style, we need to rebuild the project or even restart the IDE.
 
-## Style Meta-annotation Definition
-Let us look how to define new meta-annotation:
+## Creating a Style Meta Annotation
+
+Let's look at how to define new meta-annotation with a given style:
+
 ```java
-@Target({ElementType.PACKAGE,ElementType.TYPE})
+
+@Target({ElementType.PACKAGE, ElementType.TYPE})
 @Retention(RetentionPolicy.CLASS)
 @Value.Style(
         of = "new",
@@ -776,18 +873,29 @@ Let us look how to define new meta-annotation:
         visibility = Value.Style.ImplementationVisibility.PUBLIC
 
 )
-public @interface CustomStyle {}
+public @interface CustomStyle {
+}
 ```
-After defining `@Target` and `@Retention` annotation, we come to the `@Value.Style` annotation. The first value defined that we want to use the `new` constructor. The next thing that we define is that we want to use the strictBuilder and that all attributes should be annotated with the `@Value.Parameter` annotation. The last style defined is that the implementation visibility will be public.
 
-For more information about style possibilities, please refer to the [official documentation.](https://immutables.github.io/style.html)
+After defining `@Target` and `@Retention` as usual with an annotation, we come to the `@Value.Style` annotation. The first value defined
+that we want to use the `new` keyword. The next thing that we define is that we want to use the `strictBuilder` and
+that all attributes should be annotated with the `@Value.Parameter` annotation. The last style defined is that the
+implementation visibility will be public.
 
-# Conclusion
-We saw how the immutable library helps us build immutable, thread-safe, and null-safe domain objects. It helps us build clean and readable POJO classes. 
+For more information about style possibilities, please refer to
+the [official documentation.](https://immutables.github.io/style.html)
 
-Since it is a powerful tool we need to be careful how to use it. We can easily stray down the wrong path and overuse its features.
+## Conclusion
 
-The last thing that I want to point out is the `@Value.Style` annotation. The `@Value.Immutable` annotation tells what will be generated, while the `@Value.Style` tells how will be generated. This annotation can be a slippery slope, and we need to be careful and go outside of the default setting only when we are certain that we need to.
+We saw how the Immutables library helps us build immutable, thread-safe, and null-safe domain objects. It helps us build
+clean and readable POJO classes.
 
-For deeper reading on the immutable library please refer to the [official page.](https://immutables.github.io/)
+Since it is a powerful tool we need to be careful how to use it. We can easily stray down the wrong path and overuse its
+features.
+
+The last thing that I want to point out is the `@Value.Style` annotation. The `@Value.Immutable` annotation tells *what*
+will be generated, while the `@Value.Style` tells *how* it will be generated. This annotation can be a slippery slope, and we
+need to be careful and go outside of the default setting only when we are certain that we need to.
+
+For deeper reading on the Immutables library please refer to the [official page](https://immutables.github.io/).
    

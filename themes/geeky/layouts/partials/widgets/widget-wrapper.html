@@ -1,0 +1,11 @@
+{{ range site.Params.widgets.static }}
+  {{ partial ( print "widgets/" . ) $.Scope }}
+{{ end }}
+
+{{ $dynamic_widgets := (cond (isset .Params "widgets") .Params.widgets site.Params.widgets.dynamic) }}
+{{ $widget_count := (len $dynamic_widgets) }}
+
+{{ range $index, $widget := $dynamic_widgets }}
+  {{ $sticky := (cond (eq (add $index 1) $widget_count) true false) }}
+  {{ partial (print "widgets/" $widget) (dict "context" $.Scope "sticky" $sticky) }}
+{{ end }}

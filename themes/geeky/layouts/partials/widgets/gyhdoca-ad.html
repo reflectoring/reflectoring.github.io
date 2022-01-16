@@ -1,0 +1,31 @@
+{{ $sticky := (cond (isset . "sticky") .sticky false) }}
+{{ $stickyClass := (cond $sticky "sticky" "") }}
+<div class="widget {{ $stickyClass }}">
+
+  {{ $image:= resources.Get "images/gyhdoca/cover-338.png" }}
+  <a href="/book/">
+    <picture>
+      <source srcset="{{ $image.RelPermalink }}" media="(max-width: 350px)">
+      <img loading="lazy" decoding="async" class="img-fluid mb-3 w-100 rounded-4"
+           src="{{$image.RelPermalink}}" alt="{{.Title}}" width="{{$image.Width}}"
+           height="{{$image.Height}}">
+    </picture>
+  </a>
+
+  <p class="mb-3 small text-light-900">Join more than 6,500 <a href="/book/#what-readers-say">happy readers</a>.</p>
+  <p class="mb-3 small text-light-900">
+    <i class="fa fa-star" style="color: #f8c200"></i>
+    <i class="fa fa-star" style="color: #f8c200"></i>
+    <i class="fa fa-star" style="color: #f8c200"></i>
+    <i class="fa fa-star" style="color: #f8c200"></i>
+    <i class="fa fa-star-half" style="color: #f8c200"></i> more than 150 reviews on <a
+    href="https://www.amazon.com/gp/product/1839211962/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=9325&amp;creativeASIN=1839211962&amp;linkCode=as2&amp;tag=reflectorin0c-20&amp;linkId=559e54b6599c4213252259df28d1d3e3">Amazon</a>
+    and <a href="https://www.goodreads.com/book/show/49238827-get-your-hands-dirty-on-clean-architecture">Goodreads</a>.
+  </p>
+  <p class="mb-3 small text-light-900">
+    <strong>Save $7.50</strong> by joining the <a href="/simplify">Simplify! newsletter</a>.
+  </p>
+
+  <a href="https://gum.co/gyhdoca" type="submit" name="subscribe" class="btn btn-primary w-100">Get Your Hands Dirty</a>
+
+</div>

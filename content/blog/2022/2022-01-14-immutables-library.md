@@ -1,8 +1,8 @@
 ---
 title: "Complete Guide to the Immutables Java Library"
 categories: ["Java"]
-date: 2022-01-10 00:00:00 +1100 
-modified: 2022-01-10 00:00:00 +1100 
+date: 2022-01-16 00:00:00 +1100 
+modified: 2022-01-16 00:00:00 +1100 
 authors: [mateo]
 excerpt: "Example-rich guide to the Immutables library."
 image: images/stock/0065-java-1200x628-branded.jpg 
@@ -21,7 +21,7 @@ The [Immutables](https://immutables.github.io/) library generates classes that a
 null-safe, and help us avoid these side effects. Aside from creating immutable classes, the library helps us write
 readable and clean code.
 
-We will go through several examples showing key functionalities and how to use them properly.
+Let us go through several examples showing key functionalities and how to use them properly.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/immutables" %}}
 
@@ -322,12 +322,11 @@ The article class is a standard POJO (Plain old java object) class that doesn't 
 
 ## Creating a Basic Immutable Entity
 
-Let's now look at how the Immutables library makes it simple to create an immutable entity without that much boilerplate code. We will only look at the `Article` entity, because it will be very similar for the `User` entity.
+Let's now look at how the Immutables library makes it simple to create an immutable entity without that much boilerplate code. Let us only look at the `Article` entity, because it will be very similar for the `User` entity.
 
 ### Immutable `Article` Definition
 
-In the [standard article implementation](#the-article-entity), we saw how much code we need for creating a simple POJO
-class. Thankfully, with Immutables, we can get all that for free by annotating an abstract class: 
+In the [standard article implementation](#the-article-entity), we saw how much code we need for creating a simple POJO class with the builder. Thankfully, with Immutables, we can get all that for free by annotating an abstract class: 
 
 ```java
 
@@ -344,11 +343,9 @@ public abstract class Article {
 }
 ```
 
-The `@Value.Immutable` annotation says to the annotation processor that it should generate an implementation for this
-class.
+The `@Value.Immutable` annotation says to the annotation processor that it should generate an implementation for this class. This annotation will create the builder that we defined in the [manual implementation](#the-article-entity).
 
-It is important to mention that we can place the `@Value.Immutable` annotation on a class, an interface or an annotation
-type.
+It is important to mention that we can place the `@Value.Immutable` annotation on a class, an interface or an annotation type.
 
 ### Immutable `Article` Implementation
 
@@ -568,13 +565,31 @@ abstract class StagedBuilderArticle {
 }
 ```
 
-We use the `@Value.Style` annotation to tell the annotation processor that we need the staged builder generated.
+We use the `@Value.Style` annotation to tell the annotation processor that we need the staged builder generated:
 
-The staged builder is a strict builder by implication.
+```java
+public class BuildersService {
+    public static StagedBuilderArticle createStagedArticle(){
+        return ImmutableStagedBuilderArticle.builder()
+                .id(0)
+                .title("Lorem ipsum article!")
+                .build();
+    }
+}
+```
+In this example, we are not setting the content attribute, producing the following compile-time error:
+
+```java
+No candidates found for method call ImmutableStagedBuilderArticle.builder()
+            .id(0).title("Lorem ipsum article!").build()
+```
+The error shows that we cannot call the `build()` method if we don't set all required attributes.
+
+It is important to mention that the staged builder is a strict builder by implication.
 
 ## Using a Constructor
 
-Some use cases require that we use the regular constructor. As mentioned, the Immutables library creates a builder by
+We could be using some libraries that needs the constructor for the object creation (e.g., Hibernate). As mentioned, the Immutables library creates a builder by
 default, leaving the constructor in the private scope.
 
 Let's look at how to define a class that generates a constructor for us, instead:
@@ -635,10 +650,19 @@ public abstract class PlainPublicConstructorArticle {
 }
 ```
 
-First, we define that our class should be immutable. Then we annotate which attribute should be part of the public
-constructor.
+First, we define that our class should be immutable. Then we annotate which attribute should be part of the public constructor.
 
 The last thing that we need to do is to add `@Value.Style(of="new")` annotation to the class definition.
+
+After defining the `@Value.Style` annotation we can create the instance using the `new`keyword:
+```java
+public class ConstructorService {
+    public static PlainPublicConstructorArticle createPlainPublicConstructorArticle(){
+        return new ImmutablePlainPublicConstructorArticle(0,"Lorem ipsum","Lorem ipsum...");
+    }
+}
+```
+The article is created using the `new` keyword.
 
 ## Optional and Default Attributes
 
@@ -672,6 +696,7 @@ Everything else, by default, should go as a mandatory attribute.
 
 ### Default Attributes
 
+#### Default Attribute on the Class
 If we want to provide default values to the attributes that are not set using the builder or the constructor we can use
 the `@Value.Default` annotation:
 
@@ -693,6 +718,25 @@ abstract class DefaultArticle {
 ```
 
 The methods annotated with the `@Value.Default` annotation should then return the default value.
+
+#### Default Attribute on the Interface
+We can provide the default value to the attribute defined in the interface. We use the same `@Value.Default` annotation as in the [previous example](#default-attribute-on-the-class):
+```java
+@Value.Immutable
+interface DefaultArticleInterface {
+
+    Long getId();
+
+    @Value.Default
+    default String getTitle(){
+        return "Default title!";
+    }
+
+    String getContent();
+
+}
+```
+Since we are working with the interface, the method annotated with the `@Value.Default` annotation has to have the `default` keyword.
 
 ## Derived and Lazy Attributes
 
@@ -848,15 +892,15 @@ The package level annotation will apply the style to the whole package.
 
 The class level will take effect on the class where we placed it and on all nested classes.
 
-Used on an annotation as a meta-annotation, all classes annotated with that annotation will use the given style.
-
-__Note: It is the recommendation to use one or more meta-annotations instead of class or package level__
+Used on an annotation as a meta-annotation, all classes annotated with that annotation will use the given style. The next section shows how to create and use the meta-annotation.
 
 There are several things that we need to be aware of:
 
 - If there is mixing in the applied styles they will be selected indeterministically. Styles are never merged.
 - A style can be a powerful tool, and we need to be careful when using them.
 - Styles are cached. When changing something on the style, we need to rebuild the project or even restart the IDE.
+
+__Note: One or more meta-annotation instead of the class or the package level style will result in easier maintenance and upgrades.__
 
 ## Creating a Style Meta Annotation
 
@@ -873,14 +917,28 @@ Let's look at how to define new meta-annotation with a given style:
         visibility = Value.Style.ImplementationVisibility.PUBLIC
 
 )
-public @interface CustomStyle {
-}
+public @interface CustomStyle {}
 ```
 
 After defining `@Target` and `@Retention` as usual with an annotation, we come to the `@Value.Style` annotation. The first value defined
 that we want to use the `new` keyword. The next thing that we define is that we want to use the `strictBuilder` and
 that all attributes should be annotated with the `@Value.Parameter` annotation. The last style defined is that the
 implementation visibility will be public.
+
+## Using a Style Meta Annotation
+After defining the new style meta-annotation we can use it as we would use standard `@Value.Style` annotation:
+```java
+@Value.Immutable
+@CustomStyle
+abstract class StylesArticle {
+    abstract long getId();
+
+    abstract String getTitle();
+
+    abstract String getContent();
+}
+```
+The `@CustomStyle` annotation will create everything that we defined in the [previous chapter](#creating-a-style-meta-annotation).
 
 For more information about style possibilities, please refer to
 the [official documentation.](https://immutables.github.io/style.html)
@@ -890,12 +948,13 @@ the [official documentation.](https://immutables.github.io/style.html)
 We saw how the Immutables library helps us build immutable, thread-safe, and null-safe domain objects. It helps us build
 clean and readable POJO classes.
 
-Since it is a powerful tool we need to be careful how to use it. We can easily stray down the wrong path and overuse its
-features.
+Since it is a powerful tool, we need to be careful how to use it. We can easily stray down the wrong path and overuse its features. For example, derived attributes can end up in cycles which would break our code. The style definition can cause unexpected behavior in the code generation process if we are not careful enough. We can get indeterministic behavior that we don't want to experience.
 
 The last thing that I want to point out is the `@Value.Style` annotation. The `@Value.Immutable` annotation tells *what*
 will be generated, while the `@Value.Style` tells *how* it will be generated. This annotation can be a slippery slope, and we
 need to be careful and go outside of the default setting only when we are certain that we need to.
 
 For deeper reading on the Immutables library please refer to the [official page](https://immutables.github.io/).
+
+{{% github "https://github.com/thombergs/code-examples/tree/master/immutables" %}}
    

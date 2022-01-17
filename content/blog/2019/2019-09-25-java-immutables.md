@@ -13,6 +13,8 @@ In short, no. Feel free to jump right ahead to the section on [bad practices](#i
 
 Immutable objects are a way to create safer software that is easier to maintain. Why is that? And what should we do and what not when implementing them? This article provides answers.
 
+If you're interested in creating immutable objects in Java, also have a look at the article about the [Immutables Java library](/immutables-library).
+
 {{% github "https://github.com/thombergs/code-examples/tree/master/patterns" %}}
 
 ## What's an Immutable?

@@ -11,22 +11,24 @@ url: spring-boot-null-safety-annotations
 
 [`NullPointerException`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html) (often shortened as NPE) is a nightmare for every Java programmer.
 
-You will find plenty of articles on the internet explaining how to write null-safe code. Null-safety ensures that we have added proper checks in the code to guarantee the **object reference cannot be null** or possible safety measures are taken beforehand when any such situation arises.
+We can find plenty of articles on the internet explaining how to write null-safe code. Null-safety ensures that we have added proper checks in the code to **guarantee the object reference cannot be null or possible safety measures are taken beforehand when any such situation arises**.
 
-Since `NullPointerException` is a runtime exception, it would be hard to figure out such edge cases during code compilation. Java's type system does not have a way to quickly eliminate the dangerous null object references. 
+Since `NullPointerException` is a runtime exception, it would be hard to figure out such cases during code compilation. Java's type system does not have a way to quickly eliminate the dangerous null object references. 
 
 But, what if I tell you there are helpful approaches to write null-safe code. In particular, if you are using the Spring Framework. Wouldn't that be great news?
 
+Luckily, Spring Framework offers some annotations to solve this exact problem. 
+In this article, we will learn how to use these annotations to write null-safe code using [Spring Boot](https://reflectoring.io/categories/spring-boot/).
+
 ## Null-Safety Annotations in Spring
 
-Luckily, Spring Framework offers some annotations to solve this exact problem. 
-In this article, we will learn how to use these annotations to write null-safe code using [Spring Boot](https://reflectoring.io/categories/spring-boot/).  
+Under the `org.springframework.lang` Spring core package, there are 4 such annotations, `@NonNull`, `@NonNullFields`, `@Nullable`, and `@NonNullApi`. These are [meta-annotations](https://dzone.com/articles/what-are-meta-annotations-in-java) that use the famous (even though dormant at present) [JSR-305](https://jcp.org/en/jsr/detail?id=305) annotations underneath. 
 
-Under the `org.springframework.lang` package, there are 4 such annotations, `@NonNull`, `@NonNullFields`, `@Nullable`, and `@NonNullApi`. These are [meta-annotations](https://dzone.com/articles/what-are-meta-annotations-in-java) that use the famous (even though dormant at present) [JSR-305](https://jcp.org/en/jsr/detail?id=305) annotations underneath. 
+**Popular IDEs like [Eclipse](https://www.eclipse.org/ide/) and [IntelliJ IDEA](https://www.jetbrains.com/idea/) can understand these annotations.** It can warn the developers of potential issues during compile time. 
 
-**Popular IDEs like [Eclipse](https://www.eclipse.org/ide/) and [IntelliJ IDEA](https://www.jetbrains.com/idea/) understand these annotations.** It can warn the developers of potential issues during compile time. 
+We are going to use IntelliJ IDEA in this tutorial. Let us find out more with some code examples.
 
-We will use IntelliJ IDEA in this tutorial. Let us find out more with some code examples.
+To create the base project, we have taken help from the [Spring Initializr](https://start.spring.io/). The Spring Boot starter is all we need, no need to add any extra dependencies.
 
 ## `@NonNull`
 
@@ -139,7 +141,7 @@ class Employee {
 
 ## Conclusion
 
-These annotations are indeed a boon for the Java programmers to reduce the possibility of a `NullPointerException` arising during runtime. 
+These annotations are indeed a boon for the Java programmers to reduce the possibility of a `NullPointerException` arising during runtime. But, please bear in mind this does not guarantee complete null safety.
 
 **However, please note that not all development tools can show these warnings. If you don't see the compilation warning, check the compiler settings in IntelliJ.**
 

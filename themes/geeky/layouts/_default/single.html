@@ -60,7 +60,7 @@
         <ul class="list-inline card-meta d-flex align-items-center mb-4">
           <li class="list-inline-item d-flex align-items-center">
             <i class="fas fa-user me-2"></i>
-            <a href="/authors/{{ index .Params.authors 0 }}">{{ $author.name }}</a>
+            <a href="/authors/{{ index .Params.authors 0 }}" data-blogtrack-author>{{ $author.name }}</a>
           </li>
           <li class="list-inline-item d-flex align-items-center">
             <i class="fas fa-calendar me-2"></i>

@@ -67,10 +67,10 @@ button_link = "/"
 
 # cookies
 [cookies]
-enable = false
+enable = true
 expire_days = 2
-content = "This site uses cookies. By continuing to use this website, you agree to their use."
-button = "I Accept"
+content = "This site uses cookies to track analytics. By continuing to use this website, you agree to their use."
+button = "Accept"
 
 ######################## sidebar widgets #########################
 [widgets]

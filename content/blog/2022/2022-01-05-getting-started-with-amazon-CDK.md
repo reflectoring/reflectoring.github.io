@@ -1,9 +1,9 @@
 ---
 authors: [pratikdas]
 title: "Getting Started with AWS CDK"
-categories: ["spring-boot"]
-date: 2022-01-05 06:00:00 +1000
-modified: 2022-01-05 06:00:00 +1000
+categories: ["aws"]
+date: 2022-01-20 06:00:00 +1000
+modified: 2022-01-20 06:00:00 +1000
 excerpt: "AWS Cloud Development Kit (CDK) is a framework for defining cloud infrastructure in code and provisioning it through AWS CloudFormation. It helps us to build applications in the cloud with the expressive power of a programming language. In this article, we will introduce AWS CDK, understand its core concepts and work through some examples."
 image: images/stock/0115-2021-1200x628-branded.jpg
 url: getting-started-with-aws-cdk

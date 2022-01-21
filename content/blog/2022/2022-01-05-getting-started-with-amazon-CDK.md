@@ -4,29 +4,31 @@ title: "Getting Started with AWS CDK"
 categories: ["spring-boot"]
 date: 2022-01-05 06:00:00 +1000
 modified: 2022-01-05 06:00:00 +1000
-excerpt: "AWS Cloud Development Kit (CDK) is a framework for defining cloud infrastructure in code and provisioning it through AWS CloudFormation. It lets us build applications in the cloud with the expressive power of a programming language. In this article, we will introduce AWS CDK, understand its core concepts and work through some examples."
+excerpt: "AWS Cloud Development Kit (CDK) is a framework for defining cloud infrastructure in code and provisioning it through AWS CloudFormation. It helps us to build applications in the cloud with the expressive power of a programming language. In this article, we will introduce AWS CDK, understand its core concepts and work through some examples."
 image: images/stock/0115-2021-1200x628-branded.jpg
 url: getting-started-with-aws-cdk
 ---
 
 Infrastructure as Code (IaC) is the managing and provisioning of infrastructure through code instead of through manual processes.
 
-AWS provides native support for IaC the Azure Resource Manager. Teams can define declarative templates that specify the infrastructure required to deploy their solutions.
+AWS provides native support for IaC thru the CloudFormation service. With CloudFormation, teams can define declarative templates that specify the infrastructure required to deploy their solutions.
 
-AWS Cloud Development Kit (CDK) is a framework for defining cloud infrastructure in code and provisioning it through AWS CloudFormation. It lets us build applications in the cloud with the expressive power of a programming language. 
+AWS Cloud Development Kit (CDK) is a framework for defining cloud infrastructure with the expressive power of a programming language and provisioning it through AWS CloudFormation. 
 
 In this article, we will introduce AWS CDK, understand its core concepts and work through some examples.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-i18n" %}
+{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/aws/cdkv2" %}
 
 ## What is AWS CDK
 The AWS Cloud Development Kit (AWS CDK) is an open-source framework for defining cloud infrastructure as code with a set of supported programming languages. It is designed to support multiple programming languages. The core of the system is written in TypeScript, but bindings for other languages can be added.
 
 AWS CDK comes with a Command Line Interface (CLI) to interact with CDK applications for performing different tasks like 
  - listing the infrastructure stacks defined in the CDK app
- - synthesize the stacks into CloudFormation templates, 
- determine the differences between running stack instances and the stacks defined in our CDK code, 
- and deploy stacks to any public AWS Region
+ - synthesizing the stacks into CloudFormation templates, 
+ - determining the differences between running stack instances and the stacks defined in our CDK code, 
+ and deploying stacks to any public AWS Region
+
+
 
 ## Primer on CloudFormation - the Engine underneath CDK
 The CDK is built over AWS CloudFormation service and uses it as the engine for provisioning AWS resources. So it is very important to have a good understanding of CloudFormation when working with CDK.
@@ -71,28 +73,7 @@ This template specifies the resources that we want for hosting a website:
 
 When creating a stack, CloudFormation provisions the resources that are described in our template by making underlying service calls to AWS.
 
-AWS CDK allows us to define your infrastructure in our favorite programming language instead of using a declarative language like JSON or YAML.
-
-## Provision a VM and an S3 Bucket with CDK
-
-```shell
-npm install -g aws-cdk@latest
-```
-
-```shell
-cdk init app --language java
-
-```
-
-```shell
-mvn compile -q
-
-```
-Define a VM in code
-
-```java
-
-```
+AWS CDK allows us to define our infrastructure in our favorite programming language instead of using a declarative language like JSON or YAML as in CloudFormation.
 
 ## Setting up the Prerequisites for CDK
 
@@ -113,7 +94,6 @@ This will install the latest version of the CDK toolkit in our environment which
 cdk --version
 ```
 3. **Set up Language-Specific Prerequisites**: CDK supports multiple languages. We will be using Java in our examples here. We can create AWS CDK applications in Java using the language's familiar tools like the JDK (Oracle's, or an OpenJDK distribution such as Amazon Corretto) and Apache Maven. Prerequisites for other languages can be found in the official documentation.
-
 
 
 ## Creating a new CDK Project
@@ -174,44 +154,64 @@ Constructs are reusable components in which we bundle a bunch of infrastructure 
 
 A construct can represent a single AWS resource, such as an Amazon Simple Storage Service (Amazon S3) bucket, or it can be a higher-level abstraction consisting of multiple AWS-related resources. As such constructs are represented as a tree starting with a root construct and multiple child constructs arranged in a hierarchy.
 
-In the CDK-supported languages, a construct is represented as a class from which all other types of constructs inherit.
+In all CDK-supported languages, a construct is represented as a base class from which all other types of constructs inherit.
 
 
 ## Structure of CDK including the App and the Stack Constructs
-A CDK project is composed of an app construct and one or more constructs of type stack. When we generated the project by running `cdk init`, one app and one stack construct were generated. The app is the entry point of the CDK application.
+A CDK project is composed of an `App` construct and one or more constructs of type `Stack`. When we generated the project by running `cdk init`, one `App` and one `Stack` construct were generated. The `App` is the entry point of the CDK application.
 
-Similarly, the stack is where we define our infrastructure. A stack is the unit of deployment in the AWS CDK. All AWS resources defined within the scope of a stack are provisioned as a single unit.
+Similarly, the `Stack` is where we define our infrastructure. It is the unit of deployment in the AWS CDK. All AWS resources defined within the scope of a stack are provisioned as a single unit.
 
-## The Apps Construct - the Application
-The App is a construct that represents an entire CDK app. This construct is normally the root of the construct tree. We define an App instance as the entry point of our CDK application and then define the constructs where the app is used as the parent scope.
+## The App Construct - the CDK Application
+The `App` is a construct that represents an entire CDK app. This construct is normally the root of the construct tree. We define an `App` instance as the entry point of our CDK application and then define the constructs where the `App` is used as the parent scope.
 
-We use the App construct to define one or more stacks within the scope of an application. The following example app instantiates a MyFirstStack and produces the AWS CloudFormation template that the stack defined.
-
+We use the `App` construct to define one or more stacks within the scope of an application as shown in this code snippet: 
 ```java
+public class MyCdkApp {
+    public static void main(final String[] args) {
+        App app = new App();
 
+        new MyFirstStack(app, "myStack", StackProps.builder()
+         
+                .env(Environment.builder()
+                        .account("********")
+                        .region("us-east-1")
+                        .build())
+                
+                .build());
+
+        app.synth();
+    }
+}
 
 ```
+In this example, the `App` instantiates a stack named `myStack` and sets the AWS account and region where the resources will be provisioned.
+
 ## The Stack Construct - Unit of Deployment
-A stack is the unit of deployment in the AWS CDK. All AWS resources defined within the scope of a stack are provisioned as a single unit.
-We can define any number of stacks in our AWS CDK app. Any instance of the Stack construct represents a stack and can be either defined directly within the scope of the app, like the MyFirstStack example shown previously, or indirectly by any construct within the tree.
+A `Stack` is the unit of deployment in the AWS CDK. All AWS resources defined within the scope of a `Stack` are provisioned as a single unit.
+We can define any number of stacks within a CDK app.
 
-For example, the following code defines an AWS CDK app with two stacks.
+For example, the following code defines an AWS CDK app with two stacks:
 
 ```java
-App app = new App();
+public class MyCdkApp {
+    public static void main(final String[] args) {
+        App app = new App();
 
-new MyFirstStack(app, "stack1");
-new MySecondStack(app, "stack2");
+        new MyFirstStack(app, "stack1");
+        new MySecondStack(app, "stack2");
 
-app.synth();
+        app.synth();
+    }
+}
 
 ```
-After all the child constructs are defined within the app the `synth()` is called on the app instance which emits an assembly of artifacts like CloudFormation templates and assets that are needed to deploy this app into the AWS cloud.
+Here we are defining two stacks named `stack1` and `stack2` and calling the `synth()` method on the `app` instance to generate the CloudFormation template.
 
-## Defining the Infrastructure With CDK
-After understanding the app and stack constructs, let us return to the project we generated earlier for creating some infrastructure resources. 
+## Defining the Infrastructure with CDK
+After understanding the `App` and the `Stack` constructs, let us return to the project we generated earlier for creating our infrastructure resources. 
 
-We will first change the App class in our project to specify the stack properties, AWS account, and the region where we want to create our infrastructure. We do this by specifying these values in an environment object as shown here:
+We will first change the `App` class in our project to specify the `Stack` properties: AWS account, and the region where we want to create our infrastructure. We do this by specifying these values in an environment object as shown here:
 
 ```java
 public class CdkAppApp {
@@ -289,7 +289,7 @@ public class CdkAppStack extends Stack {
 
 ```
 
-In this code snippet, we are first looking up the default VPC in our AWS account. After that, we are creating a security group in this VPC that will allow all outbound traffic. Finally, we are creating the EC2 instance with properties: instanceType, machineImage, blockDevices, and securityGroup.
+In this code snippet, we are first looking up the default VPC in our AWS account. After that, we are creating a security group in this VPC that will allow all outbound traffic. Finally, we are creating the EC2 instance with properties: `instanceType`, `machineImage`, `blockDevices`, and `securityGroup`.
 
 ## Synthesize Cloudformation Template
 Synthesizing is the process of executing our CDK app to generate the equivalent of our CDK code as a CloudFormation template. We do this by running the `synth` command as follows:
@@ -297,13 +297,13 @@ Synthesizing is the process of executing our CDK app to generate the equivalent 
 cdk synth
 ```
 
-If our app contained more than one stack, we need to specify which stack(s) to synthesize. But if it only contains one, the CDK Toolkit knows you must mean that one.
+If our app contained more than one `Stack`, we need to specify which `Stack(s)` to synthesize. We don't have to specify the `Stack` if it only contains only one `Stack`.
 
 
-The cdk synth command executes our app, which causes the resources defined in it to be translated into an AWS CloudFormation template. The displayed output of cdk synth is a YAML-format template. The beginning of our app's output is shown below:
+The `cdk synth` command executes our app, which causes the resources defined in it to be translated into an AWS CloudFormation template. The output of `cdk synth` is a YAML-format template. The beginning of our app's output is shown below:
 
 ```shell
-(base) Pratiks-MacBook-Pro:cdk-app pratikdas$ cdk synth
+> cdk synth
 Resources:
   sg29196201:
     Type: AWS::EC2::SecurityGroup
@@ -323,9 +323,9 @@ Resources:
       ...
       ...
 ```
-The output is the Cloudformation template containing the resources defined in the stack under our CDK app.
+The output is the CloudFormation template containing the resources defined in the stack under our CDK app.
 ## Deploy Cloudformation Template
-At last, we proceed to deploy the CDK app with the `deploy` command when the actual resources are provisioned in AWS. Let us run the deploy command by specifying our AWS credentials stored under a profile created in our environment:
+At last, we proceed to deploy the CDK app with the `deploy` command when the actual resources are provisioned in AWS. Let us run the `deploy` command by specifying our AWS credentials stored under a profile created in our environment:
 
 ```shell
 (base) Pratiks-MacBook-Pro:cdk-app pratikdas$ cdk deploy --profile pratikpoc
@@ -374,13 +374,13 @@ arn:aws:cloudformation:us-east-1:675153449441:stack/CdkAppStack/b9ab5740-7919-11
 
 
 ```
-As part of deploy, first, a changeset is generated which we need to confirm for the resources in our stack to be provisioned.
+As part of deploy, first, a changeset of the resources is generated which we need to confirm for them to be provisioned.
 
 ## Destroying the Infrastructure
 When we no longer need the infrastructure, we can dispose of all the provisioned resources by running the `destroy` command:
 
 ```shell
-(base) Pratiks-MacBook-Pro:cdk-app pratikdas$ cdk destroy --profile pratikpoc
+> cdk destroy --profile pratikpoc
 Are you sure you want to delete: CdkAppStack (y/n)? y
 CdkAppStack: destroying...
 
@@ -390,10 +390,24 @@ CdkAppStack: destroying...
 
 
 ```
-All the resources under the stack are destroyed as a single unit.
-## Writing Our Constructs
+As a result of running the `destroy` command, all the resources under the stack are destroyed as a single unit.
 
-We can also write our own constructs by extending the `Construct` class as shown here:
+
+
+## Construct Library and the Construct Hub
+The AWS CDK contains the [AWS Construct Library](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-construct-library.html), which includes constructs that represent all the resources available on AWS. This library has three levels of constructs :
+
+- **Level 1 (L1) Constructs**: These are low-level constructs also called CFN Resources which directly represent all resources available in AWS CloudFormation. They are named CfnXyz, where Xyz is the name of the resource. We have to configure all the properties of the L1 constructs. For example, we will define an EC2 instance with CfnInstance class and configure all its properties.
+
+- **Level 2 (L2) Constructs**: These are slightly higher level constructs than the L1 constructs with some of the properties of the resources defined as defaults.AWS resources with a higher-level, intent-based API. The `Instance` class that we used in our example to provision an EC2 instance is an L2 construct and comes with default properties set.
+
+- **Level 3 (L3) Constructs**: These constructs are also called patterns, these constructs are designed to help us complete common tasks in AWS, often involving multiple kinds of resources. For example, the [aws-ecs-patterns](https://docs.aws.amazon.com/cdk/api/v2//docs/aws-cdk-lib.aws_ecs_patterns-readme.html) provides higher-level Amazon ECS constructs which follow common architectural patterns for application and network Load Balanced Services, Queue Processing Services, and Scheduled Tasks (cron jobs).
+
+Similarly, the Construct Hub is a resource to help us discover additional constructs from AWS, third parties, and the open-source CDK community.
+
+## Writing Our Own Curated Constructs
+
+We can also write our own constructs by extending the `Construct` base class as shown here:
 
 ```java
 public class MyStorageBucket extends Construct{
@@ -421,24 +435,9 @@ This construct can be used for creating an S3 bucket construct with a lifecycle 
 
 We can also create constructs by the composition of lower-level constructs. This way we can define reusable components and share them with other teams like any other code. 
 
-For example in an organization set up, a team can define a construct to enforce security best practices for an AWS resource like EC2 or S3 and share it with other teams in the organization. Other teams can now use this construct when building different applications without provisioning their AWS resources without any risk of non-compliance with organizations' security policies. 
+For example, in an organization setup, a team can define a construct to enforce security best practices for an AWS resource like EC2 or S3 and share it with other teams in the organization. Other teams can now use this construct when building different applications without provisioning their AWS resources without any risk of non-compliance with organizations' security policies. 
 
 
-
-
-## Construct Library and the Construct Hub
-The AWS CDK contains the [AWS Construct Library](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-construct-library.html), which includes constructs that represent all the resources available on AWS. This library has three levels of constructs :
-
-- **Level 1 (L1) Constructs**: These are low-level constructs also called CFN Resources which directly represent all resources available in AWS CloudFormation. They are named CfnXyz, where Xyz is the name of the resource. We have to configure all the properties of the L1 constructs. For example, we will define an EC2 instance with CfnInstance class and configure all its properties.
-
-- **Level 2 (L2) Constructs**: These are slightly higher level constructs than the L1 constructs with some of the properties of the resources defined as defaults.AWS resources with a higher-level, intent-based API. The `Instance` class that we used in our example to provision an EC2 instance is an L2 construct and comes with default properties set.
-
-- **Level 3 (L3) Constructs**: These constructs are also called patterns, these constructs are designed to help us complete common tasks in AWS, often involving multiple kinds of resources. For example, the [aws-ecs-patterns](https://docs.aws.amazon.com/cdk/api/v2//docs/aws-cdk-lib.aws_ecs_patterns-readme.html) provides higher-level Amazon ECS constructs which follow common architectural patterns for application and network Load Balanced Services, Queue Processing Services, and Scheduled Tasks (cron jobs).
-
-Similarly, the Construct Hub is a resource to help us discover additional constructs from AWS, third parties, and the open-source CDK community.
-
-## Best Practices
-As with all frameworks, AWS CDK has recommended best practices. 
 
 ## Conclusion
 
@@ -451,7 +450,18 @@ Here is a list of the major points for a quick reference:
 5. There are three levels of constructs: L1, L2, and L3 in the Construct library.
 6. The Construct Hub is a resource to help us discover additional constructs from AWS, third parties, and the open-source CDK community
 7. We can curate our constructs usually by the composition of lower-level constructs. This way we can define reusable components and share them with other teams like any other code. 
+8. As with all frameworks, AWS CDK has recommended [best practices](https://docs.aws.amazon.com/cdk/v2/guide/best-practices.html) which should be followed for building CDK applications. 
+9. Important cdk commands:
+```shell
+
+cdk init app --language java    // Generate the CDK project
+cdk synth      // Generate the CloudFormation Template
+cdk diff       // Finding the difference between deployed resources and new resources
+cdk deploy     // Deploy the app to provision the resources
+cdk destroy    // Dispose of the infrastructure
+
+```
 
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-i18n).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/cdkv2).
 

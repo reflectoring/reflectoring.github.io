@@ -160,8 +160,6 @@ In all CDK-supported languages, a construct is represented as a base class from 
 ## Structure of an CDK Application
 A CDK project is composed of an `App` construct and one or more constructs of type `Stack`. When we generated the project by running `cdk init`, one `App` and one `Stack` construct were generated. 
 
-Similarly, the `Stack` is where we define our infrastructure. It is the unit of deployment in the AWS CDK. All AWS resources defined within the scope of a stack are provisioned as a single unit.
-
 ### The App Construct - the CDK Application
 The `App` is a construct that represents an entire CDK app. This construct is normally the root of the construct tree. We define an `App` instance as the entry point of our CDK application and then define the constructs where the `App` is used as the parent scope.
 

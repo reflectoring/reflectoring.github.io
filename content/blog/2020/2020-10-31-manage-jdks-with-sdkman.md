@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2020-11-07T00:00:00
 modified: 2020-11-07T00:00:00
 authors: [petros]
-excerpt: "As Java developers, we often need to switch between different versions of the JDK for different projects. SDKMAN! makes this easy."
+description: "As Java developers, we often need to switch between different versions of the JDK for different projects. SDKMAN! makes this easy."
 image: images/stock/0087-hammers-1200x628-branded.jpg
 url: manage-jdks-with-sdkman
 ---

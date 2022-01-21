@@ -3,7 +3,7 @@ authors: [tom]
 title: Hexagonal Architecture with Java and Spring
 categories: ["Java", "Software Craft", "Spring Boot"]
 date: 2019-11-03T10:00:00
-excerpt: "The term 'Hexagonal Architecture' has been around for a long time. But would you know how to implement this architecture style in actual code? This article provides such a way."
+description: "The term 'Hexagonal Architecture' has been around for a long time. But would you know how to implement this architecture style in actual code? This article provides such a way."
 image:  images/stock/0054-bee-1200x628-branded.jpg
 url: spring-hexagonal
 ---

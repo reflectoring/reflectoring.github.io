@@ -4,7 +4,7 @@ categories: ["AWS"]
 date: 2020-02-15T05:00:00
 modified: 2020-02-15T05:00:00
 authors: [tom]
-excerpt: "Always wanted to get started on AWS? Then let's create a Docker image and deploy it to the AWS cloud! All you need is an AWS account and about 15 minutes of time."
+description: "Always wanted to get started on AWS? Then let's create a Docker image and deploy it to the AWS cloud! All you need is an AWS account and about 15 minutes of time."
 image: images/stock/0061-cloud-1200x628-branded.jpg
 url: aws-deploy-docker-image-via-web-console
 widgets: ["gyhdoca-ad", "stratospheric-ad"]

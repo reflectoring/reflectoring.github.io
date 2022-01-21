@@ -4,7 +4,7 @@ categories: ["Software Craft"]
 date: 2020-05-02T05:00:00
 modified: 2020-05-02T05:00:00
 authors: [tom]
-excerpt: "Learn the details of creating an AWS CloudFormation template to spin up a virtual private cloud and deploy your Docker containers into it with a single CLI command."
+description: "Learn the details of creating an AWS CloudFormation template to spin up a virtual private cloud and deploy your Docker containers into it with a single CLI command."
 image: images/stock/0061-cloud-1200x628-branded.jpg
 url: aws-cloudformation-deploy-docker-image
 ---

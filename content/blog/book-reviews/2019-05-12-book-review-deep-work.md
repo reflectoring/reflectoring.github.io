@@ -3,7 +3,7 @@ authors: [tom]
 title: "Book Review: Deep Work"
 categories: ["Book Notes"]
 date: 2019-05-12
-excerpt: "A review of the Book 'Deep Work' by Cal Newport."
+description: "A review of the Book 'Deep Work' by Cal Newport."
 image: images/covers/deep-work-teaser.jpg
 url: book-review-deep-work
 ---

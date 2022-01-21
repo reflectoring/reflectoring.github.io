@@ -4,7 +4,7 @@ categories: ["Spring Boot", "AWS"]
 date: 2021-02-09T00:00:00
 modified: 2021-02-09T00:00:00
 authors: [jgoerner]
-excerpt: "Learn how to use Spring Boot and AWS S3 by building our own file-sharing application."
+description: "Learn how to use Spring Boot and AWS S3 by building our own file-sharing application."
 image: images/stock/0095-bucket-1200x628-branded.jpg
 url: spring-boot-s3
 widgets: ["gyhdoca-ad", "stratospheric-ad"]

@@ -3,7 +3,7 @@ authors: [tom]
 title: "Testing a Spring Boot REST API against a Consumer-Driven Contract with Pact"
 categories: ["Spring Boot"]
 date: 2018-08-11
-excerpt: "A guide on how to implement a consumer-driven contract test with Pact that verifies that a REST provider based on
+description: "A guide on how to implement a consumer-driven contract test with Pact that verifies that a REST provider based on
           Spring Boot works as defined in the contract."
 image:  images/stock/0026-signature-1200x628-branded.jpg
 url: consumer-driven-contract-provider-pact-spring

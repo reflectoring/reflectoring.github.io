@@ -4,7 +4,7 @@ categories: ["AWS"]
 date: 2021-04-22T06:00:00
 modified: 2021-04-22T06:00:00
 authors: [pratikdas]
-excerpt: "Terraform is a popular infrastructure provisioning tool that makes it very easy to define infrastructure as code. In this post, we will introduce Terraform basics and see how Terraform can be used to provision AWS resources."
+description: "Terraform is a popular infrastructure provisioning tool that makes it very easy to define infrastructure as code. In this post, we will introduce Terraform basics and see how Terraform can be used to provision AWS resources."
 image: images/stock/0099-desert-1200x628-branded.jpg
 url: terraform-aws
 widgets: ["gyhdoca-ad", "stratospheric-ad"]

@@ -4,7 +4,7 @@ categories: ["AWS"]
 date: 2020-06-30T06:00:00
 modified: 2020-06-30T06:00:00
 authors: [pratikdas]
-excerpt: "New to AWS? We've got you covered. AWS is a vast ocean of services across a bunch of different domains. This article introduces the most commonly used AWS services."
+description: "New to AWS? We've got you covered. AWS is a vast ocean of services across a bunch of different domains. This article introduces the most commonly used AWS services."
 image: images/stock/0072-aws-1200x628-branded.jpg
 url: what-is-aws
 widgets: ["gyhdoca-ad", "stratospheric-ad"]

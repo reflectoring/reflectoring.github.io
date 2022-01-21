@@ -4,7 +4,7 @@ categories: ["AWS"]
 date: 2020-07-27T06:00:00
 modified: 2020-07-27T06:00:00
 authors: [pratikdas]
-excerpt: "Developing a Spring Boot App Against AWS Services with LocalStack"
+description: "Developing a Spring Boot App Against AWS Services with LocalStack"
 image: images/stock/0074-stack-1200x628-branded.jpg
 url: aws-localstack
 widgets: ["gyhdoca-ad", "stratospheric-ad"]

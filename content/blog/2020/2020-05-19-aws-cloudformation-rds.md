@@ -4,7 +4,7 @@ categories: ["AWS"]
 date: 2020-05-19T05:00:00
 modified: 2020-05-19T05:00:00
 authors: [tom]
-excerpt: "Deploy a Spring Boot application and a PostgreSQL database in a fully automated way with AWS CloudFormation."
+description: "Deploy a Spring Boot application and a PostgreSQL database in a fully automated way with AWS CloudFormation."
 image: images/stock/0061-cloud-1200x628-branded.jpg
 url: aws-cloudformation-rds
 widgets: ["gyhdoca-ad", "stratospheric-ad"]

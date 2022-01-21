@@ -3,7 +3,7 @@ authors: [tom]
 title: Loading External Application Properties in the Gradle bootRun Task
 categories: ["Spring Boot"]
 date: 2017-01-25
-excerpt: "Configuration parameters should not be baked into code - including 
+description: "Configuration parameters should not be baked into code - including 
           the code of your build scripts. This tutorial shows how use the Gradle bootRun task to
           start a Spring Boot application with application parameters loaded from a properties file." 
 image: images/stock/0013-switchboard-1200x628-branded.jpg

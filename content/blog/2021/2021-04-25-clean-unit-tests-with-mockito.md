@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2021-04-25T00:00:00
 modified: 2021-04-25T00:00:00
 authors: [lleuenberger ]
-excerpt: "Intro to writing clean unit tests with Mockito."
+description: "Intro to writing clean unit tests with Mockito."
 image: images/stock/0052-mock-1200x628-branded.jpg
 url: clean-unit-tests-with-mockito
 ---

@@ -3,7 +3,7 @@ authors: [tom]
 title: "Book Review: Atomic Habits"
 categories: ["Book Notes"]
 date: 2020-01-18T06:00:00
-excerpt: "'Atomic Habits' provides an actionable framework for making or breaking habits. Here are my notes."
+description: "'Atomic Habits' provides an actionable framework for making or breaking habits. Here are my notes."
 image: images/covers/atomic-habits-teaser.jpg
 url: book-review-atomic-habits
 ---

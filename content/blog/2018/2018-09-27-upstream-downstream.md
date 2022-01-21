@@ -3,7 +3,7 @@ authors: [tom]
 title: "What is Upstream and Downstream in Software Development?"
 categories: ["Software Craft"]
 date: 2018-09-27
-excerpt: "Wondering about what upstream and downstream means in the context
+description: "Wondering about what upstream and downstream means in the context
           of software development? This articles discusses several
           usages of these words and defines two simple rules
           to identify what is upstream and what is downstream in

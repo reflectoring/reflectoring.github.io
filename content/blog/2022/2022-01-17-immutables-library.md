@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2022-01-17 00:00:00 +1100 
 modified: 2022-01-17 00:00:00 +1100
 authors: [mateo]
-excerpt: "Example-rich guide to the Immutables library."
+description: "Example-rich guide to the Immutables library."
 image: images/stock/0065-java-1200x628-branded.jpg 
 url: immutables-library
 ---

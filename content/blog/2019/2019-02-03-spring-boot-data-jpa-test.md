@@ -3,7 +3,7 @@ authors: [tom]
 title: "Testing JPA Queries with Spring Boot and @DataJpaTest"
 categories: ["Spring Boot"]
 date: 2019-02-03
-excerpt: "An in-depth tutorial about Spring Boot's support for testing JPA database queries."
+description: "An in-depth tutorial about Spring Boot's support for testing JPA database queries."
 image:  images/stock/0019-magnifying-glass-1200x628-branded.jpg
 url: spring-boot-data-jpa-test
 ---

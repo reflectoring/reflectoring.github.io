@@ -4,7 +4,7 @@ categories: ["AWS"]
 date: 2021-01-03T00:00:00
 modified: 2021-01-03T00:00:00
 authors: [tom]
-excerpt: "Let's deploy our first application to AWS with CloudFormation. No previous CloudFormation knowledge required!"
+description: "Let's deploy our first application to AWS with CloudFormation. No previous CloudFormation knowledge required!"
 image: images/stock/0061-cloud-1200x628-branded.jpg
 url: getting-started-with-aws-cloudformation
 widgets: ["gyhdoca-ad", "stratospheric-ad"]

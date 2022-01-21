@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2022-01-15 06:00:00 +1000
 modified: 2022-01-15 06:00:00 +1000
 authors: [pratikdas]
-excerpt: "Collections are containers to group multiple items in a single unit. For example, a collection can represent a stack of books, products of a category, a queue of text messages, etc. They are an essential feature of almost all programming languages, most of which support different types of collections such as List, Set, Queue, Stack, etc. In this article, we will look at some logical operations on Java Collections."
+description: "Collections are containers to group multiple items in a single unit. For example, a collection can represent a stack of books, products of a category, a queue of text messages, etc. They are an essential feature of almost all programming languages, most of which support different types of collections such as List, Set, Queue, Stack, etc. In this article, we will look at some logical operations on Java Collections."
 image: images/stock/0074-stack-1200x628-branded.jpg
 url: common-operations-on-java-collections
 ---

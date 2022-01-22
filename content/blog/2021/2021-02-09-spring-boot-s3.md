@@ -7,12 +7,18 @@ authors: [jgoerner]
 description: "Learn how to use Spring Boot and AWS S3 by building our own file-sharing application."
 image: images/stock/0095-bucket-1200x628-branded.jpg
 url: spring-boot-s3
-widgets: ["gyhdoca-ad", "stratospheric-ad"]
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 
 In this article, **we are going to explore AWS' Simple Storage Service (S3) together with Spring Boot to build a custom file-sharing application** (just like in the good old days before Google Drive, Dropbox & co).
 
 As we will learn, S3 is an extremely versatile and easy to use solution for a variety of use cases.
+
+{{% stratospheric %}}
+This article gives only first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+{{% /stratospheric %}}
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/s3" %}}
 
@@ -441,4 +447,10 @@ In this article, we've learned the basics of AWS' Simple Storage Service (S3) an
 We used S3 to build a custom file-sharing application ([code on GitHub](https://github.com/thombergs/code-examples/tree/master/aws/s3)), that lets us upload & share our files in different ways. But it shall be said, that S3 is way more versatile, often also quoted to be the **backbone of the internet**.
 
 As this is a getting started article, we did not touch other topics like [storage tiers](https://aws.amazon.com/s3/storage-classes/), [object versioning](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html), or [static content hosting](https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html). So I can only recommend you get your hands dirty, and play around with S3!
+
+{{% stratospheric %}}
+This article gives only first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+{{% /stratospheric %}}
 

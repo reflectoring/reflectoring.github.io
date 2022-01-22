@@ -7,7 +7,7 @@ authors: [pratikdas]
 description: "Developing a Spring Boot App Against AWS Services with LocalStack"
 image: images/stock/0074-stack-1200x628-branded.jpg
 url: aws-localstack
-widgets: ["gyhdoca-ad", "stratospheric-ad"]
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 When we build applications with AWS, we access various AWS services for multiple purposes: store files in S3, save some data in DynamoDB, send messages to SQS, write event handlers with lambda functions, and many others. 
 
@@ -17,7 +17,12 @@ To avoid getting bogged down by these mundane tasks, we can use [LocalStack](htt
 
 Simply put, **LocalStack is an open-source mock of the real AWS services. It provides a testing environment on our local machine with the same APIs as the real AWS services.** We switch to using the real AWS services only in the integration environment and beyond.
 
-**If you like to learn about deploying a production-ready Spring Boot application to AWS, have a look at the [Stratospheric book](https://stratospheric.dev)!**
+
+{{% stratospheric %}}
+This article gives only first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+{{% /stratospheric %}}
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/localstack" %}}
 
@@ -314,4 +319,8 @@ I hope this will help you to feel empowered and have more fun while working with
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/localstack).
 
-**If you like to learn about deploying a production-ready Spring Boot application to AWS, have a look at the [Stratospheric book](https://stratospheric.dev)!**
+{{% stratospheric %}}
+This article gives only first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+{{% /stratospheric %}}

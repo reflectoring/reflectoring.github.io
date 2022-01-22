@@ -7,7 +7,7 @@ authors: [pratikdas]
 description: "AWS DynamoDB is a fully managed NoSQL database service in AWS Cloud. In this article, we will look at accessing DynamoDB from our Java applications with Spring Data and an enhanced high-level client with the help of some code examples."
 image: images/stock/0102-dynamo-1200x628-branded.jpg
 url: spring-dynamodb
-widgets: ["gyhdoca-ad", "stratospheric-ad"]
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 
 AWS DynamoDB is a NoSQL database service available in AWS Cloud. 
@@ -17,6 +17,12 @@ DynamoDB provides many benefits starting from a flexible pricing model, stateles
 Due to this reason, DynamoDB is widely used as a database with serverless compute services like AWS Lambda and in microservice architectures. 
 
 In this tutorial, we will look at using the DynamoDB database in microservice applications built with [Spring Boot](https://spring.io/projects/spring-boot) along with code examples.
+
+{{% stratospheric %}}
+This article gives only first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+{{% /stratospheric %}}
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/springdynamodb" %}}
 
@@ -548,3 +554,9 @@ In this article, we looked at the important concepts of AWS DynamoDB and perform
 I hope this will help you to get started with building applications using Spring with AWS DynamoDB as the database. 
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springdynamodb).
+
+{{% stratospheric %}}
+This article gives only first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+{{% /stratospheric %}}

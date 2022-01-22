@@ -1,13 +1,13 @@
 ---
-title: "Getting Started with AWS Java CDK"
+title: "Deploying a Spring Boot App with the AWS CDK"
 categories: ["Java", "AWS"]
 date: 2021-03-06T00:00:00
 modified: 2021-03-06T00:00:00
 authors: [tom]
 description: "From zero to deploying a Spring Boot app to the cloud with the AWS CDK."
 image: images/stock/0061-cloud-1200x628-branded.jpg
-url: getting-started-with-aws-cdk
-widgets: ["gyhdoca-ad", "stratospheric-ad"]
+url: deploy-spring-boot-app-with-aws-cdk
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 
 In the article ["Getting Started with AWS CloudFormation"](/getting-started-with-aws-cloudformation), we have already played around a bit with AWS CloudFormation. We have deployed a network stack that provides the network infrastructure we need, and a service stack that deploys a Docker image with our Spring Boot application into that network.
@@ -18,12 +18,11 @@ Under the hood, CDK will "synthesize" a CloudFormation file from our Java code a
 
 Let's create our first CDK app! Follow along the steps in this chapter to create a CDK app that deploys our "Hello World" application to the cloud.
 
-## Check out the Book!
+{{% stratospheric %}}
+This article is a self-sufficient sample chapter from the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev).
 
-<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" alt="Stratospheric - From Zero to Production with Spring Boot and AWS" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
-This article is a self-sufficient sample chapter from the book ["Stratospheric - From Zero to Production with Spring Boot and AWS"](https://stratospheric.dev), which I'm co-authoring.
-
-If you're interested in learning about building applications with Spring Boot and AWS from top to bottom, make sure to check it out!
+If you want to learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check it out!
+{{% /stratospheric %}}
 
 
 ## Creating Our First CDK App
@@ -332,11 +331,10 @@ This means our CDK project needs to be flexible enough to let us deploy addition
 
 To get this control, we have to build our own stacks and our own constructs. And this is what we're going to do in the next chapter.
 
-## Check out the Book!
+{{% stratospheric %}}
+This article is a self-sufficient sample chapter from the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev).
 
-<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" alt="Stratospheric - From Zero to Production with Spring Boot and AWS" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
-This was a sample chapter from the book ["Stratospheric - From Zero to Production with Spring Boot and AWS"](https://stratospheric.dev).
-
-If you enjoyed this article, make sure to check out the book to learn more about building Spring Boot applications with AWS.
+If you want to learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check it out!
+{{% /stratospheric %}}
 
 

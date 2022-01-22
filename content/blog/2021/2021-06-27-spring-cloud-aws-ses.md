@@ -7,7 +7,7 @@ authors: [pratikdas]
 description: "Amazon Simple Email Service (SES) provides an email platform for sending and receiving emails. Spring Cloud AWS makes it convenient to integrate applications with different AWS services. In this article, we will look at using Spring Cloud AWS for working with Amazon Simple Email Service (SES) with the help of some basic concepts of SES along with code examples."
 image: images/stock/0075-envelopes-1200x628-branded.jpg
 url: spring-cloud-aws-ses
-widgets: ["gyhdoca-ad", "stratospheric-ad"]
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 
 Email is a convenient way to communicate different kinds of events from applications to interested parties.
@@ -17,6 +17,12 @@ Amazon Simple Email Service (SES) is an email platform that provides an easy and
 [Spring Cloud for Amazon Web Services (AWS)](https://spring.io/projects/spring-cloud-aws) is a sub-project of [Spring Cloud](https://spring.io/projects/spring-cloud) which makes it easy to integrate with AWS services using Spring idioms and APIs familiar to Spring developers.
 
 In this article, we will look at using Spring Cloud AWS for interacting with AWS [Simple Email Service (SES)](https://aws.amazon.com/ses/) to send emails with the help of some code examples.
+
+{{% stratospheric %}}
+This article gives only first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+{{% /stratospheric %}}
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/springcloudses" %}}
 
@@ -281,3 +287,9 @@ In this article, we looked at the important concepts of Amazon Simple Email Serv
 I hope this post has given you a good introduction to Amazon Simple Email Service (SES) and how we can use this service to send emails. 
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springcloudses).
+
+{{% stratospheric %}}
+This article gives only first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+{{% /stratospheric %}}

@@ -7,12 +7,18 @@ authors: [pratikdas]
 description: "AWS Relational Database Service (RDS) is a managed database service in AWS Cloud. Spring Cloud AWS provides convenient configurable components to integrate applications with the RDS service. In this article, we will look at using Spring Cloud AWS for working with AWS RDS with the help of some code examples"
 image: images/stock/0046-rack-1200x628-branded.jpg
 url: spring-cloud-aws-rds
-widgets: ["gyhdoca-ad", "stratospheric-ad"]
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 
 Amazon Relational Database Service (AWS RDS) is a relational database service available in AWS Cloud. The Spring Framework always had good support for database access technologies built on top of [JDBC](https://docs.oracle.com/javase/8/docs/technotes/guides/jdbc/). Spring Cloud AWS uses the same principles to provide integration with AWS RDS service through the Spring Cloud AWS JDBC module. 
 
 In this tutorial, we will look at using the Spring Cloud AWS JDBC module of Spring Cloud AWS to integrate with the AWS RDS service with the help of some basic concepts of AWS RDS along with code examples.
+
+{{% stratospheric %}}
+This article gives only first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+{{% /stratospheric %}}
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/springcloudrds" %}}
 
@@ -373,3 +379,9 @@ I hope this will help you to get started with building applications using Spring
 You can also read an [article](https://reflectoring.io/spring-cloud-aws-sqs/) published earlier on using Spring Cloud AWS Messaging for accessing [Amazon Simple Queue Service (SQS)](https://aws.amazon.com/sqs/) since a majority of real-life applications need to use a mix of database persistence and message queuing for performing a wide variety of business functions.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springcloudrds).
+
+{{% stratospheric %}}
+This article gives only first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+{{% /stratospheric %}}

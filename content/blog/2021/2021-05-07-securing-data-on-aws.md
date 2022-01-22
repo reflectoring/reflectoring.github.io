@@ -15,7 +15,7 @@ Amazon Web Services provide many possibilities to secure data in the cloud. In t
 {{% stratospheric %}}
 This article gives only first impression of what you can do with AWS.
 
-If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}
 
 ## Why Encryption?
@@ -284,5 +284,5 @@ The storage services like EFS, FSx, EBS, and S3 can be easily and securely prote
 {{% stratospheric %}}
 This article gives only first impression of what you can do with AWS.
 
-If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}

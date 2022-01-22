@@ -23,7 +23,7 @@ On the way, we'll discuss some best practices that helped us manage the complexi
 Let's dive in!
 
 {{% stratospheric %}}
-This article is a self-sufficient sample chapter from the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev).
+This article is a self-sufficient sample chapter from the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content).
 
 If you want to learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check it out!
 {{% /stratospheric %}}
@@ -744,7 +744,7 @@ Then, have a look around in the AWS Console to see the resources those commands 
 Don't forget to delete the stacks afterwards, either by deleting them in the CloudFormation console, or by calling the `npm run *:destroy` scripts as otherwise you'll incur additional costs.
 
 {{% stratospheric %}}
-This article is a self-sufficient sample chapter from the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev).
+This article is a self-sufficient sample chapter from the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content).
 
 If you want to learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check it out!
 {{% /stratospheric %}}

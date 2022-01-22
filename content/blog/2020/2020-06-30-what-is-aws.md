@@ -19,7 +19,7 @@ While reading this article, you'll come across the IAAS (Infrastructure As A Ser
 {{% stratospheric %}}
 This article gives only first impression of what you can do with AWS.
 
-If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}
 
 ##  Choose a Region and Availability Zone
@@ -184,5 +184,5 @@ With the advent of distributed applications, observability has emerged as a key 
 {{% stratospheric %}}
 This article gives only first impression of what you can do with AWS.
 
-If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}

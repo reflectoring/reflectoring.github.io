@@ -17,7 +17,7 @@ As we will learn, S3 is an extremely versatile and easy to use solution for a va
 {{% stratospheric %}}
 This article gives only first impression of what you can do with AWS.
 
-If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/s3" %}}
@@ -451,6 +451,6 @@ As this is a getting started article, we did not touch other topics like [storag
 {{% stratospheric %}}
 This article gives only first impression of what you can do with AWS.
 
-If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}
 

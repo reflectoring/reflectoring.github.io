@@ -18,7 +18,7 @@ In this tutorial, we will look at using Spring Cloud AWS for interacting with [S
 {{% stratospheric %}}
 This article gives only first impression of what you can do with SQS.
 
-If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/springcloudsqs" %}}
@@ -409,5 +409,5 @@ You can refer to all the source code used in the article on [Github](https://git
 {{% stratospheric %}}
 This article gives only first impression of what you can do with SQS.
 
-If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev)!
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}

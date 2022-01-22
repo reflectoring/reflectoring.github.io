@@ -19,7 +19,7 @@ Under the hood, CDK will "synthesize" a CloudFormation file from our Java code a
 Let's create our first CDK app! Follow along the steps in this chapter to create a CDK app that deploys our "Hello World" application to the cloud.
 
 {{% stratospheric %}}
-This article is a self-sufficient sample chapter from the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev).
+This article is a self-sufficient sample chapter from the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content).
 
 If you want to learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check it out!
 {{% /stratospheric %}}
@@ -332,7 +332,7 @@ This means our CDK project needs to be flexible enough to let us deploy addition
 To get this control, we have to build our own stacks and our own constructs. And this is what we're going to do in the next chapter.
 
 {{% stratospheric %}}
-This article is a self-sufficient sample chapter from the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev).
+This article is a self-sufficient sample chapter from the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content).
 
 If you want to learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check it out!
 {{% /stratospheric %}}

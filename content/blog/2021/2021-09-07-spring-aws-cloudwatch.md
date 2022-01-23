@@ -19,7 +19,7 @@ In this article, we will generate different types of application metrics in a Sp
 **Amazon CloudWatch will store the metrics data and help us to derive insights about our application by visualizing the metric data in graphs**.
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with Amazon CloudWatch.
+This article gives only a first impression of what you can do with Amazon CloudWatch.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}
@@ -591,7 +591,7 @@ Here is a list of important points from the article for quick reference:
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springcloudwatch).
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with Amazon CloudWatch.
+This article gives only a first impression of what you can do with Amazon CloudWatch.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}

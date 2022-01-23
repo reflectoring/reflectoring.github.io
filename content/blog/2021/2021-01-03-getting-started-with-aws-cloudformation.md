@@ -23,7 +23,7 @@ At the end of this article you will
 * have all the tools necessary to deploy a Docker image with a couple of CLI commands.
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with CloudFormation.
+This article gives only a first impression of what you can do with CloudFormation.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}
@@ -494,7 +494,7 @@ This concludes our first experiment with AWS. Feel free to explore the AWS conso
 **When you're done, don't forget to run `delete.sh` to delete the stacks again**, otherwise they will incur costs at some point. You can also delete the stacks via the CloudFormation UI.
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with CloudFormation.
+This article gives only a first impression of what you can do with CloudFormation.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}

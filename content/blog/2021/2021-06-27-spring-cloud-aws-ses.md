@@ -19,7 +19,7 @@ Amazon Simple Email Service (SES) is an email platform that provides an easy and
 In this article, we will look at using Spring Cloud AWS for interacting with AWS [Simple Email Service (SES)](https://aws.amazon.com/ses/) to send emails with the help of some code examples.
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with AWS.
+This article gives only a first impression of what you can do with AWS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}
@@ -289,7 +289,7 @@ I hope this post has given you a good introduction to Amazon Simple Email Servic
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springcloudses).
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with AWS.
+This article gives only a first impression of what you can do with AWS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}

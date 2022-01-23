@@ -15,7 +15,7 @@ Amazon Web Services is a beast. It offers so many different cloud services that 
 We'll start this series by creating a small win to boost our motivation: we'll deploy a Docker image  using the AWS Management Console. In a real-world scenario with multiple images and a more complex setup, we'd want to automate deployments using scripts and the AWS command-line interface. But using the web-based Management Console is a good way to get our bearings.
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with Docker and AWS.
+This article gives only a first impression of what you can do with Docker and AWS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}
@@ -257,7 +257,7 @@ The AWS web interface is intimidating. If we know where to look, though, we can 
 In real-world scenarios, we need to [use the AWS CLI](/aws-cloudformation-deploy-docker-image/) to create production-grade configurations and to deploy those from within an automated CI/CD pipeline.
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with Docker and AWS.
+This article gives only a first impression of what you can do with Docker and AWS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}

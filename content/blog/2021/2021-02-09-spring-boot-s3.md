@@ -15,7 +15,7 @@ In this article, **we are going to explore AWS' Simple Storage Service (S3) toge
 As we will learn, S3 is an extremely versatile and easy to use solution for a variety of use cases.
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with AWS.
+This article gives only a first impression of what you can do with AWS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}
@@ -449,7 +449,7 @@ We used S3 to build a custom file-sharing application ([code on GitHub](https://
 As this is a getting started article, we did not touch other topics like [storage tiers](https://aws.amazon.com/s3/storage-classes/), [object versioning](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html), or [static content hosting](https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html). So I can only recommend you get your hands dirty, and play around with S3!
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with AWS.
+This article gives only a first impression of what you can do with AWS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}

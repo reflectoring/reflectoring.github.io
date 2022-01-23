@@ -15,7 +15,7 @@ Amazon Relational Database Service (AWS RDS) is a relational database service av
 In this tutorial, we will look at using the Spring Cloud AWS JDBC module of Spring Cloud AWS to integrate with the AWS RDS service with the help of some basic concepts of AWS RDS along with code examples.
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with AWS.
+This article gives only a first impression of what you can do with AWS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}
@@ -381,7 +381,7 @@ You can also read an [article](https://reflectoring.io/spring-cloud-aws-sqs/) pu
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springcloudrds).
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with AWS.
+This article gives only a first impression of what you can do with AWS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}

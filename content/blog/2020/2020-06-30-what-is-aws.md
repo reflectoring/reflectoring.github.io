@@ -17,7 +17,7 @@ This article provides an overview of the most important AWS services, which are 
 While reading this article, you'll come across the IAAS (Infrastructure As A Service) and PAAS (Platform As A Service) categories of services. I have also included services under the serverless category, and services for running containers. I have not included services under specialized subjects like machine learning, IoT, security, and Big Data.
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with AWS.
+This article gives only a first impression of what you can do with AWS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}
@@ -182,7 +182,7 @@ With the advent of distributed applications, observability has emerged as a key 
  AWS is a behemoth. I tried to give you a peek by covering the main capabilities of the commonly used services. We also saw the elastic nature of services like ELB, S3, VPN, DX, EC2 which can autoscale based on demand. You can always refer to the AWS documentation to learn more about these services.
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with AWS.
+This article gives only a first impression of what you can do with AWS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}

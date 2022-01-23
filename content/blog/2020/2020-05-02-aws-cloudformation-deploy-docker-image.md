@@ -13,7 +13,11 @@ In the first article of my AWS Journey, [we deployed a Docker image via the AWS 
 
 The goal of this journey is to create a production-grade, continuously deployable system, so the next step in this journey is to automate the deployment of Docker images. In this article, **we'll use AWS's CloudFormation service to deploy and undeploy a highly available virtual private cloud running multiple instances of our Docker image behind a load balancer** - all with a single CLI command. 
 
-**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with Docker and AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/cloudformation/ecs-in-two-public-subnets" %}}
 
@@ -764,4 +768,8 @@ Here's a list of the questions I want to answer on this journey. If there's a li
 * How can I access other AWS resources (like SQS queues and DynamoDB tables) from my application?
 * How can I implement HTTPS?
 
-**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with Docker and AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}

@@ -19,7 +19,7 @@ Due to this reason, DynamoDB is widely used as a database with serverless comput
 In this tutorial, we will look at using the DynamoDB database in microservice applications built with [Spring Boot](https://spring.io/projects/spring-boot) along with code examples.
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with AWS.
+This article gives only a first impression of what you can do with AWS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}
@@ -556,7 +556,7 @@ I hope this will help you to get started with building applications using Spring
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springdynamodb).
 
 {{% stratospheric %}}
-This article gives only first impression of what you can do with AWS.
+This article gives only a first impression of what you can do with AWS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 {{% /stratospheric %}}

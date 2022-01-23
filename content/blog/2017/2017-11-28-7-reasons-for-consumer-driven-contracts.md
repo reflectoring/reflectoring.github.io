@@ -3,7 +3,7 @@ authors: [tom]
 title: "7 Reasons to Choose Consumer-Driven Contract Tests Over End-to-End Tests"
 categories: ["Software Craft"]
 date: 2017-11-29
-excerpt: "Find out why contracts should be defined by the API consumer and how to ease 
+description: "Find out why contracts should be defined by the API consumer and how to ease 
           integration testing APIs by using contract tests."
 image: images/stock/0029-contract-1200x628-branded.jpg
 url: reasons-for-consumer-driven-contracts

@@ -3,7 +3,7 @@ authors: [tom]
 title: "Paging with Spring Boot"
 categories: ["Spring Boot"]
 date: 2019-03-31
-excerpt: "An in-depth look at the paging support provided by Spring Data for querying
+description: "An in-depth look at the paging support provided by Spring Data for querying
           Spring Web MVC controllers and Spring Data repositories."
 image:  images/stock/0012-pages-1200x628-branded.jpg
 url: spring-boot-paging

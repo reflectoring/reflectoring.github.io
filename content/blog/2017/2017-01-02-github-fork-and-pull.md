@@ -3,7 +3,7 @@ authors: [tom]
 title: Github's Fork & Pull Workflow for Git Beginners
 categories: ["Software Craft"]
 date: 2017-01-02
-excerpt: "If you are new to Git and/or GitHub, it's easy to get overwhelmed by the different workflow models you can use. 
+description: "If you are new to Git and/or GitHub, it's easy to get overwhelmed by the different workflow models you can use. 
           This post explains the basic fork and pull workflow model that is used on a lot of GitHub repositories." 
 image: images/stock/0050-git-1200x628-branded.jpg
 url: github-fork-and-pull

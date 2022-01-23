@@ -3,7 +3,7 @@ authors: [tom]
 title: "Book Notes: The Psychology of Money"
 categories: ["Book Notes"]
 date: 2021-01-27T05:00:00
-excerpt: "My notes on 'The Psychology of Money', a book that communicates a solid mindset about investing money to build wealth."
+description: "My notes on 'The Psychology of Money', a book that communicates a solid mindset about investing money to build wealth."
 image: images/covers/psychology-of-money-teaser.jpg
 url: book-review-psychology-of-money
 ---

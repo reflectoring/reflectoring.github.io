@@ -4,7 +4,7 @@ categories: ["Software Craft"]
 date: 2021-09-25T00:00:00
 modified: 2021-09-25T00:00:00
 authors: [jcregg]
-excerpt: "Investing in daily habits pays out. Here are some software development habits you might want to try out." 
+description: "Investing in daily habits pays out. Here are some software development habits you might want to try out." 
 image: images/stock/0112-ide-1200x628-branded.jpg
 url: atomic-habits-in-software-development
 ---  

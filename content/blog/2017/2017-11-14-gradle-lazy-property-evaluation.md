@@ -3,7 +3,7 @@ title: "Lazy Evaluation of Gradle Properties"
 categories: ["Java"]
 date: 2017-11-14
 authors: [matthias]
-excerpt: "A guide on lazy evaluation in Gradle scripts and when it makes sense to use it."
+description: "A guide on lazy evaluation in Gradle scripts and when it makes sense to use it."
 image: images/stock/0040-hammock-1200x628-branded.jpg
 url: gradle-lazy-property-evaluation
 ---

@@ -3,7 +3,7 @@ authors: [tom]
 title: "Modularizing a Spring Boot Application"
 categories: ["Spring Boot"]
 date: 2018-02-06
-excerpt: "A guide on different ways Spring Boot offers to split an application into distinct modules."
+description: "A guide on different ways Spring Boot offers to split an application into distinct modules."
 image:  images/stock/0037-rubics-cube-1200x628-branded.jpg
 url: spring-boot-modules
 ---

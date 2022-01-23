@@ -4,10 +4,10 @@ categories: ["Spring Boot", "AWS"]
 date: 2021-06-27T00:00:00
 modified: 2021-06-27T00:00:00
 authors: [mmr]
-excerpt: "In this article, we will look at configuring a Spring Boot Application to use AWS ElastiCache for Redis using Spring Cloud AWS"
+description: "In this article, we will look at configuring a Spring Boot Application to use AWS ElastiCache for Redis using Spring Cloud AWS"
 image: images/stock/0071-disk-1200x628-branded.jpg
 url: spring-cloud-aws-redis
-widgets: ["gyhdoca-ad", "stratospheric-ad"]
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 
 ElastiCache is a fully managed caching service available in AWS Cloud. 
@@ -16,7 +16,13 @@ ElastiCache is a fully managed caching service available in AWS Cloud.
 of security to auto-configuring the beans required for the communication, it takes care of a lot of essential steps.
 
 In this article, we will look at how we can use it to connect our application to [AWS ElastiCache for Redis](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html).
- 
+
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}
+
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-caching-redis" %}}
 
 ## Why Caching?
@@ -231,4 +237,10 @@ While ElastiCache is already making our life easier by managing our Redis Cluste
 In this article, we saw those configurations and also how to apply them. Hope this was helpful!
 
 Thank you for reading! You can find the working code at [GitHub](https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-caching-redis).
+
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}
 

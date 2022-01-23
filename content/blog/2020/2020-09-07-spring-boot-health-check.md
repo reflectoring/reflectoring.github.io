@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2020-09-22T06:00:00
 modified: 2020-09-22T06:00:00
 authors: [pratikdas]
-excerpt: "Monitoring and observability are essential in distributed environments. Spring Boot comes with the Actuator module which provides the health status and integrates with Micrometer to emit metrics."
+description: "Monitoring and observability are essential in distributed environments. Spring Boot comes with the Actuator module which provides the health status and integrates with Micrometer to emit metrics."
 image: images/stock/0082-ekg-1200x628-branded.jpg
 url: spring-boot-health-check
 ---

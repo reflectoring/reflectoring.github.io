@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2020-02-04T05:00:00
 modified: 2020-02-04T05:00:00
 authors: [artur]
-excerpt: "Multitenancy applications require a separate data store for each tenant. This guide shows how to configure a Spring Boot application with multiple data sources and how to switch between them depending on the tenant using the software. Using Flyway we can even upgrade the database schemas for all data sources at once."
+description: "Multitenancy applications require a separate data store for each tenant. This guide shows how to configure a Spring Boot application with multiple data sources and how to switch between them depending on the tenant using the software. Using Flyway we can even upgrade the database schemas for all data sources at once."
 image: images/stock/0059-library-1200x628-branded.jpg
 url: flyway-spring-boot-multitenancy
 ---

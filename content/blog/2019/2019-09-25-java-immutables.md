@@ -4,7 +4,7 @@ title: Immutables in Java - Are Setters Allowed?
 categories: ["Java", "Software Craft"]
 date: 2019-09-25T00:00:00
 modified: 2021-10-22T00:00:00
-excerpt: "Why are immutable objects a way to create safer software that is easier to maintain? And what are best practices to implement them? This article provides answers."
+description: "Why are immutable objects a way to create safer software that is easier to maintain? And what are best practices to implement them? This article provides answers."
 image:  images/stock/0053-rock-wave-1200x628-branded.jpg
 url: java-immutables
 ---
@@ -12,6 +12,8 @@ url: java-immutables
 In short, no. Feel free to jump right ahead to the section on [bad practices](#immutable-bad-practices). If you want to read a bit more on the why and how of immutables, have a look at the rest of this article.
 
 Immutable objects are a way to create safer software that is easier to maintain. Why is that? And what should we do and what not when implementing them? This article provides answers.
+
+If you're interested in creating immutable objects in Java, also have a look at the article about the [Immutables Java library](/immutables-library).
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/patterns" %}}
 

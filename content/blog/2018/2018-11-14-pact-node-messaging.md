@@ -3,7 +3,7 @@ authors: [tom]
 title: "Implementing a Consumer-Driven Contract between a Node Message Consumer and a Node Message Producer"
 categories: [programming]
 date: 2018-11-14
-excerpt: "In this tutorial, we're exploring how to implement a consumer-driven contract
+description: "In this tutorial, we're exploring how to implement a consumer-driven contract
           with Pact between a message consumer and provider both based on Node."
 image:  images/stock/0025-signature-1200x628-branded.jpg
 url: pact-node-messaging

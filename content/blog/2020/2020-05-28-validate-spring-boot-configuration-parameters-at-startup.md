@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2020-05-28T06:00:00
 modified: 2020-05-28T06:00:00
 authors: [yavuztas]
-excerpt: "One of the important steps to keep software applications customizable is the effective configuration management. Let's have a look at how to do this with Spring Boot."
+description: "One of the important steps to keep software applications customizable is the effective configuration management. Let's have a look at how to do this with Spring Boot."
 image: images/stock/0051-stop-1200x628-branded.jpg
 url: validate-spring-boot-configuration-parameters-at-startup
 ---

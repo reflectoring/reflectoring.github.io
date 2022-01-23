@@ -4,7 +4,7 @@ title: "Feature Flags with Spring Boot"
 categories: ["Spring Boot"]
 date: 2021-11-06T00:00:00
 modified: 2021-11-06T00:00:00
-excerpt: "Feature flags don't need to be simple if/else blocks. Instead, we can replace whole methods or even whole beans with a bit of Spring Boot magic."
+description: "Feature flags don't need to be simple if/else blocks. Instead, we can replace whole methods or even whole beans with a bit of Spring Boot magic."
 image: images/stock/0112-decision-1200x628-branded.jpg
 url: spring-boot-feature-flags
 ---

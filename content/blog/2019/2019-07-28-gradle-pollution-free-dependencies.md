@@ -3,7 +3,7 @@ authors: [tom]
 title: Pollution-Free Dependency Management with Gradle
 categories: ["Java"]
 date: 2019-07-28
-excerpt: "Unwanted compile-time dependencies can lead to problems. This article discusses these
+description: "Unwanted compile-time dependencies can lead to problems. This article discusses these
           problems and the solution Gradle provides to keep dependencies clean."
 image:  images/stock/0001-network-1200x628-branded.jpg
 url: gradle-pollution-free-dependencies

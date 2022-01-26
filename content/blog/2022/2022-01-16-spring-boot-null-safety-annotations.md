@@ -144,7 +144,7 @@ Now, if we write code where the method is returning null:
 ```java
 package io.reflectoring.nullsafety;
 
-\\ imports
+// imports
 
 class Employee {
 
@@ -152,7 +152,8 @@ class Employee {
     return null;
   }
 
-  \\...
+  //...
+}  
 ```
 
 We can see the IDE is now warning us about the non-nullable return value:
@@ -184,7 +185,7 @@ We can now mark the `pastEmployment` field as nullable:
 ```java
 package io.reflectoring.nullsafety;
 
-\\ imports
+// imports
 
 class Employee {
 
@@ -195,7 +196,8 @@ class Employee {
     return pastEmployment;
   }
 
-  \\...
+  //...
+}  
 ```
 _Here is a quick summary for `@Nullable`:_
 
@@ -205,6 +207,51 @@ _Here is a quick summary for `@Nullable`:_
 | parameter         | Indicates that the parameter can be null    |
 | method            | Indicates that the method can return null   |
 | package           | Not Applicable                              |
+
+## Automated Build Checks
+
+So far, we are discussing how modern IDEs make it easier to write null-safe code. However, if we have to put some automated code checks in the build pipelines, that's also doable to some extent.
+
+[SpotBugs](https://spotbugs.github.io/) (the reincarnation of the famous but abandoned [FindBugs](http://findbugs.sourceforge.net/) project) offers a Maven/Gradle plugin that can detect code smells due to nullability. Let's see how we can utilize the same.
+
+For a Maven project, we need to update the `pom.xml` to add the [SpotBugs Maven Plugin](https://spotbugs.readthedocs.io/en/latest/maven.html):
+
+```xml
+<plugin>
+  <groupId>com.github.spotbugs</groupId>
+  <artifactId>spotbugs-maven-plugin</artifactId>
+  <version>4.5.2.0</version>
+  <dependencies>
+    <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
+    <dependency>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs</artifactId>
+      <version>4.5.3</version>
+    </dependency>
+  </dependencies>
+</plugin>
+
+```
+After building the project, we can use the following goals from this plugin:
+
+* `spotbugs` goal analyses target project.
+* `check` goal runs analysis like the `spotbugs` goal and makes the build fail if it finds any bugs.
+
+Similarly, to configure the [SpotBugs Gradle Plugin](https://spotbugs.readthedocs.io/en/latest/gradle.html), we add the dependency in the `build.gradle` file:
+
+```
+dependencies {
+  spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
+}
+```
+Also, to specify the version, we can add:
+
+```
+spotbugs {
+  toolVersion = '4.5.3'
+}
+```
+Once the project is updated, we can run the check using the `gradle check` command.
 
 ## Conclusion
 

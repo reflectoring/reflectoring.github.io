@@ -41,8 +41,9 @@ Amazon SQS provides two types of message queues:
 
 **FIFO queues**: FIFO (First-In-First-Out) queues are used for messaging when the order of operations and events exchanged between applications is important, or in situations where we want to avoid processing duplicate messages. FIFO queues guarantee that messages are processed exactly once, in the exact order that they are sent.
 
-## FIFO Queues
-A FIFO queue preserves the order in which messages are sent and received and a message is delivered once 
+### Ordering and Deduplication (Exactly-Once Delivery) in FIFO Queues
+
+A FIFO queue preserves the order in which messages are sent and received and a message is delivered exactly once.
 
 The messages are ordered based on message group ID. If multiple hosts (or different threads on the same host) send messages with the same message group ID to a FIFO queue, Amazon SQS stores the messages in the order in which they arrive for processing. To make sure that Amazon SQS preserves the order in which messages are sent and received, each producer should use a unique message group ID to send all its messages.
 
@@ -50,14 +51,16 @@ Messages that belong to the same message group are always processed one by one, 
 
 FIFO queues also help us to avoid sending duplicate messages to a queue. If we send the same message within the 5-minute deduplication interval, it is not added to the queue. We can configure deduplication in two ways:
 
-- Enable content-based deduplication. This instructs Amazon SQS to use a SHA-256 hash to generate the message deduplication ID using the body of the message
-- Explicitly provide the message deduplication ID (or view the sequence number) for the message. If a message with a particular message deduplication ID is sent successfully, any messages sent with the same message deduplication ID are accepted successfully but are not delivered during the 5-minute deduplication interval.
+- **Enabling Content-Based Deduplication**: When this property is enabled for a queue, Amazon SQS uses a SHA-256 hash to generate the message deduplication ID using the contents in body of the message.
+
+- **Explicitly provide the message deduplication ID**: When a message with a particular message deduplication ID is sent, any messages subsequently sent with the same message deduplication ID are accepted successfully but are not delivered during the 5-minute deduplication interval.
 
 ### Queue Configurations
 
 After creating the queue, we need to configure the queue with specific attributes based on our message processing requirements. Let us look at some of the properties which we configure:
 
 **Dead-letter Queue**:A dead-letter queue is a queue that one or more source queues can use for messages that are not consumed successfully. 
+
 Amazon SQS supports dead-letter queues (DLQ), which other queues (source queues) can target for messages that cannot be processed (consumed) successfully. Dead-letter queues are useful for debugging our application or messaging system because they let you isolate unconsumed messages to determine why their processing doesn't succeed.
 
 **Dead-letter Queue Redrive**:We configure a dead-letter queue redrive to move standard unconsumed messages out of an existing dead-letter queue back to their source queues.
@@ -87,7 +90,10 @@ public class LambdaFromSqsStack extends Stack {
         this(scope, id, null);
     }
 
-    public LambdaFromSqsStack(final Construct scope, final String id, final StackProps props) {
+    public LambdaFromSqsStack(
+      final Construct scope, 
+      final String id, 
+      final StackProps props) {
         super(scope, id, props);
 
         Queue queue = Queue
@@ -190,7 +196,10 @@ public class LambdaFromSqsStack extends Stack {
         this(scope, id, null);
     }
 
-    public LambdaFromSqsStack(final Construct scope, final String id, final StackProps props) {
+    public LambdaFromSqsStack(
+      final Construct scope, 
+      final String id, 
+      final StackProps props) {
          super(scope, id, props);
 
      ...
@@ -522,24 +531,26 @@ We have next defined the queue as the event source of the Lambda function and at
 
 We can also specify a queue to act as a dead-letter queue for messages that our Lambda function fails to process.
 
-## Sending Message Metadata
-We can include structured metadata with messages using message attributes.
+## Sending Message Metadata with Message Attributes
 
-Message attributes are structured metadata that can be attached and sent together with the message. 
+Message attributes are structured metadata that can be attached and sent together with the message to SQS. 
 
-There are two sets of message attributes: 
-- **Message Attributes**:  Message Attributes are provided for general purpose use cases which normally are added and extracted by our applications. Each message can have up to 10 attributes. 
+Message Metadata are of two kinds : 
 
-- **Message System Attributes**:Message System Attributes are designed to store metadata for other AWS services, such as AWS X-Ray. 
+- **Message Attributes**:  These are custom metadata usually added and extracted by our applications for general purpose use cases. Each message can have up to 10 attributes. 
 
-One of the common use cases of Message Attributes is distributed tracing. When a messaging infrastructure such as SQS is used by distributed applications, tracing a message produced and consumed among applications becomes tricky yet an essential feature to have. To demonstrate how to add and extract custom metadata with message attributes, an attribute named `traceId` will be used and there are three components in the example:
+- **Message System Attributes**: These are used to store metadata for other AWS services like AWS X-Ray. 
 
-In the following example, we will focus on the usage of Message Attributes.
+One of the common use cases of message attributes is distributed tracing. When  SQS is used by distributed applications, tracing a message produced and consumed between applications becomes tricky yet an essential feature to have. To demonstrate how to add and extract custom metadata with message attributes, an attribute named `traceId` will be used and there are three components in the example:
+
+Let us modify our earlier example of sending a message by adding a message attribute to be sent with the message:
+
 ```java
 public class MessageSender {
 
   private static final String TRACE_ID_NAME = "trace-id";
-  private static Logger logger = Logger.getLogger(MessageSender.class.getName());
+  private static Logger logger 
+      = Logger.getLogger(MessageSender.class.getName());
 
   public static void main(String[] args) {
     sendMessage();
@@ -561,7 +572,7 @@ public class MessageSender {
                   .build());
     
     final String queueURL 
-    = "https://sqs.us-east-1.amazonaws.com/675153449441/myqueue";
+    = "https://sqs.us-east-1.amazonaws.com/****/myqueue";
 
     SendMessageRequest sendMessageRequest = SendMessageRequest
                            .builder()
@@ -582,7 +593,8 @@ public class MessageSender {
 
 
   private static SqsClient getSQSClient() {
-    AwsCredentialsProvider credentialsProvider = ProfileCredentialsProvider.create("pratikpoc");
+    AwsCredentialsProvider credentialsProvider 
+     = ProfileCredentialsProvider.create("*****");
     
     SqsClient sqsClient = SqsClient
         .builder()
@@ -594,13 +606,7 @@ public class MessageSender {
 }
 
 ```
-## Queue and Message identifiers
-Both standard and FIFO queues have multiple identifiers with which we find and manipulate specific queues and messages in queues. Let us look at these identifiers and understand their uses:
-
-
-3. **Receipt handle**:Every time you receive a message from a queue, you receive a receipt handle for that message. This handle is associated with the action of receiving the message, not with the message itself. To delete the message or to change the message visibility, you must provide the receipt handle (not the message ID).
-
-
+In this example, we have added a message attribute named `traceId` which will be of `String` type.
 
 
 ## SQS Queue as an SNS Topic Subscriber

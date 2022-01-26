@@ -34,6 +34,18 @@ We are going to use IntelliJ IDEA in this tutorial. Let us find out more with so
 
 To create the base project, we can use the [Spring Initializr](https://start.spring.io/). The Spring Boot starter is all we need, no need to add any extra dependencies.
 
+## IDE Configuration
+
+**Please note that not all development tools can show these compilation warnings. If you don't see the relevant warning, check the compiler settings in IDE.**
+
+For IntelliJ, the configuration is present under 'Build, Execution, Deployment -> Compiler':
+
+{{% image alt="IDE compiler config" src="images/posts/spring-boot-null-safety-annotations/intellij-compiler-settings.png" %}}
+
+For Eclipse, we can find the settings under 'Java -> Compiler -> Errors/Warnings':
+
+{{% image alt="IDE compiler config" src="images/posts/spring-boot-null-safety-annotations/eclipse-compiler-settings.png" %}}
+
 ## Example Code
 
 Let's use a plain `Employee` class to explain the annotations:
@@ -55,15 +67,7 @@ class Employee {
 
 ## `@NonNull`
 
-| Annotated element | Effect                                        |
-| ----------------- | --------------------------------------------- |
-| field             | Shows a warning when the field is null        |
-| parameter         | Shows a warning when the parameter is null    |
-| method            | Shows a warning when the method returns null  |
-| package           | Not applicable                                |
-
 Mostly the `id` field (in the `Employee` class) is going to be a non-nullable value. So, to avoid any potential `NullPointerException` we can mark this field as [`@NonNull`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/lang/NonNull.html):
-
 
 ```java
 class Employee {
@@ -86,14 +90,16 @@ At this point, you might be thinking "what if a class has more than one non-null
 
 We can solve this problem by using the [`@NonNullFields`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/lang/NonNullFields.html) annotation.
 
-## `@NonNullFields`
+_Here is a quick summary for `@NonNull`:_
 
-| Annotated element | Effect                                                                 |
-| ----------------- | ---------------------------------------------------------------------- |
-| field             | Not applicable                                                         |
-| parameter         | Not applicable                                                         |
-| method            | Not applicable                                                         |
-| package           | Shows a warning if any of the fields are null for the applied package  |
+| Annotated element | Effect                                        |
+| ----------------- | --------------------------------------------- |
+| field             | Shows a warning when the field is null        |
+| parameter         | Shows a warning when the parameter is null    |
+| method            | Shows a warning when the method returns null  |
+| package           | Not Applicable                                |
+
+## `@NonNullFields`
 
 Let us create a `package-info.java` file to apply the non-null field checks at the package level. This file will contain the root package name with `@NonNullFields` annotation:
 
@@ -112,14 +118,16 @@ Another point to note here is if there are any uninitialized fields, then we wil
 
 {{% image alt="IDE warning for NonNull" src="images/posts/spring-boot-null-safety-annotations/nonnullfields-ide-warning.png" %}}
 
-## `@NonNullApi`
+_Here is a quick summary for `@NonNullFields`:_
 
-| Annotated element | Effect                                                                                      |
-| ----------------- | ------------------------------------------------------------------------------------------- |
-| field             | Not applicable                                                                              |
-| parameter         | Not applicable                                                                              |
-| method            | Not applicable                                                                              |
-| package           | Shows a warning if any of the parameters or return values are null for the applied package  |
+| Annotated element | Effect                                                                 |
+| ----------------- | ---------------------------------------------------------------------- |
+| field             | Not Applicable                                                         |
+| parameter         | Not Applicable                                                         |
+| method            | Not Applicable                                                         |
+| package           | Shows a warning if any of the fields are null for the applied package  |
+
+## `@NonNullApi`
 
 By now, you might have spotted another requirement, i.e., to have similar checks for method parameters or return values. Here [`@NonNullApi`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/lang/NonNullApi.html) will come to our rescue. 
 
@@ -131,19 +139,36 @@ package io.reflectoring.nullsafety;
 
 import org.springframework.lang.NonNullApi;
 ```
+Now, if we write code where the method is returning null:
 
-We can now see the IDE is warning us about the non-nullable parameters:
+```java
+package io.reflectoring.nullsafety;
 
-{{% image alt="IDE warning for NonNullApi" src="images/posts/spring-boot-null-safety-annotations/nonnullapi-ide-warning.png" %}}
+\\ imports
+
+class Employee {
+
+  String getPastEmployment() {
+    return null;
+  }
+
+  \\...
+```
+
+We can see the IDE is now warning us about the non-nullable return value:
+
+{{% image alt="IDE warning for NonNullApi" src="images/posts/spring-boot-null-safety-annotations/nonnullapi-method-ide-warning.png" %}}
+
+_Here is a quick summary for `@NonNullApi`:_
+
+| Annotated element | Effect                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------- |
+| field             | Not Applicable                                                                              |
+| parameter         | Not Applicable                                                                              |
+| method            | Not Applicable                                                                              |
+| package           | Shows a warning if any of the parameters or return values are null for the applied package  |
 
 ## `@Nullable`
-
-| Annotated element | Effect                                      |
-| ----------------- | ------------------------------------------- |
-| field             | Indicates that the field can be null        |
-| parameter         | Indicates that the parameter can be null    |
-| method            | Indicates that the method can return null   |
-| package           | Not applicable                              |
 
 But here is a catch. **There could be scenarios where a particular field can be null** (no matter how much we want to avoid it). 
 
@@ -172,14 +197,18 @@ class Employee {
 
   \\...
 ```
+_Here is a quick summary for `@Nullable`:_
+
+| Annotated element | Effect                                      |
+| ----------------- | ------------------------------------------- |
+| field             | Indicates that the field can be null        |
+| parameter         | Indicates that the parameter can be null    |
+| method            | Indicates that the method can return null   |
+| package           | Not Applicable                              |
 
 ## Conclusion
 
 These annotations are indeed a boon for Java programmers to reduce the possibility of a `NullPointerException` arising during runtime. Please bear in mind this does not guarantee complete null safety, however.
-
-**Please note that not all development tools can show these warnings. If you don't see the compilation warning, check the compiler settings in IntelliJ.**
-
-{{% image alt="IDE compiler config" src="images/posts/spring-boot-null-safety-annotations/intellij-compiler-settings.png" %}}
 
 [Kotlin](https://kotlinlang.org/docs/null-safety.html) uses these annotations to infer the nullability of Spring API.
 

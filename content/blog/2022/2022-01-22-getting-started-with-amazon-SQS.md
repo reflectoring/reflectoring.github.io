@@ -19,15 +19,12 @@ In this article, we will introduce Amazon SQS, understand its core concepts of t
 ## What is Message Queueing
 
 Message Queueing is an asynchronous style of communication between two or more processes.
+
 Messages and queues are the basic components of a message queuing system.
 
-Programs communicate with each other by sending data in the form of messages instead of calling each other directly.
+Programs communicate with each other by sending data in the form of messages which are placed in a storage called queue, instead of calling each other directly. The receiver programs retrieve the message from the queue and does the processing without any knowledge of the producer programs.
 
-Messages are placed in a storage called queues, which allows the communicating programs to run independently of each other, at different speeds and times, in different processes, and without having a direct connection between them.
-
-They are an essential component of modern-day architectures, helping to decouple applications into smaller, independent building blocks that can be independently scaled, deployed, and evolved. 
-
-The messages sent to a queue are usually small and can be things like requests, replies, error messages, or just plain information. To send a message, a component called a producer sends a message to the queue. The message is stored on the queue until another component called a consumer retrieves the message and does processing without any knowledge of the producer component.
+This allows the communicating programs to run independently of each other, at different speeds and times, in different processes, and without having a direct connection between them.
 
 
 ## Core Concepts of Amazon SQS
@@ -45,7 +42,9 @@ Amazon SQS provides two types of message queues:
 
 A FIFO queue preserves the order in which messages are sent and received and a message is delivered exactly once.
 
-The messages are ordered based on message group ID. If multiple hosts (or different threads on the same host) send messages with the same message group ID to a FIFO queue, Amazon SQS stores the messages in the order in which they arrive for processing. To make sure that Amazon SQS preserves the order in which messages are sent and received, each producer should use a unique message group ID to send all its messages.
+The messages are ordered based on message group ID. If multiple hosts send messages with the same message group ID to a FIFO queue, Amazon SQS stores the messages in the order in which they arrive for processing. 
+
+To make sure that Amazon SQS preserves the order in which messages are sent and received, each producer should use a unique message group ID to send all its messages.
 
 Messages that belong to the same message group are always processed one by one, in a strict order relative to the message group.
 
@@ -53,7 +52,7 @@ FIFO queues also help us to avoid sending duplicate messages to a queue. If we s
 
 - **Enabling Content-Based Deduplication**: When this property is enabled for a queue, Amazon SQS uses a SHA-256 hash to generate the message deduplication ID using the contents in body of the message.
 
-- **Explicitly provide the message deduplication ID**: When a message with a particular message deduplication ID is sent, any messages subsequently sent with the same message deduplication ID are accepted successfully but are not delivered during the 5-minute deduplication interval.
+- **Providing the Message Deduplication ID**: When a message with a particular message deduplication ID is sent, any messages subsequently sent with the same message deduplication ID are accepted successfully but are not delivered during the 5-minute deduplication interval.
 
 ### Queue Configurations
 
@@ -86,16 +85,19 @@ We will define our queue with CDK using Java as the programming language:
 
 ```java
 public class LambdaFromSqsStack extends Stack {
-    public LambdaFromSqsStack(final Construct scope, final String id) {
+    public LambdaFromSqsStack(
+            final Construct scope, 
+            final String id) {
         this(scope, id, null);
     }
 
     public LambdaFromSqsStack(
-      final Construct scope, 
-      final String id, 
-      final StackProps props) {
+            final Construct scope, 
+            final String id, 
+            final StackProps props) {
         super(scope, id, props);
 
+        // Create the Queue 
         Queue queue = Queue
                        .Builder
                        .create(this, "myqueue")
@@ -120,7 +122,9 @@ Running these commands will create a standard type SQS queue of name `myqueue` w
 
 
 ## Sending Message to a Standard SQS Queue
-We can send a message to an SQS Queue from the AWS console. However, for all practical purposes, the message is sent programmatically using the AWS SDK for a supported programming language. We will send a message to our queue from a Java program so we will use the AWS Java SDK and add it as a Maven dependency. The AWS SDK for Java simpliﬁes the use of AWS Services by providing a set of libraries that are based on common design patterns familiar to Java developers.
+We can send a message to an SQS Queue from the AWS console. However, for all practical purposes, the message is sent programmatically using the AWS SDK for a supported programming language. 
+
+Let us send a message to our queue from a Java program. So we will use the AWS Java SDK and add it as a Maven dependency. The AWS SDK for Java simpliﬁes the use of AWS Services by providing a set of libraries that are based on common design patterns familiar to Java developers.
 
 We use the following code snippet to send a message to the queue that we created earlier:
 
@@ -141,7 +145,8 @@ public class MessageSender {
   public static void sendMessage() {
     SqsClient sqsClient = getSQSClient();
     
-    final String queueURL = "https://sqs.us-east-1.amazonaws.com/*****/myqueue";
+    final String queueURL 
+    = "https://sqs.us-east-1.amazonaws.com/*****/myqueue";
 
     SendMessageRequest sendMessageRequest = SendMessageRequest
                            .builder()
@@ -175,20 +180,24 @@ public class MessageSender {
 }
 
 ```
+
+Here we are first establishing a connection with the AWS SQS service using the `SqsClient` class. After that, the message to be sent is constructed with the `SendMessageRequest` class by specifying the URL of the queue and the message body. 
+
+Then the message is sent by invoking the `sendMessage()` method on the `SqsClient` instance.
+
 When we run this program we can see the `message id` in the output:
+
 ```shell
 INFO: message id: fa5fd857-59b4-4a9a-ba54-a5ab98ee82f9 
 
 ```
-The message ID is assigned by SQS which is returned in the SendMessage response. This identifier is useful for identifying messages.
-
-Here we are first establishing a connection with the AWS SQS service using the `SqsClient` class. After that, the message to be sent is constructed with the `SendMessageRequest` class by specifying the URL of the queue and the message body. Then the message is sent by invoking the `sendMessage()` method on the `SqsClient` instance.
+This message ID returned in the `sendMessage()` response is assigned by SQS and is useful for identifying messages.
 
 We can also send multiple messages in a single request using the `sendMessageBatch()` method of the `SqsClient` class.
 
 ## Creating a FIFO SQS Queue
 
-Let us now define a FIFO queue that we can use for sending non-duplicate messages in a fixed sequence. We will update our CDK stack as shown below:
+Let us now define a FIFO queue that we can use for sending non-duplicate messages in a fixed sequence. We will update our CDK stack as shown below for provisioning the FIFO queue:
 
 ```java
 public class LambdaFromSqsStack extends Stack {
@@ -219,7 +228,7 @@ public class LambdaFromSqsStack extends Stack {
 ```
 As we can see, we have defined a queue with the name `myfifoqueue.fifo`. The name of FIFO queues must end with `.fifo`. We have set the property: `contentBasedDeduplication` to `false` which means that we need to explicitly send `messageDeduplicationId` with the message so that SQS can identify them as duplicates. 
 
-Further, the `deduplicationScope` property is set to `MESSAGE_GROUP` which indicates the message group as the scope for identifying duplicate messages. The `deduplicationScope` property can alternately be set to `QUEUE`.
+Further, the `deduplicationScope` property of the queue is set to `MESSAGE_GROUP` which indicates the message group as the scope for identifying duplicate messages. The `deduplicationScope` property can alternately be set to `QUEUE`.
 
 ## Sending Message to FIFO Queue
 
@@ -236,7 +245,8 @@ To check this behavior, let us send five messages to the FIFO queue, we created 
     ...
     ...
     
-    final String queueURL = "https://sqs.us-east-1.amazonaws.com/*****/myfifoqueue.fifo";
+    final String queueURL 
+    = "https://sqs.us-east-1.amazonaws.com/*****/myfifoqueue.fifo";
     
     
     List<String> dedupIds = List.of("dedupid1",
@@ -256,7 +266,8 @@ To check this behavior, let us send five messages to the FIFO queue, we created 
     short loop = 0;
     for (String message : messages) {
       
-      SendMessageRequest sendMessageRequest = SendMessageRequest.builder()
+      SendMessageRequest sendMessageRequest 
+        = SendMessageRequest.builder()
           .queueUrl(queueURL)
           .messageBody(message)
           .messageAttributes(messageAttributes)
@@ -264,7 +275,8 @@ To check this behavior, let us send five messages to the FIFO queue, we created 
           .messageGroupId(messageGroupId)
           .build();
       
-      SendMessageResponse sendMessageResponse = sqsClient
+      SendMessageResponse sendMessageResponse 
+        = sqsClient
           .sendMessage(sendMessageRequest);
       
       logger.info("message id: "+ sendMessageResponse.messageId());
@@ -295,7 +307,9 @@ INFO: message id and sequence no.: 9529ddac-8946-4fee-a2dc-7be428666b63 | 188673
 ```
 When SQS accepts the message, it returns a sequence number along with a message identifier. The Sequence number as we can see is a large, non-consecutive number that Amazon SQS assigns to each message.
 
-We are sending five messages with two of them being duplicates. Since we had set the `contentBasedDeduplication` property to `true`, SQS determines duplicate messages by the `messageDeduplicationId`. The messages: "My fifo message1" and "My fifo message2" are each sent twice with the same `messageDeduplicationId` while "My fifo message3" is sent once. Although we have sent five messages, we will only receive three unique messages in the same order when we consume the messages from the queue. We will look at how to consume messages from SQS in the next section.
+We are sending five messages with two of them being duplicates. Since we had set the `contentBasedDeduplication` property to `true`, SQS determines duplicate messages by the `messageDeduplicationId`. The messages: "My fifo message1" and "My fifo message2" are each sent twice with the same `messageDeduplicationId` while "My fifo message3" is sent once. 
+
+Although we have sent five messages, we will only receive three unique messages in the same order when we consume the messages from the queue. We will look at how to consume messages from SQS in the next section.
 
 ## Consuming Messages from a Queue
 
@@ -309,25 +323,27 @@ public class MessageReceiver {
   public static void receiveMessage() {
     SqsClient sqsClient = getSQSClient();
 
-    final String queueURL = "https://sqs.us-east-1.amazonaws.com/*****/myqueue";
+    final String queueURL 
+     = "https://sqs.us-east-1.amazonaws.com/*****/myqueue";
 
     // long polling and wait for waitTimeSeconds before timing out
     ReceiveMessageRequest receiveMessageRequest = 
                             ReceiveMessageRequest
                             .builder()
-                                    .queueUrl(queueURL)
-                                    .waitTimeSeconds(20)
-                                    .messageAttributeNames("trace-id") 
-                                    .build();
+                            .queueUrl(queueURL)
+                            .waitTimeSeconds(20)
+                            .messageAttributeNames("trace-id") 
+                            .build();
 
-    List<Message> messages = sqsClient
-                               .receiveMessage(receiveMessageRequest)
-                               .messages();
+    List<Message> messages 
+                        = sqsClient
+                           .receiveMessage(receiveMessageRequest)
+                           .messages();
   }
   
   private static SqsClient getSQSClient() {
     AwsCredentialsProvider credentialsProvider = 
-              ProfileCredentialsProvider.create("******");
+              ProfileCredentialsProvider.create("<Profile>");
     
     SqsClient sqsClient = SqsClient
         .builder()
@@ -343,7 +359,7 @@ Here we have enabled long polling for receiving the SQS messages by setting the 
 The `receiveMessage()` returns the messages from the queue as a list of `Message` objects.
 
 
-## Deleting Messages from a Queue with ReceiptHandle
+## Deleting Messages from a Queue with the ReceiptHandle
 
 We get a `receiptHandle` when we receive a message from SQS. 
 
@@ -355,15 +371,19 @@ public class MessageReceiver {
   
   public static void receiveFifoMessage() throws InterruptedException {
     SqsClient sqsClient = getSQSClient();
-    final String queueURL = "https://sqs.us-east-1.amazonaws.com/675153449441/myfifoqueue.fifo";
+    final String queueURL 
+    = "https://sqs.us-east-1.amazonaws.com/675153449441/myfifoqueue.fifo";
     ...
     ...
     
     while(true) {
     
-      Thread.sleep(20000l);
-      List<Message> messages = sqsClient.receiveMessage(receiveMessageRequest).messages();
-        messages.stream().forEach(msg->{
+          Thread.sleep(20000l);
+          List<Message> messages 
+               = sqsClient.receiveMessage(receiveMessageRequest)
+               .messages();
+
+          messages.stream().forEach(msg->{
           
           // Get the receipt handle of the message received
           String receiptHandle = msg.receiptHandle();
@@ -389,7 +409,7 @@ public class MessageReceiver {
   private static SqsClient getSQSClient() {
 
     AwsCredentialsProvider credentialsProvider 
-                            = ProfileCredentialsProvider.create("****");
+                        = ProfileCredentialsProvider.create("<Profile>");
     
     SqsClient sqsClient = SqsClient
                             .builder()
@@ -425,7 +445,11 @@ public class LambdaFromSqsStack extends Stack {
         this(scope, id, null);
     }
 
-    public LambdaFromSqsStack(final Construct scope, final String id, final StackProps props) {
+    public LambdaFromSqsStack(
+        final Construct scope, 
+        final String id, 
+        final StackProps props) {
+
         super(scope, id, props);
 
         // Define the Queue which will be used as Dead letter queue
@@ -541,8 +565,6 @@ Message Metadata are of two kinds :
 
 - **Message System Attributes**: These are used to store metadata for other AWS services like AWS X-Ray. 
 
-One of the common use cases of message attributes is distributed tracing. When  SQS is used by distributed applications, tracing a message produced and consumed between applications becomes tricky yet an essential feature to have. To demonstrate how to add and extract custom metadata with message attributes, an attribute named `traceId` will be used and there are three components in the example:
-
 Let us modify our earlier example of sending a message by adding a message attribute to be sent with the message:
 
 ```java
@@ -594,7 +616,7 @@ public class MessageSender {
 
   private static SqsClient getSQSClient() {
     AwsCredentialsProvider credentialsProvider 
-     = ProfileCredentialsProvider.create("*****");
+     = ProfileCredentialsProvider.create("<Profile>");
     
     SqsClient sqsClient = SqsClient
         .builder()
@@ -668,7 +690,8 @@ Let us now publish a message to this SNS topic using AWS Java SDK as shown below
 
 ```java
 public class MessageSender {
-  private static Logger logger = Logger.getLogger(MessageSender.class.getName());
+  private static Logger logger 
+  = Logger.getLogger(MessageSender.class.getName());
 
   /**
    * @param args
@@ -700,7 +723,7 @@ public class MessageSender {
   
   private static SnsClient getSNSClient() {
     AwsCredentialsProvider credentialsProvider 
-    = ProfileCredentialsProvider.create("******");
+    = ProfileCredentialsProvider.create("<Profile>");
     
     // Construct the SnsClient with AWS account credentials
     SnsClient snsClient = SnsClient

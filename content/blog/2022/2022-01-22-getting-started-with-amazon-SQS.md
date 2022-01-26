@@ -58,9 +58,7 @@ FIFO queues also help us to avoid sending duplicate messages to a queue. If we s
 
 After creating the queue, we need to configure the queue with specific attributes based on our message processing requirements. Let us look at some of the properties which we configure:
 
-**Dead-letter Queue**:A dead-letter queue is a queue that one or more source queues can use for messages that are not consumed successfully. 
-
-Amazon SQS supports dead-letter queues (DLQ), which other queues (source queues) can target for messages that cannot be processed (consumed) successfully. Dead-letter queues are useful for debugging our application or messaging system because they let you isolate unconsumed messages to determine why their processing doesn't succeed.
+**Dead-letter Queue**:A dead-letter queue is a queue that one or more source queues can use for messages that are not consumed successfully. They are useful for debugging our applications or messaging system because they let us isolate unconsumed messages to determine why their processing does not succeed.
 
 **Dead-letter Queue Redrive**:We configure a dead-letter queue redrive to move standard unconsumed messages out of an existing dead-letter queue back to their source queues.
 

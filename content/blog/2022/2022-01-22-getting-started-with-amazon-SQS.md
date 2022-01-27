@@ -294,7 +294,9 @@ public class ResourceHelper {
   private static String getQueueArn(
                   final String queueName, 
                   final String region) {
-    return "arn:aws:sqs:"+region + ":" + AppConfig.ACCOUNT_NO + ":" + queueName;
+    return "arn:aws:sqs:"+region + ":" 
+          + AppConfig.ACCOUNT_NO + ":" 
+          + queueName;
   }
 
 }
@@ -543,7 +545,8 @@ public class ResourceHelper {
     SqsClient sqsClient = getSQSClient();
     
     String dlqName = "mydlq";
-    CreateQueueRequest createQueueRequest = CreateQueueRequest.builder()
+    CreateQueueRequest createQueueRequest 
+              = CreateQueueRequest.builder()
                                   .queueName(dlqName)
                                   .build();
     
@@ -577,7 +580,9 @@ public class ResourceHelper {
     final String queueName, 
     final String region) {
 
-    return "arn:aws:sqs:"+region + ":" + AppConfig.ACCOUNT_NO+ ":" + queueName;
+    return "arn:aws:sqs:"
+           + region 
+           + ":" + AppConfig.ACCOUNT_NO+ ":" + queueName;
   }
   
 }

@@ -77,45 +77,65 @@ After creating the queue, we need to configure the queue with specific attribute
 ## Creating a Standard SQS Queue
 We can use the [Amazon SQS console](https://console.aws.amazon.com/sqs/#/create-queue) to create standard queues and FIFO queues. The console provides default values for all settings except for the queue name. 
 
-However, for our examples, we will use AWS Cloud Development Kit (CDK) for creating our SQS Queue. AWS CDK is an open-source software development framework for defining our cloud application resources using programming languages like java, C#, node.js, typescript, etc.
+However, for our examples, we will use AWS SDK for Java to create our queues and send and receive messages. Let us first add the following Maven dependency in our `pom.xml`:
 
-We will define our queue with CDK using Java as the programming language:
+```xml
+    <dependency>
+        <groupId>software.amazon.awssdk</groupId>
+        <artifactId>sqs</artifactId>
+    </dependency>
+    <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>bom</artifactId>
+            <version>2.17.116</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+   </dependencyManagement>
+
+```
+
+
+
+We will define our queue with the Java SDK:
 
 ```java
-public class LambdaFromSqsStack extends Stack {
-    public LambdaFromSqsStack(
-            final Construct scope, 
-            final String id) {
-        this(scope, id, null);
-    }
+public class ResourceHelper {
+  public static void createStandardQueue() {
+    SqsClient sqsClient = getSQSClient();
+   
+    // Define the request for creating a 
+    // standard queue with default parameters
+    CreateQueueRequest createQueueRequest 
+                           = CreateQueueRequest.builder()
+                            .queueName("myqueue")
+                            .build();
+    // Create the queue
+    sqsClient.createQueue(createQueueRequest);
+  }
+  
+  
+  private static SqsClient getSQSClient() {
+    AwsCredentialsProvider credentialsProvider = 
+        ProfileCredentialsProvider.create("<Profile");
+    
+    SqsClient sqsClient = SqsClient
+        .builder()
+        .credentialsProvider(credentialsProvider)
+        .region(Region.US_EAST_1).build();
+    return sqsClient;
+  }
 
-    public LambdaFromSqsStack(
-            final Construct scope, 
-            final String id, 
-            final StackProps props) {
-        super(scope, id, props);
-
-        // Create the Queue 
-        Queue queue = Queue
-                       .Builder
-                       .create(this, "myqueue")
-                       .queueName("myqueue")
-                       .build();
-    }
 }
+
 
 ```
 We have defined an SQS queue with default configuration and set the name of the queue as `myqueue`. The queue name is unique for our AWS account and region. 
 
-Let us run the following `cdk` commands in sequence to provision this SQS queue:
-```shell
-cdk bootstrap --profile <AWS profile name>
-
-cdk synth
-
-cdk deploy --profile <AWS profile name>
-```
-Running these commands will create a standard type SQS queue of name `myqueue` with default configuration. We can see the queue we just created in the aws console:
+Running this program will create a standard type SQS queue of name `myqueue` with default configuration. We can see the queue we just created in the aws console:
 {{% image alt="SQS queue" src="images/posts/aws-sqs/sqs-queue.png" %}}
 
 
@@ -195,32 +215,66 @@ We can also send multiple messages in a single request using the `sendMessageBat
 
 ## Creating a FIFO SQS Queue
 
-Let us now define a FIFO queue that we can use for sending non-duplicate messages in a fixed sequence. We will update our CDK stack as shown below for provisioning the FIFO queue:
+Let us now create a FIFO queue that we can use for sending non-duplicate messages in a fixed sequence. We will do this in the `createFifoQueue()` method as shown here: 
 
 ```java
-public class LambdaFromSqsStack extends Stack {
-    public LambdaFromSqsStack(final Construct scope, final String id) {
-        this(scope, id, null);
-    }
+public class ResourceHelper {
+  private static Logger logger 
+       = Logger.getLogger(ResourceHelper.class.getName());
+  
+  public static void main(String[] args) {
+    createFifoQueue();
+  }
+  
 
-    public LambdaFromSqsStack(
-      final Construct scope, 
-      final String id, 
-      final StackProps props) {
-         super(scope, id, props);
+  public static void createFifoQueue() {
+    SqsClient sqsClient = getSQSClient();
+    
+    
+    // Define attributes of FIFO queue in an attribute map
+    Map<QueueAttributeName, String> attributeMap 
+          = new HashMap<QueueAttributeName, String>();
+    
+    // FIFO_QUEUE attribute is set to true mark the queue as FIFO
+    attributeMap.put(QueueAttributeName.FIFO_QUEUE, "true");
 
-     ...
-     ...
-     
-     // Create a FIFO queue. 
-     Queue fifoQueue = Queue.Builder.create(this, "myfifoqueue")
-              .queueName("myfifoqueue.fifo")
-              .deduplicationScope(DeduplicationScope.MESSAGE_GROUP)
-              .contentBasedDeduplication(false)
-              .fifo(true)
-              .build();
+    // Scope of DEDUPLICATION is set to messageGroup
+    attributeMap.put(QueueAttributeName.DEDUPLICATION_SCOPE, "messageGroup");
 
-    }
+    // CONTENT_BASED_DEDUPLICATION is disabled
+    attributeMap.put(QueueAttributeName.CONTENT_BASED_DEDUPLICATION, "false");
+    
+    // Prepare the queue creation request and end the name of the queue with fifo
+    CreateQueueRequest createQueueRequest = CreateQueueRequest.builder()
+                .queueName("myfifoqueue.fifo")
+                .attributes(attributeMap )
+                .build();
+
+    // Create the FIFO queue
+    CreateQueueResponse createQueueResponse 
+       = sqsClient.createQueue(createQueueRequest);
+        
+    // URL of the queue is returned in the response  
+    logger.info("url "+createQueueResponse.queueUrl());
+  }
+  
+  private static SqsClient getSQSClient() {
+    AwsCredentialsProvider credentialsProvider 
+    = ProfileCredentialsProvider.create("<Profile>");
+    
+    SqsClient sqsClient = SqsClient
+        .builder()
+        .credentialsProvider(credentialsProvider)
+        .region(Region.US_EAST_1).build();
+    return sqsClient;
+  }
+  
+  private static String getQueueArn(
+                  final String queueName, 
+                  final String region) {
+    return "arn:aws:sqs:"+region + ":" + AppConfig.ACCOUNT_NO + ":" + queueName;
+  }
+
 }
 
 ```
@@ -235,6 +289,11 @@ As explained earlier, a FIFO queue preserves the order in which messages are sen
 To check this behavior, let us send five messages to the FIFO queue, we created earlier :
 
 ```java
+public class MessageSender {
+
+  private static Logger logger 
+  = Logger.getLogger(MessageSender.class.getName());
+
   public static void sendMessageToFifo() {
     SqsClient sqsClient = getSQSClient();
     
@@ -243,9 +302,10 @@ To check this behavior, let us send five messages to the FIFO queue, we created 
     ...
     ...
     
-    final String queueURL 
-    = "https://sqs.us-east-1.amazonaws.com/*****/myfifoqueue.fifo";
-    
+    final String queueURL = "https://sqs.us-east-1.amazonaws.com/" 
+                    +AppConfig.ACCOUNT_NO 
+                    + "/myfifoqueue.fifo";
+   
     
     List<String> dedupIds = List.of("dedupid1",
                                     "dedupid2",
@@ -321,8 +381,10 @@ public class MessageReceiver {
   public static void receiveMessage() {
     SqsClient sqsClient = getSQSClient();
 
-    final String queueURL 
-     = "https://sqs.us-east-1.amazonaws.com/*****/myqueue";
+    final String queueURL = "https://sqs.us-east-1.amazonaws.com/" 
+                    +AppConfig.ACCOUNT_NO 
+                    + "/myqueue";
+
 
     // long polling and wait for waitTimeSeconds before timing out
     ReceiveMessageRequest receiveMessageRequest = 
@@ -370,8 +432,10 @@ public class MessageReceiver {
   public static void receiveFifoMessage() throws InterruptedException {
     SqsClient sqsClient = getSQSClient();
 
-    final String queueURL 
-    = "https://sqs.us-east-1.amazonaws.com/675153449441/myfifoqueue.fifo";
+    final String queueURL = "https://sqs.us-east-1.amazonaws.com/" 
+                    +AppConfig.ACCOUNT_NO 
+                    + "/myfifoqueue.fifo";
+
     ...
     ...
     
@@ -434,55 +498,68 @@ After we have fixed the consumer application or when the consumer application is
 
 A dead-letter queue is a queue that one or more source queues can use for messages that are not consumed successfully. 
 
-Amazon SQS does not create the dead-letter queue automatically. We must first create the queue before using it as a dead-letter queue. With this understanding, let us update the infrastructure stack that we defined earlier using CDK:
+Amazon SQS does not create the dead-letter queue automatically. We must first create the queue before using it as a dead-letter queue. With this understanding, let us update the queue creation method that we defined earlier using AWS SDK:
 
 
 ```java
-public class LambdaFromSqsStack extends Stack {
+public class ResourceHelper {
+  private static Logger logger 
+    = Logger.getLogger(ResourceHelper.class.getName());
+  
+  public static void main(String[] args) {
+    createStandardQueue();
+  }
 
-    public LambdaFromSqsStack(final Construct scope, final String id) {
-        this(scope, id, null);
-    }
+  public static void createStandardQueue() {
+    SqsClient sqsClient = getSQSClient();
+    
+    String dlqName = "mydlq";
+    CreateQueueRequest createQueueRequest = CreateQueueRequest.builder()
+                                  .queueName(dlqName)
+                                  .build();
+    
 
-    public LambdaFromSqsStack(
-        final Construct scope, 
-        final String id, 
-        final StackProps props) {
+    // Create dead letter queue
+    CreateQueueResponse createQueueResponse 
+       = sqsClient.createQueue(createQueueRequest);
+    
+    
+    String dlqArn = getQueueArn(dlqName,"us-east-1"); 
+    
+    Map<QueueAttributeName, String> attributeMap 
+         = new HashMap<QueueAttributeName, String>();
 
-        super(scope, id, props);
-
-        // Define the Queue which will be used as Dead letter queue
-        Queue dlq = Queue.Builder.create(this, "mydlq")
-                      .queueName("mydlq")
-                      .build();
-        
-        // Configure the Dead letter queue with maxReceiveCount
-        DeadLetterQueue deadLetterQueue = DeadLetterQueue.builder()
-                              .queue(dlq)
-                              .maxReceiveCount(10)
-                              .build();
-        
-        // Associate the Dead letter queue with the source queue
-        Queue queue = Queue.Builder.create(this, "myqueue")
+    attributeMap.put(QueueAttributeName.REDRIVE_POLICY, 
+        "{\"maxReceiveCount\":10,\"deadLetterTargetArn\":\""+dlqArn+"\"}");
+      
+    // Prepare request for creating the standard queue
+    createQueueRequest = CreateQueueRequest.builder()
                 .queueName("myqueue")
-                .deadLetterQueue(deadLetterQueue )
-                .visibilityTimeout(Duration.minutes(5))
-                .deliveryDelay(Duration.minutes(1))
-                .maxMessageSizeBytes(1024*100)  // 100 Kb
-                .receiveMessageWaitTime(Duration.seconds(5))
-                .retentionPeriod(Duration.days(1))
+                .attributes(attributeMap)
                 .build();
-    }
+
+    // create the queue
+    createQueueResponse = sqsClient.createQueue(createQueueRequest);
+      
+    logger.info("Queue URL " + createQueueResponse.queueUrl());
+  }
+
+  private static String getQueueArn(
+    final String queueName, 
+    final String region) {
+
+    return "arn:aws:sqs:"+region + ":" + AppConfig.ACCOUNT_NO+ ":" + queueName;
+  }
+  
 }
 
 ```
-Here we have first defined a standard queue for using it as the dead letter queue and then configured the queue with `maxReceiveCount` value of `10`. After that, we have associated this dead letter queue with the source queue.
+Here we have first defined a standard queue named `mydlq` for using it as the dead letter queue. 
 
-We have defined the dead-letter queue of a standard queue as a standard queue. Similarly, the dead-letter queue of a FIFO queue must also be a FIFO queue. 
+The redrive policy of a SQS queue is used to specify the source queue, the dead-letter queue, and the conditions under which Amazon SQS will move messages if the consumer of the source queue fails to process a message a specified number of times. The `maxReceiveCount` is the number of times a consumer tries to receive a message from a queue without deleting it before being moved to the dead-letter queue.
 
-Additionally, we can define a redrive policy to specify the source queue, the dead-letter queue, and the conditions under which Amazon SQS will move messages if the consumer of the source queue fails to process a message a specified number of times. 
+Accordingly, we have defined the `Redrive policy` in the attribute map when creating the source queue with `maxReceiveCount` value of `10` and Amazon Resource Names (ARN) of the dead letter queue. 
 
-The `maxReceiveCount` is the number of times a consumer tries to receive a message from a queue without deleting it before being moved to the dead-letter queue.
 
 ## Trigger AWS Lambda Function by Messages in the Queue
 
@@ -490,11 +567,13 @@ AWS Lambda is a serverless, event-driven compute service which we can use to run
 
 We can trigger the Lambda function from many AWS services and only pay for what we use.
 
-We can attach an AWS Lambda function to an SQS queue that will get triggered whenever messages are put in the queue. The Lambda function will poll the queue and invoke the Lambda function by passing an event parameter that contains the messages in the queue. 
+We can attach a SQS standard and FIFO queues to an AWS Lambda function as an event source. The lambda function will get triggered whenever messages are put in the queue. The function will read and process messages in the queue. 
+
+The Lambda function will poll the queue and invoke the Lambda function by passing an event parameter that contains the messages in the queue. 
 
 Lambda function supports many language runtimes like Node.js, Python, C#, and Java. 
 
-Let us write the code of our lambda function in JavaScript to process SQS messages as shown below: 
+Let us attach the following lambda function to our standard queue created earlier to process SQS messages: 
 
 ```js
 exports.handler = async function(event, context) {
@@ -506,53 +585,43 @@ exports.handler = async function(event, context) {
 }
 
 ```
-We will run this function with Node.js in AWS Lambda.
+This function written in Javascript and uses the Node.js runtime during execution in AWS Lambda. A handler function named `handler()` is exported that takes an `event` object and a `context` object as parameters and prints the message received from the SQS queue in the console. The handler function in Lambda is the method that processes events. Lambda runs the handler method when the function is invoked.
 
-We have written this Lambda function in a single source file named `index.js` and saved this file under a folder named `resources` in our project folder. 
+We will also need to create a execution role with lambda with the following IAM policy attached:
 
-This file exports a handler function named `handler()` that takes an `event` object and a `context` object as parameters. The handler function in Lambda is the method that processes events. Lambda runs the handler method when the function is invoked.
-
-
-Let us now update the CDK stack that we used for queue creation earlier and attach the lambda function to the queue. We will need to provide the name of the Lambda handler function as `index.handler` along with the folder containing the source code in the function configuration as shown here:
-
-```java
-public class LambdaFromSqsStack extends Stack {
-    public LambdaFromSqsStack(final Construct scope, 
-                              final String id) {
-        this(scope, id, null);
-    }
-
-    public LambdaFromSqsStack(final Construct scope, 
-                              final String id, 
-                              final StackProps props) {
-        super(scope, id, props);
-
-        // Create the Queue
-        Queue queue = Queue.Builder.create(this, "myqueue")
-                                    .queueName("myqueue")
-                                    .build();
-        
-        // Configure the Lambda function
-        Function sqsReceiver = Function.Builder.create(this, "SQSReceiver")
-                                  // folder containing the Lambda code
-                                  .code(AssetCode.fromAsset("resources"))
-                                  // Name of the handler function
-                                  .handler("index.handler")
-                                  .runtime( Runtime.NODEJS_14_X)
-                                  .build();
-      
-        // Configure the queue as the event source of the Lambda function
-        IEventSource source = SqsEventSource.Builder.create(queue).build();
-
-        // Add the event source to the Lambda function
-        sqsReceiver.addEventSource(source);
-    
-    }
+```xml
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "sqs:DeleteMessage",
+                "sqs:ReceiveMessage",
+                "sqs:GetQueueAttributes"
+            ],
+            "Resource": [
+                "arn:aws:sqs:us-east-1:<account-no>:myqueue"
+            ]
+        }
+    ]
 }
-```
-Here we have defined the SQS queue as before. Then we have configured the lambda function and specified the runtime as Node.js, handler method as `index.handler`, and the folder containing the source code of Lambda function as `resources`.
 
-We have next defined the queue as the event source of the Lambda function and attached it to our Lambda function.
+```
+For processing messages from the queue, the lambda function needs permissions for `DeleteMessage`, `ReceiveMessage`, `GetQueueAttributes` on our SQS queue and a AWS managed policy: `AWSLambdaBasicExecutionRole` for permission for writing to cloudwatch logs.
+
+Let us create this lambda function from the AWS console as shown here:
+
+{{% image alt="Lambda Trigger for SQS queue" src="images/posts/aws-sqs/lambda-trigger.png" %}}
+
+
+
+Let us run our `sendMessage()` method to send a message to the queue where the lambda function is attached. Since the lambda function is attached to be triggered by messages in the queue, we can see the message sent by the `sendMessage()` method in the CloudWatch console:
+
+{{% image alt="Lambda Trigger for SQS queue" src="images/posts/aws-sqs/cloudwatch-log.png" %}}
+
+We can see the message: `Test message` which was sent to the SQS queue , printed by the lambda receiver function in the CloudWatch console.
 
 We can also specify a queue to act as a dead-letter queue for messages that our Lambda function fails to process.
 
@@ -638,54 +707,57 @@ Amazon Simple Notification Service (SNS) is a fully managed publish/subscribe me
 
 SNS topics support different subscription types like SQS queues, AWS Lambda functions, HTTP endpoints, email addresses, SMS, and mobile push where we can publish messages.
 
-We can subscribe multiple Amazon SQS queues to an Amazon Simple Notification Service (Amazon SNS) topic. When we publish a message to a topic, Amazon SNS sends the message to each of the subscribed queues. Let us update our infrastructure by adding an SNS topic and a subscription to an SQS Queue:
+We can subscribe multiple Amazon SQS queues to an Amazon Simple Notification Service (Amazon SNS) topic. When we publish a message to a topic, Amazon SNS sends the message to each of the subscribed queues. 
+
+Let us update our `ResourceHelper` class by adding  a method to create an SNS topic along with a subscription to the SQS Standard Queue created earlier:
 
 ```java
-public class LambdaFromSqsStack extends Stack {
-    public LambdaFromSqsStack(
-      final Construct scope, 
-      final String id) {
-        this(scope, id, null);
-    }
+public class ResourceHelper {
+  private static Logger logger 
+      = Logger.getLogger(ResourceHelper.class.getName());
+  
+  public static void main(String[] args) {
+    createSNSTopicWithSubscription();
+  }
 
-    public LambdaFromSqsStack(
-      final Construct scope, 
-      final String id, 
-      final StackProps props) {
-        super(scope, id, props);
-        ...
-        ...
-        // Create an SQS queue
-        Queue queue = Queue.Builder.create(this, "myqueue")
-            .queueName("myqueue")
-            .deadLetterQueue(deadLetterQueue )
-            .visibilityTimeout(Duration.minutes(5))
-            .deliveryDelay(Duration.minutes(1))
-            .maxMessageSizeBytes(1024*100)  // 100 Kb
-            .receiveMessageWaitTime(Duration.seconds(5))
-            .retentionPeriod(Duration.days(1))
-            .build();
-        
-        ...
-        ...
-        
-        // Create a SNS Topic
-        Topic topic = Topic
-                          .Builder
-                          .create(this, "mytopic")
-                          .build();
-           
-        // Add the queue as Topic Subscriber 
-        topic.addSubscription(
-                  SqsSubscription
-                  .Builder
-                  .create(queue)
-                  .build());
-    }
+  public static void createSNSTopicWithSubscription() {
+    SnsClient snsClient = getSNSClient();
+    
+    // Prepare the request for creating SNS topic 
+    CreateTopicRequest createTopicRequest 
+               = CreateTopicRequest
+                         .builder()
+                         .name("mytopic")
+                         .build();
+
+    // Create the topic
+    CreateTopicResponse createTopicResponse 
+              = snsClient.createTopic(createTopicRequest );
+    
+    String topicArn = createTopicResponse.topicArn();
+
+    String queueArn= getQueueArn("myqueue","us-east-1");
+    
+    // Prepare the SubscribeRequest for subscribing
+    // endpoint of protocol sqs to topic of topicArn 
+    SubscribeRequest subscribeRequest = SubscribeRequest.builder()
+                              .protocol("sqs")
+                              .topicArn(topicArn)
+                              .endpoint(queueArn)
+                              .build();
+
+    SubscribeResponse subscribeResponse 
+               = snsClient.subscribe( subscribeRequest );
+
+      
+    logger.info("subscriptionArn " + 
+      subscribeResponse.subscriptionArn());
+  }
+
 }
 
 ```
-Here we have first created an SQS queue as we had done in previous examples. Then we have created an SNS topic and then added the SQS queue as a subscriber to the topic.
+Here we have first created an SNS topic of name `mytopic`. Then we have created a subscription by adding the SQS queue as a subscriber to the topic.
 
 Let us now publish a message to this SNS topic using AWS Java SDK as shown below:
 
@@ -702,12 +774,14 @@ public class MessageSender {
     // sendMessageToFifo();
     sendMessageToSnsTopic();
   }
+
   public static void sendMessageToSnsTopic() {
     SnsClient snsClient = getSNSClient();
     
     final String topicArn = "arn:aws:sns:us-east-1:675153449441:LambdaFromSqsStack-mytopicDA9518A7-18LSXENGTNKKY";
   
-    // Build the publish request with the SNS Topic Arn and the message body
+    // Build the publish request with the 
+    // SNS Topic Arn and the message body
     PublishRequest publishRequest = PublishRequest
                                         .builder()
                                         .topicArn(topicArn)
@@ -715,7 +789,8 @@ public class MessageSender {
                                         .build();
 
     // Publish the message to the SNS topic
-    PublishResponse publishResponse = snsClient.publish(publishRequest);
+    PublishResponse publishResponse 
+         = snsClient.publish(publishRequest);
     
     logger.info("message id: "+ publishResponse.messageId());
     
@@ -739,7 +814,7 @@ public class MessageSender {
 
 ```
 
-Here we have set up the SNS client using our AWS account credentials and invoked the publish method on the `SnsClient` instance to publish a test message to the topic.
+Here we have set up the SNS client using our AWS account credentials and invoked the publish method on the `SnsClient` instance to publish a message to the topic. The SQS queue being a subscriber to the queue receives the message from the topic.
 
 ## Conclusion
 

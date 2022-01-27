@@ -26,8 +26,8 @@ Programs communicate with each other by sending data in the form of messages whi
 
 This allows the communicating programs to run independently of each other, at different speeds and times, in different processes, and without having a direct connection between them.
 
-
 ## Core Concepts of Amazon SQS
+
 The Amazon Simple Queue Service (SQS) is a fully managed distributed Message Queueing System. The queue provided by the SQS service redundantly stores the messages across multiple Amazon SQS servers. Let us look at some of its core concepts:
 
 ### Standard Queues vs FIFO Queues
@@ -75,9 +75,14 @@ After creating the queue, we need to configure the queue with specific attribute
 
 
 ## Creating a Standard SQS Queue
+
 We can use the [Amazon SQS console](https://console.aws.amazon.com/sqs/#/create-queue) to create standard queues and FIFO queues. The console provides default values for all settings except for the queue name. 
 
-However, for our examples, we will use AWS SDK for Java to create our queues and send and receive messages. Let us first add the following Maven dependency in our `pom.xml`:
+However, for our examples, we will use [AWS SDK for Java](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/home.html) to create our queues and send and receive messages. 
+
+So we will use the AWS Java SDK and add it as a Maven dependency. The AWS SDK for Java simpliﬁes the use of AWS Services by providing a set of libraries that are based on common design patterns familiar to Java developers.
+
+Let us first add the following Maven dependency in our `pom.xml`:
 
 ```xml
     <dependency>
@@ -98,12 +103,18 @@ However, for our examples, we will use AWS SDK for Java to create our queues and
 
 ```
 
-
-
-We will define our queue with the Java SDK:
+We will next create our queue in the `ResourceHelper` class with the Java SDK:
 
 ```java
 public class ResourceHelper {
+
+  private static Logger logger 
+      = Logger.getLogger(ResourceHelper.class.getName());
+  
+  public static void main(String[] args) {
+     createStandardQueue();
+  }
+
   public static void createStandardQueue() {
     SqsClient sqsClient = getSQSClient();
    
@@ -131,7 +142,6 @@ public class ResourceHelper {
 
 }
 
-
 ```
 We have defined an SQS queue with default configuration and set the name of the queue as `myqueue`. The queue name is unique for our AWS account and region. 
 
@@ -140,11 +150,9 @@ Running this program will create a standard type SQS queue of name `myqueue` wit
 
 
 ## Sending Message to a Standard SQS Queue
-We can send a message to an SQS Queue from the AWS console. However, for all practical purposes, the message is sent programmatically using the AWS SDK for a supported programming language. 
+We can send a message to an SQS Queue either from the AWS console or from an application using the AWS SDK. 
 
-Let us send a message to our queue from a Java program. So we will use the AWS Java SDK and add it as a Maven dependency. The AWS SDK for Java simpliﬁes the use of AWS Services by providing a set of libraries that are based on common design patterns familiar to Java developers.
-
-We use the following code snippet to send a message to the queue that we created earlier:
+Let us send a message to the queue that we created earlier from a Java program as shown below:
 
 ```java
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -160,18 +168,28 @@ public class MessageSender {
   private static Logger logger = Logger
          .getLogger(MessageSender.class.getName());
 
+
+  public static void main(String[] args) {
+     sendMessage();
+  }
+
   public static void sendMessage() {
     SqsClient sqsClient = getSQSClient();
     
     final String queueURL 
-    = "https://sqs.us-east-1.amazonaws.com/*****/myqueue";
+                    = "https://sqs.us-east-1.amazonaws.com/" 
+                    + AppConfig.ACCOUNT_NO 
+                    + "/myqueue";
 
+    // Prepare request for sending message 
+    // with queueUrl and messageBody
     SendMessageRequest sendMessageRequest = SendMessageRequest
                            .builder()
                            .queueUrl(queueURL)
                            .messageBody("Test message")
                            .build();
 
+    // Send message and get the messageId in return
     SendMessageResponse sendMessageResponse = 
                                 sqsClient
                                 .sendMessage(sendMessageRequest);
@@ -203,7 +221,7 @@ Here we are first establishing a connection with the AWS SQS service using the `
 
 Then the message is sent by invoking the `sendMessage()` method on the `SqsClient` instance.
 
-When we run this program we can see the `message id` in the output:
+When we run this program we can see the `message ID` in the output:
 
 ```shell
 INFO: message id: fa5fd857-59b4-4a9a-ba54-a5ab98ee82f9 
@@ -213,7 +231,7 @@ This message ID returned in the `sendMessage()` response is assigned by SQS and 
 
 We can also send multiple messages in a single request using the `sendMessageBatch()` method of the `SqsClient` class.
 
-## Creating a FIFO SQS Queue
+## Creating a First-In-First-Out (FIFO) SQS Queue
 
 Let us now create a FIFO queue that we can use for sending non-duplicate messages in a fixed sequence. We will do this in the `createFifoQueue()` method as shown here: 
 
@@ -236,16 +254,20 @@ public class ResourceHelper {
           = new HashMap<QueueAttributeName, String>();
     
     // FIFO_QUEUE attribute is set to true mark the queue as FIFO
-    attributeMap.put(QueueAttributeName.FIFO_QUEUE, "true");
+    attributeMap.put(
+      QueueAttributeName.FIFO_QUEUE, "true");
 
     // Scope of DEDUPLICATION is set to messageGroup
-    attributeMap.put(QueueAttributeName.DEDUPLICATION_SCOPE, "messageGroup");
+    attributeMap.put(
+      QueueAttributeName.DEDUPLICATION_SCOPE, "messageGroup");
 
     // CONTENT_BASED_DEDUPLICATION is disabled
-    attributeMap.put(QueueAttributeName.CONTENT_BASED_DEDUPLICATION, "false");
+    attributeMap.put(
+      QueueAttributeName.CONTENT_BASED_DEDUPLICATION, "false");
     
     // Prepare the queue creation request and end the name of the queue with fifo
-    CreateQueueRequest createQueueRequest = CreateQueueRequest.builder()
+    CreateQueueRequest createQueueRequest 
+             = CreateQueueRequest.builder()
                 .queueName("myfifoqueue.fifo")
                 .attributes(attributeMap )
                 .build();
@@ -306,7 +328,7 @@ public class MessageSender {
                     +AppConfig.ACCOUNT_NO 
                     + "/myfifoqueue.fifo";
    
-    
+    // List of deduplicate IDs to be sent with different messages
     List<String> dedupIds = List.of("dedupid1",
                                     "dedupid2",
                                     "dedupid3",
@@ -315,21 +337,28 @@ public class MessageSender {
     
     String messageGroupId = "signup";
     
+    // List of messages to be sent. 2 of them are duplicates
     List<String> messages = List.of(
                 "My fifo message1",
                 "My fifo message2",
                 "My fifo message3",
-                "My fifo message2",
-                "My fifo message1");
+                "My fifo message2",  // Duplicate message
+                "My fifo message1"); // Duplicate message
+
     short loop = 0;
+
+    // sending the above messages in sequence. 
+    // Duplicate messages will be sent but will not be received.
     for (String message : messages) {
       
+      // message is identified as duplicate 
+      // if deduplication id is already used 
       SendMessageRequest sendMessageRequest 
         = SendMessageRequest.builder()
           .queueUrl(queueURL)
           .messageBody(message)
           .messageAttributes(messageAttributes)
-          .messageDeduplicationId(dedupIds.get(loop))
+          .messageDeduplicationId(dedupIds.get(loop)) 
           .messageGroupId(messageGroupId)
           .build();
       
@@ -616,7 +645,6 @@ Let us create this lambda function from the AWS console as shown here:
 {{% image alt="Lambda Trigger for SQS queue" src="images/posts/aws-sqs/lambda-trigger.png" %}}
 
 
-
 Let us run our `sendMessage()` method to send a message to the queue where the lambda function is attached. Since the lambda function is attached to be triggered by messages in the queue, we can see the message sent by the `sendMessage()` method in the CloudWatch console:
 
 {{% image alt="Lambda Trigger for SQS queue" src="images/posts/aws-sqs/cloudwatch-log.png" %}}
@@ -656,6 +684,7 @@ public class MessageSender {
 
     // generates a UUID as the traceId
     String traceId = UUID.randomUUID().toString();
+
     // add traceId as a message attribute
     messageAttributes.put(TRACE_ID_NAME, 
                   MessageAttributeValue.builder()
@@ -664,7 +693,8 @@ public class MessageSender {
                   .build());
     
     final String queueURL 
-    = "https://sqs.us-east-1.amazonaws.com/****/myqueue";
+     = "https://sqs.us-east-1.amazonaws.com/" 
+        +AppConfig.ACCOUNT_NO + "/myqueue";
 
     SendMessageRequest sendMessageRequest = SendMessageRequest
                            .builder()
@@ -770,16 +800,16 @@ public class MessageSender {
    * @param args
    */
   public static void main(String[] args) {
-    // sendMessage();
-    // sendMessageToFifo();
+
     sendMessageToSnsTopic();
   }
 
   public static void sendMessageToSnsTopic() {
     SnsClient snsClient = getSNSClient();
     
-    final String topicArn = "arn:aws:sns:us-east-1:675153449441:LambdaFromSqsStack-mytopicDA9518A7-18LSXENGTNKKY";
-  
+    final String topicArn 
+      = "arn:aws:sns:us-east-1:" + AppConfig.ACCOUNT_NO + ":mytopic";
+ 
     // Build the publish request with the 
     // SNS Topic Arn and the message body
     PublishRequest publishRequest = PublishRequest
@@ -821,14 +851,24 @@ Here we have set up the SNS client using our AWS account credentials and invoked
 Here is a list of the major points for a quick reference:
 
 1. Message Queueing is an asynchronous style of communication between two or more processes.
+
 2. Messages and queues are the basic components of a message queuing system.
+
 3. Amazon Simple Queue Service (SQS) is a fully managed message queuing service using which we can send, store, and receive messages to enable asynchronous communication between decoupled systems.  
+
 4. SQS provides two types of queues: Standard Queue and First-in-First-out FIFO Queue.
+
 5. Standard queues are more performant but do not preserve message ordering.
+
 6. FIFO queues preserve the order of the messages that are sent with the same message group identifier and also do not allow duplicate messages.
-7. We used AWS CDK to build an infrastructure stack containing SQS standard queue, FIFO queue, SNS topic, and a lambda function that will get triggered by messages in the queue. Other than CDK we can use CloudFormation directly or use AWS SDK for a supported language to build queues and topics.
+
+7. We used AWS Java SDK to build queues, topics, and subscriptions and also for sending and receiving messages from the queue. Other than AWS SDK we can use Infrastructure as Code services of AWS like CloudFormation or AWS Cloud Development Kit (CDK) for a supported language to build queues and topics.
+
 8. We define a Dead-letter queue (DLQ) to receive messages which have failed processing due to any erroneous condition in the producer or consumer program.
-9. SQS queue can be defined as a subscriber to an SNS topic.
+
+9. We also defined a lambda function that will get triggered by messages in the queue. 
+
+10. We also defined a SQS queue as a subscription endpoint to an SNS topic.
 
 
 

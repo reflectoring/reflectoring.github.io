@@ -588,11 +588,11 @@ public class ResourceHelper {
 }
 
 ```
-Here we have first defined a standard queue named `mydlq` for using it as the dead letter queue. 
+Here we have first defined a standard queue named `mydlq` for using it as the dead-letter queue. 
 
 The redrive policy of a SQS queue is used to specify the source queue, the dead-letter queue, and the conditions under which Amazon SQS will move messages if the consumer of the source queue fails to process a message a specified number of times. The `maxReceiveCount` is the number of times a consumer tries to receive a message from a queue without deleting it before being moved to the dead-letter queue.
 
-Accordingly, we have defined the `Redrive policy` in the attribute map when creating the source queue with `maxReceiveCount` value of `10` and Amazon Resource Names (ARN) of the dead letter queue. 
+Accordingly, we have defined the `Redrive policy` in the attribute map when creating the source queue with `maxReceiveCount` value of `10` and Amazon Resource Names (ARN) of the dead-letter queue. 
 
 
 ## Trigger AWS Lambda Function by Messages in the Queue
@@ -799,11 +799,9 @@ Let us now publish a message to this SNS topic using AWS Java SDK as shown below
 ```java
 public class MessageSender {
   private static Logger logger 
-  = Logger.getLogger(MessageSender.class.getName());
+      = Logger.getLogger(MessageSender.class.getName());
 
-  /**
-   * @param args
-   */
+  
   public static void main(String[] args) {
 
     sendMessageToSnsTopic();

@@ -8,8 +8,10 @@ description: "Overview of annotations. Implementation of a real-world example of
 image: 
 url: 
 ---
+[toc]
 
-# An Introduction to Annotations and Annotation Processing
+
+# An Introduction to Annotations and Annotation Processing 
 
 An Annotation is a construct associated with Java source code elements such as classes, methods, and variables that provide information to the program at compile-time or run-time based on which the program can take further action. The Annotation Processor processes these Annotations at compile time to provide functionality such as code generation, error checking, etc.  
 
@@ -834,7 +836,9 @@ To summarize:
 
 3. We compile the POJO project and that kicks off the Annotation Processor at compile-time which generates Builder source files for us in the output directory.
 
-Conclusion: After running the project as specified in the Annotation Processor Overview we end up creating 2 Builder classes - EmployeeBuilder and DepartmentBuilder for the 2 core classes in the core module - Employee and Department. So if we had a few dozen classes the code generation capabilities of the Annotation Processor would save us a lot of time. Further, the Builders could be used as follows to set only the parameters we need to set when constructing the objects. This helps us avoid the need to have multiple constructors for optional parameters.
+## Conclusion
+
+After running the project as specified in the Annotation Processor Overview we end up creating 2 Builder classes - EmployeeBuilder and DepartmentBuilder for the 2 core classes in the core module - Employee and Department. So if we had a few dozen classes the code generation capabilities of the Annotation Processor would save us a lot of time. Further, the Builders could be used as follows to set only the parameters we need to set when constructing the objects. This helps us avoid the need to have multiple constructors for optional parameters.
 
 ```java
 Employee employee = new EmployeeBuilder()

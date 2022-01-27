@@ -271,7 +271,7 @@ public class Department {
 
 Since the Annotation Processor is used at compile-time to generate code, we need to first build the Annotation Processor module and use it as a dependency in the Core module. When the Core module is compiled, it kicks off the Annotation Processor which generates the Builder source files.
 
-We first need to create the @Builder annotation which we will apply to the POJOs that require corresponding Builder source files. This is our Builder class:
+We first need to create the @Builder annotation which we will apply to the POJOs that require corresponding Builder source files. This is our Builder interface:
 
 ```java
 package com.reflectoring.annotation.processor;
@@ -287,7 +287,7 @@ public @interface Builder {
 }
 ```
 
-Next we need to create the AnnotationProcessor class which will process all POJOs in the Core class which have the @Builder annotation applied to them. The main Class in the Annotation Processor module is BuilderProcessor which extends AbstractProcessor. This is a class provided by the java.lang.annotations package which provides all the core functionality which we extend and add custom functionality to. 
+Next we need to create the AnnotationProcessor class which will process all POJOs in the Core class which have the @Builder annotation applied to them. The main Class in the Annotation Processor module is BuilderProcessor which extends AbstractProcessor. This is an abstract class provided by the java.lang.annotations package which provides all the core functionality which we extend and add custom functionality to. 
 
 ```java
 package com.reflectoring.annotation.processor;

@@ -22,7 +22,7 @@ Message Queueing is an asynchronous style of communication between two or more p
 
 Messages and queues are the basic components of a message queuing system.
 
-Programs communicate with each other by sending data in the form of messages which are placed in a storage called queue, instead of calling each other directly. The receiver programs retrieve the message from the queue and does the processing without any knowledge of the producer programs.
+Programs communicate with each other by sending data in the form of messages which are placed in a storage called a queue, instead of calling each other directly. The receiver programs retrieve the message from the queue and do the processing without any knowledge of the producer programs.
 
 This allows the communicating programs to run independently of each other, at different speeds and times, in different processes, and without having a direct connection between them.
 
@@ -50,9 +50,10 @@ Messages that belong to the same message group are always processed one by one, 
 
 FIFO queues also help us to avoid sending duplicate messages to a queue. If we send the same message within the 5-minute deduplication interval, it is not added to the queue. We can configure deduplication in two ways:
 
-- **Enabling Content-Based Deduplication**: When this property is enabled for a queue, Amazon SQS uses a SHA-256 hash to generate the message deduplication ID using the contents in body of the message.
+- **Enabling Content-Based Deduplication**: When this property is enabled for a queue, Amazon SQS uses a SHA-256 hash to generate the message deduplication ID using the contents in the body of the message.
 
 - **Providing the Message Deduplication ID**: When a message with a particular message deduplication ID is sent, any messages subsequently sent with the same message deduplication ID are accepted successfully but are not delivered during the 5-minute deduplication interval.
+
 
 ### Queue Configurations
 
@@ -60,18 +61,20 @@ After creating the queue, we need to configure the queue with specific attribute
 
 **Dead-letter Queue**:A dead-letter queue is a queue that one or more source queues can use for messages that are not consumed successfully. They are useful for debugging our applications or messaging system because they let us isolate unconsumed messages to determine why their processing does not succeed.
 
-**Dead-letter Queue Redrive**:We configure a dead-letter queue redrive to move standard unconsumed messages out of an existing dead-letter queue back to their source queues.
+**Dead-letter Queue Redrive**:We use this configuration to define the time after which unconsumed messages are moved out of an existing dead-letter queue back to their source queues.
 
 **Visibility Timeout**:The visibility timeout is a period of time during which a message received from a queue by one consumer is not visible to the other message consumers. Amazon SQS prevents other consumers from receiving and processing the message during the visibility timeout period. 
 
-**Message Retention Period**: The amount of time for which a message remains in the queue. The messages in the queue should be received and processed before this time is crossed. They are automatically deleted from the queue once the message retention period has passed. 
+**Message Retention Period**: The amount of time for which a message remains in the queue. The messages in the queue should be received and processed before this time is crossed. They are automatically deleted from the queue once the message retention period has expired. 
 
 **DelaySeconds**: The length of time for which the delivery of all messages in the queue is delayed. 
 
-**MaximumMessageSize**: The limit of how many bytes a message can contain before Amazon SQS rejects it.   
-**ReceiveMessageWaitTimeSeconds**: The length of time for which a ReceiveMessage action waits for a message to arrive. Valid values: An integer from 0 to 20 (seconds). Default: 0.
+**MaximumMessageSize**: The limit on the size of a message in bytes that can be sent to SQS before being rejected.   
 
-**Short and long polling**:Amazon SQS provides short polling and long polling to receive messages from a queue. By default, queues use short polling.
+**ReceiveMessageWaitTimeSeconds**: The length of time for which a message receiver waits for a message to arrive. This value defaults to `0` and can take any value from `0` to `20` seconds.
+
+**Short and long polling**:Amazon SQS uses short polling and long polling mechanisms to receive messages from a queue. Short polling returns immediately, even if the message queue being polled is empty, while long polling does not return a response until a message arrives in the message queue, or the long polling period expires.
+Queues use short polling by default. Long polling is preferable to short polling in most cases. 
 
 
 ## Creating a Standard SQS Queue
@@ -590,18 +593,18 @@ public class ResourceHelper {
 ```
 Here we have first defined a standard queue named `mydlq` for using it as the dead-letter queue. 
 
-The redrive policy of a SQS queue is used to specify the source queue, the dead-letter queue, and the conditions under which Amazon SQS will move messages if the consumer of the source queue fails to process a message a specified number of times. The `maxReceiveCount` is the number of times a consumer tries to receive a message from a queue without deleting it before being moved to the dead-letter queue.
+The redrive policy of an SQS queue is used to specify the source queue, the dead-letter queue, and the conditions under which Amazon SQS will move messages if the consumer of the source queue fails to process a message a specified number of times. The `maxReceiveCount` is the number of times a consumer tries to receive a message from a queue without deleting it before being moved to the dead-letter queue.
 
 Accordingly, we have defined the `Redrive policy` in the attribute map when creating the source queue with `maxReceiveCount` value of `10` and Amazon Resource Names (ARN) of the dead-letter queue. 
 
 
-## Trigger AWS Lambda Function by Messages in the Queue
+## Trigger AWS Lambda Function by Incoming Messages in the Queue
 
 AWS Lambda is a serverless, event-driven compute service which we can use to run code for any type of application or backend service without provisioning or managing servers. 
 
 We can trigger the Lambda function from many AWS services and only pay for what we use.
 
-We can attach a SQS standard and FIFO queues to an AWS Lambda function as an event source. The lambda function will get triggered whenever messages are put in the queue. The function will read and process messages in the queue. 
+We can attach an SQS standard and FIFO queues to an AWS Lambda function as an event source. The lambda function will get triggered whenever messages are put in the queue. The function will read and process messages in the queue. 
 
 The Lambda function will poll the queue and invoke the Lambda function by passing an event parameter that contains the messages in the queue. 
 
@@ -619,9 +622,9 @@ exports.handler = async function(event, context) {
 }
 
 ```
-This function written in Javascript and uses the Node.js runtime during execution in AWS Lambda. A handler function named `handler()` is exported that takes an `event` object and a `context` object as parameters and prints the message received from the SQS queue in the console. The handler function in Lambda is the method that processes events. Lambda runs the handler method when the function is invoked.
+This function is written in Javascript and uses the Node.js runtime during execution in AWS Lambda. A handler function named `handler()` is exported that takes an `event` object and a `context` object as parameters and prints the message received from the SQS queue in the console. The handler function in Lambda is the method that processes events. Lambda runs the handler method when the function is invoked.
 
-We will also need to create a execution role with lambda with the following IAM policy attached:
+We will also need to create an execution role with lambda with the following IAM policy attached:
 
 ```xml
 {
@@ -643,7 +646,7 @@ We will also need to create a execution role with lambda with the following IAM 
 }
 
 ```
-For processing messages from the queue, the lambda function needs permissions for `DeleteMessage`, `ReceiveMessage`, `GetQueueAttributes` on our SQS queue and a AWS managed policy: `AWSLambdaBasicExecutionRole` for permission for writing to cloudwatch logs.
+For processing messages from the queue, the lambda function needs permissions for `DeleteMessage`, `ReceiveMessage`, `GetQueueAttributes` on our SQS queue and an AWS managed policy: `AWSLambdaBasicExecutionRole` for permission for writing to CloudWatch logs.
 
 Let us create this lambda function from the AWS console as shown here:
 
@@ -654,7 +657,7 @@ Let us run our `sendMessage()` method to send a message to the queue where the l
 
 {{% image alt="Lambda Trigger for SQS queue" src="images/posts/aws-sqs/cloudwatch-log.png" %}}
 
-We can see the message: `Test message` which was sent to the SQS queue , printed by the lambda receiver function in the CloudWatch console.
+We can see the message: `Test message` which was sent to the SQS queue, printed by the lambda receiver function in the CloudWatch console.
 
 We can also specify a queue to act as a dead-letter queue for messages that our Lambda function fails to process.
 
@@ -664,7 +667,7 @@ Message attributes are structured metadata that can be attached and sent togethe
 
 Message Metadata are of two kinds : 
 
-- **Message Attributes**:  These are custom metadata usually added and extracted by our applications for general purpose use cases. Each message can have up to 10 attributes. 
+- **Message Attributes**:  These are custom metadata usually added and extracted by our applications for general-purpose use cases. Each message can have up to 10 attributes. 
 
 - **Message System Attributes**: These are used to store metadata for other AWS services like AWS X-Ray. 
 
@@ -774,7 +777,7 @@ public class ResourceHelper {
     String queueArn= getQueueArn("myqueue","us-east-1");
     
     // Prepare the SubscribeRequest for subscribing
-    // endpoint of protocol sqs to topic of topicArn 
+    // endpoint of protocol sqs to the topic of topicArn 
     SubscribeRequest subscribeRequest = SubscribeRequest.builder()
                               .protocol("sqs")
                               .topicArn(topicArn)
@@ -792,7 +795,7 @@ public class ResourceHelper {
 }
 
 ```
-Here we have first created an SNS topic of name `mytopic`. Then we have created a subscription by adding the SQS queue as a subscriber to the topic.
+Here we have first created an SNS topic of the name `mytopic`. Then we have created a subscription by adding the SQS queue as a subscriber to the topic.
 
 Let us now publish a message to this SNS topic using AWS Java SDK as shown below:
 
@@ -859,19 +862,19 @@ Here is a list of the major points for a quick reference:
 
 3. Amazon Simple Queue Service (SQS) is a fully managed message queuing service using which we can send, store, and receive messages to enable asynchronous communication between decoupled systems.  
 
-4. SQS provides two types of queues: Standard Queue and First-in-First-out FIFO Queue.
+4. SQS provides two types of queues: Standard Queue and First-In-First-Out FIFO Queue.
 
 5. Standard queues are more performant but do not preserve message ordering.
 
-6. FIFO queues preserve the order of the messages that are sent with the same message group identifier and also do not allow duplicate messages.
+6. FIFO queues preserve the order of the messages that are sent with the same message group identifier, and also do not allow to send duplicate messages.
 
-7. We used AWS Java SDK to build queues, topics, and subscriptions and also for sending and receiving messages from the queue. Other than AWS SDK we can use Infrastructure as Code services of AWS like CloudFormation or AWS Cloud Development Kit (CDK) for a supported language to build queues and topics.
+7. We used AWS Java SDK to build queues, topics, and subscriptions and also for sending and receiving messages from the queue. Other than AWS SDK, we can use Infrastructure as Code (IaC) services of AWS like CloudFormation or AWS Cloud Development Kit (CDK) for a supported language to build queues and topics.
 
 8. We define a Dead-letter queue (DLQ) to receive messages which have failed processing due to any erroneous condition in the producer or consumer program.
 
 9. We also defined a lambda function that will get triggered by messages in the queue. 
 
-10. We also defined a SQS queue as a subscription endpoint to an SNS topic.
+10. At last, we defined an SQS queue as a subscription endpoint to an SNS topic.
 
 
 

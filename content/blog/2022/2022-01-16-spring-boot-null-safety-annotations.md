@@ -1,6 +1,6 @@
 ---
 authors: [saikat]
-title: "Null-safety annotations using Spring Boot"
+title: "Using Spring's Null-Safety Annotations"
 categories: ["Spring Boot"]
 date: 2022-01-16T00:00:00
 excerpt: "A guide on how to write null-safe code using Spring annotations"

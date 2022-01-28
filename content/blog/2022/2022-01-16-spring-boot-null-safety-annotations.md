@@ -28,7 +28,7 @@ Under the `org.springframework.lang` Spring core package, there are 4 such annot
 * `@Nullable`, and 
 * `@NonNullApi`.
 
-**Popular IDEs like Eclipse and IntelliJ IDEA can understand these annotations.** They can warn the developers of potential issues during compile time. 
+**Popular IDEs like Eclipse and IntelliJ IDEA can understand these annotations.** They can warn developers of potential issues during compile time. 
 
 We are going to use IntelliJ IDEA in this tutorial. Let us find out more with some code examples.
 
@@ -38,17 +38,21 @@ To create the base project, we can use the [Spring Initializr](https://start.spr
 
 **Please note that not all development tools can show these compilation warnings. If you don't see the relevant warning, check the compiler settings in IDE.**
 
-For IntelliJ, the configuration is present under 'Build, Execution, Deployment -> Compiler':
+### IntelliJ
 
-{{% image alt="IDE compiler config" src="images/posts/spring-boot-null-safety-annotations/intellij-compiler-settings.png" %}}
+For IntelliJ, we can activate the annotation checking under 'Build, Execution, Deployment -> Compiler':
+
+{{% image alt="IntelliJ compiler config" src="images/posts/spring-boot-null-safety-annotations/intellij-compiler-settings.png" %}}
+
+### Eclipse
 
 For Eclipse, we can find the settings under 'Java -> Compiler -> Errors/Warnings':
 
-{{% image alt="IDE compiler config" src="images/posts/spring-boot-null-safety-annotations/eclipse-compiler-settings.png" %}}
+{{% image alt="Eclipse compiler config" src="images/posts/spring-boot-null-safety-annotations/eclipse-compiler-settings.png" %}}
 
 ## Example Code
 
-Let's use a plain `Employee` class to explain the annotations:
+Let's use a plain `Employee` class to understand the annotations:
 
 ```java
 package io.reflectoring.nullsafety;
@@ -82,15 +86,13 @@ Now, if we accidentally try to set the value of `id` as null anywhere in the cod
 
 {{% image alt="IDE warning for NonNull" src="images/posts/spring-boot-null-safety-annotations/nonnull-ide-warning.png" %}}
 
-Pretty awesome, isn't it?
-
 **The `@NonNull` annotation can be used at the method, parameter, or field level.** 
 
 At this point, you might be thinking "what if a class has more than one non-null field?". Would it not be too wordy if we have to add a `@NonNull` annotation before each of these? 
 
 We can solve this problem by using the [`@NonNullFields`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/lang/NonNullFields.html) annotation.
 
-_Here is a quick summary for `@NonNull`:_
+Here is a quick summary for `@NonNull`:
 
 | Annotated element | Effect                                        |
 | ----------------- | --------------------------------------------- |
@@ -110,7 +112,7 @@ package io.reflectoring.nullsafety;
 import org.springframework.lang.NonNullFields;
 ```
 
-Now, **we no longer need to annotate the fields with the `@NonNull`**. Because by default, all fields of classes in that package are now treated as non-null. And, we will still see the same warning as before:
+Now, **we no longer need to annotate the fields with the `@NonNull` annotation**. Because by default, all fields of classes in that package are now treated as non-null. And, we will still see the same warning as before:
 
 {{% image alt="IDE warning for NonNullFields" src="images/posts/spring-boot-null-safety-annotations/nonnull-ide-warning.png" %}}
 
@@ -118,7 +120,7 @@ Another point to note here is if there are any uninitialized fields, then we wil
 
 {{% image alt="IDE warning for NonNull" src="images/posts/spring-boot-null-safety-annotations/nonnullfields-ide-warning.png" %}}
 
-_Here is a quick summary for `@NonNullFields`:_
+Here is a quick summary for `@NonNullFields`:
 
 | Annotated element | Effect                                                                 |
 | ----------------- | ---------------------------------------------------------------------- |
@@ -160,7 +162,7 @@ We can see the IDE is now warning us about the non-nullable return value:
 
 {{% image alt="IDE warning for NonNullApi" src="images/posts/spring-boot-null-safety-annotations/nonnullapi-method-ide-warning.png" %}}
 
-_Here is a quick summary for `@NonNullApi`:_
+Here is a quick summary for `@NonNullApi`:
 
 | Annotated element | Effect                                                                                      |
 | ----------------- | ------------------------------------------------------------------------------------------- |
@@ -199,7 +201,7 @@ class Employee {
   //...
 }  
 ```
-_Here is a quick summary for `@Nullable`:_
+Here is a quick summary for `@Nullable`:
 
 | Annotated element | Effect                                      |
 | ----------------- | ------------------------------------------- |
@@ -210,9 +212,9 @@ _Here is a quick summary for `@Nullable`:_
 
 ## Automated Build Checks
 
-So far, we are discussing how modern IDEs make it easier to write null-safe code. However, if we have to put some automated code checks in the build pipelines, that's also doable to some extent.
+So far, we are discussing how modern IDEs make it easier to write null-safe code. However, if we want to have some automated code checks in our build pipeline, that's also doable to some extent.
 
-[SpotBugs](https://spotbugs.github.io/) (the reincarnation of the famous but abandoned [FindBugs](http://findbugs.sourceforge.net/) project) offers a Maven/Gradle plugin that can detect code smells due to nullability. Let's see how we can utilize the same.
+[SpotBugs](https://spotbugs.github.io/) (the reincarnation of the famous but abandoned [FindBugs](http://findbugs.sourceforge.net/) project) offers a Maven/Gradle plugin that can detect code smells due to nullability. Let's see how we can use it.
 
 For a Maven project, we need to update the `pom.xml` to add the [SpotBugs Maven Plugin](https://spotbugs.readthedocs.io/en/latest/maven.html):
 
@@ -230,23 +232,19 @@ For a Maven project, we need to update the `pom.xml` to add the [SpotBugs Maven 
     </dependency>
   </dependencies>
 </plugin>
-
 ```
 After building the project, we can use the following goals from this plugin:
 
-* `spotbugs` goal analyses target project.
-* `check` goal runs analysis like the `spotbugs` goal and makes the build fail if it finds any bugs.
+* the `spotbugs` goal analyzes the target project.
+* the `check` goal runs the `spotbugs` goal and makes the build fail if it finds any bugs.
 
-Similarly, to configure the [SpotBugs Gradle Plugin](https://spotbugs.readthedocs.io/en/latest/gradle.html), we add the dependency in the `build.gradle` file:
+If you use Gradle instead of Maven, you can configure the [SpotBugs Gradle Plugin](https://spotbugs.readthedocs.io/en/latest/gradle.html) in your `build.gradle` file:
 
-```
+```groovy
 dependencies {
   spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
 }
-```
-Also, to specify the version, we can add:
 
-```
 spotbugs {
   toolVersion = '4.5.3'
 }

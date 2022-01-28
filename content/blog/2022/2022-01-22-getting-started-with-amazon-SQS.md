@@ -34,7 +34,7 @@ The Amazon Simple Queue Service (SQS) is a fully managed distributed Message Que
 
 Amazon SQS provides two types of message queues:
 
-**Standard queues**: They offer maximum throughput, best-effort ordering, and at-least-once delivery. The standard queue is the default queue type in SQS.  
+**Standard queues**: They provide maximum throughput, best-effort ordering, and at-least-once delivery. The standard queue is the default queue type in SQS. When using standard queues, we should design our applications to be idempotent so that there is no negative impact when processing the same message more than once.
 
 **FIFO queues**: FIFO (First-In-First-Out) queues are used for messaging when the order of operations and events exchanged between applications is important, or in situations where we want to avoid processing duplicate messages. FIFO queues guarantee that messages are processed exactly once, in the exact order that they are sent.
 
@@ -50,7 +50,7 @@ Messages that belong to the same message group are always processed one by one, 
 
 FIFO queues also help us to avoid sending duplicate messages to a queue. If we send the same message within the 5-minute deduplication interval, it is not added to the queue. We can configure deduplication in two ways:
 
-- **Enabling Content-Based Deduplication**: When this property is enabled for a queue, Amazon SQS uses a SHA-256 hash to generate the message deduplication ID using the contents in the body of the message.
+- **Enabling Content-Based Deduplication**: When this property is enabled for a queue, SQS uses a SHA-256 hash to generate the message deduplication ID using the contents in the body of the message.
 
 - **Providing the Message Deduplication ID**: When a message with a particular message deduplication ID is sent, any messages subsequently sent with the same message deduplication ID are accepted successfully but are not delivered during the 5-minute deduplication interval.
 
@@ -852,6 +852,26 @@ public class MessageSender {
 
 Here we have set up the SNS client using our AWS account credentials and invoked the publish method on the `SnsClient` instance to publish a message to the topic. The SQS queue being a subscriber to the queue receives the message from the topic.
 
+## Security and Access Control
+SQS comes with many security features designed for least privilege access and protecting data integrity.
+It requires three types of roles for access to the different components of the producer-consumer model:
+
+**Administrators**: Administrators need access to control queue policies and to create, modify, and delete queues.
+**Producers**: They need access to send messages to queues.
+**Consumers**: They need access to receive and delete messages from queues.
+
+We should define IAM roles to grant these three types of access to SQS to applications or services.
+
+SQS also supports encryption at rest for encrypting messages stored in the queue :
+
+1. **SSE-KMS** : Server-side encryption with encryption keys managed in AWS Key Management Service
+2. **SSE-SQS** :  Server-side encryption with encryption keys managed in SQS
+
+SSE encrypts the body of the message when the message is received by SQS. The message is stored in encrypted form and  SQS decrypts messages when they are sent to an authorized consumer.
+
+
+
+
 ## Conclusion
 
 Here is a list of the major points for a quick reference:
@@ -874,9 +894,7 @@ Here is a list of the major points for a quick reference:
 
 9. We also defined a lambda function that will get triggered by messages in the queue. 
 
-10. At last, we defined an SQS queue as a subscription endpoint to an SNS topic.
-
-
+10. At last, we defined an SQS queue as a subscription endpoint to an SNS topic to implement a publish-subscribe pattern of asynchronous communication.
 
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/sqs).

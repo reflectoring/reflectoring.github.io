@@ -10,8 +10,7 @@ url:
 ---
 [toc]
 
-
-# An Introduction to Annotations and Annotation Processing 
+## An Introduction to Annotations and Annotation Processing 
 
 An Annotation is a construct associated with Java source code elements such as classes, methods, and variables that provide information to the program at compile-time or run-time based on which the program can take further action. The Annotation Processor processes these Annotations at compile time to provide functionality such as code generation, error checking, etc.  
 
@@ -23,17 +22,36 @@ In this article, we will discuss the topic of Annotations and demonstrate the po
 
 An annotation is preceded by the @ sign. Some common examples of annotations are @Override and @Entity. These are Standard or built-in annotations provided by Java through the java.lang.annotations package. We can further extend the Core functionality to provide our custom annotations.
 
-An Annotation by itself does not perform any action on the program. It simply provides information about the program that can be used at compile-time or run-time to perform further processing. For eg:
+An Annotation by itself does not perform any action on the program. It simply provides information about the program that can be used at compile-time or run-time to perform further processing. For eg., if we had a Parent and Child class as below:
 
-@Override provides the functionality at compile time to trap typo errors by enforcing the rule for all overriding methods to have the same case-sensitive name as the base method. The JUnit annotation @Test provides run-time functionality of distinguishing 'Test' methods in a class from helper or other methods.
+```java
+public class ParentClass {
+
+    public String getName() {..}
+}
+
+public class ChildClass extends ParentClass {
+
+    @Override
+    public String getname() {..}
+}
+```
+
+If we were to run this program without the @Override annotation we would not get any error since  'getname' would just be an additional method to 'getName' in ParentClass. By adding the @Override annotation in ChildClass we enforce the rule that the overriding method in the child class should have the same case-sensitive name as that in the parent class, and so the program would throw an error at compile-time, thereby trapping an error which could have gone undetected even at run-time.
 
 ## Standard Annotations
 
-These are some of the Standard annotations that Java provides as part of the java.lang.annotations package.
+Below are some of the most common Annotations in use. These are Standard annotations that Java provides as part of the java.lang.annotations package. In order to see their full effect it would be best to run the code snippets from the command line since most IDEs provide their custom options to suppress or elevate warnings.
 
-@SuppressWarnings - Used to indicate that warnings on code compilation should be ignored. We may want to suppress warnings that clutter up the build output. 
+### @SuppressWarnings 
 
-​	@SuppressWarnings("unchecked") for example suppresses warnings associated with raw types.
+​	 @SuppressWarnings is used to indicate that warnings on code compilation should be ignored. We may want to suppress warnings that clutter up the build output. @SuppressWarnings("unchecked") for example suppresses warnings associated with raw types. For eg:
+
+```
+
+```
+
+
 
 @Deprecated - Used to indicate that a method or type has been replaced with newer functionality. IDEs make use of annotation processing to throw a warning at compile time.
 

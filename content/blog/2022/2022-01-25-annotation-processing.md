@@ -39,68 +39,267 @@ public class ChildClass extends ParentClass {
 
 If we were to run this program without the @Override annotation we would not get any error since  'getname' would just be an additional method to 'getName' in ParentClass. By adding the @Override annotation in ChildClass we enforce the rule that the overriding method in the child class should have the same case-sensitive name as that in the parent class, and so the program would throw an error at compile-time, thereby trapping an error which could have gone undetected even at run-time.
 
+
+
 ## Standard Annotations
 
 Below are some of the most common Annotations in use. These are Standard annotations that Java provides as part of the java.lang.annotations package. In order to see their full effect it would be best to run the code snippets from the command line since most IDEs provide their custom options to suppress or elevate warnings.
 
 ### @SuppressWarnings 
 
-​	 @SuppressWarnings is used to indicate that warnings on code compilation should be ignored. We may want to suppress warnings that clutter up the build output. @SuppressWarnings("unchecked") for example suppresses warnings associated with raw types. For eg:
-
-```
-
-```
-
-
-
-@Deprecated - Used to indicate that a method or type has been replaced with newer functionality. IDEs make use of annotation processing to throw a warning at compile time.
-
-​	@Deprecated is used by JavaDoc to indicate that an element has been deprecated and replaced with a newer method. For eg.
+​	 @SuppressWarnings is used to indicate that warnings on code compilation should be ignored. We may want to suppress warnings that clutter up the build output. @SuppressWarnings("unchecked") for example suppresses warnings associated with raw types. For eg., when we run the following code:
 
 ```java
-public class Employee {
+public class SuppressWarningsDemo {
 
-    /*** 
-     * @Deprecated
-     * This method is no longer used. It has been replaced with getDeptName.
-     ****/
-    @Deprecated
-    public int getDeptNum { ... }
+    public static void main(String[] args) {
+
+        SuppressWarningsDemo swDemo = new SuppressWarningsDemo();
+        swDemo.testSuppressWarning();
+    }
+
+    public void testSuppressWarning() {
+
+        Map testMap = new HashMap();
+        testMap.put(1, "Item_1");
+        testMap.put(2, "Item_2");
+        testMap.put(3, "Item_3");
+    }
 }
 ```
 
-@Override - Used to indicate that a method will be overriding the base class implementation. It is used to throw compile-time errors in cases such as typos in letter casing.
+...from the command-line using the compiler switch -Xlint:unchecked to receive the full warning list, we get the following message:
+
+```
+javac -Xlint:unchecked .\com\reflectoring\SuppressWarningsDemo.java
+Warning:
+unchecked call to put(K,V) as a member of the raw type Map
+```
+
+The above code-block is an example of legacy Java code (prior to Java 5), where we could have Collections in which you could accidentally store mixed types of Objects. In order to introduce compile-time error checking Generics were introduced. So to get this legacy code to compile without error we would make the following change:
+
+```java
+change:
+Map testMap = new HashMap();
+to:
+Map<Integer, String> testMap = new HashMap<>();
+```
+
+If we had a large legacy code base, we wouldn't want to go in and make lots of code changes since it would mean a lot of QA regression testing. The safer option would be to add the @SuppressWarning annotation to the Class so that the logs are not cluttered up with redundant warning messages. We would add the code as below:
+
+```java
+@SuppressWarnings({"rawtypes", "unchecked"})
+public class SuppressWarningsDemo {
+```
+
+ Now if we compile the program, the console is free of warnings.
+
+### @Deprecated
+
+​	@Deprecated is used to indicate that a method or type has been replaced with newer functionality. IDEs make use of annotation processing to throw a warning at compile-time, usually indicating the deprecated method with a strike-through. The following class declares a deprecated method. The attribute 'since' in the annotation tells us which version the element was deprecated, and 'forRemoval' indicates if the element is going to be removed in the next version.
+
+```java
+public class DeprecatedDemo {
+
+    @Deprecated(since = "4.5", forRemoval = true)
+    public void testLegacyFunction() {
+
+        System.out.println("This is a legacy function");
+    }
+}
+```
+
+Now, calling the legacy method as below will trigger a compile-time warning indicating that the method call needs to be replaced:
+
+```java
+public class DeprecatedDemoTest {
+
+    public static void main(String[] args) {
+
+        DeprecatedDemo demo = new DeprecatedDemo();
+        demo.testLegacyFunction();
+    }
+}
+
+.\com\reflectoring\DeprecatedDemoTest.java:8: warning: [removal] testLegacyFunction() in DeprecatedDemo has been deprecated and marked for removal
+        demo.testLegacyFunction();
+            ^                     
+1 warning
+```
+
+### @Override
+
+​	@Override is used to indicate that a method will be overriding the base class implementation. It is used to throw compile-time errors in cases such as typos in letter-casing.
 
 So for example the base class could look like:
 
 ```java
 public class Employee {
 
-    public String getEmpName() {..}
+    public void getEmployeeStatus(){
+
+        System.out.println("This is the Base Employee class");
+    }
 }
 ```
 
-now if you had 2 classes extending Employee such as:
+now if you had a Manager class extending Employee such as below with the initial 'e' in 'Employee' in 'getEmployeeStatus' in lower-case, the program would compile and run without an issue. 
 
 ```java
 public class Manager extends Employee {
 
-    @Override
-    public String getEmpName() {..}
+    public void getemployeeStatus(){
+
+        System.out.println("This is the Manager class");
+    }
 }
 
-public class Developer extends Employee {
+public class OverrideTest {
 
-    @Override
-    public String getempName() {..}
+    public static void main(String[] args) {
+
+        Manager manager = new Manager();
+        manager.getemployeeStatus();
+    }
 }
 ```
 
  The method in the Developer sub-class 'getempName' would throw an error at compile-time stating that the method getEmpName was not overridden and hence we would be able to catch the error due to a typo.
 
-@FunctionalInterface - Used to indicate that the interface cannot have more than one abstract method. The compiler throws an error in case there is more than one abstract method.
+We now add the annotation @Override to the 'getemployeeStatus' method and we get a compile-time error, which forces us to correct the typo right away.
 
-@SafeVarargs - The varargs functionality allowed the creation of methods with variable arguments. However, warnings were thrown when generics were used in the arguments. @SafeVarargs allowed for suppression of these warnings.
+```java
+public class Manager extends Employee {
+
+    @Override
+    public void getemployeeStatus(){
+
+        System.out.println("This is the Manager class");
+    }
+}
+
+.\com\reflectoring\Manager.java:5: error: method does not override or implement a method from a supertype
+    @Override
+    ^
+1 error
+
+```
+
+### @FunctionalInterface 
+
+@FunctionalInterface is used to indicate that the interface cannot have more than one abstract method. The compiler throws an error in case there is more than one abstract method. Functional Interfaces were introduced in Java 8, to implement Lambda expressions and ensure that they didn't make use of more than one method. Even without the @FunctionalInterface annotation, the compiler will throw an error if you include more than one abstract method in the interface. So why do we need @FunctionalInterface if it is not mandatory? 
+
+Let us take the example of the code below:
+
+```java
+
+@FunctionalInterface
+interface Print {
+    void printString(String testString);
+}
+
+public class FunctionalInterfaceTest {
+
+    public static void main(String args[]) {
+        Print testPrint = (String testString) -> System.out.println(testString);
+        testPrint.printString("This is a String");
+    }
+}
+```
+
+If you add another method, 'printString2', to the Print interface, the compiler or the IDE will throw an error and this will be obvious right away. Now, what if the Print interface was in a separate module, and there was no @FunctionalInterface annotation. Some other developer could easily add another function to the interface, and break the code. By adding the @FunctionalInterface notation we get an immediate warning in the IDE, such as:
+
+​	**Multiple non-overriding abstract methods found in interface com.reflectoring.Print**
+
+So it is good practice to always include the @FunctionalInterface.
+
+### @SafeVarargs
+
+​	@SafeVarags - The varargs functionality allowed the creation of methods with variable arguments. Prior to Java 5, the only option to creating methods with optional parameters was to create multiple methods, each with a different number of parameters. Varargs allowed us to create a single method to handle optional parameters with syntax as below:
+
+```
+void printStrings(String... stringList)
+
+instead of ....void printStrings(String string1, String string2)
+```
+
+However, warnings were thrown when generics were used in the arguments. @SafeVarargs allowed for suppression of these warnings. For eg., consider the code below:
+
+```
+package com.reflectoring;
+
+import java.util.Arrays;
+import java.util.List;
+
+public class SafeVarargsTest {
+
+   private void printString(String test1, String test2) {
+
+        System.out.println(test1);
+        System.out.println(test2);
+    }
+
+    private void printStringVarargs(String... tests) {
+
+        for (String test : tests) {
+
+            System.out.println(test);
+        }
+    }
+
+    private void printStringSafeVarargs(List<String>... testStringLists) {
+
+        for (List<String> testStringList : testStringLists) {
+
+            for (String testString : testStringList) {
+
+                System.out.println(testString);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        SafeVarargsTest test = new SafeVarargsTest();
+
+        test.printString("String1", "String2");
+        test.printString("*******");
+
+        test.printStringVarargs("String1", "String2");
+        test.printString("*******");
+
+        List<String> testStringList1 = Arrays.asList("One", "Two");
+        List<String> testStringList2 = Arrays.asList("Three", "Four");
+
+        test.printStringSafeVarargs(testStringList1, testStringList2);
+    }
+}
+
+```
+
+In the above code, 'printString' and 'printStringVarargs' achieved the same result. However, compiling the code gave a warning:
+
+```java
+javac -Xlint:unchecked .\com\reflectoring\SafeVarargsTest.java
+
+.\com\reflectoring\SafeVarargsTest.java:28: warning: [unchecked] Possible heap pollution from parameterized vararg type List<String>
+    private void printStringSafeVarargs(List<String>... testStringLists) {
+                                                        ^
+.\com\reflectoring\SafeVarargsTest.java:52: warning: [unchecked] unchecked generic array creation for varargs parameter of type List<String>[]
+        test.printStringSafeVarargs(testStringList1, testStringList2);
+                                   ^
+2 warnings
+
+```
+
+By adding the SafeVarargs annotation as below, we could get rid of the error:
+
+```java
+@SafeVarargs
+private void printStringSafeVarargs(List<String>... testStringLists) {
+```
+
+
 
 ## Custom Annotations
 

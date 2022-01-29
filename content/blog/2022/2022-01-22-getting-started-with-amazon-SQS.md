@@ -867,7 +867,9 @@ SQS also supports encryption at rest for encrypting messages stored in the queue
 1. **SSE-KMS** : Server-side encryption with encryption keys managed in AWS Key Management Service
 2. **SSE-SQS** :  Server-side encryption with encryption keys managed in SQS
 
-SSE encrypts the body of the message when the message is received by SQS. The message is stored in encrypted form and  SQS decrypts messages when they are sent to an authorized consumer.
+SSE encrypts the body of the message when the message is received by SQS. The message is stored in encrypted form and SQS decrypts messages when they are sent to an authorized consumer.
+
+We can also enforce encryption of data in transit by allowing only connections to SQS over HTTPS (TLS) by configuring this condition in the queue policy.
 
 
 

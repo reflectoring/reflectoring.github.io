@@ -8,7 +8,6 @@ description: "An Introduction to Annotations and Annotation Processing"
 image: 
 url: 
 ---
-[toc]
 
 ## An Introduction to Annotations and Annotation Processing 
 

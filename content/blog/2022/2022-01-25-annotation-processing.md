@@ -39,11 +39,11 @@ public class ChildClass extends ParentClass {
 
 If we were to run this program without the @Override annotation we would not get any error since  'getname' would just be an additional method to 'getName' in ParentClass. By adding the @Override annotation in ChildClass we enforce the rule that the overriding method in the child class should have the same case-sensitive name as that in the parent class, and so the program would throw an error at compile-time, thereby trapping an error which could have gone undetected even at run-time.
 
-
+Note: The code for the examples below can be downloaded at - 
 
 ## Standard Annotations
 
-Below are some of the most common Annotations in use. These are Standard annotations that Java provides as part of the java.lang.annotations package. In order to see their full effect it would be best to run the code snippets from the command line since most IDEs provide their custom options to suppress or elevate warnings.
+Below are some of the most common Annotations in use. These are Standard annotations that Java provides as part of the java.lang.annotations package. To see their full effect it would be best to run the code snippets from the command line since most IDEs provide their custom options to suppress or elevate warnings.
 
 ### @SuppressWarnings 
 
@@ -76,7 +76,7 @@ Warning:
 unchecked call to put(K,V) as a member of the raw type Map
 ```
 
-The above code-block is an example of legacy Java code (prior to Java 5), where we could have Collections in which you could accidentally store mixed types of Objects. In order to introduce compile-time error checking Generics were introduced. So to get this legacy code to compile without error we would make the following change:
+The above code-block is an example of legacy Java code (prior to Java 5), where we could have Collections in which you could accidentally store mixed types of Objects. To introduce compile-time error checking Generics were introduced. So to get this legacy code to compile without error we would make the following change:
 
 ```java
 change:
@@ -205,7 +205,7 @@ public class FunctionalInterfaceTest {
 }
 ```
 
-If you add another method, 'printString2', to the Print interface, the compiler or the IDE will throw an error and this will be obvious right away. Now, what if the Print interface was in a separate module, and there was no @FunctionalInterface annotation. Some other developer could easily add another function to the interface, and break the code. By adding the @FunctionalInterface notation we get an immediate warning in the IDE, such as:
+If you add another method, 'printString2', to the Print interface, the compiler or the IDE will throw an error and this will be obvious right away. Now, what if the Print interface was in a separate module, and there was no @FunctionalInterface annotation. Some other developers could easily add another function to the interface, and break the code. By adding the @FunctionalInterface notation we get an immediate warning in the IDE, such as:
 
 ​	**Multiple non-overriding abstract methods found in interface com.reflectoring.Print**
 
@@ -327,7 +327,7 @@ public @interface Company{
 }
 ```
 
-In order to specify information about the scope of the annotation and the area it targets, such as compile-time or run-time, we need to add Meta-Annotations to the Custom Annotation. For eg., in order to specify that the Annotation applies to Classes only, we need to add @Target(ElementType.TYPE), which specifies that this annotation only applies to Classes, and @Retention(RetentionPolicy.RUNTIME), which specifies that this annotation only applies at run-time. We will discuss further details about Meta-Annotations once we get this basic example running.
+To specify information about the scope of the annotation and the area it targets, such as compile-time or run-time, we need to add Meta-Annotations to the Custom Annotation. For eg., to specify that the Annotation applies to Classes only, we need to add @Target(ElementType.TYPE), which specifies that this annotation only applies to Classes, and @Retention(RetentionPolicy.RUNTIME), which specifies that this annotation only applies at run-time. We will discuss further details about Meta-Annotations once we get this basic example running.
 
 ```java
 @Target(ElementType.TYPE)
@@ -399,7 +399,7 @@ Company Name: ABC
 Company City: XYZ
 ```
 
-So by introspecting the annotation at run-time we are able to access some common information of all employees and avoid the name for repetition.
+So by introspecting the annotation at run-time we can access some common information of all employees and avoid the name for repetition.
 
 Now, we will get into the details of Meta-Annotations, which we used in the example above:
 
@@ -512,7 +512,7 @@ CustomAnnotatedEmployee​(int id, java.lang.String name)
 
 #### @Repeatable
 
-@Repeatable allows multiple repeating Custom Annotations on a method, class, or field. In order to use a Repeatable Annotation, we need to wrap the Annotation in a Container class which refers to it as an array, as below:
+@Repeatable allows multiple repeating Custom Annotations on a method, class, or field. To use a Repeatable Annotation, we need to wrap the Annotation in a Container class which refers to it as an array, as below:
 
 ```java
 @Target(ElementType.TYPE)
@@ -625,7 +625,7 @@ public @interface RuntimeRetention {
 }
 ```
 
-Now create a class which uses all 3 annotations:
+Now create a class that uses all 3 annotations:
 
 ```java
 @SourceRetention
@@ -635,7 +635,7 @@ public class EmployeeRetentionAnnotation {
 }
 ```
 
-In order to verify that only the run-time annotation is available at run-time, run a test as follows:
+To verify that only the run-time annotation is available at run-time, run a test as follows:
 
 ```java
 public class RetentionTest {
@@ -723,7 +723,7 @@ Company City: XYZ
 
 Single Value Annotations contain only one member and the parameter is the value of the member. The single member has to be named '**value**'. 
 
-Create a SingleMemberCompany Annotation which uses only the name field as below:
+Create a SingleMemberCompany Annotation that uses only the name field as below:
 
 ```java
 @Target(ElementType.TYPE)
@@ -832,17 +832,79 @@ Company City: ZZZ
 
 ## A real-world example
 
-For our real-world example, we are going to simulate the functionality of the annotation @Test in JUnit. By marking our test functions with the @Test annotation we can determine at run-time, the methods in a class that need to be run as tests. 
+For our real-world example, we are going to do a simple simulation of the annotation @Test in JUnit. By marking our functions with the @Test annotation we can determine at run-time, the methods in a class that need to be run as tests. 
 
+We first create the Annotation as below:
 
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD) 
+public @interface Test {
+}
+```
 
+Next, we create a class AnnotatedMethods, to which we will apply the @Test annotations to some of its methods to:
 
+```java
+public class AnnotatedMethods {
 
+    @Test
+    public void Test_1() {
 
+        System.out.println("This is the first test");
+    }
 
+    public void Test_2() {
 
+        System.out.println("This is the second test");
+    }
+}
 
+```
 
+Now we create the test to run AnnotatedMethods as below:
+
+```java
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
+public class TestAnnotatedMethods {
+
+    public static void main(String[] args) throws Exception {
+
+        Class<AnnotatedMethods> annotatedMethodsClass = AnnotatedMethods.class;
+
+        for (Method method : annotatedMethodsClass.getDeclaredMethods()) {
+
+            Annotation annotation = method.getAnnotation(Test.class);
+            Test test = (Test) annotation;
+
+            // If the annotation is not null
+            if (test != null) {
+
+                try {
+                    method.invoke(annotatedMethodsClass.getDeclaredConstructor().newInstance());
+                } catch (Throwable ex) {
+                    System.out.println(ex.getCause());
+                }
+
+            }
+        }
+    }
+}
+```
+
+The output is:
+
+```
+This is the first test
+```
+
+So we see that Test_2, which did not have the @Test annotation, did not have its output printed. 
+
+### Conclusion
+
+We did an overview of Annotations, followed by a simple real-world example of Annotation Processing. We can further use the power of Annotation Processing to perform more complex automated tasks such as creating Builder source files for a set of POJOs at compile-time. A Builder is a design pattern in Java that is used to provide a better alternative to constructors when there is a large number of parameters involved or there is a need for multiple constructors with optional parameters.  If we had a few dozen POJOs, the code generation capabilities of the Annotation Processor would save us a lot of time by creating the corresponding Builder files at compile-time, on the fly. By fully leveraging the power of Annotation Processing we will be able to skip a lot of repetition and save a lot of time.
 
 
 

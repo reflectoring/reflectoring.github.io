@@ -47,7 +47,7 @@ Below are some of the most common Annotations in use. These are Standard annotat
 
 ### @SuppressWarnings 
 
-​	 @SuppressWarnings is used to indicate that warnings on code compilation should be ignored. We may want to suppress warnings that clutter up the build output. @SuppressWarnings("unchecked") for example suppresses warnings associated with raw types. For eg., when we run the following code:
+**Use Case for @SuppressWarnings** - It is used to indicate that warnings on code compilation should be ignored. We may want to suppress warnings that clutter up the build output. @SuppressWarnings("unchecked") for example suppresses warnings associated with raw types. For eg., when we run the following code:
 
 ```java
 public class SuppressWarningsDemo {
@@ -96,7 +96,7 @@ public class SuppressWarningsDemo {
 
 ### @Deprecated
 
-​	@Deprecated is used to indicate that a method or type has been replaced with newer functionality. IDEs make use of annotation processing to throw a warning at compile-time, usually indicating the deprecated method with a strike-through. The following class declares a deprecated method. The attribute 'since' in the annotation tells us which version the element was deprecated, and 'forRemoval' indicates if the element is going to be removed in the next version.
+**Use Case for @Deprecated** - It is used to indicate that a method or type has been replaced with newer functionality. IDEs make use of annotation processing to throw a warning at compile-time, usually indicating the deprecated method with a strike-through. The following class declares a deprecated method. The attribute 'since' in the annotation tells us which version the element was deprecated, and 'forRemoval' indicates if the element is going to be removed in the next version.
 
 ```java
 public class DeprecatedDemo {
@@ -129,7 +129,7 @@ public class DeprecatedDemoTest {
 
 ### @Override
 
-​	@Override is used to indicate that a method will be overriding the base class implementation. It is used to throw compile-time errors in cases such as typos in letter-casing.
+**Use Case for @Override** - It is used to indicate that a method will be overriding the base class implementation. It is used to throw compile-time errors in cases such as typos in letter-casing.
 
 So for example the base class could look like:
 
@@ -187,7 +187,7 @@ public class Manager extends Employee {
 
 ### @FunctionalInterface 
 
-@FunctionalInterface is used to indicate that the interface cannot have more than one abstract method. The compiler throws an error in case there is more than one abstract method. Functional Interfaces were introduced in Java 8, to implement Lambda expressions and ensure that they didn't make use of more than one method. Even without the @FunctionalInterface annotation, the compiler will throw an error if you include more than one abstract method in the interface. So why do we need @FunctionalInterface if it is not mandatory? 
+**Use Case for @FunctionalInterface** - It is used to indicate that the interface cannot have more than one abstract method. The compiler throws an error in case there is more than one abstract method. Functional Interfaces were introduced in Java 8, to implement Lambda expressions and ensure that they didn't make use of more than one method. Even without the @FunctionalInterface annotation, the compiler will throw an error if you include more than one abstract method in the interface. So why do we need @FunctionalInterface if it is not mandatory? 
 
 Let us take the example of the code below:
 
@@ -215,7 +215,7 @@ So it is good practice to always include the @FunctionalInterface.
 
 ### @SafeVarargs
 
-​	@SafeVarags - The varargs functionality allowed the creation of methods with variable arguments. Prior to Java 5, the only option to creating methods with optional parameters was to create multiple methods, each with a different number of parameters. Varargs allowed us to create a single method to handle optional parameters with syntax as below:
+**Use Case for @SafeVarags** - The varargs functionality allowed the creation of methods with variable arguments. Prior to Java 5, the only option to creating methods with optional parameters was to create multiple methods, each with a different number of parameters. Varargs allowed us to create a single method to handle optional parameters with syntax as below:
 
 ```
 void printStrings(String... stringList)
@@ -303,74 +303,269 @@ private void printStringSafeVarargs(List<String>... testStringLists) {
 
 ## Custom Annotations
 
-These are Annotations that are custom created to serve a particular purpose. Some of the common uses for custom annotations are:
+These are Annotations that are custom created to serve a particular purpose. 
 
+**Use Cases for Custom Annotations:**
+
+1. Reduce repetition.
 1. Automate the generation of boilerplate code.
 2. Provide the capability to trap errors at compile time such as potential null pointer checks.
 3. Customize run-time behavior based on the presence of custom annotations.
 
-An example of a Custom annotation would be:
+An example of a Custom annotation would be the @Company annotation below attached to the Employee class. When creating multiple instances of the Employee class we can skip adding the Company information in the constructor since those attributes would be automatically included.
 
 ```java
-@Employee{
-    name = "John Doe",
-    department = "Sales"
+@Company{    
+    name="ABC"
+    city="XYZ"
 }
-public class Manager { .. }
+public class CustomAnnotatedEmployee { .. }
 ```
 
-Custom Annotations are used to provide custom functionality such as Code generation using Annotation Processing.
+To create a Custom annotation we need to declare it with the @interface keyword as below:
 
-## Meta Annotations
+```java
+public @interface Company{
+}
+```
+
+In order to specify information about the scope of the annotation and the area it targets, such as compile-time or run-time, we need to add Meta-Annotations to the Custom Annotation. For eg., in order to specify that the Annotation applies to Classes only, we need to add @Target(ElementType.TYPE), which specifies that this annotation only applies to Classes, and @Retention(RetentionPolicy.RUNTIME), which specifies that this annotation only applies at run-time. We will discuss further details about Meta-Annotations once we get this basic example running.
+
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Company{
+}
+```
+
+Next, we need to add the fields to the Custom annotation. In this case, we need 'name' and 'city'. So we add it as below:
+
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Company{
+	String name() default "ABC";
+	String city() default "XYZ";
+}
+```
+
+Putting it all together, we create a CustomAnnotatedEmployee class and apply the annotation to it as below:
+
+```java
+@Company
+public class CustomAnnotatedEmployee {
+
+    private int id;
+    private String name;
+
+    public CustomAnnotatedEmployee(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public void getEmployeeDetails(){
+
+        System.out.println("Employee Id: " + id);
+        System.out.println("Employee Name: " + name);
+    }
+}
+```
+
+Now we create a test class to test this out:
+
+```java
+import java.lang.annotation.Annotation;
+
+public class TestCustomAnnotatedEmployee {
+
+    public static void main(String[] args) {
+
+        CustomAnnotatedEmployee employee = new CustomAnnotatedEmployee(1, "John Doe");
+        employee.getEmployeeDetails();
+
+        Annotation companyAnnotation = employee.getClass().getAnnotation(Company.class);
+        Company company = (Company)companyAnnotation;
+
+        System.out.println("Company Name: " + company.name());
+        System.out.println("Company City: " + company.city());
+    }
+}
+```
+
+This would give the output below:
+
+```java
+Employee Id: 1
+Employee Name: John Doe
+Company Name: ABC
+Company City: XYZ
+```
+
+So by introspecting the annotation at run-time we are able to access some common information of all employees and avoid the name for repetition.
+
+Now, we will get into the details of Meta-Annotations, which we used in the example above:
+
+### Meta Annotations
 
 Meta Annotations are Annotations about Annotations provided by the java.lang.Annotations package that provide information about an annotation.
 
-1. @Inherited - Normally an Annotation cannot be inherited but applying the @Inherited annotation to an annotation (meta annotation) allows it to be inherited. For eg:
+#### @Inherited
+
+Normally an Annotation cannot be inherited but applying the @Inherited annotation to an annotation (meta annotation) allows it to be inherited. For eg:
 
 ```java
 @Inherited
-public @interface EmployeeType {
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Company{
+    String name() default "ABC";
+    String city() default "XYZ";
 }
-
-@EmployeeType
-public class Employee { ...}
-
-public class Manager extends Employee {...}
 ```
 
-... since @EmployeeType is inherited the Manager class does not need to include it.
-
-2. @Documented - Ensures that Custom Annotations show up in the JavaDocs.
-
-Normally when we run JavaDoc on a program the annotation @Inherited would not show up in the documentation. But when we use the @Documented annotation as below '@Inherited' would show up in the output too.
+... since @Company is inherited the CustomAnnotatedManager class does not need to include it. Our CustomAnnotatedManager could be defined as follows:
 
 ```java
-@Documented
-@EmployeeType
-public class Employee { ...}
+public class CustomAnnotatedManager extends CustomAnnotatedEmployee{
+
+    public CustomAnnotatedManager(int id, String name) {
+        super(id, name);
+    }
+}
 ```
 
-3. @Repeatable - Allows multiple repeating Custom Annotations on a method, class, or field. For eg. if you had the Annotation @Role defined on Employee it could be used as:
+Now if we run the test for the Manager class as below, we still get access to the annotation information, though the Manager class does not have the annotation.
 
 ```java
-@Repeatable
-public @interface Role { .. }
+public class TestCustomAnnotatedManager {
 
-@Role("Manager")
-@Role("Analyst")
-public class Employee { ...}
+    public static void main(String[] args) {
+
+        CustomAnnotatedManager manager = new CustomAnnotatedManager(1, "John Doe");
+        manager.getEmployeeDetails();
+
+        Annotation companyAnnotation = manager.getClass().getAnnotation(Company.class);
+        Company company = (Company)companyAnnotation;
+
+        System.out.println("Company Name: " + company.name());
+        System.out.println("Company City: " + company.city());
+    }
+}
 ```
 
-4. @Target - Specifies at which element the Annotation can be used, for eg in the above example if the annotation Role was defined only for TYPE, then it could only be applied to a Class.
+#### @Documented
+
+Ensures that Custom Annotations show up in the JavaDocs.
+
+Normally when we run JavaDoc on the class CustomAnnotatedManager the annotation information would not show up in the documentation. But when we use the @Documented annotation as below the annotation information would show up in the output too, as below:
 
 ```java
-@Target({ElementType.TYPE})
-public @interface Role { .. }
+Package com.reflectoring
+Class CustomAnnotatedEmployee
+
+java.lang.Object
+com.reflectoring.CustomAnnotatedEmployee
+
+@Company
+public class CustomAnnotatedEmployee
+extends java.lang.Object
+
+Constructor Summary
+Constructors
+
+Constructor	Description
+CustomAnnotatedEmployee​(int id, java.lang.String name)
 ```
 
-The various self-explanatory element types are - ANNOTATION_TYPE, CONSTRUCTOR, FIELD, LOCAL_VARIABLE, METHOD, PACKAGE, PARAMETER, TYPE (Class).
+#### @Repeatable
 
-5. @Retention - Specifies when the annotation is discarded.
+@Repeatable allows multiple repeating Custom Annotations on a method, class, or field. In order to use a Repeatable Annotation, we need to wrap the Annotation in a Container class which refers to it as an array, as below:
+
+```java
+@Target(ElementType.TYPE)
+@Repeatable(RepeatableCompanies.class)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface RepeatableCompany {
+    String name() default "Name_1";
+    String city() default "City_1";
+}
+```
+
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface RepeatableCompanies {
+    RepeatableCompany[] value() default{};
+}
+```
+
+We declare our main Class as below:
+
+```java
+@RepeatableCompany
+@RepeatableCompany(name =  "Name_2", city = "City_2")
+public class RepeatedAnnotatedEmployee {
+}
+```
+
+If we run a test on it as below:
+
+```java
+public class TestRepeatedAnnotation {
+
+    public static void main(String[] args) {
+
+        RepeatableCompany[] repeatableCompanies = RepeatedAnnotatedEmployee.class.getAnnotationsByType(RepeatableCompany.class);
+        for (RepeatableCompany repeatableCompany : repeatableCompanies) {
+
+            System.out.println("Name: " + repeatableCompany.name());
+            System.out.println("City: " + repeatableCompany.city());
+        }
+    }
+}
+```
+
+We get the following output which displays the value of multiple annotations:
+
+```
+Name: Name_1
+City: City_1
+Name: Name_2
+City: City_2
+```
+
+#### @Target
+
+@Target specifies at which element the Annotation can be used, for eg in the above example the annotation Company was defined only for TYPE and so it could only be applied to a Class.
+
+```java
+@Company
+public class Employee {
+
+    @Company
+    public void getEmployeeStatus(){
+
+        System.out.println("This is the Base Employee class");
+    }
+}
+```
+
+If we apply @Company to the method 'getEmployeeStatus', we get a compiler error stating: "'@Company' not applicable to method."
+
+The various self-explanatory Target types are:
+
+​		ElementType.ANNOTATION_TYPE, 
+​		ElementType.CONSTRUCTOR
+​		ElementType.FIELD
+​		ElementType.LOCAL_VARIABLE
+​		ElementType.METHOD
+​		ElementType.PACKAGE
+​		ElementType.PARAMETER
+​		ElementType.TYPE 
+
+#### @Retention
+
+@Retention specifies when the annotation is discarded.
 
 ​	  SOURCE - The annotation is used at compile-time and discarded at run-time.
 
@@ -417,6 +612,28 @@ If we needed an annotation to only provide error checking at compile-time like @
 4. Type Annotations - They are declared with @Target and specify at which element the Annotation can be used, for eg. 
 
    @Target({ElementType.METHOD, ElementType.TYPE}) would apply the 		annotation both at the Method and Class level.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Annotation Processing Overview
 

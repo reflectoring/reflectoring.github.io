@@ -252,3 +252,12 @@ heidi:
   name: "Heidi Waterhouse"
   avatar: "/assets/img/authors/heidi.png"
   bio: "Heidi is a Principal Developer Advocate. She is working in the intersection of risk, usability, and happy deployments. Her passions include documentation, clear concepts, and skirts with pockets."
+
+saikat:
+  name: "Saikat Sengupta"
+  avatar: "/assets/img/authors/saikat.jpeg"
+  github: "s4ik4t"
+  stackoverflow: "1594823/saikat"
+  bio: "Software engineer, coffee lover, continuous learner, opensource contributor"
+  twitter: "s4ik4t"
+  linkedin: "saikatsengupta"

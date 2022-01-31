@@ -1,6 +1,6 @@
 ---
 authors: [saikat]
-title: "Protect Yourself from NullPointerExceptions with Spring's Null-Safety Annotations"
+title: "Protect Your Code from NullPointerExceptions with Spring's Null-Safety Annotations"
 categories: ["Spring Boot"]
 date: 2022-02-01 00:00:00 +1000
 excerpt: "A guide on how to write null-safe code using Spring annotations"

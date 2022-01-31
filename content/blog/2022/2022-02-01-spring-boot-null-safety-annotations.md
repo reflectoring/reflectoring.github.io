@@ -2,10 +2,10 @@
 authors: [saikat]
 title: "Using Spring's Null-Safety Annotations"
 categories: ["Spring Boot"]
-date: 2022-01-16T00:00:00
+date: 2022-02-01T00:00:00
 excerpt: "A guide on how to write null-safe code using Spring annotations"
 url: spring-boot-null-safety-annotations
-image: images/stock/0074-stack-1200x628-branded.jpg
+image: images/stock/0116-shield-1200x628-branded.jpg
 ---
 
 `NullPointerExceptions` (often shortened as "NPE") are a nightmare for every Java programmer.
@@ -36,7 +36,7 @@ To create the base project, we can use the [Spring Initializr](https://start.spr
 
 ## IDE Configuration
 
-**Please note that not all development tools can show these compilation warnings. If you don't see the relevant warning, check the compiler settings in IDE.**
+**Please note that not all development tools can show these compilation warnings. If you don't see the relevant warning, check the compiler settings in your IDE.**
 
 ### IntelliJ
 
@@ -238,14 +238,6 @@ After building the project, we can use the following goals from this plugin:
 * the `spotbugs` goal analyzes the target project.
 * the `check` goal runs the `spotbugs` goal and makes the build fail if it finds any bugs.
 
-SpotBugs project has defined a few rules to flag any potential issue by reading the `@NonNull` annotation during Maven build. You can go through the detailed list of [bug descriptions](https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html).
-
-For example, if any of the methods annotated with `@NonNull` is accidentally returning null, then the SpotBugs Maven check will fail with an error similar to this:
-
-```text
-[ERROR] High: io.reflectoring.nullsafety.Employee.getJoiningDate() may return null, but is declared @Nonnull [io.reflectoring.nullsafety.Employee] At Employee.java:[line 36] NP_NONNULL_RETURN_VIOLATION
-```
-
 If you use Gradle instead of Maven, you can configure the [SpotBugs Gradle Plugin](https://spotbugs.readthedocs.io/en/latest/gradle.html) in your `build.gradle` file:
 
 ```groovy
@@ -259,10 +251,18 @@ spotbugs {
 ```
 Once the project is updated, we can run the check using the `gradle check` command.
 
+SpotBugs provides a few rules to flag potential issues by processing the `@NonNull` annotation during Maven build. You can go through the detailed list of [bug descriptions](https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html).
+
+For example, if any of the methods annotated with `@NonNull` is accidentally returning null, then the SpotBugs check will fail with an error similar to this:
+
+```text
+[ERROR] High: io.reflectoring.nullsafety.Employee.getJoiningDate() may return null, but is declared @Nonnull [io.reflectoring.nullsafety.Employee] At Employee.java:[line 36] NP_NONNULL_RETURN_VIOLATION
+```
+
 ## Conclusion
 
 These annotations are indeed a boon for Java programmers to reduce the possibility of a `NullPointerException` arising during runtime. Please bear in mind this does not guarantee complete null safety, however.
 
-[Kotlin](https://kotlinlang.org/docs/null-safety.html) uses these annotations to infer the nullability of Spring API.
+[Kotlin](https://kotlinlang.org/docs/null-safety.html) uses these annotations to infer the nullability of the Spring API.
 
-I hope you are now ready to start using the newly found ways to write null-safe code in Spring Boot! 
+I hope you are now ready to write null-safe code in Spring Boot! 

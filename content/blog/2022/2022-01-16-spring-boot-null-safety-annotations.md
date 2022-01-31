@@ -238,12 +238,13 @@ After building the project, we can use the following goals from this plugin:
 * the `spotbugs` goal analyzes the target project.
 * the `check` goal runs the `spotbugs` goal and makes the build fail if it finds any bugs.
 
-For example, if any of the methods annotated with `@NonNull` is accidentally returning null, then the SpotBugs Maven check will fail with the following error:
+SpotBugs project has defined a few rules to flag any potential issue by reading the `@NonNull` annotation during Maven build. You can go through the detailed list of [bug descriptions](https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html).
+
+For example, if any of the methods annotated with `@NonNull` is accidentally returning null, then the SpotBugs Maven check will fail with an error similar to this:
 
 ```text
 [ERROR] High: io.reflectoring.nullsafety.Employee.getJoiningDate() may return null, but is declared @Nonnull [io.reflectoring.nullsafety.Employee] At Employee.java:[line 36] NP_NONNULL_RETURN_VIOLATION
 ```
-SpotBugs project has defined a few rules to flag any potential issue by reading the `@NonNull` annotation during Maven build. You can go through the detailed list of [bug descriptions](https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html).
 
 If you use Gradle instead of Maven, you can configure the [SpotBugs Gradle Plugin](https://spotbugs.readthedocs.io/en/latest/gradle.html) in your `build.gradle` file:
 

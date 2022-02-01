@@ -6,22 +6,24 @@ modified: 2022-01-27 00:00:00 +1100
 authors: [syedaf]
 description: "An Introduction to Annotations and Annotation Processing"
 image: 
-url: 
+url: java-annotation-processing
 ---
 
-## An Introduction to Annotations and Annotation Processing 
+An annotation is a construct associated with Java source code elements such as classes, methods, and variables that provides information to the program at compile-time or at run-time based on which the program can take further action. An annotation processor processes these annotations at compile time to provide functionality such as code generation, error checking, etc.  
 
-An Annotation is a construct associated with Java source code elements such as classes, methods, and variables that provide information to the program at compile-time or run-time based on which the program can take further action. The Annotation Processor processes these Annotations at compile time to provide functionality such as code generation, error checking, etc.  
+The `java.lang.annotation` package provides some core annotations and also gives us the capability to create our custom annotations that can be processed with annotation processors.
 
-The java.lang.annotation package provides the Core annotation functionality and also gives us the capability to create our Custom annotations that can be processed with Annotation Processors.
+In this article, we will discuss the topic of annotations and demonstrate the power of annotation processing with a real-world example.
 
-In this article, we will discuss the topic of Annotations and demonstrate the power of Annotation Processing with a real-world example.
+{{% github "https://github.com/thombergs/code-examples/tree/master/core-java/annotation-processing" %}}
 
 ## Annotation Basics
 
-An annotation is preceded by the @ sign. Some common examples of annotations are @Override and @Entity. These are Standard or built-in annotations provided by Java through the java.lang.annotations package. We can further extend the Core functionality to provide our custom annotations.
+An annotation is preceded by the `@` sign. Some common examples of annotations are `@Override` and `@Entity`. These are built-in annotations provided by Java through the `java.lang.annotations` package. We can further extend the core functionality to provide our custom annotations.
 
-An Annotation by itself does not perform any action on the program. It simply provides information about the program that can be used at compile-time or run-time to perform further processing. For eg., if we had a Parent and Child class as below:
+An annotation by itself does not perform any action. It simply provides information that can be used at compile-time or run-time to perform further processing. 
+
+Let's look at the `@Override` annotation as an example:
 
 ```java
 public class ParentClass {
@@ -36,7 +38,7 @@ public class ChildClass extends ParentClass {
 }
 ```
 
-If we were to run this program without the @Override annotation we would not get any error since  'getname' would just be an additional method to 'getName' in ParentClass. By adding the @Override annotation in ChildClass the Compiler is able to enforce the rule that the overriding method in the child class should have the same case-sensitive name as that in the parent class, and so the program would throw an error at compile-time, thereby trapping an error which could have gone undetected even at run-time.
+If we were to run this program without the `@Override` annotation we would not get any error since  `getname` would just be an additional method to 'getName' in ParentClass. By adding the @Override annotation in ChildClass the Compiler is able to enforce the rule that the overriding method in the child class should have the same case-sensitive name as that in the parent class, and so the program would throw an error at compile-time, thereby trapping an error which could have gone undetected even at run-time.
 
 ## Code for this Article
 
@@ -46,9 +48,9 @@ The code for the examples below can be downloaded at:
 
 ## Standard Annotations
 
-Below are some of the most common Annotations in use. These are Standard annotations that Java provides as part of the java.lang.annotations package. To see their full effect it would be best to run the code snippets from the command line since most IDEs provide their custom options that alter warning levels.
+Below are some of the most common annotations available to us. These are standard annotations that Java provides as part of the `java.lang.annotations` package. To see their full effect it would be best to run the code snippets from the command line since most IDEs provide their custom options that alter warning levels.
 
-### @SuppressWarnings 
+### `@SuppressWarnings`
 
 **Use Case for @SuppressWarnings** - It is used to indicate that warnings on code compilation should be ignored. We may want to suppress warnings that clutter up the build output. @SuppressWarnings("unchecked") for example, suppresses warnings associated with raw types. For eg., when we run the following code:
 
@@ -73,7 +75,7 @@ public class SuppressWarningsDemo {
 
 ...from the command-line using the compiler switch -Xlint:unchecked to receive the full warning list, we get the following message:
 
-```
+```shell
 javac -Xlint:unchecked .\com\reflectoring\SuppressWarningsDemo.java
 Warning:
 unchecked call to put(K,V) as a member of the raw type Map
@@ -97,7 +99,7 @@ public class SuppressWarningsDemo {
 
  Now if we compile the program, the console is free of warnings.
 
-### @Deprecated
+### `@Deprecated`
 
 **Use Case for @Deprecated** - It is used to indicate that a method or type has been replaced with newer functionality. IDEs make use of annotation processing to throw a warning at compile-time, usually indicating the deprecated method with a strike-through. The following class declares a deprecated method. The attribute 'since' in the annotation tells us which version the element was deprecated, and 'forRemoval' indicates if the element is going to be removed in the next version.
 
@@ -130,7 +132,7 @@ public class DeprecatedDemoTest {
 1 warning
 ```
 
-### @Override
+### `@Override`
 
 **Use Case for @Override** - It is used to indicate that a method will be overriding the base class implementation. It is used to throw compile-time errors in cases such as typos in letter-casing.
 
@@ -186,7 +188,7 @@ public class Manager extends Employee {
 
 ```
 
-### @FunctionalInterface 
+### `@FunctionalInterface `
 
 **Use Case for @FunctionalInterface** - It is used to indicate that the interface cannot have more than one abstract method. The compiler throws an error in case there is more than one abstract method. Functional Interfaces were introduced in Java 8, to implement Lambda expressions and ensure that they didn't make use of more than one method. Even without the @FunctionalInterface annotation, the compiler will throw an error if you include more than one abstract method in the interface. So why do we need @FunctionalInterface if it is not mandatory? 
 
@@ -214,7 +216,7 @@ If you add another method, 'printString2', to the Print interface, the compiler 
 
 So it is good practice to always include the @FunctionalInterface.
 
-### @SafeVarargs
+### `@SafeVarargs`
 
 **Use Case for @SafeVarags** - The varargs functionality allowed the creation of methods with variable arguments. Prior to Java 5, the only option to creating methods with optional parameters was to create multiple methods, each with a different number of parameters. Varargs allowed us to create a single method to handle optional parameters with syntax as below:
 
@@ -410,7 +412,7 @@ Now, we will get into the details of Meta-Annotations, which we used in the exam
 
 Meta Annotations are Annotations about Annotations provided by the java.lang.Annotations package that provide information about an annotation.
 
-#### @Inherited
+#### `@Inherited`
 
 Normally an Annotation cannot be inherited but applying the @Inherited annotation to an annotation (meta annotation) allows it to be inherited. For eg:
 
@@ -476,7 +478,7 @@ public class TestCustomAnnotatedManager {
 }
 ```
 
-#### @Documented
+#### `@Documented`
 
 @Documented ensures that Custom Annotations show up in the JavaDocs.
 
@@ -513,7 +515,7 @@ Constructor	Description
 CustomAnnotatedEmployee​(int id, java.lang.String name)
 ```
 
-#### @Repeatable
+#### `@Repeatable`
 
 @Repeatable allows multiple repeating Custom Annotations on a method, class, or field. To use a Repeatable Annotation, we need to wrap the Annotation in a Container class which refers to it as an array, as below:
 
@@ -570,7 +572,7 @@ Name: Name_2
 City: City_2
 ```
 
-#### @Target
+#### `@Target`
 
 @Target specifies at which element the Annotation can be used, for eg in the above example the annotation Company was defined only for TYPE and so it could only be applied to a Class.
 

@@ -404,7 +404,7 @@ Now, we will get into the details of meta-annotations, which we used in the exam
 
 ### Meta -Annotations
 
-Meta-annotations are annotations applied to annotations provided by the java.lang package that provide information about the annotation.
+Meta-annotations are annotations applied to annotations provided by the java.lang package that provide information about the annotation to the compiler or the run-time environment.
 
 **Use Cases for meta-annotations:**
 

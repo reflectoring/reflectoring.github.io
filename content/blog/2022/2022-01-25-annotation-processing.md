@@ -38,7 +38,7 @@ public class ChildClass extends ParentClass {
 }
 ```
 
-The @Override annotation is used to mark methods that are overridden in a child class. If we were to run this program without the `@Override` annotation in ChildClass, we would not get any error since  'getname' would just be an additional method to 'getName' in ParentClass. By adding the @Override annotation in ChildClass the compiler is able to enforce the rule that the overriding method in the child class should have the same case-sensitive name as that in the parent class, and so the program would throw an error at compile-time, thereby trapping an error which could have gone undetected even at run-time.
+The @Override annotation is used to mark methods that are overridden in a child class. If we were to run this program without the `@Override` annotation in ChildClass, we would not get any error since  'getname' would just be an additional method to 'getName' in ParentClass. By adding the @Override annotation in ChildClass the compiler can enforce the rule that the overriding method in the child class should have the same case-sensitive name as that in the parent class, and so the program would throw an error at compile-time, thereby trapping an error which could have gone undetected even at run-time.
 
 ## Standard Annotations
 
@@ -142,7 +142,7 @@ public class Employee {
 }
 ```
 
-now if you had a Manager class extending Employee such as below with the initial 'e' in 'Employee' in 'getEmployeeStatus' in lower-case, the program would compile and run without an issue. 
+now if you had a Manager class extending Employee such as below with the initial 'e' in 'Employee' in 'getEmployeeStatus' in lower-case, the program would compile and run without any issue. 
 
 ```java
 public class Manager extends Employee {
@@ -204,7 +204,7 @@ public class FunctionalInterfaceTest {
 }
 ```
 
-If you add another method, 'printString2', to the Print interface, the compiler or the IDE will throw an error and this will be obvious right away. Now, what if the Print interface was in a separate module, and there was no @FunctionalInterface annotation. Some other developers could easily add another function to the interface. Now if someone try to implement a Lambda function using the interface, it would break the code. Further, now we have to figure out which was the right function. By adding the @FunctionalInterface notation we get an immediate warning in the IDE, such as:
+If you add another method, 'printString2', to the Print interface, the compiler or the IDE will throw an error and this will be obvious right away. Now, what if the Print interface was in a separate module, and there was no @FunctionalInterface annotation. Some other developers could easily add another function to the interface. Now if someone tried to implement a Lambda function using the interface, it would break the code. Further, now we have to figure out which was the right function. By adding the @FunctionalInterface notation we get an immediate warning in the IDE, such as:
 
 ​	**Multiple non-overriding abstract methods found in interface com.reflectoring.Print**
 
@@ -212,7 +212,7 @@ So it is good practice to always include the @FunctionalInterface.
 
 ### `@SafeVarargs`
 
-**Use Case for @SafeVarags** - The varargs functionality allowed the creation of methods with variable arguments. Prior to Java 5, the only option to creating methods with optional parameters was to create multiple methods, each with a different number of parameters. Varargs allowed us to create a single method to handle optional parameters with syntax as below:
+**Use Case for @SafeVarags** - The varargs functionality allowed the creation of methods with variable arguments. Prior to Java 5, the only option to create  methods with optional parameters was to create multiple methods, each with a different number of parameters. Varargs allowed us to create a single method to handle optional parameters with syntax as below:
 
 ```
 void printStrings(String... stringList)
@@ -398,7 +398,7 @@ Company Name: ABC
 Company City: XYZ
 ```
 
-So by introspecting the annotation at run-time we can access some common information of all employees and avoid the a lot of repetition if we had to construct a lot of objects.
+So by introspecting the annotation at run-time we can access some common information of all employees and avoid a lot of repetition if we had to construct a lot of objects.
 
 Now, we will get into the details of meta-annotations, which we used in the example above:
 
@@ -410,11 +410,11 @@ Meta-annotations are annotations applied to annotations provided by the java.lan
 
 The compiler or the run-time environment needs the additional information below, about the annotation itself, in order to process it:
 
-	1. Can the annotation be inherited by child classes.
-	1. Does the annotation need to show up in documentation.
-	1. Can the annotation be applied multiple times to the same element.
-	1. The specific element that the annotation applies to, such as class, method, field, etc.
-	1. Does the annotation have to be processed at compile-time or run-time.
+	1. Can the annotation be inherited by child classes?
+	1. Does the annotation need to show up in the documentation?
+	1. Can the annotation be applied multiple times to the same element?
+	1. What specific element does the annotation apply to, such as class, method, field, etc?
+	1. Does the annotation have to be processed at compile-time or run-time?
 
 #### `@Inherited`
 
@@ -857,7 +857,7 @@ public @interface Test {
 }
 ```
 
-Next, we create a class AnnotatedMethods, to which we will apply the @Test annotations to the method Test_1. This will enable the method to be executed at run-time. The method Test_2 does not have an annotation, and will not be executed at run-time.
+Next, we create a class AnnotatedMethods, to which we will apply the @Test annotations to the method Test_1. This will enable the method to be executed at run-time. The method Test_2 does not have an annotation, and should not be executed at run-time.
 
 ```java
 public class AnnotatedMethods {
@@ -876,7 +876,7 @@ public class AnnotatedMethods {
 
 ```
 
-Now we create the test to run AnnotatedMethods as below. It gets a reference to the class, then loops through all the methods that have the annotation @Test, and invokes these methods at run-time.
+Now we create the test to run AnnotatedMethods as below. It gets a reference to the class, then loops through all the methods that have the annotation @Test, and invokes these methods at run-time. We want to verify the Test_1 will run since it is annotated with @Test, and Test_2 will not run since it is not annotated with @Test.
 
 ```java
 import java.lang.annotation.Annotation;
@@ -914,11 +914,11 @@ The output is:
 This is the first test
 ```
 
-So we see that Test_2, which did not have the @Test annotation, did not have its output printed. 
+So we verified that Test_2, which did not have the @Test annotation, did not have its output printed. 
 
 **Code walk-through:**
 
-- By calling `getDeclaredMethods()`, we're getting the methods of our `AnnotatedMethods` class. Then, we're iterating through the methods and check for each method if it is annotated with our `@Test` annotation. Finally we perform a run-time invocation of the methods that were identified as annotated with @Test.
+- By calling `getDeclaredMethods()`, we're getting the methods of our `AnnotatedMethods` class. Then, we're iterating through the methods and checking each method if it is annotated with the`@Test` annotation. Finally, we perform a run-time invocation of the methods that were identified as being annotated with @Test.
 
 ## Conclusion
 

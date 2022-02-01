@@ -11,7 +11,7 @@ url: java-annotation-processing
 
 An annotation is a construct associated with Java source code elements such as classes, methods, and variables that provides information to the program at compile-time or at run-time based on which the program can take further action. An annotation processor processes these annotations at compile time to provide functionality such as code generation, error checking, etc.  
 
-The `java.lang.annotation` package provides some core annotations and also gives us the capability to create our custom annotations that can be processed with annotation processors.
+The `java.lang` package provides some core annotations and also gives us the capability to create our custom annotations that can be processed with annotation processors.
 
 In this article, we will discuss the topic of annotations and demonstrate the power of annotation processing with a real-world example.
 
@@ -410,11 +410,11 @@ Meta-annotations are annotations applied to annotations provided by the java.lan
 
 The compiler or the run-time environment needs the additional information below, about the annotation itself, in order to process it:
 
-	1. Can the annotation be inherited by child classes?
-	1. Does the annotation need to show up in the documentation?
-	1. Can the annotation be applied multiple times to the same element?
-	1. What specific element does the annotation apply to, such as class, method, field, etc?
-	1. Does the annotation have to be processed at compile-time or run-time?
+1. Can the annotation be inherited by child classes?
+2. Does the annotation need to show up in the documentation?
+3. Can the annotation be applied multiple times to the same element?
+4. What specific element does the annotation apply to, such as class, method, field, etc?
+5. Does the annotation have to be processed at compile-time or run-time?
 
 #### `@Inherited`
 

@@ -3,9 +3,9 @@ authors: [pratikdas]
 title: "Getting Started with Express"
 categories: ["aws"]
 date: 2022-01-20T00:00:00
-excerpt: "Amazon Simple Queue Service (SQS) is a fully managed message queuing service. We can send, store, and receive messages at any volume, without losing messages or requiring other systems to be available. In this article, we will introduce Amazon SQS, understand its core concepts and work through some examples."
+excerpt: "Express is a minimal and flexible Node.js web application framework. We can use this framework to build APIs, serve web pages, and other static assets and use it as a light weight HTTP server and backend for our applications. In this article, we will introduce the Express framework and learn to use it to build HTTP servers, REST APIs and web pages."
 image: images/stock/0115-2021-1200x628-branded.jpg
-url: getting-started-with-aws-sqs
+url: getting-started-with-express
 ---
 
 Express is a minimal and flexible Node.js web application framework. We can use this framework to build APIs, serve web pages, and other static assets and use it as a light weight HTTP server and backend for our applications.
@@ -61,15 +61,17 @@ app.listen(
    () => console.log(`Server listening on port 3000.`));
 
 ```
+When we run this application in Node.js, we will have a HTTP server listening on port `3000` which can receive a GET request on http://localhost:3000/ and respond with a text message: `response for GET request`.
+
 We can observe the following components in this application:
 
-1. Server which listens for HTTP requests on a port
+1. A server which listens for HTTP requests on a port
 2. The app object representing the Express function
 3. Routes which define URLs or path to receive the HTTP request with different HTTP verbs
 4. Handler functions associated with each route which are called by the framework when request is received on a particular route.
-5. Multiple middleware functions which perform processing on the request in different stages of a request handling pipeline
+5. Middleware functions which perform processing on the request in different stages of a request handling pipeline
 
-While Express itself is fairly minimalist, there is a wide community which has created compatible middleware packages to address almost any web development problem. There are libraries to work with cookies, sessions, user logins, URL parameters, POST data, security headers, and many more. 
+While Express itself is fairly minimalist, there is a wealth of utilities created by the community in the form of middleware packages which can address almost any web development problem. 
 
 
 ## Installing Express

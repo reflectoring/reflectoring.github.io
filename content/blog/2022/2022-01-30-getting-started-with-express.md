@@ -21,7 +21,7 @@ Node.js is an open-source runtime environment for executing JavaScript applicati
 
 Node.js uses the V8 JavaScript Runtime engine which is also used by Google Chrome. This makes the runtime engine much faster and hence enables faster processing of requests. 
 
-In order to use Express, we should first install Node.js and the Node Package Manager (NPM) in our development environment. 
+In order to use Express, we should first install Node.js and the Node Package Manager (npm) in our development environment. Download and installation instruction of Node.js is found in the [official website](https://nodejs.org/en/download/). Similarly, we can refer to the [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) site for the installation instructions of npm.
 
 ## What is Express
 
@@ -64,11 +64,6 @@ While Express itself is fairly minimalist, there is a wealth of utilities create
 
 
 ## Installing Express
-
-To generate, apply and test Express Middleware, you should have certain things installed prior. Firstly, install Node and NPM using the following syntax:
-
-npm -v && node –v
-Before you install, have a check whether you are installing the right versions of the Node and NPM versions.
 
 Let us start by first installing Express. 
 

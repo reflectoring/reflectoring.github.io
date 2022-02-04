@@ -1,15 +1,15 @@
 ---
-title: "An Introduction to Annotations and Annotation Processing"
+title: "An Introduction to Annotations and Annotation Processing in Java"
 categories: ["Java"]
 date: 2022-01-27 00:00:00 +1100 
 modified: 2022-01-27 00:00:00 +1100
-authors: [syedaf]
+authors: ["syedaf"]
 description: "An Introduction to Annotations and Annotation Processing"
-image: 
+image: images/stock/0116-post-its-1200x628-branded.jpg
 url: java-annotation-processing
 ---
 
-An annotation is a construct associated with Java source code elements such as classes, methods, and variables that provides information to the program at compile-time or at run-time based on which the program can take further action. An annotation processor processes these annotations at compile time to provide functionality such as code generation, error checking, etc.  
+An **annotation** is a construct associated with Java source code elements such as classes, methods, and variables. Annotations provide information to a program at compile time or at runtime based on which the program can take further action. An **annotation processor** processes these annotations at compile time or runtime to provide functionality such as code generation, error checking, etc.  
 
 The `java.lang` package provides some core annotations and also gives us the capability to create our custom annotations that can be processed with annotation processors.
 
@@ -19,26 +19,26 @@ In this article, we will discuss the topic of annotations and demonstrate the po
 
 ## Annotation Basics
 
-An annotation is preceded by the `@` sign. Some common examples of annotations are `@Override` and `@SuppressWarnings`. These are built-in annotations provided by Java through the `java.lang` package. We can further extend the core functionality to provide our custom annotations.
+An annotation is preceded by the `@` symbol. Some common examples of annotations are `@Override` and `@SuppressWarnings`. These are built-in annotations provided by Java through the `java.lang` package. We can further extend the core functionality to provide our custom annotations.
 
-An annotation by itself does not perform any action. It simply provides information that can be used at compile-time or run-time to perform further processing. 
+An annotation by itself does not perform any action. It simply provides information that can be used at compile time or runtime to perform further processing. 
 
 Let's look at the `@Override` annotation as an example:
 
 ```java
 public class ParentClass {
-
-    public String getName() {..}
+    public String getName() {...}
 }
 
 public class ChildClass extends ParentClass {
-
     @Override
-    public String getname() {..}
+    public String getname() {...}
 }
 ```
 
-The @Override annotation is used to mark methods that are overridden in a child class. If we were to run this program without the `@Override` annotation in ChildClass, we would not get any error since  'getname' would just be an additional method to 'getName' in ParentClass. By adding the @Override annotation in ChildClass the compiler can enforce the rule that the overriding method in the child class should have the same case-sensitive name as that in the parent class, and so the program would throw an error at compile-time, thereby trapping an error which could have gone undetected even at run-time.
+We use the `@Override` annotation to mark a method that exists in a parent class, but that we want to override in a child class. The above program throws an error during compile time because the `getname()` method in `ChildClass` is annotated with `@Override` even though it doesn't override a method from `ParentClass` (because there is no `getname()` method in `ParentClass`). 
+
+By adding the `@Override` annotation in `ChildClass`, the compiler can enforce the rule that the overriding method in the child class should have the same case-sensitive name as that in the parent class, and so the program would throw an error at compile time, thereby catching an error which could have gone undetected even at runtime.
 
 ## Standard Annotations
 
@@ -46,8 +46,9 @@ Below are some of the most common annotations available to us. These are standar
 
 ### `@SuppressWarnings`
 
-**Use Case for @SuppressWarnings** - It is used to indicate that warnings on code compilation should be ignored. We may want to suppress warnings that clutter up the build output. @SuppressWarnings("unchecked") for example, suppresses warnings associated with raw types. For eg., when we run the following code:
+We can use the `@SuppressWarnings` annotation to indicate that warnings on code compilation should be ignored. We may want to suppress warnings that clutter up the build output. `@SuppressWarnings("unchecked")`, for example, suppresses warnings associated with raw types.
 
+Let's look an example where we might want to use `@SuppressWarnings`:
 ```java
 public class SuppressWarningsDemo {
 
@@ -67,35 +68,44 @@ public class SuppressWarningsDemo {
 }
 ```
 
-...from the command-line using the compiler switch -Xlint:unchecked to receive the full warning list, we get the following message:
+If we run this program from the command-line using the compiler switch `-Xlint:unchecked` to receive the full warning list, we get the following message:
 
 ```shell
-javac -Xlint:unchecked .\com\reflectoring\SuppressWarningsDemo.java
+javac -Xlint:unchecked ./com/reflectoring/SuppressWarningsDemo.java
 Warning:
 unchecked call to put(K,V) as a member of the raw type Map
 ```
 
-The above code-block is an example of legacy Java code (prior to Java 5), where we could have collections in which you could accidentally store mixed types of objects. To introduce compile-time error checking generics were introduced. So to get this legacy code to compile without error we would make the following change:
+The above code-block is an example of legacy Java code (prior to Java 5), where we could have collections in which we could accidentally store mixed types of objects. To introduce compile time error checking generics were introduced. So to get this legacy code to compile without error we would change:
 
 ```java
-change:
 Map testMap = new HashMap();
-to:
+```
+
+to
+
+```java
 Map<Integer, String> testMap = new HashMap<>();
 ```
 
-If we had a large legacy code base, we wouldn't want to go in and make lots of code changes since it would mean a lot of QA regression testing. The safer option would be to add the @SuppressWarning annotation to the class so that the logs are not cluttered up with redundant warning messages. We would add the code as below:
+If we had a large legacy code base, we wouldn't want to go in and make lots of code changes since it would mean a lot of QA regression testing. So we might want to add the `@SuppressWarning `annotation to the class so that the logs are not cluttered up with redundant warning messages. We would add the code as below:
 
 ```java
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class SuppressWarningsDemo {
+    ...
+}
 ```
 
  Now if we compile the program, the console is free of warnings.
 
 ### `@Deprecated`
 
-**Use Case for @Deprecated** - It is used to indicate that a method or type has been replaced with newer functionality. IDEs make use of annotation processing to throw a warning at compile-time, usually indicating the deprecated method with a strike-through. The following class declares a deprecated method. The attribute 'since' in the annotation tells us which version the element was deprecated, and 'forRemoval' indicates if the element is going to be removed in the next version.
+We can use the `@Deprecated` annotation to mark that a method or type has been replaced with newer functionality. 
+
+IDEs make use of annotation processing to throw a warning at compile time, usually indicating the deprecated method with a strike-through to tell the developer that they shouldn't use this method or type any more. 
+
+The following class declares a deprecated method:
 
 ```java
 public class DeprecatedDemo {
@@ -108,19 +118,12 @@ public class DeprecatedDemo {
 }
 ```
 
-Now, calling the legacy method as below will trigger a compile-time warning indicating that the method call needs to be replaced:
+The attribute `since` in the annotation tells us in which version the element was deprecated, and `forRemoval` indicates if the element is going to be removed in the next version.
+
+Now, calling the legacy method as below will trigger a compile time warning indicating that the method call needs to be replaced:
 
 ```java
-public class DeprecatedDemoTest {
-
-    public static void main(String[] args) {
-
-        DeprecatedDemo demo = new DeprecatedDemo();
-        demo.testLegacyFunction();
-    }
-}
-
-.\com\reflectoring\DeprecatedDemoTest.java:8: warning: [removal] testLegacyFunction() in DeprecatedDemo has been deprecated and marked for removal
+./com/reflectoring/DeprecatedDemoTest.java:8: warning: [removal] testLegacyFunction() in DeprecatedDemo has been deprecated and marked for removal
         demo.testLegacyFunction();
             ^                     
 1 warning
@@ -128,54 +131,28 @@ public class DeprecatedDemoTest {
 
 ### `@Override`
 
-**Use Case for @Override** - It is used to indicate that a method will be overriding the base class implementation. It is used to throw compile-time errors in cases such as typos in letter-casing.
-
-So for example the base class could look like:
+We already had a look at the `@Override` annotation above. We can use it to indicate that a method will be overriding the method with the same signature in a parent class. It is used to throw compile time errors in cases such as typos in letter-casing as in this code example:
 
 ```java
 public class Employee {
-
     public void getEmployeeStatus(){
-
         System.out.println("This is the Base Employee class");
     }
 }
-```
 
-now if you had a Manager class extending Employee such as below with the initial 'e' in 'Employee' in 'getEmployeeStatus' in lower-case, the program would compile and run without any issue. 
-
-```java
 public class Manager extends Employee {
-
     public void getemployeeStatus(){
-
         System.out.println("This is the Manager class");
-    }
-}
-
-public class OverrideTest {
-
-    public static void main(String[] args) {
-
-        Manager manager = new Manager();
-        manager.getemployeeStatus();
     }
 }
 ```
 
-We now add the annotation @Override to the 'getemployeeStatus' method and we get a compile-time error, which forces us to correct the typo right away.
+We intended to override the `getEmployeeStatus()` method but instead we misspelled the method name. This can lead to serious bugs. The program above would compile and run without issue without catching that bug.
 
-```java
-public class Manager extends Employee {
+If we add the annotation `@Override` to the `getemployeeStatus()` method, we get a compile time error, which causes a compile error and forces us to correct the typo right away:
 
-    @Override
-    public void getemployeeStatus(){
-
-        System.out.println("This is the Manager class");
-    }
-}
-
-.\com\reflectoring\Manager.java:5: error: method does not override or implement a method from a supertype
+```shell
+./com/reflectoring/Manager.java:5: error: method does not override or implement a method from a supertype
     @Override
     ^
 1 error
@@ -184,45 +161,44 @@ public class Manager extends Employee {
 
 ### `@FunctionalInterface `
 
-**Use Case for @FunctionalInterface** - It is used to indicate that the interface cannot have more than one abstract method. The compiler throws an error in case there is more than one abstract method. Functional Interfaces were introduced in Java 8, to implement Lambda expressions and ensure that they didn't make use of more than one method. Even without the @FunctionalInterface annotation, the compiler will throw an error if you include more than one abstract method in the interface. So why do we need @FunctionalInterface if it is not mandatory? 
+The `@FunctionalInterface` annotation is used to indicate that an interface cannot have more than one abstract method. The compiler throws an error in case there is more than one abstract method. Functional interfaces were introduced in Java 8, to implement Lambda expressions and to ensure that they didn't make use of more than one method. 
+
+Even without the `@FunctionalInterface` annotation the compiler will throw an error if you include more than one abstract method in the interface. So why do we need `@FunctionalInterface` if it is not mandatory? 
 
 Let us take the example of the code below:
 
 ```java
-
 @FunctionalInterface
 interface Print {
     void printString(String testString);
 }
-
-public class FunctionalInterfaceTest {
-
-    public static void main(String args[]) {
-        Print testPrint = (String testString) -> System.out.println(testString);
-        testPrint.printString("This is a String");
-    }
-}
 ```
 
-If you add another method, 'printString2', to the Print interface, the compiler or the IDE will throw an error and this will be obvious right away. Now, what if the Print interface was in a separate module, and there was no @FunctionalInterface annotation. Some other developers could easily add another function to the interface. Now if someone tried to implement a Lambda function using the interface, it would break the code. Further, now we have to figure out which was the right function. By adding the @FunctionalInterface notation we get an immediate warning in the IDE, such as:
+If we add another method `printString2()` to the `Print` interface, the compiler or the IDE will throw an error and this will be obvious right away. 
 
-​	**Multiple non-overriding abstract methods found in interface com.reflectoring.Print**
+Now, what if the `Print` interface was in a separate module, and there was no `@FunctionalInterface` annotation? The developers of that other module could easily add another function to the interface and break your code. Further, now we have to figure out which of the two is the right function in our case. By adding the `@FunctionalInterface` annotation we get an immediate warning in the IDE, such as this:
 
-So it is good practice to always include the @FunctionalInterface.
+```shell
+Multiple non-overriding abstract methods found in interface com.reflectoring.Print
+````
+
+So it is good practice to always include the `@FunctionalInterface` if the interface should be usable as a Lambda.
 
 ### `@SafeVarargs`
 
-**Use Case for @SafeVarags** - The varargs functionality allowed the creation of methods with variable arguments. Prior to Java 5, the only option to create  methods with optional parameters was to create multiple methods, each with a different number of parameters. Varargs allowed us to create a single method to handle optional parameters with syntax as below:
+The varargs functionality allows the creation of methods with variable arguments. Prior to Java 5, the only option to create  methods with optional parameters was to create multiple methods, each with a different number of parameters. Varargs allows us to create a single method to handle optional parameters with syntax as below:
 
-```
+```java
+// we can do this:
 void printStrings(String... stringList)
 
-instead of ....void printStrings(String string1, String string2)
+// instead of having to do this:
+void printStrings(String string1, String string2)
 ```
 
-However, warnings were thrown when generics were used in the arguments. @SafeVarargs allowed for suppression of these warnings. For eg., consider the code below:
+However, warnings are thrown when generics are used in the arguments. `@SafeVarargs` allows for suppression of these warnings:
 
-```
+```java
 package com.reflectoring;
 
 import java.util.Arrays;
@@ -231,32 +207,25 @@ import java.util.List;
 public class SafeVarargsTest {
 
    private void printString(String test1, String test2) {
-
         System.out.println(test1);
         System.out.println(test2);
     }
 
     private void printStringVarargs(String... tests) {
-
         for (String test : tests) {
-
             System.out.println(test);
         }
     }
 
     private void printStringSafeVarargs(List<String>... testStringLists) {
-
         for (List<String> testStringList : testStringLists) {
-
             for (String testString : testStringList) {
-
                 System.out.println(testString);
             }
         }
     }
 
     public static void main(String[] args) {
-
         SafeVarargsTest test = new SafeVarargsTest();
 
         test.printString("String1", "String2");
@@ -274,29 +243,26 @@ public class SafeVarargsTest {
 
 ```
 
-In the above code, 'printString' and 'printStringVarargs' achieved the same result. However, compiling the code gave a warning for printStringSafeVarargs, since it used Generics:
+In the above code, `printString()` and `printStringVarargs()` achieve the same result. Compiling the code, however, produces a warning for `printStringSafeVarargs()` since it used generics:
 
-```java
-javac -Xlint:unchecked .\com\reflectoring\SafeVarargsTest.java
+```shell
+javac -Xlint:unchecked ./com/reflectoring/SafeVarargsTest.java
 
-.\com\reflectoring\SafeVarargsTest.java:28: warning: [unchecked] Possible heap pollution from parameterized vararg type List<String>
+./com/reflectoring/SafeVarargsTest.java:28: warning: [unchecked] Possible heap pollution from parameterized vararg type List<String>
     private void printStringSafeVarargs(List<String>... testStringLists) {
                                                         ^
-.\com\reflectoring\SafeVarargsTest.java:52: warning: [unchecked] unchecked generic array creation for varargs parameter of type List<String>[]
+./com/reflectoring/SafeVarargsTest.java:52: warning: [unchecked] unchecked generic array creation for varargs parameter of type List<String>[]
         test.printStringSafeVarargs(testStringList1, testStringList2);
                                    ^
 2 warnings
-
 ```
 
-By adding the SafeVarargs annotation as below, we could get rid of the warning:
+By adding the SafeVarargs annotation as below, we can get rid of the warning:
 
 ```java
 @SafeVarargs
 private void printStringSafeVarargs(List<String>... testStringLists) {
 ```
-
-
 
 ## Custom Annotations
 
@@ -307,7 +273,7 @@ These are annotations that are custom created to serve a particular purpose.
 1. Reduce repetition.
 1. Automate the generation of boilerplate code.
 2. Provide the capability to trap errors at compile time such as potential null pointer checks.
-3. Customize run-time behavior based on the presence of custom annotations.
+3. Customize runtime behavior based on the presence of custom annotations.
 
 An example of a Custom annotation would be the @Company annotation below attached to the Employee class. When creating multiple instances of the CustomAnnotatedEmployee class we can skip adding the Company information in the constructor since those attributes would be automatically included.
 
@@ -326,7 +292,7 @@ public @interface Company{
 }
 ```
 
-To specify information about the scope of the annotation and the area it targets, such as compile-time or run-time, we need to add meta-annotations to the custom annotation. For eg., to specify that the annotation applies to classes only, we need to add @Target(ElementType.TYPE), which specifies that this annotation only applies to classes, and @Retention(RetentionPolicy.RUNTIME), which specifies that this annotation only applies at run-time. We will discuss further details about meta-annotations once we get this basic example running. The basic annotation is:
+To specify information about the scope of the annotation and the area it targets, such as compile time or runtime, we need to add meta-annotations to the custom annotation. For eg., to specify that the annotation applies to classes only, we need to add @Target(ElementType.TYPE), which specifies that this annotation only applies to classes, and @Retention(RetentionPolicy.RUNTIME), which specifies that this annotation only applies at runtime. We will discuss further details about meta-annotations once we get this basic example running. The basic annotation is:
 
 ```java
 @Target(ElementType.TYPE)
@@ -398,25 +364,25 @@ Company Name: ABC
 Company City: XYZ
 ```
 
-So by introspecting the annotation at run-time we can access some common information of all employees and avoid a lot of repetition if we had to construct a lot of objects.
+So by introspecting the annotation at runtime we can access some common information of all employees and avoid a lot of repetition if we had to construct a lot of objects.
 
 Now, we will get into the details of meta-annotations, which we used in the example above:
 
-### Meta -Annotations
+## Meta -Annotations
 
-Meta-annotations are annotations applied to annotations provided by the java.lang package that provide information about the annotation to the compiler or the run-time environment.
+Meta-annotations are annotations applied to annotations provided by the java.lang package that provide information about the annotation to the compiler or the runtime environment.
 
 **Use Cases for meta-annotations:**
 
-The compiler or the run-time environment needs the additional information below, about the annotation itself, in order to process it:
+The compiler or the runtime environment needs the additional information below, about the annotation itself, in order to process it:
 
 1. Can the annotation be inherited by child classes?
 2. Does the annotation need to show up in the documentation?
 3. Can the annotation be applied multiple times to the same element?
 4. What specific element does the annotation apply to, such as class, method, field, etc?
-5. Does the annotation have to be processed at compile-time or run-time?
+5. Does the annotation have to be processed at compile time or runtime?
 
-#### `@Inherited`
+### `@Inherited`
 
 Normally an annotation cannot be inherited but applying the @Inherited annotation to an annotation (meta annotation) allows it to be inherited. For eg:
 
@@ -482,7 +448,7 @@ public class TestCustomAnnotatedManager {
 }
 ```
 
-#### `@Documented`
+### `@Documented`
 
 @Documented ensures that custom annotations show up in the JavaDocs.
 
@@ -519,7 +485,7 @@ Constructor	Description
 CustomAnnotatedEmployee​(int id, java.lang.String name)
 ```
 
-#### `@Repeatable`
+### `@Repeatable`
 
 @Repeatable allows multiple repeating custom annotations on a method, class, or field. To use a Repeatable annotation, we need to wrap the annotation in a container class which refers to it as an array, as below:
 
@@ -576,7 +542,7 @@ Name: Name_2
 City: City_2
 ```
 
-#### `@Target`
+### `@Target`
 
 @Target specifies at which element the annotation can be used, for eg in the above example the annotation Company was defined only for TYPE and so it could only be applied to a class.
 
@@ -605,17 +571,17 @@ The various self-explanatory Target types are:
 ​		ElementType.PARAMETER
 ​		ElementType.TYPE 
 
-#### @Retention
+### `@Retention`
 
 @Retention specifies when the annotation is discarded.
 
-​	  SOURCE - The annotation is used at compile-time and discarded at run-time.
+​	  SOURCE - The annotation is used at compile time and discarded at runtime.
 
 ​	  CLASS - The annotation is stored in the class file at compile time and discarded at run time.
 
-​	  RUNTIME - The annotation is retained at run-time.
+​	  RUNTIME - The annotation is retained at runtime.
 
-If we needed an annotation to only provide error checking at compile-time like @Override we would use SOURCE. If we need an annotation to provide functionality at run-time such as @Test in Junit we would use RUNTIME. To see a real example, create the following annotations in 3 separate files:
+If we needed an annotation to only provide error checking at compile time like @Override we would use SOURCE. If we need an annotation to provide functionality at runtime such as @Test in Junit we would use RUNTIME. To see a real example, create the following annotations in 3 separate files:
 
 ```java
 @Target(ElementType.TYPE)
@@ -644,7 +610,7 @@ public class EmployeeRetentionAnnotation {
 }
 ```
 
-To verify that only the run-time annotation is available at run-time, run a test as follows:
+To verify that only the runtime annotation is available at runtime, run a test as follows:
 
 ```java
 public class RetentionTest {
@@ -652,13 +618,13 @@ public class RetentionTest {
     public static void main(String[] args) {
 
         SourceRetention[] sourceRetention = new EmployeeRetentionAnnotation().getClass().getAnnotationsByType(SourceRetention.class);
-        System.out.println("Source Retentions at run-time: " + sourceRetention.length);
+        System.out.println("Source Retentions at runtime: " + sourceRetention.length);
 
         RuntimeRetention[] runtimeRetention = new EmployeeRetentionAnnotation().getClass().getAnnotationsByType(RuntimeRetention.class);
-        System.out.println("Run-time Retentions at run-time: " + runtimeRetention.length);
+        System.out.println("Run-time Retentions at runtime: " + runtimeRetention.length);
 
         ClassRetention[] classRetention = new EmployeeRetentionAnnotation().getClass().getAnnotationsByType(ClassRetention.class);
-        System.out.println("Class Retentions at run-time: " + classRetention.length);
+        System.out.println("Class Retentions at runtime: " + classRetention.length);
     }
 }
 ```
@@ -666,12 +632,12 @@ public class RetentionTest {
 The output would be as follows:
 
 ```
-Source Retentions at run-time: 0
-Run-time Retentions at run-time: 1
-Class Retentions at run-time: 0
+Source Retentions at runtime: 0
+Run-time Retentions at runtime: 1
+Class Retentions at runtime: 0
 ```
 
-So we verified that only the RUNTIME annotation gets processed at run-time.
+So we verified that only the RUNTIME annotation gets processed at runtime.
 
 ## Annotation Categories
 
@@ -846,7 +812,7 @@ Company City: ZZZ
 
 ## A real-world example
 
-For our real-world example, we are going to do a simple simulation of the annotation @Test in JUnit. By marking our functions with the @Test annotation we can determine at run-time, the methods in a class that need to be run as tests. 
+For our real-world example, we are going to do a simple simulation of the annotation @Test in JUnit. By marking our functions with the @Test annotation we can determine at runtime, the methods in a class that need to be run as tests. 
 
 We first create the annotation as below:
 
@@ -857,7 +823,7 @@ public @interface Test {
 }
 ```
 
-Next, we create a class AnnotatedMethods, to which we will apply the @Test annotations to the method Test_1. This will enable the method to be executed at run-time. The method Test_2 does not have an annotation, and should not be executed at run-time.
+Next, we create a class AnnotatedMethods, to which we will apply the @Test annotations to the method Test_1. This will enable the method to be executed at runtime. The method Test_2 does not have an annotation, and should not be executed at runtime.
 
 ```java
 public class AnnotatedMethods {
@@ -876,7 +842,7 @@ public class AnnotatedMethods {
 
 ```
 
-Now we create the test to run AnnotatedMethods as below. It gets a reference to the class, then loops through all the methods that have the annotation @Test, and invokes these methods at run-time. We want to verify the Test_1 will run since it is annotated with @Test, and Test_2 will not run since it is not annotated with @Test.
+Now we create the test to run AnnotatedMethods as below. It gets a reference to the class, then loops through all the methods that have the annotation @Test, and invokes these methods at runtime. We want to verify the Test_1 will run since it is annotated with @Test, and Test_2 will not run since it is not annotated with @Test.
 
 ```java
 import java.lang.annotation.Annotation;
@@ -918,11 +884,11 @@ So we verified that Test_2, which did not have the @Test annotation, did not hav
 
 **Code walk-through:**
 
-- By calling `getDeclaredMethods()`, we're getting the methods of our `AnnotatedMethods` class. Then, we're iterating through the methods and checking each method if it is annotated with the`@Test` annotation. Finally, we perform a run-time invocation of the methods that were identified as being annotated with @Test.
+- By calling `getDeclaredMethods()`, we're getting the methods of our `AnnotatedMethods` class. Then, we're iterating through the methods and checking each method if it is annotated with the`@Test` annotation. Finally, we perform a runtime invocation of the methods that were identified as being annotated with @Test.
 
 ## Conclusion
 
-We did an overview of annotations, followed by a simple real-world example of annotation processing. We can further use the power of annotation processing to perform more complex automated tasks such as creating Builder source files for a set of POJOs at compile-time. A Builder is a design pattern in Java that is used to provide a better alternative to constructors when there is a large number of parameters involved or there is a need for multiple constructors with optional parameters.  If we had a few dozen POJOs, the code generation capabilities of the annotation processor would save us a lot of time by creating the corresponding Builder files at compile-time, on the fly. By fully leveraging the power of annotation processing we will be able to skip a lot of repetition and save a lot of time.
+We did an overview of annotations, followed by a simple real-world example of annotation processing. We can further use the power of annotation processing to perform more complex automated tasks such as creating Builder source files for a set of POJOs at compile time. A Builder is a design pattern in Java that is used to provide a better alternative to constructors when there is a large number of parameters involved or there is a need for multiple constructors with optional parameters.  If we had a few dozen POJOs, the code generation capabilities of the annotation processor would save us a lot of time by creating the corresponding Builder files at compile time, on the fly. By fully leveraging the power of annotation processing we will be able to skip a lot of repetition and save a lot of time.
 
 
 

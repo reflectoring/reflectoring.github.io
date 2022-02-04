@@ -158,7 +158,7 @@ public class BooksRestController {
             .publishedOn("16/11/2021")
             .currentlyAvailableNumber(1)
             .build();
-    List<BookResponse> books = List.of(sandman, lotr);
+    List<BookResponse> books = new ArrayList(List.of(sandman, lotr));
 
     @GetMapping
     List<BookResponse> fetchAllBooks(){
@@ -192,7 +192,7 @@ public class BooksController {
             .publishedOn("16/11/2021")
             .currentlyAvailableNumber(1)
             .build();
-    List<BookResponse> books = List.of(sandman, lotr);
+    List<BookResponse> books = new ArrayList(List.of(sandman, lotr));
 
     @GetMapping
     ResponseEntity<List<BookResponse>> fetchAllBooks(){
@@ -208,7 +208,7 @@ This approach gives us more freedom when returning objects. Let us imagine we ar
 After we build our first enpoint we want to test it and see what do we get as the result. Since we don't have any frontend we can use command line tools or the [Postman](#https://www.postman.com/). 
 If we are using the command line tools like cURL we can call the endpoint as follows:
 
-`curl --location --request GET 'http://localhost:8080/books'`
+```curl --location --request GET 'http://localhost:8080/books'```
 
 The result the we got was:
 ```json
@@ -228,12 +228,14 @@ The result the we got was:
 ]
 ```
 ## Creating a POST Endpoint
-We saw how we can fetch data from the application. Now, let us take a look how we can create new data:
+The POST method is used when we want to create a new resource in the database.
+
+Now, let us take a look how we can create new data:
 ```java
 @RestController
 @RequestMapping("/books")
 public class BooksRestController {
-    List<BookResponse> books = List.of(sandman, lotr);
+    List<BookResponse> books = new ArrayList(List.of(sandman, lotr));
 
     @PostMapping
     List<BookResponse> create(@RequestBody BookRequest request){
@@ -248,23 +250,90 @@ public class BooksRestController {
     }
 }
 ```
-We use the POST verb for the creation of the new resource. To accept the data in the HTTP request we need to annotate the method with the `@RequestBody` annotation. 
-After we built our first endpoint let us call this endpoint and look into the result.
-- Building spring MVC app
-    - Building first controllers
-        - Dependencies that we need ?
-        - What is Spring MVC ?
-        - What is Servlet Container ?
-        - Explain part by part of the conttroller ( annotations, requests, responses, multipart etc.)
-    - Connecting to the database
-        - Dependencies that we need ?
-        - What is the driver and which ones can we use ?
-        - How to set up the connection ?
-        - Repository pattern ?
-        - Explain part by part of the repository ( annotations, hibernate etc.)
-    - Enabling security
-        - How to enable security
-        - How does security work
-        - Enable different types of security
-    - Writing unit and integration tests with the Spring Boot
-- Conclusion
+The `@PostMapping` defines that this is the POST method and that we want to create a new resource through it.
+
+The `@RequestBody` annotation defines that we are expecting the data inside the HTTP requests body. That date should be serializable to the `BookRequest` instance.
+
+If we want to call the enpoind through the cURL:
+
+```text
+curl --location --request POST 'http://localhost:8080/books'
+        --header 'Content-Type: application/json'
+        --data-raw '{
+                        "author":"Stephen King",
+                        "title": "The Institute",
+                        "publishedOn": "10/09/2019",
+                        "currentlyAvailableNumber": 1
+                    }'
+```
+
+We see that the request method is the POST method and the data is sent as the application/json.
+
+## Creating a PUT Endpoint
+The PUT method is used when we want to update the resource that is already in the database:
+```java
+@RestController
+@RequestMapping("/books")
+public class BooksRestController {
+    List<BookResponse> books = new ArrayList(List.of(sandman, lotr));
+
+    @PutMapping("/{id}")
+    BookResponse update(@PathVariable("id") long id,
+                        @RequestBody BookRequest request){
+        BookResponse book =
+                books.stream().filter(x -> x.getId()==id).findFirst().orElseThrow(() -> new RuntimeException());
+        books.remove(book);
+        book = BookResponse.builder()
+                .id(id)
+                .author(request.getAuthor())
+                .title(request.getTitle())
+                .publishedOn(request.getPublishedOn())
+                .currentlyAvailableNumber(request.getCurrentlyAvailableNumber())
+                .build();
+        books.add(book);
+        return book;
+    }
+}
+```
+In the `@PutMapping` annotation we define the path that continues on the one defined with the `@RequestMapping` at the top of the class. With this our path looks like this:
+`http://localhost:8080/books/{id}`.
+
+The `id` variable is called the path variable and can be passed into method using the `@PathVariable("id")` annotation on the method argument. We need to be careful that the value inside the `@PathVariable` matches the value inside the `@PutMapping`.
+
+The body of the method is defined with the `@RequestBody` annotation and is passed as the json object inside the HTTP request.
+
+Let us look how can we call this endpoint using the cURL commands:
+```text
+curl --location --request PUT 'http://localhost:8080/books/1' 
+                --header 'Content-Type: application/json' 
+                --data-raw '    {
+                                    "title": "The Sandman Vol. 1",
+                                    "author": "Neil Gaiman",
+                                    "publishedOn": "19/10/2010",
+                                    "currentlyAvailableNumber": 2
+                                }'
+```
+We can see that the `{id}` path variable that we defined in our controller is replaced with the real value. This value will be passed into the `id` argument from our method inside the controller.
+
+## Creating a DELETE Endpoint
+The DELETE method is used to delete the resource from the database:
+```java
+@RestController
+@RequestMapping("/books")
+public class BooksRestController {
+    List<BookResponse> books = new ArrayList(List.of(sandman, lotr));
+
+    @DeleteMapping("/{id}")
+    void delete(@PathVariable("id") long id){
+        BookResponse book = books.stream().filter(x -> x.getId()==id).findFirst().orElseThrow(() -> new RuntimeException());
+        books.remove(book);
+    }
+}
+```
+With the `@DeleteMapping("/{id}")` we define which resource we want to delete. We can se that the path is the same as in the [PUT endpoint](#creating-a-put-endpoint) but the HTTP method is different. The paths have to be unique for the same HTTP method. 
+
+Let us look how can we call this endpoint using the cURL command:
+```text
+curl --location --request DELETE 'http://localhost:8080/books/1'
+```
+The method that we call is the DELETE method and the `{id}` placeholder was replaced with the real value.

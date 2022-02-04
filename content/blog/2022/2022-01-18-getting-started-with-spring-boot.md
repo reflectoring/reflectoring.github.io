@@ -146,24 +146,23 @@ Let us look into the codebase:
 @RestController
 @RequestMapping("/books")
 public class BooksRestController {
+    BookResponse sandman = BookResponse.builder()
+            .title("The Sandman Vol. 1: Preludes & Nocturnes")
+            .author("Neil Gaiman")
+            .publishedOn("19/10/2010")
+            .currentlyAvailableNumber(4)
+            .build();
+    BookResponse lotr = BookResponse.builder()
+            .title("The Lord Of The Rings Illustrated Edition")
+            .author("J.R.R. Tolkien")
+            .publishedOn("16/11/2021")
+            .currentlyAvailableNumber(1)
+            .build();
+    List<BookResponse> books = List.of(sandman, lotr);
 
     @GetMapping
     List<BookResponse> fetchAllBooks(){
-        BookResponse sandman = BookResponse.builder()
-                .title("The Sandman Vol. 1: Preludes & Nocturnes")
-                .author("Neil Gaiman")
-                .publishedOn("19/10/2010")
-                .currentlyAvailableNumber(4)
-                .build();
-        BookResponse lotr = BookResponse.builder()
-                .title("The Lord Of The Rings Illustrated Edition")
-                .author("J.R.R. Tolkien")
-                .publishedOn("16/11/2021")
-                .currentlyAvailableNumber(1)
-                .build();
-        List<BookResponse> response = List.of(sandman, lotr);
-
-        return response;
+        return books;
     }
 }
 ```
@@ -175,30 +174,29 @@ The `@RequestMapping("/books")` annotation maps our bean to this path. If we sta
 
 We annotated the `fetchAllBooks()` method with the `@GetMapping` annotation to define that this is the GET method. Since we didn't define additional path on the `@GetMapping` annotation we are using the path from the `@RequestMapping` definitions.
 
-## Creating a Endpoint With the @Controller
+## Creating an Endpoint With the @Controller
 Instead with the `@RestController` we can define our controller bean with the `@Controller` annotation:
 ```java
 @Controller
 @RequestMapping("/controllerBooks")
 public class BooksController {
+    BookResponse sandman = BookResponse.builder()
+            .title("The Sandman Vol. 1: Preludes & Nocturnes")
+            .author("Neil Gaiman")
+            .publishedOn("19/10/2010")
+            .currentlyAvailableNumber(4)
+            .build();
+    BookResponse lotr = BookResponse.builder()
+            .title("The Lord Of The Rings Illustrated Edition")
+            .author("J.R.R. Tolkien")
+            .publishedOn("16/11/2021")
+            .currentlyAvailableNumber(1)
+            .build();
+    List<BookResponse> books = List.of(sandman, lotr);
 
     @GetMapping
     ResponseEntity<List<BookResponse>> fetchAllBooks(){
-        BookResponse sandman = BookResponse.builder()
-                .title("The Sandman Vol. 1: Preludes & Nocturnes")
-                .author("Neil Gaiman")
-                .publishedOn("19/10/2010")
-                .currentlyAvailableNumber(4)
-                .build();
-        BookResponse lotr = BookResponse.builder()
-                .title("The Lord Of The Rings Illustrated Edition")
-                .author("J.R.R. Tolkien")
-                .publishedOn("16/11/2021")
-                .currentlyAvailableNumber(1)
-                .build();
-        List<BookResponse> response = List.of(sandman, lotr);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(books);
     }
 }
 ```
@@ -206,7 +204,7 @@ When using the `@Controller` annotation we need to make sure that we wrap our re
 
 This approach gives us more freedom when returning objects. Let us imagine we are rewriting some legacy backend code to the Spring Boot project. One of requirements was that the current frontend applications work as they should. Previous code always returned the 200 code but the body would differ if some error occured. In those kind of scenarios we can use the `@Controller` annotation and control what is returned to the user.
 
-## Calling the Endpoint
+## Calling an Endpoint
 After we build our first enpoint we want to test it and see what do we get as the result. Since we don't have any frontend we can use command line tools or the [Postman](#https://www.postman.com/). 
 If we are using the command line tools like cURL we can call the endpoint as follows:
 
@@ -230,7 +228,27 @@ The result the we got was:
 ]
 ```
 ## Creating a POST Endpoint
+We saw how we can fetch data from the application. Now, let us take a look how we can create new data:
+```java
+@RestController
+@RequestMapping("/books")
+public class BooksRestController {
+    List<BookResponse> books = List.of(sandman, lotr);
 
+    @PostMapping
+    List<BookResponse> create(@RequestBody BookRequest request){
+        BookResponse book = BookResponse.builder()
+                .title(request.getTitle())
+                .author(request.getAuthor())
+                .publishedOn(request.getPublishedOn())
+                .currentlyAvailableNumber(request.getCurrentlyAvailableNumber())
+                .build();
+        books.add(book);
+        return books;
+    }
+}
+```
+We use the POST verb for the creation of the new resource. To accept the data in the HTTP request we need to annotate the method with the `@RequestBody` annotation. 
 After we built our first endpoint let us call this endpoint and look into the result.
 - Building spring MVC app
     - Building first controllers

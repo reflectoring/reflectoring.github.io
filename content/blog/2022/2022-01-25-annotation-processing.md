@@ -15,7 +15,7 @@ The `java.lang` package provides some core annotations and also gives us the cap
 
 In this article, we will discuss the topic of annotations and demonstrate the power of annotation processing with a real-world example.
 
-{{% github "https://github.com/thombergs/code-examples/tree/master/core-java/annotation-processing" %}}
+{{% github "https://github.com/thombergs/code-examples/tree/master/core-java/annotation-processing/introduction-to-annotations" %}}
 
 ## Annotation Basics
 
@@ -27,12 +27,12 @@ Let's look at the `@Override` annotation as an example:
 
 ```java
 public class ParentClass {
-    public String getName() {...}
+  public String getName() {...}
 }
 
 public class ChildClass extends ParentClass {
-    @Override
-    public String getname() {...}
+  @Override
+  public String getname() {...}
 }
 ```
 
@@ -52,25 +52,23 @@ Let's look an example where we might want to use `@SuppressWarnings`:
 ```java
 public class SuppressWarningsDemo {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
+    SuppressWarningsDemo swDemo = new SuppressWarningsDemo();
+    swDemo.testSuppressWarning();
+  }
 
-        SuppressWarningsDemo swDemo = new SuppressWarningsDemo();
-        swDemo.testSuppressWarning();
-    }
-
-    public void testSuppressWarning() {
-
-        Map testMap = new HashMap();
-        testMap.put(1, "Item_1");
-        testMap.put(2, "Item_2");
-        testMap.put(3, "Item_3");
-    }
+  public void testSuppressWarning() {
+    Map testMap = new HashMap();
+    testMap.put(1, "Item_1");
+    testMap.put(2, "Item_2");
+    testMap.put(3, "Item_3");
+  }
 }
 ```
 
 If we run this program from the command-line using the compiler switch `-Xlint:unchecked` to receive the full warning list, we get the following message:
 
-```shell
+```text
 javac -Xlint:unchecked ./com/reflectoring/SuppressWarningsDemo.java
 Warning:
 unchecked call to put(K,V) as a member of the raw type Map
@@ -93,7 +91,7 @@ If we had a large legacy code base, we wouldn't want to go in and make lots of c
 ```java
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class SuppressWarningsDemo {
-    ...
+  ...
 }
 ```
 
@@ -110,11 +108,11 @@ The following class declares a deprecated method:
 ```java
 public class DeprecatedDemo {
 
-    @Deprecated(since = "4.5", forRemoval = true)
-    public void testLegacyFunction() {
+  @Deprecated(since = "4.5", forRemoval = true)
+  public void testLegacyFunction() {
 
-        System.out.println("This is a legacy function");
-    }
+    System.out.println("This is a legacy function");
+  }
 }
 ```
 
@@ -124,8 +122,8 @@ Now, calling the legacy method as below will trigger a compile time warning indi
 
 ```java
 ./com/reflectoring/DeprecatedDemoTest.java:8: warning: [removal] testLegacyFunction() in DeprecatedDemo has been deprecated and marked for removal
-        demo.testLegacyFunction();
-            ^                     
+    demo.testLegacyFunction();
+      ^           
 1 warning
 ```
 
@@ -135,15 +133,15 @@ We already had a look at the `@Override` annotation above. We can use it to indi
 
 ```java
 public class Employee {
-    public void getEmployeeStatus(){
-        System.out.println("This is the Base Employee class");
-    }
+  public void getEmployeeStatus(){
+    System.out.println("This is the Base Employee class");
+  }
 }
 
 public class Manager extends Employee {
-    public void getemployeeStatus(){
-        System.out.println("This is the Manager class");
-    }
+  public void getemployeeStatus(){
+    System.out.println("This is the Manager class");
+  }
 }
 ```
 
@@ -151,10 +149,10 @@ We intended to override the `getEmployeeStatus()` method but instead we misspell
 
 If we add the annotation `@Override` to the `getemployeeStatus()` method, we get a compile time error, which causes a compile error and forces us to correct the typo right away:
 
-```shell
+```text
 ./com/reflectoring/Manager.java:5: error: method does not override or implement a method from a supertype
-    @Override
-    ^
+  @Override
+  ^
 1 error
 
 ```
@@ -170,7 +168,7 @@ Let us take the example of the code below:
 ```java
 @FunctionalInterface
 interface Print {
-    void printString(String testString);
+  void printString(String testString);
 }
 ```
 
@@ -178,7 +176,7 @@ If we add another method `printString2()` to the `Print` interface, the compiler
 
 Now, what if the `Print` interface was in a separate module, and there was no `@FunctionalInterface` annotation? The developers of that other module could easily add another function to the interface and break your code. Further, now we have to figure out which of the two is the right function in our case. By adding the `@FunctionalInterface` annotation we get an immediate warning in the IDE, such as this:
 
-```shell
+```text
 Multiple non-overriding abstract methods found in interface com.reflectoring.Print
 ````
 
@@ -207,53 +205,53 @@ import java.util.List;
 public class SafeVarargsTest {
 
    private void printString(String test1, String test2) {
-        System.out.println(test1);
-        System.out.println(test2);
+    System.out.println(test1);
+    System.out.println(test2);
+  }
+
+  private void printStringVarargs(String... tests) {
+    for (String test : tests) {
+      System.out.println(test);
     }
+  }
 
-    private void printStringVarargs(String... tests) {
-        for (String test : tests) {
-            System.out.println(test);
-        }
+  private void printStringSafeVarargs(List<String>... testStringLists) {
+    for (List<String> testStringList : testStringLists) {
+      for (String testString : testStringList) {
+        System.out.println(testString);
+      }
     }
+  }
 
-    private void printStringSafeVarargs(List<String>... testStringLists) {
-        for (List<String> testStringList : testStringLists) {
-            for (String testString : testStringList) {
-                System.out.println(testString);
-            }
-        }
-    }
+  public static void main(String[] args) {
+    SafeVarargsTest test = new SafeVarargsTest();
 
-    public static void main(String[] args) {
-        SafeVarargsTest test = new SafeVarargsTest();
+    test.printString("String1", "String2");
+    test.printString("*******");
 
-        test.printString("String1", "String2");
-        test.printString("*******");
+    test.printStringVarargs("String1", "String2");
+    test.printString("*******");
 
-        test.printStringVarargs("String1", "String2");
-        test.printString("*******");
+    List<String> testStringList1 = Arrays.asList("One", "Two");
+    List<String> testStringList2 = Arrays.asList("Three", "Four");
 
-        List<String> testStringList1 = Arrays.asList("One", "Two");
-        List<String> testStringList2 = Arrays.asList("Three", "Four");
-
-        test.printStringSafeVarargs(testStringList1, testStringList2);
-    }
+    test.printStringSafeVarargs(testStringList1, testStringList2);
+  }
 }
 
 ```
 
 In the above code, `printString()` and `printStringVarargs()` achieve the same result. Compiling the code, however, produces a warning for `printStringSafeVarargs()` since it used generics:
 
-```shell
+```text
 javac -Xlint:unchecked ./com/reflectoring/SafeVarargsTest.java
 
 ./com/reflectoring/SafeVarargsTest.java:28: warning: [unchecked] Possible heap pollution from parameterized vararg type List<String>
-    private void printStringSafeVarargs(List<String>... testStringLists) {
-                                                        ^
+  private void printStringSafeVarargs(List<String>... testStringLists) {
+                            ^
 ./com/reflectoring/SafeVarargsTest.java:52: warning: [unchecked] unchecked generic array creation for varargs parameter of type List<String>[]
-        test.printStringSafeVarargs(testStringList1, testStringList2);
-                                   ^
+    test.printStringSafeVarargs(testStringList1, testStringList2);
+                   ^
 2 warnings
 ```
 
@@ -266,33 +264,39 @@ private void printStringSafeVarargs(List<String>... testStringLists) {
 
 ## Custom Annotations
 
-These are annotations that are custom created to serve a particular purpose. 
+These are annotations that are custom created to serve a particular purpose. We can create them ourselves. We can use custom annotations to
 
-**Use Cases for custom annotations:**
+1. reduce repetition,
+2. automate the generation of boilerplate code,
+3. catch errors at compile time such as potential null pointer checks,
+4. customize runtime behavior based on the presence of a custom annotation.
 
-1. Reduce repetition.
-1. Automate the generation of boilerplate code.
-2. Provide the capability to trap errors at compile time such as potential null pointer checks.
-3. Customize runtime behavior based on the presence of custom annotations.
-
-An example of a Custom annotation would be the @Company annotation below attached to the Employee class. When creating multiple instances of the CustomAnnotatedEmployee class we can skip adding the Company information in the constructor since those attributes would be automatically included.
+An example of a custom annotation would be this `@Company` annotation:
 
 ```java
-@Company{    
-    name="ABC"
-    city="XYZ"
+@Company{  
+  name="ABC"
+  city="XYZ"
 }
-public class CustomAnnotatedEmployee { .. }
+public class CustomAnnotatedEmployee { 
+  ... 
+}
 ```
 
-To create a Custom annotation we need to declare it with the @interface keyword as below:
+When creating multiple instances of the `CustomAnnotatedEmployee` class, all instances would contain the same company `name` and `city`, so wouldn't need to add that information to the constructor anymore.
+
+To create a custom annotation we need to declare it with the `@interface` keyword:
 
 ```java
 public @interface Company{
 }
 ```
 
-To specify information about the scope of the annotation and the area it targets, such as compile time or runtime, we need to add meta-annotations to the custom annotation. For eg., to specify that the annotation applies to classes only, we need to add @Target(ElementType.TYPE), which specifies that this annotation only applies to classes, and @Retention(RetentionPolicy.RUNTIME), which specifies that this annotation only applies at runtime. We will discuss further details about meta-annotations once we get this basic example running. The basic annotation is:
+To specify information about the scope of the annotation and the area it targets, such as compile time or runtime, we need to add meta annotations to the custom annotation. 
+
+For example, to specify that the annotation applies to classes only, we need to add `@Target(ElementType.TYPE)`, which specifies that this annotation only applies to classes, and `@Retention(RetentionPolicy.RUNTIME)`, which specifies that this annotation must be available at runtime. We will discuss further details about meta annotations once we get this basic example running. 
+
+With the meta annotations, our annotation looks like this:
 
 ```java
 @Target(ElementType.TYPE)
@@ -301,7 +305,7 @@ public @interface Company{
 }
 ```
 
-Next, we need to add the fields to the Custom annotation. In this case, we need 'name' and 'city'. So we add it as below:
+Next, we need to add the fields to the custom annotation. In this case, we need `name` and `city`. So we add it as below:
 
 ```java
 @Target(ElementType.TYPE)
@@ -312,52 +316,53 @@ public @interface Company{
 }
 ```
 
-Putting it all together, we create a CustomAnnotatedEmployee class and apply the annotation to it as below:
+Putting it all together, we can create a `CustomAnnotatedEmployee` class and apply the annotation to it as below:
 
 ```java
 @Company
 public class CustomAnnotatedEmployee {
 
-    private int id;
-    private String name;
+  private int id;
+  private String name;
 
-    public CustomAnnotatedEmployee(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+  public CustomAnnotatedEmployee(int id, String name) {
+    this.id = id;
+    this.name = name;
+  }
 
-    public void getEmployeeDetails(){
-
-        System.out.println("Employee Id: " + id);
-        System.out.println("Employee Name: " + name);
-    }
+  public void getEmployeeDetails(){
+    System.out.println("Employee Id: " + id);
+    System.out.println("Employee Name: " + name);
+  }
 }
 ```
 
-Now we create a test class to test this out:
+Now we can create a test class to read the `@Company` annotation at runtime:
 
 ```java
 import java.lang.annotation.Annotation;
 
 public class TestCustomAnnotatedEmployee {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        CustomAnnotatedEmployee employee = new CustomAnnotatedEmployee(1, "John Doe");
-        employee.getEmployeeDetails();
+    CustomAnnotatedEmployee employee = new CustomAnnotatedEmployee(1, "John Doe");
+    employee.getEmployeeDetails();
 
-        Annotation companyAnnotation = employee.getClass().getAnnotation(Company.class);
-        Company company = (Company)companyAnnotation;
+    Annotation companyAnnotation = employee
+            .getClass()
+            .getAnnotation(Company.class);
+    Company company = (Company)companyAnnotation;
 
-        System.out.println("Company Name: " + company.name());
-        System.out.println("Company City: " + company.city());
-    }
+    System.out.println("Company Name: " + company.name());
+    System.out.println("Company City: " + company.city());
+  }
 }
 ```
 
 This would give the output below:
 
-```java
+```text
 Employee Id: 1
 Employee Name: John Doe
 Company Name: ABC
@@ -366,93 +371,84 @@ Company City: XYZ
 
 So by introspecting the annotation at runtime we can access some common information of all employees and avoid a lot of repetition if we had to construct a lot of objects.
 
-Now, we will get into the details of meta-annotations, which we used in the example above:
 
-## Meta -Annotations
+## Meta Annotations
 
-Meta-annotations are annotations applied to annotations provided by the java.lang package that provide information about the annotation to the compiler or the runtime environment.
+Meta annotations are annotations applied to other annotations that provide information about the annotation to the compiler or the runtime environment.
 
-**Use Cases for meta-annotations:**
-
-The compiler or the runtime environment needs the additional information below, about the annotation itself, in order to process it:
+Meta annotations can answer the following questions about an annotation:
 
 1. Can the annotation be inherited by child classes?
 2. Does the annotation need to show up in the documentation?
 3. Can the annotation be applied multiple times to the same element?
-4. What specific element does the annotation apply to, such as class, method, field, etc?
-5. Does the annotation have to be processed at compile time or runtime?
+4. What specific element does the annotation apply to, such as class, method, field, etc.?
+5. Is the annotation being processed at compile time or runtime?
 
 ### `@Inherited`
 
-Normally an annotation cannot be inherited but applying the @Inherited annotation to an annotation (meta annotation) allows it to be inherited. For eg:
+By default an annotation is not inherited from a parent class to a child class. Applying the `@Inherited` meta annotation to an annotation allows it to be inherited:
 
 ```java
 @Inherited
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Company{
-    String name() default "ABC";
-    String city() default "XYZ";
+  String name() default "ABC";
+  String city() default "XYZ";
 }
-```
 
-... since CustomAnnotatedEmployee below has the @Company annotation and CustomAnnotatedManager inherits from it, the CustomAnnotatedManager class does not need to include it. 
-
-```java
 @Company
 public class CustomAnnotatedEmployee {
 
-    private int id;
-    private String name;
+  private int id;
+  private String name;
 
-    public CustomAnnotatedEmployee(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+  public CustomAnnotatedEmployee(int id, String name) {
+    this.id = id;
+    this.name = name;
+  }
 
-    public void getEmployeeDetails(){
-
-        System.out.println("Employee Id: " + id);
-        System.out.println("Employee Name: " + name);
-    }
+  public void getEmployeeDetails(){
+    System.out.println("Employee Id: " + id);
+    System.out.println("Employee Name: " + name);
+  }
 }
-```
 
-Our CustomAnnotatedManager could be defined as follows:
-
-```java
 public class CustomAnnotatedManager extends CustomAnnotatedEmployee{
-
-    public CustomAnnotatedManager(int id, String name) {
-        super(id, name);
-    }
+  public CustomAnnotatedManager(int id, String name) {
+    super(id, name);
+  }
 }
 ```
 
-Now if we run the test for the Manager class as below, we still get access to the annotation information, though the Manager class does not have the annotation.
+Since `CustomAnnotatedEmployee` has the `@Company` annotation and `CustomAnnotatedManager` inherits from it, the `CustomAnnotatedManager` class does not need to include it.
+
+
+Now if we run the test for the Manager class, we still get access to the annotation information, even though the Manager class does not have the annotation:
 
 ```java
 public class TestCustomAnnotatedManager {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
+    CustomAnnotatedManager manager = new CustomAnnotatedManager(1, "John Doe");
+    manager.getEmployeeDetails();
 
-        CustomAnnotatedManager manager = new CustomAnnotatedManager(1, "John Doe");
-        manager.getEmployeeDetails();
+    Annotation companyAnnotation = manager
+            .getClass()
+            .getAnnotation(Company.class);
+    Company company = (Company)companyAnnotation;
 
-        Annotation companyAnnotation = manager.getClass().getAnnotation(Company.class);
-        Company company = (Company)companyAnnotation;
-
-        System.out.println("Company Name: " + company.name());
-        System.out.println("Company City: " + company.city());
-    }
+    System.out.println("Company Name: " + company.name());
+    System.out.println("Company City: " + company.city());
+  }
 }
 ```
 
 ### `@Documented`
 
-@Documented ensures that custom annotations show up in the JavaDocs.
+`@Documented` ensures that custom annotations show up in the JavaDocs.
 
-Normally when we run JavaDoc on the class CustomAnnotatedManager the annotation information would not show up in the documentation. But when we use the @Documented annotation as below:
+Normally, when we run JavaDoc on the class `CustomAnnotatedManager` the annotation information would not show up in the documentation. But when we use the `@Documented` annotation, it will:
 
 ```
 @Inherited
@@ -460,42 +456,22 @@ Normally when we run JavaDoc on the class CustomAnnotatedManager the annotation 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Company{
-    String name() default "ABC";
-    String city() default "XYZ";
+  String name() default "ABC";
+  String city() default "XYZ";
 }
-```
-
- ...the annotation information would show up in the output too, as below:
-
-```java
-Package com.reflectoring
-Class CustomAnnotatedEmployee
-
-java.lang.Object
-com.reflectoring.CustomAnnotatedEmployee
-
-@Company
-public class CustomAnnotatedEmployee
-extends java.lang.Object
-
-Constructor Summary
-Constructors
-
-Constructor	Description
-CustomAnnotatedEmployee​(int id, java.lang.String name)
 ```
 
 ### `@Repeatable`
 
-@Repeatable allows multiple repeating custom annotations on a method, class, or field. To use a Repeatable annotation, we need to wrap the annotation in a container class which refers to it as an array, as below:
+`@Repeatable` allows multiple repeating custom annotations on a method, class, or field. To use the `@Repeatable` annotation we need to wrap the annotation in a container class which refers to it as an array:
 
 ```java
 @Target(ElementType.TYPE)
 @Repeatable(RepeatableCompanies.class)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RepeatableCompany {
-    String name() default "Name_1";
-    String city() default "City_1";
+  String name() default "Name_1";
+  String city() default "City_1";
 }
 ```
 
@@ -503,7 +479,7 @@ public @interface RepeatableCompany {
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RepeatableCompanies {
-    RepeatableCompany[] value() default{};
+  RepeatableCompany[] value() default{};
 }
 ```
 
@@ -521,21 +497,21 @@ If we run a test on it as below:
 ```java
 public class TestRepeatedAnnotation {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        RepeatableCompany[] repeatableCompanies = RepeatedAnnotatedEmployee.class.getAnnotationsByType(RepeatableCompany.class);
-        for (RepeatableCompany repeatableCompany : repeatableCompanies) {
-
-            System.out.println("Name: " + repeatableCompany.name());
-            System.out.println("City: " + repeatableCompany.city());
-        }
+    RepeatableCompany[] repeatableCompanies = RepeatedAnnotatedEmployee.class
+            .getAnnotationsByType(RepeatableCompany.class);
+    for (RepeatableCompany repeatableCompany : repeatableCompanies) {
+      System.out.println("Name: " + repeatableCompany.name());
+      System.out.println("City: " + repeatableCompany.city());
     }
+  }
 }
 ```
 
-We get the following output which displays the value of multiple annotations. Both the default annotation values and the custom values we provided are printed out.
+We get the following output which displays the value of multiple `@RepeatableCompany` annotations:
 
-```
+```text
 Name: Name_1
 City: City_1
 Name: Name_2
@@ -544,44 +520,45 @@ City: City_2
 
 ### `@Target`
 
-@Target specifies at which element the annotation can be used, for eg in the above example the annotation Company was defined only for TYPE and so it could only be applied to a class.
+`@Target` specifies on which elements the annotation can be used, for example in the above example the annotation `@Company` was defined only for `TYPE` and so it could only be applied to a class.
+
+Let's see what happens if we apply the `@Company` annotation to a method:
 
 ```java
 @Company
 public class Employee {
 
-    @Company
-    public void getEmployeeStatus(){
-
-        System.out.println("This is the Base Employee class");
-    }
+  @Company
+  public void getEmployeeStatus(){
+    System.out.println("This is the Base Employee class");
+  }
 }
 ```
 
-If we apply @Company to the method 'getEmployeeStatus' as above, we get a compiler error stating: "'@Company' not applicable to method."
+If we applied the `@Company` annotation to the method `getEmployeeStatus()` as above, we get a compiler error stating: `'@Company' not applicable to method.`
 
-The various self-explanatory Target types are:
+The various self-explanatory target types are:
 
-​		ElementType.ANNOTATION_TYPE, 
-​		ElementType.CONSTRUCTOR
-​		ElementType.FIELD
-​		ElementType.LOCAL_VARIABLE
-​		ElementType.METHOD
-​		ElementType.PACKAGE
-​		ElementType.PARAMETER
-​		ElementType.TYPE 
+* `ElementType.ANNOTATION_TYPE`
+* `ElementType.CONSTRUCTOR`
+* `ElementType.FIELD`
+* `ElementType.LOCAL_VARIABLE`
+* `ElementType.METHOD`
+* `ElementType.PACKAGE`
+* `ElementType.PARAMETER`
+* `ElementType.TYPE`
 
 ### `@Retention`
 
-@Retention specifies when the annotation is discarded.
+`@Retention` specifies when the annotation is discarded.
 
-​	  SOURCE - The annotation is used at compile time and discarded at runtime.
+* `SOURCE` - The annotation is used at compile time and discarded at runtime.
 
-​	  CLASS - The annotation is stored in the class file at compile time and discarded at run time.
+* `CLASS` - The annotation is stored in the class file at compile time and discarded at run time.
 
-​	  RUNTIME - The annotation is retained at runtime.
+* `RUNTIME` - The annotation is retained at runtime.
 
-If we needed an annotation to only provide error checking at compile time like @Override we would use SOURCE. If we need an annotation to provide functionality at runtime such as @Test in Junit we would use RUNTIME. To see a real example, create the following annotations in 3 separate files:
+If we needed an annotation to only provide error checking at compile time like `@Override` does, we would use `SOURCE`. If we need an annotation to provide functionality at runtime such as `@Test` in Junit we would use `RUNTIME`. To see a real example, create the following annotations in 3 separate files:
 
 ```java
 @Target(ElementType.TYPE)
@@ -615,58 +592,61 @@ To verify that only the runtime annotation is available at runtime, run a test a
 ```java
 public class RetentionTest {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        SourceRetention[] sourceRetention = new EmployeeRetentionAnnotation().getClass().getAnnotationsByType(SourceRetention.class);
-        System.out.println("Source Retentions at runtime: " + sourceRetention.length);
+    SourceRetention[] sourceRetention = new EmployeeRetentionAnnotation()
+            .getClass()
+            .getAnnotationsByType(SourceRetention.class);
+    System.out.println("Source Retentions at runtime: " + sourceRetention.length);
 
-        RuntimeRetention[] runtimeRetention = new EmployeeRetentionAnnotation().getClass().getAnnotationsByType(RuntimeRetention.class);
-        System.out.println("Run-time Retentions at runtime: " + runtimeRetention.length);
+    RuntimeRetention[] runtimeRetention = new EmployeeRetentionAnnotation()
+            .getClass()
+            .getAnnotationsByType(RuntimeRetention.class);
+    System.out.println("Run-time Retentions at runtime: " + runtimeRetention.length);
 
-        ClassRetention[] classRetention = new EmployeeRetentionAnnotation().getClass().getAnnotationsByType(ClassRetention.class);
-        System.out.println("Class Retentions at runtime: " + classRetention.length);
-    }
+    ClassRetention[] classRetention = new EmployeeRetentionAnnotation()
+            .getClass()
+            .getAnnotationsByType(ClassRetention.class);
+    System.out.println("Class Retentions at runtime: " + classRetention.length);
+  }
 }
 ```
 
 The output would be as follows:
 
-```
+```text
 Source Retentions at runtime: 0
 Run-time Retentions at runtime: 1
 Class Retentions at runtime: 0
 ```
 
-So we verified that only the RUNTIME annotation gets processed at runtime.
+So we verified that only the `RUNTIME` annotation gets processed at runtime.
 
 ## Annotation Categories
 
-Annotation categories distinguish annotations based on the number of parameters that need to be passed in.
-
-**Use case for annotation categories:** By categorizing annotations as parameter-less, single value or multi-value, we are able to specify annotations in a more concise manner, and eliminate redundancy. 
+Annotation categories distinguish annotations based on the number of parameters that we pass into them. By categorizing annotations as parameter-less, single value or multi-value, we are able to reason about annotations in a more concise manner. 
 
 ### Marker Annotations 
 
-Marker annotations do not contain any members or data. If we specified no parameters for the Company annotation in the Employee class below, it would process the default values.
+Marker annotations do not contain any members or data. If we specified no parameters for the `@Company` annotation in the `Employee` class below, it would process the default values.
 
 ```java
 
 @Company
 public class CustomAnnotatedEmployee {
 
-    private int id;
-    private String name;
+  private int id;
+  private String name;
 
-    public CustomAnnotatedEmployee(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+  public CustomAnnotatedEmployee(int id, String name) {
+    this.id = id;
+    this.name = name;
+  }
 
-    public void getEmployeeDetails(){
-
-        System.out.println("Employee Id: " + id);
-        System.out.println("Employee Name: " + name);
-    }
+  public void getEmployeeDetails(){
+    System.out.println("Employee Id: " + id);
+    System.out.println("Employee Name: " + name);
+  }
 }
 ```
 
@@ -675,40 +655,42 @@ If we run the Test as below, it will print the default values:
 ```java
 public class TestCustomAnnotatedEmployee {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        CustomAnnotatedEmployee employee = new CustomAnnotatedEmployee(1, "John Doe");
-        employee.getEmployeeDetails();
+    CustomAnnotatedEmployee employee = new CustomAnnotatedEmployee(1, "John Doe");
+    employee.getEmployeeDetails();
 
-        Annotation companyAnnotation = employee.getClass().getAnnotation(Company.class);
-        Company company = (Company)companyAnnotation;
+    Annotation companyAnnotation = employee
+            .getClass()
+            .getAnnotation(Company.class);
+    Company company = (Company)companyAnnotation;
 
-        System.out.println("Company Name: " + company.name());
-        System.out.println("Company City: " + company.city());
-    }
+    System.out.println("Company Name: " + company.name());
+    System.out.println("Company City: " + company.city());
+  }
 }
 ```
 
 We get the default output:
 
-```
+```text
 Employee Id: 1
 Employee Name: John Doe
 Company Name: ABC
 Company City: XYZ
 ```
 
-### Single Value Annotations
+### Single-Value Annotations
 
-Single value annotations contain only one member and the parameter is the value of the member. The single member has to be named '**value**'. 
+Single-value annotations contain only one member and the parameter is the value of the member. The single member has to be named `value`. 
 
-Create a SingleValueAnnotationCompany annotation that uses only the value field for the name, as below:
+Let's create a `SingleValueAnnotationCompany` annotation that uses only the value field for the name, as below:
 
 ```java
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SingleValueAnnotationCompany {
-    String value() default "ABC";
+  String value() default "ABC";
 }
 
 ```
@@ -719,43 +701,43 @@ Create a class which uses the annotation as below.
 @SingleValueAnnotationCompany("XYZ")
 public class SingleValueAnnotatedEmployee {
 
-    private int id;
-    private String name;
+  private int id;
+  private String name;
 
-    public SingleValueAnnotatedEmployee(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+  public SingleValueAnnotatedEmployee(int id, String name) {
+    this.id = id;
+    this.name = name;
+  }
 
-    public void getEmployeeDetails(){
-
-        System.out.println("Employee Id: " + id);
-        System.out.println("Employee Name: " + name);
-    }
+  public void getEmployeeDetails(){
+    System.out.println("Employee Id: " + id);
+    System.out.println("Employee Name: " + name);
+  }
 }
 ```
 
 Run a test as below:
 
-```
+```java
 public class TestSingleValueAnnotatedEmployee {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
+    SingleValueAnnotatedEmployee employee = new SingleValueAnnotatedEmployee(1, "John Doe");
+    employee.getEmployeeDetails();
 
-        SingleValueAnnotatedEmployee employee = new SingleValueAnnotatedEmployee(1, "John Doe");
-        employee.getEmployeeDetails();
+    Annotation companyAnnotation = employee
+            .getClass()
+            .getAnnotation(SingleValueAnnotationCompany.class);
+    SingleValueAnnotationCompany company = (SingleValueAnnotationCompany)companyAnnotation;
 
-        Annotation companyAnnotation = employee.getClass().getAnnotation(SingleValueAnnotationCompany.class);
-        SingleValueAnnotationCompany company = (SingleValueAnnotationCompany)companyAnnotation;
-
-        System.out.println("Company Name: " + company.value());
-    }
+    System.out.println("Company Name: " + company.value());
+  }
 }
 ```
 
 The single value 'XYZ' overrides the default annotation value and the output is as below:
 
-```
+```text
 Employee Id: 1
 Employee Name: John Doe
 Company Name: XYZ
@@ -763,23 +745,23 @@ Company Name: XYZ
 
 ### Full Annotations
 
-They consist of multiple name value pairs. For eg. Company(name="ABC", city="XYZ"). Considering our original Company example:
+They consist of multiple name value pairs. For example `Company(name="ABC", city="XYZ")`. Considering our original Company example:
 
 ```java
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Company{
-    String name() default "ABC";
-    String city() default "XYZ";
+  String name() default "ABC";
+  String city() default "XYZ";
 }
 ```
 
-Create the MultiValueAnnotatedEmployee class as below. Specify the parameters and values as below. The default values will be over-written.
+Let's create the `MultiValueAnnotatedEmployee` class as below. Specify the parameters and values as below. The default values will be overwritten.
 
 ```java
 @Company(name = "AAA", city = "ZZZ")
 public class MultiValueAnnotatedEmployee {
-    
+  
 }
 ```
 
@@ -788,33 +770,33 @@ Run a test as below:
 ```java
 public class TestMultiValueAnnotatedEmployee {
 
-    public static void main(String[] args) {
+  public static void main(String[] args) {
 
-        MultiValueAnnotatedEmployee employee = new MultiValueAnnotatedEmployee();
+    MultiValueAnnotatedEmployee employee = new MultiValueAnnotatedEmployee();
 
-        Annotation companyAnnotation = employee.getClass().getAnnotation(Company.class);
-        Company company = (Company)companyAnnotation;
+    Annotation companyAnnotation = employee.getClass().getAnnotation(Company.class);
+    Company company = (Company)companyAnnotation;
 
-        System.out.println("Company Name: " + company.name());
-        System.out.println("Company City: " + company.city());
-    }
+    System.out.println("Company Name: " + company.name());
+    System.out.println("Company City: " + company.city());
+  }
 }
 ```
 
 The output is as below, and has overridden the default annotation values:
 
-```
+```text
 Company Name: AAA
 Company City: ZZZ
 ```
 
 
 
-## A real-world example
+## Building a Real-World Annotation Processor
 
-For our real-world example, we are going to do a simple simulation of the annotation @Test in JUnit. By marking our functions with the @Test annotation we can determine at runtime, the methods in a class that need to be run as tests. 
+For our real-world annotation processor example, we are going to do a simple simulation of the annotation `@Test` in JUnit. By marking our functions with the `@Test` annotation we can determine at runtime which of the methods in a test class need to be run as tests. 
 
-We first create the annotation as below:
+We first create the annotation as a marker annotation for methods:
 
 ```java
 @Retention(RetentionPolicy.RUNTIME)
@@ -823,26 +805,24 @@ public @interface Test {
 }
 ```
 
-Next, we create a class AnnotatedMethods, to which we will apply the @Test annotations to the method Test_1. This will enable the method to be executed at runtime. The method Test_2 does not have an annotation, and should not be executed at runtime.
+Next, we create a class `AnnotatedMethods`, to which we will apply the `@Test` annotations to the method `test1()`. This will enable the method to be executed at runtime. The method `test2()` does not have an annotation, and should not be executed at runtime.
 
 ```java
 public class AnnotatedMethods {
 
-    @Test
-    public void Test_1() {
+  @Test
+  public void test1() {
+    System.out.println("This is the first test");
+  }
 
-        System.out.println("This is the first test");
-    }
-
-    public void Test_2() {
-
-        System.out.println("This is the second test");
-    }
+  public void test2() {
+    System.out.println("This is the second test");
+  }
 }
 
 ```
 
-Now we create the test to run AnnotatedMethods as below. It gets a reference to the class, then loops through all the methods that have the annotation @Test, and invokes these methods at runtime. We want to verify the Test_1 will run since it is annotated with @Test, and Test_2 will not run since it is not annotated with @Test.
+Now we create the test to run the `AnnotatedMethods` class: 
 
 ```java
 import java.lang.annotation.Annotation;
@@ -850,45 +830,53 @@ import java.lang.reflect.Method;
 
 public class TestAnnotatedMethods {
 
-    public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {
 
-        Class<AnnotatedMethods> annotatedMethodsClass = AnnotatedMethods.class;
+    Class<AnnotatedMethods> annotatedMethodsClass = AnnotatedMethods.class;
 
-        for (Method method : annotatedMethodsClass.getDeclaredMethods()) {
+    for (Method method : annotatedMethodsClass.getDeclaredMethods()) {
 
-            Annotation annotation = method.getAnnotation(Test.class);
-            Test test = (Test) annotation;
+      Annotation annotation = method.getAnnotation(Test.class);
+      Test test = (Test) annotation;
 
-            // If the annotation is not null
-            if (test != null) {
+      // If the annotation is not null
+      if (test != null) {
 
-                try {
-                    method.invoke(annotatedMethodsClass.getDeclaredConstructor().newInstance());
-                } catch (Throwable ex) {
-                    System.out.println(ex.getCause());
-                }
-
-            }
+        try {
+          method.invoke(annotatedMethodsClass
+                  .getDeclaredConstructor()
+                  .newInstance());
+        } catch (Throwable ex) {
+          System.out.println(ex.getCause());
         }
+
+      }
     }
+  }
 }
 ```
 
+By calling `getDeclaredMethods()`, we're getting the methods of our `AnnotatedMethods` class. Then, we're iterating through the methods and checking each method if it is annotated with the`@Test` annotation. Finally, we perform a runtime invocation of the methods that were identified as being annotated with `@Test`.
+
+We want to verify the `test1()` method will run since it is annotated with `@Test`, and `test2()` will not run since it is not annotated with `@Test`.
+
 The output is:
 
-```
+```text
 This is the first test
 ```
 
-So we verified that Test_2, which did not have the @Test annotation, did not have its output printed. 
-
-**Code walk-through:**
-
-- By calling `getDeclaredMethods()`, we're getting the methods of our `AnnotatedMethods` class. Then, we're iterating through the methods and checking each method if it is annotated with the`@Test` annotation. Finally, we perform a runtime invocation of the methods that were identified as being annotated with @Test.
+So we verified that `test2()`, which did not have the` @Test` annotation, did not have its output printed. 
 
 ## Conclusion
 
-We did an overview of annotations, followed by a simple real-world example of annotation processing. We can further use the power of annotation processing to perform more complex automated tasks such as creating Builder source files for a set of POJOs at compile time. A Builder is a design pattern in Java that is used to provide a better alternative to constructors when there is a large number of parameters involved or there is a need for multiple constructors with optional parameters.  If we had a few dozen POJOs, the code generation capabilities of the annotation processor would save us a lot of time by creating the corresponding Builder files at compile time, on the fly. By fully leveraging the power of annotation processing we will be able to skip a lot of repetition and save a lot of time.
+We did an overview of annotations, followed by a simple real-world example of annotation processing. 
+
+We can further use the power of annotation processing to perform more complex automated tasks such as creating builder source files for a set of POJOs at compile time. A builder is a design pattern in Java that is used to provide a better alternative to constructors when there is a large number of parameters involved or there is a need for multiple constructors with optional parameters.  If we had a few dozen POJOs, the code generation capabilities of the annotation processor would save us a lot of time by creating the corresponding builder files at compile time. 
+
+By fully leveraging the power of annotation processing we will be able to skip a lot of repetition and save a lot of time.
+
+You can play around with the code examples from this articles [on GitHub](https://github.com/thombergs/code-examples/tree/master/core-java/annotation-processing/introduction-to-annotations).
 
 
 

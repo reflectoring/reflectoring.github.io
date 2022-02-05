@@ -253,6 +253,14 @@ heidi:
   avatar: "/assets/img/authors/heidi.png"
   bio: "Heidi is a Principal Developer Advocate. She is working in the intersection of risk, usability, and happy deployments. Her passions include documentation, clear concepts, and skirts with pockets."
 
+syedaf:
+  name: "Arshad Syed"
+  email: "syedaf786@gmail.com"
+  avatar: "/assets/img/authors/syedaf.png"
+  github: "syedaf"
+  linkedin: "https://www.linkedin.com/in/arshad-syed-798623184/"
+  bio: "As a software developer I am always interested in learning new technologies. I am currently working on improving my full stack skills, and also on teaching technology."
+
 saikat:
   name: "Saikat Sengupta"
   avatar: "/assets/img/authors/saikat.jpeg"
@@ -261,3 +269,4 @@ saikat:
   bio: "Software engineer, coffee lover, continuous learner, opensource contributor"
   twitter: "s4ik4t"
   linkedin: "saikatsengupta"
+

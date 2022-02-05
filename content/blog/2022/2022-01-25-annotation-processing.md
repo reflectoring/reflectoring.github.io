@@ -639,7 +639,7 @@ public @interface CSV {
 
 The client class could use the annotation as below:
 
-```
+```java
 @CSV
 public class XYZClient {
 

@@ -1,10 +1,10 @@
 ---
 title: "An Introduction to Annotations and Annotation Processing in Java"
 categories: ["Java"]
-date: 2022-01-27 00:00:00 +1100 
-modified: 2022-01-27 00:00:00 +1100
+date: 2022-02-05 00:00:00 +1100 
+modified: 2022-02-05 00:00:00 +1100
 authors: ["syedaf"]
-description: "An Introduction to Annotations and Annotation Processing"
+description: "Annotations provide information to a program at compile time or at runtime based on which the program can take further action. Let's take a look at how to work with them."
 image: images/stock/0116-post-its-1200x628-branded.jpg
 url: java-annotation-processing
 ---
@@ -48,7 +48,7 @@ Below are some of the most common annotations available to us. These are standar
 
 We can use the `@SuppressWarnings` annotation to indicate that warnings on code compilation should be ignored. We may want to suppress warnings that clutter up the build output. `@SuppressWarnings("unchecked")`, for example, suppresses warnings associated with raw types.
 
-Let's look an example where we might want to use `@SuppressWarnings`:
+Let's look at an example where we might want to use `@SuppressWarnings`:
 ```java
 public class SuppressWarningsDemo {
 
@@ -74,7 +74,7 @@ Warning:
 unchecked call to put(K,V) as a member of the raw type Map
 ```
 
-The above code-block is an example of legacy Java code (prior to Java 5), where we could have collections in which we could accidentally store mixed types of objects. To introduce compile time error checking generics were introduced. So to get this legacy code to compile without error we would change:
+The above code-block is an example of legacy Java code (before Java 5), where we could have collections in which we could accidentally store mixed types of objects. To introduce compile time error checking generics were introduced. So to get this legacy code to compile without error we would change:
 
 ```java
 Map testMap = new HashMap();
@@ -101,7 +101,7 @@ public class SuppressWarningsDemo {
 
 We can use the `@Deprecated` annotation to mark that a method or type has been replaced with newer functionality. 
 
-IDEs make use of annotation processing to throw a warning at compile time, usually indicating the deprecated method with a strike-through to tell the developer that they shouldn't use this method or type any more. 
+IDEs make use of annotation processing to throw a warning at compile time, usually indicating the deprecated method with a strike-through to tell the developer that they shouldn't use this method or type anymore. 
 
 The following class declares a deprecated method:
 
@@ -145,7 +145,7 @@ public class Manager extends Employee {
 }
 ```
 
-We intended to override the `getEmployeeStatus()` method but instead we misspelled the method name. This can lead to serious bugs. The program above would compile and run without issue without catching that bug.
+We intended to override the `getEmployeeStatus()` method but we misspelled the method name. This can lead to serious bugs. The program above would compile and run without issue without catching that bug.
 
 If we add the annotation `@Override` to the `getemployeeStatus()` method, we get a compile time error, which causes a compile error and forces us to correct the typo right away:
 
@@ -161,7 +161,7 @@ If we add the annotation `@Override` to the `getemployeeStatus()` method, we get
 
 The `@FunctionalInterface` annotation is used to indicate that an interface cannot have more than one abstract method. The compiler throws an error in case there is more than one abstract method. Functional interfaces were introduced in Java 8, to implement Lambda expressions and to ensure that they didn't make use of more than one method. 
 
-Even without the `@FunctionalInterface` annotation the compiler will throw an error if you include more than one abstract method in the interface. So why do we need `@FunctionalInterface` if it is not mandatory? 
+Even without the `@FunctionalInterface` annotation, the compiler will throw an error if you include more than one abstract method in the interface. So why do we need `@FunctionalInterface` if it is not mandatory? 
 
 Let us take the example of the code below:
 
@@ -184,7 +184,7 @@ So it is good practice to always include the `@FunctionalInterface` if the inter
 
 ### `@SafeVarargs`
 
-The varargs functionality allows the creation of methods with variable arguments. Prior to Java 5, the only option to create  methods with optional parameters was to create multiple methods, each with a different number of parameters. Varargs allows us to create a single method to handle optional parameters with syntax as below:
+The varargs functionality allows the creation of methods with variable arguments. Before Java 5, the only option to create  methods with optional parameters was to create multiple methods, each with a different number of parameters. Varargs allows us to create a single method to handle optional parameters with syntax as below:
 
 ```java
 // we can do this:
@@ -264,7 +264,7 @@ private void printStringSafeVarargs(List<String>... testStringLists) {
 
 ## Custom Annotations
 
-These are annotations that are custom created to serve a particular purpose. We can create them ourselves. We can use custom annotations to
+These are annotations that are custom-created to serve a particular purpose. We can create them ourselves. We can use custom annotations to
 
 1. reduce repetition,
 2. automate the generation of boilerplate code,
@@ -386,7 +386,7 @@ Meta annotations can answer the following questions about an annotation:
 
 ### `@Inherited`
 
-By default an annotation is not inherited from a parent class to a child class. Applying the `@Inherited` meta annotation to an annotation allows it to be inherited:
+By default, an annotation is not inherited from a parent class to a child class. Applying the `@Inherited` meta annotation to an annotation allows it to be inherited:
 
 ```java
 @Inherited
@@ -558,7 +558,7 @@ The various self-explanatory target types are:
 
 * `RUNTIME` - The annotation is retained at runtime.
 
-If we needed an annotation to only provide error checking at compile time like `@Override` does, we would use `SOURCE`. If we need an annotation to provide functionality at runtime such as `@Test` in Junit we would use `RUNTIME`. To see a real example, create the following annotations in 3 separate files:
+If we needed an annotation to only provide error checking at compile time as `@Override` does, we would use `SOURCE`. If we need an annotation to provide functionality at runtime such as `@Test` in Junit we would use `RUNTIME`. To see a real example, create the following annotations in 3 separate files:
 
 ```java
 @Target(ElementType.TYPE)
@@ -602,7 +602,7 @@ public class RetentionTest {
     RuntimeRetention[] runtimeRetention = new EmployeeRetentionAnnotation()
             .getClass()
             .getAnnotationsByType(RuntimeRetention.class);
-    System.out.println("Run-time Retentions at runtime: " + runtimeRetention.length);
+    System.out.println("Runtime Retentions at runtime: " + runtimeRetention.length);
 
     ClassRetention[] classRetention = new EmployeeRetentionAnnotation()
             .getClass()
@@ -616,7 +616,7 @@ The output would be as follows:
 
 ```text
 Source Retentions at runtime: 0
-Run-time Retentions at runtime: 1
+Runtime Retentions at runtime: 1
 Class Retentions at runtime: 0
 ```
 
@@ -624,11 +624,13 @@ So we verified that only the `RUNTIME` annotation gets processed at runtime.
 
 ## Annotation Categories
 
-Annotation categories distinguish annotations based on the number of parameters that we pass into them. By categorizing annotations as parameter-less, single value or multi-value, we are able to reason about annotations in a more concise manner. 
+Annotation categories distinguish annotations based on the number of parameters that we pass into them. By categorizing annotations as parameter-less, single value, or multi-value, we can more easily think and talk about annotations. 
 
 ### Marker Annotations 
 
-Marker annotations do not contain any members or data. The `isAnnotationPresent()` method is used at run-time to determine the presence or absence of the annotation, based on which further decisions can be made. For example, if our company had several clients with different data transfer mechanisms, we could annotate the class with an annotation indicating the method of data transfer as below:
+Marker annotations do not contain any members or data. We can use the `isAnnotationPresent()` method at runtime to determine the presence or absence of a marker annotation and make decisions based on the presence of the annotation. 
+
+For example, if our company had several clients with different data transfer mechanisms, we could annotate the class with an annotation indicating the method of data transfer as below:
 
 ```java
 @Target(ElementType.TYPE)
@@ -642,11 +644,11 @@ The client class could use the annotation as below:
 ```java
 @CSV
 public class XYZClient {
-
+    ...
 }
 ```
 
-If we run the Test as below, we can take a decision on whether to write out the information to CSV or an Excel file, based on the presence of the annotation:
+We can process the annotation as follows: 
 
 ```java
 public class TestMarkerAnnotation {
@@ -665,7 +667,7 @@ public class TestMarkerAnnotation {
 }
 ```
 
-We get the output:
+Based on whether the `@CSV` annotation exists or not, we can decide whether to write out the information to CSV or an Excel file. The above program would produce this output:
 
 ```text
 Write client data to CSV.
@@ -686,7 +688,7 @@ public @interface SingleValueAnnotationCompany {
 
 ```
 
-Create a class which uses the annotation as below.
+Create a class that uses the annotation as below:
 
 ```java
 @SingleValueAnnotationCompany("XYZ")
@@ -867,7 +869,7 @@ We can further use the power of annotation processing to perform more complex au
 
 By fully leveraging the power of annotation processing we will be able to skip a lot of repetition and save a lot of time.
 
-You can play around with the code examples from this articles [on GitHub](https://github.com/thombergs/code-examples/tree/master/core-java/annotation-processing/introduction-to-annotations).
+You can play around with the code examples from this article [on GitHub](https://github.com/thombergs/code-examples/tree/master/core-java/annotation-processing/introduction-to-annotations).
 
 
 

@@ -646,7 +646,7 @@ public class XYZClient {
 }
 ```
 
-If we run the Test as below, we can take a decision on whether to write out the information to CSV or an Excel file, based on the presence of the attribute :
+If we run the Test as below, we can take a decision on whether to write out the information to CSV or an Excel file, based on the presence of the annotation:
 
 ```java
 public class TestMarkerAnnotation {

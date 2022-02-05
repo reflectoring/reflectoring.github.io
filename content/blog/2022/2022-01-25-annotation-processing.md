@@ -628,56 +628,47 @@ Annotation categories distinguish annotations based on the number of parameters 
 
 ### Marker Annotations 
 
-Marker annotations do not contain any members or data. If we specified no parameters for the `@Company` annotation in the `Employee` class below, it would process the default values.
+Marker annotations do not contain any members or data. The `isAnnotationPresent()` method is used at run-time to determine the presence or absence of the annotation, based on which further decisions can be made. For example, if our company had several clients with different data transfer mechanisms, we could annotate the class with an annotation indicating the method of data transfer as below:
 
 ```java
-
-@Company
-public class CustomAnnotatedEmployee {
-
-  private int id;
-  private String name;
-
-  public CustomAnnotatedEmployee(int id, String name) {
-    this.id = id;
-    this.name = name;
-  }
-
-  public void getEmployeeDetails(){
-    System.out.println("Employee Id: " + id);
-    System.out.println("Employee Name: " + name);
-  }
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface CSV {
 }
 ```
 
-If we run the Test as below, it will print the default values:
+The client class could use the annotation as below:
+
+```
+@CSV
+public class XYZClient {
+
+}
+```
+
+If we run the Test as below, we can take a decision on whether to write out the information to CSV or an Excel file, based on the presence of the attribute :
 
 ```java
-public class TestCustomAnnotatedEmployee {
+public class TestMarkerAnnotation {
 
   public static void main(String[] args) {
 
-    CustomAnnotatedEmployee employee = new CustomAnnotatedEmployee(1, "John Doe");
-    employee.getEmployeeDetails();
+  XYZClient client = new XYZClient();
+  Class clientClass = client.getClass();
 
-    Annotation companyAnnotation = employee
-            .getClass()
-            .getAnnotation(Company.class);
-    Company company = (Company)companyAnnotation;
-
-    System.out.println("Company Name: " + company.name());
-    System.out.println("Company City: " + company.city());
+    if (clientClass.isAnnotationPresent(CSV.class)){
+        System.out.println("Write client data to CSV.");
+    } else {
+        System.out.println("Write client data to Excel file.");
+    }
   }
 }
 ```
 
-We get the default output:
+We get the output:
 
 ```text
-Employee Id: 1
-Employee Name: John Doe
-Company Name: ABC
-Company City: XYZ
+Write client data to CSV.
 ```
 
 ### Single-Value Annotations

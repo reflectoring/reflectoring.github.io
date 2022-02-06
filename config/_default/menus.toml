@@ -15,7 +15,7 @@ weight = 1
     [[main]]
     parent = "Books"
     name = "Stratospheric"
-    url = "https://stratospheric.dev"
+    url = "https://stratospheric.dev?utm_source=reflectoring&utm_content=sidebar"
     weight = 3
 
 [[main]]
@@ -168,7 +168,7 @@ weight = 2
     [[footer]]
     parent = "Products"
     name = "Stratospheric"
-    url = "https://stratospheric.dev"
+    url = "https://stratospheric.dev?utm_source=reflectoring&utm_content=sidebar"
     weight = 3
 
 [[footer]]

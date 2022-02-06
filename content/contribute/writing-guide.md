@@ -3,7 +3,7 @@ title: "Writing Guide"
 description: "Guidelines for writing articles on reflectoring."
 layout: "static"
 draft: false
-image: images/stock/"images/stock/0016-pen-1200x628-branded.jpg"-1200x628-branded.jpg
+image: images/stock/0016-pen-1200x628-branded.jpg
 toc: true
 ---
 

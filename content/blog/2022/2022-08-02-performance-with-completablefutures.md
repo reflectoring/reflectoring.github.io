@@ -1,7 +1,8 @@
 ---
 title: "How to use CompletableFuture for better performance during API calls"
 categories: ["Java"]
-date: 2022-02-08T11:00:00 authors: [Bledi]
+date: 2022-02-08T11:00:00 
+authors: [Bledi]
 excerpt: "In this article we will see ho to increase the performance of our application using the class
 CompletableFuture for remote API calls."
 url: api-calls-performance-with-completable-future

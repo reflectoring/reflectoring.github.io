@@ -3,10 +3,10 @@ title: "Getting Started With AWS SQS and Spring Cloud"
 categories: ["Spring Boot", "AWS"]
 date: 2021-05-10T06:00:00
 authors: [pratikdas]
-excerpt: "Amazon Simple Queue Service (SQS) is one of the important services in AWS Cloud. Spring Cloud provides convenient methods to make it easy to integrate applications with the SQS service. In this article, we will look at using Spring Cloud for working with SQS with the help of some basic concepts and code examples"
+description: "Amazon Simple Queue Service (SQS) is one of the important services in AWS Cloud. Spring Cloud provides convenient methods to make it easy to integrate applications with the SQS service. In this article, we will look at using Spring Cloud for working with SQS with the help of some basic concepts and code examples"
 image: images/stock/0035-switchboard-1200x628-branded.jpg
 url: spring-cloud-aws-sqs
-widgets: ["gyhdoca-ad", "stratospheric-ad"]
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 Spring Cloud is a suite of projects containing many of the services required to make an application cloud-native by conforming to the [12-Factor](/spring-boot-12-factor-app) principles. 
 
@@ -14,13 +14,14 @@ Spring Cloud is a suite of projects containing many of the services required to 
 
 In this tutorial, we will look at using Spring Cloud AWS for interacting with [Simple Queue Service (SQS)](https://aws.amazon.com/sqs/) with the help of some basic concepts of queueing and messaging along with code examples.
 
+
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with SQS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}
+
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/springcloudsqs" %}}
-
-## Check out the Book!
-
-<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" alt="Stratospheric - From Zero to Production with Spring Boot and AWS" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
-
-If you're interested in learning about building applications with Spring Boot and AWS from top to bottom, make sure to check out ["Stratospheric - From Zero to Production with Spring Boot and AWS"](https://stratospheric.dev)!
 
 ## What is SQS?
 
@@ -417,8 +418,8 @@ I hope this will help you to get started with building applications using AWS SQ
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springcloudsqs).
 
-## Check out the Book!
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with SQS.
 
-<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" alt="Stratospheric - From Zero to Production with Spring Boot and AWS" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
-
-If you're interested in learning about building applications with Spring Boot and AWS from top to bottom, make sure to check out ["Stratospheric - From Zero to Production with Spring Boot and AWS"](https://stratospheric.dev)!
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}

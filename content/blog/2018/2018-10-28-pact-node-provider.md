@@ -3,7 +3,7 @@ authors: [tom]
 title: "Implementing a Consumer-Driven Contract for a Node Express Server with Pact"
 categories: [programming]
 date: 2018-10-28
-excerpt: "A tutorial that shows how to implement a REST provider with a Node Express Server
+description: "A tutorial that shows how to implement a REST provider with a Node Express Server
           using the Pact framework."
 image:  images/stock/0026-signature-1200x628-branded.jpg
 url: pact-node-provider

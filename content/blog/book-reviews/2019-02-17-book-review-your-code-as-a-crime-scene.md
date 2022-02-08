@@ -3,7 +3,7 @@ authors: [tom]
 title: "Book Review: Your Code as a Crime Scene"
 categories: ["Book Notes"]
 date: 2019-02-17
-excerpt: "A review of the Book 'Your Code as a Crime Scene' by Adam Tornhill."
+description: "A review of the Book 'Your Code as a Crime Scene' by Adam Tornhill."
 image: images/stock/0014-handcuffs-1200x628-branded.jpg
 url: /book-review-your-code-as-a-crime-scene
 ---

@@ -3,7 +3,7 @@ authors: [tom]
 title: Locking transitive Dependencies with NPM 
 categories: ["Node.js"]
 date: 2017-07-24
-excerpt: "A tutorial on how to lock the version of your NPM dependencies to create a reproducible build."
+description: "A tutorial on how to lock the version of your NPM dependencies to create a reproducible build."
 image: images/stock/0044-lock-1200x628-branded.jpg
 url: locking-dependencies-with-npm
 ---

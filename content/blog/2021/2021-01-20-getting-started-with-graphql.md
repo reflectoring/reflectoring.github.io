@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2021-01-20T06:00:00
 modified: 2021-01-20T06:00:00
 authors: [pratikdas]
-excerpt: "We will introduce GraphQL and explain it alongside of an example implementation in Java and Spring Boot"
+description: "We will introduce GraphQL and explain it alongside of an example implementation in Java and Spring Boot"
 image: images/stock/0001-network-1200x628-branded.jpg
 url: getting-started-with-graphql
 ---

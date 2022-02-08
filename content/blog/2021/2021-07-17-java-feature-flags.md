@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2021-07-17T00:00:00
 modified: 2021-07-17T00:00:00
 authors: [tom]
-excerpt: "With feature flags, we can reduce the risk of rolling out software changes to a minimum. Let's compare two popular tools to implement feature flags in Java."
+description: "With feature flags, we can reduce the risk of rolling out software changes to a minimum. Let's compare two popular tools to implement feature flags in Java."
 image: images/stock/0104-on-off-1200x628-branded.jpg
 url: java-feature-flags
 ---

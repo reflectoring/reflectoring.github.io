@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2021-03-01T05:00:00
 modified: 2021-03-01T05:00:00
 authors: [pratikdas]
-excerpt: "This post looks at diagnosing memory problems in a Java Application by capturing a heap dump and then analyzing it with memory analyzer tools. "
+description: "This post looks at diagnosing memory problems in a Java Application by capturing a heap dump and then analyzing it with memory analyzer tools. "
 image: images/stock/0019-magnifying-glass-1200x628-branded.jpg
 url: create-analyze-heapdump
 ---

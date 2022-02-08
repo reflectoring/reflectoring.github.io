@@ -67,10 +67,10 @@ button_link = "/"
 
 # cookies
 [cookies]
-enable = false
+enable = true
 expire_days = 2
-content = "This site uses cookies. By continuing to use this website, you agree to their use."
-button = "I Accept"
+content = "This site uses cookies to track analytics. By continuing to use this website, you agree to their use."
+button = "Accept"
 
 ######################## sidebar widgets #########################
 [widgets]
@@ -79,8 +79,8 @@ static = ["skyscraper-ad"]
 dynamic = ["simplify-form", "stratospheric-ad", "gyhdoca-ad"]
 
 [ads]
-skyscraper_image = "images/launchdarkly/2021_StateofFM_Ad_320x1200.png"
-skyscraper_href = "https://launchdarkly.com/state-of-feature-management?utm_source=reflectoring&utm_medium=display&utm_campaign=22q3&utm_content=state_of_feature_management"
+skyscraper_image = "images/launchdarkly/2021_stressfreerelease_Ad_320x1200.png"
+skyscraper_href = "https://learn.launchdarkly.com/application-modernization-guide/?utm_source=reflectoring&utm_medium=display&utm_campaign=apmn&utm_content=app_modernization"
 
 [wol]
 items = [

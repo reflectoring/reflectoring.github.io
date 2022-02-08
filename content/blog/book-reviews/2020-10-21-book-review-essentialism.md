@@ -3,7 +3,7 @@ authors: [tom]
 title: "Book Notes: Essentialism"
 categories: ["Book Notes"]
 date: 2020-10-21T05:00:00
-excerpt: "My notes on 'Essentialism' by Greg McKeown - a book about focusing on the essentials in your life instead of letting the world distract you"
+description: "My notes on 'Essentialism' by Greg McKeown - a book about focusing on the essentials in your life instead of letting the world distract you"
 image: images/covers/essentialism-teaser.jpg
 url: book-review-essentialism
 ---

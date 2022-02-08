@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2020-08-11T06:00:00
 modified: 2020-08-11T06:00:00
 authors: [yavuztas]
-excerpt: "Spring provides different callbacks and interfaces to hook into the lifecycle of Spring-managed beans. This article describes the lifecycle phases and how to hook into them."
+description: "Spring provides different callbacks and interfaces to hook into the lifecycle of Spring-managed beans. This article describes the lifecycle phases and how to hook into them."
 image: images/stock/0017-coffee-beans-1200x628-branded.jpg
 url: spring-bean-lifecycle
 ---

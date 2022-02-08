@@ -51,6 +51,8 @@ link = "plugins/font-awesome/fontawesome.min.css"
 link = "plugins/font-awesome/brands.css"
 [[params.plugins.css]]
 link = "plugins/font-awesome/solid.css"
+[[params.plugins.css]]
+link = "plugins/popup/corner-popup.css"
 
 # JS Plugins
 [[params.plugins.js]]
@@ -63,3 +65,7 @@ link = "plugins/search/fuse.min.js"
 link = "plugins/search/mark.js"
 [[params.plugins.js]]
 link = "plugins/search/search.js"
+[[params.plugins.js]]
+link = "plugins/popup/corner-popup.min.js"
+[[params.plugins.js]]
+link = "plugins/popup/popups.js"

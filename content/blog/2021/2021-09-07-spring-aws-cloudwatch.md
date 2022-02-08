@@ -4,10 +4,10 @@ categories: ["Spring Boot", "AWS"]
 date: 2021-09-07T06:00:00
 modified: 2021-09-07T06:00:00
 authors: [pratikdas]
-excerpt: "Amazon CloudWatch is a monitoring and observability service in the AWS Cloud. In this article, we will generate different types of application metrics in a Spring Boot web application and send those metrics to Amazon CloudWatch. Amazon CloudWatch will store the metrics data, and help us to derive insights about our application by visualizing the metric data in graphs."
+description: "Amazon CloudWatch is a monitoring and observability service in the AWS Cloud. In this article, we will generate different types of application metrics in a Spring Boot web application and send those metrics to Amazon CloudWatch. Amazon CloudWatch will store the metrics data, and help us to derive insights about our application by visualizing the metric data in graphs."
 image: images/stock/0032-dashboard-1200x628-branded.jpg
 url: spring-aws-cloudwatch
-widgets: ["gyhdoca-ad", "stratospheric-ad"]
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 
 Metrics provide a quantifiable measure of specific attributes of an application. A collection of different metrics give intelligent insights into the health and performance of an application. 
@@ -18,13 +18,13 @@ In this article, we will generate different types of application metrics in a Sp
 
 **Amazon CloudWatch will store the metrics data and help us to derive insights about our application by visualizing the metric data in graphs**.
 
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with Amazon CloudWatch.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}
+
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/springcloudwatch" %}}
-
-## Check out the Book!
-
-<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" alt="Stratospheric - From Zero to Production with Spring Boot and AWS" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
-
-If you're interested in learning about building applications with Spring Boot and AWS from top to bottom - including deployment and observability - make sure to check out the book ["Stratospheric - From Zero to Production with Spring Boot and AWS"](https://stratospheric.dev)!
 
 ## What is Amazon CloudWatch?
 
@@ -590,8 +590,8 @@ Here is a list of important points from the article for quick reference:
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/springcloudwatch).
 
-## Check out the Book!
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with Amazon CloudWatch.
 
-<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" alt="Stratospheric - From Zero to Production with Spring Boot and AWS" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
-
-If you're interested in learning about building applications with Spring Boot and AWS from top to bottom - including deployment and observability - make sure to check out the book ["Stratospheric - From Zero to Production with Spring Boot and AWS"](https://stratospheric.dev)!
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}

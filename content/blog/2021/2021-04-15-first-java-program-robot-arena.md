@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2021-04-15T00:00:00
 modified: 2021-04-15T00:00:00
 authors: [tom]
-excerpt: "Get started with Java and build your first program. We'll start simple and level up until we have built a robot arena!"
+description: "Get started with Java and build your first program. We'll start simple and level up until we have built a robot arena!"
 image: images/special/robot-arena.jpg
 url: first-java-program-robot-arena
 ---

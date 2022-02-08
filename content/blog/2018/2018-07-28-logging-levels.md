@@ -3,7 +3,7 @@ authors: [tom]
 title: "Tip: Use Logging Levels Consistently"
 categories: ["Software Craft"]
 date: 2018-07-28
-excerpt: "A guide to using which logging level in which logging situation."
+description: "A guide to using which logging level in which logging situation."
 image: images/stock/0033-colored-chalk-1200x628-branded.jpg
 url: logging-levels
 ---

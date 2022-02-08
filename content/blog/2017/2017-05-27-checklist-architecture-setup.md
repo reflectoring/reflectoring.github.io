@@ -3,7 +3,7 @@ authors: [tom]
 title: 'A Checklist for setting up a Java-based Software Architecture'
 categories: ["Software Craft"]
 date: 2017-05-27
-excerpt: "An extensive list of things to think through when starting a new Java-based software project."
+description: "An extensive list of things to think through when starting a new Java-based software project."
 image: images/stock/0045-checklist-1200x628-branded.jpg
 url: checklist-architecture-setup
 ---

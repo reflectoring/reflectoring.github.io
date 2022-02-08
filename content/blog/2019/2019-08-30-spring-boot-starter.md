@@ -3,7 +3,7 @@ authors: [tom]
 title: Quick Guide to Building a Spring Boot Starter
 categories: ["Spring Boot"]
 date: 2019-08-30
-excerpt: "Everything you need to know to build a Spring Boot Starter bringing a cross-cutting concern to any Spring Boot application."
+description: "Everything you need to know to build a Spring Boot Starter bringing a cross-cutting concern to any Spring Boot application."
 image:  images/stock/0039-start-1200x628-branded.jpg
 url: spring-boot-starter
 ---

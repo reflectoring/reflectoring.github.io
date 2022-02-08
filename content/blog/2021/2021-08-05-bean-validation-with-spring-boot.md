@@ -4,7 +4,7 @@ title: "Validation with Spring Boot - the Complete Guide"
 categories: ["Spring Boot"]
 date: 2021-08-05T00:00:00
 modified: 2021-08-05T00:00:00
-excerpt: "A tutorial consolidating the most important features you'll need to integrate Bean Validation into your Spring Boot application. "
+description: "A tutorial consolidating the most important features you'll need to integrate Bean Validation into your Spring Boot application. "
 image: images/stock/0051-stop-1200x628-branded.jpg
 url: bean-validation-with-spring-boot
 ---

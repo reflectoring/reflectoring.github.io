@@ -2,7 +2,7 @@
 authors: [tom]
 title: "REST with Hypermedia - Hot or Not?"
 categories: ["Software Craft"]
-excerpt: "A discussion of what Hypermedia with REST means and a guide to decide whether hypermedia is a match for your use case."
+description: "A discussion of what Hypermedia with REST means and a guide to decide whether hypermedia is a match for your use case."
 image:  images/stock/0036-notebooks-1200x628-branded.jpg
 url: rest-hypermedia
 ---

@@ -2,9 +2,9 @@
 title: "Comparison of Java HTTP Clients"
 categories: ["Java"]
 date: 2021-11-09T06:00:00
-modified: 2021-11-09T06:00:00
+modified: 2022-01-19T06:00:00
 authors: [pratikdas]
-excerpt: "This post provides an overview of some of the major libraries that are used as HTTP clients by Java applications for making HTTP calls."
+description: "This post provides an overview of some of the major libraries that are used as HTTP clients by Java applications for making HTTP calls."
 image: images/stock/0046-rack-1200x628-branded.jpg
 url: comparison-of-java-http-clients
 ---
@@ -505,7 +505,7 @@ We have used the `exchange()` method to call the API here. The `exchange()` meth
 
 Please refer to an [earlier post](https://reflectoring.io/spring-webclient/) for a more elaborate explanation of using Spring WebClient.
 
-## Which Client to Use?
+## Apache HtpClient vs. OkHttpClient vs. Spring WebClient - Which Client to Use?
 
 In this post, we looked at the commonly used HTTP clients in Java applications. We also explored the usage of each of those clients with the help of examples of making HTTP `GET` and `POST` requests. Here is a summary of the important points:
 

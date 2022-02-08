@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2020-06-04T05:00:00
 modified: 2020-06-14T05:00:00
 authors: [artur]
-excerpt: "We need a Cache to reduce expensive read operations. Distributed applications need a distributed cache. This article shows how to set up a distributed cache cluster with Hazelcast and Spring."
+description: "We need a Cache to reduce expensive read operations. Distributed applications need a distributed cache. This article shows how to set up a distributed cache cluster with Hazelcast and Spring."
 image: images/stock/0070-hazelcast-1200x628-branded.jpg
 url: spring-boot-hazelcast
 ---

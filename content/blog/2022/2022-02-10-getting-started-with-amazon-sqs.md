@@ -2,9 +2,9 @@
 authors: [pratikdas]
 title: "Getting Started with AWS SQS"
 categories: ["aws"]
-date: 2022-02-10T00:00:00
+date: 2022-02-10 00:00:00 +1100
 excerpt: "Amazon Simple Queue Service (SQS) is a fully managed message queuing service. We can send, store, and receive messages at any volume, without losing messages or requiring other systems to be available. In this article, we will introduce Amazon SQS, understand its core concepts and work through some examples."
-image: images/stock/0115-2021-1200x628-branded.jpg
+image: images/stock/0117-queue-1200x628-branded.jpg
 url: getting-started-with-aws-sqs
 ---
 

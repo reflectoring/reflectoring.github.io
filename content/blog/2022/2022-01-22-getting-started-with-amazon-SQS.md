@@ -19,7 +19,7 @@ This article gives only a first impression of what you can do with AWS SQS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and others, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 
-Also check out the sample chapters from the book about [deploying a Spring Boot application with CDK](/deploy-spring-boot-app-with-aws-cdk) and [how to design a CDK project](/designing-a-aws-cdk-project).
+Also, check out the sample chapters from the book about [deploying a Spring Boot application with CDK](/deploy-spring-boot-app-with-aws-cdk) and [how to design a CDK project](/designing-a-aws-cdk-project).
 {{% /stratospheric %}}
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/sqs" %}}
@@ -71,7 +71,7 @@ After creating the queue, we need to configure the queue with specific attribute
 
 **Dead-letter Queue Redrive**: We use this configuration to define the time after which unconsumed messages are moved out of an existing dead-letter queue back to their source queues.
 
-**Visibility Timeout**: The visibility timeout is a period of time during which a message received from a queue by one consumer is not visible to the other message consumers. Amazon SQS prevents other consumers from receiving and processing the message during the visibility timeout period. 
+**Visibility Timeout**: The visibility timeout is a period during which a message received from a queue by one consumer is not visible to the other message consumers. Amazon SQS prevents other consumers from receiving and processing the message during the visibility timeout period. 
 
 **Message Retention Period**: The amount of time for which a message remains in the queue. The messages in the queue should be received and processed before this time is crossed. They are automatically deleted from the queue once the message retention period has expired. 
 
@@ -151,9 +151,9 @@ public class ResourceHelper {
 }
 
 ```
-We have defined an SQS queue with default configuration and set the name of the queue as `myqueue`. The queue name is unique for our AWS account and region. 
+We have defined an SQS queue with a default configuration and set the name of the queue as `myqueue`. The queue name is unique for our AWS account and region. 
 
-Running this program will create a standard type SQS queue of name `myqueue` with default configuration. We can see the queue we just created in the aws console:
+Running this program will create a standard type SQS queue of name `myqueue` with a default configuration. We can see the queue we just created in the aws console:
 {{% image alt="SQS queue" src="images/posts/aws-sqs/sqs-queue.png" %}}
 
 
@@ -290,7 +290,11 @@ public class ResourceHelper {
   }
 }
 ```
-As we can see, we have defined a queue with the name `myfifoqueue.fifo`. The name of FIFO queues must end with `.fifo`. We have set the property: `contentBasedDeduplication` to `false` which means that we need to explicitly send `messageDeduplicationId` with the message so that SQS can identify them as duplicates. 
+As we can see, we have defined a queue with the name `myfifoqueue.fifo`. The name of FIFO queues must end with `.fifo`. 
+
+We have set the property: `contentBasedDeduplication` of our FIFO queue to `false` which means that SQS will not detect messages sent to the queue as duplicate by checking their content. 
+
+Instead, SQS will look for a property named `messageDeduplicationId` in the message which we need to explicitly send when sending messages to a FIFO queue. SQS will treat messages with the same value of the property: `messageDeduplicationId` as duplicate. 
 
 Further, the `deduplicationScope` property of the queue is set to `MESSAGE_GROUP` which indicates the message group as the scope for identifying duplicate messages. The `deduplicationScope` property can alternately be set to `QUEUE`.
 
@@ -377,9 +381,13 @@ message id and sequence no.: 9529ddac-8946-4fee-a2dc-7be428666b63 | 188673992229
 ```
 When SQS accepts the message, it returns a sequence number along with a message identifier. The Sequence number as we can see is a large, non-consecutive number that Amazon SQS assigns to each message.
 
-We are sending five messages with two of them being duplicates. Since we had set the `contentBasedDeduplication` property to `true`, SQS determines duplicate messages by the `messageDeduplicationId`. The messages: "My fifo message1" and "My fifo message2" are each sent twice with the same `messageDeduplicationId` while "My fifo message3" is sent once. 
+We are sending five messages to the queue: `myfifoqueue.fifo` with two of them being duplicates. Since we had set the `contentBasedDeduplication` property to `false` when creating this queue, SQS determines duplicate messages by checking the value of the `messageDeduplicationId` property in the message. 
 
-Although we have sent five messages, we will only receive three unique messages in the same order when we consume the messages from the queue. We will look at how to consume messages from SQS in the next section.
+The messages: `My fifo message1` and `My fifo message2` are each sent twice with the same `messageDeduplicationId` while `My fifo message3` is sent only once. 
+
+Although we have sent five messages to the queue, we will only receive three unique messages in the same order when we consume the messages from the queue. 
+
+With the messages residing in the queue, we will look at how to consume messages from an SQS queue in the next section.
 
 ## Consuming Messages from a Queue
 
@@ -415,16 +423,20 @@ public class MessageReceiver {
   }
 }
 ```
-Here we have enabled long polling for receiving the SQS messages by setting the wait time as `20` seconds on the `ReceiveMessageRequest` which we have supplied to the `receiveMessage()` method of the `SqsClient` class.
+Here we have enabled long polling for receiving the SQS messages by setting the wait time as `20` seconds on the `ReceiveMessageRequest` object which we have supplied as the parameter to the `receiveMessage()` method of the `SqsClient` class.
 
-The `receiveMessage()` returns the messages from the queue as a list of `Message` objects.
+The `receiveMessage()` returns the messages from the queue as a list of `Message` objects. We need to call this method in a loop to always get new messages as they come in. There are libraries available for sending and consuming messages from an SQS queue. 
+
+Spring Cloud AWS Messaging is one such library that simplifies the publication and consumption of messages over Amazon SQS.
+
+Please check our earlier article on [Spring Cloud SQS](https://reflectoring.io/spring-cloud-aws-sqs/) which illustrates integrating with Amazon SQS along with sending and receiving messages in an application.
 
 
 ## Deleting Messages from a Queue with `ReceiptHandle`
 
-We get a `receiptHandle` when we receive a message from SQS. 
+We get an identifier called `receiptHandle` when we receive a message from an SQS queue. 
 
-We use this `receiptHandle` to delete a message from a queue as shown in this example, otherwise, the messages left in a queue are deleted automatically after the expiry of the retention period configured for the queue:
+We use this `receiptHandle` identifier to delete a message from a queue as shown in this example :
 
 ```java
 public class MessageReceiver {
@@ -437,13 +449,21 @@ public class MessageReceiver {
         + AppConfig.ACCOUNT_NO
         + "/myfifoqueue.fifo";
 
-  ...
+    // long polling and wait for waitTimeSeconds before timing out
+    ReceiveMessageRequest receiveMessageRequest 
+                   = ReceiveMessageRequest
+                        .builder()
+                        .queueUrl(queueURL)
+                        .waitTimeSeconds(20)
+                        .messageAttributeNames("trace-id") // returns the trace Id
+                        .build();
 
     while (true) {
 
       Thread.sleep(20000l);
-      List<Message> messages = sqsClient.receiveMessage(receiveMessageRequest)
-          .messages();
+      List<Message> messages = sqsClient
+                                  .receiveMessage(receiveMessageRequest)
+                                  .messages();
 
       messages.stream().forEach(msg -> {
 
@@ -451,15 +471,17 @@ public class MessageReceiver {
         String receiptHandle = msg.receiptHandle();
 
         // Create the delete request with the receipt handle
-        DeleteMessageRequest deleteMessageRequest = DeleteMessageRequest
-            .builder()
-            .queueUrl(queueURL)
-            .receiptHandle(receiptHandle)
-            .build();
+        DeleteMessageRequest deleteMessageRequest 
+                                        = DeleteMessageRequest
+                                            .builder()
+                                            .queueUrl(queueURL)
+                                            .receiptHandle(receiptHandle)
+                                            .build();
 
         // Delete the message
         DeleteMessageResponse deleteMessageResponse
-            = sqsClient.deleteMessage(deleteMessageRequest);
+                                = sqsClient
+                                  .deleteMessage(deleteMessageRequest);
 
       });
 
@@ -473,11 +495,15 @@ public class MessageReceiver {
 
 }
 ```
-In this `receiveFifoMessage()`, we get the `receiptHandle` of the message received from SQS and use this to delete the queue.
+Here in the `receiveFifoMessage()` method, we are using long polling for receiving messages from the queue. We have also added an interval of `20` seconds (using `Thread.sleep()`) to delay the subsequent reading of the messages from the queue. After receiving the message from the SQS queue, we are getting the `receiptHandle` identifier of the message and using it to delete this message from the queue.
 
-The `receiptHandle` is associated with a specific instance of receiving a message. It is different each time we receive the message in case we receive the message more than once. So we must use the most recently received `receiptHandle` for the message for sending deletion requests.
+The `receiptHandle` identifier is associated with a specific instance of receiving a message. It is different each time we receive the message in case we receive the message more than once. So we must use the most recently received `receiptHandle` for the message for sending deletion requests.
 
 For standard queues, it is possible to receive a message even after we have deleted it because of the distributed nature of the underlying storage. We should ensure that our application is idempotent to handle this scenario.
+
+If we do not delete a message after consuming it, the message will remain in the queue and will be received again after the visibility timeout has expired. 
+
+Otherwise, the messages left in a queue are deleted automatically after the expiry of the retention period configured for the queue.
 
 ## Handling Messaging Failures with an SQS Dead Letter Queue (DLQ)
 Sometimes, messages cannot be processed because of errors within the producer or consumer application. We can isolate the messages which failed processing by moving them to a separate queue called Dead Letter Queue (DLQ). 
@@ -530,7 +556,8 @@ public class ResourceHelper {
     logger.info("Queue URL " + createQueueResponse.queueUrl());
   }
 
-  private static String getQueueArn(
+  private static String getQueueArn(){
+      ...
       ...
   }
 }
@@ -553,7 +580,7 @@ We can attach SQS standard and FIFO queues to an AWS Lambda function as an event
 
 The Lambda function will poll the queue and invoke the Lambda function by passing an event parameter that contains the messages in the queue. 
 
-Lambda functions supports many language runtimes like Node.js, Python, C#, and Java. 
+Lambda functions support many language runtimes like Node.js, Python, C#, and Java. 
 
 Let us attach the following lambda function to our standard queue created earlier to process SQS messages: 
 
@@ -569,7 +596,7 @@ exports.handler = async function(event, context) {
 ```
 This function is written in Javascript and uses the Node.js runtime during execution in AWS Lambda. A handler function named `handler()` is exported that takes an `event` object and a `context` object as parameters and prints the message received from the SQS queue in the console. The handler function in the Lambda is the method that processes events. Lambda runs the handler method when the function is invoked.
 
-We will also need to create an execution role with lambda with the following IAM policy attached:
+We will also need to create an execution role for the lambda function with the following IAM policy attached:
 
 ```json
 {
@@ -694,7 +721,7 @@ public class ResourceHelper {
   public static void createSNSTopicWithSubscription() {
     SnsClient snsClient = getSNSClient();
 
-    // Prepare the request for creating SNS topic 
+    // Prepare the request for creating an SNS topic 
     CreateTopicRequest createTopicRequest = CreateTopicRequest
         .builder()
         .name("mytopic")
@@ -841,6 +868,6 @@ This article gives only a first impression of what you can do with AWS SQS.
 
 If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and others, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
 
-Also check out the sample chapters from the book about [deploying a Spring Boot application with CDK](/deploy-spring-boot-app-with-aws-cdk) and [how to design a CDK project](/designing-a-aws-cdk-project).
+Also, check out the sample chapters from the book about [deploying a Spring Boot application with CDK](/deploy-spring-boot-app-with-aws-cdk) and [how to design a CDK project](/designing-a-aws-cdk-project).
 {{% /stratospheric %}}
 

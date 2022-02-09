@@ -2,7 +2,7 @@
 authors: [pratikdas]
 title: "Getting Started with AWS SQS"
 categories: ["aws"]
-date: 2022-01-20T00:00:00
+date: 2022-02-10T00:00:00
 excerpt: "Amazon Simple Queue Service (SQS) is a fully managed message queuing service. We can send, store, and receive messages at any volume, without losing messages or requiring other systems to be available. In this article, we will introduce Amazon SQS, understand its core concepts and work through some examples."
 image: images/stock/0115-2021-1200x628-branded.jpg
 url: getting-started-with-aws-sqs
@@ -383,9 +383,9 @@ message id and sequence no.: 9529ddac-8946-4fee-a2dc-7be428666b63 | 188673992229
 ```
 When SQS accepts the message, it returns a sequence number along with a message identifier. The Sequence number as we can see is a large, non-consecutive number that Amazon SQS assigns to each message.
 
-We are sending five messages to the queue: `myfifoqueue.fifo` with two of them being duplicates. Since we had set the `contentBasedDeduplication` property to `false` when creating this queue, SQS determines duplicate messages by checking the value of the `messageDeduplicationId` property in the message. 
+We are sending five messages to the queue `myfifoqueue.fifo` with two of them being duplicates. Since we had set the `contentBasedDeduplication` property to `false` when creating this queue, SQS determines duplicate messages by checking the value of the `messageDeduplicationId` property in the message. 
 
-The messages: `My fifo message1` and `My fifo message2` are each sent twice with the same `messageDeduplicationId` while `My fifo message3` is sent only once. 
+The messages `My fifo message1` and `My fifo message2` are each sent twice with the same `messageDeduplicationId` while `My fifo message3` is sent only once. 
 
 Although we have sent five messages to the queue, we will only receive three unique messages in the same order when we consume the messages from the queue. 
 
@@ -452,20 +452,19 @@ public class MessageReceiver {
         + "/myfifoqueue.fifo";
 
     // long polling and wait for waitTimeSeconds before timing out
-    ReceiveMessageRequest receiveMessageRequest 
-                   = ReceiveMessageRequest
-                        .builder()
-                        .queueUrl(queueURL)
-                        .waitTimeSeconds(20)
-                        .messageAttributeNames("trace-id") // returns the trace Id
-                        .build();
+    ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest
+        .builder()
+        .queueUrl(queueURL)
+        .waitTimeSeconds(20)
+        .messageAttributeNames("trace-id") // returns the trace Id
+        .build();
 
     while (true) {
 
       Thread.sleep(20000l);
       List<Message> messages = sqsClient
-                                  .receiveMessage(receiveMessageRequest)
-                                  .messages();
+          .receiveMessage(receiveMessageRequest)
+          .messages();
 
       messages.stream().forEach(msg -> {
 
@@ -473,17 +472,17 @@ public class MessageReceiver {
         String receiptHandle = msg.receiptHandle();
 
         // Create the delete request with the receipt handle
-        DeleteMessageRequest deleteMessageRequest 
-                                        = DeleteMessageRequest
-                                            .builder()
-                                            .queueUrl(queueURL)
-                                            .receiptHandle(receiptHandle)
-                                            .build();
+        DeleteMessageRequest deleteMessageRequest
+            = DeleteMessageRequest
+            .builder()
+            .queueUrl(queueURL)
+            .receiptHandle(receiptHandle)
+            .build();
 
         // Delete the message
         DeleteMessageResponse deleteMessageResponse
-                                = sqsClient
-                                  .deleteMessage(deleteMessageRequest);
+            = sqsClient
+            .deleteMessage(deleteMessageRequest);
 
       });
 
@@ -492,12 +491,12 @@ public class MessageReceiver {
   }
 
   private static SqsClient getSQSClient() {
-    ...
+  ...
   }
 
 }
 ```
-Here in the `receiveFifoMessage()` method, we are using long polling for receiving messages from the queue. We have also added an interval of `20` seconds (using `Thread.sleep()`) to delay the subsequent reading of the messages from the queue. After receiving the message from the SQS queue, we are getting the `receiptHandle` identifier of the message and using it to delete this message from the queue.
+Here in the `receiveFifoMessage()` method, we are using long polling to receive messages from the queue. We have also added an interval of `20` seconds (using `Thread.sleep()`) to delay the subsequent reading of the messages from the queue. After receiving the message from the SQS queue, we are getting the `receiptHandle` identifier of the message and using it to delete this message from the queue.
 
 The `receiptHandle` identifier is associated with a specific instance of receiving a message. It is different each time we receive the message in case we receive the message more than once. So we must use the most recently received `receiptHandle` for the message for sending deletion requests.
 
@@ -519,8 +518,8 @@ Amazon SQS does not create the dead-letter queue automatically. We must first cr
 
 ```java
 public class ResourceHelper {
-  private static Logger logger = 
-        Logger.getLogger(ResourceHelper.class.getName());
+  private static Logger logger =
+      Logger.getLogger(ResourceHelper.class.getName());
 
   public static void main(String[] args) {
     createStandardQueue();
@@ -531,9 +530,9 @@ public class ResourceHelper {
 
     String dlqName = "mydlq";
     CreateQueueRequest createQueueRequest = CreateQueueRequest
-                                                .builder()
-                                                .queueName(dlqName)
-                                                .build();
+        .builder()
+        .queueName(dlqName)
+        .build();
 
 
     // Create dead letter queue
@@ -561,9 +560,9 @@ public class ResourceHelper {
     logger.info("Queue URL " + createQueueResponse.queueUrl());
   }
 
-  private static String getQueueArn(){
-      ...
-      ...
+  private static String getQueueArn() {
+    ...
+    ...
   }
 }
 ```
@@ -601,7 +600,7 @@ exports.handler = async function(event, context) {
 ```
 This function is written in Javascript and uses the Node.js runtime during execution in AWS Lambda. A handler function named `handler()` is exported that takes an `event` object and a `context` object as parameters and prints the message received from the SQS queue in the console. The handler function in the Lambda is the method that processes events. Lambda runs the handler method when the function is invoked.
 
-We will also need to create an execution role for the lambda function with the following IAM policy attached:
+We will also need to create an execution role for the Lambda function with the following IAM policy attached:
 
 ```json
 {

@@ -40,52 +40,274 @@ Let us understand these services in the next sections. In each section is we wil
 
 ## Kinesis Data Streams
 
-Kinesis Data Streams helps us to set up streams and write producer and consumer applications.
+Kinesis Data Streams is used to send data from data producers as soon as it is produced (in real-time) and then continuously processing that data. The processing can include transformation of the data before emitting to another data store or running real-time metrics and analytics.
 
-### Key Concepts
+When using Kinesis Data Streams, we first set up a data stream and then write producer applications which write data to the data stream and consumer applications that read data from the data stream:
+
+// TODO diagram
+
+As we can see in this diagram, the data stream is composed of multiple shards. The data is sent to a shard. Shards have an identifier called partition key which we use to identify the shard where we want to send our data. The data stored in the shard is called a record.
+
+Each shard contains a sequence of data records. Each data record has a sequence number that is assigned by Kinesis Data Streams.
+
+
+### Creating a Kinesis Data Stream
+Let us first create our data stream where we can send our data. We can create a data stream either using the AWS Kinesis console or using the AWS SDK.
+
+```java
+public class DataStreamResourceHelper {
+
+	public static void main(String[] args) {
+		createDataStream();
+	}
+	
+
+	public static void createDataStream() {
+		 KinesisClient kinesisClient = getKinesisClient();
+		 
+		 CreateStreamRequest createStreamRequest 
+		 = CreateStreamRequest
+		 .builder()
+		 .streamName(Constants.MY_DATA_STREAM)
+		 .streamModeDetails(
+		 	StreamModeDetails
+		 	.builder()
+		 	.streamMode(StreamMode.ON_DEMAND)
+		 	.build())
+		 .build();
+
+		 CreateStreamResponse createStreamResponse 
+		   = kinesisClient.createStream(createStreamRequest);
+		 
+		 DescribeStreamSummaryRequest describeStreamSummaryRequest 
+						 = DescribeStreamSummaryRequest
+						 .builder()
+						 .streamName(Constants.MY_DATA_STREAM )
+						 .build();
+
+		 DescribeStreamSummaryResponse describeStreamSummaryResponse 
+		    =  kinesisClient.describeStreamSummary(describeStreamSummaryRequest );
+	
+		 
+		 long startTime = System.currentTimeMillis();
+		 long endTime = startTime + ( 10 * 60 * 1000 );
+		 while ( System.currentTimeMillis() < endTime ) {
+			  try {
+			    Thread.sleep(20 * 1000);
+			  } 
+			  catch ( Exception e ) {}
+			  
+			  try {
+					 StreamDescriptionSummary streamDescSumm = describeStreamSummaryResponse.streamDescriptionSummary();
+			  
+					 if(streamDescSumm.streamStatus().equals(StreamStatus.ACTIVE)) break;
+					  try {
+					      Thread.sleep( 1000 );
+					  }catch ( Exception e ) {}
+			  }catch ( ResourceNotFoundException e ) {}
+			  
+			  
+		 }
+		 
+	}
+	
+	private static KinesisClient getKinesisClient() {
+		AwsCredentialsProvider credentialsProvider = 
+		        ProfileCredentialsProvider.create(Constants.AWS_PROFILE_NAME);
+		
+		KinesisClient kinesisClient = KinesisClient
+				.builder()
+				.credentialsProvider(credentialsProvider)
+				.region(Region.US_EAST_1).build();
+		return kinesisClient;
+	}
+
+}
+
+```
 
 A Kinesis data stream is a set of shards. Each shard has a sequence of data records. Each data record has a sequence number that is assigned by Kinesis Data Streams.
 
-Stream: A stream is where we write our data also called data ingestion.
+### Data Ingestion - Writing data to Kinesis Data Streams
 
-Shard: Each stream is divided into multiple shards. Shard is the data container.
+We can add data to a Kinesis data stream in different ways:
+1. **AWS SDK**: with PutRecord and PutRecords operations
+2. **Kinesis Producer Library (KPL)**:KPL is a library written in C++ for adding data into an Kinesis data stream. It runs as a child process to the main user process.
+3. **Amazon Kinesis Agent**
 
-Partition Key: Identifier of the shard where we want to send our data.
+Let us use the AWS Java SDK to add records to the Kinesis data stream created in the previous section. We need to first configure the kinesis library as a Maven dependency in our `pom.xml` as shown below:
 
-Record: The unit of data. Multiple records form the shard.
+```xml
+   <dependencies>
+  		<dependency>
+		    <groupId>software.amazon.awssdk</groupId>
+		    <artifactId>kinesis</artifactId>
+		</dependency>
+   </dependencies>
+   <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>software.amazon.awssdk</groupId>
+        <artifactId>bom</artifactId>
+        <version>2.17.116</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+   </dependencyManagement>
 
-### Creating a Kinesis Data Stream
+```
 
+Here is the code for adding a single event to the Kinesis data stream:
 
-### Data Ingestion - Writing data to Kinesis Data Streams with KPL
+```java
+public class EventSender {
 
-We can add data to a Kinesis data stream through PutRecord and PutRecords operations, Amazon Kinesis Producer Library (KPL), or Amazon Kinesis Agent.
+    private static final Logger logger = Logger
+        .getLogger(EventSender.class.getName());
 
-Amazon Kinesis Producer Library (KPL) is an easy-to-use and highly configurable library that helps you put data into an Amazon Kinesis data stream.It simplifies producer application development, allowing developers to achieve high write throughput to a Kinesis data stream.
+	public static void main(String[] args) {
+		sendEvent();
+	}
+	
+	public static void sendEvent() {
+        KinesisClient kinesisClient = getKinesisClient();
+        
+		String partitionKey = String.format("partitionKey-%d", 1);
+		String sequenceNumberForOrdering = "1";
+		SdkBytes data 
+		= SdkBytes.fromByteBuffer(
+			ByteBuffer.wrap("Test data".getBytes()));
 
+		PutRecordRequest putRecordRequest 
+		   = PutRecordRequest
+		   .builder()
+		   .streamName(Constants.MY_DATA_STREAM)
+		   .partitionKey(partitionKey)
+		   .sequenceNumberForOrdering(sequenceNumberForOrdering)
+		   .data(data)
+		   .build();
+		
+		 PutRecordResponse putRecordsResult 
+		 = kinesisClient.putRecord(putRecordRequest);
+        
+		 logger.info("Put Result" + putRecordsResult);
+         kinesisClient.close();
+	}
 
+	private static KinesisClient getKinesisClient() {
+		AwsCredentialsProvider credentialsProvider = 
+		       ProfileCredentialsProvider
+		       .create(Constants.AWS_PROFILE_NAME);
+		
+		KinesisClient kinesisClient = KinesisClient
+				.builder()
+				.credentialsProvider(credentialsProvider)
+				.region(Region.US_EAST_1).build();
+		return kinesisClient;
+	}
+}
+```
 
+```shell
+INFO: Put ResultPutRecordResponse(ShardId=shardId-000000000001, SequenceNumber=49626569155656830268862440193769593466823195675894743058)
+```
+
+Let us next add multiple events to the Kinesis data stream. We will do this by using the `putRecords()` method as shown below:
+
+```java
+public class EventSender {
+
+    private static final Logger logger = Logger.getLogger(EventSender.class.getName());
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		sendEvents();
+
+	}
+	
+	public static void sendEvents() {
+        KinesisClient kinesisClient = getKinesisClient();
+        
+		String partitionKey = String.format("partitionKey-%d", 1);
+        
+ 
+        List <PutRecordsRequestEntry> putRecordsRequestEntryList  = new ArrayList<>(); 
+        for (int i = 0; i < 5; i++) {
+        	SdkBytes data = SdkBytes
+        			.fromByteBuffer(ByteBuffer.wrap(("Test data "+i).getBytes()));
+        	
+            PutRecordsRequestEntry putRecordsRequestEntry  
+                    = PutRecordsRequestEntry.builder()
+                    
+                    .data(data)
+                    .partitionKey(partitionKey)
+                    .build();
+            
+            putRecordsRequestEntryList.add(putRecordsRequestEntry); 
+        }
+        
+
+        PutRecordsRequest putRecordsRequest 
+						        = PutRecordsRequest
+						        .builder()
+						        .streamName(Constants.MY_DATA_STREAM)
+						        .records(putRecordsRequestEntryList)
+						        .build();
+        
+		PutRecordsResponse putRecordsResult = kinesisClient
+				.putRecords(putRecordsRequest);
+		
+        logger.info("Put Result" + putRecordsResult);
+        kinesisClient.close();
+	}
+
+	private static KinesisClient getKinesisClient() {
+      ...
+      ...
+	}
+}
+
+```
+
+```shell
+...ResultPutRecordsResponse(FailedRecordCount=0, 
+	Records=[
+	PutRecordsResultEntry(SequenceNumber=49626569155656830268862440193770802392642928158972051474, ShardId=shardId-000000000001), 
+
+	PutRecordsResultEntry(SequenceNumber=49626569155656830268862440193772011318462542788146757650, ShardId=shardId-000000000001), 
+
+	PutRecordsResultEntry(SequenceNumber=49626569155656830268862440193773220244282157417321463826, ShardId=shardId-000000000001), 
+
+	PutRecordsResultEntry(SequenceNumber=49626569155656830268862440193774429170101772046496170002, ShardId=shardId-000000000001), 
+
+	PutRecordsResultEntry(SequenceNumber=49626569155656830268862440193775638095921386675670876178, ShardId=shardId-000000000001)])
+```
 ## Kinesis Data Firehose
-Amazon Kinesis Data Firehose is an extract, transform, and load (ETL) service that reliably captures, transforms, and delivers streaming data to data lakes, data stores, and analytics services.
 
-Amazon Kinesis Data Firehose is a fully managed service for delivering real-time streaming data to destinations such as Amazon Simple Storage Service (Amazon S3), Amazon Redshift, Amazon OpenSearch Service, Splunk, and any custom HTTP endpoint or HTTP endpoints owned by supported third-party service providers, including Datadog, Dynatrace, LogicMonitor, MongoDB, New Relic, and Sumo Logic.
+Kinesis Firehose is a fully managed service which is built around the concept of a delivery stream. The delivery stream receives data from a data producer, optionally applies some transformation to the data before delivering the data to a destination.
 
-We don't need to write applications or manage resources. We configure your data producers to send data to Kinesis Data Firehose, and it automatically delivers the data to the destination that you specified. You can also configure Kinesis Data Firehose to transform your data before delivering it.
+The delivery stream buffers the incoming streaming data received from the data producer till it reaches a particular size or exceeds a certain time interval before delivering the data to the destination.
 
-### Key Concepts
+An example of a data producer is a web server that sends log data to a delivery stream. We can also configure the delivery stream to read data from a Kinesis data stream. 
 
-Kinesis Data Firehose delivery stream: We use Kinesis Data Firehose by creating a Kinesis Data Firehose delivery stream and then sending data to it. 
+A delivery stream can send data to the following destinations:
 
-Record: The data of interest that your data producer sends to a Kinesis Data Firehose delivery stream. A record can be as large as 1,000 KB.
-
-Data producer: Producers send records to Kinesis Data Firehose delivery streams. For example, a web server that sends log data to a delivery stream is a data producer. You can also configure your Kinesis Data Firehose delivery stream to automatically read data from an existing Kinesis data stream, and load it into destinations. 
-
-Buffer size and buffer interval: Kinesis Data Firehose buffers incoming streaming data to a certain size or for a certain period of time before delivering it to destinations. Buffer Size is in MBs and Buffer Interval is in seconds.
+1. Amazon Simple Storage Service (Amazon S3), 
+2. Amazon Redshift
+3. Amazon OpenSearch Service
+4. Splunk, and
+5. Any custom HTTP endpoint or HTTP endpoints owned by supported third-party service providers like Datadog, Dynatrace, LogicMonitor, MongoDB, New Relic, and Sumo Logic.
 
 ### Creating a Delivery Stream
 
-We can create a Kinesis Data Firehose delivery stream using the AWS Management Console or an AWS SDK.
-Choose source and destination
+We can create a Kinesis Data Firehose delivery stream using the AWS Management Console or an AWS SDK. We need to provide a source of data along with a destination when creating a Firehose delivery stream.  
+
+The source of a Kinesis Data Firehose delivery stream can be :
+1. Kinesis Data Stream 
+2. Producer 
 
 ### Sending Data to a Delivery Stream using Kinesis Data Streams
 

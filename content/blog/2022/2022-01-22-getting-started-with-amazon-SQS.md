@@ -508,6 +508,7 @@ If we do not delete a message after consuming it, the message will remain in the
 Otherwise, the messages left in a queue are deleted automatically after the expiry of the retention period configured for the queue.
 
 ## Handling Messaging Failures with an SQS Dead Letter Queue (DLQ)
+
 Sometimes, messages cannot be processed because of errors within the producer or consumer application. We can isolate the messages which failed processing by moving them to a separate queue called Dead Letter Queue (DLQ). 
 
 After we have fixed the consumer application or when the consumer application is available to consume the message, we can move the messages back to the source queue using the dead-letter queue redrive capability.
@@ -518,7 +519,8 @@ Amazon SQS does not create the dead-letter queue automatically. We must first cr
 
 ```java
 public class ResourceHelper {
-  private static Logger logger = Logger.getLogger(ResourceHelper.class.getName());
+  private static Logger logger = 
+        Logger.getLogger(ResourceHelper.class.getName());
 
   public static void main(String[] args) {
     createStandardQueue();
@@ -528,9 +530,10 @@ public class ResourceHelper {
     SqsClient sqsClient = getSQSClient();
 
     String dlqName = "mydlq";
-    CreateQueueRequest createQueueRequest = CreateQueueRequest.builder()
-        .queueName(dlqName)
-        .build();
+    CreateQueueRequest createQueueRequest = CreateQueueRequest
+                                                .builder()
+                                                .queueName(dlqName)
+                                                .build();
 
 
     // Create dead letter queue
@@ -661,7 +664,8 @@ public class MessageSender {
   public static void sendMessage() {
     SqsClient sqsClient = getSQSClient();
 
-    Map<String, MessageAttributeValue> messageAttributes = new HashMap<String, MessageAttributeValue>();
+    Map<String, MessageAttributeValue> messageAttributes 
+                = new HashMap<String, MessageAttributeValue>();
 
     // generates a UUID as the traceId
     String traceId = UUID.randomUUID().toString();

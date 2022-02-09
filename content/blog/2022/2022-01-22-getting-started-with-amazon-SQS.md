@@ -89,9 +89,11 @@ The SQS client uses short polling by default. Long polling is preferable to shor
 
 We can use the [Amazon SQS console](https://console.aws.amazon.com/sqs/#/create-queue) to create standard queues and FIFO queues. The console provides default values for all settings except for the queue name. 
 
-However, for our examples, we will use the [AWS SDK for Java](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/home.html) to create our queues and send and receive messages. The AWS SDK for Java simplifies the use of AWS Services by providing a set of libraries that are based on common design patterns familiar to Java developers.
+However, for our examples, we will use the [AWS SDK for Java](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/home.html) to create our queues and send and receive messages. 
 
-Let us first add the following Maven dependency in our `pom.xml`:
+The AWS SDK for Java simplifies the use of AWS Services by providing a set of libraries that are based on common design patterns familiar to Java developers.
+
+Let us first set up the AWS SDK for Java by adding the following Maven dependency in `pom.xml`:
 
 ```xml
     <dependency>
@@ -112,7 +114,7 @@ Let us first add the following Maven dependency in our `pom.xml`:
 
 ```
 
-We will next create our queue in the `ResourceHelper` class with the Java SDK:
+We will next create a standard queue with the AWS Java SDK as shown below:
 
 ```java
 public class ResourceHelper {
@@ -139,7 +141,7 @@ public class ResourceHelper {
   
   private static SqsClient getSQSClient() {
     AwsCredentialsProvider credentialsProvider = 
-        ProfileCredentialsProvider.create("<Profile");
+        ProfileCredentialsProvider.create("<Profile>");
     
     SqsClient sqsClient = SqsClient
         .builder()

@@ -15,26 +15,113 @@ A **module system** allows you to split up your code in different parts or to in
 
 ### Why Do We Need a Module System in Nodejs?
 
-- Why modules? (as short as possible)
-    - everything global in JS by default (is a bad idea for larger apps)
-    - modules for splitting and reusing code
+Usually we want to split up our code into different files when our code base grows. This way we can not only organize and reuse code in a structured manner.
+We can also control in which file which part of the code is accessible. While this is a fundamental part in most programming languages, this was not the case in JavaScript. By default, everything we write in a JavaScript application is global by default. This hasn't been a huge problem in the early beginnings of the language. As soon as developers began to write actual applications, it brought them into real trouble. This why the NodeJS creators initially decided to use a module system by default, which is CommonJS.
 
-## Default Module System (CommonJS)
+## The Default NodeJS Module System (CommonJS)
 
 ### Basics
 
-- each .js file is handled as a separate module
-- import modules via require()
-- export modules via exports or module.exports
+In NodeJS each .js file is handled as a separate CommonJS module. This means, variables, functions, classes, etc. are not accessible to other files by default. You need to explicitly tell the module system, which parts of your code should be exported. This is done via the `module.exports` object or the `exports` shortcut, which are both available in every CommonJS module. Whenever you want to import code into a filem, you use the `require(id)` function. Let's see how this all works together.
 
-### Usage
+### Importing Core NodeJS modules
 
-- requiring core Node modules (e.g. 'fs')
-- requiring Node modules (from node_modules folder)
-- export and require a single function
+Without writing or installing any module you can just start by importing any of NodeJS's built-in modules:   
+
+```js
+const http = require("http");
+
+const server = http.createServer(function (_req, res) {
+  res.writeHead(200);
+  res.end("Hello, World!");
+});
+server.listen(8080);
+```
+
+Here we import the http module in order to create a simple NodeJS server. The http module is identified by `require()` via the string "http" which always points to the NodeJS internal module. See, how the result of `require("http")` is just handled like every other function invocation. It is basically written to the local constant `http`. But you can name it however you want to.
+
+### Importing NPM dependencies
+
+The same way you can import and use modules from NPM packages (aka the `node_modules` folder):
+
+```js
+const chalk = require("chalk");
+
+console.log(chalk.blue("Hello world printed in blue"));
+```
+
+### Exporting and Importing own code
+
+To import your own code you first need to tell CommonJS which aspects of your code should by accessible by other modules. Let's assume we want to write our own logging function to make logs look a bit more colorful:
+
+```js
+// logger.js
+const chalk = require("chalk");
+
+exports.logInfo = function (message) {
+  console.log(chalk.blue(message));
+};
+
+exports.defaultMessage = "Hello World";
+```
+
+Again, we import chalk which will colorize the log output. Then we add `logInfo` to the existing `exports` object, which makes it accesible to other modules. Also we add `defaultMessage` with the string "Hello World" to `exports` only to demonstrate, that exports can have various types. Now we want to use those in our index file:
+
+```js
+// index.js
+const logger = require("./logger");
+
+logger.logInfo(`${logger.defaultMessage} printed in blue`);
+```
+
+As you can see, `require()` now receives a relative file path and returns whatever was put into the `exports` object.
+
+### Using `module.exports` instead of `exports`
+
+The `exports` object is readonly, which means it will always remain the same object instance and cannot be overwritten. However, it is only a shortcut to the `exports` property of the `module` object. We could rewrite our logger module like this:
+
+```js
+// logger.js
+const chalk = require("chalk");
+
+const defaultMessage = "Hello World";
+
+function logInfo(message) {
+  console.log(chalk.blue(message));
+}
+
+function logError(message) {
+  console.log(chalk.red(message));
+}
+
+module.exports = {
+  defaultMessage,
+  info: logInfo,
+  error: logError,
+};
+```
+
+For demonstration purposes we changed a few bits... TODO
+
+
+
+
 - export and require an object with a function
-- export and require other things, e.g. a class instance
 - require with object destructuring
+
+### Exporting Not Only Objects
+- export and require other things, e.g. a class instance
+
+
+{{% info title="Are `module.exports` and `require` Global Keywords?" %}}
+Altough it seems like `module.exports`, `exports` and `require` are global, actually they are not. CommonJS wraps your code in a function like this:
+```js
+(function(exports, require, module, __filename, __dirname) {
+    // your code lives here
+});
+```
+This way those keywords are always module specific. Have a look into the [NodeJS modules documentation](https://nodejs.org/api/modules.html) to get a better understanding of the different function parameters.
+{{% /info %}}
 
 ## The New JavaScript Standard (ES Modules)
 

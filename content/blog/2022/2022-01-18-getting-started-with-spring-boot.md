@@ -184,7 +184,7 @@ We will show how to:
 
 The domain object represents the direct link with the database tables. After sketching which data tables need to contain, we will create those objects in the Java code.
 
-### Sketching The Domain Objects
+### Sketching the Domain Objects
 We will build the database diagram for our application:
 
 {{% image alt="Sketching the Domain Objects" src="images/posts/spring-boot-begginer-guide/spring-boot-database-diagram.png" %}}
@@ -194,14 +194,14 @@ We have three tables in the database:
 - book
 - borrowed_books
 
-The user table contains the id, name, last name, email, and password. The id is our primary key, and the database will autogenerate it. We will show how to do it in the (next chapter)[#creating-the-entity].
+The user table contains the id, name, last name, email, and password. The id is our primary key, and the database will autogenerate it. We will show how to do it in the [next chapter](#creating-the-entity).
 
 The book table has the id, title, author, publication, and number of instances in the bookstore.
 
 The borrowed_books table represents the `many-to-many` relationship. The `many-to-many` relationship means that one user can borrow several books and that one book can be borrowed several times.
 
 We can read more about relationships between entities in the [Handling Associations Between Entities with Spring Data REST](https://reflectoring.io/relations-with-spring-data-rest/) article.
-### Creating The Entity
+### Creating the Entity
 After we define the database, we can start implementing entity classes.
 The entity class is the direct connection to the table in the database:
 ```java
@@ -215,7 +215,7 @@ public class Book {
 We annotate the class with the `@Entity` annotation indicating that it is JPA an entity.. The name attribute inside the annotation indicates how is the table called. 
 Defining the name attribute is not mandatory, but if we do not set the name attribute, the Spring will assume that the table name is the same as the class name.
 
-### Defining The Primary Key
+### Defining a Primary Key
 ```java
 @Entity(name = "book")
 public class Book {
@@ -295,7 +295,7 @@ We provide the generator name to the `generator` attribute inside the `@Generate
 
 The table generator uses
 
-### Defining The Column
+### Defining the Column
 We define the table column with the `@Column` annotation and the name of the column inside the `name` attribute:
 ```java
 @Entity(name = "book")
@@ -325,7 +325,7 @@ If we do not provide the name attribute, the Hibernate will assume that the colu
 
 It is always better to be safe and set the name attribute so that things do not start crashing when someone accidentally changes the variable name.
 
-### Defining The ManyToMany Relationship
+### Defining the ManyToMany Relationship
 
 We define the many-to-many relationship with the `@ManyToMany` annotation
 
@@ -333,7 +333,7 @@ Each relationship has two sides:
 - the owner 
 - the target
 
-#### The Owner Of The Relationship
+#### The Owner of the Relationship
 One side of that relationship needs to be the owning side and define the join table.
 We decided that it will be the User side:
 ```java
@@ -372,7 +372,7 @@ public class Book {
 ```
 We defined the target side with the `@ManyToMany` annotation `mappedBy` attribute. We set the `mappedBy` attribute to the name on the owning side.
 
-### Configuring The Database
+### Configuring the Database
 We said that the entity class represents the direct link to the table in the database.
 We set the configuration in the Spring Boot framework through the `application.properties` file.
 
@@ -381,7 +381,7 @@ The excellent thing about autoconfiguration is that it is non-invasive, and we c
 
 In this example, we will show how to configure the database. The H2 database can be an in-memory or persistent file-based database, and we will show how to set them up.
 
-#### Defining The Database URL
+#### Defining the Database URL
 Let us look how we define the URL for the in-memory database.
 ```text
 spring.datasource.url=jdbc:h2:mem:localdb
@@ -405,7 +405,7 @@ After defining the `jdbc` and the `h2` keywords, we note that we want to use a f
 
 Please note that we should use the H2 only for the development phase. When going to the production environment, move to something more production-ready ( Oracle, PostgreSQL, etc.).
 
-#### Defining The Database Login Information
+#### Defining the Database Login Information
 After we defined the URL for the database we need the login informations for that database:
 
 ```text
@@ -429,6 +429,86 @@ spring.jpa.generate-ddl=true
 ```
 The Hibernate DDL is used to generate the schema using the entity definitions. With the `ddl-auto`, we set that we want to destroy and recreate the schema on each run.
 
+## Building the Data Access Layer
+After creating entities, we can develop the data access layer. The data access layer allows us to use methods to manipulate the data in the database. We will build the data access layer using the repository pattern.
+
+The repository pattern is the design pattern that leverages the usage of interfaces for connection to the database. The repository interface hides all implementation details of connecting to the database, maintaining the connection, transactions, etc.
+
+We will show how to create the repository for the entity and explain how we use it.
+
+### Creating the Book Repository
+```java
+@Repository
+public interface BookRepository extends JpaRepository<Book, Long> {
+   // Rest of the code is omitted 
+}
+```
+The `@Repository` annotation creates the repository bean for the application context to control. 
+With this annotation, we are sure that the dependency injection will provide the instance of this interface where ever it is asked using the `@Autowired` annotation.
+
+Even though we can create our connections to the database, we will leverage the Spring JPA classes. Our repository can extend several different interfaces:
+- CrudRepository
+- PagingAndSortingRepository
+- JpaRepository
+
+The CrudRepository contains CRUD (Create, Read, Update, Delete) methods. It is the most basic one, and we should use it when we do not need anything besides those four methods.
+
+The PagingAndSortingRepository extends the CrudRepository and contains every method from a later one. Besides CRUD methods, we can fetch results in pages from the database and sort them with simple interface methods.
+
+The JpaRepository extends the PagingAndSortingRepository. Except for methods from the PagingAndSortingRepository and the CrudRepository, we can flush and delete in batch.
+
+Besides queries from the repository interface, we can create custom queries. We can do it in several ways:
+- [native SQL query](#native-sql-queries)
+- [JPQL query](#jpql-queries)
+- [named method query](#named-method-queries)
+### Native SQL Queries
+
+```java
+@Repository
+public interface BookRepository extends JpaRepository<Book, Long> {
+
+    @Query(nativeQuery = true, value = "SELECT * FROM Book " +
+            "book WHERE book.currentlyAvailableNumber > 5 ")
+    List<Book> findWithMoreInstancesThenFive();
+    
+    // Rest of the code is omitted
+}
+```
+We create the query by annotating the method with the `@Query` annotation. If we set the `nativeQuery` attribute to `true`, we can leverage the syntax from the underlying database.
+
+Please note that we should use native queries only in specific use cases like Postgis syntax for the PostgreSQL database. Using the native SQL, we are bound to a chosen database. The convention is that our code should not depend on any third-party technology.
+
+### JPQL Queries
+The solution to the dependence on the database whose syntax we use is the JPQL syntax. 
+Let us see how can we create the JPQL query:
+```java
+@Repository
+public interface BookRepository extends JpaRepository<Book, Long> {
+
+    @Query( value = "SELECT b FROM book b where b.numberOfInstances > 5")
+    List<Book> findWithMoreInstancesThenFiveJPQL();
+
+    // Rest of the code is omitted
+}
+```
+We define the query with the `@Query` annotation, and the `nativeQuery` is, by default, set to false.
+
+The JPQL syntax allows us to change the underlying database while the query stays the same.
+
+### Named Method Queries
+The Spring framework provides one more feature regarding queries. We can build queries by setting the method name in a specific format:
+```java
+@Repository
+public interface BookRepository extends JpaRepository<Book, Long> {
+
+    List<Book> findAllByNumberOfInstancesGreaterThan(long limit);
+
+    // Rest of the code is omitted
+}
+```
+Using the attribute names and special keywords, we can create queries. The Spring JPA will generate the proper queries according to our definition.
+
+More about the method names query we can find in the [official documentation](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.named-queries)
 ## Building Controllers
 After discussing about generation process let us create our first controller in the application.
 

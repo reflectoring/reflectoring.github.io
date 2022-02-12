@@ -3,14 +3,12 @@ authors: [pratikdas]
 title: "Getting Started with AWS Kinesis"
 categories: ["aws"]
 date: 2022-01-20T00:00:00
-excerpt: "Amazon Simple Queue Service (SQS) is a fully managed message queuing service. We can send, store, and receive messages at any volume, without losing messages or requiring other systems to be available. In this article, we will introduce Amazon SQS, understand its core concepts and work through some examples."
+excerpt: "Amazon Kinesis is a fully managed service for collecting and processing streaming data in real-time. Examples of streaming data are data collected from web site click-streams, marketing and financial information, social media feeds, iot sensors, and monitoring and operational logs. In this article, we will introduce Amazon Kinesis, understand its core concepts of the creating data streams, sending, and receiving data from streams and deriving analytical insights using different service variants: Kinesis Data Stream, firehose, Analytics, and Video Streams."
 image: images/stock/0115-2021-1200x628-branded.jpg
-url: getting-started-with-aws-sqs
+url: getting-started-with-aws-kinesis
 ---
 
-Amazon Kinesis is a fully managed service for real-time processing of streaming data at any scale.  Amazon Kinesis can collect and process hundreds of terabytes of data per hour from hundreds of thousands of sources, allowing you to easily write applications that process information in real-time, from sources such as web site click-streams, marketing and financial information, manufacturing instrumentation and social media, and operational logs and metering data. 
-
-Being fully managed, Amazon SQS also eliminates the additional overhead associated with managing and operating message-oriented middleware thereby empowering developers to focus on application development instead of managing infrastructure. 
+Amazon Kinesis is a fully managed service for collecting and processing streaming data in real-time. Examples of streaming data are data collected from web site click-streams, marketing and financial information, social media feeds, iot sensors, and monitoring and operational logs.
 
 In this article, we will introduce Amazon Kinesis, understand its core concepts of the creating data streams, sending, and receiving data from streams and deriving analytical insights using different service variants: Kinesis Data Stream, firehose, Analytics, and Video Streams.
 
@@ -42,7 +40,7 @@ Let us understand these services in the next sections. In each section is we wil
 
 Kinesis Data Streams is used to send data from data producers as soon as it is produced (in real-time) and then continuously processing that data. The processing can include transformation of the data before emitting to another data store or running real-time metrics and analytics.
 
-When using Kinesis Data Streams, we first set up a data stream and then write producer applications which write data to the data stream and consumer applications that read data from the data stream:
+When using Kinesis Data Streams, we first set up a data stream and then build producer applications which write data to the data stream and consumer applications that read data from the data stream:
 
 // TODO diagram
 
@@ -285,6 +283,18 @@ public class EventSender {
 
 	PutRecordsResultEntry(SequenceNumber=49626569155656830268862440193775638095921386675670876178, ShardId=shardId-000000000001)])
 ```
+
+### Data Consumption - Reading Data from Kinesis Data Streams
+
+We need to build consumer applications for processing data from a Kinesis data stream. A consumer application can get its own 2 MB/sec allotment of read throughput when it uses enhanced fan-out. This will allow multiple consumers to read data from the same stream in parallel, without contending for read throughput with other consumers.
+
+We can read data from a Kinesis data stream in different ways:
+1. **AWS SDK**: with PutRecord and PutRecords operations
+2. **Kinesis Consumer Library (KCL)**:KCL is a library written in C++ for adding data into an Kinesis data stream. It runs as a child process to the main user process.
+3. **Amazon Kinesis Agent**
+
+Let us use the AWS Java SDK to add records to the Kinesis data stream created in the previous section. We need to first configure the kinesis library as a Maven dependency in our `pom.xml` as shown below:
+
 ## Kinesis Data Firehose
 
 Kinesis Firehose is a fully managed service which is built around the concept of a delivery stream. The delivery stream receives data from a data producer, optionally applies some transformation to the data before delivering the data to a destination.

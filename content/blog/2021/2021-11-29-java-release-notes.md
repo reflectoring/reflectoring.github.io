@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2021-11-29T05:00:00
 modified: 2021-11-29T05:00:00
 authors: [mateo]
-excerpt: "One place to get information about all the major Java features."
+description: "One place to get information about all the major Java features."
 image: images/stock/0065-java-1200x628-branded.jpg
 url: java-release-notes
 ---

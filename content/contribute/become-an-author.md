@@ -1,9 +1,9 @@
 ---
 title: "Become an Author"
-description: "Interested in honing your writing skills in the Java / Spring space and earning a little money on the side? I need you! Read on to learn on how to contribute to the reflectoring blog. I'm looking forward to hear from you!"
+description: "Interested in honing your writing skills in software development topics and earning a little money on the side? I need you! Read on to learn on how to contribute to the reflectoring blog. I'm looking forward to hear from you!"
 layout: "static"
 draft: false
-image: images/stock/"images/stock/0016-pen-1200x628-branded.jpg"-1200x628-branded.jpg
+image: images/stock/0016-pen-1200x628-branded.jpg
 toc: true
 ---
 

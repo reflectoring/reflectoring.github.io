@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2021-03-21T00:00:00
 modified: 2021-03-21T00:00:00
 authors: [tom]
-excerpt: "Why using Spring's @Profile annotation is a bad idea and what to do instead."
+description: "Why using Spring's @Profile annotation is a bad idea and what to do instead."
 image: images/stock/0098-profile-1200x628-branded.jpg
 url: dont-use-spring-profile-annotation
 ---

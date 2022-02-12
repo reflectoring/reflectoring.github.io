@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2021-12-29T05:00:00
 modified: 2021-12-29T05:00:00
 authors: [pratikdas]
-excerpt: "REST styled APIs are all around us and as such most applications need to invoke REST APIs for some or all of their functions. These REST APIs could be either of their own or from other sources. Hence, applications need to consume APIs elegantly and consistently. RestTemplate is a library of Spring that helps us to do just that. In this article, we will understand the different methods of invoking REST API with Spring RestTemplate."
+description: "REST styled APIs are all around us and as such most applications need to invoke REST APIs for some or all of their functions. These REST APIs could be either of their own or from other sources. Hence, applications need to consume APIs elegantly and consistently. RestTemplate is a library of Spring that helps us to do just that. In this article, we will understand the different methods of invoking REST API with Spring RestTemplate."
 image: images/stock/0074-stack-1200x628-branded.jpg
 url: spring-resttemplate
 ---

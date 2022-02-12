@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2020-03-28T05:00:00
 modified: 2020-03-28T05:00:00
 authors: [vasudha]
-excerpt: 'Dependency injection is a common approach to implement loose coupling among the classes in an application. There are different ways of injecting dependencies and this article explains why constructor injection should be the preferred way.'
+description: 'Dependency injection is a common approach to implement loose coupling among the classes in an application. There are different ways of injecting dependencies and this article explains why constructor injection should be the preferred way.'
 image: images/stock/0068-injection-1200x628-branded.jpg
 url: constructor-injection
 ---  

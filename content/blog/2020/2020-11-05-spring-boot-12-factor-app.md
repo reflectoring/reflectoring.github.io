@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2020-11-05T06:00:00
 modified: 2020-11-05T06:00:00
 authors: [pratikdas]
-excerpt: "How does Spring Boot support building a 12-Factor app? What do we have left to do?"
+description: "How does Spring Boot support building a 12-Factor app? What do we have left to do?"
 image: images/stock/0086-twelve-1200x628-branded.jpg
 url: spring-boot-12-factor-app
 ---

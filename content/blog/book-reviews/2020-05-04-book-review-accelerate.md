@@ -3,7 +3,7 @@ authors: [tom]
 title: "Book Notes: Accelerate"
 categories: ["Book Notes"]
 date: 2020-05-15T05:00:00
-excerpt: "My notes on 'Accelerate' by Nicole Forsgren, Jez Humble, and Gene Kim - a book about research on the factors contribute to the performance in software development."
+description: "My notes on 'Accelerate' by Nicole Forsgren, Jez Humble, and Gene Kim - a book about research on the factors contribute to the performance in software development."
 image: images/covers/accelerate-teaser.jpg
 url: book-review-accelerate
 ---

@@ -4,7 +4,7 @@ categories: ["Software Craft"]
 date: 2020-03-03T06:00:00
 modified: 2021-10-24T07:44:00
 authors: [mukul]
-excerpt: "A practical guide to understand and apply the Interface Segregation Principle, one of the SOLID principles."
+description: "A practical guide to understand and apply the Interface Segregation Principle, one of the SOLID principles."
 image: images/stock/0063-interface-1200x628-branded.jpg
 url: interface-segregation-principle
 ---

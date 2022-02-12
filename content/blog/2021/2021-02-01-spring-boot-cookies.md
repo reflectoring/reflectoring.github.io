@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2021-02-01T06:00:00
 modified: 2021-02-01T06:00:00
 authors: [godeortela]
-excerpt: "This article demonstrates how to handle cookies in a Spring Boot or Servlet-based application."
+description: "This article demonstrates how to handle cookies in a Spring Boot or Servlet-based application."
 image: images/stock/0093-cookie-1200x628-branded.jpg
 url: spring-boot-cookies
 ---

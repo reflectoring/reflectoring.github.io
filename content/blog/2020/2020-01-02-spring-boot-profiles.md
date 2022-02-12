@@ -4,7 +4,7 @@ title: One-Stop Guide to Profiles with Spring Boot
 categories: ["Spring Boot"]
 date: 2020-01-02T05:00:00
 modified: 2020-01-02T05:00:00
-excerpt: "Profiles are a mighty tool for configuring Spring and Spring Boot applications. In this article, we discuss how Profiles work, for which use cases they are the right solution, and when we should rather not use them."
+description: "Profiles are a mighty tool for configuring Spring and Spring Boot applications. In this article, we discuss how Profiles work, for which use cases they are the right solution, and when we should rather not use them."
 image: images/stock/0056-colors-1200x628-branded.jpg
 url: spring-boot-profiles
 ---

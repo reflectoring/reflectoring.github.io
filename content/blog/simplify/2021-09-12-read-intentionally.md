@@ -4,7 +4,7 @@ categories: ["Simplify"]
 date: 2021-09-12T09:00:00
 modified: 2021-09-12T09:00:00
 authors: [tom]
-excerpt: "How much of what you're reading can you remember? Read intentionally to increase memory retention."
+description: "How much of what you're reading can you remember? Read intentionally to increase memory retention."
 image:  images/stock/0110-reading-1200x628-branded.jpg
 url: read-intentionally
 widgets: ["stratospheric-ad", "gyhdoca-ad", "simplify-form"]

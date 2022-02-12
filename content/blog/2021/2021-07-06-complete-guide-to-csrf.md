@@ -4,7 +4,7 @@ categories: ["Software Craft"]
 date: 2021-06-14T06:00:00
 modified: 2021-06-13T06:00:00
 authors: [pratikdas]
-excerpt: "In this article, we will understand a type of website attack called Cross Site Request Forgery (CSRF). We will look at the kind of websites which usually fall victim to CSRF attacks, how an attacker crafts a CSRF attack, and some techniques to mitigate the risk of being compromised with a CSRF attack"
+description: "In this article, we will understand a type of website attack called Cross Site Request Forgery (CSRF). We will look at the kind of websites which usually fall victim to CSRF attacks, how an attacker crafts a CSRF attack, and some techniques to mitigate the risk of being compromised with a CSRF attack"
 image: images/stock/0074-stack-1200x628-branded.jpg
 url: complete-guide-to-csrf
 ---

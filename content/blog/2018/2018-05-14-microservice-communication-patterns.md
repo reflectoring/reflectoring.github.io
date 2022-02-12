@@ -3,7 +3,7 @@ authors: [tom]
 title: "Microservice Communication Patterns"
 categories: ["Software Craft"]
 date: 2018-05-14
-excerpt: "A discussion of several different communication patterns between distributed micro services."
+description: "A discussion of several different communication patterns between distributed micro services."
 image:  images/stock/0035-switchboard-1200x628-branded.jpg
 url: microservice-communication-patterns
 ---

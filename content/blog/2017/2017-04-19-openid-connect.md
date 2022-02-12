@@ -3,7 +3,7 @@ title: OpenID Connect
 categories: ["Software Craft"]
 date: 2017-04-19
 authors: [david]
-excerpt: "A short introduction to OpenID Connect - the standard for Identity Management and Single-Sign-On."
+description: "A short introduction to OpenID Connect - the standard for Identity Management and Single-Sign-On."
 image: images/stock/0048-passport-1200x628-branded.jpg
 url: openid-connect
 ---

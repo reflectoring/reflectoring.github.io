@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2020-08-24T06:00:00
 modified: 2020-08-24T06:00:00
 authors: [pratikdas]
-excerpt: "Logging is the bedrock for analyzing when anything goes wrong, or even for seeing that everything is in order. In this article, we look at the logging capabilities in Spring Boot to see what we can do with it and how we can customize it."
+description: "Logging is the bedrock for analyzing when anything goes wrong, or even for seeing that everything is in order. In this article, we look at the logging capabilities in Spring Boot to see what we can do with it and how we can customize it."
 image: images/stock/0031-matrix-1200x628-branded.jpg
 url: springboot-logging
 ---

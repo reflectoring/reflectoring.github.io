@@ -14,6 +14,10 @@
 {{ .Scratch.Set "image-position" "pull-right" }}
 {{ end }}
 
+{{ if .Get "href" }}
+<a href="{{ .Get `href` }}">
+{{ end }}
+
 <!-- check cdn image -->
 {{ if hasPrefix $imagePath "http" }}
 
@@ -88,3 +92,7 @@
 
 {{ end }}
 <!-- /check cdn image -->
+
+{{ if .Get "href" }}
+</a>
+{{ end }}

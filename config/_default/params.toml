@@ -80,7 +80,7 @@ dynamic = ["simplify-form", "stratospheric-ad", "gyhdoca-ad"]
 
 [ads]
 skyscraper_image = "images/launchdarkly/2021_stressfreerelease_Ad_320x1200.png"
-skyscraper_href = "https://learn.launchdarkly.com/application-modernization-guide/?utm_source=reflectoring&utm_medium=display&utm_campaign=apmn&utm_content=app_modernization"
+skyscraper_href = "https://launchdarkly.com/?utm_source=reflectoring&utm_medium=display&utm_campaign=aodm&utm_content=ebook_oreilly_efm"
 
 [wol]
 items = [

@@ -1,7 +1,7 @@
 ---
 authors: [pratikdas]
 title: "Getting Started with Express"
-categories: ["node"]
+categories: ["Node"]
 date: 2022-01-20T00:00:00
 excerpt: "Express is a web application framework for Node.js. We can use this framework to build APIs, serve web pages, and other static assets and use it as a lightweight HTTP server and backend for our applications. In this article, we will introduce the Express framework and learn to use it to build HTTP servers, REST APIs, and web pages."
 image: images/stock/0115-2021-1200x628-branded.jpg
@@ -17,13 +17,13 @@ In this article, we will introduce the Express framework and learn to use it to 
 ## Introducing Node.js
 A basic understanding of Node.js is essential for working with Express. 
 
-Node.js is an open-source runtime environment for executing JavaScript applications in the server. A unique feature of Node.js runtime is its non-blocking, event-driven I/O request processing model.
+Node.js is an open-source runtime environment for executing server-side JavaScript applications. A unique feature of Node.js runtime is that it's a non-blocking, event-driven I/O request processing model.
 
 Node.js uses the V8 JavaScript Runtime engine which is also used by Google Chrome. This makes the runtime engine much faster and hence enables faster processing of requests. 
 
-In order to use Express, we should first install Node.js and the Node Package Manager (npm) in our development environment. Download and installation instruction of Node.js is found in the [official website](https://nodejs.org/en/download/). Similarly, we can refer to the [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) site for the installation instructions of npm.
+In order to use Express, we should first install Node.js and the Node Package Manager (npm) in our development environment. You can find download and installation instructions for Node.js on the [official website](https://nodejs.org/en/download/). Similarly, you can refer to the [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) site for the installation instructions of npm.
 
-## What is Express
+## What is Express?
 
 Express is a popular Node.js framework for authoring web applications. Express provides methods to specify the function to be called for a particular HTTP verb (GET, POST, SET, etc.) and URL pattern ("Route"). 
 
@@ -48,14 +48,13 @@ app.get('/', (req, res) => {
 app.listen(
    3000, 
    () => console.log(`Server listening on port 3000.`));
-
 ```
-When we run this application in Node.js, we will have an HTTP server listening on port `3000` which can receive a GET request on http://localhost:3000/ and respond with a text message: `response for GET request`.
+When we run this application in Node.js, we will have an HTTP server listening on port `3000` which can receive a GET request to http://localhost:3000/ and respond with a text message: `response for GET request`.
 
 We can observe the following components in this application:
 
 1. A server that listens for HTTP requests on a port
-2. The app object representing the Express function
+2. The `app` object representing the Express function
 3. Routes that define URLs or paths to receive the HTTP request with different HTTP verbs
 4. Handler functions associated with each route are called by the framework when a request is received on a particular route.
 5. Middleware functions that perform processing on the request in different stages of a request handling pipeline
@@ -73,7 +72,6 @@ Before that let us create a folder and initialize a Node.js project under it by 
 mkdir storefront
 cd storefront
 npm init -y
-
 ```
 Running these commands will create a Node.js project with `package.json` file resulting in this output:
 
@@ -92,8 +90,6 @@ Wrote to /.../storefront/package.json :
   "author": "",
   "license": "ISC"
 }
-
-
 ```
 
 The Express framework is published as a Node.js module and made available through the npm registry.
@@ -102,7 +98,6 @@ Installation is done using the npm install command:
 
 ```shell
 npm install express --save
-
 ```
 This will install the Express framework and add it as a dependency in the dependencies list in a `package.json` file as shown below:
 
@@ -140,7 +135,6 @@ const app = express();
 // start the server
 app.listen(3000, 
    () => console.log('Server listening on port 3000.'));
-
 ```
 
 The first line here is importing the Express module from the package we installed earlier. This module is a function, which we are running on the second line to create a variable named `app`. Next, we are calling the `listen()` function on the `app` to start the server. 
@@ -156,7 +150,6 @@ node index.js
 We can see the message in our `listen()` function appearing in our terminal window:
 ```shell
 Server listening on port 3000.
-
 ```
 Our server is running now and listening for requests in port `3000`. 
 When we can visit the URL: `localhost:3000` in our web browser we will get a message `Cannot GET /`. This means that the server recognizes it as an HTTP `GET` request on the root path `/` but fails to give any response. 
@@ -184,7 +177,6 @@ app.get('/', (req, res) => {
 // start the server
 app.listen(3000, 
    () => console.log('Server listening on port 3000.'));
-
 ```
 We have added the route just after the declaration of the `app` variable. In this route, we tell our Express server how to handle a GET request sent to our server. 
 
@@ -204,9 +196,11 @@ Route paths are often accompanied by route parameters and take this form:
 Let us define a route containing a route parameter as shown below. For simplicity, we are reading from a `products` array here instead of a database:
 
 ```js
-let products = [{"name":"television", "price":112.34, "brand":"samsung"},
-{"name":"washing machine", "price": 345.34, "brand": "LG"},
-{"name":"Macbook", "price": 3454.34, "brand": "Apple"}];
+let products = [
+  {"name":"television", "price":112.34, "brand":"samsung"},
+  {"name":"washing machine", "price": 345.34, "brand": "LG"},
+  {"name":"Macbook", "price": 3454.34, "brand": "Apple"}
+];
 
 // handle get request for fetching products
 // belonging to a particular brand
@@ -221,7 +215,6 @@ app.get('/products/:brand', (req, res) => {
 
   res.json(productsFiltered)
 });
-
 ```
 Here we have used a route parameter named `brand`.
 Route parameters are named URL segments that are used to capture the values specified at their position in the URL. The captured values are populated in the `req.params` object, with the name of the route parameter specified in the path as their respective keys. 
@@ -229,7 +222,9 @@ Route parameters are named URL segments that are used to capture the values spec
 In this example, the name of the route parameter is `brand` and is read with the construct `req.params.brand`.
 
 ## Modularizing Routes with Express Router
-Defining all the routes in a single file becomes unwieldy in real-life projects. We can add modularity to the routes with the help of the Express's Router class. This class can be used to create modular route handlers. An instance of Router class is a complete middleware and routing system. Let us define our routes in a separate file and name it `routes.js`. We will define our routes using the Router class like this:
+Defining all the routes in a single file becomes unwieldy in real-life projects. We can add modularity to the routes with the help of the Express's `Router` class. This class can be used to create modular route handlers. 
+
+An instance of `Router` class is a complete middleware and routing system. Let us define our routes in a separate file and name it `routes.js`. We will define our routes using the `Router` class like this:
 
 ```js
 // routes.js
@@ -249,7 +244,6 @@ router.get('/products/:brand', (req, res) => {
 });
 
 module.exports = router
-
 ```
 
 We will next define our server in another file: `server.js` and import the routes defined in the file: `routes.js`. The server code looks much more concise like this:
@@ -266,31 +260,28 @@ const PORT = process.env.PORT || 3000
 app.use(routes)
 
 app.listen(PORT, () => {
-console.log(`Server listening at http://localhost:${PORT}`)
+  console.log(`Server listening at http://localhost:${PORT}`)
 })
-
 ```
 We have also used an environment variable to define the server port which will default to `3000` if the port is not supplied. Let us run this file with the node command:
 
 ```shell
 node server.js
-
 ```
 We will use this file henceforth to run our HTTP server instead of `index.js`.
 
 ## Adding Middleware for Processing Requests
-Middleware in Express are functions that come into play after the server receives the request and before the response is sent to the client. They are arranged in a chain and are called in sequence. 
+Middleware in Express are functions that come into play **after the server receives the request and before the response is sent to the client**. They are arranged in a chain and are called in sequence. 
 
 We can use middleware functions for different types of processing tasks required for fulfilling the request like database querying, making API calls, preparing the response, etc, and finally calling the next middleware function in the chain. 
 
-Middleware functions take three arguments: the request object (req), the response object (res), and optionally the `next()` middleware function :
+Middleware functions take three arguments: the request object (`req`), the response object (`res`), and optionally the `next()` middleware function :
 
 ```js
 function middlewareFunction(req, res, next){
   ...
   next()
 }
-
 ```
 
 Middleware functions in Express are of the following types:
@@ -301,7 +292,7 @@ Middleware functions in Express are of the following types:
 - Error handling middleware for handling errors
 - Third-party middleware maintained by the community 
 
-## Adding Application-Level Middleware for Processing All Requests
+### Adding Application-Level Middleware for Processing All Requests
 
 We will define our middleware functions in a file `middleware.js`.
 
@@ -309,9 +300,9 @@ Let us define a simple middleware function which prints the request to the conso
 
 ```js
 const requestLogger = (req, res, next) => {
-                          console.log(req);
-                          next();
-                        };
+  console.log(req);
+  next();
+};
 ```
 As we can see the middleware function takes the request and the response objects as the first two parameters and the `next()` function as the third parameter. 
 
@@ -333,9 +324,13 @@ app.use(requestLogger);
 ```
 Since we have attached this function to the `app` object, it will get called for every call to the express application. Now when we visit `http://localhost:3000`, we can see the output of the incoming request object in the terminal window. 
 
-## Using Express' Built-in Middleware for some more Processing
+### Using Express' Built-in Middleware for some more Processing
 
-Express also offers middleware functions called built-in middleware. To demonstrate the use of Express' built-in middleware, let us create a route for the HTTP POST method for adding a new `product`. The handler function for this route will accept `product` data from the `req` object in JSON format. As such we require a JSON parser to parse the fields of the new `product`.  For this we will use Express' built-in middleware for parsing JSON and attach it to our `router` object like this:
+Express also offers middleware functions called built-in middleware. 
+
+To demonstrate the use of Express' built-in middleware, let us create a route for the HTTP POST method for adding a new `product`. The handler function for this route will accept `product` data from the `req` object in JSON format. As such we require a JSON parser to parse the fields of the new `product`.  
+
+For this we will use Express' built-in middleware for parsing JSON and attach it to our `router` object like this:
 
 ```js
 // routes.js
@@ -372,12 +367,19 @@ router.post('/products', (req, res) => {
 
   console.log(name + " " + brand);
   
-  products.push({name: req.body.name, brand: req.body.brand, price: req.body.price});               
+  products.push({
+    name: req.body.name, 
+    brand: req.body.brand, 
+    price: req.body.price
+  });               
  
-  const productCreationResponse = {productID: "12345", result: "success"};
+  const productCreationResponse = {
+    productID: "12345", 
+    result: "success"
+  };
+  
   res.json(productCreationResponse);
 });
-
 ```
 Here we are extracting the contents of the JSON request by calling `req.body.FIELD_NAME` before using those fields for adding a new `product`.
 
@@ -387,8 +389,10 @@ Similarly we will use express' `urlencoded()` middleware to process URL encoded 
 app.use(express.urlencoded({ extended: false }));
 ``` 
 
-### Adding Middleware only for a Route
-Next, let us define another middleware function that will apply to a specific route only. We will attach this to the route instead of the `app` object. As an example, let us validate the existence of JSON content in the HTTP POST request before performing any further processing and instead send back an error response if JSON content is not received. 
+### Adding Middleware for a Single Route
+Next, let us define another middleware function that will apply to a specific route only. We will attach this to the route instead of the `app` object. 
+
+As an example, let us validate the existence of JSON content in the HTTP POST request before performing any further processing and instead send back an error response if JSON content is not received. 
 
 Our middleware function for performing this check will look like this:
 
@@ -397,14 +401,13 @@ Our middleware function for performing this check will look like this:
 
 const requireJsonContent = (req, res, next) => {
     if (req.headers['content-type'] !== 'application/json') {
-        res.status(400).send('Server requires application/json')
+      res.status(400).send('Server requires application/json')
     } else {
       next()
     }
 }
 
 module.exports = { requireJsonContent }
-
 ```
 Here we are checking for the existence of a `content-type` header with a value of `application/json` in the request. We are sending back an error response with status `400` accompanied by an error message if this header is not present. Otherwise, the `next()` function is invoked to call the subsequent middleware present in the chain. 
 
@@ -421,7 +424,7 @@ router.post('/products', requireJsonContent, (req, res) => {
 ```
 The `requireJsonContent()` middleware function will pass the control to the next function in the chain if the `content-type` header in the HTTP request contains `application/json`. The next function processes the request further and sends back a successful response after adding the product as shown earlier.
 
-## Adding Error Handling Middleware for Handling Errors
+### Adding Error Handling Middleware
 
 Express comes with a default error handler that takes care of any errors that might be encountered in the app. This default error handler is a middleware function that is added at the end of the middleware function stack.
 
@@ -443,7 +446,7 @@ Here we are throwing an error with status code 400 and an error message `process
 
 When this route is invoked with URL: `localhost:3000/productswitherror`, Express catches this error for us and responds with the error’s status code, message, and the stack trace of the error (for non-production environments) as shown below:
 
-```shell
+```text
 Error: processing error!
     at ...storefront/routes.js:68:9
     at Layer.handle [as handle_request] (...storefront/node_modules/express/lib/router/layer.js:95:5)
@@ -476,7 +479,7 @@ When we want to call an error-handling middleware, we pass on the error object b
 const errorLogger = (err, req, res, next) => {
     console.log( `error ${err.message}`) 
     next(err) // calling next middleware
-  }
+}
 ```
 
 Let us define three middleware error handling functions in a separate file: `errormiddleware.js` as shown below:
@@ -486,20 +489,20 @@ Let us define three middleware error handling functions in a separate file: `err
 const errorLogger = (err, req, res, next) => {
     console.log( `error ${err.message}`) 
     next(err) // calling next middleware
-  }
+}
   
 const errorResponder = (err, req, res, next) => {
     res.header("Content-Type", 'application/json')
     
     res.status(err.statusCode).send(err.message)
-  }
+}
+
 const invalidPathHandler = (req, res, next) => {
     res.status(400)
     res.send('invalid path')
-  }
+}
   
 module.exports = { errorLogger, errorResponder, invalidPathHandler }
-
 ```
 
 These middleware error handling functions perform different tasks: one of them logs the error message, the second sends the error response to the client, and the third one responds with a message for `invalid path` when a non-existing route is requested. 
@@ -525,9 +528,8 @@ app.use(errorResponder)
 app.use(invalidPathHandler)
 
 app.listen(PORT, () => {
-console.log(`Server listening at http://localhost:${PORT}`)
+  console.log(`Server listening at http://localhost:${PORT}`)
 })
-
 ```
 
 Here we have attached the three middleware functions for handling errors to the `app` object by calling the `use()` method.
@@ -581,7 +583,11 @@ const express = require('express')
 const router = express.Router()
 
 router.get('/home',  (req, res) => {
-  res.render("home", { title: "Home", message: "My home page" , sysdate: new Date().toLocaleString()})
+  res.render("home", { 
+   title: "Home", 
+   message: "My home page" , 
+   sysdate: new Date().toLocaleString()
+  })
 })
 ```
 Here we are invoking the `render()` method on the res object to render the template named `Home` and assigned the values of the three variables in the template file. When we browse the route with URL: `http://localhost:3000/home`, we can see the HTML rendered from the template in the browser.
@@ -612,10 +618,10 @@ Here is a list of the major points for a quick reference:
 7. In this article, we built a web application containing GET and POST endpoints for a REST API and another endpoint for rendering an HTML.
 
 8. The code of our web application is distributed across the following files :
-- `routes.js` contains all the route handler functions for the REST API along with another route to render the dynamic HTML based on a Pug template.
-- `middleware.js` contains all the middleware functions.
-- `errormiddleware.js` contains all the custom error handlers.
-- `server.js` which uses functions from the above files and runs the Express application.
+    - `routes.js` contains all the route handler functions for the REST API along with another route to render the dynamic HTML based on a Pug template.
+    - `middleware.js` contains all the middleware functions.
+    - `errormiddleware.js` contains all the custom error handlers.
+    - `server.js` which uses functions from the above files and runs the Express application.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/node/express/getting-started).
 

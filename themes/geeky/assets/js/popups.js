@@ -25,8 +25,8 @@ $( document ).ready(function() {
             slide: 1,
             iconColor: "#000000",
             header: "",
-            width: "324px",
-            content: "<a href=\"https://launchdarkly.com/state-of-feature-management?utm_source=reflectoring&utm_medium=display&utm_campaign=22q3&utm_content=state_of_feature_management\"><img width=\"300\" alt=\"State of Feature Management\" src=\"/assets/img/launchdarkly/2021_StateofFM_Ad_300x250.png\"/></a>",
+            width: "624px",
+            content: "<a href=\"https://launchdarkly.com/?utm_source=reflectoring&utm_medium=display&utm_campaign=aodm&utm_content=ebook_oreilly_efm\"><img width=\"600\" alt=\"LaunchDarkly\" src=\"/assets/img/launchdarkly/2022_popout.jpg\"/></a>",
             afterPopup: function() {
               setCookie("launchdarkly", "true", 7);
             }

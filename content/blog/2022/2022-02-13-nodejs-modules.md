@@ -7,7 +7,7 @@ authors: ["robert"]
 description: "A **module system** allows you to split up your code in different parts or to include code written by 
 other developers. We are going to have a look into CommonJS and ES Modules."
 image: images/stock/0116-post-its-1200x628-branded.jpg
-url: nodejs-modules-systems
+url: nodejs-module-systems
 ---
 
 A **module system** allows us to split up our code in different parts or to include code written by other developers. 

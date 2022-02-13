@@ -21,9 +21,7 @@ A basic understanding of [Node.js](https://nodejs.org/en/docs/guides/getting-sta
 
 `Node.js` uses the [V8 JavaScript Runtime](https://v8.dev/docs) engine which is also used by Google Chrome web browser developed by Google. This makes the runtime engine much faster and hence enables faster processing of requests. 
 
-To use Express, we have to first install `Node.js` and [npm](https://www.npmjs.com/package/npm) in our development environment. `npm` is a JavaScript Package Manager. 
-
-`npm` is bundled with `Node.js` by default. 
+To use Express, we have to first install `Node.js` and [npm](https://www.npmjs.com/package/npm) in our development environment. `npm` is a JavaScript Package Manager. `npm` is bundled with `Node.js` by default. 
 
 We can refer to the [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) site for the installation instructions for `npm`. Similarly, we can find the installation instructions for `Node.js` on its [official website](https://nodejs.org/en/download/). 
 
@@ -124,7 +122,7 @@ Running this command will install the Express framework and add it as a dependen
 In this `package.json` file, we can see the Express framework added as a dependency: `"express": "^4.17.2"` .
 
 ## Running a Simple Web Server
-Now that Express is installed, let us create a new file named `index.js` and open the project folder in our favorite code editor. 
+Now that Express is installed, let us create a new file named `index.js` and open the project folder in our favorite code editor. We are using [Visual Studio Code](https://code.visualstudio.com) as our source-code editor.
 
 Let us now add the following lines of code to `index.js`:
 
@@ -265,12 +263,14 @@ app.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`)
 })
 ```
-We have also used an environment variable to define the server port which will default to `3000` if the port is not supplied. Let us run this file with the `node` command:
+We have also used an environment variable to define the server port which will default to `3000` if the port is not supplied. 
+
+Let us run this file with the `node` command:
 
 ```shell
 node server.js
 ```
-We will use this file henceforth to run our HTTP server instead of `index.js`.
+We will use this file: `server.js` henceforth to run our HTTP server instead of `index.js`.
 
 ## Adding Middleware for Processing Requests
 Middleware in Express are functions that come into play **after the server receives the request and before the response is sent to the client**. They are arranged in a chain and are called in sequence. 

@@ -34,7 +34,7 @@ be exported. This is done via the `module.exports` object or the `exports` short
 CommonJS module. Whenever you want to import code into a file, you use the `require(id)` function. Let's see how this 
 all works together.
 
-### Importing Core NodeJS modules
+### Importing Core NodeJS Modules
 
 Without writing or installing any module, you can just start by importing any of NodeJS's built-in modules:   
 
@@ -53,7 +53,7 @@ via the string "http" which always points to the NodeJS internal module. See, ho
 handled like every other function invocation. It is basically written to the local constant `http`. We can 
 name it however we want to.
 
-### Importing NPM dependencies
+### Importing NPM Dependencies
 
 The same way, we can import and use modules from NPM packages (aka the `node_modules` folder):
 
@@ -63,7 +63,7 @@ const chalk = require("chalk"); // don't forget to install
 console.log(chalk.blue("Hello world printed in blue"));
 ```
 
-### Exporting and Importing own code
+### Exporting and Importing Own Code
 
 To import our own code, we first need to tell CommonJS which aspects of our code should be accessible by other modules. 
 Let's assume we want to write our own logging module to make logs look a bit more colorful:
@@ -97,7 +97,7 @@ logger.logError("some error message printed in red");
 
 As you can see, `require()` now receives a relative file path and returns whatever was put into the `exports` object.
 
-### Using `module.exports` instead of `exports`
+### Using `module.Exports` Instead of `exports`
 
 The `exports` object is read only, which means it will always remain the same object instance and cannot be overwritten. 
 However, it is only a shortcut to the `exports` property of the `module` object. We could rewrite our logger module like 

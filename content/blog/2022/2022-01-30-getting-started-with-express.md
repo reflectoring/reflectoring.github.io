@@ -137,7 +137,9 @@ app.listen(3000,
 ```
 The first line here is importing the `express` module from the Express framework package we installed earlier. This module is a function, which we are running on the second line to assign its handle to a variable named `app`. Next, we are calling the `listen()` function on the `app` handle to start our server. 
 
-The `listen()` function takes a port number as the first parameter on which the server will listen for the requests from clients. The second parameter to the `listen()` function is optional. It is a function
+The `listen()` function takes a port number as the first parameter on which the server will listen for the requests from clients. 
+
+The second parameter to the `listen()` function is optional. It is a function
 that runs after the server starts up. Here we are setting the port number as `3000` and a function which will print a message to the console about the server starting up. 
 
 Let us run our application with the `node` command:
@@ -182,7 +184,7 @@ We have added the route just after the declaration of the `app` variable. In thi
 This function takes two parameters:  
 - **Route Path**: The route path is sent as the first parameter. It is in the form of a URL that will be matched with the URL of the HTTP request received by the server. In this case, we are using a route path: `/`, which is the root of our website. This route will match GET requests sent from URL: `localhost:3000`. Instead of using fixed URLs, we can also use string patterns, or regular expressions to define route paths. 
 
-- **Handler Function**: The second parameter is a function with two arguments: `request`, and `response`, also called the `Handler Function`. The first argument of the handler function: `request` represents the HTTP request that was sent to the server. We can use this object to extract information like request headers, and request parameters sent as a query string, path parameters, or request body. The second argument: `response` represents the response that we will be sending back to the client. 
+- **Handler Function**: The second parameter is a function with two arguments: `request`, and `response`, also called the `Handler Function`. The first argument of the handler function: `request` represents the HTTP request that was sent to the server. We can use this object to extract information about the HTTP request like request headers, and request parameters sent as a query string, path parameters, request body, etc. The second argument: `response` represents the HTTP response that we will be sending back to the client. 
 
 Here, we are calling the `send()` method on the `response` object to send back a response in plain text: `response for GET request`. 
 
@@ -464,7 +466,7 @@ Error: processing error!
     at next (...storefront/node_modules/express/lib/router/route.js:137:13)
     at Route.dispatch (...storefront/node_modules/express/lib/router/route.js:112:3)
     at Layer.handle [as handle_request] (...storefront/node_modules/express/lib/router/layer.js:95:5)
-    at Users/pratikdas/pratik/node/...storefront/node_modules/express/lib/router/index.js:281:22
+    at ...storefront/node_modules/express/lib/router/index.js:281:22
 ...
 ...
 
@@ -525,7 +527,8 @@ Next, let us import these error handling middleware functions into our `server.j
 const express = require('express')
 const routes = require('./routes')
 
-const { errorLogger, errorResponder, invalidPathHandler } = require('./errormiddleware')
+const { errorLogger, errorResponder, invalidPathHandler } 
+                           = require('./errormiddleware')
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -605,10 +608,10 @@ Here we are invoking the `render()` method on the res object to render the templ
 
 Other than Pug, some other template engines supported by Express are [Mustache](https://mustache.github.io) and [EJS](https://ejs.co). The complete list can be found in the website of [express](https://expressjs.com/en/resources/template-engines.html).
 
-## Using TypeScript for Express
+## Developing Express Applications with TypeScript 
 So far we have written all our code in JavaScript. However, a major downside of JavaScript is the lack of support for types like string, number, etc. The types are interpreted at runtime. As such unintentional type-related errors are only be detected during runtime making it unfavorable for building enterprise applications. The TypeScript language seeks to address this limitation.
 
-TypeScript is an open-source language developed by Microsoft. It is a superset of JavaScript with additional capabilities, most notable being static type definitions making it an excellent tool for a better and safer development experience.
+[TypeScript](https://www.typescriptlang.org) is an open-source language developed by Microsoft. It is a superset of JavaScript with additional capabilities, most notable being static type definitions making it an excellent tool for a better and safer development experience.
 
 Let us look at the steps for building an Express application using the TypeScript language.  
 
@@ -709,7 +712,7 @@ npx ts-node app.ts
 ```
 Running this command will start the server and result in a similar output as before. We have used `npx` here which is a command-line tool that can execute a package from the `npm` registry without installing that package.
 
-### Adding a Route with a Handler Function Written in TypeSCript
+### Adding a Route with a Handler Function Written in TypeScript
 
 Let us now modify the TypeScript code written in the earlier section to add a route for defining a REST API as shown below:
 ```ts

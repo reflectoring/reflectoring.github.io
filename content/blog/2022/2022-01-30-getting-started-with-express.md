@@ -3,14 +3,14 @@ authors: [pratikdas]
 title: "Getting Started with Express"
 categories: ["Node"]
 date: 2022-01-20T00:00:00
-excerpt: "Express is a web application framework for Node.js. We can use this framework to build APIs, serve web pages, and other static assets and use it as a lightweight HTTP server and backend for our applications. In this article, we will introduce the Express framework and learn to use it to build HTTP servers, REST APIs, and web pages."
+excerpt: "Express is a web application framework for Node.js. We can use this framework to build APIs, serve web pages, and other static assets and use it as a lightweight HTTP server and backend for our applications. In this article, we will introduce the Express framework and learn to use it to build HTTP servers, REST APIs, and web pages using both JavaScript and TypeScript."
 image: images/stock/0115-2021-1200x628-branded.jpg
 url: getting-started-with-express
 ---
 
 Express is a web application framework for Node.js. We can use this framework to build APIs, serve web pages, and other static assets and use it as a lightweight HTTP server and backend for our applications.
 
-In this article, we will introduce the Express framework and learn to use it to build HTTP servers, REST APIs, and web pages.
+In this article, we will introduce the Express framework and learn to use it to build HTTP servers, REST APIs, and web pages using both JavaScript and TypeScript.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/node/express/getting-started" %}}
 
@@ -277,7 +277,7 @@ Middleware in Express are functions that come into play **after the server recei
 
 We can use middleware functions for different types of processing tasks required for fulfilling the request like database querying, making API calls, preparing the response, etc, and finally calling the next middleware function in the chain. 
 
-Middleware functions take three arguments: the request object (`req`), the response object (`res`), and optionally the `next()` middleware function :
+Middleware functions take three arguments: the request object (`request`), the response object (`response`), and optionally the `next()` middleware function :
 
 ```js
 function middlewareFunction(request, response, next){
@@ -302,7 +302,7 @@ Let us define a simple middleware function which prints the request to the conso
 
 ```js
 const requestLogger = (request, response, next) => {
-  console.log(req);
+  console.log(request);
   next();
 };
 ```
@@ -317,7 +317,7 @@ const express = require('express');
 const app = express();
 
 const requestLogger = (request, response, next) => {
-  console.log(req);
+  console.log(request);
   next();
 };
 
@@ -328,9 +328,9 @@ Since we have attached this function to the `app` object, it will get called for
 
 ### Using Express' Built-in Middleware for some more Processing
 
-Express also offers middleware functions called built-in middleware. 
+Express also offers middleware functions called [built-in middleware](https://expressjs.com/en/guide/using-middleware.html#middleware.built-in). 
 
-To demonstrate the use of Express' built-in middleware, let us create a route for the HTTP POST method for adding a new `product`. The handler function for this route will accept `product` data from the `req` object in JSON format. As such we require a JSON parser to parse the fields of the new `product`.  
+To demonstrate the use of Express' built-in middleware, let us create a route for the HTTP POST method for adding a new `product`. The handler function for this route will accept `product` data from the `request` object in JSON format. As such we require a JSON parser to parse the fields of the new `product`.  
 
 For this we will use Express' built-in middleware for parsing JSON and attach it to our `router` object like this:
 
@@ -603,7 +603,7 @@ router.get('/home',  (request, response) => {
 ```
 Here we are invoking the `render()` method on the res object to render the template named `Home` and assigned the values of the three variables in the template file. When we browse the route with URL: `http://localhost:3000/home`, we can see the HTML rendered from the template in the browser.
 
-Other than Pug, some other template engines supported by Express are [Mustache](https://mustache.github.io) and [EJS](https://ejs.co).
+Other than Pug, some other template engines supported by Express are [Mustache](https://mustache.github.io) and [EJS](https://ejs.co). The complete list can be found in the website of [express](https://expressjs.com/en/resources/template-engines.html).
 
 ## Using TypeScript for Express
 So far we have written all our code in JavaScript. However, a major downside of JavaScript is the lack of support for types like string, number, etc. The types are interpreted at runtime. As such unintentional type-related errors are only be detected during runtime making it unfavorable for building enterprise applications. The TypeScript language seeks to address this limitation.

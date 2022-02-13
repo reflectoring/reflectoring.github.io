@@ -198,20 +198,20 @@ We also clarify that we are using a class by capitalizing its name.
 Looks like we can now write clean and modular NodeJS code with the help of CommonJS. Why on earth do we need any other 
 module system? Rest assured that there is a good reason for this...
 
-## The New JavaScript Standard (ES Modules)
+## The JavaScript Standard (ES Modules)
 
 ### Why Another Option for Imports?
 
 As we already learned, CommonJS was initially chosen to be the default module system for NodeJS. At this time there was
 no such thing as a built-in module system in JavaScript. Thanks to the enormous growth of the world-wide JavaScript 
-usage, the language evolved a lot. Since the 2015 edition of the underlying standard (ES2015) we actually have a 
-standardized module system in the language itself, which is simply called ES Modules. It took a while before the browser
-vendors and the NodeJS maintainers actually implemented the standard. This was the case for NodeJS with version 14, 
-when it first was stable. So, let's just dive into it!
+usage, the language evolved a lot. Since the 2015 edition of the underlying EcmaScript standard (ES2015) we actually 
+have a standardized module system in the language itself, which is simply called ES Modules. It took a while before the 
+browser vendors and the NodeJS maintainers actually implemented the standard. This was the case for NodeJS with 
+version 14, when it first got stable. So, let's just dive into it!
 
 ### Export with ES Modules
 
-To preserve comparability, we stay with our logging example. We need to rewrite it like this:
+To preserve comparability, we stay with our logging example. We need to rewrite our `Logger` class example like this:
 
 ```js
 // logger.mjs
@@ -253,60 +253,146 @@ special case with CommonJS, this is much more often seen with ES Modules.
 ### Exports vs. Default Exports
 
 One reason, why this might be seen more often is the way how JavaScript separates between usual and default exports. 
-You as an implementer may choose one specific declaration to be the default export of your module:
+We as implementers may choose one specific declaration to be the default export of your module:
 
 ```js
 export default class Logger {...}
 ```
 
-If you put the `default` keyword behind any `export`, you basically say "treat this as the thing every module gets, 
-if it doesn't ask for something specific". You can (but are not forced to) import it by leaving out the curly brackets:
+If we put the `default` keyword behind any `export`, we basically say "treat this as the thing every module gets, 
+if it doesn't ask for something specific". We can (but are not forced to) import it by leaving out the curly brackets:
 
 ```js
 import Logger from "./logger.mjs";
 ```
 
-As a consequence, you cannot declare more than one part of your code as the default export. 
+As a consequence, we cannot declare more than one part of our code as the default export. 
 
-However, you might declare no default at all. In this case every other module needs to explicitly specify what it wants 
-to import just the way we have seen above.
+However, we might declare no default at all. In this case we cannot use the default import syntax. The most obvious 
+solution is then to explicitly specify what we want to import just the way we have seen above. 
 
-### Exporting Not Only Objects
+### Named imports
 
-TODO:
-- export and import not only objects
-- import default (import { default as someName } from ... and import someName from ...)
-- TODO: named import (import * as)
-- TODO: import CommonJS modules from ES Module
+There is another import option. We can simply say "give me everything the module exports and give it the namespace xzy".
+To demonstrate this we move the `defaultMessage` from the class to an exported constant declaration.
 
+```js
+// logger.mjs
+import chalk from "chalk";
 
-## Differences to notice
+export const defaultMessage = "Hello World";
+
+export class Logger {
+  static info(message) {
+    console.log(chalk.blue(message));
+  }
+
+  static error(message) {
+    console.log(chalk.red(message));
+  }
+}
+```
+
+Now we export two declarations from our file: `defaultMessage` and `Logger`, none of them is a default export. If we 
+still want to import all of it, we would use a named import:
+
+```js
+// index.mjs
+import * as LoggerModule from "./logger.mjs"
+
+LoggerModule.Logger.info(`${LoggerModule.defaultMessage} printed in blue`);
+LoggerModule.Logger.error("some error message printed in red");
+```
+
+This way everything from `logger.mjs` is put into a namespace with the name `LoggerModule`. Often we see this syntax as
+a fallback solution for imports from non ES Modules files.
+
+{{% info title="Named default imports" %}}
+The default import we used above actually is also a named import:
+```js
+import Logger from "./logger.mjs";
+```
+Under the hood, this is a shortcut for:
+```js
+import { default as Logger } from "./logger.mjs";
+```
+Anyway, most times we use the shortcut as it is simpler to read and follow.
+{{% /info %}}
+
+### Importing CommonJS Modules from ES Modules
+
+Currently, you quickly might run into the need to import CommonJS modules as many NPM packages are not already available
+as ES Modules. This is not an issue at all. NodeJS allows you to import CommonJS modules from ES Modules. If we would 
+like to import our CommonJS class export example from above, our ES Module import would look like this:
+
+```js
+// index.mjs
+import Logger from "./logger.js";
+
+Logger.info(`${Logger.defaultMessage} printed in blue`);
+Logger.error("some error message printed in red");
+```
+
+In this case `module.exports` is simply treated as the default export which you might import as such.
+
+## Differences to Notice
+
+There are a few key differences which you need to keep in mind when working with the two different NodeJS module systems.
+We are going to highlight the most important ones here.
 
 ### File Extensions
-- .js is treated as CommonJS and is NodeJS default
-- .mjs flags file as ES Module
-- .js files cannot require .mjs files (https://nodejs.org/api/modules.html#the-mjs-extension)
-- .mjs files can import both
-- file extension is mandatory in ES Module imports (as opposed to e.g. in CommonJS, Webpack or TypeScript)
+
+As you might already have noticed, in all of our ES modules imports we explicitly added the file extension to all file
+imports. This is mandatory for ES Modules (as opposed to e.g. CommonJS, Webpack or TypeScript).
+
+This is important as NodeJS distinguishes between CommonJS modules and ES Modules via the file extension.
+By default, files with the `.js` extension will be treated as CommonJS modules, while files with the `.mjs` extension
+are treated as ES Modules. 
+
+However, you might want to configure your NodeJS project to use ES Modules as the default 
+module system. Please consult the 
+[NodeJS documentation on file extensions](https://nodejs.org/api/packages.html#packagejson-and-file-extensions) to find 
+out, how to correctly configure your project.
+
+As we already have seen, ES Modules can import CommonJS modules. Vice versa is not the case. CommonJS modules cannot
+import ES Modules. You will never be able to import `.mjs` files from `.js` files. This is due to the different nature 
+of the two systems. 
 
 ### Dynamic vs. Static
-- imports only on top of file vs. require() can be called everywhere (a bit advanced but good to know -> maybe info box?)
-    - require is dynamic / executed at runtime
-        - pros: can be called everywhere in your code
-    - import is static / executed at parse time
-        - imports are hoisted / always automatically moved to the top of the file 
-        - pros: errors can be caught upfront, tools can better support
-        - dynamic import() as option
+
+The two module systems do not only have a different syntax. They also differ in the way how imports and exports are 
+treated. 
+
+CommonJS imports are dynamically resolved at runtime. The `require()` function is simply run at the time our code 
+executes. As a consequence you can call it everywhere in your code.
+
+The opposite is the case with ES Modules. Imports are static, which means they are executed at parse time. This is why
+imports are hoisted. They are implicitly moved to the top of the file. Therefore, we cannot use the import syntax we
+have seen above just in the middle of your code. The upside of this, that errors can be caught upfront and developer
+tools can better support us with writing valid code.
+
+There might be cases where we really need to dynamically import modules at runtime. Rest assured, there is a solution:
+The dynamic `import()` function. As we really should treat this as a special use case, we did not cover it in this article.
+You may consult the [NodeJS documentation](https://nodejs.org/api/esm.html#import-expressions) if you want to know more.
 
 ## When to Use Which?
 
-- ES Modules are standardized since ES 2015 (https://tc39.es/ecma262/#sec-modules)
-- ES Modules are stable in Node since version 14 (Release: 2020-04-21)
-- no pressure to migrate existing code
-    - CommonJS is still the standard
-    - there is no deprecation of CommonJS
-    - however, tools (such as Babel) can be used to write ES Modules Syntax but use CommonJS under the hood as possible migration path
-- suggested to use ESM on new projects because it is now the language standard
+We have now learned about the two module system options in NodeJS. We have seen how you can create and import modules in
+CommonJS. We have also seen how to accomplish the same things with ES Modules.
 
-## What Did We Learn?
-- short conclusion
+Now you might wonder which module system you should use. As often, the answer is: it depends. My personal advise is the
+following:
+
+If you are starting a new project, use ES Modules. They are standardized for many years now. NodeJS has stable support
+for it since version 14, which was released in April 2020. You can find a lot of documentation and examples out there.
+Many package maintainers already published their libraries with ES Modules support. There is no reason, not to use it.
+
+Things may be different if you are maintaining an existing NodeJS application which uses CommonJS. The most important
+fact is, that currently there is no pressure to migrate your existing code. CommonJS is still the default module system
+of NodeJS and there are so far no signs that this will change soon. However, you might migrate to the
+ES Modules syntax while using CommonJS under the hood. This can be accomplished by tools like Babel or TypeScript and
+allows you to decide to more easily switch to ES Modules at a later point in time.
+
+Whatever you choose, you won't make a huge mistake. Both options are valid options and this is the beauty of the
+JavaScript ecosystem. It has evolved a lot in the past decade, and you have options for nearly anything you want to 
+achieve.

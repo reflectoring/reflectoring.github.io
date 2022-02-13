@@ -1,7 +1,7 @@
 ---
 title: "How to use CompletableFuture to improve Performance"
 categories: ["Java"]
-date: 2022-02-08T11:00:00 authors: [nukajbl]
+date: 2022-02-08T11:00:00 authors: ["nukajbl"]
 excerpt: "In this article, we will see how to increase the performance of our application using the class
 CompletableFuture."
 image: images/stock/0117-future-1200x628-branded.jpg url: api-calls-performance-with-completable-future

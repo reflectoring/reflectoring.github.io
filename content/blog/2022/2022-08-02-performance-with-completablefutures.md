@@ -319,6 +319,6 @@ Category{category='Category_7'}, Category{category='Category_8'}, Category{categ
 
 ## Conclusion
 
-In this article we saw what is `Future` interface in Java, how to use it and what are its limitations. We learned how to
-overcome these limitations by using the `CompletableFuture` class. After that we analyzed a demo application, and step
+In this article, we saw what is `Future` interface in Java, how to use it and what are its limitations. We learned how to
+overcome these limitations by using the `CompletableFuture` class. After that, we analyzed a demo application, and step
 by step using the potential offered by `CompletableFuture` we refactored it for better performance. 

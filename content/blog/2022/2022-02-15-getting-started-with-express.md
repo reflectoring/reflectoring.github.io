@@ -2,9 +2,9 @@
 authors: [pratikdas]
 title: "Getting Started with Express"
 categories: ["Node"]
-date: 2022-01-20T00:00:00
+date: 2022-02-15 00:00:00 +1100
 excerpt: "Express is a web application framework for Node.js. We can use this framework to build APIs, serve web pages, and other static assets and use it as a lightweight HTTP server and backend for our applications. In this article, we will introduce the Express framework and learn to use it to build HTTP servers, REST APIs, and web pages using both JavaScript and TypeScript."
-image: images/stock/0115-2021-1200x628-branded.jpg
+image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: getting-started-with-express
 ---
 
@@ -17,13 +17,13 @@ In this article, we will introduce the Express framework and learn to use it to 
 ## Introducing Node.js
 A basic understanding of [Node.js](https://nodejs.org/en/docs/guides/getting-started-guide/) is essential for working with Express. 
 
-`Node.js` is an open-source runtime environment for executing server-side JavaScript applications. A unique feature of Node.js runtime is that it is a non-blocking, event-driven input/output(I/O) request processing model.
+Node.js is an open-source runtime environment for executing server-side JavaScript applications. A unique feature of Node.js runtime is that it is a non-blocking, event-driven input/output(I/O) request processing model.
 
-`Node.js` uses the [V8 JavaScript Runtime](https://v8.dev/docs) engine which is also used by Google Chrome web browser developed by Google. This makes the runtime engine much faster and hence enables faster processing of requests. 
+Node.js uses the [V8 JavaScript Runtime](https://v8.dev/docs) engine which is also used by Google Chrome web browser developed by Google. This makes the runtime engine much faster and hence enables faster processing of requests. 
 
-To use Express, we have to first install `Node.js` and [npm](https://www.npmjs.com/package/npm) in our development environment. `npm` is a JavaScript Package Manager. `npm` is bundled with `Node.js` by default. 
+To use Express, we have to first install Node.js and [npm](https://www.npmjs.com/package/npm) in our development environment. `npm` is a JavaScript Package Manager. `npm` is bundled with Node.js by default. 
 
-We can refer to the [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) site for the installation instructions for `npm`. Similarly, we can find the installation instructions for `Node.js` on its [official website](https://nodejs.org/en/download/). 
+We can refer to the [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) site for the installation instructions for `npm`. Similarly, we can find the installation instructions for Node.js on its [official website](https://nodejs.org/en/download/). 
 
 ## What is Express?
 
@@ -51,7 +51,7 @@ app.listen(
    3000, 
    () => console.log(`Server listening on port 3000.`));
 ```
-When we run this application in `Node.js`, we will have an HTTP server listening on port `3000` which can receive a GET request sent from the URL: `http://localhost:3000/` and respond with a text message: `response for GET request`.
+When we run this application in Node.js, we will have an HTTP server listening on port `3000` which can respond to a GET request to the URL: `http://localhost:3000/` respond with a text message: `response for GET request`.
 
 We can observe the following components in this application:
 
@@ -68,14 +68,14 @@ While Express itself is fairly minimalist, there is a wealth of utilities create
 
 Let us start by first installing Express. 
 
-Before that let us create a folder and initialize a `Node.js` project under it by running the `npm init` command:
+Before that let us create a folder and initialize a Node.js project under it by running the `npm init` command:
 
 ```shell
 mkdir storefront
 cd storefront
 npm init -y
 ```
-Running these commands will create a `Node.js` project containing a `package.json` file resulting in this output:
+Running these commands will create a Node.js project containing a `package.json` file resulting in this output:
 
 ```shell
 Wrote to /.../storefront/package.json :
@@ -93,7 +93,7 @@ Wrote to /.../storefront/package.json :
   "license": "ISC"
 }
 ```
-The Express framework is published as a `Node.js` module and made available through the `npm` registry.
+The Express framework is published as a Node.js module and made available through the `npm` registry.
 
 Installation of the framework is done using the `npm install` command as shown below:
 
@@ -420,10 +420,13 @@ Our route for the HTTP `POST` method with the `requireJsonContent()` middleware 
 ```js
 // handle post request for path /products
 router.post('/products', 
-  requireJsonContent,     // first function in the chain will 
-                          // check for JSON content
-  (request, response) => { // second function will process the request
-                           // if first function detects the content as jSON
+  
+  // first function in the chain will check for JSON content
+  requireJsonContent,  
+  
+  // second function will process the request if first function detects JSON 
+  (request, response) => {  
+                           
   // process json request
   ...
   ...
@@ -528,7 +531,7 @@ const express = require('express')
 const routes = require('./routes')
 
 const { errorLogger, errorResponder, invalidPathHandler } 
-                           = require('./errormiddleware')
+    = require('./errormiddleware')
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -609,7 +612,7 @@ Here we are invoking the `render()` method on the res object to render the templ
 Other than Pug, some other template engines supported by Express are [Mustache](https://mustache.github.io) and [EJS](https://ejs.co). The complete list can be found in the website of [express](https://expressjs.com/en/resources/template-engines.html).
 
 ## Developing Express Applications with TypeScript 
-So far we have written all our code in JavaScript. However, a major downside of JavaScript is the lack of support for types like string, number, etc. The types are interpreted at runtime. As such unintentional type-related errors are only be detected during runtime making it unfavorable for building enterprise applications. The TypeScript language seeks to address this limitation.
+So far we have written all our code in JavaScript. However, a major downside of JavaScript is the lack of support for types like string, number, etc. The types are interpreted at runtime. This means that unintentional type-related errors can only be detected during runtime making it unfavorable for building enterprise applications. The TypeScript language seeks to address this limitation.
 
 [TypeScript](https://www.typescriptlang.org) is an open-source language developed by Microsoft. It is a superset of JavaScript with additional capabilities, most notable being static type definitions making it an excellent tool for a better and safer development experience.
 
@@ -623,19 +626,17 @@ We will install TypeScript as an `npm` package called `typescript` along with an
 
 ```shell
 npm i -D typescript ts-node
-
 ```
 The `typescript` package transforms the code written in TypeScript language to JavaScript using a process called [transcompiling](https://en.wikipedia.org/wiki/Source-to-source_compiler) or transpiling. 
 
-The `ts-node` `npm` package enables running TypeScript files from the command line in `Node.js` environments.
+The `ts-node` `npm` package enables running TypeScript files from the command line in Node.js environments.
 
-The -D, also known as the --dev option, means that both the packages are installed as development dependencies. After the installation, we will have the `devDependencies` property inside the `package.json` populated with these packages as shown below:
+The `-D`, also known as the `--dev` option, means that both the packages are installed as development dependencies. After the installation, we will have the `devDependencies` property inside the `package.json` populated with these packages as shown below:
 
 ```json
 {
   "name": "storefront",
-...
-...
+  ...
   "devDependencies": {
     "ts-node": "^10.5.0",
     "typescript": "^4.5.5"
@@ -663,7 +664,7 @@ npm i -D @types/node @types/express
 Our setup for TypeScript is now complete with the options for transpiling the TypeScript set and the types from Node.js and Express framework installed. We will use this setup to create our server and routes in TypeScript in the next sections.
 
 ### Running the Server Created with TypeScript
-Let us create a file named `app.ts` which will contain the code written in TypeScript language for running the server application in the root directory. The TypeScript code for running the server application looks like this:
+Let us create a file named `app.ts` which will contain the code written in TypeScript for running the server application in the root directory. The TypeScript code for running the server application looks like this:
 
 ```ts
 import express from 'express';
@@ -673,8 +674,7 @@ const port = 3000;
 
 app.listen(port, () => {
     console.log(`Server listening at port ${port}.`);
-  });
-
+});
 ```
 Here we have used the `express` module to create a server as we have seen before. With this configuration, the server will run on port `3000` and can be accessed with the URL: `http://localhost:3000`.
 
@@ -688,8 +688,7 @@ We will next add a script named `serve` with `nodemon app.ts` command inside the
 
 "scripts": {
     "serve": "nodemon app.ts"
-  }
-
+}
 ```
 This script is used to start the server. The `ts-node` package installed earlier makes this possible under the hood, as normally we will not be able to run TypeScript files from the command line.
 
@@ -712,7 +711,7 @@ npx ts-node app.ts
 ```
 Running this command will start the server and result in a similar output as before. We have used `npx` here which is a command-line tool that can execute a package from the `npm` registry without installing that package.
 
-### Adding a Route with a Handler Function Written in TypeScript
+### Adding a Route with a Handler Function in TypeScript
 
 Let us now modify the TypeScript code written in the earlier section to add a route for defining a REST API as shown below:
 ```ts
@@ -726,12 +725,13 @@ interface Product {
     name: string;
     price: number;
     brand: string;
-  };
+};
 
 // Define a handler function
-const getProducts = ( request: Request, 
-                      response: Response, 
-                      next: NextFunction) => {
+const getProducts = ( 
+    request: Request, 
+    response: Response, 
+    next: NextFunction) => {
 
     // Defining a hardcoded array of product entities
     let products: Product[] = [
@@ -741,8 +741,7 @@ const getProducts = ( request: Request,
     ]
 
     // sending a JSON response
-    response.status(200)
-            .json(products);
+    response.status(200).json(products);
 }
 
 // Define the route with route path '/products'
@@ -751,7 +750,7 @@ app.get('/products', getProducts);
 // Start the server
 app.listen(port, () => {
     console.log(`Server listening at port ${port}.`);
-  });
+});
 
 ```
 We have modified the import statement on the first line to import the TypeScript interfaces that will be used for the `request`, `response`, and `next` parameters inside the Express middleware.
@@ -766,7 +765,7 @@ Here is a list of the major points for a quick reference:
 
 1. Express is a lightweight framework for building web applications on Node.js
 
-2. Express is installed as an `npm` module in a `Node.js` project
+2. Express is installed as an `npm` module in a Node.js project
 
 3. We define Routes in Express by associating handler functions with URL paths also called route paths.
 
@@ -778,7 +777,7 @@ Here is a list of the major points for a quick reference:
 
 7. In this article, we built a web application containing GET and POST endpoints for a REST API and another endpoint for rendering an HTML.
 
-8. We also used TypeScript to define a `Node.js` server application containing an endpoint for a REST API.  
+8. We also used TypeScript to define a Node.js server application containing an endpoint for a REST API.  
 
 9. The code of our web application is distributed across the following files :
     - `routes.js` contains all the route handler functions for the REST API along with another route to render the dynamic HTML based on a Pug template.

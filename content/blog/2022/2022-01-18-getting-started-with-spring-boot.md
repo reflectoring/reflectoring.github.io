@@ -9,7 +9,12 @@ image: images/stock/0012-pages-1200x628-branded.jpg
 url: getting-started-with-spring-boot
 ---
 ## Introduction
-- Spring Boot vs. Spring
+The Spring Boot is the addition to the Spring Framework.
+
+Using the Spring Boot we can create production-grade applications with minimal effort. The autoconfiguration allows us to generate the project and start creating business value.
+The Spring Boot autoconfiguration is non-invasive, which means that we can change only the parts that we need.
+
+In this article, we will go through the creation process of the application. We will show how to use basic Spring features and end up with a fully functional application that we can run.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/beginners-guide" %}}
 
@@ -509,79 +514,156 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 Using the attribute names and special keywords, we can create queries. The Spring JPA will generate the proper queries according to our definition.
 
 More about the method names query we can find in the [official documentation](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.named-queries)
+## Building the Business Layer
+
+The business layer is the core part of the application. 
+
+We will show how to:
+- (define the service class)[#defining-the-service-class]
+- (inject repository classes)[#injecting-the-repository-class]
+### Defining the Service Class
+Let us look at how to create the service class:
+```java
+@Service
+public class GetBookService {
+    // Rest of the code is omitted
+}
+```
+The `@Service` annotation transforms our class into the Spring Bean controlled by the Application Context.
+
+### Injecting the Repository Class
+We use the dependency injection to obtain required classes into the GetBookService.class. For now, we only need the BookRepository.class
+
+We can inject the GetBookRepository.class using three methods:
+- [field-based injection](#field-based-injection)
+- [setter-based injection](#setter-based-injection)
+- [constructor-based injection](#constructor-based-injection)
+
+More about types of dependency injection we can look at [the article](https://reflectoring.io/constructor-injection/).
+#### Field-based Injection
+Let us look at how to use the field-based injection:
+```java
+@Service
+public class GetBookService {
+    @Autowired
+    private final BookRepository bookRepository;
+
+    // Rest of the code is omitted
+}
+```
+
+The Spring recognizes the `@Autowired` annotation and makes sure that the BookRepository is provided. Starting with the 
+#### Setter-based Injection
+```java
+@Service
+public class GetBookService {
+
+    private BookRepository bookRepository;
+
+    @Autowired
+    private void setBookRepository(BookRepository bookRepository){
+        this.bookRepository = bookRepository;
+    }
+
+    // Rest of the code is omitted
+}
+```
+
+We can put the `@Autowired` annotation on the setter method. The setter-based injection does not allow us to mark the variable as final.
+#### Constructor-based Injection
+```java
+@Service
+public class GetBookService {
+
+    private final BookRepository bookRepository;
+
+    @Autowired
+    public GetBookService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
+    // Rest of the code is omitted
+}
+```
+For the constructor-based annotation, we should set the `@Autowired` annotation on the constructor. 
+
+We are sure that the IoC container will provide all constructor arguments.
+
+More about dependency injection and why to use the constructor-based injection we can find in the [article.](https://reflectoring.io/constructor-injection/)
+
 ## Building Controllers
-After discussing about generation process let us create our first controller in the application.
+After creating entities, repositories, and services let us create our first controller.
 
 The imported `spring-boot-starter-web` contains everything that we need for the controller. We have the Spring MVC autoconfigured and the embedded Tomcat server ready to use.
 
-The Spring MVC is a Spring framework which is used to create Model View Controller web applications. With the Spring MVC we can define a controller with the `@Controller` or `@RestController` annotation so it can handle incoming requests.
+With the Spring MVC, we can define a controller with the `@Controller` or `@RestController` annotation so it can handle incoming requests.
 
-### Creating a Endpoint With the @RestController
+### Creating an Endpoint With the @RestController
 We are going to create our first endpoint. We want to fetch all books that the bookstore owns.
 Let us look into the codebase:
 ```java
 @RestController
 @RequestMapping("/books")
 public class BooksRestController {
-    BookResponse sandman = BookResponse.builder()
-            .title("The Sandman Vol. 1: Preludes & Nocturnes")
-            .author("Neil Gaiman")
-            .publishedOn("19/10/2010")
-            .currentlyAvailableNumber(4)
-            .build();
-    BookResponse lotr = BookResponse.builder()
-            .title("The Lord Of The Rings Illustrated Edition")
-            .author("J.R.R. Tolkien")
-            .publishedOn("16/11/2021")
-            .currentlyAvailableNumber(1)
-            .build();
-    List<BookResponse> books = new ArrayList(List.of(sandman, lotr));
+
+    private final GetBookService getBookService;
+
+    @Autowired
+    public BooksRestController(GetBookService getBookService) {
+        this.getBookService = getBookService;
+    }
 
     @GetMapping
     List<BookResponse> fetchAllBooks(){
-        return books;
+        return getBookService.getAllBooks();
     }
+
+    // Rest of the code 
 }
 ```
-To make our class the controller bean we need to annotate it with the `@RestController` or with the `@Controller`. The difference between these two is that the `@RestController` automatically wraps return object into the `ResponseEntity<>`. 
+To make our class the controller bean we need to annotate it with the `@RestController` or with the `@Controller`.
+The difference between these two is that the `@RestController` automatically wraps the object into the `ResponseEntity<>`. 
 
-We went with the `@RestController` because it is easier to follow the code without transformation code.
+We went with the `@RestController` because it gives cleaner and more readable code.
 
-The `@RequestMapping("/books")` annotation maps our bean to this path. If we start this code locally we can access this enpoint on the `http://localhost:8080/books`. 
+The `@RequestMapping("/books")` annotation maps our bean to this path. 
+If we start the application locally we can access the endpoint on the `http://localhost:8080/books`. 
 
-We annotated the `fetchAllBooks()` method with the `@GetMapping` annotation to define that this is the GET method. Since we didn't define additional path on the `@GetMapping` annotation we are using the path from the `@RequestMapping` definitions.
+We annotated the `fetchAllBooks()` method with the `@GetMapping` annotation to define that this is the GET method. 
+Since we didn't define additional path on the `@GetMapping` annotation we are using the path from the `@RequestMapping` definitions.
 
 ### Creating an Endpoint With the @Controller
-Instead with the `@RestController` we can define our controller bean with the `@Controller` annotation:
+
+Instead with the `@RestController` we can define the controller bean with the `@Controller` annotation:
 ```java
 @Controller
 @RequestMapping("/controllerBooks")
 public class BooksController {
-    BookResponse sandman = BookResponse.builder()
-            .title("The Sandman Vol. 1: Preludes & Nocturnes")
-            .author("Neil Gaiman")
-            .publishedOn("19/10/2010")
-            .currentlyAvailableNumber(4)
-            .build();
-    BookResponse lotr = BookResponse.builder()
-            .title("The Lord Of The Rings Illustrated Edition")
-            .author("J.R.R. Tolkien")
-            .publishedOn("16/11/2021")
-            .currentlyAvailableNumber(1)
-            .build();
-    List<BookResponse> books = new ArrayList(List.of(sandman, lotr));
+
+    private final GetBookService getBookService;
+
+    @Autowired
+    public BooksController(GetBookService getBookService) {
+        this.getBookService = getBookService;
+    }
 
     @GetMapping
     ResponseEntity<List<BookResponse>> fetchAllBooks(){
-        return ResponseEntity.ok(books);
+        return ResponseEntity.ok(getBookService.getAllBooks());
     }
+    // Rest of the code omitted
+
 }
 ```
-When using the `@Controller` annotation we need to make sure that we wrap our result in the `ResponseEntity<>` class.
+When using the `@Controller` annotation we need to make sure that we wrap the result in the `ResponseEntity<>` class.
 
-This approach gives us more freedom when returning objects. Let us imagine we are rewriting some legacy backend code to the Spring Boot project. One of requirements was that the current frontend applications work as they should. Previous code always returned the 200 code but the body would differ if some error occured. In those kind of scenarios we can use the `@Controller` annotation and control what is returned to the user.
+This approach gives us more freedom when returning objects. 
+Let us imagine we are rewriting some legacy backend code to the Spring Boot project. 
+One of requirements was that the current frontend applications work as they should. 
+Previous code always returned the 200 code but the body would differ if some error occured. 
+In those kind of scenarios we can use the `@Controller` annotation and control what is returned to the user.
 
-### Calling an Endpoint
+#### Calling an Endpoint
 After we build our first enpoint we want to test it and see what do we get as the result. Since we don't have any frontend we can use command line tools or the [Postman](#https://www.postman.com/). 
 If we are using the command line tools like cURL we can call the endpoint as follows:
 
@@ -612,19 +694,25 @@ Now, let us take a look how we can create new data:
 @RestController
 @RequestMapping("/books")
 public class BooksRestController {
-    List<BookResponse> books = new ArrayList(List.of(sandman, lotr));
+    
+    private final GetBookService getBookService;
+
+    private final CreateBookService createBookService;
+
+    @Autowired
+    public BooksRestController(GetBookService getBookService,
+                               CreateBookService createBookService) {
+        this.getBookService = getBookService;
+        this.createBookService = createBookService;
+    }
 
     @PostMapping
-    List<BookResponse> create(@RequestBody BookRequest request){
-        BookResponse book = BookResponse.builder()
-                .title(request.getTitle())
-                .author(request.getAuthor())
-                .publishedOn(request.getPublishedOn())
-                .currentlyAvailableNumber(request.getCurrentlyAvailableNumber())
-                .build();
-        books.add(book);
-        return books;
+    BookResponse create(@RequestBody BookRequest request){
+        return createBookService.createBook(request);
     }
+
+    // Rest of the code omitted
+
 }
 ```
 The `@PostMapping` defines that this is the POST method and that we want to create a new resource through it.
@@ -652,32 +740,39 @@ The PUT method is used when we want to update the resource that is already in th
 @RestController
 @RequestMapping("/books")
 public class BooksRestController {
-    List<BookResponse> books = new ArrayList(List.of(sandman, lotr));
+    
+    private final GetBookService getBookService;
+
+    private final CreateBookService createBookService;
+
+    private final UpdateBookService updateBookService;
+
+    @Autowired
+    public BooksRestController(GetBookService getBookService,
+                               CreateBookService createBookService,
+                               UpdateBookService updateBookService) {
+        this.getBookService = getBookService;
+        this.createBookService = createBookService;
+        this.updateBookService = updateBookService;
+    }
 
     @PutMapping("/{id}")
     BookResponse update(@PathVariable("id") long id,
                         @RequestBody BookRequest request){
-        BookResponse book =
-                books.stream().filter(x -> x.getId()==id).findFirst().orElseThrow(() -> new RuntimeException());
-        books.remove(book);
-        book = BookResponse.builder()
-                .id(id)
-                .author(request.getAuthor())
-                .title(request.getTitle())
-                .publishedOn(request.getPublishedOn())
-                .currentlyAvailableNumber(request.getCurrentlyAvailableNumber())
-                .build();
-        books.add(book);
-        return book;
+        return updateBookService.updateBook(id,request);
     }
+
+    // Rest of the code omitted
 }
 ```
-In the `@PutMapping` annotation we define the path that continues on the one defined with the `@RequestMapping` at the top of the class. With this our path looks like this:
+In the `@PutMapping` annotation we define the path that continues on the one defined with the `@RequestMapping` at the top of the class.
+The path looks like this:
 `http://localhost:8080/books/{id}`.
 
-The `id` variable is called the path variable and can be passed into method using the `@PathVariable("id")` annotation on the method argument. We need to be careful that the value inside the `@PathVariable` matches the value inside the `@PutMapping`.
+The `id` variable is called the path variable and we can pass it into the method using the `@PathVariable("id")` annotation on the method argument. 
+We need to be careful that the value inside the `@PathVariable` matches the value inside the `@PutMapping`.
 
-The body of the method is defined with the `@RequestBody` annotation and is passed as the json object inside the HTTP request.
+The body of the method is defined with the `@RequestBody` annotation and we pass it as the json object inside the HTTP request.
 
 Let us look how can we call this endpoint using the cURL commands:
 ```text
@@ -690,7 +785,7 @@ curl --location --request PUT 'http://localhost:8080/books/1'
                                     "currentlyAvailableNumber": 2
                                 }'
 ```
-We can see that the `{id}` path variable that we defined in our controller is replaced with the real value. This value will be passed into the `id` argument from our method inside the controller.
+We can see that the `{id}` path variable that we defined in the controller is replaced with the real value. 
 
 ### Creating a DELETE Endpoint
 The DELETE method is used to delete the resource from the database:
@@ -698,19 +793,51 @@ The DELETE method is used to delete the resource from the database:
 @RestController
 @RequestMapping("/books")
 public class BooksRestController {
-    List<BookResponse> books = new ArrayList(List.of(sandman, lotr));
+    
+
+    private final CreateBookService createBookService;
+
+    private final UpdateBookService updateBookService;
+
+    private final DeleteBookService deleteBookService;
+
+    @Autowired
+    public BooksRestController(GetBookService getBookService,
+                               CreateBookService createBookService,
+                               UpdateBookService updateBookService,
+                               DeleteBookService deleteBookService) {
+        this.getBookService = getBookService;
+        this.createBookService = createBookService;
+        this.updateBookService = updateBookService;
+        this.deleteBookService = deleteBookService;
+    }
 
     @DeleteMapping("/{id}")
     void delete(@PathVariable("id") long id){
-        BookResponse book = books.stream().filter(x -> x.getId()==id).findFirst().orElseThrow(() -> new RuntimeException());
-        books.remove(book);
+        deleteBookService.delete(id);
     }
+
+    // Rest of the code omitted
+
 }
 ```
-With the `@DeleteMapping("/{id}")` we define which resource we want to delete. We can se that the path is the same as in the [PUT endpoint](#creating-a-put-endpoint) but the HTTP method is different. The paths have to be unique for the same HTTP method. 
+With the `@DeleteMapping("/{id}")` we define which resource we want to delete. 
+We can see that the path is the same as in the [PUT endpoint](#creating-a-put-endpoint) but the HTTP method is different. 
+The paths have to be unique for the same HTTP method. 
 
 Let us look how can we call this endpoint using the cURL command:
 ```text
 curl --location --request DELETE 'http://localhost:8080/books/1'
 ```
+
 The method that we call is the DELETE method and the `{id}` placeholder was replaced with the real value.
+
+## Conclusion
+After deciding which dependencies we needed and generating the project, we showed how to create a functional application.
+
+We showed how to build the basic Spring Boot application. We went through several concepts:
+- [creating the entity](#building-the-domain-objects)
+- [creating the repository](#building-the-data-access-layer)
+- [creating the service](#building-the-business-layer)
+- [creating the controller](#building-controllers)
+

@@ -21,7 +21,7 @@ $( document ).ready(function() {
       if(cookie == null){
 
         $.fn.cornerpopup({
-          delay: 1000,
+          delay: 30000,
           width: "600px",
           height: "600px",
           variant: 10,

@@ -281,6 +281,9 @@ Using Maven we have to run the command `mvn clean package` in our root directory
 ### Gradle
 As for Gradle we have to invoke the build task. Using Windows the command will be `./gradlew build`. This will also build the JAR file in the `build` directory.
 
+
+After obtaining the JAR file we run it using the command `java -jar our-spring-shell-jar-name.jar`. This will open our shell in the command line and have it ready for us to type in commands.
+
 ## Summary
 - The Shell allows us to interface with a system using commands.
 

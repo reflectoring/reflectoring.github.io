@@ -1,17 +1,17 @@
 ## Spring Shell
 [Spring Shell](https://spring.io/projects/spring-shell) allows us to build a command line application (Shell) using Spring's framework and all the advantages it provides.
 
-## What Is A Shell Anyways?
+## What Is a Shell Anyways?
 A shell provides us with an interface to a system (usually an OS) to which we give commands and parameters. The shell in turn does some useful tasks for us and provides an output.
 
-## Let's Create A Basic Shell
+## Let's Create a Basic Shell
 Since it's a Spring application, our main method has to be annotated with `@SpringBootApplication`
 ```java
-@SpringBootApplication
-public class SpringShellApplication {
-  public static void main(String[] args) {
-    SpringApplication.run(SpringShellApplication.class, args);
-  }
+@SpringBootApplication  
+public class SpringShellApplication {  
+   public static void main(String[] args) {  
+      SpringApplication.run(SpringShellApplication.class, args);  
+   }  
 }
 ```
 
@@ -40,7 +40,7 @@ We can also see the `value` property which is used to describe the command.
 
 The `@ShellOption` annotation simply states that this command takes a parameter named `-s`.
 
-So as a result when we run the application we get a shell that has a command called `ssh` which takes a parameter `-s` and all it does is logging the passed parameter value to the command line:
+So as a result when we run the application we get a shell that has a command called `ssh` which takes a parameter `-s` and all it does is logging the passed parameter value to the command line.
 
 ```bash
 shell:>ssh -s my-machine
@@ -241,12 +241,12 @@ public Availability signOutCheck()
 }
 ```
 
-## Other Cool Features In Spring Shell
+## Other Cool Features in Spring Shell
 Since Spring Shell builds on top of [JLine](https://github.com/jline/jline3) it inherits a lot of its features. Let's look at some of them:
 
 ### Tab Completion
 
-### Built In Commands
+### Built in Commands
 
 - help:
   - lists all the commands known to the shell, including the built-in commands and commands we wrote.
@@ -255,7 +255,7 @@ Since Spring Shell builds on top of [JLine](https://github.com/jline/jline3) it 
   - accepts a local file as an argument and will replay commands found there, one at a time.
 
 
-## Styling The Shell
+## Styling the Shell
 We can do so by registering a bean of type `PromptProvider` which includes information on how to render the Shell prompt.
 For example, let's change the prompt text to `Cool Machine==> ` with a green color for the text:
 ```java
@@ -270,7 +270,7 @@ public class CustomPromptProvider implements PromptProvider {
 }
 ```
 
-## Running Spring Shell JAR File
+## Running Spring Shell Jar File
 To build a JAR file from our Spring Shell project we have two paths depending on the building tool we are using, let's explore them both.
 Please note that we are doing this using command line instructions. If you are using an IDE it will take care of this for you when running the project.
 
@@ -293,4 +293,3 @@ After obtaining the JAR file we run it using the command `java -jar our-spring-s
 - Spring Shell is built on top of **JLine** which offers useful features like tab completion and built in commands.
 - We can choose to make some commands available based on certain conditions.
 - We can style the command line as we like.
-

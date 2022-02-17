@@ -86,7 +86,7 @@ hasChildren = true
 
       [[main]]
       parent = "Categories"
-      name = "Node"
+      name = "NodeJS"
       url = "/categories/node/"
       weight = 3
 

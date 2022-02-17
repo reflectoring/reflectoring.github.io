@@ -1,7 +1,7 @@
 ---
 authors: [pratikdas]
 title: "Getting Started with Express"
-categories: ["Node"]
+categories: ["NodeJS"]
 date: 2022-02-15 00:00:00 +1100
 excerpt: "Express is a web application framework for Node.js. We can use this framework to build APIs, serve web pages, and other static assets and use it as a lightweight HTTP server and backend for our applications. In this article, we will introduce the Express framework and learn to use it to build HTTP servers, REST APIs, and web pages using both JavaScript and TypeScript."
 image: images/stock/0118-keyboard-1200x628-branded.jpg

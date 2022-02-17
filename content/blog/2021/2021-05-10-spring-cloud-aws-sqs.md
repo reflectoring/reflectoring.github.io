@@ -135,10 +135,12 @@ With the `QueueMessageChannel`, we first create an instance of this class to rep
 ```java
 @Service
 public class MessageSender {
-  private static final Logger logger = LoggerFactory.getLogger(MessageSender.class);
+  private static final Logger logger 
+     = LoggerFactory.getLogger(MessageSender.class);
 
   // Replace XXXXX with AWS account ID.
-  private static final String QUEUE_NAME = "https://sqs.us-east-1.amazonaws.com/XXXXXXX/testQueue";
+  private static final String QUEUE_NAME 
+     = "https://sqs.us-east-1.amazonaws.com/XXXXXXX/testQueue";
 
   @Autowired
   private final AmazonSQSAsync amazonSqs;
@@ -149,7 +151,8 @@ public class MessageSender {
   }
 
   public boolean send(final String messagePayload) {
-    MessageChannel messageChannel = new QueueMessageChannel(amazonSqs, QUEUE_NAME);
+    MessageChannel messageChannel 
+        = new QueueMessageChannel(amazonSqs, QUEUE_NAME);
 
     Message<String> msg = MessageBuilder.withPayload(messagePayload)
         .setHeader("sender", "app1")
@@ -214,7 +217,10 @@ public class MessageSenderWithTemplate {
     @Autowired
     private QueueMessagingTemplate messagingTemplate;
   
-    public void sendToFifoQueue(final String messagePayload, final String messageGroupID, final String messageDedupID) {
+    public void sendToFifoQueue(
+            final String messagePayload, 
+            final String messageGroupID, 
+            final String messageDedupID) {
       
           Message<String> msg = MessageBuilder.withPayload(messagePayload)
               .setHeader("message-group-id", messageGroupID)
@@ -295,7 +301,7 @@ for GenericMessage /
 "email":"jackie.chan@gmail.com"}, headers={
   ...
   ...
-```text
+```
 We can see a `MessageConversionException` here since the default converter `SimpleMessageConverter` can only convert between `String` and SQS messages. For complex objects like `SignupEvent` in our example, a custom converter needs to be configured like this:
 
 ```java
@@ -317,14 +323,15 @@ public class CustomSqsConfiguration {
                                    new QueueMessageHandlerFactory();
         queueHandlerFactory.setAmazonSqs(amazonSQSAsync);
         queueHandlerFactory.setArgumentResolvers(Collections.singletonList(
-                new PayloadMethodArgumentResolver(jackson2MessageConverter(mapper))
+          new PayloadMethodArgumentResolver(jackson2MessageConverter(mapper))
         ));
         return queueHandlerFactory;
   }
 
   private MessageConverter jackson2MessageConverter(final ObjectMapper mapper){
   
-        final MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+        final MappingJackson2MessageConverter 
+            converter = new MappingJackson2MessageConverter();
         converter.setObjectMapper(mapper);
         return converter;
   }
@@ -354,11 +361,14 @@ public class CustomSqsConfiguration {
 ...
 ...
 
-  private MessageConverter jackson2MessageConverter(final ObjectMapper mapper) {
+  private MessageConverter jackson2MessageConverter(
+                                   final ObjectMapper mapper) {
 
-    final MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+    final MappingJackson2MessageConverter 
+          converter = new MappingJackson2MessageConverter();
 
-    // set strict content type match to false to enable the listener to handle AWS events
+    // set strict content type match to false 
+    // to enable the listener to handle AWS events
     converter.setStrictContentTypeMatch(false);
     converter.setObjectMapper(mapper);
     return converter;
@@ -381,9 +391,11 @@ Our class `S3EventListener` containing the listener method which will receive th
 @Service
 public class S3EventListener {
   
-  @SqsListener(value = "testS3Queue", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+  @SqsListener(value = "testS3Queue", 
+    deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
   public void receive(S3EventNotification s3EventNotificationRecord) {
-    S3EventNotification.S3Entity s3Entity = s3EventNotificationRecord.getRecords().get(0).getS3();
+    S3EventNotification.S3Entity s3Entity 
+         = s3EventNotificationRecord.getRecords().get(0).getS3();
     String objectKey = s3Entity.getObject().getKey();
     log.info("objectKey:: {}",objectKey);
   }

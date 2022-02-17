@@ -1,8 +1,8 @@
 ---
 title: "Modules and Imports in NodeJS"
 categories: ["NodeJS"]
-date: 2022-02-13 00:00:00 +1100 
-modified: 2022-02-13 00:00:00 +1100
+date: 2022-02-18 00:00:00 +1100 
+modified: 2022-02-18 00:00:00 +1100
 authors: ["robert"]
 description: "A **module system** allows you to split up your code in different parts or to include code written by 
 other developers. We are going to have a look into CommonJS and ES Modules."

@@ -109,7 +109,7 @@ logger.logError("some error message printed in red");
 
 As you can see, `require()` now receives a relative file path and returns whatever was put into the `exports` object.
 
-### Using `module.Exports` Instead of `exports`
+### Using `module.exports` Instead of `exports`
 
 The `exports` object is read-only, which means it will always remain the same object instance and cannot be overwritten. 
 However, it is only a shortcut to the `exports` property of the `module` object. We could rewrite our logger module like 
@@ -143,7 +143,7 @@ Note that we have rewritten the internal function names from `logInfo` and
 `logError` to `info` and `error` respectively. This way, we can truly separate the internal from the external API. 
 However, the code is often simpler and more approachable if we keep internal and external naming the same.
 
-{{% info title="Where Do `module.Exports` and `require()` Come From?" %}}
+{{% info title="Where Do `module.exports` and `require()` Come From?" %}}
 Although at first glance it may seem like `module.exports`, `exports` and `require` are global, actually they are not. 
 CommonJS wraps your code in a function like this:
 ```js
@@ -291,7 +291,7 @@ solution is then to explicitly specify what we want to import, just the way we h
 
 ### Named Imports
 
-There is another import option. We can simply say "give me everything the module exports and give it the namespace xzy".
+There is another import option. We can simply say "give me everything the module exports and give it the namespace xyz".
 To demonstrate this, we move the `defaultMessage` from the class to an exported constant declaration.
 
 ```js

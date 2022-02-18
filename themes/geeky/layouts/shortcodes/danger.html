@@ -1,4 +1,4 @@
 <div class="notice danger">
-  <h4>{{ .Get "title" }}</h4>
+  <h4>{{ .Get "title" | markdownify }}</h4>
   {{ .Inner }}
 </div>

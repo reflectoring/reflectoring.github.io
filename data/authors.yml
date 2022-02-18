@@ -270,6 +270,14 @@ saikat:
   twitter: "s4ik4t"
   linkedin: "saikatsengupta"
 
+robert:
+  name: "Robert Dey"
+  email: "robdey88@gmail.com"
+  avatar: "/assets/img/authors/robert.jpg"
+  github: "RobYed"
+  linkedin: "robdey"
+  bio: "I love building successful products as a full-stack developer and software architect. Mostly I work with JavaScript and everything related to it."
+
 arpendu:
   name: "Arpendu Kumar Garai"
   email: "arpendug3@gmail.com"
@@ -277,3 +285,4 @@ arpendu:
   github: "arpendu11"
   linkedin: "arpendu-kumar-garai-61609a9b"
   bio: "I am a full-Stack developer with deep knowledge in Java, Microservices, Cloud Computing, Big Data, MERN, Javascript, Golang, and its relative frameworks. Besides coding and programming, I am a big foodie, love cooking, and love to travel."
+

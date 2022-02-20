@@ -5,8 +5,7 @@ date: 2022-02-08T11:00:00
 authors: ["nukajbl"]
 excerpt: "In this article, we will see how to increase the performance of our application using the class
 CompletableFuture."
-image: images/stock/0117-future-1200x628-branded.jpg 
-url: api-calls-performance-with-completable-future
+image: images/stock/0117-future-1200x628-branded.jpg url: api-calls-performance-with-completable-future
 ---
 
 In this article, we will learn how to use `CompletableFuture` to increase the performance of our application. In the
@@ -26,51 +25,78 @@ things, like talking to friends or drinking a glass of wine and once the chef ha
 finally eat. Another advantage is that using the `Future` interface is much more developer-friendly than working
 directly with threads.
 
-## Limitations Of `Future`
-
-- We cannot complete manually the operation by providing a value  
-  Let's imagine that in our case, the categorization service that we are using to get the category for our transactions,
-  goes down, we would like to complete the  `Future` manually by providing a default value. This is not possible using
-  the `Future` interface.
-- We cannot combine one or more asynchronous operations  
-  Using the same example of categorization service, we would like to call another API passing the value of the category
-  returned by our categorization service, creating a pipeline. But this scenario is not possible using the `Future`.
-- There is no way to react to the completion of the asynchronous operation without blocking the thread by
-  invoking [get](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Future.html#get())
-  method of the `Future` interface
-
 ## `CompletableFuture` Vs. `Future`
 
-All the above limitations are made possible by the new class `CompletableFuture` that was introduced with  
-version 8 of Java. `CompletableFuture` implements both the `Future`
-and the [`CompletionStage`](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html)
-interfaces. Let's see now how we can manage each of the limitations discussed above using `CompletableFuture` class.
+In this section we will see what are some limitation of the `Future` interface and how we can solve these by using the
+`CompletableFuture` class.
 
-- We can complete manually the operation by providing a value
+### We cannot complete manually the operation by providing a value
+
+The `Future` interface provides only the `get()` method to retrieve the result of the computation, but in case the
+computation takes too much time, we don't have any way to complete it by returning a value that we can assign. To
+understand better, let's see the example below. We have created an instance of `ExecutorService` that we will use to
+submit a task that never ends, we call it `neverEndingComputation()`. After that we want to print the value of
+the `stringFuture` variable on the console by invoking the `get()` method. This method waits if necessary for the
+computation to complete, and then retrieves its result. But because we are calling `neverEndingComputation()` that never
+ends, the result will never be printed on the console, and we don't have any way to complete it manually by passing a
+value.
 
  ```java
 class Demo {
 
-    public static void main(String[] args) {
-        CompletableFuture<String> stringCompletableFuture = new CompletableFuture<>();
-        stringCompletableFuture.complete("completed");
-        System.out.println("Is the stringCompletableFuture done ? " + stringCompletableFuture.isDone());
-    }
+  public static void main(String[] args) throws ExecutionException, InterruptedException {
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    Future<String> stringFuture = executor.submit(() -> neverEndingComputation());
+    System.out.println("The result is: " + stringFuture.get());
+  }
 }
 ```
 
-Here we are creating a `CompletableFuture` of type `String` and we are completing it by using the method `complete()`
-passing a value. In the end, we are testing if really `stringCompletableFuture` has a value by using the
+Now let's see how to overcome this limitation by using the class `CompletableFuture`. We will use the same
+scenario, but in this case, we will provide our value by using the method `complete()` of the `CompletableFuture` class.
+
+ ```java
+class Demo {
+
+  public static void main(String[] args) {
+    CompletableFuture<String> stringCompletableFuture = CompletableFuture.supplyAsync(() -> neverEndingComputation());
+    stringCompletableFuture.complete("Completed");
+    System.out.println("Is the stringCompletableFuture done ? " + stringCompletableFuture.isDone());
+  }
+}
+```
+
+Here we are creating a `CompletableFuture` of type `String` by calling the method `supplyAsync()` which takes a `Supplier` as an argument.
+In the end, we are testing if really `stringCompletableFuture` has a value by using the
 method `isDone()` which returns `true` if completed in any fashion: normally, exceptionally, or via cancellation. The
 output of the `main()` method is:
 
 `Is the stringCompletableFuture done ? true`
 
-- We can combine one or more asynchronous operations
+### We cannot combine one or more asynchronous operations
 
-Let's imagine that we need to call two remote APIs , `firstApiCall()` and `secondApiCall()`. The result of the first API
-will be the input for the second API. We are using the method `supplyAsync()` of the `CompletableFuture` class which
-returns a new `CompletableFuture` that is asynchronously completed by a task running in the `ForkJoinPool.commonPool()`
+Let's imagine that we need to call two remote APIs, `firstApiCall()` and `secondApiCall()`. The result of the first API
+will be the input for the second API. By using the `Future` interface there is no way to combine these two operations
+asynchronously. In our example below, we call the first API by submitting a task on the `ExecutorService` that returns
+a `Future`. We need to pass this value to the second API, but the only way to retrieve the value is by using the
+`get()` of the `Future` method that we have discussed earlier, and by using it we block the main thread. Now we have to
+wait until the first API returns the result before doing anything else.
+
+ ```java
+class Demo {
+
+  public static void main(String[] args) throws ExecutionException, InterruptedException {
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    Future<String> firstApiCallResult = executor.submit(() -> firstApiCall(someValue));
+    String stringResult = firstApiCallResult.get();
+    Future<String> secondApiCallResult = executor.submit(() -> secondApiCall(stringResult));
+  }
+}
+```
+
+By using the `CompletableFuture` class we don't need to block the main thread anymore, but we can asynchronously combine
+more operations. We are using the method `supplyAsync()` of the `CompletableFuture` class which returns a
+new `CompletableFuture` that is asynchronously completed by a task running in the `ForkJoinPool.commonPool()`
 with the value obtained by calling the given `Supplier`. After that we are taking the result of the `firstApiCall()` and
 using the method `thenApply()`, we pass it to the other API invoking `secondApiCall()`.
 
@@ -84,7 +110,24 @@ class Demo {
 }
 ```
 
-- There is no way to react to the completion of the asynchronous operation without blocking the thread
+### There is no way to react to the completion of the asynchronous operation without blocking the thread
+
+Using the `Future` interface we don't have a way to react to the completion of an operation asynchronously, the
+only way to get the value is by using the `get()` method which blocks the thread until the result is returned. The code below
+creates a `Future` by returning a `String` value. Then we transform it to uppercase by firstly calling the `get()`
+method and right after the `toUpperCase()` method of the `String` class.
+
+ ```java
+class Demo {
+
+  public static void main(String[] args) throws ExecutionException, InterruptedException {
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    Future<String> stringFuture = executor.submit(() -> "hello future");
+    String uppercase = stringFuture.get().toUpperCase();
+    System.out.println("The result is: " + uppercase);
+  }
+}
+```
 
 Using `CompletableFuture` we can now create a pipeline of asynchronous operations. Let's see a simple example of how to
 do it:
@@ -100,28 +143,23 @@ class Demo {
 }
 ```
 
-In the example above we can notice how simple is to create such a pipeline.
-
-* First, we are firstly calling the `supplyAsync()` method which takes a `Supplier` and returns a
-  new `CompletableFuture`.
-* Then, we are then transforming the result to an uppercase string by calling `thenApply()` method.
-* In the end, we just print the value on the console using `thenAccept()` that takes a `Consumer` as the argument.
+In the example above we can notice how simple is to create such a pipeline. First, we are firstly calling
+the `supplyAsync()` method which takes a `Supplier` and returns a new `CompletableFuture`. Then we are then transforming
+the result to an uppercase string by calling `thenApply()` method. In the end, we just print the value on the console
+using `thenAccept()` that takes a `Consumer` as the argument.
 
 If we step back for a moment, we realize that working with `CompletableFuture` is very similar to Java Streams.
 
 ## Performance Gains With `CompletableFuture`
 
+In this section we will build a simple application that takes a list of bank transactions and calls an external service
+to categorize each transaction based on the description. We will simulate the call of the external service by using a
+method that adds some delay before returning the category of the transaction. In the next sections we will incrementally
+change the implementation of our client application to improve the performance by using CompletableFuture.
+
 ### Performance Using Synchronous Calls
 
-In this section we will build a simple application that takes a list of bank transactions and calls an external service
-to categorize each transaction based on the description.
-
-We will simulate the call of the external service by using a method that adds some delay before returning the category
-of the transaction.
-
-In the next sections we will incrementally change the implementation of our client application to improve the
-performance by using CompletableFuture. Let's start implementing our categorization service that declares a method
-called `categorizeTransaction` :
+Let's start implementing our categorization service that declares a method called `categorizeTransaction` :
 
 ```java
 public class CategorizationService {
@@ -319,6 +357,6 @@ Category{category='Category_7'}, Category{category='Category_8'}, Category{categ
 
 ## Conclusion
 
-In this article, we saw what is `Future` interface in Java, how to use it and what are its limitations. We learned how to
-overcome these limitations by using the `CompletableFuture` class. After that, we analyzed a demo application, and step
-by step using the potential offered by `CompletableFuture` we refactored it for better performance. 
+In this article, we saw what is `Future` interface in Java, how to use it and what are its limitations. We learned how
+to overcome these limitations by using the `CompletableFuture` class. After that, we analyzed a demo application, and
+step by step using the potential offered by `CompletableFuture` we refactored it for better performance. 

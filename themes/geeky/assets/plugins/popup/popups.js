@@ -23,11 +23,11 @@ $( document ).ready(function() {
         $.fn.cornerpopup({
           delay: 30000,
           width: "600px",
-          height: "300px",
+          height: "600px",
           variant: 10,
           slide: 1,
           position: "left",
-          content: "<a href=\"https://learn.launchdarkly.com/application-modernization-guide/?utm_source=reflectoring&utm_medium=display&utm_campaign=apmn&utm_content=app_modernization\"><img width=\"600\" alt=\"State of Feature Management\" src=\"/images/launchdarkly/2021_7_best_practice_short-term_and_permanent_feature_flags_Ad_1200x1200 (2).png\"/></a>",
+          content: "<a href=\"https://launchdarkly.com/?utm_source=reflectoring&utm_medium=display&utm_campaign=aodm&utm_content=ebook_oreilly_efm\"><img width=\"600\" alt=\"LaunchDarkly\" src=\"/images/launchdarkly/2022_popout.jpg\"/></a>",
           afterPopup: function() {
             setCookie("launchdarkly", "true", 7);
           }

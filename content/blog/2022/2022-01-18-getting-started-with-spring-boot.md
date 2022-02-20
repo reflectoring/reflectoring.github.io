@@ -8,11 +8,11 @@ excerpt: "A comprehensive entry level guide through Spring Boot"
 image: images/stock/0012-pages-1200x628-branded.jpg 
 url: getting-started-with-spring-boot
 ---
-## Introduction
-The Spring Boot is the addition to the Spring Framework.
+## Introductiont
+Spring Boot is the addition to the Spring Framework.
 
-Using the Spring Boot we can create production-grade applications with minimal effort. The autoconfiguration allows us to generate the project and start creating business value.
-The Spring Boot autoconfiguration is non-invasive, which means that we can change only the parts that we need.
+Using Spring Boot we can create production-grade applications with minimal effort. The autoconfiguration allows us to generate the project and start creating business value.
+Spring Boot autoconfiguration is non-invasive, which means that we can change only the parts that we need.
 
 In this article, we will go through the creation process of the application. We will show how to use basic Spring features and end up with a fully functional application that we can run.
 
@@ -43,7 +43,7 @@ Each book needs to have a list of users that currently own the book.
 
 We need to decide which technologies we are going to use. 
 
-Since we are building a relatively small application for the local bookstore, we are safe to create the Spring MVC application.
+Since we are building a relatively small application for the local bookstore, we are safe to create a Spring MVC application.
 The Spring MVC framework is designed around the idea of sending incoming requests to the controller. The controller handles the request and sends it further down the application pipeline. The Spring MVC framework allows us to build RESTful applications.
 
 We also need a way to store our data. For the sake of the example, we will use the H2 database. The H2 database is an in-memory or file-based database that we can run on our local machine with minimal configuration. The H2 database allows us to have our application up and running in no time. When moving to the production environment, we should change to something more stable and persistent - Oracle, PostgreSQL, etc.
@@ -53,7 +53,7 @@ We went over technologies that we will use, and now, we will see how to set up e
 ## Setting up the Project
 We will show two ways how to generate a new Spring Boot project:
 - [using the IntelliJ IDE](#generation-through-ide)
-- [using the Spring Initializr](#generation-through-spring-initializr)
+- [using Spring Initializr](#generation-through-spring-initializr)
 
 Any of the ways to generate the project is correct. There are differences, except in the UI of the generator.
 
@@ -80,7 +80,7 @@ We won't see much, but the application will be up and running.
 #### The Spring Data JPA Dependency
 The Spring data JPA dependency allows us to create the data access layer almost without effort. 
 Building the data access layer can be cumbersome, and Spring data JPA data gives us everything that we need to start creating our first entity.
-With the Spring data JPA, we can use the Hibernate as our Object Relational Mapping framework. 
+With Spring data JPA, we can use the Hibernate as our Object Relational Mapping framework. 
 We will present the entities, constraints, and relations using annotations. This way leaves us with readable and functional code.
 
 After importing the spring data JPA dependency, we can create the repository interfaces and leverage everything Spring offers. We can use JPQL language, method names, or plain old SQL to build our queries towards the database. 
@@ -97,7 +97,7 @@ We can access the data each time we start the application. It won't get flushed 
 
 ### Generation Through Spring Initializr
 
-On the [Spring Initilizr page](https://start.spring.io/), we can generate the Spring Boot project:
+On the [Spring Initilizr page](https://start.spring.io/), we can generate a Spring Boot project:
 
 {{% image alt="Spring Boot initialization online" src="images/posts/spring-boot-begginer-guide/spring-boot-initializr-online.png" %}}
 
@@ -173,7 +173,7 @@ The dependency is the package that contains the peace of the code that our proje
 
 The pom.xml defines all dependencies that we are using in our project. Each dependency has its pom.xml. The inner pom.xml declares what does it bring into the application. 
 
-We can see that most of our dependencies have keyword `starter`. The `starter` keyword means that this dependency is built for the Spring Boot framework and comes with premade configurations that we can use out of the box.
+We can see that most of our dependencies have keyword `starter`. The `starter` keyword means that this dependency is built for Spring Boot and comes with premade configurations that we can use out of the box.
 Before the `starter` dependency, the user had to provide all dependencies that now come in one. Also, we had to create our own configuration for most things. 
 The new approach helps us to start the development process much faster.
 
@@ -218,7 +218,7 @@ public class Book {
 }
 ```
 We annotate the class with the `@Entity` annotation indicating that it is JPA an entity.. The name attribute inside the annotation indicates how is the table called. 
-Defining the name attribute is not mandatory, but if we do not set the name attribute, the Spring will assume that the table name is the same as the class name.
+Defining the name attribute is not mandatory, but if we do not set the name attribute, Spring will assume that the table name is the same as the class name.
 
 ### Defining a Primary Key
 ```java
@@ -379,7 +379,7 @@ We defined the target side with the `@ManyToMany` annotation `mappedBy` attribut
 
 ### Configuring the Database
 We said that the entity class represents the direct link to the table in the database.
-We set the configuration in the Spring Boot framework through the `application.properties` file.
+We set the configuration in Spring Boot through the `application.properties` file.
 
 Even though the Spring Boot framework comes with the autoconfiguration for most things, we need to tap into those configurations and change them.
 The excellent thing about autoconfiguration is that it is non-invasive, and we can change only those things that we need.
@@ -451,7 +451,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 The `@Repository` annotation creates the repository bean for the application context to control. 
 With this annotation, we are sure that the dependency injection will provide the instance of this interface where ever it is asked using the `@Autowired` annotation.
 
-Even though we can create our connections to the database, we will leverage the Spring JPA classes. Our repository can extend several different interfaces:
+Even though we can create our connections to the database, we will leverage Spring JPA repositories. Our repository can extend several different interfaces:
 - CrudRepository
 - PagingAndSortingRepository
 - JpaRepository
@@ -501,7 +501,7 @@ We define the query with the `@Query` annotation, and the `nativeQuery` is, by d
 The JPQL syntax allows us to change the underlying database while the query stays the same.
 
 ### Named Method Queries
-The Spring framework provides one more feature regarding queries. We can build queries by setting the method name in a specific format:
+Spring framework provides one more feature regarding queries. We can build queries by setting the method name in a specific format:
 ```java
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
@@ -511,7 +511,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     // Rest of the code is omitted
 }
 ```
-Using the attribute names and special keywords, we can create queries. The Spring JPA will generate the proper queries according to our definition.
+Using the attribute names and special keywords, we can create queries. Spring JPA will generate the proper queries according to our definition.
 
 More about the method names query we can find in the [official documentation](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.named-queries)
 ## Building the Business Layer
@@ -529,7 +529,7 @@ public class GetBookService {
     // Rest of the code is omitted
 }
 ```
-The `@Service` annotation transforms our class into the Spring Bean controlled by the Application Context.
+The `@Service` annotation transforms our class into a Spring Bean controlled by the Application Context.
 
 ### Injecting the Repository Class
 We use the dependency injection to obtain required classes into the GetBookService.class. For now, we only need the BookRepository.class
@@ -552,7 +552,7 @@ public class GetBookService {
 }
 ```
 
-The Spring recognizes the `@Autowired` annotation and makes sure that the BookRepository is provided. Starting with the 
+Spring recognizes the `@Autowired` annotation and makes sure that the BookRepository is provided. Starting with the 
 #### Setter-based Injection
 ```java
 @Service
@@ -594,9 +594,9 @@ More about dependency injection and why to use the constructor-based injection w
 ## Building Controllers
 After creating entities, repositories, and services let us create our first controller.
 
-The imported `spring-boot-starter-web` contains everything that we need for the controller. We have the Spring MVC autoconfigured and the embedded Tomcat server ready to use.
+The imported `spring-boot-starter-web` contains everything that we need for the controller. We have Spring MVC autoconfigured and the embedded Tomcat server ready to use.
 
-With the Spring MVC, we can define a controller with the `@Controller` or `@RestController` annotation so it can handle incoming requests.
+With Spring MVC, we can define a controller with the `@Controller` or `@RestController` annotation so it can handle incoming requests.
 
 ### Creating an Endpoint With the @RestController
 We are going to create our first endpoint. We want to fetch all books that the bookstore owns.

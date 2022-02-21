@@ -28,7 +28,7 @@ directly with threads.
 
 ## `CompletableFuture` vs. `Future`
 
-In this section we will see what are some limitation of the `Future` interface and how we can solve these by using the
+In this section we will look at some limitations of the `Future` interface and how we can solve these by using the
 `CompletableFuture` class.
 
 ### Defining a Timeout

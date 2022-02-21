@@ -8,10 +8,12 @@ excerpt: "A comprehensive entry level guide through Spring Boot"
 image: images/stock/0012-pages-1200x628-branded.jpg 
 url: getting-started-with-spring-boot
 ---
-## Introductiont
-Spring Boot is the addition to the Spring Framework.
+## Introduction
+Spring Boot is an addition to the Spring Framework.
 
-Using Spring Boot we can create production-grade applications with minimal effort. The autoconfiguration allows us to generate the project and start creating business value.
+Using Spring Boot we can create production-grade applications with minimal effort. 
+
+The autoconfiguration allows us to generate the project and start creating business value.
 Spring Boot autoconfiguration is non-invasive, which means that we can change only the parts that we need.
 
 In this article, we will go through the creation process of the application. We will show how to use basic Spring features and end up with a fully functional application that we can run.
@@ -27,9 +29,9 @@ We need two types of entities:
 - Book
 
 ### The User Entity
-The user can register to the application, see all books and borrow them. 
+The user can sign in to the application, see all books and borrow them. 
 
-Each user will have to provide the name, last name, email, and password for the application.
+Each user will have to provide their name, last name, email, and password.
 
 The bookstore wants to constraint each user to borrow only three books at one time. 
 
@@ -41,10 +43,8 @@ Each book needs to have a list of users that currently own the book.
 
 ### Technologies Used
 
-We need to decide which technologies we are going to use. 
-
 Since we are building a relatively small application for the local bookstore, we are safe to create a Spring MVC application.
-The Spring MVC framework is designed around the idea of sending incoming requests to the controller. The controller handles the request and sends it further down the application pipeline. The Spring MVC framework allows us to build RESTful applications.
+The Spring MVC framework is designed around the idea of sending incoming requests to a so-called controller. The controller handles the request and usually sends it further down the application backend. It then returns a response to the client.
 
 We also need a way to store our data. For the sake of the example, we will use the H2 database. The H2 database is an in-memory or file-based database that we can run on our local machine with minimal configuration. The H2 database allows us to have our application up and running in no time. When moving to the production environment, we should change to something more stable and persistent - Oracle, PostgreSQL, etc.
 
@@ -55,9 +55,9 @@ We will show two ways how to generate a new Spring Boot project:
 - [using the IntelliJ IDE](#generation-through-ide)
 - [using Spring Initializr](#generation-through-spring-initializr)
 
-Any of the ways to generate the project is correct. There are differences, except in the UI of the generator.
+There is no right way of setting up a project and both ways are similar.
 
-### Generation Through IDE
+### Generate the project with IntelliJ
 
 In the IntelliJ IDE, we can go to the __File -> New -> Project...__. We will get the next screen:
 {{% image alt="Spring Boot initialization through IDE" src="images/posts/spring-boot-begginer-guide/spring-boot-initializr-IDE.png" %}}
@@ -80,7 +80,7 @@ We won't see much, but the application will be up and running.
 #### The Spring Data JPA Dependency
 The Spring data JPA dependency allows us to create the data access layer almost without effort. 
 Building the data access layer can be cumbersome, and Spring data JPA data gives us everything that we need to start creating our first entity.
-With Spring data JPA, we can use the Hibernate as our Object Relational Mapping framework. 
+With Spring data JPA, we can use Hibernate as our Object Relational Mapping framework. 
 We will present the entities, constraints, and relations using annotations. This way leaves us with readable and functional code.
 
 After importing the spring data JPA dependency, we can create the repository interfaces and leverage everything Spring offers. We can use JPQL language, method names, or plain old SQL to build our queries towards the database. 
@@ -95,7 +95,7 @@ The in-memory database is excellent for fast iteration when we don't care what w
 In the development environment, when we want to keep the data for easier access and testing different use cases, we want to configure the file-based database. The data will remain permanent at the desired location.
 We can access the data each time we start the application. It won't get flushed when we shut down the process.
 
-### Generation Through Spring Initializr
+### Generate the Project with Spring Initializr
 
 On the [Spring Initilizr page](https://start.spring.io/), we can generate a Spring Boot project:
 

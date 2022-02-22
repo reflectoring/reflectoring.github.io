@@ -20,7 +20,7 @@ mateo:
   github: "Mufa0"
   linkedin: "mateo-stjepanović-8a618b169/"
   bio: "Fullstack developer focused on Spring and Angular. I started writing to continue my learning path and give something back to the dev community."
-  
+
 pratikdas:
   name: "Pratik Das"
   email: "pratikd2000@gmail.com"
@@ -179,7 +179,7 @@ skempken:
   github: "skempken"
   stackoverflow: "1163345/skempken"
   twitter: "sebkempken"
-  bio: "For more than a decade, I've been working as software engineer and architect. I love reasoning about our shared craft and writing down things I've learned." 
+  bio: "For more than a decade, I've been working as software engineer and architect. I love reasoning about our shared craft and writing down things I've learned."
 
 hoorvash:
   name: "Hoorvash Nikoo"
@@ -270,6 +270,15 @@ saikat:
   twitter: "s4ik4t"
   linkedin: "saikatsengupta"
 
+
+nukajbl:
+  name: "Bledi Nukaj"
+  avatar: "/assets/img/authors/bledi.jpeg"
+  github: "bledi1985"
+  bio: "Bledi is a senior software Engineer and Architect, specialized in Java and Spring to deliver high-quality Enterprise applications, on-premise or cloud.
+   Experienced and keenly interested in the field of Cloud Architecture."
+  linkedin: "https://www.linkedin.com/in/bledinukaj/"
+
 robert:
   name: "Robert Dey"
   email: "robdey88@gmail.com"
@@ -285,4 +294,3 @@ arpendu:
   github: "arpendu11"
   linkedin: "arpendu-kumar-garai-61609a9b"
   bio: "I am a full-Stack developer with deep knowledge in Java, Microservices, Cloud Computing, Big Data, MERN, Javascript, Golang, and its relative frameworks. Besides coding and programming, I am a big foodie, love cooking, and love to travel."
-

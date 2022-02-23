@@ -1,10 +1,10 @@
 ## Spring Shell
-[Spring Shell](https://spring.io/projects/spring-shell) allows us to build a command line application (Shell) using Spring's framework and all the advantages it provides.
+[Spring Shell](https://spring.io/projects/spring-shell) allows us to build a command line (shell) application using the Spring framework and all the advantages it provides.
 
 ## What Is a Shell Anyways?
-A shell provides us with an interface to a system (usually an OS) to which we give commands and parameters. The shell in turn does some useful tasks for us and provides an output.
+A shell provides us with an interface to a system (usually an operating system) to which we give commands and parameters. The shell in turn does some useful tasks for us and provides an output.
 
-## Let's Create a Basic Shell
+## Creating a Basic Shell
 Since it's a Spring application, our main method has to be annotated with `@SpringBootApplication`
 ```java
 @SpringBootApplication  
@@ -15,7 +15,7 @@ public class SpringShellApplication {
 }
 ```
 
-Now, let's create our first shell command which simulates an SSH:
+Now, let's create our first shell command which simulates an SSH command:
 ```java
 @ShellComponent  
 public class SSHCommand {  
@@ -73,6 +73,7 @@ We can specify the name of the parameter using the `value` property of the `@She
 
 If we don't specify the value however, Spring Shell assigns it a default value of parameter name "-" separated prefixed by `ShellMethod.prefix()`.
 - The `ShellMethod.prefix()` default value is "--" unless changed in the `@ShellMethod` annotation:
+
 ```java
 @ShellMethod(key = "my-ssh", prefix = "-", value = "connect to remote server")  
 public void ssh(@ShellOption String remoteServer)  

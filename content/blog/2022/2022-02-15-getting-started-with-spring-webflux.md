@@ -11,11 +11,13 @@ url: getting-started-with-spring-webflux
 
 
 
-Most of the applications built in traditional and conventional world, deal with `blocking` calls or in other words, known as `synchronous` calls. This means that if we want to access a particular resource then the application would block the other one until the first one is processed. So as we had embarked into the world of reality dealing with the *`Big Data`* , we have realized that we need to process this data with immense speed and agility. That’s when the software developers realized that they would need some kind of multi-threaded environment that handles `asynchronous` and `non-blocking` calls.
+Most of the applications built in traditional and conventional world, deal with *blocking* calls or in other words, known as *synchronous* calls. This means that if we want to access a particular resource then the application would block the other one until the first one is processed. So as we had embarked into the world of reality dealing with the *Big Data* , we have realized that we need to process this data with immense speed and agility. That’s when the software developers realized that they would need some kind of multi-threaded environment that handles asynchronous and non-blocking calls.
 
-Before jumping on to the reactive part, we must understand what streams are. A `Stream` is basically a sequence of data that is transferred across the internet over one system to another. They are often treated as electrical signals in their raw form. They typically operate in a blocking, sequential and FIFO(first-in-first-out) pattern. This methodology of data streaming often prohibits a system to process the real-time data while streaming. Thus a bunch of prominent developers realized that they would need a holistic and coherent approach to build a Reactive Systems Architecture which would ease the process of consuming and compute the data while streaming. Hence, they signed a `manifesto`, popularly known as the [Reactive Manifesto](https://www.reactivemanifesto.org/).
+## What is a Stream?
 
-The authors of the manifesto resembled that a Reactive system must be an asynchronous software that deal with `Producers` which have single responsibility to send messages to `Consumers`. They are architectural pattern that keeps failure resolution in mind to make sure most of the system will still operate even if one of them fails. Hence, they introduced the following features to keep in mind:
+Before jumping on to the reactive part, we must understand what streams are. A *Stream* is basically a sequence of data that is transferred across the internet over one system to another. They are often treated as electrical signals in their raw form. They typically operate in a blocking, sequential and FIFO(first-in-first-out) pattern. This methodology of data streaming often prohibits a system to process the real-time data while streaming. Thus a bunch of prominent developers realized that they would need a holistic and coherent approach to build a Reactive Systems Architecture which would ease the process of consuming and compute the data while streaming. Hence, they signed a manifesto, popularly known as the [Reactive Manifesto](https://www.reactivemanifesto.org/).
+
+The authors of the manifesto resembled that a Reactive system must be an asynchronous software that deal with *Producers* which have single responsibility to send messages to *Consumers*. They are architectural pattern that keeps failure resolution in mind to make sure most of the system will still operate even if one of them fails. Hence, they introduced the following features to keep in mind:
 
 * **Responsive**: Reactive systems must be fast and responsive so that it can provide best and consistent quality of service.
 * **Resilient**: Reactive systems should be designed to anticipate system failures. Thus they should be responsive through replication and isolation.
@@ -36,13 +38,13 @@ In a conventional MVC application, whenever a request reaches the server, a serv
 
 {{% image alt="Blocking request" src="images/posts/spring-webflux/blocking_request.png" %}}
 
-### Non-blocking Request
+### Non-Blocking Request
 
 In a non-blocking system, all the incoming requests are accompanied with an event handler and a callback information. The request thread delegates the incoming request to a thread pool which manages a pretty small number of threads. Then the thread pool delegates the request to its handler function and gets available to process next incoming requests from the request thread. When the handler function completes its process, one of the thread from the pool fetches the response and pass it to the callback function. Thus the threads in a non-blocking system never goes into the waiting state. This increases the productivity and the performance of the application.
 
 {{% image alt="Non-blocking request" src="images/posts/spring-webflux/non-blocking_request.png" %}}
 
-### Reactive Libraries used in Java
+### Reactive Libraries Used in Plain Java
 
 The landscape of reactive world in Java is quite evolving and matured enough. Every now and then we hear a new Reactive framework being introduced and consumed by different companies. Some of them include:
 
@@ -56,7 +58,7 @@ The landscape of reactive world in Java is quite evolving and matured enough. Ev
 
 The whole purpose of Reactive Streams was to introduce a standard for asynchronous stream processing of data with non-blocking backpressure. Hence, few engineers from various companies like Netflix, Pivotal, Lightblend, RedHat, etc. joined together to implement the *Reactive Streams API*. It is implemented based upon the *Publisher-Subscriber* Model or *Producer-Consumer* Model and primarily defines four interfaces:
 
-* ***Publisher***: It is responsible for preparation and transfer of data to subscribers as individual messages. A Publisher can serve multiple subscribers but it has only one method, `subscribe`.
+* `Publisher`: It is responsible for preparation and transfer of data to subscribers as individual messages. A Publisher can serve multiple subscribers but it has only one method, `subscribe()`.
 
   ```java
   public interface Publisher<T> {
@@ -64,7 +66,7 @@ The whole purpose of Reactive Streams was to introduce a standard for asynchrono
   }
   ```
 
-* ***Subscriber***: A Subscriber is responsible for receiving messages from Publisher and process those messages. It acts like a terminal operation in the Streams API. It basically has four methods to deal with the events received:
+* `Subscriber`: A Subscriber is responsible for receiving messages from Publisher and process those messages. It acts like a terminal operation in the Streams API. It basically has four methods to deal with the events received:
 
   * `onSubscribe(Subscription s)`: This method gets called automatically when a publisher registers itself and allows the subscription to request data.
   * `onNext(T t)`: This method gets called on the subscriber every time it is ready to receive a new message of generic type T.
@@ -80,7 +82,7 @@ The whole purpose of Reactive Streams was to introduce a standard for asynchrono
   }
   ```
 
-* ***Subscription***: It represents a relationship between the subscriber and publisher. It can be used only once by a single *Subscriber*. It has methods that allow requesting for data and to cancel the demand.
+* `Subscription`: It represents a relationship between the subscriber and publisher. It can be used only once by a single *Subscriber*. It has methods that allow requesting for data and to cancel the demand.
 
   ```java
   public interface Subscription {
@@ -89,7 +91,7 @@ The whole purpose of Reactive Streams was to introduce a standard for asynchrono
   }
   ```
 
-* ***Processor***: It represents a processing stage which consists of both *Publisher* and *Subscriber*.
+* `Processor`: It represents a processing stage which consists of both *Publisher* and *Subscriber*.
 
   ```java
   public interface Processor<T, R> extends Subscriber<T>, Publisher<R> {
@@ -104,7 +106,7 @@ Spring introduced a *Multi-Event Loop* model against the Spring MVC’s thread-p
 
 Before we get started with Spring Webflux, we must accustom ourselves to two of the Publishers which is being used heavily in the context of Webflux:
 
-* ***Mono***: A Publisher that emits 0 or 1 element.
+* `Mono`: A Publisher that emits 0 or 1 element.
 
   ```java
   Mono<String> mono = Mono.just("John");
@@ -112,7 +114,7 @@ Before we get started with Spring Webflux, we must accustom ourselves to two of 
   Mono<Object> monoError = Mono.error(new Exception());
   ```
 
-* ***Flux***: A Publisher that emits 0 to N elements which can keep emitting elements forever. It returns a sequence of elements and sends a notification when it completes returning all its elements.
+* `Flux`: A Publisher that emits 0 to N elements which can keep emitting elements forever. It returns a sequence of elements and sends a notification when it completes returning all its elements.
 
   ```java
   Flux<Integer> flux = Flux.just(1, 2, 3, 4);
@@ -128,17 +130,17 @@ Before we get started with Spring Webflux, we must accustom ourselves to two of 
       .subscribe(dataStream::add);
   ```
 
-  Once the stream of data is created, it is required to subscribe to it in order to emit elements. The data won’t flow or be processed until the subscribe method is called. Also by using the *.log()* method above, we can trace and observe all the stream signals. The events are logged into the console.
+  Once the stream of data is created, it is required to subscribe to it in order to emit elements. The data won’t flow or be processed until the subscribe method is called. Also by using the `.log()` method above, we can trace and observe all the stream signals. The events are logged into the console.
 
   Reactor also provides operators to work with Mono and Flux objects. Some of them are:
 
-  - *Map* - It is used to transform from one element to another.
-  - *FlatMap* - It works similar to a map operator, but the transformation is asynchronous.
-  - *FlatMapMany* - This is a Mono operator which is used to transform a Mono object into a Flux object.
-  - *DelayElements* - It basically delays the publishing of each element by a defined duration.
-  - *Concat* - It is used to combine the elements of publisher by keeping the sequence of the publishers intact.
-  - *Merge* - It is used to combine the publishers without keeping its sequence.
-  - *Zip* - It is used to combine two or more publishers by waiting on all the sources to emit one element and combining these elements into an output value.
+  - `Map` - It is used to transform from one element to another.
+  - `FlatMap` - It works similar to a map operator, but the transformation is asynchronous.
+  - `FlatMapMany` - This is a Mono operator which is used to transform a Mono object into a Flux object.
+  - `DelayElements` - It basically delays the publishing of each element by a defined duration.
+  - `Concat` - It is used to combine the elements of publisher by keeping the sequence of the publishers intact.
+  - `Merge` - It is used to combine the publishers without keeping its sequence.
+  - `Zip` - It is used to combine two or more publishers by waiting on all the sources to emit one element and combining these elements into an output value.
 
   
 
@@ -174,11 +176,11 @@ public class User {
 }
 ```
 
-We are initially using the Lombok annotation representors to define Getters, Setters, *toString()*, *equalsAndHashCode()* methods and constructors to reduce boilerplate implementations. Then we have used *@Document* to denote *Reactive Mongo Utilities* with the table that it needs to create in MongoDB.
+We are initially using the Lombok annotation representors to define Getters, Setters, `toString()`, `equalsAndHashCode()` methods and constructors to reduce boilerplate implementations. Then we have used `@Document` to denote *Reactive Mongo Utilities* with the table that it needs to create in MongoDB.
 
 #### Persistence Layer - Defining Repositories
 
-Next we will define our Repository layer using *ReactiveMongoRepository* interface.
+Next we will define our Repository layer using `ReactiveMongoRepository` interface.
 
 ```java
 @Repository
@@ -243,7 +245,7 @@ public class UserService {
 }
 ```
 
-We have defined service methods to save, update, fetch, search and delete a user. We have primarily used *UserRepository* to store and retrieve data from MongoDB, but we have also used a *ReactiveTemplate* and *Query* to search for a user given by a regex string.
+We have defined service methods to save, update, fetch, search and delete a user. We have primarily used `UserRepository` to store and retrieve data from MongoDB, but we have also used a `ReactiveTemplate` and `Query` to search for a user given by a regex string.
 
 #### Web Layer
 
@@ -305,13 +307,15 @@ public class UserController {
 
 This almost looks same as the controller defined in Spring MVC. But the major difference between Spring MVC and Spring Webflux relies on how the request and response are handled using non-blocking Publishers, *Mono* and *Flux*. We don’t need to call subscribe methods in the Controller as the internal classes of Spring would call it for us at the right time.
 
-> *Note: We must make sure that we don’t use any blocking methods throughout the lifecycle of an API.*
+{{% warning title="Do Not Block" %}}
+*Note: We must make sure that we don’t use any blocking methods throughout the lifecycle of an API.*
+{{% /warning %}}
 
 ##### Functional Routing and Handling
 
 Initially the Spring Functional Web Framework was built and designed for Spring Webflux but later it was also introduced in Spring MVC. We use functions for routing and handling the requests. This constitutes an alternative programming model to the Spring annotation based framework.
 
-First of all, we will define a *Handler* function that can accept a *ServerRequest* as an incoming argument and return a Mono of *ServerResponse* as the response of that functional method. Let’s name the handler class as `UserHandler`:
+First of all, we will define a `Handler` function that can accept a `ServerRequest` as an incoming argument and return a Mono of `ServerResponse` as the response of that functional method. Let’s name the handler class as `UserHandler`:
 
 ```java
 @Component
@@ -369,7 +373,7 @@ public class UserHandler {
 }
 ```
 
-Next, we will define the router function. Router functions usually evaluate the request and choose the appropriate handler function. They serve as an alternate to the *@RequestMapping* annotation. So we will define this *RouterFunction* and annotate as a Bean. Next we can add it to a config, most likely `RouterConfig`:
+Next, we will define the router function. Router functions usually evaluate the request and choose the appropriate handler function. They serve as an alternate to the `@RequestMapping` annotation. So we will define this `RouterFunction` and annotate as a Bean. Next we can add it to a config, most likely `RouterConfig`:
 
 ```java
 @Configuration
@@ -386,7 +390,7 @@ public class RouterConfig {
 }
 ```
 
-Finally, we will define some properties in order to configure our database connection and server config.
+Finally, we will define some properties as part of `application.yaml` in order to configure our database connection and server config.
 
 ```yaml
 spring:
@@ -419,7 +423,7 @@ logging:
 
 This constitutes our basic non-blocking REST API using Spring Webflux. Now this works as a Publisher-Subscriber model that we were talking about initially in this article.
 
-### Server Sent events
+### Server Sent Events
 
 *Server Sent Events* is an HTTP standard which provides capability for servers to push streaming data to the web client. The flow is unidirectional from server to client and client receives updates whenever the server pushes some data. This kind of mechanism is often used for real-time messaging, streaming or notification of events or data. Usually, for multiplexed and bidirectional streaming, we often use *Websockets*. But SSE are mostly used for following use-cases:
 
@@ -445,9 +449,9 @@ The biggest limitation of SSE is that it’s unidirectional and hence informatio
 
 Here, we will stream all the users in our system every 2 seconds. This serves the whole list of updated users from the MongoDB every interval.
 
-### Brief introduction to WebClient
+### Brief Introduction to WebClient
 
-To give an introduction, *Spring WebClient* is an HTTP component which is being used to make HTTP calls to other REST based services. Spring already had `RestTemplate` client, which was used by Spring MVC to make synchronous HTTP calls. However, Spring 5 introduced the new `WebClient` API which was made to replace RestTemplate client so that it can make both synchronous and asynchronous HTTP request with functional APIs. It is capable enough to directly integrate with your Spring configurations or the Spring WebFlux reactive framework.
+To give an introduction, *Spring WebClient* is an HTTP component which is being used to make HTTP calls to other REST based services. Spring already had *RestTemplate* client, which was used by Spring MVC to make synchronous HTTP calls. However, Spring 5 introduced the new *WebClient* API which was made to replace RestTemplate client so that it can make both synchronous and asynchronous HTTP request with functional APIs. It is capable enough to directly integrate with your Spring configurations or the Spring WebFlux reactive framework.
 
 Before we start with some basic WebClient implementation, let’s quickly look into a basic configuration that might be required to set when we would like to make an HTTP request in production environment.
 
@@ -483,13 +487,13 @@ public class WebclientConfig {
 
 We can break the above configuration into three parts:
 
-* *SslContext*: We can define an `SslContext` using *SslContextBuilder* class and defining various Trust Strategies to trust the incoming certificate request. This will set the common SslContext to validate the secure HTTP requests.
-* *HttpClient*: Next we can define an *HttpClient* and overload various configurations or settings such as connection timeout, log level settings, follow redirection of HTTP requests, adding security context, etc.
-* *WebClient*: Finally, we can define the builder for WebClient instance and overload with the above HttpClient instance.
+* `SslContext`: We can define an `SslContext` using `SslContextBuilder` class and defining various Trust Strategies to trust the incoming certificate request. This will set the common SslContext to validate the secure HTTP requests.
+* `HttpClient`: Next we can define an `HttpClient` and overload various configurations or settings such as connection timeout, log level settings, follow redirection of HTTP requests, adding security context, etc.
+* `WebClient`: Finally, we can define the builder for WebClient instance and overload with the above HttpClient instance.
 
 Now, let’s look into a basic GET call to retrieve some data from a server or an API.
 
-We can *Autowire* the WebClient instance that we have defined above and make use of it in our service class.
+We can `Autowire` the WebClient instance that we have defined above and make use of it in our service class.
 
 ```java
 @Slf4j
@@ -532,7 +536,7 @@ Now let’s quickly take a look into one POST call. WebClient allows us to defin
 
 If we receive the response in the first attempt, then it will simply return the response back. But due to some reason, if the API faces some issue, then it will try to re-attempt for a while after which it can return some indicated data or logs to denote that it has failed due to some reason.
 
-## Alternative server used in WebFlux
+## Alternative Server Used in Webflux
 
 Traditionally, Spring MVC bundles *Tomcat* server for servlet stack applications whereas Spring WebFlux bundles *Reactor Netty* by default for reactive stack applications. *Reactor Netty* is an asynchronous event-driven network application framework built out of Netty server which provides non-blocking and backpressure-ready network engines for HTTP, TCP and UDP clients and servers. Spring WebFlux automatically configures Reactor Netty as the default server but if we want to override the default configuration, we can simply do that by defining them under server prefix.
 

@@ -11,11 +11,13 @@ url: getting-started-with-spring-webflux
 
 
 
-Most of the applications built in traditional and conventional world, deal with *blocking* calls or in other words, known as *synchronous* calls. This means that if we want to access a particular resource then the application would block the other one until the first one is processed. So as we had embarked into the world of reality dealing with the *Big Data* , we have realized that we need to process this data with immense speed and agility. That’s when the software developers realized that they would need some kind of multi-threaded environment that handles asynchronous and non-blocking calls.
+Most of the applications built in traditional and conventional world, deal with *blocking* calls or in other words, known as *synchronous* calls. This means that if we want to access a particular resource in a system with most of the threads being busy, then the application would block the new one or wait until the previous threads complete processing its requests. So as we had embarked into the world of reality dealing with the *Big Data* , we have realized that we need to process this data with immense speed and agility. That’s when the software developers realized that they would need some kind of multi-threaded environment that handles asynchronous and non-blocking calls.
 
 ## What is a Stream?
 
-Before jumping on to the reactive part, we must understand what streams are. A *Stream* is basically a sequence of data that is transferred across the internet over one system to another. They are often treated as electrical signals in their raw form. They typically operate in a blocking, sequential and FIFO(first-in-first-out) pattern. This methodology of data streaming often prohibits a system to process the real-time data while streaming. Thus a bunch of prominent developers realized that they would need a holistic and coherent approach to build a Reactive Systems Architecture which would ease the process of consuming and compute the data while streaming. Hence, they signed a manifesto, popularly known as the [Reactive Manifesto](https://www.reactivemanifesto.org/).
+Before jumping on to the reactive part, we must understand what streams are. A *Stream* is basically a sequence of data that is transferred across the internet over one system to another. They are often treated as electrical signals in their raw form. They typically operate in a blocking, sequential and FIFO(first-in-first-out) pattern.
+
+This methodology of data streaming often prohibits a system to process the real-time data while streaming. Thus a bunch of prominent developers realized that they would need a holistic and coherent approach to build a Reactive Systems Architecture which would ease the process of consuming and compute the data while streaming. Hence, they signed a manifesto, popularly known as the [Reactive Manifesto](https://www.reactivemanifesto.org/).
 
 The authors of the manifesto resembled that a Reactive system must be an asynchronous software that deal with *Producers* which have single responsibility to send messages to *Consumers*. They are architectural pattern that keeps failure resolution in mind to make sure most of the system will still operate even if one of them fails. Hence, they introduced the following features to keep in mind:
 
@@ -23,8 +25,6 @@ The authors of the manifesto resembled that a Reactive system must be an asynchr
 * **Resilient**: Reactive systems should be designed to anticipate system failures. Thus they should be responsive through replication and isolation.
 * **Elastic**: Reactive systems must be adaptive to shard or replicate components based upon their requirement. They should use predictive scaling to anticipate sudden ups and downs in their infrastructure.
 * **Message-driven**: Since all the components in a reactive system are supposed to be loosely-coupled, they must communicate across their boundaries by asynchronously exchanging of messages.
-
-{{% image alt="Reactive Straits" src="https://www.reactivemanifesto.org/images/reactive-traits.svg" %}}
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-webflux" %}}
 
@@ -40,7 +40,9 @@ In a conventional MVC application, whenever a request reaches the server, a serv
 
 ### Non-Blocking Request
 
-In a non-blocking system, all the incoming requests are accompanied with an event handler and a callback information. The request thread delegates the incoming request to a thread pool which manages a pretty small number of threads. Then the thread pool delegates the request to its handler function and gets available to process next incoming requests from the request thread. When the handler function completes its process, one of the thread from the pool fetches the response and pass it to the callback function. Thus the threads in a non-blocking system never goes into the waiting state. This increases the productivity and the performance of the application.
+In a non-blocking system, all the incoming requests are accompanied with an event handler and a callback information. The request thread delegates the incoming request to a thread pool which manages a pretty small number of threads. Then the thread pool delegates the request to its handler function and gets available to process next incoming requests from the request thread.
+
+When the handler function completes its process, one of the thread from the pool fetches the response and pass it to the callback function. Thus the threads in a non-blocking system never goes into the waiting state. This increases the productivity and the performance of the application.
 
 {{% image alt="Non-blocking request" src="images/posts/spring-webflux/non-blocking_request.png" %}}
 
@@ -307,13 +309,13 @@ public class UserController {
 
 This almost looks same as the controller defined in Spring MVC. But the major difference between Spring MVC and Spring Webflux relies on how the request and response are handled using non-blocking Publishers, *Mono* and *Flux*. We don’t need to call subscribe methods in the Controller as the internal classes of Spring would call it for us at the right time.
 
-{{% warning title="Do Not Block" %}}
-*Note: We must make sure that we don’t use any blocking methods throughout the lifecycle of an API.*
+{{% warning title="Do Not Block !!" %}}
+Note: We must make sure that we don’t use any blocking methods throughout the lifecycle of an API.
 {{% /warning %}}
 
 ##### Functional Routing and Handling
 
-Initially the Spring Functional Web Framework was built and designed for Spring Webflux but later it was also introduced in Spring MVC. We use functions for routing and handling the requests. This constitutes an alternative programming model to the Spring annotation based framework.
+Initially the Spring Functional Web Framework was built and designed for Spring Webflux but later it was also introduced in Spring MVC. We use functions for routing and handling the requests. This introduces an alternative programming model to the one provided by the Spring annotation based framework.
 
 First of all, we will define a `Handler` function that can accept a `ServerRequest` as an incoming argument and return a Mono of `ServerResponse` as the response of that functional method. Let’s name the handler class as `UserHandler`:
 
@@ -431,7 +433,9 @@ This constitutes our basic non-blocking REST API using Spring Webflux. Now this 
 * Message notification without unnecessary reloading of server.
 * Subscribing to a feed of news, stocks or cryptocurrency
 
-The biggest limitation of SSE is that it’s unidirectional and hence information can’t be passed to a server from the client. Spring Wbflux allows us to define Server streaming events which can send events in a given interval. The web client initiates the REST API call and keeps it open until the even stream is closed. The server-side event would have the content type `text/event-stream`. Now we can define a Server Side Event streaming endpoint using WebFlux by simply returning a Flux and specifying the content type as text/event-stream. So let’s add this method to our existing `UserController`:
+The biggest limitation of SSE is that it’s unidirectional and hence information can’t be passed to a server from the client. Spring Webflux allows us to define server streaming events which can send events in a given interval. The web client initiates the REST API call and keeps it open until the event stream is closed.
+
+The server-side event would have the content type `text/event-stream`. Now we can define a Server Side Event streaming endpoint using WebFlux by simply returning a Flux and specifying the content type as text/event-stream. So let’s add this method to our existing `UserController`:
 
 ```java
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -541,7 +545,6 @@ If we receive the response in the first attempt, then it will simply return the 
 Traditionally, Spring MVC bundles *Tomcat* server for servlet stack applications whereas Spring WebFlux bundles *Reactor Netty* by default for reactive stack applications. *Reactor Netty* is an asynchronous event-driven network application framework built out of Netty server which provides non-blocking and backpressure-ready network engines for HTTP, TCP and UDP clients and servers. Spring WebFlux automatically configures Reactor Netty as the default server but if we want to override the default configuration, we can simply do that by defining them under server prefix.
 
 ```yaml
-
 server:
   port: 9000
   http2:

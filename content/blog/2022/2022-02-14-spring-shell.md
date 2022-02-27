@@ -1,3 +1,13 @@
+---
+title: "Create Command-line Applications with Spring Shell"
+categories: ["Spring"]
+date: 2022-02-26 00:00:00 +1100
+authors: ["cercenazi"]
+description: "Introduction to Spring Shell and how to create a simple command line application."
+image: images/stock/0119-cat-1920-1282.jpg
+url: spring-shell
+---
+
 ## Spring Shell
 [Spring Shell](https://spring.io/projects/spring-shell) allows us to build a command line (shell) application using the Spring framework and all the advantages it provides.
 
@@ -5,51 +15,46 @@
 A shell provides us with an interface to a system (usually an operating system) to which we give commands and parameters. The shell in turn does some useful tasks for us and provides an output.
 
 ## Creating a Basic Shell
-Since it's a Spring application, our main method has to be annotated with `@SpringBootApplication`
-```java
-@SpringBootApplication  
-public class SpringShellApplication {  
-   public static void main(String[] args) {  
-      SpringApplication.run(SpringShellApplication.class, args);  
-   }  
-}
-```
+First, we have to get the [SpringShell dependency](https://mvnrepository.com/artifact/org.springframework.shell/spring-shell-starter) from Maven central, which has everything we need.
+
+Then, since it's a Spring application, our main method has to be annotated with `@SpringBootApplication`
+```java  
+@SpringBootApplication 
+public class SpringShellApplication {    
+   public static void main(String[] args) {    
+      SpringApplication.run(SpringShellApplication.class, args);    
+	} 
+}  
+```  
 
 Now, let's create our first shell command which simulates an SSH command:
-```java
-@ShellComponent  
-public class SSHCommand {  
-    Logger log = Logger.getLogger(SSHCommand.class.getName());  
-  
-    @ShellMethod(value = "connect to remote server")  
-    public void ssh(@ShellOption(value = "-s") String remoteServer)  
-    {  
-        log.info(format("Logged to machine '%s'", remoteServer));  
-    }  
-}
-```
+```java  
+@ShellComponent 
+public class SSHCommand {    
+    Logger log = Logger.getLogger(SSHCommand.class.getName());    
+    
+    @ShellMethod(value = "connect to remote server")    
+    public void ssh(@ShellOption(value = "-s") String remoteServer)    
+    {    
+        log.info(format("Logged to machine '%s'", remoteServer));    
+	} 
+}  
+```  
 
-The annotation `@ShellComponent` as defined by the Spring team:
+The annotation `@ShellComponent` tells Spring Shell that an annotated class may contain shell methods, which are annotated with `@ShellMethod`.
 
-> Indicates that an annotated class may contain shell methods (themselves annotated with ShellMethod) that is, methods that may be invoked reflectively by the shell
-
-As for the `@ShellMethod` annotation:
-
-    Used to mark a method as invokable via Spring Shell.
-We can also see the `value` property which is used to describe the command.
+As for the `@ShellMethod` annotation, it's used to mark a method as invokable via Spring Shell. We can also see the `value` property which is used to describe the command.
 
 The `@ShellOption` annotation simply states that this command takes a parameter named `-s`.
 
 So as a result when we run the application we get a shell that has a command called `ssh` which takes a parameter `-s` and all it does is logging the passed parameter value to the command line.
 
-```bash
-shell:>ssh -s my-machine
-2022-02-11 15:44:04.065  INFO 5648 --- [           main] j.t.springshell.command.SSHCommand       : Logged to machine 'my-machine'
-shell:>
-```
+```bash  
+shell:>ssh -s my-machine  
+2022-02-11 15:44:04.065  INFO 5648 --- [           main] j.t.springshell.command.SSHCommand       : Logged to machine 'my-machine'shell:>  
+```  
 
-## Deeper Look Into Spring Shell
-### Command Name
+### Modifying the Command Name
 The default naming convention for Spring Shell, as we've seen, is taking the method name `ssh` and turning it into the command name.
 - If we wrote the name in camel case Spring would turn camelCase humps into "-".
 - So `customSsh` would translate to `custom-ssh`.
@@ -57,14 +62,19 @@ The default naming convention for Spring Shell, as we've seen, is taking the met
 We can also add a name of our own using the `key` property of the `ShellMethod` annotation:
 
 ```java 
-@ShellMethod(key = "my-ssh", value = "connect to remote server")  
-public void ssh(@ShellOption(value = "-s") String remoteServer)  
-{  
-    log.info(format("Logged to machine '%s'", remoteServer));  
+@ShellComponent  
+public class SSHCommand {
+	...
+	@ShellMethod(key = "my-ssh", value = "connect to remote server") 
+	public void ssh(@ShellOption(value = "-s") String remoteServer) 
+	{    
+		log.info(format("Logged to machine '%s'", remoteServer)); 
+	}  
 }
-```
+```  
 
-### Command Parameters
+### Working with Command Parameters
+Commands can take parameters as input from the user. Spring Shell offers a simple and easy way to introduce parameters.
 
 #### Parameter Naming
 As we've seen from the previous example, command parameters are expressed through method parameters.
@@ -74,87 +84,105 @@ We can specify the name of the parameter using the `value` property of the `@She
 If we don't specify the value however, Spring Shell assigns it a default value of parameter name "-" separated prefixed by `ShellMethod.prefix()`.
 - The `ShellMethod.prefix()` default value is "--" unless changed in the `@ShellMethod` annotation:
 
-```java
-@ShellMethod(key = "my-ssh", prefix = "-", value = "connect to remote server")  
-public void ssh(@ShellOption String remoteServer)  
-{  
-    log.info(format("Logged to machine '%s'", remoteServer));  
+```java  
+@ShellComponent  
+public class SSHCommand {
+	...
+	@ShellMethod(key = "my-ssh", prefix = "-", value = "connect to remote server") 
+	public void ssh(@ShellOption String remoteServer) 
+	{    
+		log.info(format("Logged to machine '%s'", remoteServer)); 
+	}  
 }
-```
-- In the above example the parameter name will be `-remote-server`.
-
-#### Default Parameters Values
-We can assign default values to parameters in case the user doesn't specify any. Doing this also allows the user to treat those parameters as optional:
-```java
-@ShellMethod(value = "connect to remote server")  
-public void ssh(@ShellOption(value = "--s", defaultValue = "default-server") String remoteServer)  
-{  
-    log.info(format("Logged to machine '%s'", remoteServer));  
-}
-```
-Typing only `ssh` to the console will give us:
+```  
+Then, our command would be something like:
 ```bash
-shell:>ssh
+Cool Machine==> my-ssh -remote-server test
+2022-02-27 12:39:14.800  INFO 11704 --- [           main] i.r.springshell.command.SSHCommand       : Logged to machine 'test'
+``` 
+
+#### Declaring Default Parameters Values
+We can assign default values to parameters in case the user doesn't specify any. Doing this also allows the user to treat those parameters as optional:
+```java  
+@ShellComponent  
+public class SSHCommand {
+	...
+	@ShellMethod(value = "connect to remote server") 
+	public void ssh(@ShellOption(value = "--s", defaultValue = "default-server") String remoteServer) 
+	{    
+		log.info(format("Logged to machine '%s'", remoteServer)); 
+	}  
+}
+```  
+Typing only `ssh` to the console will give us:
+```bash  
+shell:>ssh  
 2022-02-11 19:55:05.133  INFO 4700 --- [           main] j.t.springshell.command.SSHCommand       : Logged to machine 'default-server'
-```
+```  
 
 #### Multi-valued Parameters
 We can specify multiple values for a single parameter by using the `arity()` attribute of the `@ShellOption` annotation. Simply use a collection or array for the parameter type, and specify how many values are expected":
-```java
-@ShellMethod(value = "add keys")  
-public void sshAdd(@ShellOption(value = "--k", arity = 2) String[] keys)  
-{  
-    log.info(format("Adding keys '%s' '%s'", keys[0], keys[1]));  
+```java  
+@ShellComponent  
+public class SSHCommand {
+	...
+	@ShellMethod(value = "add keys") 
+	public void sshAdd(@ShellOption(value = "--k", arity = 2) String[] keys) 
+	{    
+		log.info(format("Adding keys '%s' '%s'", keys[0], keys[1])); 
+	}  
 }
-```
+```  
 
 Let's try the command out in the shell:
 
-```bash
-shell:>ssh-add --k test1 test2
+```bash  
+shell:>ssh-add --k test1 test2  
 2022-02-12 18:27:00.301  INFO 4928 --- [           main] j.t.springshell.command.SSHCommand       : Adding keys 'test1' 'test2'
-```
+```  
 
-#### Boolean Parameters
+#### Working with Boolean Parameters
 Boolean parameters receive a special treatment by command-line utilities. The absence of the parameter in the command indicates a false value. On the other hand, its existence indicates true value:
-```java
-@ShellMethod(value = "sign in")  
-public void sshLogin(@ShellOption(value = "--r") boolean rememberMe)  
-{  
-    log.info(format("remember me option is '%s'", rememberMe));  
+```java  
+@ShellComponent  
+public class SSHCommand {
+	...
+	@ShellMethod(value = "sign in") 
+	public void sshLogin(@ShellOption(value = "--r") boolean rememberMe) 
+	{    
+		log.info(format("remember me option is '%s'", rememberMe)); 
+	}  
 }
-```
+```  
 Let's check it out in the command line:
-```bash
-shell:>ssh-login --r
-2022-02-12 18:41:34.903  INFO 10044 --- [           main] j.t.springshell.command.SSHCommand       : remember me option is 'true'
-shell:>ssh-login
+```bash  
+shell:>ssh-login --r  
+2022-02-12 18:41:34.903  INFO 10044 --- [           main] j.t.springshell.command.SSHCommand       : remember me option is 'true'shell:>ssh-login  
 2022-02-12 18:41:44.606  INFO 10044 --- [           main] j.t.springshell.command.SSHCommand       : remember me option is 'false'
-```
+```  
 #### Validating Command Parameters
-According to the Spring Shell team
 
-> Spring Shell integrates with the  [Bean Validation API](https://beanvalidation.org/)  to support automatic and self documenting constraints on command parameters.
-> Annotations found on command parameters as well as annotations at the
-> method level will be honored and trigger validation prior to the
-> command executing.
+Spring Shell integrates with the  [Bean Validation API](https://beanvalidation.org/)  to provide us with automatic and self-documenting constraints on command parameters.
+Validation annotations found on command parameters as well as annotations at the method level will trigger validation prior to the command executing.
 
 Let's try this in action by adding a `@Size` annotation to the method parameter:
-```java
-@ShellMethod(value = "ssh agent")  
-public void sshAgent(  
-        @ShellOption(value = "--a")  
-        @Size(min = 2, max = 10) String agent)  
-{  
-    log.info(format("adding agent '%s'", agent));  
+```java  
+@ShellComponent  
+public class SSHCommand {
+	...
+	@ShellMethod(value = "ssh agent") public void sshAgent(    
+	        @ShellOption(value = "--a")    
+	@Size(min = 2, max = 10) String agent) 
+	{    
+		log.info(format("adding agent '%s'", agent)); 
+	}  
 }
-```
+```  
 Now, if we try to pass a parameter value with a length of 1 we will get an error stating the reason:
-```bash
-shell:>ssh-agent --a t
-The following constraints were not met:
-	--a string : size must be between 2 and 10 (You passed 't')
-```
+```bash  
+shell:>ssh-agent --a t  
+The following constraints were not met:  --a string : size must be between 2 and 10 (You passed 't')  
+```  
 
 Note that the `@Size` annotation is a part of the [Jakarta Bean Validation](https://beanvalidation.org/) which offers many more validation options like `@NotEmpty` `@Max`.
 
@@ -162,90 +190,100 @@ Note that the `@Size` annotation is a part of the [Jakarta Bean Validation](http
 ## Dynamic Command Availability
 Some commands only make sense when certain pre-conditions are met. For example, a `sign-out` command should be available only if a `sign-in` command has been issued, and if the user tries to run the `sign-out` command we want to warn them that it's not possible.
 
-Spring Shell offers us three ways to achieve our goal.
+Spring Shell offers us **three** ways to achieve our goal.
 
-Let's explore the **first way** which checks our class for a method with a special name and with a return type of `Availability`.
+### The First Way
+It checks our class for a method with a special name and with a return type of `Availability`.  
 The special name has to be in the format `command-to-checkAvailability`:
-```java
-@ShellComponent  
-public class SSHLoggingCommand {  
-    Logger log = Logger.getLogger(SSHLoggingCommand.class.getName());  
-    private boolean signedIn;  
-  
-    @ShellMethod(value = "sign in")  
-    public void signIn()  
-    {  
-        this.signedIn = true;  
-        log.info("Signed In!");  
-    }  
-  
-    @ShellMethod(value = "sign out")  
-    public void signOut()  
-    {  
-        this.signedIn = false;  
-        log.info("Signed out!");  
-    }  
-    // note the naming   
-	public Availability signOutAvailability()  
-    {  
-        return signedIn ?  
-                Availability.available() : Availability.unavailable("Must be signed in first");  
-    }  
-}
+```java  
+@ShellComponent 
+public class SSHLoggingCommand {    
+    Logger log = Logger.getLogger(SSHLoggingCommand.class.getName());    
+    private boolean signedIn;    
+    
+    @ShellMethod(value = "sign in")    
+    public void signIn()    
+    {    
+        this.signedIn = true;    
+        log.info("Signed In!");    
+    }    
+    
+    @ShellMethod(value = "sign out")    
+    public void signOut()    
+    {    
+        this.signedIn = false;    
+        log.info("Signed out!");    
+    }    
+    // note the naming     
+   public Availability signOutAvailability()    
+    {    
+        return signedIn ?    
+                Availability.available() : Availability.unavailable("Must be signed in first");    
+	} 
+}  
 ``` 
 So if we try to run the `sign-out` command without first signing in we will get the following message:
-```bash
-shell:>sign-out
-Command 'sign-out' exists but is not currently available because Must be signed in first
-Details of the error have been omitted. You can use the stacktrace command to print the full stacktrace.
-shell:>
-```
+```bash  
+shell:>sign-out  
+Command 'sign-out' exists but is not currently available because Must be signed in firstDetails of the error have been omitted. You can use the stacktrace command to print the full stacktrace.shell:>  
+```  
 
-The **Second way**, is to use the `@ShellMethodAvailability` annotation, in which we specify the method name we want to use to Availability check:
-```java
-@ShellMethod(value = "sign out")  
-@ShellMethodAvailability("signOutCheck")  
-public void signOut()  
-{  
-    this.signedIn = false;  
-    log.info("Signed out!");  
-}
- 
-public Availability signOutCheck()  
-{  
-    return signedIn ?  
-            Availability.available() : Availability.unavailable("Must be signed in first");  
+### The Second Way
+Uses the `@ShellMethodAvailability` annotation, in which we specify the method name we want to use to Availability check:
+```java  
+@ShellComponent  
+public  class  SSHLoggingCommand  
+{
+	...
+	@ShellMethod(value = "sign out") 
+	@ShellMethodAvailability("signOutCheck") 
+	public void signOut() 
+	{    
+	    this.signedIn = false;    
+		log.info("Signed out!"); 
+	}  
+		
+	public Availability signOutCheck() 
+	{    
+	   return signedIn ?  Availability.available() : Availability.unavailable("Must be signed in first"); 
+	}  
 }
 ``` 
-The **third** and final way is to have several methods attached to a single availability method.
+
+### The Third Way
+It enables us to have several methods attached to a single availability method.  
 We are going to use the annotation `ShellMethodAvailability` with an array of the **commands names (not method names)**:
 
-```java
-@ShellMethod(value = "sign out")  
-public void signOut()  
-{  
-    this.signedIn = false;  
-    log.info("Signed out!");  
-}  
-  
-@ShellMethod(value = "Change password")  
-public void changePass(@ShellOption String newPass)  
-{  
-    log.info(format("Changed password to '%s'", newPass));  
-}  
-  
-@ShellMethodAvailability({"sign-out", "change-pass"})  
-public Availability signOutCheck()  
-{  
-    return signedIn ?  
-            Availability.available() : Availability.unavailable("Must be signed in first");  
+```java  
+@ShellComponent  
+public  class  SSHLoggingCommand  
+{
+	...
+	@ShellMethod(value = "sign out") public void signOut() 
+	{    
+	    this.signedIn = false;    
+		log.info("Signed out!"); 
+	}    
+
+	 @ShellMethod(value = "Change password") 
+	 public void changePass(@ShellOption String newPass) 
+	 {    
+		log.info(format("Changed password to '%s'", newPass)); 
+	 }    
+	 
+	 @ShellMethodAvailability({"sign-out", "change-pass"}) 
+	 public Availability signOutCheck() 
+	 {    
+	    return signedIn ? Availability.available() : Availability.unavailable("Must be signed in first"); 
+	}  
 }
-```
+```  
 
 ## Other Cool Features in Spring Shell
 Since Spring Shell builds on top of [JLine](https://github.com/jline/jline3) it inherits a lot of its features. Let's look at some of them:
 
 ### Tab Completion
+Spring Shell allows us to use tab completion with command names and even with parameter names.
 
 ### Built in Commands
 
@@ -257,30 +295,27 @@ Since Spring Shell builds on top of [JLine](https://github.com/jline/jline3) it 
 
 
 ## Styling the Shell
-We can do so by registering a bean of type `PromptProvider` which includes information on how to render the Shell prompt.
+We can do so by registering a bean of type `PromptProvider` which includes information on how to render the Shell prompt.  
 For example, let's change the prompt text to `Cool Machine==> ` with a green color for the text:
-```java
-@Component  
-public class CustomPromptProvider implements PromptProvider {  
-    @Override  
-  public AttributedString getPrompt() {  
-            return new AttributedString(  
-                    "Cool Machine" + "==> ",  
-                    AttributedStyle.DEFAULT.background(AttributedStyle.GREEN));  
-    }  
-}
+```java  
+@Component 
+public class CustomPromptProvider implements PromptProvider 
+{    
+    @Override    
+  public AttributedString getPrompt() {    
+            return new AttributedString(    
+                    "Cool Machine" + "==> ",    
+                    AttributedStyle.DEFAULT.background(AttributedStyle.GREEN));    
+	} 
+}  
+``` 
+This will give us a prompt like this
+```bash
+2022-02-26 23:37:49.949  INFO 6560 --- [           main] i.r.springshell.SpringShellApplication   : Started SpringShellApplication in 2.267 seconds (JVM running for 3.77)
+Cool Machine==> 
 ```
 
-## Running Spring Shell Jar File
-To build a JAR file from our Spring Shell project we have two paths depending on the building tool we are using, let's explore them both.
-Please note that we are doing this using command line instructions. If you are using an IDE it will take care of this for you when running the project.
-
-### Maven
-Using Maven we have to run the command `mvn clean package` in our root directory (the directory with the `pom.xml` file). This will produce a JAR file in the `build` directory.
-
-
-### Gradle
-As for Gradle we have to invoke the build task. Using Windows the command will be `./gradlew build`. This will also build the JAR file in the `build` directory.
+## Running the Shell from the Jar File
 
 After obtaining the JAR file we run it using the command `java -jar our-spring-shell-jar-name.jar`. This will open our shell in the command line and have it ready for us to type in commands.
 

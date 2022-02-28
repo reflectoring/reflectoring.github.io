@@ -370,7 +370,7 @@ Let us take a closer look at Kinesis Firehose service by creating a delivery str
 
 For our example, let us use the AWS console for creating the delivery stream as shown below:
 
-{{% image alt="Create Kinesis Delivery Stream" src="images/posts/aws-kinesis/kdf-create.png" %}}
+{{% image alt="Create Kinesis Delivery Stream" src="images/posts/aws-kinesis/kdf_create.png" %}}
 
 We configure a delivery stream in Firehose with a source and a destination. 
 
@@ -394,7 +394,7 @@ Apart form this we also need to assign an IAM service role to the Kinesis Fireho
 
 The delivery stream which we created using this configuration looks like this:
 
-{{% image alt="Created Kinesis Delivery Stream" src="images/posts/aws-kinesis/kdf-created.png" %}}
+{{% image alt="Created Kinesis Delivery Stream" src="images/posts/aws-kinesis/kdf_created.png" %}}
 
 In this screenshot we can observe a few more properties of the delivery stream like `Data transformation` and `Dynamic partitioning` which we will understand in the subsequent sections. We can also see the status of the delivery stream as `Active` which means it can receive streaming data. The initial status of the delivery stream is CREATING. 
 
@@ -448,7 +448,8 @@ public class FirehoseEventSender {
 	
 	private static FirehoseClient getFirehoseClient() {
 		AwsCredentialsProvider credentialsProvider = 
-		              ProfileCredentialsProvider.create(Constants.AWS_PROFILE_NAME);
+		              ProfileCredentialsProvider
+		              .create(Constants.AWS_PROFILE_NAME);
 		
 		FirehoseClient kinesisClient = FirehoseClient
 				.builder()
@@ -523,7 +524,8 @@ The code for processing this stream of access logs is shown below:
 
 ```java
 public class ErrorCounter {
-	private final static Logger logger = Logger.getLogger(ErrorCounter.class.getName());
+	private final static Logger logger = 
+	  Logger.getLogger(ErrorCounter.class.getName());
 
 	public static void main(String[] args) throws Exception {
 
@@ -562,7 +564,8 @@ public class ErrorCounter {
 			@Override
 			public boolean filter(LogRecord value) throws Exception {
 
-				boolean matched = !value.getHttpStatus().equalsIgnoreCase("200");
+				boolean matched = !value.getHttpStatus()
+				                   .equalsIgnoreCase("200");
 				
 				return matched;
 			}

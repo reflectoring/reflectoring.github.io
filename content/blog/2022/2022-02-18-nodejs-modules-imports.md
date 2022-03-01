@@ -1,5 +1,5 @@
 ---
-title: "Modules and Imports in NodeJS"
+title: "CommonJS vs. ES Modules: Modules and Imports in NodeJS"
 categories: ["NodeJS"]
 date: 2022-02-18 00:00:00 +1100 
 modified: 2022-02-18 00:00:00 +1100

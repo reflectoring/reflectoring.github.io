@@ -621,7 +621,7 @@ public class BooksRestController {
     // Rest of the code 
 }
 ```
-To make our class the controller bean we need to annotate it with the `@RestController` or with the `@Controller`.
+To make our class the controller bean we need to annotate it with `@RestController` or with `@Controller`.
 The difference between these two is that the `@RestController` automatically wraps the object into the `ResponseEntity<>`. 
 
 We went with the `@RestController` because it gives cleaner and more readable code.

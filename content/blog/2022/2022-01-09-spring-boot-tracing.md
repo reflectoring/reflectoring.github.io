@@ -289,18 +289,18 @@ services:
   
   api-service:  
     build: api-service/  
-    image: images/stock/api-service:latest  -1200x628-branded.jpg
+    image: api-service:latest
     ports:  
       - "8080:8080"  
   
   customer-service:  
     build: ./customer-service/  
-    image: images/stock/customer-service:latest  -1200x628-branded.jpg
+    image: customer-service:latest
     ports:  
       - "8081:8081"  
   
   collector:  
-    image: images/stock/logzio/otel-collector-traces  -1200x628-branded.jpg
+    image: logzio/otel-collector-traces
     environment:  
       - LOGZIO_REGION=${LOGZIO_REGION}  
       - LOGZIO_TRACES_TOKEN=${LOGZIO_TRACES_TOKEN}  

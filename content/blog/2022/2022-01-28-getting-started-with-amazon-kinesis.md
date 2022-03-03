@@ -88,7 +88,8 @@ public class DataStreamResourceHelper {
 	
 	private static KinesisClient getKinesisClient() {
 		AwsCredentialsProvider credentialsProvider = 
-		        ProfileCredentialsProvider.create(Constants.AWS_PROFILE_NAME);
+		        ProfileCredentialsProvider
+		        .create(Constants.AWS_PROFILE_NAME);
 		
 		KinesisClient kinesisClient = KinesisClient
 				.builder()
@@ -103,11 +104,7 @@ In the code snippet, we are creating a Kinesis Data Stream with `on-demand` capa
 
 With the Kinesis Data Stream created, we will look at how to add data to this stream in the next section.
 
-### Data Ingestion - Writing Data to Kinesis Data Streams
-Applications that write data to Kinesis Data Streams are called `producers`. Producer applications can be custom built in a supported programming language using AWS SDK or by using the Kinesis Producer Library (KPL). 
-
-We can also use Kinesis Agent which is a stand-alone application that we can run as an agent on Linux-based server environments such as web servers, log servers, and database servers. 
-
+### Structure of Data Added to Kinesis Data Stream
 Before adding data, it is also important to understand the structure of data that is added to a Kinesis Data Stream.
 **Data is written to a Kinesis Data Stream as a record.**
 
@@ -118,6 +115,11 @@ A record in a Kinesis data stream consists of multiple identifiers. **A record i
 **Partition key is used to segregate and route records to different shards of a stream.** We need to specify the partition key in the producer application while adding data to a Kinesis stream. 
 
 For example, if we have a stream with two shards: `shard1` and `shard2`, we can write our producer application to use two partition keys: `key1` and `key2` so that all records with `key1` are added to `shard1` and all records with `key2` are added to `shard2`.
+
+### Data Ingestion - Writing Data to Kinesis Data Streams
+Applications that write data to Kinesis Data Streams are called `producers`. Producer applications can be custom built in a supported programming language using AWS SDK or by using the Kinesis Producer Library (KPL). 
+
+We can also use Kinesis Agent which is a stand-alone application that we can run as an agent on Linux-based server environments such as web servers, log servers, and database servers. 
 
 Let us create a producer application in Java that will use the AWS SDK's `PutRecord()` operation for adding a single record and the `PutRecords()` operation for adding multiple records to the Kinesis Data Stream.
 
@@ -224,12 +226,15 @@ public class EventSender {
         
 		String partitionKey = "partitionKey1";
         
-        List <PutRecordsRequestEntry> putRecordsRequestEntryList = new ArrayList<>(); 
+        List <PutRecordsRequestEntry> putRecordsRequestEntryList 
+                                       = new ArrayList<>(); 
 
         // Create 5 records for adding to the Kinesis Data Stream
         for (int i = 0; i < 5; i++) {
         	SdkBytes data = SdkBytes
-        			.fromByteBuffer(ByteBuffer.wrap(("Test data "+i).getBytes()));
+        			.fromByteBuffer(
+        				ByteBuffer.wrap(("Test data "+i)
+        					.getBytes()));
         	
             PutRecordsRequestEntry putRecordsRequestEntry  
                     = PutRecordsRequestEntry.builder()         
@@ -555,7 +560,7 @@ Let us first create a Flink application which we will run using the Kinesis Data
 ```
 The dependency: `flink-streaming-java_2.11` contains the core API of Flink. We have added the `flink-clients_2.11` dependency for running the Flink application locally. For connecting to Kinesis we are using the dependency: `amazon-kinesis-connector-flink`.
 
-Let us use a stream of access logs from an Apache HTTP server as our streaming data that we will use for processing by our Flink application. We will first test our application using a text file as a pre-defined source and stdout as a pre-defined sink.
+Let us use a stream of access logs from an [Apache HTTP server](https://httpd.apache.org/) as our streaming data that we will use for processing by our Flink application. We will first test our application using a text file as a pre-defined source and stdout as a pre-defined sink.
 
 The code for processing this stream of access logs is shown below:
 
@@ -568,7 +573,8 @@ public class ErrorCounter {
 
         // set up the streaming execution environment
         final StreamExecutionEnvironment env = 
-               StreamExecutionEnvironment.getExecutionEnvironment();
+               StreamExecutionEnvironment
+               .getExecutionEnvironment();
 
         // Create the source of streaming data
         DataStream<String> inputStream = createSource(env);
@@ -675,7 +681,9 @@ After testing our data pipeline we will modify the `data source` in our code to 
 
 {{% image alt="Automation with Kinesis" src="images/posts/aws-kinesis/s3-lambda-auto.png" %}}
 
+In this architecture the access log files from the HTTP server will be uploaded to an S3 bucket. A lambda trigger attached to the S3 bucket will read the records from the file and add them to a Kinesis Data Stream using the `putRecords()` operation.
 
+The source and the sink connected to Kinesis Data Stream looks like this:
 
 ```java
 public class ErrorCounter {
@@ -684,7 +692,9 @@ public class ErrorCounter {
 
 	public static void main(String[] args) throws Exception {
 		// set up the streaming execution environment
-		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+		final StreamExecutionEnvironment env = 
+								StreamExecutionEnvironment
+								   .getExecutionEnvironment();
 
 		DataStream<String> inputStream = createSource(env);
 		...
@@ -695,7 +705,9 @@ public class ErrorCounter {
 	}
 
     // Create Kinesis Data Stream as a source
-	private static DataStream<String> createSource(final StreamExecutionEnvironment env) {
+	private static DataStream<String> createSource(
+		final StreamExecutionEnvironment env) {
+
 		Properties inputProperties = new Properties();
 		inputProperties.setProperty(
 			ConsumerConfigConstants.AWS_REGION, 
@@ -821,7 +833,7 @@ Please refer to the [documentation](https://docs.aws.amazon.com/kinesisvideostre
 ### Consuming Media Data from a Kinesis Video Stream
 We can consume media data by either viewing it in the AWS Kinesis Video Stream console or by creating an application that reads media data from a Kinesis Video Stream.
 
-The Kinesis Video Stream Parser Library is a set of tools that can be used in Java applications to consume the MKV data from a Kinesis Video Stream. 
+The Kinesis Video Stream Parser Library is a set of tools that can be used in Java applications to consume the [MKV](https://en.wikipedia.org/wiki/Matroska) data from a Kinesis Video Stream. 
 
 Please refer to the [documentation](https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/parser-library.html) for details about configuring the Parser library.
 

@@ -5,6 +5,7 @@ layout: "static"
 draft: false
 image: images/stock/0016-pen-1200x628-branded.jpg
 toc: true
+popup: false
 ---
 
 ## Successful Review

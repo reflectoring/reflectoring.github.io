@@ -3,6 +3,7 @@ title: "About Reflectoring"
 description: "About Reflectoring"
 layout: "about"
 draft: false
+popup: false
 ---
 
 {{% image p="float-right" alt="Tom Hombergs" src="images/tom/tom.png" %}}

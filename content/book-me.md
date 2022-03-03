@@ -3,6 +3,7 @@ title: "Book me"
 description: "Need someone to bounce off ideas or kick off a project? Book me!"
 draft: false
 layout: static
+popup: false
 ---
 
 **You need an experienced software engineer for a mentoring or pairing session? To bounce off some ideas? To validate an architecture? Or to just talk through an idea?**

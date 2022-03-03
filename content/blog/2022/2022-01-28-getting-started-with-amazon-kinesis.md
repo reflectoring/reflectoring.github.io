@@ -2,7 +2,7 @@
 authors: [pratikdas]
 title: "Getting Started with AWS Kinesis"
 categories: ["aws"]
-date: 2022-01-20T00:00:00
+date: 2022-03-03T00:00:00
 excerpt: "Amazon Kinesis is a family of managed services for collecting and processing streaming data in real-time. Stream processing platforms are an integral part of the big data ecosystem. In this article, we will introduce Amazon Kinesis and understand its core concepts of creating data streams, sending, and receiving data from streams, and deriving analytical insights using the different services of the family: Kinesis Data Stream, Kinesis Data Firehose, Kinesis Data Analytics, and Kinesis Video Streams."
 image: images/stock/0115-2021-1200x628-branded.jpg
 url: getting-started-with-aws-kinesis

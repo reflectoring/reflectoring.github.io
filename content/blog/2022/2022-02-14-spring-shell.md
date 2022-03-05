@@ -4,7 +4,7 @@ categories: ["Spring"]
 date: 2022-02-26 00:00:00 +1100
 authors: ["cercenazi"]
 description: "Introduction to Spring Shell and how to create a simple command line application."
-image: images/stock/0119-cat-1920-1282.jpg
+image: images/stock/0119-keyboard-coffee-1920-1280.jpg
 url: spring-shell
 ---
 

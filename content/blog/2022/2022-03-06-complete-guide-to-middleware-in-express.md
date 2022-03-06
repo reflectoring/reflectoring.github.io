@@ -3,7 +3,7 @@ authors: [pratikdas]
 title: "Complete Guide to Middleware in Express"
 categories: ["NodeJS"]
 date: 2022-03-06 00:00:00 +1100
-excerpt: "Middleware functions are an integral part of an application built with Express framework (henceforth referred as Express application). Express middleware refers to a set of functions that execute during the processing of HTTP requests received by an Express application. In this article, we will understand and use different types of middleware functions in Express and also create our own functions using both JavaScript and TypeScript."
+excerpt: "Middleware functions are an integral part of an application built with Express framework. Express middleware refers to a set of functions that execute during the processing of HTTP requests received by an Express application. In this article, we will understand and use different types of middleware functions in Express and also create our own functions using both JavaScript and TypeScript."
 image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: complete-guide-to-middleware-in-express
 ---
@@ -52,6 +52,9 @@ An exception to this rule is error handling middleware which takes an error obje
 Under the hood, when we call `app.use()`, Express adds our middleware function to its internal middleware stack. Express executes middleware in the order they are added, so if we make the calls in this order:
 
 ```js
+const express = require('express');
+const app = express();
+
 app.use(function1)
 app.use(function2)
 ```
@@ -248,11 +251,15 @@ Here we are extracting the contents of the JSON request by calling `req.body.FIE
 Similarly we can use express' built-in middleware `express.urlencoded()` to process URL encoded fields submitted through a HTTP form object:
 
 ```js
+const express = require('express');
+const app = express();
+
 app.use(express.urlencoded({ extended: false }));
 ``` 
+After attaching the middleware: `express.urlencoded()` to the route, we can extract the field values of a submitted form in a handler function using `request.body.<fieldname>` as shown in the code snippet for earlier for extracting JSON fields.
 
 ## Adding Middleware Function to a Route
-Let us now see how to create a middleware function of our own. 
+Let us now see how to create a middleware function of our own in an Express application. 
 
 As an example, let us check for the presence of JSON content in the HTTP POST request body before allowing any further processing and send back an error response if the request body does not contain JSON content. 
 

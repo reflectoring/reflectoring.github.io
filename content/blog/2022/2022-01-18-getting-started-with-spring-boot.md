@@ -731,10 +731,10 @@ public class BooksRestController {
     // Rest of the code 
 }
 ```
-To make our class the controller bean we need to annotate it with the `@RestController` or with the `@Controller`.
-The difference between these two is that the `@RestController` automatically wraps the object into the `ResponseEntity<>`. 
+To make our class the controller bean we need to annotate it with `@RestController` or with `@Controller`.
+The difference between these two is that `@RestController` automatically wraps the object into `ResponseEntity<>`. 
 
-We went with the `@RestController` because it gives cleaner and more readable code.
+We went with `@RestController` because it gives cleaner and more readable code.
 
 The `@RequestMapping("/books")` annotation maps our bean to this path. 
 If we start the application locally we can access the endpoint on the `http://localhost:8080/books`. 
@@ -742,7 +742,7 @@ If we start the application locally we can access the endpoint on the `http://lo
 We annotated the `fetchAllBooks()` method with the `@GetMapping` annotation to define that this is the `GET` method. 
 Since we didn't define additional path on the `@GetMapping` annotation we are using the path from the `@RequestMapping` definitions.
 
-### Creating an Endpoint With the @Controller
+### Creating an Endpoint With the `@Controller` Annotation
 
 Instead with the `@RestController` we can define the controller bean with the `@Controller` annotation:
 ```java

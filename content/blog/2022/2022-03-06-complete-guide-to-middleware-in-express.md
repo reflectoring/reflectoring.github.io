@@ -2,7 +2,7 @@
 authors: [pratikdas]
 title: "Complete Guide to Middleware in Express"
 categories: ["NodeJS"]
-date: 2022-03-15 00:00:00 +1100
+date: 2022-03-06 00:00:00 +1100
 excerpt: "Middleware functions are an integral part of an application built with Express framework (henceforth referred as Express application). Express middleware refers to a set of functions that execute during the processing of HTTP requests received by an Express application. In this article, we will understand and use different types of middleware functions in Express and also create our own functions using both JavaScript and TypeScript."
 image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: complete-guide-to-middleware-in-express

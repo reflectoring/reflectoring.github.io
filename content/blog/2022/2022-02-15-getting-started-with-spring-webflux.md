@@ -328,7 +328,7 @@ This almost looks same as the controller defined in Spring MVC. But the major di
 **We don’t need to call subscribe methods in the Controller as the internal classes of Spring would call it for us at the right time**.
 
 {{% warning title="Do Not Block!" %}}
-NWe must make sure that we don’t use any blocking methods throughout the lifecycle of an API. Otherwise, we lose the main advantage of reactive programming!
+We must make sure that we don’t use any blocking methods throughout the lifecycle of an API. Otherwise, we lose the main advantage of reactive programming!
 {{% /warning %}}
 
 ##### Functional Routing and Handling

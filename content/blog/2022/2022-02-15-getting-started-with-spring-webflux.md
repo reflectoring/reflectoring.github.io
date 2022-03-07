@@ -50,15 +50,29 @@ A single request is potentially processed by multiple threads!
 
 {{% image alt="Non-blocking request" src="images/posts/spring-webflux/non-blocking_request.png" %}}
 
+### Backpressure
+
+We often might have came across this word, *Backpressure* while dealing with huge data streams. It is an analogy derived from fluid dynamics which literally means the *resistance* or *force* that opposes the desired flow of data. In Reactive Streams, backpressure defines the mechanism to regulate the data transmission across streams.
+
+Consider that a server A sends 1000 EPS(events per second) to server B. But server B could only process 800 EPS and has a deficit of 200 EPS. Server B would now tend to fall behind as it has to process the deficit data and send it downstream or maybe store it in database. Thus, server B deals with backpressure and soon will go out of memory and fail.
+
+So, this backpressure can be handled or managed by the following options or strategies:
+
+* *Buffer* - We can easily buffer the deficit data and process it later when the server is bit free. But with huge load of data coming in, this buffer might increase and the server would soon run out of memory.
+* *Drop* - This must be the last option that someone should opt for. Usually, we can use the concept of data sampling combined with buffering to achieve lesser data loss.
+* *Control* - The concept of controlling the producer that sends the data is by far the best option. Reactive Streams provides various options in both push and pull based streams to control the data that is being produced and sent to the consumer.
+
 ### Reactive Java Libraries
 
-The reactive landscape in Java has evolved a lot in recent years. Here are the most populare reactive libraries:
+The reactive landscape in Java has evolved a lot in recent years. Before we move on further to understand the Spring Webflux component, let’s just take a look into the reactive core libraries written in Java till date. Here are the most popular ones:
 
 * **RxJava**: It is implemented out of the [ReactorX](https://reactivex.io/) project which hosts implementations for multiple programming languages and platforms. *ReactiveX* is a combination of the best ideas from the *Observer* pattern, the *Iterator* pattern, and *functional programming*.
 * **Project Reactor**: [Reactor](https://projectreactor.io/) is a framework built by Pivotal and powered by Spring. It is considered as one of the foundation of the *reactive stack* in the [Spring](https://spring.io/reactive) ecosystem. It implements Reactive API patterns which are based out of *Reactive Streams* specification.
 * **Akka Streams**: Although it implements the Reactive Streams implementation, the [Akka Streams](http://doc.akka.io/docs/akka/snapshot/scala/stream/index.html) API is completely decoupled from the Reactive Streams interfaces. It uses *Actors* to deal with the streaming data. It is considered as a 3rd generation Reactive library.
 * **Ratpack**: [Ratpack](https://ratpack.io/) is a set of Java libraries used for building scalable and high-performance HTTP applications. It uses Java 8, *Netty* and reactive principles to provide a basic implementation of Reactive Stream API. You can also use Reactor or RxJava along with it.
 * **Vert.x**: [Vert.x](https://vertx.io/) is a foundation project by *Eclipse* which delivers a *polyglot event driven framework* for JVM. It is similar to Ratpack and allows to use RxJava or their native implementation for Reactive Streams API.
+
+Spring Webflux is internally built using the core components of RxJava and RxNetty.
 
 ## Intro to Java 9 Reactive Streams API
 
@@ -76,7 +90,7 @@ The whole purpose of Reactive Streams was to introduce a standard for asynchrono
 
   * `onSubscribe(Subscription s)`: Gets called automatically when a publisher registers itself and allows the subscription to request data.
   * `onNext(T t)`: Gets called on the subscriber every time it is ready to receive a new message of generic type T.
-  * `onError(Throwable t)`:Iis used to handle the next steps whenever an error is monitored.
+  * `onError(Throwable t)`:Is used to handle the next steps whenever an error is monitored.
   * `onComplete()`: Allows to perform operations in case of successful subscription of data.
 
   ```java
@@ -139,7 +153,7 @@ Before we get started with Spring Webflux, we must accustom ourselves to two of 
   Reactor also provides operators to work with `Mono` and `Flux` objects. Some of them are:
 
   - `Map` - It is used to transform from one element to another.
-  - `FlatMap` - It works similar to a map operator, but the transformation is asynchronous.
+  - `FlatMap` - It flattens the list of publisher to the values that the publishers emit. The transformation is asynchronous.
   - `FlatMapMany` - This is a Mono operator which is used to transform a Mono object into a Flux object.
   - `DelayElements` - It basically delays the publishing of each element by a defined duration.
   - `Concat` - It is used to combine the elements of publisher by keeping the sequence of the publishers intact.
@@ -457,9 +471,30 @@ The server-side event would have the content type `text/event-stream`. Now we ca
 
 Here, we will stream all the users in our system every 2 seconds. This serves the whole list of updated users from the MongoDB every interval.
 
-### Brief Introduction to `WebClient`
+### Webflux Internals
 
-To give an introduction, *Spring WebClient* is an HTTP component which is being used to make HTTP calls to other REST based services. Spring already had `RestTemplate` client, which was used by Spring MVC to make synchronous HTTP calls. However, Spring 5 introduced the new `WebClient` API which was made to replace `RestTemplate` client so that it can make both blocking and non-blocking HTTP request with functional APIs. It is capable enough to directly integrate with your Spring configurations or the Spring WebFlux reactive framework.
+
+
+Traditionally, Spring MVC bundles *Tomcat* server for servlet stack applications whereas Spring WebFlux bundles *Reactor Netty* by default for reactive stack applications.
+
+*Reactor Netty* is an asynchronous, event-driven network application framework built out of Netty server which provides non-blocking and backpressure-ready network engines for HTTP, TCP and UDP clients and servers. 
+
+Spring WebFlux automatically configures Reactor Netty as the default server but if we want to override the default configuration, we can simply do that by defining them under server prefix.
+
+```yaml
+server:
+  port: 9000
+  http2:
+    enabled: true
+```
+
+We can also define the other properties in the same way that start with the `server` prefix by overriding the default server configuration.
+
+## Brief Introduction to `WebClient`
+
+*WebClient* is considered as the main entry point to perform any web requests. Even though it is a non-blocking client, it still belongs to be an integral part of *spring-webflux* library as it supports both synchronous and asynchronous operations.
+
+To give a brief introduction, *Spring WebClient* is an HTTP component which is being used to make HTTP calls to other REST based services. Spring already had `RestTemplate` client, which was used by Spring MVC to make synchronous HTTP calls. However, Spring 5 introduced the new `WebClient` API which was made to replace `RestTemplate` client so that it can make both blocking and non-blocking HTTP request with functional APIs. It is capable enough to directly integrate with your Spring configurations or the Spring WebFlux reactive framework.
 
 If you want a deeper `WebClient` tutorial, please check out our [article about `WebClient`](/spring-webclient/).
 
@@ -545,35 +580,6 @@ public Mono<User> postUser(User user) {
 ```
 
 If we receive the response in the first attempt, then it will simply return the response back. But if the API faces some issue, then it will try to re-attempt for a while after which it can return some manually defined data return an error to denote that it has failed due to some reason.
-
-## Alternative Server Used in Webflux
-
-Traditionally, Spring MVC bundles *Tomcat* server for servlet stack applications whereas Spring WebFlux bundles *Reactor Netty* by default for reactive stack applications.
-
-*Reactor Netty* is an asynchronous, event-driven network application framework built out of Netty server which provides non-blocking and backpressure-ready network engines for HTTP, TCP and UDP clients and servers. 
-
-Spring WebFlux automatically configures Reactor Netty as the default server but if we want to override the default configuration, we can simply do that by defining them under server prefix.
-
-```yaml
-server:
-  port: 9000
-  http2:
-    enabled: true
-```
-
-We can also define the other properties in the same way that start with the `server` prefix by overriding the default server configuration.
-
-## Concurrency Model
-
-As we discussed above, traditional Spring Boot applications use a thread-per-request model which means each request to a web server can be handled by a dedicated thread. 
-
-However, most of the communications within a given thread are still blocking in nature. Hence,WebFlux came up with a different approach to place a concurrency model that can serve more requests with fewer threads.
-
-Let’s say in a reactive model, a read call to any DB will not block the calling thread while data is retrieved or exchanged. The call will return a publisher immediately that others can subscribe to. The subscriber can process the events later after the result has been generated or processed. The overall focus relies on re-structuring the system as some kind of *asynchronous event data stream*. 
-
-{{% image alt="Concurrency in WebFlux" src="images/posts/spring-webflux/webflux_concurrency.png" %}}
-
-Hence, this Publisher-Subscriber model allows us to achieve better utilization of threads which in turn helps in achieving higher overall concurrency.
 
 ## Conclusion
 

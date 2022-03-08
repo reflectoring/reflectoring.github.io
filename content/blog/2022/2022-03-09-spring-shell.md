@@ -1,14 +1,13 @@
 ---
 title: "Create Command-line Applications with Spring Shell"
 categories: ["Spring"]
-date: 2022-02-26 00:00:00 +1100
+date: 2022-03-09 00:00:00 +1100
 authors: ["cercenazi"]
 description: "Introduction to Spring Shell and how to create a simple command line application."
-image: images/stock/0119-keyboard-coffee-1920-1280.jpg
+image: images/stock/0119-keyboard-coffee-1200-628.jpg
 url: spring-shell
 ---
 
-## Spring Shell
 [Spring Shell](https://spring.io/projects/spring-shell) allows us to build a command line (shell) application using the Spring framework and all the advantages it provides.
 
 {{% github "[https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-shell](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-shell)" %}}
@@ -19,32 +18,15 @@ A shell provides us with an interface to a system (usually an operating system) 
 ## Creating a Basic Shell
 First, we have to get the [SpringShell dependency](https://mvnrepository.com/artifact/org.springframework.shell/spring-shell-starter) from Maven central, which has everything we need.
 
-The `build.gradle` file will look something like this:
+In Gradle, the dependency will look something like this:
 
 ```groovy
-plugins {  
-  id 'org.springframework.boot' version '2.6.3'  
-  id 'io.spring.dependency-management' version '1.0.11.RELEASE'  
-  id 'java'  
-}  
-  
-group = 'io.reflectoring'  
-version = '0.0.1-SNAPSHOT'  
-  
-repositories {  
-  mavenCentral()  
-}  
-  
 dependencies {  
   implementation 'org.springframework.shell:spring-shell-starter:2.0.1.RELEASE'  
 }  
-  
-tasks.named('test') {  
-  useJUnitPlatform()  
-}
 ```
 
-Then, since it's a Spring application, our main method has to be annotated with `@SpringBootApplication`
+Then, since it's a Spring Boot application, our main method has to be annotated with `@SpringBootApplication`
 ```java  
 @SpringBootApplication 
 public class SpringShellApplication 
@@ -112,8 +94,9 @@ As we've seen from the previous example, command parameters are expressed throug
 
 We can specify the name of the parameter using the `value` property of the `@ShellOption` annotation.
 
-If we don't specify the value however, Spring Shell assigns it a default value of parameter name "-" separated prefixed by `ShellMethod.prefix()`.
-- The `ShellMethod.prefix()` default value is "--" unless changed in the `@ShellMethod` annotation:
+If we don't specify the value however, Spring Shell assigns it a default value of parameter name "-" separated prefixed by `ShellMethod.prefix()`. 
+
+The default value for `@ShellMethod.prefix()` is "--":
 
 ```java  
 @ShellComponent  
@@ -192,7 +175,9 @@ public class SSHCommand
 Let's check it out in the command line:
 ```bash  
 shell:>ssh-login --r  
-2022-02-12 18:41:34.903  INFO 10044 --- [           main] j.t.springshell.command.SSHCommand       : remember me option is 'true'shell:>ssh-login  
+2022-02-12 18:41:34.903  INFO 10044 --- [           main] j.t.springshell.command.SSHCommand       : remember me option is 'true'
+
+shell:>ssh-login  
 2022-02-12 18:41:44.606  INFO 10044 --- [           main] j.t.springshell.command.SSHCommand       : remember me option is 'false'
 ```  
 #### Validating Command Parameters
@@ -228,7 +213,7 @@ Some commands only make sense when certain pre-conditions are met. For example, 
 
 Spring Shell offers us **three** ways to achieve our goal.
 
-### Create a Method to check Availability
+### Create a Method to Check Availability
 It checks our class for a method with a special name and with a return type of `Availability`.  
 The special name has to be in the format `commandToCheckAvailability`:
 ```java  
@@ -289,7 +274,7 @@ public  class  SSHLoggingCommand
 
 ### One Availability Method for Multiple Commands
 It enables us to have several methods attached to a single availability method.  
-We are going to use the annotation `ShellMethodAvailability` with an array of the **commands names (not method names)**:
+We are going to use the annotation `ShellMethodAvailability` with an array of the commands names (not method names):
 
 ```java  
 @ShellComponent  
@@ -362,7 +347,10 @@ After obtaining the JAR file we run it using the command `java -jar our-spring-s
 
 - Spring Shell introduces a simple and quick way to build a Shell leveraging all the good sides of the Spring framework.
 
-- The three main building blocks of Spring Shell are `ShellComponent` `ShellMethod` `ShellOption`.
+- The three main building blocks of Spring Shell are 
+  - `@ShellComponent` 
+  - `@ShellMethod` 
+  - `@ShellOption`.
 - Spring Shell is built on top of **JLine** which offers useful features like tab completion and built in commands.
 - We can choose to make some commands available based on certain conditions.
 - We can style the command line as we like.

@@ -20,7 +20,7 @@ mateo:
   github: "Mufa0"
   linkedin: "mateo-stjepanović-8a618b169/"
   bio: "Fullstack developer focused on Spring and Angular. I started writing to continue my learning path and give something back to the dev community."
-
+  
 pratikdas:
   name: "Pratik Das"
   email: "pratikd2000@gmail.com"
@@ -179,7 +179,7 @@ skempken:
   github: "skempken"
   stackoverflow: "1163345/skempken"
   twitter: "sebkempken"
-  bio: "For more than a decade, I've been working as software engineer and architect. I love reasoning about our shared craft and writing down things I've learned."
+  bio: "For more than a decade, I've been working as software engineer and architect. I love reasoning about our shared craft and writing down things I've learned." 
 
 hoorvash:
   name: "Hoorvash Nikoo"
@@ -270,6 +270,14 @@ saikat:
   twitter: "s4ik4t"
   linkedin: "saikatsengupta"
 
+cercenazi:
+  name: "Abdulcelil Cercenazi"
+  avatar: "/assets/img/authors/celil.jpeg"
+  github: "Jarjanazy"
+  stackoverflow: "12036956/jalil-jarjanazy"
+  bio: "Software developer and craftsman. Loves working with Java | Spring | Docker. Always looking for new adventures"
+  twitter: "cercenazi"
+  linkedin": "abedeljalil-jarjanazy"
 
 nukajbl:
   name: "Bledi Nukaj"

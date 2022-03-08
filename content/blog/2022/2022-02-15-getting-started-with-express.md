@@ -1,7 +1,7 @@
 ---
 authors: [pratikdas]
 title: "Getting Started with Express"
-categories: ["Node"]
+categories: ["NodeJS"]
 date: 2022-02-15 00:00:00 +1100
 excerpt: "Express is a web application framework for Node.js. We can use this framework to build APIs, serve web pages, and other static assets and use it as a lightweight HTTP server and backend for our applications. In this article, we will introduce the Express framework and learn to use it to build HTTP servers, REST APIs, and web pages using both JavaScript and TypeScript."
 image: images/stock/0118-keyboard-1200x628-branded.jpg
@@ -12,7 +12,7 @@ Express is a web application framework for Node.js. We can use this framework to
 
 In this article, we will introduce the Express framework and learn to use it to build HTTP servers, REST APIs, and web pages using both JavaScript and TypeScript.
 
-{{% github "https://github.com/thombergs/code-examples/tree/master/node/express/getting-started" %}}
+{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/express/getting-started" %}}
 
 ## Introducing Node.js
 A basic understanding of [Node.js](https://nodejs.org/en/docs/guides/getting-started-guide/) is essential for working with Express. 
@@ -786,5 +786,5 @@ Here is a list of the major points for a quick reference:
     - `server.js` which uses functions from the above files and runs the Express application.   
     - `app.ts` which contains the code written in TypeScript for running a server application with a REST API endpoint.  
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/node/express/getting-started).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/nodejs/express/getting-started).
 

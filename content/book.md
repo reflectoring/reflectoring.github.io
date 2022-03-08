@@ -4,6 +4,7 @@ description: "If you want to learn about clean and hexagonal architecture, you'v
 layout: "static"
 draft: false
 toc: false
+popup: false
 ---
 
 > A good software architecture should keep the cost of development low over the complete lifetime of an application.
@@ -36,7 +37,7 @@ This book fills a void by providing a hands-on approach to the Hexagonal archite
 <li>ebook available as 101-page .pdf, .epub, and .mobi on <a href="https://leanpub.com/get-your-hands-dirty-on-clean-architecture">Leanpub</a> and <a href="https://thombergs.gumroad.com/l/gyhdoca">Gumroad</a></li>
 <li>support me directly by paying more than the minimum price</li>
 <li>get updated versions immediately and for free</li>
-<li><strong>save $7.50</strong> if you subscribe to the <a href="/simplify">Simplify! newsletter</a></li>
+<li><strong>save $10</strong> if you subscribe to the <a href="/simplify">Simplify! newsletter</a></li>
 </ul>
   </p>
 <a href="https://thombergs.gumroad.com/l/gyhdoca" class="btn btn-primary w-50 mb-2">Get it on Gumroad</a>

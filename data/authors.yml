@@ -278,3 +278,20 @@ cercenazi:
   bio: "Software developer and craftsman. Loves working with Java | Spring | Docker. Always looking for new adventures"
   twitter: "cercenazi"
   linkedin": "abedeljalil-jarjanazy"
+
+nukajbl:
+  name: "Bledi Nukaj"
+  avatar: "/assets/img/authors/bledi.jpeg"
+  github: "bledi1985"
+  bio: "Bledi is a senior software Engineer and Architect, specialized in Java and Spring to deliver high-quality Enterprise applications, on-premise or cloud.
+   Experienced and keenly interested in the field of Cloud Architecture."
+  linkedin: "https://www.linkedin.com/in/bledinukaj/"
+
+robert:
+  name: "Robert Dey"
+  email: "robdey88@gmail.com"
+  avatar: "/assets/img/authors/robert.jpg"
+  github: "RobYed"
+  linkedin: "robdey"
+  bio: "I love building successful products as a full-stack developer and software architect. Mostly I work with JavaScript and everything related to it."
+

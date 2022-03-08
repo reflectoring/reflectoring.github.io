@@ -3,6 +3,7 @@ title: "Privacy Policy"
 description: "Privacy Policy"
 draft: false
 layout: static
+popup: false
 ---
 
 Last modified: July 14, 2019

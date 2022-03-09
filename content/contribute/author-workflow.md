@@ -5,6 +5,7 @@ layout: "static"
 draft: false
 image: images/stock/0016-pen-1200x628-branded.jpg
 toc: true
+popup: false
 ---
 
 This document explains the workflow of writing articles for reflectoring to make our cooperation as productive as possible for both of us.

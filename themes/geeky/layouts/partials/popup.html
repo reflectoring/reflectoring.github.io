@@ -1,0 +1,8 @@
+{{ .Scratch.Set "showPopup" true }}
+{{ if eq .Params.popup false }}
+  {{ .Scratch.Set "showPopup" false }}
+{{ end }}
+
+{{ if (eq (.Scratch.Get "showPopup") true) }}
+  {{ partial "mailerlite.html" . }}
+{{ end }}

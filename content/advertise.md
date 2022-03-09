@@ -3,6 +3,7 @@ title: "Advertise on Reflectoring"
 description: "Advertisement options on Reflectoring"
 draft: false
 layout: static
+popup: false
 ---
 
 **Looking to put your brand or product in front of more than 150,000 Java developers per month?** 

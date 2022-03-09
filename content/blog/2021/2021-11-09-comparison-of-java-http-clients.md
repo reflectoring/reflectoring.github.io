@@ -505,7 +505,7 @@ We have used the `exchange()` method to call the API here. The `exchange()` meth
 
 Please refer to an [earlier post](https://reflectoring.io/spring-webclient/) for a more elaborate explanation of using Spring WebClient.
 
-## Apache HtpClient vs. OkHttpClient vs. Spring WebClient - Which Client to Use?
+## Apache HttpClient vs. OkHttpClient vs. Spring WebClient - Which Client to Use?
 
 In this post, we looked at the commonly used HTTP clients in Java applications. We also explored the usage of each of those clients with the help of examples of making HTTP `GET` and `POST` requests. Here is a summary of the important points:
 

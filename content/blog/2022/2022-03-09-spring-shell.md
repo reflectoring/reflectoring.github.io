@@ -10,7 +10,7 @@ url: spring-shell
 
 [Spring Shell](https://spring.io/projects/spring-shell) allows us to build a command line (shell) application using the Spring framework and all the advantages it provides.
 
-{{% github "[https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-shell](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-shell)" %}}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-shell" %}}
 
 ## What Is a Shell Anyways?
 A shell provides us with an interface to a system (usually an operating system) to which we give commands and parameters. The shell in turn does some useful tasks for us and provides an output.

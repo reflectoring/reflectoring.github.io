@@ -215,7 +215,7 @@ properties {
 }
 ```
 
-To know more about the plugin, you can refer to the official Spring Boot [documentation](https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#integrating-with-actuator)
+To know more about the plugin, you can refer to the official Spring Boot [documentation](https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#integrating-with-actuator).
 
 ## Adding Git Info
 [Git information](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.build.generate-git-info) comes handy to quickly identify if the relevant code is present in production or if the distributed deployments are in sync with expectations. Spring Boot can easily include Git properties in the Actuator endpoint using the Maven and Gradle plugins. 

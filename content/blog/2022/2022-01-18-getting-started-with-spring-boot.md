@@ -9,38 +9,37 @@ image: images/stock/0012-pages-1200x628-branded.jpg
 url: getting-started-with-spring-boot
 ---
 
-In this article, we will build a production-grade application. The goal is to answer two questions:
-- How do we use Spring Boot features
-- Why do we use Spring Boot the way we use it
+In this article, we will build a production-grade application with Spring Boot. The goal is to answer two questions:
+- How do we use Spring Boot features?
+- Why do we use Spring Boot the way we use it?
 
-After explaining the use case and requirements, we will implement the application layer by layer.
+After understanging the use case and requirements, we will implement the application layer by layer.
+
 Let us dive into the requirements for the application so we can understand what are we building.
+
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/beginners-guide" %}}
 
 ## Requirements
 We need to build an application for the local bookstore that will allow them to keep track of borrowed books.
 
-The bookstore wanted to have these functionalities in the application:
-- The application should be accessable through web browser
+The bookstore wants to have these functionalities in the application:
+- The application should be accessible through the web browser.
 - The user has to provide their name, last name, email, and password.
 - Each book has information about the author, date of publication, number of instances, and users that currently own the book.
-- The user can see all available books
-- The user can borrow a book
+- The user can see all available books.
+- The user can borrow a book.
 - Each user can borrow only three books at one point in time.
-- The admin user can add new book into the bookstore
-- The admin user can delete a book from the bookstore
-- The admin user can update information about a book in the bookstore
+- The admin user can add new book into the bookstore.
+- The admin user can delete a book from the bookstore.
+- The admin user can update information about a book in the bookstore.
 
 ## High-level Architecture
-Every development should start with the research phase and a lot of drawings. 
 
-We want to make sure that we understand desired requirements fully before we develop anything. 
-
-Let us look into the diagram of our application:
+We want to make sure that we understand desired requirements fully before we develop anything, so let's create a diagram of our application:
 
 {{% image alt="Spring Boot High-level arch " src="images/posts/spring-boot-begginer-guide/SpringApplication.png" %}}
 
-Typing the `www.bookstore.loc` in the browser will guide the user to the homepage.
+Typing `www.bookstore.loc` in the browser will guide the user to the homepage.
 The homepage triggers the request to load all books available in the bookstore.
 
 We decided to build the backend application using Spring Boot. Inside the __Spring Boot Application__ box, we can see layers we will implement through this article.
@@ -50,21 +49,16 @@ Controller classes accept the request from the browser and send it further down 
 Methods inside the service layers contain all business logic.
 The service methods contact the repository layer to access the database.
 
-We represent each database table with the `@Entity`.
-
 We store the data about the books and the users in the database. For this article, we chose the in-memory H2 database.
-{{% warning title="The H2 database" %}}
-We should use the H2 database only in the prototyping phase. Later stages in development require that we use something more stable and production-ready (e.g., Oracle, PostgreSQL, MySQL, etc.)
-{{% /warning %}}
-
 
 ## Setting up the Project
-Generating the project using official methods gives us enough jumpstart to dive into the code and write business logic.
-We will show two ways how to create a new Spring Boot project:
+Spring provides the Spring Initializr project which creates an application skeleton for us to jumpstart our development and let us dive into the code and write business logic.
+
+We will look at two ways how to create a new Spring Boot project:
 - [Creating the project using Spring Initializr](#creating-the-project-with-spring-initializr)
 - [Creating the project using the IntelliJ IDE](#create-the-project-with-intellij)
 
-Each of the two ways is the correct one, and we can work with any.
+Both ways use the Spring Initializt project underneath and you can choose whichever way works best for you.
 
 ### Creating the Project with Spring Initializr
 
@@ -76,7 +70,7 @@ On this page, we provide the metadata about the application.
 
 After defining all necessary information, we can go and add our dependencies. 
 
-By clicking on the button on the top right corner, we can see the screen:
+By clicking on the button on the top right corner, we can see the dependency selection screen:
 
 {{% image alt="Spring Boot initialization online" src="images/posts/spring-boot-begginer-guide/spring-boot-initializr-online-2.png" %}}
 
@@ -90,38 +84,38 @@ After selecting desired dependencies, we can generate our project by clicking th
 Clicking the button will download the zip file onto our machine, and we need to unpack the provided zip file and import it into the IDE.
 
 #### The Spring Web Dependency
-The Spring web dependency provides everything needed to build a Spring MVC application. 
+The Spring Web dependency provides everything needed to build a Spring MVC application. 
 
 Spring MVC is how Spring implements the Model-View-Controller design pattern. 
 A controller is the front part of the application that takes incoming requests and relays them to the right destination. 
 Model is the object or collection that holds our data.
 View represents the pages that the browser renders.
 
-Let us look into the high-level architecture again and determine what does the Spring web dependency provides:
+Let us look into the high-level architecture again and determine what does the Spring Web dependency provides:
 
 {{% image alt="Spring Boot High-level arch " src="images/posts/spring-boot-begginer-guide/SpringApplication-springWeb.png" %}}
 
-The Spring web dependency provides the core Spring features (Inversion of Control, Spring MVC, server container for local running, etc.).
+The Spring Web dependency provides the core Spring features (Inversion of Control, Spring MVC, server container for local running, etc.).
 
-With the Spring web dependency, we can create `@RestController`, `@Service`, and `@Repository` classes from the image above. We can not access anything in the Spring data JPA dependency.
+With the Spring Web dependency, we can create `@RestController`, `@Service`, and `@Repository` classes from the image above. We can not access anything in the Spring Data JPA dependency.
 
 If we run the application, we will see that the process starts, and we can access the application on `http://localhost:8080`.
 We won't see much, but the application will be up and running.
 
 #### The Spring Data JPA Dependency
-The Spring data JPA dependency allows us to create the data access layer almost without effort.
+The Spring Data JPA dependency allows us to create the data access layer almost without effort.
 
 Let us look into the application diagram to see which parts do we get with Spring Data JPA:
 
 {{% image alt="Spring Boot High-level arch " src="images/posts/spring-boot-begginer-guide/SpringApplication-springData.png" %}}
 
-Building the data access layer can be cumbersome, and Spring data JPA data gives us everything we need to start creating our first entity.
+Building the data access layer can be cumbersome, and Spring Data JPA data gives us everything we need to start creating our first entity.
 
-With Spring data JPA, we can use the `@Entity` annotation to create database entities.
+With Spring Data JPA, we can use the `@Entity` annotation to create database entities.
 
 The database entity is the direct connection between the application and the table in the database. We can present constraints and relationships using annotations.
 
-Spring data JPA provides the repository interfaces:
+Spring Data JPA provides the repository interfaces:
 - `CrudRepository`
 - `PagingAndSortingRepository`
 - `JpaRepository`
@@ -130,9 +124,9 @@ Repositories are interfaces that hide the logic required for accessing the datab
 
 We will talk more about this when we start building the repository layer.
 {{% info title="Spring Data JPA Alternatives" %}}
-Spring data JPA is only one of many different alternatives of data access layers.
+Spring Data JPA is only one of many different alternatives of data access layers.
 
-To read more about the alternative approach like Spring data JDBC or Spring data Neo4J please refer to the [official page.](https://spring.io/projects/spring-data-jdbc)
+To read more about the alternative approach like Spring Data JDBC or Spring Data Neo4J please refer to the [official page.](https://spring.io/projects/spring-data-jdbc)
 {{% /info %}}
 #### The H2 Database Dependency
 The in-memory database is excellent for fast iteration when we don't care what will happen with data when we shut down the application.
@@ -148,7 +142,7 @@ We can access the data each time we start the application. It won't get flushed 
 We should use the H2 database only in the prototyping phase. For later development and production, we should use something more stable and production-ready (e.g. Oracle, PostgreSQL, MySQL, etc.)
 {{% /warning %}}
 
-### Create the Project with IntelliJ
+### Creating the Project with IntelliJ
 
 In the IntelliJ IDE, we can go to the __File -> New -> Project...__. We will get the next screen:
 {{% image alt="Spring Boot initialization through IDE" src="images/posts/spring-boot-begginer-guide/spring-boot-initializr-IDE.png" %}}
@@ -163,13 +157,13 @@ After choosing the dependencies, we can click the finish button to create the pr
 
 
 ### Generated Files
-The initialization process creates several files and folders. One of those files is the pom.xml.
+The initialization process creates several files and folders. One of those files is the `pom.xml`.
 
-The pom.xml defines all dependencies that we are using in our project. Each dependency has its pom.xml. The inner pom.xml declares what does it bring into the application. 
+The `pom.xml` defines all dependencies that we are using in our project. Each dependency has its `pom.xml`. The inner `pom.xml` declares what does it bring into the application. 
 
 The dependency is the package that contains the peace of the code that our project needs to run successfully.
 
-Let us look into the pom.xml that Spring Boot generated for us:
+Let us look into the `pom.xml` that Spring Boot generated for us:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>

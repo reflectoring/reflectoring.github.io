@@ -1,0 +1,140 @@
+{{ define "main" }}
+
+
+{{ partial "popup.html" . }}
+
+<!-- checking blog -->
+{{ if or (eq .Section "post") (eq .Section "posts") (eq .Section "blog") (eq .Section "blogs") (eq .Section "news") (eq .Section "categories") (eq .Section "tags") }}
+
+{{ $author := (index .Site.Data.authors .Params.authors) }}
+
+<!--=================== section start ===================-->
+<section class="section-sm">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mb-5 mb-lg-0">
+        <!-- image path -->
+        {{ $imagePath:= .Params.image }}
+        {{ if $imagePath }}
+        <div class="position-relative">
+          <!-- image CDN -->
+          {{ if hasPrefix $imagePath "http" }}
+          <img loading="eager" decoding="async" src="{{ $imagePath | safeURL }}" alt="{{ .Title }}"
+            class="img-fluid mb-5 w-100 rounded-4">
+          {{ else }}
+          <!-- /image cdn -->
+
+          <!-- image processing for multiple device -->
+          {{ if fileExists (add `assets/` $imagePath) }}
+          {{ $image:= resources.Get $imagePath }}
+          {{ $imageFallback:= $image.Resize "1400x" }}
+          {{ $imageXL:= $image.Resize "1400x webp" }}
+          {{ $imageLG:= $image.Resize "1000x webp" }}
+          {{ $imageMD:= $image.Resize "800x webp" }}
+          {{ $imageSM:= $image.Resize "600x webp" }}
+          <picture>
+            <source srcset="{{ $imageSM.RelPermalink }}" media="(max-width: 575px)">
+            <source srcset="{{ $imageMD.RelPermalink }}" media="(max-width: 767px)">
+            <source srcset="{{ $imageLG.RelPermalink }}" media="(max-width: 992px)">
+            <source srcset="{{ $imageXL.RelPermalink }}">
+            <img loading="eager" decoding="async" class="img-fluid mb-5 w-100 rounded-4"
+              src="{{$imageFallback.RelPermalink}}" alt="{{.Title}}" width="{{$image.Width}}"
+              height="{{$image.Height}}">
+          </picture>
+          {{ else }}
+          <strong class="text-danger">`{{$imagePath}}` doesn't exist</strong>
+          {{ end }}
+          <!-- /image processing for multiple device -->
+          {{ end }}
+          <ul class="list-inline card-badge">
+            {{ range .Params.categories }}
+            <li class="list-inline-item">
+              <a href="{{`categories/` | relLangURL}}{{. | lower | urlize}}" class="badge badge-primary py-1">{{. | title}}</a>
+            </li>
+            {{ end }}
+          </ul>
+        </div>
+        {{ else }}
+        {{ range .Params.categories }}
+        <a href="{{`categories/` | relLangURL}}{{. | lower | urlize}}" class="badge badge-primary mb-4 d-inline-block">{{. | title}}</a>
+        {{ end }}
+        {{ end }}
+        <h1 class="mb-4">{{.Title | markdownify}}</h1>
+        <ul class="list-inline card-meta d-flex align-items-center mb-4">
+          <li class="list-inline-item d-flex align-items-center">
+            <i class="fas fa-user me-2"></i>
+            <a href="/authors/{{ index .Params.authors 0 }}" data-blogtrack-author>{{ $author.name }}</a>
+          </li>
+          <li class="list-inline-item d-flex align-items-center">
+            <i class="fas fa-calendar me-2"></i>
+            <span data-blogtrack-date>{{ time.Format ":date_long" .PublishDate }}</span>
+          </li>
+        </ul>
+
+        {{ if (not (eq .Params.toc false)) }}
+        <!-- show the TOC unless it's explicitly set to false -->
+        <aside class="toc widget">
+          <h2>In this article</h2>
+          {{ .TableOfContents | replaceRE `href="#(.*)"` (printf `href="%s#%s"` .Page.RelPermalink "$1") | safeHTML }}
+        </aside>
+        {{ end }}
+
+        <div class="content" data-blogtrack-text>{{.Content}}</div>
+        <!-- disqus comments -->
+        {{ if .Site.DisqusShortname }}
+        <div class="border rounded p-4">
+          {{ template "_internal/disqus.html" . }}
+        </div>
+        {{ end }}
+      </div>
+      <!-- sidebar widgets -->
+      <aside class="col-lg-4">
+        {{ partial "widgets/widget-wrapper" ( dict "Widgets" . "Params" .Params)}}
+      </aside>
+    </div>
+  </div>
+</section>
+<!--=================== section end ===================-->
+
+<!--=================== section start ===================-->
+<section class="section-sm pt-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="section-title">
+          <h2 class="h4 title-border">Recent Posts</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- releted post -->
+    <div class="row">
+      {{ $related := (where site.RegularPages "Section" "in" site.Params.mainSections) | intersect (where site.RegularPages ".Title" "!=" .Title) | union (site.RegularPages.Related . ) }}
+      {{ range first 3 $related }}
+      <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+      {{ .Render "post" }}
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+<!--=================== section end ===================-->
+
+<!-- regular page -->
+{{ else }}
+{{ partial "page-header.html" . }}
+<section class="section-sm">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <div class="content">
+          {{.Content}}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{{ end }}
+<!-- /regular page -->
+
+{{ end }}

@@ -1,0 +1,16 @@
+{{ with site.Params.ads }}
+
+{{ if fileExists (add `assets/` .skyscraper_image) }}
+<div class="widget">
+  {{ $image:= resources.Get .skyscraper_image }}
+  <a href="{{ .skyscraper_href }}">
+  <picture>
+    <source srcset="{{ $image.RelPermalink }}" media="(max-width: 350px)">
+    <img loading="lazy" decoding="async" class="img-fluid w-100 rounded-4"
+         src="{{$image.RelPermalink}}" alt="{{.Title}}" width="{{$image.Width}}"
+         height="{{$image.Height}}">
+  </picture>
+  </a>
+</div>
+{{ end }}
+{{ end }}

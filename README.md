@@ -1,32 +1,40 @@
 # reflectoring.io
 This is the repository for the [reflectoring.io](https://reflectoring.io) blog on software engineering and Java topics.
 
-## Running the Blog Locally on Windows
+This blog runs on [Hugo](https://gohugo.io/), a static site generator.
 
-1. download and install ruby using the [ruby installer](https://rubyinstaller.org/) (I have used Ruby+Devkit 2.6.5-1 successfully)
-1. open a console and run `ruby --version` to verify that it has been installed successfully (if this command seems to run forever, restart the computer and try again :)
-1. in the folder you cloned this repo into, run `bundle install`
-1. run `bundle exec jekyll serve` to start jekyll
-1. go to [http://localhost:4000](http://localhost:4000) to view the blog in your browser
-1. changes to the markdown files should automatically trigger a re-start of jekyll (if not, kill the process with `CMD+C` and restart it)  
+## Local preview with Docker
 
-## Viewing Your Blog Post Locally
+If you have Docker installed, you can run the blog locally with this command:
 
-1. copy one of the existing blog post `.md` files from the `_posts` folder into a new file 
-1. change the name of the file so that it contains today's date and your blog post title
-1. change the `date` and `modified` fields in the file header to today's date (replace the `+1100` with the offset of your local timezone to UTC; the blog post will only show in the preview if these dates are in the past)
-1. don't worry about the rest of the header fields, I will update them before publishing
-1. write the article in markdown format
-1. run `bundle exec jekyll serve` to start up the blog locally
-1. go to [http://localhost:4000](http://localhost:4000) to view the blog in your browser
-1. your blog post should show up on the start page; click on it and check if it looks good
+```shell
+docker-compose up
+```
 
-## Troubleshooting
+or, if you want to have more control over the Hugo command:
 
-### `bundle install` fails with "zlib is missing" (Ubuntu)
+```shell
+docker run -it \
+  -v "$(pwd):/src" \
+  -p 1313:1313 \
+  "peaceiris/hugo:v0.91.2" \
+  server --bind 0.0.0.0 --buildDrafts
+```
 
-Run `sudo apt-get install --reinstall zlibc zlib1g zlib1g-dev` to install the missing zlib library and rerun `bundle install`.
+You can replace `server ...` with the [Hugo command](https://gohugo.io/commands/) that you want to run.
+
+In any case, you can then browse the site via [http://localhost:1313](http://localhost:1313).
+
+## Local preview by installing Hugo
+
+If you don't have Docker, you can [install Hugo on your machine](https://gohugo.io/getting-started/installing/) (version 0.91.2+extended) and then run this command:
+
+```
+hugo server
+```
+
+You can then browse the site via [http://localhost:1313](http://localhost:1313).
 
 ## Contributing to this Blog
 
-See the [Write For Me](https://reflectoring.io/write-for-me) page on the blog.
+See the [Become an Author](https://reflectoring.io/contribute/become-an-author) page on the blog.

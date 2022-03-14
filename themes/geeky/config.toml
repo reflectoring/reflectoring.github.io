@@ -1,0 +1,71 @@
+# This file is for render site varibles and plugins
+# don't remove this file.
+# The presence of this file is for compatibility with Blogdown and Forestry.
+#
+# The actual configuration files are stored in the `config/_default/` folder.
+
+
+######################### site variables ##############################
+# customize your color and font from here.
+[params.variables]
+color_primary = "#2ba283"
+body_color = "#FFF"
+text_color = "#222"
+text_dark = "#222"
+text_light = "#999"
+border_color = "#E1E1E1"
+black = "#000"
+white = "#FFF"
+light = "#f2f2f2"
+
+# font variables
+# base font size for full website,
+font_size = "20px" # default is 16px
+
+# Font Scale Sizes
+# "minorSecond": 1.067,
+# "majorSecond": 1.125,
+# "minorThird": 1.2,
+# "majorThird": 1.25,
+# "perfectFourth": 1.333,
+# "augmentedFourth": 1.414,
+# "perfectFifth": 1.5,
+# "goldenRatio": 1.618
+font_scale = "1.2" # default is "majorThird": 1.25
+
+# Give your font name from google font. add font weight using ":wght@" and separate by ";"
+# example: "Work Sans:wght@400;500;600"
+font_primary = "Roboto Slab:wght@350"
+font_primary_type = "serif" # [serif/sans-serif]
+font_secondary = "Oswald:wght@400;700"
+font_secondary_type = "sans-serif" # [serif/sans-serif]
+font_icon = "Font Awesome 5 Free"
+
+
+############################# Plugins ##############################
+
+# CSS Plugins
+[[params.plugins.css]]
+link = "plugins/font-awesome/fontawesome.min.css"
+[[params.plugins.css]]
+link = "plugins/font-awesome/brands.css"
+[[params.plugins.css]]
+link = "plugins/font-awesome/solid.css"
+[[params.plugins.css]]
+link = "plugins/popup/corner-popup.css"
+
+# JS Plugins
+[[params.plugins.js]]
+link = "plugins/jquery/jquery.min.js"
+[[params.plugins.js]]
+link = "plugins/bootstrap/bootstrap.min.js"
+[[params.plugins.js]]
+link = "plugins/search/fuse.min.js"
+[[params.plugins.js]]
+link = "plugins/search/mark.js"
+[[params.plugins.js]]
+link = "plugins/search/search.js"
+[[params.plugins.js]]
+link = "plugins/popup/corner-popup.min.js"
+[[params.plugins.js]]
+link = "plugins/popup/popups.js"

@@ -1,0 +1,188 @@
+pre {
+  padding: 10px;
+}
+
+// background for in-text code highlighting only
+p {
+  code {
+    background-color: #EEEEEE;
+  }
+}
+
+h3 {
+  .highlight {
+    color: $primary;
+  }
+}
+
+.sticky {
+  position: sticky;
+  position: -webkit-sticky;
+  top:20px;
+}
+
+.sticky-container {
+  position: relative;
+}
+
+.content {
+
+  .btn-primary {
+    color: $white;
+    text-decoration: none;
+  }
+
+  blockquote {
+    // to make blockquotes not bleed into the table of contents
+    display: inline-block;
+    width: 100%;
+  }
+
+}
+
+.pull-right{
+  float: right;
+}
+
+.pull-left{
+  float:left;
+}
+
+.widget {
+  strong {
+    font-weight: bold;
+  }
+}
+
+.content {
+  strong {
+    font-weight: bold;
+  }
+}
+
+.footer-widget {
+
+  text-align: left;
+
+  ul.footer-links {
+    list-style-type: none;
+
+    li {
+      margin-bottom: 10px;
+    }
+
+  }
+
+}
+
+.notice {
+  clear: both; // to avoid spilling into the table of contents
+  padding: 20px;
+  h4 {
+    margin-top: 0;
+  }
+}
+
+.success{
+  background-color: rgba(43, 162, 131, 0.2);
+}
+
+.danger {
+  background-color: rgba(255,0,0,0.2)
+}
+
+.warning {
+  background-color: rgba(255,220,0,0.2)
+}
+
+.content {
+  table {
+
+    margin-bottom: 1rem;
+
+    th {
+      background-color: $primary;
+      color: $white;
+      font-family: "Oswald";
+    }
+
+    td {
+      background-color: $light;
+    }
+
+    th, td {
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border: 5px solid $white;
+    }
+  }
+}
+
+.toc {
+  float: right;
+  max-width: 400px;
+  text-align: left;
+  margin-left: 10px;
+
+  @include desktop-lg {
+      width: 100%;
+      margin-left: 0;
+      padding-left: 40px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  ul {
+    font-size: 14px;
+    list-style-type: none;
+    li {
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
+    ul {
+      margin-left: 20px;
+      li {
+            padding-top: 5px;
+            padding-bottom: 5px;
+          }
+      ul {
+        margin-left: 20px;
+      li {
+            padding-top: 5px;
+            padding-bottom: 5px;
+          }
+      }
+    }
+  }
+}
+
+.dropdown-item {
+  &:hover,
+  &:focus {
+    color: $white !important;
+    background-color: $primary !important;
+    text-decoration: none !important;
+  }
+
+  &.active,
+  &:active {
+    color: $white !important;
+    background-color: $primary !important;
+    text-decoration: none !important;
+  }
+}
+
+h1, h2, h3, h4, h5, h6, .btn, .navbar {
+  letter-spacing: 1px;
+}
+
+header {
+  .logo {
+    width: 100px;
+    height: 100px;
+  }
+}

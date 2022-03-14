@@ -1,0 +1,152 @@
+#################### default parameters ################################
+# favicon
+favicon = "images/favicon.png"
+# logo
+logo = "images/logo.png"
+logo_small = "images/logo_small.png"
+# use `x` with logo_width, example: "100x".
+# Note: logo_width is not work with .svg file
+logo_width = "150x"
+# logo text will only show when logo is missing.
+logo_text = "Boilerplate"
+# navbar fixed to top
+navbar_fixed = false
+# OpenGraph / Twitter Card metadata
+description = "Software development made simple."
+author = "Tom Hombergs"
+image = "images/stock/0065-java-1200x628-branded.jpg" # this image will be used as fallback if a page has no image of its own
+# contact info
+address = "9567 Turner Trace Apt. BC C3G8A4"
+mobile = "+211234565523"
+email = "info@email.com"
+# contact form action
+contact_form_action = "#" # contact form works with https://formspree.io
+# search
+search = true
+
+# featured post title
+featured_post_title = "Featured Post"
+recent_post_title = "Recent Articles"
+mainSections = ["blog"]
+# about widget content
+about_widget_content = "Lorem ipsum dolor sit amet, conse tfctetur adipiscing elit. Vel in in donec iaculis tempasus odio nunc laoreet . Libero ullam rgscorper."
+# footer content
+footer_content = "Where the HOW meets the WHY."
+# copyright
+copyright = "Built upon a theme by [Themefisher](https://themefisher.com/) & [Gethugothemes](https://gethugothemes.com/)"
+
+# custom script on header, example: custom_script= "<script>console.log(\"Hello World\")</script>" 
+custom_script= ""
+
+
+[analytics]
+google_analytics_3_id = "UA-88407702-1"
+google_analytics_4_id = "G-GKV4YKFSWF"
+plausible_domain = "reflectoring.io"
+
+# Preloader
+[preloader]
+enable = false
+preloader = "" # use jpg, png, svg or gif format.
+
+# Banner
+[banner]
+enable = true
+title_large = "Reflectoring"
+title_small = "Where the HOW meets the WHY."
+image = "images/illustrations/undraw_lightbulb_moment_re_ulyo.png"
+background_image = ""
+content = "Software development tutorials, thoughts about the software craft, and tips on how to grow as a software engineer."
+button_label = "Join the Newsletter"
+button_link = "/"
+
+# Advertise
+[advertisement]
+# image = "images/promotion.png"
+# link = "https://gethugothemes.com/"
+
+# cookies
+[cookies]
+enable = true
+expire_days = 2
+content = "This site uses cookies to track analytics. By continuing to use this website, you agree to their use."
+button = "Accept"
+
+######################## sidebar widgets #########################
+[widgets]
+static = ["skyscraper-ad"]
+# dynamic sidebar widgets can be overriden by setting the "widgets" attribute in the front matter - the last widget will be sticky
+dynamic = ["simplify-form", "stratospheric-ad", "gyhdoca-ad"]
+
+[ads]
+skyscraper_image = "images/launchdarkly/2022_scyscraper.jpg"
+skyscraper_href = "https://launchdarkly.com/?utm_source=reflectoring&utm_medium=display&utm_campaign=aodm&utm_content=ebook_oreilly_efm"
+
+[wol]
+items = [
+  "Once again, your newsletter is short and to the point and let's me think about a detail of my behavior / job. Thanks!",
+  "Because weekly it has given me some points of view and inspirational ideas to organize myself and to be a better IT professional. Thanks a lot Tom Best Regards, Thiago from Brazil, São Paulo State, São Paulo City",
+  "It makes so much sense. I can relate to all the problems you discussed. I will make sure I follow the suggestions. Thanks for sharing these.",
+  "I'm working through ways to become a more productive developer. I love the emails related to productivity and organization tips. Thank you!",
+  "It was good advice",
+  "clear, concise, informative.....",
+  "Well written and informative; I appreciate the diversity of topics, both tech and non-tech",
+  "Very insightful! I love it",
+  "The insight(s) reflect both experience & pragmatism. Being that I am both of these too, to some extent, it always makes the read enjoyable and I find patterns of behaviour/practice that I need to stop or need to start developing. Thanks.",
+  "wise words, Tom. Thank you.",
+  "Short and informative article on a topic that always looks like something I've seen at some point in the past.",
+  "Hi Tom, I’ve been feeling unproductive and inefficient recently. Your article addresses so many key issues that I’m dealing with. Thanks for sharing and I appreciate that you continue to write/share knowledge even though you have so much going on. I will give ‘Shape’ a try :)",
+  "Thank you for your advice about growth in the developer career!",
+  "You point out things related to personal growth and not just software engineering",
+  "I have just joined as a SDE and really find the description of good work and great work meaningful. Thanks!",
+  "The suggestions regarding prioritization and how to create a plan along this line is insightful.",
+  "Thank you. Its really useful.",
+  "Thanks a lot for this piece of advice!",
+  "Relevant as I want to understand how to get promoted within the org",
+  "Your inspirational nuggets are helping me start my career better.",
+  "Inspiring content ! Thanks for your work.",
+  "Hi Tom, I read every Inspirational Nugget from you. Thanks a lot for your valuable insights via email.",
+  "More or less my own thoughts, but synthesized and ordered. And I needed to see others share the same vision as me. If only I could make myself to actually follow and employ this great wisdom...",
+  "Doesn't feel like useless email feeds cluttering the inbox. Someone took the effort to write this valuable piece of advice and I enjoyed it. Thanks,",
+  "It's very inspirational to get these nuggets time to time. It help me to become a better software engineer.",
+  "Always looking forward to your content :)",
+  "Useful and always new content",
+  "I really like the \"Inspirational Nugget of the Week\" section. Is there a place on your website where I can see them all? I would love to share them among my coworkers. Thank you very much!",
+  "Just what I needed to hear today. Thanks Tom!",
+  "I enjoy all of these emails. Not only do I like the voice they're written in (maybe because I too write software), but the points they make are easy to relate to, grasp and apply. In fact, I have an external Notes page where I add/keep the body of each of these for future use. Thanks a lot.",
+  "Great tips on productivity.",
+  "Speaks to me",
+  "Helped me remember something I knew I should be doing but had forgotten.",
+  "I love your newsletters. Amazing tips! Thanks :D",
+  "I love reading your emails about \"your thinking\". It gives something to think about which in most time I not thinking about.",
+]
+
+
+# Subscription
+[subscription]
+enable = false
+# mailchimp subsciption
+mailchimp_form_action = "https://gmail.us4.list-manage.com/subscribe/post?u=463ee871f45d2d93748e77cad&amp;id=a0a2c6d074" # replace this url with yours
+mailchimp_form_name = "b_463ee871f45d2d93748e77cad_a0a2c6d074" # replace this code with yours
+
+
+############################# social site ########################
+[[social]]
+title = "facebook"
+icon = "fab fa-facebook" # themify icon : https://themify.me/themify-icons
+link = "https://facebook.com/reflectoring"
+
+[[social]]
+title = "twitter"
+icon = "fab fa-twitter" # themify icon : https://themify.me/themify-icons
+link = "https://twitter.com/TomHombergs"
+
+[[social]]
+title = "github"
+icon = "fab fa-github" # fontawesome icon pack : https://fontawesome.com/icons/
+link = "https://github.com/thombergs/code-examples"
+
+[[social]]
+title = "linkedin"
+icon = "fab fa-linkedin" # fontawesome icon pack : https://fontawesome.com/icons/
+link = "https://www.linkedin.com/in/tom-hombergs-74048777"

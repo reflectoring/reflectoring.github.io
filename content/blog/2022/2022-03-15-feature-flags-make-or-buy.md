@@ -1,18 +1,18 @@
 ---
+authors: [tom]
 title: "Feature Flags: Make or Buy?"
-categories: [craft, spring-boot]
-date: 2021-10-20 00:00:00 +1100
-modified: 2021-10-20 00:00:00 +1100
+categories: ["Software Craft"]
+date: 2022-03-15 00:00:00 +1100
+modified: 2022-03-12 00:00:00 +1100
 excerpt: "Simple feature flags are easy to implement, but as soon as you want context-sensitive feature flags that can target different users, things get complicated. This article presents different ways to implement feature flags and compares them to using a paid feature management platform."
-image:
-  auto: 0039-start
+image: /images/stock/0039-start-1200x628.jpg
 ---
 
 According to Google's DevOps Research and Assessment (DORA) group, software delivery performance influences organizational performance in general. That means if you're good at delivering software, you're good at business.
 
 In this article, we'll discuss why the practice of using feature flags helps to become good in software delivery and then go through different ways of building a homegrown feature flagging solution. Finally, we'll contrast the homegrown feature flagging solution with using a full-blown feature delivery platform like [LaunchDarkly](https://launchdarkly.com) to help you decide whether to make that solution yourself or just buy it.
 
-{% include github-project.html url="https://github.com/thombergs/code-examples/tree/master/spring-boot/feature-flags/src/main/java/io/reflectoring/featureflags/implementations" %}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/feature-flags/src/main/java/io/reflectoring/featureflags/implementations" %}}
 
 ## How Do You Become Good at Delivering Software?
 
@@ -33,10 +33,10 @@ Only when you toggle the feature flag will the change become visible to the user
 
 Here's how feature flags improve the DORA metrics:
 
-- Feature flags improve deployment frequency because you can deploy any time. Even if there is unfinished code in the codebase, it will be hidden behind a feature flag. The main branch is always deployable.
-- Feature flags improve lead time because a change can be deployed even if it's not finished, yet, to gather feedback from key users.
-- Feature flags improve the mean time to restore because you can revert a problematic change by just disabling the corresponding feature flag.
-- Feature flags improve change failure rate because they decouple the risk of deployment with the risk of change. A deployment no longer fails and has to be rolled back because of bad features. The deployment is successful even if you have shipped a bad change because you can disable the bad change any time by flipping a feature flag.
+- **Feature flags improve deployment frequency** because you can deploy any time. Even if there is unfinished code in the codebase, it will be hidden behind a feature flag. The main branch is always deployable.
+- **Feature flags improve lead time** because a change can be deployed even if it's not finished, yet, to gather feedback from key users.
+- **Feature flags improve the mean time to restore** because you can revert a problematic change by just disabling the corresponding feature flag.
+- **Feature flags improve change failure rate** because they decouple the risk of deployment with the risk of change. A deployment no longer fails and has to be rolled back because of bad features. The deployment is successful even if you have shipped a bad change because you can disable the bad change any time by flipping a feature flag.
 
 If you're still reading, you should be convinced that using feature flags is a good thing. But how to do it?
 
@@ -98,9 +98,9 @@ public class CodeBackedFeatureFlagService implements FeatureFlagService {
 }
 ```
 
-Hard-coding feature flag state defeats the main purpose of feature flags, however. **We need to change the code and re-deploy if we want to enable or disable a certain feature**. 
+Hard-coding feature flag state defeats the main purpose of feature flags, however. We need to change the code and re-deploy if we want to enable or disable a certain feature. 
 
-Deployment and shipping of features are not decoupled with this solution! We cannot quickly disable a buggy feature in production because we have to re-deploy!
+**Deployment and shipping of features are not decoupled with this solution!** We cannot quickly disable a buggy feature in production because we have to re-deploy!
 
 Let's see how we can externalize the feature flag state from the code.
 
@@ -215,8 +215,8 @@ Let's extend our database-backed solution to make it context-sensitive so that w
 
 Say we want to support two types of feature rollouts:
 
-- `GLOBAL`: the feature flag state applies to all users. This is what we've done in the previous sections and it's actually not context-sensitive at all.
-- `PERCENTAGE`: the feature flag state applies to a percentage of all users. We can use this for progressive rollouts, where we first enable a feature for a small percentage of users and then slowly increase the percentage (or set it back to 0 if users complain about the feature not working). This rollout strategy is context-sensitive in the sense that it knows which user it's serving.
+- **`GLOBAL`**: the feature flag state applies to all users. This is what we've done in the previous sections and it's actually not context-sensitive at all.
+- **`PERCENTAGE`**: the feature flag state applies to a percentage of all users. We can use this for progressive rollouts, where we first enable a feature for a small percentage of users and then slowly increase the percentage (or set it back to 0 if users complain about the feature not working). This rollout strategy is context-sensitive in the sense that it knows which user it's serving.
 
 A naive implementation of these two rollout strategies might look like the one in this `Feature` class:
 
@@ -399,7 +399,7 @@ To evaluate the state of a feature flag, we ask that client for the state. We ca
 
 The evaluation of the feature flag then happens based on targeting rules that we have previously defined in the LaunchDarkly UI:
 
-![LaunchDarkly UI](/assets/img/posts/feature-flags-make-or-buy/launchdarkly-ui.png)
+{{% image alt="LaunchDarkly UI" src="images/posts/feature-flags-make-or-buy/launchdarkly-ui.png" %}}
 
 We can change the targeting rules at any time and the changes will have immediate effect. As long as we pass along a unique identifier for each user, LaunchDarkly takes care of resolving the correct feature flag state for that user, taking care of all edge cases for us.
 

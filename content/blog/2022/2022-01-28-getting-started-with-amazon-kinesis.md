@@ -422,7 +422,7 @@ These consumers do not have to share this throughput with other consumers that a
 
 The producer and consumer applications will receive throttling errors when writes and reads exceed the shard limits, which are handled through retries.
 
-## Kinesis Data Firehose
+## Kinesis Data Firehose {: #kinesis-data-firehose }
 
 Kinesis Data Firehose is a fully managed service that is used to deliver streaming data to a destination in near real-time.
 

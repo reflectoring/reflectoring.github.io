@@ -40,11 +40,11 @@ Amazon Kinesis is a fully managed streaming data platform for processing streami
 
 - **Kinesis Data Firehose (KDF)**: With Kinesis Data Firehose, we do not need to write applications or manage resources. We configure data producers to send data to Kinesis Data Firehose, and it automatically delivers the data to the specified destination. We can also configure Kinesis Data Firehose to transform the data before delivering it.
 
-- **Kinesis Data Analytics (KDA)**: With Kinesis Data Analytics we can process and analyze streaming data. It provides an efficient and scalable environment to run Flink applications.
+- **Kinesis Data Analytics (KDA)**: With Kinesis Data Analytics we can process and analyze streaming data. It provides an efficient and scalable environment to run applications built using the Apache Flink framework which provides useful operators like map, filter, aggregate, window, etc for querying streaming data.
 
 - **Kinesis Video Streams (KVS)**: Kinesis Video Streams is a fully managed service that we can use to stream live media from video or audio capturing devices to the AWS Cloud, or build applications for real-time video processing or batch-oriented video analytics.
 
-Let us understand these services in the following sections. In each section, we will first introduce the key concepts of the service and then work through some examples.
+Let us understand these services in the following sections.
 
 ## Kinesis Data Streams
 

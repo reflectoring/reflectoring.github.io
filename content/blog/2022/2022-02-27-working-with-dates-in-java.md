@@ -163,13 +163,46 @@ public class DateAndTimeDemo {
 
 ### Formatting a `LocalDate` Object
 
+If we want a string representation of an `LocalDate` object, we can use the method `format()` which takes as argument
+a `DateTimeFormatter`. Like mentioned in the other sections above, exists predefined instances of the
+class `DateTimeFormatter` like `BASIC_ISO_DATE` or `ISO_LOCAL_DATE`.
+instances to format a date.
+In the list below, we will use these instances to format a date.
+
+ ```java
+public class DateAndTimeDemo {
+    public static void main(String[] args) {
+        LocalDate date = LocalDate.of(2022, 3, 13);
+        System.out.println(date.format(DateTimeFormatter.BASIC_ISO_DATE)); // 20220313
+        System.out.println(date.format(DateTimeFormatter.ISO_LOCAL_DATE)); // 2022-03-13
+    }
+}
+```
+
+We can even create our own formatter by using the static method `ofPattern()` of the class `DateTimeFormatter`.
+
+ ```java
+public class DateAndTimeDemo {
+    public static void main(String[] args) {
+        LocalDate date = LocalDate.of(2022, 3, 13);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        System.out.println(date.format(formatter)); // 13/03/2022
+    }
+}
+```
+
+Here we have used a custom formatter of pattern `dd/MM/yyyy`. When we print the date on the console, the output
+is `13/03/2022`, as expected to be.
+
 ## Working With `LocalTime`
-### Different Ways To Create a `LocalTime` Object
+### How To Create a `LocalTime` Object
+### Parsing a `LocalTime` Object
 ### `LocalTime` Arithmetic
 ### Formatting a `LocalTime` Object
 
 ## Working With `LocalDateTime`
-### Different Ways To Create a `LocalDateTime` Object
+### How To Create a `LocalDateTime` Object
+### Parsing a `LocalDateTime` Object
 ### `LocalDateTime` Arithmetic
 ### Formatting a `LocalDateTime` Object
 

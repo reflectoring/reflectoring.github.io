@@ -41,7 +41,14 @@ Let us understand these services in the next sections. In each section, we will 
 
 ## Kinesis Data Streams - Ingesting and Storing Streaming Data
 
-The Kinesis Data Streams service is used to collect and store streaming data as soon as it is produced (in real-time). The stored data is processed in real or near real-time by custom-built applications running on compute services like EC2, EMR, or Lambda. 
+The Kinesis Data Streams service is used to collect and store streaming data as soon as it is produced (in real-time). 
+
+The producers continually push data to Kinesis Data Streams, and the consumers process the data in real time. Consumers (such as a custom application running on Amazon EC2 or an Amazon Kinesis Data Firehose delivery stream) can store their results using an AWS service such as Amazon DynamoDB, Amazon Redshift, or Amazon S3.
+
+
+{{% image alt="Create Kinesis Data Firehose Delivery Stream" src="images/posts/aws-kinesis/data_stream.png" %}}
+
+The stored data is processed in real or near real-time by custom-built applications running on compute services like EC2, EMR, or Lambda. 
 
 This makes the Kinesis Data Streams service most useful for building time-sensitive applications like real-time dashboards, and anomaly detection. Another common use of Kinesis Data Streams is the real-time aggregation of data followed by loading the aggregated data into a data warehouse or map-reduce cluster.
 

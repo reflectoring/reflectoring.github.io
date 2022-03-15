@@ -46,7 +46,7 @@ Amazon Kinesis is a fully managed streaming data platform for processing streami
 
 Let us understand these services in the following sections. In each section, we will first introduce the key concepts of the service and then work through some examples.
 
-## Kinesis Data Streams - Ingesting and Storing Streaming Data
+## Kinesis Data Streams
 
 The Kinesis Data Streams service is used to collect and store streaming data as soon as it is produced (in real-time). 
 
@@ -560,10 +560,8 @@ The path of our S3 object created as a result of delivery of our streaming data 
 
 The data delivery format of other destinations can be found in the [official documentation](https://docs.aws.amazon.com/firehose/latest/dev/basic-deliver.html).
 
-## Kinesis Data Streams vs. Kinesis Data Firehose
 
-## Kinesis Data Analytics - Analyzing Streaming Data in Real-Time
-
+## Kinesis Data Analytics
 Kinesis Data Analytics provides a fully managed environment for running applications which read streaming data from a source like Kinesis Data Stream for performing analytic operations like windowing, filtering, aggregations, mapping, etc on the streaming data in real-time. The results of processing are used in various real-time analytics use cases. 
 
 The applications run by Kinesis Data Analytics are built using Apache Flink which is a Big Data processing framework for processing a large amount of data efficiently.
@@ -894,7 +892,7 @@ Using Studio notebooks, we model queries on streaming data using the [Apache Fli
 
 Please refer to the official [documentation](https://docs.aws.amazon.com/kinesisanalytics/latest/java/how-notebook.html) for details about using Studio notebook.
 
-## Kinesis Video Streams - Ingesting, Storing, and Streaming Media
+## Kinesis Video Streams
 
 Kinesis Video Streams is a fully managed service that we can use to :
 1. connect and stream video, audio, and other time-encoded data from various capturing devices using an infrastructure provisioned dynamically in the AWS Cloud

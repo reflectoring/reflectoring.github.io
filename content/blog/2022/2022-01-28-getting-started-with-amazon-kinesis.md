@@ -1032,12 +1032,12 @@ Here is a list of the major points for a quick reference:
     * Kinesis Data Stream for ingestion and storage of streaming data
     * Kinesis Firehose for delivery of streaming data
     * Kinesis Analytics for running analysis programs over the ingested data for deriving analytical insights
-    * Kinesis Video Streams for ingestion and storage of video data
+    * Kinesis Video Streams for ingestion, storage, and streaming of media data
 4. The Kinesis Data Streams service is used to collect and process streaming data in real-time.
 5. The Kinesis Data Stream is composed of multiple data carriers called shards. Each shard provides a fixed unit of capacity.
-6. Kinesis Data Firehose is a fully managed service that is used to deliver streaming data to a destination.
+6. Kinesis Data Firehose is a fully managed service that is used to deliver streaming data to a destination in near real-time. The data is buffered in the delivery stream upto a particular size or time before being sent to the destination.
 7. Kinesis Data Analytics is used to analyze streaming data in real-time. It provides a fully managed service for running Apache Flink applications. Apache Flink is a Big Data processing framework for building applications that can process a large amount of data efficiently. Kinesis Data Analytics sets up the resources to run Flink applications and scales automatically to handle any volume of incoming data.
-8. Kinesis Video Streams is a fully managed AWS service that we can use to ingest streaming video, audio, and other time-encoded data from various capturing devices using an infrastructure provisioned dynamically in the AWS Cloud.
+8. Kinesis Video Streams is a fully managed AWS service that we can use to ingest streaming video, audio, and other time-encoded data from various media capturing devices using an infrastructure provisioned dynamically in the AWS Cloud.
 
 You can refer to all the source code used in the article
 on [Github](https://github.com/thombergs/code-examples/tree/master/aws/kinesis).

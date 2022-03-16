@@ -4,6 +4,7 @@ description: "The newsletter that helps you grow as a software engineer in just 
 layout: "newsletter"
 draft: false
 toc: false
+popup: false
 ---
 
 ## What You'll Get

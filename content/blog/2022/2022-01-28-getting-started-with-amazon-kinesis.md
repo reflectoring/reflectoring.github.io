@@ -446,9 +446,9 @@ One or more data producers send their streaming data into a kind of "pipe" calle
 
 {{% image alt="Create Kinesis Data Firehose Delivery Stream" src="images/posts/aws-kinesis/firehose.png" %}}
 
-The incoming streaming data is buffered in the delivery stream till it reaches a particular size or exceeds a certain time interval before it is delivered to the destination. Due to this reason, Kinesis Data Firehose is not intended for real-time delivery. It groups incoming messages, optionally compressing and/or transforming them with AWS Lambda functions, and then putting the data into a sink which is usually an AWS service like S3, Redshift, or Elasticsearch.
+The incoming streaming data is buffered in the delivery stream till it reaches a particular size or exceeds a certain time interval before it is delivered to the destination. Due to this reason, Kinesis Data Firehose is not intended for real-time delivery. It groups incoming streaming data, optionally compressing and/or transforming them with AWS Lambda functions, and then puts the data into a sink which is usually an AWS service like S3, Redshift, or Elasticsearch.
 
-We can also configure the delivery stream to read streaming data from a Kinesis Data Stream and deliver it to a destination.
+We can configure the delivery stream to read streaming data from a Kinesis Data Stream and deliver it to a destination.
 
 We also need to do very little programming when using Kinesis Data Firehose. This is unlike Kinesis Data Streams where we write custom applications for producers and consumers of a data stream.
 
@@ -491,17 +491,20 @@ We are now ready to send streaming data to our Firehose delivery stream which wi
 
 ### Sending Data to a Kinesis Firehose Delivery Stream
 
-As explained earlier, a Firehose delivery stream can receive data from two kinds of sources: a Kinesis data stream or from a streaming data source running a producer application that sends the streaming data to the delivery stream. 
+We can send data to a Kinesis Data Firehose delivery stream from different types of sources: 
+* **Kinesis Data Stream**: We can configure Kinesis Data Streams to send data records to a Kinesis Data Firehose delivery stream by setting the Kinesis Data Stream as the `Source` when we are creating the delivery stream.
 
-We have already seen how to put data into a Kinesis data stream. If we connect this data stream to a Kinesis firehose delivery stream, the data from the Kinesis data stream will be automatically sent to the destination configured in the delivery stream.
+* **Kinesis Firehose Agent**: Kinesis Firehose Agent is a standalone Java application that collects log data from a server and sends them to Kinesis Data Firehose. We can install this agent in Linux-based servers and configure it by specifying the files to monitor along with the delivery stream to which the log data is to be sent. More details about configuring a Kinesis Firehose Agent can be found in the official [documentation](https://docs.aws.amazon.com/firehose/latest/dev/writing-with-agents.html).
 
-Let us create a producer application 
+* **Kinesis Data Firehose API**: Kinesis Data Firehose API from the AWS SDK offers two operations for sending data to the Firehose delivery stream: `PutRecord()` and `PutRecordBatch()`. The `PutRecord()` operation sends one data record while the `PutRecordBatch()` operation can send multiple data records to the delivery stream in a single invocation. We can use these operations only if the delivery stream is created with the `DIRECT PUT` option as the `Source`.
 
-We created our Firehose delivery stream in the previous section with the `Direct PUT` option. This will allow us to send the streaming data directly to the Firehose delivery stream from a producer application. We can put records into a delivery stream using the Kinesis Data Firehose API from the AWS SDK.
+* **Amazon CloudWatch Logs**: CloudWatch Logs are used to centrally store and monitor logs from all our systems, applications, and dependent AWS services. We can create a CloudWatch Logs subscription that will send log events to Kinesis Data Firehose. Please refer to the [documentation](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/SubscriptionFilters.html#FirehoseExample) for steps to configure Subscription Filters with Amazon Kinesis Firehose.
 
-The Kinesis Data Firehose API offers two operations for sending data to the Firehose delivery stream: `PutRecord()` and `PutRecordBatch()`. `PutRecord()` sends one data record within one call and `PutRecordBatch()` can send multiple data records within one call.
+* **CloudWatch Events**: We can configure Amazon CloudWatch to send events to a Kinesis Data Firehose delivery stream by creating a CloudWatch Events rule with the Firehose delivery stream as a target.
 
-A very simplified code snippet for sending a single record to a Kinesis Firehose delivery stream looks like this:
+* **AWS IoT as the data source**:  We can configure AWS IoT to send data to a Kinesis Data Firehose delivery stream by adding a rule action for an AWS IoT rule.
+
+For our example, let us use the Kinesis Data Firehose API to send a data record to the Firehose delivery stream. A very simplified code snippet for sending a single record to a Kinesis Firehose delivery stream looks like this:
 
 ```java
 public class FirehoseEventSender {
@@ -558,12 +561,6 @@ public class FirehoseEventSender {
 }
 ```
 Here we are calling the `putRecord()` method of the Kinesis Data Firehose API for adding a single record to the delivery stream. The `putRecord()` method takes an object of type `PutRecordRequest` as input parameter. We have set the name of the delivery stream along with the contents of the data when creating the input parameter object before invoking the `putRecord()` method.
-
-Other than using the Kinesis Data Firehose API, we can also send streaming data to a Firehose delivery stream using Kinesis Firehose Agent. 
-
-Kinesis Firehose Agent is a standalone Java application that collects and sends data to Kinesis Data Firehose. The agent continuously monitors a set of files and sends new data to your Kinesis Data Firehose delivery stream. 
-
-We need to install the agent on Linux-based server environments such as web servers, log servers, and database servers and configure it by specifying the delivery stream to which the log data is to be sent and the files to monitor. More details about configuring a Kinesis Firehose Agent can be found in the official [documentation](https://docs.aws.amazon.com/firehose/latest/dev/writing-with-agents.html).
 
 ### Data Transformation in a Firehose Delivery Stream
 
@@ -1035,7 +1032,7 @@ Here is a list of the major points for a quick reference:
     * Kinesis Video Streams for ingestion, storage, and streaming of media data
 4. The Kinesis Data Streams service is used to collect and process streaming data in real-time.
 5. The Kinesis Data Stream is composed of multiple data carriers called shards. Each shard provides a fixed unit of capacity.
-6. Kinesis Data Firehose is a fully managed service that is used to deliver streaming data to a destination in near real-time. The data is buffered in the delivery stream upto a particular size or time before being sent to the destination.
+6. Kinesis Data Firehose is a fully managed service that is used to deliver streaming data to a destination in near real-time. The incoming streaming data is buffered in the delivery stream till it reaches a particular size or exceeds a certain time interval before it is delivered to the destination. Due to this reason, Kinesis Data Firehose is not intended for real-time delivery.
 7. Kinesis Data Analytics is used to analyze streaming data in real-time. It provides a fully managed service for running Apache Flink applications. Apache Flink is a Big Data processing framework for building applications that can process a large amount of data efficiently. Kinesis Data Analytics sets up the resources to run Flink applications and scales automatically to handle any volume of incoming data.
 8. Kinesis Video Streams is a fully managed AWS service that we can use to ingest streaming video, audio, and other time-encoded data from various media capturing devices using an infrastructure provisioned dynamically in the AWS Cloud.
 

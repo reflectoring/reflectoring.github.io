@@ -1,7 +1,7 @@
 ---
 authors: [pratikdas]
 title: "Processing Streams with Amazon Kinesis"
-categories: ["aws"]
+categories: ["AWS"]
 date: 2022-03-17T00:00:00 
 excerpt: "Amazon Kinesis is a family of managed services for collecting and processing
 streaming data in real-time. Stream processing platforms are an integral part of the big data ecosystem. In this article, we will introduce Amazon Kinesis and understand different aspects of processing streaming data like ingestion, loading, delivery, and performing analytic operations using the different services of the Kinesis family: Kinesis Data Stream, Kinesis Data Firehose, Kinesis Data Analytics, and Kinesis Video Streams."

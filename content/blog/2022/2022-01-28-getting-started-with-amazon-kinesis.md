@@ -73,17 +73,17 @@ The Kinesis Data Stream is composed of multiple data carriers called shards, as 
 
 The data stored in the shard is called a record.
 
-Each shard contains a sequence of data records. Each data record has a sequence number that is assigned by Kinesis Data Streams.
+Each shard contains a sequence of data records. Each data record has a sequence number that is assigned by the Kinesis Data Stream.
 
 ### Creating a Kinesis Data Stream
 
-Let us first create our data stream where we can send our data.
+Let us first create our data stream where we can send streaming data from various data sources.
 
-We can create a Kinesis data stream either by using the AWS Kinesis Data Streams Management Console, from the [AWS Command Line Interface (CLI)](https://aws.amazon.com/cli/) or using the `CreateStream` operation of AWS SDK. 
+We can create a Kinesis data stream either by using the [AWS Kinesis Data Streams Management Console](https://ap-southeast-2.console.aws.amazon.com/kinesis/home?region=ap-southeast-2#/streams/create), from the [AWS Command Line Interface (CLI)](https://aws.amazon.com/cli/) or using the `CreateStream` operation of Kinesis Data Streams API from the AWS SDK. 
 
 We can also use [AWS CloudFormation](https://reflectoring.io/getting-started-with-aws-cloudformation/) or [AWS CDK](https://reflectoring.io/getting-started-with-aws-cdk/) to create a data stream as part of an infrastructure-as-code project.
 
-Our code for creating a data stream with AWS SDK for Java looks like this:
+Our code for creating a data stream with the Kinesis Data Streams API looks like this:
 
 ```java
 public class DataStreamResourceHelper {
@@ -125,7 +125,7 @@ public class DataStreamResourceHelper {
 }
 ```
 
-In the code snippet, we are creating a Kinesis Data Stream with `ON_DEMAND` capacity mode. The capacity mode of `ON_DEMAND` is used for unpredictable workloads which scale the capacity of the data stream automatically in response to varying data traffic.
+In this code snippet, we are creating a Kinesis Data Stream with `ON_DEMAND` capacity mode. The capacity mode of `ON_DEMAND` is used for unpredictable workloads which scale the capacity of the data stream automatically in response to varying data traffic.
 
 With the Kinesis Data Stream created, we will look at how to add data to this stream in the next sections.
 
@@ -143,11 +143,11 @@ A record in a Kinesis data stream consists of:
 
 The maximum size of a data blob (the data payload before Base64-encoding) is 1 megabyte (MB).
 
-**A sequence number is a unique identifier for each record.** The sequence number is assigned by Amazon Kinesis Data Streams when a producer application calls the `PutRecord()` or `PutRecords()` operation to add data to a Kinesis Data Stream.
+**A sequence number is a unique identifier for each record.** The sequence number is assigned by the Kinesis Data Streams service when a producer application calls the `PutRecord()` or `PutRecords()` operation to add data to a Kinesis Data Stream.
 
-**The partition key is used to segregate and route records to different shards of a stream.** We need to specify the partition key in the producer application while adding data to a Kinesis stream.
+**The partition key is used to segregate and route records to different shards of a stream.** We need to specify the partition key in the producer application while adding data to a Kinesis data stream.
 
-For example, if we have a stream with two shards: `shard1` and `shard2`, we can write our producer application to use two partition keys: `key1` and `key2` so that all records with `key1` are added to `shard1` and all records with `key2` are added to `shard2`.
+For example, if we have a data stream with two shards: `shard1` and `shard2`, we can write our producer application to use two partition keys: `key1` and `key2` so that all records with `key1` are added to `shard1` and all records with `key2` are added to `shard2`.
 
 ### Data Ingestion - Writing Data to Kinesis Data Streams
 
@@ -157,7 +157,7 @@ We can also use Kinesis Agent which is a stand-alone application that we can run
 
 Let us create a producer application in Java that will use the AWS SDK's `PutRecord()` operation for adding a single record and the `PutRecords()` operation for adding multiple records to the Kinesis Data Stream.
 
-We have created this producer application as a Maven project and added a Maven dependency in our `pom.xml` as shown below:
+We have created this producer application as a [Maven](https://maven.apache.org/guides/) project and added a Maven dependency in our `pom.xml` as shown below:
 
 ```xml
 <dependencies>
@@ -220,6 +220,7 @@ public class EventSender {
     kinesisClient.close();
   }
 
+  // Set up the Kinesis client by reading aws credentials 
   private static KinesisClient getKinesisClient() {
     AwsCredentialsProvider credentialsProvider =
             ProfileCredentialsProvider
@@ -234,7 +235,7 @@ public class EventSender {
 }
 ```
 
-Here we are first creating the request object for the `putRecord()` method with the name of the Kinesis Data Stream, partition key, and the data to be sent in bytes. Then we have invoked the `putRecord()` method on the `kinesisClient` to add a record to the stream.
+Here we are first creating the request object for the `putRecord()` method by specifying the name of the Kinesis Data Stream, partition key, and the data to be sent in bytes. Then we have invoked the `putRecord()` method on the `kinesisClient` to add a record to the stream.
 
 Running this program gives the following output:
 
@@ -264,10 +265,15 @@ public class EventSender {
     List<PutRecordsRequestEntry> putRecordsRequestEntryList
             = new ArrayList<>();
 
-    // Create 5 records for adding to the Kinesis Data Stream
+    // Create collection of 5 PutRecordsRequestEntry objects
+    // for adding to the Kinesis Data Stream
     for (int i = 0; i < 5; i++) {
       SdkBytes data = ...
-      PutRecordsRequestEntry putRecordsRequestEntry = ...
+      PutRecordsRequestEntry putRecordsRequestEntry = 
+                 PutRecordsRequestEntry.builder()         
+                    .data(data)
+                    .partitionKey(partitionKey)
+                    .build();
       putRecordsRequestEntryList.add(putRecordsRequestEntry);
     }
 
@@ -285,7 +291,8 @@ public class EventSender {
     logger.info("Put records Result" + putRecordsResult);
     kinesisClient.close();
   }
-
+  
+  // Set up the Kinesis client by reading aws credentials 
   private static KinesisClient getKinesisClient() {
       ...
       ...
@@ -293,7 +300,14 @@ public class EventSender {
 }
 ```
 
-Here we are first creating the request object for the `putRecords()` method with the name of the data stream, partition key, and sequence number. Running this program gives the following output:
+Here we are using the following steps for adding a set of `5` records to the data stream:
+1. Creating a collection of `PutRecordsRequestEntry` objects corresponding to each data record to be put in the data stream. In each `PutRecordsRequestEntry` object, we are specifying the partition key and the data payload in bytes.  
+
+2. Creating the `PutRecordsRequest` object which we will pass as the input parameter to the `putRecords()` method by specifying the name of the data stream, and the collection of data records created in the previous step. 
+
+3. Invoking the `putRecords()` method to add the collection of `5` records to the data stream.
+
+Running this program gives the following output:
 
 ```shell
 ResultPutRecordsResponse(FailedRecordCount=0, 
@@ -305,13 +319,13 @@ ResultPutRecordsResponse(FailedRecordCount=0,
     PutRecordsResultEntry(SequenceNumber=49626569155656830268862440193775638095921386675670876178, ShardId=shardId-000000000001)])
 ```
 
-In this output, we can see the same `shardId` for all the records added to the stream. This is because we are using the same partition key for all our records, they have been put into the same shard with shardId : `shardId-000000000001`.
+In this output, we can see the same `shardId` for all the `5` records which got added to the stream which means they have all been put into the same shard with shardId: `shardId-000000000001`. This is because we have used the same value of partition key: `partitionKey1` for all our records.
 
 As mentioned before, other than the AWS SDK, we can use the Kinesis Producer Library (KPL) or the Kinesis agent for adding data to a Kinesis Data Stream:
 
-1. **Kinesis Producer Library (KPL)**: KPL is a library written in C++ for adding data into a Kinesis data stream. It runs as a child process to the main user process. So in case the child process stops due to an error when connecting or writing to a Kinesis Data Stream, the main process continues to run.
+1. **Kinesis Producer Library (KPL)**: KPL is a library written in C++ for adding data into a Kinesis data stream. It runs as a child process to the main user process. So in case the child process stops due to an error when connecting or writing to a Kinesis Data Stream, the main process continues to run. Please refer to the [documentation](https://docs.aws.amazon.com/streams/latest/dev/developing-producers-with-kpl.html) for guidance on developing producer applications using the Kinesis Producer Library.
 
-2. **Amazon Kinesis Agent**: Kinesis Agent is a stand-alone application that we can run as an agent on Linux-based server environments such as web servers, log servers, and database servers. The agent continuously monitors a set of files and collects and sends new data to Kinesis Data Streams. Please refer to the official documentation for guidance on configuring Kinesis Agent in a Linux-based server environment.
+2. **Amazon Kinesis Agent**: Kinesis Agent is a stand-alone application that we can run as an agent on Linux-based server environments such as web servers, log servers, and database servers. The agent continuously monitors a set of files and collects and sends new data to Kinesis Data Streams. Please refer to the official [documentation](https://docs.aws.amazon.com/streams/latest/dev/writing-with-agents.html) for guidance on configuring Kinesis Agent in a Linux-based server environment.
 
 ### Data Consumption - Reading Data from Kinesis Data Streams
 
@@ -394,7 +408,9 @@ Here we are invoking the `getRecords()` method on the Kinesis client to read the
 The shard iterator specifies the position in the shard from which we want to start reading the data records sequentially. We will get an empty list, if there are no records available in the portion of the shard that the iterator is pointing to so we have used a `while` loop to make multiple calls to get to the portion of the shard that contains records.
 
 ### Type of Consumers of Kinesis Data Streams
-Kinesis Data Streams API is a low-level method of reading streaming data. We have to take care of polling the stream, checkpointing processed records, running multiple instances, etc. So in most practical situations, we use the following methods for creating consumer applications for reading data from the stream:
+Kinesis Data Streams API which we used till now is a low-level method of reading streaming data. We have to take care of polling the stream, checkpointing processed records, running multiple instances, etc when we are using Kinesis Data Streams API for performing operations on a data stream. 
+
+So in most practical situations, we use the following methods for creating consumer applications for reading data from the stream:
 
 1. **AWS Lambda**: We can use an [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) function to process records in an Amazon Kinesis data stream. AWS Lambda integrates natively with Amazon Kinesis Data Stream as a consumer to process data ingested through a data stream by taking care of the polling, checkpointing, and error handling functions. Please refer to the [AWS Lambda documentation](https://docs.aws.amazon.com/lambda/latest/dg/with-kinesis.html) for the steps to configure a Lambda function as a consumer to a Kinesis Data Stream.
 
@@ -406,13 +422,13 @@ Kinesis Data Streams API is a low-level method of reading streaming data. We hav
 
 ### Throughput Limits of Kinesis Data Stream - Shared vs Enhanced Fan-Out Consumers
 
-It is important to understand the throughput limits of Kinesis Data Stream for designing and operating a highly reliable data streaming workflow and ensuring predictable performance.
+It is important to understand the throughput limits of Kinesis Data Stream for designing and operating a highly reliable data streaming system and ensuring predictable performance.
 
 As explained before, the Kinesis Data Stream is composed of multiple data carriers called shards which contain a sequence of data records. Each shard provides a fixed unit of capacity thereby serving as a base throughput unit of a Kinesis data stream. The data capacity of a data stream is a function of the number of shards in the stream. 
 
 **A shard supports 1 MB/second and 1,000 records per second for write throughput and 2 MB/second for read throughput.**
 
-When we have multiple consumers reading from a shard, this read throughput is shared between them. This type of consumers are called Shared fan-out consumers.
+When we have multiple consumers reading from a shard, this read throughput is shared between them. These types of consumers are called Shared fan-out consumers.
 
 If we want dedicated throughput for consumers, we can define them as Enhanced fan-out consumers.
 
@@ -426,23 +442,21 @@ The producer and consumer applications will receive throttling errors when write
 
 Kinesis Data Firehose is a fully managed service that is used to deliver streaming data to a destination in near real-time.
 
-One or more data producers send their streaming data into a kind of "pipe" called a delivery stream which optionally applies some transformation to the data before delivering it to a destination.
+One or more data producers send their streaming data into a kind of "pipe" called a delivery stream which optionally applies some transformation to the data before delivering it to a destination. An example of a data producer for a Kinesis Data Firehose is a web server that sends log data to a delivery stream.
 
 {{% image alt="Create Kinesis Data Firehose Delivery Stream" src="images/posts/aws-kinesis/firehose.png" %}}
 
-The incoming streaming data is buffered in the delivery stream till it reaches a particular size or exceeds a certain time interval before it is delivered to the destination. Due to this reason, Kinesis Data Firehose is not intended for real-time delivery. Rather, it will batch incoming messages, optionally compress and/or transform them with AWS Lambda, and then sink data, usually into an AWS service like S3, Redshift, or Elasticsearch.
-
-We also need to do very little programming when using Firehose. This is unlike Kinesis Data Streams where we write custom applications for producers and consumers.
-
-An example of a data producer is a web server that sends log data to a delivery stream.
+The incoming streaming data is buffered in the delivery stream till it reaches a particular size or exceeds a certain time interval before it is delivered to the destination. Due to this reason, Kinesis Data Firehose is not intended for real-time delivery. It groups incoming messages, optionally compressing and/or transforming them with AWS Lambda functions, and then putting the data into a sink which is usually an AWS service like S3, Redshift, or Elasticsearch.
 
 We can also configure the delivery stream to read streaming data from a Kinesis Data Stream and deliver it to a destination.
 
+We also need to do very little programming when using Kinesis Data Firehose. This is unlike Kinesis Data Streams where we write custom applications for producers and consumers of a data stream.
+
 ### Creating a Kinesis Firehose Delivery Stream
 
-Let us take a closer look at the Kinesis Data Firehose service by creating a Firehose delivery stream. We can create a Firehose delivery stream using the AWS console, AWS SDK, or infrastructure as a service like [AWS CloudFormation](https://reflectoring.io/getting-started-with-aws-cloudformation/) and [AWS CDK](https://reflectoring.io/getting-started-with-aws-cdk/).
+Let us take a closer look at the Kinesis Data Firehose service by creating a Firehose delivery stream. We can create a Firehose delivery stream using the AWS management console, AWS SDK, or infrastructure as a service like [AWS CloudFormation](https://reflectoring.io/getting-started-with-aws-cloudformation/) and [AWS CDK](https://reflectoring.io/getting-started-with-aws-cdk/).
 
-For our example, let us use the AWS console for creating the delivery stream as shown below:
+For our example, let us use the [AWS management console](https://ap-southeast-2.console.aws.amazon.com/firehose/home?region=ap-southeast-2#/create) for creating the delivery stream as shown below:
 
 {{% image alt="Create Kinesis Delivery Stream" src="images/posts/aws-kinesis/kdf_create.png" %}}
 
@@ -463,7 +477,7 @@ Similarly, the delivery stream can send data to the following destinations:
 4. Splunk, and
 5. Any custom HTTP endpoint or HTTP endpoints owned by supported third-party service providers like Datadog, Dynatrace, LogicMonitor, MongoDB, New Relic, and Sumo Logic.
 
-We have chosen our destination as `S3` and configured an S3 bucket that will receive the streaming data delivered by our Firehose delivery stream.
+For our example, we have chosen our destination as `S3` and configured an S3 bucket that will receive the streaming data delivered by our Firehose delivery stream.
 
 Apart from this we also need to assign an IAM service role to the Kinesis Firehose service with an access policy that allows it to write to the S3 bucket.
 
@@ -471,15 +485,21 @@ The delivery stream which we created using this configuration looks like this:
 
 {{% image alt="Created Kinesis Delivery Stream" src="images/posts/aws-kinesis/kdf_created.png" %}}
 
-In this screenshot, we can observe a few more properties of the delivery stream like `Data transformation` and `Dynamic partitioning` which we will understand in the subsequent sections. We can also see the status of the delivery stream as `Active` which means it can receive streaming data. The initial status of the delivery stream is CREATING.
+In this screenshot, we can observe a few more properties of the delivery stream like `Data transformation` and `Dynamic partitioning` which we will understand in the subsequent sections. We can also see the status of the delivery stream as `Active` which means it can receive streaming data. The initial status of the delivery stream is `CREATING`.
 
-We are now ready to send streaming data to our Firehose delivery stream which will deliver this data to the configured destination.
+We are now ready to send streaming data to our Firehose delivery stream which will deliver this data to the configured destination: S3 bucket.
 
 ### Sending Data to a Kinesis Firehose Delivery Stream
 
-As explained earlier, a Firehose delivery stream can receive data from two kinds of sources: a Kinesis delivery stream or from an application producing data. We have already seen how to put data to a Kinesis data stream. If we connect this data stream to a Kinesis firehose delivery stream, data will be automatically sent to the destination.
+As explained earlier, a Firehose delivery stream can receive data from two kinds of sources: a Kinesis data stream or from a streaming data source running a producer application that sends the streaming data to the delivery stream. 
 
-We created our firehose delivery stream in the previous section with the `Direct PUT` option due to which we can send data directly to the Firehose delivery stream from a producer application.
+We have already seen how to put data into a Kinesis data stream. If we connect this data stream to a Kinesis firehose delivery stream, the data from the Kinesis data stream will be automatically sent to the destination configured in the delivery stream.
+
+Let us create a producer application 
+
+We created our Firehose delivery stream in the previous section with the `Direct PUT` option. This will allow us to send the streaming data directly to the Firehose delivery stream from a producer application. We can put records into a delivery stream using the Kinesis Data Firehose API from the AWS SDK.
+
+The Kinesis Data Firehose API offers two operations for sending data to the Firehose delivery stream: `PutRecord()` and `PutRecordBatch()`. `PutRecord()` sends one data record within one call and `PutRecordBatch()` can send multiple data records within one call.
 
 A very simplified code snippet for sending a single record to a Kinesis Firehose delivery stream looks like this:
 
@@ -504,6 +524,7 @@ public class FirehoseEventSender {
                     .fromByteArray(data.getBytes()))
             .build();
 
+    // Prepare the request for putRecord operation
     PutRecordRequest putRecordRequest =
             PutRecordRequest
                     .builder()
@@ -522,6 +543,7 @@ public class FirehoseEventSender {
     firehoseClient.close();
   }
 
+  // Create the FirehoseClient with the AWS credentials
   private static FirehoseClient getFirehoseClient() {
     AwsCredentialsProvider credentialsProvider =
             ProfileCredentialsProvider
@@ -535,40 +557,85 @@ public class FirehoseEventSender {
   }
 }
 ```
+Here we are calling the `putRecord()` method of the Kinesis Data Firehose API for adding a single record to the delivery stream. The `putRecord()` method takes an object of type `PutRecordRequest` as input parameter. We have set the name of the delivery stream along with the contents of the data when creating the input parameter object before invoking the `putRecord()` method.
 
-Here we are calling the `putRecord()` method for adding a single record to the delivery stream.
+Other than using the Kinesis Data Firehose API, we can also send streaming data to a Firehose delivery stream using Kinesis Firehose Agent. 
 
-The Kinesis Data Firehose API offers two operations for sending data to the Firehose delivery stream: `PutRecord()` and `PutRecordBatch()`. `PutRecord()` sends one data record within one call and `PutRecordBatch()` can send multiple data records within one call.
+Kinesis Firehose Agent is a standalone Java application that collects and sends data to Kinesis Data Firehose. The agent continuously monitors a set of files and sends new data to your Kinesis Data Firehose delivery stream. 
 
-Other than this, we can send streaming data to a Delivery Stream using Firehose Agent.
+We need to install the agent on Linux-based server environments such as web servers, log servers, and database servers and configure it by specifying the delivery stream to which the log data is to be sent and the files to monitor. More details about configuring a Kinesis Firehose Agent can be found in the official [documentation](https://docs.aws.amazon.com/firehose/latest/dev/writing-with-agents.html).
 
 ### Data Transformation in a Firehose Delivery Stream
 
-We can configure the Kinesis Data Firehose delivery stream to transform incoming source data and deliver the transformed data to destinations by attaching a lambda function.
+We can configure the Kinesis Data Firehose delivery stream to transform and convert streaming data received from the data source before delivering the transformed data to destinations:
 
-Kinesis Data Firehose can invoke a Lambda function to transform incoming source data and deliver the transformed data to destinations. We can enable Kinesis Data Firehose data transformation when we create our delivery stream.
+**Transform Incoming Data**: We can invoke a Lambda function to transform the data received in the delivery stream. Some ready-to-use blueprints are offered by AWS which we can adapt according to our data format.
+
+**Convert the Format of the Incoming Data Records**: We can convert the format of our input data from JSON to Apache Parquet or Apache ORC before storing the data in Amazon S3. Parquet and ORC are columnar data formats that save space and enable faster queries compared to row-oriented formats like JSON. 
+If we want to convert an input format other than JSON, such as comma-separated values (CSV) or structured text, we can use a Lambda function to transform it to JSON. 
+
+The below figure shows the data transformation and record format conversion options enabled in the AWS management console:
+
+{{% image alt="Kinesis Firehose Delivery Stream data transform" src="images/posts/aws-kinesis/firehose-data-transform.png" %}}
+
+Here is the snippet of a Lambda function for transforming the streaming data record created using a Lambda blueprint for Kinesis Data Firehose Processing:
+
+```js
+console.log('Loading function');
+
+const validateRecord = (recordElement)=>{
+    // record is considered valid if contains status field
+    return recordElement.includes("status")
+}
+
+exports.handler = async (event, context) => {
+    /* Process the list of records and transform them */
+    const output = event.records.map((record)=>{
+        const decodedData = Buffer.from(record.data, "base64").toString("utf-8")
+        let isValidRecord = validateRecord(decodedData)
+
+        if(isValidRecord){
+            let parsedRecord = JSON.parse(decodedData)
+            // read fields from parsed JSON for some more processing
+            const outputRecord = `status::${parsedRecord.status}`
+            return {
+                recordId: record.recordId,
+                result: 'Ok',
+                // payload is encoded back to base64 before returning the result
+                data:  Buffer.from(outputRecord, "utf-8").toString("base64")
+            }
+
+        }else{
+            return {
+                recordId: record.recordId,
+                result: 'dropped',
+                data: record.data // payload is kept intact,
+            }
+        }
+    })
+};
+```
+This lambda function is written in Node.js. It validates the record by looking for a `status` field. If it finds the record as valid, it parses the JSON record to extract the status field and prepares the response before passing the processed record back into the stream for delivery.
 
 ### Data Delivery Format of a Firehose Delivery Stream
 
-After our delivery stream receives the streaming data, it is automatically delivered to the configured destination. Each destination type supported by Firehose has specific configurations for data delivery.
+After our delivery stream receives the streaming data, it is automatically delivered to the configured destination. Each destination type supported by Kinesis Data Firehose has specific configurations for data delivery.
 
 For data delivery to S3, Kinesis Data Firehose concatenates multiple incoming records based on the buffering configuration of our delivery stream. It then delivers the records to the S3 bucket as an S3 object. We can also add a record separator at the end of each record before sending them to Kinesis Data Firehose. This will help us to divide the delivered Amazon S3 object into individual records.
 
 Kinesis Data Firehose adds a [UTC](https://en.wikipedia.org/wiki/Coordinated_Universal_Time) time prefix in the format `YYYY/MM/dd/HH` before writing objects to an S3 bucket. This prefix creates a logical hierarchy in the bucket, where each `/` creates a level in the hierarchy.
 
-The path of our S3 object created as a result of delivery of our streaming data with the `Direct PUT` operation results in a hierarchy of the form `s3://reflectoring-pratik/2022/02/22/03/` in the S3 bucket configured as a destination to the Firehose delivery stream.
+The path of our S3 object created as a result of delivery of our streaming data with the `Direct PUT` operation results in a hierarchy of the form `s3://<S3 bucket name>/2022/02/22/03/` in the S3 bucket configured as a destination to the Firehose delivery stream.
 
-The data delivery format of other destinations can be found in the [official documentation](https://docs.aws.amazon.com/firehose/latest/dev/basic-deliver.html).
+The data delivery format of other destinations can be found in the [official documentation](https://docs.aws.amazon.com/firehose/latest/dev/basic-deliver.html) of Kinesis Data Firehose.
 
 
 ## Kinesis Data Analytics
-Kinesis Data Analytics provides a fully managed environment for running applications which read streaming data from a source like Kinesis Data Stream for performing analytic operations like windowing, filtering, aggregations, mapping, etc on the streaming data in real-time. The results of processing are used in various real-time analytics use cases. 
+Kinesis Data Analytics provides a fully managed environment for running applications which read streaming data from a source like Kinesis Data Stream for performing analytic operations like windowing, filtering, aggregations, mapping, etc on the streaming data in real-time. The results of processing are used in various use cases of real-time analytics. 
 
-The applications run by Kinesis Data Analytics are built using Apache Flink which is a Big Data processing framework for processing a large amount of data efficiently.
+The applications run by Kinesis Data Analytics are built using Apache Flink which is a Big Data processing framework for processing a large amount of data efficiently. We write application code in a language supported by the Apache Flink framework to process the incoming streaming data and produce an output that Kinesis Data Analytics writes to a configured destination.
 
 Kinesis Data Analytics sets up the resources to run Flink applications and scales automatically to handle any volume of incoming data.
-
-Kinesis Data Analytics applications continuously read and process streaming data in real-time. We write application code in a language supported by the Apache Flink framework to process the incoming streaming data and produce an output that Kinesis Data Analytics writes to a configured destination.
 
 Kinesis Data Analytics also supports applications built using Java with the open-source [Apache Beam](https://beam.apache.org/documentation/programming-guide/) libraries and our own custom code.
 
@@ -864,7 +931,7 @@ An application is the Kinesis Data Analytics entity that we work with. We config
 - **Application code**: Location of an S3 bucket containing the compiled Flink application that reads from an in-application data stream associated with a streaming source and writes to an in-application data stream associated with output.
 - **Output**: one or more in-application streams to store intermediate results. We can then optionally configure an application output to persist data from specific in-application streams to an external destination.
 
-Our application's dependent resources like CloudWatch Logs streams and IAM service roles also get created in this step.
+Our application's dependent resources like CloudWatch Log streams and IAM service roles also get created in this step.
 
 After the application is created, we will configure the application with the location of the S3 bucket where we uploaded the uber jar of the Flink application that we created before.
 

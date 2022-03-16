@@ -631,11 +631,19 @@ The data delivery format of other destinations can be found in the [official doc
 
 
 ## Kinesis Data Analytics
-Kinesis Data Analytics provides a fully managed environment for running applications which read streaming data from a source like Kinesis Data Stream for performing analytic operations like windowing, filtering, aggregations, mapping, etc on the streaming data in real-time. The results of processing are used in various use cases of real-time analytics. 
+Kinesis Data Analytics helps us to transform and analyze streaming data. It does this by providing a fully managed environment for running Flink applications. 
 
-The applications run by Kinesis Data Analytics are built using Apache Flink which is a Big Data processing framework for processing a large amount of data efficiently. We write application code in a language supported by the Apache Flink framework to process the incoming streaming data and produce an output that Kinesis Data Analytics writes to a configured destination.
+Apache Flink is a Big Data processing framework for processing a large amount of data efficiently. It has helpful constructs like windowing, filtering, aggregations, mapping, etc for performing operations on streaming data.
+
+The results of the analyzing streaming data can be used in various use cases like performing time series analytics, feeding real-time dashboards, and creating real-time metrics. 
 
 Kinesis Data Analytics sets up the resources to run Flink applications and scales automatically to handle any volume of incoming data.
+
+It is important to note the difference with Kinesis Data Stream where we can also write consumer applications with custom code for performing any processing on the streaming data. But those applications are usually run on server instances like EC2 in an infrastructure managed by us. 
+
+Kinesis Data Analytics in contrast provides an automatically provisioned environment for running applications built using the Flink framework. 
+
+Consumer applications of Kinesis Data Streams usually write the records to a destination like an S3 bucket or to a DynamoDB table after some processing. Kinesis Data Analytics applications perform queries like aggregations, filtering, etc by applying different windows on streaming data to identify trends and patterns for real time alerts and feeds for dashboards.
 
 Kinesis Data Analytics also supports applications built using Java with the open-source [Apache Beam](https://beam.apache.org/documentation/programming-guide/) libraries and our own custom code.
 
@@ -909,7 +917,13 @@ public class ErrorCounter {
 }
 ```
 
-Here we have added a Kinesis Data Stream of name `in-app-log-stream` as the source and another Kinesis Data Stream of name `log_data_stream` as the sink. Now we need to compile and package this code for deploying to the Kinesis Data Analytics service. We will see this in the next section.
+Here we have added a Kinesis Data Stream of name `in-app-log-stream` as the source and another Kinesis Data Stream of name `log_data_stream` as the sink. 
+
+We can also configure destinations where you want Kinesis Data Analytics to send the results.
+
+Other than Kinesis Data Stream, Kinesis Data Analytics also supports Kinesis Data Firehose, and AWS Lambda as destinations. Kinesis Data Firehose can be configured to automatically send the data to destinations like S3,  Redshift, OpenSearch, and Splunk.
+
+Now we need to compile and package this code for deploying to the Kinesis Data Analytics service. We will see this in the next section.
 
 ### Deploying the Flink Application to Kinesis Data Analytics
 

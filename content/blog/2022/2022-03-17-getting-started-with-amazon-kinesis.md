@@ -2,10 +2,10 @@
 authors: [pratikdas]
 title: "Processing Streams with Amazon Kinesis"
 categories: ["aws"]
-date: 2022-03-03T00:00:00 
+date: 2022-03-17T00:00:00 
 excerpt: "Amazon Kinesis is a family of managed services for collecting and processing
 streaming data in real-time. Stream processing platforms are an integral part of the big data ecosystem. In this article, we will introduce Amazon Kinesis and understand different aspects of processing streaming data like ingestion, loading, delivery, and performing analytic operations using the different services of the Kinesis family: Kinesis Data Stream, Kinesis Data Firehose, Kinesis Data Analytics, and Kinesis Video Streams."
-image: images/stock/0115-2021-1200x628-branded.jpg 
+image: images/stock/0120-data-stream-1200x628-branded.jpg 
 url: getting-started-with-aws-kinesis
 ---
 
@@ -57,13 +57,13 @@ The streaming data is collected by producer applications from various data sourc
 Examples of consumer applications are custom applications running on EC2 instances, EMR clusters, Lambda functions, or a Kinesis Data Firehose delivery stream which can use another AWS service such as DynamoDB, Redshift, or S3 to store the results of their processing.
 
 As part of the processing, the consumer applications can store their results using another AWS service such as DynamoDB, Redshift, or S3.
-The consumer applications process the data in real or near real-time which makes the Kinesis Data Streams service most useful for building time-sensitive applications like real-time dashboards, and anomaly detection. 
+The consumer applications process the data in real or near real-time which makes the Kinesis Data Streams service most useful for building time-sensitive applications like real-time dashboards and anomaly detection. 
 
 Another common use of Kinesis Data Streams is the real-time aggregation of data followed by loading the aggregated data into a data warehouse or map-reduce cluster.
 
-The data is stored in Kinesis Data Stream for 24 hours by default which can be configured to store the data beyond 24 hours up to 365 days.
+The data is stored in Kinesis Data Stream for 24 hours by default but it can be configured to up to 365 days.
 
-### Kinesis Data Stream, Shards, and Records
+### Streams, Shards, and Records
 
 When using Kinesis Data Streams, we first set up a data stream and then build producer applications that push data to the data stream and consumer applications that read and process the data from the data stream:
 
@@ -129,7 +129,7 @@ In this code snippet, we are creating a Kinesis Data Stream with `ON_DEMAND` cap
 
 With the Kinesis Data Stream created, we will look at how to add data to this stream in the next sections.
 
-### Structure of Data Added to Kinesis Data Stream
+### Kinesis Data Stream Records
 
 Before adding data, it is also important to understand the structure of data that is added to a Kinesis Data Stream.
 
@@ -405,9 +405,9 @@ public class EventConsumer {
 ```
 Here we are invoking the `getRecords()` method on the Kinesis client to read the ingested records from the Kinesis Data Stream. We have provided a shard iterator using the `ShardIterator` parameter in the request. 
 
-The shard iterator specifies the position in the shard from which we want to start reading the data records sequentially. We will get an empty list, if there are no records available in the portion of the shard that the iterator is pointing to so we have used a `while` loop to make multiple calls to get to the portion of the shard that contains records.
+The shard iterator specifies the position in the shard from which we want to start reading the data records sequentially. We will get an empty list if there are no records available in the portion of the shard that the iterator is pointing to so we have used a `while` loop to make multiple calls to get to the portion of the shard that contains records.
 
-### Type of Consumers of Kinesis Data Streams
+### Consumers of Kinesis Data Streams
 Kinesis Data Streams API which we used till now is a low-level method of reading streaming data. We have to take care of polling the stream, checkpointing processed records, running multiple instances, etc when we are using Kinesis Data Streams API for performing operations on a data stream. 
 
 So in most practical situations, we use the following methods for creating consumer applications for reading data from the stream:
@@ -418,9 +418,9 @@ So in most practical situations, we use the following methods for creating consu
 
 3. **Kinesis Data Firehose**: Kinesis Data Firehose is a fully managed service for delivering real-time streaming data to destinations such as Amazon S3, Amazon Redshift, Amazon OpenSearch Service, and Splunk. We can set up the Kinesis Data Stream as a source of streaming data to a Kinesis Firehose delivery stream for delivering after optionally transforming the data to a configured destination. We will explain this mechanism further in the section on [Kinesis Data Firehose](getting-started-with-aws-kinesis/#kinesis-data-firehose).
 
-4. **Kinesis Data Analytics**:Kinesis Data Analytics is another fully managed service from the Kinesis family for processing and analyzing streaming data with helpful programming constructs like windowing, sorting, filtering, etc. We can set up the Kinesis Data Stream as a source of streaming data to a Kinesis Data Analytics application which we will explain in the section on [Kinesis Data Analytics](getting-started-with-aws-kinesis/#kinesis-data-analytics).
+4. **Kinesis Data Analytics**: Kinesis Data Analytics is another fully managed service from the Kinesis family for processing and analyzing streaming data with helpful programming constructs like windowing, sorting, filtering, etc. We can set up the Kinesis Data Stream as a source of streaming data to a Kinesis Data Analytics application which we will explain in the section on [Kinesis Data Analytics](getting-started-with-aws-kinesis/#kinesis-data-analytics).
 
-### Throughput Limits of Kinesis Data Stream - Shared vs Enhanced Fan-Out Consumers
+### Throughput Limits - Shared vs. Enhanced Fan-Out Consumers
 
 It is important to understand the throughput limits of Kinesis Data Stream for designing and operating a highly reliable data streaming system and ensuring predictable performance.
 
@@ -465,7 +465,7 @@ We configure a delivery stream in Firehose with a source and a destination.
 The source of a Kinesis Data Firehose delivery stream can be :
 
 1. A Kinesis Data Stream
-2. `Direct PUT` which means an application producer can send data to the delivery stream using a direct `PUT` operation.
+2. `Direct PUT` means an application producer can send data to the delivery stream using a direct `PUT` operation.
 
 Here we have chosen the source as `Direct PUT`.
 
@@ -636,12 +636,12 @@ The results of analyzing streaming data can be used in various use cases like pe
 
 Kinesis Data Analytics sets up the resources to run Flink applications and scales automatically to handle any volume of incoming data.
 
-### Difference with Consumers of Kinesis Data Streams
+### The Difference Between Kinesis Data Streams and Kinesis Data Anbalytics
 It is important to note the difference with Kinesis Data Stream where we can also write consumer applications with custom code for performing any processing on the streaming data. But those applications are usually run on server instances like EC2 in an infrastructure provisioned and managed by us. 
 
 Kinesis Data Analytics in contrast provides an automatically provisioned environment for running applications built using the Flink framework which scales automatically to handle any volume of incoming data. 
 
-Consumer applications of Kinesis Data Streams usually write the records to a destination like an S3 bucket or a DynamoDB table after some processing. Kinesis Data Analytics applications perform queries like aggregations, filtering, etc by applying different windows on streaming data to identify trends and patterns for real-time alerts and feeds for dashboards.
+Consumer applications of Kinesis Data Streams usually write the records to a destination like an S3 bucket or a DynamoDB table after some processing. Kinesis Data Analytics applications perform queries like aggregations, filtering, etc. by applying different windows on streaming data to identify trends and patterns for real-time alerts and feeds for dashboards.
 
 Kinesis Data Analytics also supports applications built using Java with the open-source [Apache Beam](https://beam.apache.org/documentation/programming-guide/) libraries and our own custom code.
 
@@ -957,7 +957,7 @@ The execution of the job, and the resources it uses, are managed by a Job Manage
 
 ### Creating Flink Application Interactively with Notebooks
 
-The Flink application we built earlier, was authored separately in a Java IDE (Eclipse) and then packaged and deployed in Kinesis Data Analytics by uploading the compiled artifact (jar file) to an S3 bucket. 
+The Flink application we built earlier was authored separately in a Java IDE (Eclipse) and then packaged and deployed in Kinesis Data Analytics by uploading the compiled artifact (jar file) to an S3 bucket. 
 
 Instead of using an IDE like Eclipse, we can use notebooks which are more widely used for data science tasks, for authoring Flink applications. A notebook is a web-based interactive development environment where data scientists write and execute code and visualize results. 
 

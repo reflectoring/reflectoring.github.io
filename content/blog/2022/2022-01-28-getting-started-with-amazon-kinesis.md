@@ -569,9 +569,9 @@ We need to install the agent on Linux-based server environments such as web serv
 
 We can configure the Kinesis Data Firehose delivery stream to transform and convert streaming data received from the data source before delivering the transformed data to destinations:
 
-**Transform Incoming Data**: We can invoke a Lambda function to transform the data received in the delivery stream. Some ready-to-use blueprints are offered by AWS which we can adapt according to our data format.
+**Transforming Incoming Data**: We can invoke a Lambda function to transform the data received in the delivery stream. Some ready-to-use blueprints are offered by AWS which we can adapt according to our data format.
 
-**Convert the Format of the Incoming Data Records**: We can convert the format of our input data from JSON to Apache Parquet or Apache ORC before storing the data in Amazon S3. Parquet and ORC are columnar data formats that save space and enable faster queries compared to row-oriented formats like JSON. 
+**Converting the Format of the Incoming Data Records**: We can convert the format of our input data from JSON to [Apache Parquet](https://parquet.apache.org/documentation/latest/) or [Apache ORC](https://orc.apache.org) before storing the data in Amazon S3. Parquet and ORC are columnar data formats that save space and enable faster queries compared to row-oriented formats like JSON. 
 If we want to convert an input format other than JSON, such as comma-separated values (CSV) or structured text, we can use a Lambda function to transform it to JSON. 
 
 The below figure shows the data transformation and record format conversion options enabled in the AWS management console:

@@ -34,7 +34,7 @@ Streaming data is processed sequentially and incrementally either by one record 
 
 ## What is Amazon Kinesis?
 
-Amazon Kinesis is a fully managed streaming data platform for processing streaming data. It provides four specialized services roughly classified on the basis of the type and stages of processing of streaming data:
+Amazon Kinesis is a fully managed streaming data platform for processing streaming data. It provides four specialized services roughly classified based on the type and stages of processing of streaming data:
 
 - **Kinesis Data Streams (KDS)**: The Kinesis Data Streams service is used to capture streaming data produced by various data sources in real-time. Producer applications write to the Kinesis Data Stream and consumer applications connected to the stream read the data for different types of processing.
 
@@ -635,15 +635,16 @@ Kinesis Data Analytics helps us to transform and analyze streaming data. It does
 
 Apache Flink is a Big Data processing framework for processing a large amount of data efficiently. It has helpful constructs like windowing, filtering, aggregations, mapping, etc for performing operations on streaming data.
 
-The results of the analyzing streaming data can be used in various use cases like performing time series analytics, feeding real-time dashboards, and creating real-time metrics. 
+The results of analyzing streaming data can be used in various use cases like performing time-series analytics, feeding real-time dashboards, and creating real-time metrics. 
 
 Kinesis Data Analytics sets up the resources to run Flink applications and scales automatically to handle any volume of incoming data.
 
-It is important to note the difference with Kinesis Data Stream where we can also write consumer applications with custom code for performing any processing on the streaming data. But those applications are usually run on server instances like EC2 in an infrastructure managed by us. 
+### Difference with Consumers of Kinesis Data Streams
+It is important to note the difference with Kinesis Data Stream where we can also write consumer applications with custom code for performing any processing on the streaming data. But those applications are usually run on server instances like EC2 in an infrastructure provisioned and managed by us. 
 
-Kinesis Data Analytics in contrast provides an automatically provisioned environment for running applications built using the Flink framework. 
+Kinesis Data Analytics in contrast provides an automatically provisioned environment for running applications built using the Flink framework which scales automatically to handle any volume of incoming data. 
 
-Consumer applications of Kinesis Data Streams usually write the records to a destination like an S3 bucket or to a DynamoDB table after some processing. Kinesis Data Analytics applications perform queries like aggregations, filtering, etc by applying different windows on streaming data to identify trends and patterns for real time alerts and feeds for dashboards.
+Consumer applications of Kinesis Data Streams usually write the records to a destination like an S3 bucket or a DynamoDB table after some processing. Kinesis Data Analytics applications perform queries like aggregations, filtering, etc by applying different windows on streaming data to identify trends and patterns for real-time alerts and feeds for dashboards.
 
 Kinesis Data Analytics also supports applications built using Java with the open-source [Apache Beam](https://beam.apache.org/documentation/programming-guide/) libraries and our own custom code.
 
@@ -921,25 +922,27 @@ Here we have added a Kinesis Data Stream of name `in-app-log-stream` as the sour
 
 We can also configure destinations where you want Kinesis Data Analytics to send the results.
 
-Other than Kinesis Data Stream, Kinesis Data Analytics also supports Kinesis Data Firehose, and AWS Lambda as destinations. Kinesis Data Firehose can be configured to automatically send the data to destinations like S3,  Redshift, OpenSearch, and Splunk.
+Kinesis Data Analytics also supports Kinesis Data Firehose and AWS Lambda as destinations. Kinesis Data Firehose can be configured to automatically send the data to destinations like S3,  Redshift, OpenSearch, and Splunk.
 
-Now we need to compile and package this code for deploying to the Kinesis Data Analytics service. We will see this in the next section.
+Next, we need to compile and package this code for deploying to the Kinesis Data Analytics service. We will see this in the next section.
 
 ### Deploying the Flink Application to Kinesis Data Analytics
 
-Kinesis Data Analytics runs Flink applications by creating a job. It looks for a compiled source in an S3 bucket. Since our Flink application is in a Maven project, we will need to compile and package our application. using Maven as shown below:
+Kinesis Data Analytics runs Flink applications by creating a job. It looks for a compiled source in an S3 bucket. Since our Flink application is in a Maven project, we will compile and package our application using Maven as shown below:
 
 ```shell
 mvn package -Dflink.version=1.13.2
 ```
 
-Running this command will create a fat uber jar with all the dependencies which we will upload to an S3 bucket.
+Running this command will create a fat "uber" jar with all the dependencies. We will upload this jar file to an S3 bucket where Kinesis Data Analytics will look for the application code.
 
-We will next create an application in Kinesis Data Analytics using the AWS administration console as shown below:
+We will next create an application in Kinesis Data Analytics using the AWS management console as shown below:
 
 {{% image alt="Create Kinesis Data Analytics Application" src="images/posts/aws-kinesis/kda-app-create.png" %}}
 
-An application is the Kinesis Data Analytics entity that we work with. We configure the three primary components in an application:
+This application is the Kinesis Data Analytics entity that we work with for querying and operating on our streaming data. 
+
+We configure three primary components in an application:
 
 - **Input**: In the input configuration, we map the streaming source to an in-application data stream. Data flows from one or more data sources into the in-application data stream. We have configured a Kinesis Data Stream as a data source.
 - **Application code**: Location of an S3 bucket containing the compiled Flink application that reads from an in-application data stream associated with a streaming source and writes to an in-application data stream associated with output.
@@ -947,17 +950,17 @@ An application is the Kinesis Data Analytics entity that we work with. We config
 
 Our application's dependent resources like CloudWatch Log streams and IAM service roles also get created in this step.
 
-After the application is created, we will configure the application with the location of the S3 bucket where we uploaded the uber jar of the Flink application that we created before.
+After the application is created, we will configure the application with the location of the S3 bucket where we had uploaded the compiled code of the Flink application as an "uber" jar earlier.
 
 ### Running the Kinesis Data Analytics Application by Creating a Job
 
 We can run our application by choosing `Run` on our application's page in the AWS console. When we run our Kinesis Data Analytics application, the Kinesis Data Analytics service creates an Apache Flink job.
 
-The execution of the job, and the resources it uses, are managed by a Job Manager which separates the execution of the application into tasks. Each task is managed by a Task Manager. We examine the performance of each Task Manager, or the Job Manager as a whole to monitor the performance of our application.
+The execution of the job, and the resources it uses, are managed by a Job Manager. The  Job Manager separates the execution of the application into tasks. Each task is managed by a Task Manager. We examine the performance of each Task Manager, or the Job Manager as a whole to monitor the performance of our application.
 
 ### Creating Flink Application Interactively with Notebooks
 
-The Flink application we built earlier was authored separately in a Java IDE (Eclipse) and then packaged and deployed in Kinesis Data Analytics by uploading the compiled artifact (jar file) to an S3 bucket. 
+The Flink application we built earlier, was authored separately in a Java IDE (Eclipse) and then packaged and deployed in Kinesis Data Analytics by uploading the compiled artifact (jar file) to an S3 bucket. 
 
 Instead of using an IDE like Eclipse, we can use notebooks which are more widely used for data science tasks, for authoring Flink applications. A notebook is a web-based interactive development environment where data scientists write and execute code and visualize results. 
 

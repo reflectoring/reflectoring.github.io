@@ -302,7 +302,7 @@ public class Book {
 }
 ```
 We define the identity generation type in the strategy attribute of the `@GeneratedValue`. While the identity strategy is highly efficient for the database, it doesn't perform well with the Hibernate ORM.
-The Hibernate expects that every managed entity has its id set, so it needs to go and call the database to insert the id.
+Hibernate expects that every managed entity has its id set, so it needs to go and call the database to insert the id.
 
 The identity strategy is excellent for fast iteration and the early stages. When we move to the development environment, we should move to something more stable and with better performance.
 

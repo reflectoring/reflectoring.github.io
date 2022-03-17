@@ -322,7 +322,7 @@ public class Book {
     private long id;
 }
 ```
-To define the sequence generator, we annotate the field with the `@SequenceGenerator`. We declare the name for the Hibernate, the sequence name, and the initial value.
+To define the sequence generator, we annotate the field with the `@SequenceGenerator` annotation. We declare the name for Hibernate, the sequence name, and the initial value.
 After defining the generator, we need to connect it to the `@GeneratedValue` annotation by setting its name in the `generator` attribute. 
 
 The sequence strategy uses the sequences from the databases to determine which primary key to chose next.

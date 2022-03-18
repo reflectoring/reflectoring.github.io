@@ -355,7 +355,7 @@ We need to define the `@TableGenerator` annotation with the name and table attri
 We provide the generator name to the `generator` attribute inside the `@GeneratedValue` annotation.
 
 ### Defining the Column
-We define the table column with the `@Column` annotation and the name of the column inside the `name` attribute:
+We define each table column with the `@Column` annotation and the name of the column inside the `name` attribute:
 ```java
 @Entity(name = "book")
 public class Book {
@@ -380,13 +380,13 @@ public class Book {
 
 }
 ```
-If we do not provide the `name` attribute, Hibernate will assume that the column name is the same as the variable name inside the Java class.
+If we do not provide the `name` attribute, Hibernate will assume that the column name is the same as the field name inside the Java class.
 
 It is always better to be safe and set the `name` attribute so that things do not start crashing when someone accidentally changes the variable name.
 
 ### Defining the ManyToMany Relationship
 
-We define the many-to-many relationship with the `@ManyToMany` annotation
+We define the many-to-many relationship between `Book` and `User` with the `@ManyToMany` annotation
 
 Each relationship has two sides:
 - the owner - the table that has the foreign key
@@ -394,7 +394,7 @@ Each relationship has two sides:
 
 #### The Owner of the Relationship
 One side of that relationship needs to be the owning side and define the join table.
-We decided that it will be the User side:
+We decided that it will be the `User` side:
 ```java
 @Entity(name = "_user")
 public class User {
@@ -448,7 +448,7 @@ spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 spring.datasource.driver-class-name=org.h2.Driver
 # Rest of the configuration is omitted
 ```
-After defining the keywords `jdbc` and the `h2`to note that we are using the H2 database, we are defining that we are using the in-memory database with the `mem` keyword.
+After defining the keywords `jdbc` and `h2` to note that we are using the H2 database, we are defining that we are using the in-memory database with the `mem` keyword.
 The `localdb` is the database name and can be whatever we want.
 
 The in-memory database is good for fast iterations and prototyping, but we need something more persistent when we go into full development.
@@ -463,7 +463,7 @@ spring.datasource.driver-class-name=org.h2.Driver
 After defining the `jdbc` and the `h2` keywords, we note that we want to use a file-based H2 database with the `file` keyword. The last part of the URL is the absolute path to the folder where we want to save our database.
 
 {{% info title="The H2 database" %}}
-Please note that we should use the H2 only for the development phase. When going to the production environment, move to something more production-ready ( Oracle, PostgreSQL, etc.).
+Please note that we should use the H2 database only for the development phase. When going to the production environment, move to something more persistent and production-ready like Oracle, PostgreSQL, etc.
 {{% /info %}}
 
 #### Defining the Database Login Information
@@ -490,7 +490,7 @@ spring.jpa.generate-ddl=true
 
 # Rest of the configuration is omitted
 ```
-Hibernate DDL is used to generate the schema using the entity definitions. With the `ddl-auto`, we set that we want to destroy and recreate the schema on each run.
+Setting `hibernate.ddl-auto` to `create`, we tell Hibernate that we want to destroy and recreate the schema on each run. Only use this setting for testing!
 
 ## Building the Data Access Layer
 
@@ -714,7 +714,7 @@ The imported `spring-boot-starter-web` contains everything that we need for the 
 
 With Spring MVC, we can define a controller with the `@Controller` or `@RestController` annotation so it can handle incoming requests.
 
-### Creating an Endpoint With the @RestController
+### Creating an Endpoint With @RestController
 We are going to create our first endpoint. We want to fetch all books that the bookstore owns. This is the endpoint that will be called from the homepage.
 
 Let us look into the codebase:

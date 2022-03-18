@@ -481,7 +481,7 @@ spring.jpa.generate-ddl=true
 
 # Rest of the configuration is omitted
 ```
-The Hibernate DDL is used to generate the schema using the entity definitions. With the `ddl-auto`, we set that we want to destroy and recreate the schema on each run.
+Setting `hibernate.ddl-auto` to `create`, we tell Hibernate that we want to destroy and recreate the schema on each run. Only use this setting for testing!
 
 ## Building the Data Access Layer
 

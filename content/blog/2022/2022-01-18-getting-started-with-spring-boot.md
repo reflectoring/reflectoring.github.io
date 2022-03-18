@@ -371,7 +371,7 @@ public class Book {
 
 }
 ```
-If we do not provide the `name` attribute, the Hibernate will assume that the column name is the same as the variable name inside the Java class.
+If we do not provide the `name` attribute, Hibernate will assume that the column name is the same as the field name inside the Java class.
 
 It is always better to be safe and set the `name` attribute so that things do not start crashing when someone accidentally changes the variable name.
 

@@ -439,7 +439,7 @@ spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 spring.datasource.driver-class-name=org.h2.Driver
 # Rest of the configuration is omitted
 ```
-After defining the keywords `jdbc` and the `h2`to note that we are using the H2 database, we are defining that we are using the in-memory database with the `mem` keyword.
+After defining the keywords `jdbc` and `h2` to note that we are using the H2 database, we are defining that we are using the in-memory database with the `mem` keyword.
 The `localdb` is the database name and can be whatever we want.
 
 The in-memory database is good for fast iterations and prototyping, but we need something more persistent when we go into full development.

@@ -110,13 +110,17 @@ If we run the application, we will see that the process starts, and we can acces
 We won't see much, but the application will be up and running.
 
 #### The Spring Data JPA Dependency
-The Spring Data JPA dependency allows us to create the data access layer almost without effort.
+The Spring Data JPA dependency allows us to create the data access layer almost without effort. Spring Data JPA is not JPA implementation, it is just an abstraction to reduce codebase size.
+
+JPA(Java Persistence API) is a set of concepts that helps us write code towards a database. JPA specifications require implementation like Hibernate ORM.
+
+Hibernate is an ORM (Object/Relational Mapping) solution. Hibernate takes care of mapping between Java classes and tables in the database.
 
 Let us look into the application diagram to see which parts do we get with Spring Data JPA:
 
 {{% image alt="Spring Boot High-level arch " src="images/posts/spring-boot-begginer-guide/SpringApplication-springData.png" %}}
 
-Building the data access layer can be cumbersome, and Spring Data JPA data gives us everything we need to start creating our first entity.
+Building the data access layer can be cumbersome, and Spring Data JPA data gives us everything we need to start creating our first entity. 
 
 With Spring Data JPA, we can use the `@Entity` annotation to create database entities.
 
@@ -505,9 +509,12 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 }
 ```
 Extending `JpaRepository` turns our interface into the repository bean for the application context to control. 
-The primary job of the application context is to manage beans lifecycle.
 
-When a class is a Spring Bean we are sure that we will get the instance the class where ever it is asked using the `@Autowired` annotation.
+The primary job of the application context is to manage beans lifecycle. ApplicationContext is Springs implementation of the dependency injection controller that makes sure that every dependency is properly injected. 
+
+The dependency injection is the pattern where objects does not construct objects it need but let the controller do it. 
+
+When a class is a Spring Bean we are sure that we will get the instance the class where ever it is asked using the `@Autowired` annotation or one of the other ways of injection explained in [the next chapter.](#injecting-the-repository-class)
 
 Even though we can create our connections to the database, we will leverage Spring JPA repositories. Our repository can extend several different interfaces:
 - `CrudRepository`
@@ -636,9 +643,10 @@ If that check passes, we can check our requirement of a maximum of three books a
 Before allowing the user to borrow the book, we need to make sure that there is an instance of the book available.
 
 ### Injecting the Repository Class
-The dependency injection is the pattern where objects does not construct objects it need but let the controller do it. The ApplicationContext is Springs implementation of the controller that makes sure that every dependency is properly injected.
-
 We use the dependency injection to obtain required classes into the `GetBookService.class`. For now, we only need the `BookRepository.class`
+
+Dependency injection is explained in the [previous chapter.](#creating-the-book-repository)
+The IoC ( Inversion of Control ) container is the implementation of the dependency injection principle. The container injects dependencies into classes that ask for them.
 
 We can inject the `GetBookRepository.class` using three methods:
 - [field-based injection](#field-based-injection)
@@ -731,7 +739,7 @@ public class BooksRestController {
 }
 ```
 To make our class the controller bean we need to annotate it with `@RestController` or with `@Controller`.
-The difference between these two is that `@RestController` automatically wraps the object into `ResponseEntity<>`. 
+The difference between these two is that `@RestController` automatically wraps the return object from the methods annotated `@GetMapping`, `@PostMapping`, etc. into `ResponseEntity<>`. 
 
 We went with `@RestController` because it gives cleaner and more readable code.
 

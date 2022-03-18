@@ -701,7 +701,7 @@ The imported `spring-boot-starter-web` contains everything that we need for the 
 
 With Spring MVC, we can define a controller with the `@Controller` or `@RestController` annotation so it can handle incoming requests.
 
-### Creating an Endpoint With the @RestController
+### Creating an Endpoint With @RestController
 We are going to create our first endpoint. We want to fetch all books that the bookstore owns. This is the endpoint that will be called from the homepage.
 
 Let us look into the codebase:

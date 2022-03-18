@@ -308,7 +308,8 @@ public class Book {
     // Rest of the code omitted
 }
 ```
-We define the identity generation type in the strategy attribute of the `@GeneratedValue` annotation. While the identity strategy is highly efficient for the database, it doesn't perform well with Hibernate ORM. Hibernate expects that every managed entity has its id set, so it needs to go and call the database to insert the id.
+We define the identity generation type in the strategy attribute of the `@GeneratedValue`. While the identity strategy is highly efficient for the database, it doesn't perform well with the Hibernate ORM.
+Hibernate expects that every managed entity has its id set, so it needs to go and call the database to insert the id.
 
 The identity strategy is excellent for fast iteration and the early stages. When we move to the development environment, we should move to something more stable and with better performance.
 
@@ -329,7 +330,7 @@ public class Book {
     private long id;
 }
 ```
-To define the sequence generator, we annotate the field with the `@SequenceGenerator`. We declare the name for Hibernate, the sequence name, and the initial value.
+To define the sequence generator, we annotate the field with the `@SequenceGenerator` annotation. We declare the name for Hibernate, the sequence name, and the initial value.
 After defining the generator, we need to connect it to the `@GeneratedValue` annotation by setting its name in the `generator` attribute. 
 
 

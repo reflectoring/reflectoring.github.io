@@ -454,7 +454,7 @@ spring.datasource.driver-class-name=org.h2.Driver
 After defining the `jdbc` and the `h2` keywords, we note that we want to use a file-based H2 database with the `file` keyword. The last part of the URL is the absolute path to the folder where we want to save our database.
 
 {{% info title="The H2 database" %}}
-Please note that we should use the H2 only for the development phase. When going to the production environment, move to something more production-ready ( Oracle, PostgreSQL, etc.).
+Please note that we should use the H2 database only for the development phase. When going to the production environment, move to something more persistent and production-ready like Oracle, PostgreSQL, etc.
 {{% /info %}}
 
 #### Defining the Database Login Information

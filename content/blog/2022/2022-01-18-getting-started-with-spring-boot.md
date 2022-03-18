@@ -385,7 +385,7 @@ Each relationship has two sides:
 
 #### The Owner of the Relationship
 One side of that relationship needs to be the owning side and define the join table.
-We decided that it will be the User side:
+We decided that it will be the `User` side:
 ```java
 @Entity(name = "_user")
 public class User {

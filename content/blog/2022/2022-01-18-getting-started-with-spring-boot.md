@@ -13,7 +13,7 @@ In this article, we will build a production-grade application with Spring Boot. 
 - How do we use Spring Boot features?
 - Why do we use Spring Boot the way we use it?
 
-After understanging the use case and requirements, we will implement the application layer by layer.
+After understanding the use case and requirements, we will implement the application layer by layer.
 
 Let us dive into the requirements for the application so we can understand what are we building.
 
@@ -23,13 +23,13 @@ Let us dive into the requirements for the application so we can understand what 
 We need to build an application for the local bookstore that will allow them to keep track of borrowed books.
 
 The bookstore wants to have these functionalities in the application:
-- The application should be accessible through the web browser.
+- The application should be accessible through a web browser.
 - The user has to provide their name, last name, email, and password.
-- Each book has information about the author, date of publication, number of instances, and users that currently own the book.
+- Each book has information about an author, date of publication, number of instances, and users that currently own the book.
 - The user can see all available books.
 - The user can borrow a book.
 - Each user can borrow only three books at one point in time.
-- The admin user can add new book into the bookstore.
+- The admin user can add a new book into the bookstore.
 - The admin user can delete a book from the bookstore.
 - The admin user can update information about a book in the bookstore.
 
@@ -49,7 +49,7 @@ Controller classes accept the request from the browser and send it further down 
 Methods inside the service layers contain all business logic.
 The service methods contact the repository layer to access the database.
 
-We store the data about the books and the users in the database. For this article, we chose the in-memory H2 database.
+We store data about books and users in the database. For this article, we chose an in-memory H2 database.
 
 ## Setting up the Project
 Spring provides the Spring Initializr project which creates an application skeleton for us to jumpstart our development and let us dive into the code and write business logic.
@@ -58,7 +58,7 @@ We will look at two ways how to create a new Spring Boot project:
 - [Creating the project using Spring Initializr](#creating-the-project-with-spring-initializr)
 - [Creating the project using the IntelliJ IDE](#create-the-project-with-intellij)
 
-Both ways use the Spring Initializt project underneath and you can choose whichever way works best for you.
+Both ways use the Spring Initializr project underneath and you can choose whichever way works best for you.
 
 ### Creating the Project with Spring Initializr
 
@@ -81,7 +81,7 @@ We will select several dependencies:
 
 After selecting desired dependencies, we can generate our project by clicking the "Generate" button on the lower-left corner of the screen. 
 
-Clicking the button will download the zip file onto our machine, and we need to unpack the provided zip file and import it into the IDE.
+Clicking the button will download the zip file onto our machine, and we need to unpack the provided zip file and import it into IDE.
 
 #### The Spring Web Dependency
 The Spring Web dependency provides everything needed to build a Spring MVC application. 
@@ -93,11 +93,18 @@ View represents the pages that the browser renders.
 
 Let us look into the high-level architecture again and determine what does the Spring Web dependency provides:
 
-{{% image alt="Spring Boot High-level arch " src="images/posts/spring-boot-begginer-guide/SpringApplication-springWeb.png" %}}
+{{% image alt="Spring Boot High-level arch " src="images/posts/spring-boot-begginer-guide/SpringApplication-webLayer.png" %}}
 
-The Spring Web dependency provides the core Spring features (Inversion of Control, Spring MVC, server container for local running, etc.).
+The Spring Web dependency provides core Spring features (Inversion of Control, Spring MVC, server container for local running, etc.).
 
-With the Spring Web dependency, we can create `@RestController`, `@Service`, and `@Repository` classes from the image above. We can not access anything in the Spring Data JPA dependency.
+With the Spring Web dependency, we can create controller classes from the image above. 
+
+One controller does several things:
+- Accepts incoming HTTP requests 
+- Validating and deserializing input
+- Sending the data to the business logic layer
+- Deserializing output from the business logic layer
+- Handling exceptions and returning correct response to the user
 
 If we run the application, we will see that the process starts, and we can access the application on `http://localhost:8080`.
 We won't see much, but the application will be up and running.
@@ -136,7 +143,7 @@ The in-memory database is excellent for fast iteration when we don't care what w
 This dependency offers us the ability to define the H2 database shown in the image above. We can define it as an in-memory or file-based database. 
 
 In the development environment, when we want to keep the data for easier access and testing different use cases, we want to configure the file-based database. The data will remain permanent at the desired location.
-We can access the data each time we start the application. It won't get flushed when we shut down the process.
+We can access the data each time we start the application.
 
 {{% warning title="The H2 database" %}}
 We should use the H2 database only in the prototyping phase. For later development and production, we should use something more stable and production-ready (e.g. Oracle, PostgreSQL, MySQL, etc.)
@@ -159,9 +166,9 @@ After choosing the dependencies, we can click the finish button to create the pr
 ### Generated Files
 The initialization process creates several files and folders. One of those files is the `pom.xml`.
 
-The `pom.xml` defines all dependencies that we are using in our project. Each dependency has its `pom.xml`. The inner `pom.xml` declares what does it bring into the application. 
+The `pom.xml` defines all dependencies we are using in our project. Each dependency has its `pom.xml`. The inner `pom.xml` declares what does it bring into the application. 
 
-The dependency is the package that contains the peace of the code that our project needs to run successfully.
+The dependency is the package that contains the peace of code that our project needs to run successfully.
 
 Let us look into the `pom.xml` that Spring Boot generated for us:
 
@@ -216,15 +223,15 @@ Let us look into the `pom.xml` that Spring Boot generated for us:
     </build>
 </project>
 ```
-We can see that most of our dependencies have keyword `starter`. The `starter` keyword means that this dependency is built for Spring Boot and comes with premade configurations that we can use out of the box.
-Before the `starter` dependency, the user had to provide all dependencies that now come in one. Also, we had to create our configuration for most things. 
+We can see that most of our dependencies have the keyword `starter`. The `starter` keyword means that this dependency is built for Spring Boot and comes with premade configurations that we can use out of the box.
+Before the `starter` dependency, the user had to provide all dependencies manually. Also, we had to create our configuration for most things. 
 The new approach helps us to start the development process much faster.
 
-It is important to note that the configurations that come with the `starter` dependencies are not invasive. We can create custom configurations only where we need them.
-## Building The Database Entities
+It is important to note that the configurations that come with `starter` dependencies are not invasive. We can create custom configurations only where we need them.
+## Building Database Entities
 {{% image alt="Spring Boot High-level arch " src="images/posts/spring-boot-begginer-guide/SpringApplication-entity.png" %}}
 
-The database entity represents the direct link with the database tables. Entity classes represent columns, relationships between different tables, and constraints.
+The database entity represents the direct link with database tables. Entity classes represent columns, relationships between different tables, and constraints.
 
 While creating database entities, we have to think about requirements from the beginning of the article:
 - The user has to provide their name, last name, email, and password.
@@ -233,9 +240,9 @@ While creating database entities, we have to think about requirements from the b
 
 After sketching which data tables need to contain, we will create those objects in the Java code.
 
-### Sketching the Database Entities
+### Sketching Database Entities
 
-We will build the database diagram for our application:
+We will draw the database diagram for our application:
 
 {{% image alt="Sketching the database entities" src="images/posts/spring-boot-begginer-guide/spring-boot-database-diagram.png" %}}
 
@@ -244,7 +251,7 @@ We have three tables in the database:
 - `book`
 - `borrowed_books`
 
-The `user` table contains the id, name, last name, email, and password. The id is our primary key, and the database will autogenerate it. We will show how to do it in the [next chapter](#creating-the-entity).
+The `user` table contains the id, name, last name, email, and password. The id is our primary key, and the database will autogenerate it. We will see how to do it in the [next chapter](#creating-the-entity).
 
 The `book` table has the id, title, author, publication, and number of instances in the bookstore.
 
@@ -262,8 +269,8 @@ public class Book {
 
 }
 ```
-The `@Entity` annotation indicates that the annotated class is a JPA entity. The `name` attribute inside the annotation indicates the table name. 
-Defining the name attribute is not mandatory, but if we do not set the `name` attribute, Spring will assume that the table name is the same as the class name.
+The `@Entity` annotation indicates that the annotated class is a JPA entity. The `name` attribute inside the annotation defines the table name. 
+Setting the `name` is not mandatory, but if we do not set it, Spring will assume that the table name is the same as the class name.
 
 ### Defining a Primary Key
 ```java
@@ -277,7 +284,7 @@ public class Book {
 
 }
 ```
-When defining a class as an entity, we need to provide the id column. The id column will be the primary key of that table.
+When defining a class as an entity, we need to provide the id column. The id column is the primary key of that table.
 
 We need to decide how will the id column be generated. Using the `@GeneratedValue` annotation we can define several different strategies:
 - [IDENTITY](#identity-generation-strategy)
@@ -301,13 +308,13 @@ public class Book {
     // Rest of the code omitted
 }
 ```
-We define the identity generation type in the strategy attribute of the `@GeneratedValude`. While the identity strategy is highly efficient for the database, it doesn't perform well with the Hibernate ORM.
-The Hibernate expects that every managed entity has its id set, so it needs to go and call the database to insert the id.
+We define the identity generation type in the strategy attribute of the `@GeneratedValue` annotation. While the identity strategy is highly efficient for the database, it doesn't perform well with Hibernate ORM. Hibernate expects that every managed entity has its id set, so it needs to go and call the database to insert the id.
 
 The identity strategy is excellent for fast iteration and the early stages. When we move to the development environment, we should move to something more stable and with better performance.
 
 #### Sequence Generation Strategy
-The `GenerationType.SEQUENCE` strategy benefits from using the sequences inside the databases:
+The sequence strategy uses the sequences from the databases to determine which primary key to select next.
+Let us look at how to define the primary key with sequence generators:
 
 ```java
 @Entity(name = "book")
@@ -322,13 +329,12 @@ public class Book {
     private long id;
 }
 ```
-To define the sequence generator, we annotate the field with the `@SequenceGenerator`. We declare the name for the Hibernate, the sequence name, and the initial value.
+To define the sequence generator, we annotate the field with the `@SequenceGenerator`. We declare the name for Hibernate, the sequence name, and the initial value.
 After defining the generator, we need to connect it to the `@GeneratedValue` annotation by setting its name in the `generator` attribute. 
 
-The sequence strategy uses the sequences from the databases to determine which primary key to chose next.
 
 #### Table Generation Strategy
-Similar to the sequence generator, the table strategy uses the table to keep track of which primary key can be next:
+The table strategy uses separate table to keep track of which primary key can be next:
 ```java
 @Entity(name = "book")
 public class Book {
@@ -342,8 +348,6 @@ public class Book {
 ```
 We need to define the `@TableGenerator` annotation with the name and table attributes.
 We provide the generator name to the `generator` attribute inside the `@GeneratedValue` annotation.
-
-The table generator uses
 
 ### Defining the Column
 We define the table column with the `@Column` annotation and the name of the column inside the `name` attribute:
@@ -371,7 +375,7 @@ public class Book {
 
 }
 ```
-If we do not provide the `name` attribute, the Hibernate will assume that the column name is the same as the variable name inside the Java class.
+If we do not provide the `name` attribute, Hibernate will assume that the column name is the same as the variable name inside the Java class.
 
 It is always better to be safe and set the `name` attribute so that things do not start crashing when someone accidentally changes the variable name.
 
@@ -429,7 +433,7 @@ We set the configuration in Spring Boot through the `application.properties` fil
 Even though the Spring Boot framework comes with the configurations for most things, we need to tap in and change them.
 The excellent thing about provided configurations is that they are non-invasive, and we can change only those things that we need.
 
-In this example, we will show how to configure the database. The H2 database can be an in-memory or persistent file-based database, and we will show how to set them up.
+In this example, we will see how to configure the database. The H2 database can be an in-memory or persistent file-based database, and let us look at how to set them up.
 
 #### Defining the Database URL
 Let us look how we define the URL for the in-memory database.
@@ -481,7 +485,7 @@ spring.jpa.generate-ddl=true
 
 # Rest of the configuration is omitted
 ```
-The Hibernate DDL is used to generate the schema using the entity definitions. With the `ddl-auto`, we set that we want to destroy and recreate the schema on each run.
+Hibernate DDL is used to generate the schema using the entity definitions. With the `ddl-auto`, we set that we want to destroy and recreate the schema on each run.
 
 ## Building the Data Access Layer
 
@@ -491,7 +495,7 @@ After creating entities, we can develop the data access layer. The data access l
 
 The repository pattern is the design pattern that leverages the usage of interfaces for connection to the database. The repository interface hides all implementation details of connecting to the database, maintaining the connection, transactions, etc.
 
-We will show how to create the repository for the entity and explain how we use it.
+Let us look at how to create the repository for the entity and explain how we use it.
 
 ### Creating the Book Repository
 ```java
@@ -580,7 +584,7 @@ We split our business layer in two ways. The first one is that each entity has i
 The end product of splitting is that we have the `GetBookService.java` class. By reading the name of the class, we can conclude that the code for fetching the books will be inside this class.
 
 ### Defining the Service Class
-We will show what does it mean to implement business logic in this layer. 
+Let as look at what does it mean to implement business logic in this layer. 
 One of the requirements is that the user can borrow three books maximum at one point in time. This check should be done in the business layer.
 
 Let us look at how in the implementation class:
@@ -738,7 +742,7 @@ Since we didn't define additional path on the `@GetMapping` annotation we are us
 
 ### Creating an Endpoint With the `@Controller` Annotation
 
-Instead with the `@RestController` we can define the controller bean with the `@Controller` annotation:
+Instead with `@RestController` we can define the controller bean with the `@Controller` annotation:
 ```java
 @Controller
 @RequestMapping("/controllerBooks")
@@ -761,7 +765,7 @@ public class BooksController {
 ```
 When using the `@Controller` annotation we need to make sure that we wrap the result in the `ResponseEntity<>` class.
 
-This approach gives us more freedom when returning objects than the `@RestController`. 
+This approach gives us more freedom when returning objects than `@RestController`. 
 Let us imagine we are rewriting some legacy backend code to the Spring Boot project. 
 One of requirements was that the current frontend applications work as they should. 
 Previous code always returned the 200 code but the body would differ if some error occured. 
@@ -794,7 +798,7 @@ public class AdminBooksRestController {
 
 }
 ```
-The `@PostMapping` defines that this is the `POST` method and that we want to create a new resource through it.
+`@PostMapping` defines that this is the `POST` method and that we want to create a new resource through it.
 
 The `@RequestBody` annotation defines that we are expecting the data inside the HTTP requests body. That date should be serializable to the `BookRequest` instance.
 
@@ -830,12 +834,12 @@ public class AdminBooksRestController {
     // Rest of the code omitted
 }
 ```
-In the `@PutMapping` annotation we define the path that continues on the one defined with the `@RequestMapping` at the top of the class.
+In the `@PutMapping` annotation we define the path that continues on the one defined with `@RequestMapping` at the top of the class.
 The path looks like this:
 `http://localhost:8080/admin/books/{id}`.
 
 The `id` variable is called the path variable and we can pass it into the method using the `@PathVariable("id")` annotation on the method argument. 
-We need to be careful that the value inside the `@PathVariable` matches the value inside the `@PutMapping`.
+We need to be careful that the value inside `@PathVariable` matches the value inside `@PutMapping`.
 
 The body of the method is defined with the `@RequestBody` annotation and we pass it as the json object inside the HTTP request.
 
@@ -871,7 +875,7 @@ public class AdminBooksRestController {
 
 }
 ```
-With the `@DeleteMapping("/{id}")` we define which resource we want to delete. 
+With `@DeleteMapping("/{id}")` we define which resource we want to delete. 
 We can see that the path is the same as in the [PUT endpoint](#creating-a-put-endpoint) but the HTTP method is different. 
 The paths have to be unique for the same HTTP method. 
 

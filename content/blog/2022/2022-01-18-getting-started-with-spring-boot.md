@@ -346,7 +346,7 @@ We provide the generator name to the `generator` attribute inside the `@Generate
 The table generator uses
 
 ### Defining the Column
-We define the table column with the `@Column` annotation and the name of the column inside the `name` attribute:
+We define each table column with the `@Column` annotation and the name of the column inside the `name` attribute:
 ```java
 @Entity(name = "book")
 public class Book {

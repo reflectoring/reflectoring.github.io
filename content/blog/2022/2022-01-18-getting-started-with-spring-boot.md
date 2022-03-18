@@ -377,7 +377,7 @@ It is always better to be safe and set the `name` attribute so that things do no
 
 ### Defining the ManyToMany Relationship
 
-We define the many-to-many relationship with the `@ManyToMany` annotation
+We define the many-to-many relationship between `Book` and `User` with the `@ManyToMany` annotation
 
 Each relationship has two sides:
 - the owner - the table that has the foreign key

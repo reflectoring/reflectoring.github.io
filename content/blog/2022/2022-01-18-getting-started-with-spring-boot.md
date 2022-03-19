@@ -10,12 +10,12 @@ url: getting-started-with-spring-boot
 ---
 
 In this article, we will build a production-grade application with Spring Boot. The goal is to answer two questions:
-- How do we use Spring Boot features?
-- Why do we use Spring Boot the way we use it?
+- How?
+- Why?
 
 After understanding the use case and requirements, we will implement the application layer by layer.
 
-Let us dive into the requirements for the application so we can understand what are we building.
+Let us dive into the requirements for the application.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/beginners-guide" %}}
 
@@ -25,38 +25,40 @@ We need to build an application for the local bookstore that will allow them to 
 The bookstore wants to have these functionalities in the application:
 - The application should be accessible through a web browser.
 - The user has to provide their name, last name, email, and password.
-- Each book has information about an author, date of publication, number of instances, and users that currently own the book.
+- Each book has information about an author, date of publication, and number of instances in the bookstore.
 - The user can see all available books.
 - The user can borrow a book.
 - Each user can borrow only three books at one point in time.
+- The admin user can see all users that currently own a specific book.
 - The admin user can add a new book into the bookstore.
 - The admin user can delete a book from the bookstore.
 - The admin user can update information about a book in the bookstore.
 
 ## High-level Architecture
 
-We want to make sure that we understand desired requirements fully before we develop anything, so let's create a diagram of our application:
+The first step of development would be creating the application diagram to see how the application behaves:
 
 {{% image alt="Spring Boot High-level arch " src="images/posts/spring-boot-begginer-guide/SpringApplication.png" %}}
 
 Typing `www.bookstore.loc` in the browser will guide the user to the homepage.
 The homepage triggers the request to load all books available in the bookstore.
 
-We decided to build the backend application using Spring Boot. Inside the __Spring Boot Application__ box, we can see layers we will implement through this article.
+Inside the __Spring Boot Application__ box, we can see layers we will implement through this article.
 
 Controller classes accept the request from the browser and send it further down layers.
 
-Methods inside the service layers contain all business logic.
+Methods inside the service layers contain all business logic. We will implement most requirements from the chapter above in this layer.
+
 The service methods contact the repository layer to access the database.
 
-We store data about books and users in the database. For this article, we chose an in-memory H2 database.
+We store data about books and users in the in-memory H2 database.
 
 ## Setting up the Project
-Spring provides the Spring Initializr project which creates an application skeleton for us to jumpstart our development and let us dive into the code and write business logic.
+Spring provides the Spring Initializr project, which creates an application skeleton for us. The generated application eases the configuration phase and allows us to dive straight into the code.
 
-We will look at two ways how to create a new Spring Boot project:
+We will look at two ways of creating a new Spring Boot project:
 - [Creating the project using Spring Initializr](#creating-the-project-with-spring-initializr)
-- [Creating the project using the IntelliJ IDE](#create-the-project-with-intellij)
+- [Creating the project using the IntelliJ IDE](#creating-the-project-with-intellij)
 
 Both ways use the Spring Initializr project underneath and you can choose whichever way works best for you.
 
@@ -67,71 +69,65 @@ On the [Spring Initilizr page](https://start.spring.io/), we can create a new Sp
 {{% image alt="Spring Boot initialization online" src="images/posts/spring-boot-begginer-guide/spring-boot-initializr-online.png" %}}
 
 On this page, we provide the metadata about the application.
-
 After defining all necessary information, we can go and add our dependencies. 
 
 By clicking on the button on the top right corner, we can see the dependency selection screen:
 
 {{% image alt="Spring Boot initialization online" src="images/posts/spring-boot-begginer-guide/spring-boot-initializr-online-2.png" %}}
 
-We will select several dependencies:
+We will choose these three dependencies:
 - [Spring Web](#the-spring-web-dependency)
 - [Spring Data JPA](#the-spring-data-jpa-dependency)
 - [H2 Database](#the-h2-database-dependency) 
 
 After selecting desired dependencies, we can generate our project by clicking the "Generate" button on the lower-left corner of the screen. 
-
-Clicking the button will download the zip file onto our machine, and we need to unpack the provided zip file and import it into IDE.
+Clicking the button will download the zip file onto our machine. After unpacking the zip and importing the project into IDE, we can start developing.
 
 #### The Spring Web Dependency
-The Spring Web dependency provides everything needed to build a Spring MVC application. 
+The Spring Web dependency gives us everything we need to build a Spring MVC application. 
 
-Spring MVC is how Spring implements the Model-View-Controller design pattern. 
+Spring MVC is Springs implementation of the Model-View-Controller design pattern. 
 A controller is the front part of the application that takes incoming requests and relays them to the right destination. 
-Model is the object or collection that holds our data.
-View represents the pages that the browser renders.
+Model is the object or collection that holds our data, and view represents the pages that the browser renders.
 
-Let us look into the high-level architecture again and determine what does the Spring Web dependency provides:
+Let us look into the high-level architecture again and determine what does Spring Web provides:
 
 {{% image alt="Spring Boot High-level arch " src="images/posts/spring-boot-begginer-guide/SpringApplication-webLayer.png" %}}
 
 The Spring Web dependency provides core Spring features (Inversion of Control, Spring MVC, server container for local running, etc.).
-
 With the Spring Web dependency, we can create controller classes from the image above. 
 
-One controller does several things:
+The controller does several things:
 - Accepts incoming HTTP requests 
-- Validating and deserializing input
-- Sending the data to the business logic layer
-- Deserializing output from the business logic layer
-- Handling exceptions and returning correct response to the user
+- Validates and deserialize input
+- Sends the data to the business logic layer
+- Deserializes output from the business logic layer
+- Handles exceptions and returns a correct response to the user
 
-If we run the application, we will see that the process starts, and we can access the application on `http://localhost:8080`.
+If we run the application, we will see that we can access the application on `http://localhost:8080`.
 We won't see much, but the application will be up and running.
 
 #### The Spring Data JPA Dependency
-The Spring Data JPA dependency allows us to create the data access layer almost without effort. Spring Data JPA is not JPA implementation, it is just an abstraction to reduce codebase size.
+Building the data access layer can be cumbersome, and Spring Data JPA data gives us everything we need to start communicating with the database.
 
-JPA(Java Persistence API) is a set of concepts that helps us write code towards a database. JPA specifications require implementation like Hibernate ORM.
+JPA(Java Persistence API) is a set of concepts that helps us write code towards a database. Since JPA is just a set of specifications, it requires implementation like Hibernate ORM.
 
-Hibernate is an ORM (Object/Relational Mapping) solution. Hibernate takes care of mapping between Java classes and tables in the database.
+Hibernate is an ORM (Object/Relational Mapping) solution. Hibernate takes care of mapping between Java classes and tables in the database. It allows us to edit data in tables without writing any SQL code.
 
 Let us look into the application diagram to see which parts do we get with Spring Data JPA:
 
 {{% image alt="Spring Boot High-level arch " src="images/posts/spring-boot-begginer-guide/SpringApplication-springData.png" %}}
 
-Building the data access layer can be cumbersome, and Spring Data JPA data gives us everything we need to start creating our first entity. 
-
 With Spring Data JPA, we can use the `@Entity` annotation to create database entities.
 
-The database entity is the direct connection between the application and the table in the database. We can present constraints and relationships using annotations.
+The database entity is the direct connection between the application and the table in the database. Using annotations like `@ManyToMany`, `@Column`, etc., we can define relationships between tables and constraints on columns.
 
-Spring Data JPA provides the repository interfaces:
+Spring Data JPA also provides the repository interfaces:
 - `CrudRepository`
 - `PagingAndSortingRepository`
 - `JpaRepository`
 
-Repositories are interfaces that hide the logic required for accessing the database. Extending the interface gives us the ability to call methods towards the database.
+Repositories are interfaces that hide the logic required for accessing the database. By extending the interface, we can run queries on the database without worrying about connection details.
 
 We will talk more about this when we start building the repository layer.
 {{% info title="Spring Data JPA Alternatives" %}}
@@ -172,7 +168,7 @@ The initialization process creates several files and folders. One of those files
 
 The `pom.xml` defines all dependencies we are using in our project. Each dependency has its `pom.xml`. The inner `pom.xml` declares what does it bring into the application. 
 
-The dependency is the package that contains the peace of code that our project needs to run successfully.
+The dependency is the package that contains a peace of code that our project needs to run successfully.
 
 Let us look into the `pom.xml` that Spring Boot generated for us:
 
@@ -242,7 +238,7 @@ While creating database entities, we have to think about requirements from the b
 - Each book has information about the author, date of publication, number of instances, and users that currently own the book.
 - The user can see all books and borrow them.
 
-After sketching which data tables need to contain, we will create those objects in the Java code.
+After sketching which data tables we need, we will create those objects in the Java code.
 
 ### Sketching Database Entities
 
@@ -277,6 +273,8 @@ The `@Entity` annotation indicates that the annotated class is a JPA entity. The
 Setting the `name` is not mandatory, but if we do not set it, Spring will assume that the table name is the same as the class name.
 
 ### Defining a Primary Key
+When defining a class as an entity, we need to provide the id column. The id column is the primary key of that table.
+
 ```java
 @Entity(name = "book")
 public class Book {
@@ -288,13 +286,11 @@ public class Book {
 
 }
 ```
-When defining a class as an entity, we need to provide the id column. The id column is the primary key of that table.
-
 We need to decide how will the id column be generated. Using the `@GeneratedValue` annotation we can define several different strategies:
 - [IDENTITY](#identity-generation-strategy)
 - [SEQUENCE](#sequence-generation-strategy)
 - [TABLE](#table-generation-strategy)
-- [AUTO](#defining-the-primary-keys)
+- [AUTO](#defining-the-primary-key)
 
 We used the `AUTO` strategy, which leverages whatever the database prefers. Most databases prefer to use the `SEQUENCE` strategy for their primary key definition.
 
@@ -413,7 +409,6 @@ public class User {
 ```
 After setting the `@ManyToMany` annotation, we need to define the table that will connect the `user` and `book` tables.
 In the `@JoinTable` annotation, we declare the name, foreign key, and inverse foreign key.
-
 We define the foreign and the inverse foreign key with the `@JoinColumn` annotation.
 
 #### The Target Side
@@ -429,11 +424,11 @@ public class Book {
     // Rest of the code omitted
 }
 ```
-We defined the target side with the `@ManyToMany` annotation `mappedBy` attribute. We set the `mappedBy` attribute to the name on the owning side.
+We defined the target side with the `@ManyToMany` annotation with `mappedBy` attribute. We set the `mappedBy` attribute to the name on the owning side.
 
 ### Configuring the Database
-We said that the entity class represents the direct link to the table in the database.
-We set the configuration in Spring Boot through the `application.properties` file.
+We said that the entity class represents the direct link to the table in the database. We have to define a configuration for database location, login information, etc.
+The `application.properties` file is the place where we set that information.
 
 Even though the Spring Boot framework comes with the configurations for most things, we need to tap in and change them.
 The excellent thing about provided configurations is that they are non-invasive, and we can change only those things that we need.
@@ -467,7 +462,7 @@ Please note that we should use the H2 database only for the development phase. W
 {{% /info %}}
 
 #### Defining the Database Login Information
-After we defined the URL for the database we need the login informations for that database:
+After we defined the URL for the database, we need the login information for that database:
 
 ```text
 spring.datasource.username=username
@@ -477,8 +472,9 @@ spring.h2.console.enabled=true
 # Rest of the configuration is omitted
 ```
 We define the username and password for the database.
-
-Please define that the password and username should be externalized and encrypted in the production environment.
+{{% info title="Login Encription" %}}
+Please note that the password and username should be externalized and encrypted in the production environment.
+{{% /info %}}
 
 More about externalizing configurations can be found in the [Build Once, Run Anywhere: Externalize Your Configuration](https://reflectoring.io/externalize-configuration/) article.
 
@@ -512,11 +508,11 @@ Extending `JpaRepository` turns our interface into the repository bean for the a
 
 The primary job of the application context is to manage beans lifecycle. ApplicationContext is Springs implementation of the dependency injection controller that makes sure that every dependency is properly injected. 
 
-The dependency injection is the pattern where objects does not construct objects it need but let the controller do it. 
+The dependency injection is the pattern where objects do not construct dependencies they need but let the controller do it. 
 
-When a class is a Spring Bean we are sure that we will get the instance the class where ever it is asked using the `@Autowired` annotation or one of the other ways of injection explained in [the next chapter.](#injecting-the-repository-class)
+When a class is a Spring Bean class, we are sure that we will get the instance where ever it is asked for using the `@Autowired` annotation, or one of the other ways of injection explained in [the next chapter.](#injecting-the-repository-class)
 
-Even though we can create our connections to the database, we will leverage Spring JPA repositories. Our repository can extend several different interfaces:
+Our repository can extend several different interfaces:
 - `CrudRepository`
 - `PagingAndSortingRepository`
 - `JpaRepository`
@@ -589,10 +585,9 @@ The business layer is the core part of the application.
 The business layer is where we should write the business logic. It should contain the code for the requirement that one user can borrow a maximum of three books. Each service class contains the business logic for part of the application. 
 
 We split our business layer in two ways. The first one is that each entity has its service class (e.g., `BookService`, `UserService` ). After we split the layer by entities, we split them by use case.
-The end product of splitting is that we have the `GetBookService.java` class. By reading the name of the class, we can conclude that the code for fetching the books will be inside this class.
+The end product of splitting is that we have the `GetBookService.java` class. By reading the name of the class, we can conclude that the code for fetching books will be inside this class.
 
 ### Defining the Service Class
-Let as look at what does it mean to implement business logic in this layer. 
 One of the requirements is that the user can borrow three books maximum at one point in time. This check should be done in the business layer.
 
 Let us look at how in the implementation class:
@@ -635,7 +630,7 @@ public class UpdateBookService {
     // Rest of the code is omitted
 }
 ```
-The `@Service` annotation transforms our class into a Spring Bean controlled by the `ApplicationContext`.
+The `@Service` annotation transforms our class into Spring Bean controlled by `ApplicationContext`.
 The primary task of ApplicationContext is to control the lifecycles of each Spring Bean and provide them when they are needed.
 
 After fetching the user that wants to borrow the book, we check if the user borrowed the book already.
@@ -643,10 +638,8 @@ If that check passes, we can check our requirement of a maximum of three books a
 Before allowing the user to borrow the book, we need to make sure that there is an instance of the book available.
 
 ### Injecting the Repository Class
-We use the dependency injection to obtain required classes into the `GetBookService.class`. For now, we only need the `BookRepository.class`
-
+We use the dependency injection to obtain required classes into the `GetBookService.class`. For now, we only need the `BookRepository.class`.
 Dependency injection is explained in the [previous chapter.](#creating-the-book-repository)
-The IoC ( Inversion of Control ) container is the implementation of the dependency injection principle. The container injects dependencies into classes that ask for them.
 
 We can inject the `GetBookRepository.class` using three methods:
 - [field-based injection](#field-based-injection)
@@ -701,8 +694,6 @@ public class GetBookService {
 ```
 For the constructor-based annotation, we should set the `@Autowired` annotation on the constructor. 
 
-We are sure that the IoC container will provide all constructor arguments.
-
 More about dependency injection and why to use the constructor-based injection we can find in the [article.](https://reflectoring.io/constructor-injection/)
 
 ## Building Controllers
@@ -739,7 +730,7 @@ public class BooksRestController {
 }
 ```
 To make our class the controller bean we need to annotate it with `@RestController` or with `@Controller`.
-The difference between these two is that `@RestController` automatically wraps the return object from the methods annotated `@GetMapping`, `@PostMapping`, etc. into `ResponseEntity<>`. 
+The difference between these two is that `@RestController` automatically wraps the return object from the methods annotated with `@GetMapping`, `@PostMapping`, etc. into `ResponseEntity<>`. 
 
 We went with `@RestController` because it gives cleaner and more readable code.
 
@@ -783,7 +774,7 @@ In those kind of scenarios we can use the `@Controller` annotation and control w
 ### Creating a POST Endpoint
 The `POST` method is used when we want to create a new resource in the database. 
 
-With this `POST` method we will cover the requirement "The admin user can add new book into the bookstore". 
+With this `POST` method we will cover the requirement: "The admin user can add new book into the bookstore". 
 
 Now, let us take a look how we can create new data:
 ```java
@@ -914,7 +905,7 @@ The result the we got was:
 ## Conclusion
 After deciding which dependencies we needed and generating the project, we showed how to create a functional application.
 
-We showed how to build the basic Spring Boot application. We went through several concepts:
+We showed how to build the basic Spring Boot application, and went through several concepts:
 - [creating the entity](#building-the-database-entities)
 - [creating the repository](#building-the-data-access-layer)
 - [creating the service](#building-the-business-layer)

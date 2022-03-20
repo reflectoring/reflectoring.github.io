@@ -15,7 +15,7 @@ weight = 1
     [[main]]
     parent = "Books"
     name = "Stratospheric"
-    url = "https://stratospheric.dev"
+    url = "https://stratospheric.dev?utm_source=reflectoring&utm_content=sidebar"
     weight = 3
 
 [[main]]
@@ -86,27 +86,33 @@ hasChildren = true
 
       [[main]]
       parent = "Categories"
+      name = "NodeJS"
+      url = "/categories/node/"
+      weight = 3
+
+      [[main]]
+      parent = "Categories"
       name = "AWS"
       url = "/categories/aws/"
-      weight = 3
+      weight = 4
 
       [[main]]
       parent = "Categories"
       name = "Software Craft"
       url = "/categories/software-craft/"
-      weight = 4
+      weight = 5
 
       [[main]]
       parent = "Categories"
       name = "Simplify!"
       url = "/categories/simplify/"
-      weight = 5
+      weight = 6
 
       [[main]]
       parent = "Categories"
       name = "Meta"
       url = "/categories/meta/"
-      weight = 6
+      weight = 7
 
 # footer menu
 [[footer]]
@@ -168,7 +174,7 @@ weight = 2
     [[footer]]
     parent = "Products"
     name = "Stratospheric"
-    url = "https://stratospheric.dev"
+    url = "https://stratospheric.dev?utm_source=reflectoring&utm_content=sidebar"
     weight = 3
 
 [[footer]]

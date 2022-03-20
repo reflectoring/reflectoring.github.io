@@ -4,13 +4,19 @@ categories: ["Software Craft", "AWS"]
 date: 2021-05-07T05:00:00
 modified: 2021-05-07T05:00:00
 authors: [artur]
-excerpt: "We need to protect our data in the cloud from unauthorized access and tampering. In this article, we discuss how to encrypt data on storage in AWS Cloud"
+description: "We need to protect our data in the cloud from unauthorized access and tampering. In this article, we discuss how to encrypt data on storage in AWS Cloud"
 image: images/stock/0101-keylock-1200x628-branded.jpg
 url: securing-data-on-aws
-widgets: ["gyhdoca-ad", "stratospheric-ad"]
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 
 Amazon Web Services provide many possibilities to secure data in the cloud. In this article, we will have a closer look at how to encrypt different types of data at rest on AWS.
+
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}
 
 ## Why Encryption?
 
@@ -274,3 +280,9 @@ AWS provides many solutions for the protection of the data in the cloud using se
 AWS CloudHSM provides a solution for more stringent security requirements. It is possible to combine both these services for secure key management. 
 
 The storage services like EFS, FSx, EBS, and S3 can be easily and securely protected with help of AWS KMS and CloudHSM services.
+
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}

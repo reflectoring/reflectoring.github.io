@@ -4,10 +4,10 @@ categories: ["AWS", "Java"]
 date: 2021-05-03T06:00:00
 modified: 2021-05-03T06:00:00
 authors: [tom]
-excerpt: "With AWS CDK, we can codify our infrastructure in Java code. In this article, we're going to explore an opinionated way of designing a CDK project to make its components re-usable and easily extensible."
+description: "With AWS CDK, we can codify our infrastructure in Java code. In this article, we're going to explore an opinionated way of designing a CDK project to make its components re-usable and easily extensible."
 image: images/stock/0074-stack-1200x628-branded.jpg
 url: designing-a-aws-cdk-project
-widgets: ["gyhdoca-ad", "stratospheric-ad"]
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 
 In the article ["Getting Started with AWS CDK"](/getting-started-with-aws-cdk), we have already deployed a Spring Boot application to AWS with the CDK. We used a pre-configured "black box" construct named `SpringBootApplicationStack`, passed in a few parameters, and wrapped it in a CDK app to deploy it with the CDK CLI.
@@ -22,12 +22,11 @@ On the way, we'll discuss some best practices that helped us manage the complexi
 
 Let's dive in!
 
-## Check out the Book!
+{{% stratospheric %}}
+This article is a self-sufficient sample chapter from the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content).
 
-<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" alt="Stratospheric - From Zero to Production with Spring Boot and AWS" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
-This article is a self-sufficient sample chapter from the book ["Stratospheric - From Zero to Production with Spring Boot and AWS"](https://stratospheric.dev), which I'm co-authoring.
-
-If you're interested in learning about building applications with Spring Boot and AWS from top to bottom, make sure to check it out!
+If you want to learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check it out!
+{{% /stratospheric %}}
 
 ## The Big Picture
 
@@ -744,9 +743,8 @@ Then, have a look around in the AWS Console to see the resources those commands 
 
 Don't forget to delete the stacks afterwards, either by deleting them in the CloudFormation console, or by calling the `npm run *:destroy` scripts as otherwise you'll incur additional costs.
 
-## Check out the Book!
+{{% stratospheric %}}
+This article is a self-sufficient sample chapter from the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content).
 
-<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" alt="Stratospheric - From Zero to Production with Spring Boot and AWS" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
-This article is a self-sufficient sample chapter from the book ["Stratospheric - From Zero to Production with Spring Boot and AWS"](https://stratospheric.dev), which I'm co-authoring.
-
-If you're interested in learning about building applications with Spring Boot and AWS from top to bottom, make sure to check it out!
+If you want to learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check it out!
+{{% /stratospheric %}}

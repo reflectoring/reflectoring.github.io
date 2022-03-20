@@ -3,8 +3,9 @@ title: "Author Payment"
 description: "Payment rules for reflectoring authors."
 layout: "static"
 draft: false
-image: images/stock/"images/stock/0016-pen-1200x628-branded.jpg"-1200x628-branded.jpg
+image: images/stock/0016-pen-1200x628-branded.jpg
 toc: true
+popup: false
 ---
 
 ## Successful Review

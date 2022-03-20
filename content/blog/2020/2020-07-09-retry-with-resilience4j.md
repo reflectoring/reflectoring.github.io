@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2020-07-16T05:00:00
 modified: 2020-07-16T05:00:00
 authors: [saajan]
-excerpt: "Retry is a very useful pattern to handle remote operation failures. This article is a deep dive into the Resilience4j retry module and shows why, when and how to use it to build resilient applications."
+description: "Retry is a very useful pattern to handle remote operation failures. This article is a deep dive into the Resilience4j retry module and shows why, when and how to use it to build resilient applications."
 image: images/stock/0073-broken-1200x628-branded.jpg
 url: retry-with-resilience4j
 ---

@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2020-09-30T06:00:00
 modified: 2020-09-30T06:00:00
 authors: [seema]
-excerpt: "An overview of the Java APIs that allow us to work with files in Java 8 streams."
+description: "An overview of the Java APIs that allow us to work with files in Java 8 streams."
 image: images/stock/0083-files-1200x628-branded.jpg
 url: processing-files-using-java-8-streams
 ---

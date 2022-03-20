@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2020-02-03T05:00:00
 modified: 2020-02-03T05:00:00
 authors: [tom]
-excerpt: "Reactive Programming has a lot of pitfalls for rookies to fall into, especially when it's multi-threaded. This article documents some of those pitfalls and their solutions so you don't have to fall."
+description: "Reactive Programming has a lot of pitfalls for rookies to fall into, especially when it's multi-threaded. This article documents some of those pitfalls and their solutions so you don't have to fall."
 image: images/stock/0058-motorway-junction-1200x628-branded.jpg
 url: rxjava-reactive-batch-processing
 ---

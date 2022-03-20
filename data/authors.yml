@@ -252,3 +252,53 @@ heidi:
   name: "Heidi Waterhouse"
   avatar: "/assets/img/authors/heidi.png"
   bio: "Heidi is a Principal Developer Advocate. She is working in the intersection of risk, usability, and happy deployments. Her passions include documentation, clear concepts, and skirts with pockets."
+
+syedaf:
+  name: "Arshad Syed"
+  email: "syedaf786@gmail.com"
+  avatar: "/assets/img/authors/syedaf.png"
+  github: "syedaf"
+  linkedin: "https://www.linkedin.com/in/arshad-syed-798623184/"
+  bio: "As a software developer I am always interested in learning new technologies. I am currently working on improving my full stack skills, and also on teaching technology."
+
+saikat:
+  name: "Saikat Sengupta"
+  avatar: "/assets/img/authors/saikat.jpeg"
+  github: "s4ik4t"
+  stackoverflow: "1594823/saikat"
+  bio: "Software engineer, coffee lover, continuous learner, opensource contributor"
+  twitter: "s4ik4t"
+  linkedin: "saikatsengupta"
+
+cercenazi:
+  name: "Abdulcelil Cercenazi"
+  avatar: "/assets/img/authors/celil.jpeg"
+  github: "Jarjanazy"
+  stackoverflow: "12036956/jalil-jarjanazy"
+  bio: "Software developer and craftsman. Loves working with Java | Spring | Docker. Always looking for new adventures"
+  twitter: "cercenazi"
+  linkedin": "abedeljalil-jarjanazy"
+
+nukajbl:
+  name: "Bledi Nukaj"
+  avatar: "/assets/img/authors/bledi.jpeg"
+  github: "bledi1985"
+  bio: "Bledi is a senior software Engineer and Architect, specialized in Java and Spring to deliver high-quality Enterprise applications, on-premise or cloud.
+   Experienced and keenly interested in the field of Cloud Architecture."
+  linkedin: "https://www.linkedin.com/in/bledinukaj/"
+
+robert:
+  name: "Robert Dey"
+  email: "robdey88@gmail.com"
+  avatar: "/assets/img/authors/robert.jpg"
+  github: "RobYed"
+  linkedin: "robdey"
+  bio: "I love building successful products as a full-stack developer and software architect. Mostly I work with JavaScript and everything related to it."
+
+arpendu:
+  name: "Arpendu Kumar Garai"
+  email: "arpendug3@gmail.com"
+  avatar: "/assets/img/authors/arpendu.jpg"
+  github: "arpendu11"
+  linkedin: "arpendu-kumar-garai-61609a9b"
+  bio: "I am a full-Stack developer with deep knowledge in Java, Microservices, Cloud Computing, Big Data, MERN, Javascript, Golang, and its relative frameworks. Besides coding and programming, I am a big foodie, love cooking, and love to travel."

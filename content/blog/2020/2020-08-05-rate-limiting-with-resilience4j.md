@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2020-08-05T05:00:00
 modified: 2020-08-05T05:00:00
 authors: [saajan]
-excerpt: "A deep dive into the Resilience4j ratelimiter module. This article shows why, when and how to use it to build resilient applications."
+description: "A deep dive into the Resilience4j ratelimiter module. This article shows why, when and how to use it to build resilient applications."
 image: images/stock/0108-speed-limit-1200x628-branded.jpg
 url: rate-limiting-with-resilience4j
 ---

@@ -4,7 +4,7 @@ categories: ["Software Craft"]
 date: 2021-11-07T00:00:00
 modified: 2021-11-07T00:00:00
 authors: [heidi]
-excerpt: "Copy Japanese manufacturing principles to implement continuous improvement in your software development processes." 
+description: "Copy Japanese manufacturing principles to implement continuous improvement in your software development processes." 
 image: images/stock/0100-motor-1200x628-branded.jpg
 url: one-best-way
 ---  

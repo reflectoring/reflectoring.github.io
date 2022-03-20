@@ -3,7 +3,7 @@ authors: [tom]
 title: "Publishing Open Source Releases to JCenter and Maven Central"
 categories: ["Software Craft"]
 date: 2018-01-24
-excerpt: "For your open source projects to be accessible, it's worthwile to publish them   
+description: "For your open source projects to be accessible, it's worthwile to publish them   
           to JCenter and / or Maven Central. This article explains how to
           publish a release from your Bintray repository to JCenter and Maven Central."
 image:  images/stock/0038-package-1200x628-branded.jpg

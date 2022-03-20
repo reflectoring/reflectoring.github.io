@@ -4,7 +4,7 @@ categories: ["Software Craft"]
 date: 2020-07-06T05:00:00
 modified: 2020-07-06T05:00:00
 authors: [saajan]
-excerpt: "The Liskov Substitution Principle is a very useful idea both when developing new applications and modifying existing ones. This article explains what it is, why it's important and how to use it."
+description: "The Liskov Substitution Principle is a very useful idea both when developing new applications and modifying existing ones. This article explains what it is, why it's important and how to use it."
 image: images/stock/0066-blueprint-1200x628-branded.jpg
 url: lsp-explained
 ---

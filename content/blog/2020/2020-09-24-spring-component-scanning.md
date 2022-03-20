@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2020-09-24T05:00:00
 modified: 2020-09-24T05:00:00
 authors: [nandan]
-excerpt: 'What is Spring Component Scanning and how can we use it to build our Spring Boot application context?'
+description: 'What is Spring Component Scanning and how can we use it to build our Spring Boot application context?'
 image: images/stock/0031-matrix-1200x628-branded.jpg
 url: spring-component-scanning
 ---

@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2020-06-06 06:00 +1100
 modified: 
 authors: [petros]
-excerpt: "This article gives a quick introduction in how to implement a 'code first' approach for creating API docs with Springdoc."
+description: "This article gives a quick introduction in how to implement a 'code first' approach for creating API docs with Springdoc."
 image: images/stock/0016-pen-1200x628-branded.jpg
 url: spring-boot-springdoc
 ---

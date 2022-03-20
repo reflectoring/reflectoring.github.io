@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2020-02-13T05:00:00
 modified: 2020-02-13T05:00:00
 authors: [nandan]
-excerpt: 'Spring Boot allows us to throw and listen to specific application events that we can process as we wish. Events are meant for exchanging information between loosely coupled components.'
+description: 'Spring Boot allows us to throw and listen to specific application events that we can process as we wish. Events are meant for exchanging information between loosely coupled components.'
 image: images/stock/0058-motorway-junction-1200x628-branded.jpg
 url: spring-boot-application-events-explained
 ---

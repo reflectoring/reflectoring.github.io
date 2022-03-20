@@ -3,7 +3,7 @@ title: "Writing Meaningful Commit Messages"
 categories: ["Software Craft"]
 date: 2021-02-22T05:00:00
 modified: 2021-02-22T05:00:00
-excerpt: "This article discusses different methods of formatting and writing meaningful commit messages."
+description: "This article discusses different methods of formatting and writing meaningful commit messages."
 authors: [hoorvash]
 image: images/stock/0016-pen-1200x628-branded.jpg
 url: meaningful-commit-messages

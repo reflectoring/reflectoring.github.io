@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2021-10-24T05:00:00
 modified: 2021-10-24T05:00:00
 authors: [saajan]
-excerpt: "Continuing the Resilience4j journey, this article on Spring Boot TimeLimiter shows when and how to use it to build resilient applications."
+description: "Continuing the Resilience4j journey, this article on Spring Boot TimeLimiter shows when and how to use it to build resilient applications."
 image: images/stock/0079-stopwatch-1200x628-branded.jpg
 url: time-limiting-with-springboot-resilience4j
 ---

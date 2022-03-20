@@ -3,7 +3,7 @@ authors: [tom]
 title: Getting the current Subversion Revision Number in Gradle
 categories: ["Java"]
 date: 2016-11-26
-excerpt: "A tutorial showing how to use the subversion Revision number in a Gradle build."
+description: "A tutorial showing how to use the subversion Revision number in a Gradle build."
 image: images/stock/0050-git-1200x628-branded.jpg
 url: getting-svn-revision-in-gradle
 ---

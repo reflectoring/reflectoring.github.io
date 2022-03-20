@@ -3,7 +3,7 @@ authors: [tom]
 title: Bean Validation Anti-Patterns
 categories: ["Spring Boot", "Java"]
 date: 2019-09-07
-excerpt: "Some thoughts about validation in general, Bean Validation in particular, and why I consider some applications of Bean Validation an anti-pattern."
+description: "Some thoughts about validation in general, Bean Validation in particular, and why I consider some applications of Bean Validation an anti-pattern."
 image:  images/stock/0051-stop-1200x628-branded.jpg
 url: bean-validation-anti-patterns
 ---

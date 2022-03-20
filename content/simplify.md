@@ -1,9 +1,10 @@
 ---
-title: "Grow as a Software Engineer in just 5 Minutes a Week"
-description: "this is meta-description"
+title: "Simplify!"
+description: "The newsletter that helps you grow as a software engineer in just 5 minutes a week."
 layout: "newsletter"
 draft: false
 toc: false
+popup: false
 ---
 
 ## What You'll Get

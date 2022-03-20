@@ -3,7 +3,7 @@ authors: [tom]
 title: "Structuring and Testing Modules and Layers with Spring Boot"
 categories: ["Spring Boot"]
 date: 2018-05-27
-excerpt: "Slice your Spring Boot applications into vertical modules and make them
+description: "Slice your Spring Boot applications into vertical modules and make them
           testable in isolation using Spring Boot's testing features."
 image:  images/stock/0034-layers-1200x628-branded.jpg
 url: testing-verticals-and-layers-spring-boot

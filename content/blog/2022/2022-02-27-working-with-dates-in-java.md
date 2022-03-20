@@ -453,8 +453,95 @@ Using this pattern, we create a `LocalDateTime` instance, which represents the s
 
 ### `LocalDateTime` Arithmetic
 
+The `LocalDateTime` class provides several methods for manipulating dates. One of these is `withYear()`, which changes
+the year part of the date. Another method is `withDayOfMonth()`, which changes the month part of the date.
+Let's examine the following example to better understand.
+
+ ```java
+public class DateAndTimeDemo {
+    public static void main(String[] args) {
+        LocalDateTime date = LocalDateTime.of(2022, 1, 13, 15, 47, 54); // 2022-01-13 15:47:54 
+        LocalDateTime date2 = date.withYear(2021); // 2021-01-13 15:47:54
+        LocalDateTime date3 = date.withDayOfMonth(24); // 2022-01-24 15:47:54
+        LocalDateTime date4 = date.withMonth(5); // 2022-05-13 15:47:54 
+        LocalDateTime date5 = date.withHour(12); // 2022-01-13 12:47:54 
+        LocalDateTime date6 = date.withMinute(32); // 2022-01-13 12:47:32
+    }
+}
+```
+
+We began by creating an instance of the `LocalDateTime` object and on each successive row, we changed some property of
+it. First, we changed the year by calling the method `withYear()`, and then we changed the month by using the method
+`withDayOfMonth()`. We had changed the time part of our object by calling the three methods that we learnt when we saw
+how to format a LocalTime object.
 
 ### Formatting a `LocalDateTime` Object
 
-## Working With `Instant` and `Duration`
-## Working With Different Time Zones
+String representations of `LocalDateTime` objects can be created with the method `format()`, which takes
+a `DateTimeFormatter` argument. As mentioned earlier, we can find predefined instances of the `DateTimeFormatter` class
+such as `ISO_LOCAL_DATE_TIME` or `ISO_ORDINAL_DATE` instances to format a date. We're going to use these instances to
+format the date in the list below.
+
+ ```java
+public class DateAndTimeDemo {
+    public static void main(String[] args) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME); // 2022-03-20T15:56:30.566388
+        localDateTime.format(DateTimeFormatter.ISO_ORDINAL_DATE); // 2022-03-20T15:56:30.566388
+    }
+}
+```
+
+The class `DateTimeFormatter` provides a static method named `ofPattern()` that we can use to create our own formatter.
+
+ ```java
+public class DateAndTimeDemo {
+    public static void main(String[] args) {
+        LocalDateTime dateTime = LocalDateTime.of(2022, 2, 13, 16, 23, 45);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy H%mm%ss"); // 13/02/2022 16%23%45
+    }
+}
+```
+
+In this case, we used a custom format of pattern `dd/MM/yyyy H%mm%ss`. When we print the date on the console, we get the
+expected result of 1`3/02/2022 16%23%45`.
+
+
+## Working With `Duration` and `Period`
+
+Through the use of the 'Duration' class, we can measure the difference in seconds and eventually nanoseconds between two
+temporal objects. With the help of the static method called `between()` we can calculate the difference. This method is
+able to accept instances of the `Instant` class, the `LocalTime` class, and the `LocalDateTime` class.
+Let's see an example to understand better.
+
+ ```java
+public class DateAndTimeDemo {
+    public static void main(String[] args) {
+        LocalTime time1 = LocalTime.of(15, 47, 54);
+        LocalTime time2 = LocalTime.of(15, 47, 56);
+        Duration duration  = Duration.between(time1, time2);
+        System.out.println(duration.getSeconds()); // 2
+    }
+}
+```
+This code creates two instances of the `LocalTime` class.
+We then create a Duration instance and measure the difference between `time1` and `time2`. In this case, the value is 2.
+Due to the fact that the Duration class expresses the difference in seconds between two temporal objects, but the
+LocalDate class does not contain time information, we cannot use the Duration class with instances of `LocalDate`.
+
+When we need to express an amount of time as years, months, and days, then `Period` is the class we need.
+Let's see how to create such instances.
+
+ ```java
+public class DateAndTimeDemo {
+    public static void main(String[] args) {
+        Period periodOfOneWeek = Period.ofWeeks(1);
+        Period periodOfTwoDays = Period.ofDays(2);
+        Period periodOfOneMonth = Period.ofMonths(1),
+    }
+}
+```
+
+Through the static methods `ofWeek()`,` ofDay()`, and `ofMonth()` that are provided by the `Period` class, we created
+three different objects. The first object represents the period of one week, the second the period of two days and the
+last one month.

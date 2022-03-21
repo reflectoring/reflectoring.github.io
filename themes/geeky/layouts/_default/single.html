@@ -80,6 +80,11 @@
         {{ end }}
 
         <div class="content" data-blogtrack-text>{{.Content}}</div>
+
+        {{ $author := (index .Site.Data.authors .Params.authors) }}
+
+        {{ partial "author-blurb.html" $author }}
+
         <!-- disqus comments -->
         {{ if .Site.DisqusShortname }}
         <div class="border rounded p-4">
@@ -87,6 +92,7 @@
         </div>
         {{ end }}
       </div>
+
       <!-- sidebar widgets -->
       <aside class="col-lg-4">
         {{ partial "widgets/widget-wrapper" ( dict "Widgets" . "Params" .Params)}}

@@ -2,13 +2,13 @@
 authors: [pratikdas]
 title: "Complete Guide to Middleware in Express"
 categories: ["NodeJS"]
-date: 2022-03-06 00:00:00 +1100
-excerpt: "Middleware functions are an integral part of an application built with Express framework. Express middleware refers to a set of functions that execute during the processing of HTTP requests received by an Express application. In this article, we will understand and use different types of middleware functions in Express and also create our own functions using both JavaScript and TypeScript."
+date: 2022-03-15 00:00:00 +1100
+excerpt: "Middleware functions are an integral part of an application built with Express framework (henceforth referred as Express application). Express middleware refers to a set of functions that execute during the processing of HTTP requests received by an Express application. In this article, we will understand and use different types of middleware functions in Express and also create our own functions using both JavaScript and TypeScript."
 image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: complete-guide-to-middleware-in-express
 ---
 
-Middleware functions are an integral part of an application built with Express framework (henceforth referred to as Express application). Express middleware refers to a set of functions that execute during the processing of HTTP requests received by an Express application. 
+Middleware functions are an integral part of an application built with the Express framework (henceforth referred to as Express application). Express middleware refers to the set of functions that execute in sequence from the time a HTTP request is received by an Express application till a HTTP response is sent back to the caller. 
 
 They access the HTTP request and response objects and can either terminate the HTTP request or forward it for further processing to another middleware function. 
 
@@ -49,12 +49,9 @@ app.use(middlewareFunction)
 
 An exception to this rule is error handling middleware which takes an error object as the fourth parameter. We call `app.use()` to add a middleware function to our Express application.
 
-Under the hood, when we call `app.use()`, Express adds our middleware function to its internal middleware stack. Express executes middleware in the order they are added, so if we make the calls in this order:
+Under the hood, when we call `app.use()`, the Express framework adds our middleware function to its internal middleware stack. Express executes middleware in the order they are added, so if we make the calls in this order:
 
 ```js
-const express = require('express');
-const app = express();
-
 app.use(function1)
 app.use(function2)
 ```
@@ -71,7 +68,9 @@ Middleware functions in Express are of the following types:
 We will see examples of each of these types in the subsequent sections.
 
 ## Basic Setup for Running the Examples
-We need to first set up a Node.js project for running our examples. Let us create a folder and initialize a Node.js project under it by running the `npm init` command:
+We need to first set up a Node.js project for running our examples of using middleware functions in Express. 
+
+Let us create a folder and initialize a Node.js project under it by running the `npm init` command:
 
 ```shell
 mkdir storefront
@@ -113,7 +112,7 @@ app.listen(3000,
 ```
 In this code snippet, we are importing the `express` module and then calling the `listen()` function on the `app` handle to start our server. 
 
-We have also defined two routes which will accept the requests at URLs: `/` and `/products`. For an elaborate explanation of routes and handler function, please refer to our earlier article for an introduction to Express.
+We have also defined two routes which will accept the requests at URLs: `/` and `/products`. For an elaborate explanation of routes and handler function, please refer to our earlier [article](https://reflectoring.io/getting-started-with-express/) for an introduction to Express.
 
 We can run our application with the `node` command:
 
@@ -124,7 +123,7 @@ This will start a server that will listen for requests in port `3000`.  We will 
 
 ## Using Express' Built-in Middleware
 
-Built-in Middleware functions are bundled with Express so we do not need to install any additional modules for using them.
+Built-in middleware functions are bundled with Express so we do not need to install any additional modules for using them.
 
 Express provides the following Built-in middleware functions:
 
@@ -153,9 +152,7 @@ app.get('product', (request, response)=>{
   response.sendFile("productsample.html")
 })
 ```
-Here we have defined two static paths named `images` and `htmls` to represent two folders of the same name in our root directory. We have also defined multiple static assets directories by calling the express.static middleware function multiple times.
-
-Express looks up the files in the order in which you set the static directories with the express.static middleware function.
+Here we have defined two static paths named `images` and `htmls` to represent two folders of the same name in our root directory. We have also defined multiple static assets directories by calling the `express.static()` middleware function multiple times.
 
 Our root directory structure looks like this:
 
@@ -170,6 +167,10 @@ Our root directory structure looks like this:
 
 ```
 
+Express looks for the files in the order in which we set the static directories with the `express.static` middleware function. 
+
+In our example, we have defined `images` directory before `htmls`. So Express will look for the file : `productsample.html` in the `images` directory first. If the file is not found in the `images` directory, Express looks for the file in the `htmls` directory.
+
 Next we have defined a route with url `product` to serve the static HTML file `productsample.html`. The HTML file contains an image referred only with the image name `sample.jpg`:
 
 ```html
@@ -182,11 +183,10 @@ Next we have defined a route with url `product` to serve the static HTML file `p
 ```
 Express looks up the files relative to the static directory, so the name of the static directory is not part of the URL.
 
-
 ### Using `express.json` Built-in Middleware for Parsing JSON Payloads
 We use the `express.json` built-in middleware function to JSON content received from the incoming requests. 
 
-Let us suppose the route with URL `/products` in our Express application accepts `product` data from as `request` object in JSON format. So we will use Express' built-in middleware `express.json` for parsing the incoming JSON payload and attach it to our `router` object as shown in this code snippet:
+Let us suppose the route with URL `/products` in our Express application accepts `product` data from the `request` object in JSON format. So we will use Express' built-in middleware `express.json` for parsing the incoming JSON payload and attach it to our `router` object as shown in this code snippet:
 
 
 ```js
@@ -207,7 +207,7 @@ app.post('/products', (request, response) => {
 ```
 Here we are attaching the `express.json` middleware by calling the `use()` function on the `app` object. We have also configured a maximum size of `100` bytes for the JSON request.
 
-We have used a slightly different signature of the `use()` function than the signature used before. The `use()` function invoked on the `app` object here takes the URL of the route to which the middleware function will get attached, as the first parameter. 
+We have used a slightly different signature of the `use()` function than the signature of the function used before. The `use()` function invoked on the `app` object here takes the URL of the route: `/products` to which the middleware function will get attached, as the first parameter. Due to this, this middleware function will be called only for this route.
 
 Now we can extract the fields from the JSON payload sent in the request body as shown in this route definition:
 
@@ -246,20 +246,17 @@ app.post('/products', (request, response) => {
 })
 
 ```
-Here we are extracting the contents of the JSON request by calling `req.body.FIELD_NAME` before using those fields for adding a new `product`.
+Here we are extracting the contents of the JSON request by calling `request.body.FIELD_NAME` before using those fields for adding a new `product`.
 
 Similarly we can use express' built-in middleware `express.urlencoded()` to process URL encoded fields submitted through a HTTP form object:
 
 ```js
-const express = require('express');
-const app = express();
-
 app.use(express.urlencoded({ extended: false }));
 ``` 
-After attaching the middleware: `express.urlencoded()` to the route, we can extract the field values of a submitted form in a handler function using `request.body.<fieldname>` as shown in the code snippet for earlier for extracting JSON fields.
+Then we can use the same code for extracting the fields as we had used before for extracting the fields from a JSON payload.
 
 ## Adding Middleware Function to a Route
-Let us now see how to create a middleware function of our own in an Express application. 
+Let us now see how to create a middleware function of our own. 
 
 As an example, let us check for the presence of JSON content in the HTTP POST request body before allowing any further processing and send back an error response if the request body does not contain JSON content. 
 
@@ -338,7 +335,7 @@ The second middleware function extracts the `category` field from the JSON reque
 
 Otherwise, it calls the `next()` function to process the request further which adds the product to a database for example, and sends back a response in JSON format to the caller.
 
-We could have also attached our middleware function by using the use() function of the app as shown below:
+We could have also attached our middleware function by using the `use()` function of the `app` object as shown below:
 
 ```js
 const express = require('express')
@@ -410,23 +407,23 @@ Since we have attached this function to the `app` object, it will get called for
 
 Express comes with a default error handler that takes care of any errors that might be encountered in the application. The default error handler is added as a middleware function at the end of the middleware function stack.
 
-We can change this default error handling behavior by adding a custom error handler which is a middleware function that takes an error parameter in addition to the parameters: `request`, `response`, and the `next()` function.
+We can change this default error handling behavior by adding a custom error handler which is a middleware function that takes an error parameter in addition to the parameters: `request`, `response`, and the `next()` function. The error handling middleware functions are attached after the route definitions.
 
 The basic signature of an error-handling middleware function in Express looks like this:
 
 ```js
-function customeErrorHandler(err, request, response, next) {
+function customErrorHandler(error, request, response, next) {
 
   // Error handling middleware functionality
 
 }
 ```
-When we want to call an error-handling middleware, we pass on the error object by calling the `next()` function like this:
+When we want to call an error-handling middleware, we pass on the error object by calling the `next()` function with the `error` argument like this:
 
 ```js
-const errorLogger = (err, request, response, next) => {
+const errorLogger = (error, request, response, next) => {
     console.log( `error ${err.message}`) 
-    next(err) // calling next middleware
+    next(error) // calling next middleware
 }
 ```
 
@@ -481,7 +478,7 @@ app.listen(PORT, () => {
 ```
 These middleware error handling functions perform different tasks: one of them logs the error message, the second sends the error response to the client, and the third one responds with a message for `invalid path` when a non-existing route is requested. 
 
-We have next attached these three middleware functions for handling errors to the `app` object by calling the `use()` method.
+We have next attached these three middleware functions for handling errors to the `app` object by calling the `use()` method after the route definitions.
 
 To test how our application handles errors with the help of these error handling functions, let us invoke the route with URL: `localhost:3000/productswitherror`. 
 
@@ -622,19 +619,19 @@ app.get('product', (request: Request, response: Response)=>{
     response.sendFile("productsample.html")
 })
   
-  // handle get request for path /
-  app.get('/', (request: Request, response: Response) => {
-      response.send('response for GET request');
-  })
+// handle get request for path /
+app.get('/', (request: Request, response: Response) => {
+    response.send('response for GET request');
+})
   
   
-  const requireJsonContent = (request: Request, response: Response, next: NextFunction) => {
-    if (request.headers['content-type'] !== 'application/json') {
-        response.status(400).send('Server requires application/json')
-    } else {
-      next()
-    }
+const requireJsonContent = (request: Request, response: Response, next: NextFunction) => {
+  if (request.headers['content-type'] !== 'application/json') {
+      response.status(400).send('Server requires application/json')
+  } else {
+    next()
   }
+}
 
 
 const addProducts = (request: Request, response: Response, next: NextFunction) => {
@@ -646,6 +643,7 @@ const addProducts = (request: Request, response: Response, next: NextFunction) =
 
     response.status(200).json(products);
 }
+
 app.post('/products', addProducts)
 
 app.get('/productswitherror', (request: Request, response: Response) => {
@@ -677,49 +675,6 @@ npx ts-node app.ts
 ```
 Running this command will start the HTTP server. We have used `npx` here which is a command-line tool that can execute a package from the `npm` registry without installing that package.
 
-### Adding a Route with a Handler Function in TypeScript
-
-Let us now modify the TypeScript code written in the earlier section to add a route for defining a REST API as shown below:
-```ts
-import express, { Request, Response, NextFunction } from 'express';
-
-const app = express();
-const port = 3000;
-
-// Define a type for Product
-interface Product {
-    name: string;
-    price: number;
-    brand: string;
-};
-
-// Define a handler function
-const getProducts = ( 
-    request: Request, 
-    response: Response, 
-    next: NextFunction) => {
-
-    // Defining a hardcoded array of product entities
-    let products: Product[] = [
-      {"name":"television", "price":112.34, "brand":"samsung"},
-      {"name":"washing machine", "price": 345.34, "brand": "LG"},
-      {"name":"Macbook", "price": 3454.34, "brand": "Apple"}
-    ]
-
-    // sending a JSON response
-    response.status(200).json(products);
-}
-
-// Define the route with route path '/products'
-app.get('/products', getProducts);
-
-// Start the server
-app.listen(port, () => {
-    console.log(`Server listening at port ${port}.`);
-});
-
-```
-We can now access the URL: `http://localhost:3000/products` from the browser or run a curl command and get a JSON response containing the `products` array.
 
 ## Conclusion
 
@@ -744,7 +699,7 @@ Here is a list of the major points for a quick reference:
 
 8. Express comes with a default error handler for handling error conditions. This is a default middleware function added by Express at the end of the middleware stack.
 
-9. We also used TypeScript to define a Node.js server application containing an endpoint for a REST API.  
+9. We also used TypeScript to define a Node.js server application containing middleware functions,  
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/nodejs/express/middleware).
 

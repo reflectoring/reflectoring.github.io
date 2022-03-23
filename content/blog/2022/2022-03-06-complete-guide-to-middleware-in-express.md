@@ -3,14 +3,14 @@ authors: [pratikdas]
 title: "Complete Guide to Middleware in Express"
 categories: ["NodeJS"]
 date: 2022-03-15 00:00:00 +1100
-excerpt: "Middleware functions are an integral part of an application built with Express framework (henceforth referred as Express application). Express middleware refers to a set of functions that execute during the processing of HTTP requests received by an Express application. In this article, we will understand and use different types of middleware functions in Express and also create our own functions using both JavaScript and TypeScript."
+excerpt: "Middleware functions are an integral part of an application built with the Express framework. They access the HTTP request and response objects and can either terminate the HTTP request or forward it for further processing to another middleware function. Middleware functions are attached to one or more route handlers in an Express application and execute in sequence from the time an HTTP request is received by the application till an HTTP response is sent back to the caller. In this article, we will understand and use different types of middleware functions in Express and also create our own functions using both JavaScript and TypeScript."
 image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: complete-guide-to-middleware-in-express
 ---
 
-Middleware functions are an integral part of an application built with the Express framework (henceforth referred to as Express application). Express middleware refers to the set of functions that execute in sequence from the time a HTTP request is received by an Express application till a HTTP response is sent back to the caller. 
+Middleware functions are an integral part of an application built with the Express framework (henceforth referred to as Express application). They access the HTTP request and response objects and can either terminate the HTTP request or forward it for further processing to another middleware function. 
 
-They access the HTTP request and response objects and can either terminate the HTTP request or forward it for further processing to another middleware function. 
+Middleware functions are attached to one or more route handlers in an Express application and execute in sequence from the time an HTTP request is received by the application till an HTTP response is sent back to the caller. 
 
 This capability of executing the Express middleware functions in a chain allows us to create smaller potentially reusable components based on the [single responsibility principle(SRP)](https://en.wikipedia.org/wiki/Single-responsibility_principle).
 
@@ -169,7 +169,7 @@ Our root directory structure looks like this:
 
 Express looks for the files in the order in which we set the static directories with the `express.static` middleware function. 
 
-In our example, we have defined `images` directory before `htmls`. So Express will look for the file : `productsample.html` in the `images` directory first. If the file is not found in the `images` directory, Express looks for the file in the `htmls` directory.
+In our example, we have defined the `images` directory before `htmls`. So Express will look for the file: `productsample.html` in the `images` directory first. If the file is not found in the `images` directory, Express looks for the file in the `htmls` directory.
 
 Next we have defined a route with url `product` to serve the static HTML file `productsample.html`. The HTML file contains an image referred only with the image name `sample.jpg`:
 

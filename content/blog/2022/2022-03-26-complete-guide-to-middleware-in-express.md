@@ -1,18 +1,18 @@
 ---
 authors: [pratikdas]
-title: "Complete Guide to Middleware in Express"
+title: "Complete Guide to Express Middleware"
 categories: ["NodeJS"]
-date: 2022-03-15 00:00:00 +1100
+date: 2022-03-26 00:00:00 +1100
 excerpt: "Middleware functions are an integral part of an application built with the Express framework. They access the HTTP request and response objects and can either terminate the HTTP request or forward it for further processing to another middleware function. Middleware functions are attached to one or more route handlers in an Express application and execute in sequence from the time an HTTP request is received by the application till an HTTP response is sent back to the caller. In this article, we will understand and use different types of middleware functions in Express and also create our own functions using both JavaScript and TypeScript."
 image: images/stock/0118-keyboard-1200x628-branded.jpg
-url: complete-guide-to-middleware-in-express
+url: express-middleware
 ---
 
-Middleware functions are an integral part of an application built with the Express framework (henceforth referred to as Express application). They access the HTTP request and response objects and can either terminate the HTTP request or forward it for further processing to another middleware function. 
+Middleware functions are an integral part of an application built with the [Express framework](https://expressjs.com/) (henceforth referred to as Express application). They access the HTTP request and response objects and can either terminate the HTTP request or forward it for further processing to another middleware function. 
 
 Middleware functions are attached to one or more route handlers in an Express application and execute in sequence from the time an HTTP request is received by the application till an HTTP response is sent back to the caller. 
 
-This capability of executing the Express middleware functions in a chain allows us to create smaller potentially reusable components based on the [single responsibility principle(SRP)](https://en.wikipedia.org/wiki/Single-responsibility_principle).
+This capability of executing the Express middleware functions in a chain allows us to create smaller potentially reusable components based on the [single responsibility principle(SRP)](/single-responsibility-principle/).
 
 
 In this article, we will understand the below concepts about Express middleware:
@@ -27,9 +27,9 @@ In this article, we will understand the below concepts about Express middleware:
 
 A basic understanding of [Node.js](https://nodejs.org/en/docs/guides/getting-started-guide/) and components of the Express framework is advisable. 
 
-Please refer to our earlier [article](https://reflectoring.io/getting-started-with-express/) for an introduction to Express.
+Please refer to our earlier [article](/getting-started-with-express/) for an introduction to Express.
 
-## What is Express Middleware
+## What is Express Middleware?
 Middleware in Express are functions that come into play **after the server receives the request and before the response is sent to the client**. They are arranged in a chain and are called in sequence. 
 
 We can use middleware functions for different types of processing tasks required for fulfilling the request like database querying, making API calls, preparing the response, etc, and finally calling the next middleware function in the chain. 
@@ -129,15 +129,15 @@ Express provides the following Built-in middleware functions:
 
 |Function|Description|
 |-|-|
-|express.static|serves static assets|
-|express.json|parses JSON payloads|
-|express.urlencoded|parses URL-encoded payloads|
-|express.raw|parses payloads into a Buffer and makes them available under `req.body`|
-|express.text|parses payloads into a string |
+|`express.static`|serves static assets|
+|`express.json`|parses JSON payloads|
+|`express.urlencoded`|parses URL-encoded payloads|
+|`express.raw`|parses payloads into a Buffer and makes them available under `req.body`|
+|`express.text`|parses payloads into a string |
 
 Let us see some examples of their use.
 
-### Using `express.static` Built-in Middleware for Serving Static Assets
+### Using `express.static` for Serving Static Assets
 
 We use the `express.static` built-in middleware function to serve static files such as images, CSS files, and JavaScript files. Here is an example of using `express.static` to serve our HTML and image files:
 
@@ -183,7 +183,7 @@ Next we have defined a route with url `product` to serve the static HTML file `p
 ```
 Express looks up the files relative to the static directory, so the name of the static directory is not part of the URL.
 
-### Using `express.json` Built-in Middleware for Parsing JSON Payloads
+### Using `express.json` for Parsing JSON Payloads
 We use the `express.json` built-in middleware function to JSON content received from the incoming requests. 
 
 Let us suppose the route with URL `/products` in our Express application accepts `product` data from the `request` object in JSON format. So we will use Express' built-in middleware `express.json` for parsing the incoming JSON payload and attach it to our `router` object as shown in this code snippet:
@@ -255,7 +255,7 @@ app.use(express.urlencoded({ extended: false }));
 ``` 
 Then we can use the same code for extracting the fields as we had used before for extracting the fields from a JSON payload.
 
-## Adding Middleware Function to a Route
+## Adding a Middleware Function to a Route
 Let us now see how to create a middleware function of our own. 
 
 As an example, let us check for the presence of JSON content in the HTTP POST request body before allowing any further processing and send back an error response if the request body does not contain JSON content. 
@@ -378,9 +378,9 @@ If the current middleware function does not end the request-response cycle, it m
 
 When we have multiple middleware functions, we need to ensure that each of our middleware functions either calls the `next()` function or sends back a response. Express will not throw an error if our middleware does not call the `next()` function and will simply hang.
 
-The `next()` function is not a part of the Node.js or Express framework. The `next()` function could be named anything, but by convention, it is always named “next”. 
+The `next()` function could be named anything, but by convention it is always named “next”. 
 
-## Adding Middleware Functions for Processing All Requests
+## Adding a Middleware Function to All Requests
 We might also want to perform some common processing for all the routes and specify them in one place instead of repeating them for all the route definitions. Examples of common processing are authentication, logging, common validations, etc.
 
 Let us suppose we want to print the HTTP method (get, post, etc.) and the URL of every request sent to the Express application. Our middleware function for printing this information will look like this:
@@ -403,7 +403,7 @@ For applying the middleware function to all routes, we will attach the function 
 
 Since we have attached this function to the `app` object, it will get called for every call to the express application. Now when we visit `http://localhost:3000` or any other route in this application, we can see the HTTP method and URL of the incoming request object in the terminal window. 
 
-## Adding Middleware Function for Error Handling 
+## Adding a Middleware Function for Error Handling 
 
 Express comes with a default error handler that takes care of any errors that might be encountered in the application. The default error handler is added as a middleware function at the end of the middleware function stack.
 
@@ -438,14 +438,15 @@ const errorLogger = (error, request, response, next) => {
 }
 
 const errorResponder = (error, request, response, next) => {
-response.header("Content-Type", 'application/json')
-  
-const status = error.status || 400
-response.status(status).send(error.message)
+  response.header("Content-Type", 'application/json')
+    
+  const status = error.status || 400
+  response.status(status).send(error.message)
 }
+
 const invalidPathHandler = (request, response, next) => {
-response.status(400)
-response.send('invalid path')
+  response.status(400)
+  response.send('invalid path')
 }
   
 app.get('product', (request, response)=>{
@@ -454,12 +455,11 @@ app.get('product', (request, response)=>{
 
 // handle get request for path /
 app.get('/', (request, response) => {
-    response.send('response for GET request');
+  response.send('response for GET request');
 })
 
 app.post('/products', requireJsonContent, (request, response) => {
-...
-...
+  ...
 })
 
 app.get('/productswitherror', (request, response) => {
@@ -476,7 +476,7 @@ app.listen(PORT, () => {
 })
 
 ```
-These middleware error handling functions perform different tasks: one of them logs the error message, the second sends the error response to the client, and the third one responds with a message for `invalid path` when a non-existing route is requested. 
+These middleware error handling functions perform different tasks: `errorLogger` logs the error message,`errorResponder` sends the error response to the client, and `invalidPathHandler` responds with a message for `invalid path` when a non-existing route is requested. 
 
 We have next attached these three middleware functions for handling errors to the `app` object by calling the `use()` method after the route definitions.
 
@@ -486,7 +486,7 @@ Now instead of the default error handler, the first two error handlers get trigg
 
 When we request a non-existent route, the third error handler is invoked giving us an error message: `invalid path`.
 
-## Using Third-Party Middlewares
+## Using Third-Party Middleware
 We can also use third-party middleware to add functionality built by the community to our Express applications. These are usually available as npm modules which we install by running the `npm install` command in our terminal window.
 The following example illustrates installing and loading a third-party middleware named `Morgan` which is an HTTP request logging middleware for Node.js. 
 
@@ -501,7 +501,6 @@ const morgan = require('morgan')
 const app = express()
 
 app.use(morgan('tiny'))
-
 ```
 Here we are loading the middleware function `morgan` by calling `require()` and then attaching the function to our routes with the `use()` method of the `app` instance.
 
@@ -535,7 +534,7 @@ npm i -D typescript ts-node
 npm i -D @types/node @types/express
 ```
 
-### Writing the Express Middleware Functions in TypeScript
+### Writing Express Middleware Functions in TypeScript
 The Express application is written in TypeScript language in a file named `app.ts`. Here is a snippet of the code:
 ```ts
 import express, { Request, Response, NextFunction } from 'express'
@@ -689,9 +688,9 @@ Here is a list of the major points for a quick reference:
 4. We can add middleware functions to selected routes by using the `app.use(<route url>, <middleware function>)`. 
 
 5. Express comes with built-in middleware functions like:
-* `express.static` for serving static resources like CSS, images, and HTML files.
-* `express.json` for parsing JSON payloads received in the request body
-* `express.urlencoded` for parsing URL encoded payloads received in the request body
+    * `express.static` for serving static resources like CSS, images, and HTML files.
+    * `express.json` for parsing JSON payloads received in the request body
+    * `express.urlencoded` for parsing URL encoded payloads received in the request body
 
 6. Express middleware functions are also written and distributed as npm modules by the community. These can be integrated into our application as third-party middleware functions.
 

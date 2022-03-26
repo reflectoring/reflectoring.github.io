@@ -9,9 +9,7 @@ image: images/stock/0065-java-1200x628-branded.jpg
 url: getting-started-with-spring-boot
 ---
 
-In this article, we will build a production-grade application with Spring Boot. The goal is to answer two questions:
-- How?
-- Why?
+In this article, we will build a production-grade application with Spring Boot. 
 
 After understanding the use case and requirements, we will implement the application layer by layer.
 

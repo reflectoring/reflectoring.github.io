@@ -21,7 +21,7 @@ In this article, we will understand the below concepts about Express middleware:
 3. Use the middleware functions provided by Express and many third-party libraries in our Express applications.
 4. Use middleware functions as error handlers.
 
-{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/express/middleware" %}}
+{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/middleware" %}}
 
 ## Prerequisites
 
@@ -700,5 +700,5 @@ Here is a list of the major points for a quick reference:
 
 9. We also used TypeScript to define a Node.js server application containing middleware functions,  
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/nodejs/express/middleware).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/nodejs/middleware).
 

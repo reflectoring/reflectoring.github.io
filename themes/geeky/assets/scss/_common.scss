@@ -133,6 +133,37 @@ select {
   }
 }
 
+.social-icons-big {
+
+  li {
+    position: relative;
+    z-index: 1;
+
+    &:not(:last-child) {
+      margin-right: 15px
+    }
+
+    &:first-child::before,
+    &:last-child::before {
+      position: absolute;
+      content: "";
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    a {
+      color: $black;
+      font-size: 30px;
+      padding: 4px 8px;
+
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
+}
+
 /* pagination */
 .pagination {
 

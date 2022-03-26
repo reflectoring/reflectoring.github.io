@@ -4,6 +4,7 @@ description: "If you want to learn about clean and hexagonal architecture, you'v
 layout: "static"
 draft: false
 toc: false
+popup: false
 ---
 
 > A good software architecture should keep the cost of development low over the complete lifetime of an application.

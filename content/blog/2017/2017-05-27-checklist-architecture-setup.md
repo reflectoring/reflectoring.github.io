@@ -34,31 +34,37 @@ Which should be the basic architecture style of the application? There are of co
 styles that are listed here. However, monoliths and micro-services seem to be the most
 discussed architecture styles these days.
 
-| **Monolithic**              | A monolithic architecture contains all of its functionality in a single deployment unit. Might not support a flexible release cycle but doesn't need potentially fragile distributed communication.
-| **(Micro-) Services**       | Multiple, smaller deployment units that make use of distributed communication to implement the application's functionality. May be more flexible for creating smaller and faster releases and scales with multiple teams, but comes at the cost of distributed communication problems.
+| Architecture style    | Notes
+|-----------------------|------|
+| **Monolithic**        | A monolithic architecture contains all of its functionality in a single deployment unit. Might not support a flexible release cycle but doesn't need potentially fragile distributed communication.
+| **(Micro-) Services** | Multiple, smaller deployment units that make use of distributed communication to implement the application's functionality. May be more flexible for creating smaller and faster releases and scales with multiple teams, but comes at the cost of distributed communication problems.
 
 
-## Back-End Concerns
+## Back-End Aspects
 
 What things should you think about that concern the back-end of the application you
 want to build?
 
-| **Logging**                 | Use [SLF4J](https://www.slf4j.org/) with either [Logback](https://logback.qos.ch/) or [Log4J2](https://logging.apache.org/log4j/2.x/) underneath. Not really much to think on, nowadays. You should however think about using a central log server (we will come to that later).|
-| **Application Server**      | Where should the software be hosted? A distributed architecture may work well with [Spring Boot](https://projects.spring.io/spring-boot/) while a monolithic architecture might better be served from a full-fledged application server like [Wildfly](http://wildfly.org/). Choice of application server is often predetermined for you, since corporate operations like to define a default server for all applications they have to run.|
-| **Job Execution**           | Almost every medium-to-large sized application will need to execute scheduled jobs like cleaning up a database or batch-importing third-party data. Spring offers [basic job scheduling features](https://docs.spring.io/spring/docs/current/spring-framework-reference/html/scheduling.html). For more sophisticated needs, you may want to use [Quartz](http://www.quartz-scheduler.org/), which integrates into a Spring application nicely as well. 
-| **Database Refactoring**    | You should think about how to update the structure of your relational database between two versions of your software. In small projects, manual execution of SQL scripts may be acceptable, in medium-to-large projects you may want to use a database refactoring framework like [Flyway](https://flywaydb.org/) or [Liquibase](http://www.liquibase.org/) (see my [previous blog post](/database-refactoring-flyway-vs-liquibase/). If you are using a schemaless database you don't really need a database refactoring framework (you should still think about which changes you can do to your data in order to stay backwards-compatible, though).
-| **API Technology**          | Especially when building a distributed architecture, you need to think about how your deployment units communicate with each other. They may communicate asynchronously via a messaging middleware like [Kafka](https://kafka.apache.org/) or synchronously, for example via REST using [Spring MVC](https://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html) and [Feign](https://github.com/OpenFeign/feign). 
-| **API Documentation**       | The internal and external APIs you create must be documented in some form. For REST APIs you may use [Swagger](http://swagger.io/)'s heavy-weight annotations or use [Spring Rest Docs](https://projects.spring.io/spring-restdocs/) for a more flexible (but more manual) approach (see my [previous blog post](/spring-restdocs/)). When using no framework at all, document your APIs by hand using a markup format like [Markdown](https://de.wikipedia.org/wiki/Markdown) or [Asciidoctor](https://de.wikipedia.org/wiki/AsciiDoc).
-| **Measuring Metrics**       | Are there any metrics like thoughput that should be measured while the application is running? Use a metric framework like [Dropwizard Metrics](http://metrics.dropwizard.io) (see my [previous blog post](/transparency-with-spring-boot/)) or the [Prometheus Java Client](https://github.com/prometheus/client_java).
-| **Authentication**          | How will users of the application prove that they are who they claim to be? Will users be asked to provide username and password or are there additional credentials to check? With a client-side single page app, you need to issue some kind of token like in [OAuth](https://oauth.net/2/) or [JWT](https://jwt.io/) (also see [this blog post](/openid-connect/) about OpenID). In other web apps, a session id cookie may be enough. 
-| **Authorization**           | Once authenticated, how will the application check what the user is allowed to do and what is prohibited? On the server side, [Spring Security](https://projects.spring.io/spring-security/) is a framework that supports implementation of different authorization mechanisms.
-| **Database Technology**     | Does the application need a structured, schema-based database? Use a relational database. Is it storing document-based structures? Use [MongoDB](https://www.mongodb.com/). Key-Value Pairs? [Redis](https://redis.io/). Graphs? [Neo4J](https://neo4j.com/).
-| **Persistence Layer**       | When using a relational database, [Hibernate](http://hibernate.org/) is the de-facto default technology to map your objects into the database. You may want to use [Spring Data JPA](http://projects.spring.io/spring-data-jpa/) on top of Hibernate for easy creation of repository classes. Spring Data JPA also supports many NoSQL databases like Neo4J or MongoDB. However, there are alternative database-accessing technologies like [iBatis](http://ibatis.apache.org/) and [jOOQ](https://www.jooq.org/).
+| Aspect                   | Notes
+|--------------------------|------|
+| **Logging**              | Use [SLF4J](https://www.slf4j.org/) with either [Logback](https://logback.qos.ch/) or [Log4J2](https://logging.apache.org/log4j/2.x/) underneath. Not really much to think on, nowadays. You should however think about using a central log server (we will come to that later).|
+| **Application Server**   | Where should the software be hosted? A distributed architecture may work well with [Spring Boot](https://projects.spring.io/spring-boot/) while a monolithic architecture might better be served from a full-fledged application server like [Wildfly](http://wildfly.org/). Choice of application server is often predetermined for you, since corporate operations like to define a default server for all applications they have to run.|
+| **Job Execution**        | Almost every medium-to-large sized application will need to execute scheduled jobs like cleaning up a database or batch-importing third-party data. Spring offers [basic job scheduling features](https://docs.spring.io/spring/docs/current/spring-framework-reference/html/scheduling.html). For more sophisticated needs, you may want to use [Quartz](http://www.quartz-scheduler.org/), which integrates into a Spring application nicely as well. 
+| **Database Refactoring** | You should think about how to update the structure of your relational database between two versions of your software. In small projects, manual execution of SQL scripts may be acceptable, in medium-to-large projects you may want to use a database refactoring framework like [Flyway](https://flywaydb.org/) or [Liquibase](http://www.liquibase.org/) (see my [previous blog post](/database-refactoring-flyway-vs-liquibase/). If you are using a schemaless database you don't really need a database refactoring framework (you should still think about which changes you can do to your data in order to stay backwards-compatible, though).
+| **API Technology**       | Especially when building a distributed architecture, you need to think about how your deployment units communicate with each other. They may communicate asynchronously via a messaging middleware like [Kafka](https://kafka.apache.org/) or synchronously, for example via REST using [Spring MVC](https://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html) and [Feign](https://github.com/OpenFeign/feign). 
+| **API Documentation**    | The internal and external APIs you create must be documented in some form. For REST APIs you may use [Swagger](http://swagger.io/)'s heavy-weight annotations or use [Spring Rest Docs](https://projects.spring.io/spring-restdocs/) for a more flexible (but more manual) approach (see my [previous blog post](/spring-restdocs/)). When using no framework at all, document your APIs by hand using a markup format like [Markdown](https://de.wikipedia.org/wiki/Markdown) or [Asciidoctor](https://de.wikipedia.org/wiki/AsciiDoc).
+| **Measuring Metrics**    | Are there any metrics like thoughput that should be measured while the application is running? Use a metric framework like [Dropwizard Metrics](http://metrics.dropwizard.io) (see my [previous blog post](/transparency-with-spring-boot/)) or the [Prometheus Java Client](https://github.com/prometheus/client_java).
+| **Authentication**       | How will users of the application prove that they are who they claim to be? Will users be asked to provide username and password or are there additional credentials to check? With a client-side single page app, you need to issue some kind of token like in [OAuth](https://oauth.net/2/) or [JWT](https://jwt.io/) (also see [this blog post](/openid-connect/) about OpenID). In other web apps, a session id cookie may be enough. 
+| **Authorization**        | Once authenticated, how will the application check what the user is allowed to do and what is prohibited? On the server side, [Spring Security](https://projects.spring.io/spring-security/) is a framework that supports implementation of different authorization mechanisms.
+| **Database Technology**  | Does the application need a structured, schema-based database? Use a relational database. Is it storing document-based structures? Use [MongoDB](https://www.mongodb.com/). Key-Value Pairs? [Redis](https://redis.io/). Graphs? [Neo4J](https://neo4j.com/).
+| **Persistence Layer**    | When using a relational database, [Hibernate](http://hibernate.org/) is the de-facto default technology to map your objects into the database. You may want to use [Spring Data JPA](http://projects.spring.io/spring-data-jpa/) on top of Hibernate for easy creation of repository classes. Spring Data JPA also supports many NoSQL databases like Neo4J or MongoDB. However, there are alternative database-accessing technologies like [iBatis](http://ibatis.apache.org/) and [jOOQ](https://www.jooq.org/).
 
-## Frontend Concerns
+## Frontend Aspects
 
 What concerns are there to think about that affect the frontend architecture? 
 
+| Aspect                   | Notes
+|--------------------------|------|
 | **Frontend Technology**     | Is the application required to be hosted centrally as a web application or should it be a fat client? If a web application, will it be a client-side single page app (use [Angular](https://angular.io/)) or a server-side web framework (I would propose using [Apache Wicket](http://wicket.apache.org/) or [Thymeleaf](http://www.thymeleaf.org/) / Spring MVC over frameworks like [JSF](https://de.wikipedia.org/wiki/JavaServer_Faces) or [Vaadin](https://vaadin.com/home), unless you have a very good reason). If a fat client, are the requirements in favor of a Swing or JavaFX-based client or something completely different like Electron?
 | **Client-side Database**    | Do the clients need to store data? In a web application you can use [Local Storage](https://de.wikipedia.org/wiki/Web_Storage) and [IndexedDB](https://en.wikipedia.org/wiki/Indexed_Database_API). In a fat client you can use some small-footprint database like [Derby](https://db.apache.org/derby/).
 | **Peripheral Devices**      | Do the clients need access to some kind of peripheral devices like card readers, authentication dongles or any hardware that does external measurements of some sort? In a fat client you may access those devices directly, in a web application you may have to provide a small client app which accesses the devices and makes their data available via a http server on localhost which can be integrated into the web app within the browser. 
@@ -66,11 +72,13 @@ What concerns are there to think about that affect the frontend architecture?
 | **Measuring Metrics**       | Are there any events (errors, client version, ...) that the client should report to a central server? How will those events be communicated to the server? 
 | **Offline Mode**            | Are the clients required to work offline? Which use cases should be available offline and which not? How will client side data be synchronized with the server once the client is online?
 
-## Operations Concerns
+## Operational Aspects
 
 What you definitely should discuss with the operations team before proposing your 
 architecture to anyone.
 
+| Aspect                   | Notes
+|--------------------------|------|
 | **Servers**                 | Will the application be hosted on real hardware or on virtual machines? [Docker](https://www.docker.com/) is a popular choice for virtualization nowadays.
 | **Network Infrastructure**  | How is the network setup? Are there any communication obstacles between different parts of the application or between the application and third party applications? 
 | **Load Balancing**          | How will the load on the application be balanced between multiple instances of the software? Is there a hardware load balancer? Does it have to support sticky sessions? Does the app need a reverse proxy that routes requests to different deployment units of the application (you may want to use Zuul)?
@@ -79,11 +87,13 @@ architecture to anyone.
 | **Central Log Server**      | Especially in a distributed architecture with many deployment units, but also in a monolithic application (which also should have at least two instances running), a central log server may make bug hunting easier. The [Elastic Stack](https://www.elastic.co/de/products) (Elastic Search, Logstash, Kibana) is popular, but heavy to set up. [Graylog 2](https://www.graylog.org/) is an alternative.
 | **Database Operations**     | What are the requirements towards the database? Does it need to support hot failover and / or load balancing between database instance? Does it need online backup? [Oracle RAC](https://www.oracle.com/database/real-application-clusters/) is a pretty default (but expensive) technology here, but other databases support similar requirements. 
 
-## Development Concerns
+## Development Aspects
 
 Things that the whole development team has to deal with every day. Definitely discuss these
 points with the development team before starting development.
 
+| Aspect                   | Notes
+|--------------------------|------|
 | **IDE**                     | What's the policy on using IDE's? Is each developer allowed to use his/her IDE of choice? Making a specific IDE mandatory may reduce costs for providing several parallel solutions while letting each developer use his favorite IDE may reduce training costs. I'm a follower of [IntelliJ](https://www.jetbrains.com/idea/) and would try to convert all Eclipsians when starting a new project ;).
 | **Build Tool**              | Which tool will do the building? Both [Maven](https://maven.apache.org/) and [Gradle](https://gradle.org/) are popular choices, while I would chose Gradle for it's customizability in form of Groovy Code.
 | **Unit Testing**            | Which parts of the code should be unit tested? Which frameworks will be used for this? [JUnit4](http://junit.org/junit4/) and [Mockito](http://site.mockito.org/) are a reasonable starting point (note that JUnit 5 is currently on the way).

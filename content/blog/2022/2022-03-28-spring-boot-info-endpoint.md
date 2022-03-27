@@ -1,13 +1,14 @@
 ---
-authors: "saikat"
-title: "Exposing Application Information Using Spring Boot"
+authors: [saikat]
+title: "Exposing a Helpful Info Endpoint with Spring Boot Actuator"
 categories: ["Spring Boot"]
-date: 2022-03-10 00:00:00 +1100
+date: 2022-03-28 00:00:00 +1100
 excerpt: "A guide on how to expose useful application information using Spring Boot Actuator"
-url: spring-boot-application-info
+image: images/stock/0121-info-1200x628-branded.jpg
+url: spring-boot-info-endpoint
 ---
 
-In a distributed, fast-paced environment, dev teams often want to find out **various application information such as at what time they deployed the app, what version of the app they deployed, what is the Git commit ID, etc.**
+In a distributed, fast-paced environment, dev teams often want to find out **at what time they deployed the app, what version of the app they deployed, what Git commit was deployed, and more.**
 
 Spring Boot Actuator helps us monitor and manage the application. It exposes various endpoints that provide app health, metrics, and other relevant information.
 
@@ -16,28 +17,30 @@ In this article, we will find out how to use Spring Boot Actuator and the Maven/
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-app-info" %}}
 
 ## Enabling Spring Boot Actuator
-Spring Boot Actuator is a sub-project of Spring Boot. In this section, we will quickly see how to bootstrap the sample project and enable the `info` endpoint. If you want to know more about Spring Boot Actuator, there is already a great [tutorial](https://reflectoring.io/exploring-a-spring-boot-app-with-actuator-and-jq/).
+Spring Boot Actuator is a sub-project of Spring Boot. In this section, we will quickly see how to bootstrap the sample project and enable the `/info` endpoint. If you want to know more about Spring Boot Actuator, there is already a great [tutorial](https://reflectoring.io/exploring-a-spring-boot-app-with-actuator-and-jq/).
 
 Let's quickly create a Spring Boot project using the [Spring Initializr](https://start.spring.io/). We will require the following dependencies:
 
-| Dependency           | Purpose                                                      |
-|----------------------|--------------------------------------------------------------|
+| Dependency           | Purpose                                                     |
+|----------------------|-------------------------------------------------------------|
 | Spring Boot Actuator | To expose the application management endpoints e.g. `info`. |
-| Spring Web           | To enable the web app behaviors.                             |
+| Spring Web           | To enable the web app behavior.                             |
 
 If it helps, here is a link to the pre-populated projects in [Maven](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.6.4&packaging=jar&jvmVersion=11&groupId=io.reflectoring&artifactId=demo&name=Demo%20Application&description=Demo%20project%20for%20Spring%20Boot%20Application%20Info&packageName=io.reflectoring.demo&dependencies=web,actuator) and [Gradle](https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.6.4&packaging=jar&jvmVersion=11&groupId=io.reflectoring&artifactId=demo&name=Demo%20Application&description=Demo%20project%20for%20Spring%20Boot%20Application%20Info&packageName=io.reflectoring.demo&dependencies=web,actuator).
 
-After the project is built we will expose the built-in `info` endpoint over HTTP. 
-**By default the `info` web endpoint is disabled**. We can simply enable it by adding the the `management.endpoints.web.exposure.include` property in the `application.properties` configuration:
-```properties
+After the project is built we will expose the built-in `/info` endpoint over HTTP. 
+**By default the `/info` web endpoint is disabled**. We can simply enable it by adding the the `management.endpoints.web.exposure.include` property in the `application.properties` configuration:
+
+```text
 management.endpoints.web.exposure.include=health,info
 ```
+
+
+Let's run the Spring Boot application and open the URL `http://localhost:8080/actuator/info` in a browser. Nothing useful will be visible yet as we still have to make a few config changes. In the next section, we will see how we can add informative build information in this response.
 
 {{% warning title="Securing Endpoints" %}}
 If you are exposing the endpoints publicly, please make sure to [secure](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints.security) them as appropriate. We should not expose any sensitive information unknowingly.
 {{% /warning %}}
-
-Let's run the Spring Boot application and open the `http://localhost:8080/actuator/info` URL in a browser. Nothing useful will be visible yet as we still have to make a few config changes. In the next section, we will see how we can add informative build information in this response.
 
 ## Spring Boot Application Info
 Spring collects useful application information from various [`InfoContributor`](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/actuate/info/InfoContributor.html) beans defined in the application context. Below is a summary of the default `InfoContributor` beans:
@@ -51,12 +54,13 @@ Spring collects useful application information from various [`InfoContributor`](
 
 **By default, the `env` and `java` contributors are disabled.**
 
-First, we will enable the `java` property by adding the following key-value pair in `application.properties`:
-```properties
+First, we will enable the `java` contributor by adding the following key-value pair in `application.properties`:
+
+```text
 management.info.java.enabled=true
 ```
 
-Let's rerun the application. Now, we'll open the actuator `info` endpoint in a browser. Then an output similar to below should appear:
+Let's rerun the application. If we open the actuator `/info` endpoint again in a browser, we get an output like this:
 ```json
 {
   "java": {
@@ -77,7 +81,7 @@ Let's rerun the application. Now, we'll open the actuator `info` endpoint in a b
 You are likely to see different values based on the installed Java version.
 
 Now, it's time to display environment variables. Spring picks up any environment variable with a property name starting with `info`. To see this in action, let's add the following properties in the `application.properties` file:
-```properties
+```text
 management.info.env.enabled=true
 info.app.website=reflectoring.io
 ```
@@ -97,10 +101,10 @@ In the following sections, we will see how to add Git and application build spec
 ## Adding Build Info
 Adding useful [build information](https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.build.generate-info) helps to quickly identify the build artifact name, version, time created, etc. It could come in handy to check if the team deployed the relevant version of the app. Spring Boot allows easy ways to add this using Maven or Gradle build plugins.
 
-### Using Maven Plugin
+### Using the Maven Plugin
 The Spring Boot Maven Plugin comes bundled with plenty of useful features such as creating executable jar or war archives, running the application, etc. It also provides a way to add application build info. 
 
-Spring Boot Actuator will show build details if a valid `META-INF/build-info.properties` file is present. **Spring Boot Maven plugin has a `build-info` goal to create this file.** 
+Spring Boot Actuator will show build details if a valid `META-INF/build-info.properties` file is present. **The Spring Boot Maven plugin has a `build-info` goal to create this file.** 
 
 This plugin will be by default present in the `pom.xml` if you bootstrapped the project using Spring Initializr. We just have to add the `build-info` goal for execution as shown below:
 ```xml
@@ -160,7 +164,7 @@ If we run the app now and open the `http://localhost:8080/actuator/info` endpoin
 }
 ```
 
-**If you want to exclude any of the properties** that too is possible using the `excludeInfoProperties`. Let's see how to exclude the `artifact` property:
+**If you want to exclude any of the properties** that is possible using the `excludeInfoProperties` configuration. Let's see how to exclude the `artifact` property:
 ```xml
 <configuration>
   <excludeInfoProperties>
@@ -172,7 +176,7 @@ If we run the app now and open the `http://localhost:8080/actuator/info` endpoin
 
 Now, it's time to see how we can achieve the same output using the Spring Boot Gradle plugin.
 
-### Using Gradle Plugin
+### Using the Gradle Plugin
 The easiest way to add the build info is using the plugin DSL. In the `build.gradle` file, we need to add the following block:
 ```gradle
 springBoot {
@@ -233,7 +237,7 @@ The following management application properties control the Git related informat
 | `management.info.git.enabled=false` | Disables the Git information entirely from the `info` endpoint |
 | `management.info.git.mode=full`     | Displays all the properties from the `git.properties` file     |
 
-### Using Maven Plugin
+### Using the Maven Plugin
 The [Maven Git Commit ID plugin](https://github.com/git-commit-id/git-commit-id-maven-plugin) is managed via the `spring-boot-starter-parent` pom. To use this we have to edit the `pom.xml` as below:
 ```xml
 <plugin>
@@ -241,7 +245,7 @@ The [Maven Git Commit ID plugin](https://github.com/git-commit-id/git-commit-id-
   <artifactId>git-commit-id-plugin</artifactId>
 </plugin>
 ```
-If we run the project and open the `/actuator/info` endpoint in the browser, it will present us with the Git related information:
+If we run the project and open the `/actuator/info` endpoint in the browser, it will return the Git related information:
 ```json
 {
   "git": {
@@ -253,8 +257,8 @@ If we run the project and open the `/actuator/info` endpoint in the browser, it 
   }
 }
 ```
-We can also inspect the generated file under `target/classes/git.properties`. Here is how it looks like for me:
-```properties
+We can also inspect the generated file under `target/classes/git.properties`. Here is what it looks like for me:
+```text
 #Generated by Git-Commit-Id-Plugin
 git.branch=main
 git.build.host=mylaptop
@@ -308,7 +312,7 @@ It will generate an output like below:
 
 Let's now find out what options are available for Gradle users.
 
-### Using Gradle Plugin
+### Using the Gradle Plugin
 In the `build.gradle` we will add the [`gradle-git-properties`](https://github.com/n0mer/gradle-git-properties) plugin:
 
 ```gradle
@@ -348,6 +352,6 @@ Rerunning the app will now show limited Git info:
 ```
 
 ## Conclusion
-In this article, we learned how to use Spring Actuator to expose relevant information about our application. We found out how the build, environment, Git, and Java information could be added to the Actuator `info` endpoint. We also looked at how all this information can be configured and controlled by the Maven/Gradle build plugins.
+In this article, we learned how to use Spring Actuator to expose relevant information about our application. We found out how information about the build, environment, Git, and Java environment can be added to the Actuator `/info` endpoint. We also looked at how all this information can be configured and controlled by the Maven/Gradle build plugins.
 
 You can play around with a complete application illustrating these ideas using the code [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-app-info).

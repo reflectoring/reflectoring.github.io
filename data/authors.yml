@@ -302,3 +302,11 @@ arpendu:
   github: "arpendu11"
   linkedin: "arpendu-kumar-garai-61609a9b"
   bio: "I am a full-Stack developer with deep knowledge in Java, Microservices, Cloud Computing, Big Data, MERN, Javascript, Golang, and its relative frameworks. Besides coding and programming, I am a big foodie, love cooking, and love to travel."
+
+ranjani:
+  name: "Ranjani Harish"
+  email: "ranjani.harish12@gmail.com"
+  avatar: "/assets/img/authors/ranjani.jpg"
+  github: "ranjani2412"
+  linkedin: "https://www.linkedin.com/in/ranjaniharish/"
+  bio: "Fun-loving, curious and enthusiastic IT developer who believes in constant learning."

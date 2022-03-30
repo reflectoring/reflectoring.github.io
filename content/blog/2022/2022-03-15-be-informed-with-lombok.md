@@ -137,7 +137,7 @@ Consider the below example:
  ````
  Let's use Intellij Idea `Delombok` feature to understand the code written behind the scenes.
 
- {{% image alt="delombok example" src="images/posts/lombok/delombok.png" %}}
+ 
 
  ````java
     public class Account {
@@ -385,8 +385,8 @@ The above class has the following **flaws**:
 having multiple dependencies are added to the class. This affects code readability and destroys the concept of the Single Responsibility Principle.
 3. If you have an application that uses **checkstyle/Sonar**, using these **annotations can hide errors and warnings** which is not desirable.
 This is shown in the sample below:
-   {{% image alt="delombok example" src="images/posts/lombok/checkstyle.png" %}}
-   {{% image alt="delombok example" src="images/posts/lombok/checkstyle_err.png" %}}
+  
+  
 4. With `@AllArgsConstructor` referring to multiple same-type parameters, it is easy to accidentally define parameters out of order. 
 It affects code readability and introduces bugs that can be difficult to trace.
 

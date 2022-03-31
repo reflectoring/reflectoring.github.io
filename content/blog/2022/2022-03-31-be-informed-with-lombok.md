@@ -1,8 +1,8 @@
 ---
 title: "Be informed with Project Lombok"
 categories: ["Java"]
-date: 2022-03-15 00:00:00 +1100
-modified: 2022-03-15 00:00:00 +1100
+date: 2022-03-31 00:00:00 +1100
+modified: 2022-03-31 00:00:00 +1100
 authors: ["ranjani"]
 description: "A brief on how to and how not to use Project Lombok"
 image: images/stock/0010-gray-lego-1200x628-branded.jpg

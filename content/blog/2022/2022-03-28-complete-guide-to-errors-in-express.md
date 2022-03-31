@@ -543,17 +543,17 @@ Running this command will start the HTTP server. We have used `npx` here which i
 
 Here is a list of the major points for a quick reference:
 
-1. We perform error handling in Express applications by writing middleware functions that handle errors. These error handling functions take the error object as the fourth parameter in addition to the parameters: `request`, `response`, and the `next` function.
+1. We perform error handling in Express applications by writing middleware functions that handle errors. These error handling functions take the error object as the fourth parameter in addition to the parameters: `request`, `response`, and the `next()` function.
 
 2. Express comes with a default error handler for handling error conditions. This is a default middleware function added by Express at the end of the middleware stack.
 
-3. We call the error handling middleware by passing the error object to the `next` function. 
+3. We call the error handling middleware by passing the error object to the `next(error)` function. 
 
 4. We can define a chain of multiple error-handling middleware functions to one or more routes and attach them at the end of Express route definitions.
 
 5. We can enable Express to catch errors in JavaScript promises by providing `next` as the final catch handler.
 
-6. We also used TypeScript to define a Node.js server application containing an endpoint for a REST API.  
+6. We also used TypeScript to author an Express application with route handler and error-handling middleware functions.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/nodejs/errorhandling).
 

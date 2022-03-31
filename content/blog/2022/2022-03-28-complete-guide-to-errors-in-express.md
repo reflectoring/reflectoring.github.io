@@ -79,7 +79,14 @@ node js/index.js
 ```
 This will start a server that will listen for requests in port `3000`.  
 
-This application does not contain any error handling code as yet. Node.js applications crash when they encounter unhandled exceptions. So we will next add code to this application for simulating different error conditions and handling them in the subsequent sections.
+We have also defined a server application in a file: `js/server.js` which we can run to simulate an external service. We can run the server application with the command:
+
+```js
+node js/server.js
+```
+This will start the server application on port `3001` where we can access a REST API on a URL: `http://localhost:3001/products`. We will call this service in some of our examples to test errors related to an external API call.
+
+The application in `index.js` does not contain any error handling code as yet. Node.js applications crash when they encounter unhandled exceptions. So we will next add code to this application for simulating different error conditions and handling them in the subsequent sections.
 
 ## Handling Errors in Route Handler Functions
 The simplest way of handling errors in Express applications is by putting the error handling logic in the individual route handler functions. We can either check for specific error conditions or use a `try-catch` block for intercepting the error condition before invoking the logic for handling the error. 

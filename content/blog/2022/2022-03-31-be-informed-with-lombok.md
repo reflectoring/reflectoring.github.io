@@ -336,7 +336,7 @@ The Repository class that fetches data from the table is as below:
     public interface BookRepository extends JpaRepository<Book, Long> {
     }
 ````
-There are three main problems here:
+There are **three** main problems here:
 1. In an entity class, not all attributes of an entity are initialized. If an attribute has a FetchType of association LAZY,
 it gets invoked only when used in the application. However, **@ToString would compute all attributes 
 of an entity(irrespective of whether it is used) making one or multiple database calls** which can unintentionally **cause performance issues**.
@@ -349,7 +349,7 @@ Lombok uses all non-final attributes to evaluate and override default equals and
 1. Most primary keys in the database are **auto-generated** (either using sequences or UUID) 
 during insertion. This **can cause issues in the hashCode computation process**
 as the `ID` is not available beforehand causing unexpected results.
-2. **Every database record is uniquely identified by its primary key**. In such cases using the Lombok implementation of @EqualsAndHashCode might not be ideal. 
+2. **Every database record is uniquely identified by its primary key**. In such cases using the Lombok implementation of `@EqualsAndHashCode` might not be ideal. 
 
 Although Lombok allows us to include and exclude attributes, for the sake of brevity it might be a **better option to 
 override these methods (toString(), equals(), hashcode()) ourselves** and not rely on Lombok.
@@ -387,7 +387,7 @@ having multiple dependencies are added to the class. This affects code readabili
 This is shown in the sample below:
    {{% image alt="delombok example" src="images/posts/lombok/checkstyle.png" %}}
    {{% image alt="delombok example" src="images/posts/lombok/checkstyle_err.png" %}}
-4. With `@AllArgsConstructor` referring to multiple same-type parameters, it is easy to accidentally define parameters out of order. 
+4. With **`@AllArgsConstructor`**  referring to multiple same-type parameters, it is easy to accidentally define parameters out of order. 
 It affects code readability and introduces bugs that can be difficult to trace.
 
 In my experience, I have seen huge complex objects having multiple dependencies.

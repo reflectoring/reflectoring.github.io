@@ -8,17 +8,18 @@ image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: guide-to-error-handling-in-express
 ---
  
-Error handling functions in an application detect and capture multiple error conditions and take appropriate remedial actions to either recover from those errors or fail gracefully. Common examples of remedial actions are providing a helpful message as output, logging a message in an error log which can be used for diagnosis, or retrying the failed operation.
+Error handling functions in an application detect and capture multiple error conditions and take appropriate remedial actions to either recover from those errors or fail gracefully. Common examples of remedial actions are providing a helpful message as output, logging a message in an error log that can be used for diagnosis, or retrying the failed operation.
 
-Express is a framework for developing web application in Node.js. In an earlier article we had introduced this Express with examples of using its powerful features which was followed by a second article on Express middleware. This is the third article in the Express series where we will see how to handle errors in Node.js applications written using Express.
+Express is a framework for developing a web application in Node.js. In an earlier [article](https://reflectoring.io/getting-started-with-express/) we had introduced the Express framework with examples of using its powerful features which was followed by a second [article](https://reflectoring.io/express-middleware/) on middleware functions in Express. In both of those articles, we had briefly explained error handling using middleware functions. 
 
-In this article, we will understand the below concepts about handling errors in Express:
-1. Checking behaviour of the default error handler provided by Express.
-2. Creating custom error handlers to override the default error handling behaviour.
-3. Handle errors thrown by asynchronous functions.
-4. Handle errors by chaining error handling middleware functions to the routes defined in the Express application.
+This is the third article in the Express series where we will focus on handling errors in Node.js applications written using Express and understand the below concepts:
 
-{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/express/errorhandling" %}}
+1. Handling errors with the default error handler provided by Express.
+2. Creating custom error handlers to override the default error handling behavior.
+3. Handling errors thrown by asynchronous functions invoked in the routes defined in the Express application.
+4. Handling errors by chaining error-handling middleware functions.
+
+{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/errorhandling" %}}
 
 ## Prerequisites
 
@@ -26,24 +27,8 @@ A basic understanding of [Node.js](https://nodejs.org/en/docs/guides/getting-sta
 
 Please refer to our earlier [article](https://reflectoring.io/getting-started-with-express/) for an introduction to Express.
 
-## Type of Errors in an Express Application
-
-An application can give rise to different kind of errors:
-1. Recoverable error:
-2. Non-recoverable errors: 
-3. Temporary errors: Examples include a temporary outage in an external system.
-4. Errors from business logic: Caused by 
-
- We can have an error caused by a invalid input from which we can recover from by changing the input. 
-1. Calls to external resources like database, API, file systems.
-2. Custom Errors defined in the application
-3. Runtime errors
-
-
-We will see examples of each of these types in the subsequent sections.
-
 ## Basic Setup for Running the Examples
-We need to first set up a Node.js project for running our examples. Let us create a folder and initialize a Node.js project under it by running the `npm init` command:
+We need to first set up a Node.js project for running our examples of handling errors in Express applications. Let us create a folder and initialize a Node.js project under it by running the `npm init` command:
 
 ```shell
 mkdir storefront
@@ -85,40 +70,42 @@ app.listen(3000,
 ```
 In this code snippet, we are importing the `express` module and then calling the `listen()` function on the `app` handle to start our server. 
 
-We have also defined two routes which will accept the requests at URLs: `/` and `/products`. For an elaborate explanation of routes and handler function, please refer to our earlier article for an introduction to Express.
+We have also defined two routes that will accept the requests at URLs: `/` and `/products`. For an elaborate explanation of routes and handler functions, please refer to our earlier [article](https://reflectoring.io/getting-started-with-express/) for an introduction to Express.
 
 We can run our application with the `node` command:
 
 ```shell
 node index.js
 ```
-This will start a server that will listen for requests in port `3000`.  We will now add middleware functions to this application in the following sections.
+This will start a server that will listen for requests in port `3000`.  
+
+This application does not contain any error handling code as yet. Node.js applications crash when they encounter unhandled exceptions. So we will next add code to this application for simulating different error conditions and handling them in the subsequent sections.
 
 ## Handling Errors in Route Handler Functions
-The simplest way of handling errors in Express applications is by putting the error handling logic in the individual route handler functions. We can either check for specific error conditions or use a try/catch block for intercepting the error condition before invoking the logic for handling the error. Examples of error handling logic could be logging the error stack to a log file or returning an helpful error response. 
+The simplest way of handling errors in Express applications is by putting the error handling logic in the individual route handler functions. We can either check for specific error conditions or use a `try-catch` block for intercepting the error condition before invoking the logic for handling the error. 
 
-An example of a error handling in route a handler function is shown here: 
+Examples of error handling logic could be logging the error stack to a log file or returning a helpful error response. 
+
+An example of a error handling in a route handler function is shown here: 
 
 ```js
 const express = require('express')
-const axios = require("axios")
 const app = express()
+
+app.use('/products', express.json({ limit: 100 }))
 
 // handle post request for path /products
 app.post('/products', (request, response) => {
-  const products = []
-
   const name = request.body.name                
+  ...
+  ...
 
-  const brand = request.body.brand
-
-  const category = request.body.category
-
+  // Check for error condition
   if(name == null){
-    // log the error
+    // Error handling logic: log the error
     console.log("input error")
 
-    // return error response
+    // Error handling logic: return error response
     response
       .status(500)
       .json({ message: "Mandatory field: name is missing. " })
@@ -131,9 +118,9 @@ app.post('/products', (request, response) => {
   }
 })
 ```
-Here we are returning the error as a HTTP error response with error code 500 and an error message.
+Here we are checking for the error condition by checking for presence of a mandatory input in the request payload and returning the error as an HTTP error response with error code 500 and an error message as part of error handling logic.
 
-Here is one more example of handling error using a try/catch block:
+Here is one more example of handling error using a `try-catch` block:
 
 ```js
 const express = require('express')
@@ -148,7 +135,7 @@ app.get('/products', async (request, response)=>{
     console.log("response "+jsonResponse)
     
     response.send(jsonResponse)
-  }catch(error){
+  }catch(error){ // intercept the error in catch block
     // return error response
     response
         .status(500)
@@ -158,38 +145,15 @@ app.get('/products', async (request, response)=>{
 })
 
 ```
-Here also we are handling the error in the route handler function by intercepting the error in a catch block and returning an error message in the HTTP response.
+Here also we are handling the error in the route handler function. We are intercepting the error in a catch block and returning an error message with an error code of `500` in the HTTP response.
 
-But this method of putting error handling logic in all routes is cumbersome since we need to repeat similar code across our application. Putting this logic in a single place is desirable where we can easily maintain this logic. We will try to achieve this using middleware functions of Express as explained in the subsequent sections.
-
-## Handling Errors with Middleware Functions
-
-Error handling in Express is done using middleware functions. The middleware functions that handle errors are defined in the same way as other middleware functions, but they accept the error object as input parameter in addition to the three input parameters: `request`, `response`, and `next` as shown below:
-
-The signature of a middleware function which handles errors in Express looks like this:
-
-```js
-function errorHandler(error, request, response, next) {
-
-  // Error handling middleware functionality
-
-}
-```
-
-This error-handling middleware function is attached to the `app` instance after the route handler functions have been attached.
-When we get an error in the application, the error object is passed to this error-handling middleware, by calling the `next()` function.
-
-```js
-const errorLogger = (err, request, response, next) => {
-    console.log( `error ${err.message}`) 
-    next(err) // calling next middleware
-}
-```
-As we can see here, the `next()` function takes the error object which is passed on to the next middleware function where we build the intelligence to extract relevant information from the error object and send back an easily understandable error message to the caller.
+But this method of putting error handling logic in all the route handler functions is not clean. We will try to handle this more elegantly using the middleware functions of Express as explained in the subsequent sections.
 
 ## Default Built-in Error Handler of Express
 
-When we use the Express framework to build our web applications, we get a error handler along with it that catches and processes all the errors thrown in the application. Let us check this behaviour with the help of this simple Express application with a route that throws an error:
+When we use the Express framework to build our web applications, we get an error handler by default that catches and processes all the errors thrown in the application. 
+
+Let us check this behavior with the help of this simple Express application with a route that throws an error:
 
 ```js
 const express = require('express')
@@ -206,114 +170,26 @@ const port = 3000
 app.listen(3000, 
      () => console.log(`Server listening on port ${port}.`));
 ```
-When we invoke this route with URL `productswitherror` , we will get an error with a status code of `400` and contain an error message. But we don't have to handle this because it will be handled by the default error handler.
+When we invoke this route with URL `productswitherror`, we will get an error with a status code of `400` and contain an error message. But we do not have to handle this error since it is handled by the default error handler of the Express framework.
 
-Let us call this route either by putting this URL in a browser or running a CURL command in a terminal window. 
-
-We will get an error stack contained in an HTML format as output as shown:
+When we call this route either by putting this URL in a browser or by running a CURL command in a terminal window, we will get an error stack contained in an HTML format as output as shown:
 
 ```shell
 Error: processing error in request at /productswitherror
-    at /Users/pratikdas/pratik/node/storefront/js/index.js:43:15
-    at Layer.handle [as handle_request] (/Users/pratikdas/pratik/node/storefront/node_modules/express/lib/router/layer.js:95:5)
-    at next (/Users/pratikdas/pratik/node/storefront/node_modules/express/lib/router/route.js:137:13)
-    at Route.dispatch (/Users/pratikdas/pratik/node/storefront/node_modules/express/lib/router/route.js:112:3)
-    at Layer.handle [as handle_request] (/Users/pratikdas/pratik/node/storefront/node_modules/express/lib/router/layer.js:95:5)
-    at /Users/pratikdas/pratik/node/storefront2/node_modules/express/lib/router/index.js:281:22
-    at Function.process_params (/Users/pratikdas/pratik/node/storefront/node_modules/express/lib/router/index.js:341:12)
-    at next (/Users/pratikdas/pratik/node/storefront/node_modules/express/lib/router/index.js:275:10)
-    at SendStream.error (/Users/pratikdas/pratik/node/storefront/node_modules/serve-static/index.js:121:7)
+    at /.../storefront/js/index.js:43:15
+    at Layer.handle [as handle_request] (/.../storefront/node_modules/express/lib/router/layer.js:95:5)
+    at next (/.../storefront/node_modules/express/lib/router/route.js:137:13)
+    at Route.dispatch (/.../storefront/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/.../storefront/node_modules/express/lib/router/layer.js:95:5)
+    at /.../storefront/node_modules/express/lib/router/index.js:281:22
+    at Function.process_params (/.../storefront/node_modules/express/lib/router/index.js:341:12)
+    at next (/.../storefront/node_modules/express/lib/router/index.js:275:10)
+    at SendStream.error (/.../storefront/node_modules/serve-static/index.js:121:7)
     at SendStream.emit (node:events:390:28)
 ```
-This is the error message sent by Express' default errorhandler. The default errorhandler is defined as a middleware function in Express and is attached at the end of the middleware function stack. Express catches this error for us and responds to the client with the error’s status code, message, and even the stack trace (for non-production environments).
+This is the error message sent by the Express framework's default error handler. Express catches this error for us and responds to the caller with the error’s status code, message, and the stack trace (only for non-production environments). But this behaviour applies only for synchronous functions.
 
-The Express framework operates as a stack of middleware functions for processing a request. 
-
-In this example, the error thrown by our handler function is associated with the route `/productswitherror`. This error gets propagated through the middleware stack and is handled by the last middleware function which is the default error handler.
-
-However, this default error handler is not very elegant and user friendly giving scant information to the end user. We will improve this behaviour by adding a custom handler in the next section.
-
-## Adding Middleware Functions for Error Handling 
-
-Let us now add a custom error handler to change the default error handling behavior provided by the Express framework. We define a custom error handler function in Express as a middleware function that takes an error parameter in addition to the parameters: `request`, `response`, and the `next()` function.
-
-As we can see here, the `next()` function takes the error object which is passed on to the next middleware function where we build the intelligence to extract relevant information from the error object and send back an easily understandable error message to the caller.
-
-Let us define two middleware error handling functions and add them to our routes:
-
-```js
-
-// Error handling Middleware function for logging the error message
-const errorLogger = (error, request, response, next) => {
-  console.log( `error ${error.message}`) 
-  next(error) // calling next middleware
-}
-
-// Error handling Middleware function reads the error message 
-// and sends back a response in JSON format
-const errorResponder = (error, request, response, next) => {
-response.header("Content-Type", 'application/json')
-  
-const status = error.status || 400
-response.status(status).send(error.message)
-}
-
-// Route with a handler function which throws an error
-app.get('/productswitherror', (request, response) => {
-  let error = new Error(`processing error in request at ${request.url}`)
-  error.statusCode = 400
-  throw error
-})
-
-// Attach the first Error handling Middleware
-// function defined above (which logs the error)
-app.use(errorLogger)
-
-// Attach the second Error handling Middleware
-// function defined above (which sends back the response)
-app.use(errorResponder)
-
-app.listen(PORT, () => {
-  console.log(`Server listening at http://localhost:${PORT}`)
-})
-
-```
-These middleware error handling functions perform different tasks: the first middleware function `errorLogger` logs the error message, the second middleware function `errorResponder` sends the error response to the client. 
-
-We have then attached these middleware functions after defining the route handler to the `app` object by calling the `use()` method.
-
-To test how our application handles errors with the help of these error handling functions, let us invoke the route with URL: `localhost:3000/productswitherror`. 
-
-Now instead of the default error handler, the two error handlers get triggered. The first one logs the error message to the console and the second one sends the error message as a JSON payload in the response as shown below:
-
-```shell
-processing error in request at /productswitherror
-```
-
-The default error handler of Express sends the response in HTML format.
-
-## Handling Errors in Asynchronous Function Calls
-
-If synchronous code throws an error, then Express will catch and process it. 
-
-Calling asynchronous function which throw an error however need to be handled in a different way. The error from asynchronous functions are not handled by the default error handler in Express and result in the stopping the application. Let us check this behaviour with the help of this example:
-
-```js
-const express = require('express')
-
-const app = express()
-
-const asyncFunction = async (request,response,next)=>{
-    throw new Error(`processing error in request `) 
-}
-
-app.get('/productswitherror', (request, response, next) => {
-  
-    // call the async function
-    asyncFunction(request, response, next)
-})
-```
-Running this application and invoking the route with URL: `productswitherror` results in stopping the application.
+Asynchronous functions called from route handlers which throw an error however need to be handled differently. The error from asynchronous functions are not handled by the default error handler in Express and result in the stopping(crashing) of the application.
 
 To prevent this behaviour, we need to pass the error thrown by any asynchronous function invoked by route handlers and middleware, to the `next()`function as shown below: 
 
@@ -327,14 +203,161 @@ const asyncFunction = async (request,response,next)=>{
 }
 
 ```
-Here we are catching the error and passing the error to the `next()` function. The application will now run without interruption and invoke the default error handler or any custom error handler if we have defined.
+Here we are catching the error and passing the error to the `next()` function. Now the application will be able to run without interruption and invoke the default error handler or any custom error handler if we have defined it.
+
+However, this default error handler is not very elegant and user-friendly giving scant information about the error to the end-user. We will improve this behavior by adding custom error handling functions in the next sections.
+
+## Handling Errors with Error Handling Middleware Functions
+An Express application is essentially a series of middleware function calls. We define a set of middleware functions and attach them as a stack to one or more route handler functions. We call the next middleware function by calling the `next()` function. 
+
+The error handling middleware functions are defined in the same way as other middleware functions and attached as a separate stack of functions:
+
+{{% image alt="Express Error Handling Middleware Functions" src="images/posts/express-error-handling/error-mw.png" %}}
+
+When an error occurs, we call the `next(error)` function and pass the error object as input. The Express framework will process this by skipping all the functions in the middleware function stack and trigger the functions in the error handling middleware function stack. 
+
+The error handling middleware functions are defined in the same way as other middleware functions, but they accept the error object as the first input parameter followed by the three input parameters: `request`, `response`, and `next` accepted by the other middleware functions as shown below:
+
+```js
+const express = require('express')
+const app = express()
+
+const errorHandler = (error, request, response, next) {
+  // Error handling middleware functionality
+}
+
+// route handlers
+app.get(...)
+app.post(...)
+
+// attach error handling middleware functions after route handlers
+app.use(errorHandler)
+```
+This error-handling middleware functions are attached to the `app` instance after the route handler functions have been defined. 
+
+The built-in default error handler of Express described in the previous section is also a error handling middleware function and is attached at the end of the middleware function stack, if we do not define any error-handling middleware function.
+
+Any error in the route handlers gets propagated through the middleware stack and is handled by the last middleware function which can be the default error handler or one or more custom error handling middleware functions, if defined.
+
+## Calling the Error Handling Middleware Function
+
+When we get an error in the application, the error object is passed to the error-handling middleware, by calling the `next(error)` function as shown below:
+
+```js
+const express = require('express')
+const axios = require("axios")
+const app = express()
+
+const errorHandler = (error, request, response, next) {
+  // Error handling middleware functionality
+  console.log( `error ${error.message}`) // log the error
+  const status = error.status || 400
+  // send back an easily understandable error message to the caller
+  response.status(status).send(error.message)
+}
+
+app.get('/products', async (request, response)=>{
+  try{
+    const apiResponse = await axios.get("http://localhost:3001/products")
+
+    const jsonResponse = apiResponse.data
+    
+    response.send(jsonResponse)
+  }catch(error){
+    next(error) // calling next error handling middleware
+  }
+
+})
+app.use(errorHandler)
+```
+As we can see here, the `next(error)` function takes the error object in the `catch` block as input which is passed on to the next error handling middleware function where we can potentially put the logic to extract relevant information from the error object, log the error, and send back an easily understandable error message to the caller.
+
+## Adding Multiple Middleware Functions for Error Handling 
+
+We can chain multiple error handling middleware functions similar to what we do for other middleware functions.
+
+Let us define three middleware error handling functions and add them to our routes:
+
+```js
+
+// Error handling Middleware function for logging the error message
+const errorLogger = (error, request, response, next) => {
+  console.log( `error ${error.message}`) 
+  next(error) // calling next middleware
+}
+
+// Error handling Middleware function reads the error message 
+// and sends back a response in JSON format
+const errorResponder = (error, request, response, next) => {
+  response.header("Content-Type", 'application/json')
+    
+  const status = error.status || 400
+  response.status(status).send(error.message)
+}
+
+const invalidPathHandler = (request, response, next) => {
+  response.status(400)
+  response.send('invalid path')
+}
+
+// Route with a handler function which throws an error
+app.get('/productswitherror', (request, response) => {
+  let error = new Error(`processing error in request at ${request.url}`)
+  error.statusCode = 400
+  throw error
+})
+
+app.get('/products', async (request, response)=>{
+  try{
+    const apiResponse = await axios.get("http://localhost:3001/products")
+
+    const jsonResponse = apiResponse.data
+    
+    response.send(jsonResponse)
+  }catch(error){
+    next(error) // calling next error handling middleware
+  }
+
+})
+
+// Attach the first Error handling Middleware
+// function defined above (which logs the error)
+app.use(errorLogger)
+
+// Attach the second Error handling Middleware
+// function defined above (which sends back the response)
+app.use(errorResponder)
+
+// Attach the third Error handling Middleware
+// function defined above (which sends back the response for invalid paths)
+app.use(invalidPathHandler)
+
+app.listen(PORT, () => {
+  console.log(`Server listening at http://localhost:${PORT}`)
+})
+
+```
+These middleware error handling functions perform different tasks: the first function `errorLogger` logs the error message, the second function `errorResponder` sends the error response to the client, and the third function `invalidPathHandler` sends the error response if any invalid URL is requested. 
+
+We have then attached these three error handling middleware functions to the `app` object, after the definitions of the route handler functions by calling the `use()` method on the `app` object.
 
 ## Error Handling while Calling Promise based Methods
-Use promises to avoid the overhead of the try...catch block or when using functions that return promises. For example:
+Lastly, it will be worthwhile to look at the best practices for handling errors in JavaScript promise blocks. A promise is a JavaScript object which represents the eventual completion (or failure) of an asynchronous operation and its resulting value. 
 
-Since promises automatically catch both synchronous errors and rejected promises, you can simply provide next as the final catch handler and Express will catch errors, because the catch handler is given the error as the first argument.
+We can enable Express to catch errors in promises by providing `next` as the final catch handler as shown in this example:
 
-You could also use a chain of handlers to rely on synchronous error catching, by reducing the asynchronous code to something trivial. For example:
+```js
+app.get('/product',  (request, response, next)=>{
+ 
+    axios.get("http://localhost:3001/product")
+    .then(response=>response.json)
+    .then(jsonresponse=>response.send(jsonresponse))
+    .catch(next)
+})
+
+```
+
+Here we are calling a REST API with the `axios` library which returns a promise and catching any error in the API invocation by providing `next()` as the final catch handler.
 
 ## Developing Express Error Handling Middleware with TypeScript 
 [TypeScript](https://www.typescriptlang.org) is an open-source language developed by Microsoft. It is a superset of JavaScript with additional capabilities, most notable being static type definitions making it an excellent tool for a better and safer development experience.
@@ -505,74 +528,22 @@ npx ts-node app.ts
 ```
 Running this command will start the HTTP server. We have used `npx` here which is a command-line tool that can execute a package from the `npm` registry without installing that package.
 
-### Adding a Route with a Handler Function in TypeScript
-
-Let us now modify the TypeScript code written in the earlier section to add a route for defining a REST API as shown below:
-```ts
-import express, { Request, Response, NextFunction } from 'express';
-
-const app = express();
-const port = 3000;
-
-// Define a type for Product
-interface Product {
-    name: string;
-    price: number;
-    brand: string;
-};
-
-// Define a handler function
-const getProducts = ( 
-    request: Request, 
-    response: Response, 
-    next: NextFunction) => {
-
-    // Defining a hardcoded array of product entities
-    let products: Product[] = [
-      {"name":"television", "price":112.34, "brand":"samsung"},
-      {"name":"washing machine", "price": 345.34, "brand": "LG"},
-      {"name":"Macbook", "price": 3454.34, "brand": "Apple"}
-    ]
-
-    // sending a JSON response
-    response.status(200).json(products);
-}
-
-// Define the route with route path '/products'
-app.get('/products', getProducts);
-
-// Start the server
-app.listen(port, () => {
-    console.log(`Server listening at port ${port}.`);
-});
-
-```
-We can now access the URL: `http://localhost:3000/products` from the browser or run a curl command and get a JSON response containing the `products` array.
 
 ## Conclusion
 
 Here is a list of the major points for a quick reference:
 
-1. Express middleware refers to a set of functions that execute during the processing of HTTP requests received by an Express application. 
+1. We perform error handling in Express applications by writing middleware functions that handle errors. These error handling functions take the error object as the fourth parameter in addition to the parameters: `request`, `response`, and the `next` function.
 
-2. Middleware functions access the HTTP request and response objects. They either terminate the HTTP request or forward it for further processing to another middleware function. 
+2. Express comes with a default error handler for handling error conditions. This is a default middleware function added by Express at the end of the middleware stack.
 
-3. We can add middleware functions to all the routes by using the `app.use(<middleware function>)`.
+3. We call the error handling middleware by passing the error object to the `next` function. 
 
-4. We can add middleware functions to selected routes by using the `app.use(<route url>, <middleware function>)`. 
+4. We can define a chain of multiple error-handling middleware functions to one or more routes and attach them at the end of Express route definitions.
 
-5. Express comes with built-in middleware functions like:
-* `express.static` for serving static resources like CSS, images, and HTML files.
-* `express.json` for parsing JSON payloads received in the request body
-* `express.urlencoded` for parsing URL encoded payloads received in the request body
+5. We can enable Express to catch errors in JavaScript promises by providing `next` as the final catch handler.
 
-6. Express middleware functions are also written and distributed as npm modules by the community. These can be integrated into our application as third-party middleware functions.
+6. We also used TypeScript to define a Node.js server application containing an endpoint for a REST API.  
 
-7. We perform error handling in Express applications by writing middleware functions that handle errors. These error handling functions take the error object as the fourth parameter in addition to the parameters: `request`, `response`, and the `next` function.
-
-8. Express comes with a default error handler for handling error conditions. This is a default middleware function added by Express at the end of the middleware stack.
-
-9. We also used TypeScript to define a Node.js server application containing an endpoint for a REST API.  
-
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/nodejs/express/middleware).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/nodejs/errorhandling).
 

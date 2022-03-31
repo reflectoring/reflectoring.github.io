@@ -44,7 +44,7 @@ npm install express --save
 ```
 When we run this command, it will install the Express framework and also add it as a dependency in our `package.json` file.
 
-We will now create a file named `index.js` and open the project folder in our favorite code editor. We are using [Visual Studio Code](https://code.visualstudio.com) as our source-code editor.
+We will now create a file named `index.js` under a folder: `js` and open the project folder in our favorite code editor. We are using [Visual Studio Code](https://code.visualstudio.com) as our source-code editor.
 
 Let us now add the following lines of code to `index.js` for running a simple HTTP server:
 
@@ -75,7 +75,7 @@ We have also defined two routes that will accept the requests at URLs: `/` and `
 We can run our application with the `node` command:
 
 ```shell
-node index.js
+node js/index.js
 ```
 This will start a server that will listen for requests in port `3000`.  
 
@@ -337,9 +337,16 @@ app.listen(PORT, () => {
 })
 
 ```
-These middleware error handling functions perform different tasks: the first function `errorLogger` logs the error message, the second function `errorResponder` sends the error response to the client, and the third function `invalidPathHandler` sends the error response if any invalid URL is requested. 
+These middleware error handling functions perform different tasks: 
+* the first function: `errorLogger` logs the error message
+* the second function: `errorResponder` sends the error response to the caller
+* the third function: `invalidPathHandler` sends the error response if any invalid URL is requested. 
 
 We have then attached these three error handling middleware functions to the `app` object, after the definitions of the route handler functions by calling the `use()` method on the `app` object.
+
+To test how our application handles errors with the help of these error handling functions, let us invoke the with URL: `localhost:3000/productswitherror`. The error raised from this route causes the first two error handlers to be triggered. The first one logs the error message to the console and the second one sends the error message `processing error in request at /productswitherror` in the response. 
+
+When we request a non-existent route in the application for example: `http://localhost:3000/productswitherrornew`, the third error handler is invoked giving us an error message: `invalid path`.
 
 ## Error Handling while Calling Promise based Methods
 Lastly, it will be worthwhile to look at the best practices for handling errors in JavaScript promise blocks. A promise is a JavaScript object which represents the eventual completion (or failure) of an asynchronous operation and its resulting value. 
@@ -356,13 +363,12 @@ app.get('/product',  (request, response, next)=>{
 })
 
 ```
-
 Here we are calling a REST API with the `axios` library which returns a promise and catching any error in the API invocation by providing `next()` as the final catch handler.
 
 ## Developing Express Error Handling Middleware with TypeScript 
 [TypeScript](https://www.typescriptlang.org) is an open-source language developed by Microsoft. It is a superset of JavaScript with additional capabilities, most notable being static type definitions making it an excellent tool for a better and safer development experience.
 
-Let us first add support for TypeScript to our Node.js project and then see a snippet of the middleware functions written using the TypeScript language.  
+Let us first add support for TypeScript to our Node.js project and then see a snippet of the error handling middleware functions written using the TypeScript language.  
 
 ### Installing TypeScript and other Configurations
 
@@ -390,88 +396,71 @@ npm i -D @types/node @types/express
 ```
 
 ### Writing the Express Error Handling Middleware Functions in TypeScript
-The Express application is written in TypeScript language in a file named `app.ts`. Here is a snippet of the code:
+After enabling the project for TypeScript, we have written the same application built earlier in TypeScript. The files for TypeScript are kept under the folder: `ts`. Here is a snippet of the code in file `app.ts` containing routes and error handling middleware functions:
 ```ts
-import express, { Request, Response, NextFunction } from 'express'
-import morgan from 'morgan'
+  import express, { Request, Response, NextFunction } from 'express'
 
-const app = express()
-const port: number = 3000
+  const app = express()
+  const port: number = 3000
 
-// Define the types to be used in the application
-interface Product {
-    name: string
-    price: number
-    brand: string
-    category?: string
+
+  // Error object used in error handling middleware function
+  class AppError extends Error{
+      statusCode: number;
+
+      constructor(statusCode: number, message: string) {
+        super(message);
+    
+        Object.setPrototypeOf(this, new.target.prototype);
+        this.name = Error.name;
+        this.statusCode = statusCode;
+        Error.captureStackTrace(this);
+      }
   }
 
-interface ProductCreationResponse {
-    productID: string 
-    result: string
-} 
+  const requestLogger = (request: Request, response: Response, next: NextFunction) => {
+      console.log(`${request.method} url:: ${request.url}`);
+      next()
+  }
 
-// Error object used in error handling middleware function
-class AppError extends Error{
-    statusCode: number;
+  app.use(requestLogger)  
 
-    constructor(statusCode: number, message: string) {
-      super(message);
-  
-      Object.setPrototypeOf(this, new.target.prototype);
-      this.name = Error.name;
-      this.statusCode = statusCode;
-      Error.captureStackTrace(this);
+  app.use('/products', express.json({ limit: 100 }))
+
+  // Error handling Middleware functions
+  const errorLogger = (
+        error: Error, 
+        request: Request, 
+        response: Response, 
+        next: NextFunction) => {
+          console.log( `error ${error.message}`) 
+          next(error) // calling next middleware
     }
-}
-
-const requestLogger = (request: Request, response: Response, next: NextFunction) => {
-    console.log(`${request.method} url:: ${request.url}`);
-    next()
-}
-
-app.use(express.static('images'))  
-app.use(express.static('htmls'))  
-app.use(requestLogger)  
-
-app.use(morgan('tiny'))
-
-app.use('/products', express.json({ limit: 100 }))
-
-// Error handling Middleware functions
-const errorLogger = (
-      error: Error, 
+    
+  const errorResponder = (
+      error: AppError, 
       request: Request, 
       response: Response, 
       next: NextFunction) => {
-        console.log( `error ${error.message}`) 
-        next(error) // calling next middleware
-  }
-  
-const errorResponder = (
-    error: AppError, 
+          response.header("Content-Type", 'application/json')
+            
+          const status = error.statusCode || 400
+          response.status(status).send(error.message)
+    }
+
+  const invalidPathHandler = (
     request: Request, 
     response: Response, 
     next: NextFunction) => {
-        response.header("Content-Type", 'application/json')
-          
-        const status = error.statusCode || 400
-        response.status(status).send(error.message)
+      response.status(400)
+      response.send('invalid path')
   }
-
-const invalidPathHandler = (
-  request: Request, 
-  response: Response, 
-  next: NextFunction) => {
-    response.status(400)
-    response.send('invalid path')
-}
   
   
   
-app.get('product', (request: Request, response: Response)=>{
-    response.sendFile("productsample.html")
-})
+  app.get('product', (request: Request, response: Response)=>{
+      response.sendFile("productsample.html")
+  })
   
   // handle get request for path /
   app.get('/', (request: Request, response: Response) => {
@@ -488,43 +477,57 @@ app.get('product', (request: Request, response: Response)=>{
   }
 
 
-const addProducts = (request: Request, response: Response, next: NextFunction) => {
-    let products: Product[] = []
-...
-...
-    const productCreationResponse: ProductCreationResponse = {productID: "12345", result: "success"}
-    response.json(productCreationResponse)
+  app.get('/products', async (request: Request, response: Response, next: NextFunction)=>{
+    try{
+      const apiResponse = await axios.get("http://localhost:3001/products")
 
-    response.status(200).json(products);
-}
-app.post('/products', addProducts)
+      const jsonResponse = apiResponse.data
+      console.log("response "+jsonResponse)
+      
+      response.send(jsonResponse)
+    }catch(error){
+      next(error)
+    }
 
-app.get('/productswitherror', (request: Request, response: Response) => {
-    let error: AppError = new AppError(400, `processing error in request at ${request.url}`)
-    
+  })
+
+  app.get('/product',  (request: Request, response: Response, next: NextFunction)=>{
+   
+      axios.get("http://localhost:3001/product")
+      .then(jsonresponse=>response.send(jsonresponse))
+      .catch(next)
+  })
+
+  app.get('/productswitherror', (request, response) => {
+    let error:AppError = new AppError(400, `processing error in request at ${request.url}`)
+    error.statusCode = 400
     throw error
   })
-  
+
+  app.get('/productswitherror', (request: Request, response: Response) => {
+      let error: AppError = new AppError(400, `processing error in request at ${request.url}`)
+      
+      throw error
+  })
+    
   app.use(errorLogger)
   app.use(errorResponder)
   app.use(invalidPathHandler)
 
-app.listen(port, () => {
-    console.log(`Server listening at port ${port}.`)
-})
+  app.listen(port, () => {
+      console.log(`Server listening at port ${port}.`)
+  }
+)
 ```
 Here we have used the `express` module to create a server as we have seen before. With this configuration, the server will run on port `3000` and can be accessed with the URL: `http://localhost:3000`.
 
 We have modified the import statement on the first line to import the TypeScript interfaces that will be used for the `request`, `response`, and `next` parameters inside the Express middleware.
 
-Next, we have defined a type named `Product` containing attributes: `name`, `price`, `category`, and `brand`. After we have defined the handler function for returning an array of `products` and finally associated it with a route with route path `/products`.
-
-
 ### Running the Express Application Written in TypeScript
 
 We run the Express application written in TypeScript code by using the below command:
 ```shell
-npx ts-node app.ts
+npx ts-node ts/app.ts
 ```
 Running this command will start the HTTP server. We have used `npx` here which is a command-line tool that can execute a package from the `npm` registry without installing that package.
 

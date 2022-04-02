@@ -1,5 +1,5 @@
 ---
-title: "Be informed with Project Lombok"
+title: "Should I Use Project Lombok or Not?"
 categories: ["Java"]
 date: 2022-03-31 00:00:00 +1100
 modified: 2022-03-31 00:00:00 +1100

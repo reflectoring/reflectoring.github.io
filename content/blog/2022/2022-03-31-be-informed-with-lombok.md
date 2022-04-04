@@ -455,11 +455,12 @@ For this class, we could construct an object as
     Job job = Job.builder().id("5678").build();
 ```
 Although, the code compiles, the object `job` here is in an invalid state because we do not know which `JobType` it belongs to.
-For more complex objects, @Builder can end up creating objects in an invalid state which can cause issues further.
-Therefore, before using the @Builder annotation, it is important to enforce required attributes to have a value.
+Therefore, along with using the @Builder annotation, it is also important to enforce required attributes to have a value.
 To do this we could consider using **@NonNull** annotation. 
 With this annotation in place we now get the below error:
 {{% image alt="settings" src="images/posts/lombok/builder_err.JPG" %}}
+
+*An object created with this approach would now be considered valid.*
 
 ### Application Logic Should Not Depend on the Generated Code
 
@@ -472,9 +473,13 @@ that use `@Builder(setterPrefix = "with")`, this could be catastrophic in huge, 
 
 Since Lombok provides a lot of flexibility in the way objects are created, we should be equally responsible and use them appropriately.
 
-### `@SneakyThrows` Can Be Evil
+### Use `@SneakyThrows` cautiously
 
-Let's first consider this example:
+@SneakyThrows can be used to sneakily throw checked exceptions without declaring it in the "throws" clause.
+Lombok achieves this by faking out the compiler. It relies on the fact that the forced check applies only to the compiler and not the JVM.
+Therefore, it modifies the generated class file to disable the check at compile time thus treating checked exceptions as unchecked.
+
+To understand better, let's first consider this example:
 ````java
 public interface DataProcessor {
     void dataProcess();
@@ -493,8 +498,9 @@ public class FileDataProcessor implements DataProcessor {
     }
 
     private void processFile() throws IOException {
-        File file = new File("sample.txt");
-        throw new IOException(); // forcibly throw
+        File file = new ClassPathResource("sample.txt").getFile();
+        log.info("Check if file exists: {}", file.exists());
+        return FileUtils.readFileToString(file, "UTF-8");
     }
 }
 ````
@@ -502,24 +508,31 @@ With `@SneakyThrows` the code gets simplified
 ````java
 public class FileDataProcessor implements DataProcessor {
     @Override
-    @SneakyThrows
     public void dataProcess() {
        processFile();
     }
 
-    private void processFile() throws IOException {
-        File file = new File("sample.txt");
-        throw new IOException();
+    @SneakyThrows
+    private void processFile() {
+        File file = new ClassPathResource("sample.txt").getFile();
+        log.info("Check if file exists: {}", file.exists());
+        return FileUtils.readFileToString(file, "UTF-8");
     }
 }
 ````
 As we can see, **`@SneakyThrows` avoids the hassle of catching or throwing checked exceptions**. In other words, it treats a checked exception like an unchecked one.
 
-This can be useful, especially when writing lambda functions making the code concise and clean. However, since the annotation swallows the checked exception we cannot catch them explicitly. 
+This can be useful, especially when writing lambda functions making the code concise and clean. 
 
-Instead, we usually want to bubble up exceptions to be handled by a global exception handler.
-Therefore, **use `@SneakyThrows` only when you don't intend to process the code selectively depending on the kind of Exception it throws**.
-**Ensure it is used cautiously and not as an alternative to bypass checked exceptions.**
+However, **use `@SneakyThrows` only when you don't intend to process the code selectively depending on the kind of Exception it throws**.
+For instance, if we try to catch `IOException` after applying `@SneakyThrows`, we would get the below compile-time error
+{{% image alt="settings" src="images/posts/lombok/sneakyThrows.png" %}}
+
+The invisible IOException gets propagated, which could then be handled down the call stack.
+{{% image alt="settings" src="images/posts/lombok/exception.png" %}}
+
+Further, we could build logic to read the file content and parse them to dates which might result in `DateTimeParseException`. Bubbling up of such 
+checked exceptions and using @SneakyThrows to escape its handling might make it difficult to trace errors. Therefore, be careful when using this annotation to escape multiple checked exceptions. 
 
 ## Use Lombok with Caution
 
@@ -528,13 +541,13 @@ that will help you use Lombok in a better way.
 1. **Avoid using Lombok with JPA entities**. It will be much easier generating the code yourself than debugging issues later.
 2. When designing POJO's **use only the Lombok annotations you require** (use shorthand annotations sparingly).
 I would recommend using the Delombok feature to understand the code generated better.
-3. **Do not add too many dependencies in the POJOs**. Keep the classes relevant to the responsibility they are designed for. 
-It is easy to lose track of dependent objects with Lombok.
-4. Since `@Builder` gives a lot of flexibility in object creation it **can cause objects to be in an invalid state**. 
+3. **Do not randomly add annotations to classes**. It is important to understand how and when to apply them. 
+This is true especially with shorthand annotations.
+4. `@Builder` gives a lot of flexibility in object creation. This **can cause objects to be in an invalid state**. 
 Therefore, make sure all the required attributes are assigned values during object creation.
 5. **DO NOT write code that could have a huge dependency on the background code Lombok generates**.
-6. When using test coverage tools like Jacoco, Lombok can cause problems since **Jacoco cannot distinguish between Lombok generated code and normal source code**. 
-You might want to consider **excluding Lombok generated code for Jacoco test coverage**. More information on this is available [here](https://github.com/jacoco/jacoco/pull/495)
+6. When using test coverage tools like Jacoco, Lombok can cause problems since **Jacoco cannot distinguish between Lombok generated code and normal source code** and
+configure them accordingly.
 7. **Use `@SneakyThrows` for checked exceptions that you don't intend to selectively catch**. Otherwise, wrap them in runtime exceptions that you throw instead.
 8. **Overusing @SneakyThrows** in an application could make it **difficult to trace and debug errors**.
 

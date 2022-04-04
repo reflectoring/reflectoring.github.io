@@ -28,9 +28,12 @@ This library provides a set of user-friendly annotations that generate the code 
 
 ## IDE Support 
 
-All popular IDEs support Lombok via a plugin. We need to ensure annotation processing is enabled as in the example configuration of IntelliJ below.
+All popular IDEs support Lombok. For example, *Intellij* version 2020.3 and above is compatible with Lombok without a plugin. For earlier versions, plugins can be installed from [here](https://plugins.jetbrains.com/plugin/6317-lombok/).
+Once installed, we need to ensure annotation processing is enabled as in the example configuration below.
 {{% image alt="settings" src="images/posts/lombok/settings.PNG" %}}
 Annotation processing makes it possible for the IDE to evaluate the Lombok annotations and generate the source code from them at compile-time.
+
+For *Eclipse*, install the Lombok plugin downloaded from this [location](https://search.maven.org/search?q=g:org.projectlombok%20AND%20a:lombok&core=gav). 
 
 ### Setting Up a Project with Lombok
 
@@ -294,7 +297,7 @@ If you're looking for a library that generates immutable objects, you should als
 ## Caveats with Lombok
 
 Above are some benefits of using Lombok. By now you would have realised the value these annotations can provide to your code.
-However, in my experience of using Lombok, I have noticed developers misusing these annotations and using them across the whole codebase, making the code messy and prone to errors**.
+However, in my experience of using Lombok, I have noticed developers misusing these annotations and using them across the whole codebase, making the code messy and prone to errors.
 
 Let's look at some  situations where Lombok could be used incorrectly.
 
@@ -356,7 +359,7 @@ There are **three** main problems here:
 1. In an entity class, not all attributes of an entity are initialized. If an attribute has a `FetchType` of `LAZY`,
 it gets invoked only when used in the application. However, **`@ToString` requires all attributes 
 of an entity and would trigger the lazy loading, making one or multiple database calls. This can unintentionally cause performance issues**.
-2. Further, if we **call `toString()` on the entity outside of the scope of a transaction**, it could lead to a`LazyInitializationException`.
+2. Further, if we **call `toString()` on the entity outside of the scope of a transaction**, it could lead to a `LazyInitializationException`.
 3. In the case of associations like `@ManyToMany` between 2 entities, **logging the entity data could result in evaluating circular references and causing a `StackOverflowError`**. In the example above, the `Book` entity 
 will try to fetch all authors of the book. The `Author` entity in turn will try to find all books of the author. This process will keep repeating until it results in an error.
 
@@ -370,44 +373,93 @@ as the `ID` is not available before the entity has been persisted, causing unexp
 Although Lombok allows us to include and exclude attributes, for the sake of brevity it might be a **better option to 
 override these methods (toString(), equals(), hashcode()) ourselves** and not rely on Lombok.
 
-### Lombok Annotations Hide Violations
-Consider a model class in the example below:
+### Lombok Hides Coding Violations
+Consider a snippet of the model class as below:
 ```java
 @Data
 @Builder
 @AllArgsConstructor
 public class CustomerDetails {
 
-    private String id;
-    private String name;
-    private String buildingNm;
-    private String blockNo;
-    private String streetNm;
-    private String city;
-    private int postcode;
-    private String state;
-    private String country;
-    private Gender gender;
-    private String dateOfBirth;
-    private String email;
-    private String phoneNo;
-    private String drivingLicenseNo;
-    private String licenseIssueState;
+   private String id;
+   private String name;
+   private Address address;
+   private Gender gender;
+   private String dateOfBirth;
+   private String age;
+   private String socialSecurityNo;
+   private Contact contactDetails;
+   private DriverLicense driverLicense;
 }
 ```
-The above class has the following flaws:
-1. It is a poorly designed model class. We could consider restructuring the fields to create separate classes to store Address and LicenseDetails.
-2. **`@Builder` hides the complexity of autowiring instances** especially if custom objects 
-having multiple dependencies are added to the class. This affects code readability and destroys the concept of the [Single Responsibility Principle](https://reflectoring.io/single-responsibility-principle/).
-3. **Using these annotations can hide errors and warnings produced by static analyzers such as CheckStyle or Sonar** which is not desirable.
-This is shown in the sample below:
-   {{% image alt="delombok example" src="images/posts/lombok/checkstyle.png" %}}
-   {{% image alt="delombok example" src="images/posts/lombok/checkstyle_err.png" %}}
-4. With `@AllArgsConstructor` referring to multiple same-type parameters, it is easy to accidentally define parameters out of order. 
-It affects code readability and introduces bugs that can be difficult to trace.
+For the project, we have configured a static code analyzer `checkstyle` that runs as a part of the maven `verify` lifecycle.
+In case of the above example (that uses Lombok) the code builds without any issues.
+{{% image alt="settings" src="images/posts/lombok/checkstyle_no_errors.JPG" %}}
 
-In my experience, I have seen huge complex objects having multiple dependencies.
-Developers tend to use these annotations to escape Sonar checks making it difficult to maintain the code.
+In constrast, let's replace the same class with its Delomboked version. After the annotations get replaced with its corresponding constructors, we see issues with the static code analyzer as below.
+{{% image alt="settings" src="images/posts/lombok/checkstyle_with_errors.JPG" %}}
+
+In my experience, I have seen developers use these annotations to escape such violations making it difficult to maintain the code.
+
+### Additional configuration required when using Code Coverage tools
+
+Tools such as **JaCoCo** help create better quality software, as they point out areas of low test coverage in their reports.
+Using Lombok that generates code behind the scenes, greatly affects its code coverage results.
+[Additional configuration](https://reflectoring.io/jacoco/#excluding-code-generated-by-lombok) is required to exclude Lombok generated code.
+
+### @AllArgsConstructor May Introduce Errors When Refactoring
+
+Consider an example class:
+```java
+   @AllArgsConstructor
+   public class Customer {
+   private String id;
+   private String name;
+   private Gender gender;
+   private String dateOfBirth;
+   private String age;
+   private String socialSecurityNo;
+   }
+```
+Let's create an object of Customer class
+```java
+   Customer c = new Customer("C001", "Bryan Rhodes", Gender.MALE, "1986/02/02", "36", "07807789");
+```
+Here, we see that most of the attributes have String as its type. It is easy to mistakenly create an object
+whose params are out of order like this:
+```java
+   Customer c = new Customer("C001", "Bryan Rhodes", Gender.MALE,  "36", "1986/02/02", "07807789");
+```
+If validations are not in place for the attributes, this object might propogate as is in the application.
+Using @Builder here, might avoid such errors.
+
+### @Builder Allows Creation of Invalid Objects
+
+Consider a model as below:
+```java
+    @Builder
+    public class Job {
+        private String id;
+        
+        private JobType jobType;
+    }
+
+    public enum JobType {
+        PLUMBER,
+        BUILDER,
+        CARPENTER
+    }
+```
+For this class, we could construct an object as 
+```java
+    Job job = Job.builder().id("5678").build();
+```
+Although, the code compiles, the object `job` here is in an invalid state because we do not know which `JobType` it belongs to.
+For more complex objects, @Builder can end up creating objects in an invalid state which can cause issues further.
+Therefore, before using the @Builder annotation, it is important to enforce required attributes to have a value.
+To do this we could consider using **@NonNull** annotation. 
+With this annotation in place we now get the below error:
+{{% image alt="settings" src="images/posts/lombok/builder_err.JPG" %}}
 
 ### Application Logic Should Not Depend on the Generated Code
 

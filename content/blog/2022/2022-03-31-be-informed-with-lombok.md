@@ -541,14 +541,12 @@ that will help you use Lombok in a better way.
 1. **Avoid using Lombok with JPA entities**. It will be much easier generating the code yourself than debugging issues later.
 2. When designing POJO's **use only the Lombok annotations you require** (use shorthand annotations sparingly).
 I would recommend using the Delombok feature to understand the code generated better.
-3. **Do not randomly add annotations to classes**. It is important to understand how and when to apply them. 
-This is true especially with shorthand annotations.
-4. `@Builder` gives a lot of flexibility in object creation. This **can cause objects to be in an invalid state**. 
+3. `@Builder` gives a lot of flexibility in object creation. This **can cause objects to be in an invalid state**. 
 Therefore, make sure all the required attributes are assigned values during object creation.
-5. **DO NOT write code that could have a huge dependency on the background code Lombok generates**.
-6. When using test coverage tools like Jacoco, Lombok can cause problems since **Jacoco cannot distinguish between Lombok generated code and normal source code** and
+4. **DO NOT write code that could have a huge dependency on the background code Lombok generates**.
+5. When using test coverage tools like Jacoco, Lombok can cause problems since **Jacoco cannot distinguish between Lombok generated code and normal source code** and
 configure them accordingly.
-7. **Use `@SneakyThrows` for checked exceptions that you don't intend to selectively catch**. Otherwise, wrap them in runtime exceptions that you throw instead.
-8. **Overusing @SneakyThrows** in an application could make it **difficult to trace and debug errors**.
+6. **Use `@SneakyThrows` for checked exceptions that you don't intend to selectively catch**. Otherwise, wrap them in runtime exceptions that you throw instead.
+7. **Overusing @SneakyThrows** in an application could make it **difficult to trace and debug errors**.
 
 

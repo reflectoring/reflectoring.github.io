@@ -28,9 +28,12 @@ This library provides a set of user-friendly annotations that generate the code 
 
 ## IDE Support 
 
-All popular IDEs support Lombok via a plugin. We need to ensure annotation processing is enabled as in the example configuration of IntelliJ below.
+All popular IDEs support Lombok. For example, *Intellij* version 2020.3 and above is compatible with Lombok without a plugin. For earlier versions, plugins can be installed from [here](https://plugins.jetbrains.com/plugin/6317-lombok/).
+Once installed, we need to ensure annotation processing is enabled as in the example configuration below.
 {{% image alt="settings" src="images/posts/lombok/settings.PNG" %}}
 Annotation processing makes it possible for the IDE to evaluate the Lombok annotations and generate the source code from them at compile-time.
+
+For *Eclipse*, install the Lombok plugin downloaded from this [location](https://search.maven.org/search?q=g:org.projectlombok%20AND%20a:lombok&core=gav). 
 
 ### Setting Up a Project with Lombok
 
@@ -294,7 +297,7 @@ If you're looking for a library that generates immutable objects, you should als
 ## Caveats with Lombok
 
 Above are some benefits of using Lombok. By now you would have realised the value these annotations can provide to your code.
-However, in my experience of using Lombok, I have noticed developers misusing these annotations and using them across the whole codebase, making the code messy and prone to errors**.
+However, in my experience of using Lombok, I have noticed developers misusing these annotations and using them across the whole codebase, making the code messy and prone to errors.
 
 Let's look at some  situations where Lombok could be used incorrectly.
 
@@ -356,7 +359,7 @@ There are **three** main problems here:
 1. In an entity class, not all attributes of an entity are initialized. If an attribute has a `FetchType` of `LAZY`,
 it gets invoked only when used in the application. However, **`@ToString` requires all attributes 
 of an entity and would trigger the lazy loading, making one or multiple database calls. This can unintentionally cause performance issues**.
-2. Further, if we **call `toString()` on the entity outside of the scope of a transaction**, it could lead to a`LazyInitializationException`.
+2. Further, if we **call `toString()` on the entity outside of the scope of a transaction**, it could lead to a `LazyInitializationException`.
 3. In the case of associations like `@ManyToMany` between 2 entities, **logging the entity data could result in evaluating circular references and causing a `StackOverflowError`**. In the example above, the `Book` entity 
 will try to fetch all authors of the book. The `Author` entity in turn will try to find all books of the author. This process will keep repeating until it results in an error.
 
@@ -370,44 +373,94 @@ as the `ID` is not available before the entity has been persisted, causing unexp
 Although Lombok allows us to include and exclude attributes, for the sake of brevity it might be a **better option to 
 override these methods (toString(), equals(), hashcode()) ourselves** and not rely on Lombok.
 
-### Lombok Annotations Hide Violations
-Consider a model class in the example below:
+### Lombok Hides Coding Violations
+Consider a snippet of the model class as below:
 ```java
 @Data
 @Builder
 @AllArgsConstructor
 public class CustomerDetails {
 
-    private String id;
-    private String name;
-    private String buildingNm;
-    private String blockNo;
-    private String streetNm;
-    private String city;
-    private int postcode;
-    private String state;
-    private String country;
-    private Gender gender;
-    private String dateOfBirth;
-    private String email;
-    private String phoneNo;
-    private String drivingLicenseNo;
-    private String licenseIssueState;
+   private String id;
+   private String name;
+   private Address address;
+   private Gender gender;
+   private String dateOfBirth;
+   private String age;
+   private String socialSecurityNo;
+   private Contact contactDetails;
+   private DriverLicense driverLicense;
 }
 ```
-The above class has the following flaws:
-1. It is a poorly designed model class. We could consider restructuring the fields to create separate classes to store Address and LicenseDetails.
-2. **`@Builder` hides the complexity of autowiring instances** especially if custom objects 
-having multiple dependencies are added to the class. This affects code readability and destroys the concept of the [Single Responsibility Principle](https://reflectoring.io/single-responsibility-principle/).
-3. **Using these annotations can hide errors and warnings produced by static analyzers such as CheckStyle or Sonar** which is not desirable.
-This is shown in the sample below:
-   {{% image alt="delombok example" src="images/posts/lombok/checkstyle.png" %}}
-   {{% image alt="delombok example" src="images/posts/lombok/checkstyle_err.png" %}}
-4. With `@AllArgsConstructor` referring to multiple same-type parameters, it is easy to accidentally define parameters out of order. 
-It affects code readability and introduces bugs that can be difficult to trace.
+For the project, we have configured a static code analyzer `checkstyle` that runs as a part of the maven `verify` lifecycle.
+In case of the above example (that uses Lombok) the code builds without any issues.
+{{% image alt="settings" src="images/posts/lombok/checkstyle_no_errors.JPG" %}}
 
-In my experience, I have seen huge complex objects having multiple dependencies.
-Developers tend to use these annotations to escape Sonar checks making it difficult to maintain the code.
+In constrast, let's replace the same class with its Delomboked version. After the annotations get replaced with its corresponding constructors, we see issues with the static code analyzer as below.
+{{% image alt="settings" src="images/posts/lombok/checkstyle_with_errors.JPG" %}}
+
+In my experience, I have seen developers use these annotations to escape such violations making it difficult to maintain the code.
+
+### Additional configuration required when using Code Coverage tools
+
+Tools such as **JaCoCo** help create better quality software, as they point out areas of low test coverage in their reports.
+Using Lombok that generates code behind the scenes, greatly affects its code coverage results.
+[Additional configuration](https://reflectoring.io/jacoco/#excluding-code-generated-by-lombok) is required to exclude Lombok generated code.
+
+### @AllArgsConstructor May Introduce Errors When Refactoring
+
+Consider an example class:
+```java
+   @AllArgsConstructor
+   public class Customer {
+   private String id;
+   private String name;
+   private Gender gender;
+   private String dateOfBirth;
+   private String age;
+   private String socialSecurityNo;
+   }
+```
+Let's create an object of Customer class
+```java
+   Customer c = new Customer("C001", "Bryan Rhodes", Gender.MALE, "1986/02/02", "36", "07807789");
+```
+Here, we see that most of the attributes have String as its type. It is easy to mistakenly create an object
+whose params are out of order like this:
+```java
+   Customer c = new Customer("C001", "Bryan Rhodes", Gender.MALE,  "36", "1986/02/02", "07807789");
+```
+If validations are not in place for the attributes, this object might propogate as is in the application.
+Using @Builder here, might avoid such errors.
+
+### @Builder Allows Creation of Invalid Objects
+
+Consider a model as below:
+```java
+    @Builder
+    public class Job {
+        private String id;
+        
+        private JobType jobType;
+    }
+
+    public enum JobType {
+        PLUMBER,
+        BUILDER,
+        CARPENTER
+    }
+```
+For this class, we could construct an object as 
+```java
+    Job job = Job.builder().id("5678").build();
+```
+Although, the code compiles, the object `job` here is in an invalid state because we do not know which `JobType` it belongs to.
+Therefore, along with using the @Builder annotation, it is also important to enforce required attributes to have a value.
+To do this we could consider using **@NonNull** annotation. 
+With this annotation in place we now get the below error:
+{{% image alt="settings" src="images/posts/lombok/builder_err.JPG" %}}
+
+*An object created with this approach would now be considered valid.*
 
 ### Application Logic Should Not Depend on the Generated Code
 
@@ -420,9 +473,13 @@ that use `@Builder(setterPrefix = "with")`, this could be catastrophic in huge, 
 
 Since Lombok provides a lot of flexibility in the way objects are created, we should be equally responsible and use them appropriately.
 
-### `@SneakyThrows` Can Be Evil
+### Use `@SneakyThrows` cautiously
 
-Let's first consider this example:
+@SneakyThrows can be used to sneakily throw checked exceptions without declaring it in the "throws" clause.
+Lombok achieves this by faking out the compiler. It relies on the fact that the forced check applies only to the compiler and not the JVM.
+Therefore, it modifies the generated class file to disable the check at compile time thus treating checked exceptions as unchecked.
+
+To understand better, let's first consider this example:
 ````java
 public interface DataProcessor {
     void dataProcess();
@@ -441,8 +498,9 @@ public class FileDataProcessor implements DataProcessor {
     }
 
     private void processFile() throws IOException {
-        File file = new File("sample.txt");
-        throw new IOException(); // forcibly throw
+        File file = new ClassPathResource("sample.txt").getFile();
+        log.info("Check if file exists: {}", file.exists());
+        return FileUtils.readFileToString(file, "UTF-8");
     }
 }
 ````
@@ -450,24 +508,31 @@ With `@SneakyThrows` the code gets simplified
 ````java
 public class FileDataProcessor implements DataProcessor {
     @Override
-    @SneakyThrows
     public void dataProcess() {
        processFile();
     }
 
-    private void processFile() throws IOException {
-        File file = new File("sample.txt");
-        throw new IOException();
+    @SneakyThrows
+    private void processFile() {
+        File file = new ClassPathResource("sample.txt").getFile();
+        log.info("Check if file exists: {}", file.exists());
+        return FileUtils.readFileToString(file, "UTF-8");
     }
 }
 ````
 As we can see, **`@SneakyThrows` avoids the hassle of catching or throwing checked exceptions**. In other words, it treats a checked exception like an unchecked one.
 
-This can be useful, especially when writing lambda functions making the code concise and clean. However, since the annotation swallows the checked exception we cannot catch them explicitly. 
+This can be useful, especially when writing lambda functions making the code concise and clean. 
 
-Instead, we usually want to bubble up exceptions to be handled by a global exception handler.
-Therefore, **use `@SneakyThrows` only when you don't intend to process the code selectively depending on the kind of Exception it throws**.
-**Ensure it is used cautiously and not as an alternative to bypass checked exceptions.**
+However, **use `@SneakyThrows` only when you don't intend to process the code selectively depending on the kind of Exception it throws**.
+For instance, if we try to catch `IOException` after applying `@SneakyThrows`, we would get the below compile-time error
+{{% image alt="settings" src="images/posts/lombok/sneakyThrows.png" %}}
+
+The invisible IOException gets propagated, which could then be handled down the call stack.
+{{% image alt="settings" src="images/posts/lombok/exception.png" %}}
+
+Further, we could build logic to read the file content and parse them to dates which might result in `DateTimeParseException`. Bubbling up of such 
+checked exceptions and using @SneakyThrows to escape its handling might make it difficult to trace errors. Therefore, be careful when using this annotation to escape multiple checked exceptions. 
 
 ## Use Lombok with Caution
 
@@ -476,14 +541,12 @@ that will help you use Lombok in a better way.
 1. **Avoid using Lombok with JPA entities**. It will be much easier generating the code yourself than debugging issues later.
 2. When designing POJO's **use only the Lombok annotations you require** (use shorthand annotations sparingly).
 I would recommend using the Delombok feature to understand the code generated better.
-3. **Do not add too many dependencies in the POJOs**. Keep the classes relevant to the responsibility they are designed for. 
-It is easy to lose track of dependent objects with Lombok.
-4. Since `@Builder` gives a lot of flexibility in object creation it **can cause objects to be in an invalid state**. 
+3. `@Builder` gives a lot of flexibility in object creation. This **can cause objects to be in an invalid state**. 
 Therefore, make sure all the required attributes are assigned values during object creation.
-5. **DO NOT write code that could have a huge dependency on the background code Lombok generates**.
-6. When using test coverage tools like Jacoco, Lombok can cause problems since **Jacoco cannot distinguish between Lombok generated code and normal source code**. 
-You might want to consider **excluding Lombok generated code for Jacoco test coverage**. More information on this is available [here](https://github.com/jacoco/jacoco/pull/495)
-7. **Use `@SneakyThrows` for checked exceptions that you don't intend to selectively catch**. Otherwise, wrap them in runtime exceptions that you throw instead.
-8. **Overusing @SneakyThrows** in an application could make it **difficult to trace and debug errors**.
+4. **DO NOT write code that could have a huge dependency on the background code Lombok generates**.
+5. When using test coverage tools like Jacoco, Lombok can cause problems since **Jacoco cannot distinguish between Lombok generated code and normal source code** and
+configure them accordingly.
+6. **Use `@SneakyThrows` for checked exceptions that you don't intend to selectively catch**. Otherwise, wrap them in runtime exceptions that you throw instead.
+7. **Overusing @SneakyThrows** in an application could make it **difficult to trace and debug errors**.
 
 

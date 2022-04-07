@@ -33,7 +33,9 @@ Once installed, we need to ensure annotation processing is enabled as in the exa
 {{% image alt="settings" src="images/posts/lombok/settings.PNG" %}}
 Annotation processing makes it possible for the IDE to evaluate the Lombok annotations and generate the source code from them at compile-time.
 
-For *Eclipse*, install the Lombok plugin downloaded from this [location](https://search.maven.org/search?q=g:org.projectlombok%20AND%20a:lombok&core=gav). 
+For *Eclipse*, go to Help menu > Install new Software > Add https://projectlombok.org/p2.
+Install Lombok plugin and restart eclipse.
+{{% image alt="settings" src="images/posts/lombok/eclipse.JPG" %}}
 
 ### Setting Up a Project with Lombok
 
@@ -461,6 +463,8 @@ With this annotation in place we now get the below error:
 {{% image alt="settings" src="images/posts/lombok/builder_err.JPG" %}}
 
 *An object created with this approach would now be considered valid.*
+
+For more advanced validation scenarios, you could consider using the [Bean Validation API](https://reflectoring.io/bean-validation-with-spring-boot/).
 
 ### Application Logic Should Not Depend on the Generated Code
 

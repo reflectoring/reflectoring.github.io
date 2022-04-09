@@ -15,7 +15,7 @@ However, among the developer community, it has been both embraced and criticized
 In this article, we will focus on factors that will help you make an informed decision about using the library effectively
 and being wary of its consequences.
 
-{{% github "https://github.com/thombergs/code-examples/core-java/lombok/be-informed-with-lombok/" %}}
+{{% github "https://github.com/thombergs/code-examples/tree/master/core-java/lombok/be-informed-with-lombok/" %}}
 
 ## What is Lombok?
 

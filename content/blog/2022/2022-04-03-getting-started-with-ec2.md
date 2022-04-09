@@ -30,7 +30,7 @@ For creating the instance, we have selected an Amazon Machine Image(AMI) named: 
 
 **Instance types comprise varying combinations of CPU, memory, storage, and networking capacity and give us the flexibility to choose the appropriate mix of resources for our applications.** We have selected our instance type as `t2.micro` in this example, which is a low-cost, general-purpose instance type that provides a baseline level of CPU performance with the ability to burst above the baseline when needed.
 
-In the last step of creating the instance, we need to choose from an existing Key pair or create a new Key pair which we use to connect to our instance when it is ready. A Key pair which is a combination of public key which is stored by AWS and a private key which we need to store. We had created a new key pair and downloaded the private key and stored it in our local workstation. We will explain this further in the next section when we will connect to this EC2 instance.
+In the last step of creating the instance, we need to choose from an existing key pair or create a new Key pair which we use to connect to our instance when it is ready. A Key pair is a combination of a public key that is stored by AWS and a private key that we need to store. We had created a new key pair and downloaded the private key and stored it in our local workstation. We will explain this further in the next section when we will connect to this EC2 instance.
 
 We have accepted default properties for all other configurations like storage volume, and security group.
 
@@ -47,18 +47,18 @@ We can also see attributes of the running instance in the lower block. Some of t
 We will use these attributes to add or modify the configurations of our EC2 instance in the subsequent sections.
 
 ### Creating a Windows EC2 Instance
-Let us create a Windows EC2 instance in a similar way by selecting a AMI for Windows Operating System as shown below:
+Let us create a Windows EC2 instance in a similar way by selecting an AMI for Windows Operating System as shown below:
 
 {{% image alt="Create EC2 Windows instance" src="images/posts/aws-ec2/create-ec2-windows.png" %}}
 
 As we can see from the description of the AMI, this will create an EC2 instance with the `2019` version of the `Microsoft Windows` operating system. 
 
 ## Connecting to the EC2 Linux Instance
-We connect to EC2 instances created with Linux AMIs using SSH client. 
+We connect to EC2 instances created with Linux AMIs using an SSH client. 
 
-For accessing the EC2 instance we had created a SSH Key pair during instance creation for connecting to the instance. The SSH key pair is used to authenticate the identity of a user or process that wants to access the EC2 instance using the SSH protocol.
+For accessing the EC2 instance we had created an SSH Key pair during instance creation for connecting to the instance. The SSH key pair is used to authenticate the identity of a user or process that wants to access the EC2 instance using the SSH protocol.
 
-A key pair as explained earlier is a combination of public key which is stored by AWS and a private key which we need to store. We had downloaded the private key and stored it in our workstation in path: `~/Downloads/mykeypair.pem`.
+A key pair as explained earlier is a combination of the public key which is stored by AWS and a private key which we need to store. We had downloaded the private key and stored it in our workstation in the path: `~/Downloads/mykeypair.pem`.
 
 The public key is saved in a file `.ssh/authorized_keys` in the EC2 instance that contains a list of all authorized public keys.
 
@@ -68,7 +68,7 @@ We use the below ssh command to connect to our instance with our own private key
 chmod 400 ~/Downloads/mykeypair.pem
 ssh -i ~/Downloads/mykeypair.pem ec2-user@ec2-34-235-151-78.compute-1.amazonaws.com
 ```
-Before running the `ssh` command, we change the permission of our private key file.  We have used the public DNS name: `ec2-34-235-151-78.compute-1.amazonaws.com` to connect to our instance. The logged in ssh session for our EC2 instance looks like this:
+Before running the `ssh` command, we change the permission of our private key file.  We have used the public DNS name: `ec2-34-235-151-78.compute-1.amazonaws.com` to connect to our instance. The logged-in ssh session for our EC2 instance looks like this:
 ```shell
        __|  __|_  )
        _|  (     /   Amazon Linux 2 AMI
@@ -78,48 +78,57 @@ https://aws.amazon.com/amazon-linux-2/
 [ec2-user@ip-172-31-31-48 ~]$ 
 
 ```
-As we can see, we have logged in as `ec2-user` and can execute commands in the linux shell.
+As we can see, we have logged in as `ec2-user` and can execute commands in the Linux shell.
 
 ## Connecting to the EC2 Windows Instance
-To connect to a Windows instance, we first retrieve the initial administrator password using the private key file and then enter this password when we connect to our instance using Remote Desktop. The name of the administrator account depends on the language of the operating system. For example, for English, it's `Administrator`.
+We connect to an EC2 Windows instance with a Remote Desktop client. For Windows AMIs, the private key file is required to obtain the initial administrator password to log into our instance. Let us retrieve this password using the private key file by performing the following actions in the EC2 console:
 
 {{% image alt="EC2 Windows instance generate password" src="images/posts/aws-ec2/win-gen-pwd.png" %}}
 
-For Windows AMIs, the private key file is required to obtain the password used to log into our instance.
+As we can see here, we have specified the connection method as a `standalone RDP client` which gives us the option to download the Remote Desktop file and get the password. We have downloaded the Remote Desktop file and saved it as `ec2-54-235-20-109.compute-1.amazonaws.com.rdp`. 
 
-## Important EC2 Configurations : Volumes, Security Groups
-When creating the instance earlier we had specified the AMI and instance type for creating the EC2 instance. We had accepted default values for all other configurations. However, in most real-life situations we need to configure those properties when creating EC2 instances. 
-
-`ec2-54-235-20-109.compute-1.amazonaws.com.rdp`
+The name of the administrator account depends on the language of the operating system. For example, for English, it's `Administrator`. We initiate the connection with our Windows EC2 instance by running the Remote Desktop file as shown below:
 
 {{% image alt="EC2 Windows instance generate password" src="images/posts/aws-ec2/win-connecting.png" %}}
 {{% image alt="EC2 Windows instance generate password" src="images/posts/aws-ec2/win-login.png" %}}
 
-If our instance is joined to a domain, we can connect to our instance using domain credentials you've defined in AWS Directory Service. On the Remote Desktop login screen, instead of using the local computer name and the generated password, use the fully-qualified user name for the administrator (for example, corp.example.com\Admin), and the password for this account.
+We log in to the EC2 Windows instance by providing the password generated using the private key file earlier.
 
-Let us understand these important configurations we set during creation of an EC2 instance
+If our instance is joined to a domain, we can connect to our instance using the Remote Desktop client with domain credentials defined in AWS Directory Service.
 
-### Adding Data Storage for EC2 Instance
 
-EC2 provides the following data storage options for our instances. Each option has a unique combination of performance and durability:
-1. Elastic Block Store (EBS): We use EBS as a primary storage device for data that requires frequent and granular updates for example a write heavy database. EBS provides durable, block-level storage volumes that we can attach to a running instance. 
+## Adding Storage for an EC2 Instance
+
+The EC2 instances created earlier were configured with a Root Storage Device which contained all the information necessary to boot the instance. A root storage device is created for an instance when we launch an instance from an AMI.
+
+EC2 provides the following data storage options with each option having a unique combination of performance and durability:
+
+1. Elastic Block Store (EBS): We use EBS as a primary storage device for data that requires frequent and granular updates for example a write-heavy database. EBS provides durable, block-level storage volumes that we can attach to a running instance. 
 EBS provides the different volume types: General Purpose SSD (gp2 and gp3), Provisioned IOPS SSD (io1 and io2), Throughput Optimized HDD (st1), Cold HDD (sc1), and Magnetic (standard). They differ in performance characteristics and price, allowing you to tailor your storage performance and cost to the needs of your applications. For more information, see Amazon EBS volume types.
 2. EC2 instance store: 
 3. EFS: We use an EFS file system as a common data source for workloads and applications running on multiple instances.EFS provides scalable file storage.
 4. S3: S3 provides access to reliable and inexpensive data storage infrastructure.
 
-Root Storage Device: The root storage device contains all the information necessary to boot the instance. A root storage device is created for an instance, when we launch an instance from an AMI.
+We can attach an EBS volume to an EC2 instance in the same Availability Zone. After we attach a volume, it appears as a native block device similar to a hard drive or another physical device. At that point, the instance can interact with the volume just as it would with a local drive. 
 
+### Controlling Incoming and Outgoing Connections to the EC2 Instance with Security Groups
+We control incoming and outgoing traffic to EC2 instances by configuring a security group. 
 
-We can attach an EBS volume to any EC2 instance in the same Availability Zone. After we attach a volume, it appears as a native block device similar to a hard drive or other physical device. At that point, the instance can interact with the volume just as it would with a local drive. 
+A security group is composed of inbound rules which control the incoming traffic to the EC2 instance, and outbound rules that control the outgoing traffic from the instance. 
 
-Let us create a EBS volume in the `us-east-1b` where our EC2 instance is running.
+We can specify one or more security groups when we launch an instance or even when the instance is running.
 
+Let us configure our EC2 instance to allow only SSH and HTTP requests. For this we will add two inbound rules to the security group associated with our EC2 instance as shown below: 
 
-### Networking
-VPC is a virtual network dedicated to an AWS account. When we launch an instance, we can select a subnet from the VPC. The instance is configured with a primary network interface, which is a logical virtual network card. The instance receives a primary private IP address from the IPv4 address of the subnet, and it is assigned to the primary network interface.
+{{% image alt="EC2 security group" src="images/posts/aws-ec2/security-group.png" %}}
 
-### User Data
+Here we created two inbound rules:
+* for protocols SSH and port 22 
+* for protocol HTTP and port 80.
+
+A security group is a tool for securing our EC2 instances, and we need to configure them to meet our security needs.
+
+### Initializing the EC2 Instance with User Data
 We can pass user data to the EC2 instance for performing common automated configuration tasks and run scripts after the instance starts. We can pass two types of user data to Amazon EC2: shell scripts and cloud-init directives.
 
 ```shell
@@ -143,19 +152,6 @@ We also need to add an inbound security rule to allow traffic from port `80` as 
 We should be using AWS CloudFormation and AWS OpsWorks for more complex automation scenarios.
 
 
-## Security
-Security in all cloud platforms is based on a shared responsibility model consisting of two components:
-
-Security of the cloud: AWS is responsible for protecting the infrastructure that runs AWS services in the AWS Cloud. AWS also provides you with services that you can use securely. 
-
-Security in the cloud: This component of the security includes:
-Controlling network traffic
-1. Restrict access to our instances with security groups. 
-2. Prevent internet access by putting the instances in private subnets
-
-
-
-
 ## Register EC2 as Targets of an Application Load Balancer
 We can register EC2 instances as targets of an Application Load Balancer. The load balancer distributes incoming application traffic across multiple targets, such as EC2 instances, in multiple Availability Zones. This increases the availability of our application. 
 
@@ -163,12 +159,12 @@ We can register EC2 instances as targets of an Application Load Balancer. The lo
 
 {{% image alt="LB Targets" src="images/posts/aws-ec2/lb-create.png" %}}
 
-Elastic Load Balancing offers two types of load balancers that both feature high availability, automatic scaling, and robust security. These include the Classic Load Balancer that routes traffic based on either application or network level information, and the Application Load Balancer that routes traffic based on advanced application level information that includes the content of the request.
+Elastic Load Balancing offers two types of load balancers that both feature high availability, automatic scaling, and robust security. These include the Classic Load Balancer that routes traffic based on either application or network level information and the Application Load Balancer that routes traffic based on advanced application-level information that includes the content of the request.
 
-## Auto Scaling a EC2 Fleet
-Auto Scaling ensures that you have the correct number of Amazon EC2 instances available to handle the load for your application. We create collections of EC2 instances, called Auto Scaling groups and specify the maximum and minimum number of EC2 instances in an auto scaling group.EC2 Auto Scaling ensures that the number of instances never goes below th
+## Auto Scaling an EC2 Fleet
+Auto Scaling ensures that we have the correct number of Amazon EC2 instances available to handle the load for our application. We create collections of EC2 instances, called Auto Scaling groups, and specify the maximum and a minimum number of EC2 instances in an auto-scaling group.EC2 Auto Scaling ensures that the number of instances never goes outside the range of min and max number of instances.
 
-If you specify scaling policies, then Amazon EC2 Auto Scaling can launch or terminate instances as demand on your application increases or decreases.
+We can also specify scaling policies, then Amazon EC2 Auto Scaling can launch or terminate instances as demand on your application increases or decreases.
 
 An EC2 Fleet contains a group of On-Demand and Spot instances. We can automate the management of a fleet of EC2 instances with Auto Scaling to meet a pre-defined target capacity.
 An EC2 Fleet contains the configuration information to launch a group of instances.
@@ -201,25 +197,27 @@ Depending on your needs, you might prefer to get data for your instances from Am
 ## Optimizing Costs with Purchasing Options
 We can use the following purchasing options of EC2 to optimize our cost of using EC2:
 
-**On-Demand Instances**:  We pay by the second for the running instances.
-**Savings Plans**: Reduce your Amazon EC2 costs by making a commitment to a consistent amount of usage, in USD per hour, for a term of 1 or 3 years.
-Reserved Instances – Reduce your Amazon EC2 costs by making a commitment to a consistent instance configuration, including instance type and Region, for a term of 1 or 3 years.
-Spot Instances – Request unused EC2 instances, which can reduce your Amazon EC2 costs significantly.
-Dedicated Hosts – Pay for a physical host that is fully dedicated to running your instances, and bring your existing per-socket, per-core, or per-VM software licenses to reduce costs.
-Dedicated Instances – Pay, by the hour, for instances that run on single-tenant hardware.
-Capacity Reservations – Reserve capacity for your EC2 instances in a specific Availability Zone for any duration.
+1. **On-Demand Instances**:  We pay by the second for the running instances.
+2. **Savings Plans**: Reduce your Amazon EC2 costs by making a commitment to a consistent amount of usage, in USD per hour, for a term of 1 or 3 years.
+3. **Reserved Instances**:  Reduce your Amazon EC2 costs by making a commitment to a consistent instance configuration, including instance type and Region, for a term of 1 or 3 years.
+4. **Spot Instances**: We can request unused EC2 instances, which can reduce our EC2 costs significantly.
+5. **Dedicated Hosts**: Pay for a physical host that is fully dedicated to running our instances, and bringing our existing per-socket, per-core, or per-VM software licenses to reduce costs.
+6. **Dedicated Instances**: Pay, by the hour, for instances that run on single-tenant hardware.
+7. **Capacity Reservations**: Reserve capacity for our EC2 instances in a specific Availability Zone for any duration.
 
 ## Platform Services Based on EC2
-EC2 is a foundation level service in the Amazon Cloud. Multiple platform level services are available in which take care of the provisioning of EC2:
+EC2 is a foundation-level service in the Amazon Cloud. AWS provides multiple platform level services which take care of the provisioning of EC2 instances and allow us to focus on building applications:
+
 1. Elastic Container Service (Amazon ECS) is a highly scalable and fast container management service.
-2. Fargate: With AWS Fargate, you don't need to manage servers, handle capacity planning, or isolate container workloads for security. Fargate handles the infrastructure management aspects of your workload for you.
-3. AWS Elastic Beanstalk makes it easy for you to create, deploy, and manage scalable, fault-tolerant applications running on the AWS Cloud.
+2. Fargate: With AWS Fargate, we do not need to manage servers, handle capacity planning, or isolate container workloads for security. 
+3. AWS Elastic Beanstalk makes it easy for us to create, deploy, and manage scalable, fault-tolerant applications running on the AWS Cloud.
 
 ## Conclusion
 
 Here is a list of the major points for a quick reference:
-
-
-
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/kinesis).
+1. EC2 is a foundation-level compute service in AWS.
+2. For creating an EC2 instance we provide an AMI and instance type.
+3. We can attach different types of storage to EC2: EBS, EFS, S3, and Instance Store.
+4. We control incoming and outgoing traffic to EC2 with security groups.
+5. EC2 provides various cost-optimizing options for running our workloads on EC2.
 

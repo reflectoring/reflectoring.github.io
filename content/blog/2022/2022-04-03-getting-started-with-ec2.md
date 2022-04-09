@@ -3,18 +3,17 @@ authors: [pratikdas]
 title: "Getting Started with Amazon EC2"
 categories: ["aws"]
 date: 2022-03-03T00:00:00
-excerpt: "Amazon Elastic Compute (EC2) is a compute service from AWS with which we can create virtual machines in the Amazon Web Services (AWS) Cloud with varying characteristics. The computing capacity provided by EC2 is scalable and allows us to scale up or down to handle changes in requirements or spikes in popularity, reducing your need to forecast the load and traffic for investing in hardware upfront. In this article, we will introduce EC2 and understand some of its core concepts like instances, instance types, disk storage, networking, elastic capabilities, and security etc by working through some examples."
+excerpt: "Amazon Elastic Compute Cloud (EC2) is a compute service with which we can create virtual machines in the AWS Cloud. We can configure the computing capacity of an EC2 instance and attach different types and capacities of storage which we can further scale up or down to handle changes in server load and consumer traffic, thereby reducing our need to forecast the capacity for investing in hardware upfront. In this article, we will introduce the Amazon EC2 service and understand some of its core concepts like instances, instance types, disk storage, networking, elastic capabilities, and security by creating a few instances of EC2 and applying different configurations to those instances."
 image: images/stock/0115-2021-1200x628-branded.jpg
 url: getting-started-with-Amazon-EC2
 ---
-Amazon Elastic Compute Cloud (EC2) is a compute service from AWS with which we can create virtual machines in the Amazon Web Services (AWS) Cloud with varying characteristics. The computing capacity provided by EC2 is scalable and allows us to scale up or down to handle changes in requirements or spikes in popularity, reducing your need to forecast the load and traffic for investing in hardware upfront. 
+Amazon Elastic Compute Cloud (EC2) is a compute service with which we can create virtual machines in the AWS Cloud. We can configure the computing capacity of an EC2 instance and attach different types and capacities of storage which we can further scale up or down to handle changes in server load and consumer traffic, thereby reducing our need to forecast the capacity for investing in hardware upfront. 
 
-In this article, we will introduce EC2 and understand some of its core concepts like instances, instance types, disk storage, networking, elastic capabilities, and security etc by creating an instance of EC2 and configure its features and explain the related concepts working through some examples.
-{{% github "https://github.com/thombergs/code-examples/tree/master/aws/kinesis" %}}
+In this article, we will introduce the Amazon EC2 service and understand some of its core concepts like instances, instance types, disk storage, networking, elastic capabilities, and security by creating a few instances of EC2 and applying different configurations to those instances.
 
 ## Creating an Amazon EC2 Instance
 
-Let us get a flavour of the EC2 service by creating what we call an instance. 
+Let us get a flavor of the EC2 service by creating what we call an "EC2 instance". 
 
 An EC2 instance is a virtual machine in the cloud. Like most AWS resources we can create an EC2 instance from the [AWS administration console](https://us-east-1.console.aws.amazon.com/ec2/v2/home?region=us-east-1#Instances:), [AWS Command Line Interface(CLI)](https://aws.amazon.com/cli/), or by leveraging IaC services: Cloudformation and AWS CDK. 
 
@@ -23,52 +22,53 @@ The minimum information required for creating an EC2 instance is the operating s
 ### Creating a Linux EC2 instance
 Let us create an EC2 instance which will have Linux OS and size: 1 CPU from the [AWS administration console](https://us-east-1.console.aws.amazon.com/ec2/v2/home?region=us-east-1#Instances:) as shown in this diagram:
 
-{{% image alt="Create EC2 instance" src="images/posts/aws-ec2/create-ec2-short.png" %}}
+{{% image alt="Create EC2 instance" src="images/posts/aws-ec2/creating-ec2-short.png" %}}
 
-For creating the instance, we have selected an Amazon Machine Image(AMI) named: `no` and an instance Type: `t2.micro`. 
+For creating the instance, we have selected an Amazon Machine Image(AMI) named: `Amazon Linux 2 AMI (HVM) - Kernel 5.10, SSD Volume Type` and an instance type: `t2.micro`. 
 
-An Amazon Machine Image (AMI) is a template that contains a base configuration for the virtual machine that we want to create. It includes the operating system, root storage volumes, and some pre-installed applications. The Amazon Linux AMI used in this example includes packages, configurations for integration with Amazon Web Services, and is pre-installed with many AWS API tools and cloud-init package.
+**An Amazon Machine Image (AMI) is a template that contains a base configuration for the virtual machine that we want to create.** It includes the operating system, root storage volumes, and some pre-installed applications. The Amazon Linux AMI used in this example includes packages, and configurations for integration with Amazon Web Services, and is pre-installed with many AWS API tools.
 
-Instance types comprise varying combinations of CPU, memory, storage, and networking capacity and gives us the flexibility to choose the appropriate mix of resources for our applications. We have selected our instance type as `t2.micro` which is a low-cost, general purpose instance type that provides a baseline level of CPU performance with the ability to burst above the baseline when needed.
+**Instance types comprise varying combinations of CPU, memory, storage, and networking capacity and give us the flexibility to choose the appropriate mix of resources for our applications.** We have selected our instance type as `t2.micro` in this example, which is a low-cost, general-purpose instance type that provides a baseline level of CPU performance with the ability to burst above the baseline when needed.
 
-We have accepted default properties for everything else like storage, and networking.
+In the last step of creating the instance, we need to choose from an existing Key pair or create a new Key pair which we use to connect to our instance when it is ready. A Key pair which is a combination of public key which is stored by AWS and a private key which we need to store. We had created a new key pair and downloaded the private key and stored it in our local workstation. We will explain this further in the next section when we will connect to this EC2 instance.
 
-We can see the EC2 instance in the running state as shown below:
+We have accepted default properties for all other configurations like storage volume, and security group.
 
-{{% image alt="Create EC2 instance" src="images/posts/aws-ec2/running-ec2.png" %}}
+When we launch an EC2 instance, it takes a short time for the instance to be ready and it remains in its initial state of `pending`. The state of the EC2 instance changes to `running` after it starts and it receives a public DNS name. We can see the EC2 instance in the `running` state as shown below:
+
+{{% image alt="Running EC2 instances" src="images/posts/aws-ec2/running-ec2.png" %}}
 
 We can also see attributes of the running instance in the lower block. Some of the important attributes to note are: 
 * instance ID: This is the identifier of the instance
 * public DNS name: Public DNS name of the instance
-* Availability Zone: AZ where the instance is created
-VPC ID
-Security Group
-
-
+* Availability Zone: Availability Zone where the instance is created
+* Security Group: Set of rules to allow or disallow incoming and outgoing traffic to the EC2 instance
 
 We will use these attributes to add or modify the configurations of our EC2 instance in the subsequent sections.
 
 ### Creating a Windows EC2 Instance
-We will create a Windows EC2 instance by selecting a AMI for Windows OS as shown below:
+Let us create a Windows EC2 instance in a similar way by selecting a AMI for Windows Operating System as shown below:
 
 {{% image alt="Create EC2 Windows instance" src="images/posts/aws-ec2/create-ec2-windows.png" %}}
 
-As we can see from the description of the AMI, this will create an EC2 instance with the `2019` version of the `Microsoft Windows` operating system.
+As we can see from the description of the AMI, this will create an EC2 instance with the `2019` version of the `Microsoft Windows` operating system. 
 
 ## Connecting to the EC2 Linux Instance
-We can connect to our EC2 linux instance using a SSH client. Each Linux instance launches with a default Linux system user account. The default user name is determined by the AMI that was specified when we launched the instance.
+We connect to EC2 instances created with Linux AMIs using SSH client. 
 
-For Amazon Linux 2 or the Amazon Linux AMI, the user name is `ec2-user`.
+For accessing the EC2 instance we had created a SSH Key pair during instance creation for connecting to the instance. The SSH key pair is used to authenticate the identity of a user or process that wants to access the EC2 instance using the SSH protocol.
 
-For accessing the EC2 instance we had created a Key pair which is a combination of public key which is stored by AWS and a private key which we need to store. We had downloaded the private key and stored in a secure location. In instances created with Linux AMI's, we access our instance with SSH
+A key pair as explained earlier is a combination of public key which is stored by AWS and a private key which we need to store. We had downloaded the private key and stored it in our workstation in path: `~/Downloads/mykeypair.pem`.
 
-The cloud-init package configures specific aspects of a new Amazon Linux instance when it is launched; most notably, it configures the . ssh/authorized_keys file for the ec2-user so we can log in with our own private key.
+The public key is saved in a file `.ssh/authorized_keys` in the EC2 instance that contains a list of all authorized public keys.
+
+We use the below ssh command to connect to our instance with our own private key:
 
 ```shell
 chmod 400 ~/Downloads/mykeypair.pem
 ssh -i ~/Downloads/mykeypair.pem ec2-user@ec2-34-235-151-78.compute-1.amazonaws.com
 ```
-
+Before running the `ssh` command, we change the permission of our private key file.  We have used the public DNS name: `ec2-34-235-151-78.compute-1.amazonaws.com` to connect to our instance. The logged in ssh session for our EC2 instance looks like this:
 ```shell
        __|  __|_  )
        _|  (     /   Amazon Linux 2 AMI
@@ -78,8 +78,10 @@ https://aws.amazon.com/amazon-linux-2/
 [ec2-user@ip-172-31-31-48 ~]$ 
 
 ```
+As we can see, we have logged in as `ec2-user` and can execute commands in the linux shell.
+
 ## Connecting to the EC2 Windows Instance
-To connect to a Windows instance, we first retrieve the initial administrator password using the private key file and then enter this password when we connect to our instance using Remote Desktop.The name of the administrator account depends on the language of the operating system. For example, for English, it's `Administrator`.
+To connect to a Windows instance, we first retrieve the initial administrator password using the private key file and then enter this password when we connect to our instance using Remote Desktop. The name of the administrator account depends on the language of the operating system. For example, for English, it's `Administrator`.
 
 {{% image alt="EC2 Windows instance generate password" src="images/posts/aws-ec2/win-gen-pwd.png" %}}
 
@@ -199,8 +201,8 @@ Depending on your needs, you might prefer to get data for your instances from Am
 ## Optimizing Costs with Purchasing Options
 We can use the following purchasing options of EC2 to optimize our cost of using EC2:
 
-**On-Demand Instances**:  Pay, by the second, for the instances that we launch.
-Savings Plans – Reduce your Amazon EC2 costs by making a commitment to a consistent amount of usage, in USD per hour, for a term of 1 or 3 years.
+**On-Demand Instances**:  We pay by the second for the running instances.
+**Savings Plans**: Reduce your Amazon EC2 costs by making a commitment to a consistent amount of usage, in USD per hour, for a term of 1 or 3 years.
 Reserved Instances – Reduce your Amazon EC2 costs by making a commitment to a consistent instance configuration, including instance type and Region, for a term of 1 or 3 years.
 Spot Instances – Request unused EC2 instances, which can reduce your Amazon EC2 costs significantly.
 Dedicated Hosts – Pay for a physical host that is fully dedicated to running your instances, and bring your existing per-socket, per-core, or per-VM software licenses to reduce costs.

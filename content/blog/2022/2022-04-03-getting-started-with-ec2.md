@@ -153,13 +153,15 @@ We should be using AWS CloudFormation and AWS OpsWorks for more complex automati
 
 
 ## Register EC2 as Targets of an Application Load Balancer
-We can register EC2 instances as targets of an Application Load Balancer. The load balancer distributes incoming application traffic across multiple targets, such as EC2 instances, in multiple Availability Zones. This increases the availability of our application. 
+We can register EC2 instances as targets of an Application Load Balancer. An Application Load Balancer distributes incoming application traffic across multiple targets, such as EC2 instances, in multiple Availability Zones thereby increasing the availability of our application. 
+
+Here is an example of creating an Application Load Balancer with our EC2 instances as targets.
 
 {{% image alt="LB Targets" src="images/posts/aws-ec2/lb-targets.png" %}}
 
 {{% image alt="LB Targets" src="images/posts/aws-ec2/lb-create.png" %}}
 
-Elastic Load Balancing offers two types of load balancers that both feature high availability, automatic scaling, and robust security. These include the Classic Load Balancer that routes traffic based on either application or network level information and the Application Load Balancer that routes traffic based on advanced application-level information that includes the content of the request.
+We can set up the Application Load Balancer to route traffic based on advanced application-level information that includes the content of the request.
 
 ## Auto Scaling an EC2 Fleet
 Auto Scaling ensures that we have the correct number of Amazon EC2 instances available to handle the load for our application. We create collections of EC2 instances, called Auto Scaling groups, and specify the maximum and a minimum number of EC2 instances in an auto-scaling group.EC2 Auto Scaling ensures that the number of instances never goes outside the range of min and max number of instances.
@@ -173,26 +175,15 @@ We can use Auto Scaling to automatically increase the number of EC2 instances du
 
 ## Monitoring an EC2 Instance
 
-At a minimum, we monitor the following metrics in an EC2 instance:
-
-1. NetworkIn
-1. NetworkOut
-2. DiskReadOps
-3. DiskWriteOps
-4. DiskReadBytes
-5. DiskWriteBytes
-6. CPUUtilization
-
-By default, EC2 sends metric data to CloudWatch in 5-minute periods. We can enable detailed monitoring on the EC2 instance to send metric data for our instance to CloudWatch in 1-minute periods. The Amazon EC2 console displays a series of graphs based on the raw data from Amazon CloudWatch. 
+By default, EC2 sends metric data to CloudWatch in 5-minute intervals. We can enable detailed monitoring on the EC2 instance to send metric data for our instance to CloudWatch in 1-minute intervals. The Amazon EC2 console displays a series of graphs based on the raw data from Amazon CloudWatch. 
 
 {{% image alt="Create Alarm" src="images/posts/aws-ec2/create-alarm.png" %}}
 
-Depending on your needs, you might prefer to get data for your instances from Amazon CloudWatch instead of the graphs in the console.
+Depending on our needs, we might prefer to get information about our instances from the Amazon CloudWatch service instead of the graphs in the EC2 console. For example, we can configure alarms to alert us for specific events in our EC2 instance. An example of creating a Cloudwatch alarm is shown below:
 
-* CloudWatch Alarms
-* EventBridge
-* CloudWatch Logs
-* CloudWatch agent 
+{{% image alt="Create Alarm" src="images/posts/aws-ec2/create-alarm.png" %}}
+
+Here we have set up a alert which will publish an information message to a SNS topic when the CPU utilization in the EC2 instance is below 1%.
 
 ## Optimizing Costs with Purchasing Options
 We can use the following purchasing options of EC2 to optimize our cost of using EC2:

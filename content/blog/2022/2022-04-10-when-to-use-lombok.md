@@ -1,40 +1,37 @@
 ---
-title: "Be informed with Project Lombok"
+title: "When Should I Use Project Lombok?"
 categories: ["Java"]
-date: 2022-03-31 00:00:00 +1100
-modified: 2022-03-31 00:00:00 +1100
+date: 2022-04-10 00:00:00 +1100
+modified: 2022-04-10 00:00:00 +1100
 authors: ["ranjani"]
-description: "A brief on how to and how not to use Project Lombok"
+description: "A brief overview on how to use Lombok, when to use it, and when to better not use it."
 image: images/stock/0010-gray-lego-1200x628-branded.jpg
-url: be-informed-with-project-lombok
+url: when-to-use-lombok
 ---
 
-[Project Lombok](https://projectlombok.org/) is a popular library that **helps us to write clear, concise and less repetitive code**.
-However, among the developer community, it has been both embraced and criticised for reasons I would like to elaborate here.
+[Project Lombok](https://projectlombok.org/) is a popular library that **helps us to write clear, concise, and less repetitive Java code**.
+However, among the developer community, it has been both embraced and criticized for reasons I would like to elaborate here.
 
 In this article, we will focus on factors that will help you make an informed decision about using the library effectively
 and being wary of its consequences.
 
-## Code Example
-
-This article is accompanied by working code examples that demonstrates commonly used Lombok features on [Github](https://github.com/thombergs/code-examples).
-
+{{% github "https://github.com/thombergs/code-examples/core-java/lombok/be-informed-with-lombok/" %}}
 
 ## What is Lombok?
 
 According to official docs, "Project Lombok is a java library that automatically plugs into your editor and build tools, spicing up your Java."
 
-This library provides a set of user-friendly annotations that generate the code at compile-time, helping the developers **save time, space and improving code readability**.
+This library provides a set of user-friendly annotations that generate the code at compile time, helping the developers **save time and space and improving code readability**.
 
 ## IDE Support 
 
-All popular IDEs support Lombok. For example, *Intellij* version 2020.3 and above is compatible with Lombok without a plugin. For earlier versions, plugins can be installed from [here](https://plugins.jetbrains.com/plugin/6317-lombok/).
+All popular IDEs support Lombok. For example, IntelliJ version 2020.3 and above is compatible with Lombok without a plugin. For earlier versions, plugins can be installed from [here](https://plugins.jetbrains.com/plugin/6317-lombok/).
 Once installed, we need to ensure annotation processing is enabled as in the example configuration below.
 {{% image alt="settings" src="images/posts/lombok/settings.PNG" %}}
-Annotation processing makes it possible for the IDE to evaluate the Lombok annotations and generate the source code from them at compile-time.
+Annotation processing makes it possible for the IDE to evaluate the Lombok annotations and generate the source code from them at compile time.
 
-For *Eclipse*, go to Help menu > Install new Software > Add https://projectlombok.org/p2.
-Install Lombok plugin and restart eclipse.
+For Eclipse, go to Help menu > Install new Software > Add https://projectlombok.org/p2.
+Install the Lombok plugin and restart Eclipse.
 {{% image alt="settings" src="images/posts/lombok/eclipse.JPG" %}}
 
 ### Setting Up a Project with Lombok
@@ -125,7 +122,7 @@ Let's look at some of the most prominent benefits of using Lombok.
 ### Clean Code
 
 With Lombok, we can replace boiler-plate code with meaningful annotations. They help the developer focus on business logic.
-Lombok also provides some annotations that combine multiple other annotations (like `@Data` combines `@ToString`, `@EqualsAndHashCode`, `@Getter` / `@Setter` and `@RequiredArgsConstructor` together), so we don't have to "pollute" our code with too many annotations.
+Lombok also provides some annotations that combine multiple other annotations (like `@Data` combines `@ToString`, `@EqualsAndHashCode`, `@Getter` / `@Setter`, and `@RequiredArgsConstructor`), so we don't have to "pollute" our code with too many annotations.
 
 Since the code is more concise, modifying and adding new fields doesn't require so much typing.
 A list of all available annotations is available [here](https://projectlombok.org/features/all). 
@@ -219,7 +216,7 @@ Now, we can create objects easily.
 ### Creating Immutable Objects Made Easy
 
 Once created, an immutable object cannot be modified. The concept of immutability is vital when creating a Java application. 
-Some of its benefits include thread safety, ease of caching, ease of object maintainability. 
+Some of its benefits include thread safety, ease of caching, and ease of object maintainability. 
 To understand why it is a good idea to make classes immutable refer to [this article](https://reflectoring.io/java-immutables/).
 
 Lombok provides the `@Value` annotation to create immutable classes:
@@ -298,7 +295,7 @@ If you're looking for a library that generates immutable objects, you should als
 
 ## Caveats with Lombok
 
-Above are some benefits of using Lombok. By now you would have realised the value these annotations can provide to your code.
+Above are some benefits of using Lombok. By now you would have realized the value these annotations can provide to your code.
 However, in my experience of using Lombok, I have noticed developers misusing these annotations and using them across the whole codebase, making the code messy and prone to errors.
 
 Let's look at some  situations where Lombok could be used incorrectly.
@@ -395,47 +392,59 @@ public class CustomerDetails {
 }
 ```
 For the project, we have configured a static code analyzer `checkstyle` that runs as a part of the maven `verify` lifecycle.
-In case of the above example (that uses Lombok) the code builds without any issues.
+In the case of the above example (that uses Lombok) the code builds without any issues.
 {{% image alt="settings" src="images/posts/lombok/checkstyle_no_errors.JPG" %}}
 
-In constrast, let's replace the same class with its Delomboked version. After the annotations get replaced with its corresponding constructors, we see issues with the static code analyzer as below.
+In contrast, let's replace the same class with its Delomboked version. After the annotations get replaced with their corresponding constructors, we see issues with the static code analyzer as below.
 {{% image alt="settings" src="images/posts/lombok/checkstyle_with_errors.JPG" %}}
 
 In my experience, I have seen developers use these annotations to escape such violations making it difficult to maintain the code.
 
-### Additional configuration required when using Code Coverage tools
+### Configuration with Code Coverage Tools
 
-Tools such as **JaCoCo** help create better quality software, as they point out areas of low test coverage in their reports.
-Using Lombok that generates code behind the scenes, greatly affects its code coverage results.
-[Additional configuration](https://reflectoring.io/jacoco/#excluding-code-generated-by-lombok) is required to exclude Lombok generated code.
+Tools such as JaCoCo help create better quality software, as they point out areas of low test coverage in their reports.
+Using Lombok (that generates code behind the scenes), greatly affects its code coverage results.
+[Additional configuration](https://reflectoring.io/jacoco/#excluding-code-generated-by-lombok) is required to exclude Lombok-generated code.
 
-### @AllArgsConstructor May Introduce Errors When Refactoring
+### `@AllArgsConstructor` May Introduce Errors When Refactoring
 
 Consider an example class:
 ```java
-   @AllArgsConstructor
-   public class Customer {
+@AllArgsConstructor
+public class Customer {
    private String id;
    private String name;
    private Gender gender;
    private String dateOfBirth;
    private String age;
    private String socialSecurityNo;
-   }
+}
 ```
 Let's create an object of Customer class
 ```java
-   Customer c = new Customer("C001", "Bryan Rhodes", Gender.MALE, "1986/02/02", "36", "07807789");
+Customer c = new Customer(
+        "C001", 
+        "Bryan Rhodes", 
+        Gender.MALE, 
+        "1986/02/02", 
+        "36", 
+        "07807789");
 ```
-Here, we see that most of the attributes have String as its type. It is easy to mistakenly create an object
+Here, we see that most of the attributes have String as their type. It is easy to mistakenly create an object
 whose params are out of order like this:
 ```java
-   Customer c = new Customer("C001", "Bryan Rhodes", Gender.MALE,  "36", "1986/02/02", "07807789");
+Customer c = new Customer(
+        "C001", 
+        "Bryan Rhodes", 
+        Gender.MALE,  
+        "36", 
+        "1986/02/02", 
+        "07807789");
 ```
-If validations are not in place for the attributes, this object might propogate as is in the application.
-Using @Builder here, might avoid such errors.
+If validations are not in place for the attributes, this object might propagate as is in the application.
+Using `@Builder` here might avoid such errors.
 
-### @Builder Allows Creation of Invalid Objects
+### `@Builder` Allows Creation of Invalid Objects
 
 Consider a model as below:
 ```java
@@ -454,15 +463,17 @@ Consider a model as below:
 ```
 For this class, we could construct an object as 
 ```java
-    Job job = Job.builder().id("5678").build();
+Job job = Job.builder()
+        .id("5678")
+        .build();
 ```
-Although, the code compiles, the object `job` here is in an invalid state because we do not know which `JobType` it belongs to.
-Therefore, along with using the @Builder annotation, it is also important to enforce required attributes to have a value.
-To do this we could consider using **@NonNull** annotation. 
+Although the code compiles, the object `job` here is in an invalid state because we do not know which `JobType` it belongs to.
+Therefore, along with using the `@Builder` annotation, it is also important to enforce required attributes to have a value.
+To do this we could consider using the `@NonNull` annotation. 
 With this annotation in place we now get the below error:
 {{% image alt="settings" src="images/posts/lombok/builder_err.JPG" %}}
 
-*An object created with this approach would now be considered valid.*
+An object created with this approach would now be considered valid.
 
 For more advanced validation scenarios, you could consider using the [Bean Validation API](https://reflectoring.io/bean-validation-with-spring-boot/).
 
@@ -477,7 +488,7 @@ that use `@Builder(setterPrefix = "with")`, this could be catastrophic in huge, 
 
 Since Lombok provides a lot of flexibility in the way objects are created, we should be equally responsible and use them appropriately.
 
-### Use `@SneakyThrows` cautiously
+### Use `@SneakyThrows` Cautiously
 
 @SneakyThrows can be used to sneakily throw checked exceptions without declaring it in the "throws" clause.
 Lombok achieves this by faking out the compiler. It relies on the fact that the forced check applies only to the compiler and not the JVM.
@@ -535,8 +546,8 @@ For instance, if we try to catch `IOException` after applying `@SneakyThrows`, w
 The invisible IOException gets propagated, which could then be handled down the call stack.
 {{% image alt="settings" src="images/posts/lombok/exception.png" %}}
 
-Further, we could build logic to read the file content and parse them to dates which might result in `DateTimeParseException`. Bubbling up of such 
-checked exceptions and using @SneakyThrows to escape its handling might make it difficult to trace errors. Therefore, be careful when using this annotation to escape multiple checked exceptions. 
+Further, we could build logic to read the file content and parse them to dates which might result in `DateTimeParseException`. Bubbling up such 
+checked exceptions and using `@SneakyThrows` to escape its handling might make it difficult to trace errors. Therefore, be careful when using this annotation to escape multiple checked exceptions. 
 
 ## Use Lombok with Caution
 
@@ -548,9 +559,9 @@ I would recommend using the Delombok feature to understand the code generated be
 3. `@Builder` gives a lot of flexibility in object creation. This **can cause objects to be in an invalid state**. 
 Therefore, make sure all the required attributes are assigned values during object creation.
 4. **DO NOT write code that could have a huge dependency on the background code Lombok generates**.
-5. When using test coverage tools like Jacoco, Lombok can cause problems since **Jacoco cannot distinguish between Lombok generated code and normal source code** and
+5. When using test coverage tools like Jacoco, Lombok can cause problems since **Jacoco cannot distinguish between Lombok-generated code and normal source code** and
 configure them accordingly.
 6. **Use `@SneakyThrows` for checked exceptions that you don't intend to selectively catch**. Otherwise, wrap them in runtime exceptions that you throw instead.
-7. **Overusing @SneakyThrows** in an application could make it **difficult to trace and debug errors**.
+7. **Overusing `@SneakyThrows`** in an application could make it **difficult to trace and debug errors**.
 
 

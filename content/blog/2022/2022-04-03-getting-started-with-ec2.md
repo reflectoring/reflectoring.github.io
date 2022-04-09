@@ -2,7 +2,7 @@
 authors: [pratikdas]
 title: "Getting Started with Amazon EC2"
 categories: ["aws"]
-date: 2022-03-03T00:00:00
+date: 2022-04-08T00:00:00
 excerpt: "Amazon Elastic Compute Cloud (EC2) is a compute service with which we can create virtual machines in the AWS Cloud. We can configure the computing capacity of an EC2 instance and attach different types and capacities of storage which we can further scale up or down to handle changes in server load and consumer traffic, thereby reducing our need to forecast the capacity for investing in hardware upfront. In this article, we will introduce the Amazon EC2 service and understand some of its core concepts like instances, instance types, disk storage, networking, elastic capabilities, and security by creating a few instances of EC2 and applying different configurations to those instances."
 image: images/stock/0115-2021-1200x628-branded.jpg
 url: getting-started-with-Amazon-EC2
@@ -183,7 +183,7 @@ Depending on our needs, we might prefer to get information about our instances f
 
 {{% image alt="Create Alarm" src="images/posts/aws-ec2/create-alarm.png" %}}
 
-Here we have set up a alert which will publish an information message to a SNS topic when the CPU utilization in the EC2 instance is below 1%.
+Here we have set up an alarm that will publish an information message to an SNS topic when the CPU utilization in the EC2 instance is below 1%.
 
 ## Optimizing Costs with Purchasing Options
 We can use the following purchasing options of EC2 to optimize our cost of using EC2:
@@ -210,5 +210,8 @@ Here is a list of the major points for a quick reference:
 2. For creating an EC2 instance we provide an AMI and instance type.
 3. We can attach different types of storage to EC2: EBS, EFS, S3, and Instance Store.
 4. We control incoming and outgoing traffic to EC2 with security groups.
-5. EC2 provides various cost-optimizing options for running our workloads on EC2.
+5. EC2 provides various cost-optimizing options like reserved and spot instances for running our workloads on EC2.
+6. We define EC2 instances as targets of an Application Load Balancer for increasing the availability of our application.
+7. We can use the auto-scaling feature to automatically scale a fleet of EC2 instances for consistent and predictable performance in cases of fluctuating load.
+8. We use the AWS Cloudwatch service to monitor the health of our EC2 instances.
 

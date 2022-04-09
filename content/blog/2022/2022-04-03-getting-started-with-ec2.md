@@ -103,11 +103,18 @@ The EC2 instances created earlier were configured with a Root Storage Device whi
 
 EC2 provides the following data storage options with each option having a unique combination of performance and durability:
 
-1. Elastic Block Store (EBS): We use EBS as a primary storage device for data that requires frequent and granular updates for example a write-heavy database. EBS provides durable, block-level storage volumes that we can attach to a running instance. 
-EBS provides the different volume types: General Purpose SSD (gp2 and gp3), Provisioned IOPS SSD (io1 and io2), Throughput Optimized HDD (st1), Cold HDD (sc1), and Magnetic (standard). They differ in performance characteristics and price, allowing you to tailor your storage performance and cost to the needs of your applications. For more information, see Amazon EBS volume types.
-2. EC2 instance store: 
-3. EFS: We use an EFS file system as a common data source for workloads and applications running on multiple instances.EFS provides scalable file storage.
-4. S3: S3 provides access to reliable and inexpensive data storage infrastructure.
+1. **Elastic Block Store (EBS)**: We use EBS as a primary storage device for data that requires frequent and granular updates for example a write-heavy database. EBS provides durable, block-level storage volumes that we can attach to a running instance. 
+
+EBS provides the different volume types: 
+* General Purpose SSD (gp2 and gp3), 
+* Provisioned IOPS SSD (io1 and io2), 
+* Throughput Optimized HDD (st1), 
+* Cold HDD (sc1)
+
+These volume types differ in performance characteristics and price, allowing us to tailor the storage performance and cost to the needs of our applications. For more information, see [Amazon EBS volume types](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html).
+2. **EC2 instance store**: We use an instance store for the temporary storage of information that changes frequently, such as buffers, caches, scratch data, and other temporary content, or for data that is replicated across a fleet of instances, such as a load-balanced pool of web servers. It is located on disks that are physically attached to the host computer.
+3. **Elastic File System (EFS)**: We use an EFS file system as a common data source for workloads and applications running on multiple instances.EFS provides scalable file storage.
+4. **Simple Storage Service (S3)**: S3 provides access to reliable and inexpensive data storage infrastructure.
 
 We can attach an EBS volume to an EC2 instance in the same Availability Zone. After we attach a volume, it appears as a native block device similar to a hard drive or another physical device. At that point, the instance can interact with the volume just as it would with a local drive. 
 
@@ -164,14 +171,13 @@ Here is an example of creating an Application Load Balancer with our EC2 instanc
 We can set up the Application Load Balancer to route traffic based on advanced application-level information that includes the content of the request.
 
 ## Auto Scaling an EC2 Fleet
-Auto Scaling ensures that we have the correct number of Amazon EC2 instances available to handle the load for our application. We create collections of EC2 instances, called Auto Scaling groups, and specify the maximum and a minimum number of EC2 instances in an auto-scaling group.EC2 Auto Scaling ensures that the number of instances never goes outside the range of min and max number of instances.
-
-We can also specify scaling policies, then Amazon EC2 Auto Scaling can launch or terminate instances as demand on your application increases or decreases.
 
 An EC2 Fleet contains a group of On-Demand and Spot instances. We can automate the management of a fleet of EC2 instances with Auto Scaling to meet a pre-defined target capacity.
-An EC2 Fleet contains the configuration information to launch a group of instances.
 
-We can use Auto Scaling to automatically increase the number of EC2 instances during spikes in demand to maintain performance and decrease capacity during lulls to reduce costs.
+Auto Scaling ensures that we have the correct number of Amazon EC2 instances available to handle the load for our application. We create collections of EC2 instances, called Auto Scaling groups, and specify the maximum and a minimum number of EC2 instances.EC2 Auto Scaling ensures that the number of instances never goes outside the range of the maximum and the minimum number of instances.
+
+We can also define scaling policies, based on which EC2 Auto Scaling can launch or terminate instances as demand on our application increases or decreases.
+
 
 ## Monitoring an EC2 Instance
 
@@ -186,15 +192,13 @@ Depending on our needs, we might prefer to get information about our instances f
 Here we have set up an alarm that will publish an information message to an SNS topic when the CPU utilization in the EC2 instance is below 1%.
 
 ## Optimizing Costs with Purchasing Options
-We can use the following purchasing options of EC2 to optimize our cost of using EC2:
+We can use the following purchasing options for EC2 to reduce our cost of using EC2:
 
 1. **On-Demand Instances**:  We pay by the second for the running instances.
-2. **Savings Plans**: Reduce your Amazon EC2 costs by making a commitment to a consistent amount of usage, in USD per hour, for a term of 1 or 3 years.
-3. **Reserved Instances**:  Reduce your Amazon EC2 costs by making a commitment to a consistent instance configuration, including instance type and Region, for a term of 1 or 3 years.
-4. **Spot Instances**: We can request unused EC2 instances, which can reduce our EC2 costs significantly.
-5. **Dedicated Hosts**: Pay for a physical host that is fully dedicated to running our instances, and bringing our existing per-socket, per-core, or per-VM software licenses to reduce costs.
-6. **Dedicated Instances**: Pay, by the hour, for instances that run on single-tenant hardware.
-7. **Capacity Reservations**: Reserve capacity for our EC2 instances in a specific Availability Zone for any duration.
+2. **Savings Plans**: We commit to a consistent amount of usage, in USD per hour, for a term of 1 or 3 years.
+3. **Reserved Instances**:  We commit to a consistent instance configuration, including instance type and Region, for a term of 1 or 3 years.
+4. **Spot Instances**: We can request unused EC2 instances and use them as part of an autoscaling group. 
+5. **Capacity Reservations**: We can reserve capacity for our EC2 instances in a specific Availability Zone for any duration.
 
 ## Platform Services Based on EC2
 EC2 is a foundation-level service in the Amazon Cloud. AWS provides multiple platform level services which take care of the provisioning of EC2 instances and allow us to focus on building applications:

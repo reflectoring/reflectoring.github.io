@@ -16,7 +16,7 @@ Here's a quick overview of the options for sponsoring reflectoring:
 
 | Sponsorship opportunity                   | Price       | Details |
 |-------------------------------------------|-------------|------------------------------------|
-| **Exclusive Ad Placement**                | $250 / week | [Details](#exclusive-ad-placement) |
+| **Exclusive Ad Placement**                | $325 / week | [Details](#exclusive-ad-placement) |
 | **Sponsored Blog Post**                   | $750        |  [Details](#sponsored-blog-post) |
 | **Sponsored Newsletter**                  | $100        | [Details](#sponsored-newsletter) |
 | **Sponsored Newsletter with endorsement** | $200        | [Details](#sponsored-newsletter) |

@@ -35,13 +35,13 @@ The audience of the reflectoring blog consists of mainly **professional JVM deve
 
 Here are some stats (numbers from November, 2021):
 
-| Metric                             | Value            
-|------------------------------------|------------------|
-| **Monthly Active Users**           | 150,000          |
+| Metric                             | Value     
+|------------------------------------|-----------|
+| **Monthly Active Users**           | 180,000   |
 | **Monthly Sessions**           | > 200,000 |
-| **Newsletter Subscribers**           | 4,600            |
-| **Average Newsletter Open Rate**           | 42%              |
-| **Average Newsletter Click Rate**           | 9%               |
+| **Newsletter Subscribers**           | 5,000     |
+| **Average Newsletter Open Rate**           | 42%       |
+| **Average Newsletter Click Rate**           | 9%        |
 
 ## Exclusive Ad Placement
 

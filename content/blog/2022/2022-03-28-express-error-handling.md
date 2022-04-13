@@ -5,12 +5,12 @@ categories: ["NodeJS"]
 date: 2022-03-28 00:00:00 +1100
 excerpt: "Error handling functions in an application detect and capture multiple error conditions and take appropriate remedial actions to either recover from those errors or fail gracefully. This is the third article in the Express series where we will see how to handle errors in Node.js applications written using Express."
 image: images/stock/0118-keyboard-1200x628-branded.jpg
-url: guide-to-error-handling-in-express
+url: express-error-handling
 ---
  
 Error handling functions in an application detect and capture multiple error conditions and take appropriate remedial actions to either recover from those errors or fail gracefully. Common examples of remedial actions are providing a helpful message as output, logging a message in an error log that can be used for diagnosis, or retrying the failed operation.
 
-Express is a framework for developing a web application in Node.js. In an earlier [article](https://reflectoring.io/getting-started-with-express/) we had introduced the Express framework with examples of using its powerful features which was followed by a second [article](https://reflectoring.io/express-middleware/) on middleware functions in Express. In both of those articles, we had briefly explained error handling using middleware functions. 
+Express is a framework for developing a web application in Node.js. In an earlier article we had [introduced the Express framework](/getting-started-with-express/) with examples of using its powerful features which was followed by a second article on [middleware functions in Express](/express-middleware/). In both of those articles, we had briefly explained error handling using middleware functions. 
 
 This is the third article in the Express series where we will focus on handling errors in Node.js applications written using Express and understand the below concepts:
 
@@ -25,7 +25,7 @@ This is the third article in the Express series where we will focus on handling 
 
 A basic understanding of [Node.js](https://nodejs.org/en/docs/guides/getting-started-guide/) and components of the Express framework is advisable. 
 
-Please refer to our earlier [article](https://reflectoring.io/getting-started-with-express/) for an introduction to Express.
+Please refer to our earlier article for an [introduction to Express](/getting-started-with-express/).
 
 ## Basic Setup for Running the Examples
 We need to first set up a Node.js project for running our examples of handling errors in Express applications. Let us create a folder and initialize a Node.js project under it by running the `npm init` command:
@@ -70,7 +70,7 @@ app.listen(3000,
 ```
 In this code snippet, we are importing the `express` module and then calling the `listen()` function on the `app` handle to start our server. 
 
-We have also defined two routes that will accept the requests at URLs: `/` and `/products`. For an elaborate explanation of routes and handler functions, please refer to our earlier [article](https://reflectoring.io/getting-started-with-express/) for an introduction to Express.
+We have also defined two routes that will accept the requests at URLs: `/` and `/products`. For an elaborate explanation of routes and handler functions, please refer to our earlier article for an [introduction to Express](/getting-started-with-express/).
 
 We can run our application with the `node` command:
 
@@ -114,7 +114,7 @@ app.post('/products', (request, response) => {
 
     // Error handling logic: return error response
     response
-      .status(500)
+      .status(400)
       .json({ message: "Mandatory field: name is missing. " })
   }else{
     // continue with normal processing             
@@ -125,7 +125,7 @@ app.post('/products', (request, response) => {
   }
 })
 ```
-Here we are checking for the error condition by checking for the presence of a mandatory input in the request payload and returning the error as an HTTP error response with error code 500 and an error message as part of the error handling logic.
+Here we are checking for the error condition by checking for the presence of a mandatory input in the request payload and returning the error as an HTTP error response with error code 400 and an error message as part of the error handling logic.
 
 Here is one more example of handling error using a `try-catch` block:
 
@@ -196,7 +196,7 @@ Error: processing error in request at /productswitherror
 ```
 This is the error message sent by the Express framework's default error handler. Express catches this error for us and responds to the caller with the error’s status code, message, and stack trace (only for non-production environments). But this behavior applies only to synchronous functions.
 
-Asynchronous functions called from route handlers that throw an error however need to be handled differently. The error from asynchronous functions are not handled by the default error handler in Express and result in the stopping(crashing) of the application.
+Asynchronous functions called from route handlers that throw an error, however, we need to handle differently. The error from asynchronous functions are not handled by the default error handler in Express and result in the stopping (crashing) of the application.
 
 To prevent this behaviour, we need to pass the error thrown by any asynchronous function invoked by route handlers and middleware, to the `next()`function as shown below: 
 
@@ -355,7 +355,7 @@ To test how our application handles errors with the help of these error handling
 
 When we request a non-existent route in the application for example: `http://localhost:3000/productswitherrornew`, the third error handler is invoked giving us an error message: `invalid path`.
 
-## Error Handling while Calling Promise based Methods
+## Error Handling while Calling Promise-based Methods
 Lastly, it will be worthwhile to look at the best practices for handling errors in JavaScript promise blocks. A promise is a JavaScript object which represents the eventual completion (or failure) of an asynchronous operation and its resulting value. 
 
 We can enable Express to catch errors in promises by providing `next` as the final catch handler as shown in this example:

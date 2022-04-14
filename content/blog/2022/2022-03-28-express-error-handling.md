@@ -81,7 +81,7 @@ This will start a server that will listen for requests in port `3000`.
 
 We have also defined a server application in a file: `js/server.js` which we can run to simulate an external service. We can run the server application with the command:
 
-```js
+```shell
 node js/server.js
 ```
 This will start the server application on port `3001` where we can access a REST API on a URL: `http://localhost:3001/products`. We will call this service in some of our examples to test errors related to an external API call.
@@ -189,10 +189,10 @@ When we call this route either by putting this URL in a browser or by running a 
 ```shell
 Error: processing error in request at /productswitherror
     at /.../storefront/js/index.js:43:15
-    at Layer.handle [as handle_request] (/.../storefront/node_modules/express/lib/router/layer.js:95:5)
+    at Layer.handle .. (/.../storefront/node_modules/express/lib/router/layer.js:95:5)
     at next (/.../storefront/node_modules/express/lib/router/route.js:137:13)
     at Route.dispatch (/.../storefront/node_modules/express/lib/router/route.js:112:3)
-    at Layer.handle [as handle_request] (/.../storefront/node_modules/express/lib/router/layer.js:95:5)
+    at Layer.handle .. (/.../storefront/node_modules/express/lib/router/layer.js:95:5)
     at /.../storefront/node_modules/express/lib/router/index.js:281:22
     at Function.process_params (/.../storefront/node_modules/express/lib/router/index.js:341:12)
     at next (/.../storefront/node_modules/express/lib/router/index.js:275:10)
@@ -454,8 +454,13 @@ After enabling the project for TypeScript, we have written the same application 
         Error.captureStackTrace(this);
       }
   }
+  
+  // Middleware function for logging the request method and request URL
+   const requestLogger = (
+    request: Request, 
+    response: Response, 
+    next: NextFunction) => {
 
-  const requestLogger = (request: Request, response: Response, next: NextFunction) => {
       console.log(`${request.method} url:: ${request.url}`);
       next()
   }
@@ -465,6 +470,8 @@ After enabling the project for TypeScript, we have written the same application 
   app.use('/products', express.json({ limit: 100 }))
 
   // Error handling Middleware functions
+
+  // Error handling Middleware function for logging the error message
   const errorLogger = (
         error: Error, 
         request: Request, 
@@ -474,6 +481,8 @@ After enabling the project for TypeScript, we have written the same application 
           next(error) // calling next middleware
     }
     
+  // Error handling Middleware function reads the error message 
+  // and sends back a response in JSON format  
   const errorResponder = (
       error: AppError, 
       request: Request, 
@@ -485,11 +494,13 @@ After enabling the project for TypeScript, we have written the same application 
           response.status(status).send(error.message)
     }
 
+  // Fallback Middleware function for returning 
+  // 404 error for undefined paths
   const invalidPathHandler = (
     request: Request, 
     response: Response, 
     next: NextFunction) => {
-      response.status(400)
+      response.status(404)
       response.send('invalid path')
   }
   
@@ -505,7 +516,10 @@ After enabling the project for TypeScript, we have written the same application 
   })
   
   
-  const requireJsonContent = (request: Request, response: Response, next: NextFunction) => {
+  const requireJsonContent = (
+    request: Request, 
+    response: Response, 
+    next: NextFunction) => {
     if (request.headers['content-type'] !== 'application/json') {
         response.status(400).send('Server requires application/json')
     } else {
@@ -514,12 +528,15 @@ After enabling the project for TypeScript, we have written the same application 
   }
 
 
-  app.get('/products', async (request: Request, response: Response, next: NextFunction)=>{
+  app.get('/products', async (
+    request: Request, 
+    response: Response, 
+    next: NextFunction)=>{
     try{
       const apiResponse = await axios.get("http://localhost:3001/products")
 
       const jsonResponse = apiResponse.data
-      console.log("response "+jsonResponse)
+      console.log("response " + jsonResponse)
       
       response.send(jsonResponse)
     }catch(error){
@@ -528,35 +545,47 @@ After enabling the project for TypeScript, we have written the same application 
 
   })
 
-  app.get('/product',  (request: Request, response: Response, next: NextFunction)=>{
+  app.get('/product',  (
+    request: Request, 
+    response: Response, 
+    next: NextFunction)=>{
    
       axios.get("http://localhost:3001/product")
       .then(jsonresponse=>response.send(jsonresponse))
       .catch(next)
   })
 
-  app.get('/productswitherror', (request, response) => {
-    let error:AppError = new AppError(400, `processing error in request at ${request.url}`)
+  app.get('/productswitherror', (
+    request: Request, 
+    response: Response) => {
+
+    let error:AppError = new AppError(400, 
+      `processing error in request at ${request.url}`)
+
     error.statusCode = 400
     throw error
   })
 
-  app.get('/productswitherror', (request: Request, response: Response) => {
-      let error: AppError = new AppError(400, `processing error in request at ${request.url}`)
-      
-      throw error
-  })
     
+  // Attach the first Error handling Middleware
+  // function defined above (which logs the error)  
   app.use(errorLogger)
+
+  // Attach the second Error handling Middleware
+  // function defined above (which sends back the response)
   app.use(errorResponder)
+
+  // Attach the fallback Middleware
+  // function which sends back the response for invalid paths)
   app.use(invalidPathHandler)
+
 
   app.listen(port, () => {
       console.log(`Server listening at port ${port}.`)
   }
 )
 ```
-Here we have used the `express` module to create a server as we have seen before. With this configuration, the server will run on port `3000` and can be accessed with the URL: `http://localhost:3000`.
+Here we have used the `express` module to create an application as we have seen before. With this configuration, the application will run on port `3000` and can be accessed with the URL: `http://localhost:3000`.
 
 We have modified the import statement on the first line to import the TypeScript interfaces that will be used for the `request`, `response`, and `next` parameters inside the Express middleware.
 
@@ -581,7 +610,7 @@ Here is a list of the major points for a quick reference:
 
 4. We can define a chain of multiple error-handling middleware functions to one or more routes and attach them at the end of Express route definitions.
 
-5. We can enable Express to catch errors in JavaScript promises by providing `next` as the final catch handler.
+5. We can enable Express to catch errors in JavaScript `Promises` by providing `next` as the final catch handler.
 
 6. We also used TypeScript to author an Express application with route handler and error-handling middleware functions.
 

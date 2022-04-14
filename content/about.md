@@ -21,8 +21,10 @@ With this blog, my team of authors and I produce:
 
 * deep-dive tutorials about [Spring Boot](/categories/spring-boot)
 * hands-on tutorials about [Java](/categories/java)
-* opinion pieces on practices of the [Software Craft](/categories/craft)
-* some [book reviews](/categories/book-reviews) of the (non-fiction) books I've read.
+* hands-on tutorials about [Node.js](/categories/node)
+* hands-on tutorials about [AWS](/categories/node)
+* opinion pieces on practices of the [Software Craft](/categories/software-craft)
+* the occasional [book notes](/categories/book-notes) of a (non-fiction) book I've read.
 * ... and more.
 
 If you're interested in working with me or have any feedback about my writing, don't hesitate to contact me.

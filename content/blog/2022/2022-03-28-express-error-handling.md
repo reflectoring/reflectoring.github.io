@@ -1,10 +1,10 @@
 ---
 authors: [pratikdas]
 title: "Error Handling in Express"
-categories: ["NodeJS"]
-date: 2022-03-28 00:00:00 +1100
+categories: ["Node"]
+date: 2022-04-20 00:00:00 +1100
 excerpt: "Error handling functions in an application detect and capture multiple error conditions and take appropriate remedial actions to either recover from those errors or fail gracefully. This is the third article in the Express series where we will see how to handle errors in Node.js applications written using Express."
-image: images/stock/0118-keyboard-1200x628-branded.jpg
+image: images/stock/0090-404-1200x628-branded.jpg
 url: express-error-handling
 ---
  
@@ -134,7 +134,7 @@ const express = require('express')
 const axios = require("axios")
 const app = express()
 
-app.get('/products', async (request, response)=>{
+app.get('/products', async (request, response) => {
   try{
     const apiResponse = await axios.get("http://localhost:3001/products")
 
@@ -142,7 +142,7 @@ app.get('/products', async (request, response)=>{
     console.log("response " + jsonResponse)
     
     response.send(jsonResponse)
-  }catch(error){ // intercept the error in catch block
+  } catch(error) { // intercept the error in catch block
 
     // return error response
     response
@@ -151,7 +151,6 @@ app.get('/products', async (request, response)=>{
   }
 
 })
-
 ```
 Here also we are handling the error in the route handler function. We are intercepting the error in a catch block and returning an error message with an error code of `500` in the HTTP response.
 
@@ -206,10 +205,10 @@ However, the asynchronous functions that are called from route handlers which th
 To prevent this behaviour, we need to pass the error thrown by any asynchronous function invoked by route handlers and middleware, to the `next()`function as shown below: 
 
 ```js
-const asyncFunction = async (request,response,next)=>{
-  try{
+const asyncFunction = async (request,response,next) => {
+  try {
     throw new Error(`processing error in request `)
-  }catch(error){
+  } catch(error) {
     next(error)
   }  
 }
@@ -268,14 +267,14 @@ const errorHandler = (error, request, response, next) {
   response.status(status).send(error.message)
 }
 
-app.get('/products', async (request, response)=>{
-  try{
+app.get('/products', async (request, response) => {
+  try {
     const apiResponse = await axios.get("http://localhost:3001/products")
 
     const jsonResponse = apiResponse.data
     
     response.send(jsonResponse)
-  }catch(error){
+  } catch(error) {
     next(error) // calling next error handling middleware
   }
 
@@ -323,7 +322,7 @@ app.get('/productswitherror', (request, response) => {
   throw error
 })
 
-app.get('/products', async (request, response)=>{
+app.get('/products', async (request, response) => {
   try{
     const apiResponse = await axios.get("http://localhost:3001/products")
 
@@ -361,27 +360,11 @@ We have then attached these two error-handling middleware functions to the `app`
 
 To test how our application handles errors with the help of these error handling functions, let us invoke the with URL: `localhost:3000/productswitherror`. The error raised from this route causes the first two error handlers to be triggered. The first one logs the error message to the console and the second one sends the error message `processing error in request at /productswitherror` in the response. 
 
-We have also added a middleware function `invalidPathHandler` at the end of the chain which will be a fallback function to handle requests whose routes are not defined. 
+We have also added a middleware function `invalidPathHandler()` at the end of the chain which will be a fallback function to handle requests whose routes are not defined. 
 
-```js
-const express = require('express')
-const app = express()
+Please note that the function `invalidPathHandler()` is not an error-handling middleware since it does not take an error object as the first parameter. It is a conventional middleware function that gets invoked at the end of the middleware stack. 
 
-// Fallback Middleware function for returning 
-// 404 error for undefined paths
-const invalidPathHandler = (request, response, next) => {
-  response.status(404)
-  response.send('invalid path')
-}
-app.use(invalidPathHandler)
-
-app.listen(PORT, () => {
-  console.log(`Server listening at http://localhost:${PORT}`)
-})
-```
-Please note that the function: `invalidPathHandler` is not an error-handling middleware since it does not take an error object as the first parameter. It is a conventional middleware function that gets invoked at the end of the middleware stack. 
-
-When we request a non-existent route in the application for example: `http://localhost:3000/productswitherrornew`, Express does not a find any matching routes. So it does not invoke any route handler functions and associated middleware and error handling functions. It invokes only the middleware function: `invalidPathHandler` at the end which sends an error message: `invalid path` with an HTTP status code of `404`.
+When we request a non-existent route in the application for example: `http://localhost:3000/productswitherrornew`, Express does not a find any matching routes. So it does not invoke any route handler functions and associated middleware and error handling functions. It invokes only the middleware function `invalidPathHandler()` at the end which sends an error message: `invalid path` with an HTTP status code of `404`.
 
 ## Error Handling while Calling Promise-based Methods
 Lastly, it will be worthwhile to look at the best practices for handling errors in JavaScript `Promise` blocks. A `Promise` is a JavaScript object which represents the eventual completion (or failure) of an asynchronous operation and its resulting value. 
@@ -389,7 +372,7 @@ Lastly, it will be worthwhile to look at the best practices for handling errors 
 We can enable Express to catch errors in `Promises` by providing `next` as the final catch handler as shown in this example:
 
 ```js
-app.get('/product',  (request, response, next)=>{
+app.get('/product',  (request, response, next) => {
  
     axios.get("http://localhost:3001/product")
     .then(response=>response.json)
@@ -506,7 +489,7 @@ After enabling the project for TypeScript, we have written the same application 
   
   
   
-  app.get('product', (request: Request, response: Response)=>{
+  app.get('product', (request: Request, response: Response) => {
       response.sendFile("productsample.html")
   })
   
@@ -531,7 +514,7 @@ After enabling the project for TypeScript, we have written the same application 
   app.get('/products', async (
     request: Request, 
     response: Response, 
-    next: NextFunction)=>{
+    next: NextFunction) => {
     try{
       const apiResponse = await axios.get("http://localhost:3001/products")
 
@@ -548,7 +531,7 @@ After enabling the project for TypeScript, we have written the same application 
   app.get('/product',  (
     request: Request, 
     response: Response, 
-    next: NextFunction)=>{
+    next: NextFunction) => {
    
       axios.get("http://localhost:3001/product")
       .then(jsonresponse=>response.send(jsonresponse))

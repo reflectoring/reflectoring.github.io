@@ -14,11 +14,12 @@ Read on, this page details the different sponsorship options.
 
 Here's a quick overview of the options for sponsoring reflectoring:
 
-| Sponsorship opportunity              | Price                      | Details |
-|--------------------------------------|----------------------------|------------------------------------|
-| **Exclusive Ad Placement**           | $250 / week                | [Details](#exclusive-ad-placement) |
-| **Sponsored Blog Post**     | $750 |  [Details](#sponsored-blog-post) |
-| **Sponsored Newsletter**     | $100               | [Details](#sponsored-newsletter) |
+| Sponsorship opportunity                   | Price       | Details |
+|-------------------------------------------|-------------|------------------------------------|
+| **Exclusive Ad Placement**                | $325 / week | [Details](#exclusive-ad-placement) |
+| **Sponsored Blog Post**                   | $750        |  [Details](#sponsored-blog-post) |
+| **Sponsored Newsletter**                  | $100        | [Details](#sponsored-newsletter) |
+| **Sponsored Newsletter with endorsement** | $200        | [Details](#sponsored-newsletter) |
 
 [Get in touch](#get-in-touch) if you have any questions or want to discuss a sponsoring opportunity.
 
@@ -34,13 +35,13 @@ The audience of the reflectoring blog consists of mainly **professional JVM deve
 
 Here are some stats (numbers from November, 2021):
 
-| Metric                             | Value            
-|------------------------------------|------------------|
-| **Monthly Active Users**           | 150,000          |
+| Metric                             | Value     
+|------------------------------------|-----------|
+| **Monthly Active Users**           | 180,000   |
 | **Monthly Sessions**           | > 200,000 |
-| **Newsletter Subscribers**           | 4,600            |
-| **Average Newsletter Open Rate**           | 42%              |
-| **Average Newsletter Click Rate**           | 9%               |
+| **Newsletter Subscribers**           | 5,000     |
+| **Average Newsletter Open Rate**           | 42%       |
+| **Average Newsletter Click Rate**           | 9%        |
 
 ## Exclusive Ad Placement
 
@@ -82,6 +83,8 @@ You leave a message to the audience of my weekly newsletter.
 The newsletter usually contains a link to the latest article on the page, together with a short inspirational text from me ([see examples here](/simplify)).
 
 You provide a logo and a message of up to about 60 words, plus a URL to link to, and it will show up as the first thing in the newsletter.
+
+I can also write the message myself, including an authentic endorsement for your product, making it much more effective. To stay authentic, I only write endorsements for products which I have used myself and which have proven their value to me.
 
 ## Get in Touch
 

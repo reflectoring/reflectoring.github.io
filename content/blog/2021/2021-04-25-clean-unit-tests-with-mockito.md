@@ -47,7 +47,7 @@ Here is a little summary of the different types for test doubles and how we use 
 
 Consider the following example:
 
-![Simple UML Diagram](../assets/img/posts/clean-unit-tests-with-mockito/city-service-diagram.png)
+{{% image alt="UML diagram" src="images/posts/clean-unit-tests-with-mockito/city-service-diagram.png" %}}
 
 The green arrow with the dotted line and filled triangle stands for *implements*. `CityServiceImpl` is the
 implementation of `CityService` and therefore *an instance of* `CityService`. 

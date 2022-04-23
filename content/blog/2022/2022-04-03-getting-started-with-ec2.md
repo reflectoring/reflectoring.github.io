@@ -184,7 +184,11 @@ Here is an example of creating an Application Load Balancer with our EC2 instanc
 
 {{% image alt="LB Targets" src="images/posts/aws-ec2/lb-targets.png" %}}
 
+Here we have see two EC2 instances put in a target group which we will register as a target of an Application Load Balancer.
+
+Then we configure the routing property of the load balancer with this target group:
 {{% image alt="LB Targets" src="images/posts/aws-ec2/lb-create.png" %}}
+Additionally we have configured a HTTP listener and a security group to control traffic for this load balancer.
 
 We can set up the Application Load Balancer to route traffic based on advanced application-level information that includes the content of the request.
 

@@ -135,8 +135,18 @@ Here we created two inbound rules:
 
 A security group is a tool for securing our EC2 instances, and we need to configure them to meet our security needs.
 
-### Initializing the EC2 Instance with User Data
-We can pass user data to the EC2 instance for performing common automated configuration tasks and run scripts after the instance starts. We can pass two types of user data to Amazon EC2: shell scripts and cloud-init directives.
+### Configuring EC2 Instances
+An EC2 instance which we launched earlier is a raw bare bones virtual machine. We can configure an instance in many different ways to meet the specific needs of applications which we want to run on the instance. Moreover, in an organization scenario, an EC2 instance is first initialized by installing OS upgrades, security patches, and common softwares mandated by organization policies before being used for regular operations. Some of these configuration scenarios:
+
+* **Installing and updating softwares**: software packages for Linux are stored in software repositories. We can add a software repository and use the package management tool provided by Linux to search for, install, and update software applications in the repository. 
+* **Adding Users**: We can create user accounts for individual users who can have their own files and workspaces in the EC2 instance.
+* **Setting System Time**: By default, the latest versions of Amazon Linux 2 and Amazon Linux AMIs synchronize with the Amazon Time Sync Service. For others we can configure the Amazon Time Sync Service on an instance using the chrony client or can use external NTP and public time sources.
+* **Changing Hostname**: We can use public DNS name registered for the IP address of our instance (such as webserver.mydomain.com) for hostname, We can set the system hostname so that the EC2 instance identifies itself as a part of that domain.
+* **Setting up Dynamic DNS**: Dynamic DNS services provide custom DNS host names within their domain area that can be easy to remember and that can also be more relevant to your host's use case; some of these services are also free of charge. You can use a dynamic DNS provider with Amazon EC2 and configure the instance to update the IP address associated with a public DNS name each time the instance starts. 
+
+* **Running Commands at launch**: We can perform initial configuration tasks by running scripts during launching of an EC2 instance. The scripts are attached using a feature called user data.
+
+Let us configure our EC2 instance to install an Apache HTTP Server at launch by adding the below script to the user data configuration:
 
 ```shell
 #!/bin/bash
@@ -150,7 +160,12 @@ systemctl start httpd
 systemctl enable httpd
 ```
 
+As we can see, the script starts with `#!/bin/bash` and is run with root privelege so we should not add sudo to any command.
+
+We need to add this script to the user data configuration of the EC2 instance as shown below:
+
 {{% image alt="Create EC2 instance" src="images/posts/aws-ec2/user-data.png" %}}
+For running instances, we need to stop the instance before adding user data. 
 
 We also need to add an inbound security rule to allow traffic from port `80` as shown below:
 
@@ -158,11 +173,14 @@ We also need to add an inbound security rule to allow traffic from port `80` as 
 
 We should be using AWS CloudFormation and AWS OpsWorks for more complex automation scenarios.
 
+Custom images are created from instances or snapshots, or imported from your local device. You can create a custom image from an ECS instance that have applications deployed, and then use the custom image to create identical instances. This eliminates the need for repeated configurations.
 
 ## Register EC2 Instances as Targets of an Application Load Balancer
-We can register EC2 instances as targets of an Application Load Balancer. An Application Load Balancer distributes incoming application traffic across multiple targets, such as EC2 instances, in multiple Availability Zones thereby increasing the availability of our application. 
+In the last section we started the Apache Httpd server in our EC2 instance. The Apache Httpd server is used to serve web pages in response to HTTP requests sent from web browsers. But a single instance of EC2 instance running Apache Httpd server can get overwhelmed and run out of resources when it receives a very high number of requests simultaneously. 
 
-Here is an example of creating an Application Load Balancer with our EC2 instances as targets.
+To mitigate this situation, we can register multiple EC2 instances as targets of an Application Load Balancer. An Application Load Balancer distributes incoming application traffic across multiple EC2 instances placed in multiple Availability Zones thereby increasing the availability of our application. 
+
+Here is an example of creating an Application Load Balancer with our EC2 instances as targets:
 
 {{% image alt="LB Targets" src="images/posts/aws-ec2/lb-targets.png" %}}
 

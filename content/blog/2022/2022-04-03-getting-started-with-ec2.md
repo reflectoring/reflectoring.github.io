@@ -20,7 +20,7 @@ An EC2 instance is a virtual machine in the cloud. Like most AWS resources we ca
 The minimum information required for creating an EC2 instance is the operating system like Linux, Windows, or Mac along with the size (CPU, memory, storage) of the virtual machine. We select the operating system when we select the AMI (Amazon Machine Image). The size of the virtual machine is specified through the "instance type" configuration.
 
 ### Creating a Linux EC2 instance
-Let us create an EC2 instance which will have Linux as operating system and a size of 1 CPU from the [AWS administration console](https://us-east-1.console.aws.amazon.com/ec2/v2/home?region=us-east-1#Instances:) as per this screen shot:
+Let us create an EC2 instance that will have Linux as the operating system and a size of 1 CPU from the [AWS administration console](https://us-east-1.console.aws.amazon.com/ec2/v2/home?region=us-east-1#Instances:) as per this screenshot:
 
 {{% image alt="Create EC2 instance" src="images/posts/aws-ec2/creating-ec2-short.png" %}}
 
@@ -47,7 +47,7 @@ We can also see attributes of the running instance in the lower block. Some of t
 We will use these attributes to add or modify the configurations of our EC2 instance in the subsequent sections.
 
 ### Creating a Windows EC2 Instance
-Let us create a Windows EC2 instance in a similar way by selecting an AMI for Windows Operating System as shown below:
+Let us similarly create a Windows EC2 instance by selecting an AMI for Windows Operating System as shown below:
 
 {{% image alt="Create EC2 Windows instance" src="images/posts/aws-ec2/create-ec2-windows.png" %}}
 
@@ -66,7 +66,7 @@ A key pair as explained earlier is a combination of the public key which is stor
 
 The public key is saved in a file `.ssh/authorized_keys` in the EC2 instance that contains a list of all authorized public keys.
 
-We use the below ssh command to connect to our instance with our own private key:
+We use the below ssh command to connect to our instance with our private key:
 
 ```shell
 chmod 400 ~/Downloads/mykeypair.pem
@@ -107,7 +107,7 @@ The EC2 instances created earlier were configured with a Root Storage Device whi
 
 EC2 provides the following data storage options with each option having a unique combination of performance and durability:
 
-1. **Elastic Block Store (EBS)**: We use EBS as a primary storage device for data that requires frequent and granular updates, for example a write-heavy database. EBS provides durable, block-level storage volumes that we can attach to a running instance. For more details, see [Amazon EBS volume types](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html): 
+1. **Elastic Block Store (EBS)**: We use EBS as a primary storage device for data that requires frequent and granular updates, for example, a write-heavy database. EBS provides durable, block-level storage volumes that we can attach to a running instance. For more details, see [Amazon EBS volume types](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html): 
     * General Purpose SSD (gp2 and gp3), 
     * Provisioned IOPS SSD (io1 and io2), 
     * Throughput Optimized HDD (st1), 
@@ -136,15 +136,21 @@ Here we created two inbound rules:
 A security group is a tool for securing our EC2 instances, and we need to configure them to meet our security needs.
 
 ### Configuring EC2 Instances
-An EC2 instance which we launched earlier is a raw bare bones virtual machine. We can configure an instance in many different ways to meet the specific needs of applications which we want to run on the instance. Moreover, in an organization scenario, an EC2 instance is first initialized by installing OS upgrades, security patches, and common softwares mandated by organization policies before being used for regular operations. Some of these configuration scenarios:
+An EC2 instance that we launched earlier is a bare-bones virtual machine which is not very useful. We need to further configure the instance by installing OS upgrades, security patches, and common software mandated by organization policies before being used for regular operations. 
 
-* **Installing and updating softwares**: software packages for Linux are stored in software repositories. We can add a software repository and use the package management tool provided by Linux to search for, install, and update software applications in the repository. 
+Some of the configurations that we apply to an EC2 instance are:
+
+* **Installing and updating software**: Software packages for Linux are stored in software repositories. We can add a software repository and use the package management tool provided by Linux to search, install, and update software applications in the repository. 
+
 * **Adding Users**: We can create user accounts for individual users who can have their own files and workspaces in the EC2 instance.
-* **Setting System Time**: By default, the latest versions of Amazon Linux 2 and Amazon Linux AMIs synchronize with the Amazon Time Sync Service. For others we can configure the Amazon Time Sync Service on an instance using the chrony client or can use external NTP and public time sources.
-* **Changing Hostname**: We can use public DNS name registered for the IP address of our instance (such as webserver.mydomain.com) for hostname, We can set the system hostname so that the EC2 instance identifies itself as a part of that domain.
-* **Setting up Dynamic DNS**: Dynamic DNS services provide custom DNS host names within their domain area that can be easy to remember and that can also be more relevant to your host's use case; some of these services are also free of charge. You can use a dynamic DNS provider with Amazon EC2 and configure the instance to update the IP address associated with a public DNS name each time the instance starts. 
 
-* **Running Commands at launch**: We can perform initial configuration tasks by running scripts during launching of an EC2 instance. The scripts are attached using a feature called user data.
+* **Setting System Time**: By default, the latest versions of Amazon Linux 2 and Amazon Linux AMIs synchronize with the Amazon Time Sync Service. For EC2 instances created with others AMIs, we can configure the Amazon Time Sync Service on the instance using the chrony client or can use external NTP and public time sources.
+
+* **Changing Hostname**: We can use a public DNS name registered for the IP address of our instance for the hostname.
+
+* **Setting up Dynamic DNS**: Dynamic DNS services provide custom DNS hostnames within their domain area that are easy to remember. We can use a dynamic DNS provider to configure the instance to update the IP address associated with a public DNS name each time the instance starts. 
+
+* **Running Commands at launch**: We can perform initial configuration tasks by running scripts during the launching of an EC2 instance. The scripts are attached using a feature called user data.
 
 Let us configure our EC2 instance to install an Apache HTTP Server at launch by adding the below script to the user data configuration:
 
@@ -160,9 +166,9 @@ systemctl start httpd
 systemctl enable httpd
 ```
 
-As we can see, the script starts with `#!/bin/bash` and is run with root privelege so we should not add sudo to any command.
+As we can see, the script starts with `#!/bin/bash` and is run with root privilege so we should not add `sudo` to any command.
 
-We need to add this script to the user data configuration of the EC2 instance as shown below:
+To run this script at instance startup, we need to add this script to the user data configuration of the EC2 instance as shown below:
 
 {{% image alt="Create EC2 instance" src="images/posts/aws-ec2/user-data.png" %}}
 For running instances, we need to stop the instance before adding user data. 
@@ -176,7 +182,7 @@ We should be using AWS CloudFormation and AWS OpsWorks for more complex automati
 Custom images are created from instances or snapshots, or imported from your local device. You can create a custom image from an ECS instance that have applications deployed, and then use the custom image to create identical instances. This eliminates the need for repeated configurations.
 
 ## Register EC2 Instances as Targets of an Application Load Balancer
-In the last section we started the Apache Httpd server in our EC2 instance. The Apache Httpd server is used to serve web pages in response to HTTP requests sent from web browsers. But a single instance of EC2 instance running Apache Httpd server can get overwhelmed and run out of resources when it receives a very high number of requests simultaneously. 
+In the last section, we started the Apache Httpd server in our EC2 instance. The Apache Httpd server is used to serve web pages in response to HTTP requests sent from web browsers. But a single instance of EC2 instance running Apache Httpd server can get overwhelmed and run out of resources when it receives a very high number of requests simultaneously. 
 
 To mitigate this situation, we can register multiple EC2 instances as targets of an Application Load Balancer. An Application Load Balancer distributes incoming application traffic across multiple EC2 instances placed in multiple Availability Zones thereby increasing the availability of our application. 
 
@@ -184,11 +190,11 @@ Here is an example of creating an Application Load Balancer with our EC2 instanc
 
 {{% image alt="LB Targets" src="images/posts/aws-ec2/lb-targets.png" %}}
 
-Here we have see two EC2 instances put in a target group which we will register as a target of an Application Load Balancer.
+Here we can see two EC2 instances put in a target group which we will register as a target of an Application Load Balancer.
 
 Then we configure the routing property of the load balancer with this target group:
 {{% image alt="LB Targets" src="images/posts/aws-ec2/lb-create.png" %}}
-Additionally we have configured a HTTP listener and a security group to control traffic for this load balancer.
+Additionally, we have configured an HTTP listener and a security group to control traffic for this load balancer.
 
 We can set up the Application Load Balancer to route traffic based on advanced application-level information that includes the content of the request.
 
@@ -196,12 +202,42 @@ We can set up the Application Load Balancer to route traffic based on advanced a
 
 An EC2 fleet contains a group of On-Demand and Spot instances. We can automate the management of a fleet of EC2 instances with Auto Scaling to meet a pre-defined target capacity.
 
-Auto Scaling ensures that we have the correct number of Amazon EC2 instances available to handle the load for our application. We create collections of EC2 instances, called Auto Scaling groups, and specify the maximum and a minimum number of EC2 instances. EC2 Auto Scaling ensures that the number of instances never goes outside the range of the maximum and the minimum number of instances.
+**EC2 Auto Scaling ensures that we always have the correct number of EC2 instances available to handle the load for our application.** 
 
-We can also define scaling policies, based on which EC2 Auto Scaling can launch or terminate instances as demand on our application increases or decreases.
+The key components of EC2 Auto Scaling are:
+* Auto Scaling Group
+* Launch Template
+* Scaling Policies
 
+For configuring Auto Scaling, we need to create an Auto Scaling Group and associate it with a launch template. 
+
+The Auto Scaling group contains a collection of EC2 instances along with the maximum and the minimum number of EC2 instances and scaling policies, based on which EC2 instances are launched or terminated as demand on our application increases or decreases.
+
+A launch template contains the configuration information required to launch an instance and contains the instance-level settings such as the Amazon Machine Image (AMI), instance type, key pair, and security groups.
+
+A snippet of a launch template as displayed in the EC2 administration console is shown below:
+{{% image alt="launch Template" src="images/posts/aws-ec2/launch-template.png" %}}
+
+As we can see, this launch template has the instance type property set to `t2.micro`.
+
+When we create the Auto Scaling Group, we specify this launch template:
+{{% image alt="Creating Auto Scaling Group with launch Template" src="images/posts/aws-ec2/asg-create.png" %}}
+
+The Auto Scaling Group will use the configurations in this launch template to launch new EC2 instances. 
+
+We further specify the group size and scaling policies of the Auto Scaling Group as shown below:
+{{% image alt="Auto Scaling Group scaling policies" src="images/posts/aws-ec2/asg-config.png" %}}
+
+Here we have set the scaling policy of the Auto Scaling Group `to maintain Average CPU utilization at 50`.
 
 ## Monitoring an EC2 Instance
+
+The primary metrics which we monitor in EC2 instances are:
+
+1. `CPUUtilization` for CPU utilization
+2. `NetworkIn` and `NetworkOut` for Network utilization
+3. `DiskReadOps` and `DiskWriteOp` for Disk performance
+4. `DiskReadBytes` and `DiskWriteBytes` for Disk Reads/Writes
 
 By default, EC2 sends metric data to CloudWatch in 5-minute intervals. We can enable detailed monitoring on the EC2 instance to send metric data for our instance to CloudWatch in 1-minute intervals. The Amazon EC2 console displays a series of graphs based on the raw data from Amazon CloudWatch. 
 

@@ -1,11 +1,12 @@
 ---
 authors: [pratikdas]
 title: "Getting Started with Amazon EC2"
-categories: ["aws"]
-date: 2022-04-08T00:00:00
+categories: ["AWS"]
+date: 2022-04-24 00:00:00 +1100
 excerpt: "Amazon Elastic Compute Cloud (EC2) is a compute service with which we can create virtual machines in the AWS Cloud. We can configure the computing capacity of an EC2 instance and attach different types and capacities of storage which we can further scale up or down to handle changes in server load and consumer traffic, thereby reducing our need to forecast the capacity for investing in hardware upfront. In this article, we will introduce the Amazon EC2 service and understand some of its core concepts like instances, instance types, disk storage, networking, elastic capabilities, and security by creating a few instances of EC2 and applying different configurations to those instances."
-image: images/stock/0115-2021-1200x628-branded.jpg
-url: getting-started-with-Amazon-EC2
+image: images/stock/0046-rack-1200x628-branded.jpg
+url: getting-started-with-amazon-ec2
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 Amazon Elastic Compute Cloud (EC2) is a compute service with which we can create virtual machines in the AWS Cloud. We can configure the computing capacity of an EC2 instance and attach different types and capacities of storage which we can further scale up or down to handle changes in server load and consumer traffic, thereby reducing our need to forecast the capacity for investing in hardware upfront. 
 
@@ -236,7 +237,7 @@ The primary metrics which we monitor in EC2 instances are:
 
 1. `CPUUtilization` for CPU utilization
 2. `NetworkIn` and `NetworkOut` for Network utilization
-3. `DiskReadOps` and `DiskWriteOp` for Disk performance
+3. `DiskReadOps` and `DiskWriteOps` for Disk performance
 4. `DiskReadBytes` and `DiskWriteBytes` for Disk Reads/Writes
 
 By default, EC2 sends metric data to CloudWatch in 5-minute intervals. We can enable detailed monitoring on the EC2 instance to send metric data for our instance to CloudWatch in 1-minute intervals. The Amazon EC2 console displays a series of graphs based on the raw data from Amazon CloudWatch. 

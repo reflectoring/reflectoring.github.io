@@ -136,7 +136,7 @@ Here we created two inbound rules:
 
 A security group is a tool for securing our EC2 instances, and we need to configure them to meet our security needs.
 
-### Configuring EC2 Instances
+## Configuring EC2 Instances
 An EC2 instance that we launched earlier is a bare-bones virtual machine which is not very useful. We need to further configure the instance by installing OS upgrades, security patches, and common software mandated by organization policies before being used for regular operations. 
 
 Some of the configurations that we apply to an EC2 instance are:

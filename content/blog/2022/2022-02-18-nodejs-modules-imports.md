@@ -1,6 +1,6 @@
 ---
 title: "CommonJS vs. ES Modules: Modules and Imports in NodeJS"
-categories: ["NodeJS"]
+categories: ["Node"]
 date: 2022-02-18 00:00:00 +1100 
 modified: 2022-02-18 00:00:00 +1100
 authors: ["robert"]

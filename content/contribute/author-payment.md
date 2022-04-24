@@ -43,4 +43,20 @@ To determine the number of words, the published article is pasted into [WordCoun
 
 The payment rates are specified in US-Dollars.
 
+## Payment via Wise
+
+I prefer [Wise](https://wise.com/invite/u/tomh430) as the service for paying authors. Its fees for international money transfers are very transparent and cheap compared to PayPal with great exchange feed between currencies.
+
+Please set up a Wise account using [this link](https://wise.com/invite/u/tomh430) if you don't have an account already and set up an account that can receive any currency. Under **Manage > Account > Receiving by email or phone**, activate that your Wise account can be found by email:
+
+{{% image alt="Wise settings" src="images/wise.png" %}}
+
+Then, all you need to do after an article has been published is to let me know the email address you used for your Wise account and I can transfer the money.
+
+## Payment via PayPal
+
+If Wise is not an option for you, we can use PayPal. PayPal has some hidden fees, however, which might mean that it takes some of the money before it arrives in your account.
+
+After an article is published, let me know your PayPal email address and I'll transfer the money.
+
 {{% author-form %}}

@@ -15,7 +15,7 @@ The operations in a stream use internal iteration for processing the elements of
 
 In this post, we will work with the different classes and interfaces of the Java Stream API and understand the usage of the various types of operations that we can perform on Java Streams.
 
-{{% github "https://github.com/thombergs/code-examples/tree/master/java/streams" %}}
+{{% github "https://github.com/thombergs/code-examples/tree/master/core-java/streams/data-streams" %}}
 
 ## Creating a Stream from a Source
 The `java.util.stream` package contains the interfaces and classes to support functional-style operations on streams of elements. In addition to the `Stream` interface, which is a stream of object references, there are primitive specializations like `IntStream`, `LongStream`, and `DoubleStream`.
@@ -538,4 +538,4 @@ In this article, we looked at the different capabilities of Java Streams. Here i
 10. We can execute streams in serial or in parallel. When a stream executes in parallel, the stream is partitioned into multiple substreams. Aggregate operations iterate over and process these substreams in parallel and then combine the results.
 
 You can refer to all the source code used in the article
-on [Github](https://github.com/thombergs/code-examples/tree/master/java/streams).
+on [Github](https://github.com/thombergs/code-examples/tree/master/core-java/streams/data-streams).

@@ -117,7 +117,7 @@ Let us look at the different intermediate and terminal operations in the subsequ
 ## Stream Mapping Operations
 Mapping Operations are intermediate operations and transform each element of a stream with the help of a predicate function:
 ### map Operation
-The map function a stream consisting of the results of applying the given function to the elements of this stream
+The map function returns a stream consisting of the results of applying the given function to the elements of a stream. In this example, we use the `map()` operation to get a stream of the numeric category codes of a stream of category names:
 ```java
 public class StreamingApp {
   public void mapStream() {
@@ -140,9 +140,9 @@ public class StreamingApp {
 }
 
 ```
-
+Here in the mapping function we are converting each category name to a numeric value so that the the `map()` operation on the stream returns a stream of category codes.
 ### flatMap Operation
-
+We should use the `flatMap()` method, if we have a stream where every element has its own sequence of elements and we want to create a single stream of these inner elements:
 
 ```java
 public class StreamingApp {
@@ -158,18 +158,20 @@ public class StreamingApp {
                                 .flatMap(Collection::stream)
                                 .collect(Collectors.toList());
 
-    products.forEach(logger::info); 
+    logger.info("flattened elements::" + products); 
   }
     
 }
 
 ```    
-
-
+In this example, each element of the stream is a list. We are apply the `flatMap()` operation to get a list of all the inner elements as shown in this output:
+```shell
+INFO: flattened elements::[washing machine, Television, Laptop, Camera, Watch, grocery, essentials]
+```
 ## Ordering Operations
 Ordering operations on a stream include:
 1. `sorted()` which sorts the stream elements according to natural order 
-2. an overriden method `sorted(comparator)` which sorts the stream elements according to a provided Comparator.
+2. an overriden method `sorted(comparator)` which sorts the stream elements according to a provided `Comparator` instance.
 
 ```java
 public class StreamOrderingApp {
@@ -187,33 +189,42 @@ public class StreamOrderingApp {
     }
 }
 ```
+In the `sortElements()` function we are sorting the integer elements in their natural order.
+In the `sortElementsWithComparator()` function we are sorting the integer elements by using a comparator function to sort them in a descending order. The comparator function should return positive or negative value.
 
 Both methods are intermediate operations so we still need to call a terminal operation to trigger the sorting.
 
 ## Matching and Filtering Operations
-The Stream interface provides methods to detect whether the elements of a stream comply to a condition specified as a predicate:
+The Stream interface provides methods to detect whether the elements of a stream comply to a condition (called the predicate) specified as input:
 
-### `anyMatch()`
+### `anyMatch()` 
 
-We determine whether any of the elements comply to the condition specified as the predicate as shown in this example:
+With `anyMatch()` operation, we determine whether any of the elements comply to the condition specified as the predicate as shown in this example:
 
 ```java
 public class StreamMatcherApp {
     private final Logger logger = Logger.getLogger(StreamMatcherApp.class.getName());
 
     public void findAnyMatch(){
-        Stream<String> productCategories = Stream.of("washing machine", "Television", "Laptop", "grocery", "essentials");
+        Stream<String> productCategories = Stream.of(
+                                                    "washing machine", 
+                                                    "Television", 
+                                                    "Laptop", 
+                                                    "grocery", 
+                                                    "essentials");
       
-        boolean isPresent = productCategories.anyMatch(e->e.equals("Laptop"));
+        boolean isPresent = productCategories.anyMatch(e->e.equals("Laptop")); 
         logger.info("isPresent::"+isPresent);
 
     }
     
 }
 ```
+Here we are checking whether the stream contains an element with value `Laptop`. Since one of the values in the stream is `Laptop`, we get result of the `anyMatch()` operation as `true`. 
 
-### allMatch
-
+We would have received a `false` result if we were checking for a value for example `e->e.equals("Shoes") ` in our predicate function, which is not present in the stream.
+### `allMatch()`
+With `allMatch()` operation, we determine whether all of the elements comply to the condition specified as the predicate as shown in this example:
 ```java
 public class StreamMatcherApp {
     private final Logger logger = Logger.getLogger(StreamMatcherApp.class.getName());
@@ -229,7 +240,7 @@ public class StreamMatcherApp {
 ```
 
 ### noneMatch
-
+With `noneMatch()` operation, we determine whether none of the elements comply to the condition specified as the predicate as shown in this example:
 ```java
 public class StreamMatcherApp {
     private final Logger logger = Logger.getLogger(StreamMatcherApp.class.getName());
@@ -242,7 +253,7 @@ public class StreamMatcherApp {
     }
 }
 ```
-find API gives a handy set of instruments to validate elements of a sequence according to some predicate. To do this, one of the following methods can be used: anyMatch(), allMatch(), noneMatch(). Their names are self-explanatory. Those are terminal operations that return a boolean:
+All of these methods are terminal operations that return a boolean:
 
 ### filter
 
@@ -283,7 +294,7 @@ public class StreamingApp {
 ```
 
 ## Reduction Operations
-The JDK contains many terminal operations (such as average, sum, min, max, and count) that return one value by combining the contents of a stream. These operations are called reduction operations. The JDK also contains reduction operations that return a collection instead of a single value. Many reduction operations perform a specific task, such as finding the average of values or grouping elements into categories. However, the JDK provides you with the general-purpose reduction operations reduce and collect, 
+The Stream class has many terminal operations (such as average, sum, min, max, and count) that return one value by combining the contents of a stream. These operations are called reduction operations. The JDK also contains reduction operations that return a collection instead of a single value. Many reduction operations perform a specific task, such as finding the average of values or grouping elements into categories. However, the JDK provides you with the general-purpose reduction operations reduce and collect, 
 
 ### reduce Operation
 The Stream.reduce method is a general-purpose reduction operation that combines the elements of a stream to produce a single value. The signature of a reduce method looks like this:
@@ -332,7 +343,7 @@ Another overriden method of reduce takes only the accumulator as input parameter
 Optional<T> reduce(BinaryOperator<T> accumulator);
 ```
 
-### sum, average
+### Specialized Reduction Functions
 
 ```java
 public class ReduceStreamingApp {

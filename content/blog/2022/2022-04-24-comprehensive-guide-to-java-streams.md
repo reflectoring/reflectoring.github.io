@@ -11,18 +11,16 @@ url: comprehensive-guide-to-java-streams
 
 A stream is a sequence of elements on which we can perform different kinds of sequential and parallel operations. The Stream API was introduced in Java 8 and is used to process collections of objects. Unlike collections, a Java stream is not a data structure instead it takes input from Collections, Arrays, or I/O channels (like files).
 
-The operations in a stream use internal iteration when processing elements of a stream so we can get rid of verbose constructs like `while`, `for` and `forEach` loops while operating on multi-valued data structures (like arrays and collections) from our program code.
+The operations in a stream use internal iteration for processing the elements of a stream. This capability helps us to get rid of verbose constructs like `while`, `for`, and `forEach` loops while operating on multi-valued data structures (like arrays and collections) from our program code.
 
-In this post, we will look at the different Stream classes along with the various types of operations which we can perform on Java Streams.
+In this post, we will work with the different classes and interfaces of the Java Stream API and understand the usage of the various types of operations that we can perform on Java Streams.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/java/streams" %}}
 
-## Java Stream Classes
-The `java.util.stream` package contains the interfaces and classes to support functional-style operations on streams of elements. In addition to the `Stream` interface, which is a stream of object references, there are primitive specializations: `IntStream` for a stream of elements of type: `Int`, `LongStream` for a stream of elements of type: `Long`, and `DoubleStream` for a stream of elements of type: `Double`.
-
 ## Creating a Stream from a Source
+The `java.util.stream` package contains the interfaces and classes to support functional-style operations on streams of elements. In addition to the `Stream` interface, which is a stream of object references, there are primitive specializations like `IntStream`, `LongStream`, and `DoubleStream`.
 
-We can obtain Streams in several ways from different types of data sources:
+We can obtain streams in several ways from different types of data sources:
 
 ### Obtaining Stream From an Array
 We can obtain a stream from an array using the `stream()` method of the `Arrays` class:
@@ -94,31 +92,44 @@ public class StreamingApp {
 In this example, we are creating streams of `integer`, `long`, and `double` elements using the static factory method `of()` on the `Stream` classes. We have also used the different types of Streams starting with the `Stream` abstraction followed by the primitive specializations: `IntStream`, `LongStream`, and `DoubleStream`.
 
 ### Obtaining Stream From Files
-The lines of a file can be obtained from BufferedReader.lines();
-Streams of file paths can be obtained from methods in Files;
-Streams of random numbers can be obtained from Random.ints();
-Numerous other stream-bearing methods in the JDK, including BitSet.stream(), Pattern.splitAsStream(java.lang.CharSequence), and JarFile.stream().
+The lines of a file can be obtained from `Files.lines()` as shown in this example:
 
-Streams have a BaseStream.close() method and implement AutoCloseable, but nearly all stream instances do not need to be closed after use. Generally, only streams whose source is an IO channel (such as those returned by Files.lines(Path, Charset)) will require closing. Most streams are backed by collections, arrays, or generating functions, which require no special resource management. (If a stream does require closing, it can be declared as a resource in a try-with-resources statement.)
+```java
+import java.util.stream.Stream;
+
+public class StreamingApp {
+    public void readFromFile(final String filePath) {
+        try (Stream<String> lines = Files.lines(Paths.get(filePath));){
+          lines.forEach(logger::info);
+        } catch (IOException e) {
+          logger.info("i/o error " + e);
+        }
+    }
+}
+```
+Here we are getting the lines from a file in a stream using the `lines()` method in the `Files` class. We have put this statement in a try-with-resources statement which will close the stream after use.
+
+Streams have a `BaseStream.close()` method and implement `AutoCloseable`. Only streams whose source is an IO channel (such as those returned by `Files.lines(Path)` as in this example) will require closing. 
+
+Most streams are backed by collections, arrays, or generating functions and do not need to be closed after use.
 
 ## Type of Operations on Streams
-The Operations we can perform on Stream classes are broadly categorized into two types:
+The operations that we can perform on a stream are broadly categorized into two types:
 
-1. **Intermediate operations**: Intermediate operations transform one stream into another stream. An example of an Intermediate operation is a `map()` which transforms one element into another by applying a function (called a predicate) on each element.
+1. **Intermediate operations**: Intermediate operations transform one stream into another stream. An example of an Intermediate operation is `map()` which transforms one element into another by applying a function (called a predicate) on each element.
 
-2. **Terminal operations**: Terminal operations are applied on a stream to get a single result like a primitive or object or collection or may not return anything. An example of a Terminal operation is a `count()` which counts the total number of elements in a stream.
-
+2. **Terminal operations**: Terminal operations are applied on a stream to get a single result like a primitive or object or collection or may not return anything. An example of a Terminal operation is `count()` which counts the total number of elements in a stream.
 
 Let us look at the different intermediate and terminal operations in the subsequent sections. We have grouped these operations into the following categories:
 
 * **Mapping Operations**: These are intermediate operations and transform each element of a stream by applying a function and putting them in a new stream for further processing.
-* **Ordering Operations**: These are terminal operations which 
-* **Matching and Filtering Operations**:
-* **Reduction Operations**:
+* **Ordering Operations**: These operations include methods for ordering the elements in a stream.
+* **Matching and Filtering Operations**: Matching operations help to validate elements of a stream with a specified condition while filtering operations allow us to filter elements based on specific criteria.
+* **Reduction Operations**: Reduction operations evaluate the elements of a stream to return a single result.
 
 ## Stream Mapping Operations
 Mapping Operations are intermediate operations and transform each element of a stream with the help of a predicate function:
-### map Operation
+### `map()` Operation
 The map function returns a stream consisting of the results of applying the given function to the elements of a stream. In this example, we use the `map()` operation to get a stream of the numeric category codes of a stream of category names:
 ```java
 public class StreamingApp {
@@ -143,7 +154,7 @@ public class StreamingApp {
 
 ```
 Here in the mapping function, we are converting each category name to a numeric value so that the `map()` operation on the stream returns a stream of category codes.
-### flatMap Operation
+### `flatMap()` Operation
 We should use the `flatMap()` method if we have a stream where every element has its sequence of elements and we want to create a single stream of these inner elements:
 
 ```java
@@ -199,7 +210,7 @@ Both methods are intermediate operations so we still need to call a terminal ope
 ## Matching and Filtering Operations
 The Stream interface provides methods to detect whether the elements of a stream comply with a condition (called the predicate) specified as input. All of these methods are terminal operations that return a boolean.
 
-### `anyMatch()` 
+### `anyMatch()` Operation
 
 With `anyMatch()` operation, we determine whether any of the elements comply to the condition specified as the predicate as shown in this example:
 
@@ -226,7 +237,7 @@ Here we are checking whether the stream contains an element with the value `Lapt
 
 We would have received a `false` result if we were checking for a value for example `e->e.equals("Shoes") ` in our predicate function, which is not present in the stream.
 
-### `allMatch()`
+### `allMatch()` Operation
 With `allMatch()` operation, we determine whether all of the elements comply to the condition specified as the predicate as shown in this example:
 ```java
 public class StreamMatcherApp {
@@ -242,7 +253,7 @@ public class StreamMatcherApp {
 ```
 The result of applying the `allMatch()` function will be true since all the elements in the stream satisfy the condition in the predicate function: `e < 11`.
 
-### `noneMatch()`
+### `noneMatch()` Operation
 With `noneMatch()` operation, we determine whether none of the elements comply to the condition specified as the predicate as shown in this example:
 ```java
 public class StreamMatcherApp {
@@ -258,7 +269,7 @@ public class StreamMatcherApp {
 ```
 The result of applying the `noneMatch()` function will be true since none of the elements in the stream satisfy the condition in the predicate function: `e < 4`.
 
-### `filter()`
+### `filter()` Operation
 `filter()` is an intermediate operation of the Stream interface that allows us to filter elements of a stream that match a given condition (known as predicate).
 
 ```java
@@ -277,7 +288,7 @@ public class StreamingApp {
 ```
 Here we are applying the filter operation on the stream to get a stream filled with elements that are greater than `3`.
 
-### `findFirst()` and `findAny()`
+### `findFirst()` and `findAny()` Operations
 `findFirst()` returns an Optional for the first entry in the stream:
 ```java
 public class StreamingApp {
@@ -340,7 +351,6 @@ Here is An example of a reduce operation that adds the elements of a stream:
 
 Please note there is already a String method:`join` for joining strings.
 
-
 ```java
 String joined = String.join(separator, strings);
 
@@ -349,6 +359,28 @@ Another overridden method of `reduce` takes only the accumulator function as the
 ```java
 Optional<T> reduce(BinaryOperator<T> accumulator);
 ```
+
+### `collect()` Operation
+
+`collect()` is another commonly used reduction operation to get the elements from a stream after completing all the processing:
+
+```java
+public class StreamingApp {
+  public void collectFromStream() {
+    
+      List<String> productCategories = Stream.of(
+                                                "washing machine", 
+                                                "Television", 
+                                                "Laptop", 
+                                                "grocery", 
+                                                "essentials")
+                                              .collect(Collectors.toList());
+
+      productCategories.forEach(logger::info);                 
+  }
+}
+```
+In this example, we are collecting the elements of the stream into a list by using the `collect()` method on the stream before printing each element of the list.
 
 ### Specialized Reduction Functions
 The Stream interface provides reduction operations that perform a specific task like finding the average, sum, minimimum, and maximum of values present in a stream:
@@ -371,45 +403,6 @@ public class ReduceStreamingApp {
 
 ```
 In this example, we have used the reduction operations: `sum()`, `min()`, `max`, `count()`, and `average()` on the elements of a stream.
-
-### `collect()`
-
-`collect()` is another commonly used reduction operation to get the elements from a stream after completing all the processing:
-
-```java
-public class StreamingApp {
-  public void collectFromStream() {
-    
-      List<String> productCategories = Stream.of(
-                                                "washing machine", 
-                                                "Television", 
-                                                "Laptop", 
-                                                "grocery", 
-                                                "essentials")
-                                              .collect(Collectors.toList());
-
-      productCategories.forEach(logger::info);                 
-  }
-}
-```
-
-### forEach
-The `forEach()` operation loops over the stream elements, calling the supplied function on each element.
-
-```java
-public class StreamingApp {
- public void printStream() {
-    Stream<String> productCategories = Stream.of(
-                                              "washing machine", 
-                                              "Television", 
-                                              "Laptop", 
-                                              "grocery", 
-                                              "essentials");
-  
-    productCategories.forEach(logger::info);   
-  }
-}
-```
 
 ## Chaining Stream Operations in a Pipeline
 Operations on streams are commonly chained together to form a pipeline to execute specific use cases as shown in this code snippet:
@@ -453,10 +446,11 @@ public class StreamingApp {
 
 ```
 The `ofNullable` method returns an empty stream. So we get a value of `0` for the `count()` operation instead of a `NullPointerException`.
-## Unbounded Streams
+
+## Unbounded/Infinite Streams
 The examples we used so far operated on the finite streams of elements generated from an array or collection.  Infinite streams are sequential unordered streams with an unending sequence of elements.
 
-### `generate()`
+### `generate()` Operation
 The `generate()` method returns an infinite sequential unordered stream where each element is generated by the provided Supplier. This is suitable for generating constant streams, streams of random elements, etc.
 ```java
 public class UnboundedStreamingApp {
@@ -505,7 +499,7 @@ This continues until we generate the number of elements specified by the `limit(
 
 ## Parallel Streams
 
-We can execute streams in serial or in parallel. When a stream executes in parallel, the Java runtime partitions the stream into multiple substreams. Aggregate operations iterate over and process these substreams in parallel and then combine the results.
+We can execute streams in serial or in parallel. When a stream executes in parallel, the stream is partitioned into multiple substreams. Aggregate operations iterate over and process these substreams in parallel and then combine the results.
 
 When we create a stream, it is a serial stream by default. We create a parallel stream by invoking the operation `parallelStream()` on the `Collection` or the `BaseStream` interface. 
 
@@ -531,5 +525,17 @@ The `forEach()` method prints the elements of the list in random order. Since th
 The `forEachOrdered` method processes the elements of the stream in the order specified by its source, regardless of whether we executed the stream in serial or parallel. In this way, we lose the benefits of parallelism if we use operations like `forEachOrdered()` with parallel streams.
 
 ## Conclusion 
-In this article, we explained streams in Java. 
+In this article, we looked at the different capabilities of Java Streams. Here is a summary of the important points covered in the post:
+1. A stream is a sequence of elements on which we can perform different kinds of sequential and parallel operations.
+2. The `java.util.stream` package contains the interfaces and classes to support functional-style operations on streams of elements. In addition to the `Stream` interface, which is a stream of object references, there are primitive specializations like `IntStream`, `LongStream`, and `DoubleStream`.
+3. We can obtain streams from arrays and collections by calling the `stream()` method. We can also get s Stream by calling the static factory method on the Stream class.
+4. Most streams are backed by collections, arrays, or generating functions and do not need to be closed after use. However, streams obtained from files need to be closed after use.
+5. The operations that we can perform on a stream are broadly categorized into two types: intermediate and Terminal. 
+6. Intermediate operations transform one stream into another stream.
+7. Terminal operations are applied on a stream to get a single result like a primitive object or collection or may not return anything.
+8. Operations on streams are commonly chained together to form a pipeline to execute specific use cases.
+9. Infinite streams are sequential unordered streams with an unending sequence of elements. They are generated using the `generate()` and `iterate()` operations.
+10. We can execute streams in serial or in parallel. When a stream executes in parallel, the stream is partitioned into multiple substreams. Aggregate operations iterate over and process these substreams in parallel and then combine the results.
 
+You can refer to all the source code used in the article
+on [Github](https://github.com/thombergs/code-examples/tree/master/java/streams).

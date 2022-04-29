@@ -16,13 +16,14 @@ In this post we will look at the various types of operations which we can perfor
 {{% github "https://github.com/thombergs/code-examples/tree/master/java/streams" %}}
 
 ## Java Stream Classes
-The `java.util.stream` package contains the the interfaces and classes to support functional-style operations on streams of elements. In addition to the `Stream` interface , which is a stream of object references, there are primitive specializations: `IntStream` for stream of elements of type: `Inte`, `LongStream` for stream of elements of type: `Long`, and `DoubleStream` for stream of integer elements of type: `Double`, all of which are referred to as "streams" and conform to the characteristics and restrictions described here.
+The `java.util.stream` package contains the the interfaces and classes to support functional-style operations on streams of elements. In addition to the `Stream` interface , which is a stream of object references, there are primitive specializations: `IntStream` for stream of elements of type: `Int`, `LongStream` for stream of elements of type: `Long`, and `DoubleStream` for stream of elements of type: `Double`.
 
 ## Creating a Stream from a Source
 
 We can obtain Streams in a number of ways from different type of data sources:
 
 ### Obtaining Stream From an Array
+We can obtain a stream from an array using the `stream()` method of the `Arrays` class:
 ```java
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
@@ -39,7 +40,7 @@ public class StreamingApp {
 
 }
 ```
-Here we are creating a stream of double elements from an array and printing them by calling a `forEach()` function on the stream. 
+In this example, we are creating a stream of double elements from an array and printing them by calling a `forEach()` function on the stream. 
 ### Obtaining Stream From a Collection
 
 We can obtain a stream from a collection using the `stream()` and `parallelStream()` methods:
@@ -66,10 +67,12 @@ public class StreamingApp {
 
 }
 ```
-Here we are creating a stream of double elements from a collection of type `List` and printing them by calling a `forEach()` function on the stream. 
+Here we are creating two streams of double elements using the `stream()` and `parallelStream()` methods the from a collection of type `List` and printing them by calling a `forEach()` function on the streams. The elements in the `stream` object are processed in serial while those in the object `parallelStream` will be processed in parallel. 
+
+We will understand parallel streams in a subsequent section. 
 
 ### Obtaining Stream From Static Factory Methods on the Stream Classes
-From static factory methods on the stream classes, such as Stream.of(Object[]), IntStream.range(int, int) or Stream.iterate(Object, UnaryOperator);
+We can construct stream by calling static factory methods on the stream classes as shown in this example: 
 ```java
 import java.util.stream.Stream;
 
@@ -86,7 +89,7 @@ public class StreamingApp {
   }
 }
 ```
-In this example, we are creating streams of integer, long, and double elements using the static factory method `of()`. We can also see the flavours of Stream object starting with the Stream abstraction followed by the primitive specializations: `IntStream`, `LongStream`, and `DoubleStream`.
+In this example, we are creating streams of `integer`, `long`, and `double` elements using the static factory method `of()` on the `Stream` classes. We have also used the different types of Streams starting with the `Stream` abstraction followed by the primitive specializations: `IntStream`, `LongStream`, and `DoubleStream`.
 
 ### Obtaining Stream From Files
 The lines of a file can be obtained from BufferedReader.lines();
@@ -103,39 +106,16 @@ The Operations we can perform on Stream classes are broadly categorized into two
 
 2. **Terminal operations**: Terminal operations are applied on a stream to get a single result like a primitive or object or collection or may not return anything. Example of a Terminal operation is a `count()` which counts the total number of elements in a stream.
 
-## Chaining Operation in a Pipeline
-Operations on streams are commonly chained together to form a pipeline as shown in this code snippet:
 
-```java
-public class StreamingApp {
-  public void processStream() {
-    Double[] elements = {3.0, 4.5, 6.7, 2.3};
-    
-    Stream<Double> stream = Stream.of(elements);
-    
-    // Pipeline of stream operations
-    int numberOfElements = stream
-    .map(e->e.intValue())
-    .filter(e->e >3 )
-    .count();           
-  }
-}
-```
-We can see two intermmediate operations `map()` and `filter()` chained together with a terminal operation `count()`.
-Intermediate operations are present in the middle of the pipeline. Terminal operations are attached to the end of the pipeline. Intermediate operations are lazily loaded and executed when the terminal operation is called on the stream. 
+Let us look at the different intermediate and terminal operations in the subsequent sections. We have grouped these operations into the following categories:
 
-Let us loop at solving different scenarios by chaining operations in the next section.
-
-## Stream Operations
-We can divide the operations which we can perform on a stream into the following categories:
-
-* **Mapping Operations**: M
-* **Ordering Operations**:
+* **Mapping Operations**: These are intermediate operations and transform each element of a stream by applying a function and put them in a new stream for further processing.
+* **Ordering Operations**: These are terminal operations which 
 * **Matching and Filtering Operations**:
 * **Reduction Operations**:
 
-## Mapping Operations
-Mapping Operations are intermmediate operations and transform each element of a stream with the help of a predicate function:
+## Stream Mapping Operations
+Mapping Operations are intermediate operations and transform each element of a stream with the help of a predicate function:
 ### map Operation
 The map function a stream consisting of the results of applying the given function to the elements of this stream
 ```java
@@ -185,16 +165,84 @@ public class StreamingApp {
 
 ```    
 
-## Ordering and Grouping Operations
 
-### sorted
-The Stream interface provides the sorted() method that returns a stream consisting of the elements of a given stream, sorted according to the natural order. It is an overloaded method:
+## Ordering Operations
+Ordering operations on a stream include:
+1. `sorted()` which sorts the stream elements according to natural order 
+2. an overriden method `sorted(comparator)` which sorts the stream elements according to a provided Comparator.
 
-* Stream sorted(): sorted according to natural order.
-* Stream sorted(comparator): sorted according to the provided Comparator.
+```java
+public class StreamOrderingApp {
+
+    public void sortElements() {
+        Stream<Integer> productCategories = Stream.of(4,15,8,7,9,10);
+        Stream<Integer>  sortedStream = productCategories.sorted();
+        sortedStream.forEach(System.out::println);
+    }
+
+    public void sortElementsWithComparator() {
+        Stream<Integer> productCategories = Stream.of(4,15,8,7,9,10);
+        Stream<Integer>  sortedStream = productCategories.sorted((o1, o2) -> o2 - o1);
+        sortedStream.forEach(System.out::println);
+    }
+}
+```
+
 Both methods are intermediate operations so we still need to call a terminal operation to trigger the sorting.
 
 ## Matching and Filtering Operations
+The Stream interface provides methods to detect whether the elements of a stream comply to a condition specified as a predicate:
+
+### `anyMatch()`
+
+We determine whether any of the elements comply to the condition specified as the predicate as shown in this example:
+
+```java
+public class StreamMatcherApp {
+    private final Logger logger = Logger.getLogger(StreamMatcherApp.class.getName());
+
+    public void findAnyMatch(){
+        Stream<String> productCategories = Stream.of("washing machine", "Television", "Laptop", "grocery", "essentials");
+      
+        boolean isPresent = productCategories.anyMatch(e->e.equals("Laptop"));
+        logger.info("isPresent::"+isPresent);
+
+    }
+    
+}
+```
+
+### allMatch
+
+```java
+public class StreamMatcherApp {
+    private final Logger logger = Logger.getLogger(StreamMatcherApp.class.getName());
+
+    public void findAllMatch(){
+        Stream<Integer> productCategories = Stream.of(4,5,7,9,10);
+      
+        boolean allElementsMatch = productCategories.allMatch(e->e < 11);
+        logger.info("allElementsMatch::"+allElementsMatch);
+
+    }    
+}
+```
+
+### noneMatch
+
+```java
+public class StreamMatcherApp {
+    private final Logger logger = Logger.getLogger(StreamMatcherApp.class.getName());
+
+    public void findNoneMatch(){
+        Stream<Integer> productCategories = Stream.of(4,5,7,9,10);
+      
+        boolean noElementsMatch = productCategories.noneMatch(e->e < 4);
+        logger.info("noElementsMatch::"+noElementsMatch);
+    }
+}
+```
+find API gives a handy set of instruments to validate elements of a sequence according to some predicate. To do this, one of the following methods can be used: anyMatch(), allMatch(), noneMatch(). Their names are self-explanatory. Those are terminal operations that return a boolean:
 
 ### filter
 
@@ -216,7 +264,7 @@ public class StreamingApp {
 ```
 
 ### findFirst
-findFirst() returns an Optional for the first entry in the stream; the Optional can, of course, be empty:
+findFirst() returns an Optional for the first entry in the stream:
 ```java
 public class StreamingApp {
   public void findFromStream() {
@@ -340,13 +388,9 @@ public class StreamingApp {
 }
 ```
 
+## Chaining Operation in a Pipeline
+Operations on streams are commonly chained together to form a pipeline as shown in this code snippet:
 
-
-
-### toArray
-
-### peek
-### Pipeline of map, filter, and forEach Operations
 ```java
 public class StreamingApp {
   public void processStream() {
@@ -354,105 +398,35 @@ public class StreamingApp {
     
     Stream<Double> stream = Stream.of(elements);
     
-    stream
+    // Pipeline of stream operations
+    int numberOfElements = stream
     .map(e->e.intValue())
     .filter(e->e >3 )
-    .forEach(e->System.out.println(e));           
+    .count();           
   }
 }
-
 ```
-In this example we have applied two Intermediate operations: `map()` and `filter()` followed by a terminal function: `forEach()`:
-`map`: The map operation converts each element to an integer and returns these integers in a stream
-`filter`: The filter operation applies a criteria to include only elements which are greater than 3 in the stream to be returned and returns a stream consisting only 2 elements which match the criteria.
-`forEach`: This is a terminal operation which prints each element
+In this example, We have created a pipeline of two intermmediate operations `map()` and `filter()` chained together with a terminal operation `count()`.
+Intermediate operations are present in the middle of the pipeline. Terminal operations are attached to the end of the pipeline. Intermediate operations are lazily loaded and executed when the terminal operation is called on the stream. 
 
-## Handle Nullable Streams
+
+## Handling Nullable Streams
 In some earlier examples we used the static factory method of Stream: Stream.of to create a stream with elements. Now if any of the values in that list is null, we will get a nullpointerexception. The isNullable method was introduced in Java 9 to mitigate this behaviour.
 
 It creates a Stream with the supplied elements and if the value is null an empty Stream is created as shown in this example:
 
 ```java
+public class StreamingApp {
+  public void createFromNullable() {
+    Stream<String> productCategories = Stream.ofNullable(null);
 
+    long count = productCategories.count();
 
-```
-## Match Operations
-The Stream interface provides match methods to detect whether the elements of a stream comply to a condition specified as a predicate. Accordingly we have the methods:
-
-### `anyMatch()`
-
-We determine whether any of the elements comply to the condition specified as the predicate as shown in this example:
-
-```java
-public class StreamMatcherApp {
-    private final Logger logger = Logger.getLogger(StreamMatcherApp.class.getName());
-
-    public void findAnyMatch(){
-        Stream<String> productCategories = Stream.of("washing machine", "Television", "Laptop", "grocery", "essentials");
-      
-        boolean isPresent = productCategories.anyMatch(e->e.equals("Laptop"));
-        logger.info("isPresent::"+isPresent);
-
-    }
-    
+    logger.info("size=="+count);
+  }
 }
+
 ```
-
-### allMatch
-
-```java
-public class StreamMatcherApp {
-    private final Logger logger = Logger.getLogger(StreamMatcherApp.class.getName());
-
-    public void findAllMatch(){
-        Stream<Integer> productCategories = Stream.of(4,5,7,9,10);
-      
-        boolean allElementsMatch = productCategories.allMatch(e->e < 11);
-        logger.info("allElementsMatch::"+allElementsMatch);
-
-    }    
-}
-```
-
-### noneMatch
-
-```java
-public class StreamMatcherApp {
-    private final Logger logger = Logger.getLogger(StreamMatcherApp.class.getName());
-
-    public void findNoneMatch(){
-        Stream<Integer> productCategories = Stream.of(4,5,7,9,10);
-      
-        boolean noElementsMatch = productCategories.noneMatch(e->e < 4);
-        logger.info("noElementsMatch::"+noElementsMatch);
-    }
-}
-```
-find API gives a handy set of instruments to validate elements of a sequence according to some predicate. To do this, one of the following methods can be used: anyMatch(), allMatch(), noneMatch(). Their names are self-explanatory. Those are terminal operations that return a boolean:
-
-## Ordering Operations
-Ordering operations on a stream include:
-1. `sorted()` which sorts the stream elements according to natural order 
-2. an overriden method `sorted(comparator)` which sorts the stream elements according to a provided Comparator.
-
-```java
-public class StreamOrderingApp {
-
-    public void sortElements() {
-        Stream<Integer> productCategories = Stream.of(4,15,8,7,9,10);
-        Stream<Integer>  sortedStream = productCategories.sorted();
-        sortedStream.forEach(System.out::println);
-    }
-
-    public void sortElementsWithComparator() {
-        Stream<Integer> productCategories = Stream.of(4,15,8,7,9,10);
-        Stream<Integer>  sortedStream = productCategories.sorted((o1, o2) -> o2 - o1);
-        sortedStream.forEach(System.out::println);
-    }
-}
-```
-
-## Collect Operations
 
 ## Unbounded Streams
 
@@ -501,7 +475,7 @@ public class UnboundedStreamingApp {
 }
 
 ```    
-Here, we pass 2 as the seed value, which becomes the first element of our stream. This value is passed as input to the lambda, which returns 4. This value, in turn, is passed as input in the next iteration.
+Here, we have set `2` as the seed value, which becomes the first element of our stream. This value is passed as input to the lambda, which returns `4`. This value, in turn, is passed as input in the next iteration.
 
 This continues until we generate the number of elements specified by limit() which acts as the terminating condition.
 

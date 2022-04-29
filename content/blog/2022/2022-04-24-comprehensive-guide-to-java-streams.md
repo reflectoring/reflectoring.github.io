@@ -195,7 +195,7 @@ In the `sortElementsWithComparator()` function we are sorting the integer elemen
 Both methods are intermediate operations so we still need to call a terminal operation to trigger the sorting.
 
 ## Matching and Filtering Operations
-The Stream interface provides methods to detect whether the elements of a stream comply to a condition (called the predicate) specified as input:
+The Stream interface provides methods to detect whether the elements of a stream comply to a condition (called the predicate) specified as input. All of these methods are terminal operations that return a boolean.
 
 ### `anyMatch()` 
 
@@ -223,6 +223,7 @@ public class StreamMatcherApp {
 Here we are checking whether the stream contains an element with value `Laptop`. Since one of the values in the stream is `Laptop`, we get result of the `anyMatch()` operation as `true`. 
 
 We would have received a `false` result if we were checking for a value for example `e->e.equals("Shoes") ` in our predicate function, which is not present in the stream.
+
 ### `allMatch()`
 With `allMatch()` operation, we determine whether all of the elements comply to the condition specified as the predicate as shown in this example:
 ```java
@@ -233,13 +234,13 @@ public class StreamMatcherApp {
         Stream<Integer> productCategories = Stream.of(4,5,7,9,10);
       
         boolean allElementsMatch = productCategories.allMatch(e->e < 11);
-        logger.info("allElementsMatch::"+allElementsMatch);
-
+        logger.info("allElementsMatch::" + allElementsMatch);
     }    
 }
 ```
+The result of applying the `allMatch()` function will be true since all the elements in the stream satisfy the condition in the predicate function: `e < 11`.
 
-### noneMatch
+### `noneMatch()`
 With `noneMatch()` operation, we determine whether none of the elements comply to the condition specified as the predicate as shown in this example:
 ```java
 public class StreamMatcherApp {
@@ -253,9 +254,10 @@ public class StreamMatcherApp {
     }
 }
 ```
-All of these methods are terminal operations that return a boolean:
+The result of applying the `noneMatch()` function will be true since none of the elements in the stream satisfy the condition in the predicate function: `e < 4`.
 
-### filter
+### `filter()`
+`filter()` is an intermediate operation of the Stream interface that allows us to filter elements of a stream that match a given condition (known as predicate).
 
 ```java
 public class StreamingApp {
@@ -265,38 +267,41 @@ public class StreamingApp {
       Stream<Double> stream = Stream.of(elements);
       
       stream
-      .map(e->e.intValue())
       .filter(e->e > 3 )
-      .forEach(e->System.out.println(e));
-                
+      .forEach(e->System.out.println(e));          
     }
 }
 
 ```
+Here we are applying the filter operation on the stream to get a stream filled with elements which are greater than `3`.
 
-### findFirst
-findFirst() returns an Optional for the first entry in the stream:
+### `findFirst()` and `findAny()`
+`findFirst()` returns an Optional for the first entry in the stream:
 ```java
 public class StreamingApp {
   public void findFromStream() {
-    Stream<String> productCategories = Stream.of(
-                                              "washing machine", 
-                                              "Television", 
-                                              "Laptop", 
-                                              "grocery", 
-                                              "essentials");
+        Stream<String> productCategories = Stream.of(
+                                                  "washing machine", 
+                                                  "Television", 
+                                                  "Laptop", 
+                                                  "grocery", 
+                                                  "essentials");
 
-    Optional<String> category = productCategories.findFirst();
+        Optional<String> category = productCategories.findFirst();
 
-    if(category.isPresent()) logger.info(category.get());
+        if(category.isPresent()) logger.info(category.get());
     }
 }
 ```
 
-## Reduction Operations
-The Stream class has many terminal operations (such as average, sum, min, max, and count) that return one value by combining the contents of a stream. These operations are called reduction operations. The JDK also contains reduction operations that return a collection instead of a single value. Many reduction operations perform a specific task, such as finding the average of values or grouping elements into categories. However, the JDK provides you with the general-purpose reduction operations reduce and collect, 
+`findAny()` is a similar method using which we can find any element from a Stream. We should use this method when we are looking for an element irrespective of the position of the element in the stream.
 
-### reduce Operation
+## Reduction Operations
+The Stream class has many terminal operations (such as average, sum, min, max, and count) that return one value by combining the contents of a stream. These operations are called reduction operations. The JDK also contains reduction operations that return a collection instead of a single value. 
+
+Many reduction operations perform a specific task, such as finding the average of values or grouping elements into categories. However, the JDK provides you with the general-purpose reduction operations reduce and collect, 
+
+### `reduce()` Operation
 The Stream.reduce method is a general-purpose reduction operation that combines the elements of a stream to produce a single value. The signature of a reduce method looks like this:
 
 ```java
@@ -344,14 +349,18 @@ Optional<T> reduce(BinaryOperator<T> accumulator);
 ```
 
 ### Specialized Reduction Functions
-
+The Stream interface provides reduction operations that perform a specific task like finding the average, sum, minimimum, and maximum of values present in a stream:
 ```java
 public class ReduceStreamingApp {
   public void aggregateElements(){
       int[] numbers = {5, 2, 8, 4,55, 9};
+
       int sum = Arrays.stream(numbers).sum();
+
       OptionalInt max = Arrays.stream(numbers).max();
-      OptionalInt min = Arrays.stream(numbers).max();
+
+      OptionalInt min = Arrays.stream(numbers).min();
+
       long count = Arrays.stream(numbers).count();
 
       OptionalDouble average  = Arrays.stream(numbers).average();
@@ -359,10 +368,11 @@ public class ReduceStreamingApp {
 }
 
 ```
-In this signature, there is no default or initial value, and it returns an optional.
-### collect
+In this example, we have used the reduction operations: `sum()`, `min()`, `max`, `count()`, and `average()` on the elements of a stream.
 
-`collect()` is a commonly used operation to get the elements from a stream after completing all the processing:
+### `collect()`
+
+`collect()` is another commonly used reduction operation to get the elements from a stream after completing all the processing:
 
 ```java
 public class StreamingApp {
@@ -399,8 +409,8 @@ public class StreamingApp {
 }
 ```
 
-## Chaining Operation in a Pipeline
-Operations on streams are commonly chained together to form a pipeline as shown in this code snippet:
+## Chaining Stream Operations in a Pipeline
+Operations on streams are commonly chained together to form a pipeline to execute specific use cases as shown in this code snippet:
 
 ```java
 public class StreamingApp {
@@ -418,7 +428,10 @@ public class StreamingApp {
 }
 ```
 In this example, We have created a pipeline of two intermmediate operations `map()` and `filter()` chained together with a terminal operation `count()`.
-Intermediate operations are present in the middle of the pipeline. Terminal operations are attached to the end of the pipeline. Intermediate operations are lazily loaded and executed when the terminal operation is called on the stream. 
+
+Intermediate operations are present in the middle of the pipeline. Terminal operations are attached to the end of the pipeline. 
+
+Intermediate operations are lazily loaded and executed when the terminal operation is called on the stream. 
 
 
 ## Handling Nullable Streams

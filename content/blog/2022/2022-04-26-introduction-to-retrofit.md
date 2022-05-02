@@ -299,7 +299,10 @@ Then we can add them to the respective convertor factory
 
 ### Adding interceptors
 Interceptors are a part of the OkHttp library that intercepts requests and responses. They help add, remove or modify the metadata.
-Let's take a look at some of the usecases where interceptors are used
+OkHttp interceptors are of two types
+- **Application Interceptors** (Defined when we handle application requests and responses)
+- **Network Interceptors** (Defined when we need to handle network focused scenarios)
+Let's take a look at some use-cases where interceptors are used:
 #### Basic Authentication
 It is one of the ways in which endpoints are secured. In order to successfully make a REST call, we need to provide a valid username and password.
 To apply this authentication mechanism to a Retrofit client, we will create an Interceptor class as shown:
@@ -327,7 +330,7 @@ public class BasicAuthInterceptor implements Interceptor {
 The username and password provided in the application.yaml will be securely passed to the REST service in the `Authorization` header.
 Adding this interceptor ensures that the Authorization header is attached to every request triggered.
 
-## Logging 
+#### Logging 
 Logging interceptors print requests, responses, header data and additional information.
 To enable this we need to add `com.squareup.okhttp3:logging-interceptor` as a dependency.
 Further, we need to add this interceptor to our Retrofit configuration client
@@ -342,7 +345,7 @@ With these additions, when we trigger requests, the logs will look like this:
 {{% image alt="settings" src="images/posts/retrofit/log_interceptor.jpg" %}}
 Various levels of logging are available such as BODY, BASIC, HEADERS. We can customize them to the level we need.
 
-## Header
+#### Header
 In the previous sections, we have seen how to add headers to the client interface. 
 Those headers can be added via Interceptors too. We might consider adding interceptors if we need the same common headers to be passed to every request
 ````text
@@ -384,8 +387,106 @@ With the above code, the header added will be
 Cache-Control: no-store, no-cache
 ````
 
-## Caching
+#### Caching
+For applications, caching can help speed up response times. With the combination of caching and network interceptor configuration we can retrieve cached responses 
+when there is a network connectivity issue.
+To configure this, we need to first define a `CacheInterceptor`
+````java
 
+public class CacheInterceptor implements Interceptor {
+    @Override
+    public Response intercept(Chain chain) throws IOException {
+        Response response = chain.proceed(chain.request());
 
+        CacheControl cacheControl = new CacheControl.Builder()
+                .maxAge(1, TimeUnit.MINUTES) // 1 minutes cache
+                .build();
+
+        return response.newBuilder()
+                .removeHeader("Pragma")
+                .removeHeader("Cache-Control")
+                .header("Cache-Control", cacheControl.toString())
+                .build();
+    }
+}
+
+````
+Here the `Cache-Control` header is responsible for caching requests for the configured `maxAge`
+Next we add this interceptor as a network interceptor and define an OkHttp cache in the client configuration
+````text
+        Cache cache = new Cache(new File("cache"), 10 * 1024 * 1024);
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
+                .addInterceptor(new BasicAuthInterceptor(props.getUsername(), props.getPassword()))
+                .cache(cache)
+                .addNetworkInterceptor(new CacheInterceptor())
+                .addInterceptor(interceptor)
+                .connectTimeout(props.getConnectionTimeout(), TimeUnit.SECONDS)
+                .readTimeout(props.getReadWriteTimeout(), TimeUnit.SECONDS);
+````
+Note that Caching in general applies to GET requests only.
+With this configuration, the GET requests will be cached for 1 minute. The cached responses will be served during the 1 min timeframe even if the network connectivity is down.
+
+## Custom Interceptors
+As explained in the previous sections, `BasicAuthInterceptor`, `CachingInterceptor` are all examples of custom interceptors created to serve a specific purpose.
+Custom interceptors should implement the OkHttp `Interceptor` interface and implement the method `intercept()`.
+Next we should configure the interceptor (either as an Application interceptor or Network interceptor).
+This will make sure the interceptors are chained and called before the end-to-end request is processed.
+
+Note that if multiple interceptors are defined, they are called in sequence. For instance, a Logging interceptor must always be defined as the last interceptor to be called in the chain, so that we do not miss any critical logging during execution.
+
+## Using the REST client to call the Service
+The above configured REST client can call the service endpoints in two ways:
+### Synchronous calls
+To make a synchronous call, the `Call` interface provides the `execute()` method.
+Since execute() method runs on the main thread, the UI is blocked till the execution completes.
+
+````text
+        Response<BookDto> allBooksResponse = libraryClient.getAllBooksWithHeaders(bookRequest).execute();
+            if (allBooksResponse.isSuccessful()) {
+                books = allBooksResponse.body();
+                log.info("Get All Books : {}", books);
+                audit = auditMapper.populateAuditLogForGetBook(books);
+            } else {
+                log.error("Error calling library client: {}", allBooksResponse.errorBody());
+                if (Objects.nonNull(allBooksResponse.errorBody())) {
+                    audit = auditMapper.populateAuditLogForException(
+                            null, HttpMethod.GET, allBooksResponse.errorBody().toString());
+                }
+
+            }
+````
+The methods that help us further process the response are:
+- isSuccessful(): Helps determine if the response HTTP status code is 2xx.
+- body(): On success, the returns the response body. In the example above, the response gets mapped to `BookDto` class.
+- errorBody(): When the service returns a failure response, this method gives us the corresponding error data.
+
+### Asynchronous calls
+To make an asynchronous call, the `Call` interface provides the `enqueue()` method.
+The request is triggered on a separate thread and it does not block the main thread processing.
+````java
+public void getBooksAsync(String bookRequest) {
+        Call<BookDto> bookDtoCall = libraryClient.getAllBooksWithHeaders(bookRequest);
+        bookDtoCall.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<BookDto> call, Response<BookDto> response) {
+                if (response.isSuccessful()) {
+                    log.info("Success response : {}", response.body());
+                } else {
+                    log.info("Error response : {}", response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BookDto> call, Throwable throwable) {
+                log.error("Network error occured : {}", throwable.getLocalizedMessage());
+            }
+        });
+    }
+````
+We provide implementations to the methods of the `Callback` interface. The `onResponse()` handles valid HTTP responses (both success and error) and
+`onFailure()` handles network connectivity issues.
+
+We have now covered all the basic components that will help us create a working Retrofit client in a Spring Boot application.
+In the next section, we will look at unit testing the endpoints defined in the Retrofit client.
 
 

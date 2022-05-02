@@ -262,9 +262,129 @@ For multiple dynamic headers, we use @HeaderMap.
 All Retrofit responses are wrapped in a `Call` object. This helps control if the client requests need to be made synchronously or asynchronously.
 
 ## Using the Retrofit Builder API to setup Client Configuration
-The Builder API on Retrofit allows for customization of the Configuration object. We will take a closer look at some of the configuration options
+The Builder API on Retrofit allows for customization of the Configuration object. We will take a closer look at some configuration options.
 
+### Configuring timeout settings
+We can set timeouts on the underlying Http client. However, setting up these values is optional. If we do not specify the timeouts, default settings apply.
+- Connection timeout: 10 sec
+- Read timeout: 10 sec
+- Write timeout: 10 sec
+To override these defaults, we need to setup `OkHttpClient` as shown below:
+````text
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
+                .connectTimeout(props.getConnectionTimeout(), TimeUnit.SECONDS)
+                .readTimeout(props.getReadWriteTimeout(), TimeUnit.SECONDS);
 
+        return new Retrofit.Builder().client(httpClientBuilder.build())
+                .baseUrl(props.getEndpoint())
+                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
+                .build().create(LibraryClient.class);
+````
+Here, the timeout values are as specified in application.yaml.
+
+### Using Convertors
+By default, Retrofit can only deserialize HTTP bodies into OkHttp's `ResponseBody` type and its `RequestBody` type for @Body.
+With convertors, the requests and responses can be wrapped into Java objects.
+Commonly used convertors are:
+- Gson: com.squareup.retrofit2:converter-gson
+- Jackson: com.squareup.retrofit2:converter-jackson
+To make use of these convertors, we need to make sure their corresponding build dependencies are included.
+Then we can add them to the respective convertor factory
+````text
+        new Retrofit.Builder().client(httpClientBuilder.build())
+                .baseUrl(props.getEndpoint())
+                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
+                .build().create(LibraryClient.class);
+````
+
+### Adding interceptors
+Interceptors are a part of the OkHttp library that intercepts requests and responses. They help add, remove or modify the metadata.
+Let's take a look at some of the usecases where interceptors are used
+#### Basic Authentication
+It is one of the ways in which endpoints are secured. In order to successfully make a REST call, we need to provide a valid username and password.
+To apply this authentication mechanism to a Retrofit client, we will create an Interceptor class as shown:
+````java
+
+public class BasicAuthInterceptor implements Interceptor {
+
+    private final String credentials;
+
+    public BasicAuthInterceptor(String user, String password) {
+        this.credentials = Credentials.basic(user, password);
+    }
+
+    @Override
+    public Response intercept(Chain chain) throws IOException {
+        Request request = chain.request();
+        Request authenticatedRequest = request.newBuilder()
+                .header("Authorization", credentials).build();
+        return chain.proceed(authenticatedRequest);
+    }
+
+}
+
+````
+The username and password provided in the application.yaml will be securely passed to the REST service in the `Authorization` header.
+Adding this interceptor ensures that the Authorization header is attached to every request triggered.
+
+## Logging 
+Logging interceptors print requests, responses, header data and additional information.
+To enable this we need to add `com.squareup.okhttp3:logging-interceptor` as a dependency.
+Further, we need to add this interceptor to our Retrofit configuration client
+````text
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
+                .addInterceptor(new BasicAuthInterceptor(props.getUsername(), props.getPassword()))
+                .addInterceptor(interceptor)
+````
+With these additions, when we trigger requests, the logs will look like this:
+{{% image alt="settings" src="images/posts/retrofit/log_interceptor.jpg" %}}
+Various levels of logging are available such as BODY, BASIC, HEADERS. We can customize them to the level we need.
+
+## Header
+In the previous sections, we have seen how to add headers to the client interface. 
+Those headers can be added via Interceptors too. We might consider adding interceptors if we need the same common headers to be passed to every request
+````text
+OkHttpClient.Builder httpClient = new OkHttpClient.Builder();  
+httpClient.addInterceptor(new Interceptor() {  
+    @Override
+    public Response intercept(Interceptor.Chain chain) throws IOException {
+        Request request = chain.request();
+
+        // Request customization: add request headers
+        Request.Builder requestBuilder = request.newBuilder()
+                .header("Cache-Control", "no-store");
+
+        return chain.proceed(requestBuilder.build());
+    }
+});
+````
+Note that if the request already creates the `Cache-Control` header, the **.header()** will replace the existing header.
+There is also a **.addHeader()** method available that allows us to add multiple values to the same header
+For instance,
+````text
+OkHttpClient.Builder httpClient = new OkHttpClient.Builder();  
+httpClient.addInterceptor(new Interceptor() {  
+    @Override
+    public Response intercept(Interceptor.Chain chain) throws IOException {
+        Request request = chain.request();
+
+        // Request customization: add request headers
+        Request.Builder requestBuilder = request.newBuilder()
+                .addHeader("Cache-Control", "no-store");
+                .addHeader("Cache-Control", "no-cache");
+
+        return chain.proceed(requestBuilder.build());
+    }
+});
+````
+With the above code, the header added will be 
+````text
+Cache-Control: no-store, no-cache
+````
+
+## Caching
 
 
 

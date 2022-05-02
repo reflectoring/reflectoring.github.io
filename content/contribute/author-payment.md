@@ -45,9 +45,9 @@ The payment rates are specified in US-Dollars.
 
 ## Payment via Wise
 
-I prefer [Wise](https://wise.com/invite/u/tomh430) as the service for paying authors. Its fees for international money transfers are very transparent and cheap compared to PayPal with great exchange feed between currencies.
+I prefer [Wise](https://wise.com/invite/u/tomh430) as the service for paying authors. Its fees for international money transfers are very transparent and cheap compared to PayPal, which has very expensive exchange fees.
 
-Please set up a Wise account using [this link](https://wise.com/invite/u/tomh430) if you don't have an account already and set up an account that can receive any currency. Under **Manage > Account > Receiving by email or phone**, activate that your Wise account can be found by email:
+Please set up a Wise account using [this link](https://wise.com/invite/u/tomh430) if you don't have an account already and set up an account that can receive any currency (affiliate link). Under **Manage > Account > Receiving by email or phone**, activate that your Wise account can be found by email:
 
 {{% image alt="Wise settings" src="images/wise.png" %}}
 

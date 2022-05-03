@@ -12,7 +12,7 @@ url: introduction-to-retrofit
 Developers use HTTP Clients to communicate with other applications over the network. 
 Over the years, multiple [HTTP Clients](https://reflectoring.io/comparison-of-java-http-clients/) have been developed to suit varying application needs.
 
-In this article, we will focus on `Retrofit`, one of the most popular type-safe Http Client for Java and Android.
+In this article, we will focus on **Retrofit`, one of the most popular type-safe Http Client for Java and Android.**
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/java/retrofit" %}}
 
@@ -32,14 +32,14 @@ When used to call REST applications, it greatly simplifies API interactions by p
 In the further sections, we will work on creating a Retrofit client and look at how to incorporate the various features that OkHttp provides.
 
 ## Setting up an existing REST Service Application
-We will use a sample REST-based [Spring Boot Library Application](https://github.com/ranjanih/code-examples/tree/ranjani-retrofit/core-java/retrofit/introduction-to-retrofit/SimpleLibraryApplication) that will serve as a REST service.
+We will use a sample REST-based [Spring Boot Library Application](https://github.com/ranjanih/code-examples/tree/ranjani-retrofit/core-java/retrofit/introduction-to-retrofit/SimpleLibraryApplication) that acts as a REST service.
 This library application is a Spring Boot service that uses Maven for build and HSQLDB as the underlying database.
-We will use the maven wrapper bundled with the application to start the service
+The Maven Wrapper bundled with the application will be used to start the service:
 ````text
     mvnw clean verify spring-boot:run (for Windows)
     ./mvnw clean verify spring-boot:run (for Linux)
 ````
-Now, the application should successfully start
+Now, the application should successfully start:
 {{% image alt="settings" src="images/posts/retrofit/success_at_startup.jpg" %}}
 
 The Swagger documentation of this application can be viewed at 
@@ -49,17 +49,17 @@ The Swagger documentation of this application can be viewed at
 The documentation should look like this:
 {{% image alt="settings" src="images/posts/retrofit/swagger-doc.jpg" %}}
 
-Before we use swagger to make REST calls, we will need to add basic authentication credentials. (The credentials are configured in application.yaml)
+Before we use swagger to make REST calls, we will add basic authentication credentials as configured in application.yaml.
 {{% image alt="settings" src="images/posts/retrofit/basic-auth.jpg" %}}
 
-We should be able to hit the REST endpoints successfully now. (Sample JSON requests are available in README.md file in the application codebase.)
+Now, we can hit the REST endpoints successfully. (Sample JSON requests are available in README.md file in the application codebase.)
 {{% image alt="settings" src="images/posts/retrofit/POST.jpg" %}}
 {{% image alt="settings" src="images/posts/retrofit/POST-response.jpg" %}}
 
-Once the POST request is successful, we should now be able to make a GET call to confirm this addition.
+Once the POST request is successful, we should be able to make a GET call to confirm this addition.
 {{% image alt="settings" src="images/posts/retrofit/GET-response.jpg" %}}
 
-Now that our REST service works as expected, we will move on to setup another application that will act as a REST client making calls to this service.
+Now that our REST service works as expected, we will move on to introduce another application that will act as a REST client making calls to this service.
 In the process, we will learn about Retrofit and its various features.
 
 ## Introduction to REST Client Application
@@ -173,7 +173,7 @@ public interface LibraryClient {
 ````
 We will deep-dive into the annotations and Retrofit classes in the further sections.
 
-### Creating a Retrofit.Builder class as a Spring Boot Configuration bean 
+### Creating a Retrofit.Builder class as a Spring Boot Configuration 
 We will use the Retrofit Builder API to define URL for HTTP operations.
 
 ````java
@@ -258,10 +258,10 @@ To pass dynamic headers, we specify them as method parameters
 For multiple dynamic headers, we use @HeaderMap.
 All Retrofit responses are wrapped in a `Call` object. This helps control if the client requests need to be made synchronously or asynchronously.
 
-## Using the Retrofit Builder API to setup Client Configuration
+### Using the Retrofit Builder API
 The Builder API on Retrofit allows for customization of the Configuration object. We will take a closer look at some configuration options.
 
-### Configuring timeout settings
+#### Configuring timeout settings
 We can set timeouts on the underlying Http client. However, setting up these values is optional. If we do not specify the timeouts, default settings apply.
 - Connection timeout: 10 sec
 - Read timeout: 10 sec
@@ -279,7 +279,7 @@ To override these defaults, we need to setup `OkHttpClient` as shown below:
 ````
 Here, the timeout values are as specified in application.yaml.
 
-### Using Convertors
+#### Using Convertors
 By default, Retrofit can only deserialize HTTP bodies into OkHttp's `ResponseBody` type and its `RequestBody` type for @Body.
 With convertors, the requests and responses can be wrapped into Java objects.
 Commonly used convertors are:
@@ -295,7 +295,7 @@ Then we can add them to the respective convertor factory
                 .build().create(LibraryClient.class);
 ````
 
-### Adding interceptors
+#### Adding interceptors
 Interceptors are a part of the OkHttp library that intercepts requests and responses. They help add, remove or modify metadata.
 OkHttp interceptors are of two types
 - **Application Interceptors** - Configured to handle application requests and responses
@@ -303,7 +303,7 @@ OkHttp interceptors are of two types
 - 
 Let's take a look at some use-cases where interceptors are used:
 
-#### Basic Authentication
+##### Basic Authentication
 Basic Authentication is one of the commonly used means to secure endpoints. In our example, the REST service is secured. For the Retrofit client,
 to make authenticated REST calls, we will create an Interceptor class as shown:
 ````java
@@ -330,7 +330,7 @@ public class BasicAuthInterceptor implements Interceptor {
 The username and password configured in the application.yaml will be securely passed to the REST service in the `Authorization` header.
 **Adding this interceptor ensures that the Authorization header is attached to every request triggered.**
 
-#### Logging 
+##### Logging 
 Logging interceptors print requests, responses, header data and additional information.
 OkHttp provides a logging library that serves this purpose.
 To enable this, we need to add `com.squareup.okhttp3:logging-interceptor` as a dependency.
@@ -346,7 +346,7 @@ With these additions, when we trigger requests, the logs will look like this:
 {{% image alt="settings" src="images/posts/retrofit/log_interceptor.jpg" %}}
 Various levels of logging are available such as BODY, BASIC, HEADERS. We can customize them to the level we need.
 
-#### Header
+##### Header
 In the previous sections, we have seen how to add headers to the client interface. 
 Another way to add headers to requests and responses is via interceptors. We might consider adding interceptors if we need the same common headers to be passed to every request or response.
 ````java
@@ -388,7 +388,7 @@ With the above code, the header added will be
 Cache-Control: no-store, no-cache
 ````
 
-#### Caching
+##### Caching
 For applications, caching can help speed up response times. With the combination of caching and network interceptor configuration we can retrieve cached responses 
 when there is a network connectivity issue.
 To configure this, we need to first define a `CacheInterceptor`
@@ -427,7 +427,7 @@ Next we add this interceptor as a network interceptor and define an OkHttp cache
 Note that Caching in general applies to GET requests only.
 With this configuration, the GET requests will be cached for 1 minute. The cached responses will be served during the 1 min timeframe even if the network connectivity is down.
 
-## Custom Interceptors
+##### Custom Interceptors
 As explained in the previous sections, `BasicAuthInterceptor`, `CachingInterceptor` are all examples of custom interceptors created to serve a specific purpose.
 Custom interceptors should implement the OkHttp `Interceptor` interface and implement the method `intercept()`.
 Next we should configure the interceptor (either as an Application interceptor or Network interceptor).
@@ -435,9 +435,9 @@ This will make sure the interceptors are chained and called before the end-to-en
 
 Note that if multiple interceptors are defined, they are called in sequence. For instance, a Logging interceptor must always be defined as the last interceptor to be called in the chain, so that we do not miss any critical logging during execution.
 
-## Using the REST client to call the Service
+### Using the REST client to call the Service
 The above configured REST client can call the service endpoints in two ways:
-### Synchronous calls
+#### Synchronous calls
 To make a synchronous call, the `Call` interface provides the `execute()` method.
 Since execute() method runs on the main thread, the UI is blocked till the execution completes.
 
@@ -461,7 +461,7 @@ The methods that help us further process the response are:
 - body(): On success, the returns the response body. In the example above, the response gets mapped to `BookDto` class.
 - errorBody(): When the service returns a failure response, this method gives us the corresponding error data.
 
-### Asynchronous calls
+#### Asynchronous calls
 To make an asynchronous call, the `Call` interface provides the `enqueue()` method.
 The request is triggered on a separate thread and it does not block the main thread processing.
 ````java

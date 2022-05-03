@@ -56,14 +56,14 @@ We should be able to hit the REST endpoints successfully now. (Sample JSON reque
 {{% image alt="settings" src="images/posts/retrofit/POST.jpg" %}}
 {{% image alt="settings" src="images/posts/retrofit/POST-response.jpg" %}}
 
-Once successfully posted, we should now be able to make a GET call to confirm
+Once the POST request is successful, we should now be able to make a GET call to confirm this addition.
 {{% image alt="settings" src="images/posts/retrofit/GET-response.jpg" %}}
 
 Now that our REST service works as expected, we will move on to setup another application that will act as a REST client making calls to this service.
 In the process, we will learn about Retrofit and its various features.
 
 ## Introduction to REST Client Application
-The REST Client application will be a [Spring Boot Library Audit application]((https://github.com/ranjanih/code-examples/tree/ranjani-retrofit/core-java/retrofit/introduction-to-retrofit/AuditApplication)) that exposes REST endpoints and uses Retrofit to call another REST service. The result is then audited in an in-memory database for tracking purposes.
+The REST Client application will be a [Spring Boot Library Audit application]((https://github.com/ranjanih/code-examples/tree/ranjani-retrofit/core-java/retrofit/introduction-to-retrofit/AuditApplication)) that exposes REST endpoints and uses Retrofit to call our previously setup Library application. The result is then audited in an in-memory database for tracking purposes.
 
 ## Adding Retrofit dependencies
 ### Maven
@@ -152,10 +152,7 @@ public class LibResponse {
 ````
 
 ### Creating the client interface
-To create the retrofit interface, we will map every service call with an individual interface method.
-In the screenshot below, we can see that the REST service has configured 4 REST endpoints.
-In our client application, we will create corresponding 4 interface methods.
-
+To create the retrofit interface, we will map every service call with a corresponding interface method as shown in the screenshot below.
 {{% image alt="settings" src="images/posts/retrofit/REST.jpg" %}}
 
 ````java
@@ -208,53 +205,53 @@ In the further sections we will learn more about the Retrofit API and how to use
 In this section, we will look at how to build the client interface.
 Retrofit supports annotations @GET, @POST, @PUT, @DELETE, @PATCH, @OPTIONS, @HEAD which we use to annotate our client methods as shown below
 
-````text
+````java
     @GET("/library/managed/books")
     Call<List<BookDto>> getAllBooks(@Query("type") String type);
 ````
 
 Further, we specify the relative path of the REST service endpoint. To make this relative URL more dynamic we could have 
 parameter replacement blocks as shown below:
-````text
+````java
     @PUT("/library/managed/books/{id}")
     Call<LibResponse> updateBook(@Path("id") Long id, @Body BookDto book);
 ````
-To pass the actual value of `id`, we set it as @Path so that the call execution will replace `{id}` with its corresponding value.
+To pass the actual value of `id`, we set a method parameter @Path so that the call execution will replace `{id}` with its corresponding value.
 
 We can specify the query parameters in the URL directly or add @Query param to the method.
-````text
+````java
     @GET("/library/managed/books?type=all")
     OR
     @GET("/library/managed/books")
     Call<List<BookDto>> getAllBooks(@Query("type") String type);
 ````
 If the request needs to have multiple query parameters, we could use @QueryMap
-````text
+````java
    @GET("/library/managed/books")
     Call<List<BookDto>> getAllBooks(@QueryMap Map<String, String> options);
 ````
 To specify an object as HTTP request body, we use the @Body annotation.
-````text
+````java
     @POST("/library/managed/books")
     Call<LibResponse> createNewBook(@Body BookDto book);
 ````
 To the Retrofit interface methods, we can specify static or dynamic header parameters
 For static headers, we have
-````text
+````java
     @Headers("Accept: application/json")
     @GET("/library/managed/books")
     Call<List<BookDto>> getAllBooks(@Query("type") String type);
 ````
-To specify multiple static headers, we could use
-````text
+We could also specify multiple static headers:
+````java
     @Headers({
         "Accept: application/json",
         "Cache-Control: max-age=640000"})
     @GET("/library/managed/books")
     Call<List<BookDto>> getAllBooks(@Query("type") String type);
 ````
-In cases where we need to pass dynamic headers, we pass them as parameters.
-````text
+To pass dynamic headers, we specify them as method parameters
+````java
     @GET("/library/managed/books/{requestId}")
     Call<BookDto> getAllBooksWithHeaders(@Header("requestId") String requestId);
 ````
@@ -270,7 +267,7 @@ We can set timeouts on the underlying Http client. However, setting up these val
 - Read timeout: 10 sec
 - Write timeout: 10 sec
 To override these defaults, we need to setup `OkHttpClient` as shown below:
-````text
+````java
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(props.getConnectionTimeout(), TimeUnit.SECONDS)
                 .readTimeout(props.getReadWriteTimeout(), TimeUnit.SECONDS);
@@ -288,9 +285,10 @@ With convertors, the requests and responses can be wrapped into Java objects.
 Commonly used convertors are:
 - Gson: com.squareup.retrofit2:converter-gson
 - Jackson: com.squareup.retrofit2:converter-jackson
+
 To make use of these convertors, we need to make sure their corresponding build dependencies are included.
 Then we can add them to the respective convertor factory
-````text
+````java
         new Retrofit.Builder().client(httpClientBuilder.build())
                 .baseUrl(props.getEndpoint())
                 .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
@@ -298,14 +296,16 @@ Then we can add them to the respective convertor factory
 ````
 
 ### Adding interceptors
-Interceptors are a part of the OkHttp library that intercepts requests and responses. They help add, remove or modify the metadata.
+Interceptors are a part of the OkHttp library that intercepts requests and responses. They help add, remove or modify metadata.
 OkHttp interceptors are of two types
-- **Application Interceptors** (Defined when we handle application requests and responses)
-- **Network Interceptors** (Defined when we need to handle network focused scenarios)
+- **Application Interceptors** - Configured to handle application requests and responses
+- **Network Interceptors** - Configured to handle network focused scenarios
+- 
 Let's take a look at some use-cases where interceptors are used:
+
 #### Basic Authentication
-It is one of the ways in which endpoints are secured. In order to successfully make a REST call, we need to provide a valid username and password.
-To apply this authentication mechanism to a Retrofit client, we will create an Interceptor class as shown:
+Basic Authentication is one of the commonly used means to secure endpoints. In our example, the REST service is secured. For the Retrofit client,
+to make authenticated REST calls, we will create an Interceptor class as shown:
 ````java
 
 public class BasicAuthInterceptor implements Interceptor {
@@ -327,14 +327,15 @@ public class BasicAuthInterceptor implements Interceptor {
 }
 
 ````
-The username and password provided in the application.yaml will be securely passed to the REST service in the `Authorization` header.
-Adding this interceptor ensures that the Authorization header is attached to every request triggered.
+The username and password configured in the application.yaml will be securely passed to the REST service in the `Authorization` header.
+**Adding this interceptor ensures that the Authorization header is attached to every request triggered.**
 
 #### Logging 
 Logging interceptors print requests, responses, header data and additional information.
-To enable this we need to add `com.squareup.okhttp3:logging-interceptor` as a dependency.
+OkHttp provides a logging library that serves this purpose.
+To enable this, we need to add `com.squareup.okhttp3:logging-interceptor` as a dependency.
 Further, we need to add this interceptor to our Retrofit configuration client
-````text
+````java
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
@@ -347,8 +348,8 @@ Various levels of logging are available such as BODY, BASIC, HEADERS. We can cus
 
 #### Header
 In the previous sections, we have seen how to add headers to the client interface. 
-Those headers can be added via Interceptors too. We might consider adding interceptors if we need the same common headers to be passed to every request
-````text
+Another way to add headers to requests and responses is via interceptors. We might consider adding interceptors if we need the same common headers to be passed to every request or response.
+````java
 OkHttpClient.Builder httpClient = new OkHttpClient.Builder();  
 httpClient.addInterceptor(new Interceptor() {  
     @Override
@@ -364,9 +365,9 @@ httpClient.addInterceptor(new Interceptor() {
 });
 ````
 Note that if the request already creates the `Cache-Control` header, the **.header()** will replace the existing header.
-There is also a **.addHeader()** method available that allows us to add multiple values to the same header
+There is also a **.addHeader()** method available that allows us to add multiple values to the same header.
 For instance,
-````text
+````java
 OkHttpClient.Builder httpClient = new OkHttpClient.Builder();  
 httpClient.addInterceptor(new Interceptor() {  
     @Override
@@ -413,7 +414,7 @@ public class CacheInterceptor implements Interceptor {
 ````
 Here the `Cache-Control` header is responsible for caching requests for the configured `maxAge`
 Next we add this interceptor as a network interceptor and define an OkHttp cache in the client configuration
-````text
+````java
         Cache cache = new Cache(new File("cache"), 10 * 1024 * 1024);
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
                 .addInterceptor(new BasicAuthInterceptor(props.getUsername(), props.getPassword()))
@@ -440,7 +441,7 @@ The above configured REST client can call the service endpoints in two ways:
 To make a synchronous call, the `Call` interface provides the `execute()` method.
 Since execute() method runs on the main thread, the UI is blocked till the execution completes.
 
-````text
+````java
         Response<BookDto> allBooksResponse = libraryClient.getAllBooksWithHeaders(bookRequest).execute();
             if (allBooksResponse.isSuccessful()) {
                 books = allBooksResponse.body();
@@ -487,6 +488,6 @@ We provide implementations to the methods of the `Callback` interface. The `onRe
 `onFailure()` handles network connectivity issues.
 
 We have now covered all the basic components that will help us create a working Retrofit client in a Spring Boot application.
-In the next section, we will look at unit testing the endpoints defined in the Retrofit client.
+In the next section, we will look at mocking the endpoints defined in the Retrofit client.
 
 

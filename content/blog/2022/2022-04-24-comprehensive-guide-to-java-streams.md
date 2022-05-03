@@ -4,7 +4,7 @@ categories: ["java"]
 date: 2022-04-24T05:00:00
 modified: 2022-04-24T05:00:00
 authors: [pratikdas]
-excerpt: "Comprehensive Guide to Java Streams"
+excerpt: "A stream is a sequence of elements on which we can perform different kinds of sequential and parallel operations. The Stream API was introduced in Java 8 and is used to process collections of objects. In this article, we will work with the different classes and interfaces of the Java Stream API and understand the usage of the various types of operations that we can perform on Java Streams."
 image: images/stock/0019-magnifying-glass-1200x628-branded.jpg
 url: comprehensive-guide-to-java-streams
 ---
@@ -13,7 +13,7 @@ A stream is a sequence of elements on which we can perform different kinds of se
 
 The operations in a stream use internal iteration for processing the elements of a stream. This capability helps us to get rid of verbose constructs like `while`, `for`, and `forEach` loops while operating on multi-valued data structures (like arrays and collections) from our program code.
 
-In this post, we will work with the different classes and interfaces of the Java Stream API and understand the usage of the various types of operations that we can perform on Java Streams.
+In this article, we will work with the different classes and interfaces of the Java Stream API and understand the usage of the various types of operations that we can perform on Java Streams.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/core-java/streams/data-streams" %}}
 
@@ -525,7 +525,7 @@ The `forEach()` method prints the elements of the list in random order. Since th
 The `forEachOrdered` method processes the elements of the stream in the order specified by its source, regardless of whether we executed the stream in serial or parallel. In this way, we lose the benefits of parallelism if we use operations like `forEachOrdered()` with parallel streams.
 
 ## Conclusion 
-In this article, we looked at the different capabilities of Java Streams. Here is a summary of the important points covered in the post:
+In this article, we looked at the different capabilities of Java Streams. Here is a summary of the important points from the article:
 1. A stream is a sequence of elements on which we can perform different kinds of sequential and parallel operations.
 2. The `java.util.stream` package contains the interfaces and classes to support functional-style operations on streams of elements. In addition to the `Stream` interface, which is a stream of object references, there are primitive specializations like `IntStream`, `LongStream`, and `DoubleStream`.
 3. We can obtain streams from arrays and collections by calling the `stream()` method. We can also get s Stream by calling the static factory method on the Stream class.

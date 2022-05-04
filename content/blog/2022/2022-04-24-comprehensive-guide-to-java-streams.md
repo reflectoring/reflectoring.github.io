@@ -11,9 +11,9 @@ url: comprehensive-guide-to-java-streams
 
 A stream is a sequence of elements on which we can perform different kinds of sequential and parallel operations. The Stream API was introduced in Java 8 and is used to process collections of objects. Unlike collections, a Java stream is not a data structure instead it takes input from Collections, Arrays, or I/O channels (like files).
 
-The operations in a stream use internal iteration for processing the elements of a stream. This capability helps us to get rid of verbose constructs like `while`, `for`, and `forEach` loops while operating on multi-valued data structures (like arrays and collections) from our program code.
+The operations in a stream use internal iteration for processing the elements of a stream. This capability helps us to get rid of verbose constructs like `while`, `for`, and `forEach` loops.
 
-In this article, we will work with the different classes and interfaces of the Java Stream API and understand the usage of the various types of operations that we can perform on Java Streams.
+In this article, we will work with the different classes and interfaces of the Java Stream API and understand the usage of the various operations that we can perform on Java Streams.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/core-java/streams/data-streams" %}}
 
@@ -25,9 +25,6 @@ We can obtain streams in several ways from different types of data sources:
 ### Obtaining Stream From an Array
 We can obtain a stream from an array using the `stream()` method of the `Arrays` class:
 ```java
-import java.util.Arrays;
-import java.util.stream.DoubleStream;
-
 public class StreamingApp {
 
   public void createStreamFromArray() {
@@ -46,10 +43,6 @@ In this example, we are creating a stream of double elements from an array and p
 We can obtain a stream from a collection using the `stream()` and `parallelStream()` methods:
 
 ```java
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Stream;
-
 public class StreamingApp {
   
   public void createStreamFromCollection() {
@@ -74,8 +67,6 @@ We will understand parallel streams in a subsequent section.
 ### Obtaining Stream From Static Factory Methods on the Stream Classes
 We can construct a stream by calling static factory methods on the stream classes as shown in this example: 
 ```java
-import java.util.stream.Stream;
-
 public class StreamingApp {
   
   public void createStreams() {
@@ -134,7 +125,11 @@ The map function returns a stream consisting of the results of applying the give
 ```java
 public class StreamingApp {
   public void mapStream() {
-    Stream<String> productCategories = Stream.of("washing machine", "Television", "Laptop", "grocery", "essentials");
+    Stream<String> productCategories = Stream.of("washing machine",
+            "Television",
+            "Laptop",
+            "grocery",
+            "essentials");
   
     List<String> categoryCodes = productCategories.map(element->{
        String code = null;
@@ -315,7 +310,7 @@ The Stream class has many terminal operations (such as average, sum, min, max, a
 Many reduction operations perform a specific task, such as finding the average of values or grouping elements into categories. However, the JDK provides you with the general-purpose reduction operations reduce and collect, 
 
 ### `reduce()` Operation
-The Stream.reduce method is a general-purpose reduction operation that combines the elements of a stream to produce a single value. The signature of a reduce method looks like this:
+The `Stream.reduce()` method is a general-purpose reduction operation that combines the elements of a stream to produce a single value. The signature of a reduce method looks like this:
 
 ```java
 T reduce(T identity, BinaryOperator<T> accumulator);
@@ -328,7 +323,7 @@ Here is An example of a reduce operation that adds the elements of a stream:
 
 ```java
    public void sumElements(){
-        int[] numbers = {5, 2, 8, 4,55, 9};
+        int[] numbers = {5, 2, 8, 4, 55, 9};
         int sum = Arrays.stream(numbers).reduce(0, (a, b) -> a + b);
         int sumWithMethodRef = Arrays.stream(numbers).reduce(0, Integer::sum); 
 
@@ -503,13 +498,16 @@ We can execute streams in serial or in parallel. When a stream executes in paral
 
 When we create a stream, it is a serial stream by default. We create a parallel stream by invoking the operation `parallelStream()` on the `Collection` or the `BaseStream` interface. 
 
-In this example, we are printing each element of the stream using the `forEach()` method and the `forEachOrdered`:
+In this example, we are printing each element of the stream using the `forEach()` method and the `forEachOrdered()`:
 
 ```java
 public class ParallelStreamingApp {
 
     public void processParallelStream(){
-        List<String> list = List.of("washing machine", "Television", "Laptop", "grocery");
+        List<String> list = List.of("washing machine",
+                "Television",
+                "Laptop",
+                "grocery");
         
         list.parallelStream().forEach(System.out::println);
         
@@ -522,7 +520,7 @@ public class ParallelStreamingApp {
 
 The `forEach()` method prints the elements of the list in random order. Since the stream operations use internal iteration when processing elements of a stream when we execute a stream in parallel, the Java compiler and runtime determine the order in which to process the stream's elements to maximize the benefits of parallel computing.
 
-The `forEachOrdered` method processes the elements of the stream in the order specified by its source, regardless of whether we executed the stream in serial or parallel. In this way, we lose the benefits of parallelism if we use operations like `forEachOrdered()` with parallel streams.
+The `forEachOrdered()` method processes the elements of the stream in the order specified by its source, regardless of whether we executed the stream in serial or parallel. In this way, we lose the benefits of parallelism if we use operations like `forEachOrdered()` with parallel streams.
 
 ## Conclusion 
 In this article, we looked at the different capabilities of Java Streams. Here is a summary of the important points from the article:

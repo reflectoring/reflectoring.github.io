@@ -506,26 +506,28 @@ The overall objective of microservice architecture in comparison to monolith is 
 - **Time** - Reactive microservices must be strictly non-blocking and asynchronous throughout so that they can be eventually consistent enough.
 - **Failures** - A failure occurring in one of the microservice must not impact others or cause the service to go down. It must isolate failures to remote operational despite any kind of failures. 
 
-Keeping this in mind, let’s try to convert our existing microservice to adapt Reactive frameworks. We will primarily use *Reactive Spring Data Mongo* which provides out-of-the-box support for reactive access through MongoDB Reactive Streams. It provides *ReactiveMongoTemplate* and *ReactiveMongoRepository* interface for mapping functionality.
+Keeping this in mind, let’s try to convert our existing microservice to adapt Reactive frameworks. We will primarily use *Reactive Spring Data Mongo* which provides out-of-the-box support for reactive access through MongoDB Reactive Streams. It provides `ReactiveMongoTemplate` and `ReactiveMongoRepository` interface for mapping functionality.
 
-We will also use *Spring WebFlux* which provides the reactive stack web framework for Spring Boot. It brings in Reactor as its core reactive library that enables us to write non-blocking code and Reactive Streams backpressure. It also embeds *WebClient* which can be used in place of *RestTemplate* for performing non-blocking nested HTTP requests.
+We will also use Spring WebFlux which provides the reactive stack web framework for Spring Boot. It brings in Reactor as its core reactive library that enables us to write non-blocking code and Reactive Streams backpressure. It also embeds `WebClient` which can be used in place of `RestTemplate` for performing non-blocking nested HTTP requests.
+
+These are the dependencies we add to our `pom.xml`:
 
 ```xml
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-		</dependency>
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-webflux</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+</dependency>
 ```
 
 {{% image alt="Reactive Spring Microservice" src="images/posts/spring-reactive-architecture/reactive-spring-microservice.png" %}}
 
 ### Banking Service
 
-We will consider the same service that we had defined earlier and then we will convert the Controller implementation to emit Reactive publishers.
+We will consider the same service that we had defined earlier and then we will convert the Controller implementation to emit Reactive publishers"
 
 ```java
 @Slf4j
@@ -544,7 +546,7 @@ public class TransactionController {
 }
 ```
 
-Next, we will update the above service layer implementation to make it more functional and use *WebClient* to invoke other API calls.
+Next, we will update the service layer implementation to make it reactive and use `WebClient` to invoke other API calls:
 
 ```java
 @Slf4j
@@ -648,11 +650,11 @@ public class TransactionService {
 }
 ```
 
-We are using the `zipWhen()` method in WebClient to make sure that once we receive a response from the first API call, then we pick the payload and pass it to second API. Finally, we will consider the response of the second API as the resultant response to be returned back as response for the initial API call.
+We are using the `zipWhen()` method in `WebClient` to make sure that once we receive a response from the first API call, we pick the payload and pass it to the second API. Finally, we will consider the response of the second API as the resulting response to be returned back as response for the initial API call.
 
 ### User Notification Service
 
-Similarly, we will make changes in the endpoint of our User Notification service.
+Similarly, we will make changes in the endpoint of our User Notification service:
 
 ```java
 @Slf4j
@@ -671,7 +673,7 @@ public class UserNotificationController {
 }
 ```
 
-We will also make corresponding changes in the service layer to leverage the reactive streams implementation.
+We will also make corresponding changes in the service layer to leverage the reactive streams implementation:
 
 ```java
 @Slf4j
@@ -716,7 +718,7 @@ public class UserNotificationService {
 
 ### Reporting Service
 
-We will make similar changes in Reporting service endpoints to emit reactive publishers.
+We will make similar changes in Reporting service endpoints to emit reactive publishers:
 
 ```java
 @Slf4j
@@ -735,7 +737,7 @@ public class ReportingController {
 }
 ```
 
-Similarly, we will update the service layer implementation accordingly.
+Similarly, we will update the service layer implementation accordingly:
 
 ```java
 @Slf4j
@@ -803,7 +805,7 @@ public class AccountManagementController {
 }
 ```
 
-Next, we will update the service layer implementation to encapsulate the business logic as per reactive design.
+Next, we will update the service layer implementation to encapsulate the business logic as per reactive design:
 
 ```java
 @Slf4j
@@ -843,35 +845,35 @@ public class AccountManagementService {
 }
 ```
 
-## Adaptation of Message-driven Architecture in the Same Use-case
+## Using Message-driven Communication
 
-The basic problem that we wanted to find a solution for service-to-service communication was how to handle synchronous calls. With the conversion of simple microservices to Reactive Architecture, it had allowed us to make the microservices adapt to the Reactive paradigm, whereas the communication between the services is still synchronous enough. This kind of orchestration between the microservices with reactive APIs is never easy to maintain. It's quite prone to error and hard to debug to figure out the root cause of the failure in multiple downstream applications.
+The basic problem we had was synchronous communication between microservices, which caused delays and didn't use the processor resource to full effect. With the conversion of simple microservices to Reactive Architecture, it had allowed us to make the microservices adapt to the Reactive paradigm, where the communication between the services is still synchronous, though, because HTTP is a synchronous protocol. This kind of orchestration between the microservices with reactive APIs is never easy to maintain. It's quite prone to error and hard to debug to figure out the root cause of the failure in multiple downstream applications.
 
-So, the final part of this solution is to make the overall communications asynchronous and we can achieve that by adapting to a *message-driven architecture*. We will try to use a message broker like *Apache Kafka* as a medium or a middleware to facilitate service-to-service communication asynchronously and automatically as soon as the transaction message is published.
+So, the final part of this solution is to make the overall communications asynchronous and we can achieve that by adapting a *message-driven architecture*. We will use a message broker like *Apache Kafka* as a medium or a middleware to facilitate service-to-service communication asynchronously and automatically as soon as the transaction message is published.
 
-{{% image alt="Message-driven Reactive  Microservice" src="images/posts/spring-reactive-architecture/message-driven-reactive-microservice.png" %}}
+{{% image alt="Message-driven Reactive Microservice" src="images/posts/spring-reactive-architecture/message-driven-reactive-microservice.png" %}}
 
-We will use *Spring Cloud Stream Kafka* library in the same Reactive microservices to easily configure publish-subscribe module with Kafka. We can modify the existing pom.xml and add the following:
+We will use the *Spring Cloud Stream Kafka* library in the same Reactive microservices to easily configure the publish-subscribe module with Kafka. We can modify the existing `pom.xml` and add the following:
 
 ```xml
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>2020.0.3</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
+<dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-stream-kafka</artifactId>
+			<artifactId>spring-cloud-dependencies</artifactId>
+			<version>2020.0.3</version>
+			<type>pom</type>
+			<scope>import</scope>
 		</dependency>
-	<dependencies>    
+	</dependencies>
+</dependencyManagement>
+
+<dependencies>
+	<dependency>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-starter-stream-kafka</artifactId>
+	</dependency>
+<dependencies>    
 ```
 
 Next, we need to get an instance of Apache Kafka running and create a topic to publish messages. We will create a single topic named “transactions” to produce and consume by different consumer groups and process it by each service.
@@ -884,33 +886,33 @@ spring:
 
   # Datasource Configurations
   data:
-  mongodb:
-    authentication-database: admin
-    uri: mongodb://localhost:27017/reactive
-    database: reactive
+    mongodb:
+      authentication-database: admin
+      uri: mongodb://localhost:27017/reactive
+      database: reactive
 
   # Kafka Configuration
   cloud:
-  function:
-    definition: consumeTransaction
-  stream:
-    kafka:
-    binder:
-      brokers: localhost:9092
-      autoCreateTopics: false
-    bindings:
-    consumeTransaction-in-0:
-      consumer:
-      max-attempts: 3
-      back-off-initial-interval: 100
-      destination: transactions
-      group: account-management
-      concurrency: 1
-    transaction-out-0:
-      destination: transactions
+    function:
+      definition: consumeTransaction
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+          autoCreateTopics: false
+      bindings:
+        consumeTransaction-in-0:
+          consumer:
+            max-attempts: 3
+            back-off-initial-interval: 100
+          destination: transactions
+          group: account-management
+          concurrency: 1
+      transaction-out-0:
+        destination: transactions
 ```
 
-Next, we will define a Producer implementation that would help us to produce the messages using `StreamBridge`.
+Next, we will define a Producer implementation that would help us to produce the messages using `StreamBridge`:
 
 ```java
 @Slf4j
@@ -935,7 +937,7 @@ Now, we will take a look into each microservice to define the consumer implement
 
 ### Banking Service
 
-First, we will define a simple listener or a consumer to process the new messages that are being published on the topic.
+First, we will define a simple listener (consumer) to process the new messages that are being published on the topic:
 
 ```java
 @Slf4j
@@ -1008,7 +1010,7 @@ public class TransactionService {
 
 ### User Notification Service
 
-The listener or the consumer logic in the User Notification or any other service can be written similarly as above. We will look into the service layer implementation for this service.
+The listener or the consumer logic in the User Notification or any other service can be written similarly as above. We will look into the service layer implementation for this service:
 
 ```java
 @Slf4j
@@ -1067,7 +1069,7 @@ public class UserNotificationService {
 
 ### Reporting Service
 
-Next, we will take a look into the service layer implementation for the Reporting Service.
+Next, we will take a look into the service layer implementation for the Reporting Service:
 
 ```java
 @Slf4j
@@ -1124,7 +1126,7 @@ public class ReportingService {
 
 ### Account Management Service
 
-Finally, we will implement the service layer implementation for the Account Management service.
+Finally, we will implement the service layer implementation for the Account Management service:
 
 ```java
 @Slf4j
@@ -1172,11 +1174,11 @@ public class AccountManagementService {
 }
 ```
 
-These consumer implementations are sufficient enough to achieve asynchronous communications within the applications. If you notice, this *asynchronous choreography* has a much simpler code in comparison to the implementation that we had seen above.
+These consumer implementations are sufficient enough to achieve asynchronous communications within the applications. Note that this *asynchronous choreography* has a much simpler code in comparison to the implementation that we had seen above.
 
-### Deployment of Overall Microservice Orchestration
+### Deploying the Message-driven System
 
-Now once we have implemented all the services, we will try to achieve containerization of the services through *docker* and manage dependencies between them using *Docker Compose*. We can define a `Dockerfile` for each microservice and build our jars for them and bundle it in the image. A simple `Dockerfile` would look something like this:
+Now that we have implemented all the services, we will try to achieve containerization of the services through *Docker* and manage dependencies between them using *Docker Compose*. We can define a `Dockerfile` for each microservice and build our jars for them and bundle it in the image. A simple `Dockerfile` would look something like this:
 
 ```dockerfile
 FROM openjdk:8-jdk-alpine
@@ -1184,10 +1186,10 @@ COPY target/banking-service-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
 ```
 
-Then we can update our previously created docker-compose.yml with all the images. That would manage the dependencies between each microservice and orchestrate the overall communication with a single command:
+Then we can update our previously created `docker-compose.yml` with all the images. That would manage the dependencies between each microservice and orchestrate the overall communication with a single command:
 
 ```bash
-# docker-compose up
+docker-compose up
 ```
 
 The final `docker-compose.yml` looks like below:
@@ -1196,88 +1198,88 @@ The final `docker-compose.yml` looks like below:
 version: '3'
 services:
   zookeeper:
-  image: wurstmeister/zookeeper
-  ports:
-    - "2181:2181"
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
   kafka:
-  image: wurstmeister/kafka
-  ports:
-    - "9092:9092"
-  environment:
-    KAFKA_ADVERTISED_HOST_NAME: 10.204.106.55
-    KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-    KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
-    ALLOW_PLAINTEXT_LISTENER: "yes"
-    KAFKA_CFG_LOG_DIRS: /tmp/kafka_mounts/logs
-    KAFKA_CREATE_TOPICS: "transactions:1:2"
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 10.204.106.55
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_CFG_LOG_DIRS: /tmp/kafka_mounts/logs
+      KAFKA_CREATE_TOPICS: "transactions:1:2"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   kafka-ui:
-  image: provectuslabs/kafka-ui
-  container_name: kafka-ui
-  ports:
-    - "8090:8080"
-  depends_on:
-    - zookeeper
-    - kafka
-  restart: always
-  environment:
-    - KAFKA_CLUSTERS_0_NAME=local
-    - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
-    - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - "8090:8080"
+    depends_on:
+      - zookeeper
+      - kafka
+    restart: always
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
   mongodb:
-  image: mongo:latest
-  ports:
-    - "27017:27017"
-  volumes:
-    - ~/apps/mongo:/data/db
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - ~/apps/mongo:/data/db
   banking-service:
-  build: ./banking-service
-  ports:
-    - "8080:8080"
-  depends_on:
-    - zookeeper
-    - kafka
-    - mongodb
-    - user-notification-service
-    - reporting-service
-    - account-management-service
+    build: ./banking-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - zookeeper
+      - kafka
+      - mongodb
+      - user-notification-service
+      - reporting-service
+      - account-management-service
   user-notification-service:
-  build: ./user-notification-service
-  ports:
-    - "8081:8081"
-  depends_on:
-    - zookeeper
-    - kafka
-    - mongodb
+    build: ./user-notification-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - zookeeper
+      - kafka
+      - mongodb
   reporting-service:
-  build: ./reporting-service
-  ports:
-    - "8082:8082"
-  depends_on:
-    - zookeeper
-    - kafka
-    - mongodb
+    build: ./reporting-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - zookeeper
+      - kafka
+      - mongodb
   account-management-service:
-  build: ./account-management-service
-  ports:
-    - "8083:8083"
-  depends_on:
-    - zookeeper
-    - kafka
-    - mongodb
+    build: ./account-management-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - zookeeper
+      - kafka
+      - mongodb
 ```
 
-## Evaluating the Resultant Reactive Architecture
+## Evaluating the Reactive Microservice Architecture
 
-Now since we have completed the overall architecture let’s review and evaluate what we have built till now against the *Reactive Manifesto* and its four core features. 
+Now since we have completed the overall architecture let’s review and evaluate what we have built until now against the *Reactive Manifesto* and its four core features. 
 
 - *Responsive* - Once we had adapted the reactive programming paradigm into our microservices, it has helped us to achieve an end-to-end non-blocking system which in turn proved to be a pretty responsive application.
 - *Resilient* - The isolation of microservices provides a good amount of resiliency against various failures in the system. More resiliency can be achieved if we can move this deployment to Kubernetes and define ReplicaSet with the desired number of pods.
 - *Elastic* - Already Reactive Spring Boot services are capable enough to handle a good amount of load and performance. Moving this system to Kubernetes or a cloud-managed service can easily support elasticity against unpredictable traffic loads.
 - *Message-driven* - We have added a message broker like Kafka as a middleware system to handle asynchronous communication between each service.
 
-This brings an end to our discussion regarding the need for a Reactive Architecture. While this looks quite promising, there is still continuous scope for improvement by replacing Docker Compose with *Kubernetes cluster and resources*. It may also be quite difficult to manage so many components and their resiliency or traffic load. Thus, a managed cloud infrastructure can also help to manage and provide the necessary guarantee for each of these services or components.
+This brings an end to our discussion regarding the need for a Reactive Architecture. While this looks quite promising, there is still scope for improvement by replacing Docker Compose with *Kubernetes cluster and resources*. It may also be quite difficult to manage so many components and their resiliency or traffic load. Thus, a managed cloud infrastructure can also help to manage and provide the necessary guarantee for each of these services or components.
 
 ## Conclusion
 

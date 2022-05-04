@@ -138,19 +138,19 @@ public class StreamingApp {
     List<String> categoryCodes = 
                          productCategories.map(
                           // mapping function: map category name to code
-                                element->{
-                                   String code = null;
-                                   switch (element) {
-                                    case "washing machine" : code = "1"; break;
-                                    case "Television" : code = "2"; break;
-                                    case "Laptop" : code = "3"; break;
-                                    case "grocery" : code = "4"; break;
-                                    case "essentials" : code = "5"; break;
-                                    case "default" : code = "6";
-                                  } 
-                                return code;
-                               }
-                            ).collect(Collectors.toList());
+                            element->{
+                               String code = null;
+                               switch (element) {
+                                case "washing machine" : code = "1"; break;
+                                case "Television" : code = "2"; break;
+                                case "Laptop" : code = "3"; break;
+                                case "grocery" : code = "4"; break;
+                                case "essentials" : code = "5"; break;
+                                case "default" : code = "6";
+                              } 
+                            return code;
+                           }
+                          ).collect(Collectors.toList());
 
       categoryCodes.forEach(logger::info);  
     }
@@ -208,7 +208,8 @@ public class StreamOrderingApp {
 
     public void sortElementsWithComparator() {
         Stream<Integer> productCategories = Stream.of(4,15,8,7,9,10);
-        Stream<Integer>  sortedStream = productCategories.sorted((o1, o2) -> o2 - o1);
+        Stream<Integer>  sortedStream = productCategories
+                                         .sorted((o1, o2) -> o2 - o1);
         sortedStream.forEach(logger::info);
     }
 }
@@ -239,7 +240,8 @@ public class StreamMatcherApp {
                                                     "grocery", 
                                                     "essentials");
       
-        boolean isPresent = productCategories.anyMatch(e->e.equals("Laptop")); 
+        boolean isPresent = productCategories
+                                .anyMatch(e->e.equals("Laptop")); 
         logger.info("isPresent::"+isPresent);
 
     }
@@ -254,7 +256,8 @@ We would have received a `false` result if we were checking for a value for exam
 With `allMatch()` operation, we determine whether all of the elements comply to the condition specified as the predicate as shown in this example:
 ```java
 public class StreamMatcherApp {
-    private final Logger logger = Logger.getLogger(StreamMatcherApp.class.getName());
+    private final Logger logger = Logger
+                                 .getLogger(StreamMatcherApp.class.getName());
 
     public void findAllMatch(){
         Stream<Integer> productCategories = Stream.of(4,5,7,9,10);
@@ -270,7 +273,8 @@ The result of applying the `allMatch()` function will be true since all the elem
 With `noneMatch()` operation, we determine whether none of the elements comply to the condition specified as the predicate as shown in this example:
 ```java
 public class StreamMatcherApp {
-    private final Logger logger = Logger.getLogger(StreamMatcherApp.class.getName());
+    private final Logger logger = Logger
+                                  .getLogger(StreamMatcherApp.class.getName());
 
     public void findNoneMatch(){
         Stream<Integer> productCategories = Stream.of(4,5,7,9,10);
@@ -346,10 +350,9 @@ public class StreamingApp {
         String[] strings = {"a", "b", "c", "d", "e"};
 
         String joined = Arrays.stream(strings)
-                                    .reduce((a, b) -> {
-                                        return !"".equals(a)?  a + separator + b : b;
-                                       });
-
+                                .reduce((a, b) -> {
+                                    return !"".equals(a)?  a + separator + b : b;
+                                   });
         logger.info(joined);
     }
 }
@@ -511,8 +514,8 @@ public class UnboundedStreamingApp {
 
    public void iterateStreamingData(){
         Stream<Double> evenNumStream = Stream.iterate(
-                                           2.0, 
-                                           element -> Math.pow(element, 2.0));
+                                        2.0, 
+                                        element -> Math.pow(element, 2.0));
 
         List<Double> collect = evenNumStream
         .limit(5)
@@ -537,16 +540,17 @@ In this example, we are printing each element of the stream using the `forEach()
 
 ```java
 public class ParallelStreamingApp {
-
+    private final Logger logger = Logger.getLogger(
+                                  ParallelStreamingApp.class.getName());
     public void processParallelStream(){
         List<String> list = List.of("washing machine",
                 "Television",
                 "Laptop",
                 "grocery");
         
-        list.parallelStream().forEach(System.out::println);
+        list.parallelStream().forEach(logger::info);
         
-        list.parallelStream().forEachOrdered(System.out::println);
+        list.parallelStream().forEachOrdered(logger::info);
     }
     
 }

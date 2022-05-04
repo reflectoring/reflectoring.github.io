@@ -121,34 +121,48 @@ Let us look at the different intermediate and terminal operations in the subsequ
 ## Stream Mapping Operations
 Mapping Operations are intermediate operations and transform each element of a stream with the help of a predicate function:
 ### `map()` Operation
-The map function returns a stream consisting of the results of applying the given function to the elements of a stream. In this example, we use the `map()` operation to get a stream of the numeric category codes of a stream of category names:
+The `map()` operation takes a function as an input and returns a stream consisting of the results of applying the supplied function to each element of the stream. 
+
+In this example, we are applying the `map()` operation on a stream of category names and passing an input function that maps each category name to a numeric category code:
 ```java
 public class StreamingApp {
   public void mapStream() {
+
+    // Stream of category names
     Stream<String> productCategories = Stream.of("washing machine",
             "Television",
             "Laptop",
             "grocery",
             "essentials");
   
-    List<String> categoryCodes = productCategories.map(element->{
-       String code = null;
-       switch (element) {
-        case "washing machine" : code = "1";break;
-        case "Television" : code = "2";break;
-        case "Laptop" : code = "3";break;
-        case "grocery" : code = "4";break;
-        case "essentials" : code = "5";break;
-        case "default" : code = "6";
-      } 
-      return code;}).collect(Collectors.toList());
+    List<String> categoryCodes = 
+                         productCategories.map(
+                          // mapping function: map category name to code
+                                element->{
+                                   String code = null;
+                                   switch (element) {
+                                    case "washing machine" : code = "1"; break;
+                                    case "Television" : code = "2"; break;
+                                    case "Laptop" : code = "3"; break;
+                                    case "grocery" : code = "4"; break;
+                                    case "essentials" : code = "5"; break;
+                                    case "default" : code = "6";
+                                  } 
+                                return code;
+                               }
+                            ).collect(Collectors.toList());
 
       categoryCodes.forEach(logger::info);  
     }
 }
 
 ```
-Here in the mapping function, we are converting each category name to a numeric value so that the `map()` operation on the stream returns a stream of category codes.
+Here in the mapping function supplied as input, we are converting each category name to a category code which is a numeric value so that the `map()` operation on the stream returns a stream of category codes. Then we apply the `collect()` function to convert the `stream` to a `collection`. 
+
+We will understand the `collect()` function in a subsequent section.
+
+When we run this program, we will get a collection of category codes: `1`, `2`, `3`, `4`, and `5`.
+
 ### `flatMap()` Operation
 We should use the `flatMap()` method if we have a stream where every element has its sequence of elements and we want to create a single stream of these inner elements:
 
@@ -183,24 +197,28 @@ Ordering operations on a stream include:
 
 ```java
 public class StreamOrderingApp {
+    private final Logger logger = Logger.getLogger(
+                                   StreamOrderingApp.class.getName());
 
     public void sortElements() {
         Stream<Integer> productCategories = Stream.of(4,15,8,7,9,10);
         Stream<Integer>  sortedStream = productCategories.sorted();
-        sortedStream.forEach(System.out::println);
+        sortedStream.forEach(logger::info);
     }
 
     public void sortElementsWithComparator() {
         Stream<Integer> productCategories = Stream.of(4,15,8,7,9,10);
         Stream<Integer>  sortedStream = productCategories.sorted((o1, o2) -> o2 - o1);
-        sortedStream.forEach(System.out::println);
+        sortedStream.forEach(logger::info);
     }
 }
 ```
 In the `sortElements()` function we are sorting the integer elements in their natural order.
-In the `sortElementsWithComparator()` function we are sorting the integer elements by using a comparator function to sort them in descending order. The comparator function should return a positive or negative value.
+In the `sortElementsWithComparator()` function we are sorting the integer elements by using a `Comparator` function to sort them in descending order. 
 
-Both methods are intermediate operations so we still need to call a terminal operation to trigger the sorting.
+`Comparator` is a functional interface that is used to provide an ordering for a collection of objects. It takes two arguments for comparison and returns a negative, zero, or a positive integer. More details on the `Comparator` can be found in the official [Java documentation](https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html).
+
+Both methods are intermediate operations so we still need to call a terminal operation to trigger the sorting. In this example, we are calling the terminal operation: `forEach()` to trigger the sort.
 
 ## Matching and Filtering Operations
 The Stream interface provides methods to detect whether the elements of a stream comply with a condition (called the predicate) specified as input. All of these methods are terminal operations that return a boolean.
@@ -302,62 +320,79 @@ public class StreamingApp {
 }
 ```
 
-`findAny()` is a similar method using which we can find any element from a Stream. We should use this method when we are looking for an element irrespective of the position of the element in the stream.
+`findAny()` is a similar method using which we can find any element from a Stream. We should use this method when we are looking for an element irrespective of the position of the element in the stream. 
+
+The behavior of the `findAny()` operation is explicitly nondeterministic since it is free to select any element in the stream. Multiple invocations on the same source may not return the same result. We should use `findFirst()` method if a stable result is desired. 
 
 ## Reduction Operations
-The Stream class has many terminal operations (such as average, sum, min, max, and count) that return one value by combining the contents of a stream. These operations are called reduction operations. The JDK also contains reduction operations that return a collection instead of a single value. 
+The Stream class has many terminal operations (such as average, sum, min, max, and count) that return one value by combining the contents of a stream. These operations are called reduction operations. The Stream API also contains reduction operations that return a collection instead of a single value. 
 
-Many reduction operations perform a specific task, such as finding the average of values or grouping elements into categories. However, the JDK provides you with the general-purpose reduction operations reduce and collect, 
+Many reduction operations perform a specific task, such as finding the average of values or grouping elements into categories. 
+The Stream API provides two general-purpose reduction operations: `reduce()` and `collect()` as explained below: 
 
 ### `reduce()` Operation
-The `Stream.reduce()` method is a general-purpose reduction operation that combines the elements of a stream to produce a single value. The signature of a reduce method looks like this:
+The `reduce()` method is a general-purpose reduction operation that enables us to produce a single result by repeatedly applying a function to a sequence of elements from a stream. This method has three overridden signatures, the first of which looks like this:
 
 ```java
-T reduce(T identity, BinaryOperator<T> accumulator);
+Optional<T> reduce(BinaryOperator<T> accumulator);
 ```
-In this signature:
-* identity: default or initial value.
-* BinaryOperator: a functional interface that takes two inputs to produce a new value.
+This signature takes the `accumulator` function as an input and returns an `Optional` describing the reduced value. The `accumulator` function takes two parameters: a partial result of the reduction operation and the next element of the stream.
 
-Here is An example of a reduce operation that adds the elements of a stream:
+Here is an example of a `reduce()` operation that concatenates the elements of a `string` array:
 
 ```java
-   public void sumElements(){
-        int[] numbers = {5, 2, 8, 4, 55, 9};
-        int sum = Arrays.stream(numbers).reduce(0, (a, b) -> a + b);
-        int sumWithMethodRef = Arrays.stream(numbers).reduce(0, Integer::sum); 
-
-        logger.info(sum + " " + sumWithMethodRef);
-    }
-
+public class StreamingApp {
     public void joinString(final String separator){
         String[] strings = {"a", "b", "c", "d", "e"};
 
-        String joined = Arrays.stream(strings).reduce("", (a, b) -> {
-            return !"".equals(a)?  a + separator + b : b;
-           });
-
-        // a|b|c|d|e , better uses the Java 8 String.join :)
-        //String joined = String.join(separator, strings);
+        String joined = Arrays.stream(strings)
+                                    .reduce((a, b) -> {
+                                        return !"".equals(a)?  a + separator + b : b;
+                                       });
 
         logger.info(joined);
     }
+}
 ```
-
+Here we are passing an accumulator function to the `reduce()` operation. The accumulator function takes two parameters and concatenates them with a separator passed as a method parameter.
 Please note there is already a String method:`join` for joining strings.
 
 ```java
 String joined = String.join(separator, strings);
 
 ```
-Another overridden method of `reduce` takes only the accumulator function as the input parameter:
+There are two more overridden methods of `reduce` with the below signatures: 
 ```java
-Optional<T> reduce(BinaryOperator<T> accumulator);
+T reduce(T identity, BinaryOperator<T> accumulator);
+
+<U> U reduce(U identity, 
+             BiFunction<U,? super T,U> accumulator, 
+             BinaryOperator<U> combiner);
 ```
+The first overridden method takes only the `accumulator` as an input parameter. The second overridden method signature takes the below input parameters:
+* `identity`: default or the initial value.
+* `accumulator`: a functional interface that takes two inputs: a partial result of the reduction operation and the next element of the stream.
+* `combiner`: a stateless function for combining two values, which must be compatible with the accumulator function.
+
+Here is an example of a `reduce()` operation that adds the elements of a stream:
+
+```java
+public class StreamingApp {
+   public void sumElements(){
+        int[] numbers = {5, 2, 8, 4, 55, 9};
+        int sum = Arrays.stream(numbers)
+                               .reduce(0, 
+                                      (a, b) -> a + b);
+        
+        logger.info(sum + " " + sumWithMethodRef);
+    }
+}
+```
+Here we have used an initial value of `0` as the first parameter of the `reduce()` operation and provided an accumulator function to add the elements of the stream.    
 
 ### `collect()` Operation
 
-`collect()` is another commonly used reduction operation to get the elements from a stream after completing all the processing:
+The `collect()` operation seen in an earlier example is another commonly used reduction operation to get the elements from a stream after completing all the processing:
 
 ```java
 public class StreamingApp {
@@ -417,9 +452,9 @@ public class StreamingApp {
   }
 }
 ```
-In this example, We have created a pipeline of two intermediate operations `map()` and `filter()` chained together with a terminal operation `count()`.
+In this example, we are counting the number of elements, that are bigger than `3`. To get that count, we have created a pipeline of two intermediate operations `map()` and `filter()`, and chained them together with a terminal operation `count()`.
 
-Intermediate operations are present in the middle of the pipeline. Terminal operations are attached to the end of the pipeline. 
+As we can see in the example, intermediate operations are present in the middle of the pipeline while terminal operations are attached to the end of the pipeline. 
 
 Intermediate operations are lazily loaded and executed when the terminal operation is called on the stream. 
 
@@ -490,7 +525,7 @@ public class UnboundedStreamingApp {
 ```    
 Here, we have set `2.0` as the seed value, which becomes the first element of our stream. This value is passed as input to the lambda expression `element -> Math.pow(element, 2.0)`, which returns `4`. This value, in turn, is passed as input in the next iteration.
 
-This continues until we generate the number of elements specified by the `limit()` operation which acts as the terminating condition.
+This continues until we generate the number of elements specified by the `limit()` operation which acts as the terminating condition. These types of operations which terminate an infinite stream are called short-circuiting operations. We have already seen two other short-circuiting operations: `findFirst()` and `findAny()` in an earlier section.
 
 ## Parallel Streams
 
@@ -520,7 +555,7 @@ public class ParallelStreamingApp {
 
 The `forEach()` method prints the elements of the list in random order. Since the stream operations use internal iteration when processing elements of a stream when we execute a stream in parallel, the Java compiler and runtime determine the order in which to process the stream's elements to maximize the benefits of parallel computing.
 
-The `forEachOrdered()` method processes the elements of the stream in the order specified by its source, regardless of whether we executed the stream in serial or parallel. In this way, we lose the benefits of parallelism if we use operations like `forEachOrdered()` with parallel streams.
+We use the `forEachOrdered()` method when we want to process the elements of the stream in the order specified by its source, regardless of whether we are executing the stream in serial or parallel. But while doing this, we also lose the benefits of parallelism even if we use parallel streams.
 
 ## Conclusion 
 In this article, we looked at the different capabilities of Java Streams. Here is a summary of the important points from the article:

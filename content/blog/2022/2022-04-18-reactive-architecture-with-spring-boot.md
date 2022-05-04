@@ -1,12 +1,12 @@
 ---
-title: "A Reactive Architecture using Spring Boot"
+title: "Reactive Architecture with Spring Boot"
 categories: ["Spring"]
 date: 2022-04-17 00:00:00 +1100 
 modified: 2022-04-17 00:00:00 +1100
 authors: [arpendu]
 excerpt: "A comprehensive guide to migrate from a simple blocking call architecture to Reactive Streams and Message-driven architecture using Spring Boot microservices. A deep-dive to understand the Reactive Programming paradigm and their APIs. We will also adapt message-driven architecture along with Spring Webflux Reactive system."
 image: images/stock/0122-blocks-4480x6720.jpg 
-url: reactive-architecture-using-spring-boot
+url: reactive-architecture-with-spring-boot
 ---
 
 When we start building an application from scratch or try to build an application for a startup, we tend to build a single monolith application mapped to a single database. Over time, as the system adds more complexity, we tend to break that monolith into a group of small microservices. Now when that startup grows into a large-scale enterprise, we need to increase the adaptability, scalability, and speed of the same microservices. We might need to process the volume and the variety of the data with the ever-increasing competition of the velocity against other similar products in the market as well. Thus, in the digital era of competition, where change is constant, there is a high need to convert the simple monolith or microservices to a reactive system so that it can easily deliver adaptability, speed, efficiency, and organizational decentralization.

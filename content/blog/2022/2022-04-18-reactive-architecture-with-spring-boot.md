@@ -9,7 +9,7 @@ image: images/stock/0122-blocks-4480x6720.jpg
 url: reactive-architecture-with-spring-boot
 ---
 
-When we start building an application from scratch or try to build an application for a startup, we tend to build a single monolith application mapped to a single database. Over time, as the system adds more complexity, we tend to break that monolith into a group of small microservices. Now when that startup grows into a large-scale enterprise, we need to increase the adaptability, scalability, and speed of the same microservices. We might need to process the volume and the variety of the data with the ever-increasing competition of the velocity against other similar products in the market as well. Thus, in the digital era of competition, where change is constant, there is a high need to convert the simple monolith or microservices to a reactive system so that it can easily deliver adaptability, speed, efficiency, and organizational decentralization.
+We have often seen that the microservices are meant to be adaptable, scalable and highly performant enough so that it can be more competitive with respect to the other products in the market. In this urge to increase speed among the services, network communications and data flow within the microservices play a key role. So we will take at the various chain of communications within microservices and try to adapt or convert them into reactive applications so that we can improve the speed between the flow of data and communication.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-reactive-architecture" %}}
 
@@ -17,9 +17,9 @@ When we start building an application from scratch or try to build an applicatio
 
 In microservices, each service practically takes care of its data and persistence. Then there is always an orchestration between these services and they interact with each other synchronously or asynchronously using their APIs. 
 
-Since each service is isolated, they are independently scalable and resistant to failure. Microservices are explicitly designed to tackle failures so that they can be easily taken down without disturbing the overall system. 
+Since each service is isolated, they are independently scalable and resistant to failure. Microservices are explicitly designed to tackle failures so that they can be easily taken down without disturbing the overall system. When the microservices are replaced with the new ones after fixing the problem, it must process the records from the last offset of data which got processed.
 
-Thus, it usually makes sense to bring atomicity within the services and make the interactions and network calls asynchronous to address the problem of handling the data-rich, interactive user experience. Hence, a bunch of prominent developers realized that they would need an approach to build a “reactive” systems architecture that would ease the processing of data *while streaming* and they signed a manifesto, popularly known as the [Reactive Manifesto](https://www.reactivemanifesto.org/).
+Thus, it usually makes sense to bring atomicity within the services to bring in continuous and streamlined data flow and make the interactions and network calls asynchronous to address the problem of handling the data-rich, interactive user experience. Hence, a bunch of prominent developers realized that they would need an approach to build a “reactive” systems architecture that would ease the processing of data *while streaming* and they signed a manifesto, popularly known as the [Reactive Manifesto](https://www.reactivemanifesto.org/).
 
 The authors of the manifesto stated that a reactive system must be an *asynchronous* software that deals with *producers* who have the single responsibility to send messages to *consumers*. They introduced the following features to keep in mind:
 
@@ -178,9 +178,12 @@ And finally, a service to encapsulate the business logic and orchestrate the inf
 @Service
 public class TransactionService {
   
-  private static final String USER_NOTIFICATION_SERVICE_URL = "http://localhost:8081/notify/fraudulent-transaction";
-  private static final String REPORTING_SERVICE_URL = "http://localhost:8082/report/";
-  private static final String ACCOUNT_MANAGER_SERVICE_URL = "http://localhost:8083/banking/process";
+  private static final String USER_NOTIFICATION_SERVICE_URL =
+      "http://localhost:8081/notify/fraudulent-transaction";
+  private static final String REPORTING_SERVICE_URL =
+      "http://localhost:8082/report/";
+  private static final String ACCOUNT_MANAGER_SERVICE_URL =
+      "http://localhost:8083/banking/process";
 
   @Autowired
   private TransactionRepository transactionRepo;
@@ -212,19 +215,27 @@ public class TransactionService {
 
       else {
 
-        // Check if it's a valid transaction or not. The Transaction would be considered valid
-        // if it has been requested from the same home country of the user, else will be considered
+        // Check if it's a valid transaction or not. The Transaction
+        // would be considered valid if it has been requested from 
+        // the same home country of the user, else will be considered
         // as fraudulent
-        if (user.getHomeCountry().equalsIgnoreCase(transaction.getTransactionLocation())) {
+        if (user.getHomeCountry().equalsIgnoreCase(transaction
+                                                   .getTransactionLocation())) {
 
           transaction.setStatus(TransactionStatus.VALID);
 
-          // Call Reporting Service to report valid transaction to bank and deduct amount if funds available
-          firstProcessed = restTemplate.postForObject(REPORTING_SERVICE_URL, transaction, Transaction.class);
+          // Call Reporting Service to report valid transaction to bank
+          // and deduct amount if funds available
+          firstProcessed = restTemplate.postForObject(REPORTING_SERVICE_URL,
+                                                      transaction,
+                                                      Transaction.class);
 
-          // Call Account Manager service to process the transaction and send the money
+          // Call Account Manager service to process the transaction
+          // and send the money
           if (Objects.nonNull(firstProcessed)) {
-            secondProcessed = restTemplate.postForObject(ACCOUNT_MANAGER_SERVICE_URL, firstProcessed, Transaction.class);
+            secondProcessed = restTemplate.postForObject(ACCOUNT_MANAGER_SERVICE_URL,
+                                                         firstProcessed,
+                                                         Transaction.class);
           }
 
           if (Objects.nonNull(secondProcessed)) {
@@ -234,14 +245,20 @@ public class TransactionService {
 
           transaction.setStatus(TransactionStatus.FRAUDULENT);
 
-          // Call User Notification service to notify for a fraudulent transaction
-          // attempt from the User's card
-          firstProcessed = restTemplate.postForObject(USER_NOTIFICATION_SERVICE_URL, transaction, Transaction.class);
+          // Call User Notification service to notify for a 
+          // fraudulent transaction attempt from the User's card
+          firstProcessed = restTemplate.postForObject(USER_NOTIFICATION_SERVICE_URL,
+                                                      transaction,
+                                                      Transaction.class);
 
-          // Call Reporting Service to notify bank that there has been an attempt for fraudulent transaction
-          // and if this attempt exceeds 3 times then auto-block the card and account
+          // Call Reporting Service to notify bank that
+          // there has been an attempt for fraudulent transaction
+          // and if this attempt exceeds 3 times then auto-block 
+          // the card and account  
           if (Objects.nonNull(firstProcessed)) {
-            secondProcessed = restTemplate.postForObject(REPORTING_SERVICE_URL, firstProcessed, Transaction.class);
+            secondProcessed = restTemplate.postForObject(REPORTING_SERVICE_URL,
+                                                         firstProcessed,
+                                                         Transaction.class);
           }
 
           if (Objects.nonNull(secondProcessed)) {
@@ -538,7 +555,9 @@ public class TransactionController {
   @Autowired
   private TransactionService transactionService;
 
-  @PostMapping(value = "/process", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = "/process",
+               consumes = MediaType.APPLICATION_JSON_VALUE,
+               produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<Transaction> process(@RequestBody Transaction transaction) {
     log.info("Process transaction with details: {}", transaction);
     return transactionService.process(transaction);
@@ -552,9 +571,12 @@ Next, we will update the service layer implementation to make it reactive and us
 @Slf4j
 @Service
 public class TransactionService {
-  private static final String USER_NOTIFICATION_SERVICE_URL = "http://localhost:8081/notify/fraudulent-transaction";
-  private static final String REPORTING_SERVICE_URL = "http://localhost:8082/report/";
-  private static final String ACCOUNT_MANAGER_SERVICE_URL = "http://localhost:8083/banking/process";
+  private static final String USER_NOTIFICATION_SERVICE_URL =
+      "http://localhost:8081/notify/fraudulent-transaction";
+  private static final String REPORTING_SERVICE_URL =
+      "http://localhost:8082/report/";
+  private static final String ACCOUNT_MANAGER_SERVICE_URL =
+      "http://localhost:8083/banking/process";
 
   @Autowired
   private TransactionRepository transactionRepo;
@@ -585,13 +607,17 @@ public class TransactionService {
                 }
 
                 else {
-                  // Check if it's a valid transaction or not. The Transaction would be considered valid
-                  // if it has been requested from the same home country of the user, else will be considered
+                  // Check if it's a valid transaction or not.
+                  // The Transaction would be considered valid
+                  // if it has been requested from the same home
+                  // country of the user, else will be considered
                   // as fraudulent
-                  if (u.getHomeCountry().equalsIgnoreCase(t.getTransactionLocation())) {
+                  if (u.getHomeCountry()
+                      .equalsIgnoreCase(t.getTransactionLocation())) {
                     t.setStatus(TransactionStatus.VALID);
 
-                    // Call Reporting Service to report valid transaction to bank and deduct amount if funds available
+                    // Call Reporting Service to report valid transaction
+                    // to bank and deduct amount if funds available
                     return webClient.post()
                         .uri(REPORTING_SERVICE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -599,7 +625,8 @@ public class TransactionService {
                         .retrieve()
                         .bodyToMono(Transaction.class)
                         .zipWhen(t1 ->
-                                // Call Account Manager service to process the transaction and send the money
+                                // Call Account Manager service to process
+                                // the transaction and send the money
                                 webClient.post()
                                   .uri(ACCOUNT_MANAGER_SERVICE_URL)
                                   .contentType(MediaType.APPLICATION_JSON)
@@ -615,7 +642,8 @@ public class TransactionService {
                   } else {
                     t.setStatus(TransactionStatus.FRAUDULENT);
 
-                    // Call User Notification service to notify for a fraudulent transaction
+                    // Call User Notification service to notify
+                    // for a fraudulent transaction
                     // attempt from the User's card
                     return webClient.post()
                         .uri(USER_NOTIFICATION_SERVICE_URL)
@@ -624,8 +652,10 @@ public class TransactionService {
                         .retrieve()
                         .bodyToMono(Transaction.class)
                         .zipWhen(t1 ->
-                                // Call Reporting Service to notify bank that there has been an attempt for fraudulent transaction
-                                // and if this attempt exceeds 3 times then auto-block the card and account
+                                // Call Reporting Service to notify bank
+                                // that there has been an attempt for fraudulent transaction
+                                // and if this attempt exceeds 3 times then auto-block
+                                // the card and account
                                 webClient.post()
                                   .uri(REPORTING_SERVICE_URL)
                                   .contentType(MediaType.APPLICATION_JSON)
@@ -699,7 +729,8 @@ public class UserNotificationService {
             message.setFrom("noreply@baeldung.com");
             message.setTo(u.getEmail());
             message.setSubject("Fraudulent transaction attempt from your card");
-            message.setText("An attempt has been made to pay " + transaction.getStoreName()
+            message.setText("An attempt has been made to pay "
+                            + transaction.getStoreName()
                 + " from card " + transaction.getCardId() + " in the country "
                 + transaction.getTransactionLocation() + "." +
                 " Please report to your bank or block your card.");
@@ -754,15 +785,20 @@ public class ReportingService {
     return userRepo.findByCardId(transaction.getCardId())
         .map(u -> {
           if (transaction.getStatus().equals(TransactionStatus.FRAUDULENT)
-              || transaction.getStatus().equals(TransactionStatus.FRAUDULENT_NOTIFY_SUCCESS)
-              || transaction.getStatus().equals(TransactionStatus.FRAUDULENT_NOTIFY_FAILURE)) {
+              || transaction.getStatus().equals(TransactionStatus
+                                                .FRAUDULENT_NOTIFY_SUCCESS)
+              || transaction.getStatus().equals(TransactionStatus
+                                                .FRAUDULENT_NOTIFY_FAILURE)) {
 
-            // Report the User's account and take automatic action against User's account or card
-            u.setFraudulentActivityAttemptCount(u.getFraudulentActivityAttemptCount() + 1);
+            // Report the User's account and take automatic
+            // action against User's account or card
+            u.setFraudulentActivityAttemptCount(
+                u.getFraudulentActivityAttemptCount() + 1);
             u.setAccountLocked(u.getFraudulentActivityAttemptCount() > 3);
             List<Transaction> newList = new ArrayList<>();
             newList.add(transaction);
-            if (Objects.isNull(u.getFraudulentTransactions()) || u.getFraudulentTransactions().isEmpty()) {
+            if (Objects.isNull(u.getFraudulentTransactions())
+                || u.getFraudulentTransactions().isEmpty()) {
               u.setFraudulentTransactions(newList);
             } else {
               u.getFraudulentTransactions().add(transaction);
@@ -775,7 +811,8 @@ public class ReportingService {
         .map(u -> {
           if (!transaction.getStatus().equals(TransactionStatus.VALID)) {
             transaction.setStatus(u.isAccountLocked()
-                ? TransactionStatus.ACCOUNT_BLOCKED : TransactionStatus.FAILURE);
+                ? TransactionStatus.ACCOUNT_BLOCKED
+                                  : TransactionStatus.FAILURE);
           }
           return transaction;
         })
@@ -799,7 +836,8 @@ public class AccountManagementController {
 
   @PostMapping("/process")
   public Mono<Transaction> manage(@RequestBody Transaction transaction) {
-    log.info("Process transaction with details in account management service: {}", transaction);
+    log.info("Process transaction with details in account management service: {}",
+             transaction);
     return accountManagementService.manage(transaction);
   }
 }
@@ -824,7 +862,8 @@ public class AccountManagementService {
           if (transaction.getStatus().equals(TransactionStatus.VALID)) {
             List<Transaction> newList = new ArrayList<>();
             newList.add(transaction);
-            if (Objects.isNull(u.getValidTransactions()) || u.getValidTransactions().isEmpty()) {
+            if (Objects.isNull(u.getValidTransactions())
+                || u.getValidTransactions().isEmpty()) {
               u.setValidTransactions(newList);
             } else {
               u.getValidTransactions().add(transaction);
@@ -924,7 +963,9 @@ public class TransactionProducer {
 
   public void sendMessage(Transaction transaction) {
     Message<Transaction> msg = MessageBuilder.withPayload(transaction)
-        .setHeader(KafkaHeaders.MESSAGE_KEY, transaction.getTransactionId().getBytes(StandardCharsets.UTF_8))
+        .setHeader(KafkaHeaders.MESSAGE_KEY,
+                   transaction.getTransactionId()
+                   .getBytes(StandardCharsets.UTF_8))
         .build();
     log.info("Transaction processed to dispatch: {}; Message dispatch successful: {}",
         msg,
@@ -945,7 +986,8 @@ First, we will define a simple listener (consumer) to process the new messages t
 public class TransactionConsumer {
 
   @Bean
-  public Consumer<Transaction> consumeTransaction(TransactionService transactionService) {
+  public Consumer<Transaction> consumeTransaction(
+      TransactionService transactionService) {
     return transactionService::asyncProcess;
   }
 }
@@ -984,10 +1026,12 @@ public class TransactionService {
             }
 
             else {
-              // Check if it's a valid transaction or not. The Transaction would be considered valid
-              // if it has been requested from the same home country of the user, else will be considered
+              // Check if it's a valid transaction or not. The Transaction
+              // would be considered valid if it has been requested from
+              // the same home country of the user, else will be considered
               // as fraudulent
-              if (u.getHomeCountry().equalsIgnoreCase(transaction.getTransactionLocation())) {
+              if (u.getHomeCountry().equalsIgnoreCase(
+                  transaction.getTransactionLocation())) {
                 transaction.setStatus(TransactionStatus.VALID);
               } else {
                 transaction.setStatus(TransactionStatus.FRAUDULENT);
@@ -1040,7 +1084,8 @@ public class UserNotificationService {
               message.setFrom("noreply@baeldung.com");
               message.setTo(u.getEmail());
               message.setSubject("Fraudulent transaction attempt from your card");
-              message.setText("An attempt has been made to pay " + transaction.getStoreName()
+              message.setText("An attempt has been made to pay "
+                              + transaction.getStoreName()
                   + " from card " + transaction.getCardId() + " in the country "
                   + transaction.getTransactionLocation() + "." +
                   " Please report to your bank or block your card.");
@@ -1089,15 +1134,20 @@ public class ReportingService {
     userRepo.findByCardId(transaction.getCardId())
         .map(u -> {
           if (transaction.getStatus().equals(TransactionStatus.FRAUDULENT)
-              || transaction.getStatus().equals(TransactionStatus.FRAUDULENT_NOTIFY_SUCCESS)
-              || transaction.getStatus().equals(TransactionStatus.FRAUDULENT_NOTIFY_FAILURE)) {
+              || transaction.getStatus().equals(TransactionStatus
+                                                .FRAUDULENT_NOTIFY_SUCCESS)
+              || transaction.getStatus().equals(TransactionStatus
+                                                .FRAUDULENT_NOTIFY_FAILURE)) {
 
-            // Report the User's account and take automatic action against User's account or card
-            u.setFraudulentActivityAttemptCount(u.getFraudulentActivityAttemptCount() + 1);
+            // Report the User's account and take automatic
+            // action against User's account or card
+            u.setFraudulentActivityAttemptCount(
+                u.getFraudulentActivityAttemptCount() + 1);
             u.setAccountLocked(u.getFraudulentActivityAttemptCount() > 3);
             List<Transaction> newList = new ArrayList<>();
             newList.add(transaction);
-            if (Objects.isNull(u.getFraudulentTransactions()) || u.getFraudulentTransactions().isEmpty()) {
+            if (Objects.isNull(u.getFraudulentTransactions())
+                || u.getFraudulentTransactions().isEmpty()) {
               u.setFraudulentTransactions(newList);
             } else {
               u.getFraudulentTransactions().add(transaction);
@@ -1148,7 +1198,8 @@ public class AccountManagementService {
           if (transaction.getStatus().equals(TransactionStatus.VALID)) {
             List<Transaction> newList = new ArrayList<>();
             newList.add(transaction);
-            if (Objects.isNull(u.getValidTransactions()) || u.getValidTransactions().isEmpty()) {
+            if (Objects.isNull(u.getValidTransactions())
+                || u.getValidTransactions().isEmpty()) {
               u.setValidTransactions(newList);
             } else {
               u.getValidTransactions().add(transaction);
@@ -1205,6 +1256,8 @@ services:
     image: wurstmeister/kafka
     ports:
       - "9092:9092"
+    depends_on:
+      - zookeeper
     environment:
       KAFKA_ADVERTISED_HOST_NAME: 10.204.106.55
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -1269,6 +1322,17 @@ services:
       - kafka
       - mongodb
 ```
+
+Let’s look into all the components and its orchestration steps in order to deploy everything in our Docker environment.
+
+* ***Zookeeper***: This is required in order to run a Kafka instance to manage the brokers as well as consumers.
+* ***Kafka***: This is to run the Kafka broker and is dependent on Zookeeper to get started before it starts.
+* ***Kafka UI***: This is an optional User Interface for Kafka in order to create or manage topics or brokers through UI. It is dependent on Zookeeper and Kafka.
+* ***MongoDB***: This is required for our microservices to store and retrieve data into the database.
+* ***Banking Service***: This is the first point-of-contact microservice and would be dependent on all the other microservices, Kafka and MongoDB before it can start.
+* ***User Notification Service***: This is dependent on Kafka and MongoDB.
+* ***Reporting Service***: This is also dependent on Kafka and MongoDB.
+* ***Account Management Service***: This as well is dependent on Kafka and MongoDB before it can start.
 
 ## Evaluating the Reactive Microservice Architecture
 

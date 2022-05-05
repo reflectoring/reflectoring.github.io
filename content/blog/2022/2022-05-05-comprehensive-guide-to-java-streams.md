@@ -1,11 +1,11 @@
 ---
 title: "Comprehensive Guide to Java Streams"
-categories: ["java"]
-date: 2022-04-24T05:00:00
-modified: 2022-04-24T05:00:00
+categories: ["java" ]
+date: 2022-05-05T05:00:00
+modified: 2022-05-05T05:00:00
 authors: [pratikdas]
 excerpt: "A stream is a sequence of elements on which we can perform different kinds of sequential and parallel operations. The Stream API was introduced in Java 8 and is used to process collections of objects. In this article, we will work with the different classes and interfaces of the Java Stream API and understand the usage of the various types of operations that we can perform on Java Streams."
-image: images/stock/0019-magnifying-glass-1200x628-branded.jpg
+image: images/stock/0122-snow-1200x628-branded.jpg
 url: comprehensive-guide-to-java-streams
 ---
 
@@ -13,7 +13,7 @@ A stream is a sequence of elements on which we can perform different kinds of se
 
 The operations in a stream use internal iteration for processing the elements of a stream. This capability helps us to get rid of verbose constructs like `while`, `for`, and `forEach` loops.
 
-In this article, we will work with the different classes and interfaces of the Java Stream API and understand the usage of the various operations that we can perform on Java Streams.
+In this tutorial, we will work with the different classes and interfaces of the Java Stream API and understand the usage of the various operations that we can perform on Java Streams.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/core-java/streams/data-streams" %}}
 
@@ -32,7 +32,7 @@ public class StreamingApp {
     
     DoubleStream stream = Arrays.stream(elements);
     
-    stream.forEach(e->System.out.println(e));
+    stream.forEach(logger::info);
   }
 
 }
@@ -53,9 +53,9 @@ public class StreamingApp {
     
     Stream<Double> parallelStream = elementsInCollection.parallelStream();
     
-    stream.forEach(e->System.out.println(e));
+    stream.forEach(logger::info);
     
-    parallelStream.forEach(e->System.out.println(e));
+    parallelStream.forEach(logger::info);
   }
 
 }
@@ -298,7 +298,7 @@ public class StreamingApp {
       
       stream
       .filter(e->e > 3 )
-      .forEach(e->System.out.println(e));          
+      .forEach(logger::info);          
     }
 }
 
@@ -358,7 +358,7 @@ public class StreamingApp {
 }
 ```
 Here we are passing an accumulator function to the `reduce()` operation. The accumulator function takes two parameters and concatenates them with a separator passed as a method parameter.
-Please note there is already a String method:`join` for joining strings.
+Please note there is already a String method:`join()` for joining strings.
 
 ```java
 String joined = String.join(separator, strings);
@@ -462,7 +462,7 @@ As we can see in the example, intermediate operations are present in the middle 
 Intermediate operations are lazily loaded and executed when the terminal operation is called on the stream. 
 
 ## Handling Nullable Streams
-In some earlier examples, we used the static factory method of Stream: `Stream.of` to create a stream with elements. We will get a `NullPointerException`  if the value in the stream is `null`. The `ofNullable` method was introduced in Java 9 to mitigate this behavior.
+In some earlier examples, we used the static factory method of Stream: `Stream.of()` to create a stream with elements. We will get a `NullPointerException`  if the value in the stream is `null`. The `ofNullable` method was introduced in Java 9 to mitigate this behavior.
 
 The `ofNullable` method creates a Stream with the supplied elements and if the value is `null`, an empty Stream is created as shown in this example:
 

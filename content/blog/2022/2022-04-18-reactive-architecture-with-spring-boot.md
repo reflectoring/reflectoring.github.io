@@ -9,7 +9,7 @@ image: images/stock/0122-blocks-4480x6720.jpg
 url: reactive-architecture-with-spring-boot
 ---
 
-We have often seen that the microservices are meant to be adaptable, scalable and highly performant enough so that it can be more competitive with respect to the other products in the market. In this urge to increase speed among the services, network communications and data flow within the microservices play a key role. So we will take at the various chain of communications within microservices and try to adapt or convert them into reactive applications so that we can improve the speed between the flow of data and communication.
+We have often seen that the microservices are meant to be adaptable, scalable and highly performant enough so that it can be more competitive with respect to the other products in the market. In this urge to increase speed among the services, network communications and data flow within the microservices play a key role. So we will take a look at the various chain of communications within microservices and try to adapt or convert them into reactive applications so that we can improve the speed between the flow of data and communication.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-reactive-architecture" %}}
 

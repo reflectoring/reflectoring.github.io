@@ -489,4 +489,49 @@ We provide implementations to the methods of the `Callback` interface. The `onRe
 We have now covered all the basic components that will help us create a working Retrofit client in a Spring Boot application.
 In the next section, we will look at mocking the endpoints defined in the Retrofit client.
 
+### Mocking an OkHttp REST Client
+For writing Unit tests, **we will use the Spring Boot Test framework in combination with Mockito and Retrofit Mock.**
+We will include the Retrofit Mock dependency with Maven:
+````xml
+    <dependency>
+    <groupId>com.squareup.retrofit2</groupId>
+    <artifactId>retrofit-mock</artifactId>
+    <version>2.5.0</version>
+    <scope>test</scope>
+    </dependency>
+````
+Gradle:
+````groovy
+    testImplementation group: 'com.squareup.retrofit2', name: 'retrofit-mock', version: '2.5.0'
+````
 
+Next, we will test the service methods. Here we will focus on mocking the Retrofit client calls.
+Consider this example:
+````java
+    @Test
+    @DisplayName("Successful getAllBooks call")
+    public void getAllBooksTest() throws Exception {
+        LibraryAuditService libraryAuditService = applicationContext.getBean(LibraryAuditService.class);
+        String booksResponse = getBooksResponse("/response/getAllBooks.json");
+        List<BookDto> bookDtoList =
+                new ObjectMapper().readValue(booksResponse, new TypeReference<>() {
+                });
+        when(libraryClient.getAllBooks("all")).thenReturn(Calls.response(bookDtoList));
+        doReturn(null).when(auditRepository).save(any());
+        List<BookDto> allBooks = libraryAuditService.getAllBooks();
+        assertAll(
+                () -> assertNotNull(allBooks),
+                () -> assertTrue(allBooks.size()>0)
+        );
+
+    }
+````
+We will use Mockito to mock `libraryClient`. Since the Retrofit client returns a `Call` object, we will return a static pre-defined JSON and wrap it in a `Call` object
+using `Calls.response`.
+With this all responses for the interface methods can be mocked, and we can test different usecases.
+
+### Conclusion
+In this article, we introduced a Spring Boot REST client and REST server and looked at various capabilities of the Retrofit library. 
+We took a closer look at the various components that need to be addressed to define a Retrofit client. Finally, we look
+at how to mock the Retrofit client for unit tests.
+In conclusion, **Retrofit along with OkHttp is an ideal library that works well with Spring and simplifies calls to a REST server.**

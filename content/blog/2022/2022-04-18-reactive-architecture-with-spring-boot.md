@@ -5,11 +5,13 @@ date: 2022-04-17 00:00:00 +1100
 modified: 2022-04-17 00:00:00 +1100
 authors: [arpendu]
 excerpt: "A comprehensive guide to migrate from a simple blocking call architecture to Reactive Streams and Message-driven architecture using Spring Boot microservices. A deep-dive to understand the Reactive Programming paradigm and their APIs. We will also adapt message-driven architecture along with Spring Webflux Reactive system."
-image: images/stock/0122-blocks-4480x6720.jpg 
+image: images/stock/0122-newton-1200x628.jpg 
 url: reactive-architecture-with-spring-boot
 ---
 
-We have often seen that the microservices are meant to be adaptable, scalable and highly performant enough so that it can be more competitive with respect to the other products in the market. In this urge to increase speed among the services, network communications and data flow within the microservices play a key role. So we will take a look at the various chain of communications within microservices and try to adapt or convert them into reactive applications so that we can improve the speed between the flow of data and communication.
+Microservices are meant to be adaptable, scalable and highly performant so that they can be more competitive with respect to the other products in the market. To increase speed among the services, network communications and data flow within the microservices play a key role. 
+
+In this tutorial, we will take a look at microservices that communicate in a blocking fashion and turn them into reactive applications to improve the flow between them.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-reactive-architecture" %}}
 
@@ -17,7 +19,7 @@ We have often seen that the microservices are meant to be adaptable, scalable an
 
 In microservices, each service practically takes care of its data and persistence. Then there is always an orchestration between these services and they interact with each other synchronously or asynchronously using their APIs. 
 
-Since each service is isolated, they are independently scalable and resistant to failure. Microservices are explicitly designed to tackle failures so that they can be easily taken down without disturbing the overall system. When the microservices are replaced with the new ones after fixing the problem, it must process the records from the last offset of data which got processed.
+Since each service is isolated, they are independently scalable and resistant to failure. Microservices are explicitly designed to tackle failures so that they can be easily taken down without disturbing the overall system. When a service is restarted, it must process the records that accumulated during the downtime.
 
 Thus, it usually makes sense to bring atomicity within the services to bring in continuous and streamlined data flow and make the interactions and network calls asynchronous to address the problem of handling the data-rich, interactive user experience. Hence, a bunch of prominent developers realized that they would need an approach to build a “reactive” systems architecture that would ease the processing of data *while streaming* and they signed a manifesto, popularly known as the [Reactive Manifesto](https://www.reactivemanifesto.org/).
 
@@ -1325,14 +1327,14 @@ services:
 
 Let’s look into all the components and its orchestration steps in order to deploy everything in our Docker environment.
 
-* ***Zookeeper***: This is required in order to run a Kafka instance to manage the brokers as well as consumers.
-* ***Kafka***: This is to run the Kafka broker and is dependent on Zookeeper to get started before it starts.
-* ***Kafka UI***: This is an optional User Interface for Kafka in order to create or manage topics or brokers through UI. It is dependent on Zookeeper and Kafka.
-* ***MongoDB***: This is required for our microservices to store and retrieve data into the database.
-* ***Banking Service***: This is the first point-of-contact microservice and would be dependent on all the other microservices, Kafka and MongoDB before it can start.
-* ***User Notification Service***: This is dependent on Kafka and MongoDB.
-* ***Reporting Service***: This is also dependent on Kafka and MongoDB.
-* ***Account Management Service***: This as well is dependent on Kafka and MongoDB before it can start.
+* **Zookeeper**: This is required in order to run a Kafka instance to manage the brokers as well as consumers.
+* **Kafka**: This is to run the Kafka broker and is dependent on Zookeeper to get started before it starts.
+* **Kafka UI**: This is an optional User Interface for Kafka in order to create or manage topics or brokers through UI. It is dependent on Zookeeper and Kafka.
+* **MongoDB**: This is required for our microservices to store and retrieve data into the database.
+* **Banking Service**: This is the first point-of-contact microservice and would be dependent on all the other microservices, Kafka and MongoDB before it can start.
+* **User Notification Service**: This is dependent on Kafka and MongoDB.
+* **Reporting Service**: This is also dependent on Kafka and MongoDB.
+* **Account Management Service**: This as well is dependent on Kafka and MongoDB before it can start.
 
 ## Evaluating the Reactive Microservice Architecture
 

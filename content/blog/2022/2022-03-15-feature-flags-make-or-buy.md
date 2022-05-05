@@ -6,6 +6,7 @@ date: 2022-03-15 00:00:00 +1100
 modified: 2022-03-12 00:00:00 +1100
 excerpt: "Simple feature flags are easy to implement, but as soon as you want context-sensitive feature flags that can target different users, things get complicated. This article presents different ways to implement feature flags and compares them to using a paid feature management platform."
 image: /images/stock/0039-start-1200x628.jpg
+url: feature-flags-make-or-buy
 ---
 
 According to Google's DevOps Research and Assessment (DORA) group, software delivery performance influences organizational performance in general. That means if you're good at delivering software, you're good at business.

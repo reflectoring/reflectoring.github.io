@@ -532,6 +532,5 @@ With this all responses for the interface methods can be mocked, and we can test
 
 ### Conclusion
 In this article, we introduced a Spring Boot REST client and REST server and looked at various capabilities of the Retrofit library. 
-We took a closer look at the various components that need to be addressed to define a Retrofit client. Finally, we look
-at how to mock the Retrofit client for unit tests.
+We took a closer look at the various components that need to be addressed to define a Retrofit client. Finally, we learnt to mock the Retrofit client for unit tests.
 In conclusion, **Retrofit along with OkHttp is an ideal library that works well with Spring and simplifies calls to a REST server.**

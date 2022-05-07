@@ -15,11 +15,11 @@ We have often seen that the microservices are meant to be adaptable, scalable an
 
 ## Brief Introduction to Reactive Systems
 
-In microservices, each service practically takes care of its data and persistence. Then there is always an orchestration between these services and they interact with each other synchronously or asynchronously using their APIs. 
+The microservices are often determined to maintain data isolation, capable to scale and are fault-tolerant. But when we define multiple services, we need to also take care of the synchronization and the atomicity between their network communication for the data flow.
 
-Since each service is isolated, they are independently scalable and resistant to failure. Microservices are explicitly designed to tackle failures so that they can be easily taken down without disturbing the overall system. When the microservices are replaced with the new ones after fixing the problem, it must process the records from the last offset of data which got processed.
+Usually, while data is being transferred between the services, it operates in a blocking, synchronous and FIFO(first-in-first-out) pattern. This blocking methodology of data streaming often prohibits a system to process real-time data while streaming due to which it reduces the performance and speed.
 
-Thus, it usually makes sense to bring atomicity within the services to bring in continuous and streamlined data flow and make the interactions and network calls asynchronous to address the problem of handling the data-rich, interactive user experience. Hence, a bunch of prominent developers realized that they would need an approach to build a “reactive” systems architecture that would ease the processing of data *while streaming* and they signed a manifesto, popularly known as the [Reactive Manifesto](https://www.reactivemanifesto.org/).
+Hence, a bunch of prominent developers realized that they would need an approach to build a “reactive” systems architecture that would ease the processing of data *while streaming* and they signed a manifesto, popularly known as the [Reactive Manifesto](https://www.reactivemanifesto.org/).
 
 The authors of the manifesto stated that a reactive system must be an *asynchronous* software that deals with *producers* who have the single responsibility to send messages to *consumers*. They introduced the following features to keep in mind:
 
@@ -539,6 +539,8 @@ These are the dependencies we add to our `pom.xml`:
 	<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
 </dependency>
 ```
+
+In comparison to the above architecture diagram, the below diagram replaces the general Spring Boot with Reactive Spring Boot and the   API communication framework from RestTemplate to WebClient and Spring WebFlux. Even the DAO layer is replaced from Spring Data MongoDB to Reactive Spring Data MongoDB.
 
 {{% image alt="Reactive Spring Microservice" src="images/posts/spring-reactive-architecture/reactive-spring-microservice.png" %}}
 

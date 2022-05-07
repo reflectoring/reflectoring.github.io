@@ -391,16 +391,21 @@ public class ReportingService {
   public Transaction report(Transaction transaction) {
 
     if (transaction.getStatus().equals(TransactionStatus.FRAUDULENT_NOTIFY_SUCCESS)
-        || transaction.getStatus().equals(TransactionStatus.FRAUDULENT_NOTIFY_FAILURE)) {
+        || transaction.getStatus().equals(
+            TransactionStatus.FRAUDULENT_NOTIFY_FAILURE)) {
 
-      // Report the User's account and take automatic action against User's account or card
+      // Report the User's account and take automatic action against
+      // User's account or card
       User user = userRepo.findByCardId(transaction.getCardId());
-      user.setFraudulentActivityAttemptCount(user.getFraudulentActivityAttemptCount() + 1);
+      user.setFraudulentActivityAttemptCount(
+          user.getFraudulentActivityAttemptCount() + 1);
       user.setAccountLocked(user.getFraudulentActivityAttemptCount() > 3);
       user.getFraudulentTransactions().add(transaction);
       userRepo.save(user);
 
-      transaction.setStatus(user.isAccountLocked() ? TransactionStatus.ACCOUNT_BLOCKED : TransactionStatus.FAILURE);
+      transaction.setStatus(user.isAccountLocked()
+                            ? TransactionStatus.ACCOUNT_BLOCKED
+                            : TransactionStatus.FAILURE);
     }
     return transactionRepo.save(transaction);
   }

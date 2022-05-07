@@ -1,15 +1,15 @@
 ---
 title: "Reactive Architecture with Spring Boot"
 categories: ["Spring"]
-date: 2022-04-17 00:00:00 +1100 
-modified: 2022-04-17 00:00:00 +1100
+date: 2022-05-08 00:00:00 +1100 
+modified: 2022-05-08 00:00:00 +1100
 authors: [arpendu]
 excerpt: "A comprehensive guide to migrate from a simple blocking call architecture to Reactive Streams and Message-driven architecture using Spring Boot microservices. A deep-dive to understand the Reactive Programming paradigm and their APIs. We will also adapt message-driven architecture along with Spring Webflux Reactive system."
 image: images/stock/0122-newton-1200x628.jpg 
 url: reactive-architecture-with-spring-boot
 ---
 
-Microservices are meant to be adaptable, scalable and highly performant so that they can be more competitive with respect to the other products in the market. To increase speed among the services, network communications and data flow within the microservices play a key role. 
+Microservices are meant to be adaptable, scalable, and highly performant so that they can be more competitive to the other products in the market. To increase speed among the services, network communications and data flow within the microservices play a key role. 
 
 In this tutorial, we will take a look at microservices that communicate in a blocking fashion and turn them into reactive applications to improve the flow between them.
 
@@ -17,9 +17,7 @@ In this tutorial, we will take a look at microservices that communicate in a blo
 
 ## Brief Introduction to Reactive Systems
 
-The microservices are often determined to maintain data isolation, capable to scale and are fault-tolerant. But when we define multiple services, we need to also take care of the synchronization and the atomicity between their network communication for the data flow.
-
-Usually, while data is being transferred between the services, it operates in a blocking, synchronous and FIFO(first-in-first-out) pattern. This blocking methodology of data streaming often prohibits a system to process real-time data while streaming due to which it reduces the performance and speed.
+Usually, while data is being transferred between the services, it operates in a blocking, synchronous, and FIFO (first-in-first-out) pattern. This blocking methodology of data streaming often prohibits a system to process real-time data while streaming because of limited performance and speed.
 
 Hence, a bunch of prominent developers realized that they would need an approach to build a “reactive” systems architecture that would ease the processing of data *while streaming* and they signed a manifesto, popularly known as the [Reactive Manifesto](https://www.reactivemanifesto.org/).
 
@@ -30,7 +28,7 @@ The authors of the manifesto stated that a reactive system must be an *asynchron
 - **Elastic**: Reactive systems must be adaptive to shard or replicate components based upon their requirement. They should use predictive scaling to anticipate sudden ups and downs in their infrastructure.
 - **Message-driven**: Since all the components in a reactive system are supposed to be loosely coupled, they must communicate across their boundaries by asynchronously exchanging messages.
 
-Hence, a programming paradigm was introduced, popularly known as the *Reactive Programming Paradigm*. If you want to know in-depth about the various components in this paradigm, then have a look at our [WebFlux article](/getting-started-with-spring-webflux/#introducing-reactive-programming-paradigm).
+Hence, a programming paradigm was introduced, popularly known as the *Reactive Programming Paradigm*. If you want to know in-depth about the various components of this paradigm, then have a look at our [WebFlux article](/getting-started-with-spring-webflux/#introducing-reactive-programming-paradigm).
 
 In this chapter, we are going to build a microservice architecture that would be based upon the following design principles:
 
@@ -56,7 +54,7 @@ For this article, we are going to build a simple microservice that would receive
 
   All the above calls will be synchronous and driven by banking service. It would wait for the downstream applications to process the calls synchronously and finally update the result.
 
-  We will be using MongoDB and create two tables, `Transaction`, and `User`. Each *transaction* would contain the following information:
+  We will be using MongoDB and creating two tables, `Transaction`, and `User`. Each *transaction* would contain the following information:
 
   - **Card ID** - the user's card ID with which (allegedly) a purchase was made
   - **Amount** - the amount of the purchase transaction in dollars
@@ -509,7 +507,7 @@ services:
       - mongodb
 ```
 
-### Problems With A Synchronous Architecture
+### Problems With a Synchronous Architecture
 
 This is just a bunch of simple microservices interacting with each other, each one having a distinctive responsibility and a role to play. Still, this is far from real-time production-grade enterprise software. So let’s look into the present problems in this architecture and discuss further how we can transform it into a full-fledged reactive system.
 
@@ -528,7 +526,7 @@ The overall objective of microservice architecture in comparison to monolith is 
 - **State** - The entry-point or accessibility to the state of this kind of microservices must be through APIs. It must not provide any backdoor access through the database. This in turn allows the microservices to evolve internally without affecting the layers exposed outside.
 - **Space** - Each microservice must be deployed independently without caring much about the location or the deployment of the other microservices. This in turn would allow the service to be scaled up/down to meet the scalability demand.
 - **Time** - Reactive microservices must be strictly non-blocking and asynchronous throughout so that they can be eventually consistent enough.
-- **Failures** - A failure occurring in one of the microservice must not impact others or cause the service to go down. It must isolate failures to remote operational despite any kind of failures. 
+- **Failures** - A failure occurring in one of the microservice must not impact others or cause the service to go down. It must isolate failures to remote operations despite any kind of failures. 
 
 Keeping this in mind, let’s try to convert our existing microservice to adapt Reactive frameworks. We will primarily use *Reactive Spring Data Mongo* which provides out-of-the-box support for reactive access through MongoDB Reactive Streams. It provides `ReactiveMongoTemplate` and `ReactiveMongoRepository` interface for mapping functionality.
 
@@ -547,7 +545,7 @@ These are the dependencies we add to our `pom.xml`:
 </dependency>
 ```
 
-In comparison to the above architecture diagram, the below diagram replaces the general Spring Boot with Reactive Spring Boot and the   API communication framework from RestTemplate to WebClient and Spring WebFlux. Even the DAO layer is replaced from Spring Data MongoDB to Reactive Spring Data MongoDB.
+In comparison to the above architecture diagram, the below diagram replaces the general Spring Boot with Reactive Spring Boot and the   API communication framework from `RestTemplate` to `WebClient` and Spring WebFlux. Even the DAO layer is replaced from Spring Data MongoDB to Reactive Spring Data MongoDB.
 
 {{% image alt="Reactive Spring Microservice" src="images/posts/spring-reactive-architecture/reactive-spring-microservice.png" %}}
 
@@ -689,7 +687,9 @@ public class TransactionService {
 }
 ```
 
-We are using the `zipWhen()` method in `WebClient` to make sure that once we receive a response from the first API call, we pick the payload and pass it to the second API. Finally, we will consider the response of the second API as the resulting response to be returned back as response for the initial API call.
+We are using the `zipWhen()` method in `WebClient` to make sure that once we receive a response from the first API call, we pick the payload and pass it to the second API. Finally, we will consider the response of the second API as the resulting response to be returned as a response for the initial API call.
+
+If you want to learn more about `WebClient`, have a look at our article about [sending requests with WebClient](/spring-webclient).
 
 ### User Notification Service
 
@@ -1332,11 +1332,11 @@ services:
       - mongodb
 ```
 
-Let’s look into all the components and its orchestration steps in order to deploy everything in our Docker environment.
+Let’s look into all the components and their orchestration steps to deploy everything in our Docker environment.
 
-* **Zookeeper**: This is required in order to run a Kafka instance to manage the brokers as well as consumers.
+* **Zookeeper**: This is required to run a Kafka instance to manage the brokers as well as consumers.
 * **Kafka**: This is to run the Kafka broker and is dependent on Zookeeper to get started before it starts.
-* **Kafka UI**: This is an optional User Interface for Kafka in order to create or manage topics or brokers through UI. It is dependent on Zookeeper and Kafka.
+* **Kafka UI**: This is an optional User Interface for Kafka to create or manage topics or brokers through UI. It is dependent on Zookeeper and Kafka.
 * **MongoDB**: This is required for our microservices to store and retrieve data into the database.
 * **Banking Service**: This is the first point-of-contact microservice and would be dependent on all the other microservices, Kafka and MongoDB before it can start.
 * **User Notification Service**: This is dependent on Kafka and MongoDB.

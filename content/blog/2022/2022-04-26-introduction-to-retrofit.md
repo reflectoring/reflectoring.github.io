@@ -1,5 +1,5 @@
 ---
-title: "Create a Http Client with OkHttp and Retrofit"
+title: "HTTP Clients with OkHttp and Retrofit"
 categories: ["Java"]
 date: 2022-04-26 00:00:00 +1100
 modified: 2022-04-26 00:00:00 +1100
@@ -10,7 +10,7 @@ url: introduction-to-retrofit
 ---
 
 Developers use HTTP Clients to communicate with other applications over the network. 
-Over the years, multiple [HTTP Clients](https://reflectoring.io/comparison-of-java-http-clients/) have been developed to suit varying application needs.
+Over the years, [multiple HTTP Clients](https://reflectoring.io/comparison-of-java-http-clients/) have been developed to suit various application needs.
 
 In this article, we will focus on **Retrofit, one of the most popular type-safe Http Client for Java and Android.**
 
@@ -25,7 +25,7 @@ In this article, we will focus on **Retrofit, one of the most popular type-safe 
 - Silent recovery from connection problems
 - Support for synchronous and asynchronous calls
 
-## What is `Retrofit`
+## What is `Retrofit`?
 [Retrofit](https://square.github.io/retrofit/) is a high-level REST abstraction built on top of OkHttp. 
 When used to call REST applications, it greatly simplifies API interactions by parsing requests and responses into POJOs.
 
@@ -63,28 +63,28 @@ Now that our REST service works as expected, we will move on to introduce anothe
 In the process, we will learn about Retrofit and its various features.
 
 ## Introduction to REST Client Application
-The REST Client application will be a [Spring Boot Library Audit application]((https://github.com/ranjanih/code-examples/tree/ranjani-retrofit/core-java/retrofit/introduction-to-retrofit/AuditApplication)) that exposes REST endpoints and uses Retrofit to call our previously setup Library application. The result is then audited in an in-memory database for tracking purposes.
+The REST Client application will be a [Spring Boot Library Audit application](https://github.com/thombergs/code-examples/tree/master/java/retrofit/core-java/retrofit/introduction-to-retrofit/AuditApplication) that exposes REST endpoints and uses Retrofit to call our previously setup Library application. The result is then audited in an in-memory database for tracking purposes.
 
 ## Adding Retrofit dependencies
 With `Maven`:
 ````xml
-        <dependency>
-			<groupId>com.squareup.retrofit2</groupId>
-			<artifactId>retrofit</artifactId>
-			<version>2.5.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup.retrofit2</groupId>
-			<artifactId>converter-jackson</artifactId>
-			<version>2.5.0</version>
-		</dependency>
+<dependency>
+	<groupId>com.squareup.retrofit2</groupId>
+	<artifactId>retrofit</artifactId>
+	<version>2.5.0</version>
+</dependency>
+<dependency>
+	<groupId>com.squareup.retrofit2</groupId>
+	<artifactId>converter-jackson</artifactId>
+	<version>2.5.0</version>
+</dependency>
 ````
 With `Gradle`:
 ````groovy
-        dependencies {  
-            implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-            implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
-        }
+dependencies {  
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
+}
 ````
 
 ## Setting Up a Retrofit Client
@@ -205,54 +205,54 @@ In this section, we will look at how to build the client interface.
 **Retrofit supports annotations @GET, @POST, @PUT, @DELETE, @PATCH, @OPTIONS, @HEAD** which we use to annotate our client methods as shown below
 
 ````java
-    @GET("/library/managed/books")
-    Call<List<BookDto>> getAllBooks(@Query("type") String type);
+@GET("/library/managed/books")
+Call<List<BookDto>> getAllBooks(@Query("type") String type);
 ````
 
 Further, we specify the relative path of the REST service endpoint. **To make this relative URL more dynamic we can use 
 parameter replacement blocks** as shown below:
 ````java
-    @PUT("/library/managed/books/{id}")
-    Call<LibResponse> updateBook(@Path("id") Long id, @Body BookDto book);
+@PUT("/library/managed/books/{id}")
+Call<LibResponse> updateBook(@Path("id") Long id, @Body BookDto book);
 ````
 To pass the actual value of `id`, we set a method parameter `@Path` so that the call execution will replace `{id}` with its corresponding value.
 
 We can specify the query parameters in the URL directly or add `@Query` param to the method.
 ````java
-    @GET("/library/managed/books?type=all")
-    OR
-    @GET("/library/managed/books")
-    Call<List<BookDto>> getAllBooks(@Query("type") String type);
+ @GET("/library/managed/books?type=all")
+// OR
+ @GET("/library/managed/books")
+ Call<List<BookDto>> getAllBooks(@Query("type") String type);
 ````
 If the request needs to have multiple query parameters, we could use `@QueryMap`
 ````java
-   @GET("/library/managed/books")
-    Call<List<BookDto>> getAllBooks(@QueryMap Map<String, String> options);
+@GET("/library/managed/books")
+Call<List<BookDto>> getAllBooks(@QueryMap Map<String, String> options);
 ````
 To specify an object as HTTP request body, we use the `@Body` annotation.
 ````java
-    @POST("/library/managed/books")
-    Call<LibResponse> createNewBook(@Body BookDto book);
+@POST("/library/managed/books")
+Call<LibResponse> createNewBook(@Body BookDto book);
 ````
 To the Retrofit interface methods, we can specify static or dynamic header parameters
 For static headers, we have `@Headers`
 ````java
-    @Headers("Accept: application/json")
-    @GET("/library/managed/books")
-    Call<List<BookDto>> getAllBooks(@Query("type") String type);
+@Headers("Accept: application/json")
+@GET("/library/managed/books")
+Call<List<BookDto>> getAllBooks(@Query("type") String type);
 ````
 We could also define multiple static headers as:
 ````java
-    @Headers({
-        "Accept: application/json",
-        "Cache-Control: max-age=640000"})
-    @GET("/library/managed/books")
-    Call<List<BookDto>> getAllBooks(@Query("type") String type);
+@Headers({
+    "Accept: application/json",
+    "Cache-Control: max-age=640000"})
+@GET("/library/managed/books")
+Call<List<BookDto>> getAllBooks(@Query("type") String type);
 ````
 To pass dynamic headers, we specify them as method parameters
 ````java
-    @GET("/library/managed/books/{requestId}")
-    Call<BookDto> getAllBooksWithHeaders(@Header("requestId") String requestId);
+@GET("/library/managed/books/{requestId}")
+Call<BookDto> getAllBooksWithHeaders(@Header("requestId") String requestId);
 ````
 For multiple dynamic headers, we use `@HeaderMap`.
 

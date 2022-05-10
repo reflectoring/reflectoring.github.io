@@ -51,6 +51,8 @@ Please set up a Wise account using [this link](https://wise.com/invite/u/tomh430
 
 {{% image alt="Wise settings" src="images/wise.png" %}}
 
+Make sure that you connect a bank account (not just an UPI account).
+
 Then, all you need to do after an article has been published is to let me know the email address you used for your Wise account and I can transfer the money.
 
 ## Payment via PayPal

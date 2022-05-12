@@ -27,7 +27,7 @@ $( document ).ready(function() {
           variant: 10,
           slide: 1,
           position: "left",
-          content: "<a href=\"https://launchdarkly.com/?utm_source=reflectoring&utm_medium=display&utm_campaign=aodm&utm_content=ebook_oreilly_efm\"><img width=\"600\" alt=\"LaunchDarkly\" src=\"/images/launchdarkly/2022_popout.jpg\"/></a>",
+          content: "<a href=\"https://launchdarkly.com/galaxy?utm_source=reflectoring&utm_medium=display&utm_campaign=gxy22&utm_content=galaxy\"><img width=\"600\" alt=\"LaunchDarkly\" src=\"/images/launchdarkly/GALAXY-1200x1200-GENERAL.png\"/></a>",
           afterPopup: function() {
             setCookie("launchdarkly", "true", 7);
           }

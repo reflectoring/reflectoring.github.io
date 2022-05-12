@@ -31,8 +31,8 @@ When used to call REST applications, it greatly simplifies API interactions by p
 
 In the further sections, we will work on creating a Retrofit client and look at how to incorporate the various features that OkHttp provides.
 
-## Setting up an existing REST Service Application
-We will use a sample REST-based [Spring Boot Library Application](https://github.com/ranjanih/code-examples/tree/ranjani-retrofit/core-java/retrofit/introduction-to-retrofit/SimpleLibraryApplication) that acts as a REST service.
+## Setting up a REST Server
+We will use a sample REST-based [Library Application](https://github.com/ranjanih/code-examples/tree/ranjani-retrofit/core-java/retrofit/introduction-to-retrofit/SimpleLibraryApplication) that can fetch, create, update and delete books and authors.
 This library application is a Spring Boot service that uses Maven for build and HSQLDB as the underlying database.
 The Maven Wrapper bundled with the application will be used to start the service:
 ````text
@@ -40,19 +40,22 @@ The Maven Wrapper bundled with the application will be used to start the service
     ./mvnw clean verify spring-boot:run (for Linux)
 ````
 Now, the application should successfully start:
-{{% image alt="settings" src="images/posts/retrofit/success_at_startup.jpg" %}}
+````text
+[     main] com.reflectoring.library.Application  : Started application in 6.94 seconds (JVM running for 7.611)
+````
 
-The Swagger documentation of this application can be viewed at 
+[Swagger](https://swagger.io/docs/specification/about/) is a set of tools that describes an API structure by creating user-friendly documentation and helps developing and describing RESTful APIs.
+This application uses the Swagger documentation that can be viewed at 
 ````text
     http://localhost:8090/swagger-ui.html
 ````
 The documentation should look like this:
 {{% image alt="settings" src="images/posts/retrofit/swagger-doc.jpg" %}}
 
-Before we use swagger to make REST calls, we will add basic authentication credentials as configured in application.yaml.
+Before we use swagger to make REST calls, we will add basic authentication credentials as configured in [application.yaml](https://github.com/ranjanih/code-examples/blob/f003b31171235a1af40c66d1b3862be54fccb5f0/core-java/retrofit/introduction-to-retrofit/SimpleLibraryApplication/src/main/resources/application.yaml#L16).
 {{% image alt="settings" src="images/posts/retrofit/basic-auth.jpg" %}}
 
-Now, we can hit the REST endpoints successfully. (Sample JSON requests are available in README.md file in the application codebase.)
+Now, we can hit the REST endpoints successfully. (Sample JSON requests are available in [README.md](https://github.com/ranjanih/code-examples/blob/ranjani-retrofit/core-java/retrofit/introduction-to-retrofit/SimpleLibraryApplication/README.md) file in the application codebase.)
 {{% image alt="settings" src="images/posts/retrofit/POST.jpg" %}}
 {{% image alt="settings" src="images/posts/retrofit/POST-response.jpg" %}}
 
@@ -62,8 +65,8 @@ Once the POST request is successful, we should be able to make a GET call to con
 Now that our REST service works as expected, we will move on to introduce another application that will act as a REST client making calls to this service.
 In the process, we will learn about Retrofit and its various features.
 
-## Introduction to REST Client Application
-The REST Client application will be a [Spring Boot Library Audit application](https://github.com/thombergs/code-examples/tree/master/java/retrofit/core-java/retrofit/introduction-to-retrofit/AuditApplication) that exposes REST endpoints and uses Retrofit to call our previously setup Library application. The result is then audited in an in-memory database for tracking purposes.
+## Building a REST Client with Retrofit
+The REST Client application will be a [Library Audit application](https://github.com/thombergs/code-examples/tree/master/java/retrofit/core-java/retrofit/introduction-to-retrofit/AuditApplication) that exposes REST endpoints and uses Retrofit to call our previously setup Library application. The result is then audited in an in-memory database for tracking purposes.
 
 ## Adding Retrofit dependencies
 With `Maven`:
@@ -87,7 +90,7 @@ dependencies {
 }
 ````
 
-## Setting Up a Retrofit Client
+## Quick Guide to Setting up a Retrofit Client
 
 Every Retrofit client needs to follow the three steps listed below:
 ### Creating the model objects for Retrofit
@@ -170,7 +173,6 @@ public interface LibraryClient {
     Call<LibResponse> deleteBook(@Path("id") Long id);
 }
 ````
-We will deep-dive into the annotations and Retrofit classes in the further sections.
 
 ### Creating a Retrofit.Builder class as a Spring Boot Configuration 
 We will use the Retrofit Builder API to define URL for HTTP operations.
@@ -196,20 +198,17 @@ public class RestClientConfiguration {
 
 }
 ````
+We will deep-dive into each of the three steps listed above in the next section.
 
-## Using Retrofit
-In the further sections we will learn more about the Retrofit API and how to use them. 
+## Using Retrofit in detail
+This section will focus on the annotations, Retrofit classes and features that will help us create a flexible and easy to configure REST client. 
 
 ### Building a Client Interface
 In this section, we will look at how to build the client interface.
 **Retrofit supports annotations @GET, @POST, @PUT, @DELETE, @PATCH, @OPTIONS, @HEAD** which we use to annotate our client methods as shown below
 
-````java
-@GET("/library/managed/books")
-Call<List<BookDto>> getAllBooks(@Query("type") String type);
-````
-
-Further, we specify the relative path of the REST service endpoint. **To make this relative URL more dynamic we can use 
+#### Path Parameters
+Along with the mentioned annotations, we specify the relative path of the REST service endpoint. **To make this relative URL more dynamic we can use 
 parameter replacement blocks** as shown below:
 ````java
 @PUT("/library/managed/books/{id}")
@@ -217,6 +216,7 @@ Call<LibResponse> updateBook(@Path("id") Long id, @Body BookDto book);
 ````
 To pass the actual value of `id`, we set a method parameter `@Path` so that the call execution will replace `{id}` with its corresponding value.
 
+#### Query Parameters
 We can specify the query parameters in the URL directly or add `@Query` param to the method.
 ````java
  @GET("/library/managed/books?type=all")
@@ -224,16 +224,22 @@ We can specify the query parameters in the URL directly or add `@Query` param to
  @GET("/library/managed/books")
  Call<List<BookDto>> getAllBooks(@Query("type") String type);
 ````
+
+#### Multiple Query Parameters
 If the request needs to have multiple query parameters, we could use `@QueryMap`
 ````java
 @GET("/library/managed/books")
 Call<List<BookDto>> getAllBooks(@QueryMap Map<String, String> options);
 ````
+
+#### Request Body
 To specify an object as HTTP request body, we use the `@Body` annotation.
 ````java
 @POST("/library/managed/books")
 Call<LibResponse> createNewBook(@Body BookDto book);
 ````
+
+#### Headers
 To the Retrofit interface methods, we can specify static or dynamic header parameters
 For static headers, we have `@Headers`
 ````java
@@ -277,17 +283,17 @@ To override these defaults, we need to setup `OkHttpClient` as shown below:
                 .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
                 .build().create(LibraryClient.class);
 ````
-Here, the timeout values are as specified in application.yaml.
+Here, the timeout values are as specified in [application.yaml](https://github.com/ranjanih/code-examples/tree/ranjani-retrofit/core-java/retrofit/introduction-to-retrofit/AuditApplication/src/main/resources/application.yaml).
 
-#### Using Convertors
+#### Using Converters
 By default, Retrofit can only deserialize HTTP bodies into OkHttp's `ResponseBody` type and its `RequestBody` type for `@Body`.
 With convertors, the requests and responses can be wrapped into Java objects.
 Commonly used convertors are:
 - Gson: com.squareup.retrofit2:converter-gson
 - Jackson: com.squareup.retrofit2:converter-jackson
 
-To make use of these convertors, we need to make sure their corresponding build dependencies are included.
-Then we can add them to the respective convertor factory.
+To make use of these converters, we need to make sure their corresponding build dependencies are included.
+Then we can add them to the respective converter factory.
 ````java
         new Retrofit.Builder().client(httpClientBuilder.build())
                 .baseUrl(props.getEndpoint())
@@ -326,6 +332,11 @@ public class BasicAuthInterceptor implements Interceptor {
 }
 
 ````
+Next, we will add this interceptor to the Retrofit configuration client.
+````java
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
+                .addInterceptor(new BasicAuthInterceptor(props.getUsername(), props.getPassword()));
+````
 The username and password configured in the application.yaml will be securely passed to the REST service in the `Authorization` header.
 **Adding this interceptor ensures that the Authorization header is attached to every request triggered.**
 
@@ -347,7 +358,7 @@ With these additions, when we trigger requests, the logs will look like this:
 
 ##### Header
 In the previous sections, we have seen how to add headers to the client interface. 
-Another way to add headers to requests and responses is via interceptors. **We might consider adding interceptors for headers if we need the same common headers to be passed to every request or response.**
+Another way to add headers to requests and responses is via interceptors. **We should consider adding interceptors for headers if we need the same common headers to be passed to every request or response.**
 ````java
 OkHttpClient.Builder httpClient = new OkHttpClient.Builder();  
 httpClient.addInterceptor(new Interceptor() {  
@@ -424,12 +435,12 @@ Next we add this interceptor as a network interceptor and define an OkHttp cache
                 .readTimeout(props.getReadWriteTimeout(), TimeUnit.SECONDS);
 ````
 __Note: Caching in general applies to GET requests only.
-With this configuration, the GET requests will be cached for 1 minute. The cached responses will be served during the 1 min timeframe even if the network connectivity is down.__
+With this configuration, the GET requests will be cached for 1 minute. The cached responses will be served during the 1 minute timeframe even if the network connectivity is down.__
 
 ##### Custom Interceptors
 As explained in the previous sections, `BasicAuthInterceptor`, `CachingInterceptor` are all examples of custom interceptors created to serve a specific purpose.
-Custom interceptors should implement the OkHttp `Interceptor` interface and implement the method `intercept()`.
-Next we should configure the interceptor (either as an Application interceptor or Network interceptor).
+Custom interceptors implement the OkHttp `Interceptor` interface and implement the method `intercept()`.
+Next we configure the interceptor (either as an Application interceptor or Network interceptor).
 This will make sure the interceptors are chained and called before the end-to-end request is processed.
 
 __Note: If multiple interceptors are defined, they are called in sequence. For instance, a Logging interceptor must always be defined as the last interceptor to be called in the chain, so that we do not miss any critical logging during execution.__
@@ -458,7 +469,7 @@ Since execute() method runs on the main thread, the UI is blocked till the execu
 The methods that help us further process the response are:
 - isSuccessful(): Helps determine if the response HTTP status code is 2xx.
 - body(): On success, the returns the response body. In the example above, the response gets mapped to `BookDto` class.
-- errorBody(): When the service returns a failure response, this method gives us the corresponding error data.
+- errorBody(): When the service returns a failure response, this method gives us the corresponding error object. To further extract the error message, we use the `errorBody().string()`.
 
 #### Asynchronous calls
 To make an asynchronous call, the `Call` interface provides the `enqueue()` method.
@@ -506,31 +517,30 @@ Gradle:
 ````
 
 Next, we will test the service methods. Here we will focus on mocking the Retrofit client calls.
-Consider this example:
+First we will use Mockito to mock `libraryClient`.
 ````java
-    @Test
-    @DisplayName("Successful getAllBooks call")
-    public void getAllBooksTest() throws Exception {
-        LibraryAuditService libraryAuditService = applicationContext.getBean(LibraryAuditService.class);
+@Mock
+private LibraryClient libraryClient;
+````
+Next, we will mock the client methods and return a static object. Further we will use `retrofit-mock` to wrap the response into a `Call` object using `Calls.response`.
+Code snippet is as shown below:
+````java
         String booksResponse = getBooksResponse("/response/getAllBooks.json");
         List<BookDto> bookDtoList =
-                new ObjectMapper().readValue(booksResponse, new TypeReference<>() {
-                });
+        new ObjectMapper().readValue(booksResponse, new TypeReference<>() {
+        });
         when(libraryClient.getAllBooks("all")).thenReturn(Calls.response(bookDtoList));
-        doReturn(null).when(auditRepository).save(any());
-        List<BookDto> allBooks = libraryAuditService.getAllBooks();
-        assertAll(
-                () -> assertNotNull(allBooks),
-                () -> assertTrue(allBooks.size()>0)
-        );
-
-    }
 ````
-We will use Mockito to mock `libraryClient`. Since the Retrofit client returns a `Call` object, we will return a static pre-defined JSON and wrap it in a `Call` object
-using `Calls.response`.
-With this all responses for the interface methods can be mocked, and we can test different usecases.
+`Calls.response` automatically wraps the Call response as successful. To test error scenarios, we need to explicitly define `okhttp3.ResponseBody` with the error code and error body.
+````java
+        LibResponse response = new LibResponse(Status.ERROR.toString(), "Could not delete book for id : 1000");
+        ResponseBody respBody = ResponseBody.create(MediaType.parse("application/json"),
+                new ObjectMapper().writeValueAsString(response));
+        Response<LibResponse> respLib = Response.error(500, respBody);
+        when(libraryClient.deleteBook(Long.valueOf("1000"))).thenReturn(Calls.response(respLib));
+````
 
-### Conclusion
+## Conclusion
 In this article, we introduced a Spring Boot REST client and REST server and looked at various capabilities of the Retrofit library. 
 We took a closer look at the various components that need to be addressed to define a Retrofit client. Finally, we learnt to mock the Retrofit client for unit tests.
 In conclusion, **Retrofit along with OkHttp is an ideal library that works well with Spring and simplifies calls to a REST server.**

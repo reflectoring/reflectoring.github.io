@@ -205,10 +205,10 @@ This section will focus on the annotations, Retrofit classes and features that w
 
 ### Building a Client Interface
 In this section, we will look at how to build the client interface.
-**Retrofit supports annotations @GET, @POST, @PUT, @DELETE, @PATCH, @OPTIONS, @HEAD** which we use to annotate our client methods as shown below
+**Retrofit supports annotations @GET, @POST, @PUT, @DELETE, @PATCH, @OPTIONS, @HEAD** which we use to annotate our client methods as shown below:
 
 #### Path Parameters
-Along with the mentioned annotations, we specify the relative path of the REST service endpoint. **To make this relative URL more dynamic we can use 
+Along with the mentioned annotations, we specify the relative path of the REST service endpoint. **To make this relative URL more dynamic we use 
 parameter replacement blocks** as shown below:
 ````java
 @PUT("/library/managed/books/{id}")
@@ -461,7 +461,7 @@ Since execute() method runs on the main thread, the UI is blocked till the execu
                 log.error("Error calling library client: {}", allBooksResponse.errorBody());
                 if (Objects.nonNull(allBooksResponse.errorBody())) {
                     audit = auditMapper.populateAuditLogForException(
-                            null, HttpMethod.GET, allBooksResponse.errorBody().toString());
+                            null, HttpMethod.GET, allBooksResponse.errorBody().string());
                 }
 
             }
@@ -522,7 +522,7 @@ First we will use Mockito to mock `libraryClient`.
 @Mock
 private LibraryClient libraryClient;
 ````
-Next, we will mock the client methods and return a static object. Further we will use `retrofit-mock` to wrap the response into a `Call` object using `Calls.response`.
+Now, we will mock the client methods and return a static object. Further we will use `retrofit-mock` to wrap the response into a `Call` object using `Calls.response`.
 Code snippet is as shown below:
 ````java
         String booksResponse = getBooksResponse("/response/getAllBooks.json");

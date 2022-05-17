@@ -347,8 +347,7 @@ app.get('/products', (request, response) => {
 In this example, we are setting the `request.time` to the current time in the request interceptor. In the response interceptor, we are capturing the current time in `response.config.time.endTime` and computing the duration by deducting from the current time, the start time captured in the request interceptor.
 
 ## Handling Errors in Axios
-The response received from Axios is a JavaScript `promise` which has a `then()` function for promise chaining, and a `catch()` function for handling errors. Below is how you can catch() an error in Axios.
-Axios' catch() behaves exactly the same as the promise catch() function. So for handling errors, we should add a `catch()` function at the end of one or more `then()` functions as shown in this example:
+The response received from Axios is a JavaScript `promise` which has a `then()` function for promise chaining, and a `catch()` function for handling errors. So for handling errors, we should add a `catch()` function at the end of one or more `then()` functions as shown in this example:
 
 ```js
 const express = require('express')

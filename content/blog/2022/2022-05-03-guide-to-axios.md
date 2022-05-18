@@ -31,7 +31,7 @@ In the following sections, we will look at examples of using these features of A
 
 ## Installing Axios and Other Prerequisites For the Examples
 
-We have created the following applications to simulate the behavior of applications running on a server and the client-side interacting with REST APIs published by an `API server:
+We have created the following applications to simulate the behavior of applications running on a server and the client-side interacting with REST APIs published by an API server:
 1. `apiserver`: This is a Node.js application written using the Express Framework that will have REST APIs.
 2. `serversideapps`:  This is also a Node.js written in Express that will call the REST APIs exposed by the `apiserver` application using the `Axios` HTTP client.
 3. `reactapp`: This is a front-end application written in React which will also call the REST APIs exposed by the `apiserver` application.
@@ -374,9 +374,9 @@ app.post('/products/new', async (request, response) => {
   }).catch(error => {
     if (error.response) {
         console.log("response error")
-    }else if (error.request) {
+    } else if (error.request) {
         console.log("request error")
-    }else {
+    } else {
       console.log('Error', error.message);
     }
     response.send(error.toJSON())

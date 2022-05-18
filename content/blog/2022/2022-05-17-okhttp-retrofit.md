@@ -14,7 +14,7 @@ Over the years, [multiple HTTP Clients](https://reflectoring.io/comparison-of-ja
 
 In this article, we will focus on **Retrofit, one of the most popular type-safe Http clients for Java and Android.**
 
-{{% github "https://github.com/thombergs/code-examples/tree/master/java/retrofit" %}}
+{{% github "https://github.com/thombergs/code-examples/tree/master/core-java/retrofit/introduction-to-retrofit" %}}
 
 ## What is `OkHttp`?
 [OkHttp](https://square.github.io/okhttp/) is an efficient HTTP client developed by Square. Some of its key advantages are:
@@ -52,10 +52,10 @@ This application uses the Swagger documentation that can be viewed at [http://lo
 The documentation should look like this:
 {{% image alt="settings" src="images/posts/retrofit/swagger-doc.jpg" %}}
 
-Swagger also allows us to make calls to the REST endpoints. Before we can do this, we need to add basic authentication credentials as configured in [application.yaml](https://github.com/ranjanih/code-examples/blob/f003b31171235a1af40c66d1b3862be54fccb5f0/core-java/retrofit/introduction-to-retrofit/SimpleLibraryApplication/src/main/resources/application.yaml#L16):
+Swagger also allows us to make calls to the REST endpoints. Before we can do this, we need to add basic authentication credentials as configured in [application.yaml](https://github.com/thombergs/code-examples/blob/2185f9c68dc5e225f5401dc0d62451521b5f6432/core-java/retrofit/introduction-to-retrofit/SimpleLibraryApplication/src/main/resources/application.yaml#L16):
 {{% image alt="settings" src="images/posts/retrofit/basic-auth.jpg" %}}
 
-Now, we can hit the REST endpoints successfully. Sample JSON requests are available in [README.md](https://github.com/ranjanih/code-examples/blob/ranjani-retrofit/core-java/retrofit/introduction-to-retrofit/SimpleLibraryApplication/README.md) file in the application codebase.
+Now, we can hit the REST endpoints successfully. Sample JSON requests are available in [README.md](https://github.com/thombergs/code-examples/blob/master/core-java/retrofit/introduction-to-retrofit/SimpleLibraryApplication/README.md) file in the application codebase.
 {{% image alt="settings" src="images/posts/retrofit/POST.jpg" %}}
 {{% image alt="settings" src="images/posts/retrofit/POST-response.jpg" %}}
 
@@ -66,7 +66,7 @@ Now that our REST service works as expected, we will move on to introduce anothe
 In the process, we will learn about Retrofit and its various features.
 
 ## Building a REST Client with Retrofit
-The REST Client application will be a [Library Audit application](https://github.com/thombergs/code-examples/tree/master/java/retrofit/core-java/retrofit/introduction-to-retrofit/AuditApplication) that exposes REST endpoints and uses Retrofit to call our previously set up Library application. The result is then audited in an in-memory database for tracking purposes.
+The REST Client application will be a [Library Audit application](https://github.com/thombergs/code-examples/tree/master/core-java/retrofit/introduction-to-retrofit/AuditApplication) that exposes REST endpoints and uses Retrofit to call our previously set up Library application. The result is then audited in an in-memory database for tracking purposes.
 
 ## Adding Retrofit dependencies
 With `Maven`:

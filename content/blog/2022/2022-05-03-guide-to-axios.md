@@ -4,14 +4,14 @@ categories: ["node"]
 date: 2022-04-24T05:00:00
 modified: 2022-04-24T05:00:00
 authors: [pratikdas]
-excerpt: "Making API calls is integral to most applications and while doing this we use an HTTP client usually available as an external library. Axios is a popular HTTP client available as a JavaScript library with more than 22 million weekly downloads. We can make API calls with Axios from JavaScript applications irrespective of whether the JavaScript is running on front-end like a browser or on the server-side.
+excerpt: "Making API calls is integral to most applications and while doing this we use an HTTP client usually available as an external library. Axios is a popular HTTP client available as a JavaScript library with more than 22 million weekly downloads. We can make API calls with Axios from JavaScript applications irrespective of whether the JavaScript is running on the front-end like a browser or the server-side.
 
 In this article, we will understand Axios and use its capabilities to make different types of REST API calls from JavaScript applications."
 image: images/stock/0019-magnifying-glass-1200x628-branded.jpg
 url: guide-to-axios
 ---
 
-Making API calls is integral to most applications and while doing this we use an HTTP client usually available as an external library. Axios is a popular HTTP client available as a JavaScript library with more than 22 million weekly downloads. We can make API calls with Axios from JavaScript applications irrespective of whether the JavaScript is running on the front-end like a browser or the server-side.
+Making API calls is integral to most applications and while doing this we use an HTTP client usually available as an external library. Axios is a popular HTTP client available as a JavaScript library with more than 22 million weekly downloads as of May 2022. We can make API calls with Axios from JavaScript applications irrespective of whether the JavaScript is running on the front-end like a browser or the server-side.
 
 In this article, we will understand Axios and use its capabilities to make different types of REST API calls from JavaScript applications.
 
@@ -43,14 +43,19 @@ We will need to install the Axios library in two of these applications: `servers
 npm install axios
 ```
 
+If we want to call APIs with Axios from a vanilla JavaScript application, then we need to include it from a CDN as shown here:
+```js
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+```
+
 After setting up our applications, let us now get down to invoking the APIs exposed by the `apiserver` from the `serversideapp` and the `reactapp` using the Axios HTTP client in the following sections.
 
 ## Sending Requests with the Axios Instance
-Let us start by invoking a `GET` method with the Axios HTTP client from our `serversideapp`. 
+Let us start by invoking a `GET` method with the Axios HTTP client from our server-side application: `serversideapp`. 
 
-For this, we will add an Express route handler function with URL: `/products`. From the route handler function, we will fetch the list of products by calling an API from our `apiserver` with the URL: `http://localhost:3002/products`. 
+For doing this, we will add an Express route handler function with a URL: `/products` to the application. In the route handler function, we will fetch the list of products by calling an API from our `apiserver` with the URL: `http://localhost:3002/products`. 
 
-We will use the default instance provided by the Axios HTTP client for doing this:
+We will use the signature: `axios(config)` on the default instance provided by the Axios HTTP client for doing this:
 
 ```js
 const express = require('express')
@@ -75,13 +80,15 @@ app.get('/products', (request, response) => {
   
 })
 ```
-In this example, we are first getting an instance: `axios` set up with default configuration when we call `require('axios')`.   
+In this example, we are first calling `require('axios')` for getting an instance: `axios` set up with a default configuration.
 
-Then we are passing a configuration argument to the `axios` instance containing the HTTP method: `get` and the URL of the REST endpoint: `http://localhost:3002/products`.  
+Then we are passing a configuration argument to the `axios` instance containing the `method` parameter set to the HTTP method: `get` and the `url` parameter set to the URL of the REST endpoint: `http://localhost:3002/products`. The `url` parameter is mandatory while we can omit the `method` parameter that will then default to `get`.
 
-This method returns a JavaScript `Promise` which means the program does not wait for the method to complete before moving and trying to execute the next statement. We are processing the response in the `then` block where we are extracting the list of `products` by calling `apiResponse.data`.
+This method returns a JavaScript `Promise` object which means the program does not wait for the method to complete before trying to execute the subsequent statement. The `Promise` is either fulfilled or rejected, depending on the response from the API.
 
-Similarly, a POST request for adding a new `product` made with the `axios` default instance will like this:
+To process the result, we use the `then()` method as in this example. When the `Promise` is fulfilled, the `then()` method is executed. In our example, in the `then` function we are extracting the list of `products` by calling `apiResponse.data`.
+
+Similarly, a `POST` request for adding a new `product` made with the `axios` default instance will look like this:
 
 ```js
 const express = require('express')
@@ -111,21 +118,21 @@ app.post('/products/new', async (request, response) => {
   })
 })
 ```
-In this example, in addition to what we did for calling the `GET` method, we have set the `data` element containing the JSON representation of the new `Product` along with an `Authorization` header. We are processing the response in the `then` block of the `Promise` response where we are extracting the API response data by calling `apiResponse.data`. 
+In this example, in addition to what we did for calling the `GET` method, we have set the `data` element containing the JSON representation of the new `Product` along with an `Authorization` header. We are processing the response in the `then` function on the `Promise` response where we are extracting the API response data by calling `apiResponse.data`. 
 
-The elements of the response returned by the API call made with `axios` are:
-- **data**: Response that was provided by the server
+For more involved processing of the API response, it will be worthwhile to understand all the elements of the response returned by the API call made with `axios` :
+- **data**: Response payload sent by the server
 - **status**: HTTP status code from the server response
 - **statusText**: HTTP status message from the server response
 - **headers**: HTTP headers received in the API response
-- **config**: config that was provided to `axios` instance for sending the request
+- **config**: config sent to the `axios` instance for sending the request
 - **request**: Request that generated this response. It is the last ClientRequest instance in node.js (in redirects) and an XMLHttpRequest instance in the browser.
 
 
 ## Sending Requests with the Convenience Instance Methods of Axios
-Axios also provides convenience methods for all the HTTP methods like:`axios.get()`, `axios.post()`, `axios.post()`, `axios.put()`, etc
+Axios also provides an alternate signature for making the API calls by providing convenience methods for all the HTTP methods like:`axios.get()`, `axios.post()`, `axios.put()`, `axios.delete()`, etc.
 
-Let us make a `GET` request using the convenience method to an API with `axios.get()` as shown below:
+We can write the previous example for calling the `GET` method of the REST API using the convenience method: `axios.get()` as shown below:
 ```js
 const express = require('express')
 
@@ -134,7 +141,7 @@ const axios = require('axios')
 
 const app = express()
 
-// // Express route handler for making a request for fetching a product
+// Express route handler for making a request for fetching a product
 app.get('/products/:productName', (request, response) => {
 
   const productName = request.params.productName  
@@ -146,9 +153,11 @@ app.get('/products/:productName', (request, response) => {
   })   
 })
 ```
-In this example, in the Express route handler function we are calling the `get()` method on the default instance of `axios` and passing a configuration argument the URL of the REST API endpoint.
+In this example, in the Express route handler function, we are calling the `get()` method on the default instance of `axios` and passing the URL of the REST API endpoint as the sole argument. This code looks much more concise than the signature: `axios(config)` used in the example in the previous section. 
 
-Similar to our earlier examples, the `get()` method is returning a JavaScript `Promise` object where we are extracting the list of `products` in a `then` block.
+The signature: `axios.get()`  is always preferable for calling the REST APIs due to its cleaner syntax. However, the signature: `axios(config)` of passing a config object containing the HTTP method, and URL parameters to the `axios` instance can be used in situations where we want to construct the API calls dynamically.
+
+The `get()` method returns a JavaScript `Promise` object similar to our earlier examples, where we extract the list of `products` inside the `then` function.
 
 Instead of appending the request query parameter in the URL in the previous example, we could have passed the request parameter in a separate method argument: `params` as shown below:
 
@@ -248,7 +257,11 @@ app.get('/products/:productName/inventory', (request, response) => {
 })
 
 ```
-In this example, we are making requests to two APIs using the `Promise.all()` method. This method takes an iterable of promises returned by the two APIs as input and returns a single Promise that resolves to an array of the results of the input promises. This returned promise will resolve when all of the input promises have been resolved, or if the input iterable contains no promises.
+In this example, we are making requests to two APIs using the `Promise.all()` method. We pass an iterable of the two `Promise` objects returned by the two APIs as input to the method. 
+
+In response, we get a single `Promise` object that resolves to an array of the results of the input `Promise` objects. 
+
+This `Promise` object returned as the response will resolve only when all of the input `promises` are resolved, or if the input iterable contains no `promises`.
 
 ## Overriding the default Instance of Axios
 In all the examples we have seen so far, we used the `require('axios')` to get an instance of `axios` which is configured with default parameters. If we want to add a custom configuration like a timeout of `2` seconds, we need to use `Axios.create()` where we can pass the custom configuration as an argument.
@@ -267,7 +280,7 @@ const app = express()
 app.get('/products/deals', (request, response) => {
   
   // Create a new instance of axios
-  const instance = axios.create({
+  const new_instance = axios.create({
     baseURL: 'http://localhost:3002/products',
     timeout: 1000,
     headers: {
@@ -276,7 +289,7 @@ app.get('/products/deals', (request, response) => {
     }
   })
 
-  instance({
+  new_instance({
     method: 'get',
     url: '/deals'
   }).then(apiResponse => {

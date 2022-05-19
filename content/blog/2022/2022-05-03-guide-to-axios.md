@@ -38,7 +38,7 @@ We have created the following applications to simulate APIs on the server consum
 
 {{% image alt="Applications" src="images/posts/node-axios/axios_conn.png" %}}
 
-1. `apiserver`: This is a Node.js application written using the Express Framework that will have REST APIs.
+1. `apiserver`: This is a Node.js application written using the Express Framework that will contain the REST APIs.
 2. `serversideapps`:  This is also a Node.js written in Express that will call the REST APIs exposed by the `apiserver` application using the `Axios` HTTP client.
 3. `reactapp`: This is a front-end application written in React which will also call the REST APIs exposed by the `apiserver` application.
 

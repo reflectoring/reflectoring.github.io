@@ -11,7 +11,9 @@ image: images/stock/0019-magnifying-glass-1200x628-branded.jpg
 url: guide-to-axios
 ---
 
-Making API calls is integral to most applications and while doing this we use an HTTP client usually available as an external library. Axios is a popular HTTP client available as a JavaScript library with more than 22 million weekly downloads as of May 2022. We can make API calls with Axios from JavaScript applications irrespective of whether the JavaScript is running on the front-end like a browser or the server-side.
+Making API calls is integral to most applications and while doing this we use an HTTP client usually available as an external library. Axios is a popular HTTP client available as a JavaScript library with more than 22 million weekly downloads as of May 2022. 
+
+We can make API calls with Axios from JavaScript applications irrespective of whether the JavaScript is running on the front-end like a browser or the server-side.
 
 In this article, we will understand Axios and use its capabilities to make different types of REST API calls from JavaScript applications.
 
@@ -24,14 +26,18 @@ Axios in contrast to these built-in objects is an open-source library that we ne
 
 One of the important capabilities of Axios is its isomorphic nature which means it can run in the browser as well as in server-side Node.js applications with the same codebase. 
 
-Axios is also a promise-based HTTP client that can be used in plain JavaScript and advanced JavaScript frameworks like React, Vue.js, and Angular.
+Axios is also a promise-based HTTP client that can be used in plain JavaScript as well as in advanced JavaScript frameworks like React, Vue.js, and Angular.
+
 It supports all modern browsers, including support for IE 8 and higher.
 
 In the following sections, we will look at examples of using these features of Axios in our applications.
 
 ## Installing Axios and Other Prerequisites For the Examples
 
-We have created the following applications to simulate the behavior of applications running on a server and the client-side interacting with REST APIs published by an API server:
+We have created the following applications to simulate APIs on the server consumed by other applications on the server and the browser with REST APIs :
+
+{{% image alt="Applications" src="images/posts/node-axios/axios_conn.png" %}}
+
 1. `apiserver`: This is a Node.js application written using the Express Framework that will have REST APIs.
 2. `serversideapps`:  This is also a Node.js written in Express that will call the REST APIs exposed by the `apiserver` application using the `Axios` HTTP client.
 3. `reactapp`: This is a front-end application written in React which will also call the REST APIs exposed by the `apiserver` application.
@@ -42,12 +48,29 @@ We will need to install the Axios library in two of these applications: `servers
 ```shell
 npm install axios
 ```
+The `package.json` in our Node.js express application after installing the `axios` module looks like this:
+
+```json
+{
+  "name": "serversideapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  ...
+  ...
+  "dependencies": {
+    "axios": "^0.27.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.1"
+  }
+}
+```
+We can see the `axios` module added as a dependency in the `dependencies` element.
 
 If we want to call APIs with Axios from a vanilla JavaScript application, then we need to include it from a Content delivery network (CDN) as shown here:
 ```js
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 ```
-
 After setting up our applications, let us now get down to invoking the APIs exposed by the `apiserver` from the `serversideapp` and the `reactapp` using the Axios HTTP client in the following sections.
 
 ## Sending Requests with the Axios Instance
@@ -86,7 +109,7 @@ Then we are passing a configuration argument to the `axios` instance containing 
 
 This method returns a JavaScript `Promise` object which means the program does not wait for the method to complete before trying to execute the subsequent statement. The `Promise` is either fulfilled or rejected, depending on the response from the API.
 
-To process the result, we use the `then()` method as in this example. When the `Promise` is fulfilled, the `then()` method is executed. In our example, in the `then` function we are extracting the list of `products` by calling `apiResponse.data`.
+We use the `then()` method as in this example for processing the result. The `then()` method gets executed when the `Promise` is fulfilled .  In our example, in the `then` method, we are extracting the list of `products` by calling `apiResponse.data`.
 
 Similarly, a `POST` request for adding a new `product` made with the `axios` default instance will look like this:
 

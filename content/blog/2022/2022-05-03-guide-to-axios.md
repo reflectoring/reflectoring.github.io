@@ -438,6 +438,99 @@ As we can see in this example, we are first creating a controller object using t
 
 When the `axios` request is initiated, we pass in the `AbortSignal` as an option inside the request's options object: `{signal: abortSignal}`. This associates the signal and `controller` with the `axios` request and allows us to abort the request by calling the `abort()` method on the `controller`.
 
+## Axios in TypeScript
+Let us now see an example of using Axios in applications authored in TypeScript. 
+
+We will first create a separate folder: `serversideapp_ts` and create a project in Node.js by running the below command by changing into this directory:
+
+```shell
+cd serversideapp_ts
+npm init -y
+```
+Let us next add support for TypeScript to our Node.js project by performing the following steps:
+
+1. Installing Typescript and `ts-node` with `npm`:
+
+```shell
+npm i -D typescript ts-node
+```
+2. Creating a JSON file named `tsconfig.json` with the below contents in our project’s root folder to specify different options for compiling the TypeScript code:
+
+```json
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "rootDir": "./",
+    "esModuleInterop": true
+  }
+}
+```
+
+3. Installing the `axios` module with `npm`:
+```shell
+npm install axios
+```
+Axios includes TypeScript definitions, so we do not have to install them separately.
+
+After enabling the project for TypeScript, let us add a file `index.ts` which will contain our code for making API calls with Axios in TypeScript. 
+
+Next, we will make an HTTP `GET` request to our API for fetching `products` as shown in this code snippet:
+
+```ts
+import axios from 'axios';
+
+type Product = {
+  id: number;
+  email: string;
+  first_name: string;
+};
+
+type GetProductsResponse = {
+  data: Product[];
+};
+
+async function getProducts() {
+  try {
+    // 👇️ fetch products from an API
+    const { data, status } = await axios.get<GetProductsResponse>(
+      'http://localhost:3002/products',
+      {
+        headers: {
+          Accept: 'application/json',
+        },
+      },
+    );
+
+    console.log(JSON.stringify(data, null, 4));
+
+    console.log(`response status is: ${status}`);
+
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(`error message: ${error.message}`);
+      return error.message;
+    } else {
+      console.log(`unexpected error: ${error}`);
+      return 'An unexpected error occurred';
+    }
+  }
+}
+
+getProducts();
+```
+In this example, we are getting the `axios` instance by importing it from the module in the first line.  We have next defined two type definitions: `Product` and `GetProductsResponse`. 
+
+After that we have defined a method `getProducts()` where we are invoking the API with the `axios.get()` method using the `async/await` syntax. We are passing the URL of the API endpoint and an `Accept` header to the `axios.get()` method. 
+
+Let us now run this program with the below command:
+
+```shell
+npx ts-node index.ts 
+```
+We are calling the method: `getProducts()` in the last line in the program, which prints the response from the API in the terminal/console.
+
 ## Conclusion 
 In this article, we looked at the different capabilities of Axios. Here is a summary of the important points from the article:
 

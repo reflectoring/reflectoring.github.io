@@ -43,7 +43,7 @@ We will need to install the Axios library in two of these applications: `servers
 npm install axios
 ```
 
-If we want to call APIs with Axios from a vanilla JavaScript application, then we need to include it from a CDN as shown here:
+If we want to call APIs with Axios from a vanilla JavaScript application, then we need to include it from a Content delivery network (CDN) as shown here:
 ```js
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 ```
@@ -220,7 +220,44 @@ app.post('/products', async (request, response) => {
 ```
 Here we are using the `async/await` syntax to make a `POST` request with the `axios.post()` method. We are passing the new `product` to be created as a JSON as the second parameter of the `post()` method.
 
-## Sending Multiple Concurrent Requests
+## Using Axios in Front-End Applications
+Let us look at an example of using Axios in a front-end application built with the [React](https://reactjs.org) library.  The below snippet is from a React component that calls the API for fetching products:
+
+```js
+import React, { useState } from 'react'
+import axios from 'axios'
+
+export default function ProductList(){
+    const [products, setProducts] =  useState([])
+
+    const fetchProducts = ()=>{
+       axios.get(`http://localhost:3001/products`)
+      .then(response => {
+        const products = response.data
+        setProducts(products)
+      })      
+     
+    }
+
+    return (
+        <>
+          <p>Product List</p>
+          <p><button onClick={fetchProducts}>Fetch Products</button></p>
+          <ul>
+          {
+            products
+              .map(product =>
+                <li key={product.id}>{product.name}&nbsp;{product.brand}</li>
+              )
+          }
+          </ul>
+        </>
+    )
+}
+```
+As we can see, the code for making the API call with Axios is the same as what we used in the Node.js application in the earlier sections.
+
+## Sending Multiple Concurrent Requests with Axios
 In many situations, we need to combine the results from multiple APIs to get a consolidated result. With the Axios HTTP client, we can make concurrent requests to multiple APIs as shown in this example:
 
 ```js
@@ -306,8 +343,8 @@ The `timeout` configuration specifies the number of milliseconds before the requ
 
 ## Intercepting Requests and Responses
 We can intercept requests or responses of API calls made with Axios by setting up interceptor functions. Interceptor functions are of two types: 
-- Request interceptor for intercepting requests before the request is sent to the server. 
-- Response interceptor for intercepting responses received from the server.
+- **Request interceptor** for intercepting requests before the request is sent to the server. 
+- **Response interceptor** for intercepting responses received from the server.
 
 Here is an example of an `axios` instance configured with a request interceptor for capturing the start time and a response interceptor for computing the time taken to process the request:
 
@@ -358,6 +395,13 @@ app.get('/products', (request, response) => {
 })
 ```
 In this example, we are setting the `request.time` to the current time in the request interceptor. In the response interceptor, we are capturing the current time in `response.config.time.endTime` and computing the duration by deducting from the current time, the start time captured in the request interceptor.
+
+Interceptors are a powerful feature that can be put to use in many use cases where we need to perform actions common to all API calls. In the absence of interceptors, we will need to repeat these actions in every API call. Some of these examples are:
+
+1. Verify whether the access token for making the API call has expired in the request interceptor. If the token has expired, fetch a new token with the refresh token.
+2. Attach specific headers required by the API to the request in the request interceptor. For example, add the `Authorization` header to every API call.
+3. Check for HTTP status, headers, and specific fields in the response to detect error conditions and trigger error handling logic.
+
 
 ## Handling Errors in Axios
 The response received from Axios is a JavaScript `promise` which has a `then()` function for promise chaining, and a `catch()` function for handling errors. So for handling errors, we should add a `catch()` function at the end of one or more `then()` functions as shown in this example:
@@ -438,7 +482,7 @@ As we can see in this example, we are first creating a controller object using t
 
 When the `axios` request is initiated, we pass in the `AbortSignal` as an option inside the request's options object: `{signal: abortSignal}`. This associates the signal and `controller` with the `axios` request and allows us to abort the request by calling the `abort()` method on the `controller`.
 
-## Axios in TypeScript
+## Using Axios in TypeScript
 Let us now see an example of using Axios in applications authored in TypeScript. 
 
 We will first create a separate folder: `serversideapp_ts` and create a project in Node.js by running the below command by changing into this directory:
@@ -536,10 +580,11 @@ In this article, we looked at the different capabilities of Axios. Here is a sum
 
 1. Axios is an HTTP client for calling REST APIs from JavaScript programs running in the server as well as in web browsers.
 2. We create default instance of `axios` by calling `require('axios')`
-3. We can override the default instance of `axios` with the `create()` method of `axios` to create a new instance and configure properties like 'timeout'.
-4. Axios allows us to attach request and response interceptors to the `axios` instance.
-5. Errors are handled in the `catch()` block of the `Promise` response.
+3. We can override the default instance of `axios` with the `create()` method of `axios` to create a new instance, where we can override the default configuration properties like 'timeout'.
+4. Axios allows us to attach request and response interceptors to the `axios` instance where we can perform actions common to multiple APIs.
+5. Error conditions are handled in the `catch()` function of the `Promise` response.
 6. We can cancel requests by calling the `abort()` method of the `AbortController` class.
+7. The Axios library includes TypeScript definitions, so we do not have to install them separately when using Axios in TypeScript applications.
 
 You can refer to all the source code used in the article
 on [Github](https://github.com/thombergs/code-examples/tree/master/nodejs/axios).

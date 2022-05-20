@@ -1,14 +1,13 @@
 ---
 title: "Complete Guide to Axios HTTP Client"
-categories: ["node"]
-date: 2022-04-24T05:00:00
-modified: 2022-04-24T05:00:00
+categories: ["NodeJS"]
+date: 2022-05-20T05:00:00
+modified: 2022-05-20T05:00:00
 authors: [pratikdas]
 excerpt: "Making API calls is integral to most applications and while doing this we use an HTTP client usually available as an external library. Axios is a popular HTTP client available as a JavaScript library with more than 22 million weekly downloads. We can make API calls with Axios from JavaScript applications irrespective of whether the JavaScript is running on the front-end like a browser or the server-side.
-
 In this article, we will understand Axios and use its capabilities to make different types of REST API calls from JavaScript applications."
-image: images/stock/0019-magnifying-glass-1200x628-branded.jpg
-url: guide-to-axios
+image: images/stock/0118-keyboard-1200x628-branded.jpg
+url: tutorial-guide-axios
 ---
 
 Making API calls is integral to most applications and while doing this we use an HTTP client usually available as an external library. Axios is a popular HTTP client available as a JavaScript library with more than 22 million weekly downloads as of May 2022. 

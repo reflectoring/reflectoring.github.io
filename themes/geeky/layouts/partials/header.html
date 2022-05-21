@@ -5,9 +5,7 @@
       <div class="col-12">
         <nav class="navbar navbar-expand-lg navbar-light p-0">
           <!-- navbar brand/logo -->
-          <a class="navbar-brand" href="{{ site.BaseURL | relLangURL }}">
             {{ partialCached "logo.html" . }}
-          </a>
 
           <!-- buttons -->
           <div class="d-flex d-lg-none">
@@ -34,7 +32,7 @@
               {{ $pageURL:= $currentPage.Permalink | absLangURL }}
               {{ $active := eq $menuURL $pageURL }}
               {{ if .HasChildren }}
-              <li class="nav-item dropdown 
+              <li class="nav-item dropdown
               {{ range .Children }}
               {{ $childURL := .URL | absLangURL }}
               {{ $active := eq $childURL $pageURL }}

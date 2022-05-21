@@ -185,8 +185,15 @@ header {
     width: 100px;
     height: 100px;
   }
+  padding-bottom: 10px !important;
 }
 
 img.author {
   border-radius: 50px;
+}
+
+.supported-by {
+  font-size: 10px;
+  vertical-align: text-bottom;
+  padding-top: 10px;
 }

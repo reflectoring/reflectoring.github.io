@@ -1,14 +1,3 @@
----
-title: "One-Stop Guide to Mapping with MapStruct"
-categories: ["Java"]
-date: 2022-05-26 00:00:00 +1100 
-modified: 2022-05-26 00:00:00 +1100
-authors: [arpendu]
-excerpt: "A comprehensive guide to implement easy and fast mapping between the Java beans at compile time."
-image: images/stock/0123-mind-map-1200x628.jpg
-url: one-stop-guide-mapstruct
----
-
 When we define multi-layered architectures, we often tend to represent data differently at each layer. The interactions between each layer become quite tedious and cumbersome. Let us consider if we have a client-server application that requires us to pass different objects at different layers, then it would simply require a lot of boilerplate code to handle the interactions, data-type conversions, etc. If we have an object or payload that takes few fields, then this boilerplate code would be fine to implement once. But if we have an object that accepts more than 20-30 fields and many nested objects with a good amount of fields again within it, then this code becomes quite tedious.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/mapstruct" %}}
@@ -88,12 +77,12 @@ dependencies {
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 
-    // If you are using mapstruct in test code
+    // If we are using mapstruct in test code
     testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }
 ```
 
-The `net.ltgt.apt` plugin is responsible for the annotation processing. You can apply the `apt-idea` and `apt-eclipse` plugins depending on the IDE that you are using.
+The `net.ltgt.apt` plugin is responsible for the annotation processing. We can apply the `apt-idea` and `apt-eclipse` plugins depending on the IDE that we are using.
 
 ### Configuration Options
 
@@ -307,7 +296,7 @@ public interface BasicMapper {
 }
 ```
 
-The `INSTANCE` is the entry-point to our mapper instance once the implementation is auto-generated. We have simply defined a `convert` method in the interface which would accept a `BasicUser` object and return a `BasicUserDTO` object after conversion. As you can notice both the objects have the same object property names and data type, this is enough for the MapStruct to map between them. If a property has a different name in the target entity, its name can be specified via the `@Mapping` annotation. We will look at this in our upcoming examples.
+The `INSTANCE` is the entry-point to our mapper instance once the implementation is auto-generated. We have simply defined a `convert` method in the interface which would accept a `BasicUser` object and return a `BasicUserDTO` object after conversion. As we can notice both the objects have the same object property names and data type, this is enough for the MapStruct to map between them. If a property has a different name in the target entity, its name can be specified via the `@Mapping` annotation. We will look at this in our upcoming examples.
 
 When we compile/build the application, the MapStruct annotation processor plugin will pick the `BasicMapper` interface and create an implementation for it which would look something like the below:
 
@@ -333,7 +322,7 @@ public class BasicMapperImpl implements BasicMapper {
 }
 ```
 
-You might have noticed that the `BasicMapperImpl` has picked up the builder method since it’s annotated in the object. But if that is not defined then it will instantiate with the `new` keyword and a constructor.
+We might have noticed that the `BasicMapperImpl` has picked up the builder method since it’s annotated in the object. But if that is not defined then it will instantiate with the `new` keyword and a constructor.
 
 Now we just need to instantiate the conversion mapping by something like the below:
 
@@ -370,7 +359,7 @@ public class PersonDTO {
 }
 ```
 
-As you can notice the data type for the id field is different from the User object and the name field needs to be broken into `firstName` and `lastName`. Hence, we will define our custom default method in the previous mapper interface directly with our logic:
+As we can notice the data type for the id field is different from the User object and the name field needs to be broken into `firstName` and `lastName`. Hence, we will define our custom default method in the previous mapper interface directly with our logic:
 
 ```java
 @Mapper
@@ -388,7 +377,7 @@ public interface BasicMapper {
 }
 ```
 
-Now when you instantiate the mapper, this gets converted to a `PersonDTO` object.
+Now when we instantiate the mapper, this gets converted to a `PersonDTO` object.
 
 ```java
 PersonDTO personDto = BasicMapper.INSTANCE.convertCustom(user);
@@ -570,7 +559,7 @@ public interface UserMapper {
 }
 ```
 
-As you can see we have not added any `@Mapping` annotation to map managers. Instead, we have set the `uses` flag for `@Mapper` annotation so that while generating the mapper implementation for the `UserMapper` interface, MapStruct will also convert the `Manager` entity to `ManagerDTO`. This creates the following implementation class for the `UserMapper` interface:
+As we can see we have not added any `@Mapping` annotation to map managers. Instead, we have set the `uses` flag for `@Mapper` annotation so that while generating the mapper implementation for the `UserMapper` interface, MapStruct will also convert the `Manager` entity to `ManagerDTO`. This creates the following implementation class for the `UserMapper` interface:
 
 ```java
 @Generated(
@@ -657,7 +646,7 @@ Now we need to map this to `education` field in `PersonDTO`. For that we will up
 PersonDTO convert(BasicUser user, Education education, Address address, Employment employment);
 ```
 
-If you see the implementation class after compiling/building the application we would see that a new mapper `educationToEducationDTO()` is added along side other mappers:
+If we see the implementation class after compiling/building the application we would see that a new mapper `educationToEducationDTO()` is added along side other mappers:
 
 ```java
 @Generated(
@@ -1436,7 +1425,7 @@ public class UserMapperImpl implements UserMapper {
 }
 ```
 
-As you can see, MapStruct uses setter method to set the `PersonDTO` instance. Since MapStruct uses the `ACCESSOR_ONLY` collection mapping strategy. But if we pass and attribute in `@Mapper` to use the `ADDER_PREFERRED` collection mapping strategy then it would look something like the below:
+As we can see, MapStruct uses setter method to set the `PersonDTO` instance. Since MapStruct uses the `ACCESSOR_ONLY` collection mapping strategy. But if we pass and attribute in `@Mapper` to use the `ADDER_PREFERRED` collection mapping strategy then it would look something like the below:
 
 ```java
 @Mapper(collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
@@ -2112,5 +2101,5 @@ In this article, we took a deep dive into the world of MapStruct and created a m
 
 MapStruct provides a powerful integration plugin that reduces the amount of code a user has to write. It makes the process of creating bean mappers pretty easy and fast.
 
-You can refer to all the source codes used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/mapstruct). 
+We can refer to all the source codes used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/mapstruct). 
 

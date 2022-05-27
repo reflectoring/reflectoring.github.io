@@ -1,3 +1,14 @@
+---
+title: "One-Stop Guide to Mapping with MapStruct"
+categories: ["Java"]
+date: 2022-05-26 00:00:00 +1100 
+modified: 2022-05-26 00:00:00 +1100
+authors: [arpendu]
+excerpt: "A comprehensive guide to implement easy and fast mapping between the Java beans at compile time."
+image: images/stock/0123-mind-map-1200x628.jpg
+url: one-stop-guide-mapstruct
+---
+
 When we define multi-layered architectures, we often tend to represent data differently at each layer. The interactions between each layer become quite tedious and cumbersome. Let us consider if we have a client-server application that requires us to pass different objects at different layers, then it would simply require a lot of boilerplate code to handle the interactions, data-type conversions, etc. If we have an object or payload that takes few fields, then this boilerplate code would be fine to implement once. But if we have an object that accepts more than 20-30 fields and many nested objects with a good amount of fields again within it, then this code becomes quite tedious.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/mapstruct" %}}

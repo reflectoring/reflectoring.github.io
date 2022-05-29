@@ -45,22 +45,23 @@ Let us create the EC2 instance from the AWS Management Console in a public subne
 
 {{% image alt="Create EC2 bastion" src="images/posts/aws-rds-connect/create-ec2.png" %}}
 
-We have created our instance in the free tier with an SSH key pair to access the instance with SSH.
+We have created our instance in the free tier with an SSH key pair to access the instance with SSH in the later sections. The private key of the SSH key pair is downloaded and saved to our local workstation. 
 
 For creating the instance in the public subnet we have used the network settings as shown below:
 {{% image alt="Create EC2 bastion" src="images/posts/aws-rds-connect/ec2-network.png" %}}
 
-This EC2 instance is also secured by a security group. A security group by default is associated with an outbound rule which has all outbound traffic enabled. This will allow the EC2 instance to make an outbound connection to the RDS database.
-
 We will use this EC2 instance as our jump host on which we will set up an SSH tunnel for connecting to the RDS database in the next section.
 
-## Connecting to the RDS Database
+## Allow Traffic to the RDS Database from the Jump Host
 To enable connectivity to our RDS database, any security groups, network ACL, security rules, or third-party security software that exist on the RDS database must allow traffic from the EC2 instance used as the jump host. 
 
 In our example, the security group of our RDS database must allow access to port `3306` from the EC2 instance. To enable this, let us add an inbound rule to the security group `db-sg` to allow connections from the EC2 instance:
 
 {{% image alt="Create RDS Database" src="images/posts/aws-rds-connect/added-ingress.png" %}}
 
+This EC2 instance is also secured by a security group. A security group by default is associated with an outbound rule which has all outbound traffic enabled. This will allow the EC2 instance to make an outbound connection to the RDS database.
+
+## Connecting to the RDS Database
 We will use MySQL workbench which provides a GUI to connect to our RDS MySQL database in two ways:
 
 ### Connection Type: Standard TCP/IP

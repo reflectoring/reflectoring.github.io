@@ -4,24 +4,16 @@ categories: ["aws"]
 date: 2022-05-20T05:00:00
 modified: 2022-05-20T05:00:00
 authors: [pratikdas]
-excerpt: "In this article, we will be using a Jumphost to access an RDS database in a private subnet."
+excerpt: "In this article, we will be using a Jump host to access an RDS database in a private subnet."
 image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: connect-rds-byjumphost
 ---
 
-In this tutorial, we will create an RDS database in a private subnet so that it is not publicly accessible. We will then use a mechanism called "SSH Tunelling" for accessing this database securely over the internet.
+Back-end server resources like databases often contain data which is critical for an application to function in a consistent manner. So these resources are protected from public access over the internet by placing them in a private subnet. This will however make it inaccessible to the database clients and applications running on our local development workstations. 
 
-## Creating the Networking Components: VPC, Subnets
+This problem is mitigated by using a server called "Jump host" that can receive requests from external sources over the internet and securely forward("jump") to the database secured in the private subnet.
 
-Let us create a VPC with a size /16 IPv4 CIDR block (example: 10.0.0.0/16) from the [AWS management Console](https://us-east-1.console.aws.amazon.com/vpc/home?region=us-east-1#CreateVpc:createMode=vpcOnly).
-
-Next let us add a private subnet with a size /24 IPv4 CIDR block (example: 10.0.1.0/24) to this VPC. We must specify an IPv4 CIDR block for the subnet from the range of our VPC. 
-
-
-
-We can specify the Availability Zone in which you want the subnet to reside. 
-
-Let us also add a public subnet with a size /24 IPv4 CIDR block (example: 10.0.1.0/24) to this VPC.
+In this tutorial, we will use a Jump host for accessing an RDS database residing in a private subnet.
 
 ## Creating an RDS Database with Engine Type: MySQL
 Let us first create our RDS database using the AWS Managedment Console with `MySQL` as the engine type:
@@ -31,22 +23,28 @@ Let us first create our RDS database using the AWS Managedment Console with `MyS
 For creating the RDS database in a private subnet we have used the following configurations:
 {{% image alt="Create RDS Database" src="images/posts/aws-rds-connect/connect.png" %}}
 
-We have used the default VOC available in our AWS account and set the `public access` to `No`.  We have also chosen the option to create a new security group named `db-sg`. 
+We have used the default VPC available in our AWS account and set the `public access` to `No`.  We have also chosen the option to create a new security group named `db-sg` where we will define the inbound rules to allow traffic from selected sources. 
 
 We will also select `Password authentication` as the Database authentication option.
-
 
 Our RDS database created in a private subnet is ready to use when the status changes to `available`
 {{% image alt="Create RDS Database" src="images/posts/aws-rds-connect/db-created.png" %}}
 
-## Creating a Bastion/Jump Server 
-We will next create an EC2 instance from the AWS Management Console in a public subnet in the same VPC where we had created our RDS database in the previous section:
+With our database created, we will next set up a jump host and populate inbound rules in the security groups in the following sections.
+
+## Creating a Jump Host 
+We will use an EC2 instance as our jump host for connecting to the RDS database created in the previous section.
+Let us create the EC2 instance from the AWS Management Console in a public subnet in the same VPC where we had created our RDS database:
 
 
 {{% image alt="Create EC2 bastion" src="images/posts/aws-rds-connect/create-ec2.png" %}}
 
+We have created our instance in the free tier with a ssh key pair to access the instance with SSH.
 
-This EC2 instance is also secured with a security group. A security group by default is associated with an outbound rule which has all outbound traffic enabled. Let us leave it like this or we can tighten it further by specifying the RDS instance as destination:
+For creating the instance in public subnet we have used the network settings as shown below:
+{{% image alt="Create EC2 bastion" src="images/posts/aws-rds-connect/ec2-network.png" %}}
+
+This EC2 instance is also secured with a security group. A security group by default is associated with an outbound rule which has all outbound traffic enabled.
 
 
 

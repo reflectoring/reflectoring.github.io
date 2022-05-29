@@ -55,7 +55,7 @@ We will use this EC2 instance as a bastion server on which we will set up an SSH
 
 
 
-A bastion host is a server whose purpose is to provide access to a private network from an external network, such as the Internet. Because of its exposure to potential attack, a bastion host must minimize the chances of penetration.
+A bastion or Jump host is a server whose purpose is to provide access to a private network from an external network like Internet. 
 
 ## Connecting to the RDS Database
 Let us add an inbound rule to the security group `db-sg`  to allow connections from the EC2 instance:
@@ -68,15 +68,11 @@ We will use MySQL workbemch to connect to our RDS database.
 {{% image alt="Create RDS Database" src="images/posts/aws-rds-connect/mysql-connnect.png" %}}
 
 ## Conclusion 
-In this article, we looked at the different capabilities of Axios. Here is a summary of the important points from the article:
+In this article, we walked through the steps of creating an RDS database in a private subnet and then connecting to the database using a Jump server:
 
-1. Axios is an HTTP client for calling REST APIs from JavaScript programs running in the server as well as in web browsers.
-2. We create default instance of `axios` by calling `require('axios')`
-3. We can override the default instance of `axios` with the `create()` method of `axios` to create a new instance, where we can override the default configuration properties like 'timeout'.
-4. Axios allows us to attach request and response interceptors to the `axios` instance where we can perform actions common to multiple APIs.
-5. Error conditions are handled in the `catch()` function of the `Promise` response.
-6. We can cancel requests by calling the `abort()` method of the `AbortController` class.
-7. The Axios library includes TypeScript definitions, so we do not have to install them separately when using Axios in TypeScript applications.
+1. Create an RDS database in a private subnet.
+2. Create an EC2 instance in a public subnet in the same VPC where the RDS database was created. This EC2 instance will act as the bastion or Jump host for connecting to the RDS database. A bastion or jump host is a server whose purpose is to provide access to a private network from an external network like Internet. 
+3. Add an inbound rule to the security group associated with the RDS database to allow incoming traffic from the EC2 instance created in step 2.
+4. Optionally add an outbound rule to the security group associated with the EC2 instance to allow outgoing traffic to the RDS database.
+5. Use a database client and connect to the endpoint of the RDS database with the database credentials configured during creation time or later using SSH tunneling method.
 
-You can refer to all the source code used in the article
-on [Github](https://github.com/thombergs/code-examples/tree/master/nodejs/axios).

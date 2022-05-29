@@ -9,14 +9,14 @@ image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: connect-rds-byjumphost
 ---
 
-Back-end server resources like databases often contain data which is critical for an application to function in a consistent manner. So these resources are protected from public access over the internet by placing them in a private subnet. This will however make it inaccessible to the database clients and applications running on our local development workstations. 
+Back-end server resources like databases often contain data that is critical for an application to function consistently. So these resources are protected from public access over the internet by placing them in a private subnet. This will however make it inaccessible to the database clients and applications running on our local development workstations. 
 
 This problem is mitigated by using a server called "Jump host" that can receive requests from external sources over the internet and securely forward("jump") to the database secured in the private subnet.
 
 In this tutorial, we will use a Jump host for accessing an RDS database residing in a private subnet.
 
 ## Creating an RDS Database with Engine Type: MySQL
-Let us first create our RDS database using the AWS Managedment Console with `MySQL` as the engine type:
+Let us first create our RDS database using the AWS Management Console with `MySQL` as the engine type:
 
 {{% image alt="Create RDS Database" src="images/posts/aws-rds-connect/create-db.png" %}}
 
@@ -35,11 +35,11 @@ When the database is ready to be used, we can see the endpoint of the database a
 With our database created, we will next set up a jump host and populate inbound rules in the security groups in the following sections.
 
 ## Creating an EC2 Instance as the Jump Host 
-A jump host is also called bastion host/server whose sole purpose is to provide access to resources in a private network from an external network like internet. A rough representation of this architecture is shown below:
+A jump host is also called a bastion host/server whose sole purpose is to provide access to resources in a private network from an external network like the internet. A rough representation of this architecture is shown below:
 
 {{% image alt="Jump host" src="images/posts/aws-rds-connect/jump-host.png" %}}
 
-Here we are using an EC2 instance in a public subnet as our jump host for connecting to a RDS database in a private subnet.
+Here we are using an EC2 instance in a public subnet as our jump host for connecting to an RDS database in a private subnet.
 
 Let us create the EC2 instance from the AWS Management Console in a public subnet in the same VPC where we had created our RDS database in the previous section.:
 
@@ -47,22 +47,22 @@ Let us create the EC2 instance from the AWS Management Console in a public subne
 
 We have created our instance in the free tier with an SSH key pair to access the instance with SSH.
 
-For creating the instance in public subnet we have used the network settings as shown below:
+For creating the instance in the public subnet we have used the network settings as shown below:
 {{% image alt="Create EC2 bastion" src="images/posts/aws-rds-connect/ec2-network.png" %}}
 
-This EC2 instance is also secured with a security group. A security group by default is associated with an outbound rule which has all outbound traffic enabled. This will allow the EC2 instance to make outbound connection to the RDS database.
+This EC2 instance is also secured by a security group. A security group by default is associated with an outbound rule which has all outbound traffic enabled. This will allow the EC2 instance to make an outbound connection to the RDS database.
 
 We will use this EC2 instance as our jump host on which we will set up an SSH tunnel for connecting to the RDS database in the next section.
 
 ## Connecting to the RDS Database
 To enable connectivity to our RDS database, any security groups, network ACL, security rules, or third-party security software that exist on the RDS database must allow traffic from the EC2 instance used as the jump host. 
 
-In our example, the security group of our RDS database must allow access on port `3306` from the EC2 instance. To enable this, let us add an inbound rule to the security group `db-sg` to allow connections from the EC2 instance:
+In our example, the security group of our RDS database must allow access to port `3306` from the EC2 instance. To enable this, let us add an inbound rule to the security group `db-sg` to allow connections from the EC2 instance:
 
 {{% image alt="Create RDS Database" src="images/posts/aws-rds-connect/added-ingress.png" %}}
 
 
-We will use MySQL workbemch which provides a GUI to connect to our RDS MySQL database in two ways:
+We will use MySQL workbench which provides a GUI to connect to our RDS MySQL database in two ways:
 
 ### Connection Type: Standard TCP/IP
 
@@ -75,7 +75,7 @@ ssh -i <SSH key of EC2 instance> ec2-user@<instance-IP of EC2> -L 3306:<RDS DB e
 ```
 When we run this command, the local port `3306` on our local machine tunnels to port `3306` on the RDS instance. We can then use MySQL workbench to access the RDS MySQL with connection type as `Standard TCP/IP`:
 
-{{% image alt="Connect RDS Database with TCP" src="images/posts/aws-rds-connect/db-connn-local.png" %}}
+{{% image alt="Connect RDS Database with TCP" src="images/posts/aws-rds-connect/db-conn-local.png" %}}
 
 We can see the successful test connection message with `127.0.0.1` as the hostname and `3306` as the port.
 
@@ -84,12 +84,12 @@ Alternately, we can run the following command in our terminal using the MySQL Co
 ```shell
 mysql -u <DB User> -h 127.0.0.1 -P 3306 -p <DB password>
 ```
-Here also we are connecting to the RDS MySQL database with `127.0.0.1` as the hostname, `3306` as the port.
+Here also we are connecting to the RDS MySQL database with `127.0.0.1` as the hostname and `3306` as the port.
 
 ### Connection Type: Standard TCP/IP over SSH
 In this method, we are connecting to the RDS MySQL database using the MySQL workbench using `TCP/IP over SSH` as the connection type:
 
-{{% image alt="Connect RDS Database with TCP" src="images/posts/aws-rds-connect/db-connn-ssh.png" %}}
+{{% image alt="Connect RDS Database with TCP" src="images/posts/aws-rds-connect/db-conn-ssh.png" %}}
 
 We can see the successful test connection message with the following parameters :
 
@@ -98,15 +98,15 @@ We can see the successful test connection message with the following parameters 
 3. SSH Key File: Path to the SSH private key file saved in our local machine when creating the EC2 instance.
 4. MySQL Hostname: Endpoint of the RDS MySQL database.
 5. MySQL Server Port: TCP/IP port of the RDS MySQL database.
-6. Username: User name of the RDS MySQL database set up during RDS database creation.
+6. Username: The user name of the RDS MySQL database set up during RDS database creation.
 7. Password: Password of the RDS MySQL database set up during RDS database creation.
 
 ## Conclusion 
 In this article, we walked through the steps of creating an RDS database in a private subnet and then connecting to the database using a jump host:
 
 1. Create an RDS database in a private subnet.
-2. Create an EC2 instance in a public subnet in the same VPC where the RDS database was created. This EC2 instance will act as the bastion or Jump host for connecting to the RDS database. A bastion or jump host is a server whose purpose is to provide access to a private network from an external network like Internet. 
+2. Create an EC2 instance in a public subnet in the same VPC where the RDS database was created. This EC2 instance will act as the bastion or Jump host for connecting to the RDS database. A bastion or jump host is a server whose purpose is to provide access to a private network from an external network like the Internet. 
 3. Add an inbound rule to the security group associated with the RDS database to allow incoming traffic from the EC2 instance created in step 2.
 4. Optionally add an outbound rule to the security group associated with the EC2 instance to allow outgoing traffic to the RDS database.
-5. Use a database client and connect to the endpoint of the RDS database with the database credentials configured during creation time or later using SSH tunneling method.
+5. Use a database client and connect to the endpoint of the RDS database with the database credentials configured during creation time or later using the SSH tunneling method.
 

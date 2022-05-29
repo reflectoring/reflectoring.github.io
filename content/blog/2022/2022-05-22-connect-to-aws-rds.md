@@ -1,19 +1,19 @@
 ---
-title: "Using a Jumphost to access an RDS database in a private subnet"
+title: "Using a Jump host to access an RDS database in a private subnet"
 categories: ["aws"]
 date: 2022-05-20T05:00:00
 modified: 2022-05-20T05:00:00
 authors: [pratikdas]
-excerpt: "In this article, we will be using a Jump host to access an RDS database in a private subnet."
+excerpt: "Back-end server resources like databases often contain data that is critical for an application to function consistently. So these resources are protected from public access over the internet by placing them in a private subnet. This will however make it inaccessible to the database clients and applications running on our local development workstations. This problem is addressed by using a server called 'jump host' that can receive requests from external sources over the internet and securely forward or 'jump' to the database secured in the private subnet. In this tutorial, we will use a jump host for accessing an RDS database residing in a private subnet."
 image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: connect-rds-byjumphost
 ---
 
 Back-end server resources like databases often contain data that is critical for an application to function consistently. So these resources are protected from public access over the internet by placing them in a private subnet. This will however make it inaccessible to the database clients and applications running on our local development workstations. 
 
-This problem is mitigated by using a server called "Jump host" that can receive requests from external sources over the internet and securely forward("jump") to the database secured in the private subnet.
+This problem is addressed by using a server called "Jump host" that can receive requests from external sources over the internet and securely forward or "jump" to the database secured in the private subnet.
 
-In this tutorial, we will use a Jump host for accessing an RDS database residing in a private subnet.
+In this tutorial, we will use a jump host for accessing an RDS database residing in a private subnet.
 
 ## Creating an RDS Database with Engine Type: MySQL
 Let us first create our RDS database using the AWS Management Console with `MySQL` as the engine type:
@@ -61,7 +61,6 @@ In our example, the security group of our RDS database must allow access to port
 
 {{% image alt="Create RDS Database" src="images/posts/aws-rds-connect/added-ingress.png" %}}
 
-
 We will use MySQL workbench which provides a GUI to connect to our RDS MySQL database in two ways:
 
 ### Connection Type: Standard TCP/IP
@@ -93,13 +92,13 @@ In this method, we are connecting to the RDS MySQL database using the MySQL work
 
 We can see the successful test connection message with the following parameters :
 
-1. SSH Hostname: DNS name or IP of the EC2 instance used as the jump host
-2. SSH Username: SSH user name (`ec2-user` in our example) to connect to the EC2 instance. 
-3. SSH Key File: Path to the SSH private key file saved in our local machine when creating the EC2 instance.
-4. MySQL Hostname: Endpoint of the RDS MySQL database.
-5. MySQL Server Port: TCP/IP port of the RDS MySQL database.
-6. Username: The user name of the RDS MySQL database set up during RDS database creation.
-7. Password: Password of the RDS MySQL database set up during RDS database creation.
+1. **SSH Hostname**: DNS name or IP of the EC2 instance used as the jump host
+2. **SSH Username**: SSH user name (`ec2-user` in our example) to connect to the EC2 instance. 
+3. **SSH Key File**: Path to the SSH private key file saved in our local machine when creating the EC2 instance.
+4. **MySQL Hostname**: Endpoint of the RDS MySQL database.
+5. **MySQL Server Port**: TCP/IP port of the RDS MySQL database.
+6. **Username**: The user name of the RDS MySQL database set up during RDS database creation.
+7. **Password**: Password of the RDS MySQL database set up during RDS database creation.
 
 ## Conclusion 
 In this article, we walked through the steps of creating an RDS database in a private subnet and then connecting to the database using a jump host:

@@ -62,9 +62,17 @@ In our example, the security group of our RDS database must allow access to port
 This EC2 instance is also secured by a security group. A security group by default is associated with an outbound rule which has all outbound traffic enabled. This will allow the EC2 instance to make an outbound connection to the RDS database.
 
 ## Connecting to the RDS Database
+We use a mechanism called SSH tunneling or port forwarding for connecting to the RDS database. SSH tunneling is a method of transporting arbitrary networking data over an encrypted SSH connection.
+
+The SSH client on our local workstation listens for connections on a configured port. When it receives a connection, it tunnels the connection to the SSH server which is our EC2 instance acting as the jump host. 
+
+The SSH server(EC2 instance) connects to a destination port, usually on a different machine than the SSH server. In our example, the destination port is the port of the RDS database. 
+
+Please refer to the official [documentation](https://www.ssh.com/academy/ssh/tunneling) to understand more details about SSH tunneling.
+
 We will use MySQL workbench which provides a GUI to connect to our RDS MySQL database in two ways:
 
-### Connection Type: Standard TCP/IP
+### Connect using Standard TCP/IP
 
 In this method, we create an SSH tunnel from our local machine to access the RDS MySQL database using the EC2 instance as the jump host.
 
@@ -86,7 +94,7 @@ mysql -u <DB User> -h 127.0.0.1 -P 3306 -p <DB password>
 ```
 Here also we are connecting to the RDS MySQL database with `127.0.0.1` as the hostname and `3306` as the port.
 
-### Connection Type: Standard TCP/IP over SSH
+### Connect using Standard TCP/IP over SSH
 In this method, we are connecting to the RDS MySQL database using the MySQL workbench using `TCP/IP over SSH` as the connection type:
 
 {{% image alt="Connect RDS Database with TCP" src="images/posts/aws-rds-connect/db-conn-ssh.png" %}}

@@ -9,19 +9,29 @@ image: images/stock/0123-mind-map-1200x628.jpg
 url: one-stop-guide-mapstruct
 ---
 
-When we define multi-layered architectures, we often tend to represent data differently at each layer. The interactions between each layer become quite tedious and cumbersome. Let us consider if we have a client-server application that requires us to pass different objects at different layers, then it would simply require a lot of boilerplate code to handle the interactions, data-type conversions, etc. If we have an object or payload that takes few fields, then this boilerplate code would be fine to implement once. But if we have an object that accepts more than 20-30 fields and many nested objects with a good amount of fields again within it, then this code becomes quite tedious.
+When we define multi-layered architectures, we often tend to represent data differently at each layer. The interactions between each layer become quite tedious and cumbersome. 
+
+Consider a client-server application that requires us to pass different objects at different layers, then it would require a lot of boilerplate code to handle the interactions, data-type conversions, etc. 
+
+If we have an object or payload that takes few fields, then this boilerplate code would be fine to implement once. But if we have an object that accepts more than 20-30 fields and many nested objects with a good amount of fields again within it, then this code becomes quite tedious.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/mapstruct" %}}
 
 ## Why should we use a Mapper?
 
-The problem discussed above can be reduced by introducing the *DTO(Data Transfer Object)* pattern, which requires defining simple classes to transfer data between layers. A server can define a DTO that would return the API response payload which can be different from the persisted *Entity* objects so that it doesn’t end up exposing the schema of the *Data Access Object* layer. Thus client applications can accept a data object in a custom-defined DTO with required fields. Still, the DTO pattern heavily depends on the mappers or the logic that converts the incoming data into DTO or vice-versa. This involves boilerplate code and introduces overheads that can’t be overlooked, especially when dealing with large data.
+The problem discussed above can be reduced by introducing the *DTO (Data Transfer Object)* pattern, which requires defining simple classes to transfer data between layers. 
 
-This is where we seek for annotation processor which can easily convert the Java beans by automating it as much as possible. In this article, we will take a look at *MapStruct*, which is an annotation processor plugged into the Java compiler that can automatically generate mappers at build-time. In comparison to other Mapping frameworks, MapStruct generates bean mappings at compile-time which ensures high performance and enables fast developer feedback and thorough error checking.
+A server can define a DTO that would return the API response payload which can be different from the persisted *Entity* objects so that it doesn’t end up exposing the schema of the *Data Access Object* layer. Thus client applications can accept a data object in a custom-defined DTO with required fields. 
+
+Still, the DTO pattern heavily depends on the mappers or the logic that converts the incoming data into DTO or vice-versa. This involves boilerplate code and introduces overheads that can’t be overlooked, especially when dealing with large data shapes.
+
+This is where we seek for some automation which can easily convert the Java beans. 
+
+In this article, we will take a look at *MapStruct*, which is an annotation processor plugged into the Java compiler that can automatically generate mappers at build-time. In comparison to other Mapping frameworks, MapStruct generates bean mappings at compile-time which ensures high performance and enables fast developer feedback and thorough error checking.
 
 ## MapStruct Dependency Setup
 
-MapStruct is a Java-based annotation processor which can be configured using Maven, Gradle, or Ant. It comprises the following libraries:
+MapStruct is a Java-based annotation processor which can be configured using Maven, Gradle, or Ant. It consists of the following libraries:
 
 * `org.mapstruct:mapstruct`: This takes care of the core implementation behind the primary annotation of  `@Mapping`.
 * `org.mapstruct:mapstruct-processor`: This is the annotation processor which generates mapper implementations for the above mapping annotations.
@@ -275,7 +285,7 @@ We will now take a look into various types of bean mappers using MapStruct and t
 
 ### Basic Mapping Example
 
-Let’s start with a very basic mapping example. We will define two Objects, one with the name `BasicUser` and another with the name `BasicUserDTO`:
+Let’s start with a very basic mapping example. We will define two classes, one with the name `BasicUser` and another with the name `BasicUserDTO`:
 
 ```java
 @Data
@@ -297,7 +307,7 @@ public class BasicUserDTO {
 }
 ```
 
-Now to create a mapper between the two, we will simply define an interface named `BasicMapper` and annotate it with `@Mapper` annotation so that MapStruct would automatically be aware that it needs to create a mapper implementation between the two objects.
+Now to create a mapper between the two, we will simply define an interface named `BasicMapper` and annotate it with the `@Mapper` annotation so that MapStruct would automatically be aware that it needs to create a mapper implementation between the two objects:
 
 ```java
 @Mapper
@@ -307,7 +317,9 @@ public interface BasicMapper {
 }
 ```
 
-The `INSTANCE` is the entry-point to our mapper instance once the implementation is auto-generated. We have simply defined a `convert` method in the interface which would accept a `BasicUser` object and return a `BasicUserDTO` object after conversion. As we can notice both the objects have the same object property names and data type, this is enough for the MapStruct to map between them. If a property has a different name in the target entity, its name can be specified via the `@Mapping` annotation. We will look at this in our upcoming examples.
+The `INSTANCE` is the entry-point to our mapper instance once the implementation is auto-generated. We have simply defined a `convert` method in the interface which would accept a `BasicUser` object and return a `BasicUserDTO` object after conversion. 
+
+As we can notice both the objects have the same object property names and data type, this is enough for MapStruct to map between them. If a property has a different name in the target entity, its name can be specified via the `@Mapping` annotation. We will look at this in our upcoming examples.
 
 When we compile/build the application, the MapStruct annotation processor plugin will pick the `BasicMapper` interface and create an implementation for it which would look something like the below:
 
@@ -353,7 +365,7 @@ log.info("UserDTO details: {}", dto);
 log.info("MapStruct Basic Mapping conversion completed !!");
 ```
 
-### Adding Custom Method inside Mappers
+### Custom Mapping Methods
 
 Sometimes we would like to implement a specific mapping manually by defining our logic while transforming from one object to another. For that, we can implement those custom methods directly in our mapper interface by defining a `default` method.
 
@@ -415,7 +427,7 @@ public abstract class BasicMapper {
 
  An added advantage of this strategy over declaring default methods is that additional fields can be declared directly in the mapper class.
 
-### Mapping with Several Source Fields
+### Mapping from Several Source Objects
 
 Suppose if we want to combine several entities into a single data transfer object, then MapStruct supports the mapping method with several source fields. For example, we will create two objects additionally like `Education` and `Address`:
 
@@ -458,35 +470,35 @@ PersonDTO convert(BasicUser user, Education education, Address address);
 When we build the code now, the mapstruct annotation processor will generate the following method:
 
 ```java
-    @Override
-    public PersonDTO convert(BasicUser user,
-                             Education education,
-                             Address address) {
-        if ( user == null
-            && education == null
-            && address == null ) {
-            return null;
-        }
-
-        PersonDTOBuilder personDTO = PersonDTO.builder();
-
-        if ( user != null ) {
-            personDTO.id(String.valueOf(user.getId()));
-            personDTO.firstName(user.getName());
-        }
-        if ( education != null ) {
-            personDTO.educationalQualification(education.getDegreeName());
-        }
-        if ( address != null ) {
-            personDTO.residentialCity(address.getCity());
-            personDTO.residentialCountry(address.getCountry());
-        }
-
-        return personDTO.build();
+@Override
+public PersonDTO convert(BasicUser user,
+                         Education education,
+                         Address address) {
+    if ( user == null
+        && education == null
+        && address == null ) {
+        return null;
     }
+
+    PersonDTOBuilder personDTO = PersonDTO.builder();
+
+    if ( user != null ) {
+        personDTO.id(String.valueOf(user.getId()));
+        personDTO.firstName(user.getName());
+    }
+    if ( education != null ) {
+        personDTO.educationalQualification(education.getDegreeName());
+    }
+    if ( address != null ) {
+        personDTO.residentialCity(address.getCity());
+        personDTO.residentialCountry(address.getCountry());
+    }
+
+    return personDTO.build();
+}
 ```
 
-### Mapping Nested Bean to Target Field
+### Mapping Nested Objects
 
 We would often see that larger POJOs not only have primitive data types but other classes, lists, or sets as well. Thus we need to map those nested beans into the final DTO.
 
@@ -1047,7 +1059,7 @@ To execute and call the mapper methods, we need to instantiate the mapper instan
 
 ### Mappers Factory
 
-If we are not using MapStruct as a Dependency Injection framework, then the mapper instances can be retrieved using the `Mappers` class. We need to invoke the `getMappers()` method from the factory passing the interface type of the mapper:
+The simplest way to get a mapper instance is using the `Mappers` class. We need to invoke the `getMappers()` method from the factory passing the interface type of the mapper:
 
 ```java
 UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
@@ -1056,17 +1068,19 @@ UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 This pattern is one of the simplest ways to access the mapper methods. It can be accessed in the following way:
 
 ```java
-PersonDTO personDTO = UserMapper.INSTANCE.convert(user,
-                                                  education,
-                                                  address,
-                                                  employment);
+PersonDTO personDTO = UserMapper.INSTANCE.convert(
+        user,
+        education,
+        address,
+        employment
+);
 ```
 
 One thing to note is that the mappers generated by MapStruct are stateless and thread-safe. Thus it can be safely retrieved from several threads at the same time.
 
 ### Dependency Injection
 
-If we want to use MapStruct in a dependency injection framework, then we need to access the mapper objects via dependency injection strategies and not use the `Mappers` class. MapStruct supports the component model for *CDI*(Contexts and Dependency Injection for Java EE) and the *Spring framework*.
+If we want to use MapStruct in a dependency injection framework, then we need to access the mapper objects via dependency injection strategies and not use the `Mappers` class. MapStruct supports the component model for *CDI* (Contexts and Dependency Injection for Java EE) and the *Spring framework*.
 
 Let’s update our `UserMapper` class to work with Spring:
 
@@ -1143,7 +1157,7 @@ PersonDTO convert(BasicUser user,
                   Employment employment);
 ```
 
-Then the generated mapper implementation class would be something like below:
+Then the generated mapper implementation class would contain something like this:
 
 ```java
 personDTO.setSalary( new DecimalFormat( "$#.00" ).format(
@@ -1176,7 +1190,9 @@ managerDTO.setDateOfBirth( new SimpleDateFormat().parse(
 
 ### Mapping Collections
 
-Mapping *Collections* in MapStruct works in the same way as mapping any other bean types. But it provides various options and customizations which can be used based on our needs. The generated implementation mapper code will contain a loop that would iterate over the source collection, convert each element, and put it into the target collection. If a mapping method for the collection element types is found in the given mapper or the mapper it uses, this method is automatically invoked to perform the element conversion.
+Mapping *Collections* in MapStruct works in the same way as mapping any other bean types. But it provides various options and customizations which can be used based on our needs. 
+
+The generated implementation mapper code will contain a loop that would iterate over the source collection, convert each element, and put it into the target collection. If a mapping method for the collection element types is found in the given mapper or the mapper it uses, this method is automatically invoked to perform the element conversion.
 
 #### Set
 
@@ -1386,7 +1402,7 @@ In case, if we need to map data types with the parent-child relationship, then M
 * `ADDER_PREFERRED`
 * `TARGET_IMMUTABLE`
 
-The default value is `ACCESSOR_ONLY`, which means that only accessors can be used to set the *Collection* of children. This option helps us when the adders for a Collection type field are defined instead of setters. For example, let’s revisit the `Manager` to `ManagerDO` entity conversion in `PersonDTO`. The `PersonDTO` entity has a child field of type `List`:
+The default value is `ACCESSOR_ONLY`, which means that only accessors can be used to set the *Collection* of children. This option helps us when the adders for a Collection type field are defined instead of setters. For example, let’s revisit the `Manager` to `ManagerDTO` entity conversion in `PersonDTO`. The `PersonDTO` entity has a child field of type `List`:
 
 ```java
 public class PersonDTO {
@@ -1476,7 +1492,7 @@ In case the adder was not available, the setter would have been used.
 
 ### Mapping Streams
 
-Mapping Streams are similar to mapping collections. The only difference is that the auto-generated implementation would return a `Stream` from a provided `Iterable`:
+Mapping streams is similar to mapping collections. The only difference is that the auto-generated implementation would return a `Stream` from a provided `Iterable`:
 
 ```java
 @Mapper

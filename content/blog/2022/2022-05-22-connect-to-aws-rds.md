@@ -13,7 +13,7 @@ Back-end server resources like databases often contain data that is critical for
 
 This problem is addressed by using a server called "Jump host" that can receive requests from external sources over the internet and securely forward or "jump" to the database secured in the private subnet.
 
-In this tutorial, we will use a jump host for accessing an RDS database residing in a private subnet.
+In this tutorial, we will use a jump host for accessing an Amazon Relational Database Service(RDS) database residing in a private subnet.
 
 ## Creating an RDS Database with Engine Type: MySQL
 Let us first create our RDS database using the AWS Management Console with `MySQL` as the engine type:
@@ -23,7 +23,7 @@ Let us first create our RDS database using the AWS Management Console with `MySQ
 For creating the RDS database in a private subnet we have used the following configurations:
 {{% image alt="Create RDS Database" src="images/posts/aws-rds-connect/connect.png" %}}
 
-We have used the default VPC available in our AWS account and set the `public access` to `No`. We have also chosen the option to create a new security group named `db-sg` where we will define the inbound rules to allow traffic from selected sources. 
+We have used the default virtual private cloud(VPC) available in our AWS account and set the `public access` to `No`. We have also chosen the option to create a new security group named `db-sg` where we will define the inbound rules to allow traffic from selected sources. 
 
 We will also select `Password authentication` as the Database authentication option.
 

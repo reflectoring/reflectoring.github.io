@@ -1,11 +1,11 @@
 ---
 title: "Using a Jump host to access an RDS database in a private subnet"
 categories: ["aws"]
-date: 2022-05-20T05:00:00
-modified: 2022-05-20T05:00:00
+date: 2022-01-06T05:00:00
+modified: 2022-01-06T05:00:00
 authors: [pratikdas]
 excerpt: "Back-end server resources like databases often contain data that is critical for an application to function consistently. So these resources are protected from public access over the internet by placing them in a private subnet. This will however make it inaccessible to the database clients and applications running on our local development workstations. This problem is addressed by using a server called 'jump host' that can receive requests from external sources over the internet and securely forward or 'jump' to the database secured in the private subnet. In this tutorial, we will use a jump host for accessing an RDS database residing in a private subnet."
-image: images/stock/0118-keyboard-1200x628-branded.jpg
+image: images/stock/0001-network-1200x628-branded.jpg
 url: connect-rds-byjumphost
 ---
 

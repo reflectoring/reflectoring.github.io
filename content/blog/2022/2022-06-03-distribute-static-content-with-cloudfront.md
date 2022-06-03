@@ -239,14 +239,6 @@ After the CloudFront distribution is deployed and active, we can navigate to our
 {{% image alt="browser" src="images/posts/aws-cloudfront/browser-cf-oai.png" %}}
 
 
-Some of the other ways we can secure access to content with CloudFront are:
-
-1. Encrypting Connections to CloudFront:
-CloudFront uses HTTPS protocol (Hypertext Transfer Protocol Secure) a secure version of the HTTP protocol that uses the SSL/TLS protocol for encryption.
-2. 
-We can configure CloudFront to mandate that viewers always use the HTTPS protocol for communicating with CloudFront. We can also configure CloudFront to use HTTPS protocol for communicating with the origin. Communication over the HTTPS protocol ensures that the connection is encrypted and therefore secured from being eavesdropped on.
-
-
 ## Conclusion 
 In this article, we configured Amazon CloudFront to distribute static Content stored in an S3 bucket. Here is a summary of the steps for our quick reference:
 

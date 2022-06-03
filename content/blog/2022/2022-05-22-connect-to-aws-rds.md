@@ -1,138 +1,264 @@
 ---
-title: "Using a Jump host to access an RDS database in a private subnet"
+title: "Distribute Static Content with Amazon CloudFront"
 categories: ["aws"]
 date: 2022-05-20T05:00:00
 modified: 2022-05-20T05:00:00
 authors: [pratikdas]
-excerpt: "Back-end server resources like databases often contain data that is critical for an application to function consistently. So these resources are protected from public access over the internet by placing them in a private subnet. This will however make it inaccessible to the database clients and applications running on our local development workstations. This problem is addressed by using a server called 'jump host' that can receive requests from external sources over the internet and securely forward or 'jump' to the database secured in the private subnet. In this tutorial, we will use a jump host for accessing an RDS database residing in a private subnet."
+excerpt: "Amazon CloudFront is a fast content delivery network (CDN) service that securely delivers data, videos, applications, and APIs to customers globally with low latency. A Content delivery network (CDN) consists of a globally-distributed network of servers that can cache static content, like images, media, stylesheets, JS files, etc, or other bulky media, in locations close to consumers. This helps in improving the downloading speed of these static contents.
+In this tutorial, we will store a single page application (SPA) in an S3 bucket and configure CloudFront to deliver this application globally."
 image: images/stock/0118-keyboard-1200x628-branded.jpg
-url: connect-rds-byjumphost
+url: distribute-static-content-with-cloudfront
 ---
 
-Back-end server resources like databases often contain data that is critical for an application to function consistently. So these resources are protected from public access over the internet by placing them in a private subnet. This will however make it inaccessible to the database clients and applications running on our local development workstations. 
+Amazon CloudFront is a fast content delivery network (CDN) service that securely delivers data, videos, applications, and APIs to customers globally with low latency. A Content delivery network (CDN) consists of a globally-distributed network of servers that can cache static content, like images, media, stylesheets, JS files, etc, or other bulky media, in locations close to consumers. This helps in improving the downloading speed of these static contents.
 
-We usually run data manipulation queries in query editors provided by different database clients or from our application's unit test cases to check out various scenarios during application development. 
+In this tutorial, we will store the contents of a Single page application (SPA) in an S3 bucket and configure CloudFront to deliver this application globally. 
 
-If the database is not accessible from our local workstation, we need to seek alternate methods of testing like moving the compiled application code to the cloud environment each time we want to test which is not very convenient and results in reducing productivity with a poor developer experience.
+## Creating a Single Page Application as Static Content
 
-This problem is addressed by using a server called "Jump host" that can receive requests from external sources over the internet and securely forward or "jump" to the database secured in the private subnet.
-
-In this tutorial, we will use a jump host for accessing an Amazon Relational Database Service(RDS) database residing in a private subnet. 
-
-Amazon RDS supports multiple databases. We will use `MySQL` in our example. However, this approach will work for all other databases supported by Amazon RDS.
-
-## Creating an RDS Database with Engine Type: MySQL
-Let us first create our RDS database using the AWS Management Console with `MySQL` as the engine type:
-
-{{% image alt="Create RDS Database" src="images/posts/aws-rds-connect/create-db.png" %}}
-
-For creating the RDS database in a private subnet we have used the following configurations:
-{{% image alt="Create RDS Database" src="images/posts/aws-rds-connect/connect.png" %}}
-
-We have used the default virtual private cloud(VPC) available in our AWS account and set the `public access` to `No`. We have also chosen the option to create a new security group where we will define the inbound rules to allow traffic from selected sources. 
-
-We will also select `Password authentication` as the Database authentication option.
-
-Our RDS database created in a private subnet is ready to use when the status changes to `available`
-{{% image alt="Create RDS Database" src="images/posts/aws-rds-connect/db-created.png" %}}
-
-When the database is ready to be used, we can see the endpoint of the database along with the port which we will use later to connect to the database. 
-
-With our database created, we will next set up a jump host and populate inbound rules in the security groups in the following sections.
-
-## Creating an EC2 Instance as the Jump Host 
-A jump host is also called a bastion host/server whose sole purpose is to provide access to resources in a private network from an external network like the internet. A rough representation of this architecture is shown below:
-
-{{% image alt="Jump host" src="images/posts/aws-rds-connect/jump-host.png" %}}
-
-Here we are using an EC2 instance in a public subnet as our jump host for connecting to an RDS database in a private subnet.
-
-Let us create the EC2 instance from the AWS Management Console in a public subnet in the same VPC where we had created our RDS database in the previous section.:
-
-{{% image alt="Create EC2 bastion" src="images/posts/aws-rds-connect/create-ec2.png" %}}
-
-We have created our instance in the free tier with an SSH key pair to securely access the instance with SSH in the later sections. An SSH key pair is used to authenticate the identity of a user or process (local workstation) that wants to access a remote system (the EC2 instance) using the SSH protocol.
-
-We can either create a new SSH key pair or choose to use an existing key pair when creating the instance. We have created a new key pair as shown below: 
-
-{{% image alt="Key pair" src="images/posts/aws-rds-connect/key-pair.png" %}}
-
-The SSH key pair consists of a public key and a private key. The public key is used by the local workstation and the EC2 instance to encrypt messages. On the EC2 side, it is saved as an entry in a file: `~/.ssh/authorized_keys` that contains a list of all authorized public keys.
-
-We have downloaded the private key of the SSH key pair and saved it to our local workstation. 
-
-For creating the instance in the public subnet we have used the network settings as shown below:
-{{% image alt="Create EC2 bastion" src="images/posts/aws-rds-connect/ec2-network.png" %}}
-
-We will use this EC2 instance as our jump host on which we will set up an SSH tunnel for connecting to the RDS database in the next section.
-
-## Allow Traffic to the RDS Database from the Jump Host
-To enable connectivity to our RDS database, any security groups, network ACL, security rules, or third-party security software that exist on the RDS database must allow traffic from the EC2 instance used as the jump host. 
-
-In our example, the security group of our RDS database must allow access to port `3306` from the EC2 instance. To enable this access, let us add an inbound rule to the new security group associated with the RDS database to allow connections from the EC2 instance:
-
-{{% image alt="Create RDS Database" src="images/posts/aws-rds-connect/added-ingress.png" %}}
-
-Here we have specified the port range as `3306` and the source as `172.31.24.5/32` which is the private IP of the EC2 instance.
-
-The EC2 instance is also secured by a security group. A security group is associated with an outbound rule, by default, that allows outbound traffic to all destinations. Accordingly, this rule will also allow the EC2 instance to make an outbound connection to the RDS database.
-
-## Connecting to the RDS Database
-We use a mechanism called: SSH tunneling or port forwarding for connecting to the RDS database. SSH tunneling is a method of transporting arbitrary networking data over an encrypted SSH connection.
-
-The SSH client on our local workstation listens for connections on a configured port. When it receives a connection, it tunnels the connection to the SSH server which is our EC2 instance acting as the jump host. 
-
-The SSH server(EC2 instance) connects to a destination port, usually on a different machine than the SSH server. In our example, the destination port is the port of the RDS database. 
-
-Additionally, since the SSH private key is securely saved on our local workstation, the communication with the RDS database is secured/encrypted over the SSH tunnel and the owner of the SSH private key is authenticated by the jump host.
-
-Please refer to the official [documentation](https://www.ssh.com/academy/ssh/tunneling) to understand more details about SSH tunneling.
-
-We will use MySQL workbench which provides a GUI to connect to our RDS MySQL database in two ways:
-
-### Connect using Standard TCP/IP
-
-In this method, we create an SSH tunnel from our local machine to access the RDS MySQL database using the EC2 instance as the jump host.
-
-Let us start the SSH tunnel by running the following command:
+We can create a Single Page Application with one of the many frameworks available like Angular, React, Vue, etc.
+Let us create a SPA with the React framework by running the following NPM command:
 
 ```shell
-ssh -i <SSH key of EC2 instance> ec2-user@<instance-IP of EC2> -L 3306:<RDS DB endpoint>:3306
+ npx create-react-app mystore
 ```
-When we run this command, the local port `3306` on our local machine tunnels to port `3306` on the RDS instance. We can then use MySQL workbench to access the RDS MySQL with connection type as `Standard TCP/IP`:
+Running this command bootstraps a `react` project under a folder: `mystore` with the following files in a folder: `src`.
 
-{{% image alt="Connect RDS Database with TCP" src="images/posts/aws-rds-connect/db-conn-local.png" %}}
-
-We can see the successful test connection message with `127.0.0.1` as the hostname and `3306` as the port.
-
-Alternately, we can run the following command in our terminal using the MySQL Command-Line Client: `mysql`:
+```js
+src
+├── App.css
+├── App.js
+├── App.test.js
+├── index.css
+├── index.js
+├── logo.svg
+├── reportWebVitals.js
+└── setupTests.js
+```
+Let us run this application with the below commands:
 
 ```shell
-mysql -u <DB User> -h 127.0.0.1 -P 3306 -p <DB password>
+cd mystore
+npm start
 ```
-Here also we are connecting to the RDS MySQL database with `127.0.0.1` as the hostname and `3306` as the port.
+This will launch the default react app in a browser.
 
-### Connect using Standard TCP/IP over SSH
-In this method, we are connecting to the RDS MySQL database using the MySQL workbench using `TCP/IP over SSH` as the connection type:
+We can evolve this application further to build useful features but for this tutorial, we will deploy this react app using CloudFront.
 
-{{% image alt="Connect RDS Database with TCP" src="images/posts/aws-rds-connect/db-conn-ssh.png" %}}
+For deployment, we will first build the project by running:
 
-We can see the successful test connection message with the following parameters :
+```shell
+npm build
+```
+This will package the application in a build directory with the below contents:
 
-1. **SSH Hostname**: DNS name or IP of the EC2 instance used as the jump host
-2. **SSH Username**: SSH user name (`ec2-user` in our example) to connect to the EC2 instance. 
-3. **SSH Key File**: Path to the SSH private key file saved in our local machine when creating the EC2 instance.
-4. **MySQL Hostname**: Endpoint of the RDS MySQL database.
-5. **MySQL Server Port**: TCP/IP port of the RDS MySQL database.
-6. **Username**: The user name of the RDS MySQL database set up during RDS database creation.
-7. **Password**: Password of the RDS MySQL database set up during RDS database creation.
+```shell
+build
+├── asset-manifest.json
+├── favicon.ico
+├── index.html
+├── logo192.png
+├── logo512.png
+├── manifest.json
+├── robots.txt
+└── static
+    ├── css
+    │   ├── main.073c9b0a.css
+    │   └── main.073c9b0a.css.map
+    ├── js
+    │   ├── 787.dd20aa60.chunk.js
+    │   ├── 787.dd20aa60.chunk.js.map
+    │   ├── main.fa9c6efd.js
+    │   ├── main.fa9c6efd.js.LICENSE.txt
+    │   └── main.fa9c6efd.js.map
+    └── media
+        └── logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg
+```
+These are a set of static files which we can host on any HTTP server for serving our web content. For our tutorial, we will copy these static contents to an S3 bucket as explained in the next section.
+
+## Hosting the Static Content in an S3 Bucket
+Amazon Simple Storage Service (S3) is a service for storing and retrieving any kind of files called `objects` in S3 parlance. 
+Buckets are containers for storing objects in S3. We upload files to an S3 bucket where it is stored as an S3 object. We will upload all the files under the build folder to an S3 bucket that was created after building the react project in the previous section.
+
+### Creating the S3 Bucket
+Let us create the S3 bucket from the AWS administration console.
+{{% image alt="Create Bucket" src="images/posts/aws-cloudfront/create-bucket.png" %}}
+
+For creating the S3 bucket we are providing a name and selecting the region as `us-east` where the bucket will be created.
+
+We will allow public access to the bucket by unchecking the checkbox for `Block all public access` as shown below:
+{{% image alt="Create Bucket" src="images/posts/aws-cloudfront/allow-public-access.png" %}}
+
+This will allow public access to the S3 bucket which will make the files in the bucket accessible with a public URL over the internet. This is however not a secure practice which we will address in a later section.
+
+After creating the bucket, we will configure the bucket for hosting web assets by modifying the bucket property for static web hosting:
+{{% image alt="Bucket Properties" src="images/posts/aws-cloudfront/bucket-props.png" %}}
+{{% image alt="Static web content" src="images/posts/aws-cloudfront/web-enabled.png" %}}
+
+### Enabling the Static Web Hosting Property on the S3 Bucket
+We will enable the property: `static web hosting` of the bucket as shown below:
+{{% image alt="Bucket Properties" src="images/posts/aws-cloudfront/enable-web-hosting.png" %}}
+
+We have also set the `Index document` and `Error document` to `index.html`.
+
+After we enable the static web hosting, the section under our static web hosting property of our S3 bucket will look like this:
+
+{{% image alt="static web hosting enabled" src="images/posts/aws-cloudfront/static-web-hosting-enabled.png" %}}
+
+We can see a property `Bucket website endpoint` which contains the URL to be used for navigating to our website after copying the static files to the S3 bucket. 
+
+### Types of S3 Bucket Endpoints
+Since we will be configuring the S3 bucket URL as the origin when we create a CloudFront distribution in subsequent sections, it will be useful to understand the two types of endpoints provided by S3:
+
+1. **REST API endpoint**: This endpoint is in the format: `{bucket-name}.s3-{region}.amazonaws.com`. In our example, the Bucket Website Endpoint` is http://io.myapp.s3-us-east-1.amazonaws.com`. 
+
+The characteristics of Bucket Website Endpoint are:
+* Supports SSL connections
+* Provides End to end encryption
+* Can use Origin Access Identity (OAl)
+* Supports Private/Public content
+
+2. **Bucket Website Endpoint**: This endpoint is generated when we enable static website hosting on the bucket and is in the format: `{bucket-name}-website.s3.amazonaws.com`. In our example, the Bucket Website Endpoint` is http://io.myapp.s3-website-us-east-1.amazonaws.com`. 
+
+The characteristics of Bucket Website Endpoint are:
+* Does not support SSL connections
+* Supports Redirect requests
+* Cannot use Origin Access Identity (OAI)
+* Serves default index document (Default page)
+* Supports only publicly readable content
+
+### Attaching a Bucket Policy
+We also need to attach a bucket policy to our S3 bucket. The bucket policy, written in JSON, provides access to the objects stored in the bucket:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Statement1",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::io.myapp/*"
+        }
+    ]
+}
+```
+This bucket policy provides read-only access to all the objects stored in our bucket as represented by the resource ARN: `arn:aws:s3:::io.myapp/*`.
+
+### Uploading Static Content to our S3 Bucket
+After finishing all the configurations of our bucket, we will upload all our static content under the `build` folder of our project in our local machine to our S3 bucket:
+
+{{% image alt="file upload to Bucket" src="images/posts/aws-cloudfront/file-upload.png" %}}
+
+We can see the upload status of all the files after the upload is completed as shown below:
+
+{{% image alt="file uploading to Bucket" src="images/posts/aws-cloudfront/file-uploading.png" %}}
+{{% image alt="file uploaded to Bucket" src="images/posts/aws-cloudfront/file-uploaded.png" %}}
+
+### Serving the Web Site from the S3 Bucket 
+With all the files uploaded we will be able to see our application by navigating to the bucket website endpoint: `http://io.myapp.s3-website-us-east-1.amazonaws.com`.
+
+{{% image alt="file uploaded to Bucket" src="images/posts/aws-cloudfront/browser-s3.png" %}}
+
+Assuming we have customers accessing this website from all parts of the globe, they will all be downloading the static contents from the same S3 bucket in the `us-east` region in our example. This will give a different experience to customers depending on their location. Customers closer to the `us-east` region will experience a lower latency compared to the customers who are accessing this website from other continents. We will improve this behavior in the next section with the help of Amazon's CloudFront service.
+
+## Advantages of Using CloudFront
+
+Serving your website using SSL (HTTPS)
+The request will be cached
+Increase website performance
+The ability to set common security headers
+
+## Creating the CloudFront Distribution
+When we want to use CloudFront to distribute our content, we need to create a distribution and choose the configuration settings you want. For example:
+
+
+We create a CloudFront distribution to specify the location of the content that we want to deliver from CloudFront along with the configuration to track and manage its delivery.
+
+Let us create a CloudFront Distribution from the AWS Management Console:
+{{% image alt="file uploading to Bucket" src="images/posts/aws-cloudfront/cf-distrib1.png" %}}
+
+We have set the origin domain to the bucket website endpoint of our S3 bucket created in the previous section and left all other configurations as default. The distribution takes a few minutes to change to `enabled` status. 
+
+After it is active, we can now navigate to our website using the CloudFront distribution domain name: `https://d4l1ajcygy8jp.cloudfront.net/`:
+
+{{% image alt="browser" src="images/posts/aws-cloudfront/browser-cf.png" %}}
+
+## Securing Access to Content
+In the earlier sections, we used static assets residing in a public S3 bucket which makes it insecure by making all the content accessible to users if the S3 bucket URL is known to them. CloudFront provides many configurations to secure access to content. For this example, we will use an Origin Access Identity (OAI) to restrict access to the contents of the S3 bucket. 
+
+Origin Access Identity (OAI) is a special CloudFront user that is associated with our distributions. We can restrict access to the S3 bucket by updating the bucket policy to provide read permission to the OAI defined as the `Principal` in the policy definition as shown below:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+            "Sid": "2",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity <OAI>"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::<S3 bucket name>/*"
+        }
+  ]
+}
+```
+Let us create another CloudFront Distribution but configured to use an OAI to access the contents in the S3 bucket:
+{{% image alt="browser" src="images/posts/aws-cloudfront/oai.png" %}}
+
+This time we have chosen the S3 bucket URL from the selection box as the origin domain instead of the bucket website endpoint. In the section for S3 bucket access, we have selected `Yes use OAI` and created an OAI: `my-oai` to associate with this distribution. We have also chosen the option of updating the bucket policy manually after creating the distribution.
+
+After creating the distribution, let us update the bucket policy of our S3 bucket to look like this:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+            "Sid": "1",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity E32V87I09SD18I"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::io.myapp/*"
+    }
+  ]
+}
+```
+This bucket policy grants the CloudFront origin access identity (OAI) with id: `E32V87I09SD18I` permission to get (read) all objects in our Amazon S3 bucket. We have set the `Principal` to the OAI id which can be found from the [AWS management console](https://console.aws.amazon.com/cloudfront/v3/home#/oai). 
+
+We have also disabled the public access to the bucket and the static web hosting property. 
+
+After the CloudFront distribution is deployed and active, we can navigate to our website using the CloudFront distribution domain name: `https://d4l1ajcygy8jp.cloudfront.net/index.html`:
+
+{{% image alt="browser" src="images/posts/aws-cloudfront/browser-cf-oai.png" %}}
+
+
+Some of the other ways we can secure access to content with CloudFront are:
+
+1. Encrypting Connections to CloudFront:
+CloudFront uses HTTPS protocol (Hypertext Transfer Protocol Secure) a secure version of the HTTP protocol that uses the SSL/TLS protocol for encryption.
+2. 
+We can configure CloudFront to mandate that viewers always use the HTTPS protocol for communicating with CloudFront. We can also configure CloudFront to use HTTPS protocol for communicating with the origin. Communication over the HTTPS protocol ensures that the connection is encrypted and therefore secured from being eavesdropped on.
+
 
 ## Conclusion 
-In this article, we walked through the stages of creating an RDS database in a private subnet and then connecting to the database using a jump host. Here is a summary of the steps for our quick reference:
+In this article, we configured Amazon CloudFront to distribute static Content stored in an S3 bucket. Here is a summary of the steps for our quick reference:
 
-1. Create an RDS database in a private subnet.
-2. Create an EC2 instance in a public subnet in the same VPC where the RDS database was created. This EC2 instance will act as the bastion or Jump host for connecting to the RDS database. A bastion or jump host is a server whose purpose is to provide access to a private network from an external network like the internet. 
-3. Add an inbound rule to the security group associated with the RDS database to allow incoming traffic from the EC2 instance created in step 2.
-4. Optionally add an outbound rule to the security group associated with the EC2 instance to allow outgoing traffic to the RDS database.
-5. Use a database client and connect to the endpoint of the RDS database with the database credentials configured during creation time or later using the SSH tunneling method.
-
+1. We created an S3 bucket with public access.
+2. We enable static web hosting on the S3 bucket and got a bucket website endpoint.
+3. We added an S3 bucket policy to allow access to the contents of the S3 bucket for all users (`*`).
+4. We uploaded some static contents in the form of JavaScript, images, HTML, and CSS files of a Single Page Application (SPA) built using the React library.
+5. With this setup, we could view the website in our browser using the S3 bucket website endpoint.
+6. We finally created a CloudFront distribution and configured the S3 bucket website endpoint as the origin.
+7. After the CloudFront distribution was deployed, we could view the website in a browser using the CloudFront URL.
+8. Next we secured the S3 bucket by removing public access.
+9. We disabled static web hosting on the S3 bucket.
+10. We created another CloudFront distribution with the S3 Rest API endpoint.
+11. We created an Origin Access Identity (OAI) and associated it with the bucket.
+12. We updated the S3 bucket policy to allow access only to the OAI coming from CloudFront.
+13. After this CloudFront distribution was deployed, we could view the website in a browser using the CloudFront URL.

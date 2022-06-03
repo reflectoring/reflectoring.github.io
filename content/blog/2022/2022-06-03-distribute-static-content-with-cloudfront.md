@@ -91,11 +91,12 @@ We will allow public access to the bucket by unchecking the checkbox for `Block 
 
 This will allow public access to the S3 bucket which will make the files in the bucket accessible with a public URL over the internet. This is however not a secure practice which we will address in a later section.
 
+
+### Enabling the Static Web Hosting Property on the S3 Bucket
 After creating the bucket, we will configure the bucket for hosting web assets by modifying the bucket property for static web hosting:
 {{% image alt="Bucket Properties" src="images/posts/aws-cloudfront/bucket-props.png" %}}
 {{% image alt="Static web content" src="images/posts/aws-cloudfront/web-enabled.png" %}}
 
-### Enabling the Static Web Hosting Property on the S3 Bucket
 We will enable the property: `static web hosting` of the bucket as shown below:
 {{% image alt="Bucket Properties" src="images/posts/aws-cloudfront/enable-web-hosting.png" %}}
 
@@ -163,12 +164,6 @@ With all the files uploaded we will be able to see our application by navigating
 
 Assuming we have customers accessing this website from all parts of the globe, they will all be downloading the static contents from the same S3 bucket in the `us-east` region in our example. This will give a different experience to customers depending on their location. Customers closer to the `us-east` region will experience a lower latency compared to the customers who are accessing this website from other continents. We will improve this behavior in the next section with the help of Amazon's CloudFront service.
 
-## Advantages of Using CloudFront
-
-Serving your website using SSL (HTTPS)
-The request will be cached
-Increase website performance
-The ability to set common security headers
 
 ## Creating the CloudFront Distribution
 When we want to use CloudFront to distribute our content, we need to create a distribution and choose the configuration settings you want. For example:

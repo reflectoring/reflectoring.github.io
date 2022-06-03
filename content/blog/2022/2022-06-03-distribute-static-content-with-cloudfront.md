@@ -10,12 +10,21 @@ image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: distribute-static-content-with-cloudfront
 ---
 
-Amazon CloudFront is a fast content delivery network (CDN) service that securely delivers data, videos, applications, and APIs to customers globally with low latency. A Content delivery network (CDN) consists of a globally-distributed network of servers that can cache static content, like images, media, stylesheets, JS files, etc, or other bulky media, in locations close to consumers. This helps in improving the downloading speed of these static contents.
+Amazon CloudFront is a fast content delivery network (CDN) service that securely delivers data, videos, applications, and APIs to customers globally with low latency. A Content delivery network (CDN) consists of a globally-distributed network of servers that can cache static content, like images, media, stylesheets, JavaScript files, etc, or other bulky media, in locations close to consumers. This helps in improving the downloading speed of these static contents.
 
 In this tutorial, we will store the contents of a Single page application (SPA) in an S3 bucket and configure CloudFront to deliver this application globally. 
 
-## Creating a Single Page Application as Static Content
+## How CloudFront works
+CloudFront delivers all content through a network of data centers called edge locations. When a viewer requests content that we are serving with CloudFront, the request is routed to the edge location which is closest to the user that provides the lowest latency. This results in content being delivered to the viewer with the best possible performance.
 
+If the content is already in the edge location with the lowest latency, CloudFront delivers it immediately.
+If the content is not in that edge location, CloudFront retrieves it from an origin configured by us like an S3 bucket, or an HTTP server.
+
+We create a CloudFront distribution to tell CloudFront where we want the content to be delivered from. We define origin servers, like an Amazon S3 bucket where we upload our files like HTML pages, images, media files, etc.
+
+When the distribution is deployed, CloudFront assigns a domain name to the distribution and sends our distribution's configuration to all of its edge locations or points of presence (POPs).
+
+## Creating a Single Page Application as Static Content
 We can create a Single Page Application with one of the many frameworks available like Angular, React, Vue, etc.
 Let us create a SPA with the React framework by running the following NPM command:
 
@@ -166,10 +175,7 @@ Assuming we have customers accessing this website from all parts of the globe, t
 
 
 ## Creating the CloudFront Distribution
-When we want to use CloudFront to distribute our content, we need to create a distribution and choose the configuration settings you want. For example:
-
-
-We create a CloudFront distribution to specify the location of the content that we want to deliver from CloudFront along with the configuration to track and manage its delivery.
+When we want to use CloudFront to distribute our content, we need to create a distribution. We use a CloudFront distribution to specify the location of the content that we want to deliver from CloudFront along with the configuration to track and manage its delivery.
 
 Let us create a CloudFront Distribution from the AWS Management Console:
 {{% image alt="file uploading to Bucket" src="images/posts/aws-cloudfront/cf-distrib1.png" %}}

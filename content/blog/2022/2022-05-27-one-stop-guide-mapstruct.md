@@ -85,7 +85,7 @@ In order to configure MapStruct in a Gradle project, we need to add following to
 plugins {
     id 'net.ltgt.apt' version '0.20'
 }
-1.4.2.Final
+
 apply plugin: 'net.ltgt.apt-idea'
 apply plugin: 'net.ltgt.apt-eclipse'
 
@@ -172,7 +172,7 @@ Similarly, a final `build.gradle`  would look something like below:
 plugins {
     id 'net.ltgt.apt' version '0.20'
 }
-1.4.2.Final
+
 apply plugin: 'net.ltgt.apt-idea'
 apply plugin: 'net.ltgt.apt-eclipse'
 
@@ -513,7 +513,10 @@ Now we need to map this to `education` field in `PersonDTO`. For that we will up
 @Mapping(source = "education.degreeName", target = "education.degree")
 @Mapping(source = "education.institute", target = "education.college")
 @Mapping(source = "education.yearOfPassing", target = "education.passingYear")
-PersonDTO convert(BasicUser user, Education education, Address address, Employment employment);
+PersonDTO convert(BasicUser user,
+                  Education education,
+                  Address address,
+                  Employment employment);
 ```
 
 If we see the implementation class after compiling/building the application we would see that a new mapper `educationToEducationDTO()` is added along side other mappers.
@@ -522,7 +525,10 @@ Sometimes we won’t explicitly name all properties from nested source bean. In 
 
 ```java
 @Mapping(source = "employment", target = ".")
-PersonDTO convert(BasicUser user, Education education, Address address, Employment employment);
+PersonDTO convert(BasicUser user,
+                  Education education,
+                  Address address,
+                  Employment employment);
 ```
 
 This kind of notation can be very useful when mapping hierarchical objects to flat objects and vice versa.

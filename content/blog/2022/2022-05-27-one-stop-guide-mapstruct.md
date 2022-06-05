@@ -95,70 +95,6 @@ dependencies {
 
 The `net.ltgt.apt` plugin is responsible for the annotation processing. We can apply the `apt-idea` and `apt-eclipse` plugins depending on the IDE that we are using.
 
-### Configuration Options
-
-MapStruct allows to pass various annotation processor options or arguments to javac directly in the form `-Akey=value`. The Maven based configuration accepts build definitions with compiler args being passed explicitly:
-
-```xml
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${org.mapstruct.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                    <!-- due to problem in maven-compiler-plugin, for verbose mode 
-						add showWarnings -->
-                    <showWarnings>true</showWarnings>
-                    <compilerArgs>
-                        <arg>
-                            -Amapstruct.suppressGeneratorTimestamp=true
-                        </arg>
-                        <arg>
-                            -Amapstruct.suppressGeneratorVersionInfoComment=true
-                        </arg>
-                        <arg>
-                            -Amapstruct.verbose=true
-                        </arg>
-                        <arg>
-                            -Amapstruct.defaultComponentModel=default
-                        </arg>
-                    </compilerArgs>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-```
-
-Similarly, Gradle accepts compiler arguments in the following format:
-
-```groovy
-compileJava {
-    options.compilerArgs += [
-        '-Amapstruct.suppressGeneratorTimestamp=true',
-        '-Amapstruct.suppressGeneratorVersionInfoComment=true',
-        '-Amapstruct.verbose=true'
-        '-Amapstruct.defaultComponentModel=default'
-    ]
-}
-```
-
-We just took four example configurations here. But it supports a lot of other configuration options as well. Let’s look at these four options:
-
-* `mapstruct.suppressGeneratorTimestamp`: the creation of a time stamp in the `@Generated` annotation in the generated mapper classes is suppressed with this option.
-* `mapstruct.suppressGeneratorVersionInfoComment`: the creation of the comment attribute in the `@Generated` annotation in the generated mapper classes is suppressed with this option.
-* `mapstruct.verbose`: It logs its major decisions based upon this option.
-* `mapstruct.defaultComponentModel`: It accepts component models like *default*, *cdi*, *spring*, or *jsr330* based on which mapper the code needs to be generated finally at compile time.
-
 ### Third-Party API Integration with Lombok
 
 Most of us would like to use MapStruct alongside *Project Lombok* to take advantage of automatically generated getters, setters, and constructors to generate the mapper implementation. But Lombok 1.18.16 introduced breaking changes due to which we face compilation issues of Lombok and MapStruct modules. Hence an additional annotation processor lombok-mapstruct-binding must be added otherwise MapStruct stops working with Lombok.
@@ -214,22 +150,6 @@ So a final Maven based configuration with Lombok would something like below:
                             <version>0.2.0</version>
                         </path>
                     </annotationProcessorPaths>
-                    <!-- due to problem in maven-compiler-plugin, for verbose mode add showWarnings -->
-                    <showWarnings>true</showWarnings>
-                    <compilerArgs>
-                        <arg>
-                            -Amapstruct.suppressGeneratorTimestamp=true
-                        </arg>
-                        <arg>
-                            -Amapstruct.suppressGeneratorVersionInfoComment=true
-                        </arg>
-                        <arg>
-                            -Amapstruct.verbose=true
-                        </arg>
-                        <arg>
-                            -Amapstruct.defaultComponentModel=default
-                        </arg>
-                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>
@@ -251,15 +171,6 @@ ext {
     projectLombokVersion = "1.18.24"
 }
 
-compileJava {
-    options.compilerArgs += [
-        '-Amapstruct.suppressGeneratorTimestamp=true',
-        '-Amapstruct.suppressGeneratorVersionInfoComment=true',
-        '-Amapstruct.verbose=true'
-        '-Amapstruct.defaultComponentModel=default'
-    ]
-}
-
 dependencies {
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     implementation "org.projectlombok:lombok:${projectLombokVersion}"
@@ -271,7 +182,7 @@ dependencies {
 
 ## Mapper Definition
 
-We will now take a look into various types of bean mappers using MapStruct and try out whatever options are available.
+We will now take a look into various types of bean mappers using MapStruct and try out whatever options are available. Whenever we annotate a Mapper method with `@Mapper` annotation, it creates an implementation class with the same mapper methods having all the setters and getters auto-generated. Let’s start with a basic mapping example to see how it works.
 
 ### Basic Mapping Example
 
@@ -282,8 +193,8 @@ Let’s start with a very basic mapping example. We will define two Objects, one
 @Builder
 @ToString
 public class BasicUser {
-    private int id;
-    private String name;
+  private int id;
+  private String name;
 }
 ```
 
@@ -292,8 +203,8 @@ public class BasicUser {
 @Builder
 @ToString
 public class BasicUserDTO {
-    private int id;
-    private String name;
+  private int id;
+  private String name;
 }
 ```
 
@@ -302,8 +213,8 @@ Now to create a mapper between the two, we will simply define an interface named
 ```java
 @Mapper
 public interface BasicMapper {
-    BasicMapper INSTANCE = Mappers.getMapper(BasicMapper.class);
-    BasicUserDTO convert(BasicUser user);
+  BasicMapper INSTANCE = Mappers.getMapper(BasicMapper.class);
+  BasicUserDTO convert(BasicUser user);
 }
 ```
 
@@ -317,19 +228,18 @@ When we compile/build the application, the MapStruct annotation processor plugin
 )
 public class BasicMapperImpl implements BasicMapper {
 
-    @Override
-    public BasicUserDTO convert(BasicUser user) {
-        if ( user == null ) {
-            return null;
-        }
-
-        BasicUserDTOBuilder basicUserDTO = BasicUserDTO.builder();
-
-        basicUserDTO.id( user.getId() );
-        basicUserDTO.name( user.getName() );
-
-        return basicUserDTO.build();
+  @Override
+  public BasicUserDTO convert(BasicUser user) {
+    if ( user == null ) {
+      return null;
     }
+
+    BasicUserDTOBuilder basicUserDTO = BasicUserDTO.builder();
+    basicUserDTO.id( user.getId() );
+    basicUserDTO.name( user.getName() );
+
+    return basicUserDTO.build();
+  }
 }
 ```
 
@@ -338,8 +248,6 @@ We might have noticed that the `BasicMapperImpl` has picked up the builder metho
 Now we just need to instantiate the conversion mapping by something like the below:
 
 ```java
-log.info("MapStruct Basic Mapping conversion started !!");
-
 BasicUser user = BasicUser
         .builder()
         .id(1)
@@ -349,8 +257,6 @@ log.info("User details: {}", user);
 
 BasicUserDTO dto = BasicMapper.INSTANCE.convert(user);
 log.info("UserDTO details: {}", dto);
-
-log.info("MapStruct Basic Mapping conversion completed !!");
 ```
 
 ### Adding Custom Method inside Mappers
@@ -364,9 +270,9 @@ Let’s define a DTO object which is different from a `User` object. We will nam
 @Builder
 @ToString
 public class PersonDTO {
-    private String id;
-    private String firstName;
-    private String lastName;
+  private String id;
+  private String firstName;
+  private String lastName;
 }
 ```
 
@@ -375,16 +281,16 @@ As we can notice the data type for the id field is different from the User objec
 ```java
 @Mapper
 public interface BasicMapper {
-    BasicMapper INSTANCE = Mappers.getMapper(BasicMapper.class);
-    BasicUserDTO convert(BasicUser user);
-    default PersonDTO convertCustom(BasicUser user) {
-        return PersonDTO
-                .builder()
-                .id(String.valueOf(user.getId()))
-                .firstName(user.getName().substring(0, user.getName().indexOf(" ")))
-                .lastName(user.getName().substring(user.getName().indexOf(" ") + 1))
-                .build();
-    }
+  BasicMapper INSTANCE = Mappers.getMapper(BasicMapper.class);
+  BasicUserDTO convert(BasicUser user);
+  default PersonDTO convertCustom(BasicUser user) {
+    return PersonDTO
+             .builder()
+             .id(String.valueOf(user.getId()))
+             .firstName(user.getName().substring(0, user.getName().indexOf(" ")))
+             .lastName(user.getName().substring(user.getName().indexOf(" ") + 1))
+             .build();
+  }
 }
 ```
 
@@ -400,16 +306,16 @@ As an alternative, a mapper can also be defined as an abstract class and impleme
 @Mapper
 public abstract class BasicMapper {
 
-    public abstract BasicUserDTO convert(BasicUser user);
+  public abstract BasicUserDTO convert(BasicUser user);
 
-    public PersonDTO convertCustom(BasicUser user) {
-        return PersonDTO
-                .builder()
-                .id(String.valueOf(user.getId()))
-                .firstName(user.getName().substring(0, user.getName().indexOf(" ")))
-                .lastName(user.getName().substring(user.getName().indexOf(" ") + 1))
-                .build();
-    }
+  public PersonDTO convertCustom(BasicUser user) {
+    return PersonDTO
+             .builder()
+             .id(String.valueOf(user.getId()))
+             .firstName(user.getName().substring(0, user.getName().indexOf(" ")))
+             .lastName(user.getName().substring(user.getName().indexOf(" ") + 1))
+             .build();
+  }
 }
 ```
 
@@ -424,9 +330,9 @@ Suppose if we want to combine several entities into a single data transfer objec
 @Builder
 @ToString
 public class Education {
-    private String degreeName;
-    private String institute;
-    private Integer yearOfPassing;
+  private String degreeName;
+  private String institute;
+  private Integer yearOfPassing;
 }
 ```
 
@@ -435,12 +341,12 @@ public class Education {
 @Builder
 @ToString
 public class Address {
-    private String houseNo;
-    private String landmark;
-    private String city;
-    private String state;
-    private String country;
-    private String zipcode;
+  private String houseNo;
+  private String landmark;
+  private String city;
+  private String state;
+  private String country;
+  private String zipcode;
 }
 ```
 
@@ -458,32 +364,31 @@ PersonDTO convert(BasicUser user, Education education, Address address);
 When we build the code now, the mapstruct annotation processor will generate the following method:
 
 ```java
-    @Override
-    public PersonDTO convert(BasicUser user,
-                             Education education,
-                             Address address) {
-        if ( user == null
-            && education == null
-            && address == null ) {
-            return null;
-        }
+@Override
+public PersonDTO convert(BasicUser user,
+                         Education education,
+                         Address address) {
+  if ( user == null
+     && education == null
+     && address == null ) {
+    return null;
+  }
 
-        PersonDTOBuilder personDTO = PersonDTO.builder();
+  PersonDTOBuilder personDTO = PersonDTO.builder();
+  if ( user != null ) {
+    personDTO.id(String.valueOf(user.getId()));
+    personDTO.firstName(user.getName());
+  }
+  if ( education != null ) {
+    personDTO.educationalQualification(education.getDegreeName());
+  }
+  if ( address != null ) {
+    personDTO.residentialCity(address.getCity());
+    personDTO.residentialCountry(address.getCountry());
+  }
 
-        if ( user != null ) {
-            personDTO.id(String.valueOf(user.getId()));
-            personDTO.firstName(user.getName());
-        }
-        if ( education != null ) {
-            personDTO.educationalQualification(education.getDegreeName());
-        }
-        if ( address != null ) {
-            personDTO.residentialCity(address.getCity());
-            personDTO.residentialCountry(address.getCountry());
-        }
-
-        return personDTO.build();
-    }
+  return personDTO.build();
+}
 ```
 
 ### Mapping Nested Bean to Target Field
@@ -497,8 +402,8 @@ Let’s define a few more DTOs and add all of this to `PersonDTO`:
 @Builder
 @ToString
 public class ManagerDTO {
-    private int id;
-    private String name;
+  private int id;
+  private String name;
 }
 ```
 
@@ -507,16 +412,16 @@ public class ManagerDTO {
 @Builder
 @ToString
 public class PersonDTO {
-    private String id;
-    private String firstName;
-    private String lastName;
-    private String educationalQualification;
-    private String residentialCity;
-    private String residentialCountry;
-    private String designation;
-    private long salary;
-    private EducationDTO education;
-    private List<ManagerDTO> managerList;
+  private String id;
+  private String firstName;
+  private String lastName;
+  private String educationalQualification;
+  private String residentialCity;
+  private String residentialCountry;
+  private String designation;
+  private long salary;
+  private EducationDTO education;
+  private List<ManagerDTO> managerList;
 }
 ```
 
@@ -527,8 +432,8 @@ Now we will define an entity named `Manager` and add it to the `BasicUser` entit
 @Builder
 @ToString
 public class Manager {
-    private int id;
-    private String name;
+  private int id;
+  private String name;
 }
 ```
 
@@ -537,9 +442,9 @@ public class Manager {
 @Builder
 @ToString
 public class BasicUser {
-    private int id;
-    private String name;
-    private List<Manager> managerList;
+  private int id;
+  private String name;
+  private List<Manager> managerList;
 }
 ```
 
@@ -548,8 +453,8 @@ Before we update our `UserMapper` interface, let’s define the `ManagerMapper` 
 ```java
 @Mapper
 public interface ManagerMapper {
-    ManagerMapper INSTANCE = Mappers.getMapper(ManagerMapper.class);
-    ManagerDTO convert(Manager manager);
+  ManagerMapper INSTANCE = Mappers.getMapper(ManagerMapper.class);
+  ManagerDTO convert(Manager manager);
 }
 ```
 
@@ -558,77 +463,19 @@ Now we can update our `UserMapper` interface to include list of managers for a g
 ```java
 @Mapper(uses = {ManagerMapper.class})
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
-    ...
+  UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+  ...
 
-    @Mapping(source = "user.id", target = "id")
-    @Mapping(source = "user.name", target = "firstName")
-    @Mapping(source = "education.degreeName", target = "educationalQualification")
-    @Mapping(source = "address.city", target = "residentialCity")
-    @Mapping(source = "address.country", target = "residentialCountry")
-    PersonDTO convert(BasicUser user, Education education, Address address);
+  @Mapping(source = "user.id", target = "id")
+  @Mapping(source = "user.name", target = "firstName")
+  @Mapping(source = "education.degreeName", target = "educationalQualification")
+  @Mapping(source = "address.city", target = "residentialCity")
+  @Mapping(source = "address.country", target = "residentialCountry")
+  PersonDTO convert(BasicUser user, Education education, Address address);
 }
 ```
 
-As we can see we have not added any `@Mapping` annotation to map managers. Instead, we have set the `uses` flag for `@Mapper` annotation so that while generating the mapper implementation for the `UserMapper` interface, MapStruct will also convert the `Manager` entity to `ManagerDTO`. This creates the following implementation class for the `UserMapper` interface:
-
-```java
-@Generated(
-    value = "org.mapstruct.ap.MappingProcessor"
-)
-public class UserMapperImpl implements UserMapper {
-
-    private final ManagerMapper managerMapper = Mappers.getMapper( ManagerMapper.class );
-
-    ...
-
-    @Override
-    public PersonDTO convert(BasicUser user,
-                             Education education,
-                             Address address,
-                             Employment employment) {
-        if ( user == null && education == null
-            && address == null ) {
-            return null;
-        }
-
-        PersonDTOBuilder personDTO = PersonDTO.builder();
-
-        if ( user != null ) {
-            personDTO.id( String.valueOf( user.getId() ) );
-            personDTO.firstName( user.getName() );
-            personDTO.managerList(
-                managerListToManagerDTOList( user.getManagerList() ) );
-        }
-        if ( education != null ) {
-            personDTO.education( educationToEducationDTO( education ) );
-            personDTO.educationalQualification(
-                education.getDegreeName() );
-        }
-        if ( address != null ) {
-            personDTO.residentialCity( address.getCity() );
-            personDTO.residentialCountry( address.getCountry() );
-        }
-
-        return personDTO.build();
-    }
-
-    protected List<ManagerDTO> managerListToManagerDTOList(List<Manager> list) {
-        if ( list == null ) {
-            return null;
-        }
-
-        List<ManagerDTO> list1 = new ArrayList<ManagerDTO>( list.size() );
-        for ( Manager manager : list ) {
-            list1.add( managerMapper.convert( manager ) );
-        }
-
-        return list1;
-    }
-}
-```
-
-Now we can see that a new mapper - `managerListToManagerDTOList()` has been auto-generated along with `convert()` mapper. This has been added explicitly since we have added `ManagerMapper` to the `UserMapper` interface.
+As we can see we have not added any `@Mapping` annotation to map managers. Instead, we have set the `uses` flag for `@Mapper` annotation so that while generating the mapper implementation for the `UserMapper` interface, MapStruct will also convert the `Manager` entity to `ManagerDTO`. We can see that a new mapper - `managerListToManagerDTOList()` has been auto-generated along with `convert()` mapper in the auto-generated implementation. This has been added explicitly since we have added `ManagerMapper` to the `UserMapper` interface.
 
 Let’s suppose we have to map an object to an internal object of the final payload, then we can define `@Mapping` with direct reference to source and target. For example, we will create `EmploymentDTO` which would look something like the below:
 
@@ -637,9 +484,9 @@ Let’s suppose we have to map an object to an internal object of the final payl
 @Builder
 @ToString
 public class EducationDTO {
-    private String degree;
-    private String college;
-    private Integer passingYear;
+  private String degree;
+  private String college;
+  private Integer passingYear;
 }
 ```
 
@@ -657,93 +504,11 @@ Now we need to map this to `education` field in `PersonDTO`. For that we will up
 PersonDTO convert(BasicUser user, Education education, Address address, Employment employment);
 ```
 
-If we see the implementation class after compiling/building the application we would see that a new mapper `educationToEducationDTO()` is added along side other mappers:
-
-```java
-@Generated(
-    value = "org.mapstruct.ap.MappingProcessor"
-)
-public class UserMapperImpl implements UserMapper {
-
-    private final ManagerMapper managerMapper = Mappers.getMapper( ManagerMapper.class );
-
-    ...
-
-    @Override
-    public PersonDTO convert(BasicUser user,
-                             Education education,
-                             Address address,
-                             Employment employment) {
-        if ( user == null && education == null
-            && address == null && employment == null ) {
-            return null;
-        }
-
-        PersonDTOBuilder personDTO = PersonDTO.builder();
-
-        if ( user != null ) {
-            personDTO.id( String.valueOf( user.getId() ) );
-            personDTO.firstName( user.getName() );
-            personDTO.managerList(
-                managerListToManagerDTOList( user.getManagerList() ) );
-        }
-        if ( education != null ) {
-            personDTO.education( educationToEducationDTO( education ) );
-            personDTO.educationalQualification(
-                education.getDegreeName() );
-        }
-        if ( address != null ) {
-            personDTO.residentialCity( address.getCity() );
-            personDTO.residentialCountry( address.getCountry() );
-        }
-        if ( employment != null ) {
-            personDTO.designation( employment.getDesignation() );
-            personDTO.salary( employment.getSalary() );
-        }
-
-        return personDTO.build();
-    }
-
-    protected EducationDTO educationToEducationDTO(Education education) {
-        if ( education == null ) {
-            return null;
-        }
-
-        EducationDTOBuilder educationDTO = EducationDTO.builder();
-
-        educationDTO.degree( education.getDegreeName() );
-        educationDTO.college( education.getInstitute() );
-        educationDTO.passingYear( education.getYearOfPassing() );
-
-        return educationDTO.build();
-    }
-
-    protected List<ManagerDTO> managerListToManagerDTOList(List<Manager> list) {
-        if ( list == null ) {
-            return null;
-        }
-
-        List<ManagerDTO> list1 = new ArrayList<ManagerDTO>( list.size() );
-        for ( Manager manager : list ) {
-            list1.add( managerMapper.convert( manager ) );
-        }
-
-        return list1;
-    }
-}
-```
+If we see the implementation class after compiling/building the application we would see that a new mapper `educationToEducationDTO()` is added along side other mappers.
 
 Sometimes we won’t explicitly name all properties from nested source bean. In that case MapStruct allows to use `"."` as target. This will tell the mapper to map every property from source bean to target object. This would look something like below:
 
 ```java
-@Mapping(source = "user.id", target = "id")
-@Mapping(source = "user.name", target = "firstName")
-@Mapping(source = "education.degreeName", target = "educationalQualification")
-@Mapping(source = "address.city", target = "residentialCity")
-@Mapping(source = "address.country", target = "residentialCountry")
-@Mapping(source = "education.degreeName", target = "education.degree")
-@Mapping(source = "education.institute", target = "education.college")
-@Mapping(source = "education.yearOfPassing", target = "education.passingYear")
 @Mapping(source = "employment", target = ".")
 PersonDTO convert(BasicUser user, Education education, Address address, Employment employment);
 ```
@@ -788,86 +553,84 @@ Now this will create the following implementation with the `updateExisting()` in
 )
 public class UserMapperImpl implements UserMapper {
 
-    private final ManagerMapper managerMapper = Mappers.getMapper(
-        ManagerMapper.class );
+  private final ManagerMapper managerMapper = Mappers.getMapper(
+       ManagerMapper.class );
 
-    ...
+  ...
 
-    @Override
-    public PersonDTO convert(BasicUser user,
+  @Override
+  public PersonDTO convert(BasicUser user,
+                           Education education,
+                           Address address,
+                           Employment employment) {
+    if ( user == null && education == null
+        && address == null && employment == null ) {
+      return null;
+    }
+
+    PersonDTOBuilder personDTO = PersonDTO.builder();
+
+    if ( user != null ) {
+      personDTO.id( String.valueOf( user.getId() ) );
+      personDTO.firstName( user.getName() );
+      personDTO.managerList(
+                managerListToManagerDTOList( user.getManagerList() ) );
+    }
+    if ( education != null ) {
+      personDTO.education( educationToEducationDTO( education ) );
+    }
+    if ( employment != null ) {
+      personDTO.designation( employment.getDesignation() );
+      personDTO.salary( employment.getSalary() );
+    }
+
+    return personDTO.build();
+  }
+
+  @Override
+  public void updateExisting(BasicUser user,
                              Education education,
                              Address address,
-                             Employment employment) {
-        if ( user == null && education == null
-            && address == null && employment == null ) {
-            return null;
-        }
+                             Employment employment,
+                             PersonDTO personDTO) {
+     if ( user == null && education == null
+         && address == null && employment == null ) {
+       return;
+     }
 
-        PersonDTOBuilder personDTO = PersonDTO.builder();
-
-        if ( user != null ) {
-            personDTO.id( String.valueOf( user.getId() ) );
-            personDTO.firstName( user.getName() );
-            personDTO.managerList(
-                managerListToManagerDTOList( user.getManagerList() ) );
+     if ( user != null ) {
+       personDTO.setId( String.valueOf( user.getId() ) );
+       if ( personDTO.getManagerList() != null ) {
+         List<ManagerDTO> list = managerListToManagerDTOList(
+                  user.getManagerList() );
+         if ( list != null ) {
+            personDTO.getManagerList().clear();
+            personDTO.getManagerList().addAll( list );
+        } else {
+           personDTO.setManagerList( null );
         }
-        if ( education != null ) {
-            personDTO.education( educationToEducationDTO( education ) );
+       } else {
+        List<ManagerDTO> list = managerListToManagerDTOList(
+                  user.getManagerList() );
+        if ( list != null ) {
+         personDTO.setManagerList( list );
         }
-        if ( employment != null ) {
-            personDTO.designation( employment.getDesignation() );
-            personDTO.salary( employment.getSalary() );
-        }
-
-        return personDTO.build();
+      }
     }
-
-    @Override
-    public void updateExisting(BasicUser user,
-                               Education education,
-                               Address address,
-                               Employment employment,
-                               PersonDTO personDTO) {
-        if ( user == null && education == null
-            && address == null && employment == null ) {
-            return;
-        }
-
-        if ( user != null ) {
-            personDTO.setId( String.valueOf( user.getId() ) );
-            if ( personDTO.getManagerList() != null ) {
-                List<ManagerDTO> list = managerListToManagerDTOList(
-                    user.getManagerList() );
-                if ( list != null ) {
-                    personDTO.getManagerList().clear();
-                    personDTO.getManagerList().addAll( list );
-                }
-                else {
-                    personDTO.setManagerList( null );
-                }
-            }
-            else {
-                List<ManagerDTO> list = managerListToManagerDTOList(
-                    user.getManagerList() );
-                if ( list != null ) {
-                    personDTO.setManagerList( list );
-                }
-            }
-        }
-        if ( education != null ) {
-            personDTO.setEducationalQualification( education.getDegreeName() );
-        }
-        if ( address != null ) {
-            personDTO.setResidentialCity( address.getCity() );
-            personDTO.setResidentialCountry( address.getCountry() );
-        }
-        if ( employment != null ) {
-            personDTO.setDesignation( employment.getDesignation() );
-            personDTO.setSalary( employment.getSalary() );
-        }
+    if ( education != null ) {
+      personDTO.setEducationalQualification( education.getDegreeName() );
     }
+    if ( address != null ) {
+      personDTO.setResidentialCity( address.getCity() );
+      personDTO.setResidentialCountry( address.getCountry() );
+    }
+    if ( employment != null ) {
+      personDTO.setDesignation( employment.getDesignation() );
+      personDTO.setSalary( employment.getSalary() );
+    }
+  }
     
-    ...
+  ...
 }
 ```
 
@@ -892,11 +655,11 @@ In continuation with the above example, instead of repeating the configurations 
 ```java
 @Mapper
 public interface ManagerMapper {
-    ManagerMapper INSTANCE = Mappers.getMapper(ManagerMapper.class);
-    ManagerDTO convert(Manager manager);
+  ManagerMapper INSTANCE = Mappers.getMapper(ManagerMapper.class);
+  ManagerDTO convert(Manager manager);
 
-    @InheritConfiguration
-    void updateExisting(Manager manager, @MappingTarget ManagerDTO managerDTO);
+  @InheritConfiguration
+  void updateExisting(Manager manager, @MappingTarget ManagerDTO managerDTO);
 }
 ```
 
@@ -908,29 +671,29 @@ This will generate an implementation something like below:
 )
 public class ManagerMapperImpl implements ManagerMapper {
 
-    @Override
-    public ManagerDTO convert(Manager manager) {
-        if ( manager == null ) {
-            return null;
-        }
-
-        ManagerDTOBuilder managerDTO = ManagerDTO.builder();
-
-        managerDTO.id( manager.getId() );
-        managerDTO.name( manager.getName() );
-
-        return managerDTO.build();
+  @Override
+  public ManagerDTO convert(Manager manager) {
+    if ( manager == null ) {
+      return null;
     }
 
-    @Override
-    public void updateExisting(Manager manager, ManagerDTO managerDTO) {
-        if ( manager == null ) {
-            return;
-        }
+    ManagerDTOBuilder managerDTO = ManagerDTO.builder();
 
-        managerDTO.setId( manager.getId() );
-        managerDTO.setName( manager.getName() );
+    managerDTO.id( manager.getId() );
+    managerDTO.name( manager.getName() );
+
+    return managerDTO.build();
+  }
+
+  @Override
+  public void updateExisting(Manager manager, ManagerDTO managerDTO) {
+    if ( manager == null ) {
+     return;
     }
+
+    managerDTO.setId( manager.getId() );
+    managerDTO.setName( manager.getName() );
+   }
 }
 ```
 
@@ -941,11 +704,11 @@ If we want to define a bi-directional mapping like Entity to DTO and DTO to Enti
 ```java
 @Mapper
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
-    BasicUserDTO convert(BasicUser user);
+  UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+  BasicUserDTO convert(BasicUser user);
 
-    @InheritInverseConfiguration
-    BasicUser convert(BasicUserDTO userDTO);
+  @InheritInverseConfiguration
+  BasicUser convert(BasicUserDTO userDTO);
 }
 ```
 
@@ -953,31 +716,31 @@ This can be used for straightforward mappings between entity and DTO.
 
 ### Exception Handling during Mapping
 
-Exceptions are unavoidable, hence, MapStruct provides support to handle exceptions by making the life of developers quite easy. Let’s say if we want to validate the id field for any invalid values, then we can define a utility class named as `Validator` :
-
-```java
-public class Validator {
-    public int validateId(int id) throws ValidationException {
-        if(id == -1){
-            throw new ValidationException("Invalid ID value");
-        }
-        return id;
-    }
-}
-```
-
-Next, we can define an exception class, `ValidationException` which we will use in our mapper:
+Exceptions are unavoidable, hence, MapStruct provides support to handle exceptions by making the life of developers quite easy. First,  we will define an exception class, `ValidationException` which we will use in our mapper:
 
 ```java
 public class ValidationException extends RuntimeException {
 
-    public ValidationException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public ValidationException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public ValidationException(String message) {
-        super(message);
+  public ValidationException(String message) {
+    super(message);
+  }
+}
+```
+
+Now, let’s say if we want to validate the id field for any invalid values, then we can define a utility class named as `Validator` :
+
+```java
+public class Validator {
+  public int validateId(int id) throws ValidationException {
+    if(id < 0){
+      throw new ValidationException("Invalid ID value");
     }
+    return id;
+  }
 }
 ```
 
@@ -986,12 +749,12 @@ Finally, we will update our `UserMapper` by including the `Validator` class and 
 ```java
 @Mapper(uses = {ManagerMapper.class, Validator.class})
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
-    BasicUserDTO convert(BasicUser user) throws ValidationException;
+  UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+  BasicUserDTO convert(BasicUser user) throws ValidationException;
 
-    @InheritInverseConfiguration
-    BasicUser convert(BasicUserDTO userDTO) throws ValidationException;
-    ...
+  @InheritInverseConfiguration
+  BasicUser convert(BasicUserDTO userDTO) throws ValidationException;
+  ...
 }
 ```
 
@@ -1003,125 +766,42 @@ The implementation class after generation would look something like below:
 )
 public class UserMapperImpl implements UserMapper {
 
-    private final ManagerMapper managerMapper = Mappers.getMapper(
+  private final ManagerMapper managerMapper = Mappers.getMapper(
         ManagerMapper.class );
-    private final Validator validator = new Validator();
+  private final Validator validator = new Validator();
 
-    @Override
-    public BasicUserDTO convert(BasicUser user) throws ValidationException {
-        if ( user == null ) {
-            return null;
-        }
-
-        BasicUserDTOBuilder basicUserDTO = BasicUserDTO.builder();
-
-        basicUserDTO.id( validator.validateId( user.getId() ) );
-        basicUserDTO.name( user.getName() );
-
-        return basicUserDTO.build();
+  @Override
+  public BasicUserDTO convert(BasicUser user) throws ValidationException {
+    if ( user == null ) {
+       return null;
     }
 
-    @Override
-    public BasicUser convert(BasicUserDTO userDTO) throws ValidationException {
-        if ( userDTO == null ) {
-            return null;
-        }
+    BasicUserDTOBuilder basicUserDTO = BasicUserDTO.builder();
 
-        BasicUserBuilder basicUser = BasicUser.builder();
+    basicUserDTO.id( validator.validateId( user.getId() ) );
+    basicUserDTO.name( user.getName() );
 
-        basicUser.id( validator.validateId( userDTO.getId() ) );
-        basicUser.name( userDTO.getName() );
+    return basicUserDTO.build();
+  }
 
-        return basicUser.build();
+  @Override
+  public BasicUser convert(BasicUserDTO userDTO) throws ValidationException {
+    if ( userDTO == null ) {
+       return null;
     }
+
+    BasicUserBuilder basicUser = BasicUser.builder();
+    basicUser.id( validator.validateId( userDTO.getId() ) );
+    basicUser.name( userDTO.getName() );
+
+    return basicUser.build();
+  }
     
-    ...
+  ...
 }
 ```
 
-MapStruct has automatically set the id of the mapper objects with the result of the `Validator` instance. It has added a `throws` clause for the method as well.
-
-## Mapper Retrieval Strategies
-
-To execute and call the mapper methods, we need to instantiate the mapper instance or the constructor. MapStruct provides various strategies to instantiate and access the generated mappers. Let’s look into each of them.
-
-### Mappers Factory
-
-If we are not using MapStruct as a Dependency Injection framework, then the mapper instances can be retrieved using the `Mappers` class. We need to invoke the `getMappers()` method from the factory passing the interface type of the mapper:
-
-```java
-UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
-```
-
-This pattern is one of the simplest ways to access the mapper methods. It can be accessed in the following way:
-
-```java
-PersonDTO personDTO = UserMapper.INSTANCE.convert(user,
-                                                  education,
-                                                  address,
-                                                  employment);
-```
-
-One thing to note is that the mappers generated by MapStruct are stateless and thread-safe. Thus it can be safely retrieved from several threads at the same time.
-
-### Dependency Injection
-
-If we want to use MapStruct in a dependency injection framework, then we need to access the mapper objects via dependency injection strategies and not use the `Mappers` class. MapStruct supports the component model for *CDI*(Contexts and Dependency Injection for Java EE) and the *Spring framework*.
-
-Let’s update our `UserMapper` class to work with Spring:
-
-```java
-@Mapper(componentModel = "spring", uses = {ManagerMapper.class, Validator.class})
-public interface UserMapper {
-    
-    ...
-}
-```
-
-Now the generated implementation class would have `@Component` annotation automatically added:
-
-```java
-@Component
-public class UserMapperImpl implements UserMapper {
-	...
-}
-```
-
-Now when we define our Controller or Service layer, we can `@Autowire` it to access its methods:
-
-```java
-@Controller
-public class UserController() {
-    @Autowired
-    private UserMapper userMapper;
-}
-```
-
-Similarly, if we are not using Spring framework, MapStruct has the support for [CDI](https://docs.oracle.com/javaee/6/tutorial/doc/giwhl.html) as well:
-
-```java
-@Mapper(componentModel = "cdi", uses = {ManagerMapper.class, Validator.class})
-public interface UserMapper {
-    
-    ...
-}
-```
-
-Then the generated mapper implementation will be annotated with `@ApplicationScoped` annotation:
-
-```java
-@ApplicationScoped
-public class UserMapperImpl implements UserMapper {
-	...
-}
-```
-
-Finally, we can obtain the constructor using the `@Inject` annotation:
-
-```java
-@Inject
-private UserMapper userMapper;
-```
+MapStruct has automatically detected and set the `id` field of the mapper objects with the result of the `Validator` instance. It has added a `throws` clause for the method as well.
 
 ## Data Type Conversion
 
@@ -1185,9 +865,9 @@ Let’s say if we want to convert a set of `Long` values to `String`, then we ca
 ```java
 @Mapper
 public interface CollectionMapper {
-    CollectionMapper INSTANCE = Mappers.getMapper(CollectionMapper.class);
+  CollectionMapper INSTANCE = Mappers.getMapper(CollectionMapper.class);
 
-    Set<String> convert(Set<Long> ids);
+  Set<String> convert(Set<Long> ids);
 }
 ```
 
@@ -1199,21 +879,21 @@ The generated implementation method would first initiate an instance of `HashSet
 )
 public class CollectionMapperImpl implements CollectionMapper {
 
-    @Override
-    public Set<String> convert(Set<Long> ids) {
-        if ( ids == null ) {
-            return null;
-        }
-
-        Set<String> set = new HashSet<String>( Math.max( (int) ( ids.size() / .75f ) + 1, 16 ) );
-        for ( Long long1 : ids ) {
-            set.add( String.valueOf( long1 ) );
-        }
-
-        return set;
+  @Override
+  public Set<String> convert(Set<Long> ids) {
+    if ( ids == null ) {
+       return null;
     }
+
+    Set<String> set = new HashSet<String>( Math.max( (int) ( ids.size() / .75f ) + 1, 16 ) );
+    for ( Long long1 : ids ) {
+       set.add( String.valueOf( long1 ) );
+    }
+
+    return set;
+  }
     
-    ...
+  ...
 }    
 ```
 
@@ -1222,9 +902,9 @@ Now if we try to convert a set of one entity type to another then we can simply 
 ```java
 @Mapper
 public interface CollectionMapper {
-    CollectionMapper INSTANCE = Mappers.getMapper(CollectionMapper.class);
+  CollectionMapper INSTANCE = Mappers.getMapper(CollectionMapper.class);
 
-    Set<EmploymentDTO> convertEmployment(Set<Employment> employmentSet);
+  Set<EmploymentDTO> convertEmployment(Set<Employment> employmentSet);
 }
 ```
 
@@ -1236,37 +916,37 @@ We will notice in the generated implementation that MapStruct has automatically 
 )
 public class CollectionMapperImpl implements CollectionMapper {
 
-   	...
+  ...
         
-    @Override
-    public Set<EmploymentDTO> convertEmployment(Set<Employment> employmentSet) {
-        if ( employmentSet == null ) {
-            return null;
-        }
-
-        Set<EmploymentDTO> set = new HashSet<EmploymentDTO>(
-            Math.max( (int) ( employmentSet.size() / .75f ) + 1, 16 ) );
-        for ( Employment employment : employmentSet ) {
-            set.add( employmentToEmploymentDTO( employment ) );
-        }
-
-        return set;
+  @Override
+  public Set<EmploymentDTO> convertEmployment(Set<Employment> employmentSet) {
+    if ( employmentSet == null ) {
+      return null;
     }
-    
-    protected EmploymentDTO employmentToEmploymentDTO(Employment employment) {
-        if ( employment == null ) {
-            return null;
-        }
 
-        EmploymentDTOBuilder employmentDTO = EmploymentDTO.builder();
-
-        employmentDTO.designation( employment.getDesignation() );
-        employmentDTO.salary( employment.getSalary() );
-
-        return employmentDTO.build();
+    Set<EmploymentDTO> set = new HashSet<EmploymentDTO>(
+           Math.max( (int) ( employmentSet.size() / .75f ) + 1, 16 ) );
+    for ( Employment employment : employmentSet ) {
+        set.add( employmentToEmploymentDTO( employment ) );
     }
+
+     return set;
+  }
     
-    ...
+  protected EmploymentDTO employmentToEmploymentDTO(Employment employment) {
+    if ( employment == null ) {
+      return null;
+    }
+
+    EmploymentDTOBuilder employmentDTO = EmploymentDTO.builder();
+
+    employmentDTO.designation( employment.getDesignation() );
+    employmentDTO.salary( employment.getSalary() );
+
+    return employmentDTO.build();
+  }
+    
+  ...
 }
 
 ```
@@ -1278,13 +958,13 @@ public class CollectionMapperImpl implements CollectionMapper {
 ```java
 @Mapper
 public interface CollectionMapper {
-    CollectionMapper INSTANCE = Mappers.getMapper(CollectionMapper.class);
+  CollectionMapper INSTANCE = Mappers.getMapper(CollectionMapper.class);
 
-    @Mapping(source = "degreeName", target = "degree")
-    @Mapping(source = "institute", target = "college")
-    @Mapping(source = "yearOfPassing", target = "passingYear")
-    EducationDTO convert(Education education);
-    List<EducationDTO> convert(List<Education> educationList);
+  @Mapping(source = "degreeName", target = "degree")
+  @Mapping(source = "institute", target = "college")
+  @Mapping(source = "yearOfPassing", target = "passingYear")
+  EducationDTO convert(Education education);
+  List<EducationDTO> convert(List<Education> educationList);
 }
 ```
 
@@ -1295,38 +975,37 @@ Now the generated implementation method would look something like below:
     value = "org.mapstruct.ap.MappingProcessor"
 )
 public class CollectionMapperImpl implements CollectionMapper {
-
-	...
-    @Override
-    public EducationDTO convert(Education education) {
-        if ( education == null ) {
-            return null;
-        }
-
-        EducationDTOBuilder educationDTO = EducationDTO.builder();
-
-        educationDTO.degree( education.getDegreeName() );
-        educationDTO.college( education.getInstitute() );
-        educationDTO.passingYear( education.getYearOfPassing() );
-
-        return educationDTO.build();
+  ...
+  @Override
+  public EducationDTO convert(Education education) {
+    if ( education == null ) {
+       return null;
     }
 
-    @Override
-    public List<EducationDTO> convert(List<Education> educationList) {
-        if ( educationList == null ) {
-            return null;
-        }
+    EducationDTOBuilder educationDTO = EducationDTO.builder();
 
-        List<EducationDTO> list = new ArrayList<EducationDTO>( educationList.size() );
-        for ( Education education : educationList ) {
-            list.add( convert( education ) );
-        }
+    educationDTO.degree( education.getDegreeName() );
+    educationDTO.college( education.getInstitute() );
+    educationDTO.passingYear( education.getYearOfPassing() );
 
-        return list;
+    return educationDTO.build();
+  }
+
+  @Override
+  public List<EducationDTO> convert(List<Education> educationList) {
+    if ( educationList == null ) {
+      return null;
     }
+
+    List<EducationDTO> list = new ArrayList<EducationDTO>( educationList.size() );
+    for ( Education education : educationList ) {
+      list.add( convert( education ) );
+    }
+
+    return list;
+  }
     
-    ...
+  ...
 }
 ```
 
@@ -1337,10 +1016,10 @@ MapStruct provides additional annotation for mapping Maps. It is annotated as `M
 ```java
 @Mapper
 public interface CollectionMapper {
-    CollectionMapper INSTANCE = Mappers.getMapper(CollectionMapper.class);
+  CollectionMapper INSTANCE = Mappers.getMapper(CollectionMapper.class);
 
-    @MapMapping(keyNumberFormat = "#L", valueDateFormat = "dd.MM.yyyy")
-    Map<String, String> map(Map<Long, Date> dateMap);
+  @MapMapping(keyNumberFormat = "#L", valueDateFormat = "dd.MM.yyyy")
+  Map<String, String> map(Map<Long, Date> dateMap);
 }
 ```
 
@@ -1352,27 +1031,27 @@ This would generate an automated implementation method something like below:
 )
 public class CollectionMapperImpl implements CollectionMapper {
     
-    ...
-    @Override
-    public Map<String, String> map(Map<Long, Date> dateMap) {
-        if ( dateMap == null ) {
-            return null;
-        }
-
-        Map<String, String> map = new HashMap<String, String>(
-            Math.max( (int) ( dateMap.size() / .75f ) + 1, 16 ) );
-
-        for ( java.util.Map.Entry<Long, Date> entry : dateMap.entrySet() ) {
-            String key = new DecimalFormat( "#L" ).format( entry.getKey() );
-            String value = new SimpleDateFormat( "dd.MM.yyyy" )
-                .format( entry.getValue() );
-            map.put( key, value );
-        }
-
-        return map;
+  ...
+  @Override
+  public Map<String, String> map(Map<Long, Date> dateMap) {
+    if ( dateMap == null ) {
+        return null;
     }
+
+    Map<String, String> map = new HashMap<String, String>(
+    Math.max( (int) ( dateMap.size() / .75f ) + 1, 16 ) );
+
+    for ( java.util.Map.Entry<Long, Date> entry : dateMap.entrySet() ) {
+       String key = new DecimalFormat( "#L" ).format( entry.getKey() );
+       String value = new SimpleDateFormat( "dd.MM.yyyy" )
+              .format( entry.getValue() );
+       map.put( key, value );
+    }
+
+    return map;
+  }
     
-    ...
+  ...
 }
 
 ```
@@ -1390,24 +1069,24 @@ The default value is `ACCESSOR_ONLY`, which means that only accessors can be use
 
 ```java
 public class PersonDTO {
-    ...
-    private List<ManagerDTO> managerList;
+  ...
+  private List<ManagerDTO> managerList;
     
-    public List<ManagerDTO> getManagerList() {
-        return managers;
+  public List<ManagerDTO> getManagerList() {
+    return managers;
+  }
+
+  public void setManagerList(List<ManagerDTO> managers) {
+    this.managers = managers;
+  }
+
+  public void addManagerList(ManagerDTO managerDTO) {
+    if (managers == null) {
+       managers = new ArrayList<>();
     }
 
-    public void setManagerList(List<ManagerDTO> managers) {
-        this.managers = managers;
-    }
-
-    public void addManagerList(ManagerDTO managerDTO) {
-        if (managers == null) {
-            managers = new ArrayList<>();
-        }
-
-        managers.add(managerDTO);
-    }
+    managers.add(managerDTO);
+  }
     
     // other getters and setters
 }
@@ -1421,18 +1100,17 @@ Note that we have both the setter method, `setManagers`, and the adder method, `
 )
 public class UserMapperImpl implements UserMapper {
 
-    @Override
-    public PersonDTO map(Person person) {
-        if (person == null) {
-            return null;
-        }
-
-        PersonDTO personDTO = new PersonDTO();
-
-        personDTO.setManagerList(personMapper.map(person.getManagerList()));
-
-        return personDTO;
+  @Override
+  public PersonDTO map(Person person) {
+    if (person == null) {
+       return null;
     }
+
+    PersonDTO personDTO = new PersonDTO();
+
+    personDTO.setManagerList(personMapper.map(person.getManagerList()));
+     return personDTO;
+  }
 }
 ```
 
@@ -1442,7 +1120,7 @@ As we can see, MapStruct uses setter method to set the `PersonDTO` instance. Sin
 @Mapper(collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
        uses = ManagerMapper.class)
 public interface PersonMapperAdderPreferred {
-    PersonDTO map(Person person);
+  PersonDTO map(Person person);
 }
 ```
 
@@ -1451,24 +1129,24 @@ The generated implementation method would look something like the below:
 ```java
 public class PersonMapperAdderPreferredImpl implements PersonMapperAdderPreferred {
 
-    private final ManagerMapper managerMapper = Mappers.getMapper( ManagerMapper.class );
+  private final ManagerMapper managerMapper = Mappers.getMapper( ManagerMapper.class );
     
-    @Override
-    public PersonDTO map(Person person) {
-        if ( person == null ) {
-            return null;
-        }
-
-        PersonDTO personDTO = new PersonDTO();
-
-        if ( person.getManagerList() != null ) {
-            for ( Manager manager : person.getManagerList() ) {
-                personDTO.addManagerList( managerMapper.convert( manager ) );
-            }
-        }
-
-        return personDTO;
+  @Override
+  public PersonDTO map(Person person) {
+    if ( person == null ) {
+      return null;
     }
+
+    PersonDTO personDTO = new PersonDTO();
+
+    if ( person.getManagerList() != null ) {
+      for ( Manager manager : person.getManagerList() ) {
+          personDTO.addManagerList( managerMapper.convert( manager ) );
+      }
+    }
+
+    return personDTO;
+  }
 }
 ```
 
@@ -1481,15 +1159,15 @@ Mapping Streams are similar to mapping collections. The only difference is that 
 ```java
 @Mapper
 public interface CollectionMapper {
-    CollectionMapper INSTANCE = Mappers.getMapper(CollectionMapper.class);
+  CollectionMapper INSTANCE = Mappers.getMapper(CollectionMapper.class);
 
-    Set<String> convertStream(Stream<Long> ids);
+  Set<String> convertStream(Stream<Long> ids);
 
-    @Mapping(source = "degreeName", target = "degree")
-    @Mapping(source = "institute", target = "college")
-    @Mapping(source = "yearOfPassing", target = "passingYear")
-    EducationDTO convert(Education education);
-    List<EducationDTO> convert(Stream<Education> educationStream);
+  @Mapping(source = "degreeName", target = "degree")
+  @Mapping(source = "institute", target = "college")
+  @Mapping(source = "yearOfPassing", target = "passingYear")
+  EducationDTO convert(Education education);
+  List<EducationDTO> convert(Stream<Education> educationStream);
 }
 ```
 
@@ -1501,41 +1179,41 @@ The implementation methods would look something like below:
 )
 public class CollectionMapperImpl implements CollectionMapper {
 
-    ...
+  ...
 
-    @Override
-    public Set<String> convertStream(Stream<Long> ids) {
-        if ( ids == null ) {
-            return null;
-        }
-
-        return ids.map( long1 -> String.valueOf( long1 ) )
-        .collect( Collectors.toCollection( HashSet<String>::new ) );
+  @Override
+  public Set<String> convertStream(Stream<Long> ids) {
+    if ( ids == null ) {
+      return null;
     }
 
+    return ids.map( long1 -> String.valueOf( long1 ) )
+      .collect( Collectors.toCollection( HashSet<String>::new ) );
+  }
 
-    @Override
-    public List<EducationDTO> convert(Stream<Education> educationStream) {
-        if ( educationStream == null ) {
-            return null;
-        }
 
-        return educationStream.map( education -> convert( education ) )
-        .collect( Collectors.toCollection( ArrayList<EducationDTO>::new ) );
+  @Override
+  public List<EducationDTO> convert(Stream<Education> educationStream) {
+    if ( educationStream == null ) {
+       return null;
     }
 
-    protected EmploymentDTO employmentToEmploymentDTO(Employment employment) {
-        if ( employment == null ) {
-            return null;
-        }
+     return educationStream.map( education -> convert( education ) )
+      .collect( Collectors.toCollection( ArrayList<EducationDTO>::new ) );
+  }
 
-        EmploymentDTOBuilder employmentDTO = EmploymentDTO.builder();
-
-        employmentDTO.designation( employment.getDesignation() );
-        employmentDTO.salary( employment.getSalary() );
-
-        return employmentDTO.build();
+  protected EmploymentDTO employmentToEmploymentDTO(Employment employment) {
+    if ( employment == null ) {
+       return null;
     }
+
+    EmploymentDTOBuilder employmentDTO = EmploymentDTO.builder();
+
+    employmentDTO.designation( employment.getDesignation() );
+    employmentDTO.salary( employment.getSalary() );
+
+    return employmentDTO.build();
+  }
 }
 ```
 
@@ -1547,15 +1225,15 @@ For example, we will define an enum named `DesignationCode`:
 
 ```java
 public enum DesignationCode {
-    CEO,
-    CTO,
-    VP,
-    SM,
-    M,
-    ARCH,
-    SSE,
-    SE,
-    INT
+  CEO,
+  CTO,
+  VP,
+  SM,
+  M,
+  ARCH,
+  SSE,
+  SE,
+  INT
 }
 ```
 
@@ -1563,16 +1241,16 @@ This will be mapped to `DesignationConstant` enum:
 
 ```java
 public enum DesignationConstant {
-    CHIEF_EXECUTIVE_OFFICER,
-    CHIEF_TECHNICAL_OFFICER,
-    VICE_PRESIDENT,
-    SENIOR_MANAGER,
-    MANAGER,
-    ARCHITECT,
-    SENIOR_SOFTWARE_ENGINEER,
-    SOFTWARE_ENGINEER,
-    INTERN,
-    OTHERS
+  CHIEF_EXECUTIVE_OFFICER,
+  CHIEF_TECHNICAL_OFFICER,
+  VICE_PRESIDENT,
+  SENIOR_MANAGER,
+  MANAGER,
+  ARCHITECT,
+  SENIOR_SOFTWARE_ENGINEER,
+  SOFTWARE_ENGINEER,
+  INTERN,
+  OTHERS
 }
 ```
 
@@ -1581,22 +1259,22 @@ Now we can define an Enum mapping in the following way:
 ```java
 @Mapper
 public interface UserMapper {    
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+  UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
     
-	@ValueMappings({
-            @ValueMapping(source = "CEO", target = "CHIEF_EXECUTIVE_OFFICER"),
-            @ValueMapping(source = "CTO", target = "CHIEF_TECHNICAL_OFFICER"),
-            @ValueMapping(source = "VP", target = "VICE_PRESIDENT"),
-            @ValueMapping(source = "SM", target = "SENIOR_MANAGER"),
-            @ValueMapping(source = "M", target = "MANAGER"),
-            @ValueMapping(source = "ARCH", target = "ARCHITECT"),
-            @ValueMapping(source = "SSE", target = "SENIOR_SOFTWARE_ENGINEER"),
-            @ValueMapping(source = "SE", target = "SOFTWARE_ENGINEER"),
-            @ValueMapping(source = "INT", target = "INTERN"),
-            @ValueMapping(source = MappingConstants.ANY_REMAINING, target = "OTHERS"),
-            @ValueMapping(source = MappingConstants.NULL, target = "OTHERS")
-    })
-    DesignationConstant convertDesignation(DesignationCode code);
+  @ValueMappings({
+          @ValueMapping(source = "CEO", target = "CHIEF_EXECUTIVE_OFFICER"),
+          @ValueMapping(source = "CTO", target = "CHIEF_TECHNICAL_OFFICER"),
+          @ValueMapping(source = "VP", target = "VICE_PRESIDENT"),
+          @ValueMapping(source = "SM", target = "SENIOR_MANAGER"),
+          @ValueMapping(source = "M", target = "MANAGER"),
+          @ValueMapping(source = "ARCH", target = "ARCHITECT"),
+          @ValueMapping(source = "SSE", target = "SENIOR_SOFTWARE_ENGINEER"),
+          @ValueMapping(source = "SE", target = "SOFTWARE_ENGINEER"),
+          @ValueMapping(source = "INT", target = "INTERN"),
+          @ValueMapping(source = MappingConstants.ANY_REMAINING, target = "OTHERS"),
+          @ValueMapping(source = MappingConstants.NULL, target = "OTHERS")
+  })
+  DesignationConstant convertDesignation(DesignationCode code);
 }    
 ```
 
@@ -1610,40 +1288,40 @@ MapStruct too has a mechanism to map any unspecified mappings to a default. This
 )
 public class UserMapperImpl implements UserMapper {
 
-    private final ManagerMapper managerMapper = Mappers.getMapper( ManagerMapper.class );
+  private final ManagerMapper managerMapper = Mappers.getMapper( ManagerMapper.class );
         
-    @Override
-    public DesignationConstant convertDesignation(DesignationCode code) {
-        if ( code == null ) {
-            return DesignationConstant.OTHERS;
-        }
-
-        DesignationConstant designationConstant;
-
-        switch ( code ) {
-            case CEO: designationConstant = DesignationConstant.CHIEF_EXECUTIVE_OFFICER;
-            break;
-            case CTO: designationConstant = DesignationConstant.CHIEF_TECHNICAL_OFFICER;
-            break;
-            case VP: designationConstant = DesignationConstant.VICE_PRESIDENT;
-            break;
-            case SM: designationConstant = DesignationConstant.SENIOR_MANAGER;
-            break;
-            case M: designationConstant = DesignationConstant.MANAGER;
-            break;
-            case ARCH: designationConstant = DesignationConstant.ARCHITECT;
-            break;
-            case SSE: designationConstant = DesignationConstant.SENIOR_SOFTWARE_ENGINEER;
-            break;
-            case SE: designationConstant = DesignationConstant.SOFTWARE_ENGINEER;
-            break;
-            case INT: designationConstant = DesignationConstant.INTERN;
-            break;
-            default: designationConstant = DesignationConstant.OTHERS;
-        }
-
-        return designationConstant;
+  @Override
+  public DesignationConstant convertDesignation(DesignationCode code) {
+    if ( code == null ) {
+      return DesignationConstant.OTHERS;
     }
+
+    DesignationConstant designationConstant;
+
+    switch ( code ) {
+      case CEO: designationConstant = DesignationConstant.CHIEF_EXECUTIVE_OFFICER;
+      break;
+      case CTO: designationConstant = DesignationConstant.CHIEF_TECHNICAL_OFFICER;
+      break;
+      case VP: designationConstant = DesignationConstant.VICE_PRESIDENT;
+      break;
+      case SM: designationConstant = DesignationConstant.SENIOR_MANAGER;
+      break;
+      case M: designationConstant = DesignationConstant.MANAGER;
+      break;
+      case ARCH: designationConstant = DesignationConstant.ARCHITECT;
+      break;
+      case SSE: designationConstant = DesignationConstant.SENIOR_SOFTWARE_ENGINEER;
+      break;
+      case SE: designationConstant = DesignationConstant.SOFTWARE_ENGINEER;
+      break;
+      case INT: designationConstant = DesignationConstant.INTERN;
+      break;
+      default: designationConstant = DesignationConstant.OTHERS;
+     }
+
+    return designationConstant;
+  }
 
 }    
 ```
@@ -1659,13 +1337,13 @@ For example, let’s say we want to add a prefix to a stream of degree objects n
 
 ```java
 public enum DegreeStream {
-    MATHS,
-    PHYSICS,
-    CHEMISTRY,
-    BOTANY,
-    ZOOLOGY,
-    STATISTICS,
-    EDUCATION
+  MATHS,
+  PHYSICS,
+  CHEMISTRY,
+  BOTANY,
+  ZOOLOGY,
+  STATISTICS,
+  EDUCATION
 }
 ```
 
@@ -1673,13 +1351,13 @@ with `DegreeStreamPrefix`:
 
 ```java
 public enum DegreeStreamPrefix {
-    MSC_MATHS,
-    MSC_PHYSICS,
-    MSC_CHEMISTRY,
-    MSC_BOTANY,
-    MSC_ZOOLOGY,
-    MSC_STATISTICS,
-    MSC_EDUCATION
+  MSC_MATHS,
+  MSC_PHYSICS,
+  MSC_CHEMISTRY,
+  MSC_BOTANY,
+  MSC_ZOOLOGY,
+  MSC_STATISTICS,
+  MSC_EDUCATION
 }
 ```
 
@@ -1688,88 +1366,17 @@ Then we can define an enum mapping in the following way:
 ```java
 @Mapper
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+  UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
         
-    @EnumMapping(nameTransformationStrategy = "prefix", configuration = "MSC_")
-    DegreeStreamPrefix convert(DegreeStream degreeStream);
+  @EnumMapping(nameTransformationStrategy = "prefix", configuration = "MSC_")
+  DegreeStreamPrefix convert(DegreeStream degreeStream);
 
-    @EnumMapping(nameTransformationStrategy = "stripPrefix", configuration = "MSC_")
-    DegreeStream convert(DegreeStreamPrefix degreeStreamPrefix);
+  @EnumMapping(nameTransformationStrategy = "stripPrefix", configuration = "MSC_")
+  DegreeStream convert(DegreeStreamPrefix degreeStreamPrefix);
 }
 ```
 
-It generates an implementation as follows:
-
-```java
-@Generated(
-    value = "org.mapstruct.ap.MappingProcessor"
-)
-public class UserMapperImpl implements UserMapper {
-
-    private final ManagerMapper managerMapper = Mappers.getMapper( ManagerMapper.class );
-    
-    @Override
-    public DegreeStreamPrefix convert(DegreeStream degreeStream) {
-        if ( degreeStream == null ) {
-            return null;
-        }
-
-        DegreeStreamPrefix degreeStreamPrefix;
-
-        switch ( degreeStream ) {
-            case MATHS: degreeStreamPrefix = DegreeStreamPrefix.MSC_MATHS;
-            break;
-            case PHYSICS: degreeStreamPrefix = DegreeStreamPrefix.MSC_PHYSICS;
-            break;
-            case CHEMISTRY: degreeStreamPrefix = DegreeStreamPrefix.MSC_CHEMISTRY;
-            break;
-            case BOTANY: degreeStreamPrefix = DegreeStreamPrefix.MSC_BOTANY;
-            break;
-            case ZOOLOGY: degreeStreamPrefix = DegreeStreamPrefix.MSC_ZOOLOGY;
-            break;
-            case STATISTICS: degreeStreamPrefix = DegreeStreamPrefix.MSC_STATISTICS;
-            break;
-            case EDUCATION: degreeStreamPrefix = DegreeStreamPrefix.MSC_EDUCATION;
-            break;
-            default: throw new IllegalArgumentException(
-                "Unexpected enum constant: " + degreeStream );
-        }
-
-        return degreeStreamPrefix;
-    }
-
-    @Override
-    public DegreeStream convert(DegreeStreamPrefix degreeStreamPrefix) {
-        if ( degreeStreamPrefix == null ) {
-            return null;
-        }
-
-        DegreeStream degreeStream;
-
-        switch ( degreeStreamPrefix ) {
-            case MSC_MATHS: degreeStream = DegreeStream.MATHS;
-            break;
-            case MSC_PHYSICS: degreeStream = DegreeStream.PHYSICS;
-            break;
-            case MSC_CHEMISTRY: degreeStream = DegreeStream.CHEMISTRY;
-            break;
-            case MSC_BOTANY: degreeStream = DegreeStream.BOTANY;
-            break;
-            case MSC_ZOOLOGY: degreeStream = DegreeStream.ZOOLOGY;
-            break;
-            case MSC_STATISTICS: degreeStream = DegreeStream.STATISTICS;
-            break;
-            case MSC_EDUCATION: degreeStream = DegreeStream.EDUCATION;
-            break;
-            default: throw new IllegalArgumentException(
-                "Unexpected enum constant: " + degreeStreamPrefix );
-        }
-
-        return degreeStream;
-    }
-
-}
-```
+It generates an implementation same as above.
 
 ### Defining Default Values or Constants
 
@@ -1780,28 +1387,28 @@ Default values can be specified in MapStruct to set a predefined value to a targ
         uses = {CollectionMapper.class, ManagerMapper.class, Validator.class},
         imports = UUID.class )
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+  UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(source = "user.name", target = "firstName")
-    @Mapping(source = "education.degreeName", target = "education.degree")
-    @Mapping(source = "education.institute", target = "education.college")
-    @Mapping(source = "education.yearOfPassing", target = "education.passingYear",
-             defaultValue = "2001")
-    @Mapping(source = "employment", target = ".")
-    PersonDTO convert(BasicUser user,
+  @Mapping(source = "user.name", target = "firstName")
+  @Mapping(source = "education.degreeName", target = "education.degree")
+  @Mapping(source = "education.institute", target = "education.college")
+  @Mapping(source = "education.yearOfPassing", target = "education.passingYear",
+           defaultValue = "2001")
+  @Mapping(source = "employment", target = ".")
+  PersonDTO convert(BasicUser user,
+                    Education education,
+                    Address address,
+                    Employment employment);
+
+  @Mapping(source = "education.degreeName", target = "educationalQualification")
+  @Mapping(source = "address.city", target = "residentialCity")
+  @Mapping(target = "residentialCountry", constant = "US")
+  @Mapping(source = "employment.salary", target = "salary", numberFormat = "$#.00")
+  void updateExisting(BasicUser user,
                       Education education,
                       Address address,
-                      Employment employment);
-
-    @Mapping(source = "education.degreeName", target = "educationalQualification")
-    @Mapping(source = "address.city", target = "residentialCity")
-    @Mapping(target = "residentialCountry", constant = "US")
-    @Mapping(source = "employment.salary", target = "salary", numberFormat = "$#.00")
-    void updateExisting(BasicUser user,
-                        Education education,
-                        Address address,
-                        Employment employment,
-                        @MappingTarget PersonDTO personDTO);
+                      Employment employment,
+                      @MappingTarget PersonDTO personDTO);
 }    
 ```
 
@@ -1813,81 +1420,81 @@ This generates an implementation which looks like below:
 )
 public class UserMapperImpl implements UserMapper {
 
-    private final ManagerMapper managerMapper = Mappers.getMapper( ManagerMapper.class );
+  private final ManagerMapper managerMapper = Mappers.getMapper( ManagerMapper.class );
 
-    @Override
-    public PersonDTO convert(BasicUser user,
+  @Override
+  public PersonDTO convert(BasicUser user,
+                           Education education,
+                           Address address,
+                           Employment employment) {
+    if ( user == null && education == null
+         && address == null && employment == null ) {
+         return null;
+     }
+
+      PersonDTOBuilder personDTO = PersonDTO.builder();
+
+       if ( user != null ) {
+          personDTO.id( String.valueOf( user.getId() ) );
+          personDTO.firstName( user.getName() );
+          personDTO.managerList( managerListToManagerDTOList( user.getManagerList() ) );
+       }
+       if ( education != null ) {
+          personDTO.education( educationToEducationDTO( education ) );
+       }
+       if ( employment != null ) {
+          personDTO.designation( convertDesignation( employment.getDesignation() ) );
+          personDTO.salary( String.valueOf( employment.getSalary() ) );
+       }
+
+       return personDTO.build();
+  }
+
+  @Override
+  public void updateExisting(BasicUser user,
                              Education education,
                              Address address,
-                             Employment employment) {
-        if ( user == null && education == null
-            && address == null && employment == null ) {
-            return null;
-        }
+                             Employment employment,
+                             PersonDTO personDTO) {
+      if ( user == null && education == null
+          && address == null && employment == null ) {
+         return;
+      }
 
-        PersonDTOBuilder personDTO = PersonDTO.builder();
-
-        if ( user != null ) {
-            personDTO.id( String.valueOf( user.getId() ) );
-            personDTO.firstName( user.getName() );
-            personDTO.managerList( managerListToManagerDTOList( user.getManagerList() ) );
-        }
-        if ( education != null ) {
-            personDTO.education( educationToEducationDTO( education ) );
-        }
-        if ( employment != null ) {
-            personDTO.designation( convertDesignation( employment.getDesignation() ) );
-            personDTO.salary( String.valueOf( employment.getSalary() ) );
-        }
-
-        return personDTO.build();
-    }
-
-    @Override
-    public void updateExisting(BasicUser user,
-                               Education education,
-                               Address address,
-                               Employment employment,
-                               PersonDTO personDTO) {
-        if ( user == null && education == null
-            && address == null && employment == null ) {
-            return;
-        }
-
-        if ( user != null ) {
-            personDTO.setId( String.valueOf( user.getId() ) );
-            if ( personDTO.getManagerList() != null ) {
-                List<ManagerDTO> list = managerListToManagerDTOList( user.getManagerList() );
-                if ( list != null ) {
-                    personDTO.getManagerList().clear();
-                    personDTO.getManagerList().addAll( list );
-                }
-                else {
-                    personDTO.setManagerList( null );
-                }
-            }
-            else {
-                List<ManagerDTO> list = managerListToManagerDTOList(
-                    user.getManagerList() );
-                if ( list != null ) {
-                    personDTO.setManagerList( list );
-                }
-            }
-        }
-        if ( education != null ) {
-            personDTO.setEducationalQualification( education.getDegreeName() );
-        }
-        if ( address != null ) {
-            personDTO.setResidentialCity( address.getCity() );
-        }
-        if ( employment != null ) {
-            personDTO.setSalary( new DecimalFormat( "$#.00" )
-                                .format( employment.getSalary() ) );
-            personDTO.setDesignation( convertDesignation(
-                employment.getDesignation() ) );
-        }
-        personDTO.setResidentialCountry( "US" );
-    }
+      if ( user != null ) {
+          personDTO.setId( String.valueOf( user.getId() ) );
+          if ( personDTO.getManagerList() != null ) {
+              List<ManagerDTO> list = managerListToManagerDTOList( user.getManagerList() );
+              if ( list != null ) {
+                  personDTO.getManagerList().clear();
+                  personDTO.getManagerList().addAll( list );
+              }
+              else {
+                  personDTO.setManagerList( null );
+              }
+          }
+          else {
+              List<ManagerDTO> list = managerListToManagerDTOList(
+                  user.getManagerList() );
+              if ( list != null ) {
+                  personDTO.setManagerList( list );
+              }
+          }
+      }
+      if ( education != null ) {
+          personDTO.setEducationalQualification( education.getDegreeName() );
+      }
+      if ( address != null ) {
+          personDTO.setResidentialCity( address.getCity() );
+      }
+      if ( employment != null ) {
+          personDTO.setSalary( new DecimalFormat( "$#.00" )
+                             .format( employment.getSalary() ) );
+          personDTO.setDesignation( convertDesignation(
+              employment.getDesignation() ) );
+      }
+      personDTO.setResidentialCountry( "US" );
+  }
 }
 ```
 
@@ -1898,15 +1505,97 @@ MapStruct supports default expressions which is a combination of default values 
 ```java
 @Mapper( imports = UUID.class )
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+  UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(source = "user.id", target = "id",
-             defaultExpression = "java( UUID.randomUUID().toString() )")
-    PersonDTO convert(BasicUser user,
-                      Education education,
-                      Address address,
-                      Employment employment);
+  @Mapping(source = "user.id", target = "id",
+           defaultExpression = "java( UUID.randomUUID().toString() )")
+  PersonDTO convert(BasicUser user,
+                    Education education,
+                    Address address,
+                    Employment employment);
 }
+```
+
+## Mapper Retrieval Strategies
+
+To execute and call the mapper methods, we need to instantiate the mapper instance or the constructor. MapStruct provides various strategies to instantiate and access the generated mappers. Let’s look into each of them.
+
+### Mappers Factory
+
+If we are not using MapStruct as a Dependency Injection framework, then the mapper instances can be retrieved using the `Mappers` class. We need to invoke the `getMappers()` method from the factory passing the interface type of the mapper:
+
+```java
+UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+```
+
+This pattern is one of the simplest ways to access the mapper methods. It can be accessed in the following way:
+
+```java
+PersonDTO personDTO = UserMapper.INSTANCE.convert(user,
+                                                  education,
+                                                  address,
+                                                  employment);
+```
+
+One thing to note is that the mappers generated by MapStruct are stateless and thread-safe. Thus it can be safely retrieved from several threads at the same time.
+
+### Dependency Injection
+
+If we want to use MapStruct in a dependency injection framework, then we need to access the mapper objects via dependency injection strategies and not use the `Mappers` class. MapStruct supports the component model for *CDI*(Contexts and Dependency Injection for Java EE) and the *Spring framework*.
+
+Let’s update our `UserMapper` class to work with Spring:
+
+```java
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+    
+    ...
+}
+```
+
+Now the generated implementation class would have `@Component` annotation automatically added:
+
+```java
+@Component
+public class UserMapperImpl implements UserMapper {
+	...
+}
+```
+
+Now when we define our Controller or Service layer, we can `@Autowire` it to access its methods:
+
+```java
+@Controller
+public class UserController() {
+  @Autowired
+  private UserMapper userMapper;
+}
+```
+
+Similarly, if we are not using Spring framework, MapStruct has the support for [CDI](https://docs.oracle.com/javaee/6/tutorial/doc/giwhl.html) as well:
+
+```java
+@Mapper(componentModel = "cdi")
+public interface UserMapper {
+    
+  ...
+}
+```
+
+Then the generated mapper implementation will be annotated with `@ApplicationScoped` annotation:
+
+```java
+@ApplicationScoped
+public class UserMapperImpl implements UserMapper {
+  ...
+}
+```
+
+Finally, we can obtain the constructor using the `@Inject` annotation:
+
+```java
+@Inject
+private UserMapper userMapper;
 ```
 
 ## Mapping Customization
@@ -1925,24 +1614,27 @@ For example, let’s say we want to divide the `name` in the `User` class to `fi
 ```java
 public abstract class UserMapperDecorator implements UserMapper {
 
-    private final UserMapper delegate;
+  private final UserMapper delegate;
 
-    protected UserMapperDecorator (UserMapper delegate) {
-        this.delegate = delegate;
-    }
+  protected UserMapperDecorator (UserMapper delegate) {
+      this.delegate = delegate;
+  }
 
-    @Override
-    public PersonDTO convert(BasicUser user, Education education, Address address, Employment employment) {
-        PersonDTO dto = delegate.convert(user, education, address, employment);
-        if (user.getName().split("\\w+").length > 1) {
-            dto.setFirstName(user.getName().substring(0, user.getName().lastIndexOf(' ')));
-            dto.setLastName(user.getName().substring(user.getName().lastIndexOf(" ") + 1));
-        }
-        else {
-            dto.setFirstName(user.getName());
-        }
-        return dto;
-    }
+  @Override
+  public PersonDTO convert(BasicUser user,
+                           Education education,
+                           Address address,
+                           Employment employment) {
+    PersonDTO dto = delegate.convert(user, education, address, employment);
+    if (user.getName().split("\\w+").length > 1) {
+       dto.setFirstName(user.getName().substring(0, user.getName().lastIndexOf(' ')));
+       dto.setLastName(user.getName().substring(user.getName().lastIndexOf(" ") + 1));
+     }
+     else {
+        dto.setFirstName(user.getName());
+     }
+     return dto;
+  }
 }
 ```
 
@@ -1952,9 +1644,9 @@ We can pass this decorator class as part of the `UserMapper` as follows:
 @Mapper
 @DecoratedWith(UserMapperDecorator.class)
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+  UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
     
-    PersonDTO convert(BasicUser user, Education education, Address address, Employment employment);
+  PersonDTO convert(BasicUser user, Education education, Address address, Employment employment);
 }
 ```
 
@@ -1966,47 +1658,50 @@ Suppose we have a use-case where we would like to execute some logic before or a
 @Mapper
 @DecoratedWith(UserMapperDecorator.class)
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+  UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @BeforeMapping
-    default void validateMangers(BasicUser user, Education education, Address address, Employment employment) {
-        if (Objects.isNull(user.getManagerList())) {
-            user.setManagerList(new ArrayList<>());
-        }
+  @BeforeMapping
+  default void validateMangers(BasicUser user,
+                               Education education,
+                               Address address,
+                               Employment employment) {
+    if (Objects.isNull(user.getManagerList())) {
+       user.setManagerList(new ArrayList<>());
     }
+  }
 
-    @Mapping(source = "user.id", target = "id",
-             defaultExpression = "java( UUID.randomUUID().toString() )")
-    @Mapping(source = "education.degreeName", target = "education.degree")
-    @Mapping(source = "education.institute", target = "education.college")
-    @Mapping(source = "education.yearOfPassing",
-             target = "education.passingYear", defaultValue = "2001")
-    @Mapping(source = "employment", target = ".")
-    PersonDTO convert(BasicUser user,
+  @Mapping(source = "user.id", target = "id",
+           defaultExpression = "java( UUID.randomUUID().toString() )")
+  @Mapping(source = "education.degreeName", target = "education.degree")
+  @Mapping(source = "education.institute", target = "education.college")
+  @Mapping(source = "education.yearOfPassing",
+           target = "education.passingYear", defaultValue = "2001")
+  @Mapping(source = "employment", target = ".")
+  PersonDTO convert(BasicUser user,
+                    Education education,
+                    Address address,
+                    Employment employment);
+
+  @Mapping(source = "education.degreeName", target = "educationalQualification")
+  @Mapping(source = "address.city", target = "residentialCity")
+  @Mapping(target = "residentialCountry", constant = "US")
+  @Mapping(source = "employment.salary", target = "salary",
+           numberFormat = "$#.00")
+  void updateExisting(BasicUser user,
                       Education education,
-                      Address address,
-                      Employment employment);
-
-    @Mapping(source = "education.degreeName", target = "educationalQualification")
-    @Mapping(source = "address.city", target = "residentialCity")
-    @Mapping(target = "residentialCountry", constant = "US")
-    @Mapping(source = "employment.salary", target = "salary",
-             numberFormat = "$#.00")
-    void updateExisting(BasicUser user,
-                        Education education,
                         Address address,
                         Employment employment,
                         @MappingTarget PersonDTO personDTO);
 
-    @AfterMapping
-    default void updateResult(BasicUser user,
-                              Education education,
-                              Address address,
-                              Employment employment,
-                              @MappingTarget PersonDTO personDTO) {
-        personDTO.setFirstName(personDTO.getFirstName().toUpperCase());
-        personDTO.setLastName(personDTO.getLastName().toUpperCase());
-    }
+  @AfterMapping
+  default void updateResult(BasicUser user,
+                            Education education,
+                            Address address,
+                            Employment employment,
+                            @MappingTarget PersonDTO personDTO) {
+      personDTO.setFirstName(personDTO.getFirstName().toUpperCase());
+      personDTO.setLastName(personDTO.getLastName().toUpperCase());
+  }
 }
 ```
 
@@ -2018,93 +1713,146 @@ Now when the implementation is generated we would be able to see that the `valid
 )
 public class UserMapperImpl_ implements UserMapper {
 
-    private final ManagerMapper managerMapper = Mappers.getMapper( ManagerMapper.class );
+  private final ManagerMapper managerMapper = Mappers.getMapper( ManagerMapper.class );
 
-    @Override
-    public PersonDTO convert(BasicUser user,
+  @Override
+  public PersonDTO convert(BasicUser user,
+                           Education education,
+                           Address address,
+                           Employment employment) {
+      validateMangers( user, education, address, employment );
+      if ( user == null && education == null
+          && address == null && employment == null ) {
+            return null;
+      }
+
+      PersonDTOBuilder personDTO = PersonDTO.builder();
+
+      if ( user != null ) {
+          personDTO.id( String.valueOf( user.getId() ) );
+          personDTO.managerList( managerListToManagerDTOList(
+              user.getManagerList() ) );
+      }
+      if ( education != null ) {
+          personDTO.education( educationToEducationDTO( education ) );
+      }
+      if ( employment != null ) {
+          personDTO.designation( convertDesignation(
+              employment.getDesignation() ) );
+          personDTO.salary( String.valueOf( employment.getSalary() ) );
+      }
+     return personDTO.build();
+  }
+
+  @Override
+  public void updateExisting(BasicUser user,
                              Education education,
                              Address address,
-                             Employment employment) {
-        validateMangers( user, education, address, employment );
+                             Employment employment,
+                             PersonDTO personDTO) {
+      validateMangers( user, education, address, employment );
 
-        if ( user == null && education == null
-            && address == null && employment == null ) {
-            return null;
-        }
+      if ( user == null && education == null
+          && address == null && employment == null ) {
+          return;
+      }
 
-        PersonDTOBuilder personDTO = PersonDTO.builder();
-
-        if ( user != null ) {
-            personDTO.id( String.valueOf( user.getId() ) );
-            personDTO.managerList( managerListToManagerDTOList(
-                user.getManagerList() ) );
-        }
-        if ( education != null ) {
-            personDTO.education( educationToEducationDTO( education ) );
-        }
-        if ( employment != null ) {
-            personDTO.designation( convertDesignation(
-                employment.getDesignation() ) );
-            personDTO.salary( String.valueOf( employment.getSalary() ) );
-        }
-
-        return personDTO.build();
-    }
-
-    @Override
-    public void updateExisting(BasicUser user,
-                               Education education,
-                               Address address,
-                               Employment employment,
-                               PersonDTO personDTO) {
-        validateMangers( user, education, address, employment );
-
-        if ( user == null && education == null
-            && address == null && employment == null ) {
-            return;
-        }
-
-        if ( user != null ) {
-            personDTO.setId( String.valueOf( user.getId() ) );
-            if ( personDTO.getManagerList() != null ) {
-                List<ManagerDTO> list = managerListToManagerDTOList(
-                    user.getManagerList() );
-                if ( list != null ) {
-                    personDTO.getManagerList().clear();
-                    personDTO.getManagerList().addAll( list );
-                }
-                else {
-                    personDTO.setManagerList( null );
-                }
-            }
-            else {
-                List<ManagerDTO> list = managerListToManagerDTOList(
-                    user.getManagerList() );
-                if ( list != null ) {
-                    personDTO.setManagerList( list );
-                }
-            }
-        }
-        if ( education != null ) {
-            personDTO.setEducationalQualification( education.getDegreeName() );
-        }
-        if ( address != null ) {
-            personDTO.setResidentialCity( address.getCity() );
-        }
-        if ( employment != null ) {
-            personDTO
-                .setSalary( new DecimalFormat( "$#.00" )
-                           .format( employment.getSalary() ) );
-            personDTO
-                .setDesignation( convertDesignation(
-                    employment.getDesignation() ) );
-        }
-        personDTO.setResidentialCountry( "US" );
-
-        updateResult( user, education, address, employment, personDTO );
-    }
+      if ( user != null ) {
+          personDTO.setId( String.valueOf( user.getId() ) );
+          if ( personDTO.getManagerList() != null ) {
+              List<ManagerDTO> list = managerListToManagerDTOList(
+                  user.getManagerList() );
+              if ( list != null ) {
+                  personDTO.getManagerList().clear();
+                  personDTO.getManagerList().addAll( list );
+              }
+              else {
+                  personDTO.setManagerList( null );
+              }
+          }
+          else {
+              List<ManagerDTO> list = managerListToManagerDTOList(
+                  user.getManagerList() );
+              if ( list != null ) {
+                  personDTO.setManagerList( list );
+              }
+          }
+      }
+      if ( education != null ) {
+          personDTO.setEducationalQualification( education.getDegreeName() );
+      }
+      if ( address != null ) {
+          personDTO.setResidentialCity( address.getCity() );
+      }
+      if ( employment != null ) {
+          personDTO
+              .setSalary( new DecimalFormat( "$#.00" )
+                         .format( employment.getSalary() ) );
+          personDTO
+              .setDesignation( convertDesignation(
+                  employment.getDesignation() ) );
+      }
+      personDTO.setResidentialCountry( "US" );
+      updateResult( user, education, address, employment, personDTO );
+  }
 }
 ```
+
+### Additional Configuration Options
+
+MapStruct allows to pass various annotation processor options or arguments to `javac` directly in the form `-Akey=value`. The Maven based configuration accepts build definitions with compiler args being passed explicitly:
+
+```xml
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <!-- due to problem in maven-compiler-plugin, for verbose mode 
+						add showWarnings -->
+                    <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <arg>
+                            -Amapstruct.suppressGeneratorTimestamp=true
+                        </arg>
+                        <arg>
+                            -Amapstruct.defaultComponentModel=default
+                        </arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+```
+
+Similarly, Gradle accepts compiler arguments in the following format:
+
+```groovy
+compileJava {
+    options.compilerArgs += [
+        '-Amapstruct.suppressGeneratorTimestamp=true',
+        '-Amapstruct.defaultComponentModel=default'
+    ]
+}
+```
+
+We just took two example configurations here. But it supports a lot of other configuration options as well. Let’s look at these four important options:
+
+* `mapstruct.suppressGeneratorTimestamp`: the creation of a time stamp in the `@Generated` annotation in the generated mapper classes is suppressed with this option.
+* `mapstruct.defaultComponentModel`: It accepts component models like *default*, *cdi*, *spring*, or *jsr330* based on which mapper the code needs to be generated finally at compile time.
+
+You can get to see more of this options [here](https://mapstruct.org/documentation/1.4/reference/html/#configuration-options).
 
 ## Conclusion
 

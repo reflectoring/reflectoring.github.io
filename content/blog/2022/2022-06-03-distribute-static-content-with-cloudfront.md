@@ -10,7 +10,7 @@ image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: distribute-static-content-with-cloudfront
 ---
 
-Amazon CloudFront is a fast content delivery network (CDN) service that securely delivers data, videos, applications, and APIs to customers globally with low latency. A Content delivery network (CDN) consists of a globally-distributed network of servers that can cache static content, like images, media, stylesheets, JavaScript files, etc, or other bulky media, in locations close to consumers. This helps in improving the downloading speed of these static contents.
+Amazon CloudFront is a fast content delivery network (CDN) service that securely delivers data, videos, applications, and APIs to customers globally with low latency. A Content delivery network consists of a globally-distributed network of servers that can cache static content, like images, media, stylesheets, JavaScript files, etc, or other bulky media, in locations close to consumers. This helps in improving the downloading speed of these static contents.
 
 In this tutorial, we will store the contents of a Single page application (SPA) in an S3 bucket and configure CloudFront to deliver this application globally. 
 

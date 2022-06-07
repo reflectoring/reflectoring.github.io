@@ -267,10 +267,11 @@ In our previous distribution setting, we used the domain name that CloudFront as
 We can also use our domain name, such as `mydomain.com`, and use an SSL/TLS certificate provided by AWS Certificate Manager (ACM) or import a certificate from a third-party certificate authority into ACM or the IAM certificate store. Please refer to the official [documentation](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-alternate-domain-names.html) for the configuration steps. 
 
 When we access content from CloudFront, the request passes through two legs:
-1. Viewer to CloudFront
-2. CloudFront to the Origin server
 
 {{% image alt="2 legs" src="images/posts/aws-cloudfront/2-legs.png" %}}
+
+1. Viewer to CloudFront
+2. CloudFront to the Origin server
 
 We can choose to secure either one or both legs by encrypting the communication by using HTTPS protocol.
 
@@ -295,18 +296,6 @@ AWS WAF is a web application firewall that monitors the HTTP and HTTPS requests 
 {{% image alt="waf" src="images/posts/aws-cloudfront/waf.png" %}}
 
 We can create an AWS WAF web access control list (web ACL) and associate the CloudFront distribution with the web ACL when creating or updating the distribution.
-
-### Signed URLs and signed cookies
-3. Geographically restricting content
-4. Using AWS WAF
-
-In our previous distribution setting, we used the domain name that CloudFront assigned to our distribution, such as `dxxxxxxabcdef8.cloudfront.net`. In this setting, the Viewer Protocol Policy setting for one or more cache behaviors was set to require HTTPS communication. In that configuration, CloudFront provides the SSL/TLS certificate.
-
-We can also configure CloudFront to require that viewers use HTTPS so that connections are encrypted when CloudFront communicates with viewers. Please refer to the [CloudFront documentation](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https.html) for the steps for configuring HTTPS.
-
-
-
-
 
 ## Conclusion 
 In this article, we configured Amazon CloudFront to distribute static Content stored in an S3 bucket. Here is a summary of the steps for our quick reference:

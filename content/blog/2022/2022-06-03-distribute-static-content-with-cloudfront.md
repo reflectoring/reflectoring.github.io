@@ -122,7 +122,8 @@ We can see a property `Bucket website endpoint` which contains the URL to be use
 ### Types of S3 Bucket Endpoints
 Since we will be configuring the S3 bucket URL as the origin when we create a CloudFront distribution in subsequent sections, it will be useful to understand the two types of endpoints associated with S3 buckets:
 
-1. **REST API endpoint**: This endpoint is in the format: `{bucket-name}.s3-{region}.amazonaws.com`. In our example, the Bucket Website Endpoint` is http://io.myapp.s3-us-east-1.amazonaws.com`. 
+#### REST API Endpoint
+This endpoint is in the format: `{bucket-name}.s3-{region}.amazonaws.com`. In our example, the Bucket Website Endpoint` is http://io.myapp.s3-us-east-1.amazonaws.com`. 
 
 The characteristics of Bucket Website Endpoints are:
 * They support SSL connections
@@ -130,7 +131,8 @@ The characteristics of Bucket Website Endpoints are:
 * They can use Origin Access Identity (OAI) to restrict access to the contents of the S3 bucket. Origin Access Identity (OAI) is a special CloudFront user that is associated with CloudFront distributions. This is further explained in a subsequent section titled "Securing Access to Content".
 * They support both private and public access to the S3 buckets.
 
-2. **Bucket Website Endpoint**: This endpoint is generated when we enable static website hosting on the bucket and is in the format: `{bucket-name}-website.s3.amazonaws.com`. In our example, the Bucket Website Endpoint` is http://io.myapp.s3-website-us-east-1.amazonaws.com`. 
+##### Bucket Website Endpoint
+This endpoint is generated when we enable static website hosting on the bucket and is in the format: `{bucket-name}-website.s3.amazonaws.com`. In our example, the Bucket Website Endpoint` is http://io.myapp.s3-website-us-east-1.amazonaws.com`. 
 
 The characteristics of Bucket Website Endpoints are:
 * They do not support SSL connections
@@ -141,7 +143,7 @@ The characteristics of Bucket Website Endpoints are:
 
 We will use the Bucket Website Endpoint in our example, when we set up a CloudFront distribution to serve contents from a public S3 bucket.
 
-### Attaching a Bucket Policy
+### Attaching an S3 Bucket Policy
 We also need to attach a bucket policy to our S3 bucket. The bucket policy, written in JSON, provides access to the objects stored in the bucket:
 
 ```json
@@ -207,7 +209,8 @@ Origin Access Identity (OAI) is a special CloudFront user that is associated wit
       "Sid": "2",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity <OAI>"
+        "AWS": "arn:aws:iam::cloudfront:user/
+               CloudFront Origin Access Identity <OAI>"
        },
       "Action": "s3:GetObject",
       "Resource": "arn:aws:s3:::<S3 bucket name>/*"
@@ -234,7 +237,8 @@ After creating the distribution, let us update the bucket policy of our S3 bucke
       "Sid": "1",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity E32V87I09SD18I"
+        "AWS": "arn:aws:iam::cloudfront:user/
+                CloudFront Origin Access Identity E32V87I09SD18I"
       },
       "Action": "s3:GetObject",
       "Resource": "arn:aws:s3:::io.myapp/*"
@@ -249,6 +253,10 @@ We have also disabled the public access to the S3 bucket and the static web host
 After the CloudFront distribution is deployed and active, we can navigate to our website using the CloudFront distribution domain name: `https://d4l1ajcygy8jp.cloudfront.net/index.html`:
 
 {{% image alt="browser" src="images/posts/aws-cloudfront/browser-cf-oai.png" %}}
+
+We can also configure CloudFront to require that viewers use HTTPS so that connections are encrypted when CloudFront communicates with viewers. Please refer to the [CloudFront documentation](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https.html) for the steps for configuring HTTPS.
+
+
 
 
 ## Conclusion 

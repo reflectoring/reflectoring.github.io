@@ -260,11 +260,11 @@ After the CloudFront distribution is deployed and active, we can navigate to our
 Some of the other configurations for securing content by CloudFront are:
 
 ### Securing using HTTPS
-In our previous distribution setting, we used the domain name that CloudFront assigned to our distribution, such as `dxxxxxxabcdef8.cloudfront.net` and could navigate to our website using HTTPS protocol. In this configuration, CloudFront provides the SSL/TLS certificate. 
+In our previous distribution setting, we used the domain name that CloudFront assigned to our distribution, such as `dxxxxxxabcdef8.cloudfront.net`, and could navigate to our website using HTTPS protocol. In this configuration, CloudFront provides the SSL/TLS certificate. 
 
-We can also use our own domain name, such as `mydomain.com` and use an SSL/TLS certificate provided by AWS Certificate Manager (ACM) or import a certificate from a third-party certificate authority into ACM or the IAM certificate store. Please refer to the official [documentation](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-alternate-domain-names.html) for the configuration steps. 
+We can also use our own domain name, such as `mydomain.com`, and use an SSL/TLS certificate provided by AWS Certificate Manager (ACM) or import a certificate from a third-party certificate authority into ACM or the IAM certificate store. Please refer to the official [documentation](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-alternate-domain-names.html) for the configuration steps. 
 
-When accessing content from CloudFront, the request passes through two legs:
+When we access content from CloudFront, the request passes through two legs:
 1. Viewer to CloudFront
 2. CloudFront to the Origin server
 

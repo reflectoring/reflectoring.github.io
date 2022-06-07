@@ -29,8 +29,10 @@ We create a CloudFront distribution to tell CloudFront where we want the content
 When the distribution is deployed, CloudFront assigns a domain name to the distribution and sends our distribution's configuration to all the edge locations or points of presence (POPs). 
 
 ## Creating a Single Page Application as Static Content
+For our example, we will create some static content by packaging a barebones [Single Page Application (SPA)](https://en.wikipedia.org/wiki/Single-page_application) which will contain JavaScript, HTML, images, and stylesheets. We will then serve this application from CloudFront. 
+
 We can create a Single Page Application with one of the many frameworks available like Angular, React, Vue, etc.
-Let us create a SPA with the React framework by running the following NPM command:
+Let us create a SPA with the React framework by running the following [npm](https://www.npmjs.com) command:
 
 ```shell
  npx create-react-app mystore
@@ -56,7 +58,7 @@ npm start
 ```
 This will launch the default react app in a browser.
 
-We can evolve this application further to build useful features but for this tutorial, we will deploy this react app using CloudFront.
+We can evolve this application further to build useful features but for this tutorial, we will deploy this React app using CloudFront.
 
 For deployment, we will first build the project by running:
 
@@ -87,7 +89,7 @@ build
     └── media
         └── logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg
 ```
-These are a set of static files which we can host on any HTTP server for serving our web content. For our tutorial, we will copy these static contents to an S3 bucket as explained in the next section.
+These are a set of static files which we can host on any HTTP server for serving our web content. For our example, we will copy these static contents to an S3 bucket as explained in the next section and then render them through CloudFront in a subsequent section.
 
 ## Hosting the Static Content in an S3 Bucket
 Amazon Simple Storage Service (S3) is a service for storing and retrieving any kind of files called `objects` in S3 parlance. 
@@ -262,7 +264,7 @@ Some of the other configurations for securing content by CloudFront are:
 ### Securing using HTTPS
 In our previous distribution setting, we used the domain name that CloudFront assigned to our distribution, such as `dxxxxxxabcdef8.cloudfront.net`, and could navigate to our website using HTTPS protocol. In this configuration, CloudFront provides the SSL/TLS certificate. 
 
-We can also use our own domain name, such as `mydomain.com`, and use an SSL/TLS certificate provided by AWS Certificate Manager (ACM) or import a certificate from a third-party certificate authority into ACM or the IAM certificate store. Please refer to the official [documentation](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-alternate-domain-names.html) for the configuration steps. 
+We can also use our domain name, such as `mydomain.com`, and use an SSL/TLS certificate provided by AWS Certificate Manager (ACM) or import a certificate from a third-party certificate authority into ACM or the IAM certificate store. Please refer to the official [documentation](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-alternate-domain-names.html) for the configuration steps. 
 
 When we access content from CloudFront, the request passes through two legs:
 1. Viewer to CloudFront

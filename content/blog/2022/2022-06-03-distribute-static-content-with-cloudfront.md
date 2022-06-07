@@ -14,15 +14,17 @@ Amazon CloudFront is a fast content delivery network (CDN) service that securely
 
 In this tutorial, we will store the contents of a Single page application (SPA) in an S3 bucket and configure CloudFront to deliver this application globally. 
 
-## How CloudFront works
-CloudFront delivers all content through a network of data centers called edge locations. When a viewer requests content that we are serving with CloudFront, the request is routed to the edge location which is closest to the user that provides the lowest latency. This results in content being delivered to the viewer with the best possible performance.
+## How CloudFront Works
+CloudFront delivers all content through a network of data centers called edge locations. Edge locations are also known as Points of Presence (POP) which are part of AWS's global network infrastructure and are usually deployed in major cities and highly populated areas across the globe. 
+
+Whenever a viewer requests content that we are serving with CloudFront, the request is routed to the edge location which is closest to the user that provides the lowest latency. This results in content being delivered to the viewer with the best possible performance.
 
 If the content is already in the edge location with the lowest latency, CloudFront delivers it immediately.
 If the content is not in that edge location, CloudFront retrieves it from an origin configured by us like an S3 bucket, or an HTTP server.
 
 We create a CloudFront distribution to tell CloudFront where we want the content to be delivered from. We define origin servers, like an Amazon S3 bucket where we upload our files like HTML pages, images, media files, etc.
 
-When the distribution is deployed, CloudFront assigns a domain name to the distribution and sends our distribution's configuration to all of its edge locations or points of presence (POPs).
+When the distribution is deployed, CloudFront assigns a domain name to the distribution and sends our distribution's configuration to all the edge locations or points of presence (POPs). 
 
 ## Creating a Single Page Application as Static Content
 We can create a Single Page Application with one of the many frameworks available like Angular, React, Vue, etc.
@@ -118,24 +120,26 @@ After we enable the static web hosting, the section under our static web hosting
 We can see a property `Bucket website endpoint` which contains the URL to be used for navigating to our website after copying the static files to the S3 bucket. 
 
 ### Types of S3 Bucket Endpoints
-Since we will be configuring the S3 bucket URL as the origin when we create a CloudFront distribution in subsequent sections, it will be useful to understand the two types of endpoints provided by S3:
+Since we will be configuring the S3 bucket URL as the origin when we create a CloudFront distribution in subsequent sections, it will be useful to understand the two types of endpoints associated with S3 buckets:
 
 1. **REST API endpoint**: This endpoint is in the format: `{bucket-name}.s3-{region}.amazonaws.com`. In our example, the Bucket Website Endpoint` is http://io.myapp.s3-us-east-1.amazonaws.com`. 
 
-The characteristics of Bucket Website Endpoint are:
-* Supports SSL connections
-* Provides End to end encryption
-* Can use Origin Access Identity (OAl)
-* Supports Private/Public content
+The characteristics of Bucket Website Endpoints are:
+* They support SSL connections
+* Connections to the Bucket Website Endpoint provides end to end encryption
+* They can use Origin Access Identity (OAI) to restrict access to the contents of the S3 bucket. Origin Access Identity (OAI) is a special CloudFront user that is associated with CloudFront distributions. This is further explained in a subsequent section titled "Securing Access to Content".
+* They support both private and public access to the S3 buckets.
 
 2. **Bucket Website Endpoint**: This endpoint is generated when we enable static website hosting on the bucket and is in the format: `{bucket-name}-website.s3.amazonaws.com`. In our example, the Bucket Website Endpoint` is http://io.myapp.s3-website-us-east-1.amazonaws.com`. 
 
-The characteristics of Bucket Website Endpoint are:
-* Does not support SSL connections
-* Supports Redirect requests
-* Cannot use Origin Access Identity (OAI)
-* Serves default index document (Default page)
-* Supports only publicly readable content
+The characteristics of Bucket Website Endpoints are:
+* They do not support SSL connections
+* They support redirect requests
+* They can cannot use Origin Access Identity (OAI) to restrict access to the contents of the S3 bucket.
+* They serves default index document (Default page)
+* They supports only publicly readable content
+
+We will use the Bucket Website Endpoint in our example, when we set up a CloudFront distribution to serve contents from a public S3 bucket.
 
 ### Attaching a Bucket Policy
 We also need to attach a bucket policy to our S3 bucket. The bucket policy, written in JSON, provides access to the objects stored in the bucket:
@@ -157,7 +161,7 @@ We also need to attach a bucket policy to our S3 bucket. The bucket policy, writ
 This bucket policy provides read-only access to all the objects stored in our bucket as represented by the resource ARN: `arn:aws:s3:::io.myapp/*`.
 
 ### Uploading Static Content to our S3 Bucket
-After finishing all the configurations of our bucket, we will upload all our static content under the `build` folder of our project in our local machine to our S3 bucket:
+After finishing all the configurations of our bucket, we will upload all our static content under the `build` folder of our project in our local machine to our S3 bucket. We can upload files from the AWS admin console by drag & drop or by using the file upload option from our local machine as shown below: 
 
 {{% image alt="file upload to Bucket" src="images/posts/aws-cloudfront/file-upload.png" %}}
 
@@ -171,7 +175,9 @@ With all the files uploaded we will be able to see our application by navigating
 
 {{% image alt="file uploaded to Bucket" src="images/posts/aws-cloudfront/browser-s3.png" %}}
 
-Assuming we have customers accessing this website from all parts of the globe, they will all be downloading the static contents from the same S3 bucket in the `us-east` region in our example. This will give a different experience to customers depending on their location. Customers closer to the `us-east` region will experience a lower latency compared to the customers who are accessing this website from other continents. We will improve this behavior in the next section with the help of Amazon's CloudFront service.
+Assuming we have customers accessing this website from all parts of the globe, they will all be downloading the static contents from the same S3 bucket in the `us-east` region in our example. This will result in giving different user experiences to customers depending on their location. 
+
+Customers closer to the `us-east` region will experience a lower latency compared to the customers who are accessing this website from other continents. We will improve this behavior in the next section with the help of Amazon's CloudFront service.
 
 
 ## Creating the CloudFront Distribution
@@ -182,9 +188,11 @@ Let us create a CloudFront Distribution from the AWS Management Console:
 
 We have set the origin domain to the bucket website endpoint of our S3 bucket created in the previous section and left all other configurations as default. The distribution takes a few minutes to change to `enabled` status. 
 
-After it is active, we can now navigate to our website using the CloudFront distribution domain name: `https://d4l1ajcygy8jp.cloudfront.net/`:
+After it is active, we can see the CloudFront distribution domain name in the CloudFront console:
 
-{{% image alt="browser" src="images/posts/aws-cloudfront/browser-cf.png" %}}
+{{% image alt="browser" src="images/posts/aws-cloudfront/cf-dist.png" %}}
+
+We can now navigate to our website using this CloudFront distribution domain name: `d1yda4k0ocquhm.cloudfront.net`.
 
 ## Securing Access to Content
 In the earlier sections, we used static assets residing in a public S3 bucket which makes it insecure by making all the content accessible to users if the S3 bucket URL is known to them. CloudFront provides many configurations to secure access to content. For this example, we will use an Origin Access Identity (OAI) to restrict access to the contents of the S3 bucket. 
@@ -196,21 +204,25 @@ Origin Access Identity (OAI) is a special CloudFront user that is associated wit
   "Version": "2012-10-17",
   "Statement": [
     {
-            "Sid": "2",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity <OAI>"
-            },
-            "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::<S3 bucket name>/*"
-        }
+      "Sid": "2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity <OAI>"
+       },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::<S3 bucket name>/*"
+    }
   ]
 }
 ```
-Let us create another CloudFront Distribution but configured to use an OAI to access the contents in the S3 bucket:
+Let us create another CloudFront Distribution but this time configured to use an OAI to access the contents in the S3 bucket:
 {{% image alt="browser" src="images/posts/aws-cloudfront/oai.png" %}}
 
-This time we have chosen the S3 bucket URL from the selection box as the origin domain instead of the bucket website endpoint. In the section for S3 bucket access, we have selected `Yes use OAI` and created an OAI: `my-oai` to associate with this distribution. We have also chosen the option of updating the bucket policy manually after creating the distribution.
+This time we have chosen the S3 REST API endpoint from the selection box as the origin domain instead of the bucket website endpoint. In the section for S3 bucket access, we have selected the option: `Yes use OAI` and created an OAI: `my-oai` to associate with this distribution. 
+
+We have also chosen the option of updating the bucket policy manually after creating the distribution. We can also reuse an OAI if we have one, instead of creating a new OAI. An AWS account can have up to 100 CloudFront origin access identities (OAIs). However, we can add an OAI to multiple CloudFront distributions, so one OAI is usually sufficient.
+
+If we did not create an OAI and added it to our CloudFront distribution during created the distribution, we can create it later and add to the distribution by using either the CloudFront console or the CloudFront API.
 
 After creating the distribution, let us update the bucket policy of our S3 bucket to look like this:
 
@@ -219,20 +231,20 @@ After creating the distribution, let us update the bucket policy of our S3 bucke
   "Version": "2012-10-17",
   "Statement": [
     {
-            "Sid": "1",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity E32V87I09SD18I"
-            },
-            "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::io.myapp/*"
+      "Sid": "1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity E32V87I09SD18I"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::io.myapp/*"
     }
   ]
 }
 ```
 This bucket policy grants the CloudFront origin access identity (OAI) with id: `E32V87I09SD18I` permission to get (read) all objects in our Amazon S3 bucket. We have set the `Principal` to the OAI id which can be found from the [AWS management console](https://console.aws.amazon.com/cloudfront/v3/home#/oai). 
 
-We have also disabled the public access to the bucket and the static web hosting property. 
+We have also disabled the public access to the S3 bucket and the static web hosting property. 
 
 After the CloudFront distribution is deployed and active, we can navigate to our website using the CloudFront distribution domain name: `https://d4l1ajcygy8jp.cloudfront.net/index.html`:
 

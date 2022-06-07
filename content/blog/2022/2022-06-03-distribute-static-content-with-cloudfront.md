@@ -228,9 +228,11 @@ Let us create another CloudFront Distribution but this time configured to use an
 
 This time we have chosen the S3 REST API endpoint from the selection box as the origin domain instead of the bucket website endpoint. In the section for S3 bucket access, we have selected the option: `Yes use OAI` and created an OAI: `my-oai` to associate with this distribution. 
 
-We have also chosen the option of updating the bucket policy manually after creating the distribution. We can also reuse an OAI if we have one, instead of creating a new OAI. An AWS account can have up to 100 CloudFront origin access identities (OAIs). However, we can add an OAI to multiple CloudFront distributions, so one OAI is usually sufficient.
+We have also chosen the option of updating the bucket policy manually after creating the distribution. 
 
-If we did not create an OAI and added it to our CloudFront distribution during creating the distribution, we can create it later and add it to the distribution by using either the CloudFront console or the CloudFront API.
+We can also reuse an OAI if we have one, instead of creating a new OAI. An AWS account can have up to 100 CloudFront origin access identities (OAIs). Since, we can add an OAI to multiple CloudFront distributions, so one OAI for an AWS account is sufficient in most cases.
+
+If we had not created an OAI and added it to our CloudFront distribution during creating the distribution, we can create it later and add it to the distribution by using either the CloudFront console or the CloudFront API.
 
 After creating the distribution, let us update the bucket policy of our S3 bucket to look like this:
 
@@ -290,7 +292,7 @@ We can use geographic restrictions, to prevent users in specific geographic loca
 
 Here we are configuring the `Allow list` option to allow viewers to access our content only if they are in one of the approved countries on the allow list. Alternately, we can use the `Block list` option to prevent viewers from accessing our content if they are in one of the banned countries on our block list.
 
-### Using AWS WAF
+### Monitor Requests Using AWS WAF (Web Application Firewall)
 AWS WAF is a web application firewall that monitors the HTTP and HTTPS requests that are forwarded to CloudFront. We can specify different conditions such as the values of query strings or the IP addresses that requests originate from, based on which CloudFront responds to requests either with the requested content or with an HTTP status code `403` (Forbidden).
 
 {{% image alt="waf" src="images/posts/aws-cloudfront/waf.png" %}}

@@ -1,16 +1,16 @@
 ---
 title: "Distribute Static Content with Amazon CloudFront"
 categories: ["aws"]
-date: 2022-05-20T05:00:00
-modified: 2022-05-20T05:00:00
+date: 2022-06-08T05:00:00
+modified: 2022-06-08T05:00:00
 authors: [pratikdas]
 excerpt: "Amazon CloudFront is a fast content delivery network (CDN) service that securely delivers data, videos, applications, and APIs to customers globally with low latency. A Content delivery network (CDN) consists of a globally-distributed network of servers that can cache static content, like images, media, stylesheets, JS files, etc, or other bulky media, in locations close to consumers. This helps in improving the downloading speed of these static contents.
 In this tutorial, we will store a single page application (SPA) in an S3 bucket and configure CloudFront to deliver this application globally."
-image: images/stock/0118-keyboard-1200x628-branded.jpg
-url: distribute-static-content-with-cloudfront
+image: images/stock/0041-adapter-1200x628-branded.jpg
+url: distribute-static-content-with-cloudfront-tutorial
 ---
 
-Amazon CloudFront is a fast content delivery network (CDN) service that securely delivers data, videos, applications, and APIs to customers globally with low latency. A Content delivery network consists of a globally-distributed network of servers that can cache static content, like images, media, stylesheets, JavaScript files, etc, or other bulky media, in locations close to consumers. This helps in improving the downloading speed of these static contents.
+Amazon CloudFront is a fast content delivery network (CDN) service that securely delivers data, videos, applications, and APIs to customers globally with low latency. A content delivery network consists of a globally-distributed network of servers that can cache static content, like images, media, stylesheets, JavaScript files, etc, or other bulky media, in locations close to consumers. This helps in improving the downloading speed of these static contents.
 
 In this tutorial, we will store the contents of a Single page application (SPA) in an S3 bucket and configure CloudFront to deliver this application globally. 
 

@@ -4,14 +4,17 @@ categories: ["kotlin"]
 date: 2022-05-20T05:00:00
 modified: 2022-05-20T05:00:00
 authors: [pratikdas]
-excerpt: "When building applications we use a mix of two kinds of programming models: synchronous and asynchronous. Synchronous execution means the first task in a program must finish processing before moving on to executing the next task whereas asynchronous execution means a second task can begin executing in parallel, without waiting for an earlier task to finish. A coroutine is a concurrency design pattern used to write asynchronous programs. Coroutines were added to Kotlin in version 1.3. In this post, we will understand how to use coroutines in Kotlin."
+excerpt: "We use a mix of two kinds of programming models when building applications : synchronous and asynchronous. Synchronous execution means the first task in a program must finish processing before moving on to executing the next task while asynchronous execution means a second task can begin executing in parallel, without waiting for an earlier task to finish. A coroutine is a concurrency design pattern used to write asynchronous programs. They are computations that run on top of threads that can be suspended and resumed. When a coroutine is suspended, the corresponding computation is paused, removed from the thread, and stored in memory leaving the thread free to execute other activities.
+"
 image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: understanding-kotlin-coroutines
 ---
 
-When building applications we use a mix of two kinds of programming models: synchronous and asynchronous. Synchronous execution means the first task in a program must finish processing before moving on to executing the next task whereas asynchronous execution means a second task can begin executing in parallel, without waiting for an earlier task to finish.
+We use a mix of two kinds of programming models when building applications : synchronous and asynchronous. 
 
-A coroutine is a concurrency design pattern used to write asynchronous programs. They are computations that run on top of threads that can be suspended and resumed. When a coroutine is "suspended", the corresponding computation is paused, removed from the thread, and stored in memory leaving the thread free to execute other activities.
+Synchronous execution means the first task in a program must finish processing before moving on to executing the next task while asynchronous execution means a second task can begin executing in parallel, without waiting for an earlier task to finish.
+
+A coroutine is a concurrency design pattern used to write asynchronous programs. They are computations that run on top of threads that can be suspended and resumed. When a coroutine is suspended, the corresponding computation is paused, removed from the thread, and stored in memory leaving the thread free to execute other activities.
 
 In this post, we will understand how to use coroutines in Kotlin with the help of examples. 
 
@@ -30,7 +33,7 @@ dependencies {
 ```
 Here we have added the dependency on the Kotlin standard library and the `kotlinx-coroutines-core` library.
 
-## A Simple Coroutine
+## A Simple Coroutine in Kotlin
 Coroutines are known as lightweight threads which means we can run code on coroutines similar to how we run code on threads. Let us see a simple example of running a block of code in a coroutine:
 ```java
 fun main() = runBlocking{
@@ -227,26 +230,47 @@ Coroutine cancellation is cooperative. A coroutine code has to cooperate to be c
 
 There are two approaches to making a coroutine code cancellable:
 
-1. Periodically invoke a suspending function that checks for cancellation. For example, if we are reading multiple files from a disk, before we start reading each file, we can check whether the coroutine was canceled.
-
-There is a yield function that is a good choice for that purpose. 
+1. Periodically invoke a suspending function that checks for cancellation. This is done with the `yield` function. 
 
 2. Explicitly check the cancellation status.
 
 ```java
+fun main() = runBlocking{
+    println("program runs...: ${Thread.currentThread().name}")
 
+    val job:Job = launch {
+        val files = File ("<File Path>").listFiles()
+        var loop = 0
+
+        while (loop < files.size-1 ) {
+            if(isActive) { // check the cancellation status
+                readFile(files.get(++loop))
+            }
+        }
+    }
+    delay(1500)
+    job.cancelAndJoin()
+
+    println("program run ends...: ${Thread.currentThread().name}")
+}
+
+suspend fun readFile(file: File) {
+    println("reading file ${file.name}")
+    if (file.isFile) {
+        // process file
+    }
+    delay(100)
+}
 ```
-
-
+Here we are processing a set of files from a directory. We are checking for the cancellation status with `isActive` before processing each file.
 
 ## Coroutine Dispatchers
-The Coroutine context is defined in the Kotlin standard library. 
-It is a set of various elements. The main elements are the Job and its dispatcher. A coroutine dispatcher determines the thread or threads the corresponding coroutine uses for its execution. The coroutine dispatcher can confine coroutine execution to a specific thread, dispatch it to a thread pool, or let it run unconfined.
+A coroutine dispatcher determines the thread or threads the corresponding coroutine uses for its execution. The coroutine dispatcher can confine coroutine execution to a specific thread, dispatch it to a thread pool, or let it run unconfined. It is part of the `CoroutineContext` which is defined in the Kotlin standard library. 
 
-All coroutine builders like `launch` and `async` accept an optional CoroutineContext parameter that can be used to explicitly specify the dispatcher for the new coroutine and other context elements. We can specify four types of dispatchers :
+All coroutine builders like `launch` and `async` accept an optional `CoroutineContext` as parameter that can be used to explicitly specify the dispatcher for the new coroutine. Kotlin has multiple implementations of `CoroutineDispatchers` which we can specify when creating coroutines with coroutine builders like `launch` and `async`. Let us look at commonly used dispatchers:
 
-### Inheriting from Parent
-When launch { ... } is used without parameters, it inherits the context (and thus dispatcher) from the CoroutineScope it is being launched from:
+### Inheriting the Dispatcher from the Parent
+When `launch` is used without parameters, it inherits the context (and thus dispatcher) from the `CoroutineScope` it is being launched from:
 ```java
 fun main() = runBlocking {
     launch { // will get its own new thread
@@ -257,34 +281,79 @@ fun main() = runBlocking {
     println("completed tasks")
 }
 ```
-In this case, it inherits the context of the main runBlocking coroutine which runs in the main thread.
+In this case, it inherits the context of the main `runBlocking` coroutine which runs in the main thread.
 
-### Default Dispatcher
-The default dispatcher is used when no other dispatcher is explicitly specified in the scope. It is represented by Dispatchers.Default and uses a shared background pool of threads.
+### Default Dispatcher for Running CPU-intensive Operations
+The default dispatcher is used when no other dispatcher is explicitly specified in the scope. It is represented by `Dispatchers.Default` and uses a shared background pool of threads. It is designed to run CPU-intensive operations. It has a pool of threads with a size equal to the number of cores on the machine our code is running on with a minimum of `2` threads.
 
+Let us run the following code to check this behavior:
 ```java
 fun main() = runBlocking {
-    launch(Dispatchers.Default) { // will get dispatched to DefaultDispatcher
-        println("Default  : running in thread ${Thread.currentThread().name}")
-        longTask()
+    repeat(1000) {
+        launch(Dispatchers.Default) { // will get dispatched to DefaultDispatcher
+            println("Default  : running in thread ${Thread.currentThread().name}")
+            longTask()
+        }
     }
-    println("completed tasks")
 }
 ```
+Here is a snippet of the output showing the threads used by the coroutine:
+```shell
+Default  : running in thread DefaultDispatcher-worker-1
+Default  : running in thread DefaultDispatcher-worker-2
+Default  : running in thread DefaultDispatcher-worker-4
+Default  : running in thread DefaultDispatcher-worker-3
+Default  : running in thread DefaultDispatcher-worker-5
+Default  : running in thread DefaultDispatcher-worker-6
+Default  : running in thread DefaultDispatcher-worker-7
+Default  : running in thread DefaultDispatcher-worker-8
+Default  : running in thread DefaultDispatcher-worker-9
+Default  : running in thread DefaultDispatcher-worker-10
+Default  : running in thread DefaultDispatcher-worker-3
+Default  : running in thread DefaultDispatcher-worker-2
+Default  : running in thread DefaultDispatcher-worker-2
+Default  : running in thread DefaultDispatcher-worker-6
+Default  : running in thread DefaultDispatcher-worker-4
+```
+We can see `10` threads from the thread pool used for running the coroutines. We can use `limitedParallelism` to restrict the number of coroutines being actively executed in parallel:
 
-### Creating a New Thread
-`newSingleThreadContext` creates a thread for the coroutine to run. A dedicated thread is an expensive resource. In a real application it must be either released, when no longer needed, using the close function, or stored in a top-level variable and reused throughout the application.
 ```java
 fun main() = runBlocking {
-    launch(newSingleThreadContext("MyThread")) { // will get its own new thread
+    repeat(1000) {
+        // will get dispatched to DefaultDispatcher with 
+        // limit to running 3 coroutines in parallel
+        val dispatcher = Dispatchers.Default.limitedParallelism(3)
+        launch(dispatcher) {
+            println("Default  : running in thread ${Thread.currentThread().name}")
+            longTask()
+        }
+    }
+}
+```
+Here we have set a limit of `3` for running a maximum of `3` coroutines in parallel.
+
+### Creating a New Thread with `newSingleThreadContext`
+`newSingleThreadContext` creates a thread for the coroutine to run. This dispatcher guarantees that the coroutine is executed in a specific thread at all times:
+```java
+fun main() = runBlocking {
+    launch(newSingleThreadContext("MyThread")) { // will get its own new thread MyThread
         println("newSingleThreadContext: running in  thread ${Thread.currentThread().name}")
         longTask()
     }
     println("completed tasks")
 }
 ```
+In this example, we are executing our coroutine in a dedicated thread named `MyThread` as can be seen in the output.
+
+```shell
+newSingleThreadContext: running in  thread MyThread
+
+Process finished with exit code 0
+```
+A dedicated thread is an expensive resource. In a real application it must be either released, when no longer needed, using the close function, or stored in a top-level variable and reused throughout the application.
+
 ### Dispatchers.Unconfined
-The Dispatchers.Unconfined coroutine dispatcher starts a coroutine in the caller thread, but only until the first suspension point. After suspension it resumes the coroutine in the thread that is fully determined by the suspending function that was invoked. 
+The `Dispatchers.Unconfined` coroutine dispatcher starts a coroutine in the caller thread, but only until the first suspension point. After suspension it resumes the coroutine in the thread that is fully determined by the suspending function that was invoked. 
 ```java
 fun main() = runBlocking {
     launch(Dispatchers.Unconfined) { // not confined -- will work with main thread
@@ -296,7 +365,7 @@ fun main() = runBlocking {
 ```
 The unconfined dispatcher is appropriate for coroutines that neither consume CPU time nor update any shared data (like UI) confined to a specific thread.
 
-This behavior is in contrast to the confined dispatchers where the dispatcher is inherited from the outer CoroutineScope by default. 
+This behavior is in contrast to the confined dispatchers where the dispatcher is inherited from the outer `CoroutineScope` by default. 
 
 The default dispatcher for the runBlocking coroutine, in particular, is confined to the invoker thread, so inheriting it confines execution to this thread with predictable FIFO scheduling.
 
@@ -308,19 +377,23 @@ Let us run a simple `main()` function inside which we will call a long-running f
 import kotlin.concurrent.thread
 
 fun main() {
-    println("My program runs...: ${Thread.currentThread().name}")
+    println("My program runs...: 
+        ${Thread.currentThread().name}")
 
     thread {
         longRunningTask()
     }
 
-    println("My program run ends...: ${Thread.currentThread().name}")
+    println("My program run ends...: 
+        ${Thread.currentThread().name}")
 }
 
 fun longRunningTask(){
-    println("executing longRunningTask on...: ${Thread.currentThread().name}")
+    println("executing longRunningTask on...: 
+        ${Thread.currentThread().name}")
     Thread.sleep(1000)
-    println("longRunningTask ends on thread ...: ${Thread.currentThread().name}")
+    println("longRunningTask ends on thread ...: 
+        ${Thread.currentThread().name}")
 }
 ```
 Here we are simulating the long-running behavior by calling `Thread.sleep()` inside the function: `longRunningTask()`.  We are calling this function inside the `thread` lambda function. This will allow the `main` thread to continue without waiting for the `longRunningTask()` function to complete. 
@@ -346,13 +419,16 @@ fun main() = runBlocking{
         longRunningTask()
     }
 
-    println("My program run ends...: ${Thread.currentThread().name}")
+    println(
+        "My program run ends...: ${Thread.currentThread().name}")
 }
 
 suspend fun longRunningTask(){
-    println("executing longRunningTask on...: ${Thread.currentThread().name}")
+    println("executing longRunningTask on...: 
+        ${Thread.currentThread().name}")
     delay(1000)
-    println("longRunningTask ends on thread ...: ${Thread.currentThread().name}")
+    println("longRunningTask ends on thread ...: 
+        ${Thread.currentThread().name}")
 }
 ```
 Here we are calling the same function: `longRunningTask()` but inside the `GlobalScope.launch` lambda function. The `GlobalScope.launch` lambda function creates a coroutine which runs on a background thread.

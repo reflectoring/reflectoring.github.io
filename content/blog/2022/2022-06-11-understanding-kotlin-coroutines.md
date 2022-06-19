@@ -15,6 +15,8 @@ A coroutine is a concurrency design pattern used to write asynchronous programs.
 
 In this post, we will understand how to use coroutines in Kotlin with the help of examples. 
 
+{{% github "https://github.com/thombergs/code-examples/tree/master/kotlin/coroutines" %}}
+
 ## Adding the Dependencies for Coroutines
 The Kotlin language gives us basic constructs for coroutines but more useful constructs built on top of the basic coroutines are available in the `kotlinx-coroutines-core` library. So let us add the dependency to the `kotlinx-coroutines-core` library:
 
@@ -369,4 +371,4 @@ In this article, we understood the different ways of using Coroutines in Kotlin.
 5. The `async` function starts a coroutine in parallel, similar to the `launch` function. However, it waits for a coroutine to complete before starting another coroutine.
 6. A coroutine dispatcher determines the thread or threads the corresponding coroutine uses for its execution. The coroutine dispatcher can confine coroutine execution to a specific thread, dispatch it to a thread pool, or let it run unconfined.
 
-
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/kotlin/coroutines).

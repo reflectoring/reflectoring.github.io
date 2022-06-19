@@ -4,13 +4,13 @@ categories: ["kotlin"]
 date: 2022-05-20T05:00:00
 modified: 2022-05-20T05:00:00
 authors: [pratikdas]
-excerpt: "We use a mix of two kinds of programming models when building applications : synchronous and asynchronous. Synchronous execution means the first task in a program must finish processing before moving on to executing the next task while asynchronous execution means a second task can begin executing in parallel, without waiting for an earlier task to finish. A coroutine is a concurrency design pattern used to write asynchronous programs. They are computations that run on top of threads that can be suspended and resumed. When a coroutine is suspended, the corresponding computation is paused, removed from the thread, and stored in memory leaving the thread free to execute other activities.
+excerpt: "We use a mix of two kinds of programming models when building applications: synchronous and asynchronous. Synchronous execution means the first task in a program must finish processing before moving on to executing the next task while asynchronous execution means a second task can begin executing in parallel, without waiting for an earlier task to finish. A coroutine is a concurrency design pattern used to write asynchronous programs. They are computations that run on top of threads that can be suspended and resumed. When a coroutine is suspended, the corresponding computation is paused, removed from the thread, and stored in memory leaving the thread free to execute other activities.
 "
 image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: understanding-kotlin-coroutines
 ---
 
-We use a mix of two kinds of programming models when building applications : synchronous and asynchronous. 
+We use a mix of two kinds of programming models when building applications: synchronous and asynchronous. 
 
 Synchronous execution means the first task in a program must finish processing before moving on to executing the next task while asynchronous execution means a second task can begin executing in parallel, without waiting for an earlier task to finish.
 
@@ -226,14 +226,55 @@ Process finished with exit code 0
 We can see the `longRunningFunction` executing till step 2 and then stopping after we call `cancel` on the `job` object. Instead of two statements for `cancel` and `join`, we can also use a Job extension function: `cancelAndJoin` that combines `cancel` and `join` invocations.
 
 ## Cancellable Coroutine
-Coroutine cancellation is cooperative. A coroutine code has to cooperate to be cancellable. If a coroutine is in the middle of computation like reading a large file and does not check for cancellation, then it cannot be canceled. 
+Coroutine cancellation is cooperative. A coroutine code has to cooperate to be cancellable. Otherwise, we cannot cancel it midway during its execution even after calling `Job.cancel()`.
 
 There are two approaches to making a coroutine code cancellable:
 
-1. Periodically invoke a suspending function that checks for cancellation. This is done with the `yield` function. 
+### Periodically Invoke a Suspending Function `yield`
+1. Periodically invoke a suspending function like `yield` that checks for cancellation and yields the thread (or thread pool) of the current coroutine dispatcher to allow other coroutines to run on the same dispatcher:
+```java
+fun main() = runBlocking{
+    try {
+        val job1 = launch {
+            repeat(20){
+                println(
+                 "processing job 1: ${Thread.currentThread().name}")
+                yield()
+            }
+        }
 
-2. Explicitly check the cancellation status.
+        val job2 = launch {
+            repeat(20){
+                println(
+                 "processing job 2: ${Thread.currentThread().name}")
+                yield()
+            }
+        }
 
+        job1.join()
+        job2.join()
+
+    } catch (e: Exception) {
+        // clean up code
+
+    }
+}
+```
+Here we are running two coroutines with each of them calling the `yield` function to allow the other coroutine to run on the `main` thread.
+The output snippet of running this program is shown below:
+```shell
+processing job 1: main
+processing job 2: main
+processing job 1: main
+processing job 2: main
+processing job 1: main
+```
+We can see the output from the first coroutine after which it calls `yield`. This suspends the first coroutine and allows the second coroutine to run. Similarly, the second coroutine is also calling the `yield` function and allowing the first coroutine to resume execution.
+
+When the cancellation of a coroutine is accepted, a `kotlinx.coroutines.JobCancellationException` exception is thrown. We can catch this exception and run all clean-up code here.
+
+### Explicitly Check the Cancellation Status with `isActive`
+We can explicitly check for the cancellation status of a running coroutine with `isActive` which is an extension property available inside the coroutine via the `CoroutineScope` object:
 ```java
 fun main() = runBlocking{
     println("program runs...: ${Thread.currentThread().name}")
@@ -262,12 +303,12 @@ suspend fun readFile(file: File) {
     delay(100)
 }
 ```
-Here we are processing a set of files from a directory. We are checking for the cancellation status with `isActive` before processing each file.
+Here we are processing a set of files from a directory. We are checking for the cancellation status with `isActive` before processing each file. The `isActive` property returns `true` when the current job is still active (not completed and not canceled yet).
 
 ## Coroutine Dispatchers
 A coroutine dispatcher determines the thread or threads the corresponding coroutine uses for its execution. The coroutine dispatcher can confine coroutine execution to a specific thread, dispatch it to a thread pool, or let it run unconfined. It is part of the `CoroutineContext` which is defined in the Kotlin standard library. 
 
-All coroutine builders like `launch` and `async` accept an optional `CoroutineContext` as parameter that can be used to explicitly specify the dispatcher for the new coroutine. Kotlin has multiple implementations of `CoroutineDispatchers` which we can specify when creating coroutines with coroutine builders like `launch` and `async`. Let us look at commonly used dispatchers:
+All coroutine builders like `launch` and `async` accept an optional `CoroutineContext` as a parameter that can be used to explicitly specify the dispatcher for the new coroutine. Kotlin has multiple implementations of `CoroutineDispatchers` which we can specify when creating coroutines with coroutine builders like `launch` and `async`. Let us look at commonly used dispatchers:
 
 ### Inheriting the Dispatcher from the Parent
 When `launch` is used without parameters, it inherits the context (and thus dispatcher) from the `CoroutineScope` it is being launched from:
@@ -350,7 +391,7 @@ newSingleThreadContext: running in  thread MyThread
 
 Process finished with exit code 0
 ```
-A dedicated thread is an expensive resource. In a real application it must be either released, when no longer needed, using the close function, or stored in a top-level variable and reused throughout the application.
+A dedicated thread is an expensive resource. In a real application, the thread must be either released, when no longer needed, using the close function, or stored in a top-level variable and reused throughout the application.
 
 ### Dispatchers.Unconfined
 The `Dispatchers.Unconfined` coroutine dispatcher starts a coroutine in the caller thread, but only until the first suspension point. After suspension it resumes the coroutine in the thread that is fully determined by the suspending function that was invoked. 
@@ -431,7 +472,7 @@ suspend fun longRunningTask(){
         ${Thread.currentThread().name}")
 }
 ```
-Here we are calling the same function: `longRunningTask()` but inside the `GlobalScope.launch` lambda function. The `GlobalScope.launch` lambda function creates a coroutine which runs on a background thread.
+Here we are calling the same function: `longRunningTask()` but inside the `runBlocking` function. 
 
 We can observe a slightly different behavior when we run this program:
 
@@ -452,10 +493,12 @@ In this article, we understood the different ways of using Coroutines in Kotlin.
 1. A coroutine is a concurrency design pattern used to write asynchronous programs. 
 2. Coroutines are computations that run on top of threads that can be suspended and resumed. 
 3. When a coroutine is "suspended", the corresponding computation is paused, removed from the thread, and stored in memory leaving the thread free to execute other activities.
-2. Coroutines are started by coroutine builders which also establish a scope.
-3. `launch`, `async`, and `runBlocking` are three types of coroutine builders.
-4. The `launch` function returns `job` using which can also cancel the coroutine.
-5. The `async` function starts a coroutine in parallel, similar to the `launch` function. However, it waits for a coroutine to complete before starting another coroutine.
-6. A coroutine dispatcher determines the thread or threads the corresponding coroutine uses for its execution. The coroutine dispatcher can confine coroutine execution to a specific thread, dispatch it to a thread pool, or let it run unconfined.
+4. Coroutines are started by coroutine builders which also establish a scope.
+5. `launch`, `async`, and `runBlocking` are three types of coroutine builders.
+6. The `launch` function returns `job` using which can also cancel the coroutine.
+7. Coroutine cancellation is cooperative. A coroutine code has to cooperate to be cancellable. Otherwise, we cannot cancel it midway during its execution even after calling `Job.cancel()`.
+8. The `async` function starts a coroutine in parallel, similar to the `launch` function. However, it waits for a coroutine to complete before starting another coroutine.
+9. A coroutine dispatcher determines the thread or threads the corresponding coroutine uses for its execution. The coroutine dispatcher can confine coroutine execution to a specific thread, dispatch it to a thread pool, or let it run unconfined.
+10. Coroutines are lightweight compared to threads. A thread gets blocked while a coroutine is suspended leaving the thread to continue execution, thus allowing the same thread to be used for running multiple coroutines.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/kotlin/coroutines).

@@ -46,7 +46,8 @@ fun main() = runBlocking{
 suspend fun longRunningTask(){
     println("executing longRunningTask on...: ${Thread.currentThread().name}")
     delay(1000)
-    println("longRunningTask ends on thread ...: ${Thread.currentThread().name}")
+    println(
+     "longRunningTask ends on thread ...: ${Thread.currentThread().name}")
 }
 ```
 Let us understand what this code does:
@@ -75,14 +76,16 @@ The syntax of a suspending function is similar to a regular function except for 
 suspend fun longRunningTask(){
     println("executing longRunningTask on...: ${Thread.currentThread().name}")
     delay(1000)
-    println("longRunningTask ends on thread ...: ${Thread.currentThread().name}")
+    println(
+     "longRunningTask ends on thread ...: ${Thread.currentThread().name}")
 }
 
 fun main() = runBlocking{
   ...
   ...
     launch {
-        longRunningTask()  // calling the suspending function
+        // calling the suspending function
+        longRunningTask()  
     }
   ...
   ...
@@ -105,7 +108,8 @@ The `launch` coroutine builder starts a new coroutine without blocking the curre
 fun main() = runBlocking{
     println("My program runs...: ${Thread.currentThread().name}")
 
-    val job:Job = launch { // launch new coroutine and keep a reference to its Job
+    // launch new coroutine and keep a reference to its Job
+    val job:Job = launch { 
         longRunningTask()
     }
 
@@ -115,9 +119,11 @@ fun main() = runBlocking{
 }
 
 suspend fun longRunningTask(){
-    println("executing longRunningTask on...: ${Thread.currentThread().name}")
+    println(
+     "executing longRunningTask on...: ${Thread.currentThread().name}")
     delay(1000)
-    println("longRunningTask ends on thread ...: ${Thread.currentThread().name}")
+    println(
+     "longRunningTask ends on thread ...: ${Thread.currentThread().name}")
 }
 ```
 So launch starts the coroutine which will execute the `longRunningTask` function and returns a `Job` object immediately as a reference. We are calling the `join()` method on this `Job` object to make the thread wait until the coroutine execution completes.
@@ -136,7 +142,8 @@ fun main() = runBlocking{
         longRunningTask()
     }
 
-    println("My program run ends...: ${Thread.currentThread().name}")
+    println(
+     "My program run ends...: ${Thread.currentThread().name}")
 }
 ```
 
@@ -159,13 +166,15 @@ fun main() = runBlocking{
     // Fetch the result from Deferred instance with await
     val taskResult = taskDeferred.await() 
 
-    println("program run ends...:  ${taskResult}  ${Thread.currentThread().name}")
+    println("program run ends...:  
+        ${taskResult}  ${Thread.currentThread().name}")
 }
 
 suspend fun generateUniqueID(): String{
     println("executing longRunningTask on...: ${Thread.currentThread().name}")
     delay(1000)
-    println("longRunningTask ends on thread ...: ${Thread.currentThread().name}")
+    println("longRunningTask ends on thread ...: 
+        ${Thread.currentThread().name}")
 
     return UUID.randomUUID().toString()
 }
@@ -190,7 +199,8 @@ fun main() = runBlocking{
 
     // job.cancelAndJoin() // we can also call this in a single step
 
-    println("My program run ends...: ${Thread.currentThread().name}")
+    println(
+        "My program run ends...: ${Thread.currentThread().name}")
 }
 
 suspend fun longRunningFunction(){
@@ -240,7 +250,8 @@ When launch { ... } is used without parameters, it inherits the context (and thu
 ```java
 fun main() = runBlocking {
     launch { // will get its own new thread
-        println("newSingleThreadContext: running in  thread ${Thread.currentThread().name}")
+        println(
+         "newSingleThreadContext: running in  thread ${Thread.currentThread().name}")
         longTask()
     }
     println("completed tasks")

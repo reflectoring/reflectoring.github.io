@@ -120,6 +120,12 @@ hasChildren = true
       url = "/categories/book-notes/"
       weight = 8
 
+      [[main]]
+      parent = "Categories"
+      name = "Kotlin"
+      url = "/categories/kotlin/"
+      weight = 9
+
 # footer menu
 [[footer]]
 name = "Content"

@@ -4,7 +4,7 @@ categories: ["kotlin"]
 date: 2022-05-20T05:00:00
 modified: 2022-05-20T05:00:00
 authors: [pratikdas]
-excerpt: "Coroutines are a design pattern for writing asynchronous programs for running multiple tasks concurrently. Conventionally we execute multiple tasks in parallel on separate threads. But threads are an expensive resource and too many threads lead to a performance overhead. Coroutines are an alternate way of writing asynchronous programs but are much more lightweight compared to threads. They are computations that run on top of threads. We can suspend a coroutine to allow other coroutines to run on the same thread. We can further resume the coroutine to run on the same or a different thread. In this post, we will understand how to use coroutines in Kotlin.
+excerpt: "Coroutines are a design pattern for writing asynchronous programs for running multiple tasks concurrently. Conventionally we execute multiple tasks in parallel on separate threads. But threads are an expensive resource and too many threads lead to performance overhead. Coroutines are an alternate way of writing asynchronous programs but are much more lightweight compared to threads. They are computations that run on top of threads. We can suspend a coroutine to allow other coroutines to run on the same thread. We can further resume the coroutine to run on the same or a different thread. In this post, we will understand how to use coroutines in Kotlin.
 "
 image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: understanding-kotlin-coroutines
@@ -477,7 +477,7 @@ Process finished with exit code 0
 ```
 As we can see from the output, the coroutine starts running in the `main` thread as soon as it is called. It is suspended to allow the `main` thread to run. The coroutine resumes on a different thread: `kotlinx.coroutines.DefaultExecutor` to execute the `println` statement in the `longTask` function.
 
-The unconfined dispatcher is appropriate for coroutines that neither consume CPU time nor update any shared data (like UI) confined to a specific thread.
+The unconfined dispatcher is appropriate for coroutines that neither consume CPU time nor update any shared data (like UI) confined to a specific thread. The unconfined dispatcher should not be used in general code. It is helpful in situations where some operation in a coroutine must be performed immediately. 
 
 ## Cancelling Coroutine Execution﻿
 We might like to cancel long-running jobs before they finish. An example of a situation when we would want to cancel a job will be: when we have navigated to a different screen in a UI-based application (like Android) and are no longer interested in the result of the long-running function. 

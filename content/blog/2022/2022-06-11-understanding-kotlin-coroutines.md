@@ -4,7 +4,7 @@ categories: ["kotlin"]
 date: 2022-05-20T05:00:00
 modified: 2022-05-20T05:00:00
 authors: [pratikdas]
-excerpt: "We use a mix of two kinds of programming models when building applications: synchronous and asynchronous. Synchronous execution means the first task in a program must finish processing before moving on to executing the next task while asynchronous execution means a second task can begin executing in parallel, without waiting for an earlier task to finish. A coroutine is a concurrency design pattern used to write asynchronous programs. They are computations that run on top of threads that can be suspended and resumed. When a coroutine is suspended, the corresponding computation is paused, removed from the thread, and stored in memory leaving the thread free to execute other activities.
+excerpt: "Coroutines are a design pattern for writing asynchronous programs for running multiple tasks concurrently. In asynchronous programs, multiple tasks execute in parallel on separate threads without waiting for the other tasks to complete. Threads are an expensive resource and too many threads lead to a performance overhead due to high memory consumption and CPU usage. Coroutines are an alternate way of writing asynchronous programs but are much more lightweight compared to threads. They are computations that run on top of threads. We can suspend a coroutine to allow other coroutines to run on the same thread. We can further resume the coroutine to run on the same or a different thread. In this post, we will understand how to use coroutines in Kotlin with the help of examples. .
 "
 image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: understanding-kotlin-coroutines
@@ -19,7 +19,7 @@ We can suspend a coroutine to allow other coroutines to run on the same thread. 
 
 When a coroutine is suspended, the corresponding computation is paused, removed from the thread, and stored in memory leaving the thread free to execute other activities. This way we can run many coroutines concurrently using only a small pool of threads thereby using very limited system resources.
 
-In this post, we will understand how to use coroutines in Kotlin with the help of examples. 
+In this post, we will understand how to use coroutines in Kotlin. 
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/kotlin/coroutines" %}}
 
@@ -36,14 +36,66 @@ dependencies {
 ```
 Here we have added the dependency on the Kotlin standard library and the `kotlinx-coroutines-core` library.
 
+## Running a Concurrent Program with Thread
+Let us start by running a program that will execute some statements and also call a long-running function:
+```java
+//Todo: statement1
+//Todo: call longRunningFunction
+//Todo: statement2
+...
+...
+```
+If we execute all the statements in sequence on a single thread, the `longRunningFunction` will block the thread from executing the remaining statements and the program as a whole will take a long time to complete. 
+
+To make it more efficient, we will execute the `longRunningFunction` in a separate thread and let the program continue executing on the main thread:
+
+```java
+import kotlin.concurrent.thread
+
+fun main() {
+    println("My program runs...: 
+        ${Thread.currentThread().name}")
+
+    thread {
+        longRunningTask()
+    }
+
+    println("My program run ends...: 
+        ${Thread.currentThread().name}")
+}
+
+fun longRunningTask(){
+    println("executing longRunningTask on...: 
+        ${Thread.currentThread().name}")
+    Thread.sleep(1000)
+    println("longRunningTask ends on thread ...: 
+        ${Thread.currentThread().name}")
+}
+```
+Here we are simulating the long-running behavior by calling `Thread.sleep()` inside the function: `longRunningTask()`.  We are calling this function inside the `thread` function. This will allow the `main` thread to continue executing without waiting for the `longRunningTask()` function to complete. 
+
+The `longRunningTask()` function will execute in a different thread as we can observe from the output of the `println` statements by running this program :
+```shell
+My program runs...: main
+My program run ends...: main
+executing longRunningTask on...: Thread-0
+longRunningTask ends on thread ...: Thread-0
+
+Process finished with exit code 0
+```
+As we can see in the output, the program starts running on the thread: `main`. It executes the `longRunningTask()` on thread `Thread-0` but does not wait for it to complete and proceeds to execute the next `println()` statement again on the thread: `main`. However, the program ends with exit code `0` only after the `longRunningTask` finishes executing on `Thread-0`.
+
+We will change this program to run using coroutines in the next section.
+
 ## A Simple Coroutine in Kotlin
-Coroutines are known as lightweight threads which means we can run code on coroutines similar to how we run code on threads. Let us see a simple example of running a block of code in a coroutine:
+Coroutines are known as lightweight threads which means we can run code on coroutines similar to how we run code on threads.
+Let us change the earlier program to run the long running function in a coroutine instead of a separate thread as shown below:
 ```java
 fun main() = runBlocking{
     println("My program runs...: ${Thread.currentThread().name}")
 
-    launch {
-        longRunningTask()
+    launch { // starting a coroutine
+        longRunningTask()  // calling the long running function
     }
 
     println("My program run ends...: ${Thread.currentThread().name}")
@@ -51,7 +103,7 @@ fun main() = runBlocking{
 
 suspend fun longRunningTask(){
     println("executing longRunningTask on...: ${Thread.currentThread().name}")
-    delay(1000)
+    delay(1000)  // simulating the slow behavior by adding a delay
     println(
      "longRunningTask ends on thread ...: ${Thread.currentThread().name}")
 }
@@ -75,6 +127,8 @@ longRunningTask ends on a thread ...: main
 Process finished with exit code 0
 ```
 We can see from this output that the program runs on the thread named `main`. It does not wait for the `longRunningTask` to finish and proceeds to execute the next statement and prints `My program run ends...: main`. The coroutine executes concurrently on the same thread as we can see from the output of the two print statements in the `longRunningTask` function.
+
+We will next understand the different components of a coroutine in the following sections.
 
 ## Introducing Suspending Functions
 A suspending function is the main building block of a coroutine. It is just like any other regular function which can optionally take one or more inputs and return an output. The thread running a regular function blocks other functions from running till the execution is complete. This will cause a negative performance impact if the function is a long-running function probably pulling data with an external API over a network. 
@@ -549,86 +603,6 @@ suspend fun readFile(file: File) {
 }
 ```
 Here we are processing a set of files from a directory. We are checking for the cancellation status with `isActive` before processing each file. The `isActive` property returns `true` when the current job is still active (not completed and not canceled yet).
-
-
-
-## Coroutines vs Threads
-Coroutines are known as lightweight threads which means we can run code on coroutines similar to how we run code on threads. Let us understand this with an example of first running a block of code in a separate thread and then changing it to execute in a coroutine. 
-
-Let us run a simple `main()` function inside which we will call a long-running function in another thread:
-```java
-import kotlin.concurrent.thread
-
-fun main() {
-    println("My program runs...: 
-        ${Thread.currentThread().name}")
-
-    thread {
-        longRunningTask()
-    }
-
-    println("My program run ends...: 
-        ${Thread.currentThread().name}")
-}
-
-fun longRunningTask(){
-    println("executing longRunningTask on...: 
-        ${Thread.currentThread().name}")
-    Thread.sleep(1000)
-    println("longRunningTask ends on thread ...: 
-        ${Thread.currentThread().name}")
-}
-```
-Here we are simulating the long-running behavior by calling `Thread.sleep()` inside the function: `longRunningTask()`.  We are calling this function inside the `thread` lambda function. This will allow the `main` thread to continue without waiting for the `longRunningTask()` function to complete. 
-
-The `longRunningTask()` function will execute in a different thread as we can observe from the output of the `println` statements by running this program :
-```shell
-My program runs...: main
-My program run ends...: main
-executing longRunningTask on...: Thread-0
-longRunningTask ends on thread ...: Thread-0
-
-Process finished with exit code 0
-```
-As we can see, the program starts running on the thread: `main`. It executes the `longRunningTask()` on thread `Thread-0` but does not wait for it to complete and proceeds to execute the next `println()` statement again on the thread: `main`. However, the program ends with exit code `0` only after the `longRunningTask` finishes executing on `Thread-0`.
-
-Let us now compare this behaviour of using Thread with coroutine by executing the `longRunningTask` in a coroutine:
-
-```java
-fun main() = runBlocking{
-    println("My program runs...: ${Thread.currentThread().name}")
-
-    launch {
-        longRunningTask()
-    }
-
-    println(
-        "My program run ends...: ${Thread.currentThread().name}")
-}
-
-suspend fun longRunningTask(){
-    println("executing longRunningTask on...: 
-        ${Thread.currentThread().name}")
-    delay(1000)
-    println("longRunningTask ends on thread ...: 
-        ${Thread.currentThread().name}")
-}
-```
-Here we are calling the same function: `longRunningTask()` but inside the `runBlocking` function. 
-
-We can observe a slightly different behavior when we run this program:
-
-```shell
-My program runs...: main
-My program run ends...: main
-executing longRunningTask on...: main
-longRunningTask ends on thread ...: main
-
-Process finished with exit code 0
-```
-We can compare this output with the previous output of our program written with Threads. The coroutine executes concurrently on the same thread `main` as we can see from the output of the two print statements in the `longRunningTask` function.
-
-**A thread gets blocked while a coroutine is suspended leaving the thread to continue execution**
 
 ## Conclusion 
 In this article, we understood the different ways of using Coroutines in Kotlin. Here are some important points to remember:

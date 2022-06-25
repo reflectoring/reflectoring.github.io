@@ -4,7 +4,7 @@ categories: ["kotlin"]
 date: 2022-05-20T05:00:00
 modified: 2022-05-20T05:00:00
 authors: [pratikdas]
-excerpt: "Coroutines are a design pattern for writing asynchronous programs for running multiple tasks concurrently. In asynchronous programs, multiple tasks execute in parallel on separate threads without waiting for the other tasks to complete. Threads are an expensive resource and too many threads lead to a performance overhead due to high memory consumption and CPU usage. Coroutines are an alternate way of writing asynchronous programs but are much more lightweight compared to threads. They are computations that run on top of threads. We can suspend a coroutine to allow other coroutines to run on the same thread. We can further resume the coroutine to run on the same or a different thread. In this post, we will understand how to use coroutines in Kotlin with the help of examples. .
+excerpt: "Coroutines are a design pattern for writing asynchronous programs for running multiple tasks concurrently. Conventionally we execute multiple tasks in parallel on separate threads. But threads are an expensive resource and too many threads lead to a performance overhead. Coroutines are an alternate way of writing asynchronous programs but are much more lightweight compared to threads. They are computations that run on top of threads. We can suspend a coroutine to allow other coroutines to run on the same thread. We can further resume the coroutine to run on the same or a different thread. In this post, we will understand how to use coroutines in Kotlin.
 "
 image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: understanding-kotlin-coroutines
@@ -294,7 +294,7 @@ fun <T> CoroutineScope.async(
 ): Deferred<T>
 ```
 
-The `async{}` function takes the same three parameters as a `launch{}` function but returns a `Deferred<T>` instead of `Job`.
+The `async{}` function takes the same three parameters as a `launch{}` function but returns a `Deferred<T>` instance instead of `Job`. We can fetch the result of the computation performed in the coroutine from the `Deferred<T>` instance by calling the `await()` method.
 
 
 We can use `async` as shown in this example:
@@ -323,7 +323,7 @@ In this example, we are generating a unique identifier in a suspending function:
 
 Here type of `T` is `String` since the suspending function `generateUniqueID` returns a value of type `String`. 
 
-Next, we are calling the `await()` method on the deferred instance: `taskDeferred` to extract the result.
+Next, we are calling the `await()` method on the deferred instance: `taskDeferred` to extract the result. 
 
 We get the following output by running the program:
 ```shell
@@ -522,7 +522,7 @@ Process finished with exit code 0
 ```
 We can see the `longRunningFunction` executing till step `2` and then stopping after we call `cancel` on the `job` object. Instead of two statements for `cancel` and `join`, we can also use a Job extension function: `cancelAndJoin` that combines `cancel` and `join` invocations.
 
-## Cancellable Coroutine
+## Canceling Coroutines
 As explained in the previous section, we need to cancel coroutines to avoid doing more work than needed to save on memory and processing resources. We need to ensure that we control the life of the coroutine and cancel it when it is no longer needed.
 
 A coroutine code has to cooperate to be cancellable. We need to ensure that all the code in a coroutine is cooperative with cancellation, by checking for cancellation periodically or before beginning any long-running task. 
@@ -610,10 +610,10 @@ In this article, we understood the different ways of using Coroutines in Kotlin.
 2. Coroutines are computations that run on top of threads that can be suspended and resumed. 
 3. When a coroutine is "suspended", the corresponding computation is paused, removed from the thread, and stored in memory leaving the thread free to execute other activities.
 4. Coroutines are started by coroutine builders which also establish a scope.
-5. `launch`, `async`, and `runBlocking` are three types of coroutine builders.
-6. The `launch` function returns `job` using which can also cancel the coroutine.
+5. `launch{}`, `async{}`, and `runBlocking{}` are different types of coroutine builders.
+6. The `launch` function returns `job` using which can also cancel the coroutine. The `async` function returns a `Deferred<T>` instance. We can fetch the result of the computation performed in the coroutine from the `Deferred<T>` instance by calling the `await()` method.
 7. Coroutine cancellation is cooperative. A coroutine code has to cooperate to be cancellable. Otherwise, we cannot cancel it midway during its execution even after calling `Job.cancel()`.
-8. The `async` function starts a coroutine in parallel, similar to the `launch` function. However, it waits for a coroutine to complete before starting another coroutine.
+8. The `async` function starts a coroutine in parallel, similar to the `launch{}` function. However, it waits for a coroutine to complete before starting another coroutine.
 9. A coroutine dispatcher determines the thread or threads the corresponding coroutine uses for its execution. The coroutine dispatcher can confine coroutine execution to a specific thread, dispatch it to a thread pool, or let it run unconfined.
 10. Coroutines are lightweight compared to threads. A thread gets blocked while a coroutine is suspended leaving the thread to continue execution, thus allowing the same thread to be used for running multiple coroutines.
 

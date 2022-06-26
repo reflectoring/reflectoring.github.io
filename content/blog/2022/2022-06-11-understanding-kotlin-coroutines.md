@@ -23,19 +23,6 @@ In this post, we will understand how to use coroutines in Kotlin.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/kotlin/coroutines" %}}
 
-## Adding the Dependencies for Coroutines
-The Kotlin language gives us basic constructs for writing coroutines but more useful constructs built on top of the basic coroutines are available in the `kotlinx-coroutines-core` library. So we need to add the dependency to the `kotlinx-coroutines-core` library before starting to write coroutines:
-
-Our build tool of choice is Gradle, so the dependency on the `kotlinx-coroutines-core` library will look like this:
-
-```groovy
-dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2'
-}
-```
-Here we have added the dependency on the Kotlin standard library and the `kotlinx-coroutines-core` library.
-
 ## Running a Concurrent Program with Thread
 Let us start by running a program that will execute some statements and also call a long-running function:
 ```java
@@ -85,7 +72,20 @@ Process finished with exit code 0
 ```
 As we can see in the output, the program starts running on the thread: `main`. It executes the `longRunningTask()` on thread `Thread-0` but does not wait for it to complete and proceeds to execute the next `println()` statement again on the thread: `main`. However, the program ends with exit code `0` only after the `longRunningTask` finishes executing on `Thread-0`.
 
-We will change this program to run using coroutines in the next section.
+We will change this program to run using coroutines in the next sections.
+
+## Adding the Dependencies for Coroutines
+The Kotlin language gives us basic constructs for writing coroutines but more useful constructs built on top of the basic coroutines are available in the `kotlinx-coroutines-core` library. So we need to add the dependency to the `kotlinx-coroutines-core` library before starting to write coroutines:
+
+Our build tool of choice is [Gradle](https://gradle.org), so the dependency on the `kotlinx-coroutines-core` library will look like this:
+
+```groovy
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2'
+}
+```
+Here we have added the dependency on the Kotlin standard library and the `kotlinx-coroutines-core` library.
 
 ## A Simple Coroutine in Kotlin
 Coroutines are known as lightweight threads which means we can run code on coroutines similar to how we run code on threads.
@@ -147,7 +147,8 @@ Functions marked with the suspend keyword are transformed at compile time and ma
 
 ```java
 fun main() = runBlocking{
-    println("${Instant.now()}: My program runs...: ${Thread.currentThread().name}")
+    println("${Instant.now()}: 
+        My program runs...: ${Thread.currentThread().name}")
 
     val productId = findProduct()
 
@@ -170,12 +171,14 @@ suspend fun fetchPrice(productId: String) : Double{
 }
 
 fun findProduct() : String{
-    println("${Instant.now()}: findProduct on...: ${Thread.currentThread().name}")
+    println("${Instant.now()}: 
+        findProduct on...: ${Thread.currentThread().name}")
     return "P12333"
 }
 
 fun updateProduct() : String{
-    println("${Instant.now()}: updateProduct on...: ${Thread.currentThread().name}")
+    println("${Instant.now()}: 
+        updateProduct on...: ${Thread.currentThread().name}")
     return "Product updated"
 }
 ```
@@ -188,12 +191,12 @@ The `launch{}` function starts a coroutine as explained earlier. We are passing 
 
 Let us run this program to observe how the coroutine suspends and allows the thread to run the other regular functions: 
 ```shell
-2022-06-24T04:09:40.065300Z: My program runs...: main
-2022-06-24T04:09:40.068720Z: findProduct on...: main
-2022-06-24T04:09:40.070836Z: fetchPrice starts on...: main
-2022-06-24T04:09:40.086331Z: updateProduct on...: main
-2022-06-24T04:09:40.086440Z: My program run ends...: main
-2022-06-24T04:09:42.097901Z: fetchPrice ends on...: kotlinx.coroutines.DefaultExecutor
+2022-06-24T04:09:40..: My program runs...: main
+2022-06-24T04:09:40..: findProduct on...: main
+2022-06-24T04:09:40..: fetchPrice starts on...: main
+2022-06-24T04:09:40..: updateProduct on...: main
+2022-06-24T04:09:40..: My program run ends...: main
+2022-06-24T04:09:42..: fetchPrice ends on.: kotlinx.coroutines.DefaultExecutor
 
 Process finished with exit code 0
 ```
@@ -274,14 +277,17 @@ fun main() = runBlocking{
 suspend fun longRunningTask(){
     println("executing longRunningTask on...: ${Thread.currentThread().name}")
     delay(1000)
-    println("longRunningTask ends on thread ...: ${Thread.currentThread().name}")
+    println("longRunningTask ends on thread ...: 
+        ${Thread.currentThread().name}")
 }
 ```
-Here `launch{}` function is called inside the `runBlocking{}` function. The `launch{}` function starts the coroutine which will execute the `longRunningTask` function and return a `Job` object immediately as a reference. We are calling the `join()` method on this `Job` object which suspends the coroutine leaving the current thread free to do whatever it pleases (like executing another coroutine) in the meantime.
+Here `launch{}` function is called inside the `runBlocking{}` function. The `launch{}` function starts the coroutine which will execute the `longRunningTask` function and return a `Job` object immediately as a reference. 
+
+We are calling the `join()` method on this `Job` object which suspends the coroutine leaving the current thread free to do whatever it pleases (like executing another coroutine) in the meantime.
 
 We can also use the `Job` object to cancel the coroutine when the resulting job is canceled.
 
-### Return Result of suspending Function to the Launching Thread with `async`
+### Return Result of Suspending Function to the Launching Thread with `async`
 The `async` is another way to start a coroutine. Sometimes when we start a coroutine, we might need a value to be returned from that coroutine back to the thread that launched it.
 
 `async` starts a coroutine in parallel similar to launch. But it waits one coroutine to complete before starting another coroutine. The signature of async is shown below:
@@ -308,13 +314,16 @@ fun main() = runBlocking{
 
     val taskResult = taskDeferred.await()
 
-    println("program run ends...:  ${taskResult}  ${Thread.currentThread().name}")
+    println("program run ends...:  
+        ${taskResult}  ${Thread.currentThread().name}")
 }
 
 suspend fun generateUniqueID(): String{
-    println("executing generateUniqueID on...: ${Thread.currentThread().name}")
+    println("executing generateUniqueID on...: 
+        ${Thread.currentThread().name}")
     delay(1000)
-    println("generateUniqueID ends on thread ...: ${Thread.currentThread().name}")
+    println("generateUniqueID ends on thread ...: 
+        ${Thread.currentThread().name}")
 
     return UUID.randomUUID().toString()
 }
@@ -336,7 +345,7 @@ Process finished with exit code 0
 ```
 Here we can see the result of the suspended function printed in the output.
 
-## Coroutine Dispatchers
+## Coroutine Dispatchers: Determine the Thread for the Coroutine to Run
 
 A coroutine dispatcher determines the thread or thread pool the corresponding coroutine uses for its execution. All coroutines execute in a context represented by the `CoroutineContext` interface. The `CoroutineContext` is an indexed set of elements and is accessible inside the coroutine through the property: `CoroutineContext`. The coroutine dispatcher is an important element of this indexed set.
 
@@ -358,7 +367,7 @@ When the `launch{}` function is used without parameters, it inherits the `Corout
 fun main() = runBlocking {
     launch {
         println(
-            "launch default: running in  thread ${Thread.currentThread().name}")
+           "launch default: running in thread ${Thread.currentThread().name}")
         longTask()
     }
 }
@@ -389,8 +398,8 @@ Let us run the following code to check this behavior:
 ```java
 fun main() = runBlocking {
     repeat(1000) {
-        launch(Dispatchers.Default) { // will get dispatched to DefaultDispatcher
-            println("Default  : running in thread ${Thread.currentThread().name}")
+      launch(Dispatchers.Default) { // will get dispatched to DefaultDispatcher
+        println("Default  : running in thread ${Thread.currentThread().name}")
             longTask()
         }
     }
@@ -425,7 +434,7 @@ fun main() = runBlocking {
         // limit to running 3 coroutines in parallel
         val dispatcher = Dispatchers.Default.limitedParallelism(3)
         launch(dispatcher) {
-            println("Default  : running in thread ${Thread.currentThread().name}")
+            println("Default : running in thread ${Thread.currentThread().name}")
             longTask()
         }
     }
@@ -453,15 +462,16 @@ Process finished with exit code 0
 ```
 However, a dedicated thread is an expensive resource. In a real application, the thread must be either released, when no longer needed, using the close function, or reused throughout the application by storing its reference in a top-level variable.
 
-### Dispatchers.Unconfined
+### Run Unconfined with `Dispatchers.Unconfined`
 The `Dispatchers.Unconfined` coroutine dispatcher starts a coroutine in the caller thread, but only until the first suspension point. After suspension, it resumes the coroutine in the thread that is fully determined by the suspending function that was invoked. 
 
 Let us modify our previous example to pass a parameter: `Dispatchers.Unconfined` to the `launch{}` function:
 ```java
 fun main() = runBlocking {
     launch(Dispatchers.Unconfined) { // not confined -- will work with main thread
-        println("Unconfined : running in thread ${Thread.currentThread().name}")
-        longTask()
+      println(
+        "Unconfined : running in thread ${Thread.currentThread().name}")
+      longTask()
     }
     println("completed tasks")
 }

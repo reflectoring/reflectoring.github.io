@@ -1,20 +1,21 @@
 ---
 title: "Run Your Gradle Build Anywhere with the Gradle Wrapper"
 categories: ["Java"]
-date: 2022-07-03 00:00:00 +1100 
-modified: 2022-07-03 00:00:00 +1100
+date: 2022-07-04 00:00:00 +1100 
+modified: 2022-07-04 00:00:00 +1100
 authors: [saikat]
-excerpt: "Tutorial on Gradle Wrapper Usage"
+description: "A short article about the Gradle Wrapper - what problem it solves, how to set it up, and how it works"
+image: images/stock/0076-airmail-1200x628-branded.jpg
 url: gradle-wrapper
 ---
 
 [Gradle](https://gradle.org/) is a build automation tool that supports multi-language development. It is helpful to build, test, publish, and deploy software on any platform. In this article, we will learn about the [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html) - what it is, when to use it, how to use it, etc.
 
-## What Is Gradle Wrapper?
+## What Is the Gradle Wrapper?
 
 The Gradle Wrapper is basically a script. It will **ensure that the required version of Gradle is downloaded and used for building the project**. This is the recommended approach to executing Gradle builds.
 
-## When to Use Gradle Wrapper?
+## When To Use the Gradle Wrapper?
 
 The Wrapper is an **effective way to make the build environment independent**. No matter where the end-user is building the project, it will always download the appropriate version of Gradle and use it accordingly. 
 
@@ -31,15 +32,15 @@ Once the user builds the project using Gradle Wrapper, then the following steps 
 The Wrapper will not download the Gradle distribution if it is already cached in the system.
 {{% /info %}}
 
-## How to Use the Gradle Wrapper
+## How To Use the Gradle Wrapper
 
 There are mainly three scenarios for Gradle Wrapper usage. Let's learn more about these.
 
-### Setting up Gradle Wrapper for a New Project
+### Setting Up the Gradle Wrapper for a New Project
 
 First, we need to install Gradle to invoke the Wrapper task. You can refer to the official [installation guide](https://docs.gradle.org/current/userguide/installation.html). Once the installation is complete, we are good to go for the next step. 
 
-**In this tutorial, we will use Gradle 7.4.2 version.**
+**In this tutorial, we will use Gradle version 7.4.2.**
 
 Now, let's open the terminal, navigate to the required folder/directory and run the command `gradle init`. 
 
@@ -89,9 +90,9 @@ We need to commit these files into version control so that the Wrapper script be
 
 We just tried the first way to create the Wrapper. Let's move on to the next.
 
-### Setting up Gradle Wrapper for an Existing Project
+### Setting Up the Gradle Wrapper for an Existing Project
 
-You may also want to create the Wrapper for your existing Gradle projects. There is a `wrapper` task available for such requirements. The only pre-requisite is that you already have a `settings.gradle` file in your project directory. 
+You may also want to create the Wrapper for your existing Gradle projects. There is a `wrapper` task available for this use case. The only pre-requisite is that you already have a `settings.gradle` file in your project directory. 
 
 Now, when we run the command `gradle wrapper` from that directory, it will create the Wrapper specific files:
 
@@ -104,7 +105,7 @@ BUILD SUCCESSFUL in 697ms
 
 If you need help on the Wrapper task, then the `gradle help --task wrapper` command is all you need.
 
-### Executing Gradle Build Using the Wrapper
+### Executing a Gradle Build Using the Wrapper
 
 Once we have a project bootstrapped with the Wrapper files, running the Gradle build is straightforward.
 
@@ -148,12 +149,12 @@ We will use `./gradlew` in the following examples. Please use `gradlew.bat` inst
 
 In a typical Wrapper setup, you will encounter the following files:
 
-|File Name                    |Usage                                                                                              |
-|-----------------------------|---------------------------------------------------------------------------------------------------|
-|`gradle-wrapper.jar`         |The Wrapper JAR file containing code to download the Gradle distribution.                          |
-|`gradle-wrapper.properties`  |The properties file configuring the Wrapper runtime behavior.                                      |
-|`gradlew`                    |A shell script for executing the build.                                                            |
-|`gradlew.bat`                |A Windows batch script for running the build.                                                      |
+|File Name                    | Usage                                                                                                                                                        |
+|-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|`gradle-wrapper.jar`         | The Wrapper JAR file containing code to download the Gradle distribution.                                                                                    |
+|`gradle-wrapper.properties`  | The properties file configuring the Wrapper runtime behavior. Most importantly, this is where you can control the version of Gradle that is used for builds. |
+|`gradlew`                    | A shell script for executing the build.                                                                                                                      |
+|`gradlew.bat`                | A Windows batch script for running the build.                                                                                                                |
 
 Normally the `gradle-wrapper.properties` contains the following data:
 ```properties
@@ -169,6 +170,8 @@ zipStorePath=wrapper/dists
 You might have to update the Gradle version in the future. We can achieve this by running the command `./gradlew wrapper --gradle-version <required_gradle_version>` from a project containing Wrapper scripts. 
 
 Then, we can check if the version is duly updated by running the `./gradlew --version` command.
+
+You can also change the version number in the `distributionUrl` property in the `gradle-wrapper.properties` file. The next time `./gradlew` is called, it will download the new version of Gradle.
 
 ## How to Use a Different Gradle URL?
 

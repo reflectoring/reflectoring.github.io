@@ -6,7 +6,7 @@ modified: 2022-07-14T05:00:00
 authors: [pratikdas]
 excerpt: "Coroutines are a design pattern for writing asynchronous programs for running multiple tasks concurrently. Conventionally we execute multiple tasks in parallel on separate threads. But threads are an expensive resource and too many threads lead to performance overhead. Coroutines are an alternate way of writing asynchronous programs but are much more lightweight compared to threads. They are computations that run on top of threads. We can suspend a coroutine to allow other coroutines to run on the same thread. We can further resume the coroutine to run on the same or a different thread. In this post, we will understand how to use coroutines in Kotlin.
 "
-image: images/stock/0046-rack-1200x628-branded.jpg
+image: images/stock/0054-bee-1200x628-branded.jpg
 url: understanding-kotlin-coroutines-tutorial
 ---
 Coroutines are a design pattern for writing asynchronous programs for running multiple tasks concurrently. 

@@ -1,13 +1,13 @@
 ---
 title: "Understanding Kotlin Coroutines"
 categories: ["kotlin"]
-date: 2022-05-20T05:00:00
-modified: 2022-05-20T05:00:00
+date: 2022-07-14T05:00:00
+modified: 2022-07-14T05:00:00
 authors: [pratikdas]
 excerpt: "Coroutines are a design pattern for writing asynchronous programs for running multiple tasks concurrently. Conventionally we execute multiple tasks in parallel on separate threads. But threads are an expensive resource and too many threads lead to performance overhead. Coroutines are an alternate way of writing asynchronous programs but are much more lightweight compared to threads. They are computations that run on top of threads. We can suspend a coroutine to allow other coroutines to run on the same thread. We can further resume the coroutine to run on the same or a different thread. In this post, we will understand how to use coroutines in Kotlin.
 "
-image: images/stock/0118-keyboard-1200x628-branded.jpg
-url: understanding-kotlin-coroutines
+image: images/stock/0046-rack-1200x628-branded.jpg
+url: understanding-kotlin-coroutines-tutorial
 ---
 Coroutines are a design pattern for writing asynchronous programs for running multiple tasks concurrently. 
 
@@ -133,7 +133,7 @@ We will next understand the different components of a coroutine in the following
 ## Introducing Suspending Functions
 A suspending function is the main building block of a coroutine. It is just like any other regular function which can optionally take one or more inputs and return an output. The thread running a regular function blocks other functions from running till the execution is complete. This will cause a negative performance impact if the function is a long-running function probably pulling data with an external API over a network. 
 
-To mitigate this, we need to change the regular function into a suspending function and call it from a coroutine scope
+To mitigate this, we need to change the regular function into a suspending function and call it from a coroutine scope.
 Calling the suspending function will pause/suspend the function and allow the thread to perform other activities. The paused/suspended function can resume after some time to run on the same or a different thread.
 
 The syntax of a suspending function is also similar to a regular function with the addition of the `suspend` keyword as shown below: 
@@ -185,7 +185,7 @@ fun updateProduct() : String{
 
 As we can see in this example, the `findProduct()` and `updateProduct()` functions are regular functions. The `fetchPrice()` function is a slow function which we have simulated by adding a `delay()` function. 
 
-In the `main()` function we are first calling the `findProduct()` function and then calling the `fetchPrice()` suspending function with the `launch{}` function. After suspension it resumes the coroutine in the thread  After that we are calling the `updateProduct()` function. 
+In the `main()` function we are first calling the `findProduct()` function and then calling the `fetchPrice()` suspending function with the `launch{}` function. After suspension it resumes the coroutine in the thread. After that we are calling the `updateProduct()` function. 
 
 The `launch{}` function starts a coroutine as explained earlier. We are passing a coroutine dispatcher: `Dispatchers.Unconfined` to the `launch` function which controls the threads on which the coroutine will start and resume. We will understand more about coroutine dispatchers in the subsequent sections.
 

@@ -5,7 +5,7 @@ date: 2022-07-19 00:00:00 +1100
 authors: ["ajibade"]
 description: "Introducing Node Js Developers to Logging Using Winston Loggers"
 image: images/stock/0125-nodejs-logging.jpg
-url: logging
+url: winston-logger
 ---
 
 Logging is used to provide accurate context about what occurs in our application, it is the documentation of all events that happen within an application. Logging is a great way to retrace all steps taken prior to an error/event in applications to understand them better.

@@ -15,7 +15,6 @@ Large scale applications should have error/event logs, especially for significan
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/logging-file" %}}
 
 ## What Should I Log In My Application?
-
 Most Applications use logs for the purpose of debugging and troubleshooting. However, logs can be used for a variety of things including studying application systems, improving business logic and decisions, customer behavioural study, data mining, etc.
 
 Here is a list of possible events that our application should log.

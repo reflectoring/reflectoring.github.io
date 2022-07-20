@@ -65,7 +65,78 @@ This way the state machine executes one state after another till it has no more 
 
 Each state takes an input and generates an output. The output of a state is fed as the input of the next state. We also have mechanisms for transforming the inputs and the outputs with JSONpath expressions. We will understand these concepts further by implementing the checkout process with a state machine. 
 
-## Input for the Checkout Process
+
+
+## Creating the Lambda Functions for Invoking from the State Machine
+We will add the first step to the state machine for fetching customer. We will use a AWS lambda function to fetch the customer data which looks like the following:
+
+```js
+exports.handler = async (event, context, callback) => {
+    console,log(`input: ${event.customer_id}`)
+    // TODO fetch from database
+    callback(null,
+                {
+                    customer_id: event.customer_id, 
+                    customer_name: "John Doe", 
+                    payment_pref: "Credit Card",
+                    email: "john.doe@yahoo.com", 
+                    mobile: "677896678"
+                }
+            )
+};
+
+```
+This lambda takes `customer_id` as input and returns a customer record corresponding to the `customer_id`. Since the lambda function is not the focus of this post, we are returning a hardcoded value of customer data instead of fetching it from the database.
+
+Similarly our lambda function for fetching price looks like this:
+
+```js
+exports.handler = async (event, context, callback) => {
+    const item_no = event.item_no
+    console.log(`item::: ${item_no}`)
+   
+   // TODO fetch price from database
+    const price = {item_no: item_no, price: "123.45", lastUpdated: "2022-06-12"}
+    callback(null, price)
+}
+
+```
+This lambda takes `item_no` as input and returns a pricing record corresponding to the `item_no`. 
+
+## Defining the Checkout Process with a State Machine
+After defining the lambda functions and getting an understanding of the basic structure of a state machine, let us now define our Checkout Process. 
+
+Let us create the state machine from the AWS management console. We can either choose to use the visual workflow editor or ASL for defining our state machine. 
+{{% image alt="checkout process" src="images/posts/aws-step-function/basic-workflow.png" %}}
+
+We have given a name and a description and used the defaut type: `standard`.
+
+Each step of the Checkout Process will be a state in the state machine.
+Let us now add the steps for fetching the customer and fetching the price to the state machine. These two processes are not dependent on each other. So we can call them in parallel. Our state machine with these two steps looks like this in the visual editor:
+
+{{% image alt="checkout process with 2 steps" src="images/posts/aws-step-function/2-steps.png" %}}
+
+As we can see in this visual, our state machine consists of 2 states: `fetch customer` and `fetch price`. These are defined as 2 branches of a state of type `parallel` which makes them execute in parallel. 
+
+The `fetch price` state is called from a `Map` state which iterates over each item in the cart to fetch their price. We have added a `pass` state of type : `pass` after the parallel step. 
+
+The `pass` type state acts as a placeholder and we can manipulate the output from the parallel state. 
+
+We also have a start and end.
+
+
+## Processing Inputs with InputPath and Parameters 
+The input to a Step Functions is sent in JSON format which is then passed to the first state in the state machine. Each state in the state machine receives JSON data as input and usually generate JSON as output to be passed to the next state. 
+
+We filter and manipulate this data through using JSONPath expressions through the following stages:
+
+1. InputPath takes JSONPath attribute to extract only the parts of the input which is required by the state.
+2. Parameters: Parameters field enables us to pass a collection of key-value pairs, where the values are either static values that we define in our state machine definition, or that are selected from the input using a path.
+
+
+Let us add these as this information flows from one state to the next state. 
+
+### Input to the State Machine 
 The checkout process will take the checkout request as input in the following JSON format:
 
 ```json
@@ -94,108 +165,122 @@ The checkout process will take the checkout request as input in the following JS
 ```
 The input `checkout_request` consists of a cusomer identifier: `customer_id` and items in `cart_items`.
 
-## Creating the Lambda Functions for Invoking from the State Machine
-We will add the first step to the state machine for fetching customer. We will use a AWS lambda function to fetch the customer data which looks like the following:
 
-```js
-exports.handler = async (event, context, callback) => {
-    console,log(`input: ${event.customer_id}`)
-    // TODO fetch from database
-    callback(null,
-                {
-                    customer_id: event.customer_id, 
-                    customer_name: "pratik", 
-                    payment_pref: "Credit Card",
-                    email: "pratikd@yahoo.com", 
-                    mobile: "677896678"
-                }
-            )
-};
-
-```
-This lambda takes `customer_id` as input and returns a customer record corresponding to the `customer_id`. Since the lambda function is not the focus of this post, we are returning a hardcoded value of customer data instead of fetching it from the database.
-
-Similarly our lambda function for fetching price looks like this:
-
-```js
-exports.handler = async (event, context, callback) => {
-    const item_no = event.item_no
-    console.log(`item::: ${item_no}`)
-   
-   // TODO fetch price from database
-    const price = {item_no: item_no, price: "123.45", lastUpdated: "2022-06-12"}
-    callback(null, price)
-}
-
-```
-This lambda takes `item_no` as input and returns a pricing record corresponding to the `item_no`. 
-
-## Defining the Checkout Process with a State Machine
-After an understanding of the basic structure of a state machine, let us now use it to define our Checkout Process. Each step of the Checkout Process will be a state.
-
-Let us create the state machine from the AWS management console. We can either choose to use the visual workflow editor or ASL. 
-{{% image alt="checkout process" src="images/posts/aws-step-function/basic-workflow.png" %}}
-
-We have given a name and a description and used the defaut type: `standard`.
-
-Let us now add the steps for fetching the customer and fetching the price to the state machine. These two processes are not dependent on each other. So we can call them in parallel. Our state machine with these two steps looks like this in the visual editor:
-
-{{% image alt="checkout process with 2 steps" src="images/posts/aws-step-function/2-steps.png" %}}
-
-As we can see in this visual, the state machine consists of 2 states: `fetch customer` and `fetch price`. The `fetch price` state is called from a `Map` state which iterates to fetch price for different items in the cart.
-
-We will use the visual editor and used the lambda invoker from the `action` toolbox.
-The lambda function needs an input in the form `"customer_id" : "343434"`. For this we need to prepare our input before calling the lambda function. We do this using `inputPath` and `parameters`. InputPath takes JSONPath attribute to extract parts of the in
-
-We have given a name to the state
-
-checkout process will have the following states:
- 1. `fetchCustomer`: This will be a state of type `Task` which will fetch customer record from a database. 
-
-
-After `state1` finishes execution,the state machine moves to the next state. A state object consists of the fields: `Type`, `Resource`, `Next`, and `Comment`.
+The lambda function: `fetchcustomer` needs an input in the form `"customer_id" : "343434"`. For this we need to prepare our input before calling the lambda function. We do this using `inputPath` and `parameters`. 
+inputPath: `$.checkout_request.customer_id`
 
 ```json
 {
-  "StartAt": "fetchCustomer",
-  "States": {
-    "fetchCustomer": {...},
-    "fetchPrice": {...},
-    "processPayment": {...}
-  }
+  "customer_id.$": "$"
 }
 ```
-## Adding the Input and Output
-A state object consists of the fields: `Type`, `Resource`, `Next`, and `Comment`.
+
+inputPath: `$.checkout_request.cart_items`
 
 ```json
 {
-  "StartAt": "fetchCustomer",
-  "States": {
-    "fetchCustomer": {
-        "Type" : "Task",
-        "Resource" : "",
-        "Next" : "",
-        "Comment" : ""
+  "item_no.$": "$.item_no"
+}
+```
+
+### Output from the State Machine 
+Here is the output after executing the state machine.
+
+```json
+[
+  {
+    "customer_id": "C6238485",
+    "customer_name": "John Doe",
+    "email": "john.doe@yahoo.com",
+    "mobile": "677896678"
+  },
+  [
+    {
+      "item_no": "I1234",
+      "price": "123.45",
+      "lastUpdated": "2022-06-12"
     },
-    "fetchPrice": {...},
-    "processPayment": {...}
-  }
+    {
+      "item_no": "I1235",
+      "price": "123.45",
+      "lastUpdated": "2022-06-12"
+    },
+    {
+      "item_no": "I1236",
+      "price": "123.45",
+      "lastUpdated": "2022-06-12"
+    }
+  ]
+]
+```
+The output of the state machine consists of outputs from the individual branches of the parallel state combined into an array. 
+## Processing Outputs with OutputPath, ResultSelector, and ResultPath 
+We can further manipulate the results of the state execution using the following fields :
+1. ResultSelector: This field filters the task result to construct a new JSON object using selected elements of the task result.
+2. The ResultPath filter lets you add the task result into the original state input. Use ResultPath if you need a state to output both its input and it's result.
+3. OutputPath filter to select a portion of the effective state output to pass to the next state. It is often used with Task states to filter the result of an API response
+
+To see their usage let us add two more steps for processing payment and placing an order if the payment succeeds. Here is our state machine in the visual editor after adding these two steps:
+
+{{% image alt="checkout process with all steps" src="images/posts/aws-step-function/workflow-full.png" %}}
+
+We have also added a choice type task to fail the execution if the payment processing fails.
+
+Let us apply the transformations:
+
+First we transform the output of the parallel state in the `pass` state by applying the following `parameter` field:
+
+```json
+{
+  "customer.$": "$[0]",
+  "items.$": "$[1]"
 }
 ```
+In this parameters filter We are assigning the first element of the array to a tag named `customer` and second element of the array to a tag named `items`. The tags are appended `.$` to reference a node in the state's JSON input. For example "key2.$": "$.inputValue"). 
+The parameters fileter set in the visual editor lloks like this:
+{{% image alt="parameters filter" src="images/posts/aws-step-function/parameters_filter.png" %}}
 
-A state machine is composed of different types of states:
+This will transform the input data of our `pass` state to:
 
+```json
+"customer" : {
+    "customer_id": "C6238485",
+    "customer_name": "John Doe",
+    "email": "john.doe@yahoo.com",
+    "mobile": "677896678"
+  },
+"items" :   [
+    {
+      "item_no": "I1234",
+      "price": "123.45",
+      "lastUpdated": "2022-06-12"
+    },
+    {
+      "item_no": "I1235",
+      "price": "123.45",
+      "lastUpdated": "2022-06-12"
+    },
+    {
+      "item_no": "I1236",
+      "price": "123.45",
+      "lastUpdated": "2022-06-12"
+    }
+  ]
+```
 
-We can compose it visually or using text in JSON format known as ASL. 
+This is also the output of the `pass` state since we have not set any output filter.
 
-A state machine in AWS Step Function consists of two types of constructs:
-1. Actions
-2. Flows
+The output of the `pass` state is the input of the next state: `process payment` which also invokes a lambda function: `processPayment`. This lambda function takes an input of the form `{"payment_type" : "", "items" : []}`.
 
+To prepare this input we will set the following parameters filter in the `process payment` state:
 
-
-We have a start and end.
+```json
+{
+  "payment_type.$": "$.customer.payment_pref",
+  "items.$": "$.items"
+}
+```
+{{% image alt="checkout process with all steps" src="images/posts/aws-step-function/sm-with-data.png" %}}
 
 ## Managing the Inputs and Outputs
 The same checkout process when developed using the Step function service looks like this: 

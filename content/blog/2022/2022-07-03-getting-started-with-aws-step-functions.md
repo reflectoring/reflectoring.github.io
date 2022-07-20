@@ -280,7 +280,7 @@ To prepare this input we will set the following parameters filter in the `proces
   "items.$": "$.items"
 }
 ```
-{{% image alt="checkout process with all steps" src="images/posts/aws-step-function/sm-with-data.png" %}}
+{{% image alt="checkout process with all steps" src="images/posts/aws-step-function/sm_with_data.png" %}}
 
 ## Managing the Inputs and Outputs
 The same checkout process when developed using the Step function service looks like this: 

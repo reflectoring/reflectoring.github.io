@@ -41,11 +41,11 @@ We can create two types of state machine. State machine executions differ based 
 
 ### State
 States receive input, perform actions to produce some output, and pass the output to other states. States are of different types which determines the nature of the functions a state can perform. Some of the commonly used types are:
-1. Task: A state of type `task` represents a single unit of work performed by a state machine. All the work in a state machine is performed by tasks. The work is performed by using an activity or an AWS Lambda function, or by passing parameters to the API actions of other services.
-2. Parallel: Begin parallel branches of execution 
-3. Map: Dynamically iterate steps
-4. Choice: Make a choice between branches of execution
-5. Fail or Succed: Stop an execution with a failure or success
+1. **Task**: A state of type `task` represents a single unit of work performed by a state machine. All the work in a state machine is performed by tasks. The work is performed by using an activity or an AWS Lambda function, or by passing parameters to the API actions of other services.
+2. **Parallel**: Begin parallel branches of execution 
+3. **Map**: Dynamically iterate steps
+4. **Choice**: Make a choice between branches of execution
+5. **Fail or Succeed**: Stop an execution with a failure or success
 
 The state object represents a task for execution.  It contains the following atributes:
 `Type`: A state can be of type: `Task`
@@ -54,25 +54,27 @@ The state object represents a task for execution.  It contains the following atr
 
 This way the state machine executes one state after another till it has no more states to execute.
 
-Each state takes an input and generates an output. The output of a state is fed as the input of the next state. We also have mechanisms for transforming the inputs and the outputs with JSONpath expressions. We will understand these concepts further by implementing a sample checkout process of an ecommerce application with a state machine. 
+Each state takes an input and generates an output. The output of a state is fed as the input of the next state. We also have mechanisms for transforming the inputs and the outputs with JSONpath expressions. We will understand these concepts further by implementing a sample `checkout` process of an ecommerce application with a state machine. 
 
 ## Introducing The Example: Checkout Process
-Let us take an example of a checkout process in an application. This checkout process will typically consist of the following steps:
+Let us take an example of a `checkout` process in an application. This `checkout` process will typically consist of the following steps:
 
 |Function|Input|Output|Description|
 |-|-|-|-|
-|`fetchCustomer`|customer ID|Customer Data: email, mobile|Fetching Customer information|
-|`fetchPrice`|cart items|Price of each item|Fetching Price of cart items|
-|`processPayment`|cart items|Price of each item|Fetching Price of cart items|
-|`updateInventory`|cart items|`success/failure`|Fetching Price of cart items|
+|`fetch customer`|customer ID|Customer Data: email, mobile|Fetching Customer information|
+|`fetch price`|cart items|Price of each item|Fetching Price of each item in the cart|
+|`process payment`|payment type,cart items|Price of each item|Fetching Price of cart items|
+|`create order`|cstomer ID, cart items with price|`success/failure`|Create order if payment is successful|
 |`notifyCustomer`|customer email,mobile|`success/failure`|Notify customer|
 
-We can execute `fetchCustomer` and `fetchPrice` in parallel. Once these two are complete, we will execute `processPayment`. If it fails, we end the process with an error. If it succeeds, we update the inventory and also notify the customer. Bith these functions can execute asynchronously in parallel and retry on failures.
+When we design the order in which to execute these steps, we need to consider the which steps can execute in parallel and which ones in sequence. 
+
+We can execute the steps for `fetch customer` and `fetch price` in parallel. Once these two steps are complete, we will execute the step for `process payment`. If the payment fails, we will end the checkout process with an error. If the payment succeeds, we will create an order for the customer. The step for `process payment` can be retried for specific number of times on failures.
 
 We will use AWS Step Function to represent this orchestration in the next section.
 
 ## Creating the Lambda Functions for Invoking from the State Machine
-We will add the first step to the state machine for fetching customer. We will use a AWS lambda function to fetch the customer data which looks like the following:
+Let us define skeletal Lambda functions for each of the steps of the `checkout` process. Our Lambda function to fetch the customer data looks like the following:
 
 ```js
 exports.handler = async (event, context, callback) => {
@@ -92,7 +94,7 @@ exports.handler = async (event, context, callback) => {
 ```
 This lambda takes `customer_id` as input and returns a customer record corresponding to the `customer_id`. Since the lambda function is not the focus of this post, we are returning a hardcoded value of customer data instead of fetching it from the database.
 
-Similarly our lambda function for fetching price looks like this:
+Similarly our Lambda function for fetching price looks like this:
 
 ```js
 exports.handler = async (event, context, callback) => {
@@ -107,24 +109,72 @@ exports.handler = async (event, context, callback) => {
 ```
 This Lambda takes `item_no` as input and returns a pricing record corresponding to the `item_no`. 
 
-We will use similar Lambda functions for the other steps of the checkout process. All of them will have skeletal code similar to the `fetch customer` and `fetch price`.
+We will use similar Lambda functions for the other steps of the `checkout` process. All of them will have skeletal code similar to the `fetch customer` and `fetch price`.
 
 ## Defining the Checkout Process with a State Machine
-After defining the Lambda functions and getting an understanding of the basic structure of a state machine, let us now define our Checkout Process. 
+After defining the Lambda functions and getting an understanding of the basic concepts of the Step Function service, let us now define our `checkout` Process. 
 
 Let us create the state machine from the AWS management console. We can either choose to use the visual workflow editor or ASL for defining our state machine. 
-{{% image alt="checkout process" src="images/posts/aws-step-function/basic-workflow.png" %}}
+{{% image alt="checkout process" src="images/posts/aws-step-function/create_state_machine.png" %}}
 
-We have given a name and a description and used the defaut type: `standard`.
+We have selected the type of state machine as `standard` in the first step. In the second step we have added an empty `pass` state to the state machine. In the last step, we have given a name: `checkout` to our state machine and added an IAM role that defines which resources our state machine has permission to access during execution. Our role definition is associated with the following policy:
 
-Each step of the Checkout Process will be a state in the state machine.
-Let us now add the steps for fetching the customer and fetching the price to the state machine. These two processes are not dependent on each other. So we can call them in parallel. Our state machine with these two steps looks like this in the visual editor:
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "lambda:InvokeFunction"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
+```
+This policy will allow the state machine to invoke any Lambda function. We will next add the steps of the `checkout` process in the state machine.
+
+## Adding the States in the State Machine
+Each step of the `checkout` process will be a state in the state machine. 
+
+Let us add the steps of the `checkout` process as different states in the state machine. We will define these states as of type `task` and will call the API: `Lambda: Invoke `. 
+
+The configuration of the state for the `fetch customer` step looks like this in the visual editor:
+
+{{% image alt="State definition" src="images/posts/aws-step-function/state-defn.png" %}}
+
+As we can see we have specified the name of the state as `fetch customer`,  defined the API as `Lambda:invoke` and selected the integration type as `Optimized`. We have provided the ARN of the Lambda function as the API parameter. The corresponding definition of the state in Amazon States Language (ASL) looks like this:
+
+```json
+{
+  "Comment": "state machine for checkout process",
+  "StartAt": "fetch customer",
+  "States": {
+    "fetch customer": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:926501103602:function:fetchCustomer:$LATEST"
+      },
+      "End": true
+    }
+  }
+}
+```
+We will add the other steps with similar conigurations for invoking the corresponding Lambda functions. 
+
+The first two steps: `fetch customer` and `fetch price` are not dependent on each other. So we can call them in parallel. Our state machine after adding these two steps looks like this in the visual editor:
 
 {{% image alt="checkout process with 2 steps" src="images/posts/aws-step-function/2-steps.png" %}}
 
-As we can see in this visual, our state machine consists of 2 states: `fetch customer` and `fetch price`. These are defined as `2` branches of a state of type `parallel` which makes them execute in parallel. 
+As we can see in this visual, our state machine consists of `2` states: `fetch customer` and `fetch price`. We have defined these steps as `2` branches of a state of type `parallel` which allows the state machine to execute them in parallel. 
 
-The `fetch price` state is called from a `Map` state which iterates over each item in the cart to fetch their price. We have added a `pass` state of type : `pass` after the parallel step. 
+We have put the `fetch price` state as a child state of a `map` state. The `map` state allows the state machine to iterate over each item in the cart to fetch their price by executing the task state: `fetch price`. We have next added a state of type : `pass` after the parallel step. 
 
 The `pass` type state acts as a placeholder where we will manipulate the output from the parallel state. 
 
@@ -357,7 +407,7 @@ AWS SDK integrations allow us to make a standard API call on an AWS service from
 ### Integration Patterns
 Step functions integrate with AWS services using three types of service integration patterns. The service integration pattern is specified by appending a suffix in the Resource URL in the task configuration.
 
-* **Request Response**: When you specify a service in the "Resource" string of your task state, and you only provide the resource, Step Functions will wait for an HTTP response and then progress to the next state. Step Functions will not wait for a job to complete.
+* **Request Response**: When we specify a service in the "Resource" string of your task state, and you only provide the resource, Step Functions will wait for an HTTP response and then progress to the next state. Step Functions will not wait for a job to complete.
 
 Call a service and let Step Functions progress to the next state immediately after it gets an HTTP response.
 

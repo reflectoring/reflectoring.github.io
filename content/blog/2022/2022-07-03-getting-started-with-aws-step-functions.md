@@ -42,7 +42,7 @@ We can create two types of state machine. State machine executions differ based 
 1. **Standard**: State machine of type: `Standard` should be used for long-running, durable, and auditable processes.
 2. **Express**: State machine of type: `Express` is used for high-volume, event-processing workloads such as IoT data ingestion, streaming data processing and transformation, and mobile application backends. They can run for up to five minutes.
 
-### State
+### State Types
 States receive input, perform actions to produce some output, and pass the output to other states. States are of different types which determine the nature of the functions a state can perform. Some of the commonly used types are:
 1. **Task**: A state of type `task` represents a single unit of work performed by a state machine. All the work in a state machine is performed by tasks. The work is performed by using an activity or an AWS Lambda function, or by passing parameters to the API actions of other services.
 2. **Parallel**: State of type `parallel` is used to trigger multiple branches of execution.

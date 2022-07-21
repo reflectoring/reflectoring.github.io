@@ -8,20 +8,53 @@ image: images/stock/0117-queue-1200x628-branded.jpg
 url: getting-started-with-aws-step-functions
 ---
 
-We often encounter use cases with complex functions in real life. Among the smarter methods of solving complex functions is by breaking the them into several smaller and simpler functions.The simpler functions ideally carry out a single task, a concept called the single responsibility principle (SRP). 
-
-However the individual tasks still need to coordinate among each other. They might execute in sequence or in parallel or a mix of two and exchange their computed results. This act of coordination between these smaller tasks to achieve a single result for the complex function is called orchestration. 
-
-We see the use of orchestration in many problem areas like coordinating between microservices, data processing, or machine learning workflows.
-
-AWS Step Functions is a serverless orchestration service which we can use to perform different kinds of orchestration between individual functions. The smaller functions could be a AWS Lambda and any other AWS service. 
-
-
-AWS Step Functions is a serverless orchestration service by which we can combine AWS Lambda functions and other AWS services to build complex business applications. We can author the orchestration logic in a declarative style using a JSON based format called the Amazon States Language(ASL). AWS Step functions also provides a powerful graphical console where we can visualize our application’s workflow as a series of steps. 
+AWS Step Functions is a serverless orchestration service by which we can combine AWS Lambda functions and other AWS services to build complex business applications. We can author the orchestration logic in a declarative style using a JSON based format called the Amazon States Language(ASL). AWS Step functions also provides a powerful graphical console where we can visualize our application’s workflow as a series of steps.
 
 In this article we will introduce the concepts of AWS Step Functions and understand its working with the help of an example.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/step-functions" %}}
+
+## Step Functions: Basic Concepts
+
+### State Machine, State, and Transitions
+A state machine is a mathematical model of computation consisting of different states connected with transitions. AWS Step functions also implement a State Machine to represent the orchestration logic. Each step of the orchestration is represented by a state in the state machine and connected to one or more states through transitions.
+
+### Amazon State Language (ASL)
+We define a State machine in JSON format in a structure known as the Amazon States Language (ASL) as shown below:
+
+```json
+{
+  "StartAt": "state1",
+  "States": {
+    "state1": {...},
+    "state2": {...},
+    "state3": {...}
+  }
+}
+```
+This structure represents collection of `3` state objects with names: `state1`, `state2`, `state3`. The state machine starts execution from the state named `state1`. 
+
+### Types of State Machine: Standard vs Express
+We can create two types of state machine. State machine executions differ based on the type. The type of state machine cannot be changed after the state machine is created.
+1. **Standard**: These are ideal for long-running, durable, and auditable workflows
+2. **Express**: ideal for high-volume, event-processing workloads such as IoT data ingestion, streaming data processing and transformation, and mobile application backends. They can run for up to five minutes.
+
+### State
+States receive input, perform actions to produce some output, and pass the output to other states. States are of different types which determines the nature of the functions a state can perform. Some of the commonly used types are:
+1. Task: A state of type `task` represents a single unit of work performed by a state machine. All the work in a state machine is performed by tasks. The work is performed by using an activity or an AWS Lambda function, or by passing parameters to the API actions of other services.
+2. Parallel: Begin parallel branches of execution 
+3. Map: Dynamically iterate steps
+4. Choice: Make a choice between branches of execution
+5. Fail or Succed: Stop an execution with a failure or success
+
+The state object represents a task for execution.  It contains the following atributes:
+`Type`: A state can be of type: `Task`
+`Resource` : ARN of the resource to be executed
+`Next` : Name of the next state which should be executed after the current state finishes execution
+
+This way the state machine executes one state after another till it has no more states to execute.
+
+Each state takes an input and generates an output. The output of a state is fed as the input of the next state. We also have mechanisms for transforming the inputs and the outputs with JSONpath expressions. We will understand these concepts further by implementing a sample checkout process of an ecommerce application with a state machine. 
 
 ## Introducing The Example: Checkout Process
 Let us take an example of a checkout process in an application. This checkout process will typically consist of the following steps:
@@ -37,35 +70,6 @@ Let us take an example of a checkout process in an application. This checkout pr
 We can execute `fetchCustomer` and `fetchPrice` in parallel. Once these two are complete, we will execute `processPayment`. If it fails, we end the process with an error. If it succeeds, we update the inventory and also notify the customer. Bith these functions can execute asynchronously in parallel and retry on failures.
 
 We will use AWS Step Function to represent this orchestration in the next section.
-
-
-## Introducing the State Machine Implemented by Step Functions
-A state machine is a mathematical model of computation consisting of different states connected with transitions. AWS Step functions also implement a State Machine to represent the orchestration logic. Each step of the orchestration is represented by a state. 
-
-We can use a state machine to represent our checkout process. We define a State machine in JSON format in a structure known as the Amazon States Language (ASL) as shown below:
-
-```json
-{
-  "StartAt": "state1",
-  "States": {
-    "state1": {...},
-    "state2": {...},
-    "state3": {...}
-  }
-}
-```
-This structure represents collection of `3` state objects with names: `state1`, `state2`, `state3`. The state machine starts execution from the state named `state1`. 
-
-The state object represents a task for execution. It contains the following atributes:
-`Type`: A state can be of type: `Task`
-`Resource` : ARN of the resource to be executed
-`Next` : Name of the next state which should be executed after the current state finishes execution
-
-This way the state machine executes one state after another till it has no more states to execute.
-
-Each state takes an input and generates an output. The output of a state is fed as the input of the next state. We also have mechanisms for transforming the inputs and the outputs with JSONpath expressions. We will understand these concepts further by implementing the checkout process with a state machine. 
-
-
 
 ## Creating the Lambda Functions for Invoking from the State Machine
 We will add the first step to the state machine for fetching customer. We will use a AWS lambda function to fetch the customer data which looks like the following:
@@ -101,10 +105,12 @@ exports.handler = async (event, context, callback) => {
 }
 
 ```
-This lambda takes `item_no` as input and returns a pricing record corresponding to the `item_no`. 
+This Lambda takes `item_no` as input and returns a pricing record corresponding to the `item_no`. 
+
+We will use similar Lambda functions for the other steps of the checkout process. All of them will have skeletal code similar to the `fetch customer` and `fetch price`.
 
 ## Defining the Checkout Process with a State Machine
-After defining the lambda functions and getting an understanding of the basic structure of a state machine, let us now define our Checkout Process. 
+After defining the Lambda functions and getting an understanding of the basic structure of a state machine, let us now define our Checkout Process. 
 
 Let us create the state machine from the AWS management console. We can either choose to use the visual workflow editor or ASL for defining our state machine. 
 {{% image alt="checkout process" src="images/posts/aws-step-function/basic-workflow.png" %}}
@@ -116,104 +122,38 @@ Let us now add the steps for fetching the customer and fetching the price to the
 
 {{% image alt="checkout process with 2 steps" src="images/posts/aws-step-function/2-steps.png" %}}
 
-As we can see in this visual, our state machine consists of 2 states: `fetch customer` and `fetch price`. These are defined as 2 branches of a state of type `parallel` which makes them execute in parallel. 
+As we can see in this visual, our state machine consists of 2 states: `fetch customer` and `fetch price`. These are defined as `2` branches of a state of type `parallel` which makes them execute in parallel. 
 
 The `fetch price` state is called from a `Map` state which iterates over each item in the cart to fetch their price. We have added a `pass` state of type : `pass` after the parallel step. 
 
-The `pass` type state acts as a placeholder and we can manipulate the output from the parallel state. 
+The `pass` type state acts as a placeholder where we will manipulate the output from the parallel state. 
 
-We also have a start and end.
+Let us add two more steps for processing payment and placing an order if the payment succeeds. Here is our state machine in the visual editor after adding these two steps:
+
+{{% image alt="checkout process with all steps" src="images/posts/aws-step-function/workflow-full.png" %}}
+
+We have also added a state of type `choice` with `2` branches. Each branch has a rule. The branch will execute only if the result of the rule evaluation is true.  
 
 
-## Processing Inputs with InputPath and Parameters 
-The input to a Step Functions is sent in JSON format which is then passed to the first state in the state machine. Each state in the state machine receives JSON data as input and usually generate JSON as output to be passed to the next state. 
+## Processing Inputs and Outputs in a State Machine
+The input to a Step Functions is sent in JSON format which is then passed to the first state in the state machine. Each state in the state machine receives JSON data as input and usually generate JSON as output to be passed to the next state. We can associate different kinds of filters to manipulate data in each state both before and after the task processing.
 
-We filter and manipulate this data through using JSONPath expressions through the following stages:
+### Input Filters: InputPath and Parameters 
+We use the InputPath and Parameters fields to manipulate the data before task processing: 
 
 1. InputPath takes JSONPath attribute to extract only the parts of the input which is required by the state.
 2. Parameters: Parameters field enables us to pass a collection of key-value pairs, where the values are either static values that we define in our state machine definition, or that are selected from the input using a path.
 
+### Output Filters: OutputPath, ResultSelector, and ResultPath 
+We can further manipulate the results of the state execution using the following fields :
+1. ResultSelector: This field filters the task result to construct a new JSON object using selected elements of the task result.
+2. The ResultPath filter lets you add the task result into the original state input. Use ResultPath if you need a state to output both its input and it's result.
+3. OutputPath filter to select a portion of the effective state output to pass to the next state. It is often used with Task states to filter the result of an API response
 
+todo: add diagram...
 Let us add these as this information flows from one state to the next state. 
 
-### Input to the State Machine 
-The checkout process will take the checkout request as input in the following JSON format:
 
-```json
-{
-    "checkout_request": {
-        "customer_id" : "C6238485",
-        "cart_items": [
-            {
-                "item_no": "I1234",
-                "shipping_date": "",
-                "shipping_address": "address_1"
-            },
-            {
-                "item_no": "I1235",
-                "shipping_date": "",
-                "shipping_address": "address_2"
-            },
-            {
-                "item_no": "I1236",
-                "shipping_date": "",
-                "shipping_address": "address_3"
-            }
-        ]
-    }
-}
-```
-The input `checkout_request` consists of a cusomer identifier: `customer_id` and items in `cart_items`.
-
-
-The lambda function: `fetchcustomer` needs an input in the form `"customer_id" : "343434"`. For this we need to prepare our input before calling the lambda function. We do this using `inputPath` and `parameters`. 
-inputPath: `$.checkout_request.customer_id`
-
-```json
-{
-  "customer_id.$": "$"
-}
-```
-
-inputPath: `$.checkout_request.cart_items`
-
-```json
-{
-  "item_no.$": "$.item_no"
-}
-```
-
-### Output from the State Machine 
-Here is the output after executing the state machine.
-
-```json
-[
-  {
-    "customer_id": "C6238485",
-    "customer_name": "John Doe",
-    "email": "john.doe@yahoo.com",
-    "mobile": "677896678"
-  },
-  [
-    {
-      "item_no": "I1234",
-      "price": "123.45",
-      "lastUpdated": "2022-06-12"
-    },
-    {
-      "item_no": "I1235",
-      "price": "123.45",
-      "lastUpdated": "2022-06-12"
-    },
-    {
-      "item_no": "I1236",
-      "price": "123.45",
-      "lastUpdated": "2022-06-12"
-    }
-  ]
-]
-```
-The output of the state machine consists of outputs from the individual branches of the parallel state combined into an array. 
 ## Processing Outputs with OutputPath, ResultSelector, and ResultPath 
 We can further manipulate the results of the state execution using the following fields :
 1. ResultSelector: This field filters the task result to construct a new JSON object using selected elements of the task result.
@@ -237,7 +177,7 @@ First we transform the output of the parallel state in the `pass` state by apply
 }
 ```
 In this parameters filter We are assigning the first element of the array to a tag named `customer` and second element of the array to a tag named `items`. The tags are appended `.$` to reference a node in the state's JSON input. For example "key2.$": "$.inputValue"). 
-The parameters fileter set in the visual editor lloks like this:
+The parameters filter set in the visual editor looks like this:
 {{% image alt="parameters filter" src="images/posts/aws-step-function/parameters_filter.png" %}}
 
 This will transform the input data of our `pass` state to:
@@ -280,87 +220,151 @@ To prepare this input we will set the following parameters filter in the `proces
   "items.$": "$.items"
 }
 ```
+Our state machine with the input and output filters in shown in the diagram:
 {{% image alt="checkout process with all steps" src="images/posts/aws-step-function/sm_with_data.png" %}}
 
-## Managing the Inputs and Outputs
-The same checkout process when developed using the Step function service looks like this: 
+## Data Transformations through the Checkout Process State Machine
+Let us look at how our input data changes by applying input and output filters as we transition through each state. 
 
-
-We can see a visual representation of the checkout process with multiple steps. Let us understand some of the key elements of this representation:
-
-### Inputs
-customerID
-shopping cart
-  items:[
-    item_ID
-    shipping_address
-    delivery_date
-    item_price
-  ]
-
-### Outputs
-order_ID
-shippable_items: [
-   items:[]
-   shipping_address
-   delivery_date
-   delivery_status
-]
-invoice_url
-
-  
-
-### State
-
-fetchCustomer
-InputPath: $.checkout_request.customer_id
-State input after InputPath: 
-ResultSelector: {
-    "customer_email.$": "$.Payload.customer.email"
-  }
-ResultPath: $.checkout_request.customer_email
-OutputPath: $.checkout_request
-Selected output after OutputPath:
+Input to State Machine:
 ```json
 {
-  "customer_id": "C6238485",
-  "cart_items": [
-    {
-      "item_no": "I1234",
-      "shipping_date": "",
-      "shipping_address": "address_1"
-    },
-    {
-      "item_no": "I1235",
-      "shipping_date": "",
-      "shipping_address": "address_2"
-    },
-    {
-      "item_no": "I1236",
-      "shipping_date": "",
-      "shipping_address": "address_3"
+    "checkout_request": {
+        "customer_id" : "C6238485",
+        "cart_items": [
+            {
+                "item_no": "I1234",
+                "shipping_date": "",
+                "shipping_address": "address_1"
+            },
+            {
+                "item_no": "I1235",
+                "shipping_date": "",
+                "shipping_address": "address_2"
+            },
+            {
+                "item_no": "I1236",
+                "shipping_date": "",
+                "shipping_address": "address_3"
+            }
+        ]
     }
-  ],
-  "customer_email": {
-    "customer_email": "tyyuu@gggg.com"
-  }
 }
 ```
+This is the input to our checkout process which is composed of a `customer_id` and an array of items in the shopping cart.
 
+1. State: `Parallel`
+
+State: fetch customer
+Input: Same input as state machine
+Data after filtering with InputPath: `$.checkout_request.customer_id`
+`C6238485`
+Data after applying parameter filter: `{"customer_id.$": "$"}`
+```json
+{"customer_id" : "C6238485"}
+```
+2. State: iterate
+Input: Same input as state machine
+Data after filtering with InputPath: `$.checkout_request.cart_items`
+`[
+            {
+                "item_no": "I1234",
+                ...
+            },
+            {
+                "item_no": "I1235",
+                ..
+            },
+            {
+                "item_no": "I1236",
+                ..
+            }
+]`
+
+3. State: fetch price (for each element of the array: `cart_items`)
+Input: Each element of the array: `cart_items`
+Data after applying parameter filter: `{"item_no.$": "$.item_no"}`
+```json
+{"item_no" : "I1234"}
+```
+
+4. State: Pass
+
+5. State: `process payment`
+
+6. State: `payment success?`
+
+7. State: `create order`
+
+8. Output of state machine
 
 ## Handling Errors in Step Function Workflows
+Let us understand some of the ways we handle errors in Step functions: 
 
+When a state reports an error, the state machine execution fails completely by default.
+States of type `task`, `parallel`, and `map` provide fields for configuring error handling:
+{{% image alt="Error handling" src="images/posts/aws-step-function/error-handling.png" %}}
+We can handle errors by retryring the operation or by a fallback to another state.
 
+### Retrying on Error
+We can retry a task when errors occur by specifying one or more retry rules, called "retriers".
+{{% image alt="Error handling Retry" src="images/posts/aws-step-function/retry-error.png" %}}
+Here we have defined a `retrier` for `3` types of errors: `Lambda.ServiceException`, `Lambda.AWSLambdaException`, and `Lambda.SdkClientException` with the following retry settings:
+* **Interval**: The number of seconds before the first retry attempt. It can take values from `1` which is default to `99999999`.
+* **Max Attempts**: The maximum number of retry attempts. The task will not be retried after number of retries exceed this value. MaxAttempts has a default value of `3` and maximum value of `99999999`.
+* **Backoff Rate**: It is the multiplier by which the retry interval increases with each attempt.
 
-## Step Function States and Amazon States Language
+### Falling Back to a Different State on Error
+We can catch and revert to a fallback state when errors occur by specifying one or more catch rules, called "catchers".
+{{% image alt="Error handling Retry" src="images/posts/aws-step-function/catch-error.png" %}}
+In this example, we are defining a `prepare error` state for to which the `process payment` state can fallback to if it encounters an error of type: `States.TaskFailed`.
 
+The state machine with a `catcher` defined for the `process payment` step looks like this in the visual editor.
+{{% image alt="Error handling catcher in workflow" src="images/posts/aws-step-function/workflow-with-catch.png" %}}
 
+### Handling Lambda Service Exceptions
+As a best practice, we should proactively handle transient service errors in AWS Lambda functions which results in a 500 error, such as `ServiceException`, `AWSLambdaException`, or `SdkClientException`. We can handle these exceptions by retrying  the Lambda function invocation, or by catching the error.
 
-## Types of Step Functions
-Step Functions are of two types:
+## Integration with AWS Services
+When we configure a state of type `task` we need to specify a integration type:
 
-Standard Workflow
-Express Workflow
+{{% image alt="Error handling catcher in workflow" src="images/posts/aws-step-function/integration-type.png" %}}
+
+We can integrate Step Function with AWS services through two types of service integrations: 
+
+### Optimized Integrations
+When we are calling an AWS service with optimized integration, Step Functions provide some additional functionality when the service API is called. For example, invocation of the Lambda service converts its output from an escaped JSON string to a JSON object similar to the format:
+```json
+{
+  "ExecutedVersion": "$LATEST",
+  "Payload": {
+    ...
+  },
+  "SdkHttpMetadata": {
+    ...
+  },
+  "SdkResponseMetadata": {
+    "RequestId": "ac79dacd-7c6f-41c7-bfcf-eea70b43e141"
+  },
+  "StatusCode": 200
+}
+```
+We had used optimized integration for invoking our Lambda functions in the state machine of `checkout process`.
+### AWS SDK Integrations
+AWS SDK integrations allow us to make a standard API call on an AWS service from the state machine. When we use AWS SDK integrations, we specify the service name and API call with optionally, a service integration pattern (explained in the next section). The syntax for specifying the AWS service looks like this:
+`arn:aws:states:::aws-sdk:serviceName:apiAction.[serviceIntegrationPattern]`
+
+### Integration Patterns
+Step functions integrate with AWS services using three types of service integration patterns. The service integration pattern is specified by appending a suffix in the Resource URL in the task configuration.
+
+* **Request Response**: When you specify a service in the "Resource" string of your task state, and you only provide the resource, Step Functions will wait for an HTTP response and then progress to the next state. Step Functions will not wait for a job to complete.
+
+Call a service and let Step Functions progress to the next state immediately after it gets an HTTP response.
+
+* **Running a Job**: Step Functions wait for a request to complete before progressing to the next state. specify the "Resource" field in your task state definition with the .sync suffix appended after the resource URI.
+
+* **Waiting for a Callback with a Task Token**: A task might need to wait for various reasons like: seeking a human approval, integrating with a third party workflow, or calling a legacy systems. In these situations, we can pause Step Functions indefinitely, and wait for an external process or workflow to complete. We pass a task token to the AWS SDK service integrations, and also to some Optimized integrations integrated services during service invocation. The task will pause until it receives that task token back with a `SendTaskSuccess` or `SendTaskFailure` call.
+
 
 ## Conclusion
 

@@ -15,6 +15,7 @@ Large scale applications should have error/event logs, especially for significan
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/logging-file" %}}
 
 ## What Should I Log In My Application?
+
 Most applications use logs for the purpose of debugging and troubleshooting. However, logs can be used for a variety of things including studying application systems, improving business logic and decisions, customer behavioural study, data mining, etc.
 
 Here is a list of possible events that our application should log.
@@ -169,42 +170,41 @@ When we access the above routes via the paths `/` and `/event`, we get logs in J
 ```
 
 ## Winston Method Options
-
 As seen above the `winston.createLogger()` method gives us a number of options to help format and transport our logs.
 
 Let us visit each option and examine the properties and features they offers.
 
 ## Winston Level
-
 Log level is the piece of information in our code that indicates the importance of a specific log message. Using appropriate log levels is one of the best practices for application logging.
 
-Winston's logging levels follow the severity ordering specified by [RFC5424](https://tools.ietf.org/html/rfc5424) and npm logging levels. Custom levels can also be added.
+'winston' by default uses [npm logging levels](https://github.com/winstonjs/winston#logging-levels). Here the severity of all levels is prioritized from the most important to least important from 0 to 6 (highest to lowest).
 
-In the npm logging level, the severity of all levels is prioritized from the most important (0) to least important (6).
+In the npm logging level, the severity of all levels is prioritized from the most important (0) to least important (6):
 
-- **0:** error
-- **1:** warn
-- **2:** info
-- **3:** http
-- **4:** verbose
-- **5:** debug
-- **6:** silly
+- **0 - error**: is a serious problem or failure, that halts current activity but leaves the application in a recoverable state with no effect on other operations. The application can continue working
+- **1 - warn**:  A non-blocking warning about an unusual system exception. These logs provide context for a possible error. it logs warning signs that should be investigated.
+- **2 - Info**: This denotes major events and informative messages about the application's current state. Useful For tracking the flow of the application.
+- **3 - http**: This logs out HTTP request-related messages. HTTP transactions ranging from the host, path, response, requests, etc.
+- **4 - verbose**: Records detailed messages that may contain sensitive information.
+- **5 - debug**: Developers and internal teams should be the only ones to see these log messages. They should be disabled in production environments. These logs will help us debug our code.
+- **6 - silly**: The current stack trace of the calling function should be printed out when silly messages are called. This information can be used to help developers and internal teams debug problems.
 
-Using the appropriate log level to log allows you to consume and route logging output based on message importance.
+Another option is to **explicitly** configure `winston` to use levels severity as specified by [Syslog Protocol](https://datatracker.ietf.org/doc/html/rfc5424#page-11).
 
-_where:_
+- **0 - Emergency**: system is unusable
+- **1 - Alert**: action must be taken immediately
+- **2 - Critical**: critical conditions
+- **3 - Error**: error conditions
+- **4 - Warning**: warning conditions
+- **5 - Notice**: normal but significant condition
+- **6 - Informational**: informational messages
+- **7 - Debug**: debug-level messages
 
-- **Error**: is a serious problem or failure that halts current activity but leaves the application in a recoverable state with no effect on other operations. The application can continue working.
-- **Warn**: A non-blocking warning about an unusual system exception. These logs provide context for a possible error. It logs warning signs that should be investigated.
-- **Info**: This denotes major events and informative messages about the application's current state. Useful For tracking the flow of the application.
-- **HTTP**: This logs out HTTP request-related messages. HTTP transactions ranging from the host, path, response, requests, etc.
-- **Verbose**: Records detailed messages that may contain sensitive information. Verbose was [renamed](https://github.com/aspnet/Announcements/issues/124) to Trace.
-- **Debug**: Developers and internal teams should be the only ones to see these log messages. They should be disabled in production environments. These logs will help us debug our code.
-- **Silly**: The current stack trace of the calling function should be printed out when silly messages are called. This information can be used to help developers and internal teams debug problems.
+If we do not **explicitly** state our `winston` level, `npm` levels will be used.
 
-When we specify a logging level for our Winston logger, it will only log anything at that level or higher.
+When we specify a level we can only log anything at that level or higher.
 
-For example, looking at our `logger.js` file, the level there is set to `debug`. Hence the logger will only output `debug` and higher levels (`info`,`warn` and `error`).
+For example, looking at our `logger.js` file, the level there is set to `debug`. Hence the logger will only output `debug` and higher levels (`info`, `warn` and `error`).
 
 Any level lower than `debug` would not be displayed/output when we call our `logger` method in `app.js`.
 
@@ -255,7 +255,7 @@ In the code snippet above
 - Label, combine and timestamp are log form properties.
 - We defined a function `customFormat` and passed it into the combine method. Any number of formats can be passed into a single format using the `format.combine` method. It is used to combine multiple formats.
 
-_Run `node app.js` to display logs._
+_Run `node app.js` to display logs:_
 
 ```bash
 2022-07-10T00:30:49.559Z [winston custom format] info: Server Listenning On Port 3000

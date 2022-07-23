@@ -181,8 +181,8 @@ Log level is the piece of information in our code that indicates the importance 
 
 In the npm logging level, the severity of all levels is prioritized from the most important (0) to least important (6):
 
-- **0 - error**: is a serious problem or failure, that halts current activity but leaves the application in a recoverable state with no effect on other operations. The application can continue working
-- **1 - warn**:  A non-blocking warning about an unusual system exception. These logs provide context for a possible error. it logs warning signs that should be investigated.
+- **0 - error**: is a serious problem or failure, that halts current activity but leaves the application in a recoverable state with no effect on other operations. The application can continue working.
+- **1 - warn**:  A non-blocking warning about an unusual system exception. These logs provide context for a possible error. It logs warning signs that should be investigated.
 - **2 - Info**: This denotes major events and informative messages about the application's current state. Useful For tracking the flow of the application.
 - **3 - http**: This logs out HTTP request-related messages. HTTP transactions ranging from the host, path, response, requests, etc.
 - **4 - verbose**: Records detailed messages that may contain sensitive information.
@@ -200,9 +200,9 @@ Another option is to **explicitly** configure `winston` to use levels severity a
 - **6 - Informational**: informational messages
 - **7 - Debug**: debug-level messages
 
-If we do not **explicitly** state our `winston` level, `npm` levels will be used.
+If we do not **explicitly** state our `winston` logging level, `npm` levels will be used.
 
-When we specify a level we can only log anything at that level or higher.
+When we specify a logging level for our Winston logger, it will only log anything at that level or higher.
 
 For example, looking at our `logger.js` file, the level there is set to `debug`. Hence the logger will only output `debug` and higher levels (`info`, `warn` and `error`).
 
@@ -465,7 +465,7 @@ When we run `node app.js` again, this generates a new `rotate-%DATE%.log` file i
 
 There are more [option settings](https://github.com/winstonjs/winston-daily-rotate-file#options) to use in the `winston-daily-rotate-file` transport.
 
-### Winston Transports
+### More On Winston Transports
 
 Winston provides more helpful modules, it supports the ability to create custom transports or leverage transports actively supported by [winston contributors](https://github.com/winstonjs/winston/blob/HEAD/docs/transports.md#maintained-by-winston-contributors) and [members of the community](https://github.com/winstonjs/winston/blob/HEAD/docs/transports.md#maintained-by-winston-contributors)
 Here are some popularly used custom transport to check out:

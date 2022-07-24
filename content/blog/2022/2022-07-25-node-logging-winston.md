@@ -1,16 +1,16 @@
 ---
-title: "Node.js Logging: Novice to Expert"
+title: "Node.js Logging with Winston"
 categories: ["Node"]
-date: 2022-07-19 00:00:00 +1100
+date: 2022-07-25 00:00:00 +1100
 authors: ["ajibade"]
 description: "Introducing Node Js Developers to Logging Using Winston Loggers"
-image: images/stock/0125-nodejs-logging.jpg
-url: winston-logger
+image: images/stock/0031-matrix-1200x628-branded.jpg
+url: node-logging-winston
 ---
 
 Logging is used to provide accurate context about what occurs in our application, it is the documentation of all events that happen within an application. Logging is a great way to retrace all steps taken prior to an error/event in applications to understand them better.
 
-Large scale applications should have error/event logs, especially for significant and high-volume activity.
+Large-scale applications should have error/event logs, especially for significant and high-volume activity.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/logging-file" %}}
 
@@ -92,7 +92,7 @@ app.get("/event", (req, res, next) => {
 });
 
 app.listen(3000, () => {
-  console.log("Server Listenning On Port 3000");
+  console.log("Server Listening On Port 3000");
 });
 ```
 
@@ -154,7 +154,7 @@ app.get("/event", (req, res, next) => {
 });
 
 app.listen(3000, () => {
-  logger.info("Server Listenning On Port 3000");
+  logger.info("Server Listening On Port 3000");
 });
 ```
 
@@ -163,7 +163,7 @@ Run `node app.js` to start the server.
 When we access the above routes via the paths `/` and `/event`, we get logs in JSON format.
 
 ```bash
-{"level":"info","message":"Server Listenning On Port 3000"}
+{"level":"info","message":"Server Listening On Port 3000"}
 {"level":"debug","message":"Hello, Winston!"}
 {"level":"debug","message":"The is the home '/' route."}
 {"level":"error","message":"unauthenticated user failed"}
@@ -258,7 +258,7 @@ In the code snippet above
 _Run `node app.js` to display logs:_
 
 ```bash
-2022-07-10T00:30:49.559Z [winston custom format] info: Server Listenning On Port 3000
+2022-07-10T00:30:49.559Z [winston custom format] info: Server Listening On Port 3000
 2022-07-10T00:30:57.484Z [winston custom format] debug: Hello, Winston!
 2022-07-10T00:30:57.485Z [winston custom format] debug: This is the home '/' route.
 2022-07-10T00:31:03.311Z [winston custom format] error: Events Error: Unauthenticated user
@@ -298,7 +298,7 @@ The pretty-printed log output of the command `node app.js` will now look somethi
 
 ```js
 {
-  message: 'Server Listenning On Port 3000',
+  message: 'Server Listening On Port 3000',
   level: 'info',
   label: 'winston custom format',
   timestamp: 'Jul-10-2022 02:02:03'
@@ -375,7 +375,7 @@ In large applications, recording every log message into a single file is not a g
 
 Winston allows us to use multiple transports. It is common for applications to send the same log output to multiple locations.
 
-To use multiple transports we can just add multiple transport implementation to our logging configuration:
+To use multiple transports we can just add multiple transport implementations to our logging configuration:
 
 ```javascript
 const { format, createLogger, transports } = require("winston");
@@ -414,7 +414,7 @@ Each transport definition can contain configuration settings such as `levels`, `
 
 In the production environment, a lot of activity occurs, and storing log messages in files can get out of hand very quickly, even when using multiple transports. Over time log messages become large and bulky to manage.
 
-To solve these issues logs can be rotated based on size, limit and date. log rotation removes old logs based on count, relevance or elapsed day.
+To solve these issues logs can be rotated based on size, limit, and date. log rotation removes old logs based on count, relevance or elapsed day.
 
 Winston provides the `winston-daily-rotate-file` module. It is an external transport used for file rotation, To keep our logs up to date.
 
@@ -529,7 +529,7 @@ Timestamps in logs make it easier to debug issues and help us predict how recent
 
 ### Provide Context
 
-When composing a log message, make sure you stick to clear and concise words, describing the event that occurred as detailed and concise as required and always utilising a widely recognised character set.
+When composing a log message, make sure you stick to clear and concise words, describing the event that occurred as detailed and concisely as required and always using a widely recognised character set.
 
 We may not be able to gather enough information to establish the context of each logged event if our log message is not very detailed.
 
@@ -541,7 +541,7 @@ Sensitive and confidential user information should never make it into your log e
 
 If an attacker can retrieve confidential information from our log, Apart from putting users at risk of being attacked, there are fines or legal data compliance laws that can be enforced against such applications.
 
-Sensitive information is everything from personal identifiable data (PII), health data, financial data, passwords, to IP addresses and similar information.
+Sensitive information is everything from personally identifiable data (PII), health data, financial data, passwords, to IP addresses and similar information.
 
 ## Conclusion
 

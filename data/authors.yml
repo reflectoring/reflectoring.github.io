@@ -312,6 +312,10 @@ ranjani:
   bio: "Fun-loving, curious and enthusiastic IT developer who believes in constant learning."
 
 ajibade:
-  name: "Olunowo Olaoluwa Ajibadde"
-  avatar: "/images/tom/tom.png"
-  bio: "Your author blurb here."
+  name: "olaoluwa ajibade"
+  email: "holaszyd1@gmail.com"
+  avatar: "/images/authors/ajibade.png"
+  github: "ajibade3210"
+  linkedin: "https://www.linkedin.com/in/olaoluwa-ajibade/"
+  bio: "Backend developer who loves to creating incredible apps."
+

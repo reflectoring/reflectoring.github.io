@@ -329,7 +329,9 @@ This is the input to our `checkout` process which is composed of a `customer_id`
 State: fetch customer
 Input: Same input as state machine
 Data after filtering with InputPath: `$.checkout_request.customer_id`
-`C6238485`
+```shell
+C6238485
+```
 Data after applying parameter filter: `{"customer_id.$": "$"}`
 ```json
 {"customer_id" : "C6238485"}
@@ -347,7 +349,8 @@ Output of Lambda function execution:
 2. State: iterate
 Input: Same input as state machine
 Data after filtering with InputPath: `$.checkout_request.cart_items`
-`[
+```json
+[
             {
                 "item_no": "I1234",
                 ...
@@ -360,7 +363,8 @@ Data after filtering with InputPath: `$.checkout_request.cart_items`
                 "item_no": "I1236",
                 ..
             }
-]`
+]
+```
 
 3. State: fetch price (for each element of the array: `cart_items`)
 Input: Each element of the array: `cart_items`
@@ -450,6 +454,7 @@ ResultSelector:
 ```
 Data after ResultSelector:
 ```json
+{
  "items": [..],
  "customer": {"payment_type": "Credit Card","customer_id": "C6238485", ...},
  "payment": 
@@ -462,6 +467,19 @@ Data after ResultSelector:
 ```
 ResultPath: `$.payment`
 OutputPath: `$`
+Output of State:
+```json
+{
+  "items": [..],
+  "customer": {"payment_type": "Credit Card","customer_id": "C6238485", ...},
+  "payment": {
+    "payment_result": {
+      "status": "OK",
+      "total_price": 11274.470000000001
+    }
+  }
+}
+```
 
 6. State: `payment success?`
 Choice rule 1: `$.payment.payment_result.status == "OK"`
@@ -493,7 +511,7 @@ Data after applying the above parameters filter:
 {
   "customer_id": "C6238485",
   "order_id": "oapjjg32g8e",
-  "order_price": 11274.470000000001,
+  "order_price": 11274.47,
   "status": "OK"
 }
 ```

@@ -23,7 +23,7 @@ They are represented by a diagram to visualize the current state of a system as 
  State machines contain at least one state. Transitions represent different events that allow the system to transition from one state to another state. They also have a `start` position from where the execution can start and one or more `end` positions where the execution can end. 
 
 ### Amazon State Language (ASL)
-We define a state machine in JSON format in a structure known as the Amazon States Language (ASL). The `state` is the fundamental element in ASL. The fields of a `state` object varies on the type of the state but the fields: `Type`, `Next`, `InputPath`, and `OutputPath` are common in state of any type. A `state` object in ASL looks like this:
+We define a state machine in JSON format in a structure known as the Amazon States Language (ASL). The `state` is the fundamental element in ASL. The fields of a `state` object vary depending on the type of the state but the fields: `Type`, `Next`, `InputPath`, and `OutputPath` are common in states of any type. A `state` object in ASL looks like this:
 
 ```json
 {
@@ -34,10 +34,10 @@ We define a state machine in JSON format in a structure known as the Amazon Stat
   "Comment": "My State"
 }
 ```
-In this state object we have specified the type of state as `Task` and provided the name of the next state to execute as `My next state`. The fields: `InputPath` and `OutputPath` are filters for input and output data of the state which we will understand in a separate section. 
+In this state object, we have specified the type of state as `Task` and provided the name of the next state to execute as `My next state`. The fields: `InputPath` and `OutputPath` are filters for input and output data of the state which we will understand in a separate section. 
 
 The ASL contains a collection of `state` objects. It has the following mandatory fields:
-* `States` : This field contains a set of `state` objects. Each element of the set is a key-value pair with the name of the state as `key` and an associated `state` object as the value. 
+* `States`: This field contains a set of `state` objects. Each element of the set is a key-value pair with the name of the state as `key` and an associated `state` object as the value. 
 * `StartAt`: This field contains the name of one of the state objects in the `States` collection from where the state machine will start execution.
 
 Amazon States Language (ASL) also has optional fields:
@@ -131,10 +131,12 @@ We will use similar Lambda functions for the other steps of the `checkout` proce
 ## Defining the Checkout Process with a State Machine
 After defining the Lambda functions and getting an understanding of the basic concepts of the Step Function service, let us now define our `checkout` Process. 
 
-Let us create the state machine from the AWS management console. We can either choose to use the Visual workflow editor or ASL for defining our state machine. 
-{{% image alt="checkout process" src="images/posts/aws-step-function/create_state_machine.png" %}}
+Let us create the state machine from the AWS management console. We can either choose to use the Workflow Studio which provides a visual workflow editor or the Amazon States Language (ASL) for defining our state machine. 
+{{% image alt="checkout process" src="images/posts/aws-step-function/create_sm_1_.png" %}}
 
-We have selected the type of state machine as `standard` in the first step. In the second step, we have added an empty `pass` state to the state machine. In the last step, we have given the name: `checkout` to our state machine and added an IAM role that defines which resources our state machine has permission to access during execution. Our role definition is associated with the following policy:
+Here we have selected Workflow Studio to author our state machine. We have also selected the type of state machine as `standard` in the first step. 
+
+Let us also give a name: `checkout` to our state machine and assign an IAM role that defines which resources our state machine has permission to access during execution. Our IAM policy definition is associated with the following policy:
 
 ```json
 {
@@ -279,7 +281,7 @@ We can further manipulate the results of the state execution using the fields: R
 {{% image alt="process output" src="images/posts/aws-step-function/process_output.png" %}}
 1. **ResultSelector**: This field filters the task result to construct a new JSON object using selected elements of the task result.
 2. **ResultPath**: In most cases, we would like to retain the input data for processing by subsequent states of the state machine. For this, we use the ResultPath filter to add the task result to the original state input. 
-3. **OutputPath**: The OutputPath filter is used to select a portion of the effective state output to pass to the next state. It is often used with Task states to filter the result of an API response
+3. **OutputPath**: The OutputPath filter is used to select a portion of the effective state output to pass to the next state. It is often used with Task states to filter the result of an API response.
 
 We will next add these filters to manipulate the input data to our state machine for the `checkout` process at different stages. We will mainly manipulate the data to make prepare the requests for the different Lambda functions.
 
@@ -287,7 +289,11 @@ We will next add these filters to manipulate the input data to our state machine
 Our state machine for the `checkout` process with the input and output filters is shown below:
 {{% image alt="checkout process with all steps" src="images/posts/aws-step-function/sm_with_data.png" %}}
 
-Let us look at how our input data changes by applying input and output filters as we transition through some of the states:
+We need to execute our state machine to run the `task` type states configured in the earlier sections. We can initiate an execution from the Step Functions console, or the AWS Command Line Interface (CLI), or by calling the Step Functions API with the AWS SDKs. 
+
+We need to provide input to the state machine in JSON format during execution and receive a JSON output after execution.
+
+Let us look at how our input data changes during the execution of the state machine by applying input and output filters as we transition through some of the states:
 
 **Input to State Machine**:
 ```json

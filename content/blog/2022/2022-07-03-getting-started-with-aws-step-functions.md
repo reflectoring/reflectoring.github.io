@@ -23,10 +23,18 @@ They are represented by a diagram to visualize the current state of a system as 
  State machines have a start and end and contain at least one state. Transitions represent different events that allow the system to transition from one state to another state.
 
 ### Amazon State Language (ASL)
-We define a State machine in JSON format in a structure known as the Amazon States Language (ASL) as shown below:
+We define a State machine in JSON format in a structure known as the Amazon States Language (ASL) with the following mandatory fields:
+* `States` : This field contains contains a `map` of state objects. Each element of the map has the name of the state as `key` and an associated state object as the value. 
+* `StartAt`: This field contains the name of one of the state objects in the `States` collection from where the state machine will start execution.
+Amazon States Language (ASL) also has optional fields:
+* `Comment`: description of state machine
+* `TimeoutSeconds`: The maximum number of seconds an execution of the state machine can run beyond which the execution fails with an error.
+* `Version`: Version of the Amazon States Language used to define the state machine which is `1.0` by default.
 
+An example of a state machine defined in ASL is shown below:
 ```json
 {
+  "Comment": "Example State Machine",
   "StartAt": "state1",
   "States": {
     "state1": {...},
@@ -35,7 +43,7 @@ We define a State machine in JSON format in a structure known as the Amazon Stat
   }
 }
 ```
-This structure represents a collection of `3` state objects with the names: `state1`, `state2`, and `state3`. The state machine starts execution from the state named `state1`. 
+This structure has the `States` field containing a collection of `3` state objects of names: `state1`, `state2`, and `state3`. The value of the field: `StartAt` is `state1` which means that the state machine starts execution from the state named `state1`. 
 
 ### Types of State Machine: Standard vs Express
 We can create two types of state machine. State machine executions differ based on the type. The type of state machine cannot be changed after the state machine is created.

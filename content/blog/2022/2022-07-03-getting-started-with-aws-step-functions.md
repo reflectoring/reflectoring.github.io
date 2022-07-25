@@ -329,10 +329,12 @@ Let us look at how our input data changes during the execution of the state mach
 ```
 This is the input to our `checkout` process which is composed of a `customer_id` and an array of items in the shopping cart:  `cart_items`.
 
-1. State: `Parallel`
+1. State: `Parallel` 
+
 Input: Same input as state machine
 
-2. State: `fetch customer`
+2. State: `fetch customer` 
+
 Input: Same input as state machine
 
 Data after filtering with InputPath: `$.checkout_request.customer_id`
@@ -353,7 +355,8 @@ Output of Lambda function execution:
     "mobile": "677896678"
 }
 ```
-3. State: `iterate`
+3. State: `iterate` 
+
 Input: Same input as state machine
 
 Data after filtering with InputPath: `$.checkout_request.cart_items`
@@ -375,6 +378,7 @@ Data after filtering with InputPath: `$.checkout_request.cart_items`
 ```
 
 4. State: fetch price (for each element of the array: `cart_items`)
+
 Input: Each element of the array: `cart_items`
 
 Data after applying parameters filter: `{"item_no.$": "$.item_no"}`
@@ -417,6 +421,7 @@ Output of Lambda function execution (for each element of the array: `cart_items`
 ```
 
 6. State: `Pass`
+
 Data after applying parameters filter:`{"customer.$": "$[0]","items.$": "$[1]"}`
 ```json
 {
@@ -444,6 +449,7 @@ Data after applying parameters filter:`{"customer.$": "$[0]","items.$": "$[1]"}`
 ```
 
 7. State: `process payment`
+
 Data after applying parameters filter:`{"payment_type.$": "$.customer.payment_pref", "items.$": "$.items"}`
 ```json
 "payment_type": "Credit Card", "items": [{"item_no": "I1234",...}, ...]
@@ -475,7 +481,9 @@ Data after ResultSelector:
  }
 ```
 ResultPath: `$.payment`
+
 OutputPath: `$`
+
 Output of State:
 ```json
 {
@@ -491,12 +499,14 @@ Output of State:
 ```
 
 8. State: `payment success?`
+
 Choice rule 1: `$.payment.payment_result.status == "OK"`
 if the rule result is true: Next state is `create order`
 if the rule result is false: Next state is `prepare error`
 
 
 9. State: `create order`
+
 Parameters: 
 ```json
 {

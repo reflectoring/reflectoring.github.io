@@ -134,7 +134,7 @@ We will use similar Lambda functions for the other steps of the `checkout` proce
 After defining the Lambda functions and getting an understanding of the basic concepts of the Step Function service, let us now define our `checkout` Process. 
 
 Let us create the state machine from the AWS management console. We can either choose to use the Workflow Studio which provides a visual workflow editor or the Amazon States Language (ASL) for defining our state machine. 
-{{% image alt="checkout process" src="images/posts/aws-step-function/create_sm_1_.png" %}}
+{{% image alt="checkout process" src="images/posts/aws-step-function/create_sm_1.png" %}}
 
 Here we have selected Workflow Studio to author our state machine. We have also selected the type of state machine as `standard` in the first step. 
 

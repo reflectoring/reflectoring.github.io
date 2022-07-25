@@ -501,7 +501,9 @@ Output of State:
 8. State: `payment success?`
 
 Choice rule 1: `$.payment.payment_result.status == "OK"`
+
 if the rule result is true: Next state is `create order`
+
 if the rule result is false: Next state is `prepare error`
 
 

@@ -15,19 +15,33 @@ In this article, we will introduce the concepts of AWS Step Functions and unders
 ## Step Functions: Basic Concepts
 Let us first understand some basic concepts of Step Functions. 
 ### State Machine, State, and Transitions
-A state machine is a mathematical model of computation consisting of different states connected with transitions. AWS Step functions also implement a State Machine to represent the orchestration logic. Each step of the orchestration is represented by a state in the state machine and connected to one or more states through transitions. 
+A state machine is a mathematical model of computation consisting of different states connected with transitions. AWS Step functions also implement a state machine to represent the orchestration logic. Each step of the orchestration is represented by a state in the state machine and connected to one or more states through transitions. 
 
 They are represented by a diagram to visualize the current state of a system as shown here:
 
 {{% image alt="State Machine" src="images/posts/aws-step-function/sm.png" %}}
- State machines have a start and end and contain at least one state. Transitions represent different events that allow the system to transition from one state to another state.
+ State machines contain at least one state. Transitions represent different events that allow the system to transition from one state to another state. They also have a `start` position from where the execution can start and one or more `end` positions where the execution can end. 
 
 ### Amazon State Language (ASL)
-We define a State machine in JSON format in a structure known as the Amazon States Language (ASL) with the following mandatory fields:
-* `States` : This field contains contains a `map` of state objects. Each element of the map has the name of the state as `key` and an associated state object as the value. 
+We define a state machine in JSON format in a structure known as the Amazon States Language (ASL). The `state` is the fundamental element in ASL. The fields of a `state` object varies on the type of the state but the fields: `Type`, `Next`, `InputPath`, and `OutputPath` are common in state of any type. A `state` object in ASL looks like this:
+
+```json
+{
+  "Type": "Task",
+  "Next": "My next state",
+  "InputPath": "$",
+  "OutputPath": "$",
+  "Comment": "My State"
+}
+```
+In this state object we have specified the type of state as `Task` and provided the name of the next state to execute as `My next state`. The fields: `InputPath` and `OutputPath` are filters for input and output data of the state which we will understand in a separate section. 
+
+The ASL contains a collection of `state` objects. It has the following mandatory fields:
+* `States` : This field contains a set of `state` objects. Each element of the set is a key-value pair with the name of the state as `key` and an associated `state` object as the value. 
 * `StartAt`: This field contains the name of one of the state objects in the `States` collection from where the state machine will start execution.
+
 Amazon States Language (ASL) also has optional fields:
-* `Comment`: description of state machine
+* `Comment`: Description of state machine
 * `TimeoutSeconds`: The maximum number of seconds an execution of the state machine can run beyond which the execution fails with an error.
 * `Version`: Version of the Amazon States Language used to define the state machine which is `1.0` by default.
 
@@ -45,12 +59,7 @@ An example of a state machine defined in ASL is shown below:
 ```
 This structure has the `States` field containing a collection of `3` state objects of names: `state1`, `state2`, and `state3`. The value of the field: `StartAt` is `state1` which means that the state machine starts execution from the state named `state1`. 
 
-### Types of State Machine: Standard vs Express
-We can create two types of state machine. State machine executions differ based on the type. The type of state machine cannot be changed after the state machine is created.
-1. **Standard**: State machine of type: `Standard` should be used for long-running, durable, and auditable processes.
-2. **Express**: State machine of type: `Express` is used for high-volume, event-processing workloads such as IoT data ingestion, streaming data processing and transformation, and mobile application backends. They can run for up to five minutes.
-
-### State Types
+### Types of State
 States receive input, perform actions to produce some output, and pass the output to other states. States are of different types which determine the nature of the functions a state can perform. Some of the commonly used types are:
 1. **Task**: A state of type `task` represents a single unit of work performed by a state machine. All the work in a state machine is performed by tasks. The work is performed by using an activity or an AWS Lambda function, or by passing parameters to the API actions of other services.
 2. **Parallel**: State of type `parallel` is used to trigger multiple branches of execution.
@@ -60,6 +69,11 @@ States receive input, perform actions to produce some output, and pass the outpu
 
 We also have mechanisms for transforming the inputs and the outputs with JSONpath expressions. The state machine executes one state after another till it has no more states to execute. We will understand these concepts further by implementing a sample `checkout` process of an e-commerce application with a state machine. 
 
+### Types of State Machine: Standard vs Express
+We can create two types of state machine. State machine executions differ based on the type. The type of state machine cannot be changed after the state machine is created.
+1. **Standard**: State machine of type: `Standard` should be used for long-running, durable, and auditable processes.
+2. **Express**: State machine of type: `Express` is used for high-volume, event-processing workloads such as IoT data ingestion, streaming data processing and transformation, and mobile application backends. They can run for up to five minutes.
+
 ## Introducing The Example: Checkout Process
 Let us take an example of a `checkout` process in an application. This `checkout` process will typically consist of the following steps:
 
@@ -68,7 +82,7 @@ Let us take an example of a `checkout` process in an application. This `checkout
 |`fetch customer`|customer ID|Customer Data: email, mobile|Fetching Customer information|
 |`fetch price`|cart items|Price of each item|Fetching Price of each item in the cart|
 |`process payment`|payment type, cart items|Price of each item|Fetching Price of cart items|
-|`create order`|cstomer ID, cart items with price|`success/failure`|Create order if payment is successful|
+|`create order`|customer ID, cart items with price|`success/failure`|Create order if payment is successful|
 
 When we design the order in which to execute these steps, we need to consider which steps can execute in parallel and which ones are in sequence. 
 
@@ -117,7 +131,7 @@ We will use similar Lambda functions for the other steps of the `checkout` proce
 ## Defining the Checkout Process with a State Machine
 After defining the Lambda functions and getting an understanding of the basic concepts of the Step Function service, let us now define our `checkout` Process. 
 
-Let us create the state machine from the AWS management console. We can either choose to use the visual workflow editor or ASL for defining our state machine. 
+Let us create the state machine from the AWS management console. We can either choose to use the Visual workflow editor or ASL for defining our state machine. 
 {{% image alt="checkout process" src="images/posts/aws-step-function/create_state_machine.png" %}}
 
 We have selected the type of state machine as `standard` in the first step. In the second step, we have added an empty `pass` state to the state machine. In the last step, we have given the name: `checkout` to our state machine and added an IAM role that defines which resources our state machine has permission to access during execution. Our role definition is associated with the following policy:

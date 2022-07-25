@@ -549,7 +549,7 @@ We can retry a task when errors occur by specifying one or more retry rules, cal
 {{% image alt="Error handling Retry" src="images/posts/aws-step-function/retry-error.png" %}}
 Here we have defined a `retrier` for `3` types of errors: `Lambda.ServiceException`, `Lambda.AWSLambdaException`, and `Lambda.SdkClientException` with the following retry settings:
 * **Interval**: The number of seconds before the first retry attempt. It can take values from `1` which is default to `99999999`.
-* **Max Attempts**: The maximum number of retry attempts. The task will not be retried after the number of retries exceeds this value. MaxAttempts has a default value of `3` and maximum value of `99999999`.
+* **Max Attempts**: The maximum number of retry attempts. The task will not be retried after the number of retries exceeds this value. `MaxAttempts` has a default value of `3` and maximum value of `99999999`.
 * **Backoff Rate**: It is the multiplier by which the retry interval increases with each attempt.
 
 ### Falling Back to a Different State on Error

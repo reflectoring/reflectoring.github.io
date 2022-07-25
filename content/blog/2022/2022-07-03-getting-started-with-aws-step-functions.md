@@ -291,9 +291,14 @@ We will next add these filters to manipulate the input data to our state machine
 Our state machine for the `checkout` process with the input and output filters is shown below:
 {{% image alt="checkout process with all steps" src="images/posts/aws-step-function/sm_with_data.png" %}}
 
-We need to execute our state machine to run the `task` type states configured in the earlier sections. We can initiate an execution from the Step Functions console, or the AWS Command Line Interface (CLI), or by calling the Step Functions API with the AWS SDKs. 
+We need to execute our state machine to run the `task` type states configured in the earlier sections. We can initiate an execution from the Step Functions console, or the AWS Command Line Interface (CLI), or by calling the Step Functions API with the AWS SDKs. Step Functions records full execution history for 90 days after the execution completes.
 
 We need to provide input to the state machine in JSON format during execution and receive a JSON output after execution.
+
+We can see the list of state machine executions with information such as execution id, status, and start date in the Step Functions console. 
+
+On selecting an execution, we can see a graph inspector which shows states and transitions marked with colors to indicate successful tasks, failures, and tasks that are still in progress. The graph inspector of our checkout process is shown below:
+{{% image alt="graph inspector of checkout process with all steps" src="images/posts/aws-step-function/graph-inspector.png" %}}
 
 Let us look at how our input data changes during the execution of the state machine by applying input and output filters as we transition through some of the states:
 
@@ -325,9 +330,11 @@ Let us look at how our input data changes during the execution of the state mach
 This is the input to our `checkout` process which is composed of a `customer_id` and an array of items in the shopping cart:  `cart_items`.
 
 1. State: `Parallel`
-
-State: fetch customer
 Input: Same input as state machine
+
+2. State: `fetch customer`
+Input: Same input as state machine
+
 Data after filtering with InputPath: `$.checkout_request.customer_id`
 ```shell
 C6238485
@@ -346,8 +353,9 @@ Output of Lambda function execution:
     "mobile": "677896678"
 }
 ```
-2. State: iterate
+3. State: `iterate`
 Input: Same input as state machine
+
 Data after filtering with InputPath: `$.checkout_request.cart_items`
 ```json
 [
@@ -366,8 +374,9 @@ Data after filtering with InputPath: `$.checkout_request.cart_items`
 ]
 ```
 
-3. State: fetch price (for each element of the array: `cart_items`)
+4. State: fetch price (for each element of the array: `cart_items`)
 Input: Each element of the array: `cart_items`
+
 Data after applying parameters filter: `{"item_no.$": "$.item_no"}`
 ```json
 {"item_no" : "I1234"}
@@ -380,7 +389,7 @@ Output of Lambda function execution (for each element of the array: `cart_items`
     "lastUpdated": "2022-06-12"
 }
 ```
-5. Output of State: Parallel
+5. Output of State: `Parallel`
 ```json
 [
     {
@@ -407,7 +416,7 @@ Output of Lambda function execution (for each element of the array: `cart_items`
 ]
 ```
 
-6. State: Pass
+6. State: `Pass`
 Data after applying parameters filter:`{"customer.$": "$[0]","items.$": "$[1]"}`
 ```json
 {
@@ -434,7 +443,7 @@ Data after applying parameters filter:`{"customer.$": "$[0]","items.$": "$[1]"}`
 }
 ```
 
-5. State: `process payment`
+7. State: `process payment`
 Data after applying parameters filter:`{"payment_type.$": "$.customer.payment_pref", "items.$": "$.items"}`
 ```json
 "payment_type": "Credit Card", "items": [{"item_no": "I1234",...}, ...]
@@ -481,13 +490,13 @@ Output of State:
 }
 ```
 
-6. State: `payment success?`
+8. State: `payment success?`
 Choice rule 1: `$.payment.payment_result.status == "OK"`
 if the rule result is true: Next state is `create order`
 if the rule result is false: Next state is `prepare error`
 
 
-7. State: `create order`
+9. State: `create order`
 Parameters: 
 ```json
 {
@@ -506,7 +515,7 @@ Data after applying the above parameters filter:
 ...
 
 
-8. Output of state machine
+10. Output of state machine
 ```json
 {
   "customer_id": "C6238485",

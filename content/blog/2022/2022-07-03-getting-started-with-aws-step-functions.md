@@ -2,10 +2,11 @@
 authors: [pratikdas]
 title: "Getting Started with AWS Step Functions"
 categories: ["AWS"]
-date: 2022-07-24 00:00:00 +1100
-excerpt: "AWS Step Functions is a serverless orchestration service by which we can combine AWS Lambda functions and other AWS services to build complex business applications. We can author the orchestration logic in a declarative style using a JSON-based format called the Amazon States Language(ASL). AWS Step functions also provides a Workflow Studio where we can define and run our workflows. In this article, we will introduce the concepts of AWS Step Functions and understand how it works with the help of some examples."
+date: 2022-07-26 00:00:00 +1100
+modified: 2022-07-26 00:00:00 +1100
+excerpt: "AWS Step Functions is a serverless orchestration service by which we can combine AWS Lambda functions and other AWS services to build complex business applications. We can author the orchestration logic in a declarative style using a JSON-based format called the Amazon States Language(ASL). AWS Step functions also provide a powerful graphical console where we can visualize our application’s workflow as a series of steps. In this article, we will introduce the concepts of AWS Step Functions and understand its working with the help of an example."
 image: images/stock/0117-queue-1200x628-branded.jpg
-url: getting-started-with-aws-step-functions
+url: getting-started-with-aws-step-functions-tutorial
 ---
 
 AWS Step Functions is a serverless orchestration service by which we can combine AWS Lambda functions and other AWS services to build complex business applications. 

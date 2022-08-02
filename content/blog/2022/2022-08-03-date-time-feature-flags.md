@@ -2,7 +2,7 @@
 authors: [tom]
 title: "Testing Time-Based Features with Feature Flags"
 categories: ["Spring Boot", "Software Craft"]
-date: 2022-01-09T00:00:00 
+date: 2022-08-03 00:00:00 +1000
 excerpt: "Time-based featured are a pain to test. With feature flags, it gets easier!"
 image: images/stock/0043-calendar-1200x628-branded.jpg
 url: date-time-feature-flags
@@ -192,12 +192,16 @@ Let's look an implementation of the `FeatureFlagService` using [LaunchDarkly](ht
 @Component
 public class LaunchDarklyFeatureFlagService implements FeatureFlagService {
 
-    private final Logger logger = LoggerFactory.getLogger(LaunchDarklyFeatureFlagService.class);
+    private final Logger logger = 
+            LoggerFactory.getLogger(LaunchDarklyFeatureFlagService.class);
     private final LDClient launchdarklyClient;
     private final UserSession userSession;
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+    private final DateTimeFormatter dateFormatter = 
+            DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
-    public LaunchDarklyFeatureFlagService(LDClient launchdarklyClient, UserSession userSession) {
+    public LaunchDarklyFeatureFlagService(
+            LDClient launchdarklyClient, 
+            UserSession userSession) {
         this.launchdarklyClient = launchdarklyClient;
         this.userSession = userSession;
     }
@@ -205,7 +209,11 @@ public class LaunchDarklyFeatureFlagService implements FeatureFlagService {
 
     @Override
     public Optional<LocalDateTime> currentDateForWelcomeMessage() {
-        String stringValue = launchdarklyClient.stringVariation("now-for-welcome-message", getLaunchdarklyUserFromSession(), "false");
+        String stringValue = 
+                launchdarklyClient.stringVariation(
+                        "now-for-welcome-message", 
+                        getLaunchdarklyUserFromSession(), 
+                        "false");
 
         if ("false".equals(stringValue)) {
             return Optional.empty();
@@ -277,7 +285,9 @@ public class DateFeatureFlagController {
     private final UserSession userSession;
     private final FeatureFlagService featureFlagService;
 
-    DateFeatureFlagController(UserSession userSession, FeatureFlagService featureFlagService) {
+    DateFeatureFlagController(
+            UserSession userSession, 
+            FeatureFlagService featureFlagService) {
         this.userSession = userSession;
         this.featureFlagService = featureFlagService;
     }
@@ -285,7 +295,8 @@ public class DateFeatureFlagController {
     @GetMapping(path = {"/welcome"})
     ModelAndView welcome() {
 
-        Optional<LocalDateTime> date = featureFlagService.currentDateForWelcomeMessage();
+        Optional<LocalDateTime> date = 
+                featureFlagService.currentDateForWelcomeMessage();
 
         if (date.isEmpty()) {
             return new ModelAndView("/welcome-page-without-message.html");
@@ -302,7 +313,9 @@ public class DateFeatureFlagController {
             welcomeMessage = "Good Evening!";
         }
 
-        return new ModelAndView("/welcome-page.html", Map.of("welcomeMessage", welcomeMessage));
+        return new ModelAndView(
+                "/welcome-page.html", 
+                Map.of("welcomeMessage", welcomeMessage));
     }
 
 }
@@ -330,23 +343,29 @@ public class EmailSender {
     private final Logger logger = LoggerFactory.getLogger(EmailSender.class);
     private final FeatureFlagService featureFlagService;
 
-    public EmailSender(FeatureFlagService featureFlagService, UserSession userSession) {
+    public EmailSender(
+            FeatureFlagService featureFlagService, 
+            UserSession userSession) {
         this.featureFlagService = featureFlagService;
     }
 
     @Scheduled(fixedDelay = 10000)
     public void sendWelcomeEmails() {
         for (User user : getUsers()) {
-            Optional<LocalDateTime> now = featureFlagService.currentDateForWelcomeEmails(user.name);
+            Optional<LocalDateTime> now = 
+                    featureFlagService.currentDateForWelcomeEmails(user.name);
             if (now.isEmpty()) {
                 logger.info("not sending email to user {}", user.name);
                 continue;
             }
-            if (user.registrationDate.isBefore(now.get().minusDays(14L).toLocalDate())) {
+            if (user.registrationDate.isBefore
+                    (now.get().minusDays(14L).toLocalDate())) {
                 sendEmail(user, "Welcome email after 14 days");
-            } else if (user.registrationDate.isBefore(now.get().minusDays(7L).toLocalDate())) {
+            } else if (user.registrationDate.isBefore(
+                    now.get().minusDays(7L).toLocalDate())) {
                 sendEmail(user, "Welcome email after 7 days");
-            } else if (user.registrationDate.isBefore(now.get().minusDays(1L).toLocalDate())) {
+            } else if (user.registrationDate.isBefore(
+                    now.get().minusDays(1L).toLocalDate())) {
                 sendEmail(user, "Welcome email after 1 day");
             }
         }

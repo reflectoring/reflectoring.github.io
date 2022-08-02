@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2020-03-06T06:00:00
 modified: 2020-03-06T06:00:00
 authors: [tom]
-excerpt: "Spring MVC provides a convenient programming model for creating web controllers. We can make it even more convenient by letting Spring pass custom objects from our domain into controller methods so we don't have to map them each time."
+description: "Spring MVC provides a convenient programming model for creating web controllers. We can make it even more convenient by letting Spring pass custom objects from our domain into controller methods so we don't have to map them each time."
 image: images/stock/0065-java-1200x628-branded.jpg
 url: spring-boot-argumentresolver
 ---

@@ -1,19 +1,24 @@
 ---
 title: "The AWS Journey Part 1: Deploying Your First Docker Image"
-categories: ["Software Craft"]
+categories: ["AWS"]
 date: 2020-02-15T05:00:00
 modified: 2020-02-15T05:00:00
 authors: [tom]
-excerpt: "Always wanted to get started on AWS? Then let's create a Docker image and deploy it to the AWS cloud! All you need is an AWS account and about 15 minutes of time."
+description: "Always wanted to get started on AWS? Then let's create a Docker image and deploy it to the AWS cloud! All you need is an AWS account and about 15 minutes of time."
 image: images/stock/0061-cloud-1200x628-branded.jpg
 url: aws-deploy-docker-image-via-web-console
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 
 Amazon Web Services is a beast. It offers so many different cloud services that my natural reaction was to be intimidated. But not for long! I intend to tame that beast one blog post at a time until I have a production-grade, continuously deployable system!
 
 We'll start this series by creating a small win to boost our motivation: we'll deploy a Docker image  using the AWS Management Console. In a real-world scenario with multiple images and a more complex setup, we'd want to automate deployments using scripts and the AWS command-line interface. But using the web-based Management Console is a good way to get our bearings.
 
-**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with Docker and AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/aws-hello-world" %}}
 
@@ -251,6 +256,10 @@ The AWS web interface is intimidating. If we know where to look, though, we can 
  
 In real-world scenarios, we need to [use the AWS CLI](/aws-cloudformation-deploy-docker-image/) to create production-grade configurations and to deploy those from within an automated CI/CD pipeline.
 
-**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with Docker and AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}
 
 

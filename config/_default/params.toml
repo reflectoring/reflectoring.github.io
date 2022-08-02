@@ -67,22 +67,20 @@ button_link = "/"
 
 # cookies
 [cookies]
-enable = false
+enable = true
 expire_days = 2
-content = "This site uses cookies. By continuing to use this website, you agree to their use."
-button = "I Accept"
+content = "This site uses cookies to track analytics. By continuing to use this website, you agree to their use."
+button = "Accept"
 
 ######################## sidebar widgets #########################
 [widgets]
-sidebar = ["skyscraper-ad", "newsletter", "product-ad"]
+static = ["skyscraper-ad"]
+# dynamic sidebar widgets can be overriden by setting the "widgets" attribute in the front matter - the last widget will be sticky
+dynamic = ["simplify-form", "stratospheric-ad", "gyhdoca-ad"]
 
 [ads]
-skyscraper_image = "images/launchdarkly/2021_StateofFM_Ad_320x1200.png"
-skyscraper_href = "https://launchdarkly.com/state-of-feature-management?utm_source=reflectoring&utm_medium=display&utm_campaign=22q3&utm_content=state_of_feature_management"
-product_image = "images/gyhdoca/cover-430.png"
-product_href = "/book/"
-product_cta_title = "Get Your Hands Dirty"
-product_cta_href = "https://gum.co/gyhdoca"
+skyscraper_image = "images/launchdarkly/GALAXY-300x600-GENERAL.png"
+skyscraper_href = "https://launchdarkly.com/galaxy?utm_source=reflectoring&utm_medium=display&utm_campaign=gxy22&utm_content=galaxy"
 
 [wol]
 items = [

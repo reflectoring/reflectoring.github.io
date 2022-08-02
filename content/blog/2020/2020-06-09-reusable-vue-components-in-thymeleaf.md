@@ -3,7 +3,7 @@ title: "Marrying Vue.js and Thymeleaf: Embedding Javascript Components in Server
 categories: ["Spring Boot"]
 date: 2020-06-09 06:00 +1100
 modified: 2020-07-26 06:00 +1100
-excerpt: "Old-school server-side web applications aren't interactive enough nowadays. But full-blown Javascript applications create their own problems. Why not combine the best of both worlds? Let's include Vue.js components in server-side Thymeleaf templates."
+description: "Old-school server-side web applications aren't interactive enough nowadays. But full-blown Javascript applications create their own problems. Why not combine the best of both worlds? Let's include Vue.js components in server-side Thymeleaf templates."
 image: images/stock/0018-cogs-1200x628-branded.jpg
 authors: [tom]
 url: reusable-vue-components-in-thymeleaf

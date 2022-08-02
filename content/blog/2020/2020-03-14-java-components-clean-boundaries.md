@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2020-03-14T05:00:00
 modified: 2020-03-14T05:00:00
 authors: [tom]
-excerpt: "How can we avoid the dreaded Big Ball of Mud when developing software? This article gives an opinionated approach using packages and ArchUnit together with Spring to enforce clean boundaries between software components."
+description: "How can we avoid the dreaded Big Ball of Mud when developing software? This article gives an opinionated approach using packages and ArchUnit together with Spring to enforce clean boundaries between software components."
 image: images/stock/0065-boundary-1200x628-branded.jpg
 url: java-components-clean-boundaries
 ---

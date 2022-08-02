@@ -3,7 +3,7 @@ authors: [tom]
 title: "Configuring a Spring Boot Module with @ConfigurationProperties"
 categories: ["Spring Boot"]
 date: 2019-03-18
-excerpt: "An in-depth look at Spring Boot's support to bind external configuration
+description: "An in-depth look at Spring Boot's support to bind external configuration
           parameters to fields of a Spring bean."
 image:  images/stock/0013-switchboard-1200x628-branded.jpg
 url: spring-boot-configuration-properties

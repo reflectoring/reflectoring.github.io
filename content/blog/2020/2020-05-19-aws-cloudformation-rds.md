@@ -1,12 +1,13 @@
 ---
 title: "The AWS Journey Part 3: Connecting a Spring Boot Application to an RDS Instance with CloudFormation"
-categories: ["Software Craft"]
+categories: ["AWS"]
 date: 2020-05-19T05:00:00
 modified: 2020-05-19T05:00:00
 authors: [tom]
-excerpt: "Deploy a Spring Boot application and a PostgreSQL database in a fully automated way with AWS CloudFormation."
+description: "Deploy a Spring Boot application and a PostgreSQL database in a fully automated way with AWS CloudFormation."
 image: images/stock/0061-cloud-1200x628-branded.jpg
 url: aws-cloudformation-rds
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 
 The AWS journey started with [deploying a Spring Boot application in a Docker container manually](/aws-deploy-docker-image-via-web-console/). In the previous episode, we then [automated the deployment with CloudFormation](/aws-cloudformation-deploy-docker-image/).
@@ -15,7 +16,11 @@ On the road to a production-grade, continuously deployable system, we now want t
 
 The result will be a reproducible, fully automated deployment of a virtual private network, a PostgreSQL RDS instance, and our Spring Boot application.
 
-**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with CloudFormation and RDS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}
 
 ## Code Example
 
@@ -473,4 +478,8 @@ Here's a list of the questions I want to answer on this journey. If there's a li
 * How can I access other AWS resources (like SQS queues and DynamoDB tables) from my application?
 * How can I implement HTTPS?
 
-**This topic and everything you need to know about getting a Spring Boot application into production on AWS is part of the [Stratospheric book](https://stratospheric.dev) which I'm co-authoring. Check it out!**
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with CloudFormation and RDS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}

@@ -1,12 +1,13 @@
 ---
 title: "Using Terraform to Deploy AWS Resources"
-categories: ["Software Craft"]
+categories: ["AWS"]
 date: 2021-04-22T06:00:00
 modified: 2021-04-22T06:00:00
 authors: [pratikdas]
-excerpt: "Terraform is a popular infrastructure provisioning tool that makes it very easy to define infrastructure as code. In this post, we will introduce Terraform basics and see how Terraform can be used to provision AWS resources."
+description: "Terraform is a popular infrastructure provisioning tool that makes it very easy to define infrastructure as code. In this post, we will introduce Terraform basics and see how Terraform can be used to provision AWS resources."
 image: images/stock/0099-desert-1200x628-branded.jpg
 url: terraform-aws
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 Provisioning infrastructure resources has always been a time-consuming manual process. Infrastructure has now moved away from physical hardware in data centers to software-defined infrastructure using virtualization technology and cloud computing. 
 
@@ -14,6 +15,11 @@ All the cloud providers provide services for the creation and modification of in
 
 In this post, we will look at the capabilities of Terraform with examples of creating resources in the AWS cloud.
 
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/aws-terraform" %}}
 
@@ -503,3 +509,9 @@ In this post, we introduced the following concepts of Terraform with examples of
 These concepts should help you to get started with Terraform and inspire you to explore more advanced features like automation, extending its features, and integration capabilities.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/aws/aws-terraform).
+
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with AWS.
+
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}

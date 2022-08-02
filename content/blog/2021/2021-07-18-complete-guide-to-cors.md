@@ -4,7 +4,7 @@ categories: ["Software Craft"]
 date: 2021-07-18T06:00:00
 modified: 2021-07-18T06:00:00
 authors: [pratikdas]
-excerpt: "CORS is a protocol and security standard for browsers that helps to maintain the integrity of a website and secure it from unauthorized access. In this article, we will understand cross-origin resource sharing (CORS) and describe some common examples of security vulnerabilities caused by CORS misconfigurations along with best practices for secure CORS implementations."
+description: "CORS is a protocol and security standard for browsers that helps to maintain the integrity of a website and secure it from unauthorized access. In this article, we will understand cross-origin resource sharing (CORS) and describe some common examples of security vulnerabilities caused by CORS misconfigurations along with best practices for secure CORS implementations."
 image: images/stock/0105-shield-1200x628-branded.jpg
 url: complete-guide-to-cors
 ---
@@ -101,12 +101,6 @@ As we can see in this diagram, same-origin requests are allowed and cross-origin
 
 The URLs of `targetPage.html` that the browser rendering `currentPage.html` considers to be of the same or cross-origin are listed in this table. The default port is `80` for HTTP and `443` for HTTPS for the URLs in which we have not specified any port:
 
-<style>
-.table td {
-  padding: 5px
-}
-</style>
-
 |URLs being Matched| Same-Origin or Cross-Origin| Reason |
 |-|-|-|
 |http://www.mydomain.com/targetPage.html|Same-Origin|same scheme, host, and port|
@@ -115,7 +109,6 @@ The URLs of `targetPage.html` that the browser rendering `currentPage.html` cons
 |http://pg.mydomain.com/targetPage.html|Cross-Origin|different host|
 |http://www.mydomain.com:8080/targetPage.html|Cross-Origin|different port|
 |http://pg.mydomain.com/mypage1.html|Cross-Origin|different host|
-{: .table}
 
 
 If the origins corresponding to the URLs are same, we can run JavaScripts in `currentPage.html` which can fetch contents from `targetPage.html`.

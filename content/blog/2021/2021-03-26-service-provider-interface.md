@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2021-03-26T00:00:00
 modified: 2021-03-26T00:00:00
 authors: [bakic]
-excerpt: "This article explains the Service Provider Interface with an example."
+description: "This article explains the Service Provider Interface with an example."
 image: images/stock/0088-jigsaw-1200x628-branded.jpg
 url: service-provider-interface
 ---

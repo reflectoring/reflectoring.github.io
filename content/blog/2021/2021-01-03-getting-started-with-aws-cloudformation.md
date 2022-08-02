@@ -1,12 +1,13 @@
 ---
 title: "Getting Started with AWS CloudFormation"
-categories: ["Software Craft"]
+categories: ["AWS"]
 date: 2021-01-03T00:00:00
 modified: 2021-01-03T00:00:00
 authors: [tom]
-excerpt: "Let's deploy our first application to AWS with CloudFormation. No previous CloudFormation knowledge required!"
+description: "Let's deploy our first application to AWS with CloudFormation. No previous CloudFormation knowledge required!"
 image: images/stock/0061-cloud-1200x628-branded.jpg
 url: getting-started-with-aws-cloudformation
+widgets: ["simplify-form", "gyhdoca-ad", "stratospheric-ad"]
 ---
 
 Continuous deployment is an important part in today's software development loop. We want to ship the latest version of our software in no time to provide our users with the newest features or bugfixes. This is a major pillar of the DevOps movement.
@@ -21,12 +22,11 @@ At the end of this article you will
 * know the basic vocabulary to talk about AWS cloud infrastructure, and
 * have all the tools necessary to deploy a Docker image with a couple of CLI commands.
 
-## Check out the Book!
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with CloudFormation.
 
-<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" alt="Stratospheric - From Zero to Production with Spring Boot and AWS" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
-This article is a self-sufficient sample chapter from the book ["Stratospheric - From Zero to Production with Spring Boot and AWS"](https://stratospheric.dev), which I'm co-authoring. 
-
-If you're interested in learning about building applications with Spring Boot and AWS from top to bottom, make sure to check it out!
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}
 
 ## Getting Ready
 
@@ -493,12 +493,11 @@ This concludes our first experiment with AWS. Feel free to explore the AWS conso
 
 **When you're done, don't forget to run `delete.sh` to delete the stacks again**, otherwise they will incur costs at some point. You can also delete the stacks via the CloudFormation UI.
 
-## Check out the Book!
+{{% stratospheric %}}
+This article gives only a first impression of what you can do with CloudFormation.
 
-<a href="https://stratospheric.dev"><img src="/assets/img/stratospheric/stratospheric-cover.jpg" alt="Stratospheric - From Zero to Production with Spring Boot and AWS" style="float:left; clear:both; padding-right: 15px; margin-bottom: 30px;"/></a>
-This was a sample chapter from the book ["Stratospheric - From Zero to Production with Spring Boot and AWS"](https://stratospheric.dev). 
-
-If you enjoyed this article, make sure to check out the book to learn more about building Spring Boot applications with AWS.
+If you want to go deeper and learn how to deploy a Spring Boot application to the AWS cloud and how to connect it to cloud services like RDS, Cognito, and SQS, make sure to check out the book [Stratospheric - From Zero to Production with Spring Boot and AWS](https://stratospheric.dev?utm_source=reflectoring&utm_content=in_content)!
+{{% /stratospheric %}}
 
 
 

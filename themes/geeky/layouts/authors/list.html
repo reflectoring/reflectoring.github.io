@@ -1,5 +1,12 @@
 {{ define "main" }}
 
+{{ $author := (index .Site.Data.authors .Title) }}
+<section class="section">
+<div class="container">
+{{ partial "author-blurb.html" $author }}
+</div>
+</section>
+
 {{ partial "list.html" . }}
 
 {{ end }}

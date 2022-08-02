@@ -1,5 +1,8 @@
 {{ define "main" }}
 
+
+{{ partial "popup.html" . }}
+
 <!-- checking blog -->
 {{ if or (eq .Section "post") (eq .Section "posts") (eq .Section "blog") (eq .Section "blogs") (eq .Section "news") (eq .Section "categories") (eq .Section "tags") }}
 
@@ -60,11 +63,11 @@
         <ul class="list-inline card-meta d-flex align-items-center mb-4">
           <li class="list-inline-item d-flex align-items-center">
             <i class="fas fa-user me-2"></i>
-            <a href="/authors/{{ index .Params.authors 0 }}">{{ $author.name }}</a>
+            <a href="/authors/{{ index .Params.authors 0 }}" data-blogtrack-author>{{ $author.name }}</a>
           </li>
           <li class="list-inline-item d-flex align-items-center">
             <i class="fas fa-calendar me-2"></i>
-            <span>{{ time.Format ":date_long" .PublishDate }}</span>
+            <span data-blogtrack-date>{{ time.Format ":date_long" .PublishDate }}</span>
           </li>
         </ul>
 
@@ -76,7 +79,12 @@
         </aside>
         {{ end }}
 
-        <div class="content">{{.Content}}</div>
+        <div class="content" data-blogtrack-text>{{.Content}}</div>
+
+        {{ $author := (index .Site.Data.authors .Params.authors) }}
+
+        {{ partial "author-blurb.html" $author }}
+
         <!-- disqus comments -->
         {{ if .Site.DisqusShortname }}
         <div class="border rounded p-4">
@@ -84,10 +92,10 @@
         </div>
         {{ end }}
       </div>
+
       <!-- sidebar widgets -->
       <aside class="col-lg-4">
-        {{ $widget:= site.Params.widgets.sidebar }}
-        {{ partialCached "widgets/widget-wrapper" ( dict "Widgets" $widget "Scope" . )}}
+        {{ partial "widgets/widget-wrapper" ( dict "Widgets" . "Params" .Params)}}
       </aside>
     </div>
   </div>

@@ -1,12 +1,13 @@
 ---
 title: My System for Organizing Work in a Distracted World
-categories: ["Meta"]
+categories: ["Simplify"]
 date: 2020-03-22T05:00:00
 modified: 2020-03-22T05:00:00
 authors: [tom]
-excerpt: "A peek into the system I use to organize my workday."
+description: "A peek into the system I use to organize my workday."
 image: images/stock/0067-todo-1200x628-branded.jpg
 url: organizing-work
+widgets: ["stratospheric-ad", "gyhdoca-ad", "simplify-form"]
 ---
 
 As knowledge workers, we software developers are very vulnerable to distractions. Have you counted the number of context switches you've had today? 

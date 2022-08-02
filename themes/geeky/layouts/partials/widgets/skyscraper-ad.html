@@ -3,13 +3,11 @@
 {{ if fileExists (add `assets/` .skyscraper_image) }}
 <div class="widget">
   {{ $image:= resources.Get .skyscraper_image }}
-  {{ $imageFallback:= $image.Resize "300x" }}
-  {{ $imageStandard:= $image.Resize "300x webp" }}
   <a href="{{ .skyscraper_href }}">
   <picture>
-    <source srcset="{{ $imageStandard.RelPermalink }}" media="(max-width: 350px)">
+    <source srcset="{{ $image.RelPermalink }}" media="(max-width: 350px)">
     <img loading="lazy" decoding="async" class="img-fluid w-100 rounded-4"
-         src="{{$imageFallback.RelPermalink}}" alt="{{.Title}}" width="{{$image.Width}}"
+         src="{{$image.RelPermalink}}" alt="{{.Title}}" width="{{$image.Width}}"
          height="{{$image.Height}}">
   </picture>
   </a>

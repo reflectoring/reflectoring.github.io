@@ -4,7 +4,7 @@ categories: ["Spring Boot"]
 date: 2021-05-28T00:00:00
 modified: 2021-05-28T06:00:00
 authors: [naveen]
-excerpt: "We will see the use of the `@TestConfiguration` annotation for creating custom beans or overriding specific beans for providing specialized behavior to the application during unit testing of Spring Boot applications."
+description: "We will see the use of the `@TestConfiguration` annotation for creating custom beans or overriding specific beans for providing specialized behavior to the application during unit testing of Spring Boot applications."
 image: images/stock/0102-traffic-light-1200x628-branded.jpg
 url: spring-boot-testconfiguration
 ---

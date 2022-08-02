@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2020-07-29T05:00:00
 modified: 2020-07-29T05:00:00
 authors: [saajan]
-excerpt: "A short article about Maven Wrapper - what problem it solves, how to set it up, and how it works"
+description: "A short article about Maven Wrapper - what problem it solves, how to set it up, and how it works"
 image: images/stock/0076-airmail-1200x628-branded.jpg
 url: maven-wrapper
 ---
@@ -65,3 +65,4 @@ wrapperUrl=https://repo.maven.apache.org/maven2/io/takari/maven-wrapper/0.5.6/ma
 ## Conclusion
 
 In this article, we learned what problem the Maven Wrapper solves, how to use it, and how it works.
+You can read a similar article on this blog on [Gradle Wrapper](https://reflectoring.io/gradle-wrapper/).

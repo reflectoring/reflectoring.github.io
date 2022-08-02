@@ -4,7 +4,7 @@ categories: ["Software Craft"]
 date: 2021-01-25T00:00:00
 modified: 2021-01-25T00:00:00
 authors: [skempken]
-excerpt: "An explanation of the Open-Closed Principle and its limitations alongside some code examples."
+description: "An explanation of the Open-Closed Principle and its limitations alongside some code examples."
 image: images/stock/0093-open-closed-1200x628-branded.jpg
 url: open-closed-principle-explained
 ---

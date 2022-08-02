@@ -4,7 +4,7 @@ categories: ["Software Craft"]
 date: 2021-01-14T00:00:00
 modified: 2021-01-14T00:00:00
 authors: [mujtaba]
-excerpt: "A discussion of the Git commands 'merge' and 'rebase', what their difference is, and when to use which." 
+description: "A discussion of the Git commands 'merge' and 'rebase', what their difference is, and when to use which." 
 image: images/stock/0050-git-1200x628-branded.jpg
 url: git-rebase-merge
 ---
@@ -78,7 +78,8 @@ We will use the following commands to do this:
 git checkout main
 
 git merge feature2
-```text
+```
+
 In simple words, fast-forwarding `main` to the `feature2` branch means that previously the HEAD pointer for main branch was at 'C6' but after the above command it fast forwards the main branch's HEAD pointer to the feature2 branch:
 
 {{% image alt="Git Rebase Done" src="images/posts/git-rebase-merge/git-rebase-working3.png" %}}

@@ -13,6 +13,7 @@
         </div>
       </div>
     </div>
+
     <div class="row">
       <div class="col-lg-8 mb-5 mb-lg-0">
         <div class="border mb-5 pt-4 rounded">
@@ -113,8 +114,7 @@
 
       <!-- sidebar widgets -->
       <aside class="col-lg-4">
-        {{ $widget:= site.Params.widgets.sidebar }}
-        {{ partialCached "widgets/widget-wrapper" ( dict "Widgets" $widget "Scope" . )}}
+        {{ partial "widgets/widget-wrapper" ( dict "Scope" . "Params" .Params)}}
       </aside>
     </div>
   </div>

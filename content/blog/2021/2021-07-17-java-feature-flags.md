@@ -4,7 +4,7 @@ categories: ["Java"]
 date: 2021-07-17T00:00:00
 modified: 2021-07-17T00:00:00
 authors: [tom]
-excerpt: "With feature flags, we can reduce the risk of rolling out software changes to a minimum. Let's compare two popular tools to implement feature flags in Java."
+description: "With feature flags, we can reduce the risk of rolling out software changes to a minimum. Let's compare two popular tools to implement feature flags in Java."
 image: images/stock/0104-on-off-1200x628-branded.jpg
 url: java-feature-flags
 ---
@@ -552,12 +552,6 @@ For bigger teams or enterprises with multiple codebases - potentially across mul
 
 Here's an (incomplete) list of aspects to think about when deciding on a feature flagging solution for your context:
 
-<style>
-.table td {
-  padding: 5px;
-}
-</style>
-
 | Aspect                      | Togglz                          | LaunchDarkly                             |
 | ----------------------------|---------------------------------|------------------------------------------|
 | Targeting strategies        | By implementing the `ActivationStrategy` interface | By configuring a targeting rule in the UI, via API, or via integration |
@@ -572,4 +566,3 @@ Here's an (incomplete) list of aspects to think about when deciding on a feature
 | Enterprise                  | Simple feature management in the web console | Workflows, custom roles, SSO/SCIM/SAML login, code references, ... |
 | Cost                        | Cost of customizing             | Per-seat fee |
 | Integrations | Spring Boot, Spring Security, EJB | No out-of-the-box integrations with Java frameworks |
-{: .table}

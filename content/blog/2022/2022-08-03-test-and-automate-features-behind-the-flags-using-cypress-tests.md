@@ -410,7 +410,7 @@ In order for us to determine whether the change in our branch produces an error,
 
 We will use [cypress-io/github-action](https://github.com/cypress-io/github-action) to install the dependencies, cache Cypress, start the application, and run the tests. We can define the environment variables in the repo and then use it.
 
-{{% image alt="Repository Secrets" src="images/posts/nodejs-launchdarkly/Github_Repository_Secret.png.png" %}}
+{{% image alt="Repository Secrets" src="images/posts/nodejs-launchdarkly/Github_Repository_Secret.png" %}}
 
 We can then define a yaml configuration to run our CI tests:
 

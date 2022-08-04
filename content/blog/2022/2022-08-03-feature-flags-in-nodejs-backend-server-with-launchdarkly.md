@@ -11,9 +11,9 @@ url: nodejs-feature-flag-launchdarkly
 
 Whenever we think of deploying a new version of an existing service or application, we fear a lot whether the new features would work or whether it would be liked by the users or not. Thus, here comes the concept of *“Feature Flag”* which helps us in achieving all of that with something just like a toggle button or a switch.
 
-A *feature flag* is a process used predominantly in case of software development to manage a particular functionality by enabling or disabling it remotely. New features can be deployed without making them visible to users. Thus, feature flags help us to decouple deployment from release which in turn lets us to manage the full lifecycle of a feature.
+A *feature flag* is a process used predominantly in the case of software development to manage a particular functionality by enabling or disabling it remotely. New features can be deployed without making them visible to users. Thus, feature flags help us to decouple deployment from release which in turn lets us manage the full lifecycle of a feature.
 
-The whole purpose is to control the usage and access of a particular feature. It also eliminates the urge to maintain multiple branches in our code and rather allowing us to commit everything in the primary branch and enable it only when the feature is ready.
+The whole purpose is to control the usage and access of a particular feature. It also eliminates the urge to maintain multiple branches in our code and rather allows us to commit everything in the primary branch and enable it only when the feature is ready.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/nodejs-backend-feature-flag-launchdarkly" %}}
 
@@ -40,7 +40,7 @@ Following are some of the most common use-cases for feature flagging:
 
 {{% image alt="LaunchDarkly Internal" src="images/posts/feature-flag-tools/launchdarkly.png" %}}
 
-It is basically a cloud based service and it provides a UI to manage everything about the feature flags. For each flag, we need to define one or more **variations**. The variation can be a *boolean*, arbitrary *numbers*, *string* values or *JSON* snippets.
+It is a cloud-based service and it provides a UI to manage everything about the feature flags. For each flag, we need to define one or more **variations**. The variation can be a *boolean*, arbitrary *number*, *string* values, or *JSON* snippets.
 
 We can define **targeting rules** to define which variation a feature flag will show to its user. By default, a targeting rule for a feature flag is deactivated. The simplest targeting rule is *“show variation X for all users”*. A more complex targeting rule is *“show variation A for all users with attribute X, variation B for all users with attribute Y, and variation C for all other users”*.
 
@@ -48,7 +48,7 @@ LaunchDarkly uses a [streaming architecture](https://launchdarkly.com/blog/launc
 
 ## Initial Setup in Node.js
 
-LaunchDarkly supports lots of clients for different coding languages. For NodeJs, it has created an npm library with the name **[launchdarkly-node-server-sdk](https://github.com/launchdarkly/node-server-sdk)**. We will use this library as a dependency in our code. 
+LaunchDarkly supports lots of clients with different coding languages. For NodeJs, it has created an npm library with the name **[launchdarkly-node-server-sdk](https://github.com/launchdarkly/node-server-sdk)**. We will use this library as a dependency in our code. 
 
 In order to create our backend service, we need to first initiate the repo by simply executing:
 
@@ -62,9 +62,9 @@ Then we can try installing all the packages at once by simply executing the foll
 npm install launchdarkly-node-server-sdk express
 ```
 
-We are going to use `launchdarkly-node-server-sdk` for connecting to LaunchDarkly server to fetch the variations. Then we would need `express` to create a server that would listen in a particular port and host our APIs.
+We are going to use `launchdarkly-node-server-sdk` for connecting to the LaunchDarkly server to fetch the variations. Then we would need *express* to create a server that would listen in a particular port and host our APIs.
 
-Next we need to create an account in LaunchDarkly UI. You can also signup for a free trial [here](https://app.launchdarkly.com/signup). After signing up, we would be assigned with an *SDK Key* that the client can use to authenticate into server. We will use *Mobile Key* as our user to fetch or retrieve the feature flags.
+Next, we need to create an account in LaunchDarkly UI. You can also signup for a free trial [here](https://app.launchdarkly.com/signup). After signing up, we would be assigned an *SDK Key* that the client can use to authenticate into the server. We will use *Mobile Key* as our user to fetch or retrieve the feature flags.
 
 {{% image alt="LaunchDarkly Keys" src="images/posts/nodejs-launchdarkly/LaunchDarkly_Keys.png" %}}
 
@@ -466,17 +466,17 @@ WARN: More than half of free memory has been allocated.
 
 ### Manage blacklisted Users or IPs on the Fly
 
-Now we can take a brief look at the JSON type flags as these feature flag values are pretty open-ended. LaunchDarkly actually supports a JSON type right out of the box. This allows us to pass Object and Array data structures to our application which can then be used to implement light-weight administrative and operational functionality in our web application.
+Now we can take a brief look at the JSON type flags as these feature flag values are pretty open-ended. LaunchDarkly supports a JSON type right out of the box. This allows us to pass Object and Array data structures to our application which can then be used to implement lightweight administrative and operational functionality in our web application.
 
-Let’s consider that we have a server that watches the network IPs that is trying to access the server and somehow it would like to check for blacklisted IPs and then block it from our server. So if we think about it on a very bare minimum we would need the following:
+Let’s consider that we have a server that watches the network IPs that are trying to access the server and somehow it would like to check for blacklisted IPs and then block them from our server. So if we think about it on a very bare minimum we would need the following:
 
-* a database to store the IP address.
-* an Admin UI to update those IP addresses periodically.
-* a User Access Control around those User Interfaces.
-* a data-access layer as an abstraction to update the database.
-* finally, a REST API to integrate with the UI.
+- a database to store the IP address.
+- an Admin UI to update those IP addresses periodically.
+- a User Access Control around those User Interfaces.
+- a data-access layer as an abstraction to update the database.
+- finally, a REST API to integrate with the UI.
 
-All of this looks tedious and need a lot of effort to maintain just a list of IP address. Well, LaunchDarkly provides us with all of this functionality with almost no effort at all. We can just define a flexible data structure and pass those values to be fetched dynamically. In this case, we can create an Array of IP addresses as part of JSON variation. This helps us to maintain a history of IP-address configuration rather than changing the same value. A typical of this feature flag would look something like:
+All of this looks tedious and need a lot of effort to maintain just a list of IP address. Well, LaunchDarkly provides us with all of this functionality with almost no effort at all. We can just define a flexible data structure and pass those values to be fetched dynamically. In this case, we can create an Array of IP addresses as part of JSON variation. This helps us to maintain a history of IP-address configuration rather than changing the same value. A type of this feature flag would look something like:
 
 {{% image alt="JSON multivariate feature flag" src="images/posts/nodejs-launchdarkly/IP_Blacklist.png" %}}
 

@@ -9,19 +9,15 @@ image: images/stock/0104-on-off-1200x628-branded.jpg
 url: nodejs-feature-flag-launchdarkly-react-cypress
 ---
 
-Development teams can deliver value to consumers much more quickly and with far less risk; thanks to *feature flag-driven development*. However, it also makes testing more complicated in the long run. In this article, we'll talk about some of the difficulties testing presents in the age of feature flags and offer some suggestions on how to overcome them.
+Development teams can deliver value to consumers much more quickly and with far less risk; thanks to *featuring flag-driven development*. However, it also makes testing more complicated in the long run. In this article, we'll talk about some of the difficulties testing presents in the age of feature flags and offer some suggestions on how to overcome them.
 
-We will outline five different sorts of tests that could be included in our testing plan in in order to help structure the discussion:
+We will outline five different sorts of tests that could be included in our testing plan in order to help structure the discussion:
 
-* **Unit Tests:** Testing separate functions with *unit* tests.
-
-* **Integration Tests:** Verifying how different modules or functions work together.
-
-* **End-to-End Tests:** *End-to-end* tests, also known as *functional* tests, examine how a real user might navigate our website.
-
-* **Quality Assurance (QA) Testing:** Testing to ensure that functionality satisfies requirements is termed as *quality assurance (QA)* testing.
-
-* **User Acceptance Testing (UAT):** Testing to get stakeholders' approval that the functionality satisfies specifications.
+- **Unit Tests:** Testing separate functions with *unit* tests.
+- **Integration Tests:** Verifying how different modules or functions work together.
+- **End-to-End Tests:** *End-to-end* tests, also known as *functional* tests, examine how a real user might navigate our website.
+- **Quality Assurance (QA) Testing:** Testing to ensure that functionality satisfies requirements is termed *quality assurance (QA)* testing.
+- **User Acceptance Testing (UAT):** Testing to get stakeholders' approval that the functionality satisfies specifications.
 
 The *Continuous Integration (CI)* approach typically includes the automatic execution of the first three test types. A specialist QA team may occasionally carry out QA testing, which can include both human and automated tests. The first four test types aid in determining whether anything was built correctly, whereas UAT aids in determining whether something was built correctly.
 
@@ -29,15 +25,16 @@ The *Continuous Integration (CI)* approach typically includes the automatic exec
 
 ## Different Options for Automation Tests
 
-As we've seen, using feature flags while performing traditional automated integration testing may be very difficult. We really shouldn't advocate attempting to manage every scenario that could arise. Instead, some of the following are a few suggestions that we can try:
+As we've seen, using feature flags while performing traditional automated integration testing may be very difficult. We really shouldn't advocate attempting to manage every scenario that could arise. Instead, the following are a few suggestions that we can try:
 
 * Constantly write unit tests for code coverage.
-* Tests scenarios that can occur due to any unknown disaster
-* Always check the state of production at any point of time
-* Test different user persona and its features
-* Sometimes we can test various combinations
 
-We can use different [LaunchDarkly SDK](https://launchdarkly.com/features/sdk/) to achieve all of this functionality with a lot of ease. Performing integration tests against the current production state will always provide us some assurance that everything will largely still work once we deploy our application into production. To do this, we can direct the SDK at our production environment when it starts up, or use our API to simulate the requests by downloading the current production state.
+- Tests scenarios that can occur due to any unknown disaster
+- Always check the state of production at any point in time
+- Test different user personas and their features
+- Sometimes we can test various combinations
+
+We can use different [LaunchDarkly SDKs](https://launchdarkly.com/features/sdk/) to achieve all of this functionality with a lot of ease. Performing integration tests against the current production state will always provide us some assurance that everything will largely still work once we deploy our application into production. To do this, we can direct the SDK to our production environment when it starts up, or use our API to simulate the requests by downloading the current production state.
 
 We may find it helpful to develop some testing personas to employ in our end-to-end tests if the feature flag rules benefit from user targeting. We can accomplish this by making sure our user object contains legitimate attributes that the LaunchDarkly SDK will analyze.
 
@@ -45,42 +42,42 @@ We may find it helpful to develop some testing personas to employ in our end-to-
 
 We discuss testing in production a lot. Testing in production does not imply releasing code without tests and crossing one's fingers. Instead, it refers to the capacity to test actual features with real data in a real environment using real people.
 
-Because they have given their QA and UAT teams the freedom to test features in a genuine production environment before making it available to the rest of their user base, some of our most productive users are able to deploy to production multiple times per day. There is no impact on other users and no need to perform a complete rollback when QA or UAT finds a bug.
+Because they have given their QA and UAT teams the freedom to test features in a genuine production environment before making them available to the rest of their user base, some of our most productive users can deploy to production multiple times per day. There is no impact on other users and no need to perform a complete rollback when QA or UAT finds a bug.
 
 The real strength of feature flags lies in this. No matter how many times you test your software using automation, you will never be able to detect every fault. But the confidence to be able to continue delivering features to consumers securely and quickly comes from being able to turn a feature off when you discover an issue in production in real-time.
 
 Some of the important advantages of performing beta tests are:
 
-* Even before the product is released, it provides quick input on the product, which helps to raise its quality and increase consumer satisfaction.
-* The application can be tested for dependability, usability, and robustness, and testers can provide feedback and suggestions to developers to help them make improvements that will better fulfil consumer needs.
-* Based on recommendations made by the testers, who are the actual users, it assists various organisational teams in making judgments about a product that are well-informed.
-* Since the product is tested by actual users in a production environment, it provides accurate insight into what customers like and dislike about it.
-* It helps to address software bugs that might not have been addressed or missed during any testing cycles.
-* It reduces the probability of a product failing because it has previously been tested before going to production.
+- Even before the product is released, it provides quick input on the product, which helps to raise its quality and increase consumer satisfaction.
+- The application can be tested for dependability, usability, and robustness, and testers can provide feedback and suggestions to developers to help them make improvements that will better fulfill consumer needs.
+- Based on recommendations made by the testers, who are the actual users, it assists various organizational teams in making judgments about a product that is well-informed.
+- Since the product is tested by actual users in a production environment, it provides accurate insight into what customers like and dislike about it.
+- It helps to address software bugs that might not have been addressed or missed during any testing cycles.
+- It reduces the probability of a product failing because it has previously been tested before going to production.
 
 ## How to Control the Lifeline of a Feature
 
-One must be careful not to break any current tests while introducing a new experiment behind the feature flag. What I believe the feature lifetime should be is as follows:
+One must be careful not to break any current tests while introducing a new experiment behind the feature flag. What I believe a feature lifetime should be is as follows:
 
-* ***Experimental:*** To enable the new behavior, a new feature flag should be created. The functionality can purely be opt-in at first because the developer is testing the behavior. The current default behavior can still be experienced by all current users.
-* ***Prototype:*** The new feature can now be used if it appears to be successful. The team can prepare to release it. The feature can be activated and the new feature flow can be tested using a few end-to-end tests that employ the LaunchDarkly implementation. The old behavior can still be visible in all running tests because that is the default behavior.
-* ***Alternate Approach:*** At this point, the new functionality is being more widely used, and the previous behavior will eventually be eliminated. We can now change the current tests to explicitly allow the old behavior. As a result, some tests opt-in and test the new feature, while other tests do the opposite.
-* ***Kill Switch:*** The majority of users if not all have the feature switched on by default. The tests created while the functionality was being developed now works without opt-in. The outdated tests are still active and using the outdated behavior.
-* ***Feature Removal:*** Both the previous behavior and all previous testing can be disabled. The feature flag would now consistently denote the altered behavior.
+- **Experimental:** To enable the new behavior, a new feature flag should be created. The functionality can purely be opt-in at first because the developer is testing the behavior. The current default behavior can still be experienced by all current users.
+- **Prototype:** The new feature can now be used if it appears to be successful. The team can prepare to release it. The feature can be activated and the new feature flow can be tested using a few end-to-end tests that employ the LaunchDarkly implementation. The old behavior can still be visible in all running tests because that is the default behavior.
+- **Alternate Approach:** At this point, the new functionality is being more widely used, and the previous behavior will eventually be eliminated. We can now change the current tests to explicitly allow the old behavior. As a result, some tests opt-in and test the new feature, while other tests do the opposite.
+- **Kill Switch:** The majority of users if not all have the feature switched on by default. The tests created while the functionality was being developed now work without opt-in. The outdated tests are still active and use the outdated behavior.
+- **Feature Removal:** Both the previous behavior and all previous testing can be disabled. The feature flag would now consistently denote the altered behavior.
 
 ## Brief Introduction to LaunchDarkly and its features
 
-A SaaS based product called [LaunchDarkly](https://launchdarkly.com/) enables developers to manage feature flags. By separating feature rollout and code deployment, it enables developers to test their code live in production, gradually roll out features to groups of users, and manage flags across a flag's whole lifecycle. This gives developers more security to produce top-notch applications.
+A SaaS-based product called [LaunchDarkly](https://launchdarkly.com/) enables developers to manage feature flags. Separating feature rollout and code deployment enables developers to test their code live in production, gradually roll out features to groups of users, and manage flags across a flag's whole lifecycle. This gives developers more security to produce top-notch applications.
 
-It functions as a cloud-based service in essence and provides a UI for managing all feature flags. For each flag, we must define one or more **variations**. All acceptable alternatives include a Boolean, arbitrary numbers, textual values, and JSON snippets. We can establish **targeting rules** to indicate which variation a feature flag will display to its user. By default, a targeting rule for a feature flag is inactive. 
+It functions as a cloud-based service in essence and provides a UI for managing all feature flags. For each flag, we must define one or more **variations**. All acceptable alternatives include Boolean, arbitrary numbers, textual values, and JSON snippets. We can establish **targeting rules** to indicate which variation a feature flag will display to its user. By default, a targeting rule for a feature flag is inactive. 
 
 LaunchDarkly uses a [streaming architecture](https://launchdarkly.com/blog/launchdarklys-evolution-from-polling-to-streaming/) in place of a polling design. This approach helps with scalability by preventing the requirement for network calls every time our application has to analyze or fetch a feature flag. Additionally, for robustness, feature flag evaluation will still work even if the LaunchDarkly server is no longer responding to our requests.
 
 ## Create a Simple React Application
 
-In this article, we will focus on to cover test cases of a React UI. For this, we will define a pretty simple React application and focus primarily on writing different test cases with feature flags. To demonstrate such power to control the feature flags from Cypress tests, we will just grab an existing copy of the LaunchDarkly’s example React application.
+In this article, we will focus on covering test cases of a React UI. For this, we will define a pretty simple React application and focus primarily on writing different test cases with feature flags. To demonstrate such power to control the feature flags from Cypress tests, we will just grab an existing copy of LaunchDarkly’s example React application.
 
-We can clone and create our own copy using the command:
+We can clone and create our copy using the command:
 
 ```bash
 npx degit launchdarkly/react-client-sdk/examples/hoc react-cypress-launchdarkly-feature-flag-test
@@ -175,15 +172,15 @@ npm start
 
 ## Setup Cypress Tests
 
-A breakthrough front-end testing framework called *Cypress* that makes it simple to create effective and adaptable tests for your online apps. With features like simple test configuration, practical reporting, an appealing dashboard interface, and with lot more, it makes it possible to perform advanced testing for both unit tests and integration tests.
+A breakthrough front-end testing framework called *Cypress* makes it simple to create effective and adaptable tests for your online apps. With features like simple test configuration, practical reporting, an appealing dashboard interface, and with lot more, it makes it possible to perform advanced testing for both unit tests and integration tests.
 
 The main benefit of Cypress is that it is created in JavaScript, the most used language for front-end web development. Since it was first made available to the public for the community, it has gained a sizable following among developers and QA engineers (about 32K GitHub stars).
 
-*Cypress* is an open-source testing framework based on JavaScript that supports web application testing. Contrary to *Selenium*, Cypress does not require driver binaries in order to function fully on a real browser. The shared platform between the automated code and the application code provides total control over the application being tested.
+*Cypress* is an open-source testing framework based on JavaScript that supports web application testing. Contrary to *Selenium*, Cypress does not require driver binaries to function fully on a real browser. The shared platform between the automated code and the application code provides total control over the application being tested.
 
-Let's look into Cypress' high-level architecture in order to explain the backstory behind it. In order to execute the application and test code in the same event loop, Cypress operates on a NodeJS server that connects with the test runner (Browser). This in turn allows the Cypress code to mock and even change the JavaScript object on the fly. This is one of the primary reasons why Cypress tests are expected to execute faster than corresponding Selenium tests.
+Let's look into Cypress' high-level architecture to explain the backstory behind it. To execute the application and test code in the same event loop, Cypress operates on a NodeJS server that connects with the test runner (Browser). This in turn allows the Cypress code to mock and even change the JavaScript object on the fly. This is one of the primary reasons why Cypress tests are expected to execute faster than corresponding Selenium tests.
 
-In order to start writing our tests, let’s start by installing Cypress test runner:
+To start writing our tests, let’s start by installing Cypress test runner:
 
 ```bash
 npm install --save-dev cypress
@@ -403,12 +400,11 @@ We are also defining a task at the end to remove any user targets being created 
 
 ## Deploy Tests as CI
 
-Next we can use *GitHub Actions* to run the same tests on CI. The workflows provided by CI using GitHub Actions allows us to create the code in our repository and run our tests. Workflows can run on virtual machines hosted by GitHub or on our own servers.
-Using the repository dispatch webhook, we may set up our CI workflow to launch whenever a GitHub event takes place (for instance, if new code is pushed to your repository), on a predetermined timetable, or in response to an outside event.
+Next, we can use *GitHub Actions* to run the same tests on CI. The workflows provided by CI using GitHub Actions allow us to create the code in our repository and run our tests. Workflows can run on virtual machines hosted by GitHub or on our servers. Using the repository dispatch webhook, we may set up our CI workflow to launch whenever a GitHub event takes place (for instance, if new code is pushed to your repository), on a predetermined timetable, or in response to an outside event.
 
-In order for us to determine whether the change in our branch produces an error, GitHub executes our CI tests and includes the results of each test in the pull request. The changes we pushed are prepared to be evaluated by a team member or merged once all CI tests in a workflow pass. If a test fails, then we can easily get to know that one of our changes may have caused the failure.
+For us to determine whether the change in our branch produces an error, GitHub executes our CI tests and includes the results of each test in the pull request. The changes we pushed are prepared to be evaluated by a team member or merged once all CI tests in a workflow pass. If a test fails, then we can easily get to know that one of our changes may have caused the failure.
 
-We will use [cypress-io/github-action](https://github.com/cypress-io/github-action) to install the dependencies, cache Cypress, start the application, and run the tests. We can define the environment variables in the repo and then use it.
+We will use [cypress-io/GitHub-action](https://github.com/cypress-io/github-action) to install the dependencies, cache Cypress, start the application, and run the tests. We can define the environment variables in the repo and then use them.
 
 {{% image alt="Repository Secrets" src="images/posts/nodejs-launchdarkly/Github_Repository_Secret.png.png" %}}
 

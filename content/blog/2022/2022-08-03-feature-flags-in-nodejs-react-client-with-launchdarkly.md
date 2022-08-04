@@ -21,32 +21,32 @@ The whole purpose is to check if we can have wide-scale acceptance for a new fea
 
 ## Use-Cases of Feature Flags in Web UI
 
-* Feature flags or feature management is commonly used in web UI to perform the following operations:
+Feature flags or feature management is commonly used in web UI to perform the following operations:
 
-  - Reduce the number of rollbacks in the existing code due to failure or breakage.
-  - Gradually roll or publish out new features or functionality to users.
-  - Minimize the risk of a release by first releasing something like a beta version to a limited group of users.
-  - Test various kinds of user acceptance.
+- Reduce the number of rollbacks in the existing code due to failure or breakage.
+- Gradually roll or publish out new features or functionality to users.
+- Minimize the risk of a release by first releasing something like a beta version to a limited group of users.
+- Test various kinds of user acceptance.
 
-  Some of the most common use-cases where we can use feature flags are:
+Some of the most common use-cases where we can use feature flags are:
 
-  - **Progressive Delivery** - It is a practice that gives businesses the ability to decide when and how to roll out new software features. Feature flag management and deployment tactics like blue-green and canary deployments are built upon in this method. Progressive delivery, in the end, blends software development and delivery processes and enables businesses to deliver with control.
-  - **Beta Testing and Qualitative Feedback** - Before deploying a feature to the full user base, feature flags are a wonderful way to test it with a beta tester group, gather user feedback, and assess performance. Before the product is ready for prime time, developers must seek consumer feedback on performance, usability, and functionality in this area of progressive delivery. We can target particular individuals or groups using the granular control provided by feature flags to collect their opinion on the experience.
-  - **Kill Switches** - A kill switch is a device that does exactly what it says: it stops something immediately. This could imply that we suddenly start receiving several bug reports regarding a feature in the context of feature flags. We can just turn off the one problematic feature rather than having to roll back and potentially damage other features in the release.
-  - **Release Progressions** - Teams can deploy new features using canary launches, percentage deployments, and ring deployments with the use of release progressions. There is a lot less risk involved in using these targeted, incremental release strategies than in rolling out features to all users at once.
-  - **A/B Testing** - Let's stick with a fairly straightforward description since this is one of the most typical uses for feature flags. Consider adding a new button to our website and testing whether it receives more clicks when it is red or blue. Using feature flags, we could deploy feature A (the red button) to 50% of our consumers and feature B (the blue button) to the remaining 50%. Then we may gather data to determine if A or B performed better.
-  - **Faster Incident Resolution** - Although we don't typically consider it, feature flags can speed up issue resolution. In fact, using feature flags can fully stop problems from ever occurring. We present real-world use cases and examples of how feature flags can be used to solve problems in our article on faster incident resolution. Feature flags might be viewed in this regard as the first line of defense if something goes wrong during production.
+- **Progressive Delivery** - It is a practice that gives businesses the ability to decide when and how to roll out new software features. Feature flag management and deployment tactics like blue-green and canary deployments are built upon in this method. Progressive delivery, in the end, blends software development and delivery processes and enables businesses to deliver with control.
+- **Beta Testing and Qualitative Feedback** - Before deploying a feature to the full user base, feature flags are a wonderful way to test it with a beta tester group, gather user feedback, and assess performance. Before the product is ready for prime time, developers must seek consumer feedback on performance, usability, and functionality in this area of progressive delivery. We can target particular individuals or groups using the granular control provided by feature flags to collect their opinion on the experience.
+- **Kill Switches** - A kill switch is a device that does exactly what it says: it stops something immediately. This could imply that we suddenly start receiving several bug reports regarding a feature in the context of feature flags. We can just turn off the one problematic feature rather than having to roll back and potentially damage other features in the release.
+- **Release Progressions** - Teams can deploy new features using canary launches, percentage deployments, and ring deployments with the use of release progressions. There is a lot less risk involved in using these targeted, incremental release strategies than in rolling out features to all users at once.
+- **A/B Testing** - Let's stick with a fairly straightforward description since this is one of the most typical uses for feature flags. Consider adding a new button to our website and testing whether it receives more clicks when it is red or blue. Using feature flags, we could deploy feature A (the red button) to 50% of our consumers and feature B (the blue button) to the remaining 50%. Then we may gather data to determine if A or B performed better.
+- **Faster Incident Resolution** - Although we don't typically consider it, feature flags can speed up issue resolution. In fact, using feature flags can fully stop problems from ever occurring. We present real-world use cases and examples of how feature flags can be used to solve problems in our article on faster incident resolution. Feature flags might be viewed in this regard as the first line of defense if something goes wrong during production.
 
 ## Different Types of Feature Flags/Toggles in UI
 
-- It's tempting to want to group all feature flag use cases, but it's more beneficial to see flags as a means of accomplishing goals and as having different types of use cases.
+It's tempting to want to group all feature flag use cases, but it's more beneficial to see flags as a means of accomplishing goals and as having different types of use cases.
 
-  The various types of flags that could be used in a system are demonstrated by the following examples:
+The various types of flags that could be used in a system are demonstrated by the following examples:
 
-  - **Release features** - Using flags to avoid the need for intricate technical deployment coordination, the proper individuals can choose who and when to activate a feature.
-  - **Experiment** - Use flags to experiment and discover how a modification affects many aspects of the world. This might be a user experiment, like examining how a new button affects conversion, or it can be a technical experiment, like examining how a new user interface affects server load.
-  - **Ops flags** - These flags provide you permanent control over important portions of your feature, allowing you to turn them on and off as needed without starting a brand-new deployment cycle. This is a reliable technique to manage who has access to alter your production application when RBAC is added.
-  - **Control access** - Control access via managing betas, early adopter lists, trial access, and other things with flags.
+- **Release features** - Using flags to avoid the need for intricate technical deployment coordination, the proper individuals can choose who and when to activate a feature.
+- **Experiment** - Use flags to experiment and discover how a modification affects many aspects of the world. This might be a user experiment, like examining how a new button affects conversion, or it can be a technical experiment, like examining how a new user interface affects server load.
+- **Ops flags** - These flags provide you permanent control over important portions of your feature, allowing you to turn them on and off as needed without starting a brand-new deployment cycle. This is a reliable technique to manage who has access to alter your production application when RBAC is added.
+- **Control access** - Control access via managing betas, early adopter lists, trial access, and other things with flags.
 
 ## Introducing LaunchDarkly and its Features
 
@@ -197,7 +197,7 @@ import React, { Component } from 'react';
 import './App.css';
 import * as LDClient from 'launchdarkly-js-client-sdk';
 
-const isNewer = (a, b) => Date.parse(a.added) < Date.parse(b.added);
+const isNewer = (a, b) => Date.parse(a.added) - Date.parse(b.added);
 
 class App extends Component {
   constructor() {
@@ -205,27 +205,27 @@ class App extends Component {
     this.state = {
       selectedSortOrder: null,
       users: [
-        { name: 'John Doe', added: '2022-7-27' },
-        { name: 'Allen Witt', added: '2022-6-30' },
-        { name: 'Cheryl Strong', added: '2022-7-02' },
-        { name: 'Marty Byrde', added: '2022-5-03' },
-        { name: 'Wendy Byrde', added: '2022-6-03' },
+        { name: 'John Doe', added: new Date('2022-7-27') },
+        { name: 'Allen Witt', added: new Date('2022-6-30') },
+        { name: 'Cheryl Strong', added: new Date('2022-7-02') },
+        { name: 'Marty Byrde', added: new Date('2022-5-03') },
+        { name: 'Wendy Byrde', added: new Date('2022-6-03') },
       ]
     }
   }
   componentDidMount() {
     const user = {
-      key: '61af594df3ad1f8aaecd952d'
+      key: 'aa0ceb'
     }
-    this.ldclient = LDClient.initialize('sdk-011395da-18bd-4e71-87f6-fc462c8b32e9', user);
+    this.ldclient = LDClient.initialize('62e9289ade464c10d842c2b3', user);
     this.ldclient.on('ready', this.onLaunchDarklyUpdated.bind(this));
     this.ldclient.on('change', this.onLaunchDarklyUpdated.bind(this));
   }
   onLaunchDarklyUpdated() {
     this.setState({
       featureFlags: {
-        defaultSortingIsAdded: this.ldclient.variation('new-feature-flag'),
-        hideUser: this.ldclient.variation("hidden-user")
+        defaultSortingIsAdded: this.ldclient.variation('user-list-default-sorting-check', true),
+        hideUser: this.ldclient.variation('hidden-user', '')
       }
     })
   }
@@ -235,6 +235,7 @@ class App extends Component {
     }
 
     let sorter;
+    console.log('Checking the environment variables: ', this.state.featureFlags);
     if (this.state.selectedSortOrder) {
       if (this.state.selectedSortOrder === 'added') {
         sorter = isNewer
@@ -259,7 +260,8 @@ class App extends Component {
           onClick={() => this.setState({ selectedSortOrder: 'added' })}>Time sorting</div>
         <ul>
           {this.state.users.slice().sort(sorter).map(user =>
-             <div>{this.state.featureFlags.hideUser !== 'John Doe' ? user.name : '*********'}</div>
+             <div>{ this.state.featureFlags.hideUser === 'John Doe'
+              && user.name === 'John Doe' ? '*********' : user.name }</div>
           )}
         </ul>
       </div>

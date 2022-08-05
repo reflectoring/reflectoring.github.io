@@ -90,7 +90,7 @@ npm start
 
 The development server will start up at http://localhost:3000 and we can see the home page.
 
-{{% image alt="React UI" src="images/posts/nodejs-launchdarkly/React_Logo.png" %}}
+{{% image alt="React UI" src="images/posts/nodejs-frontend-launchdarkly/React_Logo.png" %}}
 
 Next we will add the [launchdarkly-js-client-sdk](https://github.com/launchdarkly/js-client-sdk) package to use client-side methods to fetch the feature flag variations:
 
@@ -106,11 +106,11 @@ In our first use-case, let’s try to simply define a string feature flag in Lau
 
 The feature flag defined in LaunchDarkly UI would look something like this:
 
-{{% image alt="String Feature Flag LaunchDarkly" src="images/posts/nodejs-launchdarkly/Hide_User.png" %}}
+{{% image alt="String Feature Flag LaunchDarkly" src="images/posts/nodejs-frontend-launchdarkly/Hide_User.png" %}}
 
 We need to fetch the *Client-Side ID* from LaunchDarkly Projects page and define it as part of the code. We should also make sure that the targeting option is enabled for the flag.
 
-{{% image alt="LaunchDarkly Keys" src="images/posts/nodejs-launchdarkly/LaunchDarkly_Keys.png" %}}
+{{% image alt="LaunchDarkly Keys" src="images/posts/nodejs-frontend-launchdarkly/LaunchDarkly_Keys.png" %}}
 
 Next we will update our `App.js` to fetch the feature flag variations from LaunchDarkly and display the list of users. 
 
@@ -178,17 +178,17 @@ npm start
 
 When the user is not set in the LaunchDarkly UI, our React UI looks like below:
 
-{{% image alt="React User List" src="images/posts/nodejs-launchdarkly/React_User_List_simple.png" %}}
+{{% image alt="React User List" src="images/posts/nodejs-frontend-launchdarkly/React_User_List_simple.png" %}}
 
 Now we will define “John Doe” as name in LaunchDarkly feature flag variation. Once that is saved, our UI will immediately render the user as encrypted in our list.
 
-{{% image alt="React User List Encrypted" src="images/posts/nodejs-launchdarkly/React_User_list_encrypted.png" %}}
+{{% image alt="React User List Encrypted" src="images/posts/nodejs-frontend-launchdarkly/React_User_list_encrypted.png" %}}
 
 ## Sorting of Data using Flags
 
 Next we will try to sort our content in the UI using our feature flags. Since our  users are added with some date stamp, we can easily sort our data naturally or based upon the time when that particular user is added in our system. We will create a feature flag variation in LaunchDarkly UI with a boolean type and try to use it in our code.
 
-{{% image alt="Boolean Feature Flag LaunchDarkly" src="images/posts/nodejs-launchdarkly/User_List_Sorting.png" %}}
+{{% image alt="Boolean Feature Flag LaunchDarkly" src="images/posts/nodejs-frontend-launchdarkly/User_List_Sorting.png" %}}
 
 Then we will add the sorting logic in our same `App.js`and use it with a switch in the UI. The UI will display either *Natural Sorting* or *Time Sorting*. By default, if the flag is set to true then Time Sorting takes place otherwise Natural Sorting:
 
@@ -280,7 +280,7 @@ npm start
 
 Now our UI looks something like below:
 
-{{% image alt="Final UI" src="images/posts/nodejs-launchdarkly/Final_UI.png" %}}
+{{% image alt="Final UI" src="images/posts/nodejs-frontend-launchdarkly/Final_UI.png" %}}
 
 ## Conclusion
 

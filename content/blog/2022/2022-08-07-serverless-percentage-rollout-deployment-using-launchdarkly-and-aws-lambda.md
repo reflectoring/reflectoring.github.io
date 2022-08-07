@@ -307,7 +307,7 @@ Usually AWS Lambda has various limitations of implementing canary deployments si
 
 Instead of a polling design, LaunchDarkly makes use of a [streaming architecture](https://launchdarkly.com/blog/launchdarklys-evolution-from-polling-to-streaming/). From a scalability point of view, this architecture is beneficial so that our application doesn't have to make a network call each time we need to analyse or fetch a feature flag. Furthermore, feature flag evaluation will continue to function even if the LaunchDarkly server has stopped responding to our calls, which is beneficial for resilience.
 
-So let’s just create a flag in [LaunchDarkly](https://app.launchdarkly.com/) by opening the dashboard and select our project (the default project works fine) and environment (either the default "Test" or "Production" is fine, just be sure to change the flag in the same environment later) then click  on *"Create flag"*.launchdarkly_feature_flag.png
+So let’s just create a flag in [LaunchDarkly](https://app.launchdarkly.com/) by opening the dashboard and select our project (the default project works fine) and environment (either the default "Test" or "Production" is fine, just be sure to change the flag in the same environment later) then click  on *"Create flag"*.
 
 {{% image alt="LaunchDarkly Feature Flag" src="images/posts/nodejs-aws-lambda-launchdarkly/lambda_function.png" %}}
 
@@ -385,10 +385,8 @@ Finally, once we are done with our testing, we can cleanup our AWS by the follow
 
 ## Conclusion
 
-In this article, we covered LaunchDarkly's functionality as well as how AWS Lambda can interface with it. Even if everything functioned right out of the box, the SDK's requirement for permanent connections raises questions. The maximum number of server connections to LaunchDarkly can easily be exceeded as the number of concurrent executions rises.
+In this article, we deployed a simple NodeJS based code that can redirect the user to a site. We also examined how feature toggles can be used to build canary deployments and how they differ from the approach with weighted aliases. As part of this, we deployed this function as part of AWS Lambda and mapped it to CloudFront to host our site.
 
-A polling mod exists. However, it has no impact on the quantity of server connections needed. We want all functions to make the same feature-toggling decision when there are several functions in a call chain. Large time spans are introduced via polling, which increases the likelihood of discrepancies across these functions.
-
-Finally, we examined how feature toggles can be used to build canary deployments and how they differ from the approach with weighted aliases.
+Finally, we defined a percentage based rollout feature flag in LaunchDarkly that can propagate to the landing site based upon the user’s IP address as the key. Thus, an equal number of users land either in the old site or the beta version of the new site. Thus, we took a holistic look into the serverless canary deployment with much ease.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/nodejs/nodejs-aws-lambda-launchdarkly).

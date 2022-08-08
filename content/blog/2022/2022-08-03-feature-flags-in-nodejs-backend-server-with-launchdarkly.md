@@ -66,7 +66,7 @@ We are going to use `launchdarkly-node-server-sdk` for connecting to the LaunchD
 
 Next, we need to create an account in LaunchDarkly UI. You can also signup for a free trial [here](https://app.launchdarkly.com/signup). After signing up, we would be assigned an *SDK Key* that the client can use to authenticate into the server. We will use *Mobile Key* as our user to fetch or retrieve the feature flags.
 
-{{% image alt="LaunchDarkly Keys" src="images/posts/nodejs-launchdarkly/LaunchDarkly_Keys.png" %}}
+{{% image alt="LaunchDarkly Keys" src="images/posts/nodejs-backend-launchdarkly/LaunchDarkly_Keys.png" %}}
 
 ## Retrieve All Flags set in LaunchDarkly
 
@@ -206,7 +206,7 @@ export default Logger;
 
 Then we will define a flag in LaunchDarkly with the name *“backend-log-level”* where we can add a default variation as *“debug”*. We can then change it later to whatever we need.
 
-{{% image alt="Backend Log Level Feature Flag" src="images/posts/nodejs-launchdarkly/Simple_Log_Level.png" %}}
+{{% image alt="Backend Log Level Feature Flag" src="images/posts/nodejs-backend-launchdarkly/Simple_Log_Level.png" %}}
 
 Next we can define a similar kind of code that we did it earlier but we will subscribe to the log level changes before we initiate the `express` app:
 
@@ -300,11 +300,11 @@ The first flag type we can start with is to use the same log-level concept that 
 * info
 * warn
 
-{{% image alt="Multivariate log-level" src="images/posts/nodejs-launchdarkly/Log_Level_Variations.png" %}}
+{{% image alt="Multivariate log-level" src="images/posts/nodejs-backend-launchdarkly/Log_Level_Variations.png" %}}
 
 Next we can define targeting values that would deliver one of the above defined multivariate strings.
 
-{{% image alt="Multivariate targeting rule" src="images/posts/nodejs-launchdarkly/Targeting_Log_Level.png" %}}
+{{% image alt="Multivariate targeting rule" src="images/posts/nodejs-backend-launchdarkly/Targeting_Log_Level.png" %}}
 
 Now once we have our multivariate feature flag defined, we can start with our code. We will update our existing logger class with a new implementation that would read the log-level from the variation and print accordingly:
 
@@ -478,7 +478,7 @@ Let’s consider that we have a server that watches the network IPs that are try
 
 All of this looks tedious and need a lot of effort to maintain just a list of IP address. Well, LaunchDarkly provides us with all of this functionality with almost no effort at all. We can just define a flexible data structure and pass those values to be fetched dynamically. In this case, we can create an Array of IP addresses as part of JSON variation. This helps us to maintain a history of IP-address configuration rather than changing the same value. A type of this feature flag would look something like:
 
-{{% image alt="JSON multivariate feature flag" src="images/posts/nodejs-launchdarkly/IP_Blacklist.png" %}}
+{{% image alt="JSON multivariate feature flag" src="images/posts/nodejs-backend-launchdarkly/IP_Blacklist.png" %}}
 
 Next we will define the code to consume this feature flag variation dynamically and block the IP:
 
@@ -596,7 +596,7 @@ Consider that you have a batch task or job that needs to be executed. But we mig
 
 But we can just make use of our multivariate options in LaunchDarkly to define a batch size. We can dynamically change this values so that it reflects in the code accordingly.
 
-{{% image alt="Batch Multivariate option" src="images/posts/nodejs-launchdarkly/Batch_Size_Count.png" %}}
+{{% image alt="Batch Multivariate option" src="images/posts/nodejs-backend-launchdarkly/Batch_Size_Count.png" %}}
 
 Next we can define a `BatchRunner` to get batch size and execute the batch process in a loop:
 

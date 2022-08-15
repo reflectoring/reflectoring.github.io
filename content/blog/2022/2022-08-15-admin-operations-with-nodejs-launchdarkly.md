@@ -1,7 +1,7 @@
 ---
 title: "Admin Operations with Node.js and LaunchDarkly"
 categories: ["Node"]
-date: 2022-08-03 00:00:00 +1100 
+date: 2022-08-15 00:00:00 +1100 
 modified: 2022-08-15 00:00:00 +1100
 authors: [arpendu]
 excerpt: "A simple article to understand various admin perspective use-cases of Feature flags that can be achieved with LaunchDarkly."

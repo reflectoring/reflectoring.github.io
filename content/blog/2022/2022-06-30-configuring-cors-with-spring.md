@@ -140,5 +140,46 @@ Here since we have defined @CrossOrigin
 By defining the annotation at both class and method levels
     - its combined attributes will be applied to the methods i.e (origins, allowedHeaders, maxAge)
 
+## Enable CORS Configuration globally
 
+Instead of adding CORS to each of the resource separately, we could define a common CORS configuration that would apply to
+all resources defined in the application. We could use **WebMvcConfigurer** which is a part of the Spring Web MVC library.
+By overriding the **addCorsMapping** we could configure CORS to all URLs that are handled by Spring Web MVC.
+
+To define the same configuration (as explained in the previous sections) globally, we could use the configuration parameters
+defined in **application.yml** to create a bean as defined below:
+
+````yaml
+    web:
+    cors:
+      allowed-origins: "http://localhost:4200"
+      allowed-methods: GET, POST, PATCH, PUT, DELETE, OPTIONS, HEAD
+      max-age: 3600
+      allowed-headers: "Requestor-Type"
+      exposed-headers: "X-Get-Header"
+````
+
+````java
+    @Bean
+    public WebMvcConfigurer corsMappingConfigurer() {
+            return new WebMvcConfigurer() {
+                @Override
+                public void addCorsMappings(CorsRegistry registry) {
+                    WebConfigProperties.Cors cors = webConfigProperties.getCors();
+                    registry.addMapping("/**")
+                    .allowedOrigins(cors.getAllowedOrigins())
+                    .allowedMethods(cors.getAllowedMethods())
+                    .maxAge(cors.getMaxAge())
+                    .allowedHeaders(cors.getAllowedHeaders())
+                    .exposedHeaders(cors.getExposedHeaders());
+            }
+        };
+    }
+````
+
+{{% info title="NOTE:" %}}
+**addMapping()** returns a **CorsRegistration** object which applies default **CorsConfiguration** if
+one or more methods **allowedOrigins**, **allowedMethods**, **maxAge**, **allowedHeaders**, **exposedHeaders** are not explicitly defined.
+Refer to the Spring library method **CorsConfiguration.applyPermitDefaultValues()** to understand the defaults applied.
+{{% /info %}}
 

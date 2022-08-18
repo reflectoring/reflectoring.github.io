@@ -64,12 +64,7 @@ Call to the Spring REST server:
 Call to the Spring Reactive server:
 {{% image alt="settings" src="images/posts/configuring-cors-with-spring/app_reactive.jpg" %}}
 
-
-## Configuring CORS in a Spring boot Application
-
-The initial setup created with a Spring Initializr holds all the required CORS dependencies. No external dependencies need to be added.
-
-### Understanding @CrossOrigin attributes
+## Understanding @CrossOrigin attributes
 
 Let's first understand the attributes that @CrossOrigin supports.
 
@@ -82,11 +77,15 @@ Let's first understand the attributes that @CrossOrigin supports.
 | allowCredentials | When credentials are required to invoke the API, set **Access-Control-Allow-Credentials** header value to true. In case no credentials are required, omit the header.                                                                                    | @CrossOrigin(allowCredentials = true)                                                                                             |                                                                        |
 | maxAge           | Default maxAge is set to 1800 seconds(30 minutes). Indicates how long the preflight responses can be cached for.                                                                                                                                         | @CrossOrigin(maxAge = 300)                                                                                                        |                                                                        |
 
-### What if we do not configure CORS 
+## What if we do not configure CORS 
 
 Consider our Spring Boot Application has not been configured for CORS support.
 If we try to hit our angular application running on port 4200, we see this error on the developer console.
 {{% image alt="settings" src="images/posts/configuring-cors-with-spring/cors-error.jpg" %}}
+
+## Configuring CORS in a Spring boot Application
+
+The initial setup created with a Spring Initializr holds all the required CORS dependencies. No external dependencies need to be added.
 
 ### Configure CORS using @CrossOrigin
 
@@ -149,7 +148,7 @@ Here since we have defined @CrossOrigin
 By defining the annotation at both class and method levels
     - its combined attributes will be applied to the methods i.e (origins, allowedHeaders, maxAge)
 
-#### Enable CORS Configuration globally
+### Enable CORS Configuration globally
 
 Instead of adding CORS to each of the resource separately, we could define a common CORS configuration that would apply to
 all resources defined. We could use **WebMvcConfigurer** which is a part of the Spring Web MVC library.
@@ -192,7 +191,13 @@ one or more methods - **allowedOrigins**, **allowedMethods**, **maxAge**, **allo
 Refer to the Spring library method **CorsConfiguration.applyPermitDefaultValues()** to understand the defaults applied.
 {{% /info %}}
 
-#### CORS Configuration for Spring Webflux using @CrossOrigin
+## Configuring CORS in a Spring Webflux application
+
+The initial setup created with a Spring Initializr uses Spring webflux, Spring Data R2DBC and H2 Database.
+No external dependencies need to be added.
+
+
+### CORS Configuration for Spring Webflux using @CrossOrigin
 
 Similar to Spring REST we can define @CrossOrigin at the class level or at the method level in case of Spring Webflux.
 The same @CrossOrigin attributes described in the previous sections will apply. Also, when the annotation is defined at both class and method,
@@ -236,3 +241,28 @@ In all the above cases we can define both global CORS configuration and local co
 For attributes that accept multiple values, a combination of global and local values will apply. For attributes that accept
 only a single value, the local value will take precedence over the global one.
 {{% /info %}}
+
+#### Enable CORS using WebFilter
+
+The Webflux framework allows CORS configuration to be set globally via **CorsWebFilter**. We can use the **CorsConfiguration** object to set 
+the required configuration and register **CorsConfigurationSource** to be used with the filter. However, by default the CorsConfiguration in case of filters
+does not assign default configuration to the endpoints. Only the specified configuration can be applied.
+Another option is to call CorsConfiguration.applyPermitDefaultValues() explicitly.
+
+````java
+        @Bean
+        public CorsWebFilter corsWebFilter() {
+            CorsConfiguration corsConfig = new CorsConfiguration();
+            corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+            corsConfig.setMaxAge(3600L);
+            corsConfig.addAllowedMethod("*");
+            corsConfig.addAllowedHeader("Requestor-Type");
+            corsConfig.addExposedHeader("X-Get-Header");
+
+            UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+            source.registerCorsConfiguration("/**", corsConfig);
+
+            return new CorsWebFilter(source);
+    }
+````

@@ -44,23 +44,32 @@ We should be able to start the client application successfully.
 
 ## Setting up a sample server application
 
-We will use an example Spring based Library application with sample GET and POST requests that the client application can call.
-The Maven Wrapper bundled with the application will be used to start the service
-You can check out the [source code on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/cors/configuring-cors-with-spring/SimpleLibraryApplication).
+We will use a sample Spring based application with GET and POST requests that the client application can call.
+Note that you will find two separate applications one that uses Spring REST and the other that uses the Spring Reactive stack. 
+For simplicity the CORS configuration across both applications are the same and the same endpoints have been defined. Both servers start at different ports 
+8091 and 8092.
+The Maven Wrapper bundled with the application will be used to start the service.
+You can check out the [Spring REST source code](https://github.com/thombergs/code-examples/tree/master/spring-boot/cors/configuring-cors-with-spring/SimpleLibraryApplication)
+and the [Spring Reactive source code](https://github.com/thombergs/code-examples/tree/master/spring-boot/cors/configuring-cors-with-spring/LibraryWebfluxApplication).
 
 ````text
     mvnw clean verify spring-boot:run (for Windows)
     ./mvnw clean verify spring-boot:run (for Linux)
 ````
 Once the Spring application successfully starts the client application should be able to successfully load data from the server.
+
+Call to the Spring REST server:
 {{% image alt="settings" src="images/posts/configuring-cors-with-spring/app.jpg" %}}
+
+Call to the Spring Reactive server:
+{{% image alt="settings" src="images/posts/configuring-cors-with-spring/app_reactive.jpg" %}}
 
 
 ## Configuring CORS in a Spring boot Application
 
 The initial setup created with a Spring Initializr holds all the required CORS dependencies. No external dependencies need to be added.
 
-### Enabling CORS with @CrossOrigin
+### Understanding @CrossOrigin attributes
 
 Let's first understand the attributes that @CrossOrigin supports.
 
@@ -81,7 +90,7 @@ If we try to hit our angular application running on port 4200, we see this error
 
 ### Configure CORS using @CrossOrigin
 
-Here we will look at various ways in which our client application will be able to access the server resources without throwing CORS errors
+Here we will look at various ways in which our client application will be able to access the server resource without throwing CORS errors.
 
 #### Defining @CrossOrigin at the class level
 
@@ -110,7 +119,7 @@ Here since we have defined @CrossOrigin
 
  - Request coming from origin http://localhost:4200 only will be processed.
  - If we expect only certain headers to be accepted, we can specify those headers in the allowedHeaders attribute. If the "Requestor-Type" header is not sent by the browser, the request will not be processed.
- - If we set certain response headers, for the client application to be able to use them, we need to explicitly set the list of response headers to be exposed.
+ - If we set certain response headers, for the client application to be able to use them, we need to explicitly set the list of response headers to be exposed using the **exposedHeaders** attribute.
 
 #### Combination of @CrossOrigin at class and method levels
 
@@ -140,10 +149,10 @@ Here since we have defined @CrossOrigin
 By defining the annotation at both class and method levels
     - its combined attributes will be applied to the methods i.e (origins, allowedHeaders, maxAge)
 
-## Enable CORS Configuration globally
+#### Enable CORS Configuration globally
 
 Instead of adding CORS to each of the resource separately, we could define a common CORS configuration that would apply to
-all resources defined in the application. We could use **WebMvcConfigurer** which is a part of the Spring Web MVC library.
+all resources defined. We could use **WebMvcConfigurer** which is a part of the Spring Web MVC library.
 By overriding the **addCorsMapping** we could configure CORS to all URLs that are handled by Spring Web MVC.
 
 To define the same configuration (as explained in the previous sections) globally, we could use the configuration parameters
@@ -179,7 +188,51 @@ defined in **application.yml** to create a bean as defined below:
 
 {{% info title="NOTE:" %}}
 **addMapping()** returns a **CorsRegistration** object which applies default **CorsConfiguration** if
-one or more methods **allowedOrigins**, **allowedMethods**, **maxAge**, **allowedHeaders**, **exposedHeaders** are not explicitly defined.
+one or more methods - **allowedOrigins**, **allowedMethods**, **maxAge**, **allowedHeaders**, **exposedHeaders** are not explicitly defined.
 Refer to the Spring library method **CorsConfiguration.applyPermitDefaultValues()** to understand the defaults applied.
 {{% /info %}}
 
+#### CORS Configuration for Spring Webflux using @CrossOrigin
+
+Similar to Spring REST we can define @CrossOrigin at the class level or at the method level in case of Spring Webflux.
+The same @CrossOrigin attributes described in the previous sections will apply. Also, when the annotation is defined at both class and method,
+its combined attributes will apply to the methods.
+
+````java
+    @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "Requestor-Type", exposedHeaders = "X-Get-Header")
+    @GetMapping
+    public ResponseEntity<Mono<List<BookDto>>> getBooks(@RequestParam String type) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Get-Header", "ExampleHeader");
+        return ResponseEntity.ok().headers(headers).body(libraryService.getAllBooks(type));
+    }
+````
+
+#### Enable CORS Configuration globally in Spring Webflux
+
+To define CORS globally in a Spring Webflux application, we use the **WebfluxConfigurer** and override the **addCorsMappings()**.
+Similar to Spring REST, it uses a **CorsConfiguration** with defaults that can be overridden as required.
+
+````java
+    @Bean
+    public WebFluxConfigurer corsMappingConfigurer() {
+            return new WebFluxConfigurer() {
+        @Override
+        public void addCorsMappings(CorsRegistry registry) {
+            WebConfigProperties.Cors cors = webConfigProperties.getCors();
+            registry.addMapping("/**")
+            .allowedOrigins(cors.getAllowedOrigins())
+            .allowedMethods(cors.getAllowedMethods())
+            .maxAge(cors.getMaxAge())
+            .allowedHeaders(cors.getAllowedHeaders())
+            .exposedHeaders(cors.getExposedHeaders());
+            }
+        };
+    }
+````
+
+{{% info title="NOTE:" %}}
+In all the above cases we can define both global CORS configuration and local configuration using @CrossOrigin.
+For attributes that accept multiple values, a combination of global and local values will apply. For attributes that accept
+only a single value, the local value will take precedence over the global one.
+{{% /info %}}

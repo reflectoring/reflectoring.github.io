@@ -45,7 +45,7 @@ We should be able to start the client application successfully.
 ## Setting up a sample server application
 
 We will use a sample Spring based application with GET and POST requests that the client application can call.
-Note that you will find two separate applications one that uses Spring REST and the other that uses the Spring Reactive stack. 
+Note that you will find **two separate applications one that uses Spring REST and the other that uses the Spring Reactive stack.** 
 For simplicity the CORS configuration across both applications are the same and the same endpoints have been defined. Both servers start at different ports 
 8091 and 8092.
 The Maven Wrapper bundled with the application will be used to start the service.
@@ -151,10 +151,10 @@ By defining the annotation at both class and method levels
 ### Enable CORS Configuration globally
 
 Instead of adding CORS to each of the resource separately, we could define a common CORS configuration that would apply to
-all resources defined. We could use **WebMvcConfigurer** which is a part of the Spring Web MVC library.
-By overriding the **addCorsMapping** we could configure CORS to all URLs that are handled by Spring Web MVC.
+all resources defined. Here, we will use **WebMvcConfigurer** which is a part of the Spring Web MVC library.
+By overriding the **addCorsMapping** we will configure CORS to all URLs that are handled by Spring Web MVC.
 
-To define the same configuration (as explained in the previous sections) globally, we could use the configuration parameters
+To define the same configuration (as explained in the previous sections) globally, we will use the configuration parameters
 defined in **application.yml** to create a bean as defined below:
 
 ````yaml
@@ -187,7 +187,7 @@ defined in **application.yml** to create a bean as defined below:
 
 {{% info title="NOTE:" %}}
 **addMapping()** returns a **CorsRegistration** object which applies default **CorsConfiguration** if
-one or more methods - **allowedOrigins**, **allowedMethods**, **maxAge**, **allowedHeaders**, **exposedHeaders** are not explicitly defined.
+one or more methods(**allowedOrigins**, **allowedMethods**, **maxAge**, **allowedHeaders**, **exposedHeaders**) are not explicitly defined.
 Refer to the Spring library method **CorsConfiguration.applyPermitDefaultValues()** to understand the defaults applied.
 {{% /info %}}
 
@@ -199,7 +199,7 @@ No external dependencies need to be added.
 
 ### CORS Configuration for Spring Webflux using @CrossOrigin
 
-Similar to Spring REST we can define @CrossOrigin at the class level or at the method level in case of Spring Webflux.
+Similar to Spring REST we can define **@CrossOrigin at the class level or at the method level** in case of Spring Webflux.
 The same @CrossOrigin attributes described in the previous sections will apply. Also, when the annotation is defined at both class and method,
 its combined attributes will apply to the methods.
 
@@ -247,7 +247,7 @@ only a single value, the local value will take precedence over the global one.
 The Webflux framework allows CORS configuration to be set globally via **CorsWebFilter**. We can use the **CorsConfiguration** object to set 
 the required configuration and register **CorsConfigurationSource** to be used with the filter. However, by default the CorsConfiguration in case of filters
 does not assign default configuration to the endpoints. Only the specified configuration can be applied.
-Another option is to call CorsConfiguration.applyPermitDefaultValues() explicitly.
+Another option is to call **CorsConfiguration.applyPermitDefaultValues()** explicitly.
 
 ````java
         @Bean
@@ -266,3 +266,165 @@ Another option is to call CorsConfiguration.applyPermitDefaultValues() explicitl
             return new CorsWebFilter(source);
     }
 ````
+
+## Enabling CORS with Spring Security
+
+If Spring Security is applied to a Spring application, **CORS must be processed before Spring Security comes into action
+since preflight requests will not contain cookies and Spring Security will reject the request as it will determine that the user is not authenticated**.
+Here the examples shown will demonstrate basic authentication.
+
+To apply Spring security we will add the below dependency
+Maven:
+````xml
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+  </dependency>
+````
+Gradle:
+````groovy
+  implementation 'org.springframework.boot:spring-boot-starter-security'
+````
+
+#### Spring Security applied to a Spring Boot application
+
+Spring security by default protects every endpoint. However this would not hold true in case of preflight requests since **the purpose of an OPTIONS request 
+is only to establish if the original request would go through**. To make Spring Security bypass preflight requests we need to add **http.cors()** as shown:
+
+````java
+@Configuration
+@EnableConfigurationProperties(BasicAuthConfigProperties.class)
+@EnableWebSecurity
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private final BasicAuthConfigProperties basicAuth;
+
+    public SecurityConfiguration(BasicAuthConfigProperties basicAuth) {
+        this.basicAuth = basicAuth;
+    }
+
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors();
+    }
+}
+
+````
+
+To setup additional CORS configuration with Spring Security after bypassing pre-flight requests, we can
+- **Configure CORS using @CrossOrigin**
+
+````java
+@CrossOrigin(maxAge = 3600, allowCredentials = "true")
+@RestController
+@RequestMapping("cors-library/managed/books")
+public class LibraryController {
+
+    private static final Logger log = LoggerFactory.getLogger(LibraryController.class);
+
+    private final LibraryService libraryService;
+
+    public LibraryController(LibraryService libraryService) {
+        this.libraryService = libraryService;
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = {"Requestor-Type", "Authorization"}, exposedHeaders = "X-Get-Header")
+    @GetMapping
+    public ResponseEntity<List<BookDto>> getBooks(@RequestParam String type) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Get-Header", "ExampleHeader");
+        return ResponseEntity.ok().headers(headers).body(libraryService.getAllBooks(type));
+    }
+}
+````
+
+- OR **Create a CorsConfigurationSource bean**
+
+````java
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+            CorsConfiguration configuration = new CorsConfiguration();
+            configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+            configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
+            configuration.setAllowCredentials(true);
+            configuration.setAllowedHeaders(Arrays.asList("Authorization", "Requestor-Type"));
+            configuration.setExposedHeaders(Arrays.asList("X-Get-Header"));
+            configuration.setMaxAge(3600L);
+            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+            source.registerCorsConfiguration("/**", configuration);
+            return source;
+    }
+````
+
+##### Spring Security applied to a Spring Webflux
+
+In case of Webflux, despite using Spring Security **the most preferred way of applying CORS configuration to oncoming requests 
+is to use the CorsWebFilter**. We can **disable the CORS integration with Spring security and instead integrate with CorsWebFilter by providing a CorsConfigurationSource**.
+The below code will help achieve this.
+
+````java
+@Configuration
+@EnableWebFluxSecurity
+@EnableConfigurationProperties(BasicAuthConfigProperties.class)
+public class SecurityConfiguration {
+
+    private final BasicAuthConfigProperties basicAuth;
+
+    public SecurityConfiguration(BasicAuthConfigProperties basicAuth) {
+        this.basicAuth = basicAuth;
+    }
+
+    @Bean
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+        http.cors(cors -> cors.disable())
+                .securityMatcher(new PathPatternParserServerWebExchangeMatcher("/**"))
+                .authorizeExchange()
+                .anyExchange().authenticated().and()
+                .httpBasic();
+        return http.build();
+    }
+
+    @Bean
+    public MapReactiveUserDetailsService userDetailsService() {
+        UserDetails user = User.withDefaultPasswordEncoder()
+                .username(basicAuth.getUsername())
+                .password(basicAuth.getPassword())
+                .roles("USER")
+                .build();
+        return new MapReactiveUserDetailsService(user);
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfiguration() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.applyPermitDefaultValues();
+        corsConfig.setAllowCredentials(true);
+        corsConfig.addAllowedMethod("GET");
+        corsConfig.addAllowedMethod("PATCH");
+        corsConfig.addAllowedMethod("POST");
+        corsConfig.addAllowedMethod("OPTIONS");
+        corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Requestor-Type"));
+        corsConfig.setExposedHeaders(Arrays.asList("X-Get-Header"));
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfig);
+        return source;
+    }
+
+    @Bean
+    public CorsWebFilter corsWebFilter() {
+        return new CorsWebFilter(corsConfiguration());
+    }
+}
+
+````
+
+## Conclusion
+
+In short, the CORS configuration depends on multiple factors
+- Spring Web / Spring Webflux
+- Local / Global CORS config
+- Spring Security
+- 
+Depending on the framework we can decide which method works best and is the easiest to implement so that we could avoid CORS errors.
+With the help of the sample application and the CORS configuration used we could try out various options to decide which option works best.

@@ -2,8 +2,8 @@
 authors: [tom]
 title: "Testing Feature Flags"
 categories: ["Software Craft", "Java"]
-date: 2022-05-09 00:00:00 +1100
-modified: 2022-05-09 00:00:00 +1100
+date: 2022-08-20 00:00:00 +1100
+modified: 2022-08-20 00:00:00 +1100
 excerpt: "Feature flags should be tested just like other code, otherwise we risk to deploy broken features."
 image: /images/stock/0019-magnifying-glass-1200x628.jpg
 url: testing-feature-flags
@@ -11,15 +11,15 @@ url: testing-feature-flags
 
 Putting your code behind a feature flag means that you can deploy unfinished changes. As long as the feature flag is disabled, the changes are not having an effect.
 
-This enables you to continuously deploy tiny changes to production and avoids the need for long-lived feature branches and big pull requests.
+Among other benefits, this enables you to continuously merge tiny changes into production and avoids the need for long-lived feature branches and big pull requests.
 
-When we deploy unfinished code to production, however, we want to be extra certain that this code is not being executed! This means we should write tests for our feature flags!
+When we deploy unfinished code to production, however, we want to be extra certain that this code is not being executed! This means we should write tests for our feature flags.
 
 ## Why You Should Test Your Feature Flags
 
 A big reason why we should test feature flags is the one I mentioned already: with a feature flag, we're potentially deploying unfinished code to production. We want to make sure that this code is not accidentally being executed until we want it to be executed.
 
-You might say that feature flag code is so trivial that we don't need to test it. After all it's just an `if/else` branch like this:
+You might say that feature flag code is so trivial that we don't need to test it. After all it can be as simple as an `if/else` branch like this:
 
 ```java
 class SystemUnderTest {
@@ -37,7 +37,7 @@ class SystemUnderTest {
 
 This code checks if a feature is enabled and then returns either returns the string "new" or the string "old". What is there to test?
 
-What if we accidentally invert the feature flag value in the `if` condition?
+Even in this simple scenario, let’s consider what happens if we accidentally invert the feature flag value in the `if` condition:
 
 ```java
 class SystemUnderTest {
@@ -53,11 +53,13 @@ class SystemUnderTest {
 }
 ```
 
-This is not directly apparent when looking at the code (note that in real code, there might not be a comment saying `// old code` and `// new code` so you might not be able to distinguish between the old and new code at a glance).
+It’s important to note that real code frequently doesn’t include a comment saying `// old code` and `// new code`, so you might not be able to easily distinguish between the old and new code at a glance.
+
+This is an extremely simple example. Imagine if your use of flags were more complex, for instance using dependent flags or multivariate flags (flags with many possible values) that pass configuration values. It’s easy to see how mistakes can can happen!
 
 **If the above code is deployed to production, the feature flag will most likely default to the value `false` and execute the new code instead of the old code!** The deployment will potentially break things for our users while we expect that the change is hidden behind the feature flag.
 
-How to avoid this? By writing a test that checks the following:
+How do you avoid this? For the above example, we’d do this by writing a test that checks the following:
 
 1. Is the old code executed when the feature flag is disabled?
 2. Is the new code executed when the feature flag is enabled?
@@ -197,8 +199,11 @@ Imagine what can happen if the default value of a feature flag in our test is `f
 
 This is where a central `MockFeatureFlagService` comes in handy. We can define all the default values there and even change them over time when we change a feature flag value in production. The tests will always use the same default values for feature flag states as in production, avoiding an issue like the one outlined above.
 
+This is useful even if you’re using a feature management platform. For instance, LaunchDarkly enables you to define a default value in case of any failure in retrieving the value from the LaunchDarkly service. Having these values centralized can help eliminate any mistake.
+
+
 ## Testing the Feature Flag Lifecycle
-Feature Flags are going through a lifecycle. We create them, we activate them, and then we remove them again. Let's take a look at what the tests should look like at each stage of the feature flag lifecycle.
+Most feature flags go through a common lifecycle. We create them, we activate them, and then we remove them again, although this lifecycle can differ for different types of flags (permanent flags that manage configuration changes, are not removed, for example). Let’s take a look at what the tests should look like at each stage of the typical feature flag lifecycle.
 
 ### Before the Feature Flag
 

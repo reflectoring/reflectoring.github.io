@@ -112,3 +112,10 @@ HUGO_ENV = "staging"
   to = "/feature-flags-make-or-buy"
   status = 301
   force = true
+
+[[redirects]]
+  from = "/spring-io"
+  to = "https://thombergs.gumroad.com/l/gyhdoca/spring-io"
+  status = 301
+  force = true
+

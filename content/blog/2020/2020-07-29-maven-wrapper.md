@@ -65,3 +65,4 @@ wrapperUrl=https://repo.maven.apache.org/maven2/io/takari/maven-wrapper/0.5.6/ma
 ## Conclusion
 
 In this article, we learned what problem the Maven Wrapper solves, how to use it, and how it works.
+You can read a similar article on this blog on [Gradle Wrapper](https://reflectoring.io/gradle-wrapper/).

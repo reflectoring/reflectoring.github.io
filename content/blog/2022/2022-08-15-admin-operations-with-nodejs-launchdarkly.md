@@ -9,79 +9,74 @@ image: images/stock/0104-on-off-1200x628-branded.jpg
 url: nodejs-admin-feature-flag-launchdarkly
 ---
 
-Whenever we think of deploying a new version of an existing service or application, we fear a lot whether the new features would work or whether it would be liked by the users or not. Thus, here comes the concept of *“Feature Flag”* which helps us in providing the power of switching a feature *on/off* with something just like a *toggle button* or a *switch*.
+Whenever we deploy a new version of an application, we may break things or the users may not like the changes. To reduce the risk, we can hide our changes behind feature flags to activate them for more and more users over time. If things don't work out, we can just deactivate the feature flag again without redeploying.
 
-The concept of *feature flag* can be considered as a tool that is being used predominantly in the case of software development to manage a particular functionality by enabling or disabling it remotely. New features can be deployed without making them visible to users. Thus, feature flags help us to decouple deployment from release which in turn also lets us to manage the overall lifecycle of new capability or a feature.
-
-The whole purpose is to control the usage and access of a particular feature. It also eliminates the urge to maintain multiple branches in our code and rather allows us to commit everything in the primary branch and enable it only when the feature is ready.
+But we can also use feature flags for certain administrative use cases as we'll see in this article.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/nodejs-backend-feature-flag-launchdarkly" %}}
 
 ## Use-cases of Feature Flags
 
-Feature flags or feature management is commonly used in various companies to perform the following operations:
+Feature flags are commonly used for these use cases:
 
-- Reduce the number of rollbacks in the existing code due to failure or breakage.
-- Gradually roll or publish out new features or functionality to users.
+- Increase deployment success rate by reducing the number of rollbacks caused by errors during deployment.
+- Progressively roll out new features to more and more users.
 - Minimize the risk of a release by first releasing something like a beta version to a limited groups of users.
 - Test various kinds of user acceptance.
-- Perform admin specific tasks to change application behavior dynamically at runtime or while server bootstrap.
 
-Often companies who rely mostly on Continuous Integration(CI), Continuous Delivery(CD) or Progressive Delivery use these feature flags to roll out features. Teams basically define a process through which they roll out releases smartly wrapped with feature flags to minimize the risk to company. If someone would like to understand various types of rollouts that needs to be explored, then please refer  this article [for various deployment rollout use-cases](https://reflectoring.io/java-feature-flags/#feature-flagging-use-cases).
+A less common use case is to perform administrative tasks that change the application behavior at runtime. These admin tasks can be one of the following, for example:
 
-In this article we are going to explore some of the administrative tasks that can be performed by a System Admin persona in an organization using these feature flags. Usually some of the activities that can be performed by the admins using feature flag are:
+* **Setting the log level**: We can set the application log level as a feature flag, then load it during server bootstrap or listen to its changing events and update it dynamically in the backend.
+* **Manage batch job size**: Usually batch processing applications are configured with a default batch size which needs to be tuned depending on usage. If we set the batch size as a feature flag, we can dynamically load it and change the batch size on-demand.
+* **Manage rate limits**: If an application provides an API, we often want to rate limit the customers' access to that API. Some customers may need a higher rate limit than others. If we set the rate limit as a feature flag, we can dynamically change the rate limit for each customer.
+* **Maintain a list of IPs**: Applications or websites may want to restrict access to certain IPs or geolocations only. Setting those IPs as a feature flag, we can change it on-demand while the application is running.
+* **Update cron job schedules**: Usually scheduled jobs are configured with a hard-coded cron expression. We can make that cron expression dynamic by setting it as a feature flag.
+* **Gathering of metrics**: We can define rules to gather system metrics. These rules can be modified using feature flags dynamically whenever we need to perform any kind of maintenance.
+* **Show and hide PII in logs**: Sometimes, we need certain data in logs to help investigate a support case. But we don't want to log this data all the time. With a feature flag, we can enable certain log data on-demand.
 
-* **Setting Application Log Level**: We can set the application log level as a flag, then load it during server bootstrap or listen to its changing events and update it dynamically in the backend.
-* **Update or Manage Batch Jobs**: Usually servers are configured with a default batch size and then based upon the usage it requires to update the size count. Now this can be achieved using database but it needs server reload to load the updated count. LaunchDarkly uses streaming events due to which we can load this value dynamically during runtime without any server restart.
-* **Rate Limit API calls**: Often applications those hosted as part of premium API packages often try to limit the number of calls so that they can encourage the users to opt for paid services. This value can be updated dynamically based upon the traffic and their usage at runtime.
-* **Maintain blacklisted IPs or Geolocation of Users**: Applications or websites that serve restricted or secure data can manage the IPs or geolocation of incoming traffic to filter out the content or restrict some of the content. This could have been achieved using admin APIs to upload the list in database. But we can easily define a JSON array and list all the values in LaunchDarkly.
-* **Schedule or Update execution time for Cron Jobs**: Usually scheduled jobs are configured as cron in a server that would perform scheduled tasks like report generation, healthchecks, etc. The Cron schedule patterns are usually static but that can be made dynamic and loaded from LaunchDarkly as a feature flag.
-* **System Reporting or Metrics Gathering**: We can schedule or define rules to gather system metrics to check and evaluate system performance. These rules can be triggered or modified using feature flags dynamically whenever we need to perform any kind of maintenance.
-* **Hide/Restrict Personal Identifiable Information(PII)**: We can target to define various fields that require restriction to expose sensitive data during API calls dynamically based upon the incoming User or Role information. This helps us to regulate PII rules dynamically using a feature flag in LaunchDarkly.
+Of course, we can build all these things into our application. But to quickly modify those admin settings on-demand, a feature management platform like [LaunchDarkly](https://launchdarkly.com) can do the work for us.
 
-As part of this article, we will be discussing about various ways to read logs of an application. Then we will take a brief look into API rate limiter and management of cron jobs. Finally, we will also take a look on how to retrieve all the flags from LaunchDarkly to show or persist the flags.
+In this article, we'll take a look at how to implement some of the above use cases with LaunchDarkly and Node.js. The concepts also apply to any other feature flagging solution and programming language, however.
 
 ## Introducing LaunchDarkly
 
-[LaunchDarkly](https://launchdarkly.com/) is an overall feature management service or app that takes care of all the feature flagging concepts. The name is derived from the concept of a *“dark launch”*, which deploys a feature in a deactivated state and activates it when the time is right.
+[LaunchDarkly](https://launchdarkly.com/) is a feature management service that takes care of all the feature flagging concepts. The name is derived from the concept of a *“dark launch”*, which deploys a feature in a deactivated state and activates it when the time is right.
 
 {{% image alt="LaunchDarkly Internal" src="images/posts/feature-flag-tools/launchdarkly.png" %}}
 
-It is a cloud-based service and it provides a UI to manage everything about the feature flags. For each flag, we need to define one or more **variations**. The variation can be a *boolean*, arbitrary *number*, *string* values, or *JSON* snippets.
+LaunchDarkly is a cloud-based service and provides a UI to manage everything about our feature flags. For each flag, we need to define one or more **variations**. The variation can be a *boolean*, an arbitrary *number*, a *string* value, or a *JSON* snippet.
 
 We can define **targeting rules** to define which variation a feature flag will show to its user. By default, a targeting rule for a feature flag is deactivated. The simplest targeting rule is *“show variation X for all users”*. A more complex targeting rule is *“show variation A for all users with attribute X, variation B for all users with attribute Y, and variation C for all other users”*.
 
-LaunchDarkly SDK usually relies on persistent connection to their streaming APIs to receive server-sent-events(SSE) whenever there is any change or update in feature flag.
-
-{{% image alt="LaunchDarkly SSE" src="images/posts/nodejs-backend-launchdarkly/LaunchDarkly_SSE.png" %}}
-
-Source: [https://launchdarkly.com/how-it-works/](https://launchdarkly.com/how-it-works/)
+We can use the LaunchDarkly SDK in our code to access the feature flag variations. It provides a persistent connection to [LaunchDarkly's streaming infrastructure](https://launchdarkly.com/how-it-works/) to receive server-sent-events(SSE) whenever there is any change or update in feature flag. If the connection fails for some reason, it falls back to default values.
 
 ## Initial Setup in Node.js
 
-LaunchDarkly supports lots of clients with different coding languages. For NodeJs, they have created an npm library with the name **[launchdarkly-node-server-sdk](https://github.com/launchdarkly/node-server-sdk)**. We will use this library as a dependency in our code. 
+LaunchDarkly supports lots of clients in different programming languages. For Node.js, they have created the **[launchdarkly-node-server-sdk](https://github.com/launchdarkly/node-server-sdk)** library. We will use this library as a dependency in our code. 
 
-In order to create our backend service, we need to first initiate the repo by simply executing:
+To create our backend service, we need to first initiate the repo by executing:
 
 ```bash
 npm init
 ```
 
-Then we can try installing all the packages at once by simply executing the following command:
+Then we can try installing all the packages at once by executing the following command:
 
 ```bash
 npm install launchdarkly-node-server-sdk express
 ```
 
-We are going to use `launchdarkly-node-server-sdk` for connecting to the LaunchDarkly server to fetch the variations. Then we would need *express* to create a server that would listen in a particular port and host our APIs.
+We are going to use `launchdarkly-node-server-sdk` to connect to the LaunchDarkly server to fetch the feature flag variations. We're also going to create an `express` server that will listen to a particular port and host our application's API.
 
-Next, we need to create an account in LaunchDarkly UI. You can also signup for a free trial [here](https://app.launchdarkly.com/signup). After signing up, we would be assigned an *SDK Key* under default project and default environment that the client can use to authenticate into the server. We will use a static user *“admin”* as our user to fetch or retrieve any of these feature flags.
+Next, we need to create an account with LaunchDarkly. You can sign up for a free trial [here](https://app.launchdarkly.com/signup). After signing up, you are assigned an *SDK Key* under the default project and default environment:
 
 {{% image alt="LaunchDarkly Keys" src="images/posts/nodejs-backend-launchdarkly/LaunchDarkly_Keys.png" %}}
 
+We will use this SDK key in our code to authenticate with the LaunchDarkly server. 
+
 ## Server-side Bootstrapping with LaunchDarkly
 
-Firstly, we would try a very simple use-case where we can fetch a feature flag from LaunchDarkly and use it as part of our server side bootstrap code and subscribe to it before it starts serving the traffic for API. Let’s first add few libraries like `date-fns` and `lodash` to design our custom logger:
+First, we'll try a very simple use-case where we can fetch a feature flag from LaunchDarkly and use it as part of our server side bootstrap code and subscribe to it before it starts serving the traffic for API. Let’s first add few libraries like `date-fns` and `lodash` to design our custom logger:
 
 ```bash
 npm install date-fns lodash
@@ -147,11 +142,11 @@ class Logger {
 export default Logger;
 ```
 
-Then we will define a flag in LaunchDarkly with the name *“backend-log-level”* where we can add a default variation as *“debug”*. We can then change it later to whatever we need.
+Then we will define a flag in LaunchDarkly with the name `backend-log-level` where we can add a default variation as `debug`. We can then change it later to whatever we need:
 
 {{% image alt="Backend Log Level Feature Flag" src="images/posts/nodejs-backend-launchdarkly/Simple_Log_Level.png" %}}
 
-Next we will subscribe to the log level flag before we initiate the `express` app to serve our APIs:
+Next we will create a file named `bootstrap.js` that subscribes to the log level flag before we initiate the `express` app to serve our APIs:
 
 ```javascript
 import util from 'util';
@@ -189,13 +184,13 @@ client.once('ready', async () => {
 });
 ```
 
-In order to know whether the client is ready or not we can use one of the two mechanisms: *event* or *promise*. Usually the client emits a `ready` event which receives the initial flags from LaunchDarkly. We can listen for this event to know when the client is ready to execute next set of actions.
+To execute code only when the LaunchDarkly client is ready, we have two mechanisms: an *event* or a *promise*. 
 
-The SDK supports two methods as part of promise: `waitUntilReady()` or `waitForInitialization()`. The behavior of `waitUntilReady()` is equivalent to the `ready` event. The promise resolves when the client receives its initial flag data. As with all promises, you can either use `.then()` to provide a callback, or use `await` if you are writing asynchronous code. The other method that returns a promise, `waitForInitialization()`, is similar to `waitUntilReady()` except that it also tells you if initialization fails by rejecting the promise.
+With `client.once('ready', ...)`, we subscribe to the `ready` event which will fire once the LaunchDarkly client has received the state of all feature flags from the server.
 
-Here we have used the `ready` event for our code. Thus, we are calling `client.once()` and wait for the ready event before we can start the server.
+For the promise mechanism, the SDK supports two methods: `waitUntilReady()` and `waitForInitialization()`. The behavior of `waitUntilReady()` is equivalent to the `ready` event. The promise resolves when the client receives its initial flag data. As with all promises, you can either use `.then()` to provide a callback, or use `await` if you are writing asynchronous code. The other method that returns a promise, `waitForInitialization()`, is similar to `waitUntilReady()` except that it also tells you if initialization fails by rejecting the promise.
 
-Next we can define the script as part of `package.json`:
+Next we can define the `bootstrap` script as part of `package.json`:
 
 ```json
 {
@@ -222,28 +217,32 @@ info: [LaunchDarkly] Opened LaunchDarkly stream connection
 07-26-2022 11:54:58:197 Error [Backend] ERROR! ERROR!
 ```
 
-## Perform Admin Specific Operations using Multivariate Flags in LaunchDarkly
+## Performing Admin Operations with Feature Flags
 
-LaunchDarkly supports something named *“multivariate”* flag apart from the simple boolean, String or JSON values. A multivariate feature flag could be a list of different strings, numbers or booleans. So let’s try defining few long-lived operational flag that would update our application feature dynamically.
+LaunchDarkly supports something named *“multivariate”* flags apart from the simple boolean, String or JSON values. A multivariate feature flag could be a list of different strings, numbers or booleans. So let’s try defining few long-lived operational flags that would update our application feature dynamically.
 
-### Change Log Level Dynamically without Restarting the Server
+### Changing the Log Level Without Restarting the Server
 
-The first flag type we can start with is to use the same log-level concept that we saw earlier. In the above section, we just retrieved the log level flag and started our server. But if we need to change the log level, we might need to restart our server for the changes to get affected. Thus in this section, we would update our Logger class so that whenever we update the log level in LaunchDarkly UI, the code will dynamically switch the log level in the application.
+The first flag type we can start with is to use the same log-level concept that we saw earlier. In the above section, we just retrieved the log level flag and started our server. But if we need to change the log level, **we would need to restart our server for the changes to take effect**. Let's try to make the log level change dynamically without server restart.
 
-So first of all, we will define a multivariate which will define the following string variations:
+First of all, we will define a multivariate flag with the following string variations:
 
-* debug
-* error
-* info
-* warn
+* `debug`
+* `error`
+* `info`
+* `warn`
+
+In the LaunchDarkly UI, it looks like this:
 
 {{% image alt="Multivariate log-level" src="images/posts/nodejs-backend-launchdarkly/Log_Level_Variations.png" %}}
 
-Next we can define targeting values that would deliver one of the above defined multivariate strings.
+Next, we can define targeting values that would deliver one of the above defined multivariate strings:
 
 {{% image alt="Multivariate targeting rule" src="images/posts/nodejs-backend-launchdarkly/Targeting_Log_Level.png" %}}
 
-Now once we have our multivariate feature flag defined, we can start with our code. We will update our existing logger class with a new implementation that would read the log-level from the variation and print accordingly:
+Note that we're not using targeting rules that target individual users, because our log level is a global feature flag that is independent of specific users.
+
+Now that we have our multivariate feature flag defined, we update our existing logger class from above with a new implementation that reads the log level from the feature flag variation:
 
 ```javascript
 import chalk from 'chalk';
@@ -357,6 +356,8 @@ function executeLoop () {
 }
 ```
 
+Note that we're passing the static user `admin` to LaunchDarkly, so that LaunchDarkly evaluates the feature flag for this user. This is not a real user. The feature flag is meant as a global feature flag, so targeting different users with different values doesn't make sense.
+
 Next we can define the script as part of `package.json`:
 
 ```json
@@ -395,23 +396,13 @@ INFO: Memory used: 67.4%
 WARN: More than half of free memory has been allocated.
 ```
 
-### API Rate Limiter
+### Modifying Rate Limits Dynamically
 
 *Rate Limiting* is a technique used for regulating the volume of incoming or outgoing traffic within a network. In this context, network refers to the line of communication between a client (e.g., a web browser) and our server (e.g., an API).
 
 For instance, we might wish to set a daily cap of 100 queries for a public API from an unsubscribed user. If the user goes over that threshold, we can ignore the request and throw an error to let people know they've gone over their limit.
 
-There are various algorithms for implementing rate limiting, each having advantages and disadvantages, just like with most engineering challenges. Some of them are:
-
-* Fixed Window Counter
-* Sliding Logs
-* Sliding Window Counter
-* Token Bucket
-* Leaky Bucket
-
-Out of this, sliding window counter is one of the most efficient ways to implement rate limiter. Thus we will try to implement a pretty simple middleware and add it to the `express` app. 
-
-To implement this, we will use a third-party library, [Express Rate Limit](https://www.npmjs.com/package/express-rate-limit). So, to install it, run:
+We don't want to implement the rate limiter ourselves, so we will use the `express-rate-limit` library (you can find it [here](https://www.npmjs.com/package/express-rate-limit)):
 
 ```bash
 npm install express-rate-limit
@@ -457,32 +448,39 @@ const serverInit = async () => {
 };
 ```
 
-Now we will look at the JSON type flags as these feature flag values are pretty open-ended. LaunchDarkly supports a JSON type right out of the box. This allows us to pass Object and Array data structures to our application which can then be used to implement lightweight administrative and operational functionality in our web application. In this case, we will define a feature flag that will take the sliding window counter config and use it in our middleware.
+Now we will look at the JSON type flags as these feature flag values are pretty open-ended. LaunchDarkly supports a JSON type right out of the box. This allows us to pass `Object` and `Array` data structures to our application which can then be used to implement lightweight administrative and operational functionality in our web application. In this case, we will define a feature flag that will take the rate limit config and pass it to  our rate limiter.
+
+The feature flag looks like this in LaunchDarkly:
 
 {{% image alt="Rate Limiter Flag" src="images/posts/nodejs-backend-launchdarkly/Rate_Limiter_Flag.png" %}}
 
+And the variations look like this:
+
 {{% image alt="Rate Limiter Variation" src="images/posts/nodejs-backend-launchdarkly/Rate_Limiter_Variation.png" %}}
 
-Next we will define a middleware and pass it to the `express` app before starting the server:
+Next we will define an [express middleware](/express-middleware/) and pass it to the `express` app before starting the server:
 
 ```javascript
 // Initialize Rate Limit Midlleware
 const rateLimiterConfig = await launchDarklyClient.variation(
     'rate-limiter-config',
     {
-        key: userName // The static "user" for this task.
+        // The static "user" for this task.
+        key: userName 
     },
     {
-        windowMs: 24 * 60 * 60 * 1000, // 24 hrs in milliseconds
-        max: 100, // Limit each IP to 100 requests per `window` (here, per 24 hours).
-        // Set it to 0 to diable rateLimiter
+    	  // default rate limit config for fallback
+        windowMs: 24 * 60 * 60 * 1000,
+        max: 100, 
         message: 'You have exceeded 100 requests in 24 hrs limit!', 
-        standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-        legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-     } // Default/fall-back value
+        standardHeaders: true,
+        legacyHeaders: false, 
+     } 
 );
 app.use(rateLimit(rateLimiterConfig));
 ```
+
+As the default configuration, we create a ratelimit of 100 requests per 24 hours. We can now override this config by changing the JSON in the LaunchDarkly feature flag. 
 
 Next we can define the script as part of `package.json`:
 
@@ -500,17 +498,12 @@ Then we can execute the following command to run our app:
 npm run rateLimiter
 ```
 
-Now when an unsubscribed user hits the APIs within the defined limit he will get to see:
+Note that using a feature flag for complex JSON configuration can be risky, because you don't get immediate feedback if the JSON you provided is valid or not (unless you look into the logs). So if you do this, be very careful not to provide invalid JSON in the feature flag variation.
 
-{{% image alt="Normal API" src="images/posts/nodejs-backend-launchdarkly/Normal_API_Call.png" %}}
-
-But when the threshold limit exceeds for that user, he will see the following error:
-
-{{% image alt="Rate Limit Error" src="images/posts/nodejs-backend-launchdarkly/Rate_Limiter_Error.png" %}}
 
 ### Schedule Cron Jobs Dynamically
 
-Sometimes System Admins need to schedule *cron* jobs to perform various tasks like gathering system metrics, generate important report,  clearing or archiving logs, taking backup, etc. Usually, this cron jobs are scheduled using `cronTime` which is understood by cron executors. If there is a sudden need to change the `cronTime` of a particular job, then we can define it in LaunchDarkly and use it whenever the cron runs.
+Sometimes system admins need to schedule cron jobs to perform various tasks like gathering system metrics, generate reports, clearing or archiving logs, taking a backup, etc. Usually, these cron jobs are scheduled using `cronTime` expressions which are understood by cron executors. If there is a sudden need to change the `cronTime` expression of a particular job, then we can define it as a feature flag (whose value we can change on demand) and use it whenever the cron runs.
 
 For this, first we will run:
 
@@ -518,7 +511,7 @@ For this, first we will run:
 npm install cron
 ```
 
-Then, we will define a variation in LaunchDarkly with string parameters which will take `cronTime` as desired values.
+Then, we will define a variation in LaunchDarkly with string parameters which will take different `cronTime` expressions as values:
 
 {{% image alt="Rate Limit Error" src="images/posts/nodejs-backend-launchdarkly/Cron_Variation.png" %}}
 
@@ -601,9 +594,9 @@ npm run cron
 
 
 
-## Retrieve All Flags set in LaunchDarkly
+### Retrieving All Feature Flags
 
-Lastly, we can try to retrieve all the flags being set in LaunchDarkly. As a developer, we would always be curious to know how the feature flags look like or the format in which these data is being returned by the SDK. So in order to retrieve all the flags from the LaunchDarkly for a given account, we will define a simple file `index.js`:
+Lastly, for debugging reasons, we might want to see the values of all our admin feature flags in the application. For this, we can retrieve all the flags from the LaunchDarkly server in an `index.js` file:
 
 ```javascript
 import LaunchDarkly from 'launchdarkly-node-server-sdk';
@@ -636,7 +629,7 @@ async function init() {
 }
 ```
 
-We can simply initiate a client using `LaunchDarkly.init(sdkKey)` and then we can wait to initialize. After that we can call `allFlagsState` method that captures the state of all feature flag keys with regard to a specific user. This includes their values, as well as other metadata.
+We can simply initiate a client using `LaunchDarkly.init(sdkKey)` wait until it's ready with `client.waitForInitialization()`. After that we can call the `allFlagsState()` function that captures the state of all feature flag keys with regard to a specific user. This includes their values, as well as other metadata.
 
 Finally we can bind all of this to an API using `app.get()` method so that it would get printed as a response whenever we hit the API with the endpoint http://localhost:8080.
 
@@ -672,10 +665,12 @@ When we hit the endpoint we can see the following output:
 }
 ```
 
+In the example above we're always printing out the feature flags for the static `admin` user. We could also think about adding a parameter `username` to our endpoint and then print the feature flag state for any other user! This can be very handy for investigating customer support requests!
+
 ## Conclusion
 
-As you can see LaunchDarkly as a cloud service is pretty powerful on its own and it allows us to dynamically change the runtime behavior of the application. We can also rollout or take back new features as per our convenience. This allows us to squeeze our performance and get rid of various dependencies on database related layers.
+A feature flag platform allows us to dynamically change the runtime behavior of our application. We can roll out or roll back new features as per our convenience. 
 
-LaunchDarkly is a full-blown feature management platform that supports many programming languages. It allows us to define flexible targeting rules and scales to an almost limitless number of feature flags without impacting overall performance. If we have an enterprise which needs to manage multiple codebases having various programming languages, then this could prove a very useful tool.
+We can also use a feature flag platform as a store for configuration data, so we can rapidly iterate on our application without having to build a custom configuration management.
 
 You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/nodejs/nodejs-backend-feature-flag-launchdarkly).

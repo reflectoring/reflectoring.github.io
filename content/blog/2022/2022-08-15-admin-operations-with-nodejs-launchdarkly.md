@@ -13,7 +13,7 @@ Whenever we deploy a new version of an application, we may break things or the u
 
 But we can also use feature flags for certain administrative use cases as we'll see in this article.
 
-{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/nodejs-backend-feature-flag-launchdarkly" %}}
+{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/nodejs-backend-admin-feature-flag-launchdarkly" %}}
 
 ## Use-cases of Feature Flags
 
@@ -90,7 +90,7 @@ import padEnd from 'lodash/padEnd.js';
 import capitalize from 'lodash/capitalize.js';
 
 const LEVELS = { debug: 10, log: 20, warn: 30, error: 40 };
-let LD_LOG_LEVEL = LEVELS['debug'];
+let currentLogLevel = LEVELS['debug'];
 
 class Logger {
   constructor(module) {
@@ -100,19 +100,19 @@ class Logger {
     this.log = this.log.bind(this);
     this.warn = this.warn.bind(this);
     this.error = this.error.bind(this);
-    this.consoleWriter = this.consoleWriter.bind(this);
+    this.writeToConsole = this.writeToConsole.bind(this);
   }
 
   static setLogLevel(level) {
-    LD_LOG_LEVEL = LEVELS[level];
+    currentLogLevel = LEVELS[level];
   }
 
   static get(module) {
     return new Logger(module);
   }
 
-  consoleWriter(level, message, context = '') {
-    if (LEVELS[level] >= LD_LOG_LEVEL) {
+  writeToConsole(level, message, context = '') {
+    if (LEVELS[level] >= currentLogLevel) {
       const dateTime = format(new Date(), 'MM-dd-yyyy HH:mm:ss:SSS');
       const formattedLevel = padEnd(capitalize(level), 5);
       const formattedMessage = `${dateTime} ${formattedLevel} [${
@@ -123,19 +123,19 @@ class Logger {
   }
 
   debug(message, context) {
-    this.consoleWriter('debug', message, context);
+    this.writeToConsole('debug', message, context);
   }
 
   log(message, context) {
-    this.consoleWriter('log', message, context);
+    this.writeToConsole('log', message, context);
   }
 
   warn(message, context) {
-    this.consoleWriter('warn', message, context);
+    this.writeToConsole('warn', message, context);
   }
 
   error(message, context) {
-    this.consoleWriter('error', message, context);
+    this.writeToConsole('error', message, context);
   }
 }
 
@@ -158,7 +158,7 @@ const PORT = 5000;
 const app = express();
 const simpleLogger = new Logger('SimpleLogging');
 
-const LD_SDK_KEY = 'sdk-d2432dc7-e56a-458b-9f93-0361af47d578';
+const LD_SDK_KEY = 'sdk-********-****-****-****-************';
 const LOG_LEVEL_FLAG_KEY = 'backend-log-level';
 const client = LaunchDarkly.init(LD_SDK_KEY);
 const asyncGetFlag = util.promisify(client.variation);
@@ -242,117 +242,139 @@ Next, we can define targeting values that would deliver one of the above defined
 
 Note that we're not using targeting rules that target individual users, because our log level is a global feature flag that is independent of specific users.
 
-Now that we have our multivariate feature flag defined, we update our existing logger class from above with a new implementation that reads the log level from the feature flag variation:
+Now that we have our multivariate feature flag defined, we update our existing logger class from above with few new methods that read the log level from the feature flag variation at runtime and updates in the console messages:
 
 ```javascript
-import chalk from 'chalk';
+import { format } from 'date-fns';
+import padEnd from 'lodash/padEnd.js';
+import capitalize from 'lodash/capitalize.js';
 
-class LdLogger {
- 
-	constructor ( ldClient, flagKey, user ) { 
-		this.ldClient = ldClient;
-		this.flagKey = flagKey;
-		this.user = user;
-		this.previousLevel = null; 
-	}
- 
-	async debug( message ) { 
-		if ( await this._presentLog( 'debug' ) ) {
-			console.log( chalk.grey( chalk.bold( 'DEBUG:' ), message ) ); 
-		} 
-	}
- 
-	async error( message ) { 
-		if ( await this._presentLog( 'error' ) ) {
-			console.log( chalk.red( chalk.bold( 'ERROR:' ), message ) ); 
-		} 
-	}
- 
-	async info( message ) { 
-		if ( await this._presentLog( 'info' ) ) {
-			console.log( chalk.cyan( chalk.bold( 'INFO:' ), message ) ); 
-		} 
-	}
- 
-	async warn( message ) { 
-		if ( await this._presentLog( 'warn' ) ) {
-			console.log( chalk.magenta( chalk.bold( 'WARN:' ), message ) ); 
-		}
-	}
- 
-	async _presentLog( level ) {
+const LEVELS = { debug: 10, log: 20, warn: 30, error: 40 };
+let currentLogLevel = LEVELS['debug'];
 
-		const minLogLevel = await this.ldClient.variation(
-			this.flagKey,
-			{
-				key: this.user
-			},
-			'debug' // Default / fall-back value if LaunchDarkly unavailable.
-		);
- 
-		if ( minLogLevel !== this.previousLevel ) { 
-			console.log( chalk.bgGreen.bold.white( `Switching to log-level: ${ minLogLevel }` ) ); 
-		}
-		
-		switch ( this.previousLevel = minLogLevel ) {
-			case 'error':
-				return level === 'error';
-			case 'warn':
-				return level === 'error' ||	level === 'warn';
-			case 'info':
-				return level === 'error' || level === 'warn' || level === 'info';
-			default:
-				return true;
-		} 
-	} 
+class DynamicLogger {
+  constructor( module, ldClient, flagKey, user ) {
+    this.module = module ? module : '';
+
+    this.debug = this.debug.bind(this);
+    this.info = this.info.bind(this);
+    this.warn = this.warn.bind(this);
+    this.error = this.error.bind(this);
+    this.writeToConsole = this.writeToConsole.bind(this);
+    this.ldClient = ldClient;
+	this.flagKey = flagKey;
+	this.user = user;
+	this.previousLevel = null; 
+  }
+
+  static setLogLevel(level) {
+    currentLogLevel = LEVELS[level];
+  }
+
+  static get(module) {
+    return new Logger(module);
+  }
+
+  writeToConsole(level, message) {
+    if (LEVELS[level] >= currentLogLevel) {
+      const dateTime = format(new Date(), 'MM-dd-yyyy HH:mm:ss:SSS');
+      const formattedLevel = padEnd(capitalize(level), 5);
+      const formattedMessage = `${dateTime} ${formattedLevel} [${
+        this.module
+      }] ${message}`;
+      console[level](formattedMessage, '');
+    }
+  }
+
+  async debug( message ) { 
+    if ( await this._presentLog( 'debug' ) ) {
+        this.writeToConsole('debug', message); 
+    } 
+  }
+
+  async error( message ) { 
+    if ( await this._presentLog( 'error' ) ) {
+        this.writeToConsole('error', message); 
+    } 
+  }
+
+  async info( message ) { 
+    if ( await this._presentLog( 'info' ) ) {
+        this.writeToConsole('info', message); 
+    } 
+  }
+
+  async warn( message ) { 
+    if ( await this._presentLog( 'warn' ) ) {
+        this.writeToConsole('warn', message); 
+    }
+  }
+
+  async _presentLog( level ) {
+
+    const minLogLevel = await this.ldClient.variation(
+        this.flagKey,
+        {
+           key: this.user
+        },
+        'debug' // Default / fall-back value if LaunchDarkly unavailable.
+    );
+
+    if ( minLogLevel !== this.previousLevel ) { 
+       console.log( `Switching to log-level: ${ minLogLevel }` ); 
+    }
+        
+    switch ( this.previousLevel = minLogLevel ) {
+        case 'error':
+            return level === 'error';
+        case 'warn':
+            return level === 'error' ||	level === 'warn';
+        case 'info':
+            return level === 'error' || level === 'warn' || level === 'info';
+        default:
+            return true;
+        } 
+    }
 }
 
-export default LdLogger;
+export default DynamicLogger;
 ```
 
-Next we will define the logic to subscribe to this log-level and execute some operations in a loop. For this testing, we can simply define a fake memory reader that will generate some random number and print message accordingly:
+Next we will define the logic to subscribe to this log-level and execute some operations in a loop. For this testing, we can simply define a method that will print various log messages and run them in a loop at an interval of 1 second:
 
 ```javascript
 import chalk from 'chalk';
+import util from 'util';
 import LaunchDarkly from 'launchdarkly-node-server-sdk';
-import LdLogger from './ld_logger.js';
+import DynamicLogger from './dynamic_logger.js';
 
-const LD_SDK_KEY = 'sdk-d2432dc7-e56a-458b-9f93-0361af47d578';
+const LD_SDK_KEY = 'sdk-********-****-****-****-************';
 const flagKey = 'backend-log-level';
 const userName = 'admin';
 const launchDarklyClient = LaunchDarkly.init( LD_SDK_KEY );
-const logger = new LdLogger( launchDarklyClient, flagKey, userName );
+const asyncGetFlag = util.promisify(launchDarklyClient.variation);
+const user = {
+    user: userName
+};
+let logger;
 let loop = 0;
 
-launchDarklyClient.once('ready', async () => { 
+launchDarklyClient.once('ready', async () => {
 		setTimeout( executeLoop, 1000 ); 
 	}
 );
 
-//Fake node status reader randomized to throw errors.
-function readNodeStatus() { 
-	const nodeStatus = ( Math.random() * 100 ).toFixed( 1 ); 
-	if ( nodeStatus <= 30 ) { 
-		throw new Error( 'IOError' ); 
-	} 
-	return nodeStatus; 
-}
-
-function executeLoop () {
-		console.log( chalk.dim.italic( `Loop ${ ++loop }` ) ); 
-		logger.debug( 'Executing loop.' ); 
-		try { 
-			logger.debug( 'Checking number of nodes that are busy.' );
-			const nodeCount = readNodeStatus();
-			logger.info( `Number of Nodes that are busy: ${ nodeCount }%` ); 
-			if ( nodeCount >= 50 ) { 
-				logger.warn( 'More than half of the nodes are busy. We should'
-				+ ' think of adding more nodes to the cluster.' ); 
-			} 
-		} catch ( error ) { 
-			logger.error( `Node count could not be read: ${ error.message }` );
-		} 
-		setTimeout( executeLoop, 1000 ); 
+async function executeLoop () {	
+	const initialLogLevel = await asyncGetFlag(flagKey, user, 'debug');
+	logger = new DynamicLogger( 'DynamicLogging', launchDarklyClient, flagKey, userName );
+	DynamicLogger.setLogLevel(initialLogLevel);	
+	console.log( chalk.dim.italic( `Loop ${ ++loop }` ) ); 
+	logger.debug( 'Executing loop.' );
+	logger.debug('This is a debug log.');
+	logger.info('This is an info log.');
+	logger.warn('This is a warn log.');
+	logger.error('This is a error log.');
+	setTimeout( executeLoop, 1000 ); 
 }
 ```
 
@@ -381,19 +403,20 @@ info: [LaunchDarkly] Initializing stream processor to receive feature flag updat
 info: [LaunchDarkly] Opened LaunchDarkly stream connection
 Loop 1
 Switching to log-level: debug
-DEBUG: Executing loop.
-DEBUG: Checking free memory.
-INFO: Memory used: 68.2%
-WARN: More than half of free memory has been allocated.
+08-20-2022 21:11:40:251 Debug [DynamicLogging] Executing loop. 
+08-20-2022 21:11:40:264 Debug [DynamicLogging] This is a debug log.
+08-20-2022 21:11:40:264 Info  [DynamicLogging] This is an info log.
+08-20-2022 21:11:40:265 Warn  [DynamicLogging] This is a warn log.
+08-20-2022 21:11:40:267 Error [DynamicLogging] This is a error log.
 Loop 2
-DEBUG: Executing loop.
-DEBUG: Checking free memory.
-ERROR: Memory could not be read: IOError
+08-20-2022 21:11:40:268 Debug [DynamicLogging] Executing loop. 
+08-20-2022 21:11:40:269 Debug [DynamicLogging] This is a debug log.
+08-20-2022 21:11:40:270 Info  [DynamicLogging] This is an info log.
+08-20-2022 21:11:40:271 Warn  [DynamicLogging] This is a warn log.
+08-20-2022 21:11:40:272 Error [DynamicLogging] This is a error log.
 Loop 3
-DEBUG: Executing loop.
-DEBUG: Checking free memory.
-INFO: Memory used: 67.4%
-WARN: More than half of free memory has been allocated.
+Switching to log-level: info
+08-20-2022 21:11:40:274 Info  [DynamicLogging] This is an info log.
 ```
 
 ### Modifying Rate Limits Dynamically
@@ -419,7 +442,7 @@ import LaunchDarkly from 'launchdarkly-node-server-sdk';
 import LdLogger from './ld_logger.js';
 
 // Initiating LaunchDarkly Client
-const LD_SDK_KEY = 'sdk-d2432dc7-e56a-458b-9f93-0361af47d578';
+const LD_SDK_KEY = 'sdk-********-****-****-****-************';
 const userName = 'admin';
 const launchDarklyClient = LaunchDarkly.init( LD_SDK_KEY );
 
@@ -487,7 +510,7 @@ Next we can define the script as part of `package.json`:
 ```json
 {
 	"scripts": {
-    	"rateLimiter": "nodemon rate_limiter.js"
+    	"rateLimiter": "node rate_limiter.js"
   	}
 }
 ```
@@ -525,7 +548,7 @@ const CronJob = cron.CronJob;
 const CronTime = cron.CronTime;
 
 // Initiating LaunchDarkly Client
-const LD_SDK_KEY = 'sdk-d2432dc7-e56a-458b-9f93-0361af47d578';
+const LD_SDK_KEY = 'sdk-********-****-****-****-************';
 const userName = 'admin';
 const launchDarklyClient = LaunchDarkly.init( LD_SDK_KEY );
 
@@ -581,7 +604,7 @@ Next we can define the script as part of `package.json`:
 ```json
 {
 	"scripts": {
-    	"cron": "nodemon cron_job.js"
+    	"cron": "node cron_job.js"
   	}
 }
 ```
@@ -610,13 +633,13 @@ app.get("/", async (req, res) => {
 });
 app.listen(8080);
 
-const sdkKey = 'sdk-d2432dc7-e56a-458b-9f93-0361af47d578';
+const LD_SDK_KEY = 'sdk-********-****-****-****-************';
 const userName = 'admin';
 let client;
 
 async function init() {
   if (!client) {
-    client = LaunchDarkly.init(sdkKey);
+    client = LaunchDarkly.init(LD_SDK_KEY);
     await client.waitForInitialization();
   }
 
@@ -629,7 +652,7 @@ async function init() {
 }
 ```
 
-We can simply initiate a client using `LaunchDarkly.init(sdkKey)` wait until it's ready with `client.waitForInitialization()`. After that we can call the `allFlagsState()` function that captures the state of all feature flag keys with regard to a specific user. This includes their values, as well as other metadata.
+We can simply initiate a client using `LaunchDarkly.init(sdkKey)` and wait until it's ready with `client.waitForInitialization()`. After that we can call the `allFlagsState()` function that captures the state of all feature flag keys with regard to a specific user. This includes their values, as well as other metadata.
 
 Finally we can bind all of this to an API using `app.get()` method so that it would get printed as a response whenever we hit the API with the endpoint http://localhost:8080.
 
@@ -673,4 +696,4 @@ A feature flag platform allows us to dynamically change the runtime behavior of 
 
 We can also use a feature flag platform as a store for configuration data, so we can rapidly iterate on our application without having to build a custom configuration management.
 
-You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/nodejs/nodejs-backend-feature-flag-launchdarkly).
+You can refer to all the source code used in the article on [Github](https://github.com/thombergs/code-examples/tree/master/nodejs/nodejs-backend-admin-feature-flag-launchdarkly).

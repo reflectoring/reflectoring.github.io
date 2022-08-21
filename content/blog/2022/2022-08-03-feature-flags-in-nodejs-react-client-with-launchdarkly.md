@@ -1,17 +1,17 @@
 ---
 title: "Feature Flags in Node.js React client with LaunchDarkly"
 categories: ["Node"]
-date: 2022-08-03 00:00:00 +1100 
-modified: 2022-08-03 00:00:00 +1100
+date: 2022-08-21 00:00:00 +1100 
+modified: 2022-08-21 00:00:00 +1100
 authors: [arpendu]
 excerpt: "A simple article to understand various use-cases of Feature flags that can be achieved with LaunchDarkly in React UI."
 image: images/stock/0104-on-off-1200x628-branded.jpg
 url: nodejs-feature-flag-launchdarkly-react
 ---
 
-We might have often seen various apps or websites release new experimental features directly in the production UI and then test if the users like this new feature or not. It gives them a lot of exposure to users from various regions or countries. Sometimes they also like to see if there is any glitch or any blockage due to huge traffic for a particular feature. If any of this causes any kind of problem, then they roll back that particular feature without any downtime.
+We have often seen various websites release new experimental features directly in the production UI and test whether their users like those feature or not. It gives them a lot of exposure to understand the likes and dislikes of users from various regions or countries and gather feedback around it. Sometimes they also like to check any performance glitch due to huge traffic for a new feature. If any of this causes any kind of problem, then they roll back that particular feature without any downtime.
 
-In this article, we are going to discuss exactly a few of these functionalities and see how we can manage our features dynamically at runtime. We will use the concept of *“Feature Flag”* which helps us in managing our features in UI with something just like a toggle button or a switch. This would help us in case that particular feature is not liked by the users or if it has some glitch.
+In this article, we are going to discuss few of these functionalities and see how we can manage our features dynamically at runtime. We will use the concept of *“Feature Flag”* which helps us in managing our features in UI with something just like a toggle button or a switch. This would help us to rollout a new feature dynamically in production at runtime.
 
 A *feature flag* is a technique that is being used predominantly in the case of software development to manage a particular functionality by enabling or disabling it remotely. New features can be deployed in the production UI without even making them visible to users. Thus, feature flags help us to perform usability or beta testing directly in the UI by real users.
 
@@ -23,8 +23,8 @@ The whole purpose is to check if we can have wide-scale acceptance for a new fea
 
 Feature flags or feature management is commonly used in web UI to perform the following operations:
 
-- Reduce the number of rollbacks in the existing code due to failure or breakage.
 - Gradually roll or publish out new features or functionality to users.
+- Rollback existing feature due to failure or breakage.
 - Minimize the risk of a release by first releasing something like a beta version to a limited group of users.
 - Test various kinds of user acceptance.
 
@@ -60,7 +60,7 @@ To specify which variation a feature flag will show to its user, we can set **ta
 
 Instead of a polling design, LaunchDarkly makes use of a [streaming architecture](https://launchdarkly.com/blog/launchdarklys-evolution-from-polling-to-streaming/). From a scalability point of view, this architecture is beneficial so that our application doesn't have to make a network call each time we need to analyze or fetch a feature flag. Furthermore, feature flag evaluation will continue to function even if the LaunchDarkly server has stopped responding to our calls, which is beneficial for resilience.
 
-## Create a simple React App
+## Create a Simple React App
 
 Let’s start by creating a simple React UI application. We will build this using one of the most popular npm libraries, [create-react-app](https://create-react-app.dev/). It is one of the simplest methods to start a new React project, making it a great option for both serious, large-scale apps and your own, individual projects.
 
@@ -100,7 +100,7 @@ npm install launchdarkly-js-client-sdk
 
 
 
-## String based Feature Flag to hide/display content on the Fly
+## String-based Feature Flag to Hide/Display Content on the Fly
 
 In our first use-case, let’s try to simply define a string feature flag in LaunchDarkly UI. We will simply list some users in the React UI. If any of the users matches the user name defined in the feature flag variation, then we will encrypt that user name in the UI. It would be pretty simple but enough to understand how we can enable/disable a feature in web UI.
 
@@ -108,7 +108,7 @@ The feature flag defined in LaunchDarkly UI would look something like this:
 
 {{% image alt="String Feature Flag LaunchDarkly" src="images/posts/nodejs-frontend-launchdarkly/Hide_User.png" %}}
 
-We need to fetch the *Client-Side ID* from LaunchDarkly Projects page and define it as part of the code. We should also make sure that the targeting option is enabled for the flag.
+By default, flags are only available to server-side SDKs. When we create a flag, we can choose to expose the flag to SDKs which use client-side IDs, SDKs which use mobile keys, or both. If we are using a client-side or mobile SDK, we must expose our feature flags in order for the client-side or mobile SDKs to evaluate them. As per the [documentation](https://docs.launchdarkly.com/home/getting-started/feature-flags#making-flags-available-to-client-side-and-mobile-sdks), in case of React UI or any Javascript UI, we need to enable *“SDKs using Client-side ID”* option. So in this case, we will fetch the *Client-Side ID* from LaunchDarkly Projects page and define it as part of the code. We should also make sure that the targeting option is enabled for the flag.
 
 {{% image alt="LaunchDarkly Keys" src="images/posts/nodejs-frontend-launchdarkly/LaunchDarkly_Keys.png" %}}
 
@@ -135,8 +135,10 @@ class App extends Component {
   }
   componentDidMount() {
     const user = {
-      key: 'aa0ceb'
+      // UI based user
+      key: 'user_a'
     }
+    // SDK requires Client-side ID for UI call
     this.ldclient = LDClient.initialize('62e9289ade464c10d842c2b3', user);
     this.ldclient.on('ready', this.onLaunchDarklyUpdated.bind(this));
     this.ldclient.on('change', this.onLaunchDarklyUpdated.bind(this));
@@ -170,7 +172,15 @@ class App extends Component {
 export default App;
 ```
 
-Then we can run the following command to start the UI:
+To execute code only when the LaunchDarkly client is ready, we have two mechanisms: an *event* or a *promise*.
+
+With `this.ldclient.on('ready', ...)`, we subscribe to the `ready` event which will fire once the LaunchDarkly client has received the state of all feature flags from the server.
+
+With `this.ldclient.on('change', ...)`, we subscribe to the `change` event which will fire once the LaunchDarkly client has received the state of all feature flags that has got updated or changed in the LaunchDarkly UI.
+
+For the promise mechanism, the SDK supports two methods: `waitUntilReady()` and `waitForInitialization()`. The behavior of `waitUntilReady()` is equivalent to the `ready` event. The promise resolves when the client receives its initial flag data. As with all promises, you can either use `.then()` to provide a callback, or use `await` if you are writing asynchronous code. The other method that returns a promise, `waitForInitialization()`, is similar to `waitUntilReady()` except that it also tells you if initialization fails by rejecting the promise.
+
+Next we can run the following command to start the UI:
 
 ```bash
 npm start
@@ -215,8 +225,10 @@ class App extends Component {
   }
   componentDidMount() {
     const user = {
-      key: 'aa0ceb'
+      // UI based user
+      key: 'user_a'
     }
+    // SDK requires Client-side ID for UI call
     this.ldclient = LDClient.initialize('62e9289ade464c10d842c2b3', user);
     this.ldclient.on('ready', this.onLaunchDarklyUpdated.bind(this));
     this.ldclient.on('change', this.onLaunchDarklyUpdated.bind(this));

@@ -276,14 +276,12 @@ class DynamicLogger {
   }
 
   writeToConsole(level, message) {
-    if (LEVELS[level] >= currentLogLevel) {
       const dateTime = format(new Date(), 'MM-dd-yyyy HH:mm:ss:SSS');
       const formattedLevel = padEnd(capitalize(level), 5);
       const formattedMessage = `${dateTime} ${formattedLevel} [${
         this.module
       }] ${message}`;
       console[level](formattedMessage, '');
-    }
   }
 
   async debug( message ) { 
@@ -598,6 +596,8 @@ launchDarklyClient.once('ready', async () => {
   }
 );
 ```
+
+First we initiated the cron job using `scheduler()` and then we checked the status after a second by calling `schedulerStatus()`. Next we stop the scheduler using `schedulerStop()` after 9 seconds and again check the status at 10th second. Then we change the cron time dynamically by calling `changeTime('* * * * * *')` method to run this cron every second. This value can also be set by defining another flag in LaunchDarkly and passing on to this function. After that we schedule the cron job again by calling `scheduler()` and then stop it after few seconds. So in this way, we can schedule and dynamically re-schedule the cron as per our convenience.
 
 Next we can define the script as part of `package.json`:
 

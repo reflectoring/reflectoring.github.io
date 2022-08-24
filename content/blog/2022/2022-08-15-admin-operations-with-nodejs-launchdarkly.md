@@ -21,18 +21,18 @@ Feature flags are commonly used for these use cases:
 
 - Increase deployment success rate by reducing the number of rollbacks caused by errors during deployment.
 - Progressively roll out new features to more and more users.
-- Minimize the risk of a release by first releasing something like a beta version to a limited groups of users.
+- Minimize the risk of a release by first releasing something like a beta version to a limited group of users.
 - Test various kinds of user acceptance.
 
-A less common use case is to perform administrative tasks that change the application behavior at runtime. These admin tasks can be one of the following, for example:
+**A less common use case for feature flags is to perform administrative tasks that change the application behavior at runtime**. These admin tasks can be one of the following, for example:
 
-* **Setting the log level**: We can set the application log level as a feature flag, then load it during server bootstrap or listen to its changing events and update it dynamically in the backend.
+* **Changing the log level**: We can set the application log level as a feature flag, then load it during server bootstrap or listen to its changing events and update it dynamically in the backend.
 * **Manage batch job size**: Usually batch processing applications are configured with a default batch size which needs to be tuned depending on usage. If we set the batch size as a feature flag, we can dynamically load it and change the batch size on-demand.
 * **Manage rate limits**: If an application provides an API, we often want to rate limit the customers' access to that API. Some customers may need a higher rate limit than others. If we set the rate limit as a feature flag, we can dynamically change the rate limit for each customer.
 * **Maintain a list of IPs**: Applications or websites may want to restrict access to certain IPs or geolocations only. Setting those IPs as a feature flag, we can change it on-demand while the application is running.
-* **Update cron job schedules**: Usually scheduled jobs are configured with a hard-coded cron expression. We can make that cron expression dynamic by setting it as a feature flag.
+* **Update cron job schedules**: Usually, scheduled jobs are configured with a hard-coded cron expression. We can make that cron expression dynamic by setting it as a feature flag.
 * **Gathering of metrics**: We can define rules to gather system metrics. These rules can be modified using feature flags dynamically whenever we need to perform any kind of maintenance.
-* **Show and hide PII in logs**: Sometimes, we need certain data in logs to help investigate a support case. But we don't want to log this data all the time. With a feature flag, we can enable certain log data on-demand.
+* **Show or hide Personally Identifiable Information (PII) in logs**: Sometimes, we need certain data in logs to help investigate a support case. But we don't want to log this data all the time. With a feature flag, we can enable certain log data on-demand.
 
 Of course, we can build all these things into our application. But to quickly modify those admin settings on-demand, a feature management platform like [LaunchDarkly](https://launchdarkly.com) can do the work for us.
 
@@ -48,7 +48,7 @@ LaunchDarkly is a cloud-based service and provides a UI to manage everything abo
 
 We can define **targeting rules** to define which variation a feature flag will show to its user. By default, a targeting rule for a feature flag is deactivated. The simplest targeting rule is *“show variation X for all users”*. A more complex targeting rule is *“show variation A for all users with attribute X, variation B for all users with attribute Y, and variation C for all other users”*.
 
-We can use the LaunchDarkly SDK in our code to access the feature flag variations. It provides a persistent connection to [LaunchDarkly's streaming infrastructure](https://launchdarkly.com/how-it-works/) to receive server-sent-events(SSE) whenever there is any change or update in feature flag. If the connection fails for some reason, it falls back to default values.
+We can use the LaunchDarkly SDK in our code to access the feature flag variations. It provides a persistent connection to [LaunchDarkly's streaming infrastructure](https://launchdarkly.com/how-it-works/) to receive server-sent-events (SSE) whenever there is a change in a feature flag. If the connection fails for some reason, it falls back to default values.
 
 ## Initial Setup in Node.js
 
@@ -76,7 +76,7 @@ We will use this SDK key in our code to authenticate with the LaunchDarkly serve
 
 ## Server-side Bootstrapping with LaunchDarkly
 
-First, we'll try a very simple use-case where we can fetch a feature flag from LaunchDarkly and use it as part of our server side bootstrap code and subscribe to it before it starts serving the traffic for API. Let’s first add few libraries like `date-fns` and `lodash` to design our custom logger:
+First, we'll try a very simple use case where we can fetch a feature flag from LaunchDarkly and use it as part of our server-side bootstrap code and subscribe to it before the server starts serving requests. Let’s first add some libraries like `date-fns` and `lodash` to design a custom logger:
 
 ```bash
 npm install date-fns lodash
@@ -142,11 +142,11 @@ class Logger {
 export default Logger;
 ```
 
-Then we will define a flag in LaunchDarkly with the name `backend-log-level` where we can add a default variation as `debug`. We can then change it later to whatever we need:
+Then we will define a flag in LaunchDarkly with the name `backend-log-level` where we can add a default variation as `debug`. The goal is that we can change the log level in LaunchDarkly any time we need to:
 
 {{% image alt="Backend Log Level Feature Flag" src="images/posts/nodejs-backend-launchdarkly/Simple_Log_Level.png" %}}
 
-Next we will create a file named `bootstrap.js` that subscribes to the log level flag before we initiate the `express` app to serve our APIs:
+Next, we will create a file named `bootstrap.js` that subscribes to the log level flag before we initiate the `express` app to serve our APIs:
 
 ```javascript
 import util from 'util';
@@ -184,13 +184,15 @@ client.once('ready', async () => {
 });
 ```
 
+Note that in a real application the SDK key should be provided via an environment variable and shouldn't be hardcoded.
+
 To execute code only when the LaunchDarkly client is ready, we have two mechanisms: an *event* or a *promise*. 
 
 With `client.once('ready', ...)`, we subscribe to the `ready` event which will fire once the LaunchDarkly client has received the state of all feature flags from the server.
 
 For the promise mechanism, the SDK supports two methods: `waitUntilReady()` and `waitForInitialization()`. The behavior of `waitUntilReady()` is equivalent to the `ready` event. The promise resolves when the client receives its initial flag data. As with all promises, you can either use `.then()` to provide a callback, or use `await` if you are writing asynchronous code. The other method that returns a promise, `waitForInitialization()`, is similar to `waitUntilReady()` except that it also tells you if initialization fails by rejecting the promise.
 
-Next we can define the `bootstrap` script as part of `package.json`:
+Next, we can define the `bootstrap` script as part of `package.json`:
 
 ```json
 {
@@ -206,7 +208,7 @@ Then we can execute the following command to run our app:
 npm run bootstrap
 ```
 
-Finally when we hit the API with the endpoint http://localhost:5000 we get to see the following log message being printed:
+Finally, when we hit the API with the endpoint `http://localhost:5000` we get to see the following log message being printed (assuming the feature flag is set to `debug`):
 
 ```bash
 info: [LaunchDarkly] Initializing stream processor to receive feature flag updates
@@ -219,7 +221,7 @@ info: [LaunchDarkly] Opened LaunchDarkly stream connection
 
 ## Performing Admin Operations with Feature Flags
 
-LaunchDarkly supports something named *“multivariate”* flags apart from the simple boolean, String or JSON values. A multivariate feature flag could be a list of different strings, numbers or booleans. So let’s try defining few long-lived operational flags that would update our application feature dynamically.
+LaunchDarkly supports something named *“multivariate”* flags apart from the simple boolean, String or JSON values. A multivariate feature flag could be a list of different strings, numbers or booleans. We have already seen a multivariate flag that controls the log level. Let's look at a few different use cases in which long-lived multivariate flags can control our application dynamically.
 
 ### Changing the Log Level Without Restarting the Server
 
@@ -236,13 +238,13 @@ In the LaunchDarkly UI, it looks like this:
 
 {{% image alt="Multivariate log-level" src="images/posts/nodejs-backend-launchdarkly/Log_Level_Variations.png" %}}
 
-Next, we can define targeting values that would deliver one of the above defined multivariate strings:
+Next, we can define targeting values that would deliver one of the multivariate strings defined above:
 
 {{% image alt="Multivariate targeting rule" src="images/posts/nodejs-backend-launchdarkly/Targeting_Log_Level.png" %}}
 
-Note that we're not using targeting rules that target individual users, because our log level is a global feature flag that is independent of specific users.
+Note that we're not using targeting rules that target individual users because our log level is a global feature flag that is independent of specific users.
 
-Now that we have our multivariate feature flag defined, we update our existing logger class from above with few new methods that read the log level from the feature flag variation at runtime and updates in the console messages:
+Now that we have our multivariate feature flag defined, we update our existing logger class from above with a few new methods that read the log level from the feature flag variation at runtime and updates in the console messages:
 
 ```javascript
 import { format } from 'date-fns';
@@ -376,9 +378,9 @@ async function executeLoop () {
 }
 ```
 
-Note that we're passing the static user `admin` to LaunchDarkly, so that LaunchDarkly evaluates the feature flag for this user. This is not a real user. The feature flag is meant as a global feature flag, so targeting different users with different values doesn't make sense.
+Note that we're passing the static user `admin` to LaunchDarkly so that LaunchDarkly evaluates the feature flag for this user. This is not a real user. The feature flag is meant as a global feature flag, so targeting different users with different values doesn't make sense.
 
-Next we can define the script as part of `package.json`:
+Next, we can define the script as part of `package.json`:
 
 ```json
 {
@@ -394,7 +396,7 @@ Then we can execute the following command to run our app:
 npm run dynamic
 ```
 
-Finally when we run the above command it will print something like below:
+Finally, when we run the above command it will print something like below:
 
 ```bash
 info: [LaunchDarkly] Initializing stream processor to receive feature flag updates
@@ -479,10 +481,10 @@ And the variations look like this:
 
 {{% image alt="Rate Limiter Variation" src="images/posts/nodejs-backend-launchdarkly/Rate_Limiter_Variation.png" %}}
 
-Next we will define an [express middleware](/express-middleware/) and pass it to the `express` app before starting the server:
+Next, we will define an [express middleware](/express-middleware/) and pass it to the `express` app before starting the server:
 
 ```javascript
-// Initialize Rate Limit Midlleware
+// Initialize Rate Limit Middleware
 const rateLimiterConfig = await launchDarklyClient.variation(
     'rate-limiter-config',
     {
@@ -503,7 +505,7 @@ app.use(rateLimit(rateLimiterConfig));
 
 As the default configuration, we create a ratelimit of 100 requests per 24 hours. We can now override this config by changing the JSON in the LaunchDarkly feature flag. 
 
-Next we can define the script as part of `package.json`:
+Next, we can define the script as part of `package.json`:
 
 ```json
 {
@@ -597,9 +599,9 @@ launchDarklyClient.once('ready', async () => {
 );
 ```
 
-First we initiated the cron job using `scheduler()` and then we checked the status after a second by calling `schedulerStatus()`. Next we stop the scheduler using `schedulerStop()` after 9 seconds and again check the status at 10th second. Then we change the cron time dynamically by calling `changeTime('* * * * * *')` method to run this cron every second. This value can also be set by defining another flag in LaunchDarkly and passing on to this function. After that we schedule the cron job again by calling `scheduler()` and then stop it after few seconds. So in this way, we can schedule and dynamically re-schedule the cron as per our convenience.
+First we initiated the cron job using `scheduler()` and then we checked the status after a second by calling `schedulerStatus()`. Next, we stop the scheduler using `schedulerStop()` after 9 seconds and again check the status at the 10th second. Then, we change the cron time dynamically by calling the `changeTime('* * * * * *')` method to run this cron every second. This value can also be set by defining another flag in LaunchDarkly and passing on to this function. After that we schedule the cron job again by calling `scheduler()` and then stop it after few seconds. So in this way, we can schedule and dynamically re-schedule the cron as per our convenience.
 
-Next we can define the script as part of `package.json`:
+Next, we can define the script as part of `package.json`:
 
 ```json
 {
@@ -609,7 +611,7 @@ Next we can define the script as part of `package.json`:
 }
 ```
 
-Then we can execute the following command to run our app:
+Then, we can execute the following command to run our app:
 
 ```bash
 npm run cron
@@ -652,9 +654,9 @@ async function init() {
 }
 ```
 
-We can simply initiate a client using `LaunchDarkly.init(sdkKey)` and wait until it's ready with `client.waitForInitialization()`. After that we can call the `allFlagsState()` function that captures the state of all feature flag keys with regard to a specific user. This includes their values, as well as other metadata.
+We can simply initiate a client using `LaunchDarkly.init(sdkKey)` and wait until it's ready with `client.waitForInitialization()`. After that, we can call the `allFlagsState()` function that captures the state of all feature flag variations for a specific user. This includes their values as well as other metadata.
 
-Finally we can bind all of this to an API using `app.get()` method so that it would get printed as a response whenever we hit the API with the endpoint http://localhost:8080.
+Finally, we can bind all of this to an API using `app.get()` method so that it would get printed as a response whenever we hit the API with the endpoint `http://localhost:8080`.
 
 Next we can define the script as part of `package.json`:
 

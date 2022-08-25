@@ -206,7 +206,7 @@ public WebMvcConfigurer corsMappingConfigurer() {
 {{% info title="CorsConfiguration defaults:" %}}
 `addMapping()` returns a `CorsRegistration` object which applies a default `CorsConfiguration` if
 one or more methods (`allowedOrigins`, `allowedMethods`, `maxAge`, `allowedHeaders`, `exposedHeaders`) are not explicitly defined.
-Refer to the Spring library method [`CorsConfiguration.applyPermitDefaultValues()`.](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/cors/CorsConfiguration.html#applyPermitDefaultValues--) to understand the defaults applied.
+Refer to the Spring library method [`CorsConfiguration.applyPermitDefaultValues()`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/cors/CorsConfiguration.html#applyPermitDefaultValues--) to understand the defaults applied.
 {{% /info %}}
 
 ## Configuring CORS in a Spring Webflux application

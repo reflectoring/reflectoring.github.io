@@ -98,6 +98,7 @@ This is because even though both applications are served from `localhost`, they 
 ## Configuring CORS in a Spring Web MVC Application
 
 The initial setup created with a Spring Initializr holds all the required CORS dependencies. No external dependencies need to be added.
+Refer to this sample [Spring Web Application project.](https://github.com/thombergs/code-examples/tree/master/spring-boot/cors/configuring-cors-with-spring/SpringWebApplication)
 
 ### Defining `@CrossOrigin` at the Class Level
 
@@ -154,7 +155,11 @@ public class LibraryController {
     }
 }
 ````
-By defining the annotation at both class and method levels its combined attributes will be applied to the methods i.e (origins, allowedHeaders, maxAge)
+- By defining the annotation at both class and method levels its combined attributes will be applied to the methods i.e (origins, allowedHeaders, maxAge)
+- In all the above cases we can define both global CORS configuration and local configuration using `@CrossOrigin`.
+  For attributes that accept multiple values, **a combination of global and local values will apply**. For attributes that accept
+  only a single value, **the local value will take precedence over the global one**.
+
 
 ### Enabling CORS Globally
 
@@ -166,7 +171,9 @@ Here, we will use a `WebMvcConfigurer` which is a part of the Spring Web MVC lib
 By overriding the `addCorsMapping()` method we will configure CORS to all URLs that are handled by Spring Web MVC.
 
 To define the same configuration (as explained in the previous sections) globally, we will use the configuration parameters
-defined in `application.yml` to create a bean as defined below:
+defined in `application.yml` to create a bean as defined below. The properties defined in `application.yml` (allowed-origins, allowed-methods, max-age, allowed-headers, exposed-headers)
+are custom properties that map to classname [Cors](https://github.com/thombergs/code-examples/tree/master/spring-boot/cors/configuring-cors-with-spring/SimpleLibraryApplication/src/main/java/com/reflectoring/library/config/WebConfigProperties.java)
+via `@ConfigurationProperties(prefix = "web")`
 
 ````yaml
 web:
@@ -196,16 +203,16 @@ public WebMvcConfigurer corsMappingConfigurer() {
 }
 ````
 
-{{% info title="NOTE:" %}}
+{{% info title="CorsConfiguration defaults:" %}}
 `addMapping()` returns a `CorsRegistration` object which applies a default `CorsConfiguration` if
 one or more methods (`allowedOrigins`, `allowedMethods`, `maxAge`, `allowedHeaders`, `exposedHeaders`) are not explicitly defined.
-Refer to the Spring library method `CorsConfiguration.applyPermitDefaultValues()` to understand the defaults applied.
+Refer to the Spring library method [`CorsConfiguration.applyPermitDefaultValues()`.](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/cors/CorsConfiguration.html#applyPermitDefaultValues--) to understand the defaults applied.
 {{% /info %}}
 
 ## Configuring CORS in a Spring Webflux application
 
-The initial setup created with a Spring Initializr uses Spring webflux, Spring Data R2DBC and H2 Database.
-No external dependencies need to be added.
+The initial setup is created with a Spring Initializr uses Spring webflux, Spring Data R2DBC and H2 Database.
+No external dependencies need to be added. Refer to this sample [Spring Webflux project.](https://github.com/thombergs/code-examples/tree/master/spring-boot/cors/configuring-cors-with-spring/SpringWebfluxApplication)
 
 
 ### CORS Configuration for Spring Webflux using `@CrossOrigin`
@@ -224,7 +231,7 @@ public ResponseEntity<Mono<List<BookDto>>> getBooks(@RequestParam String type) {
 }
 ````
 
-### Enable CORS Configuration Globally in Spring Webflux
+### Enabling CORS Configuration Globally in Spring Webflux
 
 To define CORS globally in a Spring Webflux application, we use the `WebfluxConfigurer` and override the `addCorsMappings()`.
 Similar to Spring REST, it uses a `CorsConfiguration` with defaults that can be overridden as required.
@@ -247,13 +254,7 @@ public WebFluxConfigurer corsMappingConfigurer() {
 }
 ````
 
-{{% info title="NOTE:" %}}
-In all the above cases we can define both global CORS configuration and local configuration using `@CrossOrigin`.
-For attributes that accept multiple values, a combination of global and local values will apply. For attributes that accept
-only a single value, the local value will take precedence over the global one.
-{{% /info %}}
-
-### Enable CORS Using `WebFilter`
+### Enabling CORS Using `WebFilter`
 
 The Webflux framework allows CORS configuration to be set globally via `CorsWebFilter`. We can use the `CorsConfiguration` object to set 
 the required configuration and register `CorsConfigurationSource` to be used with the filter.

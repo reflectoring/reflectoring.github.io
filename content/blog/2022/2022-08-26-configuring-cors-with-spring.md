@@ -1,26 +1,28 @@
 ---
 title: "Configuring CORS with Spring Boot and Spring Security"
 categories: ["Spring"]
-date: 2022-06-30 00:00:00 +1100
-modified: 2022-06-30 00:00:00 +1100
+date: 2022-08-26 00:00:00 +1100
+modified: 2022-08-26 00:00:00 +1100
 authors: ["ranjani"]
 description: "Configuring CORS with Spring Boot and Spring Security"
 image: images/stock/0014-handcuffs-1200x628-branded.jpg
 url: spring-cors
 ---
 
-**Cross Origin Resource Sharing (CORS) is an HTTP-header based mechanism** that allows servers to **explicitly allowlist certain 
-origins** and helps **bypass the same-origin policy**. This is required since **browsers by default apply the same-origin policy for security**.
-By implementing CORS in a web application, a webpage could request for additional resources and load into the browser from other domains.
+**Cross-Origin Resource Sharing (CORS) is an HTTP-header-based mechanism** that allows servers to **explicitly allowlist certain 
+origins** and helps **bypass the same-origin policy**. 
 
-This article will focus on the various ways in which CORS can be implemented in a Spring based application.
+This is required since **browsers by default apply the same-origin policy for security**.
+By implementing CORS in a web application, a webpage could request additional resources and load into the browser from other domains.
+
+This article will focus on the various ways in which CORS can be implemented in a Spring-based application.
 To understand how CORS works in detail, please refer to this excellent [introductory article.](https://reflectoring.io/complete-guide-to-cors/)
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/cors/configuring-cors-with-spring" %}}
 
 ## Overview of CORS-Specific HTTP Response Headers
 
-The CORS specification defines a set of response headers returned by the server that will be the focus in the subsequent sections.
+The CORS specification defines a set of response headers returned by the server that will be the focus of the subsequent sections.
 
 | Response Headers                 | Description                                                                                                                                        |
 |----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -45,9 +47,9 @@ We should be able to start the client application successfully.
 ## Setting up a Sample Server Application
 
 We will use a sample Spring-based application with `GET` and `POST` requests that the client application can call.
-Note that you will find **two separate applications one that uses Spring REST and the other that uses the Spring Reactive stack.** 
+Note that you will find **two separate applications: one that uses Spring MVC (REST) and the other that uses the Spring Reactive stack.** 
 
-For simplicity the CORS configuration across both applications are the same and the same endpoints have been defined. Both servers start at different ports 
+For simplicity, the CORS configuration across both applications is the same and the same endpoints have been defined. Both servers start at different ports 
 8091 and 8092.
 
 The Maven Wrapper bundled with the application will be used to start the service.
@@ -71,13 +73,13 @@ Call to the Spring Reactive server:
 In the Spring Boot app, we're using the `@CrossOrigin` annotation to enable cross-origin calls. Let's first understand the attributes that `@CrossOrigin` supports.
 
 
-| Attributes       | Description                                                                                                                                                                                                                                                                                                                                                                                                   | 
-|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Attributes       | Description                                                                                                                                                                                                                                                                                                                                                                                                  | 
+|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `origins`          | Allows you to specify a list of allowed origins. By default, it allows all origins.<br/> The attribute value will be set in the `Access-Control-Allow-Origin` header of both the preflight response and the actual response. <br/> <br/> **Example Usage:** <br/>  `@CrossOrigin(origins = "http://localhost:8080")` <br/><br/> `@CrossOrigin(origins = {"http://localhost:8080", "http://testserver:8087"})` |
-| `allowedHeaders`   | Allows you to specify a list of headers that will be accepted when the browser makes the request. By default, any headers will be allowed. The value specified in this attribute is used in `Access-Control-Allow-Headers` in the preflight response.  <br/> <br/> **Example Usage:** <br/> `@CrossOrigin(allowedHeaders = {"Authorization", "Origin"})`                                                      |
-| `exposedHeaders`   | List of headers that are set in the actual response header. If not specified, only the [safelisted headers](https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_response_header) will be considered safe to be exposed by the client script. <br/> <br/> **Example Usage:** <br/> `@CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})`           |                                                                        |
-| `allowCredentials` | When credentials are required to invoke the API, set `Access-Control-Allow-Credentials` header value to true. In case no credentials are required, omit the header. <br/> <br/> **Example Usage:** <br/> `@CrossOrigin(allowCredentials = true)`                                                                                                                                                              |
-| `maxAge`           | Default `maxAge` is set to 1800 seconds (30 minutes). Indicates how long the preflight responses can be cached for.   <br/> <br/> **Example Usage:** <br/> `@CrossOrigin(maxAge = 300)`                                                                                                                                                                                                                       |
+| `allowedHeaders`   | Allows you to specify a list of headers that will be accepted when the browser makes the request. By default, any headers will be allowed. The value specified in this attribute is used in `Access-Control-Allow-Headers` in the preflight response.  <br/> <br/> **Example Usage:** <br/> `@CrossOrigin(allowedHeaders = {"Authorization", "Origin"})`                                                     |
+| `exposedHeaders`   | List of headers that are set in the actual response header. If not specified, only the [safelisted headers](https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_response_header) will be considered safe to be exposed by the client script. <br/> <br/> **Example Usage:** <br/> `@CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})`          |                                                                        |
+| `allowCredentials` | When credentials are required to invoke the API, set `Access-Control-Allow-Credentials` header value to true. In case no credentials are required, omit the header. <br/> <br/> **Example Usage:** <br/> `@CrossOrigin(allowCredentials = true)`                                                                                                                                                             |
+| `maxAge`           | Default `maxAge` is set to 1800 seconds (30 minutes). Indicates how long the preflight responses can be cached.   <br/> <br/> **Example Usage:** <br/> `@CrossOrigin(maxAge = 300)`                                                                                                                                                                                                                       |
 
 ## What If We Do Not Configure CORS?
 
@@ -155,15 +157,15 @@ public class LibraryController {
     }
 }
 ````
-- By defining the annotation at both class and method levels its combined attributes will be applied to the methods i.e (origins, allowedHeaders, maxAge)
-- In all the above cases we can define both global CORS configuration and local configuration using `@CrossOrigin`.
-  For attributes that accept multiple values, **a combination of global and local values will apply**. For attributes that accept
+- By defining the annotation at both class and method levels its combined attributes will be applied to the methods i.e (`origins`, `allowedHeaders`, ``)
+- In all the above cases we can define both global CORS cmaxAgeonfiguration and local configuration using `@CrossOrigin`.
+  For attributes that accept multiple values, **a combination of global and local values will apply (i.e. they are merged)**. For attributes that accept
   only a single value, **the local value will take precedence over the global one**.
 
 
 ### Enabling CORS Globally
 
-Instead of adding CORS to each of the resource separately, we could define a common CORS configuration that would apply to
+Instead of adding CORS to each of the resources separately, we could define a common CORS configuration that would apply to
 all resources defined. 
 
 Here, we will use a `WebMvcConfigurer` which is a part of the Spring Web MVC library
@@ -171,8 +173,10 @@ Here, we will use a `WebMvcConfigurer` which is a part of the Spring Web MVC lib
 By overriding the `addCorsMapping()` method we will configure CORS to all URLs that are handled by Spring Web MVC.
 
 To define the same configuration (as explained in the previous sections) globally, we will use the configuration parameters
-defined in `application.yml` to create a bean as defined below. The properties defined in `application.yml` (allowed-origins, allowed-methods, max-age, allowed-headers, exposed-headers)
-are custom properties that map to classname [Cors](https://github.com/thombergs/code-examples/tree/master/spring-boot/cors/configuring-cors-with-spring/SimpleLibraryApplication/src/main/java/com/reflectoring/library/config/WebConfigProperties.java)
+defined in `application.yml` to create a bean as defined below. 
+
+The properties defined in `application.yml` (`allowed-origins`, `allowed-methods`, `max-age`, `allowed-headers`, `exposed-headers`)
+are custom properties that map to the self-defined class [Cors](https://github.com/thombergs/code-examples/tree/master/spring-boot/cors/configuring-cors-with-spring/SimpleLibraryApplication/src/main/java/com/reflectoring/library/config/WebConfigProperties.java)
 via `@ConfigurationProperties(prefix = "web")`
 
 ````yaml
@@ -203,7 +207,7 @@ public WebMvcConfigurer corsMappingConfigurer() {
 }
 ````
 
-{{% info title="CorsConfiguration defaults:" %}}
+{{% info title="`CorsConfiguration` defaults" %}}
 `addMapping()` returns a `CorsRegistration` object which applies a default `CorsConfiguration` if
 one or more methods (`allowedOrigins`, `allowedMethods`, `maxAge`, `allowedHeaders`, `exposedHeaders`) are not explicitly defined.
 Refer to the Spring library method [`CorsConfiguration.applyPermitDefaultValues()`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/cors/CorsConfiguration.html#applyPermitDefaultValues--) to understand the defaults applied.
@@ -211,13 +215,13 @@ Refer to the Spring library method [`CorsConfiguration.applyPermitDefaultValues(
 
 ## Configuring CORS in a Spring Webflux application
 
-The initial setup is created with a Spring Initializr uses Spring webflux, Spring Data R2DBC and H2 Database.
+The initial setup is created with a Spring Initializr and uses Spring Webflux, Spring Data R2DBC, and H2 Database.
 No external dependencies need to be added. Refer to this sample [Spring Webflux project.](https://github.com/thombergs/code-examples/tree/master/spring-boot/cors/configuring-cors-with-spring/SpringWebfluxApplication)
 
 
 ### CORS Configuration for Spring Webflux using `@CrossOrigin`
 
-Similar to Spring REST, in Spring Webflux we can define `@CrossOrigin` at the class level or at the method level.
+Similar to Spring MVC, in Spring Webflux we can define `@CrossOrigin` at the class level or the method level.
 The same `@CrossOrigin` attributes described in the previous sections will apply. Also, when the annotation is defined at both class and method,
 its combined attributes will apply to the methods.
 
@@ -234,21 +238,21 @@ public ResponseEntity<Mono<List<BookDto>>> getBooks(@RequestParam String type) {
 ### Enabling CORS Configuration Globally in Spring Webflux
 
 To define CORS globally in a Spring Webflux application, we use the `WebfluxConfigurer` and override the `addCorsMappings()`.
-Similar to Spring REST, it uses a `CorsConfiguration` with defaults that can be overridden as required.
+Similar to Spring MVC, it uses a `CorsConfiguration` with defaults that can be overridden as required.
 
 ````java
 @Bean
 public WebFluxConfigurer corsMappingConfigurer() {
-        return new WebFluxConfigurer() {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        WebConfigProperties.Cors cors = webConfigProperties.getCors();
-        registry.addMapping("/**")
-        .allowedOrigins(cors.getAllowedOrigins())
-        .allowedMethods(cors.getAllowedMethods())
-        .maxAge(cors.getMaxAge())
-        .allowedHeaders(cors.getAllowedHeaders())
-        .exposedHeaders(cors.getExposedHeaders());
+    return new WebFluxConfigurer() {
+        @Override
+        public void addCorsMappings(CorsRegistry registry) {
+            WebConfigProperties.Cors cors = webConfigProperties.getCors();
+            registry.addMapping("/**")
+              .allowedOrigins(cors.getAllowedOrigins())
+              .allowedMethods(cors.getAllowedMethods())
+              .maxAge(cors.getMaxAge())
+              .allowedHeaders(cors.getAllowedHeaders())
+              .exposedHeaders(cors.getExposedHeaders());
         }
     };
 }
@@ -259,7 +263,7 @@ public WebFluxConfigurer corsMappingConfigurer() {
 The Webflux framework allows CORS configuration to be set globally via `CorsWebFilter`. We can use the `CorsConfiguration` object to set 
 the required configuration and register `CorsConfigurationSource` to be used with the filter.
 
-However, by default the `CorsConfiguration` in case of filters
+However, by default, the `CorsConfiguration` in case of filters
 does not assign default configuration to the endpoints! Only the specified configuration can be applied.
 
 Another option is to call `CorsConfiguration.applyPermitDefaultValues()` explicitly.
@@ -303,8 +307,7 @@ Gradle:
 
 ### Spring Security Applied to Spring Web MVC
 
-Spring security by default protects every endpoint. However this would not hold true in case of preflight requests since **the purpose of an OPTIONS request 
-is only to establish if the original request would go through**. To make Spring Security bypass preflight requests we need to add **http.cors()** as shown:
+Spring security by default protects every endpoint. However, this would cause CORS errors since a browser's `OPTIONS` preflight requests would be blocked. To make Spring Security bypass preflight requests we need to add `http.cors()` to the `HTTPSecurity` object as shown:
 
 ````java
 @Configuration
@@ -325,8 +328,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 ````
 
-To setup additional CORS configuration with Spring Security after bypassing pre-flight requests, we can
-- **Configure CORS using @CrossOrigin**
+To set up additional CORS configuration with Spring Security after bypassing pre-flight requests, we can
+**configure CORS using the `@CrossOrigin` annotation**:
 
 ````java
 @CrossOrigin(maxAge = 3600, allowCredentials = "true")
@@ -352,29 +355,28 @@ public class LibraryController {
 }
 ````
 
-- OR **Create a CorsConfigurationSource bean**
+Or, we can **create a `CorsConfigurationSource` bean**:
 
 ````java
 @Bean
 CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Requestor-Type"));
-        configuration.setExposedHeaders(Arrays.asList("X-Get-Header"));
-        configuration.setMaxAge(3600L);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+  CorsConfiguration configuration = new CorsConfiguration();
+  configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+  configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
+  configuration.setAllowCredentials(true);
+  configuration.setAllowedHeaders(Arrays.asList("Authorization", "Requestor-Type"));
+  configuration.setExposedHeaders(Arrays.asList("X-Get-Header"));
+  configuration.setMaxAge(3600L);
+  UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+  source.registerCorsConfiguration("/**", configuration);
+  return source;
 }
 ````
 
 ### Spring Security Applied to Spring Webflux
 
 In case of Webflux, despite using Spring Security **the most preferred way of applying CORS configuration to oncoming requests 
-is to use the CorsWebFilter**. We can **disable the CORS integration with Spring security and instead integrate with CorsWebFilter by providing a CorsConfigurationSource**.
-The below code will help achieve this.
+is to use the `CorsWebFilter`**. We can **disable the CORS integration with Spring security and instead integrate with `CorsWebFilter` by providing a `CorsConfigurationSource`**:
 
 ````java
 @Configuration
@@ -431,15 +433,14 @@ public class SecurityConfiguration {
         return new CorsWebFilter(corsConfiguration());
     }
 }
-
 ````
 
 ## Conclusion
 
-In short, the CORS configuration depends on multiple factors
+In short, the CORS configuration depends on multiple factors:
 - Spring Web / Spring Webflux
 - Local / Global CORS config
-- Spring Security
+- Spring Security or not
 
-Depending on the framework we can decide which method works best and is the easiest to implement so that we could avoid CORS errors.
-With the help of the sample application and the CORS configuration used we could try out various options to decide which option works best.
+Depending on the framework we can decide which method works best and is the easiest to implement so that we can avoid CORS errors.
+You can play around with the sample application [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/cors/configuring-cors-with-spring).

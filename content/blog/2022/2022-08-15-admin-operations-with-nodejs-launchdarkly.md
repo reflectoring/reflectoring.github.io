@@ -249,30 +249,13 @@ import { format } from 'date-fns';
 import padEnd from 'lodash/padEnd.js';
 import capitalize from 'lodash/capitalize.js';
 
-const LEVELS = { debug: 10, log: 20, warn: 30, error: 40 };
-let currentLogLevel = LEVELS['debug'];
-
 class DynamicLogger {
   constructor( module, ldClient, flagKey, user ) {
     this.module = module ? module : '';
-
-    this.debug = this.debug.bind(this);
-    this.info = this.info.bind(this);
-    this.warn = this.warn.bind(this);
-    this.error = this.error.bind(this);
-    this.writeToConsole = this.writeToConsole.bind(this);
     this.ldClient = ldClient;
-	this.flagKey = flagKey;
-	this.user = user;
-	this.previousLevel = null; 
-  }
-
-  static setLogLevel(level) {
-    currentLogLevel = LEVELS[level];
-  }
-
-  static get(module) {
-    return new Logger(module);
+	  this.flagKey = flagKey;
+	  this.user = user;
+	  this.previousLevel = null; 
   }
 
   writeToConsole(level, message) {
@@ -315,11 +298,11 @@ class DynamicLogger {
         {
            key: this.user
         },
-        'debug' // Default / fall-back value if LaunchDarkly unavailable.
+        'debug' // Default/fall-back value if LaunchDarkly unavailable.
     );
 
     if ( minLogLevel !== this.previousLevel ) { 
-       console.log( `Switching to log-level: ${ minLogLevel }` ); 
+       console.log( `Present log-level: ${ minLogLevel }` ); 
     }
         
     switch ( this.previousLevel = minLogLevel ) {
@@ -342,7 +325,6 @@ Next we will define the logic to subscribe to this log-level and execute some op
 
 ```javascript
 import chalk from 'chalk';
-import util from 'util';
 import LaunchDarkly from 'launchdarkly-node-server-sdk';
 import DynamicLogger from './dynamic_logger.js';
 
@@ -350,10 +332,6 @@ const LD_SDK_KEY = 'sdk-********-****-****-****-************';
 const flagKey = 'backend-log-level';
 const userName = 'admin';
 const launchDarklyClient = LaunchDarkly.init( LD_SDK_KEY );
-const asyncGetFlag = util.promisify(launchDarklyClient.variation);
-const user = {
-    user: userName
-};
 let logger;
 let loop = 0;
 
@@ -362,10 +340,8 @@ launchDarklyClient.once('ready', async () => {
 	}
 );
 
-async function executeLoop () {	
-	const initialLogLevel = await asyncGetFlag(flagKey, user, 'debug');
+async function executeLoop () {
 	logger = new DynamicLogger( 'DynamicLogging', launchDarklyClient, flagKey, userName );
-	DynamicLogger.setLogLevel(initialLogLevel);	
 	console.log( chalk.dim.italic( `Loop ${ ++loop }` ) ); 
 	logger.debug( 'Executing loop.' );
 	logger.debug('This is a debug log.');
@@ -400,7 +376,7 @@ Finally when we run the above command it will print something like below:
 info: [LaunchDarkly] Initializing stream processor to receive feature flag updates
 info: [LaunchDarkly] Opened LaunchDarkly stream connection
 Loop 1
-Switching to log-level: debug
+Present log-level: debug
 08-20-2022 21:11:40:251 Debug [DynamicLogging] Executing loop. 
 08-20-2022 21:11:40:264 Debug [DynamicLogging] This is a debug log.
 08-20-2022 21:11:40:264 Info  [DynamicLogging] This is an info log.
@@ -413,7 +389,7 @@ Loop 2
 08-20-2022 21:11:40:271 Warn  [DynamicLogging] This is a warn log.
 08-20-2022 21:11:40:272 Error [DynamicLogging] This is a error log.
 Loop 3
-Switching to log-level: info
+Present log-level: info
 08-20-2022 21:11:40:274 Info  [DynamicLogging] This is an info log.
 ```
 

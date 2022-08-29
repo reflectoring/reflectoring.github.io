@@ -2,7 +2,7 @@
 authors: [tom]
 title: "Rollout Strategies with Feature Flags"
 categories: ["Software Craft"]
-date: 2022-01-30T00:00:00
+date: 2022-08-29T00:00:00
 description: "Feature flags provide a lot of flexibility for rolling out new features. This article discusses different rollout strategies."
 image: images/stock/0038-package-1200x628-branded.jpg
 url: rollout-strategies-with-feature-flags

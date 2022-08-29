@@ -3,8 +3,9 @@ title: "Author Payment"
 description: "Payment rules for reflectoring authors."
 layout: "static"
 draft: false
-image: images/stock/"images/stock/0016-pen-1200x628-branded.jpg"-1200x628-branded.jpg
+image: images/stock/0016-pen-1200x628-branded.jpg
 toc: true
+popup: false
 ---
 
 ## Successful Review
@@ -41,5 +42,23 @@ To determine the number of words, the published article is pasted into [WordCoun
 | Tier 2 | $4.50 | $22.50                      | $45                          | $90                          |
 
 The payment rates are specified in US-Dollars.
+
+## Payment via Wise
+
+I prefer [Wise](https://wise.com/invite/u/tomh430) as the service for paying authors. Its fees for international money transfers are very transparent and cheap compared to PayPal, which has very expensive exchange fees.
+
+Please set up a Wise account using [this link](https://wise.com/invite/u/tomh430) if you don't have an account already and set up an account that can receive any currency (affiliate link). Under **Manage > Account > Receiving by email or phone**, activate that your Wise account can be found by email:
+
+{{% image alt="Wise settings" src="images/wise.png" %}}
+
+Make sure that you connect a bank account (not just an UPI account).
+
+Then, all you need to do after an article has been published is to let me know the email address you used for your Wise account and I can transfer the money.
+
+## Payment via PayPal
+
+If Wise is not an option for you, we can use PayPal. PayPal has some hidden fees, however, which might mean that it takes some of the money before it arrives in your account.
+
+After an article is published, let me know your PayPal email address and I'll transfer the money.
 
 {{% author-form %}}

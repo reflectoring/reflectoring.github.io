@@ -1,7 +1,7 @@
 tom:
   name: "Tom Hombergs"
   email: "tom@reflectoring.io"
-  avatar: "/assets/img/authors/tom.jpg"
+  avatar: "/images/tom/tom.png"
   github: "thombergs"
   stackoverflow: "2375843/tom"
   twitter: "TomHombergs"
@@ -9,14 +9,14 @@ tom:
   facebook: "reflectoring"
   rss: "/feed.xml"
   url: /about/
-  bio: "As a professional software engineer, consultant, architect, and general problem solver,
-          I've been practicing the software craft for more than ten years and I'm still learning
+  bio: "As a professional software engineer, consultant, architect, general problem solver,
+          I've been practicing the software craft for more fifteen years and I'm still learning
           something new every day. I love sharing the things I learned, so you (and future me)
-          can get a head start."
+          can get a head start. That's why I founded reflectoring.io."
 mateo:
   name: "Mateo Stjepanović"
   email: "mateostjepanovic@gmail.com"
-  avatar: "/assets/img/authors/mateo.jpg"
+  avatar: "/images/authors/mateo.jpg"
   github: "Mufa0"
   linkedin: "mateo-stjepanović-8a618b169/"
   bio: "Fullstack developer focused on Spring and Angular. I started writing to continue my learning path and give something back to the dev community."
@@ -24,28 +24,28 @@ mateo:
 pratikdas:
   name: "Pratik Das"
   email: "pratikd2000@gmail.com"
-  avatar: "/assets/img/authors/pratikdas.jpg"
+  avatar: "/images/authors/pratikdas.jpg"
   github: "pratikdas"
   twitter: "pratikd2020"
   linkedin: "pratik-das-80345114/"
-  bio: "Professional Software Engineer and Architect currently focussed on Cloud Architecture, serverless technologies, and Microservices."
+  bio: "Software Engineer, Consultant and Architect with current expertise in Enterprise and Cloud Architecture, serverless technologies, Microservices, and Devops."
 
 matthias:
   name: "Matthias Balke"
   email: "matthias.balke@googlemail.com"
-  avatar: "/assets/img/authors/matthias.png"
+  avatar: "/images/authors/matthias.png"
   github: "matthiasbalke"
 
 rudi:
   name: "Rudi Klassen"
   email: "rudolfklassen2@gmail.com"
-  avatar: "/assets/img/authors/rudi.png"
+  avatar: "/images/authors/rudi.png"
   github: "RudiKlassen"
 
 artur:
   name: "Artur Kuksin"
   email: "arthur.kuksin@gmail.com"
-  avatar: "/assets/img/authors/artur.png"
+  avatar: "/images/authors/artur.png"
   github: "arkuksin"
   bio: "With many years of experience in software development I am always looking to learn new
   things. I like coding and exchanging knowledge."
@@ -53,13 +53,13 @@ artur:
 david:
   name: "David Klassen"
   email: "daviddd.kl@gmail.com"
-  avatar: "/assets/img/authors/david.png"
+  avatar: "/images/authors/david.png"
   github: "daklassen"
 
 vasudha:
   name: "Vasudha Venkatesan"
   email: "vasudha.govi@gmail.com"
-  avatar: "/assets/img/authors/vasudha.jpg"
+  avatar: "/images/authors/vasudha.jpg"
   github: "vasudhavenkatesan"
   bio: "A budding software engineer curious to learn new things and open to innovative ideas."
   twitter: "v_a_s_u_d_h_a"
@@ -68,14 +68,14 @@ vasudha:
 petros:
   name: "Petros Stergioulas"
   email: "petros.stergioulas94@gmail.com"
-  avatar: "/assets/img/authors/petros.jpg"
+  avatar: "/images/authors/petros.jpg"
   github: "Petros0"
   linkedin: "petrostergioulas"
 
 nandan:
   name: "Nandan BN"
   email: "its.nandanbn@gmail.com"
-  avatar: "/assets/img/authors/nandan.jpg"
+  avatar: "/images/authors/nandan.jpg"
   github: "itsLucario"
   twitter: "ItsNandanDev"
   linkedin: "nandan-bn"
@@ -84,7 +84,7 @@ nandan:
 petromir:
   name: "Petromir Dzhunev"
   email: "petromir@gmail.com"
-  avatar: "/assets/img/authors/petromir.png"
+  avatar: "/images/authors/petromir.png"
   github: "petromir"
   twitter: "dzhunev"
   linkedin: "pdzhunev"
@@ -95,13 +95,13 @@ petromir:
 mukul:
   name: "Mukul Sharma"
   email: "mukul571995@gmail.com"
-  avatar: "/assets/img/authors/mukul.png"
+  avatar: "/images/authors/mukul.png"
   github: "mukul-s"
 
 leventov:
   name: "Roman Leventov"
   email: "leventov.ru@gmail.com"
-  avatar: "/assets/img/authors/leventov.png"
+  avatar: "/images/authors/leventov.png"
   github: "leventov"
   twitter: "leventov"
   rss: "https://engineeringideas.substack.com/feed"
@@ -114,7 +114,7 @@ leventov:
 prabhakar:
   name: "Prabhakar Digumarthi"
   email: "prabhakar.digumarthi@gmail.com"
-  avatar: "/assets/img/authors/prabhakar.jpg"
+  avatar: "/images/authors/prabhakar.jpg"
   github: "prabhakar349"
   twitter: "Pdigumarthi1"
   linkedin: "pdigumarthi"
@@ -125,7 +125,7 @@ prabhakar:
 yavuztas:
   name: "Yavuz Tas"
   email: "hi@yavuztas.dev"
-  avatar: "/assets/img/authors/yavuztas.jpg"
+  avatar: "/images/authors/yavuztas.jpg"
   github: "yavuztas"
   stackoverflow: "7794994/yavuz-tas"
   twitter: "YavuzSlmTas"
@@ -138,7 +138,7 @@ yavuztas:
 saajan:
   name: "Saajan Nagendra"
   email: "saajan.n@gmail.com"
-  avatar: "/assets/img/authors/saajan.png"
+  avatar: "/images/authors/saajan.png"
   github: "saajn"
   bio: "Saajan is an architect with deep experience building systems in several business domains. With a clean and minimalist approach to design, he is
   passionate about code - the aesthetics of it and creating maintainable and flexible solutions. He enjoys both sharing with and learning from others."
@@ -146,7 +146,7 @@ saajan:
 mmr:
   name: "Murtuza Ranapurwala"
   email: "mranapurwala56@gmail.com"
-  avatar: "/assets/img/authors/mmr.jpg"
+  avatar: "/images/authors/mmr.jpg"
   github: "murtuza-ranapur"
   linkedin: "murtuza-ranapurwala-4b309315b"
   bio: "Murtuza is a software engineer who is always on the outlook to find new ways to code."
@@ -154,28 +154,28 @@ mmr:
 seema:
   name: "Seema Richard"
   email: "seema.richard@gmail.com"
-  avatar: "/assets/img/authors/seema.jpg"
+  avatar: "/images/authors/seema.jpg"
   github: "susetech"
   bio: "Seema Richard is a Technical Architect with rich experience in Java-based enterprise applications. She is passionate about coding and authoring. She believes that teaching is the best way to learn."
 
 mujtaba:
   name: "Mujtaba Mehdi"
   email: "13besemmehdi@seecs.edu.pk"
-  avatar: "/assets/img/authors/Mujtaba.jpg"
+  avatar: "/images/authors/Mujtaba.jpg"
   github: "mujjazi"
   bio: "Mujtaba is an Automation developer with a diverse range of experience working with Java Spring based projects. He is an advocate for DevOps and Test Automation while writing for various blogs to help young professionals"
 
 godeortela:
   name: "Ortela Gode"
   email: "godeortela@gmail.com"
-  avatar: "/assets/img/authors/ortela.jpg"
+  avatar: "/images/authors/ortela.jpg"
   github: "ortelagode"
   bio: "Enthusiastic Software Consultant with diverse experience in Java Enterprise applications. Always on the lookout to experiment new technologies"
 
 skempken:
   name: "Sebastian Kempken"
   email: "contact@sebastian-kempken.de"
-  avatar: "/assets/img/authors/skempken.jpg"
+  avatar: "/images/authors/skempken.jpg"
   github: "skempken"
   stackoverflow: "1163345/skempken"
   twitter: "sebkempken"
@@ -184,7 +184,7 @@ skempken:
 hoorvash:
   name: "Hoorvash Nikoo"
   email: "hoorvash.nikoo@gmail.com"
-  avatar: "/assets/img/authors/hoorvash.jpg"
+  avatar: "/images/authors/hoorvash.jpg"
   github: "hoorvash"
   linkedin: "hoorvashnikoo"
   bio: "As a software engineer and a Java developer, I love to learn new technologies and solve
@@ -194,14 +194,14 @@ hoorvash:
 jgoerner:
   name: "Joshua Görner"
   email: "joshua.goerner@gmail.com"
-  avatar: "/assets/img/authors/jgoerner.jpg"
+  avatar: "/images/authors/jgoerner.jpg"
   github: "jgoerner"
   bio: "Product Engineer, Online Instructor, Open Source Enthusiast and Father :-)"
 
 zeddysoft:
   name: "Taiwo Azeez"
   email: "azeeztaiwo942@gmail.com"
-  avatar: "/assets/img/authors/azeez.jpg"
+  avatar: "/images/authors/azeez.jpg"
   github: "zeddysoft"
   linkedin: "azeeztaiwo"
   twitter: "zeddysoft"
@@ -211,7 +211,7 @@ zeddysoft:
 lleuenberger:
   name: "Lukas Leuenberger"
   email: "lukas.leuenberger@hotmail.com"
-  avatar: "/assets/img/authors/lleuenberger.png"
+  avatar: "/images/authors/lleuenberger.png"
   github: "silenum"
   linkedin: "lukas-leuenberger-a76924194"
   bio: "I am a professional Software Engineer and part time student from Zurich. I like the everyday challenge to solve
@@ -221,7 +221,7 @@ lleuenberger:
 bakic:
   name: "Abdelbaki BEN ELHAJ SLIMENE"
   email: "belhaj.abdelbaki@gmail.com"
-  avatar: "/assets/img/authors/baki.jpg"
+  avatar: "/images/authors/baki.jpg"
   github: "bakic"
   linkedin: "abdelbaki-ben-elhaj-slimene-b797028"
   bio: "As a software developer, I am looking for new challenges. Being a developer made me a student for life. I enjoy sharing knowledge and learn from the others."
@@ -229,7 +229,7 @@ bakic:
 pimterry:
   name: "Tim Perry"
   email: "tim@httptoolkit.tech"
-  avatar: "/assets/img/authors/tim.jpg"
+  avatar: "/images/authors/tim.jpg"
   github: "pimterry"
   twitter: "pimterry"
   bio: "The developer behind <a href=\"https://httptoolkit.tech/java/\">HTTP Toolkit</a>: Beautiful & open-source tools to debug, test and develop with HTTP(S)."
@@ -237,7 +237,7 @@ pimterry:
 naveen:
   name: "Naveen Kumar Kanagaraj"
   email: "cbenaveen@gmail.com"
-  avatar: "/assets/img/authors/naveen.jpeg"
+  avatar: "/images/authors/naveen.jpeg"
   github: "https://github.com/cbenaveen"
   twitter: "CbenaveenK"
   linkedin: "https://www.linkedin.com/in/cbenaveen/"
@@ -245,10 +245,77 @@ naveen:
 
 jcregg:
   name: "Jessica Cregg"
-  avatar: "/assets/img/authors/jcregg.jpg"
+  avatar: "/images/authors/jcregg.jpg"
   bio: "Jessica is a Developer Advocate at <a href=\"https://launchdarkly.com\">LaunchDarkly</a> where she speaks about change and writes about the human implications of engineering decisions. She also writes for a selection of tech publications and works with Coding Black Females to improve equal and equitable representation within the technology industry."
 
 heidi:
   name: "Heidi Waterhouse"
-  avatar: "/assets/img/authors/heidi.png"
+  avatar: "/images/authors/heidi.png"
   bio: "Heidi is a Principal Developer Advocate. She is working in the intersection of risk, usability, and happy deployments. Her passions include documentation, clear concepts, and skirts with pockets."
+
+syedaf:
+  name: "Arshad Syed"
+  email: "syedaf786@gmail.com"
+  avatar: "/images/authors/syedaf.png"
+  github: "syedaf"
+  linkedin: "https://www.linkedin.com/in/arshad-syed-798623184/"
+  bio: "As a software developer I am always interested in learning new technologies. I am currently working on improving my full stack skills, and also on teaching technology."
+
+saikat:
+  name: "Saikat Sengupta"
+  avatar: "/images/authors/saikat.jpeg"
+  github: "s4ik4t"
+  stackoverflow: "1594823/saikat"
+  bio: "Software engineer, coffee lover, continuous learner, opensource contributor"
+  twitter: "s4ik4t"
+  linkedin: "saikatsengupta"
+
+cercenazi:
+  name: "Abdulcelil Cercenazi"
+  avatar: "/images/authors/celil.jpg"
+  github: "Jarjanazy"
+  stackoverflow: "12036956/jalil-jarjanazy"
+  bio: "Software developer and craftsman. Loves working with Java | Spring | Docker. Always looking for new adventures"
+  twitter: "cercenazi"
+  linkedin": "abedeljalil-jarjanazy"
+
+nukajbl:
+  name: "Bledi Nukaj"
+  avatar: "/images/authors/bledi.jpeg"
+  github: "bledi1985"
+  bio: "Bledi is a senior software Engineer and Architect, specialized in Java and Spring to deliver high-quality Enterprise applications, on-premise or cloud.
+   Experienced and keenly interested in the field of Cloud Architecture."
+  linkedin: "https://www.linkedin.com/in/bledinukaj/"
+
+robert:
+  name: "Robert Dey"
+  email: "robdey88@gmail.com"
+  avatar: "/images/authors/robert.jpg"
+  github: "RobYed"
+  linkedin: "robdey"
+  bio: "I love building successful products as a full-stack developer and software architect. Mostly I work with JavaScript and everything related to it."
+
+arpendu:
+  name: "Arpendu Kumar Garai"
+  email: "arpendug3@gmail.com"
+  avatar: "/images/authors/arpendu.jpg"
+  github: "arpendu11"
+  linkedin: "arpendu-kumar-garai-61609a9b"
+  bio: "I am a full-Stack developer with deep knowledge in Java, Microservices, Cloud Computing, Big Data, MERN, Javascript, Golang, and its relative frameworks. Besides coding and programming, I am a big foodie, love cooking, and love to travel."
+
+ranjani:
+  name: "Ranjani Harish"
+  email: "ranjani.harish12@gmail.com"
+  avatar: "/images/authors/ranjani.jpg"
+  github: "ranjanih"
+  linkedin: "https://www.linkedin.com/in/ranjaniharish/"
+  bio: "Fun-loving, curious and enthusiastic IT developer who believes in constant learning."
+
+ajibade:
+  name: "Oaoluwa Ajibade"
+  email: "holaszyd1@gmail.com"
+  avatar: "/images/authors/ajibade.png"
+  github: "ajibade3210"
+  linkedin: "https://www.linkedin.com/in/olaoluwa-ajibade/"
+  bio: "Backend developer who loves to create incredible apps."
+

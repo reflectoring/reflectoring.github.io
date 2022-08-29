@@ -76,6 +76,7 @@ h3 {
 }
 
 .notice {
+  clear: both; // to avoid spilling into the table of contents
   padding: 20px;
   h4 {
     margin-top: 0;
@@ -138,11 +139,22 @@ h3 {
   ul {
     font-size: 14px;
     list-style-type: none;
-
+    li {
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
     ul {
       margin-left: 20px;
+      li {
+            padding-top: 5px;
+            padding-bottom: 5px;
+          }
       ul {
         margin-left: 20px;
+      li {
+            padding-top: 5px;
+            padding-bottom: 5px;
+          }
       }
     }
   }
@@ -173,4 +185,8 @@ header {
     width: 100px;
     height: 100px;
   }
+}
+
+img.author {
+  border-radius: 50px;
 }

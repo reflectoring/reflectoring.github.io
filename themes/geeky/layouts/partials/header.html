@@ -2,7 +2,7 @@
   class="header bg-white border-bottom {{if site.Params.navbar_fixed}}sticky-top{{else}} position-relative{{end}}">
   <div class="container">
     <div class="row">
-      <div class="col-12">
+      <div class="col-12 position-relative">
         <nav class="navbar navbar-expand-lg navbar-light p-0">
           <!-- navbar brand/logo -->
           <a class="navbar-brand" href="{{ site.BaseURL | relLangURL }}">
@@ -11,10 +11,10 @@
 
           <!-- buttons -->
           <div class="d-flex d-lg-none">
-            <ul class="list-unstyled search me-3">
+            <ul class="list-unstyled search">
               {{ if site.Params.search }}
               <li class="list-inline-item">
-                <a href="#" class="toggle-search" data-target="#search-wrap"><i class="fas fa-search"></i></a>
+                <a href="#" class="toggle-search search-mobile" data-target="#search-wrap"><i class="fas fa-search"></i></a>
               </li>
               {{ end }}
               <li class="list-inline-item">
@@ -75,7 +75,7 @@
             {{ if site.Params.search }}
             <ul class="list-unstyled search d-none d-lg-block">
               <li class="list-inline-item">
-                <button class="toggle-search" data-target="#search-wrap"><i class="fas fa-search"></i></button>
+                <button class="toggle-search search-desktop" data-target="#search-wrap"><i class="fas fa-search"></i></button>
               </li>
             </ul>
             {{ end }}
@@ -95,11 +95,11 @@
         {{ end }}
 
         <!-- mobile menu -->
-        <div class="side-nav offcanvas offcanvas-end p-4" tabindex="-1" id="offcanvasRight"
+        <div class="side-nav offcanvas offcanvas-end p-3" tabindex="-1" id="offcanvasRight"
           aria-labelledby="offcanvasRightLabel">
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i class="fas fa-times"></i></button>
-          <div class="navbar mt-3 flex-column align-items-start">
-            <ul class="navbar-nav my-4 my-lg-0 me-3 w-100">
+          <!-- <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i class="fas fa-times"></i></button> -->
+          <div class="navbar flex-column align-items-start">
+            <ul class="navbar-nav w-100">
               {{ range site.Menus.main }}
               {{ if .HasChildren }}
               <li class="nav-item dropdown">

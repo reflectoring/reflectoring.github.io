@@ -41,7 +41,7 @@
 }
 
 // blog
-.drop-cap>p:first-child:first-letter {
+.drop-cap > p:first-child:first-letter {
   font-size: 3rem;
   font-weight: 700;
   font-family: $font-secondary;
@@ -104,7 +104,6 @@
 }
 
 .scroll-list {
-
   overflow: auto;
   max-height: 480px;
 
@@ -129,7 +128,6 @@
 }
 
 .blog-card-list {
-
   .card {
     border: 0;
 
@@ -185,10 +183,10 @@
 }
 
 .newsletter-widget {
-
   .smallprint {
     font-size: 12px;
-    font-color: $text-light;
+    color: $text-light;
+    margin-top: 8px;
   }
 
   .form-control {
@@ -253,7 +251,6 @@
   }
 
   .card {
-
     li,
     a {
       color: $text-dark;
@@ -275,7 +272,6 @@
     }
   }
 }
-
 
 /* footer */
 .footer {
@@ -309,7 +305,6 @@
           color: $color-primary;
         }
       }
-
     }
   }
 

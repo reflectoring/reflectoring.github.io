@@ -1,7 +1,7 @@
 {{ with site.Params.ads }}
 
 {{ if fileExists (add `assets/` .skyscraper_image) }}
-<div class="widget">
+<div class="widget p-0 border-0">
   {{ $image:= resources.Get .skyscraper_image }}
   <a href="{{ .skyscraper_href }}">
   <picture>

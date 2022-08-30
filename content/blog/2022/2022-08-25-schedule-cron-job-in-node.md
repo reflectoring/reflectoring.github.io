@@ -8,7 +8,7 @@ image: images/stock/0031-matrix-1200x628-branded.jpg
 url: schedule-cron-job-in-node
 ---
 
-Have you ever wanted to perform a specific task on your application server at specific times without physically running them yourself? Or you'd rather spend your time on more important tasks than remember to periodically clear or move data from one part of the server to another. Cron Job schedulers can be used to achieve this easily. 
+Have you ever wanted to perform a specific task on your application server at specific times without physically running them yourself? Or you'd rather spend your time on more important tasks than remember to periodically clear or move data from one part of the server to another. Cron Job schedulers can be used to achieve this easily.
 
 Cron job scheduling is a common practice in modern applications; it provides a level of autonomy in our applications. Cron is a [daemon](https://en.wikipedia.org/wiki/Daemon_(computing)), which means that it only needs to be started once, and will 
 lay dormant until it is required. Another example of a deamon is the web server. The web server remains idle until a request for a web page is made. 
@@ -29,7 +29,7 @@ This is a cron expression also known as crontab. This expression is used to spec
 
 The cron expression by default will be in the format `* * * * * *`.
 
-Here's a quick reference to the cron expression, Indicating what each with asterisks represents.
+Here's a quick reference to the cron expression, Indicating what each asterisks represents.
 ```
  # ┌────────────── second (0 - 59) (optional)
  # │ ┌──────────── minute (0 - 59) 
@@ -45,16 +45,16 @@ You can replace each asterisk with an appropriate number (or character) such tha
 
 Cron expression has some special characters like:
 - `*` Asterisk operator this is a wildcard and acts as a placeholder. It means a value or always. Eg. If the asterisk symbol is in the month field, it means performing these specified tasks every month.
-- `,` The comma operator allows you to specify a list of values for repetition. For example, If you have `1, 3, 5` in the `month field`, the task will run on days of `month 1, 3, and 5`.
-- `-` The hyphen operator allows you to specify a range of values. If you have 1-5 in the `Day of the week field`, the task will run every weekday (From Monday to Friday).
-- `/` The slash operator allows you to specify values that will be repeated over a certain interval between them. For example, if you have */4 in the Hour field, It means the action will be performed every 4 hours.
+- `,` The comma operator allows you to specify a list of values for repetition. Eg. If you have `1, 3, 5` in the `month field`, the task will run on days of `month 1, 3, and 5`.
+- `-` The hyphen operator allows you to specify a range of values. Eg. If you have 1-5 in the `Day of the week field`, the task will run every weekday (From Monday to Friday).
+- `/` The slash operator allows you to specify values that will be repeated over a certain interval between them. Eg. if you have */4 in the Hour field, It means the action will be performed every 4 hours.
 
 Each field can have one or more values separated by commas, or a range of values separated by hyphens.
 
-If you're unsure about manually writing cron syntax, you can, use free tools like [Crontab Generator](https://crontab-generator.org/) or [Crontab.guru](https://crontab.guru/#*_*_*_*_*) to generate the exact time date you want for cron expression.
+If you're unsure about manually writing cron syntax, you can, use free tools like [Crontab Generator](https://crontab-generator.org/) or [Crontab.guru](https://crontab.guru/#*_*_*_*_*) to generate the exact time date you want for your cron expression.
 
 ####  The Second Argument (Function)
-This is the function or task executed at intervals when the time specified in your cron expression is reached. 
+This is the function or task executed at intervals, when the time specified in your cron expression is reached.
 
 You can do whatever you want in this function. You can send an email, make a database backup, or download data. This function gets executed when the current system time is the same as the time provided in the first argument. 
 
@@ -122,7 +122,7 @@ app.listen(3000, () => {
   console.log("Application Listening.....");
 });
 ```
-In the code block above we are making a simple console log to the application's terminal.
+In the code block above we are making a simple log to the application's terminal.
 
 Run `node index.js` in the terminal.
 
@@ -247,7 +247,7 @@ app.listen(3000, () => {
 ```
 In the code block above, we are using node.js `fs` module. `fs` enables interaction with the file system allowing us to create a log file. Also, we used the `process` module, which provides information about, the current Node.js process. Here we are calling the `process.heapUsed` method. The `heapUsed` refer to V8's memory usage by our application.
 
-Hence we are recording our application's used memory detail at 15 seconds intervals. 
+Hence we are recording our application's used memory detail at 15 seconds intervals.
 
 Run the script: `node index.js`
 

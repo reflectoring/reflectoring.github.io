@@ -1,6 +1,5 @@
 {{ define "main" }}
 
-
 {{ partial "popup.html" . }}
 
 <!-- checking blog -->
@@ -16,11 +15,10 @@
         <!-- image path -->
         {{ $imagePath:= .Params.image }}
         {{ if $imagePath }}
-        <div class="position-relative">
           <!-- image CDN -->
           {{ if hasPrefix $imagePath "http" }}
           <img loading="eager" decoding="async" src="{{ $imagePath | safeURL }}" alt="{{ .Title }}"
-            class="img-fluid mb-5 w-100 rounded-4">
+            class="img-fluid w-100 rounded-4 mb-4">
           {{ else }}
           <!-- /image cdn -->
 
@@ -37,7 +35,7 @@
             <source srcset="{{ $imageMD.RelPermalink }}" media="(max-width: 767px)">
             <source srcset="{{ $imageLG.RelPermalink }}" media="(max-width: 992px)">
             <source srcset="{{ $imageXL.RelPermalink }}">
-            <img loading="eager" decoding="async" class="img-fluid mb-5 w-100 rounded-4"
+            <img loading="eager" decoding="async" class="img-fluid mb-4 w-100 rounded-4"
               src="{{$imageFallback.RelPermalink}}" alt="{{.Title}}" width="{{$image.Width}}"
               height="{{$image.Height}}">
           </picture>
@@ -46,28 +44,22 @@
           {{ end }}
           <!-- /image processing for multiple device -->
           {{ end }}
-          <ul class="list-inline card-badge">
-            {{ range .Params.categories }}
-            <li class="list-inline-item">
-              <a href="{{`categories/` | relLangURL}}{{. | lower | urlize}}" class="badge badge-primary py-1">{{. | title}}</a>
-            </li>
-            {{ end }}
-          </ul>
-        </div>
-        {{ else }}
-        {{ range .Params.categories }}
-        <a href="{{`categories/` | relLangURL}}{{. | lower | urlize}}" class="badge badge-primary mb-4 d-inline-block">{{. | title}}</a>
         {{ end }}
-        {{ end }}
-        <h1 class="mb-4">{{.Title | markdownify}}</h1>
-        <ul class="list-inline card-meta d-flex align-items-center mb-4">
-          <li class="list-inline-item d-flex align-items-center">
-            <i class="fas fa-user me-2"></i>
-            <a href="/authors/{{ index .Params.authors 0 }}" data-blogtrack-author>{{ $author.name }}</a>
-          </li>
-          <li class="list-inline-item d-flex align-items-center">
+        <h1 class="mb-4 h2">{{.Title | markdownify}}</h1>
+        <ul class="list-inline d-flex align-items-center mb-4">
+          <li class="list-inline-item d-flex align-items-center me-4">
             <i class="fas fa-calendar me-2"></i>
             <span data-blogtrack-date>{{ time.Format ":date_long" .PublishDate }}</span>
+          </li>
+          <li class="list-inline-item d-flex align-items-center">
+            <i class="fas fa-archive me-2"></i>
+            <ul class="list-inline">
+              {{ range .Params.categories }}
+              <li class="list-inline-item">
+                <a href="{{`categories/` | relLangURL}}{{. | lower | urlize}}" class="text-default">{{. | title}}</a>
+              </li>
+              {{ end }}
+            </ul>
           </li>
         </ul>
 

@@ -41,7 +41,7 @@
 }
 
 // blog
-.drop-cap>p:first-child:first-letter {
+.drop-cap > p:first-child:first-letter {
   font-size: 3rem;
   font-weight: 700;
   font-family: $font-secondary;
@@ -104,7 +104,6 @@
 }
 
 .scroll-list {
-
   overflow: auto;
   max-height: 480px;
 
@@ -129,7 +128,6 @@
 }
 
 .blog-card-list {
-
   .card {
     border: 0;
 
@@ -185,7 +183,6 @@
 }
 
 .newsletter-widget {
-
   .smallprint {
     font-size: 12px;
     font-color: $text-light;
@@ -253,7 +250,6 @@
   }
 
   .card {
-
     li,
     a {
       color: $text-dark;
@@ -275,7 +271,6 @@
     }
   }
 }
-
 
 /* footer */
 .footer {
@@ -309,7 +304,6 @@
           color: $color-primary;
         }
       }
-
     }
   }
 
@@ -319,5 +313,14 @@
 
   .copyright a {
     color: $color-primary;
+  }
+}
+
+.post-author {
+  @include mobile {
+    height: 150px;
+    width: 150px;
+    object-fit: cover;
+    margin-bottom: 20px;
   }
 }

@@ -4,7 +4,7 @@ categories: ["Node"]
 date: 2022-08-21 00:00:00 +1100 
 modified: 2022-08-21 00:00:00 +1100
 authors: [arpendu]
-excerpt: "A simple article to understand various use-cases of Feature flags that can be achieved with LaunchDarkly in React UI."
+excerpt: "A simple article to understand various use cases of Feature flags that can be achieved with LaunchDarkly in React UI."
 image: images/stock/0104-on-off-1200x628-branded.jpg
 url: nodejs-feature-flag-launchdarkly-react
 ---
@@ -19,7 +19,7 @@ The whole purpose is to check if we can have wide-scale acceptance for a new fea
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/nodejs-react-feature-flag-launchdarkly" %}}
 
-## Use-Cases of Feature Flags in Web UI
+## Use Cases of Feature Flags in Web UI
 
 Feature flags or feature management is commonly used in web UI to perform the following operations:
 
@@ -28,7 +28,7 @@ Feature flags or feature management is commonly used in web UI to perform the fo
 - Minimize the risk of a release by first releasing something like a beta version to a limited group of users.
 - Test various kinds of user acceptance.
 
-Some of the most common use-cases where we can use feature flags are:
+Some of the most common use cases where we can use feature flags are:
 
 - **Progressive Delivery** - It is a practice that gives businesses the ability to decide when and how to roll out new software features. Feature flag management and deployment tactics like blue-green and canary deployments are built upon in this method. Progressive delivery, in the end, blends software development and delivery processes and enables businesses to deliver with control.
 - **Beta Testing and Qualitative Feedback** - Before deploying a feature to the full user base, feature flags are a wonderful way to test it with a beta tester group, gather user feedback, and assess performance. Before the product is ready for prime time, developers must seek consumer feedback on performance, usability, and functionality in this area of progressive delivery. We can target particular individuals or groups using the granular control provided by feature flags to collect their opinion on the experience.
@@ -50,15 +50,27 @@ The various types of flags that could be used in a system are demonstrated by th
 
 ## Introducing LaunchDarkly and its Features
 
-[LaunchDarkly](https://launchdarkly.com/) is a SaaS application that allows developers to control feature flags. It enables developers to test their code live in production, gradually roll out features to groups of users, and manage flags over a flag's full lifecycle by separating feature rollout and code deployment. This makes it safer for developers to deliver superior software.
+[LaunchDarkly](https://launchdarkly.com/) is a feature management service that takes care of all the feature flagging concepts. The name is derived from the concept of a *“dark launch”*, which deploys a feature in a deactivated state and activates it when the time is right.
 
 {{% image alt="LaunchDarkly Internal" src="images/posts/feature-flag-tools/launchdarkly.png" %}}
 
-It is essentially a cloud-based service that offers a UI for managing all feature flags. We must define one or more **variations** for each flag. Boolean, arbitrary numbers, textual values, or JSON snippets are all acceptable variations.
+LaunchDarkly is a cloud-based service and provides a UI to manage everything about our feature flags. For each flag, we need to define one or more **variations**. The variation can be a *boolean*, an arbitrary *number*, a *string* value, or a *JSON* snippet.
 
-To specify which variation a feature flag will show to its user, we can set **targeting rules**. A targeting rule for a feature flag is inactive by default. The most straightforward targeting criterion is "display variation X to all users." Show variation A for all users with attribute X, variation B for all users with attribute Y, and variation C for all other users is a more intricate targeting rule.
+We can define **targeting rules** to define which variation a feature flag will show to its user. By default, a targeting rule for a feature flag is deactivated. The simplest targeting rule is *“show variation X for all users”*. A more complex targeting rule is *“show variation A for all users with attribute X, variation B for all users with attribute Y, and variation C for all other users”*.
 
-Instead of a polling design, LaunchDarkly makes use of a [streaming architecture](https://launchdarkly.com/blog/launchdarklys-evolution-from-polling-to-streaming/). From a scalability point of view, this architecture is beneficial so that our application doesn't have to make a network call each time we need to analyze or fetch a feature flag. Furthermore, feature flag evaluation will continue to function even if the LaunchDarkly server has stopped responding to our calls, which is beneficial for resilience.
+We can use the LaunchDarkly SDK in our code to access the feature flag variations. It provides a persistent connection to [LaunchDarkly's streaming infrastructure](https://launchdarkly.com/how-it-works/) to receive server-sent-events (SSE) whenever there is a change in a feature flag. If the connection fails for some reason, it falls back to default values.
+
+## Differences Between Client-side and Server-side SDKs
+
+In the previous [article](https://reflectoring.io/nodejs-admin-feature-flag-launchdarkly/), we had used *server-side SDK* which is used keeping in mind environments that are being used by multi-user. These SDKs are designed to be used in a secure environment, such as web server. But in this article, we will use *client-side SDK* which includes mobile SDK as well. Client-side SDKs are intended to be used for desktop, mobile, and embedded applications that would have only one user. These SDKs are designed to be used in system that may be less secure.
+
+Server-side SDKs work with applications that have a server architecture and are hosted on your own network or a reliable cloud network. These SDKs can safely receive flag data and rulesets without needing to filter out sensitive data because server-based applications have restricted access.
+
+On the other hand, when a flag evaluation is required, client-side SDKs assign the flag evaluation to LaunchDarkly on behalf of the particular user, and then the services are in charge of determining whether the flag rules apply to the user or not. LaunchDarkly then notifies the SDK of the evaluation results via the SDK's streaming or polling connections.
+
+Client-side SDKs will be unable to download and store an entire ruleset due to security concerns. They are vulnerable to users investigating SDK content by unpacking the SDK on a mobile device or examining its behavior in a browser because they typically run on customers' own devices. The client-side SDKs confirm and update flag rules by contacting LaunchDarkly servers via streaming connections or REST API requests rather than storing potentially sensitive data.
+
+For a client-side or mobile SDK to evaluate our feature flags, we must expose them if we are using one of those SDKs. According to the [documentation](https://docs.launchdarkly.com/home/getting-started/feature-flags#making-flags-available-to-client-side-and-mobile-sdks), we need to enable the *"SDKs using Client-side ID"* option for React UI or any Javascript UI. We will therefore retrieve the *Client-Side ID* in this instance from the LaunchDarkly Projects page and define it in the code. Additionally, we need to confirm that the flag's targeting option is turned on after creating the flag.
 
 ## Create a Simple React App
 
@@ -100,38 +112,61 @@ npm install launchdarkly-js-client-sdk
 
 
 
-## String-based Feature Flag to Hide/Display Content on the Fly
+## Enable/Disable a Feature on the Fly
 
-In our first use-case, let’s try to simply define a string feature flag in LaunchDarkly UI. We will simply list some users in the React UI. If any of the users matches the user name defined in the feature flag variation, then we will encrypt that user name in the UI. It would be pretty simple but enough to understand how we can enable/disable a feature in web UI.
+In our first use case, let’s try to simply define a string feature flag in LaunchDarkly UI. We will simply define a feature button in UI and show it based upon the user whether that matches the one set in our Launchdarkly UI. It would be pretty simple but enough to understand how we can enable/disable a feature in web UI.
 
 The feature flag defined in LaunchDarkly UI would look something like this:
 
 {{% image alt="String Feature Flag LaunchDarkly" src="images/posts/nodejs-frontend-launchdarkly/Hide_User.png" %}}
 
-By default, flags are only available to server-side SDKs. When we create a flag, we can choose to expose the flag to SDKs which use client-side IDs, SDKs which use mobile keys, or both. If we are using a client-side or mobile SDK, we must expose our feature flags in order for the client-side or mobile SDKs to evaluate them. As per the [documentation](https://docs.launchdarkly.com/home/getting-started/feature-flags#making-flags-available-to-client-side-and-mobile-sdks), in case of React UI or any Javascript UI, we need to enable *“SDKs using Client-side ID”* option. So in this case, we will fetch the *Client-Side ID* from LaunchDarkly Projects page and define it as part of the code. We should also make sure that the targeting option is enabled for the flag.
+As discussed above, we will fetch the *Client-Side ID* and add it in the code.
 
 {{% image alt="LaunchDarkly Keys" src="images/posts/nodejs-frontend-launchdarkly/LaunchDarkly_Keys.png" %}}
 
-Next we will update our `App.js` to fetch the feature flag variations from LaunchDarkly and display the list of users. 
+Next we will update our `App.js` to fetch the feature flag variations from LaunchDarkly and display that button: 
 
 ```javascript
 import React, { Component } from 'react';
+import styled from "styled-components";
 import './App.css';
 import * as LDClient from 'launchdarkly-js-client-sdk';
+
+const theme = {
+  blue: {
+    default: "#3f51b5",
+    hover: "#283593"
+  }
+};
+
+const Button = styled.button`
+    background-color: ${(props) => theme[props.theme].default};
+    color: white;
+    padding: 5px 15px;
+    border-radius: 5px;
+    outline: 0;
+    text-transform: uppercase;
+    margin: 10px 0px;
+    cursor: pointer;
+    box-shadow: 0px 2px 2px lightgray;
+    transition: ease background-color 250ms;
+    &:hover {
+      background-color: ${(props) => theme[props.theme].hover};
+    }
+    &:disabled {
+      cursor: default;
+      opacity: 0.7;
+    }
+  `;
+
+const clickMe = () => {
+  alert("You clicked me!");
+};
 
 class App extends Component {
   constructor() {
     super()
-    this.state = {
-      selectedSortOrder: null,
-      users: [
-        { name: 'John Doe', added: new Date('2022-7-27') },
-        { name: 'Allen Witt', added: new Date('2022-6-30') },
-        { name: 'Cheryl Strong', added: new Date('2022-7-02') },
-        { name: 'Marty Byrde', added: new Date('2022-5-03') },
-        { name: 'Wendy Byrde', added: new Date('2022-6-03') },
-      ]
-    }
+    this.state = {}
   }
   componentDidMount() {
     const user = {
@@ -139,7 +174,7 @@ class App extends Component {
       key: 'user_a'
     }
     // SDK requires Client-side ID for UI call
-    this.ldclient = LDClient.initialize('62e9289ade464c10d842c2b3', user);
+    this.ldclient = LDClient.initialize('62e*********************', user);
     this.ldclient.on('ready', this.onLaunchDarklyUpdated.bind(this));
     this.ldclient.on('change', this.onLaunchDarklyUpdated.bind(this));
   }
@@ -154,17 +189,13 @@ class App extends Component {
     if (!this.state.featureFlags) {
       return <div className="App">Loading....</div>
     }
-    
     return (
       <div className="App">
-        <div style ={{ fontWeight: 'bold' }}><h1>Users List</h1></div>
-        <ul>
-          {this.state.users.map(user =>
-             <div>{ this.state.featureFlags.hideUser === 'John Doe'
-              && user.name === 'John Doe' ? '*********' : user.name }</div>
-          )}
-        </ul>
-      </div>
+        <div>{ 
+            this.state.featureFlags.hideUser !== 'John Doe'
+              ? <Button theme='blue' onClick={clickMe}>Shiny New Feature</Button>
+              : '' }
+        </div>
     );
   }
 }
@@ -188,11 +219,9 @@ npm start
 
 When the user is not set in the LaunchDarkly UI, our React UI looks like below:
 
-{{% image alt="React User List" src="images/posts/nodejs-frontend-launchdarkly/React_User_List_simple.png" %}}
+{{% image alt="React User List" src="images/posts/nodejs-frontend-launchdarkly/Button.png" %}}
 
-Now we will define “John Doe” as name in LaunchDarkly feature flag variation. Once that is saved, our UI will immediately render the user as encrypted in our list.
-
-{{% image alt="React User List Encrypted" src="images/posts/nodejs-frontend-launchdarkly/React_User_list_encrypted.png" %}}
+Now we will define “John Doe” as name in LaunchDarkly feature flag variation. Once that is saved, our UI will hide this button. In a real production implementation, this name will be fetched from the logged-in session of the user and matched in Launchdarkly with its ID or username.
 
 ## Sorting of Data using Flags
 
@@ -229,7 +258,7 @@ class App extends Component {
       key: 'user_a'
     }
     // SDK requires Client-side ID for UI call
-    this.ldclient = LDClient.initialize('62e9289ade464c10d842c2b3', user);
+    this.ldclient = LDClient.initialize('62e*********************', user);
     this.ldclient.on('ready', this.onLaunchDarklyUpdated.bind(this));
     this.ldclient.on('change', this.onLaunchDarklyUpdated.bind(this));
   }
@@ -247,7 +276,6 @@ class App extends Component {
     }
 
     let sorter;
-    console.log('Checking the environment variables: ', this.state.featureFlags);
     if (this.state.selectedSortOrder) {
       if (this.state.selectedSortOrder === 'added') {
         sorter = isNewer
@@ -272,8 +300,7 @@ class App extends Component {
           onClick={() => this.setState({ selectedSortOrder: 'added' })}>Time sorting</div>
         <ul>
           {this.state.users.slice().sort(sorter).map(user =>
-             <div>{ this.state.featureFlags.hideUser === 'John Doe'
-              && user.name === 'John Doe' ? '*********' : user.name }</div>
+             <div>{ user.name }</div>
           )}
         </ul>
       </div>
@@ -296,9 +323,9 @@ Now our UI looks something like below:
 
 ## Conclusion
 
-As you can see, LaunchDarkly is a rather potent cloud service on its own and enables us to dynamically alter the application's runtime behavior. Additionally, we can introduce or remove additional functionalities as needed. By doing so, we may improve performance and eliminate various reliance on layers connected to databases.
+As you can see, feature flags enable us to dynamically alter the application's runtime behavior. Additionally, we can introduce or remove additional functionalities as per requirement. By doing so, we may improve performance and eliminate various reliance on layers connected to databases.
 
-A comprehensive feature management platform, LaunchDarkly supports a wide range of programming languages. Without affecting overall speed, it scales to virtually an infinite number of feature flags and enables us to build flexible targeting criteria. This might be a very helpful solution for businesses that need to manage many codebases using different programming languages.
+A comprehensive feature management platform like LaunchDarkly, as we saw in this article supports a wide range of programming languages. Without affecting overall speed, it scales to virtually an infinite number of feature flags and enables us to build flexible targeting criteria. This might be a very helpful solution for businesses that need to manage many codebases using different programming languages.
 
 Feature flags are frequently viewed as either an engineering tool or product manager tool. The truth is that it's both. Flags can assist product managers in better control releases, coordinating launch times, and building a feedback loop more effectively. They can also help software development and DevOps teams reduce overhead and boost velocity.
 

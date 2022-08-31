@@ -11,12 +11,14 @@ url: schedule-cron-job-in-node
 Have you ever wanted to perform a specific task on your application server at specific times without physically running them yourself? Or you'd rather spend your time on more important tasks than remember to periodically clear or move data from one part of the server to another. Cron Job schedulers can be used to achieve this easily.
 
 Cron job scheduling is a common practice in modern applications; it provides a level of autonomy in our applications. Cron is a [daemon](https://en.wikipedia.org/wiki/Daemon_(computing)), which means that it only needs to be started once, and will 
-lay dormant until it is required. Another example of a deamon is the web server. The web server remains idle until a request for a web page is made. 
+lay dormant until it is required. Another example of a deamon is the web server. The web server remains idle until a request for a web page is made.
 
 ## Using Node Cron in Node.Js
 In this article, we'll use the [node-cron](https://www.npmjs.com/package/node-cron) library to schedule cron jobs in node.js and build several demo applications. Node-cron is a node module that is made available by npm.
 
 To schedule jobs using `node-cron`, you need to invoke the cron `.schedule` method.
+
+Now let's look at how to use the node-cron `.schedule` method and it's syntax:  
 
 ### Cron Schedule Method Syntax
 ```
@@ -24,8 +26,8 @@ cron.schedule(expression , function, options);
 ```
 As shown above, the cron `.schedule` method takes in three arguments where :
 
-#### The First Argument (Expression)
-This is a cron expression also known as crontab. This expression is used to specify when a cron job is to be executed. The cron expression used here can be represented using Asterix (*),  which are wildcard characters representing the scheduled time for cron jobs. 
+#### Cron Expression
+This is the first argument of the cron `.schedule` method, it is also known as crontab. This expression is used to specify when a cron job is to be executed. The cron expression used here can be represented using Asterix (*),  which are wildcard characters representing the scheduled time for cron jobs.
 
 The cron expression by default will be in the format `* * * * * *`.
 
@@ -53,15 +55,15 @@ Each field can have one or more values separated by commas, or a range of values
 
 If you're unsure about manually writing cron syntax, you can, use free tools like [Crontab Generator](https://crontab-generator.org/) or [Crontab.guru](https://crontab.guru/#*_*_*_*_*) to generate the exact time date you want for your cron expression.
 
-####  The Second Argument (Function)
-This is the function or task executed at intervals, when the time specified in your cron expression is reached.
+#### Cron Function
+This is the second argument of the cron `.schedule` method. It is a function or task executed at intervals, when the time specified in your cron expression is reached.
 
-You can do whatever you want in this function. You can send an email, make a database backup, or download data. This function gets executed when the current system time is the same as the time provided in the first argument. 
+You can do whatever you want in this function. You can send an email, make a database backup, or download data. This function gets executed when the current system time is the same as the time provided in the first argument.
 
-#### The Third Argument (Options)
-This is for adding additional options to your scheduled jobs. It Is a configuration object, This argument is optional.
+#### Cron Options
+The cron options this is the third argument of the  cron `.schedule` method, this argument is optional. It is used to add additional options to our scheduled jobs. Cron Options are configuration object.
 
-Here is an example of what the third argument looks like.
+Here is an example of what cron options object looks like.
 ```javascript
 {
    scheduled: false,
@@ -119,7 +121,7 @@ cron.schedule("*/15 * * * * *", function () {
 });
 
 app.listen(3000, () => {
-  console.log("Application Listening.....");
+  console.log("application listening.....");
 });
 ```
 In the code block above we are making a simple log to the application's terminal.
@@ -128,7 +130,7 @@ Run `node index.js` in the terminal.
 
 `output`
 ```
-Application Listening.....
+application listening.....
 ---------------------
 running a task every 15 second
 ```
@@ -158,7 +160,7 @@ const cron = require("node-cron");
 const nodemailer = require("nodemailer");
 app = express();
 
-//Send email after 1 minute
+//send email after 1 minute
 cron.schedule("1 * * * *", function () {
   mailService();
 });
@@ -173,7 +175,7 @@ function mailService() {
     },
   });
 
-  // Setting credentials
+  // setting credentials
   let mailDetails = {
     from: "<your-email>@gmail.com",
     to: "<user-email>@gmail.com",
@@ -181,19 +183,19 @@ function mailService() {
     text: "Node.js Cron Job Email Demo Test from Reflectoring Blog",
   };
 
-  // Sending Email
+  // sending email
   mailTransporter.sendMail(mailDetails, function (err, data) {
     if (err) {
-      console.log("Error Occured", err.message);
+      console.log("error occured", err.message);
     } else {
       console.log("---------------------");
-      console.log("Email sent successfully");
+      console.log("email sent successfully");
     }
   });
 }
 
 app.listen(3000, () => {
-  console.log("Application Listening.....");
+  console.log("application listening.....");
 });
 
 ```
@@ -205,64 +207,63 @@ Run the script `node index.js`
 
 `output:`
 ```
-Application Listening.....
+application listening.....
 ---------------------
-Email Sent Successfully
+email sent successfully
 ```
 Check your inbox to confirm the email is sent.
 
-### 3. Writing to a Log File
-Cron jobs can be used to schedule logging tasks in a system. Let's say something happened, like a network delay or a warning message. To track server status, we can keep a log for a specific period of time.
+### 3. Monitoring Server Resources Over Time
+Cron jobs can be used to schedule logging tasks and monitor server resources in our node.js applications. Let's say something happened, like a network delay or a warning message. We can schedule a cron job to log at a specific time or interval to track our server status, this can act as an automatic monitor over time.
 
-In this example, we will be making use of some `node.js` inbuilt modules to get information about the current processes or runtime of our `node.js` program:
+In this section, we will log the application's server resources in `csv` format, this makes our logged data more machine-readable. The generated `.csv` file can be imported into a spreadsheet to create graphs for more advanced use cases.
 
-Insert this code in the `index.js` file to generate the application log file at our scheduled time:
-
+Insert the following code into the `index.js` file to generate the `.csv` file at the scheduled time:
 ```javascript
 const process = require("process");
 const fs = require("fs");
+const os = require("os");
 const cron = require("node-cron");
 const express = require("express");
 
 app = express();
 
-// Setting a cron job for every 15 seconds
+// setting a cron job for every 15 seconds
 cron.schedule("*/15 * * * * *", function () {
   let heap = process.memoryUsage().heapUsed / 1000000;
+  let data = new Date().toISOString();
+  const freeMemory = Math.round((os.freemem() * 100) / os.totalmem()) + "%";
 
-  let data = `Memory usage by heapUsed ${heap}MB
-  ${new Date().toUTCString()}
-               : Server is working\n`;
+  //                 date | heap used | free memory
+  let csv = `${dataa}, ${heap}, ${freeMemory}\n`;
 
-  // storing data to log
-  fs.appendFile("logstatus.txt", data, function (err) {
+  // storing log In .csv file
+  fs.appendFile("demo.csv", csv, function (err) {
     if (err) throw err;
-    console.log("Status Logged!");
+    console.log("server details logged!");
   });
 });
 
 app.listen(3000, () => {
-  console.log("Application Listening.....");
+  console.log("application listening.....");
 });
 ```
-In the code block above, we are using node.js `fs` module. `fs` enables interaction with the file system allowing us to create a log file. Also, we used the `process` module, which provides information about, the current Node.js process. Here we are calling the `process.heapUsed` method. The `heapUsed` refer to V8's memory usage by our application.
+In the code block above, we are using the node.js `fs` module. `fs` enables interaction with the file system allowing us to create a log file, and the `OS` module gives access to the application's Operating System (OS) and the `process` module, provides details about, the current Node.js process. 
 
-Hence we are recording our application's used memory detail at 15 seconds intervals.
+We are using the method  `process.heapUsed` . The `heapUsed` refer to V8's memory use by our application. And `os.freemem()` shows available RAM, `os.totalmem()` show entire memory capacity.
+
+The log is saved in `.csv` format, with the date/time in the first column, memory usage in the second, and the memory available in the third. These data are recorded and saved in a generated `demo.csv` file at 15-second intervals.
 
 Run the script: `node index.js`
 
-Allow your application to run, you will notice a file named `logstatus.txt` is generated with content similar to the following:
+Allow your application to run, you will notice a file named `demo.csv` is generated with content similar to the following:
 
 ```
-Memory Usage by Heapused 8.368304MB
-  Tue, 30 Aug 2022 01:52:15 GMT
-               : Server is working
-Memory Usage by Heapused 6.906944MB
-  Tue, 30 Aug 2022 01:52:30 GMT
-               : Server is working
-Memory Usage by Heapused 6.9638MB
-  Tue, 30 Aug 2022 01:52:45 GMT
-               : Server is working
+2022-08-31T00:19:45.912Z, 8.495856, 10%
+2022-08-31T00:20:00.027Z, 7.083216, 10%
+2022-08-31T00:20:15.133Z, 7.139864, 9%
+2022-08-31T00:20:30.219Z, 7.188568, 12%
+2022-08-31T00:20:45.414Z, 7.23724, 11%
 ```
 
 ### 4. Deleting / Refreshing a Log File
@@ -276,13 +277,13 @@ const fs = require("fs");
 
 app = express();
 
-// Remove the error.log file every 25th day of the month.
+// remove the demo.csv file every twenty-first day of the month.
 cron.schedule("0 0 25 * *", function () {
   console.log("---------------------");
-  console.log("Deleting Log Status");
-  fs.unlink("./logstatus.txt", err => {
+  console.log("deleting logged status");
+  fs.unlink("./demo.csv", err => {
     if (err) throw err;
-    console.log("Error file successfully deleted");
+    console.log("deleted successfully");
   });
 });
 

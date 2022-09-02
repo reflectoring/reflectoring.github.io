@@ -8,12 +8,14 @@ image: images/stock/0043-calendar-1200x628-branded.jpg
 url: schedule-cron-job-in-node
 ---
 
-Have you ever wanted to perform a specific task on your application server at specific times without physically running them yourself? Or we'd rather spend your time on more important tasks than remember to periodically clear or move data from one part of the server to another. 
+Have you ever wanted to perform a specific task on your application server at specific times without physically running them yourself? Or we'd rather spend your time on more important tasks than remember to periodically clear or move data from one part of the server to another.
 
 We can use cron job schedulers to automate such tasks.
 
 Cron job scheduling is a common practice in modern applications. The original `cron` is a [daemon](https://en.wikipedia.org/wiki/Daemon_(computing)), which means that it only needs to be started once, and will 
-lay dormant until it is required. Another example of a deamon is the web server. The web server remains idle until a request for a web page is made. 
+lay dormant until it is required. Another example of a deamon is the web server. The web server remains idle until a request for a web page is made.
+
+{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/job-scheduler" %}}
 
 ## Using `node-cron`
 In this article, we'll use the [`node-cron`](https://www.npmjs.com/package/node-cron) library to schedule cron jobs in several Node.js demo applications. `node-cron` is a Node module that is made available by npm.
@@ -132,13 +134,11 @@ In the code block above we are making a simple log to the application's terminal
 
 Run `node index.js` in the terminal and you'll get the following output:
 
+`output:`
 ```
 application listening.....
 ---------------------
 running a task every 15 second
----------------------
-running a task every 15 second
-...
 ```
 
 
@@ -236,12 +236,12 @@ app = express();
 
 // setting a cron job for every 15 seconds
 cron.schedule("*/15 * * * * *", function () {
-  let heap = process.memoryUsage().heapUsed / 1000000;
-  let data = new Date().toISOString();
+  let heap = process.memoryUsage().heapUsed / 1024 / 1024;
+  let date = new Date().toISOString();
   const freeMemory = Math.round((os.freemem() * 100) / os.totalmem()) + "%";
 
   //                 date | heap used | free memory
-  let csv = `${dataa}, ${heap}, ${freeMemory}\n`;
+  let csv = `${date}, ${heap}, ${freeMemory}\n`;
 
   // storing log In .csv file
   fs.appendFile("demo.csv", csv, function (err) {
@@ -254,7 +254,7 @@ app.listen(3000, () => {
   console.log("application listening.....");
 });
 ```
-In the code block above, we are using the Node.js `fs` module. `fs` enables interaction with the file system allowing us to create a log file. 
+In the code block above, we are using the Node.js `fs` module. `fs` enables interaction with the file system allowing us to create a log file.
 
 The `OS` module gives access to the application's Operating System (OS) and the `process` module, provides details about, the current Node.js process. 
 
@@ -296,7 +296,7 @@ cron.schedule("0 0 25 * *", function () {
 });
 
 app.listen(3000, () => {
-  console.log("Application Listening.....");
+  console.log("application listening.....");
 });
 ```
 
@@ -312,16 +312,16 @@ On the 25th of every month, your log status will be deleted with:
 
 `output:`
 ```
-Application Listening.....
+application listening.....
 ---------------------
-Running Cron Job
-Error file successfully deleted
+log status deleting
+deleted successfully
 ```
 Switch cron expression to a shorter time interval - like every minute. To verify the task is been executed.
 
-Checking the application directory. we will notice the logstatus.txt file has been deleted.
+Checking the application directory. we will notice the demo.csv file has been deleted.
 
 ## Conclusion
-This article demonstrates how to schedule tasks on the Node.js server using node-cron, and the concept of using node-cron jobs to automate and schedule repetitive or future tasks. we can use this idea in both current and upcoming projects.
+This article uses various examples to demonstrate how to schedule tasks on the Node.js server and the concept of using the `node-cron` schedule method to automate and schedule repetitive or future tasks. we can use this idea in both current and upcoming projects. The source code for each example can be found [here](https://github.com/thombergs/code-examples/tree/master/nodejs/job-scheduler).
 
 There are other job scheduler tools accessible to node.js applications such as node-schedule, Agenda, Bree, Cron, and Bull. Be sure to assess each one to find the best fit for your specific project.

@@ -1,0 +1,592 @@
+## What is Unit Testing and why we need it
+In software development, unit testing means writing tests to verify that our code is working as logical units. Different people tend to think of a "logical unit" in different ways. We will define it as a unit of behavior that tests not a method or a class on it own but as the collective behavior of many methods that does a useful business work.
+
+Unit testing allows us to catch bugs early on in the development phase plus allowing us to refactor and change our code knowing that if we mess up something the tests will light red and notify us.
+
+## What is JUnit and JUnit5
+JUnit is an Open Source testing framework for Java which relies heavily on annotations to run and manage our tests. It allows us to write our tests in logically separated suites which are executed in parallel fast runs.
+
+### JUnit5
+It was developed to leverage the new and powerful advances in the Java language introduced in Java8 and beyond. It embraces the functional and declarative style of programming which is more readable and easier to write.
+JUnit 5 can use more than one extension at a time, which was not possible in earlier versions where only one runner could be used at a time. This allows us to combine Spring extensions with other extensions including custom ones that we write.
+
+## Basic components of the JUnit5 project
+
+It composes of three main parts
+- JUnit Platform
+  - Serves as a foundation for launching testing frameworks on the JVM.
+  - Defines the TestEngine API for developing a testing framework that runs on the platform.
+
+- JUnit Jupiter
+  - Offers us the annotations and the extensions to write the tests.
+
+- JUnit Vintage
+  - Offers us the ability to run JUnit4 and JUnit3 tests on the platform.
+
+
+## Annotations
+JUnit annotations are offered to us by the Jupiter model. They make our tests much more readable and easy to write. Let's take a look at the most important ones.
+
+Before we start with the code we need to add the `junit-jupiter-api` dependency and the `maven-surefire-plugin` plugin to be able to run the tests using Maven commands.
+
+```xml
+<dependencies>  
+	 <dependency> 
+		 <groupId>org.junit.jupiter</groupId>  
+		 <artifactId>junit-jupiter-api</artifactId>  
+		 <version>5.9.0</version>  
+		 <scope>test</scope>  
+	 </dependency>
+ </dependencies>  
+  
+<build>  
+ <finalName>maven-unit-test</finalName>  
+	 <plugins> 
+		 <plugin> 
+			 <groupId>org.apache.maven.plugins</groupId>  
+			 <artifactId>maven-surefire-plugin</artifactId>  
+			 <version>3.0.0-M7</version>  
+		 </plugin> 
+	 </plugins>
+ </build>
+``` 
+
+### @Test
+Adding this annotation to a public void method allows us to simply run that method as a test.
+```java
+import org.junit.jupiter.api.Test;  
+import static org.junit.jupiter.api.Assertions.assertEquals;  
+  
+public class DogTest {  
+  @Test  
+  public void testBark() {  
+        String expectedString = "woof";  
+	    assertEquals(expectedString, "woof");  
+  }  
+}
+```
+Here we use the `assertEquals` method to assert that the two strings are equal, we will cover it in more detail later.
+Now, to run the tests all we need to do is run the maven command `mvn test`.
+
+We should see the test run and pass:
+```
+[INFO] Running DogTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s - in DogTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+```
+
+Let's check what happens when the test fails.
+```java
+public class DogTest {  
+	@Test  
+	public void barkFailure() {  
+	    String expectedString = "Meow";  
+	    assertEquals(expectedString, "Woof");  
+	}
+}
+```
+Then we will see
+```
+[INFO] Running DogTest
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.066 s <<< FAILURE! - in DogTest
+[ERROR] DogTest.barkFailure  Time elapsed: 0.036 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <Meow> but was:
+```
+
+### @BeforeAll
+The method annotated with it has to be a static method and it will run once before any test is run.
+
+```java
+public class DogTest {  
+  
+  @BeforeAll  
+  public static void init() {  
+        System.out.println("Doing stuff");  
+  }  
+  @Test  
+  public void testBark() {  
+        String expectedString = "woof";  
+		assertEquals(expectedString, "woof");  
+	    System.out.println("WOOF!");  
+  }  
+}
+```
+This will output
+```
+Doing stuff
+WOOF!
+```
+
+### @BeforeEach
+The name says it all! The method annotated with it will run once before every test method annotated with @Test.
+
+```java
+public class DogTest {  
+	@BeforeEach  
+	public void doEach() {  
+	    System.out.println("Hey Doggo");  
+	}  
+	  
+	@Test  
+	public void testBark1() {  
+	    String expectedString = "woof1";  
+		assertEquals(expectedString, "woof1");  
+	    System.out.println("WOOF => 1");  
+	}  
+	  
+	@Test  
+	public void testBark2() {  
+	    String expectedString = "woof2";  
+	    assertEquals(expectedString, "woof2");  
+	    System.out.println("WOOF => 2");  
+	}
+}
+```
+This will output
+```
+Hey Doggo
+WOOF => 1
+Hey Doggo
+WOOF => 2
+```
+
+### @AfterAll
+AfterAll is just like BeforeAll, only it run after all the tests are run.
+
+```java
+public class DogTest { 
+	@AfterAll  
+	public static void finish() {  
+	    System.out.println("Finishing stuff");  
+	}  
+	  
+	@Test  
+	public void testBark1() {  
+	    String expectedString = "woof1";  
+	    assertEquals(expectedString, "woof1");  
+	    System.out.println("WOOF => 1");  
+	}
+}
+```
+This should output
+```
+WOOF => 1
+Finishing stuff
+```
+
+### @AfterEach
+This will run once after each test is run.
+
+```java
+public class DogTest { 
+	@AfterEach  
+	public void doAfterEach() {  
+	    System.out.println("Bye Doggo");  
+	}  
+	  
+	@Test  
+	public void testBark1() {  
+	    String expectedString = "woof1";  
+	    assertEquals(expectedString, "woof1");  
+	    System.out.println("WOOF => 1");  
+	}  
+	  
+	@Test  
+	public void testBark2() {  
+	    String expectedString = "woof2";  
+	    assertEquals(expectedString, "woof2");  
+	    System.out.println("WOOF => 2");  
+	}
+}
+```
+This should output
+```
+WOOF => 1
+Bye Doggo
+WOOF => 2
+Bye Doggo
+```
+
+### @Disabled
+This annotation can be applied to @Test methods to prevent them from running, or it can be even applied to a class to prevent all the @Test methods inside it from running.
+
+```java
+public class DogTest { 
+
+	@Disabled("Dog 1 please don't woof")  
+	@Test  
+	public void testBark1() {  
+	    String expectedString = "woof1";  
+	    assertEquals(expectedString, "woof1");  
+	    System.out.println("WOOF => 1");  
+	}  
+	  
+	@Test  
+	public void testBark2() {  
+	    String expectedString = "woof2";  
+	    assertEquals(expectedString, "woof2");  
+	    System.out.println("WOOF => 2");  
+	}
+}
+```
+We should see the test not running and the disabled message being displayed.
+```
+Dog 1 please don't woof
+WOOF => 2
+```
+
+## Assertions
+JUnit offers basic assertions through the Jupiter module. Let's explore the main ones. For the full list please check [JUnit's doc](https://junit.org/junit5/docs/5.0.1/api/org/junit/jupiter/api/Assertions.html).
+
+### assertEquals
+This method compares two given parameters for equality . It can take any of the primitive types (int, float, etc...) plus accepting Objects for which it calls the `equals` method to check the equality.
+We have seen many examples of it in our previous code snippets.
+
+### assertNotEquals
+It checks for non-equality for two given parameters (primitive or objects).
+```java
+public class DogTest { 
+	@Test  
+	public void testNotBark() {  
+	    String unexpectedString = "";  
+	    assertNotEquals(unexpectedString, "woof");  
+	    System.out.println("Didn't woof!!");  
+	}
+}
+```
+This should pass and printout
+```
+Didn't woof!!
+```
+
+### assertNull
+It simply does a null check on the given parameter.
+```java
+public class DogTest { 
+	@Test  
+	public void nullCheck() {  
+	    Object dog = null;  
+		assertNull(dog);  
+	    System.out.println("Null dog :(");  
+	}
+}
+```
+This will print
+```
+Null dog :(
+```
+### assertNotNull
+Unlike, `assertNull`, this fails if the given object isn't null;
+```java
+public class DogTest { 
+	@Test  
+	public void nonNullCheck() {  
+	    String dog = "Max";  
+	    assertNotNull(dog);  
+	    System.out.println("Hey I am " + dog);  
+	}
+}
+```
+This will print
+```
+Hey I am Max
+```
+
+### assertTrue
+It will fail if the given boolean parameter is false.
+```java
+public class DogTest { 
+	@Test  
+	public void trueCheck() {  
+	    int dogAge = 2;  
+	    assertTrue(dogAge < 5);  
+	    System.out.println("I am young :)");  
+	}
+}
+```
+This will printout
+```
+I am young :)
+```
+### assertFalse
+It will fail if the given boolean parameters is true.
+```java
+public class DogTest { 
+	@Test  
+	public void falseCheck() {  
+	    int dogAge = 7;  
+	    assertFalse(dogAge < 5);  
+	    System.out.println("I am old :(");  
+	}
+}
+```
+This should show us
+```
+I am old :(
+```
+
+## Assertions with Hamcrest
+The first question that comes to mind is, why do we need an extra dependency to do the assertions when JUnit offers us a basic set of assertions?
+The answer is that the creators of JUnit5 intended it to be a powerful platform for running and managing tests and they didn't want to over-complicate it with a full capability of assertions. Instead, they designed the platform to be fully integrate-able with third party libraries such as Hamcrest.
+
+Hamcrest is the most popular library for such use-case, it offers a fluent API for that enable us to easily write and read object matchers.
+Let's get to know some of the most important methods of Hamcrest.
+
+First, let's introduce the Maven dependency
+```xml
+<dependency>  
+	 <groupId>org.hamcrest</groupId>  
+	 <artifactId>hamcrest-all</artifactId>  
+	 <version>1.3</version>  
+	 <scope>test</scope>  
+</dependency>
+```
+### assertThat
+This is the starting point for most of our assertion statements, as the first parameter it takes the object (or primitive) under test, and as the second parameter it takes a Matcher.
+
+```java
+import org.junit.jupiter.api.Test;  
+import static org.hamcrest.MatcherAssert.assertThat;  
+import static org.hamcrest.Matchers.*;  
+  
+public class CatTest {  
+    @Test  
+	public void testMeow() {  
+        String catName = "Stilla";  
+		int catAge = 3;  
+		boolean isNice = false;  
+  
+	   assertThat(catName, equalTo("Stilla"));  
+	   assertThat(catAge, lessThan(5));  
+	   assertThat(isNice, is(false));  
+  }  
+}
+```
+Notice the flexibility we have on the Matchers we pass, there are [many more Matchers](http://hamcrest.org/JavaHamcrest/javadoc/2.2/) we can use on many more data types.
+
+Let's explore those Matchers further more.
+
+### instanceOf
+It tests whether an object is an instance of certain class.
+Say we have a Cat class
+```java
+public class Cat {  
+}
+```
+```java
+public class CatTest {  
+	@Test  
+	public void testCatInstance() {  
+	    Cat cat = new Cat();  
+	  
+	    assertThat(cat, instanceOf(Cat.class));  
+	}
+}
+``` 
+
+### sameInstance
+It verifies if two object references are the same instance.
+```java
+public class CatTest {  
+	@Test  
+	public void testSameCatInstance() {  
+	    Cat cat = new Cat();
+	    assertThat(cat, sameInstance(cat));  
+	}
+}
+```
+
+### hasItems
+It verifies that the given items exist in the collection under test. The existence is checked through the `equals` object method.
+
+```java
+public class CatTest {  
+	@Test  
+	public void testCollectionContaining() {  
+	    List<String> catNames = asList("Phibi", "Monica", "Stilla");  
+	  
+	    assertThat(catNames, hasItems("Monica", "Phibi"));  
+	    assertThat(catNames, not(hasItems("Melih")));  
+	}
+}
+```
+Note the chaining of calls performed with `not(hasItems("Melih"))`, this allows us to mix and match those operators to have complex and readable assertions.
+
+### hasSize
+It checks the size of a given collection against an expected size.
+```java
+public class CatTest {  
+	@Test  
+	public void testCollectionSize() {  
+	    List<String> catNames = asList("Phibi", "Monica");  
+	  
+	    assertThat(catNames, hasSize(2));  
+	}
+}
+``` 
+
+### hasProperty
+This is used to check if an object's property (field) matches a certain condition.
+
+First let's modify our Cat class to have a `name` property with a getter and a constructor.
+
+```java
+public class Cat {  
+    private String name;  
+  
+    public Cat(String name) {  
+        this.name = name;  
+    }  
+  
+    public String getName() {  
+        return name;  
+    }
+ }
+```
+
+```java
+public class CatTest {  
+	@Test  
+	public void testBean() {  
+	    Cat cat = new Cat("Mimi");  
+	  
+	    assertThat(cat, hasProperty("name", equalTo("Mimi")));  
+	}
+}
+```
+
+### equalToIgnoringCase
+It checks if two strings match regardless of capital or small letters.
+
+```java
+public class CatTest {  
+	@Test  
+	public void testStringEquality() {  
+	    String catNameInCaps = "RACHEL";  
+	  
+	    assertThat(catNameInCaps, equalToIgnoringCase("rachel"));  
+	}
+}
+```
+
+### containsString
+It checks if a string is contained in another string.
+
+```java
+public class CatTest {  
+	@Test  
+	public void testStringContains() {  
+	    String catName = "Joey The Cute";  
+	  
+	    assertThat(catName, containsString("Cute"));  
+	}
+}
+```
+
+## Assumptions
+We can think of assumptions like preconditions that have to be met for the test to pass. Let's check some examples.
+
+Say we have a `GoldFish` class
+```java
+public class GoldFish {  
+    private String name;  
+	private int age;
+	// constructor and getters
+}
+```
+
+```java
+public class GoldFishTest {  
+  @Test  
+  public void testBooleanAssumption() {  
+        GoldFish goldFish = new GoldFish("Jelly", 1);  
+  
+	   assumeTrue(goldFish.getAge() > 0);  
+	   assertThat(goldFish.getName(), equalToIgnoringCase("Jelly"));  
+  }  
+}
+```
+We can also express it like
+```java
+@Test  
+public void testAssumption() {  
+    GoldFish goldFish = new GoldFish("Jelly", 1);  
+  
+    assumingThat(goldFish.getAge() > 0, 
+          () -> assertThat(goldFish.getName(), equalToIgnoringCase("Jelly")));  
+}
+```
+
+## Exception Testing
+As part of our test scenarios we might want to test that given certain conditions a particular exception is thrown. Let's check our JUnit5 helps us do this.
+
+JUnit5 offers us the `assertThrows` method, which takes the class of the exception we are excepting (or one of its super classes) as a first parameter. As for the second parameter it expects a Runnable that contains the code under test.
+
+Let's add a method to calculate the speed of GoldFish.
+
+```java
+public class GoldFish {  
+    private String name;  
+	private int age;
+	
+	public int calculateSpeed() {  
+	    if (age == 0){  
+	        throw new RuntimeException("This will fail :((");  
+	  }  
+	    return 10 / age;  
+	}
+	// constructor and getters
+}
+```
+Our test would look like this
+
+```java
+public class GoldFishTest {
+	@Test  
+	public void testException() {  
+	    GoldFish goldFish = new GoldFish("Goldy", 0);  
+	  
+	    RuntimeException exception = assertThrows(RuntimeException.class, goldFish::calculateSpeed);  
+	  
+	    assertThat(exception.getMessage(), equalToIgnoringCase("This will fail :(("));  
+	}
+}
+```
+
+## Parameterized Testing
+The idea behind parameterized testing is to execute the same test but with different parameters. JUnit5 offers a rich API to handle this, however, we are going to briefly explore the most common way to do it.
+
+We first need to add this dependency
+```xml
+<dependency>  
+	 <groupId>org.junit.jupiter</groupId>  
+	 <artifactId>junit-jupiter-params</artifactId>  
+	 <version>5.9.0</version>  
+	 <scope>test</scope>  
+</dependency>
+```
+
+```java
+public class GoldFishTest {
+	@ParameterizedTest  
+	@MethodSource("provideFishes")  
+	public void parameterizedTest(GoldFish goldFish) {  
+	    assertTrue(goldFish.getAge() >= 1);  
+	}  
+	  
+	private static Stream<Arguments> provideFishes() {  
+	    return Stream.of(  
+	            Arguments.of(new GoldFish("Browny", 1)),  
+			    Arguments.of(new GoldFish("Greeny", 2))  
+	    );  
+	}
+}
+```
+Notice that the name provided to the `@MethodSource` annotation should match the name of the provider method, `provideFishes` in this case. This will run the same test twice but with two different parameter values.
+
+## Conclusion
+We have explored JUnit5 and its components, we have also covered the most important test annotations. We learned how to use the Assertions API and assert thrown exceptions.
+

@@ -56,7 +56,7 @@
 
 .card-meta {
   li {
-    font-size: 12px;
+    font-size: 0.8rem;
     font-weight: 400;
     font-family: $font-secondary;
     color: $text-color;
@@ -90,10 +90,23 @@
   }
 }
 
+.card-avatar {
+  object-fit: cover;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
 .card-badge {
-  top: 16px;
-  left: 16px;
+  top: 5px;
+  left: 10px;
   position: absolute;
+  .badge {
+    font-size: 0.7rem;
+    display: block;
+    padding: 0.1rem 0.7rem;
+  }
 }
 
 .nav-pills {

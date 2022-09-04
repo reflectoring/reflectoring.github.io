@@ -6,7 +6,7 @@ logo = "images/logo.png"
 logo_small = "images/logo_small.png"
 # use `x` with logo_width, example: "100x".
 # Note: logo_width is not work with .svg file
-logo_width = "150x"
+logo_width = "80x"
 # logo text will only show when logo is missing.
 logo_text = "Boilerplate"
 # navbar fixed to top

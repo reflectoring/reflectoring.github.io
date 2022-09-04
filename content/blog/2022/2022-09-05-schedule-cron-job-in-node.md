@@ -1,7 +1,7 @@
 ---
 title: "Scheduling Jobs with Node.js"
 categories: ["Node"]
-date: 2022-08-25 00:00:00 +1100
+date: 2022-09-05 00:00:00 +1100
 authors: ["ajibade"]
 description: "Quick guide to scheduling cron jobs in Node.js applications"
 image: images/stock/0043-calendar-1200x628-branded.jpg
@@ -52,10 +52,10 @@ Here's a quick reference to the cron expression, Indicating what each element re
 ```
 We can replace each asterisk with one of the following characters so that the expression describes the time we want the job to be executed:
 
-- `*`: An asterisk means "every interval". For example, if the asterisk symbol is in the "month" field, it means the task is run every month.
-- `,`: The comma allows us to specify a list of values for repetition. For example, if we have `1, 3, 5` in the "month" field, the task will run in months 1, 3, and 5 (January, March, and May).
-- `-`: The hyphen allows us to specify a range of values. If we have `1-5` in the "day of the week" field, the task will run every weekday (from Monday to Friday).
-- `/`: The slash allows us to specify expressions like "every xth interval". If we have `*/4` in the "hour" field, it means the action will be performed every 4 hours.
+- **`*`:** An asterisk means "every interval". For example, if the asterisk symbol is in the "month" field, it means the task is run every month.
+- **`,`:** The comma allows us to specify a list of values for repetition. For example, if we have `1, 3, 5` in the "month" field, the task will run in months 1, 3, and 5 (January, March, and May).
+- **`-`:** The hyphen allows us to specify a range of values. If we have `1-5` in the "day of the week" field, the task will run every weekday (from Monday to Friday).
+- **`/`:** The slash allows us to specify expressions like "every xth interval". If we have `*/4` in the "hour" field, it means the action will be performed every 4 hours.
 
 The "seconds" element can be left out. In this case, cron expression will only consist of 5 elements and the first elements describes the minutes and not the seconds.
 
@@ -134,7 +134,6 @@ In the code block above we are making a simple log to the application's terminal
 
 Run `node index.js` in the terminal and you'll get the following output:
 
-`output:`
 ```
 application listening.....
 ---------------------
@@ -211,7 +210,6 @@ With the expression `1 * * * *`, we scheduled our mail to be sent once every min
 
 Run the script `node index.js` and you'll get the following output:
 
-`output:`
 ```
 application listening.....
 ---------------------
@@ -308,13 +306,12 @@ Notice the pattern used: `0 0 25 * *`.
 
 Now, run the script: `node index.js`
 
-On the 25th of every month, your log status will be deleted with:
+On the 25th of every month, your log status will be deleted with the following output:
 
-`output:`
 ```
 application listening.....
 ---------------------
-log status deleting
+deleting logged status
 deleted successfully
 ```
 Switch cron expression to a shorter time interval - like every minute. To verify the task is been executed.

@@ -7,55 +7,53 @@
 {{ $imageMD:= $image.Resize "600x webp" }}
 {{ $imageSM:= $image.Resize "545x webp" }}
 
-    <h2 class="h4 title-border">
-      {{ .name }}
-    </h2>
-    <div class="row">
-      <div class="col-lg-3">
-        <picture>
-          <source srcset="{{ $imageSM.RelPermalink }}" media="(max-width: 575px)">
-          <source srcset="{{ $imageMD.RelPermalink }}" media="(max-width: 767px)">
-          <source srcset="{{ $imageLG.RelPermalink }}">
-          <img loading="eager" decoding="async" class="img-fluid w-100 author" src="{{$imageFallback.RelPermalink}}"
-               alt="{{.Title}}" width="{{$image.Width}}" height="{{$image.Height}}">
-        </picture>
-      </div>
-      <div class="col-lg-9">
-        <div class="row">
-          <p>
-          {{ safeHTML .bio }}
-          </p>
-        </div>
-        <div class="row">
-          <p>
-          <ul class="list-unstyled social-icons-big">
-          {{ if .facebook }}
-            <li class="list-inline-item">
-              <a href="https://www.facebook.com/{{ .facebook }}"><i class="fab fa-facebook"></i></a>
-            </li>
-          {{ end }}
-          {{ if .twitter }}
-            <li class="list-inline-item">
-              <a href="https://www.twitter.com/{{ .twitter }}"><i class="fab fa-twitter"></i></a>
-            </li>
-          {{ end }}
-          {{ if .github }}
-            <li class="list-inline-item">
-              <a href="https://www.github.com/{{ .github }}"><i class="fab fa-github"></i></a>
-            </li>
-          {{ end }}
-          {{ if .linkedin }}
-            <li class="list-inline-item">
-              <a href="https://www.linkedin.com/in/{{ .linkedin }}"><i class="fab fa-linkedin"></i></a>
-            </li>
-          {{ end }}
-          {{ if .stackoverflow }}
-          <li class="list-inline-item">
-            <a href="https://www.stackoverflow.com/users/{{ .stackoverflow }}"><i class="fab fa-stack-overflow"></i></a>
-          </li>
-          {{ end }}
-          </ul>
-          </p>
-        </div>
-      </div>
+
+<div class="row">
+  <div class="col-sm-3">
+    <div class="d-block d-sm-none mb-3">
+      <small>Written By:</small>
+      <h2 class="title-border h5">{{.name}}</h2>
     </div>
+    <picture>
+      <source srcset="{{ $imageSM.RelPermalink }}" media="(max-width: 575px)">
+      <source srcset="{{ $imageMD.RelPermalink }}" media="(max-width: 767px)">
+      <source srcset="{{ $imageLG.RelPermalink }}">
+      <img loading="lazy" decoding="async" class="post-author rounded-4" src="{{$imageFallback.RelPermalink}}"
+            alt="{{.Title}}" width="{{$image.Width}}" height="{{$image.Height}}">
+    </picture>
+  </div>
+  <div class="col-sm-9">
+    <div class="d-none d-sm-block">
+      <small>Written By:</small>
+      <h2 class="title-border h5">{{.name}}</h2>
+    </div>
+    <p class="small">{{ safeHTML .bio }}</p>
+    <ul class="list-unstyled social-icons-big">
+    {{ if .facebook }}
+      <li class="list-inline-item">
+        <a href="https://www.facebook.com/{{ .facebook }}"><i class="fab fa-facebook"></i></a>
+      </li>
+    {{ end }}
+    {{ if .twitter }}
+      <li class="list-inline-item">
+        <a href="https://www.twitter.com/{{ .twitter }}"><i class="fab fa-twitter"></i></a>
+      </li>
+    {{ end }}
+    {{ if .github }}
+      <li class="list-inline-item">
+        <a href="https://www.github.com/{{ .github }}"><i class="fab fa-github"></i></a>
+      </li>
+    {{ end }}
+    {{ if .linkedin }}
+      <li class="list-inline-item">
+        <a href="https://www.linkedin.com/in/{{ .linkedin }}"><i class="fab fa-linkedin"></i></a>
+      </li>
+    {{ end }}
+    {{ if .stackoverflow }}
+    <li class="list-inline-item">
+      <a href="https://www.stackoverflow.com/users/{{ .stackoverflow }}"><i class="fab fa-stack-overflow"></i></a>
+    </li>
+    {{ end }}
+    </ul>
+  </div>
+</div>

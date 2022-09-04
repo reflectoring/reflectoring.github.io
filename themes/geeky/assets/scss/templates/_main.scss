@@ -185,7 +185,8 @@
 .newsletter-widget {
   .smallprint {
     font-size: 12px;
-    font-color: $text-light;
+    color: $text-light;
+    margin-top: 8px;
   }
 
   .form-control {

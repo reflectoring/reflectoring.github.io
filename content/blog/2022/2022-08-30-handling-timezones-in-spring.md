@@ -26,7 +26,7 @@ Australian Eastern Standard Time (AEST) to Australian Eastern Daylight Time (AED
 Operations around dates, time and timezones can be confusing and prone to errors. To understand some problems around dates refer to this [article.](https://yourcalendricalfallacyis.com/)
 In the further sections, we will take a look at the various options available to handle timezones when developing an application.
 
-## Understanding the drawbacks of legacy time-based java.util classes
+## Drawbacks of legacy time-based java.util classes
 
 Let's look at a few reasons why you should choose to avoid the date-time classes in the java.util package when developing applications.
 
@@ -43,7 +43,7 @@ For instance, if a person runs this test from another country, he might see a di
 
 - Creating a custom date with this API is very inconvenient. Firstly, the year starts with 1900, hence we must
 subtract 1900 so that the right year is considered.
-- Also to derive the months we need to use indexes 0-11. Here, since we need to create a date in August we would use 7 and not 8.
+- Also to derive the months we need to use indexes 0-11. In this example, to create a date in August we would use 7 and not 8.
 
 ### Mutable Classes
 
@@ -51,7 +51,7 @@ subtract 1900 so that the right year is considered.
 
 - Immutability is a key concept that ensures that java objects are thread-safe and concurrent access does not lead to an inconsistent state.
 - The Date API allows mutable methods such as `setHours`, `setMinutes`, `setDate`. Therefore, it becomes the responsibility
-of the developer to clone the object and return it and not modify the existing object.
+of the developer to clone the object before use.
 - Similarly, the Calendar object also has setter methods `setTimeZone`, `add` which allows an object to be modified.
 
 ### Format Dates
@@ -78,24 +78,242 @@ the Date class generically thus violating the **Liskov Substitution Principle.**
 - To overcome the shortcomings of java.util classes, Java8 introduced the new **DateTime API** in the `java.time` package. 
 {{% /info %}}
 
-### Java8 DateTime API
+## Java8 DateTime API
 
 The [DateTime API](https://docs.oracle.com/javase/8/docs/api/java/time/package-summary.html) is heavily influenced by the [Jodatime](https://www.joda.org/joda-time/) library which was the defacto standard prior to Java8.
-In this section, we will look at some commonly used date-time classes introduced with Java8. The utility methods used with the classes
-simplify common time based operations.
+In this section, we will look at some commonly used date-time classes and its corresponding operations in this section.
 
-| Class                      | Features                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-|----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `java.time.LocalDate`      | - Default format 'yyyy-MM-dd'. <br/> - Easy to create custom dates. java.util.Month can to used to specify pre-defined months.<br/> - Throws java.time.DateTimeException if invalid date is provided.<br/> - To get the LocalDate in a particular timezone, we need to pass java.time.ZoneId object.                                                                                                                                                           |
-| `java.time.LocalTime`      | - Default format 'hh:mm:ss.zzz'. <br/> - Invalid time values provided to create a custom object leads to java.time.DateTimeException. <br/> - java.time.ZoneId object can be passed to create a zone-specific time.                                                                                                                                                                                                                                            |
-| `java.time.LocalDateTime`  | - Default format 'yyyy-MM-dd-HH-mm-ss.zzz'. <br/> - Factory methods available that take LocalDate and LocalTime to create an instance of LocalDateTime. <br/> - Invalid inputs results java.time.DateTimeException and invalid ZoneId causes java.time.zone.ZoneRulesException.                                                                                                                                                                                |
-| `java.time.ZonedDateTime`  | - By passing a ZoneId to a LocalDateTime object, we can create a ZonedDateTime instance. This will help us easily create zone-specific date time at the same instant. <br/> - If we take a closer look at the ZonedDateTime instance, we can see that the ZoneOffset is included which means DST is automatically handled as applicable in the respective timezones. <br/> - Stores date, time (precision upto nanoseconds), zone and zone offset information. |
-| `java.time.OffsetDateTime` | - Stores date, time(precision of nanoseconds) and offset from UTC/GMT. <br/> - Since this object represents an Instant and an offset which allows local date-time to be obtained, it is a [preferred choice](https://docs.oracle.com/javase/8/docs/api/java/time/OffsetDateTime.html) when this value needs to be stored in a database.                                                                                                                                                                                               |
+### LocalDate
 
-As seen from above, there are various advantages of using this API
-1. All the classes discussed above have numerous utility methods that can compare, add, subtract, extract specific information while maintaining immutability.
-2. Classes in the [`java.time.temporal`](https://docs.oracle.com/javase/8/docs/api/java/time/temporal/package-summary.html) package seamlessly work with the above classes to access, manipulate and perform complex date time operations.
-3. The [`java.time.format.DateTimeFormatter`](https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html) can be used with all Date-Time classes to format dates.
-4. Allows backward compatibility with the legacy java.util classes so that they can be converted into the newer DateTime API.
+[java.time.LocalDate](https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html) is an immutable date object that does not store time or timezone information. However, we can pass the `java.time.ZoneId` object to get the local date in a particular timezone.
 
-Examples covering the features mentioned in this section are available here.
+Sample conversion examples: 
+
+````java
+
+        LocalDate today = LocalDate.now();
+        System.out.println("Today's Date in the dafault format : " + today);
+
+        LocalDate customDate = LocalDate.of(2022, Month.SEPTEMBER, 2);
+        System.out.println("Custom Date in the default format : " + customDate);
+
+        LocalDate invalidDate = LocalDate.of(2022, Month.SEPTEMBER, 31);
+        System.out.println("Invalid Date with Exception : java.time.DateTimeException: " +
+                "Invalid date 'SEPTEMBER 31' : " + invalidDate);
+
+        LocalDate defaultZoneDate = LocalDate.now();
+        System.out.println("Default Zone: " + ZoneId.systemDefault());
+        LocalDate zoneDate = LocalDate.now(ZoneId.of("Europe/London"));
+        System.out.println("Custom zone: " + zoneDate);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        System.out.println("Formatted Date : " + defaultZoneDate.format(formatter));
+
+````
+
+Output:
+
+{{% image alt="settings" src="images/posts/handling-timezones-in-spring/localDateOutput.JPG" %}}
+
+### LocalTime
+
+[java.time.LocalTime](https://docs.oracle.com/javase/8/docs/api/java/time/LocalTime.html) is an immutable object that stores time upto nanosecond precision. It does not store date or timezone information. However, `java.time.ZoneId` can be used to get the time at a specific timezone.
+
+Sample Conversion Examples:
+
+````java
+
+        LocalTime now = LocalTime.now();
+        System.out.println("Current Time in default format : " + now);
+
+        LocalTime customTime = LocalTime.of(21, 40, 50);
+        System.out.println("Custom Time: " + customTime);
+
+        LocalTime invalidTime = LocalTime.of(25, 40, 50);
+        System.out.println("Invalid Time: java.time.DateTimeException: " +
+                "Invalid value for HourOfDay (valid values 0 - 23): 25 :=" + invalidTime);
+
+        LocalTime zoneTime = LocalTime.now(ZoneId.of("Europe/London"));
+        System.out.println("Zone-specific time : " + zoneTime);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        System.out.println("Formatted Date : " + zoneTime.format(formatter));
+````
+
+Output:
+
+{{% image alt="settings" src="images/posts/handling-timezones-in-spring/localTimeOutput.JPG" %}}
+
+### LocalDateTime
+
+[java.time.LocalDateTime](https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html) is an immutable object that is a combination of both `java.time.LocalDate` and `java.time.LocalTime`.
+
+Sample Conversion examples:
+
+````java
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        System.out.println("Current Date/Time in system default timezone : " + currentDateTime);
+
+        LocalDateTime currentUsingLocals = LocalDateTime.of(LocalDate.now(), LocalTime.now());
+        System.out.println("Current Date/Time with LocalDate and LocalTime in system timezone : " + currentUsingLocals);
+
+        LocalDateTime customDateTime = LocalDateTime.of(2022, Month.SEPTEMBER, 1, 10, 30, 59);
+        System.out.println("Custom Date/Time with custom date and custom time : " + customDateTime);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        System.out.println("Formatted Date/Time : " + LocalDateTime.now().format(formatter));
+
+        LocalDateTime zoneDateTime = LocalDateTime.now(ZoneId.of("+02:00"));
+        System.out.println("Zoned Date Time : " + zoneDateTime);
+
+        String currentDateTimeStr = "20-02-2022 10:30:45";
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        System.out.println("Parsed From String to Object : " + LocalDateTime.parse(currentDateTimeStr, format));
+
+        LocalDateTime invalidZoneDateTime = LocalDateTime.now(ZoneId.of("Europ/London"));
+        System.out.println("Invalid Zone with Exception : java.time.zone.ZoneRulesException: " +
+                "Unknown time-zone ID: Europ/London: " + invalidZoneDateTime);
+````
+
+Output:
+
+{{% image alt="settings" src="images/posts/handling-timezones-in-spring/localDateTimeOutput.JPG" %}}
+
+### ZonedDateTime
+
+[java.time.ZonedDateTime](https://docs.oracle.com/javase/8/docs/api/java/time/ZonedDateTime.html) is an immutable representation of date, time and timezone. It automatically handles Daylight Saving Time(DST) clock changes via the `java.time.ZoneId` which internally resolves the zone offset.
+
+Sample conversion example:
+
+````java
+        ZonedDateTime currentZoneDateTime = ZonedDateTime.now();
+        System.out.println("Current system zone date/time : " + currentZoneDateTime);
+
+        ZonedDateTime withLocalDateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault());
+        System.out.println("Convert LocalDateTime to ZonedDateTime : " + withLocalDateTime);
+
+        ZonedDateTime withLocals = ZonedDateTime.of(LocalDate.now(), LocalTime.now(), ZoneId.systemDefault());
+        System.out.println("ZonedDateTime from LocalDate and LocalTime : " + withLocals);
+
+        ZonedDateTime customZoneDateTime = ZonedDateTime.of(2022, Month.FEBRUARY.getValue(), MonthDay.now().getDayOfMonth(), 20, 45, 50, 55, ZoneId.of("Europe/London"));
+        System.out.println("ZonedDateTime Custom : " + customZoneDateTime);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss a");
+        String timeStamp1 = "2022-03-27 10:15:30 AM"; // This String has no timezone information. Hence we need to provide one for it to be successfully parsed.
+        ZonedDateTime parsedZonedTime = ZonedDateTime.parse(timeStamp1, formatter.withZone(ZoneId.of("Europe/London")) );
+        System.out.println("String to ZonedTimeStamp for Europe/London : " + parsedZonedTime);
+
+        ZonedDateTime sameInstantDiffTimezone = parsedZonedTime.withZoneSameInstant(ZoneId.of("Asia/Calcutta"));
+        System.out.println("Change from 1 timezone to another : " + sameInstantDiffTimezone);
+````
+
+Output:
+
+{{% image alt="settings" src="images/posts/handling-timezones-in-spring/zonedDateTimeOutput.JPG" %}}
+
+
+### OffsetDateTime
+
+[java.time.OffsetDateTime](https://docs.oracle.com/javase/8/docs/api/java/time/OffsetDateTime.html) is an immutable representation of `java.time.Instant` that represents an instant in Time along with an offset from UTC/GMT.
+When zone information needs to be saved in the Database this format is preferred as it would always represent the same instant on the timeline (especially when the server and database represent different timezones, conversion that represents time at the same instant would be required).  
+
+Sample conversion example:
+
+````java
+        OffsetDateTime currentDateTime = OffsetDateTime.now();
+        System.out.println("System default timezone current zone offset date/time : " + currentDateTime);
+
+        // Check for format difference
+        ZonedDateTime currentZoneDateTime = ZonedDateTime.now();
+        System.out.println("Current system zone date/time : " + currentZoneDateTime);
+
+        ZoneOffset zoneOffSet= ZoneOffset.of("+01:00");
+        OffsetDateTime offsetDateTime = OffsetDateTime.now(zoneOffSet);
+        System.out.println("Europe/London zone offset date/time : " + offsetDateTime);
+
+        OffsetDateTime fromLocals = OffsetDateTime.of(LocalDate.now(), LocalTime.now(), currentDateTime.getOffset());
+        System.out.println("Get Offset date/time from Locals : " + fromLocals);
+
+        OffsetDateTime fromLocalDateTime = OffsetDateTime.of(LocalDateTime.of(2022, Month.NOVEMBER, 1, 10, 10, 10), currentDateTime.getOffset());
+        System.out.println("Get Offset date/time from LocalDateTime with Offset at the current Instant considered " +
+                "(does not consider DST at custom date): " + fromLocalDateTime);
+
+        OffsetDateTime fromLocalsWithDefinedOffset = OffsetDateTime.of(LocalDate.now(), LocalTime.now(), ZoneOffset.systemDefault().getRules().getOffset(LocalDateTime.of(2022, Month.NOVEMBER, 1, 10, 10, 10)));
+        System.out.println("Get Offset date/time from Local with offset for custom LocalDateTime considered " +
+                "(Considers DST at custom date) : " + fromLocalsWithDefinedOffset);
+
+        OffsetDateTime sameInstantDiffOffset = currentDateTime.withOffsetSameInstant(ZoneOffset.of("+01:00"));
+        System.out.println("Same instant at a different offset : " + sameInstantDiffOffset);
+
+        OffsetDateTime dt = OffsetDateTime.parse("2011-12-03T10:15:30+01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        System.out.println("OffsetDateTime parsed and formatted" + fmt.format(dt));
+
+        OffsetDateTime convertFromZoneToOffset = currentZoneDateTime.toOffsetDateTime();
+        System.out.println("Convert from ZonedDateTime to OffsetDateTime : " + convertFromZoneToOffset);
+
+````
+
+Output:
+
+{{% image alt="settings" src="images/posts/handling-timezones-in-spring/offsetDateTimeOutput.JPG" %}}
+
+## Compatibility with the legacy API
+
+As a part of the Date/Time API, methods have been introduced in the legacy classes to convert to the newer API objects.
+
+Sample Code Conversion:
+
+````java
+
+    @Test
+    public void testWorkingWithLegacyDateInJava8() {
+        Date date = new Date();
+        System.out.println("java.util.Date : " + date);
+        Instant instant = date.toInstant();
+        System.out.println("Convert java.util.Date to Instant : " + instant);
+
+        ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault());
+        System.out.println("Use Instant to convert to ZonedDateTime : " + zdt);
+
+        LocalDate ld = zdt.toLocalDate();
+        System.out.println("Convert to LocalDate : " + ld);
+
+        ZonedDateTime zdtDiffZone = zdt.withZoneSameInstant(ZoneId.of("Europe/London"));
+        System.out.println("ZonedDateTime of a different zone : " + zdtDiffZone);
+    }
+
+    @Test
+    public void testWorkingWithLegacyCalendarInJava8() {
+        Calendar calendar = Calendar.getInstance();
+        System.out.println("java.util.Calendar : " + calendar);
+
+        Date calendarDate = calendar.getTime();
+        System.out.println("Calendar Date : " + calendarDate);
+
+        Instant instant = calendar.toInstant();
+        System.out.println("Convert java.util.Calendar to Instant : " + instant + " for timezone : " + calendar.getTimeZone());
+
+        ZonedDateTime instantAtDiffZone = instant.atZone(ZoneId.of("Europe/London"));
+        System.out.println("Instant at a different zone : " + instantAtDiffZone);
+
+        LocalDateTime localDateTime = instantAtDiffZone.toLocalDateTime();
+        System.out.println("LocalDateTime value : " + localDateTime);
+
+    }
+
+````
+
+As we can see in the examples, methods are provided to convert to `java.time.Instant` which represents a timestamp at a particular instant.
+
+Output: 
+
+{{% image alt="settings" src="images/posts/handling-timezones-in-spring/compatibilityOutput.JPG" %}}
+
+## Advantages of the new DateTime API
+- Considering the examples of both legacy and new API, we see that with the Date/Time API, formatting, parsing, timezone conversions can be easily performed.
+- Also, exception handling with classes `java.time.DateTimeException`, `java.time.zone.ZoneRulesException` are well-detailed and easy to comprehend.
+- All classes are immutable making them thread-safe.
+- Each of the classes provide a variety of utility methods that help compute, extract, modify date-time information thus catering to most commonly needed usecases.
+- Additional complex date computations are available with `java.time.Temporal` package, `java.time.Period` and `java.time.Duration` classes.
+- Methods are added to the legacy APIs to convert objects to `java.time.Instant` and let the legacy code use the newer APIs.

@@ -311,9 +311,161 @@ Output:
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/compatibilityOutput.JPG" %}}
 
 ## Advantages of the new DateTime API
-- Considering the examples of both legacy and new API, we see that with the Date/Time API, formatting, parsing, timezone conversions can be easily performed.
+- Comparing the usage of both legacy and new API, we can see that with the Date/Time API, formatting, parsing, timezone conversions can be easily performed.
 - Also, exception handling with classes `java.time.DateTimeException`, `java.time.zone.ZoneRulesException` are well-detailed and easy to comprehend.
 - All classes are immutable making them thread-safe.
-- Each of the classes provide a variety of utility methods that help compute, extract, modify date-time information thus catering to most commonly needed usecases.
-- Additional complex date computations are available with `java.time.Temporal` package, `java.time.Period` and `java.time.Duration` classes.
+- Each of the classes provides a variety of utility methods that help compute, extract, modify date-time information thus catering to most common usecases.
+- Additional complex date computations are available in conjunction with `java.time.Temporal` package, `java.time.Period` and `java.time.Duration` classes.
 - Methods are added to the legacy APIs to convert objects to `java.time.Instant` and let the legacy code use the newer APIs.
+
+## Dealing with timezones in a SpringBoot application
+
+In this section, we will take a look at how to handle timezones when working with Spring Boot and JPA.
+
+### Introduction to a sample SpringBoot application
+
+For demonstration purposes, we will use this application to look at how timezone conversions will apply. This application is a Spring Boot application with MySql as the underlying database.
+First, let's look at the database.
+
+According to Oracle official documentation:
+> You can change the database time zone manually but Oracle recommends that you keep it as UTC (the default) to avoid data conversion and improve performance when data is transferred among databases. 
+> This configuration is especially important for distributed databases, replication, and export and import operations.
+
+This applies to all databases, so conforming with the preferred practice, we will configure MYSQL database to use UTC as default when working with JPA.
+This removes the complication of converting between multiple timezones. Now we just need to handle timezones at the server.
+
+For this to apply, we will configure the below properties in `application.yml`
+````yaml
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+````
+
+### Mapping MySql datatypes to Java
+
+Let's take a quick look at some [MySql datatypes](https://dev.mysql.com/doc/refman/8.0/en/date-and-time-types.html).
+
+- DATE : The DATE type is used for values with a date part but no time part. MySQL retrieves and displays DATE values in 'YYYY-MM-DD' format.
+- DATETIME - The DATETIME type is used for values that contain both date and time parts. MySQL retrieves and displays DATETIME values in 'YYYY-MM-DD hh:mm:ss' format.
+- TIMESTAMP - The format for TIMESTAMP is similar to DATETIME. The only difference being TIMESTAMP by default stores values in UTC.
+- TIME - The TIME type stores the time in 'hh:mm:ss' format. But it can also store time up to microseconds (6 digits precision).
+
+Now that we understand the supported datatypes, let's look at how to map them with the Java DATE/Time API.
+
+The MySql table is defined as follows:
+````sql
+    CREATE TABLE IF NOT EXISTS `timezonedb`.`date_time_tbl` (
+    `id`INT NOT NULL AUTO_INCREMENT,
+    `date_str` VARCHAR(500) NULL,
+    `date_time` DATETIME NULL,
+    `local_time` TIME NULL,
+    `local_date`  DATE NULL,
+    `local_datetime_dt` DATETIME NULL,
+    `offset_datetime` TIMESTAMP NULL,
+    `zoned_datetime` TIMESTAMP NULL,
+    `created_at` TIMESTAMP NOT NULL,
+
+    PRIMARY KEY (`id`));
+````
+
+The corresponding JPA entity is as below:
+````java
+    @Entity
+    @Table(name = "date_time_tbl")
+    public class DateTimeEntity implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(name = "date_str")
+    private String dateStr;
+
+    @Column(name = "date_time")
+    private Date date;
+
+    @Column(name = "local_date")
+    private LocalDate localDate;
+
+    @Column(name = "local_time")
+    private LocalTime localTime;
+
+    @Column(name = "local_datetime_dt")
+    private LocalDateTime localDateTime;
+
+    @Column(name = "local_datetime_ts")
+    private LocalDateTime localDateTimeTs;
+
+    @Column(name = "offset_datetime")
+    private OffsetDateTime offsetDateTime;
+
+    @Column(name = "zoned_datetime")
+    private ZonedDateTime zonedDateTime;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
+    private OffsetDateTime createdAt;
+
+````
+
+### Understanding the server timezone setup
+
+{{% image alt="settings" src="images/posts/handling-timezones-in-spring/TZ.JPG" %}}
+
+As seen, the database should store the timestamp in UTC (+00:00). We will run our spring boot application to the custom timezones Europe/London and Europe/Berlin.
+Since these timezones have offset +01:00 and +02:00 respectively, we can easily compare the timestamps stored and retrieved.
+
+To start the Spring application in Europe/London timezone we specify the timezone in the arguments as :
+````text
+    mvnw clean verify spring-boot:run -Dspring-boot.run.jvmArguments="-Duser.timezone=Europe/London"
+````
+
+Similarly, to start the application in Europe/Berlin timezone we would specify the arguments as :
+````text
+    mvnw clean verify spring-boot:run -Dspring-boot.run.jvmArguments="-Duser.timezone=Europe/Berlin"
+````
+
+We have configured two endpoints in the controller class:
+- `http://localhost:8083/app/v1/timezones/default` stores the current date/time in the jvm arguments specified timezone.
+- `http://localhost:8083/app/v1/timezones/dst` stores a custom date/time in the jvm arguments specified timezone.
+
+{{% info title="`Daylight Savings Time`" %}}
+As on 8th September 2022, both the timezones **Europe/London** and **Europe/Berlin** are on DST. Their corresponding timezones are **British Summer Time (BST) (UTC+1)** and **Central European Summer Time (CEST) (UTC+2)**.
+Post 30th October 2022, the DST will end and they will be back to **Greenwich Mean Time (GMT) (UTC)** and **Central European Time (CET) (UTC+1)** respectively.
+{{% /info %}}
+
+### Comparing results from both timezones
+
+For Europe/London at the current date/time :
+
+{{% image alt="settings" src="images/posts/handling-timezones-in-spring/spring_tz_1.JPG" %}}
+{{% image alt="settings" src="images/posts/handling-timezones-in-spring/db_tz_1.JPG" %}}
+
+On comparison, we can make note of the following points:
+- VARCHAR representation of date in the database is not preferred, since it stores the date in the format it was sent. This could result in inconsistent date formats and make it difficult to convert back in the application.
+- java.util.Date stored in the DB, has no zone information making it difficult to represent the right date-time format in the application.
+- Similarly, the DATE and TIME columns need additional information especially when working with timezones.
+- LocalDateTime although represents the correct date-time still needs additional information when working with timezones.
+- As we can see, OffsetDateTime and ZonedDateTime give all the required information for the dates to be stored in UTC and retrieved in the right format.
+- DATETIME and TIMESTAMP should be the preferred choice when storing date-time in MySql databases.
+
+For Europe/Berlin at the current date/time :
+
+{{% image alt="settings" src="images/posts/handling-timezones-in-spring/spring_tz_2.JPG" %}}
+{{% image alt="settings" src="images/posts/handling-timezones-in-spring/db_tz_2.JPG" %}}
+
+The results in this timezone are consistent with the points noted above.
+
+Now, lets see what happens at Europe/Berlin when the DST ends on 30th October 2022. The custom date considered here is 8th November 2022.
+
+{{% image alt="settings" src="images/posts/handling-timezones-in-spring/spring_tz_3.JPG" %}}
+{{% image alt="settings" src="images/posts/handling-timezones-in-spring/db_tz_3.JPG" %}}
+
+When DST ends, Europe/Berlin will shift to UTC+1 timezone and this is consistent with the results as seen the output above.
+In all above cases, OffsetDateTime and ZonedDateTime show the same results. This is because, the OffsetDateTime is derived from ZoneId. All DST rules apply to ZoneId
+and hence OffsetDateTime gives the correct representation that includes DST changes. As discussed in the API section that details differences between OffsetDateTime and ZonedDateTime,
+we could use the one that best suits our use-case.

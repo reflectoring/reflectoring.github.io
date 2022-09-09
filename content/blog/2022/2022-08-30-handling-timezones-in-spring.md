@@ -13,6 +13,8 @@ url: spring-timezones
 It is common to encounter applications that run on different timezones. Handling date and time operations across multiple layers of an application can be tricky.
 In this article, we will try to understand the options available in Java and map it in the context of a Spring application to effectively handle timezones.
 
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/timezones" %}}
+
 ## Understanding GMT, UTC and DST
 - **Greenwich Mean Time (GMT)** is a timezone used in some parts of the world, mainly Europe and Africa.
 GMT was replaced as the international standard time in 1972 by UTC.

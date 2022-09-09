@@ -10,21 +10,20 @@ image: images/stock/0111-clock-1200x628-branded.jpg
 url: spring-timezones
 ---
 
-With most modern day applications deployed on the cloud, it is quite common for different layers of the application 
-to run on different timezones. In this article, we will try to understand the options available in Java and map it in the 
-context of a Spring application to effectively handle timezones.
+It is common to encounter applications that run on different timezones. Handling date and time operations across multiple layers of an application can be tricky.
+In this article, we will try to understand the options available in Java and map it in the context of a Spring application to effectively handle timezones.
 
 ## Understanding GMT, UTC and DST
 - **Greenwich Mean Time (GMT)** is a timezone used in some parts of the world, mainly Europe and Africa.
 GMT was replaced as the international standard time in 1972 by UTC.
 - **Universal Coordinated Time (UTC)** is not a timezone. It is a universally preferred standard that can be used to display timezones.
 - **Daylight Savings Time (DST)** is the practice of setting clocks forward by one hour in the summer months
-and back again in the fall, to make better use of natural daylight. Neither GMT or UTC get affected by DST. To account for DST changes,
+and back again in the fall, to make better use of natural daylight. **Neither GMT or UTC get affected by DST**. To account for DST changes,
 countries or states usually switch to another timezone. For instance in Australian summer, the states that observe DST will move from
 Australian Eastern Standard Time (AEST) to Australian Eastern Daylight Time (AEDT).
 
 Operations around dates, time and timezones can be confusing and prone to errors. To understand some problems around dates refer to this [article.](https://yourcalendricalfallacyis.com/)
-In the further sections, we will take a look at the various options available to handle timezones when developing an application.
+We will deep-dive into various aspects of handling timezones in the further sections.
 
 ## Drawbacks of legacy time-based java.util classes
 
@@ -50,8 +49,8 @@ subtract 1900 so that the right year is considered.
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/mutableDate.JPG" %}}
 
 - Immutability is a key concept that ensures that java objects are thread-safe and concurrent access does not lead to an inconsistent state.
-- The Date API allows mutable methods such as `setHours`, `setMinutes`, `setDate`. Therefore, it becomes the responsibility
-of the developer to clone the object before use.
+- The Date API **allows mutable methods** such as `setHours`, `setMinutes`, `setDate`. Therefore, it becomes the **responsibility
+of the developer to clone the object before use**.
 - Similarly, the Calendar object also has setter methods `setTimeZone`, `add` which allows an object to be modified.
 
 ### Format Dates
@@ -60,16 +59,16 @@ of the developer to clone the object before use.
 
 With the Date API, formatting can be quite tedious and the process involves numerous steps. 
 As seen in the example above, there are various flaws in this process:
-- The Date API itself does not store any formatting information. Therefore, we need to use it in combination with the SimpleDateFormat.
-- The `SimpleDateFormat` class is not thread-safe so it cannot be used in multithreaded applications without proper synchronization.
-- As the Date API does not have timezone information, we have to use the Calendar class. However, the Calendar object cannot be formatted, 
+- The Date API itself does not store any formatting information. Therefore, we need to use it in combination with the `SimpleDateFormat`.
+- The `SimpleDateFormat` class is not thread-safe so it **cannot be used in multithreaded applications without proper synchronization**.
+- As the Date API **does not have timezone information**, we have to use the `Calendar` class. However, it cannot be formatted, 
 so we extract date from `Calendar` for formatting.
 
 #### SQL Dates
 
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/sqlDates.JPG" %}}
 
-- The API demonstrates poor design choice as java.sql.Date, java.sql.Time and java.sql.Timestamp all extend java.util.Date class.
+- The API demonstrates poor design choice as `java.sql.Date`, `java.sql.Time` and `java.sql.Timestamp` all extend `java.util.Date` class.
 Due to differences between the subclasses and java.util.Date, the [documentation](https://docs.oracle.com/javase/7/docs/api/java/sql/Timestamp.html) itself suggests to not use 
 the Date class generically thus violating the **Liskov Substitution Principle.**
 
@@ -85,7 +84,7 @@ In this section, we will look at some commonly used date-time classes and its co
 
 ### LocalDate
 
-[java.time.LocalDate](https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html) is an immutable date object that does not store time or timezone information. However, we can pass the `java.time.ZoneId` object to get the local date in a particular timezone.
+**[java.time.LocalDate](https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html)** is an immutable date object that does not store time or timezone information. However, we can pass the `java.time.ZoneId` object to get the local date in a particular timezone.
 
 Sample conversion examples: 
 
@@ -117,7 +116,7 @@ Output:
 
 ### LocalTime
 
-[java.time.LocalTime](https://docs.oracle.com/javase/8/docs/api/java/time/LocalTime.html) is an immutable object that stores time upto nanosecond precision. It does not store date or timezone information. However, `java.time.ZoneId` can be used to get the time at a specific timezone.
+**[java.time.LocalTime](https://docs.oracle.com/javase/8/docs/api/java/time/LocalTime.html)** is an immutable object that stores time upto nanosecond precision. It does not store date or timezone information. However, `java.time.ZoneId` can be used to get the time at a specific timezone.
 
 Sample Conversion Examples:
 
@@ -146,7 +145,7 @@ Output:
 
 ### LocalDateTime
 
-[java.time.LocalDateTime](https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html) is an immutable object that is a combination of both `java.time.LocalDate` and `java.time.LocalTime`.
+**[java.time.LocalDateTime](https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html)** is an immutable object that is a combination of both `java.time.LocalDate` and `java.time.LocalTime`.
 
 Sample Conversion examples:
 
@@ -181,7 +180,7 @@ Output:
 
 ### ZonedDateTime
 
-[java.time.ZonedDateTime](https://docs.oracle.com/javase/8/docs/api/java/time/ZonedDateTime.html) is an immutable representation of date, time and timezone. It automatically handles Daylight Saving Time(DST) clock changes via the `java.time.ZoneId` which internally resolves the zone offset.
+**[java.time.ZonedDateTime](https://docs.oracle.com/javase/8/docs/api/java/time/ZonedDateTime.html)** is an immutable representation of date, time and timezone. It automatically handles Daylight Saving Time(DST) clock changes via the `java.time.ZoneId` which internally resolves the zone offset.
 
 Sample conversion example:
 
@@ -214,8 +213,8 @@ Output:
 
 ### OffsetDateTime
 
-[java.time.OffsetDateTime](https://docs.oracle.com/javase/8/docs/api/java/time/OffsetDateTime.html) is an immutable representation of `java.time.Instant` that represents an instant in Time along with an offset from UTC/GMT.
-When zone information needs to be saved in the Database this format is preferred as it would always represent the same instant on the timeline (especially when the server and database represent different timezones, conversion that represents time at the same instant would be required).  
+**[java.time.OffsetDateTime](https://docs.oracle.com/javase/8/docs/api/java/time/OffsetDateTime.html)** is an immutable representation of `java.time.Instant` that represents an instant in Time along with an offset from UTC/GMT.
+**When zone information needs to be saved in the database this format is preferred as it would always represent the same instant on the timeline** (especially when the server and database represent different timezones, conversion that represents time at the same instant would be required).  
 
 Sample conversion example:
 
@@ -260,7 +259,7 @@ Output:
 
 ## Compatibility with the legacy API
 
-As a part of the Date/Time API, methods have been introduced in the legacy classes to convert to the newer API objects.
+As a part of the Date/Time API, **methods have been introduced to convert from legacy classes to the newer API objects**.
 
 Sample Code Conversion:
 
@@ -311,10 +310,10 @@ Output:
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/compatibilityOutput.JPG" %}}
 
 ## Advantages of the new DateTime API
-- Comparing the usage of both legacy and new API, we can see that with the Date/Time API, formatting, parsing, timezone conversions can be easily performed.
-- Also, exception handling with classes `java.time.DateTimeException`, `java.time.zone.ZoneRulesException` are well-detailed and easy to comprehend.
+- Operations such as formatting, parsing, timezone conversions can be easily performed.
+- Exception handling with classes `java.time.DateTimeException`, `java.time.zone.ZoneRulesException` are well-detailed and easy to comprehend.
 - All classes are immutable making them thread-safe.
-- Each of the classes provides a variety of utility methods that help compute, extract, modify date-time information thus catering to most common usecases.
+- Each of the classes provides a variety of utility methods that help compute, extract, modify date-time information thus catering to most common use cases.
 - Additional complex date computations are available in conjunction with `java.time.Temporal` package, `java.time.Period` and `java.time.Duration` classes.
 - Methods are added to the legacy APIs to convert objects to `java.time.Instant` and let the legacy code use the newer APIs.
 
@@ -324,15 +323,15 @@ In this section, we will take a look at how to handle timezones when working wit
 
 ### Introduction to a sample SpringBoot application
 
-For demonstration purposes, we will use this application to look at how timezone conversions will apply. This application is a Spring Boot application with MySql as the underlying database.
+For demonstration purposes, we will use [this application](https://github.com/thombergs/code-examples/tree/master/spring-boot/timezones/SpringWebApplication) to look at how timezone conversions apply. This application is a Spring Boot application with MySql as the underlying database.
 First, let's look at the database.
 
-According to Oracle official documentation:
+**According to Oracle official documentation**:
 > You can change the database time zone manually but Oracle recommends that you keep it as UTC (the default) to avoid data conversion and improve performance when data is transferred among databases. 
 > This configuration is especially important for distributed databases, replication, and export and import operations.
 
-This applies to all databases, so conforming with the preferred practice, we will configure MYSQL database to use UTC as default when working with JPA.
-This removes the complication of converting between multiple timezones. Now we just need to handle timezones at the server.
+This applies to all databases, so conforming with the preferred practice, we will configure MySql to use UTC as default when working with JPA.
+This removes the complication of converting between timezones. Now we just need to handle timezones at the server.
 
 For this to apply, we will configure the below properties in `application.yml`
 ````yaml
@@ -349,12 +348,12 @@ spring:
 
 Let's take a quick look at some [MySql datatypes](https://dev.mysql.com/doc/refman/8.0/en/date-and-time-types.html).
 
-- DATE : The DATE type is used for values with a date part but no time part. MySQL retrieves and displays DATE values in 'YYYY-MM-DD' format.
-- DATETIME - The DATETIME type is used for values that contain both date and time parts. MySQL retrieves and displays DATETIME values in 'YYYY-MM-DD hh:mm:ss' format.
-- TIMESTAMP - The format for TIMESTAMP is similar to DATETIME. The only difference being TIMESTAMP by default stores values in UTC.
-- TIME - The TIME type stores the time in 'hh:mm:ss' format. But it can also store time up to microseconds (6 digits precision).
+- **DATE** : The DATE type is used for values with a date part but no time part. MySQL retrieves and displays DATE values in 'YYYY-MM-DD' format.
+- **DATETIME** - The DATETIME type is used for values that contain both date and time parts. MySQL retrieves and displays DATETIME values in 'YYYY-MM-DD hh:mm:ss' format.
+- **TIMESTAMP** - The format for TIMESTAMP is similar to DATETIME. The only difference being TIMESTAMP by default stores values in UTC.
+- **TIME** - The TIME type stores the time in 'hh:mm:ss' format. But it can also store time up to microseconds (6 digits precision).
 
-Now that we understand the supported datatypes, let's look at how to map them with the Java DATE/Time API.
+Now that we understand the supported datatypes, let's look at how to map them with the Java Date/Time API.
 
 The MySql table is defined as follows:
 ````sql
@@ -416,7 +415,7 @@ The corresponding JPA entity is as below:
 
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/TZ.JPG" %}}
 
-As seen, the database should store the timestamp in UTC (+00:00). We will run our spring boot application to the custom timezones Europe/London and Europe/Berlin.
+As seen, the database should store the timestamp in UTC (+00:00). We will run our spring boot application to the custom timezones **Europe/London** and **Europe/Berlin**.
 Since these timezones have offset +01:00 and +02:00 respectively, we can easily compare the timestamps stored and retrieved.
 
 To start the Spring application in Europe/London timezone we specify the timezone in the arguments as :
@@ -446,12 +445,12 @@ For Europe/London at the current date/time :
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/db_tz_1.JPG" %}}
 
 On comparison, we can make note of the following points:
-- VARCHAR representation of date in the database is not preferred, since it stores the date in the format it was sent. This could result in inconsistent date formats and make it difficult to convert back in the application.
-- java.util.Date stored in the DB, has no zone information making it difficult to represent the right date-time format in the application.
-- Similarly, the DATE and TIME columns need additional information especially when working with timezones.
-- LocalDateTime although represents the correct date-time still needs additional information when working with timezones.
-- As we can see, OffsetDateTime and ZonedDateTime give all the required information for the dates to be stored in UTC and retrieved in the right format.
-- DATETIME and TIMESTAMP should be the preferred choice when storing date-time in MySql databases.
+- `VARCHAR` representation of date in the database is not preferred, since it stores the date in the format it was sent. This could result in inconsistent date formats and make it difficult to convert back in the application.
+- `java.util.Date` stored in the DB, has no zone information making it difficult to represent the right date-time format in the application.
+- Similarly, the `DATE` and `TIME` columns need additional information especially when working with timezones.
+- `LocalDateTime` although represents the correct date-time still needs additional information when working with timezones.
+- As we can see, `OffsetDateTime` and `ZonedDateTime` give all the required information for the dates to be stored in UTC and retrieved in the right format.
+- `DATETIME` and `TIMESTAMP` should be the preferred choice when storing date-time in MySql databases.
 
 For Europe/Berlin at the current date/time :
 
@@ -460,12 +459,56 @@ For Europe/Berlin at the current date/time :
 
 The results in this timezone are consistent with the points noted above.
 
-Now, lets see what happens at Europe/Berlin when the DST ends on 30th October 2022. The custom date considered here is 8th November 2022.
+Now, lets see what happens at Europe/Berlin when the DST ends on 30th October 2022. **The custom date considered here is 8th November 2022**.
 
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/spring_tz_3.JPG" %}}
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/db_tz_3.JPG" %}}
 
 When DST ends, Europe/Berlin will shift to UTC+1 timezone and this is consistent with the results as seen the output above.
-In all above cases, OffsetDateTime and ZonedDateTime show the same results. This is because, the OffsetDateTime is derived from ZoneId. All DST rules apply to ZoneId
-and hence OffsetDateTime gives the correct representation that includes DST changes. As discussed in the API section that details differences between OffsetDateTime and ZonedDateTime,
+In all above cases, `OffsetDateTime` and `ZonedDateTime` show the same results. This is because, the **`OffsetDateTime` is derived from `ZoneId`**. All DST rules apply to ZoneId
+and hence `OffsetDateTime` gives the correct representation that includes DST changes. As discussed in the API section that details differences between OffsetDateTime and ZonedDateTime,
 we could use the one that best suits our use-case.
+
+## Testing timezones in a Spring Boot application
+
+When working with timezones and unit testing applications, we might want to control the timezone, dates and make them agnostic of the system timezone.
+The Date/Time API provides [`java.time.Clock`](https://docs.oracle.com/javase/8/docs/api/java/time/Clock.html) that can be used for achieving this.
+According to the official documentation:
+> Use of a Clock is optional. All key date-time classes also have a now() factory method that uses the system clock in the default time zone. The primary purpose of this abstraction is to allow alternate clocks to be plugged in as and when required. 
+> Applications use an object to obtain the current time rather than a static method. This can simplify testing.
+
+With this approach, we could define a Clock object in the desired timezone and pass it to any of the Date/Time API classes 
+to get the corresponding date-time.
+
+````java
+@TestConfiguration
+public class ClockConfiguration {
+
+    @Bean
+    public Clock clock() {
+        return Clock.system(ZoneId.of("Europe/London"));
+    }
+}
+````
+
+Now in order to get timezone specific information, we can use
+````java
+OffsetDateTime current = OffsetDateTime.now(clock);
+````
+
+Further, we could also fix the clock to set it to a particular instant in a timezone
+````java
+Clock.fixed(Instant.parse("2022-11-08T09:10:20.00Z"), ZoneId.of("Europe/Berlin"));
+````
+With this set, `OffsetDateTime.now(clock)` will always return the same time.
+
+To always apply the default system timezone, we could use:
+````java
+Clock.systemDefaultZone();
+````
+
+By setting the clock parameter, testing the same application in different timezones, with or without DST becomes much easier.
+
+## Conclusion
+As discussed, we have seen the numerous advantages of the DateTime API and how it efficiently lets us save and retrieve timestamp information when working with databases.
+We have also seen a few examples of testing the created endpoints across timezones by manipulating the `Clock` in our unit tests.

@@ -18,7 +18,8 @@ In this article, we will try to understand the options available in Java and app
 
 ## Understanding GMT, UTC and DST
 - **Greenwich Mean Time (GMT)** is a timezone used in some parts of the world, mainly Europe and Africa.
-GMT was replaced as the international standard time in 1972 by UTC.
+It was recommended as the prime meridian of the world in 1884 and eventually became the basis for global system of timezones.
+However, the United Nations officially adopted UTC as a standard in 1972 since it was more accurate than GMT for setting clocks.
 - **Universal Coordinated Time (UTC)** is not a timezone. It is a universally preferred standard that can be used to display timezones.
 - **Daylight Savings Time (DST)** is the practice of setting clocks forward by one hour in the summer months
 and back again in the fall, to make better use of natural daylight. **Neither GMT or UTC get affected by DST**. To account for DST changes,
@@ -34,14 +35,44 @@ Let's look at a few reasons why you should avoid the date and time classes in th
 
 ### Missing Timezone Information
 
-{{% image alt="settings" src="images/posts/handling-timezones-in-spring/date.JPG" %}}
+````java
+@Test
+    public void testCurrentDate() {
+        Date now = new Date();
+        System.out.println(now);
+        Date before = new Date(1661832030000L);
+        System.out.println(before);
+    }
+
+````
+
+Output:
+````text
+Mon Sep 12 05:43:21 AEST 2022
+Tue Aug 30 14:00:30 AEST 2022
+````
 
 - `java.util.Date` represents an instant in time. 
 - Also, it has no timezone information. So, **it considers any given date to be in the default system timezone** which could differ from location to location.
 For instance, if a person runs this test from another country, they might see a different date and time derived from the given milliseconds.
 
 ### Creating Date Objects
-{{% image alt="settings" src="images/posts/handling-timezones-in-spring/customDate.JPG" %}}
+````java
+@Test
+    public void testCustomDate() {
+        System.out.println("Create date for 17 August 2022 23:30");
+        int year = 2022-1900;
+        int month = 8-1;
+        Date customDate = new Date(year, month, 17, 23, 30);
+        System.out.println(customDate);
+    }
+````
+
+Output:
+````text
+Create date for 17 August 2022 23:30
+Wed Aug 17 23:30:00 AEST 2022
+````
 
 - Creating a custom date with this API is very inconvenient. Firstly, the year starts with 1900, hence we must
 subtract 1900 so that the right year is considered.
@@ -49,7 +80,34 @@ subtract 1900 so that the right year is considered.
 
 ### Mutable Classes
 
-{{% image alt="settings" src="images/posts/handling-timezones-in-spring/mutableDate.JPG" %}}
+````java
+ @Test
+    public void testMutableClasses() {
+        System.out.println("Create date for 17 August 2022 23:30");
+        int year = 2022-1900;
+        int month = 8-1;
+        Date customDate = new Date(year, month, 17, 23, 30);
+        System.out.println(customDate);
+        customDate.setHours(20);
+        customDate.setMinutes(50);
+        System.out.println(customDate);
+
+        Calendar calendar = Calendar.getInstance();
+        System.out.println("Current Timezone: " + calendar.getTimeZone());
+        calendar.setTimeZone(TimeZone.getTimeZone("Europe/London"));
+        System.out.println("New Timezone: " + calendar.getTimeZone());
+    }
+````
+
+Output:
+````text
+Create date for 17 August 2022 23:30
+Wed Aug 17 23:30:00 AEST 2022
+Wed Aug 17 20:50:00 AEST 2022
+Current Timezone: sun.util.calendar.ZoneInfo[id="Australia/Sydney",offset=36000000,dstSavings=3600000,useDaylight=true,transitions=142,lastRule=java.util.SimpleTimeZone[id=Australia/Sydney,offset=36000000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=9,startDay=1,startDayOfWeek=1,startTime=7200000,startTimeMode=1,endMode=3,endMonth=3,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=1]]
+New Timezone: sun.util.calendar.ZoneInfo[id="Europe/London",offset=0,dstSavings=3600000,useDaylight=true,transitions=242,lastRule=java.util.SimpleTimeZone[id=Europe/London,offset=0,dstSavings=3600000,useDaylight=true,startYear=0,startMode=2,startMonth=2,startDay=-1,startDayOfWeek=1,startTime=3600000,startTimeMode=2,endMode=2,endMonth=9,endDay=-1,endDayOfWeek=1,endTime=3600000,endTimeMode=2]]
+
+````
 
 - Immutability is a key concept that ensures that java objects are thread-safe and concurrent access does not lead to an inconsistent state.
 - The Date API **provides mutators** such as `setHours()`, `setMinutes()`, `setDate()`. 
@@ -59,7 +117,23 @@ subtract 1900 so that the right year is considered.
 
 ### Formatting Dates
 
-{{% image alt="settings" src="images/posts/handling-timezones-in-spring/dateFormat.JPG" %}}
+````java
+@Test
+    public void testDateFormatter() {
+        TimeZone zone = TimeZone.getTimeZone("Europe/London");
+        DateFormat dtFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        Calendar cal = Calendar.getInstance(zone);
+        Date date = cal.getTime();
+        String strFormat = dtFormat.format(date);
+        System.out.println(strFormat);
+
+    }
+````
+
+Output :
+````text
+12/09/2022 05:50
+````
 
 With the `Date` API, formatting can be quite tedious and the process involves numerous steps. 
 As seen in the example above, there are various flaws in this process:
@@ -90,7 +164,7 @@ In this section, we will look at some commonly used date-time classes and its co
 
 **[java.time.LocalDate](https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html)** is an immutable date object that does not store time or timezone information. However, we can pass the `java.time.ZoneId` object to get the local date in a particular timezone.
 
-Converting 
+Sample conversion examples:  
 
 ````java
 LocalDate today = LocalDate.now();
@@ -113,8 +187,13 @@ System.out.println("Formatted Date : " + defaultZoneDate.format(formatter));
 ````
 
 Output:
-
-{{% image alt="settings" src="images/posts/handling-timezones-in-spring/localDateOutput.JPG" %}}
+````text
+Today's Date in the dafault format : 2022-09-12
+Custom Date in the default format : 2022-09-02
+Default Zone: Australia/Sydney
+Custom zone: 2022-09-11
+Formatted Date : 12-09-2022
+````
 
 ### `LocalTime`
 
@@ -142,7 +221,12 @@ System.out.println("Formatted Date : " + zoneTime.format(formatter));
 
 Output:
 
-{{% image alt="settings" src="images/posts/handling-timezones-in-spring/localTimeOutput.JPG" %}}
+````text
+Current Time in default format : 05:53:44.839445500
+Custom Time: 21:40:50
+Zone-specific time : 20:53:44.847446100
+Formatted Date : 20:53
+````
 
 ### LocalDateTime
 
@@ -176,8 +260,14 @@ System.out.println("Invalid Zone with Exception : java.time.zone.ZoneRulesExcept
 ````
 
 Output:
-
-{{% image alt="settings" src="images/posts/handling-timezones-in-spring/localDateTimeOutput.JPG" %}}
+````text
+Current Date/Time in system default timezone : 2022-09-12T05:54:31.941578100
+Current Date/Time with LocalDate and LocalTime in system timezone : 2022-09-12T05:54:31.945587400
+Custom Date/Time with custom date and custom time : 2022-09-01T10:30:59
+Formatted Date/Time : 12-09-2022 05:54
+Zoned Date Time : 2022-09-11T21:54:31.948621700
+Parsed From String to Object : 2022-02-20T10:30:45
+````
 
 ### ZonedDateTime
 
@@ -208,9 +298,14 @@ System.out.println("Change from 1 timezone to another : " + sameInstantDiffTimez
 ````
 
 Output:
-
-{{% image alt="settings" src="images/posts/handling-timezones-in-spring/zonedDateTimeOutput.JPG" %}}
-
+````text
+Current system zone date/time : 2022-09-12T05:55:11.401628700+10:00[Australia/Sydney]
+Convert LocalDateTime to ZonedDateTime : 2022-09-12T05:55:11.414805500+10:00[Australia/Sydney]
+ZonedDateTime from LocalDate and LocalTime : 2022-09-12T05:55:11.414805500+10:00[Australia/Sydney]
+ZonedDateTime Custom : 2022-02-12T20:45:50.000000055Z[Europe/London]
+String to ZonedTimeStamp for Europe/London : 2022-03-27T10:15:30+01:00[Europe/London]
+Change from 1 timezone to another : 2022-03-27T14:45:30+05:30[Asia/Calcutta]
+````
 
 ### OffsetDateTime
 
@@ -254,14 +349,22 @@ System.out.println("Convert from ZonedDateTime to OffsetDateTime : " + convertFr
 ````
 
 Output:
-
-{{% image alt="settings" src="images/posts/handling-timezones-in-spring/offsetDateTimeOutput.JPG" %}}
+````text
+System default timezone current zone offset date/time : 2022-09-12T05:55:51.019241700+10:00
+Current system zone date/time : 2022-09-12T05:55:51.025237600+10:00[Australia/Sydney]
+Europe/London zone offset date/time : 2022-09-11T20:55:51.025237600+01:00
+Get Offset date/time from Locals : 2022-09-12T05:55:51.027241+10:00
+Get Offset date/time from LocalDateTime with Offset at the current Instant considered 
+(does not consider DST at custom date): 2022-11-01T10:10:10+10:00
+Get Offset date/time from Local with offset for custom LocalDateTime considered 
+(Considers DST at custom date) : 2022-09-12T05:55:51.028248500+11:00
+````
 
 ## Compatibility with the legacy API
 
 As a part of the Date/Time API, **methods have been introduced to convert from legacy classes to the newer API objects**.
 
-Sample Code Conversion:
+Sample conversion examples:
 
 ````java
 @Test
@@ -304,8 +407,18 @@ public void testWorkingWithLegacyCalendarInJava8() {
 As we can see in the examples, methods are provided to convert to `java.time.Instant` which represents a timestamp at a particular instant.
 
 Output: 
-
-{{% image alt="settings" src="images/posts/handling-timezones-in-spring/compatibilityOutput.JPG" %}}
+````text
+java.util.Calendar : java.util.GregorianCalendar[time=1662926244673,areFieldsSet=true,areAllFieldsSet=true,lenient=true,zone=sun.util.calendar.ZoneInfo[id="Australia/Sydney",offset=36000000,dstSavings=3600000,useDaylight=true,transitions=142,lastRule=java.util.SimpleTimeZone[id=Australia/Sydney,offset=36000000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=9,startDay=1,startDayOfWeek=1,startTime=7200000,startTimeMode=1,endMode=3,endMonth=3,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=1]],firstDayOfWeek=1,minimalDaysInFirstWeek=1,ERA=1,YEAR=2022,MONTH=8,WEEK_OF_YEAR=38,WEEK_OF_MONTH=3,DAY_OF_MONTH=12,DAY_OF_YEAR=255,DAY_OF_WEEK=2,DAY_OF_WEEK_IN_MONTH=2,AM_PM=0,HOUR=5,HOUR_OF_DAY=5,MINUTE=57,SECOND=24,MILLISECOND=673,ZONE_OFFSET=36000000,DST_OFFSET=0]
+Calendar Date : Mon Sep 12 05:57:24 AEST 2022
+Convert java.util.Calendar to Instant : 2022-09-11T19:57:24.673Z for timezone : sun.util.calendar.ZoneInfo[id="Australia/Sydney",offset=36000000,dstSavings=3600000,useDaylight=true,transitions=142,lastRule=java.util.SimpleTimeZone[id=Australia/Sydney,offset=36000000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=9,startDay=1,startDayOfWeek=1,startTime=7200000,startTimeMode=1,endMode=3,endMonth=3,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=1]]
+Instant at a different zone : 2022-09-11T20:57:24.673+01:00[Europe/London]
+LocalDateTime value : 2022-09-11T20:57:24.673
+java.util.Date : Mon Sep 12 05:57:24 AEST 2022
+Convert java.util.Date to Instant : 2022-09-11T19:57:24.754Z
+Use Instant to convert to ZonedDateTime : 2022-09-12T05:57:24.754+10:00[Australia/Sydney]
+Convert to LocalDate : 2022-09-12
+ZonedDateTime of a different zone : 2022-09-11T20:57:24.754+01:00[Europe/London]
+````
 
 ## Advantages of the new DateTime API
 - Operations such as formatting, parsing, timezone conversions can be easily performed.
@@ -430,7 +543,8 @@ mvnw clean verify spring-boot:run \
 
 We have configured two endpoints in the controller class:
 - `http://localhost:8083/app/v1/timezones/default` stores the current date/time in the timezone specified by the JVM argument.
-- `http://localhost:8083/app/v1/timezones/dst` stores a custom date/time in the jvm arguments specified timezone.
+- `http://localhost:8083/app/v1/timezones/dst` stores a custom date/time in the jvm arguments specified timezone. This endpoint indicates
+the end of DST in the specific timezone. This will help understand how the application handles DST changes.
 
 {{% info title="`Daylight Savings Time`" %}}
 As on 8th September 2022, both the timezones **Europe/London** and **Europe/Berlin** are on DST. Their corresponding timezones are **British Summer Time (BST) (UTC+1)** and **Central European Summer Time (CEST) (UTC+2)**.
@@ -440,27 +554,27 @@ After 30th October 2022, the DST will end and they will be back to **Greenwich M
 
 ### Comparing results from both timezones
 
-For Europe/London at the current date/time :
+Lets's compare the output in Postman for the REST endpoint with the data stored in the DB For **Europe/London** at the **current date/time** :
 
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/spring_tz_1.JPG" %}}
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/db_tz_1.JPG" %}}
 
 On comparison, we can make note of the following points:
-- `VARCHAR` representation of date in the database is not recommended, since it stores the date in the format it was sent. This could result in inconsistent date formats and make it difficult to convert back in the application.
-- `java.util.Date` stored in the DB has no zone information making it difficult to represent the right date-time format in the application.
-- Similarly, the `DATE` and `TIME` columns need additional information especially when working with timezones.
-- `LocalDateTime` although represents the correct date-time still needs additional information when working with timezones.
-- As we can see, `OffsetDateTime` and `ZonedDateTime` give all the required information for the dates to be stored in UTC and retrieved in the right format.
-- `DATETIME` and `TIMESTAMP` should be the preferred choice when storing date-time in MySQL databases.
+- `VARCHAR` representation of date (column `date_str`) in the database is not recommended, since it stores the date in the format and the zone it was sent. This could result in inconsistent date formats and the final date stored will not be in UTC making it difficult to convert back in the application.
+- `java.util.Date` stored in the DB (column `date_time`) has no zone information making it difficult to represent the right date-time format in the application.
+- Similarly, the `DATE` and `TIME` columns (columns `local_date` and `local_time`) need additional information especially when working with timezones.
+- `LocalDateTime` (column `local_datetime_dt`) although represents the correct date-time still needs additional information when working with timezones.
+- As we can see, `OffsetDateTime` and `ZonedDateTime` (columns `offset_datetime` and `zoned_datetime`) give all the required information for the dates to be stored in UTC and retrieved in the right format.
+Therefore, we can conclude that `DATETIME` and `TIMESTAMP` should be the preferred choice when storing date-time in MySQL databases.
 
-For Europe/Berlin at the current date/time :
+Now, let's consider another timezone **Europe/Berlin** and compare its output in Postman to the data stored in the DB at the **current date/time** :
 
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/spring_tz_2.JPG" %}}
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/db_tz_2.JPG" %}}
 
 The results in this timezone are consistent with the points noted above.
 
-Now, lets see what happens at Europe/Berlin when the DST ends on 30th October 2022. **The custom date considered here is 8th November 2022**.
+Next, lets see what happens when the timezone is set to **Europe/Berlin** and when the **DST ends on 30th October 2022**. **The custom date considered here is 8th November 2022**.
 
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/spring_tz_3.JPG" %}}
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/db_tz_3.JPG" %}}
@@ -509,6 +623,12 @@ Clock.systemDefaultZone();
 ````
 
 By setting the clock parameter, testing the same application in different timezones, with or without DST becomes much easier.
+
+## Best practices for storing timezones in the Database
+- Most databases support date and timestamp fields. Always store dates in the corresponding column types and never use `VARCHAR`.
+- Recommended practice is to store timestamps in UTC to help handle zone conversions better.
+- Column types like `DATE` and `TIME` should not be preferred since they do not have zone information. In most cases you would want to store data with timezone that will cater to multiple timezones making the application less prone to time conversion errors.
+
 
 ## Conclusion
 As discussed, we have seen the numerous advantages of the DateTime API and how it efficiently lets us save and retrieve timestamp information when working with databases.

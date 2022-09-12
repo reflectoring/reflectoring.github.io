@@ -148,7 +148,7 @@ const Button = styled.button`
   `;
 
 const clickMe = () => {
-  alert("You clicked me!");
+  alert("A new shiny feature pops up!");
 };
 
 class App extends Component {
@@ -158,7 +158,7 @@ class App extends Component {
   }
   componentDidMount() {
     const user = {
-      // UI based user
+      // UI based logged-in user
       key: 'john_doe'
     }
     // SDK requires Client-side ID for UI call

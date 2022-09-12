@@ -98,13 +98,15 @@ npm install launchdarkly-js-client-sdk
 
 ## Toggling a Feature on the Fly
 
-In our first use case, let’s try to simply define a string feature flag in the LaunchDarkly UI. 
+In our first use case, let’s try to simply define a Boolean feature flag in the LaunchDarkly UI. 
 
 We will simply define a feature button in the UI and show it to the user or not, depending on the targeting rules defined in Launchdarkly.
 
 The feature flag we define in LaunchDarkly UI looks something like this:
 
 {{% image alt="String Feature Flag LaunchDarkly" src="images/posts/nodejs-frontend-launchdarkly/Hide_User.png" %}}
+
+Then we will define “*Individual Targeting*” for that feature flag and assign that to a user. In our example, we will simply define it “true” for John Doe based upon the user being passed as part of the code. In real implementation, this would be driven by the session id of the logged-in user of this UI.
 
 As discussed above, we will fetch the *Client-Side ID* and add it in the code.
 
@@ -157,7 +159,7 @@ class App extends Component {
   componentDidMount() {
     const user = {
       // UI based user
-      key: 'user_a'
+      key: 'john_doe'
     }
     // SDK requires Client-side ID for UI call
     this.ldclient = LDClient.initialize('62e*********************', user);
@@ -167,7 +169,7 @@ class App extends Component {
   onLaunchDarklyUpdated() {
     this.setState({
       featureFlags: {
-        hideUser: this.ldclient.variation('hidden-user', '')
+        showShinyNewFeature: this.ldclient.variation('show-shiny-new-feature', false)
       }
     })
   }
@@ -178,7 +180,7 @@ class App extends Component {
     return (
       <div className="App">
         <div>{ 
-            this.state.featureFlags.hideUser !== 'John Doe'
+            this.state.featureFlags.hideUser
               ? <Button theme='blue' onClick={clickMe}>Shiny New Feature</Button>
               : '' }
         </div>
@@ -205,17 +207,17 @@ When the user is not set in the LaunchDarkly UI, our React UI looks like below:
 
 {{% image alt="React User List" src="images/posts/nodejs-frontend-launchdarkly/Button.png" %}}
 
-Now we will define “John Doe” as name in LaunchDarkly feature flag variation. Once that is saved, our UI will hide this button. In a real production implementation, this name will be fetched from the logged-in session of the user and matched in Launchdarkly with its ID or username.
+Now based upon the user information, this flag will return true if the user is “John Doe”. It will return false for any other user who would try to access this UI. In a real production implementation, this name will be fetched from the logged-in session of the user and matched in Launchdarkly with its ID or username.
 
-## Sorting Data using a Boolean Feature Flags
+## Sorting Data using Feature Flags
 
 Next we will try to sort our content in the UI using our feature flags. 
 
-Let's imagine we have a list of users, each with a timestamp. We can sort the users naturally or based upon that timestamp. We will create a feature flag variation in LaunchDarkly UI with a boolean type and try to use it in our code.
+Let's imagine we have a list of users, each with a timestamp. We can sort the users naturally or based upon that timestamp. We will create a feature flag variation in LaunchDarkly UI with a string type and try to use it in our code.
 
 {{% image alt="Boolean Feature Flag LaunchDarkly" src="images/posts/nodejs-frontend-launchdarkly/User_List_Sorting.png" %}}
 
-Then we will add the sorting logic in our same `App.js`and use it with a switch in the UI. The UI will display either *Natural Sorting* or *Time Sorting*. By default, if the flag is set to true then Time Sorting takes place otherwise Natural Sorting:
+Then we will add the sorting logic in our same `App.js` and use it with a switch in the UI. The UI will display either *Natural Sorting* or *TimeStamp based Sorting*. By default, if the flag is set to “*timestamp*” then Time-based Sorting takes place otherwise Natural Sorting:
 
 ```javascript
 import React, { Component } from 'react';
@@ -240,8 +242,8 @@ class App extends Component {
   }
   componentDidMount() {
     const user = {
-      // UI based user
-      key: 'user_a'
+      // UI based logged-in user
+      key: 'john_doe'
     }
     // SDK requires Client-side ID for UI call
     this.ldclient = LDClient.initialize('62e*********************', user);
@@ -251,7 +253,7 @@ class App extends Component {
   onLaunchDarklyUpdated() {
     this.setState({
       featureFlags: {
-        defaultSortingIsAdded: this.ldclient.variation('user-list-default-sorting-check', true),
+        defaultSortingType: this.ldclient.variation('sort-order', "natural"),
         hideUser: this.ldclient.variation('hidden-user', '')
       }
     })
@@ -263,13 +265,13 @@ class App extends Component {
 
     let sorter;
     if (this.state.selectedSortOrder) {
-      if (this.state.selectedSortOrder === 'added') {
+      if (this.state.selectedSortOrder === 'timestamp') {
         sorter = isNewer
       } else if (this.state.selectedSortOrder === 'natural') {
         sorter = undefined
       }
     } else {
-      if (this.state.featureFlags.defaultSortingIsAdded) {
+      if (this.state.featureFlags.defaultSortingType === 'timestamp') {
         sorter = isNewer
       } else {
         sorter = undefined
@@ -283,7 +285,7 @@ class App extends Component {
             onClick={() => this.setState({ selectedSortOrder: 'natural' })}>Natural sorting</div>
         <div
           style={{ fontWeight: sorter === isNewer ? 'bold' : 'normal'}}
-          onClick={() => this.setState({ selectedSortOrder: 'added' })}>Time sorting</div>
+          onClick={() => this.setState({ selectedSortOrder: 'timestamp' })}>Time sorting</div>
         <ul>
           {this.state.users.slice().sort(sorter).map(user =>
              <div>{ user.name }</div>

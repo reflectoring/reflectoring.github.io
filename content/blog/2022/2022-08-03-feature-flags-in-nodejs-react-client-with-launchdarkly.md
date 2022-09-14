@@ -1,5 +1,5 @@
 ---
-title: "Feature Flags in Node.js React client with LaunchDarkly"
+title: "Feature Flags with React and LaunchDarkly"
 categories: ["Node"]
 date: 2022-08-21 00:00:00 +1100 
 modified: 2022-08-21 00:00:00 +1100
@@ -9,9 +9,11 @@ image: images/stock/0104-on-off-1200x628-branded.jpg
 url: nodejs-feature-flag-launchdarkly-react
 ---
 
-We often see various web apps release new experimental features directly in the production UI to test whether their users like those feature or not. It gives them a lot of exposure to understand the needs of a variety of users and gather feedback around it. Rolling out features slowly to more and more users also allows to catch any performance glitches early. If any issue comes up, then they roll back that particular feature without any downtime.
+We often see various web apps release new experimental features directly in the production UI to test whether their users like those features or not. These features get exposure to a variety of users and the developers can gather feedback around those features without rolling it out to everybody. 
 
-In this article, we'll discuss the concept of feature flags to manage our frontend features dynamically at runtime. We will use LaunchDarkly as a feature management platform, which allows us to managing our features in a UI by defining targeting rules.
+Rolling out features slowly to more and more users also allows to catch any performance glitches early. If any issue comes up, then they roll back that particular feature without any downtime.
+
+In this article, we'll discuss the concept of feature flags to manage our frontend features dynamically at runtime. We will use LaunchDarkly as a feature management platform, which allows us to managing our features in a UI by defining targeting rules. We will connect to LaunchDarkly directly from a React web app.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/nodejs-react-feature-flag-launchdarkly" %}}
 
@@ -26,11 +28,10 @@ Feature flags are commonly used in a web UI to perform the following operations:
 
 Some of the most common use cases where we can use feature flags are:
 
-- **Progressive delivery** - This is a practice that gives teams the ability to decide when and how to roll out new software features. It means to roll out features early, iterate on them, and progressively roll it out to more and more users over time.
+- **Progressive delivery** - This is a practice that gives teams the ability to decide when and how to roll out new software features. It means to roll out features early, iterate on them, and progressively roll them out to more and more users over time.
 - **Beta testing and qualitative feedback** - Before deploying a feature to the full user base, feature flags are a wonderful way to test it with a beta tester group. This way, we can gather user feedback, and assess performance. Before the product is ready for prime time, developers must seek consumer feedback on performance, usability, and functionality in this area of progressive delivery. We can target individual users or groups using the granular control provided by feature flags to collect their opinion on the experience.
 - **Kill switches** - A kill switch is a mechanism that does exactly what it says: it stops something immediately. If we start receiving several bug reports just after rolling out a feature, we can just turn off the feature rather than having to roll back to another version and potentially damage other features by a new deployment.
 - **A/B testing** - Consider adding a new button to our website and testing whether it receives more clicks when it is red or blue. Using feature flags, we could deploy feature A (the red button) to 50% of our consumers and feature B (the blue button) to the remaining 50%. Then we may gather data to determine if A or B performed better.
-- **Faster incident resolution** - Although we don't typically consider it, feature flags can speed up issue resolution. In fact, using feature flags can fully stop problems from ever occurring. We present real-world use cases and examples of how feature flags can be used to solve problems in our article on faster incident resolution. Feature flags might be viewed in this regard as the first line of defense if something goes wrong during production.
 
 Read more about [different rollout strategies with feature flags](/rollout-strategies-with-feature-flags) in our dedicated article.
 
@@ -48,13 +49,13 @@ We can use the LaunchDarkly SDK in our code to access the feature flag variation
 
 ## Client-side and Server-side Feature Flags
 
-In the previous article [about feature flags in Node.js](https://reflectoring.io/nodejs-admin-feature-flag-launchdarkly/), we had used LaunchDarkly's *server-side SDK* which is built for multi-user server environments. In this article, we will use the *client-side SDK* which is built for client-side web apps, desktop apps, embedded apps, and mobile apps that have exactly one (local) user where security is less of a concern.
+In the previous article [about feature flags in Node.js](/admin-operations-with-nodejs-launchdarkly), we had used LaunchDarkly's *server-side SDK* which is built for multi-user server environments. In this article, we will use the *client-side SDK* which is built for client-side web apps, desktop apps, embedded apps, and mobile apps that have exactly one (local) user where security is less of a concern.
 
 LaunchDarkly's server-side SDKs work with server-side apps that are hosted on your own network or a reliable cloud network. These SDKs can safely receive flag data without needing to filter out sensitive data that is potentially contained in targeting rules because the server is secured. Targeting rules are evaluated in our server application.
 
 With client-side SDKs, on the other hand, targeting rules are evaluated on the LaunchDarkly server on behalf of the local user to keep sensitive targeting rules secure.
 
-Client-side SDKs will be unable to download and store an entire ruleset due to security concerns. They are vulnerable to users investigating SDK content by unpacking the SDK on a mobile device or examining its behavior in a browser because they typically run on customers' own devices. The client-side SDKs confirm and update flag rules by contacting LaunchDarkly servers via streaming connections or REST API requests rather than storing potentially sensitive data.
+Client-side SDKs will be unable to download and store an entire ruleset due to those security concerns. They are vulnerable to users investigating SDK content by unpacking the SDK on a mobile device or examining its behavior in a browser because they typically run on customers' own devices. The client-side SDKs confirm and update flag rules by contacting LaunchDarkly servers via streaming connections or REST API requests rather than storing potentially sensitive targeting data.
 
 For a client-side or mobile SDK to evaluate our feature flags, the SDK needs to authenticate against the LaunchDarkly server. According to the [documentation](https://docs.launchdarkly.com/home/getting-started/feature-flags#making-flags-available-to-client-side-and-mobile-sdks), we need to enable the *"SDKs using Client-side ID"* option for when we want to access feature flags from a React UI or any Javascript UI. We will therefore retrieve the *Client-Side ID* from the LaunchDarkly "Projects" page and paste it into our code. Additionally, we need to confirm that the flag's targeting option is turned on after creating the flag.
 
@@ -106,7 +107,7 @@ The feature flag we define in LaunchDarkly UI looks something like this:
 
 {{% image alt="String Feature Flag LaunchDarkly" src="images/posts/nodejs-frontend-launchdarkly/Hide_User.png" %}}
 
-Then we will define “*Individual Targeting*” for that feature flag and assign that to a user. In our example, we will simply define it “true” for John Doe based upon the user being passed as part of the code. In real implementation, this would be driven by the session id of the logged-in user of this UI.
+Then we will define “*Individual Targeting*” for that feature flag and assign that to a user. In our example, we will simply define it “true” for John Doe based upon the user being passed as part of the code.
 
 As discussed above, we will fetch the *Client-Side ID* and add it in the code.
 
@@ -209,7 +210,7 @@ When the user is not set in the LaunchDarkly UI, our React UI looks like below:
 
 Now based upon the user information, this flag will return true if the user is “John Doe”. It will return false for any other user who would try to access this UI. In a real production implementation, this name will be fetched from the logged-in session of the user and matched in Launchdarkly with its ID or username.
 
-## Sorting Data using Feature Flags
+## Sorting Data Using Feature Flags
 
 Next we will try to sort our content in the UI using our feature flags. 
 

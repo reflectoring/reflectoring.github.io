@@ -518,19 +518,23 @@ mvnw clean verify spring-boot:run \
 ````
 
 We have configured two endpoints in the controller class:
-- `http://localhost:8083/app/v1/timezones/default` stores the current date/time in the timezone specified by the JVM argument.
-- `http://localhost:8083/app/v1/timezones/dst` stores a custom date/time in the jvm arguments specified timezone. This endpoint indicates
+- `http://localhost:8083/app/v1/timezones/default` stores a specific date/time in the jvm argument specified timezone. This endpoint indicates
 the end of DST in the specific timezone. This will help understand how the application handles DST changes.
 
 {{% info title="`Daylight Savings Time`" %}}
 As on 8th September 2022, both the timezones **Europe/London** and **Europe/Berlin** are on DST. Their corresponding timezones are **British Summer Time (BST) (UTC+1)** and **Central European Summer Time (CEST) (UTC+2)**.
 
 After 30th October 2022, the DST will end and they will be back to **Greenwich Mean Time (GMT) (UTC)** and **Central European Time (CET) (UTC+1)** respectively.
+
+In our sample application we are considering the below dates and times for easy understanding and to ensure the test cases dont fail.
+
+**DST Date/Time : 8th September 2022 21:21:17**
+**Non DST Date/Time : 8th November 2022 09:10:20**
 {{% /info %}}
 
 ### Comparing Timezone Results
 
-Lets's compare the output in Postman for the REST endpoint with the data stored in the DB For **Europe/London** at the **current date/time** :
+Lets's compare the output in Postman for the REST endpoint with the data stored in the DB For **Europe/London** :
 
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/spring_tz_1.JPG" %}}
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/db_tz_1.JPG" %}}
@@ -543,7 +547,7 @@ On comparison, we can make note of the following points:
 - As we can see, `OffsetDateTime` and `ZonedDateTime` (columns `offset_datetime` and `zoned_datetime`) give all the required information for the dates to be stored in UTC and retrieved in the right format.
 Therefore, we can conclude that `DATETIME` and `TIMESTAMP` should be the preferred choice when storing date-time in MySQL databases.
 
-Now, let's consider another timezone **Europe/Berlin** and compare its output in Postman to the data stored in the DB at the **current date/time** :
+Now, let's consider another timezone **Europe/Berlin** and compare its output in Postman to the data stored in the DB :
 
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/spring_tz_2.JPG" %}}
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/db_tz_2.JPG" %}}
@@ -573,14 +577,20 @@ to get the corresponding date-time.
 
 ````java
 @TestConfiguration
-public class ClockConfiguration {
+public class ServiceConfiguration {
 
-    @Bean
-    public Clock clock() {
-        return Clock.system(ZoneId.of("Europe/London"));
-    }
+  @Bean
+  public Clock clock() {
+    return Clock.system(ZoneId.of("Europe/London"));
+  }
 }
 ````
+
+Further, we also need to enable the bean overriding feature in our `application.yml` file as below:
+````text
+  spring.main.allow-bean-definition-overriding=true
+````
+This will help us override the beans for out test configuration. To understand how this works, refer to [this article](https://reflectoring.io/spring-boot-testconfiguration/). 
 
 Now in order to get timezone specific information, we can use
 ````java
@@ -599,6 +609,25 @@ Clock.systemDefaultZone();
 ````
 
 By setting the clock parameter, testing the same application in different timezones, with or without DST becomes much easier.
+
+We can then use some assertions in our tests to make sure the conversions are according to the testing timezones
+
+````java
+    @Test
+    public void saveDateTimeObject() throws Exception {
+        ResultActions response = mockMvc.perform(post("/app/v1/timezones/default"));
+        List<DateTimeEntity> list = repository.findAll();
+        assertTrue(!list.isEmpty());
+        assertTrue(list.size() == 1);
+        response.andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.applicationTimezone").value("Europe/London"))
+        .andExpect(jsonPath("$.['zonedDateTime (column zoned_datetime)']", Matchers.containsString("+01:00")))
+        .andExpect(jsonPath("$.['offsetDateTime (column offset_datetime)']", Matchers.containsString("+01:00")))
+        .andExpect(jsonPath("$.['localDateTime (column local_datetime_dt)']", Matchers.not(Matchers.containsString("+01:00"))));
+    }
+
+````
 
 ## Best Practices for storing Timezones in the Database
 - Most databases support date and timestamp fields. Always store dates in the corresponding column types and never use `VARCHAR`.

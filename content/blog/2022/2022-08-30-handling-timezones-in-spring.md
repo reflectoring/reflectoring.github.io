@@ -518,8 +518,8 @@ mvnw clean verify spring-boot:run \
 ````
 
 We have configured two endpoints in the controller class:
-- `http://localhost:8083/app/v1/timezones/default` stores a specific date/time in the jvm argument specified timezone. This endpoint indicates
-the end of DST in the specific timezone. This will help understand how the application handles DST changes.
+- `http://localhost:8083/app/v1/timezones/default` stores a specific date/time in the jvm argument specified timezone. 
+- `http://localhost:8083/app/v1/timezones/dst` This endpoint indicates the end of DST in the specific timezone for the defined date. This will help us understand how the application handles DST changes.
 
 {{% info title="`Daylight Savings Time`" %}}
 As on 8th September 2022, both the timezones **Europe/London** and **Europe/Berlin** are on DST. Their corresponding timezones are **British Summer Time (BST) (UTC+1)** and **Central European Summer Time (CEST) (UTC+2)**.

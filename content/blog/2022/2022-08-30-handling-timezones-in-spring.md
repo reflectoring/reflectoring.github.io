@@ -529,6 +529,7 @@ After 30th October 2022, the DST will end and they will be back to **Greenwich M
 In our sample application we are considering the below dates and times for easy understanding and to ensure the test cases dont fail.
 
 **DST Date/Time : 8th September 2022 21:21:17**
+
 **Non DST Date/Time : 8th November 2022 09:10:20**
 {{% /info %}}
 
@@ -559,7 +560,7 @@ Next, lets see what happens when the timezone is set to **Europe/Berlin** and wh
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/spring_tz_3.JPG" %}}
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/db_tz_3.JPG" %}}
 
-When DST ends, Europe/Berlin will shift to UTC+1 timezone and this is consistent with the results as seen the output above.
+**When DST ends, Europe/Berlin will shift to UTC+1 timezone** and this is consistent with the results as seen the output above.
 In all above cases, `OffsetDateTime` and `ZonedDateTime` show the same results. This is because, the **`OffsetDateTime` is derived from `ZoneId`**. All DST rules apply to ZoneId
 and hence `OffsetDateTime` gives the correct representation that includes DST changes. As discussed in the API section that details differences between OffsetDateTime and ZonedDateTime,
 we could use the one that best suits our use-case.
@@ -586,31 +587,30 @@ public class ServiceConfiguration {
 }
 ````
 
-Further, we also need to enable the bean overriding feature in our `application.yml` file as below:
+Further, we also need to **enable the bean overriding feature** in our `application.yml` file as below:
 ````text
   spring.main.allow-bean-definition-overriding=true
 ````
-This will help us override the beans for out test configuration. To understand how this works, refer to [this article](https://reflectoring.io/spring-boot-testconfiguration/). 
+This will help us override the beans for our test configuration. To understand how this works, refer to [this article](https://reflectoring.io/spring-boot-testconfiguration/). 
 
-Now in order to get timezone specific information, we can use
+Now in order to get **timezone specific information**, we can use:
 ````java
 OffsetDateTime current = OffsetDateTime.now(clock);
 ````
 
-Further, we could also fix the clock to set it to a particular instant in a timezone
+Further, we could also **fix the clock to set it to a particular instant in a timezone**:
 ````java
 Clock.fixed(Instant.parse("2022-11-08T09:10:20.00Z"), ZoneId.of("Europe/Berlin"));
 ````
 With this set, `OffsetDateTime.now(clock)` will always return the same time.
 
-To always apply the default system timezone, we could use:
+To **always apply the default system timezone**, we could use:
 ````java
 Clock.systemDefaultZone();
 ````
 
 By setting the clock parameter, testing the same application in different timezones, with or without DST becomes much easier.
-
-We can then use some assertions in our tests to make sure the conversions are according to the testing timezones
+We can then use some assertions in our tests to make sure the conversions are according to the configured timezones.
 
 ````java
     @Test
@@ -630,6 +630,8 @@ We can then use some assertions in our tests to make sure the conversions are ac
 ````
 
 ## Best Practices for storing Timezones in the Database
+Based on all the information we have gathered from executing our sample application, we can derive a common set of best practices that will apply to any database and will help us work with timezones efficiently. 
+They can be listed as below:
 - Most databases support date and timestamp fields. Always store dates in the corresponding column types and never use `VARCHAR`.
 - Recommended practice is to store timestamps in UTC to help handle zone conversions better.
 - Column types like `DATE` and `TIME` should not be preferred since they do not have zone information. In most cases you would want to store data with timezone that will cater to multiple timezones making the application less prone to time conversion errors.

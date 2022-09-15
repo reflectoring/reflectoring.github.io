@@ -1,6 +1,6 @@
 
 ---
-title: "Handling timezones in a Spring Boot Application"
+title: "Handling Timezones in a Spring Boot Application"
 categories: ["Spring"]
 date: 2022-08-30 00:00:00 +1100
 modified: 2022-08-30 00:00:00 +1100
@@ -41,7 +41,7 @@ Let's look at a few reasons why you should avoid the date and time classes in th
         Date now = new Date();
         Date before = new Date(1661832030000L);
         assertThat(now).isAfter(before);
-        }
+    }
 
 ````
 
@@ -51,8 +51,8 @@ For instance, if a person runs this test from another country, they might see a 
 
 ### Creating Date Objects
 ````java
-@Test
-public void testCustomDate() {
+    @Test
+    public void testCustomDate() {
         System.out.println("Create date for 17 August 2022 23:30");
         int year = 2022-1900;
         int month = 8-1;
@@ -60,7 +60,7 @@ public void testCustomDate() {
         assertThat(customDate.getYear()).isEqualTo(year);
         assertThat(customDate.getMonth()).isEqualTo(month);
         assertThat(customDate.getDate()).isEqualTo(17);
-        }
+    }
 ````
 
 - Creating a custom date with this API is very inconvenient. Firstly, the year starts with 1900, hence we must
@@ -70,8 +70,8 @@ subtract 1900 so that the right year is considered.
 ### Mutable Classes
 
 ````java
- @Test
-public void testMutableClasses() {
+    @Test
+    public void testMutableClasses() {
         System.out.println("Create date for 17 August 2022 23:30");
         int year = 2022-1900;
         int month = 8-1;
@@ -87,7 +87,7 @@ public void testMutableClasses() {
         assertThat(calendar.getTimeZone()).isEqualTo(TimeZone.getTimeZone("Australia/Sydney"));
         calendar.setTimeZone(TimeZone.getTimeZone("Europe/London"));
         assertThat(calendar.getTimeZone()).isEqualTo(TimeZone.getTimeZone("Europe/London"));
-        }
+    }
 ````
 
 - Immutability is a key concept that ensures that java objects are thread-safe and concurrent access does not lead to an inconsistent state.
@@ -99,8 +99,8 @@ public void testMutableClasses() {
 ### Formatting Dates
 
 ````java
-@Test
-public void testDateFormatter() {
+    @Test
+    public void testDateFormatter() {
         TimeZone zone = TimeZone.getTimeZone("Europe/London");
         DateFormat dtFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Calendar cal = Calendar.getInstance(zone);
@@ -108,7 +108,7 @@ public void testDateFormatter() {
         String strFormat = dtFormat.format(date);
         assertThat(strFormat).isNotNull();
 
-        }
+    }
 ````
 
 With the `Date` API, formatting can be quite tedious and the process involves numerous steps. 
@@ -140,11 +140,11 @@ In this section, we will look at some commonly used date-time classes and its co
 
 **[java.time.LocalDate](https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html)** is an immutable date object that does not store time or timezone information. However, we can pass the `java.time.ZoneId` object to get the local date in a particular timezone.
 
-Examples:  
+Sample conversion examples:  
 
 ````java
-@Test
-public void testLocalDate() {
+    @Test
+    public void testLocalDate() {
         LocalDate today = LocalDate.now(clock);
         assertThat(today.get(ChronoField.MONTH_OF_YEAR)).isPositive();
         assertThat(today.get(ChronoField.YEAR)).isPositive();
@@ -171,7 +171,7 @@ public void testLocalDate() {
         Assertions.assertThrows(DateTimeException.class, () -> {
         LocalDate.of(2022, Month.SEPTEMBER, 31);
         });
-        }
+    }
 ````
 
 ### `LocalTime`
@@ -181,8 +181,8 @@ public void testLocalDate() {
 Sample Conversion Examples:
 
 ````java
-@Test
-public void testLocalTime() {
+    @Test
+    public void testLocalTime() {
         LocalTime now = LocalTime.now(clock);
         assertThat(now.get(ChronoField.HOUR_OF_DAY)).isPositive();
         assertThat(now.get(ChronoField.MINUTE_OF_DAY)).isPositive();
@@ -206,18 +206,18 @@ public void testLocalTime() {
         Assertions.assertThrows(DateTimeException.class, () -> {
         LocalTime.of(25, 40, 50);
         });
-        }
+    }
 ````
 
-### LocalDateTime
+### `LocalDateTime`
 
 **[java.time.LocalDateTime](https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html)** is an immutable object that is a combination of both `java.time.LocalDate` and `java.time.LocalTime`.
 
 Sample Conversion examples:
 
 ````java
-@Test
-public void testLocalDateTime() {
+    @Test
+    public void testLocalDateTime() {
         LocalDateTime currentDateTime = LocalDateTime.now(clock);
         assertThat(currentDateTime.get(ChronoField.DAY_OF_MONTH)).isPositive();
         assertThat(currentDateTime.get(ChronoField.MONTH_OF_YEAR)).isPositive();
@@ -253,19 +253,19 @@ public void testLocalDateTime() {
         Assertions.assertThrows(ZoneRulesException.class, () -> {
         LocalDateTime.now(ZoneId.of("Europ/London"));
         });
-        }
+    }
 
 ````
 
-### ZonedDateTime
+### `ZonedDateTime`
 
-**[java.time.ZonedDateTime](https://docs.oracle.com/javase/8/docs/api/java/time/ZonedDateTime.html)** is an immutable representation of date, time and timezone. It automatically handles Daylight Saving Time(DST) clock changes via the `java.time.ZoneId` which internally resolves the zone offset.
+**[java.time.ZonedDateTime](https://docs.oracle.com/javase/8/docs/api/java/time/ZonedDateTime.html)** is an immutable representation of date, time and timezone. It automatically handles Daylight Saving Time (DST) clock changes via the `java.time.ZoneId` which internally resolves the zone offset.
 
 Sample conversion example:
 
 ````java
-@Test
-public void testZonedDateTime() {
+    @Test
+    public void testZonedDateTime() {
         ZonedDateTime currentZoneDateTime = ZonedDateTime.now(clock);
         assertThat(currentZoneDateTime.getZone()).isEqualTo(ZoneId.of("Australia/Sydney"));
         assertThat(currentZoneDateTime.get(ChronoField.DAY_OF_MONTH)).isPositive();
@@ -295,10 +295,10 @@ public void testZonedDateTime() {
         ZonedDateTime parsedZonedTime1 = ZonedDateTime.parse(timeStamp1, formatter.withZone(ZoneId.of("Europe/London")) );
         ZonedDateTime parsedZonedTime2 = parsedZonedTime1.withZoneSameInstant(ZoneId.of("Australia/Sydney"));
         assertThat(parsedZonedTime1).isCloseTo(parsedZonedTime2, within(9, ChronoUnit.HOURS));
-        }
+    }
 ````
 
-### OffsetDateTime
+### `OffsetDateTime`
 
 **[java.time.OffsetDateTime](https://docs.oracle.com/javase/8/docs/api/java/time/OffsetDateTime.html)** is an immutable representation of `java.time.Instant` that represents an instant in Time along with an offset from UTC/GMT.
 **When zone information needs to be saved in the database this format is preferred as it would always represent the same instant on the timeline** (especially when the server and database represent different timezones, conversion that represents time at the same instant would be required).  
@@ -306,8 +306,8 @@ public void testZonedDateTime() {
 Sample conversion example:
 
 ````java
-@Test
-public void testOffsetDateTime() {
+    @Test
+    public void testOffsetDateTime() {
         OffsetDateTime currentDateTime = OffsetDateTime.now(clock);
         Assertions.assertTrue(Stream.of(ZoneOffset.of("+10:00"), ZoneOffset.of("+11:00")).anyMatch(zo ->
         zo.equals(currentDateTime.getOffset())));
@@ -350,18 +350,18 @@ public void testOffsetDateTime() {
         ZonedDateTime currentZoneDateTime = ZonedDateTime.now(clock);
         OffsetDateTime convertFromZoneToOffset = currentZoneDateTime.toOffsetDateTime();
         assertThat(currentDateTime).isCloseTo(convertFromZoneToOffset, within(5, ChronoUnit.SECONDS));
-        }
+    }
 ````
 
-## Compatibility with the legacy API
+## Compatibility with the Legacy API
 
 As a part of the Date/Time API, **methods have been introduced to convert from legacy classes to the newer API objects**.
 
 Sample conversion examples:
 
 ````java
-@Test
-public void testWorkingWithLegacyDateInJava8() {
+    @Test
+    public void testWorkingWithLegacyDateInJava8() {
         Date date = new Date();
         Instant instant = date.toInstant();
         assertThat(instant).isNotEqualTo(clock.instant());
@@ -373,10 +373,10 @@ public void testWorkingWithLegacyDateInJava8() {
         assertThat(ld).isEqualTo(LocalDate.now(clock));
         ZonedDateTime zdtDiffZone = zdt.withZoneSameInstant(ZoneId.of("Europe/London"));
         assertThat(zdtDiffZone.getZone()).isEqualTo(ZoneId.of("Europe/London"));
-        }
+    }
 
-@Test
-public void testWorkingWithLegacyCalendarInJava8() {
+    @Test
+    public void testWorkingWithLegacyCalendarInJava8() {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(clock.getZone()));
         assertThat(calendar.getTimeZone()).isEqualTo(TimeZone.getTimeZone("Australia/Sydney"));
 
@@ -391,7 +391,7 @@ public void testWorkingWithLegacyCalendarInJava8() {
         LocalDateTime localDateTimeWithZone = LocalDateTime.now(ZoneId.of("Europe/London"));
         assertThat(localDateTime).isCloseTo(localDateTimeWithZone, within(5, ChronoUnit.SECONDS));
 
-        }
+    }
 ````
 
 As we can see in the examples, methods are provided to convert to `java.time.Instant` which represents a timestamp at a particular instant.
@@ -404,11 +404,11 @@ As we can see in the examples, methods are provided to convert to `java.time.Ins
 - Additional complex date computations are available in conjunction with `java.time.Temporal` package, `java.time.Period` and `java.time.Duration` classes.
 - Methods are added to the legacy APIs to convert objects to `java.time.Instant` and let the legacy code use the newer APIs.
 
-## Dealing with timezones in a Spring Boot application
+## Dealing with Timezones in a Spring Boot application
 
 In this section, we will take a look at how to handle timezones when working with Spring Boot and JPA.
 
-### Introduction to the sample Spring Boot application
+### Introduction to a Sample Spring Boot application
 
 For demonstration purposes, we will use [this application](https://github.com/thombergs/code-examples/tree/master/spring-boot/timezones/SpringWebApplication) to look at how timezone conversions apply. This application is a Spring Boot application with MySQL as the underlying database.
 First, let's look at the database.
@@ -498,7 +498,7 @@ The corresponding JPA entity is as below:
 
 ````
 
-### Understanding the server timezone setup
+### Understanding the Server Timezone Setup
 
 {{% image alt="settings" src="images/posts/handling-timezones-in-spring/TZ.JPG" %}}
 
@@ -528,7 +528,7 @@ As on 8th September 2022, both the timezones **Europe/London** and **Europe/Berl
 After 30th October 2022, the DST will end and they will be back to **Greenwich Mean Time (GMT) (UTC)** and **Central European Time (CET) (UTC+1)** respectively.
 {{% /info %}}
 
-### Comparing results from both timezones
+### Comparing Timezone Results
 
 Lets's compare the output in Postman for the REST endpoint with the data stored in the DB For **Europe/London** at the **current date/time** :
 
@@ -560,7 +560,7 @@ In all above cases, `OffsetDateTime` and `ZonedDateTime` show the same results. 
 and hence `OffsetDateTime` gives the correct representation that includes DST changes. As discussed in the API section that details differences between OffsetDateTime and ZonedDateTime,
 we could use the one that best suits our use-case.
 
-## Testing timezones in a Spring Boot application
+## Testing Timezones in a Spring Boot Application
 
 When working with timezones and unit testing applications, we might want to control the timezone, dates and make them agnostic of the system timezone.
 The Date/Time API provides [`java.time.Clock`](https://docs.oracle.com/javase/8/docs/api/java/time/Clock.html) that can be used for achieving this.
@@ -600,7 +600,7 @@ Clock.systemDefaultZone();
 
 By setting the clock parameter, testing the same application in different timezones, with or without DST becomes much easier.
 
-## Best practices for storing timezones in the Database
+## Best Practices for storing Timezones in the Database
 - Most databases support date and timestamp fields. Always store dates in the corresponding column types and never use `VARCHAR`.
 - Recommended practice is to store timestamps in UTC to help handle zone conversions better.
 - Column types like `DATE` and `TIME` should not be preferred since they do not have zone information. In most cases you would want to store data with timezone that will cater to multiple timezones making the application less prone to time conversion errors.

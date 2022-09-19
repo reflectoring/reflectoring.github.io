@@ -43,12 +43,12 @@ applications.
 
 ````java
 public class DeprecatedExamples {
-    @Test
-    public void testCurrentDate() {
-        Date now = new Date();
-        Date before = new Date(1661832030000L);
-        assertThat(now).isAfter(before);
-    }
+  @Test
+  public void testCurrentDate() {
+    Date now = new Date();
+    Date before = new Date(1661832030000L);
+    assertThat(now).isAfter(before);
+  }
 }
 ````
 
@@ -61,16 +61,16 @@ public class DeprecatedExamples {
 
 ````java
 public class DeprecatedExamples {
-    @Test
-    public void testCustomDate() {
-        System.out.println("Create date for 17 August 2022 23:30");
-        int year = 2022 - 1900;
-        int month = 8 - 1;
-        Date customDate = new Date(year, month, 17, 23, 30);
-        assertThat(customDate.getYear()).isEqualTo(year);
-        assertThat(customDate.getMonth()).isEqualTo(month);
-        assertThat(customDate.getDate()).isEqualTo(17);
-    }
+  @Test
+  public void testCustomDate() {
+    System.out.println("Create date for 17 August 2022 23:30");
+    int year = 2022 - 1900;
+    int month = 8 - 1;
+    Date customDate = new Date(year, month, 17, 23, 30);
+    assertThat(customDate.getYear()).isEqualTo(year);
+    assertThat(customDate.getMonth()).isEqualTo(month);
+    assertThat(customDate.getDate()).isEqualTo(17);
+  }
 }
 ````
 
@@ -83,30 +83,30 @@ public class DeprecatedExamples {
 
 ````java
 public class DeprecatedExamples {
-    @Test
-    public void testMutableClasses() {
-        System.out.println("Create date for 17 August 2022 23:30");
+  @Test
+  public void testMutableClasses() {
+    System.out.println("Create date for 17 August 2022 23:30");
 
-        int year = 2022 - 1900;
-        int month = 8 - 1;
-        Date customDate = new Date(year, month, 17, 23, 30);
-        assertThat(customDate.getHours()).isEqualTo(23);
-        assertThat(customDate.getMinutes()).isEqualTo(30);
+    int year = 2022 - 1900;
+    int month = 8 - 1;
+    Date customDate = new Date(year, month, 17, 23, 30);
+    assertThat(customDate.getHours()).isEqualTo(23);
+    assertThat(customDate.getMinutes()).isEqualTo(30);
 
-        customDate.setHours(20);
-        customDate.setMinutes(50);
-        assertThat(customDate.getHours()).isEqualTo(20);
-        assertThat(customDate.getMinutes()).isEqualTo(50);
+    customDate.setHours(20);
+    customDate.setMinutes(50);
+    assertThat(customDate.getHours()).isEqualTo(20);
+    assertThat(customDate.getMinutes()).isEqualTo(50);
 
-        Calendar calendar = Calendar.getInstance(
-                TimeZone.getTimeZone("Australia/Sydney"));
+    Calendar calendar = Calendar.getInstance(
+            TimeZone.getTimeZone("Australia/Sydney"));
 
-        assertThat(calendar.getTimeZone())
-                .isEqualTo(TimeZone.getTimeZone("Australia/Sydney"));
-        calendar.setTimeZone(TimeZone.getTimeZone("Europe/London"));
-        assertThat(calendar.getTimeZone())
-                .isEqualTo(TimeZone.getTimeZone("Europe/London"));
-    }
+    assertThat(calendar.getTimeZone())
+            .isEqualTo(TimeZone.getTimeZone("Australia/Sydney"));
+    calendar.setTimeZone(TimeZone.getTimeZone("Europe/London"));
+    assertThat(calendar.getTimeZone())
+            .isEqualTo(TimeZone.getTimeZone("Europe/London"));
+  }
 }
 ````
 
@@ -121,15 +121,15 @@ public class DeprecatedExamples {
 
 ````java
 public class DeprecatedExamples {
-    @Test
-    public void testDateFormatter() {
-        TimeZone zone = TimeZone.getTimeZone("Europe/London");
-        DateFormat dtFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        Calendar cal = Calendar.getInstance(zone);
-        Date date = cal.getTime();
-        String strFormat = dtFormat.format(date);
-        assertThat(strFormat).isNotNull();
-    }
+  @Test
+  public void testDateFormatter() {
+    TimeZone zone = TimeZone.getTimeZone("Europe/London");
+    DateFormat dtFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    Calendar cal = Calendar.getInstance(zone);
+    Date date = cal.getTime();
+    String strFormat = dtFormat.format(date);
+    assertThat(strFormat).isNotNull();
+  }
 }
 ````
 
@@ -145,7 +145,9 @@ above, there are various flaws in this process:
 
 #### SQL Dates
 
-`java.sql.Date` and `java.sql.Timestamp` are used in code that maps to and from date fields in databases.
+`java.sql.Date` and `java.sql.Timestamp` are wrapper classes around java.util.Date that handles SQL specific requirements.
+They represent a SQL DATE and SQL TIMESTAMP types respectively and should be used only when working with databases like
+to get or set a date or a timestamp on a `java.sql.PreparedStatement`, `java.sql.ResultSet`, `java.sql.SQLData` and other similar datatypes.
 
 - In retrospect, this API hasn't been designed very thoughtfully since `java.sql.Date`, `java.sql.Time`
   and `java.sql.Timestamp` all extend the `java.util.Date` class.
@@ -179,52 +181,52 @@ Some `LocalDate` code examples:
 ````java
 public class DateTimeExamples {
 
-    private Clock clock;
+  private Clock clock;
 
-    @BeforeEach
-    public void setClock() {
-        clock = Clock.system(ZoneId.of("Australia/Sydney"));
-    }
+  @BeforeEach
+  public void setClock() {
+    clock = Clock.system(ZoneId.of("Australia/Sydney"));
+  }
 
-    @Test
-    public void testLocalDate() {
-        // we can create a new LocalDate at the time of any given Clock
-        LocalDate today = LocalDate.now(clock);
-        assertThat(today.get(ChronoField.MONTH_OF_YEAR)).isPositive();
-        assertThat(today.get(ChronoField.YEAR)).isPositive();
-        assertThat(today.get(ChronoField.DAY_OF_MONTH)).isPositive();
-        Assertions.assertThrows(UnsupportedTemporalTypeException.class, () -> {
-            today.get(ChronoField.HOUR_OF_DAY);
-        });
+  @Test
+  public void testLocalDate() {
+    // we can create a new LocalDate at the time of any given Clock
+    LocalDate today = LocalDate.now(clock);
+    assertThat(today.get(ChronoField.MONTH_OF_YEAR)).isPositive();
+    assertThat(today.get(ChronoField.YEAR)).isPositive();
+    assertThat(today.get(ChronoField.DAY_OF_MONTH)).isPositive();
+    Assertions.assertThrows(UnsupportedTemporalTypeException.class, () -> {
+      today.get(ChronoField.HOUR_OF_DAY);
+    });
 
-        // LocalDate only has the year, month, and day fields, no hours
-        LocalDate customDate = LocalDate.of(2022, Month.SEPTEMBER, 2);
-        assertThat(customDate.getYear()).isEqualTo(2022);
-        assertThat(customDate.getMonth()).isEqualTo(Month.SEPTEMBER);
-        assertThat(customDate.getDayOfMonth()).isEqualTo(2);
-        Assertions.assertThrows(UnsupportedTemporalTypeException.class, () -> {
-            customDate.get(ChronoField.HOUR_OF_DAY);
-        });
+    // LocalDate only has the year, month, and day fields, no hours
+    LocalDate customDate = LocalDate.of(2022, Month.SEPTEMBER, 2);
+    assertThat(customDate.getYear()).isEqualTo(2022);
+    assertThat(customDate.getMonth()).isEqualTo(Month.SEPTEMBER);
+    assertThat(customDate.getDayOfMonth()).isEqualTo(2);
+    Assertions.assertThrows(UnsupportedTemporalTypeException.class, () -> {
+      customDate.get(ChronoField.HOUR_OF_DAY);
+    });
 
-        // creating a LocalDate in another time zone
-        assertThat(clock.getZone())
-                .isEqualTo(ZoneId.of("Australia/Sydney"));
-        LocalDate zoneDate = LocalDate
-                .now(ZoneId.of("America/Anchorage"));
-        assertThat(today)
-                .isCloseTo(zoneDate, within(1, ChronoUnit.DAYS));
+    // creating a LocalDate in another time zone
+    assertThat(clock.getZone())
+            .isEqualTo(ZoneId.of("Australia/Sydney"));
+    LocalDate zoneDate = LocalDate
+            .now(ZoneId.of("America/Anchorage"));
+    assertThat(today)
+            .isCloseTo(zoneDate, within(1, ChronoUnit.DAYS));
 
-        // formatting a DateTime
-        DateTimeFormatter formatter = DateTimeFormatter
-                .ofPattern("dd-MM-yyyy");
-        assertThat(zoneDate).isEqualTo(
-                LocalDate.parse(zoneDate.format(formatter), formatter));
+    // formatting a DateTime
+    DateTimeFormatter formatter = DateTimeFormatter
+            .ofPattern("dd-MM-yyyy");
+    assertThat(zoneDate).isEqualTo(
+            LocalDate.parse(zoneDate.format(formatter), formatter));
 
-        // exception when trying to create an invalid date
-        Assertions.assertThrows(DateTimeException.class, () -> {
-            LocalDate.of(2022, Month.SEPTEMBER, 31);
-        });
-    }
+    // exception when trying to create an invalid date
+    Assertions.assertThrows(DateTimeException.class, () -> {
+      LocalDate.of(2022, Month.SEPTEMBER, 31);
+    });
+  }
 }
 ````
 
@@ -239,47 +241,47 @@ Sample Conversion Examples:
 ````java
 public class DateTimeExamples {
 
-    private Clock clock;
+  private Clock clock;
 
-    @BeforeEach
-    public void setClock() {
-        clock = Clock.system(ZoneId.of("Australia/Sydney"));
-    }
+  @BeforeEach
+  public void setClock() {
+    clock = Clock.system(ZoneId.of("Australia/Sydney"));
+  }
 
-    @Test
-    public void testLocalTime() {
-        //Time based on the timezone set in `Clock`
-        LocalTime now = LocalTime.now(clock);
-        assertThat(now.get(ChronoField.HOUR_OF_DAY)).isPositive();
-        assertThat(now.get(ChronoField.MINUTE_OF_DAY)).isPositive();
-        assertThat(now.get(ChronoField.SECOND_OF_DAY)).isPositive();
-        //java.time.temporal.UnsupportedTemporalTypeException: 
-        // Unsupported field: MonthOfYear
-        Assertions.assertThrows(UnsupportedTemporalTypeException.class, () -> {
-            now.get(ChronoField.MONTH_OF_YEAR);
-        });
+  @Test
+  public void testLocalTime() {
+    //Time based on the timezone set in `Clock`
+    LocalTime now = LocalTime.now(clock);
+    assertThat(now.get(ChronoField.HOUR_OF_DAY)).isPositive();
+    assertThat(now.get(ChronoField.MINUTE_OF_DAY)).isPositive();
+    assertThat(now.get(ChronoField.SECOND_OF_DAY)).isPositive();
+    //java.time.temporal.UnsupportedTemporalTypeException: 
+    // Unsupported field: MonthOfYear
+    Assertions.assertThrows(UnsupportedTemporalTypeException.class, () -> {
+      now.get(ChronoField.MONTH_OF_YEAR);
+    });
 
-        LocalTime customTime = LocalTime.of(21, 40, 50);
-        assertThat(customTime.get(ChronoField.HOUR_OF_DAY)).isEqualTo(21);
-        assertThat(customTime.get(ChronoField.MINUTE_OF_HOUR)).isEqualTo(40);
-        assertThat(customTime.get(ChronoField.SECOND_OF_MINUTE)).isEqualTo(50);
+    LocalTime customTime = LocalTime.of(21, 40, 50);
+    assertThat(customTime.get(ChronoField.HOUR_OF_DAY)).isEqualTo(21);
+    assertThat(customTime.get(ChronoField.MINUTE_OF_HOUR)).isEqualTo(40);
+    assertThat(customTime.get(ChronoField.SECOND_OF_MINUTE)).isEqualTo(50);
 
-        // Has offset of UTC-8 or UTC-9
-        LocalTime zoneTime = LocalTime.now(ZoneId.of("America/Anchorage"));
-        assertThat(now)
-                .isCloseTo(zoneTime, within(19, ChronoUnit.HOURS));
+    // Has offset of UTC-8 or UTC-9
+    LocalTime zoneTime = LocalTime.now(ZoneId.of("America/Anchorage"));
+    assertThat(now)
+            .isCloseTo(zoneTime, within(19, ChronoUnit.HOURS));
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        //Should be almost same if not exact
-        assertThat(LocalTime.parse(zoneTime.format(formatter)))
-                .isCloseTo(zoneTime, within(1, ChronoUnit.SECONDS));
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+    //Should be almost same if not exact
+    assertThat(LocalTime.parse(zoneTime.format(formatter)))
+            .isCloseTo(zoneTime, within(1, ChronoUnit.SECONDS));
 
-        // java.time.DateTimeException: 
-        // Invalid value for HourOfDay (valid values 0 - 23): 25
-        Assertions.assertThrows(DateTimeException.class, () -> {
-            LocalTime.of(25, 40, 50);
-        });
-    }
+    // java.time.DateTimeException: 
+    // Invalid value for HourOfDay (valid values 0 - 23): 25
+    Assertions.assertThrows(DateTimeException.class, () -> {
+      LocalTime.of(25, 40, 50);
+    });
+  }
 }
 ````
 
@@ -293,62 +295,62 @@ Sample Conversion examples:
 ````java
 public class DateTimeExamples {
 
-    private Clock clock;
+  private Clock clock;
 
-    @BeforeEach
-    public void setClock() {
-        clock = Clock.system(ZoneId.of("Australia/Sydney"));
-    }
+  @BeforeEach
+  public void setClock() {
+    clock = Clock.system(ZoneId.of("Australia/Sydney"));
+  }
 
-    @Test
-    public void testLocalDateTime() {
-        //Time based on the timezone set in `Clock`
-        LocalDateTime currentDateTime = LocalDateTime.now(clock);
-        assertThat(currentDateTime.get(ChronoField.DAY_OF_MONTH)).isPositive();
-        assertThat(currentDateTime.get(ChronoField.MONTH_OF_YEAR)).isPositive();
-        assertThat(currentDateTime.get(ChronoField.YEAR)).isPositive();
-        assertThat(currentDateTime.get(ChronoField.HOUR_OF_DAY)).isPositive();
-        assertThat(currentDateTime.get(ChronoField.MINUTE_OF_DAY)).isPositive();
-        assertThat(currentDateTime.get(ChronoField.SECOND_OF_DAY)).isPositive();
+  @Test
+  public void testLocalDateTime() {
+    //Time based on the timezone set in `Clock`
+    LocalDateTime currentDateTime = LocalDateTime.now(clock);
+    assertThat(currentDateTime.get(ChronoField.DAY_OF_MONTH)).isPositive();
+    assertThat(currentDateTime.get(ChronoField.MONTH_OF_YEAR)).isPositive();
+    assertThat(currentDateTime.get(ChronoField.YEAR)).isPositive();
+    assertThat(currentDateTime.get(ChronoField.HOUR_OF_DAY)).isPositive();
+    assertThat(currentDateTime.get(ChronoField.MINUTE_OF_DAY)).isPositive();
+    assertThat(currentDateTime.get(ChronoField.SECOND_OF_DAY)).isPositive();
 
-        // Using Clock Timezone + Local Date + LocalTime
-        LocalDateTime currentUsingLocals = 
-                LocalDateTime.of(LocalDate.now(clock), LocalTime.now(clock));
-        // Should be almost same if not exact
-        assertThat(currentDateTime)
-                .isCloseTo(currentUsingLocals, within(5, ChronoUnit.SECONDS));
+    // Using Clock Timezone + Local Date + LocalTime
+    LocalDateTime currentUsingLocals =
+            LocalDateTime.of(LocalDate.now(clock), LocalTime.now(clock));
+    // Should be almost same if not exact
+    assertThat(currentDateTime)
+            .isCloseTo(currentUsingLocals, within(5, ChronoUnit.SECONDS));
 
-        LocalDateTime customDateTime = 
-                LocalDateTime.of(2022, Month.SEPTEMBER, 1, 10, 30, 59);
-        assertThat(customDateTime.get(ChronoField.DAY_OF_MONTH)).isEqualTo(1);
-        assertThat(customDateTime.get(ChronoField.MONTH_OF_YEAR))
-                .isEqualTo(Month.SEPTEMBER.getValue());
-        assertThat(customDateTime.get(ChronoField.YEAR)).isEqualTo(2022);
-        assertThat(customDateTime.get(ChronoField.HOUR_OF_DAY)).isEqualTo(10);
-        assertThat(customDateTime.get(ChronoField.MINUTE_OF_HOUR)).isEqualTo(30);
-        assertThat(customDateTime.get(ChronoField.SECOND_OF_MINUTE)).isEqualTo(59);
+    LocalDateTime customDateTime =
+            LocalDateTime.of(2022, Month.SEPTEMBER, 1, 10, 30, 59);
+    assertThat(customDateTime.get(ChronoField.DAY_OF_MONTH)).isEqualTo(1);
+    assertThat(customDateTime.get(ChronoField.MONTH_OF_YEAR))
+            .isEqualTo(Month.SEPTEMBER.getValue());
+    assertThat(customDateTime.get(ChronoField.YEAR)).isEqualTo(2022);
+    assertThat(customDateTime.get(ChronoField.HOUR_OF_DAY)).isEqualTo(10);
+    assertThat(customDateTime.get(ChronoField.MINUTE_OF_HOUR)).isEqualTo(30);
+    assertThat(customDateTime.get(ChronoField.SECOND_OF_MINUTE)).isEqualTo(59);
 
-        // Comparing zone offset of UTC+2 with Australia/Sydney (UTC+10 OR UTC+11)
-        LocalDateTime zoneDateTime = LocalDateTime.now(ZoneId.of("+02:00"));
-        assertThat(currentUsingLocals)
-                .isCloseTo(zoneDateTime, within(9, ChronoUnit.HOURS));
+    // Comparing zone offset of UTC+2 with Australia/Sydney (UTC+10 OR UTC+11)
+    LocalDateTime zoneDateTime = LocalDateTime.now(ZoneId.of("+02:00"));
+    assertThat(currentUsingLocals)
+            .isCloseTo(zoneDateTime, within(9, ChronoUnit.HOURS));
 
-        String currentDateTimeStr = "20-02-2022 10:30:45";
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        LocalDateTime parsedTime = LocalDateTime.parse(currentDateTimeStr, format);
-        assertThat(parsedTime.get(ChronoField.DAY_OF_MONTH)).isEqualTo(20);
-        assertThat(parsedTime.get(ChronoField.MONTH_OF_YEAR))
-                .isEqualTo(Month.FEBRUARY.getValue());
-        assertThat(parsedTime.get(ChronoField.YEAR)).isEqualTo(2022);
-        assertThat(parsedTime.get(ChronoField.HOUR_OF_DAY)).isEqualTo(10);
-        assertThat(parsedTime.get(ChronoField.MINUTE_OF_HOUR)).isEqualTo(30);
-        assertThat(parsedTime.get(ChronoField.SECOND_OF_MINUTE)).isEqualTo(45);
+    String currentDateTimeStr = "20-02-2022 10:30:45";
+    DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    LocalDateTime parsedTime = LocalDateTime.parse(currentDateTimeStr, format);
+    assertThat(parsedTime.get(ChronoField.DAY_OF_MONTH)).isEqualTo(20);
+    assertThat(parsedTime.get(ChronoField.MONTH_OF_YEAR))
+            .isEqualTo(Month.FEBRUARY.getValue());
+    assertThat(parsedTime.get(ChronoField.YEAR)).isEqualTo(2022);
+    assertThat(parsedTime.get(ChronoField.HOUR_OF_DAY)).isEqualTo(10);
+    assertThat(parsedTime.get(ChronoField.MINUTE_OF_HOUR)).isEqualTo(30);
+    assertThat(parsedTime.get(ChronoField.SECOND_OF_MINUTE)).isEqualTo(45);
 
-        //java.time.zone.ZoneRulesException: Unknown time-zone ID: Europ/London
-        Assertions.assertThrows(ZoneRulesException.class, () -> {
-            LocalDateTime.now(ZoneId.of("Europ/London"));
-        });
-    }
+    //java.time.zone.ZoneRulesException: Unknown time-zone ID: Europ/London
+    Assertions.assertThrows(ZoneRulesException.class, () -> {
+      LocalDateTime.now(ZoneId.of("Europ/London"));
+    });
+  }
 }
 ````
 
@@ -363,67 +365,71 @@ Sample conversion example:
 ````java
 public class DateTimeExamples {
 
-    private Clock clock;
+  private Clock clock;
 
-    @BeforeEach
-    public void setClock() {
-        clock = Clock.system(ZoneId.of("Australia/Sydney"));
-    }
+  @BeforeEach
+  public void setClock() {
+    clock = Clock.system(ZoneId.of("Australia/Sydney"));
+  }
 
-    @Test
-    public void testZonedDateTime() {
-        //Time based on the timezone set in `Clock`
-        ZonedDateTime currentZoneDateTime = ZonedDateTime.now(clock);
-        assertThat(currentZoneDateTime.getZone()).isEqualTo(ZoneId.of("Australia/Sydney"));
-        assertThat(currentZoneDateTime.get(ChronoField.DAY_OF_MONTH)).isPositive();
-        assertThat(currentZoneDateTime.get(ChronoField.MONTH_OF_YEAR)).isPositive();
-        assertThat(currentZoneDateTime.get(ChronoField.YEAR)).isPositive();
-        assertThat(currentZoneDateTime.get(ChronoField.HOUR_OF_DAY)).isPositive();
-        assertThat(currentZoneDateTime.get(ChronoField.MINUTE_OF_HOUR)).isPositive();
-        assertThat(currentZoneDateTime.get(ChronoField.SECOND_OF_MINUTE)).isPositive();
+  @Test
+  public void testZonedDateTime() {
+    //Time based on the timezone set in `Clock`
+    ZonedDateTime currentZoneDateTime = ZonedDateTime.now(clock);
+    assertThat(currentZoneDateTime.getZone())
+            .isEqualTo(ZoneId.of("Australia/Sydney"));
+    assertThat(currentZoneDateTime.get(ChronoField.DAY_OF_MONTH)).isPositive();
+    assertThat(currentZoneDateTime.get(ChronoField.MONTH_OF_YEAR)).isPositive();
+    assertThat(currentZoneDateTime.get(ChronoField.YEAR)).isPositive();
+    assertThat(currentZoneDateTime.get(ChronoField.HOUR_OF_DAY)).isPositive();
+    assertThat(currentZoneDateTime.get(ChronoField.MINUTE_OF_HOUR)).isPositive();
+    assertThat(currentZoneDateTime.get(ChronoField.SECOND_OF_MINUTE)).isPositive();
 
-        // Clock TZ + LocalDateTime + Specified ZoneId
-        ZonedDateTime withLocalDateTime = 
-                ZonedDateTime.of(LocalDateTime.now(clock), ZoneId.of("Australia/Sydney"));
-        // Should be almost same if not exact
-        assertThat(currentZoneDateTime)
-                .isCloseTo(withLocalDateTime, within(5, ChronoUnit.SECONDS));
+    // Clock TZ + LocalDateTime + Specified ZoneId
+    ZonedDateTime withLocalDateTime =
+            ZonedDateTime.of(LocalDateTime.now(clock), 
+                    ZoneId.of("Australia/Sydney"));
+    // Should be almost same if not exact
+    assertThat(currentZoneDateTime)
+            .isCloseTo(withLocalDateTime, within(5, ChronoUnit.SECONDS));
 
-        // Clock TZ + LocalDate + LocalTime + Specified zone
-        ZonedDateTime withLocals = 
-                ZonedDateTime.of(LocalDate.now(clock), LocalTime.now(clock), 
-                        clock.getZone());
-        // Should be almost same if not exact
-        assertThat(withLocalDateTime)
-                .isCloseTo(withLocals, within(5, ChronoUnit.SECONDS));
+    // Clock TZ + LocalDate + LocalTime + Specified zone
+    ZonedDateTime withLocals =
+            ZonedDateTime.of(LocalDate.now(clock), LocalTime.now(clock),
+                    clock.getZone());
+    // Should be almost same if not exact
+    assertThat(withLocalDateTime)
+            .isCloseTo(withLocals, within(5, ChronoUnit.SECONDS));
 
-        ZonedDateTime customZoneDateTime = 
-                ZonedDateTime.of(2022, Month.FEBRUARY.getValue(), 
-                        MonthDay.now(clock).getDayOfMonth(), 20, 45, 50, 55, 
-                        ZoneId.of("Europe/London"));
-        assertThat(customZoneDateTime.getZone()).isEqualTo(ZoneId.of("Europe/London"));
-        assertThat(customZoneDateTime.get(ChronoField.DAY_OF_MONTH))
-                .isEqualTo(MonthDay.now(clock).getDayOfMonth());
-        assertThat(customZoneDateTime.get(ChronoField.MONTH_OF_YEAR))
-                .isEqualTo(Month.FEBRUARY.getValue());
-        assertThat(customZoneDateTime.get(ChronoField.YEAR)).isEqualTo(2022);
-        assertThat(customZoneDateTime.get(ChronoField.HOUR_OF_DAY)).isEqualTo(20);
-        assertThat(customZoneDateTime.get(ChronoField.MINUTE_OF_HOUR)).isEqualTo(45);
-        assertThat(customZoneDateTime.get(ChronoField.SECOND_OF_MINUTE)).isEqualTo(50);
+    ZonedDateTime customZoneDateTime =
+            ZonedDateTime.of(2022, Month.FEBRUARY.getValue(),
+                    MonthDay.now(clock).getDayOfMonth(), 20, 45, 50, 55,
+                    ZoneId.of("Europe/London"));
+    assertThat(customZoneDateTime.getZone())
+            .isEqualTo(ZoneId.of("Europe/London"));
+    assertThat(customZoneDateTime.get(ChronoField.DAY_OF_MONTH))
+            .isEqualTo(MonthDay.now(clock).getDayOfMonth());
+    assertThat(customZoneDateTime.get(ChronoField.MONTH_OF_YEAR))
+            .isEqualTo(Month.FEBRUARY.getValue());
+    assertThat(customZoneDateTime.get(ChronoField.YEAR)).isEqualTo(2022);
+    assertThat(customZoneDateTime.get(ChronoField.HOUR_OF_DAY)).isEqualTo(20);
+    assertThat(customZoneDateTime.get(ChronoField.MINUTE_OF_HOUR)).isEqualTo(45);
+    assertThat(customZoneDateTime.get(ChronoField.SECOND_OF_MINUTE)).isEqualTo(50);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss a");
-        // This String has no timezone information. Provide one for successfull parsing.
-        String timeStamp1 = "2022-03-27 10:15:30 AM"; 
-        // Has offset UTC+0 or UTC+1
-        ZonedDateTime parsedZonedTime1 = 
-                ZonedDateTime.parse(timeStamp1, 
-                        formatter.withZone(ZoneId.of("Europe/London")));
-        // Has offset UTC+10 or UTC+11
-        ZonedDateTime parsedZonedTime2 = 
-                parsedZonedTime1.withZoneSameInstant(ZoneId.of("Australia/Sydney"));
-        assertThat(parsedZonedTime1)
-                .isCloseTo(parsedZonedTime2, within(10, ChronoUnit.HOURS));
-    }
+    DateTimeFormatter formatter = 
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss a");
+    // This String has no timezone information. Provide one for successfull parsing.
+    String timeStamp1 = "2022-03-27 10:15:30 AM";
+    // Has offset UTC+0 or UTC+1
+    ZonedDateTime parsedZonedTime1 =
+            ZonedDateTime.parse(timeStamp1,
+                    formatter.withZone(ZoneId.of("Europe/London")));
+    // Has offset UTC+10 or UTC+11
+    ZonedDateTime parsedZonedTime2 =
+            parsedZonedTime1.withZoneSameInstant(ZoneId.of("Australia/Sydney"));
+    assertThat(parsedZonedTime1)
+            .isCloseTo(parsedZonedTime2, within(10, ChronoUnit.HOURS));
+  }
 }
 ````
 
@@ -440,84 +446,86 @@ Sample conversion example:
 ````java
 public class DateTimeExamples {
 
-    private Clock clock;
+  private Clock clock;
 
-    @BeforeEach
-    public void setClock() {
-        clock = Clock.system(ZoneId.of("Australia/Sydney"));
-    }
+  @BeforeEach
+  public void setClock() {
+    clock = Clock.system(ZoneId.of("Australia/Sydney"));
+  }
 
-    @Test
-    public void testOffsetDateTime() {
-        OffsetDateTime currentDateTime = OffsetDateTime.now(clock);
-        // Offset can be either UTC+10 or UTC+11 depending on DST
-        Assertions.assertTrue(Stream.of(ZoneOffset.of("+10:00"), 
-                ZoneOffset.of("+11:00")).anyMatch(zo ->
-                    zo.equals(currentDateTime.getOffset())));
-        assertThat(currentDateTime.get(ChronoField.DAY_OF_MONTH)).isPositive();
-        assertThat(currentDateTime.get(ChronoField.MONTH_OF_YEAR)).isPositive();
-        assertThat(currentDateTime.get(ChronoField.YEAR)).isPositive();
-        assertThat(currentDateTime.get(ChronoField.HOUR_OF_DAY)).isPositive();
-        assertThat(currentDateTime.get(ChronoField.MINUTE_OF_HOUR)).isPositive();
-        assertThat(currentDateTime.get(ChronoField.SECOND_OF_MINUTE)).isPositive();
+  @Test
+  public void testOffsetDateTime() {
+    OffsetDateTime currentDateTime = OffsetDateTime.now(clock);
+    // Offset can be either UTC+10 or UTC+11 depending on DST
+    Assertions.assertTrue(Stream.of(ZoneOffset.of("+10:00"),
+            ZoneOffset.of("+11:00")).anyMatch(zo ->
+            zo.equals(currentDateTime.getOffset())));
+    assertThat(currentDateTime.get(ChronoField.DAY_OF_MONTH)).isPositive();
+    assertThat(currentDateTime.get(ChronoField.MONTH_OF_YEAR)).isPositive();
+    assertThat(currentDateTime.get(ChronoField.YEAR)).isPositive();
+    assertThat(currentDateTime.get(ChronoField.HOUR_OF_DAY)).isPositive();
+    assertThat(currentDateTime.get(ChronoField.MINUTE_OF_HOUR)).isPositive();
+    assertThat(currentDateTime.get(ChronoField.SECOND_OF_MINUTE)).isPositive();
 
-        // For the specified offset, check the difference with the current
-        // Since Offset is hardcoded, Zone rules will not apply here for +01:00 (No DST)
-        ZoneOffset zoneOffSet = ZoneOffset.of("+01:00");
-        OffsetDateTime offsetDateTime = OffsetDateTime.now(zoneOffSet);
-        assertThat(currentDateTime)
-                .isCloseTo(offsetDateTime, within(10, ChronoUnit.HOURS));
+    // For the specified offset, check the difference with the current
+    // Since Offset is hardcoded, Zone rules will not apply here for +01:00 (No DST)
+    ZoneOffset zoneOffSet = ZoneOffset.of("+01:00");
+    OffsetDateTime offsetDateTime = OffsetDateTime.now(zoneOffSet);
+    assertThat(currentDateTime)
+            .isCloseTo(offsetDateTime, within(10, ChronoUnit.HOURS));
 
-        // Offset + LocalDate + LocalTime
-        // Since Offset here is derived from Zone Id, Zone rules will apply 
-        // and DST changes will be considered
-        OffsetDateTime fromLocals = 
-                OffsetDateTime.of(LocalDate.now(clock), LocalTime.now(clock), 
-                        currentDateTime.getOffset());
-        Assertions.assertTrue(Stream.of(ZoneOffset.of("+10:00"), 
-                ZoneOffset.of("+11:00")).anyMatch(zo ->
-                    zo.equals(fromLocals.getOffset())));
-        assertThat(currentDateTime)
-                .isCloseTo(fromLocals, within(5, ChronoUnit.SECONDS));
+    // Offset + LocalDate + LocalTime
+    // Since Offset here is derived from Zone Id, Zone rules will apply 
+    // and DST changes will be considered
+    OffsetDateTime fromLocals =
+            OffsetDateTime.of(LocalDate.now(clock), LocalTime.now(clock),
+                    currentDateTime.getOffset());
+    Assertions.assertTrue(Stream.of(ZoneOffset.of("+10:00"),
+            ZoneOffset.of("+11:00")).anyMatch(zo ->
+            zo.equals(fromLocals.getOffset())));
+    assertThat(currentDateTime)
+            .isCloseTo(fromLocals, within(5, ChronoUnit.SECONDS));
 
-        OffsetDateTime fromLocalDateTime = 
-                OffsetDateTime.of(
-                        LocalDateTime.of(2022, Month.NOVEMBER, 1, 10, 10, 10), 
-                        currentDateTime.getOffset());
-        Assertions.assertTrue(Stream.of(ZoneOffset.of("+10:00"), 
-                ZoneOffset.of("+11:00")).anyMatch(zo ->
-                    zo.equals(fromLocalDateTime.getOffset())));
-        assertThat(fromLocalDateTime.get(ChronoField.DAY_OF_MONTH)).isEqualTo(1);
-        assertThat(fromLocalDateTime.get(ChronoField.MONTH_OF_YEAR))
-                .isEqualTo(Month.NOVEMBER.getValue());
-        assertThat(fromLocalDateTime.get(ChronoField.YEAR)).isEqualTo(2022);
-        assertThat(fromLocalDateTime.get(ChronoField.HOUR_OF_DAY)).isEqualTo(10);
-        assertThat(fromLocalDateTime.get(ChronoField.MINUTE_OF_HOUR)).isEqualTo(10);
-        assertThat(fromLocalDateTime.get(ChronoField.SECOND_OF_MINUTE)).isEqualTo(10);
+    OffsetDateTime fromLocalDateTime =
+            OffsetDateTime.of(
+                    LocalDateTime.of(2022, Month.NOVEMBER, 1, 10, 10, 10),
+                    currentDateTime.getOffset());
+    Assertions.assertTrue(Stream.of(ZoneOffset.of("+10:00"),
+            ZoneOffset.of("+11:00")).anyMatch(zo ->
+            zo.equals(fromLocalDateTime.getOffset())));
+    assertThat(fromLocalDateTime.get(ChronoField.DAY_OF_MONTH)).isEqualTo(1);
+    assertThat(fromLocalDateTime.get(ChronoField.MONTH_OF_YEAR))
+            .isEqualTo(Month.NOVEMBER.getValue());
+    assertThat(fromLocalDateTime.get(ChronoField.YEAR)).isEqualTo(2022);
+    assertThat(fromLocalDateTime.get(ChronoField.HOUR_OF_DAY)).isEqualTo(10);
+    assertThat(fromLocalDateTime.get(ChronoField.MINUTE_OF_HOUR)).isEqualTo(10);
+    assertThat(fromLocalDateTime.get(ChronoField.SECOND_OF_MINUTE)).isEqualTo(10);
 
-        // Defined offset based on zone rules will consider DST. Date: 1st Nov 2022 10:10:10
-        OffsetDateTime fromLocalsWithDefinedOffset = 
-                OffsetDateTime.of(LocalDate.now(clock), LocalTime.now(clock), 
-                        ZoneId.of("Australia/Sydney").getRules().getOffset(
-                                LocalDateTime.of(2022, Month.NOVEMBER, 1, 10, 10, 10)));
-        assertThat(fromLocalsWithDefinedOffset.getOffset()).isEqualTo(ZoneOffset.of("+11:00"));
+    // Defined offset based on zone rules will consider DST. 
+    // Date: 1st Nov 2022 10:10:10
+    OffsetDateTime fromLocalsWithDefinedOffset =
+            OffsetDateTime.of(LocalDate.now(clock), LocalTime.now(clock),
+                    ZoneId.of("Australia/Sydney").getRules().getOffset(
+                            LocalDateTime.of(2022, Month.NOVEMBER, 1, 10, 10, 10)));
+    assertThat(fromLocalsWithDefinedOffset.getOffset())
+            .isEqualTo(ZoneOffset.of("+11:00"));
 
-        OffsetDateTime sameInstantDiffOffset = 
-                currentDateTime.withOffsetSameInstant(ZoneOffset.of("+01:00"));
-        assertThat(currentDateTime)
-                .isCloseTo(sameInstantDiffOffset, within(10, ChronoUnit.HOURS));
+    OffsetDateTime sameInstantDiffOffset =
+            currentDateTime.withOffsetSameInstant(ZoneOffset.of("+01:00"));
+    assertThat(currentDateTime)
+            .isCloseTo(sameInstantDiffOffset, within(10, ChronoUnit.HOURS));
 
-        OffsetDateTime dt = 
-                OffsetDateTime.parse("2011-12-03T10:15:30+01:00", 
-                        DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        assertThat(fmt.format(dt)).contains("Z");
+    OffsetDateTime dt =
+            OffsetDateTime.parse("2011-12-03T10:15:30+01:00",
+                    DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    assertThat(fmt.format(dt)).contains("Z");
 
-        ZonedDateTime currentZoneDateTime = ZonedDateTime.now(clock);
-        OffsetDateTime convertFromZoneToOffset = currentZoneDateTime.toOffsetDateTime();
-        assertThat(currentDateTime)
-                .isCloseTo(convertFromZoneToOffset, within(5, ChronoUnit.SECONDS));
-    }
+    ZonedDateTime currentZoneDateTime = ZonedDateTime.now(clock);
+    OffsetDateTime convertFromZoneToOffset = currentZoneDateTime.toOffsetDateTime();
+    assertThat(currentDateTime)
+            .isCloseTo(convertFromZoneToOffset, within(5, ChronoUnit.SECONDS));
+  }
 }
 ````
 
@@ -531,49 +539,56 @@ Sample conversion examples:
 ````java
 public class DateUtilToTimeExamples {
 
-    private Clock clock;
+  private Clock clock;
 
-    @BeforeEach
-    public void setClock() {
-        clock = Clock.system(ZoneId.of("Australia/Sydney"));
-    }
+  @BeforeEach
+  public void setClock() {
+    clock = Clock.system(ZoneId.of("Australia/Sydney"));
+  }
 
-    @Test
-    public void testWorkingWithLegacyDateInJava8() {
-        Date date = new Date();
-        Instant instant = date.toInstant();
-        assertThat(instant).isNotEqualTo(clock.instant());
+  @Test
+  public void testWorkingWithLegacyDateInJava8() {
+    Date date = new Date();
+    Instant instant = date.toInstant();
+    assertThat(instant).isNotEqualTo(clock.instant());
 
-        ZonedDateTime zdt = instant.atZone(clock.getZone());
-        assertThat(zdt.getZone()).isEqualTo(ZoneId.of("Australia/Sydney"));
+    ZonedDateTime zdt = instant.atZone(clock.getZone());
+    assertThat(zdt.getZone())
+            .isEqualTo(ZoneId.of("Australia/Sydney"));
 
-        LocalDate ld = zdt.toLocalDate();
-        assertThat(ld).isEqualTo(LocalDate.now(clock));
-        ZonedDateTime zdtDiffZone = zdt.withZoneSameInstant(ZoneId.of("Europe/London"));
-        assertThat(zdtDiffZone.getZone()).isEqualTo(ZoneId.of("Europe/London"));
-    }
+    LocalDate ld = zdt.toLocalDate();
+    assertThat(ld).isEqualTo(LocalDate.now(clock));
+    ZonedDateTime zdtDiffZone = 
+            zdt.withZoneSameInstant(ZoneId.of("Europe/London"));
+    assertThat(zdtDiffZone.getZone())
+            .isEqualTo(ZoneId.of("Europe/London"));
+  }
 
-    @Test
-    public void testWorkingWithLegacyCalendarInJava8() {
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(clock.getZone()));
-        assertThat(calendar.getTimeZone()).isEqualTo(TimeZone.getTimeZone("Australia/Sydney"));
+  @Test
+  public void testWorkingWithLegacyCalendarInJava8() {
+    Calendar calendar = 
+            Calendar.getInstance(TimeZone.getTimeZone(clock.getZone()));
+    assertThat(calendar.getTimeZone())
+            .isEqualTo(TimeZone.getTimeZone("Australia/Sydney"));
 
-        Date calendarDate = calendar.getTime();
-        Instant instant = calendar.toInstant();
-        assertThat(calendarDate.toInstant()).isEqualTo(calendar.toInstant());
+    Date calendarDate = calendar.getTime();
+    Instant instant = calendar.toInstant();
+    assertThat(calendarDate.toInstant()).isEqualTo(calendar.toInstant());
 
-        ZonedDateTime instantAtDiffZone = instant.atZone(ZoneId.of("Europe/London"));
-        assertThat(instantAtDiffZone.getZone()).isEqualTo(ZoneId.of("Europe/London"));
+    ZonedDateTime instantAtDiffZone = 
+            instant.atZone(ZoneId.of("Europe/London"));
+    assertThat(instantAtDiffZone.getZone())
+            .isEqualTo(ZoneId.of("Europe/London"));
 
-        LocalDateTime localDateTime = instantAtDiffZone.toLocalDateTime();
-        LocalDateTime localDateTimeWithZone = LocalDateTime.now(ZoneId.of("Europe/London"));
-        assertThat(localDateTime)
-                .isCloseTo(localDateTimeWithZone, within(5, ChronoUnit.SECONDS));
+    LocalDateTime localDateTime = instantAtDiffZone.toLocalDateTime();
+    LocalDateTime localDateTimeWithZone = 
+            LocalDateTime.now(ZoneId.of("Europe/London"));
+    assertThat(localDateTime)
+            .isCloseTo(localDateTimeWithZone, within(5, ChronoUnit.SECONDS));
 
-    }
+  }
 
 }
-
 ````
 
 As we can see in the examples, methods are provided to convert to `java.time.Instant` which represents a timestamp at a
@@ -603,7 +618,7 @@ use [this application](https://github.com/thombergs/code-examples/tree/master/sp
 to look at how timezone conversions apply. This application is a Spring Boot application with MySQL as the underlying
 database. First, let's look at the database.
 
-**According to Oracle official documentation**:
+**[According to Oracle official documentation](https://docs.oracle.com/en-us/iaas/Content/Database/References/timezones.htm)**:
 > You can change the database time zone manually but Oracle recommends that you keep it as UTC (the default) to avoid
 > data conversion and improve performance when data is transferred among databases.
 > This configuration is especially important for distributed databases, replication, and export and import operations.
@@ -670,48 +685,51 @@ CREATE TABLE IF NOT EXISTS `timezonedb`.`date_time_tbl`
 The corresponding JPA entity is as below:
 
 ````java
-
 @Entity
 @Table(name = "date_time_tbl")
 public class DateTimeEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @Column(name = "date_str")
-    private String dateStr;
+  @Column(name = "date_str")
+  private String dateStr;
 
-    @Column(name = "date_time")
-    private Date date;
+  @Column(name = "date_time")
+  private Date date;
 
-    @Column(name = "local_date")
-    private LocalDate localDate;
+  @Column(name = "local_date")
+  private LocalDate localDate;
 
-    @Column(name = "local_time")
-    private LocalTime localTime;
+  @Column(name = "local_time")
+  private LocalTime localTime;
 
-    @Column(name = "local_datetime_dt")
-    private LocalDateTime localDateTime;
+  @Column(name = "local_datetime_dt")
+  private LocalDateTime localDateTime;
 
-    @Column(name = "local_datetime_ts")
-    private LocalDateTime localDateTimeTs;
+  @Column(name = "local_datetime_ts")
+  private LocalDateTime localDateTimeTs;
 
-    @Column(name = "offset_datetime")
-    private OffsetDateTime offsetDateTime;
+  @Column(name = "offset_datetime")
+  private OffsetDateTime offsetDateTime;
 
-    @Column(name = "zoned_datetime")
-    private ZonedDateTime zonedDateTime;
+  @Column(name = "zoned_datetime")
+  private ZonedDateTime zonedDateTime;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @CreationTimestamp
-    private OffsetDateTime createdAt;
+  @Column(name = "created_at", nullable = false, updatable = false)
+  @CreationTimestamp
+  private OffsetDateTime createdAt;
 }
 ````
 
 ### Understanding the Server Timezone Setup
 
-{{% image alt="settings" src="images/posts/handling-timezones-in-spring/TZ.JPG" %}}
+| GMT                 | Europe/London       | Europe/Berlin       |
+|---------------------|---------------------|---------------------|
+| UTC +00:00          | UTC +01:00          | UTC +02:00          |
+| 2022-09-08T06:38:03 | 2022-09-08T07:38:03 | 2022-09-08T08:38:03 |
+  
 
 As seen, the database should store the timestamp in UTC (+00:00). We will run our Spring Boot application to the custom
 timezones **Europe/London** and **Europe/Berlin**. Since these timezones have offset +01:00 and +02:00 respectively, we
@@ -810,14 +828,13 @@ With this approach, we could define a Clock object in the desired timezone and p
 classes to get the corresponding date-time.
 
 ````java
-
 @TestConfiguration
 public class ServiceConfiguration {
 
-    @Bean
-    public Clock clock() {
-        return Clock.system(ZoneId.of("Europe/London"));
-    }
+  @Bean
+  public Clock clock() {
+    return Clock.system(ZoneId.of("Europe/London"));
+  }
 }
 ````
 
@@ -855,7 +872,10 @@ easier. We can then use some assertions in our tests to make sure the conversion
 timezones.
 
 ````java
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = ServiceConfiguration.class)
+
+@SpringBootTest(webEnvironment = 
+        SpringBootTest.WebEnvironment.RANDOM_PORT, 
+        classes = ServiceConfiguration.class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 public class DateTimeControllerTest {
@@ -886,9 +906,12 @@ public class DateTimeControllerTest {
     response.andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.applicationTimezone").value("Europe/London"))
-            .andExpect(jsonPath("$.['zonedDateTime (column zoned_datetime)']", Matchers.containsString("+01:00")))
-            .andExpect(jsonPath("$.['offsetDateTime (column offset_datetime)']", Matchers.containsString("+01:00")))
-            .andExpect(jsonPath("$.['localDateTime (column local_datetime_dt)']", Matchers.not(Matchers.containsString("+01:00"))));
+            .andExpect(jsonPath("$.['zonedDateTime (column zoned_datetime)']", 
+                    Matchers.containsString("+01:00")))
+            .andExpect(jsonPath("$.['offsetDateTime (column offset_datetime)']", 
+                    Matchers.containsString("+01:00")))
+            .andExpect(jsonPath("$.['localDateTime (column local_datetime_dt)']", 
+                    Matchers.not(Matchers.containsString("+01:00"))));
   }
 }
 ````

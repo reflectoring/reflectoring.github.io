@@ -755,15 +755,13 @@ We have configured two endpoints in the controller class:
 - `http://localhost:8083/app/v1/timezones/dst` This endpoint indicates the end of DST in the specific timezone for the
   defined date. This will help us understand how the application handles DST changes.
 
-{{% info title="`Daylight Savings Time`" %}} As on 8th September 2022, both the timezones **Europe/London** and **
-Europe/Berlin** are on DST. Their corresponding timezones are **British Summer Time (BST) (UTC+1)** and **Central
+{{% info title="`Daylight Savings Time`" %}} As on 8th September 2022, both the timezones **Europe/London** and **Europe/Berlin** are on DST. Their corresponding timezones are **British Summer Time (BST) (UTC+1)** and **Central
 European Summer Time (CEST) (UTC+2)**.
 
 After 30th October 2022, the DST will end and they will be back to **Greenwich Mean Time (GMT) (UTC)** and **Central
 European Time (CET) (UTC+1)** respectively.
 
-In our sample application we are considering the below dates and times for easy understanding and to ensure the test
-cases dont fail.
+In our sample application we will consider the below date and time for understanding and executing our test cases.
 
 **DST Date/Time : 8th September 2022 21:21:17**
 
@@ -817,7 +815,7 @@ ZonedDateTime, we could use the one that best suits our use-case.
 When working with timezones and unit testing applications, we might want to control the timezone, dates and make them
 agnostic of the system timezone. The Date/Time API
 provides [`java.time.Clock`](https://docs.oracle.com/javase/8/docs/api/java/time/Clock.html) that can be used for
-achieving this. According to the official documentation:
+achieving this. [According to the official documentation](https://docs.oracle.com/javase/8/docs/api/java/time/Clock.html):
 > Use of a Clock is optional. All key date-time classes also have a now() factory method that uses the system clock in
 > the default time zone. The primary purpose of this abstraction is to allow alternate clocks to be plugged in as and
 > when

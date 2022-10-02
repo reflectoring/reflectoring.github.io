@@ -104,9 +104,11 @@ We will simply define a feature button in the UI and show it to the user or not,
 
 The feature flag we define in LaunchDarkly UI looks something like this:
 
-{{% image alt="String Feature Flag LaunchDarkly" src="images/posts/nodejs-frontend-launchdarkly/Hide_User.png" %}}
+{{% image alt="String Feature Flag LaunchDarkly" src="images/posts/nodejs-frontend-launchdarkly/Show_Shiny_New_Feature.png" %}}
 
-Then we will define “*Individual Targeting*” for that feature flag and assign that to a user. In our example, we will simply define it “true” for John Doe based upon the user being passed as part of the code. In real implementation, this would be driven by the session id of the logged-in user of this UI.
+Then we will define “*Target users who match these rules*” for that feature flag and assign a rule that to a user as shown below. In our example, we will simply define it “true” for John Doe based upon the user key being passed as part of the code. In real implementation, this would be driven by the session id of the logged-in user of this UI.
+
+{{% image alt="String Feature Flag LaunchDarkly Targeting Rule" src="images/posts/nodejs-frontend-launchdarkly/Targeting.png" %}}
 
 As discussed above, we will fetch the *Client-Side ID* and add it in the code.
 
@@ -207,7 +209,7 @@ When the user is not set in the LaunchDarkly UI, our React UI looks like below:
 
 {{% image alt="React User List" src="images/posts/nodejs-frontend-launchdarkly/Button.png" %}}
 
-Now based upon the user information, this flag will return true if the user is “John Doe”. It will return false for any other user who would try to access this UI. In a real production implementation, this name will be fetched from the logged-in session of the user and matched in Launchdarkly with its ID or username.
+Now based upon the user information, this flag will return true if the key of the user is “john_doe”. It will return false for any other user who would try to access this UI and it would show blank screen. In a real production implementation, this name will be fetched from the logged-in session of the user and matched in Launchdarkly with its ID or username.
 
 ## Sorting Data using Feature Flags
 
@@ -215,7 +217,7 @@ Next we will try to sort our content in the UI using our feature flags.
 
 Let's imagine we have a list of users, each with a timestamp. We can sort the users naturally or based upon that timestamp. We will create a feature flag variation in LaunchDarkly UI with a string type and try to use it in our code.
 
-{{% image alt="Boolean Feature Flag LaunchDarkly" src="images/posts/nodejs-frontend-launchdarkly/User_List_Sorting.png" %}}
+{{% image alt="Boolean Feature Flag LaunchDarkly" src="images/posts/nodejs-frontend-launchdarkly/Sort_Order.png" %}}
 
 Then we will add the sorting logic in our same `App.js` and use it with a switch in the UI. The UI will display either *Natural Sorting* or *TimeStamp based Sorting*. By default, if the flag is set to “*timestamp*” then Time-based Sorting takes place otherwise Natural Sorting:
 
@@ -253,8 +255,7 @@ class App extends Component {
   onLaunchDarklyUpdated() {
     this.setState({
       featureFlags: {
-        defaultSortingType: this.ldclient.variation('sort-order', "natural"),
-        hideUser: this.ldclient.variation('hidden-user', '')
+        defaultSortingType: this.ldclient.variation('sort-order', "natural")
       }
     })
   }

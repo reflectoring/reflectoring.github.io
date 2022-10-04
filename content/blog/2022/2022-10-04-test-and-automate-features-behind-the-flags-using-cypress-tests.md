@@ -1,25 +1,25 @@
 ---
 title: "Test and Automate Features behind the Flags using Cypress Tests"
 categories: ["Node"]
-date: 2022-08-03 00:00:00 +1100 
-modified: 2022-08-03 00:00:00 +1100
+date: 2022-10-04 00:00:00 +1100 
+modified: 2022-10-04 00:00:00 +1100
 authors: [arpendu]
 excerpt: "A complete walkthrough to define sample unit or automated tests in React UI using Cypress tests to test features behind feature flags using LaunchDarkly."
 image: images/stock/0104-on-off-1200x628-branded.jpg
 url: nodejs-feature-flag-launchdarkly-react-cypress
 ---
 
-Development teams can deliver value to consumers much more quickly and with far less risk; thanks to *featuring flag-driven development*. However, it also makes testing more complicated in the long run. In this article, we'll talk about some of the difficulties testing presents in the age of feature flags and offer some suggestions on how to overcome them.
+Development teams, nowadays, can deliver quick value to consumers with far less risk with the help of *feature flag-driven development*. However, it also makes testing more complicated in the long run. So in this article, we'll talk about some of the difficulties that testing presents in the age of feature flags and offer some suggestions on how to overcome them.
 
 We will outline five different sorts of tests that could be included in our testing plan in order to help structure the discussion:
 
 - **Unit Tests:** Testing separate functions with *unit* tests.
-- **Integration Tests:** Verifying how different modules or functions work together.
+- **Integration Tests:** Verifying how different modules work together.
 - **End-to-End Tests:** *End-to-end* tests, also known as *functional* tests, examine how a real user might navigate our website.
-- **Quality Assurance (QA) Testing:** Testing to ensure that functionality satisfies requirements is termed *quality assurance (QA)* testing.
-- **User Acceptance Testing (UAT):** Testing to get stakeholders' approval that the functionality satisfies specifications.
+- **Quality Assurance (QA) Testing:** Testing procedure that ensures functionality satisfies requirement is termed as *quality assurance (QA)* testing.
+- **User Acceptance Testing (UAT):** Testing procedure to get stakeholders' approval that the functionality satisfies specifications.
 
-The *Continuous Integration (CI)* approach typically includes the automatic execution of the first three test types. A specialist QA team may occasionally carry out QA testing, which can include both human and automated tests. The first four test types aid in determining whether anything was built correctly, whereas UAT aids in determining whether something was built correctly.
+The first three test types defined above are often executed automatically when using the *Continuous Integration (CI)* technique. QA testing, which can involve both manual and automated tests, may occasionally be performed by a specialised QA team. While the first four test types help determine whether anything was built correctly, UAT helps to determine if the product is acceptable and fit for the purpose.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/react-cypress-launchdarkly-feature-flag-test" %}}
 
@@ -28,13 +28,12 @@ The *Continuous Integration (CI)* approach typically includes the automatic exec
 As we've seen, using feature flags while performing traditional automated integration testing may be very difficult. We really shouldn't advocate attempting to manage every scenario that could arise. Instead, the following are a few suggestions that we can try:
 
 * Constantly write unit tests for code coverage.
+* Tests scenarios that can occur due to any unknown disaster.
+* Always check the state of production at any point in time.
+* Test different user personas and their features.
+* Sometimes we can test various combinations.
 
-- Tests scenarios that can occur due to any unknown disaster
-- Always check the state of production at any point in time
-- Test different user personas and their features
-- Sometimes we can test various combinations
-
-We can use different [LaunchDarkly SDKs](https://launchdarkly.com/features/sdk/) to achieve all of this functionality with a lot of ease. Performing integration tests against the current production state will always provide us some assurance that everything will largely still work once we deploy our application into production. To do this, we can direct the SDK to our production environment when it starts up, or use our API to simulate the requests by downloading the current production state.
+We can use different [LaunchDarkly SDKs](https://launchdarkly.com/features/sdk/) to achieve all of this functionality with a lot of ease. Performing integration tests against the current production state will always provide us some assurance that everything will largely still work once we deploy our application into production. To do this, we can direct the SDK to our production environment when it starts up. Alternatively, we can also use our API to simulate the requests by downloading the current production state.
 
 We may find it helpful to develop some testing personas to employ in our end-to-end tests if the feature flag rules benefit from user targeting. We can accomplish this by making sure our user object contains legitimate attributes that the LaunchDarkly SDK will analyze.
 
@@ -42,7 +41,7 @@ We may find it helpful to develop some testing personas to employ in our end-to-
 
 We discuss testing in production a lot. Testing in production does not imply releasing code without tests and crossing one's fingers. Instead, it refers to the capacity to test actual features with real data in a real environment using real people.
 
-Because they have given their QA and UAT teams the freedom to test features in a genuine production environment before making them available to the rest of their user base, some of our most productive users can deploy to production multiple times per day. There is no impact on other users and no need to perform a complete rollback when QA or UAT finds a bug.
+Because they have given their QA and UAT teams the freedom to test features in a genuine production environment before making them available to the rest of their user base, some of our most productive users can deploy directly to production multiple times per day. There is no impact on other users and no need to perform a complete rollback when QA or UAT tester finds a bug.
 
 The real strength of feature flags lies in this. No matter how many times you test your software using automation, you will never be able to detect every fault. But the confidence to be able to continue delivering features to consumers securely and quickly comes from being able to turn a feature off when you discover an issue in production in real-time.
 
@@ -65,13 +64,17 @@ One must be careful not to break any current tests while introducing a new exper
 - **Kill Switch:** The majority of users if not all have the feature switched on by default. The tests created while the functionality was being developed now work without opt-in. The outdated tests are still active and use the outdated behavior.
 - **Feature Removal:** Both the previous behavior and all previous testing can be disabled. The feature flag would now consistently denote the altered behavior.
 
-## Brief Introduction to LaunchDarkly and its features
+## Brief Introduction to LaunchDarkly and its Features
 
-A SaaS-based product called [LaunchDarkly](https://launchdarkly.com/) enables developers to manage feature flags. Separating feature rollout and code deployment enables developers to test their code live in production, gradually roll out features to groups of users, and manage flags across a flag's whole lifecycle. This gives developers more security to produce top-notch applications.
+[LaunchDarkly](https://launchdarkly.com/) is a feature management service that takes care of all the feature flagging concepts. The name is derived from the concept of a *“dark launch”*, which deploys a feature in a deactivated state and activates it when the time is right.
 
-It functions as a cloud-based service in essence and provides a UI for managing all feature flags. For each flag, we must define one or more **variations**. All acceptable alternatives include Boolean, arbitrary numbers, textual values, and JSON snippets. We can establish **targeting rules** to indicate which variation a feature flag will display to its user. By default, a targeting rule for a feature flag is inactive. 
+{{% image alt="LaunchDarkly Internal" src="images/posts/feature-flag-tools/launchdarkly.png" %}}
 
-LaunchDarkly uses a [streaming architecture](https://launchdarkly.com/blog/launchdarklys-evolution-from-polling-to-streaming/) in place of a polling design. This approach helps with scalability by preventing the requirement for network calls every time our application has to analyze or fetch a feature flag. Additionally, for robustness, feature flag evaluation will still work even if the LaunchDarkly server is no longer responding to our requests.
+LaunchDarkly is a cloud-based service and provides a UI to manage everything about our feature flags. For each flag, we need to define one or more **variations**. The variation can be a *boolean*, an arbitrary *number*, a *string* value, or a *JSON* snippet.
+
+We can define **targeting rules** to define which variation a feature flag will show to its user. By default, a targeting rule for a feature flag is deactivated. The simplest targeting rule is *“show variation X for all users”*. A more complex targeting rule is *“show variation A for all users with attribute X, variation B for all users with attribute Y, and variation C for all other users”*.
+
+We can use the LaunchDarkly SDK in our code to access the feature flag variations. It provides a persistent connection to [LaunchDarkly's streaming infrastructure](https://launchdarkly.com/how-it-works/) to receive server-sent-events (SSE) whenever there is a change in a feature flag. If the connection fails for some reason, it falls back to default values.
 
 ## Create a Simple React Application
 
@@ -89,7 +92,7 @@ We will first create a new LanuchDarkly project with name “Reflectoring.io” 
 
 {{% image alt="LaunchDarkly Project" src="images/posts/nodejs-cypress-test-launchdarkly/LaunchDarkly_Keys.png" %}}
 
-Then we will define a new String feature flag *testing-launch-darkly-control-from-cypress* with three variations.
+Then we will define a new String feature flag *test-greeting-from-cypress* with three variations.
 
 {{% image alt="Launchdarkly String Feature Variation" src="images/posts/nodejs-cypress-test-launchdarkly/Testing_With_Cypress.png" %}}
 
@@ -126,9 +129,10 @@ const App = () => (
 // your LaunchDarkly portal under Account settings / Projects
 // https://docs.launchdarkly.com/sdk/client-side/javascript#initializing-the-client
 const user = {
-  key: 'USER_1234'
+  key: 'CYPRESS_TEST_1234'
 };
-export default withLDProvider({ clientSideID: '62e9289ade464c10d842c2b3', user })(App);
+export default withLDProvider({ clientSideID: '63**********************', user })(App);
+
 ```
 
 Then the Home page would simply use the value of the flag to show the greeting:
@@ -147,7 +151,7 @@ const Heading = styled.h1`
 `;
 const Home = ({ flags }) => (
   <Root>
-    <Heading>{flags.testingLaunchDarklyControlFromCypress}, World</Heading>
+    <Heading>{flags.testGreetingFromCypress}, World !!</Heading>
     <div>
       This is a LaunchDarkly React example project. The message above changes the greeting,
       based on the current feature flag variation.
@@ -224,9 +228,9 @@ In order to use this plugin, we need to understand some of the functions defined
   cy.task('cypress-ld-control:removeUserTarget', { featureFlagKey, userId })
   ```
 
-As we can see that every task is prefixed with `cypress-ld-control:` string and every command takes zero zero or a single options object as an argument. Finally, every command returns either an object or a null and never `undefined`.
+As we can see that every task is prefixed with `cypress-ld-control:` string and every command takes zero or a single options object as an argument. Finally, every command returns either an object or a null, but never `undefined`.
 
-### Define Cypress tasks
+### Define Cypress Tasks
 
 In order to change the values of the feature flags and individual user targets, we need to first generate an access token in LaunchDarkly UI.
 
@@ -272,6 +276,8 @@ module.exports = (on, config) => {
 }
 ```
 
+#### Test Greetings
+
 Next we can start writing our Cypress tasks using `cy.task()` function. So consider if the test is to see a casual greeting header, we can simply write:
 
 ```javascript
@@ -282,7 +288,7 @@ before(() => {
 const featureFlagKey = 'testing-launch-darkly-control-from-cypress'
 const userId = 'USER_1234'
 
-it('shows the casual greeting', () => {
+it('shows a casual greeting', () => {
   // target the given user to receive the first variation of the feature flag
   cy.task('cypress-ld-control:setFeatureFlagForUser', {
     featureFlagKey,
@@ -290,8 +296,8 @@ it('shows the casual greeting', () => {
     variationIndex: 0,
   })
   cy.visit('/')
-  cy.contains('h1', 'Hello, World').should('be.visible')
-})
+  cy.contains('h1', 'Hello, World !!').should('be.visible')
+});
 ```
 
 Then we can run our tests by defining a script in `package.json` as follows:
@@ -316,12 +322,12 @@ Next we can define few more variations and cover some more test cases as follows
 
 before(() => {
   expect(Cypress.env('launchDarklyApiAvailable'), 'LaunchDarkly').to.be.true
-})
+});
 
-const featureFlagKey = 'testing-launch-darkly-control-from-cypress'
-const userId = 'USER_1234'
+const featureFlagKey = 'test-greeting-from-cypress';
+const userId = 'CYPRESS_TEST_1234';
 
-it('shows the casual greeting', () => {
+it('shows a casual greeting', () => {
   // target the given user to receive the first variation of the feature flag
   cy.task('cypress-ld-control:setFeatureFlagForUser', {
     featureFlagKey,
@@ -329,27 +335,27 @@ it('shows the casual greeting', () => {
     variationIndex: 0,
   })
   cy.visit('/')
-  cy.contains('h1', 'Hello, World').should('be.visible')
-})
+  cy.contains('h1', 'Hello, World !!').should('be.visible')
+});
 
-it('shows formal greeting', () => {
+it('shows a formal greeting', () => {
   cy.task('cypress-ld-control:setFeatureFlagForUser', {
     featureFlagKey,
     userId,
     variationIndex: 1,
   })
   cy.visit('/')
-  cy.contains('h1', 'How are you doing, World').should('be.visible')
-})
+  cy.contains('h1', 'Good Morning, World !!').should('be.visible')
+});
 
-it('shows vacation greeting', () => {
+it('shows a vacation greeting', () => {
   cy.task('cypress-ld-control:setFeatureFlagForUser', {
     featureFlagKey,
     userId,
     variationIndex: 2,
   })
   cy.visit('/')
-  cy.contains('h1', 'Yippeeee, World').should('be.visible')
+  cy.contains('h1', 'Hurrayyyyy, World').should('be.visible')
 
   // print the current state of the feature flag and its variations
   cy.task('cypress-ld-control:getFeatureFlag', featureFlagKey)
@@ -361,7 +367,7 @@ it('shows vacation greeting', () => {
         cy.log(`${k}: ${v.name} is ${v.value}`)
       })
     })
-})
+});
 
 it('shows all greetings', () => {
   cy.visit('/')
@@ -370,7 +376,7 @@ it('shows all greetings', () => {
     userId,
     variationIndex: 0,
   })
-  cy.contains('h1', 'Hello, World')
+  cy.contains('h1', 'Hello, World !!')
     .should('be.visible')
     .wait(1000)
 
@@ -379,24 +385,110 @@ it('shows all greetings', () => {
     userId,
     variationIndex: 1,
   })
-  cy.contains('h1', 'How are you doing, World').should('be.visible').wait(1000)
+  cy.contains('h1', 'Good Morning, World !!').should('be.visible').wait(1000)
 
   cy.task('cypress-ld-control:setFeatureFlagForUser', {
     featureFlagKey,
     userId,
     variationIndex: 2,
   })
-  cy.contains('h1', 'Yippeeee, World').should('be.visible')
-})
+  cy.contains('h1', 'Hurrayyyyy, World !!').should('be.visible')
+});
 
 after(() => {
   cy.task('cypress-ld-control:removeUserTarget', { featureFlagKey, userId })
-})
+});
 ```
 
 We are also defining a task at the end to remove any user targets being created as part of this tasks. Finally, we can see all the test output being populated in Cypress UI dashboard. We can launch the Cypress UI and click on “Run” option, where we can see all the task execution with variations being printed.
 
 {{% image alt="Cypress Test UI variation" src="images/posts/nodejs-cypress-test-launchdarkly/Cypress_Test_Result.png" %}}
+
+#### Test Target User Button
+
+In our previous [article](/nodejs-feature-flag-launchdarkly-react/), we had represented a button in UI which would be populated based upon the logged-in user. Considering the same, we can add the same button here and add test-cases using Cypress to cover the functionality of clicking the button and validating the popup alert.
+
+For this, we will update our home page logic:
+
+```javascript
+const theme = {
+  blue: {
+    default: "#3f51b5",
+    hover: "#283593"
+  }
+};
+
+const Button = styled.button`
+    background-color: ${(props) => theme[props.theme].default};
+    color: white;
+    padding: 5px 15px;
+    border-radius: 5px;
+    outline: 0;
+    text-transform: uppercase;
+    margin: 10px 0px;
+    cursor: pointer;
+    box-shadow: 0px 2px 2px lightgray;
+    transition: ease background-color 250ms;
+    &:hover {
+      background-color: ${(props) => theme[props.theme].hover};
+    }
+    &:disabled {
+      cursor: default;
+      opacity: 0.7;
+    }
+  `;
+
+const clickMe = () => {
+  alert("A new shiny feature pops up!");
+};
+
+const Home = ({ flags }) => (
+  <Root>
+    <Heading>{flags.testGreetingFromCypress}, World !!</Heading>
+    <div>
+      This is a LaunchDarkly React example project. The message above changes the greeting,
+      based on the current feature flag variation.
+    </div>
+    <div>
+    {flags.showShinyNewFeature ? 
+      <Button id='shiny-button' theme='blue' onClick={clickMe}>Shiny New Feature</Button>: ''}
+    </div>
+    <div>
+      {flags.showShinyNewFeature ? 'This button will show new shiny feature in UI on clicking it.': ''}
+    </div>
+  </Root>
+);
+```
+
+Now the user attribute in `app.js` needs to be updated to “John Doe”. Thus, when John logs in, he will see the shiny new button, whereas others won’t.
+
+```javascript
+const user = {
+  key: 'john_doe'
+};
+```
+
+Similarly, we will add a task in existing spec to validate the click event of a button and its outcome alert of the popup:
+
+```javascript
+it('click a button', () => {
+  cy.task('cypress-ld-control:setFeatureFlagForUser', {
+    featureFlagKey: 'show-shiny-new-feature',
+    userId: 'john_doe',
+    variationIndex: 0,
+  })
+  cy.visit('/');
+  var alerted = false;
+  cy.on('window:alert', msg => alerted = msg);
+
+  cy.get('#shiny-button').should('be.visible').click().then(
+    () => expect(alerted).to.match(/A new shiny feature pops up!/));
+});
+```
+
+Finally, we can see all the test output being populated in Cypress UI dashboard. We can launch the Cypress UI and click on “Run” option, where we can see all the task execution with variations being printed.
+
+{{% image alt="Cypress Test UI variation" src="images/posts/nodejs-cypress-test-launchdarkly/Cypress_Final_Test_Result.png" %}}
 
 ## Deploy Tests as CI
 

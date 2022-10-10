@@ -78,7 +78,8 @@ We will use the following commands to do this:
 git checkout main
 
 git merge feature2
-```text
+```
+
 In simple words, fast-forwarding `main` to the `feature2` branch means that previously the HEAD pointer for main branch was at 'C6' but after the above command it fast forwards the main branch's HEAD pointer to the feature2 branch:
 
 {{% image alt="Git Rebase Done" src="images/posts/git-rebase-merge/git-rebase-working3.png" %}}

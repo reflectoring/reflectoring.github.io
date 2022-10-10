@@ -1,10 +1,60 @@
 {{ define "main" }}
 
 {{ $author := (index .Site.Data.authors .Title) }}
-<section class="section">
-<div class="container">
-{{ partial "author-blurb.html" $author }}
-</div>
+<section class="section pb-0">
+  <div class="container">
+    <div class="row align-items-lg-center">
+      <!-- image processing for multiple device -->
+      {{ $imagePath:= $author.avatar }}
+      {{ if $imagePath}}
+      {{ $image:= resources.Get $imagePath }}
+      {{ $imageFallback:= $image.Resize "650x" }}
+      {{ $imageLG:= $image.Resize "650x webp" }}
+      {{ $imageMD:= $image.Resize "600x webp" }}
+      {{ $imageSM:= $image.Resize "545x webp" }}
+      <div class="col-lg-3 col-md-4 mb-4">
+        <picture>
+          <source srcset="{{ $imageSM.RelPermalink }}" media="(max-width: 575px)">
+          <source srcset="{{ $imageMD.RelPermalink }}" media="(max-width: 767px)">
+          <source srcset="{{ $imageLG.RelPermalink }}">
+          <img loading="eager" decoding="async" class="img-fluid rounded-4" src="{{$imageFallback.RelPermalink}}"
+               alt="{{$author.name}}" width="{{$image.Width}}" height="{{$image.Height}}" style="width: 100%; max-height:400px; object-fit:cover;">
+        </picture>
+      </div>
+      {{ end }}
+      <div class="col-lg-9 col-md-8">
+        <h1 class="h4 title-border">{{ $author.name }}</h1>
+        <p>{{ safeHTML $author.bio }}</p>
+        <ul class="list-unstyled social-icons-big">
+        {{ if $author.facebook }}
+          <li class="list-inline-item">
+            <a href="https://www.facebook.com/{{ $author.facebook }}"><i class="fab fa-facebook"></i></a>
+          </li>
+        {{ end }}
+        {{ if $author.twitter }}
+          <li class="list-inline-item">
+            <a href="https://www.twitter.com/{{ $author.twitter }}"><i class="fab fa-twitter"></i></a>
+          </li>
+        {{ end }}
+        {{ if $author.github }}
+          <li class="list-inline-item">
+            <a href="https://www.github.com/{{ $author.github }}"><i class="fab fa-github"></i></a>
+          </li>
+        {{ end }}
+        {{ if $author.linkedin }}
+          <li class="list-inline-item">
+            <a href="https://www.linkedin.com/in/{{ $author.linkedin }}"><i class="fab fa-linkedin"></i></a>
+          </li>
+        {{ end }}
+        {{ if $author.stackoverflow }}
+        <li class="list-inline-item">
+          <a href="https://www.stackoverflow.com/users/{{ $author.stackoverflow }}"><i class="fab fa-stack-overflow"></i></a>
+        </li>
+        {{ end }}
+        </ul>
+      </div>
+    </div>
+  </div>
 </section>
 
 {{ partial "list.html" . }}

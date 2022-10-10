@@ -86,33 +86,45 @@ hasChildren = true
 
       [[main]]
       parent = "Categories"
-      name = "NodeJS"
+      name = "Node"
       url = "/categories/node/"
       weight = 3
 
       [[main]]
       parent = "Categories"
+      name = "Kotlin"
+      url = "/categories/kotlin/"
+      weight = 4
+
+      [[main]]
+      parent = "Categories"
       name = "AWS"
       url = "/categories/aws/"
-      weight = 4
+      weight = 5
 
       [[main]]
       parent = "Categories"
       name = "Software Craft"
       url = "/categories/software-craft/"
-      weight = 5
+      weight = 6
 
       [[main]]
       parent = "Categories"
       name = "Simplify!"
       url = "/categories/simplify/"
-      weight = 6
+      weight = 7
 
       [[main]]
       parent = "Categories"
       name = "Meta"
       url = "/categories/meta/"
-      weight = 7
+      weight = 8
+
+      [[main]]
+      parent = "Categories"
+      name = "Book Reviews"
+      url = "/categories/book-notes/"
+      weight = 9
 
 # footer menu
 [[footer]]
@@ -133,27 +145,45 @@ weight = 1
 
     [[footer]]
     parent = "Content"
+    name = "Node"
+    url = "/categories/node/"
+    weight = 3
+
+    [[footer]]
+    parent = "Content"
+    name = "Node"
+    url = "/categories/node/"
+    weight = 4
+
+    [[footer]]
+    parent = "Content"
     name = "AWS"
     url = "/categories/aws/"
-    weight = 2
+    weight = 5
 
     [[footer]]
     parent = "Content"
     name = "Software Craft"
     url = "/categories/software-craft/"
-    weight = 3
+    weight = 6
 
     [[footer]]
     parent = "Content"
     name = "Simplify!"
     url = "/categories/simplify/"
-    weight = 5
+    weight = 7
 
     [[footer]]
     parent = "Content"
     name = "Meta"
     url = "/categories/meta/"
-    weight = 6
+    weight = 8
+
+    [[footer]]
+    parent = "Content"
+    name = "Book Reviews"
+    url = "/categories/book-notes/"
+    weight = 9
 
 [[footer]]
 name = "Products"

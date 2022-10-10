@@ -4,7 +4,7 @@
   <!-- image path -->
   {{ $imagePath:= .Params.image }}
   {{ if $imagePath }}
-  <div class="mb-4 position-relative">
+  <div class="mb-3 position-relative">
     <!-- image CDN -->
     {{ if hasPrefix $imagePath "http" }}
     <img loading="eager" decoding="async" src="{{ $imagePath | safeURL }}" alt="{{ .Title }}"
@@ -32,7 +32,7 @@
     <ul class="list-inline card-badge">
       {{ range .Params.categories }}
       <li class="list-inline-item">
-        <a href="{{`categories/` | relLangURL}}{{. | lower | urlize}}" class="badge badge-primary py-1">{{. | title}}</a>
+        <a href="{{`categories/` | relLangURL}}{{. | lower | urlize}}" class="badge badge-primary">{{. | title}}</a>
       </li>
       {{ end }}
     </ul>
@@ -50,7 +50,14 @@
     </h3>
     <ul class="list-inline card-meta d-flex align-items-center mb-3">
       <li class="list-inline-item d-flex align-items-center">
+        {{ if $author.avatar }}
+        {{ $avatar:= resources.Get $author.avatar }}
+        {{ $avatarFallback:= $avatar.Resize "40x" }}
+        {{ $avatarWebp:= $avatar.Resize "40x webp" }}
+        <img src="{{$avatarWebp.RelPermalink}}" alt="{{$author.name}}" height="20" width="20" class="card-avatar">
+        {{ else}}
         <i class="fas fa-user me-2"></i>
+        {{ end }}
         <a href="/authors/{{ index .Params.authors 0 }}">{{ $author.name }}</a>
       </li>
       <li class="list-inline-item d-flex align-items-center">
@@ -58,7 +65,7 @@
         <span>{{ time.Format ":date_long" .PublishDate }}</span>
       </li>
     </ul>
-    <p class="card-text mb-4">{{ .Summary }}</p>
+    <p class="card-text small mb-3">{{ .Summary }}</p>
     <a href="{{.RelPermalink}}" class="btn btn-outline-primary btn-sm">Read more</a>
   </div>
 </div>

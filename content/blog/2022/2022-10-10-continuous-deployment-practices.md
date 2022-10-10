@@ -2,8 +2,8 @@
 authors: [tom]
 title: "9 Practices to Support Continuous Deployment"
 categories: ["Software Craft"]
-date: 2022-03-23 00:00:00 +1100
-modified: 2022-03-23 00:00:00 +1100
+date: 2022-10-10 00:00:00 +1100
+modified: 2022-10-10 00:00:00 +1100
 excerpt: "Building a continuous deployment pipeline is one thing. But using it effectively requires a set of practices around it."
 image: /images/stock/0121-pipes-1200x628.jpg
 ---

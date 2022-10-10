@@ -317,7 +317,7 @@ Usually AWS Lambda has various limitations of implementing canary deployments si
 
 So let’s just create a flag in [LaunchDarkly](https://app.launchdarkly.com/) by opening the dashboard and select our project (the default project works fine) and environment (either the default "Test" or "Production" is fine, just be sure to change the flag in the same environment later) then click  on *"Create flag"*.
 
-{{% image alt="LaunchDarkly Feature Flag" src="images/posts/nodejs-aws-lambda-launchdarkly/lambda_function.png" %}}
+{{% image alt="LaunchDarkly Feature Flag" src="images/posts/nodejs-aws-lambda-launchdarkly/launchdarkly_feature_flag.png" %}}
 
 After creating the flag, we need to set the *“Default Rule”* and choose *"A percentage rollout"* from the **Serve** menu. For this example, we will assign 50/50 but in a real world scenario, we would likely start with a smaller distribution in the first variation and then increase that number over time.
 

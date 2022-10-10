@@ -1,19 +1,21 @@
 ---
 title: "Serverless Percentage Rollout Deployment using LaunchDarkly and AWS Lambda"
 categories: ["Node","AWS"]
-date: 2022-08-06 00:00:00 +1100 
-modified: 2022-08-06 00:00:00 +1100
+date: 2022-10-10 00:00:00 +1100 
+modified: 2022-10-10 00:00:00 +1100
 authors: [arpendu]
 excerpt: "This post demonstrates how to deploy an AWS Lambda serverless function to Lambda@Edge and connect LaunchDarkly to get the feature flags."
 image: images/stock/0104-on-off-1200x628-branded.jpg
 url: nodejs-feature-flag-launchdarkly-aws-lambda-serverless
 ---
 
-Let me take you back to the days when server rooms included real equipment that were used to host applications. Companies constructed their own data centers back then. The procedure was laborious, challenging, and extremely demanding. Recently, a new era paved the way for running an application in the cloud. We were no longer required to consider the possibility of creating our own data centers.
+Let me take you back to the days when server rooms included real equipment that were used to host applications. Companies constructed their own data centers back then. The procedure was laborious, challenging, and extremely demanding. Recently, a new era paved the way for running an application in the cloud. We are no longer required to consider the possibility of creating our own data centers.
 
-We could just deploy applications in seconds and spin up servers across several regions in a matter of minutes. Provisioning, scalability, and monitoring of servers remained challenging tasks.
+We could just deploy applications in seconds and spin up servers across several regions in a matter of minutes. Provisioning, scalability, and monitoring of servers remained challenging tasks that we need to handle efficiently.
 
-At this time, a parallel development in cloud computing is known as serverless, sometimes known as *function-as-a-service(FAAS)* came into limelight. Server provisioning, monitoring, logging, or managing the underlying infrastructure are not at all required in this. The emphasis is on your business logic, which are divided into more manageable and specialized functions. There are servers, hence the term *"serverless"* does not imply their absence. It simply implies that you are relieved of the responsibility of overseeing these servers. *Amazon Web Services* is one of the organizations in charge of looking after these servers.
+In the present world, a parallel development in cloud computing came into limelight which is termed as *serverless*. It is sometimes also called as *function-as-a-service(FAAS)*. Server provisioning, monitoring, logging, or managing the underlying infrastructure are not at all required in this mechanism. The overall emphasis is on your business logic, which are then divided into more manageable and specialized functions.
+
+There are servers, hence the term *"serverless"* does not imply their absence. It simply implies that you are relieved of the responsibility of overseeing those servers. *Amazon Web Services* is one of the organizations in charge of looking after these servers although there many others in the market.
 
 Since it has been available for a while, *AWS Lambda* continues to be the most well-liked option to test serverless technology. To get  familiar with serverless, it's a development approach where the management, provisioning, and scaling of servers is separated from the development of the application. *Function-as-a-Service (FaaS)* products like *AWS Lambda* enable on-demand code execution in response to predefined events or requests.
 
@@ -25,7 +27,7 @@ In this article, we are going to deploy a NodeJS based function in AWS Lambda. W
 
 There are different rollout strategies possible to be adapted when we would like to release or publish a feature behind feature flag:
 
-* **Dark Launch** - Release of new features to a select group of users in order to solicit feedback is known as a *"dark launch"* or *"dark release"*. Dark launching, which is similar to a soft launch, can be activated by feature flags to achieve a code deployment that poses less risk. Developers can use this method to see how people react to new features. This guarantees the best release possible. This interaction can be used by developers to decide whether they need to make any changes.
+* **Dark Launch** - Release of new features to a select group of users in order to solicit feedback is known as a *"dark launch"*. It is also called as *"dark release"*. Dark launching, which is similar to a soft launch, can be activated by feature flags to achieve a code deployment that poses less risk. Developers can use this method to see how people react to new features. This guarantees the best release possible. This interaction can be used by developers to decide whether they need to make any changes.
 * **Global Rollout** - Organizations deploy their core applications across all of the nations in which they conduct business in global rollout scenarios. However, they frequently encounter a wide range of difficulties such as compliance with the law, peculiarities of the local culture, adoption, and legacy systems in other nations. This helps to rollback the new features after release if they cause any problem with no downtime.
 * **Kill Switch** - We can divide release from deployment using kill switches. By encasing a feature in a feature flag, we can easily disable the feature if it creates issues and retest it before making it available to users. We may minimize any negative effects and avoid having to restart our application by simply altering the status of our feature flag. Additionally, if something goes wrong, any member of our team can utilize the kill switch to disable a feature. As a result, non-technical team members can disable a feature without consulting engineers, such as those in product and marketing.
 * **Percentage Rollout** or **Canary Launch** - We can roll out new features gradually when we use percentage rollouts. Before making the feature available to a larger audience, it enables us to guarantee a positive user experience. We can choose who has access to a new feature using feature flags. We have the option to gradually roll out a feature to a particular proportion of our users, and we can also choose which consumers it will be rolled out to depending on factors like location, device kind, and more. From there, once a feature is made available to our user base, we can gauge its impact. This strategy is also known as *Canary Launch*.
@@ -44,14 +46,14 @@ In this article, we are going to take a practical approach to understand more ab
 
 ## Setup AWS for this Project
 
-In this article, we are going to deploy our NodeJS serverless functions as part of AWS Lambda and then we will use use LaunchDarkly flags and these Lambda functions to conditionally enable or modify server-side logic. In addition, we will also learn how to deploy this to [CloudFront](https://aws.amazon.com/cloudfront/), Amazon's content delivery network (CDN), as [Lambda@Edge](https://aws.amazon.com/lambda/edge/) so that we can use the flags to conditionally perform actions at the *"edge"*.
+In this article, we are going to deploy our NodeJS serverless functions as part of AWS Lambda and then we will use LaunchDarkly flags and these Lambda functions to conditionally enable or modify server-side logic. In addition, we will also learn how to deploy this to [CloudFront](https://aws.amazon.com/cloudfront/), Amazon's content delivery network (CDN), as [Lambda@Edge](https://aws.amazon.com/lambda/edge/) so that we can use the flags to conditionally perform actions at the *"edge"*.
 
 Users would be forwarded to a different version of a website using the function that we will write. We are going to route them using targeted users and percentage rollout feature flags in LaunchDarkly. So it is better to do this *"at the edge"* to limit any latency the user might experience during the request. We can intercept the request at the CDN level closest to the user and direct it to a specific version of the site rather than intercepting the request on the server and performing a server-side redirect, or sending back a response that executes a client-side redirect. Identifying the user and serving them a flag variation from the edge means faster state changes to feature flags, and no disruptions when the flag state changes from the default value to the targeted variation.
 
 To start with, we need following prerequisites:
 
-* AWS Account
-* LaunchDarkly Account
+* An AWS Account
+* A LaunchDarkly Account
 * VS Code to write our NodeJS code
 * Mechanism to build and deploy this Lambda function
 
@@ -64,7 +66,7 @@ First, we will start with setting up AWS resources. We basically need following 
 
 ### Setting up an S3 Bucket
 
-In order to set the S3 bucket, we need to follow these steps:
+In order to set the S3 bucket, we need to follow the following steps:
 
 * Search for *"S3"* in the AWS console and click **Create bucket**.
 
@@ -88,7 +90,7 @@ Next, we will setup the CloudFront distribution. This is required to deploy the 
 
 ### Setup using CloudFormation Template
 
-We can also try to setup in a much easier way using CloudFormation template that I have bundled in the code.
+We can also try to setup the above resources in a much easier way using CloudFormation template that I have bundled in the code as well.
 
 * In the AWS console, search for CloudFormation and then click **Create stack**.
 
@@ -261,20 +263,20 @@ Then we will define our `index.js`:
 
 ```javascript
 const LaunchDarkly = require("launchdarkly-node-server-sdk");
-const client = LaunchDarkly.init("sdk-d2432dc7-e56a-458b-9f93-0361af47d578");
+const client = LaunchDarkly.init("sdk-********-****-****-****-************");
 
 exports.handler = async (event) => {
-  // place your S3 bucket URL here -- don't forget to add /site/
+  // Place your S3 bucket URL here. Don't forget to add /site/
   let URL =
     "https://arpendu-nodejs-lambda-s3bucketforwebsitecontent-236bs71h1km3.s3.eu-north-1.amazonaws.com/site/";
 
   await client.waitForInitialization();
   let viewBetaSite = await client.variation(
-    "rebrand",
+    "view-beta-website",
     { key: event.Records[0].cf.request.clientIp },
     false
   );
-  console.log(`LaunchDarkly returned ${viewBetaSite}`);
+  console.log(`LaunchDarkly returned: ${viewBetaSite}`);
 
   if (viewBetaSite) URL += "beta/index.html";
   else URL += "index.html";
@@ -297,15 +299,21 @@ We need to make sure that we copy the S3 bucket URL properly and append the `/si
 
 ## Create Feature Flag in LaunchDarkly to Rollout Changes
 
-An outstanding feature flag management system that manages more than 200 billion feature flags daily has been developed by [LaunchDarkly](https://launchdarkly.com/). Companies have used it to implement many different things, including infrastructure migrations, A/B testing, and continuous deployment. Through its built-in support for percentage-based rollouts, it also makes it possible for canary launches (also known as dark launches).
+[LaunchDarkly](https://launchdarkly.com/) is a feature management service that takes care of all the feature flagging concepts. The name is derived from the concept of a *“dark launch”*, which deploys a feature in a deactivated state and activates it when the time is right.
+
+{{% image alt="LaunchDarkly Internal" src="images/posts/feature-flag-tools/launchdarkly.png" %}}
+
+LaunchDarkly is a cloud-based service and provides a UI to manage everything about our feature flags. For each flag, we need to define one or more **variations**. The variation can be a *boolean*, an arbitrary *number*, a *string* value, or a *JSON* snippet.
+
+We can define **targeting rules** to define which variation a feature flag will show to its user. By default, a targeting rule for a feature flag is deactivated. The simplest targeting rule is *“show variation X for all users”*. A more complex targeting rule is *“show variation A for all users with attribute X, variation B for all users with attribute Y, and variation C for all other users”*.
+
+We can use the LaunchDarkly SDK in our code to access the feature flag variations. It provides a persistent connection to [LaunchDarkly's streaming infrastructure](https://launchdarkly.com/how-it-works/) to receive server-sent-events (SSE) whenever there is a change in a feature flag. If the connection fails for some reason, it falls back to default values.
 
 Usually AWS Lambda has various limitations of implementing canary deployments simply using weighted aliases:
 
 - Because it uses traffic-based routing, much more users than we expect may access the new code.
 - Given that the user request is handled by many functions, propagating routing decisions along a call chain is not supported.
 - We won't be able to track the performance of the two versions independently because Lambda does not disclose metrics for each of the versions.
-
-Instead of a polling design, LaunchDarkly makes use of a [streaming architecture](https://launchdarkly.com/blog/launchdarklys-evolution-from-polling-to-streaming/). From a scalability point of view, this architecture is beneficial so that our application doesn't have to make a network call each time we need to analyse or fetch a feature flag. Furthermore, feature flag evaluation will continue to function even if the LaunchDarkly server has stopped responding to our calls, which is beneficial for resilience.
 
 So let’s just create a flag in [LaunchDarkly](https://app.launchdarkly.com/) by opening the dashboard and select our project (the default project works fine) and environment (either the default "Test" or "Production" is fine, just be sure to change the flag in the same environment later) then click  on *"Create flag"*.
 
@@ -315,7 +323,7 @@ After creating the flag, we need to set the *“Default Rule”* and choose *"A 
 
 {{% image alt="Percentage Rollout" src="images/posts/nodejs-aws-lambda-launchdarkly/percentage_rollout.png" %}}
 
-After this, we would also need to enable *“Targeting”* as ON, so that it can be served with multiple users.
+After this, we would also need to enable *“Targeting”* as **ON**, so that it can be served with multiple users.
 
 ## Launch/Deploy the Function to AWS Lambda@Edge
 
@@ -327,7 +335,7 @@ We can use the user's IP address as the key. While the IP isn't unique to an ind
 
 ```javascript
 let viewBetaSite = await client.variation(
-    "rebrand",
+    "view-beta-website",
     { key: event.Records[0].cf.request.clientIp },
     false
   );

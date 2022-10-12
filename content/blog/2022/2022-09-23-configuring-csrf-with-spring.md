@@ -253,13 +253,13 @@ For a detailed understanding refer to its [documentation](https://angular.io/gui
 {{% /info %}}
 
 ### Customizing CsrfTokenRepository
-In most cases, the default implementation `HttpSessionCsrfTokenRepository` would fit in. However, if we intend to create custom tokens or
+In most cases, the default implementation of `HttpSessionCsrfTokenRepository` would fit in. However, if we intend to create custom tokens or
 save the tokens to a database we might need some customization.
 
 Let's take a closer look at how we can customize `CsrfTokenRepository`.
 In our demo application, consider we need to customize token generation and add/update tokens based on the logged in user.
-As we have seen in the previous section, we would need to implement 3 methods:
-- **generateToken()**
+As we have seen in the previous section, we would need to implement three methods:
+- **generateToken(HttpServletRequest request)**
 ````java
 public class CustomCsrfTokenRepository implements CsrfTokenRepository {
     public CsrfToken generateToken(HttpServletRequest request) {
@@ -272,9 +272,9 @@ public class CustomCsrfTokenRepository implements CsrfTokenRepository {
     }
 }
 ````
-As shown above, when implementing the `generateToken()` method, we customize the token creation instead of the using the default UUID random token.
+As shown above, we are customising the token creation instead of the using the default UUID random token.
 
-- **saveToken()**
+- **saveToken(CsrfToken token, HttpServletRequest request, HttpServletResponse response)**
 ````java
 public class CustomCsrfTokenRepository implements CsrfTokenRepository {
     @Autowired
@@ -295,9 +295,9 @@ public class CustomCsrfTokenRepository implements CsrfTokenRepository {
     }
 }
 ````
-Here, the `saveToken()` uses the generated random token to either save/retrieve from `TokenRepository` which maps to a H2 Database table `Token` that stores user tokens.
+Here, the `saveToken()` uses the generated random token to either save/retrieve from `TokenRepository` which maps to a H2 Database table `Token` that is responsible for storing user tokens.
 
-- **loadToken()**
+- **loadToken(HttpServletRequest request)**
 ````java
 public class CustomCsrfTokenRepository implements CsrfTokenRepository {
     public CsrfToken loadToken(HttpServletRequest request) {
@@ -327,7 +327,7 @@ public class CustomCsrfTokenRepository implements CsrfTokenRepository {
     }
 }
 ````
-Here, we get the logged-in user and fetch its token from the table.
+Here, we get the logged-in user and fetch its token from the underlying database.
 
 ### Exposing the token to HTTP requests
 
@@ -345,13 +345,13 @@ Spring dynamically resolves the `_csrf.parameterName` to _csrf and `_csrf.token`
 This is detailed in the [Spring documentation](https://docs.spring.io/spring-security/site/docs/5.2.x/reference/html/protection-against-exploits.html#servlet-csrf-configure) that states:
 > Spring Security’s CSRF support provides integration with Spring’s RequestDataValueProcessor via its CsrfRequestDataValueProcessor. This means that if you leverage Spring’s form tag library, Thymeleaf, or any other view technology that integrates with RequestDataValueProcessor, then forms that have an unsafe HTTP method (i.e. post) will automatically include the actual CSRF token.
 
-Every HTTP request in the session will have the same CSRF token.
-Since this value is random and is not automatically included in the browser, the attacker application wouldn't be able to deduce
-its value and his request would be rejected.
+**Every HTTP request in the session will have the same CSRF token**.
+Since this value is random and is **not automatically included in the browser, the attacker application wouldn't be able to deduce
+its value** and his request would be rejected.
 
 
 ### Selective URL protection
-Spring Security provides a `requireCsrfProtectionMatcher` method. **This allows us to enable CSRF protection selectively i.e we could enable CSRF for only
+Spring Security provides a `requireCsrfProtectionMatcher()` method. **This allows us to enable CSRF protection selectively i.e we could enable CSRF for only
 a limited set of URLs as desired**. The other endpoints will be excluded from CSRF protection.
 ````java
 @Configuration
@@ -387,7 +387,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 }
 ````
 
-OR 
+**OR** 
 
 We define a custom class called `CustomAntPathRequestMatcher` that implements `Requestmatcher` and handle URL pattern matching in that class.
 ````java
@@ -431,7 +431,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 }
 ````
-On the other hand, we could have situations where we need to enable CSRF by default, but we need only a handful of URLs for which CSRF protection needs to be turned OFF.
+On the other hand, we could have situations where we need to enable CSRF by default, but **we need only a handful of URLs for which CSRF protection needs to be turned OFF**.
 In such cases, we can use the below configuration:
 ````java
 @Configuration
@@ -454,14 +454,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 ````
 
 ## SameSite Cookie Attribute
-According to OWASP,
+[According to OWASP](https://owasp.org/www-community/SameSite),
 > “SameSite prevents the browser from sending the cookie along with cross-site requests. The main goal is mitigating the risk of cross-origin information leakage. It also provides some protection against cross-site request forgery attacks.”
 
 This attribute can be set to three values:
-1. Strict - This will prevent the browser from sending the cookie to the target site in all cross-site browsing context. This is the most restrictive forbidding third-party cookies
+1. **Strict** - This will prevent the browser from sending the cookie to the target site in all cross-site browsing context. This is the most restrictive forbidding third-party cookies
 to be sent in cross-site scenarios.
-2. Lax - This rule is slightly relaxed as with this value the server maintains the user’s logged-in session after the user arrives from an external link.
-3. None - This value is used to turn off the `SameSite` property. However, this is possible only if the `Secure` property is also set i.e the application needs to be HTTPS enabled.
+2. **Lax** - This rule is slightly relaxed as with this value the server maintains the user’s logged-in session after the user arrives from an external link.
+3. **None** - This value is used to turn off the `SameSite` property. However, this is possible only if the `Secure` property is also set i.e the application needs to be HTTPS enabled.
 
 {{% info title="Browser compatibility for SameSite attribute" %}}
 All recent versions of known browsers support the SameSite attribute. Its [default value](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite) in case the attribute isn't specified is set to **Lax** to enable defense against CSRF attacks.
@@ -491,3 +491,5 @@ public class HomeController {
     }
 }
 ````
+With this cookie set, we should see:
+{{% image alt="settings" src="images/posts/configuring-csrf-with-spring/SameSite.JPG" %}}

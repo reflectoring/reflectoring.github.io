@@ -1,3 +1,4 @@
+
 ## What is AOP
 
 Aspect Oriented Programming (AOP) is a programming paradigm aiming to extract cross-cutting functionalities, such as logging, into what's known as Aspects.
@@ -8,7 +9,7 @@ For example, we can tell the AOP framework to log all method calls happening in 
 
 ## Spring AOP
 AOP is one of the main components in the Spring framework, it provides declarative services for us, such as declarative transaction management (the famous @Transactional annotation).
-Moreover, it offers us the ability to implement custom aspects and utilize the power of AOP in our applications.
+Moreover, it offers us the ability to implement custom Aspects and utilize the power of AOP in our applications.
 
 
 Spring AOP uses either JDK dynamic proxies or CGLIB to create the proxy for a given target object. JDK dynamic proxies are built into the JDK, whereas CGLIB is a common open-source class definition library (repackaged into  `spring-core`).
@@ -20,7 +21,7 @@ The terminologies we will discuss are not Spring specific, they are general AOP 
 
 Let's start by introducing the four main building blocks of any AOP example in Spring.
 ### JoinPoint
-Simply put, a JoinPoint is a point in the execution flow of a method where an aspect (new behavior) can be plugged in.
+Simply put, a JoinPoint is a point in the execution flow of a method where an Aspect (new behavior) can be plugged in.
 
 ### Advice
 It's the behavior that addresses system-wide concerns (logging, security checks, etc...). This behavior is represented by a method to be executed at a JoinPoint.
@@ -30,7 +31,7 @@ This behavior can be executed Before, After, or Around the JoinPoint according t
 A Pointcut is an expression that defines at what JoinPoints, a given Advice should be applied.
 
 ### Aspect
-Aspect is a class in which we define Pointcuts and Advice.
+Aspect is a class in which we define Pointcuts and Advices.
 
 ## Spring AOP Example
 And now let's put those definitions into a coding example where we create a `Log` annotation that logs out a message to the console before the execution of the method starts.
@@ -118,8 +119,7 @@ class AopApplicationTests {
 	  @Test  
 	  void testBeforeLog() {  
 	      shipmentService.shipStuff();  
-	  }  
-	  
+	  }  	  
 }
 ```
 This will spin up a Spring context and load the `LoggingAspect` and the `ShipmentService`. Next, in the test method, we call the `shipStuff()` method which was annotated by `@Log`.
@@ -353,7 +353,7 @@ public class OrderService {
 		return "Order";  
     }  
     public void cancelStuff() {  
-        System.out.println("Cancelling stuff");  
+        System.out.println("Canceling stuff");  
     }  
 }
 ```
@@ -401,7 +401,7 @@ Ordering stuff
 
 While the method `testCancelWithLogicalOperator` should print out
 ```
-Cancelling stuff
+Canceling stuff
 ```
 
 ### Advice Annotations
@@ -412,29 +412,29 @@ We can capture the JoinPoint at the `@Before` annotated method which offers us m
 For example, let's can log the name of the method.
 
 ```java
-@Component  
-@Aspect  
-public class LoggingAspect {  
-    @Pointcut("@annotation(Log)")  
-    public void logPointcut(){}  
-    
-    @Before("logPointcut()")  
-    public void logAllMethodCallsAdvice(JoinPoint joinPoint){  
-        System.out.println("In Aspect at " + joinPoint.getSignature().getName());  
-  }
+@Component
+@Aspect
+public class LoggingAspect {
+    @Pointcut("@annotation(Log)")
+    public void logPointcut(){}
+
+    @Before("logPointcut()")
+    public void logAllMethodCallsAdvice(JoinPoint joinPoint){
+        System.out.println("In Aspect at " + joinPoint.getSignature().getName());
+    }
 }
 ```
 And testing it
 ```java
-@SpringBootTest  
-class AopApplicationTests {  
-    @Autowired  
+@SpringBootTest
+class AopApplicationTests {
+    @Autowired
     ShipmentService shipmentService;
 
-	@Test  
-	void testBeforeLog() {  
-	   shipmentService.shipStuff();  
-	}
+    @Test
+    void testBeforeLog() {
+        shipmentService.shipStuff();
+    }
 }
 ```
 Will print out
@@ -448,45 +448,45 @@ This advice is run after the method finishes running, this could be by normally 
 
 Let's introduce a new annotation
 ```java
-@Target(ElementType.METHOD)  
-@Retention(RetentionPolicy.RUNTIME)  
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface AfterLog {}
 ```
 ```java
-@Component  
-@Aspect  
+@Component
+@Aspect
 public class LoggingAspect {
 	...
-	@Pointcut("@annotation(AfterLog)")  
-	public void logAfterPointcut(){}  
-	  
-	@After("logAfterPointcut()")  
-	public void logMethodCallsAfterAdvice(JoinPoint joinPoint) {  
-	    System.out.println("In After Aspect at " + joinPoint.getSignature().getName());  
-	}
+    @Pointcut("@annotation(AfterLog)")
+    public void logAfterPointcut(){}
+
+    @After("logAfterPointcut()")
+    public void logMethodCallsAfterAdvice(JoinPoint joinPoint) {
+        System.out.println("In After Aspect at " + joinPoint.getSignature().getName());
+    }
 }
 ```
 
 And let's modify our service to use the new annotation
 ```java
-@Service  
+@Service
 public class OrderService {
 	...
-	@AfterLog  
-	public void checkStuff() {  
-	    System.out.println("Checking stuff");  
-	}
+    @AfterLog
+    public void checkStuff() {
+        System.out.println("Checking stuff");
+    }
 }
 ```
 And as for the test
 ```java
-@SpringBootTest  
+@SpringBootTest
 class AopApplicationTests {
 	...
-	@Test  
-	void testCheckingStuffWithAfter() {  
-	   orderService.checkStuff();  
-	}
+    @Test
+    void testCheckingStuffWithAfter() {
+        orderService.checkStuff();
+    }
 }
 ```
 This should output
@@ -507,45 +507,45 @@ This annotation allows us to take actions either before or after a JoinPoint met
 
 Let's start by defining a new `ValidationService`
 ```java
-@Service  
-public class ValidationService {  
-    public void validateNumber(int argument) {  
-        System.out.println(argument + " is valid");  
-  }  
+@Service
+public class ValidationService {
+    public void validateNumber(int argument) {
+        System.out.println(argument + " is valid");
+    }
 }
 ```
 And a new Aspect class
 ```java
-@Component  
-@Aspect  
-public class ValidationAspect {  
-    @Pointcut("within(io.reflectoring.springboot.aop.ValidationService)")  
-    public void validationPointcut(){}  
-  
-    @Around("validationPointcut()")  
-    public void aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {  
-	    System.out.println("In Around Aspect");
-        int arg = (int) joinPoint.getArgs()[0];  
-		if (arg < 0)  
-		    throw new RuntimeException("Argument should not be negative");  
-		else 
-			joinPoint.proceed();  
-	}  
+@Component
+@Aspect
+public class ValidationAspect {
+    @Pointcut("within(io.reflectoring.springboot.aop.ValidationService)")
+    public void validationPointcut(){}
+
+    @Around("validationPointcut()")
+    public void aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println("In Around Aspect");
+        int arg = (int) joinPoint.getArgs()[0];
+        if (arg < 0)
+            throw new RuntimeException("Argument should not be negative");
+        else
+            joinPoint.proceed();
+    }
 }
 ```
 The above `Pointcut` expression with capture all methods that are in the class `ValidationService`. Then, the `aroundAdvice()` advice will check the first argument of the method if it's negative it will throw an exception, otherwise it will allow the method to execute and return normally.
 
 ```java
-@SpringBootTest  
+@SpringBootTest
 class AopApplicationTests {
 	...
-	@Autowired  
-	ValidationService validationService;
+    @Autowired
+    ValidationService validationService;
 
-	@Test  
-	void testValidAroundAspect() {  
-	   validationService.validateNumber(10);  
-	}  
+    @Test
+    void testValidAroundAspect() {
+        validationService.validateNumber(10);
+    }
 }
 ```
 This will print out
@@ -555,16 +555,16 @@ In Around Aspect
 ```
 And now let's try a case where we will get an exception.
 ```java
-@SpringBootTest  
+@SpringBootTest
 class AopApplicationTests {
 	...
-	@Autowired  
-	ValidationService validationService;
+    @Autowired
+    ValidationService validationService;
 	...
-	@Test  
-	void testInvalidAroundAspect() {  
-	   validationService.validateNumber(-4);  
-	}
+    @Test
+    void testInvalidAroundAspect() {
+        validationService.validateNumber(-4);
+    }
 }
 ```
 This should output

@@ -23,14 +23,14 @@ Let's start by introducing the four main building blocks of any AOP example in S
 Simply put, a JoinPoint is a point in the execution flow of a method where an aspect (new behavior) can be plugged in.
 
 ### Advice
-It's the behavior that addresses system wide concerns (logging, security checks, etc...). This behavior is represented by a method to be executed at a JoinPoint.
-This behavior can be executed Before, After or Around the JoinPoint according to the Advice type as we will see later.
+It's the behavior that addresses system-wide concerns (logging, security checks, etc...). This behavior is represented by a method to be executed at a JoinPoint.
+This behavior can be executed Before, After, or Around the JoinPoint according to the Advice type as we will see later.
 
 ### Pointcut
 A Pointcut is an expression that defines at what JoinPoints, a given Advice should be applied.
 
 ### Aspect
-Aspect is a class in which we define Pointcuts and Advices.
+Aspect is a class in which we define Pointcuts and Advice.
 
 ## Spring AOP Example
 And now let's put those definitions into a coding example where we create a `Log` annotation that logs out a message to the console before the execution of the method starts.
@@ -65,7 +65,7 @@ public @interface Log {
 ```
 What this does is create an annotation that is only applicable to methods and gets processed at runtime.
 
-The next step is creating the Aspect class with a Pointcut and an Advice.
+The next step is creating the Aspect class with a Pointcut and Advice.
 
 ```java
 import org.aspectj.lang.annotation.Aspect;  
@@ -85,11 +85,11 @@ public class LoggingAspect {
   }  
 }
 ```
-Linking this to the definitions we introduced up top we notice the `@Aspect` annotation which marks the `LoggingAspect` class as a source for `@Pointcut` and Advices (`@Before`). Note as well that we annotated the class as a `@Component` to allow Spring to manage this class as a Bean.
+Linking this to the definitions we introduced up top we notice the `@Aspect` annotation which marks the `LoggingAspect` class as a source for `@Pointcut` and Advice (`@Before`). Note as well that we annotated the class as a `@Component` to allow Spring to manage this class as a Bean.
 
 Moreover, we used the expression`@Pointcut("@annotation(Log)")` to describe which potential methods (JoinPoints) are affected by the corresponding Advice method.
 
-Which brings us to `@Before("logPointcut()")` that executes the annotated method `logAllMethodCallsAdvice` before the execution of any method annotated with `@Log`.
+This brings us to `@Before("logPointcut()")` that executes the annotated method `logAllMethodCallsAdvice` before the execution of any method annotated with `@Log`.
 
 Now, let's create a Spring Service that will utilize the aspect we defined.
 ```java
@@ -122,14 +122,14 @@ class AopApplicationTests {
 	  
 }
 ```
-This will spin up a Spring context and load the `LoggingAspect` and the `ShipmentService`. Next, in the test method we call the `shipStuff()` method which was annotated by `@Log`.
+This will spin up a Spring context and load the `LoggingAspect` and the `ShipmentService`. Next, in the test method, we call the `shipStuff()` method which was annotated by `@Log`.
 
 If we check the console we should see
 ```
 In Aspect
 In Service
 ```
-Which means that the `logAllMethodCallsAdvice` method was indeed  executed before the `shipStuff()` method.
+This means that the `logAllMethodCallsAdvice` method was indeed executed before the `shipStuff()` method.
 
 ## Deeper Look Into Spring AOP's Annotations
 Let's explore the full range of capabilities offered by Spring's AOP annotations.
@@ -138,7 +138,7 @@ Let's explore the full range of capabilities offered by Spring's AOP annotations
 Pointcut expressions start with a Pointcut Designator (PCD), which specifies what methods to be targeted by our Advice.
 
 #### execution
-This is used to match a jointPoint method's signature.
+This is used to match a joinPoint method's signature.
 
 ```java
 @Component  
@@ -151,7 +151,7 @@ public class LoggingAspect {
 ```
 The above Pointcut will match the method named `shipStuffWithBill` with the signature `public void` that lives in the class `io.reflectoring.springboot.aop.ShipmentService`.
 
-Now, let's add the Advice matching the above Pointcut
+Now, let's add Advice matching the above Pointcut
 ```java
 @Component  
 @Aspect  
@@ -200,7 +200,7 @@ execution(public void io.reflectoring.springboot.aop.ShipmentService.*(..))
 will match any public void method that takes zero or more parameters in `ShipmentService`.
 
 #### within
-This is used to match all the jointPoint methods in a given class, package or sub-package.
+This is used to match all the JoinPoint methods in a given class, package, or sub-package.
 
 ```java
 @Component  
@@ -292,7 +292,7 @@ Bill Created: 10
 ```
 
 #### @annotation
-This is used to match a JointPoint method annotated with a give annotation.
+This is used to match a JointPoint method annotated with a given annotation.
 We used it in our first example of AOP.
 ```java
 @Component  
@@ -357,7 +357,7 @@ public class OrderService {
     }  
 }
 ```
-Now, let's write a PointCut that matches all the methods in `OrderService` and that have a return type of `String`.
+Now, let's write a PointCut that matches all the methods in `OrderService` and that has a return type of `String`.
 
 ```java
 @Component  
@@ -405,10 +405,10 @@ Cancelling stuff
 ```
 
 ### Advice Annotations
-So far we have been using the `@Before` Advice annotation in a simple way. Spring AOP, however, provide more interesting functionalities.
+So far we have been using the `@Before` Advice annotation simply. Spring AOP, however, provides more interesting functionalities.
 
 #### @Before
-We can capture the JoinPoint at the `@Before` annotated method which offers us many useful information like the method name, method arguments and [many more](https://www.eclipse.org/aspectj/doc/released/runtime-api/org/aspectj/lang/JoinPoint.html).
+We can capture the JoinPoint at the `@Before` annotated method which offers us much useful information like the method name, method arguments, and [many more](https://www.eclipse.org/aspectj/doc/released/runtime-api/org/aspectj/lang/JoinPoint.html).
 For example, let's can log the name of the method.
 
 ```java
@@ -533,7 +533,7 @@ public class ValidationAspect {
 	}  
 }
 ```
-The above `Pointcut` expression with capture all method that are in the class `ValidationService`. Then, the `aroundAdvice()` advice will check the first argument of the method, if it's negative it will throw and exception, otherwise it will allow the method to execute and return normally.
+The above `Pointcut` expression with capture all methods that are in the class `ValidationService`. Then, the `aroundAdvice()` advice will check the first argument of the method if it's negative it will throw an exception, otherwise it will allow the method to execute and return normally.
 
 ```java
 @SpringBootTest  
@@ -576,8 +576,8 @@ java.lang.RuntimeException: Argument should not be negative
 ```
 
 ## Conclusion
-Aspect Oriented Programming (AOP) allows us to address cross-cutting problems by coding our solutions into Aspects which are invoked by Spring AOP framework.
+Aspect Oriented Programming (AOP) allows us to address cross-cutting problems by coding our solutions into Aspects that are invoked by the Spring AOP framework.
 
 It forms one of the main building blocks of the Spring framework allowing it to hide complexity behind Aspects.
 
-The framework offers us a powerful collection of annotations that we covered and ran through examples testing each one of them.add
+The framework offers us a powerful collection of annotations that we covered and ran through examples testing each one of them.

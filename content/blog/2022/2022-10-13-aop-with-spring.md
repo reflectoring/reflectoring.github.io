@@ -1,4 +1,12 @@
-
+---
+title: "AOP with Spring (Boot)"
+categories: ["Spring"]
+date: 2022-10-13 00:00:00 +1100
+authors: ["cercenazi"]
+description: "AOP with Spring (Boot)"
+image: images/stock/0126-books-1200x628.jpg
+url: aop-spring
+---
 ## What is AOP
 
 Aspect Oriented Programming (AOP) is a programming paradigm aiming to extract cross-cutting functionalities, such as logging, into what's known as Aspects.

@@ -1,22 +1,22 @@
 ---
 title: "AOP with Spring (Boot)"
 categories: ["Spring"]
-date: 2022-10-13 00:00:00 +1100
+date: 2022-10-17 00:00:00 +1100
 authors: ["cercenazi"]
 description: "AOP with Spring (Boot)"
-image: images/stock/0126-books-1200x628.jpg
+image: images/stock/0126-books-1200x628-branded.jpg
 url: aop-spring
 ---
-## What is AOP
+## What is AOP?
 
-Aspect Oriented Programming (AOP) is a programming paradigm aiming to extract cross-cutting functionalities, such as logging, into what's known as Aspects.
+Aspect Oriented Programming (AOP) is a programming paradigm aiming to extract cross-cutting functionalities, such as logging, into what's known as "Aspects".
 
-This is achieved by adding behavior (Advice) to existing code without changing the code itself. We specify which code we want to add the behavior to using special expressions (Pointcuts).
+This is achieved by adding behavior ("Advice") to existing code without changing the code itself. We specify which code we want to add the behavior to using special expressions ("Pointcuts").
 
 For example, we can tell the AOP framework to log all method calls happening in the system without us having to add the log statement in every method call manually.
 
 ## Spring AOP
-AOP is one of the main components in the Spring framework, it provides declarative services for us, such as declarative transaction management (the famous @Transactional annotation).
+AOP is one of the main components in the Spring framework, it provides declarative services for us, such as declarative transaction management (the famous `@Transactional` annotation).
 Moreover, it offers us the ability to implement custom Aspects and utilize the power of AOP in our applications.
 
 
@@ -36,7 +36,7 @@ It's the behavior that addresses system-wide concerns (logging, security checks,
 This behavior can be executed Before, After, or Around the JoinPoint according to the Advice type as we will see later.
 
 ### Pointcut
-A Pointcut is an expression that defines at what JoinPoints, a given Advice should be applied.
+A Pointcut is an expression that defines at what JoinPoints a given Advice should be applied.
 
 ### Aspect
 Aspect is a class in which we define Pointcuts and Advices.
@@ -60,7 +60,7 @@ First, let's include Spring's AOP and test starters dependencies.
 	 </dependency>
  </dependencies>
 ```
-Now, let's create the `Log` annotation we want to use.
+Now, let's create the `Log` annotation we want to use:
  ```java
 import java.lang.annotation.ElementType;  
 import java.lang.annotation.Retention;  
@@ -74,7 +74,7 @@ public @interface Log {
 ```
 What this does is create an annotation that is only applicable to methods and gets processed at runtime.
 
-The next step is creating the Aspect class with a Pointcut and Advice.
+The next step is creating the Aspect class with a Pointcut and Advice:
 
 ```java
 import org.aspectj.lang.annotation.Aspect;  
@@ -85,22 +85,24 @@ import org.springframework.stereotype.Component;
 @Component  
 @Aspect  
 public class LoggingAspect {  
+    
     @Pointcut("@annotation(Log)")  
     public void logPointcut(){  
     }  
+    
     @Before("logPointcut()")  
     public void logAllMethodCallsAdvice(){  
         System.out.println("In Aspect");  
-  }  
+    }  
 }
 ```
 Linking this to the definitions we introduced up top we notice the `@Aspect` annotation which marks the `LoggingAspect` class as a source for `@Pointcut` and Advice (`@Before`). Note as well that we annotated the class as a `@Component` to allow Spring to manage this class as a Bean.
 
-Moreover, we used the expression`@Pointcut("@annotation(Log)")` to describe which potential methods (JoinPoints) are affected by the corresponding Advice method.
+Moreover, we used the expression `@Pointcut("@annotation(Log)")` to describe which potential methods (JoinPoints) are affected by the corresponding Advice method. In this case, we want to add the advice to all methods that are annotated with our `@Log` annotation.
 
 This brings us to `@Before("logPointcut()")` that executes the annotated method `logAllMethodCallsAdvice` before the execution of any method annotated with `@Log`.
 
-Now, let's create a Spring Service that will utilize the aspect we defined.
+Now, let's create a Spring Service that will use the aspect we defined:
 ```java
 import org.springframework.stereotype.Service;
 
@@ -133,7 +135,8 @@ class AopApplicationTests {
 This will spin up a Spring context and load the `LoggingAspect` and the `ShipmentService`. Next, in the test method, we call the `shipStuff()` method which was annotated by `@Log`.
 
 If we check the console we should see
-```
+
+```shell
 In Aspect
 In Service
 ```
@@ -189,20 +192,20 @@ class AopApplicationTests {
 }
 ```
 This should print out
-```
+```shell
 In Aspect from execution
 In Service with Bill
 ```
 
 Note, that we can also use Wildcards to write a more flexible expression. For example, the expression
-```
+```shell
 execution(public void io.reflectoring.springboot.aop.ShipmentService.*())
 ```
 will match any public void method that doesn't take parameters in `ShipmentService`.
 
 
 Moreover, the expression
-```
+```shell
 execution(public void io.reflectoring.springboot.aop.ShipmentService.*(..))
 ```
 will match any public void method that takes zero or more parameters in `ShipmentService`.
@@ -248,12 +251,12 @@ class AopApplicationTests {
 }
 ```
 This will give us
-```
+```shell
 In Aspect from within
 Bill created
 ```
 Note that we can also use Wildcards to be more flexible. For example, let's write an expression to match all methods in the package `io.reflectoring.springboot.aop`
-```
+```shell
 within(io.reflectoring.springboot.aop.*)
 ``` 
 
@@ -294,7 +297,7 @@ class AopApplicationTests {
 }
 ```
 This should output
-```
+```shell
 In Aspect from Args
 Bill Created: 10
 ```
@@ -343,7 +346,7 @@ class AopApplicationTests {
 }
 ```
 Which should output
-```
+```shell
 In Aspect
 In Service
 ```
@@ -402,13 +405,13 @@ class AopApplicationTests {
 }
 ```
 The `testOrderWithLogicalOperator` method should print out
-```
+```shell
 In Aspect from logical operator
 Ordering stuff
 ```
 
 While the method `testCancelWithLogicalOperator` should print out
-```
+```shell
 Canceling stuff
 ```
 
@@ -417,7 +420,7 @@ So far we have been using the `@Before` Advice annotation simply. Spring AOP, ho
 
 #### @Before
 We can capture the JoinPoint at the `@Before` annotated method which offers us much useful information like the method name, method arguments, and [many more](https://www.eclipse.org/aspectj/doc/released/runtime-api/org/aspectj/lang/JoinPoint.html).
-For example, let's can log the name of the method.
+For example, let's log the name of the method.
 
 ```java
 @Component
@@ -446,7 +449,7 @@ class AopApplicationTests {
 }
 ```
 Will print out
-```
+```shell
 In Aspect at shipStuff
 In Service
 ```
@@ -498,7 +501,7 @@ class AopApplicationTests {
 }
 ```
 This should output
-```
+```shell
 Checking stuff
 In After Aspect at checkStuff
 ```
@@ -541,7 +544,7 @@ public class ValidationAspect {
     }
 }
 ```
-The above `Pointcut` expression with capture all methods that are in the class `ValidationService`. Then, the `aroundAdvice()` advice will check the first argument of the method if it's negative it will throw an exception, otherwise it will allow the method to execute and return normally.
+The above `Pointcut` expression will capture all methods that are in the class `ValidationService`. Then, the `aroundAdvice()` advice will check the first argument of the method if it's negative it will throw an exception, otherwise it will allow the method to execute and return normally.
 
 ```java
 @SpringBootTest
@@ -557,7 +560,7 @@ class AopApplicationTests {
 }
 ```
 This will print out
-```
+```shell
 In Around Aspect
 10 is valid
 ```
@@ -576,7 +579,7 @@ class AopApplicationTests {
 }
 ```
 This should output
-```
+```shell
 In Around Aspect
 
 java.lang.RuntimeException: Argument should not be negative

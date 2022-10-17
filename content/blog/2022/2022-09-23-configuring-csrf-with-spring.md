@@ -15,6 +15,8 @@ In this article, we will take a look at how to leverage Spring's built-in CSRF s
 
 To understand the detailed guidelines for preventing CSRF vulnerabilities, refer to the [OWASP Guide](https://owasp.org/www-community/attacks/csrf).
 
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/cors/configuring-csrf-with-spring" %}}
+
 ## CSRF Protection in Spring
 The standard recommendation is to have CSRF protection enabled when we create a service that could be processed by browsers.
 **If the created service is exclusively for non-browser clients we could disable CSRF protection**.

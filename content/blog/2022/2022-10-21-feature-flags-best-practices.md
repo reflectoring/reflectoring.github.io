@@ -2,8 +2,8 @@
 authors: [tom]
 title: "Feature Flags Best Practices"
 categories: ["Software Craft"]
-date: 2022-04-20 00:00:00 +1100
-modified: 2022-04-20 00:00:00 +1100
+date: 2022-10-21 00:00:00 +1100
+modified: 2022-10-21 00:00:00 +1100
 excerpt: "Starting with feature flags? Here are some best practices to follow when using feature flags to get the most out of them."
 image: /images/stock/0122-flags-1200x628-branded.jpg
 ---

@@ -15,7 +15,7 @@ In this article, we will take a look at how to leverage Spring's built-in CSRF s
 
 To understand the detailed guidelines for preventing CSRF vulnerabilities, refer to the [OWASP Guide](https://owasp.org/www-community/attacks/csrf).
 
-{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/cors/configuring-csrf-with-spring" %}}
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/csrf" %}}
 
 ## CSRF Protection in Spring
 The standard recommendation is to have CSRF protection enabled when we create a service that could be processed by browsers.
@@ -689,3 +689,5 @@ For other state-changing endpoints, we can create similar scenarios and test for
 ## Conclusion
 In this article, we have looked at how we can leverage in-built Spring CSRF features to protect our endpoints from CSRF attacks.
 We took a look at how to configure and implement them with examples. We also briefly touched upon the spring security testing framework and its CSRF capabilities.
+
+You can play around with the example code [on GitHub](https://github.com/thombergs/code-examples/tree/master/spring-boot/csrf).

@@ -1,15 +1,15 @@
 ---
-title: "Configuring CSRF with Spring Security"
+title: "Configuring CSRF/XSRF with Spring Security"
 categories: ["Spring"]
-date: 2022-10-18 00:00:00 +1100
-modified: 2022-10-18 00:00:00 +1100
+date: 2022-10-21 00:00:00 +1100
+modified: 2022-10-21 00:00:00 +1100
 authors: ["ranjani"]
 description: "Configuring CSRF with Spring Security"
 image: images/stock/0081-safe-1200x628-branded.jpg
 url: spring-csrf
 ---
 
-**Cross-site Request Forgery (CSRF)** is an attack that can trick an end-user using a web application to unknowingly execute actions that can compromise security.
+**Cross-site Request Forgery (CSRF, sometimes also called XSRF)** is an attack that can trick an end-user using a web application to unknowingly execute actions that can compromise security.
 To understand what constitutes a CSRF attack, refer to [this introductory article](https://reflectoring.io/complete-guide-to-csrf/).
 In this article, we will take a look at how to leverage Spring's built-in CSRF support when creating a web application.
 
@@ -22,7 +22,7 @@ The standard recommendation is to have CSRF protection enabled when we create a 
 **If the created service is exclusively for non-browser clients we could disable CSRF protection**.
 Spring provides two mechanisms to protect against CSRF attacks.
 - Synchronizer Token Pattern
-- Specifying the SameSite attribute on your session cookie
+- Specifying the `SameSite` attribute on your session cookie
 
 ### Sample Application to Simulate CSRF
 
@@ -87,25 +87,30 @@ mvnw clean verify spring-boot:run (for Windows)
 ````
 
 {{% info title="CSRF in Spring" %}}
-**Spring security, provides CSRF protection by default**. Therefore, **to demonstrate CSRF attack, we need to explicitly
+**Spring security, provides CSRF protection by default**. Therefore, **to demonstrate a CSRF attack, we need to explicitly
 disable CSRF protection**.
 
 ````java
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration
+        extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests().antMatchers("/**")
-                .permitAll().and().httpBasic().and().formLogin().permitAll()
-                .and().csrf().disable();
-    }
+   @Override
+   protected void configure(HttpSecurity http) {
+      http
+        .authorizeRequests()
+        .antMatchers("/**").permitAll()
+        .and()
+        .httpBasic()
+        .and()
+        .formLogin().permitAll()
+        .and().csrf().disable();
+   }
 }
 ````
 {{% /info %}}
 
 
-Next, let's create a sample attacker application. This is another Spring Boot application, that uses Thymeleaf to create a template that the attacker will use to register a fake email id.
+Next, let's create a sample attacker application. This is another Spring Boot application that uses Thymeleaf to create a template that the attacker will use to register a fake email id.
 This application is configured to run on port 8091.
 ````text
 mvnw clean verify spring-boot:run (for Windows)
@@ -124,24 +129,30 @@ Before we enter the email to register, let's open a second tab and load the atta
 a button/link to make use of the same session and trigger the request on behalf of the user**.
 {{% image alt="settings" src="images/posts/configuring-csrf-with-spring/attacker.JPG" %}}
 When the user clicks on the Register button, the attacker triggers a request to the endpoint `http://localhost:8090/registerEmail`, registering his email id
-for all further communication. Here, **since CSRF was disabled and the attacker, was informed of all required valid parameters** the request would go through successfully, and we would see this page
+for all further communication. Here, **since CSRF was disabled and the attacker knew all required valid parameters** the request would go through successfully, and we would see this page
 {{% image alt="settings" src="images/posts/configuring-csrf-with-spring/regSuccess.JPG" %}}
 
 ### Default CSRF protection in Spring
 
 In the previous section, we were able to simulate a CSRF attack by explicitly disabling CSRF protection. Let's take a look at what happens if we remove the CSRF configuration in Spring Security.
 Let's set the security configuration to:
+
 ````java
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration 
+        extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests().antMatchers("/**")
-                .permitAll().and().httpBasic().and().formLogin().permitAll();
-    }
+  @Override
+  protected void configure(HttpSecurity http) {
+    http
+      .authorizeRequests()
+      .antMatchers("/**").permitAll()
+      .and()
+      .httpBasic()
+      .and()
+      .formLogin().permitAll();
+  }
 }
 ````
 As we can see here, we **haven't explicitly enabled, disabled or configured any CSRF properties**.
@@ -159,7 +170,7 @@ There was an unexpected error (type=Forbidden, status=403).
 
 This is because, **as of Spring Security 4.0, CSRF protection is enabled by default**.
 
-### How does the default Spring CSRF protection work
+### How does the default Spring CSRF protection work?
 
 Spring Security uses the **Synchronizer Token pattern** to generate a CSRF token that protects against CSRF attacks.
 
@@ -172,9 +183,9 @@ Features of the CSRF token are:
 
 #### Understanding key classes that enable CSRF protection
 
-**1. [CsrfFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/csrf/CsrfFilter.html)**
+##### [CsrfFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/csrf/CsrfFilter.html)
 
-When CSRF is enabled, this filter is automatically called a part of the filter chain. To know the list of filters that apply, let's enable debug logs in our `application.yaml` as :
+When CSRF is enabled, this filter is automatically called as part of the filter chain. To know the list of filters that apply, let's enable debug logs in our `application.yaml` as :
 ````yaml
 logging:
   level:
@@ -202,10 +213,10 @@ o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with
 The `CsrfFilter` extends the `OncePerRequestFilter` thus guaranteeing that the Filter would be called exactly once for a request.
 Its `doFilterInternal()` is responsible for generating and validating the token. It skips the Csrf validation and processing for GET, HEAD, TRACE and OPTIONS requests.
 
-**2. [HttpSessionCsrfTokenRepository](https://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/web/csrf/HttpSessionCsrfTokenRepository.html)**
+##### [HttpSessionCsrfTokenRepository](https://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/web/csrf/HttpSessionCsrfTokenRepository.html)
 
-This is the default implementation of the `CsrfTokenRepository` interface in Spring Security. The `CsrfToken` object is stored and validated in `HttpSession` object.
-The token created is set to a pre-defined parameter name **_csrf** and header **X-CSRF-TOKEN** that can be accessed by valid client applications.
+This is the default implementation of the `CsrfTokenRepository` interface in Spring Security. The `CsrfToken` object is stored and validated in the `HttpSession` object.
+The token created is set to a pre-defined parameter name `_csrf` and header `X-CSRF-TOKEN` that can be accessed by valid client applications.
 The **default implementation** of token creation in the class is:
 ````java
 public final class HttpSessionCsrfTokenRepository implements CsrfTokenRepository {
@@ -223,7 +234,7 @@ public final class HttpSessionCsrfTokenRepository implements CsrfTokenRepository
 ````
 [UUID](https://docs.oracle.com/javase/7/docs/api/java/util/UUID.html) is a class that represents an immutable universally unique identifier.
 
-**3. [CsrfTokenRepository](https://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/web/csrf/CsrfTokenRepository.html)**
+##### [CsrfTokenRepository](https://docs.spring.io/spring-security/site/docs/3.2.x/apidocs/org/springframework/security/web/csrf/CsrfTokenRepository.html)
 
 This interface helps customize the CSRF implementation. It contains the below methods:
 ````java
@@ -235,7 +246,7 @@ public interface CsrfTokenRepository {
     CsrfToken loadToken(HttpServletRequest request);
 }
 ````
-We need to implement these methods to provide a custom implementation of CSRF token generation and its validation.
+We need to implement these methods if we want to provide a custom implementation of CSRF token generation and its validation.
 Next, we need to plugin this class in our security configuration as below:
 ````java
 @Configuration
@@ -254,7 +265,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 ````
 This configuration will ensure our `CustomCsrfTokenRepository` class is called instead of the default `HttpSessionCsrfTokenRepository`.
 
-**4. [CookieCsrfTokenRepository](https://docs.spring.io/spring-security/site/docs/4.2.15.RELEASE/apidocs/org/springframework/security/web/csrf/CookieCsrfTokenRepository.html)**
+##### [CookieCsrfTokenRepository](https://docs.spring.io/spring-security/site/docs/4.2.15.RELEASE/apidocs/org/springframework/security/web/csrf/CookieCsrfTokenRepository.html)
 
 This implementation of `CsrfTokenRepository` is most commonly used when working with Angular or similar front-end frameworks that use **session cookie authentication**.
 It follows AngularJS conventions and stores the `CsrfToken` object in a cookie named **XSRF-TOKEN** and in the header **X-XSRF-TOKEN**.
@@ -272,30 +283,30 @@ We can use the below security configuration to plug it into this repository:
 ````java
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
-        http
-          .csrf()
-          .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-    }
+  @Override
+  public void configure(HttpSecurity http) throws Exception {
+    http
+      .csrf()
+      .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+  }
 }
 ````
-With this configuration token value is set in the XSRF-TOKEN cookie. The `withHttpOnlyFalse()` method ensures that the Angular client will be able to retrieve the cookie for all further requests.
-Once retrieved the client copies the token value to **X-XSRF-TOKEN** header for every state modifying XHR request. Spring will then compare the header and the cookie values and accept the request only if they are the same.
+With this configuration token value is set in the `XSRF-TOKEN` cookie. The `withHttpOnlyFalse()` method ensures that the Angular client will be able to retrieve the cookie for all further requests.
+Once retrieved the client copies the token value to `X-XSRF-TOKEN` header for every state modifying XHR request. Spring will then compare the header and the cookie values and accept the request only if they are the same.
 
 {{% info title="CSRF protection in Angular" %}}
-CookieCsrfTokenRepository is intended to be used only when the client application is developed in a framework such as Angular. AngularJS comes with built-in protection for CSRF.
+`CookieCsrfTokenRepository` is intended to be used only when the client application is developed in a framework such as Angular. AngularJS comes with built-in protection for CSRF.
 For a detailed understanding refer to its [documentation](https://angular.io/guide/http#security-xsrf-protection).
 {{% /info %}}
 
-### Customizing CsrfTokenRepository
-In most cases, the default implementation of `HttpSessionCsrfTokenRepository` would fit in. However, if we intend to create custom tokens or
+### Customizing `CsrfTokenRepository`
+In most cases, we'll be happy with the default implementation of `HttpSessionCsrfTokenRepository`. However, if we intend to create custom tokens or
 save the tokens to a database we might need some customization.
 
 Let's take a closer look at how we can customize `CsrfTokenRepository`.
 In our demo application, consider we need to customize token generation and add/update tokens based on the logged-in user.
 As we have seen in the previous section, we would need to implement three methods:
-- **generateToken(HttpServletRequest request)**
+- `generateToken(HttpServletRequest request)`
 ````java
 public class CustomCsrfTokenRepository implements CsrfTokenRepository {
     public CsrfToken generateToken(HttpServletRequest request) {
@@ -310,60 +321,60 @@ public class CustomCsrfTokenRepository implements CsrfTokenRepository {
 ````
 As shown above, we have customised the token creation instead of using the default UUID random token.
 
-- **saveToken(CsrfToken token, HttpServletRequest request, HttpServletResponse response)**
+- `saveToken(CsrfToken token, HttpServletRequest request, HttpServletResponse response)`
 ````java
 public class CustomCsrfTokenRepository implements CsrfTokenRepository {
-    @Autowired
-    public TokenRepository tokenRepository;
+  @Autowired
+  public TokenRepository tokenRepository;
 
-    private String headerName = "X-CSRF-TOKEN";
-    
-    public void saveToken(CsrfToken token, HttpServletRequest request, 
-                          HttpServletResponse response) {
-        String username = request.getParameter("username");
-        Optional<Token> tokenValueOpt = tokenRepository.findByUser(username);
+  private String headerName = "X-CSRF-TOKEN";
 
-        if (!tokenValueOpt.isPresent()) {
-            Token tokenObj = new Token();
-            tokenObj.setUser(username);
-            tokenObj.setToken(token.getToken());
-            tokenRepository.save(tokenObj);
-        }
+  public void saveToken(CsrfToken token, HttpServletRequest request,
+                        HttpServletResponse response) {
+    String username = request.getParameter("username");
+    Optional<Token> tokenValueOpt = tokenRepository.findByUser(username);
+
+    if (!tokenValueOpt.isPresent()) {
+      Token tokenObj = new Token();
+      tokenObj.setUser(username);
+      tokenObj.setToken(token.getToken());
+      tokenRepository.save(tokenObj);
     }
+  }
 }
 ````
 Here, the `saveToken()` uses the generated random token to either save/retrieve from `TokenRepository` which maps to a H2 Database table `Token` that is responsible for storing user tokens.
 
-- **loadToken(HttpServletRequest request)**
+- `loadToken(HttpServletRequest request)`
 ````java
 public class CustomCsrfTokenRepository implements CsrfTokenRepository {
-    public CsrfToken loadToken(HttpServletRequest request) {
-        Optional<Token> tokenOpt = Optional.empty();
-        String user = request.getParameter("username");
-        if (Objects.nonNull(user)) {
-            tokenOpt = tokenRepository.findByUser(user);
-        } else if (Objects.nonNull(
-                SecurityContextHolder.getContext().getAuthentication())) {
-            Object principal = 
-                    SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String username = "";
-            if (principal instanceof UserDetails) {
-                username = ((UserDetails)principal).getUsername();
-            } else {
-                username = principal.toString();
-            }
-            tokenOpt = tokenRepository.findByUser(username);
-        }
-
-        if (tokenOpt.isPresent()) {
-            Token tokenValue = tokenOpt.get();
-            return new DefaultCsrfToken(
-                    "X-CSRF-TOKEN",
-                    "_csrf",
-                    tokenValue.getToken());
-        } 
-        return  null;
+  public CsrfToken loadToken(HttpServletRequest request) {
+    Optional<Token> tokenOpt = Optional.empty();
+    String user = request.getParameter("username");
+    if (Objects.nonNull(user)) {
+      tokenOpt = tokenRepository.findByUser(user);
+    } else if (Objects.nonNull(
+            SecurityContextHolder.getContext().getAuthentication())) {
+      Object principal =
+              SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      String username = "";
+      if (principal instanceof UserDetails) {
+        username = ((UserDetails) principal).getUsername();
+      } else {
+        username = principal.toString();
+      }
+      tokenOpt = tokenRepository.findByUser(username);
     }
+
+    if (tokenOpt.isPresent()) {
+      Token tokenValue = tokenOpt.get();
+      return new DefaultCsrfToken(
+              "X-CSRF-TOKEN",
+              "_csrf",
+              tokenValue.getToken());
+    }
+    return null;
+  }
 }
 ````
 Here, we get the logged-in user and fetch its token from the underlying database.
@@ -393,41 +404,51 @@ its value** and his request would be rejected.
 Spring Security provides a `requireCsrfProtectionMatcher()` method **to enable CSRF protection selectively i.e we could enable CSRF for only
 a limited set of URLs as desired**. The other endpoints will be excluded from CSRF protection.
 ````java
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests().antMatchers("/**")
-                .permitAll().and().httpBasic().and().formLogin().permitAll()
-                .and()
-                .csrf()
-                .requireCsrfProtectionMatcher(new AntPathRequestMatcher("**/login"));
-    }
+  @Override
+  protected void configure(HttpSecurity http) {
+    http
+      .authorizeRequests()
+      .antMatchers("/**").permitAll()
+      .and()
+      .httpBasic()
+      .and()
+      .formLogin().permitAll()
+      .and()
+      .csrf()
+      .requireCsrfProtectionMatcher(
+              new AntPathRequestMatcher("**/login"));
+  }
 }
 ````
 
 If we have multiple URLs that need to have CSRF protection, it can be achieved in the following ways:
 ````java
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests().antMatchers("/**")
-                .permitAll().and().httpBasic()
-                .and().formLogin().permitAll()
-                .and()
-                .csrf()
-                .requireCsrfProtectionMatcher(new AntPathRequestMatcher("**/login"))
-                .and()
-                .csrf()
-                .requireCsrfProtectionMatcher(new AntPathRequestMatcher("**/registerEmail"));
-    }
+  @Override
+  protected void configure(HttpSecurity http) {
+    http
+      .authorizeRequests()
+      .antMatchers("/**").permitAll()
+      .and()
+      .httpBasic()
+      .and()
+      .formLogin().permitAll()
+      .and()
+      .csrf().requireCsrfProtectionMatcher(
+              new AntPathRequestMatcher("**/login"))
+      .and()
+      .csrf().requireCsrfProtectionMatcher(
+              new AntPathRequestMatcher("**/registerEmail"));
+  }
 }
 ````
 
@@ -436,21 +457,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 We define a custom class called `CustomAntPathRequestMatcher` that implements `Requestmatcher` and handle URL pattern matching in that class.
 ````java
 public class CustomAntPathRequestMatcher implements RequestMatcher {
-    private final AndRequestMatcher andRequestMatcher;
+  private final AndRequestMatcher andRequestMatcher;
 
-    public CustomAntPathRequestMatcher(String[] patterns) {
-        List<RequestMatcher> requestMatchers = Arrays.asList(patterns)
-                .stream()
-                .map(p -> new AntPathRequestMatcher(p))
-                .collect(Collectors.toList());
+  public CustomAntPathRequestMatcher(String[] patterns) {
+    List<RequestMatcher> requestMatchers = Arrays.asList(patterns)
+            .stream()
+            .map(p -> new AntPathRequestMatcher(p))
+            .collect(Collectors.toList());
 
-        andRequestMatcher = new AndRequestMatcher(requestMatchers);
-    }
+    andRequestMatcher = new AndRequestMatcher(requestMatchers);
+  }
 
-    @Override
-    public boolean matches(HttpServletRequest request) {
-        return andRequestMatcher.matches(request);
-    }
+  @Override
+  public boolean matches(HttpServletRequest request) {
+    return andRequestMatcher.matches(request);
+  }
 }
 ````
 Then we can use this class in our security configuration.
@@ -459,21 +480,25 @@ Then we can use this class in our security configuration.
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    String[] patterns = new String[] {
-            "/favicon.ico",
-            "/login",
-            "/registerEmail"
-    };
+  String[] patterns = new String[]{
+          "/favicon.ico",
+          "/login",
+          "/registerEmail"
+  };
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests().antMatchers("/**")
-                .permitAll().and().httpBasic().and().formLogin().permitAll()
-                .and()
-                .csrf()
-                .requireCsrfProtectionMatcher(new CustomAntPathRequestMatcher(patterns));
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http
+      .authorizeRequests()
+      .antMatchers("/**").permitAll()
+      .and()
+      .httpBasic()
+      .and()
+      .formLogin().permitAll()
+      .and()
+      .csrf().requireCsrfProtectionMatcher(
+              new CustomAntPathRequestMatcher(patterns));
+  }
 }
 ````
 On the other hand, we could have situations where we need to enable CSRF by default, but **we need only a handful of URLs for which CSRF protection needs to be turned OFF**.
@@ -490,15 +515,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "**/simpleCall"
         };
         http
-                .authorizeRequests().antMatchers("/**")
-                .permitAll().and().httpBasic().and().formLogin().permitAll()
-                .and()
-                .csrf().ignoringAntMatchers(patterns);
+          .authorizeRequests().antMatchers("/**")
+          .permitAll().and().httpBasic().and().formLogin().permitAll()
+          .and()
+          .csrf().ignoringAntMatchers(patterns);
     }
 }
 ````
 
-### SameSite Cookie Attribute
+### `SameSite` Cookie Attribute
 Spring Security provides us with another approach that could mitigate CSRF attacks.
 [According to OWASP](https://owasp.org/www-community/SameSite),
 > “SameSite prevents the browser from sending the cookie along with cross-site requests. The main goal is mitigating the risk of cross-origin information leakage. It also provides some protection against cross-site request forgery attacks.”
@@ -509,8 +534,8 @@ This attribute can be set to three values:
 2. **Lax** - This rule is slightly relaxed as with this value the server maintains the user’s logged-in session after the user arrives from an external link.
 3. **None** - This value is used to turn off the `SameSite` property. However, this is possible only if the `Secure` property is also set i.e the application needs to be HTTPS enabled.
 
-{{% info title="Browser compatibility for SameSite attribute" %}}
-All recent versions of known browsers support the SameSite attribute. Its [default value](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite) in case the attribute isn't specified is set to **Lax** to enable defence against CSRF attacks.
+{{% info title="Browser compatibility for `SameSite` attribute" %}}
+All recent versions of known browsers support the `SameSite` attribute. Its [default value](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite) in case the attribute isn't specified is set to **Lax** to enable defence against CSRF attacks.
 {{% /info %}}
 
 To configure the `SameSite` attribute in a SpringBoot application, we need to add the below configuration in `application.yml`:
@@ -527,15 +552,17 @@ Another way to set this attribute in `Set-Cookie` is via `org.springframework.ht
 ````java
 @Controller
 public class HomeController {
-    @GetMapping
-    public String homePage(HttpServletResponse response) {
-        ResponseCookie responseCookie = 
-                ResponseCookie.from("testCookie", "cookieVal")
-                .sameSite("Lax")
-                .build();
-        response.setHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
-        return "homePage";
-    }
+  @GetMapping
+  public String homePage(HttpServletResponse response) {
+    ResponseCookie responseCookie =
+            ResponseCookie.from("testCookie", "cookieVal")
+                    .sameSite("Lax")
+                    .build();
+    response.setHeader(
+            HttpHeaders.SET_COOKIE, 
+            responseCookie.toString());
+    return "homePage";
+  }
 }
 ````
 With this cookie set, we should see:
@@ -560,30 +587,30 @@ The `spring-boot-starter-test` includes basic testing tools like Junit, Mockito 
 The `spring-security-test` will integrate `MockMvc` with Spring Security allowing us to test security features incorporated in the application.
 
 ````java
-@SpringBootTest(classes = {EmailController.class, 
-        HomeController.class, 
+@SpringBootTest(classes = {EmailController.class,
+        HomeController.class,
         SecurityConfiguration.class})
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class ControllerTest {
-    @MockBean
-    public CustomerEmailService customerEmailService;
+  @MockBean
+  public CustomerEmailService customerEmailService;
 
-    @Autowired
-    private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
 
-    private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
-    @BeforeEach
-    public void setup() {
-        this.mockMvc = MockMvcBuilders
-                .webAppContextSetup(this.context)
-                .apply(springSecurity())
-                .build();
-    }
+  @BeforeEach
+  public void setup() {
+    this.mockMvc = MockMvcBuilders
+            .webAppContextSetup(this.context)
+            .apply(springSecurity())
+            .build();
+  }
 }
 ````
-Here, we have setup the `MockMvc` object using `SecurityMockMvcConfigurers.springSecurity()`. This will perform the initial setup we need to integrate Spring Security with Spring MVC Test.
+Here, we have set up the `MockMvc` object using `SecurityMockMvcConfigurers.springSecurity()`. This will perform the initial setup we need to integrate Spring Security with Spring MVC Test.
 Spring Security testing framework provides **static imports to help with the testing of various security scenarios**:
 ````text
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
@@ -594,16 +621,20 @@ To test with CSRF, let's implement a test `SecurityConfiguration`:
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests().antMatchers("/**")
-                .permitAll().and().httpBasic().and().formLogin();
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http
+      .authorizeRequests()
+      .antMatchers("/**").permitAll()
+      .and()
+      .httpBasic()
+      .and()
+      .formLogin();
+  }
 }
 ````
 
-- **Testing successful login**
+### Testing successful login
 ````java
     @Test
     void shouldLoginSuccessfully() throws Exception {
@@ -614,7 +645,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 Here, we have configured a sample `user` and `password` in our `application-test.yaml`.  
 `SecurityMockMvcRequestBuilders.FormLoginRequestBuilder.formLogin()` method internally sets up `SecurityMockMvcRequestPostProcessors.csrf()` that will internally handle csrf tokens and validate user login successfully.
 
-- **Testing login with invalid CSRF**
+### Testing login with invalid CSRF
 ````java
     @Test
     void shouldLoginErrorWithInvalidCsrf() throws Exception {
@@ -628,7 +659,7 @@ Here, we have configured a sample `user` and `password` in our `application-test
 To test, if the login works with an invalid CSRF, the testing framework provides us methods, to forcibly add an invalid CSRF token.
 With this applied, the test now returns 403.
 
-- **Testing login with invalid CSRF when we ignore '/login'**
+### Testing login with invalid CSRF when we ignore `/login`
 
 For the same test as above, let's tweak our `SecurityConfiguration` to ignore login.
 For testing, we can change our SecurityConfiguration to:
@@ -637,15 +668,17 @@ For testing, we can change our SecurityConfiguration to:
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests().antMatchers("/**")
-                .permitAll().and().httpBasic().and().formLogin()
-                .and()
-                .csrf()
-                .ignoringAntMatchers("/login");
-    }
+  @Override
+  protected void configure(HttpSecurity http) {
+    http
+      .authorizeRequests()
+      .antMatchers("/**").permitAll()
+      .and()
+      .httpBasic()
+      .and().formLogin()
+      .and()
+      .csrf().ignoringAntMatchers("/login");
+  }
 }
 ````
 {{% image alt="settings" src="images/posts/configuring-csrf-with-spring/Csrf-test.JPG" %}}

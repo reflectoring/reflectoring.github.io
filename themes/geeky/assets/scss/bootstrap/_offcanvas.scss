@@ -12,6 +12,8 @@
   outline: 0;
   @include box-shadow($offcanvas-box-shadow);
   @include transition(transform $offcanvas-transition-duration ease-in-out);
+  height: 100vh;
+  overflow: auto;
 }
 
 .offcanvas-header {
@@ -21,10 +23,10 @@
   padding: $offcanvas-padding-y $offcanvas-padding-x;
 
   .btn-close {
-    padding: ($offcanvas-padding-y * .5) ($offcanvas-padding-x * .5);
-    margin-top: $offcanvas-padding-y * -.5;
-    margin-right: $offcanvas-padding-x * -.5;
-    margin-bottom: $offcanvas-padding-y * -.5;
+    padding: ($offcanvas-padding-y * 0.5) ($offcanvas-padding-x * 0.5);
+    margin-top: $offcanvas-padding-y * -0.5;
+    margin-right: $offcanvas-padding-x * -0.5;
+    margin-bottom: $offcanvas-padding-y * -0.5;
   }
 }
 

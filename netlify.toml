@@ -106,3 +106,16 @@ HUGO_ENV = "staging"
   to = "/contribute/become-an-author"
   status = 301
   force = true
+
+[[redirects]]
+  from = "/2022-03-15-feature-flags-make-or-buy"
+  to = "/feature-flags-make-or-buy"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/spring-io"
+  to = "https://thombergs.gumroad.com/l/gyhdoca/spring-io"
+  status = 301
+  force = true
+

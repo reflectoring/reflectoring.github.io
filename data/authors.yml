@@ -28,7 +28,7 @@ pratikdas:
   github: "pratikdas"
   twitter: "pratikd2020"
   linkedin: "pratik-das-80345114/"
-  bio: "Professional Software Engineer and Architect currently focussed on Cloud Architecture, serverless technologies, and Microservices."
+  bio: "Software Engineer, Consultant and Architect with current expertise in Enterprise and Cloud Architecture, serverless technologies, Microservices, and Devops."
 
 matthias:
   name: "Matthias Balke"
@@ -310,3 +310,12 @@ ranjani:
   github: "ranjanih"
   linkedin: "https://www.linkedin.com/in/ranjaniharish/"
   bio: "Fun-loving, curious and enthusiastic IT developer who believes in constant learning."
+
+ajibade:
+  name: "Olaoluwa Ajibade"
+  email: "holaszyd1@gmail.com"
+  avatar: "/images/authors/ajibade.png"
+  github: "ajibade3210"
+  linkedin: "https://www.linkedin.com/in/olaoluwa-ajibade/"
+  bio: "Backend developer who loves to create incredible apps."
+

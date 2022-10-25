@@ -21,7 +21,7 @@ On our Node.js server, we will create REST API endpoints for the URL shortener a
 A URL shortening service selects a short domain name as a placeholder. Such as `sho.rt` `tinyurl.com` or `bit.ly` . When a client submits a long URL to be shortened by the service.  The URL shortening service generates and returns a short URL, by using some function (cryptographic hash function, iterating through IDs, random IDs, or some combination) to generate a token: **XQ6953**. This URL returned to the client consists of the selected domain name: **sho.rt**, plus the generated ID token appended to the end eg: **http://sho.rt/XQ6953**. 
 
 URL shortening service stores both the short and long URLs in the database mapped to each other. When a call is made to the short URL, the database is looked up for the associated longer URL and redirects the web request; to the long URL's web page. This is how a basic URL shortening service works
-{{% image alt="node-urlshortener" src="images/posts/node-urlshortener/serverapp.png" %}}
+{{% image alt="node-urlshortener" src="images/posts/node-urlshortener/url_architecture.jpeg" %}}
 
 For more advanced use cases, the following requirements can be met by a URL shortening service in order to ensure its scalability and durability:
        

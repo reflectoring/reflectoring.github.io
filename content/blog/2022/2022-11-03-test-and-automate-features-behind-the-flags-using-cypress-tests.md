@@ -1,8 +1,8 @@
 ---
 title: "Test and Automate Features behind Feature Flags using Cypress Tests"
 categories: ["Node"]
-date: 2022-10-04 00:00:00 +1100 
-modified: 2022-10-04 00:00:00 +1100
+date: 2022-11-03 00:00:00 +1100 
+modified: 2022-11-03 00:00:00 +1100
 authors: [arpendu]
 excerpt: "A complete walkthrough to define sample unit or automated tests in React UI using Cypress tests to test features behind feature flags using LaunchDarkly."
 image: images/stock/0104-on-off-1200x628-branded.jpg
@@ -11,7 +11,7 @@ url: nodejs-feature-flag-launchdarkly-react-cypress
 
 Development teams, nowadays, can deliver quick value to consumers with far less risk with the help of *feature flag-driven development*. 
 
-Feature flags, however, are one more thing to thing about when testing our code. So in this article, we'll talk about some of the difficulties that testing presents in the age of feature flags and offer some suggestions on how to overcome them.
+Feature flags, however, are one more thing to think about when testing our code. So in this article, we'll talk about some of the difficulties that testing presents in the age of feature flags and offer some suggestions on how to overcome them.
 
 To help structure the discussion, we will outline five different sorts of tests that could be included in our testing plan:
 
@@ -23,31 +23,19 @@ To help structure the discussion, we will outline five different sorts of tests 
 
 The first three test types defined above are often executed automatically when using the *Continuous Integration (CI)* technique. QA testing, which can involve both manual and automated tests, may occasionally be performed by a specialized QA team. While the first four test types help determine whether anything was built correctly, UAT helps to determine if the product is acceptable and fit for the purpose.
 
+In this article, we will try to perform a UAT directly in a production environment using some automation. One of the type of User Acceptance Testing is *Beta Testing*. According to this, tests are performed either in a beta version of a product or as a test user in the same product running in Production environment alongside any other users. This helps in minimalizing the risks of of product failures and enables customer validation.
+
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/react-cypress-launchdarkly-feature-flag-test" %}}
-
-## Feature Flags in Automated Tests
-
-As we've seen, using feature flags while performing traditional automated integration testing may be very difficult. We really shouldn't attempt to manage every scenario that could arise. Instead, the following are a few suggestions that we can try:
-
-- Constantly write unit tests for code coverage.
-- Think about possible disaster scenarios and test those.
-- Always check the state of production at any point in time.
-- Test different user personas and their features.
-- Sometimes we can test various combinations.
-
-We can use different [LaunchDarkly SDKs](https://launchdarkly.com/features/sdk/) to achieve all of this functionality with ease. 
-
-Performing integration tests against the current production state will always provide us some assurance that everything will largely still work once we deploy our application into production. To do this, we can direct the SDK to our production environment when it starts up. Alternatively, we can also use our API to simulate the requests by downloading the current production state.
-
-We may find it helpful to develop some testing personas to employ in our end-to-end tests if the feature flag rules benefit from user targeting. We can accomplish this by making sure our user object contains legitimate attributes that the LaunchDarkly SDK will analyze.
 
 ## Why should we Perform Beta Tests in Production?
 
 We discuss testing in production a lot. Testing in production does not imply releasing code without tests and crossing one's fingers. Instead, it refers to the capacity to test actual features with real data in a real environment using real people.
 
-Because they have given their QA and UAT teams the freedom to test features in a genuine production environment before making them available to the rest of their user base, some of our most productive users can deploy directly to production multiple times per day. There is no impact on other users and no need to perform a complete rollback when a QA or UAT tester finds a bug.
+Because they have given their QA and UAT teams the freedom to test features in a genuine production environment before making them available to the rest of their user base, some of the testers can deploy directly to production multiple times per day. There is no impact on other users and no need to perform a complete rollback when a QA or UAT tester finds a bug.
 
-The real strength of feature flags lies in this. No matter how many times you test your software using automation, you will never be able to detect every fault. But the confidence to be able to continue delivering features to consumers securely and quickly comes from being able to turn a feature off when you discover an issue in production in real-time.
+Now, since the tester is going to use the same environment along with other users, it must find a way to test the newly added features before enabling them for rest of other users. They would also need to create a separate profile and enable those features when they start the manual or automation tests.
+
+That’s where the real strength of *feature flags* lies. No matter how many times you test your software using automation, you will never be able to detect every fault. But the confidence to be able to continue delivering features to consumers securely and quickly comes from being able to turn a feature off when you discover an issue in production in real-time.
 
 Some of the important advantages of performing beta tests are:
 
@@ -58,7 +46,15 @@ Some of the important advantages of performing beta tests are:
 - It helps to address software bugs that might not have been addressed or missed during any testing cycles.
 - It reduces the probability of a product failing because it has previously been tested before going into production.
 
-## How to Control the Lifecycle of a Feature
+## Feature Flags in Automated UAT Tests
+
+As we've seen, using feature flags while performing traditional automated integration testing may be very difficult. We really shouldn't attempt to manage every scenario that could arise. Instead, the following are a few suggestions that we can try:
+
+- Constantly write unit tests for code coverage.
+- Think about possible disaster scenarios and test those.
+- Always check the state of production at any point in time.
+- Test different user personas and their features.
+- Sometimes we can test various combinations.
 
 One must be careful not to break any current tests while introducing a new experiment behind the feature flag. What I believe a feature lifetime should be is as follows:
 
@@ -67,6 +63,12 @@ One must be careful not to break any current tests while introducing a new exper
 - **Alternate Approach:** At this point, the new functionality is being more widely used, and the previous behavior will eventually be eliminated. We can now change the current tests to explicitly allow the old behavior. As a result, some tests opt-in and test the new feature, while other tests do the opposite.
 - **Kill Switch:** The majority of users, if not all, have the feature switched on by default. The tests created while the functionality was being developed now work without opt-in. The outdated tests are still active and use the outdated behavior.
 - **Feature Removal:** Both the previous behavior and all previous testing can be disabled. The feature flag would now consistently denote the altered behavior.
+
+We can use different [LaunchDarkly SDKs](https://launchdarkly.com/features/sdk/) to achieve all of this functionality with ease. 
+
+Performing integration tests against the current production state will always provide us some assurance that everything will largely still work once we deploy our application into production. To do this, we can direct the SDK to our production environment when it starts up. Alternatively, we can also use our API to simulate the requests by downloading the current production state.
+
+We may find it helpful to develop some testing personas to employ in our UAT tests if the feature flag rules benefit from user targeting. We can accomplish this by making sure our user object contains legitimate attributes that the LaunchDarkly SDK will analyze.
 
 ## Brief Introduction to LaunchDarkly and its Features
 
@@ -82,7 +84,7 @@ We can use the LaunchDarkly SDK in our code to access the feature flag variation
 
 ## Create a Simple React Application
 
-In this article, we will focus on covering test cases for a React UI. For this, we will define a pretty simple React application and focus primarily on writing different test cases with feature flags. To demonstrate such power to control the feature flags from Cypress tests, we will just grab an existing copy of LaunchDarkly’s example React application.
+In this article, we will focus on covering UAT test cases for a React UI. For this, we will define a pretty simple React application and focus primarily on writing different test cases with feature flags. To demonstrate such power to control the feature flags from Cypress tests, we will just grab an existing copy of LaunchDarkly’s example React application.
 
 We can clone and create our copy using the command:
 
@@ -196,7 +198,7 @@ npm install --save-dev cypress
 
 ### Setup Plugin
 
-LaunchDarkly flags will need to be managed using HTTP calls. Although making HTTP requests from Node and Cypress is simple, LaunchDarkly uses higher-level logic that makes changing feature flags easy for humans, but a bit harder for machines. To reduce the complexity, we can abstract all the requirements for adding individual user targets into a plugin called [cypress-ld-control](https://github.com/bahmutov/cypress-ld-control) that Cypress tests can utilize. Let's put this plugin in place and use it:
+Now we would be mostly testing user-targeted features that would be behind feature flags managed by logged-in session of a user hosted in LaunchDarkly. Those flags would need to be managed using HTTP calls. Although making HTTP requests from Node and Cypress is simple, LaunchDarkly uses higher-level logic that makes changing feature flags easy for humans, but a bit harder for machines. To reduce the complexity, we can abstract all the requirements for adding individual user targets into a plugin called [cypress-ld-control](https://github.com/bahmutov/cypress-ld-control) that Cypress tests can utilize. Let's put this plugin in place and use it:
 
 ```bash
 npm install --save-dev cypress-ld-control

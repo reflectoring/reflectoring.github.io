@@ -1,10 +1,10 @@
 ---
 title: "Building a Url Shortener With Node.Js"
 categories: ["Node"]
-date: 2022-09-25 00:00:00 +1100
+date: 2022-11-04 00:00:00 +1100
 authors: ["ajibade"]
 description: "In this article we looked at the basic architecture and advanced requirements of a URL shortener, then we created a URL shortening service API from scratch using React.js, Node.js and MongoDB."
-image: images/stock/0043-calendar-1200x628-branded.jpg
+image: images/stock/0127-link-1200x628-branded.jpg
 url: node-url-shortener
 ---
 

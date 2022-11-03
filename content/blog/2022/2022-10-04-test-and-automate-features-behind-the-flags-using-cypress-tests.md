@@ -1,5 +1,5 @@
 ---
-title: "Test and Automate Features behind the Flags using Cypress Tests"
+title: "Test and Automate Features behind Feature Flags using Cypress Tests"
 categories: ["Node"]
 date: 2022-10-04 00:00:00 +1100 
 modified: 2022-10-04 00:00:00 +1100
@@ -9,7 +9,9 @@ image: images/stock/0104-on-off-1200x628-branded.jpg
 url: nodejs-feature-flag-launchdarkly-react-cypress
 ---
 
-Development teams, nowadays, can deliver quick value to consumers with far less risk with the help of *feature flag-driven development*. However, it also makes testing more complicated in the long run. So in this article, we'll talk about some of the difficulties that testing presents in the age of feature flags and offer some suggestions on how to overcome them.
+Development teams, nowadays, can deliver quick value to consumers with far less risk with the help of *feature flag-driven development*. 
+
+Feature flags, however, are one more thing to thing about when testing our code. So in this article, we'll talk about some of the difficulties that testing presents in the age of feature flags and offer some suggestions on how to overcome them.
 
 To help structure the discussion, we will outline five different sorts of tests that could be included in our testing plan:
 
@@ -23,38 +25,40 @@ The first three test types defined above are often executed automatically when u
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/react-cypress-launchdarkly-feature-flag-test" %}}
 
-## Different Options for Automation Tests
+## Feature Flags in Automated Tests
 
 As we've seen, using feature flags while performing traditional automated integration testing may be very difficult. We really shouldn't attempt to manage every scenario that could arise. Instead, the following are a few suggestions that we can try:
 
 - Constantly write unit tests for code coverage.
-- Tests scenarios that can occur due to any unknown disaster.
+- Think about possible disaster scenarios and test those.
 - Always check the state of production at any point in time.
 - Test different user personas and their features.
 - Sometimes we can test various combinations.
 
-We can use different [LaunchDarkly SDKs](https://launchdarkly.com/features/sdk/) to achieve all of this functionality with a lot of ease. Performing integration tests against the current production state will always provide us some assurance that everything will largely still work once we deploy our application into production. To do this, we can direct the SDK to our production environment when it starts up. Alternatively, we can also use our API to simulate the requests by downloading the current production state.
+We can use different [LaunchDarkly SDKs](https://launchdarkly.com/features/sdk/) to achieve all of this functionality with ease. 
+
+Performing integration tests against the current production state will always provide us some assurance that everything will largely still work once we deploy our application into production. To do this, we can direct the SDK to our production environment when it starts up. Alternatively, we can also use our API to simulate the requests by downloading the current production state.
 
 We may find it helpful to develop some testing personas to employ in our end-to-end tests if the feature flag rules benefit from user targeting. We can accomplish this by making sure our user object contains legitimate attributes that the LaunchDarkly SDK will analyze.
 
 ## Why should we Perform Beta Tests in Production?
 
-- We discuss testing in production a lot. Testing in production does not imply releasing code without tests and crossing one's fingers. Instead, it refers to the capacity to test actual features with real data in a real environment using real people.
+We discuss testing in production a lot. Testing in production does not imply releasing code without tests and crossing one's fingers. Instead, it refers to the capacity to test actual features with real data in a real environment using real people.
 
-  Because they have given their QA and UAT teams the freedom to test features in a genuine production environment before making them available to the rest of their user base, some of our most productive users can deploy directly to production multiple times per day. There is no impact on other users and no need to perform a complete rollback when a QA or UAT tester finds a bug.
+Because they have given their QA and UAT teams the freedom to test features in a genuine production environment before making them available to the rest of their user base, some of our most productive users can deploy directly to production multiple times per day. There is no impact on other users and no need to perform a complete rollback when a QA or UAT tester finds a bug.
 
-  The real strength of feature flags lies in this. No matter how many times you test your software using automation, you will never be able to detect every fault. But the confidence to be able to continue delivering features to consumers securely and quickly comes from being able to turn a feature off when you discover an issue in production in real-time.
+The real strength of feature flags lies in this. No matter how many times you test your software using automation, you will never be able to detect every fault. But the confidence to be able to continue delivering features to consumers securely and quickly comes from being able to turn a feature off when you discover an issue in production in real-time.
 
-  Some of the important advantages of performing beta tests are:
+Some of the important advantages of performing beta tests are:
 
-  - Even before the product is released, it provides quick feedback on the product, which helps to raise its quality and increase consumer satisfaction.
-  - The application can be tested for dependability, usability, and robustness, and testers can provide feedback and suggestions to developers to help them make improvements that will better fulfill consumer needs.
-  - Based on recommendations made by the testers, who are the actual users, it assists various organizational teams in making judgments about a product that are well-informed.
-  - Since the product is tested by actual users in a production environment, it provides an accurate insight into what customers like and dislike about it.
-  - It helps to address software bugs that might not have been addressed or missed during any testing cycles.
-  - It reduces the probability of a product failing because it has previously been tested before going into production.
+- Even before the product is released, it provides quick feedback on the product, which helps to raise its quality and increase consumer satisfaction.
+- The application can be tested for dependability, usability, and robustness, and testers can provide feedback and suggestions to developers to help them make improvements that will better fulfill consumer needs.
+- Based on recommendations made by the testers, who are the actual users, it assists various organizational teams in making judgments about a product that are well-informed.
+- Since the product is tested by actual users in a production environment, it provides an accurate insight into what customers like and dislike about it.
+- It helps to address software bugs that might not have been addressed or missed during any testing cycles.
+- It reduces the probability of a product failing because it has previously been tested before going into production.
 
-## How to Control the Lifeline of a Feature
+## How to Control the Lifecycle of a Feature
 
 One must be careful not to break any current tests while introducing a new experiment behind the feature flag. What I believe a feature lifetime should be is as follows:
 
@@ -88,7 +92,7 @@ npx degit launchdarkly/react-client-sdk/examples/hoc react-cypress-launchdarkly-
 
 We are using the [degit](https://github.com/Rich-Harris/degit#readme) command to copy the repo to our local directory.
 
-We will first create a new LanuchDarkly project named “Reflectoring.io” and define two environments. We will now use a “Production” environment.
+We will first create a new LaunchDarkly project named “Reflectoring.io” and define two environments. We will now use a “Production” environment.
 
 {{% image alt="LaunchDarkly Project" src="images/posts/nodejs-cypress-test-launchdarkly/LaunchDarkly_Keys.png" %}}
 
@@ -192,7 +196,7 @@ npm install --save-dev cypress
 
 ### Setup Plugin
 
-LaunchDarkly flags will need to be managed using HTTP calls. Although making HTTP requests from Node and Cypress is simple, LaunchDarkly uses higher-level logic that makes changing feature flags a hassle. To reduce the complexity, we can abstract all the requirements for adding individual user targets into a plugin called [cypress-ld-control](https://github.com/bahmutov/cypress-ld-control) that Cypress tests can utilize. Let's put this plugin in place and use it:
+LaunchDarkly flags will need to be managed using HTTP calls. Although making HTTP requests from Node and Cypress is simple, LaunchDarkly uses higher-level logic that makes changing feature flags easy for humans, but a bit harder for machines. To reduce the complexity, we can abstract all the requirements for adding individual user targets into a plugin called [cypress-ld-control](https://github.com/bahmutov/cypress-ld-control) that Cypress tests can utilize. Let's put this plugin in place and use it:
 
 ```bash
 npm install --save-dev cypress-ld-control
@@ -404,9 +408,9 @@ We are also defining a task at the end to remove any user targets being created 
 
 {{% image alt="Cypress Test UI variation" src="images/posts/nodejs-cypress-test-launchdarkly/Cypress_Test_Result.png" %}}
 
-#### Test Target User Button
+#### Testing a User-targeted Feature
 
-In our previous [article](/nodejs-feature-flag-launchdarkly-react/), we had represented a button in UI which would be populated based upon the logged-in user. Considering the same, we can add the same button here and add test-cases using Cypress to cover the functionality of clicking the button and validating the popup alert.
+In our previous [article](/nodejs-feature-flag-launchdarkly-react/), we had represented a button in UI which would be populated based upon the logged-in user. We can add the same button here and add test-cases using Cypress to cover the functionality of clicking the button and validating the popup alert.
 
 For this, we will update our home page logic:
 
@@ -468,7 +472,7 @@ const user = {
 };
 ```
 
-Similarly, we will add a task in existing spec to validate the click event of a button and its outcome alert of the popup:
+Similarly, we will add a task in existing cypress test spec to validate the click event of a button and its outcome alert of the popup:
 
 ```javascript
 it('click a button', () => {
@@ -490,9 +494,9 @@ Finally, we can see all the test output being populated in Cypress UI dashboard.
 
 {{% image alt="Cypress Test UI variation" src="images/posts/nodejs-cypress-test-launchdarkly/Cypress_Final_Test_Result.png" %}}
 
-## Deploy Tests as CI
+## Deploy Tests in CI
 
-Next, we can use *GitHub Actions* to run the same tests on CI. The workflows provided by CI using GitHub Actions allow us to create the code in our repository and run our tests. Workflows can run on virtual machines hosted by GitHub or on our servers. Using the repository dispatch webhook, we may set up our CI workflow to launch whenever a GitHub event takes place (for instance, if new code is pushed to your repository), on a predetermined timetable, or in response to an outside event.
+Next, we can use *GitHub Actions* to run the same tests in CI. The workflows provided by CI using GitHub Actions allow us to create the code in our repository and run our tests. Workflows can run on virtual machines hosted by GitHub or on our servers. Using the repository dispatch webhook, we may set up our CI workflow to launch whenever a GitHub event takes place (for instance, if new code is pushed to your repository), on a predetermined timetable, or in response to an outside event.
 
 For us to determine whether the change in our branch produces an error, GitHub executes our CI tests and includes the results of each test in the pull request. The changes we pushed are prepared to be evaluated by a team member or merged once all CI tests in a workflow pass. If a test fails, then we can easily get to know that one of our changes may have caused the failure.
 

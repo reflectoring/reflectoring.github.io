@@ -31,11 +31,11 @@ In this article, we will try to perform a UAT directly in a production environme
 
 We discuss testing in production a lot. Testing in production does not imply releasing code without tests and crossing one's fingers. Instead, it refers to the capacity to test actual features with real data in a real environment using real people.
 
-Because they have given their QA and UAT teams the freedom to test features in a genuine production environment before making them available to the rest of their user base, some of the testers can deploy directly to production multiple times per day. There is no impact on other users and no need to perform a complete rollback when a QA or UAT tester finds a bug.
+Feature flags give developers, QA teams and UAT teams the freedom to test features in a genuine production environment before making them available to the rest of their user base. There is no impact on other users and no need to perform a complete rollback when a QA or UAT tester finds a bug.
 
 Now, since the tester is going to use the same environment along with other users, it must find a way to test the newly added features before enabling them for rest of other users. They would also need to create a separate profile and enable those features when they start the manual or automation tests.
 
-That’s where the real strength of *feature flags* lies. No matter how many times you test your software using automation, you will never be able to detect every fault. But the confidence to be able to continue delivering features to consumers securely and quickly comes from being able to turn a feature off when you discover an issue in production in real-time.
+That’s where the real strength of *feature flags* lies. Continuously delivering features to production without releasing them to the public gives a confidence boost to the whole development team because features can be tested in production.
 
 Some of the important advantages of performing beta tests are:
 
@@ -46,29 +46,11 @@ Some of the important advantages of performing beta tests are:
 - It helps to address software bugs that might not have been addressed or missed during any testing cycles.
 - It reduces the probability of a product failing because it has previously been tested before going into production.
 
-## Feature Flags in Automated UAT Tests
+## Feature Flags in Automated User Acceptance Tests
 
-As we've seen, using feature flags while performing traditional automated integration testing may be very difficult. We really shouldn't attempt to manage every scenario that could arise. Instead, the following are a few suggestions that we can try:
+However, using feature flags while performing traditional automated integration testing may be difficult. We need to know the state of any feature flags and may be even need to enable or disable a feature flag for a given test.
 
-- Constantly write unit tests for code coverage.
-- Think about possible disaster scenarios and test those.
-- Always check the state of production at any point in time.
-- Test different user personas and their features.
-- Sometimes we can test various combinations.
-
-One must be careful not to break any current tests while introducing a new experiment behind the feature flag. What I believe a feature lifetime should be is as follows:
-
-- **Experimental:** To enable the new behavior, a new feature flag should be created. The functionality can be purely opt-in at first because the developer is testing the behavior. The current default behavior can still be experienced by all current users.
-- **Prototype:** The new feature can now be used if it appears to be successful. The team can prepare to release it. The feature can be activated and the new feature flow can be tested using a few end-to-end tests that employ the LaunchDarkly implementation. The old behavior can still be seen in all running tests because that is the default behavior.
-- **Alternate Approach:** At this point, the new functionality is being more widely used, and the previous behavior will eventually be eliminated. We can now change the current tests to explicitly allow the old behavior. As a result, some tests opt-in and test the new feature, while other tests do the opposite.
-- **Kill Switch:** The majority of users, if not all, have the feature switched on by default. The tests created while the functionality was being developed now work without opt-in. The outdated tests are still active and use the outdated behavior.
-- **Feature Removal:** Both the previous behavior and all previous testing can be disabled. The feature flag would now consistently denote the altered behavior.
-
-We can use different [LaunchDarkly SDKs](https://launchdarkly.com/features/sdk/) to achieve all of this functionality with ease. 
-
-Performing integration tests against the current production state will always provide us some assurance that everything will largely still work once we deploy our application into production. To do this, we can direct the SDK to our production environment when it starts up. Alternatively, we can also use our API to simulate the requests by downloading the current production state.
-
-We may find it helpful to develop some testing personas to employ in our UAT tests if the feature flag rules benefit from user targeting. We can accomplish this by making sure our user object contains legitimate attributes that the LaunchDarkly SDK will analyze.
+TODO: is there something more that we can add here as to why feature flags are complicated in automated UATs and how Cypress can help with that?
 
 ## Brief Introduction to LaunchDarkly and its Features
 
@@ -180,7 +162,7 @@ npm start
 
 {{% image alt="React Home UI" src="images/posts/nodejs-cypress-test-launchdarkly/React_Home_UI.png" %}}
 
-## Setup Cypress Tests
+## Setting up Cypress Tests
 
 A breakthrough front-end testing framework called *Cypress* makes it simple to create effective and adaptable tests for your online apps. With features like simple test configuration, practical reporting, an appealing dashboard interface, and a lot more, it makes it possible to perform advanced testing for both unit tests and integration tests.
 
@@ -188,7 +170,7 @@ The main benefit of Cypress is that it is created in JavaScript, the most used l
 
 *Cypress* is an open-source testing framework based on JavaScript that supports web application testing. Contrary to *Selenium*, Cypress does not require driver binaries to function fully on a real browser. The shared platform between the automated code and the application code provides total control over the application being tested.
 
-Let's look into Cypress' high-level architecture to explain the backstory behind it. To execute the application and test code in the same event loop, Cypress operates on a NodeJS server that connects with the test runner (Browser). This in turn allows the Cypress code to mock and even change the JavaScript object on the fly. This is one of the primary reasons why Cypress tests are expected to execute faster than corresponding Selenium tests.
+To execute the application and test code in the same event loop, Cypress operates on a NodeJS server that connects with the test runner (Browser). This in turn allows the Cypress code to mock and even change the JavaScript object on the fly. This is one of the primary reasons why Cypress tests are expected to execute faster than corresponding Selenium tests.
 
 To start writing our tests, let’s start by installing Cypress test runner:
 
@@ -196,7 +178,7 @@ To start writing our tests, let’s start by installing Cypress test runner:
 npm install --save-dev cypress
 ```
 
-### Setup Plugin
+### Setting up the LaunchDarkly Plugin
 
 Now we would be mostly testing user-targeted features that would be behind feature flags managed by logged-in session of a user hosted in LaunchDarkly. Those flags would need to be managed using HTTP calls. Although making HTTP requests from Node and Cypress is simple, LaunchDarkly uses higher-level logic that makes changing feature flags easy for humans, but a bit harder for machines. To reduce the complexity, we can abstract all the requirements for adding individual user targets into a plugin called [cypress-ld-control](https://github.com/bahmutov/cypress-ld-control) that Cypress tests can utilize. Let's put this plugin in place and use it:
 

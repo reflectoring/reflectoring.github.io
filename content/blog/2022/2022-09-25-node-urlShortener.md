@@ -18,48 +18,59 @@ On our Node.js server, we will create REST API endpoints for the URL shortener a
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/url-shortener" %}}
 
 ## How Do Url Shorteners Work?
-A URL shortening service selects a short domain name as a placeholder. Such as `sho.rt` `tinyurl.com` or `bit.ly` . When a client submits a long URL to be shortened by the service.  The URL shortening service generates and returns a short URL, by using some function (cryptographic hash function, iterating through IDs, random IDs, or some combination) to generate a token: **XQ6953**. This URL returned to the client consists of the selected domain name: **sho.rt**, plus the generated ID token appended to the end eg: **http://sho.rt/XQ6953**. 
+A URL shortening service selects a short domain name as a placeholder. Examples are [tinyurl.com](https://tinyurl.com) or [bit.ly](https://bit.ly). When a client submits a long URL to be shortened by the service the URL shortening service generates and returns a short URL, by using some function (cryptographic hash function, iterating through IDs, random IDs, or some combination) to generate a token like `XQ6953`. This URL returned to the client consists of the selected domain name plus the generated ID token appended to the end, for example `https://bit.ly/XQ6953`. 
 
-URL shortening service stores both the short and long URLs in the database mapped to each other. When a call is made to the short URL, the database is looked up for the associated longer URL and redirects the web request; to the long URL's web page. This is how a basic URL shortening service works
+The URL shortening service stores both the short and long URLs in the database mapped to each other. When a call is made to the short URL, the database is looked up for the associated longer URL and redirects the web request; to the long URL's web page. This is how a basic URL shortening service works.
 {{% image alt="node-urlshortener" src="images/posts/node-urlshortener/url_architecture.jpeg" %}}
 
-For more advanced use cases, the following requirements can be met by a URL shortening service in order to ensure its scalability and durability:
+For scalability and durability, a URL shortener service can employ the following features.
        
-#### Advance Requirements:
-1. The system should be highly available. This is necessary because if our service goes down, all URL redirections would fail. URL redirection and response time should happen in real time with minimal latency. 
+## Advanced Architecture
 
-2. What kind of database is to be used? A NoSQL database like [DynamoDB](https://en.wikipedia.org/wiki/Amazon_DynamoDB), [MongoDB](https://en.wikipedia.org/wiki/MongoDB) or [Cassandra](https://en.wikipedia.org/wiki/Apache_Cassandra) is a better option since we expect to store billions of rows and don't need to employ associations between items. A NoSQL option can horizontally scale up performance over numerous servers, 
+### High Availability
+The system should be highly available. This is necessary because if our service goes down, all URL redirections would fail. URL redirection and response time should happen in real time with minimal latency. 
+
+### SQL or NoSQL Database?
+
+What kind of database is to be used? A NoSQL database like [DynamoDB](https://en.wikipedia.org/wiki/Amazon_DynamoDB), [MongoDB](https://en.wikipedia.org/wiki/MongoDB) or [Cassandra](https://en.wikipedia.org/wiki/Apache_Cassandra) is a better option since we expect to store billions of rows and don't need to employ associations between items. A NoSQL option can horizontally scale up performance over numerous servers. 
 	
-	They are inherently designed for large data (and for scale). Data in a NoSQL database can be distributed across multiple machines or workstations. NoSQL documents can be located on various servers without having to worry about joining rows, which is a concern in relational databases.
+They are inherently designed for large data (and for scale). Data in a NoSQL database can be distributed across multiple machines or workstations. NoSQL documents can be located on various servers without having to worry about joining rows, which is a concern in relational databases.
 
-3. We can improve this architecture by adding a caching layer to our service. Every time a user clicks on a short URL, the server access the database in order to retrieve the long URL mapped to it in the database.
+### Caching for Improved Latency
 
-	Database calls can be time-consuming and costly. We can improve the response time of our server by caching frequently accessed short URLs or the top 10% of daily lookups. So, when we receive a request for a short URL, our servers first check to see if the data is available in the cache; if it is, it is retrieved from the cache; otherwise, it is retrieved from the database.
+We can improve this architecture by adding a caching layer to our service. Every time a user clicks on a short URL, the server access the database in order to retrieve the long URL mapped to it in the database.
 
-4. What characters are allowed in the shortened URL? This encoding could be base36 ([a-z ,0-9]) or base62 ([A-Z, a-z, 0-9]) and if we add ‘+’ and ‘/’ we can use [Base64](https://en.wikipedia.org/wiki/Base64#Base64_table) encoding. 
+Database calls can be time-consuming and costly. We can improve the response time of our server by caching frequently accessed short URLs or the top 10% of daily lookups. So, when we receive a request for a short URL, our servers first check to see if the data is available in the cache; if it is, it is retrieved from the cache; otherwise, it is retrieved from the database.
 
-	How long should the randomly generated id be? The length of the random string should be such that it is not so long that it defeats the purpose of having a shortened URL, nor too small either. Because the longer the generated id the more unique our ids will be. The shortened links must be unique and random (not predictable).
+### Validation
 
-5. Using load balancer. Load balancer as the name suggests balances the load by distributing requests across our servers. we cannot have multiple servers and expose them as endpoints to users. 
+What characters are allowed in the shortened URL? This encoding could be base36 ([a-z ,0-9]) or base62 ([A-Z, a-z, 0-9]) and if we add ‘+’ and ‘/’ we can use [Base64](https://en.wikipedia.org/wiki/Base64#Base64_table) encoding. 
+
+How long should the randomly generated ID be? The length of the random string should be such that it is not so long that it defeats the purpose of having a shortened URL, nor too small either. Because the longer the generated id the more unique our ids will be. The shortened links must be unique and random (not predictable).
+
+### Load balancing
+
+A load balancer, as the name suggests, balances the load by distributing requests across our servers. We cannot have multiple servers and expose them as endpoints to users. 
 	
-	In order for the system to determine which server is available to handle which request. This job is done by the load balancer. There are various types of load balancers, each type has a unique method of how they handle load distribution. 	
-	
-	The load balancer also serves as a single point of contact for all of our users, removing the need for them to know the specific server IP addresses of our server instances. All the user requests land on the load balancer and the load balancer is responsible for re-routing these requests to a specific server instance.
+A load balancer determines which server is available to handle which request.  There are various types of load balancers, each type has a unique method of how they handle load distribution. 	
+
+The load balancer also serves as a single point of contact for all of our users, removing the need for them to know the specific server IP addresses of our server instances. All the user requests land on the load balancer and the load balancer is responsible for re-routing these requests to a specific server instance.
       
-#### Here Is a Quick Workflow on the Service for the Advance Use Case:
+### Example Use Case
+
 1.  Shortened URL links are entered by the user.
 2. The URL is validated. Check to see if the user provided the right URL address.
 3. The load balancer receives the URL and sends the request to the web servers.
-4. If the shortened URL is already in the cache, It returns the long URL right away.
+4. If the shortened URL is already in the cache, it returns the long URL right away.
 5. If the shortened URL is not in the cache, the service will have to search the database for it.
 6.  The long URL will be returned to the user.
        
-In the next section,  we will build a basic URL shortening application. That accepts URLs, then we'll validate the URL string using a helper function to guarantee that users do not make mistakes while entering the URLs. After receiving the long URL, our URL service will generate a short random Id using the previously installed `shortId` dependency. Which is then concatenated with the domain name of our application. 
+In the next section,  we will build a basic URL shortening application that accepts URLs, then we'll validate the URL string using a helper function to guarantee that users do not make mistakes while entering the URLs. After receiving the long URL, our URL service will generate a short random Id using the previously installed `shortId` dependency. Which is then concatenated with the domain name of our application. 
 
 Both URL (short and long) links are saved in a MongoDB database. Finally, all URL endpoints from the server are integrated into our React.js application.
 
-## Setting up `Node.Js` Application
-To begin, navigate to a new root directory where we want our application to live.
+## Setting up the `Node.Js` Application
+To begin, we navigate to a new root directory where we want our application to live.
 
 Here, we'll create a new folder `urlbackend`, and navigate into it. By entering the following command in the terminal:
 ```bash
@@ -67,7 +78,7 @@ mkdir urlbackend
 &&
 cd urlbackend
 ```
-Then, again in the terminal, run the following command to initialize our Node.js application.
+Then, again in the terminal, we run the following command to initialize our Node.js application.
 ```bash
 npm init -y
 ```
@@ -78,11 +89,11 @@ Then, run the following command to install the required dependencies for our app
 npm install cors dotenv express mongoose shortid
 ```
 Here, we're installing the dependencies we need for our application's server, which include:
-- cors: Cross-origin resource sharing (CORS) allows AJAX requests to skip the Same-origin policy and access resources from remote hosts. Comes in handy while connecting the Node.js server to the Client (frontend) side.
-- dotenv: This loads environment variables from a `.env `file into `process.env`
-- express: A Node.js framework that provides broad features for building web and mobile applications.
-- mongoose: An object modeling tool that aids in connecting and querying the MongoDB database.
-- shortid: Generates non-sequential short unique ids
+- `cors`: Cross-origin resource sharing (CORS) allows AJAX requests to skip the Same-origin policy and access resources from remote hosts. Comes in handy while connecting the Node.js server to the Client (frontend) side.
+- `dotenv`: This loads environment variables from a `.env `file into `process.env`.
+- `express`: A Node.js framework that provides broad features for building web and mobile applications.
+- `mongoose`: An object modeling tool that aids in connecting and querying the MongoDB database.
+- `shortid`: Generates non-sequential short unique ids
 
 Next, create an `index.js` file to start our Node.js server and a `.env` file to store all of our application's confidential information as environment variables.
 
@@ -108,7 +119,7 @@ Server is running at PORT: 3333
 ```
 Our URLs will be stored in a MongoDB database. Following, we'll go through how to use and configure the MongoDB database in our application.
 
-## Using MongoDB Database
+## Working with the MongoDB Database
 MongoDB is a schema-less [NoSQL](https://en.wikipedia.org/wiki/NoSQL) database, which means it stores data objects in collections and documents rather than the tables and rows used in typical [relational databases](https://en.wikipedia.org/wiki/Relational_database). Collections are sets of documents, which are equivalent to tables in a relational database. Documents consist of key-value pairs, which are the basic unit of data in MongoDB.
 
 We can choose to install a local version of [MongoDB Compass](https://www.mongodb.com/docs/compass/current/install/) for our application. But we'll have to switch this during production to connect to a live MongoDB server.
@@ -156,7 +167,7 @@ While MongoDB is schema-less, SQL defines a schema via the table definition. Mon
 
 Mongoose schema defines the structure of the document, default values, validators, etc.
 
-## Creating MongoDB Schema
+## Creating a MongoDB Schema
 To use mongoose we have to start by creating schemas for our application. Each schema maps to a MongoDB collection and defines the shape of the documents within that collection. We will need to create a Schema for our URLs. 
 
 To create our  URL schema, create a `Url.js` file in the `urlbackend` folder.
@@ -341,7 +352,7 @@ Db Connected
 Our endpoints and database are now operational. Next, we will configure our React.js application and test our endpoints:
 
 ## Setting Up a React.js Application
-We are using React framework for our URL shortener frontend, React is a free and open-source front-end JavaScript library for building user interfaces based on UI components. It designs simple views for each state in our application, and React efficiently updates and renders just the right components when our data changes. To get started using React, see the [React documentation](https://reactjs.org/docs/getting-started.html)
+We are using React framework for our URL shortener frontend, React is a free and open-source front-end JavaScript library for building user interfaces based on UI components. It designs simple views for each state in our application, and React efficiently updates and renders just the right components when our data changes. To get started using React, see the [React documentation](https://reactjs.org/docs/getting-started.html).
 
 Let's begin building our react application. Change the directory to the project's Root folder by entering the following command into the terminal:
 ```bash

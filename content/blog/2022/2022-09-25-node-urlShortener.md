@@ -3,7 +3,7 @@ title: "Building a Url Shortener With Node.Js"
 categories: ["Node"]
 date: 2022-09-25 00:00:00 +1100
 authors: ["ajibade"]
-description: "In this article we looked at the basic architecture and advanced requirements of a URL shortener, then we created a URL shortening service API from scratch using React.js, Node.js, and MongoDB."
+description: "In this article we looked at the basic architecture and advanced requirements of a URL shortener, then we created a URL shortening service API from scratch using React.js, Node.js and MongoDB."
 image: images/stock/0043-calendar-1200x628-branded.jpg
 url: node-url-shortener
 ---
@@ -11,7 +11,7 @@ url: node-url-shortener
 
 How to design a URL shortening service like tinyurl.com is a frequently asked question in system design interviews. URL shortener services convert long URLs into significantly shorter URL links.
 
-In this article, we will walk through the architecture of designing a URL shortening service, looking at both basic and advanced requirements, then we will explore how to create a Basic URL shortener using Node.js, React.js, and MongoDB.
+In this article, we will walk through the architecture of designing a URL shortening service, looking at both basic and advanced requirements, then we will explore how to create a Basic URL shortener using Node.js, React.js and MongoDB.
 
 On our Node.js server, we will create REST API endpoints for the URL shortener and integrate them into React.js frontend applications, while storing all our URL data in a MongoDB database.
 
@@ -34,7 +34,7 @@ The system should be highly available. This is necessary because if our service 
 
 What kind of database is to be used? A NoSQL database like [DynamoDB](https://en.wikipedia.org/wiki/Amazon_DynamoDB), [MongoDB](https://en.wikipedia.org/wiki/MongoDB) or [Cassandra](https://en.wikipedia.org/wiki/Apache_Cassandra) is a better option since we expect to store billions of rows and don't need to employ associations between items. A NoSQL option can horizontally scale up performance over numerous servers. 
 	
-They are inherently designed for large data (and for scale). Data in a NoSQL database can be distributed across multiple machines or workstations. NoSQL documents can be located on various servers without having to worry about joining rows, which is a concern in relational databases.
+They are inherently designed for large data (and for scale). Data in a NoSQL database can be distributed across multiple machines or workstations. NoSQL documents can be located on various servers without worrying about joining rows, which is a concern in relational databases.
 
 ### Caching for Improved Latency
 
@@ -72,7 +72,7 @@ Both URL (short and long) links are saved in a MongoDB database. Finally, all UR
 ## Setting up the `Node.Js` Application
 To begin, we navigate to a new root directory where we want our application to live.
 
-Here, we'll create a new folder `urlbackend`, and navigate into it. By entering the following command in the terminal:
+Here, we'll create a new folder `urlbackend` and navigate into it. By entering the following command in the terminal:
 ```bash
 mkdir urlbackend 
 &&
@@ -126,7 +126,7 @@ We can choose to install a local version of [MongoDB Compass](https://www.mongod
 
 However, we have another option of connecting to a live MongoDB database, where we won't have to configure the database connection again during deployment. We can achieve this using MongoDB Altas Cluster.
 
-MongoDB Atlas cluster is a simple and quick solution to integrating MongoDB with our application. The MongoDB Atlas cluster is a fully-managed cloud database that handles all of the complexities of deploying, administering, and repairing our installations on the cloud service provider of our choosing (AWS , Azure, and GCP).  The best approach to deploy, run, and scale MongoDB in the cloud is with MongoDB Atlas. We can build faster and spend less time managing our database by leveraging MongoDB's rich ecosystem of drivers, integrations, and tools.
+MongoDB Atlas cluster is a simple and quick solution to integrating MongoDB with our application. The MongoDB Atlas cluster is a fully-managed cloud database that handles all of the complexities of deploying, administering and repairing our installations on the cloud service provider of our choosing (AWS , Azure and GCP).  The best approach to deploy, run and scale MongoDB in the cloud is with MongoDB Atlas. We can build faster and spend less time managing our database by leveraging MongoDB's rich ecosystem of drivers, integrations and tools.
 
 To get started with MongoDB Atlas in our project, we'll need to Create an Atlas Account and deploy a Free Tier Cluster. To create and deploy a MongoDB Altas cluster, follow these steps:
 - [Go here](https://account.mongodb.com/account/register)  to sign up for a new MongoDB Atlas account.
@@ -159,16 +159,12 @@ DOMAIN_URL=http://localhost:3333
 ```
 Here, we are storing  `MongoDB_URI` and `DOMAIN_URL` as environment variables in the `.env` file. Replace the `MongoDB_URI` link with the one you generated in MongoDB Altas and remember to input your `username` and `password`. While `DOMAIN_URL` is our server's `localhost` address, which can readily be changed during production.
 
-To query and connect to our MongoDB database easily, we will use the Object Data Modeling (ODM) library **Mongoose**.
+MongoDB is schema-less, which means that it pushes database architecture and schema creation to the application level, where they can be handled more flexibly. For schema creation, query and connecting to MongoDB database we will use the **Mongoose** dependency.
 
-Mongoose manages relationships between data, provides schema validation, and is used to translate between objects in code and the representation of those objects in MongoDB. it remains one of the most popular ODM tools for MongoDB. If you are coming from a SQL background then using Mongoose will make the transition into a NoSQL environment much easier. It will also save you time writing your own validations and instance methods and is highly recommended for basic MongoDB operations.
+Mongoose manages relationships between data. It is used to create schema and define how data is stored and structured in MongoDB. It remains one of the most popular ODM tools for MongoDB. If you are coming from a SQL background then using Mongoose will make the transition into a NoSQL environment much easier.
 
-While MongoDB is schema-less, SQL defines a schema via the table definition. Mongoose provides us with schema validation a document data structure (shape of the document) that is enforced via the application layer.
-
-Mongoose schema defines the structure of the document, default values, validators, etc.
-
-## Creating a MongoDB Schema
-To use mongoose we have to start by creating schemas for our application. Each schema maps to a MongoDB collection and defines the shape of the documents within that collection. We will need to create a Schema for our URLs. 
+## Creating Mongoose Schema
+In this section, we will use Mongoose to create a URL schema. This will define how URL data will be structured and stored in our database. Each schema maps to a MongoDB collection.
 
 To create our  URL schema, create a `Url.js` file in the `urlbackend` folder.
 
@@ -352,13 +348,13 @@ Db Connected
 Our endpoints and database are now operational. Next, we will configure our React.js application and test our endpoints:
 
 ## Setting Up a React.js Application
-We are using React framework for our URL shortener frontend, React is a free and open-source front-end JavaScript library for building user interfaces based on UI components. It designs simple views for each state in our application, and React efficiently updates and renders just the right components when our data changes. To get started using React, see the [React documentation](https://reactjs.org/docs/getting-started.html).
+We are using React framework for our URL shortener frontend, React is a free and open-source front-end JavaScript library for building user interfaces based on UI components. It designs simple views for each state in our application and React efficiently updates and renders just the right components when our data changes. To get started using React, see the [React documentation](https://reactjs.org/docs/getting-started.html).
 
 Let's begin building our react application. Change the directory to the project's Root folder by entering the following command into the terminal:
 ```bash
 cd..
 ```
-We'll take full advantage of the rich React ecosystem by using [`create-react-app`](https://reactjs.org/docs/create-a-new-react-app.html) and [`npx`](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) to swiftly setup our React.js application. `npx` is a npm package runner that can execute any package we want from the `npm` registry without even installing it, whereas `create-react-app` sets up our React.js development environment so we can get right into building our application right away.
+We'll take full advantage of the rich React ecosystem by using [`create-react-app`](https://reactjs.org/docs/create-a-new-react-app.html) and [`npx`](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) to swiftly setup our React.js application. `npx` is an npm package runner that can execute any package we want from the `npm` registry without even installing it, whereas `create-react-app` sets up our React.js development environment so we can get right into building our application right away.
 
 Run the following command in the terminal to create a React application named `urlfrontend`:
 ```bash
@@ -375,7 +371,7 @@ npm install axios bootstrap
 ```
 In the above command, we installed:
 - axios: is **a promised-based HTTP client for JavaScript**. It has the ability to make HTTP requests from the browser and handle the transformation of request and response data.
-- bootstrap: a powerful, feature-packed frontend toolkit for styling our application, and helps create an elegant responsive layout.
+- bootstrap: a powerful, feature-packed frontend toolkit for styling our application and helps create an elegant responsive layout.
 
 Open the React.js application in your preferred IDE. 
 
@@ -436,7 +432,7 @@ const AddUrlComponent = () => {
               type="text"
               placeholder="http://samplesite.com"
               value={url}
-              onChange={({ target }) => setUrl(target.value)}
+              onChange={e => setUrl(e.target.value)}
             />
             <div class="d-grid gap-2 col-6 mx-auto">
             <button type="submit" className="btn btn-danger m-5">
@@ -524,7 +520,7 @@ function App() {
 
 export default App;
 ```
-In the code above, we simply included our bootstrap styling, the AddUrlComponent, and ViewUrlComponent components in the App component.
+In the code above, we simply included our bootstrap styling, the AddUrlComponent and ViewUrlComponent components in the App component.
 ```
 
 ## Start React Application
@@ -538,5 +534,5 @@ Our `urlfrontend` application should be up and running on port `3000`:
 {{% image alt="URL shortener application" src="images/posts/node-urlshortener/mern-stack-structure.png" %}}
 
 # Conclusion
-In this article we looked at the basic architecture and advanced requirements of a URL shortener, then we created a URL shortening service API from scratch using React.js, Node.js, and MongoDB.
+In this article we looked at the basic architecture and advanced requirements of a URL shortener, then we created a URL shortening service API from scratch using React.js, Node.js and MongoDB.
 I hope you enjoyed reading this article and learned something new. The complete source code can be found [here](https://github.com/thombergs/code-examples/tree/master/nodejs/url-shortener).

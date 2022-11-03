@@ -2,7 +2,7 @@
 title: "Managing Multiple JDK Installations With jEnv"
 categories: ["Java"]
 date: 2020-10-24T00:00:00
-modified: 2020-10-24T20:00:00
+modified: 2022-10-18T20:00:00
 authors: [tom]
 description: "As Java developers, we often need to switch between different versions of the JDK for different projects. jEnv makes this easy."
 image: images/stock/0085-numbers-1200x628-branded.jpg
@@ -207,6 +207,20 @@ Ant:          Apache Ant(TM) version 1.10.7 compiled on September 1 2019
 JVM:          15 (AdoptOpenJDK 15+36)
 OS:           Linux 5.4.0-52-generic amd64
 ```
+
+## Not Picking the Right Java Version?
+
+Depending on your context, `jenv` might not pick the right Java version and you might end up with errors that complain about Java incompatibilities even though you have set a local Java version using `jenv local` correctly.
+
+In this case, you might need to enable the `export` plugin, which sets the `JAVA_HOME` variable properly:
+
+```
+jenv enable-plugin export
+```
+
+Now, when you run a command like `./gradlew ...` or `./mvnw ...`, it should pick the correct Java version.
+
+More troubleshooting tips can be found on the [official troubleshooting page](https://github.com/jenv/jenv/wiki/Trouble-Shooting).
 
 ## Conclusion
 

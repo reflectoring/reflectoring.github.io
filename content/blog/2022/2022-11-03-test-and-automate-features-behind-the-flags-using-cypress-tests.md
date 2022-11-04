@@ -4,7 +4,7 @@ categories: ["Node"]
 date: 2022-11-03 00:00:00 +1100 
 modified: 2022-11-03 00:00:00 +1100
 authors: [arpendu]
-excerpt: "A complete walkthrough to define sample unit or automated tests in React UI using Cypress tests to test features behind feature flags using LaunchDarkly."
+excerpt: "A complete walkthrough to define automated tests in React UI using Cypress tests to test features behind feature flags using LaunchDarkly."
 image: images/stock/0104-on-off-1200x628-branded.jpg
 url: nodejs-feature-flag-launchdarkly-react-cypress
 ---
@@ -50,7 +50,13 @@ Some of the important advantages of performing beta tests are:
 
 However, using feature flags while performing traditional automated integration testing may be difficult. We need to know the state of any feature flags and may be even need to enable or disable a feature flag for a given test.
 
-TODO: is there something more that we can add here as to why feature flags are complicated in automated UATs and how Cypress can help with that?
+Consider that a new build has been released and deployed to production environment. Now a QE tester has to test the existing old functionalities and verify if the new functionalities added over the existing ones are properly load-tested. In a conventional automated test, the new feature can be load tested directly, but there will always be a risk of failure which might need quick rollback without impacting the users who are using this app.
+
+Here feature flags play a big role. Instead of deploying the builds with all the new features in place, we can deploy those features under a flag and disable it before its completely tested. Now we might need to write automation tests that would first test the old functionality and then enable the flags to bring in the new functionalities on top of it. All of this has to be dynamic and it should be executed in the same page with some waiting period in between to observe any kind of glitch. We should also be able to take snapshots at each stage for the purpose of reporting.
+
+This is where *Cypress* could be quite useful. Cypress automation testing lets us change the code and execute the same on the fly. This would simulate the exact scenario how a user would see the changes in the application. Cypress also has an inbuilt wait for requests as a feature which prohibits the need to configure additional waits to validate the observations. This auto-wait feature also helps Cypress tests to be less flaky.
+
+Now if there are any issues observed due to those new functionalities, it can be easily rollbacked by simply disabling the feature flag. This helps us in quick turn-around.
 
 ## Brief Introduction to LaunchDarkly and its Features
 
@@ -390,6 +396,8 @@ after(() => {
 
 We are also defining a task at the end to remove any user targets being created as part of this tasks. Finally, we can see all the test output being populated in Cypress UI dashboard. We can launch the Cypress UI and click on “Run” option, where we can see all the task execution with variations being printed.
 
+If you notice, as discussed above, we are testing the feature behind a feature flag with different variations. We are updating the flag value dynamically and execute our tests on the fly. Cypress also runs this tests with some default in-built wait period. However, if we would like to add validations we can add a dynamic wait period to observe the changes in the UI.
+
 {{% image alt="Cypress Test UI variation" src="images/posts/nodejs-cypress-test-launchdarkly/Cypress_Test_Result.png" %}}
 
 #### Testing a User-targeted Feature
@@ -474,7 +482,7 @@ it('click a button', () => {
 });
 ```
 
-Finally, we can see all the test output being populated in Cypress UI dashboard. We can launch the Cypress UI and click on “Run” option, where we can see all the task execution with variations being printed.
+As discussed above, this section helps in updating the flag value and execute our tests on the fly. Finally, we can see all the test output being populated in Cypress UI dashboard. We can launch the Cypress UI and click on “Run” option, where we can see all the task execution with variations being printed.
 
 {{% image alt="Cypress Test UI variation" src="images/posts/nodejs-cypress-test-launchdarkly/Cypress_Final_Test_Result.png" %}}
 

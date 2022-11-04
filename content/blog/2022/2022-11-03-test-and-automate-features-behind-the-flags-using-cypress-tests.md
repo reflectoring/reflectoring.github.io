@@ -396,9 +396,9 @@ after(() => {
 
 We are also defining a task at the end to remove any user targets being created as part of this tasks. Finally, we can see all the test output being populated in Cypress UI dashboard. We can launch the Cypress UI and click on “Run” option, where we can see all the task execution with variations being printed.
 
-If you notice, as discussed above, we are testing the feature behind a feature flag with different variations. We are updating the flag value dynamically and execute our tests on the fly. Cypress also runs this tests with some default in-built wait period. However, if we would like to add validations we can add a dynamic wait period to observe the changes in the UI.
-
 {{% image alt="Cypress Test UI variation" src="images/posts/nodejs-cypress-test-launchdarkly/Cypress_Test_Result.png" %}}
+
+If you notice, as discussed above, we are testing the feature behind a feature flag with different variations. We are updating the flag value dynamically and execute our tests on the fly. Cypress also runs this tests with some default in-built wait period. However, if we would like to add validations we can add a dynamic wait period to observe the changes in the UI.
 
 #### Testing a User-targeted Feature
 

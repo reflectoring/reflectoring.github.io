@@ -1,5 +1,5 @@
 ---
-title: "Test and Automate Features behind Feature Flags using Cypress Tests"
+title: "Automated Tests with Feature Flags and Cypress"
 categories: ["Node"]
 date: 2022-11-03 00:00:00 +1100 
 modified: 2022-11-03 00:00:00 +1100
@@ -23,7 +23,7 @@ To help structure the discussion, we will outline five different sorts of tests 
 
 The first three test types defined above are often executed automatically when using the *Continuous Integration (CI)* technique. QA testing, which can involve both manual and automated tests, may occasionally be performed by a specialized QA team. While the first four test types help determine whether anything was built correctly, UAT helps to determine if the product is acceptable and fit for the purpose.
 
-In this article, we will try to perform a UAT directly in a production environment using some automation. One of the type of User Acceptance Testing is *Beta Testing*. According to this, tests are performed either in a beta version of a product or as a test user in the same product running in Production environment alongside any other users. This helps in minimalizing the risks of of product failures and enables customer validation.
+In this article, we will try to perform a UAT directly in a production environment using some automation. One type of User Acceptance Testing is *Beta Testing*. Beta tests are performed either in a beta version of a product or as a test user in the same product running in a production environment alongside any other users. This helps in minimalizing the risks of product failures and enables customer validation.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/react-cypress-launchdarkly-feature-flag-test" %}}
 
@@ -33,7 +33,7 @@ We discuss testing in production a lot. Testing in production does not imply rel
 
 Feature flags give developers, QA teams and UAT teams the freedom to test features in a genuine production environment before making them available to the rest of their user base. There is no impact on other users and no need to perform a complete rollback when a QA or UAT tester finds a bug.
 
-Now, since the tester is going to use the same environment along with other users, it must find a way to test the newly added features before enabling them for rest of other users. They would also need to create a separate profile and enable those features when they start the manual or automation tests.
+Now, since the tester is going to use the same environment along with other users, it must find a way to test the newly added features before enabling them for the rest of the users. They would also need to create a separate profile and enable those features when they start the manual or automation tests.
 
 That’s where the real strength of *feature flags* lies. Continuously delivering features to production without releasing them to the public gives a confidence boost to the whole development team because features can be tested in production.
 
@@ -41,26 +41,26 @@ Some of the important advantages of performing beta tests are:
 
 - Even before the product is released, it provides quick feedback on the product, which helps to raise its quality and increase consumer satisfaction.
 - The application can be tested for dependability, usability, and robustness, and testers can provide feedback and suggestions to developers to help them make improvements that will better fulfill consumer needs.
-- Based on recommendations made by the testers, who are the actual users, it assists various organizational teams in making judgments about a product that are well-informed.
+- Based on recommendations made by the testers, who are the actual users, it assists various organizational teams in making well-informed judgments about a product.
 - Since the product is tested by actual users in a production environment, it provides an accurate insight into what customers like and dislike about it.
 - It helps to address software bugs that might not have been addressed or missed during any testing cycles.
 - It reduces the probability of a product failing because it has previously been tested before going into production.
 
 ## Feature Flags in Automated User Acceptance Tests
 
-However, using feature flags while performing traditional automated integration testing may be difficult. We need to know the state of any feature flags and may be even need to enable or disable a feature flag for a given test.
+However, using feature flags while performing traditional automated integration testing may be difficult. We need to know the state of any feature flags and may even need to enable or disable a feature flag for a given test.
 
-Consider that a new build has been released and deployed to production environment. Now a QE tester has to test the existing old functionalities and verify if the new functionalities added over the existing ones are properly load-tested. In a conventional automated test, the new feature can be load tested directly, but there will always be a risk of failure which might need quick rollback without impacting the users who are using this app.
+Consider that a new build has been released and deployed to the production environment. Now a QA tester has to test the existing old functionalities and verify if the new functionalities added over the existing ones are properly load-tested. In a conventional release process, the feature can be released to production and then load-tested right after release. But what if the feature doesn't work? We have to roll quickly roll back before the users have been impacted too much.
 
-Here feature flags play a big role. Instead of deploying the builds with all the new features in place, we can deploy those features under a flag and disable it before its completely tested. Now we might need to write automation tests that would first test the old functionality and then enable the flags to bring in the new functionalities on top of it. All of this has to be dynamic and it should be executed in the same page with some waiting period in between to observe any kind of glitch. We should also be able to take snapshots at each stage for the purpose of reporting.
+Here feature flags play a big role. Instead of deploying the builds with all the new features activated, we can deploy those features under a (disabled) feature flag even before it's completely tested. Now we might need to write **automation tests that would first test the old functionality and then enable the flags to bring in the new functionalities on top of it**. All of this has to be dynamic and it should be executed on the same page with some waiting period in between to observe any kind of glitch. We should also be able to take snapshots at each stage for reporting.
 
-This is where *Cypress* could be quite useful. Cypress automation testing lets us change the code and execute the same on the fly. This would simulate the exact scenario how a user would see the changes in the application. Cypress also has an inbuilt wait for requests as a feature which prohibits the need to configure additional waits to validate the observations. This auto-wait feature also helps Cypress tests to be less flaky.
+This is where *Cypress* can be quite useful. Cypress automation testing lets us change the code and execute the same on the fly. This would simulate the exact scenario of how a user would see the changes in the application. Cypress also has a built-in wait for requests so that we don't need to configure wait times manually. This auto-wait feature also helps Cypress tests to be less flaky.
 
-Now if there are any issues observed due to those new functionalities, it can be easily rollbacked by simply disabling the feature flag. This helps us in quick turn-around.
+Now if there are any issues observed due to those new functionalities, we can easily roll back to the old version by simply disabling the feature flag. This helps us in quick turn-around. With a feature management platform like [LaunchDarkly](https://launchdarkly.com/), we can also just enable the features for a test user that we use only for the automated tests so that the real users will not be impacted at all by a potentially broken new feature.
 
 ## Brief Introduction to LaunchDarkly and its Features
 
-[LaunchDarkly](https://launchdarkly.com/) is a feature management service that takes care of all the feature flagging concepts. The name is derived from the concept of a *“dark launch”*, which deploys a feature in a deactivated state and activates it when the time is right.
+LaunchDarkly is a feature management service that takes care of all the feature flagging concepts. The name is derived from the concept of a *“dark launch”*, which deploys a feature in a deactivated state and activates it when the time is right.
 
 {{% image alt="LaunchDarkly Internal" src="images/posts/feature-flag-tools/launchdarkly.png" %}}
 
@@ -172,7 +172,7 @@ npm start
 
 A breakthrough front-end testing framework called *Cypress* makes it simple to create effective and adaptable tests for your online apps. With features like simple test configuration, practical reporting, an appealing dashboard interface, and a lot more, it makes it possible to perform advanced testing for both unit tests and integration tests.
 
-The main benefit of Cypress is that it is created in JavaScript, the most used language for front-end web development. Since it was first made available to the public for the community, it has gained a sizable following among developers and QA engineers (about 32K GitHub stars).
+The main benefit of Cypress is that it is created in JavaScript, the most-used language for front-end web development. Since it was first made available to the public, it has gained a sizable following among developers and QA engineers (about 32K GitHub stars).
 
 *Cypress* is an open-source testing framework based on JavaScript that supports web application testing. Contrary to *Selenium*, Cypress does not require driver binaries to function fully on a real browser. The shared platform between the automated code and the application code provides total control over the application being tested.
 
@@ -186,13 +186,17 @@ npm install --save-dev cypress
 
 ### Setting up the LaunchDarkly Plugin
 
-Now we would be mostly testing user-targeted features that would be behind feature flags managed by logged-in session of a user hosted in LaunchDarkly. Those flags would need to be managed using HTTP calls. Although making HTTP requests from Node and Cypress is simple, LaunchDarkly uses higher-level logic that makes changing feature flags easy for humans, but a bit harder for machines. To reduce the complexity, we can abstract all the requirements for adding individual user targets into a plugin called [cypress-ld-control](https://github.com/bahmutov/cypress-ld-control) that Cypress tests can utilize. Let's put this plugin in place and use it:
+Now we would be mostly testing user-targeted features that would be behind feature flags. We would hold the user's identity in the client session and send the user identity to the LaunchDarkly server to query for the state of a feature flag.
+
+To get the state of a feature flag, we need to make HTTP calls. Although making HTTP requests from Node and Cypress is simple, LaunchDarkly uses a higher-level logic that makes it a bit more complicated than just using a simple HTTP client. 
+
+To reduce the complexity, we can use the abstraction provided by a plugin called [cypress-ld-control](https://github.com/bahmutov/cypress-ld-control) that Cypress tests can utilize. Let's put this plugin in place and use it:
 
 ```bash
 npm install --save-dev cypress-ld-control
 ```
 
-In order to use this plugin, we need to understand some of the functions defined by their API and how we can add them as part of the cypress tasks:
+To use this plugin, we need to understand some of the functions defined by their API and how we can add them as part of the cypress tasks:
 
 * `getFeatureFlag`:
 
@@ -204,7 +208,7 @@ In order to use this plugin, we need to understand some of the functions defined
 
 * `setFeatureFlagForUser`:
 
-  This uses user-level targeting feature to set flag for a given user:
+  This uses the user-level targeting feature to set a flag for a given user:
 
   ```javascript
   cy.task('cypress-ld-control:setFeatureFlagForUser', {
@@ -226,7 +230,7 @@ As we can see that every task is prefixed with `cypress-ld-control:` string and 
 
 ### Define Cypress Tasks
 
-In order to change the values of the feature flags and individual user targets, we need to first generate an access token in LaunchDarkly UI.
+To change the values of the feature flags and individual user targets, we need to first generate an access token in LaunchDarkly UI.
 
 {{% image alt="Access Token" src="images/posts/nodejs-cypress-test-launchdarkly/Access_Token.png" %}}
 
@@ -234,7 +238,7 @@ Then we can note the Project key from the Projects page under Account Settings.
 
 {{% image alt="Project Key" src="images/posts/nodejs-cypress-test-launchdarkly/Project_Key.png" %}}
 
-Next we can load the plugin with environment variables:
+Next, we can load the plugin with environment variables:
 
 ```javascript
 const { initLaunchDarklyApiTasks } = require('cypress-ld-control');
@@ -272,7 +276,7 @@ module.exports = (on, config) => {
 
 #### Test Greetings
 
-Next we can start writing our Cypress tasks using `cy.task()` function. So consider if the test is to see a casual greeting header, we can simply write:
+Next, we can start writing our Cypress tasks using `cy.task()` function. So consider if the test is to see a casual greeting header, we can simply write:
 
 ```javascript
 before(() => {
@@ -309,7 +313,7 @@ Then we can simply execute:
 npm run test
 ```
 
-Next we can define few more variations and cover some more test cases as follows:
+Next, we can define a few more variations and cover some more test cases as follows:
 
 ```javascript
 /// <reference types="cypress" />
@@ -394,15 +398,15 @@ after(() => {
 });
 ```
 
-We are also defining a task at the end to remove any user targets being created as part of this tasks. Finally, we can see all the test output being populated in Cypress UI dashboard. We can launch the Cypress UI and click on “Run” option, where we can see all the task execution with variations being printed.
+We are also defining a task at the end to remove any user targets being created as part of this task. Finally, we can see all the test output being populated in the Cypress dashboard UI. We can launch the Cypress UI and click on the “Run” option, where we can see all the task execution with variations being printed.
 
 {{% image alt="Cypress Test UI variation" src="images/posts/nodejs-cypress-test-launchdarkly/Cypress_Test_Result.png" %}}
 
-If you notice, as discussed above, we are testing the feature behind a feature flag with different variations. We are updating the flag value dynamically and execute our tests on the fly. Cypress also runs this tests with some default in-built wait period. However, if we would like to add validations we can add a dynamic wait period to observe the changes in the UI.
+If you notice, as discussed above, we are testing the feature behind a feature flag with different variations. We are updating the flag value dynamically and then execute our tests on the fly. Cypress also runs these tests with a default built-in wait period. However, if we would like to add validations we can add a dynamic wait period to observe the changes in the UI.
 
 #### Testing a User-targeted Feature
 
-In our previous [article](/nodejs-feature-flag-launchdarkly-react/), we had represented a button in UI which would be populated based upon the logged-in user. We can add the same button here and add test-cases using Cypress to cover the functionality of clicking the button and validating the popup alert.
+In our previous [article](/nodejs-feature-flag-launchdarkly-react/), we had represented a button in UI which would be populated based on the logged-in user. We can add the same button here and add test cases using Cypress to cover the functionality of clicking the button and validating the popup alert.
 
 For this, we will update our home page logic:
 
@@ -464,7 +468,7 @@ const user = {
 };
 ```
 
-Similarly, we will add a task in existing cypress test spec to validate the click event of a button and its outcome alert of the popup:
+Similarly, we will add a task in the existing cypress test spec to validate the click event of a button and its outcome alert of the popup:
 
 ```javascript
 it('click a button', () => {
@@ -482,7 +486,7 @@ it('click a button', () => {
 });
 ```
 
-As discussed above, this section helps in updating the flag value and execute our tests on the fly. Finally, we can see all the test output being populated in Cypress UI dashboard. We can launch the Cypress UI and click on “Run” option, where we can see all the task execution with variations being printed.
+As discussed above, this section helps in updating the flag value and executing our tests on the fly. Finally, we can see all the test output being populated in Cypress UI dashboard. We can launch the Cypress UI and click on “Run” option, where we can see all the task execution with variations being printed.
 
 {{% image alt="Cypress Test UI variation" src="images/posts/nodejs-cypress-test-launchdarkly/Cypress_Final_Test_Result.png" %}}
 

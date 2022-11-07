@@ -7,6 +7,7 @@ modified: 2022-11-07 00:00:00 +1100
 excerpt: "Take control of your cloud costs with these practices."
 image: /images/stock/0128-coins-1200x628-branded.jpg
 authors: ["laurent"]
+popup: false
 ---
 
 Teams looking to control and reduce their cloud costs can choose from multiple cloud cost management approaches. All of them require at least a basic understanding of what's going on in your cloud infrastructure - this part relies on monitoring and reporting.

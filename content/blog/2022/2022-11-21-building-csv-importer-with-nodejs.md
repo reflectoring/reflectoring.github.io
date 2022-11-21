@@ -5,45 +5,43 @@ date: 2022-11-21 00:00:00 +1100
 modified: 2022-11-21 00:00:00 +1100
 authors: [arpendu]
 excerpt: "This article shows how we can build a CSV importer with frameworks and libraries common in the Node.js tech stack."
-image: images/stock/0126-csv-import-1200x628.jpg
-url: nodejs-csv-importer
+image: images/stock/0128-csv-import-1200x628.jpg
+url: Node.js-csv-importer
 ---
 
-Spreadsheets frequently use the *CSV file* extension for their file types. As an output format for downloading data collection, such as a report of results, activities, or even software products that don't appear and feel like a spreadsheet application typically provides a CSV. The primary reason for this is that it’s pretty easy to edit and share.
+The CSV file format is a popular output format for downloading data collection, such as a report of results or a log of activities. The primary reason for this popularity is that CSV files are easy to edit and share. All common spreadsheet products support CSV, which means that files can be exported from an application and imported into a spreadsheet programm for further analysis.
 
-Any file with the "*.csv*" suffix is referred to as a "*CSV file*". One of the most popular outputs from any spreadsheet program is a "*comma-separated value file*", which is what this file extension stands for.
+Any file with the "*.csv*" suffix is referred to as a "*CSV file*" where CSV stands for "character-separated values". This term refers to the format in which each line in a file represents a data record and each line is separated into multiple columns by a pre-defined character. Often, a comma is used as the separator between columns, which explains why CSV is often also called "comma-separated values". 
 
-The term "*comma-separated value*" file refers to the entry of data that is divided into individual columns by commas. To make the data easier to read and change, the spreadsheet program transforms those comma-separated chunks of information into cells in tables and columns.
-
-{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/node-csv-importer" %}}
+{{% github "https://github.com/thombergs/code-examples/tree/master/Node.js/node-csv-importer" %}}
 
 ## Why Do We Need a CSV Importer?
 
-Before we talk about the various use cases of CSV, we need to understand why we use CSV files. Here are some of the most important benefits:
+Before we start building a CSV importer, we need to understand why we use CSV files. Here are some of the most important benefits:
 
 * **Easy to read:** CSV files contain data in plain text, which makes them human-readable, unlike some alternative data storage formats.
-* **Lightweight:** These files take up little space. The header row and the commas in between each data field are the only extra spaces they require.
-* **Portable and flexible:** It's always pretty easy to import CSV files into many other software applications.
+* **Lightweight:** These files take up little space. The header row and the commas in between each data field are the only extra space they require aside from the actual data.
+* **Portable and flexible:** The CSV format is a widely used standard format which means that it's easy to import and export CSV files into / out of many different software applications.
 
-Well, the  *W3C* Working Group has well articulated the various [use-cases](https://www.w3.org/TR/csvw-ucr/) of CSV. But some of the common use cases of CSV files are:
+The ease of use and popularity of the CSV format makes it suitable for many different use cases. For a more detailed list, refer to the [list of CSV use cases](https://www.w3.org/TR/csvw-ucr/) published by the W3C.
 
 * **Relational Data and Row-Formats** - Usually, when data is retrieved from a table, the data can be complete or half-filled. But CSV helps to categorically observe the empty or missed values in the form of comma-separated data.
 * **Publication of Statistics** - Often the data extracted for statistics need to be re-used for multiple purposes. But extracting data from spreadsheets can be pretty hard as they might not be in a proper format. Here CSV eases the re-usability of the data.
-* **Time-series data** - Often time-series data is required to understand weather forecasts over some time. This kind of data tends to drive a column- or array-oriented approach. Thus, this needs to be published in a tabular form, such as CSV, for easy consumption within a commonly available toolset.
+* **Time-series data** - Time-related data like weather data is very well suited for a column-based file format. Thus, this needs to be published in a tabular form, such as CSV, for easy consumption within a commonly available toolset.
 * **Hierarchical data** - Usually various applications tend to share their data across various tools. Sometimes this is annotated as tree data. Thus CSV helps in defining an array-oriented approach and sharing across multiple tools. For example, one can download data from one Employee Resource Planning(ERP) tool like Workday and import it to another ERP tool like SelectHub or Oracle Netsuite.
 * **Large datasets** - Often analytical applications need huge datasets to define behavior or an anomaly. CSV files help in reading those unstructured huge datasets and carving meaningful information out of them.
 
-In this article, we are going to explain the use-case of exporting and importing hierarchical data within different applications. Consider if someone provides a CSV file containing employee details. It may also have data to map the employee-manager relationship within the organization to form a tree chart. Then we can import that data into a table and define joins to fetch the final data in tabular format and show it in the UI.
+In this article, we are going to explain the use-case of exporting and importing hierarchical data between different applications. Consider the case where someone provides us with a CSV file containing employee details that has been exported from some employee management application. It may also have data to map the employee-manager relationship within the organization to form a tree chart. Our task is to load that data into another application. 
 
-To accomplish this, we need to build a simple UI and a backend that will import CSV files and store the data in a database. Then, we will also need to fetch the same data in parent-child format to show the imported data in a tabular format in the same UI.
+But that application doesn't have a CSV import feature, so we're going to build it. We're going to build a simple UI and a backend that will import CSV files and store the data in a database:
 
-{{% image alt="CSV Importer Architecture" src="images/posts/nodejs-csv-importer/csv_importer_architecture.png" %}}
+{{% image alt="CSV Importer Architecture" src="images/posts/Nodejs-csv-importer/csv_importer_architecture.png" %}}
 
 ## Setting Up the Node.js project
 
-Let’s quickly start with our implementation. As shown in the above diagram, we need to create two components: one for the Express backend and the other for the React UI client.
+Let’s start with our implementation. As shown in the above diagram, we need to create two components: one for the Express backend and the other for the React UI client.
 
-Let’s create a folder and start with the initialization of NodeJs:
+Let’s create a folder and start with the initialization of Node.js:node 
 
 ```bash
 npm init
@@ -55,14 +53,14 @@ Next, we need to install a few libraries as dependencies:
 npm install express cors multer pg sequelize fast-csv json2csv
 ```
 
-Now, let’s understand the various uses of the installed dependencies:
+Let’s understand how we're using each of the installed dependencies:
 
 * **Express** - This will be used to configure the Express server for REST API.
-* **Cors** - This is used for CORS(Cross-Origin Resource Sharing) configuration between the backend and the frontend server.
-* **Multer** - It is a NodeJs middleware used for handling `multipart/form-data`, which is primarily used for uploading files.
-* **Pg** - It is a non-blocking PostgreSQL client for NodeJs.
+* **Cors** - This is used for CORS (Cross-Origin Resource Sharing) configuration between the backend and the frontend server.
+* **Multer** - It is a Node.js middleware used for handling `multipart/form-data`, which is primarily used for uploading files.
+* **Pg** - It is a non-blocking PostgreSQL client for Node.js.
 * **Sequelize** - This is a modern TypeScript and Node.js ORM for various databases like Oracle, Postgres, MySQL, MariaDB, SQLite and SQL Server.
-* **Fast-csv** - This library is used for parsing and formatting CSVs or any other delimited value file in NodeJs.
+* **Fast-csv** - This library is used for parsing and formatting CSVs or any other delimited value file in Node.js.
 * **Json2csv** - This library is used to convert JSON into CSV with column titles and proper line endings.
 
 Now, we will create a server folder and add all our code within that directory.
@@ -77,7 +75,7 @@ This will bootstrap the React code under the client folder. We will first implem
 
 ## Configure a PostgreSQL Database
 
-We have the base setup for our implementation ready. So, let’s host an instance of PostgreSQL and configure our backend server to connect with that DB. We can quickly spin a PostgreSQL instance by creating a docker-compose file:
+We have the base setup for our implementation ready. So, let’s host an instance of PostgreSQL and configure our backend server to connect with that DB. We can quickly spin a PostgreSQL instance by creating a `docker-compose.yml` file:
 
 ```yaml
 version: '3.1'
@@ -92,7 +90,7 @@ services:
       POSTGRES_DB: csvdb
 ```
 
-We can run this by executing the following command:
+We can run this by executing the following command (assuming you have `docker-compose` installed):
 
 ```bash
 docker-compose up
@@ -127,7 +125,7 @@ The first five details are specific to the PostgreSQL driver. We have also defin
 
 ## Defining the Data Model
 
-Next, we can initialize a data model for Sequelize. Sequelize is an ORM, so we need to define a model for the `Employee` data that we want to store in our database. We can create a `models` folder and define a model:
+Next, we can initialize a data model for Sequelize. Sequelize is an Object-relational mapper (ORM) that maps between a data model in code and the database tables. First, we need to define a model for the `Employee` data that we want to store in our database. We can create a `models` folder and define a model:
 
 ```javascript
 import Sequelize from 'sequelize';
@@ -189,16 +187,16 @@ const Employee = sequelize.define("employee", {
 export default Employee;
 ```
 
-As we can see, we have an attribute as `id` which will be the foreign key for the table. We also have an attribute as `managedBy` which denotes the id of the manager who is managing this employee. We need to mark this attribute as a foreign key. In Sequelize, we can define  `references` and map the reference to the other model and key for foreign key definition.
+As we can see, we have an attribute as `id` which will contain the primary key for each employee. We also have an attribute as `managedBy` which denotes the id of the manager who is managing this employee. We need to mark this attribute as a foreign key. In Sequelize, we can define  `references` and map the reference to the other model and key for foreign key definition.
 
-Next, we need to define ORM mapping for the parent-child relationship. We will have a one-to-many relationship which means one manager can have multiple employees under that person. Sequelize provides 4 types of associations that should be combined to create ORM mappings for *One-To-One*, *One-To-Many* and *Many-To-Many*:
+Next, we need to define ORM mapping for the parent-child relationship. We will have a one-to-many relationship which means one manager can have multiple employees reporting to them. Sequelize provides 4 types of associations that should be combined to create ORM mappings for *One-To-One*, *One-To-Many* and *Many-To-Many*:
 
 * `hasOne`
 * `belongsTo`
 * `hasMany`
 * `belongsToMany`
 
-In our data model, we have to use the combination of `hasMany` and `belongsTo`:
+In our data model, we use the combination of `hasMany` and `belongsTo`:
 
 ```javascript
 Employee.hasMany(Employee, {
@@ -247,7 +245,7 @@ This will connect to PostgreSQL and `sync` all the tables as per the models defi
 
 ## Building a Middleware to Temporarily Store a CSV File Before Uploading
 
-As mentioned earlier, we are using *multer* as a *body parsing middleware* that handles content type `multipart/form-data` which is primarily used for uploading files. That means it parses the raw HTTP request data which are primarily used for file upload and makes it more accessible by storing it somewhere for further processing. Without multer, we would have to parse the raw data ourselves to access the file.
+As mentioned earlier, we are using *multer* as a *body parsing middleware* that handles content type `multipart/form-data` which is primarily used for uploading files. That means it parses the raw HTTP request data and makes it more accessible by storing it somewhere for further processing. Without multer, we would have to parse the raw data ourselves to access the file.
 
 So let’s define middleware by creating a `middleware` folder and adding our logic inside:
 
@@ -291,7 +289,7 @@ We have primarily defined a storage mechanism and a filter to verify the `mimety
 
 ## Defining the REST APIs
 
-Now, once we have our data model and the required middleware defined, we can move on to write our core implementation for the Rest APIs. As part of this article, we will need an API to upload a CSV file and store the content in the PostgreSQL database. We would also need an API to fetch all the employees and their direct children to denote the employees managed by each one of them. Additionally, we will also define an API to download a CSV file to export the data.
+Now, once we have our data model and the required middleware defined, we can move on to write our core implementation for the REST APIs. As part of this article, we will need an API to upload a CSV file and store the content in the PostgreSQL database. We would also need an API to fetch all the employees and their direct children to denote the employees managed by each one of them. Additionally, we will also define an API to download a CSV file to export the data.
 
 So let’s start with the APIs related to CSV import/export as part of our controller directory. First, we will define the upload logic to pull the file from the location that it was uploaded as part of the middleware, then upload the bulk content to the database:
 
@@ -414,13 +412,13 @@ const getEmployees = (_req, res) => {
 export default getEmployees;
 ```
 
-As we can notice, while defining the data model we had a field named `managedBy` which co-relates the Employee with its manager in the same table. Till now, we have defined associations for the One-To-Many relationship, but now to fetch the data we need to opt for either *lazy loading* or *eager loading* concept.
+As we can notice, while defining the data model we had a field named `managedBy` which relates the Employee with its manager in the same table. Until now, we have defined associations for the One-To-Many relationship, but now to fetch the data we need to opt for either *lazy loading* or *eager loading* concept.
 
-Lazy loading refers to the technique of fetching the related data only when you truly want it. Eager loading, on the other hand, refers to the approach of requesting everything at once, starting from the beginning, with a bigger query. It is a process of simultaneously requesting data from one primary model and one or more associated models. This is a query involving one or more joins at the SQL level. For our use case, we need to opt for the eager-loading concept to map the same model to retrieve child values.
+Lazy loading refers to the technique of fetching the related data only when we truly want it. Eager loading, on the other hand, refers to the approach of requesting everything at once, starting from the beginning, with a bigger query. It is a process of simultaneously requesting data from one primary model and one or more associated models. This is a query involving one or more joins at the SQL level. For our use case, we need to opt for the eager-loading concept to map the same model to retrieve child values.
 
 In Sequelize, eager loading is mainly done by using the `include` option on a model finder query (such as `findOne`, `findAll`, etc). Thus, we have defined the following option for our `include`:
 
-```javasc
+```javascript
 include: [{
     model: Employee,
     as: 'children',
@@ -472,9 +470,9 @@ We have defined three endpoints:
 * `/api/csv/download`: This will be a simple GET call to return raw CSV data as response.
 * `/api/employees`: This will be a GET call to return all the employees and their associations.
 
-## Setting Up the Express server
+## Setting Up the Express Server
 
-Since, we have defined all the building blocks for the APIs, next we need to set up the Express server and host the APIs. We would also need to define CORS to allow frontend to hit the backend APIs:
+Since we have defined all the building blocks for the APIs, next we need to set up the Express server and host the APIs. We would also need to define CORS to allow frontend to hit the backend APIs:
 
 ```javascript
 import express from 'express';
@@ -948,6 +946,6 @@ cd client/ && npm run start
 
 This will load the UI and we can upload the CSV file and display our employees in the table:
 
-{{% image alt="Final UI" src="images/posts/nodejs-csv-importer/final_ui.png" %}}
+{{% image alt="Final UI" src="images/posts/Nodejs-csv-importer/final_ui.png" %}}
 
-You can find the complete code as part of [GitHub](https://github.com/thombergs/code-examples/tree/master/nodejs/node-csv-importer).
+You can find the complete code as part of [GitHub](https://github.com/thombergs/code-examples/tree/master/Node.js/node-csv-importer).

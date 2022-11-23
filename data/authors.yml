@@ -240,7 +240,7 @@ naveen:
   avatar: "/images/authors/naveen.jpeg"
   github: "https://github.com/cbenaveen"
   twitter: "CbenaveenK"
-  linkedin: "https://www.linkedin.com/in/cbenaveen/"
+  linkedin: "cbenaveen"
   bio: "A Cloud Architect, passionate about building large-scale, resilient, and highly available systems using microservice architecture. I enjoy developing microservices using Java and Spring ecosystem and various author technologies."
 
 jcregg:
@@ -258,7 +258,7 @@ syedaf:
   email: "syedaf786@gmail.com"
   avatar: "/images/authors/syedaf.png"
   github: "syedaf"
-  linkedin: "https://www.linkedin.com/in/arshad-syed-798623184/"
+  linkedin: "arshad-syed-798623184"
   bio: "As a software developer I am always interested in learning new technologies. I am currently working on improving my full stack skills, and also on teaching technology."
 
 saikat:
@@ -285,7 +285,7 @@ nukajbl:
   github: "bledi1985"
   bio: "Bledi is a senior software Engineer and Architect, specialized in Java and Spring to deliver high-quality Enterprise applications, on-premise or cloud.
    Experienced and keenly interested in the field of Cloud Architecture."
-  linkedin: "https://www.linkedin.com/in/bledinukaj/"
+  linkedin: "bledinukaj"
 
 robert:
   name: "Robert Dey"
@@ -308,7 +308,7 @@ ranjani:
   email: "ranjani.harish12@gmail.com"
   avatar: "/images/authors/ranjani.jpg"
   github: "ranjanih"
-  linkedin: "https://www.linkedin.com/in/ranjaniharish/"
+  linkedin: "ranjaniharish"
   bio: "Fun-loving, curious and enthusiastic IT developer who believes in constant learning."
 
 ajibade:
@@ -319,3 +319,8 @@ ajibade:
   linkedin: "https://www.linkedin.com/in/olaoluwa-ajibade/"
   bio: "Backend developer who loves to create incredible apps."
 
+laurent:
+  name: "Laurent Gil"
+  avatar: "/images/authors/laurent.png"
+  linkedin: "laurentgil"
+  bio: "Co-founder and CPO at <a href=\"https://cast.ai\">CAST AI</a>, Laurent is responsible for product and business development. He was co-founder and Chief Product and Business Officer at Zenedge, acquired by Oracle in 2018. Laurent was also CEO and co-founder of Viewdle, acquired by Google in 2012. "

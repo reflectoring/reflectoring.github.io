@@ -6,7 +6,7 @@ modified: 2022-11-21 00:00:00 +1100
 authors: [arpendu]
 excerpt: "This article shows how we can build a CSV importer with frameworks and libraries common in the Node.js tech stack."
 image: images/stock/0128-csv-import-1200x628.jpg
-url: Node.js-csv-importer
+url: node-csv-importer
 ---
 
 The CSV file format is a popular output format for downloading data collection, such as a report of results or a log of activities. The primary reason for this popularity is that CSV files are easy to edit and share. All common spreadsheet products support CSV, which means that files can be exported from an application and imported into a spreadsheet programm for further analysis.

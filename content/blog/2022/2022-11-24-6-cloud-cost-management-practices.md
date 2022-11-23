@@ -1,9 +1,8 @@
 ---
-authors: [tom]
 title: "6 Proven Cloud Cost Management Practices for Kubernetes"
 categories: ["Software Craft"]
-date: 2022-11-07 00:00:00 +1100
-modified: 2022-11-07 00:00:00 +1100
+date: 2022-11-24 00:00:00 +1100
+modified: 2022-11-24 00:00:00 +1100
 excerpt: "Take control of your cloud costs with these practices."
 image: /images/stock/0128-coins-1200x628-branded.jpg
 authors: ["laurent"]
@@ -16,7 +15,7 @@ Once you gain visibility of the cost, you're ready to optimize. Traditionally, m
 
 Here are six battle-tested practices to help you manage and optimize Kubernetes costs.
 
-## Track the right cost metrics in the right place
+## 1. Track the right cost metrics in the right place
 
 Understanding the cloud bill is hard, so it pays to invest in a cost monitoring tool. Ideally, it should show you cost metrics in real time since containerized applications scale dynamically - and so do their resource demands.
 
@@ -42,7 +41,7 @@ When finance approaches you to explain why your cloud bill is so high again, you
 
 Cloud cost reporting is a challenge since major cloud providers don't provide access to data in real time. Third-party solutions that increase cost visibility can fill this gap and allow engineering teams to instantly identify cost spikes and keep their cloud expenses in check. They also include automatic alerting features that help to take action immediately. This works really well if you serve cost data in a tool engineers use anyway - for example, [the industry-standard observability tool Grafana](https://cast.ai/blog/control-cloud-costs-and-build-a-finops-culture-with-grafana/).
 
-## Ask the right questions to accelerate cloud cost anomaly detection
+## 2. Ask the right questions to accelerate cloud cost anomaly detection
 
 So, you've got your cost monitoring tool in place, and it’s generating heaps of data. And then you experience a cost spike, so it's time to investigate the cause.
 
@@ -57,7 +56,7 @@ The first step is taking a look at the historical cost allocation report that we
 
 Answering these questions with the support of a historical cost report will speed up the investigation process and prevent such cost anomalies from happening in the future.
 
-## Choose the right type and size of your virtual machines
+## 3. Choose the right type and size of your virtual machines
 
 ### Define your requirements
 
@@ -86,7 +85,7 @@ Data storage is another key cost optimization area. An application has unique st
 
 Steer clear of expensive drive options like premium SSD unless you're going to maximize your use and take full advantage of them.
 
-## Optimize Kubernetes autoscaling
+## 4. Optimize Kubernetes autoscaling
 
 ### Ensure that your autoscaling policies don't clash
 
@@ -121,7 +120,7 @@ Were these resources really needed? Or did the workload consume them because the
 
 You can eliminate this by using instance weighted scores when choosing machine sizes and types that are a good match for autoscaling. Instance weights define the capacity units that each of the instance types contributes to your application's performance. Instance weighting comes in handy, especially if you adopt a diversified allocation strategy and use spot instances.
 
-## Use spot instances
+## 5. Use spot instances
 
 Spot instances are a great way to cut your Kubernetes bill as they offer discounts reaching even 90% off the on-demand pricing. A spot instance uses spare EC2 capacity available for less than the On-Demand price. However, this also means that the provider may reclaim the capacity any time, with a notice period lasting from 30 seconds (Google Cloud) to 2 minutes (AWS and Azure).
 
@@ -160,7 +159,7 @@ To increase your chances of snatching spot instances, set up spot instance group
 
 You can probably tell that making it work means a massive number of configuration, setup, and maintenance tasks.
 
-## Use an automation tool that does cloud optimization for you
+## 6. Use an automation tool that does cloud optimization for you
 
 AWS alone has some 400+ virtual machines on offer. What if your teams use different cloud providers? The manual effort of configuring resources, picking virtual machines, and setting autoscaling policies is going to cost you more than its optimization impact.
 

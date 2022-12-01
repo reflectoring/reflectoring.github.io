@@ -35,7 +35,7 @@ In this article, we are going to explain the use-case of exporting and importing
 
 But that application doesn't have a CSV import feature, so we're going to build it. We're going to build a simple UI and a backend that will import CSV files and store the data in a database:
 
-{{% image alt="CSV Importer Architecture" src="images/posts/Nodejs-csv-importer/csv_importer_architecture.png" %}}
+{{% image alt="CSV Importer Architecture" src="images/posts/nodejs-csv-importer/csv_importer_architecture.png" %}}
 
 ## Setting Up the Node.js project
 
@@ -557,7 +557,7 @@ With this we have completed the backend implementation. Now we will build the Re
 
 Let’s move on to the frontend part. Initially as discussed, we will try to build a simplistic UI which can upload a CSV and store its data in PostgreSQL. Then we will retrieve that data from DB and display it in tabular format. Each row will have some basic information about an employee and the avatar of each employee he/she is managing. The final UI would look something like below:
 
-{{% image alt="Final UI" src="images/posts/Nodejs-csv-importer/final_ui.png" %}}
+{{% image alt="Final UI" src="images/posts/nodejs-csv-importer/final_ui.png" %}}
 
 Initially, while setting up the Node project, we initiated a client folder and created a React app using `create-react-app` script. We would additionally add `axios` to call REST APIs and `react-table` to build the table to display the imported data in tabular format:
 
@@ -950,6 +950,6 @@ cd client/ && npm run start
 
 This will load the UI and we can upload the CSV file and display our employees in the table:
 
-{{% image alt="Final UI" src="images/posts/Nodejs-csv-importer/final_ui.png" %}}
+{{% image alt="Final UI" src="images/posts/nodejs-csv-importer/final_ui.png" %}}
 
 You can find the complete code as part of [GitHub](https://github.com/thombergs/code-examples/tree/master/Node.js/node-csv-importer).

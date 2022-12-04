@@ -11,7 +11,7 @@ url: node-csv-importer
 
 The CSV file format is a popular output format for downloading a data collection, such as a report of results or a log of activities. The primary reason for this popularity is that CSV files are easy to edit and share. All common spreadsheet products support CSV, which means that files can be exported from an application and imported into a spreadsheet program for further analysis.
 
-Files with the "*.csv*" suffix are referred to as a "*CSV file*" where CSV stands for "character-separated values". This term refers to the format in which each line in a file represents a data record and each line is separated into multiple columns by a pre-defined character. A comma is a a popular choice for the separator character, which explains why CSV is often also called "comma-separated values". 
+Files with the "*.csv*" suffix are referred to as a "*CSV file*" where CSV stands for "character-separated values". This term refers to the format in which each line in a file represents a data record and each line is separated into multiple columns by a pre-defined character. A comma is a popular choice for the separator character, which explains why CSV is often also called "comma-separated values". 
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/Node.js/node-csv-importer" %}}
 
@@ -25,14 +25,14 @@ Before we start building a CSV importer, we need to understand why we use CSV fi
 
 The ease of use and popularity of the CSV format makes it suitable for many different use cases. For a more detailed list, refer to the [list of CSV use cases](https://www.w3.org/TR/csvw-ucr/) published by the W3C.
 
-* **Relational Data and Row-Formats** - Usually, when data is retrieved from a table, the data can be complete or half-filled which means there could be null or empty values for few of the columns. But CSV helps to categorically observe the empty or missed values in the form of comma-separated data which makes it easy to point out missing content in the pool of data.
+* **Relational Data and Row-Formats** - Usually, when data is retrieved from a table, the data can be complete or half-filled which means there could be null or empty values for a few of the columns. But CSV helps to categorically observe the empty or missed values in the form of comma-separated data which makes it easy to point out missing content in the pool of data.
 * **Publication of Statistics** - Often the data extracted for statistics need to be re-used for multiple purposes. The common support of CSV files in different tools increases the reusability of the data.
 * **Time-series data** - Time-related data like weather data is very well suited for a column-based file format. Again, in CSV format this data is easily consumable with a commonly available toolset.
 * **Importing and exporting data** - During mergers or acquisitions, companies often need to export and import data across systems. Given the ubiquitousness of CSV, it's a common choice to represent this data.
 
 In this article, we are going to explain the use case of exporting and importing hierarchical data between different applications. **Hierarchical data is data that contains a hierarchy, like an employee/manager relationship**. 
 
-Consider the case where someone provides us with a CSV file containing employee details that has been exported from an employee management application. It may also have data to map the employee/manager relationship within the organization to form a tree chart. Our task is to load that data into another application. But that application doesn't have a CSV import feature, so we're going to build it. We're going to build a simple UI and a backend that will import CSV files and store the data in a database:
+Consider the case where someone provides us with a CSV file containing employee details that have been exported from an employee management application. It may also have data to map the employee/manager relationship within the organization to form a tree chart. Our task is to load that data into another application. But that application doesn't have a CSV import feature, so we're going to build it. We're going to build a simple UI and a backend that will import CSV files and store the data in a database:
 
 {{% image alt="CSV Importer Architecture" src="images/posts/nodejs-csv-importer/csv_importer_architecture.png" %}}
 
@@ -40,7 +40,7 @@ Consider the case where someone provides us with a CSV file containing employee 
 
 Let’s start with our implementation. As shown in the above diagram, we need to create two components: one for the Express backend and the other for the React UI client.
 
-Let’s create a folder and start with the initialization of Node.js:node 
+Let’s create a folder and start with the initialization of a Node.js project:
 
 ```bash
 npm init
@@ -58,13 +58,13 @@ Let’s understand how we're using each of the installed dependencies:
 * **Cors** - We will use this library for CORS (Cross-Origin Resource Sharing) configuration between the backend and the frontend server.
 * **Multer** - It is a Node.js middleware used for handling `multipart/form-data`, which is primarily used for uploading files.
 * **Pg** - It is a non-blocking PostgreSQL client for Node.js.
-* **Sequelize** - This is a modern TypeScript and Node.js ORM for various databases like Oracle, Postgres, MySQL, MariaDB, SQLite and SQL Server.
+* **Sequelize** - This is a modern TypeScript and Node.js ORM for various databases like Oracle, Postgres, MySQL, MariaDB, SQLite, and SQL Server.
 * **Fast-csv** - We will use this library for parsing and formatting CSVs or any other delimited value file in Node.js.
 * **Json2csv** - We will use this library to convert JSON into CSV with column titles and proper line endings.
 
 Now, we will create a server folder and add all our code within that directory.
 
-Next, we need to define the frontend React client. So we will create another directory to host our frontend.
+Next, we need to define the frontend React client. So we will create another directory to host our frontend:
 
 ```bash
 npx create-react-app client
@@ -95,7 +95,7 @@ We can run this by executing the following command (assuming you have `docker-co
 docker-compose up
 ```
 
-This will host a Postgres instance locally. Now we can switch to our code and create `db.config.js` under `config` directory within `server` directory. Then we need to define the database connection details:
+This will host a Postgres instance locally. Now we can switch to our code and create the file `config/db.config.js` within our `server` directory with these connection details:
 
 ```javascript
 const HOST = "localhost";
@@ -190,7 +190,7 @@ export default Employee;
 
 As we can see, we have an attribute as `id` which will contain the primary key for each employee. We also have an attribute as `managedBy` which denotes the id of the manager who is managing this employee. We need to mark this attribute as a foreign key. In Sequelize, we can define  `references` and map the reference to the other model and key for foreign key definition.
 
-Next, we need to define ORM mapping for the parent-child relationship. We will have a one-to-many relationship which means one manager can have multiple employees reporting to them. Sequelize provides 4 types of associations that should be combined to create ORM mappings for *One-To-One*, *One-To-Many* and *Many-To-Many*:
+Next, we need to define ORM mapping for the parent-child relationship. We will have a one-to-many relationship which means one manager can have multiple employees reporting to them. Sequelize provides 4 types of associations that should be combined to create ORM mappings for *One-To-One*, *One-To-Many*, and *Many-To-Many*:
 
 * `hasOne()`
 * `belongsTo()`
@@ -212,7 +212,7 @@ Employee.belongsTo(Employee, {
   });
 ```
 
-How do we make sure that our data model is synchronous to the database schema? Luckily, Sequelize does that for us. For this, we create another file `index.js` in the `database` folder and call `sequalize.sync()` to tell Sequelize to create or update the database table so that it matches our data model:
+How do we make sure that our data model is in sync with the database schema? Luckily, Sequelize does that for us. For this, we create another file `database/index.js` and call `sequelize.sync()` to tell Sequelize to create or update the database table so that it matches our data model:
 
 ```javascript
 import Sequelize from 'sequelize';
@@ -242,7 +242,7 @@ sequelize.authenticate()
 });
 ```
 
-This will connect to PostgreSQL and `sync` all the tables as per the models defined. This Sequelize will be initiated by each of the model defined above.
+This will connect to PostgreSQL and update all the tables as per the models defined.
 
 ## Caching the Uploaded File
 
@@ -295,7 +295,7 @@ Now, once we have our data model and the required middleware defined, we can mov
 These are the API endpoints we want to define:
 
 * `/api/csv/upload`: will accept a `multipart/form-data` content as POST call to import the CSV file.
-* `/api/csv/download`: will be a simple GET call to return raw CSV data as response.
+* `/api/csv/download`: will be a simple GET call to return raw CSV data as a response.
 * `/api/employees`: will be a GET call to return all the employees and their associations in JSON format.
 
 ### Import CSV File
@@ -419,7 +419,7 @@ const getEmployees = (_req, res) => {
         res.status(500).send({
           message:
             err.message
-             || "There might be some error occurred while retrieving employees from database.",
+             || "Error while retrieving employees from the database.",
         });
       });
   };
@@ -427,11 +427,11 @@ const getEmployees = (_req, res) => {
 export default getEmployees;
 ```
 
-While defining the data model we had a field named `managedBy` which relates the Employee with its manager in the same table. When loading the data from the table, we have to choose between eager loading and lazy loading.
+While defining the data model we had a field named `managedBy` which relates the Employee to their manager in the same table. When loading the data from the table, we have to choose between eager loading and lazy loading.
 
 Lazy loading refers to the technique of fetching the related data only when we truly want it. Eager loading, on the other hand, refers to the approach of requesting everything at once, starting from the beginning, with a bigger query. It is a process of simultaneously requesting data from one primary model and one or more associated models. This is a query involving one or more joins at the SQL level. For our use case, we need to opt for the eager-loading concept to map the same model to retrieve child values.
 
-In Sequelize, eager loading is mainly done by using the `include` option on a model finder query (such as `findOne`, `findAll`, etc). Thus, we have defined the following option for our `include` in the same `employee.controller.js`:
+In Sequelize, eager loading is mainly done by using the `include` option on a model finder query (such as `findOne()`, `findAll()`, etc). Thus, we have defined the following option for our `include`:
 
 ```javascript
 include: [{
@@ -564,11 +564,11 @@ curl -i -X GET \
  'http://localhost:8080/api/employees'
 ```
 
-With this we have completed the backend implementation. Now we will build the React UI to upload the CSV file and display the data as tabular content.
+With this, we have completed the backend implementation. Now we will build the React UI to upload the CSV file and display the data as tabular content.
 
 ## Building a CSV Importer UI
 
-Let’s move on to the frontend part. As initially discussed, we will try to build a simplistic UI which can upload a CSV and store its data in our PostgreSQL database. Then we will retrieve that data from the DB using our `/employees` endpoint and display it in tabular format. Each row will have some basic information about an employee and the avatar of each employee he/she is managing. The final UI would look something like below:
+Let’s move on to the frontend part. As initially discussed, we will try to build a simplistic UI that can upload a CSV and store its data in our PostgreSQL database. Then we will retrieve that data from the DB using our `/employees` endpoint and display it in tabular format. Each row will have some basic information about an employee and the avatar of each employee he/she is managing. The final UI would look something like below:
 
 {{% image alt="Final UI" src="images/posts/nodejs-csv-importer/final_ui.png" %}}
 
@@ -578,7 +578,7 @@ Initially, while setting up the Node project, we initiated a client folder and c
 npm install axios react-table
 ```
 
-Now, first we will edit the `App.js` to add the component to upload the CSV file:
+Now, we will edit the `App.js` to add the component to upload the CSV file:
 
 ```javascript
 import React, { useMemo, useState, useEffect } from "react";
@@ -680,7 +680,7 @@ function App() {
 export default App;
 ```
 
-We have defined `uploadToServer` method to upload the CSV file. Then we defined React hooks to set the values for various actions. Finally, we have defined the UI component to  display upload, submit button and progress bar to display the actions related to upload. In the end, once, the file is uploaded successfully, it will display a success or error message.
+We have defined the `uploadToServer()` method to upload the CSV file. Then we defined React hooks to set the values for various actions. Finally, we have defined the UI component to  display upload, submit button, and progress bar to display the actions related to the upload feature. In the end, once the file is uploaded successfully, it will display a success or error message.
 
 Next, we need to define a component to display the retrieved employee data as a table. So, first, we will define a table component:
 
@@ -762,7 +762,7 @@ export default function Table({ columns, data }) {
 }
 ```
 
-This has the base logic to render the cells, rows and columns from the API values. Next, we need to import this in `App.js` and pass the data to this `Table` component:
+This has the base logic to render the cells, rows, and columns from the API values. Next, we need to import this in `App.js` and pass the data to this `Table` component:
 
 ```javascript
 import React, { useMemo, useState, useEffect } from "react";

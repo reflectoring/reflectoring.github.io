@@ -11,6 +11,9 @@ url: dependency-injection-and-inversion-of-control
 Inversion of control (IoC) is simply providing a callback (reaction) to an event that might happen in a system. In other words, instead of executing some logic directly, we invert the control to that callback whenever a specific event occurs.
 This pattern allows us to separate *what* we want to do from *when* we want to do it with each part knowing as little as possible about the other, thus simplifying our design.
 
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/ioc-and-di" %}}
+
+
 ## Use Cases for Inversion of Control
 IoC offers us the ability to separate the concern of writing the code to take action from the concern of declaring when to take that action. This comes in handy when we are developing a complex system and we want to keep it clean and maintainable.
 Let's take a look at some concrete usages.

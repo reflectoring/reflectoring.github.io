@@ -1,0 +1,235 @@
+---
+title: "Getting started with Spring Security"
+categories: ["Spring"]
+date: 2022-10-27 00:00:00 +1100
+modified: 2022-10-27 00:00:00 +1100
+authors: ["ranjani"]
+description: "Getting started with Spring Security"
+image: images/stock/0101-keylock-1200x628-branded.jpg
+url: spring-security
+---
+
+**[Spring Security](https://docs.spring.io/spring-security/reference/index.html)** is a framework that helps secure enterprise applications.
+By integrating with Spring MVC, Spring Webflux or Spring Boot, we can create a powerful and highly customizable authentication and access-control framework. 
+In this article, we will deep-dive into the core concepts and take a closer look at
+the defaults that Spring Security provides and how they work. We will further try to customise them and look at its impact on the application.
+
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/csrf" %}}
+
+# Creating a sample application
+
+We will begin by building an application from scratch and look at how spring configures and provides security to it.
+Let's create an application from [spring starter](https://start.spring.io/) and add the minimum required dependencies.
+
+{{% image alt="settings" src="images/posts/getting-started-with-spring-security/initializr.JPG" %}}
+
+Let's generate the project and import it in our IDE and configure it to run on port 8083.
+````text
+mvnw clean verify spring-boot:run (for Windows)
+./mvnw clean verify spring-boot:run (for Linux)
+````
+Once the application has successfully started, we should see a login page on startup.
+
+{{% image alt="settings" src="images/posts/getting-started-with-spring-security/login.JPG" %}}
+
+The console logs print the default password that was randomly generated as a part of the default security configuration:
+{{% image alt="settings" src="images/posts/getting-started-with-spring-security/login-logs.JPG" %}}
+With the default username as `user` and the default password as printed in the logs, we should be able to login to the application.
+We can override these defaults in our `application.yml`:
+````yaml
+spring:
+  security:
+    user:
+      name: admin
+      password: passw@rd
+````
+With this configuration, we should now be able to login with user as `admin` and password as `passw@rd`.
+
+{{% info title="Starter dependency versions" %}}
+Here, we have used **Spring Boot version 2.7.5**. Based on this version, Spring Boot internally resolves **Spring Security version as 5.6.1** and **Thymeleaf version as
+5.7.4**. However, we can override these versions if required in our `pom.xml` as below:
+````xml
+<properties>
+    <spring-security.version>5.2.5.RELEASE</spring-security.version>
+</properties>
+````
+{{% /info %}}
+
+## Understanding the default security configuration
+
+To understand how the default configuration works, we first need to take a look at the following:
+- **Servlet Filters**
+- **Authentication**
+- **Authorization**
+
+### Filters
+If we take a closer look at the console logs on application startup, we can see that the `DefaultSecurityChain` triggers
+a chain of filters that are called **before the request reaches the `DispatcherServlet`.**
+````text
+o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with 
+[org.springframework.security.web.session.DisableEncodeUrlFilter@2fd954f, 
+org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5731d3a, 
+org.springframework.security.web.context.SecurityContextPersistenceFilter@5626d18c, 
+org.springframework.security.web.header.HeaderWriterFilter@52b3bf03, 
+org.springframework.security.web.csrf.CsrfFilter@30c4e352, 
+org.springframework.security.web.authentication.logout.LogoutFilter@37ad042b, 
+org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@1e60b459, 
+org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@29b40b3, 
+org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@6a0f2853, 
+org.springframework.security.web.authentication.www.BasicAuthenticationFilter@254449bb, 
+org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3dc95b8b, 
+org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2d55e826, 
+org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1eff3cfb, 
+org.springframework.security.web.session.SessionManagementFilter@462abec3, 
+org.springframework.security.web.access.ExceptionTranslationFilter@6f8aba08, 
+org.springframework.security.web.access.intercept.FilterSecurityInterceptor@7ce85af2]
+````
+
+To understand how the `FilterChain` works, let's check out the flowchart from the [Spring Security documentation](https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-securityfilterchain)
+{{% image alt="settings" src="images/posts/getting-started-with-spring-security/filterChain.JPG" %}}
+Let's look at some core components that take part in the filter chain:
+1. [DelegatingFilterProxy](https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-delegatingfilterproxy)
+It is a **servlet filter** provided by the Spring framework that acts as a **bridge between the Servlet container and the Spring Application Context**. The `DelegatingFilterProxy` class is responsible
+for wiring any class that implements `javax.servlet.Filter` into the filter chain.
+2. [FilterChainProxy](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/FilterChainProxy.html)
+Spring security internally creates a `FilterChainProxy` **bean** named `springSecurityFilterChain` wrapped in `DelegatingFilterProxy`.
+The `FilterChainProxy` is a filter that chains multiple filters that are created by Spring based on the security configuration.
+Thus, the `DelegatingFilterProxy` delegates request to the `FilterChainProxy` which determines the filters that need to be invoked.
+3. [SecurityFilterChain](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/SecurityFilterChain.html):
+The security filters in the `SecurityFilterChain` are beans registered with `FilterChainProxy`. An application can have multiple `SecurityFilterChain`.
+`FilterChainProxy` uses the `RequestMatcher` interface on `HttpServletRequest` to determine which `SecurityFilterChain` needs to be called.
+With such configuration, every application has the flexibility to separate filter invocation based on different usecases.
+
+{{% info title="Additional Notes on Spring Security Chain" %}}
+- The default fallback filter chain in a Spring Boot application has a request matcher /** meaning it will apply to all requests.
+- The default filter chain has a predefined `@Order` **SecurityProperties.BASIC_AUTH_ORDER**.
+- We can exclude this complete filter chain to be called by setting **security.basic.enabled=false.**
+- We can define the ordering of multiple filter chains. For instance, to call a custom filter chain before the default one, we need to set a lower `@Order`. Example `@Order(SecurityProperties.BASIC_AUTH_ORDER - 10)`.
+- We can plugin a custom filter within the existing filter chain (to be called at all times or for specific URL patterns) using the `FilterRegistrationBean` or by extending `OncePerRequestFilter`.
+- For the defined custom filter, if no @Order is specified, it gets the default order which is at the end of the security chain. (Has the default order `LOWEST_PRECEDENCE`.)
+- We can also use methods `addFilterAfter()`, `addFilterAt()` and `addFilterBefore()` to have more control over the ordering of our defined custom filter.
+
+We will take a look at how to define custom filters and filter chain in the later sections.
+{{% /info %}}
+
+Now that we know that Spring Security provides us with a default filter chain that calls a set of predefined filters in a specified order, let's try to briefly understand the roles of a few important ones in the chain.
+1. [org.springframework.security.web.csrf.CsrfFilter](https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/web/csrf/CsrfFilter.html)
+This filter applies CSRF protection by default to all REST endpoints. To learn more about CSRF capabilities in spring boot and spring security, refer to this [article](https://reflectoring.io/spring-csrf/).
+2. [org.springframework.security.web.authentication.logout.LogoutFilter](https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/web/authentication/logout/LogoutFilter.html)
+This filter gets called when the user logs out of the application. The default registered instances of `LogoutHandler` are called that are responsible for invalidating the session and clearing the `SecurityContext`.
+Next, the default implementation of `LogoutSuccessHandler` redirects the user to a new page (`/login?logout`).
+3. [org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/UsernamePasswordAuthenticationFilter.html)
+Validates the username and password for the URL (`/login`) with the default credentials provided at startup.
+4. [org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/ui/DefaultLoginPageGeneratingFilter.html)
+Generates the default login page html at `/login`
+5. [org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/ui/DefaultLogoutPageGeneratingFilter.html)
+Generates the default logout page html at `/login?logout`
+6. [org.springframework.security.web.authentication.www.BasicAuthenticationFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/www/BasicAuthenticationFilter.html)
+This filter is responsible for processing any request that has an HTTP request header of **Authorization**, **Basic Authentication scheme**, **Base64 encoded username-password**.
+On successful authentication, the `Authentication` object will be placed in the `SecurityContextHolder`.
+7. [org.springframework.security.web.savedrequest.RequestCacheAwareFilter](https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/web/savedrequest/RequestCacheAwareFilter.html)
+Spring Security stores requests made in a `RequestCache` object. Its default implementation `HttpSessionRequestCache` stores the last request made in an `HttpSession`.
+To access it from the session, we can use the default attribute name `SPRING_SECURITY_SAVED_REQUEST`. This filter is called when the previous request and the current request matches.
+8. [org.springframework.security.web.authentication.AnonymousAuthenticationFilter](https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/web/authentication/AnonymousAuthenticationFilter.html)
+If no `Authentication` object is found in the `SecurityContext`, it creates one with the principal `anonymousUser` and role `ROLE_ANONYMOUS`.
+9. [org.springframework.security.web.access.ExceptionTranslationFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/access/ExceptionTranslationFilter.html)
+Handles `AccessDeniedException` and `AuthenticationException` thrown within the filter chain. In case of `AuthenticationException` instances of `AuthenticationEntryPoint` are required to handle responses.
+In case  of `AccessDeniedException`, this filter will delegate to `AccessDeniedHandler` whose default implementation is `AccessDeniedHandlerImpl`.
+10. [org.springframework.security.web.access.intercept.FilterSecurityInterceptor](https://docs.spring.io/spring-security/site/docs/6.0.0/api/org/springframework/security/web/access/intercept/FilterSecurityInterceptor.html)
+This filter is responsible for authorising every request that passes through the filter chain before the request hits the controller.
+
+### Authentication
+Authentication is a process of verifying a user's credentials and ensuring his validity.
+Let's understand how the spring framework validates the default credentials created:
+
+**Step.1**: `UsernamePasswordAuthenticationFilter` gets called as a part of the security filter chain when FormLogin is enabled i.e when the request is made to the URL `/login`.
+This class is a specific implementation of the base [`AbstractAuthenticationProcessingFilter`](https://docs.spring.io/spring-security/site/docs/6.0.0-M4/api/org/springframework/security/web/authentication/AbstractAuthenticationProcessingFilter.html).
+When an authentication attempt is made, the filter forwards the request to an `AuthenticationManager`.
+
+**Step.2**: `UsernamePasswordAuthenticationToken` is an implementation of [`Authentication`](https://docs.spring.io/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/core/Authentication.html) interface.
+This class specifies that the authentication mechanism must be via username-password.
+
+**Step.3**: With the authentication details obtained, an `AuthenticationManger` tries to authenticate the request with the help of an appropriate implementation of 
+`AuthenticationProvider` and a fully authenticated `Authentication` object is returned. The default implementation is the `DaoAuthenticationProvider` which retrieves user details from `UserDetailsService`.
+If authentication fails, `AuthenticationException` is thrown.
+
+**Step.4**: The  `loadUserByUsername(username)` method of the `UserDetailsService` returns `UserDetails` object that contains user data.
+If no user is found with the given username, `UsernameNotFoundException` is thrown.
+
+**Step.5**: On successful authentication, `SecurityContext` is updated with the currently authenticated user.
+
+To understand the outlined steps above, let's take a look at the authentication architecture as defined in the [Spring Security documentation](https://docs.spring.io/spring-security/reference/6.0.0-M4/servlet/authentication/architecture.html#servlet-authentication-providermanager).
+
+{{% image alt="settings" src="images/posts/getting-started-with-spring-security/providerManager.JPG" %}}
+
+The `ProviderManager` is the most common implementation of `AuthenticationManager`. As seen in the diagram, the `ProviderManager`
+delegates the request to a list of configured `AuthenticationProvider` each of which is queried to see if it can perform the authentication.
+If the authentication fails with `ProviderNotFoundException`, which is a special type of `AuthenticationException`, it indicates that
+the `ProviderManager` does not support the type of `Authentication` passed.
+**This architecture allows us to configure multiple authentication types within the same application**.
+
+The `AuthenticationEntryPoint` is an interface that acts as a point of entry for authentication that determines if the client
+has included valid credentials when requesting for a resource. If not, an appropriate implementation of the interface
+is used to request credentials from the client.
+
+Now, let's understand how the `Authentication` object ties up the entire authentication process.
+The `Authentication` interface serves the following purposes:
+1. Provides user credentials to the `AuthenticationManager`.
+2. Represents the current authenticated used in `SecurityContext`.
+Every instance of `Authentication` must contain
+- `principal` - This is an instance of `UserDetails` that identifies an user.
+- `credentials`
+- `authorities` - Instances of [`GrantedAuthority`](https://docs.spring.io/spring-security/site/docs/6.0.0/api/org/springframework/security/core/GrantedAuthority.html)
+`GrantedAuthority` play an important role in the authorization process.
+
+
+{{% info title="Additional Notes on Spring Authentication" %}}
+- There could be scenarios where we need Spring Security to be used in case of Authorization alone since it has already
+been reliably authenticated by an external system before our application was accessed. Refer to the [pre-authentication](https://docs.spring.io/spring-security/reference/servlet/authentication/preauth.html)
+documentation to understand how to configure and handle such scenarios.
+- Spring allows various means to [customise the authentication mechanism](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/storage.html) 
+We will take a look at a couple of them in the later sections.
+{{% /info %}}
+
+### Authorization
+Authorization is a process of ensuring that the user or a system accessing a resource has valid permissions.
+
+In the Spring security filter chain, the `FilterSecurityInterceptor` triggers the authorization check. As seen from the order of filter execution,
+authentication runs before authorization. Hence, the filter checks for valid permissions after the user has been successfully authenticated.
+In case authorization fails, `AccessDeniedException` is thrown.
+
+#### Granted Authority
+As seen in the previous section, every user instance holds a list of `GrantedAuthority` objects.
+GrantedAuthority is an interface that has a single method:
+````java
+public interface GrantedAuthority extends Serializable {
+    String getAuthority();
+}
+````
+Spring security by default calls the concrete `GrantedAuthority` implementation, `SimpleGrantedAuthority`.
+The `SimpleGrantedAuthority` allows us to specify roles as String, automatically mapping them into `GrantedAuthority` instances.
+The `AuthenticationManager` is responsible for inserting `GrantedAuthority` object list into the `Authentication` object.
+The `AccessDecisionManager` then uses the `getAuthority()` to decide if authorization is successful.
+
+#### Granted Authorities vs Roles
+Spring Security provides authorization support via both granted authorities and roles using the `hasAuthority()` and `hasRole()` methods respectively.
+For most cases, both the methods can be interchangeably used, the most notable difference being the `hasRole()` need not specify the ROLE prefix while the `hasAuthority()` needs the complete string to be explicity specified.
+For instance, `hasAuthority("ROLE_ADMIN")` and `hasRole("ADMIN")` perform the same task.
+
+{{% info title="Additional Notes on Spring Authorization" %}}
+- Spring allows us to configure method level securities using `@PreAuthorize` and `@PostAuthorize` annotations. 
+As the name specifies, they allow us to authorize the user before and after the method execution. Conditions for authorization check can be specified in Spring Expression Language (SpEL). 
+We will look at a few examples in the further sections.
+  {{% /info %}}
+
+
+## Common exploit protection
+The default spring security configuration comes with a protection against variety of attacks enabled by default.
+We will not cover the details of those in this article. You can refer to the [Spring documentation](https://docs.spring.io/spring-security/reference/features/exploits/index.html)
+for a detailed guide. Also, to understand in-depth spring security configuration on CORS and CSRF refer to these articles:
+- [CORS in Spring Security](https://reflectoring.io/spring-cors/)
+- [CSRF in Spring Security](https://reflectoring.io/spring-csrf/)
+
+
+
+

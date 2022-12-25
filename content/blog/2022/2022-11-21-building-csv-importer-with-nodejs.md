@@ -10,11 +10,44 @@ url: node-csv-importer
 popup: false
 ---
 
-The CSV file format is a popular output format for downloading a data collection, such as a report of results or a log of activities. The primary reason for this popularity is that CSV files are easy to edit and share. All common spreadsheet products support CSV, which means that files can be exported from an application and imported into a spreadsheet program for further analysis.
+Consider the case where someone provides us with a CSV file containing employee details that have been
+exported from an employee management application. It may also have data to map the employee/manager
+relationship within the organization to form a tree chart. Our task is to load that data into another
+application. But that application doesn’t have a CSV import feature, so we’re going to build it. We’re
+going to build a simple UI and a backend that will import CSV files and store the data in a database:
 
-Files with the "*.csv*" suffix are referred to as a "*CSV file*" where CSV stands for "character-separated values". This term refers to the format in which each line in a file represents a data record and each line is separated into multiple columns by a pre-defined character. A comma is a popular choice for the separator character, which explains why CSV is often also called "comma-separated values". 
+{{% image alt="CSV Importer Architecture" src="images/posts/nodejs-csv-importer/csv_importer_architecture.png" %}}
 
-{{% github "https://github.com/thombergs/code-examples/tree/master/Node.js/node-csv-importer" %}}
+While building a basic importer is straightforward, there are a multitude of advanced features
+that should be considered when designing and implementing a CSV importer that’s meant to be
+used in production settings.
+
+Budgeting maintenance time is also necessary, as teams often spend an additional $75,000
+annually on:
+
+- **Adaptive Maintenance:** The largest maintenance cost tends to be changes to the
+database schema. Each new field of validation requires updating a CSV importer to add
+new validations.
+- **Performance:** Naive approaches to improving performance, such as loading, validating,
+and visualizing all of the spreadsheet data at once in memory, scale drastically as
+spreadsheets approach thousands (or millions) of rows. At that size, validations need to
+be done in parallel batches, especially if results will be displayed in a responsive UI.
+- **Bug fixes / QA:** Once implemented, CSVs tend to become a permanent area that teams
+must QA. Testing a large number of encodings, formats, and file sizes can cost a
+substantial amount of resources. When data is uploaded in the wrong format, undoing /
+bulk correcting files requires time as well.
+
+Read the section on “[Creating a production-ready CSV importer](#creating-a-production-ready-csv-importer)” to learn more about the
+differences involved with building a basic importer versus one able to handle more complex
+workflows, and what features can help make the import process seamless for customers.
+
+Companies often scope [one engineering month](https://www.oneschema.co/blog/building-csv-importer-lessons-learned?utm_source=reflectoring&amp;utm_campaign=56295511) to build an importer, but end up taking over 3-6
+months with a team of 2 engineers to build all the supporting features needed to make the
+importer usable for their customers. This results in an [estimated launch cost](https://www.oneschema.co/blog/csv-importer-cost?utm_source=reflectoring&amp;utm_campaign=56295511) of $100,000.
+
+In this article, we're going to look into what it means to build a CSV importer from scratch. We will look at some general use cases that the CSV format helps us with and then use the tools the Node.js tech stack offers us to build a CSV importer with a basic UI.
+
+{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/node-csv-importer" %}}
 
 ## CSV Use Cases
 
@@ -32,10 +65,6 @@ The ease of use and popularity of the CSV format makes it suitable for many diff
 * **Importing and exporting data** - During mergers or acquisitions, companies often need to export and import data across systems. Given the ubiquitousness of CSV, it's a common choice to represent this data.
 
 In this article, we are going to explain the use case of exporting and importing hierarchical data between different applications. **Hierarchical data is data that contains a hierarchy, like an employee/manager relationship**. 
-
-Consider the case where someone provides us with a CSV file containing employee details that have been exported from an employee management application. It may also have data to map the employee/manager relationship within the organization to form a tree chart. Our task is to load that data into another application. But that application doesn't have a CSV import feature, so we're going to build it. We're going to build a simple UI and a backend that will import CSV files and store the data in a database:
-
-{{% image alt="CSV Importer Architecture" src="images/posts/nodejs-csv-importer/csv_importer_architecture.png" %}}
 
 ## Setting Up the Node.js project
 
@@ -966,4 +995,48 @@ This will load the UI and we can upload the CSV file and display our employees i
 
 {{% image alt="Final UI" src="images/posts/nodejs-csv-importer/final_ui.png" %}}
 
-You can find the complete code as part of [GitHub](https://github.com/thombergs/code-examples/tree/master/Node.js/node-csv-importer).
+You can find the complete code on [GitHub](https://github.com/thombergs/code-examples/tree/master/nodejs/node-csv-importer).
+
+## Creating a Production-Ready CSV Importer 
+
+For most enterprise use cases, a simple CSV importer, while easy to build, will result in issues
+down the road. Missing key features like lack of clear import error messages and UI for
+resolving will create challenges for users during the import process. This can result in a [major
+time investment](https://www.oneschema.co/blog/heron-data-case-study?utm_source=reflectoring&amp;utm_campaign=56295511) required from support (and technical) teams to assist customers with manually
+debugging their file imports.
+
+Below are a few examples of advanced features that can be critical for ensuring a seamless
+import experience for customers ([read a full list of features here](https://www.oneschema.co/blog/advanced-csv-import-features?utm_source=reflectoring&amp;utm_campaign=56295511)):
+
+- Data Validation &amp; Autofixes
+- In-line error resolution
+- Intelligent Mapping
+- Exportable Excel Error Summaries
+- Custom Columns
+- 
+Performance on large files should also be considered depending on the data being uploaded, as
+product speed has a [large, measurable impact](https://www.oneschema.co/blog/oneschema-vs-competitors-performance?utm_source=reflectoring&amp;utm_campaign=56295511) on import success rates.
+
+“The first self-serve CSV importer built at Affinity led to more support tickets than any other part
+of our product. And because it was so challenging to display all of the specific errors that could
+break the import flow, customers would get esoteric error messages like ‘something is amiss’
+whenever there was a missing comma, encoding issue, or a myriad of business-specific data
+formatting problems that led to downstream processing issues. Because of the critical
+onboarding flow that data importer powered, before long v1.5, v2, and v3 were prioritized,
+leading to multiple eng-years of work in iterating toward a robust importer experience.”
+Rohan Sahai, Director of Engineering at [Affinity](https://www.affinity.co/).
+
+For companies with many priorities, a never-ending CSV import project takes away valuable
+engineering time that could be spent focusing on the core product. If you need production-ready
+imports in your product, OneSchema is an embeddable CSV importer that takes less than 30
+minutes to get running in your app. They’ve built in features that improve import completion
+rates which automatically correct customer data, handle edge cases, and enable bulk data
+editing ([demo video here](https://www.loom.com/share/379ff48b08244c93a8791292846160c7?utm_source=reflectoring&amp;utm_campaign=56295511)).
+
+## Conclusion
+
+For hobbyist or non-customer-facing use cases, investing in a quick, feature-light importer
+following the steps we’ve outlined here can be a great option. The cost of missing features,
+failed imports, and bugs is low. If the CSV importer is part of critical workflows like customer
+onboarding or recurring data syncs, the cost of integrating a product like [OneSchema](https://www.oneschema.co/?utm_source=reflectoring&amp;utm_campaign=56295511) can be
+much lower than the cost to build the solution entirely in-house.

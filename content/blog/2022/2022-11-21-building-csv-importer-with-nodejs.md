@@ -980,7 +980,6 @@ function App() {
 }
 
 export default App;
-
 ```
 
 We have defined `useMemo` hook to map the attributes from the incoming API data to columns in `react-table` component. We have also defined the `Children` and `Avatar` component to render the images of employees and their children.
@@ -1013,18 +1012,21 @@ import experience for customers ([read a full list of features here](https://www
 - Intelligent Mapping
 - Exportable Excel Error Summaries
 - Custom Columns
-- 
+
 Performance on large files should also be considered depending on the data being uploaded, as
 product speed has a [large, measurable impact](https://www.oneschema.co/blog/oneschema-vs-competitors-performance?utm_source=reflectoring&amp;utm_campaign=56295511) on import success rates.
 
-“The first self-serve CSV importer built at Affinity led to more support tickets than any other part
+
+> “The first self-serve CSV importer built at Affinity led to more support tickets than any other part
 of our product. And because it was so challenging to display all of the specific errors that could
 break the import flow, customers would get esoteric error messages like ‘something is amiss’
 whenever there was a missing comma, encoding issue, or a myriad of business-specific data
 formatting problems that led to downstream processing issues. Because of the critical
 onboarding flow that data importer powered, before long v1.5, v2, and v3 were prioritized,
-leading to multiple eng-years of work in iterating toward a robust importer experience.”
-Rohan Sahai, Director of Engineering at [Affinity](https://www.affinity.co/).
+leading to multiple eng-years of work in iterating toward a robust importer experience."
+
+(Rohan Sahai, Director of Engineering at [Affinity](https://www.affinity.co/))
+
 
 For companies with many priorities, a never-ending CSV import project takes away valuable
 engineering time that could be spent focusing on the core product. If you need production-ready

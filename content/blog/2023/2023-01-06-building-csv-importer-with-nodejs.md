@@ -1,8 +1,8 @@
 ---
 title: "Building a CSV Importer with Node.js"
 categories: ["Node"]
-date: 2022-11-21 00:00:00 +1100 
-modified: 2022-11-21 00:00:00 +1100
+date: 2023-01-06 00:00:00 +1100 
+modified: 2023-01-06 00:00:00 +1100
 authors: [arpendu]
 excerpt: "This article shows how we can build a CSV importer with frameworks and libraries common in the Node.js tech stack."
 image: images/stock/0128-data-1200x628-branded.jpg
@@ -39,7 +39,7 @@ bulk correcting files requires time as well.
 
 Read the section on “[Creating a production-ready CSV importer](#creating-a-production-ready-csv-importer)” to learn more about the
 differences involved with building a basic importer versus one able to handle more complex
-workflows, and what features can help make the import process seamless for customers.
+workflows, what features can help make the import process seamless for customers, and embeddable CSV importer options such as [OneSchema](https://www.oneschema.co/?utm_source=reflectoring&utm_campaign=56295511).
 
 Companies often scope [one engineering month](https://www.oneschema.co/blog/building-csv-importer-lessons-learned?utm_source=reflectoring&amp;utm_campaign=56295511) to build an importer, but end up taking over 3-6
 months with a team of 2 engineers to build all the supporting features needed to make the
@@ -1030,7 +1030,7 @@ leading to multiple eng-years of work in iterating toward a robust importer expe
 
 For companies with many priorities, a never-ending CSV import project takes away valuable
 engineering time that could be spent focusing on the core product. If you need production-ready
-imports in your product, OneSchema is an embeddable CSV importer that takes less than 30
+imports in your product, [OneSchema](https://www.oneschema.co/?utm_source=reflectoring&utm_campaign=56295511) is an embeddable CSV importer that takes less than 30
 minutes to get running in your app. They’ve built in features that improve import completion
 rates which automatically correct customer data, handle edge cases, and enable bulk data
 editing ([demo video here](https://www.loom.com/share/379ff48b08244c93a8791292846160c7?utm_source=reflectoring&amp;utm_campaign=56295511)).

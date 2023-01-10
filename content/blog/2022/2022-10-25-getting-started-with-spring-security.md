@@ -46,8 +46,8 @@ spring:
 With this configuration, we should now be able to login with user as `admin` and password as `passw@rd`.
 
 {{% info title="Starter dependency versions" %}}
-Here, we have used **Spring Boot version 2.7.5**. Based on this version, Spring Boot internally resolves **Spring Security version as 5.6.1** and **Thymeleaf version as
-5.7.4**. However, we can override these versions if required in our `pom.xml` as below:
+Here, we have used **Spring Boot version 2.7.5**. Based on this version, Spring Boot internally resolves **Spring Security version as 5.7.4**. 
+However, we can override these versions if required in our `pom.xml` as below:
 ````xml
 <properties>
     <spring-security.version>5.2.5.RELEASE</spring-security.version>
@@ -98,7 +98,7 @@ Thus, the `DelegatingFilterProxy` delegates request to the `FilterChainProxy` wh
 3. [SecurityFilterChain](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/SecurityFilterChain.html):
 The security filters in the `SecurityFilterChain` are beans registered with `FilterChainProxy`. An application can have multiple `SecurityFilterChain`.
 `FilterChainProxy` uses the `RequestMatcher` interface on `HttpServletRequest` to determine which `SecurityFilterChain` needs to be called.
-With such configuration, every application has the flexibility to separate filter invocation based on different usecases.
+
 
 {{% info title="Additional Notes on Spring Security Chain" %}}
 - The default fallback filter chain in a Spring Boot application has a request matcher /** meaning it will apply to all requests.
@@ -113,29 +113,29 @@ We will take a look at how to define custom filters and filter chain in the late
 {{% /info %}}
 
 Now that we know that Spring Security provides us with a default filter chain that calls a set of predefined filters in a specified order, let's try to briefly understand the roles of a few important ones in the chain.
-1. [org.springframework.security.web.csrf.CsrfFilter](https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/web/csrf/CsrfFilter.html)
+1. **[org.springframework.security.web.csrf.CsrfFilter](https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/web/csrf/CsrfFilter.html)** : 
 This filter applies CSRF protection by default to all REST endpoints. To learn more about CSRF capabilities in spring boot and spring security, refer to this [article](https://reflectoring.io/spring-csrf/).
-2. [org.springframework.security.web.authentication.logout.LogoutFilter](https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/web/authentication/logout/LogoutFilter.html)
+2. **[org.springframework.security.web.authentication.logout.LogoutFilter](https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/web/authentication/logout/LogoutFilter.html)** : 
 This filter gets called when the user logs out of the application. The default registered instances of `LogoutHandler` are called that are responsible for invalidating the session and clearing the `SecurityContext`.
 Next, the default implementation of `LogoutSuccessHandler` redirects the user to a new page (`/login?logout`).
-3. [org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/UsernamePasswordAuthenticationFilter.html)
+3. **[org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/UsernamePasswordAuthenticationFilter.html)** : 
 Validates the username and password for the URL (`/login`) with the default credentials provided at startup.
-4. [org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/ui/DefaultLoginPageGeneratingFilter.html)
+4. **[org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/ui/DefaultLoginPageGeneratingFilter.html)** : 
 Generates the default login page html at `/login`
-5. [org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/ui/DefaultLogoutPageGeneratingFilter.html)
+5. **[org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/ui/DefaultLogoutPageGeneratingFilter.html)** : 
 Generates the default logout page html at `/login?logout`
-6. [org.springframework.security.web.authentication.www.BasicAuthenticationFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/www/BasicAuthenticationFilter.html)
+6. **[org.springframework.security.web.authentication.www.BasicAuthenticationFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/www/BasicAuthenticationFilter.html)** : 
 This filter is responsible for processing any request that has an HTTP request header of **Authorization**, **Basic Authentication scheme**, **Base64 encoded username-password**.
 On successful authentication, the `Authentication` object will be placed in the `SecurityContextHolder`.
-7. [org.springframework.security.web.savedrequest.RequestCacheAwareFilter](https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/web/savedrequest/RequestCacheAwareFilter.html)
+7. **[org.springframework.security.web.savedrequest.RequestCacheAwareFilter](https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/web/savedrequest/RequestCacheAwareFilter.html)** : 
 Spring Security stores requests made in a `RequestCache` object. Its default implementation `HttpSessionRequestCache` stores the last request made in an `HttpSession`.
 To access it from the session, we can use the default attribute name `SPRING_SECURITY_SAVED_REQUEST`. This filter is called when the previous request and the current request matches.
-8. [org.springframework.security.web.authentication.AnonymousAuthenticationFilter](https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/web/authentication/AnonymousAuthenticationFilter.html)
+8. **[org.springframework.security.web.authentication.AnonymousAuthenticationFilter](https://docs.spring.io/spring-security/site/docs/4.0.x/apidocs/org/springframework/security/web/authentication/AnonymousAuthenticationFilter.html)** : 
 If no `Authentication` object is found in the `SecurityContext`, it creates one with the principal `anonymousUser` and role `ROLE_ANONYMOUS`.
-9. [org.springframework.security.web.access.ExceptionTranslationFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/access/ExceptionTranslationFilter.html)
+9. **[org.springframework.security.web.access.ExceptionTranslationFilter](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/access/ExceptionTranslationFilter.html)** : 
 Handles `AccessDeniedException` and `AuthenticationException` thrown within the filter chain. In case of `AuthenticationException` instances of `AuthenticationEntryPoint` are required to handle responses.
 In case  of `AccessDeniedException`, this filter will delegate to `AccessDeniedHandler` whose default implementation is `AccessDeniedHandlerImpl`.
-10. [org.springframework.security.web.access.intercept.FilterSecurityInterceptor](https://docs.spring.io/spring-security/site/docs/6.0.0/api/org/springframework/security/web/access/intercept/FilterSecurityInterceptor.html)
+10. **[org.springframework.security.web.access.intercept.FilterSecurityInterceptor](https://docs.spring.io/spring-security/site/docs/6.0.0/api/org/springframework/security/web/access/intercept/FilterSecurityInterceptor.html)** : 
 This filter is responsible for authorising every request that passes through the filter chain before the request hits the controller.
 
 ### Authentication
@@ -226,9 +226,121 @@ We will look at a few examples in the further sections.
 ## Common exploit protection
 The default spring security configuration comes with a protection against variety of attacks enabled by default.
 We will not cover the details of those in this article. You can refer to the [Spring documentation](https://docs.spring.io/spring-security/reference/features/exploits/index.html)
-for a detailed guide. Also, to understand in-depth spring security configuration on CORS and CSRF refer to these articles:
+for a detailed guide. However, to understand in-depth spring security configuration on CORS and CSRF refer to these articles:
 - [CORS in Spring Security](https://reflectoring.io/spring-cors/)
 - [CSRF in Spring Security](https://reflectoring.io/spring-csrf/)
+
+## Implementing the Security Configuration 
+Now that we are familiar with the details of how Spring Security works, let's understand the configuration setup in our application to handle the various scenarios 
+we briefly touched upon in the previous sections.
+
+### Default configuration
+
+````java
+class SpringBootWebSecurityConfiguration {
+    @ConditionalOnDefaultWebSecurity
+    static class SecurityFilterChainConfiguration {
+        SecurityFilterChainConfiguration() {
+        }
+
+        @Bean
+        @Order(2147483642)
+        SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+            ((AuthorizedUrl) http.authorizeRequests().anyRequest()).authenticated();
+            http.formLogin();
+            http.httpBasic();
+            return (SecurityFilterChain) http.build();
+        }
+    }
+}
+````
+The `SpringBootWebSecurityConfiguration` class provides a default set of **spring security configurations for spring boot applications**.
+To create the default `SecurityFilterChainBean` the following configurations are applied:
+1. `authorizeRequests()` restricts access based on `RequestMatcher` implementations. Here `authorizeRequests().anyRequest()` will allow all requests.
+To have more control over restricting access, we can specify URL patterns via `antMatchers()`.
+2. `authenticated()` requires that all endpoints called be authenticated before proceeding in the filter chain.
+3. `formLogin()` calls the default `FormLoginConfigurer` class that loads the login page to authenticate via username-password and accordingly redirects to corresponding
+failure or success handlers. For a diagrammatic representation of how form login works, refer to the detailed notes in the [Spring documentation](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/form.html).
+4. `httpBasic()` calls the `HttpBasicConfigurer` that sets up defaults to help with basic authentication. To understand in detail, refer to the [Spring documentation](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/basic.html). 
+
+
+{{% info title="Spring Security with `SecurityFilterChain`" %}}
+- From Spring Security 5.7.0-M2, the `WebSecurityConfigurerAdapter` has been deprecated and replaced with `SecurityFilterChain`, 
+thus moving into component based security configuration.
+- To understand the differences, refer to this [Spring blog post](https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter).
+- All examples in this article, will make use of the newer configuration that uses `SecurityFilterChain`.
+  {{% /info %}}
+
+
+Now that we understand how the spring security defaults work, lets look at a few commonly encountered usecases and customize the configurations accordingly.
+
+#### Customise default configuration
+````java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfiguration {
+
+    public static final String[] ENDPOINTS_WHITELIST = {
+            "/css/**",
+            "/",
+            "/login",
+            "/home"
+    };
+    public static final String LOGIN_URL = "/login";
+    public static final String LOGOUT_URL = "/logout";
+    public static final String LOGIN_FAIL_URL = LOGIN_URL + "?error";
+    public static final String DEFAULT_SUCCESS_URL = "/home";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeRequests(request -> request.antMatchers(ENDPOINTS_WHITELIST).permitAll()
+                        .anyRequest().authenticated())
+                .csrf().disable()
+                //.formLogin(Customizer.withDefaults())
+                .formLogin(form -> form
+                        .loginPage(LOGIN_URL)
+                        .loginProcessingUrl(LOGIN_URL)
+                        .failureUrl(LOGIN_FAIL_URL)
+                        .usernameParameter(USERNAME)
+                        .passwordParameter(PASSWORD)
+                        .defaultSuccessUrl(DEFAULT_SUCCESS_URL));
+        return http.build();
+    }
+}
+````
+
+Instead of using the spring security login defaults, we can customise every aspect of login including the `loginPage`, `loginProcessingUrl`,
+`failureUrl`, `defaultSuccessUrl` and so on. Also, we can use `antmatchers()` to filter out the URLs that will be a part of the login process.
+In this example, we have created a custom `login.html` and `homePage.html` with their respective controller classes for spring to access the configured endpoints.
+Similarly, we can customise the logout process too.
+````java
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeRequests(request -> request.antMatchers(ENDPOINTS_WHITELIST).permitAll()
+                        .anyRequest().authenticated())
+                .csrf().disable()
+                //.formLogin(Customizer.withDefaults())
+                .formLogin(form -> form
+                        .loginPage(LOGIN_URL)
+                        .loginProcessingUrl(LOGIN_URL)
+                        .failureUrl(LOGIN_FAIL_URL)
+                        .usernameParameter(USERNAME)
+                        .passwordParameter(PASSWORD)
+                        .defaultSuccessUrl(DEFAULT_SUCCESS_URL))
+                //.logout(Customizer.withDefaults())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .logoutSuccessUrl(LOGIN_URL + "?logout"));
+        return http.build();
+    }
+````
+Here, when the user logs out, the http session gets invalidated, however the session cookie does not get cleared.
+Hence, it is a good idea to `deleteCookies("JSESSIONID")` explicitly to avoid session based conflicts.
+
 
 
 

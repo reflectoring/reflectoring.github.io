@@ -311,9 +311,12 @@ public class SecurityConfiguration {
 }
 ````
 
-Instead of using the spring security login defaults, we can customise every aspect of login including the `loginPage`, `loginProcessingUrl`,
-`failureUrl`, `defaultSuccessUrl` and so on. Also, we can use `antmatchers()` to filter out the URLs that will be a part of the login process.
-In this example, we have created a custom `login.html` and `homePage.html` with their respective controller classes for spring to access the configured endpoints.
+Instead of using the spring security login defaults, we can customise every aspect of login:
+- `loginPage` - Customize the default login Page. In this case we have created a custom `login.html` and corresponding `LoginController` class.
+- `loginProcessingUrl` - The URL that validates username and password.
+- `failureUrl` - The URL to direct to in case the login fails.
+- `defaultSuccessUrl` - The URL to direct to on successful login. Here, we have created a custom `homePage.html` and corresponding `HomeController` class.
+- `antmatchers()` - to filter out the URLs that will be a part of the login process.
 Similarly, we can customise the logout process too.
 ````java
     @Bean
@@ -340,6 +343,49 @@ Similarly, we can customise the logout process too.
 ````
 Here, when the user logs out, the http session gets invalidated, however the session cookie does not get cleared.
 Hence, it is a good idea to `deleteCookies("JSESSIONID")` explicitly to avoid session based conflicts.
+Further, we can manage and configure sessions via Spring Security. 
+````java
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeRequests(request -> request.antMatchers(ENDPOINTS_WHITELIST).permitAll()
+                        .anyRequest().authenticated())
+                .csrf().disable()
+                //.formLogin(Customizer.withDefaults())
+                .formLogin(form -> form
+                        .loginPage(LOGIN_URL)
+                        .loginProcessingUrl(LOGIN_URL)
+                        .failureUrl(LOGIN_FAIL_URL)
+                        .usernameParameter(USERNAME)
+                        .passwordParameter(PASSWORD)
+                        .defaultSuccessUrl(DEFAULT_SUCCESS_URL))
+                //.logout(Customizer.withDefaults())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .logoutSuccessUrl(LOGIN_URL + "?logout"))
+                //.sessionManagement(Customizer.withDefaults())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                        .invalidSessionUrl("/invalidSession.htm")
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(true));
+
+
+        return http.build();
+    }
+````
+It provides us various values for session creation policies attribute `sessionCreationPolicy`:
+1. SessionCreationPolicy.STATELESS - No session will be created or used.
+2. SessionCreationPolicy.ALWAYS - A session will always be created if it does not exist.
+3. SessionCreationPolicy.NEVER - A session will never be created. But if a session exists, it will be used.
+4. SessionCreationPolicy.IF_REQUIRED - A session will be created if required.(**Default Configuration**)
+Other options include:
+- `invalidSessionUrl` - the URL to redirect to when an invalid session is detected.
+- `maximumSessions` - limits the number of active sessions that a single user can have concurrently.
+- `maxSessionsPreventsLogin` - Default value is `false`, which indicates that the authenticated user is allowed access while the existing user's session expires.
+`true` indicates that the user will not be authenticated when `SessionManagementConfigurer.maximumSessions(int)` is reached. In this case, it will
+redirect to `/invalidSession` when multiple logins are detected.
 
 
 

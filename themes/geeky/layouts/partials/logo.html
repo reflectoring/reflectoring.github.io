@@ -54,8 +54,6 @@
 
 {{if $logoPath }}
 
-<img loading="preload" decoding="async" class="img-fluid mb-0" width="{{replace $logoWidth `x` `` | default $logoDefaultWidth}}" height="{{$logoDefaultHeight}}" src="{{.Scratch.Get `logo`}}" alt="{{ site.Title }}" onerror="this.onerror=null;this.src='{{.Scratch.Get `logo_fallback`}}'">
-
 <!-- logo text -->
 {{ else if site.Params.logo_text }}
 {{ site.Params.logo_text | markdownify }}

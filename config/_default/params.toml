@@ -6,7 +6,7 @@ logo = "images/logo.png"
 logo_small = "images/logo_small.png"
 # use `x` with logo_width, example: "100x".
 # Note: logo_width is not work with .svg file
-logo_width = "150x"
+logo_width = "80x"
 # logo text will only show when logo is missing.
 logo_text = "Boilerplate"
 # navbar fixed to top
@@ -33,10 +33,10 @@ about_widget_content = "Lorem ipsum dolor sit amet, conse tfctetur adipiscing el
 # footer content
 footer_content = "Where the HOW meets the WHY."
 # copyright
-copyright = "Built upon a theme by [Themefisher](https://themefisher.com/) & [Gethugothemes](https://gethugothemes.com/)"
+copyright = "Built upon [Geeky Hugo](https://statichunt.com/themes/hugo-geeky) theme by [Statichunt](https://statichunt.com/)"
 
 # custom script on header, example: custom_script= "<script>console.log(\"Hello World\")</script>" 
-custom_script= ""
+custom_script = ""
 
 
 [analytics]
@@ -127,26 +127,26 @@ items = [
 enable = false
 # mailchimp subsciption
 mailchimp_form_action = "https://gmail.us4.list-manage.com/subscribe/post?u=463ee871f45d2d93748e77cad&amp;id=a0a2c6d074" # replace this url with yours
-mailchimp_form_name = "b_463ee871f45d2d93748e77cad_a0a2c6d074" # replace this code with yours
+mailchimp_form_name = "b_463ee871f45d2d93748e77cad_a0a2c6d074"                                                           # replace this code with yours
 
 
 ############################# social site ########################
 [[social]]
 title = "facebook"
-icon = "fab fa-facebook" # themify icon : https://themify.me/themify-icons
+icon = "fab fa-facebook"                   # themify icon : https://themify.me/themify-icons
 link = "https://facebook.com/reflectoring"
 
 [[social]]
 title = "twitter"
-icon = "fab fa-twitter" # themify icon : https://themify.me/themify-icons
+icon = "fab fa-twitter"                  # themify icon : https://themify.me/themify-icons
 link = "https://twitter.com/TomHombergs"
 
 [[social]]
 title = "github"
-icon = "fab fa-github" # fontawesome icon pack : https://fontawesome.com/icons/
+icon = "fab fa-github"                              # fontawesome icon pack : https://fontawesome.com/icons/
 link = "https://github.com/thombergs/code-examples"
 
 [[social]]
 title = "linkedin"
-icon = "fab fa-linkedin" # fontawesome icon pack : https://fontawesome.com/icons/
+icon = "fab fa-linkedin"                                   # fontawesome icon pack : https://fontawesome.com/icons/
 link = "https://www.linkedin.com/in/tom-hombergs-74048777"

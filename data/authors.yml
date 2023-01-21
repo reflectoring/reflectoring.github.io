@@ -10,7 +10,7 @@ tom:
   rss: "/feed.xml"
   url: /about/
   bio: "As a professional software engineer, consultant, architect, general problem solver,
-          I've been practicing the software craft for more fifteen years and I'm still learning
+          I've been practicing the software craft for more than fifteen years and I'm still learning
           something new every day. I love sharing the things I learned, so you (and future me)
           can get a head start. That's why I founded reflectoring.io."
 mateo:
@@ -28,7 +28,7 @@ pratikdas:
   github: "pratikdas"
   twitter: "pratikd2020"
   linkedin: "pratik-das-80345114/"
-  bio: "Professional Software Engineer and Architect currently focussed on Cloud Architecture, serverless technologies, and Microservices."
+  bio: "Software Engineer, Consultant and Architect with current expertise in Enterprise and Cloud Architecture, serverless technologies, Microservices, and Devops."
 
 matthias:
   name: "Matthias Balke"
@@ -240,7 +240,7 @@ naveen:
   avatar: "/images/authors/naveen.jpeg"
   github: "https://github.com/cbenaveen"
   twitter: "CbenaveenK"
-  linkedin: "https://www.linkedin.com/in/cbenaveen/"
+  linkedin: "cbenaveen"
   bio: "A Cloud Architect, passionate about building large-scale, resilient, and highly available systems using microservice architecture. I enjoy developing microservices using Java and Spring ecosystem and various author technologies."
 
 jcregg:
@@ -258,7 +258,7 @@ syedaf:
   email: "syedaf786@gmail.com"
   avatar: "/images/authors/syedaf.png"
   github: "syedaf"
-  linkedin: "https://www.linkedin.com/in/arshad-syed-798623184/"
+  linkedin: "arshad-syed-798623184"
   bio: "As a software developer I am always interested in learning new technologies. I am currently working on improving my full stack skills, and also on teaching technology."
 
 saikat:
@@ -285,7 +285,7 @@ nukajbl:
   github: "bledi1985"
   bio: "Bledi is a senior software Engineer and Architect, specialized in Java and Spring to deliver high-quality Enterprise applications, on-premise or cloud.
    Experienced and keenly interested in the field of Cloud Architecture."
-  linkedin: "https://www.linkedin.com/in/bledinukaj/"
+  linkedin: "bledinukaj"
 
 robert:
   name: "Robert Dey"
@@ -308,5 +308,19 @@ ranjani:
   email: "ranjani.harish12@gmail.com"
   avatar: "/images/authors/ranjani.jpg"
   github: "ranjanih"
-  linkedin: "https://www.linkedin.com/in/ranjaniharish/"
+  linkedin: "ranjaniharish"
   bio: "Fun-loving, curious and enthusiastic IT developer who believes in constant learning."
+
+ajibade:
+  name: "Olaoluwa Ajibade"
+  email: "holaszyd1@gmail.com"
+  avatar: "/images/authors/ajibade.png"
+  github: "ajibade3210"
+  linkedin: "https://www.linkedin.com/in/olaoluwa-ajibade/"
+  bio: "Backend developer who loves to create incredible apps."
+
+laurent:
+  name: "Laurent Gil"
+  avatar: "/images/authors/laurent.png"
+  linkedin: "laurentgil"
+  bio: "Co-founder and CPO at <a href=\"https://cast.ai\">CAST AI</a>, Laurent is responsible for product and business development. He was co-founder and Chief Product and Business Officer at Zenedge, acquired by Oracle in 2018. Laurent was also CEO and co-founder of Viewdle, acquired by Google in 2012. "

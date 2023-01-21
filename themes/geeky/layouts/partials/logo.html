@@ -1,29 +1,42 @@
 {{ $logoPath:= site.Params.logo }}
+{{ $logoWebp:= site.Params.logo_webp | default true }}
 {{ $logoWidth:= replace site.Params.logo_width "px" "x" }}
+{{ $logoDefaultWidth:= "" }}
+{{ $logoDefaultHeight:= "" }}
+
+<!-- checking logo path -->
+{{ if $logoPath }}
 
 <!-- checking logo existance -->
-{{ if $logoPath }}
 {{ if fileExists (add `assets/` $logoPath) }}
 {{ $logo:= resources.Get $logoPath }}
 
-<!-- checking gif -->
+<!-- logo extention -->
 {{ $logoExt := path.Ext $logo }}
-{{ if eq $logoExt ".gif" }}
-{{ .Scratch.Set "logo" ($logo.Resize $logoWidth).RelPermalink }}
-<!-- checking svg -->
-{{ else if eq $logoExt ".svg"}}
+
+<!-- logo height, width (if not svg) -->
+{{ if ne $logoExt `.svg` }}
+{{ $logoDefaultWidth = $logo.Width }}
+{{ $logoDefaultHeight = $logo.Height }}
+{{ end }}
+
+<!-- checking gif/svg -->
+{{ if or (eq $logoExt ".gif") (eq $logoExt ".svg") }}
 {{ .Scratch.Set "logo" $logo.RelPermalink }}
-<!-- logo fallback for svg -->
-{{ .Scratch.Set "logo_fallback" $logo.RelPermalink }}
-{{ else }}
 <!-- logo processing to webp -->
-{{ $logoDefaultWidth:= add (string $logo.Width) "x"}}
+{{ else }}
+{{ $logoDefaultWidth:= add (string $logoDefaultWidth) "x"}}
 {{ $logoWidth:= $logoWidth | default $logoDefaultWidth }}
 {{ $options := add (string $logoWidth) " webp" }}
+{{ if not $logoWebp }} <!-- if webp false -->
+{{ $options = add (string $logoWidth) " " }}
+{{ end }} <!-- end -->
+
 {{ .Scratch.Set "logo" ($logo.Resize $options).RelPermalink }}
 <!-- logo fallback -->
 {{ .Scratch.Set "logo_fallback" ($logo.Resize $logoWidth).RelPermalink }}
 {{ end }}
+<!-- /checking gif/svg -->
 
 <div class="logo-wrapper">
 <a href="{{ site.BaseURL | relLangURL }}">
@@ -34,13 +47,19 @@
 <div class="supported-by">proudly supported by <a href="https://www.xapling.de" target="_blank"><img src="/images/xapling.png" width="40"/></a></div>
 </div>
 {{ else }}
-<strong class="text-danger">`{{$logoPath}}` doesn't exist</strong>
-{{ end }}
-<!-- / checking logo existance -->
+{{ warnf "%q not found" $logoPath }}
+{{ $logoPath = false }}
+{{ end }} <!-- / checking logo existance -->
+{{ end }} <!-- / checking logo path -->
+
+{{if $logoPath }}
+
+<img loading="preload" decoding="async" class="img-fluid mb-0" width="{{replace $logoWidth `x` `` | default $logoDefaultWidth}}" height="{{$logoDefaultHeight}}" src="{{.Scratch.Get `logo`}}" alt="{{ site.Title }}" onerror="this.onerror=null;this.src='{{.Scratch.Get `logo_fallback`}}'">
+
 <!-- logo text -->
 {{ else if site.Params.logo_text }}
 {{ site.Params.logo_text | markdownify }}
 <!-- logo title -->
 {{ else }}
-{{ site.Title | markdownify }}
-{{ end }}
+<strong class="text-danger">`{{$logoPath}}` doesn't exist</strong>
+{{ end }} <!-- / checking logo path -->

@@ -5,7 +5,7 @@ pre {
 // background for in-text code highlighting only
 p {
   code {
-    background-color: #EEEEEE;
+    background-color: #eeeeee;
   }
 }
 
@@ -18,7 +18,7 @@ h3 {
 .sticky {
   position: sticky;
   position: -webkit-sticky;
-  top:20px;
+  top: 20px;
 }
 
 .sticky-container {
@@ -26,7 +26,6 @@ h3 {
 }
 
 .content {
-
   .btn-primary {
     color: $white;
     text-decoration: none;
@@ -37,15 +36,14 @@ h3 {
     display: inline-block;
     width: 100%;
   }
-
 }
 
-.pull-right{
+.pull-right {
   float: right;
 }
 
-.pull-left{
-  float:left;
+.pull-left {
+  float: left;
 }
 
 .widget {
@@ -61,7 +59,6 @@ h3 {
 }
 
 .footer-widget {
-
   text-align: left;
 
   ul.footer-links {
@@ -70,9 +67,7 @@ h3 {
     li {
       margin-bottom: 10px;
     }
-
   }
-
 }
 
 .notice {
@@ -83,21 +78,20 @@ h3 {
   }
 }
 
-.success{
+.success {
   background-color: rgba(43, 162, 131, 0.2);
 }
 
 .danger {
-  background-color: rgba(255,0,0,0.2)
+  background-color: rgba(255, 0, 0, 0.2);
 }
 
 .warning {
-  background-color: rgba(255,220,0,0.2)
+  background-color: rgba(255, 220, 0, 0.2);
 }
 
 .content {
   table {
-
     margin-bottom: 1rem;
 
     th {
@@ -110,7 +104,8 @@ h3 {
       background-color: $light;
     }
 
-    th, td {
+    th,
+    td {
       padding-left: 20px;
       padding-right: 20px;
       padding-top: 10px;
@@ -127,9 +122,9 @@ h3 {
   margin-left: 10px;
 
   @include desktop-lg {
-      width: 100%;
-      margin-left: 0;
-      padding-left: 40px;
+    width: 100%;
+    margin-left: 0;
+    padding-left: 40px;
   }
 
   h2 {
@@ -146,15 +141,15 @@ h3 {
     ul {
       margin-left: 20px;
       li {
-            padding-top: 5px;
-            padding-bottom: 5px;
-          }
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
       ul {
         margin-left: 20px;
-      li {
-            padding-top: 5px;
-            padding-bottom: 5px;
-          }
+        li {
+          padding-top: 5px;
+          padding-bottom: 5px;
+        }
       }
     }
   }
@@ -176,7 +171,14 @@ h3 {
   }
 }
 
-h1, h2, h3, h4, h5, h6, .btn, .navbar {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.btn,
+.navbar {
   letter-spacing: 1px;
 }
 

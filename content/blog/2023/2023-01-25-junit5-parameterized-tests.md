@@ -383,6 +383,3 @@ Always remember -
 "With great power comes great responsibility" 
 - Stan Lee
 ```
-
-
-

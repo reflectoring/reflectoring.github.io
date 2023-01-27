@@ -431,7 +431,7 @@ public @interface CsvToPerson {
 
 JUnit5 parameterized tests help us avoid duplicate tests and provide the ability to execute the same test several times using different inputs.
 
-Since you have read the article to the end, I would like to give you a bonus - If you're using assertion frameworks like - [Fluent assertions for java](https://joel-costigliola.github.io/assertj/) you can pass the Consumer that holds the assertion itself as an argument.
+Since you have read the article to the end, I would like to give you a bonus - If you're using assertion frameworks like - [Fluent assertions for java](https://joel-costigliola.github.io/assertj/) you can pass the Consumer as an argument that holds the assertion itself.
 
 ```java
 @ParameterizedTest

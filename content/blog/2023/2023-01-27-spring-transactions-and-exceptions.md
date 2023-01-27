@@ -7,7 +7,7 @@ authors: [arpendu]
 excerpt: "Spring Transactions are quite popular among developers. However, most of us are unaware of the right ways to configure it. In this article, we will demistify this concept."
 image: images/stock/0129-transaction-1200x628.jpg
 url: spring-transactions-and-exceptions
-popup: false
+popup: true
 
 ---
 

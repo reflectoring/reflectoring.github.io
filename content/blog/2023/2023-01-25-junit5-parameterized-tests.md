@@ -24,7 +24,7 @@ The behaviour of your source code depends on the parameters passed. For example 
 
 ## Setup
 
-Just like the mad titan Thanos who is fond of accessing powers, you can access the power of parameterized tests in JUnit5 using the below maven dependency -
+Just like the mad titan Thanos who is fond of accessing powers, you can access the power of parameterized tests in JUnit5 using the below maven dependency
 
 ```xml
 <dependency>
@@ -74,7 +74,7 @@ In the next section, let’s learn about the various arguments sources provided 
 
 ## Sources Of Arguments
 
-JUnit5 provides a few source annotations Following sub-sections provide an overview and an example for the same.
+JUnit5 offers a number of source annotations. The following sections provide a brief overview and an example for some of these annotations.
 
 ### @ValueSource
 
@@ -91,7 +91,7 @@ void checkAlphanumeric(String word) {
 
 ### @NullSource & @EmptySource
 
-Let's say when verifying if the user has supplied all the required fields (username and password in a login function). We check the provided fields are not null, not empty or not blank using the annotations -
+Let's say when verifying if the user has supplied all the required fields (username and password in a login function). We check the provided fields are not null, not empty or not blank using the annotations
 
 - `@NullSource` & `@EmptySource` in unit tests will help us supply the source code with null, empty and blank values and verify the behaviour of your source code.
 
@@ -226,7 +226,7 @@ void checkCsvSource(int number, String expected) {
 
 ### @CsvFileSource
 
-This annotation lets us use comma-separated value (CSV) files from the `classpath` or the `local file system`. Similar to @CsvSource, here also, each CSV record results in one execution of the parameterized test. It also supports various other attributes - `numLinesToSkip`, `useHeadersInDisplayName`, `lineSeparator`, `delimiter` etc.
+This annotation lets us use comma-separated value (CSV) files from the `classpath` or the local file system. Similar to @CsvSource, here also, each CSV record results in one execution of the parameterized test. It also supports various other attributes - `numLinesToSkip`, `useHeadersInDisplayName`, `lineSeparator`, `delimiter` etc.
 
 ```java
 @ParameterizedTest
@@ -345,7 +345,7 @@ public class ArgumentsSourceTest {
 
 ### Argument Conversion
 
-Different argument conversions made available by the JUnit5 are -
+Different argument conversions made available by the JUnit5 are
 
 - **Widening Primitive Conversion** - 
 
@@ -413,7 +413,7 @@ For a reason, if you don't want to use the implicit argument conversion, then yo
 
 #### @ArgumentsAccessor
 
-By default, each argument provided to a `@ParameterizedTest` method corresponds to a `single method parameter`. Due to this, when argument sources that supply a large number of arguments can lead to large method signatures.
+By default, each argument provided to a `@ParameterizedTest` method corresponds to a single method parameter. Due to this, when argument sources that supply a large number of arguments can lead to large method signatures.
 To solve this problem, we can use `ArgumentsAccessor` instead of declaring multiple parameters. The type conversion is supported as discussed in Implicit conversion above.
 
 ```java

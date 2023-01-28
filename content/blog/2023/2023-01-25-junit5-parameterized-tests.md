@@ -12,9 +12,8 @@ url: JUnit5 parameterized tests
 
 If you’re reading this article, it means you’re already well-versed with `JUnit`.
 
-> Let me give you a summary on `JUnit` - In software development, we developers write code which does something simple as designing a person’s profile (where you left/right swipe 😉) or as complex as making a payment (in a banking system).
-> <br> When we develop these features, we tend to write unit tests. As the name suggests, the only purpose of the unit tests is to make sure the smallest of small parts of the code are behaving the way we expected. If the execution of the unit test fails for any reason, it means we have modified the desired functionality (or we like to call it broken functionality).
-> <br> One such tool available for writing unit tests is JUnit. These unit tests are tiny programs, yet so powerful and execute in a (Thanos) snap. If you like to learn more about `JUnit5` (also known as JUnit Jupiter), please check out - [junit5 article here](https://reflectoring.io/junit5/)
+Let me give you a summary on `JUnit` - In software development, we developers write code which does something simple as designing a person’s profile (where you left/right swipe 😉) or as complex as making a payment (in a banking system).
+When we develop these features, we tend to write unit tests. As the name suggests, the only purpose of the unit tests is to make sure the smallest of small parts of the code are behaving the way we expected. If the execution of the unit test fails for any reason, it means we have modified the desired functionality (or we like to call it broken functionality). One such tool available for writing unit tests is JUnit. These unit tests are tiny programs, yet so powerful and execute in a (Thanos) snap. If you like to learn more about `JUnit5` (also known as JUnit Jupiter), please check out - [junit5 article here](https://reflectoring.io/junit5/)
 
 Now that we know about JUnits. Let us now concentrate on the topic (for which you started to read this blog) - Parameterized tests in JUnit5. The development teams like to write reusable, loosely coupled source code using methods or classes.
 The behaviour of your source code depends on the parameters passed. For example - The sum method in a `Calculator` class can work with integer and float values.
@@ -36,8 +35,6 @@ Just like the mad titan Thanos who is fond of accessing powers, you can access t
 </dependency>
 ```
 
-**Please note**: Version `5.9.2` is the latest version available while writing this article. You can always check the latest version of - [Maven dependency here](https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params)
-
 Let’s do some coding, shall we?
 
 ## Our First Parameterized Test
@@ -54,7 +51,8 @@ public class ValueSourceTest {
 	@ParameterizedTest
 	@ValueSource(ints = { 2, 4 })
 	void checkEvenNumber(int number) {
-		assertEquals(0, number % 2, "Supplied number is not an even number");
+		assertEquals(0, number % 2, 
+		             "Supplied number is not an even number");
 	}
 }
 ```
@@ -86,7 +84,8 @@ It is one of the simple sources. It accepts a single array of literal values. Th
 @ParameterizedTest
 @ValueSource(strings = { "a1", "b2" })
 void checkAlphanumeric(String word) {
-	assertTrue(StringUtils.isAlphanumeric(word), "Supplied word is not alpha-numeric");
+	assertTrue(StringUtils.isAlphanumeric(word), 
+			   "Supplied word is not alpha-numeric");
 }
 ```
 
@@ -140,28 +139,33 @@ This annotation allows us to load the inputs from one or more factory methods of
 ```java
 // Note: The test will try to load the supplied method
 @ParameterizedTest
-@MethodSource("checkExplicitMethodSource_args")
+@MethodSource("checkExplicitMethodSourceArgs")
 void checkExplicitMethodSource(String word) {
-   assertTrue(StringUtils.isAlphanumeric(word), "Supplied word is not alpha-numeric");
+   assertTrue(StringUtils.isAlphanumeric(word), 
+              "Supplied word is not alpha-numeric");
 }
 
-static Stream<String> checkExplicitMethodSource_args() {
-   return Stream.of("a1", "b2");
+static Stream<String> checkExplicitMethodSourceArgs() {
+   return Stream.of("a1", 
+                    "b2");
 }
 ```
 
 - **Implicit method source** - The test will search for the source method that matches the test-case method name.
 
 ```java
-// Note: The test will search for the source method that matches the test-case method name
+// Note: The test will search for the source method 
+// that matches the test-case method name
 @ParameterizedTest
 @MethodSource
 void checkImplicitMethodSource(String word) {
-  assertTrue(StringUtils.isAlphanumeric(word), "Supplied word is not alpha-numeric");
+	assertTrue(StringUtils.isAlphanumeric(word), 
+               "Supplied word is not alpha-numeric");
 }
 
 static Stream<String> checkImplicitMethodSource() {
-  return Stream.of("a1", "b2");
+  return Stream.of("a1", 
+                   "b2");
 }
 ```
 
@@ -172,11 +176,12 @@ static Stream<String> checkImplicitMethodSource() {
 @ParameterizedTest
 @MethodSource
 void checkMultiArgumentsMethodSource(int number, String expected) {
-  assertEquals(StringUtils.equals(expected, "even") ? 0 : 1, number % 2);
+	assertEquals(StringUtils.equals(expected, "even") ? 0 : 1, number % 2);
 }
 
 static Stream<Arguments> checkMultiArgumentsMethodSource() {
-  	return Stream.of(Arguments.of(2, "even"), Arguments.of(3, "odd"));
+  	return Stream.of(Arguments.of(2, "even"), 
+	                 Arguments.of(3, "odd"));
 }
 ```
 
@@ -185,9 +190,11 @@ static Stream<Arguments> checkMultiArgumentsMethodSource() {
 ```java
 // Note: The test will try to load the external method
 @ParameterizedTest
-@MethodSource("source.method.ExternalMethodSource#checkExternalMethodSource_args")
+@MethodSource(
+"source.method.ExternalMethodSource#checkExternalMethodSourceArgs")
 void checkExternalMethodSource(String word) {
-	assertTrue(StringUtils.isAlphanumeric(word), "Supplied word is not alpha-numeric");
+	assertTrue(StringUtils.isAlphanumeric(word), 
+               "Supplied word is not alpha-numeric");
 }
 ```
 
@@ -196,8 +203,9 @@ package source.method;
 import java.util.stream.Stream;
 
 public class ExternalMethodSource {
-	static Stream<String> checkExternalMethodSource_args() {
-		return Stream.of("a1", "b2");
+	static Stream<String> checkExternalMethodSourceArgs() {
+		return Stream.of("a1", 
+		                 "b2");
 	}
 }
 ```
@@ -209,9 +217,10 @@ This annotation will allow us to pass argument lists as comma-separated values (
 ```java
 @ParameterizedTest
 @CsvSource({ "2, even", 
-			 "3, odd"})
+             "3, odd"})
 void checkCsvSource(int number, String expected) {
-	assertEquals(StringUtils.equals(expected, "even") ? 0 : 1, number % 2);
+	assertEquals(StringUtils.equals(expected, "even") 
+	             ? 0 : 1, number % 2);
 }
 ```
 
@@ -221,9 +230,12 @@ This annotation lets us use comma-separated value (CSV) files from the `classpat
 
 ```java
 @ParameterizedTest
-@CsvFileSource(files = "src/test/resources/csv-file-source.csv", numLinesToSkip = 1)
+@CsvFileSource(
+  files = "src/test/resources/csv-file-source.csv", 
+  numLinesToSkip = 1)
 void checkCsvFileSource(int number, String expected) {
-	assertEquals(StringUtils.equals(expected, "even") ? 0 : 1, number % 2);
+	assertEquals(StringUtils.equals(expected, "even") 
+				 ? 0 : 1, number % 2);
 }
 ```
 
@@ -241,6 +253,18 @@ This annotation provides a convenient way to use `Enum` constants as test-case a
 Attributes supported -
 
 - value - The enum class type, example - `ChronoUnit.class`
+```java
+package java.time.temporal;
+
+public enum ChronoUnit implements TemporalUnit {
+	SECONDS("Seconds", Duration.ofSeconds(1)),
+	MINUTES("Minutes", Duration.ofSeconds(60)),
+    HOURS("Hours", Duration.ofSeconds(3600)),
+	DAYS("Days", Duration.ofSeconds(86400)),
+	//12 other units
+}
+```
+The `ChronoUnit` is an enum type that contains standard date period units.
 
 ```java
 @ParameterizedTest
@@ -249,6 +273,7 @@ void checkEnumSourceValue(ChronoUnit unit) {
    assertNotNull(unit);
 }
 ```
+`@EnumSource` will pass all 16 `ChronoUnit` enums as an argument in this example.
 
 - names - The names of enum constants to provide, or regular expression to select the names, example - `DAYS` or `^.*DAYS$`
 
@@ -272,17 +297,21 @@ public class ArgumentsSourceTest {
 	@ParameterizedTest
 	@ArgumentsSource(ExternalArgumentsProvider.class)
 	void checkExternalArgumentsSource(int number, String expected) {
-		assertEquals(StringUtils.equals(expected, "even") ? 0 : 1, number % 2,
-					"Supplied number " + number + " is not an " + expected + " number");
+		assertEquals(StringUtils.equals(expected, "even") 
+					? 0 : 1, number % 2, 
+					"Supplied number " + number + 
+					" is not an " + expected + " number");
 	}
 }
 
 public class ExternalArgumentsProvider implements ArgumentsProvider {
 
 	@Override
-	public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+	public Stream<? extends Arguments> provideArguments(
+		ExtensionContext context) throws Exception {
+
 		return Stream.of(Arguments.of(2, "even"), 
-						 Arguments.of(3, "odd"));
+			             Arguments.of(3, "odd"));
 	}
 }
 ```
@@ -295,15 +324,20 @@ public class ArgumentsSourceTest {
 	@ParameterizedTest
 	@ArgumentsSource(NestedArgumentsProvider.class)
 	void checkNestedArgumentsSource(int number, String expected) {
-		assertEquals(StringUtils.equals(expected, "even") ? 0 : 1, number % 2,
-				"Supplied number " + number + " is not an " + expected + " number");
+		assertEquals(StringUtils.equals(expected, "even") 
+                    ? 0 : 1, number % 2,
+			     	"Supplied number " + number + 
+					" is not an " + expected + " number");
 	}
 
 	static class NestedArgumentsProvider implements ArgumentsProvider {
 
 		@Override
-		public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
-			return Stream.of(Arguments.of(2, "even"), Arguments.of(3, "odd"));
+		public Stream<? extends Arguments> provideArguments(
+			ExtensionContext context) throws Exception {
+
+			return Stream.of(Arguments.of(2, "even"),
+                         	 Arguments.of(3, "odd"));
 		}
 	}
 }
@@ -313,7 +347,7 @@ public class ArgumentsSourceTest {
 
 Different argument conversions made available by the JUnit5 are -
 
-- **Widening Primitive Conversion** - The parameterized test annotated with `@ValueSource(ints = { 1, 2, 3 })` can be declared to accept an argument of type int, long, float, or double.
+- **Widening Primitive Conversion** - 
 
 ```java
 @ParameterizedTest
@@ -322,8 +356,9 @@ void checkWideningArgumentConversion(long number) {
 	assertEquals(0, number % 2);
 }
 ```
+The parameterized test annotated with `@ValueSource(ints = { 1, 2, 3 })` can be declared to accept an argument of type int, long, float, or double.
 
-- **Implicit Conversion** - JUnit5 provides several built-in implicit type converters. The conversion depends on the declared method argument type. Example - The parameterized test annotated with `@ValueSource(strings = "DAYS")` converted implicitly to an argument type `ChronoUnit`.
+- **Implicit Conversion** - 
 
 ```java
 @ParameterizedTest
@@ -332,8 +367,9 @@ void checkImplicitArgumentConversion(ChronoUnit argument) {
 	assertNotNull(argument.name());
 }
 ```
+JUnit5 provides several built-in implicit type converters. The conversion depends on the declared method argument type. Example - The parameterized test annotated with `@ValueSource(strings = "DAYS")` converted implicitly to an argument type `ChronoUnit`.
 
-- **Fallback String-to-Object Conversion** - JUnit5 provides a fallback mechanism for automatic conversion from a `String` to a given `target type` if the target type declares exactly one suitable factory method or a factory constructor. Example - The parameterized test annotated with `@ValueSource(strings = { "Name1", "Name2" })` can be declared to accept an argument of type `Person` that contains a single field `name` of type string.
+- **Fallback String-to-Object Conversion** - 
 
 ```java
 @ParameterizedTest
@@ -350,24 +386,28 @@ public class Person {
 	//Getters & Setters
 }
 ```
+JUnit5 provides a fallback mechanism for automatic conversion from a `String` to a given `target type` if the target type declares exactly one suitable factory method or a factory constructor. Example - The parameterized test annotated with `@ValueSource(strings = { "Name1", "Name2" })` can be declared to accept an argument of type `Person` that contains a single field `name` of type string.
 
-- **Explicit Conversion** - For a reason, if you don't want to use the implicit argument conversion, then you can use `@ConvertWith` annotation to define your argument converter. Example - The parameterized test annotated with `@ValueSource(ints = { 100 })` can be declared to accept an argument of type String using `StringSimpleArgumentConverter.class` which converts an integer to string type.
+- **Explicit Conversion** - 
 
 ```java
 @ParameterizedTest
 @ValueSource(ints = { 100 })
-void checkExplicitArgumentConversion(@ConvertWith(StringSimpleArgumentConverter.class) String argument) {
+void checkExplicitArgumentConversion(
+	@ConvertWith(StringSimpleArgumentConverter.class) String argument) {
 	assertEquals("100", argument);
 }
 
 public class StringSimpleArgumentConverter extends SimpleArgumentConverter {
 
 	@Override
-	protected Object convert(Object source, Class<?> targetType) throws ArgumentConversionException {
+	protected Object convert(Object source, Class<?> targetType) 
+		throws ArgumentConversionException {
 		return String.valueOf(source);
 	}
 }
 ```
+For a reason, if you don't want to use the implicit argument conversion, then you can use `@ConvertWith` annotation to define your argument converter. Example - The parameterized test annotated with `@ValueSource(ints = { 100 })` can be declared to accept an argument of type String using `StringSimpleArgumentConverter.class` which converts an integer to string type.
 
 ### Argument Aggregation
 
@@ -381,7 +421,8 @@ To solve this problem, we can use `ArgumentsAccessor` instead of declaring multi
 @CsvSource({ "John, 20", 
 		     "Harry, 30" })
 void checkArgumentsAccessor(ArgumentsAccessor arguments) {
-	Person person = new Person(arguments.getString(0), arguments.getInteger(1));
+	Person person = new Person(arguments.getString(0), 
+							   arguments.getInteger(1));
 	assertTrue(person.getAge() > 19, person.getName() + " is a teenager");
 }
 ```
@@ -390,66 +431,54 @@ void checkArgumentsAccessor(ArgumentsAccessor arguments) {
 
 We saw using an `ArgumentsAccessor` can access the @ParameterizedTest method’s arguments directly. What if we want to declare the same ArgumentsAccessor in multiple tests? JUnit5 solves this by providing custom, reusable aggregators.
 
-- **@AggregateWith** - Implement the `ArgumentsAggregator` interface and register it via the `@AggregateWith` annotation in the @ParameterizedTest method. When we execute the test, it provides the aggregation result as an argument for the corresponding test. The implementation of ArgumentsAggregator can be an external class or a static nested class.
+- **@AggregateWith** - 
 
 ```java
 @ParameterizedTest
 @CsvSource({ "John, 20", 
 			 "Harry, 30" })
-void checkArgumentsAggregator(@AggregateWith(PersonArgumentsAggregator.class) Person person) {
+void checkArgumentsAggregator(
+	@AggregateWith(PersonArgumentsAggregator.class) Person person) {
 	assertTrue(person.getAge() > 19, person.getName() + " is a teenager");
 }
 
 public class PersonArgumentsAggregator implements ArgumentsAggregator {
 
 	@Override
-	public Object aggregateArguments(ArgumentsAccessor arguments, ParameterContext context)
-			throws ArgumentsAggregationException {
-		return new Person(arguments.getString(0), arguments.getInteger(1));
+	public Object aggregateArguments(ArgumentsAccessor arguments, 
+		ParameterContext context) throws ArgumentsAggregationException {
+
+		return new Person(arguments.getString(0),       
+                          arguments.getInteger(1));
 	}
 }
 ```
+Implement the `ArgumentsAggregator` interface and register it via the `@AggregateWith` annotation in the @ParameterizedTest method. When we execute the test, it provides the aggregation result as an argument for the corresponding test. The implementation of ArgumentsAggregator can be an external class or a static nested class.
 
-- **Custom Annotation** - When we see we are repeating `@AggregateWith(PersonArgumentsAggregator.class)` declaration for each test, we can create a custom annotation such as `@CsvToPerson` that can be meta-annotated with `@AggregateWith(PersonArgumentsAggregator.class)` to have a similar effect.
+## Bonus
+Since you have read the article to the end, I would like to give you a bonus - If you're using assertion frameworks like - [Fluent assertions for java](https://joel-costigliola.github.io/assertj/) you can pass the `java.util.function.Consumer` as an argument that holds the assertion itself.
 
 ```java
 @ParameterizedTest
-@CsvSource({ "John, 20", 
-             "Harry, 30" })
-void checkCustomAggregatorAnnotation(@CsvToPerson Person person) {
-	assertTrue(person.getAge() > 19, person.getName() + " is a teenager");
+@MethodSource("checkNumberArgs")
+void checkNumber(int number, Consumer<Integer> consumer) {
+	consumer.accept(number);	
 }
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-@AggregateWith(PersonArgumentsAggregator.class)
-public @interface CsvToPerson {
+static Stream<Arguments> checkNumberArgs() {	
+	Consumer<Integer> evenConsumer = 
+			i -> Assertions.assertThat(i % 2).isZero();
+	Consumer<Integer> oddConsumer = 
+			i -> Assertions.assertThat(i % 2).isEqualTo(1);
+
+	return Stream.of(Arguments.of(2, evenConsumer), 
+		             Arguments.of(3, oddConsumer));
 }
 ```
 
 ## Summary
 
-JUnit5 parameterized tests help us avoid duplicate tests and provide the ability to execute the same test several times using different inputs.
-
-Since you have read the article to the end, I would like to give you a bonus - If you're using assertion frameworks like - [Fluent assertions for java](https://joel-costigliola.github.io/assertj/) you can pass the Consumer as an argument that holds the assertion itself.
-
-```java
-@ParameterizedTest
-@MethodSource("checkNumber_args")
-void checkNumber(int number, Consumer<Integer> consumer) {
-	consumer.accept(number);	
-}
-
-static Stream<Arguments> checkNumber_args() {	
-	Consumer<Integer> evenConsumer = i -> Assertions.assertThat(i % 2).isZero();
-	Consumer<Integer> oddConsumer = i -> Assertions.assertThat(i % 2).isEqualTo(1);
-
-	return Stream.of(Arguments.of(2, evenConsumer), 
-		         Arguments.of(3, oddConsumer));
-}
-```
-
-I hope you can explore further and achieve great things.
+JUnit5 parameterized tests help us avoid duplicate tests and provide the ability to execute the same test several times using different inputs. I hope you can explore further and achieve great things.
 
 Always remember -
 

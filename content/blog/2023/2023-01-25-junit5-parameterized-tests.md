@@ -1,29 +1,37 @@
 ---
 title: "JUnit 5 Parameterized tests"
 categories: ["Java"]
-date: 2023-01-25 00:00:00
+date: 2023-01-29 00:00:00 +1100
 authors: ["pralhad"]
 description: "Parameterized tests with JUnit 5."
-image: //TODO
-url: JUnit5 parameterized tests
+image: images/stock/0010-gray-lego-1200x628-branded.jpg
+url: tutorial-JUnit5-parameterized-tests
 ---
-
-## Introduction
 
 If you’re reading this article, it means you’re already well-versed with `JUnit`.
 
-Let me give you a summary on `JUnit` - In software development, we developers write code which does something simple as designing a person’s profile (where you left/right swipe 😉) or as complex as making a payment (in a banking system).
-When we develop these features, we tend to write unit tests. As the name suggests, the only purpose of the unit tests is to make sure the smallest of small parts of the code are behaving the way we expected. If the execution of the unit test fails for any reason, it means we have modified the desired functionality (or we like to call it broken functionality). One such tool available for writing unit tests is JUnit. These unit tests are tiny programs, yet so powerful and execute in a (Thanos) snap. If you like to learn more about `JUnit5` (also known as JUnit Jupiter), please check out - [JUnit5 article here](https://reflectoring.io/junit5/)
+Let me give you a summary of `JUnit` - In software development, we developers write code which does something simple as designing a person’s profile or as complex as making a payment (in a banking system).
+When we develop these features, we tend to write unit tests.
+As the name suggests, the main purpose of unit tests is to ensure that small, individual parts of code are functioning as expected.
+If the execution of the unit test fails for any reason, it means the functionality is not working as intended.
+One such tool available for writing unit tests is JUnit.
+These unit tests are tiny programs, yet so powerful and execute in a (Thanos) snap. If you like to learn more about `JUnit 5` (also known as JUnit Jupiter),
+please check out - [JUnit5 article here](https://reflectoring.io/junit5/)
 
-Now that we know about JUnits. Let us now concentrate on the topic (for which you started to read this blog) - Parameterized tests in JUnit5.
+Now that we know about JUnit. Let's now focus on the topic of parameterized tests in JUnit 5.
 The parameterized tests solve the most common problems while developing a test framework for any old/new functionalities.
 
 - Writing a test case for every possible input becomes easy.
-- A single test case accepts multiple inputs to test the source code, which helps in reducing test code duplication.
-- By checking the single test case, we can confidently say that all the possible scenarios have been covered, which helps us to maintain better code coverage.
+- A single test case can accept multiple inputs to test the source code, helping to reduce code duplication.
+- By running a single test case with multiple inputs, we can be confident that all possible scenarios have been covered and maintain better code coverage.
 
-The development teams like to write reusable, loosely coupled source code using methods or classes. The behaviour of your source code depends on the parameters passed. For example - The sum method in a `Calculator` class can work with integer and float values.
-`JUnit5` has built the parameterized tests capability on a similar thought process, where we are testing the source code by writing a single test case that can accept different inputs. For the above case, we write a single sum test case that takes integer and float inputs (Comparing test implementation for the sum in the prior versions of JUnit5, we had to write a sum test case that accepts only integer inputs. And for float inputs, we must create a second test case. This whole process of creating a new test method per input increases code duplication).
+Development teams aim to create source code that is both reusable and loosely coupled by utilizing methods and classes.
+The way the code functions is affected by the parameters passed to it.
+For example, the `sum` method in a Calculator class is able to process both integer and float values.
+`JUnit 5` has introduced the ability to perform parameterized tests, which enables testing the source code using a single test case that
+can accept different inputs. This allows for more efficient testing,
+as previously in older versions of JUnit, separate test cases had to be created for each input type,
+leading to a lot of code repetition.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/core-java/junit5-parameterized-tests" %}}
 
@@ -402,7 +410,7 @@ If we have `String` arguments and the source method we are testing accepts `Inte
 
 Different argument conversions made available by the JUnit5 are
 
-- **Widening Primitive Conversion** -
+- **Widening Primitive Conversion**
 
 ```java
 @ParameterizedTest
@@ -414,7 +422,7 @@ void checkWideningArgumentConversion(long number) {
 
 The parameterized test annotated with `@ValueSource(ints = { 1, 2, 3 })` can be declared to accept an argument of type int, long, float, or double.
 
-- **Implicit Conversion** -
+- **Implicit Conversion**
 
 ```java
 @ParameterizedTest
@@ -426,7 +434,7 @@ void checkImplicitArgumentConversion(ChronoUnit argument) {
 
 JUnit5 provides several built-in implicit type converters. The conversion depends on the declared method argument type. Example - The parameterized test annotated with `@ValueSource(strings = "DAYS")` converted implicitly to an argument type `ChronoUnit`.
 
-- **Fallback String-to-Object Conversion** -
+- **Fallback String-to-Object Conversion**
 
 ```java
 @ParameterizedTest
@@ -446,7 +454,7 @@ public class Person {
 
 JUnit5 provides a fallback mechanism for automatic conversion from a `String` to a given `target type` if the target type declares exactly one suitable factory method or a factory constructor. Example - The parameterized test annotated with `@ValueSource(strings = { "Name1", "Name2" })` can be declared to accept an argument of type `Person` that contains a single field `name` of type string.
 
-- **Explicit Conversion** -
+- **Explicit Conversion**
 
 ```java
 @ParameterizedTest
@@ -490,7 +498,7 @@ void checkArgumentsAccessor(ArgumentsAccessor arguments) {
 
 We saw using an `ArgumentsAccessor` can access the @ParameterizedTest method’s arguments directly. What if we want to declare the same ArgumentsAccessor in multiple tests? JUnit5 solves this by providing custom, reusable aggregators.
 
-- **@AggregateWith** -
+- **@AggregateWith**
 
 ```java
 @ParameterizedTest
@@ -539,11 +547,9 @@ static Stream<Arguments> checkNumberArgs() {
 
 ## Summary
 
-JUnit5 parameterized tests help us avoid duplicate tests and provide the ability to execute the same test several times using different inputs. I hope you can explore further and achieve great things.
-
-Always remember -
-
-```
-"With great power comes great responsibility" 
-- Stan Lee
-```
+JUnit5's parameterized tests feature allows for efficient testing by eliminating
+the need for duplicate test cases and providing the capability to run the same test multiple times with varying inputs.
+his not only saves time and effort for the development team, but also increases the coverage and effectiveness of the testing process.
+Additionally, this feature allows for more comprehensive testing of the source code, as it can be tested with a wider range of inputs,
+increasing the chances of identifying any potential bugs or issues.
+Overall, JUnit5's parameterized tests are a valuable tool for improving the quality and reliability of the code.

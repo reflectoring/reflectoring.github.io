@@ -13,12 +13,17 @@ url: JUnit5 parameterized tests
 If you’re reading this article, it means you’re already well-versed with `JUnit`.
 
 Let me give you a summary on `JUnit` - In software development, we developers write code which does something simple as designing a person’s profile (where you left/right swipe 😉) or as complex as making a payment (in a banking system).
-When we develop these features, we tend to write unit tests. As the name suggests, the only purpose of the unit tests is to make sure the smallest of small parts of the code are behaving the way we expected. If the execution of the unit test fails for any reason, it means we have modified the desired functionality (or we like to call it broken functionality). One such tool available for writing unit tests is JUnit. These unit tests are tiny programs, yet so powerful and execute in a (Thanos) snap. If you like to learn more about `JUnit5` (also known as JUnit Jupiter), please check out - [junit5 article here](https://reflectoring.io/junit5/)
+When we develop these features, we tend to write unit tests. As the name suggests, the only purpose of the unit tests is to make sure the smallest of small parts of the code are behaving the way we expected. If the execution of the unit test fails for any reason, it means we have modified the desired functionality (or we like to call it broken functionality). One such tool available for writing unit tests is JUnit. These unit tests are tiny programs, yet so powerful and execute in a (Thanos) snap. If you like to learn more about `JUnit5` (also known as JUnit Jupiter), please check out - [JUnit5 article here](https://reflectoring.io/junit5/)
 
-Now that we know about JUnits. Let us now concentrate on the topic (for which you started to read this blog) - Parameterized tests in JUnit5. The development teams like to write reusable, loosely coupled source code using methods or classes.
-The behaviour of your source code depends on the parameters passed. For example - The sum method in a `Calculator` class can work with integer and float values.
+Now that we know about JUnits. Let us now concentrate on the topic (for which you started to read this blog) - Parameterized tests in JUnit5.
+The parameterized tests solve the most common problems while developing a test framework for any old/new functionalities.
 
-`JUnit5` has built the parameterized tests capability on a similar thought process, where we are testing the source code by writing a single test case that can accept different inputs. For the above case, we write a single sum test case that takes integer and float inputs (compared to 2 test cases for sum_integer and sum_float in prior versions of JUnit5).
+- Writing a test case for every possible input becomes easy.
+- A single test case accepts multiple inputs to test the source code, which helps in reducing test code duplication.
+- By checking the single test case, we can confidently say that all the possible scenarios have been covered, which helps us to maintain better code coverage.
+
+The development teams like to write reusable, loosely coupled source code using methods or classes. The behaviour of your source code depends on the parameters passed. For example - The sum method in a `Calculator` class can work with integer and float values.
+`JUnit5` has built the parameterized tests capability on a similar thought process, where we are testing the source code by writing a single test case that can accept different inputs. For the above case, we write a single sum test case that takes integer and float inputs (Comparing test implementation for the sum in the prior versions of JUnit5, we had to write a sum test case that accepts only integer inputs. And for float inputs, we must create a second test case. This whole process of creating a new test method per input increases code duplication).
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/core-java/junit5-parameterized-tests" %}}
 
@@ -57,9 +62,9 @@ public class ValueSourceTest {
 }
 ```
 
-In the above example, the annotation `@ValueSource` provides multiple inputs to the `checkAlphanumeric()` method. Let's say we are writing the same using JUnit4, we had to write 2 test cases to cover the inputs 2 and 4 even though their result (assertion) is exactly the same.
+In the above example, the annotation `@ValueSource` provides multiple inputs to the `checkEvenNumber()` method. Let's say we are writing the same using JUnit4, we had to write 2 test cases to cover the inputs 2 and 4 even though their result (assertion) is exactly the same.
 
-When we execute test ValueSourceTest, what we see -
+When we execute the ValueSourceTest, what we see:
 
 ```
 ValueSourceTest
@@ -78,7 +83,7 @@ JUnit5 offers a number of source annotations. The following sections provide a b
 
 ### @ValueSource
 
-It is one of the simple sources. It accepts a single array of literal values. The literal values supported by `@ValueSource` are - `short, byte, int, long, float, double, char, boolean, String and Class`.
+It is one of the simple sources. It accepts a single array of literal values. The literal values supported by `@ValueSource` are: `short, byte, int, long, float, double, char, boolean, String and Class`.
 
 ```java
 @ParameterizedTest
@@ -226,7 +231,9 @@ void checkCsvSource(int number, String expected) {
 
 ### @CsvFileSource
 
-This annotation lets us use comma-separated value (CSV) files from the `classpath` or the local file system. Similar to @CsvSource, here also, each CSV record results in one execution of the parameterized test. It also supports various other attributes - `numLinesToSkip`, `useHeadersInDisplayName`, `lineSeparator`, `delimiter` etc.
+This annotation lets us use comma-separated value (CSV) files from the `classpath` or the local file system. Similar to @CsvSource, here also, each CSV record results in one execution of the parameterized test. It also supports various other attributes - `numLinesToSkip`, `useHeadersInDisplayName`, `lineSeparator`, `delimiterString` etc.
+
+#### Example 1: Basic implementation
 
 ```java
 @ParameterizedTest
@@ -241,10 +248,33 @@ void checkCsvFileSource(int number, String expected) {
 
 **src/test/resources/csv-file-source.csv**
 
-```
+```csv
 NUMBER, ODD_EVEN
 2, even
 3, odd
+```
+
+#### Example 2: Using attributes
+
+```java
+@ParameterizedTest
+@CsvFileSource(
+	files = "src/test/resources/csv-file-source_attributes.csv", 
+	delimiterString = "|",
+	lineSeparator = "||",
+	numLinesToSkip = 1)
+void checkCsvFileSourceAttributes(int number, String expected) {
+	assertEquals(StringUtils.equals(expected, "even") 
+                 ? 0 : 1, number % 2);
+}
+```
+
+**src/test/resources/csv-file-source_attributes.csv**
+
+```csv
+|| NUMBER | ODD_EVEN ||
+|| 2 	  | even     ||
+|| 3 	  | odd	     ||
 ```
 
 ### @EnumSource
@@ -253,6 +283,7 @@ This annotation provides a convenient way to use `Enum` constants as test-case a
 Attributes supported -
 
 - value - The enum class type, example - `ChronoUnit.class`
+
 ```java
 package java.time.temporal;
 
@@ -345,9 +376,33 @@ public class ArgumentsSourceTest {
 
 ### Argument Conversion
 
+First of all, imagine without `Argument Conversion`, we would have to deal with the argument data type ourselves.
+
+Source method: `Calculator` class
+
+```java
+public int sum(int a, int b) {
+	return a + b;
+}
+```
+
+Testcase:
+
+```java
+@ParameterizedTest
+@CsvSource({ "10, 5, 15" })
+void calculateSum(String num1, String num2, String expected) {
+	int actual = calculator.sum(Integer.parseInt(num1), 
+								Integer.parseInt(num2));
+	assertEquals(Integer.parseInt(expected), actual);
+}
+```
+
+If we have `String` arguments and the source method we are testing accepts `Integers`, it becomes our responsibility to make this conversion before calling the source method.
+
 Different argument conversions made available by the JUnit5 are
 
-- **Widening Primitive Conversion** - 
+- **Widening Primitive Conversion** -
 
 ```java
 @ParameterizedTest
@@ -356,9 +411,10 @@ void checkWideningArgumentConversion(long number) {
 	assertEquals(0, number % 2);
 }
 ```
+
 The parameterized test annotated with `@ValueSource(ints = { 1, 2, 3 })` can be declared to accept an argument of type int, long, float, or double.
 
-- **Implicit Conversion** - 
+- **Implicit Conversion** -
 
 ```java
 @ParameterizedTest
@@ -367,9 +423,10 @@ void checkImplicitArgumentConversion(ChronoUnit argument) {
 	assertNotNull(argument.name());
 }
 ```
+
 JUnit5 provides several built-in implicit type converters. The conversion depends on the declared method argument type. Example - The parameterized test annotated with `@ValueSource(strings = "DAYS")` converted implicitly to an argument type `ChronoUnit`.
 
-- **Fallback String-to-Object Conversion** - 
+- **Fallback String-to-Object Conversion** -
 
 ```java
 @ParameterizedTest
@@ -386,9 +443,10 @@ public class Person {
 	//Getters & Setters
 }
 ```
+
 JUnit5 provides a fallback mechanism for automatic conversion from a `String` to a given `target type` if the target type declares exactly one suitable factory method or a factory constructor. Example - The parameterized test annotated with `@ValueSource(strings = { "Name1", "Name2" })` can be declared to accept an argument of type `Person` that contains a single field `name` of type string.
 
-- **Explicit Conversion** - 
+- **Explicit Conversion** -
 
 ```java
 @ParameterizedTest
@@ -407,6 +465,7 @@ public class StringSimpleArgumentConverter extends SimpleArgumentConverter {
 	}
 }
 ```
+
 For a reason, if you don't want to use the implicit argument conversion, then you can use `@ConvertWith` annotation to define your argument converter. Example - The parameterized test annotated with `@ValueSource(ints = { 100 })` can be declared to accept an argument of type String using `StringSimpleArgumentConverter.class` which converts an integer to string type.
 
 ### Argument Aggregation
@@ -431,7 +490,7 @@ void checkArgumentsAccessor(ArgumentsAccessor arguments) {
 
 We saw using an `ArgumentsAccessor` can access the @ParameterizedTest method’s arguments directly. What if we want to declare the same ArgumentsAccessor in multiple tests? JUnit5 solves this by providing custom, reusable aggregators.
 
-- **@AggregateWith** - 
+- **@AggregateWith** -
 
 ```java
 @ParameterizedTest
@@ -453,9 +512,11 @@ public class PersonArgumentsAggregator implements ArgumentsAggregator {
 	}
 }
 ```
+
 Implement the `ArgumentsAggregator` interface and register it via the `@AggregateWith` annotation in the @ParameterizedTest method. When we execute the test, it provides the aggregation result as an argument for the corresponding test. The implementation of ArgumentsAggregator can be an external class or a static nested class.
 
 ## Bonus
+
 Since you have read the article to the end, I would like to give you a bonus - If you're using assertion frameworks like - [Fluent assertions for java](https://joel-costigliola.github.io/assertj/) you can pass the `java.util.function.Consumer` as an argument that holds the assertion itself.
 
 ```java
@@ -486,4 +547,3 @@ Always remember -
 "With great power comes great responsibility" 
 - Stan Lee
 ```
-

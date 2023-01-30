@@ -1,9 +1,9 @@
 ---
-title: "JUnit 5 Parameterized tests"
+title: "JUnit 5 Parameterized Tests"
 categories: ["Java"]
 date: 2023-01-29 00:00:00 +1100
 authors: ["pralhad"]
-description: "Parameterized tests with JUnit 5."
+description: "Parameterized Tests with JUnit 5."
 image: images/stock/0010-gray-lego-1200x628-branded.jpg
 url: tutorial-JUnit5-parameterized-tests
 ---
@@ -549,7 +549,7 @@ static Stream<Arguments> checkNumberArgs() {
 
 JUnit5's parameterized tests feature allows for efficient testing by eliminating
 the need for duplicate test cases and providing the capability to run the same test multiple times with varying inputs.
-his not only saves time and effort for the development team, but also increases the coverage and effectiveness of the testing process.
+This not only saves time and effort for the development team, but also increases the coverage and effectiveness of the testing process.
 Additionally, this feature allows for more comprehensive testing of the source code, as it can be tested with a wider range of inputs,
 increasing the chances of identifying any potential bugs or issues.
 Overall, JUnit5's parameterized tests are a valuable tool for improving the quality and reliability of the code.

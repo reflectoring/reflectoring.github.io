@@ -5,7 +5,7 @@ date: 2023-01-31 00:00:00 +1100
 modified: 2023-01-31 00:00:00 +1100
 authors: [arpendu]
 excerpt: "Spring Transactions are quite popular among developers. However, most of us are unaware of the right ways to configure it. In this article, we will demistify this concept."
-image: images/stock/0129-transaction-1200x628.jpg
+image: images/stock/0029-contract-1200x628-branded.jpg
 url: spring-transactions-and-exceptions
 popup: true
 

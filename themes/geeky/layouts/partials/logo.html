@@ -44,7 +44,7 @@
   width="{{$logoWidth | default $logo.Width}}" height="{{$logo.Height}}" {{end}} src="{{.Scratch.Get `logo`}}"
   alt="{{ site.Title }}" onerror="this.onerror=null;this.src='{{.Scratch.Get `logo_fallback`}}'">
 </a>
-<div class="supported-by">proudly supported by <a href="https://www.xapling.de" target="_blank"><img src="/images/xapling.png" width="40"/></a></div>
+<div class="supported-by">supported by <a href="http://www.xapling.com" target="_blank"><img src="/images/xapling.png" width="40"/></a></div>
 </div>
 {{ else }}
 {{ warnf "%q not found" $logoPath }}

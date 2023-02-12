@@ -388,6 +388,300 @@ Other options include:
 redirect to `/invalidSession` when multiple logins are detected.
 
 
+#### Configure Multiple Filter Chains
+Spring Security allows us to have more than one mutually exclusive security configuration which gives us more control over the application.
+To demonstrate this, in addition to the login config, lets create REST endpoints for a Library application that uses H2 database to store books based on genre.
+Our `BookController` class will have an endpoint defined as below:
+````java
+@GetMapping("/library/books")
+    public ResponseEntity<List<BookDto>> getBooks(@RequestParam String genre) {
+        return ResponseEntity.ok().body(bookService.getBook(genre));
+    }
+````
+
+In order to secure this endpoint, lets use basic auth and configure details in our `SecurityConfiguration` class:
+````java
+package com.reflectoring.security.config;
+
+import com.reflectoring.security.exception.UserAuthenticationErrorHandler;
+import com.reflectoring.security.exception.UserForbiddenErrorHandler;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+@EnableConfigurationProperties(BasicAuthProperties.class)
+public class SecurityConfiguration {
+
+    private final BasicAuthProperties props;
+
+    public SecurityConfiguration(BasicAuthProperties props) {
+        this.props = props;
+    }
+
+    @Bean
+    @Order(1)
+    public SecurityFilterChain bookFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .antMatcher("/library/**")
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/library/**").hasRole("USER").anyRequest().authenticated()
+                .and()
+                .httpBasic()
+                .and()
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(userAuthenticationErrorHandler())
+                        .accessDeniedHandler(new UserForbiddenErrorHandler()));
+
+        return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new InMemoryUserDetailsManager(props.getUserDetails());
+    }
+
+    @Bean
+    public AuthenticationEntryPoint userAuthenticationErrorHandler() {
+        UserAuthenticationErrorHandler userAuthenticationErrorHandler =
+                new UserAuthenticationErrorHandler();
+        userAuthenticationErrorHandler.setRealmName("Basic Authentication");
+        return userAuthenticationErrorHandler;
+    }
+
+    public static final String[] ENDPOINTS_WHITELIST = {
+            "/css/**",
+            "/login",
+            "/home"
+    };
+    public static final String LOGIN_URL = "/login";
+    public static final String LOGIN_FAIL_URL = LOGIN_URL + "?error";
+    public static final String DEFAULT_SUCCESS_URL = "/home";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+
+    @Bean
+    @Order(1)
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // Requests
+        http.authorizeRequests(request -> request.antMatchers(ENDPOINTS_WHITELIST).permitAll()
+                        .anyRequest().authenticated())
+                // CSRF
+                .csrf().disable()
+                .antMatcher("/login")
+                //.formLogin(Customizer.withDefaults())
+                .formLogin(form -> form
+                        .loginPage(LOGIN_URL)
+                        .loginProcessingUrl(LOGIN_URL)
+                        .failureUrl(LOGIN_FAIL_URL)
+                        .usernameParameter(USERNAME)
+                        .passwordParameter(PASSWORD)
+                        .defaultSuccessUrl(DEFAULT_SUCCESS_URL))
+                //.logout(Customizer.withDefaults())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .logoutSuccessUrl(LOGIN_URL + "?logout"))
+                //.sessionManagement(Customizer.withDefaults())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                        .invalidSessionUrl("/invalidSession")
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(true));
+
+        return http.build();
+    }
+}
+````
+Let's take a closer look at the changes made:
+1. Two SecurityFilterChain methods `bookFilterChain()` and `filterChain()` methods with `@Order(1)` and `@Order(2)` have been added.
+Both these filter chains will be separately executed in the mentioned order.
+2. Since both filter chains cater to separate endpoints, different credentials have been created in `application.yml`
+````yaml
+auth:
+  users:
+    loginadmin:
+      role: admin
+      password: loginpass
+    bookadmin:
+      role: user
+      password: bookpass
+````
+For Spring Security to consider these credentials, we will customize the `UserDetailsService` as :
+````java
+@Bean
+    public UserDetailsService userDetailsService() {
+        return new InMemoryUserDetailsManager(props.getUserDetails());
+    }
+````
+3. To cater to `AuthenticationException` and `AccessDeniedException`, we have customized `exceptionHandling()` and configured custom classes
+`UserAuthenticationErrorHandler` and `UserForbiddenErrorHandler`.
+
+With this configuration, the postman response for the REST endpoint looks like this:
+**SUCCESS**
+
+{{% image alt="settings" src="images/posts/getting-started-with-spring-security/postman01.JPG" %}}
+
+**UNAUTHORISED**
+
+{{% image alt="settings" src="images/posts/getting-started-with-spring-security/postman-unauth.JPG" %}}
+
+**FORBIDDEN**
+
+{{% image alt="settings" src="images/posts/getting-started-with-spring-security/postman-forbidden.JPG" %}}
+
+#### Additional endpoints secured by default
+Once spring security is configured for a request matcher, additional endpoints added get secured by default.
+For instance, let's add an endpoint to the `BookController` class
+````java
+@GetMapping("/library/books/all")
+    public ResponseEntity<List<BookDto>> getAllBooks() {
+        return ResponseEntity.ok().body(bookService.getAllBooks());
+    }
+````
+For this endpoint to be called successfully, we need to provide basic auth credentials.
+**NO CREDENTIALS**
+
+{{% image alt="settings" src="images/posts/getting-started-with-spring-security/postman-nocreds.JPG" %}}
+
+**SUCCESS**
+
+{{% image alt="settings" src="images/posts/getting-started-with-spring-security/postman-creds.JPG" %}}
+
+#### Unsecure Specific Endpoints
+Among a list of endpoints that match the request pattern, we can specify a list of endpoints that need to be excluded from the security configuration.
+To achieve this, let's first add another endpoint to our `BookController` class and add the configuration:
+````java
+@GetMapping("/library/info")
+    public ResponseEntity<LibraryInfo> getInfo() {
+        return ResponseEntity.ok().body(bookService.getLibraryInfo());
+    }
+````
+
+````java
+@Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().antMatchers("/library/info");
+    }
+````
+Now, we should be able to hit the endpoint from postman without passing credentials:
+
+{{% image alt="settings" src="images/posts/getting-started-with-spring-security/unsecure.JPG" %}}
+
+#### Custom Filters
+Spring Security provides all the security by executing a sequence of filters in a chain. There might be cases where we might need to add additional check to the request
+before it reaches the controller. In order to facilitate this, Spring provides us with the below methods that help us add a custom filter at the desired position in the chain
+- **addFilterBefore(Filter filter, Class<? extends Filter> beforeFilter)** : This method lets us add the custom filter before the specified filter in the chain.
+- **addFilterAfter(Filter filter, Class<? extends Filter> afterFilter)** : This method lets us add the custom filter after the specified filter in the chain.
+- **addFilterAt(Filter filter, Class<? extends Filter> atFilter)** : This method lets us add the custom filter at the specified filter in the chain.
+
+Let's take a look at its configuration:
+````java
+@Configuration
+@EnableWebSecurity
+@EnableConfigurationProperties(BasicAuthProperties.class)
+public class SecurityConfiguration {
+
+    private final BasicAuthProperties props;
+
+    public SecurityConfiguration(BasicAuthProperties props) {
+        this.props = props;
+    }
+
+    @Bean
+    @Order(1)
+    public SecurityFilterChain bookFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .antMatcher("/library/**")
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/library/**").hasRole("USER").anyRequest().authenticated()
+                .and()
+                .httpBasic()
+                .and()
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(userAuthenticationErrorHandler())
+                        .accessDeniedHandler(new UserForbiddenErrorHandler()));
+
+        http.addFilterBefore(customHeaderValidatorFilter(), BasicAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    public CustomHeaderValidatorFilter customHeaderValidatorFilter() {
+        return new CustomHeaderValidatorFilter();
+    }
+}
+````
+
+In order to write a custom filter, we will create a class `CustomHeaderValidatorFilter` that extends a special filter `OncePerRequestFilter` created for this purpose.
+This makes sure that our filter gets invoked only once for every request.
+
+````java
+public class CustomHeaderValidatorFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(CustomHeaderValidatorFilter.class);
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("Custom filter called...");
+        if (StringUtils.isEmpty(request.getHeader("X-Application-Name"))) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json");
+            response.getOutputStream().println(new ObjectMapper().writeValueAsString(CommonException.headerError()));
+        } else {
+            filterChain.doFilter(request, response);
+        }
+    }
+}
+
+````
+Here, we have overridden the `doFilterInternal()` and added our logic. We can verify that this filter gets wired to our `SecurityConfiguration` class from the logs
+
+````text
+Will secure Ant [pattern='/library/**'] with [org.springframework.security.web.session.DisableEncodeUrlFilter@669469c9,
+ org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7f39ad3f,
+ org.springframework.security.web.context.SecurityContextPersistenceFilter@1b901f7b,
+ org.springframework.security.web.header.HeaderWriterFilter@64f49b3,
+ org.springframework.security.web.authentication.logout.LogoutFilter@628aea61,
+ com.reflectoring.security.CustomHeaderValidatorFilter@3d40a3b4,
+ org.springframework.security.web.authentication.www.BasicAuthenticationFilter@8d23cd8,
+ org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1a1e38ab,
+ org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5bfdabf3,
+ org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7524125c,
+ org.springframework.security.web.session.SessionManagementFilter@3dc14f80,
+ org.springframework.security.web.access.ExceptionTranslationFilter@58c16efd,
+ org.springframework.security.web.access.intercept.FilterSecurityInterceptor@5ab06829]
+````
+
+Here the filter gets called for all endpoints `/library/**`. To further restrict it to cater to specific endpoints, we can modify the Filter class as :
+````java
+@Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();// return all string of URL right after the PORT!!=> must be a context path also.
+        return path.startsWith("/library/books/all");
+    }
+````
+With this change, for the endpoint `/library/books/all` the `doFilterInternal()` method will not be executed.
+The same concept applies to filters added using `addFilterAt()` and `addFilterAfter()` methods.
+
 
 
 

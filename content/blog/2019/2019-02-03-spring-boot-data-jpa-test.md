@@ -29,7 +29,7 @@ This tutorial is part of a series:
 3. [Testing JPA Queries with Spring Boot and `@DataJpaTest`](/spring-boot-data-jpa-test/)
 4. [Integration Tests with `@SpringBootTest`](/spring-boot-test/)
 
-**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://transactions.sendowl.com/stores/13745/194393) (if you buy through this link, I get a cut). 
+**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://www.copecart.com/products/521411d4/p/tomhombergs) (if you buy through this link, I get a cut). 
 
 ## Dependencies
 
@@ -551,6 +551,6 @@ in XML or SQL files.
 What experience have you made with the different approaches? 
 Let me know in the comments!
 
-**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://transactions.sendowl.com/stores/13745/194393) (if you buy through this link, I get a cut). 
+**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://www.copecart.com/products/521411d4/p/tomhombergs) (if you buy through this link, I get a cut). 
 
  

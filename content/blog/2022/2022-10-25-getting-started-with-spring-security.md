@@ -682,6 +682,157 @@ Here the filter gets called for all endpoints `/library/**`. To further restrict
 With this change, for the endpoint `/library/books/all` the `doFilterInternal()` method will not be executed.
 The same concept applies to filters added using `addFilterAt()` and `addFilterAfter()` methods.
 
+#### Role-based Authorization
+In the context of Spring Security, authorization occurs after the user is authenticated. In the previous sections, we have looked at an example where we handled `AccessDeniedException`.
+This exception is thrown when user authorization fails. In our example we have defined roles for the users `bookadmin` and `loginadmin` in `application.yml` as :
+````yaml
+auth:
+  users:
+    loginadmin:
+      role: admin
+      password: loginpass
+    bookadmin:
+      role: user
+      password: bookpass
+````
+To ensure authorization, we have configured spring security to have:
+````java
+public class SecurityConfiguration {
+    @Bean
+    @Order(1)
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeRequests(request -> request.antMatchers(ENDPOINTS_WHITELIST).hasRole("ADMIN")
+                .anyRequest().authenticated());
+        /* Code continued.. */
+        return http.build();
+    }
+}
 
+````
+
+and
+
+````java
+public class SecurityConfiguration {
+    @Bean
+    @Order(2)
+    public SecurityFilterChain bookFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .antMatcher("/library/**")
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/library/**").hasRole("USER").anyRequest().authenticated();
+        /* Code continued.. */
+        return http.build();
+    }
+}
+
+````
+
+Let's take a look at the methods that can be used to authorize endpoints.
+- hasRole(String role) : Returns `true` if the current principal has the specified role. eg. `hasRole("ADMIN")`
+- hasAnyRole(String... roles): Multiple roles can be specified. If any of the role matches, returns `true`. eg. `hasAnyRole("ADMIN", "USER")`
+NOTE : In both the above cases `ROLE_` prefix is added by default to the provided role string.
+- hasAuthority(String authority) : Returns `true` if the current principal has the specified authority. eg. `hasAuthority(ROLE_ADMIN)`
+- hasAnyAuthority(String... authorities): Multiple authorities can be specified. If any of the authority matches, returns `true`. eg. `hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")`
+
+{{% info title="Additional Notes on Spring Security Access Control" %}}
+- All the methods discussed above use spEL for more complex access control support. This allows us to use specific classes for web and method security to access values such as current principal.
+To understand how spEL can be leveraged refer to this [Spring documentation](https://docs.spring.io/spring-security/reference/servlet/authorization/expression-based.html)
+- Also note that if authorization does not apply to an endpoint, a set of endpoints or the entire security configuration itself, we can use methods `permitAll()` and `denyAll()` to allow or deny all roles and authorities respectively.
+{{% /info %}}
+
+Let's take a look at an example configuration that uses different authorities for different endpoints
+````java
+public class SecurityConfiguration {
+    @Bean
+    public SecurityFilterChain bookFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/library/info").permitAll()
+                .antMatchers(HttpMethod.GET, "/library/books").hasRole("USER")
+                .antMatchers(HttpMethod.GET, "/library/books/all").hasRole("ADMIN");
+
+        return http.build();
+    }
+}
+````
+
+#### @PreAuthorize and @PostAuthorize
+Spring Security allows us to extend the security mechanism to specific methods via @PreAuthorize and @PostAuthorize annotations.
+These annotations use spEL to evaluate and authorize based on the arguments passed.
+- @PreAuthorize: Authorizes the condition before executing the method.
+- @PostAuthorize: Authorizes the condition after the method is executed.
+In order to get these annotations to work, we need to add `@EnableGlobalMethodSecurity(prePostEnabled = true)` to our configuration class as below:
+
+````java
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableConfigurationProperties(BasicAuthProperties.class)
+public class SecurityConfiguration {
+}
+````
+
+Next, let's look at how to use these annotations. Here we have used @PreAuthorize in our Controller class.
+````java
+@Controller
+public class BookController {
+
+    private static final Logger log = LoggerFactory.getLogger(BookController.class);
+
+    private final BookService bookService;
+
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
+
+    @GetMapping("/library/books")
+    @PreAuthorize("#user == authentication.principal.username")
+    public ResponseEntity<List<BookDto>> getBooks(@RequestParam String genre, @RequestParam String user) {
+        return ResponseEntity.ok().body(bookService.getBook(genre));
+    }
+
+    @GetMapping("/library/books/all")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<List<BookDto>> getAllBooks() {
+        return ResponseEntity.ok().body(bookService.getAllBooks());
+    }
+}
+````
+
+Here, we have demonstrated two ways in which @PreAuthorize annotations can be used.
+1. `@PreAuthorize("#user == authentication.principal.username")` : The logged-in username is passed as a request param and verified with the current principal.
+For a successful match, postman returns a valid response.
+
+{{% image alt="settings" src="images/posts/getting-started-with-spring-security/Preauth-success.JPG" %}}
+
+In case of an error, we get:
+
+{{% image alt="settings" src="images/posts/getting-started-with-spring-security/Preauth-error.JPG" %}}
+
+2. `@PreAuthorize("hasRole('ROLE_USER')")` : We get a success response only if the currently principal has a USER role.
+
+Next, let's use @PostAuthorize in our Repository class.
+````java
+@Repository
+public interface BookRepository extends JpaRepository<Book, Long> {
+
+
+    List<Book> findByGenre(String genre);
+
+    @PostAuthorize("returnObject.size() > 0")
+    List<Book> findAll();
+}
+
+````
+Here, the `returnObject` denotes `List<Book>`. Therefore, when `size()` returns 0, we will get an error response.
+
+#### DB-based authentication and Authorization
+In all of our previous examples, we have configured users, password, roles via InMemoryUserDetailsManager. 
+Spring Security allows us to customise the authentication and authorization process.
+In this section, we will configure these details in a database and look at how the security configuration changes.
 
 

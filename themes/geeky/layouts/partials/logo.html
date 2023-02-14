@@ -38,6 +38,14 @@
 {{ end }}
 <!-- /checking gif/svg -->
 
+<div class="logo-wrapper">
+<a href="{{ site.BaseURL | relLangURL }}">
+<img loading="eager" decoding="async" class="img-fluid logo" {{if ne $logoExt `.svg`}}
+  width="{{$logoWidth | default $logo.Width}}" height="{{$logo.Height}}" {{end}} src="{{.Scratch.Get `logo`}}"
+  alt="{{ site.Title }}" onerror="this.onerror=null;this.src='{{.Scratch.Get `logo_fallback`}}'">
+</a>
+<div class="supported-by">supported by <a href="http://www.xapling.com" target="_blank"><img src="/images/xapling.png" width="40"/></a></div>
+</div>
 {{ else }}
 {{ warnf "%q not found" $logoPath }}
 {{ $logoPath = false }}
@@ -45,8 +53,6 @@
 {{ end }} <!-- / checking logo path -->
 
 {{if $logoPath }}
-
-<img loading="preload" decoding="async" class="img-fluid mb-0" width="{{replace $logoWidth `x` `` | default $logoDefaultWidth}}" height="{{$logoDefaultHeight}}" src="{{.Scratch.Get `logo`}}" alt="{{ site.Title }}" onerror="this.onerror=null;this.src='{{.Scratch.Get `logo_fallback`}}'">
 
 <!-- logo text -->
 {{ else if site.Params.logo_text }}

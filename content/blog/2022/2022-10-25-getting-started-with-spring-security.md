@@ -1,8 +1,8 @@
 ---
 title: "Getting started with Spring Security and Spring Boot"
 categories: ["Spring"]
-date: 2022-10-27 00:00:00 +1100
-modified: 2022-10-27 00:00:00 +1100
+date: 2023-02-20 00:00:00 +1100
+modified: 2023-02-20 00:00:00 +1100
 authors: ["ranjani"]
 description: "Getting started with Spring Security and Spring Boot"
 image: images/stock/0101-keylock-1200x628-branded.jpg

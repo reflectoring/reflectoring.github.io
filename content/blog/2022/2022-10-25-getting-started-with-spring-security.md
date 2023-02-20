@@ -18,17 +18,17 @@ We will further try to customize them and analyse their impact on a sample Sprin
 
 ## Creating a Sample Application
 
-We will begin by building a Spring Boot application from scratch and look at how spring configures and provides security.
+Let's begin by building a Spring Boot application from scratch and look at how spring configures and provides security.
 Let's create an application from [spring starter](https://start.spring.io/) and add the minimum required dependencies.
 
 {{% image alt="settings" src="images/posts/getting-started-with-spring-security/initializr.JPG" %}}
 
-Let's generate the project and import it into our IDE and configure it to run on port 8083.
+Once the project is generated, we will import it into our IDE and configure it to run on port 8083.
 ````text
 mvnw clean verify spring-boot:run (for Windows)
 ./mvnw clean verify spring-boot:run (for Linux)
 ````
-Once the application has successfully started, we should see a login page on startup.
+On application startup, we should see a login page.
 
 {{% image alt="settings" src="images/posts/getting-started-with-spring-security/login.JPG" %}}
 

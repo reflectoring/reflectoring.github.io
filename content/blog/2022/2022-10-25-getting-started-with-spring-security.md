@@ -65,24 +65,33 @@ To understand how the default configuration works, we first need to take a look 
 ### Servlet Filters
 Let's take a closer look at the console logs on application startup. 
 We see that the `DefaultSecurityFilterChain` triggers a chain of filters **before the request reaches the `DispatcherServlet`.**
+**The `DispatcherServlet` is a key component in the web framework that handles incoming web requests and dispatches them to the appropriate handler for processing.**
 ````text
 o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with 
 [org.springframework.security.web.session.DisableEncodeUrlFilter@2fd954f, 
-org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5731d3a, 
+org.springframework.security.web.context.request.async.
+  WebAsyncManagerIntegrationFilter@5731d3a, 
 org.springframework.security.web.context.SecurityContextPersistenceFilter@5626d18c, 
 org.springframework.security.web.header.HeaderWriterFilter@52b3bf03, 
 org.springframework.security.web.csrf.CsrfFilter@30c4e352, 
 org.springframework.security.web.authentication.logout.LogoutFilter@37ad042b, 
-org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@1e60b459, 
-org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@29b40b3, 
-org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@6a0f2853, 
-org.springframework.security.web.authentication.www.BasicAuthenticationFilter@254449bb, 
+org.springframework.security.web.authentication.
+UsernamePasswordAuthenticationFilter@1e60b459, 
+org.springframework.security.web.authentication.ui.
+  DefaultLoginPageGeneratingFilter@29b40b3, 
+org.springframework.security.web.authentication.ui.
+  DefaultLogoutPageGeneratingFilter@6a0f2853, 
+org.springframework.security.web.authentication.www.
+  BasicAuthenticationFilter@254449bb, 
 org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3dc95b8b, 
-org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2d55e826, 
-org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1eff3cfb, 
+org.springframework.security.web.servletapi.
+  SecurityContextHolderAwareRequestFilter@2d55e826, 
+org.springframework.security.web.authentication.
+  AnonymousAuthenticationFilter@1eff3cfb, 
 org.springframework.security.web.session.SessionManagementFilter@462abec3, 
 org.springframework.security.web.access.ExceptionTranslationFilter@6f8aba08, 
-org.springframework.security.web.access.intercept.FilterSecurityInterceptor@7ce85af2]
+org.springframework.security.web.access.intercept.
+  FilterSecurityInterceptor@7ce85af2]
 ````
 
 To understand how the `FilterChain` works, let's look at the flowchart from the [Spring Security documentation](https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-securityfilterchain)
@@ -233,6 +242,8 @@ Now that we are familiar with the details of how Spring Security works, let's un
 we briefly touched upon in the previous sections.
 
 ### Default configuration
+The `SpringBootWebSecurityConfiguration` class from the `org.springframework.boot.autoconfigure.security.servlet` package **provides a default set of spring security configurations for spring boot applications**.
+The decompiled version of this class looks like this:
 
 ````java
 class SpringBootWebSecurityConfiguration {
@@ -243,7 +254,8 @@ class SpringBootWebSecurityConfiguration {
 
         @Bean
         @Order(2147483642)
-        SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) 
+                throws Exception {
             ((AuthorizedUrl) http.authorizeRequests().anyRequest()).authenticated();
             http.formLogin();
             http.httpBasic();
@@ -252,7 +264,6 @@ class SpringBootWebSecurityConfiguration {
     }
 }
 ````
-The `SpringBootWebSecurityConfiguration` class provides a default set of **spring security configurations for spring boot applications**.
 Spring uses the below configurations to create the default `SecurityFilterChainBean`:
 1. `authorizeRequests()` restricts access based on `RequestMatcher` implementations. Here `authorizeRequests().anyRequest()` will allow all requests.
 To have more control over restricting access, we can specify URL patterns via `antMatchers()`.
@@ -293,10 +304,10 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests(request -> request.antMatchers(ENDPOINTS_WHITELIST).permitAll()
+        http.authorizeRequests(request -> 
+                request.antMatchers(ENDPOINTS_WHITELIST).permitAll()
                         .anyRequest().authenticated())
                 .csrf().disable()
-                //.formLogin(Customizer.withDefaults())
                 .formLogin(form -> form
                         .loginPage(LOGIN_URL)
                         .loginProcessingUrl(LOGIN_URL)
@@ -320,10 +331,10 @@ Similarly, we can customize the logout process too.
 ````java
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests(request -> request.antMatchers(ENDPOINTS_WHITELIST).permitAll()
+        http.authorizeRequests(request -> 
+                request.antMatchers(ENDPOINTS_WHITELIST).permitAll()
                         .anyRequest().authenticated())
                 .csrf().disable()
-                //.formLogin(Customizer.withDefaults())
                 .formLogin(form -> form
                         .loginPage(LOGIN_URL)
                         .loginProcessingUrl(LOGIN_URL)
@@ -331,7 +342,6 @@ Similarly, we can customize the logout process too.
                         .usernameParameter(USERNAME)
                         .passwordParameter(PASSWORD)
                         .defaultSuccessUrl(DEFAULT_SUCCESS_URL))
-                //.logout(Customizer.withDefaults())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .invalidateHttpSession(true)
@@ -347,10 +357,10 @@ Further, we can manage and configure sessions via Spring Security.
 ````java
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests(request -> request.antMatchers(ENDPOINTS_WHITELIST).permitAll()
+        http.authorizeRequests(request -> 
+                request.antMatchers(ENDPOINTS_WHITELIST).permitAll()
                         .anyRequest().authenticated())
                 .csrf().disable()
-                //.formLogin(Customizer.withDefaults())
                 .formLogin(form -> form
                         .loginPage(LOGIN_URL)
                         .loginProcessingUrl(LOGIN_URL)
@@ -358,13 +368,11 @@ Further, we can manage and configure sessions via Spring Security.
                         .usernameParameter(USERNAME)
                         .passwordParameter(PASSWORD)
                         .defaultSuccessUrl(DEFAULT_SUCCESS_URL))
-                //.logout(Customizer.withDefaults())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .logoutSuccessUrl(LOGIN_URL + "?logout"))
-                //.sessionManagement(Customizer.withDefaults())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                         .invalidSessionUrl("/invalidSession.htm")
@@ -423,7 +431,8 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .antMatcher("/library/**")
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/library/**").hasRole("USER").anyRequest().authenticated()
+                .antMatchers(HttpMethod.GET, "/library/**").hasRole("USER")
+                .anyRequest().authenticated()
                 .and()
                 .httpBasic()
                 .and()
@@ -461,13 +470,11 @@ public class SecurityConfiguration {
     @Bean
     @Order(2)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // Requests
-        http.authorizeRequests(request -> request.antMatchers(ENDPOINTS_WHITELIST).permitAll()
+        http.authorizeRequests(request -> 
+                request.antMatchers(ENDPOINTS_WHITELIST).permitAll()
                         .anyRequest().authenticated())
-                // CSRF
                 .csrf().disable()
                 .antMatcher("/login")
-                //.formLogin(Customizer.withDefaults())
                 .formLogin(form -> form
                         .loginPage(LOGIN_URL)
                         .loginProcessingUrl(LOGIN_URL)
@@ -475,13 +482,11 @@ public class SecurityConfiguration {
                         .usernameParameter(USERNAME)
                         .passwordParameter(PASSWORD)
                         .defaultSuccessUrl(DEFAULT_SUCCESS_URL))
-                //.logout(Customizer.withDefaults())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .logoutSuccessUrl(LOGIN_URL + "?logout"))
-                //.sessionManagement(Customizer.withDefaults())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                         .invalidSessionUrl("/invalidSession")
@@ -598,7 +603,8 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .antMatcher("/library/**")
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/library/**").hasRole("USER").anyRequest().authenticated()
+                .antMatchers(HttpMethod.GET, "/library/**").hasRole("USER")
+                .anyRequest().authenticated()
                 .and()
                 .httpBasic()
                 .and()
@@ -606,7 +612,8 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint(userAuthenticationErrorHandler())
                         .accessDeniedHandler(new UserForbiddenErrorHandler()));
 
-        http.addFilterBefore(customHeaderValidatorFilter(), BasicAuthenticationFilter.class);
+        http.addFilterBefore(customHeaderValidatorFilter(), 
+                BasicAuthenticationFilter.class);
 
         return http.build();
     }
@@ -624,14 +631,19 @@ This makes sure that **our filter gets invoked only once for every request**.
 ````java
 public class CustomHeaderValidatorFilter extends OncePerRequestFilter {
 
-    private static final Logger log = LoggerFactory.getLogger(CustomHeaderValidatorFilter.class);
+    private static final Logger log = LoggerFactory.getLogger
+            (CustomHeaderValidatorFilter.class);
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, 
+                                    HttpServletResponse response, 
+                                    FilterChain filterChain) 
+            throws ServletException, IOException {
         log.info("Custom filter called...");
         if (StringUtils.isEmpty(request.getHeader("X-Application-Name"))) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
-            response.getOutputStream().println(new ObjectMapper().writeValueAsString(CommonException.headerError()));
+            response.getOutputStream().println(new ObjectMapper().
+                    writeValueAsString(CommonException.headerError()));
         } else {
             filterChain.doFilter(request, response);
         }
@@ -643,16 +655,21 @@ Here, we have overridden the `doFilterInternal()` and added our logic. In this c
 `X-Application-Name` is passed in the request. Also, we can verify that this filter gets wired to our `SecurityConfiguration` class from the logs.
 
 ````text
-Will secure Ant [pattern='/library/**'] with [org.springframework.security.web.session.DisableEncodeUrlFilter@669469c9,
- org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7f39ad3f,
+Will secure Ant [pattern='/library/**'] with 
+[org.springframework.security.web.session.DisableEncodeUrlFilter@669469c9,
+ org.springframework.security.web.context.request.async.
+   WebAsyncManagerIntegrationFilter@7f39ad3f,
  org.springframework.security.web.context.SecurityContextPersistenceFilter@1b901f7b,
  org.springframework.security.web.header.HeaderWriterFilter@64f49b3,
  org.springframework.security.web.authentication.logout.LogoutFilter@628aea61,
  com.reflectoring.security.CustomHeaderValidatorFilter@3d40a3b4,
- org.springframework.security.web.authentication.www.BasicAuthenticationFilter@8d23cd8,
+ org.springframework.security.web.authentication.www.
+   BasicAuthenticationFilter@8d23cd8,
  org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1a1e38ab,
- org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5bfdabf3,
- org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7524125c,
+ org.springframework.security.web.servletapi.
+   SecurityContextHolderAwareRequestFilter@5bfdabf3,
+ org.springframework.security.web.authentication.
+   AnonymousAuthenticationFilter@7524125c,
  org.springframework.security.web.session.SessionManagementFilter@3dc14f80,
  org.springframework.security.web.access.ExceptionTranslationFilter@58c16efd,
  org.springframework.security.web.access.intercept.FilterSecurityInterceptor@5ab06829]
@@ -661,7 +678,8 @@ Will secure Ant [pattern='/library/**'] with [org.springframework.security.web.s
 Here the filter gets called for all endpoints `/library/**`. To further restrict it to cater to specific endpoints, we can modify the Filter class as :
 ````java
 @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) 
+            throws ServletException {
         String path = request.getRequestURI();
         return path.startsWith("/library/books/all");
     }
@@ -688,7 +706,8 @@ public class SecurityConfiguration {
     @Bean
     @Order(1)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests(request -> request.antMatchers(ENDPOINTS_WHITELIST).hasRole("ADMIN")
+        http.authorizeRequests(request -> 
+             request.antMatchers(ENDPOINTS_WHITELIST).hasRole("ADMIN")
                 .anyRequest().authenticated());
         /* Code continued.. */
         return http.build();
@@ -710,7 +729,8 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .antMatcher("/library/**")
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/library/**").hasRole("USER").anyRequest().authenticated();
+                .antMatchers(HttpMethod.GET, "/library/**").hasRole("USER")
+                .anyRequest().authenticated();
         /* Code continued.. */
         return http.build();
     }
@@ -779,7 +799,8 @@ public class BookController {
 
     @GetMapping("/library/books")
     @PreAuthorize("#user == authentication.principal.username")
-    public ResponseEntity<List<BookDto>> getBooks(@RequestParam String genre, @RequestParam String user) {
+    public ResponseEntity<List<BookDto>> getBooks(@RequestParam String genre, 
+                                                  @RequestParam String user) {
         return ResponseEntity.ok().body(bookService.getBook(genre));
     }
 
@@ -946,7 +967,8 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("TestCase4 Run the test with configured UserDetailsService")
-    @WithUserDetails(value = "bookadmin", userDetailsServiceBeanName = "userDetailsService")
+    @WithUserDetails(value = "bookadmin", 
+            userDetailsServiceBeanName = "userDetailsService")
     void testBookWithConfiguredUserDetails() throws Exception {
         mockMvc.perform(get("/library/books")
                         .param("genre", "Fantasy")
@@ -959,21 +981,24 @@ public class BookControllerTest {
     }
 
     @Test
-    @DisplayName("TestCase5 Fails when execution of CustomHeaderValidatorFilter does not meet the criteria")
-    @WithUserDetails(value = "bookadmin", userDetailsServiceBeanName = "userDetailsService")
+    @DisplayName("TestCase5 Fails when execution of CustomHeaderValidatorFilter " +
+            "does not meet the criteria")
+    @WithUserDetails(value = "bookadmin", 
+            userDetailsServiceBeanName = "userDetailsService")
     void failsIfMandatoryHeaderIsMissing() throws Exception {
         mockMvc.perform(get("/library/books")
                         .param("genre", "Fantasy")
                         .param("user", "bookadmin"))
-                //.header("X-Application-Name", "Library"))
                 .andDo(print())
                 .andExpect(status().isForbidden())
         ;
     }
 
     @Test
-    @DisplayName("TestCase6 Fails when preauthorization of current principal fails")
-    @WithUserDetails(value = "bookadmin", userDetailsServiceBeanName = "userDetailsService")
+    @DisplayName("TestCase6 Fails when preauthorization " +
+            "of current principal fails")
+    @WithUserDetails(value = "bookadmin", 
+            userDetailsServiceBeanName = "userDetailsService")
     void failsIfPreAuthorizeConditionFails() throws Exception {
         mockMvc.perform(get("/library/books")
                         .param("genre", "Fantasy")
@@ -985,7 +1010,6 @@ public class BookControllerTest {
     }
 
     @Test
-        //@WithUserDetails(value="bookadmin", userDetailsServiceBeanName="userDetailsService")
     @DisplayName("TestCase7 Fails when wrong basic auth credentials are applied")
     void testBookWithWrongCredentialsUserDetails() throws Exception {
         mockMvc.perform(get("/library/books")

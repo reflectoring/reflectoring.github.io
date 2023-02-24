@@ -136,7 +136,7 @@ For `AccessDeniedException`, this filter will delegate to `AccessDeniedHandler` 
 This filter is responsible for authorising every request that passes through the filter chain before the request hits the controller.
 
 ### Authentication
-Authentication is the process of verifying a user's credentials and ensuring his validity.
+Authentication is the process of verifying a user's credentials and ensuring their validity.
 Let's understand how the spring framework validates the default credentials created:
 
 **Step.1**: `UsernamePasswordAuthenticationFilter` gets called as a part of the security filter chain when FormLogin is enabled i.e when the request is made to the URL `/login`.
@@ -146,7 +146,7 @@ When an authentication attempt is made, the filter forwards the request to an `A
 **Step.2**: `UsernamePasswordAuthenticationToken` is an implementation of [`Authentication`](https://docs.spring.io/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/core/Authentication.html) interface.
 This class specifies that the authentication mechanism must be via username-password.
 
-**Step.3**: With the authentication details obtained, an `AuthenticationManger` tries to authenticate the request with the help of an appropriate implementation of 
+**Step.3**: With the authentication details obtained, an `AuthenticationManager` tries to authenticate the request with the help of an appropriate implementation of 
 `AuthenticationProvider` and a fully authenticated `Authentication` object is returned. The default implementation is the `DaoAuthenticationProvider` which retrieves user details from `UserDetailsService`.
 If authentication fails, `AuthenticationException` is thrown.
 
@@ -253,7 +253,7 @@ class SpringBootWebSecurityConfiguration {
 }
 ````
 The `SpringBootWebSecurityConfiguration` class provides a default set of **spring security configurations for spring boot applications**.
-Spring uses the below configurations to create the default `SecurityFilterChainBean`:
+Spring uses the above configurations to create the default `SecurityFilterChainBean`:
 1. `authorizeRequests()` restricts access based on `RequestMatcher` implementations. Here `authorizeRequests().anyRequest()` will allow all requests.
 To have more control over restricting access, we can specify URL patterns via `antMatchers()`.
 2. `authenticated()` requires that all endpoints called be authenticated before proceeding in the filter chain.
@@ -314,7 +314,7 @@ Instead of using the spring security login defaults, we can customize every aspe
 - `loginProcessingUrl` - The URL that validates username and password.
 - `failureUrl` - The URL to direct to in case the login fails.
 - `defaultSuccessUrl` - The URL to direct to on successful login. Here, we have created a custom `homePage.html` and its corresponding `HomeController` class.
-- `antmatchers()` - to filter out the URLs that will be a part of the login process.
+- `antMatchers()` - to filter out the URLs that will be a part of the login process.
 
 Similarly, we can customize the logout process too.
 ````java

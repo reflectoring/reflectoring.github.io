@@ -219,6 +219,7 @@ The `AccessDecisionManager` then uses the `getAuthority()` to decide if authoriz
 
 #### Granted Authorities vs Roles
 Spring Security provides authorization support via both granted authorities and roles using the `hasAuthority()` and `hasRole()` methods respectively.
+These methods are used for expression-based security and are a part of the interface `SecurityExpressionOperations`
 For most cases, both methods can be interchangeably used, the most notable difference being the `hasRole()` need not specify the ROLE prefix while the `hasAuthority()` needs the complete string to be explicitly specified.
 For instance, `hasAuthority("ROLE_ADMIN")` and `hasRole("ADMIN")` perform the same task.
 
@@ -579,7 +580,8 @@ Spring provides security by executing a sequence of filters in a chain. In cases
 before it reaches the controller, Spring Security provides us with the below methods that help us add a custom filter at the desired position in the chain.
 - **addFilterBefore(Filter filter, Class<? extends Filter> beforeFilter)**: This method lets us add the custom filter before the specified filter in the chain.
 - **addFilterAfter(Filter filter, Class<? extends Filter> afterFilter)**: This method lets us add the custom filter after the specified filter in the chain.
-- **addFilterAt(Filter filter, Class<? extends Filter> atFilter)**: This method lets us add the custom filter at the specified filter in the chain.
+- **addFilterAt(Filter filter, Class<? extends Filter> atFilter)**: This method lets us add the custom filter at the specified filter in the chain with the same priority. 
+Once the custom filter gets added, both the filters will get called in the filter chain (in no specific order).
 
 Let's take a look at a sample configuration:
 ````java
@@ -958,7 +960,7 @@ Further we have also used methods `authenticated()` to verify the authentication
 - When no user details are specified, the endpoint is not secured and therefore we get Unauthorized response.
 
 ### @WithUserDetails
-Instead of mocking the user, we could also use the `UserDetailsService` bean created in the configuration.
+Instead of mocking the user, we could also use the `UserDetailsService` bean created in the `SecurityConfiguration` class.
 ````java
 public class BookControllerTest {
 

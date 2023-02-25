@@ -219,8 +219,8 @@ The `AccessDecisionManager` then uses the `getAuthority()` to decide if authoriz
 
 #### Granted Authorities vs Roles
 Spring Security provides authorization support via both granted authorities and roles using the `hasAuthority()` and `hasRole()` methods respectively.
-These methods are used for expression-based security and are a part of the interface `SecurityExpressionOperations`
-For most cases, both methods can be interchangeably used, the most notable difference being the `hasRole()` need not specify the ROLE prefix while the `hasAuthority()` needs the complete string to be explicitly specified.
+These methods are used for expression-based security and are a part of the interface `SecurityExpressionOperations`.
+For most cases, both methods can be interchangeably used, **the most notable difference being the `hasRole()` need not specify the ROLE prefix while the `hasAuthority()` needs the complete string to be explicitly specified.**
 For instance, `hasAuthority("ROLE_ADMIN")` and `hasRole("ADMIN")` perform the same task.
 
 {{% info title="Additional Notes on Spring Authorization" %}}

@@ -1,11 +1,12 @@
 ---
 title: "Build CRUD APIs Using Apollo Server(Graphql), MongoDB and Node.Js"
 categories: ["Node"]
-date: 2023-13-03 00:00:00 +1100
+date: 2023-03-20 00:00:00 +1100
+modified: 2023-03-20 00:00:00 +1100
 authors: ["ajibade"]
 description: "In this article, we'll explore how to build a web server with GraphQL API (powered by Apollo Server), MongoDB persistence layer and Node.js"
 image: images/stock/0129-node-graphql-1200x628-branded.jpg
-url: node-url-shortener
+url: tutorial-graphql-apollo-server-nodejs-mongodb
 ---
 
 REST API is a widely used client-server communication protocol, but it has limitations when dealing with clients such as web, iOS, Android, Heroku, smart devices, etc. All of these have varying demands for data granularity, speed, and performance. GraphQL, on the other hand, excels in this area by allowing clients to define the structure of the data to be returned by the server, as well as allowing multiple resource requests in a single query call, which makes it faster and more efficient.
@@ -103,7 +104,7 @@ Apollo Server is the most commonly used implementation of GraphQL specification.
 
 Resolvers contain logic to fetch and process data from an API or a database.
 
-Here, let's define our server `schema`. Paste the following code in the `models/typedef.js` file:
+Here, let's define our server `schema`. Paste the following code in the `models/typeDef.js` file:
 
 ```javascript
 const gql = require("graphql-tag");

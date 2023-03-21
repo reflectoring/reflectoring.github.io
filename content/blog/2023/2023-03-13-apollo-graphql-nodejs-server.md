@@ -9,7 +9,7 @@ image: images/stock/0129-node-graphql-1200x628-branded.jpg
 url: tutorial-graphql-apollo-server-nodejs-mongodb
 ---
 
-REST API is a widely used client-server communication protocol, but it has limitations when dealing with clients such as web, iOS, Android, Heroku, smart devices, etc. All of these have varying demands for data granularity, speed, and performance. GraphQL, on the other hand, excels in this area by allowing clients to define the structure of the data to be returned by the server, as well as allowing multiple resource requests in a single query call, which makes it faster and more efficient.
+REST API is a widely used client-server communication protocol, but it has limitations when dealing with clients such as web, iOS, Android, smart devices, etc. All of these have varying demands for data granularity, speed, and performance. GraphQL, on the other hand, excels in this area by allowing clients to define the structure of the data to be returned by the server, as well as allowing multiple resource requests in a single query call, which makes it faster and more efficient.
 
 It’s like when a teacher keeps a class register with detailed information about each student, such as their name, age, favorite color, etc.
 
@@ -37,6 +37,12 @@ GraphQL is an excellent solution to a unique problem involving the creation and 
 - Large-scale applications with complex data requirements, GraphQL's ability to provide only the data that is needed for each query can greatly improve performance by reducing network overhead.
 - Application requires multiple clients with different data requirements, GraphQL's flexible nature makes it easier to manage and maintain a consistent API across different platforms and devices.
 - A hybrid pattern where applications access and manage data from multiple sources, For example, imagine a dashboard that displays data from multiple sources, such as logging services, backends for consumption statistics, and third-party analytics tools that capture end-user interactions.
+
+## Prerequisites:
+To follow along, you'll need the following:
+- Basic knowledge of JavaScript
+- Node and npm installed on your computer: A fundamental understanding of Node.js is required.
+- A Curious mind.
 
 ## Getting the Project Started
 
@@ -120,9 +126,9 @@ module.exports = { typeDefs };
 
 The type `Query` is the root of the `schema`. The above code defines a single field `greetings` of type String, GraphQL schema supports scalar types like String, Int, Float, Boolean, and ID so we can use them directly in our schema.
 
-We also used `graphql-tag` to parse our GraphQL query template.
+We also used `graphql-tag` this allows us write GraphQL queries and mutations as template literals which are then parsed as abstract syntax tree (AST) that represents the query. This AST can then be passed to a GraphQL client or server, such as Apollo. It allows us to embed GraphQL queries and mutations directly into our code in a simple and efficient manner.
 
-To access `typeDefs` outside the module, `typeDefs` template was exported using `module.exports`.
+ALso to access `typeDefs` outside the module, `typeDefs` template was exported using `module.exports`.
 
 Next, We need to tell the GraphQL server what to retrieve and how to process our query. To do this we will use resolvers.
 
@@ -454,8 +460,8 @@ const resolvers = {
   Query: {
     hello: () => "Hello from Reflectoring Blog",
     welcome: (parent, args) => `Hello ${args.name}`,
-    students: async () => await Student.find({}), // return array of students
-    student: async (parent, args) => await Student.findById(args.id), // return student by id
+    students: async () => await Student.find({}),
+    student: async (parent, args) => await Student.findById(args.id),
   },
   Mutation: {
     create: async (parent, args) => {

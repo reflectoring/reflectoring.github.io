@@ -541,8 +541,8 @@ const resolvers = {
   Query: {
     hello: () => "Hello from Reflectoring Blog",
     welcome: (parent, args) => `Hello ${args.name}`,
-    students: async () => await Student.find({}), // return array of students
-    student: async (parent, args) => await Student.findById(args.id), // return student by id
+    students: async () => await Student.find({}),
+    student: async (parent, args) => await Student.findById(args.id),
   },
   Mutation: {
     create: async (parent, args) => {
@@ -614,8 +614,8 @@ const resolvers = {
   Query: {
     hello: () => "Hello from Reflectoring Blog",
     welcome: (parent, args) => `Hello ${args.name}`,
-    students: async () => await Student.find({}), // return array of students
-    student: async (parent, args) => await Student.findById(args.id), // return student by id
+    students: async () => await Student.find({}),
+    student: async (parent, args) => await Student.findById(args.id),
   },
   Mutation: {
     create: async (parent, args) => {

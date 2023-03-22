@@ -114,8 +114,8 @@ HUGO_ENV = "staging"
   force = true
 
 [[redirects]]
-  from = "/spring-io"
-  to = "https://thombergs.gumroad.com/l/gyhdoca/spring-io"
+  from = "/javaland"
+  to = "https://thombergs.gumroad.com/l/gyhdoca/javaland"
   status = 301
   force = true
 

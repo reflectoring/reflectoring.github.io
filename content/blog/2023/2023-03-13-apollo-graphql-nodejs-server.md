@@ -269,7 +269,7 @@ In this section, we will use GraphQL `query` and `mutation` with a MongoDB datab
 
 ### Working with MongoDB in Apollo (Graphql) Server
 
-To use mongo for our database. It can be installed on either a [Mac](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/) or [Windows](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows/) machine. Here we will be using MongoDB Community Edition 6.0. I recommend installing with brew (on Mac) to do that in your terminal run the following:
+To use MongoDB for our database. It can be installed on either a [Mac](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/) or [Windows](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows/) machine. Here we will be using MongoDB Community Edition 6.0. I recommend installing with brew (on Mac) to do that in your terminal run the following:
 
 ```bash
 xcode-select --install  # installing XCode tools
@@ -284,11 +284,16 @@ Run the following command in the terminal to start MongoDB on macOS ([docs](http
 brew services start mongodb-community@6.0
 ```
 
-Mongo will start and be ready to use.
+MongoDB will start and be ready to use.
 
 To connect to MongoDB from our application, we will use the mongoose dependency previously installed.
+Here's a breakdown of how Mongoose interacts with MongoDB:
 
-To make the connection, add the following code to the `index.js` file:
+- To use Mongoose, we first need to connect to our MongoDB database using the `mongoose.connect()` method, which takes a URI string pointing to the database port.
+- After establishing the connection to the MongoDB database, we can define schemas and models. Schemas are blueprints for datatypes use to validate the data received in the request, while models are classes representing a collection of documents in the MongoDB database. Models serve as an interface to interact with the MongoDB collection.
+- Mongoose uses the created model to execute the request using its built-in methods like `find()`, `findOne()`, `updateOne()`, `findById()`, etc.
+
+To establish connection with MongoDB using Mongoose, add the following code to the `index.js` file:
 
 ```javascript
 const { ApolloServer } = require("@apollo/server");
@@ -321,11 +326,11 @@ startStandaloneServer(server, {
 });
 ```
 
-Above we defined `MONGO_URI` which points to our mongo database. MongoDB by default connects on port 27017. The last part of the `MONGO_URI` string is our database name. We created a database connection using our MongoDB URL.
+Above we defined `MONGO_URI` which points to our MongoDB database. MongoDB by default connects on port 27017. The last part of the `MONGO_URI` string is our database name. We created a database connection using our MongoDB URL.
 
 ### Creating Student Model
 
-We can map to a MongoDB collection by using mongoose to create models. To create a Student model for our application, navigate to the `models/Student.js` file and paste the following code:
+We can now map to our MongoDB collection by using mongoose to create schema and model. To create a Student model for our application, navigate to the `models/Student.js` file and paste the following code:
 
 ```javascript
 const mongoose = require("mongoose");

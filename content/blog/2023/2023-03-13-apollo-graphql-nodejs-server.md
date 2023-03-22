@@ -1,8 +1,8 @@
 ---
 title: "Build CRUD APIs Using Apollo Server(Graphql), MongoDB and Node.Js"
 categories: ["Node"]
-date: 2023-03-20 00:00:00 +1100
-modified: 2023-03-20 00:00:00 +1100
+date: 2023-03-22 00:00:00 +1100
+modified: 2023-03-22 00:00:00 +1100
 authors: ["ajibade"]
 description: "In this article, we'll explore how to build a web server with GraphQL API (powered by Apollo Server), MongoDB persistence layer and Node.js"
 image: images/stock/0129-node-graphql-1200x628-branded.jpg

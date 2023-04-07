@@ -9,9 +9,9 @@ url: jackson-jsonview
 ---
 
 The Jackson API is one of the best JSON parsers in Java. Spring integrates well with Jackson and with every
-new Spring release newer Jackson features get incorporated making the Spring Jackson support more flexible and powerful.
+new Spring release, newer Jackson features get incorporated making the Spring Jackson support more flexible and powerful.
 In this article, we will discuss one such annotation **@JsonView** that is supported from **Spring version 4.x and above**.
-To know more about Jackson improvements in Spring, refer to [this blogpost](https://spring.io/blog/2014/12/02/latest-jackson-integration-improvements-in-spring).
+To know more about Jackson improvements in Spring, refer to [this blog post](https://spring.io/blog/2014/12/02/latest-jackson-integration-improvements-in-spring).
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/jackson-jsonview" %}}
 
@@ -163,7 +163,7 @@ public class UserController {
 ````
 This configuration will allow only the **@JsonView mapped fields** to be updated in the POST and PATCH requests respectively. Other fields will be ignored.
 
-In the further sections we will look at a sample Spring Boot application to understand how to use `@JsonView` in the context of the use cases defined above.
+In the further sections, we will look at a sample Spring Boot application to understand how to use `@JsonView` in the context of the use cases defined above.
 
 ## What is Serialization and Deserialization
 - **Serialization** is the process of converting an object into a stream of bytes.
@@ -184,7 +184,7 @@ The `ObjectMapper` class uses **`MapperFeature.DEFAULT_VIEW_INCLUSION`** to dete
 **This configuration will determine whether the properties that are not annotated with @JsonView should be included during serialization and deserialization.**
 
 For the sample application, we will use the Spring Boot version 2.7.5 that internally uses [Jackson 2.13](https://fasterxml.github.io/jackson-databind/javadoc/2.13/com/fasterxml/jackson/databind/MapperFeature.html).
-**By default, the MapperFeature.DEFAULT_VIEW_INCLUSION is set to true which means when enabling a JSON View, non annotated fields also get serialized.**
+**By default, the MapperFeature.DEFAULT_VIEW_INCLUSION is set to true which means when enabling a JSON View, non-annotated fields also get serialized.**
 {{% image alt="settings" src="images/posts/spring-boot-jsonview/MapperFeature.JPG" %}}
 
 We can also verify the configuration defaults when the `JacksonAutoConfiguration` class gets registered using the below test:
@@ -206,7 +206,7 @@ public class JacksonAutoConfigTest {
     }
 }
 ````
-`SerializationConfig` and `DeserializationConfig` classes contain baseline configurations for serialization and deserialization process respectively.
+`SerializationConfig` and `DeserializationConfig` classes contain baseline configurations for serialization and deserialization processes respectively.
 **When the ObjectMapper's `MapperFeature.DEFAULT_VIEW_INCLUSION` value is enabled, it automatically applies to both serialization and deserialization process.**
 We can override this value to apply to either serialization only or deserialization only (if required by enabling or disabling the MapperFeature configuration) using `SerializationConfig` and `DeserializationConfig` classes respectively.
 We will take a look at its configuration in the further sections.
@@ -253,8 +253,8 @@ public class Views {
 In the further sections, we will take a look at how to use `@JsonView` to cater to each of the usecases we previously looked at.
 
 {{% info title="Difference between @JsonView and @JsonIgnore" %}}
-- `@JsonIgnoreProperties` used at the class level is used to ignore fields during both serialization and deserialization process.
-- `@JsonIgnore` can be used at getter or setter for a property/multiple properties to ignore the fields during deserialization or serialization respectively.
+- `@JsonIgnoreProperties` used at the class level is used to ignore multiple fields during both serialization and deserialization process.
+- `@JsonIgnore` can be used at getter or setter for a property to ignore the fields during deserialization or serialization respectively.
 - `@JsonView` is an enhancement over `@JsonIgnore` since we can selectively decide if a field needs to be ignored or not for a particular API.
 {{% /info %}}
 
@@ -370,7 +370,7 @@ With this configuration, let us execute the same API call again:
 {{% image alt="settings" src="images/posts/spring-boot-jsonview/API-02.JPG" %}}
 Now, we don't see the `additionalData` field in the JSON response.
 Here, `mapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION)` applies to both serialization and deserialization process.
-Instead, if we need to **include no view annotations only in the serialization process**, we can apply the following configuration:
+Instead, if we need to **include no view annotation fields only in the serialization process**, we can apply the following configuration:
 ````java
 @Configuration
 public class CommonBean {
@@ -424,7 +424,7 @@ public class InternalUserController {
 {{% image alt="settings" src="images/posts/spring-boot-jsonview/userDetailedSummary.JPG" %}}
 
 As seen from the JSON responses, `/internal/userdetails/all` API uses the `UserDetailedSummary` view to return a detailed response in comparison to 
-`/internal/userdetails` that uses the `UserSummary` view that has fewer fields.
+`/internal/userdetails` that uses the `UserSummary` view having fewer fields.
 
 
 ### Separate views for HTTP Request Methods
@@ -449,7 +449,7 @@ public ResponseEntity<UserData> updateAddress(@RequestParam String loginId,
     return ResponseEntity.ok().body(userService.updateAddress(loginId, addressData));
 }
 ````
-Thus, we can use @JsonView to control which fields need to updated in our database.
+Thus, **we can use @JsonView to control which fields need to updated in our database.**
 
 ### Protect sensitive information being exposed
 

@@ -149,13 +149,15 @@ For the above views to apply to the HTTP methods, we will define our controller 
 public class UserController {
 
    @PostMapping(path = "/userdetails")
-   public ResponseEntity<User> post(@RequestBody @JsonView(value = Views.GetView.class) User user) {
+   public ResponseEntity<User> post(
+           @RequestBody @JsonView(value = Views.GetView.class) User user) {
    return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
 }
 
 
    @PatchMapping(path = "/userdetails/{userId}")
-   public ResponseEntity<?> put(@RequestBody @JsonView(value = Views.PatchView.class) User user) {
+   public ResponseEntity<?> patch(
+           @RequestBody @JsonView(value = Views.PatchView.class) User user) {
    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
  }
 
@@ -198,11 +200,14 @@ public class JacksonAutoConfigTest {
     public void defaultObjectMapperBuilder() throws Exception {
         this.context.register(JacksonAutoConfiguration.class);
         this.context.refresh();
-        Jackson2ObjectMapperBuilder builder = this.context.getBean(Jackson2ObjectMapperBuilder.class);
+        Jackson2ObjectMapperBuilder builder = 
+                this.context.getBean(Jackson2ObjectMapperBuilder.class);
         ObjectMapper mapper = builder.build();
         assertTrue(MapperFeature.DEFAULT_VIEW_INCLUSION.enabledByDefault());
-        assertFalse(mapper.getDeserializationConfig().isEnabled(MapperFeature.DEFAULT_VIEW_INCLUSION));
-        assertFalse(mapper.getSerializationConfig().isEnabled(MapperFeature.DEFAULT_VIEW_INCLUSION));
+        assertFalse(mapper.getDeserializationConfig().isEnabled(
+                MapperFeature.DEFAULT_VIEW_INCLUSION));
+        assertFalse(mapper.getSerializationConfig().isEnabled(
+                MapperFeature.DEFAULT_VIEW_INCLUSION));
     }
 }
 ````
@@ -262,25 +267,34 @@ Let us define the model `UserData` class.
 ````java
 public class UserData {
 
-    @JsonView(value = {Views.GetView.class, Views.UserSummary.class, Views.ExternalView.class})
+    @JsonView(value = 
+            {Views.GetView.class, Views.UserSummary.class, Views.ExternalView.class})
     private long id;
 
-    @JsonView(value = {Views.GetView.class, Views.UserSummary.class, Views.ExternalView.class})
+    @JsonView(value = 
+            {Views.GetView.class, Views.UserSummary.class, Views.ExternalView.class})
     private String firstName;
 
-    @JsonView(value = {Views.GetView.class, Views.UserSummary.class, Views.ExternalView.class})
+    @JsonView(value = 
+            {Views.GetView.class, Views.UserSummary.class, Views.ExternalView.class})
     private String lastName;
 
-    @JsonView(value = {Views.GetView.class, Views.UserSummary.class, Views.ExternalView.class})
+    @JsonView(value = 
+            {Views.GetView.class, Views.UserSummary.class, Views.ExternalView.class})
     private String dob;
 
-    @JsonView(value = {Views.GetView.class, Views.PatchView.class, Views.UserSummary.class, Views.ExternalView.class})
+    @JsonView(value = 
+            {Views.GetView.class, Views.PatchView.class, 
+                    Views.UserSummary.class, Views.ExternalView.class})
     private String address;
 
-    @JsonView(value = {Views.GetView.class, Views.PatchView.class, Views.UserSummary.class, Views.ExternalView.class})
+    @JsonView(value = 
+            {Views.GetView.class, Views.PatchView.class, 
+                    Views.UserSummary.class, Views.ExternalView.class})
     private String suburb;
 
-    @JsonView(value = {Views.GetView.class, Views.PatchView.class, Views.UserSummary.class, Views.ExternalView.class})
+    @JsonView(value = {Views.GetView.class, Views.PatchView.class, 
+            Views.UserSummary.class, Views.ExternalView.class})
     private String city;
 
     private boolean isInternalUser;
@@ -317,7 +331,8 @@ Next, let us take a look at how the controller class will use them.
 @RequestMapping("/internal")
 public class InternalUserController {
 
-    private static final Logger log = LoggerFactory.getLogger(InternalUserController.class);
+    private static final Logger log = 
+            LoggerFactory.getLogger(InternalUserController.class);
 
     private final UserService userService;
 
@@ -327,7 +342,8 @@ public class InternalUserController {
 
     @GetMapping("/users")
     @JsonView(Views.GetView.class)
-    public ResponseEntity<List<UserData>> getAllUsers(@RequestParam(required = false) String loginId) {
+    public ResponseEntity<List<UserData>> getAllUsers(
+            @RequestParam(required = false) String loginId) {
         if (Objects.isNull(loginId)) {
             return ResponseEntity.ok().body(userService.getAllUsers(true));
         } else {
@@ -382,7 +398,8 @@ public class CommonBean {
         mapper.registerModule(new JavaTimeModule());
         //mapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
         mapper.getSerializationConfig().without(MapperFeature.DEFAULT_VIEW_INCLUSION);
-        //mapper.getDeserializationConfig().without(MapperFeature.DEFAULT_VIEW_INCLUSION);
+        //mapper.getDeserializationConfig().without(
+        // MapperFeature.DEFAULT_VIEW_INCLUSION);
         return mapper;
     }
 }
@@ -398,7 +415,8 @@ Let us take a look at how `UserSummary` and `UserDetailedSummary` views are used
 @RequestMapping("/internal")
 public class InternalUserController {
 
-    private static final Logger log = LoggerFactory.getLogger(InternalUserController.class);
+    private static final Logger log = LoggerFactory.getLogger(
+            InternalUserController.class);
 
     private final UserService userService;
 
@@ -445,7 +463,9 @@ For this PATCH request to apply, we need to add `@JsonView` along with the `@Req
 ````java
 @PatchMapping("/users")
 public ResponseEntity<UserData> updateAddress(@RequestParam String loginId,
-                                              @RequestBody @JsonView(Views.PatchView.class) UserData addressData) {
+                                              @RequestBody 
+                                              @JsonView(Views.PatchView.class) 
+                                                UserData addressData) {
     return ResponseEntity.ok().body(userService.updateAddress(loginId, addressData));
 }
 ````
@@ -460,7 +480,8 @@ When we add these views to our controllers:
 @RequestMapping("/internal")
 public class InternalUserController {
 
-    private static final Logger log = LoggerFactory.getLogger(InternalUserController.class);
+    private static final Logger log = LoggerFactory.getLogger(
+            InternalUserController.class);
 
     private final UserService userService;
 
@@ -470,7 +491,8 @@ public class InternalUserController {
 
     @GetMapping("/users")
     @JsonView(Views.InternalView.class)
-    public ResponseEntity<List<UserData>> getAllUsers(@RequestParam(required = false) String loginId) {
+    public ResponseEntity<List<UserData>> getAllUsers(
+            @RequestParam(required = false) String loginId) {
         if (Objects.isNull(loginId)) {
             return ResponseEntity.ok().body(userService.getAllUsers(true));
         } else {
@@ -483,7 +505,8 @@ public class InternalUserController {
 @RestController
 @RequestMapping("/external")
 public class ExternalUserController {
-    private static final Logger log = LoggerFactory.getLogger(ExternalUserController.class);
+    private static final Logger log = LoggerFactory.getLogger(
+            ExternalUserController.class);
 
     private final UserService userService;
 
@@ -493,11 +516,13 @@ public class ExternalUserController {
 
     @GetMapping("/users")
     @JsonView(Views.ExternalView.class)
-    public ResponseEntity<List<UserData>> getExtUsers(@RequestParam(required = false) String loginId) {
+    public ResponseEntity<List<UserData>> getExtUsers(
+            @RequestParam(required = false) String loginId) {
         if (Objects.isNull(loginId)) {
             return ResponseEntity.ok().body(userService.getAllUsers(false));
         } else {
-            return ResponseEntity.ok().body(List.of(userService.getUser(loginId, false)));
+            return ResponseEntity.ok().body(
+                    List.of(userService.getUser(loginId, false)));
         }
 
     }
@@ -529,13 +554,13 @@ public class JsonViewTest {
                 .writerWithView(Views.UserSummary.class)
                 .writeValueAsString(mockedUser);
 
-        final List<String> expectedFields = Arrays.asList("createdBy", "createdDate", "updatedBy", "updatedDate",
+        final List<String> expectedFields = Arrays.asList(
+                "createdBy", "createdDate", "updatedBy", "updatedDate",
                 "additionalData", "loginId", "loginPassword", "ssnNumber");
         expectedFields.stream().forEach(field -> {
             assertFalse(serializedValue.contains(field));
         });
 
-        // DEFAULT_VIEW_INCLUSION is enabled - Fields not annotated with @JsonView are present
         final ObjectMapper objectMapper1 = new ObjectMapper();
         objectMapper1.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true);
         final String serializedValue1 = objectMapper1
@@ -559,8 +584,6 @@ public class JsonViewTest {
 
     @Test
     public void deserializeUserSummaryViewTest() throws JsonProcessingException {
-        // DEFAULT_VIEW_INCLUSION is disabled - Fields not annotated with @JsonView are not present
-        // Deserializes only the fields present in the view
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
         final UserData deserializedValue = objectMapper
@@ -568,7 +591,8 @@ public class JsonViewTest {
                 .forType(UserData.class)
                 .readValue(MockedUsersUtility.userDataObjectAsString());
 
-        System.out.println("Deserialize with DEFAULT_VIEW_INCLUSION as false :" + deserializedValue);
+        System.out.println(
+                "Deserialize with DEFAULT_VIEW_INCLUSION as false :" + deserializedValue);
 
         assertTrue(Objects.isNull(deserializedValue.getCreatedBy()));
         assertTrue(Objects.isNull(deserializedValue.getCreatedDate()));

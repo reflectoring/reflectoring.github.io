@@ -69,8 +69,8 @@ public class Views {
 }
 ````
 
-As seen from the example above, Json Views help segregate confidential information from the basic ones
-by creating separate views within the same model.  
+As seen from the example above, **Json Views help segregate confidential information from the basic ones
+by creating separate views within the same model**.  
 
 ### Allows control over the data exposed
 
@@ -163,7 +163,8 @@ public class UserController {
 
 }
 ````
-This configuration will allow only the **@JsonView mapped fields** to be updated in the POST and PATCH requests respectively. Other fields will be ignored.
+This configuration will allow only the **@JsonView mapped fields** to be updated in the POST and PATCH requests respectively. 
+Since the `GetView` extends `PatchView`, **the PATCH request will update only the `PatchView` defined fields** (other fields will be ignored) while **the POST request will update both `PatchView` and `GetView` defined fields**.
 
 In the further sections, we will look at a sample Spring Boot application to understand how to use `@JsonView` in the context of the use cases defined above.
 
@@ -187,7 +188,6 @@ The `ObjectMapper` class uses **`MapperFeature.DEFAULT_VIEW_INCLUSION`** to dete
 
 For the sample application, we will use the Spring Boot version 2.7.5 that internally uses [Jackson 2.13](https://fasterxml.github.io/jackson-databind/javadoc/2.13/com/fasterxml/jackson/databind/MapperFeature.html).
 **By default, the MapperFeature.DEFAULT_VIEW_INCLUSION is set to true which means when enabling a JSON View, non-annotated fields also get serialized.**
-{{% image alt="settings" src="images/posts/spring-boot-jsonview/MapperFeature.JPG" %}}
 
 We can also verify the configuration defaults when the `JacksonAutoConfiguration` class gets registered using the below test:
 ````java
@@ -215,6 +215,12 @@ public class JacksonAutoConfigTest {
 **When the ObjectMapper's `MapperFeature.DEFAULT_VIEW_INCLUSION` value is enabled, it automatically applies to both serialization and deserialization process.**
 We can override this value to apply to either serialization only or deserialization only (if required by enabling or disabling the MapperFeature configuration) using `SerializationConfig` and `DeserializationConfig` classes respectively.
 We will take a look at its configuration in the further sections.
+
+{{% info title="Difference between @JsonView and @JsonIgnore" %}}
+- `@JsonIgnoreProperties` used at the class level is used to ignore multiple fields during both serialization and deserialization process.
+- `@JsonIgnore` can be used at getter or setter for a property to ignore the fields during deserialization or serialization respectively.
+- `@JsonView` is an enhancement over `@JsonIgnore` since we can selectively decide if a field needs to be ignored or not for a particular API.
+  {{% /info %}}
 
 ## Using @JsonView with Spring Boot
 Let's look at a sample User application to demonstrate the various ways in which @JsonView annotation can be used.
@@ -257,12 +263,6 @@ public class Views {
 ````
 In the further sections, we will take a look at how to use `@JsonView` to cater to each of the usecases we previously looked at.
 
-{{% info title="Difference between @JsonView and @JsonIgnore" %}}
-- `@JsonIgnoreProperties` used at the class level is used to ignore multiple fields during both serialization and deserialization process.
-- `@JsonIgnore` can be used at getter or setter for a property to ignore the fields during deserialization or serialization respectively.
-- `@JsonView` is an enhancement over `@JsonIgnore` since we can selectively decide if a field needs to be ignored or not for a particular API.
-{{% /info %}}
-
 Let us define the model `UserData` class.
 ````java
 public class UserData {
@@ -282,23 +282,9 @@ public class UserData {
     @JsonView(value = 
             {Views.GetView.class, Views.UserSummary.class, Views.ExternalView.class})
     private String dob;
-
-    @JsonView(value = 
-            {Views.GetView.class, Views.PatchView.class, 
-                    Views.UserSummary.class, Views.ExternalView.class})
-    private String address;
-
-    @JsonView(value = 
-            {Views.GetView.class, Views.PatchView.class, 
-                    Views.UserSummary.class, Views.ExternalView.class})
-    private String suburb;
-
-    @JsonView(value = {Views.GetView.class, Views.PatchView.class, 
-            Views.UserSummary.class, Views.ExternalView.class})
-    private String city;
-
-    private boolean isInternalUser;
-
+    
+    private boolean internalUser;
+    
     private String additionalData;
 
     @JsonView(value = {Views.GetView.class, Views.InternalView.class})
@@ -309,17 +295,7 @@ public class UserData {
     @JsonView(value = {Views.GetView.class, Views.InternalView.class})
     private String ssnNumber;
 
-    @JsonView(Views.UserDetailedSummary.class)
-    private String createdBy;
-
-    @JsonView(Views.UserDetailedSummary.class)
-    private LocalDate createdDate;
-
-    @JsonView(Views.UserDetailedSummary.class)
-    private String updatedBy;
-
-    @JsonView(Views.UserDetailedSummary.class)
-    private LocalDate updatedDate;
+    // More fields here
     // Code for getters and setters
 }
 ````
@@ -330,16 +306,7 @@ Next, let us take a look at how the controller class will use them.
 @RestController
 @RequestMapping("/internal")
 public class InternalUserController {
-
-    private static final Logger log = 
-            LoggerFactory.getLogger(InternalUserController.class);
-
-    private final UserService userService;
-
-    public InternalUserController(UserService userService) {
-        this.userService = userService;
-    }
-
+    
     @GetMapping("/users")
     @JsonView(Views.GetView.class)
     public ResponseEntity<List<UserData>> getAllUsers(
@@ -409,7 +376,36 @@ public class CommonBean {
 
 ### Allows control over the data exposed
 
-Let us take a look at how `UserSummary` and `UserDetailedSummary` views are used:
+Let's define a snippet of our model class definition:
+````java
+public class UserData {
+  @JsonView(value = {Views.GetView.class, Views.UserSummary.class})
+  private long id;
+
+  @JsonView(value = {Views.GetView.class, Views.UserSummary.class})
+  private String firstName;
+
+  @JsonView(value = {Views.GetView.class, Views.UserSummary.class})
+  private String lastName;
+
+  // More UserSummary view fields
+
+  @JsonView(Views.UserDetailedSummary.class)
+  private String createdBy;
+
+  @JsonView(Views.UserDetailedSummary.class)
+  private LocalDate createdDate;
+
+  @JsonView(Views.UserDetailedSummary.class)
+  private String updatedBy;
+
+  @JsonView(Views.UserDetailedSummary.class)
+  private LocalDate updatedDate;
+  
+  // More fields
+}
+````
+Next, let's take a look at how `UserSummary` and `UserDetailedSummary` views are used:
 ````java
 @RestController
 @RequestMapping("/internal")
@@ -449,14 +445,24 @@ As seen from the JSON responses, `/internal/userdetails/all` API uses the `UserD
 
 We can also create a view that caters to PATCH requests, so that only the defined fields get updated in the downstream system.
 In our `UserData` model class, only the below three address fields cater to `PatchView`:
-{{% image alt="settings" src="images/posts/spring-boot-jsonview/patchView.JPG" %}}
 
+````java
+public class UserData {
+  @JsonView(value = {Views.PatchView.class, Views.UserSummary.class})
+  private String address;
+
+  @JsonView(value = {Views.PatchView.class, Views.UserSummary.class})
+  private String suburb;
+
+  @JsonView(value = {Views.PatchView.class, Views.UserSummary.class})
+  private String city;
+}
+````
 Let's fire a GET request for a user `Rob`:
 {{% image alt="settings" src="images/posts/spring-boot-jsonview/getView.JPG" %}}
 
 Next, let's make a PATCH request to change Rob's address. In this process, let's try to change a few other details too:
 When the PATCH request is made, we can see only the `PatchView` fields have been updated and the other fields ignored.
-
 {{% image alt="settings" src="images/posts/spring-boot-jsonview/patch.JPG" %}}
 
 For this PATCH request to apply, we need to add `@JsonView` along with the `@RequestBody` parameter:
@@ -474,7 +480,32 @@ Thus, **we can use @JsonView to control which fields need to updated in our data
 ### Protect sensitive information being exposed
 
 In our example we have created different views for internal users (`InternalView`) and external users (`ExternalView`) so that confidential details are not exposed to the external users.
-When we add these views to our controllers:
+````java
+public class UserData {
+  @JsonView(value = {Views.GetView.class, Views.ExternalView.class})
+  private long id;
+
+  @JsonView(value = {Views.GetView.class, Views.ExternalView.class})
+  private String firstName;
+
+  @JsonView(value = {Views.GetView.class, Views.ExternalView.class})
+  private String lastName;
+  
+  // More ExternalView fields
+
+  @JsonView(value = {Views.GetView.class, Views.InternalView.class})
+  private String loginId;
+
+  @JsonView(value = {Views.GetView.class, Views.InternalView.class})
+  private String loginPassword;
+  
+  @JsonView(value = {Views.GetView.class, Views.InternalView.class})
+  private String ssnNumber;
+  
+  // More fields here 
+}
+````
+When we add those views to our controllers:
 ````java
 @RestController
 @RequestMapping("/internal")

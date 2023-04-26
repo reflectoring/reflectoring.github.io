@@ -1,11 +1,11 @@
 ---
 title: "Serialize and Deserialize with Jackson's @JsonView in a Spring Boot Application"
 categories: ["Spring"]
-date: 2023-03-18 00:00:00 +1100
+date: 2023-04-26 00:00:00 +1100
 authors: ["ranjani"]
 description: "Serialize Deserialize with JsonView"
 image: images/stock/0012-pages-1200x628-branded.jpg
-url: jackson-jsonview
+url: jackson-jsonview-tutorial
 ---
 
 The Jackson API is one of the best JSON parsers in Java. Spring integrates well with Jackson and with every

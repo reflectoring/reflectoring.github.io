@@ -177,10 +177,10 @@ Serialization and deserialization form the core of REST APIs.
 **Spring Boot internally uses Jackson's `ObjectMapper` class to perform serialization and deserialization.**
 
 Deserialization example:
-{{% image alt="settings" src="images/posts/spring-boot-jsonview/Deserialise.JPG" %}}
+{{% image alt="settings" src="images/posts/spring-boot-jsonview/Deserialise.jpg" %}}
 
 Serialization example:
-{{% image alt="settings" src="images/posts/spring-boot-jsonview/Serialise.JPG" %}}
+{{% image alt="settings" src="images/posts/spring-boot-jsonview/Serialise.jpg" %}}
 
 ## Spring Boot defaults for @JsonView configuration
 The `ObjectMapper` class uses **`MapperFeature.DEFAULT_VIEW_INCLUSION`** to determine how the `JsonView` annotation needs to behave.
@@ -321,7 +321,7 @@ public class InternalUserController {
 }
 ````
 As seen above, the `internal/users` API uses the `GetView` class. Here, since we haven't explicitly autowired the `ObjectMapper` class, the default configuration will apply, and we get JSON response as below:
-{{% image alt="settings" src="images/posts/spring-boot-jsonview/API-01.JPG" %}}
+{{% image alt="settings" src="images/posts/spring-boot-jsonview/API-01.jpg" %}}
 As seen from the response, **the `GetView` configured fields and the fields that do not have any @JsonView annotation are included.**
 
 ````java
@@ -350,7 +350,7 @@ public class CommonBean {
 }
 ````
 With this configuration, let us execute the same API call again:
-{{% image alt="settings" src="images/posts/spring-boot-jsonview/API-02.JPG" %}}
+{{% image alt="settings" src="images/posts/spring-boot-jsonview/API-02.jpg" %}}
 Now, we don't see the `additionalData` field in the JSON response.
 Here, `mapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION)` applies to both serialization and deserialization process.
 Instead, if we need to **include no view annotation fields only in the serialization process**, we can apply the following configuration:
@@ -434,8 +434,8 @@ public class InternalUserController {
     }
 }
 ````
-{{% image alt="settings" src="images/posts/spring-boot-jsonview/userSummary.JPG" %}}
-{{% image alt="settings" src="images/posts/spring-boot-jsonview/userDetailedSummary.JPG" %}}
+{{% image alt="settings" src="images/posts/spring-boot-jsonview/userSummary.jpg" %}}
+{{% image alt="settings" src="images/posts/spring-boot-jsonview/userDetailedSummary.jpg" %}}
 
 As seen from the JSON responses, `/internal/userdetails/all` API uses the `UserDetailedSummary` view to return a detailed response in comparison to 
 `/internal/userdetails` that uses the `UserSummary` view having fewer fields.
@@ -459,11 +459,11 @@ public class UserData {
 }
 ````
 Let's fire a GET request for a user `Rob`:
-{{% image alt="settings" src="images/posts/spring-boot-jsonview/getView.JPG" %}}
+{{% image alt="settings" src="images/posts/spring-boot-jsonview/getView.jpg" %}}
 
 Next, let's make a PATCH request to change Rob's address. In this process, let's try to change a few other details too:
 When the PATCH request is made, we can see only the `PatchView` fields have been updated and the other fields ignored.
-{{% image alt="settings" src="images/posts/spring-boot-jsonview/patch.JPG" %}}
+{{% image alt="settings" src="images/posts/spring-boot-jsonview/patch.jpg" %}}
 
 For this PATCH request to apply, we need to add `@JsonView` along with the `@RequestBody` parameter:
 ````java
@@ -562,10 +562,10 @@ public class ExternalUserController {
 The Output JSON response looks like this.
 
 Internal View:
-{{% image alt="settings" src="images/posts/spring-boot-jsonview/internalUser.JPG" %}}
+{{% image alt="settings" src="images/posts/spring-boot-jsonview/internalUser.jpg" %}}
 
 External View:
-{{% image alt="settings" src="images/posts/spring-boot-jsonview/externalUser.JPG" %}}
+{{% image alt="settings" src="images/posts/spring-boot-jsonview/externalUser.jpg" %}}
 
 As seen from the JSON responses, the internal view exposes more user information than the external view.
 

@@ -252,13 +252,22 @@ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-c
 Although we are logging from a single application here, Cloudwatch is used as a log aggragator from multiple services allowing us us to see all of our logs, regardless of their source, as a single and consistent flow of events ordered by time.
 
 ## Running Queries on Logs with CloudWatch Log Insights
-CloudWatch Log Insights provides a User Interface and a powerful purpose-built query language to search through log data and monitor our applications. Let us use CloudWatch Log Insights to track the number of errors that occured in our Spring Boot application and send a notification whenever the rate of errors exceeds a threshold.
+CloudWatch Log Insights provides a User Interface and a powerful purpose-built query language to search through log data and monitor our applications. 
+Here we are using CloudWatch Log Insights to find the number of errors that occured in our Spring Boot application in the last 1 hour.
 
-
-## Parsing Unstructured Logs
-CloudWatch Insights provides the capability of parsing unstructured logs.
-
-
+{% image alt="insights-query" src="images/posts/aws-structured-logging-cw/insights-query.png" %}}
+We have defined a query with a filter on level = 'ERROR' sorting by timestamp and limiting the results to 20. When we run the query, we get the following results:
+{% image alt="insights-results" src="images/posts/aws-structured-logging-cw/insights-results.png" %}}
+In the query results we can see 6 errors in the last 1 hour.
  ## Conclusion
 
  Here is a list of the major points for a quick reference:
+
+1. Amazon CloudWatch is a managed monitoring and logging service which is used as a centralized log storage.
+2. Structured logging is a methodology to log information in a consistent format that allows logs to be treated as data rather than text. 
+3. We produce structured logs in applications most often by using logging libraries in different programming languages.
+4. logs are stored and organized in CloudWatch into Log Streams and Log Groups.
+5. Log stream is a sequence of log events emitted by AWS services or any custom application.
+6. Log Groups are group of Log Streams which share the same retention, monitoring, and access control settings.
+7. We use the unified CloudWatch agent to collect logs from Amazon EC2 instances and send to CloudWatch.
+8. CloudWatch Log Insights provides a User Interface and a powerful purpose-built query language to search through log data and monitor our applications. 

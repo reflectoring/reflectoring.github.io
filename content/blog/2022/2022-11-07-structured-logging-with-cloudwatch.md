@@ -137,50 +137,126 @@ When we run this application and send some requests to the endpoint `http://loca
 ## CloudWatch Logging Concepts: Log Streams, Log Groups
 Before sending our logs to CloudWatch, let us understand how the logs are stored and organized in CloudWatch into Log Streams and Log Groups.
 
-**Log Streams**: Each log statement be it in INFO mode, or DEBUG mode to write some log is a log event. Log stream is a stream of log events emitted by AWS services or any custom application. This is how a set of log streams looks in the AWS console:
+**Log Event**: A Log Event is an activity recorded by the application. It contains a timestamp and raw event message encoded in UTF-8.
+
+**Log Streams**: Log stream is a sequence of log events emitted by AWS services or any custom application. This is how a set of log streams looks in the AWS console:
 
 {% image alt="Log Streams" src="images/posts/aws-structured-logging-cw/log-streams.png" %}}
 
+This is a snapshot of a log stream showing a sequence of log events.
 
 **Log Groups**: Log Groups are group of Log Streams which share the same retention, monitoring, and access control settings. Each log stream belongs to one log group. A set of log groups in the AWS console is shown here:
 
 {% image alt="Log Groups" src="images/posts/aws-structured-logging-cw/log-groups.png" %}}
 
+We can specify the duration for which we want the logs to be retained by specifying `retention settings` to the log group. 
 
-Insights: provides a UI and a powerful query language to search through one or more log groups. We will use Insights to query the structured logs produced by our Spring Boot Application.
+We can also assign metric filters to log groups to extract metric observations from ingested log events and transform them to data points in a CloudWatch metric.
 
 Here we will configure a Spring Boot application to produce structured logs and then send those logs to CloudWatch.
 
-## Sending logs to Amazon CloudWatch 
-We will next run the Spring Boot application in an EC2 instance and ship our application logs to CloudWatch. We can either create the EC2 instance from the AWS console or any of the IaC services: Terraform, CloudFormation, CDK. Terraform scripts are included in the source code. We can use the following script to install JDK.  Next we will transfer our spring boot application to EC2 instance using scp and run it the Jar file w=with the well known java -jar <spring boot>.jar.
+## Sending logs to Amazon CloudWatch from Amazon EC2 Instance
+We will next run the Spring Boot application in an EC2 instance and ship our application logs to CloudWatch. We use the unified CloudWatch agent to collect logs from Amazon EC2 instances and send to CloudWatch.
 
-We can see the application logs in the file configured in the fileappender. Next we will configure cloudwatch agent to ship the logs to cloudwatch.
+### Creating EC2 Instance and setting up JDK
+We can either create the EC2 instance from the AWS Management console or any of the IaC services: Terraform, CloudFormation, CDK. Terraform scripts are included in the source code for creating EC2 Amazon Linux 2 instance in the free tier. We can use the following script to install JDK.  
+
+```shell
+wget https://download.java.net/***openjdk-20.0.1_linux-x64_bin.tar.gz
+tar xvf openjdk*
+export JAVA_HOME=jdk-20.0.1
+export PATH=$JAVA_HOME/bin:$PATH
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+```
+
+We also need to attach an IAM role with AWS Managed policy `CloudWatchAgentServerPolicy` to the EC2 instance which allows the EC2 instance to write logs to CloudWatch. 
+### Running the Spring Boot Application
+Next we will transfer first transfer our spring boot application from our local machine to the EC2 instance created in previous step using `scp` :
+
+```shell
+scp -i tf-key-pair.pem ~/Downloads/accountProcessor/target/accountProcessor-0.0.1-SNAPSHOT.jar ec2-user@3.66.165.62:/home/ec2-user/
+```
+We will then run the Jar file with the command:
+```shell
+java -jar accountProcessor-0.0.1-SNAPSHOT.jar
+```
+After the application is started we can see the application logs in the file: `accountprocessor-logging-dev.log` configured in the `FileAppender` in the log4j configuration of our application. 
+
+In the next section we will configure the CloudWatch agent to read this file and ship the log entries to Amazon CloudWatch.
+
+### Installing and Configuring the Unified CloudWatch Agent
+The CloudWatch agent is available as a package in Amazon Linux 2.
+Let us now install the CloudWatch agent by running the `yum` command:
 
 ```shell
 sudo yum install amazon-cloudwatch-agent    
 ```
 
-Next we need to create a configuration for cloudwatch agent to send the log files to cloudwatch. We have used the cloudwatch agent wizard to create the config file and the started the cloudwatch agent.
+Next we need to create a configuration file for the CloudWatch agent. 
+
+The agent configuration file is a JSON file with three sections: `agent`, `metrics`, and `logs` that specifies the metrics and logs which the agent needs to collect. The logs section specifies what log files are published to CloudWatch Logs.Since our Spring Boot application is writing the log files to path: 
+`accountprocessor/logs/accountprocessor-logging-dev.log`, we will configure this path in the `logs` section of our agent configuration file.
+
+We can create the agent configuration file by using the [agent configuration file wizard](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/create-cloudwatch-agent-configuration-file-wizard.html) or by creating it manually from scratch.
+
+We can start the agent configuration file wizard using the following command:
+```shell
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-config-wizard
+```
+
+In our case we will specify the log file path in the wizard:
+{% image alt="start-wizard" src="images/posts/aws-structured-logging-cw/start-wizard.png" %}}
+{% image alt="input log file path" src="images/posts/aws-structured-logging-cw/log-file-prompt.png" %}}
+
+We have specified the file path and the names of log group.
+
+The configuration file: `config.json` generated by the wizard looks like this:
+
+```json
+{
+    "agent": {
+        "run_as_user": "ec2-user"
+    },
+    "logs": {
+        "logs_collected": {
+            "files": {
+                "collect_list": [
+                    {
+                        "file_path": "/home/ec2-user/accountprocessor/logs/accountprocessor-logging-dev.log",
+                        "log_group_name": "accountprocessor-logging-dev.log",
+                        "log_stream_name": "{instance_id}",
+                        "retention_in_days": -1
+                    }
+                ]
+            }
+        }
+    }
+}
+
+```
+We can further modify this file manually to add more file paths.
+
+After configuring the CloudWatch agent let us start the CloudWatch agent by the running the command:
+
+```shell
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
+```
 
 
+### Viewing the Application Logs in Amazon CloudWatch
 
-
-Let us now create an EC2 instance and install open jdk. We will next configure the cloudwatch agent. 
-
-  see in this method, 
-for fetching accoun method in our controller class to 
-
-
+{% image alt="view log group" src="images/posts/aws-structured-logging-cw/view-log-group.png" %}}
+{% image alt="view log stream" src="images/posts/aws-structured-logging-cw/view-log-streams.png" %}}
+{% image alt="view log events" src="images/posts/aws-structured-logging-cw/view-log-events.png" %}}
  
- We can also use AWS client libraries to generate embedded metric format logs.
+Although we are logging from a single application here, Cloudwatch is used as a log aggragator from multiple services allowing us us to see all of our logs, regardless of their source, as a single and consistent flow of events ordered by time.
 
+## Running Queries on Logs with CloudWatch Log Insights
+CloudWatch Log Insights provides a User Interface and a powerful purpose-built query language to search through log data and monitor our applications. Let us use CloudWatch Log Insights to track the number of errors that occured in our Spring Boot application and send a notification whenever the rate of errors exceeds a threshold.
 
 
 ## Parsing Unstructured Logs
 CloudWatch Insights provides the capability of parsing unstructured logs.
- ## CloudWatch Log Groups and Log Streams
-
- ## Running Queryies with CloudWatch Insights
 
 
  ## Conclusion

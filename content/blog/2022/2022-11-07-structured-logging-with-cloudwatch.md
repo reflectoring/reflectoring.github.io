@@ -2,7 +2,7 @@
 authors: [pratikdas]
 title: "Structured Logging with Amazon CloudWatch"
 categories: ["AWS"]
-date: 2022-11-07 00:00:00 +1100
+date: 2023-04-25 00:00:00 +1100
 excerpt: "The primary purpose of logging in applications is to debug and trace one or more root causes of unexpected behavior. However, a log without a consistent structure with context information is difficult to search for and locate the root cause of problems. This is where we need to use Structured Logging. CloudWatch is Amazon's native service for observing and monitoring resources and applications running in AWS as well as outside. In this article, we will produce structured logs from an application and ingest them in CloudWatch. We will use different search and visualization capabilities of CloudWatch to observe the behavior of our application."
 image: images/stock/0117-queue-1200x628-branded.jpg
 url: struct-log-with-cw
@@ -64,10 +64,7 @@ Here is an example of a structured log:
 We can see several contextual information like the thread identifier, datetime epoch, and application name in this structured log apart from the log message: "Account not found:: 5678000".
  
 ## Producing Structured Logs from a Spring Boot Application
-We produce structured logs in applications most often by using logging libraries in different programming languages. Some examples of structured logging libraries are:
-| Java |Log4j2|
-| dotnet c# |serilog|
-|python|structlog|
+We produce structured logs in applications most often by using logging libraries in different programming languages. 
 
 Here we will use a spring boot application for generating structured logs. 
 Let us create the initial application setup of our application from the [spring boot starter ](https://start.spring.io/#!type=maven-project&language=java&platformVersion=3.0.5&packaging=jar&jvmVersion=17&groupId=io.pratik&artifactId=accountProcessor&name=accountProcessor&description=Sample%20Spring%20Boot%20project%20to%20produce%20structured%20logs&packageName=io.pratik.accountProcessor&dependencies=lombok,web) and open it in our favorite IDE.
@@ -107,11 +104,13 @@ public class AccountInquiryController {
     private AccountService accountService;
 
     private static final Logger LOG = 
-        LogManager.getLogger(AccountInquiryController.class);
+        LogManager.getLogger(
+            AccountInquiryController.class);
 
 
-    public AccountInquiryController(final AccountService accountService){
-        this.accountService = accountService;
+    public AccountInquiryController(
+        final AccountService accountService){
+          this.accountService = accountService;
     }
 
     @GetMapping("/{accountNo}")
@@ -122,11 +121,13 @@ public class AccountInquiryController {
         ThreadContext.put("accountNo", accountNo);
         LOG.info("fetching account details for account ");
 
-        Optional<AccountDetail> accountDetail = accountService.getAccount(accountNo);
+        Optional<AccountDetail> accountDetail = 
+                accountService.getAccount(accountNo);
 
         LOG.info("Details of account {}", accountDetail);
         ThreadContext.clearAll();
-        return accountDetail.orElse(AccountDetail.builder().build());
+        return accountDetail.orElse(
+            AccountDetail.builder().build());
     }
 }
 ```
@@ -260,7 +261,7 @@ Here we are using CloudWatch Log Insights to find the number of errors that occu
 We have defined a query with a filter on level = 'ERROR' sorting by timestamp and limiting the results to 20. When we run the query, we get the following results:
 {{% image alt="insights-results" src="images/posts/aws-structured-logging-cw/insights-results.png" %}}
 
-In the query results, we can see 6 errors in the last 1 hour.
+In the query results, we can see 6 errors from our application in the last 1 hour.
 
 ## Conclusion
 
@@ -274,3 +275,6 @@ Here is a list of the major points for a quick reference:
 6. Log Groups are a group of Log Streams that share the same retention, monitoring, and access control settings.
 7. We use the unified CloudWatch agent to collect logs from Amazon EC2 instances and send them to CloudWatch.
 8. CloudWatch Log Insights provides a User Interface and a powerful purpose-built query language to search through log data and monitor our applications. 
+
+You can refer to all the source code used in the article
+on [Github](https://github.com/thombergs/code-examples/tree/master/aws/structured-logging-cw).

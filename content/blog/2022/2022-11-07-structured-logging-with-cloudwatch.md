@@ -19,6 +19,7 @@ In this article, we will understand:
 - ingest structured logs in Amazon CloudWatch
 - run queries on the ingested logs to extract useful insights of the application
 
+{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/url-shortener" %}}
 
 ## What is Structured Logging 
 Before going further, let us understand Structured logging in bit more detail. 
@@ -141,13 +142,13 @@ Before sending our logs to CloudWatch, let us understand how the logs are stored
 
 **Log Streams**: Log stream is a sequence of log events emitted by AWS services or any custom application. This is how a set of log streams looks in the AWS console:
 
-{% image alt="Log Streams" src="images/posts/aws-structured-logging-cw/log-streams.png" %}}
+{{% image alt="Log Streams" src="images/posts/aws-structured-logging-cw/log-streams.png" %}}
 
 This is a snapshot of a log stream showing a sequence of log events.
 
 **Log Groups**: Log Groups are group of Log Streams which share the same retention, monitoring, and access control settings. Each log stream belongs to one log group. A set of log groups in the AWS console is shown here:
 
-{% image alt="Log Groups" src="images/posts/aws-structured-logging-cw/log-groups.png" %}}
+{{% image alt="Log Groups" src="images/posts/aws-structured-logging-cw/log-groups.png" %}}
 
 We can specify the duration for which we want the logs to be retained by specifying `retention settings` to the log group. 
 
@@ -205,8 +206,8 @@ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-config-wizard
 ```
 
 In our case we will specify the log file path in the wizard:
-{% image alt="start-wizard" src="images/posts/aws-structured-logging-cw/start-wizard.png" %}}
-{% image alt="input log file path" src="images/posts/aws-structured-logging-cw/log-file-prompt.png" %}}
+{{% image alt="start-wizard" src="images/posts/aws-structured-logging-cw/start-wizard.png" %}}
+{{% image alt="input log file path" src="images/posts/aws-structured-logging-cw/log-file-prompt.png" %}}
 
 We have specified the file path and the names of log group.
 
@@ -245,9 +246,9 @@ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-c
 
 ### Viewing the Application Logs in Amazon CloudWatch
 
-{% image alt="view log group" src="images/posts/aws-structured-logging-cw/view-log-group.png" %}}
-{% image alt="view log stream" src="images/posts/aws-structured-logging-cw/view-log-streams.png" %}}
-{% image alt="view log events" src="images/posts/aws-structured-logging-cw/view-log-events.png" %}}
+{{% image alt="view log group" src="images/posts/aws-structured-logging-cw/view-log-group.png" %}}
+{{% image alt="view log stream" src="images/posts/aws-structured-logging-cw/view-log-streams.png" %}}
+{{% image alt="view log events" src="images/posts/aws-structured-logging-cw/view-log-events.png" %}}
  
 Although we are logging from a single application here, Cloudwatch is used as a log aggragator from multiple services allowing us us to see all of our logs, regardless of their source, as a single and consistent flow of events ordered by time.
 
@@ -255,13 +256,15 @@ Although we are logging from a single application here, Cloudwatch is used as a 
 CloudWatch Log Insights provides a User Interface and a powerful purpose-built query language to search through log data and monitor our applications. 
 Here we are using CloudWatch Log Insights to find the number of errors that occured in our Spring Boot application in the last 1 hour.
 
-{% image alt="insights-query" src="images/posts/aws-structured-logging-cw/insights-query.png" %}}
+{{% image alt="insights-query" src="images/posts/aws-structured-logging-cw/insights-query.png" %}}
 We have defined a query with a filter on level = 'ERROR' sorting by timestamp and limiting the results to 20. When we run the query, we get the following results:
-{% image alt="insights-results" src="images/posts/aws-structured-logging-cw/insights-results.png" %}}
-In the query results we can see 6 errors in the last 1 hour.
- ## Conclusion
+{{% image alt="insights-results" src="images/posts/aws-structured-logging-cw/insights-results.png" %}}
 
- Here is a list of the major points for a quick reference:
+In the query results we can see 6 errors in the last 1 hour.
+
+## Conclusion
+
+Here is a list of the major points for a quick reference:
 
 1. Amazon CloudWatch is a managed monitoring and logging service which is used as a centralized log storage.
 2. Structured logging is a methodology to log information in a consistent format that allows logs to be treated as data rather than text. 

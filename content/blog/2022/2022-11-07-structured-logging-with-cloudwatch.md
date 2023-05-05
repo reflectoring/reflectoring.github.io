@@ -1,7 +1,7 @@
 ---
 authors: [pratikdas]
 title: "Structured Logging from Spring Boot Application with Amazon CloudWatch"
-categories: ["AWS"]
+categories: ["AWS","Spring Boot"]
 date: 2023-04-25 00:00:00 +1100
 excerpt: "The primary purpose of logging in applications is to debug and trace one or more causes of unexpected behavior. However, a log without a consistent structure with context information is difficult to search for and locate the root cause of problems. This is where we need to use Structured Logging. Amazon CloudWatch is Amazon's native service for observing and monitoring resources and applications running in the AWS cloud as well as outside. In this article, we will produce structured logs from a Spring Boot application and ingest them in Amazon CloudWatch. We will use different search and visualization capabilities of Amazon CloudWatch to observe the behavior of our Spring Boot application."
 image: images/stock/0117-queue-1200x628-branded.jpg
@@ -26,7 +26,7 @@ Before going further, let us understand Structured logging in a bit more detail.
 
 Structured logging is writing logs with information in a consistent format that allows logs to be treated as data rather than text. We log a structured object, most often as [JSON](https://www.json.org/json-en.html) for writing structured logs, instead of just logging a line of text. 
 
-The JSON object is composed of fields that can give contextual information about the log event for example:
+The JSON object is composed of fields that can give contextual information about the log event, for example:
 - the application name
 - class or method name from where the log was produced
 - invoker of the method 
@@ -117,13 +117,15 @@ public class AccountInquiryController {
         @PathVariable("accountNo") String accountNo) {
 
         ThreadContext.put("accountNo", accountNo);
-        LOG.info("fetching account details for account {}", accountNo);
+        LOG.info(
+            "fetching account details for account {}", accountNo);
 
         Optional<AccountDetail> accountDetail = 
                 accountService.getAccount(accountNo);
 
         // Log response from the service class
-        LOG.info("Details of account {}", accountDetail);
+        LOG.info("Details of account {}", 
+            accountDetail);
         ThreadContext.clearAll();
         return accountDetail.orElse(
             AccountDetail.builder().build());
@@ -157,7 +159,7 @@ We can also assign metric filters to log groups to extract metric observations f
 
 Here we will configure a Spring Boot application to produce structured logs and then send those logs to CloudWatch.
 
-## Sending logs to Amazon CloudWatch from Amazon EC2 Instance
+## Sending the Logs to Amazon CloudWatch from Amazon EC2 Instance
 We will next run the Spring Boot application in an EC2 instance and ship our application logs to CloudWatch. We use the unified CloudWatch agent to collect logs from Amazon EC2 instances and send them to CloudWatch.
 
 ### Creating EC2 Instance and Configuring it to Run the Spring Boot Application
@@ -253,7 +255,7 @@ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-c
 
 Once the agent is started, it will start sending the log events to Amazon CloudWatch.
 
-### Viewing the Application Logs in Amazon CloudWatch
+## Viewing the Application Logs in Amazon CloudWatch
 We can now view the logs from our Spring Boot application in the Amazon CloudWatch console:
 {{% image alt="view log group" src="images/posts/aws-structured-logging-cw/view-log-group.png" %}}
 {{% image alt="view log stream" src="images/posts/aws-structured-logging-cw/view-log-streams.png" %}}

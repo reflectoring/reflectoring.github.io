@@ -3,28 +3,20 @@
  title: "Organizing Code in Node.js Application"
  categories: ["Node"]
  date: 2023-05-07 00:00:00 +1100
- excerpt: "As Node.js continues to gain popularity among developers, it's important to learn best practices for organizing code in a Node.js application. Proper code organization can improve readability, maintainability, and scalability of your application. In this article, we'll explore some tips and techniques for organizing your Node.js code."
+ excerpt: "Node.js is a popular server side runtime engine based on JavaScript that is used to build and run web applications. When we build large applications with Node.js, it becomes very important to organize our source code right from the start. Otherwise the code soon becomes unweildy and very hard to maintain. Node.js does not have any prescriptive framework for organizing code. So let us look at some commonly used patterns of code organization in a Node.js application. "
  image: images/stock/0117-queue-1200x628-branded.jpg
  url: organize-code-with-nodejs
- ---
-Node.js is a popular server side runtime engine based on JavaScript that is used to build and run web applications. When we build large applications with Node.js, it becomes very important to organize our source code right from the start. Otherwise the code soon becomes unweildy and very hard to maintain. 
+---
+Node.js is a popular server side runtime engine based on JavaScript that is used to build and run web applications. When we build large applications with Node.js, it becomes very important to organize our source code right from the start. Otherwise the code soon becomes unweildy and very hard to maintain. Node.js does not have any prescriptive framework for organizing code. So let us look at some commonly used patterns of code organization in a Node.js application. 
 
-Node.js does not have any prescriptive framework for organizing code. So let us look at some commonly used patterns of code organization in a Node.js application. 
-
-## Defining General Rules for Organizing Code
-We can organize our code in various ways. But having some generally agreed upon rules helps in consistency and helps in uniform decision making and code reviews.
-A Node.js application is composed of multiple files containing code written in JavaScript or TypeScript. At its worst a complete application can be written in 1 single file. To avoid this let us look at some common sense rule we can follow to organize Node.js code:
-
-
-## Leveraging Node.js Modules as the Unit of Organizing code
+## Leveraging Node.js Modules as the Unit of Organizing Code
 Modules are the fundamental construct for organizing code in Node.js. A module in Node.js is a standalone set of potentially reusable functions which can be packaged in a file. Module contain specific functionality that can be imported in othet applications which need this functionality. This approach makes it easier to reuse code and maintain consistency across our application. We should use the principle of DRY when defining modules. Whenever we see a possibility of code reuse we should package them in a module. The module can be scoped to our application or could be made public.
 
- 
-
 ## Exporting and Importing blocks of Reusable Code  
-We specify the functions and variables to be exposed by a module using the `module.exports`. We can then import this module in other applications for reusing the functions and variables defined in the module.
+We specify the functions and variables to be exposed by a module using the `module.exports`. We can then import this module in other applications for reusing the functions and variables defined in the module. 
 
 This is an example of a module: `OrderInquiryController.js`:
+
 ```js
 const getOrderByID = ((req, res) => {
     const orderID = Number(req.params.orderID)
@@ -131,7 +123,7 @@ Node.js has a vast ecosystem of third-party modules that can help you reduce the
 ## Enforcing Code Organization with Linters
 A linter is a tool that analyzes our code and checks for syntax errors, coding style, and other issues. Using a linter can help you maintain consistent code quality across your entire codebase. Some popular linters for Node.js include ESLint and JSHint.
 
-## Use comments:
+## Use comments
 Comments can help us to explain our code and make it easier to understand for developers other than us and even for ourselves if we are seeing it after a log duration. Use comments sparingly and only where necessary. Avoid adding comments that merely repeat what the code is doing.
 
 ## Separate Folder for APIs and Views

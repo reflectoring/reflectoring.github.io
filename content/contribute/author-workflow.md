@@ -34,7 +34,7 @@ We use Trello as the tool of choice to track work on the reflectoring blog. You 
 
 ### Communication
 
-Communication is key to avoid misunderstandings and unnecessary work. All communication concerning an article should take place on the Trello card of that article. If you need feedback or have any questions while working on an article, add a comment to the Trello card and your editor by adding `@<Editor Name>` to the text. Your editor will get back to you within a day or so.
+Communication is key to avoid misunderstandings and unnecessary work. All communication concerning an article should take place on the Trello card of that article. If you need feedback or have any questions while working on an article, add a comment to the Trello card and mention the user `@Reflectoring Editors`. Your editor will get back to you. Please be patient, because the editors don't look into their messages every day.
 
 Please rather communicate too much than too little!
 
@@ -52,7 +52,7 @@ If you have a topic that you would like to write about and that you think is a g
 
 ### Request a Review of the Topic
 
-Mention your editor on the card (`@<Editor Name>`) so they can review the topic and decide the next steps.
+Mention the editors on the card (`@Reflectoring Editors`) so they can review the topic and decide the next steps.
 
 ## 1 - You Pick a Topic
 
@@ -80,13 +80,13 @@ Prepare an outline with section headings and a few bullet-points with the conten
 
 The outline is just an orientation and a means of checking that we have the same understanding of the topic. It’s better to discuss changes to an outline than changes to an already written article - it avoids unnecessary work. If, while writing, you find that you need to deviate from the outline, do it.
 
-Post the outline in the description of the topic card (Trello supports Markdown!) and mention your editor  (`@<Editor Name>`) in a comment to let your editor know to review the outline.
+Post the outline in the description of the topic card (Trello supports Markdown!) and mention the editors  (`@Reflectoring Editors`) in a comment to let your editor know to review the outline.
 
 ## 3 - An Editor Reviews the Outline
 
 ### Timeframe
 
-Expect feedback on the outline within a day or two. Nudge your editor by adding `@<Editor Name>` in a comment on the Trello card if you still don’t have feedback after 2 days.
+Expect feedback on the outline within a day or two. Nudge your editor by adding `@Reflectoring Editors` in a comment on the Trello card if you still don’t have feedback after 3 or so days (the editors don't look every day, so please be patient).
 
 ### Address Comments
 
@@ -120,7 +120,7 @@ Make sure to activate the checkbox “Allow edits from maintainers”!
 
 Once you have created a pull request, an online preview will be generated automatically. Please check the article in the online preview before requesting a review.
 
-To access the online preview, click on “Show all checks” in the detail view of your pull request,  and then on “Details” next to the netlify check.
+To access the online preview, click on “Show all checks” in the detail view of your pull request, and then on “Details” next to the netlify check.
 
 {{% image alt="Online preview after creating a pull request" src="/images/contribute/online_preview.png" %}}
 
@@ -130,7 +130,7 @@ Most articles will require some code examples to prove the ideas or discussion i
 
 ### Submit the Topic for Review
 
-Mention your editor ``@<Editor Name>`` in a comment on the Trello card to let me know that the topic is ready for review.
+Mention the editors `@Reflectoring Editors` in a comment on the Trello card to let me know that the topic is ready for review.
 
 ## 5 - Editor Reviews the Article
 
@@ -138,7 +138,7 @@ Mention your editor ``@<Editor Name>`` in a comment on the Trello card to let me
 
 I’m usually pretty quick in giving feedback to submitted articles. Give me a day or two to respond. In the response you’ll either get the feedback directly or a timeframe in which to expect it.
 
-Nudge your editor by adding `@<Editor Name>` in a comment on the Trello card if you didn’t get feedback within a week.
+Nudge your editor by adding `@Reflectoring Editors` in a comment on the Trello card if you didn’t get feedback within a week.
 
 ### Minor Changes
 

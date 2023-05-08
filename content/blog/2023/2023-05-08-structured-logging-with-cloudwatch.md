@@ -2,10 +2,10 @@
 authors: [pratikdas]
 title: "Structured Logging from Spring Boot Application with Amazon CloudWatch"
 categories: ["AWS","Spring Boot"]
-date: 2023-04-25 00:00:00 +1100
+date: 2023-05-08 00:00:00 +1100
 excerpt: "The primary purpose of logging in applications is to debug and trace one or more causes of unexpected behavior. However, a log without a consistent structure with context information is difficult to search for and locate the root cause of problems. This is where we need to use Structured Logging. Amazon CloudWatch is Amazon's native service for observing and monitoring resources and applications running in the AWS cloud as well as outside. In this article, we will produce structured logs from a Spring Boot application and ingest them in Amazon CloudWatch. We will use different search and visualization capabilities of Amazon CloudWatch to observe the behavior of our Spring Boot application."
 image: images/stock/0117-queue-1200x628-branded.jpg
-url: struct-log-with-cw
+url: struct-log-with-cloudwatch-tutorial
 ---
 
 The primary purpose of logging in applications is to debug and trace one or more root causes of an unexpected behavior. We take various approaches to logging from putting ad-hoc print statements to embedding sophisticated logging libraries in our code. 

@@ -1,12 +1,12 @@
 ---
 title: "How to Build Responsive Web Apps with Spring Boot and React: A Step-by-Step Guide"
 categories: ["Spring"]
-date: 2023-05-03 00:00:00 +1100
-modified: 2023-05-03 00:00:00 +1100
+date: 2023-05-08 00:00:00 +1100
+modified: 2023-05-08 00:00:00 +1100
 authors: ["ajibade"]
 description: "In this article, we’ll explore why Spring Boot and React.js can be a perfect duo for building full-stack web applications. Additionally, we’ll walk through the process of creating a Spring Boot backend application and integrating it with a React.js frontend application."
 image: images/stock/0130-spring-boot-and-reactjs.jpg
-url: build-responsive-web-apps-with-springboot-and-react
+url: build-responsive-web-apps-with-springboot-and-react-tutorial
 ---
 
 Choosing a backend and frontend stack for web apps can be a daunting task, as there are numerous options available for backend (Node.js, Ruby, Python, C#, Go, etc) and frontend (Angular, React, Vue, Swift, etc) development. With this many options, it can be challenging to determine which technology stack will be the best fit for our application.

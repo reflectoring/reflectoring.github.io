@@ -56,7 +56,7 @@ The main benefit we can take from this rule is that we should be aware of the ch
 
 ### How Does It Help in Software Development?
 
-In software development, we can apply it to code quality: every code smell we let into our codebase reduces our threshold to add more code smells. We should [[Start Clean]] and keep the code base clean to avoid this from happening. The reason that many codebases are so hard to understand and maintain is that a Broken Window has crept in and hasn't been fixed quickly enough.
+In software development, we can apply it to code quality: every code smell we let into our codebase reduces our threshold to add more code smells. We should [Start Clean](/start-clean) and keep the code base clean to avoid this from happening. The reason that many codebases are so hard to understand and maintain is that a Broken Window has crept in and hasn't been fixed quickly enough.
 
 We can apply the principle to test coverage as well: as soon as a certain amount of code has crept into the codebase that is not covered with tests, more uncovered code will be added. This is an argument to maintain [100% code coverage](https://reflectoring.io/100-percent-test-coverage/) (of the code that *should* be covered) so we can see the cracks before a window breaks.
 

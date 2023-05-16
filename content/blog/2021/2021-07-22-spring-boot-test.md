@@ -27,7 +27,7 @@ This tutorial is part of a series:
 3. [Testing JPA Queries with Spring Boot and `@DataJpaTest`](/spring-boot-data-jpa-test/)
 4. [Testing with Spring Boot and `@SpringBootTest`](/spring-boot-test/)
 
-**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://transactions.sendowl.com/stores/13745/194393) (if you buy through this link, I get a cut).
+**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://www.copecart.com/products/521411d4/p/tomhombergs) (if you buy through this link, I get a cut).
 
 ## Integration Tests vs. Unit Tests
 
@@ -463,4 +463,4 @@ For testing only certain slices or layers of the application, we have other opti
 
 The example code used in this article is available on [github](https://github.com/thombergs/code-examples/tree/master/spring-boot/spring-boot-testing).
 
-**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://transactions.sendowl.com/stores/13745/194393) (if you buy through this link, I get a cut). 
+**If you like learning from videos, make sure to check out Philip's** [**Testing Spring Boot Applications Masterclass**](https://www.copecart.com/products/521411d4/p/tomhombergs) (if you buy through this link, I get a cut). 

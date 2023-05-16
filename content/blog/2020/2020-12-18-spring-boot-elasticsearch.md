@@ -27,11 +27,11 @@ Here we will use Spring Data Elasticsearch to demonstrate the indexing and searc
 ## Elasticsearch Concepts
 The easiest way to get introduced to Elasticsearch concepts is by drawing an analogy with a database as illustrated in this table:
 
-|Elasticsearch|->|Database|
-|-------------|--------|
-|Index|->|Table|
-|Document|->|Row|
-|Field|->|Column|
+|Elasticsearch|Database|
+|-----------|---|
+|Index|Table|
+|Document|Row|
+|Field|Column|
 
 Any data we want to search or analyze is stored as a document in an index. In Spring Data, we represent a document in the form of a POJO and decorate it with annotations to define the mapping into an Elasticsearch document. 
 

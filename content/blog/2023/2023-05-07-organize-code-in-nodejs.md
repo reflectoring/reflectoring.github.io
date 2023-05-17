@@ -293,7 +293,7 @@ Here are the main techniques for code organization:
 1. Modules are the fundamental unit of organizing code in Node.js.
 2. Modules are imported by other applications or modules which need to use the functions defined in the imported modules. 
 3. We apply the principle of Separation of Concerns for Organizing Code.
-4. For small projects with less than 4 features, we can organize by roles like controllers, routes, etc but for bigger projects we should organize by features and then by roles.
+4. For small projects like granular microservices built around 1 feature or domain, we should organize by roles like `controllers`, `routes`, etc. For bigger projects with multiple features or domains, we should organize by features and then by roles.
 5. Whenever we are supporting multiple versions of APIs we should have separate folders for the modules of each version.
 6. Files with modules containing configurations should be under a folder: `config` so that it is easy to find and adjust the configuration values in one place.
 7. Whenever we use template engines, it helps to have separate folders for views and APIs

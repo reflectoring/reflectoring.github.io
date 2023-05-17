@@ -24,7 +24,8 @@ This is an example of a module: `orderInquiryController.js`:
 ```js
 const getOrderByID = ((req, res) => {
     const orderID = Number(req.params.orderID)
-    const order = orders.find(order => order.orderID === orderID)
+    const order = orders.find(
+                  order => order.orderID === orderID)
 
         if (!order) {
         return res.status(404).send('Order not found')
@@ -34,7 +35,8 @@ const getOrderByID = ((req, res) => {
 
 const getOrderStatus = ((req, res) => {
     const orderID = Number(req.params.orderID)
-    const order = orders.find(order => order.orderID === orderID)
+    const order = orders.find(
+                  order => order.orderID === orderID)
 
         if (!order) {
         return res.status(404).send('Order not found')
@@ -42,7 +44,11 @@ const getOrderStatus = ((req, res) => {
     res.json(order)
 })
 
-module.exports = {getOrders,getOrderByID,getOrderStatus}
+module.exports = {
+                    getOrders,
+                    getOrderByID,
+                    getOrderStatus
+                 }
 
 ```    
 In this example, we are exporting two functions: `getOrderByID` and `getOrderStatus`. Other applications or modules can use these functions by importing the module as explained in the next section.
@@ -135,22 +141,22 @@ The express framework in Node.js allows us to integrate template engines for ren
 │         ├── apis
 │    │    ├── accounts
 │    │    │   ├── controllers
-│    │    │   │   └── AccountController.js
+│    │    │   │   └── accountController.js
 │    │    │   └── routes
-│    │    │       ├── AccountRoutes.js
-│    │    │       ├── CatalogRoutes.js
+│    │    │       ├── accountRoutes.js
+│    │    │       ├── catalogRoutes.js
 │    │    └── orders
 │    │   ├── controllers
-│    │   │   ├── OrderInquiryController.js
-│    │   │   └── OrderUpdateController.js
+│    │   │   ├── orderInquiryController.js
+│    │   │   └── orderUpdateController.js
 │    │   ├── dbaccessors
-│    │   │   └── OrderDataAccessor.js
+│    │   │   └── orderDataAccessor.js
 │    │   ├── models
-│    │   │   └── Order.js
+│    │   │   └── order.js
 │    │   ├── routes
-│    │   │   └── OrderRoutes.js
+│    │   │   └── orderRoutes.js
 │    │   └── services
-│    │          └── OrderInquiryService.js
+│    │          └── orderInquiryService.js
 │         ├── views
 ```
 
@@ -162,14 +168,14 @@ Whenever we are supporting multiple versions of APIs we should have separate fol
 │    │    ├── accounts
 │         │    │    ├──v1
 │    │    │    │   ├── controllers
-│    │    │    │   │  └── AccountController.js
+│    │    │    │   │  └── accountController.js
 │    │    │    │   └── services
-│    │    │    │           └── AccountInquiryService.js
+│    │    │    │           └── accountInquiryService.js
 │         │    │    └──v2
 │    │    │       ├── controllers
-│    │    │       │  └── AccountController.js
+│    │    │       │  └── accountController.js
 │    │    │       └── services
-│    │    │               └── AccountInquiryService.js
+│    │    │               └── accountInquiryService.js
 │    │    └── routes
 │         │          └── accountRoutes.js
 │    │    └── orders
@@ -206,22 +212,22 @@ These modules should be kept in a separate folder: `helpers`:
 │         ├── apis
 │    │    ├── accounts
 │    │    │   ├── controllers
-│    │    │   │ └── AccountController.js 
+│    │    │   │ └── accountController.js 
 │    │    │   └── routes
-│    │    │     ├── AccountRoutes.js
-│         │    │          └── CatalogRoutes.js 
+│    │    │     ├── accountRoutes.js
+│         │    │          └── catalogRoutes.js 
 │    │    └── orders
 │    │   ├── controllers
-│    │   │   ├── OrderInquiryController.js
-│    │   │   └── OrderUpdateController.js
+│    │   │   ├── orderInquiryController.js
+│    │   │   └── orderUpdateController.js
 │    │   ├── dbaccessors
-│    │   │   └── OrderDataAccessor.js
+│    │   │   └── orderDataAccessor.js
 │    │   ├── models
-│    │   │   └── Order.js
+│    │   │   └── order.js
 │    │   ├── routes
-│    │   │   └── OrderRoutes.js
+│    │   │   └── orderRoutes.js
 │    │   └── services
-│    │          └── OrderInquiryService.js
+│    │          └── orderInquiryService.js
 │         ├── helpers  <- Store code reusable across the project here
 │         │       ├── awsServices.js
 │         │       └── jwtService.js 
@@ -255,7 +261,7 @@ For this reason, test files for modules should be kept under the folder for modu
 ```
 In this project, the test file for the modules under the `orders` folder is kept in the same folder. Additional test files are kept in a separate test folder.
 
-## Grouping All Shell Scripts in Separate Folder for Scripts
+## Grouping All Shell Scripts in a Separate Folder for Scripts
 We often use scripts for configuring the run time environment and dependent systems. Examples of configuration scripts are database initialization scripts, setting up values of environment variables, etc. All such these scripts should be in a separate folder: `scripts`
 
 
@@ -285,7 +291,7 @@ We should revisit the organization of code periodically because the assumptions 
 Some examples of these changes are the introduction of new features requiring the use of a new flavor of a database, and integration with external APIs.
 
 ## Using a Consistent Naming Convention 
-Apart from the rules around organizing code, we should also use a consistent naming convention for our files, folders, and functions. Consistent naming helps to increase the readability of our code. We can use a variety of naming conventions, like camelCase, PascalCase, and snake_case. However,  irrespective of our choice,  we should ensure that the naming is consistent across our entire codebase.
+Apart from the rules around organizing code, we should also use a consistent naming convention for our files, folders, and functions. Consistent naming helps to increase the readability of our code. We can use a variety of naming conventions, like camelCase, PascalCase, and snake_case. Irrespective of our choice,  we should ensure that the naming is consistent across our entire codebase.
 
 ## Conclusion
 Organizing code in a Node.js application is crucial for improving the readability, maintainability, and extendability of our code. 

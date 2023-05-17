@@ -19,7 +19,7 @@ This approach makes it easier to reuse code and maintain consistency across our 
 ## Exporting Blocks of Reusable Code  
 We specify the functions and variables to be exposed by a module using the `module.exports`. 
 
-This is an example of a module: `OrderInquiryController.js`:
+This is an example of a module: `orderInquiryController.js`:
 
 ```js
 const getOrderByID = ((req, res) => {
@@ -50,22 +50,22 @@ In this example, we are exporting two functions: `getOrderByID` and `getOrderSta
 ## Importing Blocks of Reusable Code  
 We can import one or more modules into other modules or applications which want to use the functions defined in those modules. 
 
-Let us import the module created in the previous section in another module: `OrderRoutes.js` by using the `require` function:
+Let us import the module created in the previous section in another module: `orderRoutes.js` by using the `require` function:
 ```js
 const express = require('express')
 const router = express.Router()
 
 
-// Import the OrderInquiryController module 
+// Import the orderInquiryController module 
 const  { 
     getOrders,getOrderByID,getOrderStatus
-} = require('../controllers/OrderInquiryController.js')
+} = require('../controllers/orderInquiryController.js')
 
 router.get('/', getOrders)
 router.get('/:orderId', getOrderByID)
 router.post('/:orderId/status', getOrderStatus)
 ```
-In this code snippet, we have imported the module: `OrderInquiryController`. We have used a relative path: `../controllers/OrderInquiryController.js` to specify the location of the module.
+In this code snippet, we have imported the module: `orderInquiryController`. We have used a relative path: `../controllers/orderInquiryController.js` to specify the location of the module.
 
 We can also publish modules in a shared module registry, and other applications or modules can use them by installing from the shared module registry using the npm package manager. These installed modules reside in the `node_modules` folder.
 
@@ -91,12 +91,16 @@ This is an example of grouping files and folders using the principle of Separati
 │       └── services
 │           └── inquiryService.js
 ```
-As we can see, the controller files: `OrderInquiryController.js` and `OrderUpdateController.js` are in one folder: `controllers`. Similarly, we have created folders for putting other types of files like `routes`, `models`, `services`, and `dbaccessors`. 
+As we can see, the controller files: `inquiryController.js` and `updateController.js` are in one folder: `controllers`. Similarly, we have created folders for putting other types of files like `routes`, `models`, `services`, and `dbaccessors`. 
 
-This method of grouping by roles should be used for smaller codebases typically less than 4 features. For more than 4 features we should organize by features rather than by roles as explained in the next section.
+This method of grouping by roles should be used for smaller codebases typically in a granular microservice built around 1 feature or domain. 
+
+For larger codebases with multiple features or domains, we should organize the code by features rather than by roles as explained in the next section.
 
 ## Separation of Concerns by Features for Organizing Code 
-For large codebases, we should organize them by features. This is also the preferred style if we are unsure about the number of features to be added in the future.
+Some Node.js applications could also be composed of multiple features or domains. For example an ecommerce application could have features: `orders`, `account`, `inventory`, `warehouse`, etc. Each feature will have a set of APIs which we will build by using a distinct set of `controllers` and `routes`. 
+
+For these applications, we should organize the code by features to make it more readable. 
 
 This is an example of organizing the code of a project by features: `accounts` and `orders`.
 ```shell
@@ -121,6 +125,8 @@ This is an example of organizing the code of a project by features: `accounts` a
 │           └── orderInquiryService.js
 ```
 Here the files for the features: `accounts` and `orders` are placed under folders named: `accounts` and `orders`. Under each feature, we have organized the files by the roles like `controllers`, and  `routes`.
+
+This type of organization makes it easier to locate the code for a particular feature. For example, if we need to check the request handler for the `orders` API, we can go into the `orders` folder and look for the `controllers` kept in that folder. 
 
 ## Using Separate Folders for APIs and Views
 The express framework in Node.js allows us to integrate template engines for rendering HTML pages. Whenever we use template engines, it helps to have separate folders for views and APIs:

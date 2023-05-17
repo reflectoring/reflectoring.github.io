@@ -98,7 +98,7 @@ This method of grouping by roles should be used for smaller codebases typically 
 For larger codebases with multiple features or domains, we should organize the code by features rather than by roles as explained in the next section.
 
 ## Separation of Concerns by Features for Organizing Code 
-Some Node.js applications could also be composed of multiple features or domains. For example an ecommerce application could have features: `orders`, `account`, `inventory`, `warehouse`, etc. Each feature will have a set of APIs which we will build by using a distinct set of `controllers` and `routes`. 
+Some Node.js applications could also be composed of multiple features or domains. For example, an e-commerce application could have features: `orders`, `account`, `inventory`, `warehouse`, etc. Each feature will have a set of APIs which we will build by using a distinct set of `controllers` and `routes`. 
 
 For these applications, we should organize the code by features to make it more readable. 
 
@@ -154,7 +154,7 @@ The express framework in Node.js allows us to integrate template engines for ren
 │         ├── views
 ```
 
-## Using Separate Folders Placing Code for Every Supported Version of API
+## Using Separate Folders For Modules of Supported Version of API
 Whenever we are supporting multiple versions of APIs we should have separate folders for the modules of each version. In this example, we have two versions: `v1` and `v2`:
 ```shell
 │    ├── app.js
@@ -278,7 +278,7 @@ We often use scripts for configuring the run time environment and dependent syst
 In this folder structure, we have stored the scripts for setting up the server: `setup_server.js` and database: `setup_db.js` under the folder: `scripts`.
 
 ## Enforcing Code Quality with Linters
-A linter is a tool that analyzes our code and checks for syntax errors, coding style, and other issues. A linter helps to maintain consistent code quality across our entire codebase. Some popular linters for Node.js are ESLint and JSHint.
+A linter is a tool that analyzes our code and checks for syntax errors, coding style, and other issues. We should use a linter to maintain consistent quality of code across our entire codebase. Some popular linters for Node.js are [ESLint](https://eslint.org) and [JSHint](https://jshint.com).
 
 ## Periodic Reorganizing of Code
 We should revisit the organization of code periodically because the assumptions and demands on the codebase keep changing as an application evolves to fulfill business needs.
@@ -292,10 +292,10 @@ Organizing code in a Node.js application is crucial for improving the readabilit
 Here are the main techniques for code organization: 
 1. Modules are the fundamental unit of organizing code in Node.js.
 2. Modules are imported by other applications or modules which need to use the functions defined in the imported modules. 
-3. We apply the principle of Separation of Concerns for Organizing Code.
+3. We apply the principle of Separation of Concerns for organizing code.
 4. For small projects like granular microservices built around 1 feature or domain, we should organize by roles like `controllers`, `routes`, etc. For bigger projects with multiple features or domains, we should organize by features and then by roles.
-5. Whenever we are supporting multiple versions of APIs we should have separate folders for the modules of each version.
+5. Whenever we are supporting multiple versions of APIs, we should have separate folders for the modules of each version.
 6. Files with modules containing configurations should be under a folder: `config` so that it is easy to find and adjust the configuration values in one place.
 7. Whenever we use template engines, it helps to have separate folders for views and APIs
-8. We should revisit the organization of code periodically because the assumptions and demands on the codebase keep changing as an application evolves to fulfill business needs.
+8. We should revisit the organization of our code periodically because the assumptions and demands on the codebase keep changing as an application evolves to fulfill business needs.
 9. We should also use a consistent naming convention for our files, folders, and functions. Consistent naming helps to increase the readability of our code.

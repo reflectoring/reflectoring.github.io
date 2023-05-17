@@ -2,10 +2,10 @@
  authors: [pratikdas]
  title: "Organizing Code in Node.js Application"
  categories: ["Node"]
- date: 2023-05-07 00:00:00 +1100
+ date: 2023-05-17 00:00:00 +1100
  excerpt: "Node.js is a popular server-side runtime engine based on JavaScript used to build and run web applications. Organizing our source code right from the start is a crucial initial step for building large applications. Otherwise, the code soon becomes unwieldy and very hard to maintain. Node.js does not have any prescriptive framework for organizing code. So let us look at some commonly used patterns of organizing code in a Node.js application. "
  image: images/stock/0117-queue-1200x628-branded.jpg
- url: organize-code-with-nodejs
+ url: organize-code-with-nodejs-tutorial
 ---
 Node.js is a popular server-side runtime engine based on JavaScript to build and run web applications. Organizing our source code right from the start is a crucial initial step for building large applications. 
 

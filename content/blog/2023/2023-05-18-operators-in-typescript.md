@@ -103,5 +103,20 @@ console.log(x <= y); // false
 
 **Less Than or Equal To Operator (<=):** This operator checks if the left operand is less than or equal to the right operand. If it is true, it returns true. Otherwise, it returns false.
 
+### Difference Between Equality and Strict Equality Operator:
+When it comes to comparing values, it is essential to understand the difference between the equality (==) and strict equality (===) operators. The equality operator only compares the values of the operands, while the strict equality operator compares both the values and types of the operands. Let’s take a look at this code:
+
+~~~ts
+let x = 10;
+let y = 5;
+console.log(x == y); // false
+console.log(x == 10); // true
+console.log(x === y); // false (different value)
+console.log(x === "10"); // false (different data types)
+console.log(x === 10); // true (same data types)
+~~~
+
+In the given example, the expression `x == y` returns false because `x` and `y` are not equal. The expression `x == 10` returns true because `x` is equal to `10`. The expression `x === y` returns false because `x` and `y` are of different values. The expression `x === '10'` returns false because `x` is a number and `'10'` is a string. Finally, the expression `x === 10` returns true because both `x` and `10` are of the same data type (number) and have the same value.
+
 
 

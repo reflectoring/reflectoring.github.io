@@ -56,19 +56,19 @@ a--;
 console.log(a);   // Output: 11
 ~~~
 
-**Addition (+):** adds two or more values
+**Addition (`+`):** adds two or more values
 
-**Subtraction (-):** subtracts two or more values
+**Subtraction (`-`):** subtracts two or more values
 
-**Multiplication (*):** multiplies two or more values
+**Multiplication (`*`):** multiplies two or more values
 
-**Division (/):** divides two or more values
+**Division (`/`):** divides two or more values
 
-**Modulus (%):** returns the remainder of a division operation
+**Modulus (`%`):** returns the remainder of a division operation
 
-**Increment (++):** increases the value of the variable by one
+**Increment (`++`):** increases the value of the variable by one
 
-**Decrement (--):** decreases the value of the variable by one
+**Decrement (`--`):** decreases the value of the variable by one
 
 ## Relational Operators
 Relational Operators are used to compare two values and determine their relationship. Let’s take a look at some relational operators commonly used in Typescript:
@@ -87,24 +87,24 @@ console.log(x >= y); // true
 console.log(x <= y); // false
 ~~~
 
-**Equality Operator (==):** This operator compares two values but doesn't consider their data types. If the values are equal, it returns true. Otherwise, it returns false.
+**Equality Operator (`==`):** This operator compares two values but doesn't consider their data types. If the values are equal, it returns true. Otherwise, it returns false.
 
-**Strict Equality Operator (===):** This operator compares two values for equality, and it considers their data types. If the values are equal in value and type, it returns true. Otherwise, it returns false.
+**Strict Equality Operator (`===`):** This operator compares two values for equality, and it considers their data types. If the values are equal in value and type, it returns true. Otherwise, it returns false.
 
-**Inequality Operator (!=):** This operator compares two values for inequality. If the values are not equal, it returns true. Otherwise, it returns false.
+**Inequality Operator (`!=`):** This operator compares two values for inequality. If the values are not equal, it returns true. Otherwise, it returns false.
 
-**Strict Inequality Operator (!==):** This operator compares two values for inequality, and it considers their data types. If the values are not equal in value or type, it returns true. Otherwise, it returns false.
+**Strict Inequality Operator (`!==`):** This operator compares two values for inequality, and it considers their data types. If the values are not equal in value or type, it returns true. Otherwise, it returns false.
 
-**Greater Than Operator (>):** This operator checks if the left operand is greater than the right operand. If it is true, it returns true. Otherwise, it returns false.
+**Greater Than Operator (`>`):** This operator checks if the left operand is greater than the right operand. If it is true, it returns true. Otherwise, it returns false.
 
-**Less Than Operator (<):** This operator checks if the left operand is less than the right operand. If it is true, it returns true. Otherwise, it returns false.
+**Less Than Operator (`<`):** This operator checks if the left operand is less than the right operand. If it is true, it returns true. Otherwise, it returns false.
 
-**Greater Than or Equal To Operator (>=):** This operator checks if the left operand is greater than or equal to the right operand. If it is true, it returns true. Otherwise, it returns false.
+**Greater Than or Equal To Operator (`>=`):** This operator checks if the left operand is greater than or equal to the right operand. If it is true, it returns true. Otherwise, it returns false.
 
-**Less Than or Equal To Operator (<=):** This operator checks if the left operand is less than or equal to the right operand. If it is true, it returns true. Otherwise, it returns false.
+**Less Than or Equal To Operator (`<=`):** This operator checks if the left operand is less than or equal to the right operand. If it is true, it returns true. Otherwise, it returns false.
 
 ### Difference Between Equality and Strict Equality Operator:
-When it comes to comparing values, it is essential to understand the difference between the equality (==) and strict equality (===) operators. The equality operator only compares the values of the operands, while the strict equality operator compares both the values and types of the operands. Let’s take a look at this code:
+When it comes to comparing values, it is essential to understand the difference between the equality (`==`) and strict equality (`===`) operators. The equality operator only compares the values of the operands, while the strict equality operator compares both the values and types of the operands. Let’s take a look at this code:
 
 ~~~ts
 let x = 10;
@@ -132,10 +132,42 @@ console.log(x > y || y < z); // true
 console.log(!(x > y)); // true
 ~~~
 
-**AND (&&) Operator:** The AND `&&` operator returns true if both operands are true.
+**AND (`&&`) Operator:** The AND `&&` operator returns true if both operands are true.
 
-**OR (||) Operator:** The OR `||` operator returns true if at least one of the operands is true.
+**OR (`||`) Operator:** The OR `||` operator returns true if at least one of the operands is true.
 
-**NOT (!) Operator:** The NOT `!` operator negates a boolean value, converting true to false and vice versa. 
+**NOT (`!`) Operator:** The NOT `!` operator negates a boolean value, converting true to false and vice versa. 
+
+## Bitwise Operators
+Bitwise operators in TypeScript operate on binary representations of numbers. They are useful for performing operations at the binary level, manipulating individual bits, working with flags, or optimizing certain algorithms that require low-level bit manipulations. Understanding their behaviour and how to use them correctly can be valuable when working with binary data or implementing certain advanced programming techniques.
+
+Some of the common bitwise operators include AND (`&`), OR (`|`), XOR (`^`), left shift (`<<`), right shift (`>>`), and complement (`~`). These operators are particularly useful when working with flags, binary data, or performance optimizations. Let’s take a look at them:
+
+~~~ts
+let a = 5; // 0101 in binary
+let b = 3; // 0011 in binary
+
+console.log(a & b); // 0001 (AND)
+console.log(a | b); // 0111 (OR)
+console.log(a ^ b); // 0110 (XOR)
+console.log(a << 1); // 1010 (Left Shift)
+console.log(a >> 1); // 0010 (Right Shift)
+console.log(~a); // 1010 (Complement)
+~~~
+
+AND (`&`): The AND operator, represented by the symbol `&`, performs a logical AND operation between corresponding bits of two numbers. The result is a new number where each bit is set to 1 only if both bits in the same position of the operands are 1.
+
+OR (`|`): The OR operator, represented by the symbol `|`, performs a logical OR operation between corresponding bits of two numbers. The result is a new number where each bit is set to 1 if at least one of the bits in the same position of the operands is 1.
+
+XOR (`^`): The XOR operator, represented by the symbol `^`, performs a logical exclusive OR operation between corresponding bits of two numbers. The result is a new number where each bit is set to 1 only if one of the bits in the same position of the operands is 1, but not both.
+
+Left Shift (`<<`): The left shift operator, represented by the symbol `<<`, shifts the binary bits of a number to the left by a specified number of positions. The leftmost bits are discarded, and new zeros are added on the right side. Each shift to the left doubles the value of the number.
+
+Right Shift (`>>`): The right shift operator, represented by the symbol `>>`, shifts the binary bits of a number to the right by a specified number of positions. The rightmost bits are discarded, and new bits are added on the left side. For positive numbers, each shift to the right halves the value of the number.
+
+Complement (`~`): The complement operator, represented by the symbol `~`, performs a bitwise NOT operation on a number, flipping all its bits. This operator effectively changes each 0 to 1 and each 1 to 0.
+
+# Conclusion:
+By mastering the usage of these operators and applying best practices, you can enhance your TypeScript programming skills and develop more effective solutions. Whether you're working on small-scale projects or large-scale applications, a solid understanding of operators will contribute to your success in writing maintainable and performant code.
 
 

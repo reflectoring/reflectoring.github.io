@@ -118,5 +118,24 @@ console.log(x === 10); // true (same data types)
 
 In the given example, the expression `x == y` returns false because `x` and `y` are not equal. The expression `x == 10` returns true because `x` is equal to `10`. The expression `x === y` returns false because `x` and `y` are of different values. The expression `x === '10'` returns false because `x` is a number and `'10'` is a string. Finally, the expression `x === 10` returns true because both `x` and `10` are of the same data type (number) and have the same value.
 
+## Logical Operators
+
+Logical operators in TypeScript allow you to perform logical operations on boolean values. ​​Let's take a look at some Logical Operators:
+
+~~~ts
+let x = 5;
+let y = 10;
+let z = 15;
+
+console.log(x < y && y < z); // true
+console.log(x > y || y < z); // true
+console.log(!(x > y)); // true
+~~~
+
+**AND (&&) Operator:** The AND `&&` operator returns true if both operands are true.
+
+**OR (||) Operator:** The OR `||` operator returns true if at least one of the operands is true.
+
+**NOT (!) Operator:** The NOT `!` operator negates a boolean value, converting true to false and vice versa. 
 
 

@@ -55,7 +55,7 @@ console.log(z);   // Output: 4
 
 let a = 10;
 a--;
-console.log(a);   // Output: 11
+console.log(a);   // Output: 9
 ~~~
 
 **Addition (`+`):** adds two or more values

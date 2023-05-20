@@ -172,6 +172,6 @@ Complement (`~`): The complement operator, represented by the symbol `~`, perfor
 # Conclusion:
 By mastering the usage of these operators and applying best practices, you can enhance your TypeScript programming skills and develop more effective solutions. Whether you're working on small-scale projects or large-scale applications, a solid understanding of operators will contribute to your success in writing maintainable and performant code.
 
-You can find all the code on used in this article on [GitHub]([https://github.com/thombergs/code-examples/tree/master/nodejs/node-csv-importer](https://github.com/Irtaza2009/code-examples/tree/operators-in-typescript/nodejs/operators-in-typescript)).
+You can find all the code on used in this article on [GitHub](https://github.com/Irtaza2009/code-examples/tree/operators-in-typescript/nodejs/operators-in-typescript).
 
 

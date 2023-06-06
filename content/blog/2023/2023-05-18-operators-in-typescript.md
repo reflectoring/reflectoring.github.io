@@ -1,6 +1,6 @@
 TypeScript is a superset of JavaScript that adds static typing and other features to the language. Its operators are crucial to understanding the language and writing effective code. Operators are symbols or keywords in a programming language that perform operations on values, such as arithmetic operations, string concatenation, and comparisons. **Understanding operators in TypeScript is essential because they are fundamental building blocks of the language and are used in almost every programming aspect.** By choosing the right operator for the job, you can often simplify your code and make it easier to understand and maintain. In this article, we will explore the most important operators in TypeScript and provide examples of how they can be used in real-world applications to help you write more efficient and readable code.
 
-{% include github-project.html url="[link_to_example_module](https://github.com/Irtaza2009/code-examples/tree/operators-in-typescript/nodejs/operators-in-typescript)" %}
+{% include github-project.html url="[https://github.com/Irtaza2009/code-examples/tree/operators-in-typescript/nodejs/operators-in-typescript](https://github.com/Irtaza2009/code-examples/tree/operators-in-typescript/nodejs/operators-in-typescript)" %}
 
 # What operators are in Typescript? How are they used?
 In Typescript, **operators are symbols used to perform operations on variables or values.** They can be classified into several categories based on their functions.
@@ -172,6 +172,6 @@ Complement (`~`): The complement operator, represented by the symbol `~`, perfor
 # Conclusion:
 By mastering the usage of these operators and applying best practices, you can enhance your TypeScript programming skills and develop more effective solutions. Whether you're working on small-scale projects or large-scale applications, a solid understanding of operators will contribute to your success in writing maintainable and performant code.
 
-You can find all the code on used in this article on [GitHub](https://github.com/Irtaza2009/code-examples/tree/operators-in-typescript/nodejs/operators-in-typescript).
+You can find all the code used in this article on [GitHub](https://github.com/Irtaza2009/code-examples/tree/operators-in-typescript/nodejs/operators-in-typescript).
 
 

@@ -3,7 +3,7 @@ title: "Operators in Typescript"
 categories: ["Node"]
 date: 2023-05-18 00:00:00 +1100
 modified: 2023-03-22 00:00:00 +1100
-authors: ["Irtaza"]
+
 description: "In this article, we'll discuss the different types of operators in Rypescript how to use them"
 image: images/stock/0012-pages-1200x628-branded.jpg
 url: operators-in-typescript

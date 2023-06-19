@@ -1,8 +1,22 @@
-TypeScript is a superset of JavaScript that adds static typing and other features to the language. Its operators are crucial to understanding the language and writing effective code. Operators are symbols or keywords in a programming language that perform operations on values, such as arithmetic operations, string concatenation, and comparisons. **Understanding operators in TypeScript is essential because they are fundamental building blocks of the language and are used in almost every programming aspect.** By choosing the right operator for the job, you can often simplify your code and make it easier to understand and maintain. In this article, we will explore the most important operators in TypeScript and provide examples of how they can be used in real-world applications to help you write more efficient and readable code.
+---
+authors: [pratikdas]
+title: "Operators in TypeScript"
+categories: ["AWS","Spring Boot"]
+date: 2023-06-19 00:00:00 +1100
+excerpt: "The primary purpose of logging in applications is to debug and trace one or more causes of unexpected behavior. However, a log without a consistent structure with context information is difficult to search for and locate the root cause of problems. This is where we need to use Structured Logging. Amazon CloudWatch is Amazon's native service for observing and monitoring resources and applications running in the AWS cloud as well as outside. In this article, we will produce structured logs from a Spring Boot application and ingest them in Amazon CloudWatch. We will use different search and visualization capabilities of Amazon CloudWatch to observe the behavior of our Spring Boot application."
+image: images/stock/0117-queue-1200x628-branded.jpg
+url: typescript-operators
+---
+
+TypeScript is a superset of JavaScript that adds static typing and other features to the language. Its operators are crucial to understanding the language and writing effective code. 
+
+Operators are symbols or keywords in a programming language that perform operations on values, such as arithmetic operations, string concatenation, and comparisons.
+
+**Understanding operators in TypeScript is essential because they are fundamental building blocks of the language and are used in almost every programming aspect.** By choosing the right operator for the job, you can often simplify your code and make it easier to understand and maintain. In this article, we will explore the most important operators in TypeScript and provide examples of how they can be used in real-world applications to help you write more efficient and readable code.
 
 {{% github "https://github.com/Irtaza2009/code-examples/tree/operators-in-typescript/nodejs/operators-in-typescript" %}}
 
-# What operators are in Typescript? How are they used?
+# What operators are in Typescript?
 In Typescript, **operators are symbols used to perform operations on variables or values.** They can be classified into several categories based on their functions.
 
 ## Concatenation Operators
@@ -12,7 +26,6 @@ For example, let's say we have two strings, "Hello" and "World". We can use the 
 
 ```ts
 let greeting = "Hello" + "World";
-
 console.log(greeting);
 ```
 Output:
@@ -105,7 +118,7 @@ console.log(x <= y); // false
 
 **Less Than or Equal To Operator (`<=`):** This operator checks if the left operand is less than or equal to the right operand. If it is true, it returns true. Otherwise, it returns false.
 
-### Difference Between Equality and Strict Equality Operator:
+### Difference Between Equality and Strict Equality Operator
 When it comes to comparing values, it is essential to understand the difference between the equality (`==`) and strict equality (`===`) operators. The equality operator only compares the values of the operands, while the strict equality operator compares both the values and types of the operands. Let’s take a look at this code:
 
 ~~~ts
@@ -169,7 +182,7 @@ Right Shift (`>>`): The right shift operator, represented by the symbol `>>`, sh
 
 Complement (`~`): The complement operator, represented by the symbol `~`, performs a bitwise NOT operation on a number, flipping all its bits. This operator effectively changes each 0 to 1 and each 1 to 0.
 
-# Conclusion:
+# Conclusion
 By mastering the usage of these operators and applying best practices, you can enhance your TypeScript programming skills and develop more effective solutions. Whether you're working on small-scale projects or large-scale applications, a solid understanding of operators will contribute to your success in writing maintainable and performant code.
 
 You can find all the code used in this article on [GitHub](https://github.com/Irtaza2009/code-examples/tree/operators-in-typescript/nodejs/operators-in-typescript).

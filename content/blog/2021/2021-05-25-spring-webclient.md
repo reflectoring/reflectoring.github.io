@@ -3,7 +3,7 @@ title: "Sending HTTP requests with Spring WebClient"
 categories: ["Spring Boot"]
 date: 2021-05-25T00:00:00
 modified: 2021-05-25T00:00:00
-authors: [pimterry, paulbors]
+authors: [pimterry]
 description: "How to get started using Spring WebClient to talk to REST APIs."
 image: images/stock/0001-network-1200x628-branded.jpg
 url: spring-webclient

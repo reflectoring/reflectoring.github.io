@@ -1,9 +1,9 @@
 ---
  authors: [gary]
  title: "The Art of Writing Clean Code: A Key to Maintainable Software"
- categories: ["Node"]
+ categories: ["Software Craft"]
  date: 2023-07-02 00:00:00 +1100
- excerpt: "Node.js is a popular server-side runtime engine based on JavaScript used to build and run web applications. Organizing our source code right from the start is a crucial initial step for building large applications. Otherwise, the code soon becomes unwieldy and very hard to maintain. Node.js does not have any prescriptive framework for organizing code. So let us look at some commonly used patterns of organizing code in a Node.js application. "
+ excerpt: "Dive into reasons why writing clean code is key to creating maintainable software."
  image: images/stock/0131-tetris-1200x628-branded.jpg
  url: clean-code
 ---

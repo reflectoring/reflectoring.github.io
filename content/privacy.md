@@ -220,6 +220,8 @@ to our emails is stored on MailerLite’s servers. You may access MailerLite’s
 At any time, you may be removed from our newsletter list by clicking on the unsubscribe button
 provided in each email.
 
+<span id="ezoic-privacy-policy-embed"></span>
+
 ## Analytics
 We may use third-party Service Providers to monitor and analyse the use of our Service.
 

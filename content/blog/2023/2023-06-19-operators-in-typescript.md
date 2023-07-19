@@ -47,10 +47,10 @@ I am 30 years old.
 
 In this example, the concatenation operator combines the string "I am " with the value of the age variable (30) and the string " years old." to create the final message.
 
-Concatenation operators are useful in situations where we need to build dynamic strings based on values or user input. By using concatenation operators, we can create custom messages or outputs that are tailored to our specific needs.
+Concatenation operators are useful in situations where we need to build dynamic strings based on values or user input. Using concatenation operators, we can create custom messages or outputs tailored to our specific needs.
 
 ## Arithmetic Operators
-Arithmetic operators allow us to perform mathematical operations such as addition, subtraction, multiplication, division etc on numerical values (constants and variables). Let’s take a look at them:
+Arithmetic operators allow us to perform mathematical operations such as addition, subtraction, multiplication, division etc. on numerical values (constants and variables). Let’s take a look at them:
 
 ~~~ts
 let x = 5;
@@ -71,13 +71,13 @@ a--;
 console.log(a);   // Output: 9
 ~~~
 
-- **Addition (`+`):** adds two or more values. The addition operator (+) can also perform string concatenation when used with strings. You can find more information in the [Concantation Operators](#concantation-operators) section.
+- **Addition (`+`):** adds two or more values. The addition operator (+) can also perform string concatenation when used with strings. More information is in the [Concatenation Operators](#concatenation-operators) section.
 
 - **Subtraction (`-`):** subtracts two or more values
 
 - **Multiplication (`*`):** multiplies two or more values, and the precision of the result depends on the data types involved. When multiplying two integers, the result will also be an integer, preserving the whole number portion of the calculation. Similarly, when multiplying two floats, the result will also be a float, retaining the decimal precision. When we multiply an integer by a float or a float by an integer, the result will be a float. In TypeScript, the multiplication operation between an integer and a float promotes the integer to a float and performs the multiplication as a floating-point operation. The resulting value will retain the decimal precision of the float and include any fractional component.
 
-- **Division (`/`):** divides two or more values, and the precision and data type of the result depends on the types of the operands. If we divide two integers, the result will be an integer, and any decimal portion will be truncated. For example,`5 / 2` would result in `2`, as the remainder is discarded. However, if either the numerator or denominator is a float, the result will be a float. Dividing an integer by a float or a float by an integer will yield a float result, preserving the decimal precision.
+- **Division (`/`):** divides two or more values, and the precision and data type of the result depend on the types of the operands. If we divide two integers, the result will be an integer, and any decimal portion will be truncated. For example,`5 / 2` would result in `2`, as the remainder is discarded. However, if either the numerator or denominator is a float, the result will be a float. Dividing an integer by a float or a float by an integer will yield a float result, preserving decimal precision.
 
 - **Modulus (`%`):** returns the remainder of a division operation
 

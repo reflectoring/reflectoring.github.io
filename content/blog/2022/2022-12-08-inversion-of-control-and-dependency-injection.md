@@ -285,9 +285,9 @@ Spring also allows us to inject the dependencies through the constructor of the 
 @Component
 public class ShippingService {
 
-    RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    public void setRestTemplate(RestTemplate restTemplate) {
+    public ShippingService(RestTemplate restTemplate){
         this.restTemplate = restTemplate;
     }
 

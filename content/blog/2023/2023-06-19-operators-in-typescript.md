@@ -120,8 +120,6 @@ console.log(x <= y); // false
 
 - **Less Than or Equal To Operator (`<=`):** This operator checks if the left operand is less than or equal to the right operand. If it is true, it returns true. Otherwise, it returns false. When used with strings, it checks if the left operand is smaller than or equal to the right operand. For example, `"apple" <= "banana"` would return `true` since "apple" is less than "banana".
 
-- **Again, it's important to note that the behaviour of these comparison operators on non-numeric data types is based on their underlying implementation in JavaScript, which TypeScript inherits.**
-
 ### Difference Between Equality and Strict Equality Operator
 When it comes to comparing values, it is essential to understand the difference between the equality (`==`) and strict equality (`===`) operators. The equality operator only compares the values of the operands, while the strict equality operator compares both the values and types of the operands. Let’s take a look at this code:
 

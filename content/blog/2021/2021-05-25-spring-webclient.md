@@ -75,7 +75,7 @@ There are a few different ways to unwrap an asynchronous value. To start with, w
 String responseBody = responseSpec.bodyToMono(String.class).block();
 ```
 
-This gives us a string containing the raw body of the response. It's possible to pass different classes here to parse content automatically into an appropriate format, or to use a `Flux` here instead to receive a stream of response parts (fir example from an event-based API), but we'll come back to that in just a minute.
+This gives us a string containing the raw body of the response. It's possible to pass different classes here to parse content automatically into an appropriate format, or to use a `Flux` here instead to receive a stream of response parts (for example from an event-based API), but we'll come back to that in just a minute.
 
 Note that we're not checking the status here ourselves. When we use `.retrieve()`, the client automatically checks the status code for us, providing a sensible default by throwing an error for any 4xx or 5xx responses. We'll talk about custom status checks & error handling later on too.
 
@@ -116,7 +116,7 @@ Each of these has different use cases. Most developers who aren't familiar with 
 
 ## How to Take Spring `WebClient` into Production
 
-The above should be enough to get you making and basic requests and reading responses, but there are a few more topics we need to cover if you want to build substantial applications on top of this.
+The above should be enough to get you create and send basic requests and read responses, but there are a few more topics we need to cover if you want to build substantial applications on top of this.
 
 ### Reading Response Headers
 
@@ -140,7 +140,7 @@ List<String> headerValue = responseHeaders.get("header-name");
 
 ### Parsing Response Bodies
 
-In the examples above, we've handled responses as simple strings, but Spring can also automatically parse these into many higher-level types for you, just by specifying a more specific type when reading the response, like so:
+In the examples above, we've handled responses as simple strings, but Spring can also automatically parse these into many higher-level types for you, by providing a more specific type when reading the response, like so:
 
 ```java
 Mono<Person> response = client.post()
@@ -161,15 +161,15 @@ This can also use the standard `HttpMessageConverter` configuration registered i
 
 For more details, take a look at the [Spring WebFlux codecs documentation](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html#webflux-codecs).
 
-### Manually Handling Response Statuses
+### Manually Handling Response Status
 
-By default `.retrieve()` will check for error statuses for you. That's fine for simple cases, but you're likely to find many REST APIs that encode more detailed success information in their status codes (for example returning 201 or 202 values), or APIs where you want to add custom handling for some error statuses.
+By default `.retrieve()` will check for error status for you. That's fine for simple cases, but you're likely to find many REST APIs that encode more detailed success information in their status codes (for example returning 201 or 202 values), or APIs where you want to add custom handling for some error status.
 
-It's possible to read the status from the `ResponseEntity`, like we did for the headers, but that's only useful for accepted statuses, since error statuses will throw an error before we receive the entity in that case.
+It's possible to read the status from the `ResponseEntity` like we did for the headers, but that's only useful for accepted statuses, since and error status will throw the error before we receive the entity in that case.
 
-To handle these statuses ourselves, we need to add an [`onStatus`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/reactive/function/client/WebClient.ResponseSpec.html#onStatus-java.util.function.Predicate-java.util.function.Function-) handler. This handler can match certain statuses, and return a `Mono<Throwable>` (to control the specific error thrown) or `Mono.empty()` to stop that status being treated as an error.
+To handle those types of status codes ourselves, we need to add an [`onStatus`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/reactive/function/client/WebClient.ResponseSpec.html#onStatus-java.util.function.Predicate-java.util.function.Function-) handler. This handler can match certain status code, and return a `Mono<Throwable>` (to control the specific error thrown) or `Mono.empty()` to stop that error code from being treated as an error.
 
-This works like so:
+It works like so:
 
 ```java
 ResponseEntity response = client.get()
@@ -177,14 +177,14 @@ ResponseEntity response = client.get()
     .retrieve()
     // Don't treat 401 responses as errors:
     .onStatus(
-        status -> status.value() == 401,
+        status -> status == HttpStatus.NOT_FOUND,
         clientResponse -> Mono.empty()
     )
     .toEntity(String.class)
     .block();
 
 // Manually check and handle the relevant status codes:
-if (response.getStatusCodeValue() == 401) {
+if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
     // ...
 } else {
     // ...
@@ -193,11 +193,11 @@ if (response.getStatusCodeValue() == 401) {
 
 ### Making Fully Asynchronous Requests
 
-Up until this point, we've called `.block()` on every response, blocking the thread completely to wait for the response to arrive.
+Up until this point we've called `.block()` on every response, blocking the thread completely to wait for the response to arrive.
 
 Within a traditional heavily threaded architecture that might fit quite naturally, but in a non-blocking design we need to avoid these kinds of blocking operations wherever possible.
 
-As an alternative, we can handle requests by weaving transforms around our `Mono` or `Flux` values, to handle and combine values as they're returned, and then pass these `Flux`-wrapped values into other non-blocking APIs, all fully asynchronously.
+As an alternative, we can handle requests by weaving transforms around our `Mono` or `Flux` values to handle and combine values as they're returned, and then pass these `Flux`-wrapped values into other non-blocking APIs, all fully asynchronously.
 
 There isn't space here to fully explain this paradigm or WebFlux from scratch, but an example of doing so with `WebClient` might look like this:
 
@@ -228,9 +228,9 @@ private Mono<User> getUserById(@PathVariable String id) {
 
 ### Testing with Spring `WebTestClient`
 
-In addition to `WebClient`, Spring 5 includes `WebTestClient`, which provides an interface extremely similar to `WebClient`, but designed for convenient testing of server endpoints.
+In addition to `WebClient`, Spring 5 includes `WebTestClient` which provides an interface extremely similar to `WebClient` but designed for convenient testing of server endpoints.
 
-We can set this up either by creating a `WebTestClient` that's bound to a server and sending real requests over HTTP, or one that's bound to a single `Controller`, `RouterFunction` or `WebHandler`, to run integration tests using mock request & response objects.
+We can set this up either by creating a `WebTestClient` that's bound to a server and sending real requests over HTTP, or one that's bound to a single `Controller`, `RouterFunction` or `WebHandler` to run integration tests using mock request & response objects.
 
 That looks like this:
 
@@ -273,10 +273,10 @@ Once you have HTTP Toolkit installed, the next step is to intercept your Java HT
 
 Once you've intercepted your traffic, you can inspect every request and response sent by your application from the 'View' page inside HTTP Toolkit:
 
-![HTTP Toolkit inspecting HTTP requests]({{ base }}/assets/img/posts/http_toolkit.png)
+![HTTP Toolkit inspecting HTTP requests]({{ base }}/assets/images/posts/http_toolkit.png)
 
 You can also add rules from the 'Mock' page, to interactively mock HTTP responses, breakpoint requests, or inject errors like connection failures and timeouts.
 
 ## Conclusion
 
-In this article we've looked at everything you need to get started using Spring `WebClient`. WebFlux and `WebClient` are mature powerful APIs with a lot to offer on top of the classic Spring feature set, so give them a try in your application today.
+In this article we've looked at everything you need to get started using Spring `WebClient`. WebFlux and `WebClient` are mature powerful APIs with a lot to offer on top of the classic Spring feature set. Give them a try in your application today!

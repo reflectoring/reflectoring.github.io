@@ -119,3 +119,8 @@ HUGO_ENV = "staging"
   status = 301
   force = true
 
+[[redirects]]
+from = "/100-percent-test-coverage"
+to = "/percent-test-coverage"
+status = 301
+force = true

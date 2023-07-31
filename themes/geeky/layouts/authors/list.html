@@ -5,7 +5,7 @@
   <div class="container">
     <div class="row align-items-lg-center">
       <!-- image processing for multiple device -->
-      {{ $imagePath:= $author.avatar }}
+      {{ $imagePath:= $author.avatar | default "/images/authors/dummy.png" }}
       {{ if $imagePath}}
       {{ $image:= resources.Get $imagePath }}
       {{ $imageFallback:= $image.Resize "650x" }}

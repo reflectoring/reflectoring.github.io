@@ -1,7 +1,7 @@
 ---
 authors: [irtaza]
 title: "Operators in TypeScript"
-categories: ["AWS","Spring Boot"]
+categories: ["Node"]
 date: 2023-06-19 00:00:00 +1100
 excerpt: "TypeScript is a superset of JavaScript that adds static typing and other features to the language. Its operators are crucial to understanding the language and writing effective code. Operators are symbols or keywords in a programming language that perform operations on values, such as arithmetic operations, string concatenation, and comparisons. Understanding operators in TypeScript is essential because they are fundamental building blocks of the language and are used in almost every programming aspect. By choosing the right operator for the job, you can often simplify your code and make it easier to understand and maintain. In this article, we will explore the most important operators in TypeScript and provide examples of how they can be used in real-world applications to help you write more efficient and readable code."
 image: images/stock/0065-java-1200x628-branded.jpg
@@ -14,7 +14,7 @@ Operators are symbols or keywords in a programming language that perform operati
 
 **Understanding operators in TypeScript is essential because they are fundamental building blocks of the language and are used in almost every programming aspect.** By choosing the right operator for the job, you can often simplify your code and make it easier to understand and maintain. In this article, we will explore the most important operators in TypeScript and provide examples of how they can be used in real-world applications to help you write more efficient and readable code.
 
-{{% github "https://github.com/thombergs/code-examples/tree/operators-in-typescript/nodejs/operators-in-typescript" %}}
+{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/operators-in-typescript" %}}
 
 # What operators are in Typescript?
 In Typescript, **operators are symbols used to perform operations on variables or values.** They can be classified into several categories based on their functions.
@@ -77,13 +77,13 @@ console.log(a);   // Output: 9
 
 - **Multiplication (`*`):** multiplies two or more values, and the precision of the result depends on the data types involved. When multiplying two integers, the result will also be an integer, preserving the whole number portion of the calculation. Similarly, when multiplying two floats, the result will also be a float, retaining the decimal precision. When we multiply an integer by a float or a float by an integer, the result will be a float. In TypeScript, the multiplication operation between an integer and a float promotes the integer to a float and performs the multiplication as a floating-point operation. The resulting value will retain the decimal precision of the float and include any fractional component.
 
-- **Division (`/`):** divides two or more values, and the precision and data type of the result depend on the types of the operands. If we divide two integers, the result will be an integer, and any decimal portion will be truncated. For example,`5 / 2` would result in `2`, as the remainder is discarded. However, if either the numerator or denominator is a float, the result will be a float. Dividing an integer by a float or a float by an integer will yield a float result, preserving decimal precision.
+- **Division (`/`):** divides two or more values, and the precision and data type of the result depend on the types of the operands. If we divide two integers, the result will be an integer, and any decimal portion will be truncated. For example, `5 / 2` would result in `2`, as the remainder is discarded. However, if either the numerator or denominator is a float, the result will be a float. Dividing an integer by a float or a float by an integer will yield a float result, preserving decimal precision.
 
-- **Modulus (`%`):** returns the remainder of a division operation
+- **Modulus (`%`):** returns the remainder of a division operation.
 
-- **Increment (`++`):** increases the value of the variable by one
+- **Increment (`++`):** increases the value of the variable by one.
 
-- **Decrement (`--`):** decreases the value of the variable by one
+- **Decrement (`--`):** decreases the value of the variable by one.
   
 - **If used with non-number variables, with the exception of the `+` operator, TypeScript's compiler will not allow these operations and raise a compilation error.**
 
@@ -185,21 +185,21 @@ console.log(a >> 1); // 0010 (Right Shift)
 console.log(~a); // 1010 (Complement)
 ~~~
 
-AND (`&`): The AND operator, represented by the symbol `&`, performs a logical AND operation between corresponding bits of two numbers. The result is a new number where each bit is set to 1 only if both bits in the same position of the operands are 1.
+**AND (`&`):** The AND operator, represented by the symbol `&`, performs a logical AND operation between corresponding bits of two numbers. The result is a new number where each bit is set to 1 only if both bits in the same position of the operands are 1.
 
-OR (`|`): The OR operator, represented by the symbol `|`, performs a logical OR operation between corresponding bits of two numbers. The result is a new number where each bit is set to 1 if at least one of the bits in the same position of the operands is 1.
+**OR (`|`):** The OR operator, represented by the symbol `|`, performs a logical OR operation between corresponding bits of two numbers. The result is a new number where each bit is set to 1 if at least one of the bits in the same position of the operands is 1.
 
-XOR (`^`): The XOR operator, represented by the symbol `^`, performs a logical exclusive OR operation between corresponding bits of two numbers. The result is a new number where each bit is set to 1 only if one of the bits in the same position of the operands is 1, but not both.
+**XOR (`^`):** The XOR operator, represented by the symbol `^`, performs a logical exclusive OR operation between corresponding bits of two numbers. The result is a new number where each bit is set to 1 only if one of the bits in the same position of the operands is 1, but not both.
 
-Left Shift (`<<`): The left shift operator, represented by the symbol `<<`, shifts the binary bits of a number to the left by a specified number of positions. The leftmost bits are discarded, and new zeros are added on the right side. Each shift to the left doubles the value of the number.
+**Left Shift (`<<`):** The left shift operator, represented by the symbol `<<`, shifts the binary bits of a number to the left by a specified number of positions. The leftmost bits are discarded, and new zeros are added on the right side. Each shift to the left doubles the value of the number.
 
-Right Shift (`>>`): The right shift operator, represented by the symbol `>>`, shifts the binary bits of a number to the right by a specified number of positions. The rightmost bits are discarded, and new zeroes are added on the left side. For positive numbers, each shift to the right halves the value of the number.
+**Right Shift (`>>`):** The right shift operator, represented by the symbol `>>`, shifts the binary bits of a number to the right by a specified number of positions. The rightmost bits are discarded, and new zeroes are added on the left side. For positive numbers, each shift to the right halves the value of the number.
 
-Complement (`~`): The complement operator, represented by the symbol `~`, performs a bitwise NOT operation on a number, flipping all its bits. This operator effectively changes each 0 to 1 and each 1 to 0.
+**Complement (`~`):** The complement operator, represented by the symbol `~`, performs a bitwise NOT operation on a number, flipping all its bits. This operator effectively changes each 0 to 1 and each 1 to 0.
 
 # Conclusion
 By mastering the usage of these operators and applying best practices, you can enhance your TypeScript programming skills and develop more effective solutions. Whether you're working on small-scale projects or large-scale applications, a solid understanding of operators will contribute to your success in writing maintainable and performant code.
 
-You can find all the code used in this article on [GitHub](https://github.com/thombergs/code-examples/tree/operators-in-typescript/nodejs/operators-in-typescript).
+You can find all the code used in this article on [GitHub](https://github.com/thombergs/code-examples/tree/master/nodejs/operators-in-typescript).
 
 

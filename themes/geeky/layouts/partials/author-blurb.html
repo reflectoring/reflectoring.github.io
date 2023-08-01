@@ -1,5 +1,5 @@
 <!-- image processing for multiple device -->
-{{ $imagePath:= .avatar }}
+{{ $imagePath:= .avatar | default "/images/authors/dummy.png"}}
 
 {{ $image:= resources.Get $imagePath }}
 {{ $imageFallback:= $image.Resize "650x" }}

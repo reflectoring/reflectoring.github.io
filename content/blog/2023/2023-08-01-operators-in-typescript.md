@@ -2,7 +2,7 @@
 authors: [irtaza]
 title: "Operators in TypeScript"
 categories: ["Node"]
-date: 2023-06-19 00:00:00 +1100
+date: 2023-08-01 00:00:00 +1100
 excerpt: "TypeScript is a superset of JavaScript that adds static typing and other features to the language. Its operators are crucial to understanding the language and writing effective code. Operators are symbols or keywords in a programming language that perform operations on values, such as arithmetic operations, string concatenation, and comparisons. Understanding operators in TypeScript is essential because they are fundamental building blocks of the language and are used in almost every programming aspect. By choosing the right operator for the job, you can often simplify your code and make it easier to understand and maintain. In this article, we will explore the most important operators in TypeScript and provide examples of how they can be used in real-world applications to help you write more efficient and readable code."
 image: images/stock/0065-java-1200x628-branded.jpg
 url: typescript-operators

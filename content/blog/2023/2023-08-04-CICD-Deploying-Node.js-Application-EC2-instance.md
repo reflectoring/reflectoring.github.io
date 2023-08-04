@@ -53,8 +53,7 @@ In this post, we'll cover the following:
    - Download and Configure Git Action Runner
    - Setting up a Node.js application environment on an AWS EC2 instance
 
-## Setting up a Node.js application
-
+## Setting up a Node.Js Application
 Here we'll use our Node.js application with Express.js to display a basic HTML page. This application will be the basis for implementing our CI/CD pipeline.
 
 To begin building our application, navigate to a desired location in your terminal or command prompt. Copy and paste the following command into the terminal:
@@ -211,8 +210,7 @@ Our newly created GitHub repository should look something like this:
 
 We can now proceed to the next step - creating our AWS EC2 instance.
 
-## Create an AWS EC2 instance.
-
+## Create an AWS EC2 Instance.
 AWS EC2 is a cloud computing service that allows us to launch and manage virtual machines known as instances in the cloud, hence providing flexible and scalable computing resources. It allows us to pay for only resources used, making it cost-effective for a wide range of applications and workloads.
 
 Follow these simple steps to create an EC2 instance:
@@ -251,8 +249,7 @@ Above, we set up a Custom TCP security group rule for port `3000`, allowing acce
 
 Next, we'll create a GitHub action workflow outlining the CI/CD steps to be executed when changes are pushed to our GitHub repository.
 
-## Create a Node.js GitHub Actions workflow.
-
+## Create a Node.Js Github Actions Workflow.
 Git Actions workflow automatically triggers necessary deployment steps on new code pushes or changes. It executes tasks defined in the workflow configuration. GitHub logs the workflow progress for monitoring.
 
 In case of an error or failure, a red check mark appears in the logs, indicating an issue. Developers can review the log, fix the problem, and push changes to trigger a new workflow. A green check mark confirms a smooth workflow with successful tests and deployment. This visual feedback system ensures our codebase's health and verifies the application's functionality.
@@ -323,7 +320,6 @@ To use our GitHub Actions workflow with an AWS EC2 instance, we must establish a
 To resolve the failed workflow, we'll connect to our EC2 instance via SSH, locally download and configure the Git Action Runner, and then set up our Node.js application environment on the EC2 instance.
 
 ### Connect to AWS EC2 Instance via SSH
-
 To install and configure Git Action Runner on our AWS EC2 instance, we start by establishing a local connection to the EC2 instance using the `.pem` key we previously downloaded. The `.pem` key serves as the authentication mechanism for securely accessing the EC2 instance through SSH.
 
 Here are the steps to connect to an EC2 instance via SSH:
@@ -341,7 +337,6 @@ Once we run this command, the terminal will prompt us to accept the authenticity
 Using SSH, we are now securely connected to our EC2 instance. This secure connection enables us to remotely manage and communicate with our server.
 
 ### Download and Configure Git Action Runner
-
 Git Action Runner acts as a link between our GitHub repository and the EC2 instance. This integration allows direct interaction between the two and
 enables automated build, test, and deployment processes.
 
@@ -370,8 +365,7 @@ sudo ./svc.sh start
 
 The above code will start our runner service in the background, making it ready to execute workflows whenever triggered.
 
-## Setting up a Node.js application environment on an AWS EC2 instance.
-
+## Setting up a Node.Js Application Environment on an AWS EC2 Instance.
 We have successfully integrated our application on GitHub with the EC2 instance server using GitHub Actions Runner.
 
 To ensure the smooth execution and operation of our Node.js application on the EC2 machine, we need to install essential libraries and dependencies for our application such as Node.js, NPM, and PM2.

@@ -124,3 +124,9 @@ from = "/100-percent-test-coverage"
 to = "/percent-test-coverage"
 status = 301
 force = true
+
+[[redirects]]
+from = "/advertisement"
+to = "/advertise"
+status = 301
+force = true

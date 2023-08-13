@@ -22,7 +22,7 @@ With this blog, my team of authors and I produce:
 * deep-dive tutorials about [Spring Boot](/categories/spring-boot)
 * hands-on tutorials about [Java](/categories/java)
 * hands-on tutorials about [Node.js](/categories/node)
-* hands-on tutorials about [AWS](/categories/node)
+* hands-on tutorials about [AWS](/categories/aws)
 * opinion pieces on practices of the [Software Craft](/categories/software-craft)
 * the occasional [book notes](/categories/book-notes) of a (non-fiction) book I've read.
 * ... and more.

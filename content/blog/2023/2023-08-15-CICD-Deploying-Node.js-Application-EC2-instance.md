@@ -1,8 +1,8 @@
 ---
 title: "CI/CD with Node.js and a GitHub Actions Runner Hosted on AWS EC2"
 categories: ["Node"]
-date: 2023-08-04 00:00:00 +1100
-modified: 2023-8-04 00:00:00 +1100
+date: 2023-08-15 00:00:00 +1100
+modified: 2023-8-15 00:00:00 +1100
 authors: ["ajibade"]
 description: "In this article, we explore the importance of CICD and how to create CICD process using GitHub Actions to deploy a Node.js Express backend application to an AWS EC2 instance."
 image: images/stock/0018-cogs-1200x628-branded.jpg

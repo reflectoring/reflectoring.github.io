@@ -1,19 +1,19 @@
 ---
-title: "CI/CD with GitHub Actions, PM2: Deploying a Node.js Express Backend Application to AWS EC2 instance"
+title: "CI/CD with Node.js and a GitHub Actions Runner Hosted on AWS EC2"
 categories: ["Node"]
 date: 2023-08-04 00:00:00 +1100
 modified: 2023-8-04 00:00:00 +1100
 authors: ["ajibade"]
 description: "In this article, we explore the importance of CICD and how to create CICD process using GitHub Actions to deploy a Node.js Express backend application to an AWS EC2 instance."
-image: images/stock/0133-cicd-nodejs-1200x628-branded.jpg
+image: images/stock/0018-cogs-1200x628-branded.jpg
 url: tutorial-cicd-github-actions-pm2-nodejs-aws-ec2
 ---
 
-You and your team have spent countless hours meticulously crafting a groundbreaking application that could propel your Startup to new heights. Your code is a work of art, and you can't wait to share it with the world. But as you prepare to deploy it to your production environment, disaster strikes! A critical bug emerges, bringing your entire application crashing down. The absence of a Continuous Integration/Continuous Deployment (CI/CD) pipeline has resulted in a significant setback.
+You and your team have spent countless hours meticulously crafting a groundbreaking application that could propel your Startup to new heights. Your code is a work of art, and you can't wait to share it with the world. But as you prepare to deploy it to your production environment, disaster strikes! A critical bug emerges, bringing your entire application crashing down. The application hasn't run through a Continuous Integration/Continuous Deployment (CI/CD) pipeline that would have flushed out this bug much earlier.
 
 This cautionary tale highlights the vital role that CI/CD plays in the software development lifecycle. CI/CD acts as a resilient safety net, protecting applications from potential catastrophes and ensuring a seamless journey from development to deployment. In this article, we will delve into the concept of CI/CD, and its importance. Then, we'll go over how to deploy a Node.js application on an AWS EC2 instance using GitHub Actions for CI/CD pipeline.
 
-## Prerequisites:
+## Prerequisites
 
 Before we begin, make sure you have the following:
 
@@ -26,23 +26,23 @@ Before we begin, make sure you have the following:
 
 ## What is CI/CD?
 
-CI/CD stands for Continuous Integration and Continuous Deployment/Delivery. It covers a set of strategies that help developers design and deploy software more effectively. Let's break it down in the context of a team working on a software project:
+CI/CD stands for Continuous Integration and Continuous Deployment/Delivery. It covers a set of strategies that help developers design and deploy software more effectively. Let's break it down in the context of a team working on a software project.
 
 ### Continuous Integration (CI)
 
-When modifications are made to a code repository (eg. Git). CI inspects each team member's code to ensure smooth compatibility with the existing codebase. It detects new code changes automatically and initiates a build process that includes code compilation, automated testing, and extensive checks and validations. CI establishes a solid foundation for successful software development.
+When modifications are made to a code repository (eg. Git), CI inspects each team member's code to ensure smooth compatibility with the existing codebase. It detects new code changes automatically and initiates a build process that includes code compilation, automated testing, and extensive checks and validations. CI establishes a solid foundation for successful software development.
 
 ### Continuous Deployment/Delivery (CD)
 
 After the code successfully passes all checks and tests in the CI phase, we can now go ahead with the deployment process. Continuous Deployment/Delivery allows organizations to rapidly and efficiently deploy software. Instead of waiting for lengthy release cycles, developers can deploy small, incremental changes to the software as soon as they are ready. This ensures that new features and bug fixes reach users or testing environments as soon as possible.
 
-### Importance of CI/CD:
+### Importance of CI/CD
 
-- Faster Building: CI/CD automates the build process, reducing manual effort and enabling faster software updates.
-- Reduced Errors: Automated tests in CI/CD detect issues early, ensuring more stable and reliable software.
-- Faster Feedback: CI/CD provides rapid feedback on code changes, boosting developer efficiency.
-- Improved Team Collaboration: CI/CD fosters better collaboration and communication among team members.
-- Reliable Releases: CD automates deployment, ensuring consistent and error-free software releases.
+- **Faster Building:** CI/CD automates the build process, reducing manual effort and enabling faster software updates.
+- **Reduced Errors:** Automated tests in CI/CD detect issues early, ensuring more stable and reliable software.
+- **Faster Feedback:** CI/CD provides rapid feedback on code changes, boosting developer efficiency.
+- **Improved Team Collaboration:** CI/CD fosters better collaboration and communication among team members.
+- **Reliable Releases:** CD automates deployment, ensuring consistent and error-free software releases.
 
 In this post, we'll cover the following:
 
@@ -53,7 +53,7 @@ In this post, we'll cover the following:
    - Download and Configure Git Action Runner
    - Setting up a Node.js application environment on an AWS EC2 instance
 
-## Setting up a Node.Js Application
+## Setting up a Node.js Application
 Here we'll use our Node.js application with Express.js to display a basic HTML page. This application will be the basis for implementing our CI/CD pipeline.
 
 To begin building our application, navigate to a desired location in your terminal or command prompt. Copy and paste the following command into the terminal:
@@ -74,9 +74,9 @@ npm install express jest supertest
 
 Where:
 
-- Jest: is used for executing automated tests.
-- Supertest: is used for testing HTTP requests in Jest.
-- Express: is a server framework for our application routing.
+- **Jest:** is used for executing automated tests.
+- **Supertest:** is used for testing HTTP requests in Jest.
+- **Express:** is a server framework for our application routing.
 
 Run the following command to create all necessary directories and files for the application:
 
@@ -210,7 +210,7 @@ Our newly created GitHub repository should look something like this:
 
 We can now proceed to the next step - creating our AWS EC2 instance.
 
-## Create an AWS EC2 Instance.
+## Create an AWS EC2 Instance
 AWS EC2 is a cloud computing service that allows us to launch and manage virtual machines known as instances in the cloud, hence providing flexible and scalable computing resources. It allows us to pay for only resources used, making it cost-effective for a wide range of applications and workloads.
 
 Follow these simple steps to create an EC2 instance:
@@ -220,41 +220,46 @@ Follow these simple steps to create an EC2 instance:
   Click on the `Launch instance` button.
 
 - Set up the instances and configure it to meet the needs of our application. Fill in the following information:
-  1.  Name: `node-cicd-app`
-  2.  Application and OS Images (Amazon Machine Image): `ubuntu`
+  1.  **Name:** `node-cicd-app`
+  2.  **Application and OS Images (Amazon Machine Image):** `ubuntu`
       {{% image alt="ec2-name-os" src="images/posts/cicd-aws-nodejs/ec2-name-os.png" %}}
-  3.  Instance type: `t2.micro` (Free tier)
+  3.  **Instance type:** `t2.micro` (Free tier)
       {{% image alt="t2-aws-micro" src="images/posts/cicd-aws-nodejs/t2-aws-micro.png" %}}
-  4.  Create Key Pair: `cicd-key`
+  4.  **Create Key Pair:** `cicd-key`
       {{% image alt="aws-pem-key" src="images/posts/cicd-aws-nodejs/aws-pem-key.png" %}}
       {{% image alt="aws-pem-key2" src="images/posts/cicd-aws-nodejs/aws-pem-key2.png" %}}
 
-Clicking on the **Create key pair** button. AWS will generate and download a key pair `.pem` file into our computer. This key pair includes a public key for the EC2 instance and a private key to be kept locally.
+Click on the **Create key pair** button. AWS will generate and download a key pair `.pem` file into our computer. This key pair includes a public key for the EC2 instance and a private key to be kept locally.
 
 This key pair allows a secure SSH connection to our EC2 instance. SSH (Secure Shell) is a communication protocol for remote server access and management. The private key ensures encrypted authentication, enhancing security compared to password-based access, and preventing unauthorized entry.
 
 Remember to keep the private key safe and not share it with others, as it grants access to the EC2 instance.
 
-- Next, click on the **Launch instance** button to create our EC2 virtual machines, or instances.
+- Next, click on the **Launch instance** button to create our EC2 virtual machine.
   {{% image alt="ec2-instance-launch" src="images/posts/cicd-aws-nodejs/ec2-instance-launch.png" %}}
 
-* Next, we need to configure our security groups. Security groups is essential to control inbound traffic to our EC2 instance. Security groups act as virtual firewalls, allowing us to specify which ports and protocols are accessible to our instances from different sources (e.g., specific IP addresses, ranges, or the internet).
+* Next, we need to configure our security groups. Security groups are essential to control inbound traffic to our EC2 instance. Security groups act as virtual firewalls, allowing us to specify which ports and protocols are accessible to our instances from different sources (e.g., specific IP addresses, ranges, or the internet).
 
-To set up a security group for our instances. 1. Select the newly created instance for which you want to configure the security group. 2. In the tabs below, click **Security**. Then click on the **Security groups** link associated with the instance.
-{{% image alt="security-group" src="images/posts/cicd-aws-nodejs/security-group.png" %}} 3. In the **Inbound rules** tab of the security group, click on **Edit inbound rules**
-{{% image alt="security-group2" src="images/posts/cicd-aws-nodejs/security-group2.png" %}} 4. Add new security rules by specifying the protocol, port range, and source to allow inbound traffic on the necessary ports. Click on the **Save rules** button to save the security group.
+To set up a security group for our instance:
+
+1. Select the newly created instance for which you want to configure the security group.
+2. In the tabs below, click **Security**. Then click on the **Security groups** link associated with the instance.
+{{% image alt="security-group" src="images/posts/cicd-aws-nodejs/security-group.png" %}} 
+3. In the **Inbound rules** tab of the security group, click on **Edit inbound rules**
+{{% image alt="security-group2" src="images/posts/cicd-aws-nodejs/security-group2.png" %}} 
+4. Add new security rules by specifying the protocol, port range, and source to allow inbound traffic on the necessary ports. Click on the **Save rules** button to save the security group.
 {{% image alt="security-group3" src="images/posts/cicd-aws-nodejs/security-group3.png" %}}
 
 Above, we set up a Custom TCP security group rule for port `3000`, allowing access from `anywhere`. This restricts inbound traffic to the necessary connections, enhancing application security against unauthorized access and potential threats.
 
 Next, we'll create a GitHub action workflow outlining the CI/CD steps to be executed when changes are pushed to our GitHub repository.
 
-## Create a Node.Js Github Actions Workflow.
-Git Actions workflow automatically triggers necessary deployment steps on new code pushes or changes. It executes tasks defined in the workflow configuration. GitHub logs the workflow progress for monitoring.
+## Create a Node.Js Github Actions Workflow
+A GitHub Actions workflow automatically triggers necessary deployment steps on new code pushes or changes. It executes tasks defined in the workflow configuration. GitHub logs the workflow progress for monitoring.
 
 In case of an error or failure, a red check mark appears in the logs, indicating an issue. Developers can review the log, fix the problem, and push changes to trigger a new workflow. A green check mark confirms a smooth workflow with successful tests and deployment. This visual feedback system ensures our codebase's health and verifies the application's functionality.
 
-GitHub offers pre-built workflow actions for common problems. For our article, we'll use the `Node.js pacakage` action, designed for Node.js projects. With this action, we can easily install dependencies, run tests, and deploy our Node.js application with minimal configuration.
+GitHub offers pre-built workflow actions for common problems. For our article, we'll use the "Publish Node.js package" template, designed for Node.js projects. With this action, we can easily install dependencies, run tests, and deploy our Node.js application with minimal configuration.
 
 To set up a workflow for our Node.js application, follow these steps:
 
@@ -268,7 +273,7 @@ This will generate a `.github/workflows` directory to store all our application'
 
 Replace the generated `.yml` file content with the commands below:
 
-```yml=
+```yml
 name: Node.js CI/CD
 
 on:
@@ -296,7 +301,7 @@ jobs:
 
 In the YAML file above:
 
-- Our workflow is named `Node.js CI/CD`.
+- Our workflow is named "Node.js CI/CD".
 - It triggers when there is a `push` event to the main branch.
 - The `build` job is defined to run on a self-hosted runner. A self-hosted runner is a computing environment that allows us to run GitHub Actions workflows on our own infrastructure instead of using GitHub's shared runners. With a self-hosted runner, we have more control over the environment in which our workflows are executed.
 - The `steps` section lists individual tasks to be executed in sequence.
@@ -365,7 +370,7 @@ sudo ./svc.sh start
 
 The above code will start our runner service in the background, making it ready to execute workflows whenever triggered.
 
-## Setting up a Node.Js Application Environment on an AWS EC2 Instance.
+## Setting up a Node.Js Application Environment on an AWS EC2 Instance
 We have successfully integrated our application on GitHub with the EC2 instance server using GitHub Actions Runner.
 
 To ensure the smooth execution and operation of our Node.js application on the EC2 machine, we need to install essential libraries and dependencies for our application such as Node.js, NPM, and PM2.

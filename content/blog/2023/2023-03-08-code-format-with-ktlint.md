@@ -12,7 +12,7 @@ In this tutorial, we are going to learn about a linting tool used by developers 
 
 
 ## What Is Linting
-Linting simply refers to the process of analyzing our code for any potential errors, typos or defects in formatting. In layman's language, Linting originally means "removing dust" This entire process is achieved by using a lint tool/ static code analyzer.
+Linting simply refers to the process of analyzing our code for any potential errors, typos or defects in formatting. In layman's language, linting originally means "removing dust". This entire process is achieved by using a lint tool/ static code analyzer.
 
 ## What Can We Do with Ktlint
 The following are some of the tasks Ktlint can handle for us:

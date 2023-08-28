@@ -54,7 +54,7 @@ buildscript {
 }
 ```
   ### Applying the Ktlint Gradle Plugin to Other Modules
-Lets can add Ktlint to our modules within the same project to ensure that the code in them is also checked and formatted. Note that this is only applicable if our project is a multi-module project. To achieve this task, we add the plugin in the *allprojects* block found in *build.gradle* file.
+Let's also add Ktlint to our modules within the same project to ensure that the code in them is also checked and formatted. Note that this is only applicable if our project is a multi-module project. To achieve this task, we add the plugin in the *allprojects* block found in *build.gradle* file.
 
 Let's see how to add the plugin to other modules:
 ```yaml

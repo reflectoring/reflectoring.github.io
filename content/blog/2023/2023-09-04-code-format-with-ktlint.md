@@ -1,5 +1,5 @@
 ---
- authors: [kanake]
+ authors: [ezra]
  title: "Code Formatting with Ktlint"
  categories: ["Kotlin"]
  date: 2023-09-04 00:00:00 +1100

@@ -351,8 +351,8 @@ gary:
   avatar: "/images/authors/gary.png"
   bio: "Gary is a copywriter with over 10 years of experience in software development, web development, and content strategy. He specializes in creating high-quality, engaging content that drives conversions and builds brand loyalty. He has a passion for crafting stories that captivate and inform audiences, and he's always looking for new ways to engage users."
 
-  ezra:
-  name: "Ezra kanake"
+ezra:
+  name: "Ezra Kanake"
   email: "10kanake@gmail.com"
   github: "kanake10"
   bio: "Ezra is a passionate Kotlin developer and technical writer. He loves working on open-source projects and sharing knowledge across the globe."

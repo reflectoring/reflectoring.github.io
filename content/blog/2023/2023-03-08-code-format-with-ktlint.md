@@ -79,7 +79,7 @@ In order to integrate Ktlint into our Maven project, we add the Maven plugin to 
 </build>
 ```
 
-By default, after we add the Maven plugin to our project, it's using the official standard Kotlin style guide. If we want to modify and create our own rules to use in our project, we can create a `ktlint.yml` file in the root directory of our project and configure our rules in this file.
+By default, after we add the Maven plugin to our project, it's using the official standard Kotlin style guide. If we want to modify and create our own rules to use in our project, we can create a `ktlint.yml` file in the root directory of our project and configure our rules in this file. Note that it's advisable to always use the official standard guidelines provided by Kotlin instead of modifying our own rules.
 
 The file may look like this:
 

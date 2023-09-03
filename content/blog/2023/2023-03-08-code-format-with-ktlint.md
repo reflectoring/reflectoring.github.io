@@ -4,7 +4,7 @@
  categories: ["Kotlin"]
  date: 2023-09-02 00:00:00 +1100
  excerpt: "Formatting our code before every commit ot a push change to our remote repository is a vitable step to keep our code clean, in this article we shall discuss how to use Ktlint to format our Kotlin code"
- image: images/reflecting_kt.png
+ image: images/stock/0019-magnifying-glass-1200x628-branded.jpg
  url: code-format-with-ktlint
 ---
 

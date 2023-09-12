@@ -46,13 +46,15 @@ Rate limiters enhance the service quality of an application by preventing resour
 When it comes to implementing rate limiting, various algorithms are at our disposal, each tailored to optimize specific aspects of the rate-limiting process. In this section, we will explore some commonly used rate-limiting algorithms:
 
 ### Token Bucket Algorithm
-Imagine a system in which incoming requests are represented as a stream of tokens. The Token Bucket Algorithm functions as a simple container holding these tokens. Each incoming request consumes one or more tokens from the bucket.
+This algorithm functions as a bucket holding tokens, where the system tracks tokens assigned to each client in its memory. Every incoming client request consumes one token from the bucket. The token represents permission to make one API request.
 
-When the bucket is empty, no further requests are permitted until tokens are replenished.
+When the bucket runs out of tokens due to requests, the server prevents new ones and returns HTTP response code `429`, indicating that the maximum request rate has been reached. Requests are only processed when tokens are added back to the bucket.
 
-The tokens in the bucket are replenished at a fixed rate. For instance, the tokens can be refilled in the bucket at a rate of one per second, representing the allowed request rate
+The bucket has a maximum capacity, limiting the number of requests it can handle. The token bucket algorithm allows clients to use tokens as quickly as they want, provided there are enough tokens in the bucket.
 
-This algorithm ensures a consistent and predictable rate of request handling. However, it has drawbacks, such as request denials during traffic spikes. As a result, the bucket size will be adjusted on a regular basis.
+Tokens are replenished into the bucket at a fixed, consistent rate representing the allowed request rate for the client.
+
+This algorithm has drawbacks, even if it offers a consistent and predictable request processing rate. Requests may be rejected due to an empty bucket during periods of high traffic. As a result, increasing the bucket size on a regular basis helps to mitigate this issue.
 
 ### Fixed Window Algorithm
 The fixed window algorithm specifies a time window in seconds or minutes during which only a fixed number of requests can be sent. For example, we may allow 15 requests per minute. Once these 15 requests have been processed within a minute, any subsequent requests must patiently await the commencement of the next one-minute interval.
@@ -69,13 +71,15 @@ This approach offers flexibility in defining the window duration and is particul
 The Sliding Window Algorithm offers flexibility and adaptability. It dynamically responds to fluctuations in request rates, ensuring that our rate-limiting strategy remains in sync with the evolving demands of our application.
 
 ### Leaky Bucket Algorithm
-The Leaky Bucket algorithm, like the Token Bucket, maintains a fixed token generation rate. However, its distinctiveness lies in how it "leaks" tokens at a steady rate rather than accumulating them. Here's how it works:
+The Leaky Bucket algorithm is based on the idea of a bucket that leaks water at a specified rate. Here's how it works:
 
-Imagine requests as water droplets and visualize a bucket with a set capacity and a tiny hole at its bottom. As incoming requests arrive, they fill up this bucket. When the bucket reaches its limit and additional requests pour in, they are either discarded or rejected, representing rate limiting in action.
+Think of each API request as a drop of water that enters this bucket. The bucket has a maximum capacity, defining its limits for incoming requests.
 
-At regular intervals or a steady rate, the bucket releases ( leaks ) some of its contents through the hole at the bottom. This controlled drainage is determined by a predefined rate limit configuration. Consequently, the Leaky Bucket ensures a consistent and well-managed processing rate, even in the face of request surges.
+As requests flow in, they fill the bucket. If more requests arrive and the bucket hits its maximum capacity, excess requests are either discarded or rejected.
 
-The Leaky Bucket Algorithm delivers a dependable rate of request processing. However, it operates on a first-come, first-served basis, treating all requests equally. For prioritizing requests based on specific criteria, additional mechanisms may be necessary.
+The bucket consistently releases or "leaks" its contents at regular intervals, controlled by a predefined rate limit configuration. Requests are processed and sent to the API at a fixed rate, matching the bucket's leakage rate.
+
+In essence, the Leaky Bucket guarantees a steady and well-managed request processing rate, even during traffic spikes. It maintains a reliable pace of request handling. However, it treats all requests equally on a first-come, first-served basis. To prioritize requests based on specific criteria, additional mechanisms may need to be implemented.
 
 In the next section, we will look at how to implement a rate limiter in our Node.js application, and how to use a Rate limiter both globally across all routes and on a specific route.
 
@@ -85,7 +89,7 @@ Here, we’ll make use of the [express-rate-limit](https://www.npmjs.com/package
 
 However, the `express-rate-limit` package simplifies the procedure for adding rate limiting to our demo application, enabling effective resource access management without the need for extensive custom development.
 
-It uses a sliding window algorithm to evenly distribute requests. By default, it identifies users based on their IP addresses `req.ip`, extracted from the `req` object. This `req` object holds essential information about incoming HTTP requests.
+By default, `express-rate-limit` identifies users based on their IP addresses `req.ip`, extracted from the `req` object. The `req` object holds essential information about incoming HTTP requests.
 
 `express-rate-limit` gives us the option to configure our window size and set the maximum number of requests allowed within that window.
 

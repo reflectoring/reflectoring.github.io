@@ -48,7 +48,7 @@ When it comes to implementing rate limiting, various algorithms are at our dispo
 ### Token Bucket Algorithm
 This algorithm functions as a bucket holding tokens, where the system tracks tokens assigned to each client in its memory. Every incoming client request consumes one token from the bucket. The token represents permission to make one API request.
 
-When the bucket runs out of tokens due to requests, the server prevents new ones and returns HTTP response code `429`, indicating that the maximum request rate has been reached. Requests are only processed when tokens are added back to the bucket.
+When the bucket runs out of tokens due to requests, the server stops processing new requests and returns HTTP response code `429`, indicating that the maximum request rate has been reached. Requests are only processed when tokens are added back to the bucket.
 
 The bucket has a maximum capacity, limiting the number of requests it can handle. The token bucket algorithm allows clients to use tokens as quickly as they want, provided there are enough tokens in the bucket.
 

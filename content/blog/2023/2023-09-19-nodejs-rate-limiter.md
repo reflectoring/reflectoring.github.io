@@ -1,8 +1,8 @@
 ---
 title: "How to Implement API Rate Limiting in a Node.js Express Application"
 categories: ["Node"]
-date: 2023-09-04 00:00:00 +1100
-modified: 2023-09-04 00:00:00 +1100
+date: 2023-09-19 00:00:00 +1100
+modified: 2023-09-19 00:00:00 +1100
 authors: ["ajibade"]
 description: "Here we dive into the captivating world of rate limiting. We'll explore the concept of rate limiting, followed by a step-by-step guide on how to implement a rate limiter in a Node.js application."
 image: images/stock/0044-lock-1200x628-branded.jpg

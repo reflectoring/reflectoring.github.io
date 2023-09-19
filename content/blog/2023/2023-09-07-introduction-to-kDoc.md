@@ -32,25 +32,18 @@ Block tags are used to provide documentation for larger sections of code or to d
 
 These are the block tags supported by KDoc:
 
-**@param**:This tag is used to document a value parameter of a function.
-
-**@return**: Used to document the return value of a function.
-
-**@constructor**: Used to document the primary constructor of a class.
-
-**@receiver**: Documents the receiver of an extension function.
-
-**@property**: This tag is used to document the property of a class that has the specified name.
-
-**@throws, @exception**: Used to document exceptions that can be thrown by a method.
-
-**@sample**:Used to embed the body of a function that has the specified qualified name into the documentation for the current element so as to show an example of how the particular element can be put into use.
-
-**@see**: Used to add a link to a specific class or method.
-
-**@author**: Used to specify the author of the element that is being documented.
-
-**@since**:Used to specify the version of the software in which the element under documentation was introduced.
+| Tag | Description |
+|--------|---------------------------|
+|**@param**            | This tag is used to document a value parameter of a function |
+|**@return**           |Used to document the return value of a function |
+|**@constructor**      |Used to document the primary constructor of a class |
+|**@receiver**         |Documents the receiver of an extension function |
+|**@property**         |This tag is used to document the property of a class that has the specified name |
+|**@throws,@exception**| Used to document exceptions that can be thrown by a method |
+|**@sample**           |Used to embed the body of a function that has the specified qualified name|
+|**@see**              | Used to add a link to a specific class or method |
+|**@author**           | Used to specify the author of the element that is being documented |
+|**@since**            | Used to specify the version of the software in which the element under documentation was introduced |
 
 **KDoc does not support the <code class="code ">@deprecated</code> tag. Instead, please use the <code class="code ">@Deprecated</code> annotation.**
 

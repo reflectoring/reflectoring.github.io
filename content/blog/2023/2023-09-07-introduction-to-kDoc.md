@@ -9,7 +9,7 @@ url: introduction-to-kDoc
 ---
 
 In this article, we'll discuss all that entails <em>KDoc</em> in Kotlin. [KDoc](https://kotlinlang.org/docs/kotlin-doc.html#links-to-elements) is simply language used to document code written using Kotlin specifically. KDoc allows us to provide documentation comments for classes, functions, properties and other elements in our code. It's the same as <em>Javadoc</em> which is used to document JAVA language. Essentially, <em>KDoc</em> combines syntax in <em>Javadoc </em>for the block tags and markdown for inline markup.
-## 1. KDoc Syntax
+## KDoc Syntax
 Same as <em>javadoc, </em>KDoc comments usually start with /** and end with */.
 
 Let’s see an example of KDoc:
@@ -27,7 +27,7 @@ fun sum(a: Int, b: Int): Int {
 ```
 KDoc in our example is written above our <em>sum</em> function. In this case, KDoc explains what task our function performs and also documents the parameters <em>a</em> and <em>b</em> which the function takes inclusive of the expected return value.
 
-## 2. Block Tags
+## Block Tags
 Block tags are used to provide documentation for larger sections of code or to describe multi-line content within KDoc.They are usually placed on separate lines.
 
 These are the block tags supported by KDoc:
@@ -96,5 +96,5 @@ private fun movieListSample() {
 }
 ```
 
-## 3. Conclusion
+## Conclusion
 In this article, we discussed KDoc which is the documentation language for Kotlin code. We also went through the KDOc's syntax and the various tags it supports.

@@ -356,3 +356,10 @@ ezra:
   email: "10kanake@gmail.com"
   github: "kanake10"
   bio: "Ezra is a passionate Kotlin developer and technical writer. He loves working on open-source projects and sharing knowledge across the globe."
+
+sagaofsilence:
+    name: "Sachin Raverkar"
+    email: "sagaofsilence2@gmail.com"
+    github: "sagaofsilence"
+    avatar: "/images/authors/sachin.png"
+    bio: "Sachin is a Java enthusiast with over 24 years of product development expertise. He enjoys architecting and delivering SAAS products as well as sharing expertise with people all over the world."

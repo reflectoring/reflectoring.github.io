@@ -1,14 +1,14 @@
 ---
 title: "Introduction to KDoc"
 categories: ["Kotlin"]
-date: 2023-09-07 00:00:00 +1100 
+date: 2023-09-23 00:00:00 +1100 
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss KDoc which is a documentation langunage for Kotlin code."
 image: images/stock/0104-on-off-1200x628-branded.jpg
 url: introduction-to-kDoc
 ---
 
-In this article, we'll discuss all that entails <em>KDoc</em> in Kotlin. [KDoc](https://kotlinlang.org/docs/kotlin-doc.html#links-to-elements) is simply language used to document code written using Kotlin specifically. KDoc allows us to provide documentation comments for classes, functions, properties and other elements in our code. It's the same as <em>Javadoc</em> which is used to document JAVA language. Essentially, <em>KDoc</em> combines syntax in <em>Javadoc </em>for the block tags and markdown for inline markup.
+In this article, we'll discuss all that entails <em>KDoc</em> in Kotlin. [KDoc](https://kotlinlang.org/docs/kotlin-doc.html#links-to-elements) is simply a language used to document code written in Kotlin specifically. KDoc allows us to provide documentation comments for classes, functions, properties and other elements in our code. It's the same as <em>Javadoc</em> which is used to document JAVA language. Essentially, <em>KDoc</em> combines syntax in <em>Javadoc </em>for the block tags and markdown for inline markup.
 ## KDoc Syntax
 Same as <em>javadoc, </em>KDoc comments usually start with /** and end with */.
 
@@ -27,7 +27,9 @@ fun sum(a: Int, b: Int): Int {
 ```
 KDoc in our example is written above our <em>sum</em> function. In this case, KDoc explains what task our function performs and also documents the parameters <em>a</em> and <em>b</em> which the function takes inclusive of the expected return value.
 
-## Block Tags
+Note that, different from JavaDoc, KDoc supports Markdown syntax.
+
+## KDoc Block Tags
 Block tags are used to provide documentation for larger sections of code or to describe multi-line content within KDoc.They are usually placed on separate lines.
 
 These are the block tags supported by KDoc:

@@ -8,27 +8,26 @@ image: images/stock/0134-client_sever.png
 url: create-openfeign-http-client
 ---
 
-## Introduction
 Feign is an open-source Java library that simplifies the process of making web requests. It streamlines the implementation of RESTful web services by providing a higher-level abstraction. Feign eliminates the need for boilerplate code, which makes the codebase more readable and maintainable.
 
 ## What is Feign?
 Feign is a popular Java HTTP client library that offers several advantages and features, making it a good choice for developers building HTTP-based microservices and applications.
 
 ### What is a declarative HTTP client?
-It's a way to make http requests by writing a java interface. Feign generates the actual implementation based on annotations that we provide.
+It's a way to make HTTP requests by writing a java interface. Feign generates the actual implementation based on annotations that we provide.
 
 ### Why use Feign?
 If we have a large set of APIs to call, we don't want to generate the HTTP code by hand or with code generation. It would be much easier and more maintainable to describe the API in a simple, small interface and let Feign generate the code.
 
 ### Who should use Feign?
-If we are making http requests in our Java code, and don't want to write boilerplate code, or use libraries like Apache httpclient directly, Feign is a great choice.
+If we are making HTTP requests in our Java code, and don't want to write boilerplate code, or use libraries like Apache httpclient directly, Feign is a great choice.
 
 <a name="example-code" />
 {{% github "https://github.com/thombergs/code-examples/tree/master/openfeign/openfeign-client-intro" %}}
 
 ## Creating a Basic Feign Client
 ### Step 1: Add Feign Dependency
-    Include Feign library in the Maven pom.xml file as a dependency.
+Include Feign library in the Maven pom.xml file as a dependency.
 ```xml
 <dependency>
     <groupId>io.github.openfeign</groupId>
@@ -37,16 +36,12 @@ If we are making http requests in our Java code, and don't want to write boilerp
 </dependency>
 ```
 ### Step 2: Define Service Interface
-Define service interface. **It typically contains the method declarations annotated with Feign annotations.**
+**It typically contains the method declarations annotated with Feign annotations.**
 
 We are going to declare an interface that defines signature of methods we want to call. These are just declarations. We do not implement those methods. The REST service implements those methods. These methods reperesnt the endpoints we want to call. **The method signature should include the HTTP method as well as all required data.**
 
 Let us define an interface to represent calculator service. It has simple API methods to perfom calculations like add, substract, multiply and divide.
 
-We would use Wiremock to emulate the service implementation. [WireMock](https://wiremock.org/) is a web service mocking and stubbing tool. It works by emulating a real HTTP server to which the test code can connect as if it were a real online service. It allows for HTTP response stubbing, request verification, proxy/interception, stub recording/playback, and fault injection.
-
-It is particularly useful to emulate error scenarios that are difficult to achive with real service implementation. With these emulated interactions we rest assured that when such errors occur, our client error handling logic works as expected.
-    
 Let us see our service interface.
     
 ```java
@@ -120,6 +115,13 @@ final Long result = target.add(firstNumber, secondNumber);
 We notice that calling service with Feign HTTP client is fairly simple compared to other [HTTP clients](https://reflectoring.io/comparison-of-java-http-clients/).
 
 You can see it in action by running `givenTwoNumbersReturnAddition` test in the example code shared on [Github](#example-code).
+
+**Notes on testing**:
+
+We would use Wiremock to emulate the service implementation. [WireMock](https://wiremock.org/) is a web service mocking and stubbing tool. It works by emulating a real HTTP server to which the test code can connect as if it were a real online service. It allows for HTTP response stubbing, request verification, proxy/interception, stub recording/playback, and fault injection.
+
+It is particularly useful to emulate error scenarios that are difficult to achive with real service implementation. With these emulated interactions we rest assured that when such errors occur, our client error handling logic works as expected.
+
 
 ## Getting Familiar with Annotations
 OpenFeign uses a different set of annotations for defining HTTP requests and their parameters. Here's a table of commonly used OpenFeign annotations with examples:
@@ -273,14 +275,14 @@ Implement `RequestInterceptor` and overrride its `apply` method. `apply` method 
 ### Configuring Retryer
 OpenFeign Retryer is a component that allows us to configure how Feign handles retries when a request fails. It can be particularly useful for handling transient failures in network communications. We can specify conditions under which Feign should automatically retry a failed request.
 
-### Retryer Configuration
+#### Retryer Configuration
 To use a Retryer in OpenFeign, provide an implementation of the Retryer interface. The Retryer interface has two methods:
 
 1. `boolean continueOrPropagate(int attemptedRetries, int responseStatus, Request request)`: This method is called to determine whether to continue with the retry or propagate the error. It takes the number of attempted retries, the HTTP response status, and the request as parameters and returns true to continue with the retry or false to propagate the error.
 
 1. `Retryer clone()`: This method creates a clone of the Retryer instance.
 
-### Default Retryer
+#### Default Retryer
 Feign provides a default retryer implementation called `Retryer.Default`. This default retryer is used when we create a Feign client without explicitly specifying a custom retryer. 
 
 It has two constructors.
@@ -368,11 +370,11 @@ You can see it in action by running `givenTwoNumbersAndServerReturningUnauthoriz
 
 To summarise, the incentive for creating a custom retryer in Feign arises when we require greater control and flexibility over how retries are handled in our HTTP requests. When our requirements differ from the behaviour of the default retryer, a custom retryer allows us to modify the retry logic to our specific use case.
 
-## Circuit Breakers
+### Circuit Breakers
 Circuit breakers are typically implemented using separate libraries or tools such as [Netflix Hystrix](https://github.com/Netflix/Hystrix), [Resilience4j](https://resilience4j.readme.io/), or [Spring Cloud Circuit Breaker](https://spring.io/projects/spring-cloud-circuitbreaker).
 
 
-#### Motivation for Using a Circuit Breaker with Feign
+#### Why Should I use a Circuit Breaker?
 The primary motivation for using a circuit breaker with Feign is to enhance the resilience of our microservices-based applications. Here are some key reasons:
 Fault Isolation: Circuit breakers prevent failures in one service from cascading to other services by isolating the failing component.
 

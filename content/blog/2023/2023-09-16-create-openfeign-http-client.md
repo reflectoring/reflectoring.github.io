@@ -14,10 +14,10 @@ Feign is an open-source Java library that simplifies the process of making web r
 Feign is a popular Java HTTP client library that offers several advantages and features, making it a good choice for developers building HTTP-based microservices and applications.
 
 ### What is a declarative HTTP client?
-It's a way to make HTTP requests by writing a java interface. Feign generates the actual implementation based on annotations that we provide.
+It's a way to make HTTP requests by writing a Java interface. Feign generates the actual implementation behind that interface based on annotations that we provide.
 
 ### Why use Feign?
-If we have a large set of APIs to call, we don't want to generate the HTTP code by hand or with code generation. It would be much easier and more maintainable to describe the API in a simple, small interface and let Feign generate the code.
+If we have a large set of APIs to call, we don't want to generate the HTTP code by hand or with hard-to-maintain code generation. It would be much easier and more maintainable to describe the API in a simple, small interface and let Feign interpret and implement that interface at runtime.
 
 ### Who should use Feign?
 If we are making HTTP requests in our Java code, and don't want to write boilerplate code, or use libraries like Apache httpclient directly, Feign is a great choice.
@@ -27,7 +27,7 @@ If we are making HTTP requests in our Java code, and don't want to write boilerp
 
 ## Creating a Basic Feign Client
 ### Step 1: Add Feign Dependency
-Include Feign library in the Maven pom.xml file as a dependency.
+Include Feign library in the Maven `pom.xml` file as a dependency.
 ```xml
 <dependency>
     <groupId>io.github.openfeign</groupId>
@@ -35,14 +35,12 @@ Include Feign library in the Maven pom.xml file as a dependency.
     <version>12.5</version>
 </dependency>
 ```
-### Step 2: Define Service Interface
+### Step 2: Define the Client Interface
 **It typically contains the method declarations annotated with Feign annotations.**
 
-We are going to declare an interface that defines signature of methods we want to call. These are just declarations. We do not implement those methods. The REST service implements those methods. These methods reperesnt the endpoints we want to call. **The method signature should include the HTTP method as well as all required data.**
+We are going to declare a client interface with a method for each REST endpoint we want to call on a server. These are just declarations. We do not implement those methods. Feign will do that for us. **The method signatures should include the HTTP method as well as all required data.**
 
-Let us define an interface to represent calculator service. It has simple API methods to perfom calculations like add, substract, multiply and divide.
-
-Let us see our service interface.
+Let us define an interface to represent calculator service. It has a simple API methods to perform calculations like add, substract, multiply and divide:
     
 ```java
 public interface CalculatorService {
@@ -53,8 +51,8 @@ public interface CalculatorService {
    * @param secondNumber second whole number
    * @return sum of two numbers
    */
-  @RequestLine("POST /operations/add?
-                      firstNumber={firstNumber}&secondNumber={secondNumber}")
+  @RequestLine("POST /operations/add?"
+          + "firstNumber={firstNumber}&secondNumber={secondNumber}")
   Long add(@Param("firstNumber") Long firstNumber, 
            @Param("secondNumber") Long secondNumber);
 
@@ -65,8 +63,8 @@ public interface CalculatorService {
    * @param secondNumber second whole number
    * @return subtraction of two numbers
    */
-  @RequestLine("POST /operations/subtract?
-                      firstNumber={firstNumber}&secondNumber={secondNumber}")
+  @RequestLine("POST /operations/subtract?"
+          + "firstNumber={firstNumber}&secondNumber={secondNumber}")
   Long subtract(@Param("firstNumber") Long firstNumber, 
                 @Param("secondNumber") Long secondNumber);
 
@@ -77,8 +75,8 @@ public interface CalculatorService {
    * @param secondNumber second whole number
    * @return multiplication of two numbers
    */
-  @RequestLine("POST /operations/multiply?
-                      firstNumber={firstNumber}&secondNumber={secondNumber}")
+  @RequestLine("POST /operations/multiply?"
+          + "firstNumber={firstNumber}&secondNumber={secondNumber}")
   Long multiply(@Param("firstNumber") Long firstNumber, 
                 @Param("secondNumber") Long secondNumber);
 
@@ -89,42 +87,42 @@ public interface CalculatorService {
    * @param secondNumber second whole number, should not be zero
    * @return division of two numbers
    */
-  @RequestLine("POST /operations/divide?
-                      firstNumber={firstNumber}&secondNumber={secondNumber}")
+  @RequestLine("POST /operations/divide?"
+          + "firstNumber={firstNumber}&secondNumber={secondNumber}")
   Long divide(@Param("firstNumber") Long firstNumber, 
               @Param("secondNumber") Long secondNumber);
 }
 ```
-`@RequestLine` defines the `HttpMethod` and `UriTemplate` for request. And `@Param` defines a template variable. Do not worry.  We will also know more about the [annotations supported](#getting-familiar-with-annotations) by OpenFeign.
+`@RequestLine` defines the `HttpMethod` and `UriTemplate` for request. And `@Param` defines a template variable. Do not worry.  We will learn more about the [annotations provided by OpenFeign](#getting-familiar-with-annotations) later.
 
-### Step 3: Define a client for API endpoint
-We use Feign library `builder` to prepare the client. 
+### Step 3: Create a Client Object
+We use Feign's `builder()` method to prepare the client:
     
 ```java
-final CalculatorService target = Feign.builder().decoder(new JacksonDecoder())
-                                      .target(CalculatorService.class, HOST);
-
+final CalculatorService target = Feign
+        .builder()
+        .decoder(new JacksonDecoder())
+        .target(CalculatorService.class, HOST);
 ```    
-There are many ways to prepare the client depending on our needs. The code snippet given above is just one of the simple ways to prepare the client. We have registered the decoder used to decode the JSON responses. The decoder can be changed to match the content type of the response returned by the service. We will learn more about [decoders](#integrating-encoderdecoder).
+There are many ways to prepare the client depending on our needs. The code snippet given above is just one of the simple ways to prepare the client. We have registered the decoder used to decode the JSON responses. The decoder can be changed to match the content type of the response returned by the service. We will learn more about [decoders](#integrating-encoderdecoder) later.
 
-### Step 4: Call the service
-Now let us call `add` method of the the service.
+### Step 4: Use the Client to for API Calls
+Now let us call the `add()` method of our client:
 ```java
 final Long result = target.add(firstNumber, secondNumber);
 ```
 We notice that calling service with Feign HTTP client is fairly simple compared to other [HTTP clients](https://reflectoring.io/comparison-of-java-http-clients/).
 
-You can see it in action by running `givenTwoNumbersReturnAddition` test in the example code shared on [Github](#example-code).
+You can see it in action by running the `givenTwoNumbersReturnAddition()` unit test in the example code shared on [Github](https://github.com/thombergs/code-examples/blob/master/openfeign/openfeign-client-intro/src/test/java/io/reflectoring/openfeign/services/CalculatorServiceTest.java#L37).
 
-**Notes on testing**:
-
+{{% info title="Notes on Testing" %}}
 We would use Wiremock to emulate the service implementation. [WireMock](https://wiremock.org/) is a web service mocking and stubbing tool. It works by emulating a real HTTP server to which the test code can connect as if it were a real online service. It allows for HTTP response stubbing, request verification, proxy/interception, stub recording/playback, and fault injection.
 
-It is particularly useful to emulate error scenarios that are difficult to achive with real service implementation. With these emulated interactions we rest assured that when such errors occur, our client error handling logic works as expected.
+It is particularly useful to emulate error scenarios that are difficult to achieve with real service implementation. With these emulated interactions we rest assured that when such errors occur, our client error handling logic works as expected.
+{{% /info %}}
 
-
-## Getting Familiar with Annotations
-OpenFeign uses a different set of annotations for defining HTTP requests and their parameters. Here's a table of commonly used OpenFeign annotations with examples:
+## Feign Annotations
+OpenFeign uses a set of annotations for defining HTTP requests and their parameters. Here's a table of commonly used OpenFeign annotations with examples:
 
 | Annotation | Description | Example |
 | --- | --- | --- |
@@ -149,9 +147,8 @@ Error handling is a crucial aspect of building robust and reliable applications,
     
 ```java
 final CalculatorService target = Feign.builder()
-                                      .errorDecoder(new CalculatorErrorDecoder())
-                                      .target(CalculatorService.class, HOST);
-
+    .errorDecoder(new CalculatorErrorDecoder())
+    .target(CalculatorService.class, HOST);
 ```
 
 Here is an example to show error handling:
@@ -171,29 +168,35 @@ public class CalculatorErrorDecoder implements ErrorDecoder {
     final String messageStr = message == null ? "" : message.getMessage();
     switch (response.status()) {
       case 400:
-        return new RuntimeException(messageStr.isEmpty() ? "Bad Request" : messageStr);
+        return new RuntimeException(messageStr.isEmpty() 
+                ? "Bad Request" 
+                : messageStr
+        );
       case 401:
         return new RetryableException(response.status(),
-                                      response.reason(),
-                                      response.request().httpMethod(),
-                                      null,
-                                      response.request());
+          response.reason(),
+          response.request().httpMethod(),
+          null,
+          response.request());
       case 404:
-        return new RuntimeException(messageStr.isEmpty() ? "Not found" : messageStr);
+        return new RuntimeException(messageStr.isEmpty() 
+                ? "Not found" 
+                : messageStr
+        );
       default:
         return defaultErrorDecoder.decode(methodKey, response);
     }
   }
 }
 ```
-All responses with HTTP status other than `HTTP 2xx` range, for example `HTTP 400`, will trigger the ErrorDecoder's `decode` method. 
-In this overridden `decode` method, we can handle the response, wrap the failure into a custom exception or perform any additional processing.
+All responses with HTTP status other than `HTTP 2xx` range, for example `HTTP 400`, will trigger the ErrorDecoder's `decode()` method. 
+In this overridden `decode()` method, we can handle the response, wrap the failure into a custom exception or perform any additional processing.
 
 
 We can even retry the request again by throwing a `RetryableException`. 
 This will invoke the registered `Retryer`. [Retryer](#configuring-retryer) is explained in detail in the advanced techniques.
 
-You can see it in action by running `givenNegativeDivisorDivisionReturnsError` test in the example code shared on [Github](#example-code).
+You can see it in action by running `givenNegativeDivisorDivisionReturnsError()` test in the example code shared on [Github](https://github.com/thombergs/code-examples/blob/master/openfeign/openfeign-client-intro/src/test/java/io/reflectoring/openfeign/services/CalculatorServiceTest.java#L56C10-L56C50).
 
 ## Advanced Techniques
 

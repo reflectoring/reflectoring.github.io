@@ -50,7 +50,7 @@ class MyTestClass : DescribeSpec() {
     }
 }
 ```
-In this Kotest test, we first define a test class <code>MyTestClass</code> that uses the Kotest testing framework, specifically the <code>DescribeSpec</code> style. Within the class's initializer block, we describes a test suite titled <code>My test suite</code> and contains two individual tests defined using the <code>it</code> function. The first test checks whether adding 1 and 2 results in 3, and the second test verifies that concatenating two strings <code>Hello</code>, and <code>World!</code> results in the string <code>Hello, World!<c/ode>. The <code>shouldBe</code> function is used to assert that the actual result matches the expected value in each test.
+In this Kotest test, we first define a test class <code>MyTestClass</code> that uses the Kotest testing framework, specifically the <code>DescribeSpec</code> style. Within the class's initializer block, we describes a test suite titled <code>My test suite</code> and contains two individual tests defined using the <code>it</code> function. The first test checks whether adding 1 and 2 results in 3, and the second test verifies that concatenating two strings <code>Hello</code>, and <code>World!</code> results in the string <code>Hello, World!</code>. The <code>shouldBe</code> function is used to assert that the actual result matches the expected value in each test.
 ### Using Behavior Spec Style
 Let's take a look at how we can write tests using the <code>BehaviorSpec</code> style in Kotest:
 
@@ -133,13 +133,20 @@ In our example, we've defined two features <code>Calculator</code> and <code>Str
 
 ## JUnit vs Kotest
 Choosing between Kotest and JUnit frameworks for a Kotlin project depends on our specific project requirements and preferences. Both Kotest and JUnit frameworks have their own advantages and may be better suited for different use cases. Here are some reasons why we might consider using Kotest over JUnit in a Kotlin project:
-**Kotlin native support** Kotest is designed with Kotlin and provides native support for Kotlin features, such as coroutines, property-based testing, and DSLs, making it more natural to work with Kotlin codebases.
-**Rich assertion library** Kotest comes with a powerful and extensible assertion library that allows developers to write expressive and concise assertions in a Kotlin idiomatic style. It provides a wide range of assertion functions that can make our tests more readable and maintainable.
-**Property-Based testing** Kotest supports property-based testing, which allows us to define properties that our code should satisfy, and then it generates test cases to check those properties.This can help us discover edge cases and unexpected behavior in our code.
-**Test configuration and hooks** Kotest provides flexible ways to configure our test suite and define test lifecycle hooks. We can also set up custom behavior before and after tests, which can be useful for tasks like database setup and teardown.
-**Concurrent testing** Kotest offers built-in support for running tests concurrently, which can significantly speed up test execution, especially in projects with a large number of tests.
-**Test case nesting** Kotest allows us to nest test cases and groups, which helps us to organize our tests more hierarchically and logically, making it easier to manage complex test suites.
-**Integration with other libraries** Kotest integrates well with other libraries and frameworks commonly used in Kotlin projects, such as MockK for mocking, Koin for dependency injection, and kotlinx.coroutines for coroutine testing.
+
+**Kotlin native support**: Kotest is designed with Kotlin and provides native support for Kotlin features, such as coroutines, property-based testing, and DSLs, making it more natural to work with Kotlin codebases.
+
+**Rich assertion library**: Kotest comes with a powerful and extensible assertion library that allows developers to write expressive and concise assertions in a Kotlin idiomatic style. It provides a wide range of assertion functions that can make our tests more readable and maintainable.
+
+**Property-Based testing**: Kotest supports property-based testing, which allows us to define properties that our code should satisfy, and then it generates test cases to check those properties.This can help us discover edge cases and unexpected behavior in our code.
+
+**Test configuration and hooks**: Kotest provides flexible ways to configure our test suite and define test lifecycle hooks. We can also set up custom behavior before and after tests, which can be useful for tasks like database setup and teardown.
+
+**Concurrent testing**: Kotest offers built-in support for running tests concurrently, which can significantly speed up test execution, especially in projects with a large number of tests.
+
+**Test case nesting**: Kotest allows us to nest test cases and groups, which helps us to organize our tests more hierarchically and logically, making it easier to manage complex test suites.
+
+**Integration with other libraries**: Kotest integrates well with other libraries and frameworks commonly used in Kotlin projects, such as MockK for mocking, Koin for dependency injection, and kotlinx.coroutines for coroutine testing.
 
 ## Kotest Assertions
 Kotest framework provides us with several <code>matcher</code> functions that help us write fluent assertions in our tests.These matchers are designed to help us verify various conditions and expectations in a concise and readable manner.

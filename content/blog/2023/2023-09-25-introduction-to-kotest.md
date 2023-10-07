@@ -153,27 +153,27 @@ The Kotest framework provides us with several `matcher` functions that help us w
 
  | Assertion | Description |
 |--------|---------------------------|
-|`@shouldBe`          |Asserts that value shouldBe the expected value|
-|`@shouldNotBe`       |Asserts that value shouldNotBe the unexpectedValue |
-|`@shouldBeLessThan`  |Asserts that value shouldBeLessThan maxValue|
-|`@shouldBeLessThanOrEqual`  | Asserts that value shouldBeLessThanOrEqual maxValue |
-|`@shouldBeGreaterThan`  |Asserts that value shouldBeGreaterThan minValue |
-|`@shouldBeGreaterThanOrEqual`  |Asserts that value shouldBeGreaterThanOrEqual minValue |
-|`@shouldBeNull`  |Asserts that value shouldBeNull() |
-|`@shouldNotBeNull`  |Asserts that value value shouldNotBeNull() |
-|`@shouldBeInstanceOf`  |Asserts that value shouldBeInstanceOf String::class |
-|`@shouldNotBeInstanceOf`  |Asserts that value value shouldNotBeInstanceOf Int::class |
-|`@shouldBeOfType`  |This matcher is used to check if an object is of a specific type and optionally matches its properties. |
-|`@shouldContain`  |Asserts that a collection shouldContain an element  |
-|`@shouldNotContain`  |Asserts that a collection shouldNotContain element |
-|`@shouldHaveSize`  |Asserts that a collection shouldHaveSize expectedSize |
-|`@shouldNotContain`  |Asserts that a collection shouldBeEmpty() |
-|`@shouldNotBeEmpty`  |Asserts that a string shouldNotBeEmpty() |
-|`@shouldStartWith`  |Asserts that a string shouldStartWith "should_start_with" |
-|`@shouldEndWith`    |Asserts that a string shouldEndWith "should_end_with" |
+|`@shouldBe`          |Asserts that value should be the expected value|
+|`@shouldNotBe`       |Asserts that value should not be the expectedValue |
+|`@shouldBeLessThan`  |Asserts that value should be less than the max value|
+|`@shouldBeLessThanOrEqual`  | Asserts that value should be less than or equal to the max value |
+|`@shouldBeGreaterThan`  |Asserts that value should be greater than minValue |
+|`@shouldBeGreaterThanOrEqual`  |Asserts that value should be greater than or equal to the minValue |
+|`@shouldBeNull`  |Asserts that value should be null |
+|`@shouldNotBeNull`  |Asserts that value value should not be null |
+|`@shouldBeInstanceOf`  |Asserts that value should be an instance of String::class |
+|`@shouldNotBeInstanceOf`  |Asserts that value value should not be an instance of Int::class |
+|`@shouldBeOfType`  |This matcher is used to check if an object is of a specific type and optionally matches its properties|
+|`@shouldContain`  |Asserts that a collection should contain an element  |
+|`@shouldNotContain`  |Asserts that a collection should not contain an element |
+|`@shouldHaveSize`  |Asserts that a collection should have a size as the expectedSize |
+|`@shouldNotContain`  |Asserts that a collection should be empty |
+|`@shouldNotBeEmpty`  |Asserts that a string should not be empty |
+|`@shouldStartWith`  |Asserts that a string should start with "should_start_with" |
+|`@shouldEndWith`    |Asserts that a string should end with "should_end_with" |
 |`@shouldContainSubstring` |This matcher checks if a string contains a specific substring.|
-|`@shouldThrow`    |This matcher is used to check if a specific exception is thrown during the execution of a block of code. |
-|`@shouldNotThrow`   |This matcher checks that a block of code does not throw an exception. |
+|`@shouldThrow`    |This matcher is used to check if a specific exception is thrown during the execution of a block of code|
+|`@shouldNotThrow`   |This matcher checks that a block of code does not throw an exception|
 
 ## Lifecycle Hooks
 In the Kotest framework, we can use lifecycle hooks to perform setup and teardown operations before and after our tests. Generally, these hooks allow us to prepare our test environment, set up resources and finally clean up after our tests have been executed.
@@ -184,12 +184,12 @@ Here are the most commonly used lifecycle hooks in Kotest:
 |--------|---------------------------|
 |`@beforeSpec`        |This hook runs once before all the tests in spec|
 |`@afterSpec`         |This hook runs once after all the tests in spec|
-|`@beforeTest`        |This hook runs before each individual test within a spec.|
-|`@afterTest`  |This hook runs after each individual test within a spec.|
+|`@beforeTest`        |This hook runs before each individual test within a spec|
+|`@afterTest`  |This hook runs after each individual test within a spec|
 |`@beforeContainer`   |This hook runs before each nested container within a spec|
 |`@afterContainer`    |This hook runs after each nested container within a spec|
 
-## Data Driven Testing in Kotest
+## Data-Driven Testing in Kotest
 
 Data-driven testing is a testing approach where we parameterize our tests with different sets of data, allowing us to run the same test logic with multiple input values to ensure that our code works correctly in various scenarios.
 

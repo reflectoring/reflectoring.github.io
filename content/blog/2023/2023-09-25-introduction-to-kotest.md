@@ -171,7 +171,7 @@ The Kotest framework provides us with several `matcher` functions that help us w
 |`@shouldNotBeEmpty`  |Asserts that a string should not be empty |
 |`@shouldStartWith`  |Asserts that a string should start with "should_start_with" |
 |`@shouldEndWith`    |Asserts that a string should end with "should_end_with" |
-|`@shouldContainSubstring` |This matcher checks if a string contains a specific substring.|
+|`@shouldContainSubstring` |This matcher checks if a string contains a specific substring|
 |`@shouldThrow`    |This matcher is used to check if a specific exception is thrown during the execution of a block of code|
 |`@shouldNotThrow`   |This matcher checks that a block of code does not throw an exception|
 

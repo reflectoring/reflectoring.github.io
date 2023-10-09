@@ -138,7 +138,21 @@ OpenFeign uses a set of annotations for defining HTTP requests and their paramet
 **These annotations allow us to define and customize OpenFeign client interface, making it easy to interact with remote services using OpenFeign. us can mix and match these annotations based on our specific API requirements.**
 
 ## Handling Responses
-Feign also provides a declarative approach to API integration. Instead of manually writing boilerplate code for handling request/response serialization/deserialization or error handling, Feign allows us to define these aspects declaratively using annotations. This not only reduces the amount of code we need to write but also improves readability and maintainability.
+Feign also provides a declarative approach to API integration. Instead of manually writing boilerplate code for handling response or error, Feign allows us to define custom handlers and register those with Fiegn builder. This not only reduces the amount of code we need to write but also improves readability and maintainability.
+
+Let us see `decoder` example:
+```java
+final CalculatorService target = Feign.builder()
+    .encoder(new JacksonEncoder())
+    .decoder(new JacksonDecoder())
+    .target(CalculatorService.class, HOST);
+```
+This given code snippet demonstrates the creation of a Feign client for using Jackson for both request encoding and response decoding.
+Let's break down what these lines do:
+
+`.encoder(new JacksonEncoder())`: Here, a `JacksonEncoder` is set for the Feign client. `JacksonEncoder` is part of the Feign Jackson module and is used to encode Java objects into JSON format for the HTTP request body. This is particularly useful when you need to send objects in the request body.
+
+`.decoder(new JacksonDecoder())`: Similarly, a `JacksonDecoder` is set for the Feign client. `JacksonDecoder` is responsible for decoding JSON responses from the server into Java objects. It deserializes the JSON response into the corresponding Java objects.
 
 ## Handling Errors
 Error handling is a crucial aspect of building robust and reliable applications, especially when it comes to making remote API calls. Feign offers powerful features that can assist in effectively handling errors.

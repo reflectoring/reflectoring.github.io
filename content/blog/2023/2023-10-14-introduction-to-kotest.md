@@ -1,10 +1,10 @@
 ---
 title: "Introduction to Kotest"
 categories: ["Kotlin"]
-date: 2023-09-25 00:00:00 +1100 
+date: 2023-10-14 00:00:00 +1100 
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss Kotest which is a testing Framework  written in Kotlin."
-image: images/stock/0104-on-off-1200x628-branded.jpg
+image: images/stock/0112-ide-1200x628-branded.jpg
 url: introduction-to-Kotest
 ---
 
@@ -246,7 +246,7 @@ In this example, the `MyTestSuite` test class is tagged with both `smoke` and `r
 
 To run tests based on our tags, we can use the `--kotest.tags` command-line option when executing our test suite.
 
-```yaml
+```shell
 ./gradlew test --tests * --kotest.tags="smoke"
 ```
 

@@ -2,9 +2,9 @@
 authors: [sagaofsilence]
 title: "Create an HTTP Client with OpenFeign"
 categories: ["Java"]
-date: 2023-09-16 00:00:00 +0530
+date: 2023-10-14 00:00:00 +0530
 excerpt: "Feign is an HTTP client that allows us to easily make web requests. With its simplified and fluent API, it makes consuming RESTful services a breeze."
-image: images/stock/0134-client_sever.png
+image: images/stock/0125-tools-1200x628-branded.jpg
 url: create-openfeign-http-client
 ---
 
@@ -140,7 +140,7 @@ OpenFeign uses a set of annotations for defining HTTP requests and their paramet
 ## Handling Responses
 Feign also provides a declarative approach to API integration. Instead of manually writing boilerplate code for handling response or error, Feign allows us to define custom handlers and register those with Fiegn builder. This not only reduces the amount of code we need to write but also improves readability and maintainability.
 
-Let us see `decoder` example:
+Let us see a `decoder` example:
 ```java
 final CalculatorService target = Feign.builder()
     .encoder(new JacksonEncoder())
@@ -221,9 +221,9 @@ Encoder and decoder are **used to encode/decode the request and response data re
 Here is an example showing how to use `Jackson` encoder and decoder.
 ```java
 final CalculatorService target = Feign.builder()
-                                      .encoder(new JacksonEncoder())
-                                      .decoder(new JacksonDecoder())
-                                      .target(CalculatorService.class, HOST);
+  .encoder(new JacksonEncoder())
+  .decoder(new JacksonDecoder())
+  .target(CalculatorService.class, HOST);
 
 ```
 
@@ -233,26 +233,24 @@ By default, it uses Feign HTTP client. The motivation behind changing the defaul
 Now let us see how to override the HTTP client.
 ```java
 final CalculatorService target = Feign.builder()
-                                      .client(new OkHttpClient())
-                                      .target(CalculatorService.class, HOST);
+  .client(new OkHttpClient())
+  .target(CalculatorService.class, HOST);
 
 ```
 
-### Applying Circuit Breaker
-
-### Configuring Logger
+### Configuring a Logger
 [SLF4JModule](https://github.com/OpenFeign/feign/blob/master/slf4j) is used to send Feign's logging to [SLF4J](http://www.slf4j.org/). With SLF4J, we can easily use a logging backend of our choice (Logback, Log4J, etc.)
 
 Here is an example about building the client:
 ```java
 final CalculatorService target = Feign.builder()
-                                      .logger(new Slf4jLogger())
-                                      .logLevel(Level.FULL)
-                                      .target(CalculatorService.class, HOST);
+  .logger(new Slf4jLogger())
+  .logLevel(Level.FULL)
+  .target(CalculatorService.class, HOST);
 
 ```
 To use SLF4J with Feign, add both the SLF4J module and an SLF4J binding of our choice to the classpath. 
-Then, configure Feign to use the Slf4jLogger:
+Then, configure Feign to use the Slf4jLogger as shown above.
 
 ### Configuring Request Interceptors
 Request Interceptors in Feign allow us to **customize and manipulate HTTP requests before they are sent to the remote server**. They are useful for a variety of purposes, such as adding custom headers, logging, authentication, or request modification.
@@ -281,13 +279,13 @@ public class CalculatorServiceTest {
   public static void main(String[] args) {
     final interceptor = new AuthorizationInterceptor();
     final CalculatorService target = Feign.builder()
-                                          .requestInterceptor(interceptor)
-                                          .target(CalculatorService.class, HOST);
+      .requestInterceptor(interceptor)
+      .target(CalculatorService.class, HOST);
   }
 }
 
 ```
-Implement `RequestInterceptor` and overrride its `apply` method. `apply` method would have custom logic as per requirements.
+Implement `RequestInterceptor` and override its `apply()` method to do any modifications on the request that you require.
 
 ### Configuring Retryer
 OpenFeign Retryer is a component that allows us to configure how Feign handles retries when a request fails. It can be particularly useful for handling transient failures in network communications. We can specify conditions under which Feign should automatically retry a failed request.
@@ -302,7 +300,10 @@ To use a Retryer in OpenFeign, provide an implementation of the Retryer interfac
 #### Default Retryer
 Feign provides a default retryer implementation called `Retryer.Default`. This default retryer is used when we create a Feign client without explicitly specifying a custom retryer. 
 
-It has two constructors.
+It provided two factory methods to create a `Retryer` object.
+
+
+The first factory method doesn't require any parameters:
 ```java
 public Default() {
     this(100L, TimeUnit.SECONDS.toMillis(1L), 5);
@@ -317,7 +318,7 @@ It defines a simple retry strategy with the following characteristics:
 
 - **Retryable Exceptions**: It retries requests if they result in any exceptions that are considered retryable. These typically include network-related exceptions like connection timeouts or socket exceptions.
 
-It also has argument constructor. We can use it if default configuration is not suitable for us.
+The second factory methods requires some parameters. We can use it if the default configuration is not suitable for us.
 ```java
 public Default(long period, long maxPeriod, int maxAttempts)
 
@@ -354,9 +355,10 @@ public class CalculatorRetryer implements Retryer {
 
     @Override
     public void continueOrPropagate(RetryableException e) {
-        log.info("Feign retry attempt {} of {} due to {} ", attempt, 
-                                                            maxAttempts, 
-                                                            e.getMessage());
+        log.info("Feign retry attempt {} of {} due to {} ", 
+                attempt, 
+                maxAttempts, 
+                e.getMessage());
         if (++attempt > maxAttempts) {
             throw e;
         }
@@ -393,7 +395,8 @@ Circuit breakers are typically implemented using separate libraries or tools suc
 
 #### Why Should I use a Circuit Breaker?
 The primary motivation for using a circuit breaker with Feign is to enhance the resilience of our microservices-based applications. Here are some key reasons:
-Fault Isolation: Circuit breakers prevent failures in one service from cascading to other services by isolating the failing component.
+
+1. **Fault Isolation**: Circuit breakers prevent failures in one service from cascading to other services by isolating the failing component.
 
 1. **Fail-Fast**: When a circuit is open (indicating a failure state), subsequent requests are "failed fast" without attempting to make calls to a potentially unresponsive or failing service, reducing latency and resource consumption.
 
@@ -404,14 +407,13 @@ Fault Isolation: Circuit breakers prevent failures in one service from cascading
 #### Configuring Circuit Breakers
 [HystrixFeign](https://github.com/OpenFeign/feign/blob/master/hystrix) is used to configure circuit breaker support provided by Hystrix.
 
-Hystrix is a latency and fault tolerance java library designed to isolate points of access to remote systems, services, and 3rd-party libraries in a distributed environment. It helps to stop cascading failure and enable resilience in complex distributed systems where failure is inevitable.
+Hystrix is a latency and fault tolerance library designed to isolate points of access to remote systems, services, and 3rd-party libraries in a distributed environment. It helps to stop cascading failure and enable resilience in complex distributed systems where failure is inevitable.
 
 To use Hystrix with Feign, we need to add the Hystrix module to classpath. 
 And use the HystrixFeign builder as follows:
 ```java
 final CalculatorService target = HystrixFeign.builder()
-                                             .target(CalculatorService.class, HOST);
-
+  .target(CalculatorService.class, HOST);
 ```
 
 Let us see how to use fallback class to handle errors from the service.
@@ -445,7 +447,6 @@ public class CalculatorHystrixFallback implements CalculatorService {
         return null;
     }
 }
-
 ```
 
 To demonstrate fallback, we have implemented only `add` method:
@@ -453,10 +454,9 @@ Then we use this fallback while building the client:
 ```java
 final CalculatorHystrixFallback fallback = new CalculatorHystrixFallback();
 final CalculatorService target = HystrixFeign.builder()
-                                             .decoder(new JacksonDecoder())
-                                             .target(CalculatorService.class, 
-                                                     HOST, fallback);
-
+  .decoder(new JacksonDecoder())
+  .target(CalculatorService.class, 
+          HOST, fallback);
 ```
 When there is error sent by add endpoint or the circuit is open, `add` fallback method would be called by Hystrix. 
 You can see it in action by running `givenTwoNumbersAndServerReturningServerErrorShouldCircuitBreak` test in the example code shared on [Github](#example-code).
@@ -472,22 +472,14 @@ Here's how we can use Micrometer, a commonly used library, to collect and report
 public class CalculatorServiceTest {
   public static void main(String[] args) {
     final CalculatorService target = Feign.builder()
-                                          .addCapability(new MicrometerCapability())
-                                          .target(CalculatorService.class, HOST);
+      .addCapability(new MicrometerCapability())
+      .target(CalculatorService.class, HOST);
     target.contributors("OpenFeign", "feign");
     // metrics will be available from this point onwards
   }
 }
 ```
 Please note that we would need to add Micrometer as a dependency in our project and configure it properly.
-
-## Summary
-In summary, we leanred following topics:
-1. Setting up dependencies for Feign involves adding its dependency declaration to our project's build file.
-1. Configuration includes specifying target URLs and other settings either through annotations or programmatically in a configuration class. 
-1. Creating API interfaces defines the structure of our RESTful endpoints using method signatures annotated with relevant annotations. 
-1. Making requests with Feign is as simple as invoking methods on our defined interfaces.
-1. Finally, advanced usage and configurations.
 
 ## Next Steps
 If you are interested in learning more about OpenFeign and trying out its features, we recommend visiting the official OpenFeign website and exploring the documentation. Here's how you can get started:

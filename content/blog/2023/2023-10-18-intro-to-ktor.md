@@ -54,7 +54,7 @@ To create a new Kotlin project, we'll use the following command:
 gradle init --type kotlin-application
 ```
 
-To add Ktor dependencies to our project, we're required to add the following in our `build.gradle.kts` file
+To add Ktor dependencies to our project, we're required to add the following in our `build.gradle.kts` file:
 
 ```kotlin
 dependencies {
@@ -64,7 +64,7 @@ dependencies {
 ```
 
 ### Write Ktor Application Code
-To write Ktor application code, we simply create a Kotlin file such as `Application.kt` and define our code such as:
+To write Ktor application code, we simply create a Kotlin file such as `Application.kt` and define our code as:
 
 ```kotlin
 fun Application.module() {
@@ -110,7 +110,7 @@ routing {
         // Handle GET request to the root path
     }
 }
-``
+```
 In this example, the get("/") block defines a route that matches GET requests to the root path.
 
 ### Handler Function
@@ -121,7 +121,8 @@ routing {
     get("/") {
         call.respondText("Hello, Ktor!")
     }
-}```
+}
+```
 In this case, the call.respondText function generates a simple text response, "Hello, Ktor!"
 
 ### Route Hierarchy
@@ -138,7 +139,8 @@ routing {
             // Handle POST request for /api/users
         }
     }
-}```
+}
+```
 Here, the `/api `route contains sub-routes for different user-related actions.
 
 ### Dynamic Routing
@@ -150,7 +152,8 @@ routing {
         val userId = call.parameters["id"]
         // Use the userId in our logic
     }
-}```
+}
+```
 In this case, the `{id}` segment is a variable, and we can access the value of id using call.parameters["id"].
 
 ### Route Conditions
@@ -163,7 +166,8 @@ routing {
             // Handle GET request to /admin only if the Authorization header is present
         }
     }
-}```
+}
+```
 This route would only be matched if the `Authorization` header is present in the request.
 
 ## Adding Controllers in Ktor
@@ -226,18 +230,27 @@ Here's a comparison of Ktor with some other popular web frameworks:
 ### Spring Boot (Java):
 
 `Language`: Spring Boot is based on Java, while Ktor is built on Kotlin, a more modern and concise language.
+
 `Learning Curve`: Spring Boot has a steeper learning curve, especially for beginners, due to its extensive ecosystem and configuration.
+
 `Community and Ecosystem`: Spring Boot has a large and mature ecosystem with a wide range of libraries and tools. Ktor, being newer, has a smaller but growing community.
+
 `Use Cases`: Spring Boot is suitable for large enterprise applications and has extensive support for various enterprise features. Ktor is lightweight and well-suited for microservices and smaller web applications.
+
 ### Express.js (Node.js):
 
 `Language`: Express.js is based on JavaScript/Node.js, while Ktor uses Kotlin.
+
 `Concurrency Model`: Ktor provides native support for asynchronous and coroutine-based programming, making it suitable for highly concurrent applications.
+
 `Performance`: Ktor can provide better performance in CPU-bound and I/O-bound tasks due to Kotlin's efficient concurrency model.
+
 `Use Cases`: Both can be used for web applications, but Ktor may be a better choice for Kotlin-centric projects or those requiring strong concurrency support.
+
 ### Django (Python):
 
 `Language`: Django is written in Python, whereas Ktor uses Kotlin.
+
 `Development Speed`: Django is known for its rapid development capabilities, offering a lot of built-in features. Ktor provides more flexibility but may require more code for certain features.
 
 ## Conclusion

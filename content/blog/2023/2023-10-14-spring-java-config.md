@@ -20,37 +20,47 @@ By the end, you'll not only grasp the fundamentals but also be equipped to creat
 
 Let's dive in and transform our Spring development experience!
 
+<a name="example-code" />
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/java-config" %}}
+
+
 ## Spring Configuration: Demystifying the Heartbeat of Spring Applications
 
-In the vibrant landscape of software development, Spring Configuration stands as the silent orchestrator, harmonizing the elements of Spring applications. At its core, Spring Configuration is the art and science of setting up a Spring application, defining its components, managing dependencies, and orchestrating their interactions. It serves as the blueprint, guiding the behavior of our Spring-powered creations.
+In the vibrant landscape of software development, Spring Configuration stands as the silent orchestrator, harmonizing the elements of Spring applications. At its core, **Spring Configuration is the art and science of setting up a Spring application, defining its components, managing dependencies, and orchestrating their interactions**. It serves as the blueprint, guiding the behavior of our Spring-powered creations.
 
-Configuration in Spring is all about empowering our applications with context, specifying how beans (Spring-managed objects) are created, wired, and used within the application. Traditionally, Spring offered XML-based configuration, providing a structured way to define beans and their relationships. In the dynamic landscape of Java and Spring, XML configurations have been replaced by more intuitive, expressive, and Java-centric approaches, showcasing the superior efficiency of Java configuration.
+Configuration in Spring is all about empowering our applications with context, specifying how beans (Spring-managed objects) are created, wired, and used within the application.
+
+Traditionally, Spring offered XML-based configuration, providing a structured way to define beans and their relationships. In the dynamic landscape of Java and Spring, XML configurations have been replaced by more intuitive, expressive, and Java-centric approaches, showcasing the superior efficiency of Java configuration.
 
 ## What Makes Spring Configuration Essential?
 
 Java-based configuration in Spring is like poetry in code, where you harness the power of plain Java classes and annotations to configure our application. With Java-based configuration, you bid farewell to XML files and embrace the elegance of Java code to define our beans and their relationships.
 
-In the upcoming sections, we will unravel the intricacies of Spring's Java Configuration, exploring its core concepts, understanding annotations like `@Bean` and `@Configuration`, and delving into the art of organizing and managing our Spring applications. Let's embark on this journey to demystify Spring's heartbeat and empower our coding endeavors.
+In the upcoming sections, we will unravel the intricacies of Spring's Java Configuration, exploring its core concepts, understanding annotations like `@Bean` and `@Configuration`, and delving into the art of organizing and managing our Spring applications.
+
+Let's embark on this journey to demystify Spring's heartbeat and empower our coding endeavors.
 
 {{% info title="Notes: Understanding Beans in Spring Applications" %}}
 
 Excited to dive into the magic of Spring? Let's recap the essentials: beans, IoC, and DI. Join us on this empowering journey, making our Java applications thrive!
 
-**Beans: The Core of Spring:**
-In the world of Spring, a 'bean' is not just a legume but the fundamental building block of our application. Beans are Java objects managed by the Spring container. Think of them as the essential ingredients in a recipe, representing the various components of our application, from simple data objects to complex business logic. Spring takes care of creating these beans, managing their lifecycle, and wiring them together, making our application cohesive and organized.
+✍ **BEANS: THE CORE OF SPRING:**
+In the world of Spring, a 'bean' is not just a legume but the fundamental building block of our application. **Beans are Java objects managed by the Spring container.** Think of them as the essential ingredients in a recipe, representing the various components of our application, from simple data objects to complex business logic. **Spring takes care of creating these beans, managing their lifecycle, and wiring them together, making our application cohesive and organized.**
 
-**Inversion of Control (IoC) Simplified:**
-IoC, often referred to as the 'heart' of Spring, is a concept where the control over the object creation and lifecycle is transferred from our application to the Spring container. Imagine our application as a passenger in a self-driving car; you specify the destination, and Spring takes care of the driving, ensuring our beans are created, configured, and managed without our direct intervention.
+✍ **INVERSION OF CONTROL (IOC) SIMPLIFIED:**
+IoC, often referred to as the 'heart' of Spring, is a concept where the control over the object creation and lifecycle is transferred from our application to the Spring container. Imagine our application as a passenger in a self-driving car; you specify the destination, and Spring takes care of the driving, ensuring **our beans are created, configured, and managed without our direct intervention**.
 
-**Dependency Injection (DI) Unveiled:**
-Dependency Injection is like a magic potion in Spring. It's the process where beans receive their dependencies from an external source, typically the Spring container, rather than creating them internally. Picture a chef receiving all the ingredients pre-chopped and organized on the kitchen counter. With DI, our beans are ready to use, making our code cleaner, more modular, and easier to test. Spring handles the 'injection' of dependencies, ensuring our beans work seamlessly together in our application recipe.
+✍ **DEPENDENCY INJECTION (DI) UNVEILED:**
+Dependency Injection is like a magic potion in Spring. It's the process where beans receive their dependencies from an external source, typically the Spring container, rather than creating them internally. Picture a chef receiving all the ingredients pre-chopped and organized on the kitchen counter. With DI, our beans are ready to use, making our code cleaner, more modular, and easier to test. **Spring handles the 'injection' of dependencies, ensuring our beans work seamlessly together in our application recipe.**
 
-Unveil the secrets of beans, IoC, and DI in [our detailed article](http://localhost:1313/dependency-injection-and-inversion-of-control/).
+👉 Unveil the secrets of beans, IoC, and DI in [our detailed article](http://localhost:1313/dependency-injection-and-inversion-of-control/).
 {{% /info %}}
 
 ## Types of Spring Configuration
 
-In the vibrant Spring ecosystem, configuring our applications is an art. Spring offers various types of configuration options, each tailored to specific needs. Let's get familiar with them:
+In the vibrant Spring ecosystem, configuring our applications is an art. Spring offers various types of configuration options, each tailored to specific needs.
+
+Let's get familiar with them:
 
 1. **XML Configuration:**
    Dive into the classic approach! Configure Spring beans and dependencies using XML files. Perfect for legacy systems and scenarios requiring external configuration.
@@ -74,6 +84,8 @@ Each type caters to specific project demands. Stay tuned as we unravel the nuanc
 {{% info title="Use Case: Employee Management System" %}}
 Imagine you're building an Employee Management System, where employees belong to various departments within a company. In this intricate ecosystem, maintaining clean code and modular architecture is crucial.
 
+Feel free to refer to example code shared on [Github](#example-code).
+
 {{% /info %}}
 \
 Enter Spring's core concepts: `@Bean` and `@Configuration`.
@@ -91,27 +103,54 @@ public class Department {
 }
 
 @Configuration
-public class AppConfig {
+public class JavaConfigAppConfiguration {
     @Bean
-    public Employee employee() {
-        return new Employee();
+    public Employee newEmployee(final String firstName, final String lastName) {
+        return Employee.builder().firstName(firstName).lastName(lastName).build();
     }
 
     @Bean
-    public Department salesDepartment() {
-        return new Department();
+    public Department newDepartment(final String deptName) {
+        final Department department = Department.builder().name(deptName).build();
+        acme().addDepartment(department);
+        return department;
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+    public Employee founderEmployee() {
+        final Employee founder = newEmployee("Scott", "Tiger");
+        founder.setDesignation("Founder");
+        founder.setDepartment(coreDepartment());
+        return founder;
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+    public Department coreDepartment() {
+        return newDepartment("Core");
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+    public Organization acme() {
+        final Organization acmeCo = new Organization();
+        acmeCo.setName("Acme Inc");
+        return acmeCo;
     }
 }
 ```
 
-Here, the `employee()` method creates an `Employee` bean, and `salesDepartment()` method creates a `Department` bean. Spring now manages these objects, handling their lifecycle and ensuring proper dependencies.
+Here, the `newEmployee` and `founderEmployee` methods create an `Employee` bean, `newDepartment` and `coreDepartment` methods create a `Department` bean and `acme` method creats an `Organization` bean. Spring now manages these objects, handling their lifecycle and ensuring proper dependencies.
 
 **Understanding Bean Lifecycle:**
 The lifecycle of a Spring bean involves its instantiation, initialization, use, and eventual disposal. When the Spring container starts, it instantiates the beans. Then, it injects the dependencies, calls the initialization methods (if specified), and makes the bean available for use. When the container shuts down, the beans are destroyed, invoking any destruction methods (if defined).
 
 {{% info title="Spring Bean Lifecycle: A Summary" %}}
 
-Spring beans, the heart of Spring applications, undergo a series of stages known as the bean lifecycle. Understanding these stages is essential for effective bean management. Here’s a concise summary of the Spring bean lifecycle methods:
+Spring beans, the heart of Spring applications, undergo a series of stages known as the bean lifecycle. Understanding these stages is essential for effective bean management.
+
+Here’s a concise summary of the Spring bean lifecycle methods:
 
 1. **Instantiation:** Beans are created, either through constructor invocation or factory methods.
 
@@ -127,7 +166,7 @@ Spring beans, the heart of Spring applications, undergo a series of stages known
 
 Understanding these stages ensures proper initialization and cleanup of Spring beans, facilitating efficient and well-managed Spring applications.
 
-Unveil the secrets of bean lifecycle in [our detailed article](https://reflectoring.io/spring-bean-lifecycle/).
+👉 Unveil the secrets of bean lifecycle in [our detailed article](https://reflectoring.io/spring-bean-lifecycle/).
 
 {{% /info %}}
 \
@@ -156,9 +195,10 @@ In our configuration class:
 
 ```java
 @Configuration
-public class EmployeeConfig {
+public class JavaConfigAppConfiguration {
 
     @Bean(initMethod = "init", destroyMethod = "destroy")
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public Employee employee() {
         return new Employee();
     }
@@ -171,7 +211,7 @@ In this example, the `employee()` method creates an `Employee` bean. The `initMe
 
 ```java
 
-public class Employee implements InitializingBean, DisposableBean {
+public class Department implements InitializingBean, DisposableBean {
 
     // Bean properties and methods
 
@@ -191,16 +231,23 @@ In our configuration class, you can create the bean as usual:
 
 ```java
 @Configuration
-public class EmployeeConfig {
+public class JavaConfigAppConfiguration {
 
     @Bean
-    public Employee employee() {
-        return new Employee();
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public Department newDepartment(final String deptName) {
+        final Department department = Department.builder().name(deptName).build();
+        acme().addDepartment(department);
+        return department;
     }
 }
 ```
 
-In this approach, the `Employee` class implements the `InitializingBean` and `DisposableBean` interfaces, providing `afterPropertiesSet()` for initialization and `destroy()` for cleanup. Spring automatically detects these interfaces and calls the appropriate methods during bean lifecycle stages.
+In this approach, the `Department` class implements the `InitializingBean` and `DisposableBean` interfaces, providing `afterPropertiesSet()` for initialization and `destroy()` for cleanup. Spring automatically detects these interfaces and calls the appropriate methods during bean lifecycle stages.
+
+Interface `InitializingBean` is implemented by beans that need to react once all their properties have been set by a BeanFactory: for example, to perform custom initialization, or merely to check that all mandatory properties have been set.
+
+Interface `DisposableBean` is implemented by beans that want to release resources on destruction. A BeanFactory is supposed to invoke the destroy method if it disposes a cached singleton. An application context is supposed to dispose all of its singletons on close.
 
 These examples demonstrate how `@Bean` methods, along with custom initialization and destruction methods or interfaces like `InitializingBean` and `DisposableBean`, enable precise control over the lifecycle of Spring beans within our Employee Management System.
 
@@ -212,7 +259,7 @@ The `@Scope` annotation allows you to define the scope of the bean. For instance
 public class EmployeeConfig {
 
     @Bean
-    @Scope("prototype")
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public Employee employee() {
         return new Employee();
     }
@@ -241,16 +288,20 @@ By default, the bean name is the same as the method name. However, you can speci
 
 ```java
 @Configuration
-public class EmployeeConfig {
+public class JavaConfigAppConfiguration {
 
-    @Bean(name = "customEmployee")
-    public Employee createCustomEmployee() {
-        return new Employee();
+    @Bean(name = "founder")
+    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+    public Employee founderEmployee() {
+        final Employee founder = newEmployee("Scott", "Tiger");
+        founder.setDesignation("Founder");
+        founder.setDepartment(coreDepartment());
+        return founder;
     }
 }
 ```
 
-In this example, the bean is named `customEmployee`, allowing specific identification within the application context.
+In this example, the bean is named `founder`, allowing specific identification within the application context.
 
 Understanding `@Bean` and its related concepts is pivotal in Spring configuration. It not only creates instances but also allows fine-grained control over their lifecycle, scope, and naming conventions, empowering our Employee Management System with robust, Spring-managed components.
 
@@ -259,7 +310,7 @@ Understanding `@Bean` and its related concepts is pivotal in Spring configuratio
 
 ```java
 @Configuration
-public class AppConfig {
+public class JavaConfigAppConfiguration {
     @Bean
     public Employee employee() {
         return new Employee();

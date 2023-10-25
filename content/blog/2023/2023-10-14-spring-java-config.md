@@ -380,6 +380,9 @@ In this configuration, the `DriverManagerDataSource` bean is created, specifying
 Remember to add the necessary H2 database dependency in your project's build file (Maven or Gradle) if you haven't already.
 See the pom.xml in the example code shared on [Github](#example-code).
 
+You can see it in action by running the `dataSource()` unit test in the example code shared on [Github](https://github.com/thombergs/code-examples/blob/master/spring-boot/java-config/src/test/java/io/reflectoring/spring-boot/javaconfig/DatabaseConfigurationTest.java#L30).
+
+
 **2. Caching Configuration with EhCache:**
 
 Efficient data caching is vital for improving response times in RESTful applications. `@Configuration` can be utilized to set up caching mechanisms, enhancing the system’s performance.
@@ -416,6 +419,8 @@ By adding `@EnableCaching` to the configuration class, we activate caching suppo
 
 In this example, `@Configuration` sets up caching using EhCache, creating a cache named "employeesCache" that expires after an hour. This enhances the application’s responsiveness by reducing database queries.
 
+You can see it in action by running the `employeesAreSame()` unit test in the example code shared on [Github](https://github.com/thombergs/code-examples/blob/master/spring-boot/java-config/src/test/java/io/reflectoring/spring-boot/javaconfig/CacheConfigurationTest.java#L24).
+
 👉 You can learn caching in detail by going through our article [Implementing a Cache with Spring Boot](https://reflectoring.io/spring-boot-cache/).
 
 **3. Security Configuration with Spring Security:**
@@ -451,6 +456,8 @@ Let's break down the code:
 1. `return http.build()`: Finally, the `http.build()` method is called to build and return the configured `SecurityFilterChain`.
 
 In summary, this configuration enforces access control based on the URL patterns. Requests to "/employees/" require the "USER" authority, requests to "/departments/" and "/organizations/\*\*" require the "ADMIN" authority, and any other requests require authentication. This provides fine-grained access control to different parts of the application based on the user's authorities.
+
+You can see it in action by running the `endpointWhenUserAuthorityThenAuthorized()` unit test in the example code shared on [Github](https://github.com/thombergs/code-examples/blob/master/spring-boot/java-config/src/test/java/io/reflectoring/spring-boot/javaconfig/SecurityConfigurationTest.java#L27).
 
 These advanced examples demonstrate the power of `@Bean` and `@Configuration` in configuring complex components such as database connections, caching mechanisms, and security protocols within a RESTful Employee Management System.
 
@@ -564,6 +571,8 @@ In the realm of Spring applications, scalability and maintainability are key con
 `@Import` Annotation: The `InfrastructureConfiguration` class uses the `@Import` annotation to import the configuration classes of individual modules. This annotation allows us to compose configurations by combining multiple configuration classes into a single configuration class.
 
 By importing the `SecurityConfiguration`, `DatabaseConfiguration`, and `AppCacheConfiguration` classes into the `InfrastructureConfiguration`, we create a unified configuration that encompasses all the specific settings for authentication, database interactions, and caching.
+
+You can see it in action by running the `testImportedConfig()` unit test in the example code shared on [Github](https://github.com/thombergs/code-examples/blob/master/spring-boot/java-config/src/test/java/io/reflectoring/spring-boot/javaconfig/InfrastructureConfiguration.java#L29).
 
 **3. Configuration Profiles for Flexibility:**
    - **Environment-Specific Configurations:** Java-based configuration allows the use of different profiles for various environments (e.g., development, testing, production). Each profile can have its own set of configuration classes, ensuring adaptability and flexibility across deployment scenarios.

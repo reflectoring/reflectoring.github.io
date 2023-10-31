@@ -8,90 +8,72 @@ image: images/stock/0013-switchboard-1200x628-branded.jpg
 url: beginner-friendly-guide-to-spring-java-config
 ---
 
-Welcome to the exciting world of Spring's Java Configuration! Eager to unravel the mysteries of Spring applications? You've come to the right place!
+Welcome to the exciting world of Spring's Java Configuration!
 
-In this comprehensive guide, we'll embark on a journey to demystify Spring's Java-based configuration, simplifying the process for newcomers.
+In this comprehensive guide, we will learn Spring's Java-based configuration. We will get familiar with core annotations like `@Bean` and `@Configuration`. We will explore the ways to organize configuration logic, delve into modular setups, and tailor configurations with ease. By the end, we will not only grasp the fundamentals but also be equipped to create well configured Spring applications.
 
-Imagine crafting robust Spring applications with just Java classes, understanding core annotations like `@Bean` and `@Configuration`, and seamlessly managing properties.
-
-We'll explore the art of configuration logic organization, delve into modular setups, and tailor configurations with ease.
-
-By the end, you'll not only grasp the fundamentals but also be equipped to create scalable Spring applications effortlessly.
-
-Let's dive in and transform our Spring development experience!
+Let us dive in and transform our Spring development experience!
 
 <a name="example-code" />
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/java-config" %}}
 
 
-## Spring Configuration: Demystifying the Heartbeat of Spring Applications
+## Understanding Spring Configuration
 
-In the vibrant landscape of software development, Spring Configuration stands as the silent orchestrator, harmonizing the elements of Spring applications. At its core, **Spring Configuration is the art and science of setting up a Spring application, defining its components, managing dependencies, and orchestrating their interactions**. It serves as the blueprint, guiding the behavior of our Spring-powered creations.
+In Spring based applications, Spring Configuration stands as the coordinator, connecting the elements of Spring applications. At its core, **Spring Configuration is the mainly used in setting up a Spring application, defining its components, managing dependencies, and orchestrating their interactions**. It serves as the blueprint, guiding the behavior of our Spring-powered creations.
 
 Configuration in Spring is all about empowering our applications with context, specifying how beans (Spring-managed objects) are created, wired, and used within the application.
 
-Traditionally, Spring offered XML-based configuration, providing a structured way to define beans and their relationships. In the dynamic landscape of Java and Spring, XML configurations have been replaced by more intuitive, expressive, and Java-centric approaches, showcasing the superior efficiency of Java configuration.
+Traditionally, Spring offered XML-based configuration, providing a structured way to define beans and their relationships. As Spring ecosystem evolved, XML configurations have been replaced by more intuitive, expressive, and Java-centric approaches, simplifying the application configuration.
 
-## What Makes Spring Configuration Essential?
+## Spring Configuration Essential Features
 
-Java-based configuration in Spring is like poetry in code, where you harness the power of plain Java classes and annotations to configure our application. With Java-based configuration, you bid farewell to XML files and embrace the elegance of Java code to define our beans and their relationships.
+Java-based configuration in Spring enables us to use plain Java classes (POJOs) and annotations to configure our application. With Java-based configuration, we do not need XML files. Instead, we use Java code to define our beans and their relationships.
 
-In the upcoming sections, we will unravel the intricacies of Spring's Java Configuration, exploring its core concepts, understanding annotations like `@Bean` and `@Configuration`, and delving into the art of organizing and managing our Spring applications.
+In the upcoming sections, we will learn Spring's Java Configuration, exploring its core concepts, understanding annotations like `@Bean` and `@Configuration`, and know better ways of organizing and managing our Spring applications.
 
-Let's embark on this journey to demystify Spring's heartbeat and empower our coding endeavors.
+Let us first recap the essentials: beans, IoC, and DI.
 
-{{% info title="Notes: Understanding Beans in Spring Applications" %}}
+### Beans: The Core of Spring
+In the world of Spring, beans are the fundamental building blocks of our application. **Beans are Java objects managed by the Spring container.** Beans represent the various components of our application, from simple data objects to complex business logic. **Spring creates these beans, manages their lifecycle, and wires them together, makes our application cohesive and organized.**
 
-Excited to dive into the magic of Spring? Let's recap the essentials: beans, IoC, and DI. Join us on this empowering journey, making our Java applications thrive!
+### Inversion of Control (IoC)
+IoC, one of the main building blocks of Spring, is a concept where the control over the object creation and lifecycle is transferred from our application to the Spring container. **Spring ensures that our beans are created, configured, and managed without our direct intervention**.
 
-✍ **BEANS: THE CORE OF SPRING:**
-In the world of Spring, a 'bean' is not just a legume but the fundamental building block of our application. **Beans are Java objects managed by the Spring container.** Think of them as the essential ingredients in a recipe, representing the various components of our application, from simple data objects to complex business logic. **Spring takes care of creating these beans, managing their lifecycle, and wiring them together, making our application cohesive and organized.**
+### Dependency Injection (DI)
+Dependency Injection is the process where beans receive their dependencies from an external source, typically the Spring container, rather than creating them internally. With DI, our beans are ready to use, making our code cleaner, more modular, and easier to test. **Spring handles the 'injection' of dependencies, ensuring our beans work seamlessly together in our application recipe.**
 
-✍ **INVERSION OF CONTROL (IOC) SIMPLIFIED:**
-IoC, often referred to as the 'heart' of Spring, is a concept where the control over the object creation and lifecycle is transferred from our application to the Spring container. Imagine our application as a passenger in a self-driving car; you specify the destination, and Spring takes care of the driving, ensuring **our beans are created, configured, and managed without our direct intervention**.
-
-✍ **DEPENDENCY INJECTION (DI) UNVEILED:**
-Dependency Injection is like a magic potion in Spring. It's the process where beans receive their dependencies from an external source, typically the Spring container, rather than creating them internally. Picture a chef receiving all the ingredients pre-chopped and organized on the kitchen counter. With DI, our beans are ready to use, making our code cleaner, more modular, and easier to test. **Spring handles the 'injection' of dependencies, ensuring our beans work seamlessly together in our application recipe.**
-
-👉 Unveil the secrets of beans, IoC, and DI in [our detailed article](http://localhost:1313/dependency-injection-and-inversion-of-control/).
-{{% /info %}}
+👉 Learn more about beans, IoC, and DI in our article [Dependency Injection and Inversion of Control](http://localhost:1313/dependency-injection-and-inversion-of-control/).
 
 ## Types of Spring Configuration
 
-In the vibrant Spring ecosystem, configuring our applications is an art. Spring offers various types of configuration options, each tailored to specific needs.
+Spring offers various types of configuration options, each tailored to specific needs. Let us get familiar with them.
 
-Let's get familiar with them:
+### XML Configuration
+It is the classic approach. Configure Spring beans and dependencies using XML files. Perfect for legacy systems and scenarios requiring external configuration.
 
-1. **XML Configuration:**
-   Dive into the classic approach! Configure Spring beans and dependencies using XML files. Perfect for legacy systems and scenarios requiring external configuration.
+### Annotation-based Configuration
+It offers simplicity. Use annotations like `@Component`, `@Service`, and `@Repository` to define beans. Ideal for small to medium-sized projects, reducing XML clutter.
 
-2. **Annotation-based Configuration:**
-   Embrace simplicity! Use annotations like `@Component`, `@Service`, and `@Repository` to define beans. Ideal for small to medium-sized projects, reducing XML clutter.
+### Java-based Configuration
+Configure beans with Java classes using `@Configuration` and `@Bean`. Promotes modularity and testability, making our codebase cleaner. We would focus on this configuration in this article.
 
-3. **Java-based Configuration:**
-   Embrace elegance! Configure beans with Java classes using `@Configuration` and `@Bean`. Promotes modularity and testability, making our codebase cleaner.
+### Java Configuration with Annotation Scanning
+Combine Java-based configuration with annotation scanning for effortless bean discovery. Boost productivity in large projects. Manual Java-based configuration can be used in special scenarios where custom configuration and more control is needed. In the sections to follow, we will learn about customizations offered by Java-based configuration.
 
-4. **Java Configuration with Annotation Scanning:**
-   Enjoy automation! Combine Java-based configuration with annotation scanning for effortless bean discovery. Boost productivity in large projects.
-
-5. **Java Configuration with Property Files:**
-   Master flexibility! Externalize configuration properties to property files. Inject values using `@Value` annotation, ensuring adaptability across environments.
-
-Each type caters to specific project demands. Stay tuned as we unravel the nuances, guiding you to choose the perfect configuration style for our Spring endeavors. Get ready to configure Spring like a pro!
-
-## Understanding Core Concepts: @Bean and @Configuration
+### Java Configuration with Property Files
+It offers flexibility. Externalize configuration properties to property files. Inject values using `@Value` annotation, ensuring adaptability across environments.
 
 {{% info title="Use Case: Employee Management System" %}}
-Imagine you're building an Employee Management System, where employees belong to various departments within a company. In this intricate ecosystem, maintaining clean code and modular architecture is crucial.
-
-Feel free to refer to example code shared on [Github](#example-code).
-
+Imagine you are building an Employee Management System, where employees belong to various departments within a company. Spring configuration helps us writing clean and modular code.
 {{% /info %}}
 \
 Enter Spring's core concepts: `@Bean` and `@Configuration`.
 
-**Understanding @Bean:**
-In Spring, `@Bean` is a magic wand that transforms ordinary methods into Spring-managed beans. These beans are objects managed by the Spring IoC container, ensuring centralized control and easier dependency management. In our Employee Management System, `@Bean` helps create beans representing employees and departments.
+## Understanding @Bean
+In Spring, `@Bean` transforms ordinary methods into Spring-managed beans. These beans are objects managed by the Spring IoC container, ensuring centralized control and easier dependency management. In our Employee Management System, `@Bean` helps create beans representing employees and departments.
+
+Examples of using `@Bean`:
 
 ```java
 public class Employee {
@@ -149,17 +131,17 @@ public class JavaConfigAppConfiguration {
 }
 ```
 
-Here, the `newEmployee` and `founderEmployee` methods create an `Employee` bean, `newDepartment` and `coreDepartment` methods create a `Department` bean and `acme` method creats an `Organization` bean. Spring now manages these objects, handling their lifecycle and ensuring proper dependencies.
+Here, the `newEmployee()` and `founderEmployee()` methods create an `Employee` bean, `newDepartment()` and `coreDepartment()` methods create a `Department` bean and `acme()` method creats an `Organization` bean. Spring now manages these objects, handling their lifecycle and ensuring proper dependencies.
 
-**Understanding Bean Lifecycle:**
+### Understanding Bean Lifecycle
 
 The lifecycle of a Spring bean involves its instantiation, initialization, use, and eventual disposal. When the Spring container starts, it instantiates the beans. Then, it injects the dependencies, calls the initialization methods (if specified), and makes the bean available for use. When the container shuts down, the beans are destroyed, invoking any destruction methods (if defined).
 
 {{% info title="Spring Bean Lifecycle: A Summary" %}}
 
-Spring beans, the heart of Spring applications, undergo a series of stages known as the bean lifecycle. Understanding these stages is essential for effective bean management.
+Spring beans undergo a series of stages known as the bean lifecycle. Understanding these stages is essential for effective bean management.
 
-Here’s a concise summary of the Spring bean lifecycle methods:
+Here is a concise summary of the Spring bean lifecycle methods:
 
 1. **Instantiation:** Beans are created, either through constructor invocation or factory methods.
 
@@ -175,13 +157,14 @@ Here’s a concise summary of the Spring bean lifecycle methods:
 
 Understanding these stages ensures proper initialization and cleanup of Spring beans, facilitating efficient and well-managed Spring applications.
 
-👉 Unveil the secrets of bean lifecycle in [our detailed article](https://reflectoring.io/spring-bean-lifecycle/).
+👉 Learn more about bean lifecycle in our article [Hooking Into the Spring Bean Lifecycle
+](https://reflectoring.io/spring-bean-lifecycle/).
 
 {{% /info %}}
-\
-**Managing Spring Bean Lifecycle with @Bean:**
 
-In the context of the Employee Management System, let’s delve deeper into managing the lifecycle of a Spring bean using `@Bean` methods and related annotations.
+### Managing Spring Bean Lifecycle with @Bean
+
+In the context of the Employee Management System, let us learn about managing the lifecycle of a Spring bean using `@Bean` methods and related annotations.
 
 **1. Custom Initialization and Destruction Methods:**
 
@@ -215,7 +198,7 @@ public class JavaConfigAppConfiguration {
 }
 ```
 
-In this example, the `newEmployee` method creates an `Employee` bean. The `initMethod` attribute specifies a custom initialization method, and the `destroyMethod` attribute defines a custom cleanup method. When the bean is created and destroyed, these methods are invoked, allowing you to handle specific lifecycle events.
+In this example, the `newEmployee()` method creates an `Employee` bean. The `initMethod` attribute specifies a custom initialization method, and the `destroyMethod` attribute defines a custom cleanup method. When the bean is created and destroyed, these methods are invoked, allowing you to handle specific lifecycle events.
 
 **2. Implementing InitializingBean and DisposableBean Interfaces:**
 
@@ -261,7 +244,7 @@ Interface `DisposableBean` is implemented by beans that want to release resource
 
 These examples demonstrate how `@Bean` methods, along with custom initialization and destruction methods or interfaces like `InitializingBean` and `DisposableBean`, enable precise control over the lifecycle of Spring beans within our Employee Management System.
 
-**Specifying Bean Scope:**
+### Specifying Bean Scope
 The `@Scope` annotation allows you to define the scope of the bean. For instance, `@Scope("prototype")` indicates a new instance of the bean for every request, while the default scope is `Singleton`, creating a single bean instance per Spring IoC container.
 
 ```java
@@ -292,8 +275,8 @@ In Spring, bean scope defines the lifecycle and visibility of a bean instance wi
 
 Choosing the appropriate scope depends on the specific use case and requirements of our beans. Understanding these scopes ensures that our beans are managed effectively, optimizing resource utilization and ensuring the correct behavior of our Spring application.
 {{% /info %}}
-\
-**Overriding Default Bean Name:**
+
+### Overriding Default Bean Name
 By default, the bean name is the same as the method name. However, you can specify a custom name using the name attribute in the `@Bean` annotation.
 
 ```java
@@ -314,10 +297,10 @@ public class JavaConfigAppConfiguration {
 
 In this example, the bean is named `founder`, allowing specific identification within the application context.
 
-Understanding `@Bean` and its related concepts is pivotal in Spring configuration. It not only creates instances but also allows fine-grained control over their lifecycle, scope, and naming conventions, empowering our Employee Management System with robust, Spring-managed components.
+Understanding `@Bean` and its related concepts is pivotal in Spring configuration. It not only creates instances but also allows fine-grained control over their lifecycle, scope, and naming conventions, empowering our Employee Management System with Spring-managed components.
 
-**Understanding @Configuration:**
-`@Configuration` is a superhero annotation that marks a class as a source of bean definitions. It allows you to create beans using `@Bean` methods within the class. In our Employee Management System, `@Configuration` organizes the creation of beans, providing a centralized configuration hub.
+## Understanding @Configuration
+`@Configuration` is a annotation that marks a class as a source of bean definitions. It allows you to create beans using `@Bean` methods within the class. In our Employee Management System, `@Configuration` organizes the creation of beans, providing a centralized configuration hub.
 
 ```java
 @Configuration
@@ -334,11 +317,11 @@ public class JavaConfigAppConfiguration {
 }
 ```
 
-With `@Configuration`, you encapsulate our bean definitions, promoting modularity and enhancing maintainability. Spring ensures that these beans are available for injection wherever needed, making our Employee Management System robust and scalable.
+With `@Configuration`, you encapsulate our bean definitions, promoting modularity and enhancing maintainability. Spring ensures that these beans are available for injection wherever needed.
 
-**Concrete Examples for @Bean and @Configuration**
+Let us see some of the concrete examples for `@Bean` and `@Configuration`.
 
-**1. Database Configuration with DataSource:**
+### Database Configuration with DataSource
 
 In a RESTful Employee Management System, configuring a database connection is critical. `@Configuration` can be used to set up the data source, ensuring seamless communication with your database.
 
@@ -377,13 +360,12 @@ public class DatabaseConfiguration {
 
 In this configuration, the `DriverManagerDataSource` bean is created, specifying the H2 database driver class name, `URL` for an in-memory database (`jdbc:h2:mem:employee_management_db`), default H2 username (`sa`), and password (`sa`). You can modify the URL to connect to a file-based H2 database or other configurations based on your specific use case.
 
-Remember to add the necessary H2 database dependency in your project's build file (Maven or Gradle) if you haven't already.
-See the pom.xml in the example code shared on [Github](#example-code).
+Remember to add the necessary H2 database dependency in your project's build file.
 
 You can see it in action by running the `dataSource()` unit test in the example code shared on [Github](https://github.com/thombergs/code-examples/blob/master/spring-boot/java-config/src/test/java/io/reflectoring/spring-boot/javaconfig/DatabaseConfigurationTest.java#L30).
 
 
-**2. Caching Configuration with EhCache:**
+### Caching Configuration with EhCache
 
 Efficient data caching is vital for improving response times in RESTful applications. `@Configuration` can be utilized to set up caching mechanisms, enhancing the system’s performance.
 
@@ -423,7 +405,7 @@ You can see it in action by running the `employeesAreSame()` unit test in the ex
 
 👉 You can learn caching in detail by going through our article [Implementing a Cache with Spring Boot](https://reflectoring.io/spring-boot-cache/).
 
-**3. Security Configuration with Spring Security:**
+### Security Configuration with Spring Security
 
 Securing your Employee Management System is paramount. `@Configuration` can be used to configure Spring Security, ensuring that your endpoints are protected.
 
@@ -461,100 +443,15 @@ You can see it in action by running the `endpointWhenUserAuthorityThenAuthorized
 
 These advanced examples demonstrate the power of `@Bean` and `@Configuration` in configuring complex components such as database connections, caching mechanisms, and security protocols within a RESTful Employee Management System.
 
-In the intricate world of employee management, `@Bean` and `@Configuration` shine as the building blocks, simplifying complexity and ensuring our Spring application runs seamlessly. Harness their power, and watch our application flourish.
-
-## Unraveling the Mystery of AnnotationConfigApplicationContext
-`AnnotationConfigApplicationContext` is a class in the Spring Framework that allows you to create an application context by registering annotated classes as configuration sources. It's particularly useful when you are working with Java-based configuration instead of XML configuration.
-
-Here's how it is commonly used and its primary purposes:
-
-1. **Java-Based Configuration:**
-   - **No XML Required:** With `AnnotationConfigApplicationContext`, you can configure your Spring beans and components using Java classes instead of XML files. This approach is often preferred because it provides type safety, refactoring support, and improved readability.
-
-2. **Annotation Scanning:**
-   - **Component Scanning:** The `AnnotationConfigApplicationContext` automatically scans packages for classes annotated with Spring annotations such as `@Component`, `@Service`, `@Repository`, and `@Configuration`. It registers these annotated classes as Spring beans in the application context.
-  
-3. **Using Java Configuration Classes:**
-   - **`@Configuration` Annotated Classes:** You can use classes annotated with `@Configuration` to define your beans and their dependencies. The methods within these classes annotated with `@Bean` define individual beans. `AnnotationConfigApplicationContext` allows you to utilize these configuration classes directly.
-
-4. **Integration with Spring Annotations:**
-   - **`@Autowired` and Other Annotations:** You can use `AnnotationConfigApplicationContext` in conjunction with annotations like `@Autowired` to wire up dependencies. Spring resolves these annotations and injects the appropriate beans into the classes that require them.
-
-5. **Programmatic Bean Registration:**
-   - **Manual Bean Registration:** Apart from component scanning and `@Bean` methods, you can also manually register beans in the `AnnotationConfigApplicationContext`. This is particularly useful when you want fine-grained control over bean creation and lifecycle.
-
-6. **Type Safety and IDE Support:**
-   - **Refactoring Support:** Since the configuration is done using Java classes and annotations, you get strong type checking and refactoring support from modern Integrated Development Environments (IDEs). This makes it easier to manage and refactor your codebase.
-
-**Example Usage:**
-
-Here's an example of how you might use `AnnotationConfigApplicationContext`:
-
-```java
-@Configuration
-@ComponentScan(basePackages = "io.reflectoring.javaconfig")
-public class JavaConfigAppConfiguration {
-    // Configuration and bean definitions using @Bean methods
-}
-
-public class JavaConfigApplication {
-    public static void main(String[] args) {
-        AnnotationConfigApplicationContext context 
-            = new AnnotationConfigApplicationContext(JavaConfigAppConfiguration.class);
-        
-        // Now you can access beans from the context
-        final Employee newEmployee 
-            = context.getBean("newEmployee", Employee.class);
-        
-        // ...
-        
-        // Close the context when the application is shutting down
-        context.close();
-    }
-}
-```
-
-In this example, `JavaConfigAppConfiguration` is a Java configuration class with `@Configuration` and `@ComponentScan` annotations. The `AnnotationConfigApplicationContext` is instantiated with `JavaConfigAppConfiguration.class` as an argument, allowing it to scan the specified packages for annotated components and register them in the application context. You can then retrieve beans from the context and use them in your application.
-
-{{% info title="Component Scanning in Spring" %}}
-
-Component scanning is a powerful feature in Spring that allows the framework to automatically discover and register Spring components, such as beans, within your application context. Instead of manually defining each bean in your configuration, you can rely on component scanning to find classes annotated with `@Component`, `@Service`, `@Repository`, and `@Controller` (or their meta-annotations) and register them as Spring beans.
-
-**Key Points:**
-
-1. **Automatic Bean Detection:** Spring's component scanning automatically identifies classes annotated with specific stereotype annotations. For instance, a class annotated with `@Component` is automatically registered as a Spring bean.
-
-2. **Base Packages:** You can specify one or more base packages for component scanning. Spring searches for annotated components within these packages and their sub-packages. This allows for fine-grained control over which parts of your application are scanned.
-
-3. **Stereotype Annotations:** Component scanning works with stereotype annotations like `@Component`, `@Service`, `@Repository`, and `@Controller`. These annotations enable clear categorization of components and are used to define different roles within the application.
-
-4. **Custom Stereotype Annotations:** In addition to the standard Spring stereotypes, you can create custom stereotype annotations using the `@Component` meta-annotation. This allows you to define your own annotations with specific semantics and behavior.
-
-5. **Annotation Meta-Attributes:** Annotations like `@ComponentScan` provide meta-attributes such as `basePackages`, `basePackageClasses`, and `includeFilters`. These attributes allow you to fine-tune the component scanning process, specifying exactly which classes should be considered as Spring components.
-
-6. **Reduced Configuration:** Component scanning significantly reduces configuration overhead. Instead of listing every bean in a configuration file, you can rely on sensible defaults and conventions. This promotes cleaner, more concise configurations.
-
-7. **Ease of Maintenance:** When new components are added or existing ones are refactored, there's no need to update the configuration manually. Component scanning ensures that Spring stays up-to-date with the components in your application.
-
-By leveraging component scanning, developers can focus on writing business logic and structuring their application naturally, allowing Spring to handle the bean registration process automatically. This results in more maintainable, scalable, and readable Spring applications.
-
-👉 You can learn component scanning in detail by going through our article [Component Scanning with Spring Boot
-](https://reflectoring.io/spring-component-scanning/).
-
-{{% /info %}}
-
-
 ## Building Scalable Applications
 
 In the realm of Spring applications, scalability and maintainability are key considerations. As applications grow, it becomes essential to structure the configuration in a way that's modular and adaptable. Java-based configuration in Spring provides a robust solution, enabling the development of scalable applications through modular configurations.
 
-**Modular Configurations: The Power of Java Classes**
-
-**1. Organizing Configuration Logic:**
+### Organise Configuration Logic
    - **Java Classes as Configuration Units:** With Java-based configuration, each Java class can encapsulate a specific set of configuration concerns. For instance, one class can handle data source configuration, another can manage security, and yet another can configure caching mechanisms.
    - **Encapsulation and Cohesion:** Each class focuses on a particular aspect of the application's configuration, promoting encapsulation and ensuring high cohesion, making the codebase more comprehensible and maintainable.
 
-**2. Reusability and Composition:**
+### Reuse and Compose Configurations
    - **Reusable Configurations:** Java configuration classes are highly reusable. A configuration class developed for one module can often be employed in other parts of the application or even in different projects, fostering a culture of code reuse.
    - **Composing Configurations:** By composing multiple configuration classes together, developers can create complex configurations from simpler, well-defined building blocks. This composition simplifies management and promotes a modular architecture.
    ```java
@@ -566,7 +463,8 @@ In the realm of Spring applications, scalability and maintainability are key con
        }
        
    ```
-   In this example:
+
+In this example:
 
 `@Import` Annotation: The `InfrastructureConfiguration` class uses the `@Import` annotation to import the configuration classes of individual modules. This annotation allows us to compose configurations by combining multiple configuration classes into a single configuration class.
 
@@ -574,62 +472,60 @@ By importing the `SecurityConfiguration`, `DatabaseConfiguration`, and `AppCache
 
 You can see it in action by running the `testImportedConfig()` unit test in the example code shared on [Github](https://github.com/thombergs/code-examples/blob/master/spring-boot/java-config/src/test/java/io/reflectoring/spring-boot/javaconfig/InfrastructureConfiguration.java#L29).
 
-**3. Configuration Profiles for Flexibility:**
+### Configure Profiles for Flexibility
    - **Environment-Specific Configurations:** Java-based configuration allows the use of different profiles for various environments (e.g., development, testing, production). Each profile can have its own set of configuration classes, ensuring adaptability and flexibility across deployment scenarios.
    - **Dynamic Bean Creation:** Conditional logic within configuration classes allows dynamic bean creation based on the active profile, enabling applications to adjust their behavior at runtime.
 
-**4. Testing and Unit Testing Advantages:**
+### Testing and Unit Testing Advantages
    - **Isolated Testing:** Each configuration class can be unit-tested in isolation, ensuring that specific functionalities are correctly configured.
    - **Mocking Dependencies:** In testing, dependencies can be easily mocked, enabling focused testing of individual configuration components without relying on complex setups.
 
-**5. Clear Hierarchical Structure:**
+### Clear Hierarchical Structure
    - **Hierarchical Structure:** Java configuration fosters a clear hierarchical structure within the application, where configurations can be organized based on layers, modules, or features.
-   - **Enhanced Readability:** The hierarchical arrangement enhances the readability of the configuration code, making it easier for developers to navigate and understand the application's structure.
+   - **Enhanced Readability:** The hierarchical arrangement enhances the readability of the configuration code, making it easier for us to navigate and understand the application's structure.
 
-
-Java-based configuration in Spring empowers developers to create highly scalable and maintainable applications. By embracing modular configurations, developers can build flexible, adaptable systems that respond effectively to changing requirements. With encapsulation, reusability, and focused testing, Java-based configuration stands as a cornerstone for building robust and scalable Spring applications, ensuring they are not only powerful today but also adaptable for tomorrow's challenges.
+Java-based configuration in Spring empowers developers to create highly scalable and maintainable applications. By embracing modular configurations, we can build flexible, adaptable systems that respond effectively to changing requirements. With encapsulation, reusability, and focused testing, Java-based configuration stands as a cornerstone for building robust and scalable Spring applications, ensuring they are not only powerful today but also adaptable for tomorrow's challenges.
 
 ## Tailoring Configurations with Profiles
 
 In real-world applications, the same codebase often needs to adapt to various deployment environments, development stages, or specific use cases. Spring provides a powerful mechanism called **Profiles** to handle these different scenarios. Profiles enable developers to customize configurations based on the environment, allowing for seamless transitions between development, testing, and production environments.
 
-**1. Understanding Spring Profiles:**
+### Understanding Spring Profiles
    - **Defining Profiles:** Spring profiles are defined using `@Profile` annotation on beans or configuration classes, indicating which profiles they are active for.
    - **Activation:** Profiles can be activated through various means, such as environment properties, system properties, or servlet context parameters.
 
-**2. Creating Profile-Specific Configurations:**
+### Creating Profile-Specific Configurations
    - **Profile-Specific Beans:** Define beans specific to a profile. For example, a development database configuration bean might differ from the production configuration.
    - **Conditional Logic:** Use `@Profile` in conjunction with `@Bean` methods to conditionally create beans based on the active profiles.
 
-**3. Environment-Specific Property Files:**
+### Environment-Specific Property Files
    - **Property Files:** Utilize different property files for different profiles. Spring can load environment-specific property files based on the active profile, allowing configuration values to vary.
    - **YAML Configuration:** Alternatively, use YAML files with profile-specific blocks, enabling a clean separation of configuration properties for each profile.
 
-**4. Switching Profiles:**
+### Switching Among Profiles
    - **In Application Properties:** Set the `spring.profiles.active` property in `application.properties` or `application.yml` to specify the active profiles.
    - **Using Environment Variables:** Profiles can also be activated using environment variables or command-line arguments when starting the application.
 
-**5. Practical Use Cases:**
+### Practical Use Cases of Profiles
    - **Development vs. Production:** Tailor logging levels, database connections, and external service endpoints to match development or production environments.
    - **Testing Scenarios:** Customize configurations for various test scenarios, ensuring accurate and isolated testing of different application features.
    - **Integration vs. Unit Testing:** Adjust configurations to mock external dependencies during unit tests while integrating with actual services during integration tests.
 
-**6. Advantages of Profiles:**
+### Advantages of Profiles
    - **Flexibility:** Profiles provide a flexible way to manage configurations for different scenarios without altering the core codebase.
    - **Consistency:** By ensuring consistent configurations within each environment, profiles promote stability and predictability in different stages of the application's lifecycle.
    - **Simplified Deployment:** Easily switch between profiles during deployment, allowing the same artifact to adapt to diverse runtime environments.
 
-**7. Conclusion: Adaptable and Scalable Configurations:**
-   Spring profiles empower developers to create applications that can seamlessly adapt to diverse deployment environments. By tailoring configurations with profiles, applications become more adaptable, scalable, and maintainable, ensuring a consistent and reliable experience across various scenarios. Utilizing profiles effectively is a key practice in creating robust, environment-aware Spring applications.
+Learn more about profiles in our detailed article [One-Stop Guide to Profiles with Spring Boot](https://reflectoring.io/spring-boot-profiles/).
  
 👉 **Caution:** Not all scenarios benefit from Spring profiles. Ensure you understand the nuances. For detailed insights, refer to our article on [when and when not to use profiles in Spring applications](https://reflectoring.io/dont-use-spring-profile-annotation/).
 
 ## Streamlining Java Configuration
 
-In the world of Spring Boot, `@EnableAutoConfiguration` is a powerful annotation that simplifies the process of configuring your Spring application. When you annotate your main application class with `@EnableAutoConfiguration`, you're essentially telling Spring Boot to automatically configure your application based on the libraries, dependencies, and components it finds in the classpath.
+In the world of Spring Boot, `@EnableAutoConfiguration` is a powerful annotation that simplifies the process of configuring your Spring application. When you annotate your main application class with `@EnableAutoConfiguration`, you are essentially telling Spring Boot to automatically configure your application based on the libraries, dependencies, and components it finds in the classpath.
 
-**1. Automatic Configuration:**
-   - **Dependency Analysis:** Spring Boot analyzes your classpath to identify the libraries and components you're using.
+### Automatic Configuration Using @EnableAutoConfiguration
+   - **Dependency Analysis:** Spring Boot analyzes your classpath to identify the libraries and components you are using.
    - **Smart Defaults:** It then automatically configures beans, components, and other settings, providing sensible default behaviors.
    
 Spring Boot automatically configures essential components like the web server, database connection, and more based on your classpath and the libraries you include.
@@ -643,7 +539,7 @@ public class JavaConfigApplication {
 ```
 In this example, `@SpringBootApplication` includes `@EnableAutoConfiguration`. This annotation signals Spring Boot to configure the application automatically, setting up defaults based on the classpath.
 
-**2. Customization and Overrides:**
+### Customize and Override Auto Configurations
    - **Selective Overrides:** While Spring Boot provides auto-configuration, you can still customize and override these configurations as needed.
    - **Properties-Based Tuning:** Properties in `application.properties` or `application.yml` can fine-tune auto-configured settings.
 
@@ -657,7 +553,22 @@ spring.autoconfigure.exclude=\
 ```
 In this example, DataSourceAutoConfiguration is explicitly excluded, meaning Spring Boot won't configure a datasource bean by default.
 
-**3. Simplified Setup:**
+`@OverrideAutoConfiguration` annotation can be used to override `@EnableAutoConfiguration`. It is often used in combination with `@ImportAutoConfiguration` to limit the auto-configuration classes that are loaded. It is also useful when we run tests and we want to control the auto configured beans.
+
+See following example:
+
+```java
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = Application.class, 
+                webEnvironment = WebEnvironment.DEFINED_PORT)
+@ActiveProfiles("test")
+@OverrideAutoConfiguration(exclude = {EnableWebMvc.class})
+public class ExcludeAutoConfigIntegrationTest {
+
+}
+```
+
+### Simplified Application Setup
    - **Reduced Boilerplate:** `@EnableAutoConfiguration` drastically reduces boilerplate code, eliminating the need for explicit configuration for many common scenarios.
    - **Rapid Prototyping:** It allows developers to quickly prototype and build applications without getting bogged down in intricate configuration details.
 
@@ -680,88 +591,7 @@ In this example, a simple REST endpoint is created without explicit configuratio
 
 Spring Boot's auto-configuration simplifies `@RestController` development. It handles `HTTP` message conversion, request mapping, and exception handling. Developers can focus on business logic while Spring Boot manages content negotiation and routing, streamlining RESTful API creation with sensible defaults and minimizing manual configuration.
 
-In the context of a `@RestController`, Spring Boot offers several auto-configurations that simplify the setup and handling of RESTful endpoints. These auto-configurations are part of Spring Boot's opinionated defaults, allowing developers to quickly create REST APIs without having to configure everything manually.
-
-Here's what Spring Boot provides in terms of auto-configuration for a `@RestController`:
-
-1. HTTP Message Conversion:
-
-Spring Boot automatically configures message converters to handle the conversion between Java objects and `JSON` (and other media types). When your controller returns an object, Spring Boot automatically serializes it to `JSON` using libraries like Jackson.
-
-Example:
-
-```java
-@RestController
-public class MyController {
-
-    @GetMapping("/hello")
-    public ResponseEntity<String> hello() {
-        // Automatically converted to JSON
-        return ResponseEntity.ok("Hello, Spring Boot!");
-    }
-}
-```
-
-2. Request Mapping and Dispatching:
-
-Spring Boot sets up default request mappings and dispatcher servlet configurations. It automatically maps incoming `HTTP` requests to the appropriate controller methods based on the `@RequestMapping` or related annotations.
-
-Example:
-
-```java
-@RestController
-@RequestMapping("/api")
-public class MyController {
-
-    @GetMapping("/hello")
-    public ResponseEntity<String> hello() {
-        // Maps to /api/hello
-        return ResponseEntity.ok("Hello, Spring Boot!");
-    }
-}
-```
-
-3. Exception Handling:
-
-Spring Boot provides default exception handling, mapping exceptions to appropriate `HTTP` status codes and error responses. For example, if a method throws an exception, Spring Boot automatically generates a `500` `Internal Server Error` response.
-
-Example:
-
-```java
-@RestController
-public class MyController {
-    @GetMapping("/hello")
-    public ResponseEntity<String> hello() {
-        // Some logic that might throw an exception
-        throw new RuntimeException("Something went wrong!");
-    }
-}
-```
-
-In this case, Spring Boot would automatically handle the exception and send a `500` `Internal Server Error` response to the client.
-
-4. Content Negotiation
-
-Spring Boot automatically handles content negotiation based on the `Accept` header of the incoming `HTTP` request. It can produce responses in various formats, such as `JSON` or `XML`, based on the client's preference.
-
-Example
-
-```java
-@RestController
-public class MyController {
-    @GetMapping(value = "/hello", 
-                produces = { MediaType.APPLICATION_JSON_VALUE, 
-                             MediaType.APPLICATION_XML_VALUE })
-    public ResponseEntity<String> hello() {
-        // Automatically negotiates response format
-        return ResponseEntity.ok("Hello, Spring Boot!");
-    }
-}
-```
-
-These auto-configurations simplify the development of RESTful APIs in Spring Boot. Developers can focus on business logic and endpoint functionality, relying on Spring Boot to handle the underlying HTTP-related configurations and concerns. This opinionated approach enables rapid development and consistent API behavior across Spring Boot applications.
-
-**4. Conditional Configuration:**
+### Perform Conditional Configuration
    - **Conditional Loading:** Auto-configuration is conditional; it's applied only if certain conditions are met.
    - **@ConditionalOnClass and @ConditionalOnProperty:** Conditions can be based on the presence of specific classes or properties, giving you fine-grained control.
 
@@ -784,7 +614,7 @@ public class MyConfiguration {
 ```
 In this example, MyBean is created only if the condition specified by MyCondition is met. Conditional annotations are integral to Spring Boot's auto-configuration mechanism.
 
-**5. Intuitive Development:**
+### Simplified Application Development
    - **Faster Development:** With auto-configuration, developers can focus more on business logic and features, accelerating development cycles.
    - **Convention Over Configuration:** It follows the convention over configuration principle, encouraging consistency across Spring Boot applications.
 
@@ -799,7 +629,7 @@ Example: Spring Boot Starter Usage:
 ```
 In this example, including the spring-boot-starter-web dependency automatically configures the application for web development. Spring Boot starters encapsulate auto-configurations, providing an intuitive way to include essential dependencies.
 
-**6. Spring Boot Starter Packs:**
+### Auto Configured Spring Boot Starter Packs
    - **Starter Packs:** Spring Boot Starter Packs are built around auto-configuration, bundling essential dependencies for specific use cases (e.g., web, data, security).
    - **Simplified Integration:** Starters handle complex integration details, allowing developers to seamlessly integrate technologies like databases, messaging systems, and security frameworks.
 Starters handle complex integrations, ensuring seamless setup.
@@ -813,7 +643,7 @@ Example: Using Spring Boot Starter for JPA:
 ```
 Including spring-boot-starter-data-jpa simplifies Java Persistence API (JPA) integration. Spring Boot's auto-configuration manages JPA entity managers, data sources, and transaction management.
 
-**7. Conclusion: Effortless Spring Boot Applications:**
+### Conclusion: Effortless Spring Boot Applications
    - **Boosted Productivity:** `@EnableAutoConfiguration` is at the heart of Spring Boot's philosophy, boosting developer productivity by simplifying setup and reducing configuration overhead.
    - **Maintenance Ease:** Applications configured with auto-configuration are easier to maintain and update, ensuring compatibility with evolving libraries and technologies.
 
@@ -823,13 +653,13 @@ In essence, `@EnableAutoConfiguration` encapsulates the spirit of Spring Boot—
 
 Managing configuration data, such as database URLs, API endpoints, or feature toggles, is a crucial aspect of any application. Spring provides a flexible and powerful mechanism called **PropertySource** to handle configuration properties. With `PropertySource`, you can externalize configuration, allowing your application to adapt to different environments and scenarios without code changes.
 
-Let’s delve into how Spring’s PropertySource simplifies the management of properties in your application.
+Let us see how Spring’s PropertySource simplifies the management of properties in your application.
 
-**1. Understanding PropertySource:**
+### Understanding PropertySource
    - **What is PropertySource?:** PropertySource is an abstraction in Spring that represents a source of name-value pairs, commonly used for configuration properties.
    - **Types of PropertySources:** Spring supports various PropertySource implementations, including property files, environment variables, system properties, and more.
 
-**2. Loading Properties from Files:**
+### Loading Properties from Files
    - **Property Files:** Spring can load properties from `.properties` files, enabling you to organize configuration data in a structured manner.
    - **YAML Files:** Alternatively, Spring supports `.yaml` or `.yml` files, providing a more human-readable format for complex configurations.
 
@@ -875,7 +705,7 @@ public class DatabaseConfiguration {
 ```
 To access these properties, you can use the `@Value` annotation.
 
-**3. PropertySource and Environment Integration:**
+### PropertySource and Environment Integration
    - **Property Resolution:** The `Environment` abstraction in Spring integrates with `PropertySource`, enabling property resolution in different contexts and profiles.
    - **Using `@Value` Annotation:** Spring components can inject property values using the `@Value` annotation, simplifying the retrieval of configuration data in beans.
    
@@ -892,7 +722,7 @@ public class SecurityConfig {
 ```
 In this example, the `@Value` annotation is used to inject the `security.api.key` property into the `apiKey` variable. Spring resolves this property value from the active `PropertySource` and injects it into the component.
 
-**4. Property Overrides and Hierarchical PropertySources:**
+### Property Overrides and Hierarchical PropertySources
    - **Property Overrides:** Spring allows you to override properties defined in property files with system properties, environment variables, or command-line arguments.
    - **Hierarchical PropertySources:** PropertySources can be organized hierarchically, allowing for inheritance and overrides, providing a structured way to manage configuration across modules or layers.
    
@@ -906,7 +736,7 @@ database.url=jdbc:mysql://prod-host:3306/proddb
 ```
 In this scenario, two different property files for development and production environments specify the `database.url property`. Depending on the `active profile` (development or production), Spring loads the respective properties, allowing for property overrides based on the environment.
 
-**5. Integrating with External Systems:**
+### Integrating with External Systems
    - **Database Configuration:** PropertySource can load database connection details, enabling dynamic configuration without modifying application code.
    - **Cloud Configurations:** Spring seamlessly integrates with cloud-based configuration servers, allowing applications to fetch configuration data from centralized repositories.
    
@@ -931,7 +761,7 @@ public class DatabaseConfig {
 ```
 In this example, the `Environment` object is used to fetch database connection properties from an external property source. The properties can be stored in property files, environment variables, or cloud-based configuration servers.
 
-**6. Refreshing Properties at Runtime:**
+### Refreshing Properties at Runtime
    - **Dynamic Configuration Updates:** Spring supports dynamic property updates at runtime, allowing applications to refresh configuration without restarting, making it ideal for cloud-native and microservices architectures.
    
 Example: Dynamic Configuration Update
@@ -960,7 +790,7 @@ While `@Scheduled` itself doesn't directly interact with `PropertySource`, it's 
 \
 These examples demonstrate how Spring's PropertySource mechanism simplifies property management and configuration, making applications more adaptable and secure in various deployment scenarios.
 
-**7. Secure Property Management:**
+### Secure Property Management
    - **Encrypted Properties:** Spring provides mechanisms to encrypt sensitive properties, ensuring secure management of credentials and sensitive information.
    - **Secure Communication:** When fetching properties from external sources, Spring supports secure communication protocols, safeguarding sensitive data transmission.
    
@@ -1035,9 +865,7 @@ The `@EnableEncryptableProperties` annotation is part of the [Jasypt Spring Boot
 
 When you use Jasypt with Spring Boot, you can annotate your configuration classes with `@EnableEncryptableProperties`.
 
-Here's how you can use `@EnableEncryptableProperties` in a Spring Boot application:
-
-Example: Using @EnableEncryptableProperties with Jasypt in Spring Boot:
+Example: Using `@EnableEncryptableProperties` with Jasypt in Spring Boot:
 
 **a. Add Jasypt Dependency:**
 
@@ -1084,19 +912,16 @@ Now when you do `environment.getProperty("secret.property")` or use `@Value("${s
 
 By using `@EnableEncryptableProperties`, you can secure sensitive properties in your Spring Boot application without having to manually decrypt them. This integration simplifies the process of encrypting and decrypting sensitive information, ensuring the security of your application's configuration data.
 
-**8. Conclusion: Empowering Configurability in Spring Applications:**
+### Conclusion: Empowering Configurability in Spring Applications
 Spring’s PropertySource provides a robust foundation for managing configuration data. By leveraging `PropertySource` and its integrations, developers can ensure that their applications are adaptable, secure, and maintainable. The ability to externalize properties and dynamically adjust configurations not only simplifies the development process but also lays the groundwork for resilient, flexible, and scalable Spring applications.
 
-## Seamless External Configuration
+## Externalizing Configuration Settings
 
 In Spring applications, externalizing configuration settings is essential for flexibility. The `@PropertySource` annotation allows seamless integration of external properties. By specifying the source file, properties are injected into beans, enhancing modularity and easing configuration management. This enables developers to adapt applications to different environments effortlessly, ensuring smoother deployment and maintenance processes. With `@PropertySource`, Spring applications remain adaptable, scalable, and well-organized, embodying the principles of robust software design.
 
 Let's delve into examples to support the seamless external configuration:
 
-**Example: Integrating External Properties with @PropertySource**
-
-**1. Create External Property File:**
-
+### Create External Property File
 Create a properties file, e.g., `config.properties`, containing key-value pairs of configuration properties.
 
 ```properties
@@ -1105,7 +930,7 @@ app.name=MyApp
 app.version=1.0
 ```
 
-**2. Use @PropertySource in Configuration Class:**
+### Use @PropertySource in Configuration Class
 ```java
 @Configuration
 @PropertySource("classpath:config.properties")
@@ -1116,7 +941,7 @@ public class JavaConfigAppConfiguration {
 
 In this example, `@PropertySource` is used to specify the location of the external property file (`config.properties`). The properties are injected into the Spring `Environment` and can be accessed through the `@Value` annotation or by using the `Environment` object directly. 
 
-**3. Accessing Properties in a Bean:**
+### Accessing Properties in a Bean
 ```java
 @Component
 public class MyComponent {

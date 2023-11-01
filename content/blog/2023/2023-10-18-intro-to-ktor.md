@@ -8,14 +8,14 @@ image: images/stock/0104-on-off-1200x628-branded.jpg
 url: introduction-to-ktor
 ---
 
-In today's fast-paced world, web application development is a critical domain for businesses and developers. Building web applications that are efficient, scalable, and easy to maintain is a challenging task. Enter Ktor, a powerful, asynchronous, and lightweight framework for building web applications and APIs using the Kotlin programming language. Ktor offers a modern approach to web development that has gained significant popularity in recent years.
+Web application development is a critical domain for businesses and developers. Building web applications that are efficient, scalable, and easy to maintain is a challenging task. Enter Ktor, a powerful, asynchronous, and lightweight framework for building web applications and APIs using the Kotlin programming language. Ktor offers a modern approach to web development that has gained significant popularity in recent years.
 
-## What is Ktor
+## What is Ktor?
 Ktor is an open-source framework developed by JetBrains. It is designed to build asynchronous, non-blocking, and high-performance web applications and APIs. What sets Ktor apart is that it is entirely written in Kotlin, which means it leverages Kotlin's expressive and concise syntax while providing all the tools necessary for modern web development.
 
 ## Key Features of Ktor
 ### Asynchronous and Non-blocking
-Ktor is asynchronous and non-blocking in nature. It allows developers to handle multiple requests simultaneously, making it a perfect choice for high-traffic applications. This is achieved by leveraging Kotlin's coroutines, which simplifies writing asynchronous code, making it more readable and maintainable.
+Ktor is asynchronous and non-blocking in nature. It allows applications to handle multiple requests simultaneously, making it a perfect choice for high-traffic applications. This is achieved by leveraging Kotlin's coroutines, which simplifies writing asynchronous code, making it more readable and maintainable. Besides, standard blocking applications also allow handling of multiple requests simultaneously however, they just don't do it as efficiently as non-blocking applications.
 
 ### Lightweight
 It provides only the essentials for web development, allowing developers to add components as needed. This minimalist approach results in faster start-up times, lower resource consumption, and more control over the application's architecture.
@@ -50,7 +50,7 @@ Before setting up a Ktor application, we need to ensure that we have Kotlin inst
 
 To create a new Kotlin project, we'll use the following command:
 
-```yaml
+```shell
 gradle init --type kotlin-application
 ```
 
@@ -227,31 +227,31 @@ When comparing Ktor to other web frameworks, it's important to consider the spec
 
 Here's a comparison of Ktor with some other popular web frameworks:
 
-### Spring Boot (Java):
+### Spring Boot (Java)
 
-`Language`: Spring Boot is based on Java, while Ktor is built on Kotlin, a more modern and concise language.
+**Language**: Spring Boot is based on Java, while Ktor is built on Kotlin, a more modern and concise language.
 
-`Learning Curve`: Spring Boot has a steeper learning curve, especially for beginners, due to its extensive ecosystem and configuration.
+**Learning Curve**: Spring Boot has a steeper learning curve, especially for beginners, due to its extensive ecosystem and configuration.
 
-`Community and Ecosystem`: Spring Boot has a large and mature ecosystem with a wide range of libraries and tools. Ktor, being newer, has a smaller but growing community.
+**Community and Ecosystem**: Spring Boot has a large and mature ecosystem with a wide range of libraries and tools. Ktor, being newer, has a smaller but growing community.
 
-`Use Cases`: Spring Boot is suitable for large enterprise applications and has extensive support for various enterprise features. Ktor is lightweight and well-suited for microservices and smaller web applications.
+**Use Cases**: Spring Boot is suitable for large enterprise applications and has extensive support for various enterprise features. Ktor is lightweight and well-suited for microservices and smaller web applications.
 
-### Express.js (Node.js):
+### Express.js (Node.js)
 
-`Language`: Express.js is based on JavaScript/Node.js, while Ktor uses Kotlin.
+**Language**: Express.js is based on JavaScript/Node.js, while Ktor uses Kotlin.
 
-`Concurrency Model`: Ktor provides native support for asynchronous and coroutine-based programming, making it suitable for highly concurrent applications.
+**Concurrency Model**: Ktor provides native support for asynchronous and coroutine-based programming, making it suitable for highly concurrent applications.
 
-`Performance`: Ktor can provide better performance in CPU-bound and I/O-bound tasks due to Kotlin's efficient concurrency model.
+**Performance**: Ktor can provide better performance in CPU-bound and I/O-bound tasks due to Kotlin's efficient concurrency model.
 
-`Use Cases`: Both can be used for web applications, but Ktor may be a better choice for Kotlin-centric projects or those requiring strong concurrency support.
+**Use Cases**: Both can be used for web applications, but Ktor may be a better choice for Kotlin-centric projects or those requiring strong concurrency support.
 
-### Django (Python):
+### Django (Python)
 
-`Language`: Django is written in Python, whereas Ktor uses Kotlin.
+**Language**: Django is written in Python, whereas Ktor uses Kotlin.
 
-`Development Speed`: Django is known for its rapid development capabilities, offering a lot of built-in features. Ktor provides more flexibility but may require more code for certain features.
+**Development Speed**: Django is known for its rapid development capabilities, offering a lot of built-in features. Ktor provides more flexibility but may require more code for certain features.
 
 ## Conclusion
 In this article, we went through the Ktor framework and learned how we can set it in our project, its key features, how we can write the Ktor application code and various Controllers. We finally compared Ktor to other web frameworks such as Django and Spring Boot.

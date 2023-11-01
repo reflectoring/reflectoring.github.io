@@ -268,9 +268,11 @@ Here's a breakdown of the key points in this integration:
 **@BeforeEach**
 
 This annotation is provided by JUnit and marks a method `setUp()` in this case that is executed before each test method within the test class. In the `setUp()` method, we initialize the `mathService` as a mock and create an instance of the `Calculator` class, setting the stage for the test.
+
 **@Test:**
-fasfas
+
 Another JUnit annotation, `@Test` marks a method as a test case. In the `testAddTwoNumbers()` method, we define the expected behavior of the mathService using MockK's every function, stating that when `mathService.add(2, 3)` is called, it should return 5.
+
 **assert(result == 5)**
 
 Here, we are using JUnit's assertion to check whether the result of `calculator.addTwoNumbers(2, 3)` matches the expected value, which is 5. If the assertion fails, the test will fail.

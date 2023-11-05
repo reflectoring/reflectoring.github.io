@@ -14,28 +14,27 @@ In this comprehensive guide, we will learn Spring's Java-based configuration. We
 
 Let us dive in and transform our Spring development experience!
 
-<a name="example-code" />
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/java-config" %}}
 
 
 ## Understanding Spring Configuration
 
-In Spring based applications, Spring Configuration stands as the coordinator, connecting the elements of Spring applications. At its core, **Spring Configuration is the mainly used in setting up a Spring application, defining its components, managing dependencies, and orchestrating their interactions**. It serves as the blueprint, guiding the behavior of our Spring-powered creations.
+In Spring based applications, **we speak of "configuration" when we want to describe how our application context is made up of different, potentially related and interacting beans**. It serves as the blueprint, guiding the behavior of our Spring-powered creations.
 
 Configuration in Spring is all about empowering our applications with context, specifying how beans (Spring-managed objects) are created, wired, and used within the application.
 
-Traditionally, Spring offered XML-based configuration, providing a structured way to define beans and their relationships. As Spring ecosystem evolved, XML configurations have been replaced by more intuitive, expressive, and Java-centric approaches, simplifying the application configuration.
+Traditionally, Spring offered XML-based configuration, providing a structured way to define beans and their relationships. As the Spring ecosystem evolved, XML configurations have been replaced by more intuitive, expressive, and Java-centric approaches, simplifying the application configuration.
 
 ## Spring Configuration Essential Features
 
-Java-based configuration in Spring enables us to use plain Java classes (POJOs) and annotations to configure our application. With Java-based configuration, we do not need XML files. Instead, we use Java code to define our beans and their relationships.
+Java-based configuration in Spring enables us to use plain Java classes (POJOs) and annotations to configure our application context. With Java-based configuration, we do not need XML files. Instead, we use Java code to define our beans and their relationships.
 
 In the upcoming sections, we will learn Spring's Java Configuration, exploring its core concepts, understanding annotations like `@Bean` and `@Configuration`, and know better ways of organizing and managing our Spring applications.
 
 Let us first recap the essentials: beans, IoC, and DI.
 
 ### Beans: The Core of Spring
-In the world of Spring, beans are the fundamental building blocks of our application. **Beans are Java objects managed by the Spring container.** Beans represent the various components of our application, from simple data objects to complex business logic. **Spring creates these beans, manages their lifecycle, and wires them together, makes our application cohesive and organized.**
+In the world of Spring, beans are the fundamental building blocks of our application. **Beans are Java objects managed by the Spring container in what is called the "application context".** Beans represent the various components of our application, from simple data objects to complex business logic. **Spring creates these beans, manages their lifecycle, and wires them together, makes our application cohesive and organized.**
 
 ### Inversion of Control (IoC)
 IoC, one of the main building blocks of Spring, is a concept where the control over the object creation and lifecycle is transferred from our application to the Spring container. **Spring ensures that our beans are created, configured, and managed without our direct intervention**.
@@ -50,26 +49,26 @@ Dependency Injection is the process where beans receive their dependencies from 
 Spring offers various types of configuration options, each tailored to specific needs. Let us get familiar with them.
 
 ### XML Configuration
-It is the classic approach. Configure Spring beans and dependencies using XML files. Perfect for legacy systems and scenarios requiring external configuration.
+It is the classic approach. Configure Spring beans and dependencies using XML files. Perfect for legacy systems and scenarios requiring external configuration. We're not going to dive into XML configuration in this article, however.
 
-### Java-based Configuration
+### Java-Based Configuration
 - Use annotations like `@Component`, `@Service`, and `@Repository` to define beans.
 - Configure beans with Java classes using `@Configuration` and `@Bean`.
 - Combine Java-based configuration with annotation scanning for effortless bean discovery.
-- Externalize configuration properties to property files.
 
 Manual Java-based configuration can be used in special scenarios where custom configuration and more control is needed.
 
-👉 Learn more about configuration using properties in our article [Configuring a Spring Boot Module with @ConfigurationProperties](https://reflectoring.io/spring-boot-configuration-properties/).
-
 In the sections to follow, we will learn about customizations offered by Java-based configuration.
 
-
-{{% info title="Use Case: Employee Management System" %}}
-Imagine you are building an Employee Management System, where employees belong to various departments within a company. Spring configuration helps us writing clean and modular code.
-{{% /info %}}
-\
 Enter Spring's core concepts: `@Bean` and `@Configuration`.
+
+{{% info title="Container Configuration vs. Application Configuration" %}}
+In this article, we're talking about the configuration of the _Spring container_ (the "application context"). This configuration is about deciding which beans to include in the container and how to instantiate them.
+
+Another aspect of configuration is to configure the way our _application_ behaves by defining application properties in YAML or properties files. While those properties can also influence the way the application context is initialized, we're not looking into application properties in this article.
+
+To learn more about configuration using properties read our article [Configuring a Spring Boot Module with @ConfigurationProperties](https://reflectoring.io/spring-boot-configuration-properties/).
+{{% /info %}}
 
 ## Understanding @Bean
 In Spring, `@Bean` transforms ordinary methods into Spring-managed beans. These beans are objects managed by the Spring IoC container, ensuring centralized control and easier dependency management. In our Employee Management System, `@Bean` helps create beans representing employees and departments.
@@ -235,7 +234,7 @@ In our configuration class, you can create the bean as usual:
 @Configuration
 public class JavaConfigAppConfiguration {
 
-     @Bean
+    @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public Department newDepartment(final String deptName) {
         final Department department = Department.builder().name(deptName).build();
@@ -326,131 +325,9 @@ public class JavaConfigAppConfiguration {
 }
 ```
 
-With `@Configuration`, you encapsulate our bean definitions, promoting modularity and enhancing maintainability. Spring ensures that these beans are available for injection wherever needed.
+With `@Configuration`, we encapsulate our bean definitions, promoting modularity and enhancing maintainability. Spring ensures that these beans are available for injection wherever needed.
 
-Let us see some of the concrete examples for `@Bean` and `@Configuration`.
-
-### Database Configuration with DataSource
-
-In a RESTful Employee Management System, configuring a database connection is critical. `@Configuration` can be used to set up the data source, ensuring seamless communication with your database.
-
-Here's an example of configuring an H2 database as a data source using Java configuration in Spring:
-
-```java
-@Configuration
-@ComponentScan(basePackages = "io.reflectoring.javaconfig")
-@PropertySource("classpath:application.properties")
-public class DatabaseConfiguration {
-    @Value("${spring.datasource.driver-class-name}")
-    private String databaseClass;
-
-    @Value("${spring.datasource.url}")
-    private String databaseUrl;
-
-    @Value("${spring.datasource.username}")
-    private String username;
-
-    @Value("${spring.datasource.password}")
-    private String password;
-
-    @Bean(name = "employee-management-db")
-    public DataSource dataSource() {
-        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(databaseClass);
-        dataSource.setUrl(databaseUrl); // H2 in-memory database URL
-        dataSource.setUsername(username); // Default H2 username (sa)
-        dataSource.setPassword(password); // Default H2 password (sa)
-
-        return dataSource;
-    }
-
-}
-```
-
-In this configuration, the `DriverManagerDataSource` bean is created, specifying the H2 database driver class name, `URL` for an in-memory database (`jdbc:h2:mem:employee_management_db`), default H2 username (`sa`), and password (`sa`). You can modify the URL to connect to a file-based H2 database or other configurations based on your specific use case.
-
-Remember to add the necessary H2 database dependency in your project's build file.
-
-You can see it in action by running the `dataSource()` unit test in the example code shared on [Github](https://github.com/thombergs/code-examples/blob/master/spring-boot/java-config/src/test/java/io/reflectoring/spring-boot/javaconfig/DatabaseConfigurationTest.java#L30).
-
-
-### Caching Configuration with EhCache
-
-Efficient data caching is vital for improving response times in RESTful applications. `@Configuration` can be utilized to set up caching mechanisms, enhancing the system’s performance.
-
-In the configuration class we include the `@EnableCaching` annotation to enable caching for the entire application:
-
-```java
-@Configuration
-@EnableCaching
-public class AppCacheConfiguration {
-
-    @Bean(name = "employees-cache")
-    public CacheManager employeesCacheManager() {
-        final CacheManager manager = CacheManager.create();
-
-        //Create a Cache specifying its configuration.
-        final Cache employeesCache = new Cache(
-            new CacheConfiguration("employeesCache", 1000)
-                .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
-                .eternal(false)
-                .timeToLiveSeconds(60)
-                .timeToIdleSeconds(30)
-                .diskExpiryThreadIntervalSeconds(0)
-                .persistence(
-                    new PersistenceConfiguration()
-                        .strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP)));
-        manager.addCache(employeesCache);
-        return manager;
-    }
-}
-```
-
-By adding `@EnableCaching` to the configuration class, we activate caching support globally.
-
-In this example, `@Configuration` sets up caching using EhCache, creating a cache named "employeesCache" that expires after an hour. This enhances the application’s responsiveness by reducing database queries.
-
-You can see it in action by running the `employeesAreSame()` unit test in the example code shared on [Github](https://github.com/thombergs/code-examples/blob/master/spring-boot/java-config/src/test/java/io/reflectoring/spring-boot/javaconfig/CacheConfigurationTest.java#L24).
-
-👉 You can learn caching in detail by going through our article [Implementing a Cache with Spring Boot](https://reflectoring.io/spring-boot-cache/).
-
-### Security Configuration with Spring Security
-
-Securing your Employee Management System is paramount. `@Configuration` can be used to configure Spring Security, ensuring that your endpoints are protected.
-
-```java
-@Configuration
-public class SecurityConfiguration {
-
-    @Bean("http-security")
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/employees/**").hasAuthority("USER")
-                .requestMatchers("/departments/**").hasAuthority("ADMIN")
-                .requestMatchers("/organizations/**").hasAuthority("ADMIN")
-                .anyRequest().authenticated()
-            );
-        return http.build();
-    }
-}
-```
-
-Let's break down the code:
-
-1. `public SecurityFilterChain filterChain(HttpSecurity http) throws Exception`: This method defines a custom `SecurityFilterChain` and takes an `HttpSecurity` object as a parameter.
-1. `.authorizeHttpRequests((authorize) -> authorize`: The `authorizeHttpRequests()` method is called on the `http` object, allowing authorization configuration. It takes a lambda expression that provides an `AuthorizationRequestBuilder` for specifying access rules.
-1. `.requestMatchers("/employees/**").hasAuthority("USER")`: This line configures an access rule. It specifies that requests matching the "/employees/\*\*" pattern should have the "USER" authority to be allowed access. Access control is based on authorities granted to the user.
-1. `.requestMatchers("/departments/**").hasAuthority("ADMIN")`: Similar to the previous line, this configures another access rule for the "/departments/\*\*" pattern, allowing access only to users with the "ADMIN" authority.
-1. `.requestMatchers("/organizations/**").hasAuthority("ADMIN")`: Another access rule for the "/organizations/\*\*" pattern, restricting access to users with the "ADMIN" authority.
-1. `.anyRequest().authenticated()`:  This line specifies that any other requests not matching the specified patterns should be authenticated, meaning the user must be logged in to access those resources.
-1. `return http.build()`: Finally, the `http.build()` method is called to build and return the configured `SecurityFilterChain`.
-
-In summary, this configuration enforces access control based on the URL patterns. Requests to "/employees/" require the "USER" authority, requests to "/departments/" and "/organizations/\*\*" require the "ADMIN" authority, and any other requests require authentication. This provides fine-grained access control to different parts of the application based on the user's authorities.
-
-You can see it in action by running the `endpointWhenUserAuthorityThenAuthorized()` unit test in the example code shared on [Github](https://github.com/thombergs/code-examples/blob/master/spring-boot/java-config/src/test/java/io/reflectoring/spring-boot/javaconfig/SecurityConfigurationTest.java#L27).
-
-These advanced examples demonstrate the power of `@Bean` and `@Configuration` in configuring complex components such as database connections, caching mechanisms, and security protocols within a RESTful Employee Management System.
+In the above example, we tell Spring to add a bean of type `Employee` and a bean of type `Department` to the container. We can then inject those beans into other beans if needed.
 
 ## Building Maintainable Applications
 

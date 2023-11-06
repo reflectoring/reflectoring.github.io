@@ -1,7 +1,7 @@
 ---
 title: "Don't Use Checked Exceptions"
 categories: ["Java"]
-date: 2023-10-08 00:00:00 +1100
+date: 2023-11-06 00:00:00 +1100
 authors: ["krimgen"]
 description: "Don't Use Checked Exceptions."
 image: images/stock/0011-exception-1200x628-branded.jpg

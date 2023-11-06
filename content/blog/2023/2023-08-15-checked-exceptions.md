@@ -31,25 +31,25 @@ at an example where no exceptions are used:
 
 ```java{hl_lines=[3,4,5,7]}
 public void handleBookingWithoutExceptions(String customer, String hotel) {
-    if(isValidHotel(hotel)) {
-        int hotelId = getHotelId(hotel);
-        if(sendBookingToHotel(customer, hotelId)) {
-            int bookingId = updateDatabase(customer, hotel);
-            if (bookingId > 0) {
-                if (sendConfirmationMail(customer, hotel, bookingId)) {
-                   logger.log(Level.INFO, "Booking confirmed");
-                } else {
-                    logger.log(Level.INFO, "Mail failed");
-                }
-            } else {
-                logger.log(Level.INFO, "Database couldn't be updated");
-            }
-        } else {
-            logger.log(Level.INFO, "Request to hotel failed");
-        }
-    } else {
-        logger.log(Level.INFO, "Invalid data");
-    }
+  if(isValidHotel(hotel)) {
+    int hotelId = getHotelId(hotel);
+      if(sendBookingToHotel(customer, hotelId)) {
+        int bookingId = updateDatabase(customer, hotel);
+        if (bookingId > 0) {
+          if (sendConfirmationMail(customer, hotel, bookingId)) {
+            logger.log(Level.INFO, "Booking confirmed");
+          } else {
+            logger.log(Level.INFO, "Mail failed");
+          }
+          } else {
+            logger.log(Level.INFO, "Database couldn't be updated");
+          }
+      } else {
+        logger.log(Level.INFO, "Request to hotel failed");
+      }
+  } else {
+    logger.log(Level.INFO, "Invalid data");
+  }
 }
 ```
 
@@ -62,15 +62,15 @@ exceptions:
 
 ```java
 public void handleBookingWithExceptions(String customer, String hotel) {
-    try {
-        validateHotel(hotel);
-        sendBookingToHotel(customer, getHotelId(hotel));
-        int bookingId =  updateDatabase(customer, hotel);
-        sendConfirmationMail(customer, hotel, bookingId);
-        logger.log(Level.INFO, "Booking confirmed");
-    } catch(Exception e) {
-        logger.log(Level.INFO, e.getMessage());
-    }
+  try {
+    validateHotel(hotel);
+    sendBookingToHotel(customer, getHotelId(hotel));
+    int bookingId =  updateDatabase(customer, hotel);
+    sendConfirmationMail(customer, hotel, bookingId);
+    logger.log(Level.INFO, "Booking confirmed");
+  } catch(Exception e) {
+    logger.log(Level.INFO, e.getMessage());
+  }
 }
 ```
 
@@ -143,7 +143,7 @@ As an example, let's say we call a method *libraryMethod()* that is part of an e
 
 ```java
 public void retrieveContent() throws IOException {
-    libraryMethod();
+  libraryMethod();
 }
 ```
 
@@ -152,7 +152,7 @@ system for us. Its implementation would be:
 
 ```java
 public void libraryMethod() throws IOException {
-    // some code
+  // some code
 }
 ```
 
@@ -161,7 +161,7 @@ Even though, the functionality is similar, the method in the new library throws 
 
 ```java
 public void otherSdkCall() throws IOException, MalformedURLException {
-    // call method from SDK
+  // call method from SDK
 }
 ```
 
@@ -169,7 +169,7 @@ As we have two checked exceptions, the declaration of our method needs to change
 
 ```java
 public void retrieveContent() throws IOException, MalformedURLException {
-    sdkCall();
+  sdkCall();
 }
 ```
 
@@ -178,11 +178,11 @@ refactoring. Of course, we could also directly handle the exception inside our m
 
 ```java
 public void retrieveContent() throws IOException {
-    try {
-        otherSdkCall();
-    } catch (MalformedURLException e) {
-        // do something with the exception
-    }
+  try {
+    otherSdkCall();
+  } catch (MalformedURLException e) {
+    // do something with the exception
+  }
 }
 ```
 
@@ -226,12 +226,12 @@ The first one is the *catch-all* or *Pokémon* exception:
 
 ```java
 public void retrieveInteger(String endpoint) {
-    try {
-        URL url = new URL(endpoint);
-        int result = Integer.parseInt(callEndpoint(endpoint));
-    } catch (Exception e) {
-        // do something with the exception
-    } 
+  try {
+    URL url = new URL(endpoint);
+    int result = Integer.parseInt(callEndpoint(endpoint));
+  } catch (Exception e) {
+    // do something with the exception
+  } 
 }
 ```
 
@@ -239,14 +239,14 @@ We simply catch all possible exceptions instead of handling the different except
 
 ```java
 public void retrieveInteger(String endpoint) {
-    try {
-        URL url = new URL(endpoint);
-        int result = Integer.parseInt(callEndpoint(endpoint));
-    } catch (MalformedURLException e) {
-        // do something with the exception
-    } catch (NumberFormatException e) {
-        // do something with the exception
-    }
+  try {
+    URL url = new URL(endpoint);
+    int result = Integer.parseInt(callEndpoint(endpoint));
+  } catch (MalformedURLException e) {
+    // do something with the exception
+  } catch (NumberFormatException e) {
+    // do something with the exception
+  }
 }
 ```
 
@@ -257,9 +257,9 @@ The second pattern is empty catch blocks:
 
 ```java
 public void myMethod() {
-    try {
-      URL url = new URL("malformed url");
-    } catch (MalformedURLException e) {}
+  try {
+    URL url = new URL("malformed url");
+  } catch (MalformedURLException e) {}
 }
 ```
 
@@ -270,11 +270,11 @@ The third one is to simply print the stack trace and continue as if nothing had 
 
 ```java
 public void consumeAndForgetAllExceptions(){
-    try {
-        // some code that can throw an exception
-    } catch (Exception ex){
-        ex.printStacktrace();
-    }
+  try {
+    // some code that can throw an exception
+  } catch (Exception ex){
+    ex.printStacktrace();
+  }
 }
 ```
 
@@ -284,11 +284,11 @@ Let's consider the following example:
 
 ```java
 public void readFromUrl(String endpoint) {
-    try {
-      URL url = new URL(endpoint);
-    } catch (MalformedURLException e) {
-      // do something with the exception
-    }
+  try {
+    URL url = new URL(endpoint);
+  } catch (MalformedURLException e) {
+    // do something with the exception
+  }
 }
 ```
 
@@ -327,15 +327,15 @@ Checked exceptions also do not always work nicely with lambda expressions. Let's
 
 ```java
 public class CheckedExceptions {
-    public static String readFirstLine(String filename) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new File(filename));
-        return scanner.next();
-    }
+  public static String readFirstLine(String filename) throws FileNotFoundException {
+    Scanner scanner = new Scanner(new File(filename));
+    return scanner.next();
+  }
 
-    public void readFile() {
-        List<String> fileNames = new ArrayList<>();
-        List<String> lines = fileNames.stream().map(CheckedExceptions::readFirstLine).toList();
-    }
+  public void readFile() {
+    List<String> fileNames = new ArrayList<>();
+    List<String> lines = fileNames.stream().map(CheckedExceptions::readFirstLine).toList();
+  }
 }
 ```
 
@@ -349,10 +349,10 @@ If we attempt to correct the code with a surrounding *try-catch*:
 
 ```java
 public void readFile() {
-      List<String> fileNames = new ArrayList<>();
-      try {
-          List<String> lines = fileNames.stream().map(CheckedExceptions::readFirstLine).toList();
-      } catch (FileNotFoundException e) {
+  List<String> fileNames = new ArrayList<>();
+  try {
+    List<String> lines = fileNames.stream().map(CheckedExceptions::readFirstLine).toList();
+} catch (FileNotFoundException e) {
 }
 ```
 
@@ -361,14 +361,14 @@ to the outside. We have to handle the exception inside the lambda expression and
 
 ```java{}
 public void readFile() {
-    List<String> lines = fileNames.stream()
-      .map(filename -> {
-        try{
-          return readFirstLine(filename);
-        } catch(FileNotFoundException e) {
-          throw new RuntimeException("File not found", e);
-        }
-      }).toList();
+  List<String> lines = fileNames.stream()
+    .map(filename -> {
+      try{
+        return readFirstLine(filename);
+      } catch(FileNotFoundException e) {
+        throw new RuntimeException("File not found", e);
+      }
+    }).toList();
 }
 ```
 
@@ -377,14 +377,14 @@ Alternatively, we could have the lambda expression return an error message that 
 
 ```java{}
 public void readFile() {
-    List<String> lines = fileNames.stream()
-      .map(filename -> {
-        try{
-          return readFirstLine(filename);
-        } catch(FileNotFoundException e) {
-          return "default value";
-        }
-      }).toList();
+  List<String> lines = fileNames.stream()
+    .map(filename -> {
+      try{
+        return readFirstLine(filename);
+      } catch(FileNotFoundException e) {
+        return "default value";
+      }
+    }).toList();
 }
 ```
 
@@ -394,18 +394,18 @@ What we can do is pass an unchecked exception from inside a lambda and catch it 
 
 ```java{hl_lines=[8]}
 public class UncheckedExceptions {
-    public static int parseValue(String input) throws NumberFormatException {
-        return Integer.parseInt(input);
+  public static int parseValue(String input) throws NumberFormatException {
+    return Integer.parseInt(input);
+  }
+  
+  public void readNumber() {
+    try {
+      List<String> values = new ArrayList<>();
+      List<Integers> numbers = values.stream().map(UncheckedExceptions::parseValue).toList();
+    } catch(NumberFormatException e) {
+      // handle exception
     }
-
-    public void readNumber() {
-        try {
-          List<String> values = new ArrayList<>();
-          List<Integers> numbers = values.stream().map(UncheckedExceptions::parseValue).toList();
-        } catch(NumberFormatException e) {
-          // handle exception
-        }
-    }
+  }
 }
 ```
 
@@ -428,11 +428,11 @@ We can wrap it in an unchecked exception:
 
 ```java{hl_lines=[5]}
 public void myMethod(){
-    try {
-      // some logic
-    } catch(IOException e) {
-        throw new MyUnchckedException("A problem occurred", e);
-    }
+  try {
+    // some logic
+  } catch(IOException e) {
+    throw new MyUnchckedException("A problem occurred", e);
+  }
 }
 ```
 
@@ -452,7 +452,7 @@ adding a throws clause to our method:
 
 ```java
 public void beSneaky() throws MalformedURLException {
-    URL url = new URL("http://test.example.org");
+  URL url = new URL("http://test.example.org");
 }
 ```
 
@@ -461,7 +461,7 @@ We can add *@SneakyThrows* and our code will compile:
 ```java
 @SneakyThrows
 public void beSneaky() {
-    URL url = new URL("http://test.example.org");
+  URL url = new URL("http://test.example.org");
 }
 ```
 
@@ -470,11 +470,11 @@ runtime exception. We won't be able to catch it anymore and the following code w
 
 ```java{hl_lines=[4]}
 public void callSneaky() {
-    try {
-        beSneaky();
-    } catch (MalformedURLException e) {
-        // handle exception
-    }
+  try {
+    beSneaky();
+  } catch (MalformedURLException e) {
+    // handle exception
+  }
 }
 ```
 
@@ -494,9 +494,9 @@ exception:
 
 ```java
 public class MyException extends RuntimeException {
-    public MyException(String message, boolean includeStacktrace) {
-        super(message, null, !includeStacktrace, includeStacktrace);
-    }
+  public MyException(String message, boolean includeStacktrace) {
+    super(message, null, !includeStacktrace, includeStacktrace);
+  }
 }
 ```
 

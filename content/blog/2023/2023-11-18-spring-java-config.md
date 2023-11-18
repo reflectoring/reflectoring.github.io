@@ -2,7 +2,7 @@
 authors: [sagaofsilence]
 title: "All You Need to Know about Spring's Java Config"
 categories: ["Spring"]
-date: 2023-10-18 00:00:00 +0530
+date: 2023-11-18 00:00:00 +0530
 excerpt: "Discover the simplicity of Spring's Java Configuration! Dive into this beginner-friendly guide and master essential concepts, crafting powerful Spring applications with confidence and ease."
 image: images/stock/0013-switchboard-1200x628-branded.jpg
 url: beginner-friendly-guide-to-spring-java-config

@@ -130,15 +130,6 @@ public class JavaConfigAppConfiguration {
     }
 }
 ```
-{{% info title="Notes on @Qualifier" %}}
-In Spring, the `@Qualifier` annotation is used to resolve the ambiguity that arises when multiple beans of the same type are present in the Spring container. `@Qualifier` helps by specifying the unique identifier of the bean.
-
-**Syntax:**
-```java
-@Qualifier("beanName")
-```
-Here `beanName` refers to the name of the specific bean you want to wire when there are multiple beans of the same type.
-{{% /info %}}
 \
 Here, the `newEmployee()` and `founderEmployee()` methods create an `Employee` bean, `newDepartment()` and `coreDepartment()` methods create a `Department` bean and `acme()` method creats an `Organization` bean. Spring now manages these objects, handling their lifecycle and ensuring proper dependencies.
 
@@ -304,6 +295,24 @@ public class JavaConfigAppConfiguration {
 ```
 
 In this example, the bean is named `founder`, allowing specific identification within the application context.
+
+The `@Qualifier` annotation is used to resolve the ambiguity that arises when multiple beans of the same type are present in the Spring container. `@Qualifier` helps by specifying the unique identifier of the bean.
+
+**Syntax:**
+```java
+@Qualifier("beanName")
+```
+Here `beanName` refers to the name of the specific bean you want to wire when there are multiple beans of the same type.
+In the example above, `founder` is used as a qualifier to identify founder `Employee` bean when we use it by autowiring.
+```java
+public class EmployeeController {
+    @Autowired
+    @Qualifier(value = "founder")
+    private Employee founder;
+
+}
+```
+There are two methods in `JavaConfigAppConfiguration` that configure an `Employee` bean. We need to use the qualifier to tell Spring which bean we are tring to wire.
 
 Understanding `@Bean` and its related concepts is pivotal in Spring configuration. It not only creates instances but also allows fine-grained control over their lifecycle, scope, and naming conventions, empowering our Employee Management System with Spring-managed components.
 

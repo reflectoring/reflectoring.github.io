@@ -67,5 +67,3 @@ link = "plugins/search/mark.js"
 link = "plugins/search/search.js"
 [[params.plugins.js]]
 link = "plugins/popup/corner-popup.min.js"
-[[params.plugins.js]]
-link = "plugins/popup/popups.js"

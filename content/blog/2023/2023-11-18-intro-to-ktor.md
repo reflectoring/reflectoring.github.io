@@ -4,7 +4,7 @@ categories: ["Kotlin"]
 date: 2023-11-18 00:00:00 +1100 
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss the Ktor framework"
-image: images/stock/0104-on-off-1200x628-branded.jpg
+image: images/stock/0118-keyboard-1200x628-branded.jpg
 url: introduction-to-ktor
 ---
 

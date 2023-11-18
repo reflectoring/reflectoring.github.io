@@ -1,7 +1,7 @@
 ---
 title: "Introduction to Ktor"
 categories: ["Kotlin"]
-date: 2023-10-18 00:00:00 +1100 
+date: 2023-11-18 00:00:00 +1100 
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss the Ktor framework"
 image: images/stock/0104-on-off-1200x628-branded.jpg
@@ -34,13 +34,13 @@ Ktor follows the concept of `Application`, `Routing`, and `Call`, making it a na
 
 Let's take a closer look at these components:
 
-## Application
+### Application
 The Application is the top-level component in a Ktor application. It is responsible for managing the entire application's lifecycle, including starting and stopping the server. An application can have multiple modules and plugins that define different parts of the application's behavior.
 
-## Routing
+### Routing
 Routing is a crucial aspect of any web framework, and Ktor handles it elegantly. Routes define how HTTP requests are processed and which code should be executed for specific endpoints. Developers can create complex routing structures that match HTTP methods and URL patterns, making it easy to define the behavior of your application.
 
-## Call
+### Call
 A Call represents a single HTTP request and response. It contains all the necessary information about the request, such as headers, parameters, and the request body.
 
 ##  Setting up a Ktor Application

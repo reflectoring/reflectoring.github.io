@@ -1,10 +1,10 @@
 ---
 title: "Testing with Mockk"
 categories: ["Kotlin"]
-date: 2023-10-10 00:00:00 +1100 
+date: 2023-11-18 00:00:00 +1100 
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss Mockk library which is used for unit testing."
-image: images/stock/0104-on-off-1200x628-branded.jpg
+image: images/stock/0096-tools-1200x628-branded.jpg
 url: introduction-to-Mockk
 ---
 
@@ -110,7 +110,7 @@ lateinit var relaxedService: SomeService
 val calculator = Calculator()
 ```
 
-### @UnmockK**
+### @UnmockK
  This annotation is used to unmock a property or object that was previously declared as a mock using `@MockK` or similar annotations. This is useful when we need to revert a mock back to its original behavior. 
 
 ```kotlin
@@ -118,7 +118,7 @@ val calculator = Calculator()
 lateinit var unmockedService: SomeService
 ```
 
-## Mockk Keywords
+## MockK Keywords
 
 When using the MockK library for mocking and verifying interactions in Kotlin tests, there are several essential keywords and functions we should be familiar with. Here are some of the most commonly used keywords and functions in MockK:
 
@@ -140,101 +140,101 @@ Let's take a look at code examples of each of these Mockk keywords:
 ### Mockk()
 ```kotlin
 @Test
-    fun mockkExample() {
-        val mock = mockk<MyClass>()
-    }
+fun mockkExample() {
+    val mock = mockk<MyClass>()
+}
 ```
 
 ### every{}
 ```kotlin
 @Test
-    fun everyExample() {
-        val mock = mockk<MyClass>()
-        every { mock.doSomething() } returns "Mocked result"
-    }
+fun everyExample() {
+    val mock = mockk<MyClass>()
+    every { mock.doSomething() } returns "Mocked result"
+}
 ```
 
 ### justRun{}  
 ```kotlin
 @Test
-    fun justRunExample() {
-        val mock = mockk<MyClass>()
-        justRun { mock.doSomething() }
-    }
+fun justRunExample() {
+    val mock = mockk<MyClass>()
+    justRun { mock.doSomething() }
+}
 ```
 
 ### slot{} 
 ```kotlin
 @Test
-    fun slotExample() {
-        val mock = mockk<MyClass>()
-        val capturedArg = slot<String>()
-        every { mock.doSomething(capture(capturedArg)) } just Runs
-        // our test code using the mock object and captured arguments
-    }
+fun slotExample() {
+    val mock = mockk<MyClass>()
+    val capturedArg = slot<String>()
+    every { mock.doSomething(capture(capturedArg)) } just Runs
+    // our test code using the mock object and captured arguments
+}
 ```
 
 ### verify{}  
 ```kotlin
 @Test
-    fun verifyExample() {
-        val mock = mockk<MyClass>()
-        verify { mock.doSomething("Specific Argument") }
-    }
+fun verifyExample() {
+    val mock = mockk<MyClass>()
+    verify { mock.doSomething("Specific Argument") }
+}
 ```
 
 ### atLeast(),atMost(),exactly() 
 ```kotlin
 @Test
-    fun atLeastAtMostExactlyExamples() {
-        val mock = mockk<MyClass>()
-        verify(atLeast = 2) { mock.doSomething() }
-        verify(atMost = 3) { mock.doSomething() }
-        verify(exactly = 4) { mock.doSomething() }
-    }
+fun atLeastAtMostExactlyExamples() {
+    val mock = mockk<MyClass>()
+    verify(atLeast = 2) { mock.doSomething() }
+    verify(atMost = 3) { mock.doSomething() }
+    verify(exactly = 4) { mock.doSomething() }
+}
 ```
 
 ### verifyOrder{} 
 ```kotlin
  @Test
-    fun verifyOrderExample() {
-        val mock = mockk<MyClass>()
-        verifyOrder {
-            mock.doSomething()
-            mock.anotherMethod()
-        }
+fun verifyOrderExample() {
+    val mock = mockk<MyClass>()
+    verifyOrder {
+        mock.doSomething()
+        mock.anotherMethod()
     }
+}
 ```
 
 ### confirmVerified()
 ```kotlin
  @Test
-    fun confirmVerifiedExample() {
-        val mock = mockk<MyClass>()
-        // our test code calling the mock object
-        verify { mock.doSomething() }
-        confirmVerified(mock)
-    }
+fun confirmVerifiedExample() {
+    val mock = mockk<MyClass>()
+    // our test code calling the mock object
+    verify { mock.doSomething() }
+    confirmVerified(mock)
+}
 ```
 
 ### clearMocks()
 ```kotlin
  @Test
-    fun clearMocksExample() {
-        val mock1 = mockk<MyClass>()
-        val mock2 = mockk<AnotherClass>()
-        clearMocks(mock1, mock2)
-    }
+fun clearMocksExample() {
+    val mock1 = mockk<MyClass>()
+    val mock2 = mockk<AnotherClass>()
+    clearMocks(mock1, mock2)
+}
 ```
 
 ### unmockkAll()
 ```kotlin
  @Test
-    fun unmockkAllExample() {
-        val mock1 = mockk<MyClass>()
-        val mock2 = mockk<AnotherClass>()
-        unmockkAll()
-    }
+fun unmockkAllExample() {
+    val mock1 = mockk<MyClass>()
+    val mock2 = mockk<AnotherClass>()
+    unmockkAll()
+}
 ```
 
 ## Combining Mockk With Other Testing Libraries
@@ -300,7 +300,18 @@ class CalculatorSpec : Spek({
 Spek is a behavior-driven development (BDD) testing framework for Kotlin. It provides a way to structure our tests in a natural language format and helps us to organize our test cases into descriptive blocks. It's designed to make our tests more readable and expressive. For example in our code above, we're using Spek to describe the behavior of the `Calculator` class.
 
 In our code above:
-`val mathService by memoized { mockk<MathService>() }` is used to create a mock object of the `MathService` class using MockK. The memoized feature ensures that the same instance of the mock is reused across all test cases within the same scope.`val calculator by memoized { Calculator(mathService) } `creates a memoized instance of the Calculator class, which we want to test. It takes the mathService mock as a constructor parameter. This setup ensures that the Calculator class uses the mocked mathService during testing.The `describe("Calculator") { ... }` block provided by Spek describes the behavior we want to test.The `it("should add two numbers correctly") { ... }` block defines an individual test case. This specific test case checks whether the addTwoNumbers method of the Calculator class correctly adds two numbers.This `every { mathService.add(2, 3) } returns 5` uses MockK to define the expected behavior of the mathService mock.`val result = calculator.addTwoNumbers(2, 3)`invokes the `addTwoNumbers` method of the Calculator class with the given arguments. Finally, `assert(result == 5)` verifies the result of the test. The `assert` statement checks whether the actual result of `calculator.addTwoNumbers(2, 3)` is equal to the expected result, which is 5.
+
+`val mathService by memoized { mockk<MathService>() }` is used to create a mock object of the `MathService` class using MockK. The memoized feature ensures that the same instance of the mock is reused across all test cases within the same scope.
+
+`val calculator by memoized { Calculator(mathService) } `creates a memoized instance of the Calculator class, which we want to test. It takes the mathService mock as a constructor parameter. This setup ensures that the Calculator class uses the mocked mathService during testing.The `describe("Calculator") { ... }` block provided by Spek describes the behavior we want to test.
+
+The `it("should add two numbers correctly") { ... }` block defines an individual test case. This specific test case checks whether the `addTwoNumbers()` method of the Calculator class correctly adds two numbers.
+
+The `every { mathService.add(2, 3) } returns 5` uses MockK to define the expected behavior of the mathService mock.
+
+`val result = calculator.addTwoNumbers(2, 3)`invokes the `addTwoNumbers()` method of the Calculator class with the given arguments. 
+
+Finally, `assert(result == 5)` verifies the result of the test. The `assert` statement checks whether the actual result of `calculator.addTwoNumbers(2, 3)` is equal to the expected result, which is 5.
 
  ## Conclusion
  In this tutorial, we took a look at the Mockk library used to test Kotlin code, the various keywords associated with Mockk, combining Mockk with other testing libraries such as JUnit and Spek and finally we went through the annotation provided by Mockk.

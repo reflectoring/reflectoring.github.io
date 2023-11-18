@@ -104,7 +104,6 @@ public class JavaConfigAppConfiguration {
     }
 
     @Bean(name = "founder")
-    @Qualifier(value = "founder")
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     public Employee founderEmployee() {
         final Employee founder = newEmployee("Scott", "Tiger");
@@ -114,7 +113,6 @@ public class JavaConfigAppConfiguration {
     }
 
     @Bean(name = "core")
-    @Qualifier(value = "core")
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     public Department coreDepartment() {
         return newDepartment("Core");
@@ -122,7 +120,6 @@ public class JavaConfigAppConfiguration {
 
     @Bean(name = "acme")
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-    @Qualifier(value = "acme")
     public Organization acme() {
         final Organization acmeCo = new Organization();
         acmeCo.setName("Acme Inc");
@@ -283,7 +280,6 @@ By default, the bean name is the same as the method name. However, you can speci
 public class JavaConfigAppConfiguration {
 
     @Bean(name = "founder")
-    @Qualifier(value = "founder")
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     public Employee founderEmployee() {
         final Employee founder = newEmployee("Scott", "Tiger");
@@ -296,20 +292,16 @@ public class JavaConfigAppConfiguration {
 
 In this example, the bean is named `founder`, allowing specific identification within the application context.
 
-The `@Qualifier` annotation is used to resolve the ambiguity that arises when multiple beans of the same type are present in the Spring container. `@Qualifier` helps by specifying the unique identifier of the bean.
+The `@Qualifier` annotation is used to resolve the ambiguity that arises when multiple beans of the same type are present in the Spring container. We can use it to define the name of the bean we want to inject. In this case, we want to inject the bean with the name `founder`:
 
-**Syntax:**
-```java
-@Qualifier("beanName")
-```
-Here `beanName` refers to the name of the specific bean you want to wire when there are multiple beans of the same type.
-In the example above, `founder` is used as a qualifier to identify founder `Employee` bean when we use it by autowiring.
 ```java
 public class EmployeeController {
-    @Autowired
-    @Qualifier(value = "founder")
-    private Employee founder;
+    
+    private final Employee founder;
 
+    public EmployeeController(@Qualifier(value = "founder") Employee employee){
+        this.founder = employee;
+    }
 }
 ```
 There are two methods in `JavaConfigAppConfiguration` that configure an `Employee` bean. We need to use the qualifier to tell Spring which bean we are tring to wire.
@@ -367,10 +359,6 @@ By importing the `SecurityConfiguration`, `DatabaseConfiguration`, and `AppCache
 
 You can see it in action by running the `testImportedConfig()` unit test in the example code shared on [Github](https://github.com/thombergs/code-examples/blob/master/spring-boot/java-config/src/test/java/io/reflectoring/spring-boot/javaconfig/InfrastructureConfiguration.java#L29).
 
-### Configure Profiles for Flexibility
-   - **Environment-Specific Configurations:** Java-based configuration allows the use of different profiles for various environments (e.g., development, testing, production). Each profile can have its own set of configuration classes, ensuring adaptability and flexibility across deployment scenarios.
-   - **Dynamic Bean Creation:** Conditional logic within configuration classes allows dynamic bean creation based on the active profile, enabling applications to adjust their behavior at runtime.
-
 ### Testing and Unit Testing Advantages
    - **Isolated Testing:** Each configuration class can be unit-tested in isolation, ensuring that specific functionalities are correctly configured.
    - **Mocking Dependencies:** In testing, dependencies can be easily mocked, enabling focused testing of individual configuration components without relying on complex setups.
@@ -380,40 +368,6 @@ You can see it in action by running the `testImportedConfig()` unit test in the 
    - **Enhanced Readability:** The hierarchical arrangement enhances the readability of the configuration code, making it easier for us to navigate and understand the application's structure.
 
 Java-based configuration in Spring empowers developers to create maintainable applications. By embracing modular configurations, we can build flexible, adaptable systems that respond effectively to changing requirements.
-
-## Tailoring Configurations with Profiles
-
-In real-world applications, the same codebase often needs to adapt to various deployment environments, development stages, or specific use cases. Spring provides a powerful mechanism called **Profiles** to handle these different scenarios. Profiles enable developers to customize configurations based on the environment, allowing for seamless transitions between development, testing, and production environments.
-
-### Understanding Spring Profiles
-   - **Defining Profiles:** Spring profiles are defined using `@Profile` annotation on beans or configuration classes, indicating which profiles they are active for.
-   - **Activation:** Profiles can be activated through various means, such as environment properties, system properties, or servlet context parameters.
-
-### Creating Profile-Specific Configurations
-   - **Profile-Specific Beans:** Define beans specific to a profile. For example, a development database configuration bean might differ from the production configuration.
-   - **Conditional Logic:** Use `@Profile` in conjunction with `@Bean` methods to conditionally create beans based on the active profiles.
-
-### Environment-Specific Property Files
-   - **Property Files:** Utilize different property files for different profiles. Spring can load environment-specific property files based on the active profile, allowing configuration values to vary.
-   - **YAML Configuration:** Alternatively, use YAML files with profile-specific blocks, enabling a clean separation of configuration properties for each profile.
-
-### Switching Among Profiles
-   - **In Application Properties:** Set the `spring.profiles.active` property in `application.properties` or `application.yml` to specify the active profiles.
-   - **Using Environment Variables:** Profiles can also be activated using environment variables or command-line arguments when starting the application.
-
-### Practical Use Cases of Profiles
-   - **Development vs. Production:** Tailor logging levels, database connections, and external service endpoints to match development or production environments.
-   - **Testing Scenarios:** Customize configurations for various test scenarios, ensuring accurate and isolated testing of different application features.
-   - **Integration vs. Unit Testing:** Adjust configurations to mock external dependencies during unit tests while integrating with actual services during integration tests.
-
-### Advantages of Profiles
-   - **Flexibility:** Profiles provide a flexible way to manage configurations for different scenarios without altering the core codebase.
-   - **Consistency:** By ensuring consistent configurations within each environment, profiles promote stability and predictability in different stages of the application's lifecycle.
-   - **Simplified Deployment:** Easily switch between profiles during deployment, allowing the same artifact to adapt to diverse runtime environments.
-
-Learn more about profiles in our detailed article [One-Stop Guide to Profiles with Spring Boot](https://reflectoring.io/spring-boot-profiles/).
- 
-👉 **Caution:** Not all scenarios benefit from Spring profiles. Ensure you understand the nuances. For detailed insights, refer to our article on [when and when not to use profiles in Spring applications](https://reflectoring.io/dont-use-spring-profile-annotation/).
 
 ## Automatic Java Configuration
 

@@ -32,13 +32,13 @@ Here is another example of how we can sort arrays in Kotlin:
 
 ```kotlin
 fun main() {
-    val numbersArrays = arrayOf(4, 2, 8, 1, 5)
+    val numbersArray = arrayOf(4, 2, 8, 1, 5)
 
-    val sortedArrayNumbers = numbers.sorted()
-    println("Sorted numbers: ${sortedNumbers.contentToString()}")
+    val sortedNumbers = numbersArray.sorted()
+    println("Sorted numbers: $sortedNumbers")
 
-    val descendingNumbers = numbers.sortedDescending()
-    println("Descending numbers: ${descendingNumbers.contentToString()}")
+    val descendingNumbers = numbersArray.sortedDescending()
+    println("Descending numbers: $descendingNumbers")
 }
 
 ```
@@ -58,7 +58,7 @@ The sortBy function in Kotlin is used to sort a collection for example a list or
 fun main() {
     val people = listOf(
         Person("John", 1),
-        Person("Doe", 1),
+        Person("Doe", 2),
         Person("Mary",3)
     )
 

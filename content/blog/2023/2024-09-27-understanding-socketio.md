@@ -97,29 +97,89 @@ The `io.on("connection", socket => { /* ... */ })` code subscribes to a `"connec
 
 `"connection"` is a predefined event in Socket.IO and is triggered when a client connects to the Socket.IO server.
 
-The `socket` argument provides an object reference to individual client connections and it has various properties and methods. Here are some commonly used properties and methods available within the `socket` argument:
+Our `socket` argument above provides an object reference to individual client connections and it has various properties and methods.
 
-#### Properties
+Next, we will explore some of the commonly used socket **properties** and **methods** accompanied with example code snippet showing how they can be accessed or used:
 
+#### Socket Properties
 - **`socket.id`**: This property contains a unique identifier for the connected client. Each client that connects to the server gets a distinct `socket.id`.
+
+    ```javascript
+    // Logging the unique socket.id of the connected client
+    console.log("Client ID:", socket.id);
+    ```
 - **`socket.handshake`**: This is an object containing information about the handshake used to establish the connection, which can include headers, query parameters, and more.
+    ```javascript
+    // Logging the handshake object
+    console.log('Handshake details:', socket.handshake);
+    ```
 - **`socket.rooms`**: Is an array of room names that the socket is currently in. Rooms are used for broadcasting messages to specific groups of clients.
-- **` Custom Properties`**: It's possible to extend the socket argument by attaching custom properties to it. These custom properties allow us to store additional information or settings associated with a particular client connection.
+    ```javascript
+    // Logging the room names our socket is in
+    console.log("Current rooms:", socket.rooms);
+    ```
 
-#### Methods
+- **` Custom Properties`**: We can extend our socket argument properties by addinng custom properties to it. These custom properties allow us to store additional information or settings associated with a particular client connection.
+    ```javascript
+    // adding our custom socket property
+    socket.customProperty = 'This is a custom property';
 
-- **`socket.emit(event, data)`**: The `socket` object allows us to send messages (events) specifically to the client associated with it. We can use `socket.emit()` to send data to that client only.
+    // Logging the custom property
+    console.log("Custom property value:", socket.customProperty);
+    ```
+
+#### Socket Methods
+- **`socket.emit(event, data)`**: The `socket` object allows us to send messages (events) specifically to the client associated with it. We can use `socket.emit()` to send data to a specified client only.
+    ```javascript
+    // Sending a "welcome" event with data to the client
+    socket.emit('welcome', 'Hello, client!');
+    ```
 - **`socket.on(event, callback)`**: We can use this method to listen for events sent from the client. When the client sends an event with the same name, the provided callback function is executed. This is how we handle messages or actions from the client.
+    ```javascript
+    // Handling a "chatMessage" event from the client
+    socket.on('chatMessage', (message) => {
+        console.log(`Received message from client: ${message}`);
+    });
+    ```
 - **`socket.join(room)`**: Places the `socket` in a specific room. You can use rooms to send messages to specific groups of clients.
+    ```javascript
+    // Joining a chat room named "developers"
+    socket.join('developers');
+    ```
 - **`socket.leave(room)`**: Removes the `socket` from a room.
+    ```javascript
+    // Leaving the chat room named "developers"
+    socket.leave('developers');
+    ```
 - **`socket.disconnect()`**: to forcefully disconnect a client from the server.
+    ```javascript
+    // Disconnecting from a client
+    socket.disconnect();
+    ```
 - **`socket.to(room).emit(event, data`**): Sends an event to all clients in a specific room.
+    ```javascript
+    // Sending a "notification" event to all clients in the "developers" chat room
+    socket.to('developers').emit('notification', 'New update!');
+    ```
 - **`socket.broadcast.emit(event, data)`**: Sends an event to all connected clients except the sender.
+    ```javascript
+    // Broadcasting a "news" event to all connected clients
+    socket.broadcast.emit('news', 'Important announcement!');
+    ```
 - **`socket.broadcast.to(socket.id).emit(event, data)`**: Send an event to a specific client based on their unique socket.id.
-- **`socket.rooms`**: Returns the list of rooms that the socket is currently in.
+    ```javascript
+    // Sending a private "alert" event to a specific client using their socket.id
+    socket.broadcast.to(targetSocketId).emit('alert', 'Important message!');
+    ```
 - **`socket.removeAllListeners(\[event\])`**: Removes all event listeners from the socket. If the event argument is provided, it removes listeners for the specified event.
+    ```javascript
+    // Removing all event listeners from the socket
+    socket.removeAllListeners();
+    // Removing listeners for a specific "chatMessage" event
+    socket.removeAllListeners('chatMessage');
+    ```
 
-#### Implementing a Chat
+#### Using Socket.io to Build a Chat Application
 
 Now let us go back to building our chat application, we'll introduce Socket.IO into the application by creating a new file called `server.js`. This is where we'll add all our server's logic.
 

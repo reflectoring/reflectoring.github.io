@@ -9,11 +9,11 @@ image: images/stock/0044-lock-1200x628-branded.jpg
 url: tutorial-nodejs-socketio
 ---
 
-Traditional web applications primarily used HTTP request-response model, where clients sent requests to servers, and servers responded with data. However, implementing real-time features like live chat, notifications, collaborative tools, etc, was challenging. Developers had to resort to workarounds like long polling (repeatedly sending requests) or plugins such as Flash, to achieve real-time communication.
+Traditional web applications primarily used the HTTP request-response model, where clients sent requests to servers, and servers responded with data. However, implementing real-time features like live chat, notifications, collaborative tools, etc, was challenging. Developers had to resort to workarounds like long polling (repeatedly sending requests) or plugins such as Flash, to achieve real-time communication.
 
 WebSockets changed the game by enabling constant, low-delay communication between clients and servers, breaking away from the old request-response model.
 
-Socket.IO was introduced with the aim of simplifying real-time communication between servers and clients on the web. Socket.IO is built on top of WebSockets It allows developers to create real-time applications without worrying about low-level networking details.
+Socket.IO was introduced with the aim of simplifying real-time communication between servers and clients on the web. Socket.IO is built on top of WebSockets and allows developers to create real-time applications without worrying about low-level networking details.
 
 In this article, we'll explore the concept of using Socket.IO while creating a real-time chat application using Node.js + Socket.IO, that can be connected to any client-side application of our choice.
 
@@ -27,21 +27,23 @@ Before we begin, please ensure that you have the following setup:
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/socket-chat-app" %}}
 
-## How Communication Works Using Socket.IO.
+## How Communication Works Using Socket.IO
 
 Socket.IO allows servers and clients to communicate in real time. To use Socket.IO it must be integrated on both the server and client.
 {{% image alt="spring-boot-and-reactjs-app" src="images/posts/socketio/socketio-flow.png" %}}
 
-#### Server:
+### Server
 
-- The server is the central hub responsible for managing the Socket.IO connection.
+- The server is the central hub responsible for managing the Socket.IO connection with one or more clients.
 - The server can broadcast messages to all clients, specific clients, or exclude the sender. This is useful for group notifications and chat rooms.
 
-#### Client:
+### Client
 
 - Clients, using Socket.IO, connect to the server by specifying the server's address.
 - Once connected, clients can exchange messages instantly with the server.
 
+
+### Bidirectional Communication
 In this communication flow clients can emit events to the server and listen for events from the server. Likewise, the server can emit events to the clients and listen for events from them, enabling real-time bidirectional communication.
 
 Socket.IO communication can also extend between servers (server-to-server) which is valuable for microservices and distributed applications that require real-time interactions.
@@ -97,14 +99,14 @@ The `io.on("connection", socket => { /* ... */ })` code subscribes to a `"connec
 
 The `socket` argument provides an object reference to individual client connections and it has various properties and methods. Here are some commonly used properties and methods available within the `socket` argument:
 
-#### Properties:
+#### Properties
 
 - **`socket.id`**: This property contains a unique identifier for the connected client. Each client that connects to the server gets a distinct `socket.id`.
 - **`socket.handshake`**: This is an object containing information about the handshake used to establish the connection, which can include headers, query parameters, and more.
 - **`socket.rooms`**: Is an array of room names that the socket is currently in. Rooms are used for broadcasting messages to specific groups of clients.
 - **` Custom Properties`**: It's possible to extend the socket argument by attaching custom properties to it. These custom properties allow us to store additional information or settings associated with a particular client connection.
 
-#### Methods:
+#### Methods
 
 - **`socket.emit(event, data)`**: The `socket` object allows us to send messages (events) specifically to the client associated with it. We can use `socket.emit()` to send data to that client only.
 - **`socket.on(event, callback)`**: We can use this method to listen for events sent from the client. When the client sends an event with the same name, the provided callback function is executed. This is how we handle messages or actions from the client.
@@ -116,6 +118,8 @@ The `socket` argument provides an object reference to individual client connecti
 - **`socket.broadcast.to(socket.id).emit(event, data)`**: Send an event to a specific client based on their unique socket.id.
 - **`socket.rooms`**: Returns the list of rooms that the socket is currently in.
 - **`socket.removeAllListeners(\[event\])`**: Removes all event listeners from the socket. If the event argument is provided, it removes listeners for the specified event.
+
+#### Implementing a Chat
 
 Now let us go back to building our chat application, we'll introduce Socket.IO into the application by creating a new file called `server.js`. This is where we'll add all our server's logic.
 
@@ -421,7 +425,7 @@ Let's break down what each part of the code does:
 - **`messageSubmitHandler(e)`**: This function is called when the user submits a chat message. It prevents the default form submission behavior, sends the message to the server using Socket.IO, and clears the input field.
 - **`userAddHandler(user)`**: This function is responsible for adding a user to the chat. If a user is provided as an argument, it uses that name; otherwise, it generates a random username. It then emits an `adduser` event to the server with the chosen username.
 
-## Testing Application
+## Testing the Application
 
 To test our application, we need to start both the server and client.
 

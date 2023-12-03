@@ -8,36 +8,32 @@ image: images/stock/0104-on-off-1200x628-branded.jpg
 url: desing patterns in kotlin
 ---
 
-Design patterns serve as the backbone of software development, providing reusable and scalable solutions to common problems. In the realm of Kotlin, a modern and expressive programming language, design patterns play a crucial role in enhancing code readability, maintainability and flexibility.A design pattern is a general repeatable solution to a commonly occurring problem in software design In this blog post, we will delve into various design patterns and explore how they can be effectively implemented in Kotlin.
+A design pattern is a general repeatable solution to a commonly occurring problem in software design. In this blog post, we will delve into various design patterns and explore how they can be effectively implemented in Kotlin.
 
 ## Advantages of Using Design Patterns
 
-Reusability:
+### Reusability
 Design patterns promote the reuse of proven solutions to common problems. By applying design patterns, we can use established templates to solve recurring design issues, saving time and effort in development.
 
-Maintainability:
+### Maintainability
 Design patterns enhance code maintainability by providing a clear and organized structure. When developers are familiar with common design patterns, it becomes easier for them to understand and modify the code, reducing the chances of introducing bugs during maintenance.
 
-Scalability:
+### Scalability
 Design patterns contribute to the scalability of a codebase by providing modular and extensible solutions. As our application evolves, we can add new features or modify existing ones without having to overhaul the entire codebase.
 
-Abstraction and Encapsulation:
+### Abstraction and Encapsulation
 Design patterns often involve abstraction and encapsulation, which help in hiding the complexity of the implementation details. This separation allows developers to focus on high-level design decisions without getting bogged down by low-level details.
 
-Flexibility:
+### Flexibility
 Design patterns make code more flexible and adaptable to change. When the structure of our software is based on well-established patterns, it becomes easier to introduce new functionality or modify existing behavior without affecting the entire system.
 
-Code Understandability:
+### Code Understandability
 Design patterns provide a common vocabulary for developers. When a developer sees a particular pattern being used, they can quickly understand the intent and functionality without delving deeply into the implementation details.
 
-Testability:
+### Testability
 Code that follows design patterns is often more modular and, therefore, more easily testable. This makes it simpler to write unit tests and ensures that changes to one part of the codebase do not inadvertently break other components.
 
-## Design Pattern Examples
-
-Having introduced what a design patterns is discussed the various advantages design patterns offer to us as developers in our daily life. Lets take a look at the various design patterns that we usually use in conjujnction to Kotlin.
-
-## Builder Design Pattern
+## Builder Pattern
 
 The Builder design pattern is used for constructing complex objects by separating the construction process from the actual representation. It is particularly useful when an object has a large number of parameters, and we want to provide a more readable and flexible way to construct it.
 
@@ -111,13 +107,13 @@ fun main() {
 
 ```
 
-in this code,the `Computer` class serves as the product to be built, encapsulating attributes like CPU, RAM, storage, and graphics card. The `ComputerBuilder` interface declares methods for configuring each attribute, while the `ConcreteComputerBuilder` class implements this interface, progressively setting the values. In the client code within the main function, a ConcreteComputerBuilder instance is utilized to construct a Computer object with a specific configuration by method chaining. This approach enhances readability and flexibility, especially when dealing with objects with numerous optional or interchangeable components, as the Builder pattern facilitates a step-by-step construction process.
+In this code, the `Computer` class serves as the product to be built, encapsulating attributes like CPU, RAM, storage, and graphics card. The `ComputerBuilder` interface declares methods for configuring each attribute, while the `ConcreteComputerBuilder` class implements this interface, progressively setting the values. In the client code within the main function, a ConcreteComputerBuilder instance is utilized to construct a Computer object with a specific configuration by method chaining. This approach enhances readability and flexibility, especially when dealing with objects with numerous optional or interchangeable components, as the Builder pattern facilitates a step-by-step construction process.
 
-## Singleton Design Pattern
+## Singleton Pattern
 
-The Singleton design pattern ensures that a class has only one instance and provides a global point of access to that instance.Every single place where it is used will make use of the same instance, hence reducing memory usage and ensuring consistency. It is useful when exactly one object is needed to coordinate actions across the system, such as managing a shared resource or controlling a single point of control (e.g., a configuration manager or a logging service). The pattern typically involves a private constructor, a method to access the instance, and lazy initialization to create the instance only when it's first requested.
+The Singleton design pattern ensures that a class has only one instance and provides a global point of access to that instance. Every single place where it is used will make use of the same instance, hence reducing memory usage and ensuring consistency. It is useful when exactly one object is needed to coordinate actions across the system, such as managing a shared resource or controlling a single point of control (e.g., a configuration manager or a logging service). The pattern typically involves a private constructor, a method to access the instance, and lazy initialization to create the instance only when it's first requested.
 
-In Kotlin, the Singleton design pattern can be implemented in several ways. Here are two common approaches
+In Kotlin, the Singleton design pattern can be implemented in several ways. Here are two common approaches.
 
 ### Object Declaration
 
@@ -174,7 +170,7 @@ singletonInstance.doSomething()
 
 By using `by lazy`, the `instance` is created only when it's first accessed, making it a lazy-initialized singleton.
 
-## Adapter Design Pattern
+## Adapter Pattern
 
 The Adapter design pattern allows the interface of an existing class to be used as another interface. It is often used to make existing classes work with others without modifying their source code.
 
@@ -248,7 +244,7 @@ fun main() {
 
 In this example, the `ObjectAdapter` class contains an instance of the `Adaptee` class and delegates the `request()` method to the `specificRequest()` method of the `Adaptee` class.
 
-## Decorator Design Pattern
+## Decorator Pattern
 
 The decorator design pattern allows behavior to be added to an individual object, either statically or dynamically without affecting the behavior of other objects from the same class. In Kotlin, we can implement the decorator pattern using interfaces and classes.
 
@@ -310,7 +306,7 @@ Configure offroad driving mode
 Move from A to B
 ```
 
-## Facade Design Pattern
+## Facade Pattern
 
 The Facade design pattern provides a simplified interface to a set of interfaces in a subsystem, making it easier to use. It involves creating a class that represents a higher-level, unified interface that makes it easier for clients to interact with a subsystem. This can help simplify the usage of complex systems by providing a single entry point.
 
@@ -372,7 +368,7 @@ In this example, the `ComputerFacade` class serves as a simplified interface for
 
 By using the Facade pattern, the complexity of the subsystem is hidden from the client, and the client can interact with the system through a more straightforward and unified interface provided by the facade. This can be especially useful when dealing with large and complex systems.
 
-## Observer Design Pattern
+## Observer Pattern
 
 The Observer design pattern is a behavioral design pattern where an object, known as the subject, maintains a list of its dependents, known as observers, that are notified of any state changes. This pattern is often used to implement distributed event handling systems.
 
@@ -428,7 +424,7 @@ class ValueSubject {
 
 In summary, this code sets up a system where multiple observers can be attached to a subject `ValueSubject`. The subject emits random values in a continuous stream and each attached observer `ValueObserver` is notified whenever a new value is emitted. The observer then prints a message indicating that it received the new value.
 
-## Strategy Design Pattern
+## Strategy Pattern
 
 The Strategy design pattern is a behavioral design pattern that defines a family of algorithms, encapsulates each algorithm and makes them interchangeable. It allows a client to choose an algorithm from a family of algorithms at runtime without modifying the client code.
 
@@ -478,9 +474,9 @@ fun main() {
 
 In this example, the `PaymentStrategy` interface defines the contract for payment strategies and `CreditCardPaymentStrategy` and `PayPalPaymentStrategy` are concrete implementations of the strategy. The `ShoppingCart` class represents the context that uses the selected payment strategy.
 
-By using the Strategy Design Pattern, we can easily add new payment strategies without modifying the existing code. We can create new classes that implement the `PaymentStrategy` interface and use them interchangeably in the `ShoppingCart` context.
+By using the Strategy pattern, we can easily add new payment strategies without modifying the existing code. We can create new classes that implement the `PaymentStrategy` interface and use them interchangeably in the `ShoppingCart` context.
 
-## Abstract Design Pattern
+## Abstract Pattern
 
 The abstract design pattern provides an interface for creating families of related or dependent objects without specifying their concrete classes. This pattern is often used when a system needs to be independent of how its objects are created, composed, represented and the client code should work with multiple families of objects.In Kotlin, you can implement the abstract design pattern using interfaces, abstract classes, and concrete classes.
 
@@ -576,11 +572,11 @@ In this example, `AbstractFactory` declares the creation methods for two types o
 
 This structure allows for easy extension of the system by introducing new products and factories without modifying the existing client code.
 
-## Factory Design Pattern
+## Factory Pattern
 
-The Factory Design Pattern is a creational pattern that provides an interface for creating objects in a super class but allows subclasses to alter the type of objects that will be created. This pattern is often used when a class cannot anticipate the class of objects it must create.
+The Factory pattern is a creational pattern that provides an interface for creating objects in a super class but allows subclasses to alter the type of objects that will be created. This pattern is often used when a class cannot anticipate the class of objects it must create.
 
-Here's an example of a simple Factory Design Pattern in Kotlin:
+Here's an example of a simple Factory pattern in Kotlin:
 
 ```kotlin
 // Product interface

@@ -66,9 +66,9 @@ fun main() {
     val sortedPeople = people.sortedBy { it.position }
     println("Sorted by position: $sortedPeople")
 
-    // Sorting people by position in descending order
-    val reverseSortedPeople = people.sortedByDescending { it.position }
-    println("Reverse sorted by position: $reverseSortedPeople")
+    // Sorting people by position in descending order and then by name in ascending order
+    val complexSortedPeople = people.sortedByDescending { it.position }.sortedBy { it.name }
+    println("Complex sorted by position and then by name: $complexSortedPeople")
 }
  ```
 
@@ -94,8 +94,8 @@ fun main() {
     val sortedBooks = books.sortedWith(compareBy { it.publicationYear })
     println("Books sorted by publication year: $sortedBooks")
 
-    // Sorting books by publication year in descending order using sortWith and a custom comparator
-    val reverseSortedBooks = books.sortedWith(compareByDescending { it.publicationYear })
+    // Sorting books by title first and then publication year in descending order using sortWith and a custom comparator
+    val reverseSortedBooks = books.sortedWith(compareByDescending<Book> { it.publicationYear }.thenByDescending { it.title })
     println("Books reverse sorted by publication year: $reverseSortedBooks")
 }
 

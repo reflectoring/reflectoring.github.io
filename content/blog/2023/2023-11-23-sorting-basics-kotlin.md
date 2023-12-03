@@ -43,14 +43,14 @@ fun main() {
 
 ```
 
-In our code above, we initialize an array named `numbersArrays` with integers and demonstrate sorting operations. First, it employs the sorted() function to create a new array `sortedArrayNumbers` containing the elements of numbers in ascending order. The sorted array is then printed to the console using contentToString(). Subsequently, the sortedDescending() function is applied to obtain another array, descendingNumbers, with the elements sorted in descending order and this array is printed as well.
+In our code above, we initialize an array named `numbersArrays` with integers and demonstrate sorting operations. First, it employs the `sorted()` function to create a new array `sortedArrayNumbers` containing the elements of numbers in ascending order. The sorted array is then printed to the console using `contentToString()`. Subsequently, the `sortedDescending()` function is applied to obtain another array, `descendingNumbers`, with the elements sorted in descending order and this array is printed as well.
 
 
-## SortBy
+## `sortBy`
 
-The sortBy function in Kotlin is used to sort a collection for example a list or an array based on a specified key or custom sorting criteria.
+The `sortBy` function in Kotlin is used to sort a collection for example a list or an array based on a specified key or custom sorting criteria.
 
- Here's an example using sortBy:
+ Here's an example using `sortBy`:
 
  ```kotlin
  data class Person(val name: String, val position: Int)
@@ -74,11 +74,11 @@ fun main() {
 
  In this example, a `Person` data class is defined with a `name` and `position`. The people list is then sorted using the `sortedBy` function specifying that the sorting should be based on the position property. The result is a new list sortedPeople, where the people are sorted in ascending order of position. Similarly, `sortedByDescending` is used to sort in descending order.
 
- ## sortWith
+ ## `sortWith`
 
- The sortWith function in Kotlin allows us to provide a custom comparator to define how elements in a collection should be compared and sorted.
+ The `sortWith` function in Kotlin allows us to provide a custom comparator to define how elements in a collection should be compared and sorted.
 
- Here's an example using sortWith:
+ Here's an example using `sortWith`:
  ```kotlin
  data class Book(val title: String, val author: String, val publicationYear: Int)
 

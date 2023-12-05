@@ -20,7 +20,7 @@ a balanced view on the topic, not a mere bashing of the concept of checked excep
 First, we'll dive into the motivation for checked and unchecked exceptions in Java. What does James Gosling,
 the father of Java, say about the topic? Next, we'll have a look at how exceptions work in Java and what are the
 issues with checked exceptions. We'll also discuss which type of exception should be used when. Lastly, we'll
-look at some common workarounds, like using Lombok's *@SneakyThrows*.
+look at some common workarounds, like using Lombok's `@SneakyThrows`.
 
 ## History of Exceptions in Java and Other Languages
 Exception handling in software development goes back as far as the introduction of LISP in the 1960's.
@@ -29,7 +29,7 @@ With exceptions, we can solve several problems that we might encounter in the ha
 The main idea behind exceptions is to separate the normal control flow from error handling. Let's look
 at an example where no exceptions are used:
 
-```java{hl_lines=[3,4,5,7]}
+```java
 public void handleBookingWithoutExceptions(String customer, String hotel) {
   if(isValidHotel(hotel)) {
     int hotelId = getHotelId(hotel);
@@ -53,7 +53,7 @@ public void handleBookingWithoutExceptions(String customer, String hotel) {
 }
 ```
 
-The program logic is located in the highlighted lines, the rest is error handling. So instead of focusing
+The program logic is located in just 5 or so lines of code, the rest is error handling. So instead of focusing
 on the main flow, the code is cluttered with error checking. 
 
 If we do not have exceptions
@@ -74,7 +74,7 @@ public void handleBookingWithExceptions(String customer, String hotel) {
 }
 ```
 
-With this approach, we do not need to check return values, but the control flow is transferred to the *catch* block.
+With this approach, we do not need to check return values, but the control flow is transferred to the `catch` block.
 This approach is clearly much more readable. We have two separate flows: a happy flow and an error-handling flow.
 
 In addition to readability, exceptions also solve the
@@ -83,16 +83,16 @@ occurs if a return value that indicates an error (or non-existing value) becomes
 look at a few examples to illustrate the problem:
 
 Examples:
-```java{hl_lines=[10]}
+```java
 int index =  "Hello World".indexOf("World");
 int value = Integer.parseInt("123");
 int freeSeats = getNumberOfAvailableSeatsOfFlight();
 ```
 
-The *indexOf()* method returns *-1* if the substring isn't found. Of course, *-1* can never be a valid index, so there's no 
-issue here. However, all possible return values of *parseInt()* are valid integers. That means we do not have a 
-special return value in case of an error available. The last method, *getNumberOfAvailableSeatsOfFlight()* could
-even lead to a hidden issue. We could define *-1* as the return value for an error, or no information available. That might
+The `indexOf()` method returns `-1` if the substring isn't found. Of course, `-1` can never be a valid index, so there's no 
+issue here. However, all possible return values of `parseInt()` are valid integers. That means we do not have a 
+special return value in case of an error available. The last method, `getNumberOfAvailableSeatsOfFlight()` could
+even lead to a hidden issue. We could define `-1` as the return value for an error, or no information available. That might
 seem reasonable at first glance. However, it might turn out later that a negative number means the number of people on a waiting list.
 Exceptions would solve this problem more elegantly.
 
@@ -102,11 +102,11 @@ in Java. The diagram shows the class hierarchy for exceptions:
 
 {{% image alt="Exceptions in Java" src="images/posts/checked-exceptions/exceptions.png" %}}
 
-*RuntimeException* extends *Exception* and the *Error* extends *Throwable*. These two and all
-classes that extend them are unchecked exceptions. All other classes that extend *Throwable* (usually via *Exception*)
+`RuntimeException` extends `Exception` and the `Error` extends `Throwable`. These two and all
+classes that extend them are unchecked exceptions. All other classes that extend `Throwable` (usually via `Exception`)
 are checked exceptions.
 
-Everything, checked or not, that extends from *Throwable* can be caught in a catch-block.
+Everything, checked or not, that extends from `Throwable` can be caught in a catch-block.
 
 Lastly, it's important to note that the concept of checked and unchecked exceptions is a Java compiler feature.
 The JVM itself doesn't know the difference, all exceptions are unchecked. That's why other JVM languages do not need to
@@ -138,8 +138,8 @@ checked exceptions can introduce in our codebase.
 ### Checked Exceptions Do Not Scale Well
 One of the main arguments against checked exceptions is code scalability and maintainability. A change in a method's list
 of exceptions breaks all upstream method calls, starting from the calling method
-up to the method that eventually implements a *try-catch* to handle the exception. 
-As an example, let's say we call a method *libraryMethod()* that is part of an external library:
+up to the method that eventually implements a `try-catch` to handle the exception. 
+As an example, let's say we call a method `libraryMethod()` that is part of an external library:
 
 ```java
 public void retrieveContent() throws IOException {
@@ -147,7 +147,7 @@ public void retrieveContent() throws IOException {
 }
 ```
 
-Here, the method *libraryMethod()* itself is from a dependency, for example, a library that handles REST calls to an external
+Here, the method `libraryMethod()` itself is from a dependency, for example, a library that handles REST calls to an external
 system for us. Its implementation would be:
 
 ```java
@@ -201,10 +201,10 @@ where they are actually handled.
 
 ### Unnecessary Dependencies
 Checked dependencies also introduce dependencies that aren't necessary with unchecked exceptions. 
-Let's look again at scenario (a) where we added the *IOException* in three different places. If *methodA()*,
-*methodB()*, and *methodC()* are located in different classes, so we'll have a dependency on the exception class
-in all involved classes. If we had used an unchecked exception, we'd only have this dependency in *methodA()* and *methodC()*.
-The class or module where *methodB()* doesn't even need to know about the exception.
+Let's look again at scenario (a) where we added the `IOException` in three different places. If `methodA()`,
+`methodB()`, and `methodC()` are located in different classes, so we'll have a dependency on the exception class
+in all involved classes. If we had used an unchecked exception, we'd only have this dependency in `methodA()` and `methodC()`.
+The class or module where `methodB()` doesn't even need to know about the exception.
 
 Let's illustrate this idea with an example. Imagine you travel back home from vacation. You check out at
 the reception of the hotel, go to the train station by bus, then transfer trains once, and, back in your
@@ -222,7 +222,7 @@ Typically the idea is to take care of it later. Well, we all know how that ends.
 "I want to write my code for the happy flow, not be bothered with exceptions". There are three such patterns
 that I've seen quite frequently.
 
-The first one is the *catch-all* or *Pokémon* exception:
+The first one is the `catch-all` or `Pokémon` exception:
 
 ```java
 public void retrieveInteger(String endpoint) {
@@ -292,7 +292,7 @@ public void readFromUrl(String endpoint) {
 }
 ```
 
-*MalformedURLException* is a checked exception and it's thrown when the given string isn't of a valid URL format.
+`MalformedURLException` is a checked exception and it's thrown when the given string isn't of a valid URL format.
 The important thing to note is, that the exception is thrown if the URL format is not valid, it does not mean
 that the URL actually exists and can be reached. 
 
@@ -320,7 +320,7 @@ Interestingly, when we want to parse a string to an integer, we are not forced t
 Integer.parseInt("123");
 ```
 
-The *parseInt* method throws a *NumberFormatException*, an unchecked exception, if the provided string isn't a valid integer.
+The `parseInt` method throws a `NumberFormatException`, an unchecked exception, if the provided string isn't a valid integer.
 
 ### Lambdas and Exceptions
 Checked exceptions also do not always work nicely with lambda expressions. Let's look at an example:
@@ -339,19 +339,21 @@ public class CheckedExceptions {
 }
 ```
 
-As our method *readFirstLine()* throws a checked exception, we'll get a compilation error:
+As our method `readFirstLine()` throws a checked exception, we'll get a compilation error:
 
 ```bash
-Unhandled exception: java.io.FileNotFoundException* in line 8.
+Unhandled exception: java.io.FileNotFoundException in line 8.
 ```
 
-If we attempt to correct the code with a surrounding *try-catch*:
+If we attempt to correct the code with a surrounding `try-catch`:
 
 ```java
 public void readFile() {
   List<String> fileNames = new ArrayList<>();
   try {
-    List<String> lines = fileNames.stream().map(CheckedExceptions::readFirstLine).toList();
+    List<String> lines = fileNames.stream()
+        .map(CheckedExceptions::readFirstLine)
+        .toList();
 } catch (FileNotFoundException e) {
 }
 ```
@@ -359,7 +361,7 @@ public void readFile() {
 We still get a compilation error, because we cannot propagate a checked exception inside the lambda
 to the outside. We have to handle the exception inside the lambda expression and throw a runtime exception:
 
-```java{}
+```java
 public void readFile() {
   List<String> lines = fileNames.stream()
     .map(filename -> {
@@ -375,7 +377,7 @@ public void readFile() {
 Unfortunately, this makes the use of static method references impossible if they throw a checked exception.
 Alternatively, we could have the lambda expression return an error message that is added to the result:
 
-```java{}
+```java
 public void readFile() {
   List<String> lines = fileNames.stream()
     .map(filename -> {
@@ -392,7 +394,7 @@ However, the code still looks rather cluttered.
 
 What we can do is pass an unchecked exception from inside a lambda and catch it from the calling method:
 
-```java{hl_lines=[8]}
+```java
 public class UncheckedExceptions {
   public static int parseValue(String input) throws NumberFormatException {
     return Integer.parseInt(input);
@@ -401,7 +403,9 @@ public class UncheckedExceptions {
   public void readNumber() {
     try {
       List<String> values = new ArrayList<>();
-      List<Integers> numbers = values.stream().map(UncheckedExceptions::parseValue).toList();
+      List<Integers> numbers = values.stream()
+              .map(UncheckedExceptions::parseValue)
+              .toList();
     } catch(NumberFormatException e) {
       // handle exception
     }
@@ -426,7 +430,7 @@ public void myMethod() throws IOException {}
 
 We can wrap it in an unchecked exception:
 
-```java{hl_lines=[5]}
+```java
 public void myMethod(){
   try {
     // some logic
@@ -446,7 +450,7 @@ moved from checked to unchecked exceptions and wrap checked exceptions that are 
 in their own runtime exceptions. A good example is Spring's JDBC template which translates all JDBC-specific exceptions
 into unchecked exceptions that are part of the Spring framework.
 
-### Lombok @sneakyThrows
+### Lombok `@SneakyThrows`
 [Project Lombok](https://projectlombok.org) provides us with an annotation that removes the need for exception chaining. Instead of
 adding a throws clause to our method:
 
@@ -456,7 +460,7 @@ public void beSneaky() throws MalformedURLException {
 }
 ```
 
-We can add *@SneakyThrows* and our code will compile:
+We can add `@SneakyThrows` and our code will compile:
 
 ```java
 @SneakyThrows
@@ -465,10 +469,10 @@ public void beSneaky() {
 }
 ```
 
-However, it's important to understand that *@SneakyThrows* does not transform *MalformedURLException* into a
+However, it's important to understand that `@SneakyThrows` does not transform `MalformedURLException` into a
 runtime exception. We won't be able to catch it anymore and the following code won't compile:
 
-```java{hl_lines=[4]}
+```java
 public void callSneaky() {
   try {
     beSneaky();
@@ -477,8 +481,8 @@ public void callSneaky() {
   }
 }
 ```
-
-As *@SneakyThrows* removes the exception and *MalformedURLException* is still considered a checked exception,
+    
+As `@SneakyThrows` removes the exception and `MalformedURLException` is still considered a checked exception,
 we'll get a compiler error in line 4:
 
 ```bash

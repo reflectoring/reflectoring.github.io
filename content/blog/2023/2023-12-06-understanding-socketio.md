@@ -1,11 +1,11 @@
 ---
 title: "Understanding Socket.IO: Building a simple real-time chat app with Node.js and Socket.IO"
 categories: ["Node"]
-date: 2023-10-27 00:00:00 +1100
-modified: 2023-10-27 00:00:00 +1100
+date: 2023-12-06 00:00:00 +1100
+modified: 2023-12-06 00:00:00 +1100
 authors: ["ajibade"]
 description: "This article provides a quick overview of Socket.IO while we walk through the creation of a simple real-time chat application using Node.js and Socket.IO."
-image: images/stock/0044-lock-1200x628-branded.jpg
+image: images/stock/0134-socket-1200x628-branded.jpg
 url: tutorial-nodejs-socketio
 ---
 
@@ -119,7 +119,7 @@ Next, we will explore some of the commonly used socket **properties** and **meth
     console.log("Current rooms:", socket.rooms);
     ```
 
-- **` Custom Properties`**: We can extend our socket argument properties by addinng custom properties to it. These custom properties allow us to store additional information or settings associated with a particular client connection.
+- **`Custom Properties`**: We can extend our socket argument properties by addinng custom properties to it. These custom properties allow us to store additional information or settings associated with a particular client connection.
     ```javascript
     // adding our custom socket property
     socket.customProperty = 'This is a custom property';
@@ -129,6 +129,7 @@ Next, we will explore some of the commonly used socket **properties** and **meth
     ```
 
 #### Socket Methods
+
 - **`socket.emit(event, data)`**: The `socket` object allows us to send messages (events) specifically to the client associated with it. We can use `socket.emit()` to send data to a specified client only.
     ```javascript
     // Sending a "welcome" event with data to the client

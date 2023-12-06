@@ -112,6 +112,68 @@ Lastly, it's important to note that the concept of checked and unchecked excepti
 The JVM itself doesn't know the difference, all exceptions are unchecked. That's why other JVM languages do not need to
 implement the feature.
 
+Before we start our discussion about wether or not to use checked exceptions, let's briefly recap the difference between 
+the two types of exceptions.
+
+### Checked Exceptions
+
+Checked exceptions need to be surrounded by a try-catch block or the calling method needs to declare
+the exception in its signature. Since the constructor of the `Scanner` class throws a `FileNotFoundException` exception,
+which is a checked exception, the following code does not compile:
+
+```java
+public void readFile(String filename) {
+  Scanner scanner = new Scanner(new File(filename));
+}
+```
+We get a compilation error:
+```bash
+Unhandled exception: java.io.FileNotFoundException
+```
+
+We have two option to fix the problem. We can add the exception to the method signature:
+```java
+public void readFile(String filename) throws FileNotFoundException {
+  Scanner scanner = new Scanner(new File(filename));
+}
+```
+
+Or we can handle the exception in-place with a try-catch block:
+
+```java
+public void readFile(String filename) {
+  try {
+    Scanner scanner = new Scanner(new File(filename));
+  } catch (FileNotFoundException e) {
+    // handle exception
+  }
+}
+```
+
+### Unchecked Exceptions
+
+In case of unchecked exceptions, we do not need to do anything. The `NumberFormatException` which can be thrown
+by `Integer.parseInt` is a runtime exception, so the following code compiles:
+
+```java
+public int readNumber(String number) {
+  return Integer.parseInt(callEndpoint(number));
+}
+```
+
+However, we can still choose to handle the exception, so the following code compiles as well:
+
+```java
+public int readNumber(String number) {
+  try {
+    return Integer.parseInt(callEndpoint(number));
+  } catch (NumberFormatException e) {
+    // handle exception
+    return 0;
+  }
+}
+```
+
 ## Why Should We Use Checked Exceptions?
 If we want to understand the motivation behind checked exceptions, we need to look at the history of Java.
 The language was created with a focus on robustness and networking. 
@@ -137,7 +199,7 @@ checked exceptions can introduce in our codebase.
 
 ### Checked Exceptions Do Not Scale Well
 One of the main arguments against checked exceptions is code scalability and maintainability. A change in a method's list
-of exceptions breaks all upstream method calls, starting from the calling method
+of exceptions breaks all method call in the calling chain, starting from the calling method
 up to the method that eventually implements a `try-catch` to handle the exception. 
 As an example, let's say we call a method `libraryMethod()` that is part of an external library:
 
@@ -222,7 +284,7 @@ Typically the idea is to take care of it later. Well, we all know how that ends.
 "I want to write my code for the happy flow, not be bothered with exceptions". There are three such patterns
 that I've seen quite frequently.
 
-The first one is the `catch-all` or `Pokémon` exception:
+The first one is the `catch-all` exception:
 
 ```java
 public void retrieveInteger(String endpoint) {
@@ -469,8 +531,8 @@ public void beSneaky() {
 }
 ```
 
-However, it's important to understand that `@SneakyThrows` does not transform `MalformedURLException` into a
-runtime exception. We won't be able to catch it anymore and the following code won't compile:
+However, it's important to understand that `@SneakyThrows` does not cause the `MalformedURLException` to behave exactly 
+like a runtime exception. We won't be able to catch it anymore and the following code won't compile:
 
 ```java
 public void callSneaky() {

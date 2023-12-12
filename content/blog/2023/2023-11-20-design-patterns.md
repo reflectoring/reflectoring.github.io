@@ -52,45 +52,48 @@ data class Computer(
     val graphicsCard: String
 )
 
-// Builder interface
-interface ComputerBuilder {
-    fun buildCpu(cpu: String): ComputerBuilder
-    fun buildRam(ram: String): ComputerBuilder
-    fun buildStorage(storage: String): ComputerBuilder
-    fun buildGraphicsCard(graphicsCard: String): ComputerBuilder
-    fun build(): Computer
-}
-
 // Concrete builder class
-class ConcreteComputerBuilder : ComputerBuilder {
+class ConcreteComputerBuilder {
     private var cpu: String = ""
     private var ram: String = ""
     private var storage: String = ""
     private var graphicsCard: String = ""
 
-    override fun buildCpu(cpu: String): ComputerBuilder {
+    fun cpu(cpu: String): ConcreteComputerBuilder {
         this.cpu = cpu
         return this
     }
 
-    override fun buildRam(ram: String): ComputerBuilder {
+    fun ram(ram: String): ConcreteComputerBuilder {
         this.ram = ram
         return this
     }
 
-    override fun buildStorage(storage: String): ComputerBuilder {
+    fun storage(storage: String): ConcreteComputerBuilder {
         this.storage = storage
         return this
     }
 
-    override fun buildGraphicsCard(graphicsCard: String): ComputerBuilder {
+    fun graphicsCard(graphicsCard: String): ConcreteComputerBuilder {
         this.graphicsCard = graphicsCard
         return this
     }
 
-    override fun build(): Computer {
+    fun build(): Computer {
         return Computer(cpu, ram, storage, graphicsCard)
     }
+}
+
+fun main() {
+     // Without using the Builder pattern
+    val simpleComputer = Computer(
+        cpu = "Intel Core i5",
+        ram = "16GB DDR4",
+        storage = "512GB SSD",
+        graphicsCard = "NVIDIA GTX 1660"
+    )
+
+    println(simpleComputer)
 }
 
 fun main() {
@@ -184,69 +187,38 @@ Here's an example of the class-based Adapter pattern:
 
 ```kotlin
 // Target interface that the client expects
-interface Target {
-    fun request()
+interface Printer {
+    fun print()
 }
 
 // Adaptee (the class to be adapted)
-class Adaptee {
-    fun specificRequest() {
-        println("Specific request")
+class ModernPrinter {
+    fun startPrint() {
+        println("Printing in a modern way")
     }
 }
 
 // Class-based Adapter
-class ClassAdapter(private val adaptee: Adaptee) : Target {
-    override fun request() {
-        adaptee.specificRequest()
+class ModernPrinterAdapter(private val modernPrinter: ModernPrinter) : Printer {
+    override fun print() {
+        modernPrinter.startPrint()
     }
 }
 
 // Client code
 fun main() {
-    val adaptee = Adaptee()
-    val adapter: Target = ClassAdapter(adaptee)
+    val modernPrinter = ModernPrinter()
+    val legacyPrinter: Printer = ModernPrinterAdapter(modernPrinter)
 
-    adapter.request()
+    legacyPrinter.print()
 }
-
 ```
 
-In this example, `Target` is the interface expected by the client. `Adaptee` is the class that needs to be adapted. The `ClassAdapter` class is the adapter that implements the `Target` interface and delegates the `request()` method to the `specificRequest()` method of the `Adaptee` class.
+In this example:
 
-Here's an example of the object-based Adapter pattern using composition:
-
-```kotlin
-// Target interface that the client expects
-interface Target {
-    fun request()
-}
-
-// Adaptee (the class to be adapted)
-class Adaptee {
-    fun specificRequest() {
-        println("Specific request")
-    }
-}
-
-// Object-based Adapter
-class ObjectAdapter(private val adaptee: Adaptee) : Target {
-    override fun request() {
-        adaptee.specificRequest()
-    }
-}
-
-// Client code
-fun main() {
-    val adaptee = Adaptee()
-    val adapter: Target = ObjectAdapter(adaptee)
-
-    adapter.request()
-}
-
-```
-
-In this example, the `ObjectAdapter` class contains an instance of the `Adaptee` class and delegates the `request()` method to the `specificRequest()` method of the `Adaptee` class.
+`Printer` is the target interface that the client expects.
+`ModernPrinter` is the class to be adapted (Adaptee).
+`ModernPrinterAdapter` is the class-based adapter that adapts the `ModernPrinter` to the `Printer` interface.
 
 ## Decorator Design Pattern
 
@@ -441,7 +413,10 @@ interface PaymentStrategy {
 }
 
 // Concrete implementation of a payment strategy: Credit Card
-class CreditCardPaymentStrategy(private val cardNumber: String, private val expiryDate: String, private val cvv: String) : PaymentStrategy {
+class CreditCardPaymentStrategy(private val cardNumber: String,
+                                private val expiryDate: String,
+                                private val cvv: String)
+: PaymentStrategy {
    override fun pay(amount: Double) {
        // Logic for credit card payment
        println("Paid $amount using credit card $cardNumber")
@@ -479,6 +454,66 @@ fun main() {
 In this example, the `PaymentStrategy` interface defines the contract for payment strategies and `CreditCardPaymentStrategy` and `PayPalPaymentStrategy` are concrete implementations of the strategy. The `ShoppingCart` class represents the context that uses the selected payment strategy.
 
 By using the Strategy Design Pattern, we can easily add new payment strategies without modifying the existing code. We can create new classes that implement the `PaymentStrategy` interface and use them interchangeably in the `ShoppingCart` context.
+
+## Factory Design Pattern
+
+The Factory Design Pattern is a creational pattern that provides an interface for creating objects in a super class but allows subclasses to alter the type of objects that will be created. This pattern is often used when a class cannot anticipate the class of objects it must create.
+
+Here's an example of a simple Factory Design Pattern in Kotlin:
+
+```kotlin
+// Product interface
+interface Product {
+    fun create(): String
+}
+
+// Concrete Product A
+class ConcreteProductA : Product {
+    override fun create(): String {
+        return "Product A"
+    }
+}
+
+// Concrete Product B
+class ConcreteProductB : Product {
+    override fun create(): String {
+        return "Product B"
+    }
+}
+
+// Factory interface
+interface ProductFactory {
+    fun createProduct(): Product
+}
+
+// Concrete Factory A
+class ConcreteFactoryA : ProductFactory {
+    override fun createProduct(): Product {
+        return ConcreteProductA()
+    }
+}
+
+// Concrete Factory B
+class ConcreteFactoryB : ProductFactory {
+    override fun createProduct(): Product {
+        return ConcreteProductB()
+    }
+}
+
+// Client code
+fun main() {
+    val factoryA: ProductFactory = ConcreteFactoryA()
+    val productA: Product = factoryA.createProduct()
+    println(productA.create())
+
+    val factoryB: ProductFactory = ConcreteFactoryB()
+    val productB: Product = factoryB.createProduct()
+    println(productB.create())
+}
+
+```
+
+In this example, we have a `Product` interface representing the product to be created. We have two concrete product classes, `ConcreteProductA` and `ConcreteProductB`, which implement the Product interface. We also have a `ProductFactory` interface with a method `createProduct()` and two concrete factory classes, `ConcreteFactoryA` and `ConcreteFactoryB` which implement this interface and return instances of the respective concrete products.
 
 ## Abstract Design Pattern
 
@@ -576,65 +611,17 @@ In this example, `AbstractFactory` declares the creation methods for two types o
 
 This structure allows for easy extension of the system by introducing new products and factories without modifying the existing client code.
 
-## Factory Design Pattern
+## Differences Between Abstract Factory Pattern and Factory Design Pattern
 
-The Factory Design Pattern is a creational pattern that provides an interface for creating objects in a super class but allows subclasses to alter the type of objects that will be created. This pattern is often used when a class cannot anticipate the class of objects it must create.
-
-Here's an example of a simple Factory Design Pattern in Kotlin:
-
-```kotlin
-// Product interface
-interface Product {
-    fun create(): String
-}
-
-// Concrete Product A
-class ConcreteProductA : Product {
-    override fun create(): String {
-        return "Product A"
-    }
-}
-
-// Concrete Product B
-class ConcreteProductB : Product {
-    override fun create(): String {
-        return "Product B"
-    }
-}
-
-// Factory interface
-interface ProductFactory {
-    fun createProduct(): Product
-}
-
-// Concrete Factory A
-class ConcreteFactoryA : ProductFactory {
-    override fun createProduct(): Product {
-        return ConcreteProductA()
-    }
-}
-
-// Concrete Factory B
-class ConcreteFactoryB : ProductFactory {
-    override fun createProduct(): Product {
-        return ConcreteProductB()
-    }
-}
-
-// Client code
-fun main() {
-    val factoryA: ProductFactory = ConcreteFactoryA()
-    val productA: Product = factoryA.createProduct()
-    println(productA.create())
-
-    val factoryB: ProductFactory = ConcreteFactoryB()
-    val productB: Product = factoryB.createProduct()
-    println(productB.create())
-}
-
-```
-
-In this example, we have a `Product` interface representing the product to be created. We have two concrete product classes, `ConcreteProductA` and `ConcreteProductB`, which implement the Product interface. We also have a `ProductFactory` interface with a method `createProduct()` and two concrete factory classes, `ConcreteFactoryA` and `ConcreteFactoryB` which implement this interface and return instances of the respective concrete products.
+| Aspect                  | Abstract Factory Pattern                                                                                                                                  | Factory Design Pattern                                                                                                                                                   |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Intent                  | Provides an interface for creating families of related or dependent objects without specifying their concrete classes.                                    | Provides an interface for creating objects in a superclass but allows subclasses to alter the type of objects that will be created.                                      |
+| Type of Objects Created | Creates families of related objects. Each family consists of multiple types of objects, and clients use these objects together.                           | Creates individual objects. The focus is on creating one type of object through a common interface.                                                                      |
+| Number of Interfaces    | Typically involves multiple interfaces: one for the product family, and one for each type of product within the family.                                   | Involves fewer interfaces: one for the product and one for the factory.                                                                                                  |
+| Relationships           | Establishes a relationship between multiple related products within a family, ensuring they work together seamlessly.                                     | Establishes a relationship between a single product and its factory, allowing clients to create the product without specifying its concrete class.                       |
+| Number of Classes       | Typically involves more classes due to multiple product families and their associated products and factories.                                             | Involves fewer classes, focusing on a single product interface and its corresponding factories.                                                                          |
+| Example                 | Creating a GUI toolkit where each family includes buttons, panels, and windows, and clients can switch between different toolkits (e.g., Windows, macOS). | Creating different types of documents (e.g., PDF, Word) with each document type having its own factory for creation.                                                     |
+| Use Cases               | Best suited when the system needs to support multiple families of products, and clients need to use products from the same family together.               | Suitable when a system needs to create individual objects with the ability to vary the type of objects created. Clients are interested in one type of product at a time. |
 
 ## Conclusion
 

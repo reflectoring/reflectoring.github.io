@@ -222,18 +222,14 @@ When defining extension functions, prioritize clarity and readability over cleve
 ### Leverage Extension Properties
 In addition to functions, Kotlin also supports extension properties. Extension properties allow us to add new properties to existing classes. While using them judiciously, extension properties can complement extension functions, providing a comprehensive and cohesive augmentation of class functionality.
 
-```koltin
+
+```kotlin
 val String.isPalindrome: Boolean
     get() = this == this.reversed()
-
 // Usage
 val palindromeString = "level"
 println(palindromeString.isPalindrome) // Output: true
-
 ```
-
 ## Conclusion
 
 By providing a mechanism to extend existing classes without modifying their source code, extension functions empower developers to create modular, maintainable, and interoperable code. Whether enhancing APIs, improving code organization, or facilitating interoperability with Java, extension functions are a versatile tool in the Kotlin developer's toolkit. As you embark on your Kotlin journey, consider the judicious use of extension functions to unlock the full potential of this dynamic and elegant language.
-
-

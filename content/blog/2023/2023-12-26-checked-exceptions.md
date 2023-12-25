@@ -1,7 +1,7 @@
 ---
 title: "Don't Use Checked Exceptions"
 categories: ["Java"]
-date: 2023-11-06 00:00:00 +1100
+date: 2023-12-26 00:00:00 +1100
 authors: ["krimgen"]
 description: "Don't Use Checked Exceptions."
 image: images/stock/0011-exception-1200x628-branded.jpg
@@ -31,22 +31,22 @@ at an example where no exceptions are used:
 
 ```java
 public void handleBookingWithoutExceptions(String customer, String hotel) {
-  if(isValidHotel(hotel)) {
+  if (isValidHotel(hotel)) {
     int hotelId = getHotelId(hotel);
-      if(sendBookingToHotel(customer, hotelId)) {
-        int bookingId = updateDatabase(customer, hotel);
-        if (bookingId > 0) {
-          if (sendConfirmationMail(customer, hotel, bookingId)) {
-            logger.log(Level.INFO, "Booking confirmed");
-          } else {
-            logger.log(Level.INFO, "Mail failed");
-          }
-          } else {
-            logger.log(Level.INFO, "Database couldn't be updated");
-          }
+    if (sendBookingToHotel(customer, hotelId)) {
+      int bookingId = updateDatabase(customer, hotel);
+      if (bookingId > 0) {
+        if (sendConfirmationMail(customer, hotel, bookingId)) {
+          logger.log(Level.INFO, "Booking confirmed");
+        } else {
+          logger.log(Level.INFO, "Mail failed");
+        }
       } else {
-        logger.log(Level.INFO, "Request to hotel failed");
+        logger.log(Level.INFO, "Database couldn't be updated");
       }
+    } else {
+      logger.log(Level.INFO, "Request to hotel failed");
+    }
   } else {
     logger.log(Level.INFO, "Invalid data");
   }
@@ -102,9 +102,8 @@ in Java. The diagram shows the class hierarchy for exceptions:
 
 {{% image alt="Exceptions in Java" src="images/posts/checked-exceptions/exceptions.png" %}}
 
-`RuntimeException` extends `Exception` and the `Error` extends `Throwable`. These two and all
-classes that extend them are unchecked exceptions. All other classes that extend `Throwable` (usually via `Exception`)
-are checked exceptions.
+`RuntimeException` extends `Exception` and the `Error` extends `Throwable`. `RuntimeException` and `Error` are so-called unchecked exceptions, meaning that they don't need to be handled by the calling code (i.e. they don't need to be "checked"). All other classes that extend `Throwable` (usually via `Exception`)
+are checked exceptions, meaning that the compiler expects them to be handled by the calling code (i.e. they must be "checked").
 
 Everything, checked or not, that extends from `Throwable` can be caught in a catch-block.
 

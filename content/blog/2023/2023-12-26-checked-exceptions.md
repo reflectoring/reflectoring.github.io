@@ -415,7 +415,9 @@ public void readFile() {
     List<String> lines = fileNames.stream()
         .map(CheckedExceptions::readFirstLine)
         .toList();
-} catch (FileNotFoundException e) {
+  } catch (FileNotFoundException e) {
+      // handle exception
+  }
 }
 ```
 

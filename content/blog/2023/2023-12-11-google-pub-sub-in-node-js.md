@@ -6,10 +6,9 @@ modified: 2023-12-11 00:00:00 +1100
 authors: ["ajibade"]
 description: "Unlocking the power of asynchronous communication in our Node.js applications as we delve into the seamless process of publishing and receiving messages using Google Cloud Pub/Sub, enhancing our project's real-time capabilities."
 image: images/stock/0134-socket-1200x628-branded.jpg
-url:  google-pub-sub-in-node.js
+url:  google-pub-sub-in-node-js
 ---
 
-# Publish and Receive Message with Google Pub/Sub in Node.js.
 Google Cloud Pub/Sub employs a publish-subscribe model, streamlining modern software communication and reshaping how information is shared. Publishers send messages to topics, and subscribers interested in those messages can retrieve them flexibly and asynchronously. This approach redefines the rules of engagement for both microservices and monolith applications.
 
 In this article, we'll explore the workings of Google Cloud Pub/Sub, delve into common use cases, and demonstrate how to seamlessly integrate Google Pub/Sub with Node.js for real-world scenarios.
@@ -23,24 +22,24 @@ To follow this tutorial, ensure you have the following:
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/nodejs-pub-sub" %}}
 
-## What Is Google Cloud Pub/Sub
+## What Is Google Cloud Pub/Sub?
 Google Cloud Pub/Sub is a scalable message queuing service that ensures asynchronous and reliable messaging between various applications and services. It offers flexibility, supporting one-to-many, many-to-one, and many-to-many communication patterns. This service is designed to track changes in different applications and communicate these updates to diverse systems in real-time. 
 
 ### How Google Cloud Pub/Sub Works
-Consider two servers, Sever A and Sever B, requiring communication. Traditionally, Sever A directly notifies Sever B of changes using the HTTP architectural pattern. However, this method has drawbacks: if Sever B is busy or slow, Sever A faces problems with communication.
+Consider two servers, server A and server B, requiring communication. Traditionally, server A directly notifies server B of changes using synchronous HTTP calls. However, this method has drawbacks: if server B is busy or slow, server A faces problems with communication.
 
 To tackle these issues, we can switch to asynchronous communication using a Pub/Sub pattern. Pub/Sub allows systems to work independently, solving issues like unavailability and queuing. It also introduces flexibility and scalability to our systems.
 
-Using Pub/Sub, Sever A (Publisher) publishes events related to changes, categorizing them as a topic, and Sever B (Subscriber) subscribes to these events. The publisher-subscription model, allows messages to be disseminated to all subscriptions associated with a specific topic.
+Using Pub/Sub, server A (publisher) publishes events related to changes, categorizing them as a topic, and server B (subscriber) subscribes to these events. The publisher-subscription model allows messages to be disseminated to all subscriptions associated with a specific topic.
 
-This approach provides flexibility to subscribers like Sever B, who can choose to pull messages at their convenience or have messages pushed to a specified endpoint. The push mechanism ensures proactive message delivery, creating a dynamic and adaptable communication framework for diverse application needs.
+This approach provides flexibility to subscribers like server B, who can choose to pull messages at their convenience or have messages pushed to a specified endpoint. The push mechanism ensures proactive message delivery, creating a dynamic and adaptable communication framework for diverse application needs.
 
 For a deeper understanding of Pub/Sub, let's explore some of its key terminology and common use cases.
 
 ### Google Cloud Pub/Sub Terminology
 ![Google Pub/Sub flow](https://cloud.google.com/static/pubsub/images/pub_sub_flow.svg)
 - **`Message`**: This is the data exchanged between services. It can be stored as a text or byte string, offering flexibility in formatting. Messages usually indicate events, such as data modification or action completion.
-- **`Topic`**: This is like a message folder. We can add or read related messages from it. We can have multiple topics, and each topic is for a different type of message. Messages are put into specific topics, and we choose which topic we want messages from. This helps specify the messages we get. We can make as many topics as we want.
+- **`Topic`**: This is like a message folder. We can add messages to or read messages from it. We can have multiple topics, and each topic is for a different type of message. Messages are put into specific topics, and we choose which topic we want messages from. This helps specify the messages we get. We can make as many topics as we want.
 - **`Publisher`**: These are services that add new messages to a topic. Topics can have a single or multiple publishers
 - **`Subscribers`**: These are services designed to receive messages from one or more topics. Subscribers have the flexibility to subscribe to multiple topics, providing a versatile and comprehensive method for message reception.
 - **`Subscription`**: This is the act of subscribing to a topic. By subscribing to a topic, we express interest in receiving messages published on that specific topic. Each subscription is associated with a particular topic. Creating a subscription is a key step in the Google Pub/Sub messaging system to establish the link between a subscriber and the messages published on a topic.
@@ -50,9 +49,9 @@ For a deeper understanding of Pub/Sub, let's explore some of its key terminology
 - **`Acknowledgment (Ack):`**  Subscribers play a vital role by acknowledging each received message. This acknowledgment ensures that the same messages won't be sent (Push) or read (Pull) repeatedly. If a message is not acknowledged, it triggers the assumption that it needs to be resent. Acknowledgment is a vital step in maintaining the efficiency of the messaging system, preventing redundant message delivery.
 
 ### Common Pub/Sub Use Cases:
-- Real-time Event Processing: Monitor and react in real-time to user interactions, system malfunctions, and business events.
-- Parallel Processing: Efficiently distribute and manage numerous tasks concurrently for improved performance.
-- Tracking Database Changes: Keep a watchful eye on database changes and respond to them instantly for timely and effective updates.
+- **Real-time Event Processing:** Monitor and react in real-time to user interactions, system malfunctions, and business events.
+- **Parallel Processing:** Efficiently distribute and manage numerous tasks concurrently for improved performance.
+- **Tracking Database Changes:** Keep a watchful eye on database changes and respond to them instantly for timely and effective updates.
 
 Next, let's start the process of setting up our Google Cloud Pub/Sub for integration into a Node.js app.
 
@@ -72,25 +71,25 @@ To begin using Google Cloud Pub/Sub, we must first configure and create a Google
     
 - To establish our channel for publishing and subscribing to messages we will start by creating our topic. Return to the Pub/Sub page, and click on the **CREATE TOPIC** button. This action prompts a configuration interface where we can define crucial parameters for our topic.
   {{% image alt="gcp" src="images/posts/nodejs-pub-sub/create-gcps-topic.png" %}}
-
-  Input the topic name `user_creation` and click the **CREATE** button.
+  
+- Input the topic name `user_creation` and click the **CREATE** button.
   {{% image alt="create-gcps-topic-2" src="images/posts/nodejs-pub-sub/create-gcps-topic-2.png" %}}
 
-  This action will create our `user_creation` topic and a default subscription named `user_creation-sub` will be automaticallygenerated since we left the **Add default subscription** box checked.
+- This action will create our `user_creation` topic and a default subscription named `user_creation-sub` will be automaticallygenerated since we left the **Add default subscription** box checked.
    {{% image alt="default-subcription" src="images/posts/nodejs-pub-sub/default-subcription.png" %}}
 
 - Subscriptions define how messages are delivered to subscribers, and specifying the delivery type is crucial for receiving real-time updates. Next, we will create two subscriptions with delivery types `pull` and `push` for our subscribers to connect with a topic. 
 
-To create this custom subscription, click on **CREATE SUBSCRIPTION** button then to:
+To create this custom subscription, click on **CREATE SUBSCRIPTION** button and create a pull or push subscriptions following the steps in the upcoming sections.
 
-#### Create a Pull Subscription:
+#### Create a Pull Subscription
 - Subscription ID: `email_subscription_pull`
 - Specify the Topic Name
 - Select the delivery type as `pull`
 - Click on the **CREATE** button at the bottom of the page to initiate the subscription creation process.
     {{% image alt="pull-subcription" src="images/posts/nodejs-pub-sub/pull-subcription.png" %}}
 
-#### Create a Push Subscription:
+#### Create a Push Subscription
 - Subscription ID: `email_subscription_push`
 - Specify the Topic Name
 - Select the delivery type as `push`.
@@ -113,20 +112,20 @@ We will need to get a service account configured with Pub/Sub access on our Goog
 - Then click **Create Service Account** button.
   {{% image alt="service-account-btn" src="images/posts/nodejs-pub-sub/service-account-btn.png" %}}
 
-  Enter a service account name `nodejs_app-pub-sub` and description then click on the **CREATE AND CONTINUE** button.
+- Enter a service account name `nodejs_app-pub-sub` and description then click on the **CREATE AND CONTINUE** button.
   {{% image alt="service-account-details" src="images/posts/nodejs-pub-sub/service-account-details.png" %}}
 
-  Next, to give us full access to topics and subscriptions, filter and assign the role `Pub/Sub Admin` to our service account `nodejs_app-pub-sub`. After that, click the **Continue** button.
+- Next, to give us full access to topics and subscriptions, filter and assign the role `Pub/Sub Admin` to our service account `nodejs_app-pub-sub`. After that, click the **Continue** button.
   {{% image alt="pub-sub-admin" src="images/posts/nodejs-pub-sub/pub-sub-admin.png" %}}
 
-  We can skip the **Grant users access to this service account** option since we are not giving access to other users or groups in this article. Finally, click on the **Done** button.
+- We can skip the **Grant users access to this service account** option since we are not giving access to other users or groups in this article. Finally, click on the **Done** button.
 
-  This should redirect us to the **Service accounts**  page.
+- This should redirect us to the **Service accounts**  page.
   {{% image alt="service-account-page" src="images/posts/nodejs-pub-sub/service-account-page.png" %}}
 
-  Next, click to open the newly created service account and locate the key section.
+- Next, click to open the newly created service account and locate the key section.
 
-  Click on Add Key, then select Create new Key, choose the JSON option, and download the JSON file. This file is essential for authentication within our Node.js project directory for our Pub/Sub setup.
+- Click on Add Key, then select Create new Key, choose the JSON option, and download the JSON file. This file is essential for authentication within our Node.js project directory for our Pub/Sub setup.
   {{% image alt="service-account-key" src="images/posts/nodejs-pub-sub/service-account-key.png" %}}
 
 Great! We're ready to begin integrating Google Cloud Pub/Sub into our application.
@@ -153,9 +152,17 @@ npm install @google-cloud/pubsub express
 Here, `@google-cloud/pubsub` manages Pub/Sub functionality, serving as a fully managed real-time messaging service for sending and receiving messages between applications. While `express` is a Node.js framework designed to streamline API development.
 
 Next, to create the needed folders and files for our application, run the following:
-```bash=
-mkdir src src/routes src/controllers src/helper
-touch src/user-pub.js src/email-sub.js src/routes/email.js src/routes/user.js src/controllers/emailController.js src/controllers/userController.js src/helper/pub-sub-config.js
+```bash
+mkdir src src/routes \
+ src/controllers \
+ src/helper
+touch src/user-pub.js \
+ src/email-sub.js \
+ src/routes/email.js \
+ src/routes/user.js \
+ src/controllers/emailController.js \
+ src/controllers/userController.js \
+ src/helper/pub-sub-config.js
 ```
 Our file structure is nearly complete. Lastly, move the service account key we downloaded earlier into the `src/helper` folder.
 
@@ -406,7 +413,7 @@ After making this call, check the Email service terminal; we should be able to s
 {{% image alt="receive-message-terminal" src="images/posts/nodejs-pub-sub/receive-message-terminal.png" %}}
 
 #### Receiving Message Via Push
-To receive push messages, we will utilize an HTTPS endpoint for our webhook. You can achieve this with either a live endpoint or, if using local routes, employ Ngrok to expose them.
+To receive push messages, we will use an HTTPS endpoint for our webhook. You can achieve this with either a live endpoint or, if using local routes, employ Ngrok to expose them.
 
 Ngrok creates secure tunnels from localhost, making a locally running web service remotely accessible. It's often used during development and testing to make a locally running web service accessible remotely. 
 

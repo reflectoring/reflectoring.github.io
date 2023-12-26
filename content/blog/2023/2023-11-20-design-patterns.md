@@ -49,28 +49,28 @@ data class Computer(
 )
 
 // Concrete builder class
-class ConcreteComputerBuilder {
+class ComputerBuilder {
     private var cpu: String = ""
     private var ram: String = ""
     private var storage: String = ""
     private var graphicsCard: String = ""
 
-    fun cpu(cpu: String): ConcreteComputerBuilder {
+    fun cpu(cpu: String): ComputerBuilder {
         this.cpu = cpu
         return this
     }
 
-    fun ram(ram: String): ConcreteComputerBuilder {
+    fun ram(ram: String): ComputerBuilder {
         this.ram = ram
         return this
     }
 
-    fun storage(storage: String): ConcreteComputerBuilder {
+    fun storage(storage: String): ComputerBuilder {
         this.storage = storage
         return this
     }
 
-    fun graphicsCard(graphicsCard: String): ConcreteComputerBuilder {
+    fun graphicsCard(graphicsCard: String): ComputerBuilder {
         this.graphicsCard = graphicsCard
         return this
     }
@@ -81,6 +81,23 @@ class ConcreteComputerBuilder {
 }
 
 fun main() {
+    // Build the computer with a specific configuration
+    val builder = ComputerBuilder()
+    val gamingComputer = builder
+        .cpu("Intel Core i9")
+        .ram("32GB DDR4")
+        .storage("1TB SSD")
+        .graphicsCard("NVIDIA RTX 3080")
+        .build()
+}
+```
+
+In this code, the `Computer` class serves as the product to be built, encapsulating attributes like CPU, RAM, storage, and graphics card. The `ComputerBuilder` interface declares methods for configuring each attribute, while the `ComputerBuilder` class implements this interface, progressively setting the values. In the client code within the main function, a ComputerBuilder instance is utilized to construct a Computer object with a specific configuration by method chaining. This approach enhances readability and flexibility, especially when dealing with objects with numerous optional or interchangeable components, as the Builder pattern facilitates a step-by-step construction process.
+
+Note that the Builder pattern is not as commonly used in Kotlin as it is in Java, for example, because Kotlin provides named parameters, which can be used in a constructor to a very similar effect to a Builder:
+
+```kotlin
+fun main() {
      // Without using the Builder pattern
     val simpleComputer = Computer(
         cpu = "Intel Core i5",
@@ -88,29 +105,10 @@ fun main() {
         storage = "512GB SSD",
         graphicsCard = "NVIDIA GTX 1660"
     )
-
-    println(simpleComputer)
 }
-
-fun main() {
-    // Using the Builder pattern
-    val builder = ConcreteComputerBuilder()
-
-    // Build the computer with a specific configuration
-    val gamingComputer = builder
-        .buildCpu("Intel Core i9")
-        .buildRam("32GB DDR4")
-        .buildStorage("1TB SSD")
-        .buildGraphicsCard("NVIDIA RTX 3080")
-        .build()
-
-    // Print the constructed computer
-    println(gamingComputer)
-}
-
 ```
 
-In this code, the `Computer` class serves as the product to be built, encapsulating attributes like CPU, RAM, storage, and graphics card. The `ComputerBuilder` interface declares methods for configuring each attribute, while the `ConcreteComputerBuilder` class implements this interface, progressively setting the values. In the client code within the main function, a ConcreteComputerBuilder instance is utilized to construct a Computer object with a specific configuration by method chaining. This approach enhances readability and flexibility, especially when dealing with objects with numerous optional or interchangeable components, as the Builder pattern facilitates a step-by-step construction process.
+Using named parameters in a constructor as in the example above is better for null safety, because it doesn't accept `null` values and the values do not have to be set to empty strings (`""`) as in the Builder example.
 
 ## Singleton Pattern
 
@@ -212,9 +210,9 @@ fun main() {
 
 In this example:
 
-`Printer` is the target interface that the client expects.
-`ModernPrinter` is the class to be adapted (Adaptee).
-`ModernPrinterAdapter` is the class-based adapter that adapts the `ModernPrinter` to the `Printer` interface.
+- `Printer` is the target interface that the client expects.
+- `ModernPrinter` is the class to be adapted (Adaptee).
+- `ModernPrinterAdapter` is the class-based adapter that adapts the `ModernPrinter` to the `Printer` interface.
 
 ## Decorator Pattern
 
@@ -273,7 +271,7 @@ In this example, `Car` is the component interface with the `drive` method and `B
 
 The output for this code example will be:
 
-```kotlin
+```text
 Configure offroad driving mode
 Move from A to B
 ```

@@ -1,10 +1,10 @@
 ---
 title: "Guide to Sorting in Kotlin"
 categories: ["Kotlin"]
-date: 2023-11-23 00:00:00 +1100
+date: 2023-12-26 00:00:00 +1100
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss what sorting is and discuss the various methods we can use to sort various elements."
-image: images/stock/0104-on-off-1200x628-branded.jpg
+image: images/stock/0135-sorted-1200x628-branded.jpg
 url: sorting in kotlin
 ---
 

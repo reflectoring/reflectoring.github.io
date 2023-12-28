@@ -33,14 +33,13 @@ fun main() {
     val evenNumbers = numbers.customFilter { it % 2 == 0 }
     println(evenNumbers) // Output: [2, 4, 6]
 }
-
 ```
 
 In this example, `customFilter` is a high-order function that takes a `predicate` function as a parameter. This allows us to filter a list based on various conditions without duplicating filtering logic.
 
 ## Inline Functions
 
-While high-order functions provide modularity and reusability, they may introduce some runtime overhead due to the creation of function objects. Here is where inline functions come into play. Inline functions, as the name suggests, are a way to instruct the compiler to replace the function call site with the actual body of the function during compilation. This process eliminates the overhead associated with function calls and can lead to more efficient code execution.
+While high-order functions provide modularity and reusability, they may introduce some runtime overhead due to the creation of function objects. This is where inline functions come into play. Inline functions, as the name suggests, are a way to instruct the compiler to replace the function call site with the actual body of the function during compilation. This process eliminates the overhead associated with function calls and can lead to more efficient code execution.
 
 Consider the following example:
 
@@ -53,27 +52,27 @@ fun main() {
     val result = executeOperation(5, 3) { x, y -> x + y }
     println(result) // Output: 8
 }
-
 ```
 
-In this example, the `executeOperation` function is declared as inline. When the compiler encounters a call to this function, it replaces the call site with the actual body of the function, avoiding the creation of additional function objects. This can be particularly beneficial in scenarios where performance is a critical factor.
+In this example, the `executeOperation` function is declared as `inline`. When the compiler encounters a call to this function, it replaces the call site with the actual body of the function, avoiding the creation of additional function objects. This can be particularly beneficial in scenarios where performance is a critical factor.
 
+## When to use High-Order vs. Inline Functions?
 
-Use high-order functions when:
+### Arguments for High-Order Functions
 
-`Modularity and Reusability`: We want to create modular and reusable code by abstracting certain behaviors into functions.
+- **Modularity and Reusability:** We want to create modular and reusable code by abstracting certain behaviors into functions.
 
-`Flexibility`: We need the flexibility to pass different functions dynamically.
+- **Flexibility:** We need the flexibility to pass different functions dynamically.
 
-`Code Readability`: We prioritize readability and maintainability, as high-order functions contribute to cleaner and more organized code.
+- **Code Readability:** We prioritize readability and maintainability, as high-order functions contribute to cleaner and more organized code.
 
-Use inline functions when:
+### Arguments for Inline Functions
 
-`Performance`: Performance is a critical concern, and we want to eliminate the overhead associated with function calls.
+- **Performance:** Performance is a critical concern, and we want to eliminate the overhead associated with function calls.
 
-`Code Size`: We aim to reduce the size of our compiled code by inlining small functions.
+- **Code Size:** We aim to reduce the size of our compiled code by inlining small functions.
 
-`Lambda Expression`s: We frequently work with lambda expressions and want to minimize the overhead introduced by function objects.
+- **Lambda Expressions:** We frequently work with lambda expressions and want to minimize the overhead introduced by function objects.
 
 ## Conclusion
 

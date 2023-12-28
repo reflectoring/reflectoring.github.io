@@ -33,6 +33,42 @@ sealed class MathExpression {
 }
 ```
 
+Here's an example of using the `MathExpression` sealed class in a `when` expression:
+```kotlin
+fun evaluateExpression(expression: MathExpression): Double {
+    return when (expression) {
+        is MathExpression.Value -> expression.value
+        is MathExpression.Addition -> evaluateExpression(expression.left) + evaluateExpression(expression.right)
+        is MathExpression.Subtraction -> evaluateExpression(expression.left) - evaluateExpression(expression.right)
+        MathExpression.Undefined -> Double.NaN // Handle undefined case
+    }
+}
+
+fun main() {
+    // Example 1: Simple value
+    val valueExpression = MathExpression.Value(42.0)
+    val result1 = evaluateExpression(valueExpression)
+    println("Result 1: $result1") // Output: Result 1: 42.0
+
+    // Example 2: Addition
+    val additionExpression = MathExpression.Addition(MathExpression.Value(10.0), MathExpression.Value(20.0))
+    val result2 = evaluateExpression(additionExpression)
+    println("Result 2: $result2") // Output: Result 2: 30.0
+
+    // Example 3: Subtraction
+    val subtractionExpression = MathExpression.Subtraction(MathExpression.Value(30.0), MathExpression.Value(5.0))
+    val result3 = evaluateExpression(subtractionExpression)
+    println("Result 3: $result3") // Output: Result 3: 25.0
+
+    // Example 4: Undefined
+    val undefinedExpression = MathExpression.Undefined
+    val result4 = evaluateExpression(undefinedExpression)
+    println("Result 4: $result4") // Output: Result 4: NaN
+}
+```
+
+In this example, the `evaluateExpression()` function takes a `MathExpression` as a parameter and uses a `when` expression to handle different cases. 
+
 ## Enum Classes
 Enum classes, short for enumerated classes, are another feature that Kotlin inherits from Java but enhances significantly. Enum classes allow developers to define a fixed set of values, each of which is an instance of the enum class. Enums are particularly useful when modeling a closed set of related constants.
 

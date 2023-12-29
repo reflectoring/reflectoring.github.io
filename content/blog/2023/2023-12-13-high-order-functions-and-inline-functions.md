@@ -58,7 +58,7 @@ In this example, the `executeOperation` function is declared as `inline`. When t
 
 ## When to use High-Order vs. Inline Functions?
 
-High order functions are useful when we want to abstract over actions, parameterize behavior, or create more flexible and reusable code.
+High order functions are useful when we want to abstract over actions, parameterize behavior or create more flexible and reusable code.
 
 Inline functions are used when we want to eliminate the overhead of function calls and improve performance. The inline keyword suggests to the compiler that it should insert the function's code directly at the call site avoiding the overhead of function invocation.
 

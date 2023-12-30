@@ -233,22 +233,13 @@ class BasicCar : Car {
     }
 }
 
-// Decorator abstract class
-abstract class CarDecorator(private val decoratedCar: Car) : Car {
-    override fun drive() {
-        decoratedCar.drive()
-    }
-}
-
-// Concrete decorator
-class OffroadCar(decoratedCar: Car) : CarDecorator(decoratedCar) {
-    override fun drive() {
-        initialiseDrivingMode()
-        super.drive()
-    }
-
-    private fun initialiseDrivingMode() {
-        println("Configure offroad driving mode")
+// Extension function for Car interface
+fun Car.decorate(initialize: () -> Unit): Car {
+    return object : Car {
+        override fun drive() {
+            initialize()
+            this@decorate.drive()
+        }
     }
 }
 
@@ -257,7 +248,9 @@ fun main() {
     val myBasicCar: Car = BasicCar()
 
     // Decorate it to make it an offroad car
-    val offroadCar: Car = OffroadCar(myBasicCar)
+    val offroadCar: Car = myBasicCar.decorate {
+        println("Configure offroad driving mode")
+    }
 
     // Drive the offroad car
     offroadCar.drive()
@@ -265,9 +258,9 @@ fun main() {
 
 ```
 
-In this example, `Car` is the component interface with the `drive` method and `BasicCar` is the concrete component implementing the Car interface. `CarDecorator` is the abstract class implementing the Car interface and delegating the drive operation to the decorated car.
+In this  example, the `decorate` extension function is added to the `Car` interface. This extension function takes a lambda parameter called `initialize`, which represents the additional behavior to be added. It returns a new instance of `Car` that incorporates the specified behavior before calling the original `drive` method.
 
-`OffroadCar` is a concrete decorator that extends `CarDecorator` and adds its own behavior (initialiseDrivingMode) before calling the drive method of the decorated car.In the `main` function, a basic car is decorated to become an offroad car, and then the offroad car is driven.
+In the `main` function, the basic car is decorated using the `decorate` extension function to create an offroad car, and then the offroad car is driven. 
 
 The output for this code example will be:
 
@@ -449,7 +442,67 @@ In this example, the `PaymentStrategy` interface defines the contract for paymen
 
 By using the Strategy Design Pattern, we can easily add new payment strategies without modifying the existing code. We can create new classes that implement the `PaymentStrategy` interface and use them interchangeably in the `ShoppingCart` context.
 
-## Abstract Pattern
+## Factory Design Pattern
+
+The Factory Design Pattern is a creational pattern that provides an interface for creating objects in a super class but allows subclasses to alter the type of objects that will be created. This pattern is often used when a class cannot anticipate the class of objects it must create.
+
+Here's an example of a simple Factory Design Pattern in Kotlin:
+
+```kotlin
+// Product interface
+interface Product {
+    fun create(): String
+}
+
+// Concrete Product A
+class ConcreteProductA : Product {
+    override fun create(): String {
+        return "Product A"
+    }
+}
+
+// Concrete Product B
+class ConcreteProductB : Product {
+    override fun create(): String {
+        return "Product B"
+    }
+}
+
+// Factory interface
+interface ProductFactory {
+    fun createProduct(): Product
+}
+
+// Concrete Factory A
+class ConcreteFactoryA : ProductFactory {
+    override fun createProduct(): Product {
+        return ConcreteProductA()
+    }
+}
+
+// Concrete Factory B
+class ConcreteFactoryB : ProductFactory {
+    override fun createProduct(): Product {
+        return ConcreteProductB()
+    }
+}
+
+// Client code
+fun main() {
+    val factoryA: ProductFactory = ConcreteFactoryA()
+    val productA: Product = factoryA.createProduct()
+    println(productA.create())
+
+    val factoryB: ProductFactory = ConcreteFactoryB()
+    val productB: Product = factoryB.createProduct()
+    println(productB.create())
+}
+
+```
+
+In this example, we have a `Product` interface representing the product to be created. We have two concrete product classes, `ConcreteProductA` and `ConcreteProductB`, which implement the Product interface. We also have a `ProductFactory` interface with a method `createProduct()` and two concrete factory classes, `ConcreteFactoryA` and `ConcreteFactoryB` which implement this interface and return instances of the respective concrete products.
+
+## Abstract Factory pattern
 
 The abstract design pattern provides an interface for creating families of related or dependent objects without specifying their concrete classes. This pattern is often used when a system needs to be independent of how its objects are created, composed, represented and the client code should work with multiple families of objects.In Kotlin, you can implement the abstract design pattern using interfaces, abstract classes, and concrete classes.
 
@@ -545,65 +598,13 @@ In this example, `AbstractFactory` declares the creation methods for two types o
 
 This structure allows for easy extension of the system by introducing new products and factories without modifying the existing client code.
 
-## Factory Design Pattern
+## Key Differences Between Abstract Factory pattern and Factory Design Pattern
 
-The Factory Design Pattern is a creational pattern that provides an interface for creating objects in a super class but allows subclasses to alter the type of objects that will be created. This pattern is often used when a class cannot anticipate the class of objects it must create.
-
-Here's an example of a simple Factory Design Pattern in Kotlin:
-
-```kotlin
-// Product interface
-interface Product {
-    fun create(): String
-}
-
-// Concrete Product A
-class ConcreteProductA : Product {
-    override fun create(): String {
-        return "Product A"
-    }
-}
-
-// Concrete Product B
-class ConcreteProductB : Product {
-    override fun create(): String {
-        return "Product B"
-    }
-}
-
-// Factory interface
-interface ProductFactory {
-    fun createProduct(): Product
-}
-
-// Concrete Factory A
-class ConcreteFactoryA : ProductFactory {
-    override fun createProduct(): Product {
-        return ConcreteProductA()
-    }
-}
-
-// Concrete Factory B
-class ConcreteFactoryB : ProductFactory {
-    override fun createProduct(): Product {
-        return ConcreteProductB()
-    }
-}
-
-// Client code
-fun main() {
-    val factoryA: ProductFactory = ConcreteFactoryA()
-    val productA: Product = factoryA.createProduct()
-    println(productA.create())
-
-    val factoryB: ProductFactory = ConcreteFactoryB()
-    val productB: Product = factoryB.createProduct()
-    println(productB.create())
-}
-
-```
-
-In this example, we have a `Product` interface representing the product to be created. We have two concrete product classes, `ConcreteProductA` and `ConcreteProductB`, which implement the Product interface. We also have a `ProductFactory` interface with a method `createProduct()` and two concrete factory classes, `ConcreteFactoryA` and `ConcreteFactoryB` which implement this interface and return instances of the respective concrete products.
+<li>The Factory Method pattern uses inheritance and relies on subclasses to handle the object creation, allowing a class to delegate the instantiation to its subclasses.</li>
+<li>The Abstract Factory pattern uses object composition and provides an interface for creating families of related or dependent objects. It involves multiple Factory Methods, each responsible for creating a different type of object within the family.</li>
+<li>The Factory Method pattern creates one product, while the Abstract Factory pattern creates families of related products.</li>
+<li>In the Factory Method pattern, the client code uses the concrete creator class and relies on polymorphism to instantiate the product.</li>
+<li>In the Abstract Factory pattern, the client code uses the abstract factory to create families of products, and it's designed to work with multiple families of products.</li>
 
 ## Conclusion
 

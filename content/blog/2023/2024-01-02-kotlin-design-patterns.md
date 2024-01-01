@@ -1,11 +1,11 @@
 ---
 title: "Design Patterns in Kotlin"
 categories: ["Kotlin"]
-date: 2023-11-20 00:00:00 +1100
+date: 2024-01-02 00:00:00 +1100
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss what design patterns are and discuss a few examples."
-image: images/stock/0104-on-off-1200x628-branded.jpg
-url: desing patterns in kotlin
+image: images/stock/0107-puzzle-1200x628-branded.jpg
+url: kotlin-design-patterns
 ---
 
 A design pattern is a general repeatable solution to a commonly occurring problem in software design. In this blog post, we will delve into various design patterns and explore how they can be effectively implemented in Kotlin.
@@ -502,9 +502,9 @@ fun main() {
 
 In this example, we have a `Product` interface representing the product to be created. We have two concrete product classes, `ConcreteProductA` and `ConcreteProductB`, which implement the Product interface. We also have a `ProductFactory` interface with a method `createProduct()` and two concrete factory classes, `ConcreteFactoryA` and `ConcreteFactoryB` which implement this interface and return instances of the respective concrete products.
 
-## Abstract Factory pattern
+## Abstract Factory Pattern
 
-The abstract design pattern provides an interface for creating families of related or dependent objects without specifying their concrete classes. This pattern is often used when a system needs to be independent of how its objects are created, composed, represented and the client code should work with multiple families of objects.In Kotlin, you can implement the abstract design pattern using interfaces, abstract classes, and concrete classes.
+The abstract factory design pattern provides an interface for creating families of related or dependent objects without specifying their concrete classes. This pattern is often used when a system needs to be independent of how its objects are created, composed, represented and the client code should work with multiple families of objects.In Kotlin, you can implement the abstract design pattern using interfaces, abstract classes, and concrete classes.
 
 Let's look at a simple example to illustrate the abstract design pattern:
 
@@ -598,13 +598,12 @@ In this example, `AbstractFactory` declares the creation methods for two types o
 
 This structure allows for easy extension of the system by introducing new products and factories without modifying the existing client code.
 
-## Key Differences Between Abstract Factory pattern and Factory Design Pattern
-
-<li>The Factory Method pattern uses inheritance and relies on subclasses to handle the object creation, allowing a class to delegate the instantiation to its subclasses.</li>
-<li>The Abstract Factory pattern uses object composition and provides an interface for creating families of related or dependent objects. It involves multiple Factory Methods, each responsible for creating a different type of object within the family.</li>
-<li>The Factory Method pattern creates one product, while the Abstract Factory pattern creates families of related products.</li>
-<li>In the Factory Method pattern, the client code uses the concrete creator class and relies on polymorphism to instantiate the product.</li>
-<li>In the Abstract Factory pattern, the client code uses the abstract factory to create families of products, and it's designed to work with multiple families of products.</li>
+## Key Differences Between the Abstract Factory and Factory Patterns
+- The Factory pattern uses inheritance and relies on subclasses to handle the object creation, allowing a class to delegate the instantiation to its subclasses.
+- The Abstract Factory pattern uses object composition and provides an interface for creating families of related or dependent objects. It involves multiple factory methods, each responsible for creating a different type of object within the family.
+- The Factory pattern creates one product, while the Abstract Factory pattern creates families of related products.
+- In the Factory pattern, the client code uses the concrete creator class and relies on polymorphism to instantiate the product.
+- In the Abstract Factory pattern, the client code uses the abstract factory to create families of products, and it's designed to work with multiple families of products.
 
 ## Conclusion
 

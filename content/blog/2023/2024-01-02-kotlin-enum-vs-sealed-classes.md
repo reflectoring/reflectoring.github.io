@@ -1,11 +1,11 @@
 ---
 title: "Sealed Classes vs Enums in Kotlin"
 categories: ["Kotlin"]
-date: 2023-12-12 00:00:00 +1100
+date: 2024-01-02 00:00:00 +1100
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss differences between sealed classes and enum classes in Kotlin"
-image: images/stock/0104-on-off-1200x628-branded.jpg
-url: kotlin-enum-vs-sealed
+image: images/stock/0044-lock-1200x628-branded.jpg
+url: kotlin-enum-vs-sealed-classes
 ---
 
 Kotlin, a modern JVM programming language, brings a range of features to enhance expressiveness and conciseness. Two key constructs in Kotlin that contribute to its versatility are sealed classes and enum classes. In this blog post, we'll delve into the characteristics, use cases and differences between sealed classes and enum classes.

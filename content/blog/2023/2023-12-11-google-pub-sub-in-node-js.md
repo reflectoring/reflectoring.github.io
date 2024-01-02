@@ -23,7 +23,7 @@ To follow this tutorial, ensure you have the following:
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/nodejs-pub-sub" %}}
 
 ## What Is Google Cloud Pub/Sub?
-Google Cloud Pub/Sub is a scalable message queuing service that ensures asynchronous and reliable messaging between various applications and services. It offers flexibility, supporting one-to-many, many-to-one, and many-to-many communication patterns. This service is designed to track changes in different applications and communicate these updates to diverse systems in real-time. 
+Google Cloud Pub/Sub is a scalable message queuing service that ensures asynchronous and reliable messaging between various applications and services. It offers flexibility, supporting one-to-many, many-to-one, and many-to-many communication patterns. This service is designed to track changes in different applications and communicate these updates to diverse systems in real-time.
 
 ### How Google Cloud Pub/Sub Works
 Consider two servers, server A and server B, requiring communication. Traditionally, server A directly notifies server B of changes using synchronous HTTP calls. However, this method has drawbacks: if server B is busy or slow, server A faces problems with communication.
@@ -37,16 +37,18 @@ This approach provides flexibility to subscribers like server B, who can choose 
 For a deeper understanding of Pub/Sub, let's explore some of its key terminology and common use cases.
 
 ### Google Cloud Pub/Sub Terminology
-![Google Pub/Sub flow](https://cloud.google.com/static/pubsub/images/pub_sub_flow.svg)
+
+{{% image alt="google-pub-sub-flow" src="images/posts/nodejs-pub-sub/google-pub-sub-flow.png" %}}
+
+- **`Publisher`**: These are services that add new messages to a topic. Topics can have a single or multiple publishers
 - **`Message`**: This is the data exchanged between services. It can be stored as a text or byte string, offering flexibility in formatting. Messages usually indicate events, such as data modification or action completion.
 - **`Topic`**: This is like a message folder. We can add messages to or read messages from it. We can have multiple topics, and each topic is for a different type of message. Messages are put into specific topics, and we choose which topic we want messages from. This helps specify the messages we get. We can make as many topics as we want.
-- **`Publisher`**: These are services that add new messages to a topic. Topics can have a single or multiple publishers
-- **`Subscribers`**: These are services designed to receive messages from one or more topics. Subscribers have the flexibility to subscribe to multiple topics, providing a versatile and comprehensive method for message reception.
 - **`Subscription`**: This is the act of subscribing to a topic. By subscribing to a topic, we express interest in receiving messages published on that specific topic. Each subscription is associated with a particular topic. Creating a subscription is a key step in the Google Pub/Sub messaging system to establish the link between a subscriber and the messages published on a topic.
 - **`Receiving Messages:`** Subscribers receive messages from subscribed topics based on the subscription settings. There are two ways to receive messages:
      - Pull: Subscribers manually pull the latest messages through a direct request.
      - Push: Subscribers request that all new messages be pushed to a provided endpoint URL.
 - **`Acknowledgment (Ack):`**  Subscribers play a vital role by acknowledging each received message. This acknowledgment ensures that the same messages won't be sent (Push) or read (Pull) repeatedly. If a message is not acknowledged, it triggers the assumption that it needs to be resent. Acknowledgment is a vital step in maintaining the efficiency of the messaging system, preventing redundant message delivery.
+- **`Subscribers`**: These are services designed to receive messages from one or more topics. Subscribers have the flexibility to subscribe to multiple topics, providing a versatile and comprehensive method for message reception.
 
 ### Common Pub/Sub Use Cases:
 - **Real-time Event Processing:** Monitor and react in real-time to user interactions, system malfunctions, and business events.
@@ -102,7 +104,9 @@ The `HTTPS_LIVE_URL` parameter used above signifies the HTTPS host URL where the
 Next, To connect to Google Cloud Pub/Sub from a Node.js application, authentication credentials are necessary. This typically involves obtaining a service account key. Let's proceed by setting up our service account.
 
 ### Setting up a Service Account for Google Cloud Pub/Sub
-We will need to get a service account configured with Pub/Sub access on our Google Cloud Console. We can do this by following these steps:
+This involves configuring a service account with Pub/Sub access on the Google Cloud Console. A service account acts as a means for our application to authenticate itself with Google Cloud services. Once created, we can download its key in JSON format. The service account key contains essential information for our application to prove its identity and gain access to the Pub/Sub functionalities.
+
+Follow these steps to set up a service account::
 
 - Navigate to the [Pub/Sub Section](https://console.cloud.google.com/apis/library/pubsub.googleapis.com?project=nodejs-pub-sub) and enable Pub/Sub API for our project
 - Next, In the [Google Cloud Console](https://console.cloud.google.com/), go to the **IAM & Admin** section using the search bar.

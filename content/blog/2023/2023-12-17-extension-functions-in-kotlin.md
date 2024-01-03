@@ -1,5 +1,5 @@
 ---
-title: "Exploring the Power of extension Functions in Kotlin"
+title: "Extension Functions in Kotlin"
 categories: ["Kotlin"]
 date: 2023-12-13 00:00:00 +1100
 authors: [ezra]
@@ -8,7 +8,7 @@ image: images/stock/0104-on-off-1200x628-branded.jpg
 url: extension functions in kotlin
 ---
 
-One of the Kotlin's standout features is extension functions, a mechanism that empowers developers to enhance existing classes without modifying their source code. In this blog post, we will embark on a journey to explore the fascinating realm of Kotlin extension functions, understanding their syntax, exploring use cases and recognizing their impact on code maintainability and readability.
+One of Kotlin's standout features is extension functions, a mechanism that empowers developers to enhance existing classes without modifying their source code. In this blog post, we will explore Kotlin extension functions, understanding their syntax, exploring use cases and recognizing their impact on code maintainability and readability.
 
 ## Understanding Extension Functions
 
@@ -27,7 +27,7 @@ fun main() {
     println("Result of addition: $result")
 }
 ```
-In this example, `addition` is an extension function for the `Int` class. It takes another Int as a parameter and returns the result of the addition. In the `main` function, we use this extension function to perform addition on the `Int` value 5 and 3.
+In this example, `addition` is an extension function for the `Int` class. It takes another `Int` as a parameter and returns the result of the addition. In the `main` function, we use this extension function to perform addition on the `Int` values 5 and 3.
 
 ## Advantages of Extension Functions
 
@@ -79,7 +79,7 @@ println(formattedDate) // Output: Dec 16, 2023
 
 Kotlin's interoperability with Java is a key strength of the language. Extension functions play a crucial role in enhancing the interoperability between Kotlin and Java code. When we extend a Java class in Kotlin, the extension functions seamlessly become part of the class's API making it easier for Kotlin developers to work with Java libraries.
 
-Consider a scenario where you're dealing with Java's List interface and want to filter its elements based on a predicate. We can create an extension function in Kotlin to add this functionality:
+Consider a scenario where you're dealing with Java's `List` interface and want to filter its elements based on a predicate. We can create an extension function in Kotlin to add this functionality:
 
 ```kotlin
 fun <T> List<T>.filterCustom(predicate: (T) -> Boolean): List<T> {
@@ -93,7 +93,7 @@ println(evenNumbers) // Output: [2, 4, 6, 8, 10]
 ```
 This seamless integration of extension functions across language boundaries enhances the collaboration between Kotlin and Java components in a codebase.
 
-## Extension Functions UseCases
+## Extension Functions Use Cases
 
 ### String Manipulation
 
@@ -138,7 +138,7 @@ println(avg) // Output: 3.0
 The extension function `average` simplifies the process of calculating the average of a list of integers. It adds a concise and reusable method to the `List<Int> `class promoting cleaner code.
 
 ### View-related Operations in Android
-In Android development, extension functions can be valuable for simplifying common operations on `View` objects. Consider the following example, which shows how to hide and show a View:
+In Android development, extension functions can be valuable for simplifying common operations on `View` objects. Consider the following example, which shows how to hide and show a `View`:
 ```kotlin
 fun View.hide() {
     visibility = View.GONE

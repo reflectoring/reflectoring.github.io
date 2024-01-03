@@ -38,8 +38,6 @@ Extension functions contribute to better code organization by grouping related f
 Consider a scenario where we need to manipulate dates in various ways throughout our codebase. Instead of scattering date-related functions across different classes or files, we can create a `DateUtils` class and define extension functions for the Date class within it. This centralizes date-related operations, improving code readability and maintainability.
 
 ```kotlin
-class DateUtils
-
 fun Date.isFutureDate(): Boolean {
     return this > Date()
 }
@@ -214,7 +212,32 @@ While extension functions offer a powerful tool for enhancing code, it's essenti
 While extension functions can greatly improve code readability and organization, excessive use can lead to confusion and code bloat. It's crucial to strike a balance and reserve extension functions for cases where they genuinely improve the API and maintainability of the code.
 
 ### Be Mindful of Scope
-Extension functions are in scope wherever their containing package is imported. Be cautious about naming clashes to avoid unintentional overrides or confusion. Choose names that are descriptive and unlikely to conflict with existing or future API additions.
+Extension functions are powerful tools but it's crucial to be mindful of their scope. The scope of an extension function is tied to the package in which it is defined. When we import a package containing extension functions, those functions become accessible throughout the file or package where the import statement is declared.
+
+Consider the following example:
+```kotlin
+// File: StringUtil.kt
+package com.example.util
+
+fun String.customExtensionFunction(): String {
+    return this.toUpperCase()
+}
+```
+In the above code, we've defined an extension function `customExtensionFunction` for the `String` class inside the `com.example.util` package.
+
+Now, let's use this extension function in another file:
+
+```kotlin
+// File: Main.kt
+import com.example.util.customExtensionFunction
+
+fun main() {
+    val myString = "hello, world!"
+    val result = myString.customExtensionFunction()
+    println(result)
+}
+```
+In the `Main.kt` file, we import the `customExtensionFunction` from the `com.example.util` package and apply it to a string. The extension function is in scope wherever the package is imported.
 
 ### Prioritize Clarity Over Cleverness
 When defining extension functions, prioritize clarity and readability over cleverness. While concise and expressive code is desirable, it should not compromise the ability of other developers (or your future self) to understand the code easily. Choose function names that clearly convey their purpose.

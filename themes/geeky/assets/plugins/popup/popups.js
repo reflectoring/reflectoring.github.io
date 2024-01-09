@@ -17,7 +17,7 @@ $( document ).ready(function() {
     }
 
     function showAdPopup(){
-      let cookie = getCookie("reflectoring-popup-test");
+      let cookie = getCookie("reflectoring-popup");
       if(cookie == null){
 
         $.fn.cornerpopup({

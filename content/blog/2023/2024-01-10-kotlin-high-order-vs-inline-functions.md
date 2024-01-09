@@ -1,11 +1,11 @@
 ---
-title: "Exploring the Power of Functions in Kotlin: High-Order Functions vs. Inline Functions"
+title: "High-Order Functions vs. Inline Functions in Kotlin"
 categories: ["Kotlin"]
-date: 2023-12-13 00:00:00 +1100
+date: 2024-01-10 00:00:00 +1100
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss what high order functions and inline functions are in kotlin"
-image: images/stock/0104-on-off-1200x628-branded.jpg
-url: inline functions and high order functions in kotlin
+image: images/stock/0134-kotlin-1200x628-branded.jpg
+url: kotlin-high-order-vs-inline-functions
 ---
 
 One of Kotlin's standout features is its robust support for functions, including high-order functions and inline functions. In this blog post, we will delve into the world of functions in Kotlin, exploring the differences between high-order functions and inline functions and understanding when to leverage each for optimal code efficiency.

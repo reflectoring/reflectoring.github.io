@@ -1,11 +1,11 @@
 ---
-title: "Publish and Receive Message With Google Pub/Sub in Node.js"
+title: "Publish and Receive Messages with Google Pub/Sub in Node.js"
 categories: ["Node"]
-date: 2023-12-11 00:00:00 +1100
-modified: 2023-12-11 00:00:00 +1100
+date: 2024-01-12 00:00:00 +1100
+modified: 2024-01-12 00:00:00 +1100
 authors: ["ajibade"]
 description: "Unlocking the power of asynchronous communication in our Node.js applications as we delve into the seamless process of publishing and receiving messages using Google Cloud Pub/Sub, enhancing our project's real-time capabilities."
-image: images/stock/0134-socket-1200x628-branded.jpg
+image: images/stock/0076-airmail-1200x628-branded.jpg
 url:  google-pub-sub-in-node-js
 ---
 

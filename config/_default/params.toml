@@ -79,8 +79,8 @@ static = ["skyscraper-ad"]
 dynamic = ["simplify-form", "stratospheric-ad", "gyhdoca-ad"]
 
 [ads]
-#skyscraper_image = "images/launchdarkly/GALAXY-300x600-GENERAL.png"
-#skyscraper_href = "https://launchdarkly.com/galaxy?utm_source=reflectoring&utm_medium=display&utm_campaign=gxy22&utm_content=galaxy"
+skyscraper_image = "images/height/height-vertical.png"
+skyscraper_href = "https://height.app/?home=&utm_source=ReflectoringsimplifyjanNewsletter&utm_medium=ReflectoringsimplifyjanNewsletter&utm_campaign=ReflectoringsimplifyjanNewsletter"
 
 [wol]
 items = [

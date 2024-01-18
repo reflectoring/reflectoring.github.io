@@ -1,11 +1,11 @@
 ---
-title: "Understanding Merge sort in Kotlin"
+title: "Merge sort in Kotlin"
 categories: ["Kotlin"]
 date: 2023-01-18 00:00:00 +1100 
 authors: [ezra]
-excerpt: "In this tutorial, we'll discuss merge sorting algorithm."
+excerpt: "In this tutorial, we'll discuss merge sort algorithm."
 image: images/stock/0096-tools-1200x628-branded.jpg
-url: introduction-to-Mockk
+url: merge sort in kotlin
 ---
 ## Introduction
 Sorting is a fundamental operation that plays a crucial role in various applications. Among the many sorting algorithms, merge sort stands out for its efficiency and simplicity. In this blog post, we will delve into the details of merge sort and implement it in Kotlin.

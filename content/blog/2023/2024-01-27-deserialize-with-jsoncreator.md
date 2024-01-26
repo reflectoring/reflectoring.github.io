@@ -17,7 +17,7 @@ For details on other commonly used Jackson annotations, refer to [this article](
 
 ## What is @JsonCreator
 
-The @JsonCreator annotation is a part of the [Jackson API](https://fasterxml.github.io/jackson-annotations/javadoc/2.13/com/fasterxml/jackson/annotation/JsonCreator.html) that helps in deserialization. **Deserialization is a process of converting a JSON string into a java object.**
+The @JsonCreator annotation is a part of the [Jackson API](https://fasterxml.github.io/jackson-annotations/javadoc/2.13/com/fasterxml/jackson/annotation/JsonCreator.html) that helps in deserialization. **Deserialization is a process of converting a JSON string into a Java object.**
 This is especially useful when we have multiple constructors/static factory methods for object creation. With the `@JsonCreator` annotation we can specify which constructor/static factory method to use during the deserialization process.
 
 ## Working with @JsonCreator annotation
@@ -25,7 +25,7 @@ This is especially useful when we have multiple constructors/static factory meth
 In this section, we will look at a few use-cases of how this annotation works.
 ### Deserializing immutable objects
 Java encourages creating immutable objects since they are thread-safe and easy to maintain. To get a better understanding of how to use immutable objects in java, refer to [this article.](https://reflectoring.io/java-immutables/)
-Let's try to deserialize an immutable object `UserData` which is defined as below:
+Let's try to deserialize an immutable object `UserData` which is defined as below :
 ````java
 
 @JsonIgnoreProperties(ignoreUnknown=true)
@@ -86,14 +86,16 @@ cannot deserialize from Object value (no delegate- or property-based Creator)
  at [Source: (String)"{"id":100,"firstName":"Ranjani","lastName":"Harish",
  "city":"Sydney","createdDate":"2024-01-16"}"; line: 1, column: 2]
 ````
-This is because the `ObjectMapper` class by default looks for a no-arg constructor to set the values. **Since our java class is immutable, it has neither a no-arg constructor
+This is because the `ObjectMapper` class by default looks for a no-arg constructor to set the values. **Since our Java class is immutable, it has neither a no-arg constructor
 nor setter methods to set values**. Also, we see that the `UserData` class has multiple constructors. Therefore, we would need a way to 
 instruct the `ObjectMapper` class to use the right constructor for deserialization.
-Let's modify our code to use the `@JsonCreator` annotation as:
+Let's modify our code to use the `@JsonCreator` annotation as :
 ````java
 @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public UserData(@JsonProperty("id") long id, @JsonProperty("firstName") String firstName,
-                    @JsonProperty("lastName") String lastName, @JsonProperty("city") String city) {
+    public UserData(@JsonProperty("id") long id, 
+                    @JsonProperty("firstName") String firstName,
+                    @JsonProperty("lastName") String lastName, 
+                    @JsonProperty("city") String city) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -103,7 +105,7 @@ Let's modify our code to use the `@JsonCreator` annotation as:
 ````
 Now, when we run our test again, we can see that the deserialization is successful.
 Let's look at the additional annotation we've added to get this working.
-- By applying the `@JsonCreator` annotation to the constructor, the Jackson deserializer knows which constructor is to be picked.
+- By applying the `@JsonCreator` annotation to the constructor, the Jackson deserializer knows which constructor needs to be used.
 - `JsonCreator.Mode.PROPERTIES` indicates that the creator should match the incoming object with the constructor arguments. This is the most commonly used JsonCreator Mode.
 - We annotate all the constructor arguments with `@JsonProperty` for the creator to map the arguments.
 
@@ -182,7 +184,7 @@ can not use as property-based Creator
  "city":"Sydney","createdDate":"2024-01-16"}"; line: 1, column: 1]
 ````
 which indicates that adding the `@JsonProperty` annotation is mandatory. **As we can see the Json property names and the deserialized object property names are exactly the same.
-In such cases there is an alternative way, where we can skip using the `@JsonProperty` annotation**. Let's modify our `ObjectMapper` bean:
+In such cases there is an alternative way, where we can skip using the `@JsonProperty` annotation**. Let's modify our `ObjectMapper` bean :
 ````java
     @Bean
     public ObjectMapper objectMapper() {
@@ -241,9 +243,9 @@ When we pass a serialized Map object to the `ObjectMapper` class, it will automa
 
 Now that we understand how to use the `@JsonCreator` annotation in Java, let's look at a specific use case where this annotation is required in a Spring Boot application.
 Let's create a basic Spring Boot application with Rest endpoints that support basic pagination. **Pagination is particularly useful when you need to display a large number of records in parts/slices. The Spring paging framework converts this data for us which makes retrieving data easier.**
-This sample application is only to understand the usage of `@JsonCreator`. To understand how pagination works in Spring Boot, refer [this article.](https://reflectoring.io/spring-boot-paging/)
+This sample application only demonstrates the usage of `@JsonCreator`. To understand how pagination works in Spring Boot, refer [this article.](https://reflectoring.io/spring-boot-paging/)
 
-This User Application uses H2 database to store and retrieve data. For simplicity, we have converted the List of elements returned from the DB into a paged object as shown below:
+This User Application uses H2 database to store and retrieve data. For simplicity, we have converted the List of elements returned from the DB into a paged object as shown below :
 ````java
     @GetMapping("/userdetails/page")
     public ResponseEntity<Page<UserData>> getPagedUser(
@@ -437,4 +439,4 @@ Now we see that the test runs successfully.
 
 ## Conclusion
 In this article, we took a closer look at how to make use of the `@JsonCreator` annotation with some examples.
-We created a Simple Spring Boot application that using pagination to demo how this annotation comes handy during the deserialization process.
+Also, we created a simple Spring Boot application that using pagination to demo how this annotation comes handy during the deserialization process.

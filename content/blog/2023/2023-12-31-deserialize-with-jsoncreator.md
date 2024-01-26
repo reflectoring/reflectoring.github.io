@@ -1,7 +1,7 @@
 ---
-title: "Serialize and Deserialize with Jackson's @JsonCreator in a Spring Boot Application"
+title: "Deserialize with Jackson's @JsonCreator in a Spring Boot Application"
 categories: ["Spring"]
-date: 2023-12-31 00:00:00 +1100
+date: 2024-01-27 00:00:00 +1100
 authors: ["ranjani"]
 description: "Deserialize with JsonCreator annotation"
 image: images/stock/0112-decision-1200x628-branded.jpg
@@ -17,15 +17,14 @@ For details on other commonly used Jackson annotations, refer [this article](htt
 
 ## What is @JsonCreator
 
-The @JsonCreator annotation is a part of the [Jackson API](https://fasterxml.github.io/jackson-annotations/javadoc/2.13/com/fasterxml/jackson/annotation/JsonCreator.html) that helps in deserialization. Deserialization is a process of converting a JSON string into a java object.
-This is especially useful when we have multiple constructors/static factory methods for object creation. With the @JsonCreator annotation we can specify which constructor/static factory method to use during the deserialization process.
+The @JsonCreator annotation is a part of the [Jackson API](https://fasterxml.github.io/jackson-annotations/javadoc/2.13/com/fasterxml/jackson/annotation/JsonCreator.html) that helps in deserialization. **Deserialization is a process of converting a JSON string into a java object.**
+This is especially useful when we have multiple constructors/static factory methods for object creation. With the `@JsonCreator` annotation we can specify which constructor/static factory method to use during the deserialization process.
 
 ## Working with @JsonCreator annotation
 
 In this section, we will look at a few use-cases of how this annotation works.
 ### Deserializing immutable objects
 Java encourages creating immutable objects since they are thread-safe and easy to maintain. To get a better understanding of how to use immutable objects in java, refer to [this article.](https://reflectoring.io/java-immutables/)
-Deserialization is the process of converting a stream of bytes into an Object.
 Let's try to deserialize an immutable object `UserData` which is defined as below:
 ````java
 
@@ -51,7 +50,8 @@ public class UserData {
         this.createdDate = LocalDate.now();
     }
 
-    public UserData(long id, String firstName, String lastName, String city, LocalDate createdDate) {
+    public UserData(long id, String firstName, String lastName, String city, 
+                    LocalDate createdDate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -67,11 +67,11 @@ Next, let's try to deserialize the object with Jackson's **ObjectMapper** class:
 
     @Test
     public void deserializeImmutableObjects() throws JsonProcessingException {
-        String userData = objectMapper.writeValueAsString(MockedUsersUtility.getMockedUserData());
+        String userData = 
+            objectMapper.writeValueAsString(MockedUsersUtility.getMockedUserData());
         System.out.println("USER: " + userData);
         UserData user = objectMapper.readValue(userData, UserData.class);
         assertNotNull(user);
-
     }
     
 ````
@@ -108,10 +108,10 @@ Let's look at the additional annotation we've added to get this working.
 - We annotate all the constructor arguments with `@JsonProperty` for the creator to map the arguments.
 
 ### Understanding all the available JsonCreator modes:
-- JsonCreator.Mode.PROPERTIES : This is the most commonly used mode where every constructor/factory argument is annotated with either `@JsonProperty` or `@JacksonInject` to indicate the name of the property to bind to.
-- JsonCreator.Mode.DELEGATING : Single-argument constructor/factory method without JsonProperty annotation for the argument. Here, Jackson first binds JSON into type of the argument, and then calls creator. This is often used in conjunction with JsonValue (used for serialization).
-- JsonCreator.Mode.DEFAULT : If no mode or DEFAULT mode is chosen, Jackson internally decides which of PROPERTIES / DELEGATING mode to choose from.
-- JsonCreator.Mode.DISABLED : This mode indicates the creator method is not to be used.
+- **JsonCreator.Mode.PROPERTIES** : This is the most commonly used mode where every constructor/factory argument is annotated with either `@JsonProperty` to indicate the name of the property to bind to.
+- **JsonCreator.Mode.DELEGATING** : Single-argument constructor/factory method without JsonProperty annotation for the argument. Here, Jackson first binds JSON into type of the argument, and then calls creator. This is often used in conjunction with JsonValue (used for serialization).
+- **JsonCreator.Mode.DEFAULT** : If no mode or DEFAULT mode is chosen, Jackson internally decides which of PROPERTIES / DELEGATING mode to choose from.
+- **JsonCreator.Mode.DISABLED** : This mode indicates the creator method is not to be used.
 
 
 In the further sections, we will take a look at examples and how to use them effectively.
@@ -181,8 +181,8 @@ can not use as property-based Creator
  at [Source: (String)"{"id":100,"firstName":"Ranjani","lastName":"Harish",
  "city":"Sydney","createdDate":"2024-01-16"}"; line: 1, column: 1]
 ````
-which indicates that adding the `@JsonProperty` annotation is mandatory. As we can see the Json property names and the deserialized object property names are exactly the same.
-In such cases there is an alternative way, where we can skip using the `@JsonProperty` annotation. Let's modify our `ObjectMapper` bean:
+which indicates that adding the `@JsonProperty` annotation is mandatory. **As we can see the Json property names and the deserialized object property names are exactly the same.
+In such cases there is an alternative way, where we can skip using the `@JsonProperty` annotation**. Let's modify our `ObjectMapper` bean:
 ````java
     @Bean
     public ObjectMapper objectMapper() {
@@ -199,6 +199,7 @@ Now if we run our tests, we can see that the test passes even without the use of
 Another option is to register the `Jdk8Module` which includes the `ParameterNamesModule` along with other modules.
 Refer to [the documentation for its usage.](https://github.com/FasterXML/jackson-modules-java8)
   {{% /info %}}
+
 
 **3. Apply @JsonCreator to static factory methods**
 Another way of creating immutable java objects is via static factory methods. We can apply the `@JsonCreator` annotations to static factory methods too.
@@ -239,14 +240,15 @@ When we pass a serialized Map object to the `ObjectMapper` class, it will automa
 ````
 
 Now that we understand how to use the `@JsonCreator` annotation in Java, let's look at a specific use case where this annotation is required in a Spring Boot application.
-Let's create a basic Spring Boot application with Rest endpoints that support basic pagination. Pagination is particularly useful when you need to display a large number of records in parts/slices. The Spring paging framework converts this data for us which makes retrieving data easier.
+Let's create a basic Spring Boot application with Rest endpoints that support basic pagination. **Pagination is particularly useful when you need to display a large number of records in parts/slices. The Spring paging framework converts this data for us which makes retrieving data easier.**
 This sample application is only to understand the usage of `@JsonCreator`. To understand how pagination works in Spring Boot, refer [this article.](https://reflectoring.io/spring-boot-paging/)
 
-In this User Application uses H2 database. For simplicity, we have converted the List of elements returned from the DB into a paged object as shown below:
+This User Application uses H2 database to store and retrieve data. For simplicity, we have converted the List of elements returned from the DB into a paged object as shown below:
 ````java
     @GetMapping("/userdetails/page")
-    public ResponseEntity<Page<UserData>> getPagedUser(@RequestParam(defaultValue = "0") int page,
-                                                       @RequestParam(defaultValue = "20") int size) {
+    public ResponseEntity<Page<UserData>> getPagedUser(
+                    @RequestParam(defaultValue = "0") int page,
+                    @RequestParam(defaultValue = "20") int size) {
         List<UserData> usersList = userService.getUsers();
 
         // First let's split the List depending on the pagesize
@@ -256,7 +258,8 @@ In this User Application uses H2 database. For simplicity, we have converted the
 
         List<UserData> pageContent = usersList.subList(startIndex, endIndex);
 
-        Page<UserData> employeeDtos = new PageImpl<>(pageContent, PageRequest.of(page, size), totalCount);
+        Page<UserData> employeeDtos = 
+                new PageImpl<>(pageContent, PageRequest.of(page, size), totalCount);
 
         return ResponseEntity.ok()
                 .body(employeeDtos);
@@ -301,112 +304,8 @@ When we run our Spring boot application and hit the endpoint using postman, we s
             "lastName": "Stone",
             "city": "Cape Town",
             "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1005,
-            "firstName": "Rohan",
-            "lastName": "Alexander",
-            "city": "New Jersey",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1006,
-            "firstName": "Nina",
-            "lastName": "Norton",
-            "city": "New Jersey",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1007,
-            "firstName": "Jack",
-            "lastName": "Hull",
-            "city": "New Jersey",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1008,
-            "firstName": "Ariel",
-            "lastName": "Horn",
-            "city": "California",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1009,
-            "firstName": "Colt",
-            "lastName": "Leon",
-            "city": "California",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1010,
-            "firstName": "Heath",
-            "lastName": "Kim",
-            "city": "California",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1011,
-            "firstName": "Kodi",
-            "lastName": "Wise",
-            "city": "Sydney",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1012,
-            "firstName": "Shea",
-            "lastName": "Luna",
-            "city": "Sydney",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1013,
-            "firstName": "Gage",
-            "lastName": "Bright",
-            "city": "Sydney",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1014,
-            "firstName": "Roni",
-            "lastName": "Rice",
-            "city": "Melbourne",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1015,
-            "firstName": "Abigail",
-            "lastName": "English",
-            "city": "Melbourne",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1016,
-            "firstName": "Dane",
-            "lastName": "Roth",
-            "city": "Melbourne",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1017,
-            "firstName": "Enzo",
-            "lastName": "Reese",
-            "city": "Brisbane",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1018,
-            "firstName": "Rocco",
-            "lastName": "Reid",
-            "city": "Brisbane",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1019,
-            "firstName": "Heidi",
-            "lastName": "Klum",
-            "city": "Brisbane",
-            "createdDate": "2024-01-26"
         }
+        // More elements here
     ],
     "pageable": {
         "sort": {
@@ -435,14 +334,15 @@ When we run our Spring boot application and hit the endpoint using postman, we s
     "empty": false
 }
 ````
-Note that te endpoint returned us some pagination metadata like the `totalElements`, `totalPages`, `sort` and more which is easily readable.
+As we can see, the endpoint returned us some pagination metadata like the `totalElements`, `totalPages`, `sort` which is easily readable and gives us all the information we need.
 Next, let's write a Spring Boot test to understand how the deserialization happens when we call the GET endpoint using `TestRestTemplate`
 ````java
     @Test
     void givenGetData_whenRestTemplateExchange_thenReturnsPageOfEmployee() {
 
         addDataToDB();
-        ResponseEntity<Page<UserData>> responseEntity = restTemplate.exchange(
+        ResponseEntity<Page<UserData>> responseEntity = 
+        restTemplate.exchange(
                 "http://localhost:" + port + "/data/userdetails/page", HttpMethod.GET, null,
                 new ParameterizedTypeReference<Page<UserData>>() {
                 });
@@ -456,14 +356,15 @@ Next, let's write a Spring Boot test to understand how the deserialization happe
 ````
 When we run this test, we see an error as below:
 ````text
-org.springframework.http.converter.HttpMessageConversionException: Type definition error: 
-[simple type, class org.springframework.data.domain.Page]; 
+org.springframework.http.converter.HttpMessageConversionException: 
+Type definition error: [simple type, class org.springframework.data.domain.Page]; 
 nested exception is com.fasterxml.jackson.databind.exc.InvalidDefinitionException: 
 Cannot construct instance of `org.springframework.data.domain.Page` 
 (no Creators, like default constructor, exist): 
 abstract types either need to be mapped to concrete types, have custom deserializer, 
 or contain additional type information
- at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 1]
+ at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); 
+ line: 1, column: 1]
 ````
 Here, we see that the error complains that it couldn't be mapped to concrete types.
 

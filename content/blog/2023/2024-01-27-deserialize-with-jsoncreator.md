@@ -439,4 +439,4 @@ Now we see that the test runs successfully.
 
 ## Conclusion
 In this article, we took a closer look at how to make use of the `@JsonCreator` annotation with some examples.
-Also, we created a simple Spring Boot application that using pagination to demo how this annotation comes handy during the deserialization process.
+Also, we created a simple Spring Boot application that uses pagination to demo how this annotation comes handy during the deserialization process.

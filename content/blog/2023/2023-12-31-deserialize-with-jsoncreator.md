@@ -5,7 +5,7 @@ date: 2023-12-31 00:00:00 +1100
 authors: ["ranjani"]
 description: "Deserialize with JsonCreator annotation"
 image: images/stock/0112-decision-1200x628-branded.jpg
-url: jackson-jsoncreator
+url: spring-jsoncreator
 ---
 
 The FasterXML Jackson library is the most popular JSON parser in Java. Spring internally uses this API for JSON parsing. In the previous

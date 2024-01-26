@@ -9,9 +9,9 @@ url: spring-jsoncreator
 ---
 
 The FasterXML Jackson library is the most popular JSON parser in Java. Spring internally uses this API for JSON parsing. In the previous
-article we covered the [@JsonView annotation](https://reflectoring.io/jackson-jsonview-tutorial/). In this article, we will look at how to use the **@JsonCreator** annotation.
+article, we covered the [@JsonView annotation](https://reflectoring.io/jackson-jsonview-tutorial/). In this article, we will look at how to use the **@JsonCreator** annotation.
 Subsequently, we will also take a look at a specific use case of using this annotation in a Spring Boot application. 
-For details on other commonly used Jackson annotations, refer [this article](https://reflectoring.io/jackson/).
+For details on other commonly used Jackson annotations, refer to [this article](https://reflectoring.io/jackson/).
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/jackson-jsoncreator" %}}
 

@@ -242,10 +242,18 @@ When we pass a serialized Map object to the `ObjectMapper` class, it will automa
 ````
 
 Now that we understand how to use the `@JsonCreator` annotation in Java, let's look at a specific use case where this annotation is required in a Spring Boot application.
-Let's create a basic Spring Boot application with Rest endpoints that support basic pagination. **Pagination is particularly useful when you need to display a large number of records in parts/slices. The Spring paging framework converts this data for us which makes retrieving data easier.**
+Let's create a basic Spring Boot application with Rest endpoints that support pagination. **Pagination is the concept of dividing a large number of records in parts/slices. It is particularly useful, when we have to create REST endpoints to be consumed by a front end application.
+The Spring paging framework converts this data for us which makes retrieving data easier.**
 This sample application only demonstrates the usage of `@JsonCreator`. To understand how pagination works in Spring Boot, refer [this article.](https://reflectoring.io/spring-boot-paging/)
 
-This User Application uses H2 database to store and retrieve data. For simplicity, we have converted the List of elements returned from the DB into a paged object as shown below :
+This User Application uses H2 database to store and retrieve data. 
+The application is configured to run on port 8083, so let's start our application first :
+````text
+mvnw clean verify spring-boot:run (for Windows)
+./mvnw clean verify spring-boot:run (for Linux)
+````
+
+To demonstrate pagination, we have converted the `List<User>` returned from the DB into a paged object as shown below :
 ````java
     @GetMapping("/userdetails/page")
     public ResponseEntity<Page<UserData>> getPagedUser(
@@ -268,7 +276,7 @@ This User Application uses H2 database to store and retrieve data. For simplicit
     }
 ````
 Here, the `Page` class is an interface in the `org.springframework.data.domain` package.
-When we run our Spring boot application and hit the endpoint using postman, we see response as below:
+When we make a GET request to the endpoint `http://localhost:8083/data/userdetails/page`, we see the JSON response as below:
 ````json
 {
     "content": [
@@ -336,16 +344,21 @@ When we run our Spring boot application and hit the endpoint using postman, we s
     "empty": false
 }
 ````
-As we can see, the endpoint returned us some pagination metadata like the `totalElements`, `totalPages`, `sort` which is easily readable and gives us all the information we need.
-Next, let's write a Spring Boot test to understand how the deserialization happens when we call the GET endpoint using `TestRestTemplate`
+The endpoint returned us some pagination metadata like the `totalElements`, `totalPages`, `sort`, `size`.
+**Here, we see that the application has a total of 45 records, which is divided into 3 pages where each page has a maximum of 20.
+This JSON response gives us the first 20 elements from the List.**
+
+
+Next, let's write a Spring Boot test to understand how the deserialization happens when we call the GET endpoint using `TestRestTemplate`.
+Here, the Sprint Boot test uses the same H2 database to retrieve data.
 ````java
     @Test
-    void givenGetData_whenRestTemplateExchange_thenReturnsPageOfEmployee() {
+    void givenGetData_whenRestTemplateExchange_thenReturnsPageOfUser() {
 
-        addDataToDB();
         ResponseEntity<Page<UserData>> responseEntity = 
         restTemplate.exchange(
-                "http://localhost:" + port + "/data/userdetails/page", HttpMethod.GET, null,
+                "http://localhost:" + port + "/data/userdetails/page", 
+                HttpMethod.GET, null,
                 new ParameterizedTypeReference<Page<UserData>>() {
                 });
 
@@ -353,7 +366,8 @@ Next, let's write a Spring Boot test to understand how the deserialization happe
         Page<UserData> restPage = responseEntity.getBody();
         assertNotNull(restPage);
 
-        assertEquals(2, restPage.getTotalElements());
+        assertEquals(45, restPage.getTotalElements());
+        assertEquals(20, restPage.getSize());
     }
 ````
 When we run this test, we see an error as below:
@@ -368,16 +382,17 @@ or contain additional type information
  at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); 
  line: 1, column: 1]
 ````
-Here, we see that the error complains that it couldn't be mapped to concrete types.
+Here, we see that the error indicates that the response couldn't be mapped to concrete types.
 
 Next, let's update the test to use `PageImpl` which is a concrete implementation of the `Page` interface as below:
 ````java
     @Test
-    void givenGetData_whenRestTemplateExchange_thenReturnsPageOfEmployee() {
+    void givenGetData_whenRestTemplateExchange_thenReturnsPageOfUser() {
 
         addDataToDB();
         ResponseEntity<PageImpl<UserData>> responseEntity = restTemplate.exchange(
-                "http://localhost:" + port + "/data/userdetails/page", HttpMethod.GET, null,
+                "http://localhost:" + port + "/data/userdetails/page", 
+                HttpMethod.GET, null,
                 new ParameterizedTypeReference<PageImpl<UserData>>() {
                 });
 
@@ -385,7 +400,7 @@ Next, let's update the test to use `PageImpl` which is a concrete implementation
         PageImpl<UserData> restPage = responseEntity.getBody();
         assertNotNull(restPage);
 
-        assertEquals(2, restPage.getTotalElements());
+        assertEquals(45, restPage.getTotalElements());
     }
 ````
 When we run this test, we see this error now:
@@ -396,21 +411,26 @@ nested exception is com.fasterxml.jackson.databind.exc.InvalidDefinitionExceptio
 Cannot construct instance of `org.springframework.data.domain.PageImpl` 
 (no Creators, like default constructor, exist): cannot deserialize from Object value 
 (no delegate- or property-based Creator)
- at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 2]
+ at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1]
 
 ````
-The Jackson API was not able to map the pagination metadata into the `PageImpl` class. To resolve this issue, let's create a class that implements `PageImpl` 
-and use the `@JsonCreator` annotation and explicitly specify the mapping.
+The Jackson API was not able to map the pagination metadata into the `PageImpl` class. 
+**This is because the `PageImpl` class provided by Spring Data does not provide a constructor that Jackson can use to directly map the pagination metadata.**
+To resolve this issue, let's create a class that implements `PageImpl` and use the `@JsonCreator` annotation and explicitly specify the mapping.
 ````java
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RestPageImpl<T> extends PageImpl<T> {
 
     
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public RestPageImpl(@JsonProperty("content") List<T> content, @JsonProperty("number") int number,
-                        @JsonProperty("size") int size, @JsonProperty("totalElements") Long totalElements,
-                        @JsonProperty("pageable") JsonNode pageable, @JsonProperty("last") boolean last,
-                        @JsonProperty("totalPages") int totalPages, @JsonProperty("sort") JsonNode sort,
+    public RestPageImpl(@JsonProperty("content") List<T> content, 
+                        @JsonProperty("number") int number,
+                        @JsonProperty("size") int size, 
+                        @JsonProperty("totalElements") Long totalElements,
+                        @JsonProperty("pageable") JsonNode pageable, 
+                        @JsonProperty("last") boolean last,
+                        @JsonProperty("totalPages") int totalPages, 
+                        @JsonProperty("sort") JsonNode sort,
                         @JsonProperty("numberOfElements") int numberOfElements) {
       super(content, PageRequest.of(number, numberOfElements), totalElements);
     }
@@ -421,10 +441,11 @@ Let's update the test to make use of the `RestPageImpl` class and rerun the test
 
 ````java
 @Test
-    void givenGetData_whenRestTemplateExchange_thenReturnsPageOfEmployee() {
+    void givenGetData_whenRestTemplateExchange_thenReturnsPageOfUser() {
 
         ResponseEntity<RestPageImpl<UserData>> responseEntity = restTemplate.exchange(
-                "http://localhost:" + port + "/data/userdetails/page", HttpMethod.GET, null,
+                "http://localhost:" + port + "/data/userdetails/page", 
+                HttpMethod.GET, null,
                 new ParameterizedTypeReference<RestPageImpl<UserData>>() {
                 });
 
@@ -433,9 +454,12 @@ Let's update the test to make use of the `RestPageImpl` class and rerun the test
         assertNotNull(restPage);
 
         assertEquals(45, restPage.getTotalElements());
+        assertEquals(20, restPage.getSize());
     }
 ````
 Now we see that the test runs successfully.
+In this case, we have mapped all the pagination metadata that the Spring framework has returned, but we could also use `@JsonProperty` in conjunction with `@JsonIgnoreProperties(ignoreUnknown = true)` to map only the relevant elements.
+For instance, our application does not deal with sorting, so we could ignore mapping the `@JsonProperty("sort") JsonNode sort` if needed.
 
 ## Conclusion
 In this article, we took a closer look at how to make use of the `@JsonCreator` annotation with some examples.

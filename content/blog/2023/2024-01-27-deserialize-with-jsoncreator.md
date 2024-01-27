@@ -458,8 +458,7 @@ Let's update the test to make use of the `RestPageImpl` class and rerun the test
     }
 ````
 Now we see that the test runs successfully.
-In this case, we have mapped all the pagination metadata that the Spring framework has returned, but we could also use `@JsonProperty` in conjunction with `@JsonIgnoreProperties(ignoreUnknown = true)` to map only the relevant elements.
-For instance, our application does not deal with sorting, so we could ignore mapping the `@JsonProperty("sort") JsonNode sort` if needed.
+
 
 ## Conclusion
 In this article, we took a closer look at how to make use of the `@JsonCreator` annotation with some examples.

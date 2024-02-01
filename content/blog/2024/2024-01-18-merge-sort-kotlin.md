@@ -1,7 +1,7 @@
 ---
 title: "Merge sort in Kotlin"
 categories: ["Kotlin"]
-date: 2023-01-18 00:00:00 +1100 
+date: 2024-01-18 00:00:00 +1100 
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss merge sort algorithm."
 image: images/stock/0096-tools-1200x628-branded.jpg
@@ -63,14 +63,15 @@ fun main() {
 This program initializes an array, performs the merge sort and prints both the original and sorted arrays.
 
 ## Analysis of Merge Sort Algorithm
-Merge Sort is a sorting algorithm that follows the divide-and-conquer paradigm. Let's analyze its key aspects:
+Merge Sort is a sorting algorithm that follows the divide-and-conquer paradigm. Let's analyze its key aspects.
 
 ### Time Complexity
 Merge Sort guarantees a consistent time complexity of O(n log n) for the worst, average and best cases. This efficiency is achieved by dividing the array into halves and recursively sorting them before merging resulting in a logarithmic depth and linear work at each level.
 
-`Divide Phase`
+#### Divide Phase
 Dividing the array into halves requires O(log n) operations. This is because the array is continually divided until each subarray contains only one element.
-`Merge Phase`
+
+#### Merge Phase
 Merging two sorted arrays of size n/2 takes O(n) time. Since there are log n levels in the recursive tree, the total merging time is O(n log n).
 
 The overall time complexity is dominated by the merging phase, making merge sort particularly efficient for large datasets. It outperforms algorithms with higher time complexities, such as Bubble Sort or Insertion Sort.
@@ -78,10 +79,11 @@ The overall time complexity is dominated by the merging phase, making merge sort
 ### Space Complexity
 Merge Sort has a space complexity of O(n) due to the need for additional space to store the temporary merged arrays during the merging phase. Each recursive call creates new subarrays, and the merging process involves creating a new array that stores the sorted elements.
 
-`Temporary Arrays`
+#### Temporary Arrays
 
 During the merging phase, temporary arrays are created to store the sorted subarrays. The size of these arrays is proportional to the size of the input.
-`Recursive Stack`
+
+#### Recursive Stack
 
 The recursive calls contribute to the space complexity. In the worst case, the maximum depth of the recursion tree is log n, which determines the space required for the function call stack.
 Despite the additional space requirements, merge sort's stability, predictable performance and ease of parallelization make it a viable choice in scenarios where memory usage is not a critical concern.

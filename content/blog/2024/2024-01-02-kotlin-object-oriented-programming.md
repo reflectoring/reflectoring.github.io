@@ -5,7 +5,7 @@ date: 2024-01-02 00:00:00 +1100
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss what object oriented is and see various example"
 image: images/stock/0104-on-off-1200x628-branded.jpg
-url: object oriented concepts in kotlin
+url: kotlin-object-oriented-programming
 ---
 
 In the realm of object-oriented programming (OOP), Kotlin stands out as an expressive language that seamlessly integrates modern features with a concise syntax. Inheritance, polymorphism and encapsulation play a crucial role in object-oriented code. In this blog post, we'll delve into these concepts in the context of Kotlin, exploring how they enhance code reusability, flexibility, and security.

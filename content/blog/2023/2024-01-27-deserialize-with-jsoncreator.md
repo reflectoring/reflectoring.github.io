@@ -8,22 +8,22 @@ image: images/stock/0112-decision-1200x628-branded.jpg
 url: spring-jsoncreator
 ---
 
-The FasterXML Jackson library is the most popular JSON parser in Java. Spring internally uses this API for JSON parsing. In the previous
-article, we covered the [@JsonView annotation](https://reflectoring.io/jackson-jsonview-tutorial/). In this article, we will look at how to use the **@JsonCreator** annotation.
-Subsequently, we will also take a look at a specific use case of using this annotation in a Spring Boot application. 
-For details on other commonly used Jackson annotations, refer to [this article](https://reflectoring.io/jackson/).
+The FasterXML Jackson library is the most popular JSON parser in Java. Spring internally uses this API for JSON parsing.
+For details on other commonly used Jackson annotations, refer [this article](https://reflectoring.io/jackson/).
+Also, you can deep dive into another useful Jackson annotation [@JsonView](https://reflectoring.io/jackson-jsonview-tutorial/). In this article, we will look at how to use the **@JsonCreator** annotation.
+Subsequently, we will also take a look at a specific use case of using this annotation in the context of a Spring Boot application.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/spring-boot/jackson-jsoncreator" %}}
 
 ## What is @JsonCreator
 
-The @JsonCreator annotation is a part of the [Jackson API](https://fasterxml.github.io/jackson-annotations/javadoc/2.13/com/fasterxml/jackson/annotation/JsonCreator.html) that helps in deserialization. **Deserialization is a process of converting a JSON string into a Java object.**
+The `@JsonCreator` annotation is a part of the [Jackson API](https://fasterxml.github.io/jackson-annotations/javadoc/2.13/com/fasterxml/jackson/annotation/JsonCreator.html) that helps in deserialization. **Deserialization is a process of converting a JSON string into a Java object.**
 This is especially useful when we have multiple constructors/static factory methods for object creation. With the `@JsonCreator` annotation we can specify which constructor/static factory method to use during the deserialization process.
 
-## Working with @JsonCreator annotation
+## Working With @JsonCreator Annotation
 
 In this section, we will look at a few use-cases of how this annotation works.
-### Deserializing immutable objects
+### Deserializing Immutable Objects
 Java encourages creating immutable objects since they are thread-safe and easy to maintain. To get a better understanding of how to use immutable objects in java, refer to [this article.](https://reflectoring.io/java-immutables/)
 Let's try to deserialize an immutable object `UserData` which is defined as below :
 ````java
@@ -37,25 +37,21 @@ public class UserData {
 
     private final String lastName;
 
-    private final String city;
-
     private LocalDate createdDate;
 
 
-    public UserData(long id, String firstName, String lastName, String city) {
+    public UserData(long id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.city = city;
         this.createdDate = LocalDate.now();
     }
 
-    public UserData(long id, String firstName, String lastName, String city, 
-                    LocalDate createdDate) {
+    public UserData(long id, String firstName, String lastName, 
+                  LocalDate createdDate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.city = city;
         this.createdDate = createdDate;
     }
     
@@ -84,22 +80,21 @@ Cannot construct instance of `com.reflectoring.userdetails.model.UserData`
 (no Creators, like default constructor, exist): 
 cannot deserialize from Object value (no delegate- or property-based Creator)
  at [Source: (String)"{"id":100,"firstName":"Ranjani","lastName":"Harish",
- "city":"Sydney","createdDate":"2024-01-16"}"; line: 1, column: 2]
+ createdDate":"2024-01-16"}"; line: 1, column: 2]
 ````
+**The error message explicitly states that the test could not run successfully as there was an error during deserialization**.
 This is because the `ObjectMapper` class by default looks for a no-arg constructor to set the values. **Since our Java class is immutable, it has neither a no-arg constructor
 nor setter methods to set values**. Also, we see that the `UserData` class has multiple constructors. Therefore, we would need a way to 
 instruct the `ObjectMapper` class to use the right constructor for deserialization.
 Let's modify our code to use the `@JsonCreator` annotation as :
 ````java
-@JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public UserData(@JsonProperty("id") long id, 
                     @JsonProperty("firstName") String firstName,
-                    @JsonProperty("lastName") String lastName, 
-                    @JsonProperty("city") String city) {
+                    @JsonProperty("lastName") String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.city = city;
         this.createdDate = LocalDate.now();
     }
 ````
@@ -109,7 +104,9 @@ Let's look at the additional annotation we've added to get this working.
 - `JsonCreator.Mode.PROPERTIES` indicates that the creator should match the incoming object with the constructor arguments. This is the most commonly used JsonCreator Mode.
 - We annotate all the constructor arguments with `@JsonProperty` for the creator to map the arguments.
 
-### Understanding all the available JsonCreator modes:
+### Understanding All Available JsonCreator Modes
+
+There are four modes that can be passed as a parameter to this annotation.
 - **JsonCreator.Mode.PROPERTIES** : This is the most commonly used mode where every constructor/factory argument is annotated with either `@JsonProperty` to indicate the name of the property to bind to.
 - **JsonCreator.Mode.DELEGATING** : Single-argument constructor/factory method without JsonProperty annotation for the argument. Here, Jackson first binds JSON into type of the argument, and then calls creator. This is often used in conjunction with JsonValue (used for serialization).
 - **JsonCreator.Mode.DEFAULT** : If no mode or DEFAULT mode is chosen, Jackson internally decides which of PROPERTIES / DELEGATING mode to choose from.
@@ -118,27 +115,29 @@ Let's look at the additional annotation we've added to get this working.
 
 In the further sections, we will take a look at examples and how to use them effectively.
 
-### Additional usecases:
-**1. Only a single `@JsonCreator` annotation with the same mode can be applied in the same class**
-Let's add `@JsonCreator` annotation with the same mode to two constructors in the same class as below:
+### Additional Use Cases
+Let's look at a few scenarios that will help us understand how and when to use the `@JsonCreator` annotation.
+
+
+#### Single `@JsonCreator` in a Class
+
+To understand this, let's first add `@JsonCreator` annotation with the same mode to two constructors in the same class as below:
 ````java
-@JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public UserData(@JsonProperty("id") long id, @JsonProperty("firstName") String firstName,
-                    @JsonProperty("lastName") String lastName, @JsonProperty("city") String city) {
+                    @JsonProperty("lastName") String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.city = city;
         this.createdDate = LocalDate.now();
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public UserData(@JsonProperty("id") long id, @JsonProperty("firstName") String firstName,
-                    @JsonProperty("lastName") String lastName, @JsonProperty("city") String city, @JsonProperty("createdDate") LocalDate createdDate) {
+                    @JsonProperty("lastName") String lastName, @JsonProperty("createdDate") LocalDate createdDate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.city = city;
         this.createdDate = createdDate;
     }
 ````
@@ -146,27 +145,29 @@ When we try to run our test, it will fail with error:
 ````text
 com.fasterxml.jackson.databind.exc.InvalidDefinitionException: 
 Conflicting property-based creators: already had explicitly marked creator 
-[constructor for `com.reflectoring.userdetails.model.UserData` (4 args), 
+[constructor for `com.reflectoring.userdetails.model.UserData` (3 args), 
 annotations: {interface com.fasterxml.jackson.annotation.JsonCreator=
 @com.fasterxml.jackson.annotation.JsonCreator(mode=PROPERTIES)}, 
 encountered another: [constructor for `com.reflectoring.userdetails.model.UserData` 
-(5 args), annotations: {interface com.fasterxml.jackson.annotation.JsonCreator=
+(4 args), annotations: {interface com.fasterxml.jackson.annotation.JsonCreator=
 @com.fasterxml.jackson.annotation.JsonCreator(mode=PROPERTIES)}
- at [Source: (String)"{"id":100,"firstName":"Ranjani","lastName":"Harish",
- "city":"Sydney","createdDate":"2024-01-16"}"; line: 1, column: 1]
+ at [Source: (String)"{"id":100,"firstName":"Ranjani","lastName":"Harish"
+ ,"createdDate":"2024-01-16"}"; line: 1, column: 1]
 ````
+As we can see, the error mentions **"Conflicting property-based creators"** which indicates, the Jackson deserializer could not resolve the constructor to be used during deserialization
+as we have annotated both the constructors with `@JsonCreator`. When we remove one of them, the test runs successfully.
 
 
-**2. Using @JsonProperty with @JsonCreator for the PROPERTIES mode:**  
-To understand this lets remove the @JsonProperty annotation set to the constructor arguments:
+#### Using @JsonProperty with @JsonCreator for the PROPERTIES Mode
+
+To understand this let's remove the `@JsonProperty` annotation set to the constructor arguments:
 ````java
 @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public UserData(long id, String firstName,
-                    String lastName, String city) {
+                    String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.city = city;
         this.createdDate = LocalDate.now();
     }
 ````
@@ -175,13 +176,13 @@ When we run our test, we see this error:
 com.fasterxml.jackson.databind.exc.InvalidDefinitionException: 
 Invalid type definition for type `com.reflectoring.userdetails.model.UserData`: 
 Argument #0 of constructor 
-[constructor for `com.reflectoring.userdetails.model.UserData` (4 args), 
+[constructor for `com.reflectoring.userdetails.model.UserData` (3 args), 
 annotations: {interface com.fasterxml.jackson.annotation.JsonCreator=
 @com.fasterxml.jackson.annotation.JsonCreator(mode=PROPERTIES)} 
 has no property name (and is not Injectable): 
 can not use as property-based Creator
- at [Source: (String)"{"id":100,"firstName":"Ranjani","lastName":"Harish",
- "city":"Sydney","createdDate":"2024-01-16"}"; line: 1, column: 1]
+ at [Source: (String)"{"id":100,"firstName":"Ranjani","lastName":"Harish"
+ ,"createdDate":"2024-01-16"}"; line: 1, column: 1]
 ````
 which indicates that adding the `@JsonProperty` annotation is mandatory. **As we can see the Json property names and the deserialized object property names are exactly the same.
 In such cases there is an alternative way, where we can skip using the `@JsonProperty` annotation**. Let's modify our `ObjectMapper` bean :
@@ -203,33 +204,35 @@ Refer to [the documentation for its usage.](https://github.com/FasterXML/jackson
   {{% /info %}}
 
 
-**3. Apply @JsonCreator to static factory methods**
-Another way of creating immutable java objects is via static factory methods. We can apply the `@JsonCreator` annotations to static factory methods too.
+
+#### Apply @JsonCreator to Static Factory Methods
+
+
+Another way of creating immutable java objects is via static factory methods. We can apply the `@JsonCreator` annotations to static factory methods too:
 ````java
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public static UserData getUserData(long id, String firstName,
-                                       String lastName, String city) {
-        return new UserData(id, firstName, lastName, city, LocalDate.now());
+    public static UserData getUserData(long id, String firstName,String lastName) {
+        return new UserData(id, firstName, lastName, LocalDate.now());
     }
 ````
 Here, since we've registered the `ParametersNamesModule`, we need not add the `@JsonProperty` annotation.
 
-**4. Use a DELEGATING JsonCreator mode**
-Let's see how to deserialize an object using the DELEGATING JsonCreator Mode.
+
+#### Use a DELEGATING JsonCreator mode
+
+Let's see how to deserialize an object using the DELEGATING JsonCreator Mode:
 ````java
 @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public UserData(Map<String,String> map) throws JsonProcessingException {
         this.id = Long.parseLong(map.get("id"));
         this.firstName = map.get("firstName");
         this.lastName = map.get("lastName");
-        this.city = map.get("city");
     }
 ````
-When we pass a serialized Map object to the `ObjectMapper` class, it will automatically make use of the DELEGATING mode to create the `UserData` object.
+When we pass a serialized Map object to the `ObjectMapper` class, it will automatically make use of the DELEGATING mode to create the `UserData` object:
 ````java
     public static Map<String, String> getMockedUserDataMap() {
-        return Map.of("id", "100", "firstName","Ranjani", "lastName","Harish", 
-        "city","Sydney");
+        return Map.of("id", "100", "firstName","Ranjani", "lastName","Harish");
     }
         
     @Test
@@ -242,18 +245,22 @@ When we pass a serialized Map object to the `ObjectMapper` class, it will automa
 ````
 
 Now that we understand how to use the `@JsonCreator` annotation in Java, let's look at a specific use case where this annotation is required in a Spring Boot application.
+
+## Using @JsonCreator In a Spring Boot Application
 Let's create a basic Spring Boot application with Rest endpoints that support pagination. **Pagination is the concept of dividing a large number of records in parts/slices. It is particularly useful, when we have to create REST endpoints to be consumed by a front end application.
 The Spring paging framework converts this data for us which makes retrieving data easier.**
-This sample application only demonstrates the usage of `@JsonCreator`. To understand how pagination works in Spring Boot, refer [this article.](https://reflectoring.io/spring-boot-paging/)
+This [sample application](https://github.com/thombergs/code-examples/tree/master/spring-boot/jackson-jsoncreator) only demonstrates the usage of `@JsonCreator`. To understand how pagination works in Spring Boot, refer [this article.](https://reflectoring.io/spring-boot-paging/)
 
-This User Application uses H2 database to store and retrieve data. 
+This sample User Application uses H2 database to store and retrieve data. 
 The application is configured to run on port 8083, so let's start our application first :
 ````text
 mvnw clean verify spring-boot:run (for Windows)
 ./mvnw clean verify spring-boot:run (for Linux)
 ````
 
-To demonstrate pagination, we have converted the `List<User>` returned from the DB into a paged object as shown below :
+### Create Paginated Data Using Spring REST
+Let's understand how `@JsonCreator` can be used to create paginated data in Spring. For this purpose, we will first create a GET endpoint that returns a paged object.
+Here, we have converted the `List<User>` returned from the DB into a paged object as shown below:
 ````java
     @GetMapping("/userdetails/page")
     public ResponseEntity<Page<UserData>> getPagedUser(
@@ -284,38 +291,15 @@ When we make a GET request to the endpoint `http://localhost:8083/data/userdetai
             "id": 1000,
             "firstName": "Abel",
             "lastName": "Doe",
-            "city": "NYC",
             "createdDate": "2024-01-26"
         },
         {
             "id": 1001,
             "firstName": "Abuela",
             "lastName": "Marc",
-            "city": "NYC",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1002,
-            "firstName": "Adi",
-            "lastName": "Nath",
-            "city": "Cape Town",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1003,
-            "firstName": "Asia",
-            "lastName": "Hines",
-            "city": "Cape Town",
-            "createdDate": "2024-01-26"
-        },
-        {
-            "id": 1004,
-            "firstName": "Frida",
-            "lastName": "Stone",
-            "city": "Cape Town",
             "createdDate": "2024-01-26"
         }
-        // More elements here
+        // 18 more elements here
     ],
     "pageable": {
         "sort": {
@@ -333,24 +317,18 @@ When we make a GET request to the endpoint `http://localhost:8083/data/userdetai
     "totalElements": 45,
     "totalPages": 3,
     "size": 20,
-    "number": 0,
-    "sort": {
-        "empty": true,
-        "sorted": false,
-        "unsorted": true
-    },
-    "first": true,
-    "numberOfElements": 20,
-    "empty": false
+    "number": 0
+    // More paged elements
 }
 ````
 The endpoint returned us some pagination metadata like the `totalElements`, `totalPages`, `sort`, `size`.
-**Here, we see that the application has a total of 45 records, which is divided into 3 pages where each page has a maximum of 20.
+**Here, we see that the application has a total of 45 records, which is divided into 3 pages where each page has a maximum of 20 records.
 This JSON response gives us the first 20 elements from the List.**
+As we can see, we were able to create paginated data successfully. In the next section, let's look at how to test this GET endpoint. 
 
-
-Next, let's write a Spring Boot test to understand how the deserialization happens when we call the GET endpoint using `TestRestTemplate`.
-Here, the Sprint Boot test uses the same H2 database to retrieve data.
+### Testing Paginated Data using TestRestTemplate
+In this section, let's write a Spring Boot test to understand how `@JsonCreator` helps us with deserialization when we call the GET endpoint using `TestRestTemplate`.
+Here, the Spring Boot test uses the same H2 database to retrieve data:
 ````java
     @Test
     void givenGetData_whenRestTemplateExchange_thenReturnsPageOfUser() {
@@ -382,7 +360,7 @@ or contain additional type information
  at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); 
  line: 1, column: 1]
 ````
-Here, we see that the error indicates that the response couldn't be mapped to concrete types.
+The error indicates that the response couldn't be mapped to concrete types.
 
 Next, let's update the test to use `PageImpl` which is a concrete implementation of the `Page` interface as below:
 ````java
@@ -416,7 +394,10 @@ Cannot construct instance of `org.springframework.data.domain.PageImpl`
 ````
 The Jackson API was not able to map the pagination metadata into the `PageImpl` class. 
 **This is because the `PageImpl` class provided by Spring Data does not provide a constructor that Jackson can use to directly map the pagination metadata.**
-To resolve this issue, let's create a class that implements `PageImpl` and use the `@JsonCreator` annotation and explicitly specify the mapping.
+
+
+### @JsonCreator to the Rescue
+To resolve this issue, let's create a class that implements `PageImpl` and use the `@JsonCreator` annotation and explicitly specify the mapping:
 ````java
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RestPageImpl<T> extends PageImpl<T> {
@@ -437,7 +418,7 @@ public class RestPageImpl<T> extends PageImpl<T> {
 
 }
 ````
-Let's update the test to make use of the `RestPageImpl` class and rerun the test again
+Let's update the test to make use of the `RestPageImpl` class and rerun the test again:
 
 ````java
 @Test
@@ -458,6 +439,10 @@ Let's update the test to make use of the `RestPageImpl` class and rerun the test
     }
 ````
 Now we see that the test runs successfully.
+
+### Addressing Similar Scenarios
+Another scenario where we would need to follow a similar approach is when we use a Spring client such as `RestTemplate` to consume an API 
+that returns a paged response. In such cases, we would need to use the `@JsonCreator` annotation as explained in the example above to help Jackson deserialize the response.
 
 
 ## Conclusion

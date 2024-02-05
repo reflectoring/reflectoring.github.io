@@ -451,20 +451,32 @@ Let's explore best practices for using Java records effectively in projects, gui
 ### Choose Appropriate Use Cases
 Choosing the appropriate use cases for Java records is paramount. Utilize records for simple data carriers where immutability and value semantics are crucial. However, refrain from employing records for classes with complex business logic or abundant behavior.
 
+- Use Case 1: Configuration Settings: Use records to represent configuration settings for an application. These settings are typically immutable, and their value semantics are crucial for consistent behavior across the application's lifecycle.
+- Use Case 2: DTOs in RESTful Services: Apply records for Data Transfer Objects (DTOs) in RESTful services. DTOs often serve as simple data carriers between the client and server, emphasizing immutability to prevent unintended modifications during data transmission.
+
 ### Avoid Overcomplication
 Avoid overcomplicating records. Resist the temptation to overload them with unnecessary methods. Embrace simplicity, letting records manage fundamental operations like `equals()`, `hashCode()`, and `toString()`.
+
+- Use Case 1: Domain Entities: Employ records to model simple domain entities where basic CRUD operations suffice. Avoid cluttering these entities with unnecessary methods, letting records automatically handle essential operations for improved code maintainability.
+- Use Case 2: Event Payloads: Use records to represent event payloads in an event-driven architecture. Overcomplicating these payloads with excessive methods is unnecessary; records naturally handle equality and string representation, simplifying event handling.
 
 ### Ensure Immutability
 Ensuring immutability is key to leveraging the benefits of Java records. Keep components final to enforce immutability. In cases where a component is mutable, such as a collection, create defensive copies during construction to maintain the desired immutability.
 
+- Use Case 1: Currency Conversion Rates: Represent currency conversion rates using records. As these rates are immutable once defined, marking the components as final ensures that the rates remain constant throughout the application's execution.
+- Use Case 2: Configuration Properties: Utilize records for storing configuration properties, such as database connection details. Immutability is crucial to prevent unintended modifications to these properties, ensuring the stability of the application's configuration.
+
 ### Avoid Business Logic in Records
 Steer clear of embedding business logic within records. Maintain the focus of records on data representation and delegate business logic to separate classes. This approach enhances maintainability and adheres to the principle of separation of concerns.
+
+- Use Case 1: Employee Information: Model employee information using records but avoid incorporating complex business logic. Instead, delegate tasks like salary calculations or performance assessments to separate classes, adhering to the best practice of separation of concerns.
+- Use Case 2: Sensor Readings: Use records to represent sensor readings in an Internet of Things (IoT) application. Keep records focused on data representation, and delegate any complex processing or analysis of sensor data to dedicated classes.
 
 ### Maintain Readability
 To maintain readability, adhere to consistent naming conventions for both record classes and their components. Meaningful names for records and components contribute to code clarity, making it easier for developers to understand the structure and purpose of the classes.
 
-### Document with Comments
-Documenting records with comments is a good practice in general. Comments provide insights into the rationale behind certain decisions or implementations. Additionally, document any assumptions or constraints associated with record components to facilitate a better understanding of their usage.
+- Use Case 1: User Preferences: Apply records to store user preferences in a system. Consistent naming conventions for record classes and components enhance code readability, making it easier for developers to understand and modify user preference-related code.
+- Use Case 2: Geographic Coordinates: Represent geographic coordinates using records. Meaningful names for record classes and components contribute to the clarity of the code, allowing developers to quickly comprehend the structure and purpose of the geographic coordinate representation.
 
 ## Ways to Master Java Records
 

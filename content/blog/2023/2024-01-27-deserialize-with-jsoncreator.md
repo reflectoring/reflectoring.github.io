@@ -9,7 +9,7 @@ url: spring-jsoncreator
 ---
 
 The FasterXML Jackson library is the most popular JSON parser in Java. Spring internally uses this API for JSON parsing.
-For details on other commonly used Jackson annotations, refer [this article](https://reflectoring.io/jackson/).
+For details on other commonly used Jackson annotations, refer to [this article](https://reflectoring.io/jackson/).
 Also, you can deep dive into another useful Jackson annotation [@JsonView](https://reflectoring.io/jackson-jsonview-tutorial/). In this article, we will look at how to use the **@JsonCreator** annotation.
 Subsequently, we will also take a look at a specific use case of using this annotation in the context of a Spring Boot application.
 
@@ -22,10 +22,10 @@ This is especially useful when we have multiple constructors/static factory meth
 
 ## Working With @JsonCreator Annotation
 
-In this section, we will look at a few use-cases of how this annotation works.
+In this section, we'll look at a few use-cases of how this annotation works.
 ### Deserializing Immutable Objects
 Java encourages creating immutable objects since they are thread-safe and easy to maintain. To get a better understanding of how to use immutable objects in java, refer to [this article.](https://reflectoring.io/java-immutables/)
-Let's try to deserialize an immutable object `UserData` which is defined as below :
+Let's try to deserialize an immutable object `UserData` which is defined as below:
 ````java
 
 @JsonIgnoreProperties(ignoreUnknown=true)
@@ -83,9 +83,9 @@ cannot deserialize from Object value (no delegate- or property-based Creator)
  createdDate":"2024-01-16"}"; line: 1, column: 2]
 ````
 **The error message explicitly states that the test could not run successfully as there was an error during deserialization**.
-This is because the `ObjectMapper` class by default looks for a no-arg constructor to set the values. **Since our Java class is immutable, it has neither a no-arg constructor
+This is because the `ObjectMapper` class, by default, looks for a no-arg constructor to set the values. **Since our Java class is immutable, it has neither a no-arg constructor
 nor setter methods to set values**. Also, we see that the `UserData` class has multiple constructors. Therefore, we would need a way to 
-instruct the `ObjectMapper` class to use the right constructor for deserialization.
+instruct the `ObjectMapper` class to use the correct constructor for deserialization.
 Let's modify our code to use the `@JsonCreator` annotation as :
 ````java
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
@@ -106,10 +106,10 @@ Let's look at the additional annotation we've added to get this working.
 
 ### Understanding All Available JsonCreator Modes
 
-There are four modes that can be passed as a parameter to this annotation.
+We can pass one of these four values as parameters to this annotation:
 - **JsonCreator.Mode.PROPERTIES** : This is the most commonly used mode where every constructor/factory argument is annotated with either `@JsonProperty` to indicate the name of the property to bind to.
-- **JsonCreator.Mode.DELEGATING** : Single-argument constructor/factory method without JsonProperty annotation for the argument. Here, Jackson first binds JSON into type of the argument, and then calls creator. This is often used in conjunction with JsonValue (used for serialization).
-- **JsonCreator.Mode.DEFAULT** : If no mode or DEFAULT mode is chosen, Jackson internally decides which of PROPERTIES / DELEGATING mode to choose from.
+- **JsonCreator.Mode.DELEGATING** : Single-argument constructor/factory method without JsonProperty annotation for the argument. Here, Jackson first binds JSON into type of the argument, and then calls the creator. Most commonly, we want to use this option in conjunction with JsonValue (used for serialization).
+- **JsonCreator.Mode.DEFAULT** : If we do not choose any mode or the DEFAULT mode, Jackson decides internally which of the PROPERTIES / DELEGATING modes are applied.
 - **JsonCreator.Mode.DISABLED** : This mode indicates the creator method is not to be used.
 
 
@@ -141,7 +141,7 @@ To understand this, let's first add `@JsonCreator` annotation with the same mode
         this.createdDate = createdDate;
     }
 ````
-When we try to run our test, it will fail with error:
+When we try to run our test, it will fail with an error:
 ````text
 com.fasterxml.jackson.databind.exc.InvalidDefinitionException: 
 Conflicting property-based creators: already had explicitly marked creator 
@@ -154,7 +154,7 @@ encountered another: [constructor for `com.reflectoring.userdetails.model.UserDa
  at [Source: (String)"{"id":100,"firstName":"Ranjani","lastName":"Harish"
  ,"createdDate":"2024-01-16"}"; line: 1, column: 1]
 ````
-As we can see, the error mentions **"Conflicting property-based creators"** which indicates, the Jackson deserializer could not resolve the constructor to be used during deserialization
+As we can see, the error mentions **"Conflicting property-based creators"**. That indicates that the Jackson deserializer could not resolve the constructor to be used during deserialization
 as we have annotated both the constructors with `@JsonCreator`. When we remove one of them, the test runs successfully.
 
 
@@ -184,7 +184,7 @@ can not use as property-based Creator
  at [Source: (String)"{"id":100,"firstName":"Ranjani","lastName":"Harish"
  ,"createdDate":"2024-01-16"}"; line: 1, column: 1]
 ````
-which indicates that adding the `@JsonProperty` annotation is mandatory. **As we can see the Json property names and the deserialized object property names are exactly the same.
+which indicates that adding the `@JsonProperty` annotation is mandatory. **As we can see the JSON property names and the deserialized object property names are exactly the same.
 In such cases there is an alternative way, where we can skip using the `@JsonProperty` annotation**. Let's modify our `ObjectMapper` bean :
 ````java
     @Bean
@@ -196,7 +196,7 @@ In such cases there is an alternative way, where we can skip using the `@JsonPro
         return mapper;
     }
 ````
-Now if we run our tests, we can see that the test passes even without the use of `@JsonProperty`. This is because we registed the Jackson Parameters module by adding
+If we run our tests now, we can see that the test passes even without the use of `@JsonProperty`. This is because we registed the Jackson Parameters module by adding
 **mapper.registerModule(new ParameterNamesModule())**. This is a Jackson module that allows accessing parameter names without explicitly specifying the `@JsonProperty` annotation.
 {{% info title="Additional Notes" %}}
 Another option is to register the `Jdk8Module` which includes the `ParameterNamesModule` along with other modules.
@@ -208,7 +208,7 @@ Refer to [the documentation for its usage.](https://github.com/FasterXML/jackson
 #### Apply @JsonCreator to Static Factory Methods
 
 
-Another way of creating immutable java objects is via static factory methods. We can apply the `@JsonCreator` annotations to static factory methods too:
+Another way of creating immutable java objects is via static factory methods. We can apply the `@JsonCreator` annotations to static factory methods as well:
 ````java
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public static UserData getUserData(long id, String firstName,String lastName) {
@@ -252,7 +252,7 @@ The Spring paging framework converts this data for us which makes retrieving dat
 This [sample application](https://github.com/thombergs/code-examples/tree/master/spring-boot/jackson-jsoncreator) only demonstrates the usage of `@JsonCreator`. To understand how pagination works in Spring Boot, refer [this article.](https://reflectoring.io/spring-boot-paging/)
 
 This sample User Application uses H2 database to store and retrieve data. 
-The application is configured to run on port 8083, so let's start our application first :
+The application is configured to run on port 8083, so let's start our application first:
 ````text
 mvnw clean verify spring-boot:run (for Windows)
 ./mvnw clean verify spring-boot:run (for Linux)
@@ -260,7 +260,7 @@ mvnw clean verify spring-boot:run (for Windows)
 
 ### Create Paginated Data Using Spring REST
 Let's understand how `@JsonCreator` can be used to create paginated data in Spring. For this purpose, we will first create a GET endpoint that returns a paged object.
-Here, we have converted the `List<User>` returned from the DB into a paged object as shown below:
+Here, we have converted the `List<User>` returned from the DB into a paged object:
 ````java
     @GetMapping("/userdetails/page")
     public ResponseEntity<Page<UserData>> getPagedUser(
@@ -438,13 +438,13 @@ Let's update the test to make use of the `RestPageImpl` class and rerun the test
         assertEquals(20, restPage.getSize());
     }
 ````
-Now we see that the test runs successfully.
+Now, test runs successfully.
 
 ### Addressing Similar Scenarios
 Another scenario where we would need to follow a similar approach is when we use a Spring client such as `RestTemplate` to consume an API 
-that returns a paged response. In such cases, we would need to use the `@JsonCreator` annotation as explained in the example above to help Jackson deserialize the response.
-
+that returns a paged response.
+In such a case, we can use the `@JsonCreator` annotation explained in the example above to help Jackson deserialize the response.
 
 ## Conclusion
-In this article, we took a closer look at how to make use of the `@JsonCreator` annotation with some examples.
+In this article, we took a closer look at how to make use of the `@JsonCreator` annotation including some examples.
 Also, we created a simple Spring Boot application that uses pagination to demo how this annotation comes handy during the deserialization process.

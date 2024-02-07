@@ -107,7 +107,7 @@ Let's look at the additional annotation we've added to get this working.
 ### Understanding All Available JsonCreator Modes
 
 We can pass one of these four values as parameters to this annotation:
-- **JsonCreator.Mode.PROPERTIES** : This is the most commonly used mode where every constructor/factory argument is annotated with either `@JsonProperty` to indicate the name of the property to bind to.
+- **JsonCreator.Mode.PROPERTIES** : This is the most commonly used mode where every constructor/factory argument is annotated with `@JsonProperty` to indicate the name of the property to bind to.
 - **JsonCreator.Mode.DELEGATING** : Single-argument constructor/factory method without JsonProperty annotation for the argument. Here, Jackson first binds JSON into type of the argument, and then calls the creator. Most commonly, we want to use this option in conjunction with JsonValue (used for serialization).
 - **JsonCreator.Mode.DEFAULT** : If we do not choose any mode or the DEFAULT mode, Jackson decides internally which of the PROPERTIES / DELEGATING modes are applied.
 - **JsonCreator.Mode.DISABLED** : This mode indicates the creator method is not to be used.

@@ -1,7 +1,7 @@
 ---
 title: "Deserialize with Jackson's @JsonCreator in a Spring Boot Application"
 categories: ["Spring"]
-date: 2024-01-27 00:00:00 +1100
+date: 2024-02-09 00:00:00 +0000
 authors: ["ranjani"]
 description: "Deserialize with JsonCreator annotation"
 image: images/stock/0112-decision-1200x628-branded.jpg

@@ -1,10 +1,10 @@
 ---
 title: "Extension Functions in Kotlin"
 categories: ["Kotlin"]
-date: 2023-12-13 00:00:00 +1100
+date: 2024-02-13 00:00:00 +1100
 authors: [ezra]
-excerpt: "In this tutorial, we'll discuss what extension functions are in kotlin and their usecases"
-image: images/stock/0104-on-off-1200x628-branded.jpg
+excerpt: "In this tutorial, we'll discuss what extension functions are in Kotlin and their use cases"
+image: images/stock/0112-ide-1200x628-branded.jpg
 url: extension functions in kotlin
 ---
 
@@ -237,7 +237,7 @@ fun main() {
     println(result)
 }
 ```
-In the `Main.kt` file, we import the `customExtensionFunction` from the `com.example.util` package and apply it to a string. The extension function is in scope wherever the package is imported.
+In the `Main.kt` file, we import the `customExtensionFunction` from the `com.example.util` package and apply it to a string. The extension function is in scope wherever the function is imported.
 
 ### Prioritize Clarity Over Cleverness
 When defining extension functions, prioritize clarity and readability over cleverness. While concise and expressive code is desirable, it should not compromise the ability of other developers (or your future self) to understand the code easily. Choose function names that clearly convey their purpose.

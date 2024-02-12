@@ -212,7 +212,7 @@ While extension functions offer a powerful tool for enhancing code, it's essenti
 While extension functions can greatly improve code readability and organization, excessive use can lead to confusion and code bloat. It's crucial to strike a balance and reserve extension functions for cases where they genuinely improve the API and maintainability of the code.
 
 ### Be Mindful of Scope
-Extension functions are powerful tools but it's crucial to be mindful of their scope. The scope of an extension function is tied to the package in which it is defined. When we import a package containing extension functions, those functions become accessible throughout the file or package where the import statement is declared.
+Extension functions are powerful tools but it's crucial to be mindful of their scope. The scope of an extension function is tied to the package in which it is defined. When we import some extension functions, those functions become accessible throughout the whole file where the import statement is declared.
 
 Consider the following example:
 ```kotlin

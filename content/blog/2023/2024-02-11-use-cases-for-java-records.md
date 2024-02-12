@@ -27,7 +27,7 @@ Java records are a special kind of class introduced in Java 14. They are tailore
 
 {{% info title="Comparison to Lombok and Kotlin" %}}
 **Lombok:**
-Lombok simplifies Java development by reducing boilerplate code. It offers annotations like `@Data` for automatic generation of methods, akin to Java records. While providing flexibility, Lombok requires external dependencies and may lack the language-level support and immutability guarantees inherent in Java records.
+[Lombok](https://reflectoring.io/when-to-use-lombok/) simplifies Java development by reducing boilerplate code. It offers annotations like `@Data` for automatic generation of methods, akin to Java records. While providing flexibility, Lombok requires external dependencies and may lack the language-level support and immutability guarantees inherent in Java records.
 
 **Kotlin:**
 Kotlin, as a modern, concise language for the JVM, incorporates data classes that share similarities with Java records. Kotlin's data classes automatically generate `equals()`, `hashCode()`, and `toString()` methods, enhancing developer productivity. Unlike Java records, Kotlin's data classes support default parameter values and additional features within a concise syntax, providing expressive and powerful data modeling capabilities.
@@ -43,7 +43,13 @@ Let's look at some of the benefits of using Java records.
 One of the key advantages of records is their ability to create simple data objects without the need for writing extensive boilerplate code. With records, we can define the structure of our data concisely and straightforwardly.
 
 ### Immutability by Default
-Java records are immutable by default, meaning that once we create a record, we cannot modify its fields. This immutability ensures data integrity and makes it easier to reason about the state of the objects.
+Java records are [immutable](https://reflectoring.io/java-immutables/) by default, meaning that once we create a record, 
+we cannot modify its fields. This immutability ensures data integrity and makes it easier to reason about the state of the objects.
+
+{{% warning title="A Note on Immutability" %}}
+Records ensure the immutability of their components by making all components provided in the constructor final. However,
+if a record contains a *mutable* object, for example an `ArrayList` this object itself can be modified. Furthermore, records can contain mutable *static* fields.
+{{% /warning %}}
 
 ### Conciseness and Readability
 Java records offer a more concise and readable syntax compared to traditional Java classes. The streamlined syntax of records allows us to define our data fields and their types in a compact and visually appealing way, making it easier to understand and maintain our code.
@@ -145,16 +151,9 @@ Ensuring immutability, a key aspect of data integrity, demanded additional effor
 
 Java Records, with their concise syntax, automate essential method generation, eliminating boilerplate code. They prioritize immutability by default, ensuring data integrity without manual enforcement. Automatic generation of methods like `equals()`, `hashCode()`, and `toString()` simplifies development, enhancing code readability and maintainability. Classes become concise, improving clarity and facilitating quick comprehension.
 
-{{% warning title="A Note on Immutability" %}}
-Records ensure the immutability of their components by making all components provided in the constructor final. However,
-if a record contains a *mutable* object, this object itself can be modified. Furthermore, records can contain mutable *static* fields.
-{{% /warning %}}
-
 ## Syntax of Java Records
 
-Let's dive into the syntax of Java records, covering its key elements, various types of constructors, methods, and how records compare with traditional Java classes.
-
-Let's explore the basic syntax of Java records:
+Let's dive into the syntax of Java records, covering its key elements, various types of constructors, methods, and how records compare with traditional Java classes:
 
 ```java
 public record Person(String name, int age) {
@@ -457,7 +456,7 @@ To maintain readability, adhere to consistent naming conventions for both record
 
 ## Ways to Master Java Records
 
-### Let Us Recap the Key Concepts
+### Let's Recap the Key Concepts
 We learnt that Java records streamline data class creation, reducing redundant code. They prioritize immutability and value semantics, 
 ensuring that instances of records represent fixed data values. With records, developers can focus on defining the structure and 
 properties of their data without being burdened by repetitive code.

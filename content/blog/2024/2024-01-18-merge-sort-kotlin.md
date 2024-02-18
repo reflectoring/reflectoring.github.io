@@ -10,6 +10,17 @@ url: merge sort in kotlin
 ## Introduction
 Sorting is a fundamental operation that plays a crucial role in various applications. Among the many sorting algorithms, merge sort stands out for its efficiency and simplicity. In this blog post, we will delve into the details of merge sort and implement it in Kotlin.
 
+## Merge Sort Algorithm
+Merge Sort is a popular sorting algorithm that follows the divide and conquer paradigm. It was developed by John von Neumann in 1945. The basic idea behind Merge Sort is to divide the array into two halves, recursively sort each half and then merge the sorted halves to produce a sorted array.
+
+Here are the main steps of the Merge Sort algorithm:
+
+`Divide`: Divide the unsorted array into two halves until each sub-array contains only one element.
+`Conquer`: Recursively sort each sub-array.
+`Merge`: Merge the sorted sub-arrays to produce a single sorted array.
+
+The merging process is a crucial step in Merge Sort. It involves comparing elements from the two sorted sub-arrays and merging them into a new sorted array.
+
 ### Kotlin Implementation
 Now, let's dive into the implementation of Merge Sort in Kotlin. We'll start by defining a function for the merging process:
 

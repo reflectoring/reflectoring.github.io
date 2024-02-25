@@ -232,10 +232,10 @@ Now let us see how to call this functionality.
 void executeUserStatus() {
   try {
     // prepare
-    final long userId = 2L;
+    long userId = 2L;
 
     // execute
-    final Integer userStatus = userHttpRequestHelper.getUserStatus(userId);
+    Integer userStatus = userHttpRequestHelper.getUserStatus(userId);
 
     // verify
     assertThat(userStatus).isEqualTo(HttpStatus.SC_OK);
@@ -284,7 +284,7 @@ public String createUser(String firstName,
 }
 
 ```
-The example illustrates a method for creating a new user by sending an `HTTP` `POST` request to the specified endpoint. Inside a try-with-resources block, it initializes a `CloseableHttpClient` to manage the `HTTP` connection. The method constructs a list of form parameters containing the user's details such as first name, last name, email, and avatar. These parameters are then encoded into a URL-encoded form entity using the `UrlEncodedFormEntity` class. Subsequently, an `HTTP` `POST` request is created with the constructed entity and executed using the `execute()` method of the `CloseableHttpClient` instance. The response body containing the created user's data is retrieved and returned as a `String`. Any exceptions encountered during the process are caught and rethrown as a `RequestProcessingException` to handle the failure scenario gracefully.
+The example illustrates a method for creating a new user by sending an `HTTP` `POST` request to the specified endpoint. Inside a try-with-resources block, it initializes a `CloseableHttpClient` to manage the `HTTP` connection. The method constructs a list of form parameters containing the user's details such as first name, last name, email, and avatar. These parameters are then encoded into a URL-encoded form entity using the `UrlEncodedFormEntity` class. Subsequently, an `HTTP` `POST` request is created with the constructed entity and executed using the `execute()` method of the `CloseableHttpClient` instance. The response body containing the created user's data is retrieved and returned as a `String`. Any exceptions encountered during the process are caught and thrown again as a `RequestProcessingException` to handle the failure scenario gracefully.
 
 Now let us see how to call this functionality.
 
@@ -539,7 +539,7 @@ The response headers will include the necessary information. The `Allow` or `acc
 
 {{% info title="HTTP `OPTIONS` facts" %}}
 
-The `OPTION` method is used to make a preflightrequest to the server. A preflight request is a request that is sent to the server to determine if the actual request is allowed. The server will respond to the preflight request with a list of the `HTTP` methods that are allowed. The browser will then send the actual request if the requested method is in the list. The server also includes a message that indicates the allowed origin, methods, and headers.
+The `OPTION` method is used to make a preflight request to the server. A preflight request is a request that is sent to the server to determine if the actual request is allowed. The server will respond to the preflight request with a list of the `HTTP` methods that are allowed. The browser will then send the actual request if the requested method is in the list. The server also includes a message that indicates the allowed origin, methods, and headers.
 
 The `Access-Control-Allow-Methods` header is required for cross-origin resource sharing (`CORS`). `CORS` is a security mechanism that prevents websites from accessing resources from other domains.
 
@@ -547,7 +547,7 @@ The `Access-Control-Allow-Methods` header tells the browser which `HTTP` methods
 
 {{% /info %}}
 \
-Now lt us learn how to execute options method using `HTTP` client.
+Now let us learn how to execute options method using `HTTP` client.
 
 ```java
 public Map<String, String> executeOptions() throws RequestProcessingException {
@@ -617,6 +617,130 @@ The `HTTP` `TRACE` method performs a message loop-back test along the path to th
 {{% danger title="The Vulnerability of TRACE" %}}
 As warned by OWASP in the documentation on [Test HTTP Methods](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/06-Test_HTTP_Methods) the `TRACE` method, or `TRACK` in Microsoft's systems, makes the server repeat what it receives in a request. This caused a problem known as `Cross-Site Tracing (XST)` in 2003, allowing access to cookies marked with the `HttpOnly` flag. Browsers and plugins have blocked `TRACE` for years, so this problem is no longer a risk. However, if a server still allows `TRACE`, it might indicate security weaknesses.
 {{% /danger %}}
+
+### Using User Defined Type in Request Processing
+So far we have used built-in Java types like `String`, `Integer` in requests and responses. But we are not limited to use those built-in types.
+
+We can use Plain Old Java Objects (POJOs) in requests sent using HttpClient `execute()`. However, we typically do not directly use a POJO as the request entity. Instead, we convert the POJO into a format that can be sent over HTTP, such as `JSON` or `XML`, and then include that data in the request entity.
+
+The `HttpEntity` interface represents an entity in an `HTTP` message, but it typically encapsulates raw data, such as text, binary content, or form parameters. While we cannot directly use a POJO as an `HttpEntity`, we can serialize the POJO into a suitable format and then create an `HttpEntity` instance from that serialized data.
+
+For example, if we want to send a POJO as `JSON` in an `HTTP` request, we would first serialize the POJO into a `JSON` string, and then create an `StringEntity`  instance with that `JSON` string as the content.
+
+Here's an example using Jackson `ObjectMapper` to serialize a POJO into `JSON` and include it in the request entity:
+
+```java
+/** Generic HttpClientResponseHandler */
+public class DataObjectResponseHandler<T> 
+    extends AbstractHttpClientResponseHandler<T> {
+  private ObjectMapper objectMapper = new ObjectMapper();
+
+  @NonNull private Class<T> realType;
+
+  public DataObjectResponseHandler(@NonNull Class<T> realType) {
+    this.realType = realType;
+  }
+
+  @Override
+  public T handleEntity(HttpEntity httpEntity) throws IOException {
+
+    try {
+      return objectMapper.readValue(EntityUtils.toString(httpEntity), realType);
+    } catch (ParseException e) {
+      throw new ClientProtocolException(e);
+    }
+  }
+}
+
+// Get user using custom HttpClientResponseHandler
+public class UserTypeHttpRequestHelper extends BaseHttpRequestHelper {
+
+  public User getUser(long userId) throws RequestProcessingException {
+    try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+      // Create request
+      HttpHost httpHost = userRequestProcessingUtils.getApiHost();
+      URI uri = userRequestProcessingUtils.prepareUsersApiUri(userId);
+      HttpGet httpGetRequest = new HttpGet(uri);
+
+      // Create a response handler
+      HttpClientResponseHandler<User> handler 
+        = new DataObjectResponseHandler<>(User.class);
+      return httpClient.execute(httpHost, httpGetRequest, handler);
+    } catch (Exception e) {
+      throw new RequestProcessingException(
+          MessageFormat.format("Failed to get user for ID: {0}", userId), e);
+    }
+  }
+}
+```
+The `DataObjectResponseHandler` is designed as a generic handler to deserialize `HTTP` response entities into POJOs of any specified type. It encapsulates the logic for deserializing `JSON` content received from `HTTP` responses into POJOs using the Jackson `ObjectMapper`. 
+
+The class constructor accepts a parameter `realType`, which represents the class of the target Java object that the response content will be deserialized into. This allows flexibility in handling responses of different types.
+
+In the `handleEntity()` method, the `HTTP` response entity is parsed into a `JSON` string using Apache `EntityUtils.toString()`. Then, the `objectMapper` deserializes the `JSON` string into a POJO of the specified type (`realType`). 
+
+If the deserialization process encounters any errors, such as parsing exceptions, they are caught and thrown again as `ClientProtocolException`, ensuring that any issues with the response processing are appropriately handled.
+
+This design promotes reusability and maintainability by providing a single handler class that can be used across multiple `HTTP` requests to deserialize responses into different types of POJOs, reducing code duplication and improving readability.
+
+The `UserTypeHttpRequestHelper` class facilitates retrieving an existing user from the server using a custom `HttpClientResponseHandler`.
+
+Within the `getUser()` method, a `HttpGet` request is prepared with the appropriate `URI` to retrieve the user by their ID. This request is then executed using a custom response handler of type `User` specified.
+
+The response from the server is processed by the `DataObjectResponseHandler`, which deserializes the `JSON` content received from the server into a `User` object. This handler is parameterized with the `User.class`, indicating that the response should be converted into a POJO of type `User`.
+
+If the request execution encounters any exceptions, such as network errors or parsing issues, they are caught within the catch block. A `RequestProcessingException` is then thrown, encapsulating the error message and the root cause, if available.
+
+
+Now let us see how to call this functionality.
+
+```java
+@Test
+void executeGetUser() {
+  try {
+    // prepare
+    long userId = 2L;
+
+    // execute
+    User existingUser = userHttpRequestHelper.getUser(userId);
+
+    // verify
+    ThrowingConsumer<User> responseRequirements =
+        user -> {
+          assertThat(user).as("Created user cannot be null.").isNotNull();
+          assertThat(user.getId()).as("ID should be positive number.")
+                                  .isEqualTo(userId);
+          assertThat(user.getFirstName()).as("First name cannot be null.")
+                                         .isNotEmpty();
+          assertThat(user.getLastName()).as("Last name cannot be null.")
+                                        .isNotEmpty();
+          assertThat(user.getAvatar()).as("Avatar cannot be null.").isNotNull();
+        };
+    assertThat(existingUser).satisfies(responseRequirements);
+  } catch (Exception e) {
+    Assertions.fail("Failed to execute HTTP request.", e);
+  }
+}
+
+```
+
+The `executeGetUser()` test method verifies the functionality of the `getUser` method in the `UserTypeHttpRequestHelper` class, which retrieves an existing user from the server.
+
+Firstly, the test prepares by defining the `userId` variable, representing the ID of the user to be retrieved.
+
+Next, the `getUser()` method is executed using the `userHttpRequestHelper`, passing the `userId` as an argument.
+
+Then, the test verifies the response received from the server. It defines a `responseRequirements` lambda function, which contains assertions to ensure the validity of the user object returned. These assertions check that the retrieved `user` is not `null`, that its ID matches the expected `userId`, and that its first name, last name, and avatar are not null or empty.
+
+Finally, the test uses assertThat to verify that the `existingUser` object satisfies the defined `responseRequirements`.
+
+If any exceptions occur during the execution of the test, such as network errors or unexpected responses, they are caught within the `catch` block. In such cases, the test fails with an appropriate error message indicating the failure to execute the `HTTP` request.
+
+{{% info title="Choosing User Defined Type Vs Built-in Type" %}}
+
+Typed classes offer advantages such as enhanced type safety, allowing for better code readability and preventing type-related errors. They also facilitate better code organization and maintainability by encapsulating related functionality within specific classes. However, they may introduce complexity and require additional effort for implementation. In contrast, built-in types like String offer simplicity and ease of use but may lack the specific functionality and type safety provided by custom typed classes. The choice between typed classes and built-in types depends on factors such as project requirements, complexity, and maintainability concerns.
+
+{{% /info %}}
 
 ## Conclusion
 In this article we got familiar with the classic APIs of Apache HTTP client, we explored a multitude of essential functionalities vital for interacting with web servers. From fetching paginated records to pinpointing specific data, and from determining server statuses to manipulating records, we learned a comprehensive array of HTTP methods. Understanding these capabilities equips us with the tools needed to navigate and interact with web resources efficiently and effectively. With this knowledge, our applications can communicate seamlessly with web servers, ensuring smooth data exchanges and seamless user experiences.

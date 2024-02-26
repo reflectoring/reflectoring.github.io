@@ -5,7 +5,7 @@ date: 2024-02-27 00:00:00 +1100
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss bubble sort algorithm"
 image: images/stock/0118-keyboard-1200x628-branded.jpg
-url: introduction-to-ktor
+url: bubble-sort-in-kotlin
 ---
 
 

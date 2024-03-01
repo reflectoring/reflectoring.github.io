@@ -8,8 +8,6 @@ image: images/stock/0136-ring-1200x628-branded.jpg
 url: kotlin-null-safety
 ---
 
-## Introduction
-
 One of the standout features that sets Kotlin apart is its robust approach to null safety. Null safety is a critical aspect of programming languages, aiming to eliminate the notorious null pointer exceptions that often plague developers. In this blog post, we will delve into the core concepts of null safety in Kotlin, exploring nullable types, non-null types, safe calls, the Elvis operator, the `!!` operator, and the safe cast operator `as?`.
 
 ## Nullable Types and Non-Null Types

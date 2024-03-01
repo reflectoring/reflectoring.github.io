@@ -4,7 +4,7 @@ categories: ["Kotlin"]
 date: 2024-03-02 00:00:00 +1100
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss null safety in kotlin"
-image: images/stock/0135-sorted-1200x628-branded.jpg
+image: images/stock/0136-ring-1200x628-branded.jpg
 url: kotlin-null-safety
 ---
 

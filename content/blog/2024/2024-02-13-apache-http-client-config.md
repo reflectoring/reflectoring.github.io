@@ -4,7 +4,7 @@ title: "Apache HTTP Client Configuration"
 categories: ["Java"]
 date: 2024-02-11 00:00:00 +1100
 excerpt: "Apache HTTP Client Configuration."
-image: images/stock/0063-interface-1200x628-branded.jpg
+image: images/stock/0125-tools-1200x628-branded.jpg
 url: apache-http-client-config
 ---
 

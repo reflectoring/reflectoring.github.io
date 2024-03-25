@@ -1,10 +1,10 @@
 ---
 authors: [sagaofsilence]
-title: "Create a HTTP Client with Apache HTTP Client"
+title: "Classic APIs Offered by Apache HTTP Client"
 categories: ["Java"]
 date: 2024-02-11 00:00:00 +1100
 excerpt: "Classic APIs Offered by Apache HTTP Client."
-image: images/stock/0063-interface-1200x628-branded.jpg
+image: images/stock/0077-request-response-1200x628-branded.jpg
 url: apache-http-client-classic-apis
 ---
 
@@ -12,7 +12,7 @@ In this article we are going to learn about classic APIs offered by Apache HTTP 
 
 ## The "Create a HTTP Client with Apache HTTP Client" Series
 
-This article is the second part of a series:
+This article is the third part of a series:
 
 1. [Introduction to Apache HTTP Client](/create-a-http-client-with-apache-http-client/)
 2. [Apache HTTP Client Configuration](/apache-http-client-config/)

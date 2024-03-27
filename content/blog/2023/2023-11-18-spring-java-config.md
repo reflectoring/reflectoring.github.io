@@ -42,7 +42,7 @@ IoC, one of the main building blocks of Spring, is a concept where the control o
 ### Dependency Injection (DI)
 Dependency Injection is the process where beans receive their dependencies from an external source, typically the Spring container, rather than creating them internally. With DI, our beans are ready to use, making our code cleaner, more modular, and easier to test. **Spring handles the 'injection' of dependencies, ensuring our beans work seamlessly together in our application recipe.**
 
-👉 Learn more about beans, IoC, and DI in our article [Dependency Injection and Inversion of Control](http://localhost:1313/dependency-injection-and-inversion-of-control/).
+👉 Learn more about beans, IoC, and DI in our article [Dependency Injection and Inversion of Control](/dependency-injection-and-inversion-of-control/).
 
 ## Types of Spring Configuration
 

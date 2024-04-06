@@ -347,7 +347,6 @@ app.get(
   "/api/v1/products",
   cacheMiddleware({
     EX: 3600, // 1h
-    NX: false, // write the data even if the key already exists
   }),
   productController.getproducts
 );

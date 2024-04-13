@@ -28,9 +28,7 @@ Let us now learn commonly used options to configure Apache HttpClient for web co
 ## HttpClient Client Connection Management
 Connection management in Apache HttpClient refers to the management of underlying connections to remote servers. Efficient connection management is crucial for optimizing performance and resource utilization. Apache HttpClient provides various options for configuring connection management.
 
-`PoolingHttpClientConnectionManager` manages a pool of client connections and is able to service connection requests from multiple execution threads. Connections are pooled on a per route basis.
-
-`PoolingHttpClientConnectionManager` maintains a maximum limit of connections on a per route basis and in total. By default it creates up to 2 concurrent connections per given route and up to 20 connections in total. For real-world applications we cam increase these limits if needed.
+`PoolingHttpClientConnectionManager` manages a pool of client connections and is able to service connection requests from multiple execution threads. It pools connections as per route basis. It maintains a maximum limit of connections on a per route basis and in total. By default it creates up to 2 concurrent connections per given route and up to 20 connections in total. For real-world applications we cam increase these limits if needed.
 
 This example shows how the connection pool parameters can be adjusted:
 

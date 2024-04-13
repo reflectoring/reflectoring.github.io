@@ -49,7 +49,17 @@ Notably, Apache HttpClient is known for its reliability and resilience, making i
 The library's flexibility and extensibility enable customization to specific requirements, while its supportive community ensures continuous development and maintenance. With a commitment to backward compatibility, seamless upgrades are facilitated, ensuring long-term applicability and ease of use. Overall, Apache HttpClient stands as a mature and reliable choice for Java developers handling HTTP interactions.
 
 ## Getting Familiar With Useful Terms of Apache HttpClient
-In the domain of Apache HttpClient, lot of terms are essential for comprehending the functionality of this robust tool. At its core lies the `CloseableHttpClient`, a vital component that manages connections to HTTP servers. Think of it as the a communication manager, ensuring seamless and secure data exchanges between your application and web resources.
+In the domain of Apache HttpClient, lot of terms are essential for comprehending the functionality of this robust tool. At its core lies the HTTPClient. These fall into two categories - classic `HttpClient` and async `HttpAsyncClient`. `CloseableHttpClient` is an abstract class implementing `HttpClient` interface. The library provides `MinimalHttpClient` that extends it. It is a vital component that manages connections to HTTP servers. Think of it as the a communication manager, ensuring seamless and secure data exchanges between your application and web resources.
+
+`CloseableHttpClient` provides full control over resources and ensures proper closure of connections after use. It supports connection pooling and resource management, making it suitable for long-lived applications.
+
+`MinimalHttpClient` is a minimal implementation of `CloseableHttpClient`. This client is optimized for HTTP/ 1.1 message transport and does not support advanced HTTP protocol functionality such as request execution via a proxy, state management, authentication and request redirects.
+
+Now let's check the async client. `HttpAsyncClient` is an asynchronous HTTPClient in Apache HttpComponents, designed for non-blocking I/O operations, making it suitable for high-performance, scalable applications with a large number of concurrent requests.
+
+`CloseableHttpAsyncClient` is an abstract class. It implements `HttpAsyncClient`, providing a convenient way to manage the life cycle of the asynchronous HTTP client, allowing for graceful shutdown.
+
+`MinimalHttpAsyncClient` is minimal implementation of `CloseableHttpAsyncClient`. This client is optimized for HTTP/ 1.1 and HTTP/ 2 message transport and does not support advanced HTTP protocol functionality such as request execution via a proxy, state management, authentication and request redirects.
 
 As your application makes interactions with the remote resources on the internet, it encounters `HttpResponse`, a capsule of information that carries the outcome of each interaction. This response conveys the server's message, whether it signifies success, error, or redirection.
 

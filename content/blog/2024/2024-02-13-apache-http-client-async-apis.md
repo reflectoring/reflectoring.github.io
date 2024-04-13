@@ -1,29 +1,29 @@
 ---
 authors: [sagaofsilence]
-title: "Async APIs Offered by Apache HTTP Client"
+title: "Async APIs Offered by Apache HttpClient"
 categories: ["Java"]
 date: 2024-02-11 00:00:00 +1100
-excerpt: "Async APIs Offered by Apache HTTP Client."
+excerpt: "Async APIs Offered by Apache HttpClient."
 image: images/stock/0075-envelopes-1200x628-branded.jpg
 url: apache-http-client-async-apis
 ---
 
-In this article we are going to learn about async APIs offered by Apache HTTP client APIs. We are going to explore the different ways Apache HTTP client enable developers to send and receive data over the internet in asynchronous mode. From simple GET requests to complex multipart POSTs, we'll cover it all with real-world examples. So get ready to learn to implement HTTP interactions with Apache HTTP client! 
+In this article we are going to learn about async APIs offered by Apache HttpClient APIs. We are going to explore the different ways Apache HttpClient enable developers to send and receive data over the internet in asynchronous mode. From simple GET requests to complex multipart POSTs, we'll cover it all with real-world examples. So get ready to learn to implement HTTP interactions with Apache HttpClient! 
 
-## The "Create a HTTP Client with Apache HTTP Client" Series
+## The "Create a HTTP Client with Apache HttpClient" Series
 
 This article is the fourth part of a series:
 
-1. [Introduction to Apache HTTP Client](/create-a-http-client-with-apache-http-client/)
-2. [Apache HTTP Client Configuration](/apache-http-client-config/)
-3. [Classic APIs Offered by Apache HTTP Client](/apache-http-client-classic-apis/)
-4. [Async APIs Offered by Apache HTTP Client](/apache-http-client-async-apis/)
-5. [Reactive APIs Offered by Apache HTTP Client](/apache-http-client-reactive-apis/)
+1. [Introduction to Apache HttpClient](/create-a-http-client-with-apache-http-client/)
+2. [Apache HttpClient Configuration](/apache-http-client-config/)
+3. [Classic APIs Offered by Apache HttpClient](/apache-http-client-classic-apis/)
+4. [Async APIs Offered by Apache HttpClient](/apache-http-client-async-apis/)
+5. [Reactive APIs Offered by Apache HttpClient](/apache-http-client-reactive-apis/)
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/create-a-http-client-wth-apache-http-client" %}}
 
 \
-Let us now learn how to use Apache HTTP client for web communication. We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the async APIs offered by Apache HTTP Client.
+Let us now learn how to use Apache HttpClient for web communication. We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the async APIs offered by Apache HttpClient.
 
 
 {{% info title="Reqres Fake Data CRUD API" %}}
@@ -56,7 +56,7 @@ HttpAsyncClient uses IO Reactor to exchange messages asynchronously.
 {{% info title="IO Reactor" %}}
 HttpCore NIO is a system that uses the Reactor pattern, created by Doug Lea. Its purpose is to react to I/O events and to send event notifications to individual I/O sessions. The idea behind the I/O reactor pattern is to avoid having one thread per connection, which is the case with the classic blocking I/O model. 
 
-The Apache HTTP client's `IOReactor` interface represents an abstract object that implements the Reactor pattern. I/O reactors use a small number of dispatch threads (usually one) to send I/O event notifications to a much greater number of I/O sessions or connections (often several thousands). It is recommended to have one dispatch thread per CPU core.
+The Apache HttpClient's `IOReactor` interface represents an abstract object that implements the Reactor pattern. I/O reactors use a small number of dispatch threads (usually one) to send I/O event notifications to a much greater number of I/O sessions or connections (often several thousands). It is recommended to have one dispatch thread per CPU core.
 {{% /info %}}
 
 Let's now implement the logic to call the endpoints asynchronously.
@@ -405,7 +405,7 @@ It's worth noting that HTTP pipelining is not supported by all servers, so it's 
 
 Pipelining can also improve performance by packing multiple HTTP requests into a single TCP message. This can help to reduce the overhead of the connection and improve the overall speed of the transfer. However, this technique is not widely used, as it can be challenging to implement correctly and may lead to compatibility issues with some servers.
 
-Now let's understand how to pipeline requests using Apache HTTP client.
+Now let's understand how to pipeline requests using Apache HttpClient.
 ```java
 public class PipelinedHttpResponseCallback 
   implements FutureCallback<SimpleHttpResponse> {
@@ -737,7 +737,7 @@ While both HTTP/1.1 pipelining and HTTP/2 offer similar performance benefits in 
 
 ## Request Execution Interceptors
 
-Request and response interceptors in Apache HTTP Async client allow developers to intercept and modify requests and responses before they are sent or received by the client. 
+Request and response interceptors in Apache HttpAsyncClient allow developers to intercept and modify requests and responses before they are sent or received by the client. 
 
 `HttpRequestInterceptor` is an interface used to intercept and modify HTTP requests before they are sent to the server. It has method:
 ```java
@@ -950,4 +950,4 @@ void getUserWithInterceptors() {
 It executes asynchronous HTTP requests with interceptors applied. It starts a new closeable HTTP async client with interceptors enabled using the `startHttpAsyncInterceptingClient()` method. Then, it defines parameters like the base number and request execution count. It invokes the `executeRequestsWithInterceptors()` method to send multiple requests asynchronously. After receiving the responses, it verifies the size and content of the response map, ensuring that all responses are valid. Finally, it checks if the responses contain the expected response for requests where the request ID is a multiple of the base number.
 
 ## Conclusion
-In this article we got familiar with the async APIs of Apache HTTP client, we explored a multitude of essential functionalities vital for interacting with web servers. We learned its key functionalities including basic request processing, content streaming, pipelining, and multiplexing. We learned how to use interceptors to customize request and response processing, enhancing flexibility and control. Overall, the Apache HTTP Async Client is suitable for situations requiring efficient, non-blocking HTTP communication, offering a wide range of features to meet diverse requirements in modern web development.
+In this article we got familiar with the async APIs of Apache HttpClient, we explored a multitude of essential functionalities vital for interacting with web servers. We learned its key functionalities including basic request processing, content streaming, pipelining, and multiplexing. We learned how to use interceptors to customize request and response processing, enhancing flexibility and control. Overall, the Apache HTTP Async Client is suitable for situations requiring efficient, non-blocking HTTP communication, offering a wide range of features to meet diverse requirements in modern web development.

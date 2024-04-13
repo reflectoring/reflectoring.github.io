@@ -1,29 +1,29 @@
 ---
 authors: [sagaofsilence]
-title: "Classic APIs Offered by Apache HTTP Client"
+title: "Classic APIs Offered by Apache HttpClient"
 categories: ["Java"]
 date: 2024-02-11 00:00:00 +1100
-excerpt: "Classic APIs Offered by Apache HTTP Client."
+excerpt: "Classic APIs Offered by Apache HttpClient."
 image: images/stock/0077-request-response-1200x628-branded.jpg
 url: apache-http-client-classic-apis
 ---
 
-In this article we are going to learn about classic APIs offered by Apache HTTP client APIs. We are going to explore the different ways Apache HTTP client enable developers to send and receive data over the internet in classic (synchronous) mode. From simple GET requests to complex multipart POSTs, we'll cover it all with real-world examples. So get ready to learn to implement HTTP interactions with Apache HTTP client! 
+In this article we are going to learn about classic APIs offered by Apache HttpClient APIs. We are going to explore the different ways Apache HttpClient enable developers to send and receive data over the internet in classic (synchronous) mode. From simple GET requests to complex multipart POSTs, we'll cover it all with real-world examples. So get ready to learn to implement HTTP interactions with Apache HttpClient! 
 
-## The "Create a HTTP Client with Apache HTTP Client" Series
+## The "Create a HTTP Client with Apache HttpClient" Series
 
 This article is the third part of a series:
 
-1. [Introduction to Apache HTTP Client](/create-a-http-client-with-apache-http-client/)
-2. [Apache HTTP Client Configuration](/apache-http-client-config/)
-3. [Classic APIs Offered by Apache HTTP Client](/apache-http-client-classic-apis/)
-4. [Async APIs Offered by Apache HTTP Client](/apache-http-client-async-apis/)
-5. [Reactive APIs Offered by Apache HTTP Client](/apache-http-client-reactive-apis/)
+1. [Introduction to Apache HttpClient](/create-a-http-client-with-apache-http-client/)
+2. [Apache HttpClient Configuration](/apache-http-client-config/)
+3. [Classic APIs Offered by Apache HttpClient](/apache-http-client-classic-apis/)
+4. [Async APIs Offered by Apache HttpClient](/apache-http-client-async-apis/)
+5. [Reactive APIs Offered by Apache HttpClient](/apache-http-client-reactive-apis/)
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/create-a-http-client-wth-apache-http-client" %}}
 
 \
-Let us now learn how to use Apache HTTP client for web communication. We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the classic APIs offered by Apache HTTP Client.
+Let us now learn how to use Apache HttpClient for web communication. We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the classic APIs offered by Apache HttpClient.
 
 
 {{% info title="Reqres Fake Data CRUD API" %}}
@@ -45,7 +45,7 @@ CRUD operations refer to Create, Read, Update, and Delete actions performed on d
 \
 Now let us learn processing HTTP responses using a response handler.
 
-The motivation behind using a response handler in Apache HTTP client is to provide a structured and reusable way to process HTTP responses. 
+The motivation behind using a response handler in Apache HttpClient is to provide a structured and reusable way to process HTTP responses. 
 
 Response handlers encapsulate the logic for extracting data from HTTP responses, allowing developers to define how to handle different types of responses in a modular and consistent manner. 
 
@@ -53,7 +53,7 @@ By using response handlers, developers can centralize error handling, data extra
 
 Additionally, response handlers promote code reusability, as the same handler can be used across multiple HTTP requests with similar response processing requirements. 
 
-Overall, response handlers enhance the flexibility, readability, and maintainability of code that interacts with HTTP responses using Apache HTTP client.
+Overall, response handlers enhance the flexibility, readability, and maintainability of code that interacts with HTTP responses using Apache HttpClient.
 
 ### Overview of Logic to Execute HTTP Method and Test It
 
@@ -118,7 +118,7 @@ The `UserSimpleHttpRequestHelperTests` class contains a test method named `execu
 
 Inside the test method, it first prepares optional request parameters, creating a map containing key-value pairs. These parameters might include details such as the page number for pagination.
 
-Then, it invokes the `executeHttpMethod()` method of the `UserSimpleHttpRequestHelper` class, passing the prepared parameters. This method executes an HTTP request using the Apache HTTP client and returns the response body as a string.
+Then, it invokes the `executeHttpMethod()` method of the `UserSimpleHttpRequestHelper` class, passing the prepared parameters. This method executes an HTTP request using the Apache HttpClient and returns the response body as a string.
 
 After executing the HTTP request, the test verifies the response body. It asserts that the response body is not empty, ensuring that the HTTP request was successful and returned some data.
 
@@ -777,4 +777,4 @@ Typed classes offer advantages such as enhanced type safety, allowing for better
 {{% /info %}}
 
 ## Conclusion
-In this article we got familiar with the classic APIs of Apache HTTP client, we explored a multitude of essential functionalities vital for interacting with web servers. From fetching paginated records to pinpointing specific data, and from determining server statuses to manipulating records, we learned a comprehensive array of HTTP methods. Understanding these capabilities equips us with the tools needed to navigate and interact with web resources efficiently and effectively. With this knowledge, our applications can communicate seamlessly with web servers, ensuring smooth data exchanges and seamless user experiences.
+In this article we got familiar with the classic APIs of Apache HttpClient, we explored a multitude of essential functionalities vital for interacting with web servers. From fetching paginated records to pinpointing specific data, and from determining server statuses to manipulating records, we learned a comprehensive array of HTTP methods. Understanding these capabilities equips us with the tools needed to navigate and interact with web resources efficiently and effectively. With this knowledge, our applications can communicate seamlessly with web servers, ensuring smooth data exchanges and seamless user experiences.

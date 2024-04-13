@@ -33,37 +33,39 @@ Connection management in Apache HttpClient refers to the management of underlyin
 This example shows how the connection pool parameters can be adjusted:
 
 ```java
-  public CloseableHttpClient getPooledCloseableHttpClient(
-      String host,
-      int port,
-      int maxTotalConnections,
-      int defaultMaxPerRoute,
-      long requestTimeoutMillis,
-      long responseTimeoutMillis,
-      long connectionKeepAliveMillis) {
-    PoolingHttpClientConnectionManager connectionManager =
-        new PoolingHttpClientConnectionManager();
-    connectionManager.setMaxTotal(maxTotalConnections);
-    connectionManager.setDefaultMaxPerRoute(defaultMaxPerRoute);
+public CloseableHttpClient getPooledCloseableHttpClient(
+    String host,
+    int port,
+    int maxTotalConnections,
+    int defaultMaxPerRoute,
+    long requestTimeoutMillis,
+    long responseTimeoutMillis,
+    long connectionKeepAliveMillis
+  ) {
+    
+  PoolingHttpClientConnectionManager connectionManager =
+      new PoolingHttpClientConnectionManager();
+  connectionManager.setMaxTotal(maxTotalConnections);
+  connectionManager.setDefaultMaxPerRoute(defaultMaxPerRoute);
 
-    Timeout requestTimeout = Timeout.ofMilliseconds(requestTimeoutMillis);
-    Timeout responseTimeout = Timeout.ofMilliseconds(responseTimeoutMillis);
-    TimeValue connectionKeepAlive 
-      = TimeValue.ofMilliseconds(connectionKeepAliveMillis);
-    RequestConfig requestConfig =
-        RequestConfig.custom()
-            .setConnectionRequestTimeout(requestTimeout)
-            .setResponseTimeout(responseTimeout)
-            .setConnectionKeepAlive(connectionKeepAlive)
-            .build();
+  Timeout requestTimeout = Timeout.ofMilliseconds(requestTimeoutMillis);
+  Timeout responseTimeout = Timeout.ofMilliseconds(responseTimeoutMillis);
+  TimeValue connectionKeepAlive 
+    = TimeValue.ofMilliseconds(connectionKeepAliveMillis);
+  RequestConfig requestConfig =
+      RequestConfig.custom()
+          .setConnectionRequestTimeout(requestTimeout)
+          .setResponseTimeout(responseTimeout)
+          .setConnectionKeepAlive(connectionKeepAlive)
+          .build();
 
-    HttpHost httpHost = new HttpHost(host, port);
-    connectionManager.setMaxPerRoute(new HttpRoute(httpHost), 50);
-    return HttpClients.custom()
-        .setDefaultRequestConfig(requestConfig)
-        .setConnectionManager(connectionManager)
-        .build();
-  }
+  HttpHost httpHost = new HttpHost(host, port);
+  connectionManager.setMaxPerRoute(new HttpRoute(httpHost), 50);
+  return HttpClients.custom()
+      .setDefaultRequestConfig(requestConfig)
+      .setConnectionManager(connectionManager)
+      .build();
+}
 ```
 This code snippet creates a customized `CloseableHttpClient` with specific connection pool properties. It first initializes a `PoolingHttpClientConnectionManager` and configures the maximum total connections and default connections per route. Then, it sets timeout values for connection requests and responses, as well as the duration for keeping connections alive.
 
@@ -213,7 +215,9 @@ public class CustomHttpExecutionInterceptor implements ExecChainHandler {
   public ClassicHttpResponse execute(
       ClassicHttpRequest classicHttpRequest, 
       ExecChain.Scope scope, 
-      ExecChain execChain) throws IOException, HttpException {
+      ExecChain execChain
+    ) throws IOException, HttpException {
+    
     try {
       classicHttpRequest.setHeader("x-request-id", UUID.randomUUID().toString());
       classicHttpRequest.setHeader("x-api-key", "secret-key");

@@ -63,6 +63,7 @@ Here is the sample code to execute a HTTP method:
 public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
  public String executeHttpMethod(Map<String, String> optionalRequestParameters)
       throws RequestProcessingException {
+
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
       // Create request
       HttpHost httpHost = HttpHost.create("https://reqres.in");
@@ -137,6 +138,7 @@ Let us now see how to execute a paginated HTTP GET request using a response hand
 
 ```java
 public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
+ 
  public String getPaginatedUsers(Map<String, String> requestParameters)
       throws RequestProcessingException {
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -198,6 +200,7 @@ Let us now see how to execute HTTP GET request to get a specific user record usi
 
 ```java
 public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
+ 
  /** Gets user for given user id. */
  public String getUser(long userId) throws RequestProcessingException {
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -253,6 +256,7 @@ Let us now see how to execute HTTP `HEAD` request to get status of a specific us
 
 ```java
 public Integer getUserStatus(long userId) throws RequestProcessingException {
+  
   try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
     // Create request
     HttpHost httpHost = HttpHost.create("https://reqres.in");
@@ -305,10 +309,10 @@ We use HTTP `POST` to create a new user. We need to provide details needed to cr
 Let us see how to do it:
 
 ```java
-public String createUser(String firstName, 
-                         String lastName, 
-             String email, 
-             String avatar) throws RequestProcessingException {
+public String createUser(
+  String firstName, String lastName, String email, String avatar
+) throws RequestProcessingException {
+  
   try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
     // Create request
     List<NameValuePair> formParams = new ArrayList<NameValuePair>();
@@ -319,18 +323,18 @@ public String createUser(String firstName,
     
   try (UrlEncodedFormEntity entity =
         new UrlEncodedFormEntity(formParams, StandardCharsets.UTF_8)) {
-      HttpHost httpHost = HttpHost.create("https://reqres.in");
-      URI uri = new URIBuilder("/api/users/").build();
-      HttpPost httpPostRequest = new HttpPost(uri);
+        
+    HttpHost httpHost = HttpHost.create("https://reqres.in");
+    URI uri = new URIBuilder("/api/users/").build();
+    HttpPost httpPostRequest = new HttpPost(uri);
     httpPostRequest.setEntity(entity);
-      
-      // Create a response handler
-      BasicHttpClientResponseHandler handler = new BasicHttpClientResponseHandler();
-      String responseBody = httpClient.execute(httpHost, httpPostRequest, handler);
-      
-      return responseBody;
-    }
-  catch (Exception e) {
+    
+    // Create a response handler
+    BasicHttpClientResponseHandler handler = new BasicHttpClientResponseHandler();
+    String responseBody = httpClient.execute(httpHost, httpPostRequest, handler);
+    
+    return responseBody;
+  } catch (Exception e) {
     throw new RequestProcessingException("Failed to create user.", e);
   }
 }
@@ -342,19 +346,19 @@ Now let us see how to call this functionality.
 
 ```java
 @Test
-  void executePostRequest() {
-    try {
-      // execute
-      String createdUser =
-          userHttpRequestHelper.createUser(
-              "DummyFirst", "DummyLast", "DummyEmail@example.com", "DummyAvatar");
+void executePostRequest() {
+  try {
+    // execute
+    String createdUser =
+        userHttpRequestHelper.createUser(
+            "DummyFirst", "DummyLast", "DummyEmail@example.com", "DummyAvatar");
 
-      // verify
-      assertThat(createdUser).isNotEmpty();
-    } catch (Exception e) {
-      Assertions.fail("Failed to execute HTTP request.", e);
-    }
+    // verify
+    assertThat(createdUser).isNotEmpty();
+  } catch (Exception e) {
+    Assertions.fail("Failed to execute HTTP request.", e);
   }
+}
 ```
 
 The unit test verifies the functionality of the `createUser()` method. It calls the `createUser()` method with dummy user details (first name, last name, email, and avatar). The response represents the created user's data. Using assertions, the test verifies the response.
@@ -365,12 +369,10 @@ We use HTTP `PUT` to update an existing user. We need to provide details needed 
 Let us see how to do it:
 
 ```java
-public String updateUser(long userId,
-                         String firstName,
-                         String lastName,
-                         String email,
-                         String avatar)
-      throws RequestProcessingException {
+public String updateUser(
+  long userId, String firstName, String lastName, String email, String avatar
+  ) throws RequestProcessingException {
+    
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
       // Update request
       List<NameValuePair> formParams = new ArrayList<NameValuePair>();
@@ -434,33 +436,33 @@ We use HTTP `PATCH` to update an existing user in a partial way. We need to prov
 Let us see how to do it:
 
 ```java
-public String patchUser(long userId,
-                        String firstName,
-                        String lastName)
+public String patchUser(long userId, String firstName, String lastName)
       throws RequestProcessingException {
-    try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-      // Update request
-      List<NameValuePair> formParams = new ArrayList<NameValuePair>();
-      formParams.add(new BasicNameValuePair("first_name", firstName));
-      formParams.add(new BasicNameValuePair("last_name", lastName));
       
-      try (UrlEncodedFormEntity entity =
-          new UrlEncodedFormEntity(formParams, StandardCharsets.UTF_8)) {
-        HttpHost httpHost = HttpHost.create("https://reqres.in");
-        URI uri = new URIBuilder("/api/users/" + userId).build();
-        HttpPatch httpPatchRequest = new HttpPatch(uri);
-        httpPatchRequest.setEntity(entity);
+  try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+    // Update request
+    List<NameValuePair> formParams = new ArrayList<NameValuePair>();
+    formParams.add(new BasicNameValuePair("first_name", firstName));
+    formParams.add(new BasicNameValuePair("last_name", lastName));
+    
+    try (UrlEncodedFormEntity entity =
+        new UrlEncodedFormEntity(formParams, StandardCharsets.UTF_8)) {
+      
+      HttpHost httpHost = HttpHost.create("https://reqres.in");
+      URI uri = new URIBuilder("/api/users/" + userId).build();
+      HttpPatch httpPatchRequest = new HttpPatch(uri);
+      httpPatchRequest.setEntity(entity);
 
-        // Create a response handler
-        BasicHttpClientResponseHandler handler = new BasicHttpClientResponseHandler();
-        String responseBody = httpClient.execute(httpHost, httpPatchRequest, handler);
+      // Create a response handler
+      BasicHttpClientResponseHandler handler = new BasicHttpClientResponseHandler();
+      String responseBody = httpClient.execute(httpHost, httpPatchRequest, handler);
 
-        return responseBody;
-      }
-    } catch (Exception e) {
-      throw new RequestProcessingException("Failed to patch user.", e);
+      return responseBody;
     }
+  } catch (Exception e) {
+    throw new RequestProcessingException("Failed to patch user.", e);
   }
+}
 ```
 
 The example above shows how to update a user's information via an HTTP `PATCH` request. The method constructs the patch request by creating a list of `NameValuePair` objects containing few of the user's updated details (first name and last name). Then we send the request to the specified user's endpoint (/api/users/{userId}). The response body from the server, indicating the success or failure of the update operation, is captured and returned as a string.
@@ -498,7 +500,9 @@ Let us see how to do it:
 
 ```java
 public void deleteUser(long userId) throws RequestProcessingException {
+
   try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+    
     HttpHost httpHost = HttpHost.create("https://reqres.in");
     URI uri = new URIBuilder("/api/users/" + userId).build();
     HttpDelete httpDeleteRequest = new HttpDelete(uri);
@@ -601,45 +605,47 @@ Now let us learn how to execute options method using HTTP client.
 
 ```java
 public Map<String, String> executeOptions() throws RequestProcessingException {
-    try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-      HttpHost httpHost = HttpHost.create("https://reqres.in");
-      URI uri = new URIBuilder("/api/users/").build();
-      HttpOptions httpOptionsRequest = new HttpOptions(uri);
-      
-      // Create a response handler, lambda to implement
-      // HttpClientResponseHandler::handleResponse(ClassicHttpResponse response)
-      HttpClientResponseHandler<Map<String, String>> handler =
-          response ->
-              StreamSupport.stream(
-                      Spliterators.spliteratorUnknownSize(
-                          response.headerIterator(), Spliterator.ORDERED),
-                      false)
-                  .collect(Collectors.toMap(Header::getName, Header::getValue));
-      
-      return httpClient.execute(httpHost, httpOptionsRequest, handler);
-    } catch (Exception e) {
-      throw new RequestProcessingException("Failed to execute the request.", e);
-    }
+    
+  try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+    
+    HttpHost httpHost = HttpHost.create("https://reqres.in");
+    URI uri = new URIBuilder("/api/users/").build();
+    HttpOptions httpOptionsRequest = new HttpOptions(uri);
+    
+    // Create a response handler, lambda to implement
+    // HttpClientResponseHandler::handleResponse(ClassicHttpResponse response)
+    HttpClientResponseHandler<Map<String, String>> handler =
+        response ->
+            StreamSupport.stream(
+                    Spliterators.spliteratorUnknownSize(
+                        response.headerIterator(), Spliterator.ORDERED),
+                    false)
+                .collect(Collectors.toMap(Header::getName, Header::getValue));
+    
+    return httpClient.execute(httpHost, httpOptionsRequest, handler);
+  } catch (Exception e) {
+    throw new RequestProcessingException("Failed to execute the request.", e);
   }
+}
 ```
 In this example, it populates the `HttpOptions` request and calls HttpClient `execute()` method. The response from the server is processed by the handler, and the resulting map of headers is returned to the caller.
 
 Now let us see how to call this functionality.
 
 ```java
-  @Test
-  void executeOptions() {
-    try {
-      // execute
-      Map<String, String> headers = userHttpRequestHelper.executeOptions();
-      assertThat(headers.keySet())
-          .as("Headers do not contain allow header")
-          .containsAnyOf("Allow", "Access-Control-Allow-Methods");
+@Test
+void executeOptions() {
+  try {
+    // execute
+    Map<String, String> headers = userHttpRequestHelper.executeOptions();
+    assertThat(headers.keySet())
+        .as("Headers do not contain allow header")
+        .containsAnyOf("Allow", "Access-Control-Allow-Methods");
 
-    } catch (Exception e) {
-      Assertions.fail("Failed to execute HTTP request.", e);
-    }
+  } catch (Exception e) {
+    Assertions.fail("Failed to execute HTTP request.", e);
   }
+}
 ```
 The test calls `executeOptions()` to perform the `OPTIONS` request and retrieve the headers from the server. Then it verifies that the keys of the 'headers' map contain at least one of the expected headers ('Allow' or 'Access-Control-Allow-Methods'). 
 
@@ -667,6 +673,7 @@ Here's an example using Jackson `ObjectMapper` to serialize a POJO into `JSON` a
 /** Generic HttpClientResponseHandler */
 public class DataObjectResponseHandler<T> 
     extends AbstractHttpClientResponseHandler<T> {
+    
   private ObjectMapper objectMapper = new ObjectMapper();
 
   @NonNull private Class<T> realType;
@@ -690,6 +697,7 @@ public class DataObjectResponseHandler<T>
 public class UserTypeHttpRequestHelper extends BaseHttpRequestHelper {
 
   public User getUser(long userId) throws RequestProcessingException {
+    
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
       // Create request
       HttpHost httpHost = userRequestProcessingUtils.getApiHost();

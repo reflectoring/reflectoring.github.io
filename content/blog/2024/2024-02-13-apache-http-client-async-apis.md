@@ -68,18 +68,23 @@ public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
 
   /** Starts http async client. */
   public void startHttpAsyncClient() {
+    
     if (httpClient == null) {
       try {
         PoolingAsyncClientConnectionManager cm =
             PoolingAsyncClientConnectionManagerBuilder.create().build();
+        
         IOReactorConfig ioReactorConfig =
             IOReactorConfig.custom().setSoTimeout(Timeout.ofSeconds(5)).build();
+        
         httpClient =
             HttpAsyncClients.custom()
                 .setIOReactorConfig(ioReactorConfig)
                 .setConnectionManager(cm)
                 .build();
+        
         httpClient.start();
+        
         log.debug("Started HTTP async client.");
       } catch (Exception e) {
         String errorMsg = "Failed to set up SSL context.";
@@ -117,8 +122,8 @@ On the other hand, the classic HttpClient operates synchronously by default. It 
 We are going to use method of `HttpAsyncClient`:
 ```java
 public <T> Future <T> execute(AsyncRequestProducer  requestProducer,
-                                    AsyncResponseConsumer <T> responseConsumer,
-                                    FutureCallback <T> callback)
+                              AsyncResponseConsumer <T> responseConsumer,
+                              FutureCallback <T> callback)
 ```
 
 Let's now learn how to do it. Here is the implementation of custom callback. We can also implement it inline using anonymous class.
@@ -163,15 +168,20 @@ Now let us see how to use this custom callback.
 ```java
 public Map<Long, String> getUserWithCallback(List<Long> userIdList, int delayInSec)
     throws RequestProcessingException {
+  
   Objects.requireNonNull(httpClient, "Make sure that HTTP Async client is started.");
+  
   Map<Long, String> userResponseMap = new HashMap<>();
   Map<Long, Future<SimpleHttpResponse>> futuresMap = new HashMap<>();
+  
   for (Long userId : userIdList) {
     try {
       // Create request
       HttpHost httpHost = HttpHost.create("https://reqres.in");
+      
       URI uri;
       uri = new URIBuilder("/api/users/" + userId + "?delay=" + delayInSec).build();
+      
       SimpleHttpRequest httpGetRequest =
           SimpleRequestBuilder.get().setHttpHost(httpHost)
                               .setPath(uri.getPath()).build();
@@ -188,6 +198,7 @@ public Map<Long, String> getUserWithCallback(List<Long> userIdList, int delayInS
               new SimpleHttpResponseCallback(
                   httpGetRequest,
                   MessageFormat.format("Failed to get user for ID: {0}", userId)));
+      
       futuresMap.put(userId, future);
     } catch (Exception e) {
       String message;
@@ -245,6 +256,7 @@ class UserAsyncHttpRequestHelperTests extends BaseAsyncExampleTests {
       // call the delayed endpoint
       List<Long> userIdList 
         = List.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
+      
       Map<Long, String> responseBodyMap 
         = userHttpRequestHelper.getUserWithCallback(userIdList, 3);
 
@@ -365,6 +377,7 @@ class UserAsyncHttpRequestHelperTests extends BaseAsyncExampleTests {
       // Send 10 requests in parallel
       // call the delayed endpoint
       List<Long> userIdList = List.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
+      
       Map<Long, String> responseBodyMap =
           userHttpRequestHelper.getUserWithStreams(userIdList, 3);
 
@@ -447,102 +460,106 @@ We have overridden the life cycle methods of `FutureCallback`. We have also ment
 Now let us see how to use this custom callback.
 
 ```java
-  public Map<String, String> getUserWithPipelining(
-      MinimalHttpAsyncClient minimalHttpClient,
-      List<String> userIdList,
-      int delayInSec,
-      String scheme,
-      String hostname)
-      throws RequestProcessingException {
-    return getUserWithParallelRequests(minimalHttpClient, 
-                                       userIdList, delayInSec, scheme, hostname);
+public Map<String, String> getUserWithPipelining(
+    MinimalHttpAsyncClient minimalHttpClient,
+    List<String> userIdList,
+    int delayInSec,
+    String scheme,
+    String hostname)
+    throws RequestProcessingException {
+  return getUserWithParallelRequests(minimalHttpClient, 
+                                     userIdList, delayInSec, scheme, hostname);
+}
+
+private Map<String, String> getUserWithParallelRequests(
+    MinimalHttpAsyncClient minimalHttpClient,
+    List<String> userIdList,
+    int delayInSec,
+    String scheme,
+    String hostname)
+    throws RequestProcessingException {
+
+  Objects.requireNonNull(
+      minimalHttpClient, "Make sure that minimal HTTP Async client is started.");
+  
+  Map<String, String> userResponseMap = new HashMap<>();
+  Map<String, Future<SimpleHttpResponse>> futuresMap = new HashMap<>();
+  AsyncClientEndpoint endpoint = null;
+  String userId = null;
+
+  try {
+    HttpHost httpHost = new HttpHost(scheme, hostname);
+    
+    Future<AsyncClientEndpoint> leaseFuture 
+      = minimalHttpClient.lease(httpHost, null);
+    endpoint = leaseFuture.get(30, TimeUnit.SECONDS);
+    CountDownLatch latch = new CountDownLatch(userIdList.size());
+
+    for (String currentUserId : userIdList) {
+      userId = currentUserId;
+      // Create request
+      URI uri = new URIBuilder(userId).build();
+      
+      SimpleHttpRequest httpGetRequest =
+          SimpleRequestBuilder.get()
+              .setHttpHost(httpHost)
+              .setVersion(new ProtocolVersion("HTTP", 2, 0))
+              .setPath(uri.getPath())
+              .build();
+      
+      log.debug(
+          "Executing {} request: {} on host {}",
+          httpGetRequest.getMethod(),
+          httpGetRequest.getUri(),
+          httpHost);
+
+      Future<SimpleHttpResponse> future =
+          minimalHttpClient.execute(
+              SimpleRequestProducer.create(httpGetRequest),
+              SimpleResponseConsumer.create(),
+              new PipelinedHttpResponseCallback(
+                  httpGetRequest,
+                  MessageFormat.format("Failed to get user for ID: {0}", userId),
+                  latch));
+      futuresMap.put(userId, future);
+    }
+
+    latch.await();
+  } catch (RequestProcessingException e) {
+    userResponseMap.put(userId, e.getMessage());
+  } catch (Exception e) {
+    if (userId != null) {
+      String message 
+        = MessageFormat.format("Failed to get user for ID: {0}", userId);
+      log.error(message, e);
+      userResponseMap.put(userId, message);
+    } else {
+      throw new RequestProcessingException("Failed to process request.", e);
+    }
+  } finally {
+    if (endpoint != null) {
+      endpoint.releaseAndReuse();
+    }
   }
 
-  private Map<String, String> getUserWithParallelRequests(
-      MinimalHttpAsyncClient minimalHttpClient,
-      List<String> userIdList,
-      int delayInSec,
-      String scheme,
-      String hostname)
-      throws RequestProcessingException {
+  log.debug("Got {} futures.", futuresMap.size());
 
-    Objects.requireNonNull(
-        minimalHttpClient, "Make sure that minimal HTTP Async client is started.");
-    Map<String, String> userResponseMap = new HashMap<>();
-    Map<String, Future<SimpleHttpResponse>> futuresMap = new HashMap<>();
-    AsyncClientEndpoint endpoint = null;
-    String userId = null;
-
+  for (Map.Entry<String, Future<SimpleHttpResponse>> futureEntry : 
+    futuresMap.entrySet()) {
+    String currentUserId = futureEntry.getKey();
     try {
-      HttpHost httpHost = new HttpHost(scheme, hostname);
-      Future<AsyncClientEndpoint> leaseFuture 
-        = minimalHttpClient.lease(httpHost, null);
-      endpoint = leaseFuture.get(30, TimeUnit.SECONDS);
-      CountDownLatch latch = new CountDownLatch(userIdList.size());
-
-      for (String currentUserId : userIdList) {
-        userId = currentUserId;
-        // Create request
-        URI uri = new URIBuilder(userId).build();
-        SimpleHttpRequest httpGetRequest =
-            SimpleRequestBuilder.get()
-                .setHttpHost(httpHost)
-                .setVersion(new ProtocolVersion("HTTP", 2, 0))
-                .setPath(uri.getPath())
-                .build();
-        log.debug(
-            "Executing {} request: {} on host {}",
-            httpGetRequest.getMethod(),
-            httpGetRequest.getUri(),
-            httpHost);
-
-        Future<SimpleHttpResponse> future =
-            minimalHttpClient.execute(
-                SimpleRequestProducer.create(httpGetRequest),
-                SimpleResponseConsumer.create(),
-                new PipelinedHttpResponseCallback(
-                    httpGetRequest,
-                    MessageFormat.format("Failed to get user for ID: {0}", userId),
-                    latch));
-        futuresMap.put(userId, future);
-      }
-
-      latch.await();
-    } catch (RequestProcessingException e) {
-      userResponseMap.put(userId, e.getMessage());
+      userResponseMap.put(currentUserId, 
+                          futureEntry.getValue().get().getBodyText());
     } catch (Exception e) {
-      if (userId != null) {
-        String message 
-          = MessageFormat.format("Failed to get user for ID: {0}", userId);
-        log.error(message, e);
-        userResponseMap.put(userId, message);
-      } else {
-        throw new RequestProcessingException("Failed to process request.", e);
-      }
-    } finally {
-      if (endpoint != null) {
-        endpoint.releaseAndReuse();
-      }
+      String message =
+          MessageFormat.format("Failed to get user for ID: {0}", currentUserId);
+      log.error(message, e);
+      userResponseMap.put(currentUserId, message);
     }
-
-    log.debug("Got {} futures.", futuresMap.size());
-
-    for (Map.Entry<String, Future<SimpleHttpResponse>> futureEntry : 
-      futuresMap.entrySet()) {
-      String currentUserId = futureEntry.getKey();
-      try {
-        userResponseMap.put(currentUserId, 
-                            futureEntry.getValue().get().getBodyText());
-      } catch (Exception e) {
-        String message =
-            MessageFormat.format("Failed to get user for ID: {0}", currentUserId);
-        log.error(message, e);
-        userResponseMap.put(currentUserId, message);
-      }
-    }
-
-    return userResponseMap;
   }
+
+  return userResponseMap;
+}
 ```
 Now let us understand how to call this functionality.
 
@@ -550,6 +567,7 @@ First, let's understand the operations to start and stop client for HTTP/1.
 
 ```java
 public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
+  
   private MinimalHttpAsyncClient minimalHttp1Client;
 
   // Starts minimal http 1 async client.
@@ -562,7 +580,9 @@ public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
 
   // Starts minimal http async client.
   private MinimalHttpAsyncClient startMinimalHttpAsyncClient(
-    HttpVersionPolicy httpVersionPolicy) {
+    HttpVersionPolicy httpVersionPolicy
+  ) {
+    
     try {
       MinimalHttpAsyncClient minimalHttpClient =
           HttpAsyncClients.createMinimal(
@@ -574,8 +594,11 @@ public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
                   .setDefaultTlsConfig(
                       TlsConfig.custom().setVersionPolicy(httpVersionPolicy).build())
                       .build());
+      
       minimalHttpClient.start();
+      
       log.debug("Started minimal HTTP async client for {}.", httpVersionPolicy);
+      
       return minimalHttpClient;
     } catch (Exception e) {
       String errorMsg = "Failed to start minimal HTTP async client.";
@@ -611,13 +634,16 @@ And here is the test to execute the pipelined http requests:
 ```java
 @Test
   void getUserWithPipelining() {
+    
     MinimalHttpAsyncClient minimalHttpAsyncClient = null;
+    
     try {
       minimalHttpAsyncClient = userHttpRequestHelper.startMinimalHttp1AsyncClient();
 
       // Send 10 requests in parallel
       // call the delayed endpoint
       List<Long> userIdList = List.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
+      
       Map<Long, String> responseBodyMap =
           userHttpRequestHelper.getUserWithPipelining(
               minimalHttpAsyncClient, userIdList, 3, "https", "reqres.in");
@@ -657,6 +683,7 @@ There is little difference between the way pipelined and multiplexed http reques
 Here is the implementation for client set up for multiplexed exchange.
 ```java
 public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
+  
   private MinimalHttpAsyncClient minimalHttp2Client;
 
   public MinimalHttpAsyncClient startMinimalHttp2AsyncClient() {
@@ -687,13 +714,16 @@ Here the test to verify this functionality:
 ```java
 @Test
 void getUserWithMultiplexing() {
+  
   MinimalHttpAsyncClient minimalHttpAsyncClient = null;
+  
   try {
     minimalHttpAsyncClient = userHttpRequestHelper.startMinimalHttp2AsyncClient();
 
     // Send 10 requests in parallel
     // call the delayed endpoint
     List<Long> userIdList = List.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
+    
     Map<Long, String> responseBodyMap =
         userHttpRequestHelper.getUserWithMultiplexing(
             minimalHttpAsyncClient, userIdList, 3, "https", "reqres.in");
@@ -768,10 +798,13 @@ public class UserResponseAsyncExecChainHandler implements AsyncExecChainHandler 
       AsyncExecChain asyncExecChain,
       AsyncExecCallback asyncExecCallback)
       throws HttpException, IOException {
+    
     try {
       boolean requestHandled = false;
+      
       if (httpRequest.containsHeader("x-base-number")
           && httpRequest.containsHeader("x-req-exec-number")) {
+        
         String path = httpRequest.getPath();
         if (StringUtils.startsWith(path, "/api/users/")) {
           Header baseNumberHeader = httpRequest.getFirstHeader("x-base-number");
@@ -787,8 +820,10 @@ public class UserResponseAsyncExecChainHandler implements AsyncExecChainHandler 
             String reasonPhrase = "Multiple of " + baseNumber;
             HttpResponse response 
               = new BasicHttpResponse(HttpStatus.SC_OK, reasonPhrase);
+            
             ByteBuffer content =
                 ByteBuffer.wrap(reasonPhrase.getBytes(StandardCharsets.US_ASCII));
+            
             AsyncDataConsumer asyncDataConsumer =
                 asyncExecCallback.handleResponse(
                     response, new BasicEntityDetails(content.remaining(), 
@@ -824,8 +859,10 @@ public CloseableHttpAsyncClient startHttpAsyncInterceptingClient() {
           PoolingAsyncClientConnectionManagerBuilder.create()
               .setTlsStrategy(getTlsStrategy())
               .build();
+      
       IOReactorConfig ioReactorConfig =
           IOReactorConfig.custom().setSoTimeout(Timeout.ofSeconds(5)).build();
+      
       httpAsyncInterceptingClient =
           HttpAsyncClients.custom()
               .setIOReactorConfig(ioReactorConfig)
@@ -833,7 +870,9 @@ public CloseableHttpAsyncClient startHttpAsyncInterceptingClient() {
               .addExecInterceptorFirst("custom", 
                                         new UserResponseAsyncExecChainHandler())
               .build();
+      
       httpAsyncInterceptingClient.start();
+      
       log.debug("Started HTTP async client with requests interceptors.");
     }
     return httpAsyncInterceptingClient;
@@ -854,8 +893,10 @@ public Map<Integer, String> executeRequestsWithInterceptors(
     int count,
     int baseNumber)
     throws RequestProcessingException {
+  
   Objects.requireNonNull(
       closeableHttpAsyncClient, "Make sure that HTTP Async client is started.");
+  
   Map<Integer, String> userResponseMap = new HashMap<>();
   Map<Integer, Future<SimpleHttpResponse>> futuresMap = new LinkedHashMap<>();
 
@@ -863,17 +904,20 @@ public Map<Integer, String> executeRequestsWithInterceptors(
     HttpHost httpHost = HttpHost.create("https://reqres.in");
     URI uri = new URIBuilder("/api/users/" + userId).build();
     String path = uri.getPath();
+    
     SimpleHttpRequest httpGetRequest =
         SimpleRequestBuilder.get()
             .setHttpHost(httpHost)
             .setPath(path)
             .addHeader("x-base-number", String.valueOf(baseNumber))
             .build();
+    
     for (int i = 0; i < count; i++) {
       try {
         // Update request
         httpGetRequest.removeHeaders("x-req-exec-number");
         httpGetRequest.addHeader("x-req-exec-number", String.valueOf(i));
+        
         log.debug(
             "Executing {} request: {} on host {}",
             httpGetRequest.getMethod(),
@@ -925,6 +969,7 @@ void getUserWithInterceptors() {
 
     int baseNumber = 3;
     int requestExecCount = 5;
+    
     Map<Integer, String> responseBodyMap =
         userHttpRequestHelper.executeRequestsWithInterceptors(
             closeableHttpAsyncClient, 1L, requestExecCount, baseNumber);

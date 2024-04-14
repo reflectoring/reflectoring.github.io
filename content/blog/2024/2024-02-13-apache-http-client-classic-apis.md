@@ -115,11 +115,9 @@ public class UserSimpleHttpRequestHelperTests extends BaseClassicExampleTests {
   }
 }
 ```
-The `UserSimpleHttpRequestHelperTests` class contains a test method named `executeHttpMethod()`. This method is responsible for testing the `executeHttpMethod()` method of the `UserSimpleHttpRequestHelper` class.
-
 Inside the test method, it first prepares optional request parameters, creating a map containing key-value pairs. These parameters might include details such as the page number for pagination.
 
-Then, it invokes the `executeHttpMethod()` method of the `UserSimpleHttpRequestHelper` class, passing the prepared parameters. This method executes an HTTP request using the Apache HttpClient and returns the response body as a string.
+Then, it invokes the `executeHttpMethod()` method of the `UserSimpleHttpRequestHelper`, passing the prepared parameters. This method executes an HTTP request using the Apache HttpClient and returns the response body as a string.
 
 After executing the HTTP request, the test verifies the response body. It asserts that the response body is not empty, ensuring that the HTTP request was successful and returned some data.
 

@@ -100,7 +100,7 @@ The HttpClient Cache module integrates caching functionality into HttpClient, mi
 
 The caching HttpClient's default implementation stores cache entries and responses in JVM memory, prioritizing performance. For applications needing larger caches or persistence, options like EhCache or memcached are available, allowing disk storage or external process storage. Alternatively, custom storage backends can be implemented via the `HttpCacheStorage` interface, ensuring HTTP/1.1 compliance while tailoring storage to specific needs. Multi-tier caching hierarchies are achievable, combining different storage methods like in-memory and disk or remote storage, akin to virtual memory systems. This flexibility enables tailored caching solutions to suit diverse application requirements.
 {{% /info %}}
-
+\
 First of all, we need to add the maven dependency for Apache HttpClient cache.
 ```xml
 <dependency>
@@ -211,8 +211,7 @@ In Apache HttpClient 5, `ExecChain` and `ExecChain.Scope` play key roles in requ
 `ExecChain.Scope`, on the other hand, represents the scope within which a request is executed. It provides contextual information about the execution environment, such as the target host and the request configuration. This scope helps in determining the context of request execution, allowing interceptors and handlers to make informed decisions based on the execution context.
 
 {{% /info %}}
-
-
+\
 Let's implement a execution chain interceptor:
 ```java
 @Slf4j

@@ -58,7 +58,7 @@ HttpCore NIO is a system that uses the Reactor pattern, created by Doug Lea. Its
 
 The Apache HttpClient's `IOReactor` interface represents an abstract object that implements the Reactor pattern. I/O reactors use a small number of dispatch threads (usually one) to send I/O event notifications to a much greater number of I/O sessions or connections (often several thousands). It is recommended to have one dispatch thread per CPU core.
 {{% /info %}}
-
+\
 Let's now implement the logic to call the endpoints asynchronously.
 Here is the helper class that has methods to start and stop the async client and methods to execute http requests.
 ```java
@@ -242,7 +242,9 @@ class UserAsyncHttpRequestHelperTests extends BaseAsyncExampleTests {
         public boolean matches(String value) {
           // value should not be null
           // value should not be failure message
-          return value != null && !value.startsWith("Failed to get user");
+          return value != null
+              && (!value.startsWith("Failed to get user")
+                  || value.equals("Server does not support HTTP/2 multiplexing."));
         }
       };
 
@@ -291,7 +293,7 @@ IoT devices often generate continuous streams of data that need to be transmitte
 
 OTT platforms deliver streaming media content such as videos, audio, and live broadcasts over the internet. We can use Apache HttpAsyncClient's asynchronous streaming capability to handle the transmission of media streams between servers and client applications. For example, in a video streaming service, video content can be asynchronously streamed from content servers to end-user devices, ensuring smooth playback and minimal buffering delays.
 {{% /info %}}
-
+\
 Let's see the character response consumer implementation:
 
 ```java
@@ -570,7 +572,7 @@ This code retrieves user data asynchronously using pipelining. It sends parallel
 {{% warning title="Connection Closed Exception For Unsupported HTTP/2 Async Features" %}}
 It may be noted that not all servers support HTTP/2 features like multiplexing. In that case, Apache HttpAsyncClient multiplexer encounters `ConnectionClosedException` with the message "Frame size exceeds maximum" when executing requests with an enclosed message body and the remote endpoint having negotiated a maximum frame size larger than the protocol default (16KB).
 {{% /warning %}}
-
+\
 Now Let's understand how to call this functionality.
 
 First, let's understand the operations to start and stop client for HTTP/1. 

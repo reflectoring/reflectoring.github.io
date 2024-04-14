@@ -201,17 +201,16 @@ public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
  
  /** Gets user for given user id. */
  public String getUser(long userId) throws RequestProcessingException {
+    
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
       // Create request
       HttpHost httpHost = HttpHost.create("https://reqres.in");
       HttpGet httpGetRequest 
-    = new HttpGet(new URIBuilder("/api/users/" + userId).build());
+        = new HttpGet(new URIBuilder("/api/users/" + userId).build());
       
       // Create a response handler
-      BasicHttpClientResponseHandler handler 
-    = new BasicHttpClientResponseHandler();
-      String responseBody 
-    = httpClient.execute(httpHost, httpGetRequest, handler);
+      BasicHttpClientResponseHandler handler = new BasicHttpClientResponseHandler();
+      String responseBody = httpClient.execute(httpHost, httpGetRequest, handler);
 
       return responseBody;
     } catch (Exception e) {
@@ -234,10 +233,8 @@ void executeGetSpecificRequest() {
   try {
     // prepare
     long userId = 2L;
-
     // execute
     String existingUser = userHttpRequestHelper.getUser(userId);
-
     // verify
     assertThat(existingUser).isNotEmpty();
   } catch (Exception e) {
@@ -267,7 +264,6 @@ public Integer getUserStatus(long userId) throws RequestProcessingException {
     Integer code = httpClient.execute(httpHost, httpHeadRequest, handler);
 
     log.info("Got response status code: {}", code);
-
     return code;
   } catch (Exception e) {
     throw new RequestProcessingException(
@@ -287,10 +283,8 @@ void executeUserStatus() {
   try {
     // prepare
     long userId = 2L;
-
     // execute
     Integer userStatus = userHttpRequestHelper.getUserStatus(userId);
-
     // verify
     assertThat(userStatus).isEqualTo(HttpStatus.SC_OK);
   } catch (Exception e) {
@@ -350,7 +344,6 @@ void executePostRequest() {
     String createdUser =
         userHttpRequestHelper.createUser(
             "DummyFirst", "DummyLast", "DummyEmail@example.com", "DummyAvatar");
-
     // verify
     assertThat(createdUser).isNotEmpty();
   } catch (Exception e) {
@@ -368,7 +361,7 @@ Let's see how to do it:
 
 ```java
 public String updateUser(
-  long userId, String firstName, String lastName, String email, String avatar
+    long userId, String firstName, String lastName, String email, String avatar
   ) throws RequestProcessingException {
     
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -383,7 +376,8 @@ public String updateUser(
           new UrlEncodedFormEntity(formParams, StandardCharsets.UTF_8)) {
         HttpHost httpHost = HttpHost.create("https://reqres.in");
         URI uri = new URIBuilder("/api/users/" + userId).build();
-    HttpPut httpPutRequest = new HttpPut(uri);
+        
+        HttpPut httpPutRequest = new HttpPut(uri);
         httpPutRequest.setEntity(entity);
 
         // Create a response handler
@@ -408,7 +402,6 @@ void executePutRequest() {
   try {
     // prepare
     int userId = 2;
-
     // execute
     String updatedUser =
         userHttpRequestHelper.updateUser(
@@ -417,7 +410,6 @@ void executePutRequest() {
             "UpdatedDummyLast",
             "UpdatedDummyEmail@example.com",
             "UpdatedDummyAvatar");
-
     // verify
     assertThat(updatedUser).isNotEmpty();
   } catch (Exception e) {
@@ -447,6 +439,7 @@ public String patchUser(long userId, String firstName, String lastName)
         new UrlEncodedFormEntity(formParams, StandardCharsets.UTF_8)) {
       
       HttpHost httpHost = HttpHost.create("https://reqres.in");
+      
       URI uri = new URIBuilder("/api/users/" + userId).build();
       HttpPatch httpPatchRequest = new HttpPatch(uri);
       httpPatchRequest.setEntity(entity);
@@ -473,14 +466,12 @@ void executePatchRequest() {
   try {
     // prepare
     int userId = 2;
-
     // execute
     String patchedUser =
         userHttpRequestHelper.patchUser(
             userId,
             "UpdatedDummyFirst",
             "UpdatedDummyLast");
-
     // verify
     assertThat(patchedUser).isNotEmpty();
   } catch (Exception e) {
@@ -502,6 +493,7 @@ public void deleteUser(long userId) throws RequestProcessingException {
   try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
     
     HttpHost httpHost = HttpHost.create("https://reqres.in");
+    
     URI uri = new URIBuilder("/api/users/" + userId).build();
     HttpDelete httpDeleteRequest = new HttpDelete(uri);
     
@@ -524,7 +516,6 @@ void executeDeleteRequest() {
   try {
     // prepare
     int userId = 2;
-
     // execute
     userHttpRequestHelper.deleteUser(userId);
   } catch (Exception e) {
@@ -607,6 +598,7 @@ public Map<String, String> executeOptions() throws RequestProcessingException {
   try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
     
     HttpHost httpHost = HttpHost.create("https://reqres.in");
+    
     URI uri = new URIBuilder("/api/users/").build();
     HttpOptions httpOptionsRequest = new HttpOptions(uri);
     
@@ -639,7 +631,6 @@ void executeOptions() {
     assertThat(headers.keySet())
         .as("Headers do not contain allow header")
         .containsAnyOf("Allow", "Access-Control-Allow-Methods");
-
   } catch (Exception e) {
     Assertions.fail("Failed to execute HTTP request.", e);
   }
@@ -699,6 +690,7 @@ public class UserTypeHttpRequestHelper extends BaseHttpRequestHelper {
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
       // Create request
       HttpHost httpHost = userRequestProcessingUtils.getApiHost();
+
       URI uri = userRequestProcessingUtils.prepareUsersApiUri(userId);
       HttpGet httpGetRequest = new HttpGet(uri);
 
@@ -740,10 +732,8 @@ void executeGetUser() {
   try {
     // prepare
     long userId = 2L;
-
     // execute
     User existingUser = userHttpRequestHelper.getUser(userId);
-
     // verify
     ThrowingConsumer<User> responseRequirements =
         user -> {

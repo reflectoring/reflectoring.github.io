@@ -175,7 +175,6 @@ Custom response interceptors are useful for tasks like logging responses, handli
 
 Let's implement a response interceptor:
 ```java
-@Slf4j
 public class CustomHttpResponseInterceptor implements HttpResponseInterceptor {
   @Override
   public void process(HttpResponse response, EntityDetails entity, HttpContext context)
@@ -214,7 +213,6 @@ In Apache HttpClient 5, `ExecChain` and `ExecChain.Scope` play key roles in requ
 \
 Let's implement a execution chain interceptor:
 ```java
-@Slf4j
 public class CustomHttpExecutionInterceptor implements ExecChainHandler {
   @Override
   public ClassicHttpResponse execute(

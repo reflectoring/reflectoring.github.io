@@ -22,20 +22,20 @@ This article is the first part of a series:
 4. [Async APIs Offered by Apache HttpClient](/apache-http-client-async-apis/)
 5. [Reactive APIs Offered by Apache HttpClient](/apache-http-client-reactive-apis/)
 
-## Why Should We Care About `HTTP` Client?
-Have you ever wondered how your favorite apps seamlessly fetch data from the internet or communicate with servers behind the scenes? That's where `HTTP` clients come into play – they're the silent heroes of web communication, doing the heavy lifting so you don't have to.
+## Why Should We Care About HTTP Client?
+Have you ever wondered how your favorite apps seamlessly fetch data from the internet or communicate with servers behind the scenes? That's where HTTP clients come into play – they're the silent heroes of web communication, doing the heavy lifting so you don't have to.
 
-Imagine you're using a weather app to check the forecast for the day. Behind the scenes, the app sends an `HTTP` request to a weather service's server, asking for the latest weather data. The server processes the request, gathers the relevant information, and sends back an `HTTP` response with the forecast. All of this happens in the blink of an eye, thanks to the magic of `HTTP` clients.
+Imagine you're using a weather app to check the forecast for the day. Behind the scenes, the app sends an HTTP request to a weather service's server, asking for the latest weather data. The server processes the request, gathers the relevant information, and sends back an HTTP response with the forecast. All of this happens in the blink of an eye, thanks to the magic of HTTP clients.
 
-`HTTP` clients are like digital messengers, facilitating communication between client software and web servers across the internet. They handle all the details of making connection to server, sending `HTTP` requests and processing responses, so you can focus on building great software without getting bogged down in the complexities of web communication.
+HTTP clients are like digital messengers, facilitating communication between client software and web servers across the internet. They handle all the details of making connection to server, sending HTTP requests and processing responses, so you can focus on building great software without getting bogged down in the complexities of web communication.
 
-So why should you care about `HTTP` clients? Well, imagine if every time you wanted to fetch data from a web server or interact with a web service, you had to manually craft and send `HTTP` requests, then parse and handle the responses – it would be a nightmare! `HTTP` clients automate all of that for you, making it easy to send and receive data over the web with just a few lines of code.
+So why should you care about HTTP clients? Well, imagine if every time you wanted to fetch data from a web server or interact with a web service, you had to manually craft and send HTTP requests, then parse and handle the responses – it would be a nightmare! HTTP clients automate all of that for you, making it easy to send and receive data over the web with just a few lines of code.
 
-When it comes to developing a mobile app, a web service, or anything in between, `HTTP` client plays a crucial role in facilitating interaction with remote resources on the internet. Therefore, it is important to acknowledge its significance when building software that requires web communication.
+When it comes to developing a mobile app, a web service, or anything in between, HTTP client plays a crucial role in facilitating interaction with remote resources on the internet. Therefore, it is important to acknowledge its significance when building software that requires web communication.
 
-{{% info title="Examples of `HTTP` Clients" %}}
+{{% info title="Examples of HTTP Clients" %}}
 
-There are many Java `HTTP` clients available. Check this article on [Comparison of Java `HTTP` Clients](https://reflectoring.io/comparison-of-java-http-clients/) for more details.
+There are many Java HTTP clients available. Check this article on [Comparison of Java HTTP Clients](https://reflectoring.io/comparison-of-java-http-clients/) for more details.
 
 {{% /info %}}
 

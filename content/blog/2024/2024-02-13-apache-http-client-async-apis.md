@@ -84,7 +84,6 @@ public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
                 .build();
         
         httpClient.start();
-        
         log.debug("Started HTTP async client.");
       } catch (Exception e) {
         String errorMsg = "Failed to set up SSL context.";
@@ -258,17 +257,14 @@ class UserAsyncHttpRequestHelperTests extends BaseAsyncExampleTests {
       // call the delayed endpoint
       List<Long> userIdList 
         = List.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
-      
       Map<Long, String> responseBodyMap 
         = userHttpRequestHelper.getUserWithCallback(userIdList, 3);
-
       // verify
       assertThat(responseBodyMap)
           .hasSameSizeAs(userIdList)
           .doesNotContainKey(null)
           .doesNotContainValue(null)
           .hasValueSatisfying(getUserErrorCheck);
-
     } catch (Exception e) {
       Assertions.fail("Failed to execute HTTP request.", e);
     } finally {
@@ -379,10 +375,8 @@ class UserAsyncHttpRequestHelperTests extends BaseAsyncExampleTests {
       // Send 10 requests in parallel
       // call the delayed endpoint
       List<Long> userIdList = List.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
-      
       Map<Long, String> responseBodyMap =
           userHttpRequestHelper.getUserWithStreams(userIdList, 3);
-
       // verify
       assertThat(responseBodyMap)
           .hasSameSizeAs(userIdList)
@@ -608,9 +602,7 @@ public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
                       .build());
       
       minimalHttpClient.start();
-      
       log.debug("Started minimal HTTP async client for {}.", httpVersionPolicy);
-      
       return minimalHttpClient;
     } catch (Exception e) {
       String errorMsg = "Failed to start minimal HTTP async client.";
@@ -627,9 +619,7 @@ public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
       minimalHttpClient = null;
     }
   }
-  
 }
-
 ```
 
 The `UserAsyncHttpRequestHelper` class facilitates the management of a minimal HTTP asynchronous client for making requests. It contains methods to start and stop the client.
@@ -655,18 +645,15 @@ And here is the test to execute the pipelined http requests:
       // Send 10 requests in parallel
       // call the delayed endpoint
       List<Long> userIdList = List.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
-      
       Map<Long, String> responseBodyMap =
           userHttpRequestHelper.getUserWithPipelining(
               minimalHttpAsyncClient, userIdList, 3, "https", "reqres.in");
-
       // verify
       assertThat(responseBodyMap)
           .hasSameSizeAs(userIdList)
           .doesNotContainKey(null)
           .doesNotContainValue(null)
           .hasValueSatisfying(getUserErrorCheck);
-
     } catch (Exception e) {
       Assertions.fail("Failed to execute HTTP request.", e);
     } finally {
@@ -735,18 +722,15 @@ void getUserWithMultiplexing() {
     // Send 10 requests in parallel
     // call the delayed endpoint
     List<Long> userIdList = List.of(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
-    
     Map<Long, String> responseBodyMap =
         userHttpRequestHelper.getUserWithMultiplexing(
             minimalHttpAsyncClient, userIdList, 3, "https", "reqres.in");
-
     // verify
     assertThat(responseBodyMap)
         .hasSameSizeAs(userIdList)
         .doesNotContainKey(null)
         .doesNotContainValue(null)
         .hasValueSatisfying(getUserErrorCheck);
-
   } catch (Exception e) {
     Assertions.fail("Failed to execute HTTP request.", e);
   } finally {
@@ -803,13 +787,10 @@ Now Let's understand one of these scenarios with an example. Let's learn how to 
 ```java
 public class UserResponseAsyncExecChainHandler implements AsyncExecChainHandler {
   @Override
-  public void execute(
-      HttpRequest httpRequest,
-      AsyncEntityProducer asyncEntityProducer,
-      AsyncExecChain.Scope scope,
-      AsyncExecChain asyncExecChain,
-      AsyncExecCallback asyncExecCallback)
-      throws HttpException, IOException {
+  public void execute(HttpRequest httpRequest, AsyncEntityProducer asyncEntityProducer,
+      AsyncExecChain.Scope scope, AsyncExecChain asyncExecChain, 
+      AsyncExecCallback asyncExecCallback
+    ) throws HttpException, IOException {
     
     try {
       boolean requestHandled = false;
@@ -914,6 +895,7 @@ public Map<Integer, String> executeRequestsWithInterceptors(
 
   try {
     HttpHost httpHost = HttpHost.create("https://reqres.in");
+    
     URI uri = new URIBuilder("/api/users/" + userId).build();
     String path = uri.getPath();
     
@@ -981,11 +963,9 @@ void getUserWithInterceptors() {
 
     int baseNumber = 3;
     int requestExecCount = 5;
-    
     Map<Integer, String> responseBodyMap =
         userHttpRequestHelper.executeRequestsWithInterceptors(
             closeableHttpAsyncClient, 1L, requestExecCount, baseNumber);
-
     // verify
     assertThat(responseBodyMap)
         .hasSize(requestExecCount)

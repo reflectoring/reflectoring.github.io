@@ -420,7 +420,7 @@ Pipelining can also improve performance by packing multiple HTTP requests into a
 
 Now let's understand how to pipeline requests using Apache HttpClient.
 ```java
-public class PipelinedHttpResponseCallback 
+public class CustomHttpResponseCallback 
   implements FutureCallback<SimpleHttpResponse> {
   /** The Http get request. */
   private SimpleHttpRequest httpRequest;
@@ -551,8 +551,12 @@ private Map<String, String> getUserWithParallelRequests(
       userResponseMap.put(currentUserId, 
                           futureEntry.getValue().get().getBodyText());
     } catch (Exception e) {
-      String message =
-          MessageFormat.format("Failed to get user for ID: {0}", currentUserId);
+      if (e.getCause() instanceof ConnectionClosedException cce) {
+        message = "Server does not support HTTP/2 multiplexing.";
+      } else {
+        message 
+          = MessageFormat.format("Failed to get user for ID: {0}", currentUserId);
+      }
       log.error(message, e);
       userResponseMap.put(currentUserId, message);
     }
@@ -561,6 +565,12 @@ private Map<String, String> getUserWithParallelRequests(
   return userResponseMap;
 }
 ```
+This code retrieves user data asynchronously using pipelining. It sends parallel requests to the server for each user ID. The method `getUserWithPipelining()` orchestrates this process, while `getUserWithParallelRequests()` handles actual request execution. Each request is processed asynchronously, and responses are stored in a map. If an error occurs, it's logged, and an appropriate message is added to the response map. Finally, the method returns the map containing user responses.
+
+{{% warning title="Connection Closed Exception For Unsupported HTTP/2 Async Features" %}}
+It may be noted that not all servers support HTTP/2 features like multiplexing. In that case, Apache HttpAsyncClient multiplexer encounters `ConnectionClosedException` with the message "Frame size exceeds maximum" when executing requests with an enclosed message body and the remote endpoint having negotiated a maximum frame size larger than the protocol default (16KB).
+{{% /warning %}}
+
 Now Let's understand how to call this functionality.
 
 First, let's understand the operations to start and stop client for HTTP/1. 

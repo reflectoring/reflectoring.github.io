@@ -95,6 +95,12 @@ By understanding and configuring connection management settings, developers can 
 ## Caching Configuration
 The caching HttpClient inherits all configuration options and parameters of the default non-caching implementation (this includes setting options like timeouts and connection pool sizes). For caching specific configuration, you can provide a CacheConfig instance to customize behavior.
 
+{{% info title="HttpClient Caching Mechanism" %}}
+The HttpClient Cache module integrates caching functionality into HttpClient, mimicking a browser cache for HTTP/1.1 compliance. It seamlessly replaces the default client, serving cached requests when possible. It follows the Chain of Responsibility pattern, ensuring transparent client-server interaction. It handles cache validation using conditional GETs and Cache-Control extensions. The module adheres to HTTP protocol standards, providing transparent caching proxy capabilities. Requests are corrected for protocol compliance, and cache entries are invalidated accordingly. Cached responses are served directly if valid, revalidated if necessary, or fetched from the origin server. Responses are examined for cacheability, stored if applicable, or directly returned if too large. The caching mechanism operates within the request execution pipeline, augmenting HttpClient's functionality without altering its core implementation.
+
+The caching HttpClient's default implementation stores cache entries and responses in JVM memory, prioritizing performance. For applications needing larger caches or persistence, options like EhCache or memcached are available, allowing disk storage or external process storage. Alternatively, custom storage backends can be implemented via the `HttpCacheStorage` interface, ensuring HTTP/1.1 compliance while tailoring storage to specific needs. Multi-tier caching hierarchies are achievable, combining different storage methods like in-memory and disk or remote storage, akin to virtual memory systems. This flexibility enables tailored caching solutions to suit diverse application requirements.
+{{% /info %}}
+
 First of all, we need to add the maven dependency for Apache HttpClient cache.
 ```xml
 <dependency>

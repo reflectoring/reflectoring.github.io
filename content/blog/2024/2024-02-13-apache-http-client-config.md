@@ -23,7 +23,7 @@ This article is the second part of a series:
 {{% github "https://github.com/thombergs/code-examples/tree/master/create-a-http-client-wth-apache-http-client" %}}
 
 \
-Let us now learn commonly used options to configure Apache HttpClient for web communication.
+Let's now learn commonly used options to configure Apache HttpClient for web communication.
 
 ## HttpClient Client Connection Management
 Connection management in Apache HttpClient refers to the management of underlying connections to remote servers. Efficient connection management is crucial for optimizing performance and resource utilization. Apache HttpClient provides various options for configuring connection management.
@@ -134,7 +134,7 @@ This setup enables caching of HTTP responses, which can improve performance by s
 ## Configuring Request Interceptors
 A custom request interceptor in Apache HttpClient allows developers to intercept outgoing HTTP requests before they are sent to the server. Typically, a custom response interceptor implements the `HttpRequestInterceptor` interface and overrides the `process()` method. This interceptor can modify the request headers, request parameters, or even the entire request body based on specific requirements. For example, it can add authentication headers, logging headers, or handle request retries.
 
-Let us implement a request interceptor:
+Let's implement a request interceptor:
 ```java
 public class CustomHttpRequestInterceptor implements HttpRequestInterceptor {
   @Override
@@ -151,7 +151,7 @@ The `CustomHttpRequestInterceptor` implements the `HttpRequestInterceptor` inter
  
 Overall, this interceptor enhances outgoing HTTP requests by adding custom headers, which can serve various purposes such as request identification, security, or API key authentication.
 
-Now let us build a HTTP client using this request interceptor:
+Now Let's build a HTTP client using this request interceptor:
 ``` java
 HttpRequestInterceptor interceptor = new CustomHttpRequestInterceptor();
 HttpClientBuilder builder = HttpClients.custom();
@@ -173,7 +173,7 @@ Typically, a custom response interceptor implements the `HttpResponseInterceptor
 
 Custom response interceptors are useful for tasks like logging responses, handling error conditions, extracting specific information from responses, or performing additional processing before passing the response back to the client code. They provide flexibility and extensibility to tailor the behavior of HTTP responses according to application needs.
 
-Let us implement a response interceptor:
+Let's implement a response interceptor:
 ```java
 @Slf4j
 public class CustomHttpResponseInterceptor implements HttpResponseInterceptor {
@@ -187,7 +187,7 @@ public class CustomHttpResponseInterceptor implements HttpResponseInterceptor {
 
 The `CustomHttpResponseInterceptor` implements the `HttpResponseInterceptor` interface provided by Apache HttpClient. This interceptor is designed to intercept incoming HTTP responses before they are returned to the client. In the `process()` method the interceptor logs the status code of the response object.
 
-Now let us build a HTTP client using this request interceptor:
+Now Let's build a HTTP client using this request interceptor:
 ``` java
 HttpResponseInterceptor interceptor = new CustomHttpResponseInterceptor();
 HttpClientBuilder builder = HttpClients.custom();
@@ -213,7 +213,7 @@ In Apache HttpClient 5, `ExecChain` and `ExecChain.Scope` play key roles in requ
 {{% /info %}}
 
 
-Let us implement a execution chain interceptor:
+Let's implement a execution chain interceptor:
 ```java
 @Slf4j
 public class CustomHttpExecutionInterceptor implements ExecChainHandler {
@@ -251,7 +251,7 @@ Upon receiving the response from the server, the interceptor logs the status cod
 
 If an `IOException` or `HttpException` occurs during the execution of the request or response handling, the interceptor catches these exceptions. It logs an error message indicating the failure and wraps the exception in a `RequestProcessingException`, which is then thrown to indicate the failure of the request execution.
 
-Now let us build a HTTP client using this execution interceptor:
+Now Let's build a HTTP client using this execution interceptor:
 ``` java
 HttpExecutionInterceptor interceptor = new CustomHttpExecutionInterceptor();
 HttpClientBuilder builder = HttpClients.custom();

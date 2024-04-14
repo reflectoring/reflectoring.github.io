@@ -23,7 +23,7 @@ This article is the fourth part of a series:
 {{% github "https://github.com/thombergs/code-examples/tree/master/create-a-http-client-wth-apache-http-client" %}}
 
 \
-Let us now learn how to use Apache HttpClient for web communication. We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the async APIs offered by Apache HttpClient.
+Let's now learn how to use Apache HttpClient for web communication. We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the async APIs offered by Apache HttpClient.
 
 
 {{% info title="Reqres Fake Data CRUD API" %}}
@@ -111,7 +111,7 @@ We use `CloseableHttpAsyncClient` to execute HTTP requests. In this implementati
 
 Method `stopHttpAsyncClient()` stops the client gracefully.
 
-Now let us understand why do we need to start and stop the HTTP async client. We did not need to do so for classic HTTP client.
+Now Let's understand why do we need to start and stop the HTTP async client. We did not need to do so for classic HTTP client.
 
 The need to start and stop Apache HttpAsyncClient but not for the classic HttpClient is primarily due to their underlying architectures and usage scenarios.
 
@@ -163,7 +163,7 @@ public class SimpleHttpResponseCallback
 
 We have overridden the life cycle methods of `FutureCallback`. We have also mentioned the response type `SimpleHttpResponse` it will receive when HTTP request call is completed. When the call fails, we opt to raise exception in `failed`.
 
-Now let us see how to use this custom callback.
+Now Let's see how to use this custom callback.
 
 ```java
 public Map<Long, String> getUserWithCallback(List<Long> userIdList, int delayInSec)
@@ -229,7 +229,7 @@ GET https://reqres.in/api/users/10->HTTP/1.1 200 OK
 ```
 It will send the requests in order of user id list. However, the request may complete in any order. So our implementation should be agnostic to the order of request completion.
 
-Now let us verify the implementation using unit test:
+Now Let's verify the implementation using unit test:
 ```java
 class UserAsyncHttpRequestHelperTests extends BaseAsyncExampleTests {
 
@@ -352,7 +352,7 @@ public void releaseResources() {}
 
 It processes character-based HTTP responses asynchronously in Apache HttpAsyncClient. Extending `AbstractCharResponseConsumer`, it overrides methods to handle the response stream. `start()` initializes response logging and content accumulation. `data()` appends received data to a StringBuilder. `buildResult()` constructs a `SimpleHttpResponse` with HTTP status code and accumulated content. On failure, `failed()` logs errors and throws a `RequestProcessingException`.
 
-Now let us test this functionality:
+Now Let's test this functionality:
 ```java
 class UserAsyncHttpRequestHelperTests extends BaseAsyncExampleTests {
 
@@ -457,7 +457,7 @@ public class PipelinedHttpResponseCallback
 ```
 We have overridden the life cycle methods of `FutureCallback`. We have also mentioned the response type `SimpleHttpResponse` it will receive when HTTP request call is completed. When the call fails, we opt to raise exception in `failed`.
 
-Now let us see how to use this custom callback.
+Now Let's see how to use this custom callback.
 
 ```java
 public Map<String, String> getUserWithPipelining(
@@ -561,7 +561,7 @@ private Map<String, String> getUserWithParallelRequests(
   return userResponseMap;
 }
 ```
-Now let us understand how to call this functionality.
+Now Let's understand how to call this functionality.
 
 First, let's understand the operations to start and stop client for HTTP/1. 
 
@@ -787,7 +787,7 @@ These interceptors are useful in various crosscutting scenarios, such as:
 
 Intercept requests and responses to log information such as request parameters, response status codes, or response bodies for debugging or auditing purposes. Add authentication tokens or credentials to outgoing requests before sending them to the server. Intercept responses to handle errors or exceptions gracefully and take appropriate actions based on the response received from the server. Modify requests to add custom headers, parameters, or payloads before sending them to the server.
 
-Now let us understand one of these scenarios with an example. Let us learn how to create mock response:
+Now Let's understand one of these scenarios with an example. Let's learn how to create mock response:
 ```java
 public class UserResponseAsyncExecChainHandler implements AsyncExecChainHandler {
   @Override
@@ -850,7 +850,7 @@ public class UserResponseAsyncExecChainHandler implements AsyncExecChainHandler 
 ```
 It overrides the default behavior of handling HTTP requests in the asynchronous execution chain. It checks if the request contains specific headers (`x-base-number` and `x-req-exec-number`) and if the request path starts with "/api/users/". If these conditions are met, it extracts the values of these headers and parses them into integers. Then, it checks if the `reqExecNumber` is a multiple of the `baseNumber`. If so, it creates a custom response with status code `HTTP OK (200)` and a reason phrase indicating that it's a multiple of the base number. Otherwise, it proceeds with the execution chain to handle the request normally. Finally, it handles any exceptions that occur during the execution process.
 
-Now let us prepare a client and configure it to use interceptor:
+Now Let's prepare a client and configure it to use interceptor:
 ```java
 public CloseableHttpAsyncClient startHttpAsyncInterceptingClient() {
   try {
@@ -885,7 +885,7 @@ public CloseableHttpAsyncClient startHttpAsyncInterceptingClient() {
 ```
 It initializes and returns an HTTP asynchronous client with request interceptors. It first checks if the client is already initialized. If not, it creates a pooling asynchronous client connection manager with a specified TLS strategy. Then, it configures an I/O reactor with a socket timeout of 5 seconds. Next, it creates the HTTP asynchronous client, adds a custom execution interceptor named "custom" (which is an instance of `UserResponseAsyncExecChainHandler`) as the first interceptor, and sets the connection manager and I/O reactor configuration. Finally, it starts the client and logs the action.
 
-Now let us see the scenario to execute HTTP request and its interception:
+Now Let's see the scenario to execute HTTP request and its interception:
 ```java
 public Map<Integer, String> executeRequestsWithInterceptors(
     CloseableHttpAsyncClient closeableHttpAsyncClient,
@@ -960,7 +960,7 @@ public Map<Integer, String> executeRequestsWithInterceptors(
 ```
 It sends multiple asynchronous HTTP requests with interceptors applied. It initializes a map to store the responses and a map for the futures of each request. Then, it constructs a request with a specified base number and user ID. For each request, it updates the request with the current request ID, executes the request asynchronously using the provided HTTP client, and adds the future to the map. If an exception occurs during execution, it logs the error message. After executing all requests, it retrieves the responses from the futures and populates the response map. Finally, it returns the map containing the request IDs and corresponding responses.
 
-Finally, let us test our logic:
+Finally, Let's test our logic:
 ```java
 @Test
 void getUserWithInterceptors() {

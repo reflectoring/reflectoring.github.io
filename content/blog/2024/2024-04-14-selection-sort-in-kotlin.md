@@ -1,7 +1,7 @@
 ---
 title: "Selection Sort in Kotlin"
 categories: ["Kotlin"]
-date: 2024-02-20 00:00:00 +1100 
+date: 2024-04-14 00:00:00 +1100 
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss selection sort algorithm"
 image: images/stock/0135-sorted-1200x628-branded.jpg

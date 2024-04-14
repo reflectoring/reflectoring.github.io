@@ -201,7 +201,7 @@ Then we call `addResponseInterceptorFirst()` method passing the interceptor obje
 By adding the interceptor first, it ensures that the response code logged before the response is manipulated further. Finally, it calls the `build()` method to create the `CloseableHttpClient` instance with the configured response interceptor.
 
 ## Configuring Execution Interceptors
-On the other hand, an execution interceptor allows developers to intercept the execution of HTTP requests and responses. It operates at a lower level compared to request interceptors and can intercept various stages of the request execution process, such as before sending the request, after receiving the response, or when an exception occurs during execution. Execution interceptors can be used for tasks like logging, caching, or error handling. They provide finer-grained control over the HTTP request execution process and enable developers to implement custom logic based on specific requirements or conditions.
+An execution interceptor allows developers to intercept the execution of HTTP requests and responses. It can intercept various stages of the request execution process, such as before sending the request, after receiving the response, or when an exception occurs during execution. Execution interceptors can be used for tasks like logging, caching, manipulate request and response, or error handling.
 
 {{% info title="ExecChain and Scope" %}}
 In Apache HttpClient 5, `ExecChain` and `ExecChain.Scope` play key roles in request execution and interception.

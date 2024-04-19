@@ -101,8 +101,6 @@ Encapsulation involves bundling data and methods that operate on that data withi
 
 Let's us briefly learn about these modifiers:
 
-Let's modify our Vehicle class to encapsulate its properties:
-
 `private`: When we mark a declaration (such as a class, function, or property) as private, it is accessible only within the same file in which it is declared. Other classes, functions, or properties outside of the file cannot access it. This is the most restrictive visibility modifier.
 
 `protected`: The protected modifier is similar to private, but it also allows subclasses to access the declaration. This means that the declaration is accessible within its own class and by subclasses. For example:
@@ -124,6 +122,8 @@ class Derived : Base() {
 `internal`: The internal modifier restricts access to declarations within the same module (a module is a set of Kotlin files compiled together, such as a library or an application). Anything marked as internal is visible to other code in the same module but not to code in other modules.
 
 `public`: This is the default visibility in Kotlin. When a declaration is marked as public (or if no visibility modifier is specified), it is accessible from any other code. In most cases, you won't need to explicitly use the public modifier, as it's the default.
+
+Let's modify our Vehicle class to encapsulate its properties:
 
 ```kotlin
 open class Vehicle(private val brand: String, private val model: String) {

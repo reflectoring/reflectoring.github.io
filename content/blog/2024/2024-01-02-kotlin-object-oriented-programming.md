@@ -70,6 +70,7 @@ class Car(brand: String, model: String, val color: String)
 With this implementation, a `Car` object can now be treated as a `Drivable` allowing for more flexibility in our code. Polymorphism facilitates code extensibility and maintenance by decoupling the implementation details from the interfaces.
 
 Let's show an example of Polymorphism while using an abstract class:
+```kotlin
 abstract class Shape {
     // Define an abstract method `area()` that must be overridden in subclasses
     abstract fun area(): Double

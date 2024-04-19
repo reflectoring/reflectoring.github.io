@@ -1,19 +1,19 @@
 ---
 title: "Optimizing Node.js Application Performance with Caching"
 categories: ["Node"]
-date: 2024-04-06 00:00:00 +1100
-modified: 2024-04-06 00:00:00 +1100
+date: 2024-04-20 00:00:00 +1100
+modified: 2024-04-20 00:00:00 +1100
 authors: ["ajibade"]
 description: "Caching is a popularly used technique for improving application performance. It can mean the difference between a slow, frustrating experience and a smooth, enjoyable one for users. Learn how to optimize Node.js application performance through effective caching techniques."
-image: images/stock/0076-airmail-1200x628-branded.jpg
-url:  ndoe-js-cache-optimization
+image: images/stock/0137-speed-1200x628-branded.jpg
+url:  node-js-cache
 ---
 
 Endpoints or APIs that perform complex computations and handle large amounts of data face several performance and responsiveness challenges. This occurs because each request initiates a computation or data retrieval process from scratch, which can take time. As a result, users and services that use our application might experience slower performance. An effective solution to this problem is to implement a caching mechanism.
 
-Caching is a popularly used technique for improving application performance. It can mean the difference between a slow, frustrating experience and a smooth, enjoyable one for users
+Caching is a popularly used technique for improving application performance. It can mean the difference between a frustrating or enjoyable user experience.
 
-Caching allows us to temporarily store frequently used data rather than repeatedly fetching it. This enables quick retrieval without rerunning computations or database searches, significantly improving application performance.
+Caching allows us to temporarily store frequently used data rather than repeatedly computing it. This enables quick retrieval without rerunning computations or database searches, significantly improving application performance.
 
 In this article, we'll look at what caching is, when do we need it in our application, and how to incorporate it into a Node.js application using the Redis database.
 
@@ -24,22 +24,22 @@ To follow along with this article, you will require:
 - [Redis](https://redis.io/docs/install/install-redis/) installed on your computer.
 
 
-{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/cache-nodejs" %}}
+{{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/nodecache-app" %}}
 
 ## Cache
 A cache serves as a temporary storage where copies of response data are stored to expedite loading times and enhance an application's responsiveness. Every stored data in a cache is organized using key-value pairs, each piece of data is linked to a unique key.
 
 A cache unique key can be generated using various components from the client's request, such as the URL, query parameters, request body, headers, method, etc.
 
-By using relevant request components as our cache key, we guarantee that our cached data are accurately stored and distinguished based on the specifics of each request. This approach prevents the delivery of inaccurate or outdated data from the cache, ensuring that our cached responses are tailored to fulfill the specific requirements of each request.
+By using relevant request components as our cache key, we guarantee that our cached data can be distinguished based on the specifics of each request. This approach prevents the delivery of inaccurate or outdated data from the cache, ensuring that our cached responses are tailored to fulfill the specific requirements of each request.
 
-## When Do We Need to Cache
-Deciding when and how to use caching in an application can be hard because it depends on many things like data access patterns, performance requirements, and how big we want our application to grow. Various strategies exist for storing and using cache within an application. Let us briefly explore a few commonly used types and their use cases:
+## When Do We Need to Cache?
+Deciding when and how to use caching in an application can be hard because it depends on many things like data access patterns, performance requirements, and how big we want our application to grow. Various strategies exist for storing and using cache within an application. Let us briefly explore a few commonly used types and their use cases.
 
-### Client-side Caching:
+### Client-side Caching
 Client-side caching means storing data on the user's device. Developers employ storage mechanisms such as the browser's cache, local storage, session storage, IndexedDB, or third-party solutions for this purpose.
 
-#### When to Use:
+Client-side caching lends itself well to the following scenarios:
 - **Frequent Page Visits**: Use client-side caching for frequently accessed data or resources to speed up page loading for returning visitors by serving cached content, avoiding repeated server requests. This includes storing web pages, images, stylesheets, and scripts on the user's device.
 - **Reduce Server Calls**: Employ client-side caching to minimize the time between client and server interactions, resulting in faster response times and reduced backend server load. This improves scalability and lowers server traffic.
 - **Non-Sensitive Data**: Consider the sensitivity of the cached data; avoid caching sensitive or confidential information on the front end to mitigate security risks associated with less secure client devices.
@@ -49,10 +49,11 @@ Client-side caching means storing data on the user's device. Developers employ s
 - **Enhanced User Experience**: Enhance user experience by leveraging client-side caching to achieve faster page loads and reduced latency. Users perceive the application as more responsive and reliable, leading to higher satisfaction and engagement.
 - **Personalization and Customization**: Store user-specific data, preferences, and settings locally on the user's device with client-side caching. This enables a personalized experience where users can access their customized settings without server requests each time.
 
-### Server-Side Caching:
+### Server-Side Caching
 Server-side caching temporarily saves frequently accessed data on the server, this speeds up client load time. It involves caching database queries, web pages, API responses, and other frequently used data. This caching is typically performed within the application or web server, utilizing methods such as in-memory caching, file-based caching, or third-party systems like Redis.
 
-#### When to use:
+Server-side caching is beneficial in the following scenarios:
+
 - **Processing Location**: Use server-side caching when most data processing occurs on the server, reducing the load on backend servers.
 - **Resource Intensive**: Employ server-side caching for resource-intensive tasks or complex computations, centralizing caching and easing backend server loads.
 - **Scalability**: Opt for server-side caching to manage caches centrally and scale horizontally by adding more database nodes. Utilize features like expiration time and pub/sub mechanisms for cache invalidation.
@@ -63,12 +64,13 @@ Server-side caching temporarily saves frequently accessed data on the server, 
 - **Personalization and User Data**: Cache personalized and user-specific content on the server to boost application responsiveness for authenticated users.
 - **High Traffic Peaks**: Use server-side caching during traffic spikes to serve cached content directly, relieving application servers and ensuring scalability while averting performance degradation or downtime.
 
-### CDNs (Content Delivery Networks):
+### CDNs (Content Delivery Networks)
 CDNs are networks of servers distributed across multiple locations throughout the world, known as points of presence (PoPs). Their primary responsibility is to store and distribute content to users from servers near their geographic location.
 
 CDNs cache static and dynamic content, such as web pages, photos, videos, scripts, and API answers. CDNs increase website speed, reduce delays, and improve the overall user experience by storing material on strategically positioned servers throughout the world.
 
-#### When to Use:
+CDNs work well in the following scenarios:
+
 - **Global Audience**: Use CDNs if our website or app is used by people in different parts of the world. CDNs speed up content delivery and reduce delays for users in different regions.
 - **High Traffic Peaks**: CDNs are useful during busy times like product launches or events. They distribute content efficiently and ease the load on your main servers.
 - **Static Content Delivery**: CDNs are great for delivering static content like images, videos, and scripts. By using CDN servers, you lighten the load on your main server and improve site performance.
@@ -83,7 +85,7 @@ In summary, it is vital to assess these factors and pick the approach that fits 
 
 To further understand how to use cache in an application, we'll look at how to implement server-side caching in our application.
 
-## Setting up Server-Side Caching
+## Server-Side Caching with Node.js
 In this section, we will configure server-side caching with Node.js and a Redis database. Before we do this, let's first understand Redis and how to efficiently store and retrieve data for caching using Redis.
 
 ### Redis
@@ -97,7 +99,7 @@ Redis provides us with various data types for storing and retrieving data like S
 
 We will concentrate on the Redis string data type. It is the go-to choice for caching, providing a versatile solution for various use cases. Redis strings provide strong caching capabilities, ranging from simple key-value caching to more complex cases that need expiration, atomic operations, and persistence.
 
-To store a string in Redis, use the `SET` method:
+To store a string in Redis, use the `set()` method:
 ```javascript 
 // Set a string value for the key
 redis.set('key', 'Value');
@@ -134,11 +136,12 @@ Below is an example demonstrating how to store and retrieve a JSON string using 
 ```
 In the above code snippet, we first stringify the JSON data before saving it as a string, ensuring our JSON data is stored in the correct format. When retrieving the data, we parse it back into its original JSON format.
 
-### Setting up Caching with Redis in a Node Js Application:
+### Setting up Caching with Redis in a Node.Js Application
 Next, let's proceed to set up caching with Redis in a Node.js application.
 
 To begin open a terminal in a directory of your choice. Then run the following command. This will create a new folder for our demo application  and initialize Node.js:
-```bash=
+
+```bash
 mkdir nodecache-app
 cd nodecache-app    
 npm init -y
@@ -146,7 +149,8 @@ npm init -y
 
 Next, to generate the necessary folders and files for our application, run:
 ```bash 
-mkdir controllers middlewares && touch controllers/product.js middlewares/redis.js index.js
+mkdir controllers middlewares && \
+  touch controllers/product.js middlewares/redis.js index.js
 ```
 Our server setup will reside in the `index.js` file, while our Redis caching configuration will be implemented as middleware in our application.
 
@@ -165,9 +169,12 @@ Next, execute the following command to install the required dependencies for our
 npm install express object-hash Redis
 ```
 Here's a brief overview of each dependency:
-- **express**: This library facilitates the creation of REST APIs and route management in our application.
-- **redis**: Redis is utilized as an in-memory data structure store, serving as a database for our cache.
-- **object-hash**: This library generates consistent and reliable hashes from objects and values. We'll use object-hash to create our cache key.
+
+- `express`: This library facilitates the creation of REST APIs and route management in our application.
+
+- `redis`: Redis is utilized as an in-memory data structure store, serving as a database for our cache.
+
+- `object-hash`: This library generates consistent and reliable hashes from objects and values. We'll use object-hash to create our cache key.
 
 Here's how our project directory will look so far:
 ```bash
@@ -209,9 +216,9 @@ const productController = {
 
 module.exports = { productController };
 ```
-In the code above, we've defined a controller named `productController` with a single method `getProducts`, responsible for handling requests to retrieve all available product data.
+In the code above, we've defined a controller named `productController` with a single method `getProducts()`, responsible for handling requests to retrieve all available product data.
 
-We also included a simulated delay of `750 milliseconds` using `setTimeout`. This delay mirrors the time it takes to retrieve our product list from the application's data store replicating the delay time of a database query or heavy computation while retrieving all products.
+We also included a simulated delay of `750 milliseconds` using `setTimeout()`. This delay mirrors the time it takes to retrieve our product list from the application's data store replicating the delay time of a database query or heavy computation while retrieving all products.
 
 Each time this controller is invoked, we'll consistently experience a delayed response due to the retrieval process delay time.
 
@@ -296,31 +303,33 @@ module.exports = {
   invalidateCacheMiddleware,
 };
 ```
-The code snippet above contains the following method:
-**initializeRedisClient**:
+The code snippet above contains the following methods:
+
+- `initializeRedisClient()`:
 Responsible for setting up our Redis client. We are initializing the Redis client by creating a client instance and connecting to the Redis server.
 
-**generateCacheKey**:
+- `generateCacheKey()`:
 This method generates a unique cache key based on our request object and HTTP method. Using the `object-hash` library it hashes our `request query` parameters, this will come in handy if our query parameters change or are rearranged regularly.
 
-**cacheMiddleware**:
-Our `cacheMiddleware` function is declared to accept an optional `options` object, which defaults to `{ EX: 10800 }` (indicating a cache expiration time of 3 hours). This function returns another function that acts as middleware.
-Inside the middleware function, `req`, `res`, and `next` are directly passed as parameters by the `Express.js` framework when the middleware is invoked. 
+- `cacheMiddleware()`:
+Our `cacheMiddleware()` function is declared to accept an optional `options` object, which defaults to `{ EX: 10800 }` (indicating a cache expiration time of 3 hours). This function returns another function that acts as middleware.
+  
+  Inside the middleware function, `req`, `res`, and `next` are directly passed as parameters by the `Express.js` framework when the middleware is invoked. 
 
-These parameters represent the request object `req`, the response object `res`, and `next` to continue to the next middleware in the chain.
+  These parameters represent the request object `req`, the response object `res`, and `next` to continue to the next middleware in the chain.
 
- Within the middleware function, our logic for caching response data is implemented. We first check if the Redis client (redisClient) is available and open.  If Redis is not available or open, we simply call `next()` to continue to the next middleware in the chain without performing caching.
+   Within the middleware function, our logic for caching response data is implemented. We first check if the Redis client (redisClient) is available and open.  If Redis is not available or open, we simply call `next()` to continue to the next middleware in the chain without performing caching.
 
-If Redis is available, we generate a cache key based on the request. If cached data is available for the key generated, the cached value is retrieved using `redisClient.get(key)` and the cached value is immediately sent back to the client using `res.json()`, and the middleware is exited.
+  If Redis is available, we generate a cache key based on the request. If cached data is available for the key generated, the cached value is retrieved using `redisClient.get(key)` and the cached value is immediately sent back to the client using `res.json()`, and the middleware is exited.
 
-If no cached data is found, the res.send function is replaced with a custom function `saveCache`. This will intercept the response data before sending it to the client. This is achieved by temporarily overriding `res.send` with our custom `saveCache` implementation.
+  If no cached data is found, the res.send function is replaced with a custom function `saveCache`. This will intercept the response data before sending it to the client. This is achieved by temporarily overriding `res.send` with our custom `saveCache()` implementation.
  
-**invalidateCacheMiddleware**:
+- `invalidateCacheMiddleware()`:
 This middleware function is used for invalidating cache entries. It generates a cache key based on the request and deletes the corresponding cache entry from Redis.
 
-There are several ways we can invalidate our cache data, depending on the caching strategy and requirements of our application we can use Time-Based Expiration, Manual Invalidation, Versioning, Event-Driven Invalidation, TTL (Time-to-Live), or a combination of these techniques can be used to achieve optimal cache management.
+  There are several ways we can invalidate our cache data, depending on the caching strategy and requirements of our application we can use Time-Based Expiration, Manual Invalidation, Versioning, Event-Driven Invalidation, TTL (Time-to-Live), or a combination of these techniques can be used to achieve optimal cache management.
 
-We can choose the most appropriate cache invalidation strategy based on the requirements and characteristics of our application.
+  We can choose the most appropriate cache invalidation strategy based on the requirements and characteristics of our application.
 
 The above functions enable caching functionality within our application. By exporting these functions, they become available for use throughout our application, providing flexibility in caching strategies and management.
 
@@ -366,11 +375,11 @@ Here's what's happening in the code.
 
 We are setting up a basic Express server and routes.
 
-We called the `initializeRedisClient` function to set up and connect to our Redis database. This function initializes the Redis client, allowing our application to interact with Redis for caching purposes.
+We called the `initializeRedisClient()` function to set up and connect to our Redis database. This function initializes the Redis client, allowing our application to interact with Redis for caching purposes.
 
-Then we use the `cacheMiddleware` function as a middleware to cache responses for our GET endpoint `/api/v1/product`. We specify an expiration time of 3600 seconds (1 hour) for our cached data.
+Then we use the `cacheMiddleware()` function as a middleware to cache responses for our GET endpoint `/api/v1/product`. We specify an expiration time of 3600 seconds (1 hour) for our cached data.
 
-The `invalidateCacheMiddleware` function is used as middleware to invalidate cached data when the POST endpoint `/api/v1/product` is called before processing the request. This ensures that stale data is not passed to the client.
+The `invalidateCacheMiddleware()` function is used as middleware to invalidate cached data when the POST endpoint `/api/v1/product` is called before processing the request. This ensures that stale data is not passed to the client.
 
 Our application is configured to listen on port `7000`.
 

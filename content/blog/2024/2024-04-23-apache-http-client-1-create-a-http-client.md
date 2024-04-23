@@ -2,15 +2,15 @@
 authors: [sagaofsilence]
 title: "Create a HTTP Client with Apache HttpClient"
 categories: ["Java"]
-date: 2024-02-11 00:00:00 +1100
+date: 2024-04-23 00:00:00 +1100
 excerpt: "Get familiar with the Apache HttpClient."
 image: images/stock/0063-interface-1200x628-branded.jpg
 url: create-a-http-client-with-apache-http-client
 ---
 
-In this article series we're going to explore Apache HTTPClient APIs. We'll get familiar with different ways Apache HttpClient enable developers to send and receive data over the internet. From simple `GET` requests to complex multipart `POST` requests, we'll cover it all with real-world examples.
+In this article series we're going to explore Apache HTTPClient APIs. We'll get familiar with different ways Apache HttpClient enables developers to send and receive data over the internet. From simple `GET` requests to complex multipart `POST` requests, we'll cover it all with real-world examples.
 
-So get ready to learn the web communication with Apache HttpClient! 
+So get ready to learn web communication with Apache HttpClient! 
 
 ## The "Create a HTTP Client with Apache HttpClient" Series
 
@@ -39,7 +39,7 @@ There are many Java HTTP clients available. Check this article on [Comparison of
 
 {{% /info %}}
 
-## Brief Overview of Apache HttpClient
+## Brief Overview of the Apache HttpClient
 Apache HttpClient is a robust Java library popular for its handling of HTTP requests and responses. Its open-source nature and adherence to modern HTTP standards contribute to its popularity among developers.
 
 Key features include support for various authentication mechanisms and connection pooling, enhancing performance by reusing connections. It also facilitates request and response interception, allowing for easy modification or inspection of data.
@@ -48,8 +48,8 @@ Notably, Apache HttpClient is known for its reliability and resilience, making i
 
 The library's flexibility and extensibility enable customization to specific requirements, while its supportive community ensures continuous development and maintenance. With a commitment to backward compatibility, seamless upgrades are facilitated, ensuring long-term applicability and ease of use. Overall, Apache HttpClient stands as a mature and reliable choice for Java developers handling HTTP interactions.
 
-## Getting Familiar With Useful Terms of Apache HttpClient
-In the domain of Apache HttpClient, lot of terms are essential for comprehending the functionality of this robust tool. At its core lies the HTTPClient. These fall into two categories - classic `HttpClient` and async `HttpAsyncClient`. `CloseableHttpClient` is an abstract class implementing `HttpClient` interface. The library provides `MinimalHttpClient` that extends it. It is a vital component that manages connections to HTTP servers. Think of it as the a communication manager, ensuring seamless and secure data exchanges between your application and web resources.
+## Getting Familiar With Useful Terms of the Apache HttpClient
+In the domain of Apache HttpClient, lot of terms are essential for comprehending the functionality of this robust tool. At its core lies the HTTPClient. It comes in two verions - the classic `HttpClient` and the async `HttpAsyncClient`. `CloseableHttpClient` is an abstract class implementing `HttpClient` interface. The library provides `MinimalHttpClient` that extends it. It is a vital component that manages connections to HTTP servers. Think of it as the a communication manager, ensuring seamless and secure data exchanges between your application and web resources.
 
 `CloseableHttpClient` provides full control over resources and ensures proper closure of connections after use. It supports connection pooling and resource management, making it suitable for long-lived applications.
 

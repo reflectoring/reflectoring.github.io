@@ -2,13 +2,13 @@
 authors: [sagaofsilence]
 title: "Classic APIs Offered by Apache HttpClient"
 categories: ["Java"]
-date: 2024-02-11 00:00:00 +1100
+date: 2024-04-23 00:00:00 +1100
 excerpt: "Classic APIs Offered by Apache HttpClient."
 image: images/stock/0077-request-response-1200x628-branded.jpg
 url: apache-http-client-classic-apis
 ---
 
-In this article we are going to learn about classic APIs offered by Apache HttpClient APIs. We are going to explore the different ways Apache HttpClient enable developers to send and receive data over the internet in classic (synchronous) mode. From simple GET requests to complex multipart POSTs, we'll cover it all with real-world examples. So get ready to learn to implement HTTP interactions with Apache HttpClient! 
+In this article we are going to learn about the classic APIs offered by Apache HttpClient. We are going to explore the different ways Apache HttpClient enables developers to send and receive data over the internet in classic (synchronous) mode. From simple GET requests to complex multipart POSTs, we'll cover it all with real-world examples. So get ready to learn to implement HTTP interactions with Apache HttpClient! 
 
 ## The "Create a HTTP Client with Apache HttpClient" Series
 
@@ -27,12 +27,12 @@ Let's now learn how to use Apache HttpClient for web communication. We have grou
 
 
 {{% info title="Reqres Fake Data CRUD API" %}}
-We are going to use [Reqres API Server](https://reqres.in) to test different HTTP methods. It is a free online API that can be used for testing and prototyping. It provides a variety of endpoints that can be used to test different HTTP methods. The reqres API is a good choice
+We are going to use [Reqres API Server](https://reqres.in) to test different HTTP methods. It is a free online API that can be used for testing and prototyping. It provides a variety of endpoints that can be used to test different HTTP methods. The Reqres API is a good choice
  for testing CORS because it supports all of the HTTP methods that are allowed by CORS.
 {{% /info %}}
 
 ## HttpClient (Classic APIs)
-In this section of examples we are going to learn how to use `HttpClient` for sending requests and consuming responses in synchronous mode. The client code will wait until it receives response from the server.
+In this section of examples we are going to learn how to use `HttpClient` for sending requests and consuming responses in synchronous mode. The client code will wait until it receives a response from the server.
 
 {{% info title="HTTP and CRUD Operations" %}}
 CRUD operations refer to Create, Read, Update, and Delete actions performed on data. In the context of HTTP endpoints for a `/users` resource:
@@ -43,7 +43,7 @@ CRUD operations refer to Create, Read, Update, and Delete actions performed on d
 {{% /info %}}
 
 \
-Now Let's learn processing HTTP responses using a response handler.
+Now let's learn processing HTTP responses using a response handler.
 
 The motivation behind using a response handler in Apache HttpClient is to provide a structured and reusable way to process HTTP responses. 
 
@@ -57,7 +57,7 @@ Overall, response handlers enhance the flexibility, readability, and maintainabi
 
 ### Overview of Logic to Execute HTTP Method and Test It
 
-Before we start going through the code snippet, Let's understand the general structure of the logic to execute HTTP methods and unit test to verify the logic.
+Before we start going through the code snippet, let's understand the general structure of the logic to execute HTTP methods and unit test to verify the logic.
 Here is the sample code to execute a HTTP method:
 ```java
 public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
@@ -192,7 +192,7 @@ public class UserSimpleHttpRequestHelperTests extends BaseClassicExampleTests {
 ```
 In test method `executeGetPaginatedRequest()`, we populate the request parameter (page=1) and execute an HTTP GET request to retrieve the first page of paginated users and verify the response.
 
-### Executing HTTP GET Request to Get Specific Record
+### Executing HTTP GET Request to Get a Specific Record
 
 Let's now see how to execute HTTP GET request to get a specific user record using a response handler:
 
@@ -224,7 +224,7 @@ public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
 
 In this example, the `getUser()` method retrieves a user by its id. As we have learned in `getAllUsers()` code example, in this case also, we create a `HttpGet` request object, a `HttpHost` object  and response handler. Then we call `execute()` method on the client. Then we obtain the response in string form.
 
-Now Let's see how to call this functionality.
+Now Let's see how to call this functionality:
 
 ```java
 /** Execute get specific request. */
@@ -580,7 +580,7 @@ In this command output, there is a line `access-control-allow-methods: GET,HEAD,
 
 The response headers will include the necessary information. The `Allow` or `access-control-allow-methods` header indicates the HTTP methods supported for the requested resource.
 
-{{% info title="HTTP `OPTIONS` facts" %}}
+{{% info title="HTTP `OPTIONS` Facts" %}}
 
 The `OPTION` method is used to make a preflight request to the server. A preflight request is a request that is sent to the server to determine if the actual request is allowed. The server will respond to the preflight request with a list of the HTTP methods that are allowed. The browser will then send the actual request if the requested method is in the list. The server also includes a message that indicates the allowed origin, methods, and headers.
 
@@ -620,7 +620,7 @@ public Map<String, String> executeOptions() throws RequestProcessingException {
 ```
 In this example, it populates the `HttpOptions` request and calls HttpClient `execute()` method. The response from the server is processed by the handler, and the resulting map of headers is returned to the caller.
 
-Now Let's see how to call this functionality.
+Now Let's see how to call this functionality:
 
 ```java
 @Test

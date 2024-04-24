@@ -308,3 +308,119 @@ Here is what our policy should look like:
 Spring Cloud AWS also allows us to specify the SQS queue name instead of the queue URL. In such cases, the read only permissions of `sqs:GetQueueAttributes` and `sqs:GetQueueUrl` need to be attached to the IAM policy as well.
 
 Since the additional permissions needed are `read-only`, there is no harm in configuring the queue name and allowing the library to fetch the URL instead. However, I would still prefer to use the queue URL directly, since it leads to faster application startup time and avoids unnecessary calls to AWS cloud.
+
+## Subscribing SQS Queue to SNS Topic
+
+Now that we have both of our microservices set up, there's one final piece of the puzzle to connect: **subscribing our SQS queue to the SNS topic**. This will allow the messages published to the SNS topic `user-account-created` to be automatically be forwarded to the SQS queue `dispatch-email-notification` for consumption by our subsriber microserice.
+
+The [official documentatio guide](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-subscribe-queue-sns-topic.html) can be referenced to subscribe the SQS Queue to our SNS Topic.
+
+### Resource Based Policy
+
+Once our subscription has been created, we need to grant the SNS topic, the permission to send messages to our SQS queue. This permission needs to be added to our queue's resource-based policy (Access policy).
+
+You might wonder why this is necessary when we have already granted required IAM permissions to our microservices. The answer lies in the way AWS services communicate with each other. IAM permissions control what actions an IAM user can perform on an AWS resource, **while resource-based policies determine what actions another AWS service can perform on it**. Resource-based policies are attached to an AWS resource (SQS in this context).
+
+In our case, we need to create a resource-based policy on the SQS queue to allow the SNS topic to send messages to it. Without this policy, even though our microservices have the necessary IAM permissions, the SNS topic will not be able to forward messages to the SQS queue.
+
+Here is what our SQS resource policy should look like:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "sqs-queue-arn",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "sns-topic-arn"
+        }
+      }
+    }
+  ]
+}
+```
+
+In this policy, we are granting the SNS service `(sns.amazonaws.com)` permission to perform the `sqs:SendMessage` action on our SQS queue. We specify the ARN of the SQS queue in the `Resource` field and ARN of the SNS topic in the `Condition` field to ensure that only messages from our specific topic are allowed.
+
+Once this resource-based policy is attached to our SQS queue, the SNS topic will be able to forward messages to it, finally completing the setup of our publisher-subscriber architecture.
+
+## Encryption at Rest Using KMS
+
+When dealing with sensitive data, it is recommended to ensure that the data is encrypted not only in transit but also at rest. Encryption at rest also helps us comply with security standards when going through HIPAA and PCI-DSS audits.
+
+In this section, we will discuss the necessary steps needed to integrate our architecture with [AWS KMS](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) to ensure data in our SNS topic and SQS queue is always encrypted.
+
+To encrypt data at rest, we start by creating a **custom symmetric AWS KMS key**. Once the custom key is created, we need to enable encryption on both our SNS topic and SQS queue by configuring them to use our newly created KMS key.
+
+After enabling encryption, our developed publisher-subscriber flow will... drumroll ... stop working! 😭. This is due to our SNS topic and SQS queue not having the required permissions to perform encryption and decryption operations using our custom KMS key, also our publisher microservice now lacks the necessary IAM permissions to encrypt the data before publishing it to our SNS topic.
+
+To resolve the above issues, we need to update the KMS key policy (resource-based) to include the following statements that grant SNS and SQS the necessary permissions to interact with our custom KMS key:
+
+```json
+[
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "sqs.amazonaws.com"
+      },
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": "kms-key-arn",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "sqs-queue-arn"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": "kms-key-arn",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "sns-topic-arn"
+        }
+      }
+    }
+  ]
+```
+
+The above policy statements allows SNS and SQS to use the `kms:GenerateDataKey` and `kms:Decrypt` actions on our custom KMS key. The `Condition` block ensures that only our specific SNS topic and SQS queue are granted these permissions, conforming to **least privilege principle**.
+
+Additionally, we need to attach the following IAM statement to the policy of the IAM user whose security credentials have been configured in our publisher microservice:
+
+```json
+{
+  "Effect": "Allow",
+  "Action": [
+    "kms:GenerateDataKey",
+    "kms:Decrypt"
+  ],
+  "Resource": "kms-key-arn"
+}
+```
+The above IAM statement allows our publisher microservice to use our custom KMS key, enabling it to encrypt the data before publishing it to the SNS topic.
+
+By configuring encryption at rest using AWS KMS, we have further enhanced our architecture by adding an extra layer of security to it. This enhancement also helps us meet compliance requirements when dealing with sensitive information.
+
+## Conclusion
+
+In this article, we explored how to implement the publisher-subscriber pattern in Spring Boot microservices using AWS SNS and SQS services.
+
+Throughout the implementation, we made use of Spring Cloud AWS to simplify the configuration and our interaction with AWS services. We have also discussed the necessary IAM and resource policies required for our loosely coupled architecture to function seamlessly.
+
+The source code demonstrated throughout this article is available on [Github](https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-sns-sqs-pubsub). The codebase is built as a Maven multi-module project and has been integrated with LocalStack and Docker Compose to enable local development without the need for provisioning real AWS services. I would highly encourage you to explore the codebase and set it up locally.

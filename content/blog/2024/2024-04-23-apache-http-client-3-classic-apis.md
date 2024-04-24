@@ -55,7 +55,7 @@ Additionally, response handlers promote code reusability, as the same handler ca
 
 Overall, response handlers enhance the flexibility, readability, and maintainability of code that interacts with HTTP responses using Apache HttpClient.
 
-### Overview of Logic to Execute HTTP Method and Test It
+## Overview of Logic to Execute HTTP Method and Test It
 
 Before we start going through the code snippet, let's understand the general structure of the logic to execute HTTP methods and unit test to verify the logic.
 Here is the sample code to execute a HTTP method:
@@ -123,16 +123,88 @@ After executing the HTTP request, the test verifies the response body. It assert
 
 If any exception occurs during the execution of the test, it fails the test and provides details about the failure, including the exception message. This ensures that any errors encountered during the test execution are properly reported.
 
+## HTTP Methods Used to Create Records
+
+From the set of CRUD methods, methods used to create records: POST.
+
+### Executing HTTP `POST` Request to Create a New Record
+We use HTTP `POST` to create a new user. We need to provide details needed to create a new user.
+
+Code to create new record:
+
+```java
+public String createUser(
+  String firstName, String lastName, String email, String avatar
+) throws RequestProcessingException {
+  
+  try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+    // Create request
+    List<NameValuePair> formParams = new ArrayList<NameValuePair>();
+    formParams.add(new BasicNameValuePair("first_name", firstName));
+    formParams.add(new BasicNameValuePair("last_name", lastName));
+    formParams.add(new BasicNameValuePair("email", email));
+    formParams.add(new BasicNameValuePair("avatar", avatar));
+    
+  try (UrlEncodedFormEntity entity =
+        new UrlEncodedFormEntity(formParams, StandardCharsets.UTF_8)) {
+        
+    HttpHost httpHost = HttpHost.create("https://reqres.in");
+    URI uri = new URIBuilder("/api/users/").build();
+    HttpPost httpPostRequest = new HttpPost(uri);
+    httpPostRequest.setEntity(entity);
+    
+    // Create a response handler
+    BasicHttpClientResponseHandler handler = new BasicHttpClientResponseHandler();
+    String responseBody = httpClient.execute(httpHost, httpPostRequest, handler);
+    
+    return responseBody;
+  } catch (Exception e) {
+    throw new RequestProcessingException("Failed to create user.", e);
+  }
+}
+
+```
+The example illustrates a method for creating a new user by sending an HTTP `POST` request to the specified endpoint. We construct a list of form parameters containing the user's details such as first name, last name, email, and avatar. Then call the `execute()` method and receive response body containing the created user's data.
+
+Test for creating new record:
+
+```java
+@Test
+void executePostRequest() {
+  try {
+    // execute
+    String createdUser =
+        userHttpRequestHelper.createUser(
+            "DummyFirst", "DummyLast", "DummyEmail@example.com", "DummyAvatar");
+    // verify
+    assertThat(createdUser).isNotEmpty();
+  } catch (Exception e) {
+    Assertions.fail("Failed to execute HTTP request.", e);
+  }
+}
+```
+
+The unit test verifies the functionality of the `createUser()` method. It calls the `createUser()` method with dummy user details (first name, last name, email, and avatar). The response represents the created user's data. Using assertions, the test verifies the response.
+
+## HTTP Methods Used to Read Records
+
+From the set of CRUD methods, methods used to update records: GET, OPTIONS, HEAD, TRACE.
+
 ### Executing HTTP GET Request to Get Paginated Records
 
 We use HTTP GET request to retrieve a single record as well as records in bulk. We use pagination strategy to handle such bulk requests.
 
-{{% info title="Pagination and Its Advantages" %}}
+{{% info title="Pagination, Its Advantages, Disadvantages and Complexities" %}}
 Pagination in HTTP request processing involves dividing large sets of data into smaller, manageable pages. Clients specify the page they want using parameters like `page=1`. The server processes the request, retrieves the relevant page of data, and returns it to the client, enabling efficient data retrieval and presentation. Advantages of pagination include improved performance, reduced server load, enhanced user experience, and efficient handling of large datasets.
+
+Pagination in HTTP REST calls can cause complexities on both server and client sides. Server-side complexities include additional logic for managing paginated data, increased resource usage for deep pagination, potential data consistency issues due to changing underlying data, and scalability challenges in distributed systems.
+
+On the client side, complexities arise from managing pagination state, handling additional network overhead due to more HTTP requests, ensuring a smooth user experience with pagination controls, and managing errors during pagination. These factors can impact performance, user experience, and scalability, requiring careful design and error handling on both server and client sides.
+
 {{% /info %}}
 
 \
-Let's now see how to execute a paginated HTTP GET request using a response handler:
+Let's implement paginated HTTP GET request using a response handler:
 
 ```java
 public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
@@ -194,7 +266,7 @@ In test method `executeGetPaginatedRequest()`, we populate the request parameter
 
 ### Executing HTTP GET Request to Get a Specific Record
 
-Let's now see how to execute HTTP GET request to get a specific user record using a response handler:
+Let's execute HTTP GET request to get a specific user record using a response handler:
 
 ```java
 public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
@@ -224,7 +296,7 @@ public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
 
 In this example, the `getUser()` method retrieves a user by its id. As we have learned in `getAllUsers()` code example, in this case also, we create a `HttpGet` request object, a `HttpHost` object  and response handler. Then we call `execute()` method on the client. Then we obtain the response in string form.
 
-Now Let's see how to call this functionality:
+Test case that verifies execute specific request:
 
 ```java
 /** Execute get specific request. */
@@ -247,7 +319,7 @@ In this example, the we call `getUser()` method to get user with specific id and
 ### Executing HTTP `HEAD` Request to Get Status of a Record
 The `HEAD` method in HTTP can request information about a document without retrieving the document itself. It is similar to GET but it does not receive the response body. It's used for caching, resource existence, modification checks, and link validation. Faster than GET, it saves bandwidth by omitting response data, making it ideal for resource checks and link validation, optimizing network efficiency.
 
-Let's now see how to execute HTTP `HEAD` request to get status of a specific user record using a response handler:
+Here is code to execute HTTP `HEAD` request to get status of a specific user record using a response handler:
 
 ```java
 public Integer getUserStatus(long userId) throws RequestProcessingException {
@@ -274,7 +346,7 @@ public Integer getUserStatus(long userId) throws RequestProcessingException {
 
 In this example we retrieve the status code of a user's HTTP request without fetching the response body. It sends a `HEAD` request to the specified user endpoint and retrieves the status code from the response. The status code indicates the success or failure of the request.
 
-Now Let's see how to call this functionality.
+Test for this functionality:
 
 ```java
 /** Execute get specific request. */
@@ -294,237 +366,6 @@ void executeUserStatus() {
 
 ```
 This test method verifies the status returned by the HEAD method for a user. First, it prepares the user ID to be used in the request. Then, it executes the `getUserStatus()` method from the `UserSimpleHttpRequestHelper` class to fetch the status code for the specified user ID. Finally, it verifies that the obtained user status is equal to `HttpStatus.SC_OK` (200), indicating a successful request.
-
-### Executing HTTP `POST` Request to Create a New Record
-We use HTTP `POST` to create a new user. We need to provide details needed to create a new user.
-
-Let's see how to do it:
-
-```java
-public String createUser(
-  String firstName, String lastName, String email, String avatar
-) throws RequestProcessingException {
-  
-  try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-    // Create request
-    List<NameValuePair> formParams = new ArrayList<NameValuePair>();
-    formParams.add(new BasicNameValuePair("first_name", firstName));
-    formParams.add(new BasicNameValuePair("last_name", lastName));
-    formParams.add(new BasicNameValuePair("email", email));
-    formParams.add(new BasicNameValuePair("avatar", avatar));
-    
-  try (UrlEncodedFormEntity entity =
-        new UrlEncodedFormEntity(formParams, StandardCharsets.UTF_8)) {
-        
-    HttpHost httpHost = HttpHost.create("https://reqres.in");
-    URI uri = new URIBuilder("/api/users/").build();
-    HttpPost httpPostRequest = new HttpPost(uri);
-    httpPostRequest.setEntity(entity);
-    
-    // Create a response handler
-    BasicHttpClientResponseHandler handler = new BasicHttpClientResponseHandler();
-    String responseBody = httpClient.execute(httpHost, httpPostRequest, handler);
-    
-    return responseBody;
-  } catch (Exception e) {
-    throw new RequestProcessingException("Failed to create user.", e);
-  }
-}
-
-```
-The example illustrates a method for creating a new user by sending an HTTP `POST` request to the specified endpoint. We construct a list of form parameters containing the user's details such as first name, last name, email, and avatar. Then call the `execute()` method and receive response body containing the created user's data.
-
-Now Let's see how to call this functionality.
-
-```java
-@Test
-void executePostRequest() {
-  try {
-    // execute
-    String createdUser =
-        userHttpRequestHelper.createUser(
-            "DummyFirst", "DummyLast", "DummyEmail@example.com", "DummyAvatar");
-    // verify
-    assertThat(createdUser).isNotEmpty();
-  } catch (Exception e) {
-    Assertions.fail("Failed to execute HTTP request.", e);
-  }
-}
-```
-
-The unit test verifies the functionality of the `createUser()` method. It calls the `createUser()` method with dummy user details (first name, last name, email, and avatar). The response represents the created user's data. Using assertions, the test verifies the response.
-
-### Executing HTTP `PUT` Request to Update an Existing Record
-We use HTTP `PUT` to update an existing user. We need to provide details needed to update the user.
-
-Let's see how to do it:
-
-```java
-public String updateUser(
-    long userId, String firstName, String lastName, String email, String avatar
-  ) throws RequestProcessingException {
-    
-    try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-      // Update request
-      List<NameValuePair> formParams = new ArrayList<NameValuePair>();
-      formParams.add(new BasicNameValuePair("first_name", firstName));
-      formParams.add(new BasicNameValuePair("last_name", lastName));
-      formParams.add(new BasicNameValuePair("email", email));
-      formParams.add(new BasicNameValuePair("avatar", avatar));
-
-      try (UrlEncodedFormEntity entity =
-          new UrlEncodedFormEntity(formParams, StandardCharsets.UTF_8)) {
-        HttpHost httpHost = HttpHost.create("https://reqres.in");
-        URI uri = new URIBuilder("/api/users/" + userId).build();
-        
-        HttpPut httpPutRequest = new HttpPut(uri);
-        httpPutRequest.setEntity(entity);
-
-        // Create a response handler
-        BasicHttpClientResponseHandler handler = new BasicHttpClientResponseHandler();
-        String responseBody = httpClient.execute(httpHost, httpPutRequest, handler);
-
-        return responseBody;
-      }
-    } catch (Exception e) {
-      throw new RequestProcessingException("Failed to update user.", e);
-    }
-  }
-```
-
-The example above shows how to update a user's information via an HTTP `PUT` request. The method constructs the update request by creating a list of `NameValuePair` objects containing the user's updated details (first name, last name, email, and avatar). Then we send request to the specified user's endpoint (/api/users/{userId}). The response body from the server, indicating the success or failure of the update operation, is captured and returned as a string.
-
-Now Let's see how to call this functionality.
-
-```java
-@Test
-void executePutRequest() {
-  try {
-    // prepare
-    int userId = 2;
-    // execute
-    String updatedUser =
-        userHttpRequestHelper.updateUser(
-            userId,
-            "UpdatedDummyFirst",
-            "UpdatedDummyLast",
-            "UpdatedDummyEmail@example.com",
-            "UpdatedDummyAvatar");
-    // verify
-    assertThat(updatedUser).isNotEmpty();
-  } catch (Exception e) {
-    Assertions.fail("Failed to execute HTTP request.", e);
-  }
-}
-```
-
-The example is a test method designed to execute an HTTP `PUT` request to update a user's information. The method first prepares the necessary parameters for the update operation, including the user's ID and the updated details (first name, last name, email, and avatar). It then invokes the `updateUser()` method of the `userHttpRequestHelper` object, passing these parameters. The method captures the response from the server, indicating the success or failure of the update operation, and asserts that the response body is not empty to verify the update's success.
-
-### Executing HTTP `PATCH` Request to Partially Update an Existing Record
-We use HTTP `PATCH` to update an existing user in a partial way. We need to provide details needed to update the user.
-
-Let's see how to do it:
-
-```java
-public String patchUser(long userId, String firstName, String lastName)
-      throws RequestProcessingException {
-      
-  try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-    // Update request
-    List<NameValuePair> formParams = new ArrayList<NameValuePair>();
-    formParams.add(new BasicNameValuePair("first_name", firstName));
-    formParams.add(new BasicNameValuePair("last_name", lastName));
-    
-    try (UrlEncodedFormEntity entity =
-        new UrlEncodedFormEntity(formParams, StandardCharsets.UTF_8)) {
-      
-      HttpHost httpHost = HttpHost.create("https://reqres.in");
-      
-      URI uri = new URIBuilder("/api/users/" + userId).build();
-      HttpPatch httpPatchRequest = new HttpPatch(uri);
-      httpPatchRequest.setEntity(entity);
-
-      // Create a response handler
-      BasicHttpClientResponseHandler handler = new BasicHttpClientResponseHandler();
-      String responseBody = httpClient.execute(httpHost, httpPatchRequest, handler);
-
-      return responseBody;
-    }
-  } catch (Exception e) {
-    throw new RequestProcessingException("Failed to patch user.", e);
-  }
-}
-```
-
-The example above shows how to update a user's information via an HTTP `PATCH` request. The method constructs the patch request by creating a list of `NameValuePair` objects containing few of the user's updated details (first name and last name). Then we send the request to the specified user's endpoint (/api/users/{userId}). The response body from the server, indicating the success or failure of the update operation, is captured and returned as a string.
-
-Now Let's see how to call this functionality.
-
-```java
-@Test
-void executePatchRequest() {
-  try {
-    // prepare
-    int userId = 2;
-    // execute
-    String patchedUser =
-        userHttpRequestHelper.patchUser(
-            userId,
-            "UpdatedDummyFirst",
-            "UpdatedDummyLast");
-    // verify
-    assertThat(patchedUser).isNotEmpty();
-  } catch (Exception e) {
-    Assertions.fail("Failed to execute HTTP request.", e);
-  }
-}
-```
-
-The example is a test executes an HTTP `PATCH` request to partially update a user's information. It first prepares the necessary parameters for the update operation, including the user's ID and few of the users details (first name and last name). It then invokes the `patchUser()`, passing these parameters. The method captures the response from the server, indicating the success or failure of the update operation, and asserts that the response body is not empty to verify the patch's success.
-
-### Executing HTTP `DELETE` Request to Delete an Existing Record
-We use HTTP `DELETE` to delete an existing user. We need to user id to delete the user.
-
-Let's see how to do it:
-
-```java
-public void deleteUser(long userId) throws RequestProcessingException {
-
-  try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-    
-    HttpHost httpHost = HttpHost.create("https://reqres.in");
-    
-    URI uri = new URIBuilder("/api/users/" + userId).build();
-    HttpDelete httpDeleteRequest = new HttpDelete(uri);
-    
-    // Create a response handler
-    BasicHttpClientResponseHandler handler = new BasicHttpClientResponseHandler();
-    String responseBody = httpClient.execute(httpHost, httpDeleteRequest, handler);
-  } catch (Exception e) {
-    throw new RequestProcessingException("Failed to update user.", e);
-  }
-}
-```
-
-The example demonstrates how to implement an HTTP `DELETE` request to delete an existing user. It constructs the `URI` for the delete request and calls `execute()`, passing the `HttpDelete` request and a response handler. Finally, it captures the `null` response from the server.
-
-Now Let's see how to call this functionality.
-
-```java
-@Test
-void executeDeleteRequest() {
-  try {
-    // prepare
-    int userId = 2;
-    // execute
-    userHttpRequestHelper.deleteUser(userId);
-  } catch (Exception e) {
-    Assertions.fail("Failed to execute HTTP request.", e);
-  }
-}
-```
-
-The provided test aims to verify the functionality of the `deleteUser()` method. It prepares by specifying the userId of the user to be deleted, in this case, `userId = 2`. It then executes the `deleteUser()` method, passing the `userId` as an argument.
 
 ### Executing HTTP `OPTIONS` Request to Find out Request Methods Allowed by Server
 The HTTP `OPTION` method is a type of HTTP call that explains what are the options for a target resource such as API endpoint. We use 'HTTP' `OPTION` to find out HTTP methods supported by the server `https://reqres.in`.
@@ -590,7 +431,7 @@ The `Access-Control-Allow-Methods` header tells the browser which HTTP methods a
 
 {{% /info %}}
 \
-Now Let's learn how to execute options method using HTTP client.
+Executing options method using HTTP client:
 
 ```java
 public Map<String, String> executeOptions() throws RequestProcessingException {
@@ -620,7 +461,7 @@ public Map<String, String> executeOptions() throws RequestProcessingException {
 ```
 In this example, it populates the `HttpOptions` request and calls HttpClient `execute()` method. The response from the server is processed by the handler, and the resulting map of headers is returned to the caller.
 
-Now Let's see how to call this functionality:
+Let's now test options request processing:
 
 ```java
 @Test
@@ -642,18 +483,199 @@ The test calls `executeOptions()` to perform the `OPTIONS` request and retrieve 
 
 The HTTP `TRACE` method performs a message loop-back test along the path to the target resource, providing a useful debugging mechanism. However, it is advised not to use this method as it can open the gates to the intruders.
 
-
 {{% danger title="The Vulnerability of TRACE" %}}
 As warned by OWASP in the documentation on [Test HTTP Methods](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/06-Test_HTTP_Methods) the `TRACE` method, or `TRACK` in Microsoft's systems, makes the server repeat what it receives in a request. This caused a problem known as `Cross-Site Tracing (XST)` in 2003, allowing access to cookies marked with the `HttpOnly` flag. Browsers and plugins have blocked `TRACE` for years, so this problem is no longer a risk. However, if a server still allows `TRACE`, it might indicate security weaknesses.
 {{% /danger %}}
 
-### Using User Defined Type in Request Processing
+## HTTP Methods Used to Update Records
+
+From the set of CRUD methods, methods used to update records: PUT, PATCH.
+
+### Executing HTTP `PUT` Request to Update an Existing Record
+We use HTTP `PUT` to update an existing user. We need to provide details needed to update the user.
+
+Implementation for updating an existing user:
+
+```java
+public String updateUser(
+    long userId, String firstName, String lastName, String email, String avatar
+  ) throws RequestProcessingException {
+    
+    try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+      // Update request
+      List<NameValuePair> formParams = new ArrayList<NameValuePair>();
+      formParams.add(new BasicNameValuePair("first_name", firstName));
+      formParams.add(new BasicNameValuePair("last_name", lastName));
+      formParams.add(new BasicNameValuePair("email", email));
+      formParams.add(new BasicNameValuePair("avatar", avatar));
+
+      try (UrlEncodedFormEntity entity =
+          new UrlEncodedFormEntity(formParams, StandardCharsets.UTF_8)) {
+        HttpHost httpHost = HttpHost.create("https://reqres.in");
+        URI uri = new URIBuilder("/api/users/" + userId).build();
+        
+        HttpPut httpPutRequest = new HttpPut(uri);
+        httpPutRequest.setEntity(entity);
+
+        // Create a response handler
+        BasicHttpClientResponseHandler handler = new BasicHttpClientResponseHandler();
+        String responseBody = httpClient.execute(httpHost, httpPutRequest, handler);
+
+        return responseBody;
+      }
+    } catch (Exception e) {
+      throw new RequestProcessingException("Failed to update user.", e);
+    }
+  }
+```
+
+The example above shows how to update a user's information via an HTTP `PUT` request. The method constructs the update request by creating a list of `NameValuePair` objects containing the user's updated details (first name, last name, email, and avatar). Then we send request to the specified user's endpoint (/api/users/{userId}). The response body from the server, indicating the success or failure of the update operation, is captured and returned as a string.
+
+Let's test update user workflow:
+
+```java
+@Test
+void executePutRequest() {
+  try {
+    // prepare
+    int userId = 2;
+    // execute
+    String updatedUser =
+        userHttpRequestHelper.updateUser(
+            userId,
+            "UpdatedDummyFirst",
+            "UpdatedDummyLast",
+            "UpdatedDummyEmail@example.com",
+            "UpdatedDummyAvatar");
+    // verify
+    assertThat(updatedUser).isNotEmpty();
+  } catch (Exception e) {
+    Assertions.fail("Failed to execute HTTP request.", e);
+  }
+}
+```
+
+The example is a test method designed to execute an HTTP `PUT` request to update a user's information. The method first prepares the necessary parameters for the update operation, including the user's ID and the updated details (first name, last name, email, and avatar). It then invokes the `updateUser()` method of the `userHttpRequestHelper` object, passing these parameters. The method captures the response from the server, indicating the success or failure of the update operation, and asserts that the response body is not empty to verify the update's success.
+
+### Executing HTTP `PATCH` Request to Partially Update an Existing Record
+We use HTTP `PATCH` to update an existing user in a partial way. We need to provide details needed to update the user.
+
+Logic to update an existence user partially:
+
+```java
+public String patchUser(long userId, String firstName, String lastName)
+      throws RequestProcessingException {
+      
+  try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+    // Update request
+    List<NameValuePair> formParams = new ArrayList<NameValuePair>();
+    formParams.add(new BasicNameValuePair("first_name", firstName));
+    formParams.add(new BasicNameValuePair("last_name", lastName));
+    
+    try (UrlEncodedFormEntity entity =
+        new UrlEncodedFormEntity(formParams, StandardCharsets.UTF_8)) {
+      
+      HttpHost httpHost = HttpHost.create("https://reqres.in");
+      
+      URI uri = new URIBuilder("/api/users/" + userId).build();
+      HttpPatch httpPatchRequest = new HttpPatch(uri);
+      httpPatchRequest.setEntity(entity);
+
+      // Create a response handler
+      BasicHttpClientResponseHandler handler = new BasicHttpClientResponseHandler();
+      String responseBody = httpClient.execute(httpHost, httpPatchRequest, handler);
+
+      return responseBody;
+    }
+  } catch (Exception e) {
+    throw new RequestProcessingException("Failed to patch user.", e);
+  }
+}
+```
+
+The example above shows how to update a user's information via an HTTP `PATCH` request. The method constructs the patch request by creating a list of `NameValuePair` objects containing few of the user's updated details (first name and last name). Then we send the request to the specified user's endpoint (/api/users/{userId}). The response body from the server, indicating the success or failure of the update operation, is captured and returned as a string.
+
+Test to verify patch request:
+
+```java
+@Test
+void executePatchRequest() {
+  try {
+    // prepare
+    int userId = 2;
+    // execute
+    String patchedUser =
+        userHttpRequestHelper.patchUser(
+            userId,
+            "UpdatedDummyFirst",
+            "UpdatedDummyLast");
+    // verify
+    assertThat(patchedUser).isNotEmpty();
+  } catch (Exception e) {
+    Assertions.fail("Failed to execute HTTP request.", e);
+  }
+}
+```
+
+The example is a test executes an HTTP `PATCH` request to partially update a user's information. It first prepares the necessary parameters for the update operation, including the user's ID and few of the users details (first name and last name). It then invokes the `patchUser()`, passing these parameters. The method captures the response from the server, indicating the success or failure of the update operation, and asserts that the response body is not empty to verify the patch's success.
+
+## HTTP Methods Used to Delete Records
+
+From the set of CRUD methods, methods used to delete records: DELETE.
+
+### Executing HTTP `DELETE` Request to Delete an Existing Record
+We use HTTP `DELETE` to delete an existing user. We need to user id to delete the user.
+
+Let's implement delete user logic:
+
+```java
+public void deleteUser(long userId) throws RequestProcessingException {
+
+  try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+    
+    HttpHost httpHost = HttpHost.create("https://reqres.in");
+    
+    URI uri = new URIBuilder("/api/users/" + userId).build();
+    HttpDelete httpDeleteRequest = new HttpDelete(uri);
+    
+    // Create a response handler
+    BasicHttpClientResponseHandler handler = new BasicHttpClientResponseHandler();
+    String responseBody = httpClient.execute(httpHost, httpDeleteRequest, handler);
+  } catch (Exception e) {
+    throw new RequestProcessingException("Failed to update user.", e);
+  }
+}
+```
+
+The example demonstrates how to implement an HTTP `DELETE` request to delete an existing user. It constructs the `URI` for the delete request and calls `execute()`, passing the `HttpDelete` request and a response handler. Finally, it captures the `null` response from the server.
+
+Test case verifying delete functionality:
+
+```java
+@Test
+void executeDeleteRequest() {
+  try {
+    // prepare
+    int userId = 2;
+    // execute
+    userHttpRequestHelper.deleteUser(userId);
+  } catch (Exception e) {
+    Assertions.fail("Failed to execute HTTP request.", e);
+  }
+}
+```
+
+The provided test aims to verify the functionality of the `deleteUser()` method. It prepares by specifying the userId of the user to be deleted, in this case, `userId = 2`. It then executes the `deleteUser()` method, passing the `userId` as an argument.
+
+## Using User Defined Type in Request Processing
 So far we have used built-in Java types like `String`, `Integer` in requests and responses. But we are not limited to use those built-in types.
 
+### User Defined Request and Response
 We can use Plain Old Java Objects (POJOs) in requests sent using HttpClient `execute()`. However, we typically do not directly use a POJO as the request entity. Instead, we convert the POJO into a format that can be sent over HTTP, such as `JSON` or `XML`, and then include that data in the request entity.
 
 The `HttpEntity` interface represents an entity in an HTTP message, but it typically encapsulates raw data, such as text, binary content, or form parameters. While we cannot directly use a POJO as an `HttpEntity`, we can serialize the POJO into a suitable format and then create an `HttpEntity` instance from that serialized data.
 
+### Custom HTTP Response Handler
 For example, if we want to send a POJO as `JSON` in an HTTP request, we would first serialize the POJO into a `JSON` string, and then create an `StringEntity`  instance with that `JSON` string as the content.
 
 Here's an example using Jackson `ObjectMapper` to serialize a POJO into `JSON` and include it in the request entity:
@@ -705,26 +727,11 @@ public class UserTypeHttpRequestHelper extends BaseHttpRequestHelper {
   }
 }
 ```
-The `DataObjectResponseHandler` is designed as a generic handler to deserialize HTTP response entities into POJOs of any specified type. It encapsulates the logic for deserializing `JSON` content received from HTTP responses into POJOs using the Jackson `ObjectMapper`. 
+The `DataObjectResponseHandler` is a generic HTTP response handler that deserializes JSON into specified POJOs using the Jackson ObjectMapper. It converts the HTTP response entity to a JSON string using `EntityUtils.toString()`, then deserializes it into a POJO of the given type. This design reduces code duplication, enhancing reusability and maintainability.
 
-The class constructor accepts a parameter `realType`, which represents the class of the target Java object that the response content will be deserialized into. This allows flexibility in handling responses of different types.
+The `UserTypeHttpRequestHelper` class has a method `getUser()` that retrieves a user from a server using a custom `HttpGet` request. The response is processed by `DataObjectResponseHandler`, which deserializes the server's JSON response into a `User` object. Errors during execution are caught and rethrown as `RequestProcessingException`.
 
-In the `handleEntity()` method, the HTTP response entity is parsed into a `JSON` string using Apache `EntityUtils.toString()`. Then, the `objectMapper` deserializes the `JSON` string into a POJO of the specified type (`realType`). 
-
-If the deserialization process encounters any errors, such as parsing exceptions, they are caught and thrown again as `ClientProtocolException`, ensuring that any issues with the response processing are appropriately handled.
-
-This design promotes reusability and maintainability by providing a single handler class that can be used across multiple HTTP requests to deserialize responses into different types of POJOs, reducing code duplication and improving readability.
-
-The `UserTypeHttpRequestHelper` class facilitates retrieving an existing user from the server using a custom `HttpClientResponseHandler`.
-
-Within the `getUser()` method, a `HttpGet` request is prepared with the appropriate `URI` to retrieve the user by their ID. This request is then executed using a custom response handler of type `User` specified.
-
-The response from the server is processed by the `DataObjectResponseHandler`, which deserializes the `JSON` content received from the server into a `User` object. This handler is parameterized with the `User.class`, indicating that the response should be converted into a POJO of type `User`.
-
-If the request execution encounters any exceptions, such as network errors or parsing issues, they are caught within the catch block. A `RequestProcessingException` is then thrown, encapsulating the error message and the root cause, if available.
-
-
-Now Let's see how to call this functionality.
+Test case to get user:
 
 ```java
 @Test
@@ -754,17 +761,7 @@ void executeGetUser() {
 
 ```
 
-The `executeGetUser()` test method verifies the functionality of the `getUser` method in the `UserTypeHttpRequestHelper` class, which retrieves an existing user from the server.
-
-Firstly, the test prepares by defining the `userId` variable, representing the ID of the user to be retrieved.
-
-Next, the `getUser()` method is executed using the `userHttpRequestHelper`, passing the `userId` as an argument.
-
-Then, the test verifies the response received from the server. It defines a `responseRequirements` lambda function, which contains assertions to ensure the validity of the user object returned. These assertions check that the retrieved `user` is not `null`, that its ID matches the expected `userId`, and that its first name, last name, and avatar are not null or empty.
-
-Finally, the test uses assertThat to verify that the `existingUser` object satisfies the defined `responseRequirements`.
-
-If any exceptions occur during the execution of the test, such as network errors or unexpected responses, they are caught within the `catch` block. In such cases, the test fails with an appropriate error message indicating the failure to execute the HTTP request.
+It prepares by defining the `userId` variable, executes the method using the `userHttpRequestHelper`, and verifies the response received from the server. If exceptions occur, the test fails with an error message.
 
 {{% info title="Choosing User Defined Type Vs Built-in Type" %}}
 

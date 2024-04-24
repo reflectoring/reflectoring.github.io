@@ -19,7 +19,7 @@ We will configure a microservice to act as a publisher to send messages to an SN
 
 Before we begin implementing our microservices, I wanted to explain the decision to have an SNS topic in front of an SQS queue, rather than directly using an SQS queue in both microservices. 
 
-Traditional messaging queues like SQS, Kafka, or RabbitMQ allow asynchronous communication as well, wherein the publisher publishes the payload required by the listener(s) of the queue. This facilitates point-to-point communication where the publisher is aware of the existence and identity of the subscribers.
+Traditional messaging queues like SQS, Kafka, or RabbitMQ allow asynchronous communication as well, wherein the publisher publishes the payload required by the listener of the queue. This facilitates point-to-point communication where the publisher is aware of the existence and identity of the subscriber.
 
 In contrast, the pub/sub pattern facilitated by SNS allows for a more loosely coupled approach. SNS acts as middleware between the parties, allowing them to evolve independently. Using this pattern, the publisher is not concerned about who the payload is intended for, which allows it to remain unchanged in the event where multiple new subscribers are added to receive the same payload.
 
@@ -37,7 +37,7 @@ We will be using [Spring Cloud AWS](https://awspring.io/) to establish connectio
 
 The main dependency that we will need is `spring-cloud-aws-starter-sns`, which contains all SNS related classes for our project.
 
-We will also be making use of the Spring Cloud AWS BOM (Bill of Materials) to manage the versions of the Spring Cloud AWS dependencies in our project. The BOM ensures version compatibility between the declared dependencies, avoiding conflicts and making it easier to update versions in the future.
+We will also make use of the Spring Cloud AWS BOM (Bill of Materials) to manage the versions of the Spring Cloud AWS dependencies in our project. The BOM ensures version compatibility between the declared dependencies, avoiding conflicts and making it easier to update versions in the future.
 
 Here is how our `pom.xml` would look like:
 
@@ -98,7 +98,7 @@ public class AwsSnsTopicProperties {
 
 }
 ```
-We have also added the `@NotBlank` annotation to validate the ARN value is configured when the application starts. The absence of which, would result in the Spring Application Context failing to start up.
+We have also added the `@NotBlank` annotation to validate that the ARN value is configured when the application starts. If the corresponding value is not provided, it would result in the Spring Application Context failing to start up.
 
 Below is a snippet of our `application.yaml` file where we have defined the required property which will be automatically mapped to the above defined class:
 
@@ -131,7 +131,7 @@ Here is what our policy should look like:
 }
 ```
 
-It is worth noting that Spring Cloud AWS also allows us to specify the SNS topic name instead of the full ARN. In such cases, the `sns:CreateTopic` permission needs to be attached to the IAM policy to allow the library to fetch the ARN of the topic. However, I **would not recommend this approach at all**. It would result in topic creation if a topic with the configured name doesn't already exist. Moreover, resource creation should not be done in our Spring Boot microservices.
+It is worth noting that Spring Cloud AWS also allows us to specify the SNS topic name instead of the full ARN. In such cases, the `sns:CreateTopic` permission needs to be attached to the IAM policy to allow the library to fetch the ARN of the topic. However, I **would not recommend this approach at all** as it would create a new topic if a topic with the configured name doesn't already exist. Moreover, resource creation should not be done in our Spring Boot microservices.
 
 ### Publishing Messages to SNS Topic
 
@@ -201,7 +201,7 @@ Successfully published message to topic ARN: <ARN-value-here>
 
 Now that we have our publisher microservice up and running, let's shift our focus to develop the second component of our publisher-subscriber implementation: the subscriber microservice.
 
-For our use case, the subscriber microservice will simulate a `notification dispatcher service` that sends out account creation confirmation emails to users. It will listen for messages on an SQS queue `dispatch-email-notification` and perform the email dispatch logic, which for the sake of demonstration, will be a simple log statement (I wish everything was this easier 😆).
+For our use case, the subscriber microservice will simulate a `notification dispatcher service` that sends out account creation confirmation emails to users. It will listen for messages on an SQS queue `dispatch-email-notification` and perform the email dispatch logic, which for the sake of demonstration, will be a simple log statement (I wish everything was this easy 😆).
 
 ### SQS Queue Configuration
 
@@ -210,13 +210,13 @@ Similar to the publisher microservice, we will be using Spring Cloud AWS to conn
 The only change needed in our `pom.xml` file is to include the SQS starter dependency:
 
 ```xml
-		<dependency>
-			<groupId>io.awspring.cloud</groupId>
-			<artifactId>spring-cloud-aws-starter-sqs</artifactId>
-		</dependency>
+  <dependency>
+    <groupId>io.awspring.cloud</groupId>
+    <artifactId>spring-cloud-aws-starter-sqs</artifactId>
+  </dependency>
 ```
 
-And similarly in our `application.yaml` file, we need to define the necessary configuration properties required by Spring Cloud AWS to establish connection and interact with the SQS service.
+Similarly, in our `application.yaml` file, we need to define the necessary configuration properties required by Spring Cloud AWS to establish a connection and interact with the SQS service.
 
 ```yaml
 spring:
@@ -228,6 +228,8 @@ spring:
       sqs:
         region: ${AWS_SQS_REGION}
 ```
+
+And just like that, we have successfully given our application the ability to poll messages from an SQS queue. With the addition of the above configuration properties, Spring Cloud AWS will automatically create the necessary SQS-related beans required by our application.
 
 ### Consuming Messages from SQS Queue
 
@@ -257,11 +259,30 @@ public class EmailNotificationListener {
 }
 ```
 
-We have referenced the queue URL defined in our `application.yaml` file using the property placeholder `(${…​})` capability in the `@SqsListener` annotation. This is the reason we did not require to create a corresponding `@ConfigurationProperties` class for it.
+We have referenced the queue URL defined in our `application.yaml` file using the property placeholder `(${…​})` capability in the `@SqsListener` annotation. This is why we did not create a corresponding `@ConfigurationProperties` class for it.
 
 The payload received by the SQS queue will automatically be deserialized into a `UserCreatedEventDto` object that we have declared as a method argument.
 
 Once the `listen` method in our `EmailNotificationListener` class has been executed successfully i.e., completes without any exceptions, Spring Cloud AWS will automatically delete the processed message from the queue to avoid the same message from being processed again.
+
+### Raw Message Delivery and @SnsNotificationMessage
+
+When an SQS queue subscribed to an SNS topic receives a message, the message contains not only the actual payload but also various metadata. This additional metadata can cause automatic message deserialization to fail.
+
+One way to resolve this issue is by enabling the raw message delivery attribute on the active subscription. When enabled, all the metadata is stripped from the message, and only the payload is delivered as is.
+
+Another approach that allows us to deserialize the entire SNS message without enabling the raw message delivery attribute is to use the `@SnsNotificationMessage` annotation on the method argument:
+
+```java
+  @SqsListener("${io.reflectoring.aws.sqs.queue-url}")
+	public void listen(@SnsNotificationMessage UserCreatedEventDto userCreatedEvent) {
+    // processing logic
+	}
+```
+
+In the above code, the `@SnsNotificationMessage` annotation automatically extracts the payload from the SNS message and deserializes it into a UserCreatedEventDto object.
+
+The message format used, based on whether this attribute is enabled or not, can be viewed in the provided [reference document](https://docs.aws.amazon.com/sns/latest/dg/sns-large-payload-raw-message-delivery.html#raw-message-examples).
 
 ### Required IAM Permissions
 
@@ -286,4 +307,4 @@ Here is what our policy should look like:
 ```
 Spring Cloud AWS also allows us to specify the SQS queue name instead of the queue URL. In such cases, the read only permissions of `sqs:GetQueueAttributes` and `sqs:GetQueueUrl` need to be attached to the IAM policy as well.
 
-Since the additional permissions needed are `read-only`, there is no harm in configuring the queue name and allowing the library to fetch the URL instead. However, I would still prefer to use the queue URL directly, since it will lead to faster application startup time.
+Since the additional permissions needed are `read-only`, there is no harm in configuring the queue name and allowing the library to fetch the URL instead. However, I would still prefer to use the queue URL directly, since it leads to faster application startup time and avoids unnecessary calls to AWS cloud.

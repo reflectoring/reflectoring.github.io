@@ -21,7 +21,7 @@ Before we begin implementing our microservices, I want to explain the decision t
 
 Traditional messaging queues like SQS, Kafka, or RabbitMQ allow asynchronous communication as well, wherein the publisher publishes the payload required by the listener of the queue. This facilitates point-to-point communication where the publisher is aware of the existence and identity of the subscriber.
 
-In contrast, the pub/sub pattern facilitated by SNS allows for a more loosely coupled approach. SNS acts as **middleware** between the parties, allowing them to **evolve independently**. Using this pattern, the publisher is not concerned about who the payload is intended for, which allows it to **remain unchanged** in the event where multiple new subscribers are added to receive the same payload.
+In contrast, the pub/sub pattern facilitated by SNS allows for a more loosely coupled approach. SNS acts as a **middleware** between the parties, allowing them to **evolve independently**. Using this pattern, the publisher is not concerned about who the payload is intended for, which allows it to **remain unchanged** in the event where multiple new subscribers are added to receive the same payload.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-sns-sqs-pubsub" %}}
 
@@ -33,7 +33,7 @@ The microservice will simulate a **user management service**, where a single API
 
 ### Spring Cloud AWS
 
-We will be using [Spring Cloud AWS](https://awspring.io/) to establish connection and interact with the SNS service, rather than using the SNS SDK provided by AWS directly. Spring Cloud AWS is a wrapper around the official SDK which significantly simplifies configuration and provides simple methods to interact with the SNS service.
+We will be using [Spring Cloud AWS](https://awspring.io/) to establish connection and interact with the SNS service, rather than using the SNS SDK provided by AWS directly. Spring Cloud AWS is a wrapper around the official AWS SDKs, which significantly simplifies configuration and provides simple methods to interact with AWS services.
 
 The main dependency that we will need is `spring-cloud-aws-starter-sns`, which contains all SNS related classes for our project.
 

@@ -9,9 +9,9 @@ image: images/stock/0112-ide-1200x628-branded.jpg
 url: "publisher-subscriber-pattern-using-aws-sns-and-sqs-in-spring-boot"
 ---
 
-In an event-driven architecture where multiple microservices need to communicate with each other, the publisher-subscriber pattern provides an asynchronous communication model to achieve this. It enables us to design a loosely coupled architecture that is easy to extend and scale.
+In an event-driven architecture where multiple microservices need to communicate with each other, the publisher-subscriber pattern provides an asynchronous communication model to achieve this. It enables us to design a **loosely coupled architecture** that is easy to extend and scale.
 
-In this article, we will be looking at how we can use AWS SNS and SQS services to implement the publisher-subscriber pattern in Spring Boot based microservices. 
+In this article, we will be looking at how we can **use AWS SNS and SQS services to implement the publisher-subscriber pattern in Spring Boot** based microservices. 
 
 We will configure a microservice to act as a publisher to send messages to an SNS topic, and another to act as a subscriber which consumes messages from an SQS queue subscribed to that topic.
 
@@ -21,7 +21,7 @@ Before we begin implementing our microservices, I wanted to explain the decision
 
 Traditional messaging queues like SQS, Kafka, or RabbitMQ allow asynchronous communication as well, wherein the publisher publishes the payload required by the listener of the queue. This facilitates point-to-point communication where the publisher is aware of the existence and identity of the subscriber.
 
-In contrast, the pub/sub pattern facilitated by SNS allows for a more loosely coupled approach. SNS acts as middleware between the parties, allowing them to evolve independently. Using this pattern, the publisher is not concerned about who the payload is intended for, which allows it to remain unchanged in the event where multiple new subscribers are added to receive the same payload.
+In contrast, the pub/sub pattern facilitated by SNS allows for a more loosely coupled approach. SNS acts as **middleware** between the parties, allowing them to **evolve independently**. Using this pattern, the publisher is not concerned about who the payload is intended for, which allows it to **remain unchanged** in the event where multiple new subscribers are added to receive the same payload.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-sns-sqs-pubsub" %}}
 
@@ -29,7 +29,7 @@ In contrast, the pub/sub pattern facilitated by SNS allows for a more loosely co
 
 Now that we have understood the "Why" of our topic, we will proceed with creating our publisher microservice.
 
-The microservice will simulate a user management service, where a single API endpoint is exposed to create a user record. Once this API is invoked, the service publishes a trimmed down version of the API request to the SNS topic `user-account-created` signifying successful account creation.
+The microservice will simulate a **user management service**, where a single API endpoint is exposed to create a user record. Once this API is invoked, the service publishes a trimmed down version of the API request to the SNS topic `user-account-created` signifying successful account creation.
 
 ### Spring Cloud AWS
 
@@ -80,11 +80,11 @@ spring:
         region: ${AWS_SNS_REGION}
 ```
 
-Spring Cloud AWS will automatically create the necessary configuration beans based on these properties, allowing us to interact with the SNS service in our application.
+**Spring Cloud AWS will automatically create the necessary configuration beans** based on these properties, allowing us to interact with the SNS service in our application.
 
 ### Configuring SNS Topic ARN
 
-The recommended approach to interact with an SNS topic is through its Amazon Resource Name (ARN). We will store this property in our project's `application.yaml` file and make use of `@ConfigurationProperties` to map the defined ARN to a POJO, which our application will reference while publishing messages to SNS.
+**The recommended approach to interact with an SNS topic is through its Amazon Resource Name (ARN)**. We will store this property in our project's `application.yaml` file and make use of `@ConfigurationProperties` to map the defined ARN to a POJO, which our application will reference while publishing messages to SNS.
 
 ```java
 @Getter
@@ -131,7 +131,7 @@ Here is what our policy should look like:
 }
 ```
 
-It is worth noting that Spring Cloud AWS also allows us to specify the SNS topic name instead of the full ARN. In such cases, the `sns:CreateTopic` permission needs to be attached to the IAM policy to allow the library to fetch the ARN of the topic. However, I **would not recommend this approach at all** as it would create a new topic if a topic with the configured name doesn't already exist. Moreover, resource creation should not be done in our Spring Boot microservices.
+It is worth noting that Spring Cloud AWS also allows us to specify the SNS topic name instead of the full ARN. In such cases, the `sns:CreateTopic` permission needs to be attached to the IAM policy to allow the library to fetch the ARN of the topic. However, I **would not recommend this approach at all** as it would create a new topic if a topic with the configured name doesn't already exist. Moreover, **resource creation should not be done in our Spring Boot microservices**.
 
 ### Publishing Messages to SNS Topic
 
@@ -159,7 +159,7 @@ public class UserService {
   // Rest of the service class implementation 
 }
 ```
-We have used the `SnsTemplate` class provided by Spring Cloud AWS to publish a message to the SNS topic in our service layer. We have also made use of our custom `AwsSnsTopicProperties` class to reference the SNS topic ARN defined in our active `application.yaml` file.
+We have used the `SnsTemplate` class provided by Spring Cloud AWS to publish a message to the SNS topic in our service layer. We also make use of our custom `AwsSnsTopicProperties` class to reference the SNS topic ARN defined in our active `application.yaml` file.
 
 To complete the implementation of our publisher microservice `user-management-service`, we will expose an API endpoint on top of our service layer:
 
@@ -199,13 +199,13 @@ Successfully published message to topic ARN: <ARN-value-here>
 
 ## Subscriber Microservice
 
-Now that we have our publisher microservice up and running, let's shift our focus to develop the second component of our publisher-subscriber implementation: the subscriber microservice.
+Now that we have our publisher microservice up and running, let's shift our focus on developing the second component of our publisher-subscriber implementation: the subscriber microservice.
 
-For our use case, the subscriber microservice will simulate a `notification dispatcher service` that sends out account creation confirmation emails to users. It will listen for messages on an SQS queue `dispatch-email-notification` and perform the email dispatch logic, which for the sake of demonstration, will be a simple log statement (I wish everything was this easy 😆).
+For our use case, the subscriber microservice will simulate a **notification dispatcher service** that sends out account creation confirmation emails to users. It will listen for messages on an SQS queue `dispatch-email-notification` and perform the email dispatch logic, which for the sake of demonstration, will be a simple log statement. (I wish everything was this easy 😆)
 
 ### SQS Queue Configuration
 
-Similar to the publisher microservice, we will be using Spring Cloud AWS to connect to and poll messages from the SQS queue. We will take advantage of the library's automatic deserialization and message deletion on successful processing features to simplify our implementation.
+Similar to the publisher microservice, we will be using Spring Cloud AWS to connect to and poll messages from the SQS queue. We will take advantage of the **library's automatic deserialization and message deletion features** to simplify our implementation.
 
 The only change needed in our `pom.xml` file is to include the SQS starter dependency:
 
@@ -233,7 +233,7 @@ And just like that, we have successfully given our application the ability to po
 
 ### Consuming Messages from SQS Queue
 
-The recommended attribute to use when interacting with a provisioned SQS queue is the queue URL, which we will be configuring in our `application.yaml` file:
+**The recommended attribute to use when interacting with a provisioned SQS queue is the queue URL**, which we will be configuring in our `application.yaml` file:
 
 ```yaml
 io:
@@ -267,11 +267,11 @@ Once the `listen` method in our `EmailNotificationListener` class has been execu
 
 ### Raw Message Delivery and @SnsNotificationMessage
 
-When an SQS queue subscribed to an SNS topic receives a message, the message contains not only the actual payload but also various metadata. This additional metadata can cause automatic message deserialization to fail.
+When an SQS queue subscribed to an SNS topic receives a message, the message contains not only the actual payload but also various metadata. **This additional metadata can cause automatic message deserialization to fail**.
 
 One way to resolve this issue is by enabling the raw message delivery attribute on the active subscription. When enabled, all the metadata is stripped from the message, and only the payload is delivered as is.
 
-Another approach that allows us to deserialize the entire SNS message without enabling the raw message delivery attribute is to use the `@SnsNotificationMessage` annotation on the method argument:
+Another approach that allows us to deserialize the entire SNS payload without enabling the raw message delivery attribute is to use the `@SnsNotificationMessage` annotation on the method argument:
 
 ```java
   @SqsListener("${io.reflectoring.aws.sqs.queue-url}")
@@ -321,7 +321,7 @@ Once our subscription has been created, we need to grant the SNS topic, the perm
 
 You might wonder why this is necessary when we have already granted required IAM permissions to our microservices. The answer lies in the way AWS services communicate with each other. IAM permissions control what actions an IAM user can perform on an AWS resource, **while resource-based policies determine what actions another AWS service can perform on it**. Resource-based policies are attached to an AWS resource (SQS in this context).
 
-In our case, we need to create a resource-based policy on the SQS queue to allow the SNS topic to send messages to it. Without this policy, even though our microservices have the necessary IAM permissions, the SNS topic will not be able to forward messages to the SQS queue.
+In our case, we need to create a resource-based policy on the SQS queue to allow the SNS topic to send messages to it. **Without this policy, even though our microservices have the necessary IAM permissions, the SNS topic will not be able to forward messages to the SQS queue**.
 
 Here is what our SQS resource policy should look like:
 
@@ -358,9 +358,9 @@ In this section, we will discuss the necessary steps needed to integrate our arc
 
 To encrypt data at rest, we start by creating a **custom symmetric AWS KMS key**. Once the custom key is created, we need to enable encryption on both our SNS topic and SQS queue by configuring them to use our newly created KMS key.
 
-After enabling encryption, our developed publisher-subscriber flow will... drumroll ... stop working! 😭. This is due to our SNS topic and SQS queue not having the required permissions to perform encryption and decryption operations using our custom KMS key, also our publisher microservice now lacks the necessary IAM permissions to encrypt the data before publishing it to our SNS topic.
+After enabling encryption, our developed publisher-subscriber flow **will... drumroll ... stop working!** 😭. This is due to our SNS topic and SQS queue not having the required permissions to perform encryption and decryption operations using our custom KMS key, also our publisher microservice now lacks the necessary IAM permissions to encrypt the data before publishing it to our SNS topic.
 
-To resolve the above issues, we need to update the KMS key policy (resource-based) to include the following statements that grant SNS and SQS the necessary permissions to interact with our custom KMS key:
+To resolve the above issues, we need to update the KMS key policy (resource-based policy) to include the following statements that grant SNS and SQS the necessary permissions to interact with our custom KMS key:
 
 ```json
 [
@@ -415,7 +415,7 @@ Additionally, we need to attach the following IAM statement to the policy of the
 ```
 The above IAM statement allows our publisher microservice to use our custom KMS key, enabling it to encrypt the data before publishing it to the SNS topic.
 
-By configuring encryption at rest using AWS KMS, we have further enhanced our architecture by adding an extra layer of security to it. This enhancement also helps us meet compliance requirements when dealing with sensitive information.
+By configuring encryption at rest using AWS KMS, **we have further enhanced our architecture by adding an extra layer of security to it**. This enhancement also helps us meet compliance requirements when dealing with sensitive information.
 
 ## Conclusion
 
@@ -423,4 +423,4 @@ In this article, we explored how to implement the publisher-subscriber pattern i
 
 Throughout the implementation, we made use of Spring Cloud AWS to simplify the configuration and our interaction with AWS services. We have also discussed the necessary IAM and resource policies required for our loosely coupled architecture to function seamlessly.
 
-The source code demonstrated throughout this article is available on [Github](https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-sns-sqs-pubsub). The codebase is built as a Maven multi-module project and has been integrated with LocalStack and Docker Compose to enable local development without the need for provisioning real AWS services. I would highly encourage you to explore the codebase and set it up locally.
+The source code demonstrated throughout this article is available on [Github](https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-sns-sqs-pubsub). The codebase is built as a Maven multi-module project and has been **integrated with LocalStack and Docker Compose to enable local development without the need for provisioning real AWS services**. I would highly encourage you to explore the codebase and set it up locally.

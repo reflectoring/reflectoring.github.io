@@ -17,7 +17,7 @@ We will configure a microservice to act as a publisher to send messages to an SN
 
 ## Decoupling with SNS: Advantages over Direct Messaging Queues
 
-Before we begin implementing our microservices, I wanted to explain the decision to have an SNS topic in front of an SQS queue, rather than directly using an SQS queue in both microservices. 
+Before we begin implementing our microservices, I want to explain the decision to have an SNS topic in front of an SQS queue, rather than directly using an SQS queue in both microservices. 
 
 Traditional messaging queues like SQS, Kafka, or RabbitMQ allow asynchronous communication as well, wherein the publisher publishes the payload required by the listener of the queue. This facilitates point-to-point communication where the publisher is aware of the existence and identity of the subscriber.
 

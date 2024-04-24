@@ -313,7 +313,7 @@ Since the additional permissions needed are `read-only`, there is no harm in con
 
 Now that we have both of our microservices set up, there's one final piece of the puzzle to connect: **subscribing our SQS queue to the SNS topic**. This will allow the messages published to the SNS topic `user-account-created` to be automatically be forwarded to the SQS queue `dispatch-email-notification` for consumption by our subsriber microserice.
 
-The [official documentatio guide](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-subscribe-queue-sns-topic.html) can be referenced to subscribe the SQS Queue to our SNS Topic.
+The [official documentation guide](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-subscribe-queue-sns-topic.html) can be referenced to subscribe the SQS Queue to our SNS Topic.
 
 ### Resource Based Policy
 

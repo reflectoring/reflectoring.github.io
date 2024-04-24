@@ -35,7 +35,7 @@ The microservice will simulate a **user management service**, where a single API
 
 We will be using [Spring Cloud AWS](https://awspring.io/) to establish connection and interact with the SNS service, rather than using the SNS SDK provided by AWS directly. Spring Cloud AWS is a wrapper around the official AWS SDKs, which significantly simplifies configuration and provides simple methods to interact with AWS services.
 
-The main dependency that we will need is `spring-cloud-aws-starter-sns`, which contains all SNS related classes for our project.
+The main dependency that we will need is `spring-cloud-aws-starter-sns`, which contains all SNS related classes needed by our application.
 
 We will also make use of the Spring Cloud AWS BOM (Bill of Materials) to manage the versions of the Spring Cloud AWS dependencies in our project. The BOM ensures version compatibility between the declared dependencies, avoiding conflicts and making it easier to update versions in the future.
 
@@ -80,7 +80,7 @@ spring:
         region: ${AWS_SNS_REGION}
 ```
 
-**Spring Cloud AWS will automatically create the necessary configuration beans** based on these properties, allowing us to interact with the SNS service in our application.
+**Spring Cloud AWS will automatically create the necessary configuration beans** based on the above defined properties, allowing us to interact with the SNS service in our application.
 
 ### Configuring SNS Topic ARN
 
@@ -131,11 +131,11 @@ Here is what our policy should look like:
 }
 ```
 
-It is worth noting that Spring Cloud AWS also allows us to specify the SNS topic name instead of the full ARN. In such cases, the `sns:CreateTopic` permission needs to be attached to the IAM policy to allow the library to fetch the ARN of the topic. However, I **would not recommend this approach at all** as it would create a new topic if a topic with the configured name doesn't already exist. Moreover, **resource creation should not be done in our Spring Boot microservices**.
+It is worth noting that Spring Cloud AWS also allows us to specify the SNS topic name instead of the full ARN. In such cases, the `sns:CreateTopic` permission needs to be attached to the IAM policy to allow the library to fetch the ARN of the topic. However, I **would not recommend this approach to be used** because the library would create a new topic if one with the configured name doesn't exist. Moreover, **resource creation should not be done in our Spring Boot microservices**.
 
 ### Publishing Messages to SNS Topic
 
-Now that we are done with the SNS related configurations, we will create a service class that takes in a DTO containing user creation details and, after business logic execution, publishes a message to the SNS topic.
+Now that we are done with the SNS related configurations, we will create a service method that takes in a DTO containing user creation details and, after executing the business logic, publishes a message to the SNS topic.
 
 ```java
 @Slf4j

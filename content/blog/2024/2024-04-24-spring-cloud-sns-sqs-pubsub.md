@@ -263,7 +263,7 @@ We have referenced the queue URL defined in our `application.yaml` file using th
 
 The payload received by the SQS queue will automatically be deserialized into a `UserCreatedEventDto` object that we have declared as a method argument.
 
-Once the `listen` method in our `EmailNotificationListener` class has been executed successfully i.e., completes without any exceptions, Spring Cloud AWS will automatically delete the processed message from the queue to avoid the same message from being processed again.
+Once the `listen` method in our `EmailNotificationListener` class has been executed successfully i.e., it completes without any exceptions, Spring Cloud AWS will automatically delete the processed message from the queue to avoid the same message from being processed again.
 
 ### Raw Message Delivery and @SnsNotificationMessage
 
@@ -311,7 +311,7 @@ Since the additional permissions needed are `read-only`, there is no harm in con
 
 ## Subscribing SQS Queue to SNS Topic
 
-Now that we have both of our microservices set up, there's one final piece of the puzzle to connect: **subscribing our SQS queue to the SNS topic**. This will allow the messages published to the SNS topic `user-account-created` to be automatically be forwarded to the SQS queue `dispatch-email-notification` for consumption by our subsriber microserice.
+Now that we have both of our microservices set up, there's one final piece of the puzzle to connect: **subscribing our SQS queue to the SNS topic**. This will allow the messages published to the SNS topic `user-account-created` to be automatically be forwarded to the SQS queue `dispatch-email-notification` for consumption by our subsriber microservice.
 
 The [official documentation guide](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-subscribe-queue-sns-topic.html) can be referenced to subscribe the SQS Queue to our SNS Topic.
 

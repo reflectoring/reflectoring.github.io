@@ -352,15 +352,15 @@ Once this resource-based policy is attached to our SQS queue, the SNS topic will
 
 ## Encryption at Rest Using KMS
 
-When dealing with sensitive data, it is recommended to ensure that the data is encrypted not only in transit but also at rest. Encryption at rest also helps us comply with security standards when going through HIPAA and PCI-DSS audits.
+When dealing with sensitive data, it is recommended to ensure that the data is encrypted not only in transit but also at rest. Encryption at rest, not only enhances the security of our architecture but also makes our life easier when going through HIPAA and PCI-DSS audits.
 
-In this section, we will discuss the necessary steps needed to integrate our architecture with [AWS KMS](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) to ensure data in our SNS topic and SQS queue is always encrypted.
+In this section, we will discuss the necessary steps to integrate our architecture with [AWS KMS](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) and ensure data in our SNS topic and SQS queue is always encrypted.
 
 To encrypt data at rest, we start by creating a **custom symmetric AWS KMS key**. Once the custom key is created, we need to enable encryption on both our SNS topic and SQS queue by configuring them to use our newly created KMS key.
 
-After enabling encryption, our developed publisher-subscriber flow **will... drumroll ... stop working!** 😭. This is due to our SNS topic and SQS queue not having the required permissions to perform encryption and decryption operations using our custom KMS key, also our publisher microservice now lacks the necessary IAM permissions to encrypt the data before publishing it to our SNS topic.
+After enabling encryption, our developed publisher-subscriber flow **will... drumroll please ... stop working!** 😭. This is due to our SNS topic and SQS queue not having the required permissions to perform encryption and decryption operations using our custom KMS key, also our publisher microservice now lacks the necessary IAM permissions to encrypt the data before publishing it to our SNS topic.
 
-To resolve the above issues, we need to update the KMS key policy (resource-based policy) to include the following statements that grant SNS and SQS the necessary permissions to interact with our custom KMS key:
+To resolve the above issues, we need to update our KMS key policy (resource-based policy) to include the following statements that grant SNS and SQS, the necessary permissions to interact with our custom KMS key:
 
 ```json
 [
@@ -415,7 +415,7 @@ Additionally, we need to attach the following IAM statement to the policy of the
 ```
 The above IAM statement allows our publisher microservice to use our custom KMS key, enabling it to encrypt the data before publishing it to the SNS topic.
 
-By configuring encryption at rest using AWS KMS, **we have further enhanced our architecture by adding an extra layer of security to it**. This enhancement also helps us meet compliance requirements when dealing with sensitive information.
+By configuring encryption at rest using AWS KMS, **we have further enhanced our architecture by adding an extra layer of security to it**.
 
 ## Validating Pub/Sub Functionality with LocalStack and Testcontainers
 

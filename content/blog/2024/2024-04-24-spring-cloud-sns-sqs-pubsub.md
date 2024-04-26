@@ -11,15 +11,15 @@ url: "publisher-subscriber-pattern-using-aws-sns-and-sqs-in-spring-boot"
 
 In an event-driven architecture where multiple microservices need to communicate with each other, the publisher-subscriber pattern provides an asynchronous communication model to achieve this. It enables us to design a **loosely coupled architecture** that is easy to extend and scale.
 
-In this article, we will be looking at how we can **use AWS SNS and SQS services to implement the publisher-subscriber pattern in Spring Boot** based microservices. 
+In this article, we will be looking at how we can **use [AWS SNS](https://docs.aws.amazon.com/sns/latest/dg) and [SQS](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide) services to implement the publisher-subscriber pattern in Spring Boot** based microservices. 
 
-We will configure a microservice to act as a publisher to send messages to an SNS topic, and another to act as a subscriber which consumes messages from an SQS queue subscribed to that topic.
+We will configure a microservice to act as a publisher and send messages to an SNS topic, and another to act as a subscriber which consumes messages from an SQS queue subscribed to that topic.
 
 ## Decoupling with SNS: Advantages over Direct Messaging Queues
 
 Before we begin implementing our microservices, I want to explain the decision to have an SNS topic in front of an SQS queue, rather than directly using an SQS queue in both microservices. 
 
-Traditional messaging queues like SQS, Kafka, or RabbitMQ allow asynchronous communication as well, wherein the publisher publishes the payload required by the listener of the queue. This facilitates point-to-point communication where the publisher is aware of the existence and identity of the subscriber.
+Traditional messaging queues like SQS, Kafka, or RabbitMQ allow asynchronous communication as well, wherein the publisher publishes the payload required by the listener of the queue. This facilitates a point-to-point communication where the publisher is aware of the existence and identity of the subscriber.
 
 In contrast, the pub/sub pattern facilitated by SNS allows for a more loosely coupled approach. SNS acts as a **middleware** between the parties, allowing them to **evolve independently**. Using this pattern, the publisher is not concerned about who the payload is intended for, which allows it to **remain unchanged** in the event where multiple new subscribers are added to receive the same payload.
 
@@ -80,7 +80,7 @@ spring:
         region: ${AWS_SNS_REGION}
 ```
 
-**Spring Cloud AWS will automatically create the necessary configuration beans** based on the above defined properties, allowing us to interact with the SNS service in our application.
+**Spring Cloud AWS will automatically create the necessary configuration beans** using the above defined properties, allowing us to interact with the SNS service in our application.
 
 ### Configuring SNS Topic ARN
 
@@ -131,11 +131,11 @@ Here is what our policy should look like:
 }
 ```
 
-It is worth noting that Spring Cloud AWS also allows us to specify the SNS topic name instead of the full ARN. In such cases, the `sns:CreateTopic` permission needs to be attached to the IAM policy to allow the library to fetch the ARN of the topic. However, I **would not recommend this approach to be used** because the library would create a new topic if one with the configured name doesn't exist. Moreover, **resource creation should not be done in our Spring Boot microservices**.
+It is worth noting that Spring Cloud AWS also allows us to specify the SNS topic name instead of the full ARN. In such cases, the `sns:CreateTopic` permission needs to be attached to the IAM policy as well, to allow the library to fetch the ARN of the topic. However, I **do not recommend this approach to be used** since the library would create a new topic if one with the configured name doesn't already exist. Moreover, **resource creation should not be done in our Spring Boot microservices**.
 
 ### Publishing Messages to SNS Topic
 
-Now that we are done with the SNS related configurations, we will create a service method that takes in a DTO containing user creation details and, after executing the business logic, publishes a message to the SNS topic.
+Now that we are done with the SNS related configurations, we will create a service method that accepts a DTO containing user creation details and publishes a message to the SNS topic:
 
 ```java
 @Slf4j
@@ -148,7 +148,7 @@ public class UserService {
   private final AwsSnsTopicProperties awsSnsTopicProperties;
 
   public void create(UserCreationRequestDto userCreationRequest) {
-    // save user record in database
+    // save user record in database or other business logic
 
     var topicArn = awsSnsTopicProperties.getTopicArn();
     var payload = removePassword(userCreationRequest);
@@ -159,9 +159,9 @@ public class UserService {
   // Rest of the service class implementation 
 }
 ```
-We have used the `SnsTemplate` class provided by Spring Cloud AWS to publish a message to the SNS topic in our service layer. We also make use of our custom `AwsSnsTopicProperties` class to reference the SNS topic ARN defined in our active `application.yaml` file.
+We have used the `SnsTemplate` class provided by Spring Cloud AWS, to publish a message to the SNS topic in our service layer. We also make use of our custom `AwsSnsTopicProperties` class to reference the SNS topic ARN defined in our active `application.yaml` file.
 
-To complete the implementation of our publisher microservice `user-management-service`, we will expose an API endpoint on top of our service layer:
+To finish the implementation of our publisher microservice `user-management-service`, we will expose an API endpoint on top of our service layer method:
 
 ```java
 @RestController
@@ -199,13 +199,13 @@ Successfully published message to topic ARN: <ARN-value-here>
 
 ## Subscriber Microservice
 
-Now that we have our publisher microservice up and running, let's shift our focus on developing the second component of our publisher-subscriber implementation: the subscriber microservice.
+Now that we have our publisher microservice up and running, let's shift our focus on developing the second component of our architecture: the subscriber microservice.
 
-For our use case, the subscriber microservice will simulate a **notification dispatcher service** that sends out account creation confirmation emails to users. It will listen for messages on an SQS queue `dispatch-email-notification` and perform the email dispatch logic, which for the sake of demonstration, will be a simple log statement. (I wish everything was this easy 😆)
+For our use case, the subscriber microservice will simulate a **notification dispatcher service** that sends out account creation confirmation emails to users. It will listen for messages on an SQS queue `dispatch-email-notification` and perform the email dispatch logic, which for the sake of demonstration will be a simple log statement. (I wish everything was this easy 😆)
 
 ### SQS Queue Configuration
 
-Similar to the publisher microservice, we will be using Spring Cloud AWS to connect to and poll messages from the SQS queue. We will take advantage of the **library's automatic deserialization and message deletion features** to simplify our implementation.
+Similar to the publisher microservice, we will be using Spring Cloud AWS to connect to and poll messages from our SQS queue. We will take advantage of the **library's automatic deserialization and message deletion features** to simplify our implementation.
 
 The only change needed in our `pom.xml` file is to include the SQS starter dependency:
 
@@ -216,7 +216,7 @@ The only change needed in our `pom.xml` file is to include the SQS starter depen
 </dependency>
 ```
 
-Similarly, in our `application.yaml` file, we need to define the necessary configuration properties required by Spring Cloud AWS to establish a connection and interact with the SQS service.
+Similarly, in our `application.yaml` file, we need to define the necessary configuration properties required by Spring Cloud AWS to establish connection and interact with the SQS service:
 
 ```yaml
 spring:
@@ -229,7 +229,7 @@ spring:
         region: ${AWS_SQS_REGION}
 ```
 
-And just like that, we have successfully given our application the ability to poll messages from an SQS queue. With the addition of the above configuration properties, Spring Cloud AWS will automatically create the necessary SQS-related beans required by our application.
+And just like that, we have successfully given our application the ability to poll messages from our SQS queue. With the addition of the above configuration properties, Spring Cloud AWS will automatically create the necessary SQS-related beans required by our application.
 
 ### Consuming Messages from SQS Queue
 
@@ -243,7 +243,7 @@ io:
         queue-url: ${AWS_SQS_QUEUE_URL}
 ```
 
-We will now use the `@SqsListener` annotation provided by Spring Cloud AWS on a method in a `@Component` class to listen to messages received on the queue and process them as required:
+We will now use the `@SqsListener` annotation provided by Spring Cloud AWS on a method in a `@Component` class, to listen to messages received on the queue and process them as required:
 
 ```java
 @Slf4j
@@ -259,9 +259,9 @@ public class EmailNotificationListener {
 }
 ```
 
-We have referenced the queue URL defined in our `application.yaml` file using the property placeholder `(${…​})` capability in the `@SqsListener` annotation. This is why we did not create a corresponding `@ConfigurationProperties` class for it.
+In our listener, we have referenced the queue URL defined in our `application.yaml` file using the property placeholder `(${…​})` capability in the `@SqsListener` annotation. This is why we did not create a corresponding `@ConfigurationProperties` class for it.
 
-The payload received by the SQS queue will automatically be deserialized into a `UserCreatedEventDto` object that we have declared as a method argument.
+The payload received by the SQS queue will be automatically deserialized into a `UserCreatedEventDto` object, which we have declared as a method argument.
 
 Once the `listen` method in our `EmailNotificationListener` class has been executed successfully i.e., it completes without any exceptions, Spring Cloud AWS will automatically delete the processed message from the queue to avoid the same message from being processed again.
 
@@ -269,9 +269,9 @@ Once the `listen` method in our `EmailNotificationListener` class has been execu
 
 When an SQS queue subscribed to an SNS topic receives a message, the message contains not only the actual payload but also various metadata. **This additional metadata can cause automatic message deserialization to fail**.
 
-One way to resolve this issue is by enabling the raw message delivery attribute on the active subscription. When enabled, all the metadata is stripped from the message, and only the payload is delivered as is.
+One way to resolve this issue is to enable the raw message delivery attribute on our active subscription. When enabled, all the metadata is stripped from the message, and only the actual payload is delivered as is.
 
-Another approach that allows us to deserialize the entire SNS payload without enabling the raw message delivery attribute is to use the `@SnsNotificationMessage` annotation on the method argument:
+Another approach that allows us to deserialize the entire SNS payload without enabling the raw message delivery attribute is to use the `@SnsNotificationMessage` annotation on the method parameter:
 
 ```java
   @SqsListener("${io.reflectoring.aws.sqs.queue-url}")
@@ -280,9 +280,9 @@ Another approach that allows us to deserialize the entire SNS payload without en
   }
 ```
 
-In the above code, the `@SnsNotificationMessage` annotation automatically extracts the payload from the SNS message and deserializes it into a UserCreatedEventDto object.
+In the above code, the `@SnsNotificationMessage` annotation automatically extracts the payload from the SNS message and deserializes it into a `UserCreatedEventDto` object.
 
-The message format used, based on whether this attribute is enabled or not, can be viewed in the provided [reference document](https://docs.aws.amazon.com/sns/latest/dg/sns-large-payload-raw-message-delivery.html#raw-message-examples).
+The message format used, based on whether this attribute is enabled or not, can be viewed in this [reference document](https://docs.aws.amazon.com/sns/latest/dg/sns-large-payload-raw-message-delivery.html#raw-message-examples).
 
 ### Required IAM Permissions
 

@@ -419,9 +419,9 @@ By configuring encryption at rest using AWS KMS, **we have further enhanced our 
 
 ## Validating Pub/Sub Functionality with LocalStack and Testcontainers
 
-Before concluding this article, we will test the publisher-subscriber flow that we have implemented so far with an **integration test**. We will be making use of **Testcontainers LocalStack module**. Before we begin, let's look at what these 2 tools that I've just mentioned are: 
+Before concluding this article, we will test the publisher-subscriber flow that we have implemented so far with an **integration test**. We will be making use of **LocalStack and Testcontainers**. Before we begin, let's look at what these two tools are:
 
-* [LocalStack](https://www.localstack.cloud/) : is a **cloud service emulator** that enables development and testing of AWS services without connecting to a remote cloud provider. We'll be provisioning the required SNS table and SQS queue inside this emulator.
+* [LocalStack](https://www.localstack.cloud/) : is a **cloud service emulator** that enables local development and testing of AWS services, without the need for connecting to a remote cloud provider. We'll be provisioning the required SNS table and SQS queue inside this emulator.
 * [Testcontainers](https://java.testcontainers.org/modules/localstack/) : is a library that **provides lightweight, throwaway instances of Docker containers** for integration testing. We will be starting a LocalStack container via this library.
 
 ### Dependencies
@@ -447,8 +447,8 @@ Let’s start by declaring the required test dependencies in our `pom.xml`:
 </dependency>
 ```
 The declared **`spring-boot-starter-test`** gives us the basic testing toolbox as it transitively includes JUnit, MockMVC and other utility libraries, that we will require for writing assertions and running our tests.  
-**`org.testcontainers:localstack`** will allow us to run the LocalStack emulator inside a disposable Docker container, ensuring an isolated environment for our integration test.  
-And **`awaitility`** will help us validate the integrity of our asynchronous system.
+And **`org.testcontainers:localstack`** dependency will allow us to run the LocalStack emulator inside a disposable Docker container, **ensuring an isolated environment for our integration test**.  
+Finally, **`awaitility`** will help us validate the integrity of our asynchronous system.
 
 ### Prerequisite: Running Docker
 
@@ -456,7 +456,7 @@ The prerequisite for running the LocalStack emulator via Testcontainers is, as y
 
 ### Creating AWS Resources using Init Hooks
 
-Localstack gives us the ability to create required AWS resources when the container is started via [Initialization Hooks](https://docs.localstack.cloud/references/init-hooks/). We will be creating a `provision-resources.sh` script for this purpose in the `src/test/resources` folder:
+Localstack gives us the ability to create required AWS resources when the container is started via [Initialization Hooks](https://docs.localstack.cloud/references/init-hooks/). We will be creating a bash script `provision-resources.sh` for this purpose inside our `src/test/resources` folder:
 
 ```bash
 #!/bin/bash
@@ -478,11 +478,11 @@ echo "Subscribed SQS queue '$queue_name' to SNS topic '$topic_name' successfully
 echo "Successfully provisioned resources"
 ```
 
-The script creates an SNS topic with name `user-account-created` and an SQS queue with name `dispatch-email-notification`. After creating these resources, it subscribes the queue to the created SNS topic. We will copy this script to the path `/etc/localstack/init/ready.d` in the LocalStack container for execution in our integration test class.
+The script creates an SNS topic with name `user-account-created` and an SQS queue named `dispatch-email-notification`. After creating these resources, it subscribes the queue to the created SNS topic. We will copy this script to the path `/etc/localstack/init/ready.d` in the LocalStack container for execution in our integration test class.
 
 ### Starting LocalStack via Testcontainers
 
-At the time of this writing, the latest version of the LocalStack image is `3.3`, we will be using this version in our integration test class:
+At the time of this writing, the latest version of the LocalStack image is `3.4`, we will be using this version in our integration test class:
 
 ```java
 @SpringBootTest
@@ -522,8 +522,8 @@ class PubSubIT {
 In our integration test class `PubSubIT`, we do the following:
 
 * Start a new instance of the LocalStack container and enable the required services of **`SNS`** and **`SQS`**.
-* Copy our **`provision-resources.sh`** script into the container to ensure AWS resource creation.
-* Configure a Wait strategy to wait for the log **`Successfully provisioned resources`** to be printed, as defined in our init script.
+* Copy our bash script **`provision-resources.sh`** into the container to ensure AWS resource creation.
+* Configure a strategy to wait for the log **`"Successfully provisioned resources"`** to be printed, as defined in our init script.
 * Dynamically define the AWS configuration properties needed by our applications in order to create the required SNS and SQS related beans using **`@DynamicPropertySource`**.
 
 With this setup, our applications will use the started LocalStack container for all interactions with AWS cloud during the execution of our integration test, providing an **isolated and ephemeral testing environment**.
@@ -548,7 +548,7 @@ class PubSubIT {
   void test(CapturedOutput output) {
     // prepare API request body to create user
     var name = RandomString.make();
-    var emailId = RandomString.make() + "@domain.it";
+    var emailId = RandomString.make() + "@reflectoring.io";
     var password = RandomString.make();
     var userCreationRequestBody = String.format("""
     {
@@ -565,11 +565,11 @@ class PubSubIT {
       .content(userCreationRequestBody))
       .andExpect(status().isCreated());
 		
-    // assert that message has been received by the queue
+    // assert that message has been published to SNS topic
     var expectedPublisherLog = String.format("Successfully published message to topic ARN: %s", TOPIC_ARN);
     Awaitility.await().atMost(1, TimeUnit.SECONDS).until(() -> output.getAll().contains(expectedPublisherLog));
 		
-    // assert that message has been received by the queue
+    // assert that message has been received by the SQS queue
     var expectedSubscriberLog = String.format("Dispatching account creation email to %s on %s", name, emailId);
     Awaitility.await().atMost(1, TimeUnit.SECONDS).until(() -> output.getAll().contains(expectedSubscriberLog));
   }
@@ -578,7 +578,7 @@ class PubSubIT {
 ```
 By executing the above test case, we simulate the complete flow of our publisher-subscriber architecture.
 
-Using `MockMVC`, we invoke the user creation API endpoint of our publisher microservice. We then use the `CapturedOutput` instance provided by the `OutputCaptureExtension` to assert that the expected logs are generated by both the publisher and subscriber microservices, **confirming that the message has been successfully published to the SNS topic and consumed from the SQS queue**.
+Using `MockMVC`, we invoke the user creation API endpoint exposed by our publisher microservice. We then use the `CapturedOutput` instance provided by the `OutputCaptureExtension` to assert that the expected logs are generated by both the publisher and subscriber microservices, **confirming that the message has been successfully published to the SNS topic and consumed from the SQS queue**.
 
 With this integration test in place, we have confidently validated the functionality of our publisher-subscriber architecture.
 

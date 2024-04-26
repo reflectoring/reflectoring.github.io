@@ -307,13 +307,13 @@ Here is what our policy should look like:
 ```
 Spring Cloud AWS also allows us to specify the SQS queue name instead of the queue URL. In such cases, the read only permissions of `sqs:GetQueueAttributes` and `sqs:GetQueueUrl` need to be attached to the IAM policy as well.
 
-Since the additional permissions needed are `read-only`, there is no harm in configuring the queue name and allowing the library to fetch the URL instead. However, I would still prefer to use the queue URL directly, since it leads to faster application startup time and avoids unnecessary calls to AWS cloud.
+Since the additional permissions needed are `read-only`, there is no harm in configuring the queue name and allowing the library to fetch the URL instead. However, I would still prefer to use the queue URL directly, since it **leads to faster application startup time and avoids unnecessary calls to AWS cloud**.
 
 ## Subscribing SQS Queue to SNS Topic
 
-Now that we have both of our microservices set up, there's one final piece of the puzzle to connect: **subscribing our SQS queue to the SNS topic**. This will allow the messages published to the SNS topic `user-account-created` to be automatically be forwarded to the SQS queue `dispatch-email-notification` for consumption by our subsriber microservice.
+Now that we have both of our microservices set up, there's one final piece of the puzzle to connect: **subscribing our SQS queue to our SNS topic**. This will allow the messages published to the SNS topic `user-account-created` to automatically be forwarded to the SQS queue `dispatch-email-notification` for consumption by our subsriber microservice.
 
-The [official documentation guide](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-subscribe-queue-sns-topic.html) can be referenced to subscribe the SQS Queue to our SNS Topic.
+To create a subscription between the services, the [official documentation guide](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-subscribe-queue-sns-topic.html) can be referenced.
 
 ### Resource Based Policy
 

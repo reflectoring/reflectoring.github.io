@@ -317,7 +317,7 @@ To create a subscription between the services, the [official documentation guide
 
 ### Resource Based Policy
 
-Once our subscription has been created, we need to grant the SNS topic, the permission to send messages to our SQS queue. This permission needs to be added to our queue's resource-based policy (Access policy).
+Once our subscription has been created, we need to grant our SNS topic, the permission to send messages to our SQS queue. This permission needs to be added to our queue's resource-based policy (Access policy).
 
 You might wonder why this is necessary when we have already granted required IAM permissions to our microservices. The answer lies in the way AWS services communicate with each other. IAM permissions control what actions an IAM user can perform on an AWS resource, **while resource-based policies determine what actions another AWS service can perform on it**. Resource-based policies are attached to an AWS resource (SQS in this context).
 
@@ -346,7 +346,7 @@ Here is what our SQS resource policy should look like:
 }
 ```
 
-In this policy, we are granting the SNS service `(sns.amazonaws.com)` permission to perform the `sqs:SendMessage` action on our SQS queue. We specify the ARN of the SQS queue in the `Resource` field and ARN of the SNS topic in the `Condition` field to ensure that only messages from our specific topic are allowed.
+In this policy, we are granting the SNS service `(sns.amazonaws.com)` permission to perform the `sqs:SendMessage` action on our SQS queue. We specify the ARNs of our SQS queue and SNS topic in the `Resource` and `Condition` field respectively to ensure that only messages from our specific topic are allowed.
 
 Once this resource-based policy is attached to our SQS queue, the SNS topic will be able to forward messages to it, finally completing the setup of our publisher-subscriber architecture.
 

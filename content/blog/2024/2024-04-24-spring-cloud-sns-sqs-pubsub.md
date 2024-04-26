@@ -584,8 +584,8 @@ With this integration test in place, we have confidently validated the functiona
 
 ## Conclusion
 
-In this article, we explored how to implement the publisher-subscriber pattern in Spring Boot microservices using AWS SNS and SQS services.
+In this article, we explored how to **implement the publisher-subscriber pattern in Spring Boot microservices using AWS SNS and SQS services**.
 
-Throughout the implementation, we made use of Spring Cloud AWS to simplify the configuration and our interaction with AWS services. We have also discussed the necessary IAM and resource policies required for our loosely coupled architecture to function seamlessly.
+Throughout the implementation, we made use of Spring Cloud AWS to simplify the configurations required to interact with AWS services. We also discussed the necessary IAM and resource policies required by our loosely coupled architecture to function seamlessly.
 
-The source code demonstrated throughout this article is available on [Github](https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-sns-sqs-pubsub). The codebase is built as a Maven multi-module project and has been **integrated with LocalStack and Docker Compose to enable local development without the need for provisioning real AWS services**. I would highly encourage you to explore the codebase and set it up locally.
+The source code demonstrated throughout this article is available on [Github](https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-sns-sqs-pubsub). The codebase is built as a Maven multi-module project and has been **integrated with LocalStack and Docker Compose, to enable local development without the need for provisioning real AWS services**. I would highly encourage you to explore the codebase and set it up locally.

@@ -1,8 +1,8 @@
 ---
 title: "Publisher-Subscriber Pattern using AWS SNS and SQS in Spring Boot"
 categories: [ "AWS", "Spring Boot", "Java" ]
-date: 2024-04-23 00:00:00 +0530
-modified: 2024-04-23 00:00:00 +0530
+date: 2024-04-29 00:00:00 +0530
+modified: 2024-04-29 00:00:00 +0530
 authors: [ "hardik" ]
 description: "Learn how to implement the publisher-subscriber pattern in Spring Boot applications using AWS SNS and SQS. This article guides you through configuration details using Spring Cloud AWS, IAM and resource policies, and local development using LocalStack."
 image: images/stock/0112-ide-1200x628-branded.jpg

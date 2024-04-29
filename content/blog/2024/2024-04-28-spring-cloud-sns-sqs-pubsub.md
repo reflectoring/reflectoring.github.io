@@ -84,7 +84,7 @@ spring:
 
 ### Configuring SNS Topic ARN
 
-**The recommended approach to interact with an SNS topic is through its Amazon Resource Name (ARN)**. We will store this property in our project's `application.yaml` file and make use of `@ConfigurationProperties` to map the defined ARN to a POJO, which our application will reference while publishing messages to SNS.
+**The recommended approach to interact with an SNS topic is through its Amazon Resource Name (ARN)**. We will store this property in our project's `application.yaml` file and make use of `@ConfigurationProperties` to map the defined ARN to a POJO, which our application will reference while publishing messages to SNS:
 
 ```java
 @Getter

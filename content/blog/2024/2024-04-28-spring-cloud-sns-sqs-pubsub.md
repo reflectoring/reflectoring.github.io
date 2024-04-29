@@ -37,7 +37,7 @@ We will be using <a href="https://awspring.io/" target="_blank">Spring Cloud AWS
 
 The main dependency that we will need is `spring-cloud-aws-starter-sns`, which contains all SNS related classes needed by our application.
 
-We will also make use of the Spring Cloud AWS BOM (Bill of Materials) to manage the versions of the Spring Cloud AWS dependencies in our project. The BOM ensures version compatibility between the declared dependencies, avoiding conflicts and making it easier to update versions in the future.
+We will also make use of Spring Cloud AWS BOM (Bill of Materials) to manage the versions of the Spring Cloud AWS dependencies in our project. The BOM ensures version compatibility between the declared dependencies, avoiding conflicts and making it easier to update versions in the future.
 
 Here is how our `pom.xml` would look like:
 

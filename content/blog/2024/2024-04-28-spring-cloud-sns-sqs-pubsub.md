@@ -11,7 +11,7 @@ url: "publisher-subscriber-pattern-using-aws-sns-and-sqs-in-spring-boot"
 
 In an event-driven architecture where multiple microservices need to communicate with each other, the publisher-subscriber pattern provides an asynchronous communication model to achieve this. It enables us to design a **loosely coupled architecture** that is easy to extend and scale.
 
-In this article, we will be looking at how we can **use [AWS SNS](https://docs.aws.amazon.com/sns/latest/dg) and [SQS](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide) services to implement the publisher-subscriber pattern in Spring Boot** based microservices. 
+In this article, we will be looking at how we can **use <a href='https://docs.aws.amazon.com/sns/latest/dg' target='_blank'>AWS SNS</a> and <a href='https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide' target='_blank'>SQS</a> services to implement the publisher-subscriber pattern in Spring Boot** based microservices. 
 
 We will configure a microservice to act as a publisher and send messages to an SNS topic, and another to act as a subscriber which consumes messages from an SQS queue subscribed to that topic.
 
@@ -33,7 +33,7 @@ The microservice will simulate a **user management service**, where a single API
 
 ### Spring Cloud AWS
 
-We will be using [Spring Cloud AWS](https://awspring.io/) to establish connection and interact with the SNS service, rather than using the SNS SDK provided by AWS directly. Spring Cloud AWS is a wrapper around the official AWS SDKs, which significantly simplifies configuration and provides simple methods to interact with AWS services.
+We will be using <a href="https://awspring.io/" target="_blank">Spring Cloud AWS</a> to establish connection and interact with the SNS service, rather than using the SNS SDK provided by AWS directly. Spring Cloud AWS is a wrapper around the official AWS SDKs, which significantly simplifies configuration and provides simple methods to interact with AWS services.
 
 The main dependency that we will need is `spring-cloud-aws-starter-sns`, which contains all SNS related classes needed by our application.
 
@@ -282,7 +282,7 @@ Another approach that allows us to deserialize the entire SNS payload without en
 
 In the above code, the `@SnsNotificationMessage` annotation automatically extracts the payload from the SNS message and deserializes it into a `UserCreatedEventDto` object.
 
-The message format used, based on whether this attribute is enabled or not, can be viewed in this [reference document](https://docs.aws.amazon.com/sns/latest/dg/sns-large-payload-raw-message-delivery.html#raw-message-examples).
+The message format used, based on whether this attribute is enabled or not, can be viewed in this <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-large-payload-raw-message-delivery.html#raw-message-examples" target="_blank">reference document</a>.
 
 ### Required IAM Permissions
 
@@ -313,7 +313,7 @@ Since the additional permissions needed are `read-only`, there is no harm in con
 
 Now that we have both of our microservices set up, there's one final piece of the puzzle to connect: **subscribing our SQS queue to our SNS topic**. This will allow the messages published to the SNS topic `user-account-created` to automatically be forwarded to the SQS queue `dispatch-email-notification` for consumption by our subsriber microservice.
 
-To create a subscription between the services, the [official documentation guide](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-subscribe-queue-sns-topic.html) can be referenced.
+To create a subscription between the services, the <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-subscribe-queue-sns-topic.html" target="_blank">official documentation guide</a> can be referenced.
 
 ### Resource Based Policy
 
@@ -354,7 +354,7 @@ Once this resource-based policy is attached to our SQS queue, the SNS topic will
 
 When dealing with sensitive data, it is recommended to ensure that the data is encrypted not only in transit but also at rest. Encryption at rest, not only enhances the security of our architecture but also makes our life easier when going through HIPAA and PCI-DSS audits.
 
-In this section, we will discuss the necessary steps to integrate our architecture with [AWS KMS](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) and ensure data in our SNS topic and SQS queue is always encrypted.
+In this section, we will discuss the necessary steps to integrate our architecture with <a href="https://docs.aws.amazon.com/kms/latest/developerguide/overview.html" target="_blank">AWS KMS</a> and ensure data in our SNS topic and SQS queue is always encrypted.
 
 To encrypt data at rest, we start by creating a **custom symmetric AWS KMS key**. Once the custom key is created, we need to enable encryption on both our SNS topic and SQS queue by configuring them to use our newly created KMS key.
 
@@ -421,8 +421,8 @@ By configuring encryption at rest using AWS KMS, **we have further enhanced our 
 
 Before concluding this article, we will test the publisher-subscriber flow that we have implemented so far with an **integration test**. We will be making use of **LocalStack and Testcontainers**. Before we begin, let's look at what these two tools are:
 
-* [LocalStack](https://www.localstack.cloud/) : is a **cloud service emulator** that enables local development and testing of AWS services, without the need for connecting to a remote cloud provider. We'll be provisioning the required SNS table and SQS queue inside this emulator.
-* [Testcontainers](https://java.testcontainers.org/modules/localstack/) : is a library that **provides lightweight, throwaway instances of Docker containers** for integration testing. We will be starting a LocalStack container via this library.
+* <a href="https://www.localstack.cloud/" target="_blank">LocalStack</a> : is a **cloud service emulator** that enables local development and testing of AWS services, without the need for connecting to a remote cloud provider. We'll be provisioning the required SNS table and SQS queue inside this emulator.
+* <a href="https://java.testcontainers.org/modules/localstack/" target="_blank">Testcontainers</a> : is a library that **provides lightweight, throwaway instances of Docker containers** for integration testing. We will be starting a LocalStack container via this library.
 
 ### Dependencies
 
@@ -456,7 +456,7 @@ The prerequisite for running the LocalStack emulator via Testcontainers is, as y
 
 ### Creating AWS Resources using Init Hooks
 
-Localstack gives us the ability to create required AWS resources when the container is started via [Initialization Hooks](https://docs.localstack.cloud/references/init-hooks/). We will be creating a bash script `provision-resources.sh` for this purpose inside our `src/test/resources` folder:
+Localstack gives us the ability to create required AWS resources when the container is started via <a href="https://docs.localstack.cloud/references/init-hooks/" target="_blank">Initialization Hooks</a>. We will be creating a bash script `provision-resources.sh` for this purpose inside our `src/test/resources` folder:
 
 ```bash
 #!/bin/bash
@@ -588,4 +588,4 @@ In this article, we explored how to **implement the publisher-subscriber pattern
 
 Throughout the implementation, we made use of Spring Cloud AWS to simplify the configurations required to interact with AWS services. We also discussed the necessary IAM and resource policies required by our loosely coupled architecture to function seamlessly.
 
-The source code demonstrated throughout this article is available on [Github](https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-sns-sqs-pubsub). The codebase is built as a Maven multi-module project and has been **integrated with LocalStack and Docker Compose, to enable local development without the need for provisioning real AWS services**. I would highly encourage you to explore the codebase and set it up locally.
+The source code demonstrated throughout this article is available on <a href="https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-sns-sqs-pubsub" target="_blank">Github</a>. The codebase is built as a Maven multi-module project and has been **integrated with LocalStack and Docker Compose, to enable local development without the need for provisioning real AWS services**. I would highly encourage you to explore the codebase and set it up locally.

@@ -13,7 +13,7 @@ In modern web applications, storing and retrieving files has become a common req
 
 One such solution provided by AWS is <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide" target="_blank">S3 (Simple Storage Service)</a>, which is a widely used, highly scalable and durable object storage service.
 
-While interacting with AWS S3 directly through the <a href="https://mvnrepository.com/artifact/software.amazon.awssdk/s3" target="_blank">AWS SDK for Java</a> is possible, it often leads to verbose configuration classes and boilerplate code. But fortunately, the <a href="https://awspring.io/" target="_blank">Spring Cloud AWS</a> project simplifies this integration by providing a layer of abstraction over the official AWS SDK, making it easier to interact with services like S3.
+While interacting with AWS S3 directly through the <a href="https://mvnrepository.com/artifact/software.amazon.awssdk/s3" target="_blank">AWS SDK for Java</a> is possible, it often leads to verbose configuration classes and boilerplate code. But fortunately, the <a href="https://awspring.io/" target="_blank">Spring Cloud AWS</a> project simplifies this integration by providing a layer of abstraction over the official SDK, making it easier to interact with services like S3.
 
 In this article, we will explore how to leverage Spring Cloud AWS to easily integrate Amazon S3 in our Spring Boot application. We'll go through the required dependencies, configurations, and IAM policy in order to interact with our provisioned S3 bucket. We will use this to build our service layer that performs basic S3 operations like uploading, fetching, and deleting files.
 

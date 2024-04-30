@@ -250,6 +250,95 @@ The above IAM statement is necessary for us to execute the `s3Template.bucketExi
 
 By validating the existence of the configured S3 bucket at startup, we can ensure that our application fails fast and provides clear feedback when an S3 bucket does not exist corresponding to the configured name. This approach helps maintain a more stable and predictable application behavior.
 
+## Integration Testing
+
+We cannot conclude without testing the code we have written so far. We need to ensure that our configurations and service layer works correctly. We will be making use of LocalStack and Testcontainers, but first let’s look at what these two tools are:
+
+* <a href="https://www.localstack.cloud/" target="_blank">LocalStack</a> : is a **cloud service emulator** that enables local development and testing of AWS services, without the need for connecting to a remote cloud provider. We'll be provisioning the required S3 bucket inside this emulator.
+* <a href="https://java.testcontainers.org/modules/localstack/" target="_blank">Testcontainers</a> : is a library that **provides lightweight, throwaway instances of Docker containers** for integration testing. We will be starting a LocalStack container via this library.
+
+The prerequisite for running the LocalStack emulator via Testcontainers is, as you’ve guessed it, an up-and-running Docker instance. We need to ensure this prerequisite is met when running the test suite either locally or when using a CI/CD pipeline.
+
+### Dependencies
+
+Let’s start by declaring the required test dependencies in our `pom.xml`:
+
+```xml
+<!-- Test dependencies -->
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-test</artifactId>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>org.testcontainers</groupId>
+  <artifactId>localstack</artifactId>
+  <scope>test</scope>
+</dependency>
+```
+
+The declared `spring-boot-starter-test` gives us the basic testing toolbox as it transitively includes JUnit, AssertJ and other utility libraries, that we will be needing for writing assertions and running our tests.
+
+And `org.testcontainers:localstack` dependency will allow us to run the LocalStack emulator inside a disposable Docker container, ensuring an isolated environment for our integration test.
+
+### Creating S3 Bucket using Init Hooks
+
+Localstack gives us the ability to create required AWS resources when the container is started via <a href="https://docs.localstack.cloud/references/init-hooks/" target="_blank">Initialization Hooks</a>. We will be creating a bash script `init-s3-bucket.sh` for this purpose inside our `src/test/resources` folder:
+
+```bash
+#!/bin/bash
+bucket_name="reflectoring-bucket"
+
+awslocal s3api create-bucket --bucket $bucket_name
+
+echo "S3 bucket '$bucket_name' created successfully"
+echo "Executed init-s3-bucket.sh"
+```
+
+The script creates an S3 bucket with name `reflectoring-bucket`. We will copy this script to the path `/etc/localstack/init/ready.d` inside the LocalStack container for execution in our integration test class.
+
+### Starting LocalStack via Testcontainers
+
+At the time of this writing, the latest version of the LocalStack image is `3.4`, we will be using this version in our integration test class:
+
+```java
+@SpringBootTest
+class StorageServiceIT {
+
+  private static final LocalStackContainer localStackContainer;
+
+  // Bucket name as configured in src/test/resources/init-s3-bucket.sh
+  private static final String BUCKET_NAME = "reflectoring-bucket";
+
+  static {
+    localStackContainer = new LocalStackContainer(DockerImageName.parse("localstack/localstack:3.4"))
+        .withCopyFileToContainer(MountableFile.forClasspathResource("init-s3-bucket.sh", 0744), "/etc/localstack/init/ready.d/init-s3-bucket.sh")
+        .withServices(Service.S3)
+        .waitingFor(Wait.forLogMessage(".*Executed init-s3-bucket.sh.*", 1));
+    localStackContainer.start();
+  }
+
+  @DynamicPropertySource
+  static void properties(DynamicPropertyRegistry registry) {
+    registry.add("spring.cloud.aws.credentials.access-key", localStackContainer::getAccessKey);
+    registry.add("spring.cloud.aws.credentials.secret-key", localStackContainer::getSecretKey);
+    registry.add("spring.cloud.aws.s3.region", localStackContainer::getRegion);
+    registry.add("spring.cloud.aws.s3.endpoint", localStackContainer::getEndpoint);
+
+    registry.add("io.reflectoring.aws.s3.bucket-name", () -> BUCKET_NAME);
+  }
+
+}
+```
+In our integration test class `StorageServiceIT`, we do the following:
+
+* Start a new instance of the LocalStack container and enable the **`S3`** service.
+* Copy our bash script **`init-s3-bucket.sh`** into the container to ensure bucket creation.
+* Configure a strategy to wait for the log **`"Executed init-s3-bucket.sh"`** to be printed, as defined in our init script.
+* Dynamically define the AWS configuration properties needed by our applications in order to create the required S3 related beans using **`@DynamicPropertySource`**.
+
+With this setup, our applications will use the started LocalStack container for all interactions with AWS cloud during the execution of our integration test, providing an **isolated and ephemeral testing environment**.
+
 ## Conclusion
 
 In this article, we explored how to integrate AWS S3 in a Spring Boot application using Spring Cloud AWS. 

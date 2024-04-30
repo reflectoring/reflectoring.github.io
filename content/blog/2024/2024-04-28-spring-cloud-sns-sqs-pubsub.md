@@ -424,6 +424,8 @@ Before concluding this article, we will test the publisher-subscriber flow that 
 * <a href="https://www.localstack.cloud/" target="_blank">LocalStack</a> : is a **cloud service emulator** that enables local development and testing of AWS services, without the need for connecting to a remote cloud provider. We'll be provisioning the required SNS table and SQS queue inside this emulator.
 * <a href="https://java.testcontainers.org/modules/localstack/" target="_blank">Testcontainers</a> : is a library that **provides lightweight, throwaway instances of Docker containers** for integration testing. We will be starting a LocalStack container via this library.
 
+The prerequisite for running the LocalStack emulator via Testcontainers is, as you've guessed it, **an up-and-running Docker instance**. We need to ensure this prerequisite is met when running the test suite either locally or when using a CI/CD pipeline.
+
 ### Dependencies
 
 Let’s start by declaring the required test dependencies in our `pom.xml`:
@@ -449,10 +451,6 @@ Let’s start by declaring the required test dependencies in our `pom.xml`:
 The declared **`spring-boot-starter-test`** gives us the basic testing toolbox as it transitively includes JUnit, MockMVC and other utility libraries, that we will require for writing assertions and running our tests.  
 And **`org.testcontainers:localstack`** dependency will allow us to run the LocalStack emulator inside a disposable Docker container, **ensuring an isolated environment for our integration test**.  
 Finally, **`awaitility`** will help us validate the integrity of our asynchronous system.
-
-### Prerequisite: Running Docker
-
-The prerequisite for running the LocalStack emulator via Testcontainers is, as you've guessed it, **an up-and-running Docker instance**. We need to ensure this prerequisite is met when running the test suite either locally or when using a CI/CD pipeline.
 
 ### Creating AWS Resources using Init Hooks
 

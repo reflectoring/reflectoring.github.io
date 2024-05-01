@@ -5,7 +5,7 @@ date: 2024-04-30 00:00:00 +0530
 modified: 2024-04-30 00:00:00 +0530
 authors: [ "hardik" ]
 description: "In this article, we learn how AWS S3 can be integrated in a Spring Boot application using Spring Cloud AWS. The article details the necessary configurations, best practices, IAM policy and integration testing with LocalStack and Testcontainers."
-image: images/stock/0112-ide-1200x628-branded.jpg
+image: images/stock/0138-bucket-alternative-1200x628-branded.jpg
 url: "spring-cloud-aws-s3"
 ---
 

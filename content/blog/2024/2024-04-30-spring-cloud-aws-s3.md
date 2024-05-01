@@ -11,9 +11,9 @@ url: "spring-cloud-aws-s3"
 
 In modern web applications, storing and retrieving files has become a common requirement. Whether its user-uploaded content like images and documents or application-generated logs and reports, having a reliable and scalable storage solution is crucial.
 
-One such solution provided by AWS is <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide" target="_blank">S3 (Simple Storage Service)</a>, which is a widely used, highly scalable and durable object storage service.
+One such solution provided by AWS is <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide" target="_blank">Amazon S3 (Simple Storage Service)</a>, which is a widely used, highly scalable and durable object storage service.
 
-While interacting with AWS S3 directly through the <a href="https://mvnrepository.com/artifact/software.amazon.awssdk/s3" target="_blank">AWS SDK for Java</a> is possible, it often leads to verbose configuration classes and boilerplate code. But fortunately, the <a href="https://awspring.io/" target="_blank">Spring Cloud AWS</a> project simplifies this integration by providing a layer of abstraction over the official SDK, making it easier to interact with services like S3.
+While interacting with S3 directly through the <a href="https://mvnrepository.com/artifact/software.amazon.awssdk/s3" target="_blank">AWS SDK for Java</a> is possible, it often leads to verbose configuration classes and boilerplate code. But fortunately, the <a href="https://awspring.io/" target="_blank">Spring Cloud AWS</a> project simplifies this integration by providing a layer of abstraction over the official SDK, making it easier to interact with services like S3.
 
 In this article, we will explore how to leverage Spring Cloud AWS to easily integrate Amazon S3 in our Spring Boot application. We'll go through the required dependencies, configurations, and IAM policy in order to interact with our provisioned S3 bucket. We will use this to build our service layer that performs basic S3 operations like uploading, fetching, and deleting files.
 
@@ -164,11 +164,13 @@ Here is what our policy should look like:
 }
 ```
 
+The above IAM policy conforms to the **least privilege principle**, by granting only the necessary permissions required for our service layer to operate correctly. We also specify the bucket ARN in the `Resource` field, further limiting the scope of the IAM policy to work with a single bucket that is provisioned for our application.
+
 ## Validating Bucket Existence at Startup
 
-If no S3 bucket exists in our AWS account corresponding to the configured bucket name in our `application.yaml` file, the service layer we have created, when attempting to interact with the S3 service, will result in exceptions at runtime, leading to unexpected application behavior and a poor user experience.
+If no S3 bucket exists in our AWS account corresponding to the configured bucket name in our `application.yaml` file, the service layer we have created **will encounter exceptions at runtime when attempting to interact with the S3 service**. This can lead to unexpected application behavior and a **poor user experience**.
 
-To address this issue, we will leverage the Bean Validation API and create a custom constraint to validate the existence of the configured S3 bucket during application startup, ensuring that our application fails fast if the bucket does not exist, rather than encountering runtime exceptions later on:
+To address this issue, we will leverage the Bean Validation API and create a custom constraint to validate the existence of the configured S3 bucket during application startup, **ensuring that our application fails fast if the bucket does not exist, rather than encountering runtime exceptions later on**:
 
 ```java
 @RequiredArgsConstructor
@@ -204,7 +206,7 @@ public @interface BucketExists {
 }
 ```
 
-The `@BucketExists` annotation is meta-annotated with `@Constraint`, which specifies the validator class `BucketExistenceValidator` that we created earlier to perform the validation logic. The annotation also defines a default error message that will be used when the validation fails.
+The `@BucketExists` annotation is meta-annotated with `@Constraint`, which specifies the validator class `BucketExistenceValidator` that we created earlier to perform the validation logic. The annotation also defines a default error message that will be used incase of validation failure.
 
 Now, with our custom constraint created, we can annotate the `bucketName` field in our `AwsS3BucketProperties` class with our custom annotation `@BucketExists`:
 
@@ -248,7 +250,7 @@ To finish our implementation, we need to add an additional statement to our IAM 
 ```
 The above IAM statement is necessary for us to execute the `s3Template.bucketExists()` method in our custom validation class. 
 
-By validating the existence of the configured S3 bucket at startup, we can ensure that our application fails fast and provides clear feedback when an S3 bucket does not exist corresponding to the configured name. This approach helps maintain a more stable and predictable application behavior.
+By validating the existence of the configured S3 bucket at startup, we ensure that our application fails fast and provides clear feedback when an S3 bucket does not exist corresponding to the configured name. This approach helps maintain a more stable and predictable application behavior.
 
 ## Integration Testing
 
@@ -258,8 +260,6 @@ We cannot conclude without testing the code we have written so far. We need to e
 * <a href="https://java.testcontainers.org/modules/localstack/" target="_blank">Testcontainers</a> : is a library that **provides lightweight, throwaway instances of Docker containers** for integration testing. We will be starting a LocalStack container via this library.
 
 The prerequisite for running the LocalStack emulator via Testcontainers is, as you’ve guessed it, an up-and-running Docker instance. We need to ensure this prerequisite is met when running the test suite either locally or when using a CI/CD pipeline.
-
-### Dependencies
 
 Let’s start by declaring the required test dependencies in our `pom.xml`:
 
@@ -320,11 +320,13 @@ class StorageServiceIT {
 
   @DynamicPropertySource
   static void properties(DynamicPropertyRegistry registry) {
+    // spring cloud aws properties
     registry.add("spring.cloud.aws.credentials.access-key", localStackContainer::getAccessKey);
     registry.add("spring.cloud.aws.credentials.secret-key", localStackContainer::getSecretKey);
     registry.add("spring.cloud.aws.s3.region", localStackContainer::getRegion);
     registry.add("spring.cloud.aws.s3.endpoint", localStackContainer::getEndpoint);
 
+    // custom properties
     registry.add("io.reflectoring.aws.s3.bucket-name", () -> BUCKET_NAME);
   }
 
@@ -337,7 +339,119 @@ In our integration test class `StorageServiceIT`, we do the following:
 * Configure a strategy to wait for the log **`"Executed init-s3-bucket.sh"`** to be printed, as defined in our init script.
 * Dynamically define the AWS configuration properties needed by our applications in order to create the required S3 related beans using **`@DynamicPropertySource`**.
 
+In our `@DynamicPropertySource` code block, we have declared an additional `spring.cloud.aws.s3.endpoint` property that was not present in our main `application.yaml` file. 
+
+This property is necessary when connecting to the S3 bucket `reflectoring-bucket` created inside the LocalStack container, as it requires a specific endpoint URL. However, when connecting to an actual provisioned S3 bucket in AWS, specifying an endpoint URL is not needed, as it automatically uses the default endpoint for each service in the configured AWS Region.
+
+This LocalStack container will be automatically destroyed post test suite execution, hence we do not need to worry about manual cleanups.
+
 With this setup, our applications will use the started LocalStack container for all interactions with AWS cloud during the execution of our integration test, providing an **isolated and ephemeral testing environment**.
+
+### Testing Service Layer
+
+With the LocalStack container set up successfully via Testcontainers, we can now write test cases to ensure our service layer works as expected and interacts with the provisioned S3 bucket correctly:
+
+```java
+@SpringBootTest
+class StorageServiceIT {
+
+  @Autowired
+  private S3Template s3Template;
+
+  @Autowired
+  private StorageService storageService;
+
+  @Autowired
+  private AwsS3BucketProperties awsS3BucketProperties;
+
+  // LocalStack setup as seen above
+
+  @Test
+  void shouldSaveFileSuccessfullyToBucket() {
+    // Prepare test file to upload
+    var key = RandomString.make(10) + ".txt";
+    var fileContent = RandomString.make(50);
+    var fileToUpload = createTextFile(key, fileContent);
+
+    // Invoke method under test
+    storageService.save(fileToUpload);
+
+    // Verify that the file is saved successfully in S3 bucket
+    var isFileSaved = s3Template.objectExists(BUCKET_NAME, key);
+    assertThat(isFileSaved).isTrue();
+  }
+
+  private MultipartFile createTextFile(String fileName, String content) {
+    var fileContentBytes = content.getBytes();
+    var inputStream = new ByteArrayInputStream(fileContentBytes);
+    return new MockMultipartFile(fileName, fileName, "text/plain", inputStream);
+  }
+
+}
+```
+
+In our initial test case, we verify that the `StorageService` class can successfully upload a file to the provisioned S3 bucket.
+
+We begin by preparing a file with random content and name, we pass this test file to the `save()` method exposed by our service layer.
+
+Finally, we make use of `S3Template` to assert that the file is indeed saved in the S3 bucket.
+
+Now, to validate the functionality of fetching a saved file:
+
+```java
+@Test
+void shouldFetchSavedFileSuccessfullyFromBucket() {
+  // Prepare test file and upload to S3 Bucket
+  var key = RandomString.make(10) + ".txt";
+  var fileContent = RandomString.make(50);
+  var fileToUpload = createTextFile(key, fileContent);
+  storageService.save(fileToUpload);
+
+  // Invoke method under test
+  var retrievedObject = storageService.retrieve(key);
+
+  // Read the retrieved content and assert integrity
+  var retrievedContent = readFile(retrievedObject.getContentAsByteArray());
+  assertThat(retrievedContent).isEqualTo(fileContent);
+}
+
+private String readFile(byte[] bytes) {
+  var inputStreamReader = new InputStreamReader(new ByteArrayInputStream(bytes));
+  return new BufferedReader(inputStreamReader).lines().collect(Collectors.joining("\n"));
+}  
+```
+
+We begin by saving a test file to the S3 bucket. Then, we invoke the `retrieve()` method of our service layer with the corresponding random file key. We read the content of the retrieved file and assert that it matches the original file content.
+
+Finally, let's conclude by testing our delete functionality:
+
+```java
+  @Test
+  void shouldDeleteFileFromBucketSuccessfully() {
+    // Prepare test file and upload to S3 Bucket
+    var key = RandomString.make(10) + ".txt";
+    var fileContent = RandomString.make(50);
+    var fileToUpload = createTextFile(key, fileContent);
+    storageService.save(fileToUpload);
+
+    // Verify that the file is saved successfully in S3 bucket
+    var isFileSaved = s3Template.objectExists(BUCKET_NAME, key);
+    assertThat(isFileSaved).isTrue();
+
+    // Invoke method under test
+    storageService.delete(key);
+
+    // Verify that file is deleted from the S3 bucket
+    isFileSaved = s3Template.objectExists(BUCKET_NAME, key);
+    assertThat(isFileSaved).isFalse();
+  }
+```
+
+In this test case, we again create a test file and upload it to our S3 bucket. We verify that the file is successfully saved using `S3Template`. Then, we invoke the `delete()` method of our service layer with the generated file key.
+
+To verify that the file is indeed deleted from our bucket, we use `S3Template` again to assert that the file is no longer present in the S3 bucket.
+
+By executing the above integration test cases, we simulate different interactions with our S3 bucket and ensure that our service layer works as expected.
 
 ## Conclusion
 

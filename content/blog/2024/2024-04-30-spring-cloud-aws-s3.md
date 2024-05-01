@@ -361,9 +361,6 @@ class StorageServiceIT {
   @Autowired
   private StorageService storageService;
 
-  @Autowired
-  private AwsS3BucketProperties awsS3BucketProperties;
-
   // LocalStack setup as seen above
 
   @Test

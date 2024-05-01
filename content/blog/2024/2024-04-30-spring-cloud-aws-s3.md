@@ -137,7 +137,7 @@ public class StorageService {
 ```
 We have used the `S3Template` class provided by Spring Cloud AWS in our service layer. `S3Template` is a high level abstraction over the `S3Client` class provided by the AWS SDK.
 
-While it's possible to use the `S3Client` directly, `S3Template` reduces boilerplate code and simplifies interacting with S3 by offering convenient, Spring-friendly methods for common S3 operations.
+While it's possible to use the `S3Client` directly, `S3Template` reduces boilerplate code and simplifies interaction with S3 by offering convenient, Spring-friendly methods for common S3 operations.
 
 We also make use of our custom `AwsS3BucketProperties` class which we had created earlier, to reference the S3 bucket name defined in our `application.yaml` file.
 

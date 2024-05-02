@@ -8,7 +8,7 @@ image: images/stock/0077-request-response-1200x628-branded.jpg
 url: apache-http-client-classic-apis
 ---
 
-In this article we are going to learn about the classic APIs offered by Apache HttpClient. We are going to explore the different ways Apache HttpClient enables developers to send and receive data over the internet in classic (synchronous) mode. From simple GET requests to complex multipart POSTs, we'll cover it all with real-world examples. So get ready to learn to implement HTTP interactions with Apache HttpClient! 
+In this article we are going to learn about the classic APIs offered by Apache HttpClient. We are going to explore the different ways Apache HttpClient helps us to send and receive data over the internet in classic (synchronous) mode. From simple GET requests to complex multipart POSTs, we'll cover it all with real-world examples. So get ready to learn how to implement HTTP interactions with Apache HttpClient! 
 
 ## The "Create a HTTP Client with Apache HttpClient" Series
 
@@ -23,12 +23,11 @@ This article is the third part of a series:
 {{% github "https://github.com/thombergs/code-examples/tree/master/create-a-http-client-wth-apache-http-client" %}}
 
 \
-Let's now learn how to use Apache HttpClient for web communication. We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the classic APIs offered by Apache HttpClient.
-
+We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the classic APIs offered by Apache HttpClient.
 
 {{% info title="Reqres Fake Data CRUD API" %}}
 We are going to use [Reqres API Server](https://reqres.in) to test different HTTP methods. It is a free online API that can be used for testing and prototyping. It provides a variety of endpoints that can be used to test different HTTP methods. The Reqres API is a good choice
- for testing CORS because it supports all of the HTTP methods that are allowed by CORS.
+ for testing CRUD operations because it supports all of the HTTP methods that CRUD allows.
 {{% /info %}}
 
 ## HttpClient (Classic APIs)
@@ -36,10 +35,10 @@ In this section of examples we are going to learn how to use `HttpClient` for se
 
 {{% info title="HTTP and CRUD Operations" %}}
 CRUD operations refer to Create, Read, Update, and Delete actions performed on data. In the context of HTTP endpoints for a `/users` resource:
-1. **Create**: Use HTTP POST to add a new user. Example URL: `POST /users`
-2. **Read**: Use HTTP GET to retrieve user data. Example URL: `GET /users/{userId}` for a specific user or `GET /users?page=1` for a list of users with pagination.
-3. **Update**: Use HTTP PUT or PATCH to modify user data. Example URL: `PUT /users/{userId}`
-4. **Delete**: Use HTTP DELETE to remove a user. Example URL: `DELETE /users/{userId}`
+- **Create**: Use HTTP POST to add a new user: `POST /users`
+- **Read**: Use HTTP GET to retrieve user data: `GET /users/{userId}` for a specific user or `GET /users?page=1` for a list of users with pagination.
+- **Update**: Use HTTP PUT or PATCH to modify user data: `PUT /users/{userId}`
+- **Delete**: Use HTTP DELETE to remove a user: `DELETE /users/{userId}`
 {{% /info %}}
 
 \
@@ -55,7 +54,7 @@ Additionally, response handlers promote code reusability, as the same handler ca
 
 Overall, response handlers enhance the flexibility, readability, and maintainability of code that interacts with HTTP responses using Apache HttpClient.
 
-## Overview of Logic to Execute HTTP Method and Test It
+## Overview of Executing and Testing HTTP Methods
 
 Before we start going through the code snippet, let's understand the general structure of the logic to execute HTTP methods and unit test to verify the logic.
 Here is the sample code to execute a HTTP method:
@@ -83,11 +82,11 @@ public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
   }
 }  
 ```
-This code defines a class `UserSimpleHttpRequestHelper` that extends `BaseHttpRequestHelper`. It contains a method `executeHttpMethod()` that takes optional request parameters as input and returns the response body as a string. 
+We defines a class `UserSimpleHttpRequestHelper` that extends `BaseHttpRequestHelper`. It contains a method `executeHttpMethod()` that takes optional request parameters as input and returns the response body as a string. 
 
-Inside the method, it creates an HTTP client using HttpClient `createDefault()`. It then creates an HTTP host object representing the target host. Next, it prepares the HTTP request by populating parameters such as name-value pairs, URI, and HTTP method.
+Inside the method, we create a HTTP client using `HttpClients.createDefault()`. Then we create an HTTP host object representing the target host. Next, we prepare the HTTP request by populating parameters such as name-value pairs, URI, and HTTP method.
 
-After preparing the request, it creates a response handler of type `BasicHttpClientResponseHandler` to handle the response. Finally, it executes the HTTP request using the HTTP client, passing the host, request, and handler, and returns the response body as a string. If any exception occurs during this process, it throws a `RequestProcessingException` with an appropriate error message.
+After preparing the request, we create a response handler of type `BasicHttpClientResponseHandler` to handle the response. Finally, we execute the HTTP request using the HTTP client, passing the host, request, and handler, and returns the response body as a string. If any exception occurs during this process, we throw a `RequestProcessingException` with an appropriate error message.
 
 Here is a test case to verify this functionality:
 
@@ -115,22 +114,22 @@ public class UserSimpleHttpRequestHelperTests extends BaseClassicExampleTests {
   }
 }
 ```
-Inside the test method, it first prepares optional request parameters, creating a map containing key-value pairs. These parameters might include details such as the page number for pagination.
+Inside the test method, we first prepare the optional request parameters, creating a map containing key-value pairs. These parameters might include details such as the page number for pagination.
 
-Then, it invokes the `executeHttpMethod()` method of the `UserSimpleHttpRequestHelper`, passing the prepared parameters. This method executes an HTTP request using the Apache HttpClient and returns the response body as a string.
+Then, we invoke the `executeHttpMethod()` method of the `UserSimpleHttpRequestHelper`, passing the prepared parameters. This method executes an HTTP request using the Apache HttpClient and returns the response body as a string.
 
 After executing the HTTP request, the test verifies the response body. It asserts that the response body is not empty, ensuring that the HTTP request was successful and returned some data.
 
-If any exception occurs during the execution of the test, it fails the test and provides details about the failure, including the exception message. This ensures that any errors encountered during the test execution are properly reported.
+If any exception occurs during the execution of the test, the test fails and provides details about the failure, including the exception message. This ensures that any errors encountered during the test execution are properly reported.
 
 ## HTTP Methods Used to Create Records
 
-From the set of CRUD methods, methods used to create records: POST.
+There'e one CRUD method to create records: POST.
 
-### Executing HTTP `POST` Request to Create a New Record
+### Executing a HTTP `POST` Request to Create a New Record
 We use HTTP `POST` to create a new user. We need to provide details needed to create a new user.
 
-Code to create new record:
+Here's the code to create a new record:
 
 ```java
 public String createUser(
@@ -164,9 +163,9 @@ public String createUser(
 }
 
 ```
-The example illustrates a method for creating a new user by sending an HTTP `POST` request to the specified endpoint. We construct a list of form parameters containing the user's details such as first name, last name, email, and avatar. Then call the `execute()` method and receive response body containing the created user's data.
+The example illustrates a method for creating a new user by sending an HTTP `POST` request to the specified endpoint. We construct a list of form parameters containing the user's details such as first name, last name, email, and avatar. Then call the `execute()` method and receive a response body containing the created user's data.
 
-Test for creating new record:
+And here's test:
 
 ```java
 @Test
@@ -188,11 +187,11 @@ The unit test verifies the functionality of the `createUser()` method. It calls 
 
 ## HTTP Methods Used to Read Records
 
-From the set of CRUD methods, methods used to update records: GET, OPTIONS, HEAD, TRACE.
+The CRUD methods to read records are: GET, HEAD, OPTIONS, and TRACE.
 
-### Executing HTTP GET Request to Get Paginated Records
+### Executing a HTTP GET Request to Get Paginated Records
 
-We use HTTP GET request to retrieve a single record as well as records in bulk. We use pagination strategy to handle such bulk requests.
+We use a HTTP GET request to retrieve a single record as well as records in bulk. Furthermore, we can use pagination to split requests that return large responses into multiple requests.
 
 {{% info title="Pagination, Its Advantages, Disadvantages and Complexities" %}}
 Pagination in HTTP request processing involves dividing large sets of data into smaller, manageable pages. Clients specify the page they want using parameters like `page=1`. The server processes the request, retrieves the relevant page of data, and returns it to the client, enabling efficient data retrieval and presentation. Advantages of pagination include improved performance, reduced server load, enhanced user experience, and efficient handling of large datasets.
@@ -204,7 +203,7 @@ On the client side, complexities arise from managing pagination state, handling 
 {{% /info %}}
 
 \
-Let's implement paginated HTTP GET request using a response handler:
+Let's implement a paginated HTTP GET request using a response handler:
 
 ```java
 public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
@@ -264,7 +263,7 @@ public class UserSimpleHttpRequestHelperTests extends BaseClassicExampleTests {
 ```
 In test method `executeGetPaginatedRequest()`, we populate the request parameter (page=1) and execute an HTTP GET request to retrieve the first page of paginated users and verify the response.
 
-### Executing HTTP GET Request to Get a Specific Record
+### Executing a HTTP GET Request to Get a Specific Record
 
 Let's execute HTTP GET request to get a specific user record using a response handler:
 
@@ -316,10 +315,10 @@ void executeGetSpecificRequest() {
 ```
 In this example, the we call `getUser()` method to get user with specific id and then check its response.
 
-### Executing HTTP `HEAD` Request to Get Status of a Record
+### Executing a HTTP `HEAD` Request to Get the Status of a Record
 The `HEAD` method in HTTP can request information about a document without retrieving the document itself. It is similar to GET but it does not receive the response body. It's used for caching, resource existence, modification checks, and link validation. Faster than GET, it saves bandwidth by omitting response data, making it ideal for resource checks and link validation, optimizing network efficiency.
 
-Here is code to execute HTTP `HEAD` request to get status of a specific user record using a response handler:
+Here is the code to execute HTTP `HEAD` request to get status of a specific user record using a response handler:
 
 ```java
 public Integer getUserStatus(long userId) throws RequestProcessingException {
@@ -344,7 +343,7 @@ public Integer getUserStatus(long userId) throws RequestProcessingException {
 }
 ```
 
-In this example we retrieve the status code of a user's HTTP request without fetching the response body. It sends a `HEAD` request to the specified user endpoint and retrieves the status code from the response. The status code indicates the success or failure of the request.
+In this example we send a `HEAD` request to the user endpoint to retrieve the status code of a HTTP request without fetching the response body.
 
 Test for this functionality:
 
@@ -367,8 +366,8 @@ void executeUserStatus() {
 ```
 This test method verifies the status returned by the HEAD method for a user. First, it prepares the user ID to be used in the request. Then, it executes the `getUserStatus()` method from the `UserSimpleHttpRequestHelper` class to fetch the status code for the specified user ID. Finally, it verifies that the obtained user status is equal to `HttpStatus.SC_OK` (200), indicating a successful request.
 
-### Executing HTTP `OPTIONS` Request to Find out Request Methods Allowed by Server
-The HTTP `OPTION` method is a type of HTTP call that explains what are the options for a target resource such as API endpoint. We use 'HTTP' `OPTION` to find out HTTP methods supported by the server `https://reqres.in`.
+### Executing a HTTP `OPTIONS` Request to Find out Request Methods Allowed by Server
+The HTTP `OPTION` method is a type of HTTP call that explains what are the options for a target resource such as an API endpoint. We can use `OPTION` to find out which HTTP methods are supported by the server.
 
 Here is command line example to execute it:
 
@@ -431,7 +430,7 @@ The `Access-Control-Allow-Methods` header tells the browser which HTTP methods a
 
 {{% /info %}}
 \
-Executing options method using HTTP client:
+Here's how we can send an OPTIONS request using HTTP client:
 
 ```java
 public Map<String, String> executeOptions() throws RequestProcessingException {
@@ -459,9 +458,9 @@ public Map<String, String> executeOptions() throws RequestProcessingException {
   }
 }
 ```
-In this example, it populates the `HttpOptions` request and calls HttpClient `execute()` method. The response from the server is processed by the handler, and the resulting map of headers is returned to the caller.
+In this example, we populate the `HttpOptions` request and call the `HttpClient.execute()` method. The response from the server is processed by the handler, and the resulting map of headers is returned to the caller.
 
-Let's now test options request processing:
+Let's now test the OPTIONS request:
 
 ```java
 @Test
@@ -479,7 +478,7 @@ void executeOptions() {
 ```
 The test calls `executeOptions()` to perform the `OPTIONS` request and retrieve the headers from the server. Then it verifies that the keys of the 'headers' map contain at least one of the expected headers ('Allow' or 'Access-Control-Allow-Methods'). 
 
-### Executing HTTP `TRACE` Request to Perform Diagnosis
+### Executing a HTTP `TRACE` Request to Perform Diagnosis
 
 The HTTP `TRACE` method performs a message loop-back test along the path to the target resource, providing a useful debugging mechanism. However, it is advised not to use this method as it can open the gates to the intruders.
 
@@ -489,9 +488,9 @@ As warned by OWASP in the documentation on [Test HTTP Methods](https://owasp.org
 
 ## HTTP Methods Used to Update Records
 
-From the set of CRUD methods, methods used to update records: PUT, PATCH.
+The CRUD methods to update records are: PUT, PATCH.
 
-### Executing HTTP `PUT` Request to Update an Existing Record
+### Executing a HTTP `PUT` Request to Update an Existing Record
 We use HTTP `PUT` to update an existing user. We need to provide details needed to update the user.
 
 Implementation for updating an existing user:
@@ -555,9 +554,9 @@ void executePutRequest() {
 }
 ```
 
-The example is a test method designed to execute an HTTP `PUT` request to update a user's information. The method first prepares the necessary parameters for the update operation, including the user's ID and the updated details (first name, last name, email, and avatar). It then invokes the `updateUser()` method of the `userHttpRequestHelper` object, passing these parameters. The method captures the response from the server, indicating the success or failure of the update operation, and asserts that the response body is not empty to verify the update's success.
+In this example we execute an HTTP `PUT` request to update a user's information. The method first prepares the necessary parameters for the update operation, including the user's ID and the updated details (first name, last name, email, and avatar). It then invokes the `updateUser()` method of the `userHttpRequestHelper` object, passing these parameters. The method captures the response from the server, indicating the success or failure of the update operation, and asserts that the response body is not empty to verify the update's success.
 
-### Executing HTTP `PATCH` Request to Partially Update an Existing Record
+### Executing a HTTP `PATCH` Request to Partially Update an Existing Record
 We use HTTP `PATCH` to update an existing user in a partial way. We need to provide details needed to update the user.
 
 Logic to update an existence user partially:
@@ -617,13 +616,13 @@ void executePatchRequest() {
 }
 ```
 
-The example is a test executes an HTTP `PATCH` request to partially update a user's information. It first prepares the necessary parameters for the update operation, including the user's ID and few of the users details (first name and last name). It then invokes the `patchUser()`, passing these parameters. The method captures the response from the server, indicating the success or failure of the update operation, and asserts that the response body is not empty to verify the patch's success.
+In this example we execute an HTTP `PATCH` request to partially update a user's information. It first prepares the necessary parameters for the update operation, including the user's ID and few of the users details (first name and last name). It then invokes the `patchUser()`, passing these parameters. The method captures the response from the server, indicating the success or failure of the update operation, and asserts that the response body is not empty to verify the patch's success.
 
 ## HTTP Methods Used to Delete Records
 
-From the set of CRUD methods, methods used to delete records: DELETE.
+There's one CRUD method to delete a record: DELETE.
 
-### Executing HTTP `DELETE` Request to Delete an Existing Record
+### Executing a HTTP `DELETE` Request to Delete an Existing Record
 We use HTTP `DELETE` to delete an existing user. We need to user id to delete the user.
 
 Let's implement delete user logic:
@@ -731,7 +730,7 @@ The `DataObjectResponseHandler` is a generic HTTP response handler that deserial
 
 The `UserTypeHttpRequestHelper` class has a method `getUser()` that retrieves a user from a server using a custom `HttpGet` request. The response is processed by `DataObjectResponseHandler`, which deserializes the server's JSON response into a `User` object. Errors during execution are caught and rethrown as `RequestProcessingException`.
 
-Test case to get user:
+Test case to get a user:
 
 ```java
 @Test

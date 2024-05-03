@@ -6,7 +6,7 @@ modified: 2024-05-02 00:00:00 +0530
 authors: [ "hardik" ]
 description: "In this article, we demonstrate how to use AWS S3 Presigned URLs in a Spring Boot application to offload file transfers, reducing server load and improving performance. We cover required dependencies, configuration, IAM policy, generation of Presigned URLs and integration testing with LocalStack and Testcontainers."
 image: images/stock/0139-stamped-envelope-1200x628-branded.jpg
-url: "aws-s3-presigned-urls-spring-boot"
+url: "aws-s3-presigned-url-spring-boot"
 ---
 
 When building web applications that involve file uploads or downloads, a common approach is to have the files pass through the application server. However, this can lead to **increased load on the server, consuming valuable computing resources, and potentially impacting performance**. A more efficient solution is to **offload file transfers to the client (web browsers, desktop/mobile applications) using Presigned URLs**.
@@ -134,3 +134,37 @@ io:
 This setup allows us to externalize the bucket name and the validity duration of the Presigned URLs attributes and easily access it in our code.
 
 This configuration, assumes that the application will be operating against a single S3 bucket and the defined validity will be applicable for both PUT and GET Presigned URls. If that is not the case for your application, then the `AwsS3BucketProperties` can be modified as per requirement. 
+
+## Generating Presigned URLs
+
+```java
+@Service
+@RequiredArgsConstructor
+@EnableConfigurationProperties(AwsS3BucketProperties.class)
+public class StorageService {
+
+  private final S3Template s3Template;
+  private final AwsS3BucketProperties awsS3BucketProperties;
+
+  public URL generateViewablePresignedUrl(String objectKey) {
+    var bucketName = awsS3BucketProperties.getBucketName();
+    var urlValidity = awsS3BucketProperties.getPresignedUrl().getValidity();
+    var urlValidityDuration = Duration.ofSeconds(urlValidity);
+
+    return s3Template.createSignedGetURL(bucketName, objectKey, urlValidityDuration);
+  }
+
+  public URL generateUploadablePresignedUrl(String objectKey) {
+    var bucketName = awsS3BucketProperties.getBucketName();
+    var urlValidity = awsS3BucketProperties.getPresignedUrl().getValidity();
+    var urlValidityDuration = Duration.ofSeconds(urlValidity);
+
+    return s3Template.createSignedPutURL(bucketName, objectKey, urlValidityDuration);
+  }
+
+}
+```
+
+## Required IAM Permissions
+
+## Conclusion

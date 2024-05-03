@@ -1,5 +1,5 @@
 ---
-title: "Publisher-Subscriber Pattern using AWS SNS and SQS in Spring Boot"
+title: "Publisher-Subscriber Pattern Using AWS SNS and SQS in Spring Boot"
 categories: [ "AWS", "Spring Boot", "Java" ]
 date: 2024-04-28 00:00:00 +0530
 modified: 2024-04-28 00:00:00 +0530
@@ -133,7 +133,7 @@ Here is what our policy should look like:
 
 It is worth noting that Spring Cloud AWS also allows us to specify the SNS topic name instead of the full ARN. In such cases, the `sns:CreateTopic` permission needs to be attached to the IAM policy as well, to allow the library to fetch the ARN of the topic. However, I **do not recommend this approach to be used** since the library would create a new topic if one with the configured name doesn't already exist. Moreover, **resource creation should not be done in our Spring Boot microservices**.
 
-### Publishing Messages to SNS Topic
+### Publishing Messages to the SNS Topic
 
 Now that we are done with the SNS related configurations, we will create a service method that accepts a DTO containing user creation details and publishes a message to the SNS topic:
 
@@ -191,7 +191,7 @@ curl -X POST http://localhost:8080/api/v1/users \
        "password": "somethingSecure"
       }'
 ```
-If everything is configured correctly, we should see a log message in the console indicating that the service layer was invoked and message was successfully published to our SNS topic:
+If everything is configured correctly, we should see a log message in the console indicating that the service layer was invoked and the message was successfully published to our SNS topic:
 
 ```console
 Successfully published message to topic ARN: <ARN-value-here>
@@ -231,7 +231,7 @@ spring:
 
 And just like that, we have successfully given our application the ability to poll messages from our SQS queue. With the addition of the above configuration properties, Spring Cloud AWS will automatically create the necessary SQS-related beans required by our application.
 
-### Consuming Messages from SQS Queue
+### Consuming Messages from an SQS Queue
 
 **The recommended attribute to use when interacting with a provisioned SQS queue is the queue URL**, which we will be configuring in our `application.yaml` file:
 
@@ -309,7 +309,7 @@ Spring Cloud AWS also allows us to specify the SQS queue name instead of the que
 
 Since the additional permissions needed are `read-only`, there is no harm in configuring the queue name and allowing the library to fetch the URL instead. However, I would still prefer to use the queue URL directly, since it **leads to faster application startup time and avoids unnecessary calls to AWS cloud**.
 
-## Subscribing SQS Queue to SNS Topic
+## Subscribing SQS Queue to an SNS Topic
 
 Now that we have both of our microservices set up, there's one final piece of the puzzle to connect: **subscribing our SQS queue to our SNS topic**. This will allow the messages published to the SNS topic `user-account-created` to automatically be forwarded to the SQS queue `dispatch-email-notification` for consumption by our subsriber microservice.
 
@@ -317,7 +317,7 @@ To create a subscription between the services, the <a href="https://docs.aws.ama
 
 ### Resource Based Policy
 
-Once our subscription has been created, we need to grant our SNS topic, the permission to send messages to our SQS queue. This permission needs to be added to our queue's resource-based policy (Access policy).
+Once our subscription has been created, we need to grant our SNS topic the permission to send messages to our SQS queue. This permission needs to be added to our queue's resource-based policy (Access policy).
 
 You might wonder why this is necessary when we have already granted required IAM permissions to our microservices. The answer lies in the way AWS services communicate with each other. IAM permissions control what actions an IAM user can perform on an AWS resource, **while resource-based policies determine what actions another AWS service can perform on it**. Resource-based policies are attached to an AWS resource (SQS in this context).
 
@@ -452,7 +452,7 @@ The declared **`spring-boot-starter-test`** gives us the basic testing toolbox a
 And **`org.testcontainers:localstack`** dependency will allow us to run the LocalStack emulator inside a disposable Docker container, **ensuring an isolated environment for our integration test**.  
 Finally, **`awaitility`** will help us validate the integrity of our asynchronous system.
 
-### Creating AWS Resources using Init Hooks
+### Creating AWS Resources Using Init Hooks
 
 Localstack gives us the ability to create required AWS resources when the container is started via <a href="https://docs.localstack.cloud/references/init-hooks/" target="_blank">Initialization Hooks</a>. We will be creating a bash script `provision-resources.sh` for this purpose inside our `src/test/resources` folder:
 
@@ -550,8 +550,8 @@ class PubSubIT {
     var password = RandomString.make();
     var userCreationRequestBody = String.format("""
     {
-      "name"   : "%s",
-      "emailId"  : "%s",
+      "name" : "%s",
+      "emailId" : "%s",
       "password" : "%s"
     }
     """, name, emailId, password);

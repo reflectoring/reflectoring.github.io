@@ -354,6 +354,10 @@ Once this resource-based policy is attached to our SQS queue, the SNS topic will
 
 When dealing with sensitive data, it is recommended to ensure that the data is encrypted not only in transit but also at rest. Encryption at rest, not only enhances the security of our architecture but also makes our life easier when going through HIPAA and PCI-DSS audits.
 
+While SNS and SQS are primarily used for message delivery (data in transit), the messages themselves are stored temporarily in these services until they are successfully delivered or processed. **This temporary storage period is considered "data at rest"**. Additionally, if our subscriber microservice is down or is unable to poll the SQS queue, the messages will remain in the queue until the microservice is operational again.
+
+By enabling encryption at rest, **we safeguard the confidentiality of our data throughout its lifecycle, including the intermediary stages of message delivery and temporary storage**.
+
 In this section, we will discuss the necessary steps to integrate our architecture with <a href="https://docs.aws.amazon.com/kms/latest/developerguide/overview.html" target="_blank">AWS KMS</a> and ensure data in our SNS topic and SQS queue is always encrypted.
 
 To encrypt data at rest, we start by creating a **custom symmetric AWS KMS key**. Once the custom key is created, we need to enable encryption on both our SNS topic and SQS queue by configuring them to use our newly created KMS key.

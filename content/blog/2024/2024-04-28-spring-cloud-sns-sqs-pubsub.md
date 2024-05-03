@@ -15,6 +15,8 @@ In this article, we will be looking at how we can **use <a href='https://docs.aw
 
 We will configure a microservice to act as a publisher and send messages to an SNS topic, and another to act as a subscriber which consumes messages from an SQS queue subscribed to that topic.
 
+{{% image src="images/posts/spring-cloud-sns-sqs-pubsub/pubsub-sns-sqs-architecture-diagram.png" alt="Architecture diagram of publisher-subscriber model using AWS SNS and SQS" %}}
+
 ## Decoupling with SNS: Advantages over Direct Messaging Queues
 
 Before we begin implementing our microservices, I want to explain the decision to have an SNS topic in front of an SQS queue, rather than directly using an SQS queue in both microservices. 

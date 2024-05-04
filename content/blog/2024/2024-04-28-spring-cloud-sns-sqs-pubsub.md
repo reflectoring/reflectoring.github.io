@@ -1,8 +1,8 @@
 ---
 title: "Publisher-Subscriber Pattern Using AWS SNS and SQS in Spring Boot"
 categories: [ "AWS", "Spring Boot", "Java" ]
-date: 2024-04-28 00:00:00 +0530
-modified: 2024-04-28 00:00:00 +0530
+date: 2024-05-03 00:00:00 +0000
+modified: 2024-05-03 00:00:00 +0000
 authors: [ "hardik" ]
 description: "Learn how to implement the publisher-subscriber pattern in Spring Boot applications using AWS SNS and SQS. This article guides you through configuration details using Spring Cloud AWS, IAM and resource policies, and local development using LocalStack."
 image: images/stock/0112-ide-1200x628-branded.jpg
@@ -13,7 +13,7 @@ In an event-driven architecture where multiple microservices need to communicate
 
 In this article, we will be looking at how we can **use <a href='https://docs.aws.amazon.com/sns/latest/dg' target='_blank'>AWS SNS</a> and <a href='https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide' target='_blank'>SQS</a> services to implement the publisher-subscriber pattern in Spring Boot** based microservices. 
 
-We will configure a microservice to act as a publisher and send messages to an SNS topic, and another to act as a subscriber which consumes messages from an SQS queue subscribed to that topic.
+We will configure a microservice to act as a publisher and send messages to an SNS topic, and another to act as a subscriber which consumes messages from an SQS queue subscribed to that topic:
 
 {{% image src="images/posts/spring-cloud-sns-sqs-pubsub/pubsub-sns-sqs-architecture-diagram.png" alt="Architecture diagram of publisher-subscriber model using AWS SNS and SQS" %}}
 
@@ -21,9 +21,9 @@ We will configure a microservice to act as a publisher and send messages to an S
 
 Before we begin implementing our microservices, I want to explain the decision to have an SNS topic in front of an SQS queue, rather than directly using an SQS queue in both microservices. 
 
-Traditional messaging queues like SQS, Kafka, or RabbitMQ allow asynchronous communication as well, wherein the publisher publishes the payload required by the listener of the queue. This facilitates a point-to-point communication where the publisher is aware of the existence and identity of the subscriber.
+Traditional messaging queues like SQS, Kafka, or RabbitMQ allow asynchronous communication as well, wherein the publisher publishes the payload required by the listener of the queue. This facilitates point-to-point communication where the publisher is aware of the existence and identity of the subscriber.
 
-In contrast, the pub/sub pattern facilitated by SNS allows for a more loosely coupled approach. SNS acts as a **middleware** between the parties, allowing them to **evolve independently**. Using this pattern, the publisher is not concerned about who the payload is intended for, which allows it to **remain unchanged** in the event where multiple new subscribers are added to receive the same payload.
+In contrast, the pub/sub pattern facilitated by SNS allows for a more loosely coupled approach. SNS acts as a **middleware** between the parties, allowing them to **evolve independently**. Using this pattern, the publisher is not concerned about who the payload is intended for, that allows it to **remain unchanged** in the event where multiple new subscribers are added to receive the same payload.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-sns-sqs-pubsub" %}}
 
@@ -31,15 +31,15 @@ In contrast, the pub/sub pattern facilitated by SNS allows for a more loosely co
 
 Now that we have understood the "Why" of our topic, we will proceed with creating our publisher microservice.
 
-The microservice will simulate a **user management service**, where a single API endpoint is exposed to create a user record. Once this API is invoked, the service publishes a trimmed down version of the API request to the SNS topic `user-account-created` signifying successful account creation.
+The microservice will simulate a **user management service**, where a single API endpoint is exposed to create a user record. Once this API is invoked, the service publishes a trimmed-down version of the API request to the SNS topic `user-account-created` signifying successful account creation.
 
 ### Spring Cloud AWS
 
-We will be using <a href="https://awspring.io/" target="_blank">Spring Cloud AWS</a> to establish connection and interact with the SNS service, rather than using the SNS SDK provided by AWS directly. Spring Cloud AWS is a wrapper around the official AWS SDKs, which significantly simplifies configuration and provides simple methods to interact with AWS services.
+We will be using <a href="https://awspring.io/" target="_blank">Spring Cloud AWS</a> to establish a connection and interact with the SNS service, rather than using the SNS SDK provided by AWS directly. Spring Cloud AWS is a wrapper around the official AWS SDKs, which significantly simplifies configuration and provides simple methods to interact with AWS services.
 
 The main dependency that we will need is `spring-cloud-aws-starter-sns`, which contains all SNS related classes needed by our application.
 
-We will also make use of Spring Cloud AWS BOM (Bill of Materials) to manage the versions of the Spring Cloud AWS dependencies in our project. The BOM ensures version compatibility between the declared dependencies, avoids conflicts and makes it easier to update versions in the future.
+We will also make use of Spring Cloud AWS BOM (Bill of Materials) to manage the versions of the Spring Cloud AWS dependencies in our project. The BOM ensures version compatibility between the declared dependencies, avoids conflicts, and makes it easier to update versions in the future.
 
 Here is how our `pom.xml` would look like:
 
@@ -82,11 +82,11 @@ spring:
         region: ${AWS_SNS_REGION}
 ```
 
-**Spring Cloud AWS will automatically create the necessary configuration beans** using the above defined properties, allowing us to interact with the SNS service in our application.
+**Spring Cloud AWS will automatically create the necessary configuration beans** using the above-defined properties, allowing us to interact with the SNS service in our application.
 
 ### Configuring SNS Topic ARN
 
-**The recommended approach to interact with an SNS topic is through its Amazon Resource Name (ARN)**. We will store this property in our project's `application.yaml` file and make use of `@ConfigurationProperties` to map the defined ARN to a POJO, which our application will reference while publishing messages to SNS:
+**The recommended approach to interacting with an SNS topic is through its Amazon Resource Name (ARN)**. We will store this property in our project's `application.yaml` file and make use of `@ConfigurationProperties` to map the defined ARN to a POJO, which our application will reference while publishing messages to SNS:
 
 ```java
 @Getter
@@ -100,9 +100,9 @@ public class AwsSnsTopicProperties {
 
 }
 ```
-We have also added the `@NotBlank` annotation to validate that the ARN value is configured when the application starts. If the corresponding value is not provided, it would result in the Spring Application Context failing to start up.
+We have also added the `@NotBlank` annotation to validate that the ARN value is configured when the application starts. If the corresponding value is not provided, it will result in the Spring Application Context failing to start up.
 
-Below is a snippet of our `application.yaml` file where we have defined the required property which will be automatically mapped to the above defined class:
+Below is a snippet of our `application.yaml` file where we have defined the required property which will be automatically mapped to the above-defined class:
 
 ```yaml
 io:
@@ -137,7 +137,7 @@ It is worth noting that Spring Cloud AWS also allows us to specify the SNS topic
 
 ### Publishing Messages to the SNS Topic
 
-Now that we are done with the SNS related configurations, we will create a service method that accepts a DTO containing user creation details and publishes a message to the SNS topic:
+Now that we are done with the SNS-related configurations, we will create a service method that accepts a DTO containing user creation details and publishes a message to the SNS topic:
 
 ```java
 @Slf4j
@@ -201,7 +201,7 @@ Successfully published message to topic ARN: <ARN-value-here>
 
 ## Subscriber Microservice
 
-Now that we have our publisher microservice up and running, let's shift our focus on developing the second component of our architecture: the subscriber microservice.
+Now that we have our publisher microservice up and running, let's shift our focus to developing the second component of our architecture: the subscriber microservice.
 
 For our use case, the subscriber microservice will simulate a **notification dispatcher service** that sends out account creation confirmation emails to users. It will listen for messages on an SQS queue `dispatch-email-notification` and perform the email dispatch logic, which for the sake of demonstration will be a simple log statement. (I wish everything was this easy 😆)
 
@@ -218,7 +218,7 @@ The only change needed in our `pom.xml` file is to include the SQS starter depen
 </dependency>
 ```
 
-Similarly, in our `application.yaml` file, we need to define the necessary configuration properties required by Spring Cloud AWS to establish connection and interact with the SQS service:
+Similarly, in our `application.yaml` file, we need to define the necessary configuration properties required by Spring Cloud AWS to establish a connection and interact with the SQS service:
 
 ```yaml
 spring:
@@ -307,21 +307,21 @@ Here is what our policy should look like:
   ]
 }
 ```
-Spring Cloud AWS also allows us to specify the SQS queue name instead of the queue URL. In such cases, the read only permissions of `sqs:GetQueueAttributes` and `sqs:GetQueueUrl` need to be attached to the IAM policy as well.
+Spring Cloud AWS also allows us to specify the SQS queue name instead of the queue URL. In such cases, the read-only permissions of `sqs:GetQueueAttributes` and `sqs:GetQueueUrl` need to be attached to the IAM policy as well.
 
 Since the additional permissions needed are `read-only`, there is no harm in configuring the queue name and allowing the library to fetch the URL instead. However, I would still prefer to use the queue URL directly, since it **leads to faster application startup time and avoids unnecessary calls to AWS cloud**.
 
 ## Subscribing SQS Queue to an SNS Topic
 
-Now that we have both of our microservices set up, there's one final piece of the puzzle to connect: **subscribing our SQS queue to our SNS topic**. This will allow the messages published to the SNS topic `user-account-created` to automatically be forwarded to the SQS queue `dispatch-email-notification` for consumption by our subsriber microservice.
+Now that we have both of our microservices set up, there's one final piece of the puzzle to connect: **subscribing our SQS queue to our SNS topic**. This will allow the messages published to the SNS topic `user-account-created` to automatically be forwarded to the SQS queue `dispatch-email-notification` for consumption by our subscriber microservice.
 
 To create a subscription between the services, the <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-subscribe-queue-sns-topic.html" target="_blank">official documentation guide</a> can be referenced.
 
 ### Resource Based Policy
 
-Once our subscription has been created, we need to grant our SNS topic the permission to send messages to our SQS queue. This permission needs to be added to our queue's resource-based policy (Access policy).
+Once our subscription has been created, we need to grant our SNS topic permission to send messages to our SQS queue. This permission needs to be added to our queue's resource-based policy (Access policy).
 
-You might wonder why this is necessary when we have already granted required IAM permissions to our microservices. The answer lies in the way AWS services communicate with each other. IAM permissions control what actions an IAM user can perform on an AWS resource, **while resource-based policies determine what actions another AWS service can perform on it**. Resource-based policies are attached to an AWS resource (SQS in this context).
+You might wonder why this is necessary when we have already granted the required IAM permissions to our microservices. The answer lies in the way AWS services communicate with each other. IAM permissions control what actions an IAM user can perform on an AWS resource, **while resource-based policies determine what actions another AWS service can perform on it**. Resource-based policies are attached to an AWS resource (SQS in this context).
 
 In our case, we need to create a resource-based policy on the SQS queue to allow the SNS topic to send messages to it. **Without this policy, even though our microservices have the necessary IAM permissions, the SNS topic will not be able to forward messages to the SQS queue**.
 
@@ -348,7 +348,7 @@ Here is what our SQS resource policy should look like:
 }
 ```
 
-In this policy, we are granting the SNS service `(sns.amazonaws.com)` permission to perform the `sqs:SendMessage` action on our SQS queue. We specify the ARNs of our SQS queue and SNS topic in the `Resource` and `Condition` field respectively to ensure that only messages from our specific topic are allowed.
+In this policy, we are granting the SNS service `(sns.amazonaws.com)` permission to perform the `sqs:SendMessage` action on our SQS queue. We specify the ARNs of our SQS queue and SNS topic in the `Resource` and `Condition` fields respectively to ensure that only messages from our specific topic are allowed.
 
 Once this resource-based policy is attached to our SQS queue, the SNS topic will be able to forward messages to it, finally completing the setup of our publisher-subscriber architecture.
 
@@ -405,7 +405,7 @@ To resolve the above issues, we need to update our KMS key policy (resource-base
   ]
 ```
 
-The above policy statements allows SNS and SQS to use the `kms:GenerateDataKey` and `kms:Decrypt` actions on our custom KMS key. The `Condition` block ensures that only our specific SNS topic and SQS queue are granted these permissions, conforming to **least privilege principle**.
+The above policy statements allow SNS and SQS to use the `kms:GenerateDataKey` and `kms:Decrypt` actions on our custom KMS key. The `Condition` block ensures that only our specific SNS topic and SQS queue are granted these permissions, conforming to **least privilege principle**.
 
 Additionally, we need to attach the following IAM statement to the policy of the IAM user whose security credentials have been configured in our publisher microservice:
 
@@ -454,7 +454,7 @@ Let’s start by declaring the required test dependencies in our `pom.xml`:
   <scope>test</scope>
 </dependency>
 ```
-The declared **`spring-boot-starter-test`** gives us the basic testing toolbox as it transitively includes JUnit, MockMVC and other utility libraries, that we will require for writing assertions and running our tests.  
+The declared **`spring-boot-starter-test`** gives us the basic testing toolbox as it transitively includes JUnit, MockMVC, and other utility libraries, that we will require for writing assertions and running our tests.  
 And **`org.testcontainers:localstack`** dependency will allow us to run the LocalStack emulator inside a disposable Docker container, **ensuring an isolated environment for our integration test**.  
 Finally, **`awaitility`** will help us validate the integrity of our asynchronous system.
 
@@ -482,7 +482,7 @@ echo "Subscribed SQS queue '$queue_name' to SNS topic '$topic_name' successfully
 echo "Successfully provisioned resources"
 ```
 
-The script creates an SNS topic with name `user-account-created` and an SQS queue named `dispatch-email-notification`. After creating these resources, it subscribes the queue to the created SNS topic. We will copy this script to the path `/etc/localstack/init/ready.d` in the LocalStack container for execution in our integration test class.
+The script creates an SNS topic with the name `user-account-created` and an SQS queue named `dispatch-email-notification`. After creating these resources, it subscribes the queue to the created SNS topic. We will copy this script to the path `/etc/localstack/init/ready.d` in the LocalStack container for execution in our integration test class.
 
 ### Starting LocalStack via Testcontainers
 
@@ -528,7 +528,7 @@ In our integration test class `PubSubIT`, we do the following:
 * Start a new instance of the LocalStack container and enable the required services of **`SNS`** and **`SQS`**.
 * Copy our bash script **`provision-resources.sh`** into the container to ensure AWS resource creation.
 * Configure a strategy to wait for the log **`"Successfully provisioned resources"`** to be printed, as defined in our init script.
-* Dynamically define the AWS configuration properties needed by our applications in order to create the required SNS and SQS related beans using **`@DynamicPropertySource`**.
+* Dynamically define the AWS configuration properties needed by our applications in order to create the required SNS and SQS-related beans using **`@DynamicPropertySource`**.
 
 With this setup, our applications will use the started LocalStack container for all interactions with AWS cloud during the execution of our integration test, providing an **isolated and ephemeral testing environment**.
 

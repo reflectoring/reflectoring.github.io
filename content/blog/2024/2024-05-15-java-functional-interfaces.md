@@ -10,7 +10,7 @@ url: one-stop-guide-to-java-functional-interfaces
 
 ## Introduction to Functional Programming  
 
-Functional programming is a paradigm that focuses on the use of functions to create clear and concise code. Instead of modifying data and maintaining state like in traditional imperative programming, functional programming treats functions as first-class citizens, allowing them to be assigned to variables, passed as arguments, and returned from other functions. This approach can make code easier to understand and reason about.
+Functional programming is a paradigm that focuses on the use of functions to create clear and concise code. Instead of modifying data and maintaining state like in traditional imperative programming, functional programming treats functions as first-class citizens, allowing us to be assigned to variables, passed as arguments, and returned from other functions. This approach can make code easier to understand and reason about.
 
 ### Functional Programming in Java  
 
@@ -22,13 +22,13 @@ Java, traditionally an object-oriented language, adopted functional programming 
 
 - **Concurrency and Parallelism**: Functional programming works well with modern multi-core architectures, enabling efficient parallel processing without worrying about shared state or side effects.
 
-- **Expressiveness and Flexibility**: By embracing functional interfaces and lambda expressions, Java gained a more expressive syntax, allowing developers to write flexible and adaptable code.
+- **Expressiveness and Flexibility**: By embracing functional interfaces and lambda expressions, Java gained a more expressive syntax, allowing us to write flexible and adaptable code.
 
 Functional programming in Java revolves around several key concepts and idioms:
 
 - **Lambda Expressions**: These are compact functions that can be used wherever a functional interface is expected. They help reduce boilerplate code.
 
-- **Functional Interfaces**: These are interfaces with a single abstract method, making them perfect for lambda expressions and method references. Common examples include `Predicate`, `Function`, `Consumer`, `Supplier`, and `Operator`.
+- **Functional Interfaces**: These are interfaces with a single abstract method, making us perfect for lambda expressions and method references. Common examples include `Predicate`, `Function`, `Consumer`, `Supplier`, and `Operator`.
 
 - **Method References**: These are a shorthand way to refer to methods, making code even more concise and readable.
 
@@ -40,15 +40,15 @@ Functional programming in Java brings many advantages but also has its share of 
 
 **Another advantage is its compatibility with concurrency and parallelism.** Since functional programming avoids mutable state, operations can run in parallel without the usual risks of data inconsistency or race conditions. This results in code that's naturally better suited for multi-threaded environments.
 
-**Functional programming also promotes modularity and reusability.** With functions being first-class citizens, developers can create small, reusable components, leading to cleaner, more maintainable code. The abstraction inherent in functional programming reduces overall complexity, allowing developers to focus on the essential logic without worrying about implementation details.
+**Functional programming also promotes modularity and reusability.** With functions being first-class citizens, us can create small, reusable components, leading to cleaner, more maintainable code. The abstraction inherent in functional programming reduces overall complexity, allowing us to focus on the essential logic without worrying about implementation details.
 
-However, these advantages come with potential drawbacks. The learning curve for functional programming can be steep, especially for developers accustomed to imperative or object-oriented paradigms. **Concepts like higher-order functions and immutability might require a significant mindset shift.**
+However, these advantages come with potential drawbacks. The learning curve for functional programming can be steep, especially for us accustomed to imperative or object-oriented paradigms. **Concepts like higher-order functions and immutability might require a significant mindset shift.**
 
 **Performance overheads are another concern**, particularly due to frequent object creation and additional function calls inherent in functional programming. This could impact performance in resource-constrained environments. **Debugging functional code can also be challenging** due to the abstractions involved, and understanding complex lambda expressions might require a deeper understanding of functional concepts.
 
 **Compatibility issues may arise when integrating with legacy systems** or libraries that aren't designed for functional programming, potentially causing integration problems. Finally, functional programming's focus on immutability and side-effect-free functions **may reduce flexibility in scenarios that require mutable state or complex object manipulations.**
 
-Ultimately, while functional programming offers significant benefits like improved readability and easier concurrency, it also comes with challenges. **Developers need to consider both the advantages and disadvantages to determine how functional programming fits into their Java applications.**
+Ultimately, while functional programming offers significant benefits like improved readability and easier concurrency, it also comes with challenges. **us need to consider both the advantages and disadvantages to determine how functional programming fits into their Java applications.**
 
 ## Understanding Functional Interfaces  
 The `@FunctionalInterface` annotation in Java is a special marker that indicates a particular interface is intended to be a functional interface. A functional interface is an interface with a single abstract method (SAM), meaning it can be used as a target for lambda expressions or method references. 
@@ -57,11 +57,11 @@ This annotation serves as a way to document our intention for the interface and 
 
 Functional interfaces are central to Java's support for functional programming. They allow us to write cleaner, more concise code by using lambda expressions, reducing boilerplate code, and promoting reusability. Common examples of functional interfaces include `Predicate`, `Consumer`, `Function`, and `Supplier`.
 
-Using the `@FunctionalInterface` annotation isn't strictly necessary. Any interface with a single abstract method is inherently a functional interface. But it's a good practice. It improves code readability, enforces constraints, and helps other developers understand our intentions, contributing to better maintainability and consistency in our codebase.
+Using the `@FunctionalInterface` annotation isn't strictly necessary. Any interface with a single abstract method is inherently a functional interface. But it's a good practice. It improves code readability, enforces constraints, and helps other us understand our intentions, contributing to better maintainability and consistency in our codebase.
 
 ## Creating Custom Functional Interfaces
 
-We know know that a functional interface in Java is an interface with a single abstract method. This design allows functional interfaces to be used with lambda expressions or method references, which makes them ideal for building compact and expressive code. 
+We know know that a functional interface in Java is an interface with a single abstract method. This design allows functional interfaces to be used with lambda expressions or method references, which makes us ideal for building compact and expressive code. 
 
 Let's consider a simple calculator example that takes two integers and returns the result of an arithmetic operation. To implement this, we can define a functional interface called `ArithmeticOperation`, which has a single method to perform the operation.
 
@@ -116,8 +116,18 @@ Next, it applies these operations to the numbers 10 and 5, storing the results i
 The test then verifies that these outcomes match the expected values, using assertions.
 
 ## Built-in Functional Interfaces in Java 8  
-   - Overview of built-in interfaces like `Predicate`, `Function`, `Consumer`, etc.
-   - Examples and typical use cases
+Here's an overview of some of the most common built-in functional interfaces in Java 8, along with their typical use cases and examples, presented in tabular format:
+
+| Functional Interface | Description | Example Use Cases |
+|----------------------|-------------|-------------------|
+| `Predicate<T>` | Represents a function that takes an input of type `T` and returns a boolean. Commonly used for filtering and conditional checks. | - Checking if a number is even<br>- Filtering a list of strings based on length<br>- Validating user inputs |
+| `Function<T, R>` | Represents a function that takes an input of type `T` and returns a result of type `R`. Often used for transformation or mapping operations. | - Converting a string to uppercase<br>- Mapping employee objects to their salaries<br>- Parsing a string to an integer |
+| `Consumer<T>` | Represents a function that takes an input of type `T` and performs an action, without returning a result. Ideal for side-effect operations like printing or logging. | - Printing a list of numbers<br>- Logging user actions<br>- Updating object properties |
+| `Supplier<T>` | Represents a function that provides a value of type `T` without taking any arguments. Useful for lazy initialization and deferred computation. | - Generating random numbers<br>- Providing default values<br>- Creating new object instances |
+| `UnaryOperator<T>` | Represents a function that takes an input of type `T` and returns a result of the same type. Often used for simple transformations or operations. | - Negating a number<br>- Reversing a string<br>- Incrementing a value |
+| `BinaryOperator<T>` | Represents a function that takes two inputs of type `T` and returns a result of the same type. Useful for combining or reducing operations. | - Adding two numbers<br>- Concatenating strings<br>- Finding the maximum of two values |
+
+These built-in functional interfaces in Java 8 provide a foundation for functional programming, enabling us to work with lambda expressions and streamline code. Due to their versatility we can use them in a wide range of applications, from data transformation to filtering and beyond.
 
 ## Lambda Expressions Explained  
    - Syntax and structure

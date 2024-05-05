@@ -130,8 +130,49 @@ Here's an overview of some of the most common built-in functional interfaces in 
 These built-in functional interfaces in Java 8 provide a foundation for functional programming, enabling us to work with lambda expressions and streamline code. Due to their versatility we can use them in a wide range of applications, from data transformation to filtering and beyond.
 
 ## Lambda Expressions Explained  
-   - Syntax and structure
-   - Converting functional interfaces to lambda expressions
+Lambda expressions are a key feature of Java 8, allowing us to create compact, anonymous functions in a clear and concise manner. They are a cornerstone of functional programming in Java and provide a way to represent functional interfaces in a simpler form.
+
+The general syntax of a lambda expression is as follows:
+```java
+(parameters) -> { body }
+```
+Parameters represent a comma-separated list of input parameters to the lambda function. If there's only one parameter, parentheses can be omitted. Arrow Operator separates the parameters from the body of the lambda expression. Finally, the body contains the function logic. If there's only one statement, braces can be omitted.
+
+Lambda expressions can be used to create anonymous functions, allowing us to write inline logic without the need for additional class definitions.
+
+We can use lambda expressions to implement anonymous functions where functional interfaces are required. Here are three examples demonstrating how to use lambda expressions without relying on built-in functional interfaces:
+
+### Example 1: Implementing a Custom Functional Interface
+We have already seen a custom functional interface for arithmetic operation:
+```java
+interface ArithmeticOperation {
+    int operate(int a, int b);
+}
+```
+
+We can create lambda expressions to implement this interface:
+```java
+ArithmeticOperation add = (a, b) -> a + b;
+ArithmeticOperation subtract = (a, b) -> a - b;
+```
+
+### Example 2: Anonymous Comparator
+It is not mandatory to define a custom functional interface and then use it to declare lambdas. In following example, we create an anonymous comparator to sort a list of strings by length:
+```java
+List<String> words = Arrays.asList("apple", "banana", "cherry");
+Collections.sort(words, (s1, s2) -> Integer.compare(s1.length(), s2.length()));
+```
+
+#### Example 3: Runnable for a Thread
+We can also use lambda expressions to create a `Runnable` for threads:
+```java
+Thread thread = new Thread(() -> {
+    System.out.println("Running in a lambda!");
+});
+thread.start();
+```
+
+These examples demonstrate how we can use lambda expressions to define simple, concise functions without explicitly creating additional classes. They are powerful tools for streamlining code and making functional programming in Java more accessible and expressive.
 
 ## Method References  
    - Types of method references

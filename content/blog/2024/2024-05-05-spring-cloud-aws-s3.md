@@ -71,7 +71,7 @@ Spring Cloud AWS will automatically create the necessary configuration beans usi
 
 ### S3 Bucket Name
 
-To interact with an S3 bucket, we need to provide it's name. We will store this property in our project’s `application.yaml` file and make use of `@ConfigurationProperties` to map the defined bucket name to a POJO, which our service layer will reference when interacting with S3:
+To perform operations against a provisioned S3 bucket, we need to provide it's name. We will store this property in our project’s `application.yaml` file and make use of `@ConfigurationProperties` to map the value to a POJO, which our service layer will reference when interacting with S3:
 
 ```java
 @Getter
@@ -86,7 +86,7 @@ public class AwsS3BucketProperties {
 }
 ```
 
-We have also added the `@NotBlank` annotation to validate that the bucket name is configured when the application starts. If the corresponding value is not provided, it would result in the Spring Application Context failing to start up.
+We have also added the `@NotBlank` annotation to validate that the bucket name is configured when the application starts. If the corresponding value is not provided, it will result in the Spring Application Context failing to start up.
 
 Below is a snippet of our `application.yaml` file where we have defined the required property which will be automatically mapped to the above defined class:
 
@@ -98,7 +98,7 @@ io:
         bucket-name: ${AWS_S3_BUCKET_NAME}
 ```
 
-This setup allows us to externalize the bucket name attribute and easily access it in our code. The created class `AwsS3BucketProperties` can be extended in future, if additional S3-related attributes are needed by our application.
+This setup allows us to externalize the bucket name attribute and easily access it in our code. The created class `AwsS3BucketProperties` can be extended later on, if additional S3 related attributes are needed by our application.
 
 ## Interacting with S3 Bucket
 
@@ -137,7 +137,7 @@ public class StorageService {
 ```
 We have used the `S3Template` class provided by Spring Cloud AWS in our service layer. `S3Template` is a high level abstraction over the `S3Client` class provided by the AWS SDK.
 
-While it's possible to use the `S3Client` directly, `S3Template` reduces boilerplate code and simplifies interaction with S3 by offering convenient, Spring-friendly methods for common S3 operations.
+While it is possible to use the `S3Client` directly, `S3Template` reduces boilerplate code and simplifies interaction with S3 by offering convenient, Spring-friendly methods for common S3 operations.
 
 We also make use of our custom `AwsS3BucketProperties` class which we had created earlier, to reference the S3 bucket name defined in our `application.yaml` file.
 

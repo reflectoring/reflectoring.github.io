@@ -1,5 +1,5 @@
 ---
-title: "Using AWS S3 with Spring Cloud AWS"
+title: "g"
 categories: [ "AWS", "Spring Boot", "Java" ]
 date: 2024-05-05 00:00:00 +0530
 modified: 2024-05-05 00:00:00 +0530
@@ -9,23 +9,23 @@ image: images/stock/0138-bucket-alternative-1200x628-branded.jpg
 url: "spring-cloud-aws-s3"
 ---
 
-In modern web applications, storing and retrieving files has become a common requirement. Whether its user-uploaded content like images and documents or application-generated logs and reports, having a reliable and scalable storage solution is crucial.
+In modern web applications, storing and retrieving files has become a common requirement. Whether its user uploaded content like images and documents or application generated logs and reports, having a reliable and scalable storage solution is crucial.
 
-One such solution provided by AWS is <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide" target="_blank">Amazon S3 (Simple Storage Service)</a>, which is a widely used, highly scalable and durable object storage service.
+One such solution provided by AWS is <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide" target="_blank">Amazon S3 (Simple Storage Service)</a>, which is a widely used, highly scalable, and durable object storage service.
 
-While interacting with S3 directly through the <a href="https://mvnrepository.com/artifact/software.amazon.awssdk/s3" target="_blank">AWS SDK for Java</a> is possible, it often leads to verbose configuration classes and boilerplate code. But fortunately, the <a href="https://awspring.io/" target="_blank">Spring Cloud AWS</a> project simplifies this integration by providing a layer of abstraction over the official SDK, making it easier to interact with services like S3.
+While interacting with the S3 service directly through the <a href="https://mvnrepository.com/artifact/software.amazon.awssdk/s3" target="_blank">AWS SDK for Java</a> is possible, it often leads to verbose configuration classes and boilerplate code. But fortunately, the <a href="https://awspring.io/" target="_blank">Spring Cloud AWS</a> project simplifies this integration by providing a layer of abstraction over the official SDK, making it easier to interact with services like S3.
 
 In this article, we will explore how to leverage Spring Cloud AWS to easily integrate Amazon S3 in our Spring Boot application. We'll go through the required dependencies, configurations, and IAM policy in order to interact with our provisioned S3 bucket. We will use this to build our service layer that performs basic S3 operations like uploading, fetching, and deleting files.
 
-We will also be testing our application's interaction with S3 using LocalStack and Testcontainers.
+And finally to validate our application's interaction with the AWS S3 service, we will be writing integration tests using LocalStack and Testcontainers.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-aws-s3" %}}
 
 ## Configurations
 
-The main dependency that we will need is `spring-cloud-aws-starter-s3`, which contains all S3 related classes needed by our application.
+The main dependency that we will need is `spring-cloud-aws-starter-s3`, which contains all the S3 related classes needed by our application.
 
-We will also make use of <a href="https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-dependencies" target="_blank">Spring Cloud AWS BOM</a> (Bill of Materials) to manage the version of S3 starter in our project. The BOM ensures version compatibility between the declared dependencies, avoids conflicts and makes it easier to update versions in the future.
+We will also make use of <a href="https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-dependencies" target="_blank">Spring Cloud AWS BOM</a> (Bill of Materials) to manage the version of the S3 starter in our project. The BOM ensures version compatibility between the declared dependencies, avoids conflicts, and makes it easier to update versions in the future.
 
 Here is how our `pom.xml` file would look like:
 
@@ -55,7 +55,7 @@ Here is how our `pom.xml` file would look like:
   </dependencyManagement>
 ```
 
-Now, the only thing left in order to allow Spring Cloud AWS to establish connection with the AWS S3 service, is to define the necessary configuration properties in our `application.yaml` file:
+Now, the only thing left in order to allow Spring Cloud AWS to establish a connection with the AWS S3 service, is to define the necessary configuration properties in our `application.yaml` file:
 
 ```yaml
 spring:
@@ -454,7 +454,7 @@ By executing the above integration test cases, we simulate different interaction
 
 In this article, we explored how to integrate AWS S3 in a Spring Boot application using Spring Cloud AWS. 
 
-We started by adding the necessary dependencies and configurations to establish connection with the S3 service. Then, we used the auto-configuration feature of Spring cloud AWS to create a service class that performs basic S3 operations of uploading, retrieving, and deleting files.
+We started by adding the necessary dependencies and configurations to establish a connection with the S3 service. Then, we used the auto configuration feature of Spring cloud AWS to create a service class that performs basic S3 operations of uploading, retrieving, and deleting files.
 
 We also discussed the required IAM permissions, and enhanced our application's behaviour by validating the existence of the configured S3 bucket at application startup using a custom validation annotation.
 

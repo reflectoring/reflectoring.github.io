@@ -163,7 +163,7 @@ List<String> words = Arrays.asList("apple", "banana", "cherry");
 Collections.sort(words, (s1, s2) -> Integer.compare(s1.length(), s2.length()));
 ```
 
-#### Example 3: Runnable for a Thread
+### Example 3: Runnable for a Thread
 We can also use lambda expressions to create a `Runnable` for threads:
 ```java
 Thread thread = new Thread(() -> {
@@ -175,8 +175,93 @@ thread.start();
 These examples demonstrate how we can use lambda expressions to define simple, concise functions without explicitly creating additional classes. They are powerful tools for streamlining code and making functional programming in Java more accessible and expressive.
 
 ## Method References  
-   - Types of method references
-   - Usage examples
+Method references in Java 8 are a shorthand way to refer to existing methods by their name. Use them instead of lambda expressions, offering more concise and readable code. Method references allow us to reference methods without invoking them, making them ideal for functional programming scenarios and stream processing.
+
+Java 8 provides four types of method references:
+
+### Reference to a Static Method
+A static method reference refers to a static method in a class. It uses the class name followed by `::` and the method name.
+
+Let's see example of static Reference:
+```java
+public class MethodReferenceTest {
+  @Test
+  void staticMethodReference() {
+    List<Integer> numbers = List.of(1, -2, 3, -4, 5);
+    List<Integer> positiveNumbers = numbers.stream().map(Math::abs).toList();
+    positiveNumbers.forEach(
+      number -> Assertions.assertTrue(number > 0, "Number should be positive."));
+  }
+}
+```
+The test `staticMethodReference` in the `MethodReferenceTest` class verifies the use of a static method reference. It creates a list of integers, `numbers`, containing both positive and negative values. Using a stream, it applies the `Math::abs` method reference to convert each number to its absolute value, resulting in a new list, `positiveNumbers`.
+
+The test then checks that each element in `positiveNumbers` is greater than zero, indicating that the absolute value conversion was successful. It uses assertions to ensure that every number in the list is positive. If any number is not positive, the assertion fails, providing a relevant error message.
+
+### Reference to an Instance Method of a Particular Object
+This type of method reference refers to a method of a specific instance.
+
+Instance method reference example:
+```java
+@Test
+void instanceMethodReference() {
+  List<String> numbers = List.of("One", "Two", "Three");
+  List<Integer> numberChars = numbers.stream().map(String::length).toList();
+  numberChars.forEach(
+    length -> Assertions.assertTrue(length > 0, "Number text is not empty."));
+}
+
+```
+The `instanceMethodReference` test verifies the use of an instance method reference. It creates a list of strings, `numbers`, containing "One", "Two", and "Three". Using a stream, it applies the `String::length` method reference to convert each string into its length, resulting in a new list, `numberChars`.
+
+The test checks that each element in `numberChars` is greater than zero, ensuring that all strings have a positive length. It uses assertions to confirm this condition, providing a message if a length is not positive. This test validates that the instance method reference to `String.length()` is functioning as expected.
+
+### Reference to an Instance Method of an Arbitrary Object of a Particular Type
+This type refers to an instance method, but the exact object is determined at runtime, allowing flexibility when dealing with collections or stream operations.
+
+#### Example
+```java
+@Test
+void instanceMethodArbitraryObjectParticularType() {
+  List<Number> numbers = List.of(1, 2L, 3.0f, 4.0d);
+  List<Integer> numberIntValues = numbers.stream().map(Number::intValue).toList();
+  Assertions.assertEquals(
+    List.of(1, 2, 3, 4), numberIntValues, "Int values are not same.");
+}
+```
+
+The `instanceMethodArbitraryObjectParticularType` test checks the use of an instance method reference for an arbitrary object of a particular type. It creates a list of `Number` objects (`numbers`) containing various types of numeric values: an `int`, a `long`, a `float`, and a `double`. 
+
+Using a stream, it maps each `Number` to its integer value using the `Number::intValue` method reference, resulting in a list of integers (`numberInvValues`). The test then compares this list with the expected result, `List.of(1, 2, 3, 4)`, using assertions to ensure they are the same. If the lists don't match, the assertion fails, providing a relevant message. This test demonstrates how instance method references work with arbitrary objects of a particular type in Java.
+
+### Reference to a Constructor
+A constructor reference refers to a class constructor, allowing you to create new instances through a method reference.
+
+#### Example
+```java
+@Test
+void constructorReference() {
+  List<String> numbers = List.of("1", "2", "3");
+  Map<String, BigInteger> numberMapping =
+      numbers.stream()
+          .map(BigInteger::new)
+          .collect(Collectors.toMap(BigInteger::toString, Function.identity()));
+  Map<String, BigInteger> expected =
+      new HashMap<>() {
+        {
+          put("1", BigInteger.valueOf(1));
+          put("2", BigInteger.valueOf(2));
+          put("3", BigInteger.valueOf(3));
+        }
+      };
+  Assertions.assertEquals(expected, numberMapping, "Mapped numbers do not match.");
+}
+```
+The `constructorReference` test demonstrates the use of a constructor reference in a stream operation. It creates a list of strings (`numbers`) containing "1", "2", and "3". Using a stream, it maps each string to a `BigInteger` object by referencing the `BigInteger` constructor with `BigInteger::new`.
+
+The test then collects the resulting `BigInteger` objects into a `Map`, where the keys are the original strings, and the values are the corresponding `BigInteger` instances. It uses `Collectors.toMap` with a lambda expression (`BigInteger::toString`) to create the keys and `Function.identity()` for the values.
+
+To ensure the `numberMapping` is correct, the test compares it with an expected map (`expected`) containing the same key-value pairs. If the maps don't match, the assertion fails with a descriptive message. This test effectively checks if the constructor reference is working as expected, transforming a list of strings into a map of `BigInteger` objects.
 
 ## Predicates  
    - Using `Predicate` interface

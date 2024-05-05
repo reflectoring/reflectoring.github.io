@@ -186,7 +186,7 @@ public class BucketExistenceValidator implements ConstraintValidator<BucketExist
 }
 ```
 
-Our validation class `BucketExistenceValidator` implements the `ConstraintValidator` interface and injects an instance of the `S3Template` class. We override the `isValid` method and use the convenient `bucketExists` functionality provided by the injected `S3Template` instance to check the existence of the bucket.
+Our validation class `BucketExistenceValidator` implements the `ConstraintValidator` interface and injects an instance of the `S3Template` class. We override the `isValid` method and use the convenient `bucketExists` functionality provided by the injected `S3Template` instance to validate the existence of the bucket.
 
 Next, we will create our custom constraint annotation:
 
@@ -197,7 +197,7 @@ Next, we will create our custom constraint annotation:
 @Constraint(validatedBy = BucketExistenceValidator.class)
 public @interface BucketExists {
   
-  String message() default "No bucket exists with configured name.";
+  String message() default "No bucket exists with the configured name.";
   
   Class<?>[] groups() default {};
   
@@ -206,7 +206,7 @@ public @interface BucketExists {
 }
 ```
 
-The `@BucketExists` annotation is meta-annotated with `@Constraint`, which specifies the validator class `BucketExistenceValidator` that we created earlier to perform the validation logic. The annotation also defines a default error message that will be used incase of validation failure.
+The `@BucketExists` annotation is meta-annotated with `@Constraint`, which specifies the validator class `BucketExistenceValidator` that we created earlier to perform the validation logic. The annotation also defines a default error message that will be logged in case of validation failure.
 
 Now, with our custom constraint created, we can annotate the `bucketName` field in our `AwsS3BucketProperties` class with our custom annotation `@BucketExists`:
 
@@ -254,12 +254,12 @@ By validating the existence of the configured S3 bucket at startup, we ensure th
 
 ## Integration Testing
 
-We cannot conclude without testing the code we have written so far. We need to ensure that our configurations and service layer works correctly. We will be making use of LocalStack and Testcontainers, but first let’s look at what these two tools are:
+We cannot conclude this article without testing the code we have written so far. We need to ensure that our configurations and service layer work correctly. We will be making use of LocalStack and Testcontainers, but first let’s look at what these two tools are:
 
 * <a href="https://www.localstack.cloud/" target="_blank">LocalStack</a> : is a **cloud service emulator** that enables local development and testing of AWS services, without the need for connecting to a remote cloud provider. We'll be provisioning the required S3 bucket inside this emulator.
 * <a href="https://java.testcontainers.org/modules/localstack/" target="_blank">Testcontainers</a> : is a library that **provides lightweight, throwaway instances of Docker containers** for integration testing. We will be starting a LocalStack container via this library.
 
-The prerequisite for running the LocalStack emulator via Testcontainers is, as you’ve guessed it, an up-and-running Docker instance. We need to ensure this prerequisite is met when running the test suite either locally or when using a CI/CD pipeline.
+The prerequisite for running the LocalStack emulator via Testcontainers is, as you’ve guessed it, **an up-and-running Docker instance**. We need to ensure this prerequisite is met when running the test suite either locally or when using a CI/CD pipeline.
 
 Let’s start by declaring the required test dependencies in our `pom.xml`:
 
@@ -339,9 +339,9 @@ In our integration test class `StorageServiceIT`, we do the following:
 * Configure a strategy to wait for the log **`"Executed init-s3-bucket.sh"`** to be printed, as defined in our init script.
 * Dynamically define the AWS configuration properties needed by our applications in order to create the required S3 related beans using **`@DynamicPropertySource`**.
 
-In our `@DynamicPropertySource` code block, we have declared an additional `spring.cloud.aws.s3.endpoint` property that was not present in our main `application.yaml` file. 
+Our `@DynamicPropertySource` code block declares an additional `spring.cloud.aws.s3.endpoint` property, which is not present in the main `application.yaml` file.
 
-This property is necessary when connecting to the S3 bucket `reflectoring-bucket` created inside the LocalStack container, as it requires a specific endpoint URL. However, when connecting to an actual provisioned S3 bucket in AWS, specifying an endpoint URL is not needed, as it automatically uses the default endpoint for each service in the configured AWS Region.
+This property is necessary when connecting to the LocalStack container's S3 bucket, `reflectoring-bucket`, as it requires a specific endpoint URL. However, when connecting to an actual AWS S3 bucket, specifying an endpoint URL is not required. AWS automatically uses the default endpoint for each service in the configured region.
 
 This LocalStack container will be automatically destroyed post test suite execution, hence we do not need to worry about manual cleanups.
 
@@ -418,7 +418,7 @@ private String readFile(byte[] bytes) {
 }  
 ```
 
-We begin by saving a test file to the S3 bucket. Then, we invoke the `retrieve()` method of our service layer with the corresponding random file key. We read the content of the retrieved file and assert that it matches the original file content.
+We begin by saving a test file to the S3 bucket. Then, we invoke the `retrieve()` method of our service layer with the corresponding random file key. We read the content of the retrieved file and assert that it matches with the original file content.
 
 Finally, let's conclude by testing our delete functionality:
 
@@ -446,15 +446,15 @@ Finally, let's conclude by testing our delete functionality:
 
 In this test case, we again create a test file and upload it to our S3 bucket. We verify that the file is successfully saved using `S3Template`. Then, we invoke the `delete()` method of our service layer with the generated file key.
 
-To verify that the file is indeed deleted from our bucket, we use `S3Template` again to assert that the file is no longer present in the S3 bucket.
+To verify that the file is indeed deleted from our bucket, we again use the `S3Template` instance to assert that the file is no longer present in our bucket.
 
 By executing the above integration test cases, we simulate different interactions with our S3 bucket and ensure that our service layer works as expected.
 
 ## Conclusion
 
-In this article, we explored how to integrate AWS S3 in a Spring Boot application using Spring Cloud AWS. 
+In this article, we explored how to integrate the AWS S3 service in a Spring Boot application using Spring Cloud AWS. 
 
-We started by adding the necessary dependencies and configurations to establish a connection with the S3 service. Then, we used the auto configuration feature of Spring cloud AWS to create a service class that performs basic S3 operations of uploading, retrieving, and deleting files.
+We started by adding the necessary dependencies and configurations to establish a connection with the S3 service. Then, we used the auto configuration feature of Spring Cloud AWS to create a service class that performs basic S3 operations of uploading, retrieving, and deleting files.
 
 We also discussed the required IAM permissions, and enhanced our application's behaviour by validating the existence of the configured S3 bucket at application startup using a custom validation annotation.
 

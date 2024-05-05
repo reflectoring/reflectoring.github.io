@@ -100,7 +100,7 @@ io:
 
 This setup allows us to externalize the bucket name attribute and easily access it in our code. The created class `AwsS3BucketProperties` can be extended later on, if additional S3 related attributes are needed by our application.
 
-## Interacting with S3 Bucket
+## Interacting with the S3 Bucket
 
 Now that we have our configurations set up, we will create a service class that will interact with our provisioned S3 bucket and expose the following functionalities:
 
@@ -166,7 +166,7 @@ Here is what our policy should look like:
 
 The above IAM policy conforms to the **least privilege principle**, by granting only the necessary permissions required for our service layer to operate correctly. We also specify the bucket ARN in the `Resource` field, further limiting the scope of the IAM policy to work with a single bucket that is provisioned for our application.
 
-## Validating Bucket Existence at Startup
+## Validating Bucket Existence during Startup
 
 If no S3 bucket exists in our AWS account corresponding to the configured bucket name in our `application.yaml` file, the service layer we have created **will encounter exceptions at runtime when attempting to interact with the S3 service**. This can lead to unexpected application behavior and a **poor user experience**.
 
@@ -281,7 +281,7 @@ The declared `spring-boot-starter-test` gives us the basic testing toolbox as it
 
 And `org.testcontainers:localstack` dependency will allow us to run the LocalStack emulator inside a disposable Docker container, ensuring an isolated environment for our integration test.
 
-### Creating S3 Bucket using Init Hooks
+### Provisioning S3 Bucket using Init Hooks
 
 Localstack gives us the ability to create required AWS resources when the container is started via <a href="https://docs.localstack.cloud/references/init-hooks/" target="_blank">Initialization Hooks</a>. We will be creating a bash script `init-s3-bucket.sh` for this purpose inside our `src/test/resources` folder:
 
@@ -347,7 +347,7 @@ This LocalStack container will be automatically destroyed post test suite execut
 
 With this setup, our applications will use the started LocalStack container for all interactions with AWS cloud during the execution of our integration test, providing an **isolated and ephemeral testing environment**.
 
-### Testing Service Layer
+### Testing the Service Layer
 
 With the LocalStack container set up successfully via Testcontainers, we can now write test cases to ensure our service layer works as expected and interacts with the provisioned S3 bucket correctly:
 

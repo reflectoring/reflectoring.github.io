@@ -180,7 +180,10 @@ Method references in Java 8 are a shorthand way to refer to existing methods by 
 Java 8 provides four types of method references:
 
 ### Reference to a Static Method
-A static method reference refers to a static method in a class. It uses the class name followed by `::` and the method name.
+A static method reference refers to a static method in a class. It uses the class name followed by `::` and the method name:
+```java
+ContainingClass::staticMethodName	
+```
 
 Let's see example of static Reference:
 ```java
@@ -201,25 +204,70 @@ The test then checks that each element in `positiveNumbers` is greater than zero
 ### Reference to an Instance Method of a Particular Object
 This type of method reference refers to a method of a specific instance.
 
-Instance method reference example:
+In Java, method references are a concise way to refer to methods without explicitly calling them. There are two primary syntaxes for referencing instance methods: using a containing class or using a specific object instance.
+
+**Using a Containing Class**:
 ```java
-@Test
-void instanceMethodReference() {
-  List<String> numbers = List.of("One", "Two", "Three");
-  List<Integer> numberChars = numbers.stream().map(String::length).toList();
-  numberChars.forEach(
-    length -> Assertions.assertTrue(length > 0, "Number text is not empty."));
-}
+ContainingClass::instanceMethodName
+```
+The syntax `ContainingClass::instanceMethodName` refers to an instance method of a specific class. This type of method reference doesn't refer to a specific object instance; instead, it indicates that any object of that class can use this method. It's often used in stream operations, where the object instance is derived at runtime.
+
+For example, `String::toLowerCase` can be used to reference the `toLowerCase()` method on any `String` object. When used in a stream operation like `.map(String::toLowerCase)`, it applies the method to each string in the stream.
+
+**Using a Specific Object**:
+```java
+containingObject::instanceMethodName
+```
+The syntax `containingObject::instanceMethodName` refers to an instance method of a specific object. This method reference is bound to a particular object, allowing us to call its method directly when needed.
+
+For example, if we have an instance `str` of `String`, we can refer to its `length()` method with `str::length`. This approach is useful when we need to use a specific object's method in a lambda expression or a stream operation.
+
+Both syntaxes are useful in different scenarios. The class-based method reference is more flexible, allowing us to reference methods without tying them to a specific object. The object-based method reference, on the other hand, is helpful when we want to use a method tied to a specific object instance. Both approaches provide a more concise way to call instance methods without the need for traditional anonymous classes or explicit lambda expressions.
+
+Containing class instance method reference example:
+```java
+  @Test
+  void containingClassInstanceMethodReference() {
+    List<String> numbers = List.of("One", "Two", "Three");
+    List<Integer> numberChars = numbers.stream().map(String::length).toList();
+    numberChars.forEach(
+      length -> Assertions.assertTrue(length > 0, "Number text is not empty."));
+  }
 
 ```
-The `instanceMethodReference` test verifies the use of an instance method reference. It creates a list of strings, `numbers`, containing "One", "Two", and "Three". Using a stream, it applies the `String::length` method reference to convert each string into its length, resulting in a new list, `numberChars`.
+The `containingClassInstanceMethodReference` test verifies the use of an instance method reference. It creates a list of strings, `numbers`, containing "One", "Two", and "Three". Using a stream, it applies the `String::length` method reference to convert each string into its length, resulting in a new list, `numberChars.
 
 The test checks that each element in `numberChars` is greater than zero, ensuring that all strings have a positive length. It uses assertions to confirm this condition, providing a message if a length is not positive. This test validates that the instance method reference to `String.length()` is functioning as expected.
+
+Now let's see how to use containing object method reference:
+```java
+// Custom comparator
+class StringNumberComparator implements Comparator<String> {
+  @Override
+  public int compare(String o1, String o2) {
+    if (o1 == null) {
+      return o2 == null ? 0 : 1;
+    } else if (o2 == null) {
+      return -1;
+    }
+    return o1.compareTo(o2);
+  }
+}
+  
+@Test
+void containingObjectInstanceMethodReference() {
+  List<String> numbers = List.of("One", "Two", "Three");
+  StringNumberComparator comparator = new StringNumberComparator();
+  final List<String> sorted = numbers.stream().sorted(comparator::compare).toList();
+  final List<String> expected = List.of("One", "Three", "Two");
+  Assertions.assertEquals(expected, sorted, "Incorrect sorting.");
+}
+```
+The code snippet sorts a list of strings using an instance method reference. The `StringNumberComparator` class defines a comparison logic for strings. The `comparator::compare` is a method reference that references the `compare` method of the `StringNumberComparator` instance. This method reference is passed to `sorted()`, allowing the stream to sort the `numbers` list according to the specified comparison logic. The test checks if the sorted list matches the expected order, asserting equality between the two lists. If the actual and expected results differ, the test fails, indicating incorrect sorting.
 
 ### Reference to an Instance Method of an Arbitrary Object of a Particular Type
 This type refers to an instance method, but the exact object is determined at runtime, allowing flexibility when dealing with collections or stream operations.
 
-#### Example
 ```java
 @Test
 void instanceMethodArbitraryObjectParticularType() {
@@ -235,9 +283,16 @@ The `instanceMethodArbitraryObjectParticularType` test checks the use of an inst
 Using a stream, it maps each `Number` to its integer value using the `Number::intValue` method reference, resulting in a list of integers (`numberInvValues`). The test then compares this list with the expected result, `List.of(1, 2, 3, 4)`, using assertions to ensure they are the same. If the lists don't match, the assertion fails, providing a relevant message. This test demonstrates how instance method references work with arbitrary objects of a particular type in Java.
 
 ### Reference to a Constructor
-A constructor reference refers to a class constructor, allowing you to create new instances through a method reference.
+A constructor reference refers to a class constructor, allowing us to create new instances through a method reference.
 
-#### Example
+Its syntax is as follows:
+```java
+ContainingClass::new
+```
+The `ContainingClass::new` syntax is a constructor reference. It points to the constructor of a specific class, allowing us to create new instances.
+
+Let's now see how to use constructor reference:
+
 ```java
 @Test
 void constructorReference() {
@@ -262,6 +317,15 @@ The `constructorReference` test demonstrates the use of a constructor reference 
 The test then collects the resulting `BigInteger` objects into a `Map`, where the keys are the original strings, and the values are the corresponding `BigInteger` instances. It uses `Collectors.toMap` with a lambda expression (`BigInteger::toString`) to create the keys and `Function.identity()` for the values.
 
 To ensure the `numberMapping` is correct, the test compares it with an expected map (`expected`) containing the same key-value pairs. If the maps don't match, the assertion fails with a descriptive message. This test effectively checks if the constructor reference is working as expected, transforming a list of strings into a map of `BigInteger` objects.
+
+Let's summarize the use cases for method references, along with descriptions and examples:
+
+| Type of Method Reference                                | Description                                             | Example                                                 |
+|---------------------------------------------------------|---------------------------------------------------------|---------------------------------------------------------|
+| Reference to a Static Method                            | Refers to a static method in a class. This type of method reference uses the class name followed by `::` and the method name. | <code>Function<Integer, Integer> square = MathOperations::square;</code>|
+| Reference to an Instance Method of a Particular Object  | Refers to an instance method of a specific object. The instance must be explicitly defined before using the method reference. | <code>Supplier<String> getMessage = stringUtils::getMessage;</code>|
+| Reference to an Instance Method of an Arbitrary Object of a Particular Type | Refers to an instance method of an arbitrary object of a specific type. This type is commonly used in stream operations, where the object is determined at runtime. | <code>List<String> uppercasedWords = words.stream()<br>.map(String::toUpperCase)<br>.collect(Collectors.toList());<code>|
+| Reference to a Constructor                              | Refers to a class constructor, allowing you to create new instances. This type is useful when you need to create objects without explicitly calling a constructor. | <code>Supplier<Car> carSupplier = Car::new;<code>|
 
 ## Predicates  
    - Using `Predicate` interface

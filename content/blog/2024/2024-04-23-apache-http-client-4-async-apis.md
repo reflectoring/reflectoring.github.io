@@ -84,11 +84,8 @@ public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
                 .build();
         
         httpClient.start();
-        log.debug("Started HTTP async client.");
       } catch (Exception e) {
-        String errorMsg = "Failed to set up SSL context.";
-        log.error(errorMsg, e);
-        throw new RuntimeException(errorMsg, e);
+        // handle exception
       }
     }
   }
@@ -168,8 +165,6 @@ Now let's see how to use this custom callback:
 public Map<Long, String> getUserWithCallback(List<Long> userIdList, int delayInSec)
     throws RequestProcessingException {
   
-  Objects.requireNonNull(httpClient, "Make sure that HTTP Async client is started.");
-  
   Map<Long, String> userResponseMap = new HashMap<>();
   Map<Long, Future<SimpleHttpResponse>> futuresMap = new HashMap<>();
   
@@ -184,11 +179,7 @@ public Map<Long, String> getUserWithCallback(List<Long> userIdList, int delayInS
       SimpleHttpRequest httpGetRequest =
           SimpleRequestBuilder.get().setHttpHost(httpHost)
                               .setPath(uri.getPath()).build();
-      log.debug(
-          "Executing {} request: {} on host {}",
-          httpGetRequest.getMethod(),
-          httpGetRequest.getUri(),
-          httpHost);
+      // log request
 
       Future<SimpleHttpResponse> future =
           httpClient.execute(
@@ -200,10 +191,7 @@ public Map<Long, String> getUserWithCallback(List<Long> userIdList, int delayInS
       
       futuresMap.put(userId, future);
     } catch (Exception e) {
-      String message;
-      message = MessageFormat.format("Failed to get user for ID: {0}", userId);
-      log.error(message, e);
-      userResponseMap.put(userId, message);
+      userResponseMap.put(userId, "Failed to get user for ID: " + userId));
     }
   }
 
@@ -290,62 +278,42 @@ IoT devices often generate continuous streams of data that need to be transmitte
 OTT platforms deliver streaming media content such as videos, audio, and live broadcasts over the internet. We can use Apache HttpAsyncClient's asynchronous streaming capability to handle the transmission of media streams between servers and client applications. For example, in a video streaming service, video content can be asynchronously streamed from content servers to end-user devices, ensuring smooth playback and minimal buffering delays.
 {{% /info %}}
 \
-Here's the implementation of the cuonsumer response:
+Here's the implementation of the consumer response:
 
 ```java
 public class SimpleCharResponseConsumer 
   extends AbstractCharResponseConsumer<SimpleHttpResponse> {
-/** The Http get request. */
-private SimpleHttpRequest httpRequest;
+  // fields
+  // constructor
 
-private StringBuilder responseBuilder = new StringBuilder();
-
-/** The Error message. */
-private String errorMessage;
-
-public SimpleCharResponseConsumer(
-  SimpleHttpRequest httpRequest, String errorMessage) {
-  this.httpRequest = httpRequest;
-  this.errorMessage = errorMessage;
-}
-
-@Override
-protected void start(HttpResponse httpResponse, ContentType contentType)
-    throws HttpException, IOException {
-  log.debug(httpRequest + "->" + new StatusLine(httpResponse));
-  responseBuilder.setLength(0);
-}
-
-@Override
-protected SimpleHttpResponse buildResult() throws IOException {
-  return SimpleHttpResponse.create(HttpStatus.SC_OK, responseBuilder.toString());
-}
-
-@Override
-protected int capacityIncrement() {
-  return 0;
-}
-
-@Override
-protected void data(CharBuffer src, boolean endOfStream) throws IOException {
-  while (src.hasRemaining()) {
-    responseBuilder.append(src.get());
+  @Override
+  protected void start(HttpResponse httpResponse, ContentType contentType)
+      throws HttpException, IOException {
+    responseBuilder.setLength(0);
   }
-  if (endOfStream) {
-    log.debug(responseBuilder.toString());
+
+  @Override
+  protected SimpleHttpResponse buildResult() throws IOException {
+    return SimpleHttpResponse.create(HttpStatus.SC_OK, responseBuilder.toString());
   }
-}
 
-@Override
-public void failed(Exception ex) {
-  log.error(httpRequest + "->" + ex);
-  throw new RequestProcessingException(errorMessage, ex);
-}
+  @Override
+  protected void data(CharBuffer src, boolean endOfStream) throws IOException {
+    while (src.hasRemaining()) {
+      responseBuilder.append(src.get());
+    }
+    if (endOfStream) {
+      log.debug(responseBuilder.toString());
+    }
+  }
 
-@Override
-public void releaseResources() {}
-}
+  @Override
+  public void failed(Exception ex) {
+    throw new RequestProcessingException(errorMessage, ex);
+  }
 
+  // other overridden methods
+}
 ```
 
 It processes character-based HTTP responses asynchronously in Apache HttpAsyncClient. Extending `AbstractCharResponseConsumer`, it overrides methods to handle the response stream. `start()` initializes response logging and content accumulation. `data()` appends received data to a StringBuilder. `buildResult()` constructs a `SimpleHttpResponse` with HTTP status code and accumulated content. On failure, `failed()` logs errors and throws a `RequestProcessingException`.
@@ -418,35 +386,23 @@ Now let's understand how to pipeline requests using Apache HttpClient:
 ```java
 public class CustomHttpResponseCallback 
   implements FutureCallback<SimpleHttpResponse> {
-  /** The Http get request. */
-  private SimpleHttpRequest httpRequest;
-
-  /** The Error message. */
-  private String errorMessage;
-
-  /** The Latch. */
-  private CountDownLatch latch;
-
-  // All arguments constructor
+  // fields
+  // constructor
 
   @Override
   public void completed(SimpleHttpResponse response) {
     latch.countDown();
-    log.debug(httpRequest + "->" + new StatusLine(response));
-    log.debug("Got response: {}", response.getBody());
   }
 
   @Override
   public void failed(Exception ex) {
     latch.countDown();
-    log.error(httpRequest + "->" + ex);
     throw new RequestProcessingException(errorMessage, ex);
   }
 
   @Override
   public void cancelled() {
     latch.countDown();
-    log.debug(httpRequest + " cancelled");
   }
 }
 
@@ -468,16 +424,9 @@ public Map<String, String> getUserWithPipelining(
 }
 
 private Map<String, String> getUserWithParallelRequests(
-    MinimalHttpAsyncClient minimalHttpClient,
-    List<String> userIdList,
-    int delayInSec,
-    String scheme,
-    String hostname)
-    throws RequestProcessingException {
+    MinimalHttpAsyncClient minimalHttpClient, List<String> userIdList, int delayInSec,
+    String scheme, String hostname) throws RequestProcessingException {
 
-  Objects.requireNonNull(
-      minimalHttpClient, "Make sure that minimal HTTP Async client is started.");
-  
   Map<String, String> userResponseMap = new HashMap<>();
   Map<String, Future<SimpleHttpResponse>> futuresMap = new HashMap<>();
   AsyncClientEndpoint endpoint = null;
@@ -493,73 +442,67 @@ private Map<String, String> getUserWithParallelRequests(
 
     for (String currentUserId : userIdList) {
       userId = currentUserId;
-      // Create request
-      URI uri = new URIBuilder(userId).build();
-      
-      SimpleHttpRequest httpGetRequest =
-          SimpleRequestBuilder.get()
-              .setHttpHost(httpHost)
-              .setVersion(new ProtocolVersion("HTTP", 2, 0))
-              .setPath(uri.getPath())
-              .build();
-      
-      log.debug(
-          "Executing {} request: {} on host {}",
-          httpGetRequest.getMethod(),
-          httpGetRequest.getUri(),
-          httpHost);
-
       Future<SimpleHttpResponse> future =
-          minimalHttpClient.execute(
-              SimpleRequestProducer.create(httpGetRequest),
-              SimpleResponseConsumer.create(),
-              new PipelinedHttpResponseCallback(
-                  httpGetRequest,
-                  MessageFormat.format("Failed to get user for ID: {0}", userId),
-                  latch));
+          executeRequest(minimalHttpClient, delayInSec, userId, httpHost, latch);
       futuresMap.put(userId, future);
     }
 
     latch.await();
-  } catch (RequestProcessingException e) {
-    userResponseMap.put(userId, e.getMessage());
   } catch (Exception e) {
-    if (userId != null) {
-      String message 
-        = MessageFormat.format("Failed to get user for ID: {0}", userId);
-      log.error(message, e);
-      userResponseMap.put(userId, message);
-    } else {
-      throw new RequestProcessingException("Failed to process request.", e);
-    }
+    // handle exception
+    userResponseMap.put(userId, e.getMessage());
   } finally {
-    if (endpoint != null) {
-      endpoint.releaseAndReuse();
-    }
+    // release resources
   }
 
-  log.debug("Got {} futures.", futuresMap.size());
+  handleFutureResults(futuresMap, userResponseMap);
+  return userResponseMap;
+}
 
-  for (Map.Entry<String, Future<SimpleHttpResponse>> futureEntry : 
-    futuresMap.entrySet()) {
-    String currentUserId = futureEntry.getKey();
+private Future<SimpleHttpResponse> executeRequest(
+    MinimalHttpAsyncClient minimalHttpClient,
+    int delayInSec,
+    Long userId,
+    HttpHost httpHost,
+    CountDownLatch latch)
+    throws URISyntaxException {
+  // Create request
+  URI uri 
+    = new URIBuilder("/api/users/" + userId + "?delay=" + delayInSec).build();
+  SimpleHttpRequest httpGetRequest =
+      SimpleRequestBuilder.get().setHttpHost(httpHost).setPath(uri.getPath()).build();
+  log.debug(
+      "Executing {} request: {} on host {}",
+      httpGetRequest.getMethod(),
+      httpGetRequest.getUri(),
+      httpHost);
+
+  Future<SimpleHttpResponse> future =
+      minimalHttpClient.execute(
+          SimpleRequestProducer.create(httpGetRequest),
+          SimpleResponseConsumer.create(),
+          new CustomHttpResponseCallback(
+              httpGetRequest,
+              MessageFormat.format("Failed to get user for ID: {0}", userId),
+              latch));
+  return future;
+}
+
+private void handleFutureResults(
+    Map<Long, Future<SimpleHttpResponse>> futuresMap, 
+    Map<Long, String> userResponseMap) {
+  for (Map.Entry<Long, Future<SimpleHttpResponse>> futureEntry 
+        : futuresMap.entrySet()) {
+    Long currentUserId = futureEntry.getKey();
     try {
-      userResponseMap.put(currentUserId, 
-                          futureEntry.getValue().get().getBodyText());
+      userResponseMap.put(currentUserId, futureEntry.getValue().get().getBodyText());
     } catch (Exception e) {
-      if (e.getCause() instanceof ConnectionClosedException cce) {
-        message = "Server does not support HTTP/2 multiplexing.";
-      } else {
-        message 
-          = MessageFormat.format("Failed to get user for ID: {0}", currentUserId);
-      }
-      log.error(message, e);
+      // prepare error message
       userResponseMap.put(currentUserId, message);
     }
   }
-
-  return userResponseMap;
 }
+
 ```
 This code retrieves user data asynchronously using pipelining. It sends parallel requests to the server for each user ID. The method `getUserWithPipelining()` orchestrates this process, while `getUserWithParallelRequests()` handles actual request execution. Each request is processed asynchronously, and responses are stored in a map. If an error occurs, it's logged, and an appropriate message is added to the response map. Finally, the method returns the map containing user responses.
 
@@ -605,9 +548,7 @@ public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
       log.debug("Started minimal HTTP async client for {}.", httpVersionPolicy);
       return minimalHttpClient;
     } catch (Exception e) {
-      String errorMsg = "Failed to start minimal HTTP async client.";
-      log.error(errorMsg, e);
-      throw new RuntimeException(errorMsg, e);
+      // handle exception
     }
   }
 
@@ -800,31 +741,7 @@ public class UserResponseAsyncExecChainHandler implements AsyncExecChainHandler 
         
         String path = httpRequest.getPath();
         if (StringUtils.startsWith(path, "/api/users/")) {
-          Header baseNumberHeader = httpRequest.getFirstHeader("x-base-number");
-          String baseNumberStr = baseNumberHeader.getValue();
-          int baseNumber = Integer.parseInt(baseNumberStr);
-
-          Header reqExecNumberHeader = httpRequest.getFirstHeader("x-req-exec-number");
-          String reqExecNumberStr = reqExecNumberHeader.getValue();
-          int reqExecNumber = Integer.parseInt(reqExecNumberStr);
-
-          // check if user id is multiple of base value
-          if (reqExecNumber % baseNumber == 0) {
-            String reasonPhrase = "Multiple of " + baseNumber;
-            HttpResponse response 
-              = new BasicHttpResponse(HttpStatus.SC_OK, reasonPhrase);
-            
-            ByteBuffer content =
-                ByteBuffer.wrap(reasonPhrase.getBytes(StandardCharsets.US_ASCII));
-            
-            AsyncDataConsumer asyncDataConsumer =
-                asyncExecCallback.handleResponse(
-                    response, new BasicEntityDetails(content.remaining(), 
-                                                     ContentType.TEXT_PLAIN));
-            asyncDataConsumer.consume(content);
-            asyncDataConsumer.streamEnd(null);
-            requestHandled = true;
-          }
+          requestHandled = handleUserRequest(httpRequest, asyncExecCallback);
         }
       }
 
@@ -837,6 +754,36 @@ public class UserResponseAsyncExecChainHandler implements AsyncExecChainHandler 
       log.error(msg, ex);
       throw new RequestProcessingException(msg, ex);
     }
+  }
+  
+  private boolean handleUserRequest(HttpRequest httpRequest, 
+                                    AsyncExecCallback asyncExecCallback)
+      throws HttpException, IOException {
+    boolean requestHandled = false;
+    Header baseNumberHeader = httpRequest.getFirstHeader("x-base-number");
+    String baseNumberStr = baseNumberHeader.getValue();
+    int baseNumber = Integer.parseInt(baseNumberStr);
+
+    Header reqExecNumberHeader = httpRequest.getFirstHeader("x-req-exec-number");
+    String reqExecNumberStr = reqExecNumberHeader.getValue();
+    int reqExecNumber = Integer.parseInt(reqExecNumberStr);
+
+    // check if user id is multiple of base value
+    if (reqExecNumber % baseNumber == 0) {
+      String reasonPhrase = "Multiple of " + baseNumber;
+      HttpResponse response 
+        = new BasicHttpResponse(HttpStatus.SC_OK, reasonPhrase);
+      ByteBuffer content 
+        = ByteBuffer.wrap(reasonPhrase.getBytes(StandardCharsets.US_ASCII));
+      BasicEntityDetails entityDetails =
+          new BasicEntityDetails(content.remaining(), ContentType.TEXT_PLAIN);
+      AsyncDataConsumer asyncDataConsumer =
+          asyncExecCallback.handleResponse(response, entityDetails);
+      asyncDataConsumer.consume(content);
+      asyncDataConsumer.streamEnd(null);
+      requestHandled = true;
+    }
+    return requestHandled;
   }
 }
 
@@ -887,9 +834,6 @@ public Map<Integer, String> executeRequestsWithInterceptors(
     int baseNumber)
     throws RequestProcessingException {
   
-  Objects.requireNonNull(
-      closeableHttpAsyncClient, "Make sure that HTTP Async client is started.");
-  
   Map<Integer, String> userResponseMap = new HashMap<>();
   Map<Integer, Future<SimpleHttpResponse>> futuresMap = new LinkedHashMap<>();
 
@@ -908,19 +852,9 @@ public Map<Integer, String> executeRequestsWithInterceptors(
     
     for (int i = 0; i < count; i++) {
       try {
-        // Update request
-        httpGetRequest.removeHeaders("x-req-exec-number");
-        httpGetRequest.addHeader("x-req-exec-number", String.valueOf(i));
-        
-        log.debug(
-            "Executing {} request: {} on host {}",
-            httpGetRequest.getMethod(),
-            httpGetRequest.getUri(),
-            httpHost);
-
-        Future<SimpleHttpResponse> future =
-            closeableHttpAsyncClient.execute(
-                httpGetRequest, new SimpleHttpResponseCallback(httpGetRequest, ""));
+        Future<SimpleHttpResponse> future = null; 
+        future = executeInterceptorRequest(closeableHttpAsyncClient, 
+                                           httpGetRequest, i, httpHost);
         futuresMap.put(i, future);
       } catch (RequestProcessingException e) {
         userResponseMap.put(i, e.getMessage());
@@ -932,24 +866,48 @@ public Map<Integer, String> executeRequestsWithInterceptors(
     throw new RequestProcessingException(message, e);
   }
 
+  handleInterceptorFutureResults(futuresMap, userResponseMap);
+  return userResponseMap;
+}
+
+private Future<SimpleHttpResponse> executeInterceptorRequest(
+    CloseableHttpAsyncClient closeableHttpAsyncClient,
+    SimpleHttpRequest httpGetRequest,
+    int i,
+    HttpHost httpHost)
+    throws URISyntaxException {
+  // Update request
+  httpGetRequest.removeHeaders("x-req-exec-number");
+  httpGetRequest.addHeader("x-req-exec-number", String.valueOf(i));
+  log.debug(
+      "Executing {} request: {} on host {}",
+      httpGetRequest.getMethod(),
+      httpGetRequest.getUri(),
+      httpHost);
+
+  return closeableHttpAsyncClient.execute(
+      httpGetRequest, new SimpleHttpResponseCallback(httpGetRequest, ""));
+}
+
+private void handleInterceptorFutureResults(
+    Map<Integer, Future<SimpleHttpResponse>> futuresMap, 
+    Map<Integer, String> userResponseMap) {
   log.debug("Got {} futures.", futuresMap.size());
 
-  for (Map.Entry<Integer, Future<SimpleHttpResponse>> futureEntry : 
-    futuresMap.entrySet()) {
+  for (Map.Entry<Integer, Future<SimpleHttpResponse>> futureEntry
+        : futuresMap.entrySet()) {
     Integer currentRequestId = futureEntry.getKey();
     try {
-      String text = futureEntry.getValue().get().getBodyText();
-      userResponseMap.put(currentRequestId, text);
+      userResponseMap.put(currentRequestId, 
+                          futureEntry.getValue().get().getBodyText());
     } catch (Exception e) {
-      String message =
-          MessageFormat.format("Failed to get user for request id: {0}", 
+      String message 
+        = MessageFormat.format("Failed to get user for request id: {0}", 
                                 currentRequestId);
       log.error(message, e);
       userResponseMap.put(currentRequestId, message);
     }
   }
-
-  return userResponseMap;
 }
 ```
 It sends multiple asynchronous HTTP requests with interceptors applied. It initializes a map to store the responses and a map for the futures of each request. Then, it constructs a request with a specified base number and user ID. For each request, it updates the request with the current request ID, executes the request asynchronously using the provided HTTP client, and adds the future to the map. If an exception occurs during execution, it logs the error message. After executing all requests, it retrieves the responses from the futures and populates the response map. Finally, it returns the map containing the request IDs and corresponding responses.

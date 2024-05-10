@@ -9,7 +9,7 @@ image: images/stock/0138-bucket-alternative-1200x628-branded.jpg
 url: "spring-cloud-aws-s3"
 ---
 
-In modern web applications, storing and retrieving files has become a common requirement. Whether its user uploaded content like images and documents or application generated logs and reports, having a reliable and scalable storage solution is crucial.
+In modern web applications, storing and retrieving files has become a common requirement. Whether it's user uploaded content like images and documents or application generated logs and reports, having a reliable and scalable storage solution is crucial.
 
 One such solution provided by AWS is <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide" target="_blank">Amazon S3 (Simple Storage Service)</a>, which is a widely used, highly scalable, and durable object storage service.
 
@@ -17,7 +17,7 @@ While interacting with the S3 service directly through the <a href="https://mvnr
 
 In this article, we will explore how to leverage Spring Cloud AWS to easily integrate Amazon S3 in our Spring Boot application. We'll go through the required dependencies, configurations, and IAM policy in order to interact with our provisioned S3 bucket. We will use this to build our service layer that performs basic S3 operations like uploading, fetching, and deleting files.
 
-And finally to validate our application's interaction with the AWS S3 service, we will be writing integration tests using LocalStack and Testcontainers.
+And finally, to validate our application's interaction with the AWS S3 service, we will be writing integration tests using LocalStack and Testcontainers.
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-aws-s3" %}}
 
@@ -389,7 +389,7 @@ class StorageServiceIT {
 
 In our initial test case, we verify that the `StorageService` class can successfully upload a file to the provisioned S3 bucket.
 
-We begin by preparing a file with random content and name, we pass this test file to the `save()` method exposed by our service layer.
+We begin by preparing a file with random content and name and pass this test file to the `save()` method exposed by our service layer.
 
 Finally, we make use of `S3Template` to assert that the file is indeed saved in the S3 bucket.
 

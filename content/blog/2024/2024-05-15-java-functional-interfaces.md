@@ -487,7 +487,7 @@ The test demonstrates default methods in `BiPredicate`. It defines predicates fo
 
 `IntPredicate` represents a predicate (boolean-valued function) that takes a single integer argument and returns a `boolean` result. This is the int-consuming primitive type specialization of Predicate.
 
-## Using IntPredicate
+### Using IntPredicate
 
 `IntPredicate` is commonly used when filtering collections of primitive integer values or when evaluating conditions based on integer inputs. It provides several default methods for composing predicates, including `and()`, `or()`, and `negate()`, allowing for logical combinations of predicates.
 

@@ -71,7 +71,7 @@ Spring Cloud AWS will automatically create the necessary configuration beans usi
 
 ### S3 Bucket Name
 
-To perform operations against a provisioned S3 bucket, we need to provide it's name. We will store this property in our project’s `application.yaml` file and make use of `@ConfigurationProperties` to map the value to a POJO, which our service layer will reference when interacting with S3:
+To perform operations against a provisioned S3 bucket, we need to provide its name. We will store this property in our project’s `application.yaml` file and make use of `@ConfigurationProperties` to map the value to a POJO, which our service layer will reference when interacting with S3:
 
 ```java
 @Getter
@@ -337,7 +337,7 @@ In our integration test class `StorageServiceIT`, we do the following:
 * Start a new instance of the LocalStack container and enable the **`S3`** service.
 * Copy our bash script **`init-s3-bucket.sh`** into the container to ensure bucket creation.
 * Configure a strategy to wait for the log **`"Executed init-s3-bucket.sh"`** to be printed, as defined in our init script.
-* Dynamically define the AWS configuration properties needed by our applications in order to create the required S3 related beans using **`@DynamicPropertySource`**.
+* Dynamically define the AWS configuration properties needed by our application in order to create the required S3 related beans using **`@DynamicPropertySource`**.
 
 Our `@DynamicPropertySource` code block declares an additional `spring.cloud.aws.s3.endpoint` property, which is not present in the main `application.yaml` file.
 
@@ -345,7 +345,7 @@ This property is necessary when connecting to the LocalStack container's S3 buck
 
 This LocalStack container will be automatically destroyed post test suite execution, hence we do not need to worry about manual cleanups.
 
-With this setup, our applications will use the started LocalStack container for all interactions with AWS cloud during the execution of our integration test, providing an **isolated and ephemeral testing environment**.
+With this setup, our application will use the started LocalStack container for all interactions with AWS cloud during the execution of our integration test, providing an **isolated and ephemeral testing environment**.
 
 ### Testing the Service Layer
 

@@ -483,7 +483,65 @@ Now let's learn to use the default methods used to combine and negate.
 ```
 The test demonstrates default methods in `BiPredicate`. It defines predicates for various worker conditions, like junior carpenters and welders. Using default methods `or()`, `and()`, and `negate()`, it creates new predicates for combinations like all junior workers, groomed carpenters, and non-carpenters. These predicates are then applied to filter workers, and the counts are asserted. This showcases how default methods enhance the functionality of `BiPredicate` by enabling logical operations like OR, AND, and negation.
 
-   - IntPredicate
+## IntPredicate
+
+`IntPredicate` represents a predicate (boolean-valued function) that takes a single integer argument and returns a `boolean` result. This is the int-consuming primitive type specialization of Predicate.
+
+## Using IntPredicate
+
+`IntPredicate` is commonly used when filtering collections of primitive integer values or when evaluating conditions based on integer inputs.
+
+Here's a simple example:
+
+```java
+@Test
+void testIntPredicate() {
+  IntPredicate isZero = num -> num == 0;
+  IntPredicate isPositive = num -> num > 0;
+  IntPredicate isNegative = num -> num < 0;
+  IntPredicate isOdd = num -> num % 2 == 1;
+
+  IntPredicate isPositiveOrZero = isPositive.or(isZero);
+  IntPredicate isPositiveAndOdd = isPositive.and(isOdd);
+  IntPredicate isNotZero = isZero.negate();
+  IntPredicate isAlsoZero = isPositive.negate().and(isNegative.negate());
+
+  // check zero or greater
+  Assertions.assertArrayEquals(new int[] {0, 1, 2, 3, 4, 5}, 
+    IntStream.range(-5, 6).filter(isPositiveOrZero).toArray());
+
+  // check greater than zero and odd
+  Assertions.assertArrayEquals(new int[] {1, 3, 5}, 
+    IntStream.range(-5, 6).filter(isPositiveAndOdd).toArray());
+
+  // check not zero
+  Assertions.assertArrayEquals(new int[] {-5, -4, -3, -2, -1, 1, 2, 3, 4, 5},
+    IntStream.range(-5, 6).filter(isNotZero).toArray());
+
+  // check neither positive nor negative
+  Assertions.assertArrayEquals(
+      IntStream.range(-5, 6).filter(isZero).toArray(),
+      IntStream.range(-5, 6).filter(isAlsoZero).toArray());
+}
+```
+
+The `testIntPredicate()` method demonstrates various scenarios using `IntPredicate`. Predicates like `isZero`, `isPositive`, and `isNegative` check specific conditions on integers. Combined predicates like `isPositiveOrZero` and `isPositiveAndOdd` perform logical operations. Tests verify filtering of integer ranges based on these predicates, ensuring correct outcomes for conditions like zero or greater, greater than zero and odd, not zero, and neither positive nor negative. Each assertion validates the filtering results against expected integer arrays, covering a wide range of scenarios.
+
+#### Functional Methods
+
+`IntPredicate` interface provides several default methods for composing predicates, including `and()`, `or()`, and `negate()`, allowing for logical combinations of predicates.
+
+```java
+IntPredicate isPositive = num -> num > 0;
+IntPredicate isEvenAndPositive = isEven.and(isPositive);
+```
+
+In this example, `isEvenAndPositive` represents a predicate that checks if an integer is both even and positive.
+
+#### Summary
+
+`IntPredicate` simplifies the implementation of integer-based conditions and filters in Java applications, offering a streamlined approach to predicate-based operations on primitive integer values.
+
    - LongPredicate
    - DoublePredicate
  

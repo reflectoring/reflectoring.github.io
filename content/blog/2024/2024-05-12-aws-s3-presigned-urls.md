@@ -1,8 +1,8 @@
 ---
 title: "Using AWS S3 Presigned URLs in Spring Boot"
 categories: [ "AWS", "Spring Boot", "Java" ]
-date: 2024-05-10 00:00:00 +0530
-modified: 2024-05-10 00:00:00 +0530
+date: 2024-05-11 00:00:00 +0530
+modified: 2024-05-11 00:00:00 +0530
 authors: [ "hardik" ]
 description: "In this article, we demonstrate how to use AWS S3 Presigned URLs in a Spring Boot application to offload file transfers, reduce server load and improve performance. We cover required dependencies, configuration, IAM policy, generation of Presigned URLs and integration testing with LocalStack and Testcontainers."
 image: images/stock/0139-stamped-envelope-1200x628-branded.jpg
@@ -206,7 +206,7 @@ The above IAM policy conforms to the least privilege principle, by granting only
 
 ## Integration Testing with LocalStack and Testcontainers
 
-We cannot conclude this article without testing the code we have written so far. We need to ensure that our configurations and service layer work correctly. We will be making use of LocalStack and Testcontainers, but first let’s look at what these two tools are:
+Before concluding this article, we need to ensure that our configurations and service layer work correctly and are able to generate legitimate Presigned URLs. We will be making use of LocalStack and Testcontainers to do this, but first let's look at what these two tools are:
 
 * <a href="https://www.localstack.cloud/" target="_blank">LocalStack</a> : is a **cloud service emulator** that enables local development and testing of AWS services, without the need for connecting to a remote cloud provider. We'll be provisioning the required S3 bucket inside this emulator.
 * <a href="https://java.testcontainers.org/modules/localstack/" target="_blank">Testcontainers</a> : is a library that **provides lightweight, throwaway instances of Docker containers** for integration testing. We will be starting a LocalStack container via this library.
@@ -356,7 +356,7 @@ class StorageServiceIT {
 }
 ```
 
-In our initial test case, we verify that the `StorageService` class can successfully generate a Presigned URL that can be used to download/view an object from the provisioned S3 bucket.
+In our initial test case, we verify that our `StorageService` class can successfully generate a Presigned URL that can be used to download an object from the provisioned S3 bucket.
 
 We begin by preparing a file with random content and name and save it to our S3 bucket. Then we invoke the `generateViewablePresignedUrl` method exposed by our service layer with the corresponding random file key.
 

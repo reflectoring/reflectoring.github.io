@@ -91,7 +91,7 @@ Spring Cloud AWS will automatically create the necessary configuration beans usi
 
 ### S3 Bucket Name and Presigned URL Validity
 
-To perform operations against a provisioned S3 bucket, we need to provide it’s name. And to generate Presigned URLs, we need to provide a validity duration. We will store these properties in our project's `application.yaml` file and make use of `@ConfigurationProperties` to map the values to a POJO:
+To perform operations against a provisioned S3 bucket, we need to provide its name. And to generate Presigned URLs, we need to provide a validity duration. We will store these properties in our project's `application.yaml` file and make use of `@ConfigurationProperties` to map the values to a POJO:
 
 ```java
 @Getter

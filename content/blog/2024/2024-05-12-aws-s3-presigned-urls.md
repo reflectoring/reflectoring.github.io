@@ -392,7 +392,7 @@ void shouldGeneratePresignedUrlForUploadingObjectToBucket() {
 
 In the above test case, we again create a test file with random key and content. We invoke the `generateUploadablePresignedUrl` method of our service layer with the corresponding random file key to generate the Presigned URL.
 
-We perform an HTTP POST request on the generated Presigned URL and send the contents of the test file in the request body.
+We perform an HTTP PUT request on the generated Presigned URL and send the contents of the test file in the request body.
 
 Finally, we make use of `S3Template` to assert that the file is indeed saved in our S3 bucket successfully.
 

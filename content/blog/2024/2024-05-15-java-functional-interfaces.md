@@ -258,8 +258,8 @@ class StringNumberComparator implements Comparator<String> {
 void containingObjectInstanceMethodReference() {
   List<String> numbers = List.of("One", "Two", "Three");
   StringNumberComparator comparator = new StringNumberComparator();
-  final List<String> sorted = numbers.stream().sorted(comparator::compare).toList();
-  final List<String> expected = List.of("One", "Three", "Two");
+  List<String> sorted = numbers.stream().sorted(comparator::compare).toList();
+  List<String> expected = List.of("One", "Three", "Two");
   Assertions.assertEquals(expected, sorted, "Incorrect sorting.");
 }
 ```
@@ -327,11 +327,162 @@ Let's summarize the use cases for method references, along with descriptions and
 | Reference to an Instance Method of an Arbitrary Object of a Particular Type | Refers to an instance method of an arbitrary object of a specific type. This type is commonly used in stream operations, where the object is determined at runtime. | <code>List<String> uppercasedWords = words.stream()<br>.map(String::toUpperCase)<br>.collect(Collectors.toList());<code>|
 | Reference to a Constructor                              | Refers to a class constructor, allowing you to create new instances. This type is useful when you need to create objects without explicitly calling a constructor. | <code>Supplier<Car> carSupplier = Car::new;<code>|
 
-## Predicates  
-   - Using `Predicate` interface
-   - Chaining and combining predicates
-   - Predicate<T>
-   - BiPredicate<T,U>
+## Predicates
+Predicates are functional interfaces in Java that represent boolean-valued functions of a single argument. They are commonly used for filtering, testing, and conditional operations.
+
+### Using Predicate Interface
+The `Predicate` functional interface is part of the `java.util.function` package and defines a functional method `test(T t)` that returns a `boolean`.  It also provides default methods that allow combine two predicates.
+
+```java
+@FunctionalInterface
+public interface Predicate<T> {
+    boolean test(T t);
+    // default methods
+}
+```
+This method evaluates the predicate on the input argument and determines whether it satisfies the condition defined by the predicate.
+
+Predicates are often used with the `stream()` API for filtering elements based on certain conditions. Passe them as arguments to methods like `filter()` to specify the criteria for selecting elements from a collection.
+
+Let's see filtering in action:
+```java
+public class PredicateTest {
+  @Test
+  void testFiltering() {
+    List<Integer> numbers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    Predicate<Integer> isEven = num -> num % 2 == 0;
+    List<Integer> actual = numbers.stream().filter(isEven).toList();
+    List<Integer> expected = List.of(2, 4, 6, 8, 10);
+    Assertions.assertEquals(expected, actual);
+  }
+}
+```
+In the test `testFiltering()` method, a list of integers is created. A predicate `isEven` is defined to check if a number is even. Using `stream()` and `filter()` methods, the list is filtered to contain only even numbers. The filtered list is compared against the expected list.
+
+### Combining Predicates
+Predicates can be combined using logical operators such as `and()`, `or()`, `negate()` and `not()` to create complex conditions.
+Let's see how to combine the practices:
+```java
+@Test
+void testPredicate() {
+  List<Integer> numbers = List.of(-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5);
+  Predicate<Integer> isZero = num -> num == 0;
+  Predicate<Integer> isPositive = num -> num > 0;
+  Predicate<Integer> isOdd = num -> num % 2 == 1;
+
+  Predicate<Integer> isPositiveOrZero = isPositive.or(isZero);
+  Predicate<Integer> isPositiveAndOdd = isPositive.and(isOdd);
+  Predicate<Integer> isNotPositive = Predicate.not(isPositive);
+  Predicate<Integer> isNotZero = isZero.negate();
+  Predicate<Integer> isAlsoZero = isPositive.negate().and(isNegative.negate());
+
+  // check zero or greater
+  Assertions.assertEquals(List.of(0, 1, 2, 3, 4, 5), 
+                          numbers.stream().filter(isPositiveOrZero).toList());
+  // check greater than zero and odd
+  Assertions.assertEquals(List.of(1, 3, 5), 
+                          numbers.stream().filter(isPositiveAndOdd).toList());
+  // check less than zero and negative
+  Assertions.assertEquals(List.of(-5, -4, -3, -2, -1, 0), 
+                          numbers.stream().filter(isNotPositive).toList());
+  // check not zero
+  Assertions.assertEquals(List.of(-5, -4, -3, -2, -1, 1, 2, 3, 4, 5), 
+                          numbers.stream().filter(isNotZero).toList());
+    // check neither positive nor negative
+    Assertions.assertEquals(numbers.stream().filter(isZero).toList(), 
+                            numbers.stream().filter(isAlsoZero).toList());
+}
+```
+In this test, predicates are combined to filter a list of numbers. `isPositiveOrZero` combines predicates for positive numbers or zero. `isPositiveAndOdd` combines predicates for positive and odd numbers. `isNotPositive` negates the predicate for positive numbers. `isNotZero` negates the predicate for zero. `isAlsoZero` shows us how to chain predicates. Each combined predicate is applied to the list, verifying the expected results.
+ 
+## BiPredicates
+The `BiPredicate<T, U>` takes two arguments of types `T` and `U` and returns a boolean result. It's commonly used for testing conditions involving two parameters. For instance, a `BiPredicate` can be used to check if one value is greater than the other or if two objects satisfy a specific relationship. An example would be validating if a person's age and income meet certain eligibility criteria for a financial service.
+ 
+### Using BiPredicate Interface
+`BiPredicate` defines a `test()` method with two arguments, and it returns a `boolean`. It also provides default methods that allow combine two predicates.
+ 
+```java
+@FunctionalInterface
+public interface BiPredicate<T, U> {
+    boolean test(T t, U u);
+    // default methods
+}
+```
+Let's now learn how to use the `BiPredicate`:
+```java
+public class PredicateTest {
+  // C = Carpenter, W = Welder
+  private Object[][] workers 
+      = {{"C", 24}, {"W", 32}, {"C", 35}, {"W", 40}, {"C", 50}, {"W", 44}, {"C", 30}};
+
+  @Test
+  void testBiPredicate() {
+
+    BiPredicate<String, Integer> juniorCarpenterCheck =
+        (worker, age) -> "C".equals(worker) && (age >= 18 && age <= 40);
+
+    BiPredicate<String, Integer> juniorWelderCheck =
+        (worker, age) -> "W".equals(worker) && (age >= 18 && age <= 40);
+
+    long juniorCarpenterCount = Arrays.stream(workers).filter(person ->
+      juniorCarpenterCheck.test((String) person[0], (Integer) person[1])).count();
+    Assertions.assertEquals(3L, juniorCarpenterCount);
+
+    long juniorWelderCount = Arrays.stream(workers).filter(person -> 
+      juniorWelderCheck.test((String) person[0], (Integer) person[1])).count();
+    Assertions.assertEquals(2L, juniorWelderCount);
+  }
+}
+
+```
+In the test, an array of workers with their respective ages is defined. Two `BiPredicate` instances are created: `juniorCarpenterCheck` and `juniorWelderCheck`. These predicates evaluate if a worker is within a certain age range (18 to 40) based on their occupation (Carpenter or Welder). The predicates are then used to filter the array of workers using the `test()` method. Finally, the number of workers meeting the criteria for junior carpenters and junior welders is counted and asserted against the expected counts.
+
+Now let's learn to use the default methods used to combine and negate.
+```java
+  @Test
+  void testBiPredicateDefaultMethods() {
+
+    BiPredicate<String, Integer> juniorCarpenterCheck =
+            (worker, age) -> "C".equals(worker) && (age >= 18 && age <= 40);
+
+    BiPredicate<String, Integer> groomedCarpenterCheck =
+            (worker, age) -> "C".equals(worker) && (age >= 30 && age <= 40);
+
+    BiPredicate<String, Integer> allCarpenterCheck =
+            (worker, age) -> "C".equals(worker) && (age >= 18);
+
+    BiPredicate<String, Integer> juniorWelderCheck =
+            (worker, age) -> "W".equals(worker) && (age >= 18 && age <= 40);
+    
+    BiPredicate<String, Integer> juniorWorkerCheck 
+      = juniorCarpenterCheck.or(juniorWelderCheck);
+
+    BiPredicate<String, Integer> juniorGroomedCarpenterCheck =
+            juniorCarpenterCheck.and(groomedCarpenterCheck);
+
+    BiPredicate<String, Integer> allWelderCheck = allCarpenterCheck.negate();
+
+    // test or()
+    long juniorWorkerCount = Arrays.stream(workers).filter(person -> juniorWorkerCheck
+                                   .test((String) person[0], (Integer) person[1]))
+                                   .count();
+    Assertions.assertEquals(5L, juniorWorkerCount);
+
+    // test and()
+    long juniorGroomedCarpenterCount 
+      = Arrays.stream(workers).filter(person -> juniorGroomedCarpenterCheck
+              .test((String) person[0], (Integer) person[1])).count();
+    Assertions.assertEquals(2L, juniorGroomedCarpenterCount);
+
+    // test negate()
+    long allWelderCount = Arrays.stream(workers).filter(person -> allWelderCheck
+                                .test((String) person[0], (Integer) person[1]))
+                                .count();
+    Assertions.assertEquals(3L, allWelderCount);
+  }
+```
+The test demonstrates default methods in `BiPredicate`. It defines predicates for various worker conditions, like junior carpenters and welders. Using default methods `or()`, `and()`, and `negate()`, it creates new predicates for combinations like all junior workers, groomed carpenters, and non-carpenters. These predicates are then applied to filter workers, and the counts are asserted. This showcases how default methods enhance the functionality of `BiPredicate` by enabling logical operations like OR, AND, and negation.
+
    - IntPredicate
    - LongPredicate
    - DoublePredicate

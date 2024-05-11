@@ -489,7 +489,7 @@ The test demonstrates default methods in `BiPredicate`. It defines predicates fo
 
 ## Using IntPredicate
 
-`IntPredicate` is commonly used when filtering collections of primitive integer values or when evaluating conditions based on integer inputs.
+`IntPredicate` is commonly used when filtering collections of primitive integer values or when evaluating conditions based on integer inputs. It provides several default methods for composing predicates, including `and()`, `or()`, and `negate()`, allowing for logical combinations of predicates.
 
 Here's a simple example:
 
@@ -526,21 +526,6 @@ void testIntPredicate() {
 ```
 
 The `testIntPredicate()` method demonstrates various scenarios using `IntPredicate`. Predicates like `isZero`, `isPositive`, and `isNegative` check specific conditions on integers. Combined predicates like `isPositiveOrZero` and `isPositiveAndOdd` perform logical operations. Tests verify filtering of integer ranges based on these predicates, ensuring correct outcomes for conditions like zero or greater, greater than zero and odd, not zero, and neither positive nor negative. Each assertion validates the filtering results against expected integer arrays, covering a wide range of scenarios.
-
-#### Functional Methods
-
-`IntPredicate` interface provides several default methods for composing predicates, including `and()`, `or()`, and `negate()`, allowing for logical combinations of predicates.
-
-```java
-IntPredicate isPositive = num -> num > 0;
-IntPredicate isEvenAndPositive = isEven.and(isPositive);
-```
-
-In this example, `isEvenAndPositive` represents a predicate that checks if an integer is both even and positive.
-
-#### Summary
-
-`IntPredicate` simplifies the implementation of integer-based conditions and filters in Java applications, offering a streamlined approach to predicate-based operations on primitive integer values.
 
    - LongPredicate
    - DoublePredicate

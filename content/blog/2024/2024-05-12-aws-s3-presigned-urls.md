@@ -306,7 +306,7 @@ This property is necessary when connecting to the LocalStack container's S3 buck
 
 The LocalStack container will be automatically destroyed post test suite execution, hence we do not need to worry about manual cleanups.
 
-With this setup, our applications will use the started LocalStack container for all interactions with AWS cloud during the execution of our integration test, providing an **isolated and ephemeral testing environment**.
+With this setup, our application will use the started LocalStack container for all interactions with AWS cloud during the execution of our integration test, providing an **isolated and ephemeral testing environment**.
 
 ### Testing the Service Layer
 

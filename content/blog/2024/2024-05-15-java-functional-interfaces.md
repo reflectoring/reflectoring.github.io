@@ -589,8 +589,57 @@ void testLongPredicate() {
 
 The `testIntPredicate()` method demonstrates various scenarios using `IntPredicate`. Predicates like `isZero`, `isPositive`, and `isNegative` check specific conditions on integers. Combined predicates like `isPositiveOrZero` and `isPositiveAndOdd` perform logical operations. Tests verify filtering of integer ranges based on these predicates, ensuring correct outcomes for conditions like zero or greater, greater than zero and odd, not zero, and neither positive nor negative. Each assertion validates the filtering results against expected integer arrays, covering a wide range of scenarios.
 
+## DoublePredicate
 
-   - DoublePredicate
+`DoublePredicate` represents a predicate (boolean-valued function) that takes a single double argument and returns a `boolean` result.
+
+```java
+@FunctionalInterface
+public interface DoublePredicate {
+    boolean test(double value);
+    // default methods
+}
+```
+ This is the double-consuming primitive type specialization of Predicate.
+
+### Using DoublePredicate
+
+`DoublePredicate` is commonly used when filtering collections of primitive double values or when evaluating conditions based on double inputs. It provides several default methods for composing predicates, including `and()`, `or()`, and `negate()`, allowing for logical combinations of predicates.
+
+Let's understand it with an example:
+
+```java
+@Test
+void testDoublePredicate() {
+  // weight categories (weight in lbs)
+  DoublePredicate underweight = weight -> weight <= 125;
+  DoublePredicate healthy = weight -> weight >= 126 && weight <= 168;
+  DoublePredicate overweight = weight -> weight >= 169 && weight <= 202;
+  DoublePredicate obese = weight -> weight >= 203;
+  DoublePredicate needToLose = weight -> weight >= 169;
+  DoublePredicate notHealthy = healthy.negate();
+  DoublePredicate alsoNotHealthy = underweight.or(overweight).or(obese);
+  DoublePredicate skipSugar = needToLose.and(overweight.or(obese));
+
+  // check need to lose weight
+  Assertions.assertArrayEquals(new double[] {200D}, 
+    DoubleStream.of(100D, 140D, 160D, 200D).filter(needToLose).toArray());
+
+  // check need to lose weight
+  Assertions.assertArrayEquals(new double[] {100D, 200D},
+    DoubleStream.of(100D, 140D, 160D, 200D).filter(notHealthy).toArray());
+
+  // check negate()
+  Assertions.assertArrayEquals(
+    DoubleStream.of(100D, 140D, 160D, 200D).filter(notHealthy).toArray(),
+    DoubleStream.of(100D, 140D, 160D, 200D).filter(alsoNotHealthy).toArray());
+
+  // check and()
+  Assertions.assertArrayEquals(new double[] {200D}, 
+    DoubleStream.of(100D, 140D, 160D, 200D).filter(skipSugar).toArray());
+}
+```
+The `testDoublePredicate()` method demonstrates scenarios using `DoublePredicate` for weight categories. Predicates like `underweight`, `healthy`, `overweight`, and `obese` define weight ranges. Combined predicates handle complex conditions like needing to lose weight, not being healthy, and avoiding sugar. Assertions validate filtering results for specific weight conditions, ensuring correct categorization of individuals based on their weight. Each test case covers different scenarios, such as identifying individuals needing to lose weight, those not being healthy, and those needing to avoid sugar, ensuring accurate filtering outcomes.
  
 ## Functions
    - The `Function` interface and its variants

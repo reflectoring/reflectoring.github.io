@@ -642,10 +642,83 @@ void testDoublePredicate() {
 The `testDoublePredicate()` method demonstrates scenarios using `DoublePredicate` for weight categories. Predicates like `underweight`, `healthy`, `overweight`, and `obese` define weight ranges. Combined predicates handle complex conditions like needing to lose weight, not being healthy, and avoiding sugar. Assertions validate filtering results for specific weight conditions, ensuring correct categorization of individuals based on their weight. Each test case covers different scenarios, such as identifying individuals needing to lose weight, those not being healthy, and those needing to avoid sugar, ensuring accurate filtering outcomes.
  
 ## Functions
-   - The `Function` interface and its variants
-   - Function composition
-   - Function<T,R>
-   - BiFunction<T,U,R>
+The `Function` functional interface in Java represents a single-valued function that takes one argument and produces a result. It's part of the `java.util.function` package.
+
+### The Function Interface and Its Variants
+The Function interface contains a single abstract method called `apply()`, which takes an argument of type `T` and returns a result of type `R`. 
+
+```java
+@FunctionalInterface
+public interface Function<T, R> {
+  R apply(T t);
+  // default methods
+}
+```
+This interface enables developers to define and use functions that transform input values into output values, facilitating various data processing tasks. With Function, we can create reusable and composable transformations, making code more concise and expressive. It's widely used in functional programming paradigms for mapping, filtering, and transforming data streams.
+
+Function interface has several variants like `BiFunction`, `IntFunction`, and more. We'll also learn about them in sections to follow.
+
+Let's see `Function` in action:
+```java
+@Test
+void simpleFunction() {
+  Function<String, String> toUpper = s -> s == null ? null : s.toUpperCase();
+  Assertions.assertEquals("JOY", toUpper.apply("joy"));
+  Assertions.assertNull(toUpper.apply(null));
+}
+```
+The test applies a `Function` to convert a lowercase string to uppercase. It asserts the converted value and also checks for `null` input handling.
+
+## Function Composition
+Function composition is a process of combining multiple functions to create a new function. The `compose` method in Function interface combines two functions by applying the argument function first and then the caller function. Conversely, the `andThen` method applies the caller function first and then the argument function.
+
+For example, if we have two functions: one to convert a string to upper case and another to remove vowels from it, we can compose them using `compose` or `andThen`. If we use `compose`, it first converts the string to uppercase and then removes vowels from it. Conversely, if we use `andThen`, it first removes vowels from it and then converts the string to uppercase.
+
+Let's verify function composition:
+```java
+void functionComposition() {
+  Function<String, String> toUpper = s -> s == null ? null : s.toUpperCase();
+  Function<String, String> replaceVowels =
+      s ->
+          s == null
+              ? null
+              : s.replace("A", "")
+                  .replace("E", "")
+                  .replace("I", "")
+                  .replace("O", "")
+                  .replace("U", "");
+  Assertions.assertEquals("APPLE", toUpper.compose(replaceVowels).apply("apple"));
+  Assertions.assertEquals("PPL", toUpper.andThen(replaceVowels).apply("apple"));
+}
+```
+In the `functionComposition` test, two functions are composed to manipulate a string. The first function converts the string to uppercase, while the second one removes vowels. Using `compose`, it first removes vowels and then converts to uppercase. Using `andThen`, it first converts to uppercase and then removes vowels. We verify the results using assertion.
+
+## BiFunction
+The `BiFunction` interface represents a function that accepts two arguments and produces a result. It's similar to the Function interface, but it operates on two input parameters instead of one.
+```java
+@FunctionalInterface
+public interface BiFunction<T, U, R> {
+  R apply(T t, U u);
+  // default methods
+```
+### Using BiFunction
+For example, suppose we have a `BiFunction` that takes two integers as input and returns their sum. 
+
+Let's define it and test the results:
+```java
+@Test
+void biFunction() {
+  BiFunction<Integer, Integer, Integer> bigger =
+      (first, second) -> first > second ? first : second;
+  Function<Integer, Integer> square = number -> number * number;
+
+  Assertions.assertEquals(10, bigger.apply(4, 10));
+  Assertions.assertEquals(100, bigger.andThen(square).apply(4, 10));
+}
+```
+The `BiFunction` interface combines two input values and produces a result. In this test, `bigger` selects the larger of two integers. `square` then calculates the square of a number. The result of `bigger` is passed to `square`, which squares the larger integer.
+
+
    - IntFunction<R>
    - IntToDoubleFunction
    - IntToLongFunction

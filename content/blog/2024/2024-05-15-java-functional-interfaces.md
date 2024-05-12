@@ -330,7 +330,6 @@ Let's summarize the use cases for method references, along with descriptions and
 ## Predicates
 Predicates are functional interfaces in Java that represent boolean-valued functions of a single argument. They are commonly used for filtering, testing, and conditional operations.
 
-### Using Predicate Interface
 The `Predicate` functional interface is part of the `java.util.function` package and defines a functional method `test(T t)` that returns a `boolean`.  It also provides default methods that allow combine two predicates.
 
 ```java
@@ -397,8 +396,7 @@ In this test, predicates are combined to filter a list of numbers. `isPositiveOr
  
 ## BiPredicates
 The `BiPredicate<T, U>` takes two arguments of types `T` and `U` and returns a boolean result. It's commonly used for testing conditions involving two parameters. For instance, a `BiPredicate` can be used to check if one value is greater than the other or if two objects satisfy a specific relationship. An example would be validating if a person's age and income meet certain eligibility criteria for a financial service.
- 
-### Using BiPredicate Interface
+
 `BiPredicate` defines a `test()` method with two arguments, and it returns a `boolean`. It also provides default methods that allow combine two predicates.
  
 ```java
@@ -494,9 +492,7 @@ public interface IntPredicate {
     // default methods
 }
 ```
- This is the int-consuming primitive type specialization of Predicate.
-
-### Using IntPredicate
+This is the int-consuming primitive type specialization of Predicate.
 
 `IntPredicate` is commonly used when filtering collections of primitive integer values or when evaluating conditions based on integer inputs. It provides several default methods for composing predicates, including `and()`, `or()`, and `negate()`, allowing for logical combinations of predicates.
 
@@ -549,8 +545,6 @@ public interface LongPredicate {
 ```
  This is the long-consuming primitive type specialization of Predicate.
 
-### Using LongPredicate
-
 `LongPredicate` is commonly used when filtering collections of primitive long values or when evaluating conditions based on long inputs. It provides several default methods for composing predicates, including `and()`, `or()`, and `negate()`, allowing for logical combinations of predicates.
 
 Here's a simple example:
@@ -601,8 +595,6 @@ public interface DoublePredicate {
 }
 ```
  This is the double-consuming primitive type specialization of Predicate.
-
-### Using DoublePredicate
 
 `DoublePredicate` is commonly used when filtering collections of primitive double values or when evaluating conditions based on double inputs. It provides several default methods for composing predicates, including `and()`, `or()`, and `negate()`, allowing for logical combinations of predicates.
 
@@ -701,8 +693,8 @@ public interface BiFunction<T, U, R> {
   R apply(T t, U u);
   // default methods
 ```
-### Using BiFunction
-For example, suppose we have a `BiFunction` that takes two integers as input and returns their sum. 
+
+For example, suppose we have a `BiFunction` that takes two integers as input and returns the bigger number. 
 
 Let's define it and test the results:
 ```java
@@ -718,9 +710,49 @@ void biFunction() {
 ```
 The `BiFunction` interface combines two input values and produces a result. In this test, `bigger` selects the larger of two integers. `square` then calculates the square of a number. The result of `bigger` is passed to `square`, which squares the larger integer.
 
+## IntFunction
+The `IntFunction` interface represents a function that takes an integer as input and produces a result of any type.
+```java
+@FunctionalInterface
+public interface IntFunction<R> {
+  R apply(int value);
+}
+```
+It's a specialized version of the `Function` interface tailored for integers. We can define custom logic based on integer inputs and return values of any type, making it versatile for various use cases in Java programming.
 
-   - IntFunction<R>
-   - IntToDoubleFunction
+Let's see the `IntFunction` in action:
+```java
+@Test
+void intFunction() {
+  IntFunction<Integer> square = number -> number * number;
+  Assertions.assertEquals(100, square.apply(10));
+}
+```
+The test applies an `IntFunction` to compute the square of an integer. It ensures that the square function correctly calculates the square of the input integer.
+
+## IntToDoubleFunction
+The `IntToDoubleFunction` interface represents a function that accepts an int-valued argument and produces a double-valued result. This is the int-to-double primitive specialization for `Function`.
+```java
+@FunctionalInterface
+public interface IntToDoubleFunction {
+  double applyAsDouble(int value);
+}
+```
+This is a functional interface whose functional method is `applyAsDouble(int)`.
+
+Let's see how to use `IntToDoubleFunction`:
+```java
+@Test
+void intToDoubleFunction() {
+  int principalAmount = 1000; // Initial investment amount
+  double interestRate = 0.05; // Annual interest rate (5%)
+
+  IntToDoubleFunction accruedInterest = principal -> principal * interestRate;
+  Assertions.assertEquals(50.0, accruedInterest.applyAsDouble(principalAmount));
+}
+```
+In this example, `IntToDoubleFunction` is used to define a function `accruedInterest` that calculates the interest accrued based on the principal amount provided as an integer input. Then the test verifies the calculated interest.
+
    - IntToLongFunction
    - LongFunction<R>
    - LongToDoubleFunction

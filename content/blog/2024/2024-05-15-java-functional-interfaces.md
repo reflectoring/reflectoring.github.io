@@ -51,6 +51,7 @@ However, these advantages come with potential drawbacks. The learning curve for 
 Ultimately, while functional programming offers significant benefits like improved readability and easier concurrency, it also comes with challenges. **us need to consider both the advantages and disadvantages to determine how functional programming fits into their Java applications.**
 
 ## Understanding Functional Interfaces  
+
 The `@FunctionalInterface` annotation in Java is a special marker that indicates a particular interface is intended to be a functional interface. A functional interface is an interface with a single abstract method (SAM), meaning it can be used as a target for lambda expressions or method references. 
 
 This annotation serves as a way to document our intention for the interface and provides a layer of protection against accidental changes. By using `@FunctionalInterface`, we indicate that the interface should maintain its single-method structure. If we add more abstract methods, the compiler will generate an error, ensuring the functional interface's integrity.
@@ -116,6 +117,7 @@ Next, it applies these operations to the numbers 10 and 5, storing the results i
 The test then verifies that these outcomes match the expected values, using assertions.
 
 ## Built-in Functional Interfaces in Java 8  
+
 Here's an overview of some of the most common built-in functional interfaces in Java 8, along with their typical use cases and examples, presented in tabular format:
 
 | Functional Interface | Description | Example Use Cases |
@@ -130,6 +132,7 @@ Here's an overview of some of the most common built-in functional interfaces in 
 These built-in functional interfaces in Java 8 provide a foundation for functional programming, enabling us to work with lambda expressions and streamline code. Due to their versatility we can use them in a wide range of applications, from data transformation to filtering and beyond.
 
 ## Lambda Expressions Explained  
+
 Lambda expressions are a key feature of Java 8, allowing us to create compact, anonymous functions in a clear and concise manner. They are a cornerstone of functional programming in Java and provide a way to represent functional interfaces in a simpler form.
 
 The general syntax of a lambda expression is as follows:
@@ -143,6 +146,7 @@ Lambda expressions can be used to create anonymous functions, allowing us to wri
 We can use lambda expressions to implement anonymous functions where functional interfaces are required. Here are three examples demonstrating how to use lambda expressions without relying on built-in functional interfaces:
 
 ### Example 1: Implementing a Custom Functional Interface
+
 We have already seen a custom functional interface for arithmetic operation:
 ```java
 interface ArithmeticOperation {
@@ -157,6 +161,7 @@ ArithmeticOperation subtract = (a, b) -> a - b;
 ```
 
 ### Example 2: Anonymous Comparator
+
 It is not mandatory to define a custom functional interface and then use it to declare lambdas. In following example, we create an anonymous comparator to sort a list of strings by length:
 ```java
 List<String> words = Arrays.asList("apple", "banana", "cherry");
@@ -164,6 +169,7 @@ Collections.sort(words, (s1, s2) -> Integer.compare(s1.length(), s2.length()));
 ```
 
 ### Example 3: Runnable for a Thread
+
 We can also use lambda expressions to create a `Runnable` for threads:
 ```java
 Thread thread = new Thread(() -> {
@@ -175,11 +181,13 @@ thread.start();
 These examples demonstrate how we can use lambda expressions to define simple, concise functions without explicitly creating additional classes. They are powerful tools for streamlining code and making functional programming in Java more accessible and expressive.
 
 ## Method References  
+
 Method references in Java 8 are a shorthand way to refer to existing methods by their name. Use them instead of lambda expressions, offering more concise and readable code. Method references allow us to reference methods without invoking them, making them ideal for functional programming scenarios and stream processing.
 
 Java 8 provides four types of method references:
 
 ### Reference to a Static Method
+
 A static method reference refers to a static method in a class. It uses the class name followed by `::` and the method name:
 ```java
 ContainingClass::staticMethodName	
@@ -202,6 +210,7 @@ The test `staticMethodReference` in the `MethodReferenceTest` class verifies the
 The test then checks that each element in `positiveNumbers` is greater than zero, indicating that the absolute value conversion was successful. It uses assertions to ensure that every number in the list is positive. If any number is not positive, the assertion fails, providing a relevant error message.
 
 ### Reference to an Instance Method of a Particular Object
+
 This type of method reference refers to a method of a specific instance.
 
 In Java, method references are a concise way to refer to methods without explicitly calling them. There are two primary syntaxes for referencing instance methods: using a containing class or using a specific object instance.
@@ -266,6 +275,7 @@ void containingObjectInstanceMethodReference() {
 The code snippet sorts a list of strings using an instance method reference. The `StringNumberComparator` class defines a comparison logic for strings. The `comparator::compare` is a method reference that references the `compare` method of the `StringNumberComparator` instance. This method reference is passed to `sorted()`, allowing the stream to sort the `numbers` list according to the specified comparison logic. The test checks if the sorted list matches the expected order, asserting equality between the two lists. If the actual and expected results differ, the test fails, indicating incorrect sorting.
 
 ### Reference to an Instance Method of an Arbitrary Object of a Particular Type
+
 This type refers to an instance method, but the exact object is determined at runtime, allowing flexibility when dealing with collections or stream operations.
 
 ```java
@@ -273,6 +283,7 @@ This type refers to an instance method, but the exact object is determined at ru
 void instanceMethodArbitraryObjectParticularType() {
   List<Number> numbers = List.of(1, 2L, 3.0f, 4.0d);
   List<Integer> numberIntValues = numbers.stream().map(Number::intValue).toList();
+  
   Assertions.assertEquals(
     List.of(1, 2, 3, 4), numberIntValues, "Int values are not same.");
 }
@@ -283,6 +294,7 @@ The `instanceMethodArbitraryObjectParticularType` test checks the use of an inst
 Using a stream, it maps each `Number` to its integer value using the `Number::intValue` method reference, resulting in a list of integers (`numberInvValues`). The test then compares this list with the expected result, `List.of(1, 2, 3, 4)`, using assertions to ensure they are the same. If the lists don't match, the assertion fails, providing a relevant message. This test demonstrates how instance method references work with arbitrary objects of a particular type in Java.
 
 ### Reference to a Constructor
+
 A constructor reference refers to a class constructor, allowing us to create new instances through a method reference.
 
 Its syntax is as follows:
@@ -301,6 +313,7 @@ void constructorReference() {
       numbers.stream()
           .map(BigInteger::new)
           .collect(Collectors.toMap(BigInteger::toString, Function.identity()));
+  
   Map<String, BigInteger> expected =
       new HashMap<>() {
         {
@@ -309,6 +322,7 @@ void constructorReference() {
           put("3", BigInteger.valueOf(3));
         }
       };
+  
   Assertions.assertEquals(expected, numberMapping, "Mapped numbers do not match.");
 }
 ```
@@ -328,6 +342,7 @@ Let's summarize the use cases for method references, along with descriptions and
 | Reference to a Constructor                              | Refers to a class constructor, allowing us to create new instances. This type is useful when we need to create objects without explicitly calling a constructor. | <code>Supplier<Car> carSupplier = Car::new;<code>|
 
 ## Predicates
+
 Predicates are functional interfaces in Java that represent boolean-valued functions of a single argument. They are commonly used for filtering, testing, and conditional operations.
 
 The `Predicate` functional interface is part of the `java.util.function` package and defines a functional method `test(T t)` that returns a `boolean`.  It also provides default methods that allow combine two predicates.
@@ -350,8 +365,10 @@ public class PredicateTest {
   void testFiltering() {
     List<Integer> numbers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
     Predicate<Integer> isEven = num -> num % 2 == 0;
+    
     List<Integer> actual = numbers.stream().filter(isEven).toList();
     List<Integer> expected = List.of(2, 4, 6, 8, 10);
+    
     Assertions.assertEquals(expected, actual);
   }
 }
@@ -359,8 +376,11 @@ public class PredicateTest {
 In the test `testFiltering()` method, a list of integers is created. A predicate `isEven` is defined to check if a number is even. Using `stream()` and `filter()` methods, the list is filtered to contain only even numbers. The filtered list is compared against the expected list.
 
 ### Combining Predicates
+
 Predicates can be combined using logical operators such as `and()`, `or()`, `negate()` and `not()` to create complex conditions.
+
 Let's see how to combine the practices:
+
 ```java
 @Test
 void testPredicate() {
@@ -387,14 +407,15 @@ void testPredicate() {
   // check not zero
   Assertions.assertEquals(List.of(-5, -4, -3, -2, -1, 1, 2, 3, 4, 5), 
                           numbers.stream().filter(isNotZero).toList());
-    // check neither positive nor negative
-    Assertions.assertEquals(numbers.stream().filter(isZero).toList(), 
-                            numbers.stream().filter(isAlsoZero).toList());
+  // check neither positive nor negative
+  Assertions.assertEquals(numbers.stream().filter(isZero).toList(), 
+                          numbers.stream().filter(isAlsoZero).toList());
 }
 ```
 In this test, predicates are combined to filter a list of numbers. `isPositiveOrZero` combines predicates for positive numbers or zero. `isPositiveAndOdd` combines predicates for positive and odd numbers. `isNotPositive` negates the predicate for positive numbers. `isNotZero` negates the predicate for zero. `isAlsoZero` shows us how to chain predicates. Each combined predicate is applied to the list, verifying the expected results.
  
 ## BiPredicates
+
 The `BiPredicate<T, U>` takes two arguments of types `T` and `U` and returns a boolean result. It's commonly used for testing conditions involving two parameters. For instance, a `BiPredicate` can be used to check if one value is greater than the other or if two objects satisfy a specific relationship. An example would be validating if a person's age and income meet certain eligibility criteria for a financial service.
 
 `BiPredicate` defines a `test()` method with two arguments, and it returns a `boolean`. It also provides default methods that allow combine two predicates.
@@ -406,7 +427,9 @@ public interface BiPredicate<T, U> {
     // default methods
 }
 ```
+
 Let's now learn how to use the `BiPredicate`:
+
 ```java
 public class PredicateTest {
   // C = Carpenter, W = Welder
@@ -436,6 +459,7 @@ public class PredicateTest {
 In the test, an array of workers with their respective ages is defined. Two `BiPredicate` instances are created: `juniorCarpenterCheck` and `juniorWelderCheck`. These predicates evaluate if a worker is within a certain age range (18 to 40) based on their occupation (Carpenter or Welder). The predicates are then used to filter the array of workers using the `test()` method. Finally, the number of workers meeting the criteria for junior carpenters and junior welders is counted and asserted against the expected counts.
 
 Now let's learn to use the default methods used to combine and negate.
+
 ```java
   @Test
   void testBiPredicateDefaultMethods() {
@@ -594,7 +618,7 @@ public interface DoublePredicate {
     // default methods
 }
 ```
- This is the double-consuming primitive type specialization of Predicate.
+This is the double-consuming primitive type specialization of `Predicate`.
 
 `DoublePredicate` is commonly used when filtering collections of primitive double values or when evaluating conditions based on double inputs. It provides several default methods for composing predicates, including `and()`, `or()`, and `negate()`, allowing for logical combinations of predicates.
 
@@ -634,10 +658,12 @@ void testDoublePredicate() {
 The `testDoublePredicate()` method demonstrates scenarios using `DoublePredicate` for weight categories. Predicates like `underweight`, `healthy`, `overweight`, and `obese` define weight ranges. Combined predicates handle complex conditions like needing to lose weight, not being healthy, and avoiding sugar. Assertions validate filtering results for specific weight conditions, ensuring correct categorization of individuals based on their weight. Each test case covers different scenarios, such as identifying individuals needing to lose weight, those not being healthy, and those needing to avoid sugar, ensuring accurate filtering outcomes.
  
 ## Functions
+
 The `Function` functional interface in Java represents a single-valued function that takes one argument and produces a result. It's part of the `java.util.function` package.
 
 ### The Function Interface and Its Variants
-The Function interface contains a single abstract method called `apply()`, which takes an argument of type `T` and returns a result of type `R`. 
+
+The `Function` interface contains a single abstract method called `apply()`, which takes an argument of type `T` and returns a result of type `R`. 
 
 ```java
 @FunctionalInterface
@@ -648,7 +674,7 @@ public interface Function<T, R> {
 ```
 This interface enables developers to define and use functions that transform input values into output values, facilitating various data processing tasks. With Function, we can create reusable and composable transformations, making code more concise and expressive. It's widely used in functional programming paradigms for mapping, filtering, and transforming data streams.
 
-Function interface has several variants like `BiFunction`, `IntFunction`, and more. We'll also learn about them in sections to follow.
+`Function` interface has several variants like `BiFunction`, `IntFunction`, and more. We'll also learn about them in sections to follow.
 
 Let's see `Function` in action:
 ```java
@@ -662,11 +688,13 @@ void simpleFunction() {
 The test applies a `Function` to convert a lowercase string to uppercase. It asserts the converted value and also checks for `null` input handling.
 
 ## Function Composition
+
 Function composition is a process of combining multiple functions to create a new function. The `compose` method in Function interface combines two functions by applying the argument function first and then the caller function. Conversely, the `andThen` method applies the caller function first and then the argument function.
 
 For example, if we have two functions: one to convert a string to upper case and another to remove vowels from it, we can compose them using `compose` or `andThen`. If we use `compose`, it first converts the string to uppercase and then removes vowels from it. Conversely, if we use `andThen`, it first removes vowels from it and then converts the string to uppercase.
 
 Let's verify function composition:
+
 ```java
 void functionComposition() {
   Function<String, String> toUpper = s -> s == null ? null : s.toUpperCase();
@@ -686,7 +714,9 @@ void functionComposition() {
 In the `functionComposition` test, two functions are composed to manipulate a string. The first function converts the string to uppercase, while the second one removes vowels. Using `compose`, it first removes vowels and then converts to uppercase. Using `andThen`, it first converts to uppercase and then removes vowels. We verify the results using assertion.
 
 ## BiFunction
+
 The `BiFunction` interface represents a function that accepts two arguments and produces a result. It's similar to the Function interface, but it operates on two input parameters instead of one.
+
 ```java
 @FunctionalInterface
 public interface BiFunction<T, U, R> {
@@ -711,13 +741,16 @@ void biFunction() {
 The `BiFunction` interface combines two input values and produces a result. In this test, `bigger` selects the larger of two integers. `square` then calculates the square of a number. The result of `bigger` is passed to `square`, which squares the larger integer.
 
 ## IntFunction
+
 The `IntFunction` interface represents a function that takes an integer as input and produces a result of any type.
+
 ```java
 @FunctionalInterface
 public interface IntFunction<R> {
   R apply(int value);
 }
 ```
+
 It's a specialized version of the `Function` interface tailored for integers. We can define custom logic based on integer inputs and return values of any type, making it versatile for various use cases in Java programming.
 
 Let's see the `IntFunction` in action:
@@ -728,9 +761,11 @@ void intFunction() {
   Assertions.assertEquals(100, square.apply(10));
 }
 ```
+
 The test applies an `IntFunction` to compute the square of an integer. It ensures that the square function correctly calculates the square of the input integer.
 
 ### IntToDoubleFunction
+
 The `IntToDoubleFunction` interface represents a function that accepts an int-valued argument and produces a double-valued result. This is the int-to-double primitive specialization for `Function`.
 ```java
 @FunctionalInterface
@@ -754,6 +789,7 @@ void intToDoubleFunction() {
 In this example, `IntToDoubleFunction` is used to define a function `accruedInterest` that calculates the interest accrued based on the principal amount provided as an integer input. Then the test verifies the calculated interest.
 
 ### IntToLongFunction
+
 The `IntToLongFunction` interface represents a function that accepts an int-valued argument and produces a long-valued result. This is the int-to-long primitive specialization for `Function`.
 ```java
 @FunctionalInterface
@@ -785,6 +821,7 @@ void intToLongFunction() {
 This test utilizes an `IntToLongFunction` to calculate factorials for a given range of integers. Each integer in the range is mapped to its factorial as a long value, which is then collected into an array for verification against the expected results.
 
 ## LongFunction
+
 The `LongFunction` interface represents a function that takes an long as input and produces a result of any type.
 ```java
 @FunctionalInterface
@@ -805,6 +842,7 @@ void longFunction() {
 The test applies an `LongFunction` to compute the area of a square figure. It ensures that the function correctly calculates the area of square from the side in long.
 
 ### LongToDoubleFunction
+
 The `LongToDoubleFunction` interface represents a function that accepts an long-valued argument and produces a double-valued result. This is the long-to-double primitive specialization for `Function`.
 ```java
 @FunctionalInterface
@@ -831,6 +869,7 @@ void longToDoubleFunction() {
 The test uses a `LongToDoubleFunction` to calculate the area of a square given its side length. It then asserts the result of applying the function to a specific side length. Finally, it maps a `LongStream` of side lengths to a `DoubleStream` of square areas and verifies the calculated values. It demonstrates that special interfaces like `LongToDoubleFunction` can be used directly as well as in stream processing.
 
 ### LongToIntFunction
+
 The `LongToIntFunction` interface represents a function that accepts an long-valued argument and produces a integer-valued result. This is the long-to-integer primitive specialization for `Function`.
 ```java
 @FunctionalInterface
@@ -853,6 +892,7 @@ void longToIntFunction() {
 The test utilizes a `LongToIntFunction` to count the number of digits in a given long value. It applies the function to each value in a `LongStream`, converting them to an `IntStream` of digit counts. Finally, it verifies the calculated digit counts against the expected values.
 
 ## DoubleFunction
+
 The `DoubleFunction` interface represents a function that accepts a double-valued argument and produces a result.
 
 ```java
@@ -885,7 +925,7 @@ public interface DoubleToIntFunction {
   int applyAsInt(double value);
 }
 ```
-This is the double-to-int primitive specialization for Function. This is a functional interface whose functional method is `applyAsInt(double)`.
+This is the double-to-int primitive specialization for `Function`. This is a functional interface whose functional method is `applyAsInt(double)`.
  
 Here is an example showing how to use `DoubleToIntFunction`:
 ```java
@@ -925,20 +965,178 @@ void doubleToLongFunction() {
 This test converts Celsius temperatures to Fahrenheit using a `DoubleToLongFunction`. It then verifies the results match the expected Fahrenheit temperatures.
 
 ## Specialized Functions
+
 Now let's get familiar with specialized functions.
 
-### ToDoubleBiFunction<T,U>
+### ToDoubleFunction
 
-### ToDoubleFunction<T>
+The `ToDoubleFunction` interface represents a function that produces a double-valued result.
+```java
+@FunctionalInterface
+public interface ToDoubleFunction<T> {
+  double applyAsDouble(T t);
+}
+```
+This is the double-producing primitive specialization for `Function`. This is a functional interface whose functional method is `applyAsDouble(Object)`. 
 
-### ToIntBiFunction<T,U>
+Let's try to use `ToDoubleBiFunction`:
+```java
+@Test
+void toDoubleFunction() {
+  ToDoubleFunction<Integer> fahrenheitToCelsius =
+      (fahrenheit) -> (double) ((fahrenheit - 32) * 5) / 9;
+  Assertions.assertEquals(0.0, fahrenheitToCelsius.applyAsDouble(32));
+  Assertions.assertEquals(25.0, fahrenheitToCelsius.applyAsDouble(77));
+  Assertions.assertEquals(100.0, fahrenheitToCelsius.applyAsDouble(212));
+}
+```
+This test converts Fahrenheit temperatures to Celsius using the formula `(Fahrenheit - 32) * 5/9`. It verifies conversions for temperatures 32°F, 77°F, and 212°F, checking if they match the expected Celsius values: 0.0, 25.0, and 100.0, respectively.
 
-### ToIntFunction<T>
+### ToDoubleBiFunction
 
-### ToLongBiFunction<T,U>
+The `ToDoubleBiFunction` interface represents a function that accepts two arguments and produces a double-valued result.
 
-### ToLongFunction<T>
+```java
+@FunctionalInterface
+public interface ToDoubleBiFunction<T, U> {
+  double applyAsDouble(T t, U u);
+}
+```
+This is the double-producing primitive specialization for `BiFunction`. This is a functional interface whose functional method is `applyAsDouble(Object, Object)`.
+ 
+Let's try to use `ToDoubleBiFunction`:
+```java
+@Test
+void toDoubleBiFunction() {
+  // 30% discount when it is SALE else 10% standard discount
+  ToDoubleBiFunction<String, Double> discountedPrice =
+      (code, price) -> "SALE".equals(code) ? price * 0.7 : price * 0.9;
+  Assertions.assertEquals(14.0, discountedPrice.applyAsDouble("SALE", 20.0));
+  Assertions.assertEquals(18.0, discountedPrice.applyAsDouble("OFF_SEASON", 20.0));
+}
+```
+This test calculates discounted prices based on a code. If the code is "SALE," a 30% discount is applied; otherwise, a 10% discount is applied. It verifies the discounted prices for both scenarios.
+
+### ToIntFunction
+
+The `ToIntFunction` interface represents a function that produces an int-valued result.
+
+```java
+@FunctionalInterface
+public interface ToIntFunction<T> {
+  int applyAsInt(T t);
+}
+```
+This is the int-producing primitive specialization for `Function`. This is a functional interface whose functional method is `applyAsInt(Object).`
+
+Let's check how to put `ToIntFunction` to use:
+
+```java
+@Test
+void toIntFunction() {
+  ToIntFunction<String> charCount = input -> input == null ? 0 : input.trim().length();
+
+  Assertions.assertEquals(0, charCount.applyAsInt(null));
+  Assertions.assertEquals(0, charCount.applyAsInt(""));
+  Assertions.assertEquals(3, charCount.applyAsInt("JOY"));
+}
+```
+This test counts the characters in a string using a function. It verifies the character count for null, empty string, and "JOY", expecting 0, 0, and 3, respectively. The function handles null inputs gracefully, returning 0, and trims white space before counting characters.
+
+### ToIntBiFunction
+
+The `ToIntBiFunction` interface represents a function that accepts two arguments and produces an int-valued result.
+
+```java
+@FunctionalInterface
+public interface ToIntBiFunction<T, U> {
+  int applyAsInt(T t, U u);
+}
+```
+
+This is the int-producing primitive specialization for `BiFunction`. This is a functional interface whose functional method is `applyAsInt(Object, Object)`.
+
+Let's learn to use `ToIntBiFunction`:
+
+```java
+@Test
+void toIntBiFunction() {
+  // discount on product
+  ToIntBiFunction<String, Integer> discount =
+      (season, quantity) -> "WINTER".equals(season) || quantity > 100 ? 40 : 10;
+
+  Assertions.assertEquals(40, discount.applyAsInt("WINTER", 50));
+  Assertions.assertEquals(40, discount.applyAsInt("SUMMER", 150));
+  Assertions.assertEquals(10, discount.applyAsInt("FALL", 50));
+}
+```
+This test calculates discounts based on the season and quantity. If it's winter or the quantity exceeds 100, a 40% discount is applied; otherwise, it's 10%. The test validates discounts for winter with 50 items, summer with 150 items, and fall with 50 items, expecting 40, 40, and 10, respectively.
+
+### ToLongFunction
+
+The `ToLongFunction` interface represents a function that produces an long-valued result.
+
+```java
+@FunctionalInterface
+public interface ToLongFunction<T> {
+  long applyAsLong(T t);
+}
+```
+This is the long-producing primitive specialization for `Function`. This is a functional interface whose functional method is `applyAsLong(Object).`
+
+Let's implement a `ToLongFunction` expression:
+
+```java
+@Test
+void toLongFunction() {
+  ToLongFunction<Date> elapsedTime =
+      input -> input == null ? 0 : input.toInstant().toEpochMilli();
+
+  Assertions.assertEquals(0L, elapsedTime.applyAsLong(null));
+  long now = System.currentTimeMillis();
+  Date nowDate = Date.from(Instant.ofEpochMilli(now));
+  Assertions.assertEquals(now, elapsedTime.applyAsLong(nowDate));
+}
+```
+This test calculates the elapsed time in milliseconds using `ToLongFunction`. It checks if the input date is null and returns 0, otherwise, it converts the date to milliseconds since the epoch. The test verifies the result for both null input and the current time.
    
+### ToLongBiFunction
+
+The `ToLongBiFunction` interface represents a function that accepts two arguments and produces an long-valued result.
+
+```java
+@FunctionalInterface
+public interface ToLongBiFunction<T, U> {
+  long applyAsLong(T t, U u);
+}
+```
+
+This is the long-producing primitive specialization for `BiFunction`. This is a functional interface whose functional method is `applyAsLong(Object, Object)`.
+
+Let's see example of `ToLongBiFunction`:
+
+```java
+@Test
+void toLongBiFunction() {
+  // discount on product
+  ToLongBiFunction<LocalDateTime, ZoneOffset> elapsed =
+      (localDateTime, zoneOffset) ->
+          zoneOffset == null
+              ? localDateTime.toEpochSecond(ZoneOffset.UTC)
+              : localDateTime.toEpochSecond(zoneOffset);
+
+  long now = System.currentTimeMillis();
+  LocalDateTime nowLocalDateTime = LocalDateTime.ofEpochSecond(now, 0, ZoneOffset.UTC);
+  Assertions.assertEquals(now, elapsed.applyAsLong(nowLocalDateTime, null));
+
+  long later = now + 1000;
+  ZoneOffset offset = ZoneOffset.ofHours(5);
+  LocalDateTime laterLocalDateTime = LocalDateTime.ofEpochSecond(later, 0, offset);
+  Assertions.assertEquals(later, elapsed.applyAsLong(laterLocalDateTime, offset));
+}
+```
+This test calculates the elapsed time in seconds using `ToLongBiFunction`, considering the zone offset. It verifies the result for both a null offset and a specified offset. The test ensures correctness by comparing the calculated elapsed time with the expected value.
+
 ## Operators  
    - Unary and binary operators
    - UnaryOperator<T>

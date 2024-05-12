@@ -325,7 +325,7 @@ Let's summarize the use cases for method references, along with descriptions and
 | Reference to a Static Method                            | Refers to a static method in a class. This type of method reference uses the class name followed by `::` and the method name. | <code>Function<Integer, Integer> square = MathOperations::square;</code>|
 | Reference to an Instance Method of a Particular Object  | Refers to an instance method of a specific object. The instance must be explicitly defined before using the method reference. | <code>Supplier<String> getMessage = stringUtils::getMessage;</code>|
 | Reference to an Instance Method of an Arbitrary Object of a Particular Type | Refers to an instance method of an arbitrary object of a specific type. This type is commonly used in stream operations, where the object is determined at runtime. | <code>List<String> uppercasedWords = words.stream()<br>.map(String::toUpperCase)<br>.collect(Collectors.toList());<code>|
-| Reference to a Constructor                              | Refers to a class constructor, allowing you to create new instances. This type is useful when you need to create objects without explicitly calling a constructor. | <code>Supplier<Car> carSupplier = Car::new;<code>|
+| Reference to a Constructor                              | Refers to a class constructor, allowing us to create new instances. This type is useful when we need to create objects without explicitly calling a constructor. | <code>Supplier<Car> carSupplier = Car::new;<code>|
 
 ## Predicates
 Predicates are functional interfaces in Java that represent boolean-valued functions of a single argument. They are commonly used for filtering, testing, and conditional operations.
@@ -753,7 +753,37 @@ void intToDoubleFunction() {
 ```
 In this example, `IntToDoubleFunction` is used to define a function `accruedInterest` that calculates the interest accrued based on the principal amount provided as an integer input. Then the test verifies the calculated interest.
 
-   - IntToLongFunction
+## IntToLongFunction
+The `IntToLongFunction` interface represents a function that accepts an int-valued argument and produces a long-valued result. This is the int-to-long primitive specialization for `Function`.
+```java
+@FunctionalInterface
+public interface IntToLongFunction {
+  double applyAsLong(int value);
+}
+```
+This is a functional interface whose functional method is `applyAsLong(int)`.
+
+Functional interfaces like `IntToDoubleFunction` and `IntToLongFunction` are particularly useful when working with streams of primitive data types. For instance, if we have a stream of integers and we need to perform operations that require converting those integers to doubles or longs, we can use these functional interfaces within stream operations like `mapToInt`, `mapToDouble`, and `mapToLong`. This allows us to efficiently perform transformations on stream elements without the overhead of autoboxing and unboxing.
+
+Let's see how `IntToLongFunction` helps us do clean coding:
+```java
+@Test
+void intToLongFunction() {
+  IntToLongFunction factorial =
+      n -> {
+        long result = 1L;
+        for (int i = 1; i <= n; i++) {
+          result *= i;
+        }
+        return result;
+      };
+  IntStream input = IntStream.range(1, 6);
+  long[] result = input.mapToLong(factorial).toArray();
+  Assertions.assertArrayEquals(new long[] {1L, 2L, 6L, 24L, 120L}, result);
+}
+```
+This test utilizes an `IntToLongFunction` to calculate factorials for a given range of integers. Each integer in the range is mapped to its factorial as a long value, which is then collected into an array for verification against the expected results.
+
    - LongFunction<R>
    - LongToDoubleFunction
    - LongToIntFunction

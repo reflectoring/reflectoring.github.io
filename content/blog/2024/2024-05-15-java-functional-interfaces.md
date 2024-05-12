@@ -730,7 +730,7 @@ void intFunction() {
 ```
 The test applies an `IntFunction` to compute the square of an integer. It ensures that the square function correctly calculates the square of the input integer.
 
-## IntToDoubleFunction
+### IntToDoubleFunction
 The `IntToDoubleFunction` interface represents a function that accepts an int-valued argument and produces a double-valued result. This is the int-to-double primitive specialization for `Function`.
 ```java
 @FunctionalInterface
@@ -753,7 +753,7 @@ void intToDoubleFunction() {
 ```
 In this example, `IntToDoubleFunction` is used to define a function `accruedInterest` that calculates the interest accrued based on the principal amount provided as an integer input. Then the test verifies the calculated interest.
 
-## IntToLongFunction
+### IntToLongFunction
 The `IntToLongFunction` interface represents a function that accepts an int-valued argument and produces a long-valued result. This is the int-to-long primitive specialization for `Function`.
 ```java
 @FunctionalInterface
@@ -784,9 +784,74 @@ void intToLongFunction() {
 ```
 This test utilizes an `IntToLongFunction` to calculate factorials for a given range of integers. Each integer in the range is mapped to its factorial as a long value, which is then collected into an array for verification against the expected results.
 
-   - LongFunction<R>
-   - LongToDoubleFunction
-   - LongToIntFunction
+## LongFunction
+The `LongFunction` interface represents a function that takes an long as input and produces a result of any type.
+```java
+@FunctionalInterface
+public interface LongFunction<R> {
+  R apply(long value);
+}
+```
+It's a specialized version of the `Function` interface tailored for longs. We can define custom logic based on long inputs and return values of any type, making it versatile for various use cases in Java programming.
+
+Let's see example of `LongFunction`:
+```java
+@Test
+void longFunction() {
+  LongFunction<Double> squareArea = side -> (double) (side * side);
+  Assertions.assertEquals(400d, squareArea.apply(20L));
+}
+```
+The test applies an `LongFunction` to compute the area of a square figure. It ensures that the function correctly calculates the area of square from the side in long.
+
+### LongToDoubleFunction
+The `LongToDoubleFunction` interface represents a function that accepts an long-valued argument and produces a double-valued result. This is the long-to-double primitive specialization for `Function`.
+```java
+@FunctionalInterface
+public interface LongToDoubleFunction {
+  double applyAsDouble(long value);
+}
+```
+This is a functional interface whose functional method is `applyAsDouble(long)`.
+
+Let's see an example of how to use `LongToDoubleFunction`:
+
+```java
+@Test
+void longToDoubleFunction() {
+  LongToDoubleFunction squareArea = side -> (double) (side * side);
+  Assertions.assertEquals(400d, squareArea.applyAsDouble(20L));
+
+  LongStream input = LongStream.range(1L, 6L);
+  double[] result = input.mapToDouble(squareArea).toArray();
+  Assertions.assertArrayEquals(new double[] {1.0, 4.0, 9.0, 16.0, 25.0}, result);
+}
+```
+
+The test uses a `LongToDoubleFunction` to calculate the area of a square given its side length. It then asserts the result of applying the function to a specific side length. Finally, it maps a `LongStream` of side lengths to a `DoubleStream` of square areas and verifies the calculated values. It demonstrates that special interfaces like `LongToDoubleFunction` can be used directly as well as in stream processing.
+
+### LongToIntFunction
+The `LongToIntFunction` interface represents a function that accepts an long-valued argument and produces a integer-valued result. This is the long-to-integer primitive specialization for `Function`.
+```java
+@FunctionalInterface
+public interface LongToIntFunction {
+  int applyAsInt(long value);
+}
+```
+This is a functional interface whose functional method is `applyAsInt(long)`.
+
+Let's learn how to use `LongToIntFunction`:
+```java
+@Test
+void longToIntFunction() {
+  LongToIntFunction digitCount = number -> String.valueOf(number).length();
+  LongStream input = LongStream.of(1L, 120, 15L, 12345L);
+  int[] result = input.mapToInt(digitCount).toArray();
+  Assertions.assertArrayEquals(new int[] {1, 3, 2, 5}, result);
+}
+```
+The test utilizes a `LongToIntFunction` to count the number of digits in a given long value. It applies the function to each value in a `LongStream`, converting them to an `IntStream` of digit counts. Finally, it verifies the calculated digit counts against the expected values.
+
    - DoubleFunction<R>
    - DoubleToIntFunction
    - DoubleToLongFunction

@@ -1,10 +1,10 @@
 ---
 title: "Inheritance, Polymorphism, and Encapsulation in Kotlin"
 categories: ["Kotlin"]
-date: 2024-01-02 00:00:00 +1100
+date: 2024-05-12 00:00:00 +1100
 authors: [ezra]
 excerpt: "In this tutorial, we'll discuss what object oriented is and see various example"
-image: images/stock/0104-on-off-1200x628-branded.jpg
+image: images/stock/0065-java-1200x628-branded.jpg
 url: kotlin-object-oriented-programming
 ---
 

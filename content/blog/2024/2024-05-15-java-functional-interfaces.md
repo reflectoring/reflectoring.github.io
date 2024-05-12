@@ -485,7 +485,16 @@ The test demonstrates default methods in `BiPredicate`. It defines predicates fo
 
 ## IntPredicate
 
-`IntPredicate` represents a predicate (boolean-valued function) that takes a single integer argument and returns a `boolean` result. This is the int-consuming primitive type specialization of Predicate.
+`IntPredicate` represents a predicate (boolean-valued function) that takes a single integer argument and returns a `boolean` result.
+
+```java
+@FunctionalInterface
+public interface IntPredicate {
+    boolean test(int value);
+    // default methods
+}
+```
+ This is the int-consuming primitive type specialization of Predicate.
 
 ### Using IntPredicate
 
@@ -527,7 +536,60 @@ void testIntPredicate() {
 
 The `testIntPredicate()` method demonstrates various scenarios using `IntPredicate`. Predicates like `isZero`, `isPositive`, and `isNegative` check specific conditions on integers. Combined predicates like `isPositiveOrZero` and `isPositiveAndOdd` perform logical operations. Tests verify filtering of integer ranges based on these predicates, ensuring correct outcomes for conditions like zero or greater, greater than zero and odd, not zero, and neither positive nor negative. Each assertion validates the filtering results against expected integer arrays, covering a wide range of scenarios.
 
-   - LongPredicate
+## LongPredicate
+
+`LongPredicate` represents a predicate (boolean-valued function) that takes a single long argument and returns a `boolean` result.
+
+```java
+@FunctionalInterface
+public interface LongPredicate {
+    boolean test(long value);
+    // default methods
+}
+```
+ This is the long-consuming primitive type specialization of Predicate.
+
+### Using LongPredicate
+
+`LongPredicate` is commonly used when filtering collections of primitive long values or when evaluating conditions based on long inputs. It provides several default methods for composing predicates, including `and()`, `or()`, and `negate()`, allowing for logical combinations of predicates.
+
+Here's a simple example:
+
+```java
+@Test
+void testLongPredicate() {
+  IntPredicate isZero = num -> num == 0;
+  IntPredicate isPositive = num -> num > 0;
+  IntPredicate isNegative = num -> num < 0;
+  IntPredicate isOdd = num -> num % 2 == 1;
+
+  IntPredicate isPositiveOrZero = isPositive.or(isZero);
+  IntPredicate isPositiveAndOdd = isPositive.and(isOdd);
+  IntPredicate isNotZero = isZero.negate();
+  IntPredicate isAlsoZero = isPositive.negate().and(isNegative.negate());
+
+  // check zero or greater
+  Assertions.assertArrayEquals(new int[] {0, 1, 2, 3, 4, 5}, 
+    IntStream.range(-5, 6).filter(isPositiveOrZero).toArray());
+
+  // check greater than zero and odd
+  Assertions.assertArrayEquals(new int[] {1, 3, 5}, 
+    IntStream.range(-5, 6).filter(isPositiveAndOdd).toArray());
+
+  // check not zero
+  Assertions.assertArrayEquals(new int[] {-5, -4, -3, -2, -1, 1, 2, 3, 4, 5},
+    IntStream.range(-5, 6).filter(isNotZero).toArray());
+
+  // check neither positive nor negative
+  Assertions.assertArrayEquals(
+      IntStream.range(-5, 6).filter(isZero).toArray(),
+      IntStream.range(-5, 6).filter(isAlsoZero).toArray());
+}
+```
+
+The `testIntPredicate()` method demonstrates various scenarios using `IntPredicate`. Predicates like `isZero`, `isPositive`, and `isNegative` check specific conditions on integers. Combined predicates like `isPositiveOrZero` and `isPositiveAndOdd` perform logical operations. Tests verify filtering of integer ranges based on these predicates, ensuring correct outcomes for conditions like zero or greater, greater than zero and odd, not zero, and neither positive nor negative. Each assertion validates the filtering results against expected integer arrays, covering a wide range of scenarios.
+
+
    - DoublePredicate
  
 ## Functions

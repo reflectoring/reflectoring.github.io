@@ -852,15 +852,92 @@ void longToIntFunction() {
 ```
 The test utilizes a `LongToIntFunction` to count the number of digits in a given long value. It applies the function to each value in a `LongStream`, converting them to an `IntStream` of digit counts. Finally, it verifies the calculated digit counts against the expected values.
 
-   - DoubleFunction<R>
-   - DoubleToIntFunction
-   - DoubleToLongFunction
-   - ToDoubleBiFunction<T,U>
-   - ToDoubleFunction<T>
-   - ToIntBiFunction<T,U>
-   - ToIntFunction<T>
-   - ToLongBiFunction<T,U>
-   - ToLongFunction<T>
+## DoubleFunction
+The `DoubleFunction` interface represents a function that accepts a double-valued argument and produces a result.
+
+```java
+@FunctionalInterface
+public interface DoubleFunction<R> {
+  R apply(double value);
+}
+```
+This is the double-consuming primitive specialization for `Function`. This is a functional interface whose functional method is apply(double).
+ 
+Let's example showing how to use `DoubleFunction`:
+```java
+@Test
+void doubleFunction() {
+  // grouping separator like a comma for thousands
+  //  exactly two digits after the decimal point
+  DoubleFunction<String> numberFormatter = number -> String.format("%1$,.2f", number);
+  Assertions.assertEquals("999,999.12", numberFormatter.apply(999999.123));
+}
+```
+The test uses a `DoubleFunction` to format a `double` number with a comma for thousands and two decimal places, asserting that the result is "999,999.12".
+
+### DoubleToIntFunction
+
+The `DoubleToIntFunction` interface represents a function that accepts a double-valued argument and produces an int-valued result.
+
+```java
+@FunctionalInterface
+public interface DoubleToIntFunction {
+  int applyAsInt(double value);
+}
+```
+This is the double-to-int primitive specialization for Function. This is a functional interface whose functional method is `applyAsInt(double)`.
+ 
+Here is an example showing how to use `DoubleToIntFunction`:
+```java
+@Test
+void doubleToIntFunction() {
+  DoubleToIntFunction wholeNumber = number -> Double.valueOf(number).intValue();
+  DoubleStream input = DoubleStream.of(1.0, 12.34, 99.0, 101.444);
+  int[] result = input.mapToInt(wholeNumber).toArray();
+  Assertions.assertArrayEquals(new int[] {1, 12, 99, 101}, result);
+}
+```
+The test converts double numbers to integers using a `DoubleToIntFunction`. It asserts that the result is [1, 12, 99, 101] when applied to the input [1.0, 12.34, 99.0, 101.444].
+
+### DoubleToLongFunction
+
+The `DoubleToLongFunction` interface represents a function that accepts a double-valued argument and produces an long-valued result.
+
+```java
+@FunctionalInterface
+public interface DoubleToLongFunction {
+  int applyAsLong(double value);
+}
+```
+This is the double-to-long primitive specialization for `Function`. This is a functional interface whose functional method is `applyAsLong(double)`.
+ 
+Example showing how to use `DoubleToLongFunction`:
+```java
+@Test
+void doubleToLongFunction() {
+  DoubleToLongFunction celsiusToFahrenheit 
+    = celsius -> Math.round(celsius * 9 / 5 + 32);
+  DoubleStream input = DoubleStream.of(0.0, 25.0, 100.0);
+  long[] result = input.mapToLong(celsiusToFahrenheit).toArray();
+  Assertions.assertArrayEquals(new long[] {32, 77, 212}, result);
+}
+```
+This test converts Celsius temperatures to Fahrenheit using a `DoubleToLongFunction`. It then verifies the results match the expected Fahrenheit temperatures.
+
+## Specialized Functions
+Now let's get familiar with specialized functions.
+
+### ToDoubleBiFunction<T,U>
+
+### ToDoubleFunction<T>
+
+### ToIntBiFunction<T,U>
+
+### ToIntFunction<T>
+
+### ToLongBiFunction<T,U>
+
+### ToLongFunction<T>
    
 ## Operators  
    - Unary and binary operators

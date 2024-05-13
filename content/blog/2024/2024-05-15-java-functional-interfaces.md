@@ -414,7 +414,7 @@ void testPredicate() {
 ```
 In this test, predicates are combined to filter a list of numbers. `isPositiveOrZero` combines predicates for positive numbers or zero. `isPositiveAndOdd` combines predicates for positive and odd numbers. `isNotPositive` negates the predicate for positive numbers. `isNotZero` negates the predicate for zero. `isAlsoZero` shows us how to chain predicates. Each combined predicate is applied to the list, verifying the expected results.
  
-## BiPredicates
+### BiPredicates
 
 The `BiPredicate<T, U>` takes two arguments of types `T` and `U` and returns a boolean result. It's commonly used for testing conditions involving two parameters. For instance, a `BiPredicate` can be used to check if one value is greater than the other or if two objects satisfy a specific relationship. An example would be validating if a person's age and income meet certain eligibility criteria for a financial service.
 
@@ -505,7 +505,7 @@ Now let's learn to use the default methods used to combine and negate.
 ```
 The test demonstrates default methods in `BiPredicate`. It defines predicates for various worker conditions, like junior carpenters and welders. Using default methods `or()`, `and()`, and `negate()`, it creates new predicates for combinations like all junior workers, groomed carpenters, and non-carpenters. These predicates are then applied to filter workers, and the counts are asserted. This showcases how default methods enhance the functionality of `BiPredicate` by enabling logical operations like OR, AND, and negation.
 
-## IntPredicate
+### IntPredicate
 
 `IntPredicate` represents a predicate (boolean-valued function) that takes a single integer argument and returns a `boolean` result.
 
@@ -556,7 +556,7 @@ void testIntPredicate() {
 
 The `testIntPredicate()` method demonstrates various scenarios using `IntPredicate`. Predicates like `isZero`, `isPositive`, and `isNegative` check specific conditions on integers. Combined predicates like `isPositiveOrZero` and `isPositiveAndOdd` perform logical operations. Tests verify filtering of integer ranges based on these predicates, ensuring correct outcomes for conditions like zero or greater, greater than zero and odd, not zero, and neither positive nor negative. Each assertion validates the filtering results against expected integer arrays, covering a wide range of scenarios.
 
-## LongPredicate
+### LongPredicate
 
 `LongPredicate` represents a predicate (boolean-valued function) that takes a single long argument and returns a `boolean` result.
 
@@ -607,7 +607,7 @@ void testLongPredicate() {
 
 The `testIntPredicate()` method demonstrates various scenarios using `IntPredicate`. Predicates like `isZero`, `isPositive`, and `isNegative` check specific conditions on integers. Combined predicates like `isPositiveOrZero` and `isPositiveAndOdd` perform logical operations. Tests verify filtering of integer ranges based on these predicates, ensuring correct outcomes for conditions like zero or greater, greater than zero and odd, not zero, and neither positive nor negative. Each assertion validates the filtering results against expected integer arrays, covering a wide range of scenarios.
 
-## DoublePredicate
+### DoublePredicate
 
 `DoublePredicate` represents a predicate (boolean-valued function) that takes a single double argument and returns a `boolean` result.
 
@@ -687,7 +687,7 @@ void simpleFunction() {
 ```
 The test applies a `Function` to convert a lowercase string to uppercase. It asserts the converted value and also checks for `null` input handling.
 
-## Function Composition
+### Function Composition
 
 Function composition is a process of combining multiple functions to create a new function. The `compose` method in Function interface combines two functions by applying the argument function first and then the caller function. Conversely, the `andThen` method applies the caller function first and then the argument function.
 
@@ -713,7 +713,7 @@ void functionComposition() {
 ```
 In the `functionComposition` test, two functions are composed to manipulate a string. The first function converts the string to uppercase, while the second one removes vowels. Using `compose`, it first removes vowels and then converts to uppercase. Using `andThen`, it first converts to uppercase and then removes vowels. We verify the results using assertion.
 
-## BiFunction
+### BiFunction
 
 The `BiFunction` interface represents a function that accepts two arguments and produces a result. It's similar to the Function interface, but it operates on two input parameters instead of one.
 
@@ -740,7 +740,7 @@ void biFunction() {
 ```
 The `BiFunction` interface combines two input values and produces a result. In this test, `bigger` selects the larger of two integers. `square` then calculates the square of a number. The result of `bigger` is passed to `square`, which squares the larger integer.
 
-## IntFunction
+### IntFunction
 
 The `IntFunction` interface represents a function that takes an integer as input and produces a result of any type.
 
@@ -820,7 +820,7 @@ void intToLongFunction() {
 ```
 This test utilizes an `IntToLongFunction` to calculate factorials for a given range of integers. Each integer in the range is mapped to its factorial as a long value, which is then collected into an array for verification against the expected results.
 
-## LongFunction
+### LongFunction
 
 The `LongFunction` interface represents a function that takes an long as input and produces a result of any type.
 ```java
@@ -891,7 +891,7 @@ void longToIntFunction() {
 ```
 The test utilizes a `LongToIntFunction` to count the number of digits in a given long value. It applies the function to each value in a `LongStream`, converting them to an `IntStream` of digit counts. Finally, it verifies the calculated digit counts against the expected values.
 
-## DoubleFunction
+### DoubleFunction
 
 The `DoubleFunction` interface represents a function that accepts a double-valued argument and produces a result.
 
@@ -963,8 +963,6 @@ void doubleToLongFunction() {
 }
 ```
 This test converts Celsius temperatures to Fahrenheit using a `DoubleToLongFunction`. It then verifies the results match the expected Fahrenheit temperatures.
-
-## Specialized Functions
 
 Now let's get familiar with specialized functions.
 
@@ -1137,11 +1135,115 @@ void toLongBiFunction() {
 ```
 This test calculates the elapsed time in seconds using `ToLongBiFunction`, considering the zone offset. It verifies the result for both a null offset and a specified offset. The test ensures correctness by comparing the calculated elapsed time with the expected value.
 
-## Operators  
-   - Unary and binary operators
-   - UnaryOperator<T>
-   - IntUnaryOperator
-   - LongUnaryOperator
+## Operators
+
+We'll now explore operators, fundamental functional interfaces in Java. Operators are commonly used to perform operations on data, such as mathematical calculations, comparisons, or logical operations. We use operators to transform or manipulate data in our programs. These interfaces provide a way to encapsulate these operations, making our code more concise and readable. Whether it's adding numbers, checking for equality, or combining conditions, operators play a crucial role in various programming scenarios, offering flexibility and efficiency in our code.
+
+Let's learn about unary and binary operators. 
+
+### UnaryOperator
+
+The `UnaryOperator` interface represents an operation on a single operand that produces a result of the same type as its operand.
+
+```java
+@FunctionalInterface
+public interface UnaryOperator<T> extends Function<T, T> {
+  // helper methods
+}
+```
+
+**This is a specialization of `Function` for the case where the operand and result are of the same type.** This is a functional interface whose functional method is `apply(Object)`.
+
+Let's see example of `UnaryOperator`:
+
+```java
+public class OperatorTest {
+  @Test
+  void unaryOperator() {
+    UnaryOperator<String> trim = value -> value == null ? null : value.trim();
+    UnaryOperator<String> upperCase 
+      = value -> value == null ? null : value.toUpperCase();
+    Function<String, String> transform = trim.andThen(upperCase);
+
+    Assertions.assertEquals("joy", trim.apply("  joy "));
+    Assertions.assertEquals("  JOY ", upperCase.apply("  joy "));
+    Assertions.assertEquals("JOY", transform.apply("  joy "));
+  }
+}
+```
+In the `OperatorTest`, unary operators trim and convert strings. The transform function combines them, trimming white space and converting to uppercase. Tests verify individual and combined functionalities.
+
+### IntUnaryOperator
+
+The `IntUnaryOperator` interface represents an operation on a single int-valued operand that produces an int-valued result.
+
+```java
+@FunctionalInterface
+public interface IntUnaryOperator {
+  int applyAsInt(int operand);
+  // helper methods
+}
+```
+
+**This is the primitive type specialization of `UnaryOperator` for `int`.** This is a functional interface whose functional method is `applyAsInt(int)`.
+
+Let's see how to use `IntUnaryOperator`:
+
+```java
+void intUnaryOperator() {
+  // formula y = x^2 + 2x + 1
+  IntUnaryOperator formula = x -> (x * x) + (2 * x) + 1;
+  Assertions.assertEquals(36, formula.applyAsInt(5));
+
+  IntStream input = IntStream.of(2, 3, 4);
+  final int[] result = input.map(formula).toArray();
+  Assertions.assertArrayEquals(new int[] {9, 16, 25}, result);
+
+  // the population doubling every 3 years, one fifth migrate and 10% mortality
+  IntUnaryOperator growth = number -> number * 2;
+  IntUnaryOperator migration = number -> number * 4 / 5;
+  IntUnaryOperator mortality = number -> number * 9 / 10;
+  IntUnaryOperator population = growth.andThen(migration).andThen(mortality);
+  Assertions.assertEquals(1440000, population.applyAsInt(1000000));
+}
+```
+This test defines an IntUnaryOperator to calculate a quadratic formula, then applies it to an array. It also models population growth, migration, and mortality rates, calculating the final population size.
+
+### LongUnaryOperator
+
+The `LongUnaryOperator` interface represents an operation on a single long-valued operand that produces a long-valued result.
+
+```java
+@FunctionalInterface
+public interface LongUnaryOperator {
+  long applyAsLong(long operand);
+  // helper methods
+}
+```
+
+**This is the primitive type specialization of UnaryOperator for long.** This is a functional interface whose functional method is `applyAsLong(long)`.
+
+Let's see how to use `LongUnaryOperator`:
+
+```java
+@Test
+void longUnaryOperator() {
+  // light travels 186282 miles per seconds
+  LongUnaryOperator distance = time -> time * 186282;
+  // denser medium slows light down
+  LongUnaryOperator slowDown = dist -> dist * 2 / 3;
+  LongUnaryOperator actualDistance = distance.andThen(slowDown);
+
+  Assertions.assertEquals(931410, distance.applyAsLong(5));
+  Assertions.assertEquals(620940, actualDistance.applyAsLong(5));
+
+  final LongStream input = LongStream.of(5, 10, 15);
+  final long[] result = input.map(distance).toArray();
+  Assertions.assertArrayEquals(new long[] {931410L, 1862820L, 2794230L}, result);
+}
+```
+This test calculates the distance light travels in a given time, then adjusts it based on medium density. It verifies individual and combined distances, applying the operators to an array of time values.
+
    - DoubleUnaryOperator
    - BinaryOperator<T>
    - IntBinaryOperator

@@ -1,5 +1,5 @@
 ---
-title: "Using AWS S3 with Spring Cloud AWS"
+title: "Using Amazon S3 with Spring Cloud AWS"
 categories: [ "AWS", "Spring Boot", "Java" ]
 date: 2024-05-10 00:00:00 +0530
 modified: 2024-05-10 00:00:00 +0530
@@ -9,7 +9,7 @@ image: images/stock/0138-bucket-alternative-1200x628-branded.jpg
 url: "spring-cloud-aws-s3"
 ---
 
-In modern web applications, storing and retrieving files has become a common requirement. Whether it's user uploaded content like images and documents or application generated logs and reports, having a reliable and scalable storage solution is crucial.
+In modern web applications, storing and retrieving files has become a common requirement. Whether it is user uploaded content like images and documents or application generated logs and reports, having a reliable and scalable storage solution is crucial.
 
 One such solution provided by AWS is <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide" target="_blank">Amazon S3 (Simple Storage Service)</a>, which is a widely used, highly scalable, and durable object storage service.
 

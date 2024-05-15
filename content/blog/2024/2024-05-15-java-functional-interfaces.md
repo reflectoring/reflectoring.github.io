@@ -1334,7 +1334,7 @@ In this test, we define a factorial function and use it to compute permutations 
 
 ### IntBinaryOperator
 
-The `BinaryOperator` interface represents operation upon two int-valued operands and producing an int-valued result.
+The `IntBinaryOperator` interface represents an operation upon two int-valued operands and producing an int-valued result.
 
 ```java
 @FunctionalInterface
@@ -1357,10 +1357,83 @@ void intBinaryOperator() {
   Assertions.assertEquals(OptionalInt.of(9), result);
 }
 ```
-In this test, we use `IntBinaryOperator` to sum two integers. We use it to add two numbers and apply it to a stream to sum all elements. We validate both operations.
-   
-   - LongBinaryOperator
-   - DoubleBinaryOperator
+In this test, we use `IntBinaryOperator` to sum two integers. We use it to add two numbers and apply it to a stream to sum all elements. We validate both operations. The `reduce()` method with `IntBinaryOperator` is useful for operations like summing, finding the maximum or minimum, or other cumulative operations on stream elements. 
+
+### LongBinaryOperator
+
+The `LongBinaryOperator` interface represents an operation upon two long-valued operands and producing a long-valued result.
+
+```java
+@FunctionalInterface
+public interface LongBinaryOperator {
+  long applyAsLong(long left, long right);
+}
+```
+
+**This is the primitive type specialization of `BinaryOperator` for `long`.** This is a functional interface whose functional method is `applyAsLong(long, long).`.
+
+Let's see how to use `LongBinaryOperator`:
+
+```java
+@Test
+void longBinaryOperator() {
+  // Greatest Common Divisor
+  LongBinaryOperator gcd =
+      (a, b) -> {
+        while (b != 0) {
+          long temp = b;
+          b = a % b;
+          a = temp;
+        }
+        return a;
+      };
+  Assertions.assertEquals(6L, gcd.applyAsLong(54L, 24L));
+
+  LongBinaryOperator add = Long::sum;
+  // Time car traveled
+  LongStream input = LongStream.of(1715785375164L, 1715785385771L);
+  OptionalLong result = input.reduce(add);
+  Assertions.assertEquals(OptionalLong.of(3431570760935L), result);
+}
+
+```
+This test demonstrates using `LongBinaryOperator` for calculating the GCD of two numbers and summing timestamps in a stream. The GCD calculation uses the Euclidean algorithm, while the reduce method sums elements in a `LongStream` of timestamps, verifying the expected results.
+
+### DoubleBinaryOperator
+
+The `DoubleBinaryOperator` interface represents an operation upon two double-valued operands and producing a double-valued result.
+
+```java
+@FunctionalInterface
+public interface DoubleBinaryOperator {
+  double applyAsDouble(double left, double right);
+}
+```
+
+**This is the primitive type specialization of `BinaryOperator` for `double`.** This is a functional interface whose functional method is `applyAsDouble(double, double).`.
+
+Following example shows how to use `DoubleBinaryOperator`:
+
+```java
+@Test
+void doubleBinaryOperator() {
+  DoubleBinaryOperator subtractAreas = (a, b) -> a - b;
+  // Area of a rectangle
+  double rectangleArea = 20.0 * 30.0;
+  // Area of a circle
+  double circleArea = Math.PI * 7.0 * 7.0;
+
+  // Subtract the two areas
+  double difference = subtractAreas.applyAsDouble(rectangleArea, circleArea);
+  Assertions.assertEquals(446.06, difference, 0.01);
+
+  DoubleBinaryOperator add = Double::sum;
+  DoubleStream input = DoubleStream.of(10.2, 5.6, 15.8, 20.12);
+  OptionalDouble result = input.reduce(add);
+  Assertions.assertEquals(OptionalDouble.of(51.72), result);
+}
+```
+This test demonstrates using `DoubleBinaryOperator` to subtract the area of a circle from a rectangle and to sum values in a `DoubleStream`. The results are verified with assertions for both operations, ensuring correct calculations.
 
 ## Consumers  
    - Implementing `Consumer` and `BiConsumer`

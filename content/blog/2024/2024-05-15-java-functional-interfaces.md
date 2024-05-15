@@ -1196,7 +1196,7 @@ void intUnaryOperator() {
   Assertions.assertEquals(36, formula.applyAsInt(5));
 
   IntStream input = IntStream.of(2, 3, 4);
-  final int[] result = input.map(formula).toArray();
+  int[] result = input.map(formula).toArray();
   Assertions.assertArrayEquals(new int[] {9, 16, 25}, result);
 
   // the population doubling every 3 years, one fifth migrate and 10% mortality
@@ -1207,7 +1207,7 @@ void intUnaryOperator() {
   Assertions.assertEquals(1440000, population.applyAsInt(1000000));
 }
 ```
-This test defines an IntUnaryOperator to calculate a quadratic formula, then applies it to an array. It also models population growth, migration, and mortality rates, calculating the final population size.
+This test defines an IntUnaryOperator to calculate a quadratic formula, then applies it to an array. It also models population growth, migration, and mortality rates, calculating the population size.
 
 ### LongUnaryOperator
 
@@ -1237,16 +1237,128 @@ void longUnaryOperator() {
   Assertions.assertEquals(931410, distance.applyAsLong(5));
   Assertions.assertEquals(620940, actualDistance.applyAsLong(5));
 
-  final LongStream input = LongStream.of(5, 10, 15);
-  final long[] result = input.map(distance).toArray();
+  LongStream input = LongStream.of(5, 10, 15);
+  long[] result = input.map(distance).toArray();
   Assertions.assertArrayEquals(new long[] {931410L, 1862820L, 2794230L}, result);
 }
 ```
 This test calculates the distance light travels in a given time, then adjusts it based on medium density. It verifies individual and combined distances, applying the operators to an array of time values.
 
-   - DoubleUnaryOperator
-   - BinaryOperator<T>
-   - IntBinaryOperator
+### DoubleUnaryOperator
+
+The `DoubleUnaryOperator` interface represents an operation on a single double-valued operand that produces a double-valued result.
+
+```java
+@FunctionalInterface
+public interface DoubleUnaryOperator {
+  double applyAsDouble(long double);
+  // helper methods
+}
+```
+
+**This is the primitive type specialization of `UnaryOperator` for `double`.** This is a functional interface whose functional method is `applyAsDouble(double)`.
+
+Example of how to use `DoubleUnaryOperator`:
+```java
+@Test
+void doubleUnaryOperator() {
+  DoubleUnaryOperator circleArea = radius -> radius * radius * Math.PI;
+  DoubleUnaryOperator doubleIt = area -> area * 4;
+  DoubleUnaryOperator scaling = circleArea.andThen(doubleIt);
+
+  Assertions.assertEquals(153.93D, circleArea.applyAsDouble(7), 0.01);
+  Assertions.assertEquals(615.75D, scaling.applyAsDouble(7), 0.01);
+
+  DoubleStream input = DoubleStream.of(7d, 14d, 21d);
+  double[] result = input.map(circleArea).toArray();
+  Assertions.assertArrayEquals(new double[] {153.93D, 615.75D, 1385.44D}, 
+                               result, 0.01);
+}
+```
+
+This test calculates the area of a circle given its radius, then scales it by a factor of four. It verifies individual and combined calculations, applying the operators to an array of radius values. Using `DoubleUnaryOperator` in the `map()` method allows seamless transformations within a `DoubleStream`.
+
+### BinaryOperator
+
+The `BinaryOperator` interface represents operation upon two operands of the same type, producing a result of the same type as the operands.
+
+```java
+@FunctionalInterface
+public interface BinaryOperator<T> extends BiFunction<T,T,T> {
+  // helper methods
+}
+```
+
+**This is a specialization of `BiFunction` for the case where the operands and the result are all of the same type.** This is a functional interface whose functional method is `apply(Object, Object)`.
+
+Let's use `BinaryOperator`:
+```java
+@Test
+void binaryOperator() {
+  LongUnaryOperator factorial =
+      n -> {
+        long result = 1L;
+        for (int i = 1; i <= n; i++) {
+          result *= i;
+        }
+        return result;
+      };
+  // Calculate permutations
+  BinaryOperator<Long> npr 
+    = (n, r) -> factorial.applyAsLong(n) / factorial.applyAsLong(n - r);
+  // Verify permutations
+  // 3P2: the number of permutations of 2 that can be achieved from a choice of 3.
+  final Long result3P2 = npr.apply(3L, 2L);
+  Assertions.assertEquals(6L, result3P2);
+
+  // Add two prices
+  BinaryOperator<Double> addPrices = Double::sum;
+  // Apply discount
+  UnaryOperator<Double> applyDiscount = total -> total * 0.9; // 10% discount
+  // Apply tax
+  UnaryOperator<Double> applyTax = total -> total * 1.07; // 7% tax
+  // Composing the final operation
+  BiFunction<Double, Double, Double> finalCost =
+      addPrices.andThen(applyDiscount).andThen(applyTax);
+
+  // Prices of two items
+  double item1 = 50.0;
+  double item2 = 100.0;
+  // Calculate final cost
+  double cost = finalCost.apply(item1, item2);
+  // Verify the final calculated cost
+  Assertions.assertEquals(144.45D, cost, 0.01);
+}
+```
+In this test, we define a factorial function and use it to compute permutations (nPr). For pricing, we combine `BinaryOperator<Double>` for summing prices with `UnaryOperator<Double>` for applying discount and tax, then validate the final cost calculations.
+
+### IntBinaryOperator
+
+The `BinaryOperator` interface represents operation upon two int-valued operands and producing an int-valued result.
+
+```java
+@FunctionalInterface
+public interface IntBinaryOperator {
+  int applyAsInt(int left, int right);
+}
+```
+
+**This is the primitive type specialization of `BinaryOperator` for `int`.** This is a functional interface whose functional method is `applyAsInt(int, int).`.
+
+Example of `IntBinaryOperator` to demonstrate how to use it:
+```java
+@Test
+void intBinaryOperator() {
+  IntBinaryOperator add = Integer::sum;
+  Assertions.assertEquals(10, add.applyAsInt(4, 6));
+
+  IntStream input = IntStream.of(2, 3, 4);
+  OptionalInt result = input.reduce(add);
+  Assertions.assertEquals(OptionalInt.of(9), result);
+}
+```
+In this test, we use `IntBinaryOperator` to sum two integers. We use it to add two numbers and apply it to a stream to sum all elements. We validate both operations.
+   
    - LongBinaryOperator
    - DoubleBinaryOperator
 

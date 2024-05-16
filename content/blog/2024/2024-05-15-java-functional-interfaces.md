@@ -1308,7 +1308,7 @@ void binaryOperator() {
     = (n, r) -> factorial.applyAsLong(n) / factorial.applyAsLong(n - r);
   // Verify permutations
   // 3P2: the number of permutations of 2 that can be achieved from a choice of 3.
-  final Long result3P2 = npr.apply(3L, 2L);
+  Long result3P2 = npr.apply(3L, 2L);
   Assertions.assertEquals(6L, result3P2);
 
   // Add two prices
@@ -1317,20 +1317,20 @@ void binaryOperator() {
   UnaryOperator<Double> applyDiscount = total -> total * 0.9; // 10% discount
   // Apply tax
   UnaryOperator<Double> applyTax = total -> total * 1.07; // 7% tax
-  // Composing the final operation
+  // Composing the operation
   BiFunction<Double, Double, Double> finalCost =
       addPrices.andThen(applyDiscount).andThen(applyTax);
 
   // Prices of two items
   double item1 = 50.0;
   double item2 = 100.0;
-  // Calculate final cost
+  // Calculate cost
   double cost = finalCost.apply(item1, item2);
-  // Verify the final calculated cost
+  // Verify the calculated cost
   Assertions.assertEquals(144.45D, cost, 0.01);
 }
 ```
-In this test, we define a factorial function and use it to compute permutations (nPr). For pricing, we combine `BinaryOperator<Double>` for summing prices with `UnaryOperator<Double>` for applying discount and tax, then validate the final cost calculations.
+In this test, we define a factorial function and use it to compute permutations (nPr). For pricing, we combine `BinaryOperator<Double>` for summing prices with `UnaryOperator<Double>` for applying discount and tax, then validate the cost calculations.
 
 ### IntBinaryOperator
 
@@ -1435,16 +1435,313 @@ void doubleBinaryOperator() {
 ```
 This test demonstrates using `DoubleBinaryOperator` to subtract the area of a circle from a rectangle and to sum values in a `DoubleStream`. The results are verified with assertions for both operations, ensuring correct calculations.
 
-## Consumers  
-   - Implementing `Consumer` and `BiConsumer`
-   - Consumer<T>
-   - BiConsumer<T,U>
-   - IntConsumer
-   - LongConsumer
-   - DoubleConsumer
-   - ObjIntConsumer<T>
-   - ObjLongConsumer<T>
-   - ObjDoubleConsumer<T>
+## Consumers
+
+A `Consumer` is a functional interface that represents an operation that accepts a single input argument and returns no result. It is part of the `java.util.function` package. Unlike most other functional interfaces, we use it to perform side-effect operations on an input, such as printing, modifying state, or storing values.
+
+### Consumer
+
+The `Consumer` interface has a single abstract method:
+```java
+@FunctionalInterface
+public interface Consumer<T> {
+  void accept(T t);
+  // default methods
+}
+```
+
+Consumers are particularly useful in functional programming and stream processing, where operations are often performed on elements of collections or streams in a concise and readable manner. They enable us to focus on the action to be performed rather than the iteration logic.
+
+Example showcasing use of `Consumer`:
+```java
+@Test
+void consumer() {
+  Consumer<List<String>> trim =
+      strings -> {
+        if (strings != null) {
+          strings.replaceAll(s -> s == null ? null : s.trim());
+        }
+      };
+  Consumer<List<String>> upperCase =
+      strings -> {
+        if (strings != null) {
+          strings.replaceAll(s -> s == null ? null : s.toUpperCase());
+        }
+      };
+
+  List<String> input = null;
+  input = Arrays.asList(null, "", " Joy", " Joy ", "Joy ", "Joy");
+  trim.accept(input);
+  Assertions.assertEquals(Arrays.asList(null, "", "Joy", "Joy", "Joy", "Joy"), input);
+
+  input = Arrays.asList(null, "", " Joy", " Joy ", "Joy ", "Joy");
+  trim.andThen(upperCase).accept(input);
+  Assertions.assertEquals(Arrays.asList(null, "", "JOY", "JOY", "JOY", "JOY"), input);
+}
+```
+The test demonstrates the use of the `Consumer` interface to perform operations on a list of strings. The consumer `trim` trims white space from each string and the consumer `upperCase` converts them to uppercase. It shows the composition of consumers using `andThen` to chain operations.
+
+### BiConsumer
+
+The `BiConsumer` represents an operation that accepts two input arguments and returns no result.
+
+```java
+@FunctionalInterface
+public interface BiConsumer<T, U> {
+  void accept(T t, U u);
+  // default methods
+}
+```
+**This is the two-arity specialization of `Consumer`. Unlike most other functional interfaces, `BiConsumer` is expected to operate via side-effects.** This is a functional interface whose functional method is `accept(Object, Object)`.
+
+Let's learn how to use `BiConsumer`:
+```java
+@Test
+void biConsumer() {
+  BiConsumer<List<Double>, Double> discountRule =
+      (prices, discount) -> {
+        if (prices != null && discount != null) {
+          prices.replaceAll(price -> price * discount);
+        }
+      };
+  BiConsumer<List<Double>, Double> bulkDiscountRule =
+      (prices, discount) -> {
+        if (prices != null && discount != null && prices.size() > 2) {
+          // 20% discount cart has 2 items or more
+          prices.replaceAll(price -> price * 0.80);
+        }
+      };
+
+  double discount = 0.90; // 10% discount
+  List<Double> prices = null;
+  prices = Arrays.asList(20.0, 30.0, 100.0);
+  discountRule.accept(prices, discount);
+  Assertions.assertEquals(Arrays.asList(18.0, 27.0, 90.0), prices);
+
+  prices = Arrays.asList(20.0, 30.0, 100.0);
+  discountRule.andThen(bulkDiscountRule).accept(prices, discount);
+  Assertions.assertEquals(Arrays.asList(14.4, 21.6, 72.0), prices);
+}
+```
+This test demonstrates the use of the BiConsumer interface to apply discounts to a list of prices. The BiConsumer applies a standard discount and a bulk discount if there are more than two items in the list.
+
+Next, we'll explore various specializations of consumers and provide examples to illustrate their use cases.
+
+### IntConsumer
+
+The `IntConsumer` an operation that accepts a single int-valued argument and returns no result.
+
+```java
+@FunctionalInterface
+public interface IntConsumer {
+  void accept(int value);
+  // default methods
+}
+```
+**This is the primitive type specialization of `Consumer` for `int`.** Unlike most other functional interfaces, `IntConsumer` is expected to operate via side-effects. This is a functional interface whose functional method is `accept(int)`.
+
+Example to show how to use `IntConsumer`:
+```java
+@ParameterizedTest
+@CsvSource({
+  "15,Turning off AC.",
+  "22,---",
+  "25,Turning on AC.",
+  "52,Alert! Temperature not safe for humans."
+})
+void intConsumer(int temperature, String expected) {
+  AtomicReference<String> message = new AtomicReference<>();
+  IntConsumer temperatureSensor =
+      t -> {
+        message.set("---");
+        if (t <= 20) {
+          message.set("Turning off AC.");
+        } else if (t >= 24 && t <= 50) {
+          message.set("Turning on AC.");
+        } else if (t > 50) {
+          message.set("Alert! Temperature not safe for humans.");
+        }
+      };
+
+  temperatureSensor.accept(temperature);
+  Assertions.assertEquals(expected, message.toString());
+}
+```
+This test verifies an `IntConsumer` handling temperature sensor responses. Depending on the temperature, it sets a message indicating if the AC should be turned off, turned on, or if an alert is needed. The `@ParameterizedTest` runs multiple scenarios, checking the expected message for each temperature input.
+
+### LongConsumer
+
+The `LongConsumer` an operation that accepts a single long-valued argument and returns no result.
+
+```java
+@FunctionalInterface
+public interface LongConsumer {
+  void accept(long value);
+  // default methods
+}
+```
+**This is the primitive type specialization of `Consumer` for `long`.** Unlike most other functional interfaces, `LongConsumer` is expected to operate via side-effects. This is a functional interface whose functional method is `accept(long)`.
+
+Let's see `LongConsumer` in action:
+```java
+@Test
+void longConsumer() {
+  long duration = TimeUnit.MINUTES.toMillis(20);
+  long stopTime = Instant.now().toEpochMilli() + duration;
+  AtomicReference<String> message = new AtomicReference<>();
+
+  LongConsumer timeCheck =
+      millis -> {
+        message.set("---");
+        if (millis >= stopTime) {
+          message.set("STOP");
+        } else {
+          message.set("CONTINUE");
+        }
+      };
+
+  // Current time in milliseconds
+  long currentTimeMillis = Instant.now().toEpochMilli();
+  timeCheck.accept(currentTimeMillis);
+  Assertions.assertEquals("CONTINUE", message.toString());
+
+  long pastStopTime = currentTimeMillis + duration + 10000L;
+  timeCheck.accept(pastStopTime);
+  Assertions.assertEquals("STOP", message.toString());
+}
+```
+The test initializes a stop time, checks if the current time exceeds it, then asserts a message accordingly. Subsequently, it verifies the message for a time past the stop.
+
+### DoubleConsumer
+
+The `DoubleConsumer` an operation that accepts a single double-valued argument and returns no result.
+
+```java
+@FunctionalInterface
+public interface DoubleConsumer {
+  void accept(double value);
+  // default methods
+}
+```
+**This is the primitive type specialization of `Consumer` for `double`.** Unlike most other functional interfaces, `DoubleConsumer` is expected to operate via side-effects. This is a functional interface whose functional method is `accept(double)`.
+
+Let's learn how to use `DoubleConsumer`:
+```java
+@Test
+void doubleConsumer() {
+  AtomicReference<Double> temperature = new AtomicReference<>(0.0);
+  DoubleConsumer celsiusToFahrenheit 
+    = celsius -> temperature.set(celsius * 9 / 5 + 32);
+  celsiusToFahrenheit.accept(100);
+  Assertions.assertEquals(212.0, temperature.get());
+
+  // radius of circles
+  List<Integer> input = Arrays.asList(1, 2, 3, 4, 5);
+  // calculate area of circle
+  BiConsumer<Integer, DoubleConsumer> biConsumer =
+      (radius, consumer) -> {
+        consumer.accept(Math.PI * radius * radius);
+      };
+  DoubleStream result = input.stream().mapMultiToDouble(biConsumer);
+  Assertions.assertArrayEquals(
+      new double[] {3.14, 12.56, 28.27, 50.26, 78.53}, result.toArray(), 0.01);
+}
+```
+The test sets a temperature in Celsius, converts it to Fahrenheit using a `DoubleConsumer`, and asserts the result. It then calculates circle areas based on radii using a `BiConsumer`, streaming the results to a `DoubleStream`. `mapMultiToDouble()` applies a `BiConsumer` to each element of a stream, generating `double` values, and then flattens them into a `DoubleStream`.
+
+### ObjIntConsumer
+
+The `ObjIntConsumer` an operation that accepts an object-valued and a int-valued argument, and returns no result.
+
+```java
+@FunctionalInterface
+public interface ObjIntConsumer<T> {
+  void accept(T t, int value);
+}
+```
+**This is the (reference, int) specialization of `BiConsumer`.** Unlike most other functional interfaces, `ObjIntConsumer` is expected to operate via side-effects. This is a functional interface whose functional method is `accept(Object, int).`.
+
+Let's now check how to use `ObjIntConsumer`:
+```java
+@Test
+void objIntConsumer() {
+  AtomicReference<String> result = new AtomicReference<>();
+  ObjIntConsumer<String> trim =
+      (input, len) -> {
+        if (input != null && input.length() > len) {
+          result.set(input.substring(0, len));
+        }
+      };
+
+  trim.accept("123456789", 3);
+  Assertions.assertEquals("123", result.get());
+}
+```
+The test applies an `ObjIntConsumer` to trim a string if its length exceeds a given limit. It asserts the trimmed string.
+
+### ObjLongConsumer
+
+The `ObjLongConsumer` an operation that accepts an object-valued and a long-valued argument, and returns no result.
+
+```java
+@FunctionalInterface
+public interface ObjLongConsumer<T> {
+  void accept(T t, long value);
+}
+```
+**This is the (reference, long) specialization of `BiConsumer`.** Unlike most other functional interfaces, `ObjLongConsumer` is expected to operate via side-effects. This is a functional interface whose functional method is `accept(Object, long).`.
+
+Scenario to showcase use of `ObjLongConsumer`:
+```java
+@Test
+void objLongConsumer() {
+  AtomicReference<LocalDateTime> result = new AtomicReference<>();
+  ObjLongConsumer<LocalDateTime> trim =
+      (input, delta) -> {
+        if (input != null) {
+          result.set(input.plusSeconds(delta));
+        }
+      };
+
+  LocalDateTime input = LocalDateTime.now().toLocalDate().atStartOfDay();
+  trim.accept(input, TimeUnit.DAYS.toMillis(1));
+  Assertions.assertEquals(0, result.get().getMinute());
+}
+```
+The test applies an `ObjLongConsumer` to adjust a `LocalDateTime` by adding a given number of seconds. It verifies that the resulting time is still within the same minute.
+
+### ObjDoubleConsumer
+
+The `ObjDoubleConsumer` an operation that accepts an object-valued and a double-valued argument, and returns no result.
+
+```java
+@FunctionalInterface
+public interface ObjDoubleConsumer<T> {
+  void accept(T t, double value);
+}
+```
+**This is the (reference, double) specialization of `BiConsumer`.** Unlike most other functional interfaces, `ObjDoubleConsumer` is expected to operate via side-effects. This is a functional interface whose functional method is `accept(Object, double).`.
+
+Scenario showcasing use of `ObjDoubleConsumer`:
+```java
+@ParameterizedTest
+@CsvSource(
+    value = {"{0};12,345.678", 
+             "{0,number,#.##};12345.68", 
+             "{0,number,currency};$12,345.68"},
+    delimiter = ';')
+void objDoubleConsumer(String formatString, String expected) {
+  AtomicReference<String> result = new AtomicReference<>();
+  ObjDoubleConsumer<String> format =
+      (formatStr, input) -> {
+        result.set(MessageFormat.format(formatStr, input));
+      };
+
+  double number = 12345.678;
+  format.accept(formatString, number);
+  Assertions.assertEquals(expected, result.get());
+}
+```
 
 ## Suppliers  
    - Creating and using suppliers

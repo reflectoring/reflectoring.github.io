@@ -1742,21 +1742,173 @@ void objDoubleConsumer(String formatString, String expected) {
   Assertions.assertEquals(expected, result.get());
 }
 ```
+The test uses `ObjDoubleConsumer` to format a `double` value into a string based on different format patterns. It checks that the formatted output matches the expected results for each pattern.
 
-## Suppliers  
-   - Creating and using suppliers
-   - Lazy initialization and other applications
-   - Supplier<T>
-   - IntSupplier
-   - LongSupplier
-   - DoubleSupplier
-   - BooleanSupplier
+## Suppliers
+
+The `Supplier` functional interface represents a supplier of results. Unlike other functional interfaces like `Function` or `Consumer`, the `Supplier` doesn't accept any arguments. Instead, it provides a result of a specified type when called. This makes it particularly useful in scenarios where we need to generate or supply values without any input.
+
+We commonly use suppliers for lazy evaluation to enhance performance by postponing expensive computations until necessary. We can use suppliers in factory methods to create new object instances, in dependency injection frameworks, or to encapsulate object creation logic. Suppliers also retrieve cached values, generate missing values, and store them in the cache. Additionally, suppliers provide default configurations, fallback values, or mock data for testing isolated components.
+
+### Supplier
+
+`Supplier` represents a supplier of results. Each time we invoke a supplier, it may return a distinct result or predefined result.
+
+```java 
+@FunctionalInterface
+public interface Supplier<T> {
+    T get();
+}
+```
+**This is a functional interface whose functional method is `get()`.**
+ 
+Let's consider a simple example where we generate a random number:
+
+```java
+public class SupplierTest {
+  @Test
+  void supplier() {
+      // Supply random numbers
+      Supplier<Integer> randomNumberSupplier = () -> new Random().nextInt(100);
+      int result = randomNumberSupplier.get();
+      Assertions.assertTrue(result >=0 && result < 100);
+  }
+}
+```
+In this test, `randomNumberSupplier` generates a random number between 0 and 99. The test verifies that the generated number is within the expected range. 
+
+{{% info title="Lazy Initialization" %}}
+Traditionally, we populate the needed data first and then pass it to processing logic. With suppliers, that is no more needed. We can now defer it to the point when it is actually needed. The supplier would generate the data when we call `get()` method on it. We may not use the input due to conditional logic. Sometimes such preparations are costly e.g. file resource, network connection. In such cases we could even avoid such eager preparation of costly inputs.
+
+{{% /info %}}
+
+### IntSupplier
+
+`IntSupplier` represents a supplier of int-valued results.
+
+```java 
+@FunctionalInterface
+public interface IntSupplier {
+    int getAsInt();
+}
+```
+**This is the int-producing primitive specialization of Supplier.** There is no requirement that a distinct result be returned each time the supplier is invoked. This is a functional interface whose functional method is `getAsInt()`.
+ 
+Let's see example of `IntSupplier`:
+
+```java
+@Test
+void intSupplier() {
+  IntSupplier nextWinner = () -> new Random().nextInt(100, 200);
+  int result = nextWinner.getAsInt();
+  Assertions.assertTrue(result >= 100 && result < 200);
+}
+```
+In this test, `nextWinner` generates a random number between 100 and 199. The test verifies that the generated number is within this range by asserting the result is at least 100 and less than 200.
+
+### LongSupplier
+
+`LongSupplier` represents a supplier of long-valued results.
+
+```java 
+@FunctionalInterface
+public interface LongSupplier {
+    long getAsLong();
+}
+```
+**This is the long-producing primitive specialization of Supplier.** There is no requirement that a distinct result be returned each time the supplier is invoked. This is a functional interface whose functional method is `getAsLong()`.
+ 
+Let's see example of `LongSupplier`:
+
+```java
+@Test
+void longSupplier() {
+  LongSupplier nextWinner = () -> new Random().nextLong(100, 200);
+  LongStream winners = LongStream.generate(nextWinner).limit(10);
+  Assertions.assertEquals(10, winners.toArray().length);
+}
+```
+In this test, `nextWinner` generates random `long` numbers between 100 and 199. A `LongStream` of 10 such numbers is created and verified to contain exactly 10 elements.
+
+### DoubleSupplier
+
+`DoubleSupplier` represents a supplier of double-valued results.
+
+```java 
+@FunctionalInterface
+public interface DoubleSupplier {
+  double getAsDouble();
+}
+```
+**This is the double-producing primitive specialization of Supplier.** There is no requirement that a distinct result be returned each time the supplier is invoked. This is a functional interface whose functional method is `getAsDouble()`.
+ 
+Let's see example of `DoubleSupplier`:
+
+```java
+@Test
+void doubleSupplier() {
+  // Random data for plotting graph
+  DoubleSupplier weightSupplier = () -> new Random().nextDouble(100, 200);
+  DoubleStream dataSample = DoubleStream.generate(weightSupplier).limit(10);
+  Assertions.assertEquals(10, dataSample.toArray().length);
+}
+```
+This test uses a `DoubleSupplier` to generate random `double` values between 100 and 200 for plotting graph data. It generates 10 random values and verifies the array length to ensure it contains exactly 10 elements.
+
+### BooleanSupplier
+
+`BooleanSupplier` represents a supplier of boolean-valued results.
+
+```java 
+@FunctionalInterface
+public interface BooleanSupplier {
+  boolean getAsBoolean();
+}
+```
+**This is the boolean-producing primitive specialization of Supplier.** There is no requirement that a distinct result be returned each time the supplier is invoked. This is a functional interface whose functional method is `getAsBoolean()`.
+ 
+Let's see example of `BooleanSupplier`:
+
+```java
+@ParameterizedTest
+@CsvSource(value = {"ON,true", "OFF,false"})
+void booleanSupplier(String statusCode, boolean expected) {
+  AtomicReference<String> status = new AtomicReference<>();
+  status.set(statusCode);
+  // Simulate a service health check
+  BooleanSupplier isServiceHealthy =
+      () -> {
+        // Here, we could check the actual health of a service.
+        // simplified for test purpose
+        return status.toString().equals("ON");
+      };
+  boolean result = isServiceHealthy.getAsBoolean();
+  Assertions.assertEquals(expected, result);
+}
+```
+
+In this test, we use a `BooleanSupplier` to simulate a service health check based on a status code. The `BooleanSupplier` returns `true` if the status is "ON" and `false` otherwise. The test verifies the supplier's output against the expected value for different status codes.
+
+{{% info title="BooleanSupplier Usecases" %}}
+
+While it's true that a boolean value can only be `true` or `false`, a `BooleanSupplier` can be useful in scenarios where the `boolean` value needs to be determined dynamically based on some conditions or external factors. Here are a few practical use cases:
+
+- **Feature Flags:** In applications with feature toggles, use a `BooleanSupplier` to check whether a feature is enabled or disabled.
+- **Conditional Execution:** Use it to decide whether to execute certain logic based on dynamic conditions.
+- **Health Checks:** In microservices, determine the health status of a service or component using it.
+- **Security:** It can check if a user has the necessary permissions to access a resource or perform an action.
+
+{{% /info %}}
 
 ## Conclusion
-In this article, we learned how Java records make data class construction easier by reducing repetitive code and 
-automating functions such as `equals()`, `hashCode()`, and `toString()`. Following best practices promotes effective use, 
-focusing on appropriate scenarios and preserving code readability. Adopting records results in more efficient and manageable Java codebases.
+In this article, we learned functional interfaces, how functional programming and lambda expressions bring a new level of elegance and efficiency to our code. We began by understanding the core concept of functional programming, where functions are first-class citizens, allowing us to pass and return them just like any other variable.
 
-Equipped with the knowledge of Java records, go, create, innovate, and let the code shape the future! 
+Then we dip dived into `Function` interfaces, which enable us to create concise and powerful transformations of data. Method references provided a shorthand for lambda expressions, making our code even cleaner and more readable.
+
+Predicates, as powerful boolean-valued functions, helped us filter and match conditions seamlessly. We then moved on to operators, which perform operations on data, and consumers, which act on data without returning any result. This is particularly useful for processing lists and other collections in a streamlined manner.
+
+Lastly, we explored suppliers, which generate data on demand, perfect for scenarios requiring dynamic data creation, such as random number generation or data sampling.
+
+Each of these functional interfaces has shown us how to write more modular, reusable, and expressive code. By leveraging these idioms, we've learned to tackle complex tasks with simpler, more readable solutions. Embracing these concepts helps us become more effective Java developers, capable of crafting elegant and efficient code.
 
 Happy coding! 🚀

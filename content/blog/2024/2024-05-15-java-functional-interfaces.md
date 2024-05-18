@@ -654,7 +654,7 @@ This interface enables developers to define and use functions that transform inp
 
 `Function` interface has several variants like `BiFunction`, `IntFunction`, and more. We'll also learn about them in sections to follow.
 
-Let's see `Function` in action:
+Let's witness the power of `Function` in action:
 ```java
 @Test
 void simpleFunction() {
@@ -701,7 +701,7 @@ public interface BiFunction<T, U, R> {
   R apply(T t, U u);
   // default methods
 ```
-**This is the two-arity specialization of `Function`.** This is a functional interface whose functional method is `apply(Object, Object)`.
+This is the specialized version of `Function` with two arguments. It is a functional interface that defines the `apply(Object, Object)` functional method.
 
 For example, suppose we have a `BiFunction` that takes two integers as input and returns the bigger number. 
 
@@ -729,11 +729,11 @@ public interface IntFunction<R> {
   R apply(int value);
 }
 ```
-** This is the int-consuming primitive specialization for `Function`.** This is a functional interface whose functional method is `apply(int)`.
+This represents the int-consuming specialization for `Function`. It is a functional interface with a functional method named `apply(int)`.
 
 We can define custom logic based on integer inputs and return values of any type, making it versatile for various use cases in Java programming.
 
-Let's see the `IntFunction` in action:
+Let's witness the `IntFunction` in action:
 ```java
 @Test
 void intFunction() {
@@ -753,9 +753,9 @@ public interface IntToDoubleFunction {
   double applyAsDouble(int value);
 }
 ```
-**This is the int-to-double primitive specialization for `Function`.** This is a functional interface whose functional method is `applyAsDouble(int)`.
+This is the specialized int-to-double conversion for the `Function` interface. It is a functional interface with a method called `applyAsDouble(int)`.
 
-Let's see how to use `IntToDoubleFunction`:
+Let us explore the implementation of `IntToDoubleFunction`:
 ```java
 @Test
 void intToDoubleFunction() {
@@ -777,7 +777,7 @@ public interface IntToLongFunction {
   double applyAsLong(int value);
 }
 ```
-**This is the int-to-long primitive specialization for `Function`.** This is a functional interface whose functional method is `applyAsLong(int)`.
+This is the `Function` specialization for converting `int` to `long`. It is a functional interface with the `applyAsLong(int)` functional method.
 
 {{% info title="Functions and Stream Operations" %}}
 Functional interfaces like `IntToDoubleFunction` and `IntToLongFunction` are particularly useful when working with streams of primitive data types. For instance, if we have a stream of integers and we need to perform operations that require converting those integers to doubles or longs, we can use these functional interfaces within stream operations like `mapToInt`, `mapToDouble`, and `mapToLong`. This allows us to efficiently perform transformations on stream elements without the overhead of autoboxing and unboxing.
@@ -811,11 +811,11 @@ public interface LongFunction<R> {
   R apply(long value);
 }
 ```
-**This is the long-consuming primitive specialization for `Function`.** This is a functional interface whose functional method is `apply(long)`.
+This is the specialization for `Function` that converts `long` inputs into target type . It is a functional interface with a functional method called `apply(long)`.
 
-We can define custom logic based on long inputs and return values of any type, making it versatile for various use cases in Java programming.
+We can define custom logic based on `long` inputs and return values of any type, making it versatile for various use cases in Java programming.
 
-Let's see example of `LongFunction`:
+Here is an illustration of the `LongFunction` in action:
 ```java
 @Test
 void longFunction() {
@@ -834,10 +834,9 @@ public interface LongToDoubleFunction {
   double applyAsDouble(long value);
 }
 ```
-**This is the long-to-double primitive specialization for `Function`.** This is a functional interface whose functional method is `applyAsDouble(long)`.
+This is the specialization of `Function` that converts `long` values to double`. It is a functional interface with the functional method `applyAsDouble(long)`.
 
-Let's see an example of how to use `LongToDoubleFunction`:
-
+Here's an illustration of how to use the `LongToDoubleFunction`:
 ```java
 @Test
 void longToDoubleFunction() {
@@ -861,9 +860,9 @@ public interface LongToIntFunction {
   int applyAsInt(long value);
 }
 ```
-**This is the long-to-integer primitive specialization for `Function`.** This is a functional interface whose functional method is `applyAsInt(long)`.
+This is the `Function` primitive specialization that converts `long` to integer. It is a functional interface with the functional method `applyAsInt(long)`.
 
-Let's learn how to use `LongToIntFunction`:
+Discover the usage of `LongToIntFunction` together:
 ```java
 @Test
 void longToIntFunction() {
@@ -884,7 +883,7 @@ public interface DoubleFunction<R> {
   R apply(double value);
 }
 ```
-**This is the double-consuming primitive specialization for `Function`.** This is a functional interface whose functional method is apply(double).
+This is the specialization for `Function` that accepts primitive `double`. It has functional method is `apply(double)`.
  
 Let's example showing how to use `DoubleFunction`:
 ```java
@@ -908,9 +907,9 @@ public interface DoubleToIntFunction {
   int applyAsInt(double value);
 }
 ```
-**This is the double-to-int primitive specialization for `Function`.** This is a functional interface whose functional method is `applyAsInt(double)`.
+This represents the specialized version of `Function` for converting doubles to integers. It is a functional interface with the method `applyAsInt(double)`.
  
-Here is an example showing how to use `DoubleToIntFunction`:
+This is a demonstration illustrating the usage of `DoubleToIntFunction`:
 ```java
 @Test
 void doubleToIntFunction() {
@@ -931,9 +930,9 @@ public interface DoubleToLongFunction {
   int applyAsLong(double value);
 }
 ```
-**This is the double-to-long primitive specialization for `Function`.** This is a functional interface whose functional method is `applyAsLong(double)`.
+This represents the double-to-long primitive specialization for `Function`, which is a functional interface with the functional method `applyAsLong(double)`.
  
-Example showing how to use `DoubleToLongFunction`:
+Here is an example that demonstrates the usage of `DoubleToLongFunction`:
 ```java
 @Test
 void doubleToLongFunction() {
@@ -957,9 +956,9 @@ public interface ToDoubleFunction<T> {
   double applyAsDouble(T t);
 }
 ```
-**This is the double-producing primitive specialization for `Function`.** This is a functional interface whose functional method is `applyAsDouble(Object)`. 
+This is the specialized primitive `Function` that produces `double` values. It is a functional interface with the functional method `applyAsDouble(Object)`. 
 
-Let's try to use `ToDoubleBiFunction`:
+Let's attempt to use the `ToDoubleBiFunction`:
 ```java
 @Test
 void toDoubleFunction() {
@@ -982,9 +981,9 @@ public interface ToDoubleBiFunction<T, U> {
   double applyAsDouble(T t, U u);
 }
 ```
-**This is the double-producing primitive specialization for `BiFunction`.** This is a functional interface whose functional method is `applyAsDouble(Object, Object)`.
+This is the special `Function` that can produce `double` values. It has a functional method called `applyAsDouble(Object)`.
  
-Let's try to use `ToDoubleBiFunction`:
+Let's give `ToDoubleBiFunction` a shot:
 ```java
 @Test
 void toDoubleBiFunction() {
@@ -1007,10 +1006,9 @@ public interface ToIntFunction<T> {
   int applyAsInt(T t);
 }
 ```
-**This is the int-producing primitive specialization for `Function`.** This is a functional interface whose functional method is `applyAsInt(Object)`
+This is the integer-producing primitive specialization for the `Function` interface. It provides a template for functions that take an argument and return a result. Its specialization, `applyAsInt(Object)`, is a functional method specifically designed to produce an integer result. Its purpose is to allow for operations on data that return a primitive integer, thereby improving performance by avoiding unnecessary object wrappers. This specialization is an essential tool in functional programming paradigms within Java, allowing developers to write cleaner and more efficient code.
 
-Let's check how to put `ToIntFunction` to use:
-
+Let's see how we can use the `ToIntFunction` in action:
 ```java
 @Test
 void toIntFunction() {
@@ -1033,10 +1031,9 @@ public interface ToIntBiFunction<T, U> {
   int applyAsInt(T t, U u);
 }
 ```
-**This is the int-producing primitive specialization for `BiFunction`.** This is a functional interface whose functional method is `applyAsInt(Object, Object)`.
+The int-producing primitive specialization for `BiFunction` is a functional interface that contains a single abstract method called `applyAsInt()`, which takes two input parameters of type `Object` and returns an `int`.
 
-Let's learn to use `ToIntBiFunction`:
-
+Let's discover how to use `ToIntBiFunction`:
 ```java
 @Test
 void toIntBiFunction() {
@@ -1061,10 +1058,9 @@ public interface ToLongFunction<T> {
   long applyAsLong(T t);
 }
 ```
-**This is the long-producing primitive specialization for `Function`.** This is a functional interface whose functional method is `applyAsLong(Object)`
+This is a functional interface representing a primitive specialization for `Function`. It has a functional method called `applyAsLong(Object)`.
 
-Let's implement a `ToLongFunction` expression:
-
+Let's create a `ToLongFunction` expression together:
 ```java
 @Test
 void toLongFunction() {
@@ -1089,10 +1085,9 @@ public interface ToLongBiFunction<T, U> {
   long applyAsLong(T t, U u);
 }
 ```
-**This is the long-producing primitive specialization for `BiFunction`.** This is a functional interface whose functional method is `applyAsLong(Object, Object)`.
+The `BiFunction` interface represents a function that accepts two arguments and produces a `long` result. It has a functional method called `applyAsLong()` that takes two input parameters and returns a `long` value.
 
-Let's see example of `ToLongBiFunction`:
-
+Let's check out an example of the `ToLongBiFunction`:
 ```java
 @Test
 void toLongBiFunction() {
@@ -1131,11 +1126,9 @@ public interface UnaryOperator<T> extends Function<T, T> {
   // helper methods
 }
 ```
-
 **This is a specialization of `Function` for the case where the operand and result are of the same type.** This is a functional interface whose functional method is `apply(Object)`.
 
-Let's see example of `UnaryOperator`:
-
+Let's check out an example of `UnaryOperator`:
 ```java
 public class OperatorTest {
   @Test
@@ -1164,10 +1157,9 @@ public interface IntUnaryOperator {
   // helper methods
 }
 ```
-**This is the primitive type specialization of `UnaryOperator` for `int`.** This is a functional interface whose functional method is `applyAsInt(int)`.
+This represents the primitive type specialization of `UnaryOperator` for integers. It's a functional interface featuring a method named `applyAsInt(int)`.
 
-Let's see how to use `IntUnaryOperator`:
-
+Let's learn how to use the `IntUnaryOperator`:
 ```java
 void intUnaryOperator() {
   // formula y = x^2 + 2x + 1
@@ -1199,11 +1191,9 @@ public interface LongUnaryOperator {
   // helper methods
 }
 ```
+This is the primitive type specialization of `UnaryOperator` for `long` numbers. It is a functional interface with a method called `applyAsLong(long)`.
 
-**This is the primitive type specialization of UnaryOperator for long.** This is a functional interface whose functional method is `applyAsLong(long)`.
-
-Let's see how to use `LongUnaryOperator`:
-
+Let's find out how we can use `LongUnaryOperator`:
 ```java
 @Test
 void longUnaryOperator() {
@@ -1233,9 +1223,9 @@ public interface DoubleUnaryOperator {
   // helper methods
 }
 ```
-**This is the primitive type specialization of `UnaryOperator` for `double`.** This is a functional interface whose functional method is `applyAsDouble(double)`.
+The primitive type specialization of `UnaryOperator` for `double` is a functional interface that contains a single method called `applyAsDouble()`, which takes a `double` as input and returns a `double`.
 
-Example of how to use `DoubleUnaryOperator`:
+Here's an example of how we can use `DoubleUnaryOperator`:
 ```java
 @Test
 void doubleUnaryOperator() {
@@ -1264,9 +1254,9 @@ public interface BinaryOperator<T> extends BiFunction<T,T,T> {
   // helper methods
 }
 ```
-**This is a specialization of `BiFunction` for the case where the operands and the result are all of the same type.** This is a functional interface whose functional method is `apply(Object, Object)`.
+`BiFunction` is a specialized functional interface. We use it when the operands and the result are all of the same type. It has a functional method called `apply()` that takes two objects as input and produces an object of the same type as the operands.
 
-Let's use `BinaryOperator`:
+Let's try out `BinaryOperator`:
 ```java
 @Test
 void binaryOperator() {
@@ -1317,9 +1307,9 @@ public interface IntBinaryOperator {
   int applyAsInt(int left, int right);
 }
 ```
-**This is the primitive type specialization of `BinaryOperator` for `int`.** This is a functional interface whose functional method is `applyAsInt(int, int)`.
+This is the primitive type specialization of `BinaryOperator` for numbers. It's a special type of interface that has a functional method called `applyAsInt()`, which takes two numbers as input and returns an integer.
 
-Example of `IntBinaryOperator` to demonstrate how to use it:
+Here's an example of how to use the `IntBinaryOperator`. Check it out:
 ```java
 @Test
 void intBinaryOperator() {
@@ -1342,10 +1332,9 @@ public interface LongBinaryOperator {
   long applyAsLong(long left, long right);
 }
 ```
-**This is the primitive type specialization of `BinaryOperator` for `long`.** This is a functional interface whose functional method is `applyAsLong(long, long)`.
+This is the primitive type specialization of `BinaryOperator` for `long` numbers. It's a special interface where the functional method is called `applyAsLong()` and it works with two `long` numbers.
 
-Let's see how to use `LongBinaryOperator`:
-
+Let's figure out how to work with `LongBinaryOperator`:
 ```java
 @Test
 void longBinaryOperator() {
@@ -1380,10 +1369,9 @@ public interface DoubleBinaryOperator {
   double applyAsDouble(double left, double right);
 }
 ```
-**This is the primitive type specialization of `BinaryOperator` for `double`.** This is a functional interface whose functional method is `applyAsDouble(double, double)`.
+This is the basic type specialization of `BinaryOperator` for `double`. It's a functional interface that has a functional method called `applyAsDouble(double, double)`.
 
-Following example shows how to use `DoubleBinaryOperator`:
-
+Here's an example of how we can use `DoubleBinaryOperator`:
 ```java
 @Test
 void doubleBinaryOperator() {
@@ -1419,7 +1407,7 @@ public interface Consumer<T> {
   // default methods
 }
 ```
-Unlike most other functional interfaces, Consumer is expected to operate via side-effects. This is a functional interface whose functional method is `accept(Object)`.
+`Consumer` is a unique functional interface that stands out from the rest because it operates through side-effects. **It performs actions rather than returning a value.** The functional method of `Consumer` is `accept(Object)`, which allows it to accept an object and perform some operation on it.
 
 Consumers are particularly useful in functional programming and stream processing, where operations are often performed on elements of collections or streams in a concise and readable manner. They enable us to focus on the action to be performed rather than the iteration logic.
 
@@ -1462,9 +1450,9 @@ public interface BiConsumer<T, U> {
   // default methods
 }
 ```
-**This is the two-arity specialization of `Consumer`. Unlike most other functional interfaces, `BiConsumer` is expected to operate via side-effects.** This is a functional interface whose functional method is `accept(Object, Object)`.
+This is the special version of `Consumer` that takes two arguments. Unlike other functional interfaces, `BiConsumer` results in side effects. It is a functional interface with a functional method called `accept(Object, Object)`.
 
-Let's learn how to use `BiConsumer`:
+We're going to figure out how to utilize `BiConsumer` in following example:
 ```java
 @Test
 void biConsumer() {
@@ -1507,9 +1495,9 @@ public interface IntConsumer {
   // default methods
 }
 ```
-**This is the primitive type specialization of `Consumer` for `int`.** Unlike most other functional interfaces, `IntConsumer` is expected to operate via side-effects. This is a functional interface whose functional method is `accept(int)`.
+`IntConsumer` is a specialized type of `Consumer` for integers. Unlike most other functional interfaces, `IntConsumer` produces side-effects. It is a functional interface with a method called `accept(int)`.
 
-Example to show how to use `IntConsumer`:
+Here is an illustration on how to use the `IntConsumer` interface:
 ```java
 @ParameterizedTest
 @CsvSource({
@@ -1548,9 +1536,9 @@ public interface LongConsumer {
   // default methods
 }
 ```
-**This is the primitive type specialization of `Consumer` for `long`.** Unlike most other functional interfaces, `LongConsumer` is expected to operate via side-effects. This is a functional interface whose functional method is `accept(long)`.
+`LongConsumer` is the robust, primitive type specialization of `Consumer` specifically for `long`. Uniquely, and unlike the majority of functional interfaces, `LongConsumer` operates effectively via side-effects. It's functional method is `accept(long)`.
 
-Let's see `LongConsumer` in action:
+Let's witness the `LongConsumer` in action:
 ```java
 @Test
 void longConsumer() {
@@ -1590,9 +1578,9 @@ public interface DoubleConsumer {
   // default methods
 }
 ```
-**This is the primitive type specialization of `Consumer` for `double`.** Unlike most other functional interfaces, `DoubleConsumer` is expected to operate via side-effects. This is a functional interface whose functional method is `accept(double)`.
+It is `double` primitive type specialization of `Consumer` that works with side effects, unlike most other functional interfaces. The functional method for this interface is `accept(double)`.
 
-Let's learn how to use `DoubleConsumer`:
+We will now explore how to use the `DoubleConsumer` interface:
 ```java
 @Test
 void doubleConsumer() {
@@ -1625,7 +1613,7 @@ public interface ObjIntConsumer<T> {
   void accept(T t, int value);
 }
 ```
-**This is the (reference, int) specialization of `BiConsumer`.** Unlike most other functional interfaces, `ObjIntConsumer` is expected to operate via side-effects. This is a functional interface whose functional method is `accept(Object, int)`.
+`ObjIntConsumer` interface is a special type of `BiConsumer`. Unlike most other functional interfaces, `ObjIntConsumer` is designed to work by directly changing the input. Its functional method is `accept(Object, int)`.
 
 Let's now check how to use `ObjIntConsumer`:
 ```java
@@ -1654,9 +1642,9 @@ public interface ObjLongConsumer<T> {
   void accept(T t, long value);
 }
 ```
-**This is the (reference, long) specialization of `BiConsumer`.** Unlike most other functional interfaces, `ObjLongConsumer` is expected to operate via side-effects. This is a functional interface whose functional method is `accept(Object, long)`.
+The `ObjIntConsumer` interface is a specialized version of `BiConsumer` that operates via side-effects. Unlike many other functional interfaces, `ObjIntConsumer` is designed to perform its operations through side-effects. This functional interface has a method called `accept()`, which takes an `Object` and an `int` as parameters.
 
-Scenario to showcase use of `ObjLongConsumer`:
+Example showcasing the implementation of `ObjLongConsumer`:
 ```java
 @Test
 void objLongConsumer() {
@@ -1684,7 +1672,7 @@ public interface ObjDoubleConsumer<T> {
   void accept(T t, double value);
 }
 ```
-**This is the (reference, double) specialization of `BiConsumer`.** Unlike most other functional interfaces, `ObjDoubleConsumer` is expected to operate via side-effects. This is a functional interface whose functional method is `accept(Object, double)`.
+This is the specialization of BiConsumer for handling an object and a double value. Unlike most other functional interfaces, ObjDoubleConsumer is intended to have side-effects when it is used. It is a functional interface with the method `accept(Object, double)`.
 
 Scenario showcasing use of `ObjDoubleConsumer`:
 ```java
@@ -1726,7 +1714,6 @@ public interface Supplier<T> {
 **Each time we invoke a supplier, it may return a distinct result or predefined result.** This is a functional interface whose functional method is `get()`.
  
 Let's consider a simple example where we generate a random number:
-
 ```java
 public class SupplierTest {
   @Test
@@ -1754,10 +1741,9 @@ public interface IntSupplier {
     int getAsInt();
 }
 ```
-**This is the int-producing primitive specialization of Supplier.** There is no requirement that a distinct result be returned each time the supplier is invoked. This is a functional interface whose functional method is `getAsInt()`.
+This specialized version of `Supplier` produces `int` values. It offers the flexibility to return a distinct result for each invocation. As a functional interface, it provides the `getAsInt()` functional method as its core functionality.
  
-Let's see example of `IntSupplier`:
-
+Here is an example showcasing the use of `IntSupplier`:
 ```java
 @Test
 void intSupplier() {
@@ -1777,10 +1763,9 @@ public interface LongSupplier {
     long getAsLong();
 }
 ```
-**This is the long-producing primitive specialization of Supplier.** There is no requirement that a distinct result be returned each time the supplier is invoked. This is a functional interface whose functional method is `getAsLong()`.
+Think of this as the long-producing friendly cousin of `Supplier`. There's no hard and fast rule that it would return a different result each time we call the supplier. This is a functional interface with `getAsLong()` as its functional method.
  
-Let's see example of `LongSupplier`:
-
+Let's check out an example of `LongSupplier`:
 ```java
 @Test
 void longSupplier() {
@@ -1800,10 +1785,9 @@ public interface DoubleSupplier {
   double getAsDouble();
 }
 ```
-**This is the double-producing primitive specialization of Supplier.** There is no requirement that a distinct result be returned each time the supplier is invoked. This is a functional interface whose functional method is `getAsDouble()`.
+This represents the specialized form of the `Supplier` functional interface that produces double values. It does not necessarily yield a distinct result. The functional method associated with this interface is `getAsDouble()`.
  
-Let's see example of `DoubleSupplier`:
-
+Here's an example showcasing the use of `DoubleSupplier:
 ```java
 @Test
 void doubleSupplier() {
@@ -1824,9 +1808,9 @@ public interface BooleanSupplier {
   boolean getAsBoolean();
 }
 ```
-**This is the boolean-producing primitive specialization of Supplier.** There is no requirement that a distinct result be returned each time the supplier is invoked. This is a functional interface whose functional method is `getAsBoolean()`.
+This is a special type of data supplier that produces `true` or `false` values. It's important to note that it doesn't have to return a different result every time we call it. This is a type of function that has a functional method called `getAsBoolean()`.
  
-Let's see example of `BooleanSupplier`:
+Check out this `BooleanSupplier` example in action:
 
 ```java
 @ParameterizedTest

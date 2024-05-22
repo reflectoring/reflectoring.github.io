@@ -8,7 +8,7 @@ image: images/stock/0120-data-stream-1200x628-branded.jpg
 url: apache-http-client-reactive-apis
 ---
 
-In this article we are going to learn about reactive APIs offered by Apache HttpClient APIs. We are going to explore the how to reactive, full-duplex HTTP/1.1 message exchange using RxJava and Apache HttpClient. So get ready to learn to implement HTTP interactions with Apache HttpClient! 
+In this article we are going to learn about reactive APIs offered by Apache HttpClient APIs. We are going to explore how to use reactive, full-duplex HTTP/1.1 message exchange using RxJava and Apache HttpClient. So get ready to learn to implement HTTP interactions with Apache HttpClient! 
 
 ## The "Create a HTTP Client with Apache HttpClient" Series
 
@@ -31,7 +31,7 @@ We are going to use [Reqres API Server](https://reqres.in) to test different HTT
 {{% /info %}}
 
 ## HttpClient (Reactive APIs)
-In this section of examples we are going to learn how to use `HttpAsyncClient` and RxJava for sending reactive, full-duplex HTTP/1.1 message exchange.
+In this section of examples we are going to learn how to use `HttpAsyncClient` in combination with RxJava for sending reactive, full-duplex HTTP/1.1 message exchange.
 
 {{% info title="HTTP and CRUD Operations" %}}
 CRUD operations refer to Create, Read, Update, and Delete actions performed on data. In the context of HTTP endpoints for a `/users` resource:
@@ -51,9 +51,9 @@ Reactive Java Programming, also known as [ReactiveX or Reactive Extensions](http
 RxJava allows developers to write concise and expressive code by leveraging operators like map, filter, and reduce to perform common data transformations. It also provides features for error handling, backpressure handling, and concurrency control, making it suitable for building responsive and resilient applications.
 {{% /info %}}
 \
-Let's now implement the logic to call the endpoints reactive way.
+Let's now implement the logic to call the endpoints in a reactive way.
 
-We need to set up following maven dependencies:
+We need to set up following Maven dependencies:
 ```xml
 <dependency>
     <groupId>org.apache.httpcomponents.core5</groupId>
@@ -69,7 +69,7 @@ We need to set up following maven dependencies:
 ```
 
 Here is the helper class that has methods to start and stop the async client and methods to execute http requests.
-Let's see the logic to reactive request processing.
+Here's the logic for reactive request processing:
 
 ```java
 public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {

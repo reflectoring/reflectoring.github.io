@@ -587,28 +587,8 @@ In this configuration, we are interested in the following:
 2. anyRequest().authenticated() - Spring Security will secure all other API requests.
 3. addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) - This will wire the `JwtFilter` before `UsernamePasswordAuthenticationFilter` in the FilterChain.
 4. exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint) - In case of authentication exception, `JwtAuthenticationEntryPoint` class will be called. Here we have created a `JwtAuthenticationEntryPoint` class that implements `org.springframework.security.web.AuthenticationEntryPoint` in order to handle unauthorized errors gracefully.
-A simple implementation of the class is as below:
-````java
-@Component
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-    @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType(APPLICATION_JSON_VALUE);
-        Exception exception = (Exception) request.getAttribute("exception");
-        String message;
-        if (exception != null) {
+We will look at handling exceptions in detail in the further sections.
 
-        } else {
-            if (authException.getCause() != null) {
-                message = authException.getCause().toString();
-            } else {
-
-            }
-        }
-    }
-}
-````
 With these changes, let's restart our application and inspect the logs:
 ````text
 2024-05-22 16:13:07.803  INFO 16188 --- [           main] 
@@ -630,6 +610,7 @@ We see the `JwtFilter` being chained which indicates that the Basic auth has now
 Now, let's try to hit the `/token/create` endpoint again. We see that the endpoint is now able to successfully return the generated token:
 {{% image alt="settings" src="images/posts/spring-security-and-jwt/token-200.png" %}}
 
+
 ### Securing Library Application Endpoints
 Now, that we are able to successfully create the token, we need to pass this token to our library application to successfully call `/library/books/all`.
 Let's add an `Authorization` header of type `Bearer Token` with the generated token value and fire the request.
@@ -642,7 +623,161 @@ In this section, we will take a look at some commonly encountered exceptions fro
 2. [UnsupportedJwtException](https://javadoc.io/doc/io.jsonwebtoken/jjwt/0.9.1/io/jsonwebtoken/UnsupportedJwtException.html) - This exception is thrown when a JWT is received in a format that is not expected. The most common use case of this error is when we try to parse a signed JWT with the method `Jwts.parserBuilder().setSigningKey(jwtProperties.getSecretKey())
    .build().parseClaimsJwt` instead of `Jwts.parserBuilder().setSigningKey(jwtProperties.getSecretKey())
    .build().parseClaimsJws`
-3. 
+3. [MalformedJwtException](https://javadoc.io/doc/io.jsonwebtoken/jjwt/0.9.1/io/jsonwebtoken/MalformedJwtException.html) - This exception indicates the JWT is incorrectly constructed.
+4. [IncorrectClaimException](https://javadoc.io/doc/io.jsonwebtoken/jjwt-api/latest/io/jsonwebtoken/IncorrectClaimException.html) - Indicates that the required claim does not have the expected value. Therefore, the JWT is not valid.
+5. [MissingClaimException](https://javadoc.io/doc/io.jsonwebtoken/jjwt-api/latest/io/jsonwebtoken/MissingClaimException.html) - This exception indicates that a required claim is missing in the JWT and hence not valid.
+
+In general, it is considered a good practice to handle authentication related exceptions gracefully. In case of Basic Authentication, Spring security **by default adds the `BasicAuthenticationEntryPoint` to the Security filter chain which wraps basic auth related errors to 401 Unauthorized.**
+Similarly, in our example we have explicitly created a `JwtAuthenticationEntryPoint` to handle possible authentication errors such as spring security's `BadCredentialsException` or JJwt's `MalformedJwtException`.
+````java
+@Component
+@Slf4j
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        Exception exception = (Exception) request.getAttribute("exception");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(APPLICATION_JSON_VALUE);
+        log.error("Authentication Exception: {} ", exception, exception);
+        Map<String, Object> data = new HashMap<>();
+        data.put("message", exception != null ? exception.getMessage() : authException.getCause().toString());
+        OutputStream out = response.getOutputStream();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(out, data);
+        out.flush();
+    }
+}
+````
+In our `JwtFilter` class, we are adding the exception message to the `HttpServletRequest` `exception` attribute. This allows us to use `request.getAttribute("exception")` and write it to the output stream.
+````java
+public class JwtFilter extends OncePerRequestFilter {
+   @Override
+   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+      try {
+         //validate token here
+      } catch (ExpiredJwtException jwtException) {
+         request.setAttribute("exception", jwtException);
+      } catch (BadCredentialsException | UnsupportedJwtException | MalformedJwtException e) {
+         log.error("Filter exception: {}", e.getMessage());
+         request.setAttribute("exception", e);
+      }
+      filterChain.doFilter(request, response);
+   }
+}
+````
+With these changes, we can now see an exception message with `401 Unauthorized` exceptions as below:
+{{% image alt="settings" src="images/posts/spring-security-and-jwt/exceptionMsg.png" %}}
+
+However, it is important to note that `JwtFilter` only gets called for the endpoints that are secured by spring security through the spring security filter chain. In our case the endpoint is `/library/books/all`.
+Since, we have excluded the token endpoint `/token/create` from spring security, the exception handling done under `JwtAuthenticationEntryPoint` will not apply here. For such cases, let's handle exceptions using Spring's global exception handler.
+````java
+@ControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler({BadCredentialsException.class})
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(exception.getMessage());
+    }
+}
+````
+With this exception handling, exception caused due to bad credentials will now be handled with `401 Unauthorized error`
+{{% image alt="settings" src="images/posts/spring-security-and-jwt/badCreds.png" %}}
+
+## Swagger documentation
+In this section, we'll look at how to configure Open API for JWT.
+We will add the below Maven dependency:
+````xml
+<dependency>
+   <groupId>org.springdoc</groupId>
+   <artifactId>springdoc-openapi-ui</artifactId>
+   <version>1.7.0</version>
+</dependency>
+
+````
+
+Next, lets add the below confguration:
+````java
+@OpenAPIDefinition(
+        info = @Info(
+                title = "Library application",
+                description = "Get all library books",
+                version = "1.0.0",
+                license = @License(
+                        name = "Apache 2.0",
+                        url = "http://www.apache.org/licenses/LICENSE-2.0"
+                )),
+        security = {
+                @SecurityRequirement(
+                        name = "bearerAuth"
+                )
+        }
+        )
+@SecurityScheme(
+        name = "bearerAuth",
+        description = "JWT Authorization",
+        scheme = "bearer",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        in = SecuritySchemeIn.HEADER
+)
+public class OpenApiConfig {
+}
+
+````
+Here, security is described using one or more @SecurityScheme. The `type` defined here `SecuritySchemeType.HTTP` applies to both Basic Auth and JWT.
+The other attributes like `scheme` and `bearerFormat` depend on this `type` attribute.
+After defining the security schemes, we can apply them to the whole application or individual operations by adding the 
+`security` section on the root level or operation level.
+In or example, all API operations will use the bearer token authentication scheme.
+For more information, on configuring multiple security schemes and applying a different scheme at the API level, refer to its [documentation.](https://swagger.io/docs/specification/authentication/).
+
+Next, let's add some basic swagger annotations to our Controller classes, in order to add descriptions to the API operations.
+````java
+@RestController
+@Tag(name = "Library Controller", description = "Get library books")
+public class BookController {
+}
+
+@RestController
+@Tag(name = "Create Token", description = "Create Token")
+public class TokenController {
+}
+
+````
+
+Also, we will use the below property to override the URL where Springdoc's Swagger-UI loads.
+````yaml
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+````
+With this configuration, swagger ui will now be available at `http://localhost:8083/swagger-ui/index.html`
+
+Let's try to run the application and load the swagger page at the mentioned URL. When we try to hit the endpoint, we see this:
+{{% image alt="settings" src="images/posts/spring-security-and-jwt/swagger-err.png" %}}
+This is because all endpoints in the application are automatically secured. We need a way to explicitly exclude the swagger endpoint from being secured.
+We can do this by adding the `WebSecurityCustomizer` bean and excluding the swagger endpoints to our `SecurityConfiguration` class.
+````java
+@Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().antMatchers(ArrayUtils.addAll(buildExemptedRoutes()));
+    }
+
+    private String[] buildExemptedRoutes() {
+        return new String[] {"/swagger-ui/**","/v3/api-docs/**"};
+    }
+````
+Now, when we run the application, the swagger page will load as below:
+{{% image alt="settings" src="images/posts/spring-security-and-jwt/swagger.png" %}}
+
+Since we have only one security scheme, let's add the JWT token to the `Authorize button` at the top of the swagger page:
+{{% image alt="settings" src="images/posts/spring-security-and-jwt/swagger-auth.png" %}}
+
+With the bearer token set, let's try to hit the `/library/books/all` endpoint:
+{{% image alt="settings" src="images/posts/spring-security-and-jwt/swagger-lib.png" %}}
+
+With this, we have successfully configured swagger endpoints for our application.
 
 
 

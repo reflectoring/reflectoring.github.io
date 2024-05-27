@@ -22,7 +22,6 @@ This article is the second part of a series:
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/create-a-http-client-wth-apache-http-client" %}}
 
-  
 Let's now learn commonly used options to configure Apache HttpClient for web communication.
 
 ## HttpClient Client Connection Management
@@ -105,7 +104,7 @@ By understanding and configuring connection management settings, developers can 
 The caching HttpClient inherits all configuration options and parameters of the default non-caching implementation (this includes setting options like timeouts and connection pool sizes). For caching specific configuration, you can provide a `CacheConfig` instance to customize behavior.
 
 {{% info title="HttpClient Caching Mechanism" %}}
-The HttpClient Cache module integrates caching functionality into HttpClient, mimicking a browser cache for HTTP/1.1 compliance. It seamlessly replaces the default client, serving cached requests when possible. It follows the *Chain of Responsibility* pattern, ensuring transparent client-server interaction. It handles cache validation using conditional GETs and Cache-Control extensions. The module adheres to HTTP protocol standards, providing transparent caching proxy capabilities. Requests are corrected for protocol compliance, and cache entries are invalidated accordingly. Cached responses are served directly if valid, revalidated if necessary, or fetched from the origin server. Responses are examined for cacheability, stored if applicable, or directly returned if too large. The caching mechanism operates within the request execution pipeline, augmenting HttpClient's functionality without altering its core implementation.
+The HttpClient Cache module integrates caching functionality into HttpClient, mimicking a browser cache for HTTP/1.1 compliance. It seamlessly replaces the default client, serving cached requests when possible. It follows the *Chain of Responsibility* pattern, ensuring transparent client-server interaction. Not only that, but it handles cache validation using conditional GETs and Cache-Control extensions. The module adheres to HTTP protocol standards, providing transparent caching proxy capabilities. It corrects the requests for protocol compliance, and invalidates the cache entries accordingly. It serves the cached responses directly if valid, revalidates if necessary, or fetches from the origin server. Furthermore, it examines the responses for cacheability, stored if applicable, or directly returned if too large. The caching mechanism operates within the request execution pipeline, augmenting HttpClient's functionality without altering its core implementation.
 
 The caching HttpClient's default implementation stores cache entries and responses in JVM memory, prioritizing performance. For applications needing larger caches or persistence, options like `EhCache` or `memcached` are available, allowing disk storage or external process storage. Alternatively, custom storage backends can be implemented via the `HttpCacheStorage` interface, ensuring HTTP/1.1 compliance while tailoring storage to specific needs. Multi-tier caching hierarchies are achievable, combining different storage methods like in-memory and disk or remote storage, akin to virtual memory systems. This flexibility enables tailored caching solutions to suit diverse application requirements.
 {{% /info %}}
@@ -161,7 +160,7 @@ public class CustomHttpRequestInterceptor implements HttpRequestInterceptor {
 
 ```
 
-The `CustomHttpRequestInterceptor` implements the `HttpRequestInterceptor` interface provided by Apache HttpClient. This interceptor is designed to intercept outgoing HTTP requests before they are sent to the server. In the `process()` method the interceptor modifies the request object by adding custom headers. In this specific implementation,
+The `CustomHttpRequestInterceptor` implements the `HttpRequestInterceptor` interface provided by Apache HttpClient. This interceptor intercepts outgoing HTTP requests before they are sent to the server. In the `process()` method the interceptor modifies the request object by adding custom headers. In this specific implementation,
 it sets `x-request-id` header to a randomly generated UUID string. We commonly use such header to uniquely identify each request, which can be helpful for tracking and debugging purposes. Then it sets `x-api-key header` to a predefined secret key. This header would be used for authentication or authorization purposes, allowing the server to verify the identity of the client making the request.
 
 Overall, this interceptor enhances outgoing HTTP requests by adding custom headers, which can serve various purposes such as request identification, security, or API key authentication.
@@ -203,7 +202,7 @@ public class CustomHttpResponseInterceptor implements HttpResponseInterceptor {
 
 ```
 
-The `CustomHttpResponseInterceptor` implements the `HttpResponseInterceptor` interface provided by Apache HttpClient. This interceptor is designed to intercept incoming HTTP responses before they are returned to the client. In the `process()` method the interceptor logs the status code of the response object.
+The `CustomHttpResponseInterceptor` implements the `HttpResponseInterceptor` interface provided by Apache HttpClient. This interceptor intercepts incoming HTTP responses before they are returned to the client. In the `process()` method the interceptor logs the status code of the response object.
 
 Now let's build an HTTP client using this request interceptor:
 
@@ -219,18 +218,18 @@ In this code snippet, we first create an instance of `CustomHttpResponseIntercep
 
 Then we call `addResponseInterceptorFirst()` method passing the interceptor object as an argument. This method adds the `interceptor` as the first response interceptor in the chain of interceptors. It also has a method `addResponseInterceptorLast()` to add the interceptor at the end.
 
-By adding the interceptor first, it ensures that the response code logged before the response is manipulated further. Finally, it calls the `build()` method to create the `CloseableHttpClient` instance with the configured response interceptor.
+By adding the interceptor first, it ensures that the response code logged before we manipulate the response further. Finally, it calls the `build()` method to create the `CloseableHttpClient` instance with the configured response interceptor.
 
 ## Configuring Execution Interceptors
 
-An execution interceptor allows developers to intercept the execution of HTTP requests and responses. It can intercept various stages of the request execution process, such as before sending the request, after receiving the response, or when an exception occurs during execution. Execution interceptors can be used for tasks like logging, caching, manipulate request and response, or error handling.
+An execution interceptor allows developers to intercept the execution of HTTP requests and responses. It can intercept various stages of the request execution, such as before sending the request, after receiving the response, or when an exception occurs during execution. Execution interceptors can be used for tasks like logging, caching, manipulate request and response, or error handling.
 
 {{% info title="ExecChain and Scope" %}}
 In Apache HttpClient 5, `ExecChain` and `ExecChain.Scope` play key roles in request execution and interception.
 
 `ExecChain` represents the execution chain for processing HTTP requests and responses. It defines the core method `proceed()`, which is responsible for executing the request and returning the response. This interface allows for interception and modification of the request and response at various stages of execution.
 
-`ExecChain.Scope`, on the other hand, represents the scope within which a request is executed. It provides contextual information about the execution environment, such as the target host and the request configuration. This scope helps in determining the context of request execution, allowing interceptors and handlers to make informed decisions based on the execution context.
+`ExecChain.Scope`, on the other hand, represents the scope within which it executes the request. It provides contextual information about the execution environment, such as the target host and the request configuration. This scope helps in determining the context of request execution, allowing interceptors and handlers to make informed decisions based on the execution context.
 
 {{% /info %}}
   

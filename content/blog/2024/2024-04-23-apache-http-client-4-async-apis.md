@@ -21,7 +21,6 @@ This article is the fourth part of a series:
 5. [Reactive APIs Offered by Apache HttpClient](/apache-http-client-reactive-apis/)
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/create-a-http-client-wth-apache-http-client" %}}
-
   
 Let's now learn how to use Apache HttpClient for web communication. We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the async APIs offered by Apache HttpClient.
 
@@ -113,7 +112,7 @@ Now let's understand why do we need to start and stop the HTTP async client. We 
 
 The need to start and stop the Apache HttpAsyncClient but not for the classic HttpClient is primarily due to their underlying architectures and usage scenarios.
 
-Apache `HttpAsyncClient` is designed for asynchronous, non-blocking HTTP communication. It operates based on an event-driven model, where requests are sent asynchronously, and responses are processed in a non-blocking manner. This asynchronous nature requires explicit management of the client's life cycle, including starting and stopping it, to control the execution of asynchronous tasks and resources.
+Apache `HttpAsyncClient` is designed for asynchronous, non-blocking HTTP communication. It operates based on an event-driven model, sends requests asynchronously, and processes responses in a non-blocking manner. This asynchronous nature requires explicit management of the client's life cycle, including starting and stopping it, to control the execution of asynchronous tasks and resources.
 
 On the other hand, the classic `HttpClient` operates synchronously by default. It sends HTTP requests and blocks until it receives a response, making it straightforward to use without the need for explicit start and stop operations. Each request in the classic `HttpClient` is executed synchronously, and there's no ongoing asynchronous activity that needs to be managed.
 
@@ -163,7 +162,7 @@ public class SimpleHttpResponseCallback
 
 ```
 
-We have overridden the life cycle methods of the `FutureCallback` interface. We have also defined the response type `SimpleHttpResponse` it will receive when the HTTP request call is completed. When the call fails, we opt to raise an exception in the implementation of the `failed()` method.
+We have overridden the life cycle methods of the `FutureCallback` interface. Furthermore, we have also defined the response type `SimpleHttpResponse` it will receive when the HTTP request call completes. When the call fails, we opt to raise an exception in the implementation of the `failed()` method.
 
 Now let's see how to use this custom callback:
 
@@ -275,11 +274,11 @@ class UserAsyncHttpRequestHelperTests extends BaseAsyncExampleTests {
 
 ```
 
-Here, we verify fetching user data asynchronously with Apache HttpAsyncClient. First, we initialize the client, and send 10 parallel requests to a delayed endpoint, each with a unique user ID and 3-second delay. Responses are stored in a map. After receiving all responses, we validate their correctness: ensuring the map matches the user IDs, contains no null keys-value pairs, and no responses indicating failure. If an exception occurs, the test fails with an error message. Finally, we stop the client.
+Here, we verify fetching user data asynchronously with Apache HttpAsyncClient. First, we initialize the client, and send 10 parallel requests to a delayed endpoint, each with a unique user ID and 3-second delay. Stores the responses in a map. After receiving all responses, we validate their correctness: ensuring the map matches the user IDs, contains no null keys-value pairs, and no responses indicating failure. If an exception occurs, the test fails with an error message. Finally, we stop the client.
 
 ## Asynchronous Content Stream HTTP Request / Response Exchange
 
-Let's now understand how to handle content stream HTTP requests asynchronously. We would extend `AbstractCharResponseConsumer` to implement the content consumer. `AbstractCharResponseConsumer` is a base class that developers can extend to create custom response consumers for handling character-based content streams. This class is specifically designed for scenarios where the HTTP response entity contains character data, such as text-based content like HTML, JSON, or XML.
+Let's now understand how to handle content stream HTTP requests asynchronously. We would extend `AbstractCharResponseConsumer` to implement the content consumer. `AbstractCharResponseConsumer` is a base class that developers can extend to create custom response consumers for handling character-based content streams. This class specifically handles scenarios where the HTTP response entity contains character data, such as text-based content like HTML, JSON, or XML.
 
 When extending `AbstractCharResponseConsumer`, we typically override methods as follows. First, `start()` marks the beginning of the response stream. We perform any initialization or setup tasks required for processing the incoming character data stream. Then we have the `data()` method. Apache client repeatedly calls it to process the content received from the server. We implement logic to read and process the character data in chunks as it becomes available from the response stream. And finally, in `buildResult()` the response stream ends. We perform any cleanup or finalization tasks, such as closing resources or finalizing the processing of the received content. For error handling, we override the `failed()` method.
 
@@ -378,7 +377,7 @@ class UserAsyncHttpRequestHelperTests extends BaseAsyncExampleTests {
 
 ```
 
-The `getUserWithStream()` test method in the `UserAsyncHttpRequestHelperTests` class is designed to verify the functionality of retrieving user data asynchronously using streams.
+The `getUserWithStream()` test method in the `UserAsyncHttpRequestHelperTests` class verifies the functionality of retrieving user data asynchronously using streams.
 
 First, we start the HTTP asynchronous client using `userHttpRequestHelper.startHttpAsyncClient()`.
 
@@ -386,7 +385,7 @@ Then, we prepare a list of user IDs and calls the method `getUserWithStreams()` 
 
 The method sends HTTP requests in parallel for each user ID, fetching user data from the delayed endpoint. It returns a map containing the response bodies for each user ID.
 
-Finally, the test verifies the correctness of the responses by ensuring that the response map has the same size as the list of user IDs, does not contain null keys or values, and satisfies the predefined condition `getUserErrorCheck`, which checks that the response does not contain a failure message.
+Finally, the test verifies the correctness of the responses. It ensures that the response map has the same size as the list of user IDs. The map does not contain null keys or values. Furthermore, the map satisfies the predefined condition `getUserErrorCheck`, which checks that the response does not contain a failure message.
 
 If any exception occurs during the execution of the test, the test fails with an error message indicating the failure to execute the HTTP request. Finally, we stop the HTTP asynchronous client using `userHttpRequestHelper.stopHttpAsyncClient()`.
 
@@ -398,7 +397,7 @@ When a client makes an HTTP request, it has to wait for the server to respond be
 
 It's worth noting that HTTP pipelining is not supported by all servers, so it's not always a reliable way to improve performance. Additionally, if there is an error in one of the requests, the entire pipeline will fail, and the client will need to resend all the requests.
 
-Pipelining can also improve performance by packing multiple HTTP requests into a single TCP message. This can help to reduce the overhead of the connection and improve the overall speed of the transfer. However, this technique is not widely used, as it can be challenging to implement correctly and may lead to compatibility issues with some servers.
+Pipelining can also improve performance by packing multiple HTTP requests into a single TCP message. This can help to reduce the overhead of the connection and improve the overall speed of the transfer. However, we don't use this technique widely, as it can be challenging to implement correctly and may lead to compatibility issues with some servers.
 
 Now let's understand how to pipeline requests using Apache HttpClient:
 
@@ -428,7 +427,7 @@ public class CustomHttpResponseCallback
 
 ```
 
-We have overridden the life cycle methods of `FutureCallback`. We have also mentioned the response type `SimpleHttpResponse` it will receive when the HTTP request call is completed. When the call fails, we opt to raise an exception in `failed`.
+We have overridden the life cycle methods of `FutureCallback`. We have also mentioned the response type `SimpleHttpResponse` it will receive when the HTTP request call completes. When the call fails, we opt to raise an exception in `failed`.
 
 Now let's see how to use this custom callback:
 
@@ -527,7 +526,7 @@ private void handleFutureResults(
 
 ```
 
-This code retrieves user data asynchronously using pipelining. It sends parallel requests to the server for each user ID. The method `getUserWithPipelining()` orchestrates this process, while `getUserWithParallelRequests()` handles actual request execution. Each request is processed asynchronously, and responses are stored in a map. If an error occurs, it's logged, and an appropriate message is added to the response map. Finally, the method returns the map containing user responses.
+This code retrieves user data asynchronously using pipelining. It sends parallel requests to the server for each user ID. The method `getUserWithPipelining()` orchestrates this process, while `getUserWithParallelRequests()` handles actual request execution. Processes each request asynchronously, and stores responses in a map. If an error occurs, it logs the error, and adds an appropriate message to the response map. Finally, the method returns the map containing user responses.
 
 {{% warning title="The `ConnectionClosedException` For Unsupported HTTP/2 Async Features" %}}
 It may be noted that not all servers support HTTP/2 features like multiplexing. In that case, Apache HttpAsyncClient multiplexer encounters `ConnectionClosedException` with the message "Frame size exceeds maximum" when executing requests with an enclosed message body and the remote endpoint having negotiated a maximum frame size larger than the protocol default (16 KB).
@@ -630,7 +629,7 @@ Here's the test to execute the pipelined HTTP requests:
 
 ```
 
-In the `getUserWithPipelining()` test method, an instance of `MinimalHttpAsyncClient` is initialized to `null`. The method starts by attempting to start a minimal HTTP/1 asynchronous client using the `startMinimalHttp1AsyncClient()` method of the `userHttpRequestHelper` object. This client is assigned to the `minimalHttpAsyncClient` variable.
+In the `getUserWithPipelining()` test method, an instance of `MinimalHttpAsyncClient` is initialized to `null`. The method starts by attempting to start a minimal HTTP/1 asynchronous client using the `startMinimalHttp1AsyncClient()` method of the `userHttpRequestHelper` object. Finally, it assigns this client to the `minimalHttpAsyncClient` variable.
 
 It creates a list of user IDs (`userIdList`). Then invokes `getUserWithPipelining()` method on the `userHttpRequestHelper` object, passing the `minimalHttpAsyncClient`, the `userIdList`, a delay of 3 seconds, and the scheme and hostname of the target server ("https" and "reqres.in" respectively). This method orchestrates the parallel execution of pipelined requests to the specified endpoints.
 
@@ -714,11 +713,11 @@ void getUserWithMultiplexing() {
 
 ```
 
-We first attempt to start a minimal HTTP/2 asynchronous client using the `startMinimalHttp2AsyncClient()` method of the `userHttpRequestHelper` object. This client is assigned to the `minimalHttpAsyncClient` variable.
+We first attempt to start a minimal HTTP/2 asynchronous client using the `startMinimalHttp2AsyncClient()` method of the `userHttpRequestHelper` object. Finally, it assigns this client to the `minimalHttpAsyncClient` variable.
 
 Then we populate the list of user IDs (`userIdList`). Then we invoke `getUserWithMultiplexing()` method on the `userHttpRequestHelper` object, passing the `minimalHttpAsyncClient`, the `userIdList`, a delay of 3 seconds, and the scheme and host name of the target server ("https" and "reqres.in" respectively). This method orchestrates the parallel execution of multiplexed requests to the specified endpoints.
 
-Once the requests are executed, the method retrieves the response body for each request and populates a map (`responseBodyMap`) with the URI as the key and the response body as the value.
+Once it executes the requests, the method retrieves the response body for each request and populates a map (`responseBodyMap`) with the URI as the key and the response body as the value.
 
 The test then verifies the correctness of the responses by asserting that the `responseBodyMap` has the same size as the `userIdList`, does not contain any `null` keys or values, and satisfies the `getUserErrorCheck` condition.
 
@@ -830,7 +829,7 @@ public class UserResponseAsyncExecChainHandler implements AsyncExecChainHandler 
 
 ```
 
-It overrides the default behavior of handling HTTP requests in the asynchronous execution chain. It checks if the request contains specific headers (`x-base-number` and `x-req-exec-number`) and if the request path starts with "/api/users/". If these conditions are met, it extracts the values of these headers and parses them into integers. Then, it checks if the `reqExecNumber` is a multiple of the `baseNumber`. If so, it creates a custom response with status code `HTTP OK (200)` and a reason phrase indicating that it's a multiple of the base number. Otherwise, it proceeds with the execution chain to handle the request normally. Finally, it handles any exceptions that occur during the execution process.
+It overrides the default behavior of handling HTTP requests in the asynchronous execution chain. It checks if the request contains specific headers (`x-base-number` and `x-req-exec-number`) and if the request path starts with "/api/users/". If it meets these conditions, it extracts the values of these headers and parses them into integers. Then, it checks if the `reqExecNumber` is a multiple of the `baseNumber`. If so, it creates a custom response with status code `HTTP OK (200)` and a reason phrase indicating that it's a multiple of the base number. Otherwise, it proceeds with the execution chain to handle the request normally. Finally, it handles any exceptions that occur during the execution process.
 
 Now let's prepare a client and configure it to use an interceptor:
 
@@ -868,7 +867,7 @@ public CloseableHttpAsyncClient startHttpAsyncInterceptingClient() {
 
 ```
 
-It initializes and returns an HTTP asynchronous client with request interceptors. It first checks if the client is already initialized. If not, it creates a pooling asynchronous client connection manager with a specified TLS strategy. Then, it configures an I/O reactor with a socket timeout of 5 seconds. Next, it creates the HTTP asynchronous client, adds a custom execution interceptor named "custom" (which is an instance of `UserResponseAsyncExecChainHandler`) as the first interceptor, and sets the connection manager and I/O reactor configuration. Finally, it starts the client and logs the action.
+It initializes and returns an HTTP asynchronous client with request interceptors. It first checks if the client already is in initialized state. If not, it creates a pooling asynchronous client connection manager with a specified TLS strategy. Then, it configures an I/O reactor with a socket timeout of 5 seconds. Next, it creates the HTTP asynchronous client, adds a custom execution interceptor named "custom" (which is an instance of `UserResponseAsyncExecChainHandler`) as the first interceptor, and sets the connection manager and I/O reactor configuration. Finally, it starts the client and logs the action.
 
 Now let's see the scenario of executing an HTTP request and its interception:
 

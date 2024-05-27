@@ -21,7 +21,6 @@ This article is the fifth part of a series:
 5. [Reactive APIs Offered by Apache HttpClient](/apache-http-client-reactive-apis/)
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/create-a-http-client-wth-apache-http-client" %}}
-
   
 Let's now learn how to use Apache HttpClient for web communication. We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the reactive APIs offered by Apache HttpClient.
 
@@ -54,7 +53,7 @@ Reactive Java Programming, also known as [ReactiveX or Reactive Extensions](http
 RxJava allows developers to write concise and expressive code by leveraging operators like map, filter, and reduce to perform common data transformations. It also provides features for error handling, backpressure handling, and concurrency control, making it suitable for building responsive and resilient applications.
 {{% /info %}}
   
-Let's now implement the logic to call the endpoints in a reactive way.
+Let's now implement the logic to implement a reactive call the endpoints.
 
 We need to set up following Maven dependencies:
 
@@ -150,17 +149,17 @@ public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
 
 This code creates a user using reactive processing with Apache HttpClient's minimal reactive component and RxJava. It constructs an HTTP POST request with user data and sends it asynchronously. Upon receiving the response, it reads the response body as a stream of bytes and converts it into a string. Then, it deserializes the string into a `User` object using Jackson's `ObjectMapper`.
 
-The process starts by constructing the request payload and setting up the request entity. It then executes the HTTP request asynchronously and processes the response using a reactive approach. The response body is converted into a stream of byte buffers, which is transformed into a stream of strings using RxJava. Finally, the string stream is materialized, and the result is used to deserialize the user object.
+The process starts by constructing the request payload and setting up the request entity. It then executes the HTTP request asynchronously and processes the response using a reactive approach. It converts the response body into a stream of byte buffers. Then it transforms the buffer into a stream of strings using RxJava. Finally, it obtains the string stream, and uses the result to deserialize the user object.
 
-Any exceptions during this process are caught and wrapped in a `RequestProcessingException`. Overall, this approach leverages reactive programming to handle HTTP requests and responses asynchronously, providing better scalability and responsiveness.
+If there are any exceptions during this process, it catches such exceptions and wrap those in a `RequestProcessingException`. Overall, this approach leverages reactive programming to handle HTTP requests and responses asynchronously, providing better scalability and responsiveness.
 
-In the provided code sample, several notable classes and methods from Apache reactive APIs are utilized:
+The code sample demonstrates how to use notable classes and methods from Apache reactive APIs:
 
-[Reactive Streams Specification](https://www.reactive-streams.org/) is a standard for asynchronous data processing in a streaming fashion with non-blocking backpressure. `ReactiveEntityProducer` is a `AsyncEntityProducer` that subscribes to a `Publisher` instance, as defined by the Reactive Streams specification. It is responsible for producing HTTP request entity content reactively. It accepts a `Flowable<ByteBuffer>` stream of data chunks and converts it into an HTTP request entity. In the code sample, it is used to create the request entity from the payload data (`payloadStr`).
+[Reactive Streams Specification](https://www.reactive-streams.org/) is a standard for processing asynchronous data using streaming with non-blocking backpressure. `ReactiveEntityProducer` is a `AsyncEntityProducer` that subscribes to a `Publisher` instance, as defined by the Reactive Streams specification. It is responsible for producing HTTP request entity content reactively. It accepts a `Flowable<ByteBuffer>` stream of data chunks and converts it into an HTTP request entity. In the code sample, it is used to create the request entity from the payload data (`payloadStr`).
 
 `BasicRequestProducer` is a basic implementation of `AsyncRequestProducer` that produces one fixed request and relies on a `AsyncEntityProducer` to generate request entity stream. It constructs an HTTP request with the specified method, URI, and request entity. In the code, it creates a POST request with the URI obtained from the provided `scheme` and `hostname`.
 
-`ReactiveResponseConsumer` is a `AsyncResponseConsumer` that publishes the response body through a `Publisher`, as defined by the Reactive Streams specification. The response is represented as a `Message` consisting of a `HttpResponse` representing the headers and a `Publisher` representing the response body as an asynchronous stream of `ByteBuffer` instances. It is a reactive implementation of the `ResponseConsumer` interface, designed to consume HTTP response asynchronously. It processes the response stream reactively and provides access to the response body as a `Publisher<ByteBuffer>`. In the code, it is used to consume the HTTP response asynchronously.
+`ReactiveResponseConsumer` is a `AsyncResponseConsumer` that publishes the response body through a `Publisher`, as defined by the Reactive Streams specification. The response represents a `Message` consisting of a `HttpResponse` representing the headers and a `Publisher` representing the response body as an asynchronous stream of `ByteBuffer` instances. It is a reactive implementation of the `ResponseConsumer` interface, designed to consume HTTP response asynchronously. It processes the response stream reactively and provides access to the response body as a `Publisher<ByteBuffer>`. In the code, it is used to consume the HTTP response asynchronously.
 
 `Message` represents a generic message consisting of both a head (metadata) and a body (payload). In the code sample, it's used as the return type of `getResponseFuture()` method of `ReactiveResponseConsumer`, providing access to the HTTP response's head and body.
 
@@ -169,7 +168,7 @@ A `Publisher` can serve multiple `Subscriber`s subscribed through `subscribe(Sub
 
 Now let's get familiar with the RxJava noteworthy classes.
 
-The [Observable](https://reactivex.io/RxJava/3.x/javadoc/io/reactivex/rxjava3/core/Observable.html) class is the non-backpressured, optionally multivalued base reactive class that offers factory methods, intermediate operators and the ability to consume synchronous and/ or asynchronous reactive data flows. Its `fromPublisher()` method converts an arbitrary Reactive stream `Publisher` into a `Observable`. Its `map()` method returns a `Observable` that applies a specified function to each item emitted by the current `Observable` and emits the results of these function applications. Its `materialize()` method returns a `Observable` that represents all the emissions and notifications from the current `Observable` into emissions marked with their original types within `Notification` objects.
+The [Observable](https://reactivex.io/RxJava/3.x/javadoc/io/reactivex/rxjava3/core/Observable.html) class is the non-backpressured, optionally multivalued base reactive class that offers factory methods, intermediate operators and the ability to consume synchronous and/ or asynchronous reactive data flows. Its `fromPublisher()` method converts an arbitrary Reactive stream `Publisher` into a `Observable`. Its `map()` method returns a `Observable` that applies a specified function to each item emitted by the current `Observable` and emits the results of these function applications. Furthermore, `materialize()` method returns a `Observable` that represents all the emissions and notifications from the current `Observable` into emissions marked with their original types within `Notification` objects.
 
 The [Flowable](https://reactivex.io/RxJava/3.x/javadoc/io/reactivex/rxjava3/core/Flowable.html) class that implements the Reactive Streams `Publisher` Pattern and offers factory methods, intermediate operators and the ability to consume reactive data flows. Reactive Streams operates with `Publishers` which `Flowable` extends. Many operators therefore accept general `Publishers` directly and allow direct interoperation with other Reactive Streams implementations.
 

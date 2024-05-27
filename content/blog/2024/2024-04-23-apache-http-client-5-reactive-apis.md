@@ -227,6 +227,48 @@ After executing the request, it verifies the response by asserting that the resp
 
 If any exception occurs during the execution of the test, it fails with an appropriate error message. Finally, it ensures that the MinimalHttpAsyncClient is stopped regardless of the test outcome.
 
+Sure! Let's add a section that compares the Async APIs and Reactive APIs offered by Apache HttpClient. This comparison will help readers understand the differences, benefits, and suitable use cases for each approach.
+
+---
+
+## Comparing Async and Reactive APIs
+
+Apache HttpClient provides two powerful paradigms for handling HTTP requests: Async APIs and Reactive APIs. Both styles offer non-blocking operations, but they differ in their design, usage patterns, and underlying concepts. Let's compare these two approaches.
+
+### Async APIs
+
+The Async APIs allows us to send and receive HTTP requests asynchronously. Apache built them on top of Java's `Future` and `CompletableFuture` classes. We use them to execute HTTP requests concurrently without blocking the main thread.
+
+Async APIs have following key features. First, they are callback based. They use callbacks to handle responses once they are available. It is easier to integrate them into existing codebases that are already using `Future` and `CompletableFuture`. Furthermore, they allow more control over individual request handling, such as custom timeout settings and retry logic.
+
+For example, we would use them to execute multiple HTTP requests concurrently to fetch data from different services and aggregate the results.
+
+### Reactive APIs
+
+The Reactive APIs follow the principles of reactive programming. They implement the Reactive Streams specification, typically involving frameworks like RxJava or Reactor. They are ideal for applications that need to handle large volumes of data streams or require high responsiveness and scalability.
+
+Reactive APIs have following key features. They are event driven. They use an event-driven model to process HTTP responses as they arrive. Furthermore, they support backpressure handling. That in turn allow consumers to process data at their own pace without being overwhelmed. Last but not the least, they offer composability. Composing allows for more complex data processing pipelines using reactive operators (e.g., map, flatMap).
+
+For example, we would use to build a real-time data processing application that continuously receives and processes data from multiple sources.
+
+### Comparison
+
+| Aspect                  | Async APIs                                           | Reactive APIs                                       |
+|-------------------------|------------------------------------------------------|-----------------------------------------------------|
+| **Programming Model**   | Future-based, callback-driven                        | Reactive Streams, event-driven                      |
+| **Concurrency**         | Easy to manage with `CompletableFuture`              | Inherent support for handling asynchronous data streams |
+| **Scalability**         | Suitable for moderate concurrency                    | Highly scalable, suitable for high-throughput scenarios |
+| **Backpressure**        | Not inherently supported                             | Built-in backpressure support                       |
+| **Integration**         | Seamless with existing `CompletableFuture` codebases   | Ideal for applications using reactive frameworks    |
+| **Complexity**          | Simpler for straightforward async tasks              | More complex but powerful for advanced use cases    |
+
+### Choosing the Right API
+
+Use async APIs to make concurrent HTTP requests with simpler control over futures and callbacks. It's a good fit for applications that are already leveraging `CompletableFuture`.
+On the other hand, use reactive APIs to build a highly responsive, scalable application that needs to process streams of data efficiently. It's particularly suitable if we're already using a reactive programming framework like Reactor or RxJava.
+
+By understanding the differences and strengths of Async and Reactive APIs, we can choose the most appropriate approach for application's needs, ensuring efficient and effective handling of HTTP requests with Apache HttpClient.
+
 ## Conclusion
 
 In this article we got familiar the integration of Apache HTTP client's reactive stream client with RxJava for reactive streams processing. It highlights how to leverage reactive programming paradigms for handling HTTP requests and responses asynchronously. By combining Apache's reactive stream client with RxJava's powerful capabilities, developers can create efficient and scalable applications. We learned the usage of reactive entities like `ReactiveEntityProducer` and `ReactiveResponseConsumer`, along with RxJava's `Observable` and `Flowable`, to perform asynchronous data processing. It emphasizes the benefits of reactive streams processing, such as improved responsiveness and resource utilization, and provides practical examples demonstrating the integration of Apache HTTP client and RxJava.

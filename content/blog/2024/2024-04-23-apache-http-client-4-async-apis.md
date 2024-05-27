@@ -407,7 +407,7 @@ public class CustomHttpResponseCallback
 ```
 We have overridden the life cycle methods of `FutureCallback`. We have also mentioned the response type `SimpleHttpResponse` it will receive when the HTTP request call is completed. When the call fails, we opt to raise an exception in `failed`.
 
-Now Let's see how to use this custom callback:
+Now let's see how to use this custom callback:
 
 ```java
 public Map<String, String> getUserWithPipelining(
@@ -508,7 +508,7 @@ This code retrieves user data asynchronously using pipelining. It sends parallel
 It may be noted that not all servers support HTTP/2 features like multiplexing. In that case, Apache HttpAsyncClient multiplexer encounters `ConnectionClosedException` with the message "Frame size exceeds maximum" when executing requests with an enclosed message body and the remote endpoint having negotiated a maximum frame size larger than the protocol default (16 KB).
 {{% /warning %}}
 \
-Now Let's understand how to call this functionality.
+Now let's understand how to call this functionality.
 
 First, let's understand the operations to start and stop the client for HTTP/1:
 
@@ -722,7 +722,7 @@ These interceptors are useful in various crosscutting scenarios, such as:
 
 Intercept requests and responses to log information such as request parameters, response status codes, or response bodies for debugging or auditing purposes. Add authentication tokens or credentials to outgoing requests before sending them to the server. Intercept responses to handle errors or exceptions gracefully and take appropriate actions based on the response received from the server. Modify requests to add custom headers, parameters, or payloads before sending them to the server.
 
-Now Let's understand one of these scenarios with an example. Let's learn how to create a mock response:
+Now let's understand one of these scenarios with an example. Let's learn how to create a mock response:
 ```java
 public class UserResponseAsyncExecChainHandler implements AsyncExecChainHandler {
   @Override
@@ -788,7 +788,7 @@ public class UserResponseAsyncExecChainHandler implements AsyncExecChainHandler 
 ```
 It overrides the default behavior of handling HTTP requests in the asynchronous execution chain. It checks if the request contains specific headers (`x-base-number` and `x-req-exec-number`) and if the request path starts with "/api/users/". If these conditions are met, it extracts the values of these headers and parses them into integers. Then, it checks if the `reqExecNumber` is a multiple of the `baseNumber`. If so, it creates a custom response with status code `HTTP OK (200)` and a reason phrase indicating that it's a multiple of the base number. Otherwise, it proceeds with the execution chain to handle the request normally. Finally, it handles any exceptions that occur during the execution process.
 
-Now Let's prepare a client and configure it to use an interceptor:
+Now let's prepare a client and configure it to use an interceptor:
 ```java
 public CloseableHttpAsyncClient startHttpAsyncInterceptingClient() {
   try {

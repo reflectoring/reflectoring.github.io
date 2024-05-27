@@ -151,7 +151,7 @@ The `CustomHttpRequestInterceptor` implements the `HttpRequestInterceptor` inter
  
 Overall, this interceptor enhances outgoing HTTP requests by adding custom headers, which can serve various purposes such as request identification, security, or API key authentication.
 
-Now Let's build a HTTP client using this request interceptor:
+Now let's build a HTTP client using this request interceptor:
 ``` java
 HttpRequestInterceptor interceptor = new CustomHttpRequestInterceptor();
 HttpClientBuilder builder = HttpClients.custom();
@@ -186,7 +186,7 @@ public class CustomHttpResponseInterceptor implements HttpResponseInterceptor {
 
 The `CustomHttpResponseInterceptor` implements the `HttpResponseInterceptor` interface provided by Apache HttpClient. This interceptor is designed to intercept incoming HTTP responses before they are returned to the client. In the `process()` method the interceptor logs the status code of the response object.
 
-Now Let's build a HTTP client using this request interceptor:
+Now let's build a HTTP client using this request interceptor:
 ``` java
 HttpResponseInterceptor interceptor = new CustomHttpResponseInterceptor();
 HttpClientBuilder builder = HttpClients.custom();
@@ -248,7 +248,7 @@ Upon receiving the response from the server, the interceptor logs the status cod
 
 If an `IOException` or `HttpException` occurs during the execution of the request or response handling, the interceptor catches these exceptions. It logs an error message indicating the failure and wraps the exception in a `RequestProcessingException`, which is then thrown to indicate the failure of the request execution.
 
-Now Let's build a HTTP client using this execution interceptor:
+Now let's build a HTTP client using this execution interceptor:
 ``` java
 HttpExecutionInterceptor interceptor = new CustomHttpExecutionInterceptor();
 HttpClientBuilder builder = HttpClients.custom();

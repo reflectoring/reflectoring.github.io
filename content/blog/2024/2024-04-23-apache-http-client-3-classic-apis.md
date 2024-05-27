@@ -1,8 +1,6 @@
 ---
-authors:
-  - sagaofsilence
-categories:
-  - Java
+authors: [sagaofsilence]
+categories: [Java]
 date: 2024-04-23 00:00:00 +1100
 excerpt: Classic APIs Offered by Apache HttpClient.
 image: images/stock/0077-request-response-1200x628-branded.jpg
@@ -63,7 +61,7 @@ Overall, response handlers enhance the flexibility, readability, and maintainabi
 Before we start going through the code snippet, let's understand the general structure of the logic to execute HTTP methods and unit test to verify the logic.
 Here is the sample code to execute an HTTP method:
 
-```java {"id":"01HYWPRFFPNR4QET9XN5QSSVB9"}
+```java
 public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
  public String executeHttpMethod(Map<String, String> optionalRequestParameters)
       throws RequestProcessingException {
@@ -97,7 +95,7 @@ After preparing the request, we create a response handler of type `BasicHttpClie
 
 Here is a test case to verify this functionality:
 
-```java {"id":"01HYWPRFFPNR4QET9XN65ZSQ41"}
+```java
 public class UserSimpleHttpRequestHelperTests extends BaseClassicExampleTests {
 
   private UserSimpleHttpRequestHelper userHttpRequestHelper =
@@ -141,7 +139,7 @@ We use HTTP `POST` to create a new user. We need to provide details needed to cr
 
 Here's the code to create a new record:
 
-```java {"id":"01HYWPRFFPNR4QET9XN6D0YGAW"}
+```java
 public String createUser(
   String firstName, String lastName, String email, String avatar
 ) throws RequestProcessingException {
@@ -179,7 +177,7 @@ The example illustrates a method for creating a new user by sending an HTTP `POS
 
 And here's test:
 
-```java {"id":"01HYWPRFFPNR4QET9XN8FVN0JQ"}
+```java
 @Test
 void executePostRequest() {
   try {
@@ -218,7 +216,7 @@ On the client side, complexities arise from managing pagination state, handling 
   
 Let's implement a paginated HTTP GET request using a response handler:
 
-```java {"id":"01HYWPRFFPNR4QET9XN8KXCDXW"}
+```java
 public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
  
  public String getPaginatedUsers(Map<String, String> requestParameters)
@@ -251,7 +249,7 @@ The code defines `getPaginatedUsers()` method to retrieve a list of users from a
 
 Here is a test case to verify this functionality:
 
-```java {"id":"01HYWPRFFPNR4QET9XNAD50NMY"}
+```java
 public class UserSimpleHttpRequestHelperTests extends BaseClassicExampleTests {
 
   private UserSimpleHttpRequestHelper userHttpRequestHelper =
@@ -283,7 +281,7 @@ In test method `executeGetPaginatedRequest()`, we populate the request parameter
 
 Let's execute HTTP GET request to get a specific user record using a response handler:
 
-```java {"id":"01HYWPRFFPNR4QET9XNC1S7X99"}
+```java
 public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
  
  /** Gets user for given user id. */
@@ -314,7 +312,7 @@ In this example, the `getUser()` method retrieves a user by its `id`. As we have
 
 Test case that verifies execute specific request:
 
-```java {"id":"01HYWPRFFPNR4QET9XNE369SYC"}
+```java
 /** Execute get specific request. */
 @Test
 void executeGetSpecificRequest() {
@@ -340,7 +338,7 @@ The `HEAD` method in HTTP can request information about a document without retri
 
 Here is the code to execute HTTP `HEAD` request to get status of a specific user record using a response handler:
 
-```java {"id":"01HYWPRFFQ5EKPHFGCS9M19JNT"}
+```java
 public Integer getUserStatus(long userId) throws RequestProcessingException {
   
   try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -368,7 +366,7 @@ In this example we send a `HEAD` request to the user endpoint to retrieve the st
 
 Test for this functionality:
 
-```java {"id":"01HYWPRFFQ5EKPHFGCSC0PPN3B"}
+```java
 /** Execute get specific request. */
 @Test
 void executeUserStatus() {
@@ -395,7 +393,7 @@ The HTTP `OPTION` method is a type of HTTP call that explains what are the optio
 
 Here is command line example to execute it:
 
-```bash {"id":"01HYWPRFFREQQ63QYKJRHHE8HE"}
+```bash
 curl https://reqres.in -X OPTIONS -i
 
 
@@ -403,14 +401,14 @@ curl https://reqres.in -X OPTIONS -i
 
 We can also find out allowed methods for specific URI path.
 
-```bash {"id":"01HYWPRFFREQQ63QYKJTDAV3W9"}
+```bash
 curl https://reqres.in/api/users/ -X OPTIONS -i
 
 ```
 
 We get response from the server as below:
 
-```bash {"id":"01HYWPRFFREQQ63QYKJWQJ5V3W"}
+```bash
 HTTP/2 204
 date: Sat, 24 Feb 2024 05:02:34 GMT
 report - to: {
@@ -461,7 +459,7 @@ The `Access-Control-Allow-Methods` header tells the browser which HTTP methods a
   
 Here's how we can send an OPTIONS request using HTTP client:
 
-```java {"id":"01HYWPRFFREQQ63QYKJZ1N7M89"}
+```java
 public Map<String, String> executeOptions() throws RequestProcessingException {
     
   try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -493,7 +491,7 @@ In this example, we populate the `HttpOptions` request and call the `HttpClient.
 
 Let's now test the OPTIONS request:
 
-```java {"id":"01HYWPRFFREQQ63QYKK2QN3QBY"}
+```java
 @Test
 void executeOptions() {
   try {
@@ -529,7 +527,7 @@ We use HTTP `PUT` to update an existing user. We need to provide details needed 
 
 Implementation for updating an existing user:
 
-```java {"id":"01HYWPRFFREQQ63QYKK3P9TSWX"}
+```java
 public String updateUser(
     long userId, String firstName, String lastName, String email, String avatar
   ) throws RequestProcessingException {
@@ -567,7 +565,7 @@ The example above shows how to update a user's information via an HTTP `PUT` req
 
 Let's test update user workflow:
 
-```java {"id":"01HYWPRFFREQQ63QYKK47S5KY0"}
+```java
 @Test
 void executePutRequest() {
   try {
@@ -598,7 +596,7 @@ We use HTTP `PATCH` to update an existing user in a partial way. We need to prov
 
 Logic to update an existence user partially:
 
-```java {"id":"01HYWPRFFREQQ63QYKK7M1QKHY"}
+```java
 public String patchUser(long userId, String firstName, String lastName)
       throws RequestProcessingException {
       
@@ -634,7 +632,7 @@ The example above shows how to update a user's information via an HTTP `PATCH` r
 
 Test to verify patch request:
 
-```java {"id":"01HYWPRFFREQQ63QYKK7W6JNQZ"}
+```java
 @Test
 void executePatchRequest() {
   try {
@@ -667,7 +665,7 @@ We use HTTP `DELETE` to delete an existing user. We need user ID to delete the u
 
 Let's implement delete user logic:
 
-```java {"id":"01HYWPRFFREQQ63QYKK98F673M"}
+```java
 public void deleteUser(long userId) throws RequestProcessingException {
 
   try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -691,7 +689,7 @@ The example demonstrates how to implement an HTTP `DELETE` request to delete an 
 
 Test case verifying delete functionality:
 
-```java {"id":"01HYWPRFFREQQ63QYKKAETMXZD"}
+```java
 @Test
 void executeDeleteRequest() {
   try {
@@ -724,7 +722,7 @@ For example, if we want to send a POJO as `JSON` in an HTTP request, we would fi
 
 Here's an example using Jackson `ObjectMapper` to serialize a POJO into `JSON` and include it in the request entity:
 
-```java {"id":"01HYWPRFFREQQ63QYKKCNMWQ22"}
+```java
 /** Generic HttpClientResponseHandler */
 public class DataObjectResponseHandler<T> 
     extends AbstractHttpClientResponseHandler<T> {
@@ -779,7 +777,7 @@ The `UserTypeHttpRequestHelper` class has a method `getUser()` that retrieves a 
 
 Test case to get a user:
 
-```java {"id":"01HYWPRFFREQQ63QYKKEQYZV9T"}
+```java
 @Test
 void executeGetUser() {
   try {

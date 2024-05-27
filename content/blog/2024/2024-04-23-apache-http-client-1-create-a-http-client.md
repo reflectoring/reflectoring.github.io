@@ -1,8 +1,6 @@
 ---
-authors:
-  - sagaofsilence
-categories:
-  - Java
+authors: [sagaofsilence]
+categories: [Java]
 date: 2024-04-23 00:00:00 +1100
 excerpt: Get familiar with the Apache HttpClient.
 image: images/stock/0063-interface-1200x628-branded.jpg

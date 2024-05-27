@@ -1,8 +1,6 @@
 ---
-authors:
-  - sagaofsilence
-categories:
-  - Java
+authors: [sagaofsilence]
+categories: [Java]
 date: 2024-04-23 00:00:00 +1100
 excerpt: Apache HttpClient Configuration.
 image: images/stock/0125-tools-1200x628-branded.jpg
@@ -35,7 +33,7 @@ Connection management in Apache HttpClient refers to the management of underlyin
 
 This example shows how the connection pool parameters can be adjusted:
 
-```java {"id":"01HYWQ4TT2VM6EWX34BEBSMTG7"}
+```java
 public CloseableHttpClient getPooledCloseableHttpClient(
     String host,
     int port,
@@ -114,7 +112,7 @@ The caching HttpClient's default implementation stores cache entries and respons
   
 First, we need to add the maven dependency for Apache HttpClient cache:
 
-```xml {"id":"01HYWQ4TT2VM6EWX34BG4MJR6K"}
+```xml
 <dependency>
     <groupId>org.apache.httpcomponents.client5</groupId>
     <artifactId>httpclient5-cache</artifactId>
@@ -126,7 +124,7 @@ First, we need to add the maven dependency for Apache HttpClient cache:
 
 Here is an example to build a client supporting cache:
 
-```java {"id":"01HYWQ4TT2VM6EWX34BGXVN2EV"}
+```java
 CacheConfig cacheConfig =  CacheConfig.custom()
                                       .setMaxCacheEntries(maxCacheEntries)
                                       .setMaxObjectSize(maxObjectSize)
@@ -151,7 +149,7 @@ A custom request interceptor in Apache HttpClient allows developers to intercept
 
 Let's implement a request interceptor:
 
-```java {"id":"01HYWQ4TT3R0BM4WQA0KDGD1FP"}
+```java
 public class CustomHttpRequestInterceptor implements HttpRequestInterceptor {
   @Override
   public void process(HttpRequest request, EntityDetails entity, HttpContext context)
@@ -170,7 +168,7 @@ Overall, this interceptor enhances outgoing HTTP requests by adding custom heade
 
 Now let's build an HTTP client using this request interceptor:
 
-```java {"id":"01HYWQ4TT3R0BM4WQA0N72FNTG"}
+```java
 HttpRequestInterceptor interceptor = new CustomHttpRequestInterceptor();
 HttpClientBuilder builder = HttpClients.custom();
 CloseableHttpClient client = builder.addRequestInterceptorFirst(interceptor).build();
@@ -194,7 +192,7 @@ Custom response interceptors are useful for tasks like logging responses, handli
 
 Let's implement a response interceptor:
 
-```java {"id":"01HYWQ4TT3R0BM4WQA0NW5HTYY"}
+```java
 public class CustomHttpResponseInterceptor implements HttpResponseInterceptor {
   @Override
   public void process(HttpResponse response, EntityDetails entity, HttpContext context)
@@ -209,7 +207,7 @@ The `CustomHttpResponseInterceptor` implements the `HttpResponseInterceptor` int
 
 Now let's build an HTTP client using this request interceptor:
 
-```java {"id":"01HYWQ4TT3R0BM4WQA0QNRJM44"}
+```java
 HttpResponseInterceptor interceptor = new CustomHttpResponseInterceptor();
 HttpClientBuilder builder = HttpClients.custom();
 CloseableHttpClient client = builder.addResponseInterceptorFirst(interceptor).build();
@@ -238,7 +236,7 @@ In Apache HttpClient 5, `ExecChain` and `ExecChain.Scope` play key roles in requ
   
 Let's implement an execution chain interceptor:
 
-```java {"id":"01HYWQ4TT3R0BM4WQA0T72FS2B"}
+```java
 public class CustomHttpExecutionInterceptor implements ExecChainHandler {
   @Override
   public ClassicHttpResponse execute(
@@ -278,7 +276,7 @@ If a `IOException` or `HttpException` occurs during the execution of the request
 
 Now let's build an HTTP client using this execution interceptor:
 
-```java {"id":"01HYWQ4TT3R0BM4WQA0WMG596C"}
+```java
 HttpExecutionInterceptor interceptor = new CustomHttpExecutionInterceptor();
 HttpClientBuilder builder = HttpClients.custom();
 CloseableHttpClient client = null;

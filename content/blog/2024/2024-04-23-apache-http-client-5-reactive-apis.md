@@ -1,8 +1,6 @@
 ---
-authors:
-  - sagaofsilence
-categories:
-  - Java
+authors: [sagaofsilence]
+categories: [Java]
 date: 2024-04-23 00:00:00 +1100
 excerpt: Reactive APIs Offered by Apache HttpClient.
 image: images/stock/0120-data-stream-1200x628-branded.jpg
@@ -60,7 +58,7 @@ Let's now implement the logic to call the endpoints in a reactive way.
 
 We need to set up following Maven dependencies:
 
-```xml {"id":"01HYWJAE0DNEWZ198GKJ4SPPR8"}
+```xml
 <dependency>
     <groupId>org.apache.httpcomponents.core5</groupId>
     <artifactId>httpcore5-reactive</artifactId>
@@ -78,7 +76,7 @@ We need to set up following Maven dependencies:
 Here is the helper class that has methods to start and stop the async client and methods to execute HTTP requests.
 Here's the logic for reactive request processing:
 
-```java {"id":"01HYWJAE0EGFQ6254N5VHP4EV6"}
+```java
 public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
 
   private MinimalHttpAsyncClient minimalHttp1Client;
@@ -177,7 +175,7 @@ The [Flowable](https://reactivex.io/RxJava/3.x/javadoc/io/reactivex/rxjava3/core
 
 Now let's test out reactive functionality:
 
-```java {"id":"01HYWJAE0EGFQ6254N5XK6N3ES"}
+```java
 @Test
 void createUserWithReactiveProcessing() {
   MinimalHttpAsyncClient minimalHttpAsyncClient = null;

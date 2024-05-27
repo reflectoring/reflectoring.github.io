@@ -1,8 +1,6 @@
 ---
-authors:
-  - sagaofsilence
-categories:
-  - Java
+authors: [sagaofsilence]
+categories: [Java]
 date: 2024-04-23 00:00:00 +1100
 excerpt: Async APIs Offered by Apache HttpClient.
 image: images/stock/0075-envelopes-1200x628-branded.jpg
@@ -64,7 +62,7 @@ The Apache HttpClient's `IOReactor` interface represents an abstract object that
 Let's now implement the logic to call the endpoints asynchronously.
 Here is the helper class that has methods to start and stop the async client and methods to execute HTTP requests:
 
-```java {"id":"01HYWP8B44YG3J61QV763YEJBM"}
+```java
 public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
 
   private CloseableHttpAsyncClient httpClient;
@@ -121,7 +119,7 @@ On the other hand, the classic `HttpClient` operates synchronously by default. I
 
 We are going to use the `execute()` method of `HttpAsyncClient`:
 
-```java {"id":"01HYWP8B44YG3J61QV79HP6W8Z"}
+```java
 public <T> Future <T> execute(AsyncRequestProducer  requestProducer,
                               AsyncResponseConsumer <T> responseConsumer,
                               FutureCallback <T> callback)
@@ -130,7 +128,7 @@ public <T> Future <T> execute(AsyncRequestProducer  requestProducer,
 
 Let's now learn how to do it. Here is the implementation of a custom callback. We can also implement it inline using an anonymous class:
 
-```java {"id":"01HYWP8B44YG3J61QV7AJS9ECR"}
+```java
 public class SimpleHttpResponseCallback
   implements FutureCallback<SimpleHttpResponse> {
   /** The Http get request. */
@@ -169,7 +167,7 @@ We have overridden the life cycle methods of the `FutureCallback` interface. We 
 
 Now let's see how to use this custom callback:
 
-```java {"id":"01HYWP8B44YG3J61QV7D2BC8Q8"}
+```java
 public Map<Long, String> getUserWithCallback(List<Long> userIdList, int delayInSec)
     throws RequestProcessingException {
   
@@ -212,7 +210,7 @@ For each user ID in the provided list, it constructs a `GET` request with a spec
 
 Note that we have added a delay to the `GET` endpoint. It simulates a delayed server operation. The HTTP client sends the request, one after the other, without waiting for the response. We can verify it by checking the logs:
 
-```bash {"id":"01HYWP8B44YG3J61QV7DKFCBJA"}
+```bash
 Started HTTP async client. 
 Executing GET request: https://reqres.in/api/users/1 on host https://reqres.in 
 Executing GET request: https://reqres.in/api/users/2 on host https://reqres.in 
@@ -230,7 +228,7 @@ It will send the requests in the order if the IDs in the list. However, the requ
 
 Now let's verify the implementation using a unit test:
 
-```java {"id":"01HYWP8B45ATXPZ921NKYTHJ89"}
+```java
 class UserAsyncHttpRequestHelperTests extends BaseAsyncExampleTests {
 
   private UserAsyncHttpRequestHelper userHttpRequestHelper 
@@ -296,7 +294,7 @@ OTT platforms deliver streaming media content such as videos, audio, and live br
   
 Here's the implementation of the consumer response:
 
-```java {"id":"01HYWP8B45ATXPZ921NP3ENKR5"}
+```java
 public class SimpleCharResponseConsumer 
   extends AbstractCharResponseConsumer<SimpleHttpResponse> {
   // fields
@@ -337,7 +335,7 @@ We process character-based HTTP responses asynchronously. Extending `AbstractCha
 
 Now let's test this functionality:
 
-```java {"id":"01HYWP8B45ATXPZ921NSB3J0AD"}
+```java
 class UserAsyncHttpRequestHelperTests extends BaseAsyncExampleTests {
 
   private UserAsyncHttpRequestHelper userHttpRequestHelper 
@@ -404,7 +402,7 @@ Pipelining can also improve performance by packing multiple HTTP requests into a
 
 Now let's understand how to pipeline requests using Apache HttpClient:
 
-```java {"id":"01HYWP8B46M0NNWBT03PEMKK66"}
+```java
 public class CustomHttpResponseCallback 
   implements FutureCallback<SimpleHttpResponse> {
   // fields
@@ -434,7 +432,7 @@ We have overridden the life cycle methods of `FutureCallback`. We have also ment
 
 Now let's see how to use this custom callback:
 
-```java {"id":"01HYWP8B46M0NNWBT03RYW8JTZ"}
+```java
 public Map<String, String> getUserWithPipelining(
     MinimalHttpAsyncClient minimalHttpClient,
     List<String> userIdList,
@@ -539,7 +537,7 @@ Now let's understand how to call this functionality.
 
 First, let's understand the operations to start and stop the client for HTTP/1:
 
-```java {"id":"01HYWP8B46M0NNWBT03SFQ18A4"}
+```java
 public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
   
   private MinimalHttpAsyncClient minimalHttp1Client;
@@ -601,7 +599,7 @@ These methods provide a convenient way to manage the life cycle of the minimal H
 
 Here's the test to execute the pipelined HTTP requests:
 
-```java {"id":"01HYWP8B47X50NNSWN3K5SV8QW"}
+```java
 @Test
   void getUserWithPipelining() {
     
@@ -650,7 +648,7 @@ There is little difference between the way pipelined and multiplexed HTTP reques
 
 Here's the implementation for client setup for multiplexed exchange:
 
-```java {"id":"01HYWP8B47X50NNSWN3NGWY9MB"}
+```java
 public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
   
   private MinimalHttpAsyncClient minimalHttp2Client;
@@ -669,7 +667,7 @@ We have already seen the method `startMinimalHttpAsyncClient()`. We pass `HttpVe
 
 And here is the logic to call request processing with multiplexing:
 
-```java {"id":"01HYWP8B47X50NNSWN3S1ZF6FS"}
+```java
 public Map<String, String> getUserWithMultiplexing(
     MinimalHttpAsyncClient minimalHttpClient,
     List<String> userIdList,
@@ -685,7 +683,7 @@ public Map<String, String> getUserWithMultiplexing(
 
 Here's the test to verify this functionality:
 
-```java {"id":"01HYWP8B47X50NNSWN3TKC6721"}
+```java
 @Test
 void getUserWithMultiplexing() {
   
@@ -743,7 +741,7 @@ Request and response interceptors in Apache HttpAsyncClient allow developers to 
 
 `HttpRequestInterceptor` is an interface used to intercept and modify HTTP requests before they are sent to the server. It has the method:
 
-```java {"id":"01HYWP8B48FY751FF89DH38GWS"}
+```java
 void process(HttpRequest request, EntityDetails entity, HttpContext context)
 
 ```
@@ -752,7 +750,7 @@ It provides a mechanism to add custom headers, modify request parameters, or per
 
 `AsyncExecChainHandler` is an interface used to intercept and process requests and responses as they pass through the execution chain of the HTTP async client. It has the method:
 
-```java {"id":"01HYWP8B48FY751FF89FT9K3CS"}
+```java
 void execute(HttpRequest httpRequest, AsyncEntityProducer asyncEntityProducer,
              AsyncExecChain.Scope scope, AsyncExecChain asyncExecChain, 
              AsyncExecCallback asyncExecCallback) throws HttpException, IOException
@@ -767,7 +765,7 @@ Intercept requests and responses to log information such as request parameters, 
 
 Now let's understand one of these scenarios with an example. Let's learn how to create a mock response:
 
-```java {"id":"01HYWP8B48FY751FF89HN6D0ES"}
+```java
 public class UserResponseAsyncExecChainHandler implements AsyncExecChainHandler {
   @Override
   public void execute(HttpRequest httpRequest, AsyncEntityProducer asyncEntityProducer,
@@ -836,7 +834,7 @@ It overrides the default behavior of handling HTTP requests in the asynchronous 
 
 Now let's prepare a client and configure it to use an interceptor:
 
-```java {"id":"01HYWP8B492D2HNKZ482BQ0AN6"}
+```java
 public CloseableHttpAsyncClient startHttpAsyncInterceptingClient() {
   try {
     if (httpAsyncInterceptingClient == null) {
@@ -874,7 +872,7 @@ It initializes and returns an HTTP asynchronous client with request interceptors
 
 Now let's see the scenario of executing an HTTP request and its interception:
 
-```java {"id":"01HYWP8B492D2HNKZ4846G96AP"}
+```java
 public Map<Integer, String> executeRequestsWithInterceptors(
     CloseableHttpAsyncClient closeableHttpAsyncClient,
     Long userId,
@@ -964,7 +962,7 @@ It sends multiple asynchronous HTTP requests with interceptors applied. It initi
 
 Finally, let's test our logic:
 
-```java {"id":"01HYWP8B492D2HNKZ485BTCA4N"}
+```java
 @Test
 void getUserWithInterceptors() {
   try (CloseableHttpAsyncClient closeableHttpAsyncClient =

@@ -44,16 +44,16 @@ CRUD operations refer to Create, Read, Update, and Delete actions performed on d
 
 ## Basic Reactive HTTP Request / Response Exchange
 
-Let's now understand how to send a simple HTTP reactive request.
+Let's look at an example of how to send a simple HTTP reactive request.
 {{% info title="Reactive Java Programming and RxJava" %}}
 Reactive Java Programming, also known as [ReactiveX or Reactive Extensions](https://reactivex.io/), is an approach to programming that emphasizes asynchronous and event-driven processing. It enables developers to write code that reacts to changes or events in the system, rather than relying on traditional imperative programming paradigms.
 
-[RxJava](https://github.com/ReactiveX/RxJava), a library for Reactive Programming in Java, implements the principles of ReactiveX. It provides a powerful toolkit for composing asynchronous and event-based programs using observable sequences. These sequences represent streams of data or events that can be manipulated and transformed using a wide range of operators.
+[RxJava](https://github.com/ReactiveX/RxJava), a library for reactive programming in Java, implements the principles of ReactiveX. It provides a powerful toolkit for composing asynchronous and event-based programs using observable sequences. These sequences represent streams of data or events that can be manipulated and transformed using a wide range of operators.
 
 RxJava allows developers to write concise and expressive code by leveraging operators like map, filter, and reduce to perform common data transformations. It also provides features for error handling, backpressure handling, and concurrency control, making it suitable for building responsive and resilient applications.
 {{% /info %}}
-  
-Let's now implement the logic to implement a reactive call the endpoints.
+
+### Project Setup
 
 We need to set up following Maven dependencies:
 
@@ -72,8 +72,9 @@ We need to set up following Maven dependencies:
 
 ```
 
-Here is the helper class that has methods to start and stop the async client and methods to execute HTTP requests.
-Here's the logic for reactive request processing:
+### Implementing the Reactive Request Processing
+
+In the following example we'll implement a helper class that has methods to start and stop the async client and methods to execute HTTP requests:
 
 ```java
 public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
@@ -190,11 +191,16 @@ The code sample demonstrates how to use notable classes and methods from Apache 
 `Publisher` is a provider of a potentially unbounded number of sequenced elements, publishing them according to the demand received from its `Subscriber`(s).
 A `Publisher` can serve multiple `Subscriber`s subscribed through `subscribe(Subscriber)` dynamically at various points in time. It's used to publish data asynchronously, and in the code, it represents the body of the HTTP response, providing a stream of byte buffers.
 
+### RxJava Classes
+
 Now let's get familiar with the RxJava noteworthy classes.
 
-The [Observable](https://reactivex.io/RxJava/3.x/javadoc/io/reactivex/rxjava3/core/Observable.html) class is the non-backpressured, optionally multivalued base reactive class that offers factory methods, intermediate operators and the ability to consume synchronous and/ or asynchronous reactive data flows. Its `fromPublisher()` method converts an arbitrary Reactive stream `Publisher` into a `Observable`. Its `map()` method returns a `Observable` that applies a specified function to each item emitted by the current `Observable` and emits the results of these function applications. Furthermore, `materialize()` method returns a `Observable` that represents all the emissions and notifications from the current `Observable` into emissions marked with their original types within `Notification` objects.
+The [Observable](https://reactivex.io/RxJava/3.x/javadoc/io/reactivex/rxjava3/core/Observable.html) class is the non-backpressured, optionally multivalued base reactive class that offers factory methods, intermediate operators and the ability to consume synchronous and/ or asynchronous reactive data flows. Its `fromPublisher()` method converts an arbitrary reactive stream `Publisher` into a `Observable`. Its `map()` method returns a `Observable` that applies a specified function to each item emitted by the current `Observable` and emits the results of these function applications. Furthermore, `materialize()` method returns a `Observable` that represents all the emissions and notifications from the current `Observable` into emissions marked with their original types within `Notification` objects.
 
-The [Flowable](https://reactivex.io/RxJava/3.x/javadoc/io/reactivex/rxjava3/core/Flowable.html) class that implements the Reactive Streams `Publisher` Pattern and offers factory methods, intermediate operators and the ability to consume reactive data flows. Reactive Streams operates with `Publishers` which `Flowable` extends. Many operators therefore accept general `Publishers` directly and allow direct interoperation with other Reactive Streams implementations.
+The [Flowable](https://reactivex.io/RxJava/3.x/javadoc/io/reactivex/rxjava3/core/Flowable.html) class that implements the reactive streams `Publisher` pattern, offers factory methods, intermediate operators and the ability to consume reactive data flows. Reactive streams operates with `Publishers` which `Flowable` extends. Many operators therefore accept general `Publishers` directly and allow direct interoperation with other reactive streams implementations.
+
+
+### Testing the Reactive Request Processing
 
 Now let's test out reactive functionality:
 
@@ -221,17 +227,16 @@ void createUserWithReactiveProcessing() {
 
 This test validates the functionality of creating a user with reactive processing using the Apache HttpClient.
 
-It starts by initializing the MinimalHttpAsyncClient and setting it to null. Then, it attempts to create a user with the specified name and job role using reactive processing through the `createUserWithReactiveProcessing()` method of the `userHttpRequestHelper`.
+It starts by initializing the `MinimalHttpAsyncClient` and setting it to null. Then, it attempts to create a user with the specified name and job role using reactive processing through the `createUserWithReactiveProcessing()` method of the `userHttpRequestHelper`.
 
 After executing the request, it verifies the response by asserting that the response body contains non-null values for the user's ID and creation timestamp.
 
-If any exception occurs during the execution of the test, it fails with an appropriate error message. Finally, it ensures that the MinimalHttpAsyncClient is stopped regardless of the test outcome.
+If any exception occurs during the execution of the test, it fails with an appropriate error message. Finally, it ensures that the `MinimalHttpAsyncClient` is stopped regardless of the test outcome.
 
-Sure! Let's add a section that compares the Async APIs and Reactive APIs offered by Apache HttpClient. This comparison will help readers understand the differences, benefits, and suitable use cases for each approach.
-
----
 
 ## Comparing Async and Reactive APIs
+
+Finally, let's compare the reactive APIs with the async APIs and understand when to use each.
 
 Apache HttpClient provides two powerful paradigms for handling HTTP requests: Async APIs and Reactive APIs. Both styles offer non-blocking operations, but they differ in their design, usage patterns, and underlying concepts. Let's compare these two approaches.
 
@@ -239,7 +244,7 @@ Apache HttpClient provides two powerful paradigms for handling HTTP requests: As
 
 The Async APIs allows us to send and receive HTTP requests asynchronously. Apache built them on top of Java's `Future` and `CompletableFuture` classes. We use them to execute HTTP requests concurrently without blocking the main thread.
 
-Async APIs have following key features. First, they are callback based. They use callbacks to handle responses once they are available. It is easier to integrate them into existing codebases that are already using `Future` and `CompletableFuture`. Furthermore, they allow more control over individual request handling, such as custom timeout settings and retry logic.
+Async APIs have the following key features. First, they are callback based. They use callbacks to handle responses once they are available. It is easier to integrate them into existing codebases that are already using `Future` and `CompletableFuture`. Furthermore, they allow more control over individual request handling, such as custom timeout settings and retry logic.
 
 For example, we would use them to execute multiple HTTP requests concurrently to fetch data from different services and aggregate the results.
 
@@ -247,20 +252,20 @@ For example, we would use them to execute multiple HTTP requests concurrently to
 
 The Reactive APIs follow the principles of reactive programming. They implement the Reactive Streams specification, typically involving frameworks like RxJava or Reactor. They are ideal for applications that need to handle large volumes of data streams or require high responsiveness and scalability.
 
-Reactive APIs have following key features. They are event driven. They use an event-driven model to process HTTP responses as they arrive. Furthermore, they support backpressure handling. That in turn allow consumers to process data at their own pace without being overwhelmed. Last but not the least, they offer composability. Composing allows for more complex data processing pipelines using reactive operators (e.g., map, flatMap).
+Reactive APIs have the following key features. They are event driven. They use an event-driven model to process HTTP responses as they arrive. Furthermore, they support backpressure handling. That in turn allows consumers to process data at their own pace without being overwhelmed. Last but not the least, they offer composability. Composing allows for more complex data processing pipelines using reactive operators (e.g., map, flatMap).
 
-For example, we would use to build a real-time data processing application that continuously receives and processes data from multiple sources.
+For example, we would use a reactive approach to build a real-time data processing application that continuously receives and processes data from multiple sources.
 
 ### Comparison
 
-| Aspect                  | Async APIs                                           | Reactive APIs                                       |
-|-------------------------|------------------------------------------------------|-----------------------------------------------------|
-| **Programming Model**   | Future-based, callback-driven                        | Reactive Streams, event-driven                      |
+| Aspect                  | Async APIs                                           | Reactive APIs                                           |
+|-------------------------|------------------------------------------------------|---------------------------------------------------------|
+| **Programming Model**   | Future-based, callback-driven                        | Reactive Streams, event-driven                          |
 | **Concurrency**         | Easy to manage with `CompletableFuture`              | Inherent support for handling asynchronous data streams |
 | **Scalability**         | Suitable for moderate concurrency                    | Highly scalable, suitable for high-throughput scenarios |
-| **Backpressure**        | Not inherently supported                             | Built-in backpressure support                       |
-| **Integration**         | Seamless with existing `CompletableFuture` codebases   | Ideal for applications using reactive frameworks    |
-| **Complexity**          | Simpler for straightforward async tasks              | More complex but powerful for advanced use cases    |
+| **Backpressure**        | Not inherently supported                             | Built-in backpressure support                           |
+| **Integration**         | Seamless with existing `CompletableFuture` codebases | Ideal for applications using reactive frameworks        |
+| **Complexity**          | Simpler for straightforward async tasks              | More complex but powerful for advanced use cases        |
 
 ### Choosing the Right API
 
@@ -271,4 +276,6 @@ By understanding the differences and strengths of Async and Reactive APIs, we ca
 
 ## Conclusion
 
-In this article we got familiar the integration of Apache HTTP client's reactive stream client with RxJava for reactive streams processing. It highlights how to leverage reactive programming paradigms for handling HTTP requests and responses asynchronously. By combining Apache's reactive stream client with RxJava's powerful capabilities, developers can create efficient and scalable applications. We learned the usage of reactive entities like `ReactiveEntityProducer` and `ReactiveResponseConsumer`, along with RxJava's `Observable` and `Flowable`, to perform asynchronous data processing. It emphasizes the benefits of reactive streams processing, such as improved responsiveness and resource utilization, and provides practical examples demonstrating the integration of Apache HTTP client and RxJava.
+In this article we got familiar with the integration of Apache reactive HTTP client with RxJava for reactive streams processing. We learned how to leverage reactive programming paradigms for handling HTTP requests and responses asynchronously. By combining Apache's reactive stream client with RxJava's powerful capabilities, developers can create efficient and scalable applications. 
+
+We learned the usage of reactive entities like `ReactiveEntityProducer` and `ReactiveResponseConsumer`, along with RxJava's `Observable` and `Flowable`, to perform asynchronous data processing. We now better understand the benefits of reactive streams processing, such as improved responsiveness and resource utilization, and provides practical examples demonstrating the integration of Apache HTTP client and RxJava.

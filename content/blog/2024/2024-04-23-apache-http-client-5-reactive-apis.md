@@ -84,67 +84,91 @@ public class UserAsyncHttpRequestHelper extends BaseHttpRequestHelper {
   // methods to start and stop the http clients
 
   public User createUserWithReactiveProcessing(
-      MinimalHttpAsyncClient minimalHttpClient, String userName, String userJob,
-      String scheme, String hostname
-    ) throws RequestProcessingException {
-    
+      MinimalHttpAsyncClient minimalHttpClient,
+      String userName,
+      String userJob,
+      String scheme,
+      String hostname)
+      throws RequestProcessingException {
     try {
+      // Prepare request payload
       HttpHost httpHost = new HttpHost(scheme, hostname);
       URI uri = new URIBuilder(httpHost.toURI() + "/api/users/").build();
-      
-      Map<String, String> payload = new HashMap<>();
-      payload.put("name", userName);
-      payload.put("job", userJob);
-      ObjectMapper objectMapper = new ObjectMapper();
-      String payloadStr = objectMapper.writeValueAsString(payload);
-      byte[] bs = payloadStr.getBytes(StandardCharsets.UTF_8);
-      
-      ReactiveEntityProducer reactiveEntityProducer =
-          new ReactiveEntityProducer(
-              Flowable.just(ByteBuffer.wrap(bs)), 
-                            bs.length, ContentType.TEXT_PLAIN, null);
-      
-      BasicRequestProducer requestProducer =
-          new BasicRequestProducer("POST", uri, reactiveEntityProducer);
-
+      String payloadStr = preparePayload(userName, userJob);
       ReactiveResponseConsumer consumer = new ReactiveResponseConsumer();
-      
+      // execute the request
       Future<Void> requestFuture 
-        = minimalHttpClient.execute(requestProducer, consumer, null);
-      
+        = executeRequest(minimalHttpClient, consumer, uri, payloadStr);
+      // Print headers 
       Message<HttpResponse, Publisher<ByteBuffer>> streamingResponse =
           consumer.getResponseFuture().get();
-      log.debug("Head: {}", streamingResponse.getHead());
-      for (Header header : streamingResponse.getHead().getHeaders()) {
-        log.debug("Header: {}", header);
-      }
-
-      StringBuilder result = new StringBuilder();
-          Observable.fromPublisher(streamingResponse.getBody())
-              .map(
-                  byteBuffer -> {
-                    byte[] bytes = new byte[byteBuffer.remaining()];
-                    byteBuffer.get(bytes);
-                    return new String(bytes);
-                  })
-              .materialize()
-              .forEach(
-                  stringNotification -> {
-                    String value = stringNotification.getValue();
-                    if (value != null) {
-                      result.append(value);
-                    }
-                  });
-
-      requestFuture.get(1, TimeUnit.MINUTES);
-      return objectMapper.readerFor(User.class).readValue(result.toString());
+      printHeaders(streamingResponse);
+      // Prepare result
+      return prepareResult(streamingResponse, requestFuture);
     } catch (Exception e) {
-      throw new RequestProcessingException(
-        "Failed to create user. Error: " + e.getMessage(), e);
+      String errorMessage = "Failed to create user. Error: " + e.getMessage();
+      throw new RequestProcessingException(errorMessage, e);
     }
   }
-}
 
+  private String preparePayload(String userName, String userJob) 
+        throws JsonProcessingException {
+    Map<String, String> payload = new HashMap<>();
+    payload.put("name", userName);
+    payload.put("job", userJob);
+    return OBJECT_MAPPER.writeValueAsString(payload);
+  }
+
+  private Future<Void> executeRequest(
+      MinimalHttpAsyncClient minimalHttpClient,
+      ReactiveResponseConsumer consumer,
+      URI uri,
+      String payloadStr) {
+    byte[] bs = payloadStr.getBytes(StandardCharsets.UTF_8);
+    ReactiveEntityProducer reactiveEntityProducer =
+        new ReactiveEntityProducer(Flowable.just(ByteBuffer.wrap(bs)), 
+                                   bs.length, ContentType.TEXT_PLAIN, null);
+
+    return minimalHttpClient.execute(
+        new BasicRequestProducer("POST", uri, reactiveEntityProducer), 
+        consumer, 
+        null);
+  }
+
+  private void printHeaders(
+        Message<HttpResponse, Publisher<ByteBuffer>> streamingResponse) {
+    log.debug("Head: {}", streamingResponse.getHead());
+    for (Header header : streamingResponse.getHead().getHeaders()) {
+      log.debug("Header : {}", header);
+    }
+  }
+
+  private User prepareResult(
+      Message<HttpResponse, Publisher<ByteBuffer>> streamingResponse, 
+      Future<Void> requestFuture)
+        throws InterruptedException, ExecutionException, 
+               TimeoutException, JsonProcessingException {
+    StringBuilder result = new StringBuilder();
+    Observable.fromPublisher(streamingResponse.getBody())
+        .map(
+            byteBuffer -> {
+              byte[] bytes = new byte[byteBuffer.remaining()];
+              byteBuffer.get(bytes);
+              return new String(bytes);
+            })
+        .materialize()
+        .forEach(
+            stringNotification -> {
+              String value = stringNotification.getValue();
+              if (value != null) {
+                result.append(value);
+              }
+            });
+
+    requestFuture.get(1, TimeUnit.MINUTES);
+    return OBJECT_MAPPER.readerFor(User.class).readValue(result.toString());
+  }
+}
 ```
 
 This code creates a user using reactive processing with Apache HttpClient's minimal reactive component and RxJava. It constructs an HTTP POST request with user data and sends it asynchronously. Upon receiving the response, it reads the response body as a stream of bytes and converts it into a string. Then, it deserializes the string into a `User` object using Jackson's `ObjectMapper`.

@@ -1,8 +1,8 @@
 ---
 title: "Using Amazon S3 with Spring Cloud AWS"
 categories: [ "AWS", "Spring Boot", "Java" ]
-date: 2024-05-25 00:00:00 +0530
-modified: 2024-05-25 00:00:00 +0530
+date: 2024-05-27 00:00:00 +0530
+modified: 2024-05-27 00:00:00 +0530
 authors: [ "hardik" ]
 description: "In this article, we learn how AWS S3 can be integrated in a Spring Boot application using Spring Cloud AWS. The article details the necessary configurations, best practices, IAM policy and integration testing with LocalStack and Testcontainers."
 image: images/stock/0138-bucket-alternative-1200x628-branded.jpg
@@ -141,7 +141,7 @@ While it is possible to use the `S3Client` directly, `S3Template` reduces boiler
 
 We also make use of our custom `AwsS3BucketProperties` class which we had created earlier, to reference the S3 bucket name defined in our `application.yaml` file.
 
-## Required IAM permissions
+## Required IAM Permissions
 
 To have our service layer operate normally, the IAM user whose security credentials we have configured must have the necessary permissions of `s3:GetObject`, `s3:PutObject` and `s3:DeleteObject`.
 
@@ -166,7 +166,7 @@ Here is what our policy should look like:
 
 The above IAM policy conforms to the **least privilege principle**, by granting only the necessary permissions required for our service layer to operate correctly. We also specify the bucket ARN in the `Resource` field, further limiting the scope of the IAM policy to work with a single bucket that is provisioned for our application.
 
-## Validating Bucket Existence during Startup
+## Validating Bucket Existence During Startup
 
 If no S3 bucket exists in our AWS account corresponding to the configured bucket name in our `application.yaml` file, the service layer we have created **will encounter exceptions at runtime when attempting to interact with the S3 service**. This can lead to unexpected application behavior and a **poor user experience**.
 
@@ -281,7 +281,7 @@ The declared `spring-boot-starter-test` gives us the basic testing toolbox as it
 
 And `org.testcontainers:localstack` dependency will allow us to run the LocalStack emulator inside a disposable Docker container, ensuring an isolated environment for our integration test.
 
-### Provisioning S3 Bucket using Init Hooks
+### Provisioning S3 Bucket Using Init Hooks
 
 Localstack gives us the ability to create required AWS resources when the container is started via <a href="https://docs.localstack.cloud/references/init-hooks/" target="_blank">Initialization Hooks</a>. We will be creating a bash script `init-s3-bucket.sh` for this purpose inside our `src/test/resources` folder:
 

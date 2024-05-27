@@ -22,7 +22,6 @@ This article is the third part of a series:
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/create-a-http-client-wth-apache-http-client" %}}
 
-  
 We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the classic APIs offered by Apache HttpClient.
 
 {{% info title="Reqres Fake Data CRUD API" %}}
@@ -43,7 +42,6 @@ CRUD operations refer to Create, Read, Update, and Delete actions performed on d
 - **Delete**: Use HTTP DELETE to remove a user: `DELETE /users/{userId}`
    {{% /info %}}
 
-  
 Now let's learn to process HTTP responses using a response handler.
 
 The motivation behind using a response handler in Apache HttpClient is to provide a structured and reusable way to process HTTP responses.
@@ -127,7 +125,7 @@ Then, we invoke the `executeHttpMethod()` method of the `UserSimpleHttpRequestHe
 
 After executing the HTTP request, the test verifies the response body. It asserts that the response body is not empty, ensuring that the HTTP request was successful and returned some data.
 
-If any exception occurs during the execution of the test, the test fails and provides details about the failure, including the exception message. This ensures that any errors encountered during the test execution are properly reported.
+If any exception occurs during the execution of the test, the test fails and provides details about the failure, including the exception message. It properly reports any errors encountered during the test execution.
 
 ## HTTP Methods Used to Create Records
 
@@ -204,7 +202,7 @@ The CRUD methods to read records are: GET, HEAD, OPTIONS, and TRACE.
 
 We use an HTTP GET request to retrieve a single record as well as records in bulk. Furthermore, we can use pagination to split requests that return large responses into multiple requests.
 
-{{% info title="Pagination, Its Advantages, Disadvantages and Complexities" %}}
+{{% info title="Pagination, Its Advantages, Disadvantages, and Complexities" %}}
 Pagination in HTTP request processing involves dividing large sets of data into smaller, manageable pages. Clients specify the page they want using parameters like `page=1`. The server processes the request, retrieves the relevant page of data, and returns it to the client, enabling efficient data retrieval and presentation. Advantages of pagination include improved performance, reduced server load, enhanced user experience, and efficient handling of large datasets.
 
 Pagination in HTTP REST calls can cause complexities on both server and client sides. Server-side complexities include additional logic for managing paginated data, increased resource usage for deep pagination, potential data consistency issues due to changing underlying data, and scalability challenges in distributed systems.
@@ -213,7 +211,6 @@ On the client side, complexities arise from managing pagination state, handling 
 
 {{% /info %}}
 
-  
 Let's implement a paginated HTTP GET request using a response handler:
 
 ```java
@@ -245,7 +242,7 @@ public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
 
 ```
 
-The code defines `getPaginatedUsers()` method to retrieve a list of users from an external API, specified by the request parameters map.  The `requestParameters` are mapped into a list of `NameValuePairs`. Then we create `HttpGet` instance, representing the GET request and call HttpClient's `execute()` method. The response body returned by the server is stored in the `responseBody` variable.
+The code defines `getPaginatedUsers()` method to retrieve a list of users from an external API, specified by the request parameters map.  The `requestParameters` are mapped into a list of `NameValuePairs`. Then we create `HttpGet` instance, representing the GET request and call HttpClient's `execute()` method. It stores the response body returned by the server in the `responseBody` variable.
 
 Here is a test case to verify this functionality:
 
@@ -389,7 +386,7 @@ This test method verifies the status returned by the HEAD method for a user. Fir
 
 ### Executing an HTTP `OPTIONS` Request to Find out Request Methods Allowed by Server
 
-The HTTP `OPTION` method is a type of HTTP call that explains what are the options for a target resource such as an API endpoint. We can use `OPTION` to find out which HTTP methods are supported by the server.
+The HTTP `OPTION` method is a type of HTTP call that explains what are the options for a target resource such as an API endpoint. We can use `OPTION` to find out which HTTP methods the server supports.
 
 Here is command line example to execute it:
 
@@ -449,11 +446,11 @@ The response headers will include the necessary information. The `Allow` or `acc
 
 {{% info title="HTTP `OPTIONS` Facts" %}}
 
-The `OPTION` method is used to make a preflight request to the server. A preflight request is a request that is sent to the server to determine if the actual request is allowed. The server will respond to the preflight request with a list of the HTTP methods that are allowed. The browser will then send the actual request if the requested method is in the list. The server also includes a message that indicates the allowed origin, methods, and headers.
+We use the `OPTION` method to make a preflight request to the server. A preflight request is a request we send to the server to determine if the server allows the actual request. The server will respond to the preflight request with a list of the HTTP methods it allows. The browser will then send the actual request if the requested method is in the list. The server also includes a message that indicates the allowed origin, methods, and headers.
 
-The `Access-Control-Allow-Methods` header is required for cross-origin resource sharing (`CORS`). `CORS` is a security mechanism that prevents websites from accessing resources from other domains.
+We need header `Access-Control-Allow-Methods` for cross-origin resource sharing (`CORS`). `CORS` is a security mechanism that prevents websites from accessing resources from other domains.
 
-The `Access-Control-Allow-Methods` header tells the browser which HTTP methods are allowed when accessing the resource.
+The `Access-Control-Allow-Methods` header tells the browser list of allowed HTTP methods when accessing the resource.
 
 {{% /info %}}
   
@@ -487,7 +484,7 @@ public Map<String, String> executeOptions() throws RequestProcessingException {
 
 ```
 
-In this example, we populate the `HttpOptions` request and call the `HttpClient.execute()` method. The response from the server is processed by the handler, and the resulting map of headers is returned to the caller.
+In this example, we populate the `HttpOptions` request and call the `HttpClient.execute()` method. The handler processes the response from the server, and returns the resulting map of headers to the caller.
 
 Let's now test the OPTIONS request:
 
@@ -592,7 +589,7 @@ In this example we execute an HTTP `PUT` request to update a user's information.
 
 ### Executing an HTTP `PATCH` Request to Partially Update an Existing Record
 
-We use HTTP `PATCH` to update an existing user in a partial way. We need to provide details needed to update the user.
+We use HTTP `PATCH` to update an existing user partially. We need to provide details needed to update the user.
 
 Logic to update an existence user partially:
 
@@ -773,7 +770,7 @@ public class UserTypeHttpRequestHelper extends BaseHttpRequestHelper {
 
 The `DataObjectResponseHandler` is a generic HTTP response handler that deserializes JSON into specified POJO using the Jackson ObjectMapper. It converts the HTTP response entity to a JSON string using `EntityUtils.toString()`, then deserializes it into a POJO of the given type. This design reduces code duplication, enhancing reusability and maintainability.
 
-The `UserTypeHttpRequestHelper` class has a method `getUser()` that retrieves a user from a server using a custom `HttpGet` request. The response is processed by `DataObjectResponseHandler`, which deserializes the server's JSON response into a `User` object. We catch the errors during execution and thrown them again as `RequestProcessingException`.
+The `UserTypeHttpRequestHelper` class has a method `getUser()` that retrieves a user from a server using a custom `HttpGet` request. `DataObjectResponseHandler` processes the response, which deserializes the server's JSON response into a `User` object. We catch the errors during execution and thrown them again as `RequestProcessingException`.
 
 Test case to get a user:
 

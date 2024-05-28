@@ -1,8 +1,8 @@
 ---
 title: "Using AWS S3 Presigned URLs in Spring Boot"
 categories: [ "AWS", "Spring Boot", "Java" ]
-date: 2024-05-25 00:00:00 +0530
-modified: 2024-05-25 00:00:00 +0530
+date: 2024-05-28 00:00:00 +0530
+modified: 2024-05-28 00:00:00 +0530
 authors: [ "hardik" ]
 description: "In this article, we demonstrate how to use AWS S3 Presigned URLs in a Spring Boot application to offload file transfers, reduce server load and improve performance. We cover required dependencies, configuration, IAM policy, generation of Presigned URLs and integration testing with LocalStack and Testcontainers."
 image: images/stock/0139-stamped-envelope-1200x628-branded.jpg
@@ -233,7 +233,7 @@ The declared `spring-boot-starter-test` gives us the basic testing toolbox as it
 
 And `org.testcontainers:localstack` dependency will allow us to run the LocalStack emulator inside a disposable Docker container, ensuring an isolated environment for our integration test.
 
-### Provisioning S3 Bucket using Init Hooks
+### Provisioning S3 Bucket Using Init Hooks
 
 In order to upload and download objects from an S3 bucket via Presigned URLs, we need.. an S3 bucket. (big brain stuff 🧠) 
 

@@ -6,7 +6,7 @@ modified: 2024-05-28 00:00:00 +0530
 authors: [ "hardik" ]
 description: "In this article, we demonstrate how to use AWS S3 Presigned URLs in a Spring Boot application to offload file transfers, reduce server load and improve performance. We cover required dependencies, configuration, IAM policy, generation of Presigned URLs and integration testing with LocalStack and Testcontainers."
 image: images/stock/0139-stamped-envelope-1200x628-branded.jpg
-url: "aws-s3-presigned-url-spring-boot"
+url: "offloading-file-transfers-with-amazon-s3-presigned-urls-in-spring-boot"
 ---
 
 When building web applications that involve file uploads or downloads, a common approach is to have the files pass through an application server. However, this can lead to **increased load on the server, consuming valuable computing resources, and potentially impacting performance**. A more efficient solution is to **offload file transfers to the client (web browsers, desktop/mobile applications) using Presigned URLs**.

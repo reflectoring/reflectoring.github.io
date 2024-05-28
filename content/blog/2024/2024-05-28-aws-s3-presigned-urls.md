@@ -9,15 +9,17 @@ image: images/stock/0139-stamped-envelope-1200x628-branded.jpg
 url: "aws-s3-presigned-url-spring-boot"
 ---
 
-When building web applications that involve file uploads or downloads, a common approach is to have the files pass through the application server. However, this can lead to **increased load on the server, consuming valuable computing resources, and potentially impacting performance**. A more efficient solution is to **offload file transfers to the client (web browsers, desktop/mobile applications) using Presigned URLs**.
+When building web applications that involve file uploads or downloads, a common approach is to have the files pass through an application server. However, this can lead to **increased load on the server, consuming valuable computing resources, and potentially impacting performance**. A more efficient solution is to **offload file transfers to the client (web browsers, desktop/mobile applications) using Presigned URLs**.
 
-Presigned URLs are time-limited URLs that **allow clients temporary access to upload or download objects directly to or from the storage solution being used**. These URLs are generated with a specified expiration time, after which they are no longer accessible.
+Presigned URLs are **time-limited URLs that allow clients temporary access to upload or download objects directly to or from the storage solution being used**. These URLs are generated with a specified expiration time, after which they are no longer accessible.
 
 The storage solution we will be using in this article is <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide" target="_blank">Amazon S3 (Simple Storage Service)</a>, provided by AWS. However, it's worth noting that **the concept of Presigned URLs is not limited to AWS**. It can also be implemented with other cloud storage services like Google Cloud Storage, DigitalOcean Spaces, etc.
 
 In this article, we will explore how to generate Presigned URLs in a Spring Boot application using **Spring Cloud AWS**. We will walk through the required configurations and develop a service class that provides methods for generating Presigned URLs. These URLs will allow the client applications to securely upload and download objects to/from a provisioned S3 bucket.
 
 We will also test our developed Presigned URL functionality using **LocalStack and Testcontainers**.
+
+{{% github "https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-aws-s3" %}}
 
 ## Use Cases and Benefits of Presigned URLs
 
@@ -34,8 +36,6 @@ Before diving into the implementation, let's further discuss the use cases and a
   This approach not only reduces the load on our application server but also simplifies the upload process. The client can initiate the file upload directly to S3, eliminating the need for temporary storage on our server and the additional step of forwarding the file to S3.
 
 Now that we understand the use cases for which we can implement Presigned URLs and their benefits, let's proceed with the implementation.
-
-{{% github "https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-aws-s3" %}}
 
 ## Configurations
 

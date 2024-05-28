@@ -98,7 +98,7 @@ Add a bit of dry humor if the situation allows it. We’re not writing a doctora
 
 ### Use Active, Not Passive
 
-Usive active voice instead of passive voice wherever possible. This makes the reading much less convoluted and thus easier.
+Use active voice instead of passive voice wherever possible. This makes the reading much less convoluted and thus easier.
 
 | Don't write this | Write this instead |
 |---------------|-----------------|

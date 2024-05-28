@@ -1,5 +1,5 @@
 ---
-title: "Using AWS S3 Presigned URLs in Spring Boot"
+title: "Offloading File Transfers with Amazon S3 Presigned URLs in Spring Boot"
 categories: [ "AWS", "Spring Boot", "Java" ]
 date: 2024-05-28 00:00:00 +0530
 modified: 2024-05-28 00:00:00 +0530

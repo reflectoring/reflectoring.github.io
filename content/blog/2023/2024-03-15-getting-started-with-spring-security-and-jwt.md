@@ -779,7 +779,131 @@ With the bearer token set, let's try to hit the `/library/books/all` endpoint:
 
 With this, we have successfully configured swagger endpoints for our application.
 
+## Adding Spring Security Tests
+In our example, we need to write tests to test our token endpoint and another test for our Library application.
 
+Let's add some required properties for our tests along with an in-memory database to work with real data.
+Test `application.yml`:
+````yaml
+server:
+  port: 8083
+
+spring:
+  security:
+    user:
+      name: libUser
+      password: libPassword
+  datasource:
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+    url: jdbc:hsqldb:mem:testdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+
+jwt:
+  secretKey: 5JzoMbk6E5qIqHSuBTgeQCARtUsxAkBiHwdjXOSW8kWdXzYmP3X51C0
+  validity: 600000
+````
+
+Next, let's write tests to verify our token endpoint:
+````java
+@SpringBootTest
+@AutoConfigureMockMvc
+public class TokenControllerTest {
+    @Autowired
+    private MockMvc mvc;
+
+    @Test
+    public void shouldNotAllowAccessToUnauthenticatedUsers() throws Exception {
+        TokenRequest request = TokenRequest.builder()
+                .username("testUser")
+                .password("testPassword")
+                .build();
+        mvc.perform(MockMvcRequestBuilders.post("/token/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void shouldGenerateAuthToken() throws Exception {
+        TokenRequest request = TokenRequest.builder()
+                .username("libUser")
+                .password("libPassword")
+                .build();
+        mvc.perform(MockMvcRequestBuilders.post("/token/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isOk());
+    }
+}
+
+````
+Here, we will use `@MockMvc` to verify our `TokenController` class endpoint is working as expected in both positive and negative scenarios.
+
+Similarly, our `BookControllerTest` will look like this:
+````java
+@SpringBootTest
+@AutoConfigureMockMvc
+@SqlGroup({
+        @Sql(value = "classpath:init/first.sql", executionPhase = BEFORE_TEST_METHOD),
+        @Sql(value = "classpath:init/second.sql", executionPhase = BEFORE_TEST_METHOD)
+})
+
+public class BookControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    void failsAsBearerTokenNotSet() throws Exception {
+        mockMvc.perform(get("/library/books/all"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testWithValidBearerToken() throws Exception {
+        TokenRequest request = TokenRequest.builder()
+                .username("libUser")
+                .password("libPassword")
+                .build();
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/token/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isOk()).andReturn();
+        String resultStr = mvcResult.getResponse().getContentAsString();
+        TokenResponse token = new ObjectMapper().readValue(resultStr, TokenResponse.class);
+        mockMvc.perform(get("/library/books/all")
+                        .header("Authorization", "Bearer " + token.getToken()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(5)));
+    }
+
+    @Test
+    void testWithInvalidBearerToken() throws Exception {
+        mockMvc.perform(get("/library/books/all")
+                        .header("Authorization", "Bearer 123"))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+}
+
+
+````
+To test the application endpoints, we will be using the Spring `MockMvc` class and load the in-memory database
+with data using sample sql scripts. For this we will make use of annotations `@SqlGroup` and `@Sql` and the insert scripts 
+will be placed within `/resources/init` folders.
+
+In order to verify the successful run of the endpoint `testWithValidBearerToken()`, we will make a call first to the `/token/create`
+endpoint using `MockMvc`, extract the token from the response and set the token in the `Authorization` header of the next call
+to `/library/books/all`.
+
+## Conclusion
+In summary. JWT authentication is one step ahead to Spring's Basic authentication in terms of security.
+It is one of the most sought after means of authentication and authorization. In this article, we have explored some best practices, advantages of using JWT and
+looked at configuring a simple Spring Boot application to use JWT for security. 
 
 
 

@@ -1,5 +1,5 @@
 ---
-title: "Using Amazon S3 with Spring Cloud AWS"
+title: "Integrating Amazon S3 with Spring Boot using Spring Cloud AWS"
 categories: [ "AWS", "Spring Boot", "Java" ]
 date: 2024-05-27 00:00:00 +0530
 modified: 2024-05-27 00:00:00 +0530

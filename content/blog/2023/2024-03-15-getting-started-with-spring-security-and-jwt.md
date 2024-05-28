@@ -17,6 +17,10 @@ It provides a flexible architecture that supports various authentication mechani
 Spring Security provides Basic Authentication out of the box. To understand how this works, refer to [this article](https://reflectoring.io/spring-security/).
 In this article, we will deep-dive into the working of JWT and how to configure it with spring security.
 
+
+{{% github "https://github.com/thombergs/code-examples/tree/master/spring-security-jwt/getting-started" %}}
+
+
 ## What is JWT
 **JWT (JSON Web Token)** is a secure means of passing a JSON message between two parties. It is a standard defined in [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519).
 The information contained in a JWT token can be verified and trusted because it is digitally signed. JWTs can be signed using a secret (with the HMAC algorithm) or a public/private key pair using RSA or ECDSA.

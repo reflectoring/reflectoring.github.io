@@ -1,14 +1,14 @@
 ---
 authors: [sagaofsilence]
 categories: [Java]
-date: 2024-04-23 00:00:00 +1100
+date: 2024-05-29 00:00:00 +1100
 excerpt: Classic APIs Offered by Apache HttpClient.
 image: images/stock/0077-request-response-1200x628-branded.jpg
 title: Classic APIs Offered by Apache HttpClient
 url: apache-http-client-classic-apis
 ---
 
-In this article we are going to learn about the classic APIs offered by Apache HttpClient. We are going to explore the different ways Apache HttpClient helps us to send and receive data over the internet in classic (synchronous) mode. From simple GET requests to complex multipart POST requests, we'll cover it all with real-world examples. So get ready to learn how to implement HTTP interactions with Apache HttpClient!
+In this article, we are going to learn about the classic APIs offered by Apache HttpClient. We are going to explore the different ways Apache HttpClient helps us to send and receive data over the internet in classic (synchronous) mode. From simple GET requests to complex multipart POST requests, we'll cover it all with real-world examples. So get ready to learn how to implement HTTP interactions with Apache HttpClient!
 
 ## The "Create an HTTP Client with Apache HttpClient" Series
 
@@ -22,7 +22,7 @@ This article is the third part of a series:
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/create-a-http-client-wth-apache-http-client" %}}
 
-We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the classic APIs offered by Apache HttpClient.
+We have grouped the examples under following categories of APIs: classic, async, and reactive. In this article, we will learn about the classic APIs offered by Apache HttpClient.
 
 {{% info title="Reqres Fake Data CRUD API" %}}
 We are going to use [Reqres API Server](https://reqres.in) to test different HTTP methods. It is a free online API that can be used for testing and prototyping. It provides a variety of endpoints that can be used to test different HTTP methods. The Reqres API is a good choice
@@ -129,11 +129,11 @@ If any exception occurs during the execution of the test, the test fails and pro
 
 ## HTTP Methods Used to Create Records
 
-There'e one CRUD method to create records: POST.
+There's one CRUD method to create records: POST.
 
 ### Executing an HTTP `POST` Request to Create a New Record
 
-We use HTTP `POST` to create a new user. We need to provide details needed to create a new user.
+We use HTTP `POST` to create a new user. We need to provide the details needed to create a new user.
 
 Here's the code to create a new record:
 
@@ -173,7 +173,7 @@ public String createUser(
 
 The example illustrates a method for creating a new user by sending an HTTP `POST` request to the specified endpoint. We construct a list of form parameters containing the user's details such as first name, last name, email, and avatar. Then call the `execute()` method and receive a response body containing the created user's data.
 
-And here's test:
+And here's the test:
 
 ```java
 @Test
@@ -205,9 +205,9 @@ We use an HTTP GET request to retrieve a single record as well as records in bul
 {{% info title="Pagination, Its Advantages, Disadvantages, and Complexities" %}}
 Pagination in HTTP request processing involves dividing large sets of data into smaller, manageable pages. Clients specify the page they want using parameters like `page=1`. The server processes the request, retrieves the relevant page of data, and returns it to the client, enabling efficient data retrieval and presentation. Advantages of pagination include improved performance, reduced server load, enhanced user experience, and efficient handling of large datasets.
 
-Pagination in HTTP REST calls can cause complexities on both server and client sides. Server-side complexities include additional logic for managing paginated data, increased resource usage for deep pagination, potential data consistency issues due to changing underlying data, and scalability challenges in distributed systems.
+Pagination in HTTP REST calls can cause complexities on both the server and client sides. Server-side complexities include additional logic for managing paginated data, increased resource usage for deep pagination, potential data consistency issues due to changing underlying data, and scalability challenges in distributed systems.
 
-On the client side, complexities arise from managing pagination state, handling additional network overhead due to more HTTP requests, ensuring a smooth user experience with pagination controls, and managing errors during pagination. These factors can impact performance, user experience, and scalability, requiring careful design and error handling on both server and client sides.
+On the client side, complexities arise from managing the pagination state, handling additional network overhead due to more HTTP requests, ensuring a smooth user experience with pagination controls, and managing errors during pagination. These factors can impact performance, user experience, and scalability, requiring careful design and error handling on both the server and client sides.
 
 {{% /info %}}
 
@@ -242,7 +242,7 @@ public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
 
 ```
 
-The code defines `getPaginatedUsers()` method to retrieve a list of users from an external API, specified by the request parameters map.  The `requestParameters` are mapped into a list of `NameValuePairs`. Then we create `HttpGet` instance, representing the GET request and call HttpClient's `execute()` method. It stores the response body returned by the server in the `responseBody` variable.
+The code defines the `getPaginatedUsers()` method to retrieve a list of users from an external API, specified by the request parameters map.  The `requestParameters` are mapped into a list of `NameValuePairs`. Then we create `HttpGet` instance, representing the GET request, and call HttpClient's `execute()` method. It stores the response body returned by the server in the `responseBody` variable.
 
 Here is a test case to verify this functionality:
 
@@ -272,7 +272,7 @@ public class UserSimpleHttpRequestHelperTests extends BaseClassicExampleTests {
 
 ```
 
-In test method `executeGetPaginatedRequest()`, we populate the request parameter (page=1) and execute an HTTP GET request to retrieve the first page of paginated users and verify the response.
+In the test method `executeGetPaginatedRequest()`, we populate the request parameter (page=1) and execute an HTTP GET request to retrieve the first page of paginated users and verify the response.
 
 ### Executing an HTTP GET Request to Get a Specific Record
 
@@ -305,9 +305,9 @@ public class UserSimpleHttpRequestHelper extends BaseHttpRequestHelper {
 
 ```
 
-In this example, the `getUser()` method retrieves a user by its `id`. As we have learned in `getAllUsers()` code example, in this case also, we create a `HttpGet` request object, a `HttpHost` object and response handler. Then we call `execute()` method on the client. Then we obtain the response in string form.
+In this example, the `getUser()` method retrieves a user by its `id`. As we have learned in `getAllUsers()` code example, in this case also, we create a `HttpGet` request object, a `HttpHost` object and response handler. Then we call the `execute()` method on the client and obtain the response in string form.
 
-Test case that verifies execute specific request:
+Here's test case that verifies execute specific request:
 
 ```java
 /** Execute get specific request. */
@@ -333,7 +333,7 @@ In this example, we call `getUser()` method to get user with specific `id` and t
 
 The `HEAD` method in HTTP can request information about a document without retrieving the document itself. It is similar to GET, but it does not receive the response body. It's used for caching, resource existence, modification checks, and link validation. Faster than GET, it saves bandwidth by omitting response data, making it ideal for resource checks and link validation, optimizing network efficiency.
 
-Here is the code to execute HTTP `HEAD` request to get status of a specific user record using a response handler:
+Here is the code to execute HTTP `HEAD` request to get the status of a specific user record using a response handler:
 
 ```java
 public Integer getUserStatus(long userId) throws RequestProcessingException {
@@ -359,7 +359,7 @@ public Integer getUserStatus(long userId) throws RequestProcessingException {
 
 ```
 
-In this example we send a `HEAD` request to the user endpoint to retrieve the status code of an HTTP request without fetching the response body.
+In this example, we send a `HEAD` request to the user endpoint to retrieve the status code of an HTTP request without fetching the response body.
 
 Test for this functionality:
 
@@ -388,7 +388,7 @@ This test method verifies the status returned by the HEAD method for a user. Fir
 
 The HTTP `OPTION` method is a type of HTTP call that explains what are the options for a target resource such as an API endpoint. We can use `OPTION` to find out which HTTP methods the server supports.
 
-Here is command line example to execute it:
+Here's the command line example to execute it:
 
 ```bash
 curl https://reqres.in -X OPTIONS -i
@@ -396,14 +396,14 @@ curl https://reqres.in -X OPTIONS -i
 
 ```
 
-We can also find out allowed methods for specific URI path.
+We can also find out the allowed methods for specific URI path:
 
 ```bash
 curl https://reqres.in/api/users/ -X OPTIONS -i
 
 ```
 
-We get response from the server as below:
+We get a response from the server as below:
 
 ```bash
 HTTP/2 204
@@ -450,7 +450,7 @@ We use the `OPTION` method to make a preflight request to the server. A prefligh
 
 We need header `Access-Control-Allow-Methods` for cross-origin resource sharing (`CORS`). `CORS` is a security mechanism that prevents websites from accessing resources from other domains.
 
-The `Access-Control-Allow-Methods` header tells the browser list of allowed HTTP methods when accessing the resource.
+The `Access-Control-Allow-Methods` header tells the browser the list of allowed HTTP methods when accessing the resource.
 
 {{% /info %}}
   
@@ -484,7 +484,7 @@ public Map<String, String> executeOptions() throws RequestProcessingException {
 
 ```
 
-In this example, we populate the `HttpOptions` request and call the `HttpClient.execute()` method. The handler processes the response from the server, and returns the resulting map of headers to the caller.
+In this example, we populate the `HttpOptions` request and call the `HttpClient.execute()` method. The handler processes the response from the server and returns the resulting map of headers to the caller.
 
 Let's now test the OPTIONS request:
 
@@ -508,7 +508,7 @@ The test calls `executeOptions()` to perform the `OPTIONS` request and retrieve 
 
 ### Executing an HTTP `TRACE` Request to Perform Diagnosis
 
-The HTTP `TRACE` method performs a message loop-back test along the path to the target resource, providing a useful debugging mechanism. However, it is advised not to use this method as it can open the gates to the intruders.
+The HTTP `TRACE` method performs a message loop-back test along the path to the target resource, providing a useful debugging mechanism. However, it is advised not to use this method as it can open the gates to intruders.
 
 {{% danger title="The Vulnerability of TRACE" %}}
 As warned by OWASP in the documentation on [Test HTTP Methods](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/06-Test_HTTP_Methods) the `TRACE` method, or `TRACK` in Microsoft's systems, makes the server repeat what it receives in a request. This caused a problem known as `Cross-Site Tracing (XST)` in 2003, allowing access to cookies marked with the `HttpOnly` flag. Browsers and plugins have blocked `TRACE` for years, so this problem is no longer a risk. However, if a server still allows `TRACE`, it might indicate security weaknesses.
@@ -516,11 +516,11 @@ As warned by OWASP in the documentation on [Test HTTP Methods](https://owasp.org
 
 ## HTTP Methods Used to Update Records
 
-The CRUD methods to update records are: PUT, PATCH.
+The CRUD methods to update records are PUT and PATCH.
 
 ### Executing an HTTP `PUT` Request to Update an Existing Record
 
-We use HTTP `PUT` to update an existing user. We need to provide details needed to update the user.
+We use HTTP `PUT` to update an existing user. We need to provide the details needed to update the user.
 
 Implementation for updating an existing user:
 
@@ -558,9 +558,9 @@ public String updateUser(
 
 ```
 
-The example above shows how to update a user's information via an HTTP `PUT` request. The method constructs the update request by creating a list of `NameValuePair` objects containing the user's updated details (first name, last name, email, and avatar). Then we send request to the specified user's endpoint (/api/users/{userId}). The response body from the server, indicating the success or failure of the update operation, is captured and returned as a string.
+The example above shows how to update a user's information via an HTTP `PUT` request. The method constructs the update request by creating a list of `NameValuePair` objects containing the user's updated details (first name, last name, email, and avatar). Then we send a request to the specified user's endpoint (/api/users/{userId}). The response body from the server, indicating the success or failure of the update operation, is captured and returned as a string.
 
-Let's test update user workflow:
+Let's test the update user workflow:
 
 ```java
 @Test
@@ -585,13 +585,13 @@ void executePutRequest() {
 
 ```
 
-In this example we execute an HTTP `PUT` request to update a user's information. The method first prepares the necessary parameters for the update operation, including the user's ID and the updated details (first name, last name, email, and avatar). It then invokes the `updateUser()` method of the `userHttpRequestHelper` object, passing these parameters. The method captures the response from the server, indicating the success or failure of the update operation, and asserts that the response body is not empty to verify the update's success.
+In this example, we execute an HTTP `PUT` request to update a user's information. The method first prepares the necessary parameters for the update operation, including the user's ID and the updated details (first name, last name, email, and avatar). It then invokes the `updateUser()` method of the `userHttpRequestHelper` object, passing these parameters. The method captures the response from the server, indicating the success or failure of the update operation, and asserts that the response body is not empty to verify the update's success.
 
 ### Executing an HTTP `PATCH` Request to Partially Update an Existing Record
 
-We use HTTP `PATCH` to update an existing user partially. We need to provide details needed to update the user.
+We use HTTP `PATCH` to update an existing user partially. We need to provide the details needed to update the user.
 
-Logic to update an existence user partially:
+Logic to update an existing user partially:
 
 ```java
 public String patchUser(long userId, String firstName, String lastName)
@@ -625,7 +625,7 @@ public String patchUser(long userId, String firstName, String lastName)
 
 ```
 
-The example above shows how to update a user's information via an HTTP `PATCH` request. The method constructs the patch request by creating a list of `NameValuePair` objects containing few of the user's updated details (first name and last name). Then we send the request to the specified user's endpoint (/api/users/{userId}). The response body from the server, indicating the success or failure of the update operation, is captured and returned as a string.
+The example above shows how to update a user's information via an HTTP `PATCH` request. The method constructs the patch request by creating a list of `NameValuePair` objects containing a few of the user's updated details (first name and last name). Then we send the request to the specified user's endpoint (/api/users/{userId}). The response body from the server, indicating the success or failure of the update operation, is captured and returned as a string.
 
 Test to verify patch request:
 
@@ -650,7 +650,7 @@ void executePatchRequest() {
 
 ```
 
-In this example we execute an HTTP `PATCH` request to partially update a user's information. It first prepares the necessary parameters for the update operation, including the user's ID and few of the users details (first name and last name). It then invokes the `patchUser()`, passing these parameters. The method captures the response from the server, indicating the success or failure of the update operation, and asserts that the response body is not empty to verify the patch's success.
+In this example, we execute an HTTP `PATCH` request to partially update a user's information. It first prepares the necessary parameters for the update operation, including the user's ID and some of the user's details (first name and last name). It then invokes the `patchUser()`, passing these parameters. The method captures the response from the server, indicating the success or failure of the update operation, and asserts that the response body is not empty to verify the patch's success.
 
 ## HTTP Methods Used to Delete Records
 
@@ -658,7 +658,7 @@ There's one CRUD method to delete a record: DELETE.
 
 ### Executing an HTTP `DELETE` Request to Delete an Existing Record
 
-We use HTTP `DELETE` to delete an existing user. We need user ID to delete the user.
+We use HTTP `DELETE` to delete an existing user. We need the user ID to delete the user.
 
 Let's implement delete user logic:
 
@@ -703,11 +703,11 @@ void executeDeleteRequest() {
 
 The provided test aims to verify the functionality of the `deleteUser()` method. It prepares by specifying the user ID of the user to be deleted, in this case, `userId = 2`. It then executes the `deleteUser()` method, passing the `userId` as an argument.
 
-## Using User Defined Type in Request Processing
+## Using User-Defined Type in Request Processing
 
-So far we have used built-in Java types like `String`, `Integer` in requests and responses. But we are not limited to use those built-in types.
+So far we have used built-in Java types like `String`, and `Integer` in requests and responses. But we are not limited to using those built-in types.
 
-### User Defined Request and Response
+### User-Defined Request and Response
 
 We can use Plain Old Java Objects (POJO objects) in requests sent using HttpClient `execute()`. However, we typically do not directly use a POJO as the request entity. Instead, we convert the POJO into a format that can be sent over HTTP, such as `JSON` or `XML`, and then include that data in the request entity.
 
@@ -770,7 +770,7 @@ public class UserTypeHttpRequestHelper extends BaseHttpRequestHelper {
 
 The `DataObjectResponseHandler` is a generic HTTP response handler that deserializes JSON into specified POJO using the Jackson ObjectMapper. It converts the HTTP response entity to a JSON string using `EntityUtils.toString()`, then deserializes it into a POJO of the given type. This design reduces code duplication, enhancing reusability and maintainability.
 
-The `UserTypeHttpRequestHelper` class has a method `getUser()` that retrieves a user from a server using a custom `HttpGet` request. `DataObjectResponseHandler` processes the response, which deserializes the server's JSON response into a `User` object. We catch the errors during execution and thrown them again as `RequestProcessingException`.
+The `UserTypeHttpRequestHelper` class has a method `getUser()` that retrieves a user from a server using a custom `HttpGet` request. `DataObjectResponseHandler` processes the response, which deserializes the server's JSON response into a `User` object. We catch the errors during execution and throw them again as `RequestProcessingException`.
 
 Test case to get a user:
 
@@ -805,12 +805,12 @@ void executeGetUser() {
 
 It prepares by defining the `userId` variable, executes the method using the `userHttpRequestHelper`, and verifies the response received from the server. If exceptions occur, the test fails with an error message.
 
-{{% info title="Choosing User Defined Type Vs Built-in Type" %}}
+{{% info title="Choosing User-Defined Type Vs Built-in Type" %}}
 
-Typed classes offer advantages such as enhanced type safety, allowing for better code readability and preventing type-related errors. They also facilitate better code organization and maintainability by encapsulating related functionality within specific classes. However, they may introduce complexity and require additional effort for implementation. In contrast, built-in types like String offer simplicity and ease of use but may lack the specific functionality and type safety provided by custom typed classes. The choice between typed classes and built-in types depends on factors such as project requirements, complexity, and maintainability concerns.
+Typed classes offer advantages such as enhanced type safety, allowing for better code readability and preventing type-related errors. They also facilitate better code organization and maintainability by encapsulating related functionality within specific classes. However, they may introduce complexity and require additional effort for implementation. In contrast, built-in types like String offer simplicity and ease of use but may lack the specific functionality and type safety provided by custom-typed classes. The choice between typed classes and built-in types depends on factors such as project requirements, complexity, and maintainability concerns.
 
 {{% /info %}}
 
 ## Conclusion
 
-In this article we got familiar with the classic APIs of Apache HttpClient, we explored a multitude of essential functionalities vital for interacting with web servers. From fetching paginated records to pinpointing specific data, and from determining server statuses to manipulating records, we learned a comprehensive array of HTTP methods. Understanding these capabilities equips us with the tools needed to navigate and interact with web resources efficiently and effectively. With this knowledge, our applications can communicate seamlessly with web servers, ensuring smooth data exchanges and seamless user experiences.
+In this article we got familiar with the classic APIs of Apache HttpClient, and we explored a multitude of essential functionalities vital for interacting with web servers. From fetching paginated records to pinpointing specific data, and from determining server statuses to manipulating records, we learned a comprehensive array of HTTP methods. Understanding these capabilities equips us with the tools needed to navigate and interact with web resources efficiently and effectively. With this knowledge, our applications can communicate seamlessly with web servers, ensuring smooth data exchanges and seamless user experiences.

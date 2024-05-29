@@ -1,7 +1,7 @@
 ---
 authors: [sagaofsilence]
 categories: [Java]
-date: 2024-04-23 00:00:00 +1100
+date: 2024-05-29 00:00:00 +1100
 excerpt: Async APIs Offered by Apache HttpClient.
 image: images/stock/0075-envelopes-1200x628-branded.jpg
 title: Async APIs Offered by Apache HttpClient
@@ -22,7 +22,7 @@ This article is the fourth part of a series:
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/create-a-http-client-wth-apache-http-client" %}}
   
-Let's now learn how to use Apache HttpClient for web communication. We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the async APIs offered by Apache HttpClient.
+Let's now learn how to use Apache HttpClient for web communication. We have grouped the examples under the following categories of APIs: classic, async, and reactive. In this article, we will learn about the async APIs offered by Apache HttpClient.
 
 {{% info title="Reqres Fake Data CRUD API" %}}
 We are going to use [Reqres API Server](https://reqres.in) to test different HTTP methods. It is a free online API that can be used for testing and prototyping. It provides a variety of endpoints that can be used to test different HTTP methods. The Reqres API is a good choice
@@ -44,7 +44,7 @@ CRUD operations refer to Create, Read, Update, and Delete actions performed on d
 
 ### When Should We Use HttpAsyncClient?
 
-Apache's `HttpAsyncClient` is an HTTP client that enables non-blocking and parallel processing of long-lasting HTTP calls. This library incorporates a non-blocking IO model, allowing multiple requests to be active simultaneously without the need for additional background threads. By leveraging this approach, `HttpAsyncClient` offers significant performance benefits over blocking HTTP clients, particularly when dealing with high volume, long-running HTTP requests. Additionally, this library provides a robust and flexible interface for building HTTP clients, making it an ideal choice for developers looking to optimize their asynchronous HTTP processing workflows.
+Apache's `HttpAsyncClient` is an HTTP client that enables non-blocking and parallel processing of long-lasting HTTP calls. This library incorporates a non-blocking IO model, allowing multiple requests to be active simultaneously without the need for additional background threads. By leveraging this approach, `HttpAsyncClient` offers significant performance benefits over blocking HTTP clients, particularly when dealing with high-volume, long-running HTTP requests. Additionally, this library provides a robust and flexible interface for building HTTP clients, making it an ideal choice for developers looking to optimize their asynchronous HTTP processing workflows.
 
 Asynchronous HTTP clients have a thread pool to handle responses, with explicit timeouts for idle, TTL, and request. For low workloads, synchronous HTTP clients perform better with dedicated threads per connection. For higher throughput, non-blocking IO (NIO) clients are more effective.
 
@@ -55,7 +55,7 @@ Let's now understand how to send a simple HTTP request asynchronously.
 {{% info title="IO Reactor" %}}
 `HttpAsyncClient` uses IO Reactor to exchange messages asynchronously. HttpCore NIO is a system that uses the Reactor pattern, created by Doug Lea. Its purpose is to react to I/O events and to send event notifications to individual I/O sessions. The idea behind the I/O Reactor pattern is to avoid having one thread per connection, which is the case with the classic blocking I/O model.
 
-The Apache HttpClient's `IOReactor` interface represents an abstract object that implements the Reactor pattern. I/O reactors use a few dispatch threads (usually one) to send I/O event notifications to a much greater number of I/O sessions or connections (often several thousands). It is recommended to have one dispatch thread per CPU core.
+The Apache HttpClient's `IOReactor` interface represents an abstract object that implements the Reactor pattern. I/O reactors use a few dispatch threads (usually one) to send I/O event notifications to a much greater number of I/O sessions or connections (often several thousand). It is recommended to have one dispatch thread per CPU core.
 {{% /info %}}
   
 Let's now implement the logic to call the endpoints asynchronously.
@@ -205,7 +205,7 @@ public Map<Long, String> getUserWithCallback(List<Long> userIdList, int delayInS
 
 The code snippet aims to retrieve user data for a list of user IDs asynchronously using Apache HttpAsyncClient. It starts by ensuring that the `HTTPAsyncClient` is initialized. It then initializes data structures to store user responses and futures for asynchronous HTTP requests.
 
-For each user ID in the provided list, it constructs a `GET` request with a specified delay parameter and executes it asynchronously. It stores response futures in a map for later retrieval. It logs any exceptions that occur during request execution, and adds corresponding error messages to the response map.
+For each user ID in the provided list, it constructs a `GET` request with a specified delay parameter and executes it asynchronously. It stores response futures in a map for later retrieval. It logs any exceptions that occur during request execution and adds corresponding error messages to the response map.
 
 Note that we have added a delay to the `GET` endpoint. It simulates a delayed server operation. The HTTP client sends the request, one after the other, without waiting for the response. We can verify it by checking the logs:
 
@@ -223,7 +223,7 @@ GET https://reqres.in/api/users/10->HTTP/1.1 200 OK
 
 ```
 
-It will send the requests in the order if the IDs in the list. However, the requests may complete in any order. So our implementation should be agnostic to the order of request completion.
+It will send the requests in the order of the IDs in the list. However, the requests may complete in any order. So our implementation should be agnostic to the order of request completion.
 
 Now let's verify the implementation using a unit test:
 
@@ -274,7 +274,7 @@ class UserAsyncHttpRequestHelperTests extends BaseAsyncExampleTests {
 
 ```
 
-Here, we verify fetching user data asynchronously with Apache HttpAsyncClient. First, we initialize the client, and send 10 parallel requests to a delayed endpoint, each with a unique user ID and 3-second delay. Stores the responses in a map. After receiving all responses, we validate their correctness: ensuring the map matches the user IDs, contains no null keys-value pairs, and no responses indicating failure. If an exception occurs, the test fails with an error message. Finally, we stop the client.
+Here, we verify fetching user data asynchronously with Apache HttpAsyncClient. First, we initialize the client, and send 10 parallel requests to a delayed endpoint, each with a unique user ID and 3-second delay. Stores the responses in a map. After receiving all responses, we validate their correctness: ensuring the map matches the user IDs, contains no null key-value pairs, and no responses indicating failure. If an exception occurs, the test fails with an error message. Finally, we stop the client.
 
 ## Asynchronous Content Stream HTTP Request / Response Exchange
 
@@ -381,7 +381,7 @@ The `getUserWithStream()` test method in the `UserAsyncHttpRequestHelperTests` c
 
 First, we start the HTTP asynchronous client using `userHttpRequestHelper.startHttpAsyncClient()`.
 
-Then, we prepare a list of user IDs and calls the method `getUserWithStreams()` from the `UserAsyncHttpRequestHelper` class, passing the list of user IDs and a delay value of 3 seconds.
+Then, we prepare a list of user IDs and call the method `getUserWithStreams()` from the `UserAsyncHttpRequestHelper` class, passing the list of user IDs and a delay value of 3 seconds.
 
 The method sends HTTP requests in parallel for each user ID, fetching user data from the delayed endpoint. It returns a map containing the response bodies for each user ID.
 
@@ -729,7 +729,7 @@ In HTTP/1.1 pipelining, requests must still wait for their turn, and we should r
 
 However, HTTP/2 improves on this by dividing response data into smaller chunks and returning them in an interleaved manner. This prevents any single request from blocking others, resulting in faster loading times.
 
-It's important to note that HTTP/1.1 pipelining never became widely used due to limited browser and server support. For more details, visit: [HTTP Pipelining](https://en.m.wikipedia.org/wiki/HTTP_pipelining), [HTTP/2](https://en.wikipedia.org/wiki/HTTP/2) and [Multiplexing](https://en.wikipedia.org/wiki/Multiplexing).
+It's important to note that HTTP/1.1 pipelining never became widely used due to limited browser and server support. For more details, visit [HTTP Pipelining](https://en.m.wikipedia.org/wiki/HTTP_pipelining), [HTTP/2](https://en.wikipedia.org/wiki/HTTP/2) and [Multiplexing](https://en.wikipedia.org/wiki/Multiplexing).
 
 While both HTTP/1.1 pipelining and HTTP/2 offer similar performance benefits, in theory, HTTP/2 is favored for its more extensive features and broader support.
 {{% /info %}}
@@ -829,7 +829,7 @@ public class UserResponseAsyncExecChainHandler implements AsyncExecChainHandler 
 
 ```
 
-It overrides the default behavior of handling HTTP requests in the asynchronous execution chain. It checks if the request contains specific headers (`x-base-number` and `x-req-exec-number`) and if the request path starts with "/api/users/". If it meets these conditions, it extracts the values of these headers and parses them into integers. Then, it checks if the `reqExecNumber` is a multiple of the `baseNumber`. If so, it creates a custom response with status code `HTTP OK (200)` and a reason phrase indicating that it's a multiple of the base number. Otherwise, it proceeds with the execution chain to handle the request normally. Finally, it handles any exceptions that occur during the execution process.
+It overrides the default behavior of handling HTTP requests in the asynchronous execution chain. It checks if the request contains specific headers (`x-base-number` and `x-req-exec-number`) and if the request path starts with "/api/users/". If it meets these conditions, it extracts the values of these headers and parses them into integers. Then, it checks if the `reqExecNumber` is a multiple of the `baseNumber`. If so, it creates a custom response with the status code `HTTP OK (200)` and a reason phrase indicating that it's a multiple of the base number. Otherwise, it proceeds with the execution chain to handle the request normally. Finally, it handles any exceptions that occur during the execution process.
 
 Now let's prepare a client and configure it to use an interceptor:
 
@@ -996,4 +996,4 @@ We execute asynchronous HTTP requests with interceptors applied. First, we start
 
 ## Conclusion
 
-In this article we got familiar with the async APIs of Apache HttpClient, and we explored a multitude of essential functionalities vital for interacting with web servers. We learned its key functionalities including basic request processing, content streaming, pipelining, and multiplexing. We learned how to use interceptors to customize request and response processing, enhancing flexibility and control. Overall, the Apache HTTP Async Client is suitable for situations requiring efficient, non-blocking HTTP communication, offering a wide range of features to meet diverse requirements in modern web development.
+In this article, we got familiar with the async APIs of Apache HttpClient, and we explored a multitude of essential functionalities vital for interacting with web servers. We learned its key functionalities including basic request processing, content streaming, pipelining, and multiplexing. We learned how to use interceptors to customize request and response processing, enhancing flexibility and control. Overall, the Apache HTTP Async Client is suitable for situations requiring efficient, non-blocking HTTP communication, offering a wide range of features to meet diverse requirements in modern web development.

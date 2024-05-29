@@ -1,14 +1,14 @@
 ---
 authors: [sagaofsilence]
 categories: [Java]
-date: 2024-04-23 00:00:00 +1100
+date: 2024-05-29 00:00:00 +1100
 excerpt: Reactive APIs Offered by Apache HttpClient.
 image: images/stock/0120-data-stream-1200x628-branded.jpg
 title: Reactive APIs Offered by Apache HttpClient
 url: apache-http-client-reactive-apis
 ---
 
-In this article we are going to learn about reactive APIs offered by Apache HttpClient APIs. We are going to explore how to use reactive, full-duplex HTTP/1.1 message exchange using RxJava and Apache HttpClient. So get ready to learn to implement HTTP interactions with Apache HttpClient!
+In this article, we are going to learn about reactive APIs offered by Apache HttpClient APIs. We are going to explore how to use reactive, full-duplex HTTP/1.1 message exchange using RxJava and Apache HttpClient. So get ready to learn to implement HTTP interactions with Apache HttpClient!
 
 ## The "Create an HTTP Client with Apache HttpClient" Series
 
@@ -22,7 +22,7 @@ This article is the fifth part of a series:
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/create-a-http-client-wth-apache-http-client" %}}
   
-Let's now learn how to use Apache HttpClient for web communication. We have grouped the examples under following categories of APIs: classic, async and reactive. In this article we will learn about the reactive APIs offered by Apache HttpClient.
+Let's now learn how to use Apache HttpClient for web communication. We have grouped the examples under the following categories of APIs: classic, async, and reactive. In this article we will learn about the reactive APIs offered by Apache HttpClient.
 
 {{% info title="Reqres Fake Data CRUD API" %}}
 We are going to use [Reqres API Server](https://reqres.in) to test different HTTP methods. It is a free online API that can be used for testing and prototyping. It provides a variety of endpoints that can be used to test different HTTP methods. The Reqres API is a good choice
@@ -31,7 +31,7 @@ for testing CORS because it supports all the HTTP methods that are allowed by CO
 
 ## HttpClient (Reactive APIs)
 
-In this section of examples we are going to learn how to use `HttpAsyncClient` in combination with RxJava for sending reactive, full-duplex HTTP/1.1 message exchange.
+In this section of examples, we are going to learn how to use `HttpAsyncClient` in combination with RxJava for sending reactive, full-duplex HTTP/1.1 message exchange.
 
 {{% info title="HTTP and CRUD Operations" %}}
 CRUD operations refer to Create, Read, Update, and Delete actions performed on data. In the context of HTTP endpoints for a `/users` resource:
@@ -176,13 +176,13 @@ This code creates a user using reactive processing with Apache HttpClient's mini
 
 The process starts by constructing the request payload and setting up the request entity. It then executes the HTTP request asynchronously and processes the response using a reactive approach. It converts the response body into a stream of byte buffers. Then it transforms the buffer into a stream of strings using RxJava. Finally, it obtains the string stream, and uses the result to deserialize the user object.
 
-If there are any exceptions during this process, it catches such exceptions and wrap those in a `RequestProcessingException`. Overall, this approach leverages reactive programming to handle HTTP requests and responses asynchronously, providing better scalability and responsiveness.
+If there are any exceptions during this process, it catches such exceptions and wraps those in a `RequestProcessingException`. Overall, this approach leverages reactive programming to handle HTTP requests and responses asynchronously, providing better scalability and responsiveness.
 
 The code sample demonstrates how to use notable classes and methods from Apache reactive APIs:
 
 [Reactive Streams Specification](https://www.reactive-streams.org/) is a standard for processing asynchronous data using streaming with non-blocking backpressure. `ReactiveEntityProducer` is a `AsyncEntityProducer` that subscribes to a `Publisher` instance, as defined by the Reactive Streams specification. It is responsible for producing HTTP request entity content reactively. It accepts a `Flowable<ByteBuffer>` stream of data chunks and converts it into an HTTP request entity. In the code sample, it is used to create the request entity from the payload data (`payloadStr`).
 
-`BasicRequestProducer` is a basic implementation of `AsyncRequestProducer` that produces one fixed request and relies on a `AsyncEntityProducer` to generate request entity stream. It constructs an HTTP request with the specified method, URI, and request entity. In the code, it creates a POST request with the URI obtained from the provided `scheme` and `hostname`.
+`BasicRequestProducer` is a basic implementation of `AsyncRequestProducer` that produces one fixed request and relies on a `AsyncEntityProducer` to generate a request entity stream. It constructs an HTTP request with the specified method, URI, and request entity. In the code, it creates a POST request with the URI obtained from the provided `scheme` and `hostname`.
 
 `ReactiveResponseConsumer` is a `AsyncResponseConsumer` that publishes the response body through a `Publisher`, as defined by the Reactive Streams specification. The response represents a `Message` consisting of a `HttpResponse` representing the headers and a `Publisher` representing the response body as an asynchronous stream of `ByteBuffer` instances. It is a reactive implementation of the `ResponseConsumer` interface, designed to consume HTTP response asynchronously. It processes the response stream reactively and provides access to the response body as a `Publisher<ByteBuffer>`. In the code, it is used to consume the HTTP response asynchronously.
 
@@ -195,7 +195,7 @@ A `Publisher` can serve multiple `Subscriber`s subscribed through `subscribe(Sub
 
 Now let's get familiar with the RxJava noteworthy classes.
 
-The [Observable](https://reactivex.io/RxJava/3.x/javadoc/io/reactivex/rxjava3/core/Observable.html) class is the non-backpressured, optionally multivalued base reactive class that offers factory methods, intermediate operators and the ability to consume synchronous and/ or asynchronous reactive data flows. Its `fromPublisher()` method converts an arbitrary reactive stream `Publisher` into a `Observable`. Its `map()` method returns a `Observable` that applies a specified function to each item emitted by the current `Observable` and emits the results of these function applications. Furthermore, `materialize()` method returns a `Observable` that represents all the emissions and notifications from the current `Observable` into emissions marked with their original types within `Notification` objects.
+The [Observable](https://reactivex.io/RxJava/3.x/javadoc/io/reactivex/rxjava3/core/Observable.html) class is the non-backpressured, optionally multivalued base reactive class that offers factory methods, intermediate operators and the ability to consume synchronous and/ or asynchronous reactive data flows. Its `fromPublisher()` method converts an arbitrary reactive stream `Publisher` into an `Observable`. Its `map()` method returns an `Observable` that applies a specified function to each item emitted by the current `Observable` and emits the results of these function applications. Furthermore, `materialize()` method returns an `Observable` that represents all the emissions and notifications from the current `Observable` into emissions marked with their original types within `Notification` objects.
 
 The [Flowable](https://reactivex.io/RxJava/3.x/javadoc/io/reactivex/rxjava3/core/Flowable.html) class that implements the reactive streams `Publisher` pattern, offers factory methods, intermediate operators and the ability to consume reactive data flows. Reactive streams operates with `Publishers` which `Flowable` extends. Many operators therefore accept general `Publishers` directly and allow direct interoperation with other reactive streams implementations.
 
@@ -242,9 +242,9 @@ Apache HttpClient provides two powerful paradigms for handling HTTP requests: As
 
 ### Async APIs
 
-The Async APIs allows us to send and receive HTTP requests asynchronously. Apache built them on top of Java's `Future` and `CompletableFuture` classes. We use them to execute HTTP requests concurrently without blocking the main thread.
+The Async APIs allow us to send and receive HTTP requests asynchronously. Apache built them on top of Java's `Future` and `CompletableFuture` classes. We use them to execute HTTP requests concurrently without blocking the main thread.
 
-Async APIs have the following key features. First, they are callback based. They use callbacks to handle responses once they are available. It is easier to integrate them into existing codebases that are already using `Future` and `CompletableFuture`. Furthermore, they allow more control over individual request handling, such as custom timeout settings and retry logic.
+Async APIs have the following key features. First, they are callback-based. They use callbacks to handle responses once they are available. It is easier to integrate them into existing codebases that are already using `Future` and `CompletableFuture`. Furthermore, they allow more control over individual request handling, such as custom timeout settings and retry logic.
 
 For example, we would use them to execute multiple HTTP requests concurrently to fetch data from different services and aggregate the results.
 
@@ -252,7 +252,7 @@ For example, we would use them to execute multiple HTTP requests concurrently to
 
 The Reactive APIs follow the principles of reactive programming. They implement the Reactive Streams specification, typically involving frameworks like RxJava or Reactor. They are ideal for applications that need to handle large volumes of data streams or require high responsiveness and scalability.
 
-Reactive APIs have the following key features. They are event driven. They use an event-driven model to process HTTP responses as they arrive. Furthermore, they support backpressure handling. That in turn allows consumers to process data at their own pace without being overwhelmed. Last but not the least, they offer composability. Composing allows for more complex data processing pipelines using reactive operators (e.g., map, flatMap).
+Reactive APIs have the following key features. They are event-driven. They use an event-driven model to process HTTP responses as they arrive. Furthermore, they support backpressure handling. That in turn allows consumers to process data at their own pace without being overwhelmed. Last but not least, they offer composability. Composing allows for more complex data processing pipelines using reactive operators (e.g., map, flatMap).
 
 For example, we would use a reactive approach to build a real-time data processing application that continuously receives and processes data from multiple sources.
 
@@ -272,10 +272,10 @@ For example, we would use a reactive approach to build a real-time data processi
 Use async APIs to make concurrent HTTP requests with simpler control over futures and callbacks. It's a good fit for applications that are already leveraging `CompletableFuture`.
 On the other hand, use reactive APIs to build a highly responsive, scalable application that needs to process streams of data efficiently. It's particularly suitable if we're already using a reactive programming framework like Reactor or RxJava.
 
-By understanding the differences and strengths of Async and Reactive APIs, we can choose the most appropriate approach for application's needs, ensuring efficient and effective handling of HTTP requests with Apache HttpClient.
+By understanding the differences and strengths of Async and Reactive APIs, we can choose the most appropriate approach for the application's needs, ensuring efficient and effective handling of HTTP requests with Apache HttpClient.
 
 ## Conclusion
 
-In this article we got familiar with the integration of Apache reactive HTTP client with RxJava for reactive streams processing. We learned how to leverage reactive programming paradigms for handling HTTP requests and responses asynchronously. By combining Apache's reactive stream client with RxJava's powerful capabilities, developers can create efficient and scalable applications. 
+In this article, we got familiar with the integration of Apache reactive HTTP client with RxJava for reactive streams processing. We learned how to leverage reactive programming paradigms for handling HTTP requests and responses asynchronously. By combining Apache's reactive stream client with RxJava's powerful capabilities, developers can create efficient and scalable applications. 
 
-We learned the usage of reactive entities like `ReactiveEntityProducer` and `ReactiveResponseConsumer`, along with RxJava's `Observable` and `Flowable`, to perform asynchronous data processing. We now better understand the benefits of reactive streams processing, such as improved responsiveness and resource utilization, and provides practical examples demonstrating the integration of Apache HTTP client and RxJava.
+We learned the usage of reactive entities like `ReactiveEntityProducer` and `ReactiveResponseConsumer`, along with RxJava's `Observable` and `Flowable`, to perform asynchronous data processing. We now better understand the benefits of reactive streams processing, such as improved responsiveness and resource utilization, and saw practical examples demonstrating the integration of Apache HTTP client and RxJava.

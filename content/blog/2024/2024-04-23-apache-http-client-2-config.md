@@ -1,7 +1,7 @@
 ---
 authors: [sagaofsilence]
 categories: [Java]
-date: 2024-04-23 00:00:00 +1100
+date: 2024-05-29 00:00:00 +1100
 excerpt: Apache HttpClient Configuration.
 image: images/stock/0125-tools-1200x628-branded.jpg
 title: Apache HttpClient Configuration
@@ -28,7 +28,7 @@ Let's now learn commonly used options to configure Apache HttpClient for web com
 
 Connection management in Apache HttpClient refers to the management of underlying connections to remote servers. Efficient connection management is crucial for optimizing performance and resource utilization. Apache HttpClient provides various options for configuring connection management.
 
-`PoolingHttpClientConnectionManager` manages a pool of client connections and is able to service connection requests from multiple execution threads. It pools connections as per route basis. It maintains a maximum limit of connections on a for each route basis and in total. By default, it creates up to 2 concurrent connections per given route and up to 20 connections in total. For real-world applications we can increase these limits if needed.
+`PoolingHttpClientConnectionManager` manages a pool of client connections and is able to service connection requests from multiple execution threads. It pools connections as per route basis. It maintains a maximum limit of connections on a for each route basis and in total. By default, it creates up to 2 concurrent connections per given route and up to 20 connections in total. For real-world applications, we can increase these limits if needed.
 
 This example shows how the connection pool parameters can be adjusted:
 
@@ -101,7 +101,7 @@ By understanding and configuring connection management settings, developers can 
 
 ## Caching Configuration
 
-The caching HttpClient inherits all configuration options and parameters of the default non-caching implementation (this includes setting options like timeouts and connection pool sizes). For caching specific configuration, you can provide a `CacheConfig` instance to customize behavior.
+The caching HttpClient inherits all configuration options and parameters of the default non-caching implementation (this includes setting options like timeouts and connection pool sizes). For caching-specific configurations, you can provide a `CacheConfig` instance to customize behavior.
 
 {{% info title="HttpClient Caching Mechanism" %}}
 The HttpClient Cache module integrates caching functionality into HttpClient, mimicking a browser cache for HTTP/1.1 compliance. It seamlessly replaces the default client, serving cached requests when possible. It follows the *Chain of Responsibility* pattern, ensuring transparent client-server interaction. Not only that, but it handles cache validation using conditional GETs and Cache-Control extensions. The module adheres to HTTP protocol standards, providing transparent caching proxy capabilities. It corrects the requests for protocol compliance, and invalidates the cache entries accordingly. It serves the cached responses directly if valid, revalidates if necessary, or fetches from the origin server. Furthermore, it examines the responses for cacheability, stored if applicable, or directly returned if too large. The caching mechanism operates within the request execution pipeline, augmenting HttpClient's functionality without altering its core implementation.
@@ -161,7 +161,7 @@ public class CustomHttpRequestInterceptor implements HttpRequestInterceptor {
 ```
 
 The `CustomHttpRequestInterceptor` implements the `HttpRequestInterceptor` interface provided by Apache HttpClient. This interceptor intercepts outgoing HTTP requests before they are sent to the server. In the `process()` method the interceptor modifies the request object by adding custom headers. In this specific implementation,
-it sets `x-request-id` header to a randomly generated UUID string. We commonly use such header to uniquely identify each request, which can be helpful for tracking and debugging purposes. Then it sets `x-api-key header` to a predefined secret key. This header would be used for authentication or authorization purposes, allowing the server to verify the identity of the client making the request.
+it sets `x-request-id` header to a randomly generated UUID string. We commonly use such a header to uniquely identify each request, which can be helpful for tracking and debugging purposes. Then it sets `x-api-key header` to a predefined secret key. This header would be used for authentication or authorization purposes, allowing the server to verify the identity of the client making the request.
 
 Overall, this interceptor enhances outgoing HTTP requests by adding custom headers, which can serve various purposes such as request identification, security, or API key authentication.
 
@@ -179,7 +179,7 @@ In this code snippet, we first create an instance of `CustomHttpRequestIntercept
 
 Then we call `addRequestInterceptorFirst()` method passing the interceptor object as an argument. This method adds the `interceptor` as the first request interceptor in the chain of interceptors. It also has a method `addRequestInterceptorLast()` to add the interceptor at the end.
 
-By adding the interceptor first, it ensures that the custom headers set by the `CustomHttpRequestInterceptor` will be included in all outgoing HTTP requests made by the HttpClient instance. Finally, it calls the `build()` method to create the `CloseableHttpClient` instance with the configured request interceptor.
+Adding the interceptor first ensures that the custom headers set by the `CustomHttpRequestInterceptor` will be included in all outgoing HTTP requests made by the HttpClient instance. Finally, it calls the `build()` method to create the `CloseableHttpClient` instance with the configured request interceptor.
 
 ## Configuring Response Interceptors
 
@@ -218,14 +218,14 @@ In this code snippet, we first create an instance of `CustomHttpResponseIntercep
 
 Then we call `addResponseInterceptorFirst()` method passing the interceptor object as an argument. This method adds the `interceptor` as the first response interceptor in the chain of interceptors. It also has a method `addResponseInterceptorLast()` to add the interceptor at the end.
 
-By adding the interceptor first, it ensures that the response code logged before we manipulate the response further. Finally, it calls the `build()` method to create the `CloseableHttpClient` instance with the configured response interceptor.
+By adding the interceptor first, it ensures that the response code is logged before we manipulate the response further. Finally, it calls the `build()` method to create the `CloseableHttpClient` instance with the configured response interceptor.
 
 ## Configuring Execution Interceptors
 
 An execution interceptor allows developers to intercept the execution of HTTP requests and responses. It can intercept various stages of the request execution, such as before sending the request, after receiving the response, or when an exception occurs during execution. Execution interceptors can be used for tasks like logging, caching, manipulate request and response, or error handling.
 
 {{% info title="ExecChain and Scope" %}}
-In Apache HttpClient 5, `ExecChain` and `ExecChain.Scope` play key roles in request execution and interception.
+In Apache HttpClient 5, `ExecChain` and `ExecChain.Scope` play a key role in request execution and interception.
 
 `ExecChain` represents the execution chain for processing HTTP requests and responses. It defines the core method `proceed()`, which is responsible for executing the request and returning the response. This interface allows for interception and modification of the request and response at various stages of execution.
 
@@ -288,11 +288,11 @@ In this code snippet, we first create an instance of `CustomHttpExecutionInterce
 
 Then we call `addResponseInterceptorFirst()` method passing the interceptor object as an argument. This method adds the `interceptor` as the first response interceptor in the chain of interceptors. It also has a method `addResponseInterceptorLast()` to add the interceptor at the end and methods `addResponseInterceptorBefore()` and `addResponseInterceptorAfter()` to add the interceptor before and after an existing interceptor respectively.
 
-By adding the interceptor first, it ensures that the interceptor get chance to perform its logic ahead of other interceptors. Finally, it calls the `build()` method to create the `CloseableHttpClient` instance with the configured response interceptor.
+By adding the interceptor first, it ensures that the interceptor get a chance to perform its logic ahead of other interceptors. Finally, it calls the `build()` method to create the `CloseableHttpClient` instance with the configured response interceptor.
 
 ## Conclusion
 
-In this part of article series, we explored the configuration aspects of Apache HttpClient, focusing on connection management, caching, and interceptor setup.
+In this part of te article series, we explored the configuration aspects of Apache HttpClient, focusing on connection management, caching, and interceptor setup.
 
 Firstly, we learned connection management, discussing the customization of connection pools, timeouts, and keep-alive settings to optimize HTTP request handling and resource utilization.
 

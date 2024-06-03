@@ -12,6 +12,26 @@ url: one-stop-guide-to-java-functional-interfaces
 
 Functional programming is a paradigm that focuses on the use of functions to create clear and concise code. Instead of modifying data and maintaining state like in traditional imperative programming, functional programming treats functions as first-class citizens. That makes it possible to assign them to variables, pass as arguments, and return from other functions. This approach can make code easier to understand and reason about.
 
+### History of Functional Programming
+
+Lambda calculus, also known as *λ-calculus*, is a formal system in mathematical logic used to express computation through function abstraction and application with variable binding and substitution. Alonzo Church, a mathematician, introduced it in the 1930s as part of his mathematical foundations research.
+
+John McCarthy created Lisp, the initial high-level functional programming language, in the late 1950s at Massachusetts Institute of Technology (MIT) for the IBM 700/7000 series of scientific computers. Lisp introduced many concepts central to functional programming, like first-class functions and recursion. Lisp influenced many modern functional languages.
+
+Moving forward, in the 1970s, languages like ML (Meta Language) and Scheme built on these ideas, introducing features like type inference and lazy evaluation. Haskell, another pivotal language introduced in the 1990s, brought pure functional programming to the forefront with its strong emphasis on immutability and function composition.
+
+These languages laid the groundwork for many features we see in Java 8. Inspired by these pioneers, Java adopted functional programming principles to enhance its expressiveness and conciseness. Lambda expressions, method references, and a rich set of functional interfaces like Function, Predicate, and Consumer are now part of Java’s repertoire.
+
+### Competition from Scala and Python
+
+Scala and Python are indeed strong competitors in the functional programming space.
+
+Scala combines object-oriented and functional programming paradigms. It gained traction among Java developers looking for more powerful abstractions. Its compatibility with the JVM and expressive syntax made it a compelling alternative.
+
+Python’s simplicity, readability, and support for functional programming through features like list comprehensions, lambda functions, and higher-order functions made it a favorite for many developers, especially in the fields of data science and web development.
+
+By integrating functional programming features, Java aimed to provide its existing user base with modern tools without needing to switch languages, ensuring it remained a versatile and powerful choice for a wide range of applications.
+
 ### Functional Programming in Java  
 
 In recent years, functional programming has gained popularity due to its ability to help manage complexity, especially in large-scale applications. It emphasizes immutability, avoiding side effects, and working with data in a more predictable and modular way. This makes it easier to test and maintain code.

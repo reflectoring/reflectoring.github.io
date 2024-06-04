@@ -517,6 +517,7 @@ void testPredicate() {
   List<Integer> numbers = List.of(-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5);
   Predicate<Integer> isZero = num -> num == 0;
   Predicate<Integer> isPositive = num -> num > 0;
+  Predicate<Integer> isNegative = num -> num < 0;
   Predicate<Integer> isOdd = num -> num % 2 == 1;
 
   Predicate<Integer> isPositiveOrZero = isPositive.or(isZero);
@@ -689,109 +690,7 @@ void testIntPredicate() {
 
 The `testIntPredicate()` method demonstrates various scenarios using `IntPredicate`. Predicates like `isZero`, `isPositive`, and `isNegative` check specific conditions on integers. Combined predicates like `isPositiveOrZero` and `isPositiveAndOdd` perform logical operations. Tests verify filtering of integer ranges based on these predicates, ensuring correct outcomes for conditions like zero or greater, greater than zero and odd, not zero, and neither positive nor negative. Each assertion validates the filtering results against expected integer arrays, covering a wide range of scenarios.
 
-### LongPredicate
-
-**`LongPredicate` represents a predicate (boolean-valued function) that takes a single long argument and returns a `boolean` result.**
-
-```java
-@FunctionalInterface
-public interface LongPredicate {
-    boolean test(long value);
-    // default methods
-}
-```
-
-This is the long-consuming primitive type specialization of Predicate.
-
-Use `LongPredicate` to filter collections of primitive `long` values or evaluate conditions based on `long` inputs. It provides several default methods for composing predicates, including `and()`, `or()`, and `negate()`, allowing for logical combinations of predicates.
-
-Here's a simple example:
-
-```java
-@Test
-void testLongPredicate() {
-  IntPredicate isZero = num -> num == 0;
-  IntPredicate isPositive = num -> num > 0;
-  IntPredicate isNegative = num -> num < 0;
-  IntPredicate isOdd = num -> num % 2 == 1;
-
-  IntPredicate isPositiveOrZero = isPositive.or(isZero);
-  IntPredicate isPositiveAndOdd = isPositive.and(isOdd);
-  IntPredicate isNotZero = isZero.negate();
-  IntPredicate isAlsoZero = isPositive.negate().and(isNegative.negate());
-
-  // check zero or greater
-  Assertions.assertArrayEquals(new int[] {0, 1, 2, 3, 4, 5}, 
-    IntStream.range(-5, 6).filter(isPositiveOrZero).toArray());
-
-  // check greater than zero and odd
-  Assertions.assertArrayEquals(new int[] {1, 3, 5}, 
-    IntStream.range(-5, 6).filter(isPositiveAndOdd).toArray());
-
-  // check not zero
-  Assertions.assertArrayEquals(new int[] {-5, -4, -3, -2, -1, 1, 2, 3, 4, 5},
-    IntStream.range(-5, 6).filter(isNotZero).toArray());
-
-  // check neither positive nor negative
-  Assertions.assertArrayEquals(
-      IntStream.range(-5, 6).filter(isZero).toArray(),
-      IntStream.range(-5, 6).filter(isAlsoZero).toArray());
-}
-```
-
-The `testIntPredicate()` method demonstrates various scenarios using `IntPredicate`. Predicates like `isZero`, `isPositive`, and `isNegative` check specific conditions on integers. Combined predicates like `isPositiveOrZero` and `isPositiveAndOdd` perform logical operations. Tests verify filtering of integer ranges based on these predicates, ensuring correct outcomes for conditions like zero or greater, greater than zero and odd, not zero, and neither positive nor negative. Each assertion validates the filtering results against expected integer arrays, covering a wide range of scenarios.
-
-### DoublePredicate
-
-**`DoublePredicate` represents a predicate (boolean-valued function) that takes a single `double` argument and returns a `boolean` result.**
-
-```java
-@FunctionalInterface
-public interface DoublePredicate {
-    boolean test(double value);
-    // default methods
-}
-```
-
-This is the double-consuming primitive type specialization of `Predicate`.
-
-Use `DoublePredicate` to filter collections of primitive `double` values or evaluate conditions based on `double` inputs. It provides several default methods for composing predicates, including `and()`, `or()`, and `negate()`, allowing for logical combinations of predicates.
-
-Let's understand it with an example:
-
-```java
-@Test
-void testDoublePredicate() {
-  // weight categories (weight in lbs)
-  DoublePredicate underweight = weight -> weight <= 125;
-  DoublePredicate healthy = weight -> weight >= 126 && weight <= 168;
-  DoublePredicate overweight = weight -> weight >= 169 && weight <= 202;
-  DoublePredicate obese = weight -> weight >= 203;
-  DoublePredicate needToLose = weight -> weight >= 169;
-  DoublePredicate notHealthy = healthy.negate();
-  DoublePredicate alsoNotHealthy = underweight.or(overweight).or(obese);
-  DoublePredicate skipSugar = needToLose.and(overweight.or(obese));
-
-  // check need to lose weight
-  Assertions.assertArrayEquals(new double[] {200D}, 
-    DoubleStream.of(100D, 140D, 160D, 200D).filter(needToLose).toArray());
-
-  // check need to lose weight
-  Assertions.assertArrayEquals(new double[] {100D, 200D},
-    DoubleStream.of(100D, 140D, 160D, 200D).filter(notHealthy).toArray());
-
-  // check negate()
-  Assertions.assertArrayEquals(
-    DoubleStream.of(100D, 140D, 160D, 200D).filter(notHealthy).toArray(),
-    DoubleStream.of(100D, 140D, 160D, 200D).filter(alsoNotHealthy).toArray());
-
-  // check and()
-  Assertions.assertArrayEquals(new double[] {200D}, 
-    DoubleStream.of(100D, 140D, 160D, 200D).filter(skipSugar).toArray());
-}
-```
-
-The `testDoublePredicate()` method demonstrates scenarios using `DoublePredicate` for weight categories. Predicates like `underweight`, `healthy`, `overweight`, and `obese` define weight ranges. Combined predicates handle complex conditions like needing to lose weight, not being healthy, and avoiding sugar. Assertions validate filtering results for specific weight conditions, ensuring correct categorization of individuals based on their weight. Each test case covers different scenarios, such as identifying individuals needing to lose weight, those not being healthy, and those needing to avoid sugar, ensuring accurate filtering outcomes.
+Like `IntPredicate`, we also have `LongPredicate` and `DoublePredicate`. These can be used to handle `long` and `double` values.
 
 ## Functions
 

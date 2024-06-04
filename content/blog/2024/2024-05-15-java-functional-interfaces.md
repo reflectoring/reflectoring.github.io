@@ -302,7 +302,7 @@ Similar to the previous example, this lambda also takes two parameters with `var
 
 **Method references are a shorthand way to refer to existing methods by their name.** Instead of using lambda expressions, use method references to write code that is more concise and easier to read. Use method references to pass executable logic. Such deferred method invocation makes them ideal for functional programming scenarios and stream processing.
 
-Java 8 provides four types method references as follows: static method, instance method of a particular object, instance method of an arbitrary object of a particular type and constructor.
+Java 8 provides four types method references as follows: static method, instance method of a particular type, instance method of an arbitrary object of a particular type and constructor.
 
 Let's learn about them.
 
@@ -329,9 +329,9 @@ public class MethodReferenceTest {
 
 The test `staticMethodReference` in the `MethodReferenceTest` class verifies the use of a static method reference. It creates a list of integers, `numbers`, containing both positive and negative values. Using a stream, it applies the `Math::abs` method reference to convert each number to its absolute value, resulting in a new list, `positiveNumbers`. The test then checks that each element in `positiveNumbers` is positive.
 
-### Reference to an Instance Method of a Particular Object
+### Reference to an Instance Method of a Particular Type
 
-**This type of method reference refers to a method of a specific instance.**
+**This type of method reference refers to an instance method of a specific type.**
 
 There are two primary syntaxes for referencing instance methods: using a containing class or using a specific object instance.
 
@@ -341,21 +341,9 @@ There are two primary syntaxes for referencing instance methods: using a contain
 ContainingClass::instanceMethodName
 ```
 
-The syntax `ContainingClass::instanceMethodName` refers to an instance method of a specific class. This type of method reference doesn't refer to a specific object instance; instead, it indicates that any object of that class can use this method. It's often used in stream operations, where we derive the object instance at runtime.
+The `ContainingClass::instanceMethodName` syntax denotes an instance method belonging to a particular class. This method reference is not for a specific object instance, but rather signifies that any object of that class can use the method. We commonly use it in stream operations, where we know the object instance at runtime.
 
-For example, `String::toLowerCase` can be used to reference the `toLowerCase()` method on any `String` object. When used in a stream operation like `.map(String::toLowerCase)`, it applies the method to each string in the stream.
-
-**Using a Specific Object**:
-
-```java
-containingObject::instanceMethodName
-```
-
-The syntax `containingObject::instanceMethodName` refers to an instance method of a specific object. It binds this method reference to a particular object, allowing us to call its method directly when needed.
-
-For example, if we have an instance `str` of `String`, we can refer to its `length()` method with `str::length`. This approach is useful when we need to use a specific object's method in a lambda expression or a stream operation.
-
-Both syntaxes are useful in different scenarios. The class-based method reference is more flexible, allowing us to reference methods without tying them to a specific object. The object-based method reference, on the other hand, is helpful when we want to use a method tied to a specific object instance. Both approaches provide a more concise way to call instance methods without the need for traditional anonymous classes or explicit lambda expressions.
+For example, we can use `String::toLowerCase` to refer the `toLowerCase()` method on any `String` object. Use it in a stream operation like `.map(String::toLowerCase)` to apply it to each string in the stream.
 
 Containing class instance method reference example:
 
@@ -369,6 +357,16 @@ void containingClassInstanceMethodReference() {
 ```
 
 The `containingClassInstanceMethodReference` test verifies the use of an instance method reference. It creates a list of strings, `numbers`, containing "One", "Two", and "Three". Using a stream, it applies the `String::length` method reference to convert each string into its length, resulting in a new list, `numberChars`. The test checks that each element in `numberChars` is greater than zero, ensuring that all strings have a positive length.
+
+**Using a Specific Object**:
+
+```java
+containingObject::instanceMethodName
+```
+
+The syntax `containingObject::instanceMethodName` refers to an instance method of a specific object. It binds this method reference to a particular object, allowing us to call its method directly when needed.
+
+For example, if we have an instance `str` of `String`, we can refer to its `length()` method with `str::length`. This approach is useful when we need to use a specific object's method in a lambda expression or a stream operation.
 
 Now let's see how to use containing object method reference:
 
@@ -397,6 +395,9 @@ void containingObjectInstanceMethodReference() {
 ```
 
 The code snippet sorts a list of strings using an instance method reference. The `StringNumberComparator` class defines a comparison logic for strings. The `comparator::compare` is a method reference that references the `compare` method of the `StringNumberComparator` instance. It passes method reference to `sorted()`, allowing the stream to sort the `numbers` list according to the specified comparison logic. The test checks if the sorted list match the expected order.
+
+**Comparison of two syntaxes**:
+Both syntaxes are useful in different scenarios. The class-based method reference is more flexible, allowing us to reference methods without tying them to a specific object. The object-based method reference, on the other hand, is helpful when we want to use a method tied to a specific object instance. Both approaches provide a more concise way to call instance methods without the need for traditional anonymous classes or explicit lambda expressions.
 
 ### Reference to an Instance Method of an Arbitrary Object of a Particular Type
 

@@ -48,9 +48,9 @@ Functional programming in Java revolves around several key concepts and idioms:
 
 - **Lambda Expressions**: Use these compact functions wherever we need to provide a functional interface. They help reduce boilerplate code.
 
-- **Functional Interfaces**: These are interfaces with a single abstract method, making them perfect for lambda expressions and method references. Common examples include `Predicate`, `Function`, `Consumer`, `Supplier`, and `Operator`.
-
 - **Method References**: These are a shorthand way to refer to methods, making code even more concise and readable.
+
+- **Functional Interfaces**: These are interfaces with a single abstract method, making them perfect for lambda expressions and method references. Common examples include `Predicate`, `Function`, `Consumer`, `Supplier`, and `Operator`.
 
 ### Advantages and Disadvantages of Functional Programming  
 

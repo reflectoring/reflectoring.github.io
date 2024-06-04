@@ -812,6 +812,8 @@ void intFunction() {
 
 The test applies a `IntFunction` to compute the square of an integer. It ensures that the square function correctly calculates the square of the input integer.
 
+Similarly, we have `LongFunction` and `DoubleFunction` that accept `long` and `double` results respectively.
+
 ### IntToDoubleFunction
 
 **The `IntToDoubleFunction` interface represents a function that accepts an int-valued argument and produces a double-valued result.**
@@ -840,266 +842,11 @@ void intToDoubleFunction() {
 
 In this example, `IntToDoubleFunction` is used to define a function `accruedInterest` that calculates the interest accrued based on the principal amount provided as an integer input. Then the test verifies the calculated interest.
 
-### IntToLongFunction
-
-**The `IntToLongFunction` interface represents a function that accepts an int-valued argument and produces a long-valued result.**
-
-```java
-@FunctionalInterface
-public interface IntToLongFunction {
-  double applyAsLong(int value);
-}
-```
-
-This is the `Function` specialization for converting `int` to `long`. It is a functional interface with the `applyAsLong(int)` functional method.
+Similarly, we have `IntToLongFunction`, `LongToIntFunction`, `LongToDoubleFunction`, `DoubleToIntFunction` and `DoubleToLongFunction` to map the input to respective result types.
 
 {{% info title="Functions and Stream Operations" %}}
 Functional interfaces like `IntToDoubleFunction` and `IntToLongFunction` are particularly useful when working with streams of primitive data types. For instance, if we have a stream of integers, and we need to perform operations that require converting those integers to doubles or longs, we can use these functional interfaces within stream operations like `mapToInt`, `mapToDouble`, and `mapToLong`. This allows us to efficiently perform transformations on stream elements without the overhead of autoboxing and unboxing.
 {{% /info %}}
-
-Let's see how `IntToLongFunction` helps us do clean coding:
-
-```java
-@Test
-void intToLongFunction() {
-  IntToLongFunction factorial =
-      n -> {
-        long result = 1L;
-        for (int i = 1; i <= n; i++) {
-          result *= i;
-        }
-        return result;
-      };
-  IntStream input = IntStream.range(1, 6);
-  long[] result = input.mapToLong(factorial).toArray();
-  Assertions.assertArrayEquals(new long[] {1L, 2L, 6L, 24L, 120L}, result);
-}
-```
-
-This test uses a `IntToLongFunction` to calculate factorials for a given range of integers. It maps each integer in the range to its factorial as a long value. Then collect those values into an array for verification against the expected results.
-
-### LongFunction
-
-**The `LongFunction` interface represents a function that takes a `long` as input and produces a result of any type.**
-
-```java
-@FunctionalInterface
-public interface LongFunction<R> {
-  R apply(long value);
-}
-```
-
-This is the specialization for `Function` that converts `long` inputs into target type. It is a functional interface with a functional method called `apply(long)`.
-
-We can define custom logic based on `long` inputs and return values of any type, making it versatile for various use cases in Java programming.
-
-Here is an illustration of the `LongFunction` in action:
-
-```java
-@Test
-void longFunction() {
-  LongFunction<Double> squareArea = side -> (double) (side * side);
-  Assertions.assertEquals(400d, squareArea.apply(20L));
-}
-```
-
-The test applies a `LongFunction` to compute the area of a square figure. It ensures that the function correctly calculates the area of square from the side in `long`.
-
-### LongToDoubleFunction
-
-**The `LongToDoubleFunction` interface represents a function that accepts a long-valued argument and produces a double-valued result.**
-
-```java
-@FunctionalInterface
-public interface LongToDoubleFunction {
-  double applyAsDouble(long value);
-}
-```
-
-This is the specialization of `Function` that converts `long` values to `double`. It is a functional interface with the functional method `applyAsDouble(long)`.
-
-Here's an illustration of how to use the `LongToDoubleFunction`:
-
-```java
-@Test
-void longToDoubleFunction() {
-  LongToDoubleFunction squareArea = side -> (double) (side * side);
-  Assertions.assertEquals(400d, squareArea.applyAsDouble(20L));
-
-  LongStream input = LongStream.range(1L, 6L);
-  double[] result = input.mapToDouble(squareArea).toArray();
-  Assertions.assertArrayEquals(new double[] {1.0, 4.0, 9.0, 16.0, 25.0}, result);
-}
-```
-
-The test uses a `LongToDoubleFunction` to calculate the area of a square given its side length. It then asserts the result of applying the function to a specific side length. Finally, it maps a `LongStream` of side lengths to a `DoubleStream` of square areas and verifies the calculated values. It demonstrates that how we can use special interfaces like `LongToDoubleFunction` directly as well as in stream processing.
-
-### LongToIntFunction
-
-**The `LongToIntFunction` interface represents a function that accepts a long-valued argument and produces an integer-valued result.**
-
-```java
-@FunctionalInterface
-public interface LongToIntFunction {
-  int applyAsInt(long value);
-}
-```
-
-This is the `Function` primitive specialization that converts `long` to integer. It is a functional interface with the functional method `applyAsInt(long)`.
-
-Discover the usage of `LongToIntFunction` together:
-
-```java
-@Test
-void longToIntFunction() {
-  LongToIntFunction digitCount = number -> String.valueOf(number).length();
-  LongStream input = LongStream.of(1L, 120, 15L, 12345L);
-  int[] result = input.mapToInt(digitCount).toArray();
-  Assertions.assertArrayEquals(new int[] {1, 3, 2, 5}, result);
-}
-```
-
-The test utilizes a `LongToIntFunction` to count the number of digits in a given long value. It applies the function to each value in a `LongStream`, converting them to a `IntStream` of digit counts. Finally, it verifies the calculated digit counts against the expected values.
-
-### DoubleFunction
-
-**The `DoubleFunction` interface represents a function that accepts a double-valued argument and produces a result.**
-
-```java
-@FunctionalInterface
-public interface DoubleFunction<R> {
-  R apply(double value);
-}
-```
-
-This is the specialization for `Function` that accepts primitive `double`. It has functional method is `apply(double)`.
-
-Let's example showing how to use `DoubleFunction`:
-
-```java
-@Test
-void doubleFunction() {
-  // grouping separator like a comma for thousands
-  //  exactly two digits after the decimal point
-  DoubleFunction<String> numberFormatter = number -> String.format("%1$,.2f", number);
-  Assertions.assertEquals("999,999.12", numberFormatter.apply(999999.123));
-}
-```
-
-The test uses a `DoubleFunction` to format a `double` number with a comma for thousands and two decimal places, asserting that the result is "999,999.12".
-
-### DoubleToIntFunction
-
-**The `DoubleToIntFunction` interface represents a function that accepts a double-valued argument and produces an int-valued result.**
-
-```java
-@FunctionalInterface
-public interface DoubleToIntFunction {
-  int applyAsInt(double value);
-}
-```
-
-This represents the specialized version of `Function` for converting doubles to integers. It is a functional interface with the method `applyAsInt(double)`.
-
-This is a demonstration illustrating the usage of `DoubleToIntFunction`:
-
-```java
-@Test
-void doubleToIntFunction() {
-  DoubleToIntFunction wholeNumber = number -> Double.valueOf(number).intValue();
-  DoubleStream input = DoubleStream.of(1.0, 12.34, 99.0, 101.444);
-  int[] result = input.mapToInt(wholeNumber).toArray();
-  Assertions.assertArrayEquals(new int[] {1, 12, 99, 101}, result);
-}
-```
-
-The test converts double numbers to integers using a `DoubleToIntFunction`. It asserts that the result is [1, 12, 99, 101] when applied to the input [1.0, 12.34, 99.0, 101.444].
-
-### DoubleToLongFunction
-
-**The `DoubleToLongFunction` interface represents a function that accepts a double-valued argument and produces a long-valued result.**
-
-```java
-@FunctionalInterface
-public interface DoubleToLongFunction {
-  int applyAsLong(double value);
-}
-```
-
-This represents the double-to-long primitive specialization for `Function`, which is a functional interface with the functional method `applyAsLong(double)`.
-
-Here is an example that demonstrates the usage of `DoubleToLongFunction`:
-
-```java
-@Test
-void doubleToLongFunction() {
-  DoubleToLongFunction celsiusToFahrenheit 
-    = celsius -> Math.round(celsius * 9 / 5 + 32);
-  DoubleStream input = DoubleStream.of(0.0, 25.0, 100.0);
-  long[] result = input.mapToLong(celsiusToFahrenheit).toArray();
-  Assertions.assertArrayEquals(new long[] {32, 77, 212}, result);
-}
-```
-
-This test converts Celsius temperatures to Fahrenheit using a `DoubleToLongFunction`. It then verifies the results match the expected Fahrenheit temperatures.
-
-Now let's get familiar with specialized functions.
-
-### ToDoubleFunction
-
-**The `ToDoubleFunction` interface represents a function that produces a double-valued result.**
-
-```java
-@FunctionalInterface
-public interface ToDoubleFunction<T> {
-  double applyAsDouble(T t);
-}
-```
-
-This is the specialized primitive `Function` that produces `double` values. It is a functional interface with the functional method `applyAsDouble(Object)`.
-
-Let's attempt to use the `ToDoubleBiFunction`:
-
-```java
-@Test
-void toDoubleFunction() {
-  ToDoubleFunction<Integer> fahrenheitToCelsius =
-      (fahrenheit) -> (double) ((fahrenheit - 32) * 5) / 9;
-  Assertions.assertEquals(0.0, fahrenheitToCelsius.applyAsDouble(32));
-  Assertions.assertEquals(25.0, fahrenheitToCelsius.applyAsDouble(77));
-  Assertions.assertEquals(100.0, fahrenheitToCelsius.applyAsDouble(212));
-}
-```
-
-This test converts Fahrenheit temperatures to Celsius using the formula `(Fahrenheit - 32) * 5/9`. It verifies conversions for temperature Fahrenheit values 32, 77, and 212, checking if they match the expected Celsius values: 0.0, 25.0, and 100.0, respectively.
-
-### ToDoubleBiFunction
-
-**The `ToDoubleBiFunction` interface represents a function that accepts two arguments and produces a double-valued result.**
-
-```java
-@FunctionalInterface
-public interface ToDoubleBiFunction<T, U> {
-  double applyAsDouble(T t, U u);
-}
-```
-
-This is the special `Function` that can produce `double` values. It has a functional method called `applyAsDouble(Object)`.
-
-Let's give `ToDoubleBiFunction` a shot:
-
-```java
-@Test
-void toDoubleBiFunction() {
-  // 30% discount when it is SALE else 10% standard discount
-  ToDoubleBiFunction<String, Double> discountedPrice =
-      (code, price) -> "SALE".equals(code) ? price * 0.7 : price * 0.9;
-  Assertions.assertEquals(14.0, discountedPrice.applyAsDouble("SALE", 20.0));
-  Assertions.assertEquals(18.0, discountedPrice.applyAsDouble("OFF_SEASON", 20.0));
-}
-```
-
-This test calculates discounted prices based on a code. If the code is `SALE`, it applies a 30% discount, otherwise, it applies a 10% discount. It verifies the discounted prices for both scenarios.
 
 ### ToIntFunction
 
@@ -1128,6 +875,8 @@ void toIntFunction() {
 ```
 
 This test counts the characters in a string using a function. It verifies the character count for null, empty string, and "JOY", expecting 0, 0, and 3, respectively. The function handles null inputs gracefully, returning 0, and trims white space before counting characters.
+
+Similarly, we have `ToLongFunction` and `ToDoubleFunction` that produce `long` and `double` results respectively.
 
 ### ToIntBiFunction
 
@@ -1159,73 +908,7 @@ void toIntBiFunction() {
 
 This test calculates discounts based on the season and quantity. If it's winter or the quantity exceeds 100, we apply a 40% discount, otherwise, it's 10%. The test validates discounts for winter with 50 items, summer with 150 items, and fall with 50 items, expecting 40, 40, and 10, respectively.
 
-### ToLongFunction
-
-**The `ToLongFunction` interface represents a function that produces a long-valued result.**
-
-```java
-@FunctionalInterface
-public interface ToLongFunction<T> {
-  long applyAsLong(T t);
-}
-```
-
-This is a functional interface representing a primitive specialization for `Function`. It has a functional method called `applyAsLong(Object)`.
-
-Let's create a `ToLongFunction` expression together:
-
-```java
-@Test
-void toLongFunction() {
-  ToLongFunction<Date> elapsedTime =
-      input -> input == null ? 0 : input.toInstant().toEpochMilli();
-
-  Assertions.assertEquals(0L, elapsedTime.applyAsLong(null));
-  long now = System.currentTimeMillis();
-  Date nowDate = Date.from(Instant.ofEpochMilli(now));
-  Assertions.assertEquals(now, elapsedTime.applyAsLong(nowDate));
-}
-```
-
-This test calculates the elapsed time in milliseconds using `ToLongFunction`. It checks if the input date is null and returns 0, otherwise, it converts the date to milliseconds since the epoch. The test verifies the result for both null input and the current time.
-
-### ToLongBiFunction
-
-**The `ToLongBiFunction` interface represents a function that accepts two arguments and produces a long-valued result.**
-
-```java
-@FunctionalInterface
-public interface ToLongBiFunction<T, U> {
-  long applyAsLong(T t, U u);
-}
-```
-
-The `BiFunction` interface represents a function that accepts two arguments and produces a `long` result. It has a functional method called `applyAsLong()` that takes two input parameters and returns a `long` value.
-
-Let's check out an example of the `ToLongBiFunction`:
-
-```java
-@Test
-void toLongBiFunction() {
-  // discount on product
-  ToLongBiFunction<LocalDateTime, ZoneOffset> elapsed =
-      (localDateTime, zoneOffset) ->
-          zoneOffset == null
-              ? localDateTime.toEpochSecond(ZoneOffset.UTC)
-              : localDateTime.toEpochSecond(zoneOffset);
-
-  long now = System.currentTimeMillis();
-  LocalDateTime nowLocalDateTime = LocalDateTime.ofEpochSecond(now, 0, ZoneOffset.UTC);
-  Assertions.assertEquals(now, elapsed.applyAsLong(nowLocalDateTime, null));
-
-  long later = now + 1000;
-  ZoneOffset offset = ZoneOffset.ofHours(5);
-  LocalDateTime laterLocalDateTime = LocalDateTime.ofEpochSecond(later, 0, offset);
-  Assertions.assertEquals(later, elapsed.applyAsLong(laterLocalDateTime, offset));
-}
-```
-
-This test calculates the elapsed time in seconds using `ToLongBiFunction`, considering the zone offset. It verifies the result for both a null offset and a specified offset. The test ensures correctness by comparing the calculated elapsed time with the expected value.
+Similarly, we have `ToLongBiFunction` and `ToDoubleBiFunction` that produce `long` and `double` results respectively.
 
 ## Operators
 

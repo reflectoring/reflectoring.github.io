@@ -546,6 +546,36 @@ void testPredicate() {
 
 In this test, we have combined predicates to filter a list of numbers. `isPositiveOrZero` combines predicates for positive numbers or zero. `isPositiveAndOdd` combines predicates for positive and odd numbers. `isNotPositive` negates the predicate for positive numbers. `isNotZero` negates the predicate for zero. `isAlsoZero` shows us how to chain predicates. We apply each combined predicate to the list, and verify the expected results.
 
+### Predicate Evaluation Order
+
+When we combine multiple predicates, we need to pay attention to the order the predicates are eveluated.
+
+Consider following example:
+
+```java
+Predicate<Integer> isPositive = x -> x > 0;
+Predicate<Integer> isDiv3 = x -> x % 3 == 0;
+Predicate<Integer> isOdd = x -> x % 2 != 0;
+```
+
+Following table explains the evaluation order.
+
+| Predicate Expression | Evaluation Order | Description |
+|-----|-----|-----|
+|Predicate<Integer> test1 = isPositive.or(isDiv3).and(isOdd)| 1. isPositive or isDiv3 <br> 2. Result and isOdd| First checks if the number is positive or divisible by 3, then checks if the result is odd.|
+|Predicate<Integer> test2 = isPositive.and(isOdd).or(isDiv3)| 1. isPositive and isOdd <br> 2. Result or isDiv3 |First checks if the number is positive and odd, then checks if the result is true or if the number is divisible by 3.|
+|Predicate<Integer> test3 = (isPositive.and(isOdd)).or(isDiv3)| 1. isPositive and isOdd <br> 2. Result or isDiv3| Same as test2, checks if the number is positive and odd, then checks if the result is true or if the number is divisible by 3.|
+|Predicate<Integer> test4 = isPositive.and((isOdd).or(isDiv3))| 1. isOdd or isDiv3 <br> 2. isPositive and result| First checks if the number is odd or divisible by 3, then checks if the number is positive and the previous result is true.|
+
+Let's deep dive into evaluation order of the first test:
+`Predicate<Integer> test1: isPositive.or(isDiv3).and(isOdd);`
+
+First, it evaluates the `isPositive` or `isDiv3` condition. If `isPositive` is true, then the result is true. If `isPositive` is false, proceed to check `isDiv3`. Then, if `isDiv3` is true, the result is true. Finally, if both `isPositive` and `isDiv3` are false, the result is false.
+
+Next, take the result from the first step and evaluate it with `isOdd`. If the result from the first step is true, check the `isOdd` condition. If the result from the first step is false, the final result is false.
+
+Similarly, it evaluates the order for other predicates given in the table above.
+
 ### BiPredicates
 
 The `BiPredicate<T, U>` takes two arguments of types `T` and `U` and returns a boolean result. It's common to use them for testing conditions involving two parameters. For instance, we use `BiPredicate` to check if one value is greater than the other or if two objects satisfy a specific relationship. We may validate if a person's age and income meet certain eligibility criteria for a financial service.

@@ -20,7 +20,7 @@ John McCarthy created Lisp, the initial high-level functional programming langua
 
 Moving forward, in the 1970s, languages like ML (Meta Language) and Scheme built on these ideas, introducing features like type inference and lazy evaluation. Haskell, another pivotal language introduced in the 1990s, brought pure functional programming to the forefront with its strong emphasis on immutability and function composition.
 
-These languages laid the groundwork for many features we see in Java 8. Inspired by these pioneers, Java adopted functional programming principles to enhance its expressiveness and conciseness. Lambda expressions, method references, and a rich set of functional interfaces like Function, Predicate, and Consumer are now part of Java’s repertoire.
+These languages laid the groundwork for many features we see in Java 8. Inspired by these pioneers, Java adopted functional programming principles to enhance its expressiveness and conciseness. Lambda expressions, method references, and a rich set of functional interfaces like `Function`, `Predicate`, and `Consumer` are now part of Java’s repertoire.
 
 ### Competition from Scala and Python
 

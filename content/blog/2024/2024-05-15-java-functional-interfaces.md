@@ -147,16 +147,35 @@ The general syntax of a lambda expression is as follows:
 (parameters) -> { body }
 ```
 
-Parameters represent a comma-separated list of input parameters to the lambda function. If there's only one parameter, we can omit the parentheses. Arrow operator separates the parameters from the body of the lambda expression. Finally, the body contains the function logic. If there's only one statement, we can omit the braces.
+Parameters represent a comma-separated list of input parameters to the lambda function. If there's only one parameter, we can omit the parentheses. Arrow operator separates the parameters from the body of the lambda expression. Finally, the body contains the function logic. If there's only one statement, we can omit the braces. Typically, the logic in the body will be concise. But it can be complex, multiline logic as per requirements.
+
+Example of crisp lambda expression:
+
+```java
+Function<String, String> toUpper = s -> s == null ? null : s.toUpperCase();
+```
+
+Example of complex lambda expression:
+
+```java
+IntToLongFunction factorial =
+        n -> {
+          long result = 1L;
+          for (int i = 1; i <= n; i++) {
+            result *= i;
+          }
+          return result;
+        };
+```
 
 We can use lambda expressions to create anonymous functions. That allows us to write inline logic without the need for additional class definitions. We can use such anonymous functions where it requires us to pass functional interfaces.
 
 {{% info title="Inner Workings of Lambda Expressions" %}}
 Have you ever wondered what a lambda expression looks like in Java code and inside the JVM? It's quite fascinating! In Java, we have two types of values: primitive types and object references. Now, lambdas are definitely not primitive types, which means they must be something else. Well, a lambda expression is actually a special kind of expression that returns an object reference. Isn't that intriguing?
 
-Let's decode it. We start by writing a lambda expression in our source code. 
+Let's decode it. We start by writing a lambda expression in our source code.
 
-For example: 
+For example:
 
 ```java
 public class Lambda {
@@ -206,7 +225,7 @@ Did you notice that the bytecode starts with a `invokedynamic` call? Imagine it 
 
 {{% /info %}}
 \
-Here are three examples demonstrating how to use lambda expressions without relying on built-in functional interfaces:
+Here are few examples demonstrating how to use lambda expressions without relying on built-in functional interfaces:
 
 ### Example 1: Implementing a Custom Functional Interface
 

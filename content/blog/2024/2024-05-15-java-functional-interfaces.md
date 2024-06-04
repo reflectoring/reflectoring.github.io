@@ -300,7 +300,7 @@ Similar to the previous example, this lambda also takes two parameters with `var
 
 ## Method References  
 
-**Method references are a shorthand way to refer to existing methods by their name.** Use them instead of lambda expressions, offering more concise and readable code. Use method references to refer methods without invoking them, making them ideal for functional programming scenarios and stream processing.
+**Method references are a shorthand way to refer to existing methods by their name.** Instead of using lambda expressions, use method references to write code that is more concise and easier to read. Use method references to pass executable logic. Such deferred method invocation makes them ideal for functional programming scenarios and stream processing.
 
 Java 8 provides four types of method references. Let's learn about them.
 

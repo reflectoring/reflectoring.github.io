@@ -48,7 +48,7 @@ Functional programming in Java revolves around several key concepts and idioms:
 
 - **Lambda Expressions**: Use these compact functions wherever we need to provide a functional interface. They help reduce boilerplate code.
 
-- **Functional Interfaces**: These are interfaces with a single abstract method, making us perfect for lambda expressions and method references. Common examples include `Predicate`, `Function`, `Consumer`, `Supplier`, and `Operator`.
+- **Functional Interfaces**: These are interfaces with a single abstract method, making them perfect for lambda expressions and method references. Common examples include `Predicate`, `Function`, `Consumer`, `Supplier`, and `Operator`.
 
 - **Method References**: These are a shorthand way to refer to methods, making code even more concise and readable.
 
@@ -60,15 +60,15 @@ Functional programming in Java brings many advantages but also has its share of 
 
 **Another advantage is its compatibility with concurrency and parallelism.** Since functional programming avoids mutable state, operations can run in parallel without the usual risks of data inconsistency or race conditions. This results in code that's naturally better suited for multithreaded environments.
 
-**Functional programming also promotes modularity and reusability.** With functions being first-class citizens, us can create small, reusable components, leading to cleaner, more maintainable code. The abstraction inherent in functional programming reduces overall complexity, allowing us to focus on the essential logic without worrying about implementation details.
+**Functional programming also promotes modularity and reusability.** With functions being first-class citizens, we can create small, reusable components, leading to cleaner, more maintainable code. The abstraction inherent in functional programming reduces overall complexity, allowing us to focus on the essential logic without worrying about implementation details.
 
 However, these advantages come with potential drawbacks. The learning curve for functional programming can be steep, especially for us accustomed to imperative or object-oriented paradigms. **Concepts like higher-order functions and immutability might require a significant mindset shift.**
 
-**Performance overheads are another concern**, particularly due to frequent object creation and additional function calls inherent in functional programming. This could impact performance in resource-constrained environments. **Debugging functional code can also be challenging** due to the abstractions involved, and understanding complex lambda expressions might require a deeper understanding of functional concepts.
+**Performance overheads are another concern**, particularly due to frequent object creation and additional function calls in functional programming. This could impact performance in resource-constrained environments. **Debugging functional code can also be challenging** due to the abstractions involved, and understanding complex lambda expressions might require a deeper understanding of functional concepts.
 
 **Compatibility issues may arise when integrating with legacy systems** or libraries that aren't designed for functional programming, potentially causing integration problems. Finally, functional programming's focus on immutability and side-effect-free functions **may reduce flexibility in scenarios that require mutable state or complex object manipulations.**
 
-Ultimately, while functional programming offers significant benefits like improved readability and easier concurrency, it also comes with challenges. **We need to consider both the advantages and disadvantages to determine how functional programming fits into their Java applications.**
+Ultimately, while functional programming offers significant benefits like improved readability and easier concurrency, it also comes with challenges. **We need to consider both the advantages and disadvantages to determine how functional programming fits into our Java applications.**
 
 ## Understanding Functional Interfaces  
 
@@ -151,6 +151,61 @@ Parameters represent a comma-separated list of input parameters to the lambda fu
 
 We can use lambda expressions to create anonymous functions. That allows us to write inline logic without the need for additional class definitions. We can use such anonymous functions where it requires us to pass functional interfaces.
 
+{{% info title="Inner Workings of Lambda Expressions" %}}
+Have you ever wondered what a lambda expression looks like in Java code and inside the JVM? It's quite fascinating! In Java, we have two types of values: primitive types and object references. Now, lambdas are definitely not primitive types, which means they must be something else. Well, a lambda expression is actually a special kind of expression that returns an object reference. Isn't that intriguing?
+
+Let's decode it. We start by writing a lambda expression in our source code. 
+
+For example: 
+
+```java
+public class Lambda {
+  LongFunction<Double> squareArea = side -> (double) (side * side);
+}
+```
+
+When we compile it and check its bytecode using `javap` command:
+
+```bash
+javap -c -p Lambda.class
+Compiled from "Lambda.java"
+public class Lambda {
+java.util.function.LongFunction<java.lang.Double> squareArea;
+
+public Lambda();
+Code:
+  0: aload_0
+  1: invokespecial #1      // Method java/lang/Object."<init>":()V
+  4: aload_0
+  5: invokedynamic #7,0//InvokeDynamic #0:apply:()Ljava/util/function/LongFunction;
+10: putfield      #11 // Field squareArea:Ljava/util/function/LongFunction;
+13: return
+
+private static java.lang.Double lambda$new$0(long);
+Code:
+  0: lload_0
+  1: lload_0
+  2: lmul
+  3: l2d
+  4: invokestatic  #17 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+  7: areturn
+}
+```
+
+Did you notice that the bytecode starts with a `invokedynamic` call? Imagine it as a call to a unique factory method. This method returns an instance of a type that implements `Runnable`. Compiler does not define the specific type in the bytecode and knowing the exact type is not important. It generates the type at runtime when needed, not during compilation.
+
+- **Compilation**: When we compile the code, the Java compiler transforms the lambda expression into a form that the Java Virtual Machine (JVM) can understand. Instead of generating a new anonymous inner class, the compiler uses a technique called *invokedynamic* introduced in Java 7.
+
+- **InvokeDynamic**: The *invokedynamic* bytecode instruction supports dynamic languages on the JVM. For lambdas, it allows the JVM to defer the decision of how to create the lambda instance until runtime. This provides more flexibility and efficiency compared to traditional anonymous inner classes.
+
+- **Lambda Metafactory**: When runtime encounters the *invokedynamic* instruction, it calls a special method called `LambdaMetafactory.metafactory()`. This method is responsible for creating the actual implementation of the lambda expression. The JVM uses this metafactory method to generate a lightweight class or method handle that represents the lambda.
+
+- **Instance Creation**: The `LambdaMetafactory` dynamically creates an instance of the lambda expression. This instance is typically a singleton if the lambda is stateless (i.e., it doesn't capture any variables from the enclosing scope). If the lambda captures variables, it creates a new instance with those captured values.
+
+- **Execution**: It executes the lambda expression as if it were an instance of an anonymous inner class implementing the functional interface. The JVM ensures that the lambda conforms to the expected functional interface's single abstract method.
+
+{{% /info %}}
+\
 Here are three examples demonstrating how to use lambda expressions without relying on built-in functional interfaces:
 
 ### Example 1: Implementing a Custom Functional Interface

@@ -270,6 +270,34 @@ This example demonstrates how we can create an executable using lambda.
 
 These examples demonstrate how we can use lambda expressions to define simple, concise functions without explicitly creating additional classes. They are powerful tools for streamlining code and making functional programming in Java more accessible and expressive.
 
+### Lambda Expressions and Var
+
+You cannot also use var with lambda expressions because they require an explicit target type. The following assignment will fail:
+
+```java
+var addAsVar = (a, b) -> a + b;
+```
+
+It gives error: Cannot infer type: lambda expression requires an explicit target type.
+
+The code is incorrect because we cannot use `var` to infer the type of lambda expression itself. We can use the `var` only for local variable type inference, not for lambda expressions or method return types.
+
+Let's now see how we can use `var` in lambda expressions.
+
+```java
+ArithmeticOperation add = (var a, var b) -> a + b;
+```
+
+The lambda expression (var a, var b) -> a + b defines a lambda that takes two parameters a and b, both using the var keyword to indicate that the types should be inferred by the compiler. This lambda performs addition on the two parameters.
+
+We can also use bean validation annotations.
+
+```java
+ArithmeticOperation addNullSafe = (@NotNull var a, @NotNull var b) -> a + b;
+```
+
+Similar to the previous example, this lambda also takes two parameters with `var`. Additionally, it uses the `@NotNull` annotation from bean validation library. This ensures that the parameters `a` and `b` should not be `null`.
+
 ## Method References  
 
 **Method references are a shorthand way to refer to existing methods by their name.** Use them instead of lambda expressions, offering more concise and readable code. Use method references to refer methods without invoking them, making them ideal for functional programming scenarios and stream processing.

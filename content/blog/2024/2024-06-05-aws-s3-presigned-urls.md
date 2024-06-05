@@ -1,8 +1,8 @@
 ---
 title: "Offloading File Transfers with Amazon S3 Presigned URLs in Spring Boot"
 categories: [ "AWS", "Spring Boot", "Java" ]
-date: 2024-06-03 00:00:00 +0530
-modified: 2024-06-03 00:00:00 +0530
+date: 2024-06-05 00:00:00 +0530
+modified: 2024-06-05 00:00:00 +0530
 authors: [ "hardik" ]
 description: "In this article, we demonstrate how to use AWS S3 Presigned URLs in a Spring Boot application to offload file transfers, reduce server load and improve performance. We cover required dependencies, configuration, IAM policy, generation of Presigned URLs and integration testing with LocalStack and Testcontainers."
 image: images/stock/0139-stamped-envelope-1200x628-branded.jpg
@@ -13,7 +13,7 @@ When building web applications that involve file uploads or downloads, a common 
 
 Presigned URLs are **time-limited URLs that allow clients temporary access to upload or download objects directly to or from the storage solution being used**. These URLs are generated with a specified expiration time, after which they are no longer accessible.
 
-The storage solution we'll be using in this article is <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide" target="_blank">Amazon S3 (Simple Storage Service)</a>, provided by AWS. However, it's worth noting that **the concept of Presigned URLs is not limited to AWS**. It can also be implemented with other cloud storage services like Google Cloud Storage, DigitalOcean Spaces, etc.
+The storage solution we'll use in this article is <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide" target="_blank">Amazon S3 (Simple Storage Service)</a>, provided by AWS. However, it's worth noting that **the concept of Presigned URLs is not limited to AWS**. It can also be implemented with other cloud storage services like Google Cloud Storage, DigitalOcean Spaces, etc.
 
 In this article, we'll discuss how to generate Presigned URLs in a Spring Boot application to delegate the responsibility of uploading/downloading files to the client. We'll be using **Spring Cloud AWS** to communicate with Amazon S3 and develop a service class that provides methods for generating Presigned URLs. 
 
@@ -31,7 +31,7 @@ Before diving into the implementation, let's further discuss the use cases and a
 
   By implementing Presigned URLs on applications that serve high volume of content from S3, we **reduce the load on our server(s), improve performance and make our architecture scalable**.
 
-* **Uploading User Generated Content**: In scenarios where our application requires the users to upload files such as profile pictures, KYC documents, or other media content, instead of having the files pass through our application server, we can generate a Presigned URL with the necessary permissions and provide it to the client.
+* **Uploading User-Generated Content**: In scenarios where our application requires the users to upload files such as profile pictures, documents, or other media content, instead of having the files pass through our application server, we can generate a Presigned URL with the necessary permissions and provide it to the client.
 
   This approach not only reduces the load on our application server but also simplifies the upload process. The client can initiate the file upload directly to S3, eliminating the need for temporary storage on our server and the additional step of forwarding the file to S3.
 
@@ -229,7 +229,7 @@ Let’s start by declaring the required test dependencies in our `pom.xml`:
 </dependency>
 ```
 
-The declared `spring-boot-starter-test` gives us the basic testing toolbox as it transitively includes JUnit, AssertJ and other utility libraries, that we will be needing for writing assertions and running our tests.
+The declared `spring-boot-starter-test` gives us the basic testing toolbox as it transitively includes JUnit, AssertJ, and other utility libraries, that we will be needing for writing assertions and running our tests.
 
 And `org.testcontainers:localstack` dependency will allow us to run the LocalStack emulator inside a disposable Docker container, ensuring an isolated environment for our integration test.
 
@@ -298,7 +298,7 @@ That's a lot of setup code 😥, let's break it down. In our integration test cl
 * Copy our bash script **`init-s3-bucket.sh`** into the container to ensure bucket creation.
 * Configure a strategy to wait for the log **`"Executed init-s3-bucket.sh"`** to be printed, as defined in our init script.
 * Configure a small random Presigned URL validity using **`randomValiditySeconds()`**.
-* Dynamically define the AWS configuration properties needed by our applications in order to create the required S3 related beans using **`@DynamicPropertySource`**.
+* Dynamically define the AWS configuration properties needed by our applications to create the required S3-related beans using **`@DynamicPropertySource`**.
 
 Our `@DynamicPropertySource` code block declares an additional `spring.cloud.aws.s3.endpoint` property, which is not present in the main `application.yaml` file.
 
@@ -360,7 +360,7 @@ In our initial test case, we verify that our `StorageService` class successfully
 
 We begin by preparing a file with random content and name and save it to our S3 bucket. Then we invoke the `generateViewablePresignedUrl` method exposed by our service layer with the corresponding random file key.
 
-Finally, we perform an HTTP GET request on the generated Presigned URL and assert that the API response matches with the saved file's content.
+Finally, we perform an HTTP GET request on the generated Presigned URL and assert that the API response matches the saved file's content.
 
 Now, to validate the functionality of uploading an object through the generated Presigned URL:
 
@@ -404,7 +404,7 @@ In this article, we explored how to **generate Presigned URLs in a Spring Boot a
 
 We used **Spring Cloud AWS** to communicate with our Amazon S3 bucket and reduced boilerplate configuration code.
 
-We discussed the benefits and use cases of using Presigned URLs, such as handling large file downloads and user generated content uploads. We walked through the necessary configurations and developed a service class that generates Presigned URLs for uploading and downloading objects to/from an S3 bucket.
+We discussed the benefits and use cases of using Presigned URLs, such as handling large file downloads and user-generated content uploads. We walked through the necessary configurations and developed a service class that generates Presigned URLs for uploading and downloading objects to/from an S3 bucket.
 
 We also covered the required IAM permissions and tested our implementation using LocalStack and Testcontainers to ensure the functionality works as expected.
 

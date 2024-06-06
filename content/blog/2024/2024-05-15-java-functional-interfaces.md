@@ -60,7 +60,7 @@ Functional programming in Java brings many advantages but also has its share of 
 
 **Another advantage is its compatibility with concurrency and parallelism.** Since functional programming avoids mutable state, operations can run in parallel without the usual risks of data inconsistency or race conditions. This results in code that's naturally better suited for multithreaded environments.
 
-**Functional programming also promotes modularity and reusability.** With functions being first-class citizens, we can create small, reusable components, leading to cleaner, more maintainable code. The abstraction inherent in functional programming reduces overall complexity, allowing us to focus on the essential logic without worrying about implementation details.
+**Functional programming also promotes modularity and reusability.** With functions being first-class citizens, we create small, reusable components, leading to cleaner, more maintainable code. The abstraction inherent in functional programming reduces overall complexity, allowing us to focus on the essential logic without worrying about implementation details.
 
 However, these advantages come with potential drawbacks. The learning curve for functional programming can be steep, especially for us accustomed to imperative or object-oriented paradigms. **Concepts like higher-order functions and immutability might require a significant mindset shift.**
 
@@ -99,7 +99,7 @@ Consider the `ArithmeticOperation` interface, marked with `@FunctionalInterface`
 
 The `ArithmeticOperation` interface defines a single method, `operate()`, that takes two integers and returns an integer result. The use of this annotation documents that the interface is functional.
 
-With this functional interface, we can create different arithmetic operations, like addition, subtraction, multiplication, and division, using lambda expressions.
+With this functional interface, we create different arithmetic operations, like addition, subtraction, multiplication, and division, using lambda expressions.
 
 Let's build a basic calculator with this setup:
 
@@ -237,7 +237,7 @@ interface ArithmeticOperation {
 }
 ```
 
-We can create lambda expressions to implement this interface:
+we create lambda expressions to implement this interface:
 
 ```java
 ArithmeticOperation add = (a, b) -> a + b;
@@ -266,7 +266,7 @@ Thread thread = new Thread(() -> {
 thread.start();
 ```
 
-This example demonstrates how we can create an executable using lambda.
+This example demonstrates how we create an executable using lambda.
 
 These examples demonstrate how we can use lambda expressions to define simple, concise functions without explicitly creating additional classes. They are powerful tools for streamlining code and making functional programming in Java more accessible and expressive.
 
@@ -302,7 +302,12 @@ Similar to the previous example, this lambda also takes two parameters with `var
 
 **Method references are a shorthand way to refer to existing methods by their name.** Instead of using lambda expressions, use method references to write code that is more concise and easier to read. Use method references to pass executable logic. Such deferred method invocation makes them ideal for functional programming scenarios and stream processing.
 
-Java 8 provides four types method references as follows: static method, instance method of a particular type, instance method of an arbitrary object of a particular type and constructor.
+Java 8 provides four types method references as follows:
+
+1. Reference to a Static Method
+1. Reference to an Instance Method of a Particular Type
+1. Reference to an Instance Method of an Arbitrary Object of a Particular Type
+1. Reference to a Constructor
 
 Let's learn about them.
 
@@ -738,7 +743,7 @@ public interface Function<T, R> {
 }
 ```
 
-This interface enables developers to define and use functions that transform input values into output values, facilitating various data processing tasks. With `Function` we can create reusable and composable transformations, making code more concise and expressive. We widely use it for mapping, filtering, and transforming data streams.
+This interface enables developers to define and use functions that transform input values into output values, facilitating various data processing tasks. With `Function` we create reusable and composable transformations, making code more concise and expressive. We widely use it for mapping, filtering, and transforming data streams.
 
 `Function` interface has several variants like `BiFunction`, `IntFunction`, and more. We'll also learn about them in sections to follow.
 
@@ -857,7 +862,7 @@ public interface IntToDoubleFunction {
 
 This is the specialized int-to-double conversion for the `Function` interface. It is a functional interface with a method called `applyAsDouble(int)`.
 
-Let us explore the implementation of `IntToDoubleFunction`:
+Let's explore the implementation of `IntToDoubleFunction`:
 
 ```java
 @Test

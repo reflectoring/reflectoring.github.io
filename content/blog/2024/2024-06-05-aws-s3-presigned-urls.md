@@ -1,15 +1,17 @@
 ---
 title: "Offloading File Transfers with Amazon S3 Presigned URLs in Spring Boot"
 categories: [ "AWS", "Spring Boot", "Java" ]
-date: 2024-06-05 00:00:00 +0530
-modified: 2024-06-05 00:00:00 +0530
+date: 2024-06-07 00:00:00 +0530
+modified: 2024-06-07 00:00:00 +0530
 authors: [ "hardik" ]
 description: "In this article, we demonstrate how to use AWS S3 Presigned URLs in a Spring Boot application to offload file transfers, reduce server load and improve performance. We cover required dependencies, configuration, IAM policy, generation of Presigned URLs and integration testing with LocalStack and Testcontainers."
 image: images/stock/0139-stamped-envelope-1200x628-branded.jpg
 url: "offloading-file-transfers-with-amazon-s3-presigned-urls-in-spring-boot"
 ---
 
-When building web applications that involve file uploads or downloads, a common approach is to have the files pass through an application server. However, this can lead to **increased load on the server, consuming valuable computing resources, and potentially impacting performance**. A more efficient solution is to **offload file transfers to the client (web browsers, desktop/mobile applications) using Presigned URLs**.
+When building web applications that involve file uploads or downloads, a common approach is to have the files pass through an application server. However, this can lead to **increased load on the server, consuming valuable computing resources, and potentially impacting performance**. A more efficient solution is to **offload file transfers to the client using Presigned URLs**.
+
+In the context of this article, the client refers to the single page application (SPA), desktop, or mobile application that the user is interacting with, and not the end user themselves.
 
 Presigned URLs are **time-limited URLs that allow clients temporary access to upload or download objects directly to or from the storage solution being used**. These URLs are generated with a specified expiration time, after which they are no longer accessible.
 
@@ -27,7 +29,7 @@ Before diving into the implementation, let's further discuss the use cases and a
 
 * **Large File Downloads**: When having an entertainment or an e-learning platform that serves video courses to users, instead of serving the large video files from our application server, we can generate Presigned URLs for each video file and offload the responsibility of downloading/streaming the video directly from S3 to the client. 
 
-  To secure this architecture, before we generate the Presigned URLs, our server can validate/authenticate the user requesting the video content. Additionally, we can restrict access to the video content to the specific IP address that originated the request. 
+  To secure this architecture, before we generate the Presigned URLs, our server can validate/authenticate the user requesting the video content. Additionally, we can restrict access to the video content to the specific IP address that originated the request via IAM policy. 
 
   By implementing Presigned URLs on applications that serve high volume of content from S3, we **reduce the load on our server(s), improve performance and make our architecture scalable**.
 
@@ -143,7 +145,9 @@ io:
 
 This setup allows us to externalize the bucket name and the validity duration of the Presigned URLs attributes and easily access it in our code.
 
-This configuration **assumes that the application will be operating against a single S3 bucket and the defined validity will be applicable for both PUT and GET Presigned URLs**. If that is not the case for your application, then the `AwsS3BucketProperties` class can be modified as per requirement. 
+For the sake of demonstration, the defined configuration **assumes that the application will be operating against a single S3 bucket and the defined validity will be applicable for both PUT and GET Presigned URLs**. Should this not align with your application's requirements, then the `AwsS3BucketProperties` class can be modified accordingly.
+
+I'd recommend keeping the validity of both PUT and GET Presigned URLs separate to enjoy more flexibility, and also would like to emphasize that the **validity duration of the Presigned URLs should be kept as short as possible, especially for upload operations**, to protect against unauthorized access.
 
 ## Generating Presigned URLs
 
@@ -180,6 +184,8 @@ While it's possible to use the `S3Presigner` class directly, `S3Template` reduce
 
 We also make use of our custom `AwsS3BucketProperties` class to reference the S3 bucket name and the Presigned URL validity duration defined in our `application.yaml` file.
 
+It's important to ensure that the **controller API endpoints that'll consumes the service class we've created, should be secured and preferably rate limited**. Before our application generates a Presigned URL, the requesting user's identity and authority should be validated to prevent unauthorized access.
+
 ## Required IAM Permissions
 
 To have our service layer generate Presigned URLs correctly, the IAM user whose security credentials we have configured must have the necessary permissions of `s3:GetObject` and `s3:PutObject`.
@@ -203,6 +209,55 @@ Here is what our policy should look like:
 ```
 
 The above IAM policy **conforms to the least privilege principle**, by granting only the necessary permissions required for our service layer to generate Presigned URLs. We also specify the bucket ARN in the `Resource` field, further limiting the scope of the IAM policy to work with a single bucket that is provisioned for our application.
+
+Additionally, we can further restrict access to our S3 bucket by allowing requests only from a specific IP address or IP address blocks where our client application is hosted.
+
+To achieve this, we can modify our IAM policy statement to include a condition that checks the source IP address of the request using <a href="https://aws.amazon.com/what-is/cidr/" target="_blank">CIDR notation</a>:
+
+```json
+"Condition": {
+  "IpAddress": {
+    "aws:SourceIp": "01.02.03.04/32"
+  }
+}
+```
+
+## Enabling Cross-Origin Resource Sharing (CORS)
+
+There's one last thing we need to configure before our Presigned URLs can be invoked from our client applications. 
+
+When invoking Presigned URLs from a client such as a single page application (SPA), we'll encounter an error in our browser console:
+
+```console
+Access to XMLHttpRequest at 'https://..presigned-url' from origin 'http://ourdomain.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+```
+
+Ah, the infamous CORS error! 😩
+
+We encounter this error because web browsers implement the **Same-Origin Policy** mechanism by default, which restricts our client application to interact with a resource from another origin (S3 bucket in this context).
+
+In order to solve this, we'll need to add a CORS configuration to our provisioned S3 bucket:
+
+```json
+[
+  {
+    "AllowedMethods": [
+      "GET",
+      "PUT"
+    ],
+    "AllowedOrigins": [
+      "http://localhost:8081"
+    ],
+    "AllowedHeaders": [],
+    "ExposeHeaders": [],
+    "MaxAgeSeconds": 3000
+  }
+]
+```
+
+The above configuration allows our client application, hosted at `http://ourdomain.com`, to send HTTP GET and PUT requests to access our provisioned S3 bucket.
+
+In our configuration, we follow the least privilege principle similar to our IAM policy and grant access only to the necessary origin and methods required by our application. **An overly permissive CORS configuration that uses a wildcard `*` for all properties should be avoided**, as it can introduce security vulnerabilities.
 
 ## Integration Testing with LocalStack and Testcontainers
 
@@ -406,6 +461,8 @@ We used **Spring Cloud AWS** to communicate with our Amazon S3 bucket and reduce
 
 We discussed the benefits and use cases of using Presigned URLs, such as handling large file downloads and user-generated content uploads. We walked through the necessary configurations and developed a service class that generates Presigned URLs for uploading and downloading objects to/from an S3 bucket.
 
-We also covered the required IAM permissions and tested our implementation using LocalStack and Testcontainers to ensure the functionality works as expected.
+Throughout the article, we've discussed various security considerations and best practices to strengthen our architecture's security and mitigate risks, such as keeping the validity of the Presigned URL short, securing the controller API endpoints that generate Presigned URLs, and following the least privilege principle when defining the IAM policy and CORS configuration.
+
+We also tested our implementation using LocalStack and Testcontainers to ensure the developed functionality works as expected.
 
 The source code demonstrated throughout this article is available on <a href="https://github.com/thombergs/code-examples/tree/master/aws/spring-cloud-aws-s3" target="_blank">Github</a>. I would highly encourage you to explore the codebase and set it up locally.

@@ -9,9 +9,7 @@ image: images/stock/0139-stamped-envelope-1200x628-branded.jpg
 url: "offloading-file-transfers-with-amazon-s3-presigned-urls-in-spring-boot"
 ---
 
-When building web applications that involve file uploads or downloads, a common approach is to have the files pass through an application server. However, this can lead to **increased load on the server, consuming valuable computing resources, and potentially impacting performance**. A more efficient solution is to **offload file transfers to the client using Presigned URLs**.
-
-In the context of this article, the client refers to the single page application (SPA), desktop, or mobile application that the user is interacting with, and not the end user themselves.
+When building web applications that involve file uploads or downloads, a common approach is to have the files pass through an application server. However, this can lead to **increased load on the server, consuming valuable computing resources, and potentially impacting performance**. A more efficient solution is to **offload file transfers to the client (web browsers, desktop/mobile applications) using Presigned URLs**.
 
 Presigned URLs are **time-limited URLs that allow clients temporary access to upload or download objects directly to or from the storage solution being used**. These URLs are generated with a specified expiration time, after which they are no longer accessible.
 
@@ -217,10 +215,19 @@ To achieve this, we can modify our IAM policy statement to include a condition t
 ```json
 "Condition": {
   "IpAddress": {
-    "aws:SourceIp": "01.02.03.04/32"
+    "aws:SourceIp": [
+      "01.02.03.04/32"
+    ]
   }
 }
 ```
+While the above condition will work for a Single Page Application (SPA), hosted on a server with a static IP address, it'll not be a suitable solution if our client is a mobile application. 
+
+A mobile device often switches between different networks and can be assigned different IP addresses by its carrier or Wi-Fi network. This makes it difficult to apply an IP-based restriction in our IAM policy.
+
+While it's possible to update the IAM policy configuration per session by our Spring Boot application, it's not recommended at all. 🚫
+
+Updating IAM policies programmatically for each client session would be an administrative overhead, and would require granting our backend application permission to modify IAM policies, which goes against the principle of least privilege. **It is generally recommended to keep IAM permissions separate from application-level permissions**.
 
 ## Enabling Cross-Origin Resource Sharing (CORS)
 

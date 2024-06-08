@@ -49,8 +49,7 @@ One of the most common use cases of `Executable` is with the `Assertions.assertT
 static void assertAll(Executable... executables)
 // other variants of assertAll accepting executables
 
-static <T extends Throwable> T assertDoesNotThrow(Class<T> expectedType, 
-                                                  Executable executable)
+static void assertDoesNotThrow(Executable executable)
 // other variants of assertDoesNotThrow accepting executables
 
 static <T extends Throwable> T assertThrows(Class<T> expectedType, 
@@ -83,9 +82,9 @@ public class ExecutableTest {
   @CsvSource({"1,1,2,Hello,H,bye,2,byebye", 
               "4,5,9,Good,Go,Go,-10,", 
               "10,21,31,Team,Tea,Stop,-2,"})
-  void testAssertAllExecutable(int num1, int num2, int sum, 
-                               String input, String prefix, 
-                               String arg, int count, String result) {
+  void testAssertAllWithExecutable(int num1, int num2, int sum, 
+                                   String input, String prefix, 
+                                   String arg, int count, String result) {
     assertAll(
         () -> assertEquals(sum, num1 + num2),
         () -> assertTrue(input.startsWith(prefix)),
@@ -140,23 +139,52 @@ When the JVM executes the lambda expression, it uses the method handle to invoke
 
 ### Using Executables in `assertDoesNotThrow()`
 
-The `Assertions.assertDoesNotThrow()` method asserts that execution of the supplied executable does not throw any kind of exception. Thus, we can explicitly verify that the logic under test executes without encountering any exception.
+The `Assertions.assertDoesNotThrow()` method asserts that execution of the supplied executable does not throw any kind of exception. Thus, we can explicitly verify that the logic under test executes without encountering any exception. It is useful assertion method we can use to test the *happy paths*.
 
 Here's a simple example:
 
 ```java
 @ParameterizedTest
 @CsvSource({"one,0,o", "one,1,n"})
-void testAssertDoesNotThrow(String input, int index, char result) {
+void testAssertDoesNotThrowWithExecutable(String input, int index, char result) {
     assertDoesNotThrow(() -> assertEquals(input.charAt(index), result));
 }
 ```
 
-The test `testAssertDoesNotThrow()` annotated `@ParameterizedTest` and `@CsvSource`, runs the test with different sets of parameters. The `@CsvSource` annotation specifies two sets of parameters: ("one", 0, 'o') and ("one", 1, 'n'). For each set of parameters, the test method checks that execution does not throw an exception when verifying that the character at the specified index in the input string matches the expected result. If the assertions pass without throwing any exceptions, the `assertDoesNotThrow()` method confirms the successful execution of the test.
+The test `testAssertDoesNotThrowWithExecutable()` annotated `@ParameterizedTest` and `@CsvSource`, runs the test with different sets of parameters. The `@CsvSource` annotation specifies two sets of parameters: (“one”, 0, 'o') and (“one”, 1, 'n'). For each set of parameters, the test method checks that execution does not throw an exception when verifying that the character at the specified index in the input string matches the expected result. If the assertions pass without throwing any exceptions, the `assertDoesNotThrow()` method confirms the successful execution of the test.
 
 ### Using Executables in `assertThrows()`
 
-The `Assertions.assertsThrows()` method asserts
+The `Assertions.assertsThrows()` method asserts that execution of the supplied executable throws an exception of the expected type and return the exception.
+
+If the logic does not throw any exception, or throw an exception of a different type, then this method will fail.
+
+We can perform additional checks on the exception instance we get in return value.
+
+It is useful assertion method we can use to test the *failure paths*.
+
+Let's see how we can use the `assertThrows()` in action:
+
+```java
+@Test
+void testAssertThrowsWithExecutable() {
+    List<String> input = Arrays.asList("one", "", "three", null, "five");
+    IllegalArgumentException exception =
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+                for (String value : input) {
+                if (value == null || value.isBlank()) {
+                    throw new IllegalArgumentException("Got invalid value");
+                }
+                // process values
+                }
+            });
+    assertEquals("Got invalid value", exception.getMessage());
+}
+```
+
+The `testAssertThrowsWithExecutable()` method tests the `assertThrows()` method with a `Executable`. It begins by creating a list of strings containing the values “one”, “”, “three”, `null`, and “five”. Using `assertThrows()` method it checks that executing the lambda expression throws a `IllegalArgumentException`. The lambda iterates through the list, and for each string, it checks if the value is `null` or blank. If it finds a `null` or blank value, it throws a `IllegalArgumentException` with the message “Got invalid value". The assertion confirms that the thrown exception and verifies that the exception message matches the expected “Got invalid value”.
 
 ### Using Executables in `assertTimeout()`
 

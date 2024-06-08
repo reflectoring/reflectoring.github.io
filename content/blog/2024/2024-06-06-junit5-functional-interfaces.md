@@ -52,11 +52,11 @@ static void assertAll(Executable... executables)
 static void assertDoesNotThrow(Executable executable)
 // other variants of assertDoesNotThrow accepting executables
 
-static <T extends Throwable> T assertThrows(Class<T> expectedType, 
+static <T extends Throwable> T assertThrows(Class<T> expectedType,
                                             Executable executable)
 // other variants of assertThrows accepting executables
 
-static <T extends Throwable> T assertThrowsExactly(Class<T> expectedType, 
+static <T extends Throwable> T assertThrowsExactly(Class<T> expectedType,
                                                    Executable executable)
 // other variants of assertThrowsExactly accepting executables
 
@@ -79,11 +79,11 @@ Let's now see how to use `assertAll()` and executables:
 public class ExecutableTest {
 
   @ParameterizedTest
-  @CsvSource({"1,1,2,Hello,H,bye,2,byebye", 
-              "4,5,9,Good,Go,Go,-10,", 
+  @CsvSource({"1,1,2,Hello,H,bye,2,byebye",
+              "4,5,9,Good,Go,Go,-10,",
               "10,21,31,Team,Tea,Stop,-2,"})
-  void testAssertAllWithExecutable(int num1, int num2, int sum, 
-                                   String input, String prefix, 
+  void testAssertAllWithExecutable(int num1, int num2, int sum,
+                                   String input, String prefix,
                                    String arg, int count, String result) {
     assertAll(
         () -> assertEquals(sum, num1 + num2),
@@ -197,43 +197,102 @@ Here is an example showcasing the use of `assertTimeout()`:
 ```java
 @Test
 void testAssertTimeoutWithExecutable() {
-  List<Long> numbers = Arrays.asList(100L, 200L, 50L, 300L, 5L, 0L, 12L, 80L);
+  List<Long> numbers = Arrays.asList(100L, 200L, 50L, 300L);
   int delay = 2;
-  
+  Executable checkSorting
+    = () -> assertEquals(List.of(50L, 100L, 200L, 300L), numbers);
+
   // execution does not complete within expected duration
-  assertThrows(
-      AssertionFailedError.class,
+  assertAll(
       () ->
-          assertTimeout(
-              Duration.ofSeconds(1),
-              () -> {
-                numbers.sort(Long::compareTo);
-                TimeUnit.SECONDS.sleep(delay);
-              }));
+          assertThrows(
+              AssertionFailedError.class,
+              () ->
+                  assertTimeout(
+                      Duration.ofSeconds(1),
+                      () -> {
+                        TimeUnit.SECONDS.sleep(delay);
+                        numbers.sort(Long::compareTo);
+                      })),
+      checkSorting);
 
   // execution completes within expected duration
-  assertDoesNotThrow(
+  assertAll(
       () ->
-          assertTimeout(
-              Duration.ofSeconds(5),
-              () -> {
-                numbers.sort(Long::compareTo);
-                TimeUnit.SECONDS.sleep(delay);
-              }));
+          assertDoesNotThrow(
+              () ->
+                  assertTimeout(
+                      Duration.ofSeconds(5),
+                      () -> {
+                        TimeUnit.SECONDS.sleep(delay);
+                        numbers.sort(Long::compareTo);
+                      })),
+      checkSorting);
 }
 ```
 
-The `testAssertTimeoutWithExecutable()` method demonstrates the `assertTimeout()` method using a `Executable`. It starts with a list of `long` numbers and a delay of 2 seconds.
+The `testAssertTimeoutWithExecutable()` method shows how to use the `assertTimeout` method with a `Executable`.
 
-The first part of the test expects a `AssertionFailedError` to be thrown because the `assertTimeout()` is set to 1 second, which is less than the delay. Inside the `assertTimeout()`, we sort the numbers list, and the thread sleeps for the specified delay. We have used delay to simulate a long-running execution.  Because the delay is 2 seconds, exceeding the 1-second timeout, the assertion fails as expected.
+It starts by creating a list of `long` numbers: 100L, 200L, 50L, and 300L, and sets a delay of 2 seconds. The `checkSorting` executable checks if the sorted list matches the expected order: 50L, 100L, 200L, and 300L. The test uses `assertAll()` to group assertions.
 
-The second part of the test uses `assertDoesNotThrow()` with `assertTimeout()` set to 5 seconds. It performs the same actions: sorting the numbers list and sleeping for the delay. Since the delay of 2 seconds is within the 5-second timeout, the assertion passes, confirming that it does not get exception within the specified duration.
+In the first `assertAll()` block, it asserts that the execution throws a `AssertionFailedError` when sorting the list with a timeout of 1 second. The `assertTimeout()` method attempts to sleep for the 2-second delay before sorting the numbers. Since the delay exceeds the 1-second timeout, the assertion fails, and results in `AssertionFailedError`. The `checkSorting` executable verifies that the original numbers are in ascending order.
+
+In the second `assertAll()` block, it asserts that the execution does not throw an exception when sorting the list with a timeout of 5 seconds. Again, the `assertTimeout()` method attempts to sleep for the 2-second delay before sorting the numbers. This time, the delay is within the 5-second timeout, so does not throw any exception. The `checkSorting` executable verifies that the original numbers are in ascending order.
+
+This indicates that the execution keeps carrying out its operations. In case it goes beyond the anticipated timeframe, we get an exception.
+
+Moreover, it demonstrated how we can combine multiple assertion techniques to carry out verification.
 
 ### Using Executables in `assertTimeoutPreemptively()`
 
 The `Assertions.assertTimeoutPreemptively()` method asserts that execution of the supplied executable completes before the given timeout. Furthermore, it aborts the execution of the executable preemptively if it exceeds timeout.
 
+Let's see how preemptive timeout works for the same scenario:
 
+```java
+@Test
+void testAssertTimeoutPreemptivelyWithExecutable() {
+  List<Long> numbers = Arrays.asList(100L, 200L, 50L, 300L);
+  int delay = 2;
+  Executable checkSorting
+    = () -> assertEquals(List.of(50L, 100L, 200L, 300L), numbers);
+  Executable noChanges
+    = () -> assertEquals(List.of(100L, 200L, 50L, 300L), numbers);
+
+  // execution does not complete within expected duration
+  assertAll(
+      () ->
+          assertThrows(
+              AssertionFailedError.class,
+              () ->
+                  assertTimeoutPreemptively(
+                      Duration.ofSeconds(1),
+                      () -> {
+                        TimeUnit.SECONDS.sleep(delay);
+                        numbers.sort(Long::compareTo);
+                      })),
+      noChanges);
+
+  // execution completes within expected duration
+  assertAll(
+      () ->
+          assertDoesNotThrow(
+              () ->
+                  assertTimeoutPreemptively(
+                      Duration.ofSeconds(5),
+                      () -> {
+                        TimeUnit.SECONDS.sleep(delay);
+                        numbers.sort(Long::compareTo);
+                      })),
+      checkSorting);
+}
+```
+
+The `testAssertTimeoutPreemptivelyWithExecutable()` method demonstrates how to use the `assertTimeoutPreemptively()` method with two executables to verify the sorting of a list of numbers. The method starts by defining a list of `long` numbers: 100L, 200L, 50L, and 300L, and sets a delay of 2 seconds. The `checkSorting` executable checks if the sorted list matches the expected order: 50L, 100L, 200L, and 300L, while the `noChanges` executable verifies that the list remains in its initial order.
+
+In the first `assertAll()` block, the method asserts that the execution throws a `AssertionFailedError` when sorting the list with a preemptive timeout of 1 second. The `assertTimeoutPreemptively()` method attempts to sleep for the 2-second delay before sorting the numbers. Since the delay exceeds the 1-second timeout, the assertion fails, and it throws the `AssertionFailedError`. The `noChanges` executable then verifies that the list remains unchanged, confirming that `assertTimeoutPreemptively()` preemptively stopped the sorting operation.
+
+In the second `assertAll` block, the method asserts that we do not get any exception when sorting the list with a preemptive timeout of 5 seconds. The `assertTimeoutPreemptively()` method again attempts to sleep for the 2-second delay before sorting the numbers. This time, the delay is within the 5-second timeout, it does not throw any exception. Finally, `checkSorting` executable confirms that the execution has sorted the list correctly.
 
 ## Using ThrowingConsumer
 

@@ -157,7 +157,7 @@ The test `testAssertDoesNotThrowWithExecutable()` annotated `@ParameterizedTest`
 
 The `Assertions.assertsThrows()` method asserts that execution of the supplied executable throws an exception of the expected type and return the exception.
 
-If the logic does not throw any exception, or throw an exception of a different type, then this method will fail.
+If the logic does not throw any exception, or throws an exception of a different type, then this method will fail.
 
 We can perform additional checks on the exception instance we get in return value.
 
@@ -188,9 +188,46 @@ The `testAssertThrowsWithExecutable()` method tests the `assertThrows()` method 
 
 ### Using Executables in `assertTimeout()`
 
-The `Assertions.assertTimeout()` method asserts that execution of the supplied executable completes before the given timeout.
+The `Assertions.assertTimeout()` method asserts that execution of the supplied executable completes before the given timeout. The execution can continue even after it exceeds the timeout. The assertion will throw an exception in case it exceeds the timeout duration.
 
-Let's now learn how to use the BiPredicate:
+This is useful to verify if the execution completes within bounds expected duration.
+
+Here is an example showcasing the use of `assertTimeout()`:
+
+```java
+@Test
+void testAssertTimeoutWithExecutable() {
+  List<Long> numbers = Arrays.asList(100L, 200L, 50L, 300L, 5L, 0L, 12L, 80L);
+  int delay = 2;
+  
+  // execution does not complete within expected duration
+  assertThrows(
+      AssertionFailedError.class,
+      () ->
+          assertTimeout(
+              Duration.ofSeconds(1),
+              () -> {
+                numbers.sort(Long::compareTo);
+                TimeUnit.SECONDS.sleep(delay);
+              }));
+
+  // execution completes within expected duration
+  assertDoesNotThrow(
+      () ->
+          assertTimeout(
+              Duration.ofSeconds(5),
+              () -> {
+                numbers.sort(Long::compareTo);
+                TimeUnit.SECONDS.sleep(delay);
+              }));
+}
+```
+
+The `testAssertTimeoutWithExecutable()` method demonstrates the `assertTimeout()` method using a `Executable`. It starts with a list of `long` numbers and a delay of 2 seconds.
+
+The first part of the test expects a `AssertionFailedError` to be thrown because the `assertTimeout()` is set to 1 second, which is less than the delay. Inside the `assertTimeout()`, we sort the numbers list, and the thread sleeps for the specified delay. We have used delay to simulate a long-running execution.  Because the delay is 2 seconds, exceeding the 1-second timeout, the assertion fails as expected.
+
+The second part of the test uses `assertDoesNotThrow()` with `assertTimeout()` set to 5 seconds. It performs the same actions: sorting the numbers list and sleeping for the delay. Since the delay of 2 seconds is within the 5-second timeout, the assertion passes, confirming that it does not get exception within the specified duration.
 
 ### Using Executables in `assertTimeoutPreemptively()`
 

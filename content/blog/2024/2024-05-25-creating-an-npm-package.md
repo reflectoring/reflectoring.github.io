@@ -4,16 +4,16 @@ categories: ["Node"]
 date: 2024-05-25 00:00:00 +1100
 modified: 2024-05-25 00:00:00 +1100
 authors: ["ajibade"]
-description: "Learning how to create an NPM package is vital for contributing to the open-source community and improving code reusability. This step-by-step article covers the process of generating and releasing an NPM package, with a focus on automating versioning and deployment for an easy workflow."
+description: "Learning how to create an NPM package is vital for contributing to the open-source community and improving code reusability. This step-by-step article covers the process of generating and releasing an NPM package, with a focus on automating versioning and deployment for an easy workflow."
 image: images/stock/0137-speed-1200x628-branded.jpg
-url:  how-to-create-and-publish-npm-package
+url: create-and-publish-npm-package
 ---
 
 In this step-by-step guide, we'll create, publish, and manage an NPM package using TypeScript for better code readability and scalability. We'll write test cases with Jest and automate our NPM package versioning and publishing process using Changesets and GitHub Actions.
 
-Mastering the art of creating NPM packages is crucial. It allows for the encapsulation of reusable code, simplifies project development, and promotes collaboration by sharing useful libraries with the community. This accelerates the development process and gives us the option to keep this package private or make it public (open-source) for others to use.
+An NPM package allows for the encapsulation of reusable code, simplifies project development, and promotes collaboration by sharing useful libraries with the community. This accelerates the development process and gives us the option to keep this package private or make it public (open-source) for others to use.
 
-# Prerequisites
+## Prerequisites
 We'll need the following:
 - [Node.js](https://nodejs.org/) installed on our computer.
 - Basic knowledge of TypeScript.
@@ -26,7 +26,7 @@ Let's jump right into it:
 
 {{% github "https://github.com/thombergs/code-examples/tree/master/nodejs/node-create-npm-pacakage" %}}
 
-# Step 1: Setting up Node.js Application
+## Step 1: Setting up Node.js Application
 Begin by creating an empty folder named `validate-npm-pc`.
 
 This folder will serve as the name of our NPM package. It's important to choose a unique name since the NPM registry hosts a vast number of packages, each requiring a distinct name for successful publication.
@@ -40,14 +40,28 @@ This command generates a `package.json` file, which holds essential metadata abo
 
 Again in the terminal, we will execute the following:
 ```bash
-mkdir -p .github/workflows src __tests__ 
-touch src/index.ts src/validate.ts __tests__/validate.ts .github/workflows/release.yml .gitignore
+mkdir -p \
+  .github/workflows \
+  src \
+  __tests__ 
+touch \
+  src/index.ts \
+  src/validate.ts \
+  __tests__/validate.ts \
+  .github/workflows/release.yml \
+  .gitignore
 ```
 These commands create all the necessary files and folders required in the package.
 
 Install all the dependencies needed in the package by running the following command:
 ```bash
-npm install typescript jest ts-jest @types/jest @changesets/cli  --save-dev
+npm install \
+  typescript \
+  jest \
+  ts-jest \ 
+  @types/jest \ 
+  @changesets/cli \  
+  --save-dev
 ```
 Here's a brief overview of what each dependency does:
 - `typescript`: Enables static typing in our code.
@@ -56,9 +70,8 @@ Here's a brief overview of what each dependency does:
 - `@types/jest`: Provides TypeScript type definitions for Jest.
 - `@changesets/cli`: is a command-line tool for managing versioning and changelogs in a monorepo setup. Changeset automates the NPM versioning process for our package.
 
-NPM versioning follows the [Semantic Versioning](https://semver.org/) (SemVer) convention, which consists of three numbers separated by periods: `MAJOR.MINOR.PATCH` [1.2.3].
+NPM versioning follows the [Semantic Versioning](https://semver.org/) (SemVer) convention, which consists of three numbers separated by periods: `MAJOR.MINOR.PATCH` (for example "1.2.3").
 
-![npm-versioning](https://i.imgur.com/TUziofC.png)
 {{% image alt="npm-versioning" src="images/posts/node-create-npm-package/npm-versioning.png" %}}
 
 According to SemVer, we are to:
@@ -70,7 +83,7 @@ These versions should be updated appropriately whenever the NPM package is modif
 
 Next, we will update our `package.json` file with important properties and script commands. 
 
-Here's what our NPM package.json should look like now:
+Here's what our NPM `package.json` file should look like now:
 ```json 
 {
   "name": "validate-npm-pc",
@@ -102,15 +115,15 @@ Here's what our NPM package.json should look like now:
 }
 ```
 Our `package.json` now has these additional fields:
-- **main**: This specifies the entry point for CommonJS users. When someone uses `require("validate-npm-pc"),` Node.js will look for `dist/cjs/index.js`.
-- **module**: This specifies the entry point for ES module users. When someone uses `import from "validate-npm-pc"`, tools like Webpack or Rollup will look for `dist/esm/index.js`.
-- **types**: This specifies the location of the TypeScript declaration file. This helps TypeScript understand the types when our package is used.
-- **files**: An array specifying which files should be included when our package is published.
-- **keywords**: An array of keywords to enhance our package's searchability on the NPM website.
-- **scripts**: Define commands for building, releasing, and testing the project.
-    - **build**: This script compiles TypeScript files into JavaScript using the `tsc`. It runs two separate builds using the typescript configuration files we will be creating (`tsconfig.json` and `tsconfig.cjs.json`).
-    - **release**: This script first runs the `build` script, and if successful, it then publishes the changes using `changeset publish`.
-    - **test**: This runs our project tests using Jest
+- `main`: This specifies the entry point for CommonJS users. When someone uses `require("validate-npm-pc"),` Node.js will look for `dist/cjs/index.js`.
+- `module`: This specifies the entry point for ES module users. When someone uses `import from "validate-npm-pc"`, tools like Webpack or Rollup will look for `dist/esm/index.js`.
+- `types`: This specifies the location of the TypeScript declaration file. This helps TypeScript understand the types when our package is used.
+- `files`: An array specifying which files should be included when our package is published.
+- `keywords`: An array of keywords to enhance our package's searchability on the NPM website.
+- `scripts`: Define commands for building, releasing, and testing the project.
+    - `build`: This script compiles TypeScript files into JavaScript using the `tsc`. It runs two separate builds using the typescript configuration files we will be creating (`tsconfig.json` and `tsconfig.cjs.json`).
+    - `release`: This script first runs the `build` script, and if successful, it then publishes the changes using `changeset publish`.
+    - `test`: This runs our project tests using Jest
 
 Next, update the `.gitignore` to exclude unnecessary files from being included in our GitHub repository
 
@@ -120,10 +133,10 @@ dist
 node_modules
 ```
 
-# Step 2: Initializing Helper Package
+## Step 2: Initializing Helper Packages
 Before proceeding with our package development, we need to initialize the necessary helper dependencies for our NPM package. We'll be setting up TypeScript, Jest, and Changesets in our project.
 
-## Initialize Typescript
+### Initializing Typescript
 We will configure TypeScript to compile our code to output both ES modules (ESM) and CommonJS modules (CJS). To achieve this, we will create two `tsconfig.json` files: one for ES modules and another for CommonJS modules.
 
 First, initialize TypeScript in the project by running the following command:
@@ -164,7 +177,7 @@ In the `tsconfig.cjs.json` file we extended the settings from our initial `tscon
 With the above configurations, TypeScript is set up to compile our package. The output will be organized into the `./dist` directory, with ESM files located in `./dist/esm` and CJS files in `./dist/cjs`.
 
 
-## Initialize Jest
+### Initializing Jest
 To set up unit tests for our package using Jest, we will create and configure a Jest configuration file by running the following command:
 ```bash
 touch jest.config.mjs
@@ -180,7 +193,7 @@ export default config;
 ```
 With the above configuration, Jest is now configured to work with TypeScript files, leveraging the `ts-jest` preset to compile TypeScript code during testing. Jest will recognize files with the specified extensions and execute tests accordingly.
 
-## Initialize Changeset
+### Initializing Changeset
 To simplify our NPM versioning process, we will leverage the `changeset` CLI dependency. 
 
 `changeset` monitors and automates version increments, ensuring precise updates following each change. It maintains a comprehensive record of changes made to our package, facilitating transparency and accountability in version management.
@@ -208,11 +221,11 @@ By default, the access setting in the `config.json` file is set to `restricted`.
 ```
 With these settings, our package is configured for **public access** and ready for versioning and publishing.
 
-# Step 3: Writing Our Package Function
+## Step 3: Writing Our Package Function
 Now, let's proceed to the development of our package code. We'll organize our package logic and functions as follows: the core validation functionalities will reside within the `src/validate.ts` file, while `src/index.ts` will serve as the main entry point, exporting all the functions of our module.
 
 In the `src/validate.ts` file copy and paste the following:
-```typescript=
+```typescript
 /**
  * Validates a mobile number, ensuring it starts with a "+" sign
  * and contains only digits, with a maximum length of 15 characters.
@@ -268,7 +281,7 @@ import { validEmail, validMobileNo, validSocial } from "./validate";
 export { validEmail, validMobileNo, validSocial };
 ```
 
-# Step 4: Writing Test for Code
+## Step 4: Writing Tests
 To prevent avoidable bugs and errors, it is important to write tests for our package functions.
 
 To do this we'll simply copy and paste the following into the `__test__/validate.ts` file:
@@ -325,7 +338,7 @@ npm run test
 ```
 This will search for test files within our project directory and execute the test cases found in them.
 
-# Step 5: Publish Package to NPM Website
+## Step 5: Publishing the Package to NPM
 It is often recommended to compile TypeScript code before sharing it on npm for improved performance and compatibility across multiple JavaScript environments. Because our code is written in TypeScript, we will compile it into JavaScript before publishing. 
 
 To do this, we'll run the `build` command in our `package.json` file:
@@ -344,13 +357,11 @@ Next, log in to the NPM registry from the terminal by running:
 ```bash
 npm login
 ```
-This will prompt us to enter our credentials, which will log us into our NPM account.
+This will prompt us to enter our credentials, which will log us into our NPM account.
 
-After a successful login, our terminal should indicate that we are logged in on https://registry.npmjs.org/.
+After a successful login, our terminal should indicate that we are logged in on https://registry.npmjs.org/.
 
-![npm-login](https://hackmd.io/_uploads/rJnfmAPQ0.png)
 {{% image alt="npm-login" src="images/posts/node-create-npm-package/npm-login.png" %}}
-
 
 We are now ready to publish our package. To publish, run the NPM publish command using a `--access=public` tag. By default, a published package is set to private this tag will make our package accessible publicly.
 
@@ -359,22 +370,20 @@ To publish our package, run:
 npm publish --access=public 
 ```
 
-![npm-publish](https://hackmd.io/_uploads/HkAQQCPXC.png)
 {{% image alt="npm-publish" src="images/posts/node-create-npm-package/npm-publish.png" %}}
 
 There we go! We successfully created and published an NPM package.
 
-**Note:** If you receive a 403 Forbidden error on the first publish attempt, it is likely because you haven’t yet verified your email address on npmjs.com or attempting to publish the same version of a package twice
+**Note:** If you receive a 403 Forbidden error on the first publish attempt, it is likely because you haven’t yet verified your email address on npmjs.com or attempting to publish the same version of a package twice
 
 We can now view our published package on the NPM registry.
-![view-npm-registry](https://hackmd.io/_uploads/HytdmAPQR.png)
 {{% image alt="view-npm-registry" src="images/posts/node-create-npm-package/view-npm-registry.png" %}}
 
 
-## Updating a Published NPM Pacakge
+### Updating a Published NPM Package
 Next, here are the steps to take to manually update our published NPM package after modifications have been made to the package:
 
-### Versioning:
+#### Versioning
 After modifying or making changes to the package, head to the `package.json` file, and update the version number appropriately. We can do this manually or by using NPM's version command:
 ```bash
 npm version patch
@@ -384,7 +393,7 @@ This command will automatically increment the `patch` version number.
 
 Depending on the significance of our changes, we can use `npm version [major|minor|patch]` to indicate the level of version change needed.
 
-### Publish the Update
+#### Publishing the Update
 Once the changes and the version number update have been made, publish the update to NPM using:
 
 ```bash    
@@ -392,7 +401,7 @@ npm publish
 ```
 This will publish our new changes to the NPM registry. By following these steps, we can ensure that our package updates are properly versioned and made available for installation through the NPM registry.
 
-# Step 6: Automate NPM Publishing on GitHub Using Changesets
+## Step 6: Automating NPM Publishing on GitHub Using Changesets
 We've built an awesome NPM library and can't wait to start using it and sharing it with the world. However, manually publishing and updating this library can quickly become a hassle, especially if we're open to receiving contributions from others. To streamline this, let's automate our package publishing process using GitHub Actions and the Changesets action.
 
 We'll start by pushing our package code to a new GitHub repository if it hasn't been done already. This ensures that our package is ready for integration with `changesets` and GitHub Actions.
@@ -401,15 +410,13 @@ Once a change set is created and merged into the GitHub main branch, our package
 
 Here are the steps to automate our NPM package publishing process:
 
-## Generate and Add NPM Token to GitHub Secrets
+### Generating and Add NPM Token to GitHub Secrets
 The NPM token is necessary for publishing packages to NPM via Github, enabling us to bypass the need to log in to the NPM registry manually.
 
 Here’s how to generate NPM Token, head to npmjs.com. Navigate to your profile and select **Access Tokens**. Then click **Generate new token** (Classic Token).
 
-![create-npm-access-token](https://hackmd.io/_uploads/SydTm0PQ0.png)
 {{% image alt="create-npm-access-token" src="images/posts/node-create-npm-package/create-npm-access-token.png" %}}
 
-![generate-token](https://hackmd.io/_uploads/r1jXfK97C.png)
 {{% image alt="generate-token" src="images/posts/node-create-npm-package/generate-token.png" %}}
 
 
@@ -419,26 +426,24 @@ Next, we will use GitHub secrets to protect this generated token within our proj
 
 To do this, head to GitHub and go to the project's repository. Navigate to **Settings** -> **Secrets and variables** -> **Actions**, and select **New repository secret** to add our generated NPM token as a secret as shown below:
 
-![repo-setting](https://hackmd.io/_uploads/SkQb-K97R.png)
 {{% image alt="repo-setting" src="images/posts/node-create-npm-package/repo-setting.png" %}}
 
 
 By storing the token as a GitHub secret, we ensure it is securely managed and can be used safely in our workflow.
 
-## Updating Repository Action Settings:
+### Updating Repository Action Settings:
 Changeset auto-creates a new PR to publish our changes to NPM. However, by default, GitHub Actions cannot create PRs. To enable this functionality, we need to update our GitHub repository's action settings.
     
 Navigate to repository **Settings** -> **Actions** -> **General** settings.
 
 Then Enable "Read and write permissions" to grant GitHub Actions the necessary access to read from and write to the repository.
 
-![update-pr-default-setting](https://hackmd.io/_uploads/Hk7O8Y9mR.png)
 {{% image alt="update-pr-default-setting" src="images/posts/node-create-npm-package/update-pr-default-setting.png" %}}
 
 
 By granting this permission, Changeset will be able to create PRs facilitating the automation of our package publishing process.
 
-## Writing Our Git Action Command:
+### Writing Our Git Action Command:
 Next, let's write our action workflow. 
 
 Copy and Paste the following in the `.github/workflows/release.yml` file:
@@ -469,13 +474,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```
-The above workflow is triggered on any push to the `main` branch. It utilizes Changesets to automate the process of versioning and publishing our package to NPM.
+The above workflow is triggered on any push to the `main` branch. It uses Changesets to automate the process of versioning and publishing our package to NPM.
 
 In our action environment variable, we are using the saved NPM_TOKEN and a GITHUB_TOKEN, which is provided by GitHub. If you don’t have a GitHub token. You can follow this [guide](https://docs.github.com/en/enterprise-server@3.6/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) to create one. Don’t forget to give permissions for read-write in GitHub actions.
 
 This workflow automates the versioning and publishing process of our package. When a new PR or Push occurs on the `main` branch, it automatically creates a PR named **Version Packages** containing the required changes to publish the package
 
-## Versioning and Pushing New Updates:
+### Versioning and Pushing New Updates
 We are now ready to push our package to GitHub.
 
 To do this, create a feature branch
@@ -491,9 +496,9 @@ Create a new changeset, by running:
 npx changeset
 ```
 
-This command will prompt us to choose the type of version change [patch|minor|major] and provide a description of the changes. The description will be included in the changelog upon release. After completing the prompts, a new markdown file will be created in the `.changeset` folder, documenting the changes made. This file is essential for tracking the changes and versioning.
+This command will prompt us to choose the type of version change [patch|minor|major] and provide a description of the changes. The description will be included in the changelog upon release. After completing the prompts, a new markdown file will be created in the `.changeset` folder, documenting the changes made. This file is essential for tracking the changes and versioning.
 
-**Note:** To remind contributors (and ourselves) to add changeset to PRs, [install the Changeset bot](https://github.com/apps/changeset-bot) from the GitHub Marketplace. This bot will remind all contributors to include a changeset whenever they create a PR.
+**Note:** To remind contributors (and ourselves) to add changeset to PRs, [install the Changeset bot](https://github.com/apps/changeset-bot) from the GitHub Marketplace. This bot will remind all contributors to include a changeset whenever they create a PR.
 
 Next, commit and push the changeset and new updates to the GitHub repository by running the following command:
 ```
@@ -503,32 +508,28 @@ git push -u origin feature/test-changeset
 ```
 
 Our changes are on GitHub, now create a new Pull Request (PR)!
-![create-pull-request](https://hackmd.io/_uploads/rkK9U0wm0.png)
 {{% image alt="create-pull-request" src="images/posts/node-create-npm-package/create-pull-request.png" %}}
 
 The Changeset bot has already acknowledged that we've added our changeset file. If we hadn't, it would have sent out a notice.
 
 Approve and merge the PR, this will integrate our changes into the main branch and trigger our GitHub Actions workflow.
 
-![git-action-success](https://hackmd.io/_uploads/HJNRUCwQC.png)
 {{% image alt="git-action-success" src="images/posts/node-create-npm-package/git-action-success.png" %}}
 If the action runs successfully, it creates a new PR `Version Packages`!
-![changeset-new-pr](https://hackmd.io/_uploads/BycS_RDQ0.png)
 {{% image alt="changeset-new-pr" src="images/posts/node-create-npm-package/changeset-new-pr.png" %}}
 
 Upon merging the `Version Packages` PR, the published script executes, and our updated package version is published to NPM.
 
 Now we are all set! Our NPM package is up to date, and its update and versioning process is fully automated.
 
-# Step 7: Use the Package
+## Step 7: Use the Package
 We can now install our published package in any project of choice:
 
 ```bash
 npm install validate-npm-pc
 ```
-![using-validate-npm-pc](https://hackmd.io/_uploads/HkU6ou07C.png)
 {{% image alt="using-validate-npm-pc" src="images/posts/node-create-npm-package/using-validate-npm-pc.png" %}}
 In this snippet, we can see our `validate-npm-pc` package in action, validating user inputs like a charm.
 
-# Conclusion
-Creating and publishing an NPM pacakage is a powerful way to contribute to open-source and enhance code reusability. We covered the essentials, from initializing our package to publishing it on NPM, and using changesets for versioning and automated releases. For more details, explore the [NPM](https://docs.npmjs.com/) and [changeset](https://github.com/changesets/changesets) documentation. Happy coding!
+## Conclusion
+Creating and publishing an NPM package is a powerful way to contribute to open-source and enhance code reusability. We covered the essentials, from initializing our package to publishing it on NPM, and using changesets for versioning and automated releases. For more details, explore the [NPM](https://docs.npmjs.com/) and [changeset](https://github.com/changesets/changesets) documentation. Happy coding!

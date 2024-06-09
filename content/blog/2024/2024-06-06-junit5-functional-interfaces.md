@@ -77,35 +77,52 @@ Let's now see how to use `assertAll()` and executables:
 
 ```java
 public class ExecutableTest {
-
-  @ParameterizedTest
-  @CsvSource({"1,1,2,Hello,H,bye,2,byebye",
-              "4,5,9,Good,Go,Go,-10,",
-              "10,21,31,Team,Tea,Stop,-2,"})
-  void testAssertAllWithExecutable(int num1, int num2, int sum,
-                                   String input, String prefix,
-                                   String arg, int count, String result) {
-    assertAll(
-        () -> assertEquals(sum, num1 + num2),
-        () -> assertTrue(input.startsWith(prefix)),
-        () -> {
-          if (count < 0) {
-            assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                  new ArrayList<>(count);
-                });
-          } else {
-            assertEquals(result, arg.repeat(count));
-          }
-        });
-  }
+  private List<Long> numbers = Arrays.asList(100L, 200L, 50L, 300L);
+  private Executable sorter =
+      () -> {
+        TimeUnit.SECONDS.sleep(2);
+        numbers.sort(Long::compareTo);
+      };
+  private Executable checkSorting =
+      () -> assertEquals(List.of(50L, 100L, 200L, 300L), numbers);
+  private Executable noChanges = 
+      () -> assertEquals(List.of(100L, 200L, 50L, 300L), numbers);
+  // tests
 }
 ```
 
-In the `ExecutableTest` class, the `testAssertAllExecutable()` method is a parameterized test.
+In the `ExecutableTest` class, we define several tests to demonstrate the usage of the `Executable` functional interface with JUnit's timeout assertions.
 
-The `Assertions.assertAll()` method groups three assertions to be executed together. The first assertion checks if the sum of `num1` and `num2` equals `sum`. The second assertion verifies if the string `input` starts with the string `prefix`. The third assertion checks if `count` is less than 0, it asserts that creating a `ArrayList` with `count` will throw a `IllegalArgumentException`, otherwise it asserts that the string `arg` repeated `count` times equals `result`.
+We start by initializing a list of `Long` numbers (numbers) and defining two `Executable` lambdas: `sorter` and `checkSorting`. The `sorter` lambda simulates a time-consuming operation by sleeping for 2 seconds and then sorting the list. The `checkSorting` lambda verifies that the list is in correct sort order. Additionally, we define another `Executable` lambda, `noChanges`, which checks that the list remains in its initial unsorted state.
+
+Consider following example that shows how to use `assertAll` with executable:
+
+```java
+@ParameterizedTest
+@CsvSource({"1,1,2,Hello,H,bye,2,byebye",
+            "4,5,9,Good,Go,Go,-10,",
+            "10,21,31,Team,Tea,Stop,-2,"})
+void testAssertAllWithExecutable(int num1, int num2, int sum,
+                                  String input, String prefix,
+                                  String arg, int count, String result) {
+  assertAll(
+      () -> assertEquals(sum, num1 + num2),
+      () -> assertTrue(input.startsWith(prefix)),
+      () -> {
+        if (count < 0) {
+          assertThrows(
+              IllegalArgumentException.class,
+              () -> {
+                new ArrayList<>(count);
+              });
+        } else {
+          assertEquals(result, arg.repeat(count));
+        }
+      });
+}
+```
+
+In the `testAssertAllExecutable()` method, the `Assertions.assertAll()` method groups three assertions to be executed together. The first assertion checks if the sum of `num1` and `num2` equals `sum`. The second assertion verifies if the string `input` starts with the string `prefix`. The third assertion checks if `count` is less than 0, it asserts that creating a `ArrayList` with `count` will throw a `IllegalArgumentException`, otherwise it asserts that the string `arg` repeated `count` times equals `result`.
 
 The empty parentheses () indicate that this lambda expression does not take any parameters. Recall that a `Executable` has single `execute()` method, and it does not take any parameters and return nothing. It may throw an exception. This lambda expression succinctly encapsulates the assertion logic to be executed as part of a `Executable` interface implementation, making the code more readable and concise.
 
@@ -197,43 +214,21 @@ Here is an example showcasing the use of `assertTimeout()`:
 ```java
 @Test
 void testAssertTimeoutWithExecutable() {
-  List<Long> numbers = Arrays.asList(100L, 200L, 50L, 300L);
-  int delay = 2;
-  Executable checkSorting
-    = () -> assertEquals(List.of(50L, 100L, 200L, 300L), numbers);
-
   // execution does not complete within expected duration
   assertAll(
-      () ->
-          assertThrows(
-              AssertionFailedError.class,
-              () ->
-                  assertTimeout(
-                      Duration.ofSeconds(1),
-                      () -> {
-                        TimeUnit.SECONDS.sleep(delay);
-                        numbers.sort(Long::compareTo);
-                      })),
-      checkSorting);
+    () ->
+    assertThrows(
+      AssertionFailedError.class, () -> assertTimeout(Duration.ofSeconds(1), sorter)),
+    checkSorting);
 
   // execution completes within expected duration
-  assertAll(
-      () ->
-          assertDoesNotThrow(
-              () ->
-                  assertTimeout(
-                      Duration.ofSeconds(5),
-                      () -> {
-                        TimeUnit.SECONDS.sleep(delay);
-                        numbers.sort(Long::compareTo);
-                      })),
-      checkSorting);
+  assertAll(() -> 
+    assertDoesNotThrow(
+        () -> assertTimeout(Duration.ofSeconds(5), sorter)), checkSorting);
 }
 ```
 
 The `testAssertTimeoutWithExecutable()` method shows how to use the `assertTimeout` method with a `Executable`.
-
-It starts by creating a list of `long` numbers: 100L, 200L, 50L, and 300L, and sets a delay of 2 seconds. The `checkSorting` executable checks if the sorted list matches the expected order: 50L, 100L, 200L, and 300L. The test uses `assertAll()` to group assertions.
 
 In the first `assertAll()` block, it asserts that the execution throws a `AssertionFailedError` when sorting the list with a timeout of 1 second. The `assertTimeout()` method attempts to sleep for the 2-second delay before sorting the numbers. Since the delay exceeds the 1-second timeout, the assertion fails, and results in `AssertionFailedError`. The `checkSorting` executable verifies that the original numbers are in ascending order.
 
@@ -252,43 +247,23 @@ Let's see how preemptive timeout works for the same scenario:
 ```java
 @Test
 void testAssertTimeoutPreemptivelyWithExecutable() {
-  List<Long> numbers = Arrays.asList(100L, 200L, 50L, 300L);
-  int delay = 2;
-  Executable checkSorting
-    = () -> assertEquals(List.of(50L, 100L, 200L, 300L), numbers);
-  Executable noChanges
-    = () -> assertEquals(List.of(100L, 200L, 50L, 300L), numbers);
-
   // execution does not complete within expected duration
   assertAll(
       () ->
           assertThrows(
               AssertionFailedError.class,
-              () ->
-                  assertTimeoutPreemptively(
-                      Duration.ofSeconds(1),
-                      () -> {
-                        TimeUnit.SECONDS.sleep(delay);
-                        numbers.sort(Long::compareTo);
-                      })),
+              () -> assertTimeoutPreemptively(Duration.ofSeconds(1), sorter)),
       noChanges);
 
   // execution completes within expected duration
   assertAll(
-      () ->
-          assertDoesNotThrow(
-              () ->
-                  assertTimeoutPreemptively(
-                      Duration.ofSeconds(5),
-                      () -> {
-                        TimeUnit.SECONDS.sleep(delay);
-                        numbers.sort(Long::compareTo);
-                      })),
+      () -> assertDoesNotThrow(() -> assertTimeoutPreemptively(Duration.ofSeconds(5), 
+                               sorter)),
       checkSorting);
 }
 ```
 
-The `testAssertTimeoutPreemptivelyWithExecutable()` method demonstrates how to use the `assertTimeoutPreemptively()` method with two executables to verify the sorting of a list of numbers. The method starts by defining a list of `long` numbers: 100L, 200L, 50L, and 300L, and sets a delay of 2 seconds. The `checkSorting` executable checks if the sorted list matches the expected order: 50L, 100L, 200L, and 300L, while the `noChanges` executable verifies that the list remains in its initial order.
+The `testAssertTimeoutPreemptivelyWithExecutable()` method demonstrates how to use the `assertTimeoutPreemptively()` method with two executables to verify the sorting of a list of numbers.
 
 In the first `assertAll()` block, the method asserts that the execution throws a `AssertionFailedError` when sorting the list with a preemptive timeout of 1 second. The `assertTimeoutPreemptively()` method attempts to sleep for the 2-second delay before sorting the numbers. Since the delay exceeds the 1-second timeout, the assertion fails, and it throws the `AssertionFailedError`. The `noChanges` executable then verifies that the list remains unchanged, confirming that `assertTimeoutPreemptively()` preemptively stopped the sorting operation.
 
@@ -472,6 +447,8 @@ Let's learn about these methods one by one.
 The method `assertDoesNotThrow()` asserts that execution of the supplied supplier does not throw any kind of exception.
 If the assertion passes, it returns the supplier's result. It is useful for testing *happy paths*.
 
+Let's explore the implementation of test using throwing supplier:
+
 ```java
 public class ThrowingSupplierTest {
   @ParameterizedTest
@@ -578,6 +555,8 @@ In this `ThrowingSupplierTest` class, we define several tests to demonstrate the
 
 We start by initializing a list of `Long` numbers (`numbers`) and a `Consumer<List<Long>>` (`checkSorting`) that checks if the list is in sorted order. We also define a `ThrowingSupplier<List<Long>>` named `sorter`, which sorts the list after a delay of 2 seconds. If the list is `null`, empty, or contains `null` values, the `sorter` throws a `ValidationException`.
 
+Let's consider a simple example to use supplier when the test does not throw any exception:
+
 ```java
 @ParameterizedTest
 @CsvSource({"25.0d,5.0d", "36.0d,6.0d", "49.0d,7.0d"})
@@ -594,6 +573,8 @@ void testDoesNotThrowWithSupplier(double input, double expected) {
 ```
 
 In the `testDoesNotThrowWithSupplier()` method, we use `@ParameterizedTest` with `CsvSource` to test the calculation of square roots for different inputs. We define a `ThrowingSupplier<Double>` named `findSquareRoot`, which throws a `ValidationException` for negative inputs. The test uses `assertDoesNotThrow` to verify that the square root of the input matches the expected value.
+
+Here is an example showcasing the use of timeout with supplier:
 
 ```java
 @Test
@@ -624,6 +605,8 @@ In the `testAssertTimeoutWithSupplier()` method, we test the sorting operation w
 Then, we test the same operation with a 5-second timeout, using `assertDoesNotThrow()` to ensure it completes successfully, and the result is in sorted order by the `checkSorting` consumer.
 
 Next, we reset the `numbers` list to contain `null` values and verify that the `sorter` throws a `ValidationException` when executed. We use `assertThrows()` to check that the exception message matches the expected “Invalid input”.
+
+Let's learn to preemptively timeout execution of a supplier:
 
 ```java
 @Test

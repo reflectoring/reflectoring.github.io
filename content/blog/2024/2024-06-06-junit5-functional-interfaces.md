@@ -12,11 +12,11 @@ In this article, we would get familiar with JUnit 5 functional interfaces. JUnit
 
 ## Quick Introduction to Java Functional Interfaces
 
-Functional interface are a fundamental concept in Java functional programming. Java 8 specifically designed them to allow the assignment of lambda expressions or method references while processing data streams. In the Java API, specifically in the `java.util.function` package, you will find a collection of functional interfaces. The main characteristic of a functional interface is that it contains only one abstract method. Although it can have default methods and static methods, these do not count towards the single abstract method requirement. Functional interfaces serve as the targets for lambda expressions or method references.
+Functional interface are a fundamental concept in Java functional programming. Java 8 specifically designed them to allow the assignment of lambda expressions or method references while processing data streams. In the Java API, specifically in the `java.util.function` package, you will find a collection of functional interfaces. **The main characteristic of a functional interface is that it contains only one abstract method.** Although it can have default methods and static methods, these do not count towards the single abstract method requirement. Functional interfaces serve as the targets for lambda expressions or method references.
 
 ## JUnit 5 Functional Interfaces
 
-JUnit functional interfaces belong to `org.junit.jupiter.api.function` package. It defines three functional interfaces: `Executable`, `ThrowingConsumer<T>` and `ThrowingSupplier<T>`.  We use them typically with `Assertions` utility class.
+JUnit functional interfaces belong to `org.junit.jupiter.api.function` package. **It defines three functional interfaces: `Executable`, `ThrowingConsumer<T>` and `ThrowingSupplier<T>`.**  We use them typically with `Assertions` utility class.
 
 Understanding the functionality of these interfaces can significantly enhance your testing strategies. Functional interfaces enable you to create tests that are easier to read and understand. They minimize the need for repetitive code when dealing with exceptions. Incorporating these interfaces allows you to articulate intricate test scenarios in a more concise and transparent manner.
 
@@ -24,7 +24,7 @@ Let's learn how to use these function interfaces.
 
 ## Using `Executable`
 
-The `Executable` is a functional interface that enables the implementation of any generic block of code that may potentially throw a `Throwable`.
+**The `Executable` is a functional interface that enables the implementation of any generic block of code that may potentially throw a `Throwable`.**
 
 JUnit 5 defines the `Executable` interface as follows::
 
@@ -37,7 +37,7 @@ public interface Executable {
 
 The `@FunctionalInterface` annotation signifies that the interface is a functional interface, having only one abstract method. This makes it suitable target for a lambda expression or method reference.
 
-The `Executable` interface specifies a single abstract method called execute. This method does not take any parameters and returns nothing. It can throw various types of exceptions, offering versatility in handling exceptional situations.
+**The `Executable` interface specifies a single abstract method called execute.** This method does not take any parameters and returns nothing. It can throw various types of exceptions, offering versatility in handling exceptional situations.
 
 The `Executable` interface represents a code block that may throw an exception when executed. It is especially helpful when writing tests to check if certain code paths throw specific exceptions.
 
@@ -71,7 +71,7 @@ Let's learn about these methods one by one.
 
 ### Using Executables in `assertAll()`
 
-The `Assertions.assertsAll()` method asserts that all supplied executables do not throw exceptions.
+**The `Assertions.assertsAll()` method asserts that all supplied executables do not throw exceptions.**
 
 Let's now see how to use `assertAll()` and executables:
 
@@ -156,7 +156,7 @@ When the JVM executes the lambda expression, it uses the method handle to invoke
 
 ### Using Executables in `assertDoesNotThrow()`
 
-The `Assertions.assertDoesNotThrow()` method asserts that execution of the supplied executable does not throw any kind of exception. Thus, we can explicitly verify that the logic under test executes without encountering any exception. It is useful assertion method we can use to test the *happy paths*.
+**The `Assertions.assertDoesNotThrow()` method asserts that execution of the supplied executable does not throw any kind of exception.** Thus, we can explicitly verify that the logic under test executes without encountering any exception. It is useful assertion method we can use to test the *happy paths*.
 
 Here's a simple example:
 
@@ -172,7 +172,7 @@ The test `testAssertDoesNotThrowWithExecutable()` annotated `@ParameterizedTest`
 
 ### Using Executables in `assertThrows()`
 
-The `Assertions.assertsThrows()` method asserts that execution of the supplied executable throws an expected exception and return the exception.
+**The `Assertions.assertsThrows()` method asserts that execution of the supplied executable throws an expected exception and return the exception.**
 
 If the logic does not throw any exception, or throws a different exception, then this method will fail.
 
@@ -205,7 +205,7 @@ The `testAssertThrowsWithExecutable()` method tests the `assertThrows()` method 
 
 ### Using Executables in `assertTimeout()`
 
-The `Assertions.assertTimeout()` method asserts that execution of the supplied executable completes before the given timeout. The execution can continue even after it exceeds the timeout. The assertion will throw an exception in case it exceeds the timeout duration.
+**The `Assertions.assertTimeout()` method asserts that execution of the supplied executable completes before the given timeout.** The execution can continue even after it exceeds the timeout. The assertion will throw an exception in case it exceeds the timeout duration.
 
 This is useful to verify if the execution completes within bounds expected duration.
 
@@ -240,7 +240,7 @@ Moreover, it demonstrated how we can combine multiple assertion techniques to ca
 
 ### Using Executables in `assertTimeoutPreemptively()`
 
-The `Assertions.assertTimeoutPreemptively()` method asserts that execution of the supplied executable completes before the given timeout. Furthermore, it aborts the execution of the executable preemptively if it exceeds timeout.
+**The `Assertions.assertTimeoutPreemptively()` method asserts that execution of the supplied executable completes before the given timeout.** Furthermore, it aborts the execution of the executable preemptively if it exceeds timeout.
 
 Let's see how preemptive timeout works for the same scenario:
 
@@ -271,7 +271,7 @@ In the second `assertAll` block, the method asserts that we do not get any excep
 
 ## Using `ThrowingConsumer`
 
-The `ThrowingConsumer` interface serves as a functional interface that enables the implementation of a generic block of code capable of consuming an argument and potentially throwing a `Throwable`. Unlike the [`Consumer`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Consumer.html) interface, `ThrowingConsumer` allows for the throwing of any type of exception, including checked exceptions.
+**The `ThrowingConsumer` interface serves as a functional interface that enables the implementation of a generic block of code capable of consuming an argument and potentially throwing a `Throwable`.** Unlike the [`Consumer`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Consumer.html) interface, `ThrowingConsumer` allows for the throwing of any type of exception, including checked exceptions.
 
 The `ThrowingConsumer` interface can be particularly useful in scenarios where we need to test code that might throw checked exceptions. This interface allows us to write more concise and readable tests by handling checked exceptions seamlessly.
 
@@ -409,7 +409,7 @@ class DynamicTest
 
 A [`DynamicTest`](https://junit.org/junit5/docs/5.9.0/api/org.junit.jupiter.api/org/junit/jupiter/api/DynamicTest.html) is a test case generated at runtime. It is composed of a display name and an Executable. We annotate our test with `@TestFactory` so that the factory generates instances of `DynamicTest`.
 
-The `stream()` method generates a stream of dynamic tests based on the given generator and test executor. Use this method when the set of dynamic tests is nondeterministic in nature or when the input comes from an existing Iterator.
+**The `stream()` method generates a stream of dynamic tests based on the given generator and test executor.** Use this method when the set of dynamic tests is nondeterministic in nature or when the input comes from an existing Iterator.
 
 The given `inputGenerator` is responsible for generating input values. A `DynamicTest` will be added to the resulting stream for each dynamically generated input value, using the given `displayNameGenerator` and `testExecutor`.
 
@@ -425,7 +425,7 @@ In summary, using `ThrowingConsumer` in your JUnit tests can greatly simplify th
 
 ## Using `ThrowingSupplier`
 
-`ThrowingSupplier` is a functional interface that enables the implementation of a generic block of code that returns an object and may throw a `Throwable`. It is similar to [`Supplier`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Supplier.html), except that it can throw any kind of exception, including checked exceptions.
+**`ThrowingSupplier` is a functional interface that enables the implementation of a generic block of code that returns an object and may throw a `Throwable`.** It is similar to [`Supplier`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Supplier.html), except that it can throw any kind of exception, including checked exceptions.
 
 [`Assertions`](https://junit.org/junit5/docs/5.9.0/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html) class has many assertion methods accepting throwing supplier:
 
@@ -444,7 +444,8 @@ Let's learn about these methods one by one.
 
 ### Using `ThrowingSupplier` in `assertDoesNotThrow()`
 
-The method `assertDoesNotThrow()` asserts that execution of the supplied supplier does not throw any kind of exception.
+**The method `assertDoesNotThrow()` asserts that execution of the supplied supplier does not throw any kind of exception.**
+
 If the assertion passes, it returns the supplier's result. It is useful for testing *happy paths*.
 
 Let's explore the implementation of test using throwing supplier:
@@ -476,7 +477,7 @@ This test demonstrates how to use `ThrowingSupplier` to encapsulate code that mi
 
 ### Using `ThrowingSupplier` in `assertTimeout()`
 
-The method `assertTimeout()` checks that execution of the supplied executable completes before the given timeout. The executable will continue to even after timeout duration. If duration exceeds, the method will throw `AssertionFailedError`.
+**The method `assertTimeout()` checks that execution of the supplied executable completes before the given timeout.** The executable will continue to even after timeout duration. If duration exceeds, the method will throw `AssertionFailedError`.
 
 Let's now check how to use `assertTimeout()` with supplier:
 
@@ -530,7 +531,7 @@ This test demonstrates how to use `ThrowingSupplier` for operations that may thr
 
 ### Using `ThrowingSupplier` in `assertTimeoutPreemptively()`
 
-The method `assertTimeoutPreemptively()` asserts that execution of the supplied supplier completes before the given timeout. It returns the supplier's result if the assertion passes. If the timeout exceeds, it will abort the supplier preemptively.
+**The method `assertTimeoutPreemptively()` asserts that execution of the supplied supplier completes before the given timeout.** It returns the supplier's result if the assertion passes. If the timeout exceeds, it will abort the supplier preemptively.
 
 Let's see an example of `assertTimeoutPreemptively()` with supplier:
 
@@ -629,4 +630,12 @@ Finally, in the `testAssertTimeoutPreemptivelyWithSupplier()` method, we repeat 
 
 ## Conclusion
 
-In this article we got familiar with JUnit 5 functional interfaces.
+In this article we got familiar with JUnit 5 functional interfaces, focusing on `Executable`, `ThrowingConsumer`, and `ThrowingSupplier`. These interfaces enhance the flexibility and readability of our test code by allowing us to leverage lambda expressions and method references.
+
+We started with `Executable`, which encapsulates code that may throw any `Throwable`. We explored its usage in various JUnit assertions like `assertAll`, `assertTimeout`, and `assertTimeoutPreemptively`, demonstrating how we can use it to group multiple assertions and test time-sensitive operations efficiently.
+
+Next, we examined `ThrowingConsumer<T>`, which represents an operation that accepts a single input argument and can throw checked exceptions. This interface is particularly useful for scenarios where we need to validate inputs or perform operations that may result in exceptions. We also explored its integration with dynamic tests, showcasing how it can streamline the creation of complex, parameterized test cases.
+
+Finally, we looked at `ThrowingSupplier<T>`, which provides a value and can throw checked exceptions. This interface simplifies the testing of methods that generate values and might throw exceptions. We demonstrated its use in various timeout assertions, illustrating how it can validate the timely execution of operations and the correctness of generated results.
+
+By understanding and using these functional interfaces, we can write more concise, expressive, and maintainable test code in JUnit 5, ultimately improving the robustness and reliability of our test suites.

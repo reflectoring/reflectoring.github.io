@@ -22,7 +22,7 @@ Understanding the functionality of these interfaces can significantly enhance yo
 
 Let's learn how to use these function interfaces.
 
-## Using Executable
+## Using `Executable`
 
 The `Executable` is a functional interface that enables the implementation of any generic block of code that may potentially throw a `Throwable`.
 
@@ -294,9 +294,9 @@ In the first `assertAll()` block, the method asserts that the execution throws a
 
 In the second `assertAll` block, the method asserts that we do not get any exception when sorting the list with a preemptive timeout of 5 seconds. The `assertTimeoutPreemptively()` method again attempts to sleep for the 2-second delay before sorting the numbers. This time, the delay is within the 5-second timeout, it does not throw any exception. Finally, `checkSorting` executable confirms that the execution has sorted the list correctly.
 
-## Using ThrowingConsumer
+## Using `ThrowingConsumer`
 
-The `ThrowingConsumer` interface serves as a functional interface that enables the implementation of a generic block of code capable of consuming an argument and potentially throwing a `Throwable`. Unlike the `Consumer` interface, `ThrowingConsumer` allows for the throwing of any type of exception, including checked exceptions.
+The `ThrowingConsumer` interface serves as a functional interface that enables the implementation of a generic block of code capable of consuming an argument and potentially throwing a `Throwable`. Unlike the [`Consumer`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Consumer.html) interface, `ThrowingConsumer` allows for the throwing of any type of exception, including checked exceptions.
 
 The `ThrowingConsumer` interface can be particularly useful in scenarios where we need to test code that might throw checked exceptions. This interface allows us to write more concise and readable tests by handling checked exceptions seamlessly.
 
@@ -326,7 +326,7 @@ public class ThrowingConsumerTest {
   void testMethodThatThrowsCheckedException(int percent, boolean valid) {
     // acceptable percentage range: 0 - 100
     ValueRange validPercentageRange = ValueRange.of(0, 100);
-    final Function<Integer, String> message =
+    Function<Integer, String> message =
         input ->
             MessageFormat.format(
                 "Percentage {0} should be in range {1}", 
@@ -362,7 +362,7 @@ During the test, if the input percentage is valid (as indicated by the `valid` b
 
 The test cases cover three scenarios: a valid percentage (50), an invalid percentage above the range (130), and an invalid percentage below the range (-30). The assertions ensure that the `ThrowingConsumer` correctly handles both valid and invalid inputs according to the defined percentage range.
 
-### Dynamic Tests with ThrowingConsumer
+### Dynamic Tests with `ThrowingConsumer`
 
 JUnit 5 offers a powerful feature called dynamic tests, allowing us to create tests at runtime rather than at compile time. This can be especially useful when we don't know the number of tests or the test data set beforehand.
 
@@ -378,7 +378,7 @@ record TestCase(int percent, boolean valid) {}
 Stream<DynamicTest> testDynamicTestsWithThrowingConsumer() {
   // acceptable percentage range: 0 - 100
   ValueRange validPercentageRange = ValueRange.of(0, 100);
-  final Function<Integer, String> message =
+  Function<Integer, String> message =
       input ->
           MessageFormat.format(
               "Percentage {0} should be in range {1}", 
@@ -448,9 +448,201 @@ Finally, the `DynamicTest.stream` method creates a stream of dynamic tests using
 
 In summary, using `ThrowingConsumer` in your JUnit tests can greatly simplify the process of testing methods that throw checked exceptions, manage resources, validate inputs, handle callbacks, and process complex data. It allows you to write cleaner and more concise test code by removing the need for extensive try-catch blocks, making your tests easier to read and maintain.
 
-## Using ThrowingSupplier
+## Using `ThrowingSupplier`
 
-`ThrowingSupplier` is a functional interface that enables the implementation of a generic block of code that returns an object and may throw a `Throwable`.
+`ThrowingSupplier` is a functional interface that enables the implementation of a generic block of code that returns an object and may throw a `Throwable`. It is similar to [`Supplier`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Supplier.html), except that it can throw any kind of exception, including checked exceptions.
+
+[`Assertions`](https://junit.org/junit5/docs/5.9.0/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html) class has many assertion methods accepting throwing supplier:
+
+```java
+static <T> T assertDoesNotThrow(ThrowingSupplier<T> supplier)
+// other variants of assertDoesNotThrow accepting supplier
+
+static <T> T assertTimeout(Duration timeout, ThrowingSupplier<T> supplier)
+// other variants of assertTimeout accepting supplier
+
+static void assertTimeoutPreemptively(Duration timeout, ThrowingSupplier<T> supplier)
+// other variants of assertTimeoutPreemptively accepting supplier
+```
+
+Let's learn about these methods one by one.
+
+### Using `ThrowingSupplier` in `assertDoesNotThrow()`
+
+The method `assertDoesNotThrow()` asserts that execution of the supplied supplier does not throw any kind of exception.
+If the assertion passes, it returns the supplier's result. It is useful for testing *happy paths*.
+
+```java
+public class ThrowingSupplierTest {
+  @ParameterizedTest
+  @CsvSource({"25.0d,5.0d", "36.0d,6.0d", "49.0d,7.0d"})
+  void testDoesNotThrowWithSupplier(double input, double expected) {
+    ThrowingSupplier<Double> findSquareRoot =
+        () -> {
+          if (input < 0) {
+            throw new ValidationException("Invalid input");
+          }
+          return Math.sqrt(input);
+        };
+    assertEquals(expected, assertDoesNotThrow(findSquareRoot));
+  }
+}
+```
+
+In this test, we use `ThrowingSupplier` within a JUnit parameterized test to ensure that it does not throw any exception during the execution of a block of code and to verify the correctness of the returned value. The test method, annotated with `@ParameterizedTest` and `@CsvSource`, runs multiple test cases defined in the `CsvSource`.
+
+The test method `testDoesNotThrowWithSupplier()` takes two parameters: `input`, the number for which we want to calculate the square root, and `expected`, the expected result. Within the method, we define a `ThrowingSupplier<Double>` named `findSquareRoot` that checks if the `input` is negative. If it is, the supplier throws a `ValidationException` with the message “Invalid input”. If the input is non-negative, the supplier returns the square root of the input using `Math.sqrt(input)`.
+
+The test then uses `assertEquals(expected, assertDoesNotThrow(nextUniqueIdentifier))` to ensure that the `ThrowingSupplier` executes without throwing any exceptions and that the returned value matches the expected result. If the execution of the supplier does not throw an exception and the result is equal to the expected value, the test passes.
+
+This test demonstrates how to use `ThrowingSupplier` to encapsulate code that might throw checked exceptions, handle potential invalid inputs, and verify the correctness of the results using JUnit's `assertDoesNotThrow` and `assertEquals` methods in a parameterized test setup.
+
+### Using `ThrowingSupplier` in `assertTimeout()`
+
+The method `assertTimeout()` checks that execution of the supplied executable completes before the given timeout. The executable will continue to even after timeout duration. If duration exceeds, the method will throw `AssertionFailedError`.
+
+Let's now check how to use `assertTimeout()` with supplier:
+
+```java
+@Test
+void testAssertTimeoutWithSupplier() {
+  List<Long> numbers = Arrays.asList(100L, 200L, 50L, 300L);
+  int delay = 2;
+
+  Consumer<List<Long>> checkSorting = list -> assertEquals(List.of(50L, 100L, 200L, 300L), list);
+
+  ThrowingSupplier<List<Long>> sorter =
+      () -> {
+        if (numbers == null || numbers.isEmpty() || numbers.contains(null)) {
+          throw new ValidationException("Invalid input");
+        }
+        TimeUnit.SECONDS.sleep(delay);
+        return numbers.stream().sorted().toList();
+      };
+
+  // slow execution
+  assertThrows(AssertionFailedError.class, () -> assertTimeout(Duration.ofSeconds(1), sorter));
+
+  // fast execution
+  assertDoesNotThrow(
+      () -> {
+        List<Long> result = assertTimeout(Duration.ofSeconds(5), sorter);
+        checkSorting.accept(result);
+      });
+
+  // reset the number list and verify if the supplier validates it
+  Collections.fill(numbers, null);
+
+  ValidationException exception =
+      assertThrows(ValidationException.class, () -> assertTimeout(Duration.ofSeconds(1), sorter));
+  assertEquals("Invalid input", exception.getMessage());
+}
+```
+
+In this test, we use `ThrowingSupplier` and JUnit's `assertTimeout()` to verify that a sorting operation on a list of numbers completes within a specified duration and handles potential exceptions. The test method `testAssertTimeoutWithSupplier()` works with a list of `Long` numbers and introduces a delay to simulate slow execution.
+
+We define a `Consumer<List<Long>>` named `checkSorting` to assert that the sorted list matches the expected order: `[50L, 100L, 200L, 300L]`. The `ThrowingSupplier<List<Long>>` named `sorter` checks for invalid input (`null`, empty, or containing `null`) and throws a `ValidationException` if the input is invalid. Otherwise, it returns a sorted list of numbers.
+
+First, we test a slow execution scenario by introducing a delay of 2 seconds. We use `assertThrows` to verify that the sorting operation fails to complete within 1 second, which raises a `AssertionFailedError`. Inside the `assertTimeout` block, the `ThrowingSupplier` is executed, and finally it validates the result using the `checkSorting` consumer.
+
+Next, we test a fast execution scenario with a longer timeout of 5 seconds. We use the same delay, but this time we expect the sorting operation to complete successfully within the 5-second limit. We use `assertDoesNotThrow` to verify that it does not throw any exception, and verifies the result using the `checkSorting` consumer.
+
+Finally, we reset the list to contain only `null` values and verify that the supplier correctly identifies the invalid input. We use `assertThrows` to check that a `ValidationException` is thrown with the message “Invalid input” when it tries the sorting operation within a 1-second timeout. Finally, it validates the exception message using `assertEquals`.
+
+This test demonstrates how to use `ThrowingSupplier` for operations that may throw checked exceptions and how to verify the execution time constraints and input validation using JUnit's `assertTimeout`, `assertThrows`, and `assertDoesNotThrow` methods.
+
+### Using `ThrowingSupplier` in `assertTimeoutPreemptively()`
+
+The method `assertTimeoutPreemptively()` asserts that execution of the supplied supplier completes before the given timeout. It returns the supplier's result if the assertion passes. If the timeout exceeds, it will abort the supplier preemptively.
+
+Let's see an example of `assertTimeoutPreemptively()` with supplier:
+
+```java
+public class ThrowingSupplierTest {
+  private List<Long> numbers = Arrays.asList(100L, 200L, 50L, 300L);
+  private Consumer<List<Long>> checkSorting =
+      list -> assertEquals(List.of(50L, 100L, 200L, 300L), list);
+
+  private ThrowingSupplier<List<Long>> sorter =
+      () -> {
+        if (numbers == null || numbers.isEmpty() || numbers.contains(null)) {
+          throw new ValidationException("Invalid input");
+        }
+        TimeUnit.SECONDS.sleep(2);
+        return numbers.stream().sorted().toList();
+      };
+}
+```
+
+In this `ThrowingSupplierTest` class, we define several tests to demonstrate the usage of `ThrowingSupplier` and JUnit's timeout assertions.
+
+We start by initializing a list of `Long` numbers (`numbers`) and a `Consumer<List<Long>>` (`checkSorting`) that checks if the list is in sorted order. We also define a `ThrowingSupplier<List<Long>>` named `sorter`, which sorts the list after a delay of 2 seconds. If the list is `null`, empty, or contains `null` values, the `sorter` throws a `ValidationException`.
+
+```java
+@ParameterizedTest
+@CsvSource({"25.0d,5.0d", "36.0d,6.0d", "49.0d,7.0d"})
+void testDoesNotThrowWithSupplier(double input, double expected) {
+  ThrowingSupplier<Double> findSquareRoot =
+      () -> {
+        if (input < 0) {
+          throw new ValidationException("Invalid input");
+        }
+        return Math.sqrt(input);
+      };
+  assertEquals(expected, assertDoesNotThrow(findSquareRoot));
+}
+```
+
+In the `testDoesNotThrowWithSupplier()` method, we use `@ParameterizedTest` with `CsvSource` to test the calculation of square roots for different inputs. We define a `ThrowingSupplier<Double>` named `findSquareRoot`, which throws a `ValidationException` for negative inputs. The test uses `assertDoesNotThrow` to verify that the square root of the input matches the expected value.
+
+```java
+@Test
+void testAssertTimeoutWithSupplier() {
+  // slow execution
+  assertThrows(AssertionFailedError.class, 
+               () -> assertTimeout(Duration.ofSeconds(1), sorter));
+
+  // fast execution
+  assertDoesNotThrow(
+      () -> {
+        List<Long> result = assertTimeout(Duration.ofSeconds(5), sorter);
+        checkSorting.accept(result);
+      });
+
+  // reset the number list and verify if the supplier validates it
+  Collections.fill(numbers, null);
+
+  ValidationException exception =
+      assertThrows(ValidationException.class, 
+                   () -> assertTimeout(Duration.ofSeconds(1), sorter));
+  assertEquals("Invalid input", exception.getMessage());
+}
+```
+
+In the `testAssertTimeoutWithSupplier()` method, we test the sorting operation with different timeout durations. First, we verify that the sorting operation fails to complete within 1 second, using `assertThrows()` to expect a `AssertionFailedError`.
+
+Then, we test the same operation with a 5-second timeout, using `assertDoesNotThrow()` to ensure it completes successfully, and the result is in sorted order by the `checkSorting` consumer.
+
+Next, we reset the `numbers` list to contain `null` values and verify that the `sorter` throws a `ValidationException` when executed. We use `assertThrows()` to check that the exception message matches the expected “Invalid input”.
+
+```java
+@Test
+void testAssertTimeoutPreemptivelyWithSupplier() {
+  // slow execution
+  assertThrows(
+      AssertionFailedError.class, 
+      () -> assertTimeoutPreemptively(Duration.ofSeconds(1), sorter));
+
+  // fast execution
+  assertDoesNotThrow(
+      () -> {
+        List<Long> result = assertTimeoutPreemptively(Duration.ofSeconds(5), sorter);
+        checkSorting.accept(result);
+      });
+}
+```
+
+Finally, in the `testAssertTimeoutPreemptivelyWithSupplier()` method, we repeat the timeout tests with `assertTimeoutPreemptively()`. We verify that the sorting operation fails to complete within 1 second, expecting a `AssertionFailedError`. We then test the same operation with a 5-second timeout to ensure it completes successfully, and the list is in sorted order.
 
 ## Conclusion
 

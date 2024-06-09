@@ -47,9 +47,14 @@
 
         <div class="content" data-blogtrack-text>{{.Content}}</div>
 
-        {{ $author := (index .Site.Data.authors .Params.authors) }}
-
-        {{ partial "author-blurb.html" $author }}
+        {{ $authors := .Params.authors | default slice }}
+        {{ range $index, $authorID := $authors }}
+          {{ $author := index $.Site.Data.authors $authorID }}
+          {{ partial "author-blurb.html" $author }}
+          {{ if ne (add $index 1) (len $authors) }}
+            <div style="margin-bottom: 2rem;"></div>
+          {{ end }}
+        {{ end }}
 
         <!-- disqus comments -->
         {{ if .Site.DisqusShortname }}

@@ -18,7 +18,7 @@ Functional interface are a fundamental concept in Java functional programming. J
 
 JUnit functional interfaces belong to `org.junit.jupiter.api.function` package. **It defines three functional interfaces: `Executable`, `ThrowingConsumer<T>` and `ThrowingSupplier<T>`.**  We use them typically with `Assertions` utility class.
 
-Understanding the functionality of these interfaces can significantly enhance your testing strategies. Functional interfaces enable you to create tests that are easier to read and understand. They minimize the need for repetitive code when dealing with exceptions. Incorporating these interfaces allows you to articulate intricate test scenarios in a more concise and transparent manner.
+Knowing how these interfaces work can greatly improve your testing methods. They make it easier to write and comprehend tests, reducing the amount of repetitive code needed for handling exceptions. By using these interfaces, you can describe complex test scenarios more clearly and concisely.
 
 Let's learn how to use these function interfaces.
 
@@ -35,13 +35,11 @@ public interface Executable {
 }
 ```
 
-The `@FunctionalInterface` annotation signifies that the interface is a functional interface, having only one abstract method. This makes it suitable target for a lambda expression or method reference.
+**The `Executable` interface defines a single method called execute, which does not have any parameters and does not return anything.** It can throw different types of exceptions, making it flexible for handling exceptional situations.
 
-**The `Executable` interface specifies a single abstract method called execute.** This method does not take any parameters and returns nothing. It can throw various types of exceptions, offering versatility in handling exceptional situations.
+It is particularly useful for writing tests to validate if specific code paths throw specific exceptions.
 
-The `Executable` interface represents a code block that may throw an exception when executed. It is especially helpful when writing tests to check if certain code paths throw specific exceptions.
-
-One of the most common use cases of `Executable` is with the `Assertions.assertThrows()` method. This method takes a `Executable` as a parameter, executes it, and verifies that it throws the expected exception.
+One common scenario where we use the `Executable` with the `Assertions.assertThrows()` method. This method takes a `Executable` as an argument, executes it, and checks if it throws the expected exception.
 
 [`Assertions`](https://junit.org/junit5/docs/5.9.0/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html) class has many assertion methods accepting executable:
 
@@ -122,11 +120,7 @@ void testAssertAllWithExecutable(int num1, int num2, int sum,
 }
 ```
 
-In the `testAssertAllExecutable()` method, the `Assertions.assertAll()` method groups three assertions to be executed together. The first assertion checks if the sum of `num1` and `num2` equals `sum`. The second assertion verifies if the string `input` starts with the string `prefix`. The third assertion checks if `count` is less than 0, it asserts that creating a `ArrayList` with `count` will throw a `IllegalArgumentException`, otherwise it asserts that the string `arg` repeated `count` times equals `result`.
-
-The empty parentheses () indicate that this lambda expression does not take any parameters. Recall that a `Executable` has single `execute()` method, and it does not take any parameters and return nothing. It may throw an exception. This lambda expression succinctly encapsulates the assertion logic to be executed as part of a `Executable` interface implementation, making the code more readable and concise.
-
-This test method checks all three assertions for each set of input data provided by the `@CsvSource`, allowing for comprehensive validation of the conditions described.
+In `testAssertAllExecutable()` method, `Assertions.assertAll()` groups 3 assertions. The first checks if sum of `num1` and `num2` equals `sum`. The second verifies if string input starts with `prefix`. Finally, the third checks if `count` is less than 0, asserts that creating `ArrayList` with count will throw `IllegalArgumentException`, otherwise asserts that string `arg` repeated count times equals result.
 
 {{% info title="Lambda Expression Conversion Behind the Scenes" %}}
 
@@ -168,7 +162,7 @@ void testAssertDoesNotThrowWithExecutable(String input, int index, char result) 
 }
 ```
 
-The test `testAssertDoesNotThrowWithExecutable()` annotated `@ParameterizedTest` and `@CsvSource`, runs the test with different sets of parameters. The `@CsvSource` annotation specifies two sets of parameters: (“one”, 0, 'o') and (“one”, 1, 'n'). For each set of parameters, the test method checks that execution does not throw an exception when verifying that the character at the specified index in the input string matches the expected result. If the assertions pass without throwing any exceptions, the `assertDoesNotThrow()` method confirms the successful execution of the test.
+The test `testAssertDoesNotThrowWithExecutable()` annotated `@ParameterizedTest` and `@CsvSource`, runs the test with different sets of parameters. The `@CsvSource` annotation specifies two sets of parameters: (“one”, 0, 'o') and (“one”, 1, 'n'). For each set of parameters, the test method checks that execution does not throw an exception when verifying that the character at the specified index in the input string matches the expected result.
 
 ### Using Executables in `assertThrows()`
 
@@ -201,7 +195,13 @@ void testAssertThrowsWithExecutable() {
 }
 ```
 
-The `testAssertThrowsWithExecutable()` method tests the `assertThrows()` method with a `Executable`. It begins by creating a list of strings containing the values “one”, “”, “three”, `null`, and “five”. Using `assertThrows()` method it checks that executing the lambda expression throws a `IllegalArgumentException`. The lambda iterates through the list, and for each string, it checks if the value is `null` or blank. If it finds a `null` or blank value, it throws a `IllegalArgumentException` with the message “Got invalid value". The assertion confirms that the thrown exception and verifies that the exception message matches the expected “Got invalid value”.
+The `testAssertThrowsWithExecutable()` method tests the `assertThrows()` method with a `Executable`.
+
+It begins by creating a list of strings containing the values “one”, “”, “three”, `null`, and “five”. Using `assertThrows()` method it checks that executing the lambda expression throws a `IllegalArgumentException`.
+
+The lambda iterates through the list, and for each string, it checks if the value is `null` or blank. If it finds a `null` or blank value, it throws a `IllegalArgumentException` with the message “Got invalid value".
+
+The assertion confirms that the thrown exception and verifies that the exception message matches the expected “Got invalid value”.
 
 ### Using Executables in `assertTimeout()`
 
@@ -228,15 +228,15 @@ void testAssertTimeoutWithExecutable() {
 }
 ```
 
-The `testAssertTimeoutWithExecutable()` method shows how to use the `assertTimeout` method with a `Executable`.
+The `testAssertTimeoutWithExecutable()` method demonstrates the usage of `assertTimeout()` with a `Executable`.
 
-In the first `assertAll()` block, it asserts that the execution throws a `AssertionFailedError` when sorting the list with a timeout of 1 second. The `assertTimeout()` method attempts to sleep for the 2-second delay before sorting the numbers. Since the delay exceeds the 1-second timeout, the assertion fails, and results in `AssertionFailedError`. The `checkSorting` executable verifies that the original numbers are in ascending order.
+In the first `assertAll()` block, it checks if sorting the list throws a `AssertionFailedError` within a 1-second timeout. The `assertTimeout()` method tries to sleep for 2 seconds before sorting. Since it exceeds the timeout, a `AssertionFailedError` occurs. The `checkSorting` executable confirms the numbers are in ascending order.
 
-In the second `assertAll()` block, it asserts that the execution does not throw an exception when sorting the list with a timeout of 5 seconds. Again, the `assertTimeout()` method attempts to sleep for the 2-second delay before sorting the numbers. This time, the delay is within the 5-second timeout, so does not throw any exception. The `checkSorting` executable verifies that the original numbers are in ascending order.
+In the second `assertAll()` block, it verifies that sorting the list within a 5-second timeout does not throw an exception. The `assertTimeout()` method still sleeps for 2 seconds before sorting. This time, it falls within the 5-second limit, so there is no exception. The `checkSorting` executable again confirms the numbers are in ascending order.
 
-This indicates that the execution keeps carrying out its operations. In case it goes beyond the anticipated timeframe, we get an exception.
+This shows that the execution continues as expected, but if it takes too long, there is an exception.
 
-Moreover, it demonstrated how we can combine multiple assertion techniques to carry out verification.
+Additionally, it illustrates combining multiple assertion techniques for verification.
 
 ### Using Executables in `assertTimeoutPreemptively()`
 
@@ -329,13 +329,11 @@ public class ThrowingConsumerTest {
 }
 ```
 
-In this test, we are validating percentage values against an acceptable range of 0 to 100 using a `ThrowingConsumer`. The test method `testMethodThatThrowsCheckedException()` is parameterized, taking an integer `percent` and a boolean `valid` as input. We use a `ValueRange` object to define the valid range for percentages. A `Function` named `message` is used to generate an error message for invalid inputs.
+In this test, we validate percentage values in the range of 0 to 100 using a `ThrowingConsumer`. The test method `testMethodThatThrowsCheckedException()` takes an integer percent and a `boolean` valid as input. We define a `ValueRange` object to specify the valid range for percentages.
 
-Then we define a `ThrowingConsumer` consumer to check if the input percentage is within the valid range. If the input is not valid, it throws a `ValidationException` with an appropriate error message.
+If the input percentage is not within the valid range, it throws a `ValidationException` with an appropriate error message. The test covers scenarios for a valid percentage (50), an invalid percentage above the range (130), and an invalid percentage below the range (-30).
 
-During the test, if the input percentage is valid (as indicated by the `valid` boolean), the test asserts that the `consumer.accept(percent)` method does not throw any exception else it checks for `ValidationException`. Additionally, it verifies that the exception's message matches the expected message generated by the `message` function.
-
-The test cases cover three scenarios: a valid percentage (50), an invalid percentage above the range (130), and an invalid percentage below the range (-30). The assertions ensure that the `ThrowingConsumer` correctly handles both valid and invalid inputs according to the defined percentage range.
+The assertions verify that the `ThrowingConsumer` handles both valid and invalid inputs according to the defined percentage range.
 
 ### Dynamic Tests with `ThrowingConsumer`
 
@@ -411,17 +409,9 @@ A [`DynamicTest`](https://junit.org/junit5/docs/5.9.0/api/org.junit.jupiter.api/
 
 **The `stream()` method generates a stream of dynamic tests based on the given generator and test executor.** Use this method when the set of dynamic tests is nondeterministic in nature or when the input comes from an existing Iterator.
 
-The given `inputGenerator` is responsible for generating input values. A `DynamicTest` will be added to the resulting stream for each dynamically generated input value, using the given `displayNameGenerator` and `testExecutor`.
+The `inputGenerator` generates input values, and adds a `DynamicTest` to the resulting stream for each dynamically generated input value. It uses `ThrowingConsumer` to validate percentage inputs falling within the range of 0 to 100. It defines dynamic tests using a collection of percentages and a boolean indicating validity, with display names generated based on the percentage values. This setup allows for dynamically generating and running tests to ensure correct handling of both valid and invalid percentage values.
 
-In this test case, we create dynamic tests using `ThrowingConsumer` to validate percentage inputs. The `ValueRange` object defines the acceptable range of 0 to 100. A message template provides a detailed error message when a percentage falls outside this range.
-
-We define a `ThrowingConsumer` that checks if the percentage is within the valid range. If not, it throws a `ValidationException` with the formatted message. Another `ThrowingConsumer`, named `executable`, uses assertions to test the validation logic. If the percentage is valid, it asserts that for valid percentages, execution does not throw any exception. For invalid percentages, it asserts that execution throws a `ValidationException`, and the exception message matches the expected message.
-
-We have defined the test cases in a collection, each containing a percentage and a boolean indicating whether it is valid. A function generates display names for the dynamic tests based on the percentage values.
-
-Finally, the `DynamicTest.stream` method creates a stream of dynamic tests using the test cases, display name generator, and the executable consumer. This setup allows us to dynamically generate and run tests, ensuring that the validation logic is correctly handling both valid and invalid percentage values.
-
-In summary, using `ThrowingConsumer` in your JUnit tests can greatly simplify the process of testing methods that throw checked exceptions, manage resources, validate inputs, handle callbacks, and process complex data. It allows you to write cleaner and more concise test code by removing the need for extensive try-catch blocks, making your tests easier to read and maintain.
+`ThrowingConsumer` simplifies testing methods that throw checked exceptions, manage resources, validate inputs, handle callbacks, and process complex data by eliminating extensive try-catch blocks in test code.
 
 ## Using `ThrowingSupplier`
 
@@ -467,13 +457,7 @@ public class ThrowingSupplierTest {
 }
 ```
 
-In this test, we use `ThrowingSupplier` within a JUnit parameterized test to ensure that it does not throw any exception during the execution of a block of code and to verify the correctness of the returned value. The test method, annotated with `@ParameterizedTest` and `@CsvSource`, runs multiple test cases defined in the `CsvSource`.
-
-The test method `testDoesNotThrowWithSupplier()` takes two parameters: `input`, the number for which we want to calculate the square root, and `expected`, the expected result. Within the method, we define a `ThrowingSupplier<Double>` named `findSquareRoot` that checks if the `input` is negative. If it is, the supplier throws a `ValidationException` with the message “Invalid input”. If the input is non-negative, the supplier returns the square root of the input using `Math.sqrt(input)`.
-
-The test then uses `assertEquals(expected, assertDoesNotThrow(nextUniqueIdentifier))` to ensure that the `ThrowingSupplier` executes without throwing any exceptions and that the returned value matches the expected result. If the execution of the supplier does not throw an exception and the result is equal to the expected value, the test passes.
-
-This test demonstrates how to use `ThrowingSupplier` to encapsulate code that might throw checked exceptions, handle potential invalid inputs, and verify the correctness of the results using JUnit's `assertDoesNotThrow` and `assertEquals` methods in a parameterized test setup.
+In this parameterized test, we use `ThrowingSupplier` to check if code throws exceptions and verify the return value. The test method, `testDoesNotThrowWithSupplier()`, performs a square root calculation. The negative input results in a `ValidationException`. Otherwise, it returns the square root. The test verifies that the `ThrowingSupplier` executes without exceptions and the return value matches the expected result.
 
 ### Using `ThrowingSupplier` in `assertTimeout()`
 
@@ -487,7 +471,8 @@ void testAssertTimeoutWithSupplier() {
   List<Long> numbers = Arrays.asList(100L, 200L, 50L, 300L);
   int delay = 2;
 
-  Consumer<List<Long>> checkSorting = list -> assertEquals(List.of(50L, 100L, 200L, 300L), list);
+  Consumer<List<Long>> checkSorting 
+        = list -> assertEquals(List.of(50L, 100L, 200L, 300L), list);
 
   ThrowingSupplier<List<Long>> sorter =
       () -> {
@@ -499,7 +484,8 @@ void testAssertTimeoutWithSupplier() {
       };
 
   // slow execution
-  assertThrows(AssertionFailedError.class, () -> assertTimeout(Duration.ofSeconds(1), sorter));
+  assertThrows(AssertionFailedError.class, 
+               () -> assertTimeout(Duration.ofSeconds(1), sorter));
 
   // fast execution
   assertDoesNotThrow(
@@ -512,22 +498,15 @@ void testAssertTimeoutWithSupplier() {
   Collections.fill(numbers, null);
 
   ValidationException exception =
-      assertThrows(ValidationException.class, () -> assertTimeout(Duration.ofSeconds(1), sorter));
+      assertThrows(ValidationException.class, 
+                   () -> assertTimeout(Duration.ofSeconds(1), sorter));
   assertEquals("Invalid input", exception.getMessage());
 }
 ```
 
-In this test, we use `ThrowingSupplier` and JUnit's `assertTimeout()` to verify that a sorting operation on a list of numbers completes within a specified duration and handles potential exceptions. The test method `testAssertTimeoutWithSupplier()` works with a list of `Long` numbers and introduces a delay to simulate slow execution.
+In this test, we use `ThrowingSupplier` and `assertTimeout()` to verify a sorting operation on a list of numbers. The test method `testAssertTimeoutWithSupplier()` works with a list of Long numbers and introduces a delay to simulate slow execution.
 
-We define a `Consumer<List<Long>>` named `checkSorting` to assert that the sorted list matches the expected order: `[50L, 100L, 200L, 300L]`. The `ThrowingSupplier<List<Long>>` named `sorter` checks for invalid input (`null`, empty, or containing `null`) and throws a `ValidationException` if the input is invalid. Otherwise, it returns a sorted list of numbers.
-
-First, we test a slow execution scenario by introducing a delay of 2 seconds. We use `assertThrows` to verify that the sorting operation fails to complete within 1 second, which raises a `AssertionFailedError`. Inside the `assertTimeout` block, the `ThrowingSupplier` is executed, and finally it validates the result using the `checkSorting` consumer.
-
-Next, we test a fast execution scenario with a longer timeout of 5 seconds. We use the same delay, but this time we expect the sorting operation to complete successfully within the 5-second limit. We use `assertDoesNotThrow` to verify that it does not throw any exception, and verifies the result using the `checkSorting` consumer.
-
-Finally, we reset the list to contain only `null` values and verify that the supplier correctly identifies the invalid input. We use `assertThrows` to check that a `ValidationException` is thrown with the message “Invalid input” when it tries the sorting operation within a 1-second timeout. Finally, it validates the exception message using `assertEquals`.
-
-This test demonstrates how to use `ThrowingSupplier` for operations that may throw checked exceptions and how to verify the execution time constraints and input validation using JUnit's `assertTimeout`, `assertThrows`, and `assertDoesNotThrow` methods.
+We test slow and fast execution scenarios and validate the input using `assertThrows()` and `assertDoesNotThrow()`. Finally, we demonstrate how to use `ThrowingSupplier` for operations that may throw checked exceptions and how to verify execution time constraints and input validation using JUnit’s assert methods.
 
 ### Using `ThrowingSupplier` in `assertTimeoutPreemptively()`
 

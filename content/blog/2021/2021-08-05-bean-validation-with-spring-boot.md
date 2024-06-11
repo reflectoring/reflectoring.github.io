@@ -306,7 +306,6 @@ Again, the `@Validated` annotation is only evaluated on class level, so don't pu
 Here's a test verifying the validation behavior:
 
 ```java
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 class ValidatingServiceTest {
 
@@ -367,7 +366,6 @@ By default, any time we use the repository to store an `Input` object whose cons
 we'll get a `ConstraintViolationException` as this integration test demonstrates:
 
 ```java
-@ExtendWith(SpringExtension.class)
 @DataJpaTest
 class ValidatingRepositoryTest {
 
@@ -790,7 +788,6 @@ should be active, it must also be applied at method level.
 To make certain that the above works as expected, we can implement a unit test:
 
 ```java
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 class ValidatingServiceWithGroupsTest {
 
@@ -968,6 +965,7 @@ If you want to get your hands dirty on the example code, have a look at the
 [github repository](https://github.com/thombergs/code-examples/tree/master/spring-boot/validation).
 
 ## Update History
+* **2024-06-10:** upgraded code snippets to Spring Boot v3
 * **2021-08-05:** updated and polished the article a bit. 
 * **2018-10-25:** added a word of caution on using bean validation in the persistence layer 
 (see [this](https://twitter.com/olivergierke/status/1055015506326052865) thread on Twitter). 

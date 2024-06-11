@@ -2,7 +2,7 @@
 authors: [sagaofsilence]
 title: "One Stop Guide to Java Functional Interfaces"
 categories: ["Java"]
-date: 2024-05-01 00:00:00 +1100
+date: 2024-06-11 00:00:00 +1100
 excerpt: "Get familiar with Java Functional Interfaces."
 image: images/stock/0088-jigsaw-1200x628-branded.jpg
 url: one-stop-guide-to-java-functional-interfaces
@@ -11,6 +11,8 @@ url: one-stop-guide-to-java-functional-interfaces
 ## Introduction to Functional Programming  
 
 Functional programming is a paradigm that focuses on the use of functions to create clear and concise code. Instead of modifying data and maintaining state like in traditional imperative programming, functional programming treats functions as first-class citizens. That makes it possible to assign them to variables, pass as arguments, and return from other functions. This approach can make code easier to understand and reason about.
+
+{{% github "https://github.com/thombergs/code-examples/tree/master/core-java/functional-programming/functional-interfaces" %}}
 
 ### History of Functional Programming
 
@@ -36,7 +38,7 @@ By integrating functional programming features, Java aimed to provide its existi
 
 In recent years, functional programming has gained popularity due to its ability to help manage complexity, especially in large-scale applications. It emphasizes immutability, avoiding side effects, and working with data in a more predictable and modular way. This makes it easier to test and maintain code.
 
-Java, traditionally an object-oriented language, adopted functional programming features in Java 8. Following factors triggered this move:
+Java, traditionally an object-oriented language, adopted functional programming features in Java 8. The following factors triggered this move:
 
 - **Simplifying Code**: Functional programming can reduce boilerplate code and make code more concise, leading to easier maintenance and better readability.
 
@@ -58,7 +60,7 @@ Functional programming in Java brings many advantages but also has its share of 
 
 **One of the key benefits of functional programming is that it improves code readability.** Functional code tends to be concise, thanks to lambda expressions and method references, leading to reduced boilerplate and easier code maintenance. This focus on immutability—where data structures remain unchanged after creation—helps to reduce side effects and prevents bugs caused by unexpected changes in state.
 
-**Another advantage is its compatibility with concurrency and parallelism.** Since functional programming avoids mutable state, operations can run in parallel without the usual risks of data inconsistency or race conditions. This results in code that's naturally better suited for multithreaded environments.
+**Another advantage is its compatibility with concurrency and parallelism.** Since functional programming promotes immutability, operations can run in parallel without the usual risks of data inconsistency or race conditions. This results in code that's naturally better suited for multithreaded environments.
 
 **Functional programming also promotes modularity and reusability.** With functions being first-class citizens, we create small, reusable components, leading to cleaner, more maintainable code. The abstraction inherent in functional programming reduces overall complexity, allowing us to focus on the essential logic without worrying about implementation details.
 
@@ -66,7 +68,7 @@ However, these advantages come with potential drawbacks. The learning curve for 
 
 **Performance overheads are another concern**, particularly due to frequent object creation and additional function calls in functional programming. This could impact performance in resource-constrained environments. **Debugging functional code can also be challenging** due to the abstractions involved, and understanding complex lambda expressions might require a deeper understanding of functional concepts.
 
-**Compatibility issues may arise when integrating with legacy systems** or libraries that aren't designed for functional programming, potentially causing integration problems. Finally, functional programming's focus on immutability and side-effect-free functions **may reduce flexibility in scenarios that require mutable state or complex object manipulations.**
+**Compatibility issues may arise when integrating with legacy systems** or libraries that aren't designed for functional programming, potentially causing integration problems. Finally, functional programming's focus on immutability and side-effect-free functions **may reduce flexibility in scenarios that require mutability or complex object manipulations.**
 
 Ultimately, while functional programming offers significant benefits like improved readability and easier concurrency, it also comes with challenges. **We need to consider both the advantages and disadvantages to determine how functional programming fits into our Java applications.**
 
@@ -78,7 +80,7 @@ This annotation serves as a way to document our intention for the interface and 
 
 Functional interfaces are central to Java's support for functional programming. They allow us to write cleaner, more concise code by using lambda expressions, reducing boilerplate code, and promoting reusability. Common examples of functional interfaces include `Predicate`, `Consumer`, `Function`, and `Supplier`.
 
-Using the `@FunctionalInterface` annotation isn't strictly necessary. Any interface with a single abstract method is inherently a functional interface. But it's a good practice. It improves code readability, enforces constraints, and helps other us understand our intentions, contributing to better maintainability and consistency in our codebase.
+Using the `@FunctionalInterface` annotation isn't strictly necessary. Any interface with a single abstract method is inherently a functional interface. But it's a good practice. It improves code readability, enforces constraints, and helps others to understand our intentions, contributing to better maintainability and consistency in our codebase.
 
 ## Creating Custom Functional Interfaces
 
@@ -126,16 +128,16 @@ The test `operate()` verifies if the defined arithmetic operations get accurate 
 
 Here's an overview of some of the most common built-in functional interfaces in Java 8, along with their typical use cases and examples:
 
-| Functional Interface | Description | Example Use Cases |
-|----------------------|-------------|-------------------|
-| `Predicate<T>` | Represents a function that takes an input of type `T` and returns a `boolean`. Commonly used for filtering and conditional checks. | - Checking if a number is even<br>- Filtering a list of strings based on length<br>- Validating user inputs |
-| `Function<T, R>` | Represents a function that takes an input of type `T` and returns a result of type `R`. Often used for transformation or mapping operations. | - Converting a string to uppercase<br>- Mapping employee objects to their salaries<br>- Parsing a string to an integer |
-| `Consumer<T>` | Represents a function that takes an input of type `T` and performs an action, without returning a result. Ideal for side effect operations like printing or logging. | - Printing a list of numbers<br>- Logging user actions<br>- Updating object properties |
-| `Supplier<T>` | Represents a function that provides a value of type `T` without taking any arguments. Useful for lazy initialization and deferred computation. | - Generating random numbers<br>- Providing default values<br>- Creating new object instances |
-| `UnaryOperator<T>` | Represents a function that takes an input of type `T` and returns a result of the same type. Often used for simple transformations or operations. | - Negating a number<br>- Reversing a string<br>- Incrementing a value |
-| `BinaryOperator<T>` | Represents a function that takes two inputs of type `T` and returns a result of the same type. Useful for combining or reducing operations. | - Adding two numbers<br>- Concatenating strings<br>- Finding the maximum of two values |
+| Functional Interface | Description                                                                                                                                                          | Example Use Cases                                                                                                                            |
+|----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| `Predicate<T>` | Represents a function that takes an input of type `T` and returns a `boolean`. Commonly used for filtering and conditional checks.                                   | <ul><li>Checking if a number is even</li><li>Filtering a list of strings based on length</li><li>Validating user inputs</li></ul>            |
+| `Function<T, R>` | Represents a function that takes an input of type `T` and returns a result of type `R`. Often used for transformation or mapping operations.                         | <ul><li>Converting a string to uppercase</li><li>Mapping employee objects to their salaries</li><li>Parsing a string to an integer</li></ul> |
+| `Consumer<T>` | Represents a function that takes an input of type `T` and performs an action, without returning a result. Ideal for side-effect operations like printing or logging. | <ul><li>Printing a list of numbers</li><li>Logging user actions</li><li>Updating object properties</li></ul>                                 |
+| `Supplier<T>` | Represents a function that provides a value of type `T` without taking any arguments. Useful for lazy initialization and deferred computation.                       | <ul><li>Generating random numbers</li><li>Providing default values</li><li>Creating new object instances</li></ul>                           |
+| `UnaryOperator<T>` | Represents a function that takes an input of type `T` and returns a result of the same type. Often used for simple transformations or operations.                    | <ul><li>Negating a number</li><li>Reversing a string</li><li>Incrementing a value</li></ul>                                                  |
+| `BinaryOperator<T>` | Represents a function that takes two inputs of type `T` and returns a result of the same type. Useful for combining or reducing operations.                          | <ul><li>Adding two numbers</li><li>Concatenating strings</li><li>Finding the maximum of two values</li></ul>                                 |
 
-These built-in functional interfaces in Java 8 provide a foundation for functional programming, enabling us to work with lambda expressions and streamline code. Due to their versatility we can use them in a wide range of applications, from data transformation to filtering and beyond.
+These built-in functional interfaces in Java 8 provide a foundation for functional programming, enabling us to work with lambda expressions and streamline code. Due to their versatility, we can use them in a wide range of applications, from data transformation to filtering and beyond.
 
 ## Lambda Expressions Explained  
 
@@ -147,7 +149,7 @@ The general syntax of a lambda expression is as follows:
 (parameters) -> { body }
 ```
 
-Parameters represent a comma-separated list of input parameters to the lambda function. If there's only one parameter, we can omit the parentheses. Arrow operator separates the parameters from the body of the lambda expression. Finally, the body contains the function logic. If there's only one statement, we can omit the braces. Typically, the logic in the body will be concise. But it can be complex, multiline logic as per requirements.
+Parameters represent a comma-separated list of input parameters to the lambda function. If there's only one parameter, we can omit the parentheses. The arrow operator separates the parameters from the body of the lambda expression. Finally, the body contains the function logic. If there's only one statement, we can omit the braces. Typically, the logic in the body will be concise. But it can be complex, multiline logic as per requirements.
 
 Example of crisp lambda expression:
 
@@ -211,7 +213,7 @@ Code:
 }
 ```
 
-Did you notice that the bytecode starts with a `invokedynamic` call? Imagine it as a call to a unique factory method. This method returns an instance of a type that implements `Runnable`. Compiler does not define the specific type in the bytecode and knowing the exact type is not important. It generates the type at runtime when needed, not during compilation.
+Did you notice that the bytecode starts with a `invokedynamic` call? Imagine it as a call to a unique factory method. This method returns an instance of a type that implements `Runnable`. The compiler does not define the specific type in the bytecode and knowing the exact type is not important. It generates the type at runtime when needed, not during compilation.
 
 - **Compilation**: When we compile the code, the Java compiler transforms the lambda expression into a form that the Java Virtual Machine (JVM) can understand. Instead of generating a new anonymous inner class, the compiler uses a technique called *invokedynamic* introduced in Java 7.
 
@@ -225,7 +227,7 @@ Did you notice that the bytecode starts with a `invokedynamic` call? Imagine it 
 
 {{% /info %}}
 \
-Here are few examples demonstrating how to use lambda expressions without relying on built-in functional interfaces:
+Here are a few examples demonstrating how to use lambda expressions without relying on built-in functional interfaces:
 
 ### Example 1: Implementing a Custom Functional Interface
 
@@ -278,11 +280,11 @@ You cannot also use var with lambda expressions because they require an explicit
 var addAsVar = (a, b) -> a + b;
 ```
 
-It gives error: Cannot infer type: lambda expression requires an explicit target type.
+It gives the error: Cannot infer type: lambda expression requires an explicit target type.
 
 The code is incorrect because we cannot use `var` to infer the type of lambda expression itself. We can use the `var` only for local variable type inference, not for lambda expressions or method return types.
 
-Let's now see how we can use `var` in lambda expressions.
+Let's now see how we can use `var` in lambda expressions:
 
 ```java
 ArithmeticOperation add = (var a, var b) -> a + b;
@@ -290,7 +292,7 @@ ArithmeticOperation add = (var a, var b) -> a + b;
 
 The lambda expression (var a, var b) -> a + b defines a lambda that takes two parameters a and b, both using the var keyword to indicate that the types should be inferred by the compiler. This lambda performs addition on the two parameters.
 
-We can also use bean validation annotations.
+We can also use bean validation annotations:
 
 ```java
 ArithmeticOperation addNullSafe = (@NotNull var a, @NotNull var b) -> a + b;
@@ -302,7 +304,7 @@ Similar to the previous example, this lambda also takes two parameters with `var
 
 **Method references are a shorthand way to refer to existing methods by their name.** Instead of using lambda expressions, use method references to write code that is more concise and easier to read. Use method references to pass executable logic. Such deferred method invocation makes them ideal for functional programming scenarios and stream processing.
 
-Java 8 provides four types method references as follows:
+Java 8 provides four types of method references:
 
 1. Reference to a Static Method
 1. Reference to an Instance Method of a Particular Type
@@ -346,9 +348,9 @@ There are two primary syntaxes for referencing instance methods: using a contain
 ContainingClass::instanceMethodName
 ```
 
-The `ContainingClass::instanceMethodName` syntax denotes an instance method belonging to a particular class. This method reference is not for a specific object instance, but rather signifies that any object of that class can use the method. We commonly use it in stream operations, where we know the object instance at runtime.
+The `ContainingClass::instanceMethodName` syntax denotes an instance method belonging to a particular class. This method reference is not for a specific object instance but rather signifies that any object of that class can use the method. We commonly use it in stream operations, where we know the object instance at runtime.
 
-For example, we can use `String::toLowerCase` to refer the `toLowerCase()` method on any `String` object. Use it in a stream operation like `.map(String::toLowerCase)` to apply it to each string in the stream.
+For example, we can use `String::toLowerCase` to refer to the `toLowerCase()` method on any `String` object. Use it in a stream operation like `.map(String::toLowerCase)` to apply it to each string in the stream.
 
 Containing class instance method reference example:
 
@@ -399,14 +401,14 @@ void containingObjectInstanceMethodReference() {
 }
 ```
 
-The code snippet sorts a list of strings using an instance method reference. The `StringNumberComparator` class defines a comparison logic for strings. The `comparator::compare` is a method reference that references the `compare` method of the `StringNumberComparator` instance. It passes method reference to `sorted()`, allowing the stream to sort the `numbers` list according to the specified comparison logic. The test checks if the sorted list match the expected order.
+The code snippet sorts a list of strings using an instance method reference. The `StringNumberComparator` class defines a comparison logic for strings. The `comparator::compare` is a method reference that references the `compare` method of the `StringNumberComparator` instance. It passes method reference to `sorted()`, allowing the stream to sort the `numbers` list according to the specified comparison logic. The test checks if the sorted list matches the expected order.
 
 **Comparison of two syntaxes**:
 Both syntaxes are useful in different scenarios. The class-based method reference is more flexible, allowing us to reference methods without tying them to a specific object. The object-based method reference, on the other hand, is helpful when we want to use a method tied to a specific object instance. Both approaches provide a more concise way to call instance methods without the need for traditional anonymous classes or explicit lambda expressions.
 
 ### Reference to an Instance Method of an Arbitrary Object of a Particular Type
 
-This type also refers to an instance method, but it determines the exact object at runtime, allowing flexibility when dealing with collections or stream operations.
+This type also refers to an instance method, but it determines the exact object at runtime, allowing flexibility when dealing with collections or stream operations:
 
 ```java
 @Test
@@ -477,7 +479,7 @@ Let's summarize the use cases for method references, along with descriptions and
 
 **Predicates are functional interfaces in Java that represent boolean-valued functions of a single argument.** They are commonly used for filtering, testing, and conditional operations.
 
-The `Predicate` functional interface is part of the `java.util.function` package and defines a functional method `test(T t)` that returns a `boolean`.  It also provides default methods that allow combine two predicates.
+The `Predicate` functional interface is part of the `java.util.function` package and defines a functional method `test(T t)` that returns a `boolean`.  It also provides default methods that allow combining two predicates:
 
 ```java
 @FunctionalInterface
@@ -508,7 +510,7 @@ public class PredicateTest {
 }
 ```
 
-In the test `testFiltering()` method, first we populate a list of integers. Then we define a predicate `isEven` to check if a number is even. Using `stream()` and `filter()` methods, we filter the list to contain only even numbers. Finally, we compare the filtered list to expected list.
+In the test `testFiltering()` method, first we populate a list of integers. Then we define a predicate `isEven` to check if a number is even. Using `stream()` and `filter()` methods, we filter the list to contain only even numbers. Finally, we compare the filtered list to the expected list.
 
 ### Combining Predicates
 
@@ -553,9 +555,9 @@ In this test, we have combined predicates to filter a list of numbers. `isPositi
 
 ### Predicate Evaluation Order
 
-When we combine multiple predicates, we need to pay attention to the order the predicates are eveluated.
+When we combine multiple predicates, we need to pay attention to the order the predicates are evaluated.
 
-Consider following example:
+Consider the following example:
 
 ```java
 Predicate<Integer> isPositive = x -> x > 0;
@@ -565,14 +567,14 @@ Predicate<Integer> isOdd = x -> x % 2 != 0;
 
 Following table explains the evaluation order.
 
-| Predicate Expression | Evaluation Order | Description |
-|-----|-----|-----|
-|Predicate<Integer> test1 = isPositive.or(isDiv3).and(isOdd)| 1. isPositive or isDiv3 <br> 2. Result and isOdd| First checks if the number is positive or divisible by 3, then checks if the result is odd.|
-|Predicate<Integer> test2 = isPositive.and(isOdd).or(isDiv3)| 1. isPositive and isOdd <br> 2. Result or isDiv3 |First checks if the number is positive and odd, then checks if the result is true or if the number is divisible by 3.|
-|Predicate<Integer> test3 = (isPositive.and(isOdd)).or(isDiv3)| 1. isPositive and isOdd <br> 2. Result or isDiv3| Same as test2, checks if the number is positive and odd, then checks if the result is true or if the number is divisible by 3.|
-|Predicate<Integer> test4 = isPositive.and((isOdd).or(isDiv3))| 1. isOdd or isDiv3 <br> 2. isPositive and result| First checks if the number is odd or divisible by 3, then checks if the number is positive and the previous result is true.|
+| Predicate Expression | Evaluation Order                                                | Description |
+|-----|-----------------------------------------------------------------|-----|
+|Predicate<Integer> test1 = isPositive.or(isDiv3).and(isOdd)| <ol><li>isPositive or isDiv3</li><li>Result and isOdd</li></ol> | First checks if the number is positive or divisible by 3, then checks if the result is odd.|
+|Predicate<Integer> test2 = isPositive.and(isOdd).or(isDiv3)| <ol><li>isPositive and isOdd</li><li>Result or isDiv3</li></ol> |First checks if the number is positive and odd, then checks if the result is true or if the number is divisible by 3.|
+|Predicate<Integer> test3 = (isPositive.and(isOdd)).or(isDiv3)| <ol><li>isPositive and isOdd</li><li>Result or isDiv3</li></ol> | Same as test2, checks if the number is positive and odd, then checks if the result is true or if the number is divisible by 3.|
+|Predicate<Integer> test4 = isPositive.and((isOdd).or(isDiv3))| <ol><li>isOdd or isDiv3</li><li>isPositive and result</li></ol> | First checks if the number is odd or divisible by 3, then checks if the number is positive and the previous result is true.|
 
-Let's deep dive into evaluation order of the first test:
+Let's deep dive into the evaluation order of the first test:
 `Predicate<Integer> test1: isPositive.or(isDiv3).and(isOdd);`
 
 First, it evaluates the `isPositive` or `isDiv3` condition. If `isPositive` is true, then the result is true. If `isPositive` is false, proceed to check `isDiv3`. Then, if `isDiv3` is true, the result is true. Finally, if both `isPositive` and `isDiv3` are false, the result is false.
@@ -585,7 +587,7 @@ Similarly, it evaluates the order for other predicates given in the table above.
 
 The `BiPredicate<T, U>` takes two arguments of types `T` and `U` and returns a boolean result. It's common to use them for testing conditions involving two parameters. For instance, we use `BiPredicate` to check if one value is greater than the other or if two objects satisfy a specific relationship. We may validate if a person's age and income meet certain eligibility criteria for a financial service.
 
-`BiPredicate` defines a `test()` method with two arguments, and it returns a `boolean`. It also provides default methods that allow combine two predicates.
+`BiPredicate` defines a `test()` method with two arguments, and it returns a `boolean`. It also provides default methods that allow combining two predicates:
 
 ```java
 @FunctionalInterface
@@ -623,9 +625,9 @@ public class PredicateTest {
 }
 ```
 
-In the test, first, we defined an array of workers with their respective ages. We have created two `BiPredicate` instances: `juniorCarpenterCheck` and `juniorWelderCheck`. These predicates evaluate if a worker is within a certain age range (18 to 40) based on their occupation (Carpenter or Welder). Then we use these predicates to filter the array of workers using the `test()` method. Finally, we count the workers meeting the criteria for junior carpenters and junior welders and verify if it matches the expected counts.
+In the test, first, we defined an array of workers with their respective ages. We have created two `BiPredicate` instances: `juniorCarpenterCheck` and `juniorWelderCheck`. These predicates evaluate if a worker is within a certain age range (18 to 40) based on their occupation (Carpenter or Welder). Then we use these predicates to filter the array of workers using the `test()` method. Finally, we count the workers meeting the criteria for junior carpenters and junior welders and verify if they match the expected counts.
 
-Now let's learn to use the default methods used to combine and negate.
+Now let's learn to use the default methods used to combine and negate:
 
 ```java
   @Test
@@ -763,7 +765,7 @@ The test applies a `Function` to convert a string to uppercase. It asserts the c
 
 ### Function Composition
 
-**Function composition is a process of combining multiple functions to create a new function.** The `compose()` method in `Function` interface combines two functions by applying the argument function first and then the caller function. Conversely, the `andThen()` method applies the caller function first and then the argument function.
+**Function composition is a process of combining multiple functions to create a new function.** The `compose()` method in the `Function` interface combines two functions by applying the argument function first and then the caller function. Conversely, the `andThen()` method applies the caller function first and then the argument function.
 
 For example, if we have two functions: one to convert a string to upper case and another to remove vowels from it, we can compose them using `compose()` or `andThen()`. If we use `compose()`, it first converts the string to uppercase and then removes vowels from it. Conversely, if we use `andThen()`, it first removes vowels from it and then converts the string to uppercase.
 
@@ -790,7 +792,7 @@ In the `functionComposition` test, we compose two functions to manipulate a stri
 
 ### BiFunction
 
-**The `BiFunction` interface represents a function that accepts two arguments and produces a result.** It's similar to the Function interface, but it operates on two input parameters instead of one.
+**The `BiFunction` interface represents a function that accepts two arguments and produces a result.** It's similar to the Function interface, but it operates on two input parameters instead of one:
 
 ```java
 @FunctionalInterface
@@ -1077,11 +1079,11 @@ void binaryOperator() {
 }
 ```
 
-In this test, we define a factorial function and use it to compute permutations (nPr). For pricing, we combine `BinaryOperator<Double>` for summing prices with `UnaryOperator<Double>` for applying discount and tax, then validate the cost calculations.
+In this test, we define a factorial function and use it to compute permutations (nPr). For pricing, we combine `BinaryOperator<Double>` for summing prices with `UnaryOperator<Double>` for applying discount and tax, and then validate the cost calculations.
 
 ### IntBinaryOperator
 
-**The `IntBinaryOperator` interface represents an operation upon two int-valued operands and producing an int-valued result.**
+**The `IntBinaryOperator` interface represents an operation upon two int-valued operands and produces an int-valued result.**
 
 ```java
 @FunctionalInterface
@@ -1112,11 +1114,11 @@ Similarly, we have `LongBiaryOperator` and `DoubleBiaryOperator` that produce `l
 
 ## Consumers
 
-**A `Consumer` is a functional interface that represents an operation that accepts a single input argument and returns no result.** It is part of the `java.util.function` package. Unlike most other functional interfaces, we use it to perform side effect operations on an input, such as printing, modifying state, or storing values.
+**A `Consumer` is a functional interface that represents an operation that accepts a single input argument and returns no result.** It is part of the `java.util.function` package. Unlike most other functional interfaces, we use it to perform side-effect operations on an input, such as printing, modifying state, or storing values.
 
 ### Consumer
 
-The `Consumer` Represents an operation that accepts a single input argument and returns no result.**
+The `Consumer` Represents an operation that accepts a single input argument and returns no result:
 
 ```java
 @FunctionalInterface
@@ -1224,7 +1226,7 @@ public interface IntConsumer {
 
 `IntConsumer` is a specialized type of `Consumer` for integers. Unlike most other functional interfaces, `IntConsumer` produces side effects. It is a functional interface with a method called `accept(int)`.
 
-Here is an illustration on how to use the `IntConsumer` interface:
+Here is an illustration of how to use the `IntConsumer` interface:
 
 ```java
 @ParameterizedTest
@@ -1255,7 +1257,7 @@ void intConsumer(int temperature, String expected) {
 
 This test verifies a `IntConsumer` handling temperature sensor responses. Depending on the temperature, it sets a message indicating if the AC should be turned off, turned on, or if we need an alert. The `@ParameterizedTest` runs multiple scenarios, checking the expected message for each temperature input.
 
-Similarly, we have `LongConsumer` and `DoubleConsumer` that consumes `long` and `double` inputs respectively.
+Similarly, we have `LongConsumer` and `DoubleConsumer` that consume `long` and `double` inputs respectively.
 
 ### ObjIntConsumer
 
@@ -1328,7 +1330,7 @@ public class SupplierTest {
 In this test, `randomNumberSupplier` generates a random number between 0 and 99. The test verifies that the generated number is within the expected range.
 
 {{% info title="Lazy Initialization" %}}
-Traditionally, we populate the needed data first and then pass it to processing logic. With suppliers, that is no more needed. We can now defer it to the point when it is actually needed. The supplier would generate the data when we call `get()` method on it. We may not use the input due to conditional logic. Sometimes such preparations are costly e.g., file resource, network connection. In such cases we could even avoid such eager preparation of costly inputs.
+Traditionally, we populate the needed data first and then pass it to the processing logic. With suppliers, that is no longer needed. We can now defer it to the point when it is actually needed. The supplier would generate the data when we call `get()` method on it. We may not use the input due to conditional logic. Sometimes such preparations are costly e.g., file resource, network connection. In such cases, we could even avoid such eager preparation of costly inputs.
 
 {{% /info %}}
 
@@ -1373,7 +1375,7 @@ While it's true that a boolean value can only be `true` or `false`, a `BooleanSu
 
 ## Conclusion
 
-In this article, we learned functional interfaces, how functional programming and lambda expressions bring a new level of elegance and efficiency to our code. We began by understanding the core concept of functional programming, where functions are first-class citizens, allowing us to pass and return them just like any other variable.
+In this article, we learned functional interfaces, and how functional programming and lambda expressions bring a new level of elegance and efficiency to our code. We began by understanding the core concept of functional programming, where functions are first-class citizens, allowing us to pass and return them just like any other variable.
 
 Then we dip dived into `Function` interfaces, which enable us to create concise and powerful transformations of data. Method references provided a shorthand for lambda expressions, making our code even cleaner and more readable.
 

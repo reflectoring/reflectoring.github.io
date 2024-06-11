@@ -962,7 +962,7 @@ In this tutorial, we've gone through all major validation features we might need
 Spring Boot.  
 
 If you want to get your hands dirty on the example code, have a look at the 
-[github repository](https://github.com/thombergs/code-examples/tree/master/spring-boot/validation).
+[Github repository](https://github.com/thombergs/code-examples/tree/master/spring-boot/validation).
 
 ## Update History
 * **2024-06-10:** upgraded code snippets to Spring Boot 3.

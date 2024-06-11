@@ -1,8 +1,8 @@
 ---
 title: "Offloading File Transfers with Amazon S3 Presigned URLs in Spring Boot"
 categories: [ "AWS", "Spring Boot", "Java" ]
-date: 2024-06-07 00:00:00 +0530
-modified: 2024-06-07 00:00:00 +0530
+date: 2024-06-12 00:00:00 +0530
+modified: 2024-06-12 00:00:00 +0530
 authors: [ "hardik" ]
 description: "In this article, we demonstrate how to use AWS S3 Presigned URLs in a Spring Boot application to offload file transfers, reduce server load and improve performance. We cover required dependencies, configuration, IAM policy, generation of Presigned URLs and integration testing with LocalStack and Testcontainers."
 image: images/stock/0139-stamped-envelope-1200x628-branded.jpg
@@ -27,7 +27,7 @@ Before diving into the implementation, let's further discuss the use cases and a
 
 * **Large File Downloads**: When having an entertainment or an e-learning platform that serves video courses to users, instead of serving the large video files from our application server, we can generate Presigned URLs for each video file and offload the responsibility of downloading/streaming the video directly from S3 to the client. 
 
-  To secure this architecture, before we generate the Presigned URLs, our server can validate/authenticate the user requesting the video content. Additionally, we can restrict access to the video content to the specific IP address that originated the request via IAM policy. 
+  To secure this architecture, before we generate the Presigned URLs, our server can validate/authenticate the user requesting the video content. 
 
   By implementing Presigned URLs on applications that serve high volume of content from S3, we **reduce the load on our server(s), improve performance and make our architecture scalable**.
 
@@ -207,27 +207,6 @@ Here is what our policy should look like:
 ```
 
 The above IAM policy **conforms to the least privilege principle**, by granting only the necessary permissions required for our service layer to generate Presigned URLs. We also specify the bucket ARN in the `Resource` field, further limiting the scope of the IAM policy to work with a single bucket that is provisioned for our application.
-
-Additionally, we can further restrict access to our S3 bucket by allowing requests only from a specific IP address or IP address blocks where our client application is hosted.
-
-To achieve this, we can modify our IAM policy statement to include a condition that checks the source IP address of the request using <a href="https://aws.amazon.com/what-is/cidr/" target="_blank">CIDR notation</a>:
-
-```json
-"Condition": {
-  "IpAddress": {
-    "aws:SourceIp": [
-      "01.02.03.04/32"
-    ]
-  }
-}
-```
-While the above condition will work for a Single Page Application (SPA), hosted on a server with a static IP address, it'll not be a suitable solution if our client is a mobile application. 
-
-A mobile device often switches between different networks and can be assigned different IP addresses by its carrier or Wi-Fi network. This makes it difficult to apply an IP-based restriction in our IAM policy.
-
-While it's possible to update the IAM policy configuration per session by our Spring Boot application, it's not recommended at all. 🚫
-
-Updating IAM policies programmatically for each client session would be an administrative overhead, and would require granting our backend application permission to modify IAM policies, which goes against the principle of least privilege. **It is generally recommended to keep IAM permissions separate from application-level permissions**.
 
 ## Enabling Cross-Origin Resource Sharing (CORS)
 

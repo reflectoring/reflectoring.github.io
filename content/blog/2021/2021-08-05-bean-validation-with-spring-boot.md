@@ -965,7 +965,7 @@ If you want to get your hands dirty on the example code, have a look at the
 [github repository](https://github.com/thombergs/code-examples/tree/master/spring-boot/validation).
 
 ## Update History
-* **2024-06-10:** upgraded code snippets to Spring Boot v3
+* **2024-06-10:** upgraded code snippets to Spring Boot 3
 * **2021-08-05:** updated and polished the article a bit. 
 * **2018-10-25:** added a word of caution on using bean validation in the persistence layer 
 (see [this](https://twitter.com/olivergierke/status/1055015506326052865) thread on Twitter). 

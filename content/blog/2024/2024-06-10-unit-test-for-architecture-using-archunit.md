@@ -19,19 +19,27 @@ ArchUnit is a free, simple and extensible library for checking the architecture 
 
 ArchUnit has different layers: the Core layer, the Lang layer, and the Library layer.
 
-Much of the Core layer extends and closely resembles the Java reflection API. The Core layer offers a lot of information about the static structure of a Java program. For example, to import all Java classes in the com.akinwalehabib.archunitdemo package, we can use the ClassFileImporter from the Core layer.
+Much of the Core layer extends and closely resembles the Java reflection API. The Core layer offers a lot of information about the static structure of a Java program. For example, to import all Java classes in the com.akinwalehabib.archunitdemo package, we can use the ClassFileImporter from the Core layer:
 
 ```java
-JavaClasses classes = new ClassFileImporter().importPackages("com.akinwalehabib.archunitdemo");
+JavaClasses classes = new ClassFileImporter()
+  .importPackages("com.akinwalehabib.archunitdemo");
 ```
 
 ArchUnit also has the Lang API, which provides a powerful syntax to express rules abstractly. Most parts of the Lang API are fluent APIs that are very expressive. You use the Lang API to create test rules. You can think of these rules as assertions in any unit test framework.
 
 ```java
-ArchRule rule = classes().that().resideInAPackage("..service..") .should().onlyBeAccessed().byAnyPackage("..controller..", "..service..");
+ArchRule rule = classes()
+  .that()
+  .resideInAPackage("..service..")
+  .should()
+  .onlyBeAccessed()
+  .byAnyPackage("..controller..", "..service..");
 ```
 
-Once we have imported the desired classes we wish to test and created our architecture rule using the Lang API, we check the rule against our imported classes.
+In this code above, the rule states that all classes in the `service` package should only be accessible by classes in controller and the service package.
+
+Once we have imported the desired classes we wish to test and created our architecture rule using the Lang API, we check the rule against our imported classes:
 
 ```java
 ArchRule rule = rule.check(importedClasses);
@@ -57,7 +65,7 @@ In this project, we will add a REST API controller, a service class and a Spring
 
 Spring Boot applications created using the starter at start.spring.io contains Spring Boot Starter Test dependency, which includes testing infrastructure such as JUnit5, Mockito, and assertJ.
 
-Let us add our application configuration to the application.yml file.
+Let us add our application configuration to the application.yml file:
 
 ```YAML
 spring:
@@ -68,7 +76,9 @@ spring:
       uri: mongodb://localhost/archunit
 ```
 
-Let us create a controller class and API endpoints for creating a user and another for getting the user using the email address.
+We provide the uri for our MongoDB database in the configuration above.
+
+Let us create a controller class and API endpoints for creating a user and another for getting the user using the email address:
 
 ```java
 @RestController
@@ -84,9 +94,16 @@ public class UserController {
   @PostMapping()
   @ResponseStatus(HttpStatus.CREATED)
   public void createUser(@RequestBody CreateUserDTO createUserDTO) {
-      logger.info("createUser using name{}, and email {}", createUserDTO.name(), createUserDTO.email());
+      logger.info(
+        "createUser using name{}, and email {}",
+        createUserDTO.name(),
+        createUserDTO.email());
 
-      User user = new User(createUserDTO.name(), createUserDTO.email(), createUserDTO.password());
+      User user = new User(
+        createUserDTO.name(),
+        createUserDTO.email(),
+        createUserDTO.password());
+
       userService.createUser(user);
   } 
   
@@ -107,7 +124,9 @@ public class UserController {
 }
 ```
 
-Here is the create user data transfer object, which the createUser controller function accepts as a parameter.
+We have two endpoints in the REST controller class. One endpoint accepts a GET request with email request parameter. The other endpoint accepts a POST request with user json in the request body.
+
+Here is the create user data transfer object, which the createUser controller function accepts as a parameter:
 
 ```java
 public record CreateUserDTO(
@@ -117,7 +136,7 @@ public record CreateUserDTO(
 ) {}
 ```
 
-Next, we need to create a User domain model. This model keeps track of user details such as name, email, and password. The User class will have a no-args constructor and another constructor that accepts name, email and password. Lastly, this class will also contain getter and setter methods for the instance variables.
+Next, we need to create a User domain model. This model keeps track of user details such as name, email, and password. The User class will have a no-args constructor and another constructor that accepts name, email and password. Lastly, this class will also contain getter and setter methods for the instance variables:
 
 ```java
 @Document(collection = "users")
@@ -197,27 +216,16 @@ public class UserService {
   
 }
 ```
+The UserService provides two methods. createUser function creates a new user using the User parameter. The getUser accepts an email parameter and returns an optional object of user type.
 
 ```java
-@Service
-public class UserService {
-
-  private UserRepository userRepository;
-
-  public UserService(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
-
-  public void createUser(User user) {
-    userRepository.save(user);
-  }
-
-  public Optional<User> getUser(String email) {
-    return userRepository.getByEmail(email);
-  }
-  
+@Repository
+public interface UserRepository extends MongoRepository<User, String> {
+  public Optional<User> getByEmail(String id);
 }
 ```
+
+The UserRepository extends the MontoRepository provided by Spring Data MongoDB.
 
 We now have an application with 2 API endpoints. We can run this application and manually test it using Httpie. To create a user, we will send a POST request to /user path.
 
@@ -235,7 +243,7 @@ Lastly, the UserController class belongs to the presentation layer of our applic
 
 It is a best practice that the presentation layer depends on the business layer, which in turn depends on the data layer. Now, let us enforce this principle in our architectural test using ArchUnit. We will also enforce a naming principle.
 
-Before writing our tests, we must add the archunit-junit5  dependency to the gradle or maven build file.
+Before writing our tests, we must add the archunit-junit5  dependency to the gradle or maven build file:
 
 ```groovy
 testImplementation 'com.tngtech.archunit:archunit-junit5:1.3.0'
@@ -250,7 +258,7 @@ testImplementation 'com.tngtech.archunit:archunit-junit5:1.3.0'
 </dependency>
 ```
 
-Here is our default test class for our Spring Boot application. We will add our tests to this class.
+Here is our default test class for our Spring Boot application. We will add our tests to this class:
 
 ```java
 @SpringBootTest
@@ -279,7 +287,8 @@ Lastly, we will check the rule against our imported classes.
 @Test
 void repository_interfaces_name_should_contain_Repository() {
 	// Import classes
-	JavaClasses importedClasses = new ClassFileImporter().importPackages("com.akinwalehabib.archunitdemo");
+	JavaClasses importedClasses = new ClassFileImporter()
+    .importPackages("com.akinwalehabib.archunitdemo");
 
 	// Create architectural rule
 	ArchRule myRule = classes()
@@ -292,23 +301,26 @@ void repository_interfaces_name_should_contain_Repository() {
 	myRule.check(importedClasses);
 }
 ```
+We import our classes from the desired package. We then create a rule to ensure that any class annotated with @Repository must contain Repository in its class name. Lastly we check our rule against our imported classes.
 
 ## Test to check repositories are only accessed by services.
 
-Let us add another test case that ensures only service classes, which belong in the business layer, can depend on our data layer, in which the repository interfaces belong.
+Let us add another test case that ensures only service classes, which belong in the business layer, can depend on our data layer, in which the repository interfaces belong:
 
 ```java
 @Test
 	void only_services_are_allowed_to_depend_on_repository_classes() {
 		// Import classes
-		JavaClasses importedClasses = new ClassFileImporter().importPackages("com.akinwalehabib.archunitdemo");
+		JavaClasses importedClasses = new ClassFileImporter()
+      .importPackages("com.akinwalehabib.archunitdemo");
 
 		// Create architectural rule
 		ArchRule myRule = classes()
 			.that()
 			.areAnnotatedWith(org.springframework.stereotype.Repository.class)
 			.should()
-			.onlyHaveDependentClassesThat().areAnnotatedWith(org.springframework.stereotype.Service.class);
+			.onlyHaveDependentClassesThat()
+            .areAnnotatedWith(org.springframework.stereotype.Service.class);
 
 		// Test rule against imported classes
 		myRule.check(importedClasses);
@@ -319,23 +331,25 @@ Let us add another test case that ensures only service classes, which belong in 
 ./gradlew test
 ```
 
-Let us run our tests using the Gradle test command. All tests should pass. If we remove the Repository value from the UserRepository.java file name and run our tests,  the tests will fail.
+Let us run our tests using the Gradle test command. All tests should pass. If we remove the Repository value from the `UserRepository.java` file name and run our tests, the tests will fail.
 
 ## Test to check services are only accessed by controllers.
-Next, let us add a test case that ensures only classes that belong in the presentation layer, such as our controller class, can depend on our service classes that belong in the business layer.
+Next, let us add a test case that ensures only classes that belong in the presentation layer, such as our controller class, can depend on our service classes that belong in the business layer:
 
 ```java
 @Test
 	void only_controllers_are_allowed_to_depend_on_service_classes() {
 		// Import classes
-		JavaClasses importedClasses = new ClassFileImporter().importPackages("com.akinwalehabib.archunitdemo");
+		JavaClasses importedClasses = new ClassFileImporter()
+      .importPackages("com.akinwalehabib.archunitdemo");
 
 		// Create architectural rule
 		ArchRule myRule = classes()
 			.that()
 			.areAnnotatedWith(org.springframework.stereotype.Service.class)
 			.should()
-			.onlyHaveDependentClassesThat().areAnnotatedWith(org.springframework.web.bind.annotation.RestController.class);
+			.onlyHaveDependentClassesThat()
+            .areAnnotatedWith(org.springframework.web.bind.annotation.RestController.class);
 
 		// Test rule against imported classes
 		myRule.check(importedClasses);

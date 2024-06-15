@@ -26,7 +26,7 @@ In this article, we will deep-dive into the working of JWT and how to configure 
 The information contained in a JWT token can be verified and trusted because it is digitally signed. JWTs can be signed using a secret (with the HMAC algorithm) or a public/private key pair using RSA or ECDSA.
 
 
-For the purpose of this article, we will create a JWT token using a secret key and use it for securing our REST endpoints.
+For this article, we will create a JWT token using a secret key and use it to secure our REST endpoints.
 
 ## JWT Structure
 In this section, we will take a look at a sample JWT structure.
@@ -51,8 +51,8 @@ The payload is the body that contains the actual data. The data could be user da
 This data is also referred to as `claims`. There are three types of claims: **registered, public and private claims**.
 
 #### Registered Claims
-**They are a set of predefined, three character claims as defined in [RFC7519]**(https://datatracker.ietf.org/doc/html/rfc7519#section-4.1).
-Some frequently used ones are **iss (Issuer Claim)**, **sub (Subject Claim)**, **aud (Audience Claim)**, **exp (Expiration Time Claim)**, **iat (Issued At Time)**, **nbf(Not Before)**.
+**They are a set of predefined, three character claims as defined in [RFC7519](https://datatracker.ietf.org/doc/html/rfc7519#section-4.1)**.
+Some frequently used ones are **iss (Issuer Claim)**, **sub (Subject Claim)**, **aud (Audience Claim)**, **exp (Expiration Time Claim)**, **iat (Issued At Time)**, **nbf (Not Before)**.
 Let's look at each of them in detail:
 - **iss**: This claim is used to specify the issuer of the JWT. It is used to identify the entity that issued the token such as the authentication server or identity provider.
 - **sub**: This claim is used to identify the subject of the JWT i.e. the user or the entity for which the token was issued.
@@ -96,26 +96,26 @@ Since they are also signed with a secret key, it can verify that the sender of t
 ## Common Use Cases of JWT
 JWTs are versatile and can be used in a variety of scenarios as discussed below:
 - **Single Sign-On**: JWTs facilitate Single Sign-On (SSO) by allowing user authentication across multiple services or applications. 
-After a user logs in to one application, he receives a JWT that can be used to login to other services(that the user has access to) without needing to enter/maintain separate login credentials.
+After a user logs in to one application, he receives a JWT that can be used to login to other services (that the user has access to) without needing to enter/maintain separate login credentials.
 - **API Authentication**: JWTs are commonly used to authenticate and authorize access to APIs. Clients include the JWT token in the **Authorization** header of an API request to validate their access to the API.
 The APIs will then decode the JWT to grant or deny access.
 - **Stateless Sessions**: JWTs help provide stateless session management as the session information is stored in the token itself.
 - **Information Exchange**: Since JWTs are secure and reliable, they can be used to exchange not only user information but any information that needs to be transmitted securely between two parties.
-- **Microservices**: JWTs are one of the most preferred means of API communication in a microservice ecosystem as the microservice can independently verify the token without relying on an external authentication server making it easier to scale.
+- **Microservices**: JWTs are one of the most preferred means of API communication in a microservice ecosystem as a microservice can independently verify a token without relying on an external authentication server making it easier to scale.
 
 ## Caveats of Using JWT
 
-Now that we understand the benefits that JWT provides, let look at the downside of using JWT. The idea here is for the developer to weigh the options in hand and make an informed decision about using a token-based architecture within the application.
-- In cases where JWTs replace sessions, if we end up using a big payload, the JWT token can bloat. On top of it, if we add cryptographic signature, it can cause overall performance overhead. This would end up being an overkill for storing a simple user session.
+Now that we understand the benefits that JWT provides, let's look at the downside of using JWT. The idea here is for the developer to weigh the options in hand and make an informed decision about using a token-based architecture within the application.
+- In cases where JWTs replace sessions, if we end up using a big payload, the JWT token can bloat. On top of it, if we add a cryptographic signature, it can cause overall performance overhead. This would end up being an overkill for storing a simple user session.
 - JWTs expire at certain intervals post which the token needs to be refreshed and a new token will be made available. This is great from a security standpoint, but the expiry time needs to be carefully considered. For instance, an expiry time of 24 hours would be a bad design consideration.
 
 Now, that we've looked at the focus points, we will be able to make an informed decision around how and when to use JWTs.
-In the next section, we will try to create a simple JWT token in Java.
+In the next section, we'll create a simple JWT token in Java.
 
 ## Creating a JWT Token in Java
 
 [JJWT](https://github.com/jwtk/jjwt) is the most commonly used Java library to create JWT tokens in Java and Android.
-We will begin by adding its dependencies in our application.
+We will begin by adding its dependencies to our application.
 
 ### Configure JWT Dependencies
 
@@ -146,9 +146,9 @@ compile 'io.jsonwebtoken:jjwt-api:0.11.1'
 runtime 'io.jsonwebtoken:jjwt-impl:0.11.1'
 runtime 'io.jsonwebtoken:jjwt-jackson:0.11.1'
 ````
-Our Java application is based on Maven, so we will add the above Maven dependencies to our **pom.xml**
+Our Java application is based on Maven, so we will add the above Maven dependencies to our *pom.xml*.
 
-### Creating JWT token
+### Creating JWT Token
 We will use the `Jwts` class from the `io.jsonwebtoken` package. We can specify claims (both registered and public) and other JWT attributes and create a token as below:
 
 ````java
@@ -172,14 +172,13 @@ This method creates a JWT token as below:
 eyJhbGciOiJub25lIn0.eyJpZCI6ImFiYzEyMyIsInJvbGUiOiJhZG1pbiIsImlzcyI6IlR
 lc3RBcHBsaWNhdGlvbiIsImlhdCI6MTcxMTY2MTA1MiwiZXhwIjoxNzExNjYxNjUyfQ.
 ````
-Next, let's take a look at the Builder methods used to generate the token:
-- `claim`: Allows us to specify any number of custom name-value pair claims. We can also use `addClaims` method to add a Map of claims as an alternative.
+Next, let's take a look at the builder methods used to generate the token:
+- `claim`: Allows us to specify any number of custom name-value pair claims. We can also use `addClaims` method to add a map of claims as an alternative.
 - `setIssuer`: This method corresponds to the registered claim `iss`.
 - `setIssuedAt`: This method corresponds to the registered claim `iat`. This method takes `java.util.Date` as a parameter. Here we have set this value to the current instant.
 - `setExpiration`: This method corresponds to the registered claim `exp`. This method takes `java.util.Date` as a parameter. Here we have set this value to 10 minutes from the current instant.
 
-Let's try to decode this JWT using an online [JWT Decoder](https://jwt.is/)
-Its decoded values looks like this:
+Let's try to decode this JWT using an online [JWT Decoder](https://jwt.is/):
 {{% image alt="settings" src="images/posts/spring-security-and-jwt/JWTDecode.png" %}}
 
 If we closely look at the header, we see `alg:none`. This is because we haven't specified any algorithm to be used.
@@ -254,7 +253,7 @@ This can be verified using the below test:
         );
     }
 ````
-For a full list of the available parsing methods, refer [the documentation](https://javadoc.io/doc/io.jsonwebtoken/jjwt-api/0.11.2/io/jsonwebtoken/JwtParser.html)
+For a full list of the available parsing methods, refer to [the documentation](https://javadoc.io/doc/io.jsonwebtoken/jjwt-api/0.11.2/io/jsonwebtoken/JwtParser.html).
 
 ### Comparing Basic Authentication and JWT in Spring Security
 Before we dive into the implementation of JWT in a sample Spring Boot application, let's look at a few points of comparison between BasicAuth and JWT.
@@ -267,8 +266,8 @@ Before we dive into the implementation of JWT in a sample Spring Boot applicatio
 
 
 ## Implementing JWT in a Spring Boot Application
-Now that we understand JWT better, let's try to implement it in a simple Spring Boot application.
-In our pom.xml, let's add the below dependencies:
+Now that we understand JWT better, let's implement it in a simple Spring Boot application.
+In our *pom.xml*, let's add the below dependencies:
 
 ````xml
 <dependency>
@@ -297,7 +296,7 @@ In our pom.xml, let's add the below dependencies:
 			<scope>runtime</scope>
 		</dependency>
 ````
-We have created a simple spring boot Library application that uses in-memory H2 database to store data.
+We have created a simple spring boot Library application that uses an in-memory H2 database to store data.
 The application is configured to run on port 8083. To run the application:
 
 ````text
@@ -306,33 +305,33 @@ mvnw clean verify spring-boot:run (for Windows)
 ````
 ### Intercepting the Spring Security Filter Chain for JWT
 
-The application has a REST endpoint `/library/books/all` to get all the books stored in the DB. Let's try making this GET call via Postman.
-We see `401 UnAuthorized error`
+The application has a REST endpoint `/library/books/all` to get all the books stored in the DB. IF we make this GET call via Postman, we get a `401 UnAuthorized` error:
 {{% image alt="settings" src="images/posts/spring-security-and-jwt/Postman401.png" %}}
-This is because, **the `spring-boot-starter-security` dependency added in our `pom.xml`, automatically brings in Basic authentication to all the endpoints created.**
+This is because, **the `spring-boot-starter-security` dependency added in our *pom.xml*, automatically brings in Basic authentication to all the endpoints created.**
 Since we haven't specified any credentials in Postman we get the `UnAuthorized` error.
 For the purpose of this article, we need to replace Basic Authentication with JWT-based authentication.
-We know that Spring provides security to our endpoints, by triggering a chain of filters that handle authentication and authorization for every request.
-The [`org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter`](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/UsernamePasswordAuthenticationFilter.html).
-is responsible for validating the credentials for every request. Let's create a new `Filter` called `JwtFilter` and add it before `UsernamePasswordAuthenticationFilter` in the filter chain. This will make sure that `JwtFilter` will be used to validate the token sent in the `Authorization` header along with the request.
+We know that Spring provides security to our endpoints, by triggering a chain of filters that handle authentication and authorization for every
+request. The [`UsernamePasswordAuthenticationFilter`](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/UsernamePasswordAuthenticationFilter.html) is responsible for validating the credentials for every request. 
+
+Let's create a new `Filter` called `JwtFilter` and add it before `UsernamePasswordAuthenticationFilter` in the filter chain. This will make sure that `JwtFilter` will be used to validate the token sent in the `Authorization` header along with the request.
 The `JwtFilter` will extend `OncePerRequestFilter` class as we want the filter to be called ony once per request.
 We will first create a `JwtHelper` class that has a method to create a token:
 ````java
 public String createToken(Map<String, Object> claims, String subject) {
-        Date expiryDate = 
-            Date.from(Instant.ofEpochMilli(System.currentTimeMillis() + 
-            jwtProperties.getValidity()));
-        Key hmacKey = new SecretKeySpec(Base64.getDecoder()
-            .decode(jwtProperties.getSecretKey()),
-                SignatureAlgorithm.HS256.getJcaName());
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(expiryDate)
-                .signWith(hmacKey)
-                .compact();
-    }
+    Date expiryDate = 
+        Date.from(Instant.ofEpochMilli(System.currentTimeMillis() + 
+        jwtProperties.getValidity()));
+    Key hmacKey = new SecretKeySpec(Base64.getDecoder()
+        .decode(jwtProperties.getSecretKey()),
+            SignatureAlgorithm.HS256.getJcaName());
+    return Jwts.builder()
+            .setClaims(claims)
+            .setSubject(subject)
+            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setExpiration(expiryDate)
+            .signWith(hmacKey)
+            .compact();
+}
 ````
 Let's look at the params responsible for creating the token:
 - `claims` refers to an empty map. No user specific claims have been defined for this example.
@@ -343,44 +342,45 @@ Let's look at the params responsible for creating the token:
 This method returns a String token that needs to be passed to the `Authorization header` with every request.
 Now that we have created a token, let's look at the `doFilterInternal` method in the `JwtFilter` class and understand the responsibility of this `Filter` class:
 ````java
-
 @Override
-    protected void doFilterInternal(HttpServletRequest request, 
-        HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        
-            final String authorizationHeader = request.getHeader(AUTHORIZATION);
-            String jwt = null;
-            String username = null;
-            if (Objects.nonNull(authorizationHeader) && 
-                    authorizationHeader.startsWith("Bearer ")) {
-                jwt = authorizationHeader.substring(7);
-                username = jwtHelper.extractUsername(jwt);
-            }
+protected void doFilterInternal(
+    HttpServletRequest request, 
+    HttpServletResponse response, 
+    FilterChain filterChain
+) throws ServletException, IOException {
+    
+      final String authorizationHeader = request.getHeader(AUTHORIZATION);
+      String jwt = null;
+      String username = null;
+      if (Objects.nonNull(authorizationHeader) && 
+              authorizationHeader.startsWith("Bearer ")) {
+          jwt = authorizationHeader.substring(7);
+          username = jwtHelper.extractUsername(jwt);
+      }
 
-            if (Objects.nonNull(username) && 
-                    SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = 
-                    this.userDetailsService.loadUserByUsername(username);
-                boolean isTokenValidated = 
-                    jwtHelper.validateToken(jwt, userDetails);
-                if (isTokenValidated) {
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(
-                                        userDetails, null, userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(
-                            usernamePasswordAuthenticationToken);
-                }
-            }
-        
-        filterChain.doFilter(request, response);
-
-    }
+      if (Objects.nonNull(username) && 
+              SecurityContextHolder.getContext().getAuthentication() == null) {
+          UserDetails userDetails = 
+              this.userDetailsService.loadUserByUsername(username);
+          boolean isTokenValidated = 
+              jwtHelper.validateToken(jwt, userDetails);
+          if (isTokenValidated) {
+              UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                      new UsernamePasswordAuthenticationToken(
+                                  userDetails, null, userDetails.getAuthorities());
+              usernamePasswordAuthenticationToken.setDetails(
+                      new WebAuthenticationDetailsSource().buildDetails(request));
+              SecurityContextHolder.getContext().setAuthentication(
+                      usernamePasswordAuthenticationToken);
+          }
+      }
+  
+  filterChain.doFilter(request, response);
+}
 ````
-**Step 1.** Reads the `Authorization` header and extracts the jwt string.
+**Step 1.** Reads the `Authorization` header and extracts the JWT string.
 
-**Step 2.** Parses the jwt and extracts the username. We use the `io.jsonwebtoken` library `Jwts.parseBuilder()` for this purpose. The `jwtHelper.extractUsername()` looks as below:
+**Step 2.** Parses the JWT string and extracts the username. We use the `io.jsonwebtoken` library `Jwts.parseBuilder()` for this purpose. The `jwtHelper.extractUsername()` looks as below:
 ````java
 public String extractUsername(String bearerToken) {
         return extractClaimBody(bearerToken, Claims::getSubject);
@@ -446,6 +446,7 @@ public Date extractExpiry(String bearerToken) {
         }
 ````
 **Step.5.** Once the token is validated, we create an instance of the `Authentication` object. Here, the object `UsernamePasswordAuthenticationToken` object is created (which is an implementation of the `Authentication` interface) and set it to `SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken)`. This indicates that the user is now authenticated.
+
 **Step.6.** Finally, we call `filterChain.doFilter(request, response)` so that the next filter gets called in the `FilterChain`.
 
 With this, we have successfully created a filter class to validate the token. We will look at exception handling in the further sections.
@@ -622,10 +623,10 @@ In order to chain the `JwtFilter` to the other set of filters and to exclude sec
     }
 ````
 In this configuration, we are interested in the following:
-**1. antMatchers("/token/*").permitAll()** - This will allow API endpoints that match the pattern `/token/*` and exclude them from security.
-**2. anyRequest().authenticated()** - Spring Security will secure all other API requests.
-**3. addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)** - This will wire the `JwtFilter` before `UsernamePasswordAuthenticationFilter` in the FilterChain.
-**4. exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)** - In case of authentication exception, `JwtAuthenticationEntryPoint` class will be called. Here we have created a `JwtAuthenticationEntryPoint` class that implements `org.springframework.security.web.AuthenticationEntryPoint` in order to handle unauthorized errors gracefully.
+- **antMatchers("/token/*").permitAll()** - This will allow API endpoints that match the pattern `/token/*` and exclude them from security.
+- **anyRequest().authenticated()** - Spring Security will secure all other API requests.
+- **addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)** - This will wire the `JwtFilter` before `UsernamePasswordAuthenticationFilter` in the FilterChain.
+- **exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)** - In case of authentication exception, `JwtAuthenticationEntryPoint` class will be called. Here we have created a `JwtAuthenticationEntryPoint` class that implements `org.springframework.security.web.AuthenticationEntryPoint` in order to handle unauthorized errors gracefully.
 We will look at handling exceptions in detail in the further sections.
 
 With these changes, let's restart our application and inspect the logs:
@@ -670,8 +671,8 @@ In this section, we will take a look at some commonly encountered exceptions fro
 4. [IncorrectClaimException](https://javadoc.io/doc/io.jsonwebtoken/jjwt-api/latest/io/jsonwebtoken/IncorrectClaimException.html) - Indicates that the required claim does not have the expected value. Therefore, the JWT is not valid.
 5. [MissingClaimException](https://javadoc.io/doc/io.jsonwebtoken/jjwt-api/latest/io/jsonwebtoken/MissingClaimException.html) - This exception indicates that a required claim is missing in the JWT and hence not valid.
 
-In general, it is considered a good practice to handle authentication related exceptions gracefully. In case of Basic Authentication, Spring security **by default adds the `BasicAuthenticationEntryPoint` to the Security filter chain which wraps basic auth related errors to 401 Unauthorized.**
-Similarly, in our example we have explicitly created a `JwtAuthenticationEntryPoint` to handle possible authentication errors such as spring security's `BadCredentialsException` or JJwt's `MalformedJwtException`.
+In general, it is considered a good practice to handle authentication related exceptions gracefully. In case of basic authentication, Spring security **by default adds the `BasicAuthenticationEntryPoint` to the Security filter chain which wraps basic auth related errors to 401 Unauthorized.**
+Similarly, in our example we have explicitly created a `JwtAuthenticationEntryPoint` to handle possible authentication errors such as spring security's `BadCredentialsException` or JJwt's `MalformedJwtException`:
 ````java
 @Component
 @Slf4j
@@ -733,7 +734,7 @@ public class GlobalExceptionHandler {
     }
 }
 ````
-With this exception handling, exception caused due to bad credentials will now be handled with `401 Unauthorized error`
+With this exception handling, exception caused due to bad credentials will now be handled with `401 Unauthorized` error:
 {{% image alt="settings" src="images/posts/spring-security-and-jwt/badCreds.png" %}}
 
 ## Swagger documentation
@@ -748,7 +749,7 @@ We will add the below Maven dependency:
 
 ````
 
-Next, lets add the below confguration:
+Next, let's add the below configuration:
 ````java
 @OpenAPIDefinition(
         info = @Info(
@@ -777,14 +778,14 @@ public class OpenApiConfig {
 }
 
 ````
-Here, security is described using one or more `@SecurityScheme`. The `type` defined here `SecuritySchemeType.HTTP` applies to both Basic Auth and JWT.
+Here, security is described using one or more `@SecurityScheme`. The `type` defined here `SecuritySchemeType.HTTP` applies to both basic auth and JWT.
 The other attributes like `scheme` and `bearerFormat` depend on this `type` attribute.
 After defining the security schemes, we can apply them to the whole application or individual operations by adding the 
 `security` section on the root level or operation level.
 In our example, all API operations will use the bearer token authentication scheme.
 For more information, on configuring multiple security schemes and applying a different scheme at the API level, refer to its [documentation.](https://swagger.io/docs/specification/authentication/).
 
-Next, let's add some basic swagger annotations to our Controller classes, in order to add descriptions to the API operations.
+Next, let's add some basic swagger annotations to our controller classes, in order to add descriptions to the API operations.
 ````java
 @RestController
 @Tag(name = "Library Controller", description = "Get library books")
@@ -824,7 +825,7 @@ We can do this by adding the `WebSecurityCustomizer` bean and excluding the swag
 Now, when we run the application, the swagger page will load as below:
 {{% image alt="settings" src="images/posts/spring-security-and-jwt/swagger.png" %}}
 
-Since we have only one security scheme, let's add the JWT token to the `Authorize button` at the top of the swagger page:
+Since we have only one security scheme, let's add the JWT token to the `Authorize` button at the top of the swagger page:
 {{% image alt="settings" src="images/posts/spring-security-and-jwt/swagger-auth.png" %}}
 
 With the bearer token set, let's try to hit the `/library/books/all` endpoint:
@@ -956,8 +957,9 @@ to `/library/books/all`.
 
 ## Conclusion
 In summary, JWT authentication is one step ahead to Spring's Basic authentication in terms of security.
-It is one of the most sought after means of authentication and authorization. In this article, we have explored some best practices, advantages of using JWT and
-looked at configuring a simple Spring Boot application to use JWT for security. 
+It is one of the most sought after means of authentication and authorization. 
+In this article, we have explored some best practices, advantages of using JWT and looked at configuring a simple 
+Spring Boot application to use JWT for security. 
 
 
 

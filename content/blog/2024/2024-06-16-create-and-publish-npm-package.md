@@ -1,8 +1,8 @@
 ---
-title: "Step-by-Step Guide to Creating and Publishing an NPM Package: Automating Versioning and Deployment to NPM"
+title: "Creating and Publishing an NPM Package with Automated Versioning and Deployment"
 categories: ["Node"]
-date: 2024-05-25 00:00:00 +1100
-modified: 2024-05-25 00:00:00 +1100
+date: 2024-06-16 00:00:00 +1100
+modified: 2024-06-16 00:00:00 +1100
 authors: ["ajibade"]
 description: "Learning how to create an NPM package is vital for contributing to the open-source community and improving code reusability. This step-by-step article covers the process of generating and releasing an NPM package, with a focus on automating versioning and deployment for an easy workflow."
 image: images/stock/0137-speed-1200x628-branded.jpg
@@ -443,7 +443,7 @@ Then Enable "Read and write permissions" to grant GitHub Actions the necessary a
 
 By granting this permission, Changeset will be able to create PRs facilitating the automation of our package publishing process.
 
-### Writing Our Git Action Command:
+### Writing Our Git Action Command
 Next, let's write our action workflow. 
 
 Copy and Paste the following in the `.github/workflows/release.yml` file:

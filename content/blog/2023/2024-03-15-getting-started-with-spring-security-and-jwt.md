@@ -312,10 +312,30 @@ Since we haven't specified any credentials in Postman we get the `UnAuthorized` 
 For the purpose of this article, we need to replace Basic Authentication with JWT-based authentication.
 We know that Spring provides security to our endpoints, by triggering a chain of filters that handle authentication and authorization for every
 request. The [`UsernamePasswordAuthenticationFilter`](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/UsernamePasswordAuthenticationFilter.html) is responsible for validating the credentials for every request. 
+In order to override this filter, let's create a new `Filter` called `JwtFilter`. This filter will extend `OncePerRequestFilter` class as we want the filter to be called ony once per request.
+````java
+@Component
+@Slf4j
+public class JwtFilter extends OncePerRequestFilter {
 
-Let's create a new `Filter` called `JwtFilter` and add it before `UsernamePasswordAuthenticationFilter` in the filter chain. This will make sure that `JwtFilter` will be used to validate the token sent in the `Authorization` header along with the request.
-The `JwtFilter` will extend `OncePerRequestFilter` class as we want the filter to be called ony once per request.
-We will first create a `JwtHelper` class that has a method to create a token:
+    private final AuthUserDetailsService userDetailsService;
+
+    private final JwtHelper jwtHelper;
+
+    public JwtFilter(AuthUserDetailsService userDetailsService, JwtHelper jwtHelper) {
+        this.userDetailsService = userDetailsService;
+        this.jwtHelper = jwtHelper;
+    }
+
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("Inside JWT filter");
+        // Code to validate the Authorization header
+    }
+}
+````
+The `JwtHelper` class is responsible for creating and validating the token. Let's look at how to create a token first:
 ````java
 public String createToken(Map<String, Object> claims, String subject) {
     Date expiryDate = 
@@ -333,7 +353,7 @@ public String createToken(Map<String, Object> claims, String subject) {
             .compact();
 }
 ````
-Let's look at the params responsible for creating the token:
+The following params are responsible for creating the token:
 - `claims` refers to an empty map. No user specific claims have been defined for this example.
 - `subject` refers to the username passed by the user when making the API call to create a token.
 - `expiryDate` refers to the date after adding 'x' milliseconds to the current date. The value of 'x' is defined in the property `jwt.validity`.

@@ -677,7 +677,6 @@ We see the `JwtFilter` being chained which indicates that the Basic auth has now
 Now, let's try to hit the `/token/create` endpoint again. We see that the endpoint is now able to successfully return the generated token:
 {{% image alt="settings" src="images/posts/spring-security-and-jwt/token-200.png" %}}
 
-
 ### Securing Library Application Endpoints
 Now, that we are able to successfully create the token, we need to pass this token to our library application to successfully call `/library/books/all`.
 Let's add an `Authorization` header of type `Bearer Token` with the generated token value and fire the request.

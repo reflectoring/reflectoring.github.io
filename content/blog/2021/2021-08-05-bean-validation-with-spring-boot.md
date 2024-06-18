@@ -900,6 +900,56 @@ into our `ValidationErrorResponse` data structure.
 Note the `@ControllerAdvice` annotation which makes the exception handler methods available globally to all
 controllers within the application context.
 
+## Loading Error Messages from a Properties File
+
+We've been hardcoding the error messages in our constraint validation annotations throughout this tutorial. A better approach to improve maintainability would be to externalize them in a properties file.
+
+First, we'll create a `validation-errors.properties` file in our `src/main/resources` directory and define our error messages there:
+
+```properties
+ip-address.invalid=Invalid IP address: '${validatedValue}'
+number.invalid=The provided number '${validatedValue}' must be between ${min} and ${max}
+```
+
+Note that we're using the `${validatedValue}` placeholder which will be replaced with the actual value that failed the validation. And the `${min}` and `${max}` placeholders will be replaced with the corresponding constraint values.
+
+We also use the kebab-case for declaring the keys in our `.properties` file as per normal convention.
+
+By default, Spring Boot looks for a file named `messages.properties` in the classpath to load error messages. But since we've used a different file name, we'll need to tell Spring Boot to load error messages from our `validation-errors.properties` file instead:
+
+```java
+@Bean
+public MessageSource messageSource() {
+  ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+  messageSource.setBasenames("classpath:validation-errors");
+  return messageSource;
+}
+```
+
+Alternatively, we can define the base name of our properties file in the `application.properties`:
+
+```properties
+spring.messages.basename=validation-errors
+```
+
+Both of these approaches take a comma seperated list of values that can be used to register multiple files.
+
+Finally, we'll update our code to reference the error message from our properties file using the `{}` placeholder syntax:
+
+```java
+@interface IpAddress {
+
+  String message() default "{ip-address.invalid}";
+  // ... same as above
+}
+```
+```java
+@Min(value = 1, message = "{number.invalid}")
+@Max(value = 10, message = "{number.invalid}")
+private int numberBetweenOneAndTen;
+``` 
+By externalizing our error messages in a separate `.properties` file, we improve the maintainability of our application and can easily update the messages without modifying the codebase.
+
 ## Conclusion
 In this tutorial, we've gone through all major validation features we might need when building an application with
 Spring Boot.  

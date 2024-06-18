@@ -5,6 +5,11 @@
 <!-- checking blog -->
 {{ if or (eq .Section "post") (eq .Section "posts") (eq .Section "blog") (eq .Section "blogs") (eq .Section "news") (eq .Section "categories") (eq .Section "tags") }}
 
+{{ $.Scratch.Set "articleDate" .PublishDate }}
+{{ if .Params.lastmod }}
+  {{ $.Scratch.Set "articleDate" .Params.lastmod }}
+{{ end }}
+
 <!--=================== section start ===================-->
 <section class="section-sm">
   <div class="container">
@@ -14,7 +19,7 @@
         <ul class="list-inline d-flex align-items-center mb-4">
           <li class="list-inline-item d-flex align-items-center me-4">
             <i class="fas fa-calendar me-2"></i>
-            <span data-blogtrack-date>{{ time.Format ":date_long" .PublishDate }}</span>
+            <span data-blogtrack-date>{{ time.Format ":date_long" ($.Scratch.Get "articleDate") }}</span>
           </li>
           <li class="list-inline-item d-flex align-items-center">
             <i class="fas fa-archive me-2"></i>

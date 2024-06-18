@@ -558,6 +558,76 @@ class ProgrammaticallyValidatingServiceTest {
 }
 ```   
 
+## Validating Properties at Startup
+
+In Spring Boot, we commonly use the `@ConfigurationProperties` annotation to bind external configuration properties to a POJO.
+
+However, in scenarios where we forget to provide a required property or if we provide an invalid value, our application may encounter exceptions at runtime when the properties are referenced. This leads to unexpected application behavior and a poor user experience.
+
+In such a case, **we'd want our application to fail fast during startup, rather than encountering runtime exceptions later on**.
+
+To achieve this, we can use the Bean Validation annotations on fields of our `@ConfigurationProperties` class:
+
+```java
+@Validated
+@ConfigurationProperties(prefix = "io.reflectoring.jwt")
+class RequiredConfigurationProperties {
+
+  @NotBlank
+  private String privateKey;
+
+  @NotNull
+  @Positive
+  private Integer validityMinutes;
+
+  // ... getter and setter methods
+
+}
+```
+
+We take an example of an application that needs the above properties to generate a JWT successfully. We annotate our class with `@ConfigurationProperties` and bind properties with the prefix `io.reflectoring.jwt`.
+
+The `privateKey` field is annotated with `@NotBlank`, indicating that it must not be null or an empty string. The `validityMinutes` field is annotated with `@NotNull` and `@Positive`, enforcing that a positive Integer value must be configured.
+
+We've also annotated our class with the `@Validated` annotation, to trigger Bean Validations.
+
+To enable validation for our `RequiredConfigurationProperties` class, we need to register it with Spring Boot, preferably in a `@Configuration` class:
+
+```java
+@EnableConfigurationProperties(RequiredConfigurationProperties.class)
+```
+
+Now, if we start our application without providing the required properties or with invalid values, the application context will fail to start. We'll see an error message in the console similar to:
+
+```console
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Binding to target io.reflectoring.validation.RequiredConfigurationProperties failed:
+
+    Property: io.reflectoring.jwt.privateKey
+    Value: "null"
+    Reason: must not be blank
+
+    Property: io.reflectoring.jwt.validityMinutes
+    Value: "-90"
+    Origin: class path resource [application.properties] - 3:38
+    Reason: must be greater than 0
+
+Action:
+
+Update your application's configuration
+```
+
+The error message clearly indicates which properties are missing or have invalid values, making it easy to identify and fix the configuration issues.
+
+In addition to using built-in Bean Validation annotations, we can also use custom validation annotations that we've seen, to enforce specific business rules. For example, in our [Integrating Amazon S3 Using Spring Cloud AWS](https://reflectoring.io/integrating-amazon-s3-with-spring-boot-using-spring-cloud-aws/#validating-bucket-existence-during-startup) article, we'd created a custom `@BucketExists` annotation to validate that a S3 bucket exists in our AWS account with the configured name during application startup to avoid runtime exceptions.
+
+This fail-fast approach helps us maintain a more stable and predictable application behavior.
+
 ## Using Validation Groups to Validate Objects Differently for Different Use Cases
 
 Often, certain objects are shared between different use cases. 

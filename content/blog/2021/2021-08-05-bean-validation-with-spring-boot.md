@@ -628,6 +628,103 @@ In addition to using built-in Bean Validation annotations, we can also use custo
 
 This fail-fast approach helps us maintain a more stable and predictable application behavior.
 
+## Implementing Cross-Field Validation
+
+Sometimes, we may want to enforce a validation rule that spans multiple fields. A common example is when a field's validation depends on the value of another field. Let's consider an example:
+
+```java
+class ProgrammerRegisterationRequest {
+
+  @NotBlank
+  private String programmingLanguage;
+
+  @NotBlank
+  private String favoriteIDE;
+
+  // ... getter and setter methods
+
+}
+```
+
+We have two fields: `programmingLanguage` and `favoriteIDE` in our class. Let's say we want to apply an unusual validation rule that if the programming language is selected as `Java`, then the favorite IDE cannot be `Notepad` or `Netbeans` (because that would be just weird, right? 😝).
+
+To implement this validation rule, first we'll create a custom constraint annotation `@ProgrammerStereotype`, similar to what we've seen before:
+
+```java
+@Documented
+@Target(TYPE)
+@Retention(RUNTIME)
+@Constraint(validatedBy = ProgrammerStereotypeValidator.class)
+@interface ProgrammerStereotype {
+
+  String message() default "Stereotype violation detected! IDE and language not vibing.";
+
+  Class<?>[] groups() default { };
+
+  Class<? extends Payload>[] payload() default { };
+
+}
+```
+
+Note that we've used `@Target(ElementType.TYPE)` here because this validation spans across multiple fields and will be annotated to our `ProgrammerRegisterationRequest` class, and not just to a single field. This is a key difference from the earlier `@IpAddress` annotation that we created.
+
+Next, let's create our constraint validator implementation:
+
+```java
+class ProgrammerStereotypeValidator implements ConstraintValidator < ProgrammerStereotype, ProgrammerRegisterationRequest > {
+
+  private static final List <String> UNWORTHY_JAVA_IDES = List.of("Notepad", "Netbeans");
+
+  @Override
+  public boolean isValid(ProgrammerRegisterationRequest request, ConstraintValidatorContext context) {
+    if (request.getProgrammingLanguage().equalsIgnoreCase("Java")) {
+      if (UNWORTHY_JAVA_IDES.contains(request.getFavoriteIDE())) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+}
+```
+
+In the overriden `isValid()` method, we implement our validation logic. We check if the programming language is `Java` and if the favorite IDE is in the list of unworthy Java IDEs. If both conditions are `true`, we return `false`, indicating that the validation has failed.
+
+We can now annotate the `ProgrammerRegisterationRequest` class with our new `@ProgrammerStereotype` annotation:
+
+```java
+@ProgrammerStereotype
+class ProgrammerRegisterationRequest {
+  // ... same as above
+}
+```
+
+Finally, in order to ensure our cross-field validation works as expected, let's write a unit test:
+
+```java
+class ProgrammerSteriotypeValidationTest {
+
+  private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+  @Test
+  void whenJavaProgrammerUsesNotepad_thenValidationFails() {
+    ProgrammerRegisterationRequest request = new ProgrammerRegisterationRequest();
+    request.setProgrammingLanguage("Java");
+    request.setFavoriteIDE("Notepad");
+
+    var violations = validator.validate(request);
+
+    assertFalse(violations.isEmpty());
+    assertThat(violations)
+      .extracting(ConstraintViolation::getMessage)
+      .contains("Stereotype violation detected! IDE and language not vibing.");
+  }
+
+}
+```
+
+And there we have it! We've implemented a validation rule that spans multiple fields. By using cross-field validations, we can enforce complex business rules and maintain data consistency in our classes.
+
 ## Using Validation Groups to Validate Objects Differently for Different Use Cases
 
 Often, certain objects are shared between different use cases. 

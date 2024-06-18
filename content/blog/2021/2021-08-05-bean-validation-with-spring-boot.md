@@ -3,12 +3,11 @@ authors: [ tom, hardik ]
 title: "Validation with Spring Boot - the Complete Guide"
 categories: ["Spring Boot"]
 date: 2021-08-05T00:00:00
-modified: 2021-08-05T00:00:00
+modified: 2024-06-19T00:00:00
 description: "A tutorial consolidating the most important features you'll need to integrate Bean Validation into your Spring Boot application. "
 image: images/stock/0051-stop-1200x628-branded.jpg
 url: bean-validation-with-spring-boot
 ---
-
 
 [Bean Validation](https://beanvalidation.org/) is the de-facto standard for implementing validation
 logic in the Java ecosystem. It's well integrated with Spring and Spring Boot. 
@@ -28,36 +27,33 @@ implementation('org.springframework.boot:spring-boot-starter-validation')
 ```
 
 It's not necessary to add the version number since the Spring Dependency Management Gradle plugin does
-that for us. If you're not using the plugin, you can find the most recent version 
-[here](https://search.maven.org/search?q=g:org.springframework.boot%20AND%20a:spring-boot-starter-validation&core=gav).
-
-However, if we have also included the web starter, the validation starter comes for free:
-
-```groovy
-implementation('org.springframework.boot:spring-boot-starter-web')
-```
+that for us. If you're not using the plugin, you can find the most recent version on
+[Maven Central](https://search.maven.org/search?q=g:org.springframework.boot%20AND%20a:spring-boot-starter-validation&core=gav).
 
 Note that the validation starter does no more than adding a dependency to a compatible version of
 [hibernate validator](https://search.maven.org/search?q=g:org.hibernate.validator%20AND%20a:hibernate-validator&core=gav), which is 
-the most widely used implementation of the Bean Validation specification.
+the most widely used implementation of the Bean Validation specification ([JSR 380](https://jcp.org/en/jsr/detail?id=380)).
 
 ## Bean Validation Basics
 
 Very basically, Bean Validation works by defining constraints to the fields of a class by annotating
-them with certain [annotations](https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/javax/validation/constraints/package-summary.html). 
+them with certain annotations.
+
+Through the `spring-boot-starter-validation` dependency, we're able to use constraint annotations available in [`jakarta.validation.constraints`](https://jakarta.ee/specifications/bean-validation/3.0/apidocs/jakarta/validation/constraints/package-summary.html) and [`org.hibernate.validator.constraints`](https://docs.jboss.org/hibernate/validator/6.2/api/org/hibernate/validator/constraints/package-summary.html) packages.
 
 ### Common Validation Annotations
 
 Some of the most common validation annotations are:
 
 * **`@NotNull`:** to say that a field must not be null.
-* **`@NotEmpty`:** to say that a list field must not empty.
-* **`@NotBlank`:** to say that a string field must not be the empty string (i.e. it must have at least one character).
-* **`@Min` and `@Max`:** to say that a numerical field is only valid when it's value is above or below a certain value.
+* **`@NotEmpty`:** to say that a list field must not be empty.
+* **`@NotBlank`:** to say that a string field must not be an empty string (i.e. it must have at least one character).
+* **`@Min` and `@Max`:** to say that a numerical field is only valid when its value is above or below a certain value.
 * **`@Pattern`:** to say that a string field is only valid when it matches a certain regular expression.
 * **`@Email`:** to say that a string field must be a valid email address.
+* **`@Past`:** to say that a date field must be in the past.
 
-An example of such a class would look like this:
+Let's look at an example of how some of these annotations can be used in a Java class:
 
 ```java
 class Customer {
@@ -67,8 +63,15 @@ class Customer {
 
   @NotBlank
   private String name;
+
+  @Min(1)
+  @Max(100)
+  private int age;
+
+  @Past
+  private LocalDate dateOfBirth;
   
-  // ...
+  // ... other customer fields
 }
 ```
 
@@ -96,7 +99,7 @@ We can put the `@Valid` annotation on method parameters and fields to tell Sprin
 
 ## Validating Input to a Spring MVC Controller
 
-Let's say we have implemented a Spring REST controller and want to validate the input that' passed in by a client. There are three 
+Let's say we have implemented a Spring REST controller and want to validate the input that's passed in by a client. There are three 
 things we can validate for any incoming HTTP request:
 
 * the request body,
@@ -115,11 +118,11 @@ This is our incoming payload class:
 ```java
 class Input {
 
-  @Min(1)
-  @Max(10)
+  @Min(value = 1, message = "Number must not be less than 1")
+  @Max(value = 10, message = "Number must not be greater than 10")
   private int numberBetweenOneAndTen;
 
-  @Pattern(regexp = "^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$")
+  @Pattern(regexp = "^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$", message = "Invalid IP address")
   private String ipAddress;
   
   // ...
@@ -129,6 +132,8 @@ class Input {
 We have an `int` field that must have a value between 1 and 10, inclusively, as defined by the `@Min` and `@Max` annotations. We also have a `String`
 field that must contain an IP address, as defined by the regex in the `@Pattern` annotation (the regex actually still allows invalid IP addresses with octets
 greater than 255, but we're going to fix that later in the tutorial, [when we're building a custom validator](#a-custom-validator-with-spring-boot)).
+
+Also, currently we've hardcoded the error messages in our validation annotations. We'll look at how they can be [loaded from a properties file](#loading-error-messages-from-a-properties-file) later in the tutorial.
 
 To validate the request body of an incoming HTTP request, we annotate the request body with the `@Valid` annotation in a REST controller:
 
@@ -160,7 +165,6 @@ this exception to a HTTP status 400 (Bad Request).
 We can verify this behavior with an integration test:
 
 ```java
-@ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = ValidateRequestBodyController.class)
 class ValidateRequestBodyControllerTest {
 
@@ -223,36 +227,37 @@ The `@Validated` annotation is only evaluated
 on class level in this case, even though it's allowed to be used on methods (we'll learn why it's allowed on
 method level when discussing [validation groups](#using-validation-groups-to-validate-objects-differently-for-different-use-cases) later).
 
-In contrast to request body validation a failed validation will trigger a `ConstraintViolationException`
+In contrast to request body validation, a failed validation will trigger a `ConstraintViolationException`
 instead of a `MethodArgumentNotValidException`. Spring does not register a default exception handler for this exception,
 so it will by default cause a response with HTTP status 500 (Internal Server Error).
 
 If we want to return a HTTP status 400 instead (which makes sense, since the client provided an invalid
-parameter, making it a bad request), we can add a custom exception handler to our contoller:
+parameter, making it a bad request), we can add a custom exception handler to our contoller class and return a [`ProblemDetail`](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-ann-rest-exceptions.html) instance:
 
 ```java
 @RestController
 @Validated
 class ValidateParametersController {
 
-  // request mapping method omitted
+  // request mapping methods omitted
   
+  @ResponseBody
   @ExceptionHandler(ConstraintViolationException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
-    return new ResponseEntity<>("not valid due to validation error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+  ProblemDetail handle(ConstraintViolationException exception) {
+    String detail = "Validation error: " + exception.getMessage();
+    return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, detail);
   }
 
 }
 ```
 
-Later in this tutorial we will look at how to return a [structured error response](#returning-structured-error-responses)
-that contains details on all failed validations for the client to inspect.
+The `ProblemDetail` class allows us to return a structured error response back to the client without having to create a custom class. It's an implementation of the RFC 9457 specification.
+
+Later in this tutorial, we'll define a global exception handler and look at how we can include the [list of all the failed validations](#handling-validation-errors) for the client to inspect.
 
 We can verify the validation behavior with an integration test:
 
 ```java
-@ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = ValidateParametersController.class)
 class ValidateParametersControllerTest {
 
@@ -260,16 +265,24 @@ class ValidateParametersControllerTest {
   private MockMvc mvc;
 
   @Test
-  void whenPathVariableIsInvalid_thenReturnsStatus400() throws Exception {
-    mvc.perform(get("/validatePathVariable/3"))
-            .andExpect(status().isBadRequest());
+  void whenPathVariableIsInvalid_thenReturnsStatus400() {
+    String apiPath = "/validatePathVariable/3";
+    mvc.perform(get(apiPath))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(400))
+            .andExpect(jsonPath("$.instance").value(apiPath))
+            .andExpect(jsonPath("$.detail").value(startsWith("Validation error:")));
   }
 
   @Test
-  void whenRequestParameterIsInvalid_thenReturnsStatus400() throws Exception {
-    mvc.perform(get("/validateRequestParameter")
+  void whenRequestParameterIsInvalid_thenReturnsStatus400() {
+    String apiPath = "/validateRequestParameter";
+    mvc.perform(get(apiPath)
             .param("param", "3"))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status").value(400))
+            .andExpect(jsonPath("$.instance").value(apiPath))
+            .andExpect(jsonPath("$.detail").value(startsWith("Validation error:")));
   }
 
 }
@@ -297,7 +310,6 @@ Again, the `@Validated` annotation is only evaluated on class level, so don't pu
 Here's a test verifying the validation behavior:
 
 ```java
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 class ValidatingServiceTest {
 
@@ -334,7 +346,7 @@ Let's say want to store objects of our `Input` class to the database. First, we 
 
 ```java
 @Entity
-public class Input {
+class Input {
 
   @Id
   @GeneratedValue
@@ -356,14 +368,13 @@ Then, we create a Spring Data repository that provides us with methods to persis
 `Input` objects:
 
 ```java
-public interface ValidatingRepository extends CrudRepository<Input, Long> {}
+interface ValidatingRepository extends CrudRepository<Input, Long> {}
 ```
 
 By default, any time we use the repository to store an `Input` object whose constraint annotations are violated,
 we'll get a `ConstraintViolationException` as this integration test demonstrates:
 
 ```java
-@ExtendWith(SpringExtension.class)
 @DataJpaTest
 class ValidatingRepositoryTest {
 
@@ -393,11 +404,11 @@ thes `EntityManager` automatically under certain circumstances, but in the case 
 we have to do this by hand.
 
 If for any reason we want to disable Bean Validation in our Spring Data repositories, we can set the
-Spring Boot property `spring.jpa.properties.javax.persistence.validation.mode` to `none`.
+Spring Boot property `spring.jpa.properties.jakarta.persistence.validation.mode` to `none`.
 
 ## A Custom Validator with Spring Boot
 
-If the available [constraint annotations](https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/javax/validation/constraints/package-summary.html)
+If the available [constraint annotations](https://jakarta.ee/specifications/bean-validation/3.0/apidocs/jakarta/validation/constraints/package-summary.html)
 do not suffice for our use cases, we might want to create one ourselves.
 
 In the `Input` class from above, we used a regular expression to validate that a String is a valid IP address.
@@ -411,13 +422,13 @@ but we like to implement validations in Java, don't we?).
 First, we create the custom constraint annotation `IpAddress`:
 
 ```java
-@Target({ FIELD })
+@Target(FIELD)
 @Retention(RUNTIME)
 @Constraint(validatedBy = IpAddressValidator.class)
 @Documented
-public @interface IpAddress {
+@interface IpAddress {
 
-  String message() default "{IpAddress.invalid}";
+  String message() default "Invalid IP address";
 
   Class<?>[] groups() default { };
 
@@ -428,8 +439,7 @@ public @interface IpAddress {
 
 A custom constraint annotation needs all of the following:
 
-* the parameter `message`, pointing to a property key in `ValidationMessages.properties`, which is used
-  to resolve a message in case of violation,
+* the parameter `message`, allowing to specify an error message in case of violation. We've hardcoded a default error message of `Invalid IP address`. (we'll [externalize and load it from a properties file](#loading-error-messages-from-a-properties-file) later)
 * the parameter `groups`, allowing to define under which circumstances this validation is to be triggered
   (we're going to talk about [validation groups](#using-validation-groups-to-validate-objects-differently-for-different-use-cases) later),
 * the parameter `payload`, allowing to define a payload to be passed with this validation (since this is 
@@ -441,41 +451,37 @@ The validator implementation looks like this:
 ```java
 class IpAddressValidator implements ConstraintValidator<IpAddress, String> {
 
+  private static final Pattern IP_ADDRESS_PATTERN = Pattern.compile("^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$");
+
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
-    Pattern pattern = 
-      Pattern.compile("^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$");
-    Matcher matcher = pattern.matcher(value);
-    try {
-      if (!matcher.matches()) {
-        return false;
-      } else {
-        for (int i = 1; i <= 4; i++) {
-          int octet = Integer.valueOf(matcher.group(i));
-          if (octet > 255) {
-            return false;
-          }
-        }
-        return true;
-      }
-    } catch (Exception e) {
-      return false;
+    Matcher matcher = IP_ADDRESS_PATTERN.matcher(value);
+    boolean isValidIpAddress = matcher.matches();
+    
+    if (isValidIpAddress) {
+    	isValidIpAddress = isValidOctets(matcher);
     }
+    return isValidIpAddress;
   }
+
+  private boolean isValidOctets(Matcher matcher) {
+    for (int i = 1; i <= 4; i++) {
+      int octet = Integer.parseInt(matcher.group(i));
+      if (octet < 0 || octet > 255) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 }
 ```
 
-We can now use the `@IpAddress` annotation just like any other constraint annotation:
+We can now use our custom `@IpAddress` annotation similar to other constraint annotations on our class level fields:
 
 ```java
-class InputWithCustomValidator {
-
-  @IpAddress
-  private String ipAddress;
-  
-  // ...
-
-}
+@IpAddress
+private String ipAddress;
 ```
 
 ## Validating Programmatically
@@ -530,7 +536,6 @@ constructor.
 The following unit test proves that both methods above work as expected:
 
 ```java
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 class ProgrammaticallyValidatingServiceTest {
 
@@ -624,7 +629,9 @@ Update your application's configuration
 
 The error message clearly indicates which properties are missing or have invalid values, making it easy to identify and fix the configuration issues.
 
-In addition to using built-in Bean Validation annotations, we can also use custom validation annotations that we've seen, to enforce specific business rules. For example, in our [Integrating Amazon S3 Using Spring Cloud AWS](https://reflectoring.io/integrating-amazon-s3-with-spring-boot-using-spring-cloud-aws/#validating-bucket-existence-during-startup) article, we'd created a custom `@BucketExists` annotation to validate that a S3 bucket exists in our AWS account with the configured name during application startup to avoid runtime exceptions.
+In addition to using built-in Bean Validation annotations, we can also use custom validation annotations that we've seen, to enforce specific business rules. 
+
+For example, in our [Integrating Amazon S3 Using Spring Cloud AWS](https://reflectoring.io/integrating-amazon-s3-with-spring-boot-using-spring-cloud-aws/#validating-bucket-existence-during-startup) article, we'd created a custom `@BucketExists` annotation to validate that a S3 bucket exists in our AWS account with the configured name during application startup to avoid runtime exceptions.
 
 This fail-fast approach helps us maintain a more stable and predictable application behavior.
 
@@ -792,7 +799,6 @@ should be active, it must also be applied at method level.
 To make certain that the above works as expected, we can implement a unit test:
 
 ```java
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 class ValidatingServiceWithGroupsTest {
 
@@ -833,29 +839,22 @@ class ValidatingServiceWithGroupsTest {
 ## Handling Validation Errors
 
 When a validation fails, we want to return a meaningful error message to the client. In order to enable the client
-to display a helpful error message, **we should return a data structure that contains an error message for each 
-validation that failed**.
+to display a helpful error message, **we should return an error message for each validation that failed**.
 
-First, we need to define that data structure. We'll call it `ValidationErrorResponse` and it contains
-a list of `Violation` objects:
+First, we'll define a custom `Violation` class that contains the name of the field that failed validation and its corresponding error message:
 
 ```java
-public class ValidationErrorResponse {
+class Violation {
 
-  private List<Violation> violations = new ArrayList<>();
+  private String fieldName;
 
-  // ...
+  private String message;
+
+  // ... constructor and getter methods
 }
+```
 
-public class Violation {
-
-  private final String fieldName;
-
-  private final String message;
-
-  // ...
-}
-``` 
+We'll add this `Violation` class as a custom property to the `ProblemDetail` instance that we'll return back to the client.
 
 Then, we create a global `ControllerAdvice` that handles all `ConstraintViolationExceptions` that bubble up to the
 controller level. In order to catch validation errors for [request bodies](#validating-a-request-body) as well, we will
@@ -864,38 +863,59 @@ also handle `MethodArgumentNotValidExceptions`:
 ```java
 @ControllerAdvice
 class ErrorHandlingControllerAdvice {
+	
+  private static final String VIOLATIONS_KEY = "violations";
 
   @ExceptionHandler(ConstraintViolationException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ResponseBody
-  ValidationErrorResponse onConstraintValidationException(
-      ConstraintViolationException e) {
-    ValidationErrorResponse error = new ValidationErrorResponse();
-    for (ConstraintViolation violation : e.getConstraintViolations()) {
-      error.getViolations().add(
-        new Violation(violation.getPropertyPath().toString(), violation.getMessage()));
+  ProblemDetail handle(ConstraintViolationException exception) {
+    List<Violation> violations = new ArrayList<>();
+    for (ConstraintViolation<?> violation: exception.getConstraintViolations()) {
+      violations.add(new Violation(violation.getPropertyPath().toString(), violation.getMessage()));
     }
-    return error;
+
+    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Validation failure.");
+    problemDetail.setProperty(VIOLATIONS_KEY, violations);
+    return problemDetail;
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ResponseBody
-  ValidationErrorResponse onMethodArgumentNotValidException(
-      MethodArgumentNotValidException e) {
-    ValidationErrorResponse error = new ValidationErrorResponse();
-    for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
-      error.getViolations().add(
-        new Violation(fieldError.getField(), fieldError.getDefaultMessage()));
+  ProblemDetail handle(MethodArgumentNotValidException exception) {
+    List<Violation> violations = new ArrayList<>();
+    for (FieldError fieldError: exception.getBindingResult().getFieldErrors()) {
+      violations.add(new Violation(fieldError.getField(), fieldError.getDefaultMessage()));
     }
-    return error;
+    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Validation failure.");
+    problemDetail.setProperty(VIOLATIONS_KEY, violations);
+    return problemDetail;
   }
 
 }
 ```
 
-What we're doing here is simply reading information about the violations out of the exceptions and translating them
-into our `ValidationErrorResponse` data structure.
+What we're doing here is simply reading information about the violations out of the exceptions, translating them
+into our `Violation` class, and adding it as a custom property to the `ProblemDetail` instance.
+
+The resulting JSON error response in an event of a violation exception will look like this:
+
+```json
+{
+  "detail": "Validation failure.",
+  "instance": "/validate-request-body",
+  "status": 400,
+  "title": "Bad Request",
+  "type": "about:blank",
+  "violations": [
+    {
+      "fieldName": "numberBetweenOneAndTen",
+      "message": "must be greater than or equal to 1"
+    },
+    {
+      "fieldName": "ipAddress",
+      "message": "must match \"^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$\""
+    }
+  ]
+}
+```
 
 Note the `@ControllerAdvice` annotation which makes the exception handler methods available globally to all
 controllers within the application context.
@@ -955,9 +975,10 @@ In this tutorial, we've gone through all major validation features we might need
 Spring Boot.  
 
 If you want to get your hands dirty on the example code, have a look at the 
-[github repository](https://github.com/thombergs/code-examples/tree/master/spring-boot/validation).
+[Github repository](https://github.com/thombergs/code-examples/tree/master/spring-boot/validation).
 
 ## Update History
+* **2024-06-19:** upgraded code snippets to Spring Boot 3.
 * **2021-08-05:** updated and polished the article a bit. 
 * **2018-10-25:** added a word of caution on using bean validation in the persistence layer 
 (see [this](https://twitter.com/olivergierke/status/1055015506326052865) thread on Twitter). 

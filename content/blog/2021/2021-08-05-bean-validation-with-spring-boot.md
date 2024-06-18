@@ -1,5 +1,5 @@
 ---
-authors: [tom]
+authors: [ tom, hardik ]
 title: "Validation with Spring Boot - the Complete Guide"
 categories: ["Spring Boot"]
 date: 2021-08-05T00:00:00

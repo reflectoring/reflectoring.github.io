@@ -1,8 +1,8 @@
 ---
 title: "Getting started with Spring Security and JWT"
 categories: ["Spring"]
-date: 2024-02-15 00:00:00 +0000
-modified: 2024-02-15 00:00:00 +0000
+date: 2024-06-19 00:00:00 +0000
+modified: 2024-06-19 00:00:00 +0000
 authors: ["ranjani"]
 description: "Getting started with Spring Security and JWT"
 image: images/stock/0101-keylock-1200x628-branded.jpg
@@ -312,7 +312,7 @@ Since we haven't specified any credentials in Postman we get the `UnAuthorized` 
 For the purpose of this article, we need to replace Basic Authentication with JWT-based authentication.
 We know that Spring provides security to our endpoints, by triggering a chain of filters that handle authentication and authorization for every
 request. The [`UsernamePasswordAuthenticationFilter`](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/web/authentication/UsernamePasswordAuthenticationFilter.html) is responsible for validating the credentials for every request. 
-In order to override this filter, let's create a new `Filter` called `JwtFilter`. This filter will extend `OncePerRequestFilter` class as we want the filter to be called ony once per request.
+In order to override this filter, let's create a new `Filter` called `JwtFilter`. This filter will extend the `OncePerRequestFilter` class as we want the filter to be called ony once per request:
 ````java
 @Component
 @Slf4j

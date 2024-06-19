@@ -1,5 +1,5 @@
 ---
-title: "Getting started with Spring Security and JWT"
+title: "Getting Started with Spring Security and JWT"
 categories: ["Spring"]
 date: 2024-06-19 00:00:00 +0000
 modified: 2024-06-19 00:00:00 +0000

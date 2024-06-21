@@ -372,3 +372,12 @@ hardik:
   linkedin: "hardikSinghBehl"
   twitter: "hardikSinghBehl"
   bio: "Software developer proficient in the Java, Spring and AWS ecosystem. Hardik is also an <a target=\"_blank\" href=\"https://community.aws/@hardiksinghbehl\">AWS Community Builder</a> who has been sharing his knowledge through his articles and <a target=\"_blank\" href=\"https://github.com/hardikSinghBehl\">Github profile</a>."
+
+akinwalehabib:
+  name: "Akinwale Habib"
+  email: "akinwalehabib@hotmail.com"
+  avatar: "/images/authors/akinwalehabib.jpeg"
+  github: "akinwale-habibullah"
+  linkedin: "akinwalehabib"
+  twitter: "akinwalehabib"
+  bio: "I am Akinwale Habib. I am a senior software engineer and a former bootcamp instructor at Andela. I have led technical teams to develop eHealth products at Savics. I have always loved helping others learn and I have helped many aspiring software engineers learn different technical skills. You can find a course I created on testing with Jest at <a target=\"_blank\" href=\"https://www.newline.co/courses/pain-free-mocking-with-jest\">Newline</a>."

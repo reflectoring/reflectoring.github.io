@@ -5,7 +5,10 @@
 <!-- checking blog -->
 {{ if or (eq .Section "post") (eq .Section "posts") (eq .Section "blog") (eq .Section "blogs") (eq .Section "news") (eq .Section "categories") (eq .Section "tags") }}
 
-{{ $author := (index .Site.Data.authors .Params.authors) }}
+{{ $.Scratch.Set "articleDate" .PublishDate }}
+{{ if .Params.lastmod }}
+  {{ $.Scratch.Set "articleDate" .Params.lastmod }}
+{{ end }}
 
 <!--=================== section start ===================-->
 <section class="section-sm">
@@ -16,7 +19,7 @@
         <ul class="list-inline d-flex align-items-center mb-4">
           <li class="list-inline-item d-flex align-items-center me-4">
             <i class="fas fa-calendar me-2"></i>
-            <span data-blogtrack-date>{{ time.Format ":date_long" .PublishDate }}</span>
+            <span data-blogtrack-date>{{ time.Format ":date_long" ($.Scratch.Get "articleDate") }}</span>
           </li>
           <li class="list-inline-item d-flex align-items-center">
             <i class="fas fa-archive me-2"></i>
@@ -47,9 +50,14 @@
 
         <div class="content" data-blogtrack-text>{{.Content}}</div>
 
-        {{ $author := (index .Site.Data.authors .Params.authors) }}
-
-        {{ partial "author-blurb.html" $author }}
+        {{ $authors := .Params.authors | default slice }}
+        {{ range $index, $authorID := $authors }}
+          {{ $author := index $.Site.Data.authors $authorID }}
+          {{ partial "author-blurb.html" $author }}
+          {{ if ne (add $index 1) (len $authors) }}
+            <div style="margin-bottom: 2rem;"></div>
+          {{ end }}
+        {{ end }}
 
         <!-- disqus comments -->
         {{ if .Site.DisqusShortname }}

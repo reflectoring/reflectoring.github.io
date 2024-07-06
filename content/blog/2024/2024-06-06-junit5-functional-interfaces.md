@@ -8,15 +8,15 @@ title: Guide to JUnit 5 Functional Interfaces
 url: junit5-functional-interfaces
 ---
 
-In this article, we would get familiar with JUnit 5 functional interfaces. JUnit 5 significantly advanced from its predecessors. Features like functional interfaces can greatly simplify our work once we grasp their functionality.
+In this article, we will get familiar with JUnit 5 functional interfaces. JUnit 5 significantly advanced from its predecessors. Features like functional interfaces can greatly simplify our work once we grasp their functionality.
 
 ## Quick Introduction to Java Functional Interfaces
 
-Functional interface are a fundamental concept in Java functional programming. Java 8 specifically designed them to allow the assignment of lambda expressions or method references while processing data streams. In the Java API, specifically in the `java.util.function` package, you will find a collection of functional interfaces. **The main characteristic of a functional interface is that it contains only one abstract method.** Although it can have default methods and static methods, these do not count towards the single abstract method requirement. Functional interfaces serve as the targets for lambda expressions or method references.
+Functional interfaces are a fundamental concept in Java functional programming. Java 8 specifically designed them to allow the assignment of lambda expressions or method references while processing data streams. In the Java API, specifically in the `java.util.function` package, you will find a collection of functional interfaces. **The main characteristic of a functional interface is that it contains only one abstract method.** Although it can have default methods and static methods, these do not count towards the single abstract method requirement. Functional interfaces serve as the targets for lambda expressions or method references.
 
 ## JUnit 5 Functional Interfaces
 
-JUnit functional interfaces belong to `org.junit.jupiter.api.function` package. **It defines three functional interfaces: `Executable`, `ThrowingConsumer<T>` and `ThrowingSupplier<T>`.**  We use them typically with `Assertions` utility class.
+JUnit functional interfaces belong to the `org.junit.jupiter.api.function` package. **It defines three functional interfaces: `Executable`, `ThrowingConsumer<T>` and `ThrowingSupplier<T>`.**  We use them typically with `Assertions` utility class.
 
 Knowing how these interfaces work can greatly improve your testing methods. They make it easier to write and comprehend tests, reducing the amount of repetitive code needed for handling exceptions. By using these interfaces, you can describe complex test scenarios more clearly and concisely.
 
@@ -24,9 +24,9 @@ Let's learn how to use these function interfaces.
 
 ## Using `Executable`
 
-**The `Executable` is a functional interface that enables the implementation of any generic block of code that may potentially throw a `Throwable`.**
+**`Executable` is a functional interface that enables the implementation of any generic block of code that may potentially throw a `Throwable`.**
 
-JUnit 5 defines the `Executable` interface as follows::
+JUnit 5 defines the `Executable` interface as follows:
 
 ```java
 @FunctionalInterface
@@ -41,7 +41,7 @@ It is particularly useful for writing tests to validate if specific code paths t
 
 One common scenario where we use the `Executable` with the `Assertions.assertThrows()` method. This method takes a `Executable` as an argument, executes it, and checks if it throws the expected exception.
 
-[`Assertions`](https://junit.org/junit5/docs/5.9.0/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html) class has many assertion methods accepting executable:
+The [`Assertions`](https://junit.org/junit5/docs/5.9.0/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html) class has many assertion methods accepting executable:
 
 ```java
 static void assertAll(Executable... executables)
@@ -417,7 +417,7 @@ The `inputGenerator` generates input values, and adds a `DynamicTest` to the res
 
 **`ThrowingSupplier` is a functional interface that enables the implementation of a generic block of code that returns an object and may throw a `Throwable`.** It is similar to [`Supplier`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Supplier.html), except that it can throw any kind of exception, including checked exceptions.
 
-[`Assertions`](https://junit.org/junit5/docs/5.9.0/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html) class has many assertion methods accepting throwing supplier:
+The [`Assertions`](https://junit.org/junit5/docs/5.9.0/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html) class has many assertion methods accepting throwing supplier:
 
 ```java
 static <T> T assertDoesNotThrow(ThrowingSupplier<T> supplier)

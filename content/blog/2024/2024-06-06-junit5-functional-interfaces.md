@@ -10,9 +10,11 @@ url: junit5-functional-interfaces
 
 In this article, we will get familiar with JUnit 5 functional interfaces. JUnit 5 significantly advanced from its predecessors. Features like functional interfaces can greatly simplify our work once we grasp their functionality.
 
+{{% github "https://github.com/thombergs/code-examples/tree/master/junit5-functional-interfaces" %}}
+
 ## Quick Introduction to Java Functional Interfaces
 
-Functional interfaces are a fundamental concept in Java functional programming. Java 8 specifically designed them to allow the assignment of lambda expressions or method references while processing data streams. In the Java API, specifically in the `java.util.function` package, you will find a collection of functional interfaces. **The main characteristic of a functional interface is that it contains only one abstract method.** Although it can have default methods and static methods, these do not count towards the single abstract method requirement. Functional interfaces serve as the targets for lambda expressions or method references.
+[Functional interfaces](https://reflectoring.io/one-stop-guide-to-java-functional-interfaces/) are a fundamental concept in Java functional programming. Java 8 specifically designed them to allow the assignment of lambda expressions or method references while processing data streams. In the Java API, specifically in the `java.util.function` package, you will find a collection of functional interfaces. **The main characteristic of a functional interface is that it contains only one abstract method.** Although it can have default methods and static methods, these do not count towards the single abstract method requirement. Functional interfaces serve as the targets for lambda expressions or method references.
 
 ## JUnit 5 Functional Interfaces
 
@@ -71,7 +73,7 @@ Let's learn about these methods one by one.
 
 **The `Assertions.assertsAll()` method asserts that all supplied executables do not throw exceptions.**
 
-Let's now see how to use `assertAll()` and executables:
+Let's first define executables:
 
 ```java
 public class ExecutableTest {

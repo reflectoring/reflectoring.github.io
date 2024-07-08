@@ -124,32 +124,6 @@ void testAssertAllWithExecutable(int num1, int num2, int sum,
 
 In `testAssertAllExecutable()` method, `Assertions.assertAll()` groups 3 assertions. The first checks if sum of `num1` and `num2` equals `sum`. The second verifies if string input starts with `prefix`. Finally, the third checks if `count` is less than 0, asserts that creating `ArrayList` with count will throw `IllegalArgumentException`, otherwise asserts that string `arg` repeated count times equals result.
 
-{{% info title="Lambda Expression Conversion Behind the Scenes" %}}
-
-Modern Java versions (starting from Java 8) use the `invokedynamic` instruction to handle lambda expressions more efficiently than creating anonymous classes.
-
-Here's an explanation of what happens behind the scenes:
-
-**Lambda Expression Creation**:
-When we write a lambda expression such as `() -> assertEquals(sum, num1 + num2)`, we define the behavior we want to execute later.
-
-**Type Inference**:
-The Java compiler infers that the lambda expression must be compatible with the `Executable` interface, which has a single abstract method `execute()`.
-
-**`invokedynamic` Instruction**:
-Instead of generating an anonymous inner class, the Java compiler generates a call to the `invokedynamic` instruction. Java 7 introduced `invokedynamic` bytecode instruction. It improves the performance and flexibility of dynamic language implementations on the JVM.
-
-**Lambda `Metafactory`**:
-The `invokedynamic` instruction links to a `LambdaMetafactory` at runtime, which is responsible for creating the actual implementation of the lambda. This factory uses a combination of method handles and dynamic class generation to create an instance of the functional interface. This approach avoids the overhead associated with creating anonymous classes for each lambda expression.
-
-**Method Handle**:
-It creates a *method handle* to the target method (the body of the lambda expression). This method handle is an optimized way to invoke methods dynamically.
-
-**Efficient Execution**:
-When the JVM executes the lambda expression, it uses the method handle to invoke the method directly. Java has greatly optimized this procedure. It results in lower overhead when contrasted with the utilization of conventional anonymous inner classes.
-
-{{% /info %}}
-
 ### Using Executables in `assertDoesNotThrow()`
 
 **The `Assertions.assertDoesNotThrow()` method asserts that execution of the supplied executable does not throw any kind of exception.** Thus, we can explicitly verify that the logic under test executes without encountering any exception. It is useful assertion method we can use to test the *happy paths*.

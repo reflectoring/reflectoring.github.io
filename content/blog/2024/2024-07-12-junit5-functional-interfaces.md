@@ -1,7 +1,7 @@
 ---
 authors: [sagaofsilence]
 categories: [Java]
-date: 2024-06-06 00:00:00 +1100
+date: 2024-07-12 00:00:00 +1100
 excerpt: Guide to JUnit 5 Functional Interfaces.
 image: images/stock/0041-adapter-1200x628-branded.jpg
 title: Guide to JUnit 5 Functional Interfaces
@@ -10,19 +10,19 @@ url: junit5-functional-interfaces
 
 In this article, we will get familiar with JUnit 5 functional interfaces. JUnit 5 significantly advanced from its predecessors. Features like functional interfaces can greatly simplify our work once we grasp their functionality.
 
-{{% github "https://github.com/thombergs/code-examples/tree/master/junit5-functional-interfaces" %}}
+{{% github "https://github.com/thombergs/code-examples/tree/master/junit/junit5/functional-interfaces" %}}
 
 ## Quick Introduction to Java Functional Interfaces
 
-[Functional interfaces](https://reflectoring.io/one-stop-guide-to-java-functional-interfaces/) are a fundamental concept in Java functional programming. Java 8 specifically designed them to allow the assignment of lambda expressions or method references while processing data streams. In the Java API, specifically in the `java.util.function` package, you will find a collection of functional interfaces. **The main characteristic of a functional interface is that it contains only one abstract method.** Although it can have default methods and static methods, these do not count towards the single abstract method requirement. Functional interfaces serve as the targets for lambda expressions or method references.
+[Functional interfaces](https://reflectoring.io/one-stop-guide-to-java-functional-interfaces/) are a fundamental concept in Java functional programming. Java 8 specifically designed them to allow the usage of lambda expressions or method references while processing data streams. In the Java API, specifically in the `java.util.function` package, you will find a collection of functional interfaces. **The main characteristic of a functional interface is that it contains only one abstract method.** Although it can have default methods and static methods, these do not count towards the single abstract method requirement. Functional interfaces serve as the targets for lambda expressions or method references.
 
 ## JUnit 5 Functional Interfaces
 
-JUnit functional interfaces belong to the `org.junit.jupiter.api.function` package. **It defines three functional interfaces: `Executable`, `ThrowingConsumer<T>` and `ThrowingSupplier<T>`.**  We use them typically with `Assertions` utility class.
+JUnit functional interfaces belong to the `org.junit.jupiter.api.function` package. **It defines three functional interfaces: `Executable`, `ThrowingConsumer<T>` and `ThrowingSupplier<T>`.**  We typically use them with the `Assertions` utility class.
 
 Knowing how these interfaces work can greatly improve your testing methods. They make it easier to write and comprehend tests, reducing the amount of repetitive code needed for handling exceptions. By using these interfaces, you can describe complex test scenarios more clearly and concisely.
 
-Let's learn how to use these function interfaces.
+Let's learn how to use these functional interfaces.
 
 ## Using `Executable`
 
@@ -41,9 +41,9 @@ public interface Executable {
 
 It is particularly useful for writing tests to validate if specific code paths throw specific exceptions.
 
-One common scenario where we use the `Executable` with the `Assertions.assertThrows()` method. This method takes a `Executable` as an argument, executes it, and checks if it throws the expected exception.
+One common scenario is to use the `Executable` with the `Assertions.assertThrows()` method. This method takes an `Executable` as an argument, executes it, and checks if it throws the expected exception.
 
-The [`Assertions`](https://junit.org/junit5/docs/5.9.0/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html) class has many assertion methods accepting executable:
+The [`Assertions`](https://junit.org/junit5/docs/5.9.0/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html) class provides many assertion methods accepting implementations of the `Executable` interface:
 
 ```java
 static void assertAll(Executable... executables)
@@ -73,7 +73,7 @@ Let's learn about these methods one by one.
 
 **The `Assertions.assertsAll()` method asserts that all supplied executables do not throw exceptions.**
 
-Let's first define executables:
+Let's first define the executables which we'll use in our examples:
 
 ```java
 public class ExecutableTest {
@@ -93,9 +93,9 @@ public class ExecutableTest {
 
 In the `ExecutableTest` class, we define several tests to demonstrate the usage of the `Executable` functional interface with JUnit's timeout assertions.
 
-We start by initializing a list of `Long` numbers (numbers) and defining two `Executable` lambdas: `sorter` and `checkSorting`. The `sorter` lambda simulates a time-consuming operation by sleeping for 2 seconds and then sorting the list. The `checkSorting` lambda verifies that the list is in correct sort order. Additionally, we define another `Executable` lambda, `noChanges`, which checks that the list remains in its initial unsorted state.
+We start by initializing a list of `Long` numbers (numbers) and defining two `Executable` lambdas: `sorter` and `checkSorting`. The `sorter` lambda simulates a time-consuming operation by sleeping for 2 seconds and then sorting the list. The `checkSorting` lambda verifies that the list is in the correct sort order. Additionally, we define another `Executable` lambda, `noChanges`, which checks that the list remains in its initial unsorted state.
 
-Consider following example that shows how to use `assertAll` with executable:
+Consider the following example that shows how to use `assertAll` with an executable:
 
 ```java
 @ParameterizedTest
@@ -122,11 +122,11 @@ void testAssertAllWithExecutable(int num1, int num2, int sum,
 }
 ```
 
-In `testAssertAllExecutable()` method, `Assertions.assertAll()` groups 3 assertions. The first checks if sum of `num1` and `num2` equals `sum`. The second verifies if string input starts with `prefix`. Finally, the third checks if `count` is less than 0, asserts that creating `ArrayList` with count will throw `IllegalArgumentException`, otherwise asserts that string `arg` repeated count times equals result.
+In the `testAssertAllExecutable()` method, `Assertions.assertAll()` groups 3 assertions provided as a lambda function. The first assertion checks if the sum of `num1` and `num2` equals `sum`. The second assertion verifies if the string input starts with `prefix`. Finally, the third assertion checks if `count` is less than 0, asserts that creating `ArrayList` with count will throw `IllegalArgumentException`, otherwise asserts that string `arg` repeated count times equals result.
 
 ### Using Executables in `assertDoesNotThrow()`
 
-**The `Assertions.assertDoesNotThrow()` method asserts that execution of the supplied executable does not throw any kind of exception.** Thus, we can explicitly verify that the logic under test executes without encountering any exception. It is useful assertion method we can use to test the *happy paths*.
+**The `Assertions.assertDoesNotThrow()` method asserts that the execution of the supplied executable does not throw any kind of exception.** Thus, we can explicitly verify that the logic under test executes without encountering any exception. It is a useful assertion method that we can use to test the *happy paths*.
 
 Here's a simple example:
 
@@ -142,15 +142,15 @@ The test `testAssertDoesNotThrowWithExecutable()` annotated `@ParameterizedTest`
 
 ### Using Executables in `assertThrows()`
 
-**The `Assertions.assertsThrows()` method asserts that execution of the supplied executable throws an expected exception and return the exception.**
+**The `Assertions.assertsThrows()` method asserts that the execution of the supplied executable throws an expected exception and returns the exception.**
 
-If the logic does not throw any exception, or throws a different exception, then this method will fail.
+If the logic does not throw any exception or throws a different exception, then this method will fail.
 
-We can perform additional checks on the exception instance we get in return value.
+We can perform additional checks on the exception instance we get in the returned value.
 
-It is useful assertion method we can use to test the *failure paths*.
+It is an useful assertion method we can use to test the *failure paths*.
 
-Let's see how we can use the `assertThrows()` in action:
+Let's see how we can use `assertThrows()` in action:
 
 ```java
 @Test
@@ -171,19 +171,19 @@ void testAssertThrowsWithExecutable() {
 }
 ```
 
-The `testAssertThrowsWithExecutable()` method tests the `assertThrows()` method with a `Executable`.
+The `testAssertThrowsWithExecutable()` method tests the `assertThrows()` method with an `Executable`.
 
-It begins by creating a list of strings containing the values “one”, “”, “three”, `null`, and “five”. Using `assertThrows()` method it checks that executing the lambda expression throws a `IllegalArgumentException`.
+It begins by creating a list of strings containing the values “one”, “”, “three”, `null`, and “five”. Using the `assertThrows()` method, it checks that executing the lambda expression throws an `IllegalArgumentException`.
 
 The lambda iterates through the list, and for each string, it checks if the value is `null` or blank. If it finds a `null` or blank value, it throws a `IllegalArgumentException` with the message “Got invalid value".
 
-The assertion confirms that the thrown exception and verifies that the exception message matches the expected “Got invalid value”.
+The assertion confirms that the exception is thrown and verifies that the exception message matches the expected “Got invalid value”.
 
 ### Using Executables in `assertTimeout()`
 
 **The `Assertions.assertTimeout()` method asserts that execution of the supplied executable completes before the given timeout.** The execution can continue even after it exceeds the timeout. The assertion will throw an exception in case it exceeds the timeout duration.
 
-This is useful to verify if the execution completes within bounds expected duration.
+This is useful to verify if the execution completes within the expected duration.
 
 Here is an example showcasing the use of `assertTimeout()`:
 
@@ -204,7 +204,7 @@ void testAssertTimeoutWithExecutable() {
 }
 ```
 
-The `testAssertTimeoutWithExecutable()` method demonstrates the usage of `assertTimeout()` with a `Executable`.
+The `testAssertTimeoutWithExecutable()` method demonstrates the usage of `assertTimeout()` with an `Executable`.
 
 In the first `assertAll()` block, it checks if sorting the list throws a `AssertionFailedError` within a 1-second timeout. The `assertTimeout()` method tries to sleep for 2 seconds before sorting. Since it exceeds the timeout, a `AssertionFailedError` occurs. The `checkSorting` executable confirms the numbers are in ascending order.
 
@@ -216,9 +216,9 @@ Additionally, it illustrates combining multiple assertion techniques for verific
 
 ### Using Executables in `assertTimeoutPreemptively()`
 
-**The `Assertions.assertTimeoutPreemptively()` method asserts that execution of the supplied executable completes before the given timeout.** Furthermore, it aborts the execution of the executable preemptively if it exceeds timeout.
+**The `Assertions.assertTimeoutPreemptively()` method asserts that the execution of the supplied executable completes before the given timeout.** Furthermore, it aborts the execution of the executable preemptively if it exceeds the timeout.
 
-Let's see how preemptive timeout works for the same scenario:
+Let's see how the preemptive timeout works for the same scenario:
 
 ```java
 @Test
@@ -241,7 +241,7 @@ void testAssertTimeoutPreemptivelyWithExecutable() {
 
 The `testAssertTimeoutPreemptivelyWithExecutable()` method demonstrates how to use the `assertTimeoutPreemptively()` method with two executables to verify the sorting of a list of numbers.
 
-In the first `assertAll()` block, the method asserts that the execution throws a `AssertionFailedError` when sorting the list with a preemptive timeout of 1 second. The `assertTimeoutPreemptively()` method attempts to sleep for the 2-second delay before sorting the numbers. Since the delay exceeds the 1-second timeout, the assertion fails, and it throws the `AssertionFailedError`. The `noChanges` executable then verifies that the list remains unchanged, confirming that `assertTimeoutPreemptively()` preemptively stopped the sorting operation.
+In the first `assertAll()` block, the method asserts that the execution throws an `AssertionFailedError` when sorting the list with a preemptive timeout of 1 second. The `assertTimeoutPreemptively()` method attempts to sleep for the 2-second delay before sorting the numbers. Since the delay exceeds the 1-second timeout, the assertion fails, and it throws the `AssertionFailedError`. The `noChanges` executable then verifies that the list remains unchanged, confirming that `assertTimeoutPreemptively()` preemptively stopped the sorting operation.
 
 In the second `assertAll` block, the method asserts that we do not get any exception when sorting the list with a preemptive timeout of 5 seconds. The `assertTimeoutPreemptively()` method again attempts to sleep for the 2-second delay before sorting the numbers. This time, the delay is within the 5-second timeout, it does not throw any exception. Finally, `checkSorting` executable confirms that the execution has sorted the list correctly.
 
@@ -249,7 +249,7 @@ In the second `assertAll` block, the method asserts that we do not get any excep
 
 **The `ThrowingConsumer` interface serves as a functional interface that enables the implementation of a generic block of code capable of consuming an argument and potentially throwing a `Throwable`.** Unlike the [`Consumer`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Consumer.html) interface, `ThrowingConsumer` allows for the throwing of any type of exception, including checked exceptions.
 
-The `ThrowingConsumer` interface can be particularly useful in scenarios where we need to test code that might throw checked exceptions. This interface allows us to write more concise and readable tests by handling checked exceptions seamlessly.
+The `ThrowingConsumer` interface can be handy in scenarios where we need to test code that might throw checked exceptions. This interface allows us to write more concise and readable tests by handling checked exceptions seamlessly.
 
 Here are some typical use cases.
 
@@ -383,9 +383,9 @@ class DynamicTest
 
 A [`DynamicTest`](https://junit.org/junit5/docs/5.9.0/api/org.junit.jupiter.api/org/junit/jupiter/api/DynamicTest.html) is a test case generated at runtime. It is composed of a display name and an Executable. We annotate our test with `@TestFactory` so that the factory generates instances of `DynamicTest`.
 
-**The `stream()` method generates a stream of dynamic tests based on the given generator and test executor.** Use this method when the set of dynamic tests is nondeterministic in nature or when the input comes from an existing Iterator.
+**The `stream()` method generates a stream of dynamic tests based on the given generator and test executor.** Use this method when the set of dynamic tests is nondeterministic or when the input comes from an existing Iterator.
 
-The `inputGenerator` generates input values, and adds a `DynamicTest` to the resulting stream for each dynamically generated input value. It uses `ThrowingConsumer` to validate percentage inputs falling within the range of 0 to 100. It defines dynamic tests using a collection of percentages and a boolean indicating validity, with display names generated based on the percentage values. This setup allows for dynamically generating and running tests to ensure correct handling of both valid and invalid percentage values.
+The `inputGenerator` generates input values and adds a `DynamicTest` to the resulting stream for each dynamically generated input value. It uses `ThrowingConsumer` to validate percentage inputs falling within the range of 0 to 100. It defines dynamic tests using a collection of percentages and a boolean indicating validity, with display names generated based on the percentage values. This setup allows for dynamically generating and running tests to ensure the correct handling of both, valid and invalid percentage values.
 
 `ThrowingConsumer` simplifies testing methods that throw checked exceptions, manage resources, validate inputs, handle callbacks, and process complex data by eliminating extensive try-catch blocks in test code.
 
@@ -410,11 +410,11 @@ Let's learn about these methods one by one.
 
 ### Using `ThrowingSupplier` in `assertDoesNotThrow()`
 
-**The method `assertDoesNotThrow()` asserts that execution of the supplied supplier does not throw any kind of exception.**
+**The method `assertDoesNotThrow()` asserts that the execution of the supplied supplier does not throw any kind of exception.**
 
 If the assertion passes, it returns the supplier's result. It is useful for testing *happy paths*.
 
-Let's explore the implementation of test using throwing supplier:
+Let's look at the implementation of a test using `ThrowingSupplier`:
 
 ```java
 public class ThrowingSupplierTest {
@@ -433,13 +433,13 @@ public class ThrowingSupplierTest {
 }
 ```
 
-In this parameterized test, we use `ThrowingSupplier` to check if code throws exceptions and verify the return value. The test method, `testDoesNotThrowWithSupplier()`, performs a square root calculation. The negative input results in a `ValidationException`. Otherwise, it returns the square root. The test verifies that the `ThrowingSupplier` executes without exceptions and the return value matches the expected result.
+In this parameterized test, we use `ThrowingSupplier` to check if the code throws exceptions and verify the return value. The test method, `testDoesNotThrowWithSupplier()`, performs a square root calculation. The negative input results in a `ValidationException`. Otherwise, it returns the square root. The test verifies that the `ThrowingSupplier` executes without exceptions and that the return value matches the expected result.
 
 ### Using `ThrowingSupplier` in `assertTimeout()`
 
-**The method `assertTimeout()` checks that execution of the supplied executable completes before the given timeout.** The executable will continue to even after timeout duration. If duration exceeds, the method will throw `AssertionFailedError`.
+**The method `assertTimeout()` checks that execution of the supplied executable completes before the given timeout.** If the running time of the executable exceeds the timeout, the method will throw an `AssertionFailedError`.
 
-Let's now check how to use `assertTimeout()` with supplier:
+Let's now check how to use `assertTimeout()` with a supplier:
 
 ```java
 @Test
@@ -486,7 +486,7 @@ We test slow and fast execution scenarios and validate the input using `assertTh
 
 ### Using `ThrowingSupplier` in `assertTimeoutPreemptively()`
 
-**The method `assertTimeoutPreemptively()` asserts that execution of the supplied supplier completes before the given timeout.** It returns the supplier's result if the assertion passes. If the timeout exceeds, it will abort the supplier preemptively.
+**The method `assertTimeoutPreemptively()` asserts that the execution of the supplied supplier completes before the given timeout.** It returns the supplier's result if the assertion passes. If it exceeds the timeout, it will abort the supplier preemptively.
 
 Let's see an example of `assertTimeoutPreemptively()` with supplier:
 
@@ -511,7 +511,7 @@ In this `ThrowingSupplierTest` class, we define several tests to demonstrate the
 
 We start by initializing a list of `Long` numbers (`numbers`) and a `Consumer<List<Long>>` (`checkSorting`) that checks if the list is in sorted order. We also define a `ThrowingSupplier<List<Long>>` named `sorter`, which sorts the list after a delay of 2 seconds. If the list is `null`, empty, or contains `null` values, the `sorter` throws a `ValidationException`.
 
-Let's consider a simple example to use supplier when the test does not throw any exception:
+Let's consider a simple example of using a supplier when the test does not throw any exception:
 
 ```java
 @ParameterizedTest
@@ -530,7 +530,7 @@ void testDoesNotThrowWithSupplier(double input, double expected) {
 
 In the `testDoesNotThrowWithSupplier()` method, we use `@ParameterizedTest` with `CsvSource` to test the calculation of square roots for different inputs. We define a `ThrowingSupplier<Double>` named `findSquareRoot`, which throws a `ValidationException` for negative inputs. The test uses `assertDoesNotThrow` to verify that the square root of the input matches the expected value.
 
-Here is an example showcasing the use of timeout with supplier:
+Here is an example showcasing the use of timeout with a supplier:
 
 ```java
 @Test
@@ -562,7 +562,7 @@ Then, we test the same operation with a 5-second timeout, using `assertDoesNotTh
 
 Next, we reset the `numbers` list to contain `null` values and verify that the `sorter` throws a `ValidationException` when executed. We use `assertThrows()` to check that the exception message matches the expected “Invalid input”.
 
-Let's learn to preemptively timeout execution of a supplier:
+Let's learn to preemptively time out the execution of a supplier:
 
 ```java
 @Test

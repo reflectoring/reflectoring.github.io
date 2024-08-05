@@ -1,5 +1,10 @@
 {{ $author := (index .Site.Data.authors .Params.authors) }}
 
+{{ $.Scratch.Set "articleDate" .PublishDate }}
+{{ if .Params.lastmod }}
+  {{ $.Scratch.Set "articleDate" .Params.lastmod }}
+{{ end }}
+
 <div class="card">
   <!-- image path -->
   {{ $imagePath:= .Params.image }}
@@ -62,7 +67,7 @@
       </li>
       <li class="list-inline-item d-flex align-items-center">
         <i class="fas fa-calendar me-2"></i>
-        <span>{{ time.Format ":date_long" .PublishDate }}</span>
+        <span>{{ time.Format ":date_long" ($.Scratch.Get "articleDate") }}</span>
       </li>
     </ul>
     <p class="card-text small mb-3">{{ .Summary }}</p>

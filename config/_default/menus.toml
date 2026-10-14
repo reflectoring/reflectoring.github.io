@@ -17,11 +17,6 @@ url = "/simplify/"
 weight = 3
 
 [[main]]
-name = "Write for us"
-url = "/contribute/become-an-author/"
-weight = 4
-
-[[main]]
 name = "About"
 url = "/about/"
 weight = 5
@@ -103,34 +98,6 @@ weight = 2
     weight = 3
 
 [[footer]]
-name = "Contribute"
-weight = 3
-
-    [[footer]]
-    parent = "Contribute"
-    name = "Become an Author"
-    url = "/contribute/become-an-author"
-    weight = 1
-
-    [[footer]]
-    parent = "Contribute"
-    name = "Writing Guide"
-    url = "/contribute/writing-guide"
-    weight = 2
-
-    [[footer]]
-    parent = "Contribute"
-    name = "Author Workflow"
-    url = "/contribute/author-workflow"
-    weight = 3
-
-    [[footer]]
-    parent = "Contribute"
-    name = "Author Payment"
-    url = "/contribute/author-payment"
-    weight = 4
-
-[[footer]]
 name = "Reflectoring"
 weight = 4
 
@@ -146,11 +113,6 @@ weight = 4
     url = "/feed.xml"
     weight = 2
 
-    [[footer]]
-    parent = "Reflectoring"
-    name = "Advertise"
-    url = "/advertise"
-    weight = 3
 
 [[footer]]
     parent = "Reflectoring"

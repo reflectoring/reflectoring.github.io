@@ -40,7 +40,6 @@ custom_script = ""
 
 
 [analytics]
-google_analytics_3_id = "UA-88407702-1"
 google_analytics_4_id = "G-GKV4YKFSWF"
 plausible_domain = "reflectoring.io"
 

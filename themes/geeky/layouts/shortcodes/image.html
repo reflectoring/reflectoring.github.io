@@ -51,11 +51,11 @@
 {{ else }}
 
 <!-- image processing -->
-{{ $options:= add (add (string (.Get "w" | default $imageWidth)) "x ") (.Get "o") }}
+{{ $options:= trim (printf "%vx %s" (.Get "w" | default $imageWidth) (.Get "o")) " " }}
 {{ .Scratch.Set `image` ($image.Resize $options).RelPermalink }}
 
 <!-- fallback image -->
-{{ $option:= add (string $imageWidth) "x" }}
+{{ $option:= printf "%vx" $imageWidth }}
 {{ .Scratch.Set "image_fallback" ($image.Resize $option).RelPermalink }}
 {{ end }}
 

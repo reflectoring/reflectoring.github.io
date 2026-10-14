@@ -1,6 +1,6 @@
 {{ define "main" }}
 
-{{ $author := (index .Site.Data.authors .Title) }}
+{{ $author := (index hugo.Data.authors .Title) }}
 <section class="section pb-0">
   <div class="container">
     <div class="row align-items-lg-center">

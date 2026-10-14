@@ -1,7 +1,7 @@
 ---
 title: "'Code First' API Documentation with Springdoc and Spring Boot"
 categories: ["Spring Boot"]
-date: 2020-06-06 06:00 +1100
+date: 2020-06-06 06:00:00 +1100
 modified: 
 authors: [petros]
 description: "This article gives a quick introduction in how to implement a 'code first' approach for creating API docs with Springdoc."

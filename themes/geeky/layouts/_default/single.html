@@ -52,7 +52,7 @@
 
         {{ $authors := .Params.authors | default slice }}
         {{ range $index, $authorID := $authors }}
-          {{ $author := index $.Site.Data.authors $authorID }}
+          {{ $author := index hugo.Data.authors $authorID }}
           {{ partial "author-blurb.html" $author }}
           {{ if ne (add $index 1) (len $authors) }}
             <div style="margin-bottom: 2rem;"></div>
@@ -60,9 +60,9 @@
         {{ end }}
 
         <!-- disqus comments -->
-        {{ if .Site.DisqusShortname }}
+        {{ if .Site.Config.Services.Disqus.Shortname }}
         <div class="border rounded p-4">
-          {{ template "_internal/disqus.html" . }}
+          {{ partial "disqus.html" . }}
         </div>
         {{ end }}
       </div>

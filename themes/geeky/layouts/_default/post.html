@@ -1,4 +1,4 @@
-{{ $author := (index .Site.Data.authors .Params.authors) }}
+{{ $author := (index hugo.Data.authors .Params.authors) }}
 
 {{ $.Scratch.Set "articleDate" .PublishDate }}
 {{ if .Params.lastmod }}

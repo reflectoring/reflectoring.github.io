@@ -486,3 +486,9 @@ select {
     }
   }
 }
+
+// The offcanvas menu scrolls when it is taller than the screen (was an edit in the old Bootstrap copy).
+.offcanvas {
+  height: 100vh;
+  overflow: auto;
+}

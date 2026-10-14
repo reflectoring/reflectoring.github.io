@@ -3,9 +3,8 @@ baseURL = "http://localhost:1313"
 title = "Reflectoring - Where the HOW meets the WHY"
 theme = "geeky"
 languageName = "En"
-languageCode = "en-us"
-# post pagination
-paginate = "6"
+locale = "en-US"
+# post pagination: see [pagination] below
 # post excerpt
 summaryLength = "20"
 # disable language
@@ -15,16 +14,22 @@ disableLanguages = ["fr"] # example: ["fr"] for disable french language
 [module]
 [module.hugoVersion]
 extended = true
-min = "0.87.0"
+min = "0.168.0"
 
 ############################# Outputs ##############################
 [outputs]
 home = ["HTML", "RSS", "JSON", "WebAppManifest"]
 
+############################# Pagination ###########################
+[pagination]
+pagerSize = 6
+
 ############################# Imaging ##############################
 [imaging]
 # See https://github.com/disintegration/imaging
-# Default JPEG or WebP quality setting. Default is 75.
+[imaging.jpeg]
+quality = 90
+[imaging.webp]
 quality = 90
 
 ############################# Caches ###############################

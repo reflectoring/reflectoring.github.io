@@ -1,0 +1,16 @@
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="brand" href="{{ "" | relURL }}">{{ partial "logo.html" "h" }}reflectoring</a>
+    <nav class="nav" aria-label="Main">
+      {{- $page := . }}
+      {{- range site.Menus.main }}
+      <a href="{{ .URL | relURL }}"{{ if or ($page.IsMenuCurrent "main" .) (and (eq .URL "/") $page.IsHome) }} aria-current="page"{{ end }}>{{ .Name }}</a>
+      {{- end }}
+    </nav>
+    <div class="tools">
+      <a class="icon-btn" href="{{ "search/" | relURL }}" aria-label="Search">{{ partial "icon.html" "search" }}</a>
+      <button type="button" class="icon-btn theme-toggle" aria-label="Switch between light and dark mode">{{ partial "icon.html" "moon" }}{{ partial "icon.html" "sun" }}</button>
+      <button type="button" class="icon-btn menu-toggle" aria-label="Menu" aria-expanded="false">{{ partial "icon.html" "menu" }}</button>
+    </div>
+  </div>
+</header>

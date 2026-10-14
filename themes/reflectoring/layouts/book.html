@@ -1,0 +1,25 @@
+{{ define "main" }}
+<main>
+<section class="band hero"><div class="wrap book-hero">
+  {{- with resources.Get .Params.cover }}{{ $c := .Resize "600x webp q85" }}
+  <img class="cover" src="{{ $c.RelPermalink }}" alt="Cover of {{ $.Title }}" width="300" height="{{ div $c.Height 2 }}">
+  {{- end }}
+  <div>
+    {{ with .Params.byline }}<p class="eyebrow-link">{{ . }}</p>{{ end }}
+    <h1>{{ .Params.heading | default .Title }}</h1>
+    {{ with .Params.quote }}<blockquote>{{ . }}</blockquote>{{ end }}
+    {{ with .Params.intro }}<p class="lede">{{ . | markdownify }}</p>{{ end }}
+    {{ with .Params.rating }}<p><span class="stars" aria-hidden="true">★</span> {{ . | markdownify }}</p>{{ end }}
+    <div class="buy">
+      {{- range .Params.buy }}
+      <section class="buy-option"><h2>{{ .name }}</h2>
+        <ul>{{ range .points }}<li>{{ . | markdownify }}</li>{{ end }}</ul>
+        <div class="buttons">{{ range $i, $l := .links }}<a class="button{{ if $i }} secondary{{ end }}" href="{{ $l.url }}">{{ $l.label }}</a>{{ end }}</div>
+      </section>
+      {{- end }}
+    </div>
+  </div>
+</div></section>
+<div class="wrap"><div class="page-body prose book-body">{{ .Content }}</div></div>
+</main>
+{{ end }}

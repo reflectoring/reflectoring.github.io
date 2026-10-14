@@ -1,0 +1,6 @@
+{{- /* A code block: a header with the language and a copy button, then Chroma's highlighted code (CSS classes). */ -}}
+{{- $lang := .Type | default "text" -}}
+{{- $names := dict "java" "Java" "kotlin" "Kotlin" "xml" "XML" "yaml" "YAML" "yml" "YAML" "json" "JSON" "groovy" "Groovy" "text" "Text" "shell" "Shell" "bash" "Shell" "sh" "Shell" "javascript" "JavaScript" "js" "JavaScript" "typescript" "TypeScript" "ts" "TypeScript" "sql" "SQL" "html" "HTML" "css" "CSS" "properties" "Properties" "python" "Python" "go" "Go" "dockerfile" "Dockerfile" "gradle" "Gradle" "hcl" "HCL" "jsx" "JSX" "tsx" "TSX" "graphql" "GraphQL" "http" "HTTP" "toml" "TOML" "ini" "INI" "csharp" "C#" "c" "C" "cpp" "C++" "ruby" "Ruby" "rust" "Rust" "plaintext" "Text" -}}
+<div class="code" data-lang="{{ $lang }}"><div class="code-head"><span>{{ index $names (lower $lang) | default $lang }}</span><button type="button" class="copy" aria-label="Copy code">Copy</button></div>
+{{ transform.Highlight .Inner $lang (merge .Options (dict "noClasses" false)) }}</div>
+{{- /**/ -}}

@@ -1,0 +1,4 @@
+{{- /* A list of posts. Argument: the pages. */ -}}
+<ul class="post-list">
+{{- range . }}{{ partial "post-item.html" . }}{{ end }}
+</ul>

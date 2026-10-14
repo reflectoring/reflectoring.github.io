@@ -1,0 +1,4 @@
+name = "reflectoring"
+license = "MIT"
+description = "The reflectoring.io theme: a calm, readable page with a highlighter."
+min_version = "0.168.0"

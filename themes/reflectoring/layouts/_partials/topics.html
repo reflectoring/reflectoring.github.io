@@ -1,0 +1,7 @@
+{{- /* The categories with their post counts, most used first. Argument: the current page (or nil). */ -}}
+{{- $current := . -}}
+<ul class="topics">
+{{- range first 10 site.Taxonomies.categories.ByCount }}
+  <li><a href="{{ .Page.RelPermalink }}"{{ if and $current (eq .Page.RelPermalink $current.RelPermalink) }} aria-current="page"{{ end }}>{{ .Page.Title | title }}<span>{{ .Count }}</span></a></li>
+{{- end }}
+</ul>

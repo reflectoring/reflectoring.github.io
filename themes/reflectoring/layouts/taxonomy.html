@@ -1,0 +1,10 @@
+{{ define "main" }}
+<main>
+{{ partial "page-hero.html" . }}
+<div class="wrap" style="padding-top: 40px">
+  <ul class="topics">
+  {{- range .Data.Terms.ByCount }}<li><a href="{{ .Page.RelPermalink }}">{{ .Page.Title | title }}<span>{{ .Count }}</span></a></li>{{ end }}
+  </ul>
+</div>
+</main>
+{{ end }}

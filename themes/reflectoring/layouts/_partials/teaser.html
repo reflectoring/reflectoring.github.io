@@ -1,0 +1,6 @@
+{{- /* A page's plain-text teaser, as Hugo 0.91's .Summary made it (TruncateWordsToWholeSentence):
+     the plain text up to the 20th whitespace character (summaryLength in config.toml), then on to
+     the next . ? ! " or line break, starting at that 20th character itself. Newer Hugo's .Summary returns whole paragraphs as HTML. */ -}}
+{{- $plain := .Plain | htmlUnescape | strings.TrimSpace -}}
+{{- $teaser := index (findRE `(?s)^(?:\S*\s){19}\S*(?:\n|\s[^.?!"\n]*[.?!"\n])` $plain 1) 0 | default $plain -}}
+{{- return strings.TrimSpace $teaser -}}

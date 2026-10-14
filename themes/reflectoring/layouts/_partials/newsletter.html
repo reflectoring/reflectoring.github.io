@@ -1,0 +1,15 @@
+{{- /* The newsletter block. Argument: "full" (after a post) or "mini" (in a sidebar). */ -}}
+{{- if eq . "mini" }}
+<section class="mini-newsletter" aria-labelledby="newsletter-title">
+  <h2 id="newsletter-title">The Simplify! newsletter</h2>
+  <p>Grow as a software engineer, in 5 minutes a week. Join more than 6,000 readers.</p>
+  {{ partial "newsletter-form.html" "mini" }}
+</section>
+{{- else }}
+<section class="newsletter" aria-labelledby="newsletter-title">
+  <h2 id="newsletter-title">The Simplify! newsletter</h2>
+  <p>Join more than 6,000 software engineers and get productivity and growth tips in your inbox.</p>
+  {{ partial "newsletter-form.html" "full" }}
+  <p class="fine">Your email address is safe with us. We use it as described in the <a href="{{ "privacy/" | relURL }}">privacy policy</a>.</p>
+</section>
+{{- end }}

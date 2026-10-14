@@ -1,0 +1,17 @@
+{{ define "main" }}
+{{- $paginator := .Paginate .Pages }}
+<main>
+<section class="band hero"><div class="wrap">
+  <a class="eyebrow-link" href="{{ .Parent.RelPermalink }}">All {{ .Parent.Title | lower }}</a>
+  <h1>{{ .Title }}</h1>
+  <p class="lede">{{ with .Description }}{{ . }} {{ end }}{{ len .Pages }} articles.</p>
+</div></section>
+<div class="wrap layout">
+  <section aria-label="Articles">{{ partial "post-list.html" $paginator.Pages }}{{ partial "pagination.html" $paginator }}</section>
+  <aside class="aside">
+    {{- if eq .Data.Plural "categories" }}<section><h2>Other topics</h2>{{ partial "topics.html" . }}</section>{{ end }}
+    {{ partial "newsletter.html" "mini" }}
+  </aside>
+</div>
+</main>
+{{ end }}

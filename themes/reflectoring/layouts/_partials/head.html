@@ -1,0 +1,47 @@
+<meta charset="utf-8">
+<title>{{ .Title | default site.Title }}</title>
+{{- /* Apply the stored colour theme before the first paint, so dark-mode readers see no white flash. */}}
+<script>try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+{{ if ne (getenv "HUGO_ENV") "production" }}<meta name="robots" content="noindex">{{ end }}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="{{ .Params.Description | default site.Params.description }}">
+{{ with site.Params.author }}<meta name="author" content="{{ . }}">{{ end }}
+{{ hugo.Generator }}
+
+{{- with site.Params.favicon }}{{ with resources.Get . }}
+<link rel="icon" type="image/png" sizes="32x32" href="{{ (.Resize "32x png").RelPermalink }}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ (.Resize "16x png").RelPermalink }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ (.Resize "180x png").RelPermalink }}">
+{{ end }}{{ end }}
+<link rel="manifest" href="{{ "manifest.webmanifest" | relURL }}">
+<meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131517" media="(prefers-color-scheme: dark)">
+
+{{- /* Open Graph image and Twitter card */}}
+{{ $imagePath := .Params.image | default site.Params.image }}
+{{ with resources.Get $imagePath }}
+{{ $ext := strings.TrimPrefix "." (path.Ext $imagePath | lower) }}
+<meta property="og:image" content="{{ .Permalink | absURL }}" />
+<meta property="twitter:image" content="{{ .Permalink | absURL }}" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="og:image:type" content="image/{{ if eq $ext "svg" }}svg+xml{{ else }}{{ replaceRE "^jpg$" "jpeg" $ext }}{{ end }}">
+{{ end }}
+<meta name="twitter:title" content="{{ with .Title }}{{ . }}{{ else }}{{ site.Title }}{{ end }}"/>
+<meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{ if .IsPage }}{{ partial "teaser.html" . }}{{ else }}{{ with site.Params.description }}{{ . }}{{ end }}{{ end }}{{ end }}"/>
+<meta name="twitter:site" content="@TomHombergs"/>
+<meta name="twitter:creator" content="@TomHombergs"/>
+{{ partial "opengraph.html" . }}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+{{ $css := resources.Get "css/theme.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+
+{{ range .AlternativeOutputFormats -}}
+{{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink site.Title | safeHTML }}
+{{ end -}}
+
+{{ partial "google-analytics-4.html" }}
+{{ partial "plausible.html" }}
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5672018573196134" crossorigin="anonymous"></script>

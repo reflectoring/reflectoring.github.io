@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="{{ site.Language.Locale | default "en-US" }}">
+<head>
+{{- partial "head.html" . }}
+</head>
+<body class="{{ block "body-class" . }}{{ end }}">
+{{ partial "header.html" . }}
+{{ block "main" . }}{{ end }}
+{{ partial "footer.html" . }}
+{{ partial "cookie.html" . }}
+{{ partial "scripts.html" . }}
+</body>
+</html>

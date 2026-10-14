@@ -1,0 +1,39 @@
+{{- /* A blog post: contents in the left margin, the text in the middle, the rail on the right. */ -}}
+{{- $authors := .Params.authors | default (slice "tom") }}
+{{- $showToc := and (ne .Params.toc false) (gt (len .Fragments.Headings) 0) }}
+<main class="page">
+  {{- if $showToc }}
+  <aside class="toc-aside" aria-label="Contents"><nav><p class="toc-title">Contents</p>{{ partial "toc.html" . }}</nav></aside>
+  {{- end }}
+  <article class="article">
+    <header class="article-head">
+      {{- with .Params.categories }}<a class="category" href="{{ partial "category-url.html" (index . 0) }}">{{ index . 0 }}</a>{{ end }}
+      <h1>{{ .Title }}</h1>
+      {{- with .Description }}{{ if ne (lower .) (lower $.Title) }}<p class="lede">{{ . }}</p>{{ end }}{{ end }}
+      <div class="byline">
+        {{ partial "avatar.html" (dict "id" (index $authors 0) "size" 40) }}
+        <div><strong>{{ range $i, $a := $authors }}{{ if $i }} and {{ end }}<a href="{{ printf "authors/%s/" $a | relURL }}">{{ (index hugo.Data.authors $a).name | default $a }}</a>{{ end }}</strong>
+          <span class="facts"><span>{{ partial "date.html" . }}</span><span>{{ .ReadingTime }} min read</span></span></div>
+      </div>
+    </header>
+    {{- if $showToc }}<details class="toc-inline"><summary>Contents</summary>{{ partial "toc.html" . }}</details>{{ end }}
+    <div class="prose">
+{{ .Content }}
+    </div>
+    <div class="after">
+      {{- range $authors }}{{ partial "author-box.html" . }}{{ end }}
+      {{ partial "newsletter.html" "full" }}
+      {{ partial "book-promo.html" . }}
+      {{- with first 3 (site.RegularPages.Related .) }}
+      <section class="related" aria-labelledby="related-title"><h2 class="section-title" id="related-title">Related articles</h2>{{ partial "post-list.html" . }}</section>
+      {{- end }}
+    </div>
+  </article>
+  <aside class="rail" aria-label="Sponsored">
+    <div class="rail-inner">
+      {{- with site.Params.ads }}{{ with .skyscraper_image }}{{ with resources.Get . }}
+      <a href="{{ site.Params.ads.skyscraper_href }}"><img src="{{ .RelPermalink }}" alt="Advertisement" width="{{ .Width }}" height="{{ .Height }}" loading="lazy" style="width: 100%; height: auto"></a>
+      {{- end }}{{ end }}{{ end }}
+    </div>
+  </aside>
+</main>

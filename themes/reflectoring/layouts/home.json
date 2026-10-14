@@ -1,0 +1,6 @@
+{{- /* The search index: every post with its title, date, categories and plain text. */ -}}
+{{- $index := slice -}}
+{{- range where site.RegularPages "Section" "in" site.Params.mainSections -}}
+  {{- $index = $index | append (dict "title" .Title "date" (time.Format ":date_long" .PublishDate) "categories" .Params.categories "contents" (.Plain | htmlUnescape) "permalink" .RelPermalink) -}}
+{{- end -}}
+{{- $index | jsonify -}}

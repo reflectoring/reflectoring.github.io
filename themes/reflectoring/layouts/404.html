@@ -1,0 +1,12 @@
+{{ define "main" }}
+<main>
+<section class="band"><div class="wrap not-found">
+  <p class="code-404">Error 404</p>
+  <h1>This page doesn't exist</h1>
+  <p class="lede">The address may be mistyped, or the article has moved. Search for it, or start from a topic.</p>
+  <form class="search-form" role="search" action="{{ "search/" | relURL }}" style="margin-top: 28px"><label class="sr-only" for="q404">Search the articles</label>
+    <input id="q404" type="search" name="s" placeholder="Search the articles"><button type="submit">Search</button></form>
+  <div style="margin: 36px 0 64px">{{ partial "topics.html" nil }}</div>
+</div></section>
+</main>
+{{ end }}

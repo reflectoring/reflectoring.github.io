@@ -1,0 +1,21 @@
+{{ define "main" }}
+<main>
+<section class="band hero"><div class="wrap">
+  <h1>{{ .Title }}</h1>
+  <form class="search-form" role="search" action="{{ .RelPermalink }}">
+    <label class="sr-only" for="search-query">Search the articles</label>
+    <input id="search-query" type="search" name="s" placeholder="Search the articles" autocomplete="off">
+    <button type="submit">Search</button>
+  </form>
+</div></section>
+<div class="wrap layout">
+  <section aria-live="polite">
+    <p class="result-count" id="search-count"></p>
+    <ul class="post-list search-results" id="search-results" data-index="{{ "index.json" | relURL }}"></ul>
+  </section>
+  <aside class="aside"><section><h2>Topics</h2>{{ partial "topics.html" nil }}</section></aside>
+</div>
+</main>
+{{ $js := resources.Get "js/search.js" | js.Build (dict "minify" true) | fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+{{ end }}

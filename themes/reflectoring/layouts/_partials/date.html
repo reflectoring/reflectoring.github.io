@@ -1,0 +1,4 @@
+{{- /* The date a post shows: its lastmod if set, else its publish date. Returns the formatted date. */ -}}
+{{- $d := .PublishDate -}}
+{{- with .Params.lastmod }}{{ $d = time.AsTime . }}{{ end -}}
+{{- return time.Format ":date_long" $d -}}

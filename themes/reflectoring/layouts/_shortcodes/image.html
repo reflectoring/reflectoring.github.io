@@ -1,0 +1,65 @@
+{{- /* Output has no blank lines: Hugo 0.100+ renders {{% %}} shortcode output as Markdown, and a blank
+     line inside an HTML block ends the block, turning indented HTML after it into a code block.
+     It ends with a blank line, so Markdown after the shortcode is not part of the HTML block. */ -}}
+{{- $imagePath:= (.Get "src") -}}
+{{- if eq (.Get `p`) `center` -}}
+{{- .Scratch.Set "image-position" "img-center" -}}
+{{- else if eq (.Get `p`) `left` -}}
+{{- .Scratch.Set "image-position" "img-left" -}}
+{{- else if eq (.Get `p`) `right` -}}
+{{- .Scratch.Set "image-position" "img-right" -}}
+{{- else if eq (.Get `p`) `float-left` -}}
+{{- .Scratch.Set "image-position" "pull-left" -}}
+{{- else if eq (.Get `p`) `float-right` -}}
+{{- .Scratch.Set "image-position" "pull-right" -}}
+{{- end -}}
+{{- if .Get "href" -}}
+<a href="{{ .Get `href` }}">
+{{- end -}}
+{{- if hasPrefix $imagePath "http" -}}
+{{- if .Get `title` -}}
+<figure class="{{.Scratch.Get `image-position`}}">
+  <img loading="lazy" decoding="async" src="{{ $imagePath | safeURL }}" alt="{{ .Get `alt` }}" class="{{.Get `c`}}" width="{{.Get `w`}}" height="{{.Get `h`}}">
+ </figure>
+{{- else -}}
+<img loading="lazy" decoding="async" src="{{ $imagePath | safeURL }}" alt="{{ .Get `alt` }}" class="{{.Get `c`}} {{.Scratch.Get `image-position`}}" width="{{.Get `w`}}" height="{{.Get `h`}}">
+{{- end -}}
+{{- else -}}
+{{- if fileExists (add `assets/` $imagePath) -}}
+{{- $image:= resources.Get $imagePath -}}
+{{- $imageExt := path.Ext $image -}}
+{{- $imageWidth := $image.Width -}}
+{{- $imageHeight := $image.Height -}}
+{{- if eq $imageExt `.gif` -}}
+{{- .Scratch.Set `image` $image.RelPermalink -}}
+{{- else -}}
+{{- $options:= trim (printf "%vx %s" (.Get "w" | default $imageWidth) (.Get "o")) " " -}}
+{{- .Scratch.Set `image` ($image.Resize $options).RelPermalink -}}
+{{- $option:= printf "%vx" $imageWidth -}}
+{{- .Scratch.Set "image_fallback" ($image.Resize $option).RelPermalink -}}
+{{- end -}}
+{{- if .Get `title` -}}
+<figure class="{{.Scratch.Get `image-position`}}">
+  <img loading="lazy" decoding="async" class="{{.Get `c`}}" width="{{.Get `w` | default $imageWidth }}" height="{{.Get `h` | default $imageHeight}}" src="{{.Scratch.Get `image`}}" alt="{{.Get `alt`}}" onerror="this.onerror='null';this.src='{{.Scratch.Get `image_fallback`}}'">
+  <figcaption>{{.Get `title` | markdownify}}</figcaption>
+</figure>
+{{- else -}}
+<img loading="lazy" decoding="async" class="{{.Get `c`}} {{.Scratch.Get `image-position`}}" width="{{.Get `w` | default $imageWidth }}" height="{{.Get `h` | default $imageHeight}}" src="{{.Scratch.Get `image`}}" alt="{{.Get `alt`}}" onerror="this.onerror='null';this.src='{{.Scratch.Get `image_fallback`}}'">
+{{- end -}}
+{{- else if fileExists $imagePath -}}
+{{- if .Get `title` -}}
+<figure class="{{.Scratch.Get `image-position`}}">
+  <img loading="lazy" decoding="async" class="{{.Get `c`}}" width="{{.Get `w`}}" height="{{.Get `h`}}" src="{{$imagePath | relURL}}" alt="{{.Get `alt`}}">
+  <figcaption>{{.Get `title` | markdownify}}</figcaption>
+</figure>
+{{- else -}}
+<img loading="lazy" decoding="async" class="{{.Get `c`}} {{.Scratch.Get `image-position`}}" width="{{.Get `w`}}" height="{{.Get `h`}}" src="{{$imagePath | relURL}}" alt="{{.Get `alt`}}">
+{{- end -}}
+{{- else -}}
+<strong class="text-danger mb-3 d-inline-block">{{.Page.Permalink}}{{$imagePath}} does not exist</strong>
+{{- end -}}
+{{- end -}}
+{{- if .Get "href" -}}
+</a>
+{{- end }}
+

@@ -1,0 +1,10 @@
+{{- /* Promotion for "Get Your Hands Dirty on Clean Architecture", after a post. */ -}}
+{{- $cover := (resources.Get "images/gyhdoca/cover-338.png").Resize "220x webp q85" }}
+<section class="book" aria-labelledby="book-title">
+  <img src="{{ $cover.RelPermalink }}" alt="Cover of Get Your Hands Dirty on Clean Architecture, 2nd edition" width="110" height="{{ div $cover.Height 2 }}" loading="lazy">
+  <div>
+    <h2 id="book-title">Get Your Hands Dirty on Clean Architecture</h2>
+    <p>Build web applications with a hexagonal architecture, step by step, with code examples in Java. More than 6,500 readers so far.</p>
+    <a class="button" href="{{ "book/" | relURL }}">Get the book</a>
+  </div>
+</section>

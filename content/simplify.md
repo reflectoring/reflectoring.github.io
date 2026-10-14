@@ -20,12 +20,6 @@ This includes:
 
 Have a look at [previous editions](#previous-editions) of the newsletter.
 
-## Wall of Love
-
-Check out what the subscribers have to say:
-
-{{% wol %}}
-
 ## Previous Editions
 
 Check out some previous editions of the newsletter. This list is updated with a time lag so that the content is exclusive for subscribers for a time.

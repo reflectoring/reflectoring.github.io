@@ -1,0 +1,13 @@
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-brand">{{ partial "logo.html" "f" }}<span>Where the HOW meets the WHY.</span></div>
+    <div class="footer-links">
+      {{- range site.Menus.footer }}
+      <div><h2>{{ .Name }}</h2><ul>
+        {{- range .Children }}<li><a href="{{ .URL | relURL }}">{{ .Name }}</a></li>{{ end }}
+      </ul></div>
+      {{- end }}
+    </div>
+    <p class="copyright">© {{ now.Year }} Tom Hombergs</p>
+  </div>
+</footer>

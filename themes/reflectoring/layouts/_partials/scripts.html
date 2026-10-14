@@ -1,0 +1,2 @@
+{{ $js := resources.Get "js/theme.js" | js.Build (dict "minify" true) | fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>

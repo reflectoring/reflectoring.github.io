@@ -1,0 +1,23 @@
+{{- /* The MailerLite sign-up form for the Simplify! newsletter. MailerLite's script submits it and calls
+       ml_webform_success_2818533; keep the ml-* classes and field names. Argument: an id suffix. */ -}}
+<div id="mlb2-2818533" class="ml-form-embedContainer ml-subscribe-form ml-subscribe-form-2818533">
+  <div class="row-form">
+    <form class="newsletter-form ml-block-form" action="https://assets.mailerlite.com/jsonp/234457/forms/76138091553752380/subscribe" data-code="" method="post" target="_blank">
+      <label class="sr-only" for="email-{{ . }}">Email address</label>
+      <span class="ml-field-group ml-field-email ml-validate-email ml-validate-required" style="display: contents">
+        <input id="email-{{ . }}" type="email" name="fields[email]" placeholder="Your email address" autocomplete="email" required aria-required="true">
+      </span>
+      <input type="hidden" name="ml-submit" value="1">
+      <input type="hidden" name="anticsrf" value="true">
+      <span class="ml-form-embedSubmit"><button type="submit">Subscribe</button><button disabled type="button" class="loading" style="display: none">Subscribing…</button></span>
+    </form>
+  </div>
+  <div class="row-success" style="display: none"><p class="success-message">Thank you! Please check your inbox to confirm your email address.</p></div>
+</div>
+<script>
+  function ml_webform_success_2818533() {
+    document.querySelectorAll('.ml-subscribe-form-2818533 .row-success').forEach(e => e.style.display = 'block');
+    document.querySelectorAll('.ml-subscribe-form-2818533 .row-form').forEach(e => e.style.display = 'none');
+  }
+</script>
+<script src="https://groot.mailerlite.com/js/w/webforms.min.js?v491724307ca3b85c1c754857e93994e5" defer></script>

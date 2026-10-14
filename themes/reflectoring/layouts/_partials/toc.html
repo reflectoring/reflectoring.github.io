@@ -1,0 +1,2 @@
+{{- /* The page's table of contents as a list the theme styles (class toc-list on every level). */ -}}
+{{- .TableOfContents | replaceRE `<nav id="TableOfContents">\s*` "" | replaceRE `\s*</nav>` "" | replaceRE "<ul>" `<ul class="toc-list">` | safeHTML -}}

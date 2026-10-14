@@ -1,0 +1,10 @@
+{{- /* An author's photo, or their initials. Arguments: id (key in data/authors.yml), size (px). */ -}}
+{{- $a := index hugo.Data.authors .id -}}
+{{- $img := "" -}}
+{{- with $a }}{{ with .avatar }}{{ with resources.Get (strings.TrimPrefix "/" .) }}{{ $img = .Fill (printf "%dx%d webp q80 Center" (mul $.size 2) (mul $.size 2)) }}{{ end }}{{ end }}{{ end -}}
+{{- with $img -}}
+<img class="avatar" src="{{ .RelPermalink }}" alt="" width="{{ $.size }}" height="{{ $.size }}" loading="lazy">
+{{- else -}}
+{{- $name := (index hugo.Data.authors .id).name | default .id -}}
+<span class="avatar initials" aria-hidden="true" style="width: {{ .size }}px; height: {{ .size }}px; font-size: {{ math.Round (div .size 2.6) }}px">{{ range first 2 (split $name " ") }}{{ substr . 0 1 }}{{ end }}</span>
+{{- end -}}

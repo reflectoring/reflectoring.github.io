@@ -58,7 +58,7 @@ link = "plugins/popup/corner-popup.css"
 [[params.plugins.js]]
 link = "plugins/jquery/jquery.min.js"
 [[params.plugins.js]]
-link = "plugins/bootstrap/bootstrap.min.js"
+link = "plugins/bootstrap/bootstrap.bundle.min.js"
 [[params.plugins.js]]
 link = "plugins/search/fuse.min.js"
 [[params.plugins.js]]

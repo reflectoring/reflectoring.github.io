@@ -1,6 +1,23 @@
 // Bootstrap 5.3.8 (bootstrap/bootstrap.scss), without the components this theme does not use.
-// The site colour replaces Bootstrap's blue, as the theme's old edited copy of Bootstrap did.
+// The theme's old copy of Bootstrap 5.0.2 was edited in place. These overrides keep its look:
+// - its edits: the site colour for blue, black inline code, a 300px side menu;
+// - Bootstrap 5.0 defaults that 5.3 changed: corner radius, dropdown and side-menu text colour.
 $blue: #2ba283;
+$code-color: #000;
+$offcanvas-horizontal-width: 300px;
+$border-radius: .25rem;
+$border-radius-sm: .2rem;
+$border-radius-lg: .3rem;
+$dropdown-color: #fff;
+$offcanvas-color: inherit;
+
+// The theme's $body-color is the page background; Bootstrap's is the text colour. Give Bootstrap
+// the theme's text colour while it compiles, then restore the theme's value for the theme's Sass.
+$theme-body-color: $body-color;
+$body-color: $text-color;
+// Bootstrap 5.0 gave these a fixed grey; 5.3 derives them from the body colour.
+$dropdown-link-color: #212529;
+$pagination-disabled-color: #6c757d;
 
 @import "bootstrap/mixins/banner";
 @include bsBanner("");
@@ -54,3 +71,5 @@ $blue: #2ba283;
 // Utilities
 @import "bootstrap/utilities/api";
 // scss-docs-end import-stack
+
+$body-color: $theme-body-color;

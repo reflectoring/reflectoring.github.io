@@ -492,3 +492,17 @@ select {
   height: 100vh;
   overflow: auto;
 }
+
+// Font Awesome 7 gives every icon a fixed width; Font Awesome 5 did that only with .fa-fw.
+.fa:not(.fa-fw),
+.fas:not(.fa-fw),
+.far:not(.fa-fw),
+.fab:not(.fa-fw) {
+  --fa-width: auto;
+}
+
+// Bootstrap 5.0's rule for a disabled page link. Bootstrap 5.3's `.page-link.disabled` is weaker
+// than the theme's pagination colour, so the link lost its grey.
+.page-item.disabled .page-link {
+  color: var(--bs-pagination-disabled-color);
+}

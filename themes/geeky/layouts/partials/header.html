@@ -39,8 +39,8 @@
               {{ if $active }}active{{ end }}
               {{ end }}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button"
-                  data-bs-toggle="dropdown" aria-expanded="false">{{ .Name }}
-                </a>
+                  data-bs-toggle="dropdown" aria-expanded="false">{{ .Name }}{{/* The space before the chevron:
+                  Hugo's newer minifier drops the line break that used to provide it. */}}&nbsp;</a>
                 <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                   {{ range .Children }}
                   {{ $childURL := .URL | absLangURL }}

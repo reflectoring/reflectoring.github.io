@@ -1,0 +1,25 @@
+{{ define "main" }}
+{{- $id := .Data.Term }}
+{{- $a := index hugo.Data.authors $id }}
+{{- $paginator := .Paginate .Pages }}
+<main>
+<section class="band hero"><div class="wrap profile">
+  {{ partial "avatar.html" (dict "id" $id "size" 140) }}
+  <div>
+    <h1>{{ with $a }}{{ .name }}{{ else }}{{ $id }}{{ end }}</h1>
+    {{ with $a }}{{ with .bio }}<p>{{ . | safeHTML }}</p>{{ end }}{{ end }}
+    <p class="author-links">
+      {{- with $a }}{{ with .github }}<a href="https://github.com/{{ . }}">{{ partial "icon.html" "github" }}GitHub</a>{{ end }}
+      {{- with .linkedin }}<a href="https://www.linkedin.com/in/{{ . }}">{{ partial "icon.html" "linkedin" }}LinkedIn</a>{{ end }}{{ end }}
+      <span>{{ len .Pages }} articles</span>
+    </p>
+  </div>
+</div></section>
+<div class="wrap layout">
+  <section aria-label="Articles">{{ partial "post-list.html" $paginator.Pages }}{{ partial "pagination.html" $paginator }}</section>
+  <aside class="aside">
+    {{- if eq $id "tom" }}<section><h2>Books by Tom</h2>{{ partial "mini-books.html" . }}</section>{{ else }}{{ partial "newsletter.html" "mini" }}{{ end }}
+  </aside>
+</div>
+</main>
+{{ end }}

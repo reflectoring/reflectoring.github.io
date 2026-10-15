@@ -1,0 +1,9 @@
+{{ define "main" }}
+{{- if in site.Params.mainSections .Section }}{{ partial "post.html" . }}
+{{- else }}
+<main>
+{{ partial "page-hero.html" . }}
+<div class="wrap"><div class="page-body prose">{{ .Content }}</div></div>
+</main>
+{{- end }}
+{{ end }}

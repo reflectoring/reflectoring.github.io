@@ -1,0 +1,16 @@
+{{- /* One post in a list: category, title, teaser, author, date, reading time, thumbnail. */ -}}
+{{- $cat := index (.Params.categories | default (slice "Article")) 0 -}}
+{{- $aid := index (.Params.authors | default (slice "tom")) 0 -}}
+{{- $author := index hugo.Data.authors $aid -}}
+<li class="post-item">
+  <a class="post-cat" href="{{ partial "category-url.html" $cat }}">{{ $cat }}</a>
+  <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+  <p>{{ partial "teaser.html" . }}</p>
+  <div class="meta">
+    <a class="who" href="{{ printf "authors/%s/" $aid | relURL }}">{{ partial "avatar.html" (dict "id" $aid "size" 24) }}{{ with $author }}{{ .name }}{{ else }}{{ $aid }}{{ end }}</a>
+    <span>{{ partial "date.html" . }}</span><span>{{ .ReadingTime }} min read</span>
+  </div>
+  {{- with partial "thumb.html" . }}
+  <img class="thumb" src="{{ .RelPermalink }}" alt="" width="132" height="99" loading="lazy">
+  {{- end }}
+</li>

@@ -1,0 +1,5 @@
+{{- /* The band at the top of a list or regular page: title and description. */ -}}
+<section class="band hero"><div class="wrap">
+  <h1>{{ .Title }}</h1>
+  {{ with .Description }}{{ if ne . $.Title }}<p class="lede">{{ . }}</p>{{ end }}{{ end }}
+</div></section>

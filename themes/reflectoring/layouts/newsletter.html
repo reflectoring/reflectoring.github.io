@@ -1,0 +1,16 @@
+{{ define "main" }}
+<main>
+<section class="band hero"><div class="wrap nl-hero">
+  <div>
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+  </div>
+  <div class="nl-card">
+    <p>Join more than 6,000 software engineers. Every week, one short email with one idea to simplify your work.</p>
+    {{ partial "newsletter-form.html" "page" }}
+    <p class="fine">Your email address is safe with us. We use it as described in the <a href="{{ "privacy/" | relURL }}">privacy policy</a>.</p>
+  </div>
+</div></section>
+<div class="wrap"><div class="page-body prose">{{ .Content }}</div></div>
+</main>
+{{ end }}

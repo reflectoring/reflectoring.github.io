@@ -8,13 +8,13 @@
 {{ end }}
 {{ end }}
 {{ $scripts := $scripts | append (resources.Get "js/script.js" | minify) }}
-{{ $scripts := $scripts | resources.Concat "/js/script.js" | minify | fingerprint "sha512" }}
+{{ $scripts := $scripts | resources.Concat "/js/bundle.js" | minify | fingerprint "sha512" }}
 <script crossorigin="anonymous" defer="defer" integrity="{{ $scripts.Data.Integrity }}" type="application/javascript">{{$scripts.Content | safeJS}}</script>
 
 <!-- cookie -->
 {{ with site.Params.cookies }}
 {{ if .enable }}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.8/dist/js.cookie.min.js"></script>
 <div id="js-cookie-box" class="cookie-box cookie-box-hide">
 	{{.content | markdownify}}<span id="js-cookie-button" class="btn btn-sm btn-outline-primary ms-2">{{.button}}</span>
 </div>

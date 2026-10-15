@@ -1,0 +1,12 @@
+{{ if isset site.Params.analytics "google_analytics_4_id" }}
+{{ if eq (getenv "HUGO_ENV") "production" }}
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ site.Params.analytics.google_analytics_4_id }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '{{ site.Params.analytics.google_analytics_4_id }}');
+</script>
+{{ end }}
+{{ end }}

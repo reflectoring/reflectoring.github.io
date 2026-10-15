@@ -1,0 +1,42 @@
+{{ define "body-class" }}home{{ end }}
+{{ define "main" }}
+{{- $pages := where site.RegularPages "Section" "in" site.Params.mainSections }}
+{{- $paginator := .Paginate $pages }}
+<main>
+{{- if eq $paginator.PageNumber 1 }}
+{{- $f := index $paginator.Pages 0 }}
+<section class="band"><div class="wrap">
+  <div class="intro">
+    <p class="tagline">Where the <em>how</em> meets the <em>why</em>.</p>
+    <p>Software development tutorials, thoughts about the software craft, and tips on how to grow as a software engineer.</p>
+  </div>
+  <article class="featured">
+    {{- with $f.Params.image }}{{ with or (resources.Get (replace . "-branded" "")) (resources.Get .) }}
+    {{- $img := .Fill "1200x628 webp q80 Center" }}
+    <a href="{{ $f.RelPermalink }}" tabindex="-1"><img src="{{ $img.RelPermalink }}" alt="" width="1200" height="628"></a>
+    {{- end }}{{ end }}
+    <div>
+      {{- $cat := index ($f.Params.categories | default (slice "Article")) 0 }}
+      <a class="post-cat" href="{{ partial "category-url.html" $cat }}">{{ $cat }}</a>
+      <h2><a href="{{ $f.RelPermalink }}">{{ $f.Title }}</a></h2>
+      <p>{{ partial "teaser.html" $f }}</p>
+      {{- $aid := index ($f.Params.authors | default (slice "tom")) 0 }}
+      <div class="meta"><a class="who" href="{{ printf "authors/%s/" $aid | relURL }}">{{ partial "avatar.html" (dict "id" $aid "size" 24) }}{{ (index hugo.Data.authors $aid).name }}</a><span>{{ partial "date.html" $f }}</span><span>{{ $f.ReadingTime }} min read</span></div>
+    </div>
+  </article>
+</div></section>
+{{- end }}
+<div class="wrap layout">
+  <section aria-labelledby="latest">
+    <h2 class="section-title" id="latest">{{ if eq $paginator.PageNumber 1 }}Latest articles{{ else }}Articles, page {{ $paginator.PageNumber }}{{ end }}</h2>
+    {{ partial "post-list.html" (cond (eq $paginator.PageNumber 1) (after 1 $paginator.Pages) $paginator.Pages) }}
+    {{ partial "pagination.html" $paginator }}
+  </section>
+  <aside class="aside">
+    <section><h2>Topics</h2>{{ partial "topics.html" nil }}</section>
+    {{ partial "newsletter.html" "mini" }}
+    <section><h2>Books by Tom</h2>{{ partial "mini-books.html" . }}</section>
+  </aside>
+</div>
+</main>
+{{ end }}

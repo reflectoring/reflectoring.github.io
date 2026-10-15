@@ -1,130 +1,20 @@
 ############# English navigation ##############
 
-# main menu
+# main menu: the header. Topics (categories) are listed on the pages themselves.
 [[main]]
-name = "Books"
-url = "/book"
+name = "Articles"
+url = "/"
 weight = 1
 
-    [[main]]
-    parent = "Books"
-    name = "Get Your Hands Dirty on Clean Architecture"
-    url = "/book"
-    weight = 2
-
-    [[main]]
-    parent = "Books"
-    name = "Stratospheric"
-    url = "https://stratospheric.dev?utm_source=reflectoring&utm_content=sidebar"
-    weight = 3
-
 [[main]]
-name = "Simplify"
-url = "/simplify"
+name = "Books"
+url = "/book/"
 weight = 2
 
 [[main]]
-name = "Contribute"
+name = "Mailing list"
+url = "/simplify/"
 weight = 3
-
-    [[main]]
-    parent = "Contribute"
-    name = "Become an Author"
-    url = "/contribute/become-an-author"
-    weight = 1
-
-    [[main]]
-    parent = "Contribute"
-    name = "Writing Guide"
-    url = "/contribute/writing-guide"
-    weight = 2
-
-    [[main]]
-    parent = "Contribute"
-    name = "Author Workflow"
-    url = "/contribute/author-workflow"
-    weight = 3
-
-    [[main]]
-    parent = "Contribute"
-    name = "Author Payment"
-    url = "/contribute/author-payment"
-    weight = 4
-
-[[main]]
-name = "Services"
-weight = 4
-
-    [[main]]
-    parent = "Services"
-    name = "Book me"
-    url = "/book-me"
-    weight = 4
-
-    [[main]]
-    parent = "Services"
-    name = "Advertise"
-    url = "advertise"
-    weight = 5
-
-[[main]]
-name = "Categories"
-weight = 6
-hasChildren = true
-
-      [[main]]
-      parent = "Categories"
-      name = "Spring Boot"
-      url = "/categories/spring-boot/"
-      weight = 1
-
-      [[main]]
-      parent = "Categories"
-      name = "Java"
-      url = "/categories/java/"
-      weight = 2
-
-      [[main]]
-      parent = "Categories"
-      name = "Node"
-      url = "/categories/node/"
-      weight = 3
-
-      [[main]]
-      parent = "Categories"
-      name = "Kotlin"
-      url = "/categories/kotlin/"
-      weight = 4
-
-      [[main]]
-      parent = "Categories"
-      name = "AWS"
-      url = "/categories/aws/"
-      weight = 5
-
-      [[main]]
-      parent = "Categories"
-      name = "Software Craft"
-      url = "/categories/software-craft/"
-      weight = 6
-
-      [[main]]
-      parent = "Categories"
-      name = "Simplify!"
-      url = "/categories/simplify/"
-      weight = 7
-
-      [[main]]
-      parent = "Categories"
-      name = "Meta"
-      url = "/categories/meta/"
-      weight = 8
-
-      [[main]]
-      parent = "Categories"
-      name = "Book Reviews"
-      url = "/categories/book-notes/"
-      weight = 9
 
 # footer menu
 [[footer]]
@@ -149,11 +39,6 @@ weight = 1
     url = "/categories/node/"
     weight = 3
 
-    [[footer]]
-    parent = "Content"
-    name = "Node"
-    url = "/categories/node/"
-    weight = 4
 
     [[footer]]
     parent = "Content"
@@ -197,7 +82,7 @@ weight = 2
 
     [[footer]]
     parent = "Products"
-    name = "Simplify! Newsletter"
+    name = "Simplify! Mailing list"
     url = "/simplify"
     weight = 2
 
@@ -208,42 +93,8 @@ weight = 2
     weight = 3
 
 [[footer]]
-name = "Contribute"
-weight = 3
-
-    [[footer]]
-    parent = "Contribute"
-    name = "Become an Author"
-    url = "/contribute/become-an-author"
-    weight = 1
-
-    [[footer]]
-    parent = "Contribute"
-    name = "Writing Guide"
-    url = "/contribute/writing-guide"
-    weight = 2
-
-    [[footer]]
-    parent = "Contribute"
-    name = "Author Workflow"
-    url = "/contribute/author-workflow"
-    weight = 3
-
-    [[footer]]
-    parent = "Contribute"
-    name = "Author Payment"
-    url = "/contribute/author-payment"
-    weight = 4
-
-[[footer]]
 name = "Reflectoring"
 weight = 4
-
-    [[footer]]
-    parent = "Reflectoring"
-    name = "About"
-    url = "/about"
-    weight = 1
 
     [[footer]]
     parent = "Reflectoring"
@@ -251,19 +102,8 @@ weight = 4
     url = "/feed.xml"
     weight = 2
 
-    [[footer]]
-    parent = "Reflectoring"
-    name = "Advertise"
-    url = "/advertise"
-    weight = 3
 
-    [[footer]]
-    parent = "Reflectoring"
-    name = "Book me"
-    url = "/book-me"
-    weight = 4
-
-    [[footer]]
+[[footer]]
     parent = "Reflectoring"
     name = "Privacy"
     url = "/privacy"

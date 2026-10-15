@@ -1,0 +1,7 @@
+{{- /* Tom's two books, small, for a sidebar. */ -}}
+{{- $gyhdoca := (resources.Get "images/gyhdoca/cover-338.png").Resize "144x webp q85" }}
+{{- $strato := (resources.Get "images/stratospheric/stratospheric-cover.jpg").Resize "144x webp q85" }}
+<a class="mini-book" href="{{ "book/" | relURL }}"><img src="{{ $gyhdoca.RelPermalink }}" alt="" width="72" height="{{ div $gyhdoca.Height 2 }}" loading="lazy">
+  <span><strong>Get Your Hands Dirty on Clean Architecture</strong>Hexagonal architecture, hands-on, with code examples in Java.</span></a>
+<a class="mini-book" href="https://stratospheric.dev?utm_source=reflectoring&utm_content=sidebar"><img src="{{ $strato.RelPermalink }}" alt="" width="72" height="{{ div $strato.Height 2 }}" loading="lazy">
+  <span><strong>Stratospheric</strong>From zero to production with Spring Boot and AWS.</span></a>

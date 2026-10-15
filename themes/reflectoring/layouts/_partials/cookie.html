@@ -1,0 +1,6 @@
+{{- with site.Params.cookies }}{{ if .enable }}
+<div class="cookie" role="region" aria-label="Cookie notice" hidden data-days="{{ .expire_days | default 30 }}">
+  <p>{{ .content | markdownify }}</p>
+  <button type="button" class="cookie-accept">{{ .button | default "Accept" }}</button>
+</div>
+{{- end }}{{ end }}

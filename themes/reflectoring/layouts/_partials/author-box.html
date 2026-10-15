@@ -1,0 +1,17 @@
+{{- /* "Written by" box for one author. Argument: the author's id. */ -}}
+{{- $id := . -}}
+{{- with index hugo.Data.authors $id }}
+<section class="author" aria-label="About the author">
+  {{ partial "avatar.html" (dict "id" $id "size" 72) }}
+  <div>
+    <p class="author-label">Written by</p>
+    <h2>{{ .name }}</h2>
+    {{ with .bio }}<p>{{ . | safeHTML }}</p>{{ end }}
+    <p class="author-links">
+      {{- with .github }}<a href="https://github.com/{{ . }}">{{ partial "icon.html" "github" }}GitHub</a>{{ end }}
+      {{- with .linkedin }}<a href="https://www.linkedin.com/in/{{ . }}">{{ partial "icon.html" "linkedin" }}LinkedIn</a>{{ end }}
+      <a href="{{ printf "authors/%s/" $id | relURL }}">All articles by {{ index (split .name " ") 0 }}</a>
+    </p>
+  </div>
+</section>
+{{- end }}

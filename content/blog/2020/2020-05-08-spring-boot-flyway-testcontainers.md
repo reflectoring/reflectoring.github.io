@@ -83,7 +83,7 @@ other databases.
 
 **We could, of course, maintain two sets of SQL scripts**, one for `H2`, to be used in the tests, and one for PostgreSQL, to be used in production:
 
-{{% image alt="Two sets of SQL scripts." src="images/posts/testcontainers/two_sets_of_sql_scripts.png" %}}
+{{% image alt="Two sets of SQL scripts." src="images/posts/testcontainers/two_sets_of_sql_scripts.jpg" %}}
 
 But now,:
  * we have to configure Spring Boot profiles for different folders with scripts,

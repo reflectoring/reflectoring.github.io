@@ -1,0 +1,5 @@
+{{ if isset site.Params.analytics "google_plausible_domain" }}
+{{ if eq (getenv "HUGO_ENV") "production" }}
+<script defer data-domain="{{ site.Params.analytics.plausible_domain }}" src="https://plausible.io/js/plausible.js"></script>
+{{ end }}
+{{ end }}

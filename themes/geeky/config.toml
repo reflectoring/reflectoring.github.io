@@ -39,7 +39,7 @@ font_primary = "Roboto Slab:wght@350"
 font_primary_type = "serif" # [serif/sans-serif]
 font_secondary = "Oswald:wght@400;700"
 font_secondary_type = "sans-serif" # [serif/sans-serif]
-font_icon = "Font Awesome 5 Free"
+font_icon = "Font Awesome 7 Free"
 
 
 ############################# Plugins ##############################
@@ -58,7 +58,7 @@ link = "plugins/popup/corner-popup.css"
 [[params.plugins.js]]
 link = "plugins/jquery/jquery.min.js"
 [[params.plugins.js]]
-link = "plugins/bootstrap/bootstrap.min.js"
+link = "plugins/bootstrap/bootstrap.bundle.min.js"
 [[params.plugins.js]]
 link = "plugins/search/fuse.min.js"
 [[params.plugins.js]]

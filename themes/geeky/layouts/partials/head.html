@@ -51,11 +51,11 @@
   <meta property="og:image:type" content="image/{{ if eq $image_ext `svg` }}svg+xml{{ else }}{{ replaceRE `^jpg$` `jpeg` $image_ext }}{{ end }}">
 {{ end -}}
 <meta name="twitter:title" content="{{ with .Title }}{{ . }}{{ else }}{{ site.Title }}{{ end }}"/>
-<meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{ if .IsPage }}{{ .Summary }}{{ else }}{{ with site.Params.description }}{{ . }}{{ end }}{{ end }}{{ end }}"/>
+<meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{ if .IsPage }}{{ partial "teaser.html" . }}{{ else }}{{ with site.Params.description }}{{ . }}{{ end }}{{ end }}{{ end }}"/>
 <meta name="twitter:site" content="@TomHombergs"/>
 <meta name="twitter:creator" content="@TomHombergs"/>
 
-{{ template "_internal/opengraph.html" . }}
+{{ partial "opengraph.html" . }}
 
 <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap" as="style">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab&display=swap">
@@ -67,6 +67,5 @@
 {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
 {{ end -}}
 
-{{ partial "google-analytics-3.html" }}
 {{ partial "google-analytics-4.html" }}
 {{ partial "plausible.html" }}

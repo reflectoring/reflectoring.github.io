@@ -56,7 +56,7 @@ include, but is not limited to:
 * Email address
 * Cookies and Usage Data
 
-We may use your Personal Data to contact you with newsletters, marketing or promotional materials and other
+We may use your Personal Data to contact you with our mailing list, marketing or promotional materials and other
 information that may be of interest to you. You may opt out of receiving any, or all, of these communications
 from us by following the unsubscribe link or the instructions provided in any email we send.
 
@@ -217,7 +217,7 @@ we may see if and when you open an email and which links within the email you cl
 This behavior is not passed to third parties. All data submitted at the time of subscription
 to our emails is stored on MailerLite’s servers. You may access MailerLite’s privacy policy [here](https://www.mailerlite.com/legal/privacy-policy).
 
-At any time, you may be removed from our newsletter list by clicking on the unsubscribe button
+At any time, you may be removed from our mailing list by clicking on the unsubscribe button
 provided in each email.
 
 <span id="ezoic-privacy-policy-embed"></span>

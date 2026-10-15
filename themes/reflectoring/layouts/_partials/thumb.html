@@ -1,0 +1,8 @@
+{{- /* A post's stock photo as a list thumbnail (without the old logo overlay, if that version exists).
+       Returns the processed image, or nothing. */ -}}
+{{- $img := "" -}}
+{{- with .Params.image -}}
+  {{- $r := or (resources.Get (replace . "-branded" "")) (resources.Get .) -}}
+  {{- with $r }}{{ $img = .Fill "264x198 webp q75 Center" }}{{ end -}}
+{{- end -}}
+{{- return $img -}}

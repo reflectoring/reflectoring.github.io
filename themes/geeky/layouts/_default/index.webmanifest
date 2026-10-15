@@ -1,7 +1,7 @@
 {
   "name": "{{site.Title}}",
   "short_name": "{{site.Title}}",
-  "lang": "{{ site.LanguageCode | default `en-us` }}",
+  "lang": "{{ site.Language.Locale | default `en-us` }}",
   {{ with site.Params.variables.color_primary }}"theme_color": "{{.}}",{{ end }}
   {{ with site.Params.variables.body_color }}"background_color": "{{.}}",{{ end }}
 

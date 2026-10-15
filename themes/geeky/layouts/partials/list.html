@@ -5,7 +5,7 @@
       <div class="col-12">
         <div class="section-title">
           {{ if (eq .Section "authors") }}
-          {{ $author := (index .Site.Data.authors .Title) }}
+          {{ $author := (index hugo.Data.authors .Title) }}
           <h2 class="h4"><span class="title-border">Articles by {{ $author.name | markdownify | title }}</span></h2>
           {{ else }}
           <h2 class="h4"><span class="title-border">{{ .Title | markdownify | title }}</span></h2>

@@ -40,7 +40,6 @@ custom_script = ""
 
 
 [analytics]
-google_analytics_3_id = "UA-88407702-1"
 google_analytics_4_id = "G-GKV4YKFSWF"
 plausible_domain = "reflectoring.io"
 
@@ -57,7 +56,7 @@ title_small = "Where the HOW meets the WHY."
 image = "images/illustrations/undraw_lightbulb_moment_re_ulyo.png"
 background_image = ""
 content = "Software development tutorials, thoughts about the software craft, and tips on how to grow as a software engineer."
-button_label = "Join the Newsletter"
+button_label = "Join the mailing list"
 button_link = "/"
 
 # Advertise

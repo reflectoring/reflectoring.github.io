@@ -1,0 +1,4 @@
+{{- /* The reflectoring logo as SVG, coloured by CSS variables. The argument is a unique id for the clip path. */ -}}
+{{- $r := "M31 37H190A98 98 0 0 1 288 135V158A88 88 0 0 1 244 237L282 278H154L31 155Z" -}}
+<svg class="logo" viewBox="0 0 310 310" aria-hidden="true"><defs><clipPath id="logo-{{ . }}"><path d="{{ $r }}"/></clipPath></defs><rect width="310" height="310" rx="38" fill="var(--logo-bg)"/><path fill="var(--logo-fg)" d="{{ $r }}"/><path fill="var(--logo-fold)" clip-path="url(#logo-{{ . }})" d="M31 37H310V310H282Z"/><path fill="var(--logo-bg)" d="M124 126H160A22 22 0 0 1 182 148V181Z"/><path fill="var(--logo-accent)" d="M35 196L114 275H35Z"/></svg>
+{{- /**/ -}}

@@ -38,7 +38,7 @@ For a deeper understanding of Pub/Sub, let's explore some of its key terminology
 
 ### Google Cloud Pub/Sub Terminology
 
-{{% image alt="google-pub-sub-flow" src="images/posts/nodejs-pub-sub/google-pub-sub-flow.png" %}}
+{{% image alt="google-pub-sub-flow" src="images/posts/nodejs-pub-sub/google-pub-sub-flow.jpg" %}}
 
 - **`Publisher`**: These are services that add new messages to a topic. Topics can have a single or multiple publishers
 - **`Message`**: This is the data exchanged between services. It can be stored as a text or byte string, offering flexibility in formatting. Messages usually indicate events, such as data modification or action completion.

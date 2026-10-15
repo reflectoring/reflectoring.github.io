@@ -1,0 +1,14 @@
+{{ define "main" }}
+{{- $paginator := .Paginate .RegularPagesRecursive }}
+<main>
+{{ partial "page-hero.html" . }}
+<div class="wrap layout">
+  <section aria-label="Articles">
+    {{- if in site.Params.mainSections .Section }}{{ partial "post-list.html" $paginator.Pages }}
+    {{- else }}<ul class="post-list">{{ range $paginator.Pages }}<li class="post-item"><h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>{{ with .Description }}<p>{{ . }}</p>{{ end }}</li>{{ end }}</ul>{{ end }}
+    {{ partial "pagination.html" $paginator }}
+  </section>
+  <aside class="aside"><section><h2>Topics</h2>{{ partial "topics.html" nil }}</section>{{ partial "newsletter.html" "mini" }}</aside>
+</div>
+</main>
+{{ end }}

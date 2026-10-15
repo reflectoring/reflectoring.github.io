@@ -1,0 +1,17 @@
+{{- /* Page links for a paginated list: the first, last and neighbouring pages, with gaps. */ -}}
+{{- $p := . -}}
+{{- if gt $p.TotalPages 1 }}
+<nav class="pagination" aria-label="Pages">
+  {{- with $p.Prev }}<a class="prev" href="{{ .URL }}">Newer</a>{{ end }}
+  {{- $gap := false }}
+  {{- range $p.Pagers }}
+    {{- $n := .PageNumber }}
+    {{- if or (eq $n 1) (eq $n $p.TotalPages) (and (ge $n (sub $p.PageNumber 1)) (le $n (add $p.PageNumber 1))) }}
+      {{- $gap = false }}
+      {{- if eq $n $p.PageNumber }}<span aria-current="page">{{ $n }}</span>{{ else }}<a href="{{ .URL }}">{{ $n }}</a>{{ end }}
+    {{- else if not $gap }}{{ $gap = true }}<span class="gap">…</span>
+    {{- end }}
+  {{- end }}
+  {{- with $p.Next }}<a class="next" href="{{ .URL }}">Older articles</a>{{ end }}
+</nav>
+{{- end }}

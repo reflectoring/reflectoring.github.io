@@ -1,0 +1,13 @@
+{{ define "main" }}
+<main>
+<section class="band hero"><div class="wrap"><h1>Authors</h1><p class="lede">The people who write for reflectoring.</p></div></section>
+<div class="wrap" style="padding-top: 40px">
+  <ul class="authors-grid">
+  {{- range .Data.Terms.ByCount }}
+    {{- $id := .Page.Data.Term }}
+    <li><a href="{{ .Page.RelPermalink }}">{{ partial "avatar.html" (dict "id" $id "size" 48) }}<span>{{ (index hugo.Data.authors $id).name | default $id }}<span>{{ .Count }} articles</span></span></a></li>
+  {{- end }}
+  </ul>
+</div>
+</main>
+{{ end }}

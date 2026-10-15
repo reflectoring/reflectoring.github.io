@@ -1,0 +1,3 @@
+{{- /* The URL of a category page. Argument: the category name. */ -}}
+{{- $url := printf "categories/%s/" (. | lower | urlize) | relURL -}}
+{{- return $url -}}

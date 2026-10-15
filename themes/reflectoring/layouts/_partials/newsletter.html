@@ -1,0 +1,16 @@
+{{- /* The newsletter block. Argument: "full" (after a post), "mini" (in a sidebar) or "rail" (in a
+       post's right margin; the "full" block on the same page loads MailerLite's script). */ -}}
+{{- if in (slice "mini" "rail") . }}
+<section class="mini-newsletter" aria-labelledby="newsletter-title-{{ . }}">
+  <h2 id="newsletter-title-{{ . }}">The Simplify! mailing list</h2>
+  <p>Grow as a software engineer, in 5 minutes a week. Join more than 6,000 readers.</p>
+  {{ partial "newsletter-form.html" . }}
+</section>
+{{- else }}
+<section class="newsletter" aria-labelledby="newsletter-title-full">
+  <h2 id="newsletter-title-full">The Simplify! mailing list</h2>
+  <p>Join more than 6,000 software engineers and get productivity and growth tips in your inbox.</p>
+  {{ partial "newsletter-form.html" "full" }}
+  <p class="fine">Your email address is safe with us. We use it as described in the <a href="{{ "privacy/" | relURL }}">privacy policy</a>.</p>
+</section>
+{{- end }}

@@ -87,15 +87,27 @@ h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(2rem, 1.3rem 
 
 /* Table of contents */
 .toc-title { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--text); margin: 0 0 10px; }
-.toc-list { list-style: none; margin: 0; padding: 0; font-family: var(--sans); font-size: 0.85rem; line-height: 1.4; }
-.toc-list li { margin: 0; }
-.toc-list a { display: block; padding: 5px 0 5px 12px; color: var(--muted); text-decoration: none; border-left: 2px solid var(--rule); }
-.toc-list .toc-3 a { padding-left: 24px; font-size: 0.95em; }
+/* The contents as a tree: every entry hangs off a vertical line with a short branch, and the
+   subsections of an entry branch off a line that starts below it. The line of the last entry in a
+   list stops at its branch. */
+.toc-list { --tree: color-mix(in srgb, var(--rule) 70%, var(--faint)); list-style: none; margin: 0; padding: 0; font-family: var(--sans); font-size: 0.85rem; line-height: 1.4; }
+/* --branch: the top of the branch, level with the middle of the entry's first line, on a whole pixel. */
+.toc-list li { --branch: round(calc(5px + 0.5lh - 1px), 1px); position: relative; margin: 0; padding-left: 14px; }
+.toc-list li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--tree); }
+.toc-list li:last-child::before { bottom: calc(100% - var(--branch) - 2px); }
+.toc-list li::after { content: ""; position: absolute; left: 0; top: var(--branch); width: 10px; height: 2px; background: var(--tree); }
+.toc-list .toc-list { font-size: 0.95em; margin-left: 6px; }
+/* The line to the subsections starts right below the entry they belong to. */
+.toc-list li:has(> a) > .toc-list > li:first-child::before { top: -4px; }
+/* Hugo wraps subsections without a section above them in an entry without a link: no branch there. */
+.toc-list li:not(:has(> a)) { padding-left: 0; }
+.toc-list li:not(:has(> a))::before, .toc-list li:not(:has(> a))::after { content: none; }
+.toc-list li:not(:has(> a)) > .toc-list { margin-left: 0; }
+.toc-list a { display: block; padding: 5px 6px 5px 4px; border-radius: 4px; color: var(--muted); text-decoration: none; }
 .toc-list a:hover { color: var(--text); }
-.toc-list a[aria-current] { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
 .toc-inline { margin: 0 0 8px; border: 1px solid var(--rule); border-radius: 10px; padding: 0 16px; font-family: var(--sans); }
 .toc-inline summary { cursor: pointer; padding: 12px 0; font-weight: 600; font-size: 0.95rem; }
-.toc-inline .toc-list { padding-bottom: 14px; }
+.toc-inline > .toc-list { padding-bottom: 14px; }
 
 /* Prose */
 .prose > * { margin: 0 0 1.15em; }
@@ -206,7 +218,8 @@ td { overflow-wrap: anywhere; }
 }
 .category { color: var(--text); }
 .nav a[aria-current] { color: var(--text); }
-.toc-list a[aria-current] { color: var(--text); border-left-color: var(--mark-strong); background: linear-gradient(90deg, var(--mark), transparent); }
+.toc-list a[aria-current] { color: var(--text); font-weight: 600; background: linear-gradient(90deg, var(--mark), transparent); }
+.toc-list li:has(> a[aria-current])::after { background: var(--mark-strong); }
 .callout { background: color-mix(in srgb, var(--mark-strong) 18%, var(--bg)); border-left-color: var(--mark-strong); }
 ::selection { background: var(--mark-strong); color: var(--mark-ink); }
 .newsletter { background: var(--mark-strong); color: var(--mark-ink); }
@@ -372,8 +385,6 @@ mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 1
 .band .topics a:hover { background: var(--pop); }
 
 /* ---- Content from the real site ---- */
-.toc-list .toc-list { padding-left: 12px; }
-.toc-list .toc-list a { font-size: 0.95em; }
 .prose img { max-width: 100%; height: auto; }
 .prose figure img { border: 1px solid var(--rule); border-radius: 8px; }
 .prose figcaption { font-family: var(--sans); font-size: 0.85rem; color: var(--muted); margin-top: 8px; text-align: center; }

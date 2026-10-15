@@ -1,6 +1,9 @@
 {{- /* The MailerLite sign-up form for the Simplify! newsletter. MailerLite's script submits it and calls
-       ml_webform_success_2818533; keep the ml-* classes and field names. Argument: an id suffix. */ -}}
-<div id="mlb2-2818533" class="ml-form-embedContainer ml-subscribe-form ml-subscribe-form-2818533">
+       ml_webform_success_2818533; keep the ml-* classes and field names. Argument: an id suffix, so
+       several forms can share a page. MailerLite reads the form number from the container id
+       ("mlb2-2818533-<suffix>"). The "rail" form leaves out the scripts: on a post, the form after
+       the article loads them, and MailerLite's script finds every form on the page by its class. */ -}}
+<div id="mlb2-2818533-{{ . }}" class="ml-form-embedContainer ml-subscribe-form ml-subscribe-form-2818533">
   <div class="row-form">
     <form class="newsletter-form ml-block-form" action="https://assets.mailerlite.com/jsonp/234457/forms/76138091553752380/subscribe" data-code="" method="post" target="_blank">
       <label class="sr-only" for="email-{{ . }}">Email address</label>
@@ -14,6 +17,7 @@
   </div>
   <div class="row-success" style="display: none"><p class="success-message">Thank you! Please check your inbox to confirm your email address.</p></div>
 </div>
+{{- if ne . "rail" }}
 <script>
   function ml_webform_success_2818533() {
     document.querySelectorAll('.ml-subscribe-form-2818533 .row-success').forEach(e => e.style.display = 'block');
@@ -21,3 +25,4 @@
   }
 </script>
 <script src="https://groot.mailerlite.com/js/w/webforms.min.js?v491724307ca3b85c1c754857e93994e5" defer></script>
+{{- end }}

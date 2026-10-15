@@ -1,4 +1,5 @@
-{{- /* A blog post: contents in the left margin, the text in the middle, the rail on the right. */ -}}
+{{- /* A blog post: contents in the left margin, the text in the middle, the rail on the right with
+       the newsletter, Tom's books and (when configured) the skyscraper ad. */ -}}
 {{- $authors := .Params.authors | default (slice "tom") }}
 {{- $showToc := and (ne .Params.toc false) (gt (len .Fragments.Headings) 0) }}
 <main class="page">
@@ -29,8 +30,10 @@
       {{- end }}
     </div>
   </article>
-  <aside class="rail" aria-label="Sponsored">
-    <div class="rail-inner">
+  <aside class="rail" aria-label="Newsletter and books">
+    <div class="rail-inner aside">
+      {{ partial "newsletter.html" "rail" }}
+      <section><h2>Books by Tom</h2>{{ partial "mini-books.html" . }}</section>
       {{- with site.Params.ads }}{{ with .skyscraper_image }}{{ with resources.Get . }}
       <a href="{{ site.Params.ads.skyscraper_href }}"><img src="{{ .RelPermalink }}" alt="Advertisement" width="{{ .Width }}" height="{{ .Height }}" loading="lazy" style="width: 100%; height: auto"></a>
       {{- end }}{{ end }}{{ end }}

@@ -72,6 +72,8 @@ button { font: inherit; color: inherit; }
 .rail { display: none; grid-column: 3; grid-row: 1; width: 260px; }
 .toc-aside, .rail { padding-top: 330px; }
 .toc-aside nav, .rail-inner { position: sticky; top: 28px; }
+/* On short screens the rail would not fit: it scrolls with the page instead. */
+@media (max-height: 680px) { .rail-inner { position: static; } }
 .toc-aside nav { max-height: calc(100vh - 56px); overflow-y: auto; padding-right: 4px; }
 
 .article-head { padding: 56px 0 32px; }
@@ -102,6 +104,8 @@ h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(2rem, 1.3rem 
 .prose strong { font-weight: 600; }
 .prose code { font-family: var(--mono); font-size: 0.84em; background: var(--code-bg); padding: 0.12em 0.36em; border-radius: 4px; }
 .prose h2 code, .prose h3 code { font-size: 0.85em; }
+/* Code in a heading stays monospace but sits on the heading's highlighter, not on a grey box. */
+.prose .heading-text code { background: none; padding: 0; border-radius: 0; }
 .prose ul, .prose ol { padding-left: 1.3em; }
 .prose li { margin: 0.3em 0; }
 .code { background: var(--code-bg); border: 1px solid var(--rule); border-radius: 10px; margin: 1.6em 0; overflow: hidden; }

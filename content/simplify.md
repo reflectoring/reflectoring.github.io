@@ -1,6 +1,6 @@
 ---
 title: "Simplify!"
-description: "The newsletter that helps you grow as a software engineer in just 5 minutes a week."
+description: "The mailing list that helps you grow as a software engineer in just 5 minutes a week."
 layout: "newsletter"
 draft: false
 toc: false
@@ -18,11 +18,11 @@ This includes:
 * how to be a confident software engineer,
 * ... and much more.
 
-Have a look at [previous editions](#previous-editions) of the newsletter.
+Have a look at [previous editions](#previous-editions) of the mailing list.
 
 ## Previous Editions
 
-Check out some previous editions of the newsletter. This list is updated with a time lag so that the content is exclusive for subscribers for a time.
+Check out some previous editions of the mailing list. This list is updated with a time lag so that the content is exclusive for subscribers for a time.
 
 ### December 2021
 

@@ -1,5 +1,5 @@
 {{- /* A blog post: contents in the left margin, the text in the middle, the rail on the right with
-       the newsletter, Tom's books and (when configured) the skyscraper ad. */ -}}
+       the mailing list, Tom's books and (when configured) the skyscraper ad. */ -}}
 {{- $authors := .Params.authors | default (slice "tom") }}
 {{- $showToc := and (ne .Params.toc false) (gt (len .Fragments.Headings) 0) }}
 <main class="page">
@@ -30,7 +30,7 @@
       {{- end }}
     </div>
   </article>
-  <aside class="rail" aria-label="Newsletter and books">
+  <aside class="rail" aria-label="Mailing list and books">
     <div class="rail-inner aside">
       {{ partial "newsletter.html" "rail" }}
       <section><h2>Books by Tom</h2>{{ partial "mini-books.html" . }}</section>

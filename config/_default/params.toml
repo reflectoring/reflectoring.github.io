@@ -56,7 +56,7 @@ title_small = "Where the HOW meets the WHY."
 image = "images/illustrations/undraw_lightbulb_moment_re_ulyo.png"
 background_image = ""
 content = "Software development tutorials, thoughts about the software craft, and tips on how to grow as a software engineer."
-button_label = "Join the Newsletter"
+button_label = "Join the mailing list"
 button_link = "/"
 
 # Advertise

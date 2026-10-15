@@ -12,7 +12,7 @@ url = "/book/"
 weight = 2
 
 [[main]]
-name = "Newsletter"
+name = "Mailing list"
 url = "/simplify/"
 weight = 3
 
@@ -82,7 +82,7 @@ weight = 2
 
     [[footer]]
     parent = "Products"
-    name = "Simplify! Newsletter"
+    name = "Simplify! Mailing list"
     url = "/simplify"
     weight = 2
 

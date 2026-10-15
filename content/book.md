@@ -17,7 +17,7 @@ buy:
       - "PDF and EPUB"
       - "Get updated versions immediately and for free"
       - "Support me directly by paying more than the minimum price"
-      - "**Save $10** if you subscribe to the [Simplify! newsletter](/simplify)"
+      - "**Save $10** if you subscribe to the [Simplify! mailing list](/simplify)"
     links:
       - label: "Buy on Gumroad"
         url: "https://thombergs.gumroad.com/l/gyhdoca"

@@ -165,13 +165,13 @@ td { overflow-wrap: anywhere; }
 .newsletter-form input { flex: 1 1 220px; font: inherit; font-size: 0.95rem; padding: 11px 14px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); color: var(--text); }
 .newsletter-form button, .button { font-family: var(--sans); font-weight: 600; font-size: 0.95rem; padding: 11px 20px; border: 0; border-radius: 8px; background: var(--accent); color: var(--bg); cursor: pointer; text-decoration: none; display: inline-block; }
 .newsletter .fine { font-family: var(--sans); font-size: 0.78rem; color: var(--faint); margin: 12px 0 0; }
-.book { display: flex; gap: 24px; align-items: center; }
+.books { display: grid; gap: 28px; }
+.books .section-title { margin: 0; }
+.book { display: flex; gap: 24px; align-items: flex-start; }
 .book img { width: 110px; height: auto; border-radius: 4px; box-shadow: 0 6px 18px rgb(0 0 0 / 0.18); flex: none; }
-.book h2 { font-size: 1.25rem; margin: 0 0 6px; font-weight: 600; line-height: 1.3; }
+.book h3 { font-family: var(--serif); font-size: 1.25rem; margin: 0 0 6px; font-weight: 600; line-height: 1.3; }
 .book p { margin: 0 0 14px; color: var(--muted); font-size: 0.95em; }
-.rail .book { flex-direction: column; align-items: flex-start; gap: 14px; margin-top: 32px; font-size: 0.85rem; }
-.rail .book img { width: 96px; }
-.rail .book h2 { font-size: 1rem; }
+@media (max-width: 560px) { .book { gap: 16px; } .book img { width: 76px; } .book h3 { font-size: 1.1rem; } }
 
 /* Footer */
 .site-footer { margin-top: 96px; background: var(--surface); font-family: var(--sans); font-size: 0.9rem; }

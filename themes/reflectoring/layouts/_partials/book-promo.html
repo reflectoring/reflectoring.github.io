@@ -1,10 +1,22 @@
-{{- /* Promotion for "Get Your Hands Dirty on Clean Architecture", after a post. */ -}}
-{{- $cover := (resources.Get "images/gyhdoca/cover-338.png").Resize "220x webp q85" }}
-<section class="book" aria-labelledby="book-title">
-  <img src="{{ $cover.RelPermalink }}" alt="Cover of Get Your Hands Dirty on Clean Architecture, 2nd edition" width="110" height="{{ div $cover.Height 2 }}" loading="lazy">
-  <div>
-    <h2 id="book-title">Get Your Hands Dirty on Clean Architecture</h2>
-    <p>Build web applications with a hexagonal architecture, step by step, with code examples in Java. More than 6,500 readers so far.</p>
-    <a class="button" href="{{ "book/" | relURL }}">Get the book</a>
+{{- /* Tom's books after a post: the same two books as in the post's right margin, larger. */ -}}
+{{- $gyhdoca := (resources.Get "images/gyhdoca/cover-338.png").Resize "220x webp q85" }}
+{{- $strato := (resources.Get "images/stratospheric/stratospheric-cover.jpg").Resize "220x webp q85" }}
+<section class="books" aria-labelledby="books-title">
+  <h2 class="section-title" id="books-title">Books by Tom</h2>
+  <div class="book">
+    <img src="{{ $gyhdoca.RelPermalink }}" alt="Cover of Get Your Hands Dirty on Clean Architecture, 2nd edition" width="110" height="{{ div $gyhdoca.Height 2 }}" loading="lazy">
+    <div>
+      <h3>Get Your Hands Dirty on Clean Architecture</h3>
+      <p>Build web applications with a hexagonal architecture, step by step, with code examples in Java. More than 6,500 readers so far.</p>
+      <a class="button" href="{{ "book/" | relURL }}">Get the book</a>
+    </div>
+  </div>
+  <div class="book">
+    <img src="{{ $strato.RelPermalink }}" alt="Cover of Stratospheric: From Zero to Production with Spring Boot and AWS" width="110" height="{{ div $strato.Height 2 }}" loading="lazy">
+    <div>
+      <h3>Stratospheric</h3>
+      <p>From zero to production with Spring Boot and AWS: deploy a Spring Boot application to the AWS cloud and connect it to services like RDS, Cognito and SQS. More than 1,200 readers so far.</p>
+      <a class="button" href="https://stratospheric.dev?utm_source=reflectoring&utm_content=after_article">Get the book</a>
+    </div>
   </div>
 </section>

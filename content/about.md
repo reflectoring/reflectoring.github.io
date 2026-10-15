@@ -6,7 +6,7 @@ draft: false
 popup: false
 ---
 
-{{% image p="float-right" alt="Tom Hombergs" src="images/tom/tom.png" %}}
+{{% image p="float-right" c="portrait" alt="Tom Hombergs" src="images/tom/tom.png" %}}
 
 Hi, 
 

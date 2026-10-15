@@ -315,8 +315,13 @@ td { overflow-wrap: anywhere; }
 
 /* Generic page (About, 404) */
 .page-body { max-width: 680px; margin: 0 auto; padding: 48px 0 0; }
-.page-body .portrait { float: right; width: 180px; margin: 0 0 16px 28px; border-radius: 12px; }
-@media (max-width: 560px) { .page-body .portrait { width: 120px; margin-left: 16px; } }
+/* About page: the portrait dissolves into the page from a circle around the face (eased, so the
+   fade has no visible edge), and the text follows the round shape. */
+.prose .portrait {
+  --fade: radial-gradient(closest-side at 50% 44%, #000 38%, rgb(0 0 0 / 0.86) 50%, rgb(0 0 0 / 0.62) 62%, rgb(0 0 0 / 0.36) 74%, rgb(0 0 0 / 0.15) 86%, rgb(0 0 0 / 0.04) 95%, transparent);
+  -webkit-mask-image: var(--fade); mask-image: var(--fade);
+  shape-outside: circle(closest-side at 50% 44%); shape-margin: 12px;
+}
 .prose blockquote { margin: 1.6em 0; padding: 4px 0 4px 22px; border-left: 3px solid var(--pop); font-size: 1.12em; line-height: 1.55; }
 
 /* Search */

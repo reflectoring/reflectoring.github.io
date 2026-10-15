@@ -1,6 +1,6 @@
 /* reflectoring theme. A calm, book-like page: one centred column of serif text (Literata), UI in
-   Hanken Grotesk, code in JetBrains Mono. Teal (from the logo) for links; sunflower yellow as a
-   highlighter for what matters: key sentences, the current section, the newsletter.
+   Hanken Grotesk, code in JetBrains Mono. Teal (from the logo) for links; sunflower yellow for what
+   matters: a highlighter on the headings, a thick underline under key sentences, the newsletter.
    Light and dark mode: tokens on :root, dark values for prefers-color-scheme and data-theme. */
 :root {
   --bg: #fcfcfb; --surface: #f5f5f3; --text: #1c1e22; --muted: #5d636d; --faint: #8b909a; --rule: #e4e5e7;
@@ -179,27 +179,30 @@ td { overflow-wrap: anywhere; }
 .cookie[hidden] { display: none; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 
-/* A2 "Highlighter": teal stays the link colour; sunflower yellow is a highlighter. It marks the
-   post's bold key sentences, the section being read, and the newsletter. Colour with a meaning:
-   it shows what matters. */
+/* A2 "Highlighter": teal stays the link colour; sunflower yellow shows what matters. Headings get
+   a highlighter stroke; key sentences (bold) and the current item get a thick yellow underline,
+   which keeps running text easy to read. */
 :root {
-  --mark: #ffe066; --mark-strong: #ffd43b; --mark-ink: #1c1e22;
+  --mark: #ffe066; --mark-strong: #ffd43b; --mark-ink: #1c1e22; --underline: #fcc419;
   --logo-accent: #ffc93c;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --mark: rgb(255 212 59 / 0.28); --mark-strong: #ffd43b; --mark-ink: #1a1600;
+  --mark: rgb(255 212 59 / 0.28); --mark-strong: #ffd43b; --mark-ink: #1a1600; --underline: #e0b526;
 } }
 :root[data-theme="dark"] {
-  --mark: rgb(255 212 59 / 0.28); --mark-strong: #ffd43b; --mark-ink: #1a1600;
+  --mark: rgb(255 212 59 / 0.28); --mark-strong: #ffd43b; --mark-ink: #1a1600; --underline: #e0b526;
 }
 /* The highlighter stroke covers the lower part of the line, like a real marker. */
-.prose p > strong, .prose li > strong {
-  background: linear-gradient(transparent 52%, var(--mark) 52%, var(--mark) 92%, transparent 92%);
-  -webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 2px;
+.prose .heading-text {
+  background: linear-gradient(transparent 50%, var(--mark) 50%, var(--mark) 94%, transparent 94%);
+  -webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 0.15em; margin: 0 -0.15em;
 }
-.category { background: linear-gradient(transparent 50%, var(--mark) 50%); color: var(--text); padding: 0 3px; }
+.prose p > strong, .prose li > strong, .category, .nav a[aria-current] {
+  text-decoration: underline var(--underline); text-decoration-thickness: 0.16em; text-underline-offset: 0.3em; text-decoration-skip-ink: none;
+}
+.category { color: var(--text); }
+.nav a[aria-current] { color: var(--text); }
 .toc-list a[aria-current] { color: var(--text); border-left-color: var(--mark-strong); background: linear-gradient(90deg, var(--mark), transparent); }
-.prose h2::before { content: ""; display: inline-block; width: 0.42em; height: 0.42em; background: var(--mark-strong); border-radius: 2px; margin-right: 0.4em; vertical-align: 0.12em; }
 .callout { background: color-mix(in srgb, var(--mark-strong) 18%, var(--bg)); border-left-color: var(--mark-strong); }
 ::selection { background: var(--mark-strong); color: var(--mark-ink); }
 .newsletter { background: var(--mark-strong); color: var(--mark-ink); }
@@ -365,7 +368,6 @@ mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 1
 .band .topics a:hover { background: var(--pop); }
 
 /* ---- Content from the real site ---- */
-.nav a[aria-current] { color: var(--text); background: linear-gradient(transparent 60%, var(--mark) 60%); }
 .toc-list .toc-list { padding-left: 12px; }
 .toc-list .toc-list a { font-size: 0.95em; }
 .prose img { max-width: 100%; height: auto; }

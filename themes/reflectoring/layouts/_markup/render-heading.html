@@ -1,0 +1,3 @@
+{{- /* Headings in Markdown: the text sits in a span, so the yellow highlighter can follow the lines of
+   the text instead of filling the whole width. */ -}}
+<h{{ .Level }} id="{{ .Anchor }}"{{ with .Attributes.class }} class="{{ . }}"{{ end }}><span class="heading-text">{{ .Text }}</span></h{{ .Level }}>

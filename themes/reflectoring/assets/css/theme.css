@@ -95,12 +95,12 @@ h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(2rem, 1.3rem 
    The branch curves off the vertical line: a box with a left and bottom border and a rounded
    corner, ending at --branch. The line of the last entry stops where its curve begins. */
 .toc-list li { --branch: round(calc(5px + 0.5lh - 1px), 1px); --curve: 9px; position: relative; margin: 0; padding-left: 14px; }
-.toc-list li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--tree); }
+.toc-list li::before { content: ""; position: absolute; left: 0; top: var(--line-top, 0px); bottom: 0; width: 2px; background: var(--tree); }
 .toc-list li:last-child::before { bottom: calc(100% - var(--branch) - 2px + var(--curve)); }
 .toc-list li::after { content: ""; position: absolute; left: 0; top: calc(var(--branch) + 2px - var(--curve)); box-sizing: border-box; width: 11px; height: var(--curve); border: 0 solid var(--tree); border-width: 0 0 2px 2px; border-bottom-left-radius: 7px; }
 .toc-list .toc-list { font-size: 0.95em; margin-left: 6px; }
 /* The line to the subsections starts right below the entry they belong to. */
-.toc-list li:has(> a) > .toc-list > li:first-child::before { top: -4px; }
+.toc-list li:has(> a) > .toc-list > li:first-child { --line-top: -4px; }
 /* Hugo wraps subsections without a section above them in an entry without a link: no branch there. */
 .toc-list li:not(:has(> a)) { padding-left: 0; }
 .toc-list li:not(:has(> a))::before, .toc-list li:not(:has(> a))::after { content: none; }
@@ -221,7 +221,13 @@ td { overflow-wrap: anywhere; }
 .category { color: var(--text); }
 .nav a[aria-current] { color: var(--text); }
 .toc-list a[aria-current] { color: var(--text); font-weight: 600; background: linear-gradient(90deg, var(--mark), transparent); }
-.toc-list li:has(> a[aria-current])::after { border-color: var(--mark-strong); }
+.toc-list { --path: var(--underline); }
+/* The path from the top of the tree to the current entry is yellow: the whole line past the
+   entries before it, and the line down to the curve of the current entry and of its section. */
+.toc-list li:has(~ li a[aria-current])::before { background: var(--path); }
+.toc-list li:has(a[aria-current])::before { background: linear-gradient(var(--path) 0 calc(var(--branch) + 2px - var(--curve) - var(--line-top, 0px)), var(--tree) 0); }
+.toc-list li:has(a[aria-current])::after { border-color: var(--path); }
+.toc-list li:has(.toc-list a[aria-current]) > a { color: var(--text); }
 .callout { background: color-mix(in srgb, var(--mark-strong) 18%, var(--bg)); border-left-color: var(--mark-strong); }
 ::selection { background: var(--mark-strong); color: var(--mark-ink); }
 .newsletter { background: var(--mark-strong); color: var(--mark-ink); }

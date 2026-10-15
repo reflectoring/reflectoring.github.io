@@ -224,7 +224,8 @@ td { overflow-wrap: anywhere; }
 .toc-list { --path: var(--underline); }
 /* The path from the top of the tree to the current entry is yellow: the whole line past the
    entries before it, and the line down to the curve of the current entry and of its section. */
-.toc-list li:has(~ li a[aria-current])::before { background: var(--path); }
+/* Above its own grey curve, so the curve branches off the yellow line instead of covering it. */
+.toc-list li:has(~ li a[aria-current])::before { background: var(--path); z-index: 1; }
 .toc-list li:has(a[aria-current])::before { background: linear-gradient(var(--path) 0 calc(var(--branch) + 2px - var(--curve) - var(--line-top, 0px)), var(--tree) 0); }
 .toc-list li:has(a[aria-current])::after { border-color: var(--path); }
 .toc-list li:has(.toc-list a[aria-current]) > a { color: var(--text); }

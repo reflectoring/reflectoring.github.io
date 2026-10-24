@@ -9,7 +9,7 @@ title: "Two Years of AI Changed 20 Years of Habits"
 url: two-years-of-ai-changed-20-years-of-habits
 ---
 
-This is a draft I would like to submit to [this essay challenge](https://blog.pragmaticengineer.com/how-software-engineering-is-changing-an-essay-challenge/) about how AI changed the way I work in the context of my work at Atlassian. If accepted, it may be published externally in full or in excerpts.
+This article is my contribution to Pragmatic Engineer's [essay challenge](https://blog.pragmaticengineer.com/how-software-engineering-is-changing-an-essay-challenge/) about how AI changed the way I work in the context of my work at Atlassian. 
 
 My career as a software engineer started in 2007, when I interviewed for a software engineer role at a software consultancy in Germany, fresh from university. The interviewer asked me if I knew Java, Hibernate, J2EE, and EJB. I answered "yes" to Java (because I had theoretical knowledge from uni) and "no" to the others. My interviewer said to come back in two months once I had learned these technologies. I did, and apparently had learned enough in that time to navigate the second interview well enough to get the role. I stayed with this company for 12 years. Each client project brought new technologies I had to learn.
 

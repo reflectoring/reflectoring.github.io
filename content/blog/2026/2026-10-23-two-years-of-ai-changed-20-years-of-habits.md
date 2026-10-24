@@ -2,7 +2,7 @@
 authors: [tom]
 categories: ["Meta", "Software Craft"]
 date: 2026-10-23 00:00:00 +1100
-draft: true
+draft: false
 excerpt: "Two years of watching AI go from a disappointing chatbot to a daily pairing partner, from the ground floor of platform work at Atlassian to vibe-coded side projects on a rented server."
 image: images/stock/0103-blank-1200x628-branded.jpg
 title: "Two Years of AI Changed 20 Years of Habits"
